@@ -1,13 +1,15 @@
-import { select, event, clientPoint, mouse } from 'd3-selection';
-
+import { clientPoint } from 'd3-selection';
 import slugid from 'slugid';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
 
+// Components
+import ContextMenuItem from './ContextMenuItem';
 import CenterTrack from './CenterTrack';
-import DragListeningDiv from './DragListeningDiv.js';
+import DragListeningDiv from './DragListeningDiv';
+import GalleryTracks from './GalleryTracks';
 import TrackRenderer from './TrackRenderer';
 import AddTrackModal from './AddTrackModal';
 import ConfigTrackMenu from './ConfigTrackMenu';
@@ -16,31 +18,34 @@ import PopupMenu from './PopupMenu';
 import ContextMenuContainer from './ContextMenuContainer';
 import HorizontalTiledPlot from './HorizontalTiledPlot';
 import VerticalTiledPlot from './VerticalTiledPlot';
-import ViewContextMenu from './ViewContextMenu.js';
+import ViewContextMenu from './ViewContextMenu';
 // import {HeatmapOptions} from './HeatmapOptions';
 
 // Services
-import { chromInfo } from './services';
+import { chromInfo, pubSub } from './services';
 
 // Utils
 import {
   dataToGenomicLoci,
   getTrackByUid,
   getTrackPositionByUid,
+  isWithin,
+  sum,
 } from './utils';
 
 // Configs
-import { 
-  MOUSE_TOOL_SELECT, 
-  TRACKS_INFO_BY_TYPE,
+import {
   DEFAULT_TRACKS_FOR_DATATYPE,
+  MOUSE_TOOL_SELECT,
+  TRACKS_INFO_BY_TYPE,
+  TRACK_LOCATIONS
 } from './configs';
 
 // Styles
-import styles from '../styles/TiledPlot.module.scss';
+import styles from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
 import stylesCenterTrack from '../styles/CenterTrack.module.scss'; // eslint-disable-line no-unused-vars
 
-export class TiledPlot extends React.Component {
+class TiledPlot extends React.Component {
   constructor(props) {
     super(props);
 
@@ -88,9 +93,18 @@ export class TiledPlot extends React.Component {
 
       chromInfo: null,
       defaultChromSizes: null,
+      contextMenuCustomItems: null,
       contextMenuPosition: null,
       addDivisorDialog: null,
     };
+
+    if (window.higlassTracksByType) {
+      // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
+      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
+        TRACKS_INFO_BY_TYPE[pluginTrackType] =
+          window.higlassTracksByType[pluginTrackType].config;
+      });
+    }
 
     // these dimensions are computed in the render() function and depend
     // on the sizes of the tracks in each section
@@ -105,6 +119,8 @@ export class TiledPlot extends React.Component {
 
     this.dragTimeout = null;
     this.previousPropsStr = '';
+
+    this.contextMenuHandlerBound = this.contextMenuHandler.bind(this);
   }
 
   waitForDOMAttachment(callback) {
@@ -135,7 +151,12 @@ export class TiledPlot extends React.Component {
 
     // add event listeners for drag and drop events
     this.addEventListeners();
-    this.getDefaultChromSizes();
+    //this.getDefaultChromSizes();
+
+    this.pubSubs = [];
+    this.pubSubs.push(
+      pubSub.subscribe('contextmenu', this.contextMenuHandlerBound)
+    );
   }
 
   componentWillReceiveProps(newProps) {
@@ -194,7 +215,7 @@ export class TiledPlot extends React.Component {
     }
 
     if (prevProps.tracks.center !== this.props.tracks.center) {
-      this.getDefaultChromSizes();
+      //this.getDefaultChromSizes();
     }
   }
 
@@ -202,7 +223,7 @@ export class TiledPlot extends React.Component {
     this.closing = true;
 
     this.removeEventListeners();
-
+    this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
   }
 
   addUidsToTracks(tracks) {
@@ -213,6 +234,7 @@ export class TiledPlot extends React.Component {
     }
   }
 
+    /*
   getDefaultChromSizes() {
     try {
       const centralHeatmap = this.findCentralHeatmapTrack(
@@ -221,13 +243,21 @@ export class TiledPlot extends React.Component {
       this.getChromInfo = chromInfo
         .get(`${centralHeatmap.server}/chrom-sizes/?id=${centralHeatmap.tilesetUid}`)
         .then(defaultChromSizes => this.setState({ defaultChromSizes }));
-    } catch (err) { /* Nothing */ }
+    } catch (err) {  }
   }
+  */
 
   contextMenuHandler(e) {
-    if (e.altKey) return;
+    if (!this.divTiledPlot) return;
 
-    e.preventDefault();
+    const bBox = this.divTiledPlot.getBoundingClientRect();
+    const isClickWithin = isWithin(
+      e.clientX, e.clientY,
+      bBox.left, bBox.left + bBox.width,
+      bBox.top, bBox.top + bBox.height,
+    )
+
+    if (!isClickWithin) return;
 
     const mousePos = [e.clientX, e.clientY];
     // Relative mouse position
@@ -239,16 +269,28 @@ export class TiledPlot extends React.Component {
     const xVal = this.trackRenderer.zoomedXScale.invert(canvasMousePos[0]);
     const yVal = this.trackRenderer.zoomedYScale.invert(canvasMousePos[1]);
 
+    let contextMenuCustomItems = null;
+    if (e.hgCustomItems) {
+      contextMenuCustomItems = e.hgCustomItems.map(item => (
+        <ContextMenuItem
+          key={item.key}
+          onClick={item.onClick}
+        >
+          {item.text}
+        </ContextMenuItem>
+      ));
+    }
+
     this.setState({
+      contextMenuCustomItems,
       contextMenuPosition: {
         left: mousePos[0],
         top: mousePos[1],
         canvasLeft: canvasMousePos[0] + this.trackRenderer.xPositionOffset,
         canvasTop: canvasMousePos[1] + this.trackRenderer.yPositionOffset,
       },
-
-      contextMenuX: xVal,
-      contextMenuY: yVal,
+      contextMenuDataX: xVal,
+      contextMenuDataY: yVal,
     });
   }
 
@@ -280,14 +322,14 @@ export class TiledPlot extends React.Component {
     this.props.onScalesChanged(x, y);
   }
 
+  /**
+   * We've received information about a tileset from the server. Register it
+   * with the track definition.
+   * @param trackUid (string): The identifier for the track
+   * @param tilesetInfo (object): Information about the track (hopefully including
+   *                              its name.
+   */
   handleTilesetInfoReceived(trackUid, tilesetInfo) {
-    /**
-     * We've received information about a tileset from the server. Register it
-     * with the track definition.
-     * @param trackUid (string): The identifier for the track
-     * @param tilesetInfo (object): Information about the track (hopefully including
-     *                              its name.
-     */
     const track = getTrackByUid(this.props.tracks, trackUid);
 
     if (!track) {
@@ -302,7 +344,12 @@ export class TiledPlot extends React.Component {
     track.transforms = tilesetInfo.transforms;
     track.header = tilesetInfo.header;
     track.binsPerDimension = tilesetInfo.bins_per_dimension;
-    track.maxZoom = tilesetInfo.max_zoom;
+    if (tilesetInfo.resolutions) {
+      track.maxZoom = tilesetInfo.resolutions.length-1;
+      track.resolutions = tilesetInfo.resolutions;
+    } else {
+      track.maxZoom = tilesetInfo.max_zoom;
+    }
     track.coordSystem = tilesetInfo.coordSystem;
   }
 
@@ -358,12 +405,12 @@ export class TiledPlot extends React.Component {
       addDivisorDialog: null,
     });
 
-    const numerator = series.data ? 
+    const numerator = series.data ?
       {
         server: series.data.server,
         tilesetUid: series.data.tilesetUid
       } :
-      { 
+      {
         server: series.server,
         tilesetUid: series.tilesetUid
       };
@@ -394,7 +441,7 @@ export class TiledPlot extends React.Component {
 
     const datatype = TRACKS_INFO_BY_TYPE[series.type].datatype[0];
 
-    const atm = 
+    const atm =
         (<AddTrackModal
           host={this.state.addTrackHost}
           onCancel={()=>{
@@ -479,6 +526,7 @@ export class TiledPlot extends React.Component {
       closeTrackMenuId: null,
       configTrackMenuId: null,
       contextMenuPosition: null,
+      contextMenuCustomItems: null,
     });
   }
   handleLockValueScale(uid) {
@@ -538,7 +586,6 @@ export class TiledPlot extends React.Component {
      *      the newTrack object passed in with some extra information
      *      (such as the uid) added.
      */
-    console.log('newTracks:', newTracks, 'position:', position);
 
     if (this.trackToReplace) {
       this.handleCloseTrack(this.trackToReplace);
@@ -566,9 +613,10 @@ export class TiledPlot extends React.Component {
 
   handleCloseContextMenu() {
     this.setState({
+      contextMenuCustomItems: null,
       contextMenuPosition: null,
-      contextMenuX: null,
-      contextMenuY: null,
+      contextMenuDataX: null,
+      contextMenuDataY: null,
     });
   }
 
@@ -634,102 +682,160 @@ export class TiledPlot extends React.Component {
     const tracksAndLocations = [];
     const tracks = this.state.tracks;
 
-    for (const trackType of ['top', 'left', 'right', 'bottom', 'center', 'whole']) {
-      if (!(trackType in tracks))
-        continue;
-
-      for (let i = 0; i < tracks[trackType].length; i++) { tracksAndLocations.push({ track: tracks[trackType][i], location: trackType }); }
-    }
+    TRACK_LOCATIONS.forEach((location) => {
+      if (tracks[location]) {
+        tracks[location].forEach((track) => {
+          tracksAndLocations.push({ track, location });
+        });
+      }
+    });
 
     return tracksAndLocations;
   }
 
+  /**
+   * Calculate where a track is absoluately positioned within the drawing area
+   *
+   * @param track: The track object (with members, e.g. track.uid, track.width,
+   *   track.height)
+   * @param location: Where it's being plotted (e.g. 'top', 'bottom')
+   * @return: The position of the track and it's height and width
+   *          (e.g. {left: 10, top: 20, width: 30, height: 40}
+   */
   calculateTrackPosition(track, location) {
-    /**
-     * Calculate where a track is absoluately positioned within the drawing area
-     *
-     * @param track: The track object (with members, e.g. track.uid, track.width, track.height)
-     * @param location: Where it's being plotted (e.g. 'top', 'bottom')
-     * @return: The position of the track and it's height and width
-     *          (e.g. {left: 10, top: 20, width: 30, height: 40}
-     */
-    let top = this.props.verticalMargin,
-      left = this.props.horizontalMargin;
+    let top = this.props.verticalMargin;
+    let bottom = this.props.verticalMargin;
+    let left = this.props.horizontalMargin;
+    let right = this.props.horizontalMargin;
+    let width = this.centerWidth;
+    let height = track.height;
+    let offsetX = 0;
+    let offsetY = 0;
 
-    if (location == 'top') {
-      left += this.leftWidth;
-      top += 0;
+    switch (location) {
+      case 'top':
+        left += this.leftWidth;
 
-      for (let i = 0; i < this.state.tracks.top.length; i++) {
-        if (this.state.tracks.top[i].uid == track.uid) { break; } else { top += this.state.tracks.top[i].height; }
-      }
+        for (let i = 0; i < this.state.tracks.top.length; i++) {
+          if (this.state.tracks.top[i].uid === track.uid) {
+            break;
+          } else {
+            top += this.state.tracks.top[i].height;
+          }
+        }
 
-      return { left,
-        top,
-        width: this.centerWidth,
-        height: track.height,
-        track };
-    } else if (location == 'bottom') {
-      left += this.leftWidth;
-      top += this.topHeight + this.centerHeight;
+        break;
 
-      for (let i = 0; i < this.state.tracks.bottom.length; i++) {
-        if (this.state.tracks.bottom[i].uid == track.uid) { break; } else { top += this.state.tracks.bottom[i].height; }
-      }
+      case 'bottom':
+        left += this.leftWidth;
+        top += this.topHeight + this.centerHeight + this.galleryDim;
 
-      return { left,
-        top,
-        width: this.centerWidth,
-        height: track.height,
-        track };
-    } else if (location == 'left') {
-      top += this.topHeight;
+        for (let i = 0; i < this.state.tracks.bottom.length; i++) {
+          if (this.state.tracks.bottom[i].uid === track.uid) {
+            break;
+          } else {
+            top += this.state.tracks.bottom[i].height;
+          }
+        }
 
-      for (let i = 0; i < this.state.tracks.left.length; i++) {
-        if (this.state.tracks.left[i].uid == track.uid) { break; } else { left += this.state.tracks.left[i].width; }
-      }
+        break;
 
-      return { left,
-        top,
-        width: track.width,
-        height: this.centerHeight,
-        track };
-    } else if (location == 'right') {
-      left += this.leftWidth + this.centerWidth;
-      top += this.topHeight;
+      case 'left':
+        top += this.topHeight;
+        width = track.width;
+        height = this.centerHeight;
 
-      for (let i = 0; i < this.state.tracks.right.length; i++) {
-        if (this.state.tracks.right[i].uid == track.uid) { break; } else { left += this.state.tracks.right[i].width; }
-      }
+        for (let i = 0; i < this.state.tracks.left.length; i++) {
+          if (this.state.tracks.left[i].uid === track.uid) {
+            break;
+          } else {
+            left += this.state.tracks.left[i].width;
+          }
+        }
 
-      return { left,
-        top,
-        width: track.width,
-        height: this.centerHeight,
-        track };
-    } else if (location == 'center') {
-      left += this.leftWidth;
-      top += this.topHeight;
+        break;
 
-      return { left,
-        top,
-        width: this.centerWidth,
-        height: this.centerHeight,
-        track };
-    } else {
-      // fall back on 'whole' tracks
-      if (location != 'whole') {
-        console.warn('Track with unknown position present:', location, track);
-      }
+      case 'right':
+        left += this.leftWidth + this.centerWidth + this.galleryDim;
+        top += this.topHeight;
+        width = track.width;
+        height = this.centerHeight;
 
-      return {
-        top: this.props.verticalMargin,
-        left: this.props.horizontalMargin,
-        width: this.leftWidth + this.centerWidth + this.rightWidth,
-        height: this.topHeight + this.centerHeight + this.bottomHeight,
-        track
-      }
+        for (let i = 0; i < this.state.tracks.right.length; i++) {
+          if (this.state.tracks.right[i].uid === track.uid) {
+            break;
+          } else {
+            left += this.state.tracks.right[i].width;
+          }
+        }
+
+        break;
+
+      case 'center':
+        left += this.leftWidth;
+        top += this.topHeight;
+        height = this.centerHeight;
+
+        break;
+
+      case 'gallery':
+        left += this.leftWidthNoGallery;
+        top += this.topHeightNoGallery;
+        width = (
+          this.state.width
+          - this.leftWidthNoGallery
+          - this.rightWidthNoGallery
+          - (2 * this.props.horizontalMargin)
+        );
+        height = (
+          this.state.height
+          - this.topHeightNoGallery
+          - this.bottomHeightNoGallery
+          - (2 * this.props.verticalMargin)
+        );
+        offsetX = this.galleryDim;
+        offsetY = this.galleryDim;
+
+        for (let i = 0; i < this.state.tracks.gallery.length; i++) {
+          if (this.state.tracks.gallery[i].uid === track.uid) {
+            break;
+          } else {
+            width -= (2 * this.state.tracks.gallery[i].height);
+            height -= (2 * this.state.tracks.gallery[i].height);
+            left += this.state.tracks.gallery[i].height;
+            top += this.state.tracks.gallery[i].height;
+            offsetX -= this.state.tracks.gallery[i].height;
+            offsetY -= this.state.tracks.gallery[i].height;
+          }
+        }
+
+        for (let i = 0; i < this.state.tracks.right.length; i++) {
+          right += this.state.tracks.right[i].width;
+        }
+        for (let i = 0; i < this.state.tracks.bottom.length; i++) {
+          bottom += this.state.tracks.bottom[i].height;
+        }
+
+        track.offsetX = offsetX;
+        track.offsetY = offsetY;
+        track.offsetTop = top;
+        track.offsetRight = right;
+        track.offsetBottom = bottom;
+        track.offsetLeft = left;
+
+        break;
+
+      case 'whole':
+      default:
+        width = this.leftWidth + this.centerWidth + this.rightWidth;
+        height = this.topHeight + this.centerHeight + this.bottomHeight;
     }
+
+    if (TRACK_LOCATIONS.indexOf(location) === -1) {
+      console.warn('Track with unknown position present:', location, track);
+    }
+
+    return { left, top, width, height, track };
   }
 
   /**
@@ -815,6 +921,9 @@ export class TiledPlot extends React.Component {
   listTracksAtPosition(x, y, isReturnTrackObj = false) {
     const trackObjectsAtPosition = [];
 
+    if (!this.trackRenderer)
+      return;
+
     for (const uid in this.trackRenderer.trackDefObjects) {
       const trackObj = this.trackRenderer.trackDefObjects[uid].trackObject;
 
@@ -825,13 +934,20 @@ export class TiledPlot extends React.Component {
         // wish to be identified if the mouse is directly over them
 
         if (isReturnTrackObj) {
-          // This should be much simpler to determine...
-          trackObj.is2d = this.trackRenderer.trackDefObjects[uid].trackDef.track.type === 'combined'
-            ? this.trackRenderer.trackDefObjects[uid].trackDef.track.contents
-              .some(track => TRACKS_INFO_BY_TYPE[track.type].orientation)
-            : TRACKS_INFO_BY_TYPE[
-              this.trackRenderer.trackDefObjects[uid].trackDef.track.type
-            ].orientation === '2d';
+          if (this.props.tracks.center) {
+            if (this.props.tracks.center.contents) {
+              for (let i = 0; i < this.props.tracks.center.contents.length; i++) {
+                if (this.props.tracks.center.contents[i].uid == uid) {
+                  trackObj.is2d = true;
+                }
+              }
+            } else {
+              if (this.props.tracks.center && this.props.tracks.center.length && this.props.tracks.center[0].uid == uid) {
+                trackObj.is2d = true;
+              }
+            }
+
+          }
 
           trackObjectsAtPosition.push(trackObj);
         } else {
@@ -883,8 +999,10 @@ export class TiledPlot extends React.Component {
      * Try to zoom in or out so that the bounds of the view correspond to the
      * extent of the data.
      */
-    const minPos = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
-    const maxPos = [Number.MIN_SAFE_INTEGER, Number.MIN_SAFE_INTEGER];
+    const maxSafeInt = Number.MAX_SAFE_INTEGER;
+    const minSafeInt = Number.MIN_SAFE_INTEGER;
+    const minPos = [maxSafeInt, maxSafeInt];
+    const maxPos = [minSafeInt, minSafeInt];
 
     const trackObjectsToCheck = this.listAllTrackObjects();
 
@@ -932,6 +1050,7 @@ export class TiledPlot extends React.Component {
   updatablePropsToString(props) {
     return JSON.stringify({
       tracks: props.tracks,
+      viewOptions: props.viewOptions,
       uid: props.uid,
       addTrackPosition: props.addTrackPosition,
       editable: props.editable,
@@ -1035,7 +1154,8 @@ export class TiledPlot extends React.Component {
         >
           <ViewContextMenu
             closeMenu={this.closeMenus.bind(this)}
-            coords={[this.state.contextMenuX, this.state.contextMenuY]}
+            coords={[this.state.contextMenuDataX, this.state.contextMenuDataY]}
+            customItems={this.state.contextMenuCustomItems}
             onAddSeries={this.handleAddSeries.bind(this)}
             // Can only add one new track at a time
             // because "whole" tracks are always drawn on top of each other,
@@ -1055,7 +1175,7 @@ export class TiledPlot extends React.Component {
             onReplaceTrack={this.handleReplaceTrack.bind(this)}
             onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
             onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
-            orientation={'left'}
+            orientation={'right'}
             position={this.state.contextMenuPosition}
             tracks={relevantTracks}
             trackSourceServers={this.props.trackSourceServers}
@@ -1075,11 +1195,6 @@ export class TiledPlot extends React.Component {
     const evtJson = this.props.draggingHappening;
     const datatype = evtJson.datatype;
 
-    /*
-    console.log('datatype:', datatype);
-    console.log('DEFAULT_TRACKS_FOR_DATATYPE', DEFAULT_TRACKS_FOR_DATATYPE);
-    */
-
     if (!(datatype in DEFAULT_TRACKS_FOR_DATATYPE)) {
       console.warn('unknown data type:', evtJson.higlassTrack);
       return;
@@ -1088,9 +1203,6 @@ export class TiledPlot extends React.Component {
     const defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype];
     const presentTracks = new Set(['top', 'left', 'right', 'center', 'bottom']
       .filter(x => (x in this.state.tracks && this.state.tracks[x].length)));
-
-    // console.log('presentTracks:', presentTracks);
-    // console.log('defaultTracks:', defaultTracks);
 
     let numVertical = 0;
     let numHorizontal = 0;
@@ -1110,8 +1222,6 @@ export class TiledPlot extends React.Component {
     const rightDisplayed = ('right' in defaultTracks && hasVerticalComponent );
     const centerDisplayed = ('center' in defaultTracks || hasVerticalComponent);
 
-    // console.log(topDisplayed, rightDisplayed, bottomDisplayed, leftDisplayed, centerDisplayed);
-
     const topLeftDiv = (
       <div
         style={{
@@ -1122,7 +1232,7 @@ export class TiledPlot extends React.Component {
     const topRightDiv = React.cloneElement(topLeftDiv);
 
     const topDiv = (
-      <div 
+      <div
         style={{
           display: 'flex',
           flexGrow: 1,
@@ -1144,7 +1254,7 @@ export class TiledPlot extends React.Component {
     );
 
     const bottomDiv = (
-      <div 
+      <div
         style={{
           display: 'flex',
           flexGrow: 1,
@@ -1230,7 +1340,7 @@ export class TiledPlot extends React.Component {
           }}
         >
           { topDisplayed ? topDiv : null }
-          { hasVerticalComponent && 
+          { hasVerticalComponent &&
             <div
               style={{
               display: 'flex',
@@ -1250,32 +1360,42 @@ export class TiledPlot extends React.Component {
   }
 
   render() {
+    // A gallery track consumes equal width and height. Note that since the
+    // gallery goes around the central view it's dimension takes up twice the
+    // space!
+    this.galleryDim = this.props.tracks.gallery
+      .map(x => x.height).reduce(sum, 0);
+
     // left, top, right, and bottom have fixed heights / widths
     // the center will vary to accomodate their dimensions
-    this.topHeight = this.props.tracks.top
-      .map(x => x.height)
-      .reduce((a, b) => a + b, 0);
-    this.bottomHeight = this.props.tracks.bottom
-      .map(x => x.height)
-      .reduce((a, b) => a + b, 0);
-    this.leftWidth = this.props.tracks.left
-      .map(x => x.width)
-      .reduce((a, b) => a + b, 0);
-    this.rightWidth = this.props.tracks.right
-      .map(x => x.width)
-      .reduce((a, b) => a + b, 0);
+    this.topHeightNoGallery = this.props.tracks.top
+      .map(x => x.height).reduce(sum, 0);
+    this.topHeight = this.topHeightNoGallery + this.galleryDim;
+
+    this.bottomHeightNoGallery = this.props.tracks.bottom
+      .map(x => x.height).reduce(sum, 0);
+    this.bottomHeight = this.bottomHeightNoGallery + this.galleryDim;
+
+    this.leftWidthNoGallery = this.props.tracks.left
+      .map(x => x.width).reduce(sum, 0);
+    this.leftWidth = this.leftWidthNoGallery + this.galleryDim;
+
+    this.rightWidthNoGallery = this.props.tracks.right
+      .map(x => x.width).reduce(sum, 0);
+    this.rightWidth = this.rightWidthNoGallery + this.galleryDim;
+
 
     this.centerHeight = (
-      this.state.height -
-      this.topHeight -
-      this.bottomHeight -
-      (2 * this.props.verticalMargin)
+      this.state.height
+      - this.topHeight
+      - this.bottomHeight
+      - (2 * this.props.verticalMargin)
     );
     this.centerWidth = (
-      this.state.width -
-      this.leftWidth -
-      this.rightWidth -
-      (2 * this.props.horizontalMargin)
+      this.state.width
+      - this.leftWidth
+      - this.rightWidth
+      - (2 * this.props.horizontalMargin)
     );
 
     const trackOutline = 'none';
@@ -1287,7 +1407,7 @@ export class TiledPlot extends React.Component {
           left: this.leftWidth + this.props.horizontalMargin,
           top: this.props.verticalMargin,
           width: this.centerWidth,
-          height: this.topHeight,
+          height: this.topHeightNoGallery,
           outline: trackOutline,
           position: 'absolute',
         }}
@@ -1322,7 +1442,7 @@ export class TiledPlot extends React.Component {
         style={{
           left: this.props.horizontalMargin,
           top: this.topHeight + this.props.verticalMargin,
-          width: this.leftWidth,
+          width: this.leftWidthNoGallery,
           height: this.centerHeight,
           outline: trackOutline,
           position: 'absolute',
@@ -1356,7 +1476,7 @@ export class TiledPlot extends React.Component {
       <div style={{
         right: this.props.horizontalMargin,
         top: this.topHeight + this.props.verticalMargin,
-        width: this.rightWidth,
+        width: this.rightWidthNoGallery,
         height: this.centerHeight,
         outline: trackOutline,
         position: 'absolute',
@@ -1392,7 +1512,7 @@ export class TiledPlot extends React.Component {
         left: this.leftWidth + this.props.horizontalMargin,
         bottom: this.props.verticalMargin,
         width: this.centerWidth,
-        height: this.bottomHeight,
+        height: this.bottomHeightNoGallery,
         outline: trackOutline,
         position: 'absolute',
       }}
@@ -1421,6 +1541,33 @@ export class TiledPlot extends React.Component {
       </div>
     );
 
+    const galleryTracks = (
+      <div
+        key="galleryTracksDiv"
+        className="gallery-track-container"
+        style={{
+          left: this.leftWidthNoGallery + this.props.horizontalMargin,
+          top: this.topHeightNoGallery + this.props.verticalMargin,
+          width: this.centerWidth + (2 * this.galleryDim),
+          height: this.centerHeight + (2 * this.galleryDim),
+          outline: trackOutline,
+          position: 'absolute',
+        }}
+      >
+        <GalleryTracks
+          configTrackMenuId={this.state.configTrackMenuId}
+          editable={this.props.editable}
+          height={this.centerHeight + (2 * this.galleryDim)}
+          onAddSeries={this.handleAddSeries.bind(this)}
+          onCloseTrack={this.handleCloseTrack.bind(this)}
+          onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+          onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
+          tracks={this.props.tracks.gallery}
+          width={this.centerWidth + (2 * this.galleryDim)}
+        />
+      </div>
+    );
+
     let centerTrack = (
       <div
         style={{
@@ -1437,6 +1584,7 @@ export class TiledPlot extends React.Component {
     if (this.props.tracks.center.length) {
       centerTrack = (
         <div
+          className="center-track-container"
           style={{
             left: this.leftWidth + this.props.horizontalMargin,
             top: this.props.verticalMargin + this.topHeight,
@@ -1487,16 +1635,16 @@ export class TiledPlot extends React.Component {
           centerHeight={this.centerHeight}
           centerWidth={this.centerWidth}
           dragging={this.props.dragging}
+          galleryDim={this.galleryDim}
           height={this.state.height}
           initialXDomain={this.props.initialXDomain}
           initialYDomain={this.props.initialYDomain}
-          xDomainLimits={this.props.xDomainLimits}
-          yDomainLimits={this.props.yDomainLimits}
-          zoomLimits={this.props.zoomLimits}
           isRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT}
           leftWidth={this.leftWidth}
+          leftWidthNoGallery={this.leftWidthNoGallery}
           marginLeft={this.props.horizontalMargin}
           marginTop={this.props.verticalMargin}
+          metaTracks={this.props.metaTracks}
           onMouseMoveZoom={this.props.onMouseMoveZoom}
           onNewTilesLoaded={this.props.onNewTilesLoaded}
           onScalesChanged={this.handleScalesChanged.bind(this)}
@@ -1504,20 +1652,27 @@ export class TiledPlot extends React.Component {
           onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
           onValueScaleChanged={this.props.onValueScaleChanged}
           pixiStage={this.props.pixiStage}
+          pluginTracks={this.props.pluginTracks}
           positionedTracks={positionedTracks}
           registerDraggingChangedListener={this.props.registerDraggingChangedListener}
           removeDraggingChangedListener={this.props.removeDraggingChangedListener}
           setCentersFunction={this.props.setCentersFunction}
           svgElement={this.props.svgElement}
           topHeight={this.topHeight}
+          topHeightNoGallery={this.topHeightNoGallery}
           uid={this.props.uid}
           width={this.state.width}
+          viewOptions={this.props.viewOptions}
+          xDomainLimits={this.props.xDomainLimits}
+          yDomainLimits={this.props.yDomainLimits}
           zoomable={this.props.zoomable}
+          zoomLimits={this.props.zoomLimits}
         >
           {topTracks}
           {leftTracks}
           {rightTracks}
           {bottomTracks}
+          {galleryTracks}
           {centerTrack}
         </TrackRenderer>
       );
@@ -1543,7 +1698,7 @@ export class TiledPlot extends React.Component {
             onReplaceTrack={this.handleReplaceTrack.bind(this)}
             onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
             onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
-            ref={c => this.configTrackMenu = c}
+            ref={(c) => { this.configTrackMenu = c; }}
             position={this.state.configTrackMenuLocation}
             tracks={[getTrackByUid(this.props.tracks, this.state.configTrackMenuId)]}
             trackOrientation={getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
@@ -1577,7 +1732,7 @@ export class TiledPlot extends React.Component {
         let background = 'transparent';
         let border = 'none';
 
-        if (this.state.mouseOverOverlayUid == pTrack.track.uid) {
+        if (this.state.mouseOverOverlayUid === pTrack.track.uid) {
           background = 'yellow';
           border = '1px solid black';
         }
@@ -1590,6 +1745,7 @@ export class TiledPlot extends React.Component {
             // we want to remove the mouseOverOverlayUid so that next time we try
             // to choose an overlay track, the previously selected one isn't
             // automatically highlighted
+
             onClick={() => {
               this.setState({ mouseOverOverlayUid: null });
               this.props.chooseTrackHandler(pTrack.track.uid);
@@ -1605,6 +1761,7 @@ export class TiledPlot extends React.Component {
               background,
               opacity: 0.4,
               border,
+              zIndex: 1
             }}
           />
         );
@@ -1666,7 +1823,6 @@ export class TiledPlot extends React.Component {
       <div
         ref={(c) => { this.divTiledPlot = c; }}
         className="tiled-plot-div"
-        onContextMenu={this.contextMenuHandler.bind(this)}
         styleName="styles.tiled-plot"
         onDragEnter={(evt) => {
         }}
@@ -1710,6 +1866,12 @@ export class TiledPlot extends React.Component {
   }
 }
 
+TiledPlot.defaultProps = {
+  pluginTracks: {},
+  metaTracks: [],
+  zoomable: true,
+};
+
 TiledPlot.propTypes = {
   addTrackPosition: PropTypes.string,
   canvasElement: PropTypes.object,
@@ -1738,14 +1900,13 @@ TiledPlot.propTypes = {
   removeDraggingChangedListener: PropTypes.func,
   setCentersFunction: PropTypes.func,
   pixiStage: PropTypes.object,
+  pluginTracks: PropTypes.object,
   svgElement: PropTypes.object,
   trackSourceServers: PropTypes.array,
   tracks: PropTypes.object,
-  'tracks.top': PropTypes.array,
-  'tracks.bottom': PropTypes.array,
-  'tracks.left': PropTypes.array,
-  'tracks.right': PropTypes.array,
+  metaTracks: PropTypes.array,
   verticalMargin: PropTypes.number,
+  viewOptions: PropTypes.object,
   uid: PropTypes.string,
   zoomable: PropTypes.bool,
 };

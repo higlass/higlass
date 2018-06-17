@@ -1,20 +1,11 @@
 import { scaleLinear, scaleLog } from 'd3-scale';
 
-import { HorizontalLine1DPixiTrack } from './HorizontalLine1DPixiTrack';
+import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 
 // Utils
 import { colorToHex, dictValues } from './utils';
 
-export class BarTrack extends HorizontalLine1DPixiTrack {
-  constructor( scene, dataConfig, handleTilesetInfoReceived, option,
-    animate,
-    onValueScaleChanged,
-  ) {
-    super( scene, dataConfig, handleTilesetInfoReceived, option, animate,
-      onValueScaleChanged,
-    );
-  }
-
+class BarTrack extends HorizontalLine1DPixiTrack {
   initTile(tile) {
     /**
          * Create whatever is needed to draw this tile.
@@ -35,6 +26,18 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
   drawTile(tile) {
     // empty function so that the superclass's drawTile
     // doesn't do anything
+  }
+
+  updateTile(tile) {
+    // console.log('tile.valueScale', tile.valueScale, 'this.scale', this.scale);
+    if (tile.valueScale && this.scale && 
+      this.scale.minValue == tile.scale.minValue && 
+      this.scale.maxValue == tile.scale.maxValue) {
+      // already rendered properly, no need to rerender
+    } else {
+      // not rendered using the current scale, so we need to rerender
+      this.renderTile(tile);
+    }
   }
 
   renderTile(tile) {
@@ -160,7 +163,10 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
     const stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
 
     for (const tile of this.visibleAndFetchedTiles()) {
-      const data = tile.svgData;
+      const data = tile;
+      if (!data || !data.barXValues)
+        continue;
+
       for (let i = 0; i < data.barXValues.length; i++) {
         const rect = document.createElement('rect');
         rect.setAttribute('fill', data.barColors[i]);

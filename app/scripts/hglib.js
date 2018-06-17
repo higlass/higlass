@@ -13,6 +13,7 @@ const launch = (element, config, options) => {
    * @return  {Object} The instance's public API
    */
   let component;
+  
   ReactDOM.render(
     <HiGlassComponent
       ref={(c) => { component = c; }}

@@ -1,12 +1,17 @@
 import { format } from 'd3-format';
 import * as PIXI from 'pixi.js';
 
+// Services
+import { getDarkTheme } from './services';
+
+import { colorToHex } from './utils';
+
 const TICK_HEIGHT = 40;
 const TICK_MARGIN = 0;
 const TICK_LENGTH = 5;
 const TICK_LABEL_MARGIN = 4;
 
-export class AxisPixi {
+class AxisPixi {
   constructor(track) {
     this.pAxis = new PIXI.Graphics();
     this.track = track;
@@ -34,14 +39,20 @@ export class AxisPixi {
     this.tickValues = this.calculateAxisTickValues(valueScale, axisHeight);
     let i = 0;
 
+    const color = getDarkTheme() ? '#cccccc' : 'black';
+
     while (i < this.tickValues.length) {
       const tick = this.tickValues[i];
 
       while (this.axisTexts.length <= i) {
-        const newText = new PIXI.Text(tick,
-          { fontSize: `${this.axisTextFontSize}px`,
+        const newText = new PIXI.Text(
+          tick,
+          {
+            fontSize: `${this.axisTextFontSize}px`,
             fontFamily: this.axisTextFontFamily,
-            fill: 'black' });
+            fill: color
+          }
+        );
         this.axisTexts.push(newText);
 
         this.pAxis.addChild(newText);
@@ -112,9 +123,17 @@ export class AxisPixi {
 
     const graphics = this.pAxis;
 
+    if (getDarkTheme()) {
+      graphics.lineStyle(
+        graphics.lineWidth,
+        colorToHex('#ffffff'),
+        0.33
+      );
+    }
+
     // draw the top, potentially unlabelled, ticke
-    graphics.moveTo(0, 0);
-    graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), 0);
+    // graphics.moveTo(0, 0);
+    // graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), 0);
 
     graphics.moveTo(0, axisHeight);
     graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), axisHeight);
@@ -125,7 +144,6 @@ export class AxisPixi {
       // draw ticks to the left of the axis
       this.axisTexts[i].x = -(TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2);
       this.axisTexts[i].y = valueScale(tick);
-
 
       graphics.moveTo(-TICK_MARGIN, valueScale(tick));
       graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), valueScale(tick));
@@ -203,12 +221,18 @@ export class AxisPixi {
 
     let stroke = 'black';
 
-    if (this.track) { stroke = this.track.options.lineStrokeColor ? this.track.options.lineStrokeColor : 'blue'; }
+    if (this.track) {
+      stroke = this.track.options.lineStrokeColor
+        ? this.track.options.lineStrokeColor
+        : 'blue';
+    }
+
+    if (getDarkTheme()) stroke = '#cccccc';
 
     const line = document.createElement('path');
 
     line.setAttribute('fill', 'transparent');
-    line.setAttribute('stroke', 'black');
+    line.setAttribute('stroke', stroke);
     line.setAttribute('id', 'axis-line');
 
     line.setAttribute('d',
@@ -224,7 +248,13 @@ export class AxisPixi {
     // factor out the styling for axis lines
     let stroke = 'black';
 
-    if (this.track) { stroke = this.track.options.lineStrokeColor ? this.track.options.lineStrokeColor : 'blue'; }
+    if (this.track) {
+      stroke = this.track.options.lineStrokeColor
+        ? this.track.options.lineStrokeColor
+        : 'blue';
+    }
+
+    if (getDarkTheme()) stroke = '#cccccc';
 
     const line = document.createElement('path');
     line.setAttribute('id', 'tick-mark');

@@ -1,8 +1,6 @@
-import { json } from 'd3-request';
 import { queue } from 'd3-queue';
 import { select, event } from 'd3-selection';
 import React from 'react';
-import {tileProxy} from './services';
 import slugid from 'slugid';
 import {
   FormGroup,
@@ -14,9 +12,12 @@ import PropTypes from 'prop-types';
 
 import { ZOOM_TRANSITION_DURATION } from './configs';
 import Autocomplete from './Autocomplete';
-import { ChromosomeInfo } from './ChromosomeInfo';
-import { SearchField } from './search_field';
+import ChromosomeInfo from './ChromosomeInfo';
+import SearchField from './SearchField';
 import PopupMenu from './PopupMenu';
+
+// Services
+import { getDarkTheme, tileProxy } from './services';
 
 // Utils
 import { scalesCenterAndK, dictKeys } from './utils';
@@ -24,7 +25,7 @@ import { scalesCenterAndK, dictKeys } from './utils';
 // Styles
 import styles from '../styles/GenomePositionSearchBox.module.scss'; // eslint-disable-line no-unused-vars
 
-export class GenomePositionSearchBox extends React.Component {
+class GenomePositionSearchBox extends React.Component {
   constructor(props) {
     super(props);
 
@@ -353,7 +354,7 @@ export class GenomePositionSearchBox extends React.Component {
     if (this.changedPart != null) {
       // if something has changed in the input text
       this.setState({ loading: true });
-      // send out a request for the autcomplete suggestions
+      // spend out a request for the autcomplete suggestions
       const url = `${this.props.autocompleteServer}/suggest/?d=${this.props.autocompleteId}&ac=${parts[this.changedPart].toLowerCase()}`;
       tileProxy.json(url, (error, data) => {
         if (error) {
@@ -462,7 +463,7 @@ export class GenomePositionSearchBox extends React.Component {
       </MenuItem>
     ));
 
-    const className = this.state.isFocused ?
+    let className = this.state.isFocused ?
       'styles.genome-position-search-focus' : 'styles.genome-position-search';
 
     const classNameButton = this.state.isFocused ?
@@ -472,6 +473,8 @@ export class GenomePositionSearchBox extends React.Component {
     const classNameIcon = this.state.isFocused ?
       'styles.genome-position-search-bar-icon-focus' :
       'styles.genome-position-search-bar-icon';
+
+    if (getDarkTheme()) className += ' styles.genome-position-search-dark';
 
     return (
       <FormGroup

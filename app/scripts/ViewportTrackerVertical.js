@@ -1,10 +1,17 @@
-import SVGTrack from './SVGTrack.js';
-import slugid from 'slugid';
 import { brush } from 'd3-brush';
 import { event } from 'd3-selection';
+import slugid from 'slugid';
 
-export class ViewportTrackerVertical extends SVGTrack {
-  constructor(svgElement, registerViewportChanged, removeViewportChanged, setDomainsCallback, options) {
+import SVGTrack from './SVGTrack';
+
+class ViewportTrackerVertical extends SVGTrack {
+  constructor(
+    svgElement,
+    registerViewportChanged,
+    removeViewportChanged,
+    setDomainsCallback,
+    options
+  ) {
     // create a clipped SVG Path
     super(svgElement, true);
 
@@ -17,8 +24,6 @@ export class ViewportTrackerVertical extends SVGTrack {
 
     this.viewportXDomain = null;
     this.viewportYDomain = null;
-
-    let MAX_VALUE = 10000;
 
     this.brush = brush(true)
       .on('brush', this.brushed.bind(this))

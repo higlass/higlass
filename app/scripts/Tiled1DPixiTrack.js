@@ -4,7 +4,7 @@ import { tileProxy } from './services';
 
 const BINS_PER_TILE = 1024;
 
-export class Tiled1DPixiTrack extends TiledPixiTrack {
+class Tiled1DPixiTrack extends TiledPixiTrack {
   initTile(tile) {
     /**
          * We don't need to do anything but draw the tile.

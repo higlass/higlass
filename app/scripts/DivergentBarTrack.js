@@ -1,23 +1,13 @@
 import { scaleLinear, scaleLog } from 'd3-scale';
 
-import { BarTrack } from './BarTrack';
+import BarTrack from './BarTrack';
 
 // Utils
-import { colorToHex, dictValues } from './utils';
+import { colorToHex } from './utils';
 
-export class DivergentBarTrack extends BarTrack {
-  constructor( scene, dataConfig, handleTilesetInfoReceived, option,
-    animate,
-    onValueScaleChanged,
-  ) {
-    super( scene, dataConfig, handleTilesetInfoReceived, option, animate,
-      onValueScaleChanged,
-    );
-  }
-
+class DivergentBarTrack extends BarTrack {
   renderTile(tile) {
     //super.drawTile(tile);
-
     if (!tile.graphics) { return; }
 
     const graphics = tile.graphics;
@@ -32,6 +22,7 @@ export class DivergentBarTrack extends BarTrack {
     let pseudocount = 0; // if we use a log scale, then we'll set a pseudocount
     // equal to the smallest non-zero value
     this.valueScale = null;
+    
 
     // console.log('valueScaling:', this.options.valueScaling);
     if (this.options.valueScaling == 'log') {
@@ -51,8 +42,14 @@ export class DivergentBarTrack extends BarTrack {
         .range([this.dimensions[1], 0]);
     }
 
-    graphics.clear();
+      /*
+    tile.scale = {
+      minValue: this.valueScale.domain()[0],
+      maxValue: this.valueScale.domain()[1]
+    };
+    */
 
+    graphics.clear();
     this.drawAxis(this.valueScale);
 
     if (this.options.valueScaling == 'log' && this.valueScale.domain()[1] < 0) {
@@ -90,6 +87,8 @@ export class DivergentBarTrack extends BarTrack {
     } else {
       baseline = this.valueScale(0);
     }
+
+    delete tile.svgData;
 
     for (let i = 0; i < tileValues.length; i++) {
       const xPos = this._xScale(tileXScale(i));

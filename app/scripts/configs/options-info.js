@@ -40,6 +40,8 @@ const OPACITY_OPTIONS = {
   '1.0': { name: '100%', value: 1.0 },
 };
 
+// these values define the options that are visible in the track config
+// menu
 export const OPTIONS_INFO = {
   heatmapValueScaling: {
     name: 'Value Scaling',
@@ -94,7 +96,10 @@ export const OPTIONS_INFO = {
     name: 'Background Color',
     inlineOptions: {
       white: { name: 'White', value: 'white' },
+      lightGrey: { name: 'Light Grey', value: '#eeeeee' },
+      grey: { name: 'Grey', value: '#cccccc' },
       black: { name: 'Black', value: 'black' },
+      transparent: { name: 'Transparent', value: 'transparent' },
     },
   },
   colorScale: {
@@ -281,6 +286,13 @@ export const OPTIONS_INFO = {
       no: { name: 'No', value: false },
     },
   },
+  showTooltip: {
+    name: 'Show Tooltip',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true},
+      no: { name: 'No', value: false },
+    },
+  },
   axisPositionHorizontal: {
     name: 'Axis Position',
     inlineOptions: {
@@ -362,6 +374,15 @@ export const OPTIONS_INFO = {
   labelBackgroundOpacity: {
     name: 'Label Background Opacity',
     inlineOptions: OPACITY_OPTIONS,
+  },
+
+  viewResolution: {
+    name: 'View Resolution',
+    inlineOptions: {
+      high: { name: 'High', value: 384},
+      medium: { name: 'Medium', value: 1024},
+      low: { name: 'Low', value: 2048},
+    },
   },
 
   // colormaps are mostly taken from here:
@@ -527,20 +548,26 @@ export const OPTIONS_INFO = {
           const binsPerDimension = track.binsPerDimension;
           const maxZoom = track.maxZoom;
 
-          const resolution = track.maxWidth / (2 ** i * track.binsPerDimension);
+          let maxResolutionSize = 1;
+          let resolution = 1;
 
-          const maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+          if (track.resolutions) {
+            const sortedResolutions = track.resolutions.map(x => +x).sort((a,b) => b-a)
+            maxResolutionSize = sortedResolutions[0];
+            resolution = sortedResolutions[i];
+          } else {
+            resolution = track.maxWidth / (2 ** i * track.binsPerDimension);
+            maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+          }
 
           const pp = precisionPrefix(maxResolutionSize, resolution);
           const f = formatPrefix(`.${pp}`, resolution);
           const formattedResolution = f(resolution);
 
-          // const formattedName =  ;
           inlineOptions.push({
             name: formattedResolution,
             value: i.toString(),
           });
-
           //
         }
 

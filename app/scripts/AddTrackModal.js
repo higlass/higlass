@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Button } from 'react-bootstrap';
-import { TilesetFinder } from './TilesetFinder';
-import { PlotTypeChooser } from './PlotTypeChooser';
+
+import TilesetFinder from './TilesetFinder';
+import PlotTypeChooser from './PlotTypeChooser';
 
 // Configs
 import {
@@ -12,10 +13,9 @@ import {
 // Styles
 import '../styles/AddTrackModal.css';
 
-export class AddTrackModal extends React.Component {
+class AddTrackModal extends React.Component {
   constructor(props) {
     super(props);
-    console.log('making atm');
 
     this.tilesetFinder = null;
     this.multiSelect = null;
@@ -28,14 +28,11 @@ export class AddTrackModal extends React.Component {
     };
   }
 
-  componentDidMount() {
-
-  }
-
-  handleSubmit() {
+  handleSubmit(evt) {
     this.props.onTracksChosen(this.state.selectedTilesets,
       this.props.position,
       this.props.host);
+    evt.preventDefault();
   }
 
   selectedTilesetsChanged(selectedTilesets) {

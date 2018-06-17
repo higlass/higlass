@@ -10,7 +10,7 @@ import {
 // Styles
 import '../styles/PlotTypeChooser.css';
 
-export class PlotTypeChooser extends React.Component {
+class PlotTypeChooser extends React.Component {
   constructor(props) {
     super(props);
 

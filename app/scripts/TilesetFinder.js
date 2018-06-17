@@ -1,5 +1,3 @@
-import { tileProxy } from './services';
-
 import React from 'react';
 import {
   Col,
@@ -11,10 +9,12 @@ import {
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 
+import { tileProxy } from './services';
+
 // Configs
 import { TRACKS_INFO } from './configs';
 
-export class TilesetFinder extends React.Component {
+class TilesetFinder extends React.Component {
   constructor(props) {
     super(props);
 
@@ -23,6 +23,13 @@ export class TilesetFinder extends React.Component {
     // local tracks are ones that don't have a filetype associated with them
     this.localTracks = TRACKS_INFO
       .filter(x => x.local && !x.hidden)
+
+    this.augmentedTracksInfo = TRACKS_INFO;
+    if (window.higlassTracksByType) {
+      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
+        this.augmentedTracksInfo.push(window.higlassTracksByType[pluginTrackType].config);
+      });
+    }
 
     if (props.datatype)
       this.localTracks = this.localTracks.filter(x => x.datatype[0] == props.datatype);
@@ -106,10 +113,11 @@ export class TilesetFinder extends React.Component {
     if (this.props.datatype) {
       datatypesQuery = `dt=${this.props.datatype}`;
     } else {
-      const datatypes = new Set(TRACKS_INFO
+      const datatypes = new Set([].concat.apply([], this.augmentedTracksInfo
         .filter(x => x.datatype)
         .filter(x => x.orientation == this.props.orientation)
-        .map(x => x.datatype));
+        .map(x => x.datatype)));
+
 
       datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
     }
@@ -155,8 +163,6 @@ export class TilesetFinder extends React.Component {
 
     // this should give the dataset the PlotType that's selected in the parent
     // this.props.selectedTilesetChanged(this.state.options[x.target.value]);
-
-    // console.log('x.target.value:', x.target.value);
 
     const value = this.state.options[x.target.value];
     this.props.onDoubleClick(value);
@@ -221,8 +227,9 @@ export class TilesetFinder extends React.Component {
     const form = (
       <Form
         horizontal
+        onSubmit={(evt) => {evt.preventDefault()}}
       >
-        <FormGroup >
+        <FormGroup>
           <Col sm={3}>
             <ControlLabel>{'Select tileset'}</ControlLabel>
           </Col>

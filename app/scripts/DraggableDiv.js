@@ -5,7 +5,7 @@ import React from 'react';
 
 import '../styles/DraggableTrack.css';
 
-export class DraggableDiv extends React.Component {
+class DraggableDiv extends React.Component {
   constructor(props) {
     super(props);
 

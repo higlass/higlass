@@ -1,13 +1,12 @@
-import { scaleLinear, scaleLog } from 'd3-scale';
-import { tileProxy } from './services';
 import { format } from 'd3-format';
+import { scaleLinear } from 'd3-scale';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 import { colorToHex } from './utils';
-import { pubSub } from './services';
+import { pubSub, tileProxy } from './services';
 
-export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
+class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(
     scene,
     dataConfig,
@@ -38,16 +37,20 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     if (!this.tilesetInfo)
       return;
 
+    if (!this.options.showTooltip) 
+      return '';
+
     const zoomLevel = this.calculateZoomLevel();
     const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size);
 
     // the position of the tile containing the query position
     const tilePos = this._xScale.invert(trackX) / tileWidth;
-
-    const posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
-
     const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)])
+
     const fetchedTile = this.fetchedTiles[tileId];
+    if (!fetchedTile) return '';
+
+    const posInTileX = fetchedTile.tileData.dense.length * (tilePos - Math.floor(tilePos));
 
     let value = '';
     let textValue = '';
@@ -56,7 +59,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       const index =  Math.floor(posInTileX);
       value = fetchedTile.tileData.dense[index];
       textValue = format(".3f")(value);
-    } else { 
+    } else {
       return '';
     }
 
@@ -69,10 +72,10 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     graphics.beginFill(colorHex, .5);
     graphics.lineStyle(1, colorHex, 1);
     const markerWidth = 4;
-    
+
     graphics.drawRect(
       trackX - markerWidth / 2,
-      yPos - markerWidth / 2, 
+      yPos - markerWidth / 2,
       markerWidth,
       markerWidth);
 
@@ -117,6 +120,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     // this function is just so that we follow the same pattern as
     // HeatmapTiledPixiTrack.js
     this.drawTile(tile);
+    this.drawAxis(this.valueScale);
   }
 
   drawTile(tile) {
@@ -134,6 +138,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       tile.tileData.zoomLevel,
       tile.tileData.tilePos,
     );
+
     const tileValues = tile.tileData.dense;
 
     if (tileValues.length === 0) { return; }

@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import { getDarkTheme } from './services';
+
 // Styles
 import '../styles/ContextMenu.module.scss';
 
@@ -10,7 +12,7 @@ import '../styles/ContextMenu.module.scss';
 // taken from ../styles/TrackControl.module.css
 const TRACK_CONTROL_HEIGHT = 20;
 
-export class ContextMenuContainer extends React.Component {
+class ContextMenuContainer extends React.Component {
   constructor(props) {
     /**
      * A window that is opened when a user clicks on the track configuration icon.
@@ -24,7 +26,7 @@ export class ContextMenuContainer extends React.Component {
       left: this.props.position.left,
       top: this.props.position.top,
       submenuShown: null
-    }
+    };
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */
@@ -57,12 +59,11 @@ export class ContextMenuContainer extends React.Component {
 
   handleItemMouseEnter(evt, series) {
     this.handleItemMouseEnterWithRect(
-      evt.currentTarget.getBoundingClientRect(), series)
+      evt.currentTarget.getBoundingClientRect(), series
+    );
   }
 
-  handleMouseLeave() {
-    return;
-  }
+  handleMouseLeave() {}
 
   handleOtherMouseEnter() {
     this.setState({
@@ -115,7 +116,11 @@ export class ContextMenuContainer extends React.Component {
       // goes off the bottom
       if (parentBbox.top - bbox.height > 0) {
         // will fit on top
-        topPosition = parentBbox.top - bbox.height + TRACK_CONTROL_HEIGHT; 
+        topPosition = parentBbox.top - bbox.height + TRACK_CONTROL_HEIGHT;
+      } else {
+        // align along the bottom
+        topPosition = parentBbox.top - bbox.height + TRACK_CONTROL_HEIGHT;
+        topPosition -= (topPosition + bbox.height) - window.innerHeight;
       }
     }
 
@@ -177,12 +182,16 @@ export class ContextMenuContainer extends React.Component {
 
     const wholeStyle = Object.assign(stylePosition, otherStyle);
 
+    let stylenames = 'context-menu';
+
+    if (getDarkTheme()) stylenames += ' context-menu-dark';
+
     return(
       <div
         className={'context-menu-item'}
         ref={c => this.div = c}
         style={wholeStyle}
-        styleName="context-menu"
+        styleName={stylenames}
       >
         {this.props.children}
       </div>

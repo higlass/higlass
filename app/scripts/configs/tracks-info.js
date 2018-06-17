@@ -10,6 +10,7 @@ import {
   svgVertical1DTilesIcon,
   svgVerticalGeneAnnotationsIcon,
   svgVerticalLineIcon,
+  svgGeoMapIcon,
 } from '../icons';
 
 export const TRACKS_INFO = [
@@ -67,19 +68,37 @@ export const TRACKS_INFO = [
     orientation: '2d',
     thumbnail: svg2DHeatmapIcon,
     defaultOptions: {
+      backgroundColor: '#eeeeee',
       labelPosition: 'bottomRight',
-      colorRange: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], // corresponding to the fall colormap
+      colorRange: [ // corresponding to the fall colormap
+        'white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'
+      ],
       maxZoom: null,
       colorbarPosition: 'topRight',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
       heatmapValueScaling: 'log',
       showMousePosition: false,
+      mousePositionColor: '#999999',
+      showTooltip: false,
     },
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
-      'colorRange', 'maxZoom', 'dataTransform', 'colorbarPosition',
-      'trackBorderWidth', 'trackBorderColor', 'heatmapValueScaling', 'showMousePosition'],
-    // exportable: true
+    availableOptions: [
+      'backgroundColor',
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'colorRange',
+      'maxZoom',
+      'dataTransform',
+      'colorbarPosition',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'heatmapValueScaling',
+      'showMousePosition',
+      'mousePositionColor',
+      'showTooltip',
+    ],
   },
   {
     type: 'horizontal-heatmap',
@@ -90,16 +109,31 @@ export const TRACKS_INFO = [
     orientation: '1d-horizontal',
     thumbnail: svg2DHeatmapIcon,
     defaultOptions: {
+      backgroundColor: '#eeeeee',
       labelPosition: 'bottomRight',
       labelColor: 'black',
-      colorRange: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], // corresponding to the fall colormap
+      colorRange: [ // corresponding to the fall colormap
+        'white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'
+      ],
       maxZoom: null,
       trackBorderWidth: 0,
       trackBorderColor: 'black',
     },
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
-      'colorRange', 'maxZoom', 'dataTransform', 'oneDHeatmapFlipped',
-      'colorbarPosition', 'trackBorderWidth', 'trackBorderColor', 'heatmapValueScaling'],
+    availableOptions: [
+      'backgroundColor',
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'colorRange',
+      'maxZoom',
+      'dataTransform',
+      'oneDHeatmapFlipped',
+      'colorbarPosition',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'heatmapValueScaling'
+    ],
   },
   {
     type: 'vertical-heatmap',
@@ -112,13 +146,27 @@ export const TRACKS_INFO = [
     defaultOptions: {
       labelPosition: 'bottomRight',
       labelColor: 'black',
-      colorRange: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], // corresponding to the fall colormap
+      colorRange: [ // corresponding to the fall colormap
+        'white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'
+      ],
       maxZoom: null,
       colorbarPosition: 'topRight',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
     },
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'dataTransform', 'oneDHeatmapFlipped', 'colorbarPosition', 'trackBorderWidth', 'trackBorderColor', 'heatmapValueScaling'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'colorRange',
+      'maxZoom',
+      'dataTransform',
+      'oneDHeatmapFlipped',
+      'colorbarPosition',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'heatmapValueScaling'],
   },
   {
     type: 'horizontal-line',
@@ -139,6 +187,8 @@ export const TRACKS_INFO = [
       'trackBorderColor',
       'trackType',
       'showMousePosition',
+      'showTooltip',
+      'mousePositionColor',
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -151,6 +201,8 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       labelTextOpacity: 0.4,
       showMousePosition: false,
+      mousePositionColor: '#999999',
+      showTooltip: false,
     },
   },
   {
@@ -160,7 +212,18 @@ export const TRACKS_INFO = [
     orientation: '1d-horizontal',
     minHeight: 100,
     thumbnail: null,
-    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'trackBorderWidth', 'trackBorderColor', 'trackType', 'heatmapValueScaling'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'valueScaling',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'colorRange',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'trackType',
+      'heatmapValueScaling',
+    ],
     defaultOptions: {
       labelPosition: 'topLeft',
       labelColor: 'black',
@@ -171,47 +234,6 @@ export const TRACKS_INFO = [
       heatmapValueScaling: 'log',
     },
   },
-  {
-    type: 'horizontal-stacked-bar',
-    datatype: ['multivec'],
-    local: false,
-    orientation: '1d-horizontal',
-    thumbnail: null,
-    availableOptions: ['labelPosition', 'labelColor', 'valueScaling',
-      'labelTextOpacity', 'labelBackgroundOpacity', 'trackBorderWidth',
-      'trackBorderColor', 'trackType', 'scaledHeight', 'backgroundColor',
-      'colorScale', 'barBorder', 'sortLargestOnTop'],
-    defaultOptions: {
-      labelPosition: 'topLeft',
-      labelColor: 'black',
-      labelTextOpacity: 0.4,
-      valueScaling: 'linear',
-      trackBorderWidth: 0,
-      trackBorderColor: 'black',
-      backgroundColor: 'white',
-      barBorder: true,
-      scaledHeight: true,
-      sortLargestOnTop: true,
-      colorScale:      [
-                        "#FF0000",
-                        "#FF4500",
-                        "#32CD32",
-                        "#008000",
-                        "#006400",
-                        "#C2E105",
-                        "#FFFF00",
-                        "#66CDAA",
-                        "#8A91D0",
-                        "#CD5C5C",
-                        "#E9967A",
-                        "#BDB76B",
-                        "#808080",
-                        "#C0C0C0",
-                        "#FFFFFF"
-                      ],
-    }
-  },
-  //
   {
     type: 'vertical-line',
     datatype: ['vector'],
@@ -230,6 +252,7 @@ export const TRACKS_INFO = [
       'trackBorderWidth',
       'trackBorderColor',
       'showMousePosition',
+      'showTooltip',
       'mousePositionColor',
     ],
     defaultOptions: {
@@ -243,55 +266,8 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       labelTextOpacity: 0.4,
       showMousePosition: false,
+      showTooltip: false,
       mousePositionColor: '#999999'
-    },
-  },
-  {
-    type: 'basic-multiple-line-chart',
-    datatype: ['multivec'],
-    local: false,
-    orientation: '1d-horizontal',
-    thumbnail: null,
-    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
-    defaultOptions: {
-      labelPosition: 'topLeft',
-      labelColor: 'black',
-      labelTextOpacity: 0.4,
-      valueScaling: 'linear',
-      trackBorderWidth: 0,
-      trackBorderColor: 'black',
-    },
-  },
-  {
-    type: 'basic-stacked-bar-chart',
-    datatype: ['multivec'],
-    local: false,
-    orientation: '1d-horizontal',
-    thumbnail: null,
-    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
-    defaultOptions: {
-      labelPosition: 'topLeft',
-      labelColor: 'black',
-      labelTextOpacity: 0.4,
-      valueScaling: 'linear',
-      trackBorderWidth: 0,
-      trackBorderColor: 'black',
-    },
-  },
-  {
-    type: 'basic-multiple-bar-chart',
-    datatype: ['multivec'],
-    local: false,
-    orientation: '1d-horizontal',
-    thumbnail: null,
-    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
-    defaultOptions: {
-      labelPosition: 'topLeft',
-      labelColor: 'black',
-      labelTextOpacity: 0.4,
-      valueScaling: 'linear',
-      trackBorderWidth: 0,
-      trackBorderColor: 'black',
     },
   },
   {
@@ -299,7 +275,18 @@ export const TRACKS_INFO = [
     datatype: ['vector'],
     local: false,
     orientation: '1d-horizontal',
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'pointColor', 'pointSize', 'valueScaling', 'trackBorderWidth', 'trackBorderColor'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'axisPositionHorizontal',
+      'pointColor',
+      'pointSize',
+      'valueScaling',
+      'trackBorderWidth',
+      'trackBorderColor'
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'topLeft',
@@ -317,7 +304,19 @@ export const TRACKS_INFO = [
     datatype: ['vector'],
     local: false,
     orientation: '1d-horizontal',
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'barFillColorTop', 'barFillColorBottom', 'valueScaling', 'trackBorderWidth', 'trackBorderColor', 'barOpacity'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'axisPositionHorizontal',
+      'barFillColorTop',
+      'barFillColorBottom',
+      'valueScaling',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'barOpacity'
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'topLeft',
@@ -336,7 +335,18 @@ export const TRACKS_INFO = [
     datatype: ['vector'],
     local: false,
     orientation: '1d-horizontal',
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'barFillColor', 'valueScaling', 'trackBorderWidth', 'trackBorderColor', 'barOpacity'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'axisPositionHorizontal',
+      'barFillColor',
+      'valueScaling',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'barOpacity'
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'topLeft',
@@ -354,7 +364,18 @@ export const TRACKS_INFO = [
     datatype: ['vector'],
     local: false,
     orientation: '1d-vertical',
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'barFillColor', 'valueScaling', 'trackBorderWidth', 'trackBorderColor', 'barOpacity'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'axisPositionHorizontal',
+      'barFillColor',
+      'valueScaling',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'barOpacity'
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'topLeft',
@@ -372,7 +393,18 @@ export const TRACKS_INFO = [
     datatype: ['vector'],
     local: false,
     orientation: '1d-vertical',
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling', 'trackBorderWidth', 'trackBorderColor'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'axisPositionHorizontal',
+      'lineStrokeWidth',
+      'lineStrokeColor',
+      'valueScaling',
+      'trackBorderWidth',
+      'trackBorderColor'
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'topLeft',
@@ -399,7 +431,13 @@ export const TRACKS_INFO = [
     local: false,
     orientation: ['1d-horizontal'],
     name: '1D Rectangles',
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'axisPositionHorizontal'
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'bottomLeft',
@@ -414,7 +452,13 @@ export const TRACKS_INFO = [
     local: false,
     orientation: ['1d-vertical'],
     name: '1D Rectangles',
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionVertical'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'axisPositionVertical'
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'bottomLeft',
@@ -429,7 +473,12 @@ export const TRACKS_INFO = [
     local: false,
     orientation: '1d-horizontal',
     thumbnail: 'horizontal-stacked-interval.png',
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity'
+    ],
   },
   {
     type: 'left-stacked-interval',
@@ -437,7 +486,12 @@ export const TRACKS_INFO = [
     local: false,
     orientation: '1d-vertical',
     thumbnail: 'vertical-stacked-interval.png',
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity'
+    ],
   },
   {
     type: 'viewport-projection-vertical',
@@ -447,7 +501,11 @@ export const TRACKS_INFO = [
     orientation: '1d-vertical',
     name: 'Viewport Projection',
     thumbnail: 'viewport-projection-center.png',
-    availableOptions: ['projectionFillColor', 'projectionStrokeColor', 'strokeWidth'],
+    availableOptions: [
+      'projectionFillColor',
+      'projectionStrokeColor',
+      'strokeWidth'
+    ],
     defaultOptions: {
       projectionFillColor: '#777',
       projectionStrokeColor: '#777',
@@ -464,7 +522,11 @@ export const TRACKS_INFO = [
     orientation: '1d-horizontal',
     name: 'Viewport Projection',
     thumbnail: 'viewport-projection-center.png',
-    availableOptions: ['projectionFillColor', 'projectionStrokeColor', 'strokeWidth'],
+    availableOptions: [
+      'projectionFillColor',
+      'projectionStrokeColor',
+      'strokeWidth'
+    ],
     defaultOptions: {
       projectionFillColor: '#777',
       projectionStrokeColor: '#777',
@@ -481,7 +543,11 @@ export const TRACKS_INFO = [
     orientation: '2d',
     name: 'Viewport Projection',
     thumbnail: 'viewport-projection-center.png',
-    availableOptions: ['projectionFillColor', 'projectionStrokeColor', 'strokeWidth'],
+    availableOptions: [
+      'projectionFillColor',
+      'projectionStrokeColor',
+      'strokeWidth'
+    ],
     defaultOptions: {
       projectionFillColor: '#777',
       projectionStrokeColor: '#777',
@@ -508,6 +574,7 @@ export const TRACKS_INFO = [
       'trackBorderWidth',
       'trackBorderColor',
       'showMousePosition',
+      'mousePositionColor',
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -517,6 +584,7 @@ export const TRACKS_INFO = [
       trackBorderWidth: 0,
       trackBorderColor: 'black',
       showMousePosition: false,
+      mousePositionColor: '#999999',
     },
   },
   {
@@ -558,8 +626,14 @@ export const TRACKS_INFO = [
     orientation: '2d',
     name: 'Arrowhead Domains',
     thumbnail: svgArrowheadDomainsIcon,
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
-      'trackBorderWidth', 'trackBorderColor'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'trackBorderWidth',
+      'trackBorderColor'
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'hidden',
@@ -575,8 +649,14 @@ export const TRACKS_INFO = [
     orientation: '1d-vertical',
     name: 'Vertical 2D Rectangle Domains',
     thumbnail: svgArrowheadDomainsIcon,
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
-      'trackBorderWidth', 'trackBorderColor'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'trackBorderWidth',
+      'trackBorderColor'
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'hidden',
@@ -592,9 +672,16 @@ export const TRACKS_INFO = [
     orientation: '1d-horizontal',
     name: 'Horizontal 2D Rectangle Domains',
     thumbnail: svgArrowheadDomainsIcon,
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
-      'trackBorderWidth', 'trackBorderColor',
-      'rectangleDomainFillColor', 'rectangleDomainStrokeColor', 'rectangleDomainOpacity',
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'rectangleDomainFillColor',
+      'rectangleDomainStrokeColor',
+      'rectangleDomainOpacity',
       'minSquareSize',
     ],
     defaultOptions: {
@@ -616,10 +703,18 @@ export const TRACKS_INFO = [
     orientation: '2d',
     name: '2D Rectangle Domains',
     thumbnail: svgArrowheadDomainsIcon,
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
-      'trackBorderWidth', 'trackBorderColor',
-      'rectangleDomainFillColor', 'rectangleDomainStrokeColor', 'rectangleDomainOpacity',
-      'minSquareSize'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'rectangleDomainFillColor',
+      'rectangleDomainStrokeColor',
+      'rectangleDomainOpacity',
+      'minSquareSize'
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'hidden',
@@ -649,42 +744,16 @@ export const TRACKS_INFO = [
       'rectangleDomainFillColor',
       'rectangleDomainStrokeColor',
       'rectangleDomainOpacity',
-      'minSquareSize'
+      'minSquareSize',
+      'isClickable',
+      'hoverColor',
+      'selectColor',
+      'exclude',
+      'trackBorderBgWidth',
+      'trackBorderBgColor',
+      'trackBorderBgAlpha',
     ],
     defaultOptions: {
-      labelColor: 'black',
-      labelPosition: 'hidden',
-      trackBorderWidth: 0,
-      trackBorderColor: 'black',
-      rectangleDomainFillColor: 'grey',
-      rectangleDomainStrokeColor: 'black',
-      rectangleDomainOpacity: 0.6,
-      minSquareSize: 'none',
-    },
-  },
-
-  {
-    type: 'geo-json',
-    datatype: ['geo-json'],
-    orientation: '2d',
-    name: 'Geo JSON',
-    thumbnail: svgArrowheadDomainsIcon,
-    availableOptions: [
-      'projecton',
-      'labelPosition',
-      'labelColor',
-      'labelTextOpacity',
-      'labelBackgroundOpacity',
-      'trackBorderWidth',
-      'trackBorderColor',
-      'rectangleDomainFillColor',
-      'rectangleDomainStrokeColor',
-      'rectangleDomainOpacity',
-      'rectanlgeMinSize',
-      'polygonMinBoundingSize',
-    ],
-    defaultOptions: {
-      projecton: 'mercator',
       labelColor: 'black',
       labelPosition: 'hidden',
       trackBorderWidth: 0,
@@ -693,10 +762,17 @@ export const TRACKS_INFO = [
       rectangleDomainStrokeColor: 'black',
       rectangleDomainOpacity: 0.6,
       rectanlgeMinSize: 1,
-      polygonMinBoundingSize: 0
+      polygonMinBoundingSize: 0,
+      minSquareSize: 'none',
+      isClickable: false,
+      hoverColor: 'orange',
+      selectColor: 'fuchsia',
+      exclude: [],
+      trackBorderBgWidth: 0,
+      trackBorderBgColor: 'black',
+      trackBorderBgAlpha: 0.33,
     },
   },
-
   {
     type: 'square-markers',
     datatype: ['bedpe'],
@@ -704,7 +780,9 @@ export const TRACKS_INFO = [
     orientation: '2d',
     name: 'Square Markers',
     thumbnail: svgArrowheadDomainsIcon,
-    availableOptions: ['labelPosition', 'labelColor'],
+    availableOptions: [
+      'labelPosition', 'labelColor'
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'hidden',
@@ -712,7 +790,6 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
     },
   },
-
   {
     type: 'combined',
     datatype: 'any',
@@ -727,7 +804,9 @@ export const TRACKS_INFO = [
     name: 'Chromosome Grid',
     chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
     thumbnail: null,
-    availableOptions: ['lineStrokeWidth', 'lineStrokeColor'],
+    availableOptions: [
+      'lineStrokeWidth', 'lineStrokeColor'
+    ],
     defaultOptions: {
       lineStrokeWidth: 1,
       lineStrokeColor: 'grey',
@@ -806,16 +885,19 @@ export const TRACKS_INFO = [
     orientation: '2d',
     hidden: true,
     name: 'OSM Tiles',
-    thumbnail: null,
+    thumbnail: svgGeoMapIcon,
     availableOptions: [
       'minPos',
       'maxPos',
       'maxZoom',
+      'labelPosition',
+      'name',
     ],
     defaultOptions: {
       minPos: -180,
       maxPos: 180,
       maxZoom: 19,
+      labelPosition: 'bottomRight',
     },
   },
   {
@@ -825,10 +907,15 @@ export const TRACKS_INFO = [
     orientation: '2d',
     hidden: true,
     name: 'Mapbox Tiles',
-    thumbnail: null,
-    availableOptions: ['mapboxStyle'],
+    thumbnail: svgGeoMapIcon,
+    availableOptions: [
+      'style',
+      'labelPosition',
+      'name',
+    ],
     defaultOptions: {
-      mapboxStyle: 'mapbox.streets',
+      style: 'mapbox.streets',
+      labelPosition: 'bottomRight',
     },
   },
   {

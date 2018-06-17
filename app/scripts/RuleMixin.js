@@ -1,7 +1,7 @@
 import { Mixin } from 'mixwith';
 import { pubSub } from './services';
 
-export const RuleMixin = Mixin(superclass => class extends superclass {
+const RuleMixin = Mixin(superclass => class extends superclass {
   constructor(stage, options, animate) {
     super(stage, options);
 
@@ -31,3 +31,5 @@ export const RuleMixin = Mixin(superclass => class extends superclass {
     return this.highlighted;
   }
 });
+
+export default RuleMixin;

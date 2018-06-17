@@ -15,7 +15,7 @@ const ALPHA = 1.0;
  * @param  {Function}  getScales  Getter for the track's X and Y scales.
  * @param  {Function}  getPosition  Getter for the track's position.
  * @param  {Function}  getDimensions  Getter for the track's dimensions.
- * @param  {Function}  getIsFlipped  Getter determining of a track has been
+ * @param  {Function}  getIsFlipped  Getter determining if a track has been
  *   flipped from horizontal to vertical.
  * @param  {Boolean}  is2d  If `true` draw both dimensions of the mouse
  *   location.

@@ -1,7 +1,7 @@
 import slugid from 'slugid';
 import * as PIXI from 'pixi.js';
 
-import { PixiTrack } from './PixiTrack';
+import PixiTrack from './PixiTrack';
 
 // Services
 import { tileProxy } from './services';
@@ -12,7 +12,7 @@ import { debounce } from './utils';
 // Configs
 import { ZOOM_DEBOUNCE } from './configs';
 
-export class OSMTilesTrack extends PixiTrack {
+class OSMTilesTrack extends PixiTrack {
   /**
    * A track that must pull remote tiles
    *
@@ -21,6 +21,9 @@ export class OSMTilesTrack extends PixiTrack {
    * @param tilesetUid: The data set to get the tiles from the server
    */
   constructor(scene, options, animate) {
+    // Force OpenStreetMaps copyright
+    options.name = `© OpenStreetMap${options.name ? `\n${options.name}` : ''}`;
+
     super(scene, options);
 
     // the tiles which should be visible (although they're not necessarily fetched)

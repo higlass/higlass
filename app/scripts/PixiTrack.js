@@ -2,7 +2,7 @@ import { formatPrefix, precisionPrefix } from 'd3-format';
 import * as PIXI from 'pixi.js';
 import slugid from 'slugid';
 
-import { Track } from './Track.js';
+import Track from './Track';
 
 import { colorToHex } from './utils';
 
@@ -82,7 +82,7 @@ function getWidthBasedResolutionText(
   return '';
 }
 
-export class PixiTrack extends Track {
+class PixiTrack extends Track {
   /**
    * @param scene: A PIXI.js scene to draw everything to.
    * @param options: A set of options that describe how this track is rendered.
@@ -110,6 +110,7 @@ export class PixiTrack extends Track {
 
     // for drawing the track label (often its name)
     this.pBorder = new PIXI.Graphics();
+    this.pBackground = new PIXI.Graphics();
     this.pLabel = new PIXI.Graphics();
     this.pMobile = new PIXI.Graphics();
     this.pAxis = new PIXI.Graphics();
@@ -121,6 +122,7 @@ export class PixiTrack extends Track {
 
     this.pBase.addChild(this.pMasked);
 
+    this.pMasked.addChild(this.pBackground);
     this.pMasked.addChild(this.pMain);
     this.pMasked.addChild(this.pMask);
     this.pMasked.addChild(this.pMobile);
@@ -138,14 +140,23 @@ export class PixiTrack extends Track {
 
     this.options = Object.assign(this.options, options);
 
-    const labelTextText = this.options.name ? this.options.name :
-      (this.tilesetInfo ? this.tilesetInfo.name : '');
+    let labelTextText = this.options.name
+      ? this.options.name
+      : this.tilesetInfo ? this.tilesetInfo.name : '';
+
+    if (!this.options.labelPosition || this.options.labelPosition === 'hidden') {
+      labelTextText = '';
+    }
+
     this.labelTextFontFamily = 'Arial';
     this.labelTextFontSize = 12;
 
-    this.labelText = new PIXI.Text(labelTextText, { fontSize: `${this.labelTextFontSize}px`,
-      fontFamily: this.labelTextFontFamily,
-      fill: 'black' });
+    this.labelText = new PIXI.Text(
+      labelTextText, {
+        fontSize: `${this.labelTextFontSize}px`,
+        fontFamily: this.labelTextFontFamily,
+        fill: 'black'
+      });
 
     this.errorText = new PIXI.Text('',
       { fontSize: '12px', fontFamily: 'Arial', fill: 'red' });
@@ -164,6 +175,8 @@ export class PixiTrack extends Track {
     this.position = newPosition;
 
     this.drawBorder();
+    this.drawLabel();
+    this.drawBackground();
     this.setMask(this.position, this.dimensions);
   }
 
@@ -171,6 +184,8 @@ export class PixiTrack extends Track {
     super.setDimensions(newDimensions);
 
     this.drawBorder();
+    this.drawLabel();
+    this.drawBackground();
     this.setMask(this.position, this.dimensions);
   }
 
@@ -187,7 +202,6 @@ export class PixiTrack extends Track {
    * graphics from the scene
    */
   remove() {
-    //console.trace('removing track');
     // the entire PIXI stage was probably removed
     this.pBase.clear();
     this.scene.removeChild(this.pBase);
@@ -241,8 +255,35 @@ export class PixiTrack extends Track {
     }
   }
 
+  drawBackground() {
+    const graphics = this.pBackground;
+
+    graphics.clear();
+
+    if (!this.options || !this.options.backgroundColor) {
+      return;
+    }
+
+    let opacity = 1;
+    let color = this.options.backgroundColor;
+
+    if (this.options.backgroundColor == 'transparent') {
+      opacity = 0;
+      color = 'white';
+    }
+    
+    const hexColor = colorToHex(color);
+    graphics.beginFill(hexColor, opacity);
+
+    graphics.drawRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1]);
+  }
+
   drawLabel() {
+    if (!this.labelText) return;
+
     const graphics = this.pLabel;
+
+    graphics.clear();
 
     if (!this.options || !this.options.labelPosition) {
       // don't display the track label
@@ -250,12 +291,11 @@ export class PixiTrack extends Track {
       return;
     }
 
-    graphics.clear();
-
     if (this.options.labelBackgroundOpacity) {
       graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity);
     } else {
-      graphics.beginFill(0xFFFFFF, 0);
+      // default to some label background opacity
+      graphics.beginFill(0xFFFFFF, 0.5);
     }
 
     const stroke = colorToHex(
@@ -439,6 +479,7 @@ export class PixiTrack extends Track {
   rerender(options) {
     this.options = options;
     this.draw();
+    this.drawBackground();
     this.drawLabel();
     this.drawBorder();
   }
@@ -462,10 +503,22 @@ export class PixiTrack extends Track {
    */
   exportSVG() {
     const gBase = document.createElement('g');
+    const rectBackground = document.createElement('rect');
+
+    rectBackground.setAttribute('x', `${this.position[0]}`);
+    rectBackground.setAttribute('y', `${this.position[1]}`);
+    rectBackground.setAttribute('width', `${this.dimensions[0]}`);
+    rectBackground.setAttribute('height', `${this.dimensions[1]}`);
+
+    if (this.options && this.options.backgroundColor)
+      rectBackground.setAttribute('fill', this.options.backgroundColor);
+    else
+      rectBackground.setAttribute('fill', 'transparent');
 
     const gClipped = document.createElement('g');
     gClipped.setAttribute('class', 'g-clipped');
     gBase.appendChild(gClipped);
+    gClipped.appendChild(rectBackground);
 
     const gTrack = document.createElement('g');
     gClipped.setAttribute('class', 'g-track');

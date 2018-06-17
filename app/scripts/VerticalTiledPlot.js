@@ -21,7 +21,7 @@ import stylesPlot from '../styles/TiledPlot.module.scss'; // eslint-disable-line
 import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
 
 
-export class VerticalTiledPlot extends React.Component {
+class VerticalTiledPlot extends React.Component {
   constructor(props) {
     super(props);
 
@@ -64,6 +64,12 @@ export class VerticalTiledPlot extends React.Component {
     }
   }
 
+  /* --------------------------- Getter / Setter ---------------------------- */
+
+  get sourceEvent() {
+    return event && event.sourceEvent;
+  }
+
   /* ---------------------------- Custom Methods ---------------------------- */
 
   addBrush() {
@@ -88,7 +94,7 @@ export class VerticalTiledPlot extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !event.sourceEvent ||
+      !this.sourceEvent ||
       !this.props.onRangeSelection ||
       rangeSelectionMoved
     ) return;
@@ -98,7 +104,7 @@ export class VerticalTiledPlot extends React.Component {
   }
 
   brushStarted() {
-    if (!event.sourceEvent || !event.selection) return;
+    if (!this.sourceEvent || !event.selection) return;
 
     this.props.onRangeSelectionStart();
   }

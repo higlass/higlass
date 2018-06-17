@@ -1,7 +1,10 @@
-export class CombinedTrack {
+import slugid from 'slugid';
+
+class CombinedTrack {
   constructor(trackDefs, trackCreator) {
     this.childTracks = trackDefs.map(trackCreator);
     this.createdTracks = {};
+    this.uid = slugid.nice()
 
     this.childTracks.forEach((ct, i) => {
       this.createdTracks[trackDefs[i].uid] = ct;
@@ -79,39 +82,39 @@ export class CombinedTrack {
     }
   }
 
-  refXScale(xScale) {
-    for (let i = 0; i < this.childTracks.length; i++) {
-      this.childTracks[i].refXScale(xScale);
-    }
-  }
+  // refXScale(xScale) {
+  //   for (let i = 0; i < this.childTracks.length; i++) {
+  //     this.childTracks[i].refXScale(xScale);
+  //   }
+  // }
 
-  refYScale(yScale) {
-    for (let i = 0; i < this.childTracks.length; i++) {
-      this.childTracks[i].refYScale(yScale);
-    }
-  }
+  // refYScale(yScale) {
+  //   for (let i = 0; i < this.childTracks.length; i++) {
+  //     this.childTracks[i].refYScale(yScale);
+  //   }
+  // }
 
   draw() {
-    for (let i = 0; i < this.childTracks.length; i++) {
-      this.childTracks[i].draw();
-    }
+    // for (let i = 0; i < this.childTracks.length; i++) {
+    //   this.childTracks[i].draw();
+    // }
   }
 
-  xScale(xScale) {
-    this._xScale = xScale;
+  // xScale(xScale) {
+  //   this._xScale = xScale;
 
-    for (let i = 0; i < this.childTracks.length; i++) {
-      this.childTracks[i].xScale(xScale);
-    }
-  }
+  //   for (let i = 0; i < this.childTracks.length; i++) {
+  //     this.childTracks[i].xScale(xScale);
+  //   }
+  // }
 
-  yScale(xScale) {
-    this._yScale = yScale;
+  // yScale(xScale) {
+  //   this._yScale = yScale;
 
-    for (let i = 0; i < this.childTracks.length; i++) {
-      this.childTracks[i].yScale(yScale);
-    }
-  }
+  //   for (let i = 0; i < this.childTracks.length; i++) {
+  //     this.childTracks[i].yScale(yScale);
+  //   }
+  // }
 
   refScalesChanged(refXScale, refYScale) {
     for (let i = 0; i < this.childTracks.length; i++) {
@@ -182,6 +185,31 @@ export class CombinedTrack {
       && (y >= this.position[1] && y <= this.dimensions[1] + this.position[1])
     );
   }
+
+  stopHover() {
+    for (const childTrack of this.childTracks) {
+      if (childTrack.stopHover)
+        childTrack.stopHover();
+    }
+  }
+
+  getMouseOverHtml(trackX, trackY) {
+    let mouseOverHtml = ''
+
+    for (const childTrack of this.childTracks) {
+      if (childTrack.getMouseOverHtml) {
+        const trackHtml = childTrack.getMouseOverHtml(trackX, trackY);
+
+        if (trackHtml && trackHtml.length) {
+          mouseOverHtml += trackHtml;
+          mouseOverHtml += "<br/>"
+        }
+
+      }
+    }
+
+    return mouseOverHtml;
+  };
 }
 
 export default CombinedTrack;

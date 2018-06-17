@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { select, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
-import { json, request } from 'd3-request';
+import { json } from 'd3-request';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
 import ReactGridLayout from 'react-grid-layout';
@@ -11,20 +11,23 @@ import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
 import parse from 'url-parse';
 
-import { TiledPlot } from './TiledPlot';
+import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
-import { ExportLinkModal } from './ExportLinkModal';
+import ExportLinkModal from './ExportLinkModal';
+import ViewHeader from './ViewHeader';
+import ChromosomeInfo from './ChromosomeInfo';
+
 import { createSymbolIcon } from './symbol';
 import { all as icons } from './icons';
-import ViewHeader from './ViewHeader';
-import { ChromosomeInfo } from './ChromosomeInfo';
 import api, { destroy as apiDestroy, publish as apiPublish } from './api';
 
 // Services
 import {
   chromInfo,
   domEvent,
-  pubSub ,
+  getDarkTheme,
+  setDarkTheme,
+  pubSub,
   setTileProxyAuthHeader
 } from './services';
 
@@ -36,8 +39,11 @@ import {
   dictKeys,
   dictValues,
   download,
+  fillInMinWidths,
+  forwardEvent,
   getTrackByUid,
   getTrackPositionByUid,
+  hasParent,
   // loadChromInfos,
   objVals,
   positionedTracksToAllTracks,
@@ -53,9 +59,7 @@ import {
   LOCATION_LISTENER_PREFIX,
   LONG_DRAG_TIMEOUT,
   SHORT_DRAG_TIMEOUT,
-  TRACKS_INFO,
   TRACKS_INFO_BY_TYPE,
-  ZOOM_TRANSITION_DURATION,
 } from './configs';
 
 // Styles
@@ -125,6 +129,8 @@ class HiGlassComponent extends React.Component {
 
     this.unsetOnLocationChange = [];
 
+    if (props.options.isDarkTheme) setDarkTheme();
+
     let viewConfig = {};
     let views = {};
     if (typeof this.props.viewConfig === 'string') {
@@ -153,6 +159,7 @@ class HiGlassComponent extends React.Component {
 
     this.pixiStage = new PIXI.Container();
     this.pixiStage.interactive = true;
+
     this.element = null;
 
     let mouseTool = MOUSE_TOOL_MOVE;
@@ -165,9 +172,23 @@ class HiGlassComponent extends React.Component {
       }
     }
 
+    const pluginTracks = {};
+    try {
+      if (window.higlassTracks) {
+        Object.values(window.higlassTracks).forEach((trackDef) => {
+          pluginTracks[trackDef.config.type] = trackDef;
+        });
+      }
+    } catch (e) {
+      console.warn(
+        'Broken config of a plugin track', this.props.options.tracks
+      );
+    }
+
     this.mounted = false;
     this.state = {
-      bounded: this.props.options ? this.props.options.bounded : false,
+      bounded: this.props.options.bounded || false,
+      pluginTracks,
       currentBreakpoint: 'lg',
       width: 0,
       height: 0,
@@ -186,6 +207,7 @@ class HiGlassComponent extends React.Component {
       exportLinkModalOpen: false,
       exportLinkLocation: null,
       mouseTool,
+      isDarkTheme: false
     };
 
     dictValues(views).map(view => this.adjustLayoutToTrackSizes(view));
@@ -207,6 +229,7 @@ class HiGlassComponent extends React.Component {
     this.rangeSelection = [null, null];
 
     this.prevMouseHoverTrack = null;
+    this.zooming = false;
   }
 
   componentWillMount() {
@@ -215,26 +238,37 @@ class HiGlassComponent extends React.Component {
     domEvent.register('scroll', document);
     domEvent.register('resize', window);
     domEvent.register('orientationchange', window);
+    domEvent.register('mousewheel', window);
+    domEvent.register('mousedown', window, true);
+    domEvent.register('mouseup', window, true);
+    domEvent.register('click', window, true);
+    domEvent.register('mousemove', window);
 
     this.pubSubs = [];
     this.pubSubs.push(
-      pubSub.subscribe('keydown', this.keyDownHandler.bind(this)),
+      pubSub.subscribe('keydown', this.keyDownHandler.bind(this))
     );
     this.pubSubs.push(
-      pubSub.subscribe('keyup', this.keyUpHandler.bind(this)),
+      pubSub.subscribe('keyup', this.keyUpHandler.bind(this))
     );
     this.pubSubs.push(
-      pubSub.subscribe('resize', this.resizeHandler.bind(this)),
+      pubSub.subscribe('resize', this.resizeHandler.bind(this))
     );
     this.pubSubs.push(
-      pubSub.subscribe('orientationchange', this.resizeHandler.bind(this)),
+      pubSub.subscribe('mousewheel', this.mousewheelHandler.bind(this))
     );
     this.pubSubs.push(
-      pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandler.bind(this)),
+      pubSub.subscribe('orientationchange', this.resizeHandler.bind(this))
+    );
+    this.pubSubs.push(
+      pubSub.subscribe('app.event', this.dispatchEvent.bind(this))
+    );
+    this.pubSubs.push(
+      pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandler.bind(this))
     );
 
     this.pubSubs.push(
-      pubSub.subscribe('trackDropped', () => { 
+      pubSub.subscribe('trackDropped', () => {
         this.setState({
           draggingHappening: null,
         });
@@ -246,6 +280,10 @@ class HiGlassComponent extends React.Component {
       pubSub.subscribe('app.zoomEnd', this.zoomEndHandler.bind(this))
     );
 
+    this.pubSubs.push(
+      pubSub.subscribe('app.zoom', this.zoomHandler.bind(this))
+    );
+
     if (this.props.getApi) {
       this.props.getApi(this.api);
     }
@@ -253,10 +291,18 @@ class HiGlassComponent extends React.Component {
 
   zoomStartHandler() {
     this.hideHoverMenu();
+    this.zooming = true;
   }
 
   zoomEndHandler() {
+    this.zooming = false;
+  }
 
+  zoomHandler(evt) {
+    if (!evt.sourceEvent)
+      return;
+
+    this.mouseMoveHandler(evt.sourceEvent);
   }
 
   waitForDOMAttachment(callback) {
@@ -279,6 +325,7 @@ class HiGlassComponent extends React.Component {
     this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
     window.addEventListener('focus', this.boundRefreshView);
+    window.addEventListener('mousewheel', this.mousewheelHandler.bind(this), true);
 
     dictValues(this.state.views).forEach((v) => {
       if (!v.layout) {
@@ -288,15 +335,34 @@ class HiGlassComponent extends React.Component {
       }
     });
 
-    this.pixiRenderer = PIXI.autoDetectRenderer(this.state.width,
-      this.state.height, {
-        view: this.canvasElement,
-        antialias: true,
-        transparent: true,
-        resolution: 2,
-        autoResize: true,
-        preserveDrawingBuffer: true,
-      });
+    const rendererOptions = 
+        {
+          view: this.canvasElement,
+          antialias: true,
+          transparent: true,
+          resolution: 2,
+          autoResize: true,
+        }
+
+    if (this.props.options.renderer == 'webgl') {
+      this.pixiRenderer = new PIXI.WebGLRenderer(
+        this.state.width,
+        this.state.height,
+        rendererOptions
+      );
+    } else if (this.props.options.renderer == 'canvas') {
+      this.pixiRenderer = new PIXI.CanvasRenderer(
+        this.state.width,
+        this.state.height,
+        rendererOptions
+      );
+    } else {
+      this.pixiRenderer = PIXI.autoDetectRenderer(
+        this.state.width,
+        this.state.height,
+        rendererOptions
+      );
+    }
 
     // PIXI.RESOLUTION=2;
     this.fitPixiToParentContainer();
@@ -330,7 +396,6 @@ class HiGlassComponent extends React.Component {
     icons.forEach(
       icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox),
     );
-
   }
   getTrackObject(viewUid, trackUid) {
     return this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
@@ -386,7 +451,6 @@ class HiGlassComponent extends React.Component {
 
   componentDidUpdate() {
     this.animate();
-
     this.triggerViewChangeDb();
   }
 
@@ -407,6 +471,11 @@ class HiGlassComponent extends React.Component {
     domEvent.unregister('keydown', document);
     domEvent.unregister('keyup', document);
     domEvent.unregister('scroll', document);
+    domEvent.unregister('mousewheel', window);
+    domEvent.unregister('mousedown', window);
+    domEvent.unregister('mouseup', window);
+    domEvent.unregister('click', window);
+    domEvent.unregister('mousemove', window);
 
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
@@ -415,6 +484,17 @@ class HiGlassComponent extends React.Component {
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
+
+
+  dispatchEvent(e) {
+    if (!this.canvasElement) return;
+
+    forwardEvent(e, this.canvasElement);
+  }
+
+  mousewheelHandler(e) {
+    if (hasParent(e.target, this.topDiv)) e.preventDefault();
+  }
 
   animateOnMouseMoveHandler(active) {
     if (active && !this.animateOnMouseMove) {
@@ -443,18 +523,19 @@ class HiGlassComponent extends React.Component {
   }
 
   addDefaultOptions(track) {
-    if (!TRACKS_INFO_BY_TYPE.hasOwnProperty(track.type)) {
-      console.warn('Track type not found:', track.type, ' (check app/scripts/config/ for a list of defined track types)');
-      return;
-    }
+    const trackInfo = this.getTrackInfo(track.type);
+    if (!trackInfo) return;
 
     const trackOptions = track.options ? track.options : {};
 
-    if (TRACKS_INFO_BY_TYPE[track.type].defaultOptions) {
-      if (!track.options) { track.options = JSON.parse(JSON.stringify(TRACKS_INFO_BY_TYPE[track.type].defaultOptions)); } else {
-        for (const optionName in TRACKS_INFO_BY_TYPE[track.type].defaultOptions) {
-          track.options[optionName] = typeof(track.options[optionName]) !== 'undefined' ?
-            track.options[optionName] : JSON.parse(JSON.stringify(TRACKS_INFO_BY_TYPE[track.type].defaultOptions[optionName]));
+    if (trackInfo.defaultOptions) {
+      if (!track.options) {
+        track.options = JSON.parse(JSON.stringify(trackInfo.defaultOptions));
+      } else {
+        for (const optionName in trackInfo.defaultOptions) {
+          track.options[optionName] = typeof(track.options[optionName]) !== 'undefined'
+            ? track.options[optionName]
+            : JSON.parse(JSON.stringify(trackInfo.defaultOptions[optionName]));
         }
       }
     } else { track.options = trackOptions; }
@@ -640,8 +721,7 @@ class HiGlassComponent extends React.Component {
       // /let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
       const lockedTracks = lockGroupValues
         .filter(x => this.tiledPlots[x.view])
-        .map(x =>
-        this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track));
+        .map(x => this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track));
 
       const minValues = lockedTracks
         // exclude tracks that don't set min and max values
@@ -740,17 +820,17 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  /**
+   * Add an event listener that will be called every time the scale
+   * of the view with uid viewUid is changed.
+   *
+   * @param viewUid: The uid of the view being observed
+   * @param listenerUid: The uid of the listener
+   * @param eventHandler: The handler to be called when the scales change
+   *    Event handler is called with parameters (xScale, yScale)
+   */
   addScalesChangedListener(viewUid, listenerUid, eventHandler) {
-    /**
-       * Add an event listener that will be called every time the scale
-       * of the view with uid viewUid is changed.
-       *
-       * @param viewUid: The uid of the view being observed
-       * @param listenerUid: The uid of the listener
-       * @param eventHandler: The handler to be called when the scales change
-       *    Event handler is called with parameters (xScale, yScale)
-       */
-    if (!this.scalesChangedListeners.hasOwnProperty(viewUid)) {
+    if (!this.scalesChangedListeners[viewUid]) {
       this.scalesChangedListeners[viewUid] = {};
     }
 
@@ -762,17 +842,17 @@ class HiGlassComponent extends React.Component {
     eventHandler(this.xScales[viewUid], this.yScales[viewUid]);
   }
 
+  /**
+   * Remove a scale change event listener
+   *
+   * @param viewUid: The view that it's listening on.
+   * @param listenerUid: The uid of the listener itself.
+   */
   removeScalesChangedListener(viewUid, listenerUid) {
-    /**
-       * Remove a scale change event listener
-       *
-       * @param viewUid: The view that it's listening on.
-       * @param listenerUid: The uid of the listener itself.
-       */
-    if (this.scalesChangedListeners.hasOwnProperty(viewUid)) {
+    if (this.scalesChangedListeners[viewUid]) {
       const listeners = this.scalesChangedListeners[viewUid];
 
-      if (listeners.hasOwnProperty(listenerUid)) { delete listeners[listenerUid]; }
+      if (listeners[listenerUid]) { delete listeners[listenerUid]; }
     }
   }
 
@@ -797,7 +877,12 @@ class HiGlassComponent extends React.Component {
   }
 
   createSVGString() {
-    return vkbeautify.xml(new XMLSerializer().serializeToString(this.createSVG()));
+    let svgString = vkbeautify.xml(new XMLSerializer().serializeToString(this.createSVG()));
+
+    svgString = svgString.replace("\<a0:", "\<");
+    svgString = svgString.replace("\</a0:", "\<\/");
+
+    return svgString;
   }
 
   createDataURI() {
@@ -1315,6 +1400,22 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  getTrackInfo(trackType) {
+    if (TRACKS_INFO_BY_TYPE[trackType]) {
+      return TRACKS_INFO_BY_TYPE[trackType];
+    } else if (
+      window.higlassTracksByType && window.higlassTracksByType[trackType]
+    ) {
+      return window.higlassTracksByType[trackType].config;
+    }
+    console.warn(
+      'Track type not found:',
+      trackType,
+      '(check app/scripts/config/ for a list of defined track types)'
+    );
+    return undefined;
+  }
+
   forceRefreshView() {
     // force everything to rerender
 
@@ -1351,13 +1452,13 @@ class HiGlassComponent extends React.Component {
     objVals(this.viewHeaders).filter(x => x).forEach(viewHeader => viewHeader.checkWidth());
   }
 
+  /**
+   * If tracks don't have specified dimensions, add in the known
+   * minimums
+   *
+   * Operates on the tracks stored for this TiledPlot.
+   */
   fillInMinWidths(tracksDict) {
-    /**
-         * If tracks don't have specified dimensions, add in the known
-         * minimums
-         *
-         * Operates on the tracks stored for this TiledPlot.
-         */
     const horizontalLocations = ['top', 'bottom'];
 
     // first make sure all track types are specified
@@ -1375,7 +1476,7 @@ class HiGlassComponent extends React.Component {
       if (!tracks) { continue; }
 
       for (let i = 0; i < tracks.length; i++) {
-        const trackInfo = TRACKS_INFO_BY_TYPE[tracks[i].type];
+        const trackInfo = this.getTrackInfo(tracks[i].type);
 
         if (!('height' in tracks[i]) || (trackInfo && tracks[i].height < trackInfo.minHeight)) {
           if (trackInfo && trackInfo.minHeight) {
@@ -1394,7 +1495,7 @@ class HiGlassComponent extends React.Component {
       if (!tracks) { continue; }
 
       for (let i = 0; i < tracks.length; i++) {
-        const trackInfo = TRACKS_INFO_BY_TYPE[tracks[i].type];
+        const trackInfo = this.getTrackInfo(tracks[i].type);
 
         if (!('width' in tracks[i]) || (trackInfo && tracks[i].width < trackInfo.minWidth)) {
           //
@@ -1761,33 +1862,30 @@ class HiGlassComponent extends React.Component {
     trackConfig.uid = slugid.nice();
     trackConfig.data = newData;
 
-    console.log('trackConfig:', trackConfig);
-
     this.setState({
       views: this.state.views,
     });
   }
 
+  /**
+   * A track was added from the AddTrackModal dialog.
+   *
+   * @param trackInfo: A JSON object that can be used as a track
+   *                   definition
+   * @param position: The position the track is being added to
+   * @param host: If this track is being added to another track
+   *
+   * Returns
+   * -------
+   *
+   *  { uid: "", width: }:
+   *      The trackConfig object describing this track.
+   */
   handleTrackAdded(viewId, newTrack, position, host = null) {
-    /**
-         * A track was added from the AddTrackModal dialog.
-         *
-         * @param trackInfo: A JSON object that can be used as a track
-         *                   definition
-         * @param position: The position the track is being added to
-         * @param host: If this track is being added to another track
-         *
-         * Returns
-         * -------
-         *
-         *  { uid: "", width: }:
-         *      The trackConfig object describing this track.
-         */
     this.addDefaultOptions(newTrack);
 
     // make sure the new track has a uid
-    if (!newTrack.uid)
-      newTrack.uid = slugid.nice();
+    if (!newTrack.uid) newTrack.uid = slugid.nice();
 
     if (newTrack.contents) {
       // add default options to combined tracks
@@ -1809,20 +1907,22 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
-    newTrack.width = TRACKS_INFO_BY_TYPE[newTrack.type].minWidth ? TRACKS_INFO_BY_TYPE[newTrack.type].minWidth
+    newTrack.width = this.getTrackInfo(newTrack.type).minWidth
+      ? this.getTrackInfo(newTrack.type).minWidth
       : this.minVerticalWidth;
-    newTrack.height = TRACKS_INFO_BY_TYPE[newTrack.type].minHeight ? TRACKS_INFO_BY_TYPE[newTrack.type].minHeight
+    newTrack.height = this.getTrackInfo(newTrack.type).minHeight
+      ? this.getTrackInfo(newTrack.type).minHeight
       : this.minHorizontalHeight;
 
     const tracks = this.state.views[viewId].tracks;
-    if (position == 'left' || position == 'top') {
+    if (position === 'left' || position === 'top') {
       // if we're adding a track on the left or the top, we want the
       // new track to appear at the begginning of the track list
       tracks[position].unshift(newTrack);
-    } else if (position == 'center') {
+    } else if (position === 'center') {
       // we're going to have to either overlay the existing track with a new one
       // or add another one on top
-      if (tracks.center.length == 0) {
+      if (tracks.center.length === 0) {
         // no existing tracks
         const newCombined = {
           uid: slugid.nice(),
@@ -2213,7 +2313,7 @@ class HiGlassComponent extends React.Component {
   }
 
   handleExportViewsAsLink(
-    url = this.props.viewConfig.exportViewUrl,
+    url = this.state.viewConfig.exportViewUrl,
     fromApi = false
   ) {
     this.width = this.element.clientWidth;
@@ -2238,11 +2338,19 @@ class HiGlassComponent extends React.Component {
         body: `{"viewconf":${this.getViewsAsString()}}`
       }
     )
-      .then(res => res.json())
-      .then(_json => ({
-        id: _json.uid,
-        url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${json.uid}`
-      }));
+      .then( response => {
+        if (!response.ok) { throw response }
+        return response.json()
+      })
+      .catch(err => {
+        console.log('err:', err)
+      })
+      .then(_json => {
+        return {
+          id: _json.uid,
+          url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
+        };
+      })
 
     if (!fromApi) {
       req
@@ -2381,29 +2489,25 @@ class HiGlassComponent extends React.Component {
       */
   }
 
+  /**
+   * Add a name to this track based on its track type.
+   *
+   * Name is added in-place.
+   *
+   * The list of track information can be found in config.js:TRACKS_INFO
+   */
   addNameToTrack(track) {
-    /**
-       * Add a name to this track based on its track type.
-       *
-       * Name is added in-place.
-       *
-       * The list of track information can be found in config.js:TRACKS_INFO
-       */
-    const typeToName = {};
-    TRACKS_INFO.forEach((x) => {
-      if (x.name) { typeToName[x.type] = x.name; }
-    });
+    const config = this.getTrackInfo(track.type);
 
-    if (track.type in typeToName) { track.name = typeToName[track.type]; }
+    if (config && config.name) track.name = config.name;
 
     return track;
   }
 
+  /**
+   * Add track names to the ones that have known names in config.js
+   */
   addUidsToTracks(allTracks) {
-    /**
-         * Add track names to the ones that have known names in config.js
-         */
-
     allTracks.forEach((t) => {
       if (!t.uid) { t.uid = slugid.nice(); }
     });
@@ -2411,11 +2515,10 @@ class HiGlassComponent extends React.Component {
     return allTracks;
   }
 
+  /**
+   * Add track names to the ones that have known names in config.js
+   */
   addNamesToTracks(allTracks) {
-    /**
-         * Add track names to the ones that have known names in config.js
-         */
-
     allTracks.forEach((t) => {
       if (!t.name) { this.addNameToTrack(t); }
     });
@@ -2562,6 +2665,21 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  handleViewOptionsChanged(viewUid, newOptions) {
+    const view = this.state.views[viewUid];
+
+    if (!view)
+      return;
+
+    view.options = Object.assign(view.options || {}, newOptions);
+
+    if (this.mounted) {
+      this.setState({
+        views: this.state.views,
+      });
+    }
+  }
+
   isTrackValid(track, viewUidsPresent) {
     /**
          * Determine whether a track is valid and can be displayed.
@@ -2614,11 +2732,11 @@ class HiGlassComponent extends React.Component {
     const views = viewConfig.views;
     let viewsByUid = {};
 
-    if (!viewConfig.views || viewConfig.views.length == 0)
+    if (!viewConfig.views || viewConfig.views.length === 0)
       throw 'No views provided in viewConfig';
 
     views.forEach((v) => {
-      this.fillInMinWidths(v.tracks);
+      fillInMinWidths(v.tracks);
 
       // if a view doesn't have a uid, assign it one
       if (!v.uid) { v.uid = slugid.nice(); }
@@ -2747,7 +2865,7 @@ class HiGlassComponent extends React.Component {
       typeof viewId === 'undefined' || viewsIds.indexOf(viewId) === -1
     ) {
       console.error(
-        '🦄 listen to me: you forgot to give me a propper view ID. ' +
+        '🦄 listen to me: you forgot to give me a proper view ID. ' +
         'I can\'t do nothing without that. 💩',
       );
       return;
@@ -2755,6 +2873,8 @@ class HiGlassComponent extends React.Component {
 
     const view = this.state.views[viewId];
 
+    /*
+    console.log('setting chrominfo');
     // Set chromInfo if not available
     if (!this.chromInfo) {
       this.setChromInfo(
@@ -2763,10 +2883,11 @@ class HiGlassComponent extends React.Component {
       );
       return;
     }
+    */
 
     // Convert scales into genomic locations
     const middleLayerListener = (xScale, yScale) => {
-      callback(scalesToGenomeLoci(xScale, yScale, this.chromInfo));
+      callback({xDomain: xScale.domain(), yDomain: yScale.domain(), xRange: xScale.range(), yRange: yScale.range() });
     };
 
     let newListenerId = 1;
@@ -2786,6 +2907,8 @@ class HiGlassComponent extends React.Component {
     if (callbackId) {
       callbackId(`${LOCATION_LISTENER_PREFIX}.${newListenerId}`);
     }
+
+    return newListenerId;
   }
 
   /**
@@ -2831,11 +2954,10 @@ class HiGlassComponent extends React.Component {
 
     const hoveredTracks = hoveredTiledPlot
       ? hoveredTiledPlot.listTracksAtPosition(relPos[0], relPos[1], true)
-      : undefined;
+        .map(track => track.originalTrack || track)
+      : [];
 
-    const hoveredTrack = hoveredTracks && hoveredTracks.length > 0
-      ? hoveredTracks[0].originalTrack || hoveredTracks[0]
-      : undefined;
+    const hoveredTrack = hoveredTracks.find(track => !track.isAugmentationTrack);
 
     const relTrackPos = hoveredTrack
       ? [
@@ -2857,19 +2979,20 @@ class HiGlassComponent extends React.Component {
         : dataX;
     }
 
-    const evt = 
-      {
-        x: relPos[0],
-        y: relPos[1],
-        relTrackX: relTrackPos[0],
-        relTrackY: relTrackPos[1],
-        dataX,
-        dataY,
-        isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,
-        isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText,
-        track: hoveredTrack,
-        origEvt: e
-      }
+    const evt = {
+      x: relPos[0],
+      y: relPos[1],
+      relTrackX: (hoveredTrack && hoveredTrack.flipText) ? relTrackPos[1] : relTrackPos[0],
+      relTrackY: (hoveredTrack && hoveredTrack.flipText) ? relTrackPos[0] : relTrackPos[1],
+      dataX,
+      dataY,
+      isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,
+      isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText,
+      track: hoveredTrack,
+      origEvt: e,
+      sourceUid: this.uid,
+      hoveredTracks,
+    };
 
     pubSub.publish(
       'app.mouseMove', evt
@@ -2884,10 +3007,11 @@ class HiGlassComponent extends React.Component {
   showHoverMenu(evt) {
     // each track should have a function that returns an HTML representation
     // of the data at a give position
-    const mouseOverHtml = (evt.track && evt.track.getMouseOverHtml) ?
-      evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY) : '';
+    const mouseOverHtml = (evt.track && evt.track.getMouseOverHtml)
+      ? evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY)
+      : '';
 
-    if (evt.track != this.prevMouseHoverTrack) {
+    if (evt.track !== this.prevMouseHoverTrack) {
       if (this.prevMouseHoverTrack && this.prevMouseHoverTrack.stopHover) {
         this.prevMouseHoverTrack.stopHover();
       }
@@ -2895,11 +3019,14 @@ class HiGlassComponent extends React.Component {
 
     this.prevMouseHoverTrack = evt.track;
 
+    if (this.zooming)
+      return;
+
     const data = (mouseOverHtml && mouseOverHtml.length) ? [1] : [];
 
     // try to select the mouseover div
-    let mouseOverDiv = select('body').selectAll('.track-mouseover-menu')
-      .data(data)
+    let mouseOverDiv = select('body')
+      .selectAll('.track-mouseover-menu').data(data);
 
     mouseOverDiv
       .exit()
@@ -2922,29 +3049,25 @@ class HiGlassComponent extends React.Component {
       .classed('.mouseover-marker', true)
     */
 
-    mouseOverDiv
-    .style('position', 'absolute')
-      .style('left', mousePos[0] + "px")
-      .style('top', mousePos[1] + "px")
-    ;
+    mouseOverDiv.style('position', 'fixed')
+      .style('left', `${mousePos[0]}px`)
+      .style('top', `${mousePos[1]}px`);
 
-    if (!mouseOverDiv.node()) {
-      // probably not over a track so there's no mouseover rectangle
-      return;
-    }
+    // probably not over a track so there's no mouseover rectangle
+    if (!mouseOverDiv.node()) return;
 
     const bbox = mouseOverDiv.node().getBoundingClientRect();
 
     if (bbox.x + bbox.width > window.innerWidth) {
       // the overlay box is spilling outside of the track so switch
       // to showing it on the left
-      mouseOverDiv.style('left', (mousePos[0] - bbox.width) + 'px')
+      mouseOverDiv.style('left', `${(mousePos[0] - bbox.width)}px`);
     }
 
     if (bbox.y + bbox.height > window.innerHeight) {
       // the overlay box is spilling outside of the track so switch
       // to showing it on the left
-      mouseOverDiv.style('top', (mousePos[1] - bbox.height) + 'px')
+      mouseOverDiv.style('top', `${(mousePos[1] - bbox.height)}px`);
     }
 
     mouseOverDiv.html(mouseOverHtml);
@@ -2990,9 +3113,10 @@ class HiGlassComponent extends React.Component {
     // the right width
     if (this.mounted) {
       this.tiledAreas = dictValues(this.state.views).map((view) => {
-        const zoomFixed = typeof view.zoomFixed !== 'undefined'
+        let zoomFixed = typeof view.zoomFixed !== 'undefined'
           ? view.zoomFixed
           : this.props.zoomFixed;
+        zoomFixed = zoomFixed | this.props.viewConfig.zoomFixed;
 
         // only show the add track menu for the tiled plot it was selected for
         const addTrackPositionMenuPosition =
@@ -3019,6 +3143,7 @@ class HiGlassComponent extends React.Component {
                 height: '100%',
                 background,
                 opacity: 0.3,
+                zIndex: 1
               }}
             />
           );
@@ -3079,6 +3204,7 @@ class HiGlassComponent extends React.Component {
             onUnlockValueScale={uid => this.handleUnlockValueScale(view.uid, uid)}
             onValueScaleChanged={uid => this.syncValueScales(view.uid, uid)}
             pixiStage={this.pixiStage}
+            pluginTracks={this.state.pluginTracks}
             registerDraggingChangedListener={(listener) => {
               this.addDraggingChangedListener(view.uid, view.uid, listener);
             }}
@@ -3090,6 +3216,8 @@ class HiGlassComponent extends React.Component {
             svgElement={this.state.svgElement}
             trackSourceServers={this.state.viewConfig.trackSourceServers}
             tracks={view.tracks}
+            viewOptions={view.options}
+            metaTracks={view.metaTracks}
             uid={view.uid}
             verticalMargin={this.verticalMargin}
             // dragging={this.state.dragging}
@@ -3167,6 +3295,7 @@ class HiGlassComponent extends React.Component {
             }}
             onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(this)}
             onTrackPositionChosen={position => this.handleTrackPositionChosen(view.uid, position)}
+            onViewOptionsChanged={(newOptions) => this.handleViewOptionsChanged(view.uid, newOptions)}
             onUnlockLocation={uid => this.handleUnlock(uid, this.locationLocks)}
             onUnlockZoom={uid => this.handleUnlock(uid, this.zoomLocks)}
             onUnlockZoomAndLocation={(uid) => {
@@ -3247,13 +3376,22 @@ class HiGlassComponent extends React.Component {
       </ReactGridLayout>
     );
 
+    let styleNames = 'styles.higlass';
+
+    if (getDarkTheme()) {
+      styleNames += ' styles.higlass-dark-theme';
+    }
+
     return (
       <div
         key={this.uid}
         ref={(c) => { this.topDiv = c; }}
-        className="higlass"
-        styleName="styles.higlass"
+        className='higlass'
         onMouseMove={this.mouseMoveHandler.bind(this)}
+        onMouseLeave={() => {
+          this.hideHoverMenu();
+        }}
+        styleName={styleNames}
       >
         <canvas
           key={this.uid}
@@ -3263,8 +3401,9 @@ class HiGlassComponent extends React.Component {
         <div
           ref={(c) => { this.divDrawingSurface = c; }}
           styleName="styles.higlass-drawing-surface"
-        />
-        {gridLayout}
+        >
+          {gridLayout}
+        </div>
         <svg
           ref={(c) => { this.svgElement = c; }}
           styleName="styles.higlass-svg"

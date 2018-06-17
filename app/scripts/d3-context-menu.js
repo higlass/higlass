@@ -1,8 +1,9 @@
-import '../styles/d3-context-menu.css';
 import { mouse, select, selectAll } from 'd3-selection';
 import slugid from 'slugid';
 
-export function contextMenu(menu, opts) {
+import '../styles/d3-context-menu.css';
+
+function contextMenu(menu, opts) {
   let previouslyMouseUp = false;
   let clickAway = {};
   const uid = slugid.nice();

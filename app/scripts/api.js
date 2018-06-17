@@ -1,3 +1,5 @@
+import ReactDOM from 'react-dom';
+
 import {
   relToAbsChromPos,
   scalesCenterAndK,
@@ -5,7 +7,7 @@ import {
 } from './utils';
 
 import {
-  setTileProxyAuthHeader
+  setDarkTheme, setTileProxyAuthHeader
 } from './services';
 
 import {
@@ -14,6 +16,8 @@ import {
 } from './configs';
 
 import pubSub, { create } from './services/pub-sub';
+
+import ChromosomeInfo from './ChromosomeInfo';
 
 let stack = {};
 let pubSubs = [];
@@ -25,7 +29,6 @@ export const destroy = () => {
   pubSubs = [];
   stack = {};
 };
-import ChromosomeInfo from './ChromosomeInfo';
 
 const api = function api(context) {
   const self = context;
@@ -44,6 +47,10 @@ const api = function api(context) {
      */
     reload() {
 
+    },
+
+    destroy() {
+      ReactDOM.unmountComponentAtNode(self.topDiv.parentNode);
     },
 
     setViewConfig(newViewConfig) {
@@ -131,6 +138,13 @@ const api = function api(context) {
       }
     },
 
+    /**
+     * Choose a theme.
+     */
+    setDarkTheme(darkTheme) {
+      setDarkTheme(!!darkTheme);
+    },
+
     zoomToDataExtent(viewUid) {
       /**
        * Zoom so that the entire dataset is visible
@@ -180,86 +194,61 @@ const api = function api(context) {
       }
     },
 
-    /**
-     * Get a property of HiGlass.
+    /*
+     * Get the current view as a Data URI
      *
-     * @description
-     * Returns the current value for any of the available listeners, e.g.,
-     * `get(rangeSelection)` will return the current range selection without
-     * requiring that a range selection event is fired.
-     *
-     * @param {string} prop - Name of the property.
-     * @param {string} viewId - UUID of the view `prop` relates to.
-     * @return {object} Promise resolving to the value.
+     * @return {string} A data URI describing the current state of the canvas
      */
-    get(prop, viewId) {
-      switch (prop) {
-        case 'location':
-          if (typeof viewId === 'undefined') {
-            return Promise.reject(
-              'Please provide the view UUID sweetheart 😙',
-            );
-          }
-          return self.getGenomeLocation(viewId);
+    exportAsPng() {
+      return self.createDataURI();
+    },
 
-        case 'rangeSelection':
-          return Promise.resolve(self.rangeSelection);
+    /*
+     * Get the current view as an SVG. Relies on all the tracks implementing
+     * their respective exportAsSVG methods.
+     *
+     * @return {string} An SVG string of the current view.
+     */
+    exportAsSvg() {
+      return self.createSVGString();
+    },
 
-        case 'viewConfig':
-          return Promise.resolve(self.getViewsAsString());
+    /*
+     * Export the current view as a Viewconf.
+     *
+     * @return {string} A stringified version of the current viewconf
+    */
+    exportAsViewConfString() {
+      return self.getViewsAsString();
+    },
 
-        case 'png':
-          return Promise.resolve(self.createDataURI());
+    /*
+     * Get the current range selection
+     *
+     * @return {???} What is the return type here??
+     */
+    getRangeSelection() {
+      return self.rangeSelection;
+    },
 
-        case 'svg':
-        case 'svgString':
-          return Promise.resolve(self.createSVGString());
-
-        default:
-          return Promise.reject(`Propert "${prop}" unknown`);
+    getLocation(viewId) {
+      if (typeof viewId === 'undefined') {
+        return 'Please provide the view UUID sweetheart 😙';
+      }
+      return {
+        xDomain: self.xScales[viewId].domain(),
+        yDomain: self.yScales[viewId].domain()
       }
     },
 
-    goTo(
+    zoomTo(
       viewUid,
-      chrom1,
-      start1,
-      end1,
-      chrom2,
-      start2,
-      end2,
+      start1Abs,
+      end1Abs,
+      start2Abs,
+      end2Abs,
       animateTime = 0,
-      chromInfo = null,
     ) {
-      // if no ChromosomeInfo is passed in, try to load it from the
-      // location specified in the viewconf
-      if (!chromInfo) {
-        ChromosomeInfo(self.state.views[viewUid.chromInfoPath],
-          (internalChromInfo) => {
-            self.api().goTo(
-              viewUid,
-              chrom1,
-              start1,
-              end1,
-              chrom2,
-              start2,
-              end2,
-              animateTime,
-              internalChromInfo,
-            );
-          },
-        );
-        return;
-      }
-
-      const [start1Abs, end1Abs] = relToAbsChromPos(
-        chrom1, start1, end1, chromInfo,
-      );
-
-      const [start2Abs, end2Abs] = relToAbsChromPos(
-        chrom2, start2, end2, chromInfo,
-      );
-
       const [centerX, centerY, k] = scalesCenterAndK(
         self.xScales[viewUid].copy().domain([start1Abs, end1Abs]),
         self.yScales[viewUid].copy().domain([start2Abs, end2Abs]),
@@ -301,6 +290,7 @@ const api = function api(context) {
     on(event, callback, viewId, callbackId) {
       switch (event) {
         case 'location':
+          // returns a set of scales (xScale, yScale) on every zoom event
           return self.onLocationChange(viewId, callback, callbackId);
 
         case 'mouseMoveZoom':

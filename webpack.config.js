@@ -12,7 +12,20 @@ module.exports = {
     hglib: ['./scripts/hglib.js'],
     worker: ['./scripts/worker.js'],
   },
+  watch: process.env.NODE_ENV === 'production' ? false : true,
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: 1000,
+    ignored: /node_modules/,
+  },
   devtool: 'cheap-source-map',
+  devServer: {
+    contentBase: [
+      path.resolve(__dirname, 'app'),
+      path.resolve(__dirname, 'node_modules'),
+    ],
+    publicPath: '/'
+  },
   output: {
     path: `${__dirname}/build`,
     publicPath: '/',
@@ -45,10 +58,6 @@ module.exports = {
                     generateScopedName: '[name]_[local]-[hash:base64:5]',
                   },
                 ],
-              ],
-              presets: [
-                ['es2015', { modules: false }],
-                'react'
               ],
             },
           },
@@ -174,22 +183,16 @@ module.exports = {
     },
   },
   plugins: [
-  new webpack.DefinePlugin({
+    new webpack.DefinePlugin({
       'process.env': {
       'NODE_ENV': JSON.stringify('production')
       }
-  }),
+    }),
     new webpack.IgnorePlugin(/react\/addons/),
     new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
     new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
     new ExtractTextPlugin('hglib.css'),
     new webpack.optimize.ModuleConcatenationPlugin(),
-  /*
-  ,
-  new BundleAnalyzerPlugin({
-    analyzerMode: 'static'
-  })
-  */
+    // new BundleAnalyzerPlugin(),
   ],
 };
-

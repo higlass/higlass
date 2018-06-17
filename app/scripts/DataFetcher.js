@@ -119,6 +119,8 @@ export default class DataFetcher {
      */
     if (this.dataConfig.type == 'horizontal-section') {
       this.fetchHorizontalSection(receivedTiles, tileIds);
+    }  else if (this.dataConfig.type == 'vertical-section') {
+      this.fetchHorizontalSection(receivedTiles, tileIds, vertical=true);
     } else if (!this.dataConfig.children) {
       // no children, just return the fetched tiles as is
       const promise = new Promise(resolve =>
@@ -230,7 +232,7 @@ export default class DataFetcher {
     }
   }
 
-  fetchHorizontalSection(receivedTiles, tileIds) {
+  fetchHorizontalSection(receivedTiles, tileIds, vertical=false) {
     // We want to take a horizontal section of a 2D dataset
     // that means that a 1D track is requesting data from a 2D source
     // because the 1D track only requests 1D tiles, we need to calculate
@@ -248,30 +250,30 @@ export default class DataFetcher {
       // along the y-axis of the 2D dataset (we already have the x positions
       // from the track that is querying this data)
       const scale = scaleLinear()
-        .domain([this.dataConfig.ySlicePos, this.dataConfig.ySlicePos]);
+        .domain([this.dataConfig.slicePos, this.dataConfig.slicePos]);
 
       // there's two different ways of calculating tile positions
       // this needs to be consolidated into one function eventually
       let yTiles = [];
 
       if (this.dataConfig.tilesetInfo && this.dataConfig.tilesetInfo.resolutions)  {
-        const sortedResolutions = this.tilesetInfo.resolutions
+        const sortedResolutions = this.dataConfig.tilesetInfo.resolutions
           .map(x => +x)
           .sort((a, b) => b - a);
 
         yTiles = tileProxy.calculateTilesFromResolution(
-          scale,
           sortedResolutions[zoomLevel],
-          this.dataConfig.tilesetInfo.min_pos[1], this.dataConfig.tilesetInfo.max_pos[1]
+          scale,
+          this.dataConfig.tilesetInfo.min_pos[vertical ? 1 : 0], 
+          this.dataConfig.tilesetInfo.max_pos[vertical ? 1 : 0]
         )
       } else {
         yTiles = tileProxy.calculateTiles(zoomLevel, 
           scale,
-          this.dataConfig.tilesetInfo.min_pos[0],
-          this.dataConfig.tilesetInfo.max_pos[0],
+          this.dataConfig.tilesetInfo.min_pos[vertical ? 1 : 0],
+          this.dataConfig.tilesetInfo.max_pos[vertical ? 1 : 0],
           this.dataConfig.tilesetInfo.max_zoom,
           this.dataConfig.tilesetInfo.max_width);
-
       }
       const sortedPosition = [xTilePos, yTiles[0]].sort((a,b) => a - b);
 
@@ -312,7 +314,7 @@ export default class DataFetcher {
           this.dataConfig.tilesetInfo.max_width,
           this.dataConfig.tilesetInfo.min_pos[1],
           zoomLevel,
-          +this.dataConfig.ySlicePos);
+          +this.dataConfig.slicePos);
 
         const fullTileId = this.fullTileId(tilesetUid, newTileIds[i]);
         const tile = returnedTiles[fullTileId];

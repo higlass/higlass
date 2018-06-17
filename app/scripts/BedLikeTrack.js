@@ -1,6 +1,4 @@
-import boxIntersect from 'box-intersect';
-import { median, range } from 'd3-array';
-import { scaleBand } from 'd3-scale';
+import classifyPoint from 'robust-point-in-polygon';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
@@ -15,7 +13,7 @@ const GENE_RECT_HEIGHT = 10;
 const MAX_TEXTS = 1000;
 const MAX_TILE_ENTRIES = 1000;
 
-export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
+class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
     super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
     this.textFontSize = '10px';
@@ -68,8 +66,8 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         tile.textWidths = {};
 
         // don't draw texts for the latter entries in the tile
-        if (i >= MAX_TEXTS) { 
-          return; 
+        if (i >= MAX_TEXTS) {
+          return;
         }
 
         // geneInfo[3] is the gene symbol
@@ -175,7 +173,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     tile.rendered = true;
 
-    if (this.options && this.options.valueColumn) { 
+    if (this.options && this.options.valueColumn) {
       /**
        * These intervals come with some y-value that we want to plot
        */
@@ -225,9 +223,10 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           let yMiddle = rowScale(j) + rowScale.step() / 2;
           let textYMiddle = rowScale(j) + rowScale.step() / 2;
           const geneName = geneInfo[3];
-          let rectHeight = rowScale.step() / 2;
+          //let rectHeight = rowScale.step() / 2;
+          let rectHeight = GENE_RECT_HEIGHT;
 
-          if (this.options && this.options.valueColumn) { 
+          if (this.options && this.options.valueColumn) {
             // These intervals come with some y-value that we want to plot
 
             yMiddle = this.valueScale( +geneInfo[+this.options.valueColumn-1]);
@@ -252,13 +251,42 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
           const xStartPos = this._xScale(txStart);
           const xEndPos = this._xScale(txEnd);
+          
+          let drawnPoly = null;
 
-          tile.rectGraphics.drawRect(xStartPos, rectY, xEndPos - xStartPos, rectHeight);
+          if (geneInfo.length > 5 && (geneInfo[5] == '+' || geneInfo[5] == '-') 
+            && (xEndPos - xStartPos < GENE_RECT_HEIGHT / 2)) { //only draw if it's not too wide
+            drawnPoly = [
+                xStartPos, rectY,
+                xStartPos + GENE_RECT_HEIGHT / 2, rectY + rectHeight / 2,
+                xStartPos, rectY + rectHeight
+              ]
+
+            if (geneInfo[5] == '+') {
+              tile.rectGraphics.drawPolygon(drawnPoly);
+            } else {
+              drawnPoly = [
+                xStartPos, rectY,
+                xStartPos - GENE_RECT_HEIGHT / 2, rectY + rectHeight / 2,
+                xStartPos, rectY + rectHeight
+              ]
+              tile.rectGraphics.drawPolygon( drawnPoly );
+            }
+          } else {
+            drawnPoly = [
+              xStartPos, rectY,
+              xStartPos + xEndPos - xStartPos, rectY,
+              xStartPos + xEndPos - xStartPos, rectY + rectHeight,
+              xStartPos, rectY + rectHeight
+            ];
+
+            tile.rectGraphics.drawPolygon(drawnPoly);
+          }
 
           if (!this.drawnRects[zoomLevel])
             this.drawnRects[zoomLevel] = {}
 
-          this.drawnRects[zoomLevel][td.uid] = [xStartPos, rectY, xEndPos - xStartPos, rectHeight, 
+          this.drawnRects[zoomLevel][td.uid] = [drawnPoly,
             {
               start: txStart,
               end: txEnd,
@@ -274,7 +302,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           if (i >= MAX_TEXTS) { return; }
 
           if (!tile.texts[geneName]) {
-            // console.log('skipping', geneName, tile.texts);
             continue;
           }
 
@@ -342,7 +369,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     return min;
   }
-  
+
   maxVisibleValue() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
@@ -562,14 +589,17 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         output.appendChild(gTile);
 
         if (this.drawnRects[zoomLevel] && td.uid in this.drawnRects[zoomLevel]) {
-          let rect = this.drawnRects[zoomLevel][td.uid];
+          let rect = this.drawnRects[zoomLevel][td.uid][0];
 
-          let r = document.createElement('rect');
-          r.setAttribute('x', rect[0]);
-          r.setAttribute('y', rect[1]);
-          r.setAttribute('width', rect[2]);
-          r.setAttribute('height', rect[3]);
+          let r = document.createElement('path');
 
+          let d = `M ${rect[0]} ${rect[1]}`
+
+          for (let i = 2; i < rect.length; i+= 2) {
+            d += ` L ${rect[i]} ${rect[i+1]}`;
+          }
+
+          r.setAttribute('d', d);
           r.setAttribute('fill',  this.options.fillColor ? this.options.fillColor : 'blue')
           r.setAttribute('opacity', 0.3);
 
@@ -609,28 +639,17 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       const visibleRects = Object.values(this.drawnRects[zoomLevel]);
 
       for (let i = 0; i < visibleRects.length; i++) {
-        const rect = visibleRects[i];
-        const rectStart = this._xScale(rect[4].start);
-        const rectEnd = this._xScale(rect[4].end);
+        const point = [trackX, trackY];
+        const rect = visibleRects[i][0].slice(0);
+        let newArr = [];
+        while (rect.length) newArr.push(rect.splice(0,2));
 
-        if ((rectStart - MOUSEOVER_NEAR_LIMIT) < trackX 
-          && trackX < (rectEnd + MOUSEOVER_NEAR_LIMIT)) {
+        const pc = classifyPoint(newArr, point);
 
-          if (rect[1] < trackY && trackY < (rect[1] + rect[3])) {
+        if (pc == -1) {
+          parts = visibleRects[i][1].value.fields.slice(3);
 
-            // calculate how far away the cursor was from this
-            // rectangle
-            let closestLeft = Math.max(0, rectStart - trackX)
-            let closestRight = Math.max(0, trackX - rectEnd)
-            let distance = Math.max(closestLeft, closestRight);
-
-            if (distance < closestDistance) {
-              parts = visibleRects[i][4].value.fields.slice(3);
-
-              closestDistance = distance;
-              closestText = parts.join(" ");
-            }
-          }
+          return parts.join(" ");
         }
       }
     }

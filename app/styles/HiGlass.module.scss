@@ -2,6 +2,10 @@
   position: relative;
 }
 
+.higlass-dark-theme {
+  background: black;
+}
+
 .higlass-canvas {
   position: absolute;
   width: 100%;
@@ -9,8 +13,7 @@
 }
 
 .higlass-drawing-surface {
-  position: absolute;
-  opacity: 0;
+  position: relative;
 }
 
 .higlass-svg {
