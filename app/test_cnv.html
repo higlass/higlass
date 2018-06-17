@@ -20,9 +20,9 @@
   <div style=" display: flex; height: 100% ">
     <div style="width: 50%">
       <h3>List of CNVs</h3>
-      <ul id="sv-list">
+      <div id="sv-list">
 
-      </ul>
+      </div>
     </div>
 
     <div 
@@ -31,7 +31,7 @@
     </div>
   </div>
 </body>
-<script src='https://unpkg.com/higlass@1.0.1/dist/scripts/hglib.js'>
+<script src='hglib.js'>
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js"></script>
 <script>
@@ -123,27 +123,7 @@
                 ],
                 "position": "center"
               },
-              {
-                "name": "K562_regions.tsv.multires.db",
-                "server": "http://test1.resgen.io/api/v1",
-                "tilesetUid": "WvGX-d_iTxWFiP47H2qQtQ",
-                "uid": "W8E0HpZdRF6tk-IUT5W7Lw",
-                "type": "2d-rectangle-domains",
-                "height": 457,
-                "position": "center",
-                "options": {
-                  "minSquareSize": 5,
-                  "labelColor": "black",
-                  "labelPosition": "hidden",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "rectangleDomainFillColor": "grey",
-                  "rectangleDomainStrokeColor": "black",
-                  "rectangleDomainOpacity": 0.6,
-                  "name": "K562_regions.tsv.multires.db"
-                },
-                "width": 515
-              },
+              
               {
                 "name": "Chromosome Grid",
                 "created": "2017-06-06T17:03:01.273116Z",
@@ -187,143 +167,6 @@
         "chromInfoId": "hg19",
         "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
       }
-    },
-    {
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-      "uid": "YFsuh_3LSouL-_GaY9d7Xg",
-      "initialXDomain": [
-        -458058948.1763164,
-        3509921751.782502
-      ],
-      "initialYDomain": [
-        -237553139.73315394,
-        3283548180.424477
-      ],
-      "tracks": {
-        "top": [
-          {
-            "name": "Chromosome Axis",
-            "created": "2017-06-06T17:03:01.273116Z",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
-            "uid": "AhtKA-llRZuJ6kNW8h6g3g",
-            "type": "horizontal-chromosome-labels",
-            "options": {},
-            "width": 515,
-            "height": 30,
-            "position": "top"
-          }
-        ],
-        "left": [
-          {
-            "name": "Chromosome Axis",
-            "created": "2017-06-06T17:03:01.273116Z",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
-            "uid": "XoDgys-mS-mG9GUUd3iQhA",
-            "type": "vertical-chromosome-labels",
-            "options": {},
-            "width": 20,
-            "height": 457,
-            "position": "left"
-          }
-        ],
-        "center": [
-          {
-            "uid": "Ihzcos--SWij8O7wPpjI5A",
-            "type": "combined",
-            "contents": [
-              {
-                "name": "Rao et al. (2014) K562 MboI (allreps) 1kb",
-                "created": "2017-02-03T03:32:35.710182Z",
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "QvdMEvccQuOxKTEjrVL3wA",
-                "uid": "V4GTUC_jTGiqp5B5q3VI3g",
-                "type": "heatmap",
-                "options": {
-                  "labelPosition": "bottomRight",
-                  "colorRange": [
-                    "white",
-                    "rgba(245,166,35,1.0)",
-                    "rgba(208,2,27,1.0)",
-                    "black"
-                  ],
-                  "maxZoom": null,
-                  "colorbarPosition": "topRight",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "heatmapValueScaling": "log",
-                  "name": "Rao et al. (2014) K562 MboI (allreps) 1kb",
-                  "scaleStartPercent": "0.00000",
-                  "scaleEndPercent": "1.00000"
-                },
-                "width": 515,
-                "height": 457,
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
-                "position": "center"
-              },
-              {
-                "uid": "QcfbDgBSQlKNEnGoTmOWNw",
-                "type": "viewport-projection-center",
-                "fromViewUid": "view1",
-                "options": {
-                  "projectionFillColor": "#777",
-                  "projectionStrokeColor": "#777",
-                  "projectionFillOpacity": 0.3,
-                  "projectionStrokeOpacity": 0.7,
-                  "strokeWidth": 13
-                },
-                "name": "Viewport Projection",
-                "position": "center",
-                "width": 515,
-                "height": 457
-              },
-              {
-                "name": "Chromosome Grid",
-                "created": "2017-06-06T17:03:01.273116Z",
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
-                "uid": "XbYPwIByR5-XhhaFZBuIfg",
-                "type": "2d-chromosome-grid",
-                "options": {
-                  "lineStrokeWidth": 1,
-                  "lineStrokeColor": "grey"
-                },
-                "position": "center"
-              }
-            ],
-            "position": "center",
-            "options": {},
-            "width": 515,
-            "height": 457
-          }
-        ],
-        "bottom": [],
-        "right": [],
-        "whole": []
-      },
-      "layout": {
-        "w": 12,
-        "h": 7,
-        "x": 0,
-        "y": 7,
-        "i": "YFsuh_3LSouL-_GaY9d7Xg",
-        "moved": false,
-        "static": false
-      },
-      "genomePositionSearchBoxVisible": true,
-      "genomePositionSearchBox": {
-        "autocompleteServer": "http://higlass.io/api/v1",
-        "chromInfoServer": "http://higlass.io/api/v1",
-        "visible": true,
-        "chromInfoId": "hg19",
-        "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
-      }
     }
   ],
   "zoomLocks": {
@@ -354,45 +197,75 @@
 hglib.ChromosomeInfo(testViewConfig.views[0].chromInfoPath, function(chromInfo) {
     console.log('chromInfo:', chromInfo);
   d3.tsv('//s3.amazonaws.com/pkerp/public/cnv-explorer/7eb0f792-858f-45d1-a908-125b02ea1506.consensus.20170119.somatic.cna.annotated.txt', function(error, data)  {
-    var svs = d3.select('#sv-list')
-      .selectAll('li')
-      .data(data)
+    var divs = d3.select('#sv-list')
+      .selectAll('div')
+      .data(data.slice(0,5))
       .enter()
-      .append('li')
       .append('a')
-      .text(function(d) {
-        return "chr" + d.chromosome + " " + d.start + " " + d.end + " " + d.total_cn; 
-      })
       .style('cursor', 'pointer')
       .on('click', function(d) {
           console.log('d:', d);
         var absStart = chromInfo.chrPositions['chr' + d.chromosome].pos + +d.start;
         var absEnd = chromInfo.chrPositions['chr' + d.chromosome].pos + +d.end;
+        var padding = (absEnd + absStart) / 4
 
         console.log('absStart:', absStart);
 
-          /*
-        var region1Parts = d.region1.split('_');
-        var from1 = +region1Parts[0];
-        var to1 = +region1Parts[1];
-
-        var region2Parts = d.region2.split('_');
-        var chrom2 = d.chrom2;
-        var from2 = +region2Parts[0];
-        var to2 = +region2Parts[1];
-
-        var width = (to1 - from1);
-        var padding = 40*width;
-        */
-
           console.log('goto');
         window.hgApi.zoomTo('view1', 
-          absStart, absEnd,
-          absStart, absEnd,
+          absStart - padding, absEnd - padding,
+          absStart - padding, absEnd - padding,
           1000);
-      });
+      })
+      .append('div')
+      .style("display", "flex")
+      .style("justify-content", "space-around")
+
+    var svs = divs
+      .append('div')
+      .style("width", "200px")
+      .style("display", "flex")
+      .style("align-items", "center")
+      .text(function(d) {
+        return "chr" + d.chromosome + " " + d.start + " " + d.end + " " + d.total_cn; 
+      })
+
+    // create a template viewconfig
+    // replace the initial x and y domains with this item's
+    // position
+    var hgDivs = divs.append('div')
+      .style('height', '100px')
+      .style('width', '100px')
+          .attr('id', (function(d,i) {
+              return "cnv-" + i;
+          }))
+      .each(function(d,i) {
+        var templateJson = JSON.parse(JSON.stringify(testViewConfig));
+          templateJson.hideHeader = true;
+          templateJson.editable = false;
+          templateJson.zoomFixed = true;
+          templateJson.views[0].tracks.top = [];
+          templateJson.views[0].tracks.left = [];
+          templateJson.views[0].tracks.center[0].contents[0].options.colorbarPosition = 'hidden';
+          templateJson.views[0].tracks.center[0].contents[0].options.labelPosition = 'hidden';
+        var absStart = chromInfo.chrPositions['chr' + d.chromosome].pos + +d.start;
+        var absEnd = chromInfo.chrPositions['chr' + d.chromosome].pos + +d.end;
+          templateJson.views[0].initialXDomain = [absStart, absEnd];
+          templateJson.views[0].initialYDomain = [absStart, absEnd];
+            hglib.viewer(
+                document.getElementById('cnv-' + i),
+             templateJson,
+                { 
+                    bounded: true,
+                    renderer: 'canvas'
+                }
+                );
+        });
+      ;
 
       window.hgApi.on('location', function(data) {
+        console.log('data.xDomain:', data.xDomain);
+
         const fromX = data.xDomain[0];
         const toX = data.xDomain[1];
 
@@ -411,7 +284,7 @@ hglib.ChromosomeInfo(testViewConfig.views[0].chromInfoPath, function(chromInfo) 
 
         visibleSvs.style('background', 'yellow');
 
-        //console.log('data:', data);
+        // console.log('data:', data);
       }, 'view1');
     ;
   });
