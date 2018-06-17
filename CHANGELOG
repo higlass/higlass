@@ -1,6 +1,7 @@
 v1.0.2
 
 - Fix mouseover error when trackrenderer hasn't been initialized yet
+- Added zoomFixed option to the top level of the viewconf
 
 v1.0.1 (2018-06-14)
 
