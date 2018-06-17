@@ -1,3 +1,8 @@
+v1.0.2
+
+- Use transpiled version of `mixwith.js`
+- Add options to change the background of the label and colorbar
+
 v1.0.0-alpha.12
 
 - Fixed long loading bug on zoomed in genes
