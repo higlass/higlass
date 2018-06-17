@@ -131,11 +131,17 @@ HiGlass exposes the following event, which one can subscribe to via this method:
 
   hgv.on(eventName, callback, viewId, callbackId)
 
-**location:** Returns a BEDPE array of the current view port.
+**location:** Returns an object describing the visible region
 
 .. code-block:: javascript
 
-  ["chr1", 229372197, "chrM", 16571, "chr1", 1, "chrM", 16571]
+    {
+        xDomain: [1347750580.3773856, 1948723324.787681],
+        xRange: [0, 346],
+        yDomain: [1856870481.5391564, 2407472678.0075483],
+        yRange: [0, 317]
+    }
+
 
 **rangeSelection:** Returns a BED- (1D) or BEDPE (1d) array of the selected data and genomic range (if chrom-sizes are available)
 

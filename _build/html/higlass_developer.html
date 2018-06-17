@@ -145,8 +145,13 @@ to each other.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="nx">eventName</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">viewId</span><span class="p">,</span> <span class="nx">callbackId</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>location:</strong> Returns a BEDPE array of the current view port.</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">229372197</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">]</span>
+<p><strong>location:</strong> Returns an object describing the visible region</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nx">xDomain</span><span class="o">:</span> <span class="p">[</span><span class="mf">1347750580.3773856</span><span class="p">,</span> <span class="mf">1948723324.787681</span><span class="p">],</span>
+    <span class="nx">xRange</span><span class="o">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">346</span><span class="p">],</span>
+    <span class="nx">yDomain</span><span class="o">:</span> <span class="p">[</span><span class="mf">1856870481.5391564</span><span class="p">,</span> <span class="mf">2407472678.0075483</span><span class="p">],</span>
+    <span class="nx">yRange</span><span class="o">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">317</span><span class="p">]</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p><strong>rangeSelection:</strong> Returns a BED- (1D) or BEDPE (1d) array of the selected data and genomic range (if chrom-sizes are available)</p>
