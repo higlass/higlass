@@ -271,7 +271,7 @@ class PixiTrack extends Track {
       opacity = 0;
       color = 'white';
     }
-    
+
     const hexColor = colorToHex(color);
     graphics.beginFill(hexColor, opacity);
 
@@ -291,16 +291,12 @@ class PixiTrack extends Track {
       return;
     }
 
-    if (this.options.labelBackgroundOpacity) {
-      graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity);
-    } else {
-      // default to some label background opacity
-      graphics.beginFill(0xFFFFFF, 0.5);
-    }
-
-    const stroke = colorToHex(
-      this.options.labelColor ? this.options.labelColor : 'black',
+    graphics.beginFill(
+      colorToHex(this.options.labelBackgroundColor || 'white'),
+      +this.options.labelBackgroundOpacity || 0.5
     );
+
+    const stroke = colorToHex(this.options.labelColor || 'black');
     const labelBackgroundMargin = 2;
 
     // we can't draw a label if there's no space
