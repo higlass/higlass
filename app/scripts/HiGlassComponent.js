@@ -335,17 +335,34 @@ class HiGlassComponent extends React.Component {
       }
     });
 
-    this.pixiRenderer = PIXI.autoDetectRenderer(
-      this.state.width,
-      this.state.height,
-      {
-        view: this.canvasElement,
-        antialias: true,
-        transparent: true,
-        resolution: 2,
-        autoResize: true,
-      }
-    );
+    const rendererOptions = 
+        {
+          view: this.canvasElement,
+          antialias: true,
+          transparent: true,
+          resolution: 2,
+          autoResize: true,
+        }
+
+    if (this.props.options.renderer == 'webgl') {
+      this.pixiRenderer = new PIXI.WebGLRenderer(
+        this.state.width,
+        this.state.height,
+        rendererOptions
+      );
+    } else if (this.props.options.renderer == 'canvas') {
+      this.pixiRenderer = new PIXI.CanvasRenderer(
+        this.state.width,
+        this.state.height,
+        rendererOptions
+      );
+    } else {
+      this.pixiRenderer = PIXI.autoDetectRenderer(
+        this.state.width,
+        this.state.height,
+        rendererOptions
+      );
+    }
 
     // PIXI.RESOLUTION=2;
     this.fitPixiToParentContainer();
@@ -3097,9 +3114,10 @@ class HiGlassComponent extends React.Component {
     // the right width
     if (this.mounted) {
       this.tiledAreas = dictValues(this.state.views).map((view) => {
-        const zoomFixed = typeof view.zoomFixed !== 'undefined'
+        let zoomFixed = typeof view.zoomFixed !== 'undefined'
           ? view.zoomFixed
           : this.props.zoomFixed;
+        zoomFixed = zoomFixed | this.props.viewConfig.zoomFixed;
 
         // only show the add track menu for the tiled plot it was selected for
         const addTrackPositionMenuPosition =
