@@ -56,9 +56,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         rows = segmentsToRows(segments);
         // console.log('rows', rows);
       } else {
-        rows = tile.tileData.map(x => {
+        rows = [tile.tileData.map(x => {
           return {value: x,};
-        });
+        })];
       }
 
       tile.rows = rows;
@@ -122,10 +122,11 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   drawTile(tile) {
     if (this.options && this.options.valueColumn) {
-      if (this.valueScale)
+      if (this.valueScale) {
         // there might no be a value scale if no valueColumn
-        // was specified
+        // was specified 
         this.drawAxis(this.valueScale);
+      }
     }
   }
 
@@ -178,11 +179,13 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       /**
        * These intervals come with some y-value that we want to plot
        */
+
+      // makeValueScale returns [scale, pseudocount]
       this.valueScale = this.makeValueScale(
         this.minVisibleValue(),
         this.calculateMedianVisibleValue(),
         this.maxVisibleValue()
-      );
+      )[0];
     }
 
     if (tile.tileData && tile.tileData.length) {
