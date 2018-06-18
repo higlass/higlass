@@ -29,14 +29,28 @@
 </script>
 <script>
 
-const testViewConfig = {
-    "editable": false,
-    "trackSourceServers": ["/api/v1"],
-    "exportViewUrl": "https://vcg-higlass.rc.fas.harvard.edu/api/v1/viewconfs/",
-    "views": [{
-      "uid": "0",
-      "zoomFixed": true,
-      "chromInfoPath": "https://vcg-higlass.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=J2IoKaXJSG-5bH1pITTtTg",
+ var testViewConfig =
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1",
+  ],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        7595655.0000270605,
+        2507738795.9999733
+      ],
+      "initialYDomain": [
+        770998140.8015373,
+        1744336310.1984634
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": false,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "center": [{
           "uid": "0.4",

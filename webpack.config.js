@@ -18,13 +18,14 @@ module.exports = {
     poll: 1000,
     ignored: /node_modules/,
   },
+  devtool: 'cheap-source-map',
   devServer: {
     contentBase: [
-      path.resolve(__dirname, ''),
       path.resolve(__dirname, 'app'),
-    ]
+      path.resolve(__dirname, 'node_modules'),
+    ],
+    publicPath: '/'
   },
-  devtool: 'cheap-source-map',
   output: {
     path: `${__dirname}/build`,
     publicPath: '/',

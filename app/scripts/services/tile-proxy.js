@@ -256,6 +256,21 @@ export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
   );
 };
 
+export const calculateResolution = (tilesetInfo, zoomLevel) => {
+  if (tilesetInfo.resolutions) {
+    const sortedResolutions = tilesetInfo.resolutions.map(x => +x).sort((a, b) => b - a);
+    const resolution = sortedResolutions[zoomLevel];
+
+    return resolution;
+  }
+
+  const maxWidth = tilesetInfo.max_width;
+  const binsPerDimension = +tilesetInfo.bins_per_dimension;
+  const resolution = maxWidth / ((2 ** zoomLevel) * binsPerDimension);
+
+  return resolution;
+}
+
 /**
  * Calculate the current zoom level.
  */
@@ -356,8 +371,10 @@ export const calculateTiles = (
 };
 
 export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
-  if (tilesetInfo.resolutions)
-    return tilesetInfo.resolutions[zoomLevel] * binsPerTile;
+  if (tilesetInfo.resolutions) {
+    const sortedResolutions = tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
+    return sortedResolutions[zoomLevel] * binsPerTile;
+  }
   return tilesetInfo.max_width / (2 ** zoomLevel)
 };
 
@@ -440,11 +457,13 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
  * @param valueScaleDomain: The domain of the scale (the range is always [254,0])
  * @param colorScale: a 255 x 4 rgba array used as a color scale
  * @param synchronous: Render this tile synchronously or pass it on to the
+ * @param ignoreUpperRight: If this is a tile along the diagonal and there will be mirrored tiles present
+ *    ignore the upper right values
  * threadpool
  */
 export const tileDataToPixData = (
   tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished,
-synchronous=false) => {
+synchronous=false, ignoreUpperRight) => {
   const tileData = tile.tileData;
 
   if  (!tileData.dense) {
@@ -472,7 +491,6 @@ synchronous=false) => {
 
   // comment this and uncomment the code afterwards to enable threading
 
-
   if (true) {
     const pixData = workerSetPix(
       tileData.dense.length,
@@ -481,6 +499,7 @@ synchronous=false) => {
       valueScaleDomain,
       pseudocount,
       colorScale,
+      ignoreUpperRight
     );
 
     finished({pixData});
@@ -547,6 +566,7 @@ function json(url, callback) {
 
 
 const api = {
+  calculateResolution,
   calculateTileAndPosInTile,
   calculateTiles,
   calculateTilesFromResolution,

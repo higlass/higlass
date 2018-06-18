@@ -1,7 +1,7 @@
 import { chromInfoBisector } from './';
 
 const absToChr = (absPosition, chromInfo) => {
-  if (!chromInfo.cumPositions.length) {
+  if (!chromInfo || !chromInfo.cumPositions || !chromInfo.cumPositions.length) {
     return null;
   }
 

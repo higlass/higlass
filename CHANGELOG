@@ -1,4 +1,43 @@
-develop (2018-01-??)
+v1.0.2
+
+- Fix mouseover error when trackrenderer hasn't been initialized yet
+- Added zoomFixed option to the top level of the viewconf
+- Use transpiled version of `mixwith.js`
+- Add options to change the background of the label and colorbar
+
+v1.0.1 (2018-06-14)
+
+- Fixed background export in SVG
+- Turned off line mouseover by default
+
+v1.0.0-alpha.12
+
+- Fixed long loading bug on zoomed in genes
+
+v1.0.0-alpha.11
+
+- Fixed gene stretching issues
+
+v1.0.0-alpha.10
+
+- Fixed background rendering after resizing
+- Fixed viewconf export link (use state.viewconf vs props.viewconf)
+
+v1.0.0-alpha.9
+
+- Fixed lock value scales
+
+v1.0.0-alpha.8
+
+- Fixed tooltip scrollbar appearance
+- Fixed context menu appearing issue
+
+v1.0.0-alpha.7
+
+- Fixed scrolling bug when multiple higlass components are on a single page
+- Fixed hover bug in combined tracks
+
+v1.0.0-alpha
 
 - Added triangles to genes
 - Preliminary authentication support

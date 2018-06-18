@@ -68,6 +68,7 @@ export const TRACKS_INFO = [
     orientation: '2d',
     thumbnail: svg2DHeatmapIcon,
     defaultOptions: {
+      backgroundColor: '#eeeeee',
       labelPosition: 'bottomRight',
       colorRange: [ // corresponding to the fall colormap
         'white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'
@@ -82,6 +83,7 @@ export const TRACKS_INFO = [
       showTooltip: false,
     },
     availableOptions: [
+      'backgroundColor',
       'labelPosition',
       'labelColor',
       'labelTextOpacity',
@@ -107,6 +109,7 @@ export const TRACKS_INFO = [
     orientation: '1d-horizontal',
     thumbnail: svg2DHeatmapIcon,
     defaultOptions: {
+      backgroundColor: '#eeeeee',
       labelPosition: 'bottomRight',
       labelColor: 'black',
       colorRange: [ // corresponding to the fall colormap
@@ -117,6 +120,7 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
     },
     availableOptions: [
+      'backgroundColor',
       'labelPosition',
       'labelColor',
       'labelTextOpacity',
@@ -183,6 +187,7 @@ export const TRACKS_INFO = [
       'trackBorderColor',
       'trackType',
       'showMousePosition',
+      'showTooltip',
       'mousePositionColor',
     ],
     defaultOptions: {
@@ -196,7 +201,8 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       labelTextOpacity: 0.4,
       showMousePosition: false,
-      mousePositionColor: '#999999'
+      mousePositionColor: '#999999',
+      showTooltip: false,
     },
   },
   {
@@ -246,6 +252,7 @@ export const TRACKS_INFO = [
       'trackBorderWidth',
       'trackBorderColor',
       'showMousePosition',
+      'showTooltip',
       'mousePositionColor',
     ],
     defaultOptions: {
@@ -259,6 +266,7 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       labelTextOpacity: 0.4,
       showMousePosition: false,
+      showTooltip: false,
       mousePositionColor: '#999999'
     },
   },

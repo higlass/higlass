@@ -335,17 +335,34 @@ class HiGlassComponent extends React.Component {
       }
     });
 
-    this.pixiRenderer = PIXI.autoDetectRenderer(
-      this.state.width,
-      this.state.height,
-      {
-        view: this.canvasElement,
-        antialias: true,
-        transparent: true,
-        resolution: 2,
-        autoResize: true,
-      }
-    );
+    const rendererOptions = 
+        {
+          view: this.canvasElement,
+          antialias: true,
+          transparent: true,
+          resolution: 2,
+          autoResize: true,
+        }
+
+    if (this.props.options.renderer == 'webgl') {
+      this.pixiRenderer = new PIXI.WebGLRenderer(
+        this.state.width,
+        this.state.height,
+        rendererOptions
+      );
+    } else if (this.props.options.renderer == 'canvas') {
+      this.pixiRenderer = new PIXI.CanvasRenderer(
+        this.state.width,
+        this.state.height,
+        rendererOptions
+      );
+    } else {
+      this.pixiRenderer = PIXI.autoDetectRenderer(
+        this.state.width,
+        this.state.height,
+        rendererOptions
+      );
+    }
 
     // PIXI.RESOLUTION=2;
     this.fitPixiToParentContainer();
@@ -574,6 +591,7 @@ class HiGlassComponent extends React.Component {
     this.updateRowHeight();
     this.fitPixiToParentContainer();
     this.refreshView(LONG_DRAG_TIMEOUT);
+    this.resizeHandler();
   }
 
   onBreakpointChange(breakpoint) {
@@ -2296,7 +2314,7 @@ class HiGlassComponent extends React.Component {
   }
 
   handleExportViewsAsLink(
-    url = this.props.viewConfig.exportViewUrl,
+    url = this.state.viewConfig.exportViewUrl,
     fromApi = false
   ) {
     this.width = this.element.clientWidth;
@@ -2308,8 +2326,6 @@ class HiGlassComponent extends React.Component {
     });
 
     const port = window.location.port === '' ? '' : `:${window.location.port}`;
-    console.log('viewconfig:', this.props.viewConfig.exportViewUrl);
-    console.log('url:', url);
 
     const req = fetch(
       url,
@@ -2323,15 +2339,19 @@ class HiGlassComponent extends React.Component {
         body: `{"viewconf":${this.getViewsAsString()}}`
       }
     )
-      .then(res => {
-        return res.json()
+      .then( response => {
+        if (!response.ok) { throw response }
+        return response.json()
+      })
+      .catch(err => {
+        console.log('err:', err)
       })
       .then(_json => {
         return {
           id: _json.uid,
           url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
-          };
-      });
+        };
+      })
 
     if (!fromApi) {
       req
@@ -2978,6 +2998,7 @@ class HiGlassComponent extends React.Component {
       isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText,
       track: hoveredTrack,
       origEvt: e,
+      sourceUid: this.uid,
       hoveredTracks,
     };
 
@@ -3036,7 +3057,7 @@ class HiGlassComponent extends React.Component {
       .classed('.mouseover-marker', true)
     */
 
-    mouseOverDiv.style('position', 'absolute')
+    mouseOverDiv.style('position', 'fixed')
       .style('left', `${mousePos[0]}px`)
       .style('top', `${mousePos[1]}px`);
 
@@ -3100,9 +3121,10 @@ class HiGlassComponent extends React.Component {
     // the right width
     if (this.mounted) {
       this.tiledAreas = dictValues(this.state.views).map((view) => {
-        const zoomFixed = typeof view.zoomFixed !== 'undefined'
+        let zoomFixed = typeof view.zoomFixed !== 'undefined'
           ? view.zoomFixed
           : this.props.zoomFixed;
+        zoomFixed = zoomFixed | this.props.viewConfig.zoomFixed;
 
         // only show the add track menu for the tiled plot it was selected for
         const addTrackPositionMenuPosition =

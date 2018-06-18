@@ -368,7 +368,12 @@ class TiledPlot extends React.Component {
     track.transforms = tilesetInfo.transforms;
     track.header = tilesetInfo.header;
     track.binsPerDimension = tilesetInfo.bins_per_dimension;
-    track.maxZoom = tilesetInfo.max_zoom;
+    if (tilesetInfo.resolutions) {
+      track.maxZoom = tilesetInfo.resolutions.length-1;
+      track.resolutions = tilesetInfo.resolutions;
+    } else {
+      track.maxZoom = tilesetInfo.max_zoom;
+    }
     track.coordSystem = tilesetInfo.coordSystem;
   }
 
@@ -973,6 +978,9 @@ class TiledPlot extends React.Component {
    */
   listTracksAtPosition(x, y, isReturnTrackObj = false) {
     const trackObjectsAtPosition = [];
+
+    if (!this.trackRenderer)
+      return;
 
     for (const uid in this.trackRenderer.trackDefObjects) {
       const trackObj = this.trackRenderer.trackDefObjects[uid].trackObject;
@@ -1603,6 +1611,7 @@ class TiledPlot extends React.Component {
     const galleryTracks = (
       <div
         key="galleryTracksDiv"
+        className="gallery-track-container"
         style={{
           left: this.leftWidthNoGallery + this.props.horizontalMargin,
           top: this.topHeightNoGallery + this.props.verticalMargin,
@@ -1803,6 +1812,7 @@ class TiledPlot extends React.Component {
             // we want to remove the mouseOverOverlayUid so that next time we try
             // to choose an overlay track, the previously selected one isn't
             // automatically highlighted
+
             onClick={() => {
               this.setState({ mouseOverOverlayUid: null });
               this.props.chooseTrackHandler(pTrack.track.uid);
@@ -1818,6 +1828,7 @@ class TiledPlot extends React.Component {
               background,
               opacity: 0.4,
               border,
+              zIndex: 1
             }}
           />
         );

@@ -2,6 +2,7 @@ import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
 import * as PIXI from 'pixi.js';
+import {parseChromsizesRows} from './ChromosomeInfo.js';
 
 import DataFetcher from './DataFetcher';
 import PixiTrack from './PixiTrack';
@@ -100,6 +101,10 @@ class TiledPixiTrack extends PixiTrack {
     this.dataFetcher.tilesetInfo((tilesetInfo) => {
       this.tilesetInfo = tilesetInfo;
 
+      if (this.tilesetInfo.chromsizes) {
+        this.chromInfo = parseChromsizesRows(this.tilesetInfo.chromsizes);
+      }
+
       if ('error' in this.tilesetInfo) {
         // no tileset info for this track
         console.warn(
@@ -115,7 +120,10 @@ class TiledPixiTrack extends PixiTrack {
       }
 
       // console.log('tilesetInfo:', this.tilesetInfo);
-      this.maxZoom = +this.tilesetInfo.max_zoom;
+      if (this.tilesetInfo.resolutions)
+        this.maxZoom = this.tilesetInfo.resolutions.length;
+      else
+        this.maxZoom = +this.tilesetInfo.max_zoom;
 
       if (this.options && this.options.maxZoom) {
         if (this.options.maxZoom >= 0) {
@@ -155,7 +163,10 @@ class TiledPixiTrack extends PixiTrack {
 
     if (!this.tilesetInfo) { return; }
 
-    this.maxZoom = +this.tilesetInfo.max_zoom;
+    if (this.tilesetInfo.resolutions)
+      this.maxZoom = this.tilesetInfo.resolutions.length;
+    else
+      this.maxZoom = +this.tilesetInfo.max_zoom;
 
     if (this.options && this.options.maxZoom) {
       if (this.options.maxZoom >= 0) {

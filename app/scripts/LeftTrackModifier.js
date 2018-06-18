@@ -115,7 +115,7 @@ class LeftTrackModifier {
   }
 
   getMouseOverHtml(trackX, trackY) {
-    return this.originTrack.getMouseOverHtml(trackY, trackX);
+    return this.originalTrack.getMouseOverHtml(trackY, trackX);
   }
 
   draw() {

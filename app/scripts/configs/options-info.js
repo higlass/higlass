@@ -96,8 +96,10 @@ export const OPTIONS_INFO = {
     name: 'Background Color',
     inlineOptions: {
       white: { name: 'White', value: 'white' },
-      grey: { name: 'Grey', value: 'grey' },
+      lightGrey: { name: 'Light Grey', value: '#eeeeee' },
+      grey: { name: 'Grey', value: '#cccccc' },
       black: { name: 'Black', value: 'black' },
+      transparent: { name: 'Transparent', value: 'transparent' },
     },
   },
   colorScale: {
@@ -324,6 +326,16 @@ export const OPTIONS_INFO = {
     },
   },
 
+  colorbarBackgroundColor: {
+    name: 'Colorbar Background Color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
+
+  colorbarBackgroundOpacity: {
+    name: 'Colorbar Background Opacity',
+    inlineOptions: OPACITY_OPTIONS,
+  },
+
   /*
   colorbarOrientation: {
     name: 'Colorbar Orientation',
@@ -367,6 +379,11 @@ export const OPTIONS_INFO = {
   labelTextOpacity: {
     name: 'Label Text Opacity',
     inlineOptions: OPACITY_OPTIONS,
+  },
+
+  labelBackgroundColor: {
+    name: 'Label Background Color',
+    inlineOptions: AVAILABLE_COLORS,
   },
 
   labelBackgroundOpacity: {
@@ -546,20 +563,26 @@ export const OPTIONS_INFO = {
           const binsPerDimension = track.binsPerDimension;
           const maxZoom = track.maxZoom;
 
-          const resolution = track.maxWidth / (2 ** i * track.binsPerDimension);
+          let maxResolutionSize = 1;
+          let resolution = 1;
 
-          const maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+          if (track.resolutions) {
+            const sortedResolutions = track.resolutions.map(x => +x).sort((a,b) => b-a)
+            maxResolutionSize = sortedResolutions[0];
+            resolution = sortedResolutions[i];
+          } else {
+            resolution = track.maxWidth / (2 ** i * track.binsPerDimension);
+            maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+          }
 
           const pp = precisionPrefix(maxResolutionSize, resolution);
           const f = formatPrefix(`.${pp}`, resolution);
           const formattedResolution = f(resolution);
 
-          // const formattedName =  ;
           inlineOptions.push({
             name: formattedResolution,
             value: i.toString(),
           });
-
           //
         }
 
@@ -574,6 +597,7 @@ export const OPTIONS_INFO = {
       none: { name: 'None', value: null },
     },
     generateOptions: (track) => {
+      console.log('track:', track);
       if (!track.header)
         return [];
 

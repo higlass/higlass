@@ -24,6 +24,13 @@ class TilesetFinder extends React.Component {
     this.localTracks = TRACKS_INFO
       .filter(x => x.local && !x.hidden)
 
+    this.augmentedTracksInfo = TRACKS_INFO;
+    if (window.higlassTracksByType) {
+      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
+        this.augmentedTracksInfo.push(window.higlassTracksByType[pluginTrackType].config);
+      });
+    }
+
     if (props.datatype)
       this.localTracks = this.localTracks.filter(x => x.datatype[0] == props.datatype);
     else
@@ -106,10 +113,11 @@ class TilesetFinder extends React.Component {
     if (this.props.datatype) {
       datatypesQuery = `dt=${this.props.datatype}`;
     } else {
-      const datatypes = new Set(TRACKS_INFO
+      const datatypes = new Set([].concat.apply([], this.augmentedTracksInfo
         .filter(x => x.datatype)
         .filter(x => x.orientation == this.props.orientation)
-        .map(x => x.datatype));
+        .map(x => x.datatype)));
+
 
       datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
     }

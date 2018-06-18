@@ -110,6 +110,7 @@ class PixiTrack extends Track {
 
     // for drawing the track label (often its name)
     this.pBorder = new PIXI.Graphics();
+    this.pBackground = new PIXI.Graphics();
     this.pLabel = new PIXI.Graphics();
     this.pMobile = new PIXI.Graphics();
     this.pAxis = new PIXI.Graphics();
@@ -121,6 +122,7 @@ class PixiTrack extends Track {
 
     this.pBase.addChild(this.pMasked);
 
+    this.pMasked.addChild(this.pBackground);
     this.pMasked.addChild(this.pMain);
     this.pMasked.addChild(this.pMask);
     this.pMasked.addChild(this.pMobile);
@@ -173,6 +175,8 @@ class PixiTrack extends Track {
     this.position = newPosition;
 
     this.drawBorder();
+    this.drawLabel();
+    this.drawBackground();
     this.setMask(this.position, this.dimensions);
   }
 
@@ -180,6 +184,8 @@ class PixiTrack extends Track {
     super.setDimensions(newDimensions);
 
     this.drawBorder();
+    this.drawLabel();
+    this.drawBackground();
     this.setMask(this.position, this.dimensions);
   }
 
@@ -249,6 +255,29 @@ class PixiTrack extends Track {
     }
   }
 
+  drawBackground() {
+    const graphics = this.pBackground;
+
+    graphics.clear();
+
+    if (!this.options || !this.options.backgroundColor) {
+      return;
+    }
+
+    let opacity = 1;
+    let color = this.options.backgroundColor;
+
+    if (this.options.backgroundColor == 'transparent') {
+      opacity = 0;
+      color = 'white';
+    }
+
+    const hexColor = colorToHex(color);
+    graphics.beginFill(hexColor, opacity);
+
+    graphics.drawRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1]);
+  }
+
   drawLabel() {
     if (!this.labelText) return;
 
@@ -262,16 +291,12 @@ class PixiTrack extends Track {
       return;
     }
 
-    if (this.options.labelBackgroundOpacity) {
-      graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity);
-    } else {
-      // default to some label background opacity
-      graphics.beginFill(0xFFFFFF, 0.5);
-    }
-
-    const stroke = colorToHex(
-      this.options.labelColor ? this.options.labelColor : 'black',
+    graphics.beginFill(
+      colorToHex(this.options.labelBackgroundColor || 'white'),
+      +this.options.labelBackgroundOpacity || 0.5
     );
+
+    const stroke = colorToHex(this.options.labelColor || 'black');
     const labelBackgroundMargin = 2;
 
     // we can't draw a label if there's no space
@@ -450,6 +475,7 @@ class PixiTrack extends Track {
   rerender(options) {
     this.options = options;
     this.draw();
+    this.drawBackground();
     this.drawLabel();
     this.drawBorder();
   }
@@ -473,10 +499,22 @@ class PixiTrack extends Track {
    */
   exportSVG() {
     const gBase = document.createElement('g');
+    const rectBackground = document.createElement('rect');
+
+    rectBackground.setAttribute('x', `${this.position[0]}`);
+    rectBackground.setAttribute('y', `${this.position[1]}`);
+    rectBackground.setAttribute('width', `${this.dimensions[0]}`);
+    rectBackground.setAttribute('height', `${this.dimensions[1]}`);
+
+    if (this.options && this.options.backgroundColor)
+      rectBackground.setAttribute('fill', this.options.backgroundColor);
+    else
+      rectBackground.setAttribute('fill', 'transparent');
 
     const gClipped = document.createElement('g');
     gClipped.setAttribute('class', 'g-clipped');
     gBase.appendChild(gClipped);
+    gClipped.appendChild(rectBackground);
 
     const gTrack = document.createElement('g');
     gClipped.setAttribute('class', 'g-track');

@@ -294,7 +294,9 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       xStartPos, yPos + lineHeight
     ]);
 
-    for (let j = xStartPos; j < xStartPos + width; j += 2 * GENE_RECT_HEIGHT) {
+    for (let j = Math.max(this.position[0], xStartPos); 
+      j < Math.min(this.position[0] + this.dimensions[0], xStartPos + width);
+      j += 2 * GENE_RECT_HEIGHT) {
       if (strand === '+') {
         poly = [j, yExonPos + (GENE_RECT_HEIGHT - TRIANGLE_HEIGHT) / 2,
             j + TRIANGLE_HEIGHT / 2, yExonPos + GENE_RECT_HEIGHT / 2, 
@@ -343,6 +345,25 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.allTexts = [];
     this.allBoxes = [];
 
+    // go through once to make sure the tiles aren't being
+    // excessively stretched
+    for (const fetchedTileId in this.fetchedTiles) {
+      const tile = this.fetchedTiles[fetchedTileId];
+
+      if (!tile.drawnAtScale) {
+        // tile hasn't been drawn properly because we likely got some
+        // bogus data from the server
+        // console.warn("Tile without drawnAtScale:", tile);
+        continue;
+      }
+
+      const tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) / (this._xScale.domain()[1] - this._xScale.domain()[0]);
+
+      if (tileK > 3) {
+        this.renderTile(tile);
+      }
+    }
+
     for (const fetchedTileId in this.fetchedTiles) {
       const tile = this.fetchedTiles[fetchedTileId];
 
@@ -357,7 +378,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
       const tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) / (this._xScale.domain()[1] - this._xScale.domain()[0]);
       const newRange = this._xScale.domain().map(tile.drawnAtScale);
-
+      
       const posOffset = newRange[0];
       tile.rectGraphics.scale.x = tileK;
       tile.rectGraphics.position.x = -posOffset * tileK;
