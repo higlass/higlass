@@ -1,5 +1,5 @@
 import {scaleLinear} from 'd3-scale';
-import {SearchField} from '../app/scripts/search_field.js';
+import SearchField from '../app/scripts/SearchField.js';
 import {ChromosomeInfo} from '../app/scripts/ChromosomeInfo.js';
 
 import {chromInfoHg19} from './chrom_info.js';
