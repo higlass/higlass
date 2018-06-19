@@ -880,8 +880,8 @@ class HiGlassComponent extends React.Component {
   createSVGString() {
     let svgString = vkbeautify.xml(new XMLSerializer().serializeToString(this.createSVG()));
 
-    svgString = svgString.replace("\<a0:", "\<");
-    svgString = svgString.replace("\</a0:", "\<\/");
+    svgString = svgString.replace(/\<a0:/g, "\<");
+    svgString = svgString.replace(/\<\/a0:/g, "\<\/");
 
     return svgString;
   }
