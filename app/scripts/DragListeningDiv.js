@@ -8,6 +8,9 @@ import {
   DEFAULT_TRACKS_FOR_DATATYPE,
 } from './configs';
 
+// Styles
+import '../styles/DragListeningDiv.module.scss';
+
 export default class DragListeningDiv extends React.Component {
   constructor(props) {
     super(props);
@@ -22,6 +25,8 @@ export default class DragListeningDiv extends React.Component {
     // and red otherwise
     const background = this.props.enabled ?
       (this.state.dragOnTop ? 'green' : 'blue') : 'red';
+
+    const styleNames = this.props.enabled ? 'drag-listening-div-active' : '';
 
     return (
       <div
@@ -55,6 +60,7 @@ export default class DragListeningDiv extends React.Component {
           background,
           opacity: 0.6,
         }, this.props.style)}
+        styleName={styleNames}
       />
     );
   }
