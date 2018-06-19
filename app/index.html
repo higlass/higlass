@@ -52,373 +52,69 @@
       "genomePositionSearchBoxVisible": false,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
-        "top": [
-          {
-            "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig",
-            "created": "2017-02-03T17:46:58.349271Z",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
-            "uid": "WCGssXHmQTGOkdRgweYKkQ",
-            "type": "horizontal-bar",
+        "center": [{
+          "uid": "0.4",
+          "type": "combined",
+          "contents": [{
+            "uid": "0.5",
+            "server": "https://vcg-higlass.rc.fas.harvard.edu/api/v1",
+            "tilesetUid": "J2IoKaXJSG-5bH1pITTtTg",
+            "type": "heatmap",
             "options": {
-              "labelColor": "black",
-              "labelPosition": "topLeft",
-              "axisPositionHorizontal": "right",
-              "barFillColor": "darkgreen",
-              "valueScaling": "linear",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "labelTextOpacity": 0.4,
-              "barOpacity": 1,
-              "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig"
-            },
-            "width": 20,
-            "height": 20,
-            "position": "top"
-          },
-          {
-            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-            "created": "2017-02-03T00:28:06.909619Z",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-            "uid": "YLnxkBvQQxG-UNLxP9wR8g",
-            "type": "horizontal-heatmap",
-            "options": {
-              "labelPosition": "bottomRight",
-              "labelColor": "black",
-              "colorRange": [
-                "white",
-                "rgba(245,166,35,1.0)",
-                "rgba(208,2,27,1.0)",
-                "black"
-              ],
-              "maxZoom": null,
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
-            },
-            "width": 1179,
-            "height": 85,
-            "transforms": [
-              {
-                "name": "ICE",
-                "value": "weight"
-              }
-            ],
-            "position": "top"
-          },
-          {
-            "name": "Gene Annotations (hg19)",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "uid": "BEEMEjU7QCa2krDO9C0yOQ",
-            "type": "horizontal-gene-annotations",
-            "options": {
-              "labelPosition": "outerTop",
-              "name": "Gene Annotations (hg19)",
-              "labelColor": "black",
-              "plusStrandColor": "blue",
-              "minusStrandColor": "red",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black"
-            },
-            "width": 1179,
-            "height": 60,
-            "position": "top"
-          },
-          {
-            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
-            "type": "horizontal-line",
-            "options": {
-              "labelColor": "red",
-              "labelPosition": "outerLeft",
-              "axisPositionHorizontal": "right",
-              "lineStrokeColor": "blue",
-              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-              "valueScaling": "log",
-              "lineStrokeWidth": 1,
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "labelTextOpacity": 0.4
-            },
-            "width": 1179,
-            "height": 20,
-            "position": "top",
-            "uid": "RzZlBf58Q7WanbmbZRv-lA"
-          },
-          {
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "type": "horizontal-chromosome-labels",
-            "position": "top",
-            "name": "Chromosome Labels (hg19)",
-            "height": 30,
-            "uid": "I1QUF22JQJuJ38j9PS4iqw",
-            "options": {},
-            "width": 1179
-          }
-        ],
-        "left": [
-          {
-            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
-            "type": "vertical-line",
-            "options": {
-              "labelColor": "red",
-              "labelPosition": "outerLeft",
-              "axisPositionHorizontal": "right",
-              "lineStrokeColor": "blue",
-              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-              "valueScaling": "log",
-              "axisPositionVertical": "top",
-              "lineStrokeWidth": 1,
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "labelTextOpacity": 0.4
-            },
-            "width": 20,
-            "position": "left",
-            "uid": "Y8NKUAFQR1SYGrYJMbEoeQ",
-            "height": 459
-          },
-          {
-            "type": "vertical-gene-annotations",
-            "width": 60,
-            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "server": "http://higlass.io/api/v1",
-            "position": "left",
-            "name": "Gene Annotations (hg19)",
-            "options": {
-              "labelPosition": "bottomRight",
-              "name": "Gene Annotations (hg19)",
-              "labelColor": "black",
-              "plusStrandColor": "blue",
-              "minusStrandColor": "red",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black"
-            },
-            "uid": "OgnAEKSHRaG-gR1RqPOuBQ",
-            "height": 459
-          },
-          {
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "type": "vertical-chromosome-labels",
-            "position": "left",
-            "name": "Chromosome Labels (hg19)",
-            "width": 30,
-            "uid": "a-mFiHnBQ8uuI6UG3USWVA",
-            "options": {},
-            "height": 459
-          }
-        ],
-        "center": [
-          {
-            "uid": "c1",
-            "type": "combined",
-            "height": 459,
-            "contents": [
-              {
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-                "type": "heatmap",
-                "position": "center",
-                "options": {
-                  "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "#F5A623",
-                    "#D0021B"
-                  ],
-                  "colorbarPosition": "topRight",
-                  "colorbarLabelsPosition": "outside",
-                  "maxZoom": null,
-                  "labelPosition": "bottomLeft",
-                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "heatmapValueScaling": "log",
-                  "scaleStartPercent": "0.00000",
-                  "scaleEndPercent": "1.00000"
-                },
-                "uid": "heatmap1",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
-                "width": 1179,
-                "height": 459
-              },
-              {
-                "type": "2d-chromosome-grid",
-                "local": true,
-                "orientation": "2d",
-                "name": "Chromosome Grid (hg19)",
-                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-                "thumbnail": null,
-                "server": "",
-                "tilesetUid": "TIlwFtqxTX-ndtM7Y9k1bw",
-                "uid": "LUVqXXu2QYiO8XURIwyUyA",
-                "options": {
-                  "lineStrokeWidth": 1,
-                  "lineStrokeColor": "grey"
-                },
-                "position": "center",
-                "width": 1179,
-                "height": 459
-              }
-            ],
-            "position": "center",
-            "options": {},
-            "width": 1179
-          }
-        ],
-        "right": [
-          {
-            "type": "vertical-gene-annotations",
-            "width": 60,
-            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "server": "http://higlass.io/api/v1",
-            "name": "Gene Annotations (hg19)",
-            "options": {
-              "labelPosition": "outerBottom",
-              "name": "Gene Annotations (hg19)",
-              "labelColor": "black",
-              "plusStrandColor": "blue",
-              "minusStrandColor": "red",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black"
-            },
-            "position": "right",
-            "uid": "Fbw5wZb8Soe1JgQQ2Z6EoA",
-            "height": 459
-          },
-          {
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "type": "vertical-chromosome-labels",
-            "name": "Chromosome Labels (hg19)",
-            "width": 30,
-            "options": {
-              "labelPosition": "outerBottom",
-              "name": "Chromosome labels"
-            },
-            "position": "right",
-            "uid": "VdplA_MaRuqvlKvJaCKpGA",
-            "height": 459
-          }
-        ],
-        "bottom": [
-          {
-            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
-            "type": "horizontal-line",
-            "options": {
-              "labelPosition": "outerLeft",
-              "axisPositionHorizontal": "right",
-              "lineStrokeColor": "blue",
-              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-              "valueScaling": "log",
-              "labelColor": "black",
-              "lineStrokeWidth": 1,
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "labelTextOpacity": 0.4
-            },
-            "width": 1179,
-            "height": 50,
-            "position": "bottom",
-            "uid": "NlTkTBTCS--0qpB9Kn_ohw"
-          }
-        ]
+              "colorRange": ["#FFFFFF", "#ffed1a", "#ff5500", "#540000"]
+            }
+          }]
+        }]
       },
       "layout": {
-        "w": 12,
+        "w": 6,
         "h": 12,
         "x": 0,
-        "y": 0,
-        "i": "aa",
-        "moved": false,
-        "static": false
-      },
-      "genomePositionSearchBox": {
-        "autocompleteServer": "http://higlass.io/api/v1",
-        "chromInfoServer": "http://higlass.io/api/v1",
-        "visible": true,
-        "chromInfoId": "hg19",
-        "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
+        "y": 0
       }
-    }
-  ],
-  "zoomLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
-  },
-  "locationLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
-  },
-  "valueScaleLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
-  }
-}
- ;
+    }, {
+      "uid": "1",
+      "zoomFixed": true,
+      "chromInfoPath": "https://vcg-higlass.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=J2IoKaXJSG-5bH1pITTtTg",
+      "tracks": {
+        "center": [{
+          "uid": "1.4",
+          "type": "combined",
+          "contents": [{
+            "uid": "1.5",
+            "server": "https://vcg-higlass.rc.fas.harvard.edu/api/v1",
+            "tilesetUid": "J2IoKaXJSG-5bH1pITTtTg",
+            "type": "heatmap",
+            "options": {
+              "colorRange": ["#FFFFFF", "#ffed1a", "#ff5500", "#540000"]
+            }
+          }]
+        }]
+      },
+      "layout": {
+        "w": 6,
+        "h": 12,
+        "x": 6,
+        "y": 0
+      }
+    }]
+  };
 
-    window.hgApi = hglib.viewer(
-        document.getElementById('development-demo'),
-        testViewConfig,
-        { bounded: true },
-    );
+const api = hglib.viewer(
+  document.getElementById('development-demo'),
+  testViewConfig,
+  { bounded: true },
+);
 
-    window.hgApi.on('view', function (viewConfig) {
-      console.log('View Config changed');
-    });
+console.log(api.getLocation('0').xDomain);
 
-    window.hgApi.setAuthHeader('hello');
+setTimeout(() => {
+  console.log(api.getLocation('0').xDomain);
+}, 1000);
 
-    // setTimeout(function () {
-    //   // Go to PTEN
-    //   window.hgApi.goTo(
-    //     testViewConfig.views[0].uid,
-    //     'chr10',
-    //     89596071,
-    //     89758810,
-    //     'chr10',
-    //     89596071,
-    //     89758810,
-    //     true,
-    //     10000
-    //   );
-    // }, 3000);
-
-    // setTimeout(function () {
-    //   // Go to Chr1 without animation
-    //   window.hgApi.goTo(
-    //     testViewConfig.views[0].uid,
-    //     'chr1',
-    //     0,
-    //     89758810,
-    //     'chr1',
-    //     0,
-    //     89758810
-    //   );
-    // }, 11000);
-
-
-</script>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-77756807-1', 'auto');
-    ga('send', 'pageview');
+setTimeout(() => {
+  console.log(api.getLocation('0').xDomain[0]);
+}, 5000);
 
 </script>
 </html>
