@@ -1276,6 +1276,16 @@ class TrackRenderer extends React.Component {
           () => this.currentProps.onValueScaleChanged(track.uid),
         );
 
+      case 'vertical-bar':
+        return new LeftTrackModifier(new BarTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+          () => this.currentProps.onValueScaleChanged(track.uid),
+        ));
+
       case 'horizontal-divergent-bar':
         return new DivergentBarTrack(
           this.pStage,
@@ -1286,15 +1296,17 @@ class TrackRenderer extends React.Component {
           () => this.currentProps.onValueScaleChanged(track.uid),
         );
 
-      case 'vertical-bar':
-        return new LeftTrackModifier(new BarTrack(
-          this.pStage,
-          dataConfig,
-          handleTilesetInfoReceived,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-          () => this.currentProps.onValueScaleChanged(track.uid),
-        ));
+      case 'vertical-divergent-bar':
+        return new LeftTrackModifier(
+          new DivergentBarTrack(
+            this.pStage,
+            dataConfig,
+            handleTilesetInfoReceived,
+            track.options,
+            () => this.currentProps.onNewTilesLoaded(track.uid),
+            () => this.currentProps.onValueScaleChanged(track.uid),
+          )
+        );
 
       case 'horizontal-1d-tiles':
         return new IdHorizontal1DTiledPixiTrack(

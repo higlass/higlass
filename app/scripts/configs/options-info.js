@@ -597,6 +597,7 @@ export const OPTIONS_INFO = {
       none: { name: 'None', value: null },
     },
     generateOptions: (track) => {
+      console.log('track:', track);
       if (!track.header)
         return [];
 

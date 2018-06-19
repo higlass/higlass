@@ -227,7 +227,7 @@ const api = function api(context) {
       return {
         xDomain: self.xScales[viewId].domain(),
         yDomain: self.yScales[viewId].domain()
-      }
+      };
     },
 
     zoomTo(
