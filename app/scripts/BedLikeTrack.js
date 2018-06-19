@@ -101,6 +101,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     const zoomLevel = +tile.tileId.split('.')[0];
     tile.rectGraphics.clear();
     tile.rendered = false;
+    console.log('destroying:', tile);
 
     if (tile.tileData && tile.tileData.length) {
       tile.tileData.forEach((td, i) => {
@@ -118,6 +119,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // any rectangles that were listed under 'drawnRects' don't get
     // ignored
     // this.rerender(this.options);
+    this.rerender(this.options);
   }
 
   drawTile(tile) {
@@ -148,6 +150,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   renderTile(tile) {
+    console.log('renderTile');
     let maxRows = 1;
 
     for (const tile1 of this.visibleAndFetchedTiles()) {
@@ -198,9 +201,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       for (let j = 0; j < rows.length; j++) {
         for (let i = 0; i < rows[j].length; i++) {
           const td = rows[j][i].value;
-
           // don't draw anything that has already been drawn
-          if (zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel]) return;
+          console.log('pre dr:', zoomLevel, this.drawnRects[zoomLevel], tile );
+          if (zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel]) {
+            console.log('skipping:', td);
+            return;
+          }
 
           const geneInfo = td.fields;
           // the returned positions are chromosome-based and they need to
@@ -277,6 +283,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             tile.rectGraphics.drawPolygon(drawnPoly);
           }
 
+          console.log('drawing:', td.uid, this.drawnRects);
           if (!this.drawnRects[zoomLevel])
             this.drawnRects[zoomLevel] = {}
 
