@@ -3,6 +3,8 @@ import { event, mouse, select } from 'd3-selection';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { getDarkTheme } from './services/is-dark-theme';
+
 import '../styles/DraggableTrack.css';
 
 class DraggableDiv extends React.Component {
@@ -265,6 +267,8 @@ class DraggableDiv extends React.Component {
   /* ------------------------------ Rendering ------------------------------- */
 
   render() {
+    let dragColor = getDarkTheme() ? 'white' : 'black';
+
     const divStyle = {
       top: this.state.top,
       left: this.state.left,
@@ -285,8 +289,8 @@ class DraggableDiv extends React.Component {
       width: resizeWidth,
       opacity: 0.2,
       height: 4,
-      borderBottom: '1px solid black',
-      borderTop: '1px solid black',
+      borderBottom: `1px solid ${dragColor}`,
+      borderTop: `1px solid ${dragColor}`,
       cursor: 'row-resize'
     };
     const topStyle = {
@@ -296,8 +300,8 @@ class DraggableDiv extends React.Component {
       width: resizeWidth,
       opacity: 0.2,
       height: 4,
-      borderBottom: '1px solid black',
-      borderTop: '1px solid black',
+      borderBottom: `1px solid ${dragColor}`,
+      borderTop: `1px solid ${dragColor}`,
       cursor: 'row-resize'
     };
     const leftStyle = {
@@ -307,8 +311,8 @@ class DraggableDiv extends React.Component {
       opacity: 0.2,
       width: 4,
       height: resizeHeight,
-      borderLeft: '1px solid black',
-      borderRight: '1px solid black',
+      borderLeft: `1px solid ${dragColor}`,
+      borderRight: `1px solid ${dragColor}`,
       cursor: 'col-resize'
     };
     const rightStyle = {
@@ -318,8 +322,8 @@ class DraggableDiv extends React.Component {
       top: this.state.height / 2 - resizeHeight / 2,
       width: 4,
       height: resizeHeight,
-      borderLeft: '1px solid black',
-      borderRight: '1px solid black',
+      borderLeft: `1px solid ${dragColor}`,
+      borderRight: `1px solid ${dragColor}`,
       cursor: 'col-resize'
     };
 

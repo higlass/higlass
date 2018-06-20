@@ -1,7 +1,11 @@
 v1.0.2
 
+- Added vertical divergent bar tracks
+- Fixed export in SVG
 - Fix mouseover error when trackrenderer hasn't been initialized yet
 - Added zoomFixed option to the top level of the viewconf
+- Use transpiled version of `mixwith.js`
+- Add options to change the background of the label and colorbar
 
 v1.0.1 (2018-06-14)
 

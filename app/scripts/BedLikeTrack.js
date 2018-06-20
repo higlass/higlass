@@ -52,9 +52,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         rows = segmentsToRows(segments);
         // console.log('rows', rows);
       } else {
-        rows = tile.tileData.map(x => {
+        rows = [tile.tileData.map(x => {
           return {value: x,};
-        });
+        })];
       }
 
       tile.rows = rows;
@@ -101,8 +101,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     if (tile.tileData && tile.tileData.length) {
       tile.tileData.forEach((td, i) => {
 
-        if (this.drawnRects[zoomLevel] && this.drawnRects[zoomLevel][td.uid])
-          delete this.drawnRects[zoomLevel][td.uid];
+        if (this.drawnRects[zoomLevel] && this.drawnRects[zoomLevel][td.uid]) {
+          if (this.drawnRects[zoomLevel][td.uid][2] == tile.tileId) {
+            // this was the tile that drew that rectangle
+            delete this.drawnRects[zoomLevel][td.uid];
+          }
+        }
       });
     }
   }
@@ -114,14 +118,17 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // any rectangles that were listed under 'drawnRects' don't get
     // ignored
     // this.rerender(this.options);
+    if (toRemoveIds.length > 0)
+      this.rerender(this.options);
   }
 
   drawTile(tile) {
     if (this.options && this.options.valueColumn) {
-      if (this.valueScale)
+      if (this.valueScale) {
         // there might no be a value scale if no valueColumn
-        // was specified
+        // was specified 
         this.drawAxis(this.valueScale);
+      }
     }
   }
 
@@ -177,11 +184,13 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       /**
        * These intervals come with some y-value that we want to plot
        */
+
+      // makeValueScale returns [scale, pseudocount]
       this.valueScale = this.makeValueScale(
         this.minVisibleValue(),
         this.calculateMedianVisibleValue(),
         this.maxVisibleValue()
-      );
+      )[0];
     }
 
     if (tile.tileData && tile.tileData.length) {
@@ -194,19 +203,13 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       for (let j = 0; j < rows.length; j++) {
         for (let i = 0; i < rows[j].length; i++) {
           const td = rows[j][i].value;
-
           // don't draw anything that has already been drawn
           if (zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel]) {
-            return;
+            // indicate that this tile wants to draw this rectangle again
+            //this.drawnRects[zoomLevel][td.uid][2].add(tile.tileId);
+            //console.log('skipping:', td);
+            continue;
           }
-
-            /* 
-          if (!(zoomLevel in this.drawnRects)) {
-            this.drawnRects[zoomLevel] = {}
-          }
-
-          this.drawnRects[zoomLevel][td.uid] = true;
-          */
 
           const geneInfo = td.fields;
           // the returned positions are chromosome-based and they need to
@@ -283,6 +286,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             tile.rectGraphics.drawPolygon(drawnPoly);
           }
 
+          //console.log('drawing:', td.uid, tile.tileId, td.xStart, td.xEnd);
           if (!this.drawnRects[zoomLevel])
             this.drawnRects[zoomLevel] = {}
 
@@ -291,7 +295,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
               start: txStart,
               end: txEnd,
               value: td,
-            }];
+            },
+          tile.tileId];
 
           if (!tile.texts) {
             // tile probably hasn't been initialized yet
@@ -436,7 +441,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
       // hasn't been rendered yet
       if (!tile.drawnAtScale) {
-        // console.log('not rendered');
         return;
       }
 
@@ -580,6 +584,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     track.appendChild(output);
 
     for (let tile of this.visibleAndFetchedTiles()) {
+      if (!tile.tileData.length)
+        continue;
+
       tile.tileData.forEach((td, i) => {
         const zoomLevel = +tile.tileId.split('.')[0];
 

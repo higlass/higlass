@@ -326,6 +326,16 @@ export const OPTIONS_INFO = {
     },
   },
 
+  colorbarBackgroundColor: {
+    name: 'Colorbar Background Color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
+
+  colorbarBackgroundOpacity: {
+    name: 'Colorbar Background Opacity',
+    inlineOptions: OPACITY_OPTIONS,
+  },
+
   /*
   colorbarOrientation: {
     name: 'Colorbar Orientation',
@@ -369,6 +379,11 @@ export const OPTIONS_INFO = {
   labelTextOpacity: {
     name: 'Label Text Opacity',
     inlineOptions: OPACITY_OPTIONS,
+  },
+
+  labelBackgroundColor: {
+    name: 'Label Background Color',
+    inlineOptions: AVAILABLE_COLORS,
   },
 
   labelBackgroundOpacity: {
@@ -582,6 +597,7 @@ export const OPTIONS_INFO = {
       none: { name: 'None', value: null },
     },
     generateOptions: (track) => {
+      console.log('track:', track);
       if (!track.header)
         return [];
 

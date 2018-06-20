@@ -6,6 +6,7 @@ import '../styles/ContextMenu.module.scss';
 
 const ContextMenuItem = props => (
   <div
+    data-menu-item-for={typeof props.children === 'string' ? props.children : null}
     onClick={e => props.onClick(e)}
     onMouseEnter={e => props.onMouseEnter(e)}
     onMouseLeave={e => props.onMouseLeave(e)}
@@ -13,9 +14,7 @@ const ContextMenuItem = props => (
     styleName="context-menu-item"
     tabIndex={0}
   >
-    <span
-      styleName="context-menu-span"
-    >
+    <span styleName="context-menu-span">
       {props.children}
     </span>
   </div>
