@@ -7,3 +7,4 @@ _build/html/.doctrees
 _build/html/clodius.html
 notebooks/.ipynb_checkpoints/
 .DS_Store
+.idea/
