@@ -11,7 +11,7 @@ Creating an inline HiGlass component
 
   const hgv = hglib.viewer(element, config, options);
 
-Create a new HiGlass component within a web page. This initializes a
+Create a new HiGlass viewer within a web page. This initializes a
 HiGlassComponent inside the element ``element`` with a viewconfig passed in as
 ``config``. If ``config`` is a string, it is interpreted as a url and used to
 try to fetch a remote viewconfig.
