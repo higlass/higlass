@@ -234,6 +234,151 @@ describe('Simple HiGlassComponent', () => {
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
 
+  describe('Track Resizing', () => {
+    const atm = null;
+
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:600px;height:600px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: true }}
+        viewConfig={oneTrackConfig}
+      />,
+        { attachTo: div });
+
+      waitForTilesLoaded(hgc, done);
+    });
+
+    it('Resizes one track ', (done) => {
+      const tp = getTiledPlot(hgc, 'aa');
+
+      tp.handleResizeTrack('line1', 289, 49);
+
+      // tp.setState(tp.state);
+      waitForTilesLoaded(hgc, done);
+    });
+
+    it('Ensures that the track object was resized', (done) => {
+      const track = getTrackObject(hgc, 'aa', 'line1');
+
+      expect(track.dimensions[1]).to.eql(49);
+
+      waitForTilesLoaded(hgc, done);
+    });
+  });
+
+  describe('Track type menu tests', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={oneTrackConfig}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc, done);
+
+      // visual check that the heatmap track config menu is moved
+      // to the left
+    });
+
+    it ("Opens the track type menu", (done) => {
+      const clickPosition = {
+        bottom : 85,
+        height : 28,
+        left : 246,
+        right : 274,
+        top : 57,
+        width : 28,
+        x : 246,
+        y : 57,
+      }
+      const uid = 'line1';
+
+
+      hgc.instance().tiledPlots.aa.handleConfigTrackMenuOpened(uid, clickPosition);
+      let cftm = hgc.instance().tiledPlots.aa.configTrackMenu;
+
+
+      const subMenuRect = {
+        bottom : 88,
+        height : 27,
+        left : 250,
+        right : 547.984375,
+        top : 61,
+        width : 297.984375,
+        x : 250,
+        y : 61,
+      }
+
+      const series = invalidTrackConfig.views[0].tracks.top;
+
+      console.log('series:', series);
+      // get the object corresponding to the series
+      cftm.handleItemMouseEnterWithRect(subMenuRect, series[0]);
+      let seriesObj = cftm.seriesListMenu;
+
+      const position = {left: 127.03125, top: 84};
+      const bbox = {
+        bottom : 104,
+        height : 20,
+        left : 131.03125,
+        right : 246,
+        top : 84,
+        width : 114.96875,
+        x : 131.03125,
+        y : 84,
+      };
+
+      console.log('hi');
+      const validSeries = oneTrackConfig.views[0].tracks.top[0];
+      let trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, validSeries);
+
+      expect(trackTypeItems.props.menuItems).to.have.property('horizontal-line');
+      expect(trackTypeItems.props.menuItems).to.have.property('horizontal-point');
+
+      done();
+    });
+
+    it ("Changes the track type", (done) => {
+      // make sure that this doesn't error
+      hgc.instance().tiledPlots.aa.handleChangeTrackType('line1', 'horizontal-bar');
+
+      // make sure that the uid of the top track has been changed
+      expect(hgc.instance().state.views.aa.tracks.top[0].uid).to.not.eql('line1');
+      expect(hgc.instance().state.views.aa.tracks.top[0].type).to.eql('horizontal-bar');
+
+      done();
+    });
+  });
+
   describe('Track addition and removal', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
@@ -299,7 +444,6 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc, done);
     });
   });
-  return;
 
   describe('1D viewport projection', () => {
     let vpUid = null;
@@ -1856,7 +2000,6 @@ describe('Simple HiGlassComponent', () => {
       expect(range2[1]).to.eql(3000);
 
       [range1, range2] = gpsb.searchField.searchPosition('chr1:1-1000 & chr1:2001-3000');
-      console.log('range1:', range1, 'range2:', range2);
 
       expect(range1[0]).to.eql(1);
       expect(range1[1]).to.eql(1000);
@@ -1959,51 +2102,6 @@ describe('Simple HiGlassComponent', () => {
     });
   });
 
-  describe('Track Resizing', () => {
-    const atm = null;
-
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:600px;height:600px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: true }}
-        viewConfig={oneTrackConfig}
-      />,
-        { attachTo: div });
-
-      waitForTilesLoaded(hgc, done);
-    });
-
-    it('Resizes one track ', (done) => {
-      const tp = getTiledPlot(hgc, 'aa');
-
-      tp.handleResizeTrack('line1', 289, 49);
-
-      // tp.setState(tp.state);
-      waitForTilesLoaded(hgc, done);
-    });
-
-    it('Ensures that the track object was resized', (done) => {
-      const track = getTrackObject(hgc, 'aa', 'line1');
-
-      expect(track.dimensions[1]).to.eql(49);
-
-      waitForTilesLoaded(hgc, done);
-    });
-  });
 
   describe('Track positioning', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -2398,99 +2496,6 @@ describe('Simple HiGlassComponent', () => {
     });
   });
 
-  describe('Track type menu tests', () => {
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: false }}
-        viewConfig={oneTrackConfig}
-      />, { attachTo: div });
-
-      hgc.update();
-      waitForTilesLoaded(hgc, done);
-
-      // visual check that the heatmap track config menu is moved
-      // to the left
-    });
-
-    it ("Opens the track type menu", (done) => {
-      const clickPosition = {
-        bottom : 85,
-        height : 28,
-        left : 246,
-        right : 274,
-        top : 57,
-        width : 28,
-        x : 246,
-        y : 57,
-      }
-      const uid = 'line1';
-
-      hgc.instance().tiledPlots.aa.handleConfigTrackMenuOpened(uid, clickPosition);
-      let cftm = hgc.instance().tiledPlots.aa.configTrackMenu;
-
-      const subMenuRect = {
-        bottom : 88,
-        height : 27,
-        left : 250,
-        right : 547.984375,
-        top : 61,
-        width : 297.984375,
-        x : 250,
-        y : 61,
-      }
-
-      const series = invalidTrackConfig.views[0].tracks.top;
-
-      // get the object corresponding to the series
-      cftm.handleItemMouseEnterWithRect(subMenuRect, series);
-      let seriesObj = cftm.seriesListMenu;
-
-      const position = {left: 127.03125, top: 84};
-      const bbox = {
-        bottom : 104,
-        height : 20,
-        left : 131.03125,
-        right : 246,
-        top : 84,
-        width : 114.96875,
-        x : 131.03125,
-        y : 84,
-      };
-
-      let trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
-
-      expect(trackTypeItems.props.menuItems).to.have.property('horizontal-line');
-      expect(trackTypeItems.props.menuItems).to.have.property('horizontal-point');
-
-      done();
-    });
-
-    it ("Changes the track type", (done) => {
-      // make sure that this doesn't error
-      hgc.instance().tiledPlots.aa.handleChangeTrackType('line1', 'horizontal-bar');
-
-      // make sure that the uid of the top track has been changed
-      expect(hgc.instance().state.views.aa.tracks.top[0].uid).to.not.eql('line1');
-      expect(hgc.instance().state.views.aa.tracks.top[0].type).to.eql('horizontal-bar');
-
-      done();
-    });
-  });
 
   describe('Check for menu clashing in the center track ', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
