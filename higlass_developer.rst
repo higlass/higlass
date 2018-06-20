@@ -38,8 +38,7 @@ GitHub repository
     { bounded: true },
   );
 
-Options
-^^^^^^^
+**Options**
 
 ``bounded: bool [default: true]``
     Don't exceed the bounds of the enclosing element.
@@ -69,30 +68,18 @@ Options
   }
     
 
-
-Reference
----------
-
-The following is a list of the public API methods:
-
-.. code-block:: javascript
-
-  const hgv = hglib.viewer(element, config, options);
-
-  hgv.setViewConfig(newViewConfig);
-  hgv.zoomToDataExtent(newViewConfig);
-  hgv.zoomTo(viewUid, start1, end1, start2, end2, animateTime = 3000);
-  hgv.activateTool(mouseTool);
-  hgv.on(event, callback, viewId, callbackId);
-  hgv.off(event, listenerId, viewId);
-  hgv.get(prop, viewId);
-  hgv.shareViewConfigAsLink(url);
-
-setViewConfig(viewConfig): Setting a view config
-------------------------------------------------
+setViewConfig
+-------------
 
 The HiGlass API can be used to set a new viewconfig. This returns a Promise
 which is fulfilled when all of the data for the view is loaded.
+
+**Parameters**
+
+``viewconfig: {...}``
+    A JSON object describing the viewconf to use.
+
+**Example**
 
 .. code-block:: javascript
 
@@ -101,12 +88,18 @@ which is fulfilled when all of the data for the view is loaded.
     // the initial set of tiles has been loaded
   });
 
-zoomToDataExtent(viewId): Zooming to show all of the data
+zoomToDataExtent: Zooming to show all of the data
 ---------------------------------------------------------
 
 One may set a view config pointing to a dataset which is either out of the
 bounds of the view, too small, or too zoomed in. To fit the data inside of
 the view, the HiGlass API exposes the  ``zoomToDataExtent`` function.
+
+**Parameters**
+
+``viewUid: string``
+    The uid of the view to zoom. The uid of a view can be found in the
+    JSON viewconf views section under ``uid``.
 
 .. code-block:: javascript
 
@@ -116,8 +109,8 @@ The passed in ``viewUid`` should refer to a view which is present. If it
 doesn't, an exception will be thrown.
 
 
-zoomTo(viewUid,start1,end1,start2,end2,animateTime): Zoom to a data location
---------------------------------------------------------------------------------
+zoomTo: Zoom to a data location
+-------------------------------
 
 Change the current view port to a certain data location.  When ``animateTime`` is
 greater than 0, animate the transition.
@@ -127,20 +120,50 @@ order to calculate "data" coordinates from chromosome coordinates. "Data"
 coordinates are simply the coordinates as if the chromosomes were placed next
 to each other.
 
+**Prototype**
+
+``zoomTo(viewUid,start1,end1,start2,end2,animateTime):``
+
+**Parameters**
+
+``viewUid: string``
+    The uid of the view to zoom. The uid of a view can be found in the
+    JSON viewconf views section under ``uid``.
+``start1: Number``
+    The left x coordinate of the region to zoom to. 
+``end1: Number``
+    The right x coordinate of the region to zoom to. 
+``start2: Number``
+    The left x coordinate of the region to zoom to. 
+``end2: Number``
+    The right x coordinate of the region to zoom to. 
+``animateTime``
+    The duration of the zoom transition in milliseconds.
+
 **Example:**
 
 .. code-block:: javascript
 
   hgv.zoomTo('v1', 1000000,1000000,2000000,2000000, 500);
 
-activateTool(mouseTool): Select a mouse tool
---------------------------------------------
+activateTool: Select a mouse tool
+---------------------------------
 
-Some tools needs conflicting mouse events such as mousedown or mousemove. To avoid complicated triggers for certain actions HiGlass supports different mouse tools for different interactions. The default mouse tool enables pan&zoom. The only other mouse tool available right now is ``select``, which lets you brush on to a track to select a range for annotating regions.
+Some tools needs conflicting mouse events such as mousedown or mousemove. To
+avoid complicated triggers for certain actions HiGlass supports different mouse
+tools for different interactions. The default mouse tool enables pan&zoom. The
+only other mouse tool available right now is ``select``, which lets you brush
+on to a track to select a range for annotating regions.
 
-.. code-block:: javascript
+**Prototype**
 
-    hgv.activateTool(mouseTool);
+activateTool(mouseTool);
+
+**Parameters**
+
+``mouseTool: string [default: '']
+    Select a mouse tool to use. Currently there only 'default' and 'select' are
+    available.
 
 **Examples:**
 
@@ -149,8 +172,8 @@ Some tools needs conflicting mouse events such as mousedown or mousemove. To avo
   hgv.activateTool('select'); // Select tool is active
   hgv.activateTool(); // Default pan&zoom tool is active
 
-on(event, callback, viewId, callbackId): Subscribe to an event
---------------------------------------------------------------
+on: Subscribe to an event
+-------------------------
 
 HiGlass exposes the following event, which one can subscribe to via this method:
 
@@ -159,11 +182,24 @@ HiGlass exposes the following event, which one can subscribe to via this method:
 - viewConfig
 - mouseMoveZoom
 
-.. code-block:: javascript
+**Prototype**
 
-  hgv.on(eventName, callback, viewId, callbackId)
+on(event, callback, viewId)
 
-**location:** Returns an object describing the visible region
+**Parameters**
+
+event: string 
+    One of the events described below
+
+callback: function
+    A callback to be called when the event occurs
+
+viewId: string
+    The view ID to listen to events.
+
+**Event types**
+
+``location:`` Returns an object describing the visible region
 
 .. code-block:: javascript
 
@@ -175,7 +211,7 @@ HiGlass exposes the following event, which one can subscribe to via this method:
     }
 
 
-**rangeSelection:** Returns a BED- (1D) or BEDPE (1d) array of the selected data and genomic range (if chrom-sizes are available)
+``rangeSelection:`` Returns a BED- (1D) or BEDPE (1d) array of the selected data and genomic range (if chrom-sizes are available)
 
 .. code-block:: javascript
 
@@ -197,9 +233,9 @@ HiGlass exposes the following event, which one can subscribe to via this method:
   // 2D or BEDPE-like array
   [["chr1", 249200621, "chr2", 50000], ["chr3", 197972430, "chr4", 50000]]
 
-**viewConfig:** Returns the current view config.
+``viewConfig:`` Returns the current view config.
 
-**mouseMoveZoom:** Returns the raw data around the mouse cursors screen location and the related genomic location.
+``mouseMoveZoom:`` Returns the raw data around the mouse cursors screen location and the related genomic location.
 
 .. code-block:: javascript
 
@@ -238,14 +274,14 @@ HiGlass exposes the following event, which one can subscribe to via this method:
   const mmz = event => console.log('Moved', event);
   hgv.on('mouseMoveZoom', mmz);
 
-off(event, listenerId, viewId): Unsubscribe from an event
+off: Unsubscribe from an event
 ---------------------------------------------------------
 
 Cancel a subscription.
 
-.. code-block:: javascript
+**Prototype**
 
-  hgv.off(eventName, listenerId, viewId)
+``off(event, listenerId, viewId)``
 
 **Examples:**
 
@@ -253,9 +289,9 @@ The variables used in the following examples are coming from the above examples 
 
 .. code-block:: javascript
 
-  hgv.off('location', locationListenerId, 'viewId1');
-  hgv.off('rangeSelection', rangeListenerId);
-  hgv.off('viewConfig', viewConfigListenerId);
+  hgv.off('location', listener, 'viewId1');
+  hgv.off('rangeSelection', rangeListener);
+  hgv.off('viewConfig', viewConfigListener);
   hgv.off('mouseMoveZoom', mmz);
 
 get(prop, viewId): Instant getter for event data
