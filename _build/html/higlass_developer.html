@@ -58,7 +58,7 @@ which tells the HiGlass component to fill all the space in the containing
 element. Note that if <code class="docutils literal"><span class="pre">bounded</span></code> is set to true, then <code class="docutils literal"><span class="pre">element</span></code> must have a
 fixed height. <code class="docutils literal"><span class="pre">callback</span></code> is used to return an api variable which can be used
 to access HiGlass events.</p>
-<p>The function returns an instance of the public API of a HiGLass component.</p>
+<p>The function returns an instance of the public API of a HiGlass component.</p>
 <p>A full example of an inline HiGlass component can be found in the <a class="reference external" href="https://github.com/hms-dbmi/higlass/blob/develop/app/api.html">HiGlass
 GitHub repository</a>.</p>
 <p><strong>Example</strong></p>
@@ -68,6 +68,34 @@ GitHub repository</a>.</p>
   <span class="p">{</span> <span class="nx">bounded</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
 <span class="p">);</span>
 </pre></div>
+</div>
+<div class="section" id="options">
+<h4>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">bounded:</span> <span class="pre">bool</span> <span class="pre">[default:</span> <span class="pre">true]</span></code></dt>
+<dd>Don’t exceed the bounds of the enclosing element.</dd>
+<dt><code class="docutils literal"><span class="pre">onViewConfLoaded:</span> <span class="pre">callback</span> <span class="pre">[default:</span> <span class="pre">null]</span></code></dt>
+<dd><p class="first">Specify a callback to be loaded when the specified viewconf is
+completely loaded. This is useful when trying calling an API
+function in quick succesion after initializing the viewer.</p>
+<p class="last">Example:</p>
+</dd>
+</dl>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="s1">&#39;http://higlass.io/api/v1/viewconfs/&#39;</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">hgv</span> <span class="o">=</span> <span class="nx">hglib</span><span class="p">.</span><span class="nx">createHgComponent</span><span class="p">(</span>
+  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;development-demo&#39;</span><span class="p">),</span>
+  <span class="nx">baseUrl</span> <span class="o">+</span> <span class="s1">&#39;?d=KeXl4zLsTP6IKZGpFckuNA&#39;</span><span class="p">,</span>
+  <span class="p">{</span>
+    <span class="nx">bounded</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">onViewConfLoaded</span><span class="o">:</span> <span class="nx">zoomTo</span>
+  <span class="p">}</span>
+<span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">zoomTo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">hgv</span><span class="p">.</span><span class="nx">zoomTo</span><span class="p">(</span><span class="s2">&quot;aa&quot;</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">,</span><span class="mi">2000000</span><span class="p">,</span><span class="mi">1000000</span><span class="p">,</span><span class="mi">2000000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="reference">

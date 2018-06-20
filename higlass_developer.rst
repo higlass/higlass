@@ -22,7 +22,7 @@ element. Note that if ``bounded`` is set to true, then ``element`` must have a
 fixed height. ``callback`` is used to return an api variable which can be used
 to access HiGlass events.
 
-The function returns an instance of the public API of a HiGLass component.
+The function returns an instance of the public API of a HiGlass component.
 
 A full example of an inline HiGlass component can be found in the `HiGlass
 GitHub repository
@@ -37,6 +37,38 @@ GitHub repository
     testViewConfig,
     { bounded: true },
   );
+
+Options
+^^^^^^^
+
+``bounded: bool [default: true]``
+    Don't exceed the bounds of the enclosing element.
+
+
+``onViewConfLoaded: callback [default: null]``
+    Specify a callback to be loaded when the specified viewconf is 
+    completely loaded. This is useful when trying calling an API
+    function in quick succesion after initializing the viewer.
+
+    Example:
+
+.. code-block:: javascript
+
+  const baseUrl = 'http://higlass.io/api/v1/viewconfs/';
+  var hgv = hglib.createHgComponent(
+    document.getElementById('development-demo'),
+    baseUrl + '?d=KeXl4zLsTP6IKZGpFckuNA',
+    {
+      bounded: true,
+      onViewConfLoaded: zoomTo
+    }
+  );
+
+  function zoomTo() {
+    hgv.zoomTo("aa", 1000000,2000000,1000000,2000000, 1000);
+  }
+    
+
 
 Reference
 ---------
