@@ -386,7 +386,7 @@ The individual datapoints should then be formatted as follows:
 
 This can be converted to a multivec file using the following command:
 
-..code-block:: bash
+.. code-block:: bash
 
     clodius convert bedfile_to_multivec \
         data.tsv \

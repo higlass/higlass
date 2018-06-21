@@ -366,13 +366,12 @@ segment1    <span class="m">10</span>  <span class="m">100</span> <span class="m
 </pre></div>
 </div>
 <p>This can be converted to a multivec file using the following command:</p>
-<p>..code-block:: bash</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>clodius convert bedfile_to_multivec </dt>
-<dd>data.tsv –chromsizes-file segments.tsv –starting-resolution 1</dd>
-</dl>
-</div></blockquote>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>clodius convert bedfile_to_multivec <span class="se">\</span>
+    data.tsv <span class="se">\</span>
+    --chromsizes-file segments.tsv <span class="se">\</span>
+    --starting-resolution <span class="m">1</span>
+</pre></div>
+</div>
 <p>The resulting output file can be ingested using <code class="docutils literal"><span class="pre">higlass-manage</span></code>:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>higlass-manage.py ingest --filetype multivec --datatype multivec data.mv5
 </pre></div>
