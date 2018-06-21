@@ -15,7 +15,8 @@ import { colorToHex, segmentsToRows } from './utils';
 const GENE_RECT_WIDTH = 1;
 const GENE_RECT_HEIGHT = 10;
 const MAX_TEXTS = 1000;
-const MAX_TILE_ENTRIES = 1000;
+const MAX_TILE_ENTRIES = 5000;
+const MIN_RECT_WIDTH = 2;
 
 class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
@@ -194,6 +195,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       )[0];
     }
 
+    let maxValue = 0;
+
     if (tile.tileData && tile.tileData.length) {
       const rows = tile.rows;
 
@@ -233,6 +236,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
           if (this.options && this.options.valueColumn) {
             // These intervals come with some y-value that we want to plot
+            const value = +geneInfo[+this.options.valueColumn-1];
+            if (value > maxValue) {
+              maxValue = value;
+            }
 
             yMiddle = this.valueScale( +geneInfo[+this.options.valueColumn-1]);
             // console.log('valueScale:', this.valueScale.domain() );
@@ -254,8 +261,18 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           const rectX = this._xScale(txMiddle) - rectHeight / 2;
           const rectY = yMiddle - rectHeight / 2;
 
-          const xStartPos = this._xScale(txStart);
-          const xEndPos = this._xScale(txEnd);
+          let xStartPos = this._xScale(txStart);
+          let xEndPos = this._xScale(txEnd);
+
+          /*
+          if (xEndPos - xStartPos < MIN_RECT_WIDTH) {
+            xStartPos -= 1;
+            xEndPos += 1;
+
+            console.log('xStartPos:', xStartPos);
+            console.log('xEndPos:', xStartPos);
+          }
+          */
           
           let drawnPoly = null;
 
@@ -367,7 +384,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           x.tileData
           .sort((a,b) => b.importance - a.importance)
           .slice(0, MAX_TILE_ENTRIES)
-          .map(y => +y.fields[+this.options.valueColumn - 1]));
+          .map(y => +y.fields[+this.options.valueColumn - 1])
+          .filter(y => !isNaN(y))
+        );
       })
     );
 
@@ -394,7 +413,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           x.tileData
           .sort((a,b) => b.importance - a.importance)
           .slice(0, MAX_TILE_ENTRIES)
-          .map(y => +y.fields[+this.options.valueColumn - 1]));
+          .map(y => +y.fields[+this.options.valueColumn - 1])
+          .filter(y => !isNaN(y))
+        ) 
       })
     );
 
