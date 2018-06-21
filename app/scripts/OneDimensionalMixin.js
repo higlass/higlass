@@ -5,22 +5,23 @@ import {colorToHex} from './utils';
 export const OneDimensionalMixin = Mixin(superclass => class extends superclass {
 
   initTile(tile) {
+    // create the tile
+    // should be overwritten by child classes
+    this.scale.minRawValue = this.minVisibleValue();
+    this.scale.maxRawValue = this.maxVisibleValue();
+
+    this.scale.minValue = this.scale.minRawValue;
+    this.scale.maxValue = this.scale.maxRawValue;
+
+    this.maxAndMin.max = this.scale.maxValue;
+    this.maxAndMin.min = this.scale.minValue;
+
     this.localColorToHexScale();
+
+    this.unFlatten(tile);
 
     tile.svgData = null;
     tile.mouseOverData = null;
-
-    this.unFlatten(tile);
-    this.maxAndMin.max = tile.maxValue;
-    this.maxAndMin.min = tile.minValue;
-
-    if (tile.matrix) {
-      // update global max and min if necessary
-      (this.maxAndMin.max === null || tile.maxValue > this.maxAndMin.max) ?
-        this.maxAndMin.max = tile.maxValue : this.maxAndMin.max;
-      (this.maxAndMin.min === null || tile.minValue > this.maxAndMin.min) ?
-        this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
-    }
 
     this.renderTile(tile);
     this.rescaleTiles();
@@ -37,22 +38,10 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
 
   updateTile(tile) {
     const visibleAndFetched = this.visibleAndFetchedTiles();
-    // reset max and min to null so previous maxes and mins don't carry over
-    this.maxAndMin = {
-      max: null,
-      min: null
-    };
 
     for (let i = 0; i < visibleAndFetched.length; i++) {
       const tile = visibleAndFetched[i];
       this.unFlatten(tile);
-      if (tile.matrix) {
-        // update global max and min if necessary
-        (this.maxAndMin.max === null || tile.maxValue > this.maxAndMin.max) ?
-          this.maxAndMin.max = tile.maxValue : this.maxAndMin.max;
-        (this.maxAndMin.min === null || tile.minValue > this.maxAndMin.min) ?
-          this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
-      }
     }
 
     this.rescaleTiles();
