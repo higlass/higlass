@@ -393,4 +393,8 @@ This can be converted to a multivec file using the following command:
         --chromsizes-file segments.tsv \
         --starting-resolution 1 
 
-The resulting output file can be viewed in HiGlass.
+The resulting output file can be ingested using ``higlass-manage``:
+
+.. code-block:: bash
+
+    higlass-manage.py ingest --filetype multivec --datatype multivec data.mv5

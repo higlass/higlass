@@ -373,7 +373,10 @@ segment1    <span class="m">10</span>  <span class="m">100</span> <span class="m
 <dd>data.tsv –chromsizes-file segments.tsv –starting-resolution 1</dd>
 </dl>
 </div></blockquote>
-<p>The resulting output file can be viewed in HiGlass.</p>
+<p>The resulting output file can be ingested using <code class="docutils literal"><span class="pre">higlass-manage</span></code>:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>higlass-manage.py ingest --filetype multivec --datatype multivec data.mv5
+</pre></div>
+</div>
 </div>
 </div>
 
