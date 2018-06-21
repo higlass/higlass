@@ -335,17 +335,34 @@ class HiGlassComponent extends React.Component {
       }
     });
 
-    this.pixiRenderer = PIXI.autoDetectRenderer(
-      this.state.width,
-      this.state.height,
-      {
-        view: this.canvasElement,
-        antialias: true,
-        transparent: true,
-        resolution: 2,
-        autoResize: true,
-      }
-    );
+    const rendererOptions = 
+        {
+          view: this.canvasElement,
+          antialias: true,
+          transparent: true,
+          resolution: 2,
+          autoResize: true,
+        }
+
+    if (this.props.options.renderer == 'webgl') {
+      this.pixiRenderer = new PIXI.WebGLRenderer(
+        this.state.width,
+        this.state.height,
+        rendererOptions
+      );
+    } else if (this.props.options.renderer == 'canvas') {
+      this.pixiRenderer = new PIXI.CanvasRenderer(
+        this.state.width,
+        this.state.height,
+        rendererOptions
+      );
+    } else {
+      this.pixiRenderer = PIXI.autoDetectRenderer(
+        this.state.width,
+        this.state.height,
+        rendererOptions
+      );
+    }
 
     // PIXI.RESOLUTION=2;
     this.fitPixiToParentContainer();
@@ -574,6 +591,7 @@ class HiGlassComponent extends React.Component {
     this.updateRowHeight();
     this.fitPixiToParentContainer();
     this.refreshView(LONG_DRAG_TIMEOUT);
+    this.resizeHandler();
   }
 
   onBreakpointChange(breakpoint) {
@@ -862,8 +880,8 @@ class HiGlassComponent extends React.Component {
   createSVGString() {
     let svgString = vkbeautify.xml(new XMLSerializer().serializeToString(this.createSVG()));
 
-    svgString = svgString.replace("\<a0:", "\<");
-    svgString = svgString.replace("\</a0:", "\<\/");
+    svgString = svgString.replace(/\<a0:/g, "\<");
+    svgString = svgString.replace(/\<\/a0:/g, "\<\/");
 
     return svgString;
   }
@@ -2356,6 +2374,9 @@ class HiGlassComponent extends React.Component {
     views[viewUid].initialXDomain = newXDomain;
     views[viewUid].initialYDomain = newYDomain;
 
+    this.xScales[viewUid] = scaleLinear().domain(newXDomain);
+    this.yScales[viewUid] = scaleLinear().domain(newYDomain);
+
     this.setState({ views });
   }
 
@@ -2715,8 +2736,9 @@ class HiGlassComponent extends React.Component {
     const views = viewConfig.views;
     let viewsByUid = {};
 
-    if (!viewConfig.views || viewConfig.views.length === 0)
+    if (!viewConfig.views || viewConfig.views.length === 0) {
       throw 'No views provided in viewConfig';
+    }
 
     views.forEach((v) => {
       fillInMinWidths(v.tracks);
@@ -2727,11 +2749,12 @@ class HiGlassComponent extends React.Component {
       viewsByUid[v.uid] = v;
 
       if (!v.initialXDomain) {
-        throw 'No initialXDomain in provided viewconf';
+        console.warn('No initialXDomain provided in the view config.');
+        v.initialXDomain = [0, 100];
+        v.zoomToDataExtentOnInit = true;
       } else {
         v.initialXDomain[0] = +v.initialXDomain[0];
         v.initialXDomain[1] = +v.initialXDomain[1];
-
       }
 
       // if there's no y domain specified just use the x domain instead
@@ -2743,10 +2766,12 @@ class HiGlassComponent extends React.Component {
         v.initialXDomain[1] = +v.initialXDomain[1];
       }
 
-      if (!this.xScales[v.uid])
+      if (!this.xScales[v.uid]) {
         this.xScales[v.uid] = scaleLinear().domain(v.initialXDomain);
-      if (!this.yScales[v.uid])
+      }
+      if (!this.yScales[v.uid]) {
         this.yScales[v.uid] = scaleLinear().domain(v.initialYDomain);
+      }
 
       // Add names to all the tracks
       let looseTracks = positionedTracksToAllTracks(v.tracks);
@@ -3096,9 +3121,10 @@ class HiGlassComponent extends React.Component {
     // the right width
     if (this.mounted) {
       this.tiledAreas = dictValues(this.state.views).map((view) => {
-        const zoomFixed = typeof view.zoomFixed !== 'undefined'
+        let zoomFixed = typeof view.zoomFixed !== 'undefined'
           ? view.zoomFixed
           : this.props.zoomFixed;
+        zoomFixed = zoomFixed | this.props.viewConfig.zoomFixed;
 
         // only show the add track menu for the tiled plot it was selected for
         const addTrackPositionMenuPosition =
@@ -3158,6 +3184,7 @@ class HiGlassComponent extends React.Component {
             xDomainLimits={view.xDomainLimits}
             yDomainLimits={view.yDomainLimits}
             zoomLimits={view.zoomLimits}
+            zoomToDataExtentOnInit={view.zoomToDataExtentOnInit}
             mouseTool={this.state.mouseTool}
             onChangeTrackType={(trackId, newType) =>
               this.handleChangeTrackType(view.uid, trackId, newType)}

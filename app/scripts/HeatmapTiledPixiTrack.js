@@ -544,7 +544,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     this.pColorbarArea.clear();
-    this.pColorbarArea.beginFill(colorToHex('white'), 0.6);
+    this.pColorbarArea.beginFill(
+      colorToHex(this.options.colorbarBackgroundColor || 'white'),
+      +this.options.colorbarBackgroundOpacity || 0.6
+    );
     this.pColorbarArea.drawRect(0, 0, colorbarAreaWidth, colorbarAreaHeight);
 
     if (!this.options) { this.options = {}; }
@@ -1195,7 +1198,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   getMouseOverHtml(trackX, trackY) {
-    if (!this.options.showTooltip) 
+    if (!this.options.showTooltip)
       return '';
 
     if (!this.tilesetInfo)
@@ -1227,7 +1230,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       positionText += '<br/>';
     }
 
-    const data = this.getVisibleData(trackX, trackY);     
+    const data = this.getVisibleData(trackX, trackY);
 
     if (this.options.heatmapValueScaling == 'log')
       if (data[0] > 0)
