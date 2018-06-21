@@ -1,4 +1,4 @@
-import { mix } from 'mixwith';
+import { mix } from './mixwith';
 
 import React from 'react';
 import PropTypes from 'prop-types';
