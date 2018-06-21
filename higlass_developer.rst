@@ -192,13 +192,13 @@ HiGlass exposes the following event, which one can subscribe to via this method:
 
 **Parameters**
 
-event: string 
+``event: string``
     One of the events described below
 
-callback: function
+``callback: function``
     A callback to be called when the event occurs
 
-viewId: string
+``viewId: string``
     The view ID to listen to events.
 
 **Event types**
