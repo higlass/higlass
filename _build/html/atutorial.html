@@ -55,39 +55,14 @@ lets you run “containers” hosting software and its dependencies</li>
 </div>
 <div class="section" id="running-higlass-locally">
 <h2>Running HiGlass Locally<a class="headerlink" href="#running-higlass-locally" title="Permalink to this headline">¶</a></h2>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
-We can start a local HiGlass instance using <code class="docutils literal"><span class="pre">higlass-manage</span></code>:</p>
+<p>We can start a local HiGlass instance using <code class="docutils literal"><span class="pre">higlass-manage</span></code>:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>higlass-manage start
 </pre></div>
 </div>
 <p>This will create what is essentially a mini virtual machine running on your
 computer. This command creates a data directory at <code class="docutils literal"><span class="pre">~/hg-data</span></code>. All of the
 ingested data data will be stored there. An alternative directory can be specified
-using the <code class="docutils literal"><span class="pre">--data-dir</span></code> parameter.
-=======
-The first step to pull the latest HiGlass Docker image from our repository and run it.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>docker stop higlass-container<span class="p">;</span>
-docker rm higlass-container<span class="p">;</span>
-
-docker pull gehlenborglab/higlass:v0.2.60 <span class="c1"># higher versions are experimental and may or may not work</span>
-
-docker run --detach <span class="se">\</span>
-       --publish <span class="m">8989</span>:80 <span class="se">\</span>
-       --volume ~/hg-data:/data <span class="se">\</span>
-       --volume ~/tmp:/tmp <span class="se">\</span>
-       --name higlass-container <span class="se">\</span>
-       gehlenborglab/higlass:v0.2.60
-</pre></div>
-</div>
-<p>This will create what is essentially a mini virtual machine running on your
-computer. This virtual machine has its own filesystem and can only see files
-within it. By using the <code class="docutils literal"><span class="pre">--volume</span> <span class="pre">~/hg-data:/data</span></code> and <code class="docutils literal"><span class="pre">-volume</span>
-<span class="pre">~/hg-data/tmp</span></code> parameters, we’ve exposed our local <code class="docutils literal"><span class="pre">~/hg-data</span></code> and
-<code class="docutils literal"><span class="pre">-/hg-data</span></code> directories to the virtual machine and can thus load files onto
-it.</p>
-<p>The Docker container we started, <code class="docutils literal"><span class="pre">higlass-container</span></code> contains a web server
-running higlass. To access it, simply go to <a class="reference external" href="http://localhost:8989">http://localhost:8989</a>. You should
-be greeted with an empty HiGlass view:</p>
+using the <code class="docutils literal"><span class="pre">--data-dir</span></code> parameter.</p>
 <div class="figure align-center" id="id1" style="width: 500px">
 <img alt="_images/higlass-website-screenshot.png" src="_images/higlass-website-screenshot.png" />
 <p class="caption"><span class="caption-text">A screenshot of an empty HiGlass web page</span></p>
