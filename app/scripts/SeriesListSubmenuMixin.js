@@ -1,4 +1,4 @@
-import { Mixin } from 'mixwith';
+import { Mixin } from './mixwith';
 
 import React from 'react';
 
