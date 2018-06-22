@@ -532,9 +532,6 @@ export const OPTIONS_INFO = {
     generateOptions: (track) => {
       const inlineOptions = [];
 
-      // console.log('track:',track);
-      // console.log('track.tilesetInfo:', track.tilesetInfo);
-
       if (track.transforms) {
         for (const transform of track.transforms) {
           inlineOptions.push({
@@ -544,7 +541,6 @@ export const OPTIONS_INFO = {
         }
       }
 
-      // console.log('inlineOptions:', inlineOptions);
       return inlineOptions;
     },
   },
@@ -597,7 +593,6 @@ export const OPTIONS_INFO = {
       none: { name: 'None', value: null },
     },
     generateOptions: (track) => {
-      console.log('track:', track);
       if (!track.header)
         return [];
 

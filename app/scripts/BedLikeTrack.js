@@ -40,7 +40,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     if (tile.tileData && tile.tileData.length) {
       tile.tileData.sort((a, b) => b.importance - a.importance);
-      tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
+      //tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
 
       let rows = [];
       if (!this.options || !this.options.valueColumn) {
@@ -168,7 +168,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       maxRows = Math.max(tile1.rows.length, maxRows);
     }
 
-
     const zoomLevel = +tile.tileId.split('.')[0];
 
     // store the scale at while the tile was drawn at so that
@@ -197,6 +196,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     let maxValue = 0;
 
+    let rendered = 0;
+
     if (tile.tileData && tile.tileData.length) {
       const rows = tile.rows;
 
@@ -206,13 +207,13 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
       for (let j = 0; j < rows.length; j++) {
         for (let i = 0; i < rows[j].length; i++) {
+          rendered += 1;
           const td = rows[j][i].value;
           // don't draw anything that has already been drawn
           if (zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel]) {
 
             // indicate that this tile wants to draw this rectangle again
             //this.drawnRects[zoomLevel][td.uid][2].add(tile.tileId);
-            //console.log('skipping:', td);
             continue;
           }
 
@@ -241,7 +242,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
               maxValue = value;
             }
 
-            yMiddle = this.valueScale( +geneInfo[+this.options.valueColumn-1]);
+            yMiddle = this.valueScale( value );
             // console.log('valueScale:', this.valueScale.domain() );
             // console.log('yMiddle:', +geneInfo[+this.options.valueColumn-1], yMiddle);
             rectHeight = rectHeight / 2;
@@ -323,7 +324,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           }
 
           // don't draw texts for the latter entries in the tile
-          if (i >= MAX_TEXTS) { return; }
+          if (i >= MAX_TEXTS) { continue; }
 
           if (!tile.texts[geneName]) {
             continue;
@@ -380,13 +381,15 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         return x;
       })
       .map((x) => {
-        return Math.min.apply(null,
+        const m =  Math.min.apply(null,
           x.tileData
           .sort((a,b) => b.importance - a.importance)
           .slice(0, MAX_TILE_ENTRIES)
           .map(y => +y.fields[+this.options.valueColumn - 1])
           .filter(y => !isNaN(y))
         );
+
+        return m;
       })
     );
 
