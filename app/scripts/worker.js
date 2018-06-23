@@ -96,8 +96,6 @@ export function workerSetPix(
   let e = 0;
   const tileWidth = Math.sqrt(size);
 
-  savedScaled = {};
-
   try {
     for (let i = 0; i < data.length; i++) {
       const d = data[i];

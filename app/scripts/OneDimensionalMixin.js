@@ -1,4 +1,4 @@
-import { Mixin } from 'mixwith';
+import { Mixin } from './mixwith';
 import { scaleOrdinal, schemeCategory10 } from 'd3-scale';
 import { colorToHex } from './utils';
 
