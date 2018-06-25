@@ -282,6 +282,8 @@ class TiledPixiTrack extends PixiTrack {
       if (tileIdStr in this.tileGraphics) {
         this.pMain.removeChild(this.tileGraphics[tileIdStr]);
         delete this.tileGraphics[tileIdStr];
+      } else {
+        console.log('tileIdStr absent:', tileIdStr);
       }
 
       delete this.fetchedTiles[tileIdStr];
