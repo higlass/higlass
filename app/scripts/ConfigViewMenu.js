@@ -5,6 +5,8 @@ import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
 import NestedContextMenu from './NestedContextMenu';
 
+import { getDarkTheme } from './services';
+
 // Styles
 import '../styles/ContextMenu.module.scss';
 
@@ -55,7 +57,7 @@ class ConfigViewMenu extends ContextMenuContainer {
 
             menuItems[optionType].children[inlineOptionKey] = optionSelectorSettings;
           }
-        }       
+        }
       }
     }
 
@@ -102,6 +104,7 @@ class ConfigViewMenu extends ContextMenuContainer {
 
   render() {
     let styleNames = 'context-menu';
+    if (getDarkTheme()) styleNames += ' context-menu-dark';
 
     return (
       <div

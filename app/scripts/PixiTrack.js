@@ -271,7 +271,7 @@ class PixiTrack extends Track {
       opacity = 0;
       color = 'white';
     }
-    
+
     const hexColor = colorToHex(color);
     graphics.beginFill(hexColor, opacity);
 
@@ -291,16 +291,12 @@ class PixiTrack extends Track {
       return;
     }
 
-    if (this.options.labelBackgroundOpacity) {
-      graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity);
-    } else {
-      // default to some label background opacity
-      graphics.beginFill(0xFFFFFF, 0.5);
-    }
-
-    const stroke = colorToHex(
-      this.options.labelColor ? this.options.labelColor : 'black',
+    graphics.beginFill(
+      colorToHex(this.options.labelBackgroundColor || 'white'),
+      +this.options.labelBackgroundOpacity || 0.5
     );
+
+    const stroke = colorToHex(this.options.labelColor || 'black');
     const labelBackgroundMargin = 2;
 
     // we can't draw a label if there's no space
@@ -503,10 +499,22 @@ class PixiTrack extends Track {
    */
   exportSVG() {
     const gBase = document.createElement('g');
+    const rectBackground = document.createElement('rect');
+
+    rectBackground.setAttribute('x', `${this.position[0]}`);
+    rectBackground.setAttribute('y', `${this.position[1]}`);
+    rectBackground.setAttribute('width', `${this.dimensions[0]}`);
+    rectBackground.setAttribute('height', `${this.dimensions[1]}`);
+
+    if (this.options && this.options.backgroundColor)
+      rectBackground.setAttribute('fill', this.options.backgroundColor);
+    else
+      rectBackground.setAttribute('fill', 'transparent');
 
     const gClipped = document.createElement('g');
     gClipped.setAttribute('class', 'g-clipped');
     gBase.appendChild(gClipped);
+    gClipped.appendChild(rectBackground);
 
     const gTrack = document.createElement('g');
     gClipped.setAttribute('class', 'g-track');
