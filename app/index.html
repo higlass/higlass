@@ -34,7 +34,7 @@
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://higlass.io/api/v1",
+    "http://higlass.io/api/v1"
   ],
   "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
   "views": [
@@ -45,8 +45,8 @@
         2507738795.9999733
       ],
       "initialYDomain": [
-        770998140.8015373,
-        1744336310.1984634
+        -545671929.4383738,
+        3061006380.438374
       ],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": false,
@@ -72,7 +72,7 @@
               "barOpacity": 1,
               "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig"
             },
-            "width": 20,
+            "width": 479,
             "height": 20,
             "position": "top"
           },
@@ -95,9 +95,10 @@
               "maxZoom": null,
               "trackBorderWidth": 0,
               "trackBorderColor": "black",
-              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+              "backgroundColor": "#eeeeee"
             },
-            "width": 1179,
+            "width": 479,
             "height": 85,
             "transforms": [
               {
@@ -120,11 +121,14 @@
               "plusStrandColor": "blue",
               "minusStrandColor": "red",
               "trackBorderWidth": 0,
-              "trackBorderColor": "black"
+              "trackBorderColor": "black",
+              "showMousePosition": false,
+              "mousePositionColor": "#999999"
             },
-            "width": 1179,
+            "width": 479,
             "height": 60,
-            "position": "top"
+            "position": "top",
+            "header": ""
           },
           {
             "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig",
@@ -141,9 +145,12 @@
               "lineStrokeWidth": 1,
               "trackBorderWidth": 0,
               "trackBorderColor": "black",
-              "labelTextOpacity": 0.4
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "showTooltip": false
             },
-            "width": 1179,
+            "width": 479,
             "height": 20,
             "position": "top",
             "uid": "RzZlBf58Q7WanbmbZRv-lA"
@@ -155,8 +162,11 @@
             "name": "Chromosome Labels (hg19)",
             "height": 30,
             "uid": "I1QUF22JQJuJ38j9PS4iqw",
-            "options": {},
-            "width": 1179
+            "options": {
+              "showMousePosition": false,
+              "mousePositionColor": "#999999"
+            },
+            "width": 479
           }
         ],
         "left": [
@@ -176,12 +186,15 @@
               "lineStrokeWidth": 1,
               "trackBorderWidth": 0,
               "trackBorderColor": "black",
-              "labelTextOpacity": 0.4
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "showTooltip": false,
+              "mousePositionColor": "#999999"
             },
             "width": 20,
             "position": "left",
             "uid": "Y8NKUAFQR1SYGrYJMbEoeQ",
-            "height": 459
+            "height": 691
           },
           {
             "type": "vertical-gene-annotations",
@@ -197,10 +210,13 @@
               "plusStrandColor": "blue",
               "minusStrandColor": "red",
               "trackBorderWidth": 0,
-              "trackBorderColor": "black"
+              "trackBorderColor": "black",
+              "showMousePosition": false,
+              "mousePositionColor": "#999999"
             },
             "uid": "OgnAEKSHRaG-gR1RqPOuBQ",
-            "height": 459
+            "height": 691,
+            "header": ""
           },
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
@@ -209,15 +225,18 @@
             "name": "Chromosome Labels (hg19)",
             "width": 30,
             "uid": "a-mFiHnBQ8uuI6UG3USWVA",
-            "options": {},
-            "height": 459
+            "options": {
+              "showMousePosition": false,
+              "mousePositionColor": "#999999"
+            },
+            "height": 691
           }
         ],
         "center": [
           {
             "uid": "c1",
             "type": "combined",
-            "height": 459,
+            "height": 691,
             "contents": [
               {
                 "server": "http://higlass.io/api/v1",
@@ -240,7 +259,11 @@
                   "trackBorderColor": "black",
                   "heatmapValueScaling": "log",
                   "scaleStartPercent": "0.00000",
-                  "scaleEndPercent": "1.00000"
+                  "scaleEndPercent": "1.00000",
+                  "backgroundColor": "#eeeeee",
+                  "showMousePosition": false,
+                  "mousePositionColor": "#999999",
+                  "showTooltip": false
                 },
                 "uid": "heatmap1",
                 "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
@@ -250,8 +273,8 @@
                     "value": "weight"
                   }
                 ],
-                "width": 1179,
-                "height": 459
+                "width": 479,
+                "height": 691
               },
               {
                 "type": "2d-chromosome-grid",
@@ -268,13 +291,13 @@
                   "lineStrokeColor": "grey"
                 },
                 "position": "center",
-                "width": 1179,
-                "height": 459
+                "width": 479,
+                "height": 691
               }
             ],
             "position": "center",
             "options": {},
-            "width": 1179
+            "width": 479
           }
         ],
         "right": [
@@ -291,11 +314,14 @@
               "plusStrandColor": "blue",
               "minusStrandColor": "red",
               "trackBorderWidth": 0,
-              "trackBorderColor": "black"
+              "trackBorderColor": "black",
+              "showMousePosition": false,
+              "mousePositionColor": "#999999"
             },
             "position": "right",
             "uid": "Fbw5wZb8Soe1JgQQ2Z6EoA",
-            "height": 459
+            "height": 691,
+            "header": ""
           },
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
@@ -304,11 +330,13 @@
             "width": 30,
             "options": {
               "labelPosition": "outerBottom",
-              "name": "Chromosome labels"
+              "name": "Chromosome labels",
+              "showMousePosition": false,
+              "mousePositionColor": "#999999"
             },
             "position": "right",
             "uid": "VdplA_MaRuqvlKvJaCKpGA",
-            "height": 459
+            "height": 691
           }
         ],
         "bottom": [
@@ -327,14 +355,31 @@
               "lineStrokeWidth": 1,
               "trackBorderWidth": 0,
               "trackBorderColor": "black",
-              "labelTextOpacity": 0.4
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "showTooltip": false
             },
-            "width": 1179,
+            "width": 479,
             "height": 50,
             "position": "bottom",
             "uid": "NlTkTBTCS--0qpB9Kn_ohw"
           }
-        ]
+        ],
+        "whole": [
+          {
+            "type": "cross-rule",
+            "x": 1103691812.8496904,
+            "y": 1338569560.9603324,
+            "position": "whole",
+            "options": {},
+            "uid": "btFjZjl2Tkm3hmjVhWBqTA",
+            "name": "Cross Rule",
+            "width": 20,
+            "height": 20
+          }
+        ],
+        "gallery": []
       },
       "layout": {
         "w": 12,

@@ -534,6 +534,9 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         scale(${tile.rectGraphics.scale.x},
         ${tile.rectGraphics.scale.y})`);
 
+      if (!tile.allRects)
+        continue;
+
       for (const rect of tile.allRects) {
         const r = document.createElement('path');
 

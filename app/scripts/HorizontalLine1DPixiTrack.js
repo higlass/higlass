@@ -37,6 +37,9 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     if (!this.tilesetInfo)
       return;
 
+    if (!this.options.showTooltip) 
+      return '';
+
     const zoomLevel = this.calculateZoomLevel();
     const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size);
 
@@ -103,6 +106,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   // }
 
   rerender(options) {
+    super.rerender(options);
     this.options = options;
 
     super.draw();

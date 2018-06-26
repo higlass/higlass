@@ -32,7 +32,9 @@ class AddTrackModal extends React.Component {
     this.props.onTracksChosen(this.state.selectedTilesets,
       this.props.position,
       this.props.host);
-    evt.preventDefault();
+
+    if (evt)
+      evt.preventDefault();
   }
 
   selectedTilesetsChanged(selectedTilesets) {

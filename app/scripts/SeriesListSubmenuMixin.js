@@ -1,4 +1,4 @@
-import { Mixin } from 'mixwith';
+import { Mixin } from './mixwith';
 
 import React from 'react';
 
@@ -31,7 +31,7 @@ const SeriesListSubmenuMixin = Mixin(superclass => class extends superclass {
 
       // for now we can't replace 'whole' tracks because they're
       // just the horizontal and vertical rule tracks
-      const canBeReplaced = !(selectedTrack.position === 'whole');
+      const canBeReplaced = selectedTrack && !(selectedTrack.position === 'whole');
 
       return (
         <SeriesListMenu

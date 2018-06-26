@@ -116,38 +116,6 @@ class DivergentBarTrack extends BarTrack {
         tile.svgData.barHeights[i]);
     }
   }
-
-  /**
-   * Adds information to recreate the track in SVG to the tile
-   *
-   * @param tile
-   * @param x x value of bar
-   * @param y y value of bar
-   * @param width width of bar
-   * @param height height of bar
-   * @param color color of bar (not converted to hex)
-   */
-  addSVGInfo(tile, x, y, width, height, color) {
-    if (tile.hasOwnProperty('svgData')) {
-      tile.svgData.barXValues.push(x);
-      tile.svgData.barYValues.push(y);
-      tile.svgData.barWidths.push(width);
-      tile.svgData.barHeights.push(height);
-      tile.svgData.barColors.push(color);
-    }
-    else {
-      tile.svgData  = {
-        barXValues: [x],
-        barYValues: [y],
-        barWidths: [width],
-        barHeights: [height],
-        barColors: [color]
-      };
-    }
-  }
-
 }
-
-
 
 export default DivergentBarTrack;
