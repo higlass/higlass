@@ -462,8 +462,7 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
  * threadpool
  */
 export const tileDataToPixData = (
-  tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished,
-synchronous=false, ignoreUpperRight) => {
+  tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished, ignoreUpperRight) => {
   const tileData = tile.tileData;
 
   if  (!tileData.dense) {

@@ -1023,6 +1023,10 @@ class TrackRenderer extends React.Component {
     this.applyZoomTransform(true);
 
     pubSub.publish('app.zoom', event);
+    if (event.sourceEvent) {
+      event.sourceEvent.stopPropagation();
+      event.sourceEvent.preventDefault();
+    }
   }
 
   zoomStarted() {

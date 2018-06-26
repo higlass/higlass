@@ -1005,7 +1005,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
         this.renderingTiles.delete(tile.tileId);
       },
-      synchronous,
       this.mirrorTiles && !tile.mirrored && tile.tileData.tilePos[0] == tile.tileData.tilePos[1]
     );
   }
