@@ -11,7 +11,7 @@ import { tileProxy } from './services';
 
 // Utils
 import {
-  colorDomainToRgbaArray, colorToHex, segmentsToRows, valueToColor
+  colorDomainToRgbaArray, colorToHex, rgbToHex, segmentsToRows, valueToColor
 } from './utils';
 
 // Configs
@@ -22,18 +22,6 @@ const GENE_RECT_HEIGHT = 10;
 const MAX_TEXTS = 1000;
 const MAX_TILE_ENTRIES = 5000;
 const MIN_RECT_WIDTH = 2;
-
-
-const componentToHex = (c) => {
-  const hex = c.toString(16);
-  return hex.length === 1 ? '0' + hex : hex;
-};
-
-const rgbToHex = (r, g, b) => {
-  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-};
-
-alert( rgbToHex(0, 51, 255) ); // #0033ff
 
 class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
@@ -202,8 +190,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
        * These intervals come with some y-value that we want to plot
        */
 
-      const min = this.minVisibleValue();
-      const max = this.maxVisibleValue();
+      const min = this.options.colorEncodingRange
+        ? +this.options.colorEncodingRange[0]
+        : this.minVisibleValue();
+      const max = this.options.colorEncodingRange
+        ? +this.options.colorEncodingRange[1]
+        : this.maxVisibleValue();
 
       if (this.options.colorEncoding) {
         this.valueColorScale = scaleLinear().domain([min, max]).range([0, 255]);
@@ -221,7 +213,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     let rendered = 0;
 
     if (tile.tileData && tile.tileData.length) {
-      const rows = this.options.valueColumn ? [tile.rows] : tile.rows;
+      const rows = tile.rows;
 
       const rowScale = scaleBand()
         .domain(range(maxRows))

@@ -45,6 +45,7 @@ export { default as rangeQuery2d } from './range-query-2d';
 export { default as relToAbsChromPos } from './rel-to-abs-chrom-pos';
 export { default as removeClass } from './remove-class';
 export { default as resetD3BrushStyle } from './reset-d3-brush-style';
+export { default as rgbToHex } from './rgb-to-hex';
 export { default as scalesCenterAndK } from './scales-center-and-k';
 export { default as scalesToGenomeLoci } from './scales-to-genome-loci';
 export { default as showMousePosition } from './show-mouse-position';
