@@ -488,8 +488,6 @@ class TiledPlot extends React.Component {
       });
   }
 
-
-
   getAddDivisorDialog() {
     if (!this.state.addDivisorDialog) {
       return null;
@@ -1263,7 +1261,7 @@ class TiledPlot extends React.Component {
     const datatype = evtJson.datatype;
 
     if (!(datatype in DEFAULT_TRACKS_FOR_DATATYPE)) {
-      console.warn('unknown data type:', evtJson.higlassTrack);
+      console.warn('unknown data type:', evtJson.datatype);
       return;
     }
 

@@ -1,4 +1,8 @@
 export const DEFAULT_TRACKS_FOR_DATATYPE = {
+  'arcs': {
+    top: '1d-arcs',
+    bottom: '1d-arcs',
+  },
   'matrix': {
     'center': 'heatmap',
     'top': 'horizontal-heatmap',

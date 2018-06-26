@@ -4,6 +4,7 @@ import { format } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
 import { select, event } from 'd3-selection';
 import * as PIXI from 'pixi.js';
+import slugid from 'slugid';
 
 import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
 import AxisPixi from './AxisPixi';
@@ -66,6 +67,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.is2d = true;
     this.animate = animate;
     this.mirrorTiles = true;
+    this.uid = slugid.nice();
+    this.scaleBrush = brushY();
 
     this.onTrackOptionsChanged = onTrackOptionsChanged;
 
@@ -412,7 +415,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     ) {
       this.pColorbarArea.visible = false;
 
-      if (this.scaleBrush) {
+      if (this.scaleBrush.on('.brush')) {
         this.gColorscaleBrush.call(this.scaleBrush.move, null);
       }
 
@@ -450,7 +453,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const axisValueScale = this.valueScale.copy()
       .range([this.colorbarHeight, 0]);
 
-    this.scaleBrush = brushY();
+    // console.log('new brushY');
+    // this.scaleBrush = brushY();
 
     // this is to make the handles of the scale brush stick out away
     // from the colorbar

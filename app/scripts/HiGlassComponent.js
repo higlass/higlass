@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { select, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
-import { json } from 'd3-request';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
 import ReactGridLayout from 'react-grid-layout';
@@ -28,7 +27,9 @@ import {
   getDarkTheme,
   setDarkTheme,
   pubSub,
-  setTileProxyAuthHeader
+  setTileProxyAuthHeader,
+  tileProxy,
+  requestsInFlight,
 } from './services';
 
 // Utils
@@ -75,6 +76,8 @@ const VIEW_HEADER_HEIGHT = 20;
 class HiGlassComponent extends React.Component {
   constructor(props) {
     super(props);
+
+    this.pubSubs = [];
 
     this.minHorizontalHeight = 20;
     this.minVerticalWidth = 20;
@@ -131,11 +134,13 @@ class HiGlassComponent extends React.Component {
 
     if (props.options.isDarkTheme) setDarkTheme();
 
+    this.viewconfLoaded = false;
+
     let viewConfig = {};
     let views = {};
     if (typeof this.props.viewConfig === 'string') {
       // Load external viewConfig
-      json(this.props.viewConfig, (error, viewConfig) => {
+      tileProxy.json(this.props.viewConfig, (error, viewConfig) => {
         this.setState({
           viewConfig,
           views: this.processViewConfig(
@@ -152,6 +157,15 @@ class HiGlassComponent extends React.Component {
         JSON.parse(JSON.stringify(viewConfig))
       );
     }
+
+    this.pubSubs.push(pubSub.subscribe('requestReceived', () => {
+      if (!this.viewconfLoaded && requestsInFlight == 0) {
+        this.viewconfLoaded = true;
+        if (this.props.options.onViewConfLoaded) {
+          this.props.options.onViewConfLoaded();
+        }
+      }
+    }));
 
     if (props.options.authToken) {
       setTileProxyAuthHeader(props.options.authToken);
@@ -244,7 +258,6 @@ class HiGlassComponent extends React.Component {
     domEvent.register('click', window, true);
     domEvent.register('mousemove', window);
 
-    this.pubSubs = [];
     this.pubSubs.push(
       pubSub.subscribe('keydown', this.keyDownHandler.bind(this))
     );
@@ -2857,8 +2870,21 @@ class HiGlassComponent extends React.Component {
     this.removeScalesChangedListener(viewId, listenerId);
   }
 
+  zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime) {
+    const [centerX, centerY, k] = scalesCenterAndK(
+      this.xScales[viewUid].copy().domain([start1Abs, end1Abs]),
+      this.yScales[viewUid].copy().domain([start2Abs, end2Abs]),
+    );
+
+    this.setCenters[viewUid](
+      centerX, centerY, k, false, animateTime,
+    );
+  }
+
   onLocationChange(viewId, callback, callbackId) {
     const viewsIds = Object.keys(this.state.views);
+
+    console.log('viewIds:', viewsIds, viewId);
 
     if (!viewsIds.length) {
       // HiGlass was probably initialized with an URL instead of a viewconfig
