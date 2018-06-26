@@ -345,7 +345,9 @@ export const TRACKS_INFO = [
       'valueScaling',
       'trackBorderWidth',
       'trackBorderColor',
-      'barOpacity'
+      'barOpacity',
+      'showMousePosition',
+      'showTooltip',
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -374,7 +376,9 @@ export const TRACKS_INFO = [
       'valueScaling',
       'trackBorderWidth',
       'trackBorderColor',
-      'barOpacity'
+      'barOpacity',
+      'showMousePosition',
+      'showTooltip',
     ],
     defaultOptions: {
       labelColor: 'black',
