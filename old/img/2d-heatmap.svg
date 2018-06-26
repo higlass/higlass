@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="90px" height="90px" viewBox="0 0 90 90" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41 (35326) - http://www.bohemiancoding.com/sketch -->
+    <title>2d-heatmap</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="30" height="30"></rect>
+        <rect id="path-2" x="30" y="0" width="30" height="30"></rect>
+        <rect id="path-3" x="60" y="0" width="30" height="30"></rect>
+        <rect id="path-4" x="0" y="30" width="30" height="30"></rect>
+        <rect id="path-5" x="30" y="30" width="30" height="30"></rect>
+        <rect id="path-6" x="60" y="30" width="30" height="30"></rect>
+        <rect id="path-7" x="0" y="60" width="30" height="30"></rect>
+        <rect id="path-8" x="30" y="60" width="30" height="30"></rect>
+        <rect id="path-9" x="60" y="60" width="30" height="30"></rect>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <use id="Rectangle" fill="#858372" xlink:href="#path-1"></use>
+        <use id="Rectangle" fill="#BBBAA4" xlink:href="#path-2"></use>
+        <use id="Rectangle" fill="#ECECD5" xlink:href="#path-3"></use>
+        <use id="Rectangle" fill="#BCBD9E" xlink:href="#path-4"></use>
+        <use id="Rectangle" fill="#817C7C" xlink:href="#path-5"></use>
+        <use id="Rectangle" fill="#BBBAA4" xlink:href="#path-6"></use>
+        <use id="Rectangle" fill="#ECECD5" xlink:href="#path-7"></use>
+        <use id="Rectangle" fill="#BBBAA4" xlink:href="#path-8"></use>
+        <use id="Rectangle" fill="#7B7777" xlink:href="#path-9"></use>
+    </g>
+</svg>

@@ -1,0 +1,159 @@
+### Creating a new track
+
+#### Create a new class in app/scrips/
+
+    a) Example: `app/scripts/CNVIntervalTrack.js`
+
+#### Extend the appropriate template class.
+
+The `CNVIntervalTrack` extends the `HorizontalTiled1DPixiTrack` because it will
+be displayed horizontally and is 1D.
+
+If the track will rely on translations and zooms to move and rescale the content,
+it needs to set `pMain = this.pMobile` in its constructor and draw using the
+reference scales (`this._refXScale` and `this._refYScale`).
+
+
+#### Implement the `initTile` function
+
+This function is called when the tile is initially created.
+
+It is especially useful for tracks that require heavy initial rendering and
+lighter transformations for zooming and panning. The `HeatmapTiledPixiTrack`,
+for example, creates the heatmap sprite and renders it in the `initTile`
+function. It omits the `drawTile` function because it wouldn't do anything and
+relies on the `zoomed` function to alter the graphic's translate and scale
+factor to change the view.
+
+#### Implement the `destroyTile(tile)` function
+
+Whatever cleanup for the tile that needs to happen can be placed in this
+function. 
+
+#### Implement a drawing method
+
+There are two ways to draw the visible data:
+
+1.  Draw each individual tile:
+
+Example: HeatmapTiledPlot: Each tile can be drawn completely independently
+of every other one. 
+
+2. Adjacent tiles required:
+
+Example: HorizontalLine1DPixiTrack.js: To connect the lines between adjacent
+tiles, we need a draw method that looks at the adjacent tiles.
+
+3.  Draw all the tiles at once
+
+Example: CNVIntervalTrack: We need to have all of the intervals that are visible ready 
+so that we can create a layout where all the elements are considered and there's no 
+overlaps.
+
+##### Implement the `drawTile(tile)` method:
+
+Within the `tile` structure there is the `tileData` member which contains the
+data retrieved from the server. The `tile` object itself contains the following
+fields.  The following is an example of a tile:
+
+```
+tile = {
+    graphics: <Pixi.Graphics>,
+    remoteId: "uid.4.3",
+    tileId: "uid.4.3",
+    tileData: {
+        discrete: [[0,1,0],[0,3,0]],
+        tileId: "uuid.0.0",
+        tilePos: [3],
+        zoomLevel: 4
+    }
+```
+
+The `tile` object can also contain information that is relevant to its
+rendering. If it is meant to be displayed as text, then it can contain
+additional PIXI.Text objects which are simply rescaled when the tile is
+redrawn.
+
+##### Scales
+
+Zoomed scales:
+
+Horizontal tracks: `this._xScale()`
+Vertical tracks: `this._yScale()`
+2D tracks: `this._xScale()` and `this._yScale()`
+
+Original scales:
+
+`this._refXScale()`
+`this._refYScale()`
+
+To draw the data, it needs various scales. The `HorizontalLine1DPixiTrack`, for
+example, requires a `valueScale` that maps tile values to y positions within
+the track. This scale can be calculated in a number of different ways, but the
+simplest is to just use the `maxVisibleValue()` function of the track. This
+returns the maximum value present in the `dense` fields of all the visible
+tiles.
+
+Other scaling methods may include... quantile scaling, log scaling, etc...
+
+Custom tracks may require bespoke scaling methods. When drawing intervals, we
+may want to calculate what the maximum number of intervals that will be drawn
+on top of each other at any point will be. Then for each interval, we will want
+to calculate its y position.
+
+##### Debugging notes
+
+* LeftTrackModifier switches out `pBase` so removing it requirest removing its
+  pBase from the stage, rather than the original track's
+
+
+
+### Creating a new track 2
+
+1.  Create a new section in `views` in `app/scripts/MultiViewContainer`:
+
+
+                    {
+                        'uid': slugid.nice(), 
+                        type:'horizontal-gene-annotations',
+                        height: 40,
+                      tilesetUid: 'dd',
+                      server: usedServer 
+                    }
+
+2. Open `app/scripts/config.js` and add an entry for the new track type:
+
+    * If you don't have a thumbnail for this track (which you should!), make it null
+
+    {
+        type: 'horizontal-gene-annotations',
+        datatype: ['gene-annotations'],
+        local: false,
+        orientation: '1d-horizontal',
+        name: 'Gene Annotations',
+        thumbnail: null
+    },
+
+3. Copy the closest existing track in app/scripts/*Track.js and rename it to what you want it called
+
+    cp app/scripts/HorizontalLine1DPixiTrack.js app/scripts/HorizontalGeneAnnotationsTrack.js
+
+4. Open the new track and change its class name:
+
+    export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
+
+5. Open `app/scripts/TrackRenderer.js` and import the new track:
+
+    import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack.js';
+
+Add instantiate the new track.
+
+    case 'horizontal-gene-annotations':
+        return new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid)
+
+6. Go back to the track and fill in the appropriate methods
+
+7. Add the new datatype to the horizontal-1d-tiles track if you want to be able to view its tiles.
+
+        type: 'horizontal-1d-tiles',
+        datatype: ['vector', 'stacked-interval', 'gene-annotation'],
