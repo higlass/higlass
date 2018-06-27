@@ -465,6 +465,7 @@ export const tileDataToPixData = (
   tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished, ignoreUpperRight) => {
   const tileData = tile.tileData;
 
+
   if  (!tileData.dense) {
     // if we didn't get any data from the server, don't do anything
     finished(null);
@@ -484,6 +485,7 @@ export const tileDataToPixData = (
     }
   }
 
+  console.log('tile', tile);
   // clone the tileData so that the original array doesn't get neutered
   // when being passed to the worker script
   //const newTileData = tileData.dense;

@@ -30,6 +30,7 @@ import {
 // View configs
 import {
   // paperFigure1,
+  horizontalAndVerticalMultivec,
   invalidTrackConfig,
   divergentTrackConfig,
   divisionViewConfig,
@@ -233,6 +234,42 @@ describe('Simple HiGlassComponent', () => {
     atm = null;
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
+
+  describe('Horizontal and vertical multivec', () => {
+    const atm = null;
+
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:600px;height:600px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: true }}
+        viewConfig={horizontalAndVerticalMultivec}
+      />,
+        { attachTo: div });
+
+      waitForTilesLoaded(hgc, done);
+    });
+
+    it('renders with no errors', (done) => {
+      done();
+    });
+    return;
+
+  });
+  return;
 
   describe('Track Resizing', () => {
     const atm = null;

@@ -135,6 +135,15 @@ export default class SeriesListMenu extends ContextMenuContainer {
     let datatype = null;
     let orientation = null;
 
+    // if we've loaded external track types, list them here
+    if (window.higlassTracksByType) {
+      // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
+      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
+        TRACKS_INFO_BY_TYPE[pluginTrackType] =
+          window.higlassTracksByType[pluginTrackType].config;
+      });
+    }
+
     // make sure that this is a valid track type before trying to
     // look up other tracks that can substitute for it
     if (track.type in TRACKS_INFO_BY_TYPE) {

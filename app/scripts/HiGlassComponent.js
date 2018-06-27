@@ -3426,11 +3426,15 @@ class HiGlassComponent extends React.Component {
           this.hideHoverMenu();
         }}
         onWheel={ (evt) => {
+          if (evt.forwared)
+            return;
           // forward the wheel event back to the TrackRenderer that it should go to
           // this is so that we can zoom when there's a viewport projection present
           const hoveredTiledPlot = this.getTiledPlotAtPosition(evt.clientX, evt.clientY);
           if (hoveredTiledPlot) {
             const trackRenderer = hoveredTiledPlot.trackRenderer;
+            evt.forwared = true;
+
             forwardEvent(evt.nativeEvent, trackRenderer.element);
           }
         }}

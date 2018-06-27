@@ -1213,6 +1213,7 @@ class TrackRenderer extends React.Component {
         );
 
       case 'horizontal-multivec':
+      case 'horizontal-vector-heatmap':
         return new HorizontalMultivecTrack(
           this.pStage,
           dataConfig,
@@ -1223,6 +1224,22 @@ class TrackRenderer extends React.Component {
           () => this.currentProps.onValueScaleChanged(track.uid),
           newOptions =>
             this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
+        );
+
+      case 'vertical-multivec':
+      case 'vertical-vector-heatmap':
+        return new LeftTrackModifier(
+          new HorizontalMultivecTrack(
+            this.pStage,
+            dataConfig,
+            handleTilesetInfoReceived,
+            track.options,
+            () => this.currentProps.onNewTilesLoaded(track.uid),
+            this.svgElement,
+            () => this.currentProps.onValueScaleChanged(track.uid),
+            newOptions =>
+              this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
+          )
         );
 
       case 'horizontal-line':

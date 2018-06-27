@@ -5,6 +5,34 @@ import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import { tileProxy } from './services';
 
 export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
+  constructor(
+    scene,
+    dataConfig,
+    handleTilesetInfoReceived,
+    options,
+    animate,
+    svgElement,
+    onValueScaleChanged,
+    onTrackOptionsChanged,
+    onMouseMoveZoom
+  ) {
+    super(
+      scene,
+      dataConfig,
+      handleTilesetInfoReceived,
+      options,
+      animate,
+      svgElement,
+      onValueScaleChanged,
+      onTrackOptionsChanged,
+      onMouseMoveZoom
+    );
+
+    //this.pMain = this.pMobile;
+    this.pMain = this.pMobile;
+    
+  }
+
   tileDataToCanvas(pixData) {
     const canvas = document.createElement('canvas');
 
@@ -12,7 +40,8 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       canvas.width = this.tilesetInfo.shape[0];
       canvas.height = this.tilesetInfo.shape[1];
     } else {
-      canvas.width = Math.min(this.tilesetInfo.tile_size, pixData.length / 4);
+      console.log('tile_size:', this.tilesetInfo.tile_size, pixData.length);
+      canvas.width = this.tilesetInfo.tile_size; //, pixData.length / 4);
       canvas.height = 1;
     }
 
@@ -21,9 +50,10 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     ctx.fillStyle = 'transparent';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const pix = new ImageData(pixData, canvas.width, canvas.height);
-
-    ctx.putImageData(pix, 0, 0);
+    if (pixData.length) {
+      const pix = new ImageData(pixData, pixData.length / 4, canvas.height);
+      ctx.putImageData(pix, 0, 0);
+    }
 
     return canvas;
   }
@@ -40,6 +70,17 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     sprite.x = this._refXScale(tileX);
     sprite.y = 0;
+  }
+
+  leftTrackZoomed(newXScale, newYScale, k, tx, ty) {
+    // a separate zoom function if the track is drawn on 
+    // the left
+    const offset = this._xScale(0) - k * this._refXScale(0);
+    this.pMobile.position.x = offset + this.position[0];
+    this.pMobile.position.y = this.position[1];
+
+    this.pMobile.scale.x = k;
+    this.pMobile.scale.y = 1;
   }
 
   zoomed(newXScale, newYScale, k, tx) {
