@@ -1,16 +1,30 @@
-import { Mixin } from './mixwith';
-import { scaleOrdinal, schemeCategory10 } from 'd3-scale';
-import { colorToHex } from './utils';
+import {Mixin} from 'mixwith';
+import {scaleLinear, scaleOrdinal, schemeCategory10} from 'd3-scale';
+import {colorToHex} from './utils';
 
 export const OneDimensionalMixin = Mixin(superclass => class extends superclass {
 
   initTile(tile) {
+    // create the tile
+    // should be overwritten by child classes
+    this.scale.minRawValue = this.minVisibleValue();
+    this.scale.maxRawValue = this.maxVisibleValue();
+
+    this.scale.minValue = this.scale.minRawValue;
+    this.scale.maxValue = this.scale.maxRawValue;
+
+    this.maxAndMin.max = this.scale.maxValue;
+    this.maxAndMin.min = this.scale.minValue;
+
     this.localColorToHexScale();
 
     this.unFlatten(tile);
-    this.maxAndMin.max = tile.maxValue;
-    this.maxAndMin.min = tile.minValue;
+
+    tile.svgData = null;
+    tile.mouseOverData = null;
+
     this.renderTile(tile);
+    this.rescaleTiles();
   }
 
   rerender(newOptions) {
@@ -25,31 +39,18 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
   updateTile(tile) {
     const visibleAndFetched = this.visibleAndFetchedTiles();
 
-    // reset max and min to null so previous maxes and mins don't carry over
-    this.maxAndMin = {
-      max: null,
-      min: null
-    };
-
     for (let i = 0; i < visibleAndFetched.length; i++) {
       const tile = visibleAndFetched[i];
       this.unFlatten(tile);
-      tile.svgData = null;
-      tile.mouseOverData = null;
-      if (tile.matrix) {
-        // update global max and min if necessary
-        (this.maxAndMin.max === null || tile.maxValue > this.maxAndMin.max) ?
-          this.maxAndMin.max = tile.maxValue : this.maxAndMin.max;
-        (this.maxAndMin.min === null || tile.minValue < this.maxAndMin.min) ?
-          this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
-      }
     }
 
-    for (let i = 0; i < visibleAndFetched.length; i++) {
-      this.renderTile(visibleAndFetched[i]);
-    }
-
+    this.rescaleTiles();
   }
+
+  /**
+   * Rescales the sprites of all visible tiles when zooming and panning.
+   */
+  rescaleTiles() {}
 
   /**
    * Converts all colors in a colorScale to Hex colors.
