@@ -1,7 +1,7 @@
 {
   "name": "higlass",
   "version": "1.0.4",
-  "description": "Massive matrix viewer",
+  "description": "HiGlass Hi-C / genomic / large data viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/scripts/hglib.js",
   "keywords": [

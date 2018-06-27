@@ -207,7 +207,7 @@ export const TRACKS_INFO = [
   },
   {
     type: 'horizontal-multivec',
-    datatype: ['multivec'],
+    datatype: ['multivec', 'vector'],
     local: false,
     orientation: '1d-horizontal',
     minHeight: 100,
