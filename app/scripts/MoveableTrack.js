@@ -4,6 +4,15 @@ import React from 'react';
 import DraggableDiv from './DraggableDiv';
 import TrackArea from './TrackArea';
 
+import { isWithin } from './utils';
+
+
+const checkMousePosVsEl = (x, y, el) => {
+  const bBox = el.getBoundingClientRect();
+  return isWithin(
+    x, y, bBox.left, bBox.left + bBox.width, bBox.top, bBox.top + bBox.height
+  );
+};
 
 class MoveableTrack extends TrackArea {
   constructor(props) {
@@ -15,9 +24,15 @@ class MoveableTrack extends TrackArea {
   render() {
     return (
       <div
+        ref={(r) => { this.el = r; }}
         className={this.props.className}
         onMouseEnter={this.handleMouseEnter.bind(this)}
-        onMouseLeave={this.handleMouseLeave.bind(this)}
+        onMouseLeave={(e) => {
+          if (checkMousePosVsEl(
+            e.nativeEvent.clientX, e.nativeEvent.clientY, this.el
+          )) return;
+          this.handleMouseLeave();
+        }}
         style={{
           height: this.props.height,
           width: this.props.width,
@@ -40,11 +55,9 @@ class MoveableTrack extends TrackArea {
           uid={this.props.uid}
           width={this.props.width}
         />
-        {this.props.editable &&
-          <div>
-            {this.getControls(this.state.controlsVisible || this.props.item.configMenuVisible)}
-          </div>
-        }
+        {this.props.editable && (
+          this.getControls(this.state.controlsVisible || this.props.item.configMenuVisible)
+        )}
       </div>
     );
   }

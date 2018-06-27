@@ -54,6 +54,25 @@ class TiledPlot extends React.Component {
 
     const tracks = this.props.tracks;
 
+    this.tracksByUidInit = {};
+    [
+      ...this.props.tracks.top,
+      ...this.props.tracks.right,
+      ...this.props.tracks.bottom,
+      ...this.props.tracks.left,
+      ...this.props.tracks.gallery,
+      ...this.props.tracks.center,
+    ].forEach((track) => {
+      if (track.type === 'combined') {
+        // Damn this combined track...
+        track.contents.forEach((track2) => {
+          this.tracksByUidInit[track2.uid] = false;
+        });
+      } else {
+        this.tracksByUidInit[track.uid] = false;
+      }
+    });
+
     this.xScale = null;
     this.yScale = null;
 
@@ -80,6 +99,7 @@ class TiledPlot extends React.Component {
       width: 10,
 
       tracks,
+      init: false,
       addTrackPosition: null,
       mouseOverOverlayUid: null,
       // trackOptions: null
@@ -151,7 +171,7 @@ class TiledPlot extends React.Component {
 
     // add event listeners for drag and drop events
     this.addEventListeners();
-    this.getDefaultChromSizes();
+    //this.getDefaultChromSizes();
 
     this.pubSubs = [];
     this.pubSubs.push(
@@ -215,7 +235,7 @@ class TiledPlot extends React.Component {
     }
 
     if (prevProps.tracks.center !== this.props.tracks.center) {
-      this.getDefaultChromSizes();
+      //this.getDefaultChromSizes();
     }
   }
 
@@ -234,6 +254,7 @@ class TiledPlot extends React.Component {
     }
   }
 
+    /*
   getDefaultChromSizes() {
     try {
       const centralHeatmap = this.findCentralHeatmapTrack(
@@ -242,8 +263,9 @@ class TiledPlot extends React.Component {
       this.getChromInfo = chromInfo
         .get(`${centralHeatmap.server}/chrom-sizes/?id=${centralHeatmap.tilesetUid}`)
         .then(defaultChromSizes => this.setState({ defaultChromSizes }));
-    } catch (err) { /* Nothing */ }
+    } catch (err) {  }
   }
+  */
 
   contextMenuHandler(e) {
     if (!this.divTiledPlot) return;
@@ -334,6 +356,10 @@ class TiledPlot extends React.Component {
       console.warn("Strange, track not found:", trackUid);
       return;
     }
+
+    this.tracksByUidInit[track.uid] = true;
+    this.checkAllTilesetInfoReceived();
+
     if (!track.options) { track.options = {}; }
 
     // track.options.name = tilesetInfo.name;
@@ -342,8 +368,47 @@ class TiledPlot extends React.Component {
     track.transforms = tilesetInfo.transforms;
     track.header = tilesetInfo.header;
     track.binsPerDimension = tilesetInfo.bins_per_dimension;
-    track.maxZoom = tilesetInfo.max_zoom;
+    if (tilesetInfo.resolutions) {
+      track.maxZoom = tilesetInfo.resolutions.length-1;
+      track.resolutions = tilesetInfo.resolutions;
+    } else {
+      track.maxZoom = tilesetInfo.max_zoom;
+    }
     track.coordSystem = tilesetInfo.coordSystem;
+  }
+
+  /**
+   * Check if all track which are expecting a tileset info have been loaded.
+   */
+  checkAllTilesetInfoReceived() {
+    // Do nothing is HiGlass initialized already
+    if (this.state.init || !this.props.zoomToDataExtentOnInit) return;
+
+    // Get the total number of track that are expecting a tilesetInfo
+    const allTilesetInfos = Object.keys(this.trackRenderer.trackDefObjects)
+      // Map track to a list of tileset infos
+      .map((trackUuid) => {
+        const track = this.trackRenderer.trackDefObjects[trackUuid].trackObject;
+        if (track.childTracks) {
+          return track.childTracks.map(childTrack => childTrack.tilesetInfo);
+        }
+        return track.tilesetInfo;
+      })
+      // Needed because of combined tracks
+      .reduce((a, b) => a.concat(b), [])
+      // We distinguish between tracks that need a tileset info and those whoch
+      // don't by comparing `undefined` vs something else, i.e., tracks that
+      // need a tileset info will be initialized with `this.tilesetInfo = null;`.
+      .filter(tilesetInfo => typeof tilesetInfo !== 'undefined')
+      .length;
+
+    const loadedTilesetInfos = Object.values(this.tracksByUidInit)
+      .filter(x => x).length;
+
+    if (allTilesetInfos === loadedTilesetInfos) {
+      this.setState({ init: true });
+      this.handleZoomToData();
+    }
   }
 
   handleOverlayMouseEnter(uid) {
@@ -914,6 +979,9 @@ class TiledPlot extends React.Component {
   listTracksAtPosition(x, y, isReturnTrackObj = false) {
     const trackObjectsAtPosition = [];
 
+    if (!this.trackRenderer)
+      return;
+
     for (const uid in this.trackRenderer.trackDefObjects) {
       const trackObj = this.trackRenderer.trackDefObjects[uid].trackObject;
 
@@ -1002,23 +1070,29 @@ class TiledPlot extends React.Component {
       if (trackObject.tilesetInfo) {
         if (trackObject.tilesetInfo.min_pos) {
           for (let j = 0; j < trackObject.tilesetInfo.min_pos.length; j++) {
-            if (trackObject.tilesetInfo.min_pos[j] < minPos[j]) { minPos[j] = trackObject.tilesetInfo.min_pos[j]; }
+            if (trackObject.tilesetInfo.min_pos[j] < minPos[j]) {
+              minPos[j] = trackObject.tilesetInfo.min_pos[j];
+            }
 
-            if (trackObject.tilesetInfo.max_pos[j] > maxPos[j]) { maxPos[j] = trackObject.tilesetInfo.max_pos[j]; }
+            if (trackObject.tilesetInfo.max_pos[j] > maxPos[j]) {
+              maxPos[j] = trackObject.tilesetInfo.max_pos[j];
+            }
           }
         }
       }
     }
 
     // set the initial domain
+    const left = this.trackRenderer.currentProps.marginLeft + this.trackRenderer.currentProps.leftWidth;
     let newXDomain = [
-      this.trackRenderer.currentProps.marginLeft + this.trackRenderer.currentProps.leftWidth,
-      this.trackRenderer.currentProps.marginLeft + this.trackRenderer.currentProps.leftWidth + this.trackRenderer.currentProps.centerWidth,
+      left,
+      left + this.trackRenderer.currentProps.centerWidth,
     ].map(this.trackRenderer.zoomTransform.rescaleX(this.trackRenderer.xScale).invert);
 
+    const top = this.trackRenderer.currentProps.marginTop + this.trackRenderer.currentProps.topHeight;
     let newYDomain = [
-      this.trackRenderer.currentProps.marginTop + this.trackRenderer.currentProps.topHeight,
-      this.trackRenderer.currentProps.marginTop + this.trackRenderer.currentProps.topHeight + this.trackRenderer.currentProps.centerHeight,
+      top,
+      top + this.trackRenderer.currentProps.centerHeight,
     ].map(this.trackRenderer.zoomTransform.rescaleY(this.trackRenderer.yScale).invert);
 
     // reset the zoom transform
@@ -1028,10 +1102,13 @@ class TiledPlot extends React.Component {
     this.trackRenderer.zoomTransform.y = 0;
     this.trackRenderer.applyZoomTransform();
 
+    if (minPos[0] < Number.MAX_SAFE_INTEGER && maxPos[0] > Number.MIN_SAFE_INTEGER) {
+      newXDomain = [minPos[0], maxPos[0]];
+    }
 
-    if (minPos[0] < Number.MAX_SAFE_INTEGER && maxPos[0] > Number.MIN_SAFE_INTEGER) { newXDomain = [minPos[0], maxPos[0]]; }
-
-    if (minPos[1] < Number.MAX_SAFE_INTEGER && maxPos[1] > Number.MIN_SAFE_INTEGER) { newYDomain = [minPos[1], maxPos[1]]; }
+    if (minPos[1] < Number.MAX_SAFE_INTEGER && maxPos[1] > Number.MIN_SAFE_INTEGER) {
+      newYDomain = [minPos[1], maxPos[1]];
+    }
 
 
     this.props.onDataDomainChanged(newXDomain, newYDomain);
@@ -1040,6 +1117,7 @@ class TiledPlot extends React.Component {
   updatablePropsToString(props) {
     return JSON.stringify({
       tracks: props.tracks,
+      viewOptions: props.viewOptions,
       uid: props.uid,
       addTrackPosition: props.addTrackPosition,
       editable: props.editable,
@@ -1533,6 +1611,7 @@ class TiledPlot extends React.Component {
     const galleryTracks = (
       <div
         key="galleryTracksDiv"
+        className="gallery-track-container"
         style={{
           left: this.leftWidthNoGallery + this.props.horizontalMargin,
           top: this.topHeightNoGallery + this.props.verticalMargin,
@@ -1650,6 +1729,7 @@ class TiledPlot extends React.Component {
           topHeightNoGallery={this.topHeightNoGallery}
           uid={this.props.uid}
           width={this.state.width}
+          viewOptions={this.props.viewOptions}
           xDomainLimits={this.props.xDomainLimits}
           yDomainLimits={this.props.yDomainLimits}
           zoomable={this.props.zoomable}
@@ -1732,6 +1812,7 @@ class TiledPlot extends React.Component {
             // we want to remove the mouseOverOverlayUid so that next time we try
             // to choose an overlay track, the previously selected one isn't
             // automatically highlighted
+
             onClick={() => {
               this.setState({ mouseOverOverlayUid: null });
               this.props.chooseTrackHandler(pTrack.track.uid);
@@ -1747,6 +1828,7 @@ class TiledPlot extends React.Component {
               background,
               opacity: 0.4,
               border,
+              zIndex: 1
             }}
           />
         );
@@ -1891,8 +1973,10 @@ TiledPlot.propTypes = {
   tracks: PropTypes.object,
   metaTracks: PropTypes.array,
   verticalMargin: PropTypes.number,
+  viewOptions: PropTypes.object,
   uid: PropTypes.string,
   zoomable: PropTypes.bool,
+  zoomToDataExtentOnInit: PropTypes.bool
 };
 
 export default TiledPlot;

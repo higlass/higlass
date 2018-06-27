@@ -1,7 +1,10 @@
+import slugid from 'slugid';
+
 class CombinedTrack {
   constructor(trackDefs, trackCreator) {
     this.childTracks = trackDefs.map(trackCreator);
     this.createdTracks = {};
+    this.uid = slugid.nice()
 
     this.childTracks.forEach((ct, i) => {
       this.createdTracks[trackDefs[i].uid] = ct;
@@ -183,13 +186,25 @@ class CombinedTrack {
     );
   }
 
+  stopHover() {
+    for (const childTrack of this.childTracks) {
+      if (childTrack.stopHover)
+        childTrack.stopHover();
+    }
+  }
+
   getMouseOverHtml(trackX, trackY) {
     let mouseOverHtml = ''
 
     for (const childTrack of this.childTracks) {
       if (childTrack.getMouseOverHtml) {
-        mouseOverHtml += childTrack.getMouseOverHtml(trackX, trackY);
-        mouseOverHtml += "<br/>"
+        const trackHtml = childTrack.getMouseOverHtml(trackX, trackY);
+
+        if (trackHtml && trackHtml.length) {
+          mouseOverHtml += trackHtml;
+          mouseOverHtml += "<br/>"
+        }
+
       }
     }
 

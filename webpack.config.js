@@ -12,19 +12,20 @@ module.exports = {
     hglib: ['./scripts/hglib.js'],
     worker: ['./scripts/worker.js'],
   },
-  watch: process.env.NODE_ENV === 'production' ? false : true,
+  watch: process.env.NODE_ENV === 'production' ? false : false,
   watchOptions: {
     aggregateTimeout: 300,
     poll: 1000,
     ignored: /node_modules/,
   },
+  devtool: 'cheap-source-map',
   devServer: {
     contentBase: [
-      path.resolve(__dirname, ''),
       path.resolve(__dirname, 'app'),
-    ]
+      path.resolve(__dirname, 'node_modules'),
+    ],
+    publicPath: '/'
   },
-  devtool: 'cheap-source-map',
   output: {
     path: `${__dirname}/build`,
     publicPath: '/',

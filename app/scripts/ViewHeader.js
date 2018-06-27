@@ -118,81 +118,83 @@ class ViewHeader extends React.Component {
         <PopupMenu
           onMenuClosed={() => this.setState({ configMenuUid: null })}
         >
-          <ContextMenuContainer
+          <ConfigViewMenu
             orientation="left"
             position={this.state.configMenuPosition}
-          >
-            <ConfigViewMenu
-              onExportSVG={() => {
-                this.setState({ configMenuUid: null });
-                this.props.onExportSVG();
-              }}
-              onClearView = {() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onClearView();
-              }}
-              onExportViewAsJSON={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onExportViewsAsJSON();
-              }}
-              onExportViewAsLink={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onExportViewsAsLink();
-              }}
-              onLockLocation={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onLockLocation(this.state.configMenuUid);
-              }}
-              onLockZoom={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onLockZoom(this.state.configMenuUid);
-              }}
-              onLockZoomAndLocation={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onLockZoomAndLocation(this.state.configMenuUid);
-              }}
-              onProjectViewport={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onProjectViewport(this.state.configMenuUid);
-              }}
-              onTakeAndLockZoomAndLocation={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onTakeAndLockZoomAndLocation(this.state.configMenuUid);
-              }}
-              onTogglePositionSearchBox={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onTogglePositionSearchBox(this.state.configMenuUid);
-              }}
-              onUnlockLocation={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onUnlockLocation(this.state.configMenuUid);
-              }}
-              onUnlockZoom={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onUnlockZoom(this.state.configMenuUid);
-              }}
-              onUnlockZoomAndLocation={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onUnlockZoomAndLocation(this.state.configMenuUid);
-              }}
-              onYankLocation={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onYankLocation(this.state.configMenuUid);
-              }}
-              onYankZoom={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onYankZoom(this.state.configMenuUid);
-              }}
-              onYankZoomAndLocation={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onYankZoomAndLocation(this.state.configMenuUid);
-              }}
-              onZoomToData={() => {
-                this.setState({ configMenuUid: null }); // hide the menu
-                this.props.onZoomToData(this.state.configMenuUid);
-              }}
-            />
-          </ContextMenuContainer>
+
+            onExportSVG={() => {
+              this.setState({ configMenuUid: null });
+              this.props.onExportSVG();
+            }}
+            onClearView = {() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onClearView();
+            }}
+            onExportViewAsJSON={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onExportViewsAsJSON();
+            }}
+            onExportViewAsLink={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onExportViewsAsLink();
+            }}
+            onLockLocation={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onLockLocation(this.state.configMenuUid);
+            }}
+            onLockZoom={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onLockZoom(this.state.configMenuUid);
+            }}
+            onLockZoomAndLocation={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onLockZoomAndLocation(this.state.configMenuUid);
+            }}
+            onProjectViewport={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onProjectViewport(this.state.configMenuUid);
+            }}
+            onOptionsChanged={(newOptions) => {
+              this.props.onViewOptionsChanged(newOptions);
+              this.setState({ configMenuUid: null }); // hide the menu
+            }}
+            onTakeAndLockZoomAndLocation={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onTakeAndLockZoomAndLocation(this.state.configMenuUid);
+            }}
+            onTogglePositionSearchBox={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onTogglePositionSearchBox(this.state.configMenuUid);
+            }}
+            onUnlockLocation={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onUnlockLocation(this.state.configMenuUid);
+            }}
+            onUnlockZoom={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onUnlockZoom(this.state.configMenuUid);
+            }}
+            onUnlockZoomAndLocation={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onUnlockZoomAndLocation(this.state.configMenuUid);
+            }}
+            onYankLocation={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onYankLocation(this.state.configMenuUid);
+            }}
+            onYankZoom={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onYankZoom(this.state.configMenuUid);
+            }}
+            onYankZoomAndLocation={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onYankZoomAndLocation(this.state.configMenuUid);
+            }}
+            onZoomToData={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onZoomToData(this.state.configMenuUid);
+            }}
+          />
         </PopupMenu>
       );
     }

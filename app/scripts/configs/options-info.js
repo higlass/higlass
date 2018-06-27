@@ -96,7 +96,10 @@ export const OPTIONS_INFO = {
     name: 'Background Color',
     inlineOptions: {
       white: { name: 'White', value: 'white' },
+      lightGrey: { name: 'Light Grey', value: '#eeeeee' },
+      grey: { name: 'Grey', value: '#cccccc' },
       black: { name: 'Black', value: 'black' },
+      transparent: { name: 'Transparent', value: 'transparent' },
     },
   },
   colorScale: {
@@ -283,6 +286,13 @@ export const OPTIONS_INFO = {
       no: { name: 'No', value: false },
     },
   },
+  showTooltip: {
+    name: 'Show Tooltip',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true},
+      no: { name: 'No', value: false },
+    },
+  },
   axisPositionHorizontal: {
     name: 'Axis Position',
     inlineOptions: {
@@ -314,6 +324,16 @@ export const OPTIONS_INFO = {
       bottomRight: { name: 'Bottom Right', value: 'bottomRight' },
       hidden: { name: 'Hidden', value: null },
     },
+  },
+
+  colorbarBackgroundColor: {
+    name: 'Colorbar Background Color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
+
+  colorbarBackgroundOpacity: {
+    name: 'Colorbar Background Opacity',
+    inlineOptions: OPACITY_OPTIONS,
   },
 
   /*
@@ -361,9 +381,23 @@ export const OPTIONS_INFO = {
     inlineOptions: OPACITY_OPTIONS,
   },
 
+  labelBackgroundColor: {
+    name: 'Label Background Color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
+
   labelBackgroundOpacity: {
     name: 'Label Background Opacity',
     inlineOptions: OPACITY_OPTIONS,
+  },
+
+  viewResolution: {
+    name: 'View Resolution',
+    inlineOptions: {
+      high: { name: 'High', value: 384},
+      medium: { name: 'Medium', value: 1024},
+      low: { name: 'Low', value: 2048},
+    },
   },
 
   // colormaps are mostly taken from here:
@@ -498,9 +532,6 @@ export const OPTIONS_INFO = {
     generateOptions: (track) => {
       const inlineOptions = [];
 
-      // console.log('track:',track);
-      // console.log('track.tilesetInfo:', track.tilesetInfo);
-
       if (track.transforms) {
         for (const transform of track.transforms) {
           inlineOptions.push({
@@ -510,7 +541,6 @@ export const OPTIONS_INFO = {
         }
       }
 
-      // console.log('inlineOptions:', inlineOptions);
       return inlineOptions;
     },
   },
@@ -529,20 +559,26 @@ export const OPTIONS_INFO = {
           const binsPerDimension = track.binsPerDimension;
           const maxZoom = track.maxZoom;
 
-          const resolution = track.maxWidth / (2 ** i * track.binsPerDimension);
+          let maxResolutionSize = 1;
+          let resolution = 1;
 
-          const maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+          if (track.resolutions) {
+            const sortedResolutions = track.resolutions.map(x => +x).sort((a,b) => b-a)
+            maxResolutionSize = sortedResolutions[0];
+            resolution = sortedResolutions[i];
+          } else {
+            resolution = track.maxWidth / (2 ** i * track.binsPerDimension);
+            maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+          }
 
           const pp = precisionPrefix(maxResolutionSize, resolution);
           const f = formatPrefix(`.${pp}`, resolution);
           const formattedResolution = f(resolution);
 
-          // const formattedName =  ;
           inlineOptions.push({
             name: formattedResolution,
             value: i.toString(),
           });
-
           //
         }
 

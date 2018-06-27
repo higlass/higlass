@@ -12,13 +12,6 @@ class BarTrack extends HorizontalLine1DPixiTrack {
          */
     super.initTile(tile);
 
-    // console.log('initializing tile');
-    tile.barXValues = new Array(tile.tileData.dense.length);
-    tile.barYValues = new Array(tile.tileData.dense.length);
-    tile.barWidths = new Array(tile.tileData.dense.length);
-    tile.barHeights = new Array(tile.tileData.dense.length);
-    tile.barColors = new Array(tile.tileData.dense.length);
-
     // this.drawTile(tile);
     this.renderTile(tile);
   }
@@ -98,11 +91,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       const width = this._xScale(tileXScale(i + 1)) - xPos;
       const height = this.dimensions[1] - yPos;
 
-      tile.barColors[i] = color;
-      tile.barXValues[i] = xPos;
-      tile.barYValues[i] = yPos;
-      tile.barWidths[i] = width;
-      tile.barHeights[i] = height;
+      this.addSVGInfo(tile, xPos, yPos, width, height, color);
 
       if (tileXScale(i) > this.tilesetInfo.max_pos[0])
       // this data is in the last tile and extends beyond the length
@@ -140,6 +129,35 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   /**
+   * Adds information to recreate the track in SVG to the tile
+   *
+   * @param tile
+   * @param x x value of bar
+   * @param y y value of bar
+   * @param width width of bar
+   * @param height height of bar
+   * @param color color of bar (not converted to hex)
+   */
+  addSVGInfo(tile, x, y, width, height, color) {
+    if (tile.hasOwnProperty('svgData')) {
+      tile.svgData.barXValues.push(x);
+      tile.svgData.barYValues.push(y);
+      tile.svgData.barWidths.push(width);
+      tile.svgData.barHeights.push(height);
+      tile.svgData.barColors.push(color);
+    }
+    else {
+      tile.svgData  = {
+        barXValues: [x],
+        barYValues: [y],
+        barWidths: [width],
+        barHeights: [height],
+        barColors: [color]
+      };
+    }
+  }
+
+  /**
    * Export an SVG representation of this track
    *
    * @returns {[DOMNode,DOMNode]} The two returned DOM nodes are both SVG
@@ -163,7 +181,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     const stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
 
     for (const tile of this.visibleAndFetchedTiles()) {
-      const data = tile;
+      const data = tile.svgData;
       if (!data || !data.barXValues)
         continue;
 

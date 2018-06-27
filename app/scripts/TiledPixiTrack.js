@@ -2,6 +2,7 @@ import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
 import * as PIXI from 'pixi.js';
+import {parseChromsizesRows} from './ChromosomeInfo.js';
 
 import DataFetcher from './DataFetcher';
 import PixiTrack from './PixiTrack';
@@ -94,15 +95,21 @@ class TiledPixiTrack extends PixiTrack {
 
     this.dataFetcher = new DataFetcher(dataConfig);
 
+    // To indicate that this track is requiring a tileset info
+    this.tilesetInfo = null;
+
     this.dataFetcher.tilesetInfo((tilesetInfo) => {
       this.tilesetInfo = tilesetInfo;
+
+      if (this.tilesetInfo.chromsizes) {
+        this.chromInfo = parseChromsizesRows(this.tilesetInfo.chromsizes);
+      }
 
       if ('error' in this.tilesetInfo) {
         // no tileset info for this track
         console.warn(
           'Error retrieving tilesetInfo:', dataConfig, this.tilesetInfo.error
         );
-
 
         this.trackNotFoundText = '';
         this.errorTextText = this.tilesetInfo.error;
@@ -113,7 +120,10 @@ class TiledPixiTrack extends PixiTrack {
       }
 
       // console.log('tilesetInfo:', this.tilesetInfo);
-      this.maxZoom = +this.tilesetInfo.max_zoom;
+      if (this.tilesetInfo.resolutions)
+        this.maxZoom = this.tilesetInfo.resolutions.length;
+      else
+        this.maxZoom = +this.tilesetInfo.max_zoom;
 
       if (this.options && this.options.maxZoom) {
         if (this.options.maxZoom >= 0) {
@@ -132,6 +142,7 @@ class TiledPixiTrack extends PixiTrack {
       this.options.name = this.options.name ? this.options.name : tilesetInfo.name;
 
       this.draw();
+      this.drawLabel(); //draw the label so that the current resolution is displayed
       this.animate();
     });
 
@@ -152,7 +163,10 @@ class TiledPixiTrack extends PixiTrack {
 
     if (!this.tilesetInfo) { return; }
 
-    this.maxZoom = +this.tilesetInfo.max_zoom;
+    if (this.tilesetInfo.resolutions)
+      this.maxZoom = this.tilesetInfo.resolutions.length;
+    else
+      this.maxZoom = +this.tilesetInfo.max_zoom;
 
     if (this.options && this.options.maxZoom) {
       if (this.options.maxZoom >= 0) {
@@ -259,7 +273,11 @@ class TiledPixiTrack extends PixiTrack {
       !toRemoveIds.length ||
       !this.areAllVisibleTilesLoaded() ||
       this.renderingTiles.size
-    ) return;
+    ) {
+      return;
+    }
+
+    // console.log('removing:', toRemoveIds);
 
     toRemoveIds.forEach((x) => {
       const tileIdStr = x;
@@ -268,13 +286,18 @@ class TiledPixiTrack extends PixiTrack {
       if (tileIdStr in this.tileGraphics) {
         this.pMain.removeChild(this.tileGraphics[tileIdStr]);
         delete this.tileGraphics[tileIdStr];
+      } else {
+        // console.log('tileIdStr absent:', tileIdStr);
       }
 
       delete this.fetchedTiles[tileIdStr];
     });
 
+
     this.synchronizeTilesAndGraphics();
     this.draw();
+
+    // console.log('# children', this.pMain.children.length, Object.keys(this.fetchedTiles).length);
   }
 
   zoomed(newXScale, newYScale, k = 1, tx = 0, ty = 0) {
@@ -371,12 +394,13 @@ class TiledPixiTrack extends PixiTrack {
          * Add graphics for tiles that have no graphics
          */
     const fetchedTileIDs = Object.keys(this.fetchedTiles);
-    let added = false;
     this.renderVersion += 1;
 
     for (let i = 0; i < fetchedTileIDs.length; i++) {
       //console.log('this.tileGraphics', this.tileGraphics);
       if (!(fetchedTileIDs[i] in this.tileGraphics)) {
+        // console.trace('adding:', fetchedTileIDs[i]);
+
         const newGraphics = new PIXI.Graphics();
         this.pMain.addChild(newGraphics);
 
@@ -384,7 +408,6 @@ class TiledPixiTrack extends PixiTrack {
         this.initTile(this.fetchedTiles[fetchedTileIDs[i]]);
 
         this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
-        added = true;
       }
     }
 
@@ -414,8 +437,8 @@ class TiledPixiTrack extends PixiTrack {
 
     // keep track of which tiles are visible at the moment
     this.addMissingGraphics();
-    this.updateExistingGraphics();
     this.removeOldTiles();
+    this.updateExistingGraphics();
   }
 
   loadTileData(tile, dataLoader) {
@@ -501,6 +524,7 @@ class TiledPixiTrack extends PixiTrack {
 
     // we need to draw when we receive new data
     this.draw();
+    this.drawLabel(); // update the current zoom level
 
     // Let HiGlass know we need to re-render
     // check if the value scale has changed

@@ -1,4 +1,4 @@
-import { Mixin } from 'mixwith';
+import { Mixin } from './mixwith';
 import { pubSub } from './services';
 
 const RuleMixin = Mixin(superclass => class extends superclass {

@@ -4,6 +4,7 @@ import { absToChr } from './utils';
 
 class SearchField {
   constructor(chromInfo) {
+    //console.trace('chromInfo:', chromInfo)
     this.chromInfo = chromInfo;
     this.chromInfoBisector = bisector(d => d.pos).left;
   }
@@ -224,9 +225,6 @@ class SearchField {
     const sparts1 = parts[1].split(',');
     return [[+sparts0[0], +sparts0[1]],
       [+sparts1[0], +sparts1[1]]];
-
-
-    return [[0, 0], [0, 0]];
   }
 
   searchPosition(text) {
