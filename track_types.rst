@@ -86,11 +86,16 @@ along the diagonal.
     :align: right
 
 track-type: ``2d-rectangle-domains``
-datatype: ``2d-rectangle-domains``
 
 The rectangle domains track shows rectangular regions on the heatmap. These are
 commonly aggregated using clodius based on some importance using the ``clodius
-bedpe`` command.
+bedpe`` command. See the `data preparation section
+<data_preparation.html#bedpe-like-files>`_ for an example of the aggregation
+command.
+
+.. code-block:: bash
+
+    higlass-manage ingest --filetype bed2ddb --datatype 2d-rectangle-domains annotations.bed2ddb
 
 .. _horizontal-2d-rectangle-domain:
 

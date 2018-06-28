@@ -356,7 +356,7 @@ of the data sources, visualization types, visible region as well as searching
 and styling options.</p>
 <div class="section" id="show-a-specific-genomic-location">
 <h3>Show a specific genomic location<a class="headerlink" href="#show-a-specific-genomic-location" title="Permalink to this headline">¶</a></h3>
-<p>Say we want to have a viewconf which was centered on the gene OSR1. It’s
+<p>Say we want to have a viewconf which was centered on the gene OSR1. Its
 location is roughly between positions 19,500,000 and 19,600,000 on chromosome 7
 of the hg19 assembly. So what should <code class="docutils literal"><span class="pre">initialXDomain</span></code> be set to in order to
 show this gene?</p>
@@ -374,7 +374,7 @@ positions 268,750,621 and 268,850,621 for the <code class="docutils literal"><sp
 <h3>Upload a viewconf to the server<a class="headerlink" href="#upload-a-viewconf-to-the-server" title="Permalink to this headline">¶</a></h3>
 <p>A local viewconf can be sent to the server by sending a <code class="docutils literal"><span class="pre">POST</span></code> request. Make
 sure the actual viewconf is wrapped in the <code class="docutils literal"><span class="pre">viewconf</span></code> section of the posted
-json (e.g. ‘{“viewconf”: myViewConfig}’):</p>
+json (e.g. <cite>{“viewconf”: myViewConfig}</cite>):</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>curl -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
      -X POST <span class="se">\</span>
      -d <span class="s1">&#39;{&quot;viewconf&quot;: {&quot;editable&quot;: true, &quot;zoomFixed&quot;: false, &quot;trackSourceServers&quot;: [&quot;/api/v2&quot;, &quot;http://higlass.io/api/v1&quot;], &quot;exportViewUrl&quot;: &quot;/api/v1/viewconfs/&quot;, &quot;views&quot;: [{&quot;tracks&quot;: {&quot;top&quot;: [], &quot;left&quot;: [], &quot;center&quot;: [], &quot;right&quot;: [], &quot;bottom&quot;: []}, &quot;initialXDomain&quot;: [243883495.14563107, 2956116504.854369], &quot;initialYDomain&quot;: [804660194.1747572, 2395339805.825243], &quot;layout&quot;: {&quot;w&quot;: 12, &quot;h&quot;: 12, &quot;x&quot;: 0, &quot;y&quot;: 0, &quot;i&quot;: &quot;EwiSznw8ST2HF3CjHx-tCg&quot;, &quot;moved&quot;: false, &quot;static&quot;: false}, &quot;uid&quot;: &quot;EwiSznw8ST2HF3CjHx-tCg&quot;}], &quot;zoomLocks&quot;: {&quot;locksByViewUid&quot;: {}, &quot;locksDict&quot;: {}}, &quot;locationLocks&quot;: {&quot;locksByViewUid&quot;: {}, &quot;locksDict&quot;: {}}, &quot;valueScaleLocks&quot;: {&quot;locksByViewUid&quot;: {}, &quot;locksDict&quot;: {}}}}&#39;</span> http://localhost:8989/api/v1/viewconfs/
