@@ -32,8 +32,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.drawnRects = {};
 
     if (this.options.colorEncoding) {
-      if (this.options.colorEncoding.constructor === Array) {
-        this.colorScale = colorDomainToRgbaArray(this.options.colorEncoding);
+      if (this.options.colorRange) {
+        this.colorScale = colorDomainToRgbaArray(this.options.colorRange);
       } else {
         this.colorScale = HEATED_OBJECT_MAP;
       }
@@ -132,12 +132,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   removeTiles(toRemoveIds) {
     super.removeTiles(toRemoveIds);
 
-    // we're going to rerender after destroying tiles to make sure
+    // Pete: we're going to rerender after destroying tiles to make sure
     // any rectangles that were listed under 'drawnRects' don't get
     // ignored
-    // this.rerender(this.options);
-    if (toRemoveIds.length > 0)
-      this.rerender(this.options);
+    // Fritz: this line is causing unnecessary rerenderings. Seems to work fine
+    // without rerendering anyway, so I disabled it.
+    // if (toRemoveIds.length > 0) this.rerender(this.options);
   }
 
   drawTile(tile) {
@@ -151,6 +151,14 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     super.rerender(options, force);
 
     this.drawnRects = {};
+
+    if (this.options.colorEncoding) {
+      if (this.options.colorRange) {
+        this.colorScale = colorDomainToRgbaArray(this.options.colorRange);
+      } else {
+        this.colorScale = HEATED_OBJECT_MAP;
+      }
+    }
 
     for (const tile of this.visibleAndFetchedTiles()) {
       this.destroyTile(tile);
