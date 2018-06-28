@@ -485,7 +485,7 @@ export const tileDataToPixData = (
     }
   }
 
-  console.log('tile', tile);
+  // console.log('tile', tile);
   // clone the tileData so that the original array doesn't get neutered
   // when being passed to the worker script
   //const newTileData = tileData.dense;

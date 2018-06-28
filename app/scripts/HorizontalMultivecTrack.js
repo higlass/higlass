@@ -40,7 +40,6 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       canvas.width = this.tilesetInfo.shape[0];
       canvas.height = this.tilesetInfo.shape[1];
     } else {
-      console.log('tile_size:', this.tilesetInfo.tile_size, pixData.length);
       canvas.width = this.tilesetInfo.tile_size; //, pixData.length / 4);
       canvas.height = 1;
     }
@@ -229,9 +228,6 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)])
     const fetchedTile = this.fetchedTiles[tileId];
-
-    // console.log('tileId:', tileId);
-    // console.log('vaft:', this.visibleAndFetchedTiles());
 
     let value = '';
 
