@@ -313,8 +313,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       lensSize = lensSize % 2 == 0 ? lensSize + 1 : lensSize;
       console.log('lensSize', lensSize);
       this.setDataLensSize(lensSize);
+
+      this.getVisibleRectangleData();
+      return;
       
-      const visibleData = this.getVisibleData(this.dimensions[0] / 2,
+      const visibleData = this.getVisibleData(this.dimensions[0] / 2 - pixelsWidth / 2,
         this.dimensions[1] / 2);
 
       const center = [(this._xScale.domain()[1] - this._xScale.domain()[0]) / 2,
@@ -781,6 +784,61 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   /**
+   * Get the data in the visible rectangle
+   *
+   * The parameter coordinates are data coordinates.
+   */
+  getVisibleRectangleData() {
+    let zoomLevel = this.calculateZoomLevel();
+    zoomLevel = this.tilesetInfo.max_zoom ? Math.min(this.tilesetInfo.max_zoom, zoomLevel) : zoomLevel;
+
+    const tileWidth = tileProxy.calculateTileWidth(
+        this.tilesetInfo, zoomLevel, BINS_PER_TILE
+      );
+
+    // BP resolution of a tile's bin (i.e., numbe of base pairs per bin / pixel)
+    const tileRes = tileWidth / BINS_PER_TILE;
+
+    // the data domain of the currently visible region
+    const xDomain = this._xScale.domain();
+    const yDomain = this._yScale.domain();
+
+    // the bounds of the currently visible region in bins
+    const leftXBin = Math.floor(xDomain[0] / tileRes);
+    const leftYBin = Math.floor(yDomain[0] / tileRes);
+    const binWidth = Math.floor((xDomain[1] - xDomain[0]) / tileRes);
+    const binHeight = Math.floor((yDomain[1] - yDomain[0]) / tileRes);
+
+    // iterate through all the visible tiles
+    this.visibleAndFetchedTiles().map(tile => {
+      console.log('tile:', tile);
+
+      // get the tile's position and width (in data coordinates)
+      const {tileX, tileY, tileWidth, tileHeight} = 
+        this.getTilePosAndDimensions(tile.tileData.zoomLevel,
+          tile.tileData.tilePos, BINS_PER_TILE);
+
+      // calculate the tile's position in bins
+      const tileXStartBin = tileX / tileRes;
+      const tileXEndBin = (tileX + tileWidth) / tileRes;
+      const tileYStartBin = tileY / tileRes;
+      const tileYEndBin = (tileY + tileHeight) / tileRes;
+
+      // calculate which part of this tile is present in the current window
+      const tileSliceXStart = Math.max(leftXBin, tileXStartBin) - tileXStartBin;
+      const tileSliceYStart = Math.max(leftYBin, tileYStartBin) - tileYStartBin;
+      const tileSliceXEnd = Math.min(leftXBin + binWidth, tileXEndBin) - tileXStartBin;
+      const tileSliceYEnd = Math.min(leftYBin + binHeight, tileYEndBin) - tileYStartBin;
+
+      console.log('tile:', tileXStartBin, tileXEndBin, tileYStartBin, tileYEndBin);
+      console.log('slice:', tileSliceXStart, tileSliceXEnd, tileSliceYStart, tileSliceYEnd);
+    });
+
+    console.log('xDomain', xDomain);
+    console.log('leftXBin:', leftXBin, 'leftYBin', leftYBin, 'width', binWidth, 'height', binHeight);
+  }
+
+  /**
    * Get raw data for a relative 2D position. Returns a submatrix centered
    * around the given location.
    *
@@ -818,6 +876,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // Absolute tile array (i.e., data) position
     const dataX = Math.floor(this._xScale.invert(x) / tileRes);
     const dataY = Math.floor(this._yScale.invert(y) / tileRes);
+
+    console.log('dataX:', dataX, 'dataY:', dataY);
 
     // Relative tile array (i.e., data) position within hovering tile
     const dataRelX = dataX % BINS_PER_TILE;
@@ -880,6 +940,20 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       });
     } else {
       tileData.forEach((tile) => {
+        // there are a few different scenarios that can happen here
+        const {tileX, tileY, tileWidth, tileHeight} = 
+          this.getTilePosAndDimensions(tile.data.zoomLevel,
+            tile.data.tilePos, BINS_PER_TILE);
+
+        const tileXStartBins = tileX / tileRes;
+        const tileXEndBins = (tileX + tileWidth) / tileRes;
+        const tileYStartBins = tileY / tileRes;
+        const tileYEndBins = (tileY + tileHeight) / tileRes;
+
+        console.log('tileXRange', tileXStartBins, tileXEndBins, 
+          'tileYRange', tileYStartBins, tileYEndBins);
+        // 
+        //
         const midpointXTile = tile.mirrored
           ? xTile === tile.data.tilePos[1]
           : xTile === tile.data.tilePos[0];
@@ -916,6 +990,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
           dataRelYMax = yClosest === 0
             ? BINS_PER_TILE : mod(dataRelY + rPad, BINS_PER_TILE);
         }
+
+        console.log('dataRelXMin:', dataRelXMin, dataRelXMax);
+        console.log('dataRelYMin:', dataRelYMin, dataRelYMax);
 
         data = rangeQuery2d(
           tile.data.dense,

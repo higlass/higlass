@@ -30,6 +30,7 @@ import {
 // View configs
 import {
   // paperFigure1,
+  exportDataConfig,
   invalidTrackConfig,
   divergentTrackConfig,
   divisionViewConfig,
@@ -233,6 +234,46 @@ describe('Simple HiGlassComponent', () => {
     atm = null;
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
+
+  describe('Export data', () => {
+    const atm = null;
+
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:600px;height:1200px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: true }}
+        viewConfig={exportDataConfig}
+      />,
+        { attachTo: div });
+
+      waitForTilesLoaded(hgc, done);
+    });
+
+    it('once', (done) => {
+      const views = hgc.instance().state.views;
+      const tp = getTrackObject(hgc, 'NagBzk-AQZuoY0bqG-Yy0Q', 'PdEzdgsxRymGelD5xfKlNA');
+
+      tp.exportData();
+
+      waitForTilesLoaded(hgc, done);
+    });
+
+  });
+  return;
 
   describe('Track Resizing', () => {
     const atm = null;
