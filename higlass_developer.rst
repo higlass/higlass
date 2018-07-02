@@ -255,7 +255,7 @@ If it is not provided, the value is taken from the `exportViewUrl` value of the 
 
 .. code-block:: javascript
 
-  hgv.shareViewConfigAsLink()
+  hgv.shareViewConfigAsLink('http://localhost:8989/api/v1/viewconfs')
     .then((sharedViewConfig) => {
       console.log(`Shared view config (ID: ${sharedViewConfig.id}) is available at ${sharedViewConfig.url}`)
     })
