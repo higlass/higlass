@@ -886,7 +886,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         const midpointYTile = tile.mirrored
           ? yTile === tile.data.tilePos[0]
           : yTile === tile.data.tilePos[1];
-        console.log('tile', tile.data.tilePos, midPointXTile, midPointYTile);
+        console.log('tile', tile.data.tilePos, midpointXTile, midpointYTile);
 
         const xClosest = Math.round(dataRelX / BINS_PER_TILE);
         const yClosest = Math.round(dataRelY / BINS_PER_TILE);
