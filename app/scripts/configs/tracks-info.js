@@ -67,6 +67,7 @@ export const TRACKS_INFO = [
     minWidth: 100,
     orientation: '2d',
     thumbnail: svg2DHeatmapIcon,
+    exportable: true,
     defaultOptions: {
       backgroundColor: '#eeeeee',
       labelPosition: 'bottomRight',

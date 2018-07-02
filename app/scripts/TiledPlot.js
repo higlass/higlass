@@ -971,6 +971,8 @@ class TiledPlot extends React.Component {
     }
 
     trackObject.exportData();
+
+    this.closeMenus();
   }
 
   /**
