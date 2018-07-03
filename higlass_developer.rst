@@ -322,7 +322,7 @@ If it is not provided, the value is taken from the `exportViewUrl` value of the 
 
 **Prototype**
 
-shareViewConfigAsLink(url)
+``shareViewConfigAsLink(url)``
 
 **Example**
 
