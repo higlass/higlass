@@ -319,7 +319,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       output = {
         bounds: [this._xScale.domain(), this._yScale.domain()],
         dimensions: data.shape,
-        data: data.flatten(),
+        data: data.flatten().tolist(),
       }
 
       console.log('length:', output.data.shape)

@@ -1,10 +1,13 @@
 #!/usr/bin/python
 
 import json
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
 import argparse
+
+plt.switch_backend('Qt5Agg')
 
 def main():
     parser = argparse.ArgumentParser(description="""
