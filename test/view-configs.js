@@ -9,8 +9,8 @@ export const exportDataConfig =
     {
       "uid": "a",
       "initialXDomain": [
-        641726589.6752774,
-        677810070.7305707
+        480652506.7430513,
+        1436917478.5448952
       ],
       "tracks": {
         "top": [],
@@ -80,8 +80,8 @@ export const exportDataConfig =
         "static": false
       },
       "initialYDomain": [
-        2259217243.338727,
-        2409849375.162279
+        -542724630.897934,
+        3449246960.478492
       ],
       "genomePositionSearchBoxVisible": true,
       "genomePositionSearchBox": {
@@ -95,8 +95,8 @@ export const exportDataConfig =
     {
       "uid": "NagBzk-AQZuoY0bqG-Yy0Q",
       "initialXDomain": [
-        641726589.6752766,
-        677810070.7305712
+        480652506.7429197,
+        1436917478.5450268
       ],
       "tracks": {
         "top": [],
@@ -129,7 +129,7 @@ export const exportDataConfig =
                   "heatmapValueScaling": "log",
                   "showMousePosition": false,
                   "mousePositionColor": "#999999",
-                  "showTooltip": false,
+                  "showTooltip": true,
                   "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
                   "scaleStartPercent": "0.00000",
                   "scaleEndPercent": "1.00000"
@@ -166,8 +166,8 @@ export const exportDataConfig =
         "static": false
       },
       "initialYDomain": [
-        2259217243.3387246,
-        2409849375.1622815
+        -542724630.8984827,
+        3449246960.4790406
       ],
       "genomePositionSearchBoxVisible": true,
       "genomePositionSearchBox": {

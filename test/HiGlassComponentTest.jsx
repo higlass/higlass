@@ -266,8 +266,14 @@ describe('Simple HiGlassComponent', () => {
     it('once', (done) => {
       const views = hgc.instance().state.views;
       const tp = getTrackObject(hgc, 'NagBzk-AQZuoY0bqG-Yy0Q', 'PdEzdgsxRymGelD5xfKlNA');
+      
+      let data = tp.getVisibleRectangleData(262, 298, 1, 1);
 
-      tp.exportData();
+      data = tp.getVisibleRectangleData(0, 0, tp.dimensions[0], tp.dimensions[1]);
+      expect(data.shape[0]).to.eql(975);
+      expect(data.shape[1]).to.eql(234);
+
+      // tp.exportData();
 
       waitForTilesLoaded(hgc, done);
     });
