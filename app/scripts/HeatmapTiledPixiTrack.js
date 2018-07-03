@@ -156,12 +156,19 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       return;
     }
 
-    // temporarily disabled
-    return;
-
     const relX = x - this.position[0];
     const relY = y - this.position[1];
-    const data = this.getVisibleData(relX, relY);
+    let data = this.getVisibleRectangleData(relX - Math.ceil(this.dataLensSize / 2), 
+      relY - Math.ceil(this.dataLensSize / 2), this.dataLensSize, this.dataLensSize);
+    if (!data)
+      return;
+
+    try {
+      data = data.flatten().tolist();
+    } catch (err) {
+
+    }
+
     const dim = this.dataLensSize;
 
     let toRgb;
@@ -763,6 +770,14 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * Get the data in the visible rectangle
    *
    * The parameter coordinates are in pixel coordinates
+   * 
+   * @param {int} x: The upper left corner of the rectangle in pixel coordinates
+   * @param {int} y: The upper left corner of the rectangle in pixel coordinates
+   * @param {int} width: The width of the rectangle (pixels)
+   * @param {int} height: The height of the rectangle (pixels)
+   *
+   * @returns {numjs 2x2 array} The raw data visible in this region
+   *
    */
   getVisibleRectangleData(x, y, width, height) {
     let zoomLevel = this.calculateZoomLevel();
@@ -838,179 +853,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     });
 
     return out;
-  }
-
-  /**
-   * Get raw data for a relative 2D position. Returns a submatrix centered
-   * around the given location.
-   *
-   * @param  {Integer}  x  Relative X display position (i.e., mouse cursor).
-   * @param  {Integer}  y  Relative Y display position (i.e., mouse cursor).
-   * @return  {Array}  Float32Array with the raw data containing a square centered
-   * at the given location.
-   */
-  getVisibleData(x, y, lpad_param=null, rpad_param=null) {
-    // Init data
-    let data = new this.dataLens.constructor(this.dataLensSize ** 2);
-
-    if (!this.tilesetInfo) {
-      console.warn('Tileset info not available yet');
-      return data;
-    }
-  
-    const lPad = this.dataLensLPad;
-    const rPad = this.dataLensRPad;
-
-    if (this.dataLensSize > 100) {
-      console.log('large datalens');
-    }
-
-    let zoomLevel = this.calculateZoomLevel();
-    zoomLevel = this.tilesetInfo.max_zoom ? Math.min(this.tilesetInfo.max_zoom, zoomLevel) : zoomLevel;
-
-    const tileWidth = tileProxy.calculateTileWidth(
-        this.tilesetInfo, zoomLevel, BINS_PER_TILE
-      );
-
-    // BP resolution of a tile's bin (i.e., numbe of base pairs per bin / pixel)
-    const tileRes = tileWidth / BINS_PER_TILE;
-
-    // Absolute tile array (i.e., data) position
-    const dataX = Math.floor(this._xScale.invert(x) / tileRes);
-    const dataY = Math.floor(this._yScale.invert(y) / tileRes);
-
-    console.log('dataX:', dataX, 'dataY:', dataY);
-
-    // Relative tile array (i.e., data) position within hovering tile
-    const dataRelX = dataX % BINS_PER_TILE;
-    const dataRelY = dataY % BINS_PER_TILE;
-
-    // Tile position hovering
-    const xTile = Math.floor(dataX / BINS_PER_TILE);
-    const yTile = Math.floor(dataY / BINS_PER_TILE);
-
-    const xTiles = range(
-      Math.floor((dataX - lPad) / BINS_PER_TILE),
-      Math.floor((dataX + rPad) / BINS_PER_TILE) + 1
-    );
-
-    const yTiles = range(
-      Math.floor((dataY - lPad) / BINS_PER_TILE),
-      Math.floor((dataY + rPad) / BINS_PER_TILE) + 1
-    );
-
-    const tileIds = this.tilesToId(
-      xTiles, yTiles, this.zoomLevel, true
-    ).map(tile => this.tileToLocalId(tile));
-
-    let tileData = [];
-
-    try {
-      // fetch the tiles that contain data within this range
-      tileData = tileIds
-        .filter(id => id in this.fetchedTiles)
-        .map(
-        id => ({
-          data: this.fetchedTiles[id].tileData,
-          mirrored: this.fetchedTiles[id].mirrored
-        })
-      );
-    } catch (e) {
-      console.warn('Error getting tile data:', e);
-      // Nothing: probably `this.fetchedTiles[id]` is not available yet
-    }
-
-    if (
-      tileData.length === 1
-      || (
-        tileData.length === 2 &&
-        tileData[0].data.tilePositionId === tileData[1].data.tilePositionId
-      )
-    ) {
-      tileData.forEach((tile) => {
-        data = rangeQuery2d(
-          tile.data.dense,
-          BINS_PER_TILE,
-          this.dataLensSize,
-          [dataRelX - lPad, dataRelX + rPad],
-          [dataRelY - lPad, dataRelY + rPad],
-          tile.mirrored,
-          0,
-          0,
-          data,
-        );
-      });
-    } else {
-      tileData.forEach((tile) => {
-        // there are a few different scenarios that can happen here
-        const {tileX, tileY, tileWidth, tileHeight} = 
-          this.getTilePosAndDimensions(tile.data.zoomLevel,
-            tile.data.tilePos, BINS_PER_TILE);
-
-        const tileXStartBins = tileX / tileRes;
-        const tileXEndBins = (tileX + tileWidth) / tileRes;
-        const tileYStartBins = tileY / tileRes;
-        const tileYEndBins = (tileY + tileHeight) / tileRes;
-
-        console.log('tileXRange', tileXStartBins, tileXEndBins, 
-          'tileYRange', tileYStartBins, tileYEndBins);
-        // 
-        //
-        const midpointXTile = tile.mirrored
-          ? xTile === tile.data.tilePos[1]
-          : xTile === tile.data.tilePos[0];
-        const midpointYTile = tile.mirrored
-          ? yTile === tile.data.tilePos[0]
-          : yTile === tile.data.tilePos[1];
-        console.log('tile', tile.data.tilePos, midpointXTile, midpointYTile);
-
-        const xClosest = Math.round(dataRelX / BINS_PER_TILE);
-        const yClosest = Math.round(dataRelY / BINS_PER_TILE);
-
-        let dataRelXMin = Math.max(0, dataRelX - lPad);
-        let dataRelXMax = Math.min(BINS_PER_TILE, dataRelX + rPad);
-        let dataRelYMin = Math.max(0, dataRelY - lPad);
-        let dataRelYMax = Math.min(BINS_PER_TILE, dataRelY + rPad);
-
-        const xOff = midpointXTile
-          ? xClosest === 0 ? Math.max(0, this.dataLensSize - dataRelXMax) : 0
-          : xClosest === 0 ? 0 : Math.max(0, dataRelXMax - dataRelXMin);
-        const yOff = midpointYTile
-          ? yClosest === 0 ? Math.max(0, this.dataLensSize - dataRelYMax) : 0
-          : yClosest === 0 ? 0 : Math.max(0, dataRelYMax - dataRelYMin);
-
-        if (!midpointXTile) {
-          dataRelXMin = xClosest === 0
-            ? mod(dataRelX - lPad, BINS_PER_TILE) : 0;
-          dataRelXMax = xClosest === 0
-            ? BINS_PER_TILE : mod(dataRelX + rPad, BINS_PER_TILE);
-        }
-
-        if (!midpointYTile) {
-          dataRelYMin = yClosest === 0
-            ? mod(dataRelY - lPad, BINS_PER_TILE) : 0;
-          dataRelYMax = yClosest === 0
-            ? BINS_PER_TILE : mod(dataRelY + rPad, BINS_PER_TILE);
-        }
-
-        console.log('dataRelXMin:', dataRelXMin, dataRelXMax);
-        console.log('dataRelYMin:', dataRelYMin, dataRelYMax);
-
-        data = rangeQuery2d(
-          tile.data.dense,
-          BINS_PER_TILE,
-          this.dataLensSize,
-          [dataRelXMin, dataRelXMax],
-          [dataRelYMin, dataRelYMax],
-          tile.mirrored,
-          xOff,
-          yOff,
-          data,
-        );
-      });
-    }
-
-    return data;
   }
 
   /**
@@ -1373,7 +1215,12 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       positionText += '<br/>';
     }
 
-    const data = this.getVisibleRectangleData(trackX, trackY, 1, 1).flatten().tolist();
+    let data = null;
+    try {
+      data = this.getVisibleRectangleData(trackX, trackY, 1, 1).flatten().tolist();
+    } catch (err) {
+      return '';
+    }
 
     if (this.options.heatmapValueScaling == 'log')
       if (data[0] > 0)
