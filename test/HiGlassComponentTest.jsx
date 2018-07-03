@@ -233,7 +233,7 @@ describe('Simple HiGlassComponent', () => {
     div = null,
     atm = null;
 
-  jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 7000;
 
   describe('Export data', () => {
     const atm = null;

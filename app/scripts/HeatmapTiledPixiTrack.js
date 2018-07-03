@@ -1,3 +1,4 @@
+import nj from 'numjs';
 import { brushY } from 'd3-brush';
 import { range } from 'd3-array';
 import { format } from 'd3-format';
@@ -314,7 +315,15 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       console.log('lensSize', lensSize);
       this.setDataLensSize(lensSize);
 
-      this.getVisibleRectangleData();
+      const data = this.getVisibleRectangleData();
+      output = {
+        bounds: [this._xScale.domain(), this._yScale.domain()],
+        dimensions: data.shape,
+        data: data.flatten(),
+      }
+
+      console.log('length:', output.data.shape)
+      download('data.json', JSON.stringify(output));
       return;
       
       const visibleData = this.getVisibleData(this.dimensions[0] / 2 - pixelsWidth / 2,
@@ -809,6 +818,12 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const binWidth = Math.floor((xDomain[1] - xDomain[0]) / tileRes);
     const binHeight = Math.floor((yDomain[1] - yDomain[0]) / tileRes);
 
+    console.log('nj:', nj);
+    let out = nj.zeros([binWidth, binHeight]);
+    out.slice([0,binWidth],[0,binHeight]).assign(NaN, false);
+
+    // console.log('out:', JSON.stringify(out));
+
     // iterate through all the visible tiles
     this.visibleAndFetchedTiles().map(tile => {
       console.log('tile:', tile);
@@ -817,6 +832,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       const {tileX, tileY, tileWidth, tileHeight} = 
         this.getTilePosAndDimensions(tile.tileData.zoomLevel,
           tile.tileData.tilePos, BINS_PER_TILE);
+      const tileData = nj.array(Array.from(tile.tileData.dense)).reshape([BINS_PER_TILE, BINS_PER_TILE]);
 
       // calculate the tile's position in bins
       const tileXStartBin = tileX / tileRes;
@@ -830,12 +846,37 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       const tileSliceXEnd = Math.min(leftXBin + binWidth, tileXEndBin) - tileXStartBin;
       const tileSliceYEnd = Math.min(leftYBin + binHeight, tileYEndBin) - tileYStartBin;
 
+      // where in the output array will the portion of this tile which is in the
+      // visible window be placed?
+      const tileXOffset = Math.max(tileXStartBin - leftXBin, 0);
+      const tileYOffset = Math.max(tileYStartBin - leftYBin, 0);
+      const tileSliceWidth = tileSliceXEnd - tileSliceXStart;
+      const tileSliceHeight = tileSliceYEnd - tileSliceYStart;
+
+      const tileSlice = tileData.slice([tileSliceXStart, tileSliceXStart + tileSliceWidth],
+          [tileSliceYStart, tileSliceYStart + tileSliceHeight])
+      //console.log('tileSlice', JSON.stringify(tileSlice));
+
+      out.slice([tileXOffset, tileXOffset + tileSliceWidth],
+        [tileYOffset, tileYOffset + tileSliceHeight])
+        .assign(tileSlice, false);
+
+      /*
+      console.log('tileOffset', Math.max(tileXStartBin - leftXBin,0), 
+        Math.max(tileYStartBin - leftYBin, 0));
+      console.log('sliceWidth', tileSliceXEnd - tileSliceXStart);
+      console.log('sliceHeight', tileSliceYEnd - tileSliceYStart);
+
       console.log('tile:', tileXStartBin, tileXEndBin, tileYStartBin, tileYEndBin);
       console.log('slice:', tileSliceXStart, tileSliceXEnd, tileSliceYStart, tileSliceYEnd);
+      */
     });
 
+    /*
     console.log('xDomain', xDomain);
     console.log('leftXBin:', leftXBin, 'leftYBin', leftYBin, 'width', binWidth, 'height', binHeight);
+    */
+    return out;
   }
 
   /**

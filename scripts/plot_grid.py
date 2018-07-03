@@ -23,12 +23,15 @@ def main():
     with open(args.grid_filename, 'r') as f:
         grid = json.load(f)
         data = []
+        counter = 0
         for d in grid['data']:
             try: 
                 num = float(d)
             except:
                 num = 0
             data += [num]
+            counter += 1
+        print("counter:", counter)
 
         data = np.array(data)
         print('dimensions:', grid['dimensions'])
