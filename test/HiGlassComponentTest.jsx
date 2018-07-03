@@ -31,6 +31,7 @@ import {
 import {
   // paperFigure1,
   horizontalAndVerticalMultivec,
+  exportDataConfig,
   invalidTrackConfig,
   divergentTrackConfig,
   divisionViewConfig,
@@ -233,7 +234,52 @@ describe('Simple HiGlassComponent', () => {
     div = null,
     atm = null;
 
-  jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 7000;
+
+  describe('Export data', () => {
+    const atm = null;
+
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:600px;height:1200px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: true }}
+        viewConfig={exportDataConfig}
+      />,
+        { attachTo: div });
+
+      waitForTilesLoaded(hgc, done);
+    });
+
+    it('once', (done) => {
+      const views = hgc.instance().state.views;
+      const tp = getTrackObject(hgc, 'NagBzk-AQZuoY0bqG-Yy0Q', 'PdEzdgsxRymGelD5xfKlNA');
+      
+      let data = tp.getVisibleRectangleData(262, 298, 1, 1);
+
+      data = tp.getVisibleRectangleData(0, 0, tp.dimensions[0], tp.dimensions[1]);
+      expect(data.shape[0]).to.eql(975);
+      expect(data.shape[1]).to.eql(234);
+
+      tp.exportData();
+
+      waitForTilesLoaded(hgc, done);
+    });
+
+  });
 
   describe('Horizontal and vertical multivec', () => {
     const atm = null;
@@ -266,10 +312,8 @@ describe('Simple HiGlassComponent', () => {
     it('renders with no errors', (done) => {
       done();
     });
-    return;
 
   });
-  return;
 
   describe('Track Resizing', () => {
     const atm = null;

@@ -260,8 +260,8 @@ export default class SeriesListMenu extends ContextMenuContainer {
   render() {
     let exportDataMenuItem = null;
 
-    /*
-    if (TRACKS_INFO_BY_TYPE[this.props.hostTrack.type]) {
+    if (TRACKS_INFO_BY_TYPE[this.props.series.type] && 
+    TRACKS_INFO_BY_TYPE[this.props.series.type].exportable) {
       exportDataMenuItem = (
         <ContextMenuItem
           onClick={() => this.props.onExportData(this.props.hostTrack.uid, this.props.track.uid)}
@@ -276,7 +276,6 @@ export default class SeriesListMenu extends ContextMenuContainer {
         </ContextMenuItem>
       );
     }
-    */
 
     // if a track can't be replaced, this.props.onAddSeries
     // will be null so we don't need to display the menu item
