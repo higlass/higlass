@@ -25,3 +25,48 @@ To run higlass from its source code simply run the following:
 npm install
 npm run start
 ```
+
+### API
+
+HiGlass provides an API for controlling the component from within a Javascript script. Complete documentation is availabe at [docs.higlass.io](http://docs.higlass.io/higlass_developer.html#public-api). Example:
+
+```
+var testViewConfig =
+{
+  "editable": true,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1"
+  ],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs",
+  "views": [
+    {
+      "uid": "view1",
+      "tracks": {
+        "center": [
+              {
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "type": "heatmap"
+              }
+        ]
+      },
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "visible": true,
+        "chromInfoId": "hg19",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
+      }
+    }
+  ],
+
+}
+
+
+const api = hglib.createHgComponent(
+    document.getElementById('development-demo'),
+    testViewConfig,
+    { bounded: true }
+);
+```
