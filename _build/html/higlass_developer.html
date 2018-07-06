@@ -130,7 +130,19 @@ JSON viewconf views section under <code class="docutils literal"><span class="pr
 </pre></div>
 </div>
 <p>The passed in <code class="docutils literal"><span class="pre">viewUid</span></code> should refer to a view which is present. If it
-doesn’t, an exception will be thrown.</p>
+doesn’t, an exception will be thrown. Note that if this functio is invoked
+directly after a HiGlass component is created, the information about the
+visible tilesets will not have been retrieved from the server and
+<code class="docutils literal"><span class="pre">zoomToDataExtent</span></code> will not work as expected. To ensure that the
+visible data has been loaded from the server, use the <code class="docutils literal"><span class="pre">setViewConfig</span></code>
+function and place <code class="docutils literal"><span class="pre">zoomToDataExtent</span></code> in the promise resolution.</p>
+<p>Example:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">setViewConfig</span><span class="p">(</span><span class="nx">newViewConfig</span><span class="p">);</span>
+<span class="nx">p</span><span class="p">.</span><span class="nx">then</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">hgv</span><span class="p">.</span><span class="nx">zoomToDataExtent</span><span class="p">(</span><span class="s1">&#39;viewUid&#39;</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="zoom-to-a-data-location">
 <h3>Zoom to a data location<a class="headerlink" href="#zoom-to-a-data-location" title="Permalink to this headline">¶</a></h3>
@@ -174,7 +186,7 @@ on to a track to select a range for annotating regions.</p>
 <p><code class="docutils literal"><span class="pre">activateTool(mouseTool)</span></code></p>
 <p><strong>Parameters</strong></p>
 <dl class="docutils">
-<dt><a href="#id1"><span class="problematic" id="id2">``</span></a>mouseTool: string [default: ‘’]</dt>
+<dt><code class="docutils literal"><span class="pre">mouseTool:</span> <span class="pre">string</span> <span class="pre">[default:</span> <span class="pre">'']</span></code></dt>
 <dd>Select a mouse tool to use. Currently there only ‘default’ and ‘select’ are
 available.</dd>
 </dl>
@@ -303,7 +315,7 @@ available.</dd>
 the API endpoint used to export the view link (e.g. ‘<a class="reference external" href="http://localhost:8989/api/v1/viewconfs">http://localhost:8989/api/v1/viewconfs</a>’).
 If it is not provided, the value is taken from the <cite>exportViewUrl</cite> value of the viewconf.</p>
 <p><strong>Prototype</strong></p>
-<p>shareViewConfigAsLink(url)</p>
+<p><code class="docutils literal"><span class="pre">shareViewConfigAsLink(url)</span></code></p>
 <p><strong>Example</strong></p>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">shareViewConfigAsLink</span><span class="p">()</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">sharedViewConfig</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
@@ -360,7 +372,7 @@ and styling options.</p>
 location is roughly between positions 19,500,000 and 19,600,000 on chromosome 7
 of the hg19 assembly. So what should <code class="docutils literal"><span class="pre">initialXDomain</span></code> be set to in order to
 show this gene?</p>
-<p>Because <cite>initialXDomain</cite> accepts absolute coordinates calculated by
+<p>Because <code class="docutils literal"><span class="pre">initialXDomain</span></code> accepts absolute coordinates calculated by
 concatenating chromosomes according to a certain order, we need to calculate
 what chr2:19,500,000 and chr2:196,000,000 are in absolute coordinates.</p>
 <p>To do this we will assume a chromosome ordering consisting of chr1, chr2, …

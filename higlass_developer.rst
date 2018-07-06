@@ -110,7 +110,21 @@ the view, the HiGlass API exposes the  ``zoomToDataExtent`` function.
   hgv.zoomToDataExtent('viewUid');
 
 The passed in ``viewUid`` should refer to a view which is present. If it
-doesn't, an exception will be thrown.
+doesn't, an exception will be thrown. Note that if this functio is invoked
+directly after a HiGlass component is created, the information about the
+visible tilesets will not have been retrieved from the server and
+``zoomToDataExtent`` will not work as expected. To ensure that the
+visible data has been loaded from the server, use the ``setViewConfig``
+function and place ``zoomToDataExtent`` in the promise resolution.
+
+Example:
+
+.. code-block:: javascript
+
+    const p = hgv.setViewConfig(newViewConfig);
+    p.then(() => {
+        hgv.zoomToDataExtent('viewUid');
+    });
 
 
 Zoom to a data location
@@ -165,7 +179,7 @@ on to a track to select a range for annotating regions.
 
 **Parameters**
 
-``mouseTool: string [default: '']
+``mouseTool: string [default: '']``
     Select a mouse tool to use. Currently there only 'default' and 'select' are
     available.
 
@@ -388,7 +402,7 @@ location is roughly between positions 19,500,000 and 19,600,000 on chromosome 7
 of the hg19 assembly. So what should ``initialXDomain`` be set to in order to
 show this gene?
 
-Because `initialXDomain` accepts absolute coordinates calculated by
+Because ``initialXDomain`` accepts absolute coordinates calculated by
 concatenating chromosomes according to a certain order, we need to calculate
 what chr2:19,500,000 and chr2:196,000,000 are in absolute coordinates.
 
