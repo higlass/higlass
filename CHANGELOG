@@ -1,3 +1,7 @@
+v1.1.1
+
+- Check whether the tileset_info specifies that the tiles should be mirrored
+
 v1.1.0
 
 - Added data export feature
