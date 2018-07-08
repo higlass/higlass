@@ -967,7 +967,7 @@ class TiledPlot extends React.Component {
       // the track whose data we're trying to export is part of a combined track
       trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject.createdTracks[track.uid];
     } else {
-      trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject.createdTracks[track.uid];
+      trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject;
     }
 
     trackObject.exportData();
