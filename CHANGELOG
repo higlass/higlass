@@ -1,10 +1,8 @@
-v1.1.1
-
-- Check whether the tileset_info specifies that the tiles should be mirrored
-
 v1.1.0
 
+- Check whether the tileset_info specifies that the tiles should be mirrored
 - Added data export feature
+- Added showMousePosition and showMouseTooltip to horizontal-bar-track
 
 v1.0.4
 
