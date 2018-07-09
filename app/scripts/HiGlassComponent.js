@@ -92,6 +92,7 @@ class HiGlassComponent extends React.Component {
     this.xScales = {};
     this.yScales = {};
     this.topDiv = null;
+    this.zoomToDataExtentOnInit = new Set();
 
     // a reference of view / track combinations
     // to be used with combined to viewAndTrackUid
@@ -2761,10 +2762,14 @@ class HiGlassComponent extends React.Component {
 
       viewsByUid[v.uid] = v;
 
+      if (this.zoomToDataExtentOnInit.has(v.uid))
+        this.zoomToDataExtentOnInit.delete(v.uid);
+
       if (!v.initialXDomain) {
         console.warn('No initialXDomain provided in the view config.');
         v.initialXDomain = [0, 100];
-        v.zoomToDataExtentOnInit = true;
+
+        this.zoomToDataExtentOnInit.add(v.uid);
       } else {
         v.initialXDomain[0] = +v.initialXDomain[0];
         v.initialXDomain[1] = +v.initialXDomain[1];
@@ -3210,7 +3215,7 @@ class HiGlassComponent extends React.Component {
             xDomainLimits={view.xDomainLimits}
             yDomainLimits={view.yDomainLimits}
             zoomLimits={view.zoomLimits}
-            zoomToDataExtentOnInit={view.zoomToDataExtentOnInit}
+            zoomToDataExtentOnInit={this.zoomToDataExtentOnInit.has(view.uid)}
             mouseTool={this.state.mouseTool}
             onChangeTrackType={(trackId, newType) =>
               this.handleChangeTrackType(view.uid, trackId, newType)}
@@ -3454,6 +3459,16 @@ class HiGlassComponent extends React.Component {
         <svg
           ref={(c) => { this.svgElement = c; }}
           styleName="styles.higlass-svg"
+          style={{
+            // inline the styles so they aren't overriden by other css
+            // on the web page
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            left: 0,
+            top: 0,
+            pointerEvents: 'none',
+          }}
         />
         {exportLinkModal}
       </div>

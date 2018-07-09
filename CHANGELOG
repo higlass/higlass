@@ -1,3 +1,8 @@
+v1.1.2
+
+- Inline the SVG styles so they aren't overwritten by other elments on the
+page
+
 v1.1.1
 
 - Fixed export track data bug in heatmaps that are not combined tracks
