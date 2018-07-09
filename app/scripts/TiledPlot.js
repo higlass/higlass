@@ -399,7 +399,7 @@ class TiledPlot extends React.Component {
       // We distinguish between tracks that need a tileset info and those whoch
       // don't by comparing `undefined` vs something else, i.e., tracks that
       // need a tileset info will be initialized with `this.tilesetInfo = null;`.
-      .filter(tilesetInfo => typeof tilesetInfo !== 'undefined')
+      .filter(tilesetInfo => typeof tilesetInfo !== 'undefined' && tilesetInfo !== true)
       .length;
 
     const loadedTilesetInfos = Object.values(this.tracksByUidInit)
