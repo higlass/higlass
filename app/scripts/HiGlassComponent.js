@@ -3090,7 +3090,8 @@ class HiGlassComponent extends React.Component {
 
     mouseOverDiv.style('position', 'fixed')
       .style('left', `${mousePos[0]}px`)
-      .style('top', `${mousePos[1]}px`);
+      .style('top', `${mousePos[1]}px`)
+      .style('z-index', 1);
 
     // probably not over a track so there's no mouseover rectangle
     if (!mouseOverDiv.node()) return;
