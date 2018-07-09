@@ -2,6 +2,9 @@ v1.1.2
 
 - Inline the SVG styles so they aren't overwritten by other elments on the
 page
+- Inline TrackControl svg styles so they aren't overwritten by page css
+settings
+- Clear gene annotation graphics before redrawing
 
 v1.1.1
 
