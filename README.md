@@ -31,6 +31,21 @@ npm run start
 HiGlass provides an API for controlling the component from within a Javascript script. Complete documentation is availabe at [docs.higlass.io](http://docs.higlass.io/higlass_developer.html#public-api). Example:
 
 ```
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="https://unpkg.com/higlass@1.0.1/dist/styles/hglib.css" type="text/css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.2/react.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/15.6.2/react-dom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.2/pixi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js"></script>
+<script src="https://unpkg.com/higlass@1.0.1/dist/scripts/hglib.js"></script>
+
+<div
+    id="development-demo"
+    style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem">
+</div>
+
+<script>
 var testViewConfig =
 {
   "editable": true,
@@ -69,4 +84,10 @@ const api = hglib.createHgComponent(
     testViewConfig,
     { bounded: true }
 );
+</script>
 ```
+
+### License
+
+HiGlass is provided under the MIT License.
+
