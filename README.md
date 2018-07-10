@@ -86,6 +86,11 @@ const api = hglib.createHgComponent(
 );
 </script>
 ```
+### Related
+
+* [HiGlass Manage](https://github.com/hms-dbmi/higlass-manage) - Easy to use interface for deploying a local HiGlass instance
+* [HiGlass Docker](https://github.com/hms-dbmi/higlass-docker) - Build an image containing all the components necessary to deploy HiGlass
+* [HiGlass Server](https://github.com/hms-dbmi/higlass-server) - Server component for serving multi-resolution data
 
 ### License
 
