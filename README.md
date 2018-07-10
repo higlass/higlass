@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/56026057.svg)](https://zenodo.org/badge/latestdoi/56026057)
+
 ### Introduction
 
 HiGlass is a web-based viewer for genome interaction maps
