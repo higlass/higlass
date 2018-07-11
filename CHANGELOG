@@ -2,6 +2,7 @@ v1.1.4
 
 - Fix the checkAllTilesetInfoReceived function so that it ignores left and top
 axis tracks
+- First release to be registered with Zenodo
 
 v1.1.3
 
