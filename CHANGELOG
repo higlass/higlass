@@ -1,3 +1,8 @@
+v1.1.5
+
+- Merge'd Chuck's PR for adding 'same-origin' to fetch request headers
+- Fixed a bug where a view without a layout is created with a width of 1
+
 v1.1.4
 
 - Fix the checkAllTilesetInfoReceived function so that it ignores left and top

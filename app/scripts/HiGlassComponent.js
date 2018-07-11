@@ -1672,6 +1672,7 @@ class HiGlassComponent extends React.Component {
     if ('layout' in view) {
       layout = view.layout;
     } else {
+      /*
       const minTrackHeight = 30;
       const elementWidth = this.element.clientWidth;
 
@@ -1680,10 +1681,15 @@ class HiGlassComponent extends React.Component {
         leftWidth, rightWidth,
         centerWidth, centerHeight } = this.calculateViewDimensions(view);
 
+      // console.log('totalWidth:', totalWidth, totalHeight, leftWidth, rightWidth, centerWidth, centerHeight);
+
       if (view.searchBox) { totalHeight += 30; }
 
       const heightGrid = Math.ceil(totalHeight / this.rowHeight);
 
+      */
+
+      // we're keeping this simple, just make the view 12x12
       layout = {
         x: 0,
         y: 0,
@@ -1720,6 +1726,9 @@ class HiGlassComponent extends React.Component {
         layout.i = slugid.nice();
         */
     }
+
+
+    console.trace('generated layout:', layout);
 
     return layout;
   }
@@ -2358,7 +2367,7 @@ class HiGlassComponent extends React.Component {
         return response.json()
       })
       .catch(err => {
-        console.log('err:', err)
+        console.warn('err:', err)
       })
       .then(_json => {
         return {
@@ -2727,7 +2736,7 @@ class HiGlassComponent extends React.Component {
 
     for (const v of dictValues(viewsByUid)) {
       for (const trackOrientation of ['left', 'top', 'center', 'right', 'bottom']) {
-        if (v.tracks.hasOwnProperty(trackOrientation)) {
+        if (v.tracks && v.tracks.hasOwnProperty(trackOrientation)) {
           // filter out invalid tracks
           v.tracks[trackOrientation] = v.tracks[trackOrientation]
             .filter(t => this.isTrackValid(t, viewUidsSet));
@@ -2747,15 +2756,22 @@ class HiGlassComponent extends React.Component {
   }
 
   processViewConfig(viewConfig) {
-    const views = viewConfig.views;
+    let views = viewConfig.views;
     let viewsByUid = {};
 
     if (!viewConfig.views || viewConfig.views.length === 0) {
-      throw 'No views provided in viewConfig';
+      console.warn('No views provided in viewConfig');
+      views = [
+        {
+          editable: true,
+          tracks: {}
+        }
+      ];
     }
 
     views.forEach((v) => {
-      fillInMinWidths(v.tracks);
+      if (v.tracks)
+        fillInMinWidths(v.tracks);
 
       // if a view doesn't have a uid, assign it one
       if (!v.uid) { v.uid = slugid.nice(); }
@@ -2818,6 +2834,10 @@ class HiGlassComponent extends React.Component {
           for (const ct of t.contents) { this.addDefaultOptions(ct); }
         }
       });
+
+      if (!v.layout) {
+        v.layout = this.generateViewLayout(v);
+      }
     });
 
     viewsByUid = this.removeInvalidTracks(viewsByUid);
@@ -2888,8 +2908,6 @@ class HiGlassComponent extends React.Component {
 
   onLocationChange(viewId, callback, callbackId) {
     const viewsIds = Object.keys(this.state.views);
-
-    console.log('viewIds:', viewsIds, viewId);
 
     if (!viewsIds.length) {
       // HiGlass was probably initialized with an URL instead of a viewconfig
