@@ -1,3 +1,7 @@
+v1.1.1
+
+- Fixed a bug where a view without a layout is created with a width of 1
+
 v1.1.0
 
 - Added data export feature
