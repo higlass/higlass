@@ -1,3 +1,12 @@
+v1.1.6
+
+- Fixed colorbar positioning bug
+- Remove all tracks from the 'whole' window when clearing the view
+- Fixed track type selection bug
+(https://github.com/hms-dbmi/higlass/issues/245)
+- Fixed zoom to data extent issue
+(https://github.com/hms-dbmi/higlass/issues/262)
+
 v1.1.5
 
 - Merge'd Chuck's PR for adding 'same-origin' to fetch request headers

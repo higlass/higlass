@@ -1746,6 +1746,7 @@ class HiGlassComponent extends React.Component {
     views[viewUid].tracks.center = [];
     views[viewUid].tracks.left = [];
     views[viewUid].tracks.right = [];
+    views[viewUid].tracks.whole = [];
 
     this.setState({
       views: views,
@@ -2394,11 +2395,26 @@ class HiGlassComponent extends React.Component {
          */
     const views = this.state.views;
 
-    views[viewUid].initialXDomain = newXDomain;
-    views[viewUid].initialYDomain = newYDomain;
+    if (this.zoomLocks[viewUid]) {
+      const lockGroup = this.zoomLocks[viewUid];
+      const lockGroupItems = dictItems(lockGroup);
+      
+      for (let i = 0; i < lockGroupItems.length; i++) {
+        const key = lockGroupItems[i][0];
 
-    this.xScales[viewUid] = scaleLinear().domain(newXDomain);
-    this.yScales[viewUid] = scaleLinear().domain(newYDomain);
+        if (!(key in this.locationLocks)) {
+          // only zoom to extent if both zoom and location
+          // are locked
+          continue;
+        }
+
+        views[key].initialXDomain = newXDomain;
+        views[key].initialYDomain = newYDomain;
+
+        this.xScales[key] = scaleLinear().domain(newXDomain);
+        this.yScales[key] = scaleLinear().domain(newYDomain);
+      }
+    }
 
     this.setState({ views });
   }
