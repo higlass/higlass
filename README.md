@@ -28,6 +28,14 @@ npm install
 npm run start
 ```
 
+**Troubleshooting:**
+
+- If the installation fails due to `sharp` > `node-gyp` try installing the node packages using `python2`:
+
+  ```
+  npm i --python=/usr/bin/python2
+  ```
+
 ### API
 
 HiGlass provides an API for controlling the component from within a Javascript script. Complete documentation is availabe at [docs.higlass.io](http://docs.higlass.io/higlass_developer.html#public-api). Example:
