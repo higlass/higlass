@@ -5,7 +5,7 @@ import React from 'react';
 
 import { getDarkTheme } from './services/is-dark-theme';
 
-import '../styles/DraggableTrack.css';
+import styles from '../styles/DraggableDiv.module.scss'; // eslint-disable-line no-unused-vars
 
 class DraggableDiv extends React.Component {
   constructor(props) {
@@ -266,6 +266,14 @@ class DraggableDiv extends React.Component {
     this.props.trackClosed(this.state.uid);
   }
 
+  mouseLeaveHandler() {
+    console.log('MOUSE ENTER');
+  }
+
+  mouseLeaveHandler() {
+    console.log('MOUSE LEAVE');
+  }
+
   /* ------------------------------ Rendering ------------------------------- */
 
   render() {
@@ -285,48 +293,32 @@ class DraggableDiv extends React.Component {
     const resizeHeight = 10;
 
     const bottomStyle = {
-      position: 'absolute',
       left: (this.state.width / 2) - (resizeWidth / 2),
       bottom: 1,
       width: resizeWidth,
-      opacity: 0.2,
-      height: 4,
       borderBottom: `1px solid ${dragColor}`,
       borderTop: `1px solid ${dragColor}`,
-      cursor: 'row-resize'
     };
     const topStyle = {
-      position: 'absolute',
       left: (this.state.width / 2) - (resizeWidth / 2),
       top: 1,
       width: resizeWidth,
-      opacity: 0.2,
-      height: 4,
       borderBottom: `1px solid ${dragColor}`,
       borderTop: `1px solid ${dragColor}`,
-      cursor: 'row-resize'
     };
     const leftStyle = {
-      position: 'absolute',
       left: 1,
       top: (this.state.height / 2) - (resizeHeight / 2),
-      opacity: 0.2,
-      width: 4,
       height: resizeHeight,
       borderLeft: `1px solid ${dragColor}`,
       borderRight: `1px solid ${dragColor}`,
-      cursor: 'col-resize'
     };
     const rightStyle = {
-      position: 'absolute',
       right: 1,
-      opacity: 0.2,
       top: (this.state.height / 2) - (resizeHeight / 2),
-      width: 4,
       height: resizeHeight,
       borderLeft: `1px solid ${dragColor}`,
       borderRight: `1px solid ${dragColor}`,
-      cursor: 'col-resize'
     };
 
     const resizeHandleDivs = {
@@ -334,7 +326,7 @@ class DraggableDiv extends React.Component {
         <div
           key="bottom"
           ref={(c) => { this.bottomHandle = c; }}
-          className="bottom-draggable-handle"
+          styleName="bottom-draggable-handle"
           style={bottomStyle}
         />
       ),
@@ -342,7 +334,7 @@ class DraggableDiv extends React.Component {
         <div
           key="top"
           ref={(c) => { this.topHandle = c; }}
-          className="top-draggable-handle"
+          styleName="top-draggable-handle"
           style={topStyle}
         />
       ),
@@ -350,7 +342,7 @@ class DraggableDiv extends React.Component {
         <div
           key="right"
           ref={(c) => { this.rightHandle = c; }}
-          className="right-draggable-handle"
+          styleName="right-draggable-handle"
           style={rightStyle}
         />
       ),
@@ -358,7 +350,7 @@ class DraggableDiv extends React.Component {
         <div
           key="left"
           ref={(c) => { this.leftHandle = c; }}
-          className="left-draggable-handle"
+          styleName="left-draggable-handle"
           style={leftStyle}
         />
       )
@@ -370,7 +362,10 @@ class DraggableDiv extends React.Component {
       <div
         ref={(c) => { this.divContainer = c; }}
         className={this.props.className}
+        onMouseEnter={this.mouseEnterHandler}
+        onMouseLeave={this.mouseLeaveHandler}
         style={divStyle}
+        styleName="draggable-div"
       >
         {resizeHandles}
       </div>
