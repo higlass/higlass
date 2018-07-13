@@ -33,7 +33,6 @@ class MoveableTrack extends TrackArea {
           // if (checkMousePosVsEl(
           //   e.nativeEvent.clientX, e.nativeEvent.clientY, this.el
           // )) {
-          //   console.log('????');
           //   return;
           // }
           this.handleMouseLeave();

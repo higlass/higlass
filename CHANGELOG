@@ -1,5 +1,6 @@
 v1.1.6
 
+- Fix #263
 - Make resize handle fade out and in upon mouse enter of a draggable div
 - Enlarge resize handle upon mouse enter
 - Fixed colorbar positioning bug
