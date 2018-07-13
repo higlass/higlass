@@ -217,7 +217,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const {
       tileX, tileY, tileWidth, tileHeight
     } = this.getTilePosAndDimensions(zoomLevel, tilePos);
-    console.log('tileX:', tileX, tileY, tileWidth, tileHeight);
 
     const dim = {};
 
@@ -1169,8 +1168,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.yTiles = tileProxy.calculateTiles(
         this.zoomLevel,
         this._yScale,
-        this.tilesetInfo.min_pos[1],
-        this.tilesetInfo.max_pos[1],
+        this.options.reverseYAxis ? -this.tilesetInfo.max_pos[1] : this.tilesetInfo.min_pos[1],
+        this.options.reverseYAxis ? -this.tilesetInfo.min_pos[1] : this.tilesetInfo.max_pos[1],
         this.tilesetInfo.max_zoom,
         this.tilesetInfo.max_width1 || this.tilesetInfo.max_width
       );
@@ -1270,7 +1269,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const yTilePos = tilePos[1];
 
     const minX = this.tilesetInfo.min_pos[0];
-    const minY = this.tilesetInfo.max_pos[0];
+    const minY = this.options.reverseYAxis ? 
+      -this.tilesetInfo.max_pos[1] : this.tilesetInfo.min_pos[1];
 
     const tileWidth = this.tilesetInfo.max_width / (2 ** zoomLevel);
     const tileHeight = this.tilesetInfo.max_width / (2 ** zoomLevel);
