@@ -266,14 +266,6 @@ class DraggableDiv extends React.Component {
     this.props.trackClosed(this.state.uid);
   }
 
-  mouseLeaveHandler() {
-    console.log('MOUSE ENTER');
-  }
-
-  mouseLeaveHandler() {
-    console.log('MOUSE LEAVE');
-  }
-
   /* ------------------------------ Rendering ------------------------------- */
 
   render() {
@@ -362,8 +354,6 @@ class DraggableDiv extends React.Component {
       <div
         ref={(c) => { this.divContainer = c; }}
         className={this.props.className}
-        onMouseEnter={this.mouseEnterHandler}
-        onMouseLeave={this.mouseLeaveHandler}
         style={divStyle}
         styleName="draggable-div"
       >
