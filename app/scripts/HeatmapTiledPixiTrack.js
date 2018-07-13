@@ -434,6 +434,30 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.brushing = false;
   }
 
+  setPosition(newPosition) {
+    super.setPosition(newPosition);
+
+    this.drawColorbar();
+
+  }
+  setDimensions(newDimensions) {
+    super.setDimensions(newDimensions);
+
+    this.drawColorbar();
+  }
+
+  removeColorbar() {
+    this.pColorbarArea.visible = false;
+
+    if (this.scaleBrush.on('.brush')) {
+      this.gColorscaleBrush.call(this.scaleBrush.move, null);
+    }
+
+    // turn off the color scale brush
+    this.gColorscaleBrush.on('.brush', null);
+    this.gColorscaleBrush.selectAll('rect').remove();
+  }
+
   drawColorbar() {
     this.pColorbar.clear();
 
@@ -441,15 +465,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       !this.options.colorbarPosition
       || this.options.colorbarPosition === 'hidden'
     ) {
-      this.pColorbarArea.visible = false;
-
-      if (this.scaleBrush.on('.brush')) {
-        this.gColorscaleBrush.call(this.scaleBrush.move, null);
-      }
-
-      // turn off the color scale brush
-      this.gColorscaleBrush.on('.brush', null);
-      this.gColorscaleBrush.selectAll('rect').remove();
+      this.removeColorbar();
 
       return;
     }
@@ -467,7 +483,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.colorbarHeight = colorbarAreaHeight - (2 * COLORBAR_MARGIN);
 
     //  no point in drawing the colorbar if it's not going to be visible
-    if (this.colorbarHeight < 0) return;
+    if (this.colorbarHeight < 0) {
+      // turn off the color scale brush
+      this.removeColorbar();
+      return;
+    }
 
     const colorbarAreaWidth = (
       COLORBAR_WIDTH +
@@ -481,7 +501,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const axisValueScale = this.valueScale.copy()
       .range([this.colorbarHeight, 0]);
 
-    // console.log('new brushY');
     // this.scaleBrush = brushY();
 
     // this is to make the handles of the scale brush stick out away
@@ -845,7 +864,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       const tileSlice = tileData.slice(
         [tileSliceYStart, tileSliceYStart + tileSliceHeight],
         [tileSliceXStart, tileSliceXStart + tileSliceWidth])
-      //console.log('tileSlice', JSON.stringify(tileSlice));
 
       out.slice([tileYOffset, tileYOffset + tileSliceHeight],
         [tileXOffset, tileXOffset + tileSliceWidth])

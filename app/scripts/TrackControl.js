@@ -74,7 +74,7 @@ const TrackControl = (props) => {
             imgConfig.getBoundingClientRect()
           );
         }}
-        style={props.imgStyleSettings}
+        style={Object.assign({ height: '20px', width: '20px' }, props.imgStyleSettings)}
         styleName={getButtonClassNames(props)}
       >
         <use xlinkHref="#cog" />
@@ -84,7 +84,7 @@ const TrackControl = (props) => {
         <svg
           className="no-zoom"
           onClick={() => props.onAddSeries(props.uid)}
-          style={props.imgStyleAdd}
+          style={Object.assign({ height: '20px', width: '20px' }, props.imgStyleAdd)}
           styleName={getButtonClassNames(props)}
         >
           <use xlinkHref="#plus" />
@@ -100,7 +100,7 @@ const TrackControl = (props) => {
             imgClose.getBoundingClientRect()
           );
         }}
-        style={props.imgStyleClose}
+        style={Object.assign({ height: '20px', width: '20px'}, props.imgStyleClose)}
         styleName={getButtonClassNames(props)}
       >
         <use xlinkHref="#cross" />
