@@ -1221,9 +1221,7 @@ class TiledPlot extends React.Component {
   }
 
   rangeSelection1dHandler(axis) {
-    if (!this.xScale || !this.yScale) {
-      this.getXYScales();
-    }
+    if (!this.xScale || !this.yScale) this.getXYScales();
 
     const scale = axis === 'x' ? this.xScale : this.yScale;
 
@@ -1272,6 +1270,38 @@ class TiledPlot extends React.Component {
         rangeSelectionEnd: false,
       });
     }
+  }
+
+  rangeSelection2dEndHandler(range) {
+    if (!this.xScale || !this.yScale) this.getXYScales();
+
+    let dataPosX = this.rangeViewToDataLoci(range[0], this.xScale);
+    let dataPosY = this.rangeViewToDataLoci(range[1], this.yScale);
+    const dataPos = [dataPosX, dataPosY];
+
+    // Enforce range selection size constraints
+    const sizeX = dataPosX[1] - dataPosX[0];
+    const sizeY = dataPosY[1] - dataPosY[0];
+    const size = [sizeX, sizeY];
+
+    dataPos.forEach((pos, i) => {
+      if (this.props.rangeSelection1dSize[0] > size[i]) {
+        // Blow selection up
+        const center = pos[0] + Math.round(size[i] / 2);
+        pos[0] = center - (this.props.rangeSelection1dSize[0] / 2);
+        pos[1] = center + (this.props.rangeSelection1dSize[0] / 2);
+      } else if (this.props.rangeSelection1dSize[1] < size[i]) {
+        // Shrink selection
+        const center = pos[0] + Math.round(size[i] / 2);
+        pos[0] = center - (this.props.rangeSelection1dSize[1] / 2);
+        pos[1] = center + (this.props.rangeSelection1dSize[1] / 2);
+      }
+    });
+
+    this.setState({
+      rangeSelection: dataPos,
+      rangeSelectionEnd: true,
+    });
   }
 
   getContextMenu() {
@@ -1744,11 +1774,14 @@ class TiledPlot extends React.Component {
             onAddSeries={this.handleAddSeries.bind(this)}
             onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
             onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-            onRangeSelectionEnd={this.rangeSelectionResetHandler.bind(this)}
+            onRangeSelectionReset={this.rangeSelectionResetHandler.bind(this)}
             onRangeSelectionStart={this.rangeSelection2dStartHandler.bind(this)}
             onRangeSelectionX={this.rangeSelection1dHandler('x').bind(this)}
+            onRangeSelectionXEnd={this.rangeSelection1dEndHandler('x').bind(this)}
             onRangeSelectionXY={this.rangeSelection2dHandler.bind(this)}
+            onRangeSelectionXYEnd={this.rangeSelection2dEndHandler.bind(this)}
             onRangeSelectionY={this.rangeSelection1dHandler('y').bind(this)}
+            onRangeSelectionYEnd={this.rangeSelection1dEndHandler('y').bind(this)}
             rangeSelection={this.state.rangeSelection}
             rangeSelectionEnd={this.state.rangeSelectionEnd}
             scaleX={this.xScale}
