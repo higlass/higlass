@@ -1135,6 +1135,9 @@ class TrackRenderer extends React.Component {
       );
     }
 
+    this.currentXScale = newXScale;
+    this.currentYScale = newYScale;
+
     if (notify) {
       this.currentProps.onScalesChanged(newXScale, newYScale);
     }

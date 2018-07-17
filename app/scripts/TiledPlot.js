@@ -1135,6 +1135,15 @@ class TiledPlot extends React.Component {
     });
   }
 
+  getXYScales() {
+    if (this.trackRenderer) {
+      this.xScale = this.trackRenderer.currentXScale;
+      this.yScale = this.trackRenderer.currentYScale;
+    } else {
+      console.warn('TrackRenderer is not available. Cannot get x and y scales');
+    }
+  }
+
   /**
    * Translate view to data location.
    *
@@ -1151,6 +1160,8 @@ class TiledPlot extends React.Component {
    * @return  {Array}  2D array of data locations
    */
   rangeViewToDataLoci(range, scale) {
+    if (!scale) return [null, null];
+
     return [
       parseInt(scale.invert(range[0]), 10),
       parseInt(scale.invert(range[1]), 10),
@@ -1168,6 +1179,8 @@ class TiledPlot extends React.Component {
   }
 
   rangeSelection1dHandler(axis) {
+    if (!this.xScale || !this.yScale) this.getXYScales();
+
     const scale = axis === 'x' ? this.xScale : this.yScale;
 
     return (range) => {
@@ -1194,6 +1207,8 @@ class TiledPlot extends React.Component {
   }
 
   rangeSelection2dHandler(range) {
+    if (!this.xScale || !this.yScale) this.getXYScales();
+
     this.setState({
       rangeSelection: [
         this.rangeViewToDataLoci(range[0], this.xScale),
