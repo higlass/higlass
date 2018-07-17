@@ -52,6 +52,14 @@ const api = function api(context) {
       ReactDOM.unmountComponentAtNode(self.topDiv.parentNode);
     },
 
+    setRangeSelectionToInt() {
+      self.setState({ rangeSelectionToInt: true });
+    },
+
+    setRangeSelectionToFloat() {
+      self.setState({ rangeSelectionToInt: false });
+    },
+
     setRangeSelection1dSize(minSize = 0, maxSize = Infinity) {
       self.setState({
         rangeSelection1dSize: [minSize, maxSize]

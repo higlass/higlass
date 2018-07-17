@@ -1213,6 +1213,11 @@ class TiledPlot extends React.Component {
 
       newRangeSelection[accessor] = dataPos;
 
+      if (this.props.rangeSelectionToInt) {
+        newRangeSelection[accessor] = newRangeSelection[accessor]
+          .map(x => Math.round(x));
+      }
+
       this.setState({
         rangeSelection: newRangeSelection,
         rangeSelectionEnd: true,
@@ -1277,7 +1282,7 @@ class TiledPlot extends React.Component {
 
     let dataPosX = this.rangeViewToDataLoci(range[0], this.xScale);
     let dataPosY = this.rangeViewToDataLoci(range[1], this.yScale);
-    const dataPos = [dataPosX, dataPosY];
+    let dataPos = [dataPosX, dataPosY];
 
     // Enforce range selection size constraints
     const sizeX = dataPosX[1] - dataPosX[0];
@@ -1297,6 +1302,10 @@ class TiledPlot extends React.Component {
         pos[1] = center + (this.props.rangeSelection1dSize[1] / 2);
       }
     });
+
+    if (this.props.rangeSelectionToInt) {
+      dataPos = dataPos.map(x => x.map(y => Math.round(y)));
+    }
 
     this.setState({
       rangeSelection: dataPos,
@@ -2072,6 +2081,7 @@ TiledPlot.propTypes = {
   onValueScaleChanged: PropTypes.func,
   onUnlockValueScale: PropTypes.func,
   rangeSelection1dSize: PropTypes.array,
+  rangeSelectionToInt: PropTypes.bool,
   registerDraggingChangedListener: PropTypes.func,
   removeDraggingChangedListener: PropTypes.func,
   setCentersFunction: PropTypes.func,

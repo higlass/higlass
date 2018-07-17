@@ -224,6 +224,7 @@ class HiGlassComponent extends React.Component {
       mouseTool,
       isDarkTheme: false,
       rangeSelection1dSize: [0, Infinity],
+      rangeSelectionToInt: false,
     };
 
     dictValues(views).map(view => this.adjustLayoutToTrackSizes(view));
@@ -3283,6 +3284,7 @@ class HiGlassComponent extends React.Component {
             pixiStage={this.pixiStage}
             pluginTracks={this.state.pluginTracks}
             rangeSelection1dSize={this.state.rangeSelection1dSize}
+            rangeSelectionToInt={this.state.rangeSelectionToInt}
             registerDraggingChangedListener={(listener) => {
               this.addDraggingChangedListener(view.uid, view.uid, listener);
             }}
