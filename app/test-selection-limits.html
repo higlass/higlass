@@ -231,6 +231,7 @@ window.hgApi = hglib.viewer(
 
 window.hgApi.activateTool('select');
 window.hgApi.setRangeSelection1dSize(100000000, 200000000);
+window.hgApi.setRangeSelectionToInt();
 window.hgApi.on('rangeSelection', (range) => {
   console.log('rangeSelection', range.dataRange[0]);
 });
