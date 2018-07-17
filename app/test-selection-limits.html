@@ -162,7 +162,51 @@ const testViewConfig = {
             },
           }
         ],
-        center: [],
+        center: [{
+          uid: 'c1',
+          type: 'combined',
+          height: 691,
+          contents: [
+            {
+              server: 'http://higlass.io/api/v1',
+              tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
+              type: 'heatmap',
+              position: 'center',
+              options: {
+                colorRange: [
+                  '#FFFFFF',
+                  '#F8E71C',
+                  '#F5A623',
+                  '#D0021B'
+                ],
+                colorbarPosition: 'topRight',
+                colorbarLabelsPosition: 'outside',
+                maxZoom: null,
+                labelPosition: 'bottomLeft',
+                name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
+                trackBorderWidth: 0,
+                trackBorderColor: 'black',
+                heatmapValueScaling: 'log',
+                scaleStartPercent: '0.00000',
+                scaleEndPercent: '1.00000',
+                backgroundColor: '#eeeeee',
+                showMousePosition: false,
+                mousePositionColor: '#999999',
+                showTooltip: false
+              },
+              uid: 'heatmap1',
+              name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
+              transforms: [
+                {
+                  name: 'ICE',
+                  value: 'weight'
+                }
+              ],
+              width: 479,
+              height: 691
+            },
+          ],
+        }],
         right: [],
         bottom: [],
       },
@@ -188,7 +232,7 @@ window.hgApi = hglib.viewer(
 window.hgApi.activateTool('select');
 window.hgApi.setRangeSelection1dSize(100000000, 200000000);
 window.hgApi.on('rangeSelection', (range) => {
-  console.log(range);
+  console.log('rangeSelection', range.dataRange[0]);
 });
 
 </script>
