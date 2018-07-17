@@ -818,7 +818,50 @@ export const TRACKS_INFO = [
       minSquareSize: 'none',
     },
   },
-
+  {
+    type: 'horizontal-1d-annotations',
+    datatype: ['nothing'],  // Unfortunately one has to specify something here
+    local: false,
+    orientation: '1d-horizontal',
+    name: 'Horizontal 1D Annotations',
+    thumbnail: null,
+    availableOptions: [
+      'fill',
+      'fillOpacity',
+      'stroke',
+      'strokeOpacity',
+      'regions',
+    ],
+    defaultOptions: {
+      fill: 'red',
+      fillOpacity: '0.2',
+      stroke: 'red',
+      strokeOpacity: '0',
+      regions: [],
+    },
+  },
+  {
+    type: 'vertical-1d-annotations',
+    datatype: ['nothing'],  // Unfortunately one has to specify something here
+    local: false,
+    orientation: '1d-vertical',
+    name: 'Vertical 1D Annotations',
+    thumbnail: null,
+    availableOptions: [
+      'fill',
+      'fillOpacity',
+      'stroke',
+      'strokeOpacity',
+      'regions',
+    ],
+    defaultOptions: {
+      fill: 'red',
+      fillOpacity: '0.2',
+      stroke: 'red',
+      strokeOpacity: '0',
+      regions: [],
+    },
+  },
   {
     type: '2d-annotations',
     datatype: ['2d-annotations'],
@@ -1021,7 +1064,7 @@ export const TRACKS_INFO = [
     type: 'bedlike',
     datatype: ['bedlike'],
     local: false,
-    minHeight: 55,
+    minHeight: 20,
     orientation: '1d-horizontal',
     name: 'BED-like track',
     thumbnail: null,
