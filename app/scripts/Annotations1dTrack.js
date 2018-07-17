@@ -1,0 +1,105 @@
+import { color } from 'd3-color';
+import * as PIXI from 'pixi.js';
+
+import PixiTrack from './PixiTrack';
+
+class Annotations1dTrack extends PixiTrack {
+  constructor(scene, options, isVertical) {
+    super(scene, options);
+
+    this.options = options;
+    this.isVertical = isVertical;
+
+    this.drawnRects = new Set();
+
+    this.defaultColor = color('red');
+  }
+
+  draw() {
+    this.drawnRects.clear();
+
+    const globalMinRectWidth = typeof this.options.minRectWidth !== 'undefined'
+      ? this.options.minRectWidth
+      : 10;
+
+    const globalFill = typeof this.options.fill !== 'undefined'
+      ? color(this.options.fill)
+      : this.defaultColor;
+
+    const globalFillOpacity = typeof this.options.fillOpacity !== 'undefined'
+      ? +this.options.fillOpacity
+      : 0.2;
+
+    const globalStroke = typeof this.options.stroke !== 'undefined'
+      ? color(this.options.stroke)
+      : this.defaultColor;
+
+    const globalStrokeOpacity = typeof this.options.strokeOpacity !== 'undefined'
+      ? +this.options.strokeOpacity
+      : 0;
+
+    super.draw();
+    const graphics = this.pMain;
+    graphics.clear();
+
+    // Regions have to follow the following form:
+    // start, end, fill, stroke, fillOpacity, strokeOpcaity, min-size
+    // If `color-line` is not given, `color-fill` is used
+    this.options.regions.forEach((region) => {
+      const fill = color(region[2]) || globalFill;
+      let stroke = color(region[3]) || globalStroke;
+
+      if (!stroke) { stroke = fill; }
+
+      const fillHex = PIXI.utils.rgb2hex(
+        [fill.r / 255.0, fill.g / 255.0, fill.b / 255.0],
+      );
+      const strokeHex = PIXI.utils.rgb2hex(
+        [stroke.r / 255.0, stroke.g / 255.0, stroke.b / 255.0],
+      );
+
+      graphics.lineStyle(1, strokeHex, +region[5] || globalStrokeOpacity);
+      graphics.beginFill(fillHex, +region[4] || globalFillOpacity);
+
+      const scale = this.isVertical ? this._yScale : this._xScale;
+
+      let start = scale(+region[0]);
+      const end = scale(+region[1]);
+
+      let width = end - start;
+
+      const minRectWidth = typeof region[6] !== 'undefined'
+        ? region[6]
+        : globalMinRectWidth;
+
+      if (width < minRectWidth) {
+        // this region is too small to draw so center it on the location
+        // where it would be drawn
+        start = ((start + end) / 2) - (minRectWidth / 2);
+        width = minRectWidth;
+      }
+
+      if (this.isVertical) {
+        graphics.drawRect(0, start, this.dimensions[0], width);
+      } else {
+        graphics.drawRect(start, 0, width, this.dimensions[1]);
+      }
+    });
+  }
+
+  setPosition(newPosition) {
+    super.setPosition(newPosition);
+
+    this.pMain.position.y = this.position[1];
+    this.pMain.position.x = this.position[0];
+  }
+
+  zoomed(newXScale, newYScale) {
+    this.xScale(newXScale);
+    this.yScale(newYScale);
+
+    this.draw();
+  }
+}
+
+export default Annotations1dTrack;
