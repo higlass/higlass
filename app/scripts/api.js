@@ -52,6 +52,12 @@ const api = function api(context) {
       ReactDOM.unmountComponentAtNode(self.topDiv.parentNode);
     },
 
+    setRangeSelection1dSize(minSize = 0, maxSize = Infinity) {
+      self.setState({
+        rangeSelection1dSize: [minSize, maxSize]
+      });
+    },
+
     setViewConfig(newViewConfig) {
       /**
        * Set a new view config to define the layout and data

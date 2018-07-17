@@ -222,7 +222,8 @@ class HiGlassComponent extends React.Component {
       exportLinkModalOpen: false,
       exportLinkLocation: null,
       mouseTool,
-      isDarkTheme: false
+      isDarkTheme: false,
+      rangeSelection1dSize: [0, Infinity],
     };
 
     dictValues(views).map(view => this.adjustLayoutToTrackSizes(view));
@@ -349,7 +350,7 @@ class HiGlassComponent extends React.Component {
       }
     });
 
-    const rendererOptions = 
+    const rendererOptions =
         {
           view: this.canvasElement,
           antialias: true,
@@ -2399,7 +2400,7 @@ class HiGlassComponent extends React.Component {
     if (this.zoomLocks[viewUid]) {
       const lockGroup = this.zoomLocks[viewUid];
       const lockGroupItems = dictItems(lockGroup);
-      
+
       for (let i = 0; i < lockGroupItems.length; i++) {
         const key = lockGroupItems[i][0];
 
@@ -3281,6 +3282,7 @@ class HiGlassComponent extends React.Component {
             onValueScaleChanged={uid => this.syncValueScales(view.uid, uid)}
             pixiStage={this.pixiStage}
             pluginTracks={this.state.pluginTracks}
+            rangeSelection1dSize={this.state.rangeSelection1dSize}
             registerDraggingChangedListener={(listener) => {
               this.addDraggingChangedListener(view.uid, view.uid, listener);
             }}
@@ -3467,14 +3469,13 @@ class HiGlassComponent extends React.Component {
           this.hideHoverMenu();
         }}
         onWheel={ (evt) => {
-          if (evt.forwared)
-            return;
+          if (evt.forwarded) return;
           // forward the wheel event back to the TrackRenderer that it should go to
           // this is so that we can zoom when there's a viewport projection present
           const hoveredTiledPlot = this.getTiledPlotAtPosition(evt.clientX, evt.clientY);
           if (hoveredTiledPlot) {
             const trackRenderer = hoveredTiledPlot.trackRenderer;
-            evt.forwared = true;
+            evt.forwarded = true;
 
             forwardEvent(evt.nativeEvent, trackRenderer.element);
           }
