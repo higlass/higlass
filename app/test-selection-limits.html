@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HiGlass</title>
+<style type="text/css">
+    .canvasjs-chart-credit {
+    display:none;
+}
+</style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/page.css">
+    <link rel="stylesheet" href="hglib.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.2/react.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/15.6.2/react-dom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.2/pixi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js"></script>
+</head>
+<body >
+    <div style="height: 50px" />
+        <div style="margin: auto; width: 100%;">
+        <div
+            id="development-demo"
+            style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem">
+        </div>
+    </div>
+</body>
+<script src='hglib.js'>
+</script>
+<script>
+
+const testViewConfig = {
+  editable: true,
+  zoomFixed: false,
+  trackSourceServers: [
+    'http://higlass.io/api/v1'
+  ],
+  exportViewUrl: 'http://higlass.io/api/v1/viewconfs/',
+  views: [
+    {
+      uid: 'aa',
+      initialXDomain: [
+        7595655.0000270605,
+        2507738795.9999733
+      ],
+      initialYDomain: [
+        -545671929.4383738,
+        3061006380.438374
+      ],
+      autocompleteSource: 'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
+      genomePositionSearchBoxVisible: false,
+      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+      tracks: {
+        top: [
+          {
+            name: 'wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig',
+            created: '2017-02-03T17:46:58.349271Z',
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'b6qFe7fOSnaX-YkP2kzN1w',
+            uid: 'WCGssXHmQTGOkdRgweYKkQ',
+            type: 'horizontal-bar',
+            options: {
+              labelColor: 'black',
+              labelPosition: 'topLeft',
+              axisPositionHorizontal: 'right',
+              barFillColor: 'darkgreen',
+              valueScaling: 'linear',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              barOpacity: 1,
+              name: 'wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig'
+            },
+            width: 479,
+            height: 20,
+            position: 'top'
+          },
+          {
+            name: 'Gene Annotations (hg19)',
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            uid: 'BEEMEjU7QCa2krDO9C0yOQ',
+            type: 'horizontal-gene-annotations',
+            options: {
+              labelPosition: 'outerTop',
+              name: 'Gene Annotations (hg19)',
+              labelColor: 'black',
+              plusStrandColor: 'blue',
+              minusStrandColor: 'red',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: false,
+              mousePositionColor: '#999999'
+            },
+            width: 479,
+            height: 60,
+            position: 'top',
+          },
+          {
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            type: 'horizontal-chromosome-labels',
+            position: 'top',
+            name: 'Chromosome Labels (hg19)',
+            height: 30,
+            uid: 'I1QUF22JQJuJ38j9PS4iqw',
+            options: {
+              showMousePosition: false,
+              mousePositionColor: '#999999'
+            },
+            width: 479
+          }
+        ],
+        left: [
+          {
+            name: 'wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig',
+            created: '2017-02-03T17:46:58.349271Z',
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'b6qFe7fOSnaX-YkP2kzN1w',
+            uid: 'WCGssXHmQTGOkdRgweYKkQ2',
+            type: 'vertical-bar',
+            options: {
+              labelColor: 'black',
+              labelPosition: 'topLeft',
+              axisPositionHorizontal: 'right',
+              barFillColor: 'darkgreen',
+              valueScaling: 'linear',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              barOpacity: 1,
+              name: 'wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig'
+            },
+          },
+          {
+            name: 'Gene Annotations (hg19)',
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            uid: 'BEEMEjU7QCa2krDO9C0yOQ2',
+            type: 'vertical-gene-annotations',
+            options: {
+              labelPosition: 'outerTop',
+              name: 'Gene Annotations (hg19)',
+              labelColor: 'black',
+              plusStrandColor: 'blue',
+              minusStrandColor: 'red',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: false,
+              mousePositionColor: '#999999'
+            },
+          },
+          {
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            type: 'vertical-chromosome-labels',
+            position: 'top',
+            name: 'Chromosome Labels (hg19)',
+            height: 30,
+            uid: 'I1QUF22JQJuJ38j9PS4iqw2',
+            options: {
+              showMousePosition: false,
+              mousePositionColor: '#999999'
+            },
+          }
+        ],
+        center: [],
+        right: [],
+        bottom: [],
+      },
+      layout: {
+        w: 12,
+        h: 12,
+        x: 0,
+        y: 0,
+        i: 'aa',
+        moved: false,
+        static: false
+      },
+    }
+  ],
+};
+
+window.hgApi = hglib.viewer(
+  document.getElementById('development-demo'),
+  testViewConfig,
+  { bounded: true },
+);
+
+window.hgApi.activateTool('select');
+window.hgApi.setRangeSelection1dSize(100000000, 200000000);
+window.hgApi.on('rangeSelection', (range) => {
+  console.log(range);
+});
+
+</script>
+</html>
