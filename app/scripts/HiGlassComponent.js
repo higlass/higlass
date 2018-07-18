@@ -123,8 +123,10 @@ class HiGlassComponent extends React.Component {
     this.plusImg = {};
     this.configImg = {};
 
-    this.horizontalMargin = 5;
-    this.verticalMargin = 5;
+    this.horizontalMargin = typeof props.options.horizontalMargin !== 'undefined'
+      ? props.options.horizontalMargin : 5;
+    this.verticalMargin = typeof props.options.verticalMargin !== 'undefined'
+      ? props.options.verticalMargin : 5;
 
     this.genomePositionSearchBox = null;
     this.viewHeaders = {};
@@ -349,7 +351,7 @@ class HiGlassComponent extends React.Component {
       }
     });
 
-    const rendererOptions = 
+    const rendererOptions =
         {
           view: this.canvasElement,
           antialias: true,
@@ -2399,7 +2401,7 @@ class HiGlassComponent extends React.Component {
     if (this.zoomLocks[viewUid]) {
       const lockGroup = this.zoomLocks[viewUid];
       const lockGroupItems = dictItems(lockGroup);
-      
+
       for (let i = 0; i < lockGroupItems.length; i++) {
         const key = lockGroupItems[i][0];
 
