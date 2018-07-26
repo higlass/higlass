@@ -349,7 +349,7 @@ class HiGlassComponent extends React.Component {
       }
     });
 
-    const rendererOptions = 
+    const rendererOptions =
         {
           view: this.canvasElement,
           antialias: true,
@@ -1050,10 +1050,18 @@ class HiGlassComponent extends React.Component {
      *
      * @param viewUid: The view uid for which to adjust the zoom level
      */
-    if (!this.tiledPlots[viewUid])
-      throw `View uid ${viewUid} does not exist in the current viewConfig`;
+    if (viewUid && !this.tiledPlots[viewUid]) {
+      throw new Error(
+        `View uid ${viewUid} does not exist in the current viewConfig`
+      );
+    }
 
-    this.tiledPlots[viewUid].handleZoomToData();
+    if (viewUid) {
+      this.tiledPlots[viewUid].handleZoomToData();
+    } else {
+      Object.values(this.tiledPlots)
+        .forEach(tiledPlot => tiledPlot.handleZoomToData());
+    }
   }
 
 
@@ -2399,7 +2407,7 @@ class HiGlassComponent extends React.Component {
     if (this.zoomLocks[viewUid]) {
       const lockGroup = this.zoomLocks[viewUid];
       const lockGroupItems = dictItems(lockGroup);
-      
+
       for (let i = 0; i < lockGroupItems.length; i++) {
         const key = lockGroupItems[i][0];
 
