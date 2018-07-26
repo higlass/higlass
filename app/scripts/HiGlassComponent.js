@@ -1064,6 +1064,25 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  /**
+   * Reset the viewport to the initial x and y domain
+   * @param  {number} viewId - ID of the view for which the viewport should be
+   *  reset.
+   */
+  resetViewport(viewId) {
+    if (viewId && !this.tiledPlots[viewId]) {
+      throw new Error(
+        `View uid ${viewId} does not exist in the current viewConfig`
+      );
+    }
+
+    if (viewId) {
+      this.tiledPlots[viewId].resetViewport();
+    } else {
+      Object.values(this.tiledPlots)
+        .forEach(tiledPlot => tiledPlot.resetViewport());
+    }
+  }
 
   handleYankFunction(uid, yankFunction) {
     /**
