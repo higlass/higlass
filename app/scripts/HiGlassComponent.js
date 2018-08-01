@@ -494,7 +494,7 @@ class HiGlassComponent extends React.Component {
   }
 
   mousewheelHandler(e) {
-    if (hasParent(e.target, this.topDiv)) {
+    if (hasParent(e.target, this.topDiv) && !this.isZoomFixed()) {
       e.preventDefault();
     }
   }
