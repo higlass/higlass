@@ -34,9 +34,20 @@ class Annotations1dTrack extends PixiTrack {
       ? color(this.options.stroke)
       : this.defaultColor;
 
+    const globalStrokeWidth = typeof this.options.strokeWidth !== 'undefined'
+      ? +this.options.strokeWidth
+      : 1;
+
     const globalStrokeOpacity = typeof this.options.strokeOpacity !== 'undefined'
       ? +this.options.strokeOpacity
       : 0;
+
+    let strokePos;
+    if (this.options.strokePos && this.options.strokePos.length) {
+      strokePos = Array.isArray(this.options.strokePos)
+        ? this.options.strokePos
+        : [this.options.strokePos];
+    }
 
     super.draw();
     const graphics = this.pMain;
@@ -58,8 +69,15 @@ class Annotations1dTrack extends PixiTrack {
         [stroke.r / 255.0, stroke.g / 255.0, stroke.b / 255.0],
       );
 
-      graphics.lineStyle(1, strokeHex, +region[5] || globalStrokeOpacity);
-      graphics.beginFill(fillHex, +region[4] || globalFillOpacity);
+      if (strokePos) {
+        graphics.lineStyle(1, strokeHex, 0);
+        graphics.beginFill(strokeHex, +region[5] || globalStrokeOpacity);
+      } else {
+        graphics.lineStyle(
+          globalStrokeWidth, strokeHex, +region[5] || globalStrokeOpacity
+        );
+        graphics.beginFill(fillHex, +region[4] || globalFillOpacity);
+      }
 
       const scale = this.isVertical ? this._yScale : this._xScale;
 
@@ -79,6 +97,74 @@ class Annotations1dTrack extends PixiTrack {
         width = minRectWidth;
       }
 
+      if (strokePos) {
+        graphics.lineStyle(1, strokeHex, 0);
+        graphics.beginFill(strokeHex, +region[5] || globalStrokeOpacity);
+
+        strokePos.forEach((pos) => {
+          if (pos === 'top' || pos === 'around') {
+            if (this.isVertical) {
+              graphics.drawRect(0, start, globalStrokeWidth, width);
+            } else {
+              graphics.drawRect(start, 0, width, globalStrokeWidth);
+            }
+          }
+
+          if (pos === 'right' || pos === 'around') {
+            if (this.isVertical) {
+              graphics.drawRect(
+                0, start, this.dimensions[0], globalStrokeWidth
+              );
+            } else {
+              graphics.drawRect(
+                start, 0, globalStrokeWidth, this.dimensions[1]
+              );
+            }
+          }
+
+          if (pos === 'bottom' || pos === 'around') {
+            if (this.isVertical) {
+              graphics.drawRect(
+                this.dimensions[0] - globalStrokeWidth,
+                start,
+                globalStrokeWidth,
+                width,
+              );
+            } else {
+              graphics.drawRect(
+                start,
+                this.dimensions[1] - globalStrokeWidth,
+                width,
+                globalStrokeWidth,
+              );
+            }
+          }
+
+          if (pos === 'left' || pos === 'around') {
+            if (this.isVertical) {
+              graphics.drawRect(
+                0,
+                start + width - globalStrokeWidth,
+                this.dimensions[0],
+                globalStrokeWidth
+              );
+            } else {
+              graphics.drawRect(
+                start + width - globalStrokeWidth,
+                0,
+                globalStrokeWidth,
+                this.dimensions[1]
+              );
+            }
+          }
+        });
+      } else {
+        graphics.lineStyle(
+          globalStrokeWidth, strokeHex, +region[5] || globalStrokeOpacity
+        );
+      }
+
+      graphics.beginFill(fillHex, +region[4] || globalFillOpacity);
       if (this.isVertical) {
         graphics.drawRect(0, start, this.dimensions[0], width);
       } else {
