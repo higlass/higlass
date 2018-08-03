@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/56026057.svg)](https://zenodo.org/badge/latestdoi/56026057)
+
 ### Introduction
 
 HiGlass is a web-based viewer for genome interaction maps
@@ -26,11 +28,34 @@ npm install
 npm run start
 ```
 
+**Troubleshooting:**
+
+- If the installation fails due to `sharp` > `node-gyp` try installing the node packages using `python2`:
+
+  ```
+  npm i --python=/usr/bin/python2
+  ```
+
 ### API
 
 HiGlass provides an API for controlling the component from within a Javascript script. Complete documentation is availabe at [docs.higlass.io](http://docs.higlass.io/higlass_developer.html#public-api). Example:
 
 ```
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="https://unpkg.com/higlass@1.0.1/dist/styles/hglib.css" type="text/css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.2/react.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/15.6.2/react-dom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.2/pixi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js"></script>
+<script src="https://unpkg.com/higlass@1.0.1/dist/scripts/hglib.js"></script>
+
+<div
+    id="development-demo"
+    style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem">
+</div>
+
+<script>
 var testViewConfig =
 {
   "editable": true,
@@ -69,4 +94,16 @@ const api = hglib.createHgComponent(
     testViewConfig,
     { bounded: true }
 );
+</script>
 ```
+### Related
+
+* [HiGlass Manage](https://github.com/hms-dbmi/higlass-manage) - Easy to use interface for deploying a local HiGlass instance
+* [HiGlass Docker](https://github.com/hms-dbmi/higlass-docker) - Build an image containing all the components necessary to deploy HiGlass
+* [HiGlass Server](https://github.com/hms-dbmi/higlass-server) - Server component for serving multi-resolution data
+* [HiGlass Website](https://github.com/hms-dbmi/higlass-website) - The code for the web site hosted at http://higlass.io
+
+### License
+
+HiGlass is provided under the MIT License.
+
