@@ -29,20 +29,20 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.gTicks = {};
     this.tickTexts = {};
 
+    this.options = options;
+
     this.textFontSize = '12px';
     this.textFontFamily = 'Arial';
     this.textFontColor = '#777777';
     this.pixiTextConfig = {
       fontSize: this.textFontSize,
       fontFamily: this.textFontFamily,
-      fill: this.textFontColor
+      fill: this.options.color || this.textFontColor
     };
 
     this.animate = animate;
 
     this.pubSubs = [];
-
-    this.options = options;
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(this, this.is2d);
