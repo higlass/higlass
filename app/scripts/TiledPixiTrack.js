@@ -350,11 +350,23 @@ class TiledPixiTrack extends PixiTrack {
   allTilesLoaded() {}
 
   minValue(_) {
-    if (_) { this.scale.minValue = _; } else { return this.scale.minValue; }
+    if (_) {
+      this.scale.minValue = _;
+    } else {
+      return typeof this.options.valueScaleMin !== 'undefined'
+        ? +this.options.valueScaleMin
+        : this.scale.minValue;
+    }
   }
 
   maxValue(_) {
-    if (_) { this.scale.maxValue = _; } else { return this.scale.maxValue; }
+    if (_) {
+      this.scale.maxValue = _;
+    } else {
+      return typeof this.options.valueScaleMax !== 'undefined'
+        ? +this.options.valueScaleMax
+        : this.scale.maxValue;
+    }
   }
 
   minRawValue() {
@@ -661,7 +673,7 @@ class TiledPixiTrack extends PixiTrack {
     return max;
   }
 
-  makeValueScale(minValue, medianValue,  maxValue, margin) {
+  makeValueScale(minValue, medianValue, maxValue, margin) {
     /*
      * Create a value scale that will be used to position values
      * along the y axis.
@@ -688,8 +700,9 @@ class TiledPixiTrack extends PixiTrack {
     let valueScale = null;
     let offsetValue = 0;
 
-    if (margin == null || typeof(margin) == 'undefined')
+    if (margin === null || typeof margin === 'undefined') {
       margin = 6;  // set a default value
+    }
 
     if (this.options.valueScaling === 'log') {
       offsetValue = medianValue;
@@ -701,13 +714,14 @@ class TiledPixiTrack extends PixiTrack {
         .domain([offsetValue, maxValue + offsetValue])
         // .domain([offsetValue, this.maxValue()])
         .range([this.dimensions[1] - margin, margin]);
-      pseudocount = offsetValue;
+
+      // pseudocount = offsetValue;
     } else if (this.options.valueScaling === 'quantile') {
       const start = this.dimensions[1] - margin;
       const end = margin;
       const quantScale = scaleQuantile().domain(this.allVisibleValues())
-        .range(range(start, end, (end-start) / 256));
-      quantScale.ticks = (n) => ticks(start, end, n);
+        .range(range(start, end, (end - start) / 256));
+      quantScale.ticks = n => ticks(start, end, n);
 
       return [quantScale, 0];
     } else if (this.options.valueScaling === 'setquantile') {
@@ -715,8 +729,8 @@ class TiledPixiTrack extends PixiTrack {
       const end = margin;
       const s = new Set(this.allVisibleValues());
       const quantScale = scaleQuantile().domain([...s])
-        .range(range(start, end, (end-start) / 256));
-      quantScale.ticks = (n) => ticks(start, end, n);
+        .range(range(start, end, (end - start) / 256));
+      quantScale.ticks = n => ticks(start, end, n);
 
       return [quantScale, 0];
     } else {
@@ -728,7 +742,6 @@ class TiledPixiTrack extends PixiTrack {
 
     return [valueScale, offsetValue];
   }
-
 }
 
 export default TiledPixiTrack;
