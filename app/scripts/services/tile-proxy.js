@@ -276,6 +276,7 @@ export const calculateResolution = (tilesetInfo, zoomLevel) => {
  */
 export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   const rangeWidth = scale.range()[1] - scale.range()[0];
+
   const zoomScale = Math.max(
     (maxX - minX) / (scale.domain()[1] - scale.domain()[0]),
     1,
