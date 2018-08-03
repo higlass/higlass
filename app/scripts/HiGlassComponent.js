@@ -2937,6 +2937,12 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
+    console.log(viewId, viewsIds.length);
+
+    viewId = typeof viewId === 'undefined' && viewsIds.length === 1
+      ? viewsIds[0]
+      : viewId;
+
     if (
       typeof viewId === 'undefined' || viewsIds.indexOf(viewId) === -1
     ) {
@@ -2963,7 +2969,12 @@ class HiGlassComponent extends React.Component {
 
     // Convert scales into genomic locations
     const middleLayerListener = (xScale, yScale) => {
-      callback({xDomain: xScale.domain(), yDomain: yScale.domain(), xRange: xScale.range(), yRange: yScale.range() });
+      callback({
+        xDomain: xScale.domain(),
+        yDomain: yScale.domain(),
+        xRange: xScale.range(),
+        yRange: yScale.range()
+      });
     };
 
     let newListenerId = 1;
