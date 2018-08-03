@@ -38,7 +38,7 @@ const api = function api(context) {
      * Reload all of the tiles
      */
     reload() {
-
+      console.warn('Not implemented yet!');
     },
 
     destroy() {
