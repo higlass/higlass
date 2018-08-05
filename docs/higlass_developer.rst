@@ -45,7 +45,7 @@ GitHub repository
 
 
 ``onViewConfLoaded: callback [default: null]``
-    Specify a callback to be loaded when the specified viewconf is 
+    Specify a callback to be loaded when the specified viewconf is
     completely loaded. This is useful when trying calling an API
     function in quick succesion after initializing the viewer.
 
@@ -66,7 +66,7 @@ GitHub repository
   function zoomTo() {
     hgv.zoomTo("aa", 1000000,2000000,1000000,2000000, 1000);
   }
-    
+
 
 Setting the current view config
 -------------------------------
@@ -148,13 +148,13 @@ to each other.
     The uid of the view to zoom. The uid of a view can be found in the
     JSON viewconf views section under ``uid``.
 ``start1: Number``
-    The left x coordinate of the region to zoom to. 
+    The left x coordinate of the region to zoom to.
 ``end1: Number``
-    The right x coordinate of the region to zoom to. 
+    The right x coordinate of the region to zoom to.
 ``start2: Number``
-    The left x coordinate of the region to zoom to. 
+    The left x coordinate of the region to zoom to.
 ``end2: Number``
-    The right x coordinate of the region to zoom to. 
+    The right x coordinate of the region to zoom to.
 ``animateTime``
     The duration of the zoom transition in milliseconds.
 
@@ -189,6 +189,52 @@ on to a track to select a range for annotating regions.
 
   hgv.activateTool('select'); // Select tool is active
   hgv.activateTool(); // Default pan&zoom tool is active
+
+
+Restrict range selection
+------------------------
+
+The following enpoint restricts the size of range selection equally for 1D or
+2D tracks to a certain length (specified in absolute coordinates).
+
+**Prototype**
+
+``setRangeSelection1dSize(minSize, maxSize)``
+
+**Parameters**
+
+``minSize: number [default: 0]``
+    Minimum range selection. ``undefined`` unsets the value.
+
+``maxSize: number [default: Infinity]``
+    Maximum range selection. ``undefined`` unsets the value.
+
+**Examples:**
+
+.. code-block:: javascript
+
+  hgv.activateTool('select'); // Activate select tool
+  hgv.setRangeSelection1dSize(5000, 10000); // Force selections to be between 5 and 10 Kb
+
+
+Ensure integer range selection
+------------------------------
+
+The following two endpoints enable or disable forced integer range selections.
+
+**Prototype**
+
+``setRangeSelectionToInt()``
+
+``setRangeSelectionToFloat()``
+
+**Examples:**
+
+.. code-block:: javascript
+
+  hgv.activateTool('select'); // Activate select tool
+  hgv.setRangeSelectionToInt(); // Force selections to be integer
+  hgv.setRangeSelectionToFloat(); // Allow float range selections
 
 Subscribe to events
 -------------------
