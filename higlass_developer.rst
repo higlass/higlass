@@ -194,19 +194,23 @@ on to a track to select a range for annotating regions.
 Get the visible min and max value of a track
 --------------------------------------------
 
-Get the min and max value of the visible data of a track.
+Get the min and max value of the (visible) data of a track.
 
 **Prototype**
 
-``getMinMaxValue(viewId, trackId)``
+``getMinMaxValue(viewId, trackId, ignoreFixedScale)``
 
 **Parameters**
 
-``viewId: string [default: '']``
+``viewId: string``
     View identifier (uid). Can be omitted if only one view is specified.
 
-``trackId: string [default: '']``
+``trackId: string``
     Track identifier (uid).
+
+``ignoreFixedScale: string [default: false]``
+    If ``true`` ignore fixed scaling and return the actual (not the visible)
+    min and max value.
 
 **Examples:**
 
