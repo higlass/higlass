@@ -190,6 +190,31 @@ on to a track to select a range for annotating regions.
   hgv.activateTool('select'); // Select tool is active
   hgv.activateTool(); // Default pan&zoom tool is active
 
+
+Get the visible min and max value of a track
+--------------------------------------------
+
+Get the min and max value of the visible data of a track.
+
+**Prototype**
+
+``getMinMaxValue(viewId, trackId)``
+
+**Parameters**
+
+``viewId: string [default: '']``
+    View identifier (uid). Can be omitted if only one view is specified.
+
+``trackId: string [default: '']``
+    Track identifier (uid).
+
+**Examples:**
+
+.. code-block:: javascript
+
+  const [minVal, maxVal] = hgv.getMinMaxValue('myView', 'myTrack');
+
+
 Subscribe to events
 -------------------
 
