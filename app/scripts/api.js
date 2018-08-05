@@ -88,8 +88,8 @@ const api = function api(context) {
       return p;
     },
 
-    getMinMaxValue(viewId, trackId) {
-      return self.getMinMaxValue(viewId, trackId);
+    getMinMaxValue(viewId, trackId, ignoreFixedScale = false) {
+      return self.getMinMaxValue(viewId, trackId, ignoreFixedScale);
     },
 
     /**
