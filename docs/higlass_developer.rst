@@ -45,7 +45,7 @@ GitHub repository
 
 
 ``onViewConfLoaded: callback [default: null]``
-    Specify a callback to be loaded when the specified viewconf is 
+    Specify a callback to be loaded when the specified viewconf is
     completely loaded. This is useful when trying calling an API
     function in quick succesion after initializing the viewer.
 
@@ -66,7 +66,7 @@ GitHub repository
   function zoomTo() {
     hgv.zoomTo("aa", 1000000,2000000,1000000,2000000, 1000);
   }
-    
+
 
 Setting the current view config
 -------------------------------
@@ -148,13 +148,13 @@ to each other.
     The uid of the view to zoom. The uid of a view can be found in the
     JSON viewconf views section under ``uid``.
 ``start1: Number``
-    The left x coordinate of the region to zoom to. 
+    The left x coordinate of the region to zoom to.
 ``end1: Number``
-    The right x coordinate of the region to zoom to. 
+    The right x coordinate of the region to zoom to.
 ``start2: Number``
-    The left x coordinate of the region to zoom to. 
+    The left x coordinate of the region to zoom to.
 ``end2: Number``
-    The right x coordinate of the region to zoom to. 
+    The right x coordinate of the region to zoom to.
 ``animateTime``
     The duration of the zoom transition in milliseconds.
 
@@ -189,6 +189,31 @@ on to a track to select a range for annotating regions.
 
   hgv.activateTool('select'); // Select tool is active
   hgv.activateTool(); // Default pan&zoom tool is active
+
+
+Get the visible min and max value of a track
+--------------------------------------------
+
+Get the min and max value of the visible data of a track.
+
+**Prototype**
+
+``getMinMaxValue(viewId, trackId)``
+
+**Parameters**
+
+``viewId: string [default: '']``
+    View identifier (uid). Can be omitted if only one view is specified.
+
+``trackId: string [default: '']``
+    Track identifier (uid).
+
+**Examples:**
+
+.. code-block:: javascript
+
+  const [minVal, maxVal] = hgv.getMinMaxValue('myView', 'myTrack');
+
 
 Subscribe to events
 -------------------
