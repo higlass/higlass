@@ -88,6 +88,10 @@ const api = function api(context) {
       return p;
     },
 
+    getMinMaxValue(viewId, trackId) {
+      return self.getMinMaxValue(viewId, trackId);
+    },
+
     /**
      * Retrieve a sharable link for the current view config
      *
