@@ -45,7 +45,7 @@ GitHub repository
 
 
 ``onViewConfLoaded: callback [default: null]``
-    Specify a callback to be loaded when the specified viewconf is 
+    Specify a callback to be loaded when the specified viewconf is
     completely loaded. This is useful when trying calling an API
     function in quick succesion after initializing the viewer.
 
@@ -66,7 +66,7 @@ GitHub repository
   function zoomTo() {
     hgv.zoomTo("aa", 1000000,2000000,1000000,2000000, 1000);
   }
-    
+
 
 Setting the current view config
 -------------------------------
@@ -148,13 +148,13 @@ to each other.
     The uid of the view to zoom. The uid of a view can be found in the
     JSON viewconf views section under ``uid``.
 ``start1: Number``
-    The left x coordinate of the region to zoom to. 
+    The left x coordinate of the region to zoom to.
 ``end1: Number``
-    The right x coordinate of the region to zoom to. 
+    The right x coordinate of the region to zoom to.
 ``start2: Number``
-    The left x coordinate of the region to zoom to. 
+    The left x coordinate of the region to zoom to.
 ``end2: Number``
-    The right x coordinate of the region to zoom to. 
+    The right x coordinate of the region to zoom to.
 ``animateTime``
     The duration of the zoom transition in milliseconds.
 
@@ -189,6 +189,27 @@ on to a track to select a range for annotating regions.
 
   hgv.activateTool('select'); // Select tool is active
   hgv.activateTool(); // Default pan&zoom tool is active
+
+Reset the viewport
+------------------
+
+The endpoint allows you to reset the viewport to the initially defined X and Y
+domains of your view config.
+
+**Prototype**
+
+``resetViewport(viewId)``
+
+**Parameters**
+
+``viewId: string [default: '']``
+    The view identifier. If you have only one view you can ommit this parameter.
+
+**Examples:**
+
+.. code-block:: javascript
+
+  hgv.resetViewport(); // Resets the first view
 
 Subscribe to events
 -------------------
