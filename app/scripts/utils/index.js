@@ -21,6 +21,7 @@ export { default as forEach } from './for-each';
 export { default as forwardEvent } from './forward-event';
 export { default as genomeLociToPixels } from './genome-loci-to-pixels';
 export { default as getTrackByUid } from './get-track-by-uid';
+export { default as getTrackObjById } from './get-track-obj-by-id';
 export { default as getTrackPositionByUid } from './get-track-position-by-uid';
 export { default as hasClass } from './has-class';
 export { default as hasParent } from './has-parent';
