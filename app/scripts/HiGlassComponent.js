@@ -159,15 +159,6 @@ class HiGlassComponent extends React.Component {
       );
     }
 
-    this.pubSubs.push(pubSub.subscribe('requestReceived', () => {
-      if (!this.viewconfLoaded && requestsInFlight == 0) {
-        this.viewconfLoaded = true;
-        if (this.props.options.onViewConfLoaded) {
-          this.props.options.onViewConfLoaded();
-        }
-      }
-    }));
-
     if (props.options.authToken) {
       setTileProxyAuthHeader(props.options.authToken);
     }
@@ -245,6 +236,24 @@ class HiGlassComponent extends React.Component {
 
     this.prevMouseHoverTrack = null;
     this.zooming = false;
+
+    // Bounded functions
+    this.keyDownHandlerBound = this.keyDownHandler.bind(this);
+    this.keyUpHandlerBound = this.keyUpHandler.bind(this);
+    this.resizeHandlerBound = this.resizeHandler.bind(this);
+    this.mousewheelHandlerBound = this.mousewheelHandler.bind(this);
+    this.resizeHandlerBound = this.resizeHandler.bind(this);
+    this.dispatchEventBound = this.dispatchEvent.bind(this);
+    this.animateOnMouseMoveHandlerBound = this.animateOnMouseMoveHandler.bind(this);
+    this.zoomStartHandlerBound = this.zoomStartHandler.bind(this);
+    this.zoomEndHandlerBound = this.zoomEndHandler.bind(this);
+    this.zoomHandlerBound = this.zoomHandler.bind(this);
+    this.trackDroppedHandlerBound = this.trackDroppedHandler.bind(this);
+    this.animateBound = this.animate.bind(this);
+    this.requestReceivedHandlerBound = this.requestReceivedHandler.bind(this);
+    this.onWheelHandlerBound = this.onWheelHandler.bind(this);
+    this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
+    this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
   }
 
   componentWillMount() {
@@ -260,42 +269,18 @@ class HiGlassComponent extends React.Component {
     domEvent.register('mousemove', window);
 
     this.pubSubs.push(
-      pubSub.subscribe('keydown', this.keyDownHandler.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('keyup', this.keyUpHandler.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('resize', this.resizeHandler.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('mousewheel', this.mousewheelHandler.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('orientationchange', this.resizeHandler.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('app.event', this.dispatchEvent.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandler.bind(this))
-    );
-
-    this.pubSubs.push(
-      pubSub.subscribe('trackDropped', () => {
-        this.setState({
-          draggingHappening: null,
-        });
-      }),
-      pubSub.subscribe('app.zoomStart', this.zoomStartHandler.bind(this))
-    );
-
-    this.pubSubs.push(
-      pubSub.subscribe('app.zoomEnd', this.zoomEndHandler.bind(this))
-    );
-
-    this.pubSubs.push(
-      pubSub.subscribe('app.zoom', this.zoomHandler.bind(this))
+      pubSub.subscribe('keydown', this.keyDownHandlerBound),
+      pubSub.subscribe('keyup', this.keyUpHandlerBound),
+      pubSub.subscribe('resize', this.resizeHandlerBound),
+      pubSub.subscribe('mousewheel', this.mousewheelHandlerBound),
+      pubSub.subscribe('orientationchange', this.resizeHandlerBound),
+      pubSub.subscribe('app.event', this.dispatchEventBound),
+      pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandlerBound),
+      pubSub.subscribe('trackDropped', this.trackDroppedHandlerBound),
+      pubSub.subscribe('app.zoomStart', this.zoomStartHandlerBound),
+      pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
+      pubSub.subscribe('app.zoom', this.zoomHandlerBound),
+      pubSub.subscribe('requestReceived', this.requestReceivedHandlerBound),
     );
 
     if (this.props.getApi) {
@@ -339,7 +324,9 @@ class HiGlassComponent extends React.Component {
     this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
     window.addEventListener('focus', this.boundRefreshView);
-    window.addEventListener('mousewheel', this.mousewheelHandler.bind(this), true);
+
+    // The mousewheel is already listened to. This handler is also never removed
+    // window.addEventListener('mousewheel', this.mousewheelHandler.bind(this), true);
 
     dictValues(this.state.views).forEach((v) => {
       if (!v.layout) {
@@ -507,14 +494,29 @@ class HiGlassComponent extends React.Component {
   }
 
   mousewheelHandler(e) {
-    if (hasParent(e.target, this.topDiv)) e.preventDefault();
+    if (hasParent(e.target, this.topDiv) && !this.isZoomFixed()) {
+      e.preventDefault();
+    }
+  }
+
+  trackDroppedHandler() {
+    this.setState({
+      draggingHappening: null,
+    });
+  }
+
+  requestReceivedHandler() {
+    if (!this.viewconfLoaded && requestsInFlight == 0) {
+      this.viewconfLoaded = true;
+      if (this.props.options.onViewConfLoaded) {
+        this.props.options.onViewConfLoaded();
+      }
+    }
   }
 
   animateOnMouseMoveHandler(active) {
     if (active && !this.animateOnMouseMove) {
-      this.pubSubs.push(
-        pubSub.subscribe('app.mouseMove', this.animate.bind(this)),
-      );
+      this.pubSubs.push(pubSub.subscribe('app.mouseMove', this.animateBound));
     }
     this.animateOnMouseMove = active;
   }
@@ -2962,6 +2964,12 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
+    console.log(viewId, viewsIds.length);
+
+    viewId = typeof viewId === 'undefined' && viewsIds.length === 1
+      ? viewsIds[0]
+      : viewId;
+
     if (
       typeof viewId === 'undefined' || viewsIds.indexOf(viewId) === -1
     ) {
@@ -2988,7 +2996,12 @@ class HiGlassComponent extends React.Component {
 
     // Convert scales into genomic locations
     const middleLayerListener = (xScale, yScale) => {
-      callback({xDomain: xScale.domain(), yDomain: yScale.domain(), xRange: xScale.range(), yRange: yScale.range() });
+      callback({
+        xDomain: xScale.domain(),
+        yDomain: yScale.domain(),
+        xRange: xScale.range(),
+        yRange: yScale.range()
+      });
     };
 
     let newListenerId = 1;
@@ -3203,6 +3216,39 @@ class HiGlassComponent extends React.Component {
     });
   }
 
+  onMouseLeaveHandler() {
+    this.hideHoverMenu();
+  }
+
+  isZoomFixed(view) {
+    return (
+      this.props.zoomFixed
+      || this.props.options.zoomFixed
+      || this.props.viewConfig.zoomFixed
+      || (view && view.zoomFixed)
+    );
+  }
+
+  onWheelHandler(evt) {
+    const zoomFixed = (
+      this.props.zoomFixed
+      || this.props.options.zoomFixed
+      || this.props.viewConfig.zoomFixed
+    );
+
+    if (evt.forwared || zoomFixed) return;
+
+    // forward the wheel event back to the TrackRenderer that it should go to
+    // this is so that we can zoom when there's a viewport projection present
+    const hoveredTiledPlot = this.getTiledPlotAtPosition(evt.clientX, evt.clientY);
+    if (hoveredTiledPlot) {
+      const trackRenderer = hoveredTiledPlot.trackRenderer;
+      evt.forwared = true;
+
+      forwardEvent(evt.nativeEvent, trackRenderer.element);
+    }
+  }
+
   render() {
     this.tiledAreasDivs = {};
     this.tiledAreas = (
@@ -3215,10 +3261,7 @@ class HiGlassComponent extends React.Component {
     // the right width
     if (this.mounted) {
       this.tiledAreas = dictValues(this.state.views).map((view) => {
-        let zoomFixed = typeof view.zoomFixed !== 'undefined'
-          ? view.zoomFixed
-          : this.props.zoomFixed;
-        zoomFixed = zoomFixed | this.props.viewConfig.zoomFixed;
+        const zoomFixed = this.isZoomFixed(view);
 
         // only show the add track menu for the tiled plot it was selected for
         const addTrackPositionMenuPosition =
@@ -3489,23 +3532,9 @@ class HiGlassComponent extends React.Component {
         key={this.uid}
         ref={(c) => { this.topDiv = c; }}
         className='higlass'
-        onMouseMove={this.mouseMoveHandler.bind(this)}
-        onMouseLeave={() => {
-          this.hideHoverMenu();
-        }}
-        onWheel={ (evt) => {
-          if (evt.forwared)
-            return;
-          // forward the wheel event back to the TrackRenderer that it should go to
-          // this is so that we can zoom when there's a viewport projection present
-          const hoveredTiledPlot = this.getTiledPlotAtPosition(evt.clientX, evt.clientY);
-          if (hoveredTiledPlot) {
-            const trackRenderer = hoveredTiledPlot.trackRenderer;
-            evt.forwared = true;
-
-            forwardEvent(evt.nativeEvent, trackRenderer.element);
-          }
-        }}
+        onMouseMove={this.mouseMoveHandlerBound}
+        onMouseLeave={this.onMouseLeaveHandlerBound}
+        onWheel={this.onWheelHandlerBound}
         styleName={styleNames}
       >
         <canvas

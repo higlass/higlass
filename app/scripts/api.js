@@ -1,11 +1,6 @@
 import ReactDOM from 'react-dom';
 
 import {
-  relToAbsChromPos,
-  scalesCenterAndK,
-} from './utils';
-
-import {
   setDarkTheme, setTileProxyAuthHeader
 } from './services';
 
@@ -15,8 +10,6 @@ import {
 } from './configs';
 
 import pubSub, { create } from './services/pub-sub';
-
-import ChromosomeInfo from './ChromosomeInfo';
 
 let stack = {};
 let pubSubs = [];
@@ -45,7 +38,7 @@ const api = function api(context) {
      * Reload all of the tiles
      */
     reload() {
-
+      console.warn('Not implemented yet!');
     },
 
     destroy() {
