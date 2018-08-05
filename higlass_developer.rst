@@ -45,7 +45,7 @@ GitHub repository
 
 
 ``onViewConfLoaded: callback [default: null]``
-    Specify a callback to be loaded when the specified viewconf is 
+    Specify a callback to be loaded when the specified viewconf is
     completely loaded. This is useful when trying calling an API
     function in quick succesion after initializing the viewer.
 
@@ -66,7 +66,7 @@ GitHub repository
   function zoomTo() {
     hgv.zoomTo("aa", 1000000,2000000,1000000,2000000, 1000);
   }
-    
+
 
 Setting the current view config
 -------------------------------
@@ -148,13 +148,13 @@ to each other.
     The uid of the view to zoom. The uid of a view can be found in the
     JSON viewconf views section under ``uid``.
 ``start1: Number``
-    The left x coordinate of the region to zoom to. 
+    The left x coordinate of the region to zoom to.
 ``end1: Number``
-    The right x coordinate of the region to zoom to. 
+    The right x coordinate of the region to zoom to.
 ``start2: Number``
-    The left x coordinate of the region to zoom to. 
+    The left x coordinate of the region to zoom to.
 ``end2: Number``
-    The right x coordinate of the region to zoom to. 
+    The right x coordinate of the region to zoom to.
 ``animateTime``
     The duration of the zoom transition in milliseconds.
 
@@ -428,3 +428,35 @@ json (e.g. `{"viewconf": myViewConfig}`):
          -X POST \
          -d '{"viewconf": {"editable": true, "zoomFixed": false, "trackSourceServers": ["/api/v2", "http://higlass.io/api/v1"], "exportViewUrl": "/api/v1/viewconfs/", "views": [{"tracks": {"top": [], "left": [], "center": [], "right": [], "bottom": []}, "initialXDomain": [243883495.14563107, 2956116504.854369], "initialYDomain": [804660194.1747572, 2395339805.825243], "layout": {"w": 12, "h": 12, "x": 0, "y": 0, "i": "EwiSznw8ST2HF3CjHx-tCg", "moved": false, "static": false}, "uid": "EwiSznw8ST2HF3CjHx-tCg"}], "zoomLocks": {"locksByViewUid": {}, "locksDict": {}}, "locationLocks": {"locksByViewUid": {}, "locksDict": {}}, "valueScaleLocks": {"locksByViewUid": {}, "locksDict": {}}}}' http://localhost:8989/api/v1/viewconfs/
 
+
+Fix the value range of a 1D track
+---------------------------------
+
+When comparing different 1D tracks it can be desireable to fix their y or value
+scale
+
+**Prototype**
+
+``setTrackValueScale(viewId, trackId, minValue, maxValue)``
+
+**Parameters**
+
+``viewId: string [default: '']``
+    The view identifier. If you only have one view this parameter can be
+    omitted.
+
+``trackId: string [default: '']``
+    The track identifier.
+
+``trackId: number [default: '']``
+    Minimum value used for scaling the track.
+
+``trackId: number [default: '']``
+    Maximum value used for scaling the track.
+
+**Examples:**
+
+.. code-block:: javascript
+
+  hgv.setTrackValueScale(myView, myTrack, 0, 100); // Sets the scaling to [0, 100]
+  hgv.setTrackValueScale(myView, myTrack); // Unsets the fixed scaling, i.e., enables dynamic scaling again.
