@@ -120,6 +120,10 @@ const api = function api(context) {
       });
     },
 
+    setTrackValueScale(viewId, trackId, minValue, maxValue) {
+      self.setTrackValueScale(viewId, trackId, minValue, maxValue);
+    },
+
     /**
      * Choose a theme.
      */

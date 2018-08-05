@@ -2937,8 +2937,6 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
-    console.log(viewId, viewsIds.length);
-
     viewId = typeof viewId === 'undefined' && viewsIds.length === 1
       ? viewsIds[0]
       : viewId;
@@ -3180,6 +3178,30 @@ class HiGlassComponent extends React.Component {
    */
   mouseDownHandler(evt) {
 
+  }
+
+  setTrackValueScale(viewId, trackId, minValue, maxValue) {
+    const tiledPlot = viewId
+      ? this.tiledPlots[viewId]
+      : Object.values(this.tiledPlots)[0];
+
+    if (!tiledPlot) {
+      if (!viewId) console.warn('No views available.');
+      else console.warn(`Could't find view with id "${viewId}"`);
+      return;
+    }
+
+    const track = tiledPlot.trackRenderer.trackDefObjects[trackId].trackObject;
+
+    if (track.setFixedValueScaleMin && track.setFixedValueScaleMax) {
+      track.setFixedValueScaleMin(minValue);
+      track.setFixedValueScaleMax(maxValue);
+
+      track.rerender(track.options, true);
+      track.animate();
+    } else {
+      console.warn('Track doesn\'t support fixed value scales.');
+    }
   }
 
   setChromInfo(chromInfoPath, callback) {
