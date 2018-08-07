@@ -123,8 +123,10 @@ class HiGlassComponent extends React.Component {
     this.plusImg = {};
     this.configImg = {};
 
-    this.horizontalMargin = 5;
-    this.verticalMargin = 5;
+    this.horizontalMargin = typeof props.options.horizontalMargin !== 'undefined'
+      ? props.options.horizontalMargin : 5;
+    this.verticalMargin = typeof props.options.verticalMargin !== 'undefined'
+      ? props.options.verticalMargin : 5;
 
     this.genomePositionSearchBox = null;
     this.viewHeaders = {};

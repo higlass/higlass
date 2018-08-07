@@ -50,6 +50,12 @@ GitHub repository
     function in quick succesion after initializing the viewer.
 
     Example:
+   
+``horizontalMargin: number [default: 5]``
+    Horizontal margin added by HiGlass
+
+``verticalMargin: number [default: 5]``
+    Vertical margin added by HiGlass
 
 .. code-block:: javascript
 
@@ -66,7 +72,6 @@ GitHub repository
   function zoomTo() {
     hgv.zoomTo("aa", 1000000,2000000,1000000,2000000, 1000);
   }
-
 
 Setting the current view config
 -------------------------------
