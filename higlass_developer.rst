@@ -203,7 +203,7 @@ domains of your view config.
 **Parameters**
 
 ``viewId: string [default: '']``
-    The view identifier. If you have only one view you can ommit this parameter.
+    The view identifier. If you have only one view you can omit this parameter.
 
 **Examples:**
 
