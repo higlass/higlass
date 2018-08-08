@@ -4,27 +4,40 @@ import * as PIXI from 'pixi.js';
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 
 // Utils
-import { colorDomainToRgbaArray, colorToHex } from './utils';
-
-import { HEATED_OBJECT_MAP } from './configs';
+import { colorDomainToRgbaArray, colorToHex, gradient } from './utils';
 
 class BarTrack extends HorizontalLine1DPixiTrack {
   constructor(...args) {
     super(...args);
+
     if (this.options && this.options.colorRange) {
-      this.setColorScale(this.options.colorRange);
+      if (this.options.colorRangeGradient) {
+        this.setColorGradient(this.options.colorRange);
+      } else {
+        this.setColorScale(this.options.colorRange);
+      }
     }
   }
 
   setColorScale(colorRange) {
-    this.colorScale = colorRange
-      ? colorDomainToRgbaArray(colorRange)
-      : HEATED_OBJECT_MAP;
+    if (!colorRange) return;
+
+    this.colorScale = colorDomainToRgbaArray(colorRange);
 
     // Normalize colormap upfront to save 3 divisions per data point during the
     // rendering.
     this.colorScale = this.colorScale
       .map(rgb => rgb.map(channel => channel / 255.0));
+  }
+
+  setColorGradient(colorGradient) {
+    if (!colorGradient) return;
+
+    const N = colorGradient.length - 1;
+
+    this.colorGradientColors = this.options.align === 'bottom'
+      ? colorGradient.slice().reverse().map((color, i) => ({ from: i / N, color }))
+      : colorGradient.map((color, i) => ({ from: i / N, color }));
   }
 
   /**
@@ -122,6 +135,23 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     let yPos;
     let height;
 
+    let barMask;
+    let barSprite;
+    if (this.colorGradientColors) {
+      barMask = new PIXI.Graphics();
+      barMask.beginFill(colorToHex('#FFFFFF'), 1);
+
+      const canvas = gradient(
+        this.colorGradientColors,
+        ...this.dimensions,  // width, height
+        0, 0, 0, this.dimensions[1]  // fromX, fromY, toX, toY
+      );
+
+      barSprite = new PIXI.Sprite(
+        PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
+      );
+    }
+
     for (let i = 0; i < tileValues.length; i++) {
       xPos = this._xScale(tileXScale(i));
       yPos = this.valueScale(tileValues[i] + pseudocount);
@@ -136,20 +166,31 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       // of the coordinate system
       if (tileXScale(i) > this.tilesetInfo.max_pos[0]) break;
 
-      if (this.colorScale) {
+      if (this.colorScale && !this.options.colorRangeGradient) {
         const rgbIdx = Math.round(colorScale(tileValues[i] + pseudocount));
         const rgb = this.colorScale[rgbIdx];
         const hex = PIXI.utils.rgb2hex(rgb);
         graphics.beginFill(hex, opacity);
       }
 
-      graphics.drawRect(xPos, yPos, width, height);
+      (barMask || graphics).drawRect(xPos, yPos, width, height);
+    }
+
+    if (this.colorGradientColors) {
+      barSprite.mask = barMask;
+
+      graphics.removeChildren();
+      graphics.addChild(barSprite, barMask);
     }
   }
 
   rerender(options) {
     if (options && options.colorRange) {
-      this.setColorScale(options.colorRange);
+      if (options.colorRangeGradient) {
+        this.setColorGradient(options.colorRange);
+      } else {
+        this.setColorScale(options.colorRange);
+      }
     }
 
     super.rerender(options);

@@ -535,6 +535,14 @@ export const OPTIONS_INFO = {
     },
   },
 
+  colorRangeGradient: {
+    name: 'Color Gradient',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true },
+      no: { name: 'No', value: false },
+    },
+  },
+
   dataTransform: {
     name: 'Transforms',
     inlineOptions: {
