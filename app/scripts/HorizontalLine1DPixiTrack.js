@@ -37,7 +37,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     if (!this.tilesetInfo)
       return;
 
-    if (!this.options.showTooltip) 
+    if (!this.options.showTooltip)
       return '';
 
     const zoomLevel = this.calculateZoomLevel();
@@ -95,8 +95,8 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       return;
     }
 
-    tile.lineXValues = new Array(tile.tileData.dense.length);
-    tile.lineYValues = new Array(tile.tileData.dense.length);
+    tile.xValues = new Array(tile.tileData.dense.length);
+    tile.yValues = new Array(tile.tileData.dense.length);
 
     this.drawTile(tile);
   }
@@ -172,8 +172,8 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       const xPos = this._xScale(tileXScale(i));
       const yPos = this.valueScale(tileValues[i] + pseudocount);
 
-      tile.lineXValues[i] = xPos;
-      tile.lineYValues[i] = yPos;
+      tile.xValues[i] = xPos;
+      tile.yValues[i] = yPos;
 
       if (i === 0) {
         graphics.moveTo(xPos, yPos);
@@ -252,9 +252,9 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       const g = document.createElement('path');
       g.setAttribute('fill', 'transparent');
       g.setAttribute('stroke', stroke);
-      let d = `M${tile.lineXValues[0]} ${tile.lineYValues[0]}`;
-      for (let i = 0; i < tile.lineXValues.length; i++) {
-        d += `L${tile.lineXValues[i]} ${tile.lineYValues[i]}`;
+      let d = `M${tile.xValues[0]} ${tile.yValues[0]}`;
+      for (let i = 0; i < tile.xValues.length; i++) {
+        d += `L${tile.xValues[i]} ${tile.yValues[i]}`;
       }
       g.setAttribute('d', d);
       output.appendChild(g);

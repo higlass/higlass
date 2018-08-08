@@ -22,6 +22,7 @@ import HorizontalPoint1DPixiTrack from './HorizontalPoint1DPixiTrack';
 import HorizontalMultivecTrack from './HorizontalMultivecTrack';
 import BarTrack from './BarTrack';
 import DivergentBarTrack from './DivergentBarTrack';
+import Horizontal1dHeatmapTrack from './Horizontal1dHeatmapTrack';
 
 import CNVIntervalTrack from './CNVIntervalTrack';
 import LeftTrackModifier from './LeftTrackModifier';
@@ -1243,6 +1244,17 @@ class TrackRenderer extends React.Component {
           )
         );
 
+      case 'horizontal-1d-heatmap':
+        return new Horizontal1dHeatmapTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+          () => this.currentProps.onValueScaleChanged(track.uid),
+          this.props.onMouseMoveZoom,
+        );
+
       case 'horizontal-line':
         return new HorizontalLine1DPixiTrack(
           this.pStage,
@@ -1265,6 +1277,17 @@ class TrackRenderer extends React.Component {
             () => this.currentProps.onValueScaleChanged(track.uid),
           ),
         );
+
+      case 'vertical-1d-heatmap':
+        return new LeftTrackModifier(new Horizontal1dHeatmapTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+          () => this.currentProps.onValueScaleChanged(track.uid),
+          this.props.onMouseMoveZoom,
+        ));
 
       case 'horizontal-point':
         return new HorizontalPoint1DPixiTrack(
