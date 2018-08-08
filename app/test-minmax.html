@@ -174,7 +174,7 @@ const testViewConfig = {
             name: 'Gene Annotations (hg19)',
             server: 'http://higlass.io/api/v1',
             tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            uid: 'BEEMEjU7QCa2krDO9C0yOQ',
+            uid: 'genes',
             type: 'horizontal-gene-annotations',
             options: {
               labelPosition: 'hidden',
@@ -195,7 +195,7 @@ const testViewConfig = {
             position: 'top',
             name: 'Chromosome Labels (hg19)',
             height: 30,
-            uid: 'I1QUF22JQJuJ38j9PS4iqw',
+            uid: 'chroms',
             options: {
               color: '#4FEAE9',
               showMousePosition: false,
@@ -275,6 +275,8 @@ setTimeout(() => {
   console.log('Min-Max for line3:', hgApi.getMinMaxValue(null, 'line3'));
   console.log('Min-Max for bar3:', hgApi.getMinMaxValue(null, 'bar3'));
   console.log('Min-Max for heatmap1:', hgApi.getMinMaxValue(null, 'heatmap1'));
+  console.log('Min-Max for genes:', hgApi.getMinMaxValue(null, 'genes'));
+  console.log('Min-Max for chroms:', hgApi.getMinMaxValue(null, 'chroms'));
 }, 2000);
 
 </script>
