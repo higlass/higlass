@@ -3121,7 +3121,17 @@ class HiGlassComponent extends React.Component {
   getMinMaxValue(viewId, trackId) {
     const track = getTrackObjById(this.tiledPlots, viewId, trackId);
 
-    if (!track) return undefined;
+    if (!track) {
+      console.warn(`Track with ID: ${trackId} not found!`);
+      return undefined;
+    }
+
+    if (!track.minVisibleValue) {
+      console.warn(
+        `Track ${trackId} doesn't support the retrieval of min or max values.`
+      );
+      return undefined;
+    }
 
     return [track.minVisibleValue(), track.maxVisibleValue()];
   }
