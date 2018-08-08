@@ -412,7 +412,7 @@ class TrackRenderer extends React.Component {
   }
 
   addZoom() {
-    if (!this.elementSelection) return;
+    if (!this.elementSelection || !this.currentProps.zoomable) return;
 
     // add back the previous transform
     this.elementSelection.call(this.zoomBehavior);
@@ -1004,6 +1004,7 @@ class TrackRenderer extends React.Component {
           this.activeTransitions -= 1;
         });
     } else {
+      // console.log('setting zoom', notify);
       setZoom();
     }
 

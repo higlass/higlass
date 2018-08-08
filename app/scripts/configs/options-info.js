@@ -173,6 +173,10 @@ export const OPTIONS_INFO = {
     name: 'Fill Color',
     inlineOptions: AVAILABLE_COLORS,
   },
+  color: {
+    name: 'Color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
   fillColor: {
     name: 'Fill color',
     inlineOptions: AVAILABLE_COLORS,
