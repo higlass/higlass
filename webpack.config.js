@@ -22,6 +22,7 @@ module.exports = {
   devServer: {
     contentBase: [
       path.resolve(__dirname, 'app'),
+      path.resolve(__dirname, 'docs', 'examples'),
       path.resolve(__dirname, 'node_modules'),
     ],
     publicPath: '/'
