@@ -66,6 +66,12 @@ GitHub repository
 
     Example:
 
+``horizontalMargin: number [default: 5]``
+    Horizontal margin added by HiGlass
+
+``verticalMargin: number [default: 5]``
+    Vertical margin added by HiGlass
+
 .. code-block:: javascript
 
   const baseUrl = 'http://higlass.io/api/v1/viewconfs/';
@@ -109,7 +115,6 @@ Use the ``HiGlassComponent`` to create a HiGlass instance in react. The
   >
 
   export default HiGlass;
-
 
 
 Setting the current view config
@@ -233,6 +238,29 @@ on to a track to select a range for annotating regions.
 
   hgv.activateTool('select'); // Select tool is active
   hgv.activateTool(); // Default pan&zoom tool is active
+
+
+Reset the viewport
+------------------
+
+The endpoint allows you to reset the viewport to the initially defined X and Y
+domains of your view config.
+
+**Prototype**
+
+``resetViewport(viewId)``
+
+**Parameters**
+
+``viewId: string [default: '']``
+    The view identifier. If you have only one view you can omit this parameter.
+
+**Examples:**
+
+.. code-block:: javascript
+
+  hgv.resetViewport(); // Resets the first view
+
 
 Subscribe to events
 -------------------
