@@ -273,7 +273,11 @@ class TiledPixiTrack extends PixiTrack {
       !toRemoveIds.length ||
       !this.areAllVisibleTilesLoaded() ||
       this.renderingTiles.size
-    ) return;
+    ) {
+      return;
+    }
+
+    // console.log('removing:', toRemoveIds);
 
     toRemoveIds.forEach((x) => {
       const tileIdStr = x;
@@ -283,14 +287,17 @@ class TiledPixiTrack extends PixiTrack {
         this.pMain.removeChild(this.tileGraphics[tileIdStr]);
         delete this.tileGraphics[tileIdStr];
       } else {
-        console.log('tileIdStr absent:', tileIdStr);
+        // console.log('tileIdStr absent:', tileIdStr);
       }
 
       delete this.fetchedTiles[tileIdStr];
     });
 
+
     this.synchronizeTilesAndGraphics();
     this.draw();
+
+    // console.log('# children', this.pMain.children.length, Object.keys(this.fetchedTiles).length);
   }
 
   zoomed(newXScale, newYScale, k = 1, tx = 0, ty = 0) {
@@ -387,12 +394,13 @@ class TiledPixiTrack extends PixiTrack {
          * Add graphics for tiles that have no graphics
          */
     const fetchedTileIDs = Object.keys(this.fetchedTiles);
-    let added = false;
     this.renderVersion += 1;
 
     for (let i = 0; i < fetchedTileIDs.length; i++) {
       //console.log('this.tileGraphics', this.tileGraphics);
       if (!(fetchedTileIDs[i] in this.tileGraphics)) {
+        // console.trace('adding:', fetchedTileIDs[i]);
+
         const newGraphics = new PIXI.Graphics();
         this.pMain.addChild(newGraphics);
 
@@ -400,7 +408,6 @@ class TiledPixiTrack extends PixiTrack {
         this.initTile(this.fetchedTiles[fetchedTileIDs[i]]);
 
         this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
-        added = true;
       }
     }
 
@@ -430,8 +437,8 @@ class TiledPixiTrack extends PixiTrack {
 
     // keep track of which tiles are visible at the moment
     this.addMissingGraphics();
-    this.updateExistingGraphics();
     this.removeOldTiles();
+    this.updateExistingGraphics();
   }
 
   loadTileData(tile, dataLoader) {

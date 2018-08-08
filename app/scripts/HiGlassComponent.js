@@ -92,6 +92,7 @@ class HiGlassComponent extends React.Component {
     this.xScales = {};
     this.yScales = {};
     this.topDiv = null;
+    this.zoomToDataExtentOnInit = new Set();
 
     // a reference of view / track combinations
     // to be used with combined to viewAndTrackUid
@@ -122,8 +123,10 @@ class HiGlassComponent extends React.Component {
     this.plusImg = {};
     this.configImg = {};
 
-    this.horizontalMargin = 5;
-    this.verticalMargin = 5;
+    this.horizontalMargin = typeof props.options.horizontalMargin !== 'undefined'
+      ? props.options.horizontalMargin : 5;
+    this.verticalMargin = typeof props.options.verticalMargin !== 'undefined'
+      ? props.options.verticalMargin : 5;
 
     this.genomePositionSearchBox = null;
     this.viewHeaders = {};
@@ -157,15 +160,6 @@ class HiGlassComponent extends React.Component {
         JSON.parse(JSON.stringify(viewConfig))
       );
     }
-
-    this.pubSubs.push(pubSub.subscribe('requestReceived', () => {
-      if (!this.viewconfLoaded && requestsInFlight == 0) {
-        this.viewconfLoaded = true;
-        if (this.props.options.onViewConfLoaded) {
-          this.props.options.onViewConfLoaded();
-        }
-      }
-    }));
 
     if (props.options.authToken) {
       setTileProxyAuthHeader(props.options.authToken);
@@ -244,6 +238,24 @@ class HiGlassComponent extends React.Component {
 
     this.prevMouseHoverTrack = null;
     this.zooming = false;
+
+    // Bounded functions
+    this.keyDownHandlerBound = this.keyDownHandler.bind(this);
+    this.keyUpHandlerBound = this.keyUpHandler.bind(this);
+    this.resizeHandlerBound = this.resizeHandler.bind(this);
+    this.mousewheelHandlerBound = this.mousewheelHandler.bind(this);
+    this.resizeHandlerBound = this.resizeHandler.bind(this);
+    this.dispatchEventBound = this.dispatchEvent.bind(this);
+    this.animateOnMouseMoveHandlerBound = this.animateOnMouseMoveHandler.bind(this);
+    this.zoomStartHandlerBound = this.zoomStartHandler.bind(this);
+    this.zoomEndHandlerBound = this.zoomEndHandler.bind(this);
+    this.zoomHandlerBound = this.zoomHandler.bind(this);
+    this.trackDroppedHandlerBound = this.trackDroppedHandler.bind(this);
+    this.animateBound = this.animate.bind(this);
+    this.requestReceivedHandlerBound = this.requestReceivedHandler.bind(this);
+    this.onWheelHandlerBound = this.onWheelHandler.bind(this);
+    this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
+    this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
   }
 
   componentWillMount() {
@@ -259,42 +271,18 @@ class HiGlassComponent extends React.Component {
     domEvent.register('mousemove', window);
 
     this.pubSubs.push(
-      pubSub.subscribe('keydown', this.keyDownHandler.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('keyup', this.keyUpHandler.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('resize', this.resizeHandler.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('mousewheel', this.mousewheelHandler.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('orientationchange', this.resizeHandler.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('app.event', this.dispatchEvent.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandler.bind(this))
-    );
-
-    this.pubSubs.push(
-      pubSub.subscribe('trackDropped', () => {
-        this.setState({
-          draggingHappening: null,
-        });
-      }),
-      pubSub.subscribe('app.zoomStart', this.zoomStartHandler.bind(this))
-    );
-
-    this.pubSubs.push(
-      pubSub.subscribe('app.zoomEnd', this.zoomEndHandler.bind(this))
-    );
-
-    this.pubSubs.push(
-      pubSub.subscribe('app.zoom', this.zoomHandler.bind(this))
+      pubSub.subscribe('keydown', this.keyDownHandlerBound),
+      pubSub.subscribe('keyup', this.keyUpHandlerBound),
+      pubSub.subscribe('resize', this.resizeHandlerBound),
+      pubSub.subscribe('mousewheel', this.mousewheelHandlerBound),
+      pubSub.subscribe('orientationchange', this.resizeHandlerBound),
+      pubSub.subscribe('app.event', this.dispatchEventBound),
+      pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandlerBound),
+      pubSub.subscribe('trackDropped', this.trackDroppedHandlerBound),
+      pubSub.subscribe('app.zoomStart', this.zoomStartHandlerBound),
+      pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
+      pubSub.subscribe('app.zoom', this.zoomHandlerBound),
+      pubSub.subscribe('requestReceived', this.requestReceivedHandlerBound),
     );
 
     if (this.props.getApi) {
@@ -338,7 +326,9 @@ class HiGlassComponent extends React.Component {
     this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
     window.addEventListener('focus', this.boundRefreshView);
-    window.addEventListener('mousewheel', this.mousewheelHandler.bind(this), true);
+
+    // The mousewheel is already listened to. This handler is also never removed
+    // window.addEventListener('mousewheel', this.mousewheelHandler.bind(this), true);
 
     dictValues(this.state.views).forEach((v) => {
       if (!v.layout) {
@@ -348,7 +338,7 @@ class HiGlassComponent extends React.Component {
       }
     });
 
-    const rendererOptions = 
+    const rendererOptions =
         {
           view: this.canvasElement,
           antialias: true,
@@ -506,14 +496,29 @@ class HiGlassComponent extends React.Component {
   }
 
   mousewheelHandler(e) {
-    if (hasParent(e.target, this.topDiv)) e.preventDefault();
+    if (hasParent(e.target, this.topDiv) && !this.isZoomFixed()) {
+      e.preventDefault();
+    }
+  }
+
+  trackDroppedHandler() {
+    this.setState({
+      draggingHappening: null,
+    });
+  }
+
+  requestReceivedHandler() {
+    if (!this.viewconfLoaded && requestsInFlight == 0) {
+      this.viewconfLoaded = true;
+      if (this.props.options.onViewConfLoaded) {
+        this.props.options.onViewConfLoaded();
+      }
+    }
   }
 
   animateOnMouseMoveHandler(active) {
     if (active && !this.animateOnMouseMove) {
-      this.pubSubs.push(
-        pubSub.subscribe('app.mouseMove', this.animate.bind(this)),
-      );
+      this.pubSubs.push(pubSub.subscribe('app.mouseMove', this.animateBound));
     }
     this.animateOnMouseMove = active;
   }
@@ -1049,12 +1054,39 @@ class HiGlassComponent extends React.Component {
      *
      * @param viewUid: The view uid for which to adjust the zoom level
      */
-    if (!this.tiledPlots[viewUid])
-      throw `View uid ${viewUid} does not exist in the current viewConfig`;
+    if (viewUid && !this.tiledPlots[viewUid]) {
+      throw new Error(
+        `View uid ${viewUid} does not exist in the current viewConfig`
+      );
+    }
 
-    this.tiledPlots[viewUid].handleZoomToData();
+    if (viewUid) {
+      this.tiledPlots[viewUid].handleZoomToData();
+    } else {
+      Object.values(this.tiledPlots)
+        .forEach(tiledPlot => tiledPlot.handleZoomToData());
+    }
   }
 
+  /**
+   * Reset the viewport to the initial x and y domain
+   * @param  {number} viewId - ID of the view for which the viewport should be
+   *  reset.
+   */
+  resetViewport(viewId) {
+    if (viewId && !this.tiledPlots[viewId]) {
+      throw new Error(
+        `View uid ${viewId} does not exist in the current viewConfig`
+      );
+    }
+
+    if (viewId) {
+      this.tiledPlots[viewId].resetViewport();
+    } else {
+      Object.values(this.tiledPlots)
+        .forEach(tiledPlot => tiledPlot.resetViewport());
+    }
+  }
 
   handleYankFunction(uid, yankFunction) {
     /**
@@ -1671,6 +1703,7 @@ class HiGlassComponent extends React.Component {
     if ('layout' in view) {
       layout = view.layout;
     } else {
+      /*
       const minTrackHeight = 30;
       const elementWidth = this.element.clientWidth;
 
@@ -1679,10 +1712,15 @@ class HiGlassComponent extends React.Component {
         leftWidth, rightWidth,
         centerWidth, centerHeight } = this.calculateViewDimensions(view);
 
+      // console.log('totalWidth:', totalWidth, totalHeight, leftWidth, rightWidth, centerWidth, centerHeight);
+
       if (view.searchBox) { totalHeight += 30; }
 
       const heightGrid = Math.ceil(totalHeight / this.rowHeight);
 
+      */
+
+      // we're keeping this simple, just make the view 12x12
       layout = {
         x: 0,
         y: 0,
@@ -1720,6 +1758,9 @@ class HiGlassComponent extends React.Component {
         */
     }
 
+
+    console.trace('generated layout:', layout);
+
     return layout;
   }
 
@@ -1736,6 +1777,7 @@ class HiGlassComponent extends React.Component {
     views[viewUid].tracks.center = [];
     views[viewUid].tracks.left = [];
     views[viewUid].tracks.right = [];
+    views[viewUid].tracks.whole = [];
 
     this.setState({
       views: views,
@@ -2349,7 +2391,8 @@ class HiGlassComponent extends React.Component {
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest',
         },
-        body: `{"viewconf":${this.getViewsAsString()}}`
+        body: `{"viewconf":${this.getViewsAsString()}}`,
+        credentials: 'same-origin',
       }
     )
       .then( response => {
@@ -2357,7 +2400,7 @@ class HiGlassComponent extends React.Component {
         return response.json()
       })
       .catch(err => {
-        console.log('err:', err)
+        console.warn('err:', err)
       })
       .then(_json => {
         return {
@@ -2384,11 +2427,26 @@ class HiGlassComponent extends React.Component {
          */
     const views = this.state.views;
 
-    views[viewUid].initialXDomain = newXDomain;
-    views[viewUid].initialYDomain = newYDomain;
+    if (this.zoomLocks[viewUid]) {
+      const lockGroup = this.zoomLocks[viewUid];
+      const lockGroupItems = dictItems(lockGroup);
 
-    this.xScales[viewUid] = scaleLinear().domain(newXDomain);
-    this.yScales[viewUid] = scaleLinear().domain(newYDomain);
+      for (let i = 0; i < lockGroupItems.length; i++) {
+        const key = lockGroupItems[i][0];
+
+        if (!(key in this.locationLocks)) {
+          // only zoom to extent if both zoom and location
+          // are locked
+          continue;
+        }
+
+        views[key].initialXDomain = newXDomain;
+        views[key].initialYDomain = newYDomain;
+
+        this.xScales[key] = scaleLinear().domain(newXDomain);
+        this.yScales[key] = scaleLinear().domain(newYDomain);
+      }
+    }
 
     this.setState({ views });
   }
@@ -2726,7 +2784,7 @@ class HiGlassComponent extends React.Component {
 
     for (const v of dictValues(viewsByUid)) {
       for (const trackOrientation of ['left', 'top', 'center', 'right', 'bottom']) {
-        if (v.tracks.hasOwnProperty(trackOrientation)) {
+        if (v.tracks && v.tracks.hasOwnProperty(trackOrientation)) {
           // filter out invalid tracks
           v.tracks[trackOrientation] = v.tracks[trackOrientation]
             .filter(t => this.isTrackValid(t, viewUidsSet));
@@ -2746,25 +2804,36 @@ class HiGlassComponent extends React.Component {
   }
 
   processViewConfig(viewConfig) {
-    const views = viewConfig.views;
+    let views = viewConfig.views;
     let viewsByUid = {};
 
     if (!viewConfig.views || viewConfig.views.length === 0) {
-      throw 'No views provided in viewConfig';
+      console.warn('No views provided in viewConfig');
+      views = [
+        {
+          editable: true,
+          tracks: {}
+        }
+      ];
     }
 
     views.forEach((v) => {
-      fillInMinWidths(v.tracks);
+      if (v.tracks)
+        fillInMinWidths(v.tracks);
 
       // if a view doesn't have a uid, assign it one
       if (!v.uid) { v.uid = slugid.nice(); }
 
       viewsByUid[v.uid] = v;
 
+      if (this.zoomToDataExtentOnInit.has(v.uid))
+        this.zoomToDataExtentOnInit.delete(v.uid);
+
       if (!v.initialXDomain) {
         console.warn('No initialXDomain provided in the view config.');
         v.initialXDomain = [0, 100];
-        v.zoomToDataExtentOnInit = true;
+
+        this.zoomToDataExtentOnInit.add(v.uid);
       } else {
         v.initialXDomain[0] = +v.initialXDomain[0];
         v.initialXDomain[1] = +v.initialXDomain[1];
@@ -2813,6 +2882,10 @@ class HiGlassComponent extends React.Component {
           for (const ct of t.contents) { this.addDefaultOptions(ct); }
         }
       });
+
+      if (!v.layout) {
+        v.layout = this.generateViewLayout(v);
+      }
     });
 
     viewsByUid = this.removeInvalidTracks(viewsByUid);
@@ -2884,8 +2957,6 @@ class HiGlassComponent extends React.Component {
   onLocationChange(viewId, callback, callbackId) {
     const viewsIds = Object.keys(this.state.views);
 
-    console.log('viewIds:', viewsIds, viewId);
-
     if (!viewsIds.length) {
       // HiGlass was probably initialized with an URL instead of a viewconfig
       // and that remote viewConfig is not yet loaded.
@@ -2894,6 +2965,12 @@ class HiGlassComponent extends React.Component {
       });
       return;
     }
+
+    console.log(viewId, viewsIds.length);
+
+    viewId = typeof viewId === 'undefined' && viewsIds.length === 1
+      ? viewsIds[0]
+      : viewId;
 
     if (
       typeof viewId === 'undefined' || viewsIds.indexOf(viewId) === -1
@@ -2921,7 +2998,12 @@ class HiGlassComponent extends React.Component {
 
     // Convert scales into genomic locations
     const middleLayerListener = (xScale, yScale) => {
-      callback({xDomain: xScale.domain(), yDomain: yScale.domain(), xRange: xScale.range(), yRange: yScale.range() });
+      callback({
+        xDomain: xScale.domain(),
+        yDomain: yScale.domain(),
+        xRange: xScale.range(),
+        yRange: yScale.range()
+      });
     };
 
     let newListenerId = 1;
@@ -3085,7 +3167,8 @@ class HiGlassComponent extends React.Component {
 
     mouseOverDiv.style('position', 'fixed')
       .style('left', `${mousePos[0]}px`)
-      .style('top', `${mousePos[1]}px`);
+      .style('top', `${mousePos[1]}px`)
+      .style('z-index', 1);
 
     // probably not over a track so there's no mouseover rectangle
     if (!mouseOverDiv.node()) return;
@@ -3135,6 +3218,39 @@ class HiGlassComponent extends React.Component {
     });
   }
 
+  onMouseLeaveHandler() {
+    this.hideHoverMenu();
+  }
+
+  isZoomFixed(view) {
+    return (
+      this.props.zoomFixed
+      || this.props.options.zoomFixed
+      || this.props.viewConfig.zoomFixed
+      || (view && view.zoomFixed)
+    );
+  }
+
+  onWheelHandler(evt) {
+    const zoomFixed = (
+      this.props.zoomFixed
+      || this.props.options.zoomFixed
+      || this.props.viewConfig.zoomFixed
+    );
+
+    if (evt.forwared || zoomFixed) return;
+
+    // forward the wheel event back to the TrackRenderer that it should go to
+    // this is so that we can zoom when there's a viewport projection present
+    const hoveredTiledPlot = this.getTiledPlotAtPosition(evt.clientX, evt.clientY);
+    if (hoveredTiledPlot) {
+      const trackRenderer = hoveredTiledPlot.trackRenderer;
+      evt.forwared = true;
+
+      forwardEvent(evt.nativeEvent, trackRenderer.element);
+    }
+  }
+
   render() {
     this.tiledAreasDivs = {};
     this.tiledAreas = (
@@ -3147,10 +3263,7 @@ class HiGlassComponent extends React.Component {
     // the right width
     if (this.mounted) {
       this.tiledAreas = dictValues(this.state.views).map((view) => {
-        let zoomFixed = typeof view.zoomFixed !== 'undefined'
-          ? view.zoomFixed
-          : this.props.zoomFixed;
-        zoomFixed = zoomFixed | this.props.viewConfig.zoomFixed;
+        const zoomFixed = this.isZoomFixed(view);
 
         // only show the add track menu for the tiled plot it was selected for
         const addTrackPositionMenuPosition =
@@ -3210,7 +3323,7 @@ class HiGlassComponent extends React.Component {
             xDomainLimits={view.xDomainLimits}
             yDomainLimits={view.yDomainLimits}
             zoomLimits={view.zoomLimits}
-            zoomToDataExtentOnInit={view.zoomToDataExtentOnInit}
+            zoomToDataExtentOnInit={this.zoomToDataExtentOnInit.has(view.uid)}
             mouseTool={this.state.mouseTool}
             onChangeTrackType={(trackId, newType) =>
               this.handleChangeTrackType(view.uid, trackId, newType)}
@@ -3421,19 +3534,9 @@ class HiGlassComponent extends React.Component {
         key={this.uid}
         ref={(c) => { this.topDiv = c; }}
         className='higlass'
-        onMouseMove={this.mouseMoveHandler.bind(this)}
-        onMouseLeave={() => {
-          this.hideHoverMenu();
-        }}
-        onWheel={ (evt) => {
-          // forward the wheel event back to the TrackRenderer that it should go to
-          // this is so that we can zoom when there's a viewport projection present
-          const hoveredTiledPlot = this.getTiledPlotAtPosition(evt.clientX, evt.clientY);
-          if (hoveredTiledPlot) {
-            const trackRenderer = hoveredTiledPlot.trackRenderer;
-            forwardEvent(evt.nativeEvent, trackRenderer.element);
-          }
-        }}
+        onMouseMove={this.mouseMoveHandlerBound}
+        onMouseLeave={this.onMouseLeaveHandlerBound}
+        onWheel={this.onWheelHandlerBound}
         styleName={styleNames}
       >
         <canvas
@@ -3450,6 +3553,16 @@ class HiGlassComponent extends React.Component {
         <svg
           ref={(c) => { this.svgElement = c; }}
           styleName="styles.higlass-svg"
+          style={{
+            // inline the styles so they aren't overriden by other css
+            // on the web page
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            left: 0,
+            top: 0,
+            pointerEvents: 'none',
+          }}
         />
         {exportLinkModal}
       </div>

@@ -375,6 +375,7 @@ class TiledPlot extends React.Component {
       track.maxZoom = tilesetInfo.max_zoom;
     }
     track.coordSystem = tilesetInfo.coordSystem;
+    track.datatype = tilesetInfo.datatype;
   }
 
   /**
@@ -399,7 +400,7 @@ class TiledPlot extends React.Component {
       // We distinguish between tracks that need a tileset info and those whoch
       // don't by comparing `undefined` vs something else, i.e., tracks that
       // need a tileset info will be initialized with `this.tilesetInfo = null;`.
-      .filter(tilesetInfo => typeof tilesetInfo !== 'undefined')
+      .filter(tilesetInfo => typeof tilesetInfo !== 'undefined' && tilesetInfo !== true)
       .length;
 
     const loadedTilesetInfos = Object.values(this.tracksByUidInit)
@@ -967,10 +968,12 @@ class TiledPlot extends React.Component {
       // the track whose data we're trying to export is part of a combined track
       trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject.createdTracks[track.uid];
     } else {
-      trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject.createdTracks[track.uid];
+      trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject;
     }
 
     trackObject.exportData();
+
+    this.closeMenus();
   }
 
   /**
@@ -1110,6 +1113,39 @@ class TiledPlot extends React.Component {
       newYDomain = [minPos[1], maxPos[1]];
     }
 
+
+    this.props.onDataDomainChanged(newXDomain, newYDomain);
+  }
+
+  resetViewport() {
+    // Set the initial domain
+    const left = (
+      this.trackRenderer.currentProps.marginLeft
+      + this.trackRenderer.currentProps.leftWidth
+    );
+    const newXDomain = [
+      left,
+      left + this.trackRenderer.currentProps.centerWidth,
+    ].map(this.trackRenderer.zoomTransform
+      .rescaleX(this.trackRenderer.xScale).invert
+    );
+
+    const top = (
+      this.trackRenderer.currentProps.marginTop
+      + this.trackRenderer.currentProps.topHeight
+    );
+    const newYDomain = [
+      top,
+      top + this.trackRenderer.currentProps.centerHeight,
+    ].map(this.trackRenderer.zoomTransform
+      .rescaleY(this.trackRenderer.yScale).invert
+    );
+
+    // Reset the zoom transform
+    this.trackRenderer.zoomTransform.k = 1;
+    this.trackRenderer.zoomTransform.x = 0;
+    this.trackRenderer.zoomTransform.y = 0;
+    this.trackRenderer.applyZoomTransform();
 
     this.props.onDataDomainChanged(newXDomain, newYDomain);
   }

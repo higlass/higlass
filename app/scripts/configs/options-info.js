@@ -165,6 +165,10 @@ export const OPTIONS_INFO = {
     name: 'Stroke color',
     inlineOptions: AVAILABLE_COLORS,
   },
+  color: {
+    name: 'Color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
   fillColor: {
     name: 'Fill color',
     inlineOptions: AVAILABLE_COLORS,

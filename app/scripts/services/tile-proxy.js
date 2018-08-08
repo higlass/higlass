@@ -276,6 +276,7 @@ export const calculateResolution = (tilesetInfo, zoomLevel) => {
  */
 export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   const rangeWidth = scale.range()[1] - scale.range()[0];
+
   const zoomScale = Math.max(
     (maxX - minX) / (scale.domain()[1] - scale.domain()[0]),
     1,
@@ -462,9 +463,9 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
  * threadpool
  */
 export const tileDataToPixData = (
-  tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished,
-synchronous=false, ignoreUpperRight) => {
+  tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished, ignoreUpperRight) => {
   const tileData = tile.tileData;
+
 
   if  (!tileData.dense) {
     // if we didn't get any data from the server, don't do anything
@@ -485,6 +486,7 @@ synchronous=false, ignoreUpperRight) => {
     }
   }
 
+  // console.log('tile', tile);
   // clone the tileData so that the original array doesn't get neutered
   // when being passed to the worker script
   //const newTileData = tileData.dense;
@@ -552,6 +554,7 @@ function json(url, callback) {
 
   const r = request(url)
     .header('Content-Type', 'application/json')
+  // TODO: Check if this preserves same-origin cookies
 
   if (authHeader)
     r.header('Authorization', `${authHeader}`)

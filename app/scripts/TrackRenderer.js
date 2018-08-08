@@ -411,7 +411,7 @@ class TrackRenderer extends React.Component {
   }
 
   addZoom() {
-    if (!this.elementSelection) return;
+    if (!this.elementSelection || !this.currentProps.zoomable) return;
 
     // add back the previous transform
     this.elementSelection.call(this.zoomBehavior);
@@ -1003,6 +1003,7 @@ class TrackRenderer extends React.Component {
           this.activeTransitions -= 1;
         });
     } else {
+      // console.log('setting zoom', notify);
       setZoom();
     }
 
@@ -1023,6 +1024,10 @@ class TrackRenderer extends React.Component {
     this.applyZoomTransform(true);
 
     pubSub.publish('app.zoom', event);
+    if (event.sourceEvent) {
+      event.sourceEvent.stopPropagation();
+      event.sourceEvent.preventDefault();
+    }
   }
 
   zoomStarted() {
@@ -1209,6 +1214,7 @@ class TrackRenderer extends React.Component {
         );
 
       case 'horizontal-multivec':
+      case 'horizontal-vector-heatmap':
         return new HorizontalMultivecTrack(
           this.pStage,
           dataConfig,
@@ -1219,6 +1225,22 @@ class TrackRenderer extends React.Component {
           () => this.currentProps.onValueScaleChanged(track.uid),
           newOptions =>
             this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
+        );
+
+      case 'vertical-multivec':
+      case 'vertical-vector-heatmap':
+        return new LeftTrackModifier(
+          new HorizontalMultivecTrack(
+            this.pStage,
+            dataConfig,
+            handleTilesetInfoReceived,
+            track.options,
+            () => this.currentProps.onNewTilesLoaded(track.uid),
+            this.svgElement,
+            () => this.currentProps.onValueScaleChanged(track.uid),
+            newOptions =>
+              this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
+          )
         );
 
       case 'horizontal-line':

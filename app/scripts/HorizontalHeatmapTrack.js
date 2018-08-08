@@ -332,9 +332,13 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         }
 
         this.renderingTiles.delete(tile.tileId);
+        /*
         this.animate();
         this.refreshTiles();
-      });
+        */
+      },
+      this.mirrorTiles && !tile.mirrored && tile.tileData.tilePos[0] == tile.tileData.tilePos[1]
+    );
   }
 
   refScalesChanged(refXScale, refYScale) {
