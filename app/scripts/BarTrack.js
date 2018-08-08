@@ -1,11 +1,32 @@
 import { scaleLinear } from 'd3-scale';
+import * as PIXI from 'pixi.js';
 
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 
 // Utils
-import { colorToHex } from './utils';
+import { colorDomainToRgbaArray, colorToHex } from './utils';
+
+import { HEATED_OBJECT_MAP } from './configs';
 
 class BarTrack extends HorizontalLine1DPixiTrack {
+  constructor(...args) {
+    super(...args);
+    if (this.options && this.options.colorRange) {
+      this.setColorScale(this.options.colorRange);
+    }
+  }
+
+  setColorScale(colorRange) {
+    this.colorScale = colorRange
+      ? colorDomainToRgbaArray(colorRange)
+      : HEATED_OBJECT_MAP;
+
+    // Normalize colormap upfront to save 3 divisions per data point during the
+    // rendering.
+    this.colorScale = this.colorScale
+      .map(rgb => rgb.map(channel => channel / 255.0));
+  }
+
   /**
    * Create whatever is needed to draw this tile.
    */
@@ -46,14 +67,17 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     if (tileValues.length === 0) return;
 
     // equal to the smallest non-zero value
-    const [vs, pseudocount] = this.makeValueScale(
+    const [valueScale, pseudocount] = this.makeValueScale(
       this.minVisibleValue(),
       this.medianVisibleValue,
       this.maxValue(),
       0
     );
-    this.valueScale = vs;
-    // console.log('pseudocount:', pseudocount, this.valueScale.domain());
+
+    this.valueScale = valueScale;
+
+    const colorScale = valueScale.copy();
+    colorScale.range([254, 0]).clamp(true);
 
     graphics.clear();
 
@@ -104,8 +128,23 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       // of the coordinate system
       if (tileXScale(i) > this.tilesetInfo.max_pos[0]) break;
 
+      if (this.colorScale) {
+        const rgbIdx = Math.round(colorScale(tileValues[i] + pseudocount));
+        const rgb = this.colorScale[rgbIdx];
+        const hex = PIXI.utils.rgb2hex(rgb);
+        graphics.beginFill(hex, opacity);
+      }
+
       graphics.drawRect(xPos, yPos, width, height);
     }
+  }
+
+  rerender(options) {
+    if (options && options.colorRange) {
+      this.setColorScale(options.colorRange);
+    }
+
+    super.rerender(options);
   }
 
   draw() {
