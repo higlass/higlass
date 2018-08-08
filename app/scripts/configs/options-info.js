@@ -527,6 +527,14 @@ export const OPTIONS_INFO = {
     },
   },
 
+  align: {
+    name: 'Align',
+    inlineOptions: {
+      white: { name: 'Top', value: 'top' },
+      lightGrey: { name: 'Bottom', value: 'bottom' },
+    },
+  },
+
   dataTransform: {
     name: 'Transforms',
     inlineOptions: {

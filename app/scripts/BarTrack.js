@@ -115,12 +115,20 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     tile.drawnAtScale = this._xScale.copy();
 
-    for (let i = 0; i < tileValues.length; i++) {
-      const xPos = this._xScale(tileXScale(i));
-      const yPos = this.valueScale(tileValues[i] + pseudocount);
+    const isTopAligned = this.options.align === 'top';
 
-      const width = this._xScale(tileXScale(i + 1)) - xPos;
-      const height = this.dimensions[1] - yPos;
+    let xPos;
+    let width;
+    let yPos;
+    let height;
+
+    for (let i = 0; i < tileValues.length; i++) {
+      xPos = this._xScale(tileXScale(i));
+      yPos = this.valueScale(tileValues[i] + pseudocount);
+      width = this._xScale(tileXScale(i + 1)) - xPos;
+      height = this.dimensions[1] - yPos;
+
+      if (isTopAligned) yPos = 0;
 
       this.addSVGInfo(tile, xPos, yPos, width, height, color);
 

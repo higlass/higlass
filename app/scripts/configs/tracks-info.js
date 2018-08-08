@@ -424,6 +424,7 @@ export const TRACKS_INFO = [
     local: false,
     orientation: '1d-horizontal',
     availableOptions: [
+      'align',
       'labelPosition',
       'labelColor',
       'labelTextOpacity',
@@ -439,6 +440,7 @@ export const TRACKS_INFO = [
       'showTooltip',
     ],
     defaultOptions: {
+      align: 'bottom',
       labelColor: 'black',
       labelPosition: 'topLeft',
       axisPositionHorizontal: 'right',
@@ -469,8 +471,10 @@ export const TRACKS_INFO = [
       'barOpacity',
       'showMousePosition',
       'showTooltip',
+      'align',
     ],
     defaultOptions: {
+      align: 'bottom',
       labelColor: 'black',
       labelPosition: 'topLeft',
       axisPositionHorizontal: 'right',
