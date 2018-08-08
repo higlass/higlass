@@ -191,7 +191,10 @@ with this track.
     height: 12,
   }
 
-**Demo**: `1d-heatmap-track.html <1d-heatmap-track.html>`_.
+**Demo**:
+
+  `Full example <1d-heatmap-track.html>`_.
+  `Genome browser-like view from HiGlass.io <1d-heatmap-track-2.html>`_.
 
 .. _chromosome-labels:
 
