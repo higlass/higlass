@@ -51,6 +51,12 @@ GitHub repository
 
     Example:
 
+``horizontalMargin: number [default: 5]``
+    Horizontal margin added by HiGlass
+
+``verticalMargin: number [default: 5]``
+    Vertical margin added by HiGlass
+
 .. code-block:: javascript
 
   const baseUrl = 'http://higlass.io/api/v1/viewconfs/';
@@ -217,6 +223,24 @@ Get the min and max value of the (visible) data of a track.
 .. code-block:: javascript
 
   const [minVal, maxVal] = hgv.getMinMaxValue('myView', 'myTrack');
+
+
+Reset the viewport
+------------------
+
+The endpoint allows you to reset the viewport to the initially defined X and Y
+domains of your view config.
+
+**Prototype**
+
+``resetViewport(viewId)``
+
+**Parameters**
+
+``viewId: string [default: '']``
+    The view identifier. If you have only one view you can omit this parameter.
+
+  hgv.resetViewport(); // Resets the first view
 
 
 Subscribe to events

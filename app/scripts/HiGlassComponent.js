@@ -124,8 +124,10 @@ class HiGlassComponent extends React.Component {
     this.plusImg = {};
     this.configImg = {};
 
-    this.horizontalMargin = 5;
-    this.verticalMargin = 5;
+    this.horizontalMargin = typeof props.options.horizontalMargin !== 'undefined'
+      ? props.options.horizontalMargin : 5;
+    this.verticalMargin = typeof props.options.verticalMargin !== 'undefined'
+      ? props.options.verticalMargin : 5;
 
     this.genomePositionSearchBox = null;
     this.viewHeaders = {};
@@ -1053,12 +1055,39 @@ class HiGlassComponent extends React.Component {
      *
      * @param viewUid: The view uid for which to adjust the zoom level
      */
-    if (!this.tiledPlots[viewUid])
-      throw `View uid ${viewUid} does not exist in the current viewConfig`;
+    if (viewUid && !this.tiledPlots[viewUid]) {
+      throw new Error(
+        `View uid ${viewUid} does not exist in the current viewConfig`
+      );
+    }
 
-    this.tiledPlots[viewUid].handleZoomToData();
+    if (viewUid) {
+      this.tiledPlots[viewUid].handleZoomToData();
+    } else {
+      Object.values(this.tiledPlots)
+        .forEach(tiledPlot => tiledPlot.handleZoomToData());
+    }
   }
 
+  /**
+   * Reset the viewport to the initial x and y domain
+   * @param  {number} viewId - ID of the view for which the viewport should be
+   *  reset.
+   */
+  resetViewport(viewId) {
+    if (viewId && !this.tiledPlots[viewId]) {
+      throw new Error(
+        `View uid ${viewId} does not exist in the current viewConfig`
+      );
+    }
+
+    if (viewId) {
+      this.tiledPlots[viewId].resetViewport();
+    } else {
+      Object.values(this.tiledPlots)
+        .forEach(tiledPlot => tiledPlot.resetViewport());
+    }
+  }
 
   handleYankFunction(uid, yankFunction) {
     /**

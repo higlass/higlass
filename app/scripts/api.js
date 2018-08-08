@@ -151,6 +151,15 @@ const api = function api(context) {
       self.handleZoomToData(viewUid);
     },
 
+    /**
+     * Reset the viewport to the initial x and y domain
+     * @param  {number} viewId - ID of the view for which the viewport should be
+     *  reset.
+     */
+    resetViewport(viewId) {
+      self.resetViewport(viewId);
+    },
+
     getDataURI() {
       /**
        * Export the current canvas as a PNG string so that
