@@ -59,7 +59,7 @@ datatype: ``matrix``
 Heatmaps in HiGlass are usually used to display HiC data. They log-scale input
 values and map them to a user-selectable color scale (color map configuration
 option). Because HiGlass displays data at varying zoom levels, heatmaps are
-displayed at different resolutions depending on the current zoom level. To 
+displayed at different resolutions depending on the current zoom level. To
 limit the resolution of the displayed data, users can set the `Zoom Limit`
 configuration option.
 
@@ -142,6 +142,10 @@ track-type: ``horizontal-bar``
 datatype: ``vector``
 
 Bar tracks display 1D vector data as bars.
+
+**Demos:**
+
+- `Diverging bars with color map and gradient <examples/bar-track-color-range.html>`
 
 .. _point-track:
 
