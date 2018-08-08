@@ -3126,7 +3126,7 @@ class HiGlassComponent extends React.Component {
       return undefined;
     }
 
-    if (!track.minVisibleValue) {
+    if (!track.minVisibleValue || !track.maxVisibleValue) {
       console.warn(
         `Track ${trackId} doesn't support the retrieval of min or max values.`
       );
