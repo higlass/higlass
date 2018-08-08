@@ -59,7 +59,7 @@ datatype: ``matrix``
 Heatmaps in HiGlass are usually used to display HiC data. They log-scale input
 values and map them to a user-selectable color scale (color map configuration
 option). Because HiGlass displays data at varying zoom levels, heatmaps are
-displayed at different resolutions depending on the current zoom level. To 
+displayed at different resolutions depending on the current zoom level. To
 limit the resolution of the displayed data, users can set the `Zoom Limit`
 configuration option.
 
@@ -157,6 +157,41 @@ datatype: ``vector``
 Point tracks display 1D vector data. Unlike :ref:`line tracks <line-track>`,
 they are well suited to data with NaNs because they do not require two points
 to draw something.
+
+.. _point-track:
+
+1D Heatmap
+==========
+
+.. image:: img/1d-heatmap-track.png
+    :align: right
+
+track-type: ``horizontal-1d-heatmap`` and ``vertical-1d-heatmap``
+datatype: ``vector``
+
+1D heatmap tracks display 1D vector data. Unlike the other 1D tracks,
+they are well suited for getting an overview of distribution and less suited for
+identifying precise properties of individual data points. E.g., finding regions
+that are on average highly expressed is much easier than finding the highest peak
+with this track.
+
+**Example:**
+
+.. code-block:: javascript
+
+  {
+    server: 'http://higlass.io/api/v1',
+    tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
+    uid: '1d-heatmap',
+    type: 'horizontal-1d-heatmap',
+    options: {
+      labelPosition: 'hidden',
+      colorRange: ['#FFFFFF', '#ccc6ff', '#4f3de5', '#120489', '#000000'],
+    },
+    height: 12,
+  }
+
+**Demo**: `1d-heatmap-track.html <1d-heatmap-track.html>`_.
 
 .. _chromosome-labels:
 
