@@ -3221,7 +3221,7 @@ class HiGlassComponent extends React.Component {
 
   }
 
-  setTrackValueScale(viewId, trackId, minValue, maxValue) {
+  setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
     const tiledPlot = viewId
       ? this.tiledPlots[viewId]
       : Object.values(this.tiledPlots)[0];

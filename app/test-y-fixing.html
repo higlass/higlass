@@ -229,18 +229,18 @@ const hgApi = hglib.viewer(
 
 setTimeout(() => {
   console.log('DING!');
-  hgApi.setTrackValueScale(null, 'line1', -10000000, 10000000);
-  hgApi.setTrackValueScale(null, 'bar1', -10000000, 10000000);
-  hgApi.setTrackValueScale(null, 'line2', -10000000, 10000000);
-  hgApi.setTrackValueScale(null, 'bar2', -10000000, 10000000);
+  hgApi.setTrackValueScaleLimits(null, 'line1', -10000000, 10000000);
+  hgApi.setTrackValueScaleLimits(null, 'bar1', -10000000, 10000000);
+  hgApi.setTrackValueScaleLimits(null, 'line2', -10000000, 10000000);
+  hgApi.setTrackValueScaleLimits(null, 'bar2', -10000000, 10000000);
 }, 5000);
 
 setTimeout(() => {
   console.log('DONG!');
-  hgApi.setTrackValueScale(null, 'line1');
-  hgApi.setTrackValueScale(null, 'bar1');
-  hgApi.setTrackValueScale(null, 'line2');
-  hgApi.setTrackValueScale(null, 'bar2');
+  hgApi.setTrackValueScaleLimits(null, 'line1');
+  hgApi.setTrackValueScaleLimits(null, 'bar1');
+  hgApi.setTrackValueScaleLimits(null, 'line2');
+  hgApi.setTrackValueScaleLimits(null, 'bar2');
 }, 10000);
 
 </script>

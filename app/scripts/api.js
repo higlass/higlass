@@ -124,8 +124,8 @@ const api = function api(context) {
       });
     },
 
-    setTrackValueScale(viewId, trackId, minValue, maxValue) {
-      self.setTrackValueScale(viewId, trackId, minValue, maxValue);
+    setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
+      self.setTrackValueScaleLimits(viewId, trackId, minValue, maxValue);
     },
 
     /**
