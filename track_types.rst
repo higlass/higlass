@@ -59,7 +59,7 @@ datatype: ``matrix``
 Heatmaps in HiGlass are usually used to display HiC data. They log-scale input
 values and map them to a user-selectable color scale (color map configuration
 option). Because HiGlass displays data at varying zoom levels, heatmaps are
-displayed at different resolutions depending on the current zoom level. To 
+displayed at different resolutions depending on the current zoom level. To
 limit the resolution of the displayed data, users can set the `Zoom Limit`
 configuration option.
 
@@ -175,6 +175,10 @@ sourced from a standard chromSizes file containing chromosome names and
 chromosome files. The file can be ingested by the higlass server like any other
 tileset. As long as the `datatype` is set to `chromsizes` this track should be
 selectable from the "Add Track Dialog".
+
+**Demos:**
+
+- `demonstrate adjustability <examples/chromosome-labels.html>`_.
 
 Chromosome Grid
 ===============
