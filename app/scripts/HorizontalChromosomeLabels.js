@@ -181,17 +181,17 @@ class HorizontalChromosomeLabels extends PixiTrack {
     const tickFormat = xScale.tickFormat(numTicks);
     const tickTexts = this.tickTexts[cumPos.chr];
 
-    const tickHeight = this.options.fontIsAligned
+    const tickHeight = this.options.fontIsLeftAligned
       ? ((+this.options.fontSize || this.textFontSize) / 2)
       : this.tickHeight;
 
     const flipTextSign = this.flipText ? -1 : 1;
 
-    const xPadding = this.options.fontIsAligned
+    const xPadding = this.options.fontIsLeftAligned
       ? flipTextSign * 4
       : 0;
 
-    const yPadding = this.options.fontIsAligned
+    const yPadding = this.options.fontIsLeftAligned
       ? 0
       : tickHeight + this.tickTextSeparation;
 
@@ -205,7 +205,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
     while (i < ticks.length) {
       tickTexts[i].visible = true;
 
-      tickTexts[i].anchor.x = this.options.fontIsAligned ? 0 : 0.5;
+      tickTexts[i].anchor.x = this.options.fontIsLeftAligned ? 0 : 0.5;
       tickTexts[i].anchor.y = 1;
 
       if (this.flipText) tickTexts[i].scale.x = -1;
@@ -226,7 +226,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       graphics.moveTo(x, this.dimensions[1]);
       graphics.lineTo(x, this.dimensions[1] - tickHeight);
 
-      if (this.options.fontIsAligned) {
+      if (this.options.fontIsLeftAligned) {
         graphics.lineTo(
           x + (2 * flipTextSign),
           this.dimensions[1] - tickHeight
@@ -264,7 +264,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.gTicks[this.chromInfo.cumPositions[i].chr].visible = false;
     }
 
-    const yPadding = this.options.fontIsAligned
+    const yPadding = this.options.fontIsLeftAligned
       ? 0
       : this.tickHeight + this.tickTextSeparation;
 
@@ -278,7 +278,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
       const text = this.texts[i];
 
-      text.anchor.x = this.options.fontIsAligned ? 0 : 0.5;
+      text.anchor.x = this.options.fontIsLeftAligned ? 0 : 0.5;
       text.anchor.y = 1;
       text.x = viewportMidX;
       text.y = this.dimensions[1] - yPadding;
