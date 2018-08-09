@@ -52,9 +52,10 @@ class HorizontalChromosomeLabels extends PixiTrack {
       fontFamily: this.textFontFamily,
       fill: this.options.color || this.textFontColor,
       lineJoin: 'round',
-      stroke: '#ffffff',
-      strokeThickness: 1
+      stroke: this.options.stroke || '#ffffff',
+      strokeThickness: 2
     };
+    this.stroke = colorToHex(this.pixiTextConfig.stroke);
 
     this.tickWidth = TICK_WIDTH;
     this.tickHeight = TICK_HEIGHT;
@@ -130,12 +131,12 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.prevOptions = strOptions;
     this.options = options;
 
-    this.pixiTextConfig = {
-      fontSize: +this.options.fontSize
-        ? `${+this.options.fontSize}px`
-        : this.pixiTextConfig.fontSize,
-      fill: this.options.color || this.pixiTextConfig.fill
-    };
+    this.pixiTextConfig.fontSize = +this.options.fontSize
+      ? `${+this.options.fontSize}px`
+      : this.pixiTextConfig.fontSize;
+    this.pixiTextConfig.fill = this.options.color || this.pixiTextConfig.fill;
+    this.pixiTextConfig.stroke = this.options.stroke || this.pixiTextConfig.stroke;
+    this.stroke = colorToHex(this.pixiTextConfig.stroke);
 
     this.tickColor = this.options.tickColor
       ? colorToHex(this.options.tickColor)
@@ -220,11 +221,32 @@ class HorizontalChromosomeLabels extends PixiTrack {
         ? `${cumPos.chr}: 1`
         : `${cumPos.chr}: ${tickFormat(ticks[i])}`;
 
-      graphics.lineStyle(1, this.tickColor);
-
       const x = this._xScale(cumPos.pos + ticks[i]);
 
+      // Draw outline
+      graphics.lineStyle(1, this.stroke);
+      graphics.moveTo(x - 1, this.dimensions[1]);
+      graphics.lineTo(x - 1, this.dimensions[1] - tickHeight - 1);
+      if (this.options.fontIsLeftAligned) {
+        graphics.lineTo(
+          x + (2 * flipTextSign) + (1 * flipTextSign),
+          this.dimensions[1] - tickHeight - 1
+        );
+        graphics.lineTo(
+          x + (2 * flipTextSign) + (1 * flipTextSign),
+          this.dimensions[1] - tickHeight + 1
+        );
+        graphics.lineTo(
+          x + 1,
+          this.dimensions[1] - tickHeight + 1
+        );
+      } else {
+        graphics.lineTo(x + 1, this.dimensions[1] - tickHeight - 1);
+      }
+      graphics.lineTo(x + 1, this.dimensions[1]);
+
       // draw the tick lines
+      graphics.lineStyle(1, this.tickColor);
       graphics.moveTo(x, this.dimensions[1]);
       graphics.lineTo(x, this.dimensions[1] - tickHeight);
 
