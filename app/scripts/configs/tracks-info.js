@@ -923,16 +923,19 @@ export const TRACKS_INFO = [
     type: 'horizontal-chromosome-labels',
     datatype: ['chromsizes'],
     orientation: '1d-horizontal',
-    minHeight: 30,
+    minHeight: 10,
+    defaultHeight: 30,
     name: 'Chromosome Axis',
     thumbnail: null,
     availableOptions: [
       'color',
+      'fontSize',
       'showMousePosition',
       'mousePositionColor',
     ],
     defaultOptions: {
       color: '#777777',
+      fontSize: 12,
       showMousePosition: false,
       mousePositionColor: '#999999'
     },
@@ -941,8 +944,8 @@ export const TRACKS_INFO = [
     type: 'vertical-chromosome-labels',
     datatype: ['chromsizes'],
     orientation: '1d-vertical',
-    minWidth: 20,
-    minHeight: 30,
+    minWidth: 10,
+    defaultWidth: 30,
     name: 'Chromosome Axis',
     thumbnail: null,
     availableOptions: [
