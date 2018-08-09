@@ -6,6 +6,8 @@ import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 // Utils
 import { colorDomainToRgbaArray, colorToHex, gradient } from './utils';
 
+const HEX_WHITE = colorToHex('#FFFFFF');
+
 class BarTrack extends HorizontalLine1DPixiTrack {
   constructor(...args) {
     super(...args);
@@ -139,17 +141,20 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     let barSprite;
     if (this.colorGradientColors) {
       barMask = new PIXI.Graphics();
-      barMask.beginFill(colorToHex('#FFFFFF'), 1);
+      barMask.beginFill(HEX_WHITE, 1);
 
       const canvas = gradient(
         this.colorGradientColors,
-        ...this.dimensions,  // width, height
+        1, this.dimensions[1],  // width, height
         0, 0, 0, this.dimensions[1]  // fromX, fromY, toX, toY
       );
 
       barSprite = new PIXI.Sprite(
         PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
       );
+
+      barSprite.x = this._xScale(tileX);
+      barSprite.width = this._xScale(tileX + tileWidth) - barSprite.x;
     }
 
     for (let i = 0; i < tileValues.length; i++) {
