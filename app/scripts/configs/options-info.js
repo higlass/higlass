@@ -5,6 +5,11 @@ import {
 
 import HeatmapOptions from '../HeatmapOptions';
 
+const YES_NO = {
+  yes: { name: 'Yes', value: true},
+  no: { name: 'No', value: false },
+}
+
 const AVAILABLE_COLORS = {
   black: { name: 'Black', value: 'black' },
   blue: { name: 'Blue', value: 'blue' },
@@ -191,17 +196,11 @@ export const OPTIONS_INFO = {
   },
   barBorder: {
     name: 'Bar border',
-    inlineOptions: {
-      yes: { name: 'Yes', value: true},
-      no: { name: 'No', value: false },
-    },
+    inlineOptions: YES_NO
   },
   scaledHeight: {
     name: 'Scaled height',
-    inlineOptions: {
-      yes: { name: 'Yes', value: true},
-      no: { name: 'No', value: false },
-    },
+    inlineOptions: YES_NO
   },
   rectangleDomainStrokeColor: {
     name: 'Stroke color',
@@ -285,18 +284,33 @@ export const OPTIONS_INFO = {
   },
   showMousePosition: {
     name: 'Show Mouse Position',
-    inlineOptions: {
-      yes: { name: 'Yes', value: true},
-      no: { name: 'No', value: false },
-    },
+    inlineOptions: YES_NO
   },
   showTooltip: {
     name: 'Show Tooltip',
+    inlineOptions: YES_NO
+  },
+
+  fontSize: {
+    name: 'Font Size',
     inlineOptions: {
-      yes: { name: 'Yes', value: true},
-      no: { name: 'No', value: false },
+      8: { name: '8px', value: 8 },
+      9: { name: '9px', value: 9 },
+      10: { name: '10px', value: 10 },
+      11: { name: '11px', value: 11 },
+      12: { name: '12px', value: 12 },
+      14: { name: '14px', value: 14 },
+      16: { name: '16px', value: 16 },
+      18: { name: '18px', value: 18 },
+      24: { name: '24px', value: 24 },
     },
   },
+
+  fontIsAligned: {
+    name: 'Left-Align Font',
+    inlineOptions: YES_NO
+  },
+
   axisPositionHorizontal: {
     name: 'Axis Position',
     inlineOptions: {

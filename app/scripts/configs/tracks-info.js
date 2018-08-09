@@ -930,12 +930,14 @@ export const TRACKS_INFO = [
     availableOptions: [
       'color',
       'fontSize',
+      'fontIsAligned',
       'showMousePosition',
       'mousePositionColor',
     ],
     defaultOptions: {
       color: '#777777',
       fontSize: 12,
+      fontIsAligned: false,
       showMousePosition: false,
       mousePositionColor: '#999999'
     },
