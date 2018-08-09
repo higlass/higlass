@@ -19,7 +19,14 @@ const TICK_TEXT_SEPARATION = 2;
 const TICK_COLOR = 0x777777;
 
 class HorizontalChromosomeLabels extends PixiTrack {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, chromInfoPath) {
+  constructor(
+    scene,
+    dataConfig,
+    handleTilesetInfoReceived,
+    options,
+    animate,
+    chromInfoPath
+  ) {
     super(scene, options);
 
     this.searchField = null;
@@ -162,8 +169,12 @@ class HorizontalChromosomeLabels extends PixiTrack {
       graphics.lineStyle(1, TICK_COLOR);
 
       // draw the tick lines
-      graphics.moveTo(this._xScale(cumPos.pos + ticks[i]), this.dimensions[1]);
-      graphics.lineTo(this._xScale(cumPos.pos + ticks[i]), this.dimensions[1] - TICK_HEIGHT);
+      graphics.moveTo(
+        this._xScale(cumPos.pos + ticks[i]), this.dimensions[1]
+      );
+      graphics.lineTo(
+        this._xScale(cumPos.pos + ticks[i]), this.dimensions[1] - TICK_HEIGHT
+      );
 
       i += 1;
     }
@@ -181,9 +192,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
   draw() {
     this.allTexts = [];
 
-    if (!this.texts) { return; }
+    console.log(this.tickTexts);
 
-    if (!this.searchField) { return; }
+    if (!this.texts || !this.searchField) return;
 
     const x1 = absToChr(this._xScale.domain()[0], this.chromInfo);
     const x2 = absToChr(this._xScale.domain()[1], this.chromInfo);
@@ -213,21 +224,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       text.y = this.dimensions[1] - TICK_TEXT_SEPARATION - TICK_HEIGHT;
       text.updateTransform();
 
-      if (this.flipText) { text.scale.x = -1; }
-
-      // const bbox = text.getBounds();
-      // text.y -= bbox.height;
-
-      // make sure the chrosome label fits in the x range
-      /* Not necessary because chromosome labels only get drawn
-            if (viewportMidX + bbox.width / 2  > this.dimensions[0]) {
-                text.x -= (viewportMidX + bbox.width / 2) - this.dimensions[0];
-            } else if (viewportMidX - bbox.width / 2 < 0) {
-                //
-                text.x -= (viewportMidX - bbox.width / 2);
-            }
-            */
-
+      if (this.flipText) text.scale.x = -1;
 
       const numTicksDrawn = this.drawTicks(xCumPos);
 
@@ -285,8 +282,8 @@ class HorizontalChromosomeLabels extends PixiTrack {
   }
 
   exportSVG() {
-    let track = null,
-      base = null;
+    let track = null;
+    let base = null;
 
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
@@ -302,18 +299,16 @@ class HorizontalChromosomeLabels extends PixiTrack {
     output.setAttribute('transform',
       `translate(${this.position[0]},${this.position[1]})`);
 
-    for (const text of this.allTexts) {
-      if (!text.text.visible) continue;
+    this.allTexts
+      .filter(text => text.text.visible)
+      .forEach((text) => {
+        const g = pixiTextToSvg(text.text);
+        output.appendChild(g);
+      });
 
-      const g = pixiTextToSvg(text.text);
-      output.appendChild(g);
-    }
-
-    for (let key in this.tickTexts) {
-      for (let text of this.tickTexts[key]) {
-        if (!text.visible)
-          continue;
-
+    Object.values(this.tickTexts)
+      .filter(text => text.visible)
+      .forEach((text) => {
         let g = pixiTextToSvg(text);
         output.appendChild(g);
 
@@ -327,8 +322,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
         );
 
         output.appendChild(g);
-      }
-    }
+      });
 
     return [base, track];
   }
