@@ -18,7 +18,6 @@ const TICK_WIDTH = 200;
 const TICK_HEIGHT = 6;
 const TICK_TEXT_SEPARATION = 2;
 const TICK_COLOR = 0x777777;
-const HEX_WHITE = colorToHex('#FFFFFF');
 
 class HorizontalChromosomeLabels extends PixiTrack {
   constructor(
@@ -34,6 +33,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.searchField = null;
     this.chromInfo = null;
     this.dataConfig = dataConfig;
+
+    this.pTicks = new PIXI.Graphics();
+    this.pMain.addChild(this.pTicks);
 
     this.gTicks = {};
     this.tickTexts = {};
@@ -93,7 +95,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
     if (!this.chromInfo) return;
 
     this.texts = [];
-    this.pMain.removeChildren();
+    this.pTicks.removeChildren();
 
     for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
       const textStr = this.chromInfo.cumPositions[i].chr;
@@ -113,8 +115,8 @@ class HorizontalChromosomeLabels extends PixiTrack {
       // when there's overlaps
       text.hashValue = Math.random();
 
-      this.pMain.addChild(text);
-      this.pMain.addChild(this.gTicks[textStr]);
+      this.pTicks.addChild(text);
+      this.pTicks.addChild(this.gTicks[textStr]);
 
       this.texts.push(text);
     }
