@@ -3118,7 +3118,7 @@ class HiGlassComponent extends React.Component {
     this.showHoverMenu(evt);
   }
 
-  getMinMaxValue(viewId, trackId) {
+  getMinMaxValue(viewId, trackId, ignoreOffScreenValues, ignoreFixedScale) {
     const track = getTrackObjById(this.tiledPlots, viewId, trackId);
 
     if (!track) {
@@ -3133,7 +3133,17 @@ class HiGlassComponent extends React.Component {
       return undefined;
     }
 
-    return [track.minVisibleValue(), track.maxVisibleValue()];
+    if (ignoreOffScreenValues && track.getAggregatedVisibleValue) {
+      return [
+        track.getAggregatedVisibleValue('min'),
+        track.getAggregatedVisibleValue('max'),
+      ];
+    }
+
+    return [
+      track.minVisibleValue(ignoreFixedScale),
+      track.maxVisibleValue(ignoreFixedScale)
+    ];
   }
 
   /**
