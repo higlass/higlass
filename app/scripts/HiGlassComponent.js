@@ -3222,24 +3222,12 @@ class HiGlassComponent extends React.Component {
   }
 
   setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
-    const tiledPlot = viewId
-      ? this.tiledPlots[viewId]
-      : Object.values(this.tiledPlots)[0];
+    const track = getTrackObjById(this.tiledPlots, viewId, trackId);
 
-    if (!tiledPlot) {
-      if (!viewId) console.warn('No views available.');
-      else console.warn(`Could't find view with id "${viewId}"`);
+    if (!track) {
+      console.warn(`Could't find track: ${trackId}`);
       return;
     }
-
-    const trackDef = tiledPlot.trackRenderer.trackDefObjects[trackId];
-
-    if (!trackDef) {
-      console.warn(`Could't find track: ${trackId} in view: ${tiledPlot.props.uid}`);
-      return;
-    }
-
-    const track = tiledPlot.trackRenderer.trackDefObjects[trackId].trackObject;
 
     if (track.setFixedValueScaleMin && track.setFixedValueScaleMax) {
       track.setFixedValueScaleMin(minValue);
