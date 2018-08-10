@@ -3232,6 +3232,13 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
+    const trackDef = tiledPlot.trackRenderer.trackDefObjects[trackId];
+
+    if (!trackDef) {
+      console.warn(`Could't find track: ${trackId} in view: ${tiledPlot.props.uid}`);
+      return;
+    }
+
     const track = tiledPlot.trackRenderer.trackDefObjects[trackId].trackObject;
 
     if (track.setFixedValueScaleMin && track.setFixedValueScaleMax) {
