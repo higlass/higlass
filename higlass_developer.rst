@@ -203,8 +203,6 @@ Get the visible min and max value of a track
 Get the min and max value of the visible data of a track.
 
 **Prototype**
-      ignoreOffScreenValues = false,
-      ignoreFixedScale = false
 
 ``getMinMaxValue(viewId, trackId, ignoreOffScreenValues, ignoreFixedScale)``
 
@@ -233,7 +231,7 @@ Get the min and max value of the visible data of a track.
 
   const [minVal, maxVal] = hgv.getMinMaxValue('myView', 'myTrack');
 
-**Demo:**
+**Demos:**
 
 - `Base example <examples/api-get-min-max-value.html>`_
 
