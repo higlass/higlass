@@ -625,14 +625,12 @@ class TiledPixiTrack extends PixiTrack {
   minVisibleValue() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
-    if (visibleAndFetchedIds.length == 0) {
+    if (visibleAndFetchedIds.length === 0) {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    let min = Math.min.apply(
-      null,
-      visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.minNonZero)
-      .filter(x => x)
+    let min = Math.min(
+      ...visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.minNonZero)
     );
 
     // if there's no data, use null
@@ -648,10 +646,8 @@ class TiledPixiTrack extends PixiTrack {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    let max = Math.max.apply(
-      null,
-      visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.maxNonZero)
-      .filter(x => x)
+    let max = Math.max(
+      ...visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.maxNonZero)
     );
 
 
