@@ -258,6 +258,7 @@ const api = hglib.viewer(
 );
 
 setTimeout(() => {
+  console.log('FAST:');
   console.log('Min-Max for line1:', api.getMinMaxValue(null, 'line1'));
   console.log('Min-Max for bar1:', api.getMinMaxValue(null, 'bar1'));
   console.log('Min-Max for line3:', api.getMinMaxValue(null, 'line3'));
@@ -266,6 +267,18 @@ setTimeout(() => {
   console.log('Min-Max for genes:', api.getMinMaxValue(null, 'genes'));
   console.log('Min-Max for chroms:', api.getMinMaxValue(null, 'chroms'));
 }, 2000);
+
+setTimeout(() => {
+  console.log('\n----------\n');
+  console.log('SLOW:');
+  console.log('Visible Min-Max for line1:', api.getMinMaxValue(null, 'line1', true));
+  console.log('Visible Min-Max for bar1:', api.getMinMaxValue(null, 'bar1', true));
+  console.log('Visible Min-Max for line3:', api.getMinMaxValue(null, 'line3', true));
+  console.log('Visible Min-Max for bar3:', api.getMinMaxValue(null, 'bar3', true));
+  console.log('Visible Min-Max for heatmap1:', api.getMinMaxValue(null, 'heatmap1', true));
+  console.log('Visible Min-Max for genes:', api.getMinMaxValue(null, 'genes', true));
+  console.log('Visible Min-Max for chroms:', api.getMinMaxValue(null, 'chroms', true));
+}, 3000);
 
 </script>
 </html>
