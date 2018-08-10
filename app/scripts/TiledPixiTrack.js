@@ -657,59 +657,6 @@ class TiledPixiTrack extends PixiTrack {
     return max;
   }
 
-  /**
-   * Return an aggregated visible value. For example, the minimum or maximum.
-   *
-   * @description
-   *   The difference to `minVisibleValue`
-   *   is that the truly visible min or max value is returned instead of the
-   *   min or max value of the tile. The latter is not necessarily visible.
-   *
-   * @param  {string} aggregator Aggregation method. Currently supports `min`
-   *   and `max` only.
-   * @return {number} The aggregated value.
-   */
-  getAggregatedVisibleValue(aggregator = 'max') {
-    const aggregate = aggregator === 'min' ? Math.min : Math.max;
-    const limit = aggregator === 'min' ? Infinity : -Infinity;
-
-    let visibleAndFetchedIds = this.visibleAndFetchedIds();
-
-    if (visibleAndFetchedIds.length === 0) {
-      visibleAndFetchedIds = Object.keys(this.fetchedTiles);
-    }
-
-    const visible = this._xScale.range();
-
-    return visibleAndFetchedIds
-      .map(x => this.fetchedTiles[x])
-      .map((tile) => {
-        const { tileX, tileWidth } = this.getTilePosAndDimensions(
-          tile.tileData.zoomLevel,
-          tile.tileData.tilePos,
-          this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size
-        );
-
-        const tileXScale = scaleLinear()
-          .domain([
-            0, this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension
-          ])
-          .range([tileX, tileX + tileWidth]);
-
-        const start = Math.max(
-          0,
-          Math.round(tileXScale.invert(this._xScale.invert(visible[0])))
-        );
-        const end = Math.min(
-          tile.tileData.dense.length,
-          Math.round(tileXScale.invert(this._xScale.invert(visible[1])))
-        );
-
-        return tile.tileData.dense.slice(start, end);
-      })
-      .reduce((smallest, current) => aggregate(smallest, ...current), limit);
-  }
-
   makeValueScale(minValue, medianValue,  maxValue, margin) {
     /*
      * Create a value scale that will be used to position values
