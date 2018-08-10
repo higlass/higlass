@@ -203,8 +203,10 @@ Get the visible min and max value of a track
 Get the min and max value of the visible data of a track.
 
 **Prototype**
+      ignoreOffScreenValues = false,
+      ignoreFixedScale = false
 
-``getMinMaxValue(viewId, trackId)``
+``getMinMaxValue(viewId, trackId, ignoreOffScreenValues, ignoreFixedScale)``
 
 **Parameters**
 
@@ -214,13 +216,26 @@ Get the min and max value of the visible data of a track.
 ``trackId: string``
     Track identifier (uid).
 
+``ignoreOffScreenValues: bool [default: false]``
+    If ``true`` only truly visible values are considered. Otherwise the values
+    of visible tiles are used. Not that considering only the truly visible
+    values results in a roughly 10x slowdown (from 0.1 to 1 millisecond).
+
+``ignoreFixedScale: bool [default: false]``
+    If ``true`` potentially fixed scaled values are ignored. I.e., if the
+    absolute range is ``[1, 18]`` but you have fixed the output range to
+    ``[4, 5]`` you would normally retrieve ``[4, 5]``. Having this option set to
+    ``true`` retrieves the absolute ``[1, 18]`` range.
+
 **Examples:**
 
 .. code-block:: javascript
 
   const [minVal, maxVal] = hgv.getMinMaxValue('myView', 'myTrack');
 
-**Demo:** `get-min-max-value.html <examples/get-min-max-value.html>`_
+**Demo:**
+
+- `Base example <examples/api-get-min-max-value.html>`_
 
 
 Reset the viewport
