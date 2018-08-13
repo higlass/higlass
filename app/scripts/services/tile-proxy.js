@@ -1,10 +1,5 @@
 import { scaleLog, scaleLinear } from 'd3-scale';
 import { range } from 'd3-array';
-import {
-  json as d3Json,
-  text as d3Text,
-  request,
-} from 'd3-request';
 import slugid from 'slugid';
 
 import {
@@ -532,36 +527,54 @@ export const tileDataToPixData = (
 
 function text(url, callback) {
   /**
-   * Send a JSON request mark it so that we can tell how many are in flight
+   * Send a text request and mark it so that we can tell how many are in flight
    */
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
-  d3Text(url, (error, done) => {
-    callback(error, done);
-    pubSub.publish('requestReceived', url);
-    requestsInFlight -= 1;
-  });
+  fetch(url, {credentials: 'include', headers: headers})
+    .then(response => {
+      pubSub.publish('requestReceived', url);
+      if (response.ok) {
+        response.text().then(t => {
+          callback(null, t);
+          requestsInFlight -= 1;
+        })
+      } else {
+        // Do something?
+      }
+    })
+    .catch(error => {
+      // Do something?
+    });
 }
 
 function json(url, callback) {
   /**
-   * Send a JSON request mark it so that we can tell how many are in flight
+   * Send a JSON request and mark it so that we can tell how many are in flight
    */
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
-  const r = request(url)
-    .header('Content-Type', 'application/json')
+  var headers = {'Content-Type': 'application/json'};
+  if (authHeader) {
+    headers['Authorization'] = authHeader;
+  }
 
-  if (authHeader)
-    r.header('Authorization', `${authHeader}`)
-
-    r.send('GET', (error, data) => {
+  fetch(url, {credentials: 'include', headers: headers})
+    .then(response => {
       pubSub.publish('requestReceived', url);
-      const j = data && JSON.parse(data.response);
-      callback(error, j);
-      requestsInFlight -= 1;
+      if (response.ok) {
+        response.json().then(j => {
+          callback(null, j);
+          requestsInFlight -= 1;
+        })
+      } else {
+        // Do something?
+      }
+    })
+    .catch(error => {
+      // Do something?
     });
 }
 
