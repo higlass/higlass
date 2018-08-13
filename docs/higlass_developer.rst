@@ -50,7 +50,7 @@ GitHub repository
     function in quick succesion after initializing the viewer.
 
     Example:
-   
+
 ``horizontalMargin: number [default: 5]``
     Horizontal margin added by HiGlass
 
@@ -145,7 +145,7 @@ to each other.
 
 **Prototype**
 
-``zoomTo(viewUid,start1,end1,start2,end2,animateTime):``
+``zoomTo(viewUid, start1, end1, start2, end2, animateTime):``
 
 **Parameters**
 
@@ -160,14 +160,18 @@ to each other.
     The left x coordinate of the region to zoom to.
 ``end2: Number``
     The right x coordinate of the region to zoom to.
-``animateTime``
+``animateTime [default: 0]``
     The duration of the zoom transition in milliseconds.
 
 **Example:**
 
 .. code-block:: javascript
 
-  hgv.zoomTo('v1', 1000000,1000000,2000000,2000000, 500);
+  hgv.zoomTo('view1', 1000000, 1000000, 2000000, 2000000, 500);
+
+**Demos:**
+
+- `Consecutive animated zooms <examples/api-zoom-to.html>`_
 
 Select a mouse tool
 -------------------
