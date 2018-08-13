@@ -1,10 +1,5 @@
 import { scaleLog, scaleLinear } from 'd3-scale';
 import { range } from 'd3-array';
-import {
-  json as d3Json,
-  text as d3Text,
-  request,
-} from 'd3-request';
 import slugid from 'slugid';
 
 import {
