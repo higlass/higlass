@@ -2944,6 +2944,18 @@ class HiGlassComponent extends React.Component {
   }
 
   zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime) {
+    if (
+      !(+start1Abs >= 0 && +end1Abs >= 0 && +start2Abs >= 0 && +end2Abs >= 0)
+    ) {
+      const coords = [start1Abs, end1Abs, start2Abs, end2Abs].join(', ');
+      console.warn([
+        `Invalid coordinates (${coords}). All coordinates need to be numbers`,
+        'and should represent absolute coordinates (not chromosome',
+        'coordinates).',
+      ].join(' '));
+      return;
+    }
+
     const [centerX, centerY, k] = scalesCenterAndK(
       this.xScales[viewUid].copy().domain([start1Abs, end1Abs]),
       this.yScales[viewUid].copy().domain([start2Abs, end2Abs]),
