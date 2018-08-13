@@ -167,7 +167,27 @@ to each other.
 
 .. code-block:: javascript
 
-  hgv.zoomTo('view1', 1000000, 1000000, 2000000, 2000000, 500);
+  // Absolute coordinates
+  hgApi.zoomTo('view1', 1000000, 1000000, 2000000, 2000000, 500);
+
+  // Chromosomal coordinates
+  hglib
+    // Pass in the URL of your chrom sizes
+    .ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv')
+    // Now we can use the chromInfo object to convert
+    .then((chromInfo) => {
+      // Go to PTEN
+      hgApi.zoomTo(
+        viewConfig.views[0].uid,
+        chromInfo.chrToAbs(['chr10', 89596071]),
+        chromInfo.chrToAbs(['chr10', 89758810]),
+        chromInfo.chrToAbs(['chr10', 89596071]),
+        chromInfo.chrToAbs(['chr10', 89758810]),
+        2500  // Animation time
+      );
+    });
+    // Just in case, let us catch errors
+    .catch(error => console.error('Oh boy...', error))
 
 **Demos:**
 
