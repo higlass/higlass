@@ -4,7 +4,7 @@ import { scaleLinear } from 'd3-scale';
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 import { colorToHex } from './utils';
-import { pubSub, tileProxy } from './services';
+import { tileProxy } from './services';
 
 class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(
@@ -33,19 +33,19 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     this.animate();
   }
 
-  getMouseOverHtml(trackX, trackY) {
-    if (!this.tilesetInfo)
-      return;
+  getMouseOverHtml(trackX) {
+    if (!this.tilesetInfo) return '';
 
-    if (!this.options.showTooltip) 
-      return '';
+    if (!this.options.showTooltip) return '';
 
     const zoomLevel = this.calculateZoomLevel();
-    const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size);
+    const tileWidth = tileProxy.calculateTileWidth(
+      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
+    );
 
     // the position of the tile containing the query position
     const tilePos = this._xScale.invert(trackX) / tileWidth;
-    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)])
+    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
 
     const fetchedTile = this.fetchedTiles[tileId];
     if (!fetchedTile) return '';
@@ -56,38 +56,38 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     let textValue = '';
 
     if (fetchedTile) {
-      const index =  Math.floor(posInTileX);
+      const index = Math.floor(posInTileX);
       value = fetchedTile.tileData.dense[index];
-      textValue = format(".3f")(value);
+      textValue = format('.3f')(value);
     } else {
       return '';
     }
 
     const graphics = this.pMouseOver;
-    //const colorHex = colorToHex('black');
     const colorHex = 0;
     const yPos = this.valueScale(value);
 
     graphics.clear();
-    graphics.beginFill(colorHex, .5);
+    graphics.beginFill(colorHex, 0.5);
     graphics.lineStyle(1, colorHex, 1);
     const markerWidth = 4;
 
     graphics.drawRect(
-      trackX - markerWidth / 2,
-      yPos - markerWidth / 2,
+      trackX - (markerWidth / 2),
+      yPos - (markerWidth / 2),
       markerWidth,
-      markerWidth);
+      markerWidth
+    );
 
     this.animate();
 
     return `${textValue}`;
   }
 
+  /**
+   * Create whatever is needed to draw this tile.
+   */
   initTile(tile) {
-    /**
-     * Create whatever is needed to draw this tile.
-     */
     super.initTile(tile);
 
     if (!tile.tileData || !tile.tileData.dense) {
@@ -101,19 +101,15 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     this.drawTile(tile);
   }
 
-  // destroyTile(tile) {
-
-  // }
-
   rerender(options) {
     super.rerender(options);
     this.options = options;
 
     super.draw();
 
-    for (const tile of this.visibleAndFetchedTiles()) {
+    this.visibleAndFetchedTiles().forEach((tile) => {
       this.renderTile(tile);
-    }
+    });
   }
 
   renderTile(tile) {
@@ -186,11 +182,13 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         break;
       }
 
-
-      if (logScaling && tileValues[i] === 0)
       // if we're using log scaling and there's a 0 value, we shouldn't draw it
       // because it's invalid
-      { graphics.moveTo(xPos, yPos); } else { graphics.lineTo(xPos, yPos); }
+      if (logScaling && tileValues[i] === 0) {
+        graphics.moveTo(xPos, yPos);
+      } else {
+        graphics.lineTo(xPos, yPos);
+      }
     }
   }
 
@@ -248,7 +246,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     const stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
 
-    for (const tile of this.visibleAndFetchedTiles()) {
+    this.visibleAndFetchedTiles().forEach((tile) => {
       const g = document.createElement('path');
       g.setAttribute('fill', 'transparent');
       g.setAttribute('stroke', stroke);
@@ -258,7 +256,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       }
       g.setAttribute('d', d);
       output.appendChild(g);
-    }
+    });
 
     const gAxis = document.createElement('g');
     gAxis.setAttribute('id', 'axis');
