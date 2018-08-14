@@ -32,6 +32,34 @@ render tracks with a `bedlike` datatype. This usually comes from the `beddb`
 filetype. Regular bed-like files can be converted to beddb using the instructions
 in the `data preparation section <data_preparation.html#bed-files>`_.
 
+**Color Encoding:**
+
+Intervals can visually encode information using the following three ``options``:
+
+``colorEncoding: bool [default false]``
+    If ``true`` the interval value is used for color encoding.
+
+``colorRange: array``
+    A list of HEX colors that make up the continuous color map.
+
+``colorEncodingRange: array``
+    A tuple defining the minimum and maximum range value for color encoding.
+
+Here is an example snippet
+
+.. code-block:: javascript
+
+  {
+    ...,
+    colorEncoding: true,  // Turn on color encoding
+    colorRange: [  // Define the color map
+      '#000000', '#652537', '#bf5458', '#fba273', '#ffffe0'
+    ],
+    colorEncodingRange: [0, 0.5119949],  // Limit the encoding range
+    ...
+  }
+
+
 Gene Annotations
 ================
 
@@ -143,6 +171,10 @@ datatype: ``vector``
 
 Bar tracks display 1D vector data as bars.
 
+**Demos:**
+
+- `Diverging bars with color map and gradient <examples/bar-track-color-range.html>`
+
 .. _point-track:
 
 Point
@@ -237,3 +269,39 @@ datatype: ``multivec``
 
 Displays multivec data by showing multiple values at every location using a
 number of bar graphs.
+
+.. _1d-annotations:
+
+1D Annotations
+==============
+
+.. image:: img/1d-annotations.png
+    :align: right
+
+track-type: ``horizontal-1d-annotations`` and ``vertical-1d-annotations``
+datatype: none
+
+Displays absolute positioned 1D annotations on horizontal and vertical 1D tracks
+as well as 2D tracks. This track can be used to permanently highlight 1D regions
+in any kind of dataset. The data is directly passed in via the ``regions``
+parameter of the ``options``.
+
+**Example:**
+
+.. code-block:: javascript
+
+  {
+    uid: 'selection-a',
+    type: 'horizontal-1d-annotations',
+    options: {
+      regions: [
+        [230000000, 561000000],
+      ],
+      minRectWidth: 3,
+      fillOpacity: 0.1,
+      stroke: 'blue',
+      strokePos: ['left', 'right'],
+      strokeWidth: 2,
+      strokeOpacity: 0.6,
+    }
+  }

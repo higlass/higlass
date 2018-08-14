@@ -166,8 +166,16 @@ export const OPTIONS_INFO = {
     name: 'Fill color',
     inlineOptions: AVAILABLE_COLORS,
   },
+  stroke: {
+    name: 'Stroke Color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
   strokeColor: {
     name: 'Stroke color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
+  fill: {
+    name: 'Fill Color',
     inlineOptions: AVAILABLE_COLORS,
   },
   color: {
@@ -193,6 +201,26 @@ export const OPTIONS_INFO = {
   barOpacity: {
     name: 'Bar opacity',
     inlineOptions: OPACITY_OPTIONS,
+  },
+  fillOpacity: {
+    name: 'Fill Opacity',
+    inlineOptions: OPACITY_OPTIONS,
+  },
+  strokeOpacity: {
+    name: 'Stroke Opacity',
+    inlineOptions: OPACITY_OPTIONS,
+  },
+  strokePos: {
+    name: 'Stroke Position',
+    inlineOptions: {
+      aroundInner: { name: 'Around Inner', value: 'around' },
+      aroundCenter: { name: 'Around Center', value: null },
+      hidden: { name: 'Hidden', value: 'hidden' },
+      top: { name: 'Top', value: 'top' },
+      right: { name: 'Right', value: 'right' },
+      bottom: { name: 'Bottom', value: 'bottom' },
+      left: { name: 'Left', value: 'left' },
+    },
   },
   barBorder: {
     name: 'Bar border',
@@ -304,6 +332,11 @@ export const OPTIONS_INFO = {
       18: { name: '18px', value: 18 },
       24: { name: '24px', value: 24 },
     },
+  },
+  
+  colorEncoding: {
+    name: 'Color Encode Annotations',
+    inlineOptions: YES_NO
   },
 
   fontIsAligned: {
@@ -538,6 +571,22 @@ export const OPTIONS_INFO = {
           'horizontal-heatmap': HeatmapOptions,
         },
       },
+    },
+  },
+
+  align: {
+    name: 'Align',
+    inlineOptions: {
+      white: { name: 'Top', value: 'top' },
+      lightGrey: { name: 'Bottom', value: 'bottom' },
+    },
+  },
+
+  colorRangeGradient: {
+    name: 'Color Gradient',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true },
+      no: { name: 'No', value: false },
     },
   },
 
