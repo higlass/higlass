@@ -208,6 +208,10 @@ chromosome files. The file can be ingested by the higlass server like any other
 tileset. As long as the `datatype` is set to `chromsizes` this track should be
 selectable from the "Add Track Dialog".
 
+**Demos:**
+
+- `demonstrate adjustability <examples/chromosome-labels.html>`_.
+
 Chromosome Grid
 ===============
 
