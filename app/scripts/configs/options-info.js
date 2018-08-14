@@ -286,14 +286,21 @@ export const OPTIONS_INFO = {
   showMousePosition: {
     name: 'Show Mouse Position',
     inlineOptions: {
-      yes: { name: 'Yes', value: true},
+      yes: { name: 'Yes', value: true },
       no: { name: 'No', value: false },
     },
   },
   showTooltip: {
     name: 'Show Tooltip',
     inlineOptions: {
-      yes: { name: 'Yes', value: true},
+      yes: { name: 'Yes', value: true },
+      no: { name: 'No', value: false },
+    },
+  },
+  colorEncoding: {
+    name: 'Color Encode Annotations',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true },
       no: { name: 'No', value: false },
     },
   },
@@ -524,6 +531,22 @@ export const OPTIONS_INFO = {
           'horizontal-heatmap': HeatmapOptions,
         },
       },
+    },
+  },
+
+  align: {
+    name: 'Align',
+    inlineOptions: {
+      white: { name: 'Top', value: 'top' },
+      lightGrey: { name: 'Bottom', value: 'bottom' },
+    },
+  },
+
+  colorRangeGradient: {
+    name: 'Color Gradient',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true },
+      no: { name: 'No', value: false },
     },
   },
 
