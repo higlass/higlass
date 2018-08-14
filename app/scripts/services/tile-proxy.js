@@ -557,7 +557,7 @@ function fetchEither(url, callback, textOrJson) {
     headers['Authorization'] = authHeader;
   }
 
-  return fetch(url, {credentials: 'include', headers: headers})
+  fetch(url, {credentials: 'same-origin', headers: headers})
     .then(rep => rep[textOrJson]())
     .then((content) => {
       callback(undefined, content);
