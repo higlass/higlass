@@ -534,6 +534,22 @@ export const OPTIONS_INFO = {
     },
   },
 
+  align: {
+    name: 'Align',
+    inlineOptions: {
+      white: { name: 'Top', value: 'top' },
+      lightGrey: { name: 'Bottom', value: 'bottom' },
+    },
+  },
+
+  colorRangeGradient: {
+    name: 'Color Gradient',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true },
+      no: { name: 'No', value: false },
+    },
+  },
+
   dataTransform: {
     name: 'Transforms',
     inlineOptions: {
