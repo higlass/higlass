@@ -171,6 +171,10 @@ datatype: ``vector``
 
 Bar tracks display 1D vector data as bars.
 
+**Demos:**
+
+- `Diverging bars with color map and gradient <examples/bar-track-color-range.html>`
+
 .. _point-track:
 
 Point
