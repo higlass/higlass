@@ -31,6 +31,14 @@ npm install
 npm run start
 ```
 
+### Tests
+
+The tests for the React components and API functions are located in the `test` directory.
+
+```
+npm run test-watch
+```
+
 **Troubleshooting:**
 
 - If the installation fails due to `sharp` > `node-gyp` try installing the node packages using `python2`:
