@@ -14,7 +14,7 @@ const parseChromInfo = (text) => {
   return parseChromsizesRows(tsv);
 };
 
-const getFromRemote = url => fetch(url)
+const getFromRemote = url => fetch(url, {credentials: 'same-origin'})
   .then(response => response.text())
   .then(text => parseChromInfo(text))
   .catch((error) => {
