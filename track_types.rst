@@ -32,6 +32,34 @@ render tracks with a `bedlike` datatype. This usually comes from the `beddb`
 filetype. Regular bed-like files can be converted to beddb using the instructions
 in the `data preparation section <data_preparation.html#bed-files>`_.
 
+**Color Encoding:**
+
+Intervals can visually encode information using the following three ``options``:
+
+``colorEncoding: bool [default false]``
+    If ``true`` the interval value is used for color encoding.
+
+``colorRange: array``
+    A list of HEX colors that make up the continuous color map.
+
+``colorEncodingRange: array``
+    A tuple defining the minimum and maximum range value for color encoding.
+
+Here is an example snippet
+
+.. code-block:: javascript
+
+  {
+    ...,
+    colorEncoding: true,  // Turn on color encoding
+    colorRange: [  // Define the color map
+      '#000000', '#652537', '#bf5458', '#fba273', '#ffffe0'
+    ],
+    colorEncodingRange: [0, 0.5119949],  // Limit the encoding range
+    ...
+  }
+
+
 Gene Annotations
 ================
 
@@ -142,6 +170,10 @@ track-type: ``horizontal-bar``
 datatype: ``vector``
 
 Bar tracks display 1D vector data as bars.
+
+**Demos:**
+
+- `Diverging bars with color map and gradient <examples/bar-track-color-range.html>`
 
 .. _point-track:
 
