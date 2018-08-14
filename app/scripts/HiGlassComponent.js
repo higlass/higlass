@@ -3133,8 +3133,7 @@ class HiGlassComponent extends React.Component {
 
     this.prevMouseHoverTrack = evt.track;
 
-    if (this.zooming)
-      return;
+    if (this.zooming) return;
 
     const data = (mouseOverHtml && mouseOverHtml.length) ? [1] : [];
 
@@ -3163,10 +3162,9 @@ class HiGlassComponent extends React.Component {
       .classed('.mouseover-marker', true)
     */
 
-    mouseOverDiv.style('position', 'fixed')
+    mouseOverDiv
       .style('left', `${mousePos[0]}px`)
-      .style('top', `${mousePos[1]}px`)
-      .style('z-index', 1);
+      .style('top', `${mousePos[1]}px`);
 
     // probably not over a track so there's no mouseover rectangle
     if (!mouseOverDiv.node()) return;
