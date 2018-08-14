@@ -45,6 +45,20 @@ const api = function api(context) {
       ReactDOM.unmountComponentAtNode(self.topDiv.parentNode);
     },
 
+    setRangeSelectionToInt() {
+      self.setState({ rangeSelectionToInt: true });
+    },
+
+    setRangeSelectionToFloat() {
+      self.setState({ rangeSelectionToInt: false });
+    },
+
+    setRangeSelection1dSize(minSize = 0, maxSize = Infinity) {
+      self.setState({
+        rangeSelection1dSize: [minSize, maxSize]
+      });
+    },
+
     setViewConfig(newViewConfig) {
       /**
        * Set a new view config to define the layout and data
@@ -132,6 +146,10 @@ const api = function api(context) {
       self.setState({
         draggingHappening: null,
       });
+    },
+
+    setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
+      self.setTrackValueScaleLimits(viewId, trackId, minValue, maxValue);
     },
 
     /**
