@@ -12,6 +12,7 @@ before_script:
 - sh -e /etc/init.d/xvfb start
 - npm install --quiet -g gulp
 - npm install
+- npm run build
 before_deploy:
 - npm run compile
 deploy:
