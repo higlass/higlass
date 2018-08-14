@@ -94,6 +94,18 @@ const parser = new DOMParser();
 const svgGeoMapStr = '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="1.5"><path d="M4 2.1L.5 3.5v12l5-2 5 2 5-2v-12l-5 2-3.17-1.268M10.5 3.5v12" fill="none" stroke="currentColor"/><path d="M5.5 13.5v-7" fill="none" stroke="currentColor" stroke-width=".9969299999999999"/><path d="M5.494 0c-1.803 0-3.26 1.496-3.26 3.35 0 .427.124.97.264 1.343L5.5 11l3.003-6.306c.142-.375.263-.916.263-1.342C8.766 1.496 7.3 0 5.494 0zM5.5 4.64c-.76 0-1.375-.616-1.375-1.374 0-.76.616-1.376 1.375-1.376.76 0 1.374.616 1.374 1.376 0 .758-.614 1.375-1.374 1.375z" fill="currentColor"/></svg>';
 export const svgGeoMapIcon = parser.parseFromString(svgGeoMapStr, 'text/xml').documentElement;
 
+const horizontal1dHeatmap = `
+<svg width="20px" height="20px" viewBox="0 0 20 20">
+  <rect x="0" y="3" width="4" height="14" fill="#637993"/>
+  <rect x="4" y="3" width="2" height="14" fill="#c7d1de"/>
+  <rect x="6" y="3" width="5" height="14" fill="#3c5068"/>
+  <rect x="11" y="3" width="3" height="14" fill="#92a3ba"/>
+  <rect x="14" y="3" width="2" height="14" fill="#000000"/>
+  <rect x="16" y="3" width="4" height="14" fill="#637993"/>
+</svg>
+`;
+export const svgHorizontal1dHeatmap = parser.parseFromString(horizontal1dHeatmap, 'text/xml').documentElement;
+
 const horizontalLineStr = `
 <svg width="20px" height="20px" viewBox="0 0 135 85" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>line</title>
