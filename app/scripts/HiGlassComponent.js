@@ -2966,8 +2966,6 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
-    console.log(viewId, viewsIds.length);
-
     viewId = typeof viewId === 'undefined' && viewsIds.length === 1
       ? viewsIds[0]
       : viewId;
