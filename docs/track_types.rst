@@ -265,3 +265,39 @@ datatype: ``multivec``
 
 Displays multivec data by showing multiple values at every location using a
 number of bar graphs.
+
+.. _1d-annotations:
+
+1D Annotations
+==============
+
+.. image:: img/1d-annotations.png
+    :align: right
+
+track-type: ``horizontal-1d-annotations`` and ``vertical-1d-annotations``
+datatype: none
+
+Displays absolute positioned 1D annotations on horizontal and vertical 1D tracks
+as well as 2D tracks. This track can be used to permanently highlight 1D regions
+in any kind of dataset. The data is directly passed in via the ``regions``
+parameter of the ``options``.
+
+**Example:**
+
+.. code-block:: javascript
+
+  {
+    uid: 'selection-a',
+    type: 'horizontal-1d-annotations',
+    options: {
+      regions: [
+        [230000000, 561000000],
+      ],
+      minRectWidth: 3,
+      fillOpacity: 0.1,
+      stroke: 'blue',
+      strokePos: ['left', 'right'],
+      strokeWidth: 2,
+      strokeOpacity: 0.6,
+    }
+  }
