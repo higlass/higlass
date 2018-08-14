@@ -190,7 +190,7 @@ to each other.
 
 **Prototype**
 
-``zoomTo(viewUid,start1,end1,start2,end2,animateTime):``
+``zoomTo(viewUid, start1, end1, start2, end2, animateTime):``
 
 **Parameters**
 
@@ -205,14 +205,38 @@ to each other.
     The left x coordinate of the region to zoom to.
 ``end2: Number``
     The right x coordinate of the region to zoom to.
-``animateTime``
+``animateTime [default: 0]``
     The duration of the zoom transition in milliseconds.
 
 **Example:**
 
 .. code-block:: javascript
 
-  hgv.zoomTo('v1', 1000000,1000000,2000000,2000000, 500);
+  // Absolute coordinates
+  hgApi.zoomTo('view1', 1000000, 1000000, 2000000, 2000000, 500);
+
+  // Chromosomal coordinates
+  hglib
+    // Pass in the URL of your chrom sizes
+    .ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv')
+    // Now we can use the chromInfo object to convert
+    .then((chromInfo) => {
+      // Go to PTEN
+      hgApi.zoomTo(
+        viewConfig.views[0].uid,
+        chromInfo.chrToAbs(['chr10', 89596071]),
+        chromInfo.chrToAbs(['chr10', 89758810]),
+        chromInfo.chrToAbs(['chr10', 89596071]),
+        chromInfo.chrToAbs(['chr10', 89758810]),
+        2500  // Animation time
+      );
+    });
+    // Just in case, let us catch errors
+    .catch(error => console.error('Oh boy...', error))
+
+**Demos:**
+
+- `Consecutive animated zooms <examples/api-zoom-to.html>`_
 
 Select a mouse tool
 -------------------
