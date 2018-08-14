@@ -86,6 +86,11 @@ class TiledPixiTrack extends PixiTrack {
     this.maxZoom = 0;
     this.medianVisibleValue = null;
 
+    this.valueScaleMin = null;
+    this.fixedValueScaleMin = null;
+    this.valueScaleMax = null;
+    this.fixedValueScaleMax = null;
+
     this.animate = animate;
     this.onValueScaleChanged = onValueScaleChanged;
 
@@ -141,6 +146,8 @@ class TiledPixiTrack extends PixiTrack {
 
       this.options.name = this.options.name ? this.options.name : tilesetInfo.name;
 
+      this.checkValueScaleLimits();
+
       this.draw();
       this.drawLabel(); //draw the label so that the current resolution is displayed
       this.animate();
@@ -156,12 +163,40 @@ class TiledPixiTrack extends PixiTrack {
     this.pLabel.addChild(this.trackNotFoundText);
   }
 
+  setFixedValueScaleMin(value) {
+    this.fixedValueScaleMin = +value || null;
+  }
+
+  setFixedValueScaleMax(value) {
+    this.fixedValueScaleMax = +value || null;
+  }
+
+  checkValueScaleLimits() {
+    this.valueScaleMin = typeof this.options.valueScaleMin !== 'undefined'
+      ? +this.options.valueScaleMin
+      : null;
+
+    if (this.fixedValueScaleMin !== null) {
+      this.valueScaleMin = this.fixedValueScaleMin;
+    }
+
+    this.valueScaleMax = typeof this.options.valueScaleMax !== 'undefined'
+      ? +this.options.valueScaleMax
+      : null;
+
+    if (this.fixedValueScaleMax !== null) {
+      this.valueScaleMax = this.fixedValueScaleMax;
+    }
+  }
+
   rerender(options) {
     super.rerender(options);
 
     this.renderVersion += 1;
 
     if (!this.tilesetInfo) { return; }
+
+    this.checkValueScaleLimits();
 
     if (this.tilesetInfo.resolutions)
       this.maxZoom = this.tilesetInfo.resolutions.length;
@@ -350,11 +385,23 @@ class TiledPixiTrack extends PixiTrack {
   allTilesLoaded() {}
 
   minValue(_) {
-    if (_) { this.scale.minValue = _; } else { return this.scale.minValue; }
+    if (_) {
+      this.scale.minValue = _;
+    } else {
+      return this.valueScaleMin !== null
+        ? this.valueScaleMin
+        : this.scale.minValue;
+    }
   }
 
   maxValue(_) {
-    if (_) { this.scale.maxValue = _; } else { return this.scale.maxValue; }
+    if (_) {
+      this.scale.maxValue = _;
+    } else {
+      return this.valueScaleMax !== null
+        ? this.valueScaleMax
+        : this.scale.maxValue;
+    }
   }
 
   minRawValue() {
@@ -622,26 +669,31 @@ class TiledPixiTrack extends PixiTrack {
     );
   }
 
-  minVisibleValue() {
+  minVisibleValue(ignoreFixedScale = false) {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
-    if (visibleAndFetchedIds.length == 0) {
+    if (visibleAndFetchedIds.length === 0) {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
     let min = Math.min.apply(
       null,
-      visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.minNonZero)
-      .filter(x => x)
+      visibleAndFetchedIds
+        .map(x => this.fetchedTiles[x].tileData.minNonZero)
+        .filter(x => x)
     );
 
     // if there's no data, use null
     if (min === Number.MAX_SAFE_INTEGER) { min = null; }
 
-    return min;
+    if (ignoreFixedScale) return min;
+
+    return this.valueScaleMin !== null
+      ? this.valueScaleMin
+      : min;
   }
 
-  maxVisibleValue() {
+  maxVisibleValue(ignoreFixedScale = false) {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
@@ -650,18 +702,23 @@ class TiledPixiTrack extends PixiTrack {
 
     let max = Math.max.apply(
       null,
-      visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.maxNonZero)
-      .filter(x => x)
+      visibleAndFetchedIds
+        .map(x => this.fetchedTiles[x].tileData.maxNonZero)
+        .filter(x => x)
     );
 
 
     // if there's no data, use null
     if (max === Number.MIN_SAFE_INTEGER) { max = null; }
 
-    return max;
+    if (ignoreFixedScale) return max;
+
+    return this.valueScaleMax !== null
+      ? this.valueScaleMax
+      : max;
   }
 
-  makeValueScale(minValue, medianValue,  maxValue, margin) {
+  makeValueScale(minValue, medianValue, maxValue, margin) {
     /*
      * Create a value scale that will be used to position values
      * along the y axis.
@@ -688,8 +745,9 @@ class TiledPixiTrack extends PixiTrack {
     let valueScale = null;
     let offsetValue = 0;
 
-    if (margin == null || typeof(margin) == 'undefined')
+    if (margin === null || typeof margin === 'undefined') {
       margin = 6;  // set a default value
+    }
 
     if (this.options.valueScaling === 'log') {
       offsetValue = medianValue;
@@ -701,13 +759,14 @@ class TiledPixiTrack extends PixiTrack {
         .domain([offsetValue, maxValue + offsetValue])
         // .domain([offsetValue, this.maxValue()])
         .range([this.dimensions[1] - margin, margin]);
-      pseudocount = offsetValue;
+
+      // pseudocount = offsetValue;
     } else if (this.options.valueScaling === 'quantile') {
       const start = this.dimensions[1] - margin;
       const end = margin;
       const quantScale = scaleQuantile().domain(this.allVisibleValues())
-        .range(range(start, end, (end-start) / 256));
-      quantScale.ticks = (n) => ticks(start, end, n);
+        .range(range(start, end, (end - start) / 256));
+      quantScale.ticks = n => ticks(start, end, n);
 
       return [quantScale, 0];
     } else if (this.options.valueScaling === 'setquantile') {
@@ -715,8 +774,8 @@ class TiledPixiTrack extends PixiTrack {
       const end = margin;
       const s = new Set(this.allVisibleValues());
       const quantScale = scaleQuantile().domain([...s])
-        .range(range(start, end, (end-start) / 256));
-      quantScale.ticks = (n) => ticks(start, end, n);
+        .range(range(start, end, (end - start) / 256));
+      quantScale.ticks = n => ticks(start, end, n);
 
       return [quantScale, 0];
     } else {
@@ -728,7 +787,6 @@ class TiledPixiTrack extends PixiTrack {
 
     return [valueScale, offsetValue];
   }
-
 }
 
 export default TiledPixiTrack;

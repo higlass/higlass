@@ -34,9 +34,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   }
 
   getMouseOverHtml(trackX) {
-    if (!this.tilesetInfo) return '';
-
-    if (!this.options.showTooltip) return '';
+    if (!this.tilesetInfo || !this.options.showTooltip) return '';
 
     const zoomLevel = this.calculateZoomLevel();
     const tileWidth = tileProxy.calculateTileWidth(
@@ -101,8 +99,9 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     this.drawTile(tile);
   }
 
-  rerender(options) {
-    super.rerender(options);
+  rerender(options, force) {
+    super.rerender(options, force);
+
     this.options = options;
 
     super.draw();
@@ -139,7 +138,8 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     if (tileValues.length === 0) { return; }
 
-    const [vs, pseudocount] = this.makeValueScale(
+    // FIXME
+    const [vs, offsetValue] = this.makeValueScale(
       this.minValue(),
       this.medianVisibleValue,
       this.maxValue()
@@ -166,7 +166,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     for (let i = 0; i < tileValues.length; i++) {
       const xPos = this._xScale(tileXScale(i));
-      const yPos = this.valueScale(tileValues[i] + pseudocount);
+      const yPos = this.valueScale(tileValues[i] + offsetValue);
 
       tile.lineXValues[i] = xPos;
       tile.lineYValues[i] = yPos;

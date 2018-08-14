@@ -8,6 +8,7 @@ import { colorDomainToRgbaArray, colorToHex, gradient } from './utils';
 
 const HEX_WHITE = colorToHex('#FFFFFF');
 
+
 class BarTrack extends HorizontalLine1DPixiTrack {
   constructor(...args) {
     super(...args);
@@ -56,12 +57,12 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   updateTile(tile) {
-    if (!(
-      tile.valueScale &&
-      this.scale &&
-      this.scale.minValue === tile.scale.minValue &&
-      this.scale.maxValue === tile.scale.maxValue
-    )) {
+    if (
+      !tile.valueScale
+      || !this.scale
+      || this.scale.minValue !== tile.scale.minValue
+      || this.scale.maxValue !== tile.scale.maxValue
+    ) {
       // not rendered using the current scale, so we need to rerender
       this.renderTile(tile);
     }
@@ -99,8 +100,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     this.drawAxis(this.valueScale);
 
     if (
-      this.options.valueScaling === 'log' &&
-      this.valueScale.domain()[1] < 0
+      this.options.valueScaling === 'log'
+      && this.valueScale.domain()[1] < 0
     ) {
       console.warn(
         'Negative values present when using a log scale',
@@ -110,6 +111,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     }
 
     const stroke = colorToHex(this.options.lineStrokeColor || 'blue');
+
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
     const tileXScale = scaleLinear()
