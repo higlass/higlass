@@ -1,10 +1,5 @@
 import { scaleLog, scaleLinear } from 'd3-scale';
 import { range } from 'd3-array';
-import {
-  json as d3Json,
-  text as d3Text,
-  request,
-} from 'd3-request';
 import slugid from 'slugid';
 
 import {
@@ -552,7 +547,17 @@ function fetchEither(url, callback, textOrJson) {
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
-  return fetch(url)
+  if (textOrJson == 'text') {
+    var mime = 'text/plain';
+  } else if (textOrJson == 'json') {
+    var mime = 'application/json';
+  }
+  var headers = {'Content-Type': mime};
+  if (authHeader) {
+    headers['Authorization'] = authHeader;
+  }
+
+  return fetch(url, {credentials: 'include', headers: headers})
     .then(rep => rep[textOrJson]())
     .then((content) => {
       callback(undefined, content);
