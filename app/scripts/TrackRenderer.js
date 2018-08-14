@@ -30,6 +30,7 @@ import Track from './Track';
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 import ArrowheadDomainsTrack from './ArrowheadDomainsTrack';
 import Annotations2dTrack from './Annotations2dTrack';
+import Annotations1dTrack from './Annotations1dTrack';
 
 import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
 
@@ -1137,6 +1138,9 @@ class TrackRenderer extends React.Component {
       );
     }
 
+    this.currentXScale = newXScale;
+    this.currentYScale = newYScale;
+
     if (notify) {
       this.currentProps.onScalesChanged(newXScale, newYScale);
     }
@@ -1481,6 +1485,19 @@ class TrackRenderer extends React.Component {
           handleTilesetInfoReceived,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+      case 'horizontal-1d-annotations':
+        return new Annotations1dTrack(
+          this.pStage,
+          track.options,
+        );
+
+      case 'vertical-1d-annotations':
+        return new Annotations1dTrack(
+          this.pStage,
+          track.options,
+          true,
         );
 
       case '2d-annotations':

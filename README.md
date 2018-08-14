@@ -1,4 +1,7 @@
+[![Build Status](https://travis-ci.org/hms-dbmi/higlass.svg?branch=master)](https://travis-ci.org/hms-dbmi/higlass)
+[![Live Docs](https://img.shields.io/badge/docs-live-red.svg?colorB=0f5d92)](https://hms-dbmi.github.io/higlass-docs/)
 [![DOI](https://zenodo.org/badge/56026057.svg)](https://zenodo.org/badge/latestdoi/56026057)
+
 
 ### Introduction
 
@@ -26,6 +29,14 @@ To run higlass from its source code simply run the following:
 ```
 npm install
 npm run start
+```
+
+### Tests
+
+The tests for the React components and API functions are located in the `test` directory.
+
+```
+npm run test-watch
 ```
 
 **Troubleshooting:**
