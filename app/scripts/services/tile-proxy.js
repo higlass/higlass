@@ -473,7 +473,7 @@ export const tileDataToPixData = (
     return;
   }
 
-  if (tile.mirrored && 
+  if (tile.mirrored &&
     tile.tileData.tilePos.length > 0 &&
     tile.tileData.tilePos[0] == tile.tileData.tilePos[1]) {
 
@@ -538,11 +538,18 @@ function text(url, callback) {
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
-  d3Text(url, (error, done) => {
-    callback(error, done);
-    pubSub.publish('requestReceived', url);
-    requestsInFlight -= 1;
-  });
+  return fetch(url)
+    .then(rep => rep.text())
+    .then((text) => {
+      callback(undefined, text);
+    })
+    .catch((error) => {
+      callback(error, undefined);
+    })
+    .finally(() => {
+      pubSub.publish('requestReceived', url);
+      requestsInFlight -= 1;
+    });
 }
 
 function json(url, callback) {

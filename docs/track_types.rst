@@ -32,6 +32,34 @@ render tracks with a `bedlike` datatype. This usually comes from the `beddb`
 filetype. Regular bed-like files can be converted to beddb using the instructions
 in the `data preparation section <data_preparation.html#bed-files>`_.
 
+**Color Encoding:**
+
+Intervals can visually encode information using the following three ``options``:
+
+``colorEncoding: bool [default false]``
+    If ``true`` the interval value is used for color encoding.
+
+``colorRange: array``
+    A list of HEX colors that make up the continuous color map.
+
+``colorEncodingRange: array``
+    A tuple defining the minimum and maximum range value for color encoding.
+
+Here is an example snippet
+
+.. code-block:: javascript
+
+  {
+    ...,
+    colorEncoding: true,  // Turn on color encoding
+    colorRange: [  // Define the color map
+      '#000000', '#652537', '#bf5458', '#fba273', '#ffffe0'
+    ],
+    colorEncodingRange: [0, 0.5119949],  // Limit the encoding range
+    ...
+  }
+
+
 Gene Annotations
 ================
 
@@ -59,7 +87,7 @@ datatype: ``matrix``
 Heatmaps in HiGlass are usually used to display HiC data. They log-scale input
 values and map them to a user-selectable color scale (color map configuration
 option). Because HiGlass displays data at varying zoom levels, heatmaps are
-displayed at different resolutions depending on the current zoom level. To 
+displayed at different resolutions depending on the current zoom level. To
 limit the resolution of the displayed data, users can set the `Zoom Limit`
 configuration option.
 
@@ -143,6 +171,10 @@ datatype: ``vector``
 
 Bar tracks display 1D vector data as bars.
 
+**Demos:**
+
+- `Diverging bars with color map and gradient <examples/bar-track-color-range.html>`
+
 .. _point-track:
 
 Point
@@ -157,6 +189,44 @@ datatype: ``vector``
 Point tracks display 1D vector data. Unlike :ref:`line tracks <line-track>`,
 they are well suited to data with NaNs because they do not require two points
 to draw something.
+
+.. _point-track:
+
+1D Heatmap
+==========
+
+.. image:: img/1d-heatmap-track.png
+    :align: right
+
+track-type: ``horizontal-1d-heatmap`` and ``vertical-1d-heatmap``
+datatype: ``vector``
+
+1D heatmap tracks display 1D vector data. Unlike the other 1D tracks,
+they are well suited for getting an overview of distribution and less suited for
+identifying precise properties of individual data points. E.g., finding regions
+that are on average highly expressed is much easier than finding the highest peak
+with this track.
+
+**Example:**
+
+.. code-block:: javascript
+
+  {
+    server: 'http://higlass.io/api/v1',
+    tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
+    uid: '1d-heatmap',
+    type: 'horizontal-1d-heatmap',
+    options: {
+      labelPosition: 'hidden',
+      colorRange: ['#FFFFFF', '#ccc6ff', '#4f3de5', '#120489', '#000000'],
+    },
+    height: 12,
+  }
+
+**Demo**:
+
+  `Full example <1d-heatmap-track.html>`_.
+  `Genome browser-like view from HiGlass.io <1d-heatmap-track-2.html>`_.
 
 .. _chromosome-labels:
 
@@ -175,6 +245,10 @@ sourced from a standard chromSizes file containing chromosome names and
 chromosome files. The file can be ingested by the higlass server like any other
 tileset. As long as the `datatype` is set to `chromsizes` this track should be
 selectable from the "Add Track Dialog".
+
+**Demos:**
+
+- `demonstrate adjustability <examples/chromosome-labels.html>`_.
 
 Chromosome Grid
 ===============
@@ -233,3 +307,39 @@ datatype: ``multivec``
 
 Displays multivec data by showing multiple values at every location using a
 number of bar graphs.
+
+.. _1d-annotations:
+
+1D Annotations
+==============
+
+.. image:: img/1d-annotations.png
+    :align: right
+
+track-type: ``horizontal-1d-annotations`` and ``vertical-1d-annotations``
+datatype: none
+
+Displays absolute positioned 1D annotations on horizontal and vertical 1D tracks
+as well as 2D tracks. This track can be used to permanently highlight 1D regions
+in any kind of dataset. The data is directly passed in via the ``regions``
+parameter of the ``options``.
+
+**Example:**
+
+.. code-block:: javascript
+
+  {
+    uid: 'selection-a',
+    type: 'horizontal-1d-annotations',
+    options: {
+      regions: [
+        [230000000, 561000000],
+      ],
+      minRectWidth: 3,
+      fillOpacity: 0.1,
+      stroke: 'blue',
+      strokePos: ['left', 'right'],
+      strokeWidth: 2,
+      strokeOpacity: 0.6,
+    }
+  }

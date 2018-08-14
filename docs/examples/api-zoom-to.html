@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>API zoomTo() - HiGlass</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/page.css">
+  <link rel="stylesheet" href="hglib.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.2/react.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/15.6.2/react-dom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.2/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js"></script>
+</head>
+<body >
+  <div
+    id="demo"
+    style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem">
+  </div>
+</body>
+<script src='hglib.js'></script>
+<script>
+
+const viewConfig = {
+  editable: false,
+  zoomFixed: false,
+  trackSourceServers: ['http://higlass.io/api/v1'],
+  exportViewUrl: 'http://higlass.io/api/v1/viewconfs/',
+  views: [
+    {
+      uid: 'aa',
+      initialXDomain: [7595655, 2507738795],
+      initialYDomain: [-545671929, 3061006380],
+      autocompleteSource: 'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
+      genomePositionSearchBoxVisible: false,
+      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+      tracks: {
+        top: [
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            uid: 'genes1',
+            type: 'horizontal-gene-annotations',
+            options: { labelPosition: 'hidden' },
+          },
+          {
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            type: 'horizontal-chromosome-labels',
+            uid: 'chroms1',
+          }
+        ],
+        left: [
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            type: 'vertical-gene-annotations',
+            uid: 'genes2',
+            options: { labelPosition: 'hidden' },
+          },
+          {
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            type: 'vertical-chromosome-labels',
+            uid: 'chrom2',
+          }
+        ],
+        center: [
+          {
+            uid: 'c1',
+            type: 'combined',
+            contents: [
+              {
+                server: 'http://higlass.io/api/v1',
+                tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
+                type: 'heatmap',
+                options: {
+                  colorbarPosition: 'topRight',
+                  colorbarLabelsPosition: 'outside',
+                  labelPosition: 'bottomLeft',
+                  name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'black',
+                  heatmapValueScaling: 'log',
+                  scaleStartPercent: '0.00000',
+                  scaleEndPercent: '1.00000',
+                  backgroundColor: '#eeeeee',
+                },
+                uid: 'heatmap',
+                transforms: [
+                  {
+                    name: 'ICE',
+                    value: 'weight'
+                  }
+                ],
+              },
+              {
+                type: '2d-chromosome-grid',
+                chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+                uid: 'chrom-grid',
+                options: {
+                  lineStrokeWidth: 1,
+                  lineStrokeColor: 'grey'
+                },
+              }
+            ],
+          }
+        ],
+        right: [],
+        bottom: [],
+        whole: [],
+        gallery: []
+      },
+      layout: {
+        w: 12,
+        h: 12,
+        x: 0,
+        y: 0,
+        i: 'aa',
+      },
+    }
+  ],
+};
+
+const hgApi = hglib.viewer(
+  document.getElementById('demo'), viewConfig, { bounded: true },
+);
+
+hglib
+  .ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv')
+  .then((chromInfo) => {
+    setTimeout(() => {
+      // Go to PTEN
+      console.log('Go to chr10: 89,596,071 - 89,758,810 (PTEN)');
+      hgApi.zoomTo(
+        viewConfig.views[0].uid,
+        chromInfo.chrToAbs(['chr10', 89596071]),
+        chromInfo.chrToAbs(['chr10', 89758810]),
+        chromInfo.chrToAbs(['chr10', 89596071]),
+        chromInfo.chrToAbs(['chr10', 89758810]),
+        2500
+      );
+    }, 2500);
+
+    setTimeout(() => {
+      // Go to chromosome 8
+      console.log('Go to chr8: 0 - 146,364,022');
+      hgApi.zoomTo(
+        viewConfig.views[0].uid,
+        chromInfo.chrToAbs(['chr8', 0]),
+        chromInfo.chrToAbs(['chr8', 146364022]),
+        chromInfo.chrToAbs(['chr8', 0]),
+        chromInfo.chrToAbs(['chr8', 146364022]),
+        2500
+      );
+    }, 7500);
+
+    setTimeout(() => {
+      // Go to some loops on chr 4
+      console.log('Go to chr4: 87,000,000 - 88,500,000');
+      hgApi.zoomTo(
+        viewConfig.views[0].uid,
+        chromInfo.chrToAbs(['chr4', 87000000]),
+        chromInfo.chrToAbs(['chr4', 88500000]),
+        chromInfo.chrToAbs(['chr4', 87000000]),
+        chromInfo.chrToAbs(['chr4', 88500000]),
+        2500
+      );
+    }, 12500);
+
+    setTimeout(() => {
+      // Go to chromosome 1
+      console.log('Go to chr1: 0 - 89,750,000');
+      hgApi.zoomTo(
+        viewConfig.views[0].uid,
+        chromInfo.chrToAbs(['chr1', 0]),
+        chromInfo.chrToAbs(['chr1', 89750000]),
+        chromInfo.chrToAbs(['chr1', 0]),
+        chromInfo.chrToAbs(['chr1', 89750000]),
+        2500
+      );
+    }, 17500);
+  });
+</script>
+</html>

@@ -110,6 +110,7 @@ class TiledPlot extends React.Component {
         null,
         null,
       ],
+      rangeSelectionEnd: false,
 
       chromInfo: null,
       defaultChromSizes: null,
@@ -1117,6 +1118,39 @@ class TiledPlot extends React.Component {
     this.props.onDataDomainChanged(newXDomain, newYDomain);
   }
 
+  resetViewport() {
+    // Set the initial domain
+    const left = (
+      this.trackRenderer.currentProps.marginLeft
+      + this.trackRenderer.currentProps.leftWidth
+    );
+    const newXDomain = [
+      left,
+      left + this.trackRenderer.currentProps.centerWidth,
+    ].map(this.trackRenderer.zoomTransform
+      .rescaleX(this.trackRenderer.xScale).invert
+    );
+
+    const top = (
+      this.trackRenderer.currentProps.marginTop
+      + this.trackRenderer.currentProps.topHeight
+    );
+    const newYDomain = [
+      top,
+      top + this.trackRenderer.currentProps.centerHeight,
+    ].map(this.trackRenderer.zoomTransform
+      .rescaleY(this.trackRenderer.yScale).invert
+    );
+
+    // Reset the zoom transform
+    this.trackRenderer.zoomTransform.k = 1;
+    this.trackRenderer.zoomTransform.x = 0;
+    this.trackRenderer.zoomTransform.y = 0;
+    this.trackRenderer.applyZoomTransform();
+
+    this.props.onDataDomainChanged(newXDomain, newYDomain);
+  }
+
   updatablePropsToString(props) {
     return JSON.stringify({
       tracks: props.tracks,
@@ -1135,6 +1169,13 @@ class TiledPlot extends React.Component {
     });
   }
 
+  getXYScales() {
+    if (this.trackRenderer) {
+      this.xScale = this.trackRenderer.currentXScale;
+      this.yScale = this.trackRenderer.currentYScale;
+    }
+  }
+
   /**
    * Translate view to data location.
    *
@@ -1151,23 +1192,75 @@ class TiledPlot extends React.Component {
    * @return  {Array}  2D array of data locations
    */
   rangeViewToDataLoci(range, scale) {
+    if (!scale) return [null, null];
+
     return [
       parseInt(scale.invert(range[0]), 10),
       parseInt(scale.invert(range[1]), 10),
     ];
   }
 
-  rangeSelectionEndHandler() {
+  rangeSelectionResetHandler() {
     if (this.state.rangeSelectionMaster) {
       this.setState({
         is1dRangeSelection: null,
         rangeSelection: [null, null],
         rangeSelectionMaster: null,
+        rangeSelectionEnd: false,
       });
     }
   }
 
+  rangeSelection1dEndHandler(axis) {
+    if (!this.xScale || !this.yScale) {
+      this.getXYScales();
+    }
+
+    const scale = axis === 'x' ? this.xScale : this.yScale;
+
+    return (range) => {
+      const newRangeSelection = this.state.is1dRangeSelection ?
+        [null, null] : this.state.rangeSelection.slice();
+
+      const accessor = !this.state.is1dRangeSelection && axis === 'y' ? 1 : 0;
+
+      let dataPos = this.rangeViewToDataLoci(range, scale);
+
+      // Enforce range selection size constraints
+      const size = dataPos[1] - dataPos[0];
+      if (this.props.rangeSelection1dSize[0] > size) {
+        // Blow selection up
+        const center = dataPos[0] + (size / 2);
+        dataPos = [
+          center - (this.props.rangeSelection1dSize[0] / 2),
+          center + (this.props.rangeSelection1dSize[0] / 2)
+        ];
+      } else if (this.props.rangeSelection1dSize[1] < size) {
+        // Shrink selection
+        const center = dataPos[0] + (size / 2);
+        dataPos = [
+          center - (this.props.rangeSelection1dSize[1] / 2),
+          center + (this.props.rangeSelection1dSize[1] / 2)
+        ];
+      }
+
+      newRangeSelection[accessor] = dataPos;
+
+      if (this.props.rangeSelectionToInt) {
+        newRangeSelection[accessor] = newRangeSelection[accessor]
+          .map(x => Math.round(x));
+      }
+
+      this.setState({
+        rangeSelection: newRangeSelection,
+        rangeSelectionEnd: true,
+      });
+    };
+  }
+
   rangeSelection1dHandler(axis) {
+    if (!this.xScale || !this.yScale) this.getXYScales();
+
     const scale = axis === 'x' ? this.xScale : this.yScale;
 
     return (range) => {
@@ -1180,6 +1273,7 @@ class TiledPlot extends React.Component {
 
       this.setState({
         rangeSelection: newRangeSelection,
+        rangeSelectionEnd: false,
       });
     };
   }
@@ -1189,16 +1283,20 @@ class TiledPlot extends React.Component {
       this.setState({
         is1dRangeSelection: true,
         rangeSelectionMaster: true,
+        rangeSelectionEnd: false,
       });
     }
   }
 
   rangeSelection2dHandler(range) {
+    if (!this.xScale || !this.yScale) this.getXYScales();
+
     this.setState({
       rangeSelection: [
         this.rangeViewToDataLoci(range[0], this.xScale),
         this.rangeViewToDataLoci(range[1], this.yScale),
       ],
+      rangeSelectionEnd: false,
     });
   }
 
@@ -1207,8 +1305,45 @@ class TiledPlot extends React.Component {
       this.setState({
         is1dRangeSelection: false,
         rangeSelectionMaster: true,
+        rangeSelectionEnd: false,
       });
     }
+  }
+
+  rangeSelection2dEndHandler(range) {
+    if (!this.xScale || !this.yScale) this.getXYScales();
+
+    let dataPosX = this.rangeViewToDataLoci(range[0], this.xScale);
+    let dataPosY = this.rangeViewToDataLoci(range[1], this.yScale);
+    let dataPos = [dataPosX, dataPosY];
+
+    // Enforce range selection size constraints
+    const sizeX = dataPosX[1] - dataPosX[0];
+    const sizeY = dataPosY[1] - dataPosY[0];
+    const size = [sizeX, sizeY];
+
+    dataPos.forEach((pos, i) => {
+      if (this.props.rangeSelection1dSize[0] > size[i]) {
+        // Blow selection up
+        const center = pos[0] + Math.round(size[i] / 2);
+        pos[0] = center - (this.props.rangeSelection1dSize[0] / 2);
+        pos[1] = center + (this.props.rangeSelection1dSize[0] / 2);
+      } else if (this.props.rangeSelection1dSize[1] < size[i]) {
+        // Shrink selection
+        const center = pos[0] + Math.round(size[i] / 2);
+        pos[0] = center - (this.props.rangeSelection1dSize[1] / 2);
+        pos[1] = center + (this.props.rangeSelection1dSize[1] / 2);
+      }
+    });
+
+    if (this.props.rangeSelectionToInt) {
+      dataPos = dataPos.map(x => x.map(y => Math.round(y)));
+    }
+
+    this.setState({
+      rangeSelection: dataPos,
+      rangeSelectionEnd: true,
+    });
   }
 
   getContextMenu() {
@@ -1495,9 +1630,11 @@ class TiledPlot extends React.Component {
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
           onRangeSelection={this.rangeSelection1dHandler('x').bind(this)}
-          onRangeSelectionEnd={this.rangeSelectionEndHandler.bind(this)}
+          onRangeSelectionEnd={this.rangeSelection1dEndHandler('x').bind(this)}
+          onRangeSelectionReset={this.rangeSelectionResetHandler.bind(this)}
           onRangeSelectionStart={this.rangeSelection1dStartHandler.bind(this)}
           rangeSelection={this.state.rangeSelection}
+          rangeSelectionEnd={this.state.rangeSelectionEnd}
           resizeHandles={new Set(['bottom'])}
           scale={this.xScale}
           tracks={this.props.tracks.top}
@@ -1532,9 +1669,11 @@ class TiledPlot extends React.Component {
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
           onRangeSelection={this.rangeSelection1dHandler('y').bind(this)}
-          onRangeSelectionEnd={this.rangeSelectionEndHandler.bind(this)}
+          onRangeSelectionEnd={this.rangeSelection1dEndHandler('y').bind(this)}
+          onRangeSelectionReset={this.rangeSelectionResetHandler.bind(this)}
           onRangeSelectionStart={this.rangeSelection1dStartHandler.bind(this)}
           rangeSelection={this.state.rangeSelection}
+          rangeSelectionEnd={this.state.rangeSelectionEnd}
           resizeHandles={new Set(['right'])}
           scale={this.yScale}
           tracks={this.props.tracks.left}
@@ -1566,9 +1705,11 @@ class TiledPlot extends React.Component {
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
           onRangeSelection={this.rangeSelection1dHandler('y').bind(this)}
-          onRangeSelectionEnd={this.rangeSelectionEndHandler.bind(this)}
+          onRangeSelectionEnd={this.rangeSelection1dEndHandler('y').bind(this)}
+          onRangeSelectionReset={this.rangeSelectionResetHandler.bind(this)}
           onRangeSelectionStart={this.rangeSelection1dStartHandler.bind(this)}
           rangeSelection={this.state.rangeSelection}
+          rangeSelectionEnd={this.state.rangeSelectionEnd}
           resizeHandles={new Set(['left'])}
           scale={this.yScale}
           tracks={this.props.tracks.right}
@@ -1600,9 +1741,11 @@ class TiledPlot extends React.Component {
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
           onRangeSelection={this.rangeSelection1dHandler('x').bind(this)}
-          onRangeSelectionEnd={this.rangeSelectionEndHandler.bind(this)}
+          onRangeSelectionEnd={this.rangeSelection1dEndHandler('x').bind(this)}
+          onRangeSelectionReset={this.rangeSelectionResetHandler.bind(this)}
           onRangeSelectionStart={this.rangeSelection1dStartHandler.bind(this)}
           rangeSelection={this.state.rangeSelection}
+          rangeSelectionEnd={this.state.rangeSelectionEnd}
           resizeHandles={new Set(['top'])}
           scale={this.xScale}
           tracks={this.props.tracks.bottom}
@@ -1673,12 +1816,16 @@ class TiledPlot extends React.Component {
             onAddSeries={this.handleAddSeries.bind(this)}
             onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
             onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-            onRangeSelectionEnd={this.rangeSelectionEndHandler.bind(this)}
+            onRangeSelectionReset={this.rangeSelectionResetHandler.bind(this)}
             onRangeSelectionStart={this.rangeSelection2dStartHandler.bind(this)}
             onRangeSelectionX={this.rangeSelection1dHandler('x').bind(this)}
+            onRangeSelectionXEnd={this.rangeSelection1dEndHandler('x').bind(this)}
             onRangeSelectionXY={this.rangeSelection2dHandler.bind(this)}
+            onRangeSelectionXYEnd={this.rangeSelection2dEndHandler.bind(this)}
             onRangeSelectionY={this.rangeSelection1dHandler('y').bind(this)}
+            onRangeSelectionYEnd={this.rangeSelection1dEndHandler('y').bind(this)}
             rangeSelection={this.state.rangeSelection}
+            rangeSelectionEnd={this.state.rangeSelectionEnd}
             scaleX={this.xScale}
             scaleY={this.yScale}
             tracks={this.props.tracks.center}
@@ -1966,6 +2113,8 @@ TiledPlot.propTypes = {
   onTrackPositionChosen: PropTypes.func,
   onValueScaleChanged: PropTypes.func,
   onUnlockValueScale: PropTypes.func,
+  rangeSelection1dSize: PropTypes.array,
+  rangeSelectionToInt: PropTypes.bool,
   registerDraggingChangedListener: PropTypes.func,
   removeDraggingChangedListener: PropTypes.func,
   setCentersFunction: PropTypes.func,

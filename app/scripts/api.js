@@ -1,11 +1,6 @@
 import ReactDOM from 'react-dom';
 
 import {
-  relToAbsChromPos,
-  scalesCenterAndK,
-} from './utils';
-
-import {
   setDarkTheme, setTileProxyAuthHeader
 } from './services';
 
@@ -15,8 +10,6 @@ import {
 } from './configs';
 
 import pubSub, { create } from './services/pub-sub';
-
-import ChromosomeInfo from './ChromosomeInfo';
 
 let stack = {};
 let pubSubs = [];
@@ -45,11 +38,25 @@ const api = function api(context) {
      * Reload all of the tiles
      */
     reload() {
-
+      console.warn('Not implemented yet!');
     },
 
     destroy() {
       ReactDOM.unmountComponentAtNode(self.topDiv.parentNode);
+    },
+
+    setRangeSelectionToInt() {
+      self.setState({ rangeSelectionToInt: true });
+    },
+
+    setRangeSelectionToFloat() {
+      self.setState({ rangeSelectionToInt: false });
+    },
+
+    setRangeSelection1dSize(minSize = 0, maxSize = Infinity) {
+      self.setState({
+        rangeSelection1dSize: [minSize, maxSize]
+      });
     },
 
     setViewConfig(newViewConfig) {
@@ -95,6 +102,20 @@ const api = function api(context) {
       return p;
     },
 
+    getMinMaxValue(
+      viewId,
+      trackId,
+      ignoreOffScreenValues = false,
+      ignoreFixedScale = false
+    ) {
+      return self.getMinMaxValue(
+        viewId,
+        trackId,
+        ignoreOffScreenValues,
+        ignoreFixedScale
+      );
+    },
+
     /**
      * Retrieve a sharable link for the current view config
      *
@@ -127,6 +148,10 @@ const api = function api(context) {
       });
     },
 
+    setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
+      self.setTrackValueScaleLimits(viewId, trackId, minValue, maxValue);
+    },
+
     /**
      * Choose a theme.
      */
@@ -148,6 +173,15 @@ const api = function api(context) {
        *  nothing
        */
       self.handleZoomToData(viewUid);
+    },
+
+    /**
+     * Reset the viewport to the initial x and y domain
+     * @param  {number} viewId - ID of the view for which the viewport should be
+     *  reset.
+     */
+    resetViewport(viewId) {
+      self.resetViewport(viewId);
     },
 
     getDataURI() {

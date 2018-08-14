@@ -43,6 +43,7 @@ import {
   fillInMinWidths,
   forwardEvent,
   getTrackByUid,
+  getTrackObjById,
   getTrackPositionByUid,
   hasParent,
   // loadChromInfos,
@@ -123,8 +124,10 @@ class HiGlassComponent extends React.Component {
     this.plusImg = {};
     this.configImg = {};
 
-    this.horizontalMargin = 5;
-    this.verticalMargin = 5;
+    this.horizontalMargin = typeof props.options.horizontalMargin !== 'undefined'
+      ? props.options.horizontalMargin : 5;
+    this.verticalMargin = typeof props.options.verticalMargin !== 'undefined'
+      ? props.options.verticalMargin : 5;
 
     this.genomePositionSearchBox = null;
     this.viewHeaders = {};
@@ -213,7 +216,9 @@ class HiGlassComponent extends React.Component {
       exportLinkModalOpen: false,
       exportLinkLocation: null,
       mouseTool,
-      isDarkTheme: false
+      isDarkTheme: false,
+      rangeSelection1dSize: [0, Infinity],
+      rangeSelectionToInt: false,
     };
 
     dictValues(views).map(view => this.adjustLayoutToTrackSizes(view));
@@ -1052,12 +1057,39 @@ class HiGlassComponent extends React.Component {
      *
      * @param viewUid: The view uid for which to adjust the zoom level
      */
-    if (!this.tiledPlots[viewUid])
-      throw `View uid ${viewUid} does not exist in the current viewConfig`;
+    if (viewUid && !this.tiledPlots[viewUid]) {
+      throw new Error(
+        `View uid ${viewUid} does not exist in the current viewConfig`
+      );
+    }
 
-    this.tiledPlots[viewUid].handleZoomToData();
+    if (viewUid) {
+      this.tiledPlots[viewUid].handleZoomToData();
+    } else {
+      Object.values(this.tiledPlots)
+        .forEach(tiledPlot => tiledPlot.handleZoomToData());
+    }
   }
 
+  /**
+   * Reset the viewport to the initial x and y domain
+   * @param  {number} viewId - ID of the view for which the viewport should be
+   *  reset.
+   */
+  resetViewport(viewId) {
+    if (viewId && !this.tiledPlots[viewId]) {
+      throw new Error(
+        `View uid ${viewId} does not exist in the current viewConfig`
+      );
+    }
+
+    if (viewId) {
+      this.tiledPlots[viewId].resetViewport();
+    } else {
+      Object.values(this.tiledPlots)
+        .forEach(tiledPlot => tiledPlot.resetViewport());
+    }
+  }
 
   handleYankFunction(uid, yankFunction) {
     /**
@@ -2915,6 +2947,18 @@ class HiGlassComponent extends React.Component {
   }
 
   zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime) {
+    if (
+      !(+start1Abs >= 0 && +end1Abs >= 0 && +start2Abs >= 0 && +end2Abs >= 0)
+    ) {
+      const coords = [start1Abs, end1Abs, start2Abs, end2Abs].join(', ');
+      console.warn([
+        `Invalid coordinates (${coords}). All coordinates need to be numbers`,
+        'and should represent absolute coordinates (not chromosome',
+        'coordinates).',
+      ].join(' '));
+      return;
+    }
+
     const [centerX, centerY, k] = scalesCenterAndK(
       this.xScales[viewUid].copy().domain([start1Abs, end1Abs]),
       this.yScales[viewUid].copy().domain([start2Abs, end2Abs]),
@@ -2936,8 +2980,6 @@ class HiGlassComponent extends React.Component {
       });
       return;
     }
-
-    console.log(viewId, viewsIds.length);
 
     viewId = typeof viewId === 'undefined' && viewsIds.length === 1
       ? viewsIds[0]
@@ -3088,6 +3130,34 @@ class HiGlassComponent extends React.Component {
     this.showHoverMenu(evt);
   }
 
+  getMinMaxValue(viewId, trackId, ignoreOffScreenValues, ignoreFixedScale) {
+    const track = getTrackObjById(this.tiledPlots, viewId, trackId);
+
+    if (!track) {
+      console.warn(`Track with ID: ${trackId} not found!`);
+      return undefined;
+    }
+
+    if (!track.minVisibleValue || !track.maxVisibleValue) {
+      console.warn(
+        `Track ${trackId} doesn't support the retrieval of min or max values.`
+      );
+      return undefined;
+    }
+
+    if (ignoreOffScreenValues && track.getAggregatedVisibleValue) {
+      return [
+        track.getAggregatedVisibleValue('min'),
+        track.getAggregatedVisibleValue('max'),
+      ];
+    }
+
+    return [
+      track.minVisibleValue(ignoreFixedScale),
+      track.maxVisibleValue(ignoreFixedScale)
+    ];
+  }
+
   /**
    * Show a menu displaying some information about the track under it
    */
@@ -3106,8 +3176,7 @@ class HiGlassComponent extends React.Component {
 
     this.prevMouseHoverTrack = evt.track;
 
-    if (this.zooming)
-      return;
+    if (this.zooming) return;
 
     const data = (mouseOverHtml && mouseOverHtml.length) ? [1] : [];
 
@@ -3136,10 +3205,9 @@ class HiGlassComponent extends React.Component {
       .classed('.mouseover-marker', true)
     */
 
-    mouseOverDiv.style('position', 'fixed')
+    mouseOverDiv
       .style('left', `${mousePos[0]}px`)
-      .style('top', `${mousePos[1]}px`)
-      .style('z-index', 1);
+      .style('top', `${mousePos[1]}px`);
 
     // probably not over a track so there's no mouseover rectangle
     if (!mouseOverDiv.node()) return;
@@ -3180,6 +3248,25 @@ class HiGlassComponent extends React.Component {
    */
   mouseDownHandler(evt) {
 
+  }
+
+  setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
+    const track = getTrackObjById(this.tiledPlots, viewId, trackId);
+
+    if (!track) {
+      console.warn(`Could't find track: ${trackId}`);
+      return;
+    }
+
+    if (track.setFixedValueScaleMin && track.setFixedValueScaleMax) {
+      track.setFixedValueScaleMin(minValue);
+      track.setFixedValueScaleMax(maxValue);
+
+      track.rerender(track.options, true);
+      track.animate();
+    } else {
+      console.warn('Track doesn\'t support fixed value scales.');
+    }
   }
 
   setChromInfo(chromInfoPath, callback) {
@@ -3324,6 +3411,8 @@ class HiGlassComponent extends React.Component {
             onValueScaleChanged={uid => this.syncValueScales(view.uid, uid)}
             pixiStage={this.pixiStage}
             pluginTracks={this.state.pluginTracks}
+            rangeSelection1dSize={this.state.rangeSelection1dSize}
+            rangeSelectionToInt={this.state.rangeSelectionToInt}
             registerDraggingChangedListener={(listener) => {
               this.addDraggingChangedListener(view.uid, view.uid, listener);
             }}
@@ -3508,7 +3597,6 @@ class HiGlassComponent extends React.Component {
         onMouseMove={this.mouseMoveHandlerBound}
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onWheel={this.onWheelHandlerBound}
-        styleName={styleNames}
       >
         <canvas
           key={this.uid}
