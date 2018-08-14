@@ -325,6 +325,13 @@ export const OPTIONS_INFO = {
       no: { name: 'No', value: false },
     },
   },
+  colorEncoding: {
+    name: 'Color Encode Annotations',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true },
+      no: { name: 'No', value: false },
+    },
+  },
   axisPositionHorizontal: {
     name: 'Axis Position',
     inlineOptions: {
@@ -552,6 +559,22 @@ export const OPTIONS_INFO = {
           'horizontal-heatmap': HeatmapOptions,
         },
       },
+    },
+  },
+
+  align: {
+    name: 'Align',
+    inlineOptions: {
+      white: { name: 'Top', value: 'top' },
+      lightGrey: { name: 'Bottom', value: 'bottom' },
+    },
+  },
+
+  colorRangeGradient: {
+    name: 'Color Gradient',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true },
+      no: { name: 'No', value: false },
     },
   },
 

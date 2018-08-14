@@ -28,10 +28,12 @@ class CenterTrack extends React.Component {
     };
 
     this.brushBehaviorX = brushX(true, true)
-      .on('brush', this.brushedX.bind(this));
+      .on('brush', this.brushedX.bind(this))
+      .on('end', this.brushedXEnded.bind(this));
 
     this.brushBehaviorY = brushY(true, true, true)
-      .on('brush', this.brushedY.bind(this));
+      .on('brush', this.brushedY.bind(this))
+      .on('end', this.brushedYEnded.bind(this));
 
     this.brushBehaviorXY = brush(true)
       .on('start', this.brushStarted.bind(this))
@@ -50,22 +52,39 @@ class CenterTrack extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (this.rangeSelectionTriggeredXY) {
       this.rangeSelectionTriggeredXY = false;
+      if (this.rangeSelectionTriggeredXYEnd) {
+        const dim1 = nextProps.rangeSelection[0] || null;
+        this.moveBrushXY(
+          [dim1, nextProps.rangeSelection[1]],
+          true
+        );
+        this.rangeSelectionTriggeredXYEnd = false;
+      }
       return this.state !== nextState;
     } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
       const dim1 = nextProps.rangeSelection[0] || null;
 
       if (this.props.is1dRangeSelection) {
         if (!this.rangeSelectionTriggeredX) {
-          this.moveBrushX(dim1);
+          this.moveBrushX(dim1, nextProps.rangeSelectionEnd);
+        }
+        if (this.rangeSelectionTriggeredXEnd) {
+          this.moveBrushX(dim1, nextProps.rangeSelectionEnd, true);
         }
         if (!this.rangeSelectionTriggeredY) {
-          this.moveBrushY(dim1);
+          this.moveBrushY(dim1, nextProps.rangeSelectionEnd);
+        }
+        if (this.rangeSelectionTriggeredYEnd) {
+          this.moveBrushY(dim1, nextProps.rangeSelectionEnd, true);
         }
         this.rangeSelectionTriggeredX = false;
+        this.rangeSelectionTriggeredXEnd = false;
         this.rangeSelectionTriggeredY = false;
+        this.rangeSelectionTriggeredYEnd = false;
       } else {
         this.moveBrushXY(
-          [dim1, nextProps.rangeSelection[1]]
+          [dim1, nextProps.rangeSelection[1]],
+          nextProps.rangeSelectionEnd
         );
       }
 
@@ -165,6 +184,22 @@ class CenterTrack extends React.Component {
     this.props.onRangeSelectionX(event.selection);
   }
 
+  brushedXEnded() {
+    const rangeSelectionMovedEnd = this.rangeSelectionMovedEnd;
+    this.rangeSelectionMovedEnd = false;
+
+    if (
+      !this.sourceEvent ||
+      !this.props.onRangeSelectionX ||
+      !this.props.is1dRangeSelection ||
+      rangeSelectionMovedEnd
+    ) return;
+
+    this.rangeSelectionTriggeredX = true;
+    this.rangeSelectionTriggeredXEnd = true;
+    this.props.onRangeSelectionXEnd(event.selection);
+  }
+
   brushedY() {
     // Need to reassign variable to check after reset
     const rangeSelectionMoved = this.rangeSelectionMoved;
@@ -179,6 +214,22 @@ class CenterTrack extends React.Component {
 
     this.rangeSelectionTriggeredY = true;
     this.props.onRangeSelectionY(event.selection);
+  }
+
+  brushedYEnded() {
+    const rangeSelectionMovedEnd = this.rangeSelectionMovedEnd;
+    this.rangeSelectionMovedEnd = false;
+
+    if (
+      !this.sourceEvent ||
+      !this.props.onRangeSelectionY ||
+      !this.props.is1dRangeSelection ||
+      rangeSelectionMovedEnd
+    ) return;
+
+    this.rangeSelectionTriggeredY = true;
+    this.rangeSelectionTriggeredYEnd = true;
+    this.props.onRangeSelectionYEnd(event.selection);
   }
 
   brushedXY() {
@@ -201,9 +252,29 @@ class CenterTrack extends React.Component {
   }
 
   brushedXYEnded() {
-    if (!event.selection && !this.props.is1dRangeSelection) {
+    if (this.props.is1dRangeSelection) return;
+
+    const rangeSelectionMovedEnd = this.rangeSelectionMovedEnd;
+    this.rangeSelectionMovedEnd = false;
+
+    // Brush end event with a selection
+    if (
+      event.selection
+      && event.sourceEvent
+      && this.props.onRangeSelectionXY
+      && !rangeSelectionMovedEnd
+    ) {
       this.rangeSelectionTriggeredXY = true;
-      this.props.onRangeSelectionEnd();
+      this.rangeSelectionTriggeredXYEnd = true;
+      this.props.onRangeSelectionXYEnd([
+        [event.selection[0][0], event.selection[1][0]],
+        [event.selection[0][1], event.selection[1][1]],
+      ]);
+    }
+
+    if (!event.selection) {
+      this.rangeSelectionTriggeredXY = true;
+      this.props.onRangeSelectionReset();
     }
   }
 
@@ -213,7 +284,7 @@ class CenterTrack extends React.Component {
     this.props.onRangeSelectionStart();
   }
 
-  moveBrushX(rangeSelection) {
+  moveBrushX(rangeSelection, animate = false) {
     if (!this.brushEl && !this.sourceEvent) { return; }
 
     if (this.brushIs2dBound) {
@@ -227,10 +298,16 @@ class CenterTrack extends React.Component {
     ] : null;
 
     this.rangeSelectionMoved = true;
-    this.brushElX.call(this.brushBehaviorX.move, relRangeX);
+    this.rangeSelectionMovedEnd = true;
+
+    if (animate) {
+      this.brushElX.transition().call(this.brushBehaviorX.move, relRangeX);
+    } else {
+      this.brushElX.call(this.brushBehaviorX.move, relRangeX);
+    }
   }
 
-  moveBrushY(rangeSelection) {
+  moveBrushY(rangeSelection, animate = false) {
     if (!this.brushEl && !this.sourceEvent) { return; }
 
     if (this.brushIs2dBound) {
@@ -244,10 +321,16 @@ class CenterTrack extends React.Component {
     ] : null;
 
     this.rangeSelectionMoved = true;
-    this.brushElY.call(this.brushBehaviorY.move, relRangeY);
+    this.rangeSelectionMovedEnd = true;
+
+    if (animate) {
+      this.brushElY.transition().call(this.brushBehaviorY.move, relRangeY);
+    } else {
+      this.brushElY.call(this.brushBehaviorY.move, relRangeY);
+    }
   }
 
-  moveBrushXY(rangeSelection) {
+  moveBrushXY(rangeSelection, animate = false) {
     if (!this.brushEl && !this.sourceEvent) { return; }
 
     const relRange = [
@@ -262,7 +345,13 @@ class CenterTrack extends React.Component {
     ];
 
     this.rangeSelectionMoved = true;
-    this.brushElXY.call(this.brushBehaviorXY.move, relRange);
+    this.rangeSelectionMovedEnd = true;
+
+    if (animate) {
+      this.brushElXY.transition().call(this.brushBehaviorXY.move, relRange);
+    } else {
+      this.brushElXY.call(this.brushBehaviorXY.move, relRange);
+    }
   }
 
   mouseEnterHandler() {
@@ -314,7 +403,7 @@ class CenterTrack extends React.Component {
 
       this.brushIs2dBound = false;
 
-      if (!this.props.is1dRangeSelection) this.props.onRangeSelectionEnd();
+      if (!this.props.is1dRangeSelection) this.props.onRangeSelectionReset();
     }
   }
 
@@ -422,6 +511,7 @@ CenterTrack.defaultProps = {
   className: 'center-track',
   configTrackMenuId: null,
   is1dRangeSelection: false,
+  rangeSelectionEnd: PropTypes.bool,
   isRangeSelectionActive: false,
   scaleX: x => x,
   scaleY: x => x,
@@ -438,11 +528,15 @@ CenterTrack.propTypes = {
   onCloseTrackMenuOpened: PropTypes.func.isRequired,
   onConfigTrackMenuOpened: PropTypes.func.isRequired,
   onRangeSelectionX: PropTypes.func.isRequired,
+  onRangeSelectionXEnd: PropTypes.func.isRequired,
   onRangeSelectionY: PropTypes.func.isRequired,
+  onRangeSelectionYEnd: PropTypes.func.isRequired,
   onRangeSelectionXY: PropTypes.func.isRequired,
-  onRangeSelectionEnd: PropTypes.func.isRequired,
+  onRangeSelectionXYEnd: PropTypes.func.isRequired,
+  onRangeSelectionReset: PropTypes.func.isRequired,
   onRangeSelectionStart: PropTypes.func.isRequired,
   rangeSelection: PropTypes.array.isRequired,
+  rangeSelectionEnd: PropTypes.bool,
   scaleX: PropTypes.func,
   scaleY: PropTypes.func,
   tracks: PropTypes.array.isRequired,

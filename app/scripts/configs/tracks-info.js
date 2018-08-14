@@ -424,12 +424,15 @@ export const TRACKS_INFO = [
     local: false,
     orientation: '1d-horizontal',
     availableOptions: [
+      'align',
       'labelPosition',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
       'axisPositionHorizontal',
       'barFillColor',
+      'colorRange',
+      'colorRangeGradient',
       'valueScaling',
       'trackBorderWidth',
       'trackBorderColor',
@@ -438,6 +441,7 @@ export const TRACKS_INFO = [
       'showTooltip',
     ],
     defaultOptions: {
+      align: 'bottom',
       labelColor: 'black',
       labelPosition: 'topLeft',
       axisPositionHorizontal: 'right',
@@ -455,12 +459,15 @@ export const TRACKS_INFO = [
     local: false,
     orientation: '1d-vertical',
     availableOptions: [
+      'align',
       'labelPosition',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
       'axisPositionHorizontal',
       'barFillColor',
+      'colorRange',
+      'colorRangeGradient',
       'valueScaling',
       'trackBorderWidth',
       'trackBorderColor',
@@ -469,6 +476,7 @@ export const TRACKS_INFO = [
       'showTooltip',
     ],
     defaultOptions: {
+      align: 'bottom',
       labelColor: 'black',
       labelPosition: 'topLeft',
       axisPositionHorizontal: 'right',
@@ -1083,6 +1091,9 @@ export const TRACKS_INFO = [
       'trackBorderWidth',
       'trackBorderColor',
       'valueColumn',
+      'colorEncoding',
+      'colorRange',
+      'colorEncodingRange',
     ],
     defaultOptions: {
       fillColor: 'blue',
@@ -1091,7 +1102,12 @@ export const TRACKS_INFO = [
       labelPosition: 'hidden',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
-      valueColumn: null
+      valueColumn: null,
+      colorEncoding: false,
+      colorRange: [
+        '#000000', '#652537', '#bf5458', '#fba273', '#ffffe0'
+      ],
+      colorEncodingRange: false,
     },
   },
   {
