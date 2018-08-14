@@ -535,17 +535,17 @@ function text(url, callback) {
   /**
    * Send a text request and mark it so that we can tell how many are in flight
    */
-  fetch(url, callback, 'text');
+  fetchEither(url, callback, 'text');
 }
 
 function json(url, callback) {
   /**
    * Send a JSON request and mark it so that we can tell how many are in flight
    */
-  fetch(url, callback, 'json');
+  fetchEither(url, callback, 'json');
 }
 
-function fetch(url, callback, textOrJson) {
+function fetchEither(url, callback, textOrJson) {
   /**
    * Send a either a text or JSON request and mark it so that we can tell how many are in flight
    */
