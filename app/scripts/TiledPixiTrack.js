@@ -146,6 +146,8 @@ class TiledPixiTrack extends PixiTrack {
 
       this.options.name = this.options.name ? this.options.name : tilesetInfo.name;
 
+      this.checkValueScaleLimits();
+
       this.draw();
       this.drawLabel(); //draw the label so that the current resolution is displayed
       this.animate();
@@ -169,9 +171,7 @@ class TiledPixiTrack extends PixiTrack {
     this.fixedValueScaleMax = +value || null;
   }
 
-  rerender(options) {
-    super.rerender(options);
-
+  checkValueScaleLimits() {
     this.valueScaleMin = typeof this.options.valueScaleMin !== 'undefined'
       ? +this.options.valueScaleMin
       : null;
@@ -187,10 +187,16 @@ class TiledPixiTrack extends PixiTrack {
     if (this.fixedValueScaleMax !== null) {
       this.valueScaleMax = this.fixedValueScaleMax;
     }
+  }
+
+  rerender(options) {
+    super.rerender(options);
 
     this.renderVersion += 1;
 
     if (!this.tilesetInfo) { return; }
+
+    this.checkValueScaleLimits();
 
     if (this.tilesetInfo.resolutions)
       this.maxZoom = this.tilesetInfo.resolutions.length;
