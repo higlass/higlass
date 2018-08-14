@@ -4,6 +4,21 @@ Developer
 Public API
 ***********
 
+Available endpoints
+-------------------
+
+.. code-block:: javascript
+
+  import { HiGlassComponent, ChromosomeInfo, viewer } from 'higlass';
+
+HiGlass exports three endpoints for your convenience. ``viewer`` is the main
+endpoint to create a new HiGlass component. ``HiGlassComponent`` can be used
+to integrate HiGlass in your React application. ``ChromosomeInfo`` is a class
+for converting absolute coordinates to chromosome coordinates. It's used
+internally and made available to convert absolute range selection into
+chromosome range selections.
+
+
 Creating an inline HiGlass component
 ------------------------------------
 
@@ -72,6 +87,34 @@ GitHub repository
   function zoomTo() {
     hgv.zoomTo("aa", 1000000,2000000,1000000,2000000, 1000);
   }
+
+
+Creating a HiGlass component in your React app
+----------------------------------------------
+
+.. code-block:: javascript
+
+  <HiGlassComponent
+    options={options}
+    viewConfig={viewConfig}
+  >
+
+Use the ``HiGlassComponent`` to create a HiGlass instance in react. The
+``options`` prop is the same as explained above.
+
+**Example**
+
+.. code-block:: javascript
+
+  import { HiGlassComponent } from 'higlass';
+
+  const HiGlass = props => <HiGlassComponent
+    ref={props.onRef}
+    options={props.options}
+    viewConfig={props.viewConfig}
+  >
+
+  export default HiGlass;
 
 
 Setting the current view config
@@ -217,12 +260,58 @@ Get the min and max value of the (visible) data of a track.
 ``ignoreFixedScale: string [default: false]``
     If ``true`` ignore fixed scaling and return the actual (not the visible)
     min and max value.
-
+    
 **Examples:**
 
 .. code-block:: javascript
 
   const [minVal, maxVal] = hgv.getMinMaxValue('myView', 'myTrack');
+
+
+Restrict range selection
+------------------------
+
+The following enpoint restricts the size of range selection equally for 1D or
+2D tracks to a certain length (specified in absolute coordinates).
+
+**Prototype**
+
+``setRangeSelection1dSize(minSize, maxSize)``
+
+**Parameters**
+
+``minSize: number [default: 0]``
+    Minimum range selection. ``undefined`` unsets the value.
+
+``maxSize: number [default: Infinity]``
+    Maximum range selection. ``undefined`` unsets the value.
+
+**Examples:**
+
+.. code-block:: javascript
+
+  hgv.activateTool('select'); // Activate select tool
+  hgv.setRangeSelection1dSize(5000, 10000); // Force selections to be between 5 and 10 Kb
+
+
+Ensure integer range selection
+------------------------------
+
+The following two endpoints enable or disable forced integer range selections.
+
+**Prototype**
+
+``setRangeSelectionToInt()``
+
+``setRangeSelectionToFloat()``
+
+**Examples:**
+
+.. code-block:: javascript
+
+  hgv.activateTool('select'); // Activate select tool
+  hgv.setRangeSelectionToInt(); // Force selections to be integer
+  hgv.setRangeSelectionToFloat(); // Allow float range selections
 
 
 Reset the viewport
@@ -237,7 +326,7 @@ domains of your view config.
 
 **Parameters**
 
-``viewId: string [default: '']``
+``viewId: string``
     The view identifier. If you have only one view you can omit this parameter.
 
   hgv.resetViewport(); // Resets the first view
@@ -277,6 +366,7 @@ scale
 **Demos:**
 
 - `Live example in the console <examples/api-set-track-value-scale-limits.html>`_
+
 
 
 Subscribe to events
@@ -445,13 +535,11 @@ and the order they are listed in a chromSizes file:
 
 .. code-block:: javascript
 
-    import {ChromosomeInfo} from 'higlass';
+  import { ChromosomeInfo } from 'higlass';
 
-    ChromosomeInfo(
-      'http://higlass.io/api/v1/chrom-sizes/?id=Ajn_ttUUQbqgtOD4nOt-IA',
-      (chromInfo) => {
-        console.log('chromInfo:', chromInfo);
-      });
+  const chromInfo = ChromosomeInfo(
+    'http://higlass.io/api/v1/chrom-sizes/?id=Ajn_ttUUQbqgtOD4nOt-IA',
+    (chromInfo) => { console.log('chromInfo:', chromInfo); });
 
 This will return a data structure with information about the chromosomes
 listed:
@@ -475,6 +563,15 @@ listed:
         ...
        ]
     }
+
+**Convert absolute to chromosomal coordinates:**
+
+.. code-block:: javascript
+
+  absPos = 257893;
+  chromPos = chromInfo.absToChr(absPos);
+
+
 
 Viewconfs
 *********
