@@ -1,18 +1,53 @@
 import { scaleLinear } from 'd3-scale';
+import * as PIXI from 'pixi.js';
 
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 
 // Utils
-import { colorToHex } from './utils';
+import { colorDomainToRgbaArray, colorToHex, gradient } from './utils';
+
+const HEX_WHITE = colorToHex('#FFFFFF');
+
 
 class BarTrack extends HorizontalLine1DPixiTrack {
-  initTile(tile) {
-    /**
-         * Create whatever is needed to draw this tile.
-         */
-    super.initTile(tile);
+  constructor(...args) {
+    super(...args);
 
-    // this.drawTile(tile);
+    if (this.options && this.options.colorRange) {
+      if (this.options.colorRangeGradient) {
+        this.setColorGradient(this.options.colorRange);
+      } else {
+        this.setColorScale(this.options.colorRange);
+      }
+    }
+  }
+
+  setColorScale(colorRange) {
+    if (!colorRange) return;
+
+    this.colorScale = colorDomainToRgbaArray(colorRange);
+
+    // Normalize colormap upfront to save 3 divisions per data point during the
+    // rendering.
+    this.colorScale = this.colorScale
+      .map(rgb => rgb.map(channel => channel / 255.0));
+  }
+
+  setColorGradient(colorGradient) {
+    if (!colorGradient) return;
+
+    const N = colorGradient.length - 1;
+
+    this.colorGradientColors = this.options.align === 'bottom'
+      ? colorGradient.slice().reverse().map((color, i) => ({ from: i / N, color }))
+      : colorGradient.map((color, i) => ({ from: i / N, color }));
+  }
+
+  /**
+   * Create whatever is needed to draw this tile.
+   */
+  initTile(tile) {
+    super.initTile(tile);
     this.renderTile(tile);
   }
 
@@ -34,7 +69,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   renderTile(tile) {
-    if (!tile.graphics) { return; }
+    if (!tile.graphics) return;
 
     const graphics = tile.graphics;
 
@@ -48,14 +83,17 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     if (tileValues.length === 0) return;
 
     // equal to the smallest non-zero value
-    const [vs, pseudocount] = this.makeValueScale(
+    const [valueScale, pseudocount] = this.makeValueScale(
       this.minVisibleValue(),
       this.medianVisibleValue,
       this.maxValue(),
       0
     );
-    this.valueScale = vs;
-    // console.log('pseudocount:', pseudocount, this.valueScale.domain());
+
+    this.valueScale = valueScale;
+
+    const colorScale = valueScale.copy();
+    colorScale.range([254, 0]).clamp(true);
 
     graphics.clear();
 
@@ -72,9 +110,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       return;
     }
 
-    const stroke = colorToHex(
-      this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue'
-    );
+    const stroke = colorToHex(this.options.lineStrokeColor || 'blue');
+
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
     const tileXScale = scaleLinear()
@@ -83,12 +120,10 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       ])
       .range([tileX, tileX + tileWidth]);
 
-    // let strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
-
     const strokeWidth = 0;
     graphics.lineStyle(strokeWidth, stroke, 1);
 
-    const color = this.options.barFillColor ? this.options.barFillColor : 'grey';
+    const color = this.options.barFillColor || 'grey';
     const colorHex = colorToHex(color);
 
     const opacity = 'barOpacity' in this.options ? this.options.barOpacity : 1;
@@ -97,12 +132,40 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     tile.drawnAtScale = this._xScale.copy();
 
-    for (let i = 0; i < tileValues.length; i++) {
-      const xPos = this._xScale(tileXScale(i));
-      const yPos = this.valueScale(tileValues[i] + pseudocount);
+    const isTopAligned = this.options.align === 'top';
 
-      const width = this._xScale(tileXScale(i + 1)) - xPos;
-      const height = this.dimensions[1] - yPos;
+    let xPos;
+    let width;
+    let yPos;
+    let height;
+
+    let barMask;
+    let barSprite;
+    if (this.colorGradientColors) {
+      barMask = new PIXI.Graphics();
+      barMask.beginFill(HEX_WHITE, 1);
+
+      const canvas = gradient(
+        this.colorGradientColors,
+        1, this.dimensions[1],  // width, height
+        0, 0, 0, this.dimensions[1]  // fromX, fromY, toX, toY
+      );
+
+      barSprite = new PIXI.Sprite(
+        PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
+      );
+
+      barSprite.x = this._xScale(tileX);
+      barSprite.width = this._xScale(tileX + tileWidth) - barSprite.x;
+    }
+
+    for (let i = 0; i < tileValues.length; i++) {
+      xPos = this._xScale(tileXScale(i));
+      yPos = this.valueScale(tileValues[i] + pseudocount);
+      width = this._xScale(tileXScale(i + 1)) - xPos;
+      height = this.dimensions[1] - yPos;
+
+      if (isTopAligned) yPos = 0;
 
       this.addSVGInfo(tile, xPos, yPos, width, height, color);
 
@@ -110,13 +173,34 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       // of the coordinate system
       if (tileXScale(i) > this.tilesetInfo.max_pos[0]) break;
 
-      graphics.drawRect(
-        xPos,
-        yPos,
-        width,
-        height
-      );
+      if (this.colorScale && !this.options.colorRangeGradient) {
+        const rgbIdx = Math.round(colorScale(tileValues[i] + pseudocount));
+        const rgb = this.colorScale[rgbIdx];
+        const hex = PIXI.utils.rgb2hex(rgb);
+        graphics.beginFill(hex, opacity);
+      }
+
+      (barMask || graphics).drawRect(xPos, yPos, width, height);
     }
+
+    if (this.colorGradientColors) {
+      barSprite.mask = barMask;
+
+      graphics.removeChildren();
+      graphics.addChild(barSprite, barMask);
+    }
+  }
+
+  rerender(options) {
+    if (options && options.colorRange) {
+      if (options.colorRangeGradient) {
+        this.setColorGradient(options.colorRange);
+      } else {
+        this.setColorScale(options.colorRange);
+      }
+    }
+
+    super.rerender(options);
   }
 
   draw() {
@@ -130,8 +214,6 @@ class BarTrack extends HorizontalLine1DPixiTrack {
         (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
         (this._xScale.domain()[1] - this._xScale.domain()[0])
       );
-
-      // let posOffset = newRange[0];
 
       const newRange = this._xScale.domain().map(tile.drawnAtScale);
 
@@ -156,7 +238,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
    * @param color color of bar (not converted to hex)
    */
   addSVGInfo(tile, x, y, width, height, color) {
-    if (tile['svgData']) {
+    if (tile.svgData) {
       tile.svgData.barXValues.push(x);
       tile.svgData.barYValues.push(y);
       tile.svgData.barWidths.push(width);

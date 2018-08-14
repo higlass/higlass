@@ -216,7 +216,9 @@ class HiGlassComponent extends React.Component {
       exportLinkModalOpen: false,
       exportLinkLocation: null,
       mouseTool,
-      isDarkTheme: false
+      isDarkTheme: false,
+      rangeSelection1dSize: [0, Infinity],
+      rangeSelectionToInt: false,
     };
 
     dictValues(views).map(view => this.adjustLayoutToTrackSizes(view));
@@ -3145,8 +3147,7 @@ class HiGlassComponent extends React.Component {
 
     this.prevMouseHoverTrack = evt.track;
 
-    if (this.zooming)
-      return;
+    if (this.zooming) return;
 
     const data = (mouseOverHtml && mouseOverHtml.length) ? [1] : [];
 
@@ -3175,10 +3176,9 @@ class HiGlassComponent extends React.Component {
       .classed('.mouseover-marker', true)
     */
 
-    mouseOverDiv.style('position', 'fixed')
+    mouseOverDiv
       .style('left', `${mousePos[0]}px`)
-      .style('top', `${mousePos[1]}px`)
-      .style('z-index', 1);
+      .style('top', `${mousePos[1]}px`);
 
     // probably not over a track so there's no mouseover rectangle
     if (!mouseOverDiv.node()) return;
@@ -3382,6 +3382,8 @@ class HiGlassComponent extends React.Component {
             onValueScaleChanged={uid => this.syncValueScales(view.uid, uid)}
             pixiStage={this.pixiStage}
             pluginTracks={this.state.pluginTracks}
+            rangeSelection1dSize={this.state.rangeSelection1dSize}
+            rangeSelectionToInt={this.state.rangeSelectionToInt}
             registerDraggingChangedListener={(listener) => {
               this.addDraggingChangedListener(view.uid, view.uid, listener);
             }}
@@ -3566,7 +3568,6 @@ class HiGlassComponent extends React.Component {
         onMouseMove={this.mouseMoveHandlerBound}
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onWheel={this.onWheelHandlerBound}
-        styleName={styleNames}
       >
         <canvas
           key={this.uid}
