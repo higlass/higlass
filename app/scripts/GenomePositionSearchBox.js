@@ -103,10 +103,16 @@ class GenomePositionSearchBox extends React.Component {
     }
 
     this.availableChromSizes = {};
-    // this.availableChromSizes[this.props.chromInfoId] = new Set([{server: this.props.chromInfoServer, uuid: this.props.chromInfoId} ]);
 
+    /*
+    if (this.props.chromInfoServer && this.props.chromInfoId) {
+      // if we've been passed a server and chromInfo ID we trust that it exists
+      // and use that
+      this.availableChromSizes[this.props.chromInfoId] = new Set([{server: this.props.chromInfoServer, uuid: this.props.chromInfoId} ]);
+      this.fetchChromInfo(this.props.chromInfoId);
+    }
+    */
 
-    // this.fetchChromInfo(this.props.chromInfoId);
   }
 
   componentDidMount() {
@@ -126,7 +132,53 @@ class GenomePositionSearchBox extends React.Component {
     this.props.removeViewportChangedListener();
   }
 
-  fetchChromInfo(chromInfoId) {
+  setSelectedAssembly(assemblyName) {
+    if (!this.mounted)
+      // component is probably about to be unmounted
+      return;
+
+    if (!this.availableChromSizes[assemblyName])
+    // we don't know of any available chromosome sizes so just ignore
+    // this function call (usually called from the constructor)
+    { return; }
+
+    const chromInfoId = this.availableChromSizes[assemblyName];
+    // use the first available server that we have on record for this chromInfoId
+    const serverAndChromInfoToUse = [...this.availableChromSizes[assemblyName]][0];
+
+    this.setState({
+      autocompleteServer: serverAndChromInfoToUse.server,
+    });
+
+    const server = serverAndChromInfoToUse.server;
+
+    // we need to set a an autocompleteId that matches the chromInfo
+    // that was received, but if none has been retrieved yet...
+    if (this.availableAutocompletes[assemblyName]) {
+      const newAcId = [...this.availableAutocompletes[assemblyName]][0].acId;
+      this.props.onSelectedAssemblyChanged(assemblyName, newAcId,
+        server);
+
+      if (this.gpsbForm) {
+        this.setState({
+          autocompleteId: newAcId,
+        });
+      }
+    } else {
+      this.props.onSelectedAssemblyChanged(assemblyName,
+        null, server);
+
+      if (this.gpsbForm) {
+        this.setState({
+          autocompleteId: null,
+        });
+      }
+    }
+
+    this.fetchChromInfo(serverAndChromInfoToUse.uuid, serverAndChromInfoToUse.server);
+  }
+
+  fetchChromInfo(chromInfoId, server) {
     /**
      * The user has selected an assembly to use for the coordinate search box
      *
@@ -141,58 +193,23 @@ class GenomePositionSearchBox extends React.Component {
      *      Once the appropriate ChromInfo file is fetched, it is stored locally
      */
 
-    if (!this.mounted)
-      // component is probably about to be unmounted
-      return;
+    ChromosomeInfo(`${server}/chrom-sizes/?id=${chromInfoId}`, (newChromInfo) => {
+      tileProxy.json(`${server}/tileset_info/?d=${chromInfoId}`, (error, tilesetInfo) => {
+        if (this.gpsbForm) {
+          // only set the state if this component is mounted
+          this.setState({
+            selectedAssembly: tilesetInfo[chromInfoId].coordSystem,
+          });
+        }
+        
+      });
 
-    if (!this.availableChromSizes[chromInfoId])
-    // we don't know of any available chromosome sizes so just ignore
-    // this function call (usually called from the constructor)
-    { return; }
-
-    // use the first available server that we have on record for this chromInfoId
-    const serverAndChromInfoToUse = [...this.availableChromSizes[chromInfoId]][0];
-
-    this.setState({
-      autocompleteServer: serverAndChromInfoToUse.server,
-    });
-
-
-    ChromosomeInfo(`${serverAndChromInfoToUse.server}/chrom-sizes/?id=${serverAndChromInfoToUse.uuid}`, (newChromInfo) => {
       this.chromInfo = newChromInfo;
       this.searchField = new SearchField(this.chromInfo);
 
       this.setPositionText();
 
-      if (this.gpsbForm) {
-        // only set the state if this component is mounted
-        this.setState({
-          selectedAssembly: chromInfoId,
-        });
-      }
 
-      // we need to set a an autocompleteId that matches the chromInfo
-      // that was received, but if none has been retrieved yet...
-      if (this.availableAutocompletes[chromInfoId]) {
-        const newAcId = [...this.availableAutocompletes[chromInfoId]][0].acId;
-        this.props.onSelectedAssemblyChanged(chromInfoId, newAcId,
-          serverAndChromInfoToUse.server);
-
-        if (this.gpsbForm) {
-          this.setState({
-            autocompleteId: newAcId,
-          });
-        }
-      } else {
-        this.props.onSelectedAssemblyChanged(chromInfoId,
-          null, serverAndChromInfoToUse.server);
-
-        if (this.gpsbForm) {
-          this.setState({
-            autocompleteId: null,
-          });
-        }
-      }
     });
   }
 
@@ -247,7 +264,7 @@ class GenomePositionSearchBox extends React.Component {
           console.error(error);
         } else {
           data.results.map((x) => {
-            if (!(x.uuid in this.availableChromSizes)) {
+            if (!(x.coordSystem in this.availableChromSizes)) {
               this.availableChromSizes[x.coordSystem] = new Set();
             }
 
@@ -258,7 +275,10 @@ class GenomePositionSearchBox extends React.Component {
           // we haven't set an assembly yet so set it now
           // props.chromInfoId will be set to the suggested assembly (e.g. "hg19")
           // this will be mapped to an available chromSize (with its own unique uuid)
-          if (!this.searchField) { this.fetchChromInfo(this.props.chromInfoId); }
+          if (!this.searchField) { 
+            // only fetch chromsizes if there isn't a specified chromInfoServer
+              this.fetchChromInfo(this.props.chromInfoId, sourceServer); 
+          }
         }
       });
     });
@@ -296,6 +316,7 @@ class GenomePositionSearchBox extends React.Component {
     // ReactDOM.findDOMNode( this.refs.searchFieldText).value = positionString;
     // used for autocomplete
     this.prevParts = positionString.split(/[ -]/);
+
     //console.log('this.autocompleteMenu', this.autocompleteMenu.inputEl);
     if (this.gpsbForm) {
       this.positionText = positionString;
@@ -537,7 +558,7 @@ class GenomePositionSearchBox extends React.Component {
   }
 
   handleAssemblySelect(evt) {
-    this.fetchChromInfo(evt);
+    this.setSelectedAssembly(evt);
 
     this.setState({
       selectedAssembly: evt,
