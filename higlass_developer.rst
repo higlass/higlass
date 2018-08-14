@@ -4,6 +4,21 @@ Developer
 Public API
 ***********
 
+Available endpoints
+-------------------
+
+.. code-block:: javascript
+
+  import { HiGlassComponent, ChromosomeInfo, viewer } from 'higlass';
+
+HiGlass exports three endpoints for your convenience. ``viewer`` is the main
+endpoint to create a new HiGlass component. ``HiGlassComponent`` can be used
+to integrate HiGlass in your React application. ``ChromosomeInfo`` is a class
+for converting absolute coordinates to chromosome coordinates. It's used
+internally and made available to convert absolute range selection into
+chromosome range selections.
+
+
 Creating an inline HiGlass component
 ------------------------------------
 
@@ -73,6 +88,35 @@ GitHub repository
     hgv.zoomTo("aa", 1000000,2000000,1000000,2000000, 1000);
   }
 
+
+Creating a HiGlass component in your React app
+----------------------------------------------
+
+.. code-block:: javascript
+
+  <HiGlassComponent
+    options={options}
+    viewConfig={viewConfig}
+  >
+
+Use the ``HiGlassComponent`` to create a HiGlass instance in react. The
+``options`` prop is the same as explained above.
+
+**Example**
+
+.. code-block:: javascript
+
+  import { HiGlassComponent } from 'higlass';
+
+  const HiGlass = props => <HiGlassComponent
+    ref={props.onRef}
+    options={props.options}
+    viewConfig={props.viewConfig}
+  >
+
+  export default HiGlass;
+
+
 Setting the current view config
 -------------------------------
 
@@ -96,6 +140,7 @@ which is fulfilled when all of the data for the view is loaded.
   p.then(() => {
     // the initial set of tiles has been loaded
   });
+
 
 Zooming to show all of the data
 -------------------------------
@@ -219,6 +264,92 @@ on to a track to select a range for annotating regions.
   hgv.activateTool('select'); // Select tool is active
   hgv.activateTool(); // Default pan&zoom tool is active
 
+
+Get the visible min and max value of a track
+--------------------------------------------
+
+Get the min and max value of the visible data of a track.
+
+**Prototype**
+
+``getMinMaxValue(viewId, trackId, ignoreOffScreenValues, ignoreFixedScale)``
+
+**Parameters**
+
+``viewId: string``
+    View identifier (uid). Can be omitted if only one view is specified.
+
+``trackId: string``
+    Track identifier (uid).
+
+``ignoreOffScreenValues: bool [default: false]``
+    If ``true`` only truly visible values are considered. Otherwise the values
+    of visible tiles are used. Not that considering only the truly visible
+    values results in a roughly 10x slowdown (from 0.1 to 1 millisecond).
+
+``ignoreFixedScale: bool [default: false]``
+    If ``true`` potentially fixed scaled values are ignored. I.e., if the
+    absolute range is ``[1, 18]`` but you have fixed the output range to
+    ``[4, 5]`` you would normally retrieve ``[4, 5]``. Having this option set to
+    ``true`` retrieves the absolute ``[1, 18]`` range.
+    
+**Examples:**
+
+.. code-block:: javascript
+
+  const [minVal, maxVal] = hgv.getMinMaxValue('myView', 'myTrack');
+  
+**Demos:**
+
+- `Base example <examples/api-get-min-max-value.html>`_
+
+
+Restrict range selection
+------------------------
+
+The following enpoint restricts the size of range selection equally for 1D or
+2D tracks to a certain length (specified in absolute coordinates).
+
+**Prototype**
+
+``setRangeSelection1dSize(minSize, maxSize)``
+
+**Parameters**
+
+``minSize: number [default: 0]``
+    Minimum range selection. ``undefined`` unsets the value.
+
+``maxSize: number [default: Infinity]``
+    Maximum range selection. ``undefined`` unsets the value.
+
+**Examples:**
+
+.. code-block:: javascript
+
+  hgv.activateTool('select'); // Activate select tool
+  hgv.setRangeSelection1dSize(5000, 10000); // Force selections to be between 5 and 10 Kb
+
+
+Ensure integer range selection
+------------------------------
+
+The following two endpoints enable or disable forced integer range selections.
+
+**Prototype**
+
+``setRangeSelectionToInt()``
+
+``setRangeSelectionToFloat()``
+
+**Examples:**
+
+.. code-block:: javascript
+
+  hgv.activateTool('select'); // Activate select tool
+  hgv.setRangeSelectionToInt(); // Force selections to be integer
+  hgv.setRangeSelectionToFloat(); // Allow float range selections
+
+
 Reset the viewport
 ------------------
 
@@ -231,14 +362,52 @@ domains of your view config.
 
 **Parameters**
 
-``viewId: string [default: '']``
+``viewId: string``
     The view identifier. If you have only one view you can omit this parameter.
-
+    
 **Examples:**
 
 .. code-block:: javascript
 
   hgv.resetViewport(); // Resets the first view
+
+
+Fix the value range of a 1D track
+---------------------------------
+
+When comparing different 1D tracks it can be desireable to fix their y or value
+scale
+
+**Prototype**
+
+``setTrackValueScale(viewId, trackId, minValue, maxValue)``
+
+**Parameters**
+
+``viewId: string [default: '']``
+    The view identifier. If you only have one view this parameter can be
+    omitted.
+
+``trackId: string [default: '']``
+    The track identifier.
+
+``trackId: number [default: '']``
+    Minimum value used for scaling the track.
+
+``trackId: number [default: '']``
+    Maximum value used for scaling the track.
+
+**Examples:**
+
+.. code-block:: javascript
+
+  hgv.setTrackValueScale(myView, myTrack, 0, 100); // Sets the scaling to [0, 100]
+  hgv.setTrackValueScale(myView, myTrack); // Unsets the fixed scaling, i.e., enables dynamic scaling again.
+
+**Demos:**
+
+- `Live example in the console <examples/api-set-track-value-scale-limits.html>`_
+
 
 Subscribe to events
 -------------------
@@ -342,6 +511,7 @@ HiGlass exposes the following event, which one can subscribe to via this method:
   const mmz = event => console.log('Moved', event);
   hgv.on('mouseMoveZoom', mmz);
 
+
 Unsubscribe from events
 -----------------------
 
@@ -362,6 +532,7 @@ The variables used in the following examples are coming from the above examples 
   hgv.off('viewConfig', viewConfigListener);
   hgv.off('mouseMoveZoom', mmz);
 
+
 Getters for the current HiGlass State
 -------------------------------------
 
@@ -376,6 +547,7 @@ HiGlass provides a set of accessors and exporters to retrieve data from HiGlass 
   const currentViewConfig = hgv.exportAsViewConfString();
   const pngSnapshot = hgv.exportAsPng();  // Data URI
   const svgSnapshot = hgv.exportAsSvg();  // XML string
+
 
 Get sharable link for current view config
 -----------------------------------------
@@ -398,6 +570,7 @@ If it is not provided, the value is taken from the `exportViewUrl` value of the 
     })
     .catch((err) => { console.error('Something did not work. Sorry', err); })
 
+
 Obtaining ordered chromosome info
 ---------------------------------
 
@@ -406,13 +579,11 @@ and the order they are listed in a chromSizes file:
 
 .. code-block:: javascript
 
-    import {ChromosomeInfo} from 'higlass';
+  import { ChromosomeInfo } from 'higlass';
 
-    ChromosomeInfo(
-      'http://higlass.io/api/v1/chrom-sizes/?id=Ajn_ttUUQbqgtOD4nOt-IA',
-      (chromInfo) => {
-        console.log('chromInfo:', chromInfo);
-      });
+  const chromInfo = ChromosomeInfo(
+    'http://higlass.io/api/v1/chrom-sizes/?id=Ajn_ttUUQbqgtOD4nOt-IA',
+    (chromInfo) => { console.log('chromInfo:', chromInfo); });
 
 This will return a data structure with information about the chromosomes
 listed:
@@ -436,6 +607,15 @@ listed:
         ...
        ]
     }
+
+**Convert absolute to chromosomal coordinates:**
+
+.. code-block:: javascript
+
+  absPos = 257893;
+  chromPos = chromInfo.absToChr(absPos);
+
+
 
 Viewconfs
 *********
@@ -477,4 +657,3 @@ json (e.g. `{"viewconf": myViewConfig}`):
     curl -H "Content-Type: application/json" \
          -X POST \
          -d '{"viewconf": {"editable": true, "zoomFixed": false, "trackSourceServers": ["/api/v2", "http://higlass.io/api/v1"], "exportViewUrl": "/api/v1/viewconfs/", "views": [{"tracks": {"top": [], "left": [], "center": [], "right": [], "bottom": []}, "initialXDomain": [243883495.14563107, 2956116504.854369], "initialYDomain": [804660194.1747572, 2395339805.825243], "layout": {"w": 12, "h": 12, "x": 0, "y": 0, "i": "EwiSznw8ST2HF3CjHx-tCg", "moved": false, "static": false}, "uid": "EwiSznw8ST2HF3CjHx-tCg"}], "zoomLocks": {"locksByViewUid": {}, "locksDict": {}}, "locationLocks": {"locksByViewUid": {}, "locksDict": {}}, "valueScaleLocks": {"locksByViewUid": {}, "locksDict": {}}}}' http://localhost:8989/api/v1/viewconfs/
-
