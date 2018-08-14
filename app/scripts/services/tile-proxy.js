@@ -535,34 +535,27 @@ function text(url, callback) {
   /**
    * Send a text request and mark it so that we can tell how many are in flight
    */
-  requestsInFlight += 1;
-  pubSub.publish('requestSent', url);
-
-  return fetch(url)
-    .then(rep => rep.text())
-    .then((text) => {
-      callback(undefined, text);
-    })
-    .catch((error) => {
-      callback(error, undefined);
-    })
-    .finally(() => {
-      pubSub.publish('requestReceived', url);
-      requestsInFlight -= 1;
-    });
+  fetch(url, callback, 'text');
 }
 
 function json(url, callback) {
   /**
    * Send a JSON request and mark it so that we can tell how many are in flight
    */
+  fetch(url, callback, 'json');
+}
+
+function fetch(url, callback, textOrJson) {
+  /**
+   * Send a either a text or JSON request and mark it so that we can tell how many are in flight
+   */
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
   return fetch(url)
-    .then(rep => rep.json())
-    .then((json) => {
-      callback(undefined, json);
+    .then(rep => rep[textOrJson]())
+    .then((content) => {
+      callback(undefined, content);
     })
     .catch((error) => {
       callback(error, undefined);
