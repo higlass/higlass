@@ -533,7 +533,7 @@ export const tileDataToPixData = (
 
 function text(url, callback) {
   /**
-   * Send a JSON request mark it so that we can tell how many are in flight
+   * Send a text request and mark it so that we can tell how many are in flight
    */
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
@@ -554,22 +554,21 @@ function text(url, callback) {
 
 function json(url, callback) {
   /**
-   * Send a JSON request mark it so that we can tell how many are in flight
+   * Send a JSON request and mark it so that we can tell how many are in flight
    */
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
-  const r = request(url)
-    .header('Content-Type', 'application/json')
-  // TODO: Check if this preserves same-origin cookies
-
-  if (authHeader)
-    r.header('Authorization', `${authHeader}`)
-
-    r.send('GET', (error, data) => {
+  return fetch(url)
+    .then(rep => rep.json())
+    .then((json) => {
+      callback(undefined, json);
+    })
+    .catch((error) => {
+      callback(error, undefined);
+    })
+    .finally(() => {
       pubSub.publish('requestReceived', url);
-      const j = data && JSON.parse(data.response);
-      callback(error, j);
       requestsInFlight -= 1;
     });
 }
