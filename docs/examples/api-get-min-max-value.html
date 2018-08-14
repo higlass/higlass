@@ -1,35 +1,26 @@
 <!DOCTYPE html>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HiGlass</title>
-<style type="text/css">
-    .canvasjs-chart-credit {
-    display:none;
-}
-</style>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="styles/page.css">
-    <link rel="stylesheet" href="hglib.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.2/react.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/15.6.2/react-dom.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.2/pixi.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>getMinMaxValue() | HiGlass</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/page.css">
+  <link rel="stylesheet" href="hglib.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.2/react.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/15.6.2/react-dom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.2/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js"></script>
 </head>
 <body >
-    <div style="height: 50px" />
-        <div style="margin: auto; width: 100%;">
-        <div
-            id="development-demo"
-            style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem">
-        </div>
-    </div>
+  <div
+    id="demo"
+    style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem"
+  ></div>
 </body>
-<script src='hglib.js'>
-</script>
+<script src='hglib.js'></script>
 <script>
-
-const testViewConfig = {
+const viewConfig = {
   editable: true,
   zoomFixed: false,
   trackSourceServers: [
@@ -262,22 +253,32 @@ const testViewConfig = {
   ],
 };
 
-const hgApi = hglib.viewer(
-  document.getElementById('development-demo'),
-  testViewConfig,
-  { bounded: true },
+const api = hglib.viewer(
+  document.getElementById('demo'), viewConfig, { bounded: true },
 );
 
 setTimeout(() => {
-  console.log('DING!');
-  console.log('Min-Max for line1:', hgApi.getMinMaxValue(null, 'line1'));
-  console.log('Min-Max for bar1:', hgApi.getMinMaxValue(null, 'bar1'));
-  console.log('Min-Max for line3:', hgApi.getMinMaxValue(null, 'line3'));
-  console.log('Min-Max for bar3:', hgApi.getMinMaxValue(null, 'bar3'));
-  console.log('Min-Max for heatmap1:', hgApi.getMinMaxValue(null, 'heatmap1'));
-  console.log('Min-Max for genes:', hgApi.getMinMaxValue(null, 'genes'));
-  console.log('Min-Max for chroms:', hgApi.getMinMaxValue(null, 'chroms'));
+  console.log('FAST:');
+  console.log('Min-Max for line1:', api.getMinMaxValue(null, 'line1'));
+  console.log('Min-Max for bar1:', api.getMinMaxValue(null, 'bar1'));
+  console.log('Min-Max for line3:', api.getMinMaxValue(null, 'line3'));
+  console.log('Min-Max for bar3:', api.getMinMaxValue(null, 'bar3'));
+  console.log('Min-Max for heatmap1:', api.getMinMaxValue(null, 'heatmap1'));
+  console.log('Min-Max for genes:', api.getMinMaxValue(null, 'genes'));
+  console.log('Min-Max for chroms:', api.getMinMaxValue(null, 'chroms'));
 }, 2000);
+
+setTimeout(() => {
+  console.log('\n----------\n');
+  console.log('SLOW:');
+  console.log('Visible Min-Max for line1:', api.getMinMaxValue(null, 'line1', true));
+  console.log('Visible Min-Max for bar1:', api.getMinMaxValue(null, 'bar1', true));
+  console.log('Visible Min-Max for line3:', api.getMinMaxValue(null, 'line3', true));
+  console.log('Visible Min-Max for bar3:', api.getMinMaxValue(null, 'bar3', true));
+  console.log('Visible Min-Max for heatmap1:', api.getMinMaxValue(null, 'heatmap1', true));
+  console.log('Visible Min-Max for genes:', api.getMinMaxValue(null, 'genes', true));
+  console.log('Visible Min-Max for chroms:', api.getMinMaxValue(null, 'chroms', true));
+}, 3000);
 
 </script>
 </html>

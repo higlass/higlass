@@ -141,6 +141,7 @@ which is fulfilled when all of the data for the view is loaded.
     // the initial set of tiles has been loaded
   });
 
+
 Zooming to show all of the data
 -------------------------------
 
@@ -243,11 +244,11 @@ on to a track to select a range for annotating regions.
 Get the visible min and max value of a track
 --------------------------------------------
 
-Get the min and max value of the (visible) data of a track.
+Get the min and max value of the visible data of a track.
 
 **Prototype**
 
-``getMinMaxValue(viewId, trackId, ignoreFixedScale)``
+``getMinMaxValue(viewId, trackId, ignoreOffScreenValues, ignoreFixedScale)``
 
 **Parameters**
 
@@ -257,15 +258,26 @@ Get the min and max value of the (visible) data of a track.
 ``trackId: string``
     Track identifier (uid).
 
-``ignoreFixedScale: string [default: false]``
-    If ``true`` ignore fixed scaling and return the actual (not the visible)
-    min and max value.
+``ignoreOffScreenValues: bool [default: false]``
+    If ``true`` only truly visible values are considered. Otherwise the values
+    of visible tiles are used. Not that considering only the truly visible
+    values results in a roughly 10x slowdown (from 0.1 to 1 millisecond).
+
+``ignoreFixedScale: bool [default: false]``
+    If ``true`` potentially fixed scaled values are ignored. I.e., if the
+    absolute range is ``[1, 18]`` but you have fixed the output range to
+    ``[4, 5]`` you would normally retrieve ``[4, 5]``. Having this option set to
+    ``true`` retrieves the absolute ``[1, 18]`` range.
     
 **Examples:**
 
 .. code-block:: javascript
 
   const [minVal, maxVal] = hgv.getMinMaxValue('myView', 'myTrack');
+  
+**Demos:**
+
+- `Base example <examples/api-get-min-max-value.html>`_
 
 
 Restrict range selection
@@ -328,8 +340,13 @@ domains of your view config.
 
 ``viewId: string``
     The view identifier. If you have only one view you can omit this parameter.
+    
+**Examples:**
+
+.. code-block:: javascript
 
   hgv.resetViewport(); // Resets the first view
+
 
 Fix the value range of a 1D track
 ---------------------------------
@@ -366,7 +383,6 @@ scale
 **Demos:**
 
 - `Live example in the console <examples/api-set-track-value-scale-limits.html>`_
-
 
 
 Subscribe to events
@@ -471,6 +487,7 @@ HiGlass exposes the following event, which one can subscribe to via this method:
   const mmz = event => console.log('Moved', event);
   hgv.on('mouseMoveZoom', mmz);
 
+
 Unsubscribe from events
 -----------------------
 
@@ -491,6 +508,7 @@ The variables used in the following examples are coming from the above examples 
   hgv.off('viewConfig', viewConfigListener);
   hgv.off('mouseMoveZoom', mmz);
 
+
 Getters for the current HiGlass State
 -------------------------------------
 
@@ -505,6 +523,7 @@ HiGlass provides a set of accessors and exporters to retrieve data from HiGlass 
   const currentViewConfig = hgv.exportAsViewConfString();
   const pngSnapshot = hgv.exportAsPng();  // Data URI
   const svgSnapshot = hgv.exportAsSvg();  // XML string
+
 
 Get sharable link for current view config
 -----------------------------------------
@@ -526,6 +545,7 @@ If it is not provided, the value is taken from the `exportViewUrl` value of the 
       console.log(`Shared view config (ID: ${sharedViewConfig.id}) is available at ${sharedViewConfig.url}`)
     })
     .catch((err) => { console.error('Something did not work. Sorry', err); })
+
 
 Obtaining ordered chromosome info
 ---------------------------------

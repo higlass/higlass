@@ -102,8 +102,18 @@ const api = function api(context) {
       return p;
     },
 
-    getMinMaxValue(viewId, trackId, ignoreFixedScale = false) {
-      return self.getMinMaxValue(viewId, trackId, ignoreFixedScale);
+    getMinMaxValue(
+      viewId,
+      trackId,
+      ignoreOffScreenValues = false,
+      ignoreFixedScale = false
+    ) {
+      return self.getMinMaxValue(
+        viewId,
+        trackId,
+        ignoreOffScreenValues,
+        ignoreFixedScale
+      );
     },
 
     /**
