@@ -330,6 +330,12 @@ class HiGlassComponent extends React.Component {
     this.element = ReactDOM.findDOMNode(this);
     window.addEventListener('focus', this.boundRefreshView);
 
+    if (parseInt(window.React.version.split('.')[0]) < 16) {
+      console.error("HiGlass requires React 16 or greater. Current version: ", window.React.version);
+    }
+
+    console.log('react version:', window.React.version);
+
     // The mousewheel is already listened to. This handler is also never removed
     // window.addEventListener('mousewheel', this.mousewheelHandler.bind(this), true);
 
