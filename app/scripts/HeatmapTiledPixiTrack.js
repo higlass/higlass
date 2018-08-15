@@ -273,7 +273,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     this.visibleAndFetchedTiles().forEach(
-      tile => this.renderTile(tile, synchronous=true));
+      tile => this.renderTile(tile));
 
     // hopefully draw isn't rerendering all the tiles
     // this.drawColorbar();
@@ -938,7 +938,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    *
    * @param {Object}  tile  Tile data to be rendered.
    */
-  renderTile(tile,synchronous=false) {
+  renderTile(tile) {
     const [scaleType, valueScale] = getValueScale(
       (this.options && this.options.heatmapValueScaling) || 'log',
             this.scale.minValue, this.medianVisibleValue, this.scale.maxValue, 'log');
