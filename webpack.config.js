@@ -12,7 +12,7 @@ module.exports = {
     hglib: ['./scripts/hglib.js'],
     worker: ['./scripts/worker.js'],
   },
-  watch: process.env.NODE_ENV !== 'production',
+  watch: process.env.NODE_ENV !== 'watch',
   watchOptions: {
     aggregateTimeout: 300,
     poll: 1000,
