@@ -530,14 +530,14 @@ function text(url, callback) {
   /**
    * Send a text request and mark it so that we can tell how many are in flight
    */
-  fetchEither(url, callback, 'text');
+  return fetchEither(url, callback, 'text');
 }
 
 function json(url, callback) {
   /**
    * Send a JSON request and mark it so that we can tell how many are in flight
    */
-  fetchEither(url, callback, 'json');
+  return fetchEither(url, callback, 'json');
 }
 
 function fetchEither(url, callback, textOrJson) {
@@ -547,17 +547,19 @@ function fetchEither(url, callback, textOrJson) {
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
-  if (textOrJson == 'text') {
+  if (textOrJson === 'text') {
     var mime = 'text/plain';
-  } else if (textOrJson == 'json') {
+  } else if (textOrJson === 'json') {
     var mime = 'application/json';
+  } else {
+    throw new Error(`fetch either "text" or "json", not "${textOrJson}"`);
   }
-  var headers = {'Content-Type': mime};
+  const headers = {'Content-Type': mime};
   if (authHeader) {
     headers['Authorization'] = authHeader;
   }
 
-  fetch(url, {credentials: 'same-origin', headers: headers})
+  return fetch(url, {credentials: 'same-origin', headers: headers})
     .then(rep => rep[textOrJson]())
     .then((content) => {
       callback(undefined, content);
