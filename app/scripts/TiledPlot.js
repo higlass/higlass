@@ -53,6 +53,7 @@ class TiledPlot extends React.Component {
     // that the tracks will be drawn on
 
     const tracks = this.props.tracks;
+    this.canvasElement = null;
 
     this.tracksByUidInit = {};
     [
@@ -159,6 +160,7 @@ class TiledPlot extends React.Component {
   componentDidMount() {
     this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
+    this.canvasElement = ReactDOM.findDOMNode(this.props.canvasElement);
 
     // new ResizeSensor(this.element, this.measureSize.bind(this));
     this.waitForDOMAttachment(() => {
@@ -1848,7 +1850,7 @@ class TiledPlot extends React.Component {
           ref={(c) => { this.trackRenderer = c; }}
 
           // Custom props
-          canvasElement={this.props.canvasElement}
+          canvasElement={this.canvasElement}
           centerHeight={this.centerHeight}
           centerWidth={this.centerWidth}
           dragging={this.props.dragging}
