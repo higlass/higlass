@@ -12,6 +12,7 @@ describe("A search field", function() {
     let searchField = new SearchField(chromInfoHg19);
 
     it ("should search for ranges", function() {
+        let range1=null, range2=null;
         [range1, range2] = searchField.searchPosition('chr17:7566932-7595655');
         // console.log('range1:', range1);
 

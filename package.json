@@ -27,9 +27,9 @@
   },
   "peerDependencies": {
     "pixi.js": "^4.6.2",
-    "react": "^15.6.2",
-    "react-bootstrap": "^0.32.0",
-    "react-dom": "^15.6.2"
+    "react": "^16.4.2",
+    "react-bootstrap": "^0.32.1",
+    "react-dom": "^16.4.2"
   },
   "dependencies": {
     "babel-plugin-react-css-modules": "^3.4.0",
@@ -48,6 +48,7 @@
     "d3-transition": "^1.1.1",
     "d3-zoom": "^1.7.1",
     "dom-scroll-into-view": "^1.2.1",
+    "enzyme-adapter-react-16": "^1.2.0",
     "eventemitter3": "^2.0.2",
     "numjs": "^0.16.0",
     "path": "^0.12.7",
@@ -55,7 +56,7 @@
     "prop-types": "^15.6.0",
     "react": "^16.4.2",
     "react-autocomplete": "github:tiemevanveen/react-autocomplete#fix-176",
-    "react-bootstrap": "^0.32.0",
+    "react-bootstrap": "^0.32.1",
     "react-color": "^2.13.8",
     "react-contextmenu": "^2.9.2",
     "react-dimensions": "^1.3.1",
@@ -93,7 +94,7 @@
     "css-loader": "^0.28.8",
     "d3-brush": "github:flekschas/d3-brush",
     "del": "~2.2.0",
-    "enzyme": "^2.8.0",
+    "enzyme": "^3.4.1",
     "es6-promise": "~3.1.2",
     "eslint": "^4.14.0",
     "eslint-config-airbnb": "^15.1.0",
@@ -119,8 +120,7 @@
     "postcss-flexbugs-fixes": "^3.2.0",
     "postcss-loader": "^2.0.10",
     "postcss-scss": "^1.0.3",
-    "react-addons-test-utils": "^15.6.2",
-    "react-test-renderer": "^15.6.2",
+    "react-test-renderer": "^16.4.2",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
     "webpack": "^3.10.0",
