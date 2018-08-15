@@ -288,7 +288,6 @@ class TrackRenderer extends React.Component {
       nextProps.width !== this.props.width ||
       nextProps.height !== this.props.height,
     );
-    this.currentProps.canvasElement = ReactDOM.findDOMNode(nextProps.canvasElement);
 
     this.svgElement = nextProps.svgElement;
 
