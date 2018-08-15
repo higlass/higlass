@@ -37,6 +37,7 @@ export { default as map } from './map';
 export { default as max } from './max';
 export { default as min } from './min';
 export { default as mod } from './mod';
+export { default as numericifyVersion } from './numericify-version';
 export { default as objVals } from './obj-vals';
 export { default as or } from './or';
 export { default as pixiTextToSvg } from './pixi-text-to-svg';
