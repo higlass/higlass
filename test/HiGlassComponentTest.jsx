@@ -14,6 +14,11 @@ import HiGlassComponent from '../app/scripts/HiGlassComponent';
 import {tileProxy,requestsInFlight} from '../app/scripts/services';
 import HeatmapOptions from '../app/scripts/HeatmapOptions';
 
+import { configure } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+
+configure({ adapter: new Adapter() });
+
 // Utils
 import {
   scalesCenterAndK,
@@ -306,7 +311,7 @@ describe('Simple HiGlassComponent', () => {
     it('Changes the value scale', (done) => {
       const heatmapTrack = getTrackObject(hgc, 'aa', 'heatmap1');
 
-      hgc.instance().tiledPlots.aa.trackRenderer.setCenter(179943234.8692136, 180201760.5768778, 2887.21283197403, notify=true);
+      hgc.instance().tiledPlots.aa.trackRenderer.setCenter(179943234.8692136, 180201760.5768778, 2887.21283197403, true);
 
       waitForTilesLoaded(hgc, done);
     });
