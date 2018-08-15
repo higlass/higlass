@@ -701,7 +701,7 @@ class TiledPixiTrack extends PixiTrack {
         .domain([offsetValue, maxValue + offsetValue])
         // .domain([offsetValue, this.maxValue()])
         .range([this.dimensions[1] - margin, margin]);
-      pseudocount = offsetValue;
+      // Unused and causes test error: pseudocount = offsetValue;
     } else if (this.options.valueScaling === 'quantile') {
       const start = this.dimensions[1] - margin;
       const end = margin;
