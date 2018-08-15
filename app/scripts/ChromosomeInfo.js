@@ -33,12 +33,14 @@ export function parseChromsizesRows(data) {
 }
 
 function ChromosomeInfo(filepath, success) {
-  this.absToChr = absPos => (this.chromInfo
+  let ret = {}
+
+  ret.absToChr = absPos => (this.chromInfo
     ? absToChr(absPos, this.chromInfo)
     : null
   );
 
-  this.chrToAbs = chrPos => (this.chromInfo
+  ret.chrToAbs = chrPos => (this.chromInfo
     ? chrToAbs(...chrPos, this.chromInfo)
     : null
   );
@@ -51,9 +53,9 @@ function ChromosomeInfo(filepath, success) {
     const data = tsvParseRows(chrInfoText);
     const chromInfo = parseChromsizesRows(data);
 
-    this.chromInfo = chromInfo;
+    ret.chromInfo = chromInfo;
     if (success) success(chromInfo);
-  }).then(() => this);
+  }).then(() => ret);
 }
 
 export default ChromosomeInfo;
