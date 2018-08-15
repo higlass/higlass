@@ -116,7 +116,8 @@ class TiledPixiTrack extends PixiTrack {
           'Error retrieving tilesetInfo:', dataConfig, this.tilesetInfo.error
         );
 
-        this.trackNotFoundText = '';
+        // Fritz: Not sure why it's reset
+        // this.trackNotFoundText = '';
         this.errorTextText = this.tilesetInfo.error;
         this.tilesetInfo = null;
         this.draw();
