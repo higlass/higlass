@@ -75,6 +75,10 @@ all annotated exons in refseq. There are separate tracks for the different
 available species. Details on how gene annotation tracks are created is available
 in the `gene annotations section <gene_annotations.html>`_.
 
+**Demos:**
+
+- `Standard vs Customize Gene Annotation Track <examples/gene_annotations.html>`_
+
 Heatmap
 =======
 
