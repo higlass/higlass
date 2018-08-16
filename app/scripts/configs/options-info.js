@@ -333,7 +333,7 @@ export const OPTIONS_INFO = {
       24: { name: '24px', value: 24 },
     },
   },
-  
+
   colorEncoding: {
     name: 'Color Encode Annotations',
     inlineOptions: YES_NO
@@ -430,6 +430,33 @@ export const OPTIONS_INFO = {
   labelTextOpacity: {
     name: 'Label Text Opacity',
     inlineOptions: OPACITY_OPTIONS,
+  },
+
+  geneAnnoHeight: {
+    name: 'Gene Anno Height',
+    inlineOptions: {
+      8: { name: '8px', value: 8 },
+      10: { name: '10px', value: 10 },
+      12: { name: '12px', value: 12 },
+      16: { name: '16px', value: 16 },
+    }
+  },
+
+  geneLabelPosition: {
+    name: 'Gene Label Position',
+    inlineOptions: {
+      inside: { name: 'Inside', value: 'inside' },
+      outside: { name: 'Outside', value: 'outside' },
+    }
+  },
+
+  geneStrandSpacing: {
+    name: 'Gene Strand Spacing',
+    inlineOptions: {
+      2: { name: '2px', value: 2 },
+      4: { name: '4px', value: 4 },
+      8: { name: '8px', value: 8 },
+    }
   },
 
   labelBackgroundColor: {
