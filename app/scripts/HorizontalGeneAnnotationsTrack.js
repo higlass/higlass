@@ -11,6 +11,7 @@ import { tileProxy } from './services';
 import { colorToHex } from './utils';
 
 const FONT_SIZE = 11;
+const FONT_FAMILY = 'Arial';
 const GENE_RECT_WIDTH = 1;
 const GENE_RECT_HEIGHT = 10;
 const TRIANGLE_HEIGHT = 6;
@@ -37,11 +38,11 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
    */
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
     super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
-    this.fontSize = `${FONT_SIZE}px`;
-    this.fontFamily = 'Arial';
 
     this.animate = animate;
     this.options = options;
+
+    this.fontSize = +this.options.fontSize || FONT_SIZE;
   }
 
   initTile(tile) {
@@ -65,7 +66,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       const geneInfo = td.fields;
       let fill = this.options.plusStrandColor ? this.options.plusStrandColor : 'blue';
 
-      if (geneInfo[5] == '-') {
+      if (geneInfo[5] === '-') {
         fill = this.options.minusStrandColor ? this.options.minusStrandColor : 'red';
       }
       tile.textWidths = {};
@@ -78,8 +79,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       const text = new PIXI.Text(
         geneInfo[3],
         {
-          fontSize: this.fontSize,
-          fontFamily: this.fontFamily,
+          fontSize: `${this.fontSize}px`,
+          fontFamily: FONT_FAMILY,
           fill: colorToHex(fill)
         }
       );
@@ -98,23 +99,21 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     tile.initialized = true;
 
     this.renderTile(tile);
-    // this.draw();
   }
 
-  destroyTile(tile) {
-    // remove texts
+  destroyTile() {}
 
-  }
-
+  /*
+   * Redraw the track because the options
+   * changed
+   */
   rerender(options, force) {
-    /*
-     * Redraw the track because the options
-     * changed
-     */
     const strOptions = JSON.stringify(options);
     if (!force && strOptions === this.prevOptions) return;
 
     super.rerender(options, force);
+
+    this.fontSize = +this.options.fontSize || FONT_SIZE;
 
     this.prevOptions = strOptions;
 
@@ -160,7 +159,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       if (geneInfo[5] === '+') {
         // genes on the + strand drawn above and in a user-specified color or the default blue
         yMiddle -= GENE_RECT_HEIGHT - 2;
-        textYMiddle -= (FONT_SIZE / 2) + GENE_RECT_HEIGHT;
+        textYMiddle -= (this.fontSize / 2) + GENE_RECT_HEIGHT;
         tile.rectGraphics.lineStyle(1, fill['+'], 0.3);
         tile.rectGraphics.beginFill(fill['+'], 0.3);
       } else {
@@ -239,9 +238,11 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
       text.position.x = this._xScale(txMiddle);
       text.position.y = textYMiddle;
-      text.style = { fontSize: this.fontSize,
-        fontFamily: this.fontFamily,
-        fill: fill[geneInfo[5]] };
+      text.style = {
+        fontSize: `${this.fontSize}px`,
+        fontFamily: FONT_FAMILY,
+        fill: fill[geneInfo[5]]
+      };
 
       if (!(geneInfo[3] in tile.textWidths)) {
         text.updateTransform();
@@ -414,11 +415,11 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           if (geneInfo[5] === '+') {
             // genes on the + strand drawn above and in a user-specified color or the
             // default blue textYMiddle -= 10;
-            textYMiddle -= (FONT_SIZE / 2) + GENE_RECT_HEIGHT - 2;
+            textYMiddle -= (this.fontSize / 2) + GENE_RECT_HEIGHT - 2;
           } else {
             // genes on the - strand drawn below and in a user-specified color or the
             // default red
-            textYMiddle += (1.5 * FONT_SIZE) + GENE_RECT_HEIGHT + 2;
+            textYMiddle += (1.5 * this.fontSize) + GENE_RECT_HEIGHT + 2;
           }
 
           text.position.x = this._xScale(txMiddle);
@@ -556,8 +557,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         const g = document.createElement('g');
         const t = document.createElement('text');
         t.setAttribute('text-anchor', 'middle');
-        t.setAttribute('font-family', this.fontFamily);
-        t.setAttribute('font-size', this.fontSize);
+        t.setAttribute('font-family', FONT_FAMILY);
+        t.setAttribute('font-size', `${this.fontSize}px`);
 
         // this small adjustment of .2em is to place the text better
         // in relation to the rectangles used for the genes and exons

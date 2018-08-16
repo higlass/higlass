@@ -758,8 +758,10 @@ export const TRACKS_INFO = [
       'trackBorderColor',
       'showMousePosition',
       'mousePositionColor',
+      'fontSize',
     ],
     defaultOptions: {
+      fontSize: 11,
       labelColor: 'black',
       labelPosition: 'hidden',
       plusStrandColor: 'blue',
