@@ -109,12 +109,12 @@ const showMousePosition = (
  * each class as well.
  *
  * @param  {Object}  context  Class context, i.e., `this`.
- * @param  {Boolean}  is2d   If `true` both dimensions of the mouse locaiton
+ * @param  {Boolean}  is2d   If `true` both dimensions of the mouse location
  *   should be shown. E.g., on a central track.
  * @return  {Function}  Method to remove graphics showing the mouse location.
  */
 const setupShowMousePosition = (context, is2d = false) => {
-  const scene = is2d ? context.pMasked : context.pMain;
+  const scene = is2d ? context.pMasked : (context.pForeground || context.pMain);
   const getScales = () => [context.xScale(), context.yScale()];
 
   const graphics = showMousePosition(

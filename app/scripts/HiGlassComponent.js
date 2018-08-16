@@ -46,6 +46,7 @@ import {
   getTrackPositionByUid,
   hasParent,
   // loadChromInfos,
+  numericifyVersion,
   objVals,
   positionedTracksToAllTracks,
   scalesCenterAndK,
@@ -76,6 +77,13 @@ const VIEW_HEADER_HEIGHT = 20;
 class HiGlassComponent extends React.Component {
   constructor(props) {
     super(props);
+
+    // Check React version
+    if (numericifyVersion(React.version) < 15.6) {
+      console.warn(
+        'HiGlass requires React v15.6 or higher. Current version: ', React.version
+      );
+    }
 
     this.pubSubs = [];
 
@@ -325,12 +333,6 @@ class HiGlassComponent extends React.Component {
     this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
     window.addEventListener('focus', this.boundRefreshView);
-
-    if (parseInt(window.React.version.split('.')[0]) < 16) {
-      console.error("HiGlass requires React 16 or greater. Current version: ", window.React.version);
-    }
-
-    console.log('react version:', window.React.version);
 
     // The mousewheel is already listened to. This handler is also never removed
     // window.addEventListener('mousewheel', this.mousewheelHandler.bind(this), true);

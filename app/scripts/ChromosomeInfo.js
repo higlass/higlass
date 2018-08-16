@@ -33,7 +33,7 @@ export function parseChromsizesRows(data) {
 }
 
 function ChromosomeInfo(filepath, success) {
-  let ret = {}
+  const ret = {};
 
   ret.absToChr = absPos => (this.chromInfo
     ? absToChr(absPos, this.chromInfo)

@@ -44,7 +44,7 @@ npm run test-watch
 - If the installation fails due to `sharp` > `node-gyp` try installing the node packages using `python2`:
 
   ```
-  npm i --python=/usr/bin/python2
+  npm i --python=/usr/bin/python2 && rm -rf node_modules/node-sass && npm i
   ```
 
 ### API
