@@ -9,7 +9,7 @@ describe('tile-proxy json', function() {
 		expect(typeof(api.json)).to.eql('function');
 	});
 	
-	it('handles json', function(done) {
+	it('handles json callback', function(done) {
 	  api.json(
 	    'http://higlass.io/api/v1/available-chrom-sizes/',
 	    function(status, json_response) {
@@ -41,7 +41,7 @@ describe('tile-proxy text', function() {
   instead of failing out immediately, and the ultimate test failure
   is an uninformative timeout. Perhaps get rid of our catch?
   */
-  it('handles text', function(done) {
+  it('handles text callback', function(done) {
     api.text(
       'http://higlass.io/api/v1/available-chrom-sizes/',
       function(status, text_response) {
