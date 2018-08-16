@@ -12,7 +12,7 @@ module.exports = {
     hglib: ['./scripts/hglib.js'],
     worker: ['./scripts/worker.js'],
   },
-  watch: process.env.NODE_ENV === 'production' ? false : false,
+  watch: process.env.NODE_ENV === 'watch',
   watchOptions: {
     aggregateTimeout: 300,
     poll: 1000,
@@ -22,6 +22,7 @@ module.exports = {
   devServer: {
     contentBase: [
       path.resolve(__dirname, 'app'),
+      path.resolve(__dirname, 'docs', 'examples'),
       path.resolve(__dirname, 'node_modules'),
     ],
     publicPath: '/'

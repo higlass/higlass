@@ -111,6 +111,7 @@ class PixiTrack extends Track {
     // for drawing the track label (often its name)
     this.pBorder = new PIXI.Graphics();
     this.pBackground = new PIXI.Graphics();
+    this.pForeground = new PIXI.Graphics();
     this.pLabel = new PIXI.Graphics();
     this.pMobile = new PIXI.Graphics();
     this.pAxis = new PIXI.Graphics();
@@ -128,6 +129,7 @@ class PixiTrack extends Track {
     this.pMasked.addChild(this.pMobile);
     this.pMasked.addChild(this.pBorder);
     this.pMasked.addChild(this.pLabel);
+    this.pMasked.addChild(this.pForeground);
     this.pMasked.addChild(this.pMouseOver);
     this.pBase.addChild(this.pAxis);
 
@@ -178,6 +180,7 @@ class PixiTrack extends Track {
     this.drawLabel();
     this.drawBackground();
     this.setMask(this.position, this.dimensions);
+    this.setForeground();
   }
 
   setDimensions(newDimensions) {
@@ -187,6 +190,7 @@ class PixiTrack extends Track {
     this.drawLabel();
     this.drawBackground();
     this.setMask(this.position, this.dimensions);
+    this.setForeground();
   }
 
   setMask(position, dimensions) {
@@ -195,6 +199,11 @@ class PixiTrack extends Track {
 
     this.pMask.drawRect(position[0], position[1], dimensions[0], dimensions[1]);
     this.pMask.endFill();
+  }
+
+  setForeground() {
+    this.pForeground.position.y = this.position[1];
+    this.pForeground.position.x = this.position[0];
   }
 
   /**

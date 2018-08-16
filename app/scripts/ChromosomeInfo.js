@@ -1,5 +1,6 @@
 import { tsvParseRows } from 'd3-dsv';
 import { tileProxy } from './services';
+import { absToChr, chrToAbs } from './utils';
 
 export function parseChromsizesRows(data) {
   const cumValues = [];
@@ -32,16 +33,29 @@ export function parseChromsizesRows(data) {
 }
 
 function ChromosomeInfo(filepath, success) {
-  tileProxy.text(filepath, (error, chrInfoText) => {
+  const ret = {};
+
+  ret.absToChr = absPos => (this.chromInfo
+    ? absToChr(absPos, this.chromInfo)
+    : null
+  );
+
+  ret.chrToAbs = chrPos => (this.chromInfo
+    ? chrToAbs(...chrPos, this.chromInfo)
+    : null
+  );
+
+  return tileProxy.text(filepath, (error, chrInfoText) => {
     if (error) {
-      console.warn("Chromosome info not found at:", filepath);
-      success(null);
-    } 
+      console.warn('Chromosome info not found at:', filepath);
+      if (success) success(null);
+    }
     const data = tsvParseRows(chrInfoText);
     const chromInfo = parseChromsizesRows(data);
 
-    success(chromInfo);
-  });
+    ret.chromInfo = chromInfo;
+    if (success) success(chromInfo);
+  }).then(() => ret);
 }
 
 export default ChromosomeInfo;

@@ -1,3 +1,20 @@
+v1.1.6
+
+- Fix #263
+- Make resize handle fade out and in upon mouse enter of a draggable div
+- Enlarge resize handle upon mouse enter
+- Fixed colorbar positioning bug
+- Remove all tracks from the 'whole' window when clearing the view
+- Fixed track type selection bug
+(https://github.com/hms-dbmi/higlass/issues/245)
+- Fixed zoom to data extent issue
+(https://github.com/hms-dbmi/higlass/issues/262)
+
+v1.1.5
+
+- Merge'd Chuck's PR for adding 'same-origin' to fetch request headers
+- Fixed a bug where a view without a layout is created with a width of 1
+
 v1.1.4
 
 - Fix the checkAllTilesetInfoReceived function so that it ignores left and top

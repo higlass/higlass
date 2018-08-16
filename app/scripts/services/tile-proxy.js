@@ -276,6 +276,7 @@ export const calculateResolution = (tilesetInfo, zoomLevel) => {
  */
 export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   const rangeWidth = scale.range()[1] - scale.range()[0];
+
   const zoomScale = Math.max(
     (maxX - minX) / (scale.domain()[1] - scale.domain()[0]),
     1,
@@ -478,7 +479,7 @@ export const tileDataToPixData = (
     return;
   }
 
-  if (tile.mirrored && 
+  if (tile.mirrored &&
     tile.tileData.tilePos.length > 0 &&
     tile.tileData.tilePos[0] == tile.tileData.tilePos[1]) {
 
@@ -543,11 +544,18 @@ function text(url, callback) {
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
-  d3Text(url, (error, done) => {
-    callback(error, done);
-    pubSub.publish('requestReceived', url);
-    requestsInFlight -= 1;
-  });
+  return fetch(url)
+    .then(rep => rep.text())
+    .then((text) => {
+      callback(undefined, text);
+    })
+    .catch((error) => {
+      callback(error, undefined);
+    })
+    .finally(() => {
+      pubSub.publish('requestReceived', url);
+      requestsInFlight -= 1;
+    });
 }
 
 function json(url, callback) {
@@ -559,6 +567,7 @@ function json(url, callback) {
 
   const r = request(url)
     .header('Content-Type', 'application/json')
+  // TODO: Check if this preserves same-origin cookies
 
   if (authHeader)
     r.header('Authorization', `${authHeader}`)

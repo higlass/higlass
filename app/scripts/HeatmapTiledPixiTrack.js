@@ -61,8 +61,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       options,
       animate,
       () => {
-        this.drawColorbar();
         onValueScaleChanged();
+        this.drawColorbar();
       },
     );
 
@@ -115,7 +115,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       );
     }
 
-    if (this.options.showMousePosition && !this.hideMousePosition) {
+    if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(this, this.is2d);
     }
 
@@ -273,16 +273,16 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     this.visibleAndFetchedTiles().forEach(
-      tile => this.renderTile(tile, synchronous=true));
+      tile => this.renderTile(tile));
 
     // hopefully draw isn't rerendering all the tiles
     // this.drawColorbar();
 
-    if (this.options.showMousePosition && !this.hideMousePosition) {
+    if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(this, this.is2d);
     }
 
-    if (!this.options.showMousePosition && this.hideMousePosition) {
+    if (this.options && !this.options.showMousePosition && this.hideMousePosition) {
       this.hideMousePosition();
       this.hideMousePosition = undefined;
     }
@@ -434,22 +434,39 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.brushing = false;
   }
 
+  setPosition(newPosition) {
+    super.setPosition(newPosition);
+
+    this.drawColorbar();
+
+  }
+  setDimensions(newDimensions) {
+    super.setDimensions(newDimensions);
+
+    this.drawColorbar();
+  }
+
+  removeColorbar() {
+    this.pColorbarArea.visible = false;
+
+    if (this.scaleBrush.on('.brush')) {
+      this.gColorscaleBrush.call(this.scaleBrush.move, null);
+    }
+
+    // turn off the color scale brush
+    this.gColorscaleBrush.on('.brush', null);
+    this.gColorscaleBrush.selectAll('rect').remove();
+  }
+
   drawColorbar() {
     this.pColorbar.clear();
+    // console.trace('draw colorbar');
 
-    if (
+    if (!this.options ||
       !this.options.colorbarPosition
       || this.options.colorbarPosition === 'hidden'
     ) {
-      this.pColorbarArea.visible = false;
-
-      if (this.scaleBrush.on('.brush')) {
-        this.gColorscaleBrush.call(this.scaleBrush.move, null);
-      }
-
-      // turn off the color scale brush
-      this.gColorscaleBrush.on('.brush', null);
-      this.gColorscaleBrush.selectAll('rect').remove();
+      this.removeColorbar();
 
       return;
     }
@@ -467,7 +484,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.colorbarHeight = colorbarAreaHeight - (2 * COLORBAR_MARGIN);
 
     //  no point in drawing the colorbar if it's not going to be visible
-    if (this.colorbarHeight < 0) return;
+    if (this.colorbarHeight < 0) {
+      // turn off the color scale brush
+      this.removeColorbar();
+      return;
+    }
 
     const colorbarAreaWidth = (
       COLORBAR_WIDTH +
@@ -481,7 +502,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const axisValueScale = this.valueScale.copy()
       .range([this.colorbarHeight, 0]);
 
-    // console.log('new brushY');
     // this.scaleBrush = brushY();
 
     // this is to make the handles of the scale brush stick out away
@@ -582,9 +602,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     );
     this.pColorbarArea.drawRect(0, 0, colorbarAreaWidth, colorbarAreaHeight);
 
-    if (!this.options) { this.options = {}; }
-    if (!this.options.scaleStartPercent) { this.options.scaleStartPercent = 0; }
-    if (!this.options.scaleEndPercent) { this.options.scaleEndPercent = 1; }
+    if (!this.options) { 
+      this.options = { scaleStartPercent: 0, scaleEndPercent: 1 }; 
+    }
+    else {
+      if (!this.options.scaleStartPercent) { this.options.scaleStartPercent = 0; }
+      if (!this.options.scaleEndPercent) { this.options.scaleEndPercent = 1; }
+    }
 
     const domainWidth = axisValueScale.domain()[1] - axisValueScale.domain()[0];
 
@@ -847,7 +871,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       const tileSlice = tileData.slice(
         [tileSliceYStart, tileSliceYStart + tileSliceHeight],
         [tileSliceXStart, tileSliceXStart + tileSliceWidth])
-      //console.log('tileSlice', JSON.stringify(tileSlice));
 
       out.slice([tileYOffset, tileYOffset + tileSliceHeight],
         [tileXOffset, tileXOffset + tileSliceWidth])
@@ -917,8 +940,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    *
    * @param {Object}  tile  Tile data to be rendered.
    */
-  renderTile(tile,synchronous=false) {
-    const [scaleType, valueScale] = getValueScale(this.options.heatmapValueScaling,
+  renderTile(tile) {
+    const [scaleType, valueScale] = getValueScale(
+      (this.options && this.options.heatmapValueScaling) || 'log',
             this.scale.minValue, this.medianVisibleValue, this.scale.maxValue, 'log');
 
     this.valueScale = valueScale;
@@ -1100,7 +1124,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   tilesToId(xTiles, yTiles, zoomLevel) {
     const rows = xTiles;
     const cols = yTiles;
-    const dataTransform = this.options.dataTransform || 'default';
+    const dataTransform = (this.options && this.options.dataTransform) || 'default';
 
     // if we're mirroring tiles, then we only need tiles along the diagonal
     const tiles = [];
@@ -1188,7 +1212,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   getMouseOverHtml(trackX, trackY) {
-    if (!this.options.showTooltip)
+    if (!this.options || !this.options.showTooltip)
       return '';
 
     if (!this.tilesetInfo)
@@ -1228,7 +1252,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       return '';
     }
 
-    if (this.options.heatmapValueScaling == 'log')
+    if (this.options && this.options.heatmapValueScaling == 'log')
       if (data[0] > 0)
         return positionText + "<b>Value:</b> 1e" + format(".3f")(Math.log(data[0]));
       else

@@ -8,8 +8,8 @@ module.exports = function(config) {
 
     files: [
       'node_modules/babel-polyfill/dist/polyfill.js',
-      'node_modules/react/dist/react.js',
-      'node_modules/react-dom/dist/react-dom.js',
+      'node_modules/react/umd/react.development.js',
+      'node_modules/react-dom/umd/react-dom.development.js',
       'node_modules/pixi.js/dist/pixi.js',
       'node_modules/react-bootstrap/dist/react-bootstrap.js',
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
