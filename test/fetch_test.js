@@ -17,16 +17,6 @@ describe('tile-proxy json', function() {
         done();
       });
 	});
-
-/* Blocked by CORB in Chrome: */
-// 	it('errors out appropriately', function(done) {
-// 	  api.json(
-// 	    'http://higlass.io/no-such-url',
-// 	    function(status, json_response) {
-//         expect(status).to.eql('ERROR');
-//         done();
-//       });
-// 	});
 	
 });
 

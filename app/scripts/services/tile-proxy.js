@@ -526,31 +526,35 @@ export const tileDataToPixData = (
   }
 };
 
+/**
+ * Send a text request and mark it so that we can tell how many are in flight
+ *
+ * @param url: URL to fetch
+ * @param callback: Callback to execute with content from fetch
+ */
 function text(url, callback) {
-  /**
-   * Send a text request and mark it so that we can tell how many are in flight
-   */
   return fetchEither(url, callback, 'text');
 }
 
+/**
+ * Send a JSON request and mark it so that we can tell how many are in flight
+ *
+ * @param url: URL to fetch
+ * @param callback: Callback to execute with content from fetch
+ */
 function json(url, callback) {
-  /**
-   * Send a JSON request and mark it so that we can tell how many are in flight
-   */
   return fetchEither(url, callback, 'json');
 }
 
 function fetchEither(url, callback, textOrJson) {
-  /**
-   * Send a either a text or JSON request and mark it so that we can tell how many are in flight
-   */
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
   
+  let mime;
   if (textOrJson === 'text') {
-    var mime = 'text/plain';
+    mime = 'text/plain';
   } else if (textOrJson === 'json') {
-    var mime = 'application/json';
+    mime = 'application/json';
   } else {
     throw new Error(`fetch either "text" or "json", not "${textOrJson}"`);
   }
