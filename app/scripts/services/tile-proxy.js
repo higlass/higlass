@@ -1,10 +1,5 @@
 import { scaleLog, scaleLinear } from 'd3-scale';
 import { range } from 'd3-array';
-import {
-  json as d3Json,
-  text as d3Text,
-  request,
-} from 'd3-request';
 import slugid from 'slugid';
 
 import {
@@ -533,43 +528,47 @@ export const tileDataToPixData = (
 
 function text(url, callback) {
   /**
-   * Send a JSON request mark it so that we can tell how many are in flight
+   * Send a text request and mark it so that we can tell how many are in flight
+   */
+  return fetchEither(url, callback, 'text');
+}
+
+function json(url, callback) {
+  /**
+   * Send a JSON request and mark it so that we can tell how many are in flight
+   */
+  return fetchEither(url, callback, 'json');
+}
+
+function fetchEither(url, callback, textOrJson) {
+  /**
+   * Send a either a text or JSON request and mark it so that we can tell how many are in flight
    */
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
-  return fetch(url)
-    .then(rep => rep.text())
-    .then((text) => {
-      callback(undefined, text);
+  if (textOrJson === 'text') {
+    var mime = 'text/plain';
+  } else if (textOrJson === 'json') {
+    var mime = 'application/json';
+  } else {
+    throw new Error(`fetch either "text" or "json", not "${textOrJson}"`);
+  }
+  const headers = {'Content-Type': mime};
+  if (authHeader) {
+    headers['Authorization'] = authHeader;
+  }
+
+  return fetch(url, {credentials: 'same-origin', headers: headers})
+    .then(rep => rep[textOrJson]())
+    .then((content) => {
+      callback(undefined, content);
     })
     .catch((error) => {
       callback(error, undefined);
     })
     .finally(() => {
       pubSub.publish('requestReceived', url);
-      requestsInFlight -= 1;
-    });
-}
-
-function json(url, callback) {
-  /**
-   * Send a JSON request mark it so that we can tell how many are in flight
-   */
-  requestsInFlight += 1;
-  pubSub.publish('requestSent', url);
-
-  const r = request(url)
-    .header('Content-Type', 'application/json')
-  // TODO: Check if this preserves same-origin cookies
-
-  if (authHeader)
-    r.header('Authorization', `${authHeader}`)
-
-    r.send('GET', (error, data) => {
-      pubSub.publish('requestReceived', url);
-      const j = data && JSON.parse(data.response);
-      callback(error, j);
       requestsInFlight -= 1;
     });
 }
