@@ -40,7 +40,6 @@ const viewConfig = {
       tracks: {
         top: [
           {
-            name: 'Gene Annotations (hg19)',
             server: 'http://higlass.io/api/v1',
             tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
             uid: 'genes1',
@@ -48,7 +47,6 @@ const viewConfig = {
             height: 24,
             options: {
               labelPosition: 'hidden',
-              name: 'Gene Annotations (hg19)',
               labelColor: 'black',
               plusStrandColor: 'black',
               minusStrandColor: 'black',
@@ -61,7 +59,6 @@ const viewConfig = {
             },
           },
           {
-            name: 'Gene Annotations (hg19)',
             server: 'http://higlass.io/api/v1',
             tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
             uid: 'genes2',
@@ -70,13 +67,30 @@ const viewConfig = {
               labelPosition: 'hidden',
             },
           },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            uid: 'genes3',
+            type: 'horizontal-gene-annotations',
+            height: 24,
+            options: {
+              labelPosition: 'hidden',
+              plusStrandColor: '#8D16B8',
+              minusStrandColor: '#B85F03',
+              trackBorderWidth: 0,
+              showMousePosition: false,
+              fontSize: 8,
+              geneAnnoHeight: 8,
+              geneStrandSpacing: 2,
+            },
+          },
         ],
         left: [
           {
             name: 'Gene Annotations (hg19)',
             server: 'http://higlass.io/api/v1',
             tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            uid: 'genes3',
+            uid: 'genes4',
             type: 'vertical-gene-annotations',
             width: 24,
             options: {
@@ -97,12 +111,29 @@ const viewConfig = {
             name: 'Gene Annotations (hg19)',
             server: 'http://higlass.io/api/v1',
             tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            uid: 'genes4',
+            uid: 'genes5',
             type: 'vertical-gene-annotations',
             options: {
               labelPosition: 'hidden',
             },
-          }
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            uid: 'genes6',
+            type: 'vertical-gene-annotations',
+            width: 24,
+            options: {
+              labelPosition: 'hidden',
+              plusStrandColor: '#8D16B8',
+              minusStrandColor: '#B85F03',
+              trackBorderWidth: 0,
+              showMousePosition: false,
+              fontSize: 8,
+              geneAnnoHeight: 8,
+              geneStrandSpacing: 2,
+            },
+          },
         ],
         center: [],
         right: [],
