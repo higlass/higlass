@@ -813,6 +813,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     // BP resolution of a tile's bin (i.e., numbe of base pairs per bin / pixel)
     const tileRes = tileWidth / BINS_PER_TILE;
+    // console.log('tileWidth:', tileWidth);
+    return [];
 
     // the data domain of the currently visible region
     const xDomain = [this._xScale.invert(x), this._xScale.invert(x + width)]
@@ -1186,16 +1188,18 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         this.tilesetInfo.max_width
       );
 
+      // console.log('ytiles');
       this.yTiles = tileProxy.calculateTiles(
         this.zoomLevel,
         this._yScale,
-        this.tilesetInfo.min_pos[1],
-        this.tilesetInfo.max_pos[1],
+        this.options.reverseYAxis ? -this.tilesetInfo.max_pos[1] : this.tilesetInfo.min_pos[1],
+        this.options.reverseYAxis ? -this.tilesetInfo.min_pos[1] : this.tilesetInfo.max_pos[1],
         this.tilesetInfo.max_zoom,
-        this.tilesetInfo.max_width
+        this.tilesetInfo.max_width1 || this.tilesetInfo.max_width
       );
     }
 
+    // console.log('this.xTiles:', this.xTiles, this.yTiles);
     this.setVisibleTiles(
       this.tilesToId(this.xTiles, this.yTiles, this.zoomLevel, this.mirrorTiles())
     );
@@ -1240,6 +1244,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       positionText += '<br/>';
     }
 
+    console.log('getMouseOverHtml:');
     let data = null;
     try {
       data = this.getVisibleRectangleData(trackX, trackY, 1, 1).flatten().tolist();
@@ -1287,8 +1292,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const xTilePos = tilePos[0];
     const yTilePos = tilePos[1];
 
-    const minX = 0;
-    const minY = 0;
+    const minX = this.tilesetInfo.min_pos[0];
+    const minY = this.options.reverseYAxis ? 
+      -this.tilesetInfo.max_pos[1] : this.tilesetInfo.min_pos[1];
 
     const tileWidth = this.tilesetInfo.max_width / (2 ** zoomLevel);
     const tileHeight = this.tilesetInfo.max_width / (2 ** zoomLevel);

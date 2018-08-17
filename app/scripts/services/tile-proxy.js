@@ -354,8 +354,14 @@ export const calculateTiles = (
   // be calculated according to cumulative width
 
   const tileWidth = maxDim / (2 ** zoomLevelFinal);
+  // console.log('maxDim:', maxDim);
 
   const epsilon = 0.0000001;
+
+  /*
+  console.log('minX:', minX, 'zoomLevel:', zoomLevel);
+  console.log('domain:', scale.domain(), scale.domain()[0] - minX, ((scale.domain()[0] - minX) / tileWidth))
+  */
 
   return range(
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),

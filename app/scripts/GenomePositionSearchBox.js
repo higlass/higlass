@@ -35,7 +35,8 @@ class GenomePositionSearchBox extends React.Component {
     this.searchField = null;
     this.autocompleteMenu = null;
 
-    this.xScale = null, this.yScale = null;
+    this.xScale = null;
+    this.yScale = null;
     // this.props.zoomDispatch.on('zoom.' + this.uid, this.zoomed.bind(this))
 
     /*
@@ -58,15 +59,11 @@ class GenomePositionSearchBox extends React.Component {
     // the position text is maintained both here and in
     // in state.value so that it can be quickly updated in
     // response to zoom events
-    this.positionText =  'chr4:190,998,876-191,000,255';
+    this.positionText = 'chr4:190,998,876-191,000,255';
 
     this.state = {
-      value: this.positionText,
-      loading: false,
-      menuPosition: [0, 0],
       genes: [],
       isFocused: false,
-      menuOpened: false,
       autocompleteServer: this.props.autocompleteServer,
       autocompleteId: this.props.autocompleteId,
       availableAssemblies: [],
@@ -108,15 +105,15 @@ class GenomePositionSearchBox extends React.Component {
     if (this.props.chromInfoServer && this.props.chromInfoId) {
       // if we've been passed a server and chromInfo ID we trust that it exists
       // and use that
-      this.availableChromSizes[this.props.chromInfoId] = new Set([{server: this.props.chromInfoServer, uuid: this.props.chromInfoId} ]);
+      this.availableChromSizes[this.props.chromInfoId] = 
+        new Set([{server: this.props.chromInfoServer, uuid: this.props.chromInfoId} ]);
       this.fetchChromInfo(this.props.chromInfoId);
     }
     */
-
   }
 
   componentDidMount() {
-    this.mounted=true;
+    this.mounted = true;
     // we want to catch keypresses so we can get that enter
     select(this.autocompleteMenu.inputEl)
       .on('keypress', this.autocompleteKeyPress.bind(this));
@@ -133,16 +130,13 @@ class GenomePositionSearchBox extends React.Component {
   }
 
   setSelectedAssembly(assemblyName) {
-    if (!this.mounted)
-      // component is probably about to be unmounted
-      return;
+    // component is probably about to be unmounted
+    if (!this.mounted) return;
 
-    if (!this.availableChromSizes[assemblyName])
+    if (!this.availableChromSizes[assemblyName]) return;
     // we don't know of any available chromosome sizes so just ignore
     // this function call (usually called from the constructor)
-    { return; }
 
-    const chromInfoId = this.availableChromSizes[assemblyName];
     // use the first available server that we have on record for this chromInfoId
     const serverAndChromInfoToUse = [...this.availableChromSizes[assemblyName]][0];
 
@@ -150,7 +144,7 @@ class GenomePositionSearchBox extends React.Component {
       autocompleteServer: serverAndChromInfoToUse.server,
     });
 
-    const server = serverAndChromInfoToUse.server;
+    const { server } = serverAndChromInfoToUse;
 
     // we need to set a an autocompleteId that matches the chromInfo
     // that was received, but if none has been retrieved yet...
@@ -201,15 +195,12 @@ class GenomePositionSearchBox extends React.Component {
             selectedAssembly: tilesetInfo[chromInfoId].coordSystem,
           });
         }
-        
       });
 
       this.chromInfo = newChromInfo;
       this.searchField = new SearchField(this.chromInfo);
 
       this.setPositionText();
-
-
     });
   }
 
@@ -225,7 +216,7 @@ class GenomePositionSearchBox extends React.Component {
         if (error) {
           console.error(error);
         } else {
-          data.results.map((x) => {
+          data.results.forEach((x) => {
             if (!(x.coordSystem in this.availableAutocompletes)) {
               this.availableAutocompletes[x.coordSystem] = new Set();
             }
@@ -263,7 +254,7 @@ class GenomePositionSearchBox extends React.Component {
         if (error) {
           console.error(error);
         } else {
-          data.results.map((x) => {
+          data.results.forEach((x) => {
             if (!(x.coordSystem in this.availableChromSizes)) {
               this.availableChromSizes[x.coordSystem] = new Set();
             }
@@ -275,9 +266,16 @@ class GenomePositionSearchBox extends React.Component {
           // we haven't set an assembly yet so set it now
           // props.chromInfoId will be set to the suggested assembly (e.g. "hg19")
           // this will be mapped to an available chromSize (with its own unique uuid)
-          if (!this.searchField) { 
+          if (!this.searchField) {
             // only fetch chromsizes if there isn't a specified chromInfoServer
-              this.fetchChromInfo(this.props.chromInfoId, sourceServer); 
+            this.fetchChromInfo(
+              this.props.chromInfoId in this.availableChromSizes
+                ? [...this.availableChromSizes[this.props.chromInfoId]][0].uuid
+                : this.props.chromInfoId,
+              this.props.chromInfoId in this.availableChromSizes
+                ? [...this.availableChromSizes[this.props.chromInfoId]][0].server
+                : this.props.chromInfoServer
+            );
           }
         }
       });
@@ -285,10 +283,9 @@ class GenomePositionSearchBox extends React.Component {
   }
 
   setAvailableAssemblies() {
-    const autocompleteKeys = new Set(dictKeys(this.availableAutocompletes));
     const chromsizeKeys = new Set(dictKeys(this.availableChromSizes));
 
-    let commonKeys = new Set([...chromsizeKeys]);
+    const commonKeys = new Set([...chromsizeKeys]);
 
     if (this.gpsbForm) {
       // only set the state if this comonent is mounted
