@@ -26,10 +26,10 @@ class ConfigViewMenu extends ContextMenuContainer {
   getConfigureViewMenu(position, bbox) {
     const availableOptions = ['backgroundColor'];
     const menuItems = {};
-    newOptions = {};
+    const newOptions = {};
 
     for (const optionType of availableOptions) {
-      if (OPTIONS_INFO.hasOwnProperty(optionType)) {
+      if (optionType in Object.keys(OPTIONS_INFO)) {
         menuItems[optionType] = { name: OPTIONS_INFO[optionType].name };
 
         if (OPTIONS_INFO[optionType].inlineOptions) {
@@ -63,7 +63,7 @@ class ConfigViewMenu extends ContextMenuContainer {
 
     return (
       <NestedContextMenu
-        key={`config-series-menu`}
+        key="config-series-menu"
         closeMenu={this.props.closeMenu}
         menuItems={menuItems}
         orientation={this.state.orientation}
@@ -92,11 +92,11 @@ class ConfigViewMenu extends ContextMenuContainer {
       );
 
       const subMenuData = this.state.submenuShown;
-      if (subMenuData.option == 'options') {
+      if (subMenuData.option === 'options') {
         return this.getConfigureViewMenu(position, bbox);
       }
 
-      return(<div />);
+      return (<div />);
     }
 
     return (<div />);
@@ -108,7 +108,7 @@ class ConfigViewMenu extends ContextMenuContainer {
 
     return (
       <div
-        ref={c => this.div = c}
+        ref={(c) => { this.div = c; }}
         data-menu-type="ConfigViewMenu"
         style={{
           left: this.state.left,
@@ -134,7 +134,7 @@ class ConfigViewMenu extends ContextMenuContainer {
           onMouseLeave={e => this.handleMouseLeave(e)}
         >
           {'Options'}
-          <svg styleName="play-icon" >
+          <svg styleName="play-icon">
             <use xlinkHref="#play" />
           </svg>
         </ContextMenuItem>
@@ -273,6 +273,6 @@ ConfigViewMenu.propTypes = {
   onYankZoom: PropTypes.func,
   onYankZoomAndLocation: PropTypes.func,
   onZoomToData: PropTypes.func
-}
+};
 
 export default ConfigViewMenu;
