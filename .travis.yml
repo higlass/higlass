@@ -6,14 +6,23 @@ branches:
   - master
   - develop
   - /^v.*$/
+addons:
+  apt:
+    packages:
+      - xvfb
+install:
+    - npm install -g xvfb-maybe
 before_script:
-- export CHROME_BIN=chromium-browser
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
-- npm install --quiet -g gulp
-- npm install
+    - export CHROME_BIN=chromium-browser
+    - export DISPLAY=:99.0
+    - sh -e /etc/init.d/xvfb start
+    - npm install --quiet -g gulp
+    - npm install
+script:
+    - npm run compile
+    - xvfb-maybe ./node_modules/karma/bin/karma start karma.conf.js --single-run
 before_deploy:
-- npm run compile
+    - npm run compile
 deploy:
     - provider: npm
       skip_cleanup: true
