@@ -308,18 +308,20 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
   exportData() {
     if (this.tilesetInfo) {
-      const currentResolution = tileProxy.calculateResolution(this.tilesetInfo,
-        this.zoomLevel);
+      // const currentResolution = tileProxy.calculateResolution(this.tilesetInfo,
+      //  this.zoomLevel);
 
-      const pixelsWidth = (this._xScale.domain()[1]  - this._xScale.domain()[0])/ currentResolution;
-      const pixelsHeight = (this._yScale.domain()[1]  - this._yScale.domain()[0])/ currentResolution;
+      // const pixelsWidth = (this._xScale.domain()[1]  - this._xScale.domain()[0])
+      // / currentResolution;
+      // const pixelsHeight = (this._yScale.domain()[1]  - this._yScale.domain()[0])
+      // / currentResolution;
 
       const data = this.getVisibleRectangleData(0, 0, this.dimensions[0], this.dimensions[1]);
-      output = {
+      const output = {
         bounds: [this._xScale.domain(), this._yScale.domain()],
         dimensions: data.shape,
         data: data.flatten().tolist(),
-      }
+      };
 
       download('data.json', JSON.stringify(output));
     }
@@ -805,20 +807,20 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    */
   getVisibleRectangleData(x, y, width, height) {
     let zoomLevel = this.calculateZoomLevel();
-    zoomLevel = this.tilesetInfo.max_zoom ? Math.min(this.tilesetInfo.max_zoom, zoomLevel) : zoomLevel;
+    zoomLevel = this.tilesetInfo.max_zoom
+      ? Math.min(this.tilesetInfo.max_zoom, zoomLevel) : zoomLevel;
 
     const tileWidth = tileProxy.calculateTileWidth(
-        this.tilesetInfo, zoomLevel, BINS_PER_TILE
-      );
+      this.tilesetInfo, zoomLevel, BINS_PER_TILE
+    );
 
     // BP resolution of a tile's bin (i.e., numbe of base pairs per bin / pixel)
     const tileRes = tileWidth / BINS_PER_TILE;
     // console.log('tileWidth:', tileWidth);
-    return [];
 
     // the data domain of the currently visible region
-    const xDomain = [this._xScale.invert(x), this._xScale.invert(x + width)]
-    const yDomain = [this._yScale.invert(y), this._yScale.invert(y + height)]
+    const xDomain = [this._xScale.invert(x), this._xScale.invert(x + width)];
+    const yDomain = [this._yScale.invert(y), this._yScale.invert(y + height)];
 
     // the bounds of the currently visible region in bins
     const leftXBin = Math.floor(xDomain[0] / tileRes);

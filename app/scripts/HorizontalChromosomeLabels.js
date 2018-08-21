@@ -182,6 +182,8 @@ class HorizontalChromosomeLabels extends PixiTrack {
     // calculate a certain number of ticks
     const ticks = xScale.ticks(numTicks);
     const tickFormat = xScale.tickFormat(numTicks);
+
+    // not sure why we're separating these out by chromosome, but ok
     const tickTexts = this.tickTexts[cumPos.chr];
 
     const tickHeight = this.options.fontIsLeftAligned
@@ -222,6 +224,11 @@ class HorizontalChromosomeLabels extends PixiTrack {
         : `${cumPos.chr}: ${tickFormat(ticks[i])}`;
 
       const x = this._xScale(cumPos.pos + ticks[i]);
+
+      // store the position of the tick line so that it can
+      // be used in the export function
+      tickTexts[i].tickLine = [x - 1, this.dimensions[1],
+        x - 1, this.dimensions[1] - tickHeight - 1];
 
       // Draw outline
       graphics.lineStyle(1, this.stroke);
@@ -330,7 +337,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
     let allBoxes = []; // store the bounding boxes of the text objects so we can
     // calculate overlaps
     allBoxes = allTexts.map((val) => {
-      const text = val.text;
+      const { text } = val;
       text.updateTransform();
       const b = text.getBounds();
       const box = [b.x, b.y, b.x + b.width, b.y + b.height];
@@ -350,8 +357,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
   setPosition(newPosition) {
     super.setPosition(newPosition);
 
-    this.pMain.position.y = this.position[1];
-    this.pMain.position.x = this.position[0];
+    ([this.pMain.position.x, this.pMain.position.y] = this.position);
   }
 
   zoomed(newXScale, newYScale) {
@@ -391,21 +397,32 @@ class HorizontalChromosomeLabels extends PixiTrack {
       });
 
     Object.values(this.tickTexts)
-      .filter(text => text.visible)
-      .forEach((text) => {
-        let g = pixiTextToSvg(text);
-        output.appendChild(g);
+      .forEach((texts) => {
+        texts.filter(x => x.visible)
+          .forEach((text) => {
+            let g = pixiTextToSvg(text);
+            output.appendChild(g);
+            g = svgLine(
+              text.x,
+              this.dimensions[1],
+              text.x,
+              this.dimensions[1] - this.tickHeight,
+              1,
+              this.tickColor,
+            );
 
-        g = svgLine(
-          text.x,
-          this.dimensions[1],
-          text.x,
-          this.dimensions[1] - this.tickHeight,
-          1,
-          this.tickColor,
-        );
 
-        output.appendChild(g);
+            const line = document.createElement('line');
+
+            line.setAttribute('x1', text.tickLine[0]);
+            line.setAttribute('y1', text.tickLine[1]);
+            line.setAttribute('x2', text.tickLine[2]);
+            line.setAttribute('y2', text.tickLine[3]);
+            line.setAttribute('style', 'stroke: grey');
+
+            output.appendChild(g);
+            output.appendChild(line);
+          });
       });
 
     return [base, track];

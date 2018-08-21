@@ -22,7 +22,7 @@ import ViewContextMenu from './ViewContextMenu';
 // import {HeatmapOptions} from './HeatmapOptions';
 
 // Services
-import { chromInfo, pubSub } from './services';
+import { pubSub } from './services';
 
 // Utils
 import {
@@ -52,17 +52,17 @@ class TiledPlot extends React.Component {
     this.closing = false;
     // that the tracks will be drawn on
 
-    const tracks = this.props.tracks;
+    const { tracks } = this.props;
     this.canvasElement = null;
 
     this.tracksByUidInit = {};
     [
-      ...this.props.tracks.top,
-      ...this.props.tracks.right,
-      ...this.props.tracks.bottom,
-      ...this.props.tracks.left,
-      ...this.props.tracks.gallery,
-      ...this.props.tracks.center,
+      ...(this.props.tracks.top || []),
+      ...(this.props.tracks.right || []),
+      ...(this.props.tracks.bottom || []),
+      ...(this.props.tracks.left || []),
+      ...(this.props.tracks.gallery || []),
+      ...(this.props.tracks.center || []),
     ].forEach((track) => {
       if (track.type === 'combined') {
         // Damn this combined track...
@@ -105,7 +105,8 @@ class TiledPlot extends React.Component {
       mouseOverOverlayUid: null,
       // trackOptions: null
       // trackOptions: trackOptions
-      forceUpdate: 0, // a random value that will be assigned by crucial functions to force an update
+      forceUpdate: 0, // a random value that will be assigned by
+      // crucial functions to force an update
 
       rangeSelection: [
         null,
@@ -123,8 +124,7 @@ class TiledPlot extends React.Component {
     if (window.higlassTracksByType) {
       // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
       Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
-        TRACKS_INFO_BY_TYPE[pluginTrackType] =
-          window.higlassTracksByType[pluginTrackType].config;
+        TRACKS_INFO_BY_TYPE[pluginTrackType] = window.higlassTracksByType[pluginTrackType].config;
       });
     }
 
@@ -174,7 +174,7 @@ class TiledPlot extends React.Component {
 
     // add event listeners for drag and drop events
     this.addEventListeners();
-    //this.getDefaultChromSizes();
+    // this.getDefaultChromSizes();
 
     this.pubSubs = [];
     this.pubSubs.push(
@@ -1571,7 +1571,7 @@ class TiledPlot extends React.Component {
     // gallery goes around the central view it's dimension takes up twice the
     // space!
     this.galleryDim = this.props.tracks.gallery
-      .map(x => x.height).reduce(sum, 0);
+      ? this.props.tracks.gallery.map(x => x.height).reduce(sum, 0) : 0;
 
     // left, top, right, and bottom have fixed heights / widths
     // the center will vary to accomodate their dimensions

@@ -1,5 +1,3 @@
-import AddTrackModal from './AddTrackModal';
-
 import React from 'react';
 
 import ContextMenuContainer from './ContextMenuContainer';
@@ -102,7 +100,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
     return (
       <NestedContextMenu
-        key={'config-series-menu'}
+        key='config-series-menu'
         closeMenu={this.props.closeMenu}
         menuItems={menuItems}
         orientation={this.state.orientation}
@@ -133,10 +131,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
     // get the datatype of the current track
     //
-    let datatype = null;
-    let orientation = null;
 
-    // console.log('track:', track, JSON.stringify(bbox, 2), track);
 
     // if we've loaded external track types, list them here
     if (window.higlassTracksByType) {
@@ -146,23 +141,24 @@ export default class SeriesListMenu extends ContextMenuContainer {
       });
     }
 
+    const { datatype } = track;
+    let orientation = null;
     // make sure that this is a valid track type before trying to
     // look up other tracks that can substitute for it
     if (track.type in TRACKS_INFO_BY_TYPE) {
-      orientation = TRACKS_INFO_BY_TYPE[track.type].orientation;
+      ({ orientation } = TRACKS_INFO_BY_TYPE[track.type]);
     }
-    datatype = track.datatype;
 
     // see which other tracks can display a similar datatype
     const availableTrackTypes = TRACKS_INFO
       .filter(x => x.datatype)
       .filter(x => x.orientation)
       .filter(x => x.datatype.includes(datatype))
-      .filter(x => x.orientation == orientation)
+      .filter(x => x.orientation === orientation)
       .map(x => x.type);
 
     // console.log('availableTrackTypes:', availableTrackTypes);
-  
+
     const menuItems = {};
     for (let i = 0; i < availableTrackTypes.length; i++) {
       menuItems[availableTrackTypes[i]] = {
@@ -171,7 +167,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
         handler: () => {
           this.props.onChangeTrackType(track.uid, availableTrackTypes[i]);
         },
-      }
+      };
     }
 
     return (
@@ -212,17 +208,17 @@ export default class SeriesListMenu extends ContextMenuContainer {
       const subMenuData = this.state.submenuShown;
       const track = subMenuData.value;
 
-      if (subMenuData.option == 'track-type') {
+      if (subMenuData.option === 'track-type') {
         return this.getTrackTypeItems(position, bbox, track);
-      } else {
-        return this.getConfigureSeriesMenu(position, bbox, track);
       }
+      return this.getConfigureSeriesMenu(position, bbox, track);
     }
+
     return (<div />);
   }
 
   getDivideByMenuItem() {
-    if (this.props.series.data && this.props.series.data.type == 'divided') {
+    if (this.props.series.data && this.props.series.data.type === 'divided') {
       const newData = {
         tilesetUid: this.props.series.data.children[0].tilesetUid,
         server: this.props.series.data.children[0].server,
@@ -241,7 +237,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
         </ContextMenuItem>
       );
     }
-    
+
     return (
       <ContextMenuItem
         onClick={() => this.props.onAddDivisor(this.props.series)}
@@ -322,7 +318,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
           onMouseLeave={e => this.handleMouseLeave(e)}
         >
           {'Configure Series'}
-          <svg styleName="play-icon" >
+          <svg styleName="play-icon">
             <use xlinkHref="#play" />
           </svg>
         </ContextMenuItem>
@@ -330,17 +326,17 @@ export default class SeriesListMenu extends ContextMenuContainer {
         <ContextMenuItem
           onClick={() => {}}
           onMouseEnter={e => this.handleItemMouseEnter(e,
-          {
-            option: 'track-type',
-            value: this.props.track
-          })
+            {
+              option: 'track-type',
+              value: this.props.track
+            })
           }
           onMouseLeave={e => this.handleMouseLeave(e)}
           styleName="context-menu-item"
         >
           <span styleName="context-menu-span">
             {'Track Type'}
-            <svg styleName="play-icon" >
+            <svg styleName="play-icon">
               <use xlinkHref="#play" />
             </svg>
           </span>

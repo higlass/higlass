@@ -2519,7 +2519,7 @@ class HiGlassComponent extends React.Component {
     potentialPositions.sort((a, b) => {
       const n = a[1] - b[1];
 
-      if (n == 0) {
+      if (n === 0) {
         return a[0] - b[0];
       }
 
