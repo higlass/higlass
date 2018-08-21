@@ -24,6 +24,7 @@ import api, { destroy as apiDestroy, publish as apiPublish } from './api';
 import {
   chromInfo,
   domEvent,
+  getDarkTheme,
   setDarkTheme,
   pubSub,
   setTileProxyAuthHeader,
@@ -3585,6 +3586,11 @@ class HiGlassComponent extends React.Component {
       </ReactGridLayout>
     );
 
+    let styleNames = 'styles.higlass';
+
+    if (getDarkTheme()) {
+      styleNames += ' styles.higlass-dark-theme';
+    }
 
     return (
       <div
@@ -3594,6 +3600,7 @@ class HiGlassComponent extends React.Component {
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
         onWheel={this.onWheelHandlerBound}
+        styleName={styleNames}
       >
         <canvas
           key={this.uid}
