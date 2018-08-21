@@ -1,9 +1,13 @@
 /* eslint-env node, mocha */
 import {
+  configure,
   mount,
   // render,
   ReactWrapper,
 } from 'enzyme';
+
+import Adapter from 'enzyme-adapter-react-16';
+
 import { expect } from 'chai';
 import { select } from 'd3-selection';
 import React from 'react';
@@ -11,13 +15,8 @@ import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 
 import HiGlassComponent from '../app/scripts/HiGlassComponent';
-import {tileProxy,requestsInFlight} from '../app/scripts/services';
+import { requestsInFlight } from '../app/scripts/services';
 import HeatmapOptions from '../app/scripts/HeatmapOptions';
-
-import { configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-
-configure({ adapter: new Adapter() });
 
 // Utils
 import {
@@ -26,11 +25,6 @@ import {
   totalTrackPixelHeight,
   getTrackByUid,
 } from '../app/scripts/utils';
-
-// Configs
-import {
-  ZOOM_TRANSITION_DURATION,
-} from '../app/scripts/configs';
 
 // View configs
 import {
@@ -44,8 +38,6 @@ import {
   simpleCenterViewConfig,
   rectangleDomains,
   threeViews,
-  fritzBug1,
-  fritzBug2,
   project1D,
   noGPSB,
   onlyGPSB,
@@ -65,27 +57,17 @@ import {
   testViewConfX2,
 } from './view-configs';
 
-const pageLoadTime = 1200;
+configure({ adapter: new Adapter() });
+
 const tileLoadTime = 1800;
-const shortLoadTime = 200; // for rapid changes,
 // just to make sure the screen can display what's happened
-
-function testAsync(done) {
-  // Wait two seconds, then set the flag to true
-  setTimeout(() => {
-    // flag = true;
-
-    // Invoke the special done callback
-    done();
-  }, pageLoadTime);
-}
 
 function getTrackObject(hgc, viewUid, trackUid) {
   return hgc.instance().tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
 }
 
-function getTrackRenderer(hgc, viewUid, trackUid) {
-    return hgc.instance().tiledPlots[viewUid].trackRenderer
+function getTrackRenderer(hgc, viewUid) {
+  return hgc.instance().tiledPlots[viewUid].trackRenderer;
 }
 
 function getTiledPlot(hgc, viewUid) {
@@ -96,21 +78,20 @@ function areTransitionsActive(hgc) {
   /**
    * Check if there are any active transitions that we
    * need to wait on
-   * 
+   *
    * Parameters
    * ----------
-     *  hgc: enzyme wrapper for a HiGlassComponent
-     *
-     * Returns
-     * -------
-     *  True if any of the tracks have active transtions. False otherwise.
-     */
-    for (let track of hgc.instance().iterateOverTracks()) {
-      let trackRenderer = getTrackRenderer(hgc, track.viewId, track.trackId);
+   *  hgc: enzyme wrapper for a HiGlassComponent
+   *
+   * Returns
+   * -------
+   *  True if any of the tracks have active transtions. False otherwise.
+   */
+  for (const track of hgc.instance().iterateOverTracks()) {
+    const trackRenderer = getTrackRenderer(hgc, track.viewId, track.trackId);
 
-      if (trackRenderer.activeTransitions > 0)
-        return true;
-    }
+    if (trackRenderer.activeTransitions > 0) return true;
+  }
   return false;
 }
 
@@ -130,10 +111,9 @@ function isWaitingOnTiles(hgc) {
   for (const track of hgc.instance().iterateOverTracks()) {
     let trackObj = getTrackObject(hgc, track.viewId, track.trackId);
 
-    if (track.track.type == 'viewport-projection-vertical' || 
-        track.track.type == 'viewport-projection-horizontal' ||
-        track.track.type == 'viewport-projection-center')
-      continue;
+    if (track.track.type === 'viewport-projection-vertical'
+        || track.track.type === 'viewport-projection-horizontal'
+        || track.track.type === 'viewport-projection-center') continue;
 
     if (trackObj.originalTrack) { trackObj = trackObj.originalTrack; }
 
@@ -208,37 +188,37 @@ function waitForJsonComplete(finished) {
 }
 
 function waitForTransitionsFinished(hgc, callback) {
-    /**
-     * Wait until all transitions have finished before
-     * calling the callback
-     *
-     * Arguments
-     * ---------
-     *  hgc: Enzyme wrapper for a HiGlassComponent
-     *      The componentthat we're waiting on
-     *  tilesLoadedCallback: function
-     *      The callback to call whenever all of the tiles
-     *      have been loaded.
-     * Returns
-     * -------
-     *  Nothing
-     */
-    //console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
+  /**
+   * Wait until all transitions have finished before
+   * calling the callback
+   *
+   * Arguments
+   * ---------
+   *  hgc: Enzyme wrapper for a HiGlassComponent
+   *      The componentthat we're waiting on
+   *  tilesLoadedCallback: function
+   *      The callback to call whenever all of the tiles
+   *      have been loaded.
+   * Returns
+   * -------
+   *  Nothing
+   */
+  // console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
 
-    if (areTransitionsActive(hgc)) {
-        setTimeout(() => { 
-            waitForTransitionsFinished(hgc, callback);
-        }, TILE_LOADING_CHECK_INTERVAL);
-    } else {
-        //console.log('finished');
-        callback();
-    }
+  if (areTransitionsActive(hgc)) {
+    setTimeout(() => {
+      waitForTransitionsFinished(hgc, callback);
+    }, TILE_LOADING_CHECK_INTERVAL);
+  } else {
+    // console.log('finished');
+    callback();
+  }
 }
 
 describe('Simple HiGlassComponent', () => {
-  let hgc = null,
-    div = null,
-    atm = null;
+  let hgc = null;
+  let div = null;
+  let atm = null;
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 7000;
 
