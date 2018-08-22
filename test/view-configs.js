@@ -1,3 +1,152 @@
+export const geneAnnotationsOnly = 
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "/api/v1",
+    "http://higlass.io/api/v1"
+  ],
+  "exportViewUrl": "/api/v1/viewconfs/",
+  "views": [
+    {
+      "tracks": {
+        "top": [
+          {
+            "type": "combined",
+            "uid": "BZBnN-PIRs-53cXgme7o_w",
+            "height": 30,
+            "width": 1173,
+            "contents": [
+              {
+                "name": "ChromosomeAxis",
+                "created": "2017-07-17T14:16:45.346835Z",
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "NyITQvZsS_mOFNlz5C2LJg",
+                "uid": "YbYGI4JMSv-gkTPzL01pXQ",
+                "type": "horizontal-chromosome-labels",
+                "options": {
+                  "showMousePosition": false,
+                  "mousePositionColor": "#999999",
+                  "color": "#777777",
+                  "stroke": "#FFFFFF",
+                  "fontSize": 12,
+                  "fontIsAligned": false
+                },
+                "width": 1173,
+                "height": 30,
+                "position": "top"
+              },
+              {
+                "uid": "MfwUm8OwSreXJqo31kralg",
+                "type": "viewport-projection-horizontal",
+                "fromViewUid": "XWA2wY2sSyShybSVbuARfA",
+                "options": {
+                  "projectionFillColor": "#777",
+                  "projectionStrokeColor": "#777",
+                  "projectionFillOpacity": 0.3,
+                  "projectionStrokeOpacity": 0.7,
+                  "strokeWidth": 1
+                },
+                "name": "ViewportProjection",
+                "position": "top",
+                "width": 1173,
+                "height": 30
+              }
+            ],
+            "position": "top",
+            "options": {}
+          },
+          {
+            "type": "combined",
+            "uid": "G0zF1N_5QHmgD4MMduoYFQ",
+            "height": 55,
+            "width": 1173,
+            "contents": [
+              {
+                "name": "Gene Annotations (hg38)",
+                "created": "2017-07-14T15:27:46.989053Z",
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "P0PLbQMwTYGy-5uPIQid7A",
+                "uid": "genes1",
+                "type": "horizontal-gene-annotations",
+                "options": {
+                  "labelColor": "black",
+                  "labelPosition": "hidden",
+                  "plusStrandColor": "blue",
+                  "minusStrandColor": "red",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "showMousePosition": false,
+                  "mousePositionColor": "#999999",
+                  "name": "GeneAnnotations(hg38)"
+                },
+                "width": 1173,
+                "height": 55,
+                "header": "1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14",
+                "position": "top"
+              },
+              {
+                "uid": "EhOdm65ATsuoyA2PP_CWXw",
+                "type": "viewport-projection-horizontal",
+                "fromViewUid": "XWA2wY2sSyShybSVbuARfA",
+                "options": {
+                  "projectionFillColor": "#777",
+                  "projectionStrokeColor": "#777",
+                  "projectionFillOpacity": 0.3,
+                  "projectionStrokeOpacity": 0.7,
+                  "strokeWidth": 1
+                },
+                "name": "ViewportProjection",
+                "position": "top",
+                "width": 1173,
+                "height": 55
+              }
+            ],
+            "position": "top",
+            "options": {}
+          }
+        ],
+        "left": [],
+        "center": [],
+        "right": [],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "initialXDomain": [
+        1813877344.9998484,
+        1813954614.937772
+      ],
+      "initialYDomain": [
+        1813915981.414309,
+        1813960512.0861218
+      ],
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "QpgOD8vCSO2AHp5YMQ93mQ",
+        "moved": false,
+        "static": false
+      },
+      "uid": "aa"
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+};
+
 export const annotationsTilesView = 
 {
   "editable": true,

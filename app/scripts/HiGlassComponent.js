@@ -148,15 +148,16 @@ class HiGlassComponent extends React.Component {
 
     this.viewconfLoaded = false;
 
-    let viewConfig = {};
+    let { viewConfig } = this.props;
     let views = {};
     if (typeof this.props.viewConfig === 'string') {
       // Load external viewConfig
-      tileProxy.json(this.props.viewConfig, (error, viewConfig) => {
+      tileProxy.json(this.props.viewConfig, (error, remoteViewConfig) => {
+        viewConfig = remoteViewConfig;
         this.setState({
-          viewConfig,
+          remoteViewConfig,
           views: this.processViewConfig(
-            JSON.parse(JSON.stringify(viewConfig))
+            JSON.parse(JSON.stringify(remoteViewConfig))
           )
         });
         this.unsetOnLocationChange.forEach(({ viewId, callback, callbackId }) => {
@@ -164,7 +165,6 @@ class HiGlassComponent extends React.Component {
         });
       });
     } else {
-      viewConfig = this.props.viewConfig;
       views = this.processViewConfig(
         JSON.parse(JSON.stringify(viewConfig))
       );
@@ -185,6 +185,8 @@ class HiGlassComponent extends React.Component {
       switch (this.props.options.mouseTool) {
         case MOUSE_TOOL_SELECT:
           mouseTool = MOUSE_TOOL_SELECT;
+          break;
+        default:
           break;
       }
     }
@@ -216,10 +218,6 @@ class HiGlassComponent extends React.Component {
       viewConfig,
       addTrackPositionMenuPosition: null,
 
-      // chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
-      // chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
-      // chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
-      // chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
       mouseOverOverlayUid: null,
       exportLinkModalOpen: false,
       exportLinkLocation: null,
@@ -311,8 +309,7 @@ class HiGlassComponent extends React.Component {
   }
 
   zoomHandler(evt) {
-    if (!evt.sourceEvent)
-      return;
+    if (!evt.sourceEvent) return;
 
     this.mouseMoveHandler(evt.sourceEvent);
   }
@@ -635,7 +632,7 @@ class HiGlassComponent extends React.Component {
     });
   }
 
-  handleOverlayMouseLeave(uid) {
+  handleOverlayMouseLeave() {
     this.setState({
       mouseOverOverlayUid: null,
     });
@@ -658,17 +655,13 @@ class HiGlassComponent extends React.Component {
     });
   }
 
-  updateLockedValueScales(viewUid, trackUid) {
-    const lockGroup = this.valueScaleLocks[this.combineViewAndTrackUid(viewUid, trackUid)];
-  }
-
   /*
    * Iteratate over all of the views in this component
    */
   iterateOverViews() {
     const viewIds = [];
 
-    for (const viewId in this.state.views) {
+    for (const viewId in Object.keys(this.state.views)) {
       viewIds.push(viewId);
     }
 
@@ -677,7 +670,7 @@ class HiGlassComponent extends React.Component {
 
   iterateOverTracksInView(viewId) {
     const allTracks = [];
-    const tracks = this.state.views[viewId].tracks;
+    const { tracks } = this.state.views[viewId];
 
     for (const trackType in tracks) {
       for (const track of tracks[trackType]) {
@@ -2526,7 +2519,7 @@ class HiGlassComponent extends React.Component {
     potentialPositions.sort((a, b) => {
       const n = a[1] - b[1];
 
-      if (n == 0) {
+      if (n === 0) {
         return a[0] - b[0];
       }
 
@@ -3545,13 +3538,15 @@ class HiGlassComponent extends React.Component {
       });
     }
 
-    const exportLinkModal = this.state.exportLinkModalOpen ?
-      (<ExportLinkModal
-        height={this.height}
-        linkLocation={this.state.exportLinkLocation}
-        onDone={() => this.setState({ exportLinkModalOpen: false })}
-        width={this.width}
-      />)
+    const exportLinkModal = this.state.exportLinkModalOpen
+      ? (
+        <ExportLinkModal
+          height={this.height}
+          linkLocation={this.state.exportLinkLocation}
+          onDone={() => this.setState({ exportLinkModalOpen: false })}
+          width={this.width}
+        />
+      )
       : null;
 
     let layouts = this.mounted ? dictValues(this.state.views)
@@ -3601,10 +3596,11 @@ class HiGlassComponent extends React.Component {
       <div
         key={this.uid}
         ref={(c) => { this.topDiv = c; }}
-        className='higlass'
-        onMouseMove={this.mouseMoveHandlerBound}
+        className="higlass"
         onMouseLeave={this.onMouseLeaveHandlerBound}
+        onMouseMove={this.mouseMoveHandlerBound}
         onWheel={this.onWheelHandlerBound}
+        styleName={styleNames}
       >
         <canvas
           key={this.uid}
@@ -3619,7 +3615,6 @@ class HiGlassComponent extends React.Component {
         </div>
         <svg
           ref={(c) => { this.svgElement = c; }}
-          styleName="styles.higlass-svg"
           style={{
             // inline the styles so they aren't overriden by other css
             // on the web page
@@ -3630,6 +3625,7 @@ class HiGlassComponent extends React.Component {
             top: 0,
             pointerEvents: 'none',
           }}
+          styleName="styles.higlass-svg"
         />
         {exportLinkModal}
       </div>

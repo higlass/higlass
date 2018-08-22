@@ -308,18 +308,20 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
   exportData() {
     if (this.tilesetInfo) {
-      const currentResolution = tileProxy.calculateResolution(this.tilesetInfo,
-        this.zoomLevel);
+      // const currentResolution = tileProxy.calculateResolution(this.tilesetInfo,
+      //  this.zoomLevel);
 
-      const pixelsWidth = (this._xScale.domain()[1]  - this._xScale.domain()[0])/ currentResolution;
-      const pixelsHeight = (this._yScale.domain()[1]  - this._yScale.domain()[0])/ currentResolution;
+      // const pixelsWidth = (this._xScale.domain()[1]  - this._xScale.domain()[0])
+      // / currentResolution;
+      // const pixelsHeight = (this._yScale.domain()[1]  - this._yScale.domain()[0])
+      // / currentResolution;
 
       const data = this.getVisibleRectangleData(0, 0, this.dimensions[0], this.dimensions[1]);
-      output = {
+      const output = {
         bounds: [this._xScale.domain(), this._yScale.domain()],
         dimensions: data.shape,
         data: data.flatten().tolist(),
-      }
+      };
 
       download('data.json', JSON.stringify(output));
     }
@@ -805,18 +807,20 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    */
   getVisibleRectangleData(x, y, width, height) {
     let zoomLevel = this.calculateZoomLevel();
-    zoomLevel = this.tilesetInfo.max_zoom ? Math.min(this.tilesetInfo.max_zoom, zoomLevel) : zoomLevel;
+    zoomLevel = this.tilesetInfo.max_zoom
+      ? Math.min(this.tilesetInfo.max_zoom, zoomLevel) : zoomLevel;
 
     const tileWidth = tileProxy.calculateTileWidth(
-        this.tilesetInfo, zoomLevel, BINS_PER_TILE
-      );
+      this.tilesetInfo, zoomLevel, BINS_PER_TILE
+    );
 
     // BP resolution of a tile's bin (i.e., numbe of base pairs per bin / pixel)
     const tileRes = tileWidth / BINS_PER_TILE;
+    // console.log('tileWidth:', tileWidth);
 
     // the data domain of the currently visible region
-    const xDomain = [this._xScale.invert(x), this._xScale.invert(x + width)]
-    const yDomain = [this._yScale.invert(y), this._yScale.invert(y + height)]
+    const xDomain = [this._xScale.invert(x), this._xScale.invert(x + width)];
+    const yDomain = [this._yScale.invert(y), this._yScale.invert(y + height)];
 
     // the bounds of the currently visible region in bins
     const leftXBin = Math.floor(xDomain[0] / tileRes);
@@ -1186,16 +1190,18 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         this.tilesetInfo.max_width
       );
 
+      // console.log('ytiles');
       this.yTiles = tileProxy.calculateTiles(
         this.zoomLevel,
         this._yScale,
-        this.tilesetInfo.min_pos[1],
-        this.tilesetInfo.max_pos[1],
+        this.options.reverseYAxis ? -this.tilesetInfo.max_pos[1] : this.tilesetInfo.min_pos[1],
+        this.options.reverseYAxis ? -this.tilesetInfo.min_pos[1] : this.tilesetInfo.max_pos[1],
         this.tilesetInfo.max_zoom,
-        this.tilesetInfo.max_width
+        this.tilesetInfo.max_width1 || this.tilesetInfo.max_width
       );
     }
 
+    // console.log('this.xTiles:', this.xTiles, this.yTiles);
     this.setVisibleTiles(
       this.tilesToId(this.xTiles, this.yTiles, this.zoomLevel, this.mirrorTiles())
     );
@@ -1240,6 +1246,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       positionText += '<br/>';
     }
 
+    console.log('getMouseOverHtml:');
     let data = null;
     try {
       data = this.getVisibleRectangleData(trackX, trackY, 1, 1).flatten().tolist();
@@ -1287,8 +1294,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const xTilePos = tilePos[0];
     const yTilePos = tilePos[1];
 
-    const minX = 0;
-    const minY = 0;
+    const minX = this.tilesetInfo.min_pos[0];
+    const minY = this.options.reverseYAxis ? 
+      -this.tilesetInfo.max_pos[1] : this.tilesetInfo.min_pos[1];
 
     const tileWidth = this.tilesetInfo.max_width / (2 ** zoomLevel);
     const tileHeight = this.tilesetInfo.max_width / (2 ** zoomLevel);

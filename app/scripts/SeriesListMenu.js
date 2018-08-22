@@ -1,5 +1,3 @@
-import AddTrackModal from './AddTrackModal';
-
 import React from 'react';
 
 import ContextMenuContainer from './ContextMenuContainer';
@@ -26,7 +24,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
       || !TRACKS_INFO_BY_TYPE[track.type].availableOptions) { return null; }
 
     for (const optionType of TRACKS_INFO_BY_TYPE[track.type].availableOptions) {
-      if (OPTIONS_INFO.hasOwnProperty(optionType)) {
+      if (optionType in OPTIONS_INFO) {
         menuItems[optionType] = { name: OPTIONS_INFO[optionType].name };
 
         // can we dynamically generate some options?
@@ -70,8 +68,8 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
             // is there a custom component available for picking this
             // option type value (e.g. 'custom' color scale)
-            if (inlineOption.componentPickers &&
-              inlineOption.componentPickers[track.type]) {
+            if (inlineOption.componentPickers
+              && inlineOption.componentPickers[track.type]) {
               optionSelectorSettings.handler = () => {
                 this.props.onConfigureTrack(track, inlineOption.componentPickers[track.type]);
                 this.props.closeMenu();
@@ -88,11 +86,12 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
             menuItems[optionType].children[inlineOptionKey] = optionSelectorSettings;
           }
-        } else if (OPTIONS_INFO[optionType].componentPickers &&
-          OPTIONS_INFO[optionType].componentPickers[track.type]) {
+        } else if (OPTIONS_INFO[optionType].componentPickers
+          && OPTIONS_INFO[optionType].componentPickers[track.type]) {
           // there's an option picker registered
           menuItems[optionType].handler = () => {
-            this.props.onConfigureTrack(track, OPTIONS_INFO[optionType].componentPickers[track.type]);
+            this.props.onConfigureTrack(track, OPTIONS_INFO[optionType]
+              .componentPickers[track.type]);
             this.props.closeMenu();
           };
         }
@@ -101,7 +100,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
     return (
       <NestedContextMenu
-        key={`config-series-menu`}
+        key='config-series-menu'
         closeMenu={this.props.closeMenu}
         menuItems={menuItems}
         orientation={this.state.orientation}
@@ -132,36 +131,35 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
     // get the datatype of the current track
     //
-    let datatype = null;
-    let orientation = null;
 
-    console.log('track:', track);
 
     // if we've loaded external track types, list them here
     if (window.higlassTracksByType) {
       // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
       Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
-        TRACKS_INFO_BY_TYPE[pluginTrackType] =
-          window.higlassTracksByType[pluginTrackType].config;
+        TRACKS_INFO_BY_TYPE[pluginTrackType] = window.higlassTracksByType[pluginTrackType].config;
       });
     }
 
+    const { datatype } = track;
+    let orientation = null;
     // make sure that this is a valid track type before trying to
     // look up other tracks that can substitute for it
     if (track.type in TRACKS_INFO_BY_TYPE) {
-      orientation = TRACKS_INFO_BY_TYPE[track.type].orientation;
+      ({ orientation } = TRACKS_INFO_BY_TYPE[track.type]);
     }
-    datatype = track.datatype;
 
     // see which other tracks can display a similar datatype
-    let availableTrackTypes = TRACKS_INFO
+    const availableTrackTypes = TRACKS_INFO
       .filter(x => x.datatype)
       .filter(x => x.orientation)
       .filter(x => x.datatype.includes(datatype))
-      .filter(x => x.orientation == orientation)
+      .filter(x => x.orientation === orientation)
       .map(x => x.type);
 
-    let menuItems = {};
+    // console.log('availableTrackTypes:', availableTrackTypes);
+
+    const menuItems = {};
     for (let i = 0; i < availableTrackTypes.length; i++) {
       menuItems[availableTrackTypes[i]] = {
         value: availableTrackTypes[i],
@@ -169,7 +167,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
         handler: () => {
           this.props.onChangeTrackType(track.uid, availableTrackTypes[i]);
         },
-      }
+      };
     }
 
     return (
@@ -210,23 +208,21 @@ export default class SeriesListMenu extends ContextMenuContainer {
       const subMenuData = this.state.submenuShown;
       const track = subMenuData.value;
 
-      if (subMenuData.option == 'track-type') {
+      if (subMenuData.option === 'track-type') {
         return this.getTrackTypeItems(position, bbox, track);
-      } else {
-        return this.getConfigureSeriesMenu(position, bbox, track);
       }
+      return this.getConfigureSeriesMenu(position, bbox, track);
     }
+
     return (<div />);
   }
 
   getDivideByMenuItem() {
-    if (this.props.series.data && this.props.series.data.type == 'divided') {
+    if (this.props.series.data && this.props.series.data.type === 'divided') {
       const newData = {
         tilesetUid: this.props.series.data.children[0].tilesetUid,
         server: this.props.series.data.children[0].server,
       };
-
-      console.log('newData:', newData);
 
       // this track is already being divided
       return (
@@ -240,19 +236,19 @@ export default class SeriesListMenu extends ContextMenuContainer {
           </span>
         </ContextMenuItem>
       );
-    } else {
-      return (
-        <ContextMenuItem
-          onClick={() => this.props.onAddDivisor(this.props.series)}
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
-          styleName="context-menu-item"
-        >
-          <span styleName="context-menu-span">
-            {'Divide by'}
-          </span>
-        </ContextMenuItem>
-        );
     }
+
+    return (
+      <ContextMenuItem
+        onClick={() => this.props.onAddDivisor(this.props.series)}
+        onMouseEnter={e => this.handleOtherMouseEnter(e)}
+        styleName="context-menu-item"
+      >
+        <span styleName="context-menu-span">
+          {'Divide by'}
+        </span>
+      </ContextMenuItem>
+    );
   }
 
   componentWillUnmount() {
@@ -262,8 +258,8 @@ export default class SeriesListMenu extends ContextMenuContainer {
   render() {
     let exportDataMenuItem = null;
 
-    if (TRACKS_INFO_BY_TYPE[this.props.series.type] && 
-    TRACKS_INFO_BY_TYPE[this.props.series.type].exportable) {
+    if (TRACKS_INFO_BY_TYPE[this.props.series.type]
+      && TRACKS_INFO_BY_TYPE[this.props.series.type].exportable) {
       exportDataMenuItem = (
         <ContextMenuItem
           onClick={() => this.props.onExportData(this.props.hostTrack.uid, this.props.track.uid)}
@@ -281,9 +277,9 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
     // if a track can't be replaced, this.props.onAddSeries
     // will be null so we don't need to display the menu item
-    const replaceSeriesItem =
-          this.props.onAddSeries ?
-          (<ContextMenuItem
+    const replaceSeriesItem = this.props.onAddSeries
+      ? (
+          <ContextMenuItem
             onClick={() => {
               this.props.onCloseTrack(this.props.series.uid);
               this.props.onAddSeries(this.props.hostTrack.uid);
@@ -294,17 +290,16 @@ export default class SeriesListMenu extends ContextMenuContainer {
             <span styleName="context-menu-span">
               {'Replace Series'}
             </span>
-          </ContextMenuItem>)
-          :
-          null;
+          </ContextMenuItem>
+      ) : null;
 
     let styleNames = 'context-menu';
     if (getDarkTheme()) styleNames += ' context-menu-dark';
 
     return (
       <div
+        ref={(c) => { this.div = c; }}
         onMouseLeave={this.props.handleMouseLeave}
-        ref={c => this.div = c}
         data-menu-type="SeriesListMenu"
         style={{
           left: this.state.left,
@@ -315,15 +310,15 @@ export default class SeriesListMenu extends ContextMenuContainer {
         <ContextMenuItem
           onClick={this.props.onConfigureTrack}
           onMouseEnter={e => this.handleItemMouseEnter(e,
-          {
-            option: 'configure-series',
-            value: this.props.track
-          })
+            {
+              option: 'configure-series',
+              value: this.props.track
+            })
           }
           onMouseLeave={e => this.handleMouseLeave(e)}
         >
           {'Configure Series'}
-          <svg styleName="play-icon" >
+          <svg styleName="play-icon">
             <use xlinkHref="#play" />
           </svg>
         </ContextMenuItem>
@@ -331,17 +326,17 @@ export default class SeriesListMenu extends ContextMenuContainer {
         <ContextMenuItem
           onClick={() => {}}
           onMouseEnter={e => this.handleItemMouseEnter(e,
-          {
-            option: 'track-type',
-            value: this.props.track
-          })
+            {
+              option: 'track-type',
+              value: this.props.track
+            })
           }
           onMouseLeave={e => this.handleMouseLeave(e)}
           styleName="context-menu-item"
         >
           <span styleName="context-menu-span">
             {'Track Type'}
-            <svg styleName="play-icon" >
+            <svg styleName="play-icon">
               <use xlinkHref="#play" />
             </svg>
           </span>
