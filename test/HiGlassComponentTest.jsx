@@ -29,6 +29,7 @@ import {
 // View configs
 import {
   // paperFigure1,
+  geneAnnotationsOnly,
   annotationsTilesView,
   horizontalAndVerticalMultivec,
   exportDataConfig,
@@ -220,6 +221,50 @@ describe('Simple HiGlassComponent', () => {
   let div = null;
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 7000;
+
+  describe('Gene Annotations Dispaly', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={geneAnnotationsOnly}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc, done);
+    });
+
+    it('Check to make sure that the rectangles are initially small', (done) => {
+      let track = getTrackObject(hgc, 'aa', 'genes1');
+
+      const { views } = hgc.instance().state;
+      track = getTrackByUid(views.aa.tracks, 'genes1');
+
+      track.options.labelPosition = 'topLeft';
+
+      hgc.setState({
+        views,
+      });
+      console.log('track', track);
+
+      waitForTilesLoaded(hgc, done);
+    });
+  });
+  return;
 
   describe('2D Rectangle Annotations', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
