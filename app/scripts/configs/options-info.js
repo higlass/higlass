@@ -5,10 +5,17 @@ import {
 
 import HeatmapOptions from '../HeatmapOptions';
 
+const sizesInPx = (sizes, unit = '', multiplier = 1) => sizes.reduce(
+  (sizeOption, size) => {
+    sizeOption[size] = { name: `${size * multiplier}${unit}`, value: size };
+    return sizeOption;
+  }, {}
+);
+
 const YES_NO = {
-  yes: { name: 'Yes', value: true},
+  yes: { name: 'Yes', value: true },
   no: { name: 'No', value: false },
-}
+};
 
 const AVAILABLE_COLORS = {
   black: { name: 'Black', value: 'black' },
@@ -24,26 +31,12 @@ const AVAILABLE_COLORS = {
   white: { name: 'White', value: 'white' },
 };
 
-const AVAILABLE_WIDTHS = {
-  1: { name: '1', value: 1 },
-  2: { name: '2', value: 2 },
-  3: { name: '3', value: 3 },
-  5: { name: '5', value: 5 },
-  8: { name: '8', value: 8 },
-  13: { name: '13', value: 13 },
-  21: { name: '21', value: 21 },
-};
-const AVAILABLE_WIDTHS_AND_NONE = Object.assign(AVAILABLE_WIDTHS, {
-  'none': { name: 'none', value: 'none'}});
+const AVAILABLE_WIDTHS = sizesInPx([1, 2, 3, 5, 8, 13, 21]);
+const AVAILABLE_WIDTHS_AND_NONE = Object.assign(
+  AVAILABLE_WIDTHS, { none: { name: 'none', value: 'none' } }
+);
 
-const OPACITY_OPTIONS = {
-  0: { name: '0%', value: 0.0 },
-  0.2: { name: '20%', value: 0.2 },
-  0.4: { name: '40%', value: 0.4 },
-  0.6: { name: '60%', value: 0.6 },
-  0.8: { name: '80%', value: 0.8 },
-  '1.0': { name: '100%', value: 1.0 },
-};
+const OPACITY_OPTIONS = sizesInPx([0.0, 0.2, 0.4, 0.6, 0.8, 1.0], '%', 100);
 
 // these values define the options that are visible in the track config
 // menu
@@ -76,10 +69,7 @@ export const OPTIONS_INFO = {
   },
   sortLargestOnTop: {
     name: 'Sort Largest On Top',
-    inlineOptions: {
-      yes: { name: 'Yes', value: true},
-      no: { name: 'No', value: false }
-    }
+    inlineOptions: YES_NO
   },
   minSquareSize: {
     name: 'Minimum size',
@@ -321,19 +311,9 @@ export const OPTIONS_INFO = {
 
   fontSize: {
     name: 'Font Size',
-    inlineOptions: {
-      8: { name: '8px', value: 8 },
-      9: { name: '9px', value: 9 },
-      10: { name: '10px', value: 10 },
-      11: { name: '11px', value: 11 },
-      12: { name: '12px', value: 12 },
-      14: { name: '14px', value: 14 },
-      16: { name: '16px', value: 16 },
-      18: { name: '18px', value: 18 },
-      24: { name: '24px', value: 24 },
-    },
+    inlineOptions: sizesInPx([8, 9, 10, 11, 12, 14, 16, 18, 24], 'px'),
   },
-  
+
   colorEncoding: {
     name: 'Color Encode Annotations',
     inlineOptions: YES_NO
@@ -445,9 +425,9 @@ export const OPTIONS_INFO = {
   viewResolution: {
     name: 'View Resolution',
     inlineOptions: {
-      high: { name: 'High', value: 384},
-      medium: { name: 'Medium', value: 1024},
-      low: { name: 'Low', value: 2048},
+      high: { name: 'High', value: 384 },
+      medium: { name: 'Medium', value: 1024 },
+      low: { name: 'Low', value: 2048 },
     },
   },
 
@@ -584,10 +564,7 @@ export const OPTIONS_INFO = {
 
   colorRangeGradient: {
     name: 'Color Gradient',
-    inlineOptions: {
-      yes: { name: 'Yes', value: true },
-      no: { name: 'No', value: false },
-    },
+    inlineOptions: YES_NO,
   },
 
   dataTransform: {
