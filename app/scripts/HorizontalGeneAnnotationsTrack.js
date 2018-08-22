@@ -235,6 +235,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       const text = tile.texts[geneName];
 
       text.position.x = this._xScale(txMiddle);
+
+      console.log('position', textYMiddle);
       text.position.y = textYMiddle;
       text.style = { 
         fontSize: this.textFontSize,
@@ -288,6 +290,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       xStartPos + width, yPos + lineHeight,
       xStartPos, yPos + lineHeight
     ];
+    console.log('yPos:', yPos);
  
     graphics.drawPolygon(poly);
 
@@ -337,6 +340,14 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     }
 
     return polys;
+  }
+
+  /**
+  * Position a gene annotation's text at its expected location.
+  * @param {td}: A piece of tile data
+  */
+  positionText(td) {
+
   }
 
   draw() {
@@ -419,6 +430,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           // genes on the - strand drawn below and in a user-specified color or the default red
           textYMiddle += (1.5 * FONT_SIZE) + GENE_RECT_HEIGHT + 2;
         }
+        console.log('textYMiddle', textYMiddle);
 
         text.position.x = this._xScale(txMiddle);
         text.position.y = textYMiddle;
@@ -595,7 +607,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       t.innerHTML = text.text.text;
 
       g.appendChild(t);
-      g.setAttribute('transform', `translate(${text.text.x},${text.text.y})scale(${text.text.scale.x},1)`);
+      g.setAttribute('transform', 
+        `translate(${text.text.x},${text.text.y})scale(${text.text.scale.x},1)`);
       output.appendChild(g);
     }
 

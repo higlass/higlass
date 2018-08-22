@@ -254,6 +254,7 @@ describe('Simple HiGlassComponent', () => {
       const { views } = hgc.instance().state;
       track = getTrackByUid(views.aa.tracks, 'genes1');
 
+      console.log('setting views');
       track.options.labelPosition = 'topLeft';
 
       hgc.setState({
