@@ -50,7 +50,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     this.fontSize = +this.options.fontSize || FONT_SIZE;
     this.geneLabelPos = this.options.geneLabelPosition || GENE_LABEL_POS;
-    this.geneRectHeight = +this.options.geneAnnoHeight || GENE_RECT_HEIGHT;
+    this.geneRectHeight = +this.options.geneAnnotationHeight || GENE_RECT_HEIGHT;
     this.geneTriangleHeight = 0.6 * this.geneRectHeight || TRIANGLE_HEIGHT;
     this.geneStrandSpacing = +this.options.geneStrandSpacing || GENE_STRAND_SPACING;
     this.geneStrandHSpacing = this.geneStrandSpacing / 2;
@@ -158,7 +158,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     this.fontSize = +this.options.fontSize || FONT_SIZE;
     this.geneLabelPos = this.options.geneLabelPosition || GENE_LABEL_POS;
-    this.geneRectHeight = +this.options.geneAnnoHeight || GENE_RECT_HEIGHT;
+    this.geneRectHeight = +this.options.geneAnnotationHeight || GENE_RECT_HEIGHT;
     this.geneTriangleHeight = 0.6 * this.geneRectHeight || TRIANGLE_HEIGHT;
     this.geneStrandHSpacing = this.geneStrandSpacing / 2;
     this.geneRectHHeight = this.geneRectHeight / 2;

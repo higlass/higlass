@@ -432,8 +432,8 @@ export const OPTIONS_INFO = {
     inlineOptions: OPACITY_OPTIONS,
   },
 
-  geneAnnoHeight: {
-    name: 'Gene Anno Height',
+  geneAnnotationHeight: {
+    name: 'Gene Annotation Height',
     inlineOptions: {
       8: { name: '8px', value: 8 },
       10: { name: '10px', value: 10 },
