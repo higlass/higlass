@@ -121,7 +121,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const tileIds = {};
     tiles.forEach((t) => { tileIds[t.tileId] = t; });
 
-    if (tile.tileData && this.drawnGenes[zoomLevel]) {
+    if (tile.tileData && tile.tileData.filter && this.drawnGenes[zoomLevel]) {
       tile.tileData
         .filter(td => this.drawnGenes[zoomLevel][td.fields[3]])
         .forEach((td) => {
@@ -301,6 +301,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         if (i >= MAX_TEXTS) return;
 
         const text = tile.texts[geneName];
+
+        if (!text) return;
 
         text.style = {
           fontSize: `${this.fontSize}px`,
