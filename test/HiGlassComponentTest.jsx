@@ -265,7 +265,6 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc, done);
     });
   });
-  return;
 
   describe('2D Rectangle Annotations', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
