@@ -412,6 +412,33 @@ export const OPTIONS_INFO = {
     inlineOptions: OPACITY_OPTIONS,
   },
 
+  geneAnnotationHeight: {
+    name: 'Gene Annotation Height',
+    inlineOptions: {
+      8: { name: '8px', value: 8 },
+      10: { name: '10px', value: 10 },
+      12: { name: '12px', value: 12 },
+      16: { name: '16px', value: 16 },
+    }
+  },
+
+  geneLabelPosition: {
+    name: 'Gene Label Position',
+    inlineOptions: {
+      inside: { name: 'Inside', value: 'inside' },
+      outside: { name: 'Outside', value: 'outside' },
+    }
+  },
+
+  geneStrandSpacing: {
+    name: 'Gene Strand Spacing',
+    inlineOptions: {
+      2: { name: '2px', value: 2 },
+      4: { name: '4px', value: 4 },
+      8: { name: '8px', value: 8 },
+    }
+  },
+
   labelBackgroundColor: {
     name: 'Label Background Color',
     inlineOptions: AVAILABLE_COLORS,
