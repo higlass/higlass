@@ -1,4 +1,4 @@
-const STACK = {
+const GLOBAL_STACK = {
   __times: {}
 };
 
@@ -13,7 +13,7 @@ const STACK = {
  * @return {object} Object with the event name and the callback. The object
  *   can be used to unsubscribe.
  */
-const subscribe = (stack = STACK) => (event, callback, times = Infinity) => {
+const subscribe = stack => (event, callback, times = Infinity) => {
   if (!stack[event]) {
     stack[event] = [];
     stack.__times[event] = [];
@@ -33,7 +33,7 @@ const subscribe = (stack = STACK) => (event, callback, times = Infinity) => {
  * @param {function} callback - Callback function to be unsubscribed. It is
  *   ignored if `id` is provided.
  */
-const unsubscribe = (stack = STACK) => (event, callback) => {
+const unsubscribe = stack => (event, callback) => {
   if (!stack[event]) return;
 
   if (typeof event === 'object') {
@@ -56,10 +56,10 @@ const unsubscribe = (stack = STACK) => (event, callback) => {
  * @param {string} event - Event type to be published.
  * @param {any} news - The news to be published.
  */
-const publish = (stack = STACK) => (event, news) => {
+const publish = stack => (event, news) => {
   if (!stack[event]) return;
 
-  const unsubscriber = unsubscribe(STACK);
+  const unsubscriber = unsubscribe(stack);
 
   stack[event].forEach((listener, i) => {
     listener(news);
@@ -67,7 +67,7 @@ const publish = (stack = STACK) => (event, news) => {
   });
 };
 
-export const create = (stack = {}) => {
+export const create = (stack = { __times: {} }) => {
   if (!stack.__times) stack.__times = {};
   return {
     publish: publish(stack),
@@ -76,4 +76,6 @@ export const create = (stack = {}) => {
   };
 };
 
-export default create(STACK);
+export default create;
+
+export const globalPubSub = create(GLOBAL_STACK);
