@@ -67,7 +67,7 @@ const publish = stack => (event, news) => {
   });
 };
 
-export const create = (stack = { __times: {} }) => {
+const create = (stack = { __times: {} }) => {
   if (!stack.__times) stack.__times = {};
   return {
     publish: publish(stack),
