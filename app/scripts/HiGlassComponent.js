@@ -26,11 +26,12 @@ import {
   domEvent,
   getDarkTheme,
   setDarkTheme,
-  pubSub,
   setTileProxyAuthHeader,
   tileProxy,
   requestsInFlight,
 } from './services';
+
+import createPubSub, { Provider: PubSubProvider } from './services/pub-sub';
 
 // Utils
 import {
@@ -74,6 +75,9 @@ import stylesGlobal from '../styles/HiGlass.scss'; // eslint-disable-line no-unu
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
 const VIEW_HEADER_HEIGHT = 20;
+
+// Create global pubSub
+const pubSub = createPubSub();
 
 class HiGlassComponent extends React.Component {
   constructor(props) {
@@ -3593,42 +3597,44 @@ class HiGlassComponent extends React.Component {
     }
 
     return (
-      <div
-        key={this.uid}
-        ref={(c) => { this.topDiv = c; }}
-        className="higlass"
-        onMouseLeave={this.onMouseLeaveHandlerBound}
-        onMouseMove={this.mouseMoveHandlerBound}
-        onWheel={this.onWheelHandlerBound}
-        styleName={styleNames}
-      >
-        <canvas
-          key={this.uid}
-          ref={(c) => { this.canvasElement = c; }}
-          styleName="styles.higlass-canvas"
-        />
+      <PubSubProvider value={pubSub}>
         <div
-          ref={(c) => { this.divDrawingSurface = c; }}
-          styleName="styles.higlass-drawing-surface"
+          key={this.uid}
+          ref={(c) => { this.topDiv = c; }}
+          className="higlass"
+          onMouseLeave={this.onMouseLeaveHandlerBound}
+          onMouseMove={this.mouseMoveHandlerBound}
+          onWheel={this.onWheelHandlerBound}
+          styleName={styleNames}
         >
-          {gridLayout}
+          <canvas
+            key={this.uid}
+            ref={(c) => { this.canvasElement = c; }}
+            styleName="styles.higlass-canvas"
+          />
+          <div
+            ref={(c) => { this.divDrawingSurface = c; }}
+            styleName="styles.higlass-drawing-surface"
+          >
+            {gridLayout}
+          </div>
+          <svg
+            ref={(c) => { this.svgElement = c; }}
+            style={{
+              // inline the styles so they aren't overriden by other css
+              // on the web page
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              left: 0,
+              top: 0,
+              pointerEvents: 'none',
+            }}
+            styleName="styles.higlass-svg"
+          />
+          {exportLinkModal}
         </div>
-        <svg
-          ref={(c) => { this.svgElement = c; }}
-          style={{
-            // inline the styles so they aren't overriden by other css
-            // on the web page
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            left: 0,
-            top: 0,
-            pointerEvents: 'none',
-          }}
-          styleName="styles.higlass-svg"
-        />
-        {exportLinkModal}
-      </div>
+      </PubSubContext>
     );
   }
 }

@@ -1,3 +1,5 @@
+import React from 'react';
+
 const GLOBAL_STACK = {
   __times: {}
 };
@@ -76,6 +78,23 @@ const create = (stack = { __times: {} }) => {
   };
 };
 
+const globalPubSub = create(GLOBAL_STACK);
+
+const { Provider, Consumer } = React.createContext();
+
+// Higher order component (for React components)
+const withPubSubComponent = Component => props => (
+  <Consumer>
+    {pubSub => <Component {...props} pubSub={pubSub} />}
+  </Consumer>
+);
+
+// Higher order function (for other kind of classes)
+const withPubSubFn = pubSub => (fn) => {
+  fn.pubSub = pubSub;
+  return fn;
+};
+
 export default create;
 
-export const globalPubSub = create(GLOBAL_STACK);
+export { globalPubSub, Provider, withPubSubComponent, withPubSubFn };

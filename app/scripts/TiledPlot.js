@@ -22,7 +22,7 @@ import ViewContextMenu from './ViewContextMenu';
 // import {HeatmapOptions} from './HeatmapOptions';
 
 // Services
-import { pubSub } from './services';
+import { withPubSubComponent } from './services/pub-sub';
 
 // Utils
 import {
@@ -178,7 +178,7 @@ class TiledPlot extends React.Component {
 
     this.pubSubs = [];
     this.pubSubs.push(
-      pubSub.subscribe('contextmenu', this.contextMenuHandlerBound)
+      this.props.pubSub.subscribe('contextmenu', this.contextMenuHandlerBound)
     );
   }
 
@@ -246,7 +246,7 @@ class TiledPlot extends React.Component {
     this.closing = true;
 
     this.removeEventListeners();
-    this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
+    this.pubSubs.forEach(subscription => this.props.pubSub.unsubscribe(subscription));
   }
 
   addUidsToTracks(tracks) {
@@ -2133,4 +2133,4 @@ TiledPlot.propTypes = {
   zoomToDataExtentOnInit: PropTypes.bool
 };
 
-export default TiledPlot;
+export default withPubSubComponent(TiledPlot);
