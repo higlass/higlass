@@ -67,7 +67,7 @@ const publish = (stack = STACK) => (event, news) => {
   });
 };
 
-export const create = (stack = STACK) => {
+export const create = (stack = {}) => {
   if (!stack.__times) stack.__times = {};
   return {
     publish: publish(stack),
@@ -76,4 +76,4 @@ export const create = (stack = STACK) => {
   };
 };
 
-export default create();
+export default create(STACK);
