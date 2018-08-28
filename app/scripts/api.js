@@ -9,326 +9,326 @@ import {
   MOUSE_TOOL_SELECT,
 } from './configs';
 
-import pubSub, { create } from './services/pub-sub';
+import createPubSub from './services/pub-sub';
 
-let stack = {};
-let pubSubs = [];
-
-const apiPubSub = create(stack);
-
-export const destroy = () => {
-  pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
-  pubSubs = [];
-  stack = {};
-};
-
-const api = function api(context) {
+const api = function api(context, pubSub) {
   const self = context;
+  const apiPubSub = createPubSub();
+
+  let pubSubs = [];
+
+  const destroy = () => {
+    pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
+    pubSubs = [];
+  };
 
   // Public API
   return {
-    setAuthHeader(newHeader) {
-      setTileProxyAuthHeader(newHeader);
+    destroy,
+    publish: apiPubSub.publish,
+    public: {
+      setAuthHeader(newHeader) {
+        setTileProxyAuthHeader(newHeader);
 
-      // we need to re-request all the tiles
-      this.reload();
-    },
+        // we need to re-request all the tiles
+        this.reload();
+      },
 
-    /**
-     * Reload all of the tiles
-     */
-    reload() {
-      console.warn('Not implemented yet!');
-    },
-
-    destroy() {
-      ReactDOM.unmountComponentAtNode(self.topDiv.parentNode);
-    },
-
-    setRangeSelectionToInt() {
-      self.setState({ rangeSelectionToInt: true });
-    },
-
-    setRangeSelectionToFloat() {
-      self.setState({ rangeSelectionToInt: false });
-    },
-
-    setRangeSelection1dSize(minSize = 0, maxSize = Infinity) {
-      self.setState({
-        rangeSelection1dSize: [minSize, maxSize]
-      });
-    },
-
-    setViewConfig(newViewConfig) {
       /**
-       * Set a new view config to define the layout and data
-       * of this component
-       *
-       * Parameters
-       * ----------
-       *  newViewConfig: {}
-       *    A JSON object that defines the state of the HiGlassComponent
-       *
-       * Returns
-       * -------
-       *  dataLoaded: Promise
-       *    A promise that resolves when all of the data for this viewconfig
-       *    is loaded
+       * Reload all of the tiles
        */
-      const viewsByUid = self.processViewConfig(newViewConfig);
-      const p = new Promise((resolve) => {
-        this.requestsInFlight = 0;
+      reload() {
+        console.warn('Not implemented yet!');
+      },
 
-        pubSubs.push(pubSub.subscribe('requestSent', () => {
-          this.requestsInFlight += 1;
-        }));
+      destroy() {
+        ReactDOM.unmountComponentAtNode(self.topDiv.parentNode);
+      },
 
-        pubSubs.push(pubSub.subscribe('requestReceived', () => {
-          this.requestsInFlight -= 1;
+      setRangeSelectionToInt() {
+        self.setState({ rangeSelectionToInt: true });
+      },
 
-          if (this.requestsInFlight === 0) {
-            resolve();
-          }
-        }));
+      setRangeSelectionToFloat() {
+        self.setState({ rangeSelectionToInt: false });
+      },
 
+      setRangeSelection1dSize(minSize = 0, maxSize = Infinity) {
         self.setState({
-          viewConfig: newViewConfig,
-          views: viewsByUid,
-        }, () => {
-
+          rangeSelection1dSize: [minSize, maxSize]
         });
-      });
+      },
 
-      return p;
-    },
+      setViewConfig(newViewConfig) {
+        /**
+         * Set a new view config to define the layout and data
+         * of this component
+         *
+         * Parameters
+         * ----------
+         *  newViewConfig: {}
+         *    A JSON object that defines the state of the HiGlassComponent
+         *
+         * Returns
+         * -------
+         *  dataLoaded: Promise
+         *    A promise that resolves when all of the data for this viewconfig
+         *    is loaded
+         */
+        const viewsByUid = self.processViewConfig(newViewConfig);
+        const p = new Promise((resolve) => {
+          this.requestsInFlight = 0;
 
-    getMinMaxValue(
-      viewId,
-      trackId,
-      ignoreOffScreenValues = false,
-      ignoreFixedScale = false
-    ) {
-      return self.getMinMaxValue(
+          pubSubs.push(pubSub.subscribe('requestSent', () => {
+            this.requestsInFlight += 1;
+          }));
+
+          pubSubs.push(pubSub.subscribe('requestReceived', () => {
+            this.requestsInFlight -= 1;
+
+            if (this.requestsInFlight === 0) {
+              resolve();
+            }
+          }));
+
+          self.setState({
+            viewConfig: newViewConfig,
+            views: viewsByUid,
+          }, () => {
+
+          });
+        });
+
+        return p;
+      },
+
+      getMinMaxValue(
         viewId,
         trackId,
-        ignoreOffScreenValues,
-        ignoreFixedScale
-      );
-    },
+        ignoreOffScreenValues = false,
+        ignoreFixedScale = false
+      ) {
+        return self.getMinMaxValue(
+          viewId,
+          trackId,
+          ignoreOffScreenValues,
+          ignoreFixedScale
+        );
+      },
 
-    /**
-     * Retrieve a sharable link for the current view config
-     *
-     * @param {string}  url  Custom URL that should point to a higlass server's
-     *   view config endpoint, i.e.,
-     *   `http://my-higlass-server.com/api/v1/viewconfs/`.
-     * @return  {Object}  Promise resolving to the link ID and URL.
-     */
-    shareViewConfigAsLink(url) {
-      return self.handleExportViewsAsLink(url, true);
-    },
-
-    /**
-     * Show overlays where this track can be positioned
-     *
-     * @param {obj} track: { server, tilesetUid, datatype }
-     */
-    showAvailableTrackPositions(track) {
-      self.setState({
-        draggingHappening: track,
-      });
-    },
-
-    /**
-     * Hide the overlay showing wher this track can be positioned
-     */
-    hideAvailableTrackPositions(track) {
-      self.setState({
-        draggingHappening: null,
-      });
-    },
-
-    setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
-      self.setTrackValueScaleLimits(viewId, trackId, minValue, maxValue);
-    },
-
-    /**
-     * Choose a theme.
-     */
-    setDarkTheme(darkTheme) {
-      setDarkTheme(!!darkTheme);
-    },
-
-    zoomToDataExtent(viewUid) {
       /**
-       * Zoom so that the entire dataset is visible
+       * Retrieve a sharable link for the current view config
        *
-       * Parameters
-       * ----------
-       *  viewUid: string
-       *    The view uid to zoom to extent to
-       *
-       * Returns
-       * -------
-       *  nothing
+       * @param {string}  url  Custom URL that should point to a higlass server's
+       *   view config endpoint, i.e.,
+       *   `http://my-higlass-server.com/api/v1/viewconfs/`.
+       * @return  {Object}  Promise resolving to the link ID and URL.
        */
-      self.handleZoomToData(viewUid);
-    },
+      shareViewConfigAsLink(url) {
+        return self.handleExportViewsAsLink(url, true);
+      },
 
-    /**
-     * Reset the viewport to the initial x and y domain
-     * @param  {number} viewId - ID of the view for which the viewport should be
-     *  reset.
-     */
-    resetViewport(viewId) {
-      self.resetViewport(viewId);
-    },
-
-    getDataURI() {
       /**
-       * Export the current canvas as a PNG string so that
-       * it can be saved
+       * Show overlays where this track can be positioned
        *
-       * Return
-       * ------
-       *  pngString: string
-       *    A data URI
+       * @param {obj} track: { server, tilesetUid, datatype }
        */
-      return self.createDataURI();
-    },
+      showAvailableTrackPositions(track) {
+        self.setState({
+          draggingHappening: track,
+        });
+      },
 
-    /**
-     * Activate a specific mouse tool.
-     *
-     * @description
-     * Mouse tools enable different behaviors which would otherwise clash. For
-     *
-     * @param {string}  tool  Mouse tool name to be selected.
-     */
-    activateTool(tool) {
-      switch (tool) {
-        case 'select':
-          self.setMouseTool(MOUSE_TOOL_SELECT);
-          break;
+      /**
+       * Hide the overlay showing wher this track can be positioned
+       */
+      hideAvailableTrackPositions(track) {
+        self.setState({
+          draggingHappening: null,
+        });
+      },
 
-        default:
-          self.setMouseTool(MOUSE_TOOL_MOVE);
-          break;
-      }
-    },
+      setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
+        self.setTrackValueScaleLimits(viewId, trackId, minValue, maxValue);
+      },
 
-    /*
-     * Get the current view as a Data URI
-     *
-     * @return {string} A data URI describing the current state of the canvas
-     */
-    exportAsPng() {
-      return self.createDataURI();
-    },
+      /**
+       * Choose a theme.
+       */
+      setDarkTheme(darkTheme) {
+        setDarkTheme(!!darkTheme);
+      },
 
-    /*
-     * Get the current view as an SVG. Relies on all the tracks implementing
-     * their respective exportAsSVG methods.
-     *
-     * @return {string} An SVG string of the current view.
-     */
-    exportAsSvg() {
-      return self.createSVGString();
-    },
+      zoomToDataExtent(viewUid) {
+        /**
+         * Zoom so that the entire dataset is visible
+         *
+         * Parameters
+         * ----------
+         *  viewUid: string
+         *    The view uid to zoom to extent to
+         *
+         * Returns
+         * -------
+         *  nothing
+         */
+        self.handleZoomToData(viewUid);
+      },
 
-    /*
-     * Export the current view as a Viewconf.
-     *
-     * @return {string} A stringified version of the current viewconf
-    */
-    exportAsViewConfString() {
-      return self.getViewsAsString();
-    },
+      /**
+       * Reset the viewport to the initial x and y domain
+       * @param  {number} viewId - ID of the view for which the viewport should be
+       *  reset.
+       */
+      resetViewport(viewId) {
+        self.resetViewport(viewId);
+      },
 
-    /*
-     * Get the current range selection
-     *
-     * @return {???} What is the return type here??
-     */
-    getRangeSelection() {
-      return self.rangeSelection;
-    },
+      getDataURI() {
+        /**
+         * Export the current canvas as a PNG string so that
+         * it can be saved
+         *
+         * Return
+         * ------
+         *  pngString: string
+         *    A data URI
+         */
+        return self.createDataURI();
+      },
 
-    getLocation(viewId) {
-      const wurstId = viewId
-        ? self.xScales[viewId] && self.yScales[viewId] && viewId
-        : Object.values(self.tiledPlots)[0] && Object.values(self.tiledPlots)[0].props.uid;
+      /**
+       * Activate a specific mouse tool.
+       *
+       * @description
+       * Mouse tools enable different behaviors which would otherwise clash. For
+       *
+       * @param {string}  tool  Mouse tool name to be selected.
+       */
+      activateTool(tool) {
+        switch (tool) {
+          case 'select':
+            self.setMouseTool(MOUSE_TOOL_SELECT);
+            break;
 
-      if (!wurstId) {
-        return 'Please provide a valid view UUID sweetheart 😙';
-      }
+          default:
+            self.setMouseTool(MOUSE_TOOL_MOVE);
+            break;
+        }
+      },
 
-      return {
-        xDomain: self.xScales[wurstId].domain(),
-        yDomain: self.yScales[wurstId].domain()
-      };
-    },
+      /*
+       * Get the current view as a Data URI
+       *
+       * @return {string} A data URI describing the current state of the canvas
+       */
+      exportAsPng() {
+        return self.createDataURI();
+      },
 
-    zoomTo(
-      viewUid,
-      start1Abs,
-      end1Abs,
-      start2Abs,
-      end2Abs,
-      animateTime = 0,
-    ) {
-      self.zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime);
-    },
+      /*
+       * Get the current view as an SVG. Relies on all the tracks implementing
+       * their respective exportAsSVG methods.
+       *
+       * @return {string} An SVG string of the current view.
+       */
+      exportAsSvg() {
+        return self.createSVGString();
+      },
 
-    off(event, listenerId, viewId) {
-      const callback = typeof listenerId === 'object'
-        ? listenerId.callback
-        : listenerId;
+      /*
+       * Export the current view as a Viewconf.
+       *
+       * @return {string} A stringified version of the current viewconf
+      */
+      exportAsViewConfString() {
+        return self.getViewsAsString();
+      },
 
-      switch (event) {
-        case 'location':
-          self.offLocationChange(viewId, listenerId);
-          break;
+      /*
+       * Get the current range selection
+       *
+       * @return {???} What is the return type here??
+       */
+      getRangeSelection() {
+        return self.rangeSelection;
+      },
 
-        case 'mouseMoveZoom':
-          apiPubSub.unsubscribe('mouseMoveZoom', callback);
-          break;
+      getLocation(viewId) {
+        const wurstId = viewId
+          ? self.xScales[viewId] && self.yScales[viewId] && viewId
+          : Object.values(self.tiledPlots)[0] && Object.values(self.tiledPlots)[0].props.uid;
 
-        case 'rangeSelection':
-          apiPubSub.unsubscribe('rangeSelection', callback);
-          break;
+        if (!wurstId) {
+          return 'Please provide a valid view UUID sweetheart 😙';
+        }
 
-        case 'viewConfig':
-          self.offViewChange(listenerId);
-          break;
+        return {
+          xDomain: self.xScales[wurstId].domain(),
+          yDomain: self.yScales[wurstId].domain()
+        };
+      },
 
-        default:
-          // nothing
-          break;
-      }
-    },
+      zoomTo(
+        viewUid,
+        start1Abs,
+        end1Abs,
+        start2Abs,
+        end2Abs,
+        animateTime = 0,
+      ) {
+        self.zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime);
+      },
 
-    on(event, callback, viewId, callbackId) {
-      switch (event) {
-        case 'location':
-          // returns a set of scales (xScale, yScale) on every zoom event
-          return self.onLocationChange(viewId, callback, callbackId);
+      off(event, listenerId, viewId) {
+        const callback = typeof listenerId === 'object'
+          ? listenerId.callback
+          : listenerId;
 
-        case 'mouseMoveZoom':
-          return apiPubSub.subscribe('mouseMoveZoom', callback);
+        switch (event) {
+          case 'location':
+            self.offLocationChange(viewId, listenerId);
+            break;
 
-        case 'rangeSelection':
-          return apiPubSub.subscribe('rangeSelection', callback);
+          case 'mouseMoveZoom':
+            apiPubSub.unsubscribe('mouseMoveZoom', callback);
+            break;
 
-        case 'viewConfig':
-          return self.onViewChange(callback);
+          case 'rangeSelection':
+            apiPubSub.unsubscribe('rangeSelection', callback);
+            break;
 
-        default:
-          return undefined;
-      }
+          case 'viewConfig':
+            self.offViewChange(listenerId);
+            break;
+
+          default:
+            // nothing
+            break;
+        }
+      },
+
+      on(event, callback, viewId, callbackId) {
+        switch (event) {
+          case 'location':
+            // returns a set of scales (xScale, yScale) on every zoom event
+            return self.onLocationChange(viewId, callback, callbackId);
+
+          case 'mouseMoveZoom':
+            return apiPubSub.subscribe('mouseMoveZoom', callback);
+
+          case 'rangeSelection':
+            return apiPubSub.subscribe('rangeSelection', callback);
+
+          case 'viewConfig':
+            return self.onViewChange(callback);
+
+          default:
+            return undefined;
+        }
+      },
     },
   };
 };
 
 export default api;
-export const publish = apiPubSub.publish;
