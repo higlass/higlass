@@ -1,7 +1,7 @@
 import slugid from 'slugid';
 
 class CombinedTrack {
-  constructor(trackDefs, trackCreator) {
+  constructor(pubSub, trackDefs, trackCreator) {
     this.childTracks = trackDefs.map(trackCreator);
     this.createdTracks = {};
     this.uid = slugid.nice()

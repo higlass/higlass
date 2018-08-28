@@ -10,8 +10,10 @@ import {
 } from './worker';
 
 export default class DataFetcher {
-  constructor(dataConfig) {
+  constructor(dataConfig, pubSub) {
     this.tilesetInfoLoading = true;
+
+    this.pubSub = pubSub;
 
     // copy the dataConfig so that it doesn't dirty so that
     // it doesn't get modified when we make objects of its
@@ -40,7 +42,7 @@ export default class DataFetcher {
      *    A callback that will be called when all tileset infos are loaded
      */
     if (!this.dataConfig.children) {
-      // this data source has no children so we just need to retrieve one tileset 
+      // this data source has no children so we just need to retrieve one tileset
       // info
       if (!this.dataConfig.server && !this.dataConfig.tilesetUid) {
         console.warn(
@@ -60,7 +62,8 @@ export default class DataFetcher {
           },
           (error) => {
             finished({'error': error});
-          }
+          },
+          this.pubSub
         );
       }
     } else {
@@ -123,13 +126,14 @@ export default class DataFetcher {
       this.fetchHorizontalSection(receivedTiles, tileIds, vertical=true);
     } else if (!this.dataConfig.children) {
       // no children, just return the fetched tiles as is
-      const promise = new Promise(resolve =>
+      const promise = new Promise(resolve => {
         tileProxy.fetchTilesDebounced({
           id: slugid.nice(),
           server: this.dataConfig.server,
           done: resolve,
           ids: tileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
-        }));
+        }, this.pubSub, true)
+      });
       promise.then((returnedTiles) => {
         // console.log('tileIds:', tileIds);
         const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
@@ -150,6 +154,7 @@ export default class DataFetcher {
       // fetch their data before returning to the parent
       const promises = this.dataConfig.children
         .map(x => new Promise((resolve) => {
+          console.log('CHECK ME', x);
           x.fetchTilesDebounced(resolve, tileIds);
         }));
 
@@ -264,11 +269,11 @@ export default class DataFetcher {
         yTiles = tileProxy.calculateTilesFromResolution(
           sortedResolutions[zoomLevel],
           scale,
-          this.dataConfig.tilesetInfo.min_pos[vertical ? 1 : 0], 
+          this.dataConfig.tilesetInfo.min_pos[vertical ? 1 : 0],
           this.dataConfig.tilesetInfo.max_pos[vertical ? 1 : 0]
         )
       } else {
-        yTiles = tileProxy.calculateTiles(zoomLevel, 
+        yTiles = tileProxy.calculateTiles(zoomLevel,
           scale,
           this.dataConfig.tilesetInfo.min_pos[vertical ? 1 : 0],
           this.dataConfig.tilesetInfo.max_pos[vertical ? 1 : 0],
@@ -295,7 +300,7 @@ export default class DataFetcher {
         server: this.dataConfig.server,
         done: resolve,
         ids: newTileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
-      }));
+      }, this.pubSub));
     promise.then((returnedTiles) => {
       // we've received some new tiles, but they're 2D
       // we need to extract the row corresponding to the data we need

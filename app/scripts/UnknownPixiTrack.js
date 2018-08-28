@@ -1,8 +1,8 @@
 import PixiTrack from './PixiTrack';
 
 class UnknownPixiTrack extends PixiTrack {
-  constructor(stage, def) {
-    super(stage, def);
+  constructor(pubSub, stage, def) {
+    super(pubSub, stage, def);
     // so that the tests checking for retrieved tilesetInfo pass
     this.tilesetInfo = {};
 

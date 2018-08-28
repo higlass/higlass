@@ -18,6 +18,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
    * @param dataConfig: An object defining where the data should be pulled from
    */
   constructor(
+    pubSub,
     scene,
     dataConfig,
     handleTilesetInfoReceived,
@@ -28,6 +29,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     onTrackOptionsChanged,
   ) {
     super(
+      pubSub,
       scene,
       dataConfig,
       handleTilesetInfoReceived,
@@ -271,12 +273,12 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     if (tile.renderInfo) {
       // console.log('same scaletype', scaleType, tile.renderInfo.scaleType);
       if (tile.renderInfo.scaleType == scaleType) {
-        if (tile.renderInfo.scaleDomain 
+        if (tile.renderInfo.scaleDomain
           && tile.renderInfo.scaleDomain[0] == this.limitedValueScale.domain()[0]
           && tile.renderInfo.scaleDomain[1] == this.limitedValueScale.domain()[1])
           toUpdate = false;
       }
-    } 
+    }
 
     if (!toUpdate)
       return;

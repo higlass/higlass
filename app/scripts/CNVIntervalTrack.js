@@ -6,6 +6,7 @@ import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
   constructor(
+    pubSub,
     scene,
     dataConfig,
     handleTilesetInfoReceived,
@@ -13,7 +14,9 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
     animate,
     onValueScaleChanged,
   ) {
-    super(scene,
+    super(
+      pubsub,
+      scene,
       dataConfig,
       handleTilesetInfoReceived,
       options,

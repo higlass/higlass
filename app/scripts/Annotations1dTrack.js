@@ -4,8 +4,8 @@ import * as PIXI from 'pixi.js';
 import PixiTrack from './PixiTrack';
 
 class Annotations1dTrack extends PixiTrack {
-  constructor(scene, options, isVertical) {
-    super(scene, options);
+  constructor(pubSub, scene, options, isVertical) {
+    super(pubSub, scene, options);
 
     this.options = options;
     this.isVertical = isVertical;

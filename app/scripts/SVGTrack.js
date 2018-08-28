@@ -4,8 +4,8 @@ import slugid from 'slugid';
 import Track from './Track';
 
 class SVGTrack extends Track {
-  constructor(svgElement) {
-    super();
+  constructor(pubSub, svgElement) {
+    super(pubSub);
     /**
      * Create a new SVG track. It will contain a g element
      * that maintains all of its element.

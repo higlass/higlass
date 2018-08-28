@@ -6,6 +6,7 @@ import SVGTrack from './SVGTrack';
 
 class ViewportTracker2D extends SVGTrack {
   constructor(
+    pubSub,
     svgElement,
     registerViewportChanged,
     removeViewportChanged,
@@ -13,7 +14,7 @@ class ViewportTracker2D extends SVGTrack {
     options,
   ) {
     // create a clipped SVG Path
-    super(svgElement, true);
+    super(pubSub, svgElement, true);
 
     const uid = slugid.nice();
     this.uid = uid;
@@ -37,7 +38,7 @@ class ViewportTracker2D extends SVGTrack {
       .call(this.brush);
 
     /*
-    // This is used to draw a border that is completely outside of the 
+    // This is used to draw a border that is completely outside of the
     // drawn rectangle
     this.gBorder = this.gMain
       .append('path')
@@ -117,7 +118,7 @@ class ViewportTracker2D extends SVGTrack {
       .style('fill', this.options.projectionStrokeColor)
       .style('opacity', this.options.projectionStrokeOpacity)
     */
-      
+
   }
 
   draw() {

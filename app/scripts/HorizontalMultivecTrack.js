@@ -6,6 +6,7 @@ import { tileProxy } from './services';
 
 export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   constructor(
+    pubSub,
     scene,
     dataConfig,
     handleTilesetInfoReceived,
@@ -17,6 +18,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     onMouseMoveZoom
   ) {
     super(
+      pubSub,
       scene,
       dataConfig,
       handleTilesetInfoReceived,
@@ -30,7 +32,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     //this.pMain = this.pMobile;
     this.pMain = this.pMobile;
-    
+
   }
 
   tileDataToCanvas(pixData) {
@@ -72,7 +74,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   }
 
   leftTrackZoomed(newXScale, newYScale, k, tx, ty) {
-    // a separate zoom function if the track is drawn on 
+    // a separate zoom function if the track is drawn on
     // the left
     const offset = this._xScale(0) - k * this._refXScale(0);
     this.pMobile.position.x = offset + this.position[0];

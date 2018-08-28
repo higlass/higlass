@@ -18,6 +18,7 @@ import PopupMenu from './PopupMenu';
 
 // Services
 import { getDarkTheme, tileProxy } from './services';
+import { withPubSub } from './services/pub-sub';
 
 // Utils
 import { scalesCenterAndK, dictKeys } from './utils';
@@ -105,7 +106,7 @@ class GenomePositionSearchBox extends React.Component {
     if (this.props.chromInfoServer && this.props.chromInfoId) {
       // if we've been passed a server and chromInfo ID we trust that it exists
       // and use that
-      this.availableChromSizes[this.props.chromInfoId] = 
+      this.availableChromSizes[this.props.chromInfoId] =
         new Set([{server: this.props.chromInfoServer, uuid: this.props.chromInfoId} ]);
       this.fetchChromInfo(this.props.chromInfoId);
     }
@@ -201,7 +202,7 @@ class GenomePositionSearchBox extends React.Component {
       this.searchField = new SearchField(this.chromInfo);
 
       this.setPositionText();
-    });
+    }, this.props.pubSub);
   }
 
   findAvailableAutocompleteSources() {
@@ -663,4 +664,4 @@ GenomePositionSearchBox.propTypes = {
   twoD: PropTypes.bool,
 };
 
-export default GenomePositionSearchBox;
+export default withPubSub(GenomePositionSearchBox);

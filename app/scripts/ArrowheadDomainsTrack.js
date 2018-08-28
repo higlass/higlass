@@ -8,8 +8,8 @@ import { create } from './services/pub-sub';
 import { colorToHex } from './utils';
 
 class ArrowheadDomainsTrack extends TiledPixiTrack {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate) {
-    super(scene, dataConfig, handleTilesetInfoReceived, option, animate);
+  constructor(pubSub, scene, dataConfig, handleTilesetInfoReceived, option, animate) {
+    super(pubSub, scene, dataConfig, handleTilesetInfoReceived, option, animate);
 
     this.drawnRects = {};
 

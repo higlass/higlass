@@ -7,8 +7,8 @@ import SearchField from './SearchField';
 import { colorToHex } from './utils';
 
 class Chromosome2DGrid extends PixiTrack {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, chromInfoPath) {
-    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
+  constructor(pubSub, scene, dataConfig, handleTilesetInfoReceived, options, animate, chromInfoPath) {
+    super(pubSub, scene, dataConfig, handleTilesetInfoReceived, options, animate);
 
     this.searchField = null;
     this.chromInfo = null;
@@ -32,7 +32,7 @@ class Chromosome2DGrid extends PixiTrack {
 
       this.draw();
       this.animate();
-    });
+    }, this.pubSub);
   }
 
   drawLines() {

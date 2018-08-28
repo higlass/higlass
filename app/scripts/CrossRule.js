@@ -7,8 +7,8 @@ import { HorizontalRuleMixin } from './HorizontalRule';
 import { VerticalRuleMixin } from './VerticalRule';
 
 class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
-  constructor(stage, xPosition, yPosition, options, animate) {
-    super(stage, options, animate);
+  constructor(pubSub, stage, xPosition, yPosition, options, animate) {
+    super(pubSub, stage, options, animate);
 
     this.xPosition = xPosition;
     this.yPosition = yPosition;

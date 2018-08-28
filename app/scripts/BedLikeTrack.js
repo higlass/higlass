@@ -24,8 +24,8 @@ const MAX_TILE_ENTRIES = 5000;
 const MIN_RECT_WIDTH = 2;
 
 class BedLikeTrack extends HorizontalTiled1DPixiTrack {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
-    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
+  constructor(pubSub, scene, dataConfig, handleTilesetInfoReceived, options, animate) {
+    super(pubSub, scene, dataConfig, handleTilesetInfoReceived, options, animate);
     this.textFontSize = '10px';
     this.textFontFamily = 'Arial';
 

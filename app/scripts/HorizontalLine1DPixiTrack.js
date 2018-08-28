@@ -8,6 +8,7 @@ import { tileProxy } from './services';
 
 class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(
+    pubSub,
     scene,
     dataConfig,
     handleTilesetInfoReceived,
@@ -16,6 +17,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     onValueScaleChanged,
   ) {
     super(
+      pubSub,
       scene,
       dataConfig,
       handleTilesetInfoReceived,

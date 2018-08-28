@@ -41,6 +41,7 @@ const BINS_PER_TILE = 256;
 
 class HeatmapTiledPixiTrack extends TiledPixiTrack {
   constructor(
+    pubSub,
     scene,
     dataConfig,
     handleTilesetInfoReceived,
@@ -55,6 +56,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
      * @param scene: A PIXI.js scene to draw everything to.
      */
     super(
+      pubSub,
       scene,
       dataConfig,
       handleTilesetInfoReceived,
@@ -158,7 +160,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     const relX = x - this.position[0];
     const relY = y - this.position[1];
-    let data = this.getVisibleRectangleData(relX - Math.ceil(this.dataLensSize / 2), 
+    let data = this.getVisibleRectangleData(relX - Math.ceil(this.dataLensSize / 2),
       relY - Math.ceil(this.dataLensSize / 2), this.dataLensSize, this.dataLensSize);
     if (!data)
       return;
@@ -604,8 +606,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     );
     this.pColorbarArea.drawRect(0, 0, colorbarAreaWidth, colorbarAreaHeight);
 
-    if (!this.options) { 
-      this.options = { scaleStartPercent: 0, scaleEndPercent: 1 }; 
+    if (!this.options) {
+      this.options = { scaleStartPercent: 0, scaleEndPercent: 1 };
     }
     else {
       if (!this.options.scaleStartPercent) { this.options.scaleStartPercent = 0; }
@@ -796,7 +798,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * Get the data in the visible rectangle
    *
    * The parameter coordinates are in pixel coordinates
-   * 
+   *
    * @param {int} x: The upper left corner of the rectangle in pixel coordinates
    * @param {int} y: The upper left corner of the rectangle in pixel coordinates
    * @param {int} width: The width of the rectangle (pixels)
@@ -838,13 +840,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
       // get the tile's position and width (in data coordinates)
       // if it's mirrored then we have to switch the position indeces
-      const {tileX, tileY, tileWidth, tileHeight} = 
+      const {tileX, tileY, tileWidth, tileHeight} =
         this.getTilePosAndDimensions(tile.tileData.zoomLevel,
           tilePos, BINS_PER_TILE);
       let tileData = tile.dataArray;
 
       if (tile.mirrored) {
-        tileData = tileData.T; 
+        tileData = tileData.T;
       }
 
       // calculate the tile's position in bins
@@ -1295,7 +1297,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const yTilePos = tilePos[1];
 
     const minX = this.tilesetInfo.min_pos[0];
-    const minY = this.options.reverseYAxis ? 
+    const minY = this.options.reverseYAxis ?
       -this.tilesetInfo.max_pos[1] : this.tilesetInfo.min_pos[1];
 
     const tileWidth = this.tilesetInfo.max_width / (2 ** zoomLevel);

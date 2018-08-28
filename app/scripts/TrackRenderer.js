@@ -64,7 +64,8 @@ import {
 } from './utils';
 
 // Services
-import { getDarkTheme, pubSub } from './services';
+import { getDarkTheme } from './services';
+import { withPubSub } from './services/pub-sub';
 
 // Configs
 import {
@@ -187,13 +188,13 @@ class TrackRenderer extends React.Component {
   componentWillMount() {
     this.pubSubs = [];
     this.pubSubs.push(
-      pubSub.subscribe('scroll', this.windowScrolledBound),
+      this.props.pubSub.subscribe('scroll', this.windowScrolledBound),
     );
     this.pubSubs.push(
-      pubSub.subscribe('app.event', this.dispatchEvent.bind(this)),
+      this.props.pubSub.subscribe('app.event', this.dispatchEvent.bind(this)),
     );
     this.pubSubs.push(
-      pubSub.subscribe('zoomToDataPos', this.zoomToDataPosHandler.bind(this)),
+      this.props.pubSub.subscribe('zoomToDataPos', this.zoomToDataPosHandler.bind(this)),
     );
   }
 
@@ -364,7 +365,7 @@ class TrackRenderer extends React.Component {
     this.pMask.destroy(true);
     this.pStage.destroy(true);
 
-    this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
+    this.pubSubs.forEach(subscription => this.props.pubSub.unsubscribe(subscription));
     this.pubSubs = [];
 
     this.removeEventTracker();
@@ -1024,7 +1025,7 @@ class TrackRenderer extends React.Component {
 
     this.applyZoomTransform(true);
 
-    pubSub.publish('app.zoom', event);
+    this.props.pubSub.publish('app.zoom', event);
     if (event.sourceEvent) {
       event.sourceEvent.stopPropagation();
       event.sourceEvent.preventDefault();
@@ -1034,13 +1035,13 @@ class TrackRenderer extends React.Component {
   zoomStarted() {
     this.zooming = true;
 
-    pubSub.publish('app.zoomStart');
+    this.props.pubSub.publish('app.zoomStart');
   }
 
   zoomEnded() {
     this.zooming = false;
 
-    pubSub.publish('app.zoomEnd');
+    this.props.pubSub.publish('app.zoomEnd');
   }
 
   applyZoomTransform(notify = true) {
@@ -1198,13 +1199,14 @@ class TrackRenderer extends React.Component {
 
     switch (track.type) {
       case 'left-axis':
-        return new LeftAxisTrack(this.svgElement);
+        return new LeftAxisTrack(this.props.pubSub, this.svgElement);
 
       case 'top-axis':
-        return new TopAxisTrack(this.svgElement);
+        return new TopAxisTrack(this.props.pubSub, this.svgElement);
 
       case 'heatmap':
         return new HeatmapTiledPixiTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1220,6 +1222,7 @@ class TrackRenderer extends React.Component {
       case 'horizontal-multivec':
       case 'horizontal-vector-heatmap':
         return new HorizontalMultivecTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1235,6 +1238,7 @@ class TrackRenderer extends React.Component {
       case 'vertical-vector-heatmap':
         return new LeftTrackModifier(
           new HorizontalMultivecTrack(
+            this.props.pubSub,
             this.pStage,
             dataConfig,
             handleTilesetInfoReceived,
@@ -1249,6 +1253,7 @@ class TrackRenderer extends React.Component {
 
       case 'horizontal-1d-heatmap':
         return new Horizontal1dHeatmapTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1260,6 +1265,7 @@ class TrackRenderer extends React.Component {
 
       case 'horizontal-line':
         return new HorizontalLine1DPixiTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1272,6 +1278,7 @@ class TrackRenderer extends React.Component {
       case 'vertical-line':
         return new LeftTrackModifier(
           new HorizontalLine1DPixiTrack(
+            this.props.pubSub,
             this.pStage,
             dataConfig,
             handleTilesetInfoReceived,
@@ -1283,6 +1290,7 @@ class TrackRenderer extends React.Component {
 
       case 'vertical-1d-heatmap':
         return new LeftTrackModifier(new Horizontal1dHeatmapTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1294,6 +1302,7 @@ class TrackRenderer extends React.Component {
 
       case 'horizontal-point':
         return new HorizontalPoint1DPixiTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1305,6 +1314,7 @@ class TrackRenderer extends React.Component {
       case 'vertical-point':
         return new LeftTrackModifier(
           new HorizontalPoint1DPixiTrack(
+            this.props.pubSub,
             this.pStage,
             dataConfig,
             handleTilesetInfoReceived,
@@ -1316,6 +1326,7 @@ class TrackRenderer extends React.Component {
 
       case 'horizontal-bar':
         return new BarTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1326,6 +1337,7 @@ class TrackRenderer extends React.Component {
 
       case 'vertical-bar':
         return new LeftTrackModifier(new BarTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1336,6 +1348,7 @@ class TrackRenderer extends React.Component {
 
       case 'horizontal-divergent-bar':
         return new DivergentBarTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1347,6 +1360,7 @@ class TrackRenderer extends React.Component {
       case 'vertical-divergent-bar':
         return new LeftTrackModifier(
           new DivergentBarTrack(
+            this.props.pubSub,
             this.pStage,
             dataConfig,
             handleTilesetInfoReceived,
@@ -1358,6 +1372,7 @@ class TrackRenderer extends React.Component {
 
       case 'horizontal-1d-tiles':
         return new IdHorizontal1DTiledPixiTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1367,6 +1382,7 @@ class TrackRenderer extends React.Component {
 
       case 'vertical-1d-tiles':
         return new IdVertical1DTiledPixiTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1376,6 +1392,7 @@ class TrackRenderer extends React.Component {
 
       case '2d-tiles':
         return new Id2DTiledPixiTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1385,6 +1402,7 @@ class TrackRenderer extends React.Component {
 
       case 'top-stacked-interval':
         return new CNVIntervalTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1396,6 +1414,7 @@ class TrackRenderer extends React.Component {
       case 'left-stacked-interval':
         return new LeftTrackModifier(
           new CNVIntervalTrack(
+            this.props.pubSub,
             this.pStage,
             dataConfig,
             handleTilesetInfoReceived,
@@ -1413,6 +1432,7 @@ class TrackRenderer extends React.Component {
           track.setDomainsCallback
         ) {
           return new ViewportTracker2D(
+            this.props.pubSub,
             this.svgElement,
             track.registerViewportChanged,
             track.removeViewportChanged,
@@ -1420,7 +1440,7 @@ class TrackRenderer extends React.Component {
             track.options,
           );
         }
-        return new Track();
+        return new Track(this.props.pubSub);
 
       case 'viewport-projection-horizontal':
         // TODO: Fix this so that these functions are defined somewhere else
@@ -1430,6 +1450,7 @@ class TrackRenderer extends React.Component {
           track.setDomainsCallback
         ) {
           return new ViewportTrackerHorizontal(
+            this.props.pubSub,
             this.svgElement,
             track.registerViewportChanged,
             track.removeViewportChanged,
@@ -1437,7 +1458,7 @@ class TrackRenderer extends React.Component {
             track.options,
           );
         }
-        return new Track();
+        return new Track(this.props.pubSub);
 
       case 'viewport-projection-vertical':
         // TODO: Fix this so that these functions are defined somewhere else
@@ -1447,6 +1468,7 @@ class TrackRenderer extends React.Component {
           track.setDomainsCallback
         ) {
           return new ViewportTrackerVertical(
+            this.props.pubSub,
             this.svgElement,
             track.registerViewportChanged,
             track.removeViewportChanged,
@@ -1454,10 +1476,11 @@ class TrackRenderer extends React.Component {
             track.options,
           );
         }
-        return new Track();
+        return new Track(this.props.pubSub);
 
       case 'horizontal-gene-annotations':
         return new HorizontalGeneAnnotationsTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1468,6 +1491,7 @@ class TrackRenderer extends React.Component {
       case 'vertical-gene-annotations':
         return new LeftTrackModifier(
           new HorizontalGeneAnnotationsTrack(
+            this.props.pubSub,
             this.pStage,
             dataConfig,
             handleTilesetInfoReceived,
@@ -1479,6 +1503,7 @@ class TrackRenderer extends React.Component {
       case '2d-rectangle-domains':
       case 'arrowhead-domains':
         return new ArrowheadDomainsTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1488,12 +1513,14 @@ class TrackRenderer extends React.Component {
 
       case 'horizontal-1d-annotations':
         return new Annotations1dTrack(
+          this.props.pubSub,
           this.pStage,
           track.options,
         );
 
       case 'vertical-1d-annotations':
         return new Annotations1dTrack(
+          this.props.pubSub,
           this.pStage,
           track.options,
           true,
@@ -1501,6 +1528,7 @@ class TrackRenderer extends React.Component {
 
       case '2d-annotations':
         return new Annotations2dTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1511,6 +1539,7 @@ class TrackRenderer extends React.Component {
       case 'vertical-2d-rectangle-domains':
         return new LeftTrackModifier(
           new Horizontal2DDomainsTrack(
+            this.props.pubSub,
             this.pStage,
             dataConfig,
             handleTilesetInfoReceived,
@@ -1521,6 +1550,7 @@ class TrackRenderer extends React.Component {
 
       case 'horizontal-2d-rectangle-domains':
         return new Horizontal2DDomainsTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1530,6 +1560,7 @@ class TrackRenderer extends React.Component {
 
       case 'square-markers':
         return new SquareMarkersTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1539,12 +1570,14 @@ class TrackRenderer extends React.Component {
 
       case 'combined':
         return new CombinedTrack(
+          this.props.pubSub,
           track.contents,
           this.createTrackObject.bind(this),
         );
 
       case '2d-chromosome-labels':
         return new Chromosome2DLabels(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1554,6 +1587,7 @@ class TrackRenderer extends React.Component {
 
       case '2d-chromosome-grid':
         return new Chromosome2DGrid(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1566,6 +1600,7 @@ class TrackRenderer extends React.Component {
         // chromInfoPath is passed in for backwards compatibility
         // it can be used to provide custom chromosome sizes
         return new HorizontalChromosomeLabels(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1579,6 +1614,7 @@ class TrackRenderer extends React.Component {
         // it can be used to provide custom chromosome sizes
         return new LeftTrackModifier(
           new HorizontalChromosomeLabels(
+            this.props.pubSub,
             this.pStage,
             dataConfig,
             handleTilesetInfoReceived,
@@ -1587,8 +1623,10 @@ class TrackRenderer extends React.Component {
             track.chromInfoPath,
           ),
         );
+
       case 'horizontal-heatmap':
         return new HorizontalHeatmapTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1603,6 +1641,7 @@ class TrackRenderer extends React.Component {
       case 'vertical-heatmap':
         return new LeftTrackModifier(
           new HorizontalHeatmapTrack(
+            this.props.pubSub,
             this.pStage,
             dataConfig,
             handleTilesetInfoReceived,
@@ -1617,6 +1656,7 @@ class TrackRenderer extends React.Component {
 
       case '2d-chromosome-annotations':
         return new Chromosome2DAnnotations(
+          this.props.pubSub,
           this.pStage,
           track.chromInfoPath,
           track.options,
@@ -1624,6 +1664,7 @@ class TrackRenderer extends React.Component {
 
       case 'horizontal-1d-value-interval':
         return new ValueIntervalTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1633,6 +1674,7 @@ class TrackRenderer extends React.Component {
 
       case 'vertical-1d-value-interval':
         return new LeftTrackModifier(new ValueIntervalTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1642,6 +1684,7 @@ class TrackRenderer extends React.Component {
 
       case 'osm-tiles':
         return new OSMTilesTrack(
+          this.props.pubSub,
           this.pStage,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
@@ -1649,6 +1692,7 @@ class TrackRenderer extends React.Component {
 
       case 'mapbox-tiles':
         return new MapboxTilesTrack(
+          this.props.pubSub,
           this.pStage,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
@@ -1657,6 +1701,7 @@ class TrackRenderer extends React.Component {
 
       case 'bedlike':
         return new BedLikeTrack(
+          this.props.pubSub,
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1666,6 +1711,7 @@ class TrackRenderer extends React.Component {
 
       case 'horizontal-rule':
         return new HorizontalRule(
+          this.props.pubSub,
           this.pStage,
           track.y,
           track.options,
@@ -1674,6 +1720,7 @@ class TrackRenderer extends React.Component {
 
       case 'vertical-rule':
         return new VerticalRule(
+          this.props.pubSub,
           this.pStage,
           track.x,
           track.options,
@@ -1682,6 +1729,7 @@ class TrackRenderer extends React.Component {
 
       case 'cross-rule':
         return new CrossRule(
+          this.props.pubSub,
           this.pStage,
           track.x,
           track.y,
@@ -1692,6 +1740,7 @@ class TrackRenderer extends React.Component {
       case 'vertical-bedlike':
         return new LeftTrackModifier(
           new BedLikeTrack(
+            this.props.pubSub,
             this.pStage,
             dataConfig,
             handleTilesetInfoReceived,
@@ -1708,6 +1757,7 @@ class TrackRenderer extends React.Component {
           try {
             return new pluginTrack.track(
               AVAILABLE_FOR_PLUGINS,
+              this.props.pubSub,
               this.pStage,
               track,
               dataConfig,
@@ -1725,6 +1775,7 @@ class TrackRenderer extends React.Component {
         console.warn('Unknown track type:', track.type);
 
         return new UnknownPixiTrack(
+          this.props.pubSub,
           this.pStage,
           { name: 'Unknown Track Type', type: track.type },
           () => this.currentProps.onNewTilesLoaded(track.uid),
@@ -1779,7 +1830,7 @@ class TrackRenderer extends React.Component {
 
     setTimeout(() => {
       // For right clicks only. Publish the contextmenu event
-      pubSub.publish('contextmenu', e);
+      this.props.pubSub.publish('contextmenu', e);
     }, 0);
   }
 
@@ -1862,7 +1913,7 @@ class TrackRenderer extends React.Component {
 
   forwardEvent(e) {
     e.sourceUid = this.uid;
-    pubSub.publish('app.event', e);
+    this.props.pubSub.publish('app.event', e);
   }
 
   /* ------------------------------- Render ------------------------------- */
@@ -1948,4 +1999,4 @@ TrackRenderer.propTypes = {
   width: PropTypes.number,
 };
 
-export default TrackRenderer;
+export default withPubSub(TrackRenderer);

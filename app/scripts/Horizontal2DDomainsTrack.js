@@ -4,8 +4,8 @@ import { tileProxy } from './services';
 import { colorToHex } from './utils';
 
 class Horizontal2DDomainsTrack extends TiledPixiTrack {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate) {
-    super(scene, dataConfig, handleTilesetInfoReceived, option, animate);
+  constructor(pubSub, scene, dataConfig, handleTilesetInfoReceived, option, animate) {
+    super(pubSub, scene, dataConfig, handleTilesetInfoReceived, option, animate);
 
     this.drawnRects = new Set();
     this.pMain = this.pMobile;

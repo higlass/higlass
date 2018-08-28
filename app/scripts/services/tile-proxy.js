@@ -9,6 +9,8 @@ import {
   tileResponseToData,
 } from '../worker';
 
+import { fake as fakePubSub } from '../services/pub-sub';
+
 const MAX_FETCH_TILES = 20;
 
 /*
@@ -52,9 +54,6 @@ fetchTilesPool.run(function(params, done) {
 }, [workerPath]);
 */
 
-
-import pubSub from './pub-sub';
-
 import { trimTrailingSlash as tts } from '../utils';
 
 // Config
@@ -87,14 +86,14 @@ const debounce = (func, wait) => {
     requestMapper = {};
   };
 
-  const debounced = (request) => {
+  const debounced = (request, ...args) => {
     bundleRequests(request);
 
     const later = () => {
       func({
         sessionId,
         requests: bundledRequest,
-      });
+      }, ...args);
       reset();
     };
 
@@ -121,7 +120,13 @@ export const setTileProxyAuthHeader = (newHeader) => {
   authHeader = newHeader
 }
 
-export function fetchMultiRequestTiles(req) {
+// Fritz: is this function used anywhere?
+export function fetchMultiRequestTiles(req, pubSub = fakePubSub, ass) {
+  console.log('fetchMultiRequestTiles():', pubSub, ass);
+  if (pubSub.__fake__) {
+    console.log('fetchMultiRequestTiles(): SCHEISSE');
+    console.trace();
+  }
   const sessionId = req.sessionId;
   const requests = req.requests;
   const fetchPromises = [];
@@ -424,7 +429,7 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
  * @param {func} doneCb: A callback that gets called when the data is retrieved
  * @param {func} errorCb: A callback that gets called when there is an error
  */
-export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
+export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub = fakePubSub) => {
   const url =
     `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
     pubSub.publish('requestSent', url);
@@ -443,7 +448,7 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
         // console.log('got data', data);
         doneCb(data);
       }
-    });
+    }, pubSub);
 };
 
 /**
@@ -538,8 +543,8 @@ export const tileDataToPixData = (
  * @param url: URL to fetch
  * @param callback: Callback to execute with content from fetch
  */
-function text(url, callback) {
-  return fetchEither(url, callback, 'text');
+function text(url, callback, pubSub) {
+  return fetchEither(url, callback, 'text', pubSub);
 }
 
 /**
@@ -548,14 +553,14 @@ function text(url, callback) {
  * @param url: URL to fetch
  * @param callback: Callback to execute with content from fetch
  */
-function json(url, callback) {
-  return fetchEither(url, callback, 'json');
+function json(url, callback, pubSub) {
+  return fetchEither(url, callback, 'json', pubSub);
 }
 
-function fetchEither(url, callback, textOrJson) {
+function fetchEither(url, callback, textOrJson, pubSub = fakePubSub) {
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
-  
+
   let mime;
   if (textOrJson === 'text') {
     mime = 'text/plain';

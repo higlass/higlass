@@ -6,6 +6,7 @@ import SVGTrack from './SVGTrack';
 
 class ViewportTrackerHorizontal extends SVGTrack {
   constructor(
+    pubSub,
     svgElement,
     registerViewportChanged,
     removeViewportChanged,
@@ -13,7 +14,7 @@ class ViewportTrackerHorizontal extends SVGTrack {
     options
   ) {
     // create a clipped SVG Path
-    super(svgElement, true);
+    super(pubSub, svgElement, true);
 
     const uid = slugid.nice();
     this.uid = uid;

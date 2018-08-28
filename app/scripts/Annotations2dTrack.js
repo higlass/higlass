@@ -12,8 +12,8 @@ import { colorToHex, max, min } from './utils';
 const MOUSE_CLICK_TIME = 250;
 
 class Annotations2dTrack extends TiledPixiTrack {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
-    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
+  constructor(pubSub, scene, dataConfig, handleTilesetInfoReceived, options, animate) {
+    super(pubSub, scene, dataConfig, handleTilesetInfoReceived, options, animate);
 
     this.drawnAnnotations = {};
     this.drawnAnnoGfx = {};
@@ -45,7 +45,7 @@ class Annotations2dTrack extends TiledPixiTrack {
   }
 
   get maxX() {
-    return this.tilesetInfo && this.tilesetInfo.max_pos 
+    return this.tilesetInfo && this.tilesetInfo.max_pos
       ? this.tilesetInfo.max_pos[0]
       : this.tilesetInfo.max_width || this.tilesetInfo.max_size;
   }

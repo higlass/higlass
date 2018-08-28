@@ -6,6 +6,7 @@ import { showMousePosition } from './utils';
 
 class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
   constructor(
+    pubSub,
     scene,
     dataConfig,
     handleTilesetInfoReceived,
@@ -14,6 +15,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     onValueScaleChanged,
   ) {
     super(
+      pubSub,
       scene,
       dataConfig,
       handleTilesetInfoReceived,

@@ -18,12 +18,12 @@ import ChromosomeInfo from './ChromosomeInfo';
 
 import { createSymbolIcon } from './symbol';
 import { all as icons } from './icons';
-import api, { destroy as apiDestroy, publish as apiPublish } from './api';
+import createApi from './api';
 
 // Services
 import {
   chromInfo,
-  domEvent,
+  createDomEvent,
   getDarkTheme,
   setDarkTheme,
   setTileProxyAuthHeader,
@@ -31,7 +31,7 @@ import {
   requestsInFlight,
 } from './services';
 
-import createPubSub, { Provider: PubSubProvider } from './services/pub-sub';
+import createPubSub, { Provider as PubSubProvider } from './services/pub-sub';
 
 // Utils
 import {
@@ -78,6 +78,7 @@ const VIEW_HEADER_HEIGHT = 20;
 
 // Create global pubSub
 const pubSub = createPubSub();
+const domEvent = createDomEvent(pubSub);
 
 class HiGlassComponent extends React.Component {
   constructor(props) {
@@ -238,7 +239,12 @@ class HiGlassComponent extends React.Component {
     this.attachedToDOM = false;
 
     // Set up API
-    this.api = api(this);
+    const {
+      public: api, destroy: apiDestroy, publish: apiPublish
+    } = createApi(this, pubSub);
+    this.api = api;
+    this.apiDestroy = apiDestroy;
+    this.apiPublish = apiPublish;
 
     this.viewChangeListener = [];
 
@@ -495,7 +501,7 @@ class HiGlassComponent extends React.Component {
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
 
-    apiDestroy();
+    this.apiDestroy();
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
@@ -2922,7 +2928,7 @@ class HiGlassComponent extends React.Component {
    */
   rangeSelectionHandler(range) {
     this.rangeSelection = range;
-    apiPublish('rangeSelection', range);
+    this.apiPublish('rangeSelection', range);
   }
 
   offViewChange(listenerId) {
@@ -3245,7 +3251,7 @@ class HiGlassComponent extends React.Component {
    * Handle mousemove and zoom events.
    */
   mouseMoveZoomHandler(data) {
-    apiPublish('mouseMoveZoom', data);
+    this.apiPublish('mouseMoveZoom', data);
   }
 
   /**
@@ -3278,7 +3284,7 @@ class HiGlassComponent extends React.Component {
     ChromosomeInfo(chromInfoPath, (newChromInfo) => {
       this.chromInfo = newChromInfo;
       callback();
-    });
+    }, pubSub);
   }
 
   onMouseLeaveHandler() {
@@ -3634,7 +3640,7 @@ class HiGlassComponent extends React.Component {
           />
           {exportLinkModal}
         </div>
-      </PubSubContext>
+      </PubSubProvider>
     );
   }
 }

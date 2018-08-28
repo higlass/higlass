@@ -1,5 +1,6 @@
 import { tsvParseRows } from 'd3-dsv';
 import { tileProxy } from './services';
+import { fake as fakePubSub } from './services/pub-sub';
 import { absToChr, chrToAbs } from './utils';
 
 export function parseChromsizesRows(data) {
@@ -32,7 +33,7 @@ export function parseChromsizesRows(data) {
   };
 }
 
-function ChromosomeInfo(filepath, success) {
+function ChromosomeInfo(filepath, success, pubSub = fakePubSub) {
   const ret = {};
 
   ret.absToChr = absPos => (this.chromInfo
@@ -55,7 +56,7 @@ function ChromosomeInfo(filepath, success) {
 
     ret.chromInfo = chromInfo;
     if (success) success(chromInfo);
-  }).then(() => ret);
+  }, pubSub).then(() => ret);
 }
 
 export default ChromosomeInfo;

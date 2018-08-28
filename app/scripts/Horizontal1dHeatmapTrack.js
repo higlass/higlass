@@ -9,6 +9,7 @@ import { HEATED_OBJECT_MAP } from './configs';
 
 class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
   constructor(
+    pubSub,
     scene,
     dataConfig,
     handleTilesetInfoReceived,
@@ -17,6 +18,7 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
     onValueScaleChanged,
   ) {
     super(
+      pubSub,
       scene,
       dataConfig,
       handleTilesetInfoReceived,

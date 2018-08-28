@@ -22,7 +22,7 @@ import ViewContextMenu from './ViewContextMenu';
 // import {HeatmapOptions} from './HeatmapOptions';
 
 // Services
-import { withPubSubComponent } from './services/pub-sub';
+import { withPubSub } from './services/pub-sub';
 
 // Utils
 import {
@@ -2133,4 +2133,4 @@ TiledPlot.propTypes = {
   zoomToDataExtentOnInit: PropTypes.bool
 };
 
-export default withPubSubComponent(TiledPlot);
+export default withPubSub(TiledPlot);

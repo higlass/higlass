@@ -8,9 +8,6 @@ import DataFetcher from './DataFetcher';
 import PixiTrack from './PixiTrack';
 
 // Utils
-import { pubSub } from './services';
-
-// Utils
 import { debounce } from './utils';
 
 // Configs
@@ -57,8 +54,8 @@ class TiledPixiTrack extends PixiTrack {
    * @param server: The server to pull tiles from.
    * @param tilesetUid: The data set to get the tiles from the server
    */
-  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
-    super(scene, options);
+  constructor(pubSub, scene, dataConfig, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
+    super(pubSub, scene, options);
 
     // keep track of which render we're on so that we save ourselves
     // rerendering all rendering in the same version will have the same
@@ -98,7 +95,7 @@ class TiledPixiTrack extends PixiTrack {
     // if the tileset info is not found
     this.prevValueScale = null;
 
-    this.dataFetcher = new DataFetcher(dataConfig);
+    this.dataFetcher = new DataFetcher(dataConfig, this.pubSub);
 
     // To indicate that this track is requiring a tileset info
     this.tilesetInfo = null;
@@ -596,7 +593,7 @@ class TiledPixiTrack extends PixiTrack {
     // 1. Check if all visible tiles are loaded
     // 2. If `true` then send out event
     if (this.areAllVisibleTilesLoaded()) {
-      pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
+      this.pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
     }
   }
 
@@ -625,7 +622,7 @@ class TiledPixiTrack extends PixiTrack {
       this.trackNotFoundText.visible = false;
     }
 
-    pubSub.publish('TiledPixiTrack.tilesDrawnStart', { uuid: this.uuid });
+    this.pubSub.publish('TiledPixiTrack.tilesDrawnStart', { uuid: this.uuid });
 
     super.draw();
 
@@ -633,7 +630,7 @@ class TiledPixiTrack extends PixiTrack {
       tilesetUid => this.drawTile(this.fetchedTiles[tilesetUid])
     );
 
-    pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
+    this.pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
   }
 
   /**

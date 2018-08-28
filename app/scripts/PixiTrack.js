@@ -91,8 +91,8 @@ class PixiTrack extends Track {
    *          - labelText: What should be drawn in the label. If either labelPosition
    *                  or labelText are false, no label will be drawn.
    */
-  constructor(scene, options) {
-    super();
+  constructor(pubSub, scene, options) {
+    super(pubSub);
 
     // the PIXI drawing areas
     // pMain will have transforms applied to it as users scroll to and fro
