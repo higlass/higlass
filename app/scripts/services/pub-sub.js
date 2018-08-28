@@ -1,5 +1,7 @@
 import React from 'react';
 
+import toVoid from '../utils/to-void';
+
 const GLOBAL_STACK = {
   __times: {}
 };
@@ -82,19 +84,20 @@ const globalPubSub = create(GLOBAL_STACK);
 
 const { Provider, Consumer } = React.createContext();
 
-// Higher order component (for React components)
-const withPubSubComponent = Component => props => (
+// Higher order component
+const withPubSub = Component => props => (
   <Consumer>
     {pubSub => <Component {...props} pubSub={pubSub} />}
   </Consumer>
 );
 
-// Higher order function (for other kind of classes)
-const withPubSubFn = pubSub => (fn) => {
-  fn.pubSub = pubSub;
-  return fn;
+const fake = {
+  __fake__: true,
+  publish: toVoid,
+  subscribe: toVoid,
+  unsubscribe: toVoid
 };
 
 export default create;
 
-export { globalPubSub, Provider, withPubSubComponent, withPubSubFn };
+export { fake, globalPubSub, Provider, withPubSub };
