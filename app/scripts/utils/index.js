@@ -56,6 +56,7 @@ export { default as sum } from './sum';
 export { default as svgLine } from './svg-line';
 export { default as tileToCanvas } from './tile-to-canvas';
 export { default as totalTrackPixelHeight } from './total-track-pixel-height';
+export { default as toVoid } from './to-void';
 export { default as trimTrailingSlash } from './trim-trailing-slash';
 export { default as valueToColor } from './value-to-color';
 export { default as expandCombinedTracks } from './expand-combined-tracks';
