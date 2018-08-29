@@ -39,6 +39,7 @@ export { default as min } from './min';
 export { default as mod } from './mod';
 export { default as ndarrayAssign } from './ndarray-assign';
 export { default as ndarrayFlatten } from './ndarray-flatten';
+export { default as ndarrayToList } from './ndarray-to-list';
 export { default as numericifyVersion } from './numericify-version';
 export { default as objVals } from './obj-vals';
 export { default as or } from './or';
