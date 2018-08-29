@@ -29,6 +29,7 @@ import {
 import {
   // paperFigure1,
   geneAnnotationsOnly,
+  geneAnnotationsOnly1,
   annotationsTilesView,
   horizontalAndVerticalMultivec,
   exportDataConfig,
@@ -221,7 +222,44 @@ describe('Simple HiGlassComponent', () => {
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 7000;
 
-  describe('Gene Annotations Dispaly', () => {
+  describe('Gene Annotations Overlaps', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={geneAnnotationsOnly1}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc, done);
+    });
+
+    it('Check to make sure that the rectangles are initially small', (done) => {
+      // this will cause the ALOXE3 and AURKB genes to overlap
+      hgc.instance().tiledPlots.aa.trackRenderer.setCenter(
+        2507278112.3606963, 2510821333.85643, 5969.720921993256
+      );
+
+      waitForTilesLoaded(hgc, done);
+    });
+  });
+  return;
+
+  describe('Gene Annotations Display', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
         hgc.unmount();

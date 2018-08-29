@@ -130,18 +130,20 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           // contain gene annotations stretching multiple tiles. By removing this tile
           // the annotation visualization will be gone but the other tiles might still
           // contain its data.
-          const reRender = Object.keys(this.drawnGenes[zoomLevel][gene].otherTileIds)
-            .some((tileId) => {
-              if (tileIds[tileId]) {
-                this.drawnGenes[zoomLevel][gene].otherTileIds[tileId] = undefined;
-                delete this.drawnGenes[zoomLevel][gene].otherTileIds[tileId];
-                this.drawnGenes[zoomLevel][gene].tileId = tileId;
-                this.renderTile(tileIds[tileId]);
-                return true;
-              }
-              return false;
-            });
-          if (!reRender) this.drawnGenes[zoomLevel][gene] = undefined;
+          if (this.drawnGenes[zoomLevel][gene]) {
+            const reRender = Object.keys(this.drawnGenes[zoomLevel][gene].otherTileIds)
+              .some((tileId) => {
+                if (tileIds[tileId]) {
+                  this.drawnGenes[zoomLevel][gene].otherTileIds[tileId] = undefined;
+                  delete this.drawnGenes[zoomLevel][gene].otherTileIds[tileId];
+                  this.drawnGenes[zoomLevel][gene].tileId = tileId;
+                  this.renderTile(tileIds[tileId]);
+                  return true;
+                }
+                return false;
+              });
+            if (!reRender) this.drawnGenes[zoomLevel][gene] = undefined;
+          }
         });
     }
   }

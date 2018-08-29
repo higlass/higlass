@@ -346,22 +346,21 @@ class HiGlassComponent extends React.Component {
       }
     });
 
-    const rendererOptions =
-        {
+    const rendererOptions = {
           view: this.canvasElement,
           antialias: true,
           transparent: true,
           resolution: 2,
           autoResize: true,
-        }
+        };
 
-    if (this.props.options.renderer == 'webgl') {
+    if (this.props.options.renderer === 'webgl') {
       this.pixiRenderer = new PIXI.WebGLRenderer(
         this.state.width,
         this.state.height,
         rendererOptions
       );
-    } else if (this.props.options.renderer == 'canvas') {
+    } else if (this.props.options.renderer === 'canvas') {
       this.pixiRenderer = new PIXI.CanvasRenderer(
         this.state.width,
         this.state.height,
@@ -419,11 +418,11 @@ class HiGlassComponent extends React.Component {
   componentWillReceiveProps(newProps) {
     const viewsByUid = this.processViewConfig(newProps.viewConfig);
 
-    if (newProps.options.authToken != this.prevAuthToken) {
+    if (newProps.options.authToken !== this.prevAuthToken) {
       // we go a new auth token so we should reload everything
       setTileProxyAuthHeader(newProps.options.authToken);
 
-      for (let viewId of this.iterateOverViews()) {
+      for (const viewId of this.iterateOverViews()) {
         const trackRenderer = this.getTrackRenderer(viewId);
         const trackDefinitions = JSON.parse(trackRenderer.prevTrackDefinitions);
 
@@ -441,7 +440,7 @@ class HiGlassComponent extends React.Component {
     });
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate() {
     // let width = this.element.clientWidth;
     // let height = this.element.clientHeight;
 
@@ -516,7 +515,7 @@ class HiGlassComponent extends React.Component {
   }
 
   requestReceivedHandler() {
-    if (!this.viewconfLoaded && requestsInFlight == 0) {
+    if (!this.viewconfLoaded && requestsInFlight === 0) {
       this.viewconfLoaded = true;
       if (this.props.options.onViewConfLoaded) {
         this.props.options.onViewConfLoaded();
@@ -559,7 +558,7 @@ class HiGlassComponent extends React.Component {
         track.options = JSON.parse(JSON.stringify(trackInfo.defaultOptions));
       } else {
         for (const optionName in trackInfo.defaultOptions) {
-          track.options[optionName] = typeof(track.options[optionName]) !== 'undefined'
+          track.options[optionName] = typeof (track.options[optionName]) !== 'undefined'
             ? track.options[optionName]
             : JSON.parse(JSON.stringify(trackInfo.defaultOptions[optionName]));
         }
@@ -679,7 +678,7 @@ class HiGlassComponent extends React.Component {
             allTracks.push({ viewId, trackId: subTrack.uid, track: subTrack });
           }
         } else {
-          allTracks.push({ viewId, trackId: track.uid, track: track});
+          allTracks.push({ viewId, trackId: track.uid, track });
         }
       }
     }
@@ -693,7 +692,7 @@ class HiGlassComponent extends React.Component {
   iterateOverTracks() {
     const allTracks = [];
     for (const viewId in this.state.views) {
-      const tracks = this.state.views[viewId].tracks;
+      const { tracks } = this.state.views[viewId];
 
       for (const trackType in tracks) {
         for (const track of tracks[trackType]) {
@@ -702,7 +701,7 @@ class HiGlassComponent extends React.Component {
               allTracks.push({ viewId, trackId: subTrack.uid, track: subTrack });
             }
           } else {
-            allTracks.push({ viewId, trackId: track.uid, track: track });
+            allTracks.push({ viewId, trackId: track.uid, track });
           }
         }
       }
@@ -732,9 +731,8 @@ class HiGlassComponent extends React.Component {
   syncValueScales(viewUid, trackUid) {
     const uid = this.combineViewAndTrackUid(viewUid, trackUid);
 
-    if (!this.state.views[viewUid])
-      // the view must have been deleted
-      return;
+    if (!this.state.views[viewUid]) return;
+    // the view must have been deleted
 
     const sourceTrack = getTrackByUid(this.state.views[viewUid].tracks, trackUid);
 
@@ -775,10 +773,10 @@ class HiGlassComponent extends React.Component {
 
         lockedTrack.valueScale.domain([allMin, allMax]);
 
-        if  (
-          sourceTrack.options &&
-          typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
-          typeof sourceTrack.options.scaleEndPercent !== 'undefined'
+        if (
+          sourceTrack.options 
+          && typeof sourceTrack.options.scaleStartPercent !== 'undefined'
+          && typeof sourceTrack.options.scaleEndPercent !== 'undefined'
         ) {
           lockedTrack.options.scaleStartPercent = sourceTrack.options.scaleStartPercent;
           lockedTrack.options.scaleEndPercent = sourceTrack.options.scaleEndPercent;
@@ -928,12 +926,15 @@ class HiGlassComponent extends React.Component {
     this.yScales[uid] = yScale;
 
     if (notify) {
-      if (this.scalesChangedListeners.hasOwnProperty(uid)) {
+      if (uid in this.scalesChangedListeners) {
         dictValues(this.scalesChangedListeners[uid]).forEach((x) => {
           x(xScale, yScale);
         });
       }
     }
+  
+    const [centerX, centerY, k] = scalesCenterAndK(xScale, yScale);
+    console.log('tx, ty, k', [centerX, centerY, k]);
 
     if (this.zoomLocks[uid]) {
       // this view is locked to another
@@ -942,7 +943,6 @@ class HiGlassComponent extends React.Component {
 
 
       const [centerX, centerY, k] = scalesCenterAndK(this.xScales[uid], this.yScales[uid]);
-
 
       for (let i = 0; i < lockGroupItems.length; i++) {
         const key = lockGroupItems[i][0];
@@ -1137,7 +1137,7 @@ class HiGlassComponent extends React.Component {
   viewScalesLockData(uid) {
     if (!this.xScales[uid] || !this.yScales[uid]) {
       console.warn("View scale lock doesn't correspond to existing uid: ", uid);
-      return;
+      return null;
     }
 
     return scalesCenterAndK(this.xScales[uid], this.yScales[uid]);
@@ -1145,12 +1145,12 @@ class HiGlassComponent extends React.Component {
 
   addLock(uid1, uid2, lockGroups, lockData) {
     /*
-       * :param uid1 (string): The uid of the first element to be locked (e.g. viewUid)
-       * :param uid2 (string): The uid of the second element to be locked (e.g. viewUid)
-       * :param lockGroups (dict): The set of locks where to store this lock (e.g. this.locationLocks)
-       * :parma lockData (function): A function that takes two uids and calculates some extra data
-       *    to store with this lock data (e.g. scalesCenterAndK(this.xScales[uid1], this.yScales[uid1]))
-       */
+     * :param uid1 (string): The uid of the first element to be locked (e.g. viewUid)
+     * :param uid2 (string): The uid of the second element to be locked (e.g. viewUid)
+     * :param lockGroups (dict): The set of locks where to store this lock (e.g. this.locationLocks)
+     * :parma lockData (function): A function that takes two uids and calculates some extra data
+     *    to store with this lock data (e.g. scalesCenterAndK(this.xScales[uid1], this.yScales[uid1]))
+     */
     let group1Members = [];
     let group2Members = [];
 
@@ -1163,11 +1163,8 @@ class HiGlassComponent extends React.Component {
         .filter(x => lockData(x[0])) // make sure we can create the necessary data for this lock
         // in the case of location locks, this implies that the
         // views it's locking exist
-        .map(x =>
-          // x is [uid, [centerX, centerY, k]]
-          [x[0], lockData(x[0])],
-        );
-    }
+        .map(x => [x[0], lockData(x[0])]); // x is [uid, [centerX, centerY, k]]
+      }
 
     if (!lockGroups[uid2]) {
       // view1 isn't already in a group
@@ -1549,7 +1546,9 @@ class HiGlassComponent extends React.Component {
 
         if (!('width' in tracks[i]) || (trackInfo && tracks[i].width < trackInfo.minWidth)) {
           //
-          if (trackInfo && trackInfo.minWidth) { tracks[i].width = trackInfo.minWidth; } else { tracks[i].width = this.minVerticalWidth; }
+          if (trackInfo && trackInfo.minWidth) {
+            tracks[i].width = trackInfo.minWidth;
+          } else { tracks[i].width = this.minVerticalWidth; }
         }
       }
     }
@@ -1571,7 +1570,8 @@ class HiGlassComponent extends React.Component {
     const defaultCenterHeight = 100;
     const defaultCenterWidth = 100;
     let currHeight = this.horizontalMargin * 2;
-    let currWidth = this.verticalMargin * 2; // currWidth will generally be ignored because it will just be set to
+    let currWidth = this.verticalMargin * 2; 
+    // currWidth will generally be ignored because it will just be set to
     // the width of the enclosing container
     let minNecessaryHeight = 0;
     minNecessaryHeight += 10; // the header
