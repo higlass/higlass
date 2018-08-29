@@ -18,6 +18,12 @@
     },
     "ecmascript": 6
   },
+  "globals": {
+    "beforeEach": true,
+    "describe": true,
+    "expect": true,
+    "it": true
+  },
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
