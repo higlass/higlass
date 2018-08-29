@@ -21,7 +21,6 @@ import HeatmapOptions from '../app/scripts/HeatmapOptions';
 // Utils
 import {
   scalesCenterAndK,
-  dictValues,
   totalTrackPixelHeight,
   getTrackByUid,
 } from '../app/scripts/utils';
