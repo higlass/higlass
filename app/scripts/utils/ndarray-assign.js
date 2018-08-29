@@ -1,21 +1,36 @@
+import cwise from 'cwise';
+
 const ndarrayAssign = (target, source) => {
-  const ty = target.shape[0];
-  const tx = target.shape[1];
-  const sy = source.shape[0];
-  const sx = source.shape[1];
+  const numSource = +source;
+  const isScalar = !isNaN(numSource);
 
-  if (ty !== sy || tx !== sx) {
-    console.warn(
-      'Cannot assign source to target ndarray as the dimensions do not match',
-      ty, sy, tx, sx
-    );
-    return;
-  }
+  if (isScalar) {
+    cwise({
+      args: ['array', 'scalar'],
+      body: (a, s) => {
+        a = s;  // eslint-disable-line
+      }
+    })(target, numSource);
+  } else {
+    const ty = target.shape[0];
+    const tx = target.shape[1];
+    const sy = source.shape[0];
+    const sx = source.shape[1];
 
-  for (let i = 0; i < ty; ++i) {
-    for (let j = 0; j < tx; ++j) {
-      target.set(i, j, source.get(i, j));
+    if (ty !== sy || tx !== sx) {
+      console.warn(
+        'Cannot assign source to target ndarray as the dimensions do not match',
+        ty, sy, tx, sx
+      );
+      return;
     }
+
+    cwise({
+      args: ['array', 'array'],
+      body: (a, b) => {
+        a = b;  // eslint-disable-line
+      }
+    })(target, source);
   }
 };
 

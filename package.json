@@ -37,6 +37,7 @@
     "babel-plugin-react-css-modules": "^3.4.0",
     "box-intersect": "^1.0.1",
     "css-element-queries": "github:marcj/css-element-queries",
+    "cwise": "^1.0.10",
     "d3-array": "^1.2.1",
     "d3-axis": "^1.0.4",
     "d3-color": "^1.0.3",
