@@ -191,7 +191,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     fill['+'] = colorToHex(this.options.plusStrandColor || 'blue');
     fill['-'] = colorToHex(this.options.minusStrandColor || 'red');
 
-    const furz = tile.tileData
+    tile.tileData
       .filter((td) => {
         if (!this.drawnGenes[zoomLevel]) this.drawnGenes[zoomLevel] = {};
 
@@ -256,9 +256,9 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           if (geneInfo.length < 14) {
             // don't draw if the input is invalid
             console.warn(
-              'Gene annotations have less than 14 columns (chrName, chrStart, chrEnd, ' +
-              'symbol, importance, transcript_name, geneId, transcript_type, "-", ' +
-              'txStart, txEnd, exonStarts, exonEnds):',
+              'Gene annotations have less than 14 columns (chrName, chrStart, chrEnd, '
+              + 'symbol, importance, transcript_name, geneId, transcript_type, "-", '
+              + 'txStart, txEnd, exonStarts, exonEnds):',
               geneInfo
             );
           } else {
@@ -421,14 +421,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     return polys;
   }
 
-  /**
-  * Position a gene annotation's text at its expected location.
-  * @param {td}: A piece of tile data
-  */
-  positionText(td) {
-
-  }
-
   draw() {
     super.draw();
 
@@ -447,8 +439,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         if (!tile.drawnAtScale) return false;
 
         const tileK = (
-          (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
-          (this._xScale.domain()[1] - this._xScale.domain()[0])
+          (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
+          / (this._xScale.domain()[1] - this._xScale.domain()[0])
         );
 
         return tileK > 3;
@@ -463,8 +455,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       .filter(tile => tile.drawnAtScale)
       .forEach((tile) => {
         const tileK = (
-          (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
-          (this._xScale.domain()[1] - this._xScale.domain()[0])
+          (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
+          / (this._xScale.domain()[1] - this._xScale.domain()[0])
         );
         const newRange = this._xScale.domain().map(tile.drawnAtScale);
 

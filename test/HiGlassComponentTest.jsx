@@ -254,6 +254,10 @@ describe('Simple HiGlassComponent', () => {
         2507278112.3606963, 2510821333.85643, 5969.720921993256
       );
 
+      let track = getTrackObject(hgc, 'aa', 'genes1');
+      console.log('track:', track);
+
+
       waitForTilesLoaded(hgc, done);
     });
   });
