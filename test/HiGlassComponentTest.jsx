@@ -15,7 +15,6 @@ import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 
 import HiGlassComponent from '../app/scripts/HiGlassComponent';
-import { requestsInFlight } from '../app/scripts/services';
 import HeatmapOptions from '../app/scripts/HeatmapOptions';
 
 // Utils
@@ -23,6 +22,11 @@ import {
   scalesCenterAndK,
   totalTrackPixelHeight,
   getTrackByUid,
+  getTrackObjectFromHGC,
+  getTiledPlot,
+  waitForJsonComplete,
+  waitForTilesLoaded,
+  waitForTransitionsFinished,
 } from '../app/scripts/utils';
 
 // View configs
@@ -60,162 +64,6 @@ import {
 
 configure({ adapter: new Adapter() });
 
-const tileLoadTime = 1800;
-// just to make sure the screen can display what's happened
-
-function getTrackObject(hgc, viewUid, trackUid) {
-  return hgc.instance().tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
-}
-
-function getTrackRenderer(hgc, viewUid) {
-  return hgc.instance().tiledPlots[viewUid].trackRenderer;
-}
-
-function getTiledPlot(hgc, viewUid) {
-  return hgc.instance().tiledPlots[viewUid];
-}
-
-function areTransitionsActive(hgc) {
-  /**
-   * Check if there are any active transitions that we
-   * need to wait on
-   *
-   * Parameters
-   * ----------
-   *  hgc: enzyme wrapper for a HiGlassComponent
-   *
-   * Returns
-   * -------
-   *  True if any of the tracks have active transtions. False otherwise.
-   */
-  for (const track of hgc.instance().iterateOverTracks()) {
-    const trackRenderer = getTrackRenderer(hgc, track.viewId, track.trackId);
-
-    if (trackRenderer.activeTransitions > 0) return true;
-  }
-  return false;
-}
-
-/**
- * Check if a HiGlassComponent is still waiting on tiles from a remote
- * server.
- *
- * Arguments
- * ---------
- *  hgc: enzyme wrapper for a HiGlassComponent
- *
- * Returns
- * -------
- *  True if any of the tracks are waiting for tiles, false otherwise.
- */
-function isWaitingOnTiles(hgc) {
-  for (const track of hgc.instance().iterateOverTracks()) {
-    let trackObj = getTrackObject(hgc, track.viewId, track.trackId);
-
-    if (track.track.type === 'viewport-projection-vertical'
-        || track.track.type === 'viewport-projection-horizontal'
-        || track.track.type === 'viewport-projection-center') continue;
-
-    if (trackObj.originalTrack) { trackObj = trackObj.originalTrack; }
-
-    if (!trackObj) {
-      // console.warn('no track obj', getTrackObject(hgc, track.viewId, track.trackId));
-    }
-
-    if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
-      // console.warn('no tileset info');
-      return true;
-    }
-
-    // if (trackObj.fetching)
-    //   console.log('trackObj.fetching.size:', trackObj.fetching);
-
-    if (trackObj.fetching && trackObj.fetching.size) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-function waitForTilesLoaded(hgc, tilesLoadedCallback) {
-  /**
-     * Wait until all of the tiles in the HiGlassComponent are loaded
-     * until calling the callback
-     *
-     * Arguments
-     * ---------
-     *  hgc: Enzyme wrapper for a HiGlassComponent
-     *      The componentthat we're waiting on
-     *  tilesLoadedCallback: function
-     *      The callback to call whenever all of the tiles
-     *      have been loaded.
-     * Returns
-     * -------
-     *  Nothing
-     */
-  const TILE_LOADING_CHECK_INTERVAL = 100;
-  // console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
-
-  if (isWaitingOnTiles(hgc)) {
-    setTimeout(() => {
-      waitForTilesLoaded(hgc, tilesLoadedCallback);
-    }, TILE_LOADING_CHECK_INTERVAL);
-  } else {
-    // console.log('finished');
-    tilesLoadedCallback();
-  }
-}
-
-const TILE_LOADING_CHECK_INTERVAL = 100;
-
-function waitForJsonComplete(finished) {
-  /*
-   * Wait until all open JSON requests are finished
-   *
-   * Parameters
-   * ----------
-   *  finished: function
-   *    A callback to call when there's no more JSON requests
-   *    open
-   *
-   */
-  if (requestsInFlight > 0) {
-    setTimeout(() => waitForJsonComplete(finished),
-      TILE_LOADING_CHECK_INTERVAL);
-  } else {
-    finished();
-  }
-}
-
-function waitForTransitionsFinished(hgc, callback) {
-  /**
-   * Wait until all transitions have finished before
-   * calling the callback
-   *
-   * Arguments
-   * ---------
-   *  hgc: Enzyme wrapper for a HiGlassComponent
-   *      The componentthat we're waiting on
-   *  tilesLoadedCallback: function
-   *      The callback to call whenever all of the tiles
-   *      have been loaded.
-   * Returns
-   * -------
-   *  Nothing
-   */
-  // console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
-
-  if (areTransitionsActive(hgc)) {
-    setTimeout(() => {
-      waitForTransitionsFinished(hgc, callback);
-    }, TILE_LOADING_CHECK_INTERVAL);
-  } else {
-    // console.log('finished');
-    callback();
-  }
-}
-
 describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
@@ -245,7 +93,7 @@ describe('Simple HiGlassComponent', () => {
       />, { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Check to make sure that the rectangles are initially small', (done) => {
@@ -254,14 +102,12 @@ describe('Simple HiGlassComponent', () => {
         2507278112.3606963, 2510821333.85643, 5969.720921993256
       );
 
-      let track = getTrackObject(hgc, 'aa', 'genes1');
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'genes1');
       console.log('track:', track);
 
-
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
-  return;
 
   describe('Gene Annotations Display', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -286,11 +132,11 @@ describe('Simple HiGlassComponent', () => {
       />, { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Check to make sure that the rectangles are initially small', (done) => {
-      let track = getTrackObject(hgc, 'aa', 'genes1');
+      let track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'genes1');
 
       const { views } = hgc.instance().state;
       track = getTrackByUid(views.aa.tracks, 'genes1');
@@ -303,7 +149,7 @@ describe('Simple HiGlassComponent', () => {
       });
       console.log('track', track);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -330,11 +176,11 @@ describe('Simple HiGlassComponent', () => {
       />, { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Check to make sure that the rectangles are initially small', (done) => {
-      let track = getTrackObject(hgc, 'aa', 'rectangles1');
+      let track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'rectangles1');
 
       let hasSmaller = false;
       for (const uid of Object.keys(track.drawnRects)) {
@@ -355,11 +201,11 @@ describe('Simple HiGlassComponent', () => {
         views,
       });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Make sure that the rectangles are large', (done) => {
-      let track = getTrackObject(hgc, 'aa', 'rectangles1');
+      let track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'rectangles1');
 
       let hasSmaller = false;
       for (const uid of Object.keys(track.drawnRects)) {
@@ -380,7 +226,7 @@ describe('Simple HiGlassComponent', () => {
         views,
       });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Exports to SVG', (done) => {
@@ -413,7 +259,7 @@ describe('Simple HiGlassComponent', () => {
       />, { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it ("Exports to SVG", (done) => {
@@ -450,7 +296,7 @@ describe('Simple HiGlassComponent', () => {
       />, { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it ("Exports to SVG", (done) => {
@@ -511,7 +357,7 @@ describe('Simple HiGlassComponent', () => {
       { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Exports to SVG', (done) => {
@@ -558,7 +404,7 @@ describe('Simple HiGlassComponent', () => {
       />, { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
 
       // visual check that the heatmap track config menu is moved
       // to the left
@@ -656,11 +502,11 @@ describe('Simple HiGlassComponent', () => {
       />,
       { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('once', (done) => {
-      const tp = getTrackObject(hgc, 'NagBzk-AQZuoY0bqG-Yy0Q', 'PdEzdgsxRymGelD5xfKlNA');
+      const tp = getTrackObjectFromHGC(hgc.instance(), 'NagBzk-AQZuoY0bqG-Yy0Q', 'PdEzdgsxRymGelD5xfKlNA');
       let data = tp.getVisibleRectangleData(262, 298, 1, 1);
 
       data = tp.getVisibleRectangleData(0, 0, tp.dimensions[0], tp.dimensions[1]);
@@ -670,7 +516,7 @@ describe('Simple HiGlassComponent', () => {
 
       // tp.exportData();
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -698,7 +544,7 @@ describe('Simple HiGlassComponent', () => {
       { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });  
 
     it('has a colorbar', () => {
@@ -749,7 +595,7 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().handleTrackOptionsChanged('aa', 'heatmap1', newOptions);
 
-      // const svg = getTrackObject(hgc, 'aa', 'heatmap1').exportSVG()[0];
+      // const svg = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1').exportSVG()[0];
       // hgc.instance().handleExportSVG();
 
       // how do we test for what's drawn in Pixi?'
@@ -776,9 +622,9 @@ describe('Simple HiGlassComponent', () => {
         valueScaling: 'linear',
       };
 
-      expect(getTrackObject(hgc, 'aa', 'line1').options.valueScaling).to.eql('log');
+      expect(getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').options.valueScaling).to.eql('log');
       hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
-      expect(getTrackObject(hgc, 'aa', 'line1').options.valueScaling).to.eql('linear');
+      expect(getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').options.valueScaling).to.eql('linear');
 
       newOptions.valueScaling = 'log';
       hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
@@ -826,72 +672,73 @@ describe('Simple HiGlassComponent', () => {
     );
 
       // make sure that the chromInfo is displayed
-      setTimeout(() => done(), tileLoadTime);
+      // setTimeout(() => done(), 1000);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('splits one of the views', (done) => {
       hgc.instance().handleAddView(twoViewConfig.views[0]);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('splits one of the views1', (done) => {
       hgc.instance().handleAddView(twoViewConfig.views[0]);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
     it('splits one of the views2', (done) => {
       hgc.instance().handleAddView(twoViewConfig.views[0]);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
     it('splits one of the views3', (done) => {
       hgc.instance().handleAddView(twoViewConfig.views[0]);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
     it('splits one of the views3', (done) => {
       hgc.instance().handleAddView(twoViewConfig.views[0]);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
     it('splits one of the views3', (done) => {
       hgc.instance().handleAddView(twoViewConfig.views[0]);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
     it('splits one of the views3', (done) => {
       hgc.instance().handleAddView(twoViewConfig.views[0]);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
     it('splits one of the views3', (done) => {
       hgc.instance().handleAddView(twoViewConfig.views[0]);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
     it('splits one of the views3', (done) => {
       hgc.instance().handleAddView(twoViewConfig.views[0]);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
     it('splits one of the views3', (done) => {
       hgc.instance().handleAddView(twoViewConfig.views[0]);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
     it('splits one of the views3', (done) => {
       hgc.instance().handleAddView(twoViewConfig.views[0]);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
     it('checks to make sure the colorbar is gone', (done) => {
       //
-      const track = getTrackObject(hgc, 'aa', 'heatmap1');
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
 
       expect(track.pColorbarArea.visible).to.eql(false);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -918,7 +765,7 @@ describe('Simple HiGlassComponent', () => {
       />, { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
 
       // visual check that the heatmap track config menu is moved
       // to the left
@@ -1002,7 +849,7 @@ describe('Simple HiGlassComponent', () => {
       />,
       { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('locks the scales and recenters the page', (done) => {
@@ -1015,8 +862,7 @@ describe('Simple HiGlassComponent', () => {
         1799432348.8692136, 1802017603.5768778, 28874.21283197403
       );
 
-      // setTimeout(() => done(), tileLoadTime);
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('exports as JSON and makes sure that the scales are locked', (done) => {
@@ -1028,7 +874,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Moves the brush on one view and makes sure it moves on the other', (done) => {
-      const heatmap1Track = getTrackObject(hgc, 'aa', 'heatmap1');
+      const heatmap1Track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
 
       // console.log('lvs1', heatmapTrack.limitedValueScale.domain());
 
@@ -1038,29 +884,27 @@ describe('Simple HiGlassComponent', () => {
 
       // console.log('lvs2', heatmapTrack.limitedValueScale.domain());
 
-      const heatmap2Track = getTrackObject(hgc, 'view2', 'heatmap2');
+      const heatmap2Track = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
       expect(heatmap1Track.options.scaleStartPercent)
         .to
         .eql(heatmap2Track.options.scaleStartPercent);
       expect(heatmap1Track.options.scaleEndPercent).to.eql(heatmap2Track.options.scaleEndPercent);
 
-      // setTimeout(done, tileLoadTime);
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Changes the value scale', (done) => {
-      // const heatmapTrack = getTrackObject(hgc, 'aa', 'heatmap1');
 
       hgc.instance().tiledPlots.aa.trackRenderer
         .setCenter(179943234.8692136, 180201760.5768778, 2887.21283197403, true);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('ensures that the new track domains are equal', (done) => {
-      const track1 = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap1');
-      const track2 = hgc.instance().tiledPlots.view2.trackRenderer.getTrackObject('heatmap2');
+      const track1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
+      const track2 = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
       const domain1 = track1.valueScale.domain();
       const domain2 = track2.valueScale.domain();
@@ -1089,19 +933,19 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().tiledPlots.aa.trackRenderer
         .setCenter(1799432348.8692136, 1802017603.5768778, 2887.21283197403);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('ensure that new domains are unequal and locks the combined tracks', (done) => {
-      const track1 = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap1');
-      const track2 = hgc.instance().tiledPlots.view2.trackRenderer.getTrackObject('heatmap2');
+      const track1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
+      const track2 = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
       const domain1 = track1.valueScale.domain();
       const domain2 = track2.valueScale.domain();
 
       expect(domain1[1]).to.not.eql(domain2[1]);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
 
@@ -1113,31 +957,31 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().tiledPlots.aa.trackRenderer
         .setCenter(2268041199.8615317, 2267986087.2543955, 15.803061962127686);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('ensures that the new track domains are equal and unlock the combined tracks', (done) => {
-      const track1 = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap1');
-      const track2 = hgc.instance().tiledPlots.view2.trackRenderer.getTrackObject('heatmap2');
+      const track1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
+      const track2 = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
       const domain1 = track1.valueScale.domain();
       const domain2 = track2.valueScale.domain();
 
       expect(domain1[1]).to.eql(domain2[1]);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('zooms out', (done) => {
       hgc.instance().tiledPlots.aa.trackRenderer
         .setCenter(2268233532.6257076, 2268099618.396191, 1710.4168190956116);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('ensures that the domain changed', (done) => {
-      const track1 = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap1');
-      const track2 = hgc.instance().tiledPlots.view2.trackRenderer.getTrackObject('heatmap2');
+      const track1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
+      const track2 = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
       const domain1 = track1.valueScale.domain();
       const domain2 = track2.valueScale.domain();
@@ -1145,7 +989,7 @@ describe('Simple HiGlassComponent', () => {
       expect(domain1[1]).to.be.below(1);
       expect(domain1[1]).to.eql(domain2[1]);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Unlocks the scales and moves to a different location', (done) => {
@@ -1155,7 +999,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().tiledPlots.aa.trackRenderer
         .setCenter(1799432348.8692136, 1802017603.5768778, 2887.21283197403);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('ensures that the new track domains are not equal', (done) => {
@@ -1172,7 +1016,6 @@ describe('Simple HiGlassComponent', () => {
       // unlock the scales and zoom out
       // hgc.instance().tiledPlots['aa'].trackRenderer
       // .setCenter(1799432348.8692136, 1802017603.5768778, 2887.21283197403);
-      // setTimeout(() => done(), tileLoadTime);
 
       done();
     });
@@ -1211,26 +1054,17 @@ describe('Simple HiGlassComponent', () => {
     it('Replaces and displays a new track', (done) => {
       // hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'heatmap3');
 
-      const track = hgc.instance().tiledPlots.view2.trackRenderer.getTrackObject('heatmap3');
+      const track = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap3'); 
 
       // make sure that the newly added track is rendered
       expect(track.pMain.position.x).to.be.above(404);
       expect(track.pMain.position.x).to.be.below(406);
 
-      // setTimeout(() => done(), tileLoadTime);
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Locks the scales again (after waiting for the previous tiles to load)', (done) => {
       hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'heatmap3');
-
-      /*
-      const track1 = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap1');
-      const track2 = hgc.instance().tiledPlots.view2.trackRenderer.getTrackObject('heatmap3');
-
-      const domain1 = track1.valueScale.domain();
-      const domain2 = track2.valueScale.domain();
-      */
 
       done();
     });
@@ -1259,7 +1093,7 @@ describe('Simple HiGlassComponent', () => {
       />, { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
 
       // visual check that the heatmap track config menu is moved
       // to the left
@@ -1363,14 +1197,14 @@ describe('Simple HiGlassComponent', () => {
       { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('zoom to the data extent', (done) => {
       console.log('zooming to extent');
       hgc.instance().api.zoomToDataExtent('aa');
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('ensures both views zoomed to the data extent', () => {
@@ -1405,7 +1239,7 @@ describe('Simple HiGlassComponent', () => {
       />,
         { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('renders with no errors', (done) => {
@@ -1439,24 +1273,24 @@ describe('Simple HiGlassComponent', () => {
       />,
         { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Resizes one track ', (done) => {
-      const tp = getTiledPlot(hgc, 'aa');
+      const tp = getTiledPlot(hgc.instance(), 'aa');
 
       tp.handleResizeTrack('line1', 289, 49);
 
       // tp.setState(tp.state);
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Ensures that the track object was resized', (done) => {
-      const track = getTrackObject(hgc, 'aa', 'line1');
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1');
 
       expect(track.dimensions[1]).to.eql(49);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -1483,7 +1317,7 @@ describe('Simple HiGlassComponent', () => {
       />,
         { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('should load the initial config', (done) => {
@@ -1503,9 +1337,9 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
       hgc.setState(hgc.instance().state);
 
-      expect(getTrackObject(hgc, 'aa', 'line1').labelText.alpha).to.be.below(0.21);
+      expect(getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').labelText.alpha).to.be.below(0.21);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('should change the stroke width of the second line to 5', (done) => {
@@ -1515,13 +1349,13 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleTrackOptionsChanged('aa', 'line2', newOptions);
       hgc.setState(hgc.instance().state);
 
-      expect(getTrackObject(hgc, 'aa', 'line1').labelText.alpha).to.be.below(0.21);
+      expect(getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').labelText.alpha).to.be.below(0.21);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('should do something else', (done) => {
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -1564,14 +1398,14 @@ describe('Simple HiGlassComponent', () => {
       />,
         { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Should lock the location without throwing an error', (done) => {
       hgc.instance().handleLocationLockChosen('aa', 'bb');
       // the viewconf contains a location lock, we need to ignore it
       //
-      const track = getTrackObject(hgc, 'bb', 'line2');
+      const track = getTrackObjectFromHGC(hgc.instance(), 'bb', 'line2');
       expect(track.labelText.text.indexOf('hg19')).to.eql(0);
 
       const overlayElements = document.getElementsByClassName('overlay');
@@ -1579,7 +1413,7 @@ describe('Simple HiGlassComponent', () => {
       // there should be two colorbars
       expect(overlayElements.length).to.eql(2);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Should add a vertical viewport projection', (done) => {
@@ -1591,7 +1425,7 @@ describe('Simple HiGlassComponent', () => {
       // we should have created an overlay element
       expect(overlayElements.length).to.eql(3);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Should project the viewport of view2 onto the gene annotations track', (done) => {
@@ -1599,27 +1433,27 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().tiledPlots.aa.trackRenderer.setCenter(2540607259.217122, 2541534691.921077, 195.2581009864807);
       // move the viewport just a little bit
       //
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Should make sure that the track labels still contain the assembly', (done) => {
-      const track = getTrackObject(hgc, 'bb', 'line2');
+      const track = getTrackObjectFromHGC(hgc.instance(), 'bb', 'line2');
       expect(track.labelText.text.indexOf('hg19')).to.eql(0);
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Add a 2D vertical projection and move the lower track to different location', (done) => {
-      const track = getTrackObject(hgc, 'bb', 'line2');
+      const track = getTrackObjectFromHGC(hgc.instance(), 'bb', 'line2');
 
       hgc.instance().tiledPlots.bb.trackRenderer.setCenter(2540607259.217122, 2541534691.921077, 87.50166702270508);
       vp2DUid = hgc.instance().handleViewportProjected('bb', 'aa', 'heatmap3');
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Resize the 1D projection', (done) => {
-      const viewportTracker = getTrackObject(hgc, 'aa', vpUid);
-      const viewport2DTracker = getTrackObject(hgc, 'aa', vp2DUid);
+      const viewportTracker = getTrackObjectFromHGC(hgc.instance(), 'aa', vpUid);
+      const viewport2DTracker = getTrackObjectFromHGC(hgc.instance(), 'aa', vp2DUid);
 
       // the 2D viewport tracker domains shouldn't change
       // what??? this is impossible since the yDomain 
@@ -1640,7 +1474,7 @@ describe('Simple HiGlassComponent', () => {
       expect(preResizeYDomain[1] - postResizeYDomain[1]).to.be.below(0.0001);
       expect(preResizeYDomain[1] - postResizeYDomain[1]).to.be.below(0.0001);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -1669,7 +1503,7 @@ describe('Simple HiGlassComponent', () => {
       />,
         { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('should open the AddTrackModal', (done) => {
@@ -1718,7 +1552,7 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.update();
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('should add these plot types', (done) => {
@@ -1859,7 +1693,7 @@ describe('Simple HiGlassComponent', () => {
       // hgc.update();
 
       // console.log('starting wait');
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Changes the position of the brush to the top right', (done) => {
@@ -1873,7 +1707,7 @@ describe('Simple HiGlassComponent', () => {
 
 
     it('Moves the brush on one of the views', (done) => {
-      const heatmapTrack = getTrackObject(hgc, 'aa', 'heatmap1');
+      const heatmapTrack = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
 
       const domain1 = heatmapTrack.limitedValueScale.domain();
 
@@ -1896,18 +1730,17 @@ describe('Simple HiGlassComponent', () => {
 
     it('locks the scales and recenters the page', (done) => {
       hgc.instance().handleValueScaleLocked('aa', 'heatmap1', 'view2', 'heatmap2');
-      const track1 = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap1');
-      const track2 = hgc.instance().tiledPlots.view2.trackRenderer.getTrackObject('heatmap2');
+      const track1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
+      const track2 = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
       // zoom out a little bit
       hgc.instance().tiledPlots.aa.trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 28874.21283197403);
 
-      // setTimeout(() => done(), tileLoadTime);
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Moves the brush on one view and makes sure it moves on the other', (done) => {
-      const heatmapTrack = getTrackObject(hgc, 'aa', 'heatmap1');
+      const heatmapTrack = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
 
       // console.log('lvs1', heatmapTrack.limitedValueScale.domain());
 
@@ -1917,7 +1750,7 @@ describe('Simple HiGlassComponent', () => {
 
       // console.log('lvs2', heatmapTrack.limitedValueScale.domain());
 
-      const heatmap2Track = getTrackObject(hgc, 'view2', 'heatmap2');
+      const heatmap2Track = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
       expect(heatmapTrack.options.scaleStartPercent).to.eql(heatmap2Track.options.scaleStartPercent);
       expect(heatmapTrack.options.scaleEndPercent).to.eql(heatmap2Track.options.scaleEndPercent);
@@ -1949,7 +1782,7 @@ describe('Simple HiGlassComponent', () => {
       />,
         { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Ensures that the custom color map loads properly', (done) => {
@@ -1959,7 +1792,7 @@ describe('Simple HiGlassComponent', () => {
         twoViewConfig.views[0].tracks.center[0].contents[0],
         HeatmapOptions);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -1988,7 +1821,7 @@ describe('Simple HiGlassComponent', () => {
         { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it ('Exports the views as SVG', (done) => {
@@ -2031,7 +1864,7 @@ describe('Simple HiGlassComponent', () => {
         expect(midY).to.eql(newMidY);
       });
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
 
       // visual check that the heatmap track config menu is moved
       // to the left
@@ -2072,7 +1905,7 @@ describe('Simple HiGlassComponent', () => {
       />, { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
 
       // visual check that the heatmap track config menu is moved
       // to the left
@@ -2125,7 +1958,7 @@ describe('Simple HiGlassComponent', () => {
       />,
         { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Ensures that the custom color map loads properly', (done) => {
@@ -2135,7 +1968,7 @@ describe('Simple HiGlassComponent', () => {
         twoViewConfig.views[0].tracks.center[0].contents[0],
         HeatmapOptions);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -2161,7 +1994,7 @@ describe('Simple HiGlassComponent', () => {
       />,
         { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Ensures that when a view is closed, the PIXI graphics are removed', (done) => {
@@ -2174,7 +2007,7 @@ describe('Simple HiGlassComponent', () => {
       // since we removed one of the children, there should be only one left
       expect(hgc.instance().pixiStage.children.length).to.eql(1);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -2203,7 +2036,7 @@ describe('Simple HiGlassComponent', () => {
       />,
         { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Links two views and moves to the side', (done) => {
@@ -2212,7 +2045,7 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().tiledPlots.aa.trackRenderer.setCenter(
         1799508622.8021536, 1801234331.7949603, 17952.610495328903);
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Checks to make sure that the two views have moved to the same place', (done) => {
@@ -2241,7 +2074,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().tiledPlots.aa.trackRenderer.setCenter(
         1799509622.8021536, 1801244331.7949603, 17952.610495328903);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Makes sure that the third view moved', (done) => {
@@ -2258,7 +2091,7 @@ describe('Simple HiGlassComponent', () => {
       expect(aaCenterY - ccCenterY).to.be.below(0.001);
 
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -2285,7 +2118,7 @@ describe('Simple HiGlassComponent', () => {
       />,
         { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('has the focus in the searchbar when adding a new track', (done) => {
@@ -2300,7 +2133,7 @@ describe('Simple HiGlassComponent', () => {
       // e.g. that it has focus
       expect(inputField).to.be.eql(document.activeElement);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -2328,11 +2161,11 @@ describe('Simple HiGlassComponent', () => {
       />,
         { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('should load the initial config', (done) => {
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Changes the axis to inner right', (done) => {
@@ -2342,14 +2175,14 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
 
-      const track = getTrackObject(hgc, 'aa', 'line1');
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1');
       const pAxis = track.axis.pAxis;
 
       // we want the axis labels to be to the left of the end of the track
       expect(pAxis.position.x).to.be.above(track.position[0]);
       expect(pAxis.children[0].x).to.be.below(0);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Changes the axis to outside right', (done) => {
@@ -2359,7 +2192,7 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
 
-      const track = getTrackObject(hgc, 'aa', 'line1');
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1');
       const pAxis = track.axis.pAxis;
 
 
@@ -2367,7 +2200,7 @@ describe('Simple HiGlassComponent', () => {
       expect(pAxis.position.x).to.be.above(track.position[0]);
       expect(pAxis.children[0].x).to.be.above(0);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Changes the axis to outside left', (done) => {
@@ -2377,14 +2210,14 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
 
-      const track = getTrackObject(hgc, 'aa', 'line1');
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1');
       const pAxis = track.axis.pAxis;
 
       // we want the axis labels to be to the left of the end of the track
       expect(pAxis.position.x).to.be.eql(track.position[0]);
       expect(pAxis.children[0].x).to.be.below(0);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Changes the axis to the left', (done) => {
@@ -2394,14 +2227,14 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
 
-      const track = getTrackObject(hgc, 'aa', 'line1');
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1');
       const pAxis = track.axis.pAxis;
 
       // we want the axis labels to be to the left of the end of the track
       expect(pAxis.position.x).to.be.eql(track.position[0]);
       expect(pAxis.children[0].x).to.be.above(0);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Changes the axis to the top', (done) => {
@@ -2412,14 +2245,14 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
 
-      const track = getTrackObject(hgc, 'aa', 'vline1').originalTrack;
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vline1').originalTrack;
       const pAxis = track.axis.pAxis;
 
       // we want the axis labels to be to the left of the end of the track
       expect(pAxis.position.x).to.be.eql(track.position[0]);
       expect(pAxis.children[0].x).to.be.above(0);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Changes the axis to the outside top', (done) => {
@@ -2430,14 +2263,14 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
 
-      const track = getTrackObject(hgc, 'aa', 'vline1').originalTrack;
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vline1').originalTrack;
       const pAxis = track.axis.pAxis;
 
       // we want the axis labels to be to the left of the end of the track
       expect(pAxis.position.x).to.be.eql(track.position[0]);
       expect(pAxis.children[0].x).to.be.below(0);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Changes the axis to the outside bottom', (done) => {
@@ -2448,14 +2281,14 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
 
-      const track = getTrackObject(hgc, 'aa', 'vline1').originalTrack;
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vline1').originalTrack;
       const pAxis = track.axis.pAxis;
 
       // we want the axis labels to be to the left of the end of the track
       expect(pAxis.position.x).to.be.above(track.position[0]);
       expect(pAxis.children[0].x).to.be.above(0);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Changes the axis to the bottom', (done) => {
@@ -2465,14 +2298,14 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
 
-      const track = getTrackObject(hgc, 'aa', 'vline1').originalTrack;
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vline1').originalTrack;
       const pAxis = track.axis.pAxis;
 
       // we want the axis labels to be to the left of the end of the track
       expect(pAxis.position.x).to.be.above(track.position[0]);
       expect(pAxis.children[0].x).to.be.below(0);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -2499,7 +2332,7 @@ describe('Simple HiGlassComponent', () => {
       />,
         { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it("doesn't export maxWidth or filetype", () => {
@@ -2536,7 +2369,7 @@ describe('Simple HiGlassComponent', () => {
         { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Makes the search box invisible', (done) => {
@@ -2638,7 +2471,7 @@ describe('Simple HiGlassComponent', () => {
       />,
         { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Sends a resize event to fit the current view into the window', (done) => {
@@ -2646,7 +2479,7 @@ describe('Simple HiGlassComponent', () => {
 
       window.dispatchEvent(resizeEvent);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Resize the view', (done) => {
@@ -2655,13 +2488,13 @@ describe('Simple HiGlassComponent', () => {
 
       window.dispatchEvent(resizeEvent);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Expect the the chosen rowHeight to be less than 24', (done) => {
       expect(hgc.instance().state.rowHeight).to.be.below(24);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -2689,7 +2522,7 @@ describe('Simple HiGlassComponent', () => {
       />,
         { attachTo: div });
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('should add and resize a vertical heatmp', (done) => {
@@ -2699,11 +2532,11 @@ describe('Simple HiGlassComponent', () => {
       hgc.setState(hgc.instance().state);
       hgc.instance().tiledPlots.aa.measureSize();
 
-      const track = getTrackObject(hgc, 'aa', 'vh1');
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vh1');
 
       expect(track.originalTrack.axis.track.flipText).to.eql(true);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Should flip the vertical heatmap', (done) => {
@@ -2712,7 +2545,7 @@ describe('Simple HiGlassComponent', () => {
 
       track.options.oneDHeatmapFlipped = 'yes';
 
-      const trackObj = getTrackObject(hgc, 'aa', 'vh1').originalTrack;
+      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vh1').originalTrack;
       hgc.setState({
         views,
       });
@@ -2729,7 +2562,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().tiledPlots.aa.measureSize();
 
       // setTimeout(done, shortLoadTime);
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('should add a heatmap', (done) => {
@@ -2742,24 +2575,22 @@ describe('Simple HiGlassComponent', () => {
       hgc.setState(hgc.instance().state);
 
       // this should show the graphics, but it initially doesn't
-      // setTimeout(done, tileLoadTime);
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('should change the opacity of the label', (done) => {
       hgc.instance().state.views.aa.tracks.top[0].options.labelBackgroundOpacity = 0.5;
 
       hgc.setState(hgc.instance().state);
-      const horizontalHeatmap = getTrackObject(hgc, 'aa', 'hh1');
+      const horizontalHeatmap = getTrackObjectFromHGC(hgc.instance(), 'aa', 'hh1');
 
       expect(horizontalHeatmap.options.labelBackgroundOpacity).to.eql(0.5);
 
-      // setTimeout(done, tileLoadTime);
       done();
     });
 
     it('should have a horizontal heatmap scale', (done) => {
-      const horizontalHeatmap = getTrackObject(hgc, 'aa', 'hh1');
+      const horizontalHeatmap = getTrackObjectFromHGC(hgc.instance(), 'aa', 'hh1');
 
       const svg = horizontalHeatmap.exportColorBarSVG();
       const rect = svg.getElementsByClassName('color-rect')[0];
@@ -2776,11 +2607,10 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.setState(hgc.instance().state);
 
-      // setTimeout(done, tileLoadTime);
       // make sure that the view has grown
       expect(hgc.instance().state.views.aa.layout.h).to.be.above(prevHeight);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
 
@@ -2796,8 +2626,7 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.setState(hgc.instance().state);
 
-      // setTimeout(done, tileLoadTime);
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('updates the view and deletes some tracks', (done) => {
@@ -2823,7 +2652,7 @@ describe('Simple HiGlassComponent', () => {
       // we deleted the tracks
       const newTrackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer.currentProps.height;
       expect(newTrackRendererHeight).to.be.below(trackRendererHeight);
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Adds a center heatmap track', (done) => {
@@ -2832,8 +2661,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.setState(hgc.instance().state);
       hgc.instance().tiledPlots.aa.measureSize();
 
-      // setTimeout(done, tileLoadTime);
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Checks to make sure the newly added heatmap was large enough and deletes a track', (done) => {
@@ -2862,11 +2690,11 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().tiledPlots.aa.measureSize();
 
       // setTimeout(done, shortLoadTime);
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Should add a bottom track and have the new height', (done) => {
-      const prevHeight = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3').dimensions[1]
+      const prevHeight = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap3').dimensions[1]
 
       const newTrack = JSON.parse(JSON.stringify(horizontalHeatmapTrack));
       newTrack.uid = 'xyx1';
@@ -2884,7 +2712,7 @@ describe('Simple HiGlassComponent', () => {
       console.log('prevHeight:', prevHeight, 'newHeight:', newHeight);
       expect(prevHeight).to.eql(newHeight);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
       */
     });
 
@@ -2895,7 +2723,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.setState(hgc.instance().state);
       hgc.instance().tiledPlots.aa.measureSize();
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Should delete the bottom track and not resize the center', (done) => {
@@ -2909,7 +2737,7 @@ describe('Simple HiGlassComponent', () => {
 
       // expect(nextSize).to.be.eql(prevSize);
 
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -2937,7 +2765,7 @@ describe('Simple HiGlassComponent', () => {
       />, { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
 
       // visual check that the heatmap track config menu is moved
       // to the left
@@ -2967,7 +2795,7 @@ describe('Simple HiGlassComponent', () => {
       />, { attachTo: div });
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
 
       // visual check that the heatmap track config menu is moved
       // to the left
@@ -3005,7 +2833,7 @@ describe('Simple HiGlassComponent', () => {
         {attachTo: div});
 
       hgc.update();
-      waitForTilesLoaded(hgc, done);
+      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it ("Makes the search box visible", (done) => {
@@ -3039,7 +2867,6 @@ describe('Simple HiGlassComponent', () => {
       // this gene previously did nothing when searching for it
       hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'w');
 
-      //setTimeout(done, tileLoadTime);
       waitForJsonComplete(done);
     });
 
@@ -3060,7 +2887,6 @@ describe('Simple HiGlassComponent', () => {
       // this gene previously did nothing when searching for it
       hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'Clock');
 
-      //setTimeout(done, tileLoadTime);
       waitForJsonComplete(done);
     });
 
@@ -3068,8 +2894,8 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().genomePositionSearchBoxes['aa'].buttonClick();
 
       waitForJsonComplete(() => {
-        waitForTransitionsFinished(hgc, () => {
-          waitForTilesLoaded(hgc, done);
+        waitForTransitionsFinished(hgc.instance(), () => {
+          waitForTilesLoaded(hgc.instance(), done);
         });
       });
     });
@@ -3120,8 +2946,8 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().genomePositionSearchBoxes['aa'].buttonClick();
 
       waitForJsonComplete(() => {
-        waitForTransitionsFinished(hgc, () => {
-          waitForTilesLoaded(hgc, done);
+        waitForTransitionsFinished(hgc.instance(), () => {
+          waitForTilesLoaded(hgc.instance(), done);
         });
       });
     });

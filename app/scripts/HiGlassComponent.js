@@ -934,7 +934,7 @@ class HiGlassComponent extends React.Component {
     }
   
     const [centerX, centerY, k] = scalesCenterAndK(xScale, yScale);
-    console.log('tx, ty, k', [centerX, centerY, k]);
+    // console.log('tx, ty, k', [centerX, centerY, k]);
 
     if (this.zoomLocks[uid]) {
       // this view is locked to another
@@ -3303,7 +3303,7 @@ class HiGlassComponent extends React.Component {
     // this is so that we can zoom when there's a viewport projection present
     const hoveredTiledPlot = this.getTiledPlotAtPosition(evt.clientX, evt.clientY);
     if (hoveredTiledPlot) {
-      const trackRenderer = hoveredTiledPlot.trackRenderer;
+      const { trackRenderer } = hoveredTiledPlot;
       evt.forwared = true;
 
       forwardEvent(evt.nativeEvent, trackRenderer.element);
@@ -3325,10 +3325,9 @@ class HiGlassComponent extends React.Component {
         const zoomFixed = this.isZoomFixed(view);
 
         // only show the add track menu for the tiled plot it was selected for
-        const addTrackPositionMenuPosition =
-          view.uid === this.state.addTrackPositionMenuUid
-            ? this.state.addTrackPositionMenuPosition
-            : null;
+        const addTrackPositionMenuPosition = view.uid === this.state.addTrackPositionMenuUid
+          ? this.state.addTrackPositionMenuPosition
+          : null;
 
         let overlay = null;
         if (this.state.chooseViewHandler) {
