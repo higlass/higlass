@@ -5,6 +5,13 @@ import HiGlassComponent from './HiGlassComponent';
 export { default as ChromosomeInfo } from './ChromosomeInfo';
 export { default as HiGlassComponent } from './HiGlassComponent';
 
+// export functions that are useful for testing
+export {
+  waitForJsonComplete,
+  waitForTilesLoaded,
+  waitForTransitionsFinished,
+} from './utils';
+
 const launch = (element, config, options) => {
   /**
    * The instance's public API will be passed into the callback

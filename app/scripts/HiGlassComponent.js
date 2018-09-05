@@ -347,12 +347,12 @@ class HiGlassComponent extends React.Component {
     });
 
     const rendererOptions = {
-          view: this.canvasElement,
-          antialias: true,
-          transparent: true,
-          resolution: 2,
-          autoResize: true,
-        };
+      view: this.canvasElement,
+      antialias: true,
+      transparent: true,
+      resolution: 2,
+      autoResize: true,
+    };
 
     if (this.props.options.renderer === 'webgl') {
       this.pixiRenderer = new PIXI.WebGLRenderer(
@@ -531,7 +531,7 @@ class HiGlassComponent extends React.Component {
   }
 
   fitPixiToParentContainer() {
-    if (!this.element.parentNode) {
+    if (!this.element || !this.element.parentNode) {
       console.warn('No parentNode:', this.element);
       return;
     }

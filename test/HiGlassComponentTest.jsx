@@ -299,30 +299,30 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it ("Exports to SVG", (done) => {
-      let svg = hgc.instance().createSVG();
-      let svgText = new XMLSerializer().serializeToString(svg);
+    it('Exports to SVG', (done) => {
+      // const svg = hgc.instance().createSVG();
+      // const svgText = new XMLSerializer().serializeToString(svg);
 
-      //expect(svgText.indexOf('dy="-17"')).to.be.above(0);
-      //hgc.instance().handleExportSVG();
+      // expect(svgText.indexOf('dy="-17"')).to.be.above(0);
+      // hgc.instance().handleExportSVG();
 
       done();
     });
 
-    it ("Replaces one of the views and tries to export again", (done) => {
-      let views = hgc.instance().state.views;
+    it('Replaces one of the views and tries to export again', (done) => {
+      let { views } = hgc.instance().state;
 
-      let newView = JSON.parse(JSON.stringify(views['aa']));
+      const newView = JSON.parse(JSON.stringify(views.aa));
 
       hgc.instance().handleCloseView('aa');
-      views = hgc.instance().state.views;
+      ({ views } = hgc.instance().state);
 
       newView.uid = 'a2';
       newView.layout.i = 'a2';
 
-      views['a2'] = newView;
+      views.a2 = newView;
 
-      hgc.instance().setState({views: views});
+      hgc.instance().setState({ views });
 
       // this used to raise an error because the hgc.instance().tiledPlots
       // would maintain a reference to the closed view and we would try
@@ -545,7 +545,7 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.update();
       waitForTilesLoaded(hgc.instance(), done);
-    });  
+    });
 
     it('has a colorbar', () => {
       const heatmap = hgc.instance().tiledPlots.aa.trackRenderer
@@ -669,7 +669,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().tiledPlots.view2
         .trackRenderer.syncTrackObjects(
           hgc.instance().tiledPlots.view2.positionedTracks()
-    );
+        );
 
       // make sure that the chromInfo is displayed
       // setTimeout(() => done(), 1000);
@@ -895,7 +895,6 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Changes the value scale', (done) => {
-
       hgc.instance().tiledPlots.aa.trackRenderer
         .setCenter(179943234.8692136, 180201760.5768778, 2887.21283197403, true);
 
@@ -1130,41 +1129,39 @@ describe('Simple HiGlassComponent', () => {
 
       // get the object corresponding to the series
       cftm.handleItemMouseEnterWithRect(subMenuRect, series[0]);
-      let seriesObj = cftm.seriesListMenu;
+      const seriesObj = cftm.seriesListMenu;
 
-      const position = {left: 127.03125, top: 84};
+      const position = { left: 127.03125, top: 84 };
       const bbox = {
-        bottom : 104,
-        height : 20,
-        left : 131.03125,
-        right : 246,
-        top : 84,
-        width : 114.96875,
-        x : 131.03125,
-        y : 84,
+        bottom: 104,
+        height: 20,
+        left: 131.03125,
+        right: 246,
+        top: 84,
+        width: 114.96875,
+        x: 131.03125,
+        y: 84,
       };
 
-      let trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
+      const trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
 
       expect(trackTypeItems.props.menuItems).to.not.have.property('horizontal-line');
       expect(trackTypeItems.props.menuItems).to.not.have.property('horizontal-point');
-
-      let configMenuItems = seriesObj.getConfigureSeriesMenu(position, bbox, series);
 
       done();
     });
 
     it('Opens the close track menu', (done) => {
       const clickPosition = {
-        bottom : 85,
-        height : 28,
-        left : 246,
-        right : 274,
-        top : 57,
-        width : 28,
-        x : 246,
-        y : 57,
-      }
+        bottom: 85,
+        height: 28,
+        left: 246,
+        right: 274,
+        top: 57,
+        width: 28,
+        x: 246,
+        y: 57,
+      };
       const uid = 'line1';
 
       hgc.instance().tiledPlots.aa.handleCloseTrackMenuOpened(uid, clickPosition);
@@ -1245,12 +1242,9 @@ describe('Simple HiGlassComponent', () => {
     it('renders with no errors', (done) => {
       done();
     });
-
   });
 
   describe('Track Resizing', () => {
-    const atm = null;
-
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
         hgc.unmount();
@@ -1271,7 +1265,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: true }}
         viewConfig={oneTrackConfig}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1315,7 +1309,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: false }}
         viewConfig={testViewConfX2}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1396,7 +1390,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: false }}
         viewConfig={newViewConf}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1418,7 +1412,6 @@ describe('Simple HiGlassComponent', () => {
 
     it('Should add a vertical viewport projection', (done) => {
       vpUid = hgc.instance().handleViewportProjected('bb', 'aa', 'vline1');
-      // hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(2540607259.217122,2541534691.921077,195.2581009864807);
       // move the viewport just a little bit
       const overlayElements = document.getElementsByClassName('overlay');
 
@@ -1430,7 +1423,9 @@ describe('Simple HiGlassComponent', () => {
 
     it('Should project the viewport of view2 onto the gene annotations track', (done) => {
       vpUid = hgc.instance().handleViewportProjected('bb', 'aa', 'ga1');
-      hgc.instance().tiledPlots.aa.trackRenderer.setCenter(2540607259.217122, 2541534691.921077, 195.2581009864807);
+      hgc.instance().tiledPlots.aa.trackRenderer.setCenter(2540607259.217122,
+        2541534691.921077,
+        195.2581009864807);
       // move the viewport just a little bit
       //
       waitForTilesLoaded(hgc.instance(), done);
@@ -1443,9 +1438,9 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Add a 2D vertical projection and move the lower track to different location', (done) => {
-      const track = getTrackObjectFromHGC(hgc.instance(), 'bb', 'line2');
-
-      hgc.instance().tiledPlots.bb.trackRenderer.setCenter(2540607259.217122, 2541534691.921077, 87.50166702270508);
+      hgc.instance().tiledPlots.bb.trackRenderer.setCenter(2540607259.217122,
+        2541534691.921077,
+        87.50166702270508);
       vp2DUid = hgc.instance().handleViewportProjected('bb', 'aa', 'heatmap3');
 
       waitForTilesLoaded(hgc.instance(), done);
@@ -1456,7 +1451,7 @@ describe('Simple HiGlassComponent', () => {
       const viewport2DTracker = getTrackObjectFromHGC(hgc.instance(), 'aa', vp2DUid);
 
       // the 2D viewport tracker domains shouldn't change
-      // what??? this is impossible since the yDomain 
+      // what??? this is impossible since the yDomain
       // this test is invalid
       // TODO: Add a bug report for this
       done();
