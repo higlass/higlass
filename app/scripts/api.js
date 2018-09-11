@@ -238,14 +238,7 @@ const api = function api(context) {
       end2Abs,
       animateTime = 0,
     ) {
-      const [centerX, centerY, k] = scalesCenterAndK(
-        self.xScales[viewUid].copy().domain([start1Abs, end1Abs]),
-        self.yScales[viewUid].copy().domain([start2Abs, end2Abs]),
-      );
-
-      self.setCenters[viewUid](
-        centerX, centerY, k, false, animateTime,
-      );
+      self.zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime);
     },
 
     off(event, listenerId, viewId) {

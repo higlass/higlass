@@ -1,7 +1,7 @@
 {
   "name": "higlass",
-  "version": "1.0.2",
-  "description": "Massive matrix viewer",
+  "version": "1.1.5",
+  "description": "HiGlass Hi-C / genomic / large data viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/scripts/hglib.js",
   "keywords": [
@@ -15,7 +15,7 @@
     "build": "rm -rf dist/*; mkdir -p dist/scripts; mkdir -p dist/styles; cp -r app/images dist/; NODE_ENV=development ./node_modules/webpack/bin/webpack.js; cp build/hglib.js dist/scripts; cp app/index.html dist/; cp app/hglib.html dist/; cp build/hglib.css dist/styles/hglib.css; cp doc/favicon.ico dist/; cp app/styles/page.css dist/styles/;",
     "compile": "rm -rf dist/*; mkdir -p dist/scripts; mkdir -p dist/styles; cp -r app/images dist/; NODE_ENV=production ./node_modules/webpack/bin/webpack.js --display-optimization-bailout; cp build/hglib.js dist/scripts; cp app/index.html dist/; cp app/hglib.html dist/; cp build/hglib.css dist/styles/hglib.css; cp doc/favicon.ico dist/; cp app/styles/page.css dist/styles/; zip -r dist.zip dist",
     "compile-debug": "rm -rf dist/*; mkdir -p dist/scripts; mkdir -p dist/styles; cp -r app/images dist/; ./node_modules/webpack/bin/webpack.js; cp build/hglib.js dist/scripts; cp app/index.html dist/; cp app/hglib.html dist/; cp build/hglib.css dist/styles/hglib.css; cp doc/favicon.ico dist/; cp app/styles/page.css dist/styles/; zip -r dist.zip dist",
-    "test-watch": "npm run compile-debug && ./node_modules/karma/bin/karma start karma.conf.js"
+    "test-watch": "npm run build && ./node_modules/karma/bin/karma start karma.conf.js"
   },
   "repository": {
     "type": "git",
@@ -34,10 +34,8 @@
   "dependencies": {
     "babel-plugin-react-css-modules": "^3.4.0",
     "box-intersect": "^1.0.1",
-    "css-element-queries": "github:marcj/css-element-queries",
     "d3-array": "^1.2.1",
     "d3-axis": "^1.0.4",
-    "d3-brush": "github:flekschas/d3-brush",
     "d3-color": "^1.0.3",
     "d3-drag": "^1.2.1",
     "d3-dsv": "^1.0.8",
@@ -51,6 +49,7 @@
     "d3-zoom": "^1.7.1",
     "dom-scroll-into-view": "^1.2.1",
     "eventemitter3": "^2.0.2",
+    "numjs": "^0.16.0",
     "path": "^0.12.7",
     "pixi.js": "^4.6.2",
     "prop-types": "^15.6.0",
@@ -86,10 +85,13 @@
     "babel-preset-airbnb": "^2.4.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.11.1",
+    "bootstrap": "^3.3.7",
     "brfs": "1.4.3",
     "browser-sync": "~2.11.1",
     "chai": "^3.5.0",
+    "css-element-queries": "github:marcj/css-element-queries",
     "css-loader": "^0.28.8",
+    "d3-brush": "github:flekschas/d3-brush",
     "del": "~2.2.0",
     "enzyme": "^2.8.0",
     "es6-promise": "~3.1.2",

@@ -106,6 +106,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   // }
 
   rerender(options) {
+    super.rerender(options);
     this.options = options;
 
     super.draw();

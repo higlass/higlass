@@ -1,9 +1,11 @@
+import nj from 'numjs';
 import { brushY } from 'd3-brush';
 import { range } from 'd3-array';
 import { format } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
 import { select, event } from 'd3-selection';
 import * as PIXI from 'pixi.js';
+import slugid from 'slugid';
 
 import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
 import AxisPixi from './AxisPixi';
@@ -15,6 +17,7 @@ import {
   absToChr,
   colorDomainToRgbaArray,
   colorToHex,
+  download,
   mod,
   objVals,
   rangeQuery2d,
@@ -58,14 +61,15 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       options,
       animate,
       () => {
-        this.drawColorbar();
         onValueScaleChanged();
+        this.drawColorbar();
       },
     );
 
     this.is2d = true;
     this.animate = animate;
-    this.mirrorTiles = true;
+    this.uid = slugid.nice();
+    this.scaleBrush = brushY();
 
     this.onTrackOptionsChanged = onTrackOptionsChanged;
 
@@ -111,7 +115,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       );
     }
 
-    if (this.options.showMousePosition && !this.hideMousePosition) {
+    if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(this, this.is2d);
     }
 
@@ -154,7 +158,17 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     const relX = x - this.position[0];
     const relY = y - this.position[1];
-    const data = this.getVisibleData(relX, relY);
+    let data = this.getVisibleRectangleData(relX - Math.ceil(this.dataLensSize / 2), 
+      relY - Math.ceil(this.dataLensSize / 2), this.dataLensSize, this.dataLensSize);
+    if (!data)
+      return;
+
+    try {
+      data = data.flatten().tolist();
+    } catch (err) {
+
+    }
+
     const dim = this.dataLensSize;
 
     let toRgb;
@@ -264,11 +278,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // hopefully draw isn't rerendering all the tiles
     // this.drawColorbar();
 
-    if (this.options.showMousePosition && !this.hideMousePosition) {
+    if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(this, this.is2d);
     }
 
-    if (!this.options.showMousePosition && this.hideMousePosition) {
+    if (this.options && !this.options.showMousePosition && this.hideMousePosition) {
       this.hideMousePosition();
       this.hideMousePosition = undefined;
     }
@@ -292,7 +306,24 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     return canvas;
   }
 
-  exportData() {}
+  exportData() {
+    if (this.tilesetInfo) {
+      const currentResolution = tileProxy.calculateResolution(this.tilesetInfo,
+        this.zoomLevel);
+
+      const pixelsWidth = (this._xScale.domain()[1]  - this._xScale.domain()[0])/ currentResolution;
+      const pixelsHeight = (this._yScale.domain()[1]  - this._yScale.domain()[0])/ currentResolution;
+
+      const data = this.getVisibleRectangleData(0, 0, this.dimensions[0], this.dimensions[1]);
+      output = {
+        bounds: [this._xScale.domain(), this._yScale.domain()],
+        dimensions: data.shape,
+        data: data.flatten().tolist(),
+      }
+
+      download('data.json', JSON.stringify(output));
+    }
+  }
 
   /**
    * Position sprite (the rendered tile)
@@ -403,22 +434,39 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.brushing = false;
   }
 
+  setPosition(newPosition) {
+    super.setPosition(newPosition);
+
+    this.drawColorbar();
+
+  }
+  setDimensions(newDimensions) {
+    super.setDimensions(newDimensions);
+
+    this.drawColorbar();
+  }
+
+  removeColorbar() {
+    this.pColorbarArea.visible = false;
+
+    if (this.scaleBrush.on('.brush')) {
+      this.gColorscaleBrush.call(this.scaleBrush.move, null);
+    }
+
+    // turn off the color scale brush
+    this.gColorscaleBrush.on('.brush', null);
+    this.gColorscaleBrush.selectAll('rect').remove();
+  }
+
   drawColorbar() {
     this.pColorbar.clear();
+    // console.trace('draw colorbar');
 
-    if (
+    if (!this.options ||
       !this.options.colorbarPosition
       || this.options.colorbarPosition === 'hidden'
     ) {
-      this.pColorbarArea.visible = false;
-
-      if (this.scaleBrush) {
-        this.gColorscaleBrush.call(this.scaleBrush.move, null);
-      }
-
-      // turn off the color scale brush
-      this.gColorscaleBrush.on('.brush', null);
-      this.gColorscaleBrush.selectAll('rect').remove();
+      this.removeColorbar();
 
       return;
     }
@@ -436,7 +484,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.colorbarHeight = colorbarAreaHeight - (2 * COLORBAR_MARGIN);
 
     //  no point in drawing the colorbar if it's not going to be visible
-    if (this.colorbarHeight < 0) return;
+    if (this.colorbarHeight < 0) {
+      // turn off the color scale brush
+      this.removeColorbar();
+      return;
+    }
 
     const colorbarAreaWidth = (
       COLORBAR_WIDTH +
@@ -450,7 +502,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const axisValueScale = this.valueScale.copy()
       .range([this.colorbarHeight, 0]);
 
-    this.scaleBrush = brushY();
+    // this.scaleBrush = brushY();
 
     // this is to make the handles of the scale brush stick out away
     // from the colorbar
@@ -550,9 +602,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     );
     this.pColorbarArea.drawRect(0, 0, colorbarAreaWidth, colorbarAreaHeight);
 
-    if (!this.options) { this.options = {}; }
-    if (!this.options.scaleStartPercent) { this.options.scaleStartPercent = 0; }
-    if (!this.options.scaleEndPercent) { this.options.scaleEndPercent = 1; }
+    if (!this.options) { 
+      this.options = { scaleStartPercent: 0, scaleEndPercent: 1 }; 
+    }
+    else {
+      if (!this.options.scaleStartPercent) { this.options.scaleStartPercent = 0; }
+      if (!this.options.scaleEndPercent) { this.options.scaleEndPercent = 1; }
+    }
 
     const domainWidth = axisValueScale.domain()[1] - axisValueScale.domain()[0];
 
@@ -735,26 +791,19 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   /**
-   * Get raw data for a relative 2D position. Returns a submatrix centered
-   * around the given location.
+   * Get the data in the visible rectangle
    *
-   * @param  {Integer}  x  Relative X display position (i.e., mouse cursor).
-   * @param  {Integer}  y  Relative Y display position (i.e., mouse cursor).
-   * @return  {Array}  Float32Array with the raw data containing a square centered
-   * at the given location.
+   * The parameter coordinates are in pixel coordinates
+   * 
+   * @param {int} x: The upper left corner of the rectangle in pixel coordinates
+   * @param {int} y: The upper left corner of the rectangle in pixel coordinates
+   * @param {int} width: The width of the rectangle (pixels)
+   * @param {int} height: The height of the rectangle (pixels)
+   *
+   * @returns {numjs 2x2 array} The raw data visible in this region
+   *
    */
-  getVisibleData(x, y) {
-    // Init data
-    let data = new this.dataLens.constructor(this.dataLensSize ** 2);
-
-    if (!this.tilesetInfo) {
-      console.warn('Tileset info not available yet');
-      return data;
-    }
-
-    const lPad = this.dataLensLPad;
-    const rPad = this.dataLensRPad;
-
+  getVisibleRectangleData(x, y, width, height) {
     let zoomLevel = this.calculateZoomLevel();
     zoomLevel = this.tilesetInfo.max_zoom ? Math.min(this.tilesetInfo.max_zoom, zoomLevel) : zoomLevel;
 
@@ -765,119 +814,68 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // BP resolution of a tile's bin (i.e., numbe of base pairs per bin / pixel)
     const tileRes = tileWidth / BINS_PER_TILE;
 
-    // Absolute tile array (i.e., data) position
-    const dataX = Math.floor(this._xScale.invert(x) / tileRes);
-    const dataY = Math.floor(this._yScale.invert(y) / tileRes);
+    // the data domain of the currently visible region
+    const xDomain = [this._xScale.invert(x), this._xScale.invert(x + width)]
+    const yDomain = [this._yScale.invert(y), this._yScale.invert(y + height)]
 
-    // Relative tile array (i.e., data) position within hovering tile
-    const dataRelX = dataX % BINS_PER_TILE;
-    const dataRelY = dataY % BINS_PER_TILE;
+    // the bounds of the currently visible region in bins
+    const leftXBin = Math.floor(xDomain[0] / tileRes);
+    const leftYBin = Math.floor(yDomain[0] / tileRes);
+    const binWidth = Math.ceil((xDomain[1] - xDomain[0]) / tileRes);
+    const binHeight = Math.ceil((yDomain[1] - yDomain[0]) / tileRes);
 
-    // Tile position hovering
-    const xTile = Math.floor(dataX / BINS_PER_TILE);
-    const yTile = Math.floor(dataY / BINS_PER_TILE);
+    let out = nj.zeros([binHeight, binWidth]);
+    out.slice([0,binHeight],[0,binWidth]).assign(NaN, false);
 
-    const xTiles = range(
-      Math.floor((dataX - lPad) / BINS_PER_TILE),
-      Math.floor((dataX + rPad) / BINS_PER_TILE) + 1
-    );
+    // iterate through all the visible tiles
+    this.visibleAndFetchedTiles().map(tile => {
+      let tilePos = tile.mirrored ? [tile.tileData.tilePos[1], tile.tileData.tilePos[0]] :
+        tile.tileData.tilePos;
 
-    const yTiles = range(
-      Math.floor((dataY - lPad) / BINS_PER_TILE),
-      Math.floor((dataY + rPad) / BINS_PER_TILE) + 1
-    );
+      // get the tile's position and width (in data coordinates)
+      // if it's mirrored then we have to switch the position indeces
+      const {tileX, tileY, tileWidth, tileHeight} = 
+        this.getTilePosAndDimensions(tile.tileData.zoomLevel,
+          tilePos, BINS_PER_TILE);
+      let tileData = tile.dataArray;
 
-    const tileIds = this.tilesToId(
-      xTiles, yTiles, this.zoomLevel, true
-    ).map(tile => this.tileToLocalId(tile));
+      if (tile.mirrored) {
+        tileData = tileData.T; 
+      }
 
-    let tileData = [];
+      // calculate the tile's position in bins
+      const tileXStartBin = tileX / tileRes;
+      const tileXEndBin = (tileX + tileWidth) / tileRes;
+      const tileYStartBin = tileY / tileRes;
+      const tileYEndBin = (tileY + tileHeight) / tileRes;
 
-    try {
-      // fetch the tiles that contain data within this range
-      tileData = tileIds.map(
-        id => ({
-          data: this.fetchedTiles[id].tileData,
-          mirrored: this.fetchedTiles[id].mirrored
-        })
-      );
-    } catch (e) {
-      // Nothing: probably `this.fetchedTiles[id]` is not available yet
-    }
+      // calculate which part of this tile is present in the current window
+      const tileSliceXStart = Math.max(leftXBin, tileXStartBin) - tileXStartBin;
+      const tileSliceYStart = Math.max(leftYBin, tileYStartBin) - tileYStartBin;
+      const tileSliceXEnd = Math.min(leftXBin + binWidth, tileXEndBin) - tileXStartBin;
+      const tileSliceYEnd = Math.min(leftYBin + binHeight, tileYEndBin) - tileYStartBin;
 
-    if (
-      tileData.length === 1
-      || (
-        tileData.length === 2 &&
-        tileData[0].data.tilePositionId === tileData[1].data.tilePositionId
-      )
-    ) {
-      tileData.forEach((tile) => {
-        data = rangeQuery2d(
-          tile.data.dense,
-          BINS_PER_TILE,
-          this.dataLensSize,
-          [dataRelX - lPad, dataRelX + rPad],
-          [dataRelY - lPad, dataRelY + rPad],
-          tile.mirrored,
-          0,
-          0,
-          data,
-        );
-      });
-    } else if (tileData.length <= 6) {
-      tileData.forEach((tile) => {
-        const midpointXTile = tile.mirrored
-          ? xTile === tile.data.tilePos[1]
-          : xTile === tile.data.tilePos[0];
-        const midpointYTile = tile.mirrored
-          ? yTile === tile.data.tilePos[0]
-          : yTile === tile.data.tilePos[1];
+      // where in the output array will the portion of this tile which is in the
+      // visible window be placed?
+      const tileXOffset = Math.max(tileXStartBin - leftXBin, 0);
+      const tileYOffset = Math.max(tileYStartBin - leftYBin, 0);
+      const tileSliceWidth = tileSliceXEnd - tileSliceXStart;
+      const tileSliceHeight = tileSliceYEnd - tileSliceYStart;
 
-        const xClosest = Math.round(dataRelX / BINS_PER_TILE);
-        const yClosest = Math.round(dataRelY / BINS_PER_TILE);
+      // the region is outside of this tile
+      if (tileSliceWidth < 0 || tileSliceHeight < 0)
+        return;
 
-        let dataRelXMin = Math.max(0, dataRelX - lPad);
-        let dataRelXMax = Math.min(BINS_PER_TILE, dataRelX + rPad);
-        let dataRelYMin = Math.max(0, dataRelY - lPad);
-        let dataRelYMax = Math.min(BINS_PER_TILE, dataRelY + rPad);
+      const tileSlice = tileData.slice(
+        [tileSliceYStart, tileSliceYStart + tileSliceHeight],
+        [tileSliceXStart, tileSliceXStart + tileSliceWidth])
 
-        const xOff = midpointXTile
-          ? xClosest === 0 ? Math.max(0, this.dataLensSize - dataRelXMax) : 0
-          : xClosest === 0 ? 0 : Math.max(0, dataRelXMax - dataRelXMin);
-        const yOff = midpointYTile
-          ? yClosest === 0 ? Math.max(0, this.dataLensSize - dataRelYMax) : 0
-          : yClosest === 0 ? 0 : Math.max(0, dataRelYMax - dataRelYMin);
+      out.slice([tileYOffset, tileYOffset + tileSliceHeight],
+        [tileXOffset, tileXOffset + tileSliceWidth])
+        .assign(tileSlice, false);
+    });
 
-        if (!midpointXTile) {
-          dataRelXMin = xClosest === 0
-            ? mod(dataRelX - lPad, BINS_PER_TILE) : 0;
-          dataRelXMax = xClosest === 0
-            ? BINS_PER_TILE : mod(dataRelX + rPad, BINS_PER_TILE);
-        }
-
-        if (!midpointYTile) {
-          dataRelYMin = yClosest === 0
-            ? mod(dataRelY - lPad, BINS_PER_TILE) : 0;
-          dataRelYMax = yClosest === 0
-            ? BINS_PER_TILE : mod(dataRelY + rPad, BINS_PER_TILE);
-        }
-
-        data = rangeQuery2d(
-          tile.data.dense,
-          BINS_PER_TILE,
-          this.dataLensSize,
-          [dataRelXMin, dataRelXMax],
-          [dataRelYMin, dataRelYMax],
-          tile.mirrored,
-          xOff,
-          yOff,
-          data,
-        );
-      });
-    }
-
-    return data;
+    return out;
   }
 
   /**
@@ -893,6 +891,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     if (this.scale.minValue == null || this.scale.maxValue == null)
       // no data present
       return;
+
+    // prepare the data for fast retrieval in getVisibleRectangleData
+    if (tile.tileData.dense.length == BINS_PER_TILE * BINS_PER_TILE)
+      tile.dataArray = nj.array(Array.from(tile.tileData.dense)).reshape([BINS_PER_TILE, BINS_PER_TILE]);
 
     this.renderTile(tile);
   }
@@ -937,7 +939,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * @param {Object}  tile  Tile data to be rendered.
    */
   renderTile(tile,synchronous=false) {
-    const [scaleType, valueScale] = getValueScale(this.options.heatmapValueScaling,
+    const [scaleType, valueScale] = getValueScale(
+      (this.options && this.options.heatmapValueScaling) || 'log',
             this.scale.minValue, this.medianVisibleValue, this.scale.maxValue, 'log');
 
     this.valueScale = valueScale;
@@ -971,6 +974,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     this.renderingTiles.add(tile.tileId);
+
     tileProxy.tileDataToPixData(tile,
       scaleType,
       this.limitedValueScale.domain(),
@@ -1001,8 +1005,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
         this.renderingTiles.delete(tile.tileId);
       },
-      synchronous,
-      this.mirrorTiles && !tile.mirrored && tile.tileData.tilePos[0] == tile.tileData.tilePos[1]
+
+      this.mirrorTiles() && !tile.mirrored && tile.tileData.tilePos[0] == tile.tileData.tilePos[1]
     );
   }
 
@@ -1118,7 +1122,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   tilesToId(xTiles, yTiles, zoomLevel) {
     const rows = xTiles;
     const cols = yTiles;
-    const dataTransform = this.options.dataTransform || 'default';
+    const dataTransform = (this.options && this.options.dataTransform) || 'default';
 
     // if we're mirroring tiles, then we only need tiles along the diagonal
     const tiles = [];
@@ -1126,7 +1130,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // calculate the ids of the tiles that should be visible
     for (let i = 0; i < rows.length; i++) {
       for (let j = 0; j < cols.length; j++) {
-        if (this.mirrorTiles) {
+        if (this.mirrorTiles()) {
           if (rows[i] >= cols[j]) {
             // if we're in the upper triangular part of the matrix, then we need
             // to load a mirrored tile
@@ -1193,12 +1197,18 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     this.setVisibleTiles(
-      this.tilesToId(this.xTiles, this.yTiles, this.zoomLevel, this.mirrorTiles)
+      this.tilesToId(this.xTiles, this.yTiles, this.zoomLevel, this.mirrorTiles())
     );
   }
 
+  mirrorTiles()  {
+    if (this.tilesetInfo.mirror_tiles && this.tilesetInfo.mirror_tiles == 'false')
+      return false;
+    return true;
+  }
+
   getMouseOverHtml(trackX, trackY) {
-    if (!this.options.showTooltip)
+    if (!this.options || !this.options.showTooltip)
       return '';
 
     if (!this.tilesetInfo)
@@ -1230,9 +1240,14 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       positionText += '<br/>';
     }
 
-    const data = this.getVisibleData(trackX, trackY);
+    let data = null;
+    try {
+      data = this.getVisibleRectangleData(trackX, trackY, 1, 1).flatten().tolist();
+    } catch (err) {
+      return '';
+    }
 
-    if (this.options.heatmapValueScaling == 'log')
+    if (this.options && this.options.heatmapValueScaling == 'log')
       if (data[0] > 0)
         return positionText + "<b>Value:</b> 1e" + format(".3f")(Math.log(data[0]));
       else

@@ -137,6 +137,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     // store the scale at while the tile was drawn at so that
     // we only resize it when redrawing
     tile.drawnAtScale = this._xScale.copy();
+    tile.rectGraphics.clear();
+
     const fill = {};
 
     fill['+'] = colorToHex(this.options.plusStrandColor ? this.options.plusStrandColor : 'blue');

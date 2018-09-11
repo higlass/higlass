@@ -128,6 +128,13 @@ class LeftTrackModifier {
 
     this.originalTrack.refreshTiles();
 
+    if (this.originalTrack.leftTrackZoomed) {
+      // the track implements its own left-oriented zooming and scrolling
+      this.originalTrack.leftTrackZoomed(newXScale, newYScale, k, tx, ty);
+      this.originalTrack.draw();
+      return;
+    }
+
     const offset = this.originalTrack._xScale(0) - k * this.originalTrack._refXScale(0);
     this.originalTrack.pMobile.position.x = offset + this.originalTrack.position[0];
     this.originalTrack.pMobile.position.y = this.originalTrack.position[1] + this.originalTrack.dimensions[1];

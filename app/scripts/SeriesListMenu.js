@@ -135,18 +135,29 @@ export default class SeriesListMenu extends ContextMenuContainer {
     let datatype = null;
     let orientation = null;
 
+    console.log('track:', track);
+
+    // if we've loaded external track types, list them here
+    if (window.higlassTracksByType) {
+      // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
+      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
+        TRACKS_INFO_BY_TYPE[pluginTrackType] =
+          window.higlassTracksByType[pluginTrackType].config;
+      });
+    }
+
     // make sure that this is a valid track type before trying to
     // look up other tracks that can substitute for it
     if (track.type in TRACKS_INFO_BY_TYPE) {
-      datatype = TRACKS_INFO_BY_TYPE[track.type].datatype[0];
       orientation = TRACKS_INFO_BY_TYPE[track.type].orientation;
     }
+    datatype = track.datatype;
 
     // see which other tracks can display a similar datatype
     let availableTrackTypes = TRACKS_INFO
       .filter(x => x.datatype)
       .filter(x => x.orientation)
-      .filter(x => x.datatype[0] == datatype)
+      .filter(x => x.datatype.includes(datatype))
       .filter(x => x.orientation == orientation)
       .map(x => x.type);
 
@@ -251,8 +262,8 @@ export default class SeriesListMenu extends ContextMenuContainer {
   render() {
     let exportDataMenuItem = null;
 
-    /*
-    if (TRACKS_INFO_BY_TYPE[this.props.hostTrack.type]) {
+    if (TRACKS_INFO_BY_TYPE[this.props.series.type] && 
+    TRACKS_INFO_BY_TYPE[this.props.series.type].exportable) {
       exportDataMenuItem = (
         <ContextMenuItem
           onClick={() => this.props.onExportData(this.props.hostTrack.uid, this.props.track.uid)}
@@ -267,7 +278,6 @@ export default class SeriesListMenu extends ContextMenuContainer {
         </ContextMenuItem>
       );
     }
-    */
 
     // if a track can't be replaced, this.props.onAddSeries
     // will be null so we don't need to display the menu item

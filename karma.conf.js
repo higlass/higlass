@@ -12,6 +12,7 @@ module.exports = function(config) {
       'node_modules/react-dom/dist/react-dom.js',
       'node_modules/pixi.js/dist/pixi.js',
       'node_modules/react-bootstrap/dist/react-bootstrap.js',
+      'node_modules/bootstrap/dist/css/bootstrap.min.css',
       'test/**/*.+(js|jsx)',
       'build/hglib.css',
     ],

@@ -263,6 +263,28 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       ]);
     }
 
+    /**
+     * If we've already rendered this tile at the correct scale no need to render
+     * it again
+     */
+    let toUpdate = true;
+    if (tile.renderInfo) {
+      // console.log('same scaletype', scaleType, tile.renderInfo.scaleType);
+      if (tile.renderInfo.scaleType == scaleType) {
+        if (tile.renderInfo.scaleDomain 
+          && tile.renderInfo.scaleDomain[0] == this.limitedValueScale.domain()[0]
+          && tile.renderInfo.scaleDomain[1] == this.limitedValueScale.domain()[1])
+          toUpdate = false;
+      }
+    } 
+
+    if (!toUpdate)
+      return;
+
+    tile.renderInfo = {};
+    tile.renderInfo.scaleType = scaleType;
+    tile.renderInfo.scaleDomain = this.limitedValueScale.domain()
+
     this.renderingTiles.add(tile.tileId);
     tileProxy.tileDataToPixData(
       tile,
@@ -310,9 +332,13 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         }
 
         this.renderingTiles.delete(tile.tileId);
+        /*
         this.animate();
         this.refreshTiles();
-      });
+        */
+      },
+      this.mirrorTiles && !tile.mirrored && tile.tileData.tilePos[0] == tile.tileData.tilePos[1]
+    );
   }
 
   refScalesChanged(refXScale, refYScale) {
