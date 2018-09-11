@@ -28,6 +28,8 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
   }
 
   rerender(newOptions) {
+    super.rerender(newOptions);
+
     this.options = newOptions;
     const visibleAndFetched = this.visibleAndFetchedTiles();
 
