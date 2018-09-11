@@ -1,9 +1,9 @@
-import {Mixin} from './mixwith';
-import {scaleLinear, scaleOrdinal, schemeCategory10} from 'd3-scale';
-import {colorToHex} from './utils';
+import { scaleOrdinal, schemeCategory10 } from 'd3-scale';
+
+import { Mixin } from './mixwith';
+import { colorToHex } from './utils';
 
 export const OneDimensionalMixin = Mixin(superclass => class extends superclass {
-
   initTile(tile) {
     // create the tile
     // should be overwritten by child classes
@@ -38,7 +38,7 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
     }
   }
 
-  updateTile(tile) {
+  updateTile() {
     const visibleAndFetched = this.visibleAndFetchedTiles();
 
     for (let i = 0; i < visibleAndFetched.length; i++) {
@@ -59,7 +59,7 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
    */
   localColorToHexScale() {
     const colorScale = this.options.colorScale || scaleOrdinal(schemeCategory10);
-    let colorHexMap = {};
+    const colorHexMap = {};
     for (let i = 0; i < colorScale.length; i++) {
       colorHexMap[colorScale[i]] = colorToHex(colorScale[i]);
     }
@@ -73,7 +73,7 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
    */
   findMaxAndMin(matrix) {
     // find max height of bars for scaling in the track
-    let maxAndMin = {
+    const maxAndMin = {
       max: null,
       min: null
     };
@@ -83,20 +83,22 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
 
       // find total heights of each positive column and each negative column
       // and compare to highest value so far for the tile
-      const localPositiveMax = temp.filter((a) => a >= 0).reduce((a, b) => a + b, 0);
-      (localPositiveMax > maxAndMin.max) ? maxAndMin.max = localPositiveMax : maxAndMin.max;
+      const localPositiveMax = temp.filter(a => a >= 0).reduce((a, b) => a + b, 0);
+      if (localPositiveMax > maxAndMin.max) {
+        maxAndMin.max = localPositiveMax;
+      }
 
-      let negativeValues = temp.filter((a) => a < 0);
+      let negativeValues = temp.filter(a => a < 0);
       if (negativeValues.length > 0) {
-        negativeValues = negativeValues.map((a) => Math.abs(a));
+        negativeValues = negativeValues.map(a => Math.abs(a));
         const localNegativeMax = negativeValues.reduce((a, b) => a + b, 0); // check
-        (maxAndMin.min === null || localNegativeMax > maxAndMin.min) ?
-          maxAndMin.min = localNegativeMax : maxAndMin.min;
+        if (maxAndMin.min === null || localNegativeMax > maxAndMin.min) {
+          maxAndMin.min = localNegativeMax;
+        }
       }
     }
 
     return maxAndMin;
-
   }
 
   /**
@@ -109,25 +111,24 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
     if (tile.matrix) {
       return tile.matrix;
     }
-    else {
-      let flattenedArray = tile.tileData.dense;
 
-      // if any data is negative, switch to exponential scale
-      if (flattenedArray.filter((a) => a < 0).length > 0 && this.options.valueScaling === 'linear') {
-        console.warn('Negative values present in data. Defaulting to exponential scale.');
-        this.options.valueScaling = 'exponential';
-      }
+    const flattenedArray = tile.tileData.dense;
 
-      const matrix = this.simpleUnFlatten(tile, flattenedArray);
-
-      const maxAndMin = this.findMaxAndMin(matrix);
-
-      tile.matrix = matrix;
-      tile.maxValue = maxAndMin.max;
-      tile.minValue = maxAndMin.min;
-
-      return matrix;
+    // if any data is negative, switch to exponential scale
+    if (flattenedArray.filter(a => a < 0).length > 0 && this.options.valueScaling === 'linear') {
+      console.warn('Negative values present in data. Defaulting to exponential scale.');
+      this.options.valueScaling = 'exponential';
     }
+
+    const matrix = this.simpleUnFlatten(tile, flattenedArray);
+
+    const maxAndMin = this.findMaxAndMin(matrix);
+
+    tile.matrix = matrix;
+    tile.maxValue = maxAndMin.max;
+    tile.minValue = maxAndMin.min;
+
+    return matrix;
   }
 
   /**
@@ -143,10 +144,14 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
     // matrix[0] will be [flattenedArray[0], flattenedArray[256], flattenedArray[512], etc.]
     // because of how flattenedArray comes back from the server.
     const matrix = [];
-    for (let i = 0; i < shapeX; i++) {//6
-      for (let j = 0; j < shapeY; j++) {//256;
+    for (let i = 0; i < shapeX; i++) { // 6
+      for (let j = 0; j < shapeY; j++) { // 256;
         let singleBar;
-        (matrix[j] === undefined) ? singleBar = [] : singleBar = matrix[j];
+        if (matrix[j] === undefined) {
+          singleBar = [];
+        } else {
+          singleBar = matrix[j];
+        }
         singleBar.push(data[(shapeY * i) + j]);
         matrix[j] = singleBar;
       }
@@ -154,8 +159,6 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
 
     return matrix;
   }
-
-
 });
 
 export default OneDimensionalMixin;
