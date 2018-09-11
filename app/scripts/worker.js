@@ -11,8 +11,6 @@ function countTransform(count) {
 */
 const epsilon = 0.0000001;
 
-const MAX_FETCH_TILES = 20;
-
 export function minNonZero(data) {
   /**
    * Calculate the minimum non-zero value in the data
@@ -27,17 +25,17 @@ export function minNonZero(data) {
    *  minNonZero: float
    *    The minimum non-zero value in the array
    */
-   let minNonZero = Number.MAX_SAFE_INTEGER;
+  let minNonZeroNum = Number.MAX_SAFE_INTEGER;
 
   for (let i = 0; i < data.length; i++) {
     const x = data[i];
 
     if (x < epsilon && x > -epsilon) { continue; }
 
-    if (x < minNonZero) { minNonZero = x; }
+    if (x < minNonZeroNum) { minNonZeroNum = x; }
   }
 
-  return  minNonZero;
+  return minNonZeroNum;
 }
 
 export function maxNonZero(data) {
@@ -54,40 +52,40 @@ export function maxNonZero(data) {
    *  minNonZero: float
    *    The minimum non-zero value in the array
    */
-  let maxNonZero = Number.MIN_SAFE_INTEGER;
+  let maxNonZeroNum = Number.MIN_SAFE_INTEGER;
 
   for (let i = 0; i < data.length; i++) {
     const x = data[i];
 
     if (x < epsilon && x > -epsilon) { continue; }
 
-    if (x > maxNonZero) { maxNonZero = x; }
+    if (x > maxNonZeroNum) { maxNonZeroNum = x; }
   }
 
-  return maxNonZero;
+  return maxNonZeroNum;
 }
 
 export function workerSetPix(
-  size, data, valueScaleType, valueScaleDomain, pseudocount, colorScale, ignoreUpperRight=false
+  size, data, valueScaleType, valueScaleDomain, pseudocount, colorScale,
+  ignoreUpperRight = false
 ) {
   /**
    * The pseudocount is generally the minimum non-zero value and is
    * used so that our log scaling doesn't lead to NaN values.
    */
-  const epsilon = 0.000001;
   let valueScale = null;
 
-  if (valueScaleType == 'log') {
+  if (valueScaleType === 'log') {
     valueScale = scaleLog()
-      .range([254,0])
-      .domain(valueScaleDomain)
+      .range([254, 0])
+      .domain(valueScaleDomain);
   } else {
-    if (valueScaleType != 'linear') {
+    if (valueScaleType !== 'linear') {
       console.warn('Unknown value scale type:', valueScaleType, ' Defaulting to linear');
     }
     valueScale = scaleLinear()
-      .range([254,0])
-      .domain(valueScaleDomain)
+      .range([254, 0])
+      .domain(valueScaleDomain);
   }
 
   const pixData = new Uint8ClampedArray(size * 4);
@@ -107,7 +105,7 @@ export function workerSetPix(
       // ignore the upper right portion of a tile because it's on the diagonal
       // and its mirror will fill in that space
       if (ignoreUpperRight && Math.floor(i / tileWidth) < i % tileWidth) {
-        rgbIdx = 255;        
+        rgbIdx = 255;
       } else if (isNaN(d)) {
         rgbIdx = 255;
       } else {
