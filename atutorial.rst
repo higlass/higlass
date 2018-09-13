@@ -13,8 +13,23 @@ To follow the steps in this tutorial you will require the following software pac
 - Python
 - ``higlass-manage``: This package is a wrapper for the Docker commands used to run a local instance. It can be installed using ``pip install higlass-manage``. Brief documentation can be found `at its GitHub project page <https://github.com/pkerpedjiev/higlass-manage>`_
 
+Quickly viewing a dataset
+-------------------------
 
-Running HiGlass Locally
+The simplest way to get started is to open and view a dataset.  The
+``higlass-manage view`` command will automatically start a new instance if one
+isn't already running, add the given dataset and display it in a browser.
+Currently, the ``higlass-manage view`` command only works with cooler, bigWig,
+chromsizes and gene-annotation files. 
+
+.. code-block:: bash
+    
+    higlass-manage view my_file.mcool
+
+To view multiple datasets, see the `Adding data` section below.
+
+
+Running HiGlass locally
 -----------------------
 
 We can start a local HiGlass instance using ``higlass-manage``:
@@ -59,8 +74,8 @@ In other, more ambiguous cases, it needs to be explicitly specified:
 
 Note that bedfiles don't store chromosome sizes so they need to be passed in using either the ``--assembly`` or ``--chromsizes-filename`` parameters.
 
-Viewing data
-------------
+Viewing data in the client
+--------------------------
 
 To view the data we've added to our instance, we need to load the HiGlass
 browser. This can be done by either opening a browser and navigating to

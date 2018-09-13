@@ -25,11 +25,22 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Viewer" href="b_viewer.html" />
     <link rel="prev" title="HiGlass: A Multiscale Genomic Data Browser" href="index.html" />
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-77756807-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-77756807-1');
+  </script>
+  
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
 
   </head>
   <body>
@@ -53,8 +64,20 @@ lets you run “containers” hosting software and its dependencies</li>
 <li><code class="docutils literal"><span class="pre">higlass-manage</span></code>: This package is a wrapper for the Docker commands used to run a local instance. It can be installed using <code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">higlass-manage</span></code>. Brief documentation can be found <a class="reference external" href="https://github.com/pkerpedjiev/higlass-manage">at its GitHub project page</a></li>
 </ul>
 </div>
+<div class="section" id="quickly-viewing-a-dataset">
+<h2>Quickly viewing a dataset<a class="headerlink" href="#quickly-viewing-a-dataset" title="Permalink to this headline">¶</a></h2>
+<p>The simplest way to get started is to open and view a dataset.  The
+<code class="docutils literal"><span class="pre">higlass-manage</span> <span class="pre">view</span></code> command will automatically start a new instance if one
+isn’t already running, add the given dataset and display it in a browser.
+Currently, the <code class="docutils literal"><span class="pre">higlass-manage</span> <span class="pre">view</span></code> command only works with cooler, bigWig,
+chromsizes and gene-annotation files.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>higlass-manage view my_file.mcool
+</pre></div>
+</div>
+<p>To view multiple datasets, see the <cite>Adding data</cite> section below.</p>
+</div>
 <div class="section" id="running-higlass-locally">
-<h2>Running HiGlass Locally<a class="headerlink" href="#running-higlass-locally" title="Permalink to this headline">¶</a></h2>
+<h2>Running HiGlass locally<a class="headerlink" href="#running-higlass-locally" title="Permalink to this headline">¶</a></h2>
 <p>We can start a local HiGlass instance using <code class="docutils literal"><span class="pre">higlass-manage</span></code>:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>higlass-manage start
 </pre></div>
@@ -85,8 +108,8 @@ a HiGlass instance running on your computer.</p>
 </div>
 <p>Note that bedfiles don’t store chromosome sizes so they need to be passed in using either the <code class="docutils literal"><span class="pre">--assembly</span></code> or <code class="docutils literal"><span class="pre">--chromsizes-filename</span></code> parameters.</p>
 </div>
-<div class="section" id="viewing-data">
-<h2>Viewing data<a class="headerlink" href="#viewing-data" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="viewing-data-in-the-client">
+<h2>Viewing data in the client<a class="headerlink" href="#viewing-data-in-the-client" title="Permalink to this headline">¶</a></h2>
 <p>To view the data we’ve added to our instance, we need to load the HiGlass
 browser. This can be done by either opening a browser and navigating to
 <code class="docutils literal"><span class="pre">http://localhost:8989/app</span></code> (using the port specified), or using:</p>
@@ -132,9 +155,10 @@ shows both the local datasets as well as the public data available on
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#running-higlass-locally">Running HiGlass Locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quickly-viewing-a-dataset">Quickly viewing a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-higlass-locally">Running HiGlass locally</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#adding-data">Adding data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#viewing-data">Viewing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#viewing-data-in-the-client">Viewing data in the client</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
