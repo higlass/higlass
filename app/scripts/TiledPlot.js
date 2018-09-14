@@ -1947,7 +1947,9 @@ class TiledPlot extends React.Component {
     if (this.props.chooseTrackHandler) {
       // We want to choose a track and call a function. To choose the track, we display
       // an overlay on top of each track
-      overlays = positionedTracks.map((pTrack) => {
+      overlays = positionedTracks
+        .filter(pTrack => pTrack.track.position != 'whole')
+        .map((pTrack) => {
         let background = 'transparent';
         let border = 'none';
 

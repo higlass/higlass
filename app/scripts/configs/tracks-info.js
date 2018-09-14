@@ -288,7 +288,7 @@ export const TRACKS_INFO = [
     datatype: ['vector'],
     local: false,
     orientation: '1d-horizontal',
-    minHeight: 100,
+    minHeight: 1,
     thumbnail: null,
     availableOptions: [
       'labelPosition',

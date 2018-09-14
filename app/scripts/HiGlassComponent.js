@@ -742,7 +742,8 @@ class HiGlassComponent extends React.Component {
       // /let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
       const lockedTracks = lockGroupValues
         .filter(x => this.tiledPlots[x.view])
-        .map(x => this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track));
+        .map(x => this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track))
+        .filter(x => x);
 
       const minValues = lockedTracks
         // exclude tracks that don't set min and max values
@@ -1261,7 +1262,8 @@ class HiGlassComponent extends React.Component {
         bottom: 'horizontal',
         center: 'center',
         left: 'vertical',
-        right: 'vertical' };
+        right: 'vertical' 
+      };
 
       const newTrack = {
         uid: newTrackUid,

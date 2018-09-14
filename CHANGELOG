@@ -1,5 +1,7 @@
-v1.1.6
+v1.2.0
 
+- Fixed viewport projection issue when there are vertical and horizontal rules
+- Upgrade to React 16.5
 - Fix #317 ( moving gene positions )
 - Fix #263
 - Make resize handle fade out and in upon mouse enter of a draggable div
