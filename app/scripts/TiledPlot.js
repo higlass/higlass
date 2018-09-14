@@ -1116,7 +1116,6 @@ class TiledPlot extends React.Component {
       newYDomain = [minPos[1], maxPos[1]];
     }
 
-
     this.props.onDataDomainChanged(newXDomain, newYDomain);
   }
 

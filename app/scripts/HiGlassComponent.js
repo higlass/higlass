@@ -2433,6 +2433,12 @@ class HiGlassComponent extends React.Component {
          */
     const views = this.state.views;
 
+    views[viewUid].initialXDomain = newXDomain;
+    views[viewUid].initialYDomain = newYDomain;
+    
+    this.xScales[viewUid] = scaleLinear().domain(newXDomain);
+    this.yScales[viewUid] = scaleLinear().domain(newYDomain);
+
     if (this.zoomLocks[viewUid]) {
       const lockGroup = this.zoomLocks[viewUid];
       const lockGroupItems = dictItems(lockGroup);
