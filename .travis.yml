@@ -10,17 +10,13 @@ addons:
   apt:
     packages:
       - xvfb
-install:
-    - npm install -g xvfb-maybe
 before_script:
     - export CHROME_BIN=chromium-browser
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
-    - npm install --quiet -g gulp
     - npm install
 script:
     - npm run compile
-    - xvfb-maybe ./node_modules/karma/bin/karma start karma.conf.js --single-run
 before_deploy:
     - npm run compile
 deploy:
@@ -33,11 +29,3 @@ deploy:
       on:
         branch: master
         tags: true
-    - provider: releases
-      skip_cleanup: true
-      file: dist.zip
-      api_key:
-          secure: Pr3uxqR7ihrbpIOecTNaI4lJ1eqwNqpzqtWptVOffyZfmJ3EEfJu2swRgpr7Zi2AP6R5IhVdZJ9ZkRFqV0ei8S+OzFSNhYMoqr1ISvP7VxVKxUaDhWeqEE1umRJ6rENQko8mxqC9e8zW8Mx7U/IAnHXfHFlicYwrt5y/xGBOjhaF9W9sPBPG41QTaLswP1Cp5Tyti2rlZ1K6cWFX01gQugVJsdK5/b27wjoq/LKez6xRu2fa0i+FRGhKiYDh/OCduSh4AIEw9jFssjxC87eHP4CyIBYlUhRSqgcT3DMsuw7uxiVBUwrqB2B9GgcWspmN5LWNpHNE1Y/1e2xgPruxu/bhyXd3ZDNdD4iLt/eGVLbLVOjzK8xuhL7X0H9zd4DtheSfOBj6PRw7qUbLiSHt/qUVo9SosWhzOz/2Q0l2+7d8n/oJx5dzNKzQeVrxp5pM9aMph467BxBJQ6h8/KjXf3FO84DmHUyRR4yW4x+LlKlYWpmtQoOf8tjt1Jd0wj7fZyvq0UVcTSBFdQiAsaU75ItBOFXZaUgqYJqKKtT8+DKzbGd8Jw78qzmWuiPkvMh+FxAzVBQq9D1Jr8jFlUz3iBc+BC8N+DV+1tFKlgaBq/SxJ6jcXwhqOBHva6F2RctbG77M94hYYxcmtazO2QwADj2elvxsje7B2XR8O+WPuNs=
-      on:
-        tags: true
-        branch: master
