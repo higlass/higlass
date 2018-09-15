@@ -17,8 +17,6 @@ before_script:
     - npm install
 script:
     - npm run compile
-before_deploy:
-    - npm run compile
 deploy:
     - provider: npm
       skip_cleanup: true
@@ -28,4 +26,4 @@ deploy:
           secure: AGI4b3s8m+mKdVAVBR+d5EdYdYAeLhFy76o8WzQ7KwGSIAsIfmwjejqs4BRvq2m3kDdUqNF4fUhG1L2yXsqGXdKqDYnICL+IiKJAKrtdrsx4Y8J31OdeYX8J4MrYzFYsHAyg2bO0D2JNKe0K5b1ykks3qZd9p+Q/4jMjekmNB/T4rBOKjg1bxm0deULQabsLyonjY/IoLc+vjuNmT9VLw9SXw5d8yWTeWszHL8QmQ/UFKZVxF1EfaxJU/9/R/QKQgrAXHsElGfS9+dfhMmZTW8+3kNbB8/lHGkoF+9LrqnRWI6/R8OorqHSLmomfJJuK4iS2Z7Ull561vG67lNrgj7EZ3F2Rjrn4I82T2V/fYBCU/xvIsp2a+MUXvScWu3ONtNJCLGXL7qHQuVN6UjTyVH9J010fIz1qeY264Q/HSVv+PnAueN6e3j9RmrYIf4bVL9OxsNPhOZbUOi/xvg/WBkNifhrT/n65wgopyT5tzwK9Tk8Kyp6aJlaDsqFBtc7gZhOn8MIPsAYAvszfXlNHFqfOrvRQqV/UWoaBkBFEVJwlVZzUWmbNz0wIFs3QJjabR5/wR8GRUpRmugTMR1OE6JYwiIGhteW55p9Wm1SbHZw7RT3VIENpovxmGhbT4TxsZ8UcFk6fknIUH8F1S7K2+Uwxu5Wb0DT7SoD/Lfh0u+E=
       on:
         branch: master
-        tags: true
+        repo: hms-dbmi/higlass
