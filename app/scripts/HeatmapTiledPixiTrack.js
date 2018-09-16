@@ -856,10 +856,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       }
 
       // calculate the tile's position in bins
-      const tileXStartBin = tileX / tileRes;
-      const tileXEndBin = (tileX + tileWidth) / tileRes;
-      const tileYStartBin = tileY / tileRes;
-      const tileYEndBin = (tileY + tileHeight) / tileRes;
+      const tileXStartBin = Math.floor(tileX / tileRes);
+      const tileXEndBin = Math.floor((tileX + tileWidth) / tileRes);
+      const tileYStartBin = Math.floor(tileY / tileRes);
+      const tileYEndBin = Math.floor((tileY + tileHeight) / tileRes);
 
       // calculate which part of this tile is present in the current window
       const tileSliceXStart = Math.max(leftXBin, tileXStartBin) - tileXStartBin;
