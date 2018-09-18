@@ -612,6 +612,7 @@ class GenomePositionSearchBox extends React.Component {
           getItemValue={item => item.geneName}
           inputProps={{
             className: styles['genome-position-search-bar'],
+            title: "Current location: enter a symbol or location to change the position of the current view",
           }}
           items={this.state.genes}
           menuStyle={{

@@ -320,6 +320,7 @@ class DraggableDiv extends React.Component {
           ref={(c) => { this.bottomHandle = c; }}
           styleName="bottom-draggable-handle"
           style={bottomStyle}
+          title="Resize track"
         />
       ),
       top: (
@@ -328,6 +329,7 @@ class DraggableDiv extends React.Component {
           ref={(c) => { this.topHandle = c; }}
           styleName="top-draggable-handle"
           style={topStyle}
+          title="Resize track"
         />
       ),
       right: (
@@ -336,6 +338,7 @@ class DraggableDiv extends React.Component {
           ref={(c) => { this.rightHandle = c; }}
           styleName="right-draggable-handle"
           style={rightStyle}
+          title="Resize track"
         />
       ),
       left: (
@@ -344,6 +347,7 @@ class DraggableDiv extends React.Component {
           ref={(c) => { this.leftHandle = c; }}
           styleName="left-draggable-handle"
           style={leftStyle}
+          title="Resize track"
         />
       )
     };
@@ -356,6 +360,7 @@ class DraggableDiv extends React.Component {
         className={this.props.className}
         style={divStyle}
         styleName="draggable-div"
+        title="Resize track"
       >
         {resizeHandles}
       </div>

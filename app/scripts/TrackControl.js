@@ -55,6 +55,7 @@ const TrackControl = (props) => {
         style={props.imgStyleMove}
         styleName={getButtonClassNames(props)}
       >
+        <title>Move track</title>
         <use xlinkHref="#move" />
       </svg>
     ));
@@ -77,6 +78,7 @@ const TrackControl = (props) => {
         style={Object.assign({ height: '20px', width: '20px' }, props.imgStyleSettings)}
         styleName={getButtonClassNames(props)}
       >
+        <title>Configure track</title>
         <use xlinkHref="#cog" />
       </svg>
 
@@ -87,6 +89,7 @@ const TrackControl = (props) => {
           style={Object.assign({ height: '20px', width: '20px' }, props.imgStyleAdd)}
           styleName={getButtonClassNames(props)}
         >
+          <title>Add series</title>
           <use xlinkHref="#plus" />
         </svg>
       }
@@ -100,9 +103,10 @@ const TrackControl = (props) => {
             imgClose.getBoundingClientRect()
           );
         }}
-        style={Object.assign({ height: '20px', width: '20px'}, props.imgStyleClose)}
+        style={Object.assign({ height: '20px', width: '20px' }, props.imgStyleClose)}
         styleName={getButtonClassNames(props)}
       >
+        <title>Close track</title>
         <use xlinkHref="#cross" />
       </svg>
     </div>

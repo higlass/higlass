@@ -1,3 +1,9 @@
+v1.2.4
+
+- Fixed line inversion issue (#268)
+- Fixed fetched area size mismatch issue on mouseover
+- Added mouseover text to UI elements
+
 v1.2.0
 
 - Fixed viewport projection issue when there are vertical and horizontal rules
