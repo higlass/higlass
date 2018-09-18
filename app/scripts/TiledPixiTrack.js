@@ -713,7 +713,7 @@ class TiledPixiTrack extends PixiTrack {
       : max;
   }
 
-  makeValueScale(minValue, medianValue, maxValue, margin) {
+  makeValueScale(minValue, medianValue, maxValue, inMargin) {
     /*
      * Create a value scale that will be used to position values
      * along the y axis.
@@ -740,8 +740,20 @@ class TiledPixiTrack extends PixiTrack {
     let valueScale = null;
     let offsetValue = 0;
 
+    let margin = inMargin;
+
     if (margin === null || typeof margin === 'undefined') {
       margin = 6;  // set a default value
+    }
+
+    let minDimension = Math.min(this.dimensions[1] - margin, margin);
+    let maxDimension = Math.max(this.dimensions[1] - margin, margin);
+
+    if (this.dimensions[1] - margin < margin) {
+      // if the track becomes smaller than the margins, then just draw a flat
+      // line in the center
+      minDimension = this.dimensions[1] / 2;
+      maxDimension = this.dimensions[1] / 2;
     }
 
     if (this.options.valueScaling === 'log') {
@@ -749,11 +761,12 @@ class TiledPixiTrack extends PixiTrack {
 
       if (!offsetValue) { offsetValue = minValue; }
 
+
       valueScale = scaleLog()
         // .base(Math.E)
         .domain([offsetValue, maxValue + offsetValue])
         // .domain([offsetValue, this.maxValue()])
-        .range([this.dimensions[1] - margin, margin]);
+        .range([minDimension, maxDimension]);
 
       // pseudocount = offsetValue;
     } else if (this.options.valueScaling === 'quantile') {
@@ -777,7 +790,7 @@ class TiledPixiTrack extends PixiTrack {
       // linear scale
       valueScale = scaleLinear()
         .domain([minValue, maxValue])
-        .range([this.dimensions[1] - margin, margin]);
+        .range([maxDimension, minDimension]);
     }
 
     return [valueScale, offsetValue];
