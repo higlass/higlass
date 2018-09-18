@@ -3,6 +3,8 @@ v1.2.4
 - Fixed line inversion issue (#268)
 - Fixed fetched area size mismatch issue on mouseover
 - Added mouseover text to UI elements
+- Upgraded to webpack 4
+- Started building hglib.js and hglib.min.js
 
 v1.2.0
 

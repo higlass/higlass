@@ -4,12 +4,15 @@ const autoprefixer = require('autoprefixer');
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   context: `${__dirname}/app`,
   entry: {
     hglib: ['./scripts/hglib.js'],
+    'hglib.min': ['./scripts/hglib.js'],
     worker: ['./scripts/worker.js'],
   },
   watch: process.env.NODE_ENV === 'watch',
@@ -34,8 +37,14 @@ module.exports = {
     libraryTarget: 'umd',
     library: '[name]',
   },
+  optimization: {
+    minimize: true,
+    minimizer: [new UglifyJsPlugin({
+      include: /\.min\.js$/
+    })]
+  },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
         include: [
@@ -186,7 +195,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-      'NODE_ENV': JSON.stringify('production')
+        NODE_ENV: JSON.stringify('production')
       }
     }),
     new webpack.IgnorePlugin(/react\/addons/),
