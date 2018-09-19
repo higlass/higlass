@@ -1,6 +1,34 @@
 Developer
 #########
 
+Embedding HiGlass in web page
+*****************************
+
+HiGlass can be included in any web page by including the relevant
+javascript and css files:
+
+.. code-block:: javascript
+
+    <link rel="stylesheet" href="https://unpkg.com/higlass@1.1.5/dist/styles/hglib.css" type="text/css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js"></script>
+
+    <script src="https://unpkg.com/higlass@1.1.5/dist/scripts/hglib.js"></script>
+
+External tracks should be included **before** the hglib.js import:
+
+.. code-block:: javascript
+
+    <script src="https://unpkg.com/higlass-multivec@0.1.10/dist/higlass-multivec.js"></script>
+
+Instructions for instantiating the component and interacting with it are in the 
+`Public API section <higlass_developer.html#public-api>`_.
+
 Public API
 ***********
 
@@ -27,6 +55,7 @@ The function returns an instance of the public API of a HiGlass component.
 A full example of an inline HiGlass component can be found in the `HiGlass
 GitHub repository
 <https://github.com/hms-dbmi/higlass/blob/develop/app/api.html>`_.
+
 
 **Example**
 

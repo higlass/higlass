@@ -53,6 +53,29 @@
             
   <div class="section" id="developer">
 <h1>Developer<a class="headerlink" href="#developer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="embedding-higlass-in-web-page">
+<h2>Embedding HiGlass in web page<a class="headerlink" href="#embedding-higlass-in-web-page" title="Permalink to this headline">¶</a></h2>
+<p>HiGlass can be included in any web page by including the relevant
+javascript and css files:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://unpkg.com/higlass@1.1.5/dist/styles/hglib.css&quot; type=&quot;text/css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&quot; type=&quot;text/css&quot;&gt;
+
+
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;script src=&quot;https://unpkg.com/higlass@1.1.5/dist/scripts/hglib.js&quot;&gt;&lt;/script&gt;
+</pre></div>
+</div>
+<p>External tracks should be included <strong>before</strong> the hglib.js import:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span>&lt;script src=&quot;https://unpkg.com/higlass-multivec@0.1.10/dist/higlass-multivec.js&quot;&gt;&lt;/script&gt;
+</pre></div>
+</div>
+<p>Instructions for instantiating the component and interacting with it are in the
+<a class="reference external" href="higlass_developer.html#public-api">Public API section</a>.</p>
+</div>
 <div class="section" id="public-api">
 <h2>Public API<a class="headerlink" href="#public-api" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="creating-an-inline-higlass-component">
@@ -458,6 +481,7 @@ json (e.g. <cite>{“viewconf”: myViewConfig}</cite>):</p>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Developer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#embedding-higlass-in-web-page">Embedding HiGlass in web page</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#public-api">Public API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#viewconfs">Viewconfs</a></li>
 </ul>
