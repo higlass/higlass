@@ -296,10 +296,76 @@ class GenomePositionSearchBox extends React.Component {
   }
 
   scalesChanged(xScale, yScale) {
-    this.xScale = xScale, this.yScale = yScale;
+    this.xScale = xScale; 
+    this.yScale = yScale;
 
     // make sure that this component is loaded first
     this.setPositionText();
+  }
+
+  onAutocompleteChange(evt, value) {
+    this.positionText = value;
+    this.setState({ value, loading: true });
+
+    const parts = value.split(/[ -]/);
+    this.changedPart = null;
+
+    for (let i = 0; i < parts.length; i++) {
+      if (i == this.prevParts.length) {
+        // new part added
+        this.changedPart = i;
+        break;
+      }
+
+      if (parts[i] != this.prevParts[i]) {
+        this.changedPart = i;
+        break;
+      }
+    }
+
+    this.prevParts = parts;
+
+    // no autocomplete repository is provided, so we don't try to autcomplete anything
+    if (!(this.state.autocompleteServer && this.state.autocompleteId)) {
+      return;
+    }
+
+    if (this.changedPart != null) {
+      // if something has changed in the input text
+      this.setState({ loading: true });
+      // send out a request for the autcomplete suggestions
+      let url = `${this.state.autocompleteServer}/suggest/`
+      url += `?d=${this.state.autocompleteId}&ac=${parts[this.changedPart].toLowerCase()}`;
+      tileProxy.json(url, (error, data) => {
+        if (error) {
+          this.setState({ loading: false, genes: [] });
+        } else {
+          if (this.changedPart > 0) {
+            // send out another request for genes with dashes in them
+            // but we need to distinguish things that have a dash in front
+            let url1 = `${this.state.autocompleteServer}/suggest/`;
+            url1 += `?d=${this.state.autocompleteId}&ac=`;
+            url1 += `${parts[this.changedPart-1].toLowerCase()}-${parts[this.changedPart].toLowerCase()}`;
+            tileProxy.json(url1, (error1, data1) => {
+              if (error1) {
+                this.setState({
+                  loading: false,
+                  genes: data,
+                });
+              } else {
+                this.setState({
+                  loading: false,
+                  genes: data1.concat(data),
+                });
+              }
+            });
+          } else {
+            // we've received a list of autocomplete suggestions
+            this.setState({ loading: false, genes: data });          
+          }
+        }
+      });
+    }
   }
 
   setPositionText() {
@@ -314,11 +380,16 @@ class GenomePositionSearchBox extends React.Component {
     // used for autocomplete
     this.prevParts = positionString.split(/[ -]/);
 
-    //console.log('this.autocompleteMenu', this.autocompleteMenu.inputEl);
+    // console.log('this.autocompleteMenu', this.autocompleteMenu.inputEl);
     if (this.gpsbForm) {
       this.positionText = positionString;
+
+      // this.origPositionText is used to reset the text if somebody clicks submit
+      // on an empty field
+      this.origPositionText = positionString;
+
       this.autocompleteMenu.inputEl.value = positionString;
-      //this.setState({ value: positionString });
+      // this.setState({ value: positionString });
     }
   }
 
@@ -326,6 +397,10 @@ class GenomePositionSearchBox extends React.Component {
     const ENTER_KEY_CODE = 13;
 
     if (event.keyCode == ENTER_KEY_CODE) { this.buttonClick(); }
+  }
+
+  genePositionToSearchBarText(genePosition) {
+
   }
 
   replaceGenesWithLoadedPositions(genePositions) {
@@ -336,38 +411,62 @@ class GenomePositionSearchBox extends React.Component {
 
     for (let i = 0; i < spaceParts.length; i++) {
       const dashParts = spaceParts[i].split('-');
+      console.log('dashParts:', dashParts);
 
-      for (let j = 0; j < dashParts.length; j++) {
-        // if we're in this function, this gene name must have been loaded
-        const genePosition = genePositions[dashParts[j].toLowerCase()];
+      // check if this "word" is a gene symbol which can be replaced
 
-        if (!genePosition) {
-          continue;
+      // iterate over chunks, checking what the maximum replaceable
+      // unit is
+      let j = 0;
+      let k = 0;
+      console.log('genePositions:', genePositions);
+      let spacePart = '';
+
+      while (j < dashParts.length) {
+        k = dashParts.length;
+
+        while (k > j) {
+          const dashChunk = dashParts.slice(j, k).join('-').toLowerCase();
+
+          if (genePositions[dashChunk]) {
+            const genePosition = genePositions[dashChunk];
+            const extension = Math.floor((genePosition.txEnd - genePosition.txStart) / 4);
+
+            if (j === 0 && k < dashParts.length) {
+              // there's more parts so this is the first part
+              spacePart = `${genePosition.chr}:${genePosition.txStart - extension}`;
+            } else if (j === 0 && k === dashParts.length) {
+              // there's only one part so this is a position
+              spacePart = `${genePosition.chr}:${genePosition.txStart - extension}-${genePosition.txEnd + extension}`;
+            } else {
+              spacePart += `- ${genePosition.chr}:${genePosition.txEnd + extension}`;
+              // it's the last part of a range
+            }
+            break;
+          } else {
+            if (k === j + 1) {
+              if (spacePart.length) {
+                spacePart += '-';
+              }
+              
+              spacePart += dashChunk;
+            }
+          }
+
+          k -= 1;
         }
 
-        // elongate the span of the gene so that it doesn't take up the entire
-        // view
-        const extension = Math.floor((genePosition.txEnd - genePosition.txStart) / 4);
-
-        if (dashParts.length == 1) {
-          // no range, just a position
-          dashParts[j] = `${genePosition.chr}:${genePosition.txStart - extension
-          }-${genePosition.txEnd + extension}`;
-        } else if (j == 0) {
-          // first part of a range
-
-          dashParts[j] = `${genePosition.chr}:${genePosition.txStart - extension}`;
-        } else {
-          // last part of a range
-
-          dashParts[j] = `${genePosition.chr}:${genePosition.txEnd + extension}`;
-        }
-
-        spaceParts[i] = dashParts.join('-');
+        // console.log('j:', j, k);
+        j = k + 1;
       }
+
+      console.log('spacePart', spacePart);
+      spaceParts[i] = spacePart;
     }
 
     const newValue = spaceParts.join(' ');
+    console.log('newValue:', newValue);
+
     this.prevParts = newValue.split(/[ -]/);
 
     this.positionText = newValue;
@@ -416,10 +515,16 @@ class GenomePositionSearchBox extends React.Component {
     this.setState({ genes: [] }); // no menu should be open
 
     this.replaceGenesWithPositions(() => {
-      const searchFieldValue = this.positionText; // ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
+      const searchFieldValue = this.positionText; 
+      // ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
 
       if (this.searchField != null) {
         let [range1, range2] = this.searchField.searchPosition(searchFieldValue);
+
+        if (!range1) {
+          this.setPositionText(this.origPositionText);
+          return;
+        }
 
         if ((range1 && (isNaN(range1[0]) || isNaN(range1[1]))) ||
           (range2 && (isNaN(range2[0]) || isNaN(range2[1])))) {
@@ -448,63 +553,40 @@ class GenomePositionSearchBox extends React.Component {
     return parts.join(separator).replace(replace, separator);
   }
 
-
-  onAutocompleteChange(event, value) {
-    this.positionText = value;
-    this.setState({ value, loading: true });
-
-    const parts = value.split(/[ -]/);
-    this.changedPart = null;
-
-    for (let i = 0; i < parts.length; i++) {
-      if (i == this.prevParts.length) {
-        // new part added
-        this.changedPart = i;
-        break;
-      }
-
-      if (parts[i] != this.prevParts[i]) {
-        this.changedPart = i;
-        break;
-      }
-    }
-
-    this.prevParts = parts;
-
-    // no autocomplete repository is provided, so we don't try to autcomplete anything
-    if (!(this.state.autocompleteServer && this.state.autocompleteId)) {
-      return;
-    }
-
-    if (this.changedPart != null) {
-      // if something has changed in the input text
-      this.setState({ loading: true });
-      // send out a request for the autcomplete suggestions
-      const url = `${this.state.autocompleteServer}/suggest/?d=${this.state.autocompleteId}&ac=${parts[this.changedPart].toLowerCase()}`;
-      tileProxy.json(url, (error, data) => {
-        if (error) {
-          this.setState({ loading: false, genes: [] });
-          return;
-        }
-
-        // we've received a list of autocomplete suggestions
-        this.setState({ loading: false, genes: data });
-      });
-    }
-  }
-
   geneSelected(value, objct) {
     const parts = this.positionText.split(' ');
     let partCount = this.changedPart;
 
     // change the part that was selected
     for (let i = 0; i < parts.length; i++) {
-      const dash_parts = parts[i].split('-');
-      if (partCount > dash_parts.length - 1) {
-        partCount -= dash_parts.length;
+      const dashParts = parts[i].split('-');
+      const geneParts = objct.geneName.split('-');
+
+      if (partCount > dashParts.length - 1) {
+        partCount -= dashParts.length;
       } else {
-        dash_parts[partCount] = objct.geneName;
-        parts[i] = dash_parts.join('-');
+        console.log('dashParts:', dashParts);
+        dashParts[partCount] = objct.geneName;
+
+        if (geneParts.length === 2
+          && partCount > 0
+          && dashParts[partCount - 1].toLowerCase() === geneParts[0].toLowerCase()) {
+          // the gene to be added contains a dash and is
+          // meant to replace a part of the previous gene
+          // e.g. SOX2-O should be replaced with SOX2-OT
+
+          const newDashParts = dashParts.slice(0, partCount-1);
+          newDashParts.push(geneParts.join('-'));
+
+          if (partCount < dashParts.length - 1) {
+            newDashParts.push(dashParts.slice(partCount + 1));
+          }
+
+          parts[i] = newDashParts.join('-');
+        } else {
+          parts[i] = dashParts.join('-');
+        }
+
         break;
       }
     }

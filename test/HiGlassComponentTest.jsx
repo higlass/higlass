@@ -68,9 +68,9 @@ describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
 
-  jasmine.DEFAULT_TIMEOUT_INTERVAL = 7000;
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
-  describe('Gene Annotations Overlaps', () => {
+  describe('Genome position search box tests', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
         hgc.unmount();
@@ -96,18 +96,31 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Check to make sure that the rectangles are initially small', (done) => {
-      // this will cause the ALOXE3 and AURKB genes to overlap
-      hgc.instance().tiledPlots.aa.trackRenderer.setCenter(
-        2507278112.3606963, 2510821333.85643, 5969.720921993256
-      );
+    it('Searches for cdkn2b-as1', (done) => {
+      const firstDomain = hgc.instance().xScales.aa.domain();
 
-      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'genes1');
-      console.log('track:', track);
+      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'cdkn2b-as1');
+      hgc.update();
+      console.log('xScale', hgc.instance().xScales.aa.domain());
 
-      waitForTilesLoaded(hgc.instance(), done);
+      hgc.instance().genomePositionSearchBoxes.aa.buttonClick();
+      hgc.update();
+
+      waitForJsonComplete(() => {
+        waitForTransitionsFinished(hgc.instance(), () => {
+          const secondDomain = hgc.instance().xScales.aa.domain();
+          console.log('domains:', firstDomain, secondDomain);
+          // make sure that we zoomed somwhere
+
+          expect(firstDomain[0]).to.not.eql(secondDomain[0]);
+          expect(firstDomain[1]).to.not.eql(secondDomain[1]);
+          done();
+        });
+      });
     });
   });
+
+  return;
 
   describe('Gene Annotations Display', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {

@@ -12,7 +12,7 @@ module.exports = {
   context: `${__dirname}/app`,
   entry: {
     hglib: ['./scripts/hglib.js'],
-    'hglib.min': ['./scripts/hglib.js'],
+   // 'hglib.min': ['./scripts/hglib.js'],
     worker: ['./scripts/worker.js'],
   },
   watch: process.env.NODE_ENV === 'watch',

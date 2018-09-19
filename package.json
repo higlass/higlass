@@ -12,10 +12,10 @@
   ],
   "scripts": {
     "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --content-base app --profile --inline | grep -v '\\[\\d*\\]'",
-    "build-watch": "rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; NODE_ENV=watch ./node_modules/webpack/bin/webpack.js; cp build/hglib.js dist/; cp app/index.html dist/; cp app/hglib.html dist/; cp build/hglib.css dist/hglib.css; cp doc/favicon.ico dist/; cp app/page.css dist/;",
-    "build": "rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; NODE_ENV=development ./node_modules/webpack/bin/webpack.js; cp build/hglib.js dist/; cp app/index.html dist/; cp app/hglib.html dist/; cp build/hglib.css dist/hglib.css; cp doc/favicon.ico dist/; cp app/page.css dist/;",
-    "compile": "rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; NODE_ENV=production ./node_modules/webpack/bin/webpack.js -p --display-optimization-bailout; cp build/hglib.min.js dist/; cp build/hglib.js dist/; cp app/index.html dist/; cp app/hglib.html dist/; cp build/hglib.css dist/hglib.css; cp doc/favicon.ico dist/; cp app/page.css dist/; zip -r dist.zip dist",
-    "compile-debug": "rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; ./node_modules/webpack/bin/webpack.js; cp build/hglib.js dist/; cp app/index.html dist/; cp app/hglib.html dist/; cp build/hglib.css dist/hglib.css; cp doc/favicon.ico dist/; cp app/page.css dist/; zip -r dist.zip dist",
+    "build-watch": "rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; NODE_ENV=watch ./node_modules/webpack/bin/webpack.js; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css;",
+    "build": "rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; NODE_ENV=development ./node_modules/webpack/bin/webpack.js; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css;",
+    "compile": "rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; NODE_ENV=production ./node_modules/webpack/bin/webpack.js -p --display-optimization-bailout; cp build/hglib.min.js dist/; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css; zip -r dist.zip dist",
+    "compile-debug": "rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; ./node_modules/webpack/bin/webpack.js; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css; zip -r dist.zip dist",
     "test": "./node_modules/karma/bin/karma start karma.conf.js",
     "test-watch": "NODE_ENV=development; npm run build && ./node_modules/karma/bin/karma start karma.conf.js"
   },
@@ -34,7 +34,6 @@
     "react-dom": "^16.5.0"
   },
   "dependencies": {
-    "babel-plugin-react-css-modules": "^3.4.0",
     "box-intersect": "^1.0.1",
     "css-element-queries": "github:marcj/css-element-queries",
     "cwise": "^1.0.10",
@@ -76,18 +75,20 @@
     "url-join": "^1.1.0",
     "url-parse": "^1.4.3",
     "vkbeautify": "^0.99.3",
+    "webpack-dev-server": "^3.1.8",
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
-    "autoprefixer": "^7.2.4",
+    "autoprefixer": "^7.2.6",
     "babel": "^6.23.0",
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-plugin-transform-object-rest-spread": "^6.20.2",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-react-css-modules": "^3.4.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
-    "babel-preset-airbnb": "^2.4.0",
-    "babel-preset-env": "^1.6.1",
+    "babel-preset-airbnb": "^2.6.0",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.11.1",
     "bootstrap": "^3.3.7",
     "brfs": "1.4.3",
@@ -123,7 +124,6 @@
     "webpack": "^4.19.1",
     "webpack-bundle-analyzer": "^2.11.1",
     "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^2.9.7",
     "wiredep": "~3.0.0"
   }
 }
