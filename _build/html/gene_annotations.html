@@ -79,6 +79,9 @@ them is simply a matter of downloading the list from UCSC (e.g.
 
 <span class="c1">#ASSEMBLY=sacCer3</span>
 <span class="c1">#TAXID=559292</span>
+
+<span class="c1">#ASSEMBLY=dm6</span>
+<span class="c1">#TAXID=7227</span>
 </pre></div>
 </div>
 </div>
@@ -254,9 +257,9 @@ aws s3 cp ~/data/tiled-data/gene-annotations-<span class="si">${</span><span cla
 <div class="section" id="chromosomes">
 <h3>Chromosomes<a class="headerlink" href="#chromosomes" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>curl -u <span class="sb">`</span>cat ~/.higlass-server-login<span class="sb">`</span>    <span class="se">\</span>
-    -F <span class="s2">&quot;datafile=@/Users/peter/tmp/chromSizes_hg38.csv&quot;</span>    <span class="se">\</span>
+    -F <span class="s2">&quot;datafile=@/Users/peter/tmp/chromSizes_hg38.tsv&quot;</span>    <span class="se">\</span>
     -F <span class="s2">&quot;name=Chromosomes (hg38)&quot;</span>   <span class="se">\</span>
-    -F <span class="s1">&#39;filetype=chromsizes-csv&#39;</span>  <span class="se">\</span>
+    -F <span class="s1">&#39;filetype=chromsizes-tsv&#39;</span>  <span class="se">\</span>
     -F <span class="s1">&#39;datatype=chromsizes&#39;</span>  <span class="se">\</span>
     -F <span class="s2">&quot;coordSystem=</span><span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
     -F <span class="s2">&quot;coordSystem2=</span><span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="se">\</span>

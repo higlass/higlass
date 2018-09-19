@@ -46,6 +46,9 @@ Set the assembly name and species ID
     #ASSEMBLY=sacCer3
     #TAXID=559292
 
+    #ASSEMBLY=dm6
+    #TAXID=7227
+
 Download data from UCSC and NCBI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -229,9 +232,9 @@ Chromosomes
 .. code-block:: bash
 
     curl -u `cat ~/.higlass-server-login`    \
-        -F "datafile=@/Users/peter/tmp/chromSizes_hg38.csv"    \
+        -F "datafile=@/Users/peter/tmp/chromSizes_hg38.tsv"    \
         -F "name=Chromosomes (hg38)"   \ 
-        -F 'filetype=chromsizes-csv'  \
+        -F 'filetype=chromsizes-tsv'  \
         -F 'datatype=chromsizes'  \
         -F "coordSystem=${ASSEMBLY}" \
         -F "coordSystem2=${ASSEMBLY}"  \
