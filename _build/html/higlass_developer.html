@@ -351,7 +351,7 @@ If it is not provided, the value is taken from the <cite>exportViewUrl</cite> va
 <p><strong>Prototype</strong></p>
 <p><code class="docutils literal"><span class="pre">shareViewConfigAsLink(url)</span></code></p>
 <p><strong>Example</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">shareViewConfigAsLink</span><span class="p">()</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">shareViewConfigAsLink</span><span class="p">(</span><span class="s1">&#39;http://localhost:8989/api/v1/viewconfs&#39;</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">sharedViewConfig</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Shared view config (ID: </span><span class="si">${</span><span class="nx">sharedViewConfig</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">) is available at </span><span class="si">${</span><span class="nx">sharedViewConfig</span><span class="p">.</span><span class="nx">url</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span>
   <span class="p">})</span>
