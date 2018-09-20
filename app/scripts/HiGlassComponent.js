@@ -1128,8 +1128,6 @@ class HiGlassComponent extends React.Component {
   }
 
   viewScalesLockData(uid) {
-    console.log('this:', this);
-
     if (!this.xScales[uid] || !this.yScales[uid]) {
       console.warn("View scale lock doesn't correspond to existing uid: ", uid);
       return null;
@@ -1165,7 +1163,6 @@ class HiGlassComponent extends React.Component {
       // view1 isn't already in a group
       group2Members = [[uid2, lockData.bind(this)(uid2)]];
     } else {
-      console.log('this1:', this);
       // view2 is already in a group
       group2Members = dictItems(lockGroups[uid2])
         .filter(x => lockData.bind(this)(x[0]))
@@ -1214,7 +1211,7 @@ class HiGlassComponent extends React.Component {
          * @param uid2: The view that the lock was called on (the view that was selected)
          */
 
-    if (uid1 == uid2) {
+    if (uid1 === uid2) {
       this.setState({
         chooseViewHandler: null,
       });
@@ -1258,7 +1255,7 @@ class HiGlassComponent extends React.Component {
         bottom: 'horizontal',
         center: 'center',
         left: 'vertical',
-        right: 'vertical' 
+        right: 'vertical',
       };
 
       const newTrack = {
@@ -1568,7 +1565,7 @@ class HiGlassComponent extends React.Component {
     const defaultCenterHeight = 100;
     const defaultCenterWidth = 100;
     let currHeight = this.horizontalMargin * 2;
-    let currWidth = this.verticalMargin * 2; 
+    let currWidth = this.verticalMargin * 2;
     // currWidth will generally be ignored because it will just be set to
     // the width of the enclosing container
     let minNecessaryHeight = 0;
@@ -1596,9 +1593,11 @@ class HiGlassComponent extends React.Component {
       }
     }
 
-    if ((view.tracks.left && view.tracks.left.length > 0) ||
-          (view.tracks.right && view.tracks.right.length > 0) ||
-            (view.tracks.center && view.tracks.center.length > 0)) { minNecessaryHeight += MIN_VERTICAL_HEIGHT; }
+    if ((view.tracks.left && view.tracks.left.length > 0)
+      || (view.tracks.right && view.tracks.right.length > 0) 
+      || (view.tracks.center && view.tracks.center.length > 0)) { 
+      minNecessaryHeight += MIN_VERTICAL_HEIGHT; 
+    }
 
     let leftHeight = 0;
     if (view.tracks.left) {
@@ -1660,10 +1659,10 @@ class HiGlassComponent extends React.Component {
 
     // make the total height the greater of the left height
     // and the center height
-    if (sideHeight > centerHeight) { 
-      currHeight += sideHeight; 
-    } else { 
-      currHeight += centerHeight; 
+    if (sideHeight > centerHeight) {
+      currHeight += sideHeight;
+    } else {
+      currHeight += centerHeight;
     }
 
     let topHeight = 0;
@@ -1701,7 +1700,7 @@ class HiGlassComponent extends React.Component {
       rightWidth,
       centerWidth,
       centerHeight,
-      minNecessaryHeight 
+      minNecessaryHeight,
     };
   }
 
@@ -2111,7 +2110,7 @@ class HiGlassComponent extends React.Component {
       const theseTracks = tracks[trackType];
       const newTracks = theseTracks.filter(d => d.uid !== uid);
 
-      if (newTracks.length == theseTracks.length) {
+      if (newTracks.length === theseTracks.length) {
         // no whole tracks need to removed, see if any of the combined tracks
         // contain series which need to go
         const combinedTracks = newTracks.filter(x => x.type === 'combined');
