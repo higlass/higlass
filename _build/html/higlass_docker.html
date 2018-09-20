@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Docker &#8212; HiGlass v0.4.8 documentation</title>
+    <title>Docker &#8212; HiGlass v1.0 documentation</title>
     <link rel="stylesheet" href="_static/higlass.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     'v0.4.8',
+        VERSION:     'v1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -25,11 +25,22 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Server" href="higlass_server.html" />
     <link rel="prev" title="Developer" href="higlass_developer.html" />
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-77756807-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-77756807-1');
+  </script>
+  
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
 
   </head>
   <body>
@@ -69,18 +80,31 @@
 
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="atutorial.html">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="atutorial.html#running-higlass-locally">Running HiGlass Locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#quickly-viewing-a-dataset">Quickly viewing a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#running-higlass-locally">Running HiGlass locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#adding-data">Adding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#viewing-data-in-the-client">Viewing data in the client</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-views">Adding views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#replacing-tracks">Replacing Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-cross-sections">Adding cross sections</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data Preparation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bed-files">Bed Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedpe-like-files">Bedpe-like Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#epilogos-data">Epilogos Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedgraph-files">BedGraph files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bigwig-files">bigWig files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#hitile-files">Hitile files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#cooler-files">Cooler files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#multivec-files">Multivec Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#development">Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#epilogos-data-multivec">Epilogos Data (multivec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#other-data-multivec">Other Data (multivec)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gene_annotations.html">Gene Annotations Tracks</a><ul>
@@ -89,17 +113,9 @@
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#importing-into-higlass">Importing into HiGlass</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="higlass_client.html">Client Viewer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#adding-views">Adding views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#closing-and-resizing-views">Closing and resizing views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#replacing-tracks">Replacing Tracks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_developer.html">Developer</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#public-api">Public API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#viewconfs">Viewconfs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#coding-guidelines">Coding Guidelines</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Docker</a><ul>
@@ -129,9 +145,6 @@
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#stacked-bars">Stacked Bars</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#multiple-lines">Multiple Lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#multiple-bar-charts">Multiple Bar Charts</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>
@@ -174,7 +187,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2017, Peter Kerpedjiev.
+      &copy;2017,2018 HiGlass Authors.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>

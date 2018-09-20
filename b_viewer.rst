@@ -1,5 +1,5 @@
-Client Viewer
-#############
+Viewer
+######
 
 
 Adding views
@@ -42,3 +42,13 @@ config menu:
 .. raw::  html
 
     <video autoplay loop src="_static/take-and-lock-zoom-and-location.mp4" />
+
+Adding cross sections
+*********************
+
+
+.. figure:: img/add-horizontal-cross-section.png
+    :align: left
+    :figwidth: 500px
+    
+    How to add a cross section track derived from a heatmap.

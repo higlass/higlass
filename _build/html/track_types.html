@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Track Types &#8212; HiGlass v0.4.8 documentation</title>
+    <title>Track Types &#8212; HiGlass v1.0 documentation</title>
     <link rel="stylesheet" href="_static/higlass.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     'v0.4.8',
+        VERSION:     'v1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -23,13 +23,24 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Tutorial" href="tutorial.html" />
+    <link rel="next" title="View Configs" href="view_config.html" />
     <link rel="prev" title="Server" href="higlass_server.html" />
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-77756807-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-77756807-1');
+  </script>
+  
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
 
   </head>
   <body>
@@ -98,14 +109,17 @@ along the diagonal.</p>
 <div class="section" id="d-rectangle-domain">
 <span id="id2"></span><h2>2D Rectangle Domain<a class="headerlink" href="#d-rectangle-domain" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/2d-rectangles-track-thumb.png" class="align-right" src="_images/2d-rectangles-track-thumb.png" />
-<p>track-type: <code class="docutils literal"><span class="pre">2d-rectangle-domains</span></code>
-datatype: <code class="docutils literal"><span class="pre">2d-rectangle-domains</span></code></p>
+<p>track-type: <code class="docutils literal"><span class="pre">2d-rectangle-domains</span></code></p>
 <p>The rectangle domains track shows rectangular regions on the heatmap. These are
 commonly aggregated using clodius based on some importance using the <code class="docutils literal"><span class="pre">clodius</span>
-<span class="pre">bedpe</span></code> command.</p>
+<span class="pre">bedpe</span></code> command. See the <a class="reference external" href="data_preparation.html#bedpe-like-files">data preparation section</a> for an example of the aggregation
+command.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>higlass-manage ingest --filetype bed2ddb --datatype 2d-rectangle-domains annotations.bed2ddb
+</pre></div>
+</div>
 </div>
 <div class="section" id="horizontal-2d-rectangle-domain">
-<span id="id3"></span><h2>Horizontal 2D Rectangle Domain<a class="headerlink" href="#horizontal-2d-rectangle-domain" title="Permalink to this headline">¶</a></h2>
+<span id="id4"></span><h2>Horizontal 2D Rectangle Domain<a class="headerlink" href="#horizontal-2d-rectangle-domain" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/horizontal-2d-rectangle-domains-thumb.png" class="align-right" src="_images/horizontal-2d-rectangle-domains-thumb.png" />
 <p>track-type: <code class="docutils literal"><span class="pre">horizontal-2d-rectangle-domains</span></code>
 datatype: <code class="docutils literal"><span class="pre">2d-rectangle-domains</span></code></p>
@@ -142,7 +156,7 @@ they are well suited to data with NaNs because they do not require two points
 to draw something.</p>
 </div>
 <div class="section" id="chromosome-labels">
-<span id="id4"></span><h2>Chromosome Labels<a class="headerlink" href="#chromosome-labels" title="Permalink to this headline">¶</a></h2>
+<span id="id5"></span><h2>Chromosome Labels<a class="headerlink" href="#chromosome-labels" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/chromosome-labels-thumb.png" class="align-right" src="_images/chromosome-labels-thumb.png" />
 <p>track-type: <code class="docutils literal"><span class="pre">horizontal-chromosome-labes</span></code>
 datatype: <code class="docutils literal"><span class="pre">chromsizes</span></code>
@@ -213,18 +227,31 @@ number of bar graphs.</p>
 
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="atutorial.html">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="atutorial.html#running-higlass-locally">Running HiGlass Locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#quickly-viewing-a-dataset">Quickly viewing a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#running-higlass-locally">Running HiGlass locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#adding-data">Adding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#viewing-data-in-the-client">Viewing data in the client</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-views">Adding views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#replacing-tracks">Replacing Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-cross-sections">Adding cross sections</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data Preparation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bed-files">Bed Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedpe-like-files">Bedpe-like Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#epilogos-data">Epilogos Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedgraph-files">BedGraph files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bigwig-files">bigWig files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#hitile-files">Hitile files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#cooler-files">Cooler files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#multivec-files">Multivec Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#development">Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#epilogos-data-multivec">Epilogos Data (multivec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#other-data-multivec">Other Data (multivec)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gene_annotations.html">Gene Annotations Tracks</a><ul>
@@ -233,17 +260,9 @@ number of bar graphs.</p>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#importing-into-higlass">Importing into HiGlass</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="higlass_client.html">Client Viewer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#adding-views">Adding views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#closing-and-resizing-views">Closing and resizing views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#replacing-tracks">Replacing Tracks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_developer.html">Developer</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#public-api">Public API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#viewconfs">Viewconfs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#coding-guidelines">Coding Guidelines</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_docker.html">Docker</a><ul>
@@ -275,9 +294,6 @@ number of bar graphs.</p>
 <li class="toctree-l2"><a class="reference internal" href="#multiple-bar-charts">Multiple Bar Charts</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul class="simple">
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="view_config.html#genome-position-search-box">Genome Position Search Box</a></li>
 <li class="toctree-l2"><a class="reference internal" href="view_config.html#uids">UIDs</a></li>
@@ -299,7 +315,7 @@ number of bar graphs.</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="higlass_server.html" title="previous chapter">Server</a></li>
-      <li>Next: <a href="tutorial.html" title="next chapter">Tutorial</a></li>
+      <li>Next: <a href="view_config.html" title="next chapter">View Configs</a></li>
   </ul></li>
 </ul>
 </div>
@@ -318,7 +334,7 @@ number of bar graphs.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2017, Peter Kerpedjiev.
+      &copy;2017,2018 HiGlass Authors.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
