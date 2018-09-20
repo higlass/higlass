@@ -307,23 +307,36 @@ class GenomePositionSearchBox extends React.Component {
     this.positionText = value;
     this.setState({ value, loading: true });
 
-    const parts = value.split(/[ -]/);
     this.changedPart = null;
+    const spaceParts = value.split(/ /);
+    let partIndex = 0;
+    const newParts = [];
+    let changedAtStartOfWord = false;
 
-    for (let i = 0; i < parts.length; i++) {
-      if (i == this.prevParts.length) {
-        // new part added
-        this.changedPart = i;
-        break;
-      }
+    for (let j = 0; j < spaceParts.length; j++) {
+      const parts = spaceParts[j].split(/-/);
 
-      if (parts[i] != this.prevParts[i]) {
-        this.changedPart = i;
-        break;
+      for (let i = 0; i < parts.length; i++) {
+        partIndex += 1;
+        newParts.push(parts[i]);
+
+        if (i === 0) changedAtStartOfWord = true;
+        else changedAtStartOfWord = false;
+
+        if (i == this.prevParts.length) {
+          // new part added
+          this.changedPart = partIndex - 1;
+          break;
+        }
+
+        if (parts[i] != this.prevParts[i]) {
+          this.changedPart = partIndex - 1;
+          break;
+        }
       }
     }
 
-    this.prevParts = parts;
+    this.prevParts = newParts;
 
     // no autocomplete repository is provided, so we don't try to autcomplete anything
     if (!(this.state.autocompleteServer && this.state.autocompleteId)) {
@@ -335,17 +348,19 @@ class GenomePositionSearchBox extends React.Component {
       this.setState({ loading: true });
       // send out a request for the autcomplete suggestions
       let url = `${this.state.autocompleteServer}/suggest/`
-      url += `?d=${this.state.autocompleteId}&ac=${parts[this.changedPart].toLowerCase()}`;
+      url += `?d=${this.state.autocompleteId}&ac=${newParts[this.changedPart].toLowerCase()}`;
       tileProxy.json(url, (error, data) => {
         if (error) {
           this.setState({ loading: false, genes: [] });
         } else {
-          if (this.changedPart > 0) {
+          if (this.changedPart > 0 && !changedAtStartOfWord) {
             // send out another request for genes with dashes in them
             // but we need to distinguish things that have a dash in front
+            // from things that just have a space in front 
+
             let url1 = `${this.state.autocompleteServer}/suggest/`;
             url1 += `?d=${this.state.autocompleteId}&ac=`;
-            url1 += `${parts[this.changedPart-1].toLowerCase()}-${parts[this.changedPart].toLowerCase()}`;
+            url1 += `${newParts[this.changedPart-1].toLowerCase()}-${newParts[this.changedPart].toLowerCase()}`;
             tileProxy.json(url1, (error1, data1) => {
               if (error1) {
                 this.setState({
@@ -411,7 +426,6 @@ class GenomePositionSearchBox extends React.Component {
 
     for (let i = 0; i < spaceParts.length; i++) {
       const dashParts = spaceParts[i].split('-');
-      console.log('dashParts:', dashParts);
 
       // check if this "word" is a gene symbol which can be replaced
 
@@ -419,7 +433,6 @@ class GenomePositionSearchBox extends React.Component {
       // unit is
       let j = 0;
       let k = 0;
-      console.log('genePositions:', genePositions);
       let spacePart = '';
 
       while (j < dashParts.length) {
@@ -460,13 +473,10 @@ class GenomePositionSearchBox extends React.Component {
         j = k + 1;
       }
 
-      console.log('spacePart', spacePart);
       spaceParts[i] = spacePart;
     }
 
     const newValue = spaceParts.join(' ');
-    console.log('newValue:', newValue);
-
     this.prevParts = newValue.split(/[ -]/);
 
     this.positionText = newValue;
@@ -565,7 +575,6 @@ class GenomePositionSearchBox extends React.Component {
       if (partCount > dashParts.length - 1) {
         partCount -= dashParts.length;
       } else {
-        console.log('dashParts:', dashParts);
         dashParts[partCount] = objct.geneName;
 
         if (geneParts.length === 2

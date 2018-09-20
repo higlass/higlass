@@ -3,12 +3,14 @@
 const autoprefixer = require('autoprefixer');
 const path = require('path');
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
+  mode: process.env.NODE_ENV === "production" ? "production" : "development",
   context: `${__dirname}/app`,
   entry: {
     hglib: ['./scripts/hglib.js'],
@@ -38,10 +40,19 @@ module.exports = {
     library: '[name]',
   },
   optimization: {
-    minimize: true,
-    minimizer: [new UglifyJsPlugin({
-      include: /\.min\.js$/
-    })]
+    minimizer: [
+      new TerserPlugin({
+        cache: true,
+        parallel: true,
+        include: /\.min\.js$/,
+        sourceMap: false,
+      }),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessorOptions: {
+          sourceMap: false
+        },
+      })
+    ]
   },
   module: {
     rules: [
@@ -75,91 +86,87 @@ module.exports = {
       },
       {
         test: /^((?!\.module).)*s?css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 2,
-                minimize: process.env.NODE_ENV === 'development' ? false : { presets: 'default' },
-                sourceMap: process.env.NODE_ENV !== 'development',
-              },
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'fast-css-loader',
+            options: {
+              importLoaders: 2,
+              minimize: false,
+              sourceMap: false,
             },
-            {
-              loader: 'postcss-loader',
-              options: {
-                // Necessary for external CSS imports to work
-                // https://github.com/facebookincubator/create-react-app/issues/2677
-                ident: 'postcss',
-                plugins: () => [
-                  require('postcss-flexbugs-fixes'),
-                  autoprefixer({
-                    browsers: [
-                      '>1%',
-                      'last 4 versions',
-                      'Firefox ESR',
-                      'not ie < 9', // React doesn't support IE8 anyway
-                    ],
-                    flexbox: 'no-2009',
-                  }),
-                ],
-                sourceMap: process.env.NODE_ENV !== 'development',
-              },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              // Necessary for external CSS imports to work
+              // https://github.com/facebookincubator/create-react-app/issues/2677
+              ident: 'postcss',
+              plugins: () => [
+                require('postcss-flexbugs-fixes'),
+                autoprefixer({
+                  browsers: [
+                    '>1%',
+                    'last 4 versions',
+                    'Firefox ESR',
+                    'not ie < 9', // React doesn't support IE8 anyway
+                  ],
+                  flexbox: 'no-2009',
+                }),
+              ],
+              sourceMap: false,
             },
-            {
-              loader: 'sass-loader',
-              options: {
-                sourceMap: process.env.NODE_ENV !== 'development',
-              },
+          },
+          {
+            loader: 'fast-sass-loader',
+            options: {
+              sourceMap: false,
             },
-          ],
-        }),
+          },
+        ],
       },
       {
         test: /\.module.s?css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 2,
-                localIdentName: '[name]_[local]-[hash:base64:5]',
-                minimize: process.env.NODE_ENV === 'development' ? false : { presets: 'default' },
-                modules: true,
-                sourceMap: process.env.NODE_ENV !== 'development',
-              },
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2,
+              localIdentName: '[name]_[local]-[hash:base64:5]',
+              minimize:  false,
+              modules: true,
+              sourceMap: false,
             },
-            {
-              loader: 'postcss-loader',
-              options: {
-                // Necessary for external CSS imports to work
-                // https://github.com/facebookincubator/create-react-app/issues/2677
-                ident: 'postcss',
-                plugins: () => [
-                  require('postcss-flexbugs-fixes'),
-                  autoprefixer({
-                    browsers: [
-                      '>1%',
-                      'last 4 versions',
-                      'Firefox ESR',
-                      'not ie < 9', // React doesn't support IE8 anyway
-                    ],
-                    flexbox: 'no-2009',
-                  }),
-                ],
-                sourceMap: process.env.NODE_ENV !== 'development',
-              },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              // Necessary for external CSS imports to work
+              // https://github.com/facebookincubator/create-react-app/issues/2677
+              ident: 'postcss',
+              plugins: () => [
+                require('postcss-flexbugs-fixes'),
+                autoprefixer({
+                  browsers: [
+                    '>1%',
+                    'last 4 versions',
+                    'Firefox ESR',
+                    'not ie < 9', // React doesn't support IE8 anyway
+                  ],
+                  flexbox: 'no-2009',
+                }),
+              ],
+              sourceMap: false,
             },
-            {
-              loader: 'sass-loader',
-              options: {
-                sourceMap: process.env.NODE_ENV !== 'development',
-              },
+          },
+          {
+            loader: 'fast-sass-loader',
+            options: {
+              sourceMap: false,
             },
-          ],
-        }),
+          },
+        ],
       },
     ],
     noParse: [
@@ -201,7 +208,7 @@ module.exports = {
     new webpack.IgnorePlugin(/react\/addons/),
     new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
     new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
-    new ExtractTextPlugin('hglib.css'),
+    new MiniCssExtractPlugin('hglib.css'),
     new webpack.optimize.ModuleConcatenationPlugin(),
     // new BundleAnalyzerPlugin(),
   ],

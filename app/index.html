@@ -7,16 +7,24 @@
 <link rel="stylesheet" href="styles/page.css">
 <link rel="stylesheet" href="hglib.css">
 
+<style type="text/css">
+#demo {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  bottom: 1rem;
+  right: 1rem;
+  overflow: hidden;
+}
+</style>
+
 <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.1/pixi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.2/pixi.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
 </head>
-<body >
-  <div
-    id="demo"
-    style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem">
-  </div>
+<body>
+  <div id="demo"></div>
 </body>
 <script src='hglib.js'></script>
 <script>
