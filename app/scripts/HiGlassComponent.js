@@ -445,19 +445,7 @@ class HiGlassComponent extends React.Component {
     // let width = this.element.clientWidth;
     // let height = this.element.clientHeight;
 
-    /*
-    this.pixiRenderer.resize(width, height);
-    this.pixiRenderer.view.style.width = width + 'px';
-    this.pixiRenderer.view.style.height = height + 'px';
-    */
-
     this.pixiRenderer.render(this.pixiStage);
-
-    /*
-    if (this.state.views !== nextState.views) {
-      loadChromInfos(nextState.views);
-    }
-    */
   }
 
   componentDidUpdate() {
@@ -1006,8 +994,9 @@ class HiGlassComponent extends React.Component {
         const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key],
           this.yScales[key]);
 
-        if (key == uid) // no need to notify oneself that the scales have changed
-        { continue; }
+        if (key === uid) { // no need to notify oneself that the scales have changed
+          continue; 
+        }
 
         const dx = value[0] - lockGroup[uid][0];
         const dy = value[1] - lockGroup[uid][1];
@@ -1050,7 +1039,9 @@ class HiGlassComponent extends React.Component {
 
 
     this.setState({
-      chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(uid, viewUid, trackUid),
+      chooseTrackHandler: (viewUid, trackUid) => (
+        this.handleViewportProjected(uid, viewUid, trackUid)
+      )
     });
   }
 
@@ -1119,7 +1110,7 @@ class HiGlassComponent extends React.Component {
     const lockGroup = lockGroups[uid];
     const lockGroupKeys = dictKeys(lockGroup);
 
-    if (lockGroupKeys.length == 2) {
+    if (lockGroupKeys.length === 2) {
       // there's only two items in this lock group so we need to
       // remove them both (no point in having one view locked to itself)
       delete lockGroups[lockGroupKeys[0]];
@@ -1137,6 +1128,8 @@ class HiGlassComponent extends React.Component {
   }
 
   viewScalesLockData(uid) {
+    console.log('this:', this);
+
     if (!this.xScales[uid] || !this.yScales[uid]) {
       console.warn("View scale lock doesn't correspond to existing uid: ", uid);
       return null;
@@ -1151,7 +1144,7 @@ class HiGlassComponent extends React.Component {
      * :param uid2 (string): The uid of the second element to be locked (e.g. viewUid)
      * :param lockGroups (dict): The set of locks where to store this lock (e.g. this.locationLocks)
      * :parma lockData (function): A function that takes two uids and calculates some extra data
-     *    to store with this lock data (e.g. scalesCenterAndK(this.xScales[uid1], this.yScales[uid1]))
+     * to store with this lock data (e.g. scalesCenterAndK(this.xScales[uid1], this.yScales[uid1]))
      */
     let group1Members = [];
     let group2Members = [];
@@ -1166,21 +1159,23 @@ class HiGlassComponent extends React.Component {
         // in the case of location locks, this implies that the
         // views it's locking exist
         .map(x => [x[0], lockData(x[0])]); // x is [uid, [centerX, centerY, k]]
-      }
+    }
 
     if (!lockGroups[uid2]) {
       // view1 isn't already in a group
       group2Members = [[uid2, lockData.bind(this)(uid2)]];
     } else {
+      console.log('this1:', this);
       // view2 is already in a group
       group2Members = dictItems(lockGroups[uid2])
-        .filter(x => lockData(x[0])) // make sure we can create the necessary data for this lock
+        .filter(x => lockData.bind(this)(x[0]))
+        // make sure we can create the necessary data for this lock
         // in the case of location locks, this implies that the
         // views it's locking exist
-        .map(x =>
+        .map(x => (
           // x is [uid, [centerX, centerY, k]]
-          [x[0], lockData(x[0])],
-        );
+          [x[0], lockData.bind(this)(x[0])]
+        ));
     }
 
     const allMembers = group1Members.concat(group2Members);
@@ -1655,17 +1650,21 @@ class HiGlassComponent extends React.Component {
         currHeight += centerHeight;
         currWidth += centerWidth;
       }
-    } else if (((view.tracks.top && dictValues(view.tracks.top).length > 1) ||
-                  (view.tracks.bottom && dictValues(view.tracks.bottom).length > 1)) &&
-              ((view.tracks.left && dictValues(view.tracks.left).length) ||
-               (view.tracks.right && dictValues(view.tracks.right).length))) {
+    } else if (((view.tracks.top && dictValues(view.tracks.top).length > 1)
+      || (view.tracks.bottom && dictValues(view.tracks.bottom).length > 1))
+      && ((view.tracks.left && dictValues(view.tracks.left).length)
+      || (view.tracks.right && dictValues(view.tracks.right).length))) {
       centerWidth = defaultCenterWidth;
       centerHeight = defaultCenterHeight;
     }
 
     // make the total height the greater of the left height
     // and the center height
-    if (sideHeight > centerHeight) { currHeight += sideHeight; } else { currHeight += centerHeight; }
+    if (sideHeight > centerHeight) { 
+      currHeight += sideHeight; 
+    } else { 
+      currHeight += centerHeight; 
+    }
 
     let topHeight = 0;
     let bottomHeight = 0;
@@ -1693,7 +1692,8 @@ class HiGlassComponent extends React.Component {
         .reduce((a, b) => a + b, 0);
     }
 
-    return { totalWidth: currWidth,
+    return {
+      totalWidth: currWidth,
       totalHeight: currHeight,
       topHeight,
       bottomHeight,
@@ -1701,14 +1701,15 @@ class HiGlassComponent extends React.Component {
       rightWidth,
       centerWidth,
       centerHeight,
-      minNecessaryHeight };
+      minNecessaryHeight 
+    };
   }
 
   generateViewLayout(view) {
     let layout = null;
 
     if ('layout' in view) {
-      layout = view.layout;
+      ({ layout } = view.layout);
     } else {
       /*
       const minTrackHeight = 30;
@@ -1766,7 +1767,7 @@ class HiGlassComponent extends React.Component {
     }
 
 
-    console.trace('generated layout:', layout);
+    // console.trace('generated layout:', layout);
 
     return layout;
   }
@@ -1777,7 +1778,7 @@ class HiGlassComponent extends React.Component {
      *
      * @param {viewUid} Thie view's identifier
      */
-    const views = this.state.views;
+    const { views } = this.state;
 
     views[viewUid].tracks.top = [];
     views[viewUid].tracks.bottom = [];
@@ -1787,7 +1788,7 @@ class HiGlassComponent extends React.Component {
     views[viewUid].tracks.whole = [];
 
     this.setState({
-      views: views,
+      views,
     });
   }
 
@@ -2438,11 +2439,11 @@ class HiGlassComponent extends React.Component {
          * The initial[XY]Domain of a view has changed. Update its definition
          * and rerender.
          */
-    const views = this.state.views;
+    const { views } = this.state;
 
     views[viewUid].initialXDomain = newXDomain;
     views[viewUid].initialYDomain = newYDomain;
-    
+   
     this.xScales[viewUid] = scaleLinear().domain(newXDomain);
     this.yScales[viewUid] = scaleLinear().domain(newYDomain);
 
@@ -2491,8 +2492,6 @@ class HiGlassComponent extends React.Component {
 
       const svEndX = svX + sortedViews[j].layout.w;
       const svEndY = svY + sortedViews[j].layout.h;
-
-      const intersects = false;
 
       if (pX < svEndX && pEndX > svX) {
         // x range intersects
@@ -2565,8 +2564,8 @@ class HiGlassComponent extends React.Component {
     newView.initialYDomain = this.yScales[newView.uid].domain();
 
     // place this new view below all the others
-    newView.layout.x = potentialPositions[0][0];
-    newView.layout.y = potentialPositions[0][1];
+
+    ([[newView.layout.x, newView.layout.y]] = potentialPositions);
 
     // give it its own unique id
     newView.uid = slugid.nice();
@@ -2688,7 +2687,9 @@ class HiGlassComponent extends React.Component {
 
     if (!newGpsb) { newGpsb = JSON.parse(JSON.stringify(defaultGpsb)); }
 
-    if (!newGpsb.autocompleteServer) { newGpsb.autocompleteServer = defaultGpsb.autocompleteServer; }
+    if (!newGpsb.autocompleteServer) { 
+      newGpsb.autocompleteServer = defaultGpsb.autocompleteServer; 
+    }
 
     /*
          * If we don't have an autocompleteId, we'll try to look it up in
@@ -2753,8 +2754,9 @@ class HiGlassComponent extends React.Component {
     const view = this.state.views[viewUid];
     const track = getTrackByUid(view.tracks, trackUid);
 
-    if (!track)
+    if (!track) {
       return;
+    }
 
     track.options = Object.assign(track.options, newOptions);
 
@@ -2768,8 +2770,9 @@ class HiGlassComponent extends React.Component {
   handleViewOptionsChanged(viewUid, newOptions) {
     const view = this.state.views[viewUid];
 
-    if (!view)
+    if (!view) {
       return;
+    }
 
     view.options = Object.assign(view.options || {}, newOptions);
 
@@ -2791,7 +2794,7 @@ class HiGlassComponent extends React.Component {
          * @param viewUidsPresent (Set): The view uids which are available
          */
 
-    if (track.type == 'viewport-projection-center') {
+    if (track.type === 'viewport-projection-center') {
       if (!viewUidsPresent.has(track.fromViewUid)) {
         return false;
       }
@@ -2816,7 +2819,7 @@ class HiGlassComponent extends React.Component {
 
           // filter out invalid tracks in combined tracks
           v.tracks[trackOrientation].forEach((t) => {
-            if (t.type == 'combined') {
+            if (t.type === 'combined') {
               t.contents = t.contents
                 .filter(c => this.isTrackValid(c, viewUidsSet));
             }
@@ -2829,7 +2832,7 @@ class HiGlassComponent extends React.Component {
   }
 
   processViewConfig(viewConfig) {
-    let views = viewConfig.views;
+    let { views } = viewConfig;
     let viewsByUid = {};
 
     if (!viewConfig.views || viewConfig.views.length === 0) {
@@ -2843,16 +2846,18 @@ class HiGlassComponent extends React.Component {
     }
 
     views.forEach((v) => {
-      if (v.tracks)
+      if (v.tracks) {
         fillInMinWidths(v.tracks);
+      }
 
       // if a view doesn't have a uid, assign it one
       if (!v.uid) { v.uid = slugid.nice(); }
 
       viewsByUid[v.uid] = v;
 
-      if (this.zoomToDataExtentOnInit.has(v.uid))
+      if (this.zoomToDataExtentOnInit.has(v.uid)) {
         this.zoomToDataExtentOnInit.delete(v.uid);
+      }
 
       if (!v.initialXDomain) {
         console.warn('No initialXDomain provided in the view config.');
@@ -3000,7 +3005,7 @@ class HiGlassComponent extends React.Component {
       this.unsetOnLocationChange.push({
         viewId, callback, callbackId
       });
-      return;
+      return null;
     }
 
     viewId = typeof viewId === 'undefined' && viewsIds.length === 1
@@ -3014,7 +3019,7 @@ class HiGlassComponent extends React.Component {
         '🦄 listen to me: you forgot to give me a proper view ID. ' +
         'I can\'t do nothing without that. 💩',
       );
-      return;
+      return null;
     }
 
     const view = this.state.views[viewId];
@@ -3075,9 +3080,8 @@ class HiGlassComponent extends React.Component {
 
       const area = this.tiledAreasDivs[views[i].uid].getBoundingClientRect();
 
-      const top = area.top;
+      const { top, left } = area;
       const bottom = top + area.height;
-      const left = area.left;
       const right = left + area.width;
 
       const withinX = x >= left && x <= right;
