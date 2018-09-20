@@ -5,6 +5,7 @@
 - Added mouseover text to UI elements
 - Upgraded to webpack 4
 - Started building hglib.js and hglib.min.js
+- Support for searching for gene names with dashes
 
 ## v1.2.1, v1.2.2, and v1.2.1
 
