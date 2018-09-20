@@ -407,6 +407,7 @@ class HiGlassComponent extends React.Component {
       icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox),
     );
   }
+
   getTrackObject(viewUid, trackUid) {
     return this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
   }
@@ -1832,21 +1833,23 @@ class HiGlassComponent extends React.Component {
     // if not, remove the current track from the track list
     // create a new combined track, add the current and the new
     // tracks and then update the whole track list
-    const tracks = this.state.views[viewId].tracks;
+    const { tracks } = this.state.views[viewId];
 
-    if (hostTrack.type == 'combined') {
+    if (hostTrack.type === 'combined') {
       hostTrack.contents.push(newTrack);
     } else {
-      const newHost = { type: 'combined',
+      const newHost = {
+        type: 'combined',
         uid: slugid.nice(),
         height: hostTrack.height,
         width: hostTrack.width,
-        contents: [hostTrack, newTrack] };
+        contents: [hostTrack, newTrack],
+      };
 
       const positionTracks = tracks[position];
 
       for (let i = 0; i < positionTracks.length; i++) {
-        if (positionTracks[i].uid == hostTrack.uid) { positionTracks[i] = newHost; }
+        if (positionTracks[i].uid === hostTrack.uid) { positionTracks[i] = newHost; }
       }
     }
 
@@ -1892,7 +1895,7 @@ class HiGlassComponent extends React.Component {
      *    The type to switch this track to.
      */
     const view = this.state.views[viewUid];
-    let trackConfig = getTrackByUid(view.tracks, trackUid);
+    const trackConfig = getTrackByUid(view.tracks, trackUid);
 
     // this track needs a new uid so that it will be rerendered
     trackConfig.uid = slugid.nice();
@@ -1918,7 +1921,7 @@ class HiGlassComponent extends React.Component {
      *    The new data source section
      */
     const view = this.state.views[viewUid];
-    let trackConfig = getTrackByUid(view.tracks, trackUid);
+    const trackConfig = getTrackByUid(view.tracks, trackUid);
 
     // this track needs a new uid so that it will be rerendered
     trackConfig.uid = slugid.nice();
@@ -1966,7 +1969,7 @@ class HiGlassComponent extends React.Component {
     if (host) {
       // we're adding a series rather than a whole new track
       this.handleSeriesAdded(viewId, newTrack, position, host);
-      return;
+      return null;
     }
 
     newTrack.width = this.getTrackInfo(newTrack.type).minWidth
@@ -1976,7 +1979,7 @@ class HiGlassComponent extends React.Component {
       ? this.getTrackInfo(newTrack.type).minHeight
       : this.minHorizontalHeight;
 
-    const tracks = this.state.views[viewId].tracks;
+    const { tracks } = this.state.views[viewId];
     if (position === 'left' || position === 'top') {
       // if we're adding a track on the left or the top, we want the
       // new track to appear at the begginning of the track list
@@ -1995,7 +1998,7 @@ class HiGlassComponent extends React.Component {
         tracks.center = [newCombined];
       } else {
         // center track exists
-        if (tracks.center[0].type == 'combined') {
+        if (tracks.center[0].type === 'combined') {
           // if it's a combined track, we just need to add this track to the
           // contents
           tracks.center[0].contents.push(newTrack);
@@ -2014,9 +2017,11 @@ class HiGlassComponent extends React.Component {
       }
     } else {
       // otherwise, we want it at the end of the track list
-      if (!tracks[position])
+      if (!tracks[position]) {
         // this position wasn't defined in the original viewconf
         tracks[position] = [];
+      }
+
       tracks[position].push(newTrack);
     }
 
@@ -2048,11 +2053,11 @@ class HiGlassComponent extends React.Component {
     for (const track of looseTracks) {
       const trackObj = this.tiledPlots[viewId].trackRenderer.getTrackObject(track.uid);
 
-      if (!trackObj)
+      if (!trackObj) {
         continue;
+      }
 
-      track.width = trackObj.dimensions[0];
-      track.height = trackObj.dimensions[1];
+      ([track.width, track.height] = trackObj.dimensions);
     }
   }
 
@@ -2090,28 +2095,28 @@ class HiGlassComponent extends React.Component {
 
     if (!this.props.options.bounded) {
       view.layout.h = Math.ceil(
-        (totalTrackHeight + MARGIN_HEIGHT) /
-              (this.state.rowHeight + MARGIN_HEIGHT),
+        (totalTrackHeight + MARGIN_HEIGHT)
+          / (this.state.rowHeight + MARGIN_HEIGHT),
       );
     }
   }
 
   handleCloseTrack(viewId, uid) {
-    const tracks = this.state.views[viewId].tracks;
+    const { tracks } = this.state.views[viewId];
 
     this.handleUnlockValueScale(viewId, uid);
 
     for (const trackType in tracks) {
       const theseTracks = tracks[trackType];
-      const newTracks = theseTracks.filter(d => d.uid != uid);
+      const newTracks = theseTracks.filter(d => d.uid !== uid);
 
       if (newTracks.length == theseTracks.length) {
         // no whole tracks need to removed, see if any of the combined tracks
         // contain series which need to go
-        const combinedTracks = newTracks.filter(x => x.type == 'combined');
+        const combinedTracks = newTracks.filter(x => x.type === 'combined');
 
         combinedTracks.forEach((ct) => {
-          ct.contents = ct.contents.filter(x => x.uid != uid);
+          ct.contents = ct.contents.filter(x => x.uid !== uid);
         });
       } else {
         tracks[trackType] = newTracks;
@@ -2130,8 +2135,9 @@ class HiGlassComponent extends React.Component {
 
   handleLockValueScale(fromViewUid, fromTrackUid) {
     this.setState({
-      chooseTrackHandler: (toViewUid, toTrackUid) =>
-        this.handleValueScaleLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid),
+      chooseTrackHandler: (toViewUid, toTrackUid) => (
+        this.handleValueScaleLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid)
+      ),
     });
   }
 
@@ -2142,7 +2148,9 @@ class HiGlassComponent extends React.Component {
     this.combinedUidToViewTrack[uid] = { view: viewUid, track: trackUid };
 
     if (this.viewTrackUidsToCombinedUid[viewUid]) {
-      if (this.viewTrackUidsToCombinedUid[trackUid]) { return this.viewTrackUidsToCombinedUid[viewUid][trackUid]; }
+      if (this.viewTrackUidsToCombinedUid[trackUid]) {
+        return this.viewTrackUidsToCombinedUid[viewUid][trackUid];
+      }
 
       this.viewTrackUidsToCombinedUid[viewUid][trackUid] = uid;
     } else {
@@ -2323,7 +2331,6 @@ class HiGlassComponent extends React.Component {
       const uid = k[0];
 
       for (const track of positionedTracksToAllTracks(newView.tracks)) {
-
         if (track.server) {
           const url = parse(track.server, {});
 
@@ -2331,8 +2338,8 @@ class HiGlassComponent extends React.Component {
             // no hostname specified in the track source servers so we'll add the
             // current URL's
             const hostString = window.location.host;
-            const protocol = window.location.protocol;
-            const newUrl = `${protocol}//${hostString}${url.pathname}`
+            const { protocol } = window.location;
+            const newUrl = `${protocol}//${hostString}${url.pathname}`;
 
             track.server = newUrl;
           }
@@ -2369,7 +2376,7 @@ class HiGlassComponent extends React.Component {
 
   handleExportViewAsJSON() {
     const data = this.getViewsAsString();
-    const file = new Blob([data], { type: 'text/json' });
+    // const file = new Blob([data], { type: 'text/json' });
 
     download('viewconf.json', data);
   }
@@ -2401,14 +2408,14 @@ class HiGlassComponent extends React.Component {
         credentials: 'same-origin',
       }
     )
-      .then( response => {
-        if (!response.ok) { throw response }
-        return response.json()
+      .then((response) => {
+        if (!response.ok) { throw response; }
+        return response.json();
       })
-      .catch(err => {
-        console.warn('err:', err)
+      .catch((err) => {
+        console.warn('err:', err);
       })
-      .then(_json => {
+      .then((_json) => {
         return {
           id: _json.uid,
           url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
@@ -2515,12 +2522,16 @@ class HiGlassComponent extends React.Component {
       let pY = views[i].layout.y;
 
       // can we place the new view to the right of this view?
-      if (this.viewPositionAvailable(pX, pY, view.layout.w, view.layout.h)) { potentialPositions.push([pX, pY]); }
+      if (this.viewPositionAvailable(pX, pY, view.layout.w, view.layout.h)) {
+        potentialPositions.push([pX, pY]);
+      }
 
       pX = views[i].layout.x;
       pY = views[i].layout.y + views[i].layout.h;
       // can we place the new view below this view
-      if (this.viewPositionAvailable(pX, pY, view.layout.w, view.layout.h)) { potentialPositions.push([pX, pY]); }
+      if (this.viewPositionAvailable(pX, pY, view.layout.w, view.layout.h)) {
+        potentialPositions.push([pX, pY]);
+      }
     }
 
 
@@ -2550,6 +2561,8 @@ class HiGlassComponent extends React.Component {
     const jsonString = JSON.stringify(lastView);
 
     const newView = JSON.parse(jsonString); // ghetto copy
+    newView.initialXDomain = this.xScales[newView.uid].domain();
+    newView.initialYDomain = this.yScales[newView.uid].domain();
 
     // place this new view below all the others
     newView.layout.x = potentialPositions[0][0];

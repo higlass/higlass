@@ -120,8 +120,6 @@ describe('Simple HiGlassComponent', () => {
     });
   });
 
-  return;
-
   describe('Gene Annotations Display', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
