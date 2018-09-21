@@ -6,6 +6,8 @@
 - Upgraded to webpack 4
 - Started building hglib.js and hglib.min.js
 - Support for searching for gene names with dashes
+- Sort tilesets alphabetically (#256)
+- Fixed zoom linking issues (#251, #76)
 
 ## v1.2.1, v1.2.2, and v1.2.1
 
