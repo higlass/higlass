@@ -1,1 +1,4 @@
 ./node_modules/karma/bin/karma start karma.conf.js
+
+git subtree pull --prefix docs hg-docs master
+git subtree push --prefix docs hg-docs develop
