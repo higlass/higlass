@@ -66,6 +66,57 @@ jupyter nbextension install --py --sys-prefix --symlink prefix higlass_jupyter
 jupyter nbextension <span class="nb">enable</span> --py --sys-prefix prefix higlass_jupyter
 </pre></div>
 </div>
+<div class="section" id="uninstalling">
+<h3>Uninstalling<a class="headerlink" href="#uninstalling" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>jupyter nbextension uninstall --py --sys-prefix higlass_jupyter
+</pre></div>
+</div>
+</div>
+<div class="section" id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
+<p>To instantiate a HiGlass component within a Jupyter notebook, we first need
+to specify which data should be loaded. This can be accomplished with the
+help of the <code class="docutils literal"><span class="pre">hgflask.client</span></code> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hgflask.client</span> <span class="kn">as</span> <span class="nn">hgc</span>
+<span class="n">conf</span> <span class="o">=</span> <span class="n">hgc</span><span class="o">.</span><span class="n">HiGlassConfig</span><span class="p">()</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">add_view</span><span class="p">()</span>
+<span class="n">track</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">add_track</span><span class="p">(</span><span class="s1">&#39;CQMd6V_cRw6iCI_-Unl3PQ&#39;</span><span class="p">,</span>
+    <span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;heatmap&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+    <span class="n">server</span><span class="o">=</span><span class="s1">&#39;http://higlass.io/api/v1/&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This config can then be passed to the <cite>HiGlassDisplay</cite> object to render the
+selected dataset:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">higlass_jupyter</span> <span class="kn">as</span> <span class="nn">hgj</span>
+<span class="n">hgj</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">to_json_string</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="serving-local-data">
+<h3>Serving local data<a class="headerlink" href="#serving-local-data" title="Permalink to this headline">¶</a></h3>
+<p>To view local data, we need to set up a temporary server:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hgflask</span> <span class="kn">as</span> <span class="nn">hgf</span>
+
+<span class="n">tilesets</span> <span class="o">=</span> <span class="p">[{</span>
+    <span class="s1">&#39;filepath&#39;</span><span class="p">:</span> <span class="n">filename</span><span class="p">,</span>
+    <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span>
+<span class="p">}]</span>
+
+<span class="n">server</span> <span class="o">=</span> <span class="n">hgf</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">tilesets</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can then test if the server is running:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">server</span><span class="o">.</span><span class="n">tileset_info</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And display the data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">track</span> <span class="o">=</span> <span class="p">(</span><span class="n">hgc</span><span class="o">.</span><span class="n">HiGlassConfig</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">add_view</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">add_track</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;heatmap&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">server</span><span class="o">=</span><span class="n">server</span><span class="o">.</span><span class="n">api_address</span><span class="p">))</span>
+<span class="n">hgj</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">to_json_string</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
