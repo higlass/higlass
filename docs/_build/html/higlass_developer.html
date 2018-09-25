@@ -351,7 +351,7 @@ If it is not provided, the value is taken from the <cite>exportViewUrl</cite> va
 <p><strong>Prototype</strong></p>
 <p><code class="docutils literal"><span class="pre">shareViewConfigAsLink(url)</span></code></p>
 <p><strong>Example</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">shareViewConfigAsLink</span><span class="p">()</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">shareViewConfigAsLink</span><span class="p">(</span><span class="s1">&#39;http://localhost:8989/api/v1/viewconfs&#39;</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">sharedViewConfig</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Shared view config (ID: </span><span class="si">${</span><span class="nx">sharedViewConfig</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">) is available at </span><span class="si">${</span><span class="nx">sharedViewConfig</span><span class="p">.</span><span class="nx">url</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span>
   <span class="p">})</span>
@@ -488,6 +488,10 @@ json (e.g. <cite>{“viewconf”: myViewConfig}</cite>):</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_docker.html">Docker</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="higlass_docker.html#dropping-individual-cache-entries">Dropping individual cache entries</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_jupyter.html">Jupyter Notebooks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_jupyter.html#installation">Installation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_server.html">Server</a><ul>
