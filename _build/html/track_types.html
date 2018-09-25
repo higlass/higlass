@@ -72,6 +72,28 @@ datatype: <code class="docutils literal"><span class="pre">bedlike</span></code>
 render tracks with a <cite>bedlike</cite> datatype. This usually comes from the <cite>beddb</cite>
 filetype. Regular bed-like files can be converted to beddb using the instructions
 in the <a class="reference external" href="data_preparation.html#bed-files">data preparation section</a>.</p>
+<p><strong>Color Encoding:</strong></p>
+<p>Intervals can visually encode information using the following three <code class="docutils literal"><span class="pre">options</span></code>:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">colorEncoding:</span> <span class="pre">bool</span> <span class="pre">[default</span> <span class="pre">false]</span></code></dt>
+<dd>If <code class="docutils literal"><span class="pre">true</span></code> the interval value is used for color encoding.</dd>
+<dt><code class="docutils literal"><span class="pre">colorRange:</span> <span class="pre">array</span></code></dt>
+<dd>A list of HEX colors that make up the continuous color map.</dd>
+<dt><code class="docutils literal"><span class="pre">colorEncodingRange:</span> <span class="pre">array</span></code></dt>
+<dd>A tuple defining the minimum and maximum range value for color encoding.</dd>
+</dl>
+<p>Here is an example snippet</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="p">...,</span>
+  <span class="nx">colorEncoding</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>  <span class="c1">// Turn on color encoding</span>
+  <span class="nx">colorRange</span><span class="o">:</span> <span class="p">[</span>  <span class="c1">// Define the color map</span>
+    <span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="s1">&#39;#652537&#39;</span><span class="p">,</span> <span class="s1">&#39;#bf5458&#39;</span><span class="p">,</span> <span class="s1">&#39;#fba273&#39;</span><span class="p">,</span> <span class="s1">&#39;#ffffe0&#39;</span>
+  <span class="p">],</span>
+  <span class="nx">colorEncodingRange</span><span class="o">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5119949</span><span class="p">],</span>  <span class="c1">// Limit the encoding range</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="gene-annotations">
 <h2>Gene Annotations<a class="headerlink" href="#gene-annotations" title="Permalink to this headline">¶</a></h2>
@@ -83,6 +105,10 @@ The tracks displayed on HiGlass show a transcript consisting of the union of
 all annotated exons in refseq. There are separate tracks for the different
 available species. Details on how gene annotation tracks are created is available
 in the <a class="reference external" href="gene_annotations.html">gene annotations section</a>.</p>
+<p><strong>Demos:</strong></p>
+<ul class="simple">
+<li><a class="reference external" href="examples/gene_annotations.html">Standard vs Customize Gene Annotation Track</a></li>
+</ul>
 </div>
 <div class="section" id="heatmap">
 <h2>Heatmap<a class="headerlink" href="#heatmap" title="Permalink to this headline">¶</a></h2>
@@ -136,7 +162,7 @@ be outside of the bounds of the track.</p>
 datatype: <code class="docutils literal"><span class="pre">vector</span></code></p>
 <p>Line tracks display 1D vector data. Because each line segment requires two
 adjacent points to be present, data with lots of NaNs may lead to a fragmented
-plot. For such data, the <a class="reference internal" href="#bar-track"><span class="std std-ref">bar track</span></a> or <a class="reference internal" href="#point-track"><span class="std std-ref">point track</span></a> may be more
+plot. For such data, the <a class="reference internal" href="#bar-track"><span class="std std-ref">bar track</span></a> or <span class="xref std std-ref">point track</span> may be more
 appropriate.</p>
 </div>
 <div class="section" id="bar">
@@ -145,6 +171,10 @@ appropriate.</p>
 <p>track-type: <code class="docutils literal"><span class="pre">horizontal-bar</span></code>
 datatype: <code class="docutils literal"><span class="pre">vector</span></code></p>
 <p>Bar tracks display 1D vector data as bars.</p>
+<p><strong>Demos:</strong></p>
+<ul class="simple">
+<li><cite>Diverging bars with color map and gradient &lt;examples/bar-track-color-range.html&gt;</cite></li>
+</ul>
 </div>
 <div class="section" id="point">
 <span id="point-track"></span><h2>Point<a class="headerlink" href="#point" title="Permalink to this headline">¶</a></h2>
@@ -155,8 +185,37 @@ datatype: <code class="docutils literal"><span class="pre">vector</span></code><
 they are well suited to data with NaNs because they do not require two points
 to draw something.</p>
 </div>
+<div class="section" id="id5">
+<span id="id6"></span><h2>1D Heatmap<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/1d-heatmap-track.png" class="align-right" src="_images/1d-heatmap-track.png" />
+<p>track-type: <code class="docutils literal"><span class="pre">horizontal-1d-heatmap</span></code> and <code class="docutils literal"><span class="pre">vertical-1d-heatmap</span></code>
+datatype: <code class="docutils literal"><span class="pre">vector</span></code></p>
+<p>1D heatmap tracks display 1D vector data. Unlike the other 1D tracks,
+they are well suited for getting an overview of distribution and less suited for
+identifying precise properties of individual data points. E.g., finding regions
+that are on average highly expressed is much easier than finding the highest peak
+with this track.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nx">server</span><span class="o">:</span> <span class="s1">&#39;http://higlass.io/api/v1&#39;</span><span class="p">,</span>
+  <span class="nx">tilesetUid</span><span class="o">:</span> <span class="s1">&#39;e0DYtZBSTqiMLHoaimsSpg&#39;</span><span class="p">,</span>
+  <span class="nx">uid</span><span class="o">:</span> <span class="s1">&#39;1d-heatmap&#39;</span><span class="p">,</span>
+  <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;horizontal-1d-heatmap&#39;</span><span class="p">,</span>
+  <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">labelPosition</span><span class="o">:</span> <span class="s1">&#39;hidden&#39;</span><span class="p">,</span>
+    <span class="nx">colorRange</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;#FFFFFF&#39;</span><span class="p">,</span> <span class="s1">&#39;#ccc6ff&#39;</span><span class="p">,</span> <span class="s1">&#39;#4f3de5&#39;</span><span class="p">,</span> <span class="s1">&#39;#120489&#39;</span><span class="p">,</span> <span class="s1">&#39;#000000&#39;</span><span class="p">],</span>
+  <span class="p">},</span>
+  <span class="nx">height</span><span class="o">:</span> <span class="mi">12</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Demo</strong>:</p>
+<blockquote>
+<div><a class="reference external" href="1d-heatmap-track.html">Full example</a>.
+<a class="reference external" href="1d-heatmap-track-2.html">Genome browser-like view from HiGlass.io</a>.</div></blockquote>
+</div>
 <div class="section" id="chromosome-labels">
-<span id="id5"></span><h2>Chromosome Labels<a class="headerlink" href="#chromosome-labels" title="Permalink to this headline">¶</a></h2>
+<span id="id7"></span><h2>Chromosome Labels<a class="headerlink" href="#chromosome-labels" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/chromosome-labels-thumb.png" class="align-right" src="_images/chromosome-labels-thumb.png" />
 <p>track-type: <code class="docutils literal"><span class="pre">horizontal-chromosome-labes</span></code>
 datatype: <code class="docutils literal"><span class="pre">chromsizes</span></code>
@@ -166,6 +225,10 @@ sourced from a standard chromSizes file containing chromosome names and
 chromosome files. The file can be ingested by the higlass server like any other
 tileset. As long as the <cite>datatype</cite> is set to <cite>chromsizes</cite> this track should be
 selectable from the “Add Track Dialog”.</p>
+<p><strong>Demos:</strong></p>
+<ul class="simple">
+<li><a class="reference external" href="examples/chromosome-labels.html">demonstrate adjustability</a>.</li>
+</ul>
 </div>
 <div class="section" id="chromosome-grid">
 <h2>Chromosome Grid<a class="headerlink" href="#chromosome-grid" title="Permalink to this headline">¶</a></h2>
@@ -207,6 +270,34 @@ of line graphs.</p>
 datatype: <code class="docutils literal"><span class="pre">multivec</span></code></p>
 <p>Displays multivec data by showing multiple values at every location using a
 number of bar graphs.</p>
+</div>
+<div class="section" id="d-annotations">
+<span id="id8"></span><h2>1D Annotations<a class="headerlink" href="#d-annotations" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/1d-annotations.png" class="align-right" src="_images/1d-annotations.png" />
+<p>track-type: <code class="docutils literal"><span class="pre">horizontal-1d-annotations</span></code> and <code class="docutils literal"><span class="pre">vertical-1d-annotations</span></code>
+datatype: none</p>
+<p>Displays absolute positioned 1D annotations on horizontal and vertical 1D tracks
+as well as 2D tracks. This track can be used to permanently highlight 1D regions
+in any kind of dataset. The data is directly passed in via the <code class="docutils literal"><span class="pre">regions</span></code>
+parameter of the <code class="docutils literal"><span class="pre">options</span></code>.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nx">uid</span><span class="o">:</span> <span class="s1">&#39;selection-a&#39;</span><span class="p">,</span>
+  <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;horizontal-1d-annotations&#39;</span><span class="p">,</span>
+  <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">regions</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">[</span><span class="mi">230000000</span><span class="p">,</span> <span class="mi">561000000</span><span class="p">],</span>
+    <span class="p">],</span>
+    <span class="nx">minRectWidth</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nx">fillOpacity</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">,</span>
+    <span class="nx">stroke</span><span class="o">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span>
+    <span class="nx">strokePos</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">],</span>
+    <span class="nx">strokeWidth</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="nx">strokeOpacity</span><span class="o">:</span> <span class="mf">0.6</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -292,11 +383,13 @@ number of bar graphs.</p>
 <li class="toctree-l2"><a class="reference internal" href="#line">Line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bar">Bar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#point">Point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">1D Heatmap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#chromosome-labels">Chromosome Labels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#chromosome-grid">Chromosome Grid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#stacked-bars">Stacked Bars</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#multiple-lines">Multiple Lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#multiple-bar-charts">Multiple Bar Charts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#d-annotations">1D Annotations</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>

@@ -106,3 +106,11 @@ Each set of tracks is placed within a view.
         }
       ],
     }
+
+Track options
+=============
+
+Each track can specify a set of options defining how it will be drawn.
+Some of the more important ones are:
+
+-  ``valueScaleMin`` and ``valueScaleMax``: control the minimum and maximum values rendered by the track. If either is not defined, then it will be set according to the visible data (i.e. the minimum value of the scale will be the minimum value in the visible data and the same for the maximum)
