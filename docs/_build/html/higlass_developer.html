@@ -25,11 +25,22 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Docker" href="higlass_docker.html" />
     <link rel="prev" title="Gene Annotations Tracks" href="gene_annotations.html" />
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-77756807-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-77756807-1');
+  </script>
+  
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
 
   </head>
   <body>
@@ -42,6 +53,29 @@
             
   <div class="section" id="developer">
 <h1>Developer<a class="headerlink" href="#developer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="embedding-higlass-in-web-page">
+<h2>Embedding HiGlass in web page<a class="headerlink" href="#embedding-higlass-in-web-page" title="Permalink to this headline">¶</a></h2>
+<p>HiGlass can be included in any web page by including the relevant
+javascript and css files:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://unpkg.com/higlass@1.1.5/dist/styles/hglib.css&quot; type=&quot;text/css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&quot; type=&quot;text/css&quot;&gt;
+
+
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;script src=&quot;https://unpkg.com/higlass@1.1.5/dist/scripts/hglib.js&quot;&gt;&lt;/script&gt;
+</pre></div>
+</div>
+<p>External tracks should be included <strong>before</strong> the hglib.js import:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span>&lt;script src=&quot;https://unpkg.com/higlass-multivec@0.1.10/dist/higlass-multivec.js&quot;&gt;&lt;/script&gt;
+</pre></div>
+</div>
+<p>Instructions for instantiating the component and interacting with it are in the
+<a class="reference external" href="higlass_developer.html#public-api">Public API section</a>.</p>
+</div>
 <div class="section" id="public-api">
 <h2>Public API<a class="headerlink" href="#public-api" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="creating-an-inline-higlass-component">
@@ -414,9 +448,10 @@ json (e.g. <cite>{“viewconf”: myViewConfig}</cite>):</p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="atutorial.html">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="atutorial.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atutorial.html#running-higlass-locally">Running HiGlass Locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#quickly-viewing-a-dataset">Quickly viewing a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#running-higlass-locally">Running HiGlass locally</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atutorial.html#adding-data">Adding data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atutorial.html#viewing-data">Viewing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#viewing-data-in-the-client">Viewing data in the client</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
@@ -446,6 +481,7 @@ json (e.g. <cite>{“viewconf”: myViewConfig}</cite>):</p>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Developer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#embedding-higlass-in-web-page">Embedding HiGlass in web page</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#public-api">Public API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#viewconfs">Viewconfs</a></li>
 </ul>

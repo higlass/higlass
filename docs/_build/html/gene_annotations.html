@@ -25,11 +25,22 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Developer" href="higlass_developer.html" />
     <link rel="prev" title="Data Preparation" href="data_preparation.html" />
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-77756807-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-77756807-1');
+  </script>
+  
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
 
   </head>
   <body>
@@ -68,6 +79,9 @@ them is simply a matter of downloading the list from UCSC (e.g.
 
 <span class="c1">#ASSEMBLY=sacCer3</span>
 <span class="c1">#TAXID=559292</span>
+
+<span class="c1">#ASSEMBLY=dm6</span>
+<span class="c1">#TAXID=7227</span>
 </pre></div>
 </div>
 </div>
@@ -243,9 +257,9 @@ aws s3 cp ~/data/tiled-data/gene-annotations-<span class="si">${</span><span cla
 <div class="section" id="chromosomes">
 <h3>Chromosomes<a class="headerlink" href="#chromosomes" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>curl -u <span class="sb">`</span>cat ~/.higlass-server-login<span class="sb">`</span>    <span class="se">\</span>
-    -F <span class="s2">&quot;datafile=@/Users/peter/tmp/chromSizes_hg38.csv&quot;</span>    <span class="se">\</span>
+    -F <span class="s2">&quot;datafile=@/Users/peter/tmp/chromSizes_hg38.tsv&quot;</span>    <span class="se">\</span>
     -F <span class="s2">&quot;name=Chromosomes (hg38)&quot;</span>   <span class="se">\</span>
-    -F <span class="s1">&#39;filetype=chromsizes-csv&#39;</span>  <span class="se">\</span>
+    -F <span class="s1">&#39;filetype=chromsizes-tsv&#39;</span>  <span class="se">\</span>
     -F <span class="s1">&#39;datatype=chromsizes&#39;</span>  <span class="se">\</span>
     -F <span class="s2">&quot;coordSystem=</span><span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
     -F <span class="s2">&quot;coordSystem2=</span><span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="se">\</span>
@@ -274,9 +288,10 @@ aws s3 cp ~/data/tiled-data/gene-annotations-<span class="si">${</span><span cla
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="atutorial.html">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="atutorial.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atutorial.html#running-higlass-locally">Running HiGlass Locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#quickly-viewing-a-dataset">Quickly viewing a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#running-higlass-locally">Running HiGlass locally</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atutorial.html#adding-data">Adding data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atutorial.html#viewing-data">Viewing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#viewing-data-in-the-client">Viewing data in the client</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
