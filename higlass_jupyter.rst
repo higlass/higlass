@@ -16,8 +16,8 @@ and enable the jupyter extension:
 
     pip install jupyter hgflask higlass-jupyter 
 
-    jupyter nbextension install --py --sys-prefix --symlink prefix higlass_jupyter
-    jupyter nbextension enable --py --sys-prefix prefix higlass_jupyter
+    jupyter nbextension install --py --sys-prefix --symlink higlass_jupyter
+    jupyter nbextension enable --py --sys-prefix higlass_jupyter
 
 
 Uninstalling
@@ -66,7 +66,7 @@ To view local data, we need to set up a temporary server:
     import hgflask as hgf
 
     tilesets = [{
-        'filepath': filename,
+        'filepath': "my_file.mcool",
         'uuid': 'a'
     }]
 
@@ -87,5 +87,59 @@ And display the data:
         .add_track('a', 'heatmap', 'center', server=server.api_address))
     hgj.HiGlassDisplay(viewconf=conf.to_json_string())
 
+Serving custom data
+^^^^^^^^^^^^^^^^^^^
+
+We can also explore a numpy matrix. To start let's make the matrix using the
+`Eggholder function <https://en.wikipedia.org/wiki/Test_functions_for_optimization>`_.
+
+.. code-block:: python
+
+    import math
+    import numpy as np
+    import itertools as it
+
+    dim = 2000
+
+    data = np.zeros((dim, dim))
+    for x,y in it.product(range(dim), repeat=2):
+        data[x][y] = (-(y + 47) * math.sin(math.sqrt(abs(x / 2 + (y+47)))) 
+                                 - x * math.sin(math.sqrt(abs(x - (y+47)))))
+
+Then we can define the data and tell the server how to render it.
+
+.. code-block:: python
+
+    import functools as ft
+    import hgtiles.npmatrix as hgnp
+
+    tilesets = [{
+        'uuid': 'a',
+        'handlers': {
+            'tiles': ft.partial(hgnp.tiles_wrapper, data),
+            'tileset_info': ft.partial(hgnp.tileset_info, data)        
+            }
+        }
+    ]
+
+    server = hgf.start(tilesets)
+
+Finally, we create the HiGlass component which renders it, along with
+axis labels:
+
+.. code-block:: python
+
+    hgc = hfc.HiGlassConfig()
+    view = hgc.add_view()
+    view.add_track('a', 'heatmap', 'center', 
+                   server=server.api_address,
+                   height=200)
+    view.add_track(None, 'top-axis', 'top')
+    view.add_track(None, 'left-axis', 'left')
 
 
+    #print(hgc.to_json_string())
+    import higlass_jupyter
+    higlass_jupyter.HiGlassDisplay(viewconf=hgc.to_json_string())
+
+.. image:: img/eggholder-function.png

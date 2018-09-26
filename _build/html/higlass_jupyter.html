@@ -62,8 +62,8 @@ extension, you can use HiGlass directly from within a Jupyter notebook.</p>
 and enable the jupyter extension:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>pip install jupyter hgflask higlass-jupyter
 
-jupyter nbextension install --py --sys-prefix --symlink prefix higlass_jupyter
-jupyter nbextension <span class="nb">enable</span> --py --sys-prefix prefix higlass_jupyter
+jupyter nbextension install --py --sys-prefix --symlink higlass_jupyter
+jupyter nbextension <span class="nb">enable</span> --py --sys-prefix higlass_jupyter
 </pre></div>
 </div>
 <div class="section" id="uninstalling">
@@ -103,7 +103,7 @@ notebook.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hgflask</span> <span class="kn">as</span> <span class="nn">hgf</span>
 
 <span class="n">tilesets</span> <span class="o">=</span> <span class="p">[{</span>
-    <span class="s1">&#39;filepath&#39;</span><span class="p">:</span> <span class="n">filename</span><span class="p">,</span>
+    <span class="s1">&#39;filepath&#39;</span><span class="p">:</span> <span class="s2">&quot;my_file.mcool&quot;</span><span class="p">,</span>
     <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span>
 <span class="p">}]</span>
 
@@ -121,6 +121,56 @@ notebook.</p>
 <span class="n">hgj</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">to_json_string</span><span class="p">())</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="serving-custom-data">
+<h3>Serving custom data<a class="headerlink" href="#serving-custom-data" title="Permalink to this headline">¶</a></h3>
+<p>We can also explore a numpy matrix. To start let’s make the matrix using the
+<a class="reference external" href="https://en.wikipedia.org/wiki/Test_functions_for_optimization">Eggholder function</a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">itertools</span> <span class="kn">as</span> <span class="nn">it</span>
+
+<span class="n">dim</span> <span class="o">=</span> <span class="mi">2000</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="n">it</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">),</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="n">data</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="mi">47</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="mi">47</span><span class="p">))))</span>
+                             <span class="o">-</span> <span class="n">x</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="mi">47</span><span class="p">)))))</span>
+</pre></div>
+</div>
+<p>Then we can define the data and tell the server how to render it.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">functools</span> <span class="kn">as</span> <span class="nn">ft</span>
+<span class="kn">import</span> <span class="nn">hgtiles.npmatrix</span> <span class="kn">as</span> <span class="nn">hgnp</span>
+
+<span class="n">tilesets</span> <span class="o">=</span> <span class="p">[{</span>
+    <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;tiles&#39;</span><span class="p">:</span> <span class="n">ft</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">hgnp</span><span class="o">.</span><span class="n">tiles_wrapper</span><span class="p">,</span> <span class="n">data</span><span class="p">),</span>
+        <span class="s1">&#39;tileset_info&#39;</span><span class="p">:</span> <span class="n">ft</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">hgnp</span><span class="o">.</span><span class="n">tileset_info</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+
+<span class="n">server</span> <span class="o">=</span> <span class="n">hgf</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">tilesets</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, we create the HiGlass component which renders it, along with
+axis labels:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">hgc</span> <span class="o">=</span> <span class="n">hfc</span><span class="o">.</span><span class="n">HiGlassConfig</span><span class="p">()</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">hgc</span><span class="o">.</span><span class="n">add_view</span><span class="p">()</span>
+<span class="n">view</span><span class="o">.</span><span class="n">add_track</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;heatmap&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span>
+               <span class="n">server</span><span class="o">=</span><span class="n">server</span><span class="o">.</span><span class="n">api_address</span><span class="p">,</span>
+               <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">add_track</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;top-axis&#39;</span><span class="p">,</span> <span class="s1">&#39;top&#39;</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">add_track</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;left-axis&#39;</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+
+<span class="c1">#print(hgc.to_json_string())</span>
+<span class="kn">import</span> <span class="nn">higlass_jupyter</span>
+<span class="n">higlass_jupyter</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">hgc</span><span class="o">.</span><span class="n">to_json_string</span><span class="p">())</span>
+</pre></div>
+</div>
+<img alt="_images/eggholder-function.png" src="_images/eggholder-function.png" />
 </div>
 </div>
 </div>
