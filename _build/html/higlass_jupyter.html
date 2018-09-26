@@ -72,26 +72,31 @@ jupyter nbextension <span class="nb">enable</span> --py --sys-prefix prefix higl
 </pre></div>
 </div>
 </div>
+</div>
 <div class="section" id="usage">
-<h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>To instantiate a HiGlass component within a Jupyter notebook, we first need
 to specify which data should be loaded. This can be accomplished with the
 help of the <code class="docutils literal"><span class="pre">hgflask.client</span></code> module:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hgflask.client</span> <span class="kn">as</span> <span class="nn">hgc</span>
-<span class="n">conf</span> <span class="o">=</span> <span class="n">hgc</span><span class="o">.</span><span class="n">HiGlassConfig</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hgflask.client</span> <span class="kn">as</span> <span class="nn">hfc</span>
+<span class="kn">import</span> <span class="nn">higlass_jupyter</span>
+
+<span class="n">conf</span> <span class="o">=</span> <span class="n">hfc</span><span class="o">.</span><span class="n">HiGlassConfig</span><span class="p">()</span>
 <span class="n">view</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">add_view</span><span class="p">()</span>
-<span class="n">track</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">add_track</span><span class="p">(</span><span class="s1">&#39;CQMd6V_cRw6iCI_-Unl3PQ&#39;</span><span class="p">,</span>
-    <span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;heatmap&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
-    <span class="n">server</span><span class="o">=</span><span class="s1">&#39;http://higlass.io/api/v1/&#39;</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">add_track</span><span class="p">(</span><span class="n">tileset_uuid</span><span class="o">=</span><span class="s1">&#39;CQMd6V_cRw6iCI_-Unl3PQ&#39;</span><span class="p">,</span>
+               <span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;heatmap&#39;</span><span class="p">,</span>
+               <span class="n">position</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+               <span class="n">server</span><span class="o">=</span><span class="s2">&quot;http://higlass.io/api/v1&quot;</span><span class="p">,</span>
+               <span class="n">height</span><span class="o">=</span><span class="mi">210</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span>
+                   <span class="s1">&#39;valueScaleMax&#39;</span><span class="p">:</span> <span class="mf">0.5</span>
+               <span class="p">})</span>
+
+<span class="n">higlass_jupyter</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">hgc</span><span class="o">.</span><span class="n">to_json_string</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>This config can then be passed to the <cite>HiGlassDisplay</cite> object to render the
-selected dataset:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">higlass_jupyter</span> <span class="kn">as</span> <span class="nn">hgj</span>
-<span class="n">hgj</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">to_json_string</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
+<p>The result is a fully interactive HiGlass view direcly embedded in the Jupyter
+notebook.</p>
+<img alt="_images/jupyter-hic-heatmap.png" src="_images/jupyter-hic-heatmap.png" />
 <div class="section" id="serving-local-data">
 <h3>Serving local data<a class="headerlink" href="#serving-local-data" title="Permalink to this headline">¶</a></h3>
 <p>To view local data, we need to set up a temporary server:</p>
@@ -182,6 +187,7 @@ selected dataset:</p>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Jupyter Notebooks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_server.html">Server</a><ul>
@@ -202,11 +208,13 @@ selected dataset:</p>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#line">Line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#bar">Bar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#point">Point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#id5">1D Heatmap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#chromosome-labels">Chromosome Labels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#chromosome-grid">Chromosome Grid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#stacked-bars">Stacked Bars</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#multiple-lines">Multiple Lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#multiple-bar-charts">Multiple Bar Charts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#d-annotations">1D Annotations</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>

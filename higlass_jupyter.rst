@@ -28,7 +28,7 @@ Uninstalling
     jupyter nbextension uninstall --py --sys-prefix higlass_jupyter
 
 Usage
-^^^^^
+-----
 
 To instantiate a HiGlass component within a Jupyter notebook, we first need
 to specify which data should be loaded. This can be accomplished with the 
@@ -36,20 +36,25 @@ help of the ``hgflask.client`` module:
 
 .. code-block:: python
 
-    import hgflask.client as hgc
-    conf = hgc.HiGlassConfig()
+    import hgflask.client as hfc
+    import higlass_jupyter
+
+    conf = hfc.HiGlassConfig()
     view = conf.add_view()
-    track = view.add_track('CQMd6V_cRw6iCI_-Unl3PQ', 
-        track_type='heatmap', position='center',
-        server='http://higlass.io/api/v1/')
+    view.add_track(tileset_uuid='CQMd6V_cRw6iCI_-Unl3PQ', 
+                   track_type='heatmap', 
+                   position='center', 
+                   server="http://higlass.io/api/v1",
+                   height=210, options={
+                       'valueScaleMax': 0.5
+                   })
 
-This config can then be passed to the `HiGlassDisplay` object to render the
-selected dataset:
+    higlass_jupyter.HiGlassDisplay(viewconf=hgc.to_json_string())
 
-.. code-block:: python
+The result is a fully interactive HiGlass view direcly embedded in the Jupyter
+notebook.
 
-    import higlass_jupyter as hgj
-    hgj.HiGlassDisplay(viewconf=conf.to_json_string())
+.. image:: img/jupyter-hic-heatmap.png
 
 Serving local data
 ^^^^^^^^^^^^^^^^^^
