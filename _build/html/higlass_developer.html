@@ -129,6 +129,11 @@ function in quick succesion after initializing the viewer.</p>
 <dd>Horizontal margin added by HiGlass</dd>
 <dt><code class="docutils literal"><span class="pre">verticalMargin:</span> <span class="pre">number</span> <span class="pre">[default:</span> <span class="pre">5]</span></code></dt>
 <dd>Vertical margin added by HiGlass</dd>
+<dt><code class="docutils literal"><span class="pre">renderer:</span> <span class="pre">string</span> <span class="pre">[default:</span> <span class="pre">'auto'],</span> <span class="pre">options=['webgl',</span> <span class="pre">'canvas']</span></code></dt>
+<dd>Pick which type of renderer to use for HiGlass. WebGL is faster
+but there is typically a limited number of WebGL contexts that
+are allowed in a browser. If you plan on loading many HiGlass
+viewers, consier using the a canvas renderer.</dd>
 </dl>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="s1">&#39;http://higlass.io/api/v1/viewconfs/&#39;</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">hgv</span> <span class="o">=</span> <span class="nx">hglib</span><span class="p">.</span><span class="nx">createHgComponent</span><span class="p">(</span>
@@ -664,6 +669,7 @@ json (e.g. <cite>{“viewconf”: myViewConfig}</cite>):</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_jupyter.html">Jupyter Notebooks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="higlass_jupyter.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_jupyter.html#usage">Usage</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_server.html">Server</a><ul>

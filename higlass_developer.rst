@@ -101,6 +101,12 @@ GitHub repository
 ``verticalMargin: number [default: 5]``
     Vertical margin added by HiGlass
 
+``renderer: string [default: 'auto'], options=['webgl', 'canvas']``
+    Pick which type of renderer to use for HiGlass. WebGL is faster
+    but there is typically a limited number of WebGL contexts that 
+    are allowed in a browser. If you plan on loading many HiGlass 
+    viewers, consier using the a canvas renderer.
+
 .. code-block:: javascript
 
   const baseUrl = 'http://higlass.io/api/v1/viewconfs/';
