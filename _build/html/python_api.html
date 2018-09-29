@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Viewer &#8212; HiGlass v1.0 documentation</title>
+    <title>Python API &#8212; HiGlass v1.0 documentation</title>
     <link rel="stylesheet" href="_static/higlass.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Server" href="higlass_server.html" />
-    <link rel="prev" title="Track Types" href="track_types.html" />
+    <link rel="next" title="Data Preparation" href="data_preparation.html" />
+    <link rel="prev" title="Jupyter Notebooks" href="jupyter.html" />
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-77756807-1"></script>
   <script>
@@ -51,33 +51,95 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="viewer">
-<h1>Viewer<a class="headerlink" href="#viewer" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="adding-views">
-<h2>Adding views<a class="headerlink" href="#adding-views" title="Permalink to this headline">¶</a></h2>
-<p>Views can be added by cloning an existing view:</p>
-<video autoplay loop src="_static/add-views.mp4" /></div>
-<div class="section" id="closing-and-resizing-views">
-<h2>Closing and resizing views<a class="headerlink" href="#closing-and-resizing-views" title="Permalink to this headline">¶</a></h2>
-<p>Views can be closed using the cross on the upper-right corner and resized using
-the handles on the lower left corner.</p>
-<video autoplay loop src="_static/close-and-resize-views.mp4" /></div>
-<div class="section" id="replacing-tracks">
-<h2>Replacing Tracks<a class="headerlink" href="#replacing-tracks" title="Permalink to this headline">¶</a></h2>
-<p>Tracks can be replaced using the track config menu:</p>
-<video autoplay loop src="_static/replace-track.mp4" /></div>
-<div class="section" id="synchronizing-zoom-and-location">
-<h2>Synchronizing zoom and location<a class="headerlink" href="#synchronizing-zoom-and-location" title="Permalink to this headline">¶</a></h2>
-<p>The zoom and location between two views can be synchronized using
-the “Take and lock zoom and location with” option of the view
-config menu:</p>
-<video autoplay loop src="_static/take-and-lock-zoom-and-location.mp4" /></div>
-<div class="section" id="adding-cross-sections">
-<h2>Adding cross sections<a class="headerlink" href="#adding-cross-sections" title="Permalink to this headline">¶</a></h2>
-<div class="figure align-left" id="id1" style="width: 500px">
-<img alt="_images/add-horizontal-cross-section.png" src="_images/add-horizontal-cross-section.png" />
-<p class="caption"><span class="caption-text">How to add a cross section track derived from a heatmap.</span></p>
+  <div class="section" id="python-api">
+<h1>Python API<a class="headerlink" href="#python-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="hgflask">
+<h2>hgflask<a class="headerlink" href="#hgflask" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="hgflask.start">
+<code class="descclassname">hgflask.</code><code class="descname">start</code><span class="sig-paren">(</span><em>tilesets</em>, <em>port=None</em>, <em>filetype_handlers={}</em>, <em>tmp_dir='/tmp/hgflask'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hgflask.html#start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hgflask.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the hgflask server. If a port is not specified, an open port
+will be automatically selected.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tilesets</strong> (<em>object</em>) – <p>The list of tilesets to serve. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">TILESETS</span> <span class="o">=</span> <span class="p">[{</span>
+    <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="s2">&quot;abc&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;filetype&#39;</span><span class="p">:</span> <span class="s2">&quot;grid_1000&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;datatype&#39;</span><span class="p">:</span> <span class="s2">&quot;matrix&quot;</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="p">{</span>
+    <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="s2">&quot;abc1&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;filetype&#39;</span><span class="p">:</span> <span class="s2">&quot;grid_8000&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;datatype&#39;</span><span class="p">:</span> <span class="s2">&quot;matrix&quot;</span><span class="p">,</span>
+<span class="p">}]</span>
+</pre></div>
 </div>
+</li>
+<li><strong>port</strong> (<em>int</em>) – The port to start this server on. If it is None, a port
+will automatically be assigned.</li>
+<li><strong>filetype_handlers</strong> (<em>dict</em>) – A dictionary of handlers for filetypes not supported out of the
+box</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="hgflask-client">
+<h2>hgflask.client<a class="headerlink" href="#hgflask-client" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="hgflask.client.HiGlassView.add_track">
+<code class="descclassname">HiGlassView.</code><code class="descname">add_track</code><span class="sig-paren">(</span><em>tileset_uuid</em>, <em>track_type</em>, <em>position=None</em>, <em>server=None</em>, <em>height=None</em>, <em>width=None</em>, <em>options={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hgflask/client.html#HiGlassView.add_track"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hgflask.client.HiGlassView.add_track" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a track to a position.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tileset_uuid</strong> – The uuid of the track on the server</li>
+<li><strong>view_uid</strong> (<em>string</em>) – The identifier for the view to add this track to</li>
+<li><strong>track_type</strong> (<em>string</em>) – The type of track to add (e.g. “heatmap”, “line”)</li>
+<li><strong>position</strong> (<em>string</em>) – One of ‘top’, ‘bottom’, ‘center’, ‘left’, ‘right’</li>
+<li><strong>height</strong> (<em>int</em>) – The height of the track, if it is a top, bottom or a center track</li>
+<li><strong>width</strong> (<em>int</em>) – The width of the track, if it is a left, right or a center track</li>
+<li><strong>server</strong> (<em>string</em>) – The server storing the data for this track</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="hgflask.client.HiGlassConfig.add_view">
+<code class="descclassname">HiGlassConfig.</code><code class="descname">add_view</code><span class="sig-paren">(</span><em>uid=None</em>, <em>width=12</em>, <em>height=6</em>, <em>x=0</em>, <em>y=0</em>, <em>initialXDomain=None</em>, <em>initialYDomain=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hgflask/client.html#HiGlassConfig.add_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hgflask.client.HiGlassConfig.add_view" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new view</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>uid</strong> (<em>string</em>) – The uid of new view</li>
+<li><strong>width</strong> (<em>int</em>) – The width of this of view on a 12 unit grid</li>
+<li><strong>height</strong> (<em>int</em>) – The height of the this view. The height is proportional
+to the height of all the views present.</li>
+<li><strong>x</strong> (<em>int</em>) – The position of this view on the grid</li>
+<li><strong>y</strong> (<em>int</em>) – The position of this view on the grid</li>
+<li><strong>initialXDoamin</strong> (<em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – The initial x range of the view</li>
+<li><strong>initialYDomain</strong> (<em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – The initial y range of the view</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 
@@ -117,9 +179,9 @@ config menu:</p>
 <li class="toctree-l2"><a class="reference internal" href="jupyter.html#usage">Usage</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="python_api.html">Python API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="python_api.html#hgflask-client">hgflask.client</a></li>
-<li class="toctree-l2"><a class="reference internal" href="python_api.html#hgflask">hgflask</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Python API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hgflask">hgflask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hgflask-client">hgflask.client</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data Preparation</a><ul>
@@ -155,12 +217,12 @@ config menu:</p>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#d-annotations">1D Annotations</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Viewer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#adding-views">Adding views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#closing-and-resizing-views">Closing and resizing views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#replacing-tracks">Replacing Tracks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#adding-cross-sections">Adding cross sections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-views">Adding views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#replacing-tracks">Replacing Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-cross-sections">Adding cross sections</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_server.html">Server</a><ul>
@@ -190,8 +252,8 @@ config menu:</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="track_types.html" title="previous chapter">Track Types</a></li>
-      <li>Next: <a href="higlass_server.html" title="next chapter">Server</a></li>
+      <li>Previous: <a href="jupyter.html" title="previous chapter">Jupyter Notebooks</a></li>
+      <li>Next: <a href="data_preparation.html" title="next chapter">Data Preparation</a></li>
   </ul></li>
 </ul>
 </div>
@@ -217,7 +279,7 @@ config menu:</p>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="_sources/b_viewer.rst.txt"
+      <a href="_sources/python_api.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

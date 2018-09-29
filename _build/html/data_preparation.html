@@ -23,8 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Gene Annotations Tracks" href="gene_annotations.html" />
-    <link rel="prev" title="Viewer" href="b_viewer.html" />
+    <link rel="next" title="Track Types" href="track_types.html" />
+    <link rel="prev" title="Python API" href="python_api.html" />
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-77756807-1"></script>
   <script>
@@ -166,7 +166,7 @@ of the data file contains a header using the (<code class="docutils literal"><sp
 <p>The dataset used in this example contains copy number data that has been log2
 transformed. That is, the copy number given for each bin is the log2 of the
 computed value. This is a problem for HiGlass’s default aggregation method of
-summing adjacent values since <img class="math" src="_images/math/4e9125b9e00c5072d6f3577f7c356a015ed9ca82.png" alt="\log_2 a + \log_2 b \neq \log_2 ab"/>.</p>
+summing adjacent values since <span class="math">\log_2 a + \log_2 b \neq \log_2 ab</span>.</p>
 <p>Using the <code class="docutils literal"><span class="pre">--transform</span> <span class="pre">exp2</span></code> option tells clodius to raise two to the
 power of the provided value before doing the transformation and storing. As
 an added benefit, NaN values become apparent in the resulting because they
@@ -205,6 +205,218 @@ vector datatype and bigwig filetype:</p>
         --filetype bigwig <span class="se">\</span>
         --datatype vector
 </pre></div>
+</div>
+</div>
+<div class="section" id="gene-annotation-tracks">
+<h2>Gene Annotation Tracks<a class="headerlink" href="#gene-annotation-tracks" title="Permalink to this headline">¶</a></h2>
+<p>HiGlass uses a specialized track for displaying gene annotations. It is rougly
+based on UCSC’s refGene files
+(e.g. <a class="reference external" href="http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/">http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/</a>). For any identifiable
+genome assembly the following commands can be run to generate a list of
+gene annotation that can be loaded as a zoomable track in HiGlass.</p>
+<div class="section" id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
+<p>For any assembly, there needs to a refGene file:</p>
+<p><a class="reference external" href="http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/refGene.txt.gz">http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/refGene.txt.gz</a></p>
+<p>And a list of chromosome sizes in the <a class="reference external" href="https://github.com/pkerpedjiev/negspy">negspy</a> python package.</p>
+<p>If there are no available chromosome sizes for this assembly in negspy, adding
+them is simply a matter of downloading the list from UCSC (e.g.
+<a class="reference external" href="http://hgdownload.cse.ucsc.edu/goldenpath/hg19/bigZips/hg19.chrom.sizes">http://hgdownload.cse.ucsc.edu/goldenpath/hg19/bigZips/hg19.chrom.sizes</a>)</p>
+</div>
+<div class="section" id="set-the-assembly-name-and-species-id">
+<h3>Set the assembly name and species ID<a class="headerlink" href="#set-the-assembly-name-and-species-id" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">ASSEMBLY</span><span class="o">=</span>mm9
+<span class="nv">TAXID</span><span class="o">=</span><span class="m">10090</span>
+
+<span class="c1">#ASSEMBLY=hg19</span>
+<span class="c1">#TAXID=9606</span>
+
+<span class="c1">#ASSEMBLY=sacCer3</span>
+<span class="c1">#TAXID=559292</span>
+
+<span class="c1">#ASSEMBLY=dm6</span>
+<span class="c1">#TAXID=7227</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="download-data-from-ucsc-and-ncbi">
+<h3>Download data from UCSC and NCBI<a class="headerlink" href="#download-data-from-ucsc-and-ncbi" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>mkdir -p ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>
+
+wget -N -P ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/ <span class="se">\</span>
+    http://hgdownload.cse.ucsc.edu/goldenPath/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/database/refGene.txt.gz
+
+wget -N -P ~/data/genbank-data/ <span class="se">\</span>
+    ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz
+
+wget -N -P ~/data/genbank-data/ <span class="se">\</span>
+    ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_info.gz
+
+wget -N -P ~/data/genbank-data/ <span class="se">\</span>
+    ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2pubmed.gz
+</pre></div>
+</div>
+</div>
+<div class="section" id="preprocess-data">
+<h3>Preprocess data<a class="headerlink" href="#preprocess-data" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># remove entries to chr6_...</span>
+
+gzcat ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/refGene.txt.gz <span class="se">\</span>
+    <span class="p">|</span> awk -F <span class="s1">$&#39;\t&#39;</span> <span class="s1">&#39;{if (!($3 ~ /_/)) print;}&#39;</span> <span class="se">\</span>
+    <span class="p">|</span> sort -k2 &gt; ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/sorted_refGene
+wc -l ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/sorted_refGene
+
+zgrep ^<span class="si">${</span><span class="nv">TAXID</span><span class="si">}</span> ~/data/genbank-data/gene2refseq.gz <span class="se">\</span>
+     &gt; ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene2refseq
+head ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene2refseq
+
+zgrep ^<span class="si">${</span><span class="nv">TAXID</span><span class="si">}</span> ~/data/genbank-data/gene_info.gz <span class="se">\</span>
+    <span class="p">|</span> sort -k <span class="m">2</span> <span class="se">\</span>
+     &gt; ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene_info
+head ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene_info
+
+zgrep ^<span class="si">${</span><span class="nv">TAXID</span><span class="si">}</span> ~/data/genbank-data/gene2pubmed.gz <span class="se">\</span>
+    &gt; ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene2pubmed
+head ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene2pubmed
+
+<span class="c1"># awk &#39;{print $2}&#39; ~/data/genbank-data/hg19/gene_info \</span>
+<span class="c1"># | xargs python scripts/gene_info_by_id.py \</span>
+<span class="c1"># | tee ~/data/genbank-data/hg19/gene_summaries.tsv</span>
+
+<span class="c1"># output -&gt; geneid \t citation_count</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="processing">
+<h3>Processing<a class="headerlink" href="#processing" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cat ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene2pubmed <span class="se">\</span>
+    <span class="p">|</span> awk <span class="s1">&#39;{print $2}&#39;</span> <span class="se">\</span>
+    <span class="p">|</span> sort <span class="se">\</span>
+    <span class="p">|</span> uniq -c <span class="se">\</span>
+    <span class="p">|</span> awk <span class="s1">&#39;{print $2 &quot;\t&quot; $1}&#39;</span> <span class="se">\</span>
+    <span class="p">|</span> sort <span class="se">\</span>
+    &gt; ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene2pubmed-count
+head ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene2pubmed-count
+
+
+<span class="c1"># output -&gt; geneid \t refseq_id</span>
+
+cat ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene2refseq <span class="se">\</span>
+    <span class="p">|</span> awk -F <span class="s1">$&#39;\t&#39;</span> <span class="s1">&#39;{ split($4,a,&quot;.&quot;); if (a[1] != &quot;-&quot;) print $2 &quot;\t&quot; a[1];}&#39;</span> <span class="se">\</span>
+    <span class="p">|</span> sort <span class="se">\</span>
+    <span class="p">|</span> uniq  <span class="se">\</span>
+    &gt; ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneid_refseqid
+head ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneid_refseqid
+wc -l ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneid_refseqid
+
+
+<span class="c1">#output -&gt; geneid \t refseq_id \t citation_count</span>
+
+join ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneid_refseqid <span class="se">\</span>
+    ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene2pubmed-count  <span class="se">\</span>
+    <span class="p">|</span> sort -k2 <span class="se">\</span>
+    &gt; ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneid_refseqid_count
+
+head ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneid_refseqid_count
+wc -l ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneid_refseqid_count
+
+
+<span class="c1"># output -&gt; geneid \t refseq_id \t chr (5) \t strand(6) \t txStart(7) \t txEnd(8) \t cdsStart(9) \t cdsEnd (10) \t exonCount(11) \t exonStarts(12) \t exonEnds(13)</span>
+
+join -1 <span class="m">2</span> -2 <span class="m">2</span> <span class="se">\</span>
+    ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneid_refseqid_count <span class="se">\</span>
+    ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/sorted_refGene <span class="se">\</span>
+    <span class="p">|</span> awk <span class="s1">&#39;{ print $2 &quot;\t&quot; $1 &quot;\t&quot; $5 &quot;\t&quot; $6 &quot;\t&quot; $7 &quot;\t&quot; $8 &quot;\t&quot; $9 &quot;\t&quot; $10 &quot;\t&quot; $11 &quot;\t&quot; $12 &quot;\t&quot; $13 &quot;\t&quot; $3; }&#39;</span> <span class="se">\</span>
+    <span class="p">|</span> sort -k1   <span class="se">\</span>
+    &gt; ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneid_refGene_count
+
+head ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneid_refGene_count
+wc -l ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneid_refGene_count
+
+<span class="c1"># output -&gt; geneid \t symbol \t gene_type \t name \t citation_count</span>
+
+join -1 <span class="m">2</span> -2 <span class="m">1</span> -t <span class="s1">$&#39;\t&#39;</span> <span class="se">\</span>
+    ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene_info <span class="se">\</span>
+    ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene2pubmed-count <span class="se">\</span>
+    <span class="p">|</span> awk -F <span class="s1">$&#39;\t&#39;</span> <span class="s1">&#39;{print $1 &quot;\t&quot; $3 &quot;\t&quot; $10 &quot;\t&quot; $12 &quot;\t&quot; $16}&#39;</span> <span class="se">\</span>
+    <span class="p">|</span> sort -k1 <span class="se">\</span>
+    &gt; ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene_subinfo_citation_count
+head ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene_subinfo_citation_count
+wc -l ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene_subinfo_citation_count
+
+
+<span class="c1"># 1: chr (chr1)</span>
+<span class="c1"># 2: txStart (52301201) [9]</span>
+<span class="c1"># 3: txEnd (52317145) [10]</span>
+<span class="c1"># 4: geneName (ACVRL1)   [2]</span>
+<span class="c1"># 5: citationCount (123) [16]</span>
+<span class="c1"># 6: strand (+)  [8]</span>
+<span class="c1"># 7: refseqId (NM_000020)</span>
+<span class="c1"># 8: geneId (94) [1]</span>
+<span class="c1"># 9: geneType (protein-coding)</span>
+<span class="c1"># 10: geneDesc (activin A receptor type II-like 1)</span>
+<span class="c1"># 11: cdsStart (52306258)</span>
+<span class="c1"># 12: cdsEnd (52314677)</span>
+<span class="c1"># 14: exonStarts (52301201,52306253,52306882,52307342,52307757,52308222,52309008,52309819,52312768,52314542,)</span>
+<span class="c1"># 15: exonEnds (52301479,52306319,52307134,52307554,52307857,52308369,52309284,52310017,52312899,52317145,)</span>
+
+join -t <span class="s1">$&#39;\t&#39;</span> <span class="se">\</span>
+    ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene_subinfo_citation_count <span class="se">\</span>
+    ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneid_refGene_count <span class="se">\</span>
+    <span class="p">|</span> awk -F <span class="s1">$&#39;\t&#39;</span> <span class="s1">&#39;{print $7 &quot;\t&quot; $9 &quot;\t&quot; $10 &quot;\t&quot; $2 &quot;\t&quot; $16 &quot;\t&quot; $8 &quot;\t&quot; $6 &quot;\t&quot; $1 &quot;\t&quot; $3 &quot;\t&quot; $4 &quot;\t&quot; $11 &quot;\t&quot; $12 &quot;\t&quot; $14 &quot;\t&quot; $15}&#39;</span> <span class="se">\</span>
+    &gt; ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneAnnotations.bed
+head ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneAnnotations.bed
+wc -l ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneAnnotations.bed
+
+python scripts/exonU.py <span class="se">\</span>
+    ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneAnnotations.bed <span class="se">\</span>
+    &gt; ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneAnnotationsExonUnions.bed
+wc -l ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneAnnotationsExonUnions.bed
+</pre></div>
+</div>
+</div>
+<div class="section" id="creating-a-higlass-track">
+<h3>Creating a HiGlass Track<a class="headerlink" href="#creating-a-higlass-track" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>workon hg-server
+<span class="nv">ASSEMBLY</span><span class="o">=</span>mm9
+
+clodius aggregate bedfile <span class="se">\</span>
+    --max-per-tile <span class="m">20</span> --importance-column <span class="m">5</span> <span class="se">\</span>
+    --assembly <span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span> <span class="se">\</span>
+    --output-file ~/data/tiled-data/gene-annotations-<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>.db <span class="se">\</span>
+    --delimiter <span class="s1">$&#39;\t&#39;</span> <span class="se">\</span>
+    ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/geneAnnotationsExonUnions.bed
+
+aws s3 cp ~/data/tiled-data/gene-annotations-<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>.db <span class="se">\</span>
+    s3://pkerp/public/hg-server/data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/
+</pre></div>
+</div>
+</div>
+<div class="section" id="importing-into-higlass">
+<h3>Importing into HiGlass<a class="headerlink" href="#importing-into-higlass" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl -u <span class="sb">`</span>cat ~/.higlass-server-login<span class="sb">`</span>    <span class="se">\</span>
+    -F <span class="s2">&quot;datafile=@/Users/peter/data/tiled-data/gene-annotations-</span><span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span><span class="s2">.db&quot;</span>    <span class="se">\</span>
+    -F <span class="s2">&quot;name=Gene Annotations (</span><span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span><span class="s2">)&quot;</span>   <span class="se">\</span>
+    -F <span class="s1">&#39;filetype=beddb&#39;</span>  <span class="se">\</span>
+    -F <span class="s1">&#39;datatype=gene-annotation&#39;</span>  <span class="se">\</span>
+    -F <span class="s1">&#39;coordSystem=${ASSEMBLY}&#39;</span> <span class="se">\</span>
+    -F <span class="s1">&#39;coordSystem2=${ASSEMBLY}&#39;</span>  <span class="se">\</span>
+    http://higlass.io:80/api/v1/tilesets/
+</pre></div>
+</div>
+</div>
+<div class="section" id="chromosomes">
+<h3>Chromosomes<a class="headerlink" href="#chromosomes" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl -u <span class="sb">`</span>cat ~/.higlass-server-login<span class="sb">`</span>    <span class="se">\</span>
+    -F <span class="s2">&quot;datafile=@/Users/peter/tmp/chromSizes_hg38.tsv&quot;</span>    <span class="se">\</span>
+    -F <span class="s2">&quot;name=Chromosomes (hg38)&quot;</span>   <span class="se">\</span>
+    -F <span class="s1">&#39;filetype=chromsizes-tsv&#39;</span>  <span class="se">\</span>
+    -F <span class="s1">&#39;datatype=chromsizes&#39;</span>  <span class="se">\</span>
+    -F <span class="s2">&quot;coordSystem=</span><span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
+    -F <span class="s2">&quot;coordSystem2=</span><span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="se">\</span>
+    http://higlass.io:80/api/v1/tilesets/
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="hitile-files">
@@ -406,20 +618,29 @@ segment1    <span class="m">10</span>  <span class="m">100</span> <span class="m
 
 
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="atutorial.html">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="atutorial.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atutorial.html#quickly-viewing-a-dataset">Quickly viewing a dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atutorial.html#running-higlass-locally">Running HiGlass locally</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atutorial.html#adding-data">Adding data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atutorial.html#viewing-data-in-the-client">Viewing data in the client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#quickly-viewing-a-dataset">Quickly viewing a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#running-higlass-locally">Running HiGlass locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#adding-data">Adding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#viewing-data-in-the-client">Viewing data in the client</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-views">Adding views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#replacing-tracks">Replacing Tracks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
-<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-cross-sections">Adding cross sections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developer.html#embedding-higlass-in-web-page">Embedding HiGlass in web page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer.html#javascript-api">Javascript API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer.html#viewconfs">Viewconfs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer.html#docker">Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="jupyter.html">Jupyter Notebooks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jupyter.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jupyter.html#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="python_api.html">Python API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="python_api.html#hgflask-client">hgflask.client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python_api.html#hgflask">hgflask</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data Preparation</a><ul>
@@ -427,38 +648,12 @@ segment1    <span class="m">10</span>  <span class="m">100</span> <span class="m
 <li class="toctree-l2"><a class="reference internal" href="#bedpe-like-files">Bedpe-like Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bedgraph-files">BedGraph files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bigwig-files">bigWig files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gene-annotation-tracks">Gene Annotation Tracks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hitile-files">Hitile files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cooler-files">Cooler files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#multivec-files">Multivec Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epilogos-data-multivec">Epilogos Data (multivec)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#other-data-multivec">Other Data (multivec)</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="gene_annotations.html">Gene Annotations Tracks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#creating-the-track">Creating the track</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#importing-into-higlass">Importing into HiGlass</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="higlass_developer.html">Developer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#embedding-higlass-in-web-page">Embedding HiGlass in web page</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#public-api">Public API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#viewconfs">Viewconfs</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="higlass_docker.html">Docker</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_docker.html#dropping-individual-cache-entries">Dropping individual cache entries</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="higlass_jupyter.html">Jupyter Notebooks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_jupyter.html#installation">Installation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="higlass_server.html">Server</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#configuration">Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#development">Development</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#testing">Testing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#api">API</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="track_types.html">Track Types</a><ul>
@@ -472,11 +667,28 @@ segment1    <span class="m">10</span>  <span class="m">100</span> <span class="m
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#line">Line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#bar">Bar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#point">Point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#id5">1D Heatmap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#chromosome-labels">Chromosome Labels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#chromosome-grid">Chromosome Grid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#stacked-bars">Stacked Bars</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#multiple-lines">Multiple Lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#multiple-bar-charts">Multiple Bar Charts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#d-annotations">1D Annotations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-views">Adding views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#replacing-tracks">Replacing Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-cross-sections">Adding cross sections</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_server.html">Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#development">Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#api">API</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>
@@ -499,8 +711,8 @@ segment1    <span class="m">10</span>  <span class="m">100</span> <span class="m
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="b_viewer.html" title="previous chapter">Viewer</a></li>
-      <li>Next: <a href="gene_annotations.html" title="next chapter">Gene Annotations Tracks</a></li>
+      <li>Previous: <a href="python_api.html" title="previous chapter">Python API</a></li>
+      <li>Next: <a href="track_types.html" title="next chapter">Track Types</a></li>
   </ul></li>
 </ul>
 </div>
