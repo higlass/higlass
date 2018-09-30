@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Viewer &#8212; HiGlass v1.0 documentation</title>
+    <title>Javascript API &#8212; HiGlass v1.0 documentation</title>
     <link rel="stylesheet" href="_static/higlass.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Server" href="higlass_server.html" />
-    <link rel="prev" title="Track Types" href="track_types.html" />
+    <link rel="next" title="Data Preparation" href="data_preparation.html" />
+    <link rel="prev" title="Python API" href="python_api.html" />
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-77756807-1"></script>
   <script>
@@ -51,34 +51,55 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="viewer">
-<h1>Viewer<a class="headerlink" href="#viewer" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="adding-views">
-<h2>Adding views<a class="headerlink" href="#adding-views" title="Permalink to this headline">¶</a></h2>
-<p>Views can be added by cloning an existing view:</p>
-<video autoplay loop src="_static/add-views.mp4" /></div>
-<div class="section" id="closing-and-resizing-views">
-<h2>Closing and resizing views<a class="headerlink" href="#closing-and-resizing-views" title="Permalink to this headline">¶</a></h2>
-<p>Views can be closed using the cross on the upper-right corner and resized using
-the handles on the lower left corner.</p>
-<video autoplay loop src="_static/close-and-resize-views.mp4" /></div>
-<div class="section" id="replacing-tracks">
-<h2>Replacing Tracks<a class="headerlink" href="#replacing-tracks" title="Permalink to this headline">¶</a></h2>
-<p>Tracks can be replaced using the track config menu:</p>
-<video autoplay loop src="_static/replace-track.mp4" /></div>
-<div class="section" id="synchronizing-zoom-and-location">
-<h2>Synchronizing zoom and location<a class="headerlink" href="#synchronizing-zoom-and-location" title="Permalink to this headline">¶</a></h2>
-<p>The zoom and location between two views can be synchronized using
-the “Take and lock zoom and location with” option of the view
-config menu:</p>
-<video autoplay loop src="_static/take-and-lock-zoom-and-location.mp4" /></div>
-<div class="section" id="adding-cross-sections">
-<h2>Adding cross sections<a class="headerlink" href="#adding-cross-sections" title="Permalink to this headline">¶</a></h2>
-<div class="figure align-left" id="id1" style="width: 500px">
-<img alt="_images/add-horizontal-cross-section.png" src="_images/add-horizontal-cross-section.png" />
-<p class="caption"><span class="caption-text">How to add a cross section track derived from a heatmap.</span></p>
-</div>
-</div>
+  <div class="section" id="javascript-api">
+<h1>Javascript API<a class="headerlink" href="#javascript-api" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="reload">
+<code class="descname">reload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#reload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reload all of the tiles</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="setViewConfig">
+<code class="descname">setViewConfig</code><span class="sig-paren">(</span><em>newViewConfig:</em><span class="sig-paren">)</span><a class="headerlink" href="#setViewConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a new view config to define the layout and data
+of this component</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>newViewConfig:</strong> (<em>obj</em>) – A JSON object that defines the state of the HiGlassComponent</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>:type newViewConfig:: obj
+:returns: <strong>Promise</strong> – dataLoaded: A promise that resolves when .   all of the data for this viewconfig is loaded</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="shareViewConfigAsLink">
+<code class="descname">shareViewConfigAsLink</code><span class="sig-paren">(</span><em>url</em><span class="sig-paren">)</span><a class="headerlink" href="#shareViewConfigAsLink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve a sharable link for the current view config</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>url</strong> (<em>string</em>) – Custom URL that should point to a higlass server’s view config endpoint, i.e., <cite>http://my-higlass-server.com/api/v1/viewconfs/</cite>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>Object</strong> – Promise resolving to the link ID and URL.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>h</p>
 </div>
 
 
@@ -122,7 +143,7 @@ config menu:</p>
 <li class="toctree-l2"><a class="reference internal" href="python_api.html#hgflask-client">hgflask.client</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="javascript_api.html">Javascript API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Javascript API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data Preparation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bed-files">Bed Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedpe-like-files">Bedpe-like Files</a></li>
@@ -156,12 +177,12 @@ config menu:</p>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#d-annotations">1D Annotations</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Viewer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#adding-views">Adding views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#closing-and-resizing-views">Closing and resizing views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#replacing-tracks">Replacing Tracks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#adding-cross-sections">Adding cross sections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-views">Adding views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#replacing-tracks">Replacing Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-cross-sections">Adding cross sections</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_server.html">Server</a><ul>
@@ -191,8 +212,8 @@ config menu:</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="track_types.html" title="previous chapter">Track Types</a></li>
-      <li>Next: <a href="higlass_server.html" title="next chapter">Server</a></li>
+      <li>Previous: <a href="python_api.html" title="previous chapter">Python API</a></li>
+      <li>Next: <a href="data_preparation.html" title="next chapter">Data Preparation</a></li>
   </ul></li>
 </ul>
 </div>
@@ -218,7 +239,7 @@ config menu:</p>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="_sources/b_viewer.rst.txt"
+      <a href="_sources/javascript_api.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

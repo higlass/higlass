@@ -167,6 +167,7 @@ crucial are listed below.
     developer 
     jupyter
     python_api
+    javascript_api
     data_preparation
     track_types
     *
