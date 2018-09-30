@@ -59,22 +59,17 @@ const api = function api(context) {
       });
     },
 
+    /**
+     * Set a new view config to define the layout and data
+     * of this component
+     *
+     * @param {obj} newViewConfig: A JSON object that defines 
+     *    the state of the HiGlassComponent
+     *
+     * @return {Promise} dataLoaded: A promise that resolves when 
+     *.   all of the data for this viewconfig is loaded
+     */
     setViewConfig(newViewConfig) {
-      /**
-       * Set a new view config to define the layout and data
-       * of this component
-       *
-       * Parameters
-       * ----------
-       *  newViewConfig: {}
-       *    A JSON object that defines the state of the HiGlassComponent
-       *
-       * Returns
-       * -------
-       *  dataLoaded: Promise
-       *    A promise that resolves when all of the data for this viewconfig
-       *    is loaded
-       */
       const viewsByUid = self.processViewConfig(newViewConfig);
       const p = new Promise((resolve) => {
         this.requestsInFlight = 0;
@@ -159,24 +154,18 @@ const api = function api(context) {
       setDarkTheme(!!darkTheme);
     },
 
+    /**
+     * Zoom so that the entire dataset is visible
+     *
+     * @param {string} viewUid: The view uid of the view to zoom
+     */
     zoomToDataExtent(viewUid) {
-      /**
-       * Zoom so that the entire dataset is visible
-       *
-       * Parameters
-       * ----------
-       *  viewUid: string
-       *    The view uid to zoom to extent to
-       *
-       * Returns
-       * -------
-       *  nothing
-       */
       self.handleZoomToData(viewUid);
     },
 
     /**
      * Reset the viewport to the initial x and y domain
+     * 
      * @param  {number} viewId - ID of the view for which the viewport should be
      *  reset.
      */
