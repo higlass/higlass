@@ -27,3 +27,4 @@ dist
 report.html
 docs/_build
 package-lock.json
+webpack-stats.json
