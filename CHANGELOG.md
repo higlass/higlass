@@ -1,5 +1,9 @@
 ## v1.2.4
 
+- Fix #322
+
+## v1.2.3
+
 - Fixed line inversion issue (#268)
 - Fixed fetched area size mismatch issue on mouseover
 - Added mouseover text to UI elements
@@ -9,7 +13,7 @@
 - Sort tilesets alphabetically (#256)
 - Fixed zoom linking issues (#251, #76)
 
-## v1.2.1, v1.2.2, and v1.2.1
+## v1.2.1 and v1.2.2
 
 - Accidental releases. Please ignore.
 

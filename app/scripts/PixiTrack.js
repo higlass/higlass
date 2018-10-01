@@ -515,10 +515,11 @@ class PixiTrack extends Track {
     rectBackground.setAttribute('width', `${this.dimensions[0]}`);
     rectBackground.setAttribute('height', `${this.dimensions[1]}`);
 
-    if (this.options && this.options.backgroundColor)
+    if (this.options && this.options.backgroundColor) {
       rectBackground.setAttribute('fill', this.options.backgroundColor);
-    else
-      rectBackground.setAttribute('fill', 'transparent');
+    } else {
+      rectBackground.setAttribute('fill-opacity', '0');
+    }
 
     const gClipped = document.createElement('g');
     gClipped.setAttribute('class', 'g-clipped');
