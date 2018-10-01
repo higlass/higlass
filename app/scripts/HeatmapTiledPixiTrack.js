@@ -806,7 +806,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * @param {int} width: The width of the rectangle (pixels)
    * @param {int} height: The height of the rectangle (pixels)
    *
-   * @returns {numjs 2x2 array} The raw data visible in this region
+   * @returns {Array} A numjs array containing the data in the visible region
    *
    */
   getVisibleRectangleData(x, y, width, height) {
@@ -894,7 +894,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * Convert the raw tile data to a rendered array of values which can be represented as a sprite.
    *
    * @param tile: The data structure containing all the tile information. Relevant to
-   *              this function are tile.tileData = {'dense': [...], ...}
+   *              this function are tile.tileData = \{'dense': [...], ...\}
    *              and tile.graphics
    */
   initTile(tile) {

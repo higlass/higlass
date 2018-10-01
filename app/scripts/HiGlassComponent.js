@@ -626,16 +626,17 @@ class HiGlassComponent extends React.Component {
     });
   }
 
+  /**
+   * We want to lock the zoom of this view to the zoom of another view.
+   *
+   * First we pick which other view we want to lock to.
+   *
+   * The we calculate the current zoom offset and center offset. The differences
+   * between the center of the two views will always remain the same, as will the
+   * different between the zoom levels.
+   */
   handleLockLocation(uid) {
-    /**
-       * We want to lock the zoom of this view to the zoom of another view.
-       *
-       * First we pick which other view we want to lock to.
-       *
-       * The we calculate the current zoom offset and center offset. The differences
-       * between the center of the two views will always remain the same, as will the
-       * different between the zoom levels.
-       */
+
     // create a view chooser and remove the config view menu
     this.setState({
       chooseViewHandler: uid2 => this.handleLocationLockChosen(uid, uid2),
@@ -643,7 +644,7 @@ class HiGlassComponent extends React.Component {
     });
   }
 
-  /*
+  /**
    * Iteratate over all of the views in this component
    */
   iterateOverViews() {
@@ -792,15 +793,15 @@ class HiGlassComponent extends React.Component {
     });
   }
 
-  addDraggingChangedListener(viewUid, listenerUid, eventHandler) {
-    /**
-       * Add a listener that will be called every time the view is updated.
-       *
-       * @param viewUid: The uid of the view being observed
-       * @param listenerUid: The uid of the listener
-       * @param eventHandler: The handler to be called when the scales change
-       *    Event handler is called with parameters (xScale, yScale)
-       */
+  /**
+   * Add a listener that will be called every time the view is updated.
+   *
+   * @param viewUid: The uid of the view being observed
+   * @param listenerUid: The uid of the listener
+   * @param eventHandler: The handler to be called when the scales change
+   *    Event handler is called with parameters (xScale, yScale)
+   */
+  addDraggingChangedListener(viewUid, listenerUid, eventHandler) {  
     if (!this.draggingChangedListeners.hasOwnProperty(viewUid)) {
       this.draggingChangedListeners[viewUid] = {};
     }
@@ -811,13 +812,14 @@ class HiGlassComponent extends React.Component {
     eventHandler(false);
   }
 
+  /**
+   * Remove a scale change event listener
+   *
+   * @param viewUid: The view that it's listening on.
+   * @param listenerUid: The uid of the listener itself.
+   */
   removeDraggingChangedListener(viewUid, listenerUid) {
-    /**
-       * Remove a scale change event listener
-       *
-       * @param viewUid: The view that it's listening on.
-       * @param listenerUid: The uid of the listener itself.
-       */
+    
     if (this.draggingChangedListeners.hasOwnProperty(viewUid)) {
       const listeners = this.draggingChangedListeners[viewUid];
 
@@ -904,14 +906,15 @@ class HiGlassComponent extends React.Component {
     download('export.svg', this.createSVGString());
   }
 
+  /*
+   * The scales of some view have changed (presumably in response to zooming).
+   *
+   * Mark the new scales and update any locked views.
+   *
+   * @param uid: The view of whom the scales have changed.
+   */
   handleScalesChanged(uid, xScale, yScale, notify = true) {
-    /*
-       * The scales of some view have changed (presumably in response to zooming).
-       *
-       * Mark the new scales and update any locked views.
-       *
-       * @param uid: The view of whom the scales have changed.
-       */
+    
     this.xScales[uid] = xScale;
     this.yScales[uid] = yScale;
 
@@ -1045,12 +1048,12 @@ class HiGlassComponent extends React.Component {
     });
   }
 
-  handleZoomToData(viewUid) {
-    /**
-     * Adjust the zoom level so that all of the data is visible
-     *
-     * @param viewUid: The view uid for which to adjust the zoom level
-     */
+  /**
+   * Adjust the zoom level so that all of the data is visible
+   *
+   * @param viewUid: The view uid for which to adjust the zoom level
+   */
+  handleZoomToData(viewUid) {  
     if (viewUid && !this.tiledPlots[viewUid]) {
       throw new Error(
         `View uid ${viewUid} does not exist in the current viewConfig`
@@ -1085,27 +1088,25 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  /**
+   * We want to yank some attributes from another view.
+   *
+   * This will create a view selection overlay and then call the selected
+   * provided function.
+   */
   handleYankFunction(uid, yankFunction) {
-    /**
-         * We want to yank some attributes from another view.
-         *
-         * This will create a view selection overlay and then call the selected
-         * provided function.
-         */
-
     this.setState({
       chooseViewHandler: uid2 => yankFunction(uid, uid2),
       mouseOverOverlayUid: uid,
     });
   }
 
+  /**
+   * We want to unlock uid from the zoom group that it's in.
+   *
+   * @param uid: The uid of a view.
+   */
   handleUnlock(uid, lockGroups) {
-    /**
-       * We want to unlock uid from the zoom group that it's in.
-       *
-       * @param uid: The uid of a view.
-       */
-
     // if this function is being called, lockGroup has to exist
     const lockGroup = lockGroups[uid];
     const lockGroupKeys = dictKeys(lockGroup);
@@ -1136,14 +1137,14 @@ class HiGlassComponent extends React.Component {
     return scalesCenterAndK(this.xScales[uid], this.yScales[uid]);
   }
 
-  addLock(uid1, uid2, lockGroups, lockData) {
-    /*
-     * :param uid1 (string): The uid of the first element to be locked (e.g. viewUid)
-     * :param uid2 (string): The uid of the second element to be locked (e.g. viewUid)
-     * :param lockGroups (dict): The set of locks where to store this lock (e.g. this.locationLocks)
-     * :parma lockData (function): A function that takes two uids and calculates some extra data
-     * to store with this lock data (e.g. scalesCenterAndK(this.xScales[uid1], this.yScales[uid1]))
-     */
+  /*
+   * :param uid1 (string): The uid of the first element to be locked (e.g. viewUid)
+   * :param uid2 (string): The uid of the second element to be locked (e.g. viewUid)
+   * :param lockGroups (dict): The set of locks where to store this lock (e.g. this.locationLocks)
+   * :parma lockData (function): A function that takes two uids and calculates some extra data
+   * to store with this lock data (e.g. scalesCenterAndK(this.xScales[uid1], this.yScales[uid1]))
+   */
+  addLock(uid1, uid2, lockGroups, lockData) {  
     let group1Members = [];
     let group2Members = [];
 
@@ -1182,12 +1183,13 @@ class HiGlassComponent extends React.Component {
     allMembers.forEach((m) => { lockGroups[m[0]] = groupDict; });
   }
 
+  /* Views uid1 and uid2 need to be locked so that they always maintain the current
+   * zoom and translation difference.
+   * @param uid1: The view that the lock was called from
+   * @param uid2: The view that the lock was called on (the view that was selected)
+   */
   handleLocationLockChosen(uid1, uid2) {
-    /* Views uid1 and uid2 need to be locked so that they always maintain the current
-         * zoom and translation difference.
-         * @param uid1: The view that the lock was called from
-         * @param uid2: The view that the lock was called on (the view that was selected)
-         */
+
     if (uid1 == uid2) {
       this.setState({
         chooseViewHandler: null,
@@ -1204,12 +1206,12 @@ class HiGlassComponent extends React.Component {
     });
   }
 
+  /* Views uid1 and uid2 need to be locked so that they always maintain the current
+   * zoom and translation difference.
+   * @param uid1: The view that the lock was called from
+   * @param uid2: The view that the lock was called on (the view that was selected)
+   */
   handleZoomLockChosen(uid1, uid2) {
-    /* Views uid1 and uid2 need to be locked so that they always maintain the current
-         * zoom and translation difference.
-         * @param uid1: The view that the lock was called from
-         * @param uid2: The view that the lock was called on (the view that was selected)
-         */
 
     if (uid1 === uid2) {
       this.setState({
@@ -1227,20 +1229,21 @@ class HiGlassComponent extends React.Component {
     });
   }
 
+  /**
+   * We want to project the viewport of fromView onto toTrack of toView.
+   *
+   * @param fromView: The uid of the view that we want to project
+   * @param toView: The uid of the view that we want to project to
+   * @param toTrack: The track we want to project to
+   *
+   * Returns
+   * -------
+   *
+   *  newTrackUid: string
+   *      The uid of the newly created viewport projection track
+   */
   handleViewportProjected(fromView, toView, toTrack) {
-    /**
-     * We want to project the viewport of fromView onto toTrack of toView.
-     *
-     * @param fromView: The uid of the view that we want to project
-     * @param toView: The uid of the view that we want to project to
-     * @param toTrack: The track we want to project to
-     *
-     * Returns
-     * -------
-     *
-     *  newTrackUid: string
-     *      The uid of the newly created viewport projection track
-     */
+
     let newTrackUid = null;
 
     if (fromView == toView) {
@@ -1274,10 +1277,10 @@ class HiGlassComponent extends React.Component {
     return newTrackUid;
   }
 
+  /**
+   * Uid1 is copying the center of uid2
+   */
   handleLocationYanked(uid1, uid2) {
-    /**
-         * Uid1 is copying the center of uid2
-         */
     // where we're taking the zoom from
     const sourceXScale = this.xScales[uid2];
     const sourceYScale = this.yScales[uid2];
@@ -1299,10 +1302,11 @@ class HiGlassComponent extends React.Component {
     });
   }
 
+  /**
+   * Uid1 yanked the zoom of uid2, now  make sure that they're synchronized.
+   */
   handleZoomYanked(uid1, uid2) {
-    /**
-         * Uid1 yanked the zoom of uid2, now  make sure that they're synchronized.
-         */
+
 
     // where we're taking the zoom from
     const sourceXScale = this.xScales[uid2];
@@ -1324,13 +1328,14 @@ class HiGlassComponent extends React.Component {
   }
 
 
+  /**
+   * The user has chosen a position for the new track. The actual
+   * track selection will be handled by TiledPlot
+   *
+   * We just need to close the menu here.
+   */
   handleTrackPositionChosen(viewUid, position) {
-    /**
-       * The user has chosen a position for the new track. The actual
-       * track selection will be handled by TiledPlot
-       *
-       * We just need to close the menu here.
-       */
+
     this.setState({
       addTrackPosition: position,
       addTrackPositionView: viewUid,
@@ -1402,11 +1407,12 @@ class HiGlassComponent extends React.Component {
     });
   }
 
+  /**
+   * Notify the children that the layout has changed so that they
+   * know to redraw themselves
+   */
   handleLayoutChange(layout, layouts) {
-    /**
-       * Notify the children that the layout has changed so that they
-       * know to redraw themselves
-       */
+
 
     if (!this.element) { return; }
 
@@ -1430,12 +1436,13 @@ class HiGlassComponent extends React.Component {
     this.refreshView(LONG_DRAG_TIMEOUT);
   }
 
+  /**
+   * Maybe somebody started dragging again before the previous drag
+   * timeout fired. In that case, we need to clear this timeout so
+   * that it doesn't override a previously set one.
+   */
   clearDragTimeout() {
-    /**
-       * Maybe somebody started dragging again before the previous drag
-       * timeout fired. In that case, we need to clear this timeout so
-       * that it doesn't override a previously set one.
-       */
+
     if (this.dragTimeout) {
       clearTimeout(this.dragTimeout);
       this.dragTimeout = null;
@@ -1551,15 +1558,15 @@ class HiGlassComponent extends React.Component {
     return tracksDict;
   }
 
-
+  /**
+   * Get the dimensions for this view, counting just the tracks
+   * that are present in it
+   *
+   * @param view: A view containing a list of tracks as a member.
+   * @return: A width and a height pair (e.g. [width, height])
+   */
   calculateViewDimensions(view) {
-    /**
-       * Get the dimensions for this view, counting just the tracks
-       * that are present in it
-       *
-       * @param view: A view containing a list of tracks as a member.
-       * @return: A width and a height pair (e.g. [width, height])
-       */
+    
     const defaultHorizontalHeight = 20;
     const defaultVerticalWidth = 0;
     const defaultCenterHeight = 100;
@@ -1771,12 +1778,13 @@ class HiGlassComponent extends React.Component {
     return layout;
   }
 
+  /**
+   * Remove all the tracks from a view
+   *
+   * @param {viewUid} Thie view's identifier
+   */
   handleClearView(viewUid) {
-    /**
-     * Remove all the tracks from a view
-     *
-     * @param {viewUid} Thie view's identifier
-     */
+    
     const { views } = this.state;
 
     views[viewUid].tracks.top = [];
@@ -1791,13 +1799,14 @@ class HiGlassComponent extends React.Component {
     });
   }
 
+  /**
+   * A view needs to be closed. Remove it from from the viewConfig and then clean
+   * up all of its connections (zoom links, workers, etc...)
+   *
+   * @param {uid} This view's identifier
+   */
   handleCloseView(uid) {
-    /**
-       * A view needs to be closed. Remove it from from the viewConfig and then clean
-       * up all of its connections (zoom links, workers, etc...)
-       *
-       * @param {uid} This view's identifier
-       */
+    
 
     // check if this is the only view
     // if it is, don't close it (display an error message)
@@ -1817,16 +1826,17 @@ class HiGlassComponent extends React.Component {
     });
   }
 
+  /**
+   * We're adding a new dataset to an existing track
+   *
+   * @param newTrack: The new track to be added.
+   * @param position: Where the new series should be placed.
+   *  (This could also be inferred from the hostTrack, but since
+   *  we already have it, we might as well use it)
+   * @param hostTrack: The track that will host the new series.
+   */
   handleSeriesAdded(viewId, newTrack, position, hostTrack) {
-    /**
-         * We're adding a new dataset to an existing track
-         *
-         * @param newTrack: The new track to be added.
-         * @param position: Where the new series should be placed.
-         *  (This could also be inferred from the hostTrack, but since
-         *  we already have it, we might as well use it)
-         * @param hostTrack: The track that will host the new series.
-         */
+    
 
     // is the host track a combined track?
     // if so, easy, just append the new track to its contents
@@ -1867,33 +1877,34 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  /**
+   * Add multiple new tracks (likely from the AddTrackModal dialog)
+   *
+   * @param trackInfo: A JSON object that can be used as a track
+   *                   definition
+   * @param position: The position the track is being added to
+   * @param host: If this track is being added to another track
+   */
   handleTracksAdded(viewId, newTracks, position, host) {
-    /**
-         * Add multiple new tracks (likely from the AddTrackModal dialog)
-         *
-         * @param trackInfo: A JSON object that can be used as a track
-         *                   definition
-         * @param position: The position the track is being added to
-         * @param host: If this track is being added to another track
-         */
+    
     this.storeTrackSizes(viewId);
 
     for (const newTrack of newTracks) { this.handleTrackAdded(viewId, newTrack, position, host); }
   }
 
+  /**
+   * Change the type of a track. For example, convert a line to a bar track.
+   *
+   * Parameters
+   * ----------
+   *  viewUid: string
+   *    The view containing the track to be changed
+   *  trackUid: string
+   *    The uid identifying the existin track
+   *  newType: string
+   *    The type to switch this track to.
+   */
   handleChangeTrackType(viewUid, trackUid, newType) {
-    /**
-     * Change the type of a track. For example, convert a line to a bar track.
-     *
-     * Parameters
-     * ----------
-     *  viewUid: string
-     *    The view containing the track to be changed
-     *  trackUid: string
-     *    The uid identifying the existin track
-     *  newType: string
-     *    The type to switch this track to.
-     */
     const view = this.state.views[viewUid];
     const trackConfig = getTrackByUid(view.tracks, trackUid);
 
@@ -1906,20 +1917,20 @@ class HiGlassComponent extends React.Component {
     });
   }
 
+  /**
+   * Change the data source for a track. E.g. when adding or
+   * removing a divisor.
+   *
+   * Parameters
+   * ----------
+   *  viewUid: string
+   *    The view containing the track to be changed
+   *  trackUid: string
+   *    The uid identifying the existin track
+   *  newData: object
+   *    The new data source section
+   */
   handleChangeTrackData(viewUid, trackUid, newData) {
-    /**
-     * Change the data source for a track. E.g. when adding or
-     * removing a divisor.
-     *
-     * Parameters
-     * ----------
-     *  viewUid: string
-     *    The view containing the track to be changed
-     *  trackUid: string
-     *    The uid identifying the existin track
-     *  newData: object
-     *    The new data source section
-     */
     const view = this.state.views[viewUid];
     const trackConfig = getTrackByUid(view.tracks, trackUid);
 
@@ -1940,11 +1951,8 @@ class HiGlassComponent extends React.Component {
    * @param position: The position the track is being added to
    * @param host: If this track is being added to another track
    *
-   * Returns
-   * -------
-   *
-   *  { uid: "", width: }:
-   *      The trackConfig object describing this track.
+   * @returns {Object}: A trackConfig (\{ uid: "", width: x \}) 
+   *  describing this track
    */
   handleTrackAdded(viewId, newTrack, position, host = null) {
     this.addDefaultOptions(newTrack);
@@ -2030,24 +2038,25 @@ class HiGlassComponent extends React.Component {
     return newTrack;
   }
 
+  /**
+   * Go through each track and store its size in the viewconf.
+   *
+   * This is so that sizes don't get lost when the view is unbounded
+   * and new tracks are added.
+   *
+   * Parameters
+   * ----------
+   *
+   *  viewId : string
+   *      The id of the view whose tracks we're measuring
+   *
+   * Returns
+   * -------
+   *
+   *  Nothing
+   */
   storeTrackSizes(viewId) {
-    /**
-         * Go through each track and store its size in the viewconf.
-         *
-         * This is so that sizes don't get lost when the view is unbounded
-         * and new tracks are added.
-         *
-         * Parameters
-         * ----------
-         *
-         *  viewId : string
-         *      The id of the view whose tracks we're measuring
-         *
-         * Returns
-         * -------
-         *
-         *  Nothing
-         */
+    
     const looseTracks = positionedTracksToAllTracks(this.state.views[viewId].tracks);
 
     for (const track of looseTracks) {
@@ -2061,20 +2070,20 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  /*
+   * Adjust the layout to match the size of the contained tracks. If tracks
+   * are added, the layout size needs to expand. If they're removed, it needs
+   * to contract.
+   *
+   * This function should be called from handleTrackAdded and handleCloseTrack.
+   *
+   * Parameters
+   * ----------
+   *
+   *  view : {...}
+   *      The definition from the viewconf
+   */
   adjustLayoutToTrackSizes(view) {
-    /*
-         * Adjust the layout to match the size of the contained tracks. If tracks
-         * are added, the layout size needs to expand. If they're removed, it needs
-         * to contract.
-         *
-         * This function should be called from handleTrackAdded and handleCloseTrack.
-         *
-         * Parameters
-         * ----------
-         *
-         *  view : {...}
-         *      The definition from the viewconf
-         */
     // if the view is too short, expand the view so that it fits this track
     if (!view.layout) { return; }
 
@@ -2218,14 +2227,14 @@ class HiGlassComponent extends React.Component {
     });
   }
 
-  addCallbacks(viewUid, track) {
-    /**
-       * Add callbacks for functions that need them
-       *
-       * Done in place.
-       *
-       * @param track: A view with tracks.
-       */
+  /**
+   * Add callbacks for functions that need them
+   *
+   * Done in place.
+   *
+   * @param track: A view with tracks.
+   */
+  addCallbacks(viewUid, track) {  
     if (track.type == 'viewport-projection-center'
           || track.type == 'viewport-projection-horizontal'
           || track.type == 'viewport-projection-vertical'
@@ -2470,10 +2479,11 @@ class HiGlassComponent extends React.Component {
     this.setState({ views });
   }
 
+  /**
+   * Check if we can place a view at this position
+   */
   viewPositionAvailable(pX, pY, w, h) {
-    /**
-       * Check if we can place a view at this position
-       */
+
     const pEndX = pX + w;
     const pEndY = pY + h;
 
@@ -2504,12 +2514,11 @@ class HiGlassComponent extends React.Component {
     return true;
   }
 
+  /**
+   * User clicked on the "Add View" button. We'll duplicate the last
+   * view.
+   */
   handleAddView(view) {
-    /**
-       * User clicked on the "Add View" button. We'll duplicate the last
-       * view.
-       */
-
     const views = dictValues(this.state.views);
     const lastView = view;
 
@@ -2782,16 +2791,17 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  /**
+   * Determine whether a track is valid and can be displayed.
+   *
+   * Tracks can be invalid due to inconsistent input such as
+   * referral to views that don't exist
+   *
+   * @param track (object): A track definition
+   * @param viewUidsPresent (Set): The view uids which are available
+   */
   isTrackValid(track, viewUidsPresent) {
-    /**
-         * Determine whether a track is valid and can be displayed.
-         *
-         * Tracks can be invalid due to inconsistent input such as
-         * referral to views that don't exist
-         *
-         * @param track (object): A track definition
-         * @param viewUidsPresent (Set): The view uids which are available
-         */
+    
 
     if (track.type === 'viewport-projection-center') {
       if (!viewUidsPresent.has(track.fromViewUid)) {
@@ -2802,11 +2812,11 @@ class HiGlassComponent extends React.Component {
     return true;
   }
 
+  /**
+   * Remove tracks which can no longer be shown (possibly because the views they
+   * refer to no longer exist
+   */
   removeInvalidTracks(viewsByUid) {
-    /**
-         * Remove tracks which can no longer be shown (possibly because the views they
-         * refer to no longer exist
-         */
     const viewUidsSet = new Set(dictKeys(viewsByUid));
 
     for (const v of dictValues(viewsByUid)) {
