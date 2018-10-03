@@ -20,7 +20,7 @@ const launch = (element, config, options) => {
    * @return  {Object} The instance's public API
    */
   let component;
-  
+
   ReactDOM.render(
     <HiGlassComponent
       ref={(c) => { component = c; }}
@@ -39,10 +39,17 @@ const launch = (element, config, options) => {
  *   associated to.
  * @param  {Object|String}  viewConfig  Dictionary or URL of a view config.
  * @param  {Object}  options  Dictionary of public options.
- * @param  {Function}  callback  Callback function for the API.
+ * @example
+ *
+ * const hgv = hglib.viewer(
+ *  document.getElementById('development-demo'),
+ *  testViewConfig,
+ *  { bounded: true },
+ * );
+ *
  * @return  {Object}  Newly created HiGlass component.
  */
-export const createHgComponent = (element, viewConfig, options, callback) => {
+export const viewer = (element, viewConfig, options) => {
   /**
    * Available options:
    *
@@ -50,16 +57,6 @@ export const createHgComponent = (element, viewConfig, options, callback) => {
    *      Fit the container to the bounds of the element
    */
   const hg = launch(element, viewConfig, options);
-  try {
-    callback(hg.api);
-    console.warn(
-      'Deprecated use of `createHgComponent`. The api is directly returned ' +
-      'now.'
-    );
-  } catch (e) { /* Nothing */ }
+
   return hg.api;
 };
-
-export const viewer = createHgComponent;
-
-export default createHgComponent;
