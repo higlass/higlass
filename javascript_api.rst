@@ -7,4 +7,3 @@ Javascript API
 
 .. js:autofunction:: shareViewConfigAsLink
 
-h

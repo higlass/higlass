@@ -143,3 +143,74 @@ axis labels:
     higlass_jupyter.HiGlassDisplay(viewconf=hgc.to_json_string())
 
 .. image:: img/eggholder-function.png
+
+Displaying Many Points
+""""""""""""""""""""""
+
+To display, for example, a list of 1 million points in a HiGlass window inside of a Jupyter notebook.
+First we need to import the custom track type for displaying labelled points:
+
+.. code-block:: javascript
+
+    %%javascript
+
+    require(["https://unpkg.com/higlass-labelled-points-track@0.1.7/dist/higlass-labelled-points-track"], 
+        function(hglib) {
+
+    });
+
+Then we have to set up a data server to output the data in "tiles".
+
+.. code-block:: python
+
+    import hgtiles.points as hgpo
+    import hgtiles.utils as hgut
+    import hgflask as hgf
+    import numpy as np
+    import pandas as pd
+
+    length = int(1e6)
+    df = pd.DataFrame({
+        'x': np.random.random((length,)),
+        'y': np.random.random((length,)),
+        'v': range(1, length+1),
+    })  
+
+    # get the tileset info (bounds and such) of the dataset
+    tsinfo = hgpo.tileset_info(df, 'x', 'y')
+
+    # specify the dataset and its tile handlers
+    tilesets = [{
+        'uuid': 'a',
+        'handlers': {
+            'tileset_info': lambda: tsinfo,
+            'tiles': lambda tile_ids: hgpo.format_data(
+                    hgut.bundled_tiles_wrapper_2d(tile_ids,
+                        lambda z,x,y,width=1,height=1: hgpo.tiles(df, 'x', 'y', 
+                            tsinfo, z, x, y, width, height)))
+        }
+    }]
+
+    # start the server
+    server = hgf.start(tilesets)
+
+And finally, we can create a HiGlass client in the browser to view the data:
+
+.. code-block:: python
+
+    import hgflask.client as hfc
+    import higlass_jupyter
+
+    hgc = hfc.HiGlassConfig()
+    hgc.add_view().add_track('a', 'labelled-points-track', 'center',
+                  server.api_address, height=200,
+                  options = {
+                      'labelField': 'v'
+                  })
+
+    a = hgc.to_json_string()
+    higlass_jupyter.HiGlassDisplay(viewconf=hgc.to_json_string(),
+                                  hg_options='{"bounded": false}')
+
+.. image:: img/jupyter-labelled-points.png
+

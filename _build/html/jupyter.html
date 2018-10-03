@@ -171,6 +171,69 @@ axis labels:</p>
 </pre></div>
 </div>
 <img alt="_images/eggholder-function.png" src="_images/eggholder-function.png" />
+<div class="section" id="displaying-many-points">
+<h4>Displaying Many Points<a class="headerlink" href="#displaying-many-points" title="Permalink to this headline">¶</a></h4>
+<p>To display, for example, a list of 1 million points in a HiGlass window inside of a Jupyter notebook.
+First we need to import the custom track type for displaying labelled points:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="o">%%</span><span class="nx">javascript</span>
+
+<span class="nx">require</span><span class="p">([</span><span class="s2">&quot;https://unpkg.com/higlass-labelled-points-track@0.1.7/dist/higlass-labelled-points-track&quot;</span><span class="p">],</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">hglib</span><span class="p">)</span> <span class="p">{</span>
+
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>Then we have to set up a data server to output the data in “tiles”.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hgtiles.points</span> <span class="kn">as</span> <span class="nn">hgpo</span>
+<span class="kn">import</span> <span class="nn">hgtiles.utils</span> <span class="kn">as</span> <span class="nn">hgut</span>
+<span class="kn">import</span> <span class="nn">hgflask</span> <span class="kn">as</span> <span class="nn">hgf</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="n">length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e6</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">length</span><span class="p">,)),</span>
+    <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">length</span><span class="p">,)),</span>
+    <span class="s1">&#39;v&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">})</span>
+
+<span class="c1"># get the tileset info (bounds and such) of the dataset</span>
+<span class="n">tsinfo</span> <span class="o">=</span> <span class="n">hgpo</span><span class="o">.</span><span class="n">tileset_info</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">)</span>
+
+<span class="c1"># specify the dataset and its tile handlers</span>
+<span class="n">tilesets</span> <span class="o">=</span> <span class="p">[{</span>
+    <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;tileset_info&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">tsinfo</span><span class="p">,</span>
+        <span class="s1">&#39;tiles&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">tile_ids</span><span class="p">:</span> <span class="n">hgpo</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
+                <span class="n">hgut</span><span class="o">.</span><span class="n">bundled_tiles_wrapper_2d</span><span class="p">(</span><span class="n">tile_ids</span><span class="p">,</span>
+                    <span class="k">lambda</span> <span class="n">z</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span> <span class="n">hgpo</span><span class="o">.</span><span class="n">tiles</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span>
+                        <span class="n">tsinfo</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)))</span>
+    <span class="p">}</span>
+<span class="p">}]</span>
+
+<span class="c1"># start the server</span>
+<span class="n">server</span> <span class="o">=</span> <span class="n">hgf</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">tilesets</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And finally, we can create a HiGlass client in the browser to view the data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hgflask.client</span> <span class="kn">as</span> <span class="nn">hfc</span>
+<span class="kn">import</span> <span class="nn">higlass_jupyter</span>
+
+<span class="n">hgc</span> <span class="o">=</span> <span class="n">hfc</span><span class="o">.</span><span class="n">HiGlassConfig</span><span class="p">()</span>
+<span class="n">hgc</span><span class="o">.</span><span class="n">add_view</span><span class="p">()</span><span class="o">.</span><span class="n">add_track</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;labelled-points-track&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span>
+              <span class="n">server</span><span class="o">.</span><span class="n">api_address</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+              <span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
+                  <span class="s1">&#39;labelField&#39;</span><span class="p">:</span> <span class="s1">&#39;v&#39;</span>
+              <span class="p">})</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">hgc</span><span class="o">.</span><span class="n">to_json_string</span><span class="p">()</span>
+<span class="n">higlass_jupyter</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">hgc</span><span class="o">.</span><span class="n">to_json_string</span><span class="p">(),</span>
+                              <span class="n">hg_options</span><span class="o">=</span><span class="s1">&#39;{&quot;bounded&quot;: false}&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/jupyter-labelled-points.png" src="_images/jupyter-labelled-points.png" />
+</div>
 </div>
 </div>
 </div>
