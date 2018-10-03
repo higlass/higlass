@@ -361,6 +361,8 @@ const testViewConfig = {
                   showTooltip: true,
                   scaleStartPercent: "0.00000",
                   scaleEndPercent: "1.00000",
+                  valueScaleMin: 0.0025,
+                  valueScaleMax: 0.0075
                 },
                 uid: "rao2",
                 transforms: [
@@ -401,7 +403,7 @@ setTimeout(() => {
   hgApi.setTrackValueScaleLimits(null, 'bar1', -10000000, 10000000);
   hgApi.setTrackValueScaleLimits(null, 'line2', -10000000, 10000000);
   hgApi.setTrackValueScaleLimits(null, 'bar2', -10000000, 10000000);
-  hgApi.setTrackValueScaleLimits(null, 'rao1', -0.5, 2);
+  hgApi.setTrackValueScaleLimits(null, 'rao1', 1e-6, 3);
   hgApi.setTrackValueScaleLimits(null, 'pansen', -10000000, 10000000);
 }, 10000);
 
