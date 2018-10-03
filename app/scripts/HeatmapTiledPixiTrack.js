@@ -252,8 +252,26 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     super.setPosition(newPosition);
   }
 
+  updateValueScale() {
+    const [scaleType, valueScale] = getValueScale(
+      (this.options && this.options.heatmapValueScaling) || 'log',
+      this.valueScaleMin || this.scale.minValue,
+      this.medianVisibleValue,
+      this.valueScaleMax || this.scale.maxValue,
+      'log'
+    );
+
+    this.valueScale = valueScale;
+    this.limitedValueScale = this.valueScale.copy();
+
+    return [scaleType, valueScale];
+  }
+
   rerender(options, force) {
     super.rerender(options, force);
+
+    // We need to update the value scale prior to updating the colorbar
+    this.updateValueScale();
 
     // if force is set, then we force a rerender even if the options
     // haven't changed rerender will force a brush.move
@@ -274,8 +292,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
 
-    this.visibleAndFetchedTiles().forEach(
-      tile => this.renderTile(tile));
+    this.visibleAndFetchedTiles()
+      .forEach(tile => this.renderTile(tile));
 
     // hopefully draw isn't rerendering all the tiles
     // this.drawColorbar();
@@ -954,22 +972,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * @param {Object}  tile  Tile data to be rendered.
    */
   renderTile(tile) {
-    const [scaleType, valueScale] = getValueScale(
-      (this.options && this.options.heatmapValueScaling) || 'log',
-            this.scale.minValue, this.medianVisibleValue, this.scale.maxValue, 'log');
-
-    this.valueScale = valueScale;
+    const [scaleType, valueScale] = this.updateValueScale();
     let pseudocount = 0;
-
-    tile.scale = {
-      minValue: this.scale.minValue,
-      maxValue: this.scale.maxValue
-    };
-
-    if (scaleType == 'log')
-      pseudocount = 0; // this.medianVisibleValue;
-
-    this.limitedValueScale = this.valueScale.copy();
 
     if (
       this.options
@@ -990,14 +994,15 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     this.renderingTiles.add(tile.tileId);
 
-    tileProxy.tileDataToPixData(tile,
+    tileProxy.tileDataToPixData(
+      tile,
       scaleType,
       this.limitedValueScale.domain(),
       pseudocount, // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
       (pixData) => {
-        // the tileData has been converted to pixData by the worker script and needs to be loaded
-        // as a sprite
+        // the tileData has been converted to pixData by the worker script and
+        // needs to be loaded as a sprite
         if (pixData) {
           const graphics = tile.graphics;
           const canvas = this.tileDataToCanvas(pixData.pixData);
@@ -1005,13 +1010,20 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
           let sprite = null;
 
-          sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+          sprite = new PIXI.Sprite(
+            PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
+          );
 
           tile.sprite = sprite;
 
           // store the pixData so that we can export it
           tile.canvas = canvas;
-          this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
+          this.setSpriteProperties(
+            tile.sprite,
+            tile.tileData.zoomLevel,
+            tile.tileData.tilePos,
+            tile.mirrored
+          );
 
           graphics.removeChildren();
           graphics.addChild(tile.sprite);
