@@ -1,6 +1,44 @@
 View Configs
 ##########################
 
+Viewconfs specify exactly what a HiGlass view should show. They contain a list
+of the data sources, visualization types, visible region as well as searching
+and styling options.
+
+Show a specific genomic location
+--------------------------------
+
+Say we want to have a viewconf which was centered on the gene OSR1. Its
+location is roughly between positions 19,500,000 and 19,600,000 on chromosome 7
+of the hg19 assembly. So what should ``initialXDomain`` be set to in order to
+show this gene?
+
+Because ``initialXDomain`` accepts absolute coordinates calculated by
+concatenating chromosomes according to a certain order, we need to calculate
+what chr2:19,500,000 and chr2:196,000,000 are in absolute coordinates.
+
+To do this we will assume a chromosome ordering consisting of chr1, chr2, ...
+This means that we need to take the length of chr1 in hg19, which is
+249,250,621 base pairs, and add our positions to that, yielding
+positions 268,750,621 and 268,850,621 for the ``initialXDomain``.
+
+The chromosome order commonly used in HiGlass for hg19 can be found in the
+`negspy repository
+<https://github.com/pkerpedjiev/negspy/blob/master/negspy/data/hg19/chromInfo.txt>`_.
+
+Upload a viewconf to the server
+-------------------------------
+
+A local viewconf can be sent to the server by sending a ``POST`` request. Make
+sure the actual viewconf is wrapped in the ``viewconf`` section of the posted
+json (e.g. `{"viewconf": myViewConfig}`):
+
+.. code-block:: bash
+
+    curl -H "Content-Type: application/json" \
+         -X POST \
+         -d '{"viewconf": {"editable": true, "zoomFixed": false, "trackSourceServers": ["/api/v2", "http://higlass.io/api/v1"], "exportViewUrl": "/api/v1/viewconfs/", "views": [{"tracks": {"top": [], "left": [], "center": [], "right": [], "bottom": []}, "initialXDomain": [243883495.14563107, 2956116504.854369], "initialYDomain": [804660194.1747572, 2395339805.825243], "layout": {"w": 12, "h": 12, "x": 0, "y": 0, "i": "EwiSznw8ST2HF3CjHx-tCg", "moved": false, "static": false}, "uid": "EwiSznw8ST2HF3CjHx-tCg"}], "zoomLocks": {"locksByViewUid": {}, "locksDict": {}}, "locationLocks": {"locksByViewUid": {}, "locksDict": {}}, "valueScaleLocks": {"locksByViewUid": {}, "locksDict": {}}}}' http://localhost:8989/api/v1/viewconfs/
+
 Genome Position Search Box
 **************************
 

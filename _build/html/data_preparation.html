@@ -166,7 +166,7 @@ of the data file contains a header using the (<code class="docutils literal"><sp
 <p>The dataset used in this example contains copy number data that has been log2
 transformed. That is, the copy number given for each bin is the log2 of the
 computed value. This is a problem for HiGlass’s default aggregation method of
-summing adjacent values since <span class="math">\log_2 a + \log_2 b \neq \log_2 ab</span>.</p>
+summing adjacent values since <img class="math" src="_images/math/4e9125b9e00c5072d6f3577f7c356a015ed9ca82.png" alt="\log_2 a + \log_2 b \neq \log_2 ab"/>.</p>
 <p>Using the <code class="docutils literal"><span class="pre">--transform</span> <span class="pre">exp2</span></code> option tells clodius to raise two to the
 power of the provided value before doing the transformation and storing. As
 an added benefit, NaN values become apparent in the resulting because they
@@ -626,13 +626,6 @@ segment1    <span class="m">10</span>  <span class="m">100</span> <span class="m
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#viewing-data-in-the-client">Viewing data in the client</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="developer.html#embedding-higlass-in-web-page">Embedding HiGlass in web page</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developer.html#javascript-api">Javascript API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developer.html#viewconfs">Viewconfs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developer.html#docker">Docker</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="jupyter.html">Jupyter Notebooks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="jupyter.html#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jupyter.html#usage">Usage</a></li>
@@ -643,7 +636,11 @@ segment1    <span class="m">10</span>  <span class="m">100</span> <span class="m
 <li class="toctree-l2"><a class="reference internal" href="python_api.html#hgflask-client">hgflask.client</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="javascript_api.html">Javascript API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="javascript_api.html">Javascript API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="javascript_api.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="javascript_api.html#api-functions">API Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data Preparation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#bed-files">Bed Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bedpe-like-files">Bedpe-like Files</a></li>
@@ -677,6 +674,7 @@ segment1    <span class="m">10</span>  <span class="m">100</span> <span class="m
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#d-annotations">1D Annotations</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Contributor Guidelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-views">Adding views</a></li>
 <li class="toctree-l2"><a class="reference internal" href="b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
@@ -693,12 +691,8 @@ segment1    <span class="m">10</span>  <span class="m">100</span> <span class="m
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="view_config.html#genome-position-search-box">Genome Position Search Box</a></li>
-<li class="toctree-l2"><a class="reference internal" href="view_config.html#uids">UIDs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="view_config.html#initialxdomain-and-initialydomain">initialXDomain and initialYDomain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="view_config.html#tracksourceservers">trackSourceServers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="view_config.html#exportviewurl">exportViewUrl</a></li>
-<li class="toctree-l2"><a class="reference internal" href="view_config.html#tracks">Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#show-a-specific-genomic-location">Show a specific genomic location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#upload-a-viewconf-to-the-server">Upload a viewconf to the server</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="views.html">Views</a><ul>

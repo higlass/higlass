@@ -72,6 +72,7 @@ language = None
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+# html_extra_path = ['examples']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'

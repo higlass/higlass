@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Developer &#8212; HiGlass v1.0 documentation</title>
+    <title>Contributor Guidelines &#8212; HiGlass v1.0 documentation</title>
     <link rel="stylesheet" href="_static/higlass.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Jupyter Notebooks" href="jupyter.html" />
-    <link rel="prev" title="Tutorial" href="tutorial.html" />
+    <link rel="next" title="Viewer" href="b_viewer.html" />
+    <link rel="prev" title="Track Types" href="track_types.html" />
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-77756807-1"></script>
   <script>
@@ -51,569 +51,17 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="developer">
-<h1>Developer<a class="headerlink" href="#developer" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="embedding-higlass-in-web-page">
-<h2>Embedding HiGlass in web page<a class="headerlink" href="#embedding-higlass-in-web-page" title="Permalink to this headline">¶</a></h2>
-<p>HiGlass can be included in any web page by including the relevant
-javascript and css files:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://unpkg.com/higlass@1.1.5/dist/styles/hglib.css&quot; type=&quot;text/css&quot;&gt;
-&lt;link rel=&quot;stylesheet&quot; href=&quot;//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&quot; type=&quot;text/css&quot;&gt;
-
-
-&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.min.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js&quot;&gt;&lt;/script&gt;
-
-&lt;script src=&quot;https://unpkg.com/higlass@1.1.5/dist/scripts/hglib.js&quot;&gt;&lt;/script&gt;
-</pre></div>
-</div>
-<p>External tracks should be included <strong>before</strong> the hglib.js import:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span>&lt;script src=&quot;https://unpkg.com/higlass-multivec@0.1.10/dist/higlass-multivec.js&quot;&gt;&lt;/script&gt;
-</pre></div>
-</div>
-<p>Instructions for instantiating the component and interacting with it are in the
-<a class="reference external" href="higlass_developer.html#public-api">Public API section</a>.</p>
-</div>
-<div class="section" id="javascript-api">
-<h2>Javascript API<a class="headerlink" href="#javascript-api" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="available-endpoints">
-<h3>Available endpoints<a class="headerlink" href="#available-endpoints" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">HiGlassComponent</span><span class="p">,</span> <span class="nx">ChromosomeInfo</span><span class="p">,</span> <span class="nx">viewer</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;higlass&#39;</span><span class="p">;</span>
-</pre></div>
-</div>
-<p>HiGlass exports three endpoints for your convenience. <code class="docutils literal"><span class="pre">viewer</span></code> is the main
-endpoint to create a new HiGlass component. <code class="docutils literal"><span class="pre">HiGlassComponent</span></code> can be used
-to integrate HiGlass in your React application. <code class="docutils literal"><span class="pre">ChromosomeInfo</span></code> is a class
-for converting absolute coordinates to chromosome coordinates. It’s used
-internally and made available to convert absolute range selection into
-chromosome range selections.</p>
-</div>
-<div class="section" id="creating-an-inline-higlass-component">
-<h3>Creating an inline HiGlass component<a class="headerlink" href="#creating-an-inline-higlass-component" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">hgv</span> <span class="o">=</span> <span class="nx">hglib</span><span class="p">.</span><span class="nx">viewer</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">config</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
-</pre></div>
-</div>
-<p>Create a new HiGlass viewer within a web page. This initializes a
-HiGlassComponent inside the element <code class="docutils literal"><span class="pre">element</span></code> with a viewconfig passed in as
-<code class="docutils literal"><span class="pre">config</span></code>. If <code class="docutils literal"><span class="pre">config</span></code> is a string, it is interpreted as a url and used to
-try to fetch a remote viewconfig.</p>
-<p>The <code class="docutils literal"><span class="pre">options</span></code> parameter can currently only specify the <code class="docutils literal"><span class="pre">bounded</span></code> property
-which tells the HiGlass component to fill all the space in the containing
-element. Note that if <code class="docutils literal"><span class="pre">bounded</span></code> is set to true, then <code class="docutils literal"><span class="pre">element</span></code> must have a
-fixed height. <code class="docutils literal"><span class="pre">callback</span></code> is used to return an api variable which can be used
-to access HiGlass events.</p>
-<p>The function returns an instance of the public API of a HiGlass component.</p>
-<p>A full example of an inline HiGlass component can be found in the <a class="reference external" href="https://github.com/hms-dbmi/higlass/blob/develop/app/api.html">HiGlass
-GitHub repository</a>.</p>
-<p><strong>Example</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">hgv</span> <span class="o">=</span> <span class="nx">hglib</span><span class="p">.</span><span class="nx">viewer</span><span class="p">(</span>
-  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;development-demo&#39;</span><span class="p">),</span>
-  <span class="nx">testViewConfig</span><span class="p">,</span>
-  <span class="p">{</span> <span class="nx">bounded</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
-<span class="p">);</span>
-</pre></div>
-</div>
-<p><strong>Options</strong></p>
-<dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">bounded:</span> <span class="pre">bool</span> <span class="pre">[default:</span> <span class="pre">true]</span></code></dt>
-<dd>Don’t exceed the bounds of the enclosing element.</dd>
-<dt><code class="docutils literal"><span class="pre">onViewConfLoaded:</span> <span class="pre">callback</span> <span class="pre">[default:</span> <span class="pre">null]</span></code></dt>
-<dd><p class="first">Specify a callback to be loaded when the specified viewconf is
-completely loaded. This is useful when trying calling an API
-function in quick succesion after initializing the viewer.</p>
-<p class="last">Example:</p>
-</dd>
-<dt><code class="docutils literal"><span class="pre">horizontalMargin:</span> <span class="pre">number</span> <span class="pre">[default:</span> <span class="pre">5]</span></code></dt>
-<dd>Horizontal margin added by HiGlass</dd>
-<dt><code class="docutils literal"><span class="pre">verticalMargin:</span> <span class="pre">number</span> <span class="pre">[default:</span> <span class="pre">5]</span></code></dt>
-<dd>Vertical margin added by HiGlass</dd>
-<dt><code class="docutils literal"><span class="pre">renderer:</span> <span class="pre">string</span> <span class="pre">[default:</span> <span class="pre">'auto'],</span> <span class="pre">options=['webgl',</span> <span class="pre">'canvas']</span></code></dt>
-<dd>Pick which type of renderer to use for HiGlass. WebGL is faster
-but there is typically a limited number of WebGL contexts that
-are allowed in a browser. If you plan on loading many HiGlass
-viewers, consier using the a canvas renderer.</dd>
-</dl>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">baseUrl</span> <span class="o">=</span> <span class="s1">&#39;http://higlass.io/api/v1/viewconfs/&#39;</span><span class="p">;</span>
-<span class="kd">var</span> <span class="nx">hgv</span> <span class="o">=</span> <span class="nx">hglib</span><span class="p">.</span><span class="nx">createHgComponent</span><span class="p">(</span>
-  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;development-demo&#39;</span><span class="p">),</span>
-  <span class="nx">baseUrl</span> <span class="o">+</span> <span class="s1">&#39;?d=KeXl4zLsTP6IKZGpFckuNA&#39;</span><span class="p">,</span>
-  <span class="p">{</span>
-    <span class="nx">bounded</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-    <span class="nx">onViewConfLoaded</span><span class="o">:</span> <span class="nx">zoomTo</span>
-  <span class="p">}</span>
-<span class="p">);</span>
-
-<span class="kd">function</span> <span class="nx">zoomTo</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nx">hgv</span><span class="p">.</span><span class="nx">zoomTo</span><span class="p">(</span><span class="s2">&quot;aa&quot;</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">,</span><span class="mi">2000000</span><span class="p">,</span><span class="mi">1000000</span><span class="p">,</span><span class="mi">2000000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="creating-a-higlass-component-in-your-react-app">
-<h3>Creating a HiGlass component in your React app<a class="headerlink" href="#creating-a-higlass-component-in-your-react-app" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="nx">HiGlassComponent</span>
-  <span class="nx">options</span><span class="o">=</span><span class="p">{</span><span class="nx">options</span><span class="p">}</span>
-  <span class="nx">viewConfig</span><span class="o">=</span><span class="p">{</span><span class="nx">viewConfig</span><span class="p">}</span>
-<span class="o">&gt;</span>
-</pre></div>
-</div>
-<p>Use the <code class="docutils literal"><span class="pre">HiGlassComponent</span></code> to create a HiGlass instance in react. The
-<code class="docutils literal"><span class="pre">options</span></code> prop is the same as explained above.</p>
-<p><strong>Example</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">HiGlassComponent</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;higlass&#39;</span><span class="p">;</span>
-
-<span class="kr">const</span> <span class="nx">HiGlass</span> <span class="o">=</span> <span class="nx">props</span> <span class="p">=&gt;</span> <span class="o">&lt;</span><span class="nx">HiGlassComponent</span>
-  <span class="nx">ref</span><span class="o">=</span><span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">onRef</span><span class="p">}</span>
-  <span class="nx">options</span><span class="o">=</span><span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">options</span><span class="p">}</span>
-  <span class="nx">viewConfig</span><span class="o">=</span><span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">viewConfig</span><span class="p">}</span>
-<span class="o">&gt;</span>
-
-<span class="kr">export</span> <span class="k">default</span> <span class="nx">HiGlass</span><span class="p">;</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="setting-the-current-view-config">
-<h3>Setting the current view config<a class="headerlink" href="#setting-the-current-view-config" title="Permalink to this headline">¶</a></h3>
-<p>The HiGlass API can be used to set a new viewconfig. This returns a Promise
-which is fulfilled when all of the data for the view is loaded.</p>
-<p><strong>Prototype</strong></p>
-<p><code class="docutils literal"><span class="pre">setViewConfig(viewconfig)</span></code></p>
-<p><strong>Parameters</strong></p>
-<dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">viewconfig:</span> <span class="pre">{...}</span></code></dt>
-<dd>A JSON object describing the viewconf to use.</dd>
-</dl>
-<p><strong>Example</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">setViewConfig</span><span class="p">(</span><span class="nx">newViewConfig</span><span class="p">);</span>
-<span class="nx">p</span><span class="p">.</span><span class="nx">then</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="p">{</span>
-  <span class="c1">// the initial set of tiles has been loaded</span>
-<span class="p">});</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="zooming-to-show-all-of-the-data">
-<h3>Zooming to show all of the data<a class="headerlink" href="#zooming-to-show-all-of-the-data" title="Permalink to this headline">¶</a></h3>
-<p>One may set a view config pointing to a dataset which is either out of the
-bounds of the view, too small, or too zoomed in. To fit the data inside of
-the view, the HiGlass API exposes the  <code class="docutils literal"><span class="pre">zoomToDataExtent</span></code> function.</p>
-<p><strong>Parameters</strong></p>
-<dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">viewUid:</span> <span class="pre">string</span></code></dt>
-<dd>The uid of the view to zoom. The uid of a view can be found in the
-JSON viewconf views section under <code class="docutils literal"><span class="pre">uid</span></code>.</dd>
-</dl>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">zoomToDataExtent</span><span class="p">(</span><span class="s1">&#39;viewUid&#39;</span><span class="p">);</span>
-</pre></div>
-</div>
-<p>The passed in <code class="docutils literal"><span class="pre">viewUid</span></code> should refer to a view which is present. If it
-doesn’t, an exception will be thrown. Note that if this functio is invoked
-directly after a HiGlass component is created, the information about the
-visible tilesets will not have been retrieved from the server and
-<code class="docutils literal"><span class="pre">zoomToDataExtent</span></code> will not work as expected. To ensure that the
-visible data has been loaded from the server, use the <code class="docutils literal"><span class="pre">setViewConfig</span></code>
-function and place <code class="docutils literal"><span class="pre">zoomToDataExtent</span></code> in the promise resolution.</p>
-<p>Example:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">setViewConfig</span><span class="p">(</span><span class="nx">newViewConfig</span><span class="p">);</span>
-<span class="nx">p</span><span class="p">.</span><span class="nx">then</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="p">{</span>
-    <span class="nx">hgv</span><span class="p">.</span><span class="nx">zoomToDataExtent</span><span class="p">(</span><span class="s1">&#39;viewUid&#39;</span><span class="p">);</span>
-<span class="p">});</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="zoom-to-a-data-location">
-<h3>Zoom to a data location<a class="headerlink" href="#zoom-to-a-data-location" title="Permalink to this headline">¶</a></h3>
-<p>Change the current view port to a certain data location.  When <code class="docutils literal"><span class="pre">animateTime</span></code> is
-greater than 0, animate the transition.</p>
-<p>If working with genomic data, a chromosome info file will need to be used in
-order to calculate “data” coordinates from chromosome coordinates. “Data”
-coordinates are simply the coordinates as if the chromosomes were placed next
-to each other.</p>
-<p><strong>Prototype</strong></p>
-<p><code class="docutils literal"><span class="pre">zoomTo(viewUid,</span> <span class="pre">start1,</span> <span class="pre">end1,</span> <span class="pre">start2,</span> <span class="pre">end2,</span> <span class="pre">animateTime):</span></code></p>
-<p><strong>Parameters</strong></p>
-<dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">viewUid:</span> <span class="pre">string</span></code></dt>
-<dd>The uid of the view to zoom. The uid of a view can be found in the
-JSON viewconf views section under <code class="docutils literal"><span class="pre">uid</span></code>.</dd>
-<dt><code class="docutils literal"><span class="pre">start1:</span> <span class="pre">Number</span></code></dt>
-<dd>The left x coordinate of the region to zoom to.</dd>
-<dt><code class="docutils literal"><span class="pre">end1:</span> <span class="pre">Number</span></code></dt>
-<dd>The right x coordinate of the region to zoom to.</dd>
-<dt><code class="docutils literal"><span class="pre">start2:</span> <span class="pre">Number</span></code></dt>
-<dd>The left x coordinate of the region to zoom to.</dd>
-<dt><code class="docutils literal"><span class="pre">end2:</span> <span class="pre">Number</span></code></dt>
-<dd>The right x coordinate of the region to zoom to.</dd>
-<dt><code class="docutils literal"><span class="pre">animateTime</span> <span class="pre">[default:</span> <span class="pre">0]</span></code></dt>
-<dd>The duration of the zoom transition in milliseconds.</dd>
-</dl>
-<p><strong>Example:</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="c1">// Absolute coordinates</span>
-<span class="nx">hgApi</span><span class="p">.</span><span class="nx">zoomTo</span><span class="p">(</span><span class="s1">&#39;view1&#39;</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">,</span> <span class="mi">2000000</span><span class="p">,</span> <span class="mi">2000000</span><span class="p">,</span> <span class="mi">500</span><span class="p">);</span>
-
-<span class="c1">// Chromosomal coordinates</span>
-<span class="nx">hglib</span>
-  <span class="c1">// Pass in the URL of your chrom sizes</span>
-  <span class="p">.</span><span class="nx">ChromosomeInfo</span><span class="p">(</span><span class="s1">&#39;//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv&#39;</span><span class="p">)</span>
-  <span class="c1">// Now we can use the chromInfo object to convert</span>
-  <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">chromInfo</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
-    <span class="c1">// Go to PTEN</span>
-    <span class="nx">hgApi</span><span class="p">.</span><span class="nx">zoomTo</span><span class="p">(</span>
-      <span class="nx">viewConfig</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">uid</span><span class="p">,</span>
-      <span class="nx">chromInfo</span><span class="p">.</span><span class="nx">chrToAbs</span><span class="p">([</span><span class="s1">&#39;chr10&#39;</span><span class="p">,</span> <span class="mi">89596071</span><span class="p">]),</span>
-      <span class="nx">chromInfo</span><span class="p">.</span><span class="nx">chrToAbs</span><span class="p">([</span><span class="s1">&#39;chr10&#39;</span><span class="p">,</span> <span class="mi">89758810</span><span class="p">]),</span>
-      <span class="nx">chromInfo</span><span class="p">.</span><span class="nx">chrToAbs</span><span class="p">([</span><span class="s1">&#39;chr10&#39;</span><span class="p">,</span> <span class="mi">89596071</span><span class="p">]),</span>
-      <span class="nx">chromInfo</span><span class="p">.</span><span class="nx">chrToAbs</span><span class="p">([</span><span class="s1">&#39;chr10&#39;</span><span class="p">,</span> <span class="mi">89758810</span><span class="p">]),</span>
-      <span class="mi">2500</span>  <span class="c1">// Animation time</span>
-    <span class="p">);</span>
-  <span class="p">});</span>
-  <span class="c1">// Just in case, let us catch errors</span>
-  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span> <span class="p">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Oh boy...&#39;</span><span class="p">,</span> <span class="nx">error</span><span class="p">))</span>
-</pre></div>
-</div>
-<p><strong>Demos:</strong></p>
-<ul class="simple">
-<li><a class="reference external" href="examples/api-zoom-to.html">Consecutive animated zooms</a></li>
-</ul>
-</div>
-<div class="section" id="select-a-mouse-tool">
-<h3>Select a mouse tool<a class="headerlink" href="#select-a-mouse-tool" title="Permalink to this headline">¶</a></h3>
-<p>Some tools needs conflicting mouse events such as mousedown or mousemove. To
-avoid complicated triggers for certain actions HiGlass supports different mouse
-tools for different interactions. The default mouse tool enables pan&amp;zoom. The
-only other mouse tool available right now is <code class="docutils literal"><span class="pre">select</span></code>, which lets you brush
-on to a track to select a range for annotating regions.</p>
-<p><strong>Prototype</strong></p>
-<p><code class="docutils literal"><span class="pre">activateTool(mouseTool)</span></code></p>
-<p><strong>Parameters</strong></p>
-<dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">mouseTool:</span> <span class="pre">string</span> <span class="pre">[default:</span> <span class="pre">'']</span></code></dt>
-<dd>Select a mouse tool to use. Currently there only ‘default’ and ‘select’ are
-available.</dd>
-</dl>
-<p><strong>Examples:</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">activateTool</span><span class="p">(</span><span class="s1">&#39;select&#39;</span><span class="p">);</span> <span class="c1">// Select tool is active</span>
-<span class="nx">hgv</span><span class="p">.</span><span class="nx">activateTool</span><span class="p">();</span> <span class="c1">// Default pan&amp;zoom tool is active</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="get-the-visible-min-and-max-value-of-a-track">
-<h3>Get the visible min and max value of a track<a class="headerlink" href="#get-the-visible-min-and-max-value-of-a-track" title="Permalink to this headline">¶</a></h3>
-<p>Get the min and max value of the visible data of a track.</p>
-<p><strong>Prototype</strong></p>
-<p><code class="docutils literal"><span class="pre">getMinMaxValue(viewId,</span> <span class="pre">trackId,</span> <span class="pre">ignoreOffScreenValues,</span> <span class="pre">ignoreFixedScale)</span></code></p>
-<p><strong>Parameters</strong></p>
-<dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">viewId:</span> <span class="pre">string</span></code></dt>
-<dd>View identifier (uid). Can be omitted if only one view is specified.</dd>
-<dt><code class="docutils literal"><span class="pre">trackId:</span> <span class="pre">string</span></code></dt>
-<dd>Track identifier (uid).</dd>
-<dt><code class="docutils literal"><span class="pre">ignoreOffScreenValues:</span> <span class="pre">bool</span> <span class="pre">[default:</span> <span class="pre">false]</span></code></dt>
-<dd>If <code class="docutils literal"><span class="pre">true</span></code> only truly visible values are considered. Otherwise the values
-of visible tiles are used. Not that considering only the truly visible
-values results in a roughly 10x slowdown (from 0.1 to 1 millisecond).</dd>
-<dt><code class="docutils literal"><span class="pre">ignoreFixedScale:</span> <span class="pre">bool</span> <span class="pre">[default:</span> <span class="pre">false]</span></code></dt>
-<dd>If <code class="docutils literal"><span class="pre">true</span></code> potentially fixed scaled values are ignored. I.e., if the
-absolute range is <code class="docutils literal"><span class="pre">[1,</span> <span class="pre">18]</span></code> but you have fixed the output range to
-<code class="docutils literal"><span class="pre">[4,</span> <span class="pre">5]</span></code> you would normally retrieve <code class="docutils literal"><span class="pre">[4,</span> <span class="pre">5]</span></code>. Having this option set to
-<code class="docutils literal"><span class="pre">true</span></code> retrieves the absolute <code class="docutils literal"><span class="pre">[1,</span> <span class="pre">18]</span></code> range.</dd>
-</dl>
-<p><strong>Examples:</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="p">[</span><span class="nx">minVal</span><span class="p">,</span> <span class="nx">maxVal</span><span class="p">]</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">getMinMaxValue</span><span class="p">(</span><span class="s1">&#39;myView&#39;</span><span class="p">,</span> <span class="s1">&#39;myTrack&#39;</span><span class="p">);</span>
-</pre></div>
-</div>
-<p><strong>Demos:</strong></p>
-<ul class="simple">
-<li><a class="reference external" href="examples/api-get-min-max-value.html">Base example</a></li>
-</ul>
-</div>
-<div class="section" id="restrict-range-selection">
-<h3>Restrict range selection<a class="headerlink" href="#restrict-range-selection" title="Permalink to this headline">¶</a></h3>
-<p>The following enpoint restricts the size of range selection equally for 1D or
-2D tracks to a certain length (specified in absolute coordinates).</p>
-<p><strong>Prototype</strong></p>
-<p><code class="docutils literal"><span class="pre">setRangeSelection1dSize(minSize,</span> <span class="pre">maxSize)</span></code></p>
-<p><strong>Parameters</strong></p>
-<dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">minSize:</span> <span class="pre">number</span> <span class="pre">[default:</span> <span class="pre">0]</span></code></dt>
-<dd>Minimum range selection. <code class="docutils literal"><span class="pre">undefined</span></code> unsets the value.</dd>
-<dt><code class="docutils literal"><span class="pre">maxSize:</span> <span class="pre">number</span> <span class="pre">[default:</span> <span class="pre">Infinity]</span></code></dt>
-<dd>Maximum range selection. <code class="docutils literal"><span class="pre">undefined</span></code> unsets the value.</dd>
-</dl>
-<p><strong>Examples:</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">activateTool</span><span class="p">(</span><span class="s1">&#39;select&#39;</span><span class="p">);</span> <span class="c1">// Activate select tool</span>
-<span class="nx">hgv</span><span class="p">.</span><span class="nx">setRangeSelection1dSize</span><span class="p">(</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">);</span> <span class="c1">// Force selections to be between 5 and 10 Kb</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="ensure-integer-range-selection">
-<h3>Ensure integer range selection<a class="headerlink" href="#ensure-integer-range-selection" title="Permalink to this headline">¶</a></h3>
-<p>The following two endpoints enable or disable forced integer range selections.</p>
-<p><strong>Prototype</strong></p>
-<p><code class="docutils literal"><span class="pre">setRangeSelectionToInt()</span></code></p>
-<p><code class="docutils literal"><span class="pre">setRangeSelectionToFloat()</span></code></p>
-<p><strong>Examples:</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">activateTool</span><span class="p">(</span><span class="s1">&#39;select&#39;</span><span class="p">);</span> <span class="c1">// Activate select tool</span>
-<span class="nx">hgv</span><span class="p">.</span><span class="nx">setRangeSelectionToInt</span><span class="p">();</span> <span class="c1">// Force selections to be integer</span>
-<span class="nx">hgv</span><span class="p">.</span><span class="nx">setRangeSelectionToFloat</span><span class="p">();</span> <span class="c1">// Allow float range selections</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="reset-the-viewport">
-<h3>Reset the viewport<a class="headerlink" href="#reset-the-viewport" title="Permalink to this headline">¶</a></h3>
-<p>The endpoint allows you to reset the viewport to the initially defined X and Y
-domains of your view config.</p>
-<p><strong>Prototype</strong></p>
-<p><code class="docutils literal"><span class="pre">resetViewport(viewId)</span></code></p>
-<p><strong>Parameters</strong></p>
-<dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">viewId:</span> <span class="pre">string</span></code></dt>
-<dd>The view identifier. If you have only one view you can omit this parameter.</dd>
-</dl>
-<p><strong>Examples:</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">resetViewport</span><span class="p">();</span> <span class="c1">// Resets the first view</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="fix-the-value-range-of-a-1d-track">
-<h3>Fix the value range of a 1D track<a class="headerlink" href="#fix-the-value-range-of-a-1d-track" title="Permalink to this headline">¶</a></h3>
-<p>When comparing different 1D tracks it can be desireable to fix their y or value
-scale</p>
-<p><strong>Prototype</strong></p>
-<p><code class="docutils literal"><span class="pre">setTrackValueScale(viewId,</span> <span class="pre">trackId,</span> <span class="pre">minValue,</span> <span class="pre">maxValue)</span></code></p>
-<p><strong>Parameters</strong></p>
-<dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">viewId:</span> <span class="pre">string</span> <span class="pre">[default:</span> <span class="pre">'']</span></code></dt>
-<dd>The view identifier. If you only have one view this parameter can be
-omitted.</dd>
-<dt><code class="docutils literal"><span class="pre">trackId:</span> <span class="pre">string</span> <span class="pre">[default:</span> <span class="pre">'']</span></code></dt>
-<dd>The track identifier.</dd>
-<dt><code class="docutils literal"><span class="pre">trackId:</span> <span class="pre">number</span> <span class="pre">[default:</span> <span class="pre">'']</span></code></dt>
-<dd>Minimum value used for scaling the track.</dd>
-<dt><code class="docutils literal"><span class="pre">trackId:</span> <span class="pre">number</span> <span class="pre">[default:</span> <span class="pre">'']</span></code></dt>
-<dd>Maximum value used for scaling the track.</dd>
-</dl>
-<p><strong>Examples:</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">setTrackValueScale</span><span class="p">(</span><span class="nx">myView</span><span class="p">,</span> <span class="nx">myTrack</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span> <span class="c1">// Sets the scaling to [0, 100]</span>
-<span class="nx">hgv</span><span class="p">.</span><span class="nx">setTrackValueScale</span><span class="p">(</span><span class="nx">myView</span><span class="p">,</span> <span class="nx">myTrack</span><span class="p">);</span> <span class="c1">// Unsets the fixed scaling, i.e., enables dynamic scaling again.</span>
-</pre></div>
-</div>
-<p><strong>Demos:</strong></p>
-<ul class="simple">
-<li><a class="reference external" href="examples/api-set-track-value-scale-limits.html">Live example in the console</a></li>
-</ul>
-</div>
-<div class="section" id="subscribe-to-events">
-<h3>Subscribe to events<a class="headerlink" href="#subscribe-to-events" title="Permalink to this headline">¶</a></h3>
-<p>HiGlass exposes the following event, which one can subscribe to via this method:</p>
-<ul class="simple">
-<li>location</li>
-<li>rangeSelection</li>
-<li>viewConfig</li>
-<li>mouseMoveZoom</li>
-</ul>
-<p><strong>Prototype</strong></p>
-<p><code class="docutils literal"><span class="pre">on(event,</span> <span class="pre">callback,</span> <span class="pre">viewId)</span></code></p>
-<p><strong>Parameters</strong></p>
-<dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">event:</span> <span class="pre">string</span></code></dt>
-<dd>One of the events described below</dd>
-<dt><code class="docutils literal"><span class="pre">callback:</span> <span class="pre">function</span></code></dt>
-<dd>A callback to be called when the event occurs</dd>
-<dt><code class="docutils literal"><span class="pre">viewId:</span> <span class="pre">string</span></code></dt>
-<dd>The view ID to listen to events.</dd>
-</dl>
-<p><strong>Event types</strong></p>
-<p><code class="docutils literal"><span class="pre">location:</span></code> Returns an object describing the visible region</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="nx">xDomain</span><span class="o">:</span> <span class="p">[</span><span class="mf">1347750580.3773856</span><span class="p">,</span> <span class="mf">1948723324.787681</span><span class="p">],</span>
-    <span class="nx">xRange</span><span class="o">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">346</span><span class="p">],</span>
-    <span class="nx">yDomain</span><span class="o">:</span> <span class="p">[</span><span class="mf">1856870481.5391564</span><span class="p">,</span> <span class="mf">2407472678.0075483</span><span class="p">],</span>
-    <span class="nx">yRange</span><span class="o">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">317</span><span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p><code class="docutils literal"><span class="pre">rangeSelection:</span></code> Returns a BED- (1D) or BEDPE (1d) array of the selected data and genomic range (if chrom-sizes are available)</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="c1">// Global output</span>
-<span class="p">{</span>
-  <span class="nx">dataRange</span><span class="o">:</span> <span class="p">[...]</span>
-  <span class="nx">genomicRange</span><span class="o">:</span> <span class="p">[...]</span>
-<span class="p">}</span>
-
-<span class="c1">// 1D data range</span>
-<span class="p">[[</span><span class="mi">1218210862</span><span class="p">,</span> <span class="mi">1528541001</span><span class="p">],</span> <span class="kc">null</span><span class="p">]</span>
-
-<span class="c1">// 2D data range</span>
-<span class="p">[[</span><span class="mi">1218210862</span><span class="p">,</span> <span class="mi">1528541001</span><span class="p">],</span> <span class="p">[</span><span class="mi">1218210862</span><span class="p">,</span> <span class="mi">1528541001</span><span class="p">]]</span>
-
-<span class="c1">// 1D or BED-like array</span>
-<span class="p">[[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">249200621</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">50000</span><span class="p">],</span> <span class="kc">null</span><span class="p">]</span>
-
-<span class="c1">// 2D or BEDPE-like array</span>
-<span class="p">[[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">249200621</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="mi">50000</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;chr3&quot;</span><span class="p">,</span> <span class="mi">197972430</span><span class="p">,</span> <span class="s2">&quot;chr4&quot;</span><span class="p">,</span> <span class="mi">50000</span><span class="p">]]</span>
-</pre></div>
-</div>
-<p><code class="docutils literal"><span class="pre">viewConfig:</span></code> Returns the current view config.</p>
-<p><code class="docutils literal"><span class="pre">mouseMoveZoom:</span></code> Returns the raw data around the mouse cursors screen location and the related genomic location.</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nx">data</span><span class="p">,</span> <span class="c1">// Raw Float32Array</span>
-  <span class="nx">dim</span><span class="p">,</span>  <span class="c1">// Dimension of the lens (the lens is squared)</span>
-  <span class="nx">toRgb</span><span class="p">,</span>  <span class="c1">// Current float-to-rgb converter</span>
-  <span class="nx">center</span><span class="p">,</span>  <span class="c1">// BED array of the cursors genomic location</span>
-  <span class="nx">xRange</span><span class="p">,</span>  <span class="c1">// BEDPE array of the x genomic range</span>
-  <span class="nx">yRange</span><span class="p">,</span>  <span class="c1">// BEDPE array of the y genomic range</span>
-  <span class="nx">rel</span>  <span class="c1">// If true the above three genomic locations are relative</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p><strong>Examples:</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kd">let</span> <span class="nx">locationListenerId</span><span class="p">;</span>
-<span class="nx">hgv</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span>
-  <span class="s1">&#39;location&#39;</span><span class="p">,</span>
-  <span class="nx">location</span> <span class="p">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Here we are:&#39;</span><span class="p">,</span> <span class="nx">location</span><span class="p">),</span>
-  <span class="s1">&#39;viewId1&#39;</span><span class="p">,</span>
-  <span class="nx">listenerId</span> <span class="p">=&gt;</span> <span class="nx">locationListenerId</span> <span class="o">=</span> <span class="nx">listenerId</span>
-<span class="p">);</span>
-
-<span class="kr">const</span> <span class="nx">rangeListenerId</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span>
-  <span class="s1">&#39;rangeSelection&#39;</span><span class="p">,</span>
-  <span class="nx">range</span> <span class="p">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Selected&#39;</span><span class="p">,</span> <span class="nx">range</span><span class="p">)</span>
-<span class="p">);</span>
-
-<span class="kr">const</span> <span class="nx">viewConfigListenerId</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span>
-  <span class="s1">&#39;viewConfig&#39;</span><span class="p">,</span>
-  <span class="nx">range</span> <span class="p">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Selected&#39;</span><span class="p">,</span> <span class="nx">range</span><span class="p">)</span>
-<span class="p">);</span>
-
-<span class="kr">const</span> <span class="nx">mmz</span> <span class="o">=</span> <span class="nx">event</span> <span class="p">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Moved&#39;</span><span class="p">,</span> <span class="nx">event</span><span class="p">);</span>
-<span class="nx">hgv</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;mouseMoveZoom&#39;</span><span class="p">,</span> <span class="nx">mmz</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="unsubscribe-from-events">
-<h3>Unsubscribe from events<a class="headerlink" href="#unsubscribe-from-events" title="Permalink to this headline">¶</a></h3>
-<p>Cancel a subscription.</p>
-<p><strong>Prototype</strong></p>
-<p><code class="docutils literal"><span class="pre">off(event,</span> <span class="pre">listenerId,</span> <span class="pre">viewId)</span></code></p>
-<p><strong>Examples:</strong></p>
-<p>The variables used in the following examples are coming from the above examples of <code class="docutils literal"><span class="pre">on()</span></code>.</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="nx">listener</span><span class="p">,</span> <span class="s1">&#39;viewId1&#39;</span><span class="p">);</span>
-<span class="nx">hgv</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">&#39;rangeSelection&#39;</span><span class="p">,</span> <span class="nx">rangeListener</span><span class="p">);</span>
-<span class="nx">hgv</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">&#39;viewConfig&#39;</span><span class="p">,</span> <span class="nx">viewConfigListener</span><span class="p">);</span>
-<span class="nx">hgv</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">&#39;mouseMoveZoom&#39;</span><span class="p">,</span> <span class="nx">mmz</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="getters-for-the-current-higlass-state">
-<h3>Getters for the current HiGlass State<a class="headerlink" href="#getters-for-the-current-higlass-state" title="Permalink to this headline">¶</a></h3>
-<p>Naturally, event listeners only return news once an event has been published but sometimes one needs to get the data at a certain time. The get method returns the current value of an event without having to wait for the event to fire.</p>
-<p>HiGlass provides a set of accessors and exporters to retrieve data from HiGlass or to export its state as a viewconf, SVG or PNG:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">currentLocationOfViewId</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">getLocation</span><span class="p">(</span><span class="s1">&#39;viewId&#39;</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">currentRangeSelection</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">getRangeSelection</span><span class="p">();</span>
-<span class="kr">const</span> <span class="nx">currentViewConfig</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">exportAsViewConfString</span><span class="p">();</span>
-<span class="kr">const</span> <span class="nx">pngSnapshot</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">exportAsPng</span><span class="p">();</span>  <span class="c1">// Data URI</span>
-<span class="kr">const</span> <span class="nx">svgSnapshot</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">exportAsSvg</span><span class="p">();</span>  <span class="c1">// XML string</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="get-sharable-link-for-current-view-config">
-<h3>Get sharable link for current view config<a class="headerlink" href="#get-sharable-link-for-current-view-config" title="Permalink to this headline">¶</a></h3>
-<p>Generate a sharable link to the current view config. The <cite>url</cite> parameter should contain
-the API endpoint used to export the view link (e.g. ‘<a class="reference external" href="http://localhost:8989/api/v1/viewconfs">http://localhost:8989/api/v1/viewconfs</a>’).
-If it is not provided, the value is taken from the <cite>exportViewUrl</cite> value of the viewconf.</p>
-<p><strong>Prototype</strong></p>
-<p><code class="docutils literal"><span class="pre">shareViewConfigAsLink(url)</span></code></p>
-<p><strong>Example</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">shareViewConfigAsLink</span><span class="p">(</span><span class="s1">&#39;http://localhost:8989/api/v1/viewconfs&#39;</span><span class="p">)</span>
-  <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">sharedViewConfig</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Shared view config (ID: </span><span class="si">${</span><span class="nx">sharedViewConfig</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">) is available at </span><span class="si">${</span><span class="nx">sharedViewConfig</span><span class="p">.</span><span class="nx">url</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span>
-  <span class="p">})</span>
-  <span class="p">.</span><span class="k">catch</span><span class="p">((</span><span class="nx">err</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Something did not work. Sorry&#39;</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span> <span class="p">})</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="obtaining-ordered-chromosome-info">
-<h3>Obtaining ordered chromosome info<a class="headerlink" href="#obtaining-ordered-chromosome-info" title="Permalink to this headline">¶</a></h3>
-<p>HiGlass provides an API for obtaining information about chromosomes
-and the order they are listed in a chromSizes file:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">ChromosomeInfo</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;higlass&#39;</span><span class="p">;</span>
-
-<span class="kr">const</span> <span class="nx">chromInfo</span> <span class="o">=</span> <span class="nx">ChromosomeInfo</span><span class="p">(</span>
-  <span class="s1">&#39;http://higlass.io/api/v1/chrom-sizes/?id=Ajn_ttUUQbqgtOD4nOt-IA&#39;</span><span class="p">,</span>
-  <span class="p">(</span><span class="nx">chromInfo</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;chromInfo:&#39;</span><span class="p">,</span> <span class="nx">chromInfo</span><span class="p">);</span> <span class="p">});</span>
-</pre></div>
-</div>
-<p>This will return a data structure with information about the chromosomes
-listed:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nx">chrPositions</span><span class="o">:</span> <span class="p">{</span>
-    <span class="nx">chr1</span> <span class="o">:</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">chr</span><span class="o">:</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="nx">pos</span><span class="o">:</span> <span class="mi">0</span><span class="p">},</span>
-    <span class="nx">chr2</span> <span class="o">:</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">chr</span><span class="o">:</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="nx">pos</span><span class="o">:</span> <span class="mi">249250621</span><span class="p">}</span> <span class="p">,</span>
-    <span class="p">...</span>
-  <span class="p">},</span>
-  <span class="nx">chromLengths</span><span class="o">:</span> <span class="p">{</span>
-    <span class="nx">chr1</span><span class="o">:</span> <span class="s2">&quot;249250621&quot;</span><span class="p">,</span>
-    <span class="nx">chr2</span><span class="o">:</span> <span class="s2">&quot;243199373&quot;</span><span class="p">,</span>
-    <span class="p">...</span>
-  <span class="p">},</span>
-  <span class="nx">cumPositions</span><span class="o">:</span> <span class="p">[</span>
-    <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">chr</span><span class="o">:</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="nx">pos</span><span class="o">:</span> <span class="mi">0</span><span class="p">},</span>
-    <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">chr</span><span class="o">:</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="nx">pos</span><span class="o">:</span> <span class="mi">249250621</span><span class="p">},</span>
-    <span class="p">...</span>
-   <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p><strong>Convert absolute to chromosomal coordinates:</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">absPos</span> <span class="o">=</span> <span class="mi">257893</span><span class="p">;</span>
-<span class="nx">chromPos</span> <span class="o">=</span> <span class="nx">chromInfo</span><span class="p">.</span><span class="nx">absToChr</span><span class="p">(</span><span class="nx">absPos</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="viewconfs">
-<h2>Viewconfs<a class="headerlink" href="#viewconfs" title="Permalink to this headline">¶</a></h2>
-<p>Viewconfs specify exactly what a HiGlass view should show. They contain a list
-of the data sources, visualization types, visible region as well as searching
-and styling options.</p>
-<div class="section" id="show-a-specific-genomic-location">
-<h3>Show a specific genomic location<a class="headerlink" href="#show-a-specific-genomic-location" title="Permalink to this headline">¶</a></h3>
-<p>Say we want to have a viewconf which was centered on the gene OSR1. Its
-location is roughly between positions 19,500,000 and 19,600,000 on chromosome 7
-of the hg19 assembly. So what should <code class="docutils literal"><span class="pre">initialXDomain</span></code> be set to in order to
-show this gene?</p>
-<p>Because <code class="docutils literal"><span class="pre">initialXDomain</span></code> accepts absolute coordinates calculated by
-concatenating chromosomes according to a certain order, we need to calculate
-what chr2:19,500,000 and chr2:196,000,000 are in absolute coordinates.</p>
-<p>To do this we will assume a chromosome ordering consisting of chr1, chr2, …
-This means that we need to take the length of chr1 in hg19, which is
-249,250,621 base pairs, and add our positions to that, yielding
-positions 268,750,621 and 268,850,621 for the <code class="docutils literal"><span class="pre">initialXDomain</span></code>.</p>
-<p>The chromosome order commonly used in HiGlass for hg19 can be found in the
-<a class="reference external" href="https://github.com/pkerpedjiev/negspy/blob/master/negspy/data/hg19/chromInfo.txt">negspy repository</a>.</p>
-</div>
-<div class="section" id="upload-a-viewconf-to-the-server">
-<h3>Upload a viewconf to the server<a class="headerlink" href="#upload-a-viewconf-to-the-server" title="Permalink to this headline">¶</a></h3>
-<p>A local viewconf can be sent to the server by sending a <code class="docutils literal"><span class="pre">POST</span></code> request. Make
-sure the actual viewconf is wrapped in the <code class="docutils literal"><span class="pre">viewconf</span></code> section of the posted
-json (e.g. <cite>{“viewconf”: myViewConfig}</cite>):</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>curl -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
-     -X POST <span class="se">\</span>
-     -d <span class="s1">&#39;{&quot;viewconf&quot;: {&quot;editable&quot;: true, &quot;zoomFixed&quot;: false, &quot;trackSourceServers&quot;: [&quot;/api/v2&quot;, &quot;http://higlass.io/api/v1&quot;], &quot;exportViewUrl&quot;: &quot;/api/v1/viewconfs/&quot;, &quot;views&quot;: [{&quot;tracks&quot;: {&quot;top&quot;: [], &quot;left&quot;: [], &quot;center&quot;: [], &quot;right&quot;: [], &quot;bottom&quot;: []}, &quot;initialXDomain&quot;: [243883495.14563107, 2956116504.854369], &quot;initialYDomain&quot;: [804660194.1747572, 2395339805.825243], &quot;layout&quot;: {&quot;w&quot;: 12, &quot;h&quot;: 12, &quot;x&quot;: 0, &quot;y&quot;: 0, &quot;i&quot;: &quot;EwiSznw8ST2HF3CjHx-tCg&quot;, &quot;moved&quot;: false, &quot;static&quot;: false}, &quot;uid&quot;: &quot;EwiSznw8ST2HF3CjHx-tCg&quot;}], &quot;zoomLocks&quot;: {&quot;locksByViewUid&quot;: {}, &quot;locksDict&quot;: {}}, &quot;locationLocks&quot;: {&quot;locksByViewUid&quot;: {}, &quot;locksDict&quot;: {}}, &quot;valueScaleLocks&quot;: {&quot;locksByViewUid&quot;: {}, &quot;locksDict&quot;: {}}}}&#39;</span> http://localhost:8989/api/v1/viewconfs/
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="docker">
-<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="dropping-individual-cache-entries">
-<h3>Dropping individual cache entries<a class="headerlink" href="#dropping-individual-cache-entries" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> container-redis-2017-12-16_21-19-59 redis-cli del Lm2XCdYQSVyRDkPABIUKGA.11.112
-</pre></div>
-</div>
-</div>
-</div>
+  <div class="section" id="contributor-guidelines">
+<h1>Contributor Guidelines<a class="headerlink" href="#contributor-guidelines" title="Permalink to this headline">¶</a></h1>
+<p>Contributions are in the form of issues, code, documentation are always very welcome. The
+following are a set of guidelines to help ensure that contributions can be smoothly
+merged into the existing code base:</p>
+<ol class="arabic simple">
+<li>All code contributions should be accompanied by a test. Tests can be placed into the <cite>test</cite>
+folder.</li>
+<li>All added functions should include a jsdoc string for javascript code or a numpy style
+docstring for python code.</li>
+</ol>
 </div>
 
 
@@ -640,13 +88,6 @@ json (e.g. <cite>{“viewconf”: myViewConfig}</cite>):</p>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#viewing-data-in-the-client">Viewing data in the client</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Developer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#embedding-higlass-in-web-page">Embedding HiGlass in web page</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#javascript-api">Javascript API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#viewconfs">Viewconfs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#docker">Docker</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="jupyter.html">Jupyter Notebooks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="jupyter.html#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jupyter.html#usage">Usage</a></li>
@@ -657,7 +98,11 @@ json (e.g. <cite>{“viewconf”: myViewConfig}</cite>):</p>
 <li class="toctree-l2"><a class="reference internal" href="python_api.html#hgflask-client">hgflask.client</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="javascript_api.html">Javascript API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="javascript_api.html">Javascript API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="javascript_api.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="javascript_api.html#api-functions">API Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data Preparation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bed-files">Bed Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedpe-like-files">Bedpe-like Files</a></li>
@@ -691,6 +136,7 @@ json (e.g. <cite>{“viewconf”: myViewConfig}</cite>):</p>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#d-annotations">1D Annotations</a></li>
 </ul>
 </li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributor Guidelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-views">Adding views</a></li>
 <li class="toctree-l2"><a class="reference internal" href="b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
@@ -707,12 +153,8 @@ json (e.g. <cite>{“viewconf”: myViewConfig}</cite>):</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="view_config.html#genome-position-search-box">Genome Position Search Box</a></li>
-<li class="toctree-l2"><a class="reference internal" href="view_config.html#uids">UIDs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="view_config.html#initialxdomain-and-initialydomain">initialXDomain and initialYDomain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="view_config.html#tracksourceservers">trackSourceServers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="view_config.html#exportviewurl">exportViewUrl</a></li>
-<li class="toctree-l2"><a class="reference internal" href="view_config.html#tracks">Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#show-a-specific-genomic-location">Show a specific genomic location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#upload-a-viewconf-to-the-server">Upload a viewconf to the server</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="views.html">Views</a><ul>
@@ -726,8 +168,8 @@ json (e.g. <cite>{“viewconf”: myViewConfig}</cite>):</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="tutorial.html" title="previous chapter">Tutorial</a></li>
-      <li>Next: <a href="jupyter.html" title="next chapter">Jupyter Notebooks</a></li>
+      <li>Previous: <a href="track_types.html" title="previous chapter">Track Types</a></li>
+      <li>Next: <a href="b_viewer.html" title="next chapter">Viewer</a></li>
   </ul></li>
 </ul>
 </div>

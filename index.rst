@@ -164,10 +164,10 @@ crucial are listed below.
     :glob:
 
     tutorial
-    developer 
     jupyter
     python_api
     javascript_api
     data_preparation
     track_types
+    developer 
     *
