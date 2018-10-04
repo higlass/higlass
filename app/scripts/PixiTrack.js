@@ -486,6 +486,7 @@ class PixiTrack extends Track {
     this.draw();
     this.drawBackground();
     this.drawLabel();
+    this.drawError();
     this.drawBorder();
   }
 
