@@ -49,7 +49,7 @@ help of the ``hgflask.client`` module:
                        'valueScaleMax': 0.5
                    })
 
-    higlass_jupyter.HiGlassDisplay(viewconf=hgc.to_json_string())
+    higlass_jupyter.HiGlassDisplay(viewconf=conf.to_json_string())
 
 The result is a fully interactive HiGlass view direcly embedded in the Jupyter
 notebook.
