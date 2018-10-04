@@ -166,7 +166,7 @@ of the data file contains a header using the (<code class="docutils literal"><sp
 <p>The dataset used in this example contains copy number data that has been log2
 transformed. That is, the copy number given for each bin is the log2 of the
 computed value. This is a problem for HiGlass’s default aggregation method of
-summing adjacent values since <img class="math" src="_images/math/4e9125b9e00c5072d6f3577f7c356a015ed9ca82.png" alt="\log_2 a + \log_2 b \neq \log_2 ab"/>.</p>
+summing adjacent values since <span class="math">\log_2 a + \log_2 b \neq \log_2 ab</span>.</p>
 <p>Using the <code class="docutils literal"><span class="pre">--transform</span> <span class="pre">exp2</span></code> option tells clodius to raise two to the
 power of the provided value before doing the transformation and storing. As
 an added benefit, NaN values become apparent in the resulting because they
