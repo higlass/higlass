@@ -16,6 +16,10 @@ A live instance can be found at [http://higlass.io](http://higlass.io). A [Docke
 
 For documentation about how to use and install HiGlass, please visit [http://docs.higlass.io](http://docs.higlass.io).
 
+### Citation
+
+Kerpedjiev, P., Abdennur, N., Lekschas, F., McCallum, C., Dinkla, K., Strobelt, H., ... & Gehlenborg, N. *HiGlass: Web-based Visual Exploration and Analysis of Genome Interaction Maps.* Genome Biology (2018): 19:125. https://doi.org/10.1186/s13059-018-1486-1
+
 ### Example
 
 <p align="center">
