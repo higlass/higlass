@@ -36,56 +36,122 @@ help of the ``hgflask.client`` module:
 
 .. code-block:: python
 
-    import hgflask.client as hfc
-    import higlass_jupyter
+    import higlass_jupyter as hiju
+    import hgflask.client as hgc
 
-    conf = hfc.HiGlassConfig()
-    view = conf.add_view()
-    view.add_track(tileset_uuid='CQMd6V_cRw6iCI_-Unl3PQ', 
-                   track_type='heatmap', 
-                   position='center', 
-                   server="http://higlass.io/api/v1",
-                   height=210, options={
-                       'valueScaleMax': 0.5
-                   })
+    conf = hgc.ViewConf([
+        hgc.View([
+            hgc.Track(track_type='top-axis', position='top'),   
+            hgc.Track(track_type='heatmap', position='center',
+                     tileset_uuid='CQMd6V_cRw6iCI_-Unl3PQ', 
+                      api_url="http://higlass.io/api/v1/",
+                      height=250,
+                     options={ 'valueScaleMax': 0.5 }),
 
-    higlass_jupyter.HiGlassDisplay(viewconf=conf.to_json_string())
+        ])
+    ])
+
+    hiju.HiGlassDisplay(viewconf=conf.to_json())
 
 The result is a fully interactive HiGlass view direcly embedded in the Jupyter
 notebook.
 
-.. image:: img/jupyter-hic-heatmap.png
+.. image:: img/remote-hic.png
 
 Serving local data
 ^^^^^^^^^^^^^^^^^^
 
-To view local data, we need to set up a temporary server:
+To view local data, we need to define the tilesets and set up a temporary
+server.
+
+Cooler Files
+""""""""""""
+
+Creating the server:
 
 .. code-block:: python
 
-    import hgflask as hgf
+    import hgflask.tilesets as hfti
+    import hgflask.server as hgse
 
-    tilesets = [{
-        'filepath': "my_file.mcool",
-        'uuid': 'a'
-    }]
+    ts = hfti.cooler(
+        '../data/Dixon2012-J1-NcoI-R1-filtered.100kb.multires.cool')
 
-    server = hgf.start(tilesets)
+    server = hgse.start(tilesets=[ts])
 
-We can then test if the server is running:
-
-.. code-block:: python
-
-    server.tileset_info('a')
-
-And display the data:
+And displaying the dataset in the client:
 
 .. code-block:: python
 
-    track = (hgc.HiGlassConfig()
-        .add_view() 
-        .add_track('a', 'heatmap', 'center', server=server.api_address))
-    hgj.HiGlassDisplay(viewconf=conf.to_json_string())
+    import higlass_jupyter as hiju
+    import hgflask.client as hgc
+
+    conf = hgc.ViewConf([
+        hgc.View([
+            hgc.Track(track_type='top-axis', position='top'),   
+            hgc.Track(track_type='heatmap', position='center',
+                     tileset_uuid=ts.uuid, 
+                      api_url=server.api_address,
+                      height=250
+                     options={ 'valueScaleMax': 0.5 }),
+
+        ])
+    ])
+
+    hiju.HiGlassDisplay(viewconf=conf.to_json())
+
+
+.. image:: img/jupyter-hic-heatmap.png
+
+
+BigWig Files
+""""""""""""
+
+In this example, we'll set up a server containing both a chromosome labels
+track and a bigwig track. Furthermore, the bigwig track will be ordered
+according to the chromosome info in the specified file.
+
+.. code-block:: python
+
+    import hgtiles.chromsizes as hgch
+
+    import hgflask.server as hgse
+    import hgflask.tilesets as hfti
+
+
+    chromsizes_fp = '../data/chromSizes_hg19_reordered.tsv'
+    bigwig_fp = '../data/wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.bigWig'
+
+    chromsizes = hgch.get_tsv_chromsizes(chromsizes_fp)
+
+    ts_r = hfti.bigwig(bigwig_fp, chromsizes=chromsizes)
+    cs_r = hfti.chromsizes(chromsizes_fp)
+
+    server = hgse.start(tilesets=[ts_r, cs_r])
+
+The client view will be composed such that three tracks are visible. Two of them
+are served from the local server.
+
+.. code-block:: python
+
+    import higlass_jupyter as hiju
+    import hgflask.client as hgc
+
+    conf = hgc.ViewConf([
+        hgc.View([
+            hgc.Track(track_type='top-axis', position='top'),
+            
+            hgc.Track(track_type='horizontal-chromosome-labels', position='top',
+                     tileset_uuid=cs_r.uuid, api_url=server.api_address),
+            hgc.Track(track_type='horizontal-bar', position='top', 
+                      tileset_uuid=ts_r.uuid, api_url=server.api_address,
+                     options={ 'height': 40 }),
+        ])
+    ])
+
+    hiju.HiGlassDisplay(viewconf=conf.to_json())
+
+.. image:: img/jupyter-bigwig.png
 
 Serving custom data
 ^^^^^^^^^^^^^^^^^^^
@@ -113,34 +179,38 @@ Then we can define the data and tell the server how to render it.
     import functools as ft
     import hgtiles.npmatrix as hgnp
 
-    tilesets = [{
-        'uuid': 'a',
-        'handlers': {
-            'tiles': ft.partial(hgnp.tiles_wrapper, data),
-            'tileset_info': ft.partial(hgnp.tileset_info, data)        
-            }
-        }
-    ]
+    import hgflask.server as hgse
+    import hgflask.tilesets as hfti
 
-    server = hgf.start(tilesets)
+    ts = hfti.Tileset(
+        tileset_info=lambda: hgnp.tileset_info(data),
+        tiles=lambda tids: hgnp.tiles_wrapper(data, tids)
+    )
+
+    server = hgse.start([ts])
 
 Finally, we create the HiGlass component which renders it, along with
 axis labels:
 
 .. code-block:: python
 
-    hgc = hfc.HiGlassConfig()
-    view = hgc.add_view()
-    view.add_track('a', 'heatmap', 'center', 
-                   server=server.api_address,
-                   height=200)
-    view.add_track(None, 'top-axis', 'top')
-    view.add_track(None, 'left-axis', 'left')
+    import higlass_jupyter as hiju
+    import hgflask.client as hgc
 
+    conf = hgc.ViewConf([
+        hgc.View([
+            hgc.Track(track_type='top-axis', position='top'), 
+            hgc.Track(track_type='left-axis', position='left'),
+            hgc.Track(track_type='heatmap', position='center',
+                     tileset_uuid=ts.uuid, 
+                      api_url=server.api_address,
+                      height=250,
+                     options={ 'valueScaleMax': 0.5 }),
 
-    #print(hgc.to_json_string())
-    import higlass_jupyter
-    higlass_jupyter.HiGlassDisplay(viewconf=hgc.to_json_string())
+        ])
+    ])
+
+    hiju.HiGlassDisplay(viewconf=conf.to_json())
 
 .. image:: img/eggholder-function.png
 
@@ -165,7 +235,10 @@ Then we have to set up a data server to output the data in "tiles".
 
     import hgtiles.points as hgpo
     import hgtiles.utils as hgut
-    import hgflask as hgf
+
+    import hgflask.server as hfse
+    import hgflask.tilesets as hfti
+
     import numpy as np
     import pandas as pd
 
@@ -174,43 +247,43 @@ Then we have to set up a data server to output the data in "tiles".
         'x': np.random.random((length,)),
         'y': np.random.random((length,)),
         'v': range(1, length+1),
-    })  
+    })
 
     # get the tileset info (bounds and such) of the dataset
     tsinfo = hgpo.tileset_info(df, 'x', 'y')
 
-    # specify the dataset and its tile handlers
-    tilesets = [{
-        'uuid': 'a',
-        'handlers': {
-            'tileset_info': lambda: tsinfo,
-            'tiles': lambda tile_ids: hgpo.format_data(
+    ts = hfti.Tileset(
+        tileset_info=lambda: tsinfo,
+        tiles=lambda tile_ids: hgpo.format_data(
                     hgut.bundled_tiles_wrapper_2d(tile_ids,
-                        lambda z,x,y,width=1,height=1: hgpo.tiles(df, 'x', 'y', 
-                            tsinfo, z, x, y, width, height)))
-        }
-    }]
+                        lambda z,x,y,width=1,height=1: hgpo.tiles(df, 'x', 'y',
+                            tsinfo, z, x, y, width, height))))
 
     # start the server
-    server = hgf.start(tilesets)
+    server = hfse.start([ts])
 
 And finally, we can create a HiGlass client in the browser to view the data:
 
 .. code-block:: python
 
     import hgflask.client as hfc
-    import higlass_jupyter
+    import higlass_jupyter as hiju
 
-    hgc = hfc.HiGlassConfig()
-    hgc.add_view().add_track('a', 'labelled-points-track', 'center',
-                  server.api_address, height=200,
-                  options = {
-                      'labelField': 'v'
-                  })
+    hgc = hfc.ViewConf([
+        hfc.View([
+            hfc.Track(
+                track_type='labelled-points-track',
+                position='center',
+                tileset_uuid=ts.uuid,
+                api_url=server.api_address,
+                height=200,
+                options={
+                    'labelField': 'v'
+                })
+        ])
+    ])
 
-    a = hgc.to_json_string()
-    higlass_jupyter.HiGlassDisplay(viewconf=hgc.to_json_string(),
-                                  hg_options='{"bounded": false}')
+    hiju.HiGlassDisplay(viewconf=hgc.to_json())
 
 .. image:: img/jupyter-labelled-points.png
 
