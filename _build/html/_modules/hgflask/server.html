@@ -5,12 +5,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>hgflask &#8212; HiGlass v1.0 documentation</title>
-    <link rel="stylesheet" href="../_static/higlass.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <title>hgflask.server &#8212; HiGlass v1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/higlass.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
+        URL_ROOT:    '../../',
         VERSION:     'v1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -18,11 +18,11 @@
         SOURCELINK_SUFFIX: '.txt'
       };
     </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-77756807-1"></script>
   <script>
@@ -34,7 +34,7 @@
   </script>
   
    
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -49,7 +49,7 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>Source code for hgflask</h1><div class="highlight"><pre>
+  <h1>Source code for hgflask.server</h1><div class="highlight"><pre>
 <span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
 
 <span class="c1"># -*- coding: utf-8 -*-</span>
@@ -81,39 +81,9 @@
 <span class="kn">from</span> <span class="nn">fuse</span> <span class="k">import</span> <span class="n">FUSE</span>
 
 
-<span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span><span class="n">tilesets</span><span class="p">,</span> <span class="n">external_filetype_handlers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span><span class="n">tilesets</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
     <span class="n">CORS</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
-
-    <span class="n">CHROMSIZES</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;hg19&#39;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;chr1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">249250621</span><span class="p">},</span> 
-            <span class="s2">&quot;chr2&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">243199373</span><span class="p">},</span> 
-            <span class="s2">&quot;chr3&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">198022430</span><span class="p">},</span> 
-            <span class="s2">&quot;chr4&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">191154276</span><span class="p">},</span> 
-            <span class="s2">&quot;chr5&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">180915260</span><span class="p">},</span> 
-            <span class="s2">&quot;chr6&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">171115067</span><span class="p">},</span> 
-            <span class="s2">&quot;chr7&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">159138663</span><span class="p">},</span> 
-            <span class="s2">&quot;chr8&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">146364022</span><span class="p">},</span> 
-            <span class="s2">&quot;chr9&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">141213431</span><span class="p">},</span> 
-            <span class="s2">&quot;chr10&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">135534747</span><span class="p">},</span> 
-            <span class="s2">&quot;chr11&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">135006516</span><span class="p">},</span> 
-            <span class="s2">&quot;chr12&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">133851895</span><span class="p">},</span> 
-            <span class="s2">&quot;chr13&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">115169878</span><span class="p">},</span> 
-            <span class="s2">&quot;chr14&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">107349540</span><span class="p">},</span> 
-            <span class="s2">&quot;chr15&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">102531392</span><span class="p">},</span> 
-            <span class="s2">&quot;chr16&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">90354753</span><span class="p">},</span> 
-            <span class="s2">&quot;chr17&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">81195210</span><span class="p">},</span> 
-            <span class="s2">&quot;chr18&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">78077248</span><span class="p">},</span> 
-            <span class="s2">&quot;chr19&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">59128983</span><span class="p">},</span> 
-            <span class="s2">&quot;chr20&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">63025520</span><span class="p">},</span> 
-            <span class="s2">&quot;chr21&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">48129895</span><span class="p">},</span> 
-            <span class="s2">&quot;chr22&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">51304566</span><span class="p">},</span> 
-            <span class="s2">&quot;chrX&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">155270560</span><span class="p">},</span> 
-            <span class="s2">&quot;chrY&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">59373566</span><span class="p">},</span> 
-            <span class="s2">&quot;chrM&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">16571</span><span class="p">},</span>
-        <span class="p">},</span>
-    <span class="p">}</span>
 
     <span class="n">TILESETS</span> <span class="o">=</span> <span class="n">tilesets</span>
 
@@ -127,44 +97,95 @@
         <span class="k">return</span><span class="p">(</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">)</span>
 
 
-    <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/v1/available-chrom-sizes/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
-    <span class="k">def</span> <span class="nf">available_chrom_sizes</span><span class="p">():</span>
-        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span>
-            <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">CHROMSIZES</span><span class="p">),</span> 
-            <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">CHROMSIZES</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">CHROMSIZES</span><span class="p">))}</span>
-        <span class="p">})</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    CHROMSIZES = {</span>
+<span class="sd">        &#39;hg19&#39;: {</span>
+<span class="sd">            &quot;chr1&quot;: {&quot;size&quot;: 249250621}, </span>
+<span class="sd">            &quot;chr2&quot;: {&quot;size&quot;: 243199373}, </span>
+<span class="sd">            &quot;chr3&quot;: {&quot;size&quot;: 198022430}, </span>
+<span class="sd">            &quot;chr4&quot;: {&quot;size&quot;: 191154276}, </span>
+<span class="sd">            &quot;chr5&quot;: {&quot;size&quot;: 180915260}, </span>
+<span class="sd">            &quot;chr6&quot;: {&quot;size&quot;: 171115067}, </span>
+<span class="sd">            &quot;chr7&quot;: {&quot;size&quot;: 159138663}, </span>
+<span class="sd">            &quot;chr8&quot;: {&quot;size&quot;: 146364022}, </span>
+<span class="sd">            &quot;chr9&quot;: {&quot;size&quot;: 141213431}, </span>
+<span class="sd">            &quot;chr10&quot;: {&quot;size&quot;: 135534747}, </span>
+<span class="sd">            &quot;chr11&quot;: {&quot;size&quot;: 135006516}, </span>
+<span class="sd">            &quot;chr12&quot;: {&quot;size&quot;: 133851895}, </span>
+<span class="sd">            &quot;chr13&quot;: {&quot;size&quot;: 115169878}, </span>
+<span class="sd">            &quot;chr14&quot;: {&quot;size&quot;: 107349540}, </span>
+<span class="sd">            &quot;chr15&quot;: {&quot;size&quot;: 102531392}, </span>
+<span class="sd">            &quot;chr16&quot;: {&quot;size&quot;: 90354753}, </span>
+<span class="sd">            &quot;chr17&quot;: {&quot;size&quot;: 81195210}, </span>
+<span class="sd">            &quot;chr18&quot;: {&quot;size&quot;: 78077248}, </span>
+<span class="sd">            &quot;chr19&quot;: {&quot;size&quot;: 59128983}, </span>
+<span class="sd">            &quot;chr20&quot;: {&quot;size&quot;: 63025520}, </span>
+<span class="sd">            &quot;chr21&quot;: {&quot;size&quot;: 48129895}, </span>
+<span class="sd">            &quot;chr22&quot;: {&quot;size&quot;: 51304566}, </span>
+<span class="sd">            &quot;chrX&quot;: {&quot;size&quot;: 155270560}, </span>
+<span class="sd">            &quot;chrY&quot;: {&quot;size&quot;: 59373566}, </span>
+<span class="sd">            &quot;chrM&quot;: {&quot;size&quot;: 16571},</span>
+<span class="sd">        },</span>
+<span class="sd">    }</span>
+
+<span class="sd">    @app.route(&#39;/api/v1/available-chrom-sizes/&#39;, methods=[&#39;GET&#39;])</span>
+<span class="sd">    def available_chrom_sizes():</span>
+<span class="sd">        return jsonify({</span>
+<span class="sd">            &quot;count&quot;: len(CHROMSIZES), </span>
+<span class="sd">            &quot;results&quot;: {i: CHROMSIZES[i] for i in range(len(CHROMSIZES))}</span>
+<span class="sd">        })</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/v1/chrom-sizes/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">chrom_sizes</span><span class="p">():</span>
         <span class="n">uuid</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">res_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)</span>
+        <span class="n">res_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;tsv&#39;</span><span class="p">)</span>
         <span class="n">incl_cum</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cum&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="n">uuid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">CHROMSIZES</span><span class="p">)</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">CHROMSIZES</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">ts</span> <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">TILESETS</span> <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">uuid</span> <span class="o">==</span> <span class="n">uuid</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Not found&quot;</span><span class="p">}),</span> <span class="mi">404</span>
-
+        
+        <span class="n">data</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">chromsizes</span><span class="p">()</span>
+        
+        <span class="n">new_data</span> <span class="o">=</span> <span class="p">[]</span>
+        
         <span class="k">if</span> <span class="n">incl_cum</span><span class="p">:</span>
             <span class="n">cum</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">new_data</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">cum</span><span class="p">)]</span>
+                <span class="n">cum</span> <span class="o">+=</span> <span class="n">size</span> 
+
             <span class="k">for</span> <span class="n">chrom</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>   <span class="c1"># dictionaries in py3.6+ are ordered!</span>
                 <span class="n">data</span><span class="p">[</span><span class="n">chrom</span><span class="p">][</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cum</span>
                 <span class="n">cum</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="n">chrom</span><span class="p">][</span><span class="s1">&#39;size&#39;</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">res_type</span> <span class="o">==</span> <span class="s1">&#39;json&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-
-        <span class="k">elif</span> <span class="n">res_type</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
+            <span class="c1"># should return</span>
+            <span class="c1"># { uuid: {</span>
+            <span class="c1">#   &#39;chr1&#39;: {&#39;size&#39;: 2343, &#39;offset&#39;: 0},</span>
+            <span class="c1">#</span>
             <span class="k">if</span> <span class="n">incl_cum</span><span class="p">:</span>
-               <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\t</span><span class="si">{}</span><span class="se">\t</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">])</span>
-                    <span class="k">for</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="n">ts</span><span class="o">.</span><span class="n">uuid</span><span class="p">:</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">chrom</span><span class="p">,</span> <span class="p">{</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span> <span class="s1">&#39;offset&#39;</span><span class="p">:</span> <span class="n">offset</span> <span class="p">})</span> <span class="k">for</span> 
+                            <span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span>
+                    <span class="p">}</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\t</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
-                    <span class="k">for</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="n">ts</span><span class="o">.</span><span class="n">uuid</span><span class="p">:</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">chrom</span><span class="p">,</span> <span class="p">{</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="n">size</span> <span class="p">})</span> <span class="k">for</span> 
+                            <span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span>
+                    <span class="p">}</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">res_type</span> <span class="o">==</span> <span class="s1">&#39;tsv&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">incl_cum</span><span class="p">:</span>
+               <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\t</span><span class="si">{}</span><span class="se">\t</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">cum</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">cum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\t</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">size</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Unknown response type&quot;</span><span class="p">}),</span> <span class="mi">500</span>
@@ -237,46 +258,14 @@
 
         <span class="n">info</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">uuid</span> <span class="ow">in</span> <span class="n">uuids</span><span class="p">:</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">ts</span> <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">TILESETS</span> <span class="k">if</span> <span class="n">ts</span><span class="p">[</span><span class="s1">&#39;uuid&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">uuid</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">ts</span> <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">TILESETS</span> <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">uuid</span> <span class="o">==</span> <span class="n">uuid</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
             
             <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s1">&#39;handlers&#39;</span> <span class="ow">in</span> <span class="n">ts</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="s1">&#39;tileset_info&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ts</span><span class="p">[</span><span class="s1">&#39;handlers&#39;</span><span class="p">]:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Missing tileset_info handler&quot;</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
-                    <span class="n">tsinfo</span> <span class="o">=</span> <span class="n">ts</span><span class="p">[</span><span class="s1">&#39;handlers&#39;</span><span class="p">][</span><span class="s1">&#39;tileset_info&#39;</span><span class="p">]()</span>
-
-                    <span class="c1">#print(&#39;tsinfo&#39;, tsinfo)</span>
-                    <span class="n">info</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span> <span class="o">=</span> <span class="n">tsinfo</span>
-                    <span class="k">continue</span>
-
-                <span class="n">info</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-                <span class="n">filepath</span> <span class="o">=</span> <span class="n">get_filepath</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="n">uuid</span><span class="p">])</span>
-                <span class="n">filetype</span> <span class="o">=</span> <span class="n">get_filetype</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="n">uuid</span><span class="p">])</span>
-
-                <span class="k">if</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="n">external_filetype_handlers</span><span class="p">:</span>
-                    <span class="n">handler</span> <span class="o">=</span> <span class="n">external_filetype_handlers</span><span class="p">[</span><span class="n">filetype</span><span class="p">][</span><span class="s1">&#39;tileset_info&#39;</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="n">filepath</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">info</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">handler</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">info</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">handler</span><span class="p">())</span>
-                <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s1">&#39;bigwig&#39;</span><span class="p">:</span>
-                    <span class="n">info</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">hgbi</span><span class="o">.</span><span class="n">tileset_info</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>                
-                <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s1">&#39;cooler&#39;</span><span class="p">:</span>
-                    <span class="n">info</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">hgco</span><span class="o">.</span><span class="n">tileset_info</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
-                <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s1">&#39;hitile&#39;</span><span class="p">:</span>
-                    <span class="n">info</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">hghi</span><span class="o">.</span><span class="n">tileset_info</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
-                <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s1">&#39;bedarcsdb&#39;</span><span class="p">:</span>
-                    <span class="n">info</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">hgb2</span><span class="o">.</span><span class="n">get_2d_tileset_info</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unknown filetype:&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">[</span><span class="n">uuid</span><span class="p">][</span><span class="s1">&#39;filetype&#39;</span><span class="p">],</span> 
-                            <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+                <span class="n">info</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">tileset_info</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">info</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;No such tileset with uid: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
                 <span class="p">}</span>
-
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;info:&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
 
@@ -293,36 +282,8 @@
         
         <span class="n">tiles</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">tids</span> <span class="ow">in</span> <span class="n">uuids_to_tids</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">ts</span> <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">TILESETS</span> <span class="k">if</span> <span class="n">ts</span><span class="p">[</span><span class="s1">&#39;uuid&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">uuid</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s1">&#39;handlers&#39;</span> <span class="ow">in</span> <span class="n">ts</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="s1">&#39;tiles&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ts</span><span class="p">[</span><span class="s1">&#39;handlers&#39;</span><span class="p">]:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Missing tiles handler&quot;</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
-                    <span class="n">tiles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="s1">&#39;handlers&#39;</span><span class="p">][</span><span class="s1">&#39;tiles&#39;</span><span class="p">](</span><span class="n">tids</span><span class="p">))</span>
-                    <span class="k">continue</span>
-
-                <span class="n">filetype</span> <span class="o">=</span> <span class="n">get_filetype</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-                <span class="n">filepath</span> <span class="o">=</span> <span class="n">get_filepath</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-
-
-                <span class="k">if</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="n">external_filetype_handlers</span><span class="p">:</span>
-                    <span class="n">handler</span> <span class="o">=</span> <span class="n">external_filetype_handlers</span><span class="p">[</span><span class="n">filetype</span><span class="p">][</span><span class="s1">&#39;tiles&#39;</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="n">filepath</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">tiles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">handler</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">tids</span><span class="p">))</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">tiles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">handler</span><span class="p">(</span><span class="n">tids</span><span class="p">))</span>
-                <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s1">&#39;bigwig&#39;</span><span class="p">:</span>
-                    <span class="n">tiles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hgbi</span><span class="o">.</span><span class="n">tiles</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">tids</span><span class="p">))</span>
-                <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s1">&#39;cooler&#39;</span><span class="p">:</span>
-                    <span class="n">tiles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hgco</span><span class="o">.</span><span class="n">tiles</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">tids</span><span class="p">))</span>
-                <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s1">&#39;hitile&#39;</span><span class="p">:</span>
-                    <span class="n">tiles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hghi</span><span class="o">.</span><span class="n">tiles</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">tids</span><span class="p">))</span>
-                <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s1">&#39;bedarcsdb&#39;</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;tids:&#39;</span><span class="p">,</span> <span class="n">tids</span><span class="p">)</span>
-                    <span class="n">tiles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hgb2</span><span class="o">.</span><span class="n">get_1D_tiles</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">tids</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unknown filetype:&quot;</span><span class="p">,</span> <span class="n">filetype</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
-
+            <span class="n">ts</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">ts</span> <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">TILESETS</span> <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">uuid</span> <span class="o">==</span> <span class="n">uuid</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">tiles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">tiles</span><span class="p">(</span><span class="n">tids</span><span class="p">))</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="n">tid</span><span class="p">:</span> <span class="n">tval</span> <span class="k">for</span> <span class="n">tid</span><span class="p">,</span> <span class="n">tval</span> <span class="ow">in</span> <span class="n">tiles</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -391,6 +352,20 @@
 
         <span class="n">content</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">content</span><span class="p">[</span><span class="n">tile_id</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">chromsizes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uid</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return the chromosome sizes from the given filename</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:</span><span class="si">{port}</span><span class="s1">/api/v1/chrom-sizes/?id=</span><span class="si">{uid}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+                <span class="n">uid</span><span class="o">=</span><span class="n">uid</span><span class="p">)</span>
+
+        <span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">req</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Error fetching chromsizes:&#39;</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">req</span><span class="o">.</span><span class="n">content</span>
 
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -502,7 +477,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
 
 
-<div class="viewcode-block" id="start"><a class="viewcode-back" href="../python_api.html#hgflask.start">[docs]</a><span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="n">tilesets</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filetype_handlers</span><span class="o">=</span><span class="p">{},</span> <span class="n">tmp_dir</span><span class="o">=</span><span class="s1">&#39;/tmp/hgflask&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="start"><a class="viewcode-back" href="../../python_api.html#hgflask.server.start">[docs]</a><span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="n">tilesets</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmp_dir</span><span class="o">=</span><span class="s1">&#39;/tmp/hgflask&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Start the hgflask server. If a port is not specified, an open port </span>
 <span class="sd">    will be automatically selected.</span>
@@ -514,40 +489,37 @@
 
 <span class="sd">        .. code-block:: python</span>
 
-<span class="sd">            TILESETS = [{  </span>
-<span class="sd">                &#39;uuid&#39;: &quot;abc&quot;,</span>
-<span class="sd">                &#39;filetype&#39;: &quot;grid_1000&quot;,</span>
-<span class="sd">                &#39;datatype&#39;: &quot;matrix&quot;,</span>
-<span class="sd">            },</span>
-<span class="sd">            {  </span>
-<span class="sd">                &#39;uuid&#39;: &quot;abc1&quot;,</span>
-<span class="sd">                &#39;filetype&#39;: &quot;grid_8000&quot;,</span>
-<span class="sd">                &#39;datatype&#39;: &quot;matrix&quot;,</span>
-<span class="sd">            }]</span>
+<span class="sd">            import hgflask.tilesets as hfti</span>
+
+<span class="sd">            tilesets = [</span>
+<span class="sd">                hfti.cooler(&#39;mycooler.cool&#39;,</span>
+<span class="sd">                hfti.bigwig(&#39;mybigwig.bigWig&#39;,</span>
+<span class="sd">            ]</span>
 <span class="sd">    port: int</span>
 <span class="sd">        The port to start this server on. If it is None, a port</span>
 <span class="sd">        will automatically be assigned.</span>
-
-<span class="sd">    filetype_handlers: dict</span>
-<span class="sd">        A dictionary of handlers for filetypes not supported out of the</span>
-<span class="sd">        box</span>
+<span class="sd">    tmp_dir: string </span>
+<span class="sd">        A temporary directory to be used for mounting http files </span>
+<span class="sd">        (experimental)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># fuse = setup_fuse(tmp_dir)</span>
     <span class="n">to_delete</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="c1"># simmple integrity check</span>
-    <span class="k">for</span> <span class="n">tileset</span> <span class="ow">in</span> <span class="n">tilesets</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;filepath&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tileset</span> 
-                    <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;filetype&#39;</span> <span class="ow">in</span> <span class="n">tileset</span> <span class="ow">and</span> <span class="n">tileset</span><span class="p">[</span><span class="s1">&#39;filetype&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">filetype_handlers</span><span class="p">)</span>
-                    <span class="ow">and</span> <span class="s1">&#39;handlers&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tileset</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: tileset missing filepath or filetype handler&quot;</span><span class="p">,</span> <span class="n">tileset</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Are you sure the list of tilesets is a list?&quot;</span><span class="p">)</span>
-            <span class="k">raise</span>
-        
-        <span class="k">if</span> <span class="s1">&#39;filepath&#39;</span> <span class="ow">in</span> <span class="n">tileset</span><span class="p">:</span>
-            <span class="n">tileset</span><span class="p">[</span><span class="s1">&#39;filepath&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">tileset</span><span class="p">[</span><span class="s1">&#39;filepath&#39;</span><span class="p">])</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    for tileset in tilesets:</span>
+<span class="sd">        try:</span>
+<span class="sd">            if (&#39;filepath&#39; not in tileset </span>
+<span class="sd">                    and (&#39;filetype&#39; in tileset and tileset[&#39;filetype&#39;] not in filetype_handlers)</span>
+<span class="sd">                    and &#39;handlers&#39; not in tileset):</span>
+<span class="sd">                print(&quot;WARNING: tileset missing filepath or filetype handler&quot;, tileset)</span>
+<span class="sd">        except TypeError:</span>
+<span class="sd">            print(&quot;ERROR: Are you sure the list of tilesets is a list?&quot;)</span>
+<span class="sd">            raise</span>
+<span class="sd">        </span>
+<span class="sd">        if &#39;filepath&#39; in tileset:</span>
+<span class="sd">            tileset[&#39;filepath&#39;] = op.expanduser(tileset[&#39;filepath&#39;])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 
     <span class="k">for</span> <span class="n">puid</span> <span class="ow">in</span> <span class="n">processes</span><span class="p">:</span>
@@ -560,9 +532,9 @@
 
     <span class="c1"># we&#39;re going to assign a uuid to each server process so that if anything</span>
     <span class="c1"># goes wrong, the variable referencing the process doesn&#39;t get lost</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">(</span><span class="n">tilesets</span><span class="o">=</span><span class="n">tilesets</span><span class="p">,</span> <span class="n">external_filetype_handlers</span><span class="o">=</span><span class="n">filetype_handlers</span><span class="p">)</span><span class="c1"># we&#39;re going to assign a uuid to each server process so that if anything</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">(</span><span class="n">tilesets</span><span class="o">=</span><span class="n">tilesets</span><span class="p">)</span><span class="c1"># we&#39;re going to assign a uuid to each server process so that if anything</span>
     <span class="c1"># goes wrong, the variable referencing the process doesn&#39;t get lost</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">(</span><span class="n">tilesets</span><span class="o">=</span><span class="n">tilesets</span><span class="p">,</span> <span class="n">external_filetype_handlers</span><span class="o">=</span><span class="n">filetype_handlers</span><span class="p">)</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">(</span><span class="n">tilesets</span><span class="o">=</span><span class="n">tilesets</span><span class="p">)</span>
 
     <span class="n">port</span><span class="o">=</span><span class="n">get_open_port</span><span class="p">()</span> <span class="k">if</span> <span class="n">port</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">port</span>
 
@@ -598,7 +570,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">HiGlass</a></h1>
+<h1 class="logo"><a href="../../index.html">HiGlass</a></h1>
 
 
 
@@ -608,86 +580,86 @@
 
 
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#quickly-viewing-a-dataset">Quickly viewing a dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#running-higlass-locally">Running HiGlass locally</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#adding-data">Adding data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#viewing-data-in-the-client">Viewing data in the client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#quickly-viewing-a-dataset">Quickly viewing a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#running-higlass-locally">Running HiGlass locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#adding-data">Adding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#viewing-data-in-the-client">Viewing data in the client</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../jupyter.html">Jupyter Notebooks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../jupyter.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../jupyter.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../jupyter.html">Jupyter Notebooks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../jupyter.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../jupyter.html#usage">Usage</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../python_api.html">Python API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../python_api.html#hgflask">hgflask</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../python_api.html#hgflask-client">hgflask.client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_api.html">Python API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../python_api.html#hgflask">hgflask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../python_api.html#hgflask-client">hgflask.client</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../javascript_api.html">Javascript API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../javascript_api.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../javascript_api.html#api-functions">API Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../javascript_api.html">Javascript API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../javascript_api.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../javascript_api.html#api-functions">API Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../data_preparation.html">Data Preparation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../data_preparation.html#bed-files">Bed Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data_preparation.html#bedpe-like-files">Bedpe-like Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data_preparation.html#bedgraph-files">BedGraph files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data_preparation.html#bigwig-files">bigWig files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data_preparation.html#gene-annotation-tracks">Gene Annotation Tracks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data_preparation.html#hitile-files">Hitile files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data_preparation.html#cooler-files">Cooler files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data_preparation.html#multivec-files">Multivec Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data_preparation.html#epilogos-data-multivec">Epilogos Data (multivec)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data_preparation.html#other-data-multivec">Other Data (multivec)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data_preparation.html">Data Preparation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../data_preparation.html#bed-files">Bed Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../data_preparation.html#bedpe-like-files">Bedpe-like Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../data_preparation.html#bedgraph-files">BedGraph files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../data_preparation.html#bigwig-files">bigWig files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../data_preparation.html#gene-annotation-tracks">Gene Annotation Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../data_preparation.html#hitile-files">Hitile files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../data_preparation.html#cooler-files">Cooler files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../data_preparation.html#multivec-files">Multivec Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../data_preparation.html#epilogos-data-multivec">Epilogos Data (multivec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../data_preparation.html#other-data-multivec">Other Data (multivec)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../track_types.html">Track Types</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#linking-value-scales">Linking value scales</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#bed-like">Bed-like</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#gene-annotations">Gene Annotations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#heatmap">Heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#d-heatmap">1D Heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#d-rectangle-domain">2D Rectangle Domain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#horizontal-2d-rectangle-domain">Horizontal 2D Rectangle Domain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#line">Line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#bar">Bar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#point">Point</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#id5">1D Heatmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#chromosome-labels">Chromosome Labels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#chromosome-grid">Chromosome Grid</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#stacked-bars">Stacked Bars</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#multiple-lines">Multiple Lines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#multiple-bar-charts">Multiple Bar Charts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../track_types.html#d-annotations">1D Annotations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../track_types.html">Track Types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#linking-value-scales">Linking value scales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#bed-like">Bed-like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#gene-annotations">Gene Annotations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#heatmap">Heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#d-heatmap">1D Heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#d-rectangle-domain">2D Rectangle Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#horizontal-2d-rectangle-domain">Horizontal 2D Rectangle Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#line">Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#bar">Bar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#point">Point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#id5">1D Heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#chromosome-labels">Chromosome Labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#chromosome-grid">Chromosome Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#stacked-bars">Stacked Bars</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#multiple-lines">Multiple Lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#multiple-bar-charts">Multiple Bar Charts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../track_types.html#d-annotations">1D Annotations</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../developer.html">Contributor Guidelines</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../b_viewer.html">Viewer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../b_viewer.html#adding-views">Adding views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../b_viewer.html#replacing-tracks">Replacing Tracks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../b_viewer.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../b_viewer.html#adding-cross-sections">Adding cross sections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer.html">Contributor Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../b_viewer.html">Viewer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../b_viewer.html#adding-views">Adding views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../b_viewer.html#replacing-tracks">Replacing Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../b_viewer.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../b_viewer.html#adding-cross-sections">Adding cross sections</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../higlass_server.html">Server</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../higlass_server.html#configuration">Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../higlass_server.html#development">Development</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../higlass_server.html#testing">Testing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../higlass_server.html#api">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../higlass_server.html">Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../higlass_server.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../higlass_server.html#development">Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../higlass_server.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../higlass_server.html#api">API</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../view_config.html">View Configs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../view_config.html#show-a-specific-genomic-location">Show a specific genomic location</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../view_config.html#upload-a-viewconf-to-the-server">Upload a viewconf to the server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../view_config.html">View Configs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../view_config.html#show-a-specific-genomic-location">Show a specific genomic location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../view_config.html#upload-a-viewconf-to-the-server">Upload a viewconf to the server</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../views.html">Views</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../views.html#genome-position-search-box">Genome Position Search Box</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../views.html#view-synchronization">View synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../views.html">Views</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../views.html#genome-position-search-box">Genome Position Search Box</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../views.html#view-synchronization">View synchronization</a></li>
 </ul>
 </li>
 </ul>
@@ -695,15 +667,15 @@
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="index.html">Module code</a><ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
+    <form class="search" action="../../search.html" method="get">
       <div><input type="text" name="q" /></div>
       <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />

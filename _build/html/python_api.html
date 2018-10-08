@@ -56,8 +56,8 @@
 <div class="section" id="hgflask">
 <h2>hgflask<a class="headerlink" href="#hgflask" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="hgflask.start">
-<code class="descclassname">hgflask.</code><code class="descname">start</code><span class="sig-paren">(</span><em>tilesets</em>, <em>port=None</em>, <em>filetype_handlers={}</em>, <em>tmp_dir='/tmp/hgflask'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hgflask.html#start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hgflask.start" title="Permalink to this definition">¶</a></dt>
+<dt id="hgflask.server.start">
+<code class="descclassname">hgflask.server.</code><code class="descname">start</code><span class="sig-paren">(</span><em>tilesets</em>, <em>port=None</em>, <em>tmp_dir='/tmp/hgflask'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hgflask/server.html#start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hgflask.server.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start the hgflask server. If a port is not specified, an open port
 will be automatically selected.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -66,23 +66,19 @@ will be automatically selected.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>tilesets</strong> (<em>object</em>) – <p>The list of tilesets to serve. For example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">TILESETS</span> <span class="o">=</span> <span class="p">[{</span>
-    <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="s2">&quot;abc&quot;</span><span class="p">,</span>
-    <span class="s1">&#39;filetype&#39;</span><span class="p">:</span> <span class="s2">&quot;grid_1000&quot;</span><span class="p">,</span>
-    <span class="s1">&#39;datatype&#39;</span><span class="p">:</span> <span class="s2">&quot;matrix&quot;</span><span class="p">,</span>
-<span class="p">},</span>
-<span class="p">{</span>
-    <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="s2">&quot;abc1&quot;</span><span class="p">,</span>
-    <span class="s1">&#39;filetype&#39;</span><span class="p">:</span> <span class="s2">&quot;grid_8000&quot;</span><span class="p">,</span>
-    <span class="s1">&#39;datatype&#39;</span><span class="p">:</span> <span class="s2">&quot;matrix&quot;</span><span class="p">,</span>
-<span class="p">}]</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hgflask.tilesets</span> <span class="kn">as</span> <span class="nn">hfti</span>
+
+<span class="n">tilesets</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">hfti</span><span class="o">.</span><span class="n">cooler</span><span class="p">(</span><span class="s1">&#39;mycooler.cool&#39;</span><span class="p">,</span>
+    <span class="n">hfti</span><span class="o">.</span><span class="n">bigwig</span><span class="p">(</span><span class="s1">&#39;mybigwig.bigWig&#39;</span><span class="p">,</span>
+<span class="p">]</span>
 </pre></div>
 </div>
 </li>
 <li><strong>port</strong> (<em>int</em>) – The port to start this server on. If it is None, a port
 will automatically be assigned.</li>
-<li><strong>filetype_handlers</strong> (<em>dict</em>) – A dictionary of handlers for filetypes not supported out of the
-box</li>
+<li><strong>tmp_dir</strong> (<em>string</em>) – A temporary directory to be used for mounting http files
+(experimental)</li>
 </ul>
 </td>
 </tr>
@@ -94,21 +90,23 @@ box</li>
 <div class="section" id="hgflask-client">
 <h2>hgflask.client<a class="headerlink" href="#hgflask-client" title="Permalink to this headline">¶</a></h2>
 <dl class="method">
-<dt id="hgflask.client.HiGlassView.add_track">
-<code class="descclassname">HiGlassView.</code><code class="descname">add_track</code><span class="sig-paren">(</span><em>tileset_uuid</em>, <em>track_type</em>, <em>position=None</em>, <em>server=None</em>, <em>height=None</em>, <em>width=None</em>, <em>options={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hgflask/client.html#HiGlassView.add_track"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hgflask.client.HiGlassView.add_track" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a track to a position.</p>
+<dt id="hgflask.client.View.__init__">
+<code class="descclassname">View.</code><code class="descname">__init__</code><span class="sig-paren">(</span><em>tracks=[]</em>, <em>x=0</em>, <em>y=0</em>, <em>width=12</em>, <em>height=6</em>, <em>initialXDomain=None</em>, <em>initialYDomain=None</em>, <em>uid=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hgflask/client.html#View.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hgflask.client.View.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new view</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tileset_uuid</strong> – The uuid of the track on the server</li>
-<li><strong>view_uid</strong> (<em>string</em>) – The identifier for the view to add this track to</li>
-<li><strong>track_type</strong> (<em>string</em>) – The type of track to add (e.g. “heatmap”, “line”)</li>
-<li><strong>position</strong> (<em>string</em>) – One of ‘top’, ‘bottom’, ‘center’, ‘left’, ‘right’</li>
-<li><strong>height</strong> (<em>int</em>) – The height of the track, if it is a top, bottom or a center track</li>
-<li><strong>width</strong> (<em>int</em>) – The width of the track, if it is a left, right or a center track</li>
-<li><strong>server</strong> (<em>string</em>) – The server storing the data for this track</li>
+<li><strong>tracks</strong> (<em>[</em><em>]</em>) – A list of Tracks to include in this view</li>
+<li><strong>x</strong> (<em>int</em>) – The position of this view on the grid</li>
+<li><strong>y</strong> (<em>int</em>) – The position of this view on the grid</li>
+<li><strong>width</strong> (<em>int</em>) – The width of this of view on a 12 unit grid</li>
+<li><strong>height</strong> (<em>int</em>) – The height of the this view. The height is proportional
+to the height of all the views present.</li>
+<li><strong>initialXDoamin</strong> (<em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – The initial x range of the view</li>
+<li><strong>initialYDomain</strong> (<em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – The initial y range of the view</li>
+<li><strong>uid</strong> (<em>string</em>) – The uid of new view</li>
 </ul>
 </td>
 </tr>
@@ -117,22 +115,21 @@ box</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="hgflask.client.HiGlassConfig.add_view">
-<code class="descclassname">HiGlassConfig.</code><code class="descname">add_view</code><span class="sig-paren">(</span><em>uid=None</em>, <em>width=12</em>, <em>height=6</em>, <em>x=0</em>, <em>y=0</em>, <em>initialXDomain=None</em>, <em>initialYDomain=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hgflask/client.html#HiGlassConfig.add_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hgflask.client.HiGlassConfig.add_view" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a new view</p>
+<dt id="hgflask.client.Track.__init__">
+<code class="descclassname">Track.</code><code class="descname">__init__</code><span class="sig-paren">(</span><em>track_type</em>, <em>position</em>, <em>tileset_uuid=None</em>, <em>api_url=None</em>, <em>height=None</em>, <em>width=None</em>, <em>options={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hgflask/client.html#Track.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hgflask.client.Track.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a track to a position.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>uid</strong> (<em>string</em>) – The uid of new view</li>
-<li><strong>width</strong> (<em>int</em>) – The width of this of view on a 12 unit grid</li>
-<li><strong>height</strong> (<em>int</em>) – The height of the this view. The height is proportional
-to the height of all the views present.</li>
-<li><strong>x</strong> (<em>int</em>) – The position of this view on the grid</li>
-<li><strong>y</strong> (<em>int</em>) – The position of this view on the grid</li>
-<li><strong>initialXDoamin</strong> (<em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – The initial x range of the view</li>
-<li><strong>initialYDomain</strong> (<em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – The initial y range of the view</li>
+<li><strong>track_type</strong> (<em>string</em>) – The type of track to add (e.g. “heatmap”, “line”)</li>
+<li><strong>position</strong> (<em>string</em>) – One of ‘top’, ‘bottom’, ‘center’, ‘left’, ‘right’</li>
+<li><strong>tileset_uuid</strong> – The of uuid of the tileset being displayed in this track</li>
+<li><strong>api_url</strong> (<em>string</em>) – The server storing the data for this track</li>
+<li><strong>height</strong> (<em>int</em>) – The height of the track (in pixels)</li>
+<li><strong>width</strong> (<em>int</em>) – The width of the track (in pixels)</li>
+<li><strong>options</strong> (<em>{}</em>) – The options to pass onto the track</li>
 </ul>
 </td>
 </tr>

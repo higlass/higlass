@@ -203,8 +203,26 @@ vector datatype and bigwig filetype:</p>
         higlass-server/manage.py ingest_tileset <span class="se">\</span>
         --filename /tmp/cnvs_hw.hitile <span class="se">\</span>
         --filetype bigwig <span class="se">\</span>
-        --datatype vector
+        --datatype vector <span class="se">\</span>
+        --coordSystem hg19
 </pre></div>
+</div>
+<p><strong>Important:</strong> BigWig files have to be associated with a chromosome order!!
+This means that there needs to be a chromsizes file for the
+specified assembly (coordSystem) in the higlass database. If no <code class="docutils literal"><span class="pre">coordSystem</span></code>
+is specified for the bigWig file in <code class="docutils literal"><span class="pre">ingest_tileset</span></code>, HiGlass will try to
+find one in the database that matches the chromosomes present in the bigWig file.
+If a <code class="docutils literal"><span class="pre">chromsizes</span></code> tileset is found, it’s <code class="docutils literal"><span class="pre">coordSystem</span></code> will also be used for
+the bigWig file. If none are found, the import will fail. If more than one is found,
+the import will also fail. If a <cite>coordSystem</cite> is specified for the bigWig, but no
+<code class="docutils literal"><span class="pre">chromsizes</span></code> are found on the server, the import will fail.</p>
+<p>TLDR: The simplest way to import a bigWig is to have a <code class="docutils literal"><span class="pre">chromsizes</span></code> present e.g.</p>
+<div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">ingest_tileset</span> <span class="pre">--filetype</span> <span class="pre">chromsizes-tsv</span> <span class="pre">--datatype</span> <span class="pre">chromsizes</span> <span class="pre">--coordSystem</span> <span class="pre">hg19</span> <span class="pre">chromSizes.tsv</span></code></div>
+</div>
+<p>and then to add the bigWig with the same <code class="docutils literal"><span class="pre">coordSystem</span></code>:</p>
+<div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">ingest_tileset</span> <span class="pre">--filetype</span> <span class="pre">bigwig</span> <span class="pre">--datatype</span> <span class="pre">vector</span> <span class="pre">--coordSystem</span> <span class="pre">hg19</span> <span class="pre">chromSizes.tsv</span></code></div>
 </div>
 </div>
 <div class="section" id="gene-annotation-tracks">

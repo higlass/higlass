@@ -53,32 +53,36 @@
 <span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">slugid</span>
 
-<span class="k">class</span> <span class="nc">HiGlassTrack</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">track_type</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">server</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-            <span class="n">tileset_uuid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{}):</span>
+<span class="k">class</span> <span class="nc">Track</span><span class="p">:</span>
+<div class="viewcode-block" id="Track.__init__"><a class="viewcode-back" href="../../python_api.html#hgflask.client.Track.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">track_type</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">tileset_uuid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+            <span class="n">api_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{}):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Add a track to a position.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        view_uid: string</span>
-<span class="sd">            The identifier for the view to add this track to</span>
 <span class="sd">        track_type: string</span>
 <span class="sd">            The type of track to add (e.g. &quot;heatmap&quot;, &quot;line&quot;)</span>
 <span class="sd">        position: string</span>
 <span class="sd">            One of &#39;top&#39;, &#39;bottom&#39;, &#39;center&#39;, &#39;left&#39;, &#39;right&#39;</span>
-<span class="sd">        server: string</span>
-<span class="sd">            The server storing the data for this track</span>
 <span class="sd">        tileset_uuid:</span>
-<span class="sd">            The uuid of the track on the server</span>
+<span class="sd">            The of uuid of the tileset being displayed in this track</span>
+<span class="sd">        api_url: string</span>
+<span class="sd">            The server storing the data for this track</span>
+<span class="sd">        height: int </span>
+<span class="sd">            The height of the track (in pixels)</span>
+<span class="sd">        width: int </span>
+<span class="sd">            The width of the track (in pixels)</span>
+<span class="sd">        options: {} </span>
+<span class="sd">            The options to pass onto the track</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">new_track</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">track_type</span><span class="p">,</span>
             <span class="s1">&#39;options&#39;</span><span class="p">:</span> <span class="n">options</span>
         <span class="p">}</span>
 
-        <span class="k">if</span> <span class="n">server</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">new_track</span><span class="p">[</span><span class="s1">&#39;server&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">server</span>
+        <span class="k">if</span> <span class="n">api_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_track</span><span class="p">[</span><span class="s1">&#39;server&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">api_url</span>
         <span class="k">if</span> <span class="n">tileset_uuid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">new_track</span><span class="p">[</span><span class="s1">&#39;tilesetUid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tileset_uuid</span>
         <span class="k">if</span> <span class="n">height</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -87,47 +91,46 @@
             <span class="n">new_track</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">width</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">viewconf</span> <span class="o">=</span> <span class="n">new_track</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">position</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">position</span></div>
 
     <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewconf</span>
 
-<span class="k">class</span> <span class="nc">HiGlassView</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+<span class="k">class</span> <span class="nc">View</span><span class="p">:</span>
+<div class="viewcode-block" id="View.__init__"><a class="viewcode-back" href="../../python_api.html#hgflask.client.View.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tracks</span><span class="o">=</span><span class="p">[],</span>
+                 <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
                  <span class="n">width</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> 
                  <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
-                 <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
                  <span class="n">initialXDomain</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-                 <span class="n">initialYDomain</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">initialYDomain</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">uid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Add a new view</span>
 <span class="sd">        </span>
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        uid: The uid of the view</span>
-<span class="sd">        </span>
-<span class="sd">        Returns:</span>
+<span class="sd">        Parameters</span>
 <span class="sd">        --------</span>
-<span class="sd">        uid: string</span>
-<span class="sd">            The uid of new view</span>
+<span class="sd">        tracks: []</span>
+<span class="sd">            A list of Tracks to include in this view</span>
+<span class="sd">        x: int</span>
+<span class="sd">            The position of this view on the grid</span>
+<span class="sd">        y: int</span>
+<span class="sd">            The position of this view on the grid</span>
 <span class="sd">        width: int</span>
 <span class="sd">            The width of this of view on a 12 unit grid</span>
 <span class="sd">        height: int</span>
 <span class="sd">            The height of the this view. The height is proportional</span>
 <span class="sd">            to the height of all the views present.</span>
-<span class="sd">        x: int</span>
-<span class="sd">            The position of this view on the grid</span>
-<span class="sd">        y: int</span>
-<span class="sd">            The position of this view on the grid</span>
 <span class="sd">        initialXDoamin: [int, int]</span>
 <span class="sd">            The initial x range of the view</span>
 <span class="sd">        initialYDomain: [int, int]</span>
 <span class="sd">            The initial y range of the view</span>
+<span class="sd">        uid: string</span>
+<span class="sd">            The uid of new view</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">uid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">uid</span> <span class="o">=</span> <span class="n">slugid</span><span class="o">.</span><span class="n">nice</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span> <span class="o">=</span> <span class="n">tracks</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="n">uid</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">viewconf</span> <span class="o">=</span> <span class="p">{</span>
@@ -150,36 +153,34 @@
         <span class="k">if</span> <span class="n">initialXDomain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">viewconf</span><span class="p">[</span><span class="s1">&#39;initialXDomain&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">initialXDomain</span>
         <span class="k">if</span> <span class="n">initialYDomain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">viewconf</span><span class="p">[</span><span class="s1">&#39;initialYDomain&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">initialYDomain</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">viewconf</span><span class="p">[</span><span class="s1">&#39;initialYDomain&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">initialYDomain</span></div>
 
 
-<div class="viewcode-block" id="HiGlassView.add_track"><a class="viewcode-back" href="../../python_api.html#hgflask.client.HiGlassView.add_track">[docs]</a>    <span class="k">def</span> <span class="nf">add_track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tileset_uuid</span><span class="p">,</span> <span class="n">track_type</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">server</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-            <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span> <span class="nf">add_track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">track_type</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tileset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">server</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{}):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Add a track to a position.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        tileset_uuid:</span>
-<span class="sd">            The uuid of the track on the server</span>
-<span class="sd">        view_uid: string</span>
-<span class="sd">            The identifier for the view to add this track to</span>
 <span class="sd">        track_type: string</span>
 <span class="sd">            The type of track to add (e.g. &quot;heatmap&quot;, &quot;line&quot;)</span>
 <span class="sd">        position: string</span>
 <span class="sd">            One of &#39;top&#39;, &#39;bottom&#39;, &#39;center&#39;, &#39;left&#39;, &#39;right&#39;</span>
+<span class="sd">        tileset: hgflask.tilesets.Tileset</span>
+<span class="sd">            The tileset to be plotted in this track</span>
+<span class="sd">        server: string</span>
+<span class="sd">            The server serving this track</span>
 <span class="sd">        height: int  </span>
 <span class="sd">            The height of the track, if it is a top, bottom or a center track</span>
 <span class="sd">        width: int </span>
 <span class="sd">            The width of the track, if it is a left, right or a center track</span>
-<span class="sd">        server: string</span>
-<span class="sd">            The server storing the data for this track</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">new_track</span> <span class="o">=</span> <span class="n">HiGlassTrack</span><span class="p">(</span><span class="n">track_type</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> 
-                <span class="n">server</span><span class="p">,</span> <span class="n">tileset_uuid</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> 
+        <span class="n">new_track</span> <span class="o">=</span> <span class="n">HiGlassTrack</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> 
+                <span class="n">tileset</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> 
                 <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span> <span class="o">+=</span> <span class="p">[</span><span class="n">new_track</span><span class="p">]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span> <span class="o">+=</span> <span class="p">[</span><span class="n">new_track</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -193,8 +194,8 @@
         <span class="k">return</span> <span class="n">viewconf</span>
 
 
-<span class="k">class</span> <span class="nc">HiGlassConfig</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ViewConf</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">views</span><span class="o">=</span><span class="p">[]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">viewconf</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;editable&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
         <span class="s1">&#39;views&#39;</span><span class="p">:</span> <span class="p">[],</span>
@@ -204,11 +205,11 @@
           <span class="s2">&quot;exportViewUrl&quot;</span><span class="p">:</span> <span class="s2">&quot;http://higlass.io/api/v1/viewconfs&quot;</span>
         <span class="p">}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">views</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">views</span> <span class="o">=</span> <span class="n">views</span>
         
         <span class="k">pass</span>
     
-<div class="viewcode-block" id="HiGlassConfig.add_view"><a class="viewcode-back" href="../../python_api.html#hgflask.client.HiGlassConfig.add_view">[docs]</a>    <span class="k">def</span> <span class="nf">add_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+    <span class="k">def</span> <span class="nf">add_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
                  <span class="n">width</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> 
                  <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
                  <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
@@ -244,23 +245,22 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;View with this uid already exists&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">views</span> <span class="o">+=</span> <span class="p">[</span><span class="n">new_view</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">new_view</span></div>
+        <span class="k">return</span> <span class="n">new_view</span>
     
     <span class="k">def</span> <span class="nf">location_lock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view_uid1</span><span class="p">,</span> <span class="n">view_uid2</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Add a location lock between two views.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">pass</span>
-    
-    <span class="k">def</span> <span class="nf">to_json_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">viewconf</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">viewconf</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">views</span><span class="p">:</span>
             <span class="n">viewconf</span><span class="p">[</span><span class="s1">&#39;views&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="n">view</span><span class="o">.</span><span class="n">to_json</span><span class="p">()]</span>
 
-        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
-            <span class="n">viewconf</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">viewconf</span>
+    
 </pre></div>
 
           </div>
@@ -367,8 +367,6 @@
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../index.html">Module code</a><ul>
-  <li><a href="../hgflask.html">hgflask</a><ul>
-  </ul></li>
   </ul></li>
   </ul></li>
 </ul>

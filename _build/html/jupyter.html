@@ -78,48 +78,107 @@ jupyter nbextension <span class="nb">enable</span> --py --sys-prefix higlass_jup
 <p>To instantiate a HiGlass component within a Jupyter notebook, we first need
 to specify which data should be loaded. This can be accomplished with the
 help of the <code class="docutils literal"><span class="pre">hgflask.client</span></code> module:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hgflask.client</span> <span class="kn">as</span> <span class="nn">hfc</span>
-<span class="kn">import</span> <span class="nn">higlass_jupyter</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">higlass_jupyter</span> <span class="kn">as</span> <span class="nn">hiju</span>
+<span class="kn">import</span> <span class="nn">hgflask.client</span> <span class="kn">as</span> <span class="nn">hgc</span>
 
-<span class="n">conf</span> <span class="o">=</span> <span class="n">hfc</span><span class="o">.</span><span class="n">HiGlassConfig</span><span class="p">()</span>
-<span class="n">view</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">add_view</span><span class="p">()</span>
-<span class="n">view</span><span class="o">.</span><span class="n">add_track</span><span class="p">(</span><span class="n">tileset_uuid</span><span class="o">=</span><span class="s1">&#39;CQMd6V_cRw6iCI_-Unl3PQ&#39;</span><span class="p">,</span>
-               <span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;heatmap&#39;</span><span class="p">,</span>
-               <span class="n">position</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
-               <span class="n">server</span><span class="o">=</span><span class="s2">&quot;http://higlass.io/api/v1&quot;</span><span class="p">,</span>
-               <span class="n">height</span><span class="o">=</span><span class="mi">210</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span>
-                   <span class="s1">&#39;valueScaleMax&#39;</span><span class="p">:</span> <span class="mf">0.5</span>
-               <span class="p">})</span>
+<span class="n">conf</span> <span class="o">=</span> <span class="n">hgc</span><span class="o">.</span><span class="n">ViewConf</span><span class="p">([</span>
+    <span class="n">hgc</span><span class="o">.</span><span class="n">View</span><span class="p">([</span>
+        <span class="n">hgc</span><span class="o">.</span><span class="n">Track</span><span class="p">(</span><span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;top-axis&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">),</span>
+        <span class="n">hgc</span><span class="o">.</span><span class="n">Track</span><span class="p">(</span><span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;heatmap&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                 <span class="n">tileset_uuid</span><span class="o">=</span><span class="s1">&#39;CQMd6V_cRw6iCI_-Unl3PQ&#39;</span><span class="p">,</span>
+                  <span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;http://higlass.io/api/v1/&quot;</span><span class="p">,</span>
+                  <span class="n">height</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span>
+                 <span class="n">options</span><span class="o">=</span><span class="p">{</span> <span class="s1">&#39;valueScaleMax&#39;</span><span class="p">:</span> <span class="mf">0.5</span> <span class="p">}),</span>
 
-<span class="n">higlass_jupyter</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">to_json_string</span><span class="p">())</span>
+    <span class="p">])</span>
+<span class="p">])</span>
+
+<span class="n">hiju</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
 </pre></div>
 </div>
 <p>The result is a fully interactive HiGlass view direcly embedded in the Jupyter
 notebook.</p>
-<img alt="_images/jupyter-hic-heatmap.png" src="_images/jupyter-hic-heatmap.png" />
+<img alt="_images/remote-hic.png" src="_images/remote-hic.png" />
 <div class="section" id="serving-local-data">
 <h3>Serving local data<a class="headerlink" href="#serving-local-data" title="Permalink to this headline">¶</a></h3>
-<p>To view local data, we need to set up a temporary server:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hgflask</span> <span class="kn">as</span> <span class="nn">hgf</span>
+<p>To view local data, we need to define the tilesets and set up a temporary
+server.</p>
+<div class="section" id="cooler-files">
+<h4>Cooler Files<a class="headerlink" href="#cooler-files" title="Permalink to this headline">¶</a></h4>
+<p>Creating the server:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hgflask.tilesets</span> <span class="kn">as</span> <span class="nn">hfti</span>
+<span class="kn">import</span> <span class="nn">hgflask.server</span> <span class="kn">as</span> <span class="nn">hgse</span>
 
-<span class="n">tilesets</span> <span class="o">=</span> <span class="p">[{</span>
-    <span class="s1">&#39;filepath&#39;</span><span class="p">:</span> <span class="s2">&quot;my_file.mcool&quot;</span><span class="p">,</span>
-    <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span>
-<span class="p">}]</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">hfti</span><span class="o">.</span><span class="n">cooler</span><span class="p">(</span>
+    <span class="s1">&#39;../data/Dixon2012-J1-NcoI-R1-filtered.100kb.multires.cool&#39;</span><span class="p">)</span>
 
-<span class="n">server</span> <span class="o">=</span> <span class="n">hgf</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">tilesets</span><span class="p">)</span>
+<span class="n">server</span> <span class="o">=</span> <span class="n">hgse</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">tilesets</span><span class="o">=</span><span class="p">[</span><span class="n">ts</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>We can then test if the server is running:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">server</span><span class="o">.</span><span class="n">tileset_info</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+<p>And displaying the dataset in the client:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">higlass_jupyter</span> <span class="kn">as</span> <span class="nn">hiju</span>
+<span class="kn">import</span> <span class="nn">hgflask.client</span> <span class="kn">as</span> <span class="nn">hgc</span>
+
+<span class="n">conf</span> <span class="o">=</span> <span class="n">hgc</span><span class="o">.</span><span class="n">ViewConf</span><span class="p">([</span>
+    <span class="n">hgc</span><span class="o">.</span><span class="n">View</span><span class="p">([</span>
+        <span class="n">hgc</span><span class="o">.</span><span class="n">Track</span><span class="p">(</span><span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;top-axis&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">),</span>
+        <span class="n">hgc</span><span class="o">.</span><span class="n">Track</span><span class="p">(</span><span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;heatmap&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                 <span class="n">tileset_uuid</span><span class="o">=</span><span class="n">ts</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
+                  <span class="n">api_url</span><span class="o">=</span><span class="n">server</span><span class="o">.</span><span class="n">api_address</span><span class="p">,</span>
+                  <span class="n">height</span><span class="o">=</span><span class="mi">250</span>
+                 <span class="n">options</span><span class="o">=</span><span class="p">{</span> <span class="s1">&#39;valueScaleMax&#39;</span><span class="p">:</span> <span class="mf">0.5</span> <span class="p">}),</span>
+
+    <span class="p">])</span>
+<span class="p">])</span>
+
+<span class="n">hiju</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>And display the data:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">track</span> <span class="o">=</span> <span class="p">(</span><span class="n">hgc</span><span class="o">.</span><span class="n">HiGlassConfig</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">add_view</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">add_track</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;heatmap&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">server</span><span class="o">=</span><span class="n">server</span><span class="o">.</span><span class="n">api_address</span><span class="p">))</span>
-<span class="n">hgj</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">to_json_string</span><span class="p">())</span>
+<img alt="_images/jupyter-hic-heatmap.png" src="_images/jupyter-hic-heatmap.png" />
+</div>
+<div class="section" id="bigwig-files">
+<h4>BigWig Files<a class="headerlink" href="#bigwig-files" title="Permalink to this headline">¶</a></h4>
+<p>In this example, we’ll set up a server containing both a chromosome labels
+track and a bigwig track. Furthermore, the bigwig track will be ordered
+according to the chromosome info in the specified file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hgtiles.chromsizes</span> <span class="kn">as</span> <span class="nn">hgch</span>
+
+<span class="kn">import</span> <span class="nn">hgflask.server</span> <span class="kn">as</span> <span class="nn">hgse</span>
+<span class="kn">import</span> <span class="nn">hgflask.tilesets</span> <span class="kn">as</span> <span class="nn">hfti</span>
+
+
+<span class="n">chromsizes_fp</span> <span class="o">=</span> <span class="s1">&#39;../data/chromSizes_hg19_reordered.tsv&#39;</span>
+<span class="n">bigwig_fp</span> <span class="o">=</span> <span class="s1">&#39;../data/wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.bigWig&#39;</span>
+
+<span class="n">chromsizes</span> <span class="o">=</span> <span class="n">hgch</span><span class="o">.</span><span class="n">get_tsv_chromsizes</span><span class="p">(</span><span class="n">chromsizes_fp</span><span class="p">)</span>
+
+<span class="n">ts_r</span> <span class="o">=</span> <span class="n">hfti</span><span class="o">.</span><span class="n">bigwig</span><span class="p">(</span><span class="n">bigwig_fp</span><span class="p">,</span> <span class="n">chromsizes</span><span class="o">=</span><span class="n">chromsizes</span><span class="p">)</span>
+<span class="n">cs_r</span> <span class="o">=</span> <span class="n">hfti</span><span class="o">.</span><span class="n">chromsizes</span><span class="p">(</span><span class="n">chromsizes_fp</span><span class="p">)</span>
+
+<span class="n">server</span> <span class="o">=</span> <span class="n">hgse</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">tilesets</span><span class="o">=</span><span class="p">[</span><span class="n">ts_r</span><span class="p">,</span> <span class="n">cs_r</span><span class="p">])</span>
 </pre></div>
+</div>
+<p>The client view will be composed such that three tracks are visible. Two of them
+are served from the local server.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">higlass_jupyter</span> <span class="kn">as</span> <span class="nn">hiju</span>
+<span class="kn">import</span> <span class="nn">hgflask.client</span> <span class="kn">as</span> <span class="nn">hgc</span>
+
+<span class="n">conf</span> <span class="o">=</span> <span class="n">hgc</span><span class="o">.</span><span class="n">ViewConf</span><span class="p">([</span>
+    <span class="n">hgc</span><span class="o">.</span><span class="n">View</span><span class="p">([</span>
+        <span class="n">hgc</span><span class="o">.</span><span class="n">Track</span><span class="p">(</span><span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;top-axis&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">),</span>
+
+        <span class="n">hgc</span><span class="o">.</span><span class="n">Track</span><span class="p">(</span><span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;horizontal-chromosome-labels&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
+                 <span class="n">tileset_uuid</span><span class="o">=</span><span class="n">cs_r</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span> <span class="n">api_url</span><span class="o">=</span><span class="n">server</span><span class="o">.</span><span class="n">api_address</span><span class="p">),</span>
+        <span class="n">hgc</span><span class="o">.</span><span class="n">Track</span><span class="p">(</span><span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;horizontal-bar&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
+                  <span class="n">tileset_uuid</span><span class="o">=</span><span class="n">ts_r</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span> <span class="n">api_url</span><span class="o">=</span><span class="n">server</span><span class="o">.</span><span class="n">api_address</span><span class="p">,</span>
+                 <span class="n">options</span><span class="o">=</span><span class="p">{</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">40</span> <span class="p">}),</span>
+    <span class="p">])</span>
+<span class="p">])</span>
+
+<span class="n">hiju</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
+</pre></div>
+</div>
+<img alt="_images/jupyter-bigwig.png" src="_images/jupyter-bigwig.png" />
 </div>
 </div>
 <div class="section" id="serving-custom-data">
@@ -142,32 +201,36 @@ notebook.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">functools</span> <span class="kn">as</span> <span class="nn">ft</span>
 <span class="kn">import</span> <span class="nn">hgtiles.npmatrix</span> <span class="kn">as</span> <span class="nn">hgnp</span>
 
-<span class="n">tilesets</span> <span class="o">=</span> <span class="p">[{</span>
-    <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;tiles&#39;</span><span class="p">:</span> <span class="n">ft</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">hgnp</span><span class="o">.</span><span class="n">tiles_wrapper</span><span class="p">,</span> <span class="n">data</span><span class="p">),</span>
-        <span class="s1">&#39;tileset_info&#39;</span><span class="p">:</span> <span class="n">ft</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">hgnp</span><span class="o">.</span><span class="n">tileset_info</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">]</span>
+<span class="kn">import</span> <span class="nn">hgflask.server</span> <span class="kn">as</span> <span class="nn">hgse</span>
+<span class="kn">import</span> <span class="nn">hgflask.tilesets</span> <span class="kn">as</span> <span class="nn">hfti</span>
 
-<span class="n">server</span> <span class="o">=</span> <span class="n">hgf</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">tilesets</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">hfti</span><span class="o">.</span><span class="n">Tileset</span><span class="p">(</span>
+    <span class="n">tileset_info</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">hgnp</span><span class="o">.</span><span class="n">tileset_info</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+    <span class="n">tiles</span><span class="o">=</span><span class="k">lambda</span> <span class="n">tids</span><span class="p">:</span> <span class="n">hgnp</span><span class="o">.</span><span class="n">tiles_wrapper</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tids</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">server</span> <span class="o">=</span> <span class="n">hgse</span><span class="o">.</span><span class="n">start</span><span class="p">([</span><span class="n">ts</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>Finally, we create the HiGlass component which renders it, along with
 axis labels:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">hgc</span> <span class="o">=</span> <span class="n">hfc</span><span class="o">.</span><span class="n">HiGlassConfig</span><span class="p">()</span>
-<span class="n">view</span> <span class="o">=</span> <span class="n">hgc</span><span class="o">.</span><span class="n">add_view</span><span class="p">()</span>
-<span class="n">view</span><span class="o">.</span><span class="n">add_track</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;heatmap&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span>
-               <span class="n">server</span><span class="o">=</span><span class="n">server</span><span class="o">.</span><span class="n">api_address</span><span class="p">,</span>
-               <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
-<span class="n">view</span><span class="o">.</span><span class="n">add_track</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;top-axis&#39;</span><span class="p">,</span> <span class="s1">&#39;top&#39;</span><span class="p">)</span>
-<span class="n">view</span><span class="o">.</span><span class="n">add_track</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;left-axis&#39;</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">higlass_jupyter</span> <span class="kn">as</span> <span class="nn">hiju</span>
+<span class="kn">import</span> <span class="nn">hgflask.client</span> <span class="kn">as</span> <span class="nn">hgc</span>
 
+<span class="n">conf</span> <span class="o">=</span> <span class="n">hgc</span><span class="o">.</span><span class="n">ViewConf</span><span class="p">([</span>
+    <span class="n">hgc</span><span class="o">.</span><span class="n">View</span><span class="p">([</span>
+        <span class="n">hgc</span><span class="o">.</span><span class="n">Track</span><span class="p">(</span><span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;top-axis&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">),</span>
+        <span class="n">hgc</span><span class="o">.</span><span class="n">Track</span><span class="p">(</span><span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;left-axis&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">),</span>
+        <span class="n">hgc</span><span class="o">.</span><span class="n">Track</span><span class="p">(</span><span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;heatmap&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                 <span class="n">tileset_uuid</span><span class="o">=</span><span class="n">ts</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
+                  <span class="n">api_url</span><span class="o">=</span><span class="n">server</span><span class="o">.</span><span class="n">api_address</span><span class="p">,</span>
+                  <span class="n">height</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span>
+                 <span class="n">options</span><span class="o">=</span><span class="p">{</span> <span class="s1">&#39;valueScaleMax&#39;</span><span class="p">:</span> <span class="mf">0.5</span> <span class="p">}),</span>
 
-<span class="c1">#print(hgc.to_json_string())</span>
-<span class="kn">import</span> <span class="nn">higlass_jupyter</span>
-<span class="n">higlass_jupyter</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">hgc</span><span class="o">.</span><span class="n">to_json_string</span><span class="p">())</span>
+    <span class="p">])</span>
+<span class="p">])</span>
+
+<span class="n">hiju</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
 </pre></div>
 </div>
 <img alt="_images/eggholder-function.png" src="_images/eggholder-function.png" />
@@ -186,7 +249,10 @@ First we need to import the custom track type for displaying labelled points:</p
 <p>Then we have to set up a data server to output the data in “tiles”.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hgtiles.points</span> <span class="kn">as</span> <span class="nn">hgpo</span>
 <span class="kn">import</span> <span class="nn">hgtiles.utils</span> <span class="kn">as</span> <span class="nn">hgut</span>
-<span class="kn">import</span> <span class="nn">hgflask</span> <span class="kn">as</span> <span class="nn">hgf</span>
+
+<span class="kn">import</span> <span class="nn">hgflask.server</span> <span class="kn">as</span> <span class="nn">hfse</span>
+<span class="kn">import</span> <span class="nn">hgflask.tilesets</span> <span class="kn">as</span> <span class="nn">hfti</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 
@@ -200,36 +266,36 @@ First we need to import the custom track type for displaying labelled points:</p
 <span class="c1"># get the tileset info (bounds and such) of the dataset</span>
 <span class="n">tsinfo</span> <span class="o">=</span> <span class="n">hgpo</span><span class="o">.</span><span class="n">tileset_info</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">)</span>
 
-<span class="c1"># specify the dataset and its tile handlers</span>
-<span class="n">tilesets</span> <span class="o">=</span> <span class="p">[{</span>
-    <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;tileset_info&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">tsinfo</span><span class="p">,</span>
-        <span class="s1">&#39;tiles&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">tile_ids</span><span class="p">:</span> <span class="n">hgpo</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">hfti</span><span class="o">.</span><span class="n">Tileset</span><span class="p">(</span>
+    <span class="n">tileset_info</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">tsinfo</span><span class="p">,</span>
+    <span class="n">tiles</span><span class="o">=</span><span class="k">lambda</span> <span class="n">tile_ids</span><span class="p">:</span> <span class="n">hgpo</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
                 <span class="n">hgut</span><span class="o">.</span><span class="n">bundled_tiles_wrapper_2d</span><span class="p">(</span><span class="n">tile_ids</span><span class="p">,</span>
                     <span class="k">lambda</span> <span class="n">z</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span> <span class="n">hgpo</span><span class="o">.</span><span class="n">tiles</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span>
-                        <span class="n">tsinfo</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)))</span>
-    <span class="p">}</span>
-<span class="p">}]</span>
+                        <span class="n">tsinfo</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))))</span>
 
 <span class="c1"># start the server</span>
-<span class="n">server</span> <span class="o">=</span> <span class="n">hgf</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">tilesets</span><span class="p">)</span>
+<span class="n">server</span> <span class="o">=</span> <span class="n">hfse</span><span class="o">.</span><span class="n">start</span><span class="p">([</span><span class="n">ts</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>And finally, we can create a HiGlass client in the browser to view the data:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hgflask.client</span> <span class="kn">as</span> <span class="nn">hfc</span>
-<span class="kn">import</span> <span class="nn">higlass_jupyter</span>
+<span class="kn">import</span> <span class="nn">higlass_jupyter</span> <span class="kn">as</span> <span class="nn">hiju</span>
 
-<span class="n">hgc</span> <span class="o">=</span> <span class="n">hfc</span><span class="o">.</span><span class="n">HiGlassConfig</span><span class="p">()</span>
-<span class="n">hgc</span><span class="o">.</span><span class="n">add_view</span><span class="p">()</span><span class="o">.</span><span class="n">add_track</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;labelled-points-track&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span>
-              <span class="n">server</span><span class="o">.</span><span class="n">api_address</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-              <span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
-                  <span class="s1">&#39;labelField&#39;</span><span class="p">:</span> <span class="s1">&#39;v&#39;</span>
-              <span class="p">})</span>
+<span class="n">hgc</span> <span class="o">=</span> <span class="n">hfc</span><span class="o">.</span><span class="n">ViewConf</span><span class="p">([</span>
+    <span class="n">hfc</span><span class="o">.</span><span class="n">View</span><span class="p">([</span>
+        <span class="n">hfc</span><span class="o">.</span><span class="n">Track</span><span class="p">(</span>
+            <span class="n">track_type</span><span class="o">=</span><span class="s1">&#39;labelled-points-track&#39;</span><span class="p">,</span>
+            <span class="n">position</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+            <span class="n">tileset_uuid</span><span class="o">=</span><span class="n">ts</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
+            <span class="n">api_url</span><span class="o">=</span><span class="n">server</span><span class="o">.</span><span class="n">api_address</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">&#39;labelField&#39;</span><span class="p">:</span> <span class="s1">&#39;v&#39;</span>
+            <span class="p">})</span>
+    <span class="p">])</span>
+<span class="p">])</span>
 
-<span class="n">a</span> <span class="o">=</span> <span class="n">hgc</span><span class="o">.</span><span class="n">to_json_string</span><span class="p">()</span>
-<span class="n">higlass_jupyter</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">hgc</span><span class="o">.</span><span class="n">to_json_string</span><span class="p">(),</span>
-                              <span class="n">hg_options</span><span class="o">=</span><span class="s1">&#39;{&quot;bounded&quot;: false}&#39;</span><span class="p">)</span>
+<span class="n">hiju</span><span class="o">.</span><span class="n">HiGlassDisplay</span><span class="p">(</span><span class="n">viewconf</span><span class="o">=</span><span class="n">hgc</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
 </pre></div>
 </div>
 <img alt="_images/jupyter-labelled-points.png" src="_images/jupyter-labelled-points.png" />
