@@ -4,11 +4,11 @@ Python API
 hgflask
 *******
 
-.. autofunction:: hgflask.start
+.. autofunction:: hgflask.server.start
 
 hgflask.client
 **************
 
-.. automethod:: hgflask.client.HiGlassView.add_track
+.. automethod:: hgflask.client.View.__init__
 
-.. automethod:: hgflask.client.HiGlassConfig.add_view
+.. automethod:: hgflask.client.Track.__init__
