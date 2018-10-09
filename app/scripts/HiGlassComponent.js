@@ -892,8 +892,8 @@ class HiGlassComponent extends React.Component {
   createSVGString() {
     let svgString = vkbeautify.xml(new XMLSerializer().serializeToString(this.createSVG()));
 
-    svgString = svgString.replace(/\<a0:/g, "\<");
-    svgString = svgString.replace(/\<\/a0:/g, "\<\/");
+    svgString = svgString.replace(/<a0:/g, '<');
+    svgString = svgString.replace(/<\/a0:/g, '</');
 
     return svgString;
   }
@@ -2984,15 +2984,23 @@ class HiGlassComponent extends React.Component {
 
   zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime) {
     if (
-      !(+start1Abs >= 0 && +end1Abs >= 0 && +start2Abs >= 0 && +end2Abs >= 0)
+      !(+start1Abs >= 0 && +end1Abs >= 0)
     ) {
-      const coords = [start1Abs, end1Abs, start2Abs, end2Abs].join(', ');
+      const coords = [start1Abs, end1Abs].join(', ');
       console.warn([
         `Invalid coordinates (${coords}). All coordinates need to be numbers`,
         'and should represent absolute coordinates (not chromosome',
         'coordinates).',
       ].join(' '));
       return;
+    } 
+
+    if (!(+start2Abs >= 0)) {
+      start2Abs = start1Abs;
+    }
+
+    if (!(+end2Abs >= 0)) {
+      end2Abs = end1Abs;
     }
 
     const [centerX, centerY, k] = scalesCenterAndK(

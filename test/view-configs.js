@@ -88,7 +88,7 @@ export const geneAnnotationsOnly1 =
   }
 };
 
-export const geneAnnotationsOnly = 
+export const geneAnnotationsOnly =
 {
   "editable": true,
   "zoomFixed": false,

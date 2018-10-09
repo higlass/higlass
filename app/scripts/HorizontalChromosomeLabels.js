@@ -299,6 +299,17 @@ class HorizontalChromosomeLabels extends PixiTrack {
       ? 0
       : this.tickHeight + this.tickTextSeparation;
 
+    // hide all the chromosome labels in preparation for drawing
+    // new ones
+    for (const key of Object.keys(this.chromInfo.chrPositions)) {
+      //  console.log('key:', key);
+      for (let j = 0; j < this.tickTexts[key].length; j++) {
+        this.tickTexts[key][j].visible = false;
+      }
+    }
+
+    // console.log('chromInfo:', this.chromInfo);
+
     // iterate over each chromosome
     for (let i = x1[3]; i <= x2[3]; i++) {
       const xCumPos = this.chromInfo.cumPositions[i];

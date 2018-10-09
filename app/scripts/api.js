@@ -371,8 +371,10 @@ const api = function api(context) {
      * @param {string} viewUid The identifier of the view to zoom
      * @param {Number} start1Abs The x start position
      * @param {Number} end1Abs The x end position
-     * @param {Number} start2Abs The y start position
-     * @param {Number} end2Abs The y end position
+     * @param {Number} start2Abs (optional) The y start position. If not specified
+     *    start1Abs will be used.
+     * @param {Number} end2Abs (optional) The y end position. If not specified
+     *    end1Abs will be used
      * @example
      *    // Absolute coordinates
      * hgApi.zoomTo('view1', 1000000, 1000000, 2000000, 2000000, 500);
