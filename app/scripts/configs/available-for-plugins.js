@@ -30,7 +30,6 @@ import LeftAxisTrack from '../LeftAxisTrack';
 import MapboxTilesTrack from '../MapboxTilesTrack';
 import MoveableTrack from '../MoveableTrack';
 import OSMTilesTrack from '../OSMTilesTrack';
-import OneDimensionalMixin from '../OneDimensionalMixin';
 import PixiTrack from '../PixiTrack';
 import SVGTrack from '../SVGTrack';
 import SquareMarkersTrack from '../SquareMarkersTrack';
@@ -84,7 +83,6 @@ const tracks = {
   LeftAxisTrack,
   MapboxTilesTrack,
   MoveableTrack,
-  OneDimensionalMixin,
   OSMTilesTrack,
   PixiTrack,
   SVGTrack,
