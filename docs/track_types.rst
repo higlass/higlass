@@ -177,7 +177,7 @@ Bar tracks display 1D vector data as bars.
 
 **Demos:**
 
-- `Diverging bars with color map and gradient <examples/bar-track-color-range.html>`
+- `Diverging bars with color map and gradient <examples/bar-track-color-range.html>`_
 
 .. _point-track:
 
@@ -229,8 +229,8 @@ with this track.
 
 **Demo**:
 
-  `Full example <1d-heatmap-track.html>`_.
-  `Genome browser-like view from HiGlass.io <1d-heatmap-track-2.html>`_.
+- `Full example <examples/1d-heatmap-track.html>`_
+- `Genome browser-like view from HiGlass.io <examples/1d-heatmap-track-2.html>`_
 
 .. _chromosome-labels:
 
