@@ -79,8 +79,8 @@ in the `gene annotations section <gene_annotations.html>`_.
 
 - `Standard vs Customize Gene Annotation Track <examples/gene_annotations.html>`_
 
-Heatmap
-=======
+2D Heatmap
+==========
 
 .. image:: img/heatmap-track-thumb.png
     :align: right
@@ -95,8 +95,8 @@ displayed at different resolutions depending on the current zoom level. To
 limit the resolution of the displayed data, users can set the `Zoom Limit`
 configuration option.
 
-1D Heatmap
-==========
+Rotated 2D Heatmap
+==================
 
 .. image:: img/horizontal-heatmap-thumb.png
     :align: right
