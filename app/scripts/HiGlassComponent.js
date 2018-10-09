@@ -765,7 +765,7 @@ class HiGlassComponent extends React.Component {
         lockedTrack.valueScale.domain([allMin, allMax]);
 
         if (
-          sourceTrack.options 
+          sourceTrack.options
           && typeof sourceTrack.options.scaleStartPercent !== 'undefined'
           && typeof sourceTrack.options.scaleEndPercent !== 'undefined'
         ) {
@@ -801,7 +801,7 @@ class HiGlassComponent extends React.Component {
    * @param eventHandler: The handler to be called when the scales change
    *    Event handler is called with parameters (xScale, yScale)
    */
-  addDraggingChangedListener(viewUid, listenerUid, eventHandler) {  
+  addDraggingChangedListener(viewUid, listenerUid, eventHandler) {
     if (!this.draggingChangedListeners.hasOwnProperty(viewUid)) {
       this.draggingChangedListeners[viewUid] = {};
     }
@@ -819,7 +819,7 @@ class HiGlassComponent extends React.Component {
    * @param listenerUid: The uid of the listener itself.
    */
   removeDraggingChangedListener(viewUid, listenerUid) {
-    
+
     if (this.draggingChangedListeners.hasOwnProperty(viewUid)) {
       const listeners = this.draggingChangedListeners[viewUid];
 
@@ -914,7 +914,7 @@ class HiGlassComponent extends React.Component {
    * @param uid: The view of whom the scales have changed.
    */
   handleScalesChanged(uid, xScale, yScale, notify = true) {
-    
+
     this.xScales[uid] = xScale;
     this.yScales[uid] = yScale;
 
@@ -925,7 +925,7 @@ class HiGlassComponent extends React.Component {
         });
       }
     }
-  
+
     const [centerX, centerY, k] = scalesCenterAndK(xScale, yScale);
     // console.log('tx, ty, k', [centerX, centerY, k]);
 
@@ -998,7 +998,7 @@ class HiGlassComponent extends React.Component {
           this.yScales[key]);
 
         if (key === uid) { // no need to notify oneself that the scales have changed
-          continue; 
+          continue;
         }
 
         const dx = value[0] - lockGroup[uid][0];
@@ -1053,7 +1053,7 @@ class HiGlassComponent extends React.Component {
    *
    * @param viewUid: The view uid for which to adjust the zoom level
    */
-  handleZoomToData(viewUid) {  
+  handleZoomToData(viewUid) {
     if (viewUid && !this.tiledPlots[viewUid]) {
       throw new Error(
         `View uid ${viewUid} does not exist in the current viewConfig`
@@ -1144,7 +1144,7 @@ class HiGlassComponent extends React.Component {
    * :parma lockData (function): A function that takes two uids and calculates some extra data
    * to store with this lock data (e.g. scalesCenterAndK(this.xScales[uid1], this.yScales[uid1]))
    */
-  addLock(uid1, uid2, lockGroups, lockData) {  
+  addLock(uid1, uid2, lockGroups, lockData) {
     let group1Members = [];
     let group2Members = [];
 
@@ -1566,7 +1566,7 @@ class HiGlassComponent extends React.Component {
    * @return: A width and a height pair (e.g. [width, height])
    */
   calculateViewDimensions(view) {
-    
+
     const defaultHorizontalHeight = 20;
     const defaultVerticalWidth = 0;
     const defaultCenterHeight = 100;
@@ -1601,9 +1601,9 @@ class HiGlassComponent extends React.Component {
     }
 
     if ((view.tracks.left && view.tracks.left.length > 0)
-      || (view.tracks.right && view.tracks.right.length > 0) 
-      || (view.tracks.center && view.tracks.center.length > 0)) { 
-      minNecessaryHeight += MIN_VERTICAL_HEIGHT; 
+      || (view.tracks.right && view.tracks.right.length > 0)
+      || (view.tracks.center && view.tracks.center.length > 0)) {
+      minNecessaryHeight += MIN_VERTICAL_HEIGHT;
     }
 
     let leftHeight = 0;
@@ -1784,7 +1784,7 @@ class HiGlassComponent extends React.Component {
    * @param {viewUid} Thie view's identifier
    */
   handleClearView(viewUid) {
-    
+
     const { views } = this.state;
 
     views[viewUid].tracks.top = [];
@@ -1806,7 +1806,7 @@ class HiGlassComponent extends React.Component {
    * @param {uid} This view's identifier
    */
   handleCloseView(uid) {
-    
+
 
     // check if this is the only view
     // if it is, don't close it (display an error message)
@@ -1836,7 +1836,7 @@ class HiGlassComponent extends React.Component {
    * @param hostTrack: The track that will host the new series.
    */
   handleSeriesAdded(viewId, newTrack, position, hostTrack) {
-    
+
 
     // is the host track a combined track?
     // if so, easy, just append the new track to its contents
@@ -1886,7 +1886,7 @@ class HiGlassComponent extends React.Component {
    * @param host: If this track is being added to another track
    */
   handleTracksAdded(viewId, newTracks, position, host) {
-    
+
     this.storeTrackSizes(viewId);
 
     for (const newTrack of newTracks) { this.handleTrackAdded(viewId, newTrack, position, host); }
@@ -1951,7 +1951,7 @@ class HiGlassComponent extends React.Component {
    * @param position: The position the track is being added to
    * @param host: If this track is being added to another track
    *
-   * @returns {Object}: A trackConfig (\{ uid: "", width: x \}) 
+   * @returns {Object}: A trackConfig (\{ uid: "", width: x \})
    *  describing this track
    */
   handleTrackAdded(viewId, newTrack, position, host = null) {
@@ -2056,7 +2056,7 @@ class HiGlassComponent extends React.Component {
    *  Nothing
    */
   storeTrackSizes(viewId) {
-    
+
     const looseTracks = positionedTracksToAllTracks(this.state.views[viewId].tracks);
 
     for (const track of looseTracks) {
@@ -2104,8 +2104,8 @@ class HiGlassComponent extends React.Component {
 
     if (!this.props.options.bounded) {
       view.layout.h = Math.ceil(
-        (totalTrackHeight + MARGIN_HEIGHT)
-          / (this.state.rowHeight + MARGIN_HEIGHT),
+        (totalTrackHeight + MARGIN_HEIGHT) /
+        (this.state.rowHeight + MARGIN_HEIGHT),
       );
     }
   }
@@ -2234,7 +2234,7 @@ class HiGlassComponent extends React.Component {
    *
    * @param track: A view with tracks.
    */
-  addCallbacks(viewUid, track) {  
+  addCallbacks(viewUid, track) {
     if (track.type == 'viewport-projection-center'
           || track.type == 'viewport-projection-horizontal'
           || track.type == 'viewport-projection-vertical'
@@ -2451,7 +2451,7 @@ class HiGlassComponent extends React.Component {
 
     views[viewUid].initialXDomain = newXDomain;
     views[viewUid].initialYDomain = newYDomain;
-   
+
     this.xScales[viewUid] = scaleLinear().domain(newXDomain);
     this.yScales[viewUid] = scaleLinear().domain(newYDomain);
 
@@ -2695,8 +2695,8 @@ class HiGlassComponent extends React.Component {
 
     if (!newGpsb) { newGpsb = JSON.parse(JSON.stringify(defaultGpsb)); }
 
-    if (!newGpsb.autocompleteServer) { 
-      newGpsb.autocompleteServer = defaultGpsb.autocompleteServer; 
+    if (!newGpsb.autocompleteServer) {
+      newGpsb.autocompleteServer = defaultGpsb.autocompleteServer;
     }
 
     /*
@@ -2801,7 +2801,7 @@ class HiGlassComponent extends React.Component {
    * @param viewUidsPresent (Set): The view uids which are available
    */
   isTrackValid(track, viewUidsPresent) {
-    
+
 
     if (track.type === 'viewport-projection-center') {
       if (!viewUidsPresent.has(track.fromViewUid)) {
@@ -3304,6 +3304,8 @@ class HiGlassComponent extends React.Component {
     if (track.setFixedValueScaleMin && track.setFixedValueScaleMax) {
       track.setFixedValueScaleMin(minValue);
       track.setFixedValueScaleMax(maxValue);
+
+      console.log('FIX IT', trackId);
 
       track.rerender(track.options, true);
       track.animate();

@@ -1,6 +1,7 @@
 ## v1.2.4
 
 - Fix #322
+- Fix missing update of the value scale upon rerendering
 
 ## v1.2.3
 
