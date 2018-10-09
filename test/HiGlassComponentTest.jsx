@@ -110,6 +110,15 @@ describe('Simple HiGlassComponent', () => {
         done();
       });
     });
+
+    it ('Zooms a little closer', (done) => {
+      hgc.instance().zoomTo('aa', 165061, 945306);
+
+      waitForTransitionsFinished(hgc.instance(), () => {
+        done();
+      })
+    })
+
   });
   return;
 
