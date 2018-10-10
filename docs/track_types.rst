@@ -252,7 +252,7 @@ selectable from the "Add Track Dialog".
 
 **Demos:**
 
-- `demonstrate adjustability <examples/chromosome-labels.html>`_.
+- `Customizability <examples/chromosome-labels.html>`_.
 
 Chromosome Grid
 ===============
