@@ -32,6 +32,10 @@ render tracks with a `bedlike` datatype. This usually comes from the `beddb`
 filetype. Regular bed-like files can be converted to beddb using the instructions
 in the `data preparation section <data_preparation.html#bed-files>`_.
 
+**Demos:**
+
+- `Color encoding <examples/bed-track.html>`_.
+
 **Color Encoding:**
 
 Intervals can visually encode information using the following three ``options``:
