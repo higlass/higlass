@@ -70,6 +70,58 @@ describe('Simple HiGlassComponent', () => {
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
+  describe('API tests', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={geneAnnotationsOnly}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('Zooms to a location', (done) => {
+      hgc.instance().zoomTo('aa', 1, 1000000);
+
+      waitForTransitionsFinished(hgc.instance(), () => {
+        const svgText = hgc.instance().createSVGString();
+
+        // make sure none of the chromosome labels are left
+        // over after zooming
+        expect(svgText.indexOf('chr11')).to.eql(-1);
+
+        // hgc.instance().handleExportSVG();
+        done();
+      });
+    });
+
+    it ('Zooms a little closer', (done) => {
+      hgc.instance().zoomTo('aa', 165061, 945306);
+
+      waitForTransitionsFinished(hgc.instance(), () => {
+        done();
+      })
+    })
+
+  });
+  return;
+
   describe('Genome position search box tests', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {

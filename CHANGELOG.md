@@ -2,6 +2,7 @@
 
 - Fix #322
 - Fix missing update of the value scale upon rerendering
+- Fix absToChr and chrToAbs of the ChromInfo API
 
 ## v1.2.3
 

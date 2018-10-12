@@ -32,6 +32,10 @@ render tracks with a `bedlike` datatype. This usually comes from the `beddb`
 filetype. Regular bed-like files can be converted to beddb using the instructions
 in the `data preparation section <data_preparation.html#bed-files>`_.
 
+**Demos:**
+
+- `Color encoding <examples/bed-track.html>`_.
+
 **Color Encoding:**
 
 Intervals can visually encode information using the following three ``options``:
@@ -79,8 +83,8 @@ in the `gene annotations section <gene_annotations.html>`_.
 
 - `Standard vs Customize Gene Annotation Track <examples/gene_annotations.html>`_
 
-Heatmap
-=======
+2D Heatmap
+==========
 
 .. image:: img/heatmap-track-thumb.png
     :align: right
@@ -95,8 +99,8 @@ displayed at different resolutions depending on the current zoom level. To
 limit the resolution of the displayed data, users can set the `Zoom Limit`
 configuration option.
 
-1D Heatmap
-==========
+Rotated 2D Heatmap
+==================
 
 .. image:: img/horizontal-heatmap-thumb.png
     :align: right
@@ -177,7 +181,7 @@ Bar tracks display 1D vector data as bars.
 
 **Demos:**
 
-- `Diverging bars with color map and gradient <examples/bar-track-color-range.html>`
+- `Diverging bars with color map and gradient <examples/bar-track-color-range.html>`_
 
 .. _point-track:
 
@@ -229,8 +233,8 @@ with this track.
 
 **Demo**:
 
-  `Full example <1d-heatmap-track.html>`_.
-  `Genome browser-like view from HiGlass.io <1d-heatmap-track-2.html>`_.
+- `Full example <examples/1d-heatmap-track.html>`_
+- `Genome browser-like view from HiGlass.io <examples/1d-heatmap-track-2.html>`_
 
 .. _chromosome-labels:
 
@@ -252,7 +256,7 @@ selectable from the "Add Track Dialog".
 
 **Demos:**
 
-- `demonstrate adjustability <examples/chromosome-labels.html>`_.
+- `Customizability <examples/chromosome-labels.html>`_.
 
 Chromosome Grid
 ===============
