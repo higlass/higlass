@@ -247,6 +247,7 @@ class OSMTilesTrack extends PixiTrack {
     this.pMain.scale.y = k; // scaleY;
 
     this.refreshTilesDebounced();
+    this.draw();
   }
 
   setPosition(newPosition) {

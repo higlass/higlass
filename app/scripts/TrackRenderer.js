@@ -1197,8 +1197,6 @@ class TrackRenderer extends React.Component {
       };
     }
 
-    console.log('track.type', track.type);
-
     switch (track.type) {
       case 'left-axis':
         return new LeftAxisTrack(this.svgElement);

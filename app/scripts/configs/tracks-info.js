@@ -608,14 +608,7 @@ export const TRACKS_INFO = [
     name: '2D Tile Outlines',
     thumbnail: svg2DTilesIcon,
   },
-    {
-    type: 'osm-2d-tile-ids',
-    datatype: ['map-tiles'],
-    local: false,
-    orientation: '2d',
-    name: 'OSM Tile Outlines',
-    thumbnail: svg2DTilesIcon,
-  },
+
   {
     type: 'horizontal-1d-value-interval',
     datatype: ['bed-value'],
@@ -1157,6 +1150,27 @@ export const TRACKS_INFO = [
     hidden: true,
     name: 'OSM Tiles',
     thumbnail: svgGeoMapIcon,
+    availableOptions: [
+      'minPos',
+      'maxPos',
+      'maxZoom',
+      'labelPosition',
+      'name',
+    ],
+    defaultOptions: {
+      minPos: -180,
+      maxPos: 180,
+      maxZoom: 19,
+      labelPosition: 'bottomRight',
+    },
+  },
+  {
+    type: 'osm-2d-tile-ids',
+    datatype: ['map-tiles'],
+    local: false,
+    orientation: '2d',
+    name: 'OSM Tile Outlines',
+    thumbnail: svg2DTilesIcon,
     availableOptions: [
       'minPos',
       'maxPos',

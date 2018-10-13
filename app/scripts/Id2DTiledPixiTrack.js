@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
-export function drawTile() {
+export function drawTile(tile) {
   if (!tile.graphics) { return; }
 
   // console.log('Id2DTiled drawTile...', tile);
@@ -13,13 +13,19 @@ export function drawTile() {
 
   // the text needs to be scaled down so that it doesn't become huge
   // when we zoom in
+  tile.drawnAtScale = this._xScale.copy();
+
   const tSX = 1 / ((this._xScale(1) - this._xScale(0)) / (this._refXScale(1) - this._refXScale(0)));
   const tSY = 1 / ((this._yScale(1) - this._yScale(0)) / (this._refYScale(1) - this._refYScale(0)));
 
   tile.text.scale.x = tSX;
   tile.text.scale.y = tSY;
 
-  // console.log('tSX:', tSX, 'tSY:',tSY);
+  const tilePixelWidth = this._xScale(tileWidth) - this._xScale(0);
+
+  // make sure the text's size is always drawn at the same size
+  tile.textGraphics.scale.x = tilePixelWidth / 256;
+  tile.textGraphics.scale.y = tilePixelWidth / 256;
 
   graphics.clear();
 
@@ -64,10 +70,10 @@ export function initTile(tile) {
   if (tile.mirrored) {
     // mirrored tiles have their x and y coordinates reversed
     tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${[tile.tileData.tilePos[1], tile.tileData.tilePos[0]].join('/')}`,
-      { fontFamily: 'Arial', fontSize: 48, fill: 0xff1010, align: 'center' });
+      { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
   } else {
     tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`,
-      { fontFamily: 'Arial', fontSize: 48, fill: 0xff1010, align: 'center' });
+      { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
   }
 
   // tile.text.y = 100;
