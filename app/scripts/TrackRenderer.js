@@ -52,6 +52,7 @@ import VerticalRule from './VerticalRule';
 import CrossRule from './CrossRule';
 
 import OSMTilesTrack from './OSMTilesTrack';
+import OSMTileIdsTrack from './OSMTileIdsTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
 
 // Utils
@@ -1196,6 +1197,8 @@ class TrackRenderer extends React.Component {
       };
     }
 
+    console.log('track.type', track.type);
+
     switch (track.type) {
       case 'left-axis':
         return new LeftAxisTrack(this.svgElement);
@@ -1642,6 +1645,13 @@ class TrackRenderer extends React.Component {
 
       case 'osm-tiles':
         return new OSMTilesTrack(
+          this.pStage,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+       case 'osm-2d-tile-ids':
+        return new OSMTileIdsTrack(
           this.pStage,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),

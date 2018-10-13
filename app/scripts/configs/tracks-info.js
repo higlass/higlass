@@ -608,6 +608,14 @@ export const TRACKS_INFO = [
     name: '2D Tile Outlines',
     thumbnail: svg2DTilesIcon,
   },
+    {
+    type: 'osm-2d-tile-ids',
+    datatype: ['map-tiles'],
+    local: false,
+    orientation: '2d',
+    name: 'OSM Tile Outlines',
+    thumbnail: svg2DTilesIcon,
+  },
   {
     type: 'horizontal-1d-value-interval',
     datatype: ['bed-value'],

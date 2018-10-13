@@ -77,6 +77,7 @@ class CombinedTrack {
     this._yScale = newYScale;
 
     for (let i = 0; i < this.childTracks.length; i++) {
+      // console.log('childTracks.zoomed', this.childTracks[i].zoomed);
       this.childTracks[i].zoomed(newXScale, newYScale, k, x, y,
         xPositionOffset, yPositionOffset);
     }
