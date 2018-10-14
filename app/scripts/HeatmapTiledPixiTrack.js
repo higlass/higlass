@@ -264,6 +264,23 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.valueScale = valueScale;
     this.limitedValueScale = this.valueScale.copy();
 
+    if (
+      this.options
+      && typeof this.options.scaleStartPercent !== 'undefined'
+      && typeof this.options.scaleEndPercent !== 'undefined'
+    ) {
+      this.limitedValueScale.domain([
+        this.valueScale.domain()[0] + (
+          (this.valueScale.domain()[1] - this.valueScale.domain()[0]) *
+          this.options.scaleStartPercent
+        ),
+        this.valueScale.domain()[0] + (
+          (this.valueScale.domain()[1] - this.valueScale.domain()[0]) *
+          this.options.scaleEndPercent
+        )
+      ]);
+    }
+
     return [scaleType, valueScale];
   }
 
@@ -974,23 +991,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   renderTile(tile) {
     const [scaleType, valueScale] = this.updateValueScale();
     let pseudocount = 0;
-
-    if (
-      this.options
-      && typeof this.options.scaleStartPercent !== 'undefined'
-      && typeof this.options.scaleEndPercent !== 'undefined'
-    ) {
-      this.limitedValueScale.domain([
-        this.valueScale.domain()[0] + (
-          (this.valueScale.domain()[1] - this.valueScale.domain()[0]) *
-          this.options.scaleStartPercent
-        ),
-        this.valueScale.domain()[0] + (
-          (this.valueScale.domain()[1] - this.valueScale.domain()[0]) *
-          this.options.scaleEndPercent
-        )
-      ]);
-    }
 
     this.renderingTiles.add(tile.tileId);
 
