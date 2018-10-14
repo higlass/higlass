@@ -99,8 +99,8 @@ class Id2DTiledPixiTrack extends HeatmapTiledPixiTrack {
          * Create whatever is needed to draw this tile.
          */
 
-    initTile(tile);
-    this.drawTile(tile, graphics);
+    initTile.bind(this)(tile);
+    this.drawTile(tile);
   }
 
   destroyTile(tile, graphics) {
@@ -108,7 +108,7 @@ class Id2DTiledPixiTrack extends HeatmapTiledPixiTrack {
   }
 
   drawTile(tile) {
-    drawTile(tile);
+    drawTile.bind(this)(tile);
   }
 
   fetchNewTiles(toFetch) {

@@ -110,24 +110,20 @@ export default class SeriesListMenu extends ContextMenuContainer {
     );
   }
 
-  getTrackTypeItems(position, bbox, track) {
-    /**
-     * Return a list of track types that can be used
-     * with the data for this track
-     *
-     * Parameters
-     * ----------
-     *
-     * position: {left: 42, top: 88}
-     *  The position where to draw ths menu.
-     *
-     * bbox: { }
-     *  The bounding box of the parent menu, used to determine whether
-     *  to draw the child menu on the left or the right
-     *
-     *  track: {}
-     *    The track definition for this series (as in the viewconf)
+  /**
+   * Return a list of track types that can be used
+   * with the data for this track
+   *
+   * @param {Object} position The position where to draw ths menu (e.g. {left: 42, top: 88})
+   *
+   * @param (Object) bbox
+   *  The bounding box of the parent menu, used to determine whether
+   *  to draw the child menu on the left or the right
+   *
+   * @param (Object) track The track definition for this series (as in the viewconf)
      */
+  getTrackTypeItems(position, bbox, track) {
+
 
     // get the datatype of the current track
     //
@@ -141,11 +137,15 @@ export default class SeriesListMenu extends ContextMenuContainer {
       });
     }
 
-    const { datatype } = track;
+    let { datatype } = track;
+
     let orientation = null;
     // make sure that this is a valid track type before trying to
     // look up other tracks that can substitute for it
     if (track.type in TRACKS_INFO_BY_TYPE) {
+      if (!datatype) {
+        datatype = TRACKS_INFO_BY_TYPE[track.type].datatype[0];
+      }
       ({ orientation } = TRACKS_INFO_BY_TYPE[track.type]);
     }
 
