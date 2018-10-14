@@ -8,7 +8,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-
+console.log('NODE_ENV:', process.env.NODE_ENV)
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
   context: `${__dirname}/app`,
   entry: {
     hglib: ['./scripts/hglib.js'],
-    // 'hglib.min': ['./scripts/hglib.js'],
+    'hglib.min': ['./scripts/hglib.js'],
     worker: ['./scripts/worker.js'],
   },
   watch: process.env.NODE_ENV === 'watch',
@@ -42,7 +42,7 @@ module.exports = {
     library: '[name]',
   },
   optimization: {
-    minimize: true,
+    minimize: process.env.NODE_ENV === 'production',
     minimizer: [
       new TerserPlugin({
         cache: true,
