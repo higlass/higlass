@@ -15,7 +15,7 @@ module.exports = function(config) {
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
       //'test/**/*.+(js|jsx)',
       //'test/search_field_test.js',
-      'test/HiGlassComponentTest.jsx',
+      'test/HiGlassComponentTest.js',
       'build/hglib.css',
     ],
 

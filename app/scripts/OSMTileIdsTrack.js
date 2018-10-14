@@ -6,6 +6,8 @@ import PixiTrack from './PixiTrack';
 class OSMTileIdsTrack extends OSMTilesTrack {
   constructor(scene, options, animate) {
     super(scene, options, animate);
+
+    //this.zoomed(this._xScale, this._yScale);
   }
 
   
@@ -47,6 +49,15 @@ class OSMTileIdsTrack extends OSMTilesTrack {
     });
 
     this.synchronizeTilesAndGraphics();
+
+    this.draw();
+    this.animate();
+  }
+
+  draw() {
+    super.draw();
+
+    //this.animate();
   }
 }
 

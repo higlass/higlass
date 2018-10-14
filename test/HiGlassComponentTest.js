@@ -32,6 +32,7 @@ import {
 // View configs
 import {
   // paperFigure1,
+  osmConf,
   geneAnnotationsOnly,
   geneAnnotationsOnly1,
   annotationsTilesView,
@@ -69,6 +70,49 @@ describe('Simple HiGlassComponent', () => {
   let div = null;
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+
+  describe('API tests', () => {
+      it('Cleans up previously created instances and mounts a new component', (done) => {
+        if (hgc) {
+          hgc.unmount();
+          hgc.detach();
+        }
+
+        if (div) {
+          global.document.body.removeChild(div);
+        }
+
+        div = global.document.createElement('div');
+        global.document.body.appendChild(div);
+
+        div.setAttribute('style', 'width:800px;background-color: lightgreen');
+        div.setAttribute('id', 'simple-hg-component');
+
+        hgc = mount(<HiGlassComponent
+          options={{ bounded: false }}
+          viewConfig={osmConf}
+        />, { attachTo: div });
+
+        hgc.update();
+        waitForTilesLoaded(hgc.instance(), done);
+        //done();
+      });
+
+      it('Switches to the osm tles track', (done) => {
+        const { views } = hgc.instance().state;
+        // console.log('views:', views);
+
+        const view = views.aa;
+
+        view.tracks.center[0].type = 'osm-2d-tile-ids';
+        view.tracks.center[0].uid = 'bb';
+
+        hgc.setState({
+          views,
+        })
+        done();
+      });
+    });
 
   describe('API tests', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -120,7 +164,6 @@ describe('Simple HiGlassComponent', () => {
     })
 
   });
-  return;
 
   describe('Genome position search box tests', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -153,7 +196,7 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'cdkn2b-as1');
       hgc.update();
-      console.log('xScale', hgc.instance().xScales.aa.domain());
+      // console.log('xScale', hgc.instance().xScales.aa.domain());
 
       hgc.instance().genomePositionSearchBoxes.aa.buttonClick();
       hgc.update();
@@ -161,7 +204,7 @@ describe('Simple HiGlassComponent', () => {
       waitForJsonComplete(() => {
         waitForTransitionsFinished(hgc.instance(), () => {
           const secondDomain = hgc.instance().xScales.aa.domain();
-          console.log('domains:', firstDomain, secondDomain);
+          // console.log('domains:', firstDomain, secondDomain);
           // make sure that we zoomed somwhere
 
           expect(firstDomain[0]).to.not.eql(secondDomain[0]);
@@ -204,13 +247,13 @@ describe('Simple HiGlassComponent', () => {
       const { views } = hgc.instance().state;
       track = getTrackByUid(views.aa.tracks, 'genes1');
 
-      console.log('setting views');
+      // console.log('setting views');
       track.options.labelPosition = 'topLeft';
 
       hgc.setState({
         views,
       });
-      console.log('track', track);
+      // console.log('track', track);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -974,14 +1017,14 @@ describe('Simple HiGlassComponent', () => {
       // const zl1 = track1.calculateZoomLevel();
       // const zl2 = track2.calculateZoomLevel();
 
-      /*
-      console.log('zl1:', track1.calculateZoomLevel());
-      console.log('zl2:', track2.calculateZoomLevel());
+      
+      // console.log('zl1:', track1.calculateZoomLevel());
+      // console.log('zl2:', track2.calculateZoomLevel());
 
       // the zoom levels are different because one view is slightly larger
       // than the other
-      expect(zl1).to.eql(zl2);
-      */
+      // expect(zl1).to.eql(zl2);
+      
 
       expect(domain1[1]).to.eql(domain2[1]);
 
@@ -1261,7 +1304,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('zoom to the data extent', (done) => {
-      console.log('zooming to extent');
+      // console.log('zooming to extent');
       hgc.instance().api.zoomToDataExtent('aa');
 
       waitForTilesLoaded(hgc.instance(), done);
@@ -1526,8 +1569,8 @@ describe('Simple HiGlassComponent', () => {
 
       const postResizeYDomain = JSON.parse(JSON.stringify(viewport2DTracker.viewportYDomain));
 
-      console.log('preResizeYDomain:', preResizeYDomain);
-      console.log('postResizeYDomain:', postResizeYDomain);
+      // console.log('preResizeYDomain:', preResizeYDomain);
+      // console.log('postResizeYDomain:', postResizeYDomain);
 
       expect(preResizeYDomain[1] - postResizeYDomain[1]).to.be.below(0.0001);
       expect(preResizeYDomain[1] - postResizeYDomain[1]).to.be.below(0.0001);
@@ -1778,10 +1821,10 @@ describe('Simple HiGlassComponent', () => {
       // we don't expect the other view to change
       expect(domain1[0]).to.not.eql(domain2[0]);
 
-      /*
-      console.log('domain1:', domain1);
-      console.log('domain2:', domain2);
-      */
+      
+      // console.log('domain1:', domain1);
+      // console.log('domain2:', domain2);
+      
 
       done();
     });

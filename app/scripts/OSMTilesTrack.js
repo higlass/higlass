@@ -4,7 +4,9 @@ import * as PIXI from 'pixi.js';
 import PixiTrack from './PixiTrack';
 
 // Services
-import { tileProxy } from './services';
+import { 
+  tileProxy
+} from './services';
 
 // Utils
 import { debounce } from './utils';

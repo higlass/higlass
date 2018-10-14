@@ -124,7 +124,9 @@ export const isWaitingOnTiles = (hgc) => {
 
     if (track.track.type === 'viewport-projection-vertical'
         || track.track.type === 'viewport-projection-horizontal'
-        || track.track.type === 'viewport-projection-center') continue;
+        || track.track.type === 'viewport-projection-center'
+        || track.track.type === 'osm-tiles'
+        || track.track.type === 'osm-2d-tile-ids') continue;
 
     if (trackObj.originalTrack) { trackObj = trackObj.originalTrack; }
 
