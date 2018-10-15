@@ -1,9 +1,15 @@
+import {
+  mount
+} from 'enzyme';
+
 import { requestsInFlight } from '../services';
 
 import {
   getTrackObjectFromHGC,
   getTrackRenderer,
 } from '.';
+
+import HiGlassComponent from '../HiGlassComponent';
 
 const TILE_LOADING_CHECK_INTERVAL = 100;
 
@@ -148,4 +154,39 @@ export const isWaitingOnTiles = (hgc) => {
   }
 
   return false;
+};
+
+/**
+ * Mount a new HiGlassComponent and unmount the previously visible one.
+ *
+ * @param {HTML Element} div A div element to detach and recreate for the component
+ * @param {Enzyme wrapped HiGlass component} prevHgc An already mounted
+ *  hgc component
+ * @param {function} done The callback to call when the component is fully loaded
+ */
+export const mountHGComponent = (prevDiv, prevHgc, viewConf, done) => {
+  if (prevHgc) {
+    prevHgc.unmount();
+    prevHgc.detach();
+  }
+
+  if (prevDiv) {
+    global.document.body.removeChild(prevDiv);
+  }
+
+  const div = global.document.createElement('div');
+  global.document.body.appendChild(div);
+
+  div.setAttribute('style', 'width:800px;background-color: lightgreen');
+  div.setAttribute('id', 'simple-hg-component');
+
+  const hgc = mount(<HiGlassComponent
+    options={{ bounded: false }}
+    viewConfig={viewConf}
+  />, { attachTo: div });
+
+  hgc.update();
+  waitForTilesLoaded(hgc.instance(), done);
+
+  return [div, hgc];
 };
