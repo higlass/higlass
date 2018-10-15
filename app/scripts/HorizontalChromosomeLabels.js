@@ -83,41 +83,34 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
       this.searchField = new SearchField(this.chromInfo);
 
-      this.texts = [];
-
-      this.drawChromLabels();
+      this.initChromLabels();
 
       this.draw();
       this.animate();
     });
   }
 
-  drawChromLabels() {
+  initChromLabels() {
     if (!this.chromInfo) return;
 
     this.texts = [];
     this.pTicks.removeChildren();
 
     for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
-      const textStr = this.chromInfo.cumPositions[i].chr;
-      this.gTicks[textStr] = new PIXI.Graphics();
+      const chromName = this.chromInfo.cumPositions[i].chr;
+      this.gTicks[chromName] = new PIXI.Graphics();
 
       // create the array that will store tick TEXT objects
-      if (!this.tickTexts[textStr]) { this.tickTexts[textStr] = []; }
+      if (!this.tickTexts[chromName]) this.tickTexts[chromName] = [];
 
-      const text = new PIXI.Text(textStr, this.pixiTextConfig);
-
-      // This seems to be unnecessary
-      // text.anchor.x = 0;
-      // text.anchor.y = 1;
-      // text.visible = false;
+      const text = new PIXI.Text(chromName, this.pixiTextConfig);
 
       // give each string a random hash so that some get hidden
       // when there's overlaps
       text.hashValue = Math.random();
 
       this.pTicks.addChild(text);
-      this.pTicks.addChild(this.gTicks[textStr]);
+      this.pTicks.addChild(this.gTicks[chromName]);
 
       this.texts.push(text);
     }
@@ -142,7 +135,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       ? colorToHex(this.options.tickColor)
       : TICK_COLOR;
 
-    this.drawChromLabels();
+    this.initChromLabels();
 
     super.rerender(options, force);
 
@@ -160,7 +153,10 @@ class HorizontalChromosomeLabels extends PixiTrack {
     const graphics = this.gTicks[cumPos.chr];
 
     graphics.visible = true;
+
+    // CLear graphics *and* ticktexts otherwise the two are out of sync!
     graphics.clear();
+    this.tickTexts[cumPos.chr] = [];
 
     const chromLen = +this.chromInfo.chromLengths[cumPos.chr];
 
@@ -301,14 +297,11 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     // hide all the chromosome labels in preparation for drawing
     // new ones
-    for (const key of Object.keys(this.chromInfo.chrPositions)) {
-      //  console.log('key:', key);
-      for (let j = 0; j < this.tickTexts[key].length; j++) {
-        this.tickTexts[key][j].visible = false;
+    Object.keys(this.chromInfo.chrPositions).forEach((chrom) => {
+      for (let j = 0; j < this.tickTexts[chrom].length; j++) {
+        this.tickTexts[chrom][j].visible = false;
       }
-    }
-
-    // console.log('chromInfo:', this.chromInfo);
+    });
 
     // iterate over each chromosome
     for (let i = x1[3]; i <= x2[3]; i++) {
@@ -318,6 +311,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
       const viewportMidX = this._xScale(midX);
 
+      // This is ONLY the bare chromosome name. Not the tick label!
       const text = this.texts[i];
 
       text.anchor.x = this.options.fontIsLeftAligned ? 0 : 0.5;
@@ -334,8 +328,8 @@ class HorizontalChromosomeLabels extends PixiTrack {
       text.visible = numTicksDrawn <= 0;
 
       this.allTexts.push({
-        importance: this.texts[i].hashValue,
-        text: this.texts[i],
+        importance: text.hashValue,
+        text: text,
         caption: null
       });
     }
@@ -347,8 +341,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
   hideOverlaps(allTexts) {
     let allBoxes = []; // store the bounding boxes of the text objects so we can
     // calculate overlaps
-    allBoxes = allTexts.map((val) => {
-      const { text } = val;
+    allBoxes = allTexts.map(({ text }, i) => {
       text.updateTransform();
       const b = text.getBounds();
       const box = [b.x, b.y, b.x + b.width, b.y + b.height];
@@ -358,9 +351,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     boxIntersect(allBoxes, (i, j) => {
       if (allTexts[i].importance > allTexts[j].importance) {
-        allTexts[j].text.visible = 0;
+        allTexts[j].text.visible = false;
       } else {
-        allTexts[i].text.visible = 0;
+        allTexts[i].text.visible = false;
       }
     });
   }
