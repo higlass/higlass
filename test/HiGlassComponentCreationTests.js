@@ -21,19 +21,18 @@ describe('Simple HiGlassComponent', () => {
   let div = null;
 
   describe('API tests', () => {
-
     beforeAll((done) => {
-      ([div, hgc] = mountHGComponent(div, hgc, 'http://higlass.io/api/v1/viewconfs/?d=default', done));    
+      ([div, hgc] = mountHGComponent(div, hgc, 'http://higlass.io/api/v1/viewconfs/?d=default', done));
+    });
+
+    it('Ensures that the viewconf state is editable', (done) => {
+      expect(hgc.instance().state.viewConfig.editable).to.eql(true);
+
+      done();
     });
 
     afterAll((done) => {
       document.body.removeChild(div);
-      done();
-    });
-
-
-    it('Ensures that the viewconf state is editable', (done) => {
-      expect(hgc.instance().state.viewConfig.editable).to.eql(true);
 
       done();
     });

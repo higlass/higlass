@@ -186,7 +186,9 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done) => {
   />, { attachTo: div });
 
   hgc.update();
-  waitForTilesLoaded(hgc.instance(), done);
+  waitForTilesLoaded(hgc.instance(), () => {
+    waitForJsonComplete(done);
+  });
 
   return [div, hgc];
 };
