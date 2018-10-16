@@ -1,3 +1,7 @@
+## v1.2.5
+
+- Fix remote viewConf loading in HiGlassComponent
+
 ## v1.2.4
 
 - Fix #322

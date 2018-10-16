@@ -155,10 +155,10 @@ class HiGlassComponent extends React.Component {
       tileProxy.json(this.props.viewConfig, (error, remoteViewConfig) => {
         viewConfig = remoteViewConfig;
         this.setState({
-          remoteViewConfig,
           views: this.processViewConfig(
             JSON.parse(JSON.stringify(remoteViewConfig))
-          )
+          ),
+          viewConfig: remoteViewConfig
         });
         this.unsetOnLocationChange.forEach(({ viewId, callback, callbackId }) => {
           this.onLocationChange(viewId, callback, callbackId);
@@ -3304,8 +3304,6 @@ class HiGlassComponent extends React.Component {
     if (track.setFixedValueScaleMin && track.setFixedValueScaleMax) {
       track.setFixedValueScaleMin(minValue);
       track.setFixedValueScaleMax(maxValue);
-
-      console.log('FIX IT', trackId);
 
       track.rerender(track.options, true);
       track.animate();
