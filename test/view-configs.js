@@ -1156,6 +1156,8 @@ export const simpleCenterViewConfig =
 {
   "editable": true,
   "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1"],
   "views": [
     {
       "uid": "a",

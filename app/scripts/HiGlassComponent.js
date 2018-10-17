@@ -131,6 +131,7 @@ class HiGlassComponent extends React.Component {
 
     this.plusImg = {};
     this.configImg = {};
+    console.log('constructing');
 
     this.horizontalMargin = typeof props.options.horizontalMargin !== 'undefined'
       ? props.options.horizontalMargin : 5;
@@ -149,26 +150,7 @@ class HiGlassComponent extends React.Component {
     this.viewconfLoaded = false;
 
     let { viewConfig } = this.props;
-    let views = {};
-    if (typeof this.props.viewConfig === 'string') {
-      // Load external viewConfig
-      tileProxy.json(this.props.viewConfig, (error, remoteViewConfig) => {
-        viewConfig = remoteViewConfig;
-        this.setState({
-          views: this.processViewConfig(
-            JSON.parse(JSON.stringify(remoteViewConfig))
-          ),
-          viewConfig: remoteViewConfig
-        });
-        this.unsetOnLocationChange.forEach(({ viewId, callback, callbackId }) => {
-          this.onLocationChange(viewId, callback, callbackId);
-        });
-      });
-    } else {
-      views = this.processViewConfig(
-        JSON.parse(JSON.stringify(viewConfig))
-      );
-    }
+    let views = this.loadIfRemoteViewConfig(this.props.viewConfig);
 
     if (props.options.authToken) {
       setTileProxyAuthHeader(props.options.authToken);
@@ -416,8 +398,44 @@ class HiGlassComponent extends React.Component {
     return this.tiledPlots[viewUid].trackRenderer;
   }
 
+  /**
+   * Check if the passed in viewConfig is remote (i.e. is a string).
+   * If it is, fetch it before proceeding
+   */
+  loadIfRemoteViewConfig(viewConfig) {
+    let views = {};
+    if (typeof viewConfig === 'string') {
+      // Load external viewConfig
+      tileProxy.json(viewConfig, (error, remoteViewConfig) => {
+        viewConfig = remoteViewConfig;
+        this.setState({
+          views: this.processViewConfig(
+            JSON.parse(JSON.stringify(remoteViewConfig))
+          ),
+          viewConfig: remoteViewConfig
+        });
+        this.unsetOnLocationChange.forEach(({ viewId, callback, callbackId }) => {
+          this.onLocationChange(viewId, callback, callbackId);
+        });
+      });
+    } else {
+      views = this.processViewConfig(
+        JSON.parse(JSON.stringify(viewConfig))
+      );
+      if (this.mounted) {
+        this.setState({
+          viewConfig,
+        });
+      }
+    }
+
+    return views;
+  }
+
   componentWillReceiveProps(newProps) {
-    const viewsByUid = this.processViewConfig(newProps.viewConfig);
+    const viewsByUid = this.loadIfRemoteViewConfig(newProps.viewConfig);
+
+    console.log('componentWillReceiveProps', newProps);
 
     if (newProps.options.authToken !== this.prevAuthToken) {
       // we go a new auth token so we should reload everything

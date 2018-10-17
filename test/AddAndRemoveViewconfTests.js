@@ -8,39 +8,50 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
-// Utils
 import {
-  mountHGComponent,
-} from '../app/scripts/utils';
+  simpleCenterViewConfig,
+} from './view-configs';
 
+import {
+  viewer
+} from '../app/scripts/hglib';
 
 configure({ adapter: new Adapter() });
 
 describe('Simple HiGlassComponent', () => {
-  let hgc = null;
   let div = null;
+  let api = null;
 
   describe('API tests', () => {
     beforeAll((done) => {
-      const div = global.document.createElement('div');
+      div = global.document.createElement('div');
       global.document.body.appendChild(div);
 
-      ([div, hgc] = mountHGComponent(div, hgc, 'http://higlass.io/api/v1/viewconfs/?d=default', done));
+      api = viewer(div, simpleCenterViewConfig, {});
+
+      const p = api.setViewConfig(simpleCenterViewConfig);
+
+      done();
+
+      // p.then(() => {
+      //   console.log('done');
+      //   done();
+      // });
+
+      // ([div, hgc] = mountHGComponent(div, hgc, 'http://higlass.io/api/v1/viewconfs/?d=default', done));
     });
 
-    it('Ensures that the viewconf state is editable', (done) => {
-      const viewConf = JSON.parse(hgc.instance().getViewsAsString());
+    it('Ensures that setting a new viewconf changes the trackSourceServers', (done) => {
+      const viewConf = JSON.parse(api.exportAsViewConfString());
+      viewConf.trackSourceServers = ['http://blah'];
 
-      console.log('viewConf:', viewConf);
-      viewConf.trackSourceServers  = ['http://blah'];
+      // const p = api.setViewConfig(viewConf);
+      const newApi = viewer(div, viewConf, {});
+      const newViewConf = JSON.parse(newApi.exportAsViewConfString());
 
-      const p = hgc.instance().api.setViewConfig(viewConf);
+      expect(newViewConf.trackSourceServers[0]).to.eql('http://blah');
 
-      p.then(() => {
-        const newViewConf = JSON.parse(hgc.instance().getViewsAsString());
-        console.log('newViewConf', newViewConf);
-        done();
-      });
+      done();
     });
 
     afterAll((done) => {
