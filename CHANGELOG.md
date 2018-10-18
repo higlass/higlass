@@ -1,3 +1,8 @@
+## v1.2.6
+
+- Fixed trackSourceServer export
+- Fixed BedLikeTrack errors being thrown
+
 ## v1.2.5
 
 - Fix remote viewConf loading in HiGlassComponent
