@@ -227,16 +227,17 @@ export const fetchTilesDebounced = debounce(fetchMultiRequestTiles, TILE_FETCH_D
  * @param server: A string with the server's url (e.g. "http://127.0.0.1")
  * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
  */
-export const fetchTiles = (tilesetServer, tilesetIds, done) =>
-  workerFetchTiles(tilesetServer, tilesetIds, this.sessionId, (results) => {
+export const fetchTiles = (tilesetServer, tilesetIds, done) => workerFetchTiles(
+  tilesetServer, tilesetIds, this.sessionId, (results) => {
     done(results);
-  });
+  }
+);
 
 /**
  * Calculate the zoom level from a list of available resolutions
  */
 export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
-  const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
+  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
 
   const trackWidth = scale.range()[1] - scale.range()[0];
 
