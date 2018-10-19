@@ -131,7 +131,6 @@ class HiGlassComponent extends React.Component {
 
     this.plusImg = {};
     this.configImg = {};
-    console.log('constructing');
 
     this.horizontalMargin = typeof props.options.horizontalMargin !== 'undefined'
       ? props.options.horizontalMargin : 5;

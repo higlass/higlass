@@ -25,6 +25,10 @@ export const destroy = () => {
 const api = function api(context) {
   const self = context;
 
+  const options = {
+
+  };
+
   // Public API
   return {
     setAuthHeader(newHeader) {
