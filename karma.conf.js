@@ -14,9 +14,10 @@ module.exports = function(config) {
       'node_modules/react-bootstrap/dist/react-bootstrap.js',
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
       'test/**/*.+(js|jsx)',
-      //'test/search_field_test.js',
-      //'test/HiGlassComponentTest.js',
-      //'test/HiGlassComponentCreationTests.js',
+      // 'test/APITests.js',
+      // 'test/AddAndRemoveViewconfTests.js',
+      // 'test/HiGlassComponentTest.js',
+      // 'test/HiGlassComponentCreationTests.js',
       'build/hglib.css',
     ],
 

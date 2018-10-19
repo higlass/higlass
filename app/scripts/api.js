@@ -1,7 +1,9 @@
 import ReactDOM from 'react-dom';
 
 import {
-  setDarkTheme, setTileProxyAuthHeader
+  setDarkTheme,
+  getTileProxyAuthHeader,
+  setTileProxyAuthHeader,
 } from './services';
 
 import {
@@ -27,11 +29,33 @@ const api = function api(context) {
 
   // Public API
   return {
+    /**
+     * Set an auth header to be included with all tile requests.
+     *
+     * @param {string} newHeader The contensts of the header to be included. 
+     * Example: ``hgapi.setAuthHeader('JWT xyz')``
+     */
     setAuthHeader(newHeader) {
       setTileProxyAuthHeader(newHeader);
 
       // we need to re-request all the tiles
       this.reload();
+    },
+
+    /**
+     * Get the currently set auth header
+     */
+    getAuthHeader() {
+      return setTileProxyAuthHeader();
+    },
+
+    /**
+     * Get a reference to the React HiGlassComponent
+     *
+     * @returns {HiGlassComponent}
+     */
+    getComponent() {
+      return self;
     },
 
     /**
@@ -219,7 +243,8 @@ const api = function api(context) {
      * @example
      *
      * hgv.setTrackValueScale(myView, myTrack, 0, 100); // Sets the scaling to [0, 100]
-     * hgv.setTrackValueScale(myView, myTrack); // Unsets the fixed scaling, i.e., enables dynamic scaling again.
+     * hgv.setTrackValueScale(myView, myTrack); // Unsets the fixed scaling, i.e., enables 
+     * dynamic scaling again.
      */
     setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
       self.setTrackValueScaleLimits(viewId, trackId, minValue, maxValue);
@@ -476,7 +501,8 @@ const api = function api(context) {
      *        yRange: [0, 317]
      *    }
      *
-     * ``rangeSelection:`` Returns a BED- (1D) or BEDPE (1d) array of the selected data and genomic range (if chrom-sizes are available)
+     * ``rangeSelection:`` Returns a BED- (1D) or BEDPE (1d) array of the selected data and 
+     * genomic range (if chrom-sizes are available)
      *
      * .. code-block:: javascript
      *
@@ -500,7 +526,8 @@ const api = function api(context) {
      *
      * ``viewConfig:`` Returns the current view config.
      *
-     * ``mouseMoveZoom:`` Returns the raw data around the mouse cursors screen location and the related genomic location.
+     * ``mouseMoveZoom:`` Returns the raw data around the mouse cursors screen location
+     * and the related genomic location.
      *
      * .. code-block:: javascript
      *
@@ -534,12 +561,12 @@ const api = function api(context) {
      *   'rangeSelection',
      *   range => console.log('Selected', range)
      * );
-     * 
+     *
      * const viewConfigListenerId = hgv.on(
      *   'viewConfig',
      *   range => console.log('Selected', range)
      * );
-     * 
+     *
      *  const mmz = event => console.log('Moved', event);
      *  hgv.on('mouseMoveZoom', mmz);
      */

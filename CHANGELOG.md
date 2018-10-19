@@ -1,3 +1,13 @@
+## v1.2.8
+
+- Added `editable` as a possible option to hglib.viewer()
+- Enabled arbitrary tile resolution in HeatmapTiledPixiTrack. It just needs to receive `bins_per_dimension` in the tileset info. Otherwise it defaults to 256.
+
+## v1.2.6
+
+- Fixed trackSourceServer export
+- Fixed BedLikeTrack errors being thrown
+
 ## v1.2.5
 
 - Fix remote viewConf loading in HiGlassComponent

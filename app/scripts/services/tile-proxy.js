@@ -9,7 +9,7 @@ import {
   tileResponseToData,
 } from '../worker';
 
-const MAX_FETCH_TILES = 20;
+const MAX_FETCH_TILES = 15;
 
 /*
 const str = document.currentScript.src
@@ -118,8 +118,12 @@ const debounce = (func, wait) => {
 };
 
 export const setTileProxyAuthHeader = (newHeader) => {
-  authHeader = newHeader
-}
+  authHeader = newHeader;
+};
+
+export const getTileProxyAuthHeader = () => {
+  return authHeader;
+};
 
 export function fetchMultiRequestTiles(req) {
   const sessionId = req.sessionId;
@@ -193,7 +197,7 @@ export function fetchMultiRequestTiles(req) {
     // trigger the callback for every request
     for (const request of requests) {
       const reqDate = {};
-      const server = request.server;
+      const { server } = request;
 
       // pull together the data per request
       for (const id of request.ids) {
@@ -223,16 +227,17 @@ export const fetchTilesDebounced = debounce(fetchMultiRequestTiles, TILE_FETCH_D
  * @param server: A string with the server's url (e.g. "http://127.0.0.1")
  * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
  */
-export const fetchTiles = (tilesetServer, tilesetIds, done) =>
-  workerFetchTiles(tilesetServer, tilesetIds, this.sessionId, (results) => {
+export const fetchTiles = (tilesetServer, tilesetIds, done) => workerFetchTiles(
+  tilesetServer, tilesetIds, this.sessionId, (results) => {
     done(results);
-  });
+  }
+);
 
 /**
  * Calculate the zoom level from a list of available resolutions
  */
 export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
-  const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
+  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
 
   const trackWidth = scale.range()[1] - scale.range()[0];
 
@@ -264,7 +269,7 @@ export const calculateResolution = (tilesetInfo, zoomLevel) => {
   const resolution = maxWidth / ((2 ** zoomLevel) * binsPerDimension);
 
   return resolution;
-}
+};
 
 /**
  * Calculate the current zoom level.
@@ -278,7 +283,7 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   );
 
   const viewResolution = 384;
-  //const viewResolution = 2048;
+  // const viewResolution = 2048;
 
   // fun fact: the number 384 is halfway between 256 and 512
   const addedZoom = Math.max(
@@ -290,10 +295,11 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   let binsPerTileCorrection = 0;
 
   if (binsPerTile) {
-    binsPerTileCorrection = Math.floor((Math.log(256) / Math.log(2) - (Math.log(binsPerTile) / Math.log(2))))
+    binsPerTileCorrection = Math.floor(((Math.log(256) / Math.log(2))
+      - (Math.log(binsPerTile) / Math.log(2))));
   }
 
-  zoomLevel = zoomLevel + binsPerTileCorrection;
+  zoomLevel += binsPerTileCorrection;
 
   return zoomLevel;
 };
@@ -396,8 +402,9 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
   const MAX_TILES = 20;
   // console.log('PIXELS_PER_TILE:', PIXELS_PER_TILE);
 
-  if (!maxX)
+  if (!maxX) {
     maxX = Number.MAX_VALUE;
+  }
 
   let tileRange = range(
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
@@ -459,30 +466,30 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
  * @param valueScaleDomain: The domain of the scale (the range is always [254,0])
  * @param colorScale: a 255 x 4 rgba array used as a color scale
  * @param synchronous: Render this tile synchronously or pass it on to the
- * @param ignoreUpperRight: If this is a tile along the diagonal and there will be mirrored tiles present
- *    ignore the upper right values
+ * @param ignoreUpperRight: If this is a tile along the diagonal and there will
+ * be mirrored tiles present ignore the upper right values
  * threadpool
  */
 export const tileDataToPixData = (
-  tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished, ignoreUpperRight) => {
-  const tileData = tile.tileData;
+  tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished, ignoreUpperRight
+) => {
+  const { tileData } = tile;
 
 
-  if  (!tileData.dense) {
+  if (!tileData.dense) {
     // if we didn't get any data from the server, don't do anything
     finished(null);
     return;
   }
 
-  if (tile.mirrored &&
-    tile.tileData.tilePos.length > 0 &&
-    tile.tileData.tilePos[0] == tile.tileData.tilePos[1]) {
-
+  if (tile.mirrored
+    && tile.tileData.tilePos.length > 0
+    && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]) {
     // if a center tile is mirrored, we'll just add its transpose
     const tileWidth = Math.floor(Math.sqrt(tile.tileData.dense.length));
     for (let i = 0; i < tileWidth; i++) {
       for (let j = 0; j < tileWidth; j++) {
-        tile.tileData.dense[i * tileWidth + j] = tile.tileData.dense[j * tileWidth + i];
+        tile.tileData.dense[(i * tileWidth) + j] = tile.tileData.dense[(j * tileWidth) + i];
       }
     }
   }
@@ -490,7 +497,7 @@ export const tileDataToPixData = (
   // console.log('tile', tile);
   // clone the tileData so that the original array doesn't get neutered
   // when being passed to the worker script
-  //const newTileData = tileData.dense;
+  // const newTileData = tileData.dense;
 
   // comment this and uncomment the code afterwards to enable threading
 
@@ -505,7 +512,7 @@ export const tileDataToPixData = (
       ignoreUpperRight
     );
 
-    finished({pixData});
+    finished({ pixData });
   } else {
     const newTileData = new Float32Array(tileData.dense.length);
     newTileData.set(tileData.dense);
@@ -532,6 +539,36 @@ export const tileDataToPixData = (
   }
 };
 
+function fetchEither(url, callback, textOrJson) {
+  requestsInFlight += 1;
+  pubSub.publish('requestSent', url);
+
+  let mime;
+  if (textOrJson === 'text') {
+    mime = 'text/plain';
+  } else if (textOrJson === 'json') {
+    mime = 'application/json';
+  } else {
+    throw new Error(`fetch either "text" or "json", not "${textOrJson}"`);
+  }
+  const headers = { 'Content-Type': mime };
+  if (authHeader) {
+    headers.Authorization = authHeader;
+  }
+  return fetch(url, { credentials: 'same-origin', headers })
+    .then(rep => rep[textOrJson]())
+    .then((content) => {
+      callback(undefined, content);
+    })
+    .catch((error) => {
+      callback(error, undefined);
+    })
+    .finally(() => {
+      pubSub.publish('requestReceived', url);
+      requestsInFlight -= 1;
+    });
+}
+
 /**
  * Send a text request and mark it so that we can tell how many are in flight
  *
@@ -551,37 +588,6 @@ function text(url, callback) {
 function json(url, callback) {
   return fetchEither(url, callback, 'json');
 }
-
-function fetchEither(url, callback, textOrJson) {
-  requestsInFlight += 1;
-  pubSub.publish('requestSent', url);
-  
-  let mime;
-  if (textOrJson === 'text') {
-    mime = 'text/plain';
-  } else if (textOrJson === 'json') {
-    mime = 'application/json';
-  } else {
-    throw new Error(`fetch either "text" or "json", not "${textOrJson}"`);
-  }
-  const headers = {'Content-Type': mime};
-  if (authHeader) {
-    headers['Authorization'] = authHeader;
-  }
-  return fetch(url, {credentials: 'same-origin', headers: headers})
-    .then(rep => rep[textOrJson]())
-    .then((content) => {
-      callback(undefined, content);
-    })
-    .catch((error) => {
-      callback(error, undefined);
-     })
-     .finally(() => {
-       pubSub.publish('requestReceived', url);
-       requestsInFlight -= 1;
-     });
-}
-
 
 const api = {
   calculateResolution,
