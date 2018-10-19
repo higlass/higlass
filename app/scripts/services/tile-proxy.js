@@ -119,7 +119,11 @@ const debounce = (func, wait) => {
 
 export const setTileProxyAuthHeader = (newHeader) => {
   authHeader = newHeader;
-}
+};
+
+export const getTileProxyAuthHeader = () => {
+  return authHeader;
+};
 
 export function fetchMultiRequestTiles(req) {
   const sessionId = req.sessionId;

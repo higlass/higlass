@@ -653,12 +653,24 @@ class HiGlassComponent extends React.Component {
    * different between the zoom levels.
    */
   handleLockLocation(uid) {
-
     // create a view chooser and remove the config view menu
     this.setState({
       chooseViewHandler: uid2 => this.handleLocationLockChosen(uid, uid2),
       mouseOverOverlayUid: uid,
     });
+  }
+
+  /**
+   * Can views be added, removed or rearranged and are the view headers
+   * visible?
+   */
+  isEditable() {
+    // console.log('editable:', this.props.options, this.state.viewConfig);   
+    if (!this.props.options || !('editable' in this.props.options)) {
+      return this.state.viewConfig.editable;
+    }
+
+    return this.props.options.editable && this.state.viewConfig.editable;
   }
 
   /**
@@ -1380,7 +1392,7 @@ class HiGlassComponent extends React.Component {
     this.handleDragStart();
     this.handleDragStop();
 
-    const MARGIN_HEIGHT = this.state.viewConfig.editable ? 10 : 0;
+    const MARGIN_HEIGHT = this.isEditable() ? 10 : 0;
 
     const marginHeight = (MARGIN_HEIGHT * maxHeight) - 1;
     const availableHeight = height - marginHeight;
@@ -2108,7 +2120,7 @@ class HiGlassComponent extends React.Component {
 
     // we are not checking for this.viewHeaders because this function may be
     // called before the component is mounted
-    if (this.state.viewConfig.editable) {
+    if (this.isEditable()) {
       totalTrackHeight += VIEW_HEADER_HEIGHT;
     }
 
@@ -2117,7 +2129,7 @@ class HiGlassComponent extends React.Component {
     const { totalHeight } = this.calculateViewDimensions(view);
     totalTrackHeight += totalHeight;
 
-    const MARGIN_HEIGHT = this.state.viewConfig.editable ? 10 : 0;
+    const MARGIN_HEIGHT = this.isEditable() ? 10 : 0;
 
     if (!this.props.options.bounded) {
       view.layout.h = Math.ceil(
@@ -3433,7 +3445,7 @@ class HiGlassComponent extends React.Component {
             }
             chromInfoPath={view.chromInfoPath}
             draggingHappening={this.state.draggingHappening}
-            editable={this.state.viewConfig.editable}
+            editable={this.isEditable()}
             horizontalMargin={this.horizontalMargin}
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
@@ -3524,7 +3536,7 @@ class HiGlassComponent extends React.Component {
           );
         };
 
-        const multiTrackHeader = this.state.viewConfig.editable && !this.state.viewConfig.hideHeader ? (
+        const multiTrackHeader = this.isEditable() && !this.state.viewConfig.hideHeader ? (
           <ViewHeader
             // Reserved props
             ref={(c) => { this.viewHeaders[view.uid] = c; }}
@@ -3620,10 +3632,10 @@ class HiGlassComponent extends React.Component {
         cols={12}
         width={this.state.width}
         draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}
-        isDraggable={this.state.viewConfig.editable}
-        isResizable={this.state.viewConfig.editable}
+        isDraggable={this.isEditable()}
+        isResizable={this.isEditable()}
         layout={layouts}
-        margin={this.state.viewConfig.editable ? [10, 10] : [0, 0]}
+        margin={this.isEditable() ? [10, 10] : [0, 0]}
         measureBeforeMount={false}
         onBreakpointChange={this.onBreakpointChange.bind(this)}
         onDragStart={this.handleDragStart.bind(this)}

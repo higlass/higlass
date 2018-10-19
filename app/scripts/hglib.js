@@ -16,7 +16,15 @@ const launch = (element, config, options) => {
   /**
    * The instance's public API will be passed into the callback
    *
-   * @param   {Object} higlass - HiGlass instance
+   * @param {DOMElement} element The element to attach the HiGlass component to
+   *  E.g. ``document.getElementById('two-heatmaps')``
+   *
+   * @param {Object} config The viewconfig to load. If this parameter is a string
+   * it will be interpreted as a url from which to retrieve the viewconf.
+   *
+   * @param {Object} options Options that affect how the component is drawn and
+   * and behaves.
+   *
    * @return  {Object} The instance's public API
    */
   let component;
@@ -33,12 +41,27 @@ const launch = (element, config, options) => {
 };
 
 /**
- * Create a HiGlass component
+ * Create a HiGlass component.
+ *
+ * In addition to the parameters below, a number of extra options can be passed
+ * using the **options** parameter:
+ *
+ * * **authToken** *(string)* - An auth token to be included with every tile request
+  (e.g. ``JWT xyz``)
+ * * **bounded** *(bool)* - A boolean specifying whether the component should be sized
+  to fit within the enclosing div [default=false]. If it is false, then the component
+  will grow as needed to fit the tracks within it.
+ * * **editable** *(bool)* - Can the layout be changed? If false, the view headers will
+  be hidden. This can also be specified in the viewconfig using the ``editable`` option.
+  The value passed here overrides the value in the viewconf. [default=true]
  *
  * @param  {Object}  element  DOM element the HiGlass component should be
- *   associated to.
- * @param  {Object|String}  viewConfig  Dictionary or URL of a view config.
- * @param  {Object}  options  Dictionary of public options.
+ *   attached to.
+ * @param  {Object|String}  viewConfig  The viewconfig to load. If this parameter is a string
+ * it will be interpreted as a url from which to retrieve the viewconf. If it is a dictionary
+ * it will be loaded as is.
+ * @param  {Object}  options  Dictionary of public options. See the description above for a list
+   of available values.
  * @example
  *
  * const hgv = hglib.viewer(
