@@ -1272,10 +1272,9 @@ class HiGlassComponent extends React.Component {
    *      The uid of the newly created viewport projection track
    */
   handleViewportProjected(fromView, toView, toTrack) {
-
     let newTrackUid = null;
 
-    if (fromView == toView) {
+    if (fromView === toView) {
       alert('A view can not show its own viewport.');
     } else {
       const hostTrack = getTrackByUid(this.state.views[toView].tracks, toTrack);
@@ -1323,7 +1322,7 @@ class HiGlassComponent extends React.Component {
 
 
     // set target center
-    this.setCenters[uid1](sourceCenterX, sourceCenterY, targetK, true );
+    this.setCenters[uid1](sourceCenterX, sourceCenterY, targetK, true);
 
 
     this.setState({
@@ -1335,8 +1334,6 @@ class HiGlassComponent extends React.Component {
    * Uid1 yanked the zoom of uid2, now  make sure that they're synchronized.
    */
   handleZoomYanked(uid1, uid2) {
-
-
     // where we're taking the zoom from
     const sourceXScale = this.xScales[uid2];
     const sourceYScale = this.yScales[uid2];
@@ -1349,7 +1346,7 @@ class HiGlassComponent extends React.Component {
 
 
     // set target center
-    this.setCenters[uid1](targetCenterX, targetCenterY, sourceK, true );
+    this.setCenters[uid1](targetCenterX, targetCenterY, sourceK, true);
 
     this.setState({
       chooseViewHandler: null,
@@ -1364,7 +1361,6 @@ class HiGlassComponent extends React.Component {
    * We just need to close the menu here.
    */
   handleTrackPositionChosen(viewUid, position) {
-
     this.setState({
       addTrackPosition: position,
       addTrackPositionView: viewUid,
@@ -1440,9 +1436,7 @@ class HiGlassComponent extends React.Component {
    * Notify the children that the layout has changed so that they
    * know to redraw themselves
    */
-  handleLayoutChange(layout, layouts) {
-
-
+  handleLayoutChange(layout /*,  layouts */) {
     if (!this.element) { return; }
 
     for (const l of layout) {
@@ -1471,7 +1465,6 @@ class HiGlassComponent extends React.Component {
    * that it doesn't override a previously set one.
    */
   clearDragTimeout() {
-
     if (this.dragTimeout) {
       clearTimeout(this.dragTimeout);
       this.dragTimeout = null;
@@ -1481,11 +1474,14 @@ class HiGlassComponent extends React.Component {
   getTrackInfo(trackType) {
     if (TRACKS_INFO_BY_TYPE[trackType]) {
       return TRACKS_INFO_BY_TYPE[trackType];
-    } else if (
+    } 
+
+    if (
       window.higlassTracksByType && window.higlassTracksByType[trackType]
     ) {
       return window.higlassTracksByType[trackType].config;
     }
+
     console.warn(
       'Track type not found:',
       trackType,
@@ -1595,7 +1591,6 @@ class HiGlassComponent extends React.Component {
    * @return: A width and a height pair (e.g. [width, height])
    */
   calculateViewDimensions(view) {
-
     const defaultHorizontalHeight = 20;
     const defaultVerticalWidth = 0;
     const defaultCenterHeight = 100;
@@ -1666,6 +1661,7 @@ class HiGlassComponent extends React.Component {
 
     let centerHeight = 0;
     let centerWidth = 0;
+
     if (view.tracks.center && dictValues(view.tracks.center).length > 0) {
       if (!view.tracks.center[0].contents || view.tracks.center[0].contents.length > 0) {
         let centerHeight = null;
@@ -1674,12 +1670,16 @@ class HiGlassComponent extends React.Component {
         if (view.tracks.center[0].contents) {
           // combined track in the center
           for (const track of view.tracks.center[0].contents) {
-            centerHeight = Math.max(centerHeight, track.height ? track.height : defaultCenterHeight);
-            centerWidth = Math.max(centerWidth, track.width ? track.width : defaultCenterWidth);
+            centerHeight = Math.max(centerHeight, track.height 
+              ? track.height : defaultCenterHeight);
+            centerWidth = Math.max(centerWidth, track.width 
+              ? track.width : defaultCenterWidth);
           }
         } else {
-          centerHeight = view.tracks.center[0].height ? view.tracks.center[0].height : defaultCenterHeight;
-          centerWidth = view.tracks.center[0].width ? view.tracks.center[0].width : defaultCenterWidth;
+          centerHeight = view.tracks.center[0].height 
+            ? view.tracks.center[0].height : defaultCenterHeight;
+          centerWidth = view.tracks.center[0].width 
+            ? view.tracks.center[0].width : defaultCenterWidth;
         }
 
         currHeight += centerHeight;
