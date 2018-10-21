@@ -183,15 +183,27 @@ listed:</p>
 <dl class="function">
 <dt id="viewer">
 <code class="descname">viewer</code><span class="sig-paren">(</span><em>element</em>, <em>viewConfig</em>, <em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#viewer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a HiGlass component</p>
+<dd><p>Create a HiGlass component.</p>
+<p>In addition to the parameters below, a number of extra options can be passed
+using the <strong>options</strong> parameter:</p>
+<ul class="simple">
+<li><strong>authToken</strong> <em>(string)</em> - An auth token to be included with every tile request
+(e.g. <code class="docutils literal"><span class="pre">JWT</span> <span class="pre">xyz</span></code>)</li>
+<li><strong>bounded</strong> <em>(bool)</em> - A boolean specifying whether the component should be sized
+to fit within the enclosing div [default=false]. If it is false, then the component
+will grow as needed to fit the tracks within it.</li>
+<li><strong>editable</strong> <em>(bool)</em> - Can the layout be changed? If false, the view headers will
+be hidden. This can also be specified in the viewconfig using the <code class="docutils literal"><span class="pre">editable</span></code> option.
+The value passed here overrides the value in the viewconf. [default=true]</li>
+</ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
-<li><strong>element</strong> (<em>Object</em>) – DOM element the HiGlass component should be associated to.</li>
-<li><strong>viewConfig</strong> (<em>Object|String</em>) – Dictionary or URL of a view config.</li>
-<li><strong>options</strong> (<em>Object</em>) – Dictionary of public options.</li>
+<li><strong>element</strong> (<em>Object</em>) – DOM element the HiGlass component should be attached to.</li>
+<li><strong>viewConfig</strong> (<em>Object|String</em>) – The viewconfig to load. If this parameter is a string it will be interpreted as a url from which to retrieve the viewconf. If it is a dictionary it will be loaded as is.</li>
+<li><strong>options</strong> (<em>Object</em>) – Dictionary of public options. See the description above for a list of available values.</li>
 </ul>
 </td>
 </tr>
@@ -392,8 +404,8 @@ to each other.</p>
 <li><strong>viewUid</strong> (<em>string</em>) – The identifier of the view to zoom</li>
 <li><strong>start1Abs</strong> (<em>Number</em>) – The x start position</li>
 <li><strong>end1Abs</strong> (<em>Number</em>) – The x end position</li>
-<li><strong>start2Abs</strong> (<em>Number</em>) – The y start position</li>
-<li><strong>end2Abs</strong> (<em>Number</em>) – The y end position</li>
+<li><strong>start2Abs</strong> (<em>Number</em>) – (optional) The y start position. If not specified start1Abs will be used.</li>
+<li><strong>end2Abs</strong> (<em>Number</em>) – (optional) The y end position. If not specified end1Abs will be used</li>
 </ul>
 </td>
 </tr>
@@ -518,7 +530,8 @@ If it is not provided, the value is taken from the <cite>exportViewUrl</cite> va
 <span class="p">}</span>
 </pre></div>
 </div>
-<p><code class="docutils literal"><span class="pre">rangeSelection:</span></code> Returns a BED- (1D) or BEDPE (1d) array of the selected data and genomic range (if chrom-sizes are available)</p>
+<p><code class="docutils literal"><span class="pre">rangeSelection:</span></code> Returns a BED- (1D) or BEDPE (1d) array of the selected data and
+genomic range (if chrom-sizes are available)</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="c1">// Global output</span>
 <span class="p">{</span>
   <span class="nx">dataRange</span><span class="o">:</span> <span class="p">[...]</span>
@@ -539,7 +552,8 @@ If it is not provided, the value is taken from the <cite>exportViewUrl</cite> va
 </pre></div>
 </div>
 <p><code class="docutils literal"><span class="pre">viewConfig:</span></code> Returns the current view config.</p>
-<p><code class="docutils literal"><span class="pre">mouseMoveZoom:</span></code> Returns the raw data around the mouse cursors screen location and the related genomic location.</p>
+<p><code class="docutils literal"><span class="pre">mouseMoveZoom:</span></code> Returns the raw data around the mouse cursors screen location
+and the related genomic location.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nx">data</span><span class="p">,</span> <span class="c1">// Raw Float32Array</span>
   <span class="nx">dim</span><span class="p">,</span>  <span class="c1">// Dimension of the lens (the lens is squared)</span>
