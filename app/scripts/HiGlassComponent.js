@@ -972,8 +972,9 @@ class HiGlassComponent extends React.Component {
 
         if (!this.xScales[key] || !this.yScales[key]) { continue; }
 
-        if (key == uid) // no need to notify oneself that the scales have changed
-        { continue; }
+        if (key == uid) {// no need to notify oneself that the scales have changed
+          continue; 
+        }
 
         const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key],
           this.yScales[key]);
@@ -1218,8 +1219,7 @@ class HiGlassComponent extends React.Component {
    * @param uid2: The view that the lock was called on (the view that was selected)
    */
   handleLocationLockChosen(uid1, uid2) {
-
-    if (uid1 == uid2) {
+    if (uid1 === uid2) {
       this.setState({
         chooseViewHandler: null,
       });
@@ -1241,7 +1241,6 @@ class HiGlassComponent extends React.Component {
    * @param uid2: The view that the lock was called on (the view that was selected)
    */
   handleZoomLockChosen(uid1, uid2) {
-
     if (uid1 === uid2) {
       this.setState({
         chooseViewHandler: null,
@@ -1436,7 +1435,7 @@ class HiGlassComponent extends React.Component {
    * Notify the children that the layout has changed so that they
    * know to redraw themselves
    */
-  handleLayoutChange(layout /*,  layouts */) {
+  handleLayoutChange(layout /* , layouts */) {
     if (!this.element) { return; }
 
     for (const l of layout) {
@@ -1474,7 +1473,7 @@ class HiGlassComponent extends React.Component {
   getTrackInfo(trackType) {
     if (TRACKS_INFO_BY_TYPE[trackType]) {
       return TRACKS_INFO_BY_TYPE[trackType];
-    } 
+    }
 
     if (
       window.higlassTracksByType && window.higlassTracksByType[trackType]
@@ -1507,7 +1506,7 @@ class HiGlassComponent extends React.Component {
     }, timeout);
   }
 
-  handleDragStart(layout, oldItem, newItem, placeholder, e, element) {
+  handleDragStart(/* layout, oldItem, newItem, placeholder, e, element */) {
     this.clearDragTimeout();
     this.notifyDragChangedListeners(true);
   }
@@ -1911,7 +1910,6 @@ class HiGlassComponent extends React.Component {
    * @param host: If this track is being added to another track
    */
   handleTracksAdded(viewId, newTracks, position, host) {
-
     this.storeTrackSizes(viewId);
 
     for (const newTrack of newTracks) { this.handleTrackAdded(viewId, newTrack, position, host); }
@@ -2128,7 +2126,7 @@ class HiGlassComponent extends React.Component {
 
     if (!this.props.options.bounded) {
       view.layout.h = Math.ceil(
-        (totalTrackHeight + MARGIN_HEIGHT) 
+        (totalTrackHeight + MARGIN_HEIGHT)
         / (this.state.rowHeight + MARGIN_HEIGHT),
       );
     }
@@ -2204,7 +2202,7 @@ class HiGlassComponent extends React.Component {
         .getTrackObject(trackUid)
         .createdTracks);
       for (const childTrackUid of childTrackUids) {
-        this.handleUnlock(this.combineViewAndTrackUid(viewUid, childTrackUid), 
+        this.handleUnlock(this.combineViewAndTrackUid(viewUid, childTrackUid),
           this.valueScaleLocks);
       }
     } else {
@@ -2549,8 +2547,8 @@ class HiGlassComponent extends React.Component {
 
     const potentialPositions = [];
 
-    if (view.layout.w == 12) {
-      // this view is full width, we can cut it in half
+    if (view.layout.w === 12) {
+      // this view is full width, we can cut it in half (#259)
       view.layout.w = 6;
     }
 
