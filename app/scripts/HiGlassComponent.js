@@ -1835,11 +1835,9 @@ class HiGlassComponent extends React.Component {
    * @param {uid} This view's identifier
    */
   handleCloseView(uid) {
-
-
     // check if this is the only view
     // if it is, don't close it (display an error message)
-    if (dictValues(this.state.views).length == 1) {
+    if (dictValues(this.state.views).length === 1) {
       return;
     }
 
@@ -1865,8 +1863,6 @@ class HiGlassComponent extends React.Component {
    * @param hostTrack: The track that will host the new series.
    */
   handleSeriesAdded(viewId, newTrack, position, hostTrack) {
-
-
     // is the host track a combined track?
     // if so, easy, just append the new track to its contents
     // if not, remove the current track from the track list
@@ -2085,7 +2081,6 @@ class HiGlassComponent extends React.Component {
    *  Nothing
    */
   storeTrackSizes(viewId) {
-
     const looseTracks = positionedTracksToAllTracks(this.state.views[viewId].tracks);
 
     for (const track of looseTracks) {
@@ -2133,8 +2128,8 @@ class HiGlassComponent extends React.Component {
 
     if (!this.props.options.bounded) {
       view.layout.h = Math.ceil(
-        (totalTrackHeight + MARGIN_HEIGHT) /
-        (this.state.rowHeight + MARGIN_HEIGHT),
+        (totalTrackHeight + MARGIN_HEIGHT) 
+        / (this.state.rowHeight + MARGIN_HEIGHT),
       );
     }
   }
@@ -2209,7 +2204,8 @@ class HiGlassComponent extends React.Component {
         .getTrackObject(trackUid)
         .createdTracks);
       for (const childTrackUid of childTrackUids) {
-        this.handleUnlock(this.combineViewAndTrackUid(viewUid, childTrackUid), this.valueScaleLocks);
+        this.handleUnlock(this.combineViewAndTrackUid(viewUid, childTrackUid), 
+          this.valueScaleLocks);
       }
     } else {
       this.handleUnlock(this.combineViewAndTrackUid(viewUid, trackUid), this.valueScaleLocks);
@@ -2264,9 +2260,9 @@ class HiGlassComponent extends React.Component {
    * @param track: A view with tracks.
    */
   addCallbacks(viewUid, track) {
-    if (track.type == 'viewport-projection-center'
-          || track.type == 'viewport-projection-horizontal'
-          || track.type == 'viewport-projection-vertical'
+    if (track.type === 'viewport-projection-center'
+          || track.type === 'viewport-projection-horizontal'
+          || track.type === 'viewport-projection-vertical'
     ) {
       const fromView = track.fromViewUid;
 
@@ -2553,6 +2549,11 @@ class HiGlassComponent extends React.Component {
 
     const potentialPositions = [];
 
+    if (view.layout.w == 12) {
+      // this view is full width, we can cut it in half
+      view.layout.w = 6;
+    }
+
     for (let i = 0; i < views.length; i++) {
       let pX = views[i].layout.x + views[i].layout.w;
       let pY = views[i].layout.y;
@@ -2581,19 +2582,6 @@ class HiGlassComponent extends React.Component {
       return n;
     });
 
-    /*
-      for (let i = 0; i < views.length; i++) {
-          let view = views[i];
-
-          if ('layout' in view) {
-              if ('minH' in view.layout)
-                    maxY += Math.max(maxY, view.layout.y + view.layout.minH);
-              else
-                    maxY += Math.max(maxY, view.layout.y + 1);
-          }
-      }
-      */
-
     const jsonString = JSON.stringify(lastView);
 
     const newView = JSON.parse(jsonString); // ghetto copy
@@ -2615,14 +2603,6 @@ class HiGlassComponent extends React.Component {
     this.setState({
       views: this.state.views,
     });
-
-    /*
-      this.state
-      freshViewConfig.views.push(newView);
-      let newViewConfigText = JSON.stringify(freshViewConfig);
-
-      this.props.onNewConfig(newViewConfigText);
-      */
   }
 
   /**
@@ -2681,7 +2661,7 @@ class HiGlassComponent extends React.Component {
      *
      *  Nothing
      */
-    const views = this.state.views;
+    const { views } = this.state;
 
     views[viewUid].genomePositionSearchBox.chromInfoId = newAssembly;
     views[viewUid].genomePositionSearchBox.autocompleteId = newAutocompleteId;

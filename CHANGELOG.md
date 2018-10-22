@@ -1,6 +1,7 @@
 ## v1.2.9
 
 - Minor bug fix wherein valueScaleMin and valueScaleMax weren't used when set to 0
+- Cloned views split vertically first (#259)
 
 ## v1.2.8
 
