@@ -44,7 +44,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     afterAll((done) => {
-      // document.body.removeChild(div);
+      document.body.removeChild(div);
 
       done();
     });

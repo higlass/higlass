@@ -164,7 +164,7 @@ export const isWaitingOnTiles = (hgc) => {
  *  hgc component
  * @param {function} done The callback to call when the component is fully loaded
  */
-export const mountHGComponent = (prevDiv, prevHgc, viewConf, done) => {
+export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
   if (prevHgc) {
     prevHgc.unmount();
     prevHgc.detach();
@@ -174,14 +174,19 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done) => {
     global.document.body.removeChild(prevDiv);
   }
 
+  const style = (options && options.style) || 'width:800px; background-color: lightgreen;';
+  const bounded = (options && options.bounded) || false;
+
+  console.log('options', options, 'style:', style);
+  
   const div = global.document.createElement('div');
   global.document.body.appendChild(div);
 
-  div.setAttribute('style', 'width:800px;background-color: lightgreen');
+  div.setAttribute('style', style);
   div.setAttribute('id', 'simple-hg-component');
 
   const hgc = mount(<HiGlassComponent
-    options={{ bounded: false }}
+    options={{ bounded }}
     viewConfig={viewConf}
   />, { attachTo: div });
 
