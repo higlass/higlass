@@ -231,9 +231,9 @@ to each other.
 ``end1: Number``
     The right x coordinate of the region to zoom to.
 ``start2: Number``
-    The left x coordinate of the region to zoom to.
+    The left y coordinate of the region to zoom to.
 ``end2: Number``
-    The right x coordinate of the region to zoom to.
+    The right y coordinate of the region to zoom to.
 ``animateTime [default: 0]``
     The duration of the zoom transition in milliseconds.
 
@@ -242,7 +242,7 @@ to each other.
 .. code-block:: javascript
 
   // Absolute coordinates
-  hgApi.zoomTo('view1', 1000000, 1000000, 2000000, 2000000, 500);
+  hgApi.zoomTo('view1', 1000000, 1100000, 2000000, 2100000, 500);
 
   // Chromosomal coordinates
   hglib
