@@ -10,6 +10,8 @@ export {
   waitForJsonComplete,
   waitForTilesLoaded,
   waitForTransitionsFinished,
+  mountHGComponent,
+  getTrackObjectFromHGC,
 } from './utils';
 
 const launch = (element, config, options) => {

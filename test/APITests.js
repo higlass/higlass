@@ -53,6 +53,11 @@ describe('Simple HiGlassComponent', () => {
       document.body.removeChild(div);
     });
 
+    it('zooms to a location with a nonexistent view', () => {
+      // complete me, should throw an error rather than complaining
+      // "Cannot read property 'copy' of undefined thrown"
+    });
+
     return;
     
     // it('creates a new component with different options and checks'

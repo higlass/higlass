@@ -3172,7 +3172,7 @@ class HiGlassComponent extends React.Component {
       sourceUid: this.uid,
       hoveredTracks,
     };
-
+    
     pubSub.publish(
       'app.mouseMove', evt
     );
@@ -3220,15 +3220,18 @@ class HiGlassComponent extends React.Component {
 
     if (evt.track !== this.prevMouseHoverTrack) {
       if (this.prevMouseHoverTrack && this.prevMouseHoverTrack.stopHover) {
+        console.log('stophover');
         this.prevMouseHoverTrack.stopHover();
       }
     }
 
     this.prevMouseHoverTrack = evt.track;
 
+
     if (this.zooming) return;
 
     const data = (mouseOverHtml && mouseOverHtml.length) ? [1] : [];
+
 
     // try to select the mouseover div
     let mouseOverDiv = select('body')
@@ -3244,8 +3247,11 @@ class HiGlassComponent extends React.Component {
       .classed('track-mouseover-menu', true)
       .classed(styles['track-mouseover-menu'], true);
 
+
+
     mouseOverDiv = select('body').selectAll('.track-mouseover-menu');
     const mousePos = clientPoint(select('body').node(), evt.origEvt);
+
 
     /*
     mouseOverDiv.selectAll('.mouseover-marker')

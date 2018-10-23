@@ -400,6 +400,7 @@ const api = function api(context) {
      *    start1Abs will be used.
      * @param {Number} end2Abs (optional) The y end position. If not specified
      *    end1Abs will be used
+     * @param {Number} animateTime The time to spend zooming to the specified location
      * @example
      *    // Absolute coordinates
      * hgApi.zoomTo('view1', 1000000, 1000000, 2000000, 2000000, 500);
