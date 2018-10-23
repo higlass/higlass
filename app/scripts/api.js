@@ -403,7 +403,7 @@ const api = function api(context) {
      * @param {Number} animateTime The time to spend zooming to the specified location
      * @example
      *    // Absolute coordinates
-     * hgApi.zoomTo('view1', 1000000, 1000000, 2000000, 2000000, 500);
+     * hgApi.zoomTo('view1', 1000000, 1100000, 2000000, 2100000, 500);
      * // Chromosomal coordinates
      * hglib
      *   // Pass in the URL of your chrom sizes
