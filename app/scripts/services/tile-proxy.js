@@ -556,7 +556,13 @@ function fetchEither(url, callback, textOrJson) {
     headers.Authorization = authHeader;
   }
   return fetch(url, { credentials: 'same-origin', headers })
-    .then(rep => rep[textOrJson]())
+    .then((rep) => {
+      if (!rep.ok) {
+        throw Error(rep.statusText);
+      }
+
+      return rep[textOrJson]();
+    })
     .then((content) => {
       callback(undefined, content);
     })
@@ -579,13 +585,21 @@ function text(url, callback) {
   return fetchEither(url, callback, 'text');
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 /**
  * Send a JSON request and mark it so that we can tell how many are in flight
  *
  * @param url: URL to fetch
  * @param callback: Callback to execute with content from fetch
  */
-function json(url, callback) {
+async function json(url, callback) {
+  if (url.indexOf('hg19') >= 0) {
+    await sleep(1);
+  }
+  // console.log('url:', url);
   return fetchEither(url, callback, 'json');
 }
 

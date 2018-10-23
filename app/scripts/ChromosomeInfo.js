@@ -47,16 +47,17 @@ function ChromosomeInfo(filepath, success) {
 
   return tileProxy.text(filepath, (error, chrInfoText) => {
     if (error) {
-      console.warn('Chromosome info not found at:', filepath);
+      // console.warn('Chromosome info not found at:', filepath);
       if (success) success(null);
-    }
-    const data = tsvParseRows(chrInfoText);
-    const chromInfo = parseChromsizesRows(data);
+    } else {
+      const data = tsvParseRows(chrInfoText);
+      const chromInfo = parseChromsizesRows(data);
 
-    Object.keys(chromInfo).forEach((key) => {
-      ret[key] = chromInfo[key];
-    });
-    if (success) success(ret);
+      Object.keys(chromInfo).forEach((key) => {
+        ret[key] = chromInfo[key];
+      });
+      if (success) success(ret);
+    }
   }).then(() => ret);
 }
 

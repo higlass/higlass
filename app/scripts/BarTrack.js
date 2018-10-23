@@ -219,7 +219,6 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
       const posOffset = newRange[0];
 
-      console.log(tile.tileId, 'posOffset', -posOffset, 'tileK:', tileK, tile.drawnAtScale.domain());
       tile.graphics.scale.x = tileK;
       tile.graphics.position.x = -posOffset * tileK;
     });

@@ -2661,6 +2661,8 @@ class HiGlassComponent extends React.Component {
      */
     const { views } = this.state;
 
+    console.log('newAssembly', newAssembly);
+
     views[viewUid].genomePositionSearchBox.chromInfoId = newAssembly;
     views[viewUid].genomePositionSearchBox.autocompleteId = newAutocompleteId;
     views[viewUid].genomePositionSearchBox.autocompleteServer = newServer;
@@ -3220,7 +3222,6 @@ class HiGlassComponent extends React.Component {
 
     if (evt.track !== this.prevMouseHoverTrack) {
       if (this.prevMouseHoverTrack && this.prevMouseHoverTrack.stopHover) {
-        console.log('stophover');
         this.prevMouseHoverTrack.stopHover();
       }
     }
@@ -3246,8 +3247,6 @@ class HiGlassComponent extends React.Component {
       .append('div')
       .classed('track-mouseover-menu', true)
       .classed(styles['track-mouseover-menu'], true);
-
-
 
     mouseOverDiv = select('body').selectAll('.track-mouseover-menu');
     const mousePos = clientPoint(select('body').node(), evt.origEvt);
