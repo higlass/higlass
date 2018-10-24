@@ -55,6 +55,8 @@ import OSMTilesTrack from './OSMTilesTrack';
 import OSMTileIdsTrack from './OSMTileIdsTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
 
+import SVGTrack from './SVGTrack';
+
 // Utils
 import {
   colorToHex,
@@ -379,7 +381,7 @@ class TrackRenderer extends React.Component {
    * @param  {Object}  e  Event to be dispatched.
    */
   dispatchEvent(e) {
-    if (e.sourceUid == this.uid) {
+    if (e.sourceUid === this.uid) {
       if (e.type !== 'contextmenu') {
         forwardEvent(e, this.element);
       }
@@ -1707,6 +1709,11 @@ class TrackRenderer extends React.Component {
             () => this.currentProps.onNewTilesLoaded(track.uid),
           )
         );
+
+      case 'simple-svg':
+        return new SVGTrack(
+            this.svgElement
+          );
 
       default: {
         // Check if a plugin track is available

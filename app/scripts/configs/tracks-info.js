@@ -61,6 +61,15 @@ export const TRACKS_INFO = [
     defaultOptions: {},
   },
   {
+    type: 'simple-svg',
+    datatype: [],
+    local: false,
+    minHeight: 100,
+    minWidth: 100,
+    orientation: '2d',
+    exportable: true,
+  },
+  {
     type: 'heatmap',
     datatype: ['matrix'],
     local: false,
