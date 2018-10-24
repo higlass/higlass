@@ -56,9 +56,17 @@ class TiledPixiTrack extends PixiTrack {
   /**
    * A track that must pull remote tiles
    *
-   * @param scene: A PIXI.js scene to draw everything to.
-   * @param server: The server to pull tiles from.
-   * @param tilesetUid: The data set to get the tiles from the server
+   * @param (PIXI.scene) scene A PIXI.js scene to draw everything to.
+   * @param (Object) dataConfig: A data source. Usually a
+   *  ``{server: 'x/api/v1/', tilesetUuid: 'y'}`` Object.
+   * @param {Object} handleTilesetInfoReceived: A callback to do something once once the tileset
+   *  info is received. Usually it registers some information about the tileset with its
+   * definition
+   * @param {Object} options The track's options
+   * @param {function} animate A function to redraw this track. Typically called when an
+   *  asynchronous event occurs (i.e. tiles loaded)
+   * @param {function} onValueScaleChanged The range of values has changed so we need to inform
+   *  the higher ups that the value scale has changed. Only occurs on tracks with ``dense`` data.
    */
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
     super(scene, options);
@@ -196,6 +204,22 @@ class TiledPixiTrack extends PixiTrack {
     }
   }
 
+  /**
+   * Register an event listener for track events. Currently, the only supported
+   * event is ``dataChanged``.
+   *
+   * @param {string} event The event to listen for
+   * @param {function} callback The callback to call when the event occurs. The
+   *  parameters for the event depend on the event called.
+   * 
+   * @example
+   *
+   * ..code-block::
+   *
+   *  trackObj.on('dataChanged', (newData) => {
+   *   console.log('newData:', newData)
+   *  });
+   */
   on(event, callback) {
     if (!this.listeners[event]) {
       this.listeners[event] = [];
@@ -438,7 +462,7 @@ class TiledPixiTrack extends PixiTrack {
   }
 
 
-  initTile(tile) {
+  initTile(/* tile */) {
     // create the tile
     // should be overwritten by child classes
     this.scale.minRawValue = this.minVisibleValue();
@@ -448,11 +472,11 @@ class TiledPixiTrack extends PixiTrack {
     this.scale.maxValue = this.scale.maxRawValue;
   }
 
-  updateTile(tile) {
+  updateTile(/* tile */) {
     // console.log("ERROR: unimplemented updateTile:", this);
   }
 
-  destroyTile(tile) {
+  destroyTile(/* tile */) {
     // remove all data structures needed to draw this tile
   }
 
@@ -509,7 +533,7 @@ class TiledPixiTrack extends PixiTrack {
     this.updateExistingGraphics();
 
     if (this.listeners.dataChanged) {
-      for (let callback of this.listeners.dataChanged) {
+      for (const callback of this.listeners.dataChanged) {
         callback(this.visibleAndFetchedTiles());
       }
     }
@@ -574,7 +598,7 @@ class TiledPixiTrack extends PixiTrack {
       }
     }
 
-    const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
+    // const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
     // console.log('fetchedTileIDs:', fetchedTileIDs);
     // console.log('fetching:', this.fetching);
 
@@ -603,7 +627,9 @@ class TiledPixiTrack extends PixiTrack {
     // Let HiGlass know we need to re-render
     // check if the value scale has changed
     if (this.valueScale) {
-      if (!this.prevValueScale || JSON.stringify(this.valueScale.domain()) != JSON.stringify(this.prevValueScale.domain())) {
+      if (!this.prevValueScale
+        || JSON.stringify(this.valueScale.domain())
+        !== JSON.stringify(this.prevValueScale.domain())) {
         // console.log('here', this.onValueScaleChanged);
         // if (this.prevValueScale)
         // console.log('this.prevValueScale.domain()', this.prevValueScale.domain());
@@ -663,7 +689,7 @@ class TiledPixiTrack extends PixiTrack {
   /**
    * Draw a tile on some graphics
    */
-  drawTile(tileData, graphics) {}
+  drawTile(/* tileData, graphics */) {}
 
   calculateMedianVisibleValue() {
     if (this.areAllVisibleTilesLoaded()) {
