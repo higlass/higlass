@@ -934,7 +934,12 @@ class HiGlassComponent extends React.Component {
     // -- or redraw in the same event as you call toDataURL,
     // so it doesn't have a chance to swap buffers.
     this.forceRefreshView();
-    return this.canvasElement.toDataURL();
+    const dataURI = this.canvasElement.toDataURL();
+    console.log('if non-zero, likely blank (AABA)',
+                (dataURI.match(/AABAgQIEC/g) || []).length);
+    // console.log('if non-zero, likely blank (LOLL)',
+    //             (dataURI.match(/LOLLX9QhH/g) || []).length);
+    return dataURI;
   }
 
   handleExportSVG() {
