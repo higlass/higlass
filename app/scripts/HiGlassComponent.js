@@ -928,6 +928,12 @@ class HiGlassComponent extends React.Component {
   }
 
   createDataURI() {
+    // If Canvas is used with a webgl context, there are actually two buffers.
+    // To get the one that isn't blank, you can either:
+    // -- set "preserveDrawingBuffer: true", with a performance penalty,
+    // -- or redraw in the same event as you call toDataURL,
+    // so it doesn't have a chance to swap buffers.
+    this.forceRefreshView();
     return this.canvasElement.toDataURL();
   }
 
