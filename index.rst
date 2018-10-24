@@ -166,10 +166,9 @@ crucial are listed below.
     :glob:
 
     tutorial
-    jupyter
-    python_api
     javascript_api
+    python_api
+    jupyter
     data_preparation
     track_types
     developer 
-    *

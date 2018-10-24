@@ -23,8 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Data Preparation" href="data_preparation.html" />
-    <link rel="prev" title="Python API" href="python_api.html" />
+    <link rel="next" title="Python API" href="python_api.html" />
+    <link rel="prev" title="Tutorial" href="tutorial.html" />
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-77756807-1"></script>
   <script>
@@ -389,7 +389,7 @@ of this component</p>
 
 <dl class="function">
 <dt id="zoomTo">
-<code class="descname">zoomTo</code><span class="sig-paren">(</span><em>viewUid</em>, <em>start1Abs</em>, <em>end1Abs</em>, <em>start2Abs</em>, <em>end2Abs</em><span class="sig-paren">)</span><a class="headerlink" href="#zoomTo" title="Permalink to this definition">¶</a></dt>
+<code class="descname">zoomTo</code><span class="sig-paren">(</span><em>viewUid</em>, <em>start1Abs</em>, <em>end1Abs</em>, <em>start2Abs</em>, <em>end2Abs</em>, <em>animateTime</em><span class="sig-paren">)</span><a class="headerlink" href="#zoomTo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the current view port to a certain data location.  When <code class="docutils literal"><span class="pre">animateTime</span></code> is
 greater than 0, animate the transition.
 If working with genomic data, a chromosome info file will need to be used in
@@ -406,6 +406,7 @@ to each other.</p>
 <li><strong>end1Abs</strong> (<em>Number</em>) – The x end position</li>
 <li><strong>start2Abs</strong> (<em>Number</em>) – (optional) The y start position. If not specified start1Abs will be used.</li>
 <li><strong>end2Abs</strong> (<em>Number</em>) – (optional) The y end position. If not specified end1Abs will be used</li>
+<li><strong>animateTime</strong> (<em>Number</em>) – The time to spend zooming to the specified location</li>
 </ul>
 </td>
 </tr>
@@ -413,7 +414,7 @@ to each other.</p>
 </table>
 <p><strong>Examples:</strong></p>
 <div class="highlight-js"><div class="highlight"><pre><span></span><span class="c1">// Absolute coordinates</span>
-<span class="nx">hgApi</span><span class="p">.</span><span class="nx">zoomTo</span><span class="p">(</span><span class="s1">&#39;view1&#39;</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">,</span> <span class="mi">2000000</span><span class="p">,</span> <span class="mi">2000000</span><span class="p">,</span> <span class="mi">500</span><span class="p">);</span>
+<span class="nx">hgApi</span><span class="p">.</span><span class="nx">zoomTo</span><span class="p">(</span><span class="s1">&#39;view1&#39;</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">,</span> <span class="mi">1100000</span><span class="p">,</span> <span class="mi">2000000</span><span class="p">,</span> <span class="mi">2100000</span><span class="p">,</span> <span class="mi">500</span><span class="p">);</span>
 <span class="c1">// Chromosomal coordinates</span>
 <span class="nx">hglib</span>
   <span class="c1">// Pass in the URL of your chrom sizes</span>
@@ -630,9 +631,9 @@ and the related genomic location.</p>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#viewing-data-in-the-client">Viewing data in the client</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="jupyter.html">Jupyter Notebooks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="jupyter.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jupyter.html#usage">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Javascript API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-functions">API Functions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="python_api.html">Python API</a><ul>
@@ -640,9 +641,9 @@ and the related genomic location.</p>
 <li class="toctree-l2"><a class="reference internal" href="python_api.html#hgflask-client">hgflask.client</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Javascript API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#api-functions">API Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jupyter.html">Jupyter Notebooks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jupyter.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jupyter.html#usage">Usage</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data Preparation</a><ul>
@@ -679,39 +680,14 @@ and the related genomic location.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Contributor Guidelines</a></li>
-<li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-views">Adding views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#replacing-tracks">Replacing Tracks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
-<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-cross-sections">Adding cross sections</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="higlass_server.html">Server</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#configuration">Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#development">Development</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#testing">Testing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#api">API</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="view_config.html#show-a-specific-genomic-location">Show a specific genomic location</a></li>
-<li class="toctree-l2"><a class="reference internal" href="view_config.html#upload-a-viewconf-to-the-server">Upload a viewconf to the server</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="views.html">Views</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="views.html#genome-position-search-box">Genome Position Search Box</a></li>
-<li class="toctree-l2"><a class="reference internal" href="views.html#view-synchronization">View synchronization</a></li>
-</ul>
-</li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="python_api.html" title="previous chapter">Python API</a></li>
-      <li>Next: <a href="data_preparation.html" title="next chapter">Data Preparation</a></li>
+      <li>Previous: <a href="tutorial.html" title="previous chapter">Tutorial</a></li>
+      <li>Next: <a href="python_api.html" title="next chapter">Python API</a></li>
   </ul></li>
 </ul>
 </div>
