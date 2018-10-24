@@ -2,9 +2,12 @@ import ReactDOM from 'react-dom';
 
 import {
   setDarkTheme,
-  getTileProxyAuthHeader,
   setTileProxyAuthHeader,
 } from './services';
+
+import {
+  getTrackObjectFromHGC
+} from './utils';
 
 import {
   MOUSE_TOOL_MOVE,
@@ -32,7 +35,7 @@ const api = function api(context) {
     /**
      * Set an auth header to be included with all tile requests.
      *
-     * @param {string} newHeader The contensts of the header to be included. 
+     * @param {string} newHeader The contensts of the header to be included.
      * Example: ``hgapi.setAuthHeader('JWT xyz')``
      */
     setAuthHeader(newHeader) {
@@ -156,6 +159,14 @@ const api = function api(context) {
       return p;
     },
 
+    /**
+     * Retrieve the visible viewconf.
+     *
+     * @returns (Object) A JSON object describing the visible views
+     */
+    getViewConfig() {
+      return self.getViewsAsJson();
+    },
     /**
      * Get the minimum and maximum visible values for a given track.
      *
@@ -382,6 +393,22 @@ const api = function api(context) {
         xDomain: self.xScales[wurstId].domain(),
         yDomain: self.yScales[wurstId].domain()
       };
+    },
+
+    /**
+     * Return the track's javascript object. This is useful for subscribing to
+     * data events (dataChanged)
+     */
+    getTrackObject(viewId, trackId) {
+      let newViewId = viewId;
+      let newTrackId = trackId;
+
+      if (!trackId) {
+        newViewId = Object.values(self.state.views)[0].uid;
+        newTrackId = viewId;
+      }
+
+      return getTrackObjectFromHGC(self, newViewId, newTrackId);
     },
 
     /**

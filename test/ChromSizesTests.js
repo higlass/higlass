@@ -189,8 +189,6 @@ describe('Simple HiGlassComponent', () => {
         hgc.instance(), 'Mw2aWH9TTcu38t5OZlCYyA'
       );
 
-      console.log('hi: =;');
-
       expect(trackObject.options['lineStrokeColor']).to.eql('grey');
       done();
     });

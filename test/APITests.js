@@ -53,6 +53,22 @@ describe('Simple HiGlassComponent', () => {
       document.body.removeChild(div);
     });
 
+    it('retrieves a track', () => {
+      const [div, api] = createElementAndAPI(simpleCenterViewConfig,
+        { editable: false });
+
+      // const component = api.getComponent();
+      const viewconf = api.getViewConfig();
+      const trackObj = api.getTrackObject(viewconf.views[0].tracks.center[0].uid);
+
+
+      expect(trackObj).to.exist;
+      
+      // console.log('viewHeaders:', component.viewHeaders);
+      // expect(Object.keys(component.viewHeaders).length).to.eql(0);
+      document.body.removeChild(div);
+    });
+
     it('zooms to a location with a nonexistent view', () => {
       // complete me, should throw an error rather than complaining
       // "Cannot read property 'copy' of undefined thrown"

@@ -13,7 +13,7 @@ module.exports = function(config) {
       'node_modules/pixi.js/dist/pixi.js',
       'node_modules/react-bootstrap/dist/react-bootstrap.js',
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
-       'test/**/*.+(js|jsx)',
+      'test/**/*.+(js|jsx)',
       // 'test/TiledPixiTrackTests.js',
       // 'test/ViewManipulationTests.js',
       // 'test/ChromSizesTests.js',

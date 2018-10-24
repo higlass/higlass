@@ -2356,7 +2356,7 @@ class HiGlassComponent extends React.Component {
     return { locksByViewUid, locksDict };
   }
 
-  getViewsAsString() {
+  getViewsAsJson() {
     const newJson = JSON.parse(JSON.stringify(this.state.viewConfig));
     newJson.views = dictItems(this.state.views).map((k) => {
       const newView = JSON.parse(JSON.stringify(k[1]));
@@ -2402,8 +2402,11 @@ class HiGlassComponent extends React.Component {
     newJson.locationLocks = this.serializeLocks(this.locationLocks);
     newJson.valueScaleLocks = this.serializeLocks(this.valueScaleLocks);
 
-    const data = JSON.stringify(newJson, null, 2);
-    return data;
+    return newJson;
+  }
+
+  getViewsAsString() {
+    return JSON.stringify(this.getViewsAsJson(), null, 2);
   }
 
   handleExportViewAsJSON() {

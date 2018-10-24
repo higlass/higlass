@@ -1,4 +1,4 @@
-## v1.3.0-dev.1
+## v1.2.10
 
 - Added TiledPixiTrack.on event handler
 - Added getTrackObject to exports

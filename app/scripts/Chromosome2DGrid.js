@@ -8,7 +8,7 @@ import { colorToHex } from './utils';
 
 class Chromosome2DGrid extends PixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, chromInfoPath) {
-    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
+    super(scene, options);
 
     this.searchField = null;
     this.chromInfo = null;
