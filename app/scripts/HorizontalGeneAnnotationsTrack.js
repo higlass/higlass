@@ -61,6 +61,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     // create texts
     tile.texts = {};
 
+    // console.log('tile:', tile.tileId, tile.tileData);
     tile.rectGraphics = new PIXI.Graphics();
     tile.textBgGraphics = new PIXI.Graphics();
     tile.textGraphics = new PIXI.Graphics();
@@ -232,13 +233,10 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         const exonEnds = geneInfo[13];
 
         const txMiddle = (txStart + txEnd) / 2;
-
         let yMiddle = this.dimensions[1] / 2;
-        const geneName = geneInfo[3];
         const geneId = this.geneId(geneInfo);
 
         // console.log('geneInfo:', geneInfo);
-
         if (geneInfo[5] === '+') {
           // genes on the + strand drawn above and in a user-specified color or the
           // default blue
@@ -526,7 +524,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             // dimensions are measured for the first tile and not for the second
             const textWidth = text.getBounds().width;
             const textHeight = text.getBounds().height;
-       
+
             // console.log('textWidth:', textWidth);
             // console.log('textHeight:', textHeight);
 
