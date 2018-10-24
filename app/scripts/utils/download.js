@@ -1,7 +1,7 @@
 export function download(filename, data) {
   // yanked from here
   // https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
-  const blob = new Blob([data], { type: 'text/csv' });
+  const blob = new Blob([data], { type: 'application/octet-stream' });
   if (window.navigator.msSaveOrOpenBlob) {
     window.navigator.msSaveBlob(blob, filename);
   } else {

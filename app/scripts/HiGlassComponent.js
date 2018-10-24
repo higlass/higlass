@@ -940,6 +940,22 @@ class HiGlassComponent extends React.Component {
   handleExportSVG() {
     download('export.svg', this.createSVGString());
   }
+  
+  handleExportPNG() {
+    // download() makes a Blob, so canvas.toBlob() would be more direct...
+    // except that method takes a callback so it's asynchronous,
+    // and that gives the browser time to swap buffers,
+    // and we end up with a blank image.
+    const dataURI = this.createDataURI();
+    const base64 = dataURI.replace("data:image/png;base64,", "");
+    const byteCharacters = atob(base64);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (var i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    download('export.png', byteArray);
+  }
 
   /*
    * The scales of some view have changed (presumably in response to zooming).
@@ -3529,6 +3545,7 @@ class HiGlassComponent extends React.Component {
             onClearView={() => this.handleClearView(view.uid)}
             onCloseView={() => this.handleCloseView(view.uid)}
             onExportSVG={this.handleExportSVG.bind(this)}
+            onExportPNG={this.handleExportPNG.bind(this)}
             onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
             onExportViewsAsLink={this.handleExportViewsAsLink.bind(this)}
             onLockLocation={uid =>
