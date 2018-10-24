@@ -1,3 +1,8 @@
+## v1.3.0-dev.1
+
+- Added TiledPixiTrack.on event handler
+- Added getTrackObject to exports
+
 ## v1.2.9
 
 - Minor bug fix wherein valueScaleMin and valueScaleMax weren't used when set to 0
