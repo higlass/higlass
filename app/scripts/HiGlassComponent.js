@@ -3050,18 +3050,6 @@ class HiGlassComponent extends React.Component {
 
     const view = this.state.views[viewId];
 
-    /*
-    console.log('setting chrominfo');
-    // Set chromInfo if not available
-    if (!this.chromInfo) {
-      this.setChromInfo(
-        view.chromInfoPath,
-        () => { this.onLocationChange(viewId, callback, callbackId); },
-      );
-      return;
-    }
-    */
-
     // Convert scales into genomic locations
     const middleLayerListener = (xScale, yScale) => {
       callback({

@@ -28,19 +28,22 @@ import { ZOOM_DEBOUNCE } from './configs';
  * @param {string} defaultScaling: The default scaling type to use in case
  * 'scalingType' is null (e.g. 'linear' or 'log')
  *
- * @returns {array} An array of [string, scale] containin the scale type and a scale with an appropriately set domain and range
+ * @returns {array} An array of [string, scale] containin the scale type 
+ *  and a scale with an appropriately set domain and range
  */
-export const getValueScale = function(scalingType, minValue, pseudocountIn, maxValue, defaultScaling) {
+export function getValueScale(scalingType, minValue, pseudocountIn, maxValue, defaultScaling) {
   const scalingTypeToUse = scalingType || defaultScaling;
-  const pseudocount = 0; //purposely set to not equal pseudocountIn for now
-                         // eventually this will be an option
 
-  if (scalingTypeToUse == 'log' && minValue > 0) {
+  // purposely set to not equal pseudocountIn for now
+  // eventually this will be an option
+  const pseudocount = 0; 
+
+  if (scalingTypeToUse === 'log' && minValue > 0) {
     return ['log', scaleLog().range([254, 0])
       .domain([minValue + pseudocount, maxValue + pseudocount])];
   }
 
-  if (scalingTypeToUse == 'log') {
+  if (scalingTypeToUse === 'log') {
     // warn the users that their desired scaling type couldn't be used
     // console.warn('Negative values present in data. Defaulting to linear scale: ', minValue);
   }
@@ -91,6 +94,8 @@ class TiledPixiTrack extends PixiTrack {
     this.valueScaleMax = null;
     this.fixedValueScaleMax = null;
 
+    this.listeners = {};
+
     this.animate = animate;
     this.onValueScaleChanged = onValueScaleChanged;
 
@@ -126,10 +131,11 @@ class TiledPixiTrack extends PixiTrack {
       }
 
       // console.log('tilesetInfo:', this.tilesetInfo);
-      if (this.tilesetInfo.resolutions)
+      if (this.tilesetInfo.resolutions) {
         this.maxZoom = this.tilesetInfo.resolutions.length;
-      else
+      } else {
         this.maxZoom = +this.tilesetInfo.max_zoom;
+      }
 
       if (this.options && this.options.maxZoom) {
         if (this.options.maxZoom >= 0) {
@@ -150,7 +156,7 @@ class TiledPixiTrack extends PixiTrack {
       this.checkValueScaleLimits();
 
       this.draw();
-      this.drawLabel(); //draw the label so that the current resolution is displayed
+      this.drawLabel(); // draw the label so that the current resolution is displayed
       this.animate();
     });
 
@@ -190,6 +196,21 @@ class TiledPixiTrack extends PixiTrack {
     }
   }
 
+  on(event, callback) {
+    if (!this.listeners[event]) {
+      this.listeners[event] = [];
+    }
+
+    this.listeners[event].push(callback);
+  }
+
+  off(event, callback) {
+    const id = this.listeners[event].indexOf(callback);
+    if (id === -1 || id >= this.listeners[event].length) return;
+
+    this.listeners[event].splice(id, 1);
+  }
+
   rerender(options) {
     super.rerender(options);
 
@@ -199,10 +220,11 @@ class TiledPixiTrack extends PixiTrack {
 
     this.checkValueScaleLimits();
 
-    if (this.tilesetInfo.resolutions)
+    if (this.tilesetInfo.resolutions) {
       this.maxZoom = this.tilesetInfo.resolutions.length;
-    else
+    } else {
       this.maxZoom = +this.tilesetInfo.max_zoom;
+    }
 
     if (this.options && this.options.maxZoom) {
       if (this.options.maxZoom >= 0) {
@@ -306,9 +328,7 @@ class TiledPixiTrack extends PixiTrack {
   removeTiles(toRemoveIds) {
     // if there's nothing to remove, don't bother doing anything
     if (
-      !toRemoveIds.length ||
-      !this.areAllVisibleTilesLoaded() ||
-      this.renderingTiles.size
+      !toRemoveIds.length || !this.areAllVisibleTilesLoaded() || this.renderingTiles.size
     ) {
       return;
     }
@@ -445,7 +465,7 @@ class TiledPixiTrack extends PixiTrack {
     this.renderVersion += 1;
 
     for (let i = 0; i < fetchedTileIDs.length; i++) {
-      //console.log('this.tileGraphics', this.tileGraphics);
+      // console.log('this.tileGraphics', this.tileGraphics);
       if (!(fetchedTileIDs[i] in this.tileGraphics)) {
         // console.trace('adding:', fetchedTileIDs[i]);
 
@@ -487,6 +507,12 @@ class TiledPixiTrack extends PixiTrack {
     this.addMissingGraphics();
     this.removeOldTiles();
     this.updateExistingGraphics();
+
+    if (this.listeners.dataChanged) {
+      for (let callback of this.listeners.dataChanged) {
+        callback(this.visibleAndFetchedTiles());
+      }
+    }
   }
 
   loadTileData(tile, dataLoader) {
@@ -528,7 +554,7 @@ class TiledPixiTrack extends PixiTrack {
    */
   receivedTiles(loadedTiles) {
     for (let i = 0; i < this.visibleTiles.length; i++) {
-      const tileId = this.visibleTiles[i].tileId;
+      const { tileId } = this.visibleTiles[i];
 
       if (!loadedTiles[this.visibleTiles[i].remoteId]) { continue; }
 
@@ -612,13 +638,11 @@ class TiledPixiTrack extends PixiTrack {
         }] tilesetUid: [${this.tilesetUid}]`;
       }
 
-      this.trackNotFoundText.x = this.position[0];
-      this.trackNotFoundText.y = this.position[1];
-
+      ([this.trackNotFoundText.x, this.trackNotFoundText.y] = this.position);
       /*
-            if (this.flipText)
-                this.trackNotFoundText.scale.x = -1;
-            */
+      if (this.flipText)
+          this.trackNotFoundText.scale.x = -1;
+      */
 
       this.trackNotFoundText.visible = true;
     } else {
