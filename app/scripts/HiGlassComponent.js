@@ -943,6 +943,7 @@ class HiGlassComponent extends React.Component {
    * @param uid: The view of whom the scales have changed.
    */
   handleScalesChanged(uid, xScale, yScale, notify = true) {
+    // console.log('hsc:', xScale.domain());
 
     this.xScales[uid] = xScale;
     this.yScales[uid] = yScale;
@@ -2985,8 +2986,8 @@ class HiGlassComponent extends React.Component {
   getGenomeLocation(viewId) {
     return chromInfo
       .get(this.state.views[viewId].chromInfoPath)
-      .then(chromInfo => scalesToGenomeLoci(
-        this.xScales[viewId], this.yScales[viewId], chromInfo,
+      .then(chrInfo => scalesToGenomeLoci(
+        this.xScales[viewId], this.yScales[viewId], chrInfo,
       ));
   }
 
@@ -2995,6 +2996,10 @@ class HiGlassComponent extends React.Component {
   }
 
   zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime) {
+    if (!(viewUid in this.setCenters)) {
+      throw `Invalid viewUid. Current present uuids: ${Object.keys(this.setCenters).join(',')}`;
+    }
+
     if (
       !(+start1Abs >= 0 && +end1Abs >= 0)
     ) {
@@ -3005,15 +3010,15 @@ class HiGlassComponent extends React.Component {
         'coordinates).',
       ].join(' '));
       return;
-    } 
-
-    if (!(+start2Abs >= 0)) {
-      start2Abs = start1Abs;
     }
 
-    if (!(+end2Abs >= 0)) {
+    if (isNaN(start2Abs) || isNaN(end2Abs)
+      || start2Abs === null || end2Abs === null) {
+      start2Abs = start1Abs;
       end2Abs = end1Abs;
     }
+
+    // console.log('start1Abs', start1Abs, 'start2Abs', start2Abs);
 
     const [centerX, centerY, k] = scalesCenterAndK(
       this.xScales[viewUid].copy().domain([start1Abs, end1Abs]),

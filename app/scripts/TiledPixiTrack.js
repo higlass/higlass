@@ -534,7 +534,7 @@ class TiledPixiTrack extends PixiTrack {
 
     if (this.listeners.dataChanged) {
       for (const callback of this.listeners.dataChanged) {
-        callback(this.visibleAndFetchedTiles());
+        callback(this.visibleAndFetchedTiles().map(x => x.tileData));
       }
     }
   }
