@@ -960,21 +960,10 @@ class HiGlassComponent extends React.Component {
         // TODO: I have no idea why dimensions are doubled!
         targetCanvas.width = this.canvasElement.width / 2;
         targetCanvas.height = this.canvasElement.height / 2;
-        const context = targetCanvas.getContext('2d');
-        context.drawImage(img, 0, 0);
-        // download() makes a Blob, so canvas.toBlob() would be more direct...
-        // except that method takes a callback so it's asynchronous,
-        // and that gives the browser time to swap buffers,
-        // and we end up with a blank image.
-        const dataURI = targetCanvas.toDataURL();
-        const base64 = dataURI.replace("data:image/png;base64,", "");
-        const byteCharacters = atob(base64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (var i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        download('export.png', byteArray);
+        targetCanvas.getContext('2d').drawImage(img, 0, 0);
+        targetCanvas.toBlob((blob) => {
+          download('export.png', blob);
+        });
         // TODO: Cleanup
     }
   }
