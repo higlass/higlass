@@ -742,6 +742,12 @@ class TiledPlot extends React.Component {
     });
   }
 
+  createOverlays(overlays) {
+    for (const trackType in overlays) {
+      for (let i = 0; i < tracks[trackType].length; i++) { tracksAndLocations.push({ track: tracks[trackType][i], location: trackType }); }
+    }
+  }
+
   createTracksAndLocations() {
     const tracksAndLocations = [];
     const { tracks } = this.state;
@@ -924,6 +930,97 @@ class TiledPlot extends React.Component {
     return undefined;
   }
 
+  trackUuidToOrientation(trackUuid) {
+    /**
+     * Obtain the orientation of the track defined
+     * by the Uuid and return it.
+     *
+     * Parameters
+     * ----------
+     *  trackUuid: 'xsdfsd'
+     *
+     * Returns
+     * -------
+     *  orientation: '1d-horizontal'
+     */
+
+  }
+
+  overlayTracks(positionedTracks) {
+    /**
+     * Return the current set of overlay tracks.
+     *
+     * These have no positions of their own because
+     * they depend on other tracks to be drawn first.
+     *
+     * Parameters
+     * ----------
+     *  positionedTracks: The tracks along with their positions
+     *
+     * Returns
+     * -------
+     *  overlaysWithOrientationsAndPositions: []
+     *
+     */
+    if (this.props.overlays) {
+      const overlayDefs = this.props.overlays.map((overlayTrack) => {
+
+        const overlayDef = {
+          uid: overlayTrack.uid || slugid.nice(),
+          includes: overlayTrack.includes,
+          type: 'overlay-track',
+          options: Object.assign(overlayTrack.options, {
+            orientationsAndPositions: overlayTrack.includes.map((trackUuid) => {
+              // translate a trackUuid into that track's orientation
+              const includedTrack = getTrackByUid(this.props.tracks, trackUuid);
+              if (!includedTrack) {
+                console.warn(`OverlayTrack included uid (${trackUuid}) not found in the track list`);
+                return null;
+              }
+              const orientation =  TRACKS_INFO_BY_TYPE[includedTrack.type].orientation;
+
+              const positionedTrack = positionedTracks.filter(
+                track => track.track.uid == trackUuid);
+
+              if (!positionedTrack.length)
+                // couldn't find a matching track, somebody must have included
+                // an invalid uuid
+                return null;
+              const position = {
+                left: positionedTrack[0].left,
+                top: positionedTrack[0].top,
+                width: positionedTrack[0].width,
+                height: positionedTrack[0].height,
+              };
+
+              return {
+                orientation: orientation,
+                position: position
+              };
+            })
+            .filter(x => x) //filter out null entries
+          })
+        }
+
+        // the 2 * verticalMargin is to make up for the space taken away
+        // in render(): this.centerHeight = this.state.height...
+        return {
+          top: 0,
+          left: 0,
+          width: this.leftWidth + this.centerWidth + this.rightWidth,
+          height: this.topHeight + this.centerHeight
+          + this.bottomHeight
+          + 2 * this.props.verticalMargin,
+          track: overlayDef,
+        };
+      });
+
+      return overlayDefs;
+    }
+
+    return [];
+  }
+
   positionedTracks() {
     /**
      * Return the current set of tracks along with their positions
@@ -1014,8 +1111,8 @@ class TiledPlot extends React.Component {
                 }
               }
             } else {
-              if (this.props.tracks.center 
-                && this.props.tracks.center.length 
+              if (this.props.tracks.center
+                && this.props.tracks.center.length
                 && this.props.tracks.center[0].uid === uid) {
                 trackObj.is2d = true;
               }
@@ -1165,6 +1262,7 @@ class TiledPlot extends React.Component {
   updatablePropsToString(props) {
     return JSON.stringify({
       tracks: props.tracks,
+      overlays: props.overlays,
       viewOptions: props.viewOptions,
       uid: props.uid,
       addTrackPosition: props.addTrackPosition,
@@ -1654,6 +1752,7 @@ class TiledPlot extends React.Component {
       </div>
     );
 
+
     const leftTracks = (
       <div
         key="leftTracksPlot"
@@ -1849,7 +1948,8 @@ class TiledPlot extends React.Component {
 
     this.createTrackPositionTexts();
 
-    const positionedTracks = this.positionedTracks();
+    let positionedTracks = this.positionedTracks();
+    positionedTracks = positionedTracks.concat(this.overlayTracks(positionedTracks));
 
     let trackRenderer = null;
     if (this.state.sizeMeasured) {

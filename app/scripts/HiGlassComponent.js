@@ -453,6 +453,12 @@ class HiGlassComponent extends React.Component {
       this.prevAuthToken = newProps.options.authToken;
     }
 
+    // make sure that the current view is tall enough to display
+    // all the tracks (if unbounded, which is checked in adjustLayout...)
+    for (let view of dictValues(viewsByUid)) {
+      this.adjustLayoutToTrackSizes(view);
+    }
+
     this.setState({
       views: viewsByUid,
     });
@@ -665,7 +671,7 @@ class HiGlassComponent extends React.Component {
    * visible?
    */
   isEditable() {
-    // console.log('editable:', this.props.options, this.state.viewConfig);   
+    // console.log('editable:', this.props.options, this.state.viewConfig);
     if (!this.props.options || !('editable' in this.props.options)) {
       return this.state.viewConfig.editable;
     }
@@ -2108,7 +2114,9 @@ class HiGlassComponent extends React.Component {
    */
   adjustLayoutToTrackSizes(view) {
     // if the view is too short, expand the view so that it fits this track
-    if (!view.layout) { return; }
+    if (!view.layout) {
+      return;
+    }
 
     let totalTrackHeight = 0;
 
@@ -3010,7 +3018,6 @@ class HiGlassComponent extends React.Component {
         'coordinates).',
       ].join(' '));
       return;
-    }
 
     if (isNaN(start2Abs) || isNaN(end2Abs)
       || start2Abs === null || end2Abs === null) {
@@ -3472,7 +3479,8 @@ class HiGlassComponent extends React.Component {
             }
             setCentersFunction={(c) => { this.setCenters[view.uid] = c; }}
             svgElement={this.state.svgElement}
-            trackSourceServers={this.state.viewConfig.trackSourceServers}
+            trackSourceServers={this.props.viewConfig.trackSourceServers}
+            overlays={view.overlays}
             tracks={view.tracks}
             viewOptions={view.options}
             metaTracks={view.metaTracks}
