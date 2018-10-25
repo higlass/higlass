@@ -1,4 +1,4 @@
-export const osmConf = 
+export const osmConf =
 {
   "editable": true,
   "zoomFixed": false,
@@ -23,8 +23,13 @@ export const osmConf =
       },
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
-        "top": [],
-        "left": [],
+        "top": [{
+          "type": "top-axis",
+        }],
+        "left": [{
+          "type": "left-axis",
+        }
+        ],
         "center": [
           {
             "type": "osm-tiles",
