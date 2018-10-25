@@ -3018,6 +3018,7 @@ class HiGlassComponent extends React.Component {
         'coordinates).',
       ].join(' '));
       return;
+    }
 
     if (isNaN(start2Abs) || isNaN(end2Abs)
       || start2Abs === null || end2Abs === null) {
@@ -3057,8 +3058,7 @@ class HiGlassComponent extends React.Component {
       typeof viewId === 'undefined' || viewsIds.indexOf(viewId) === -1
     ) {
       console.error(
-        '🦄 listen to me: you forgot to give me a proper view ID. ' +
-        'I can\'t do nothing without that. 💩',
+        'onLocationChange either missing a viewId or passed an invalid viewId: ', viewId
       );
       return null;
     }
