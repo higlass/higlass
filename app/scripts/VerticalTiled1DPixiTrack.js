@@ -2,7 +2,7 @@ import Tiled1DPixiTrack from './Tiled1DPixiTrack';
 
 import { tileProxy } from './services';
 
-export class VerticalTiled1DPixiTrack extends Tiled1DPixiTrack {
+class VerticalTiled1DPixiTrack extends Tiled1DPixiTrack {
   calculateZoomLevel() {
     const yZoomLevel = tileProxy.calculateZoomLevel(this._yScale,
       this.tilesetInfo.min_pos[0],

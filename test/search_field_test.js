@@ -1,5 +1,5 @@
 import {scaleLinear} from 'd3-scale';
-import {SearchField} from '../app/scripts/search_field.js';
+import SearchField from '../app/scripts/SearchField.js';
 import {ChromosomeInfo} from '../app/scripts/ChromosomeInfo.js';
 
 import {chromInfoHg19} from './chrom_info.js';
@@ -12,6 +12,7 @@ describe("A search field", function() {
     let searchField = new SearchField(chromInfoHg19);
 
     it ("should search for ranges", function() {
+        let range1=null, range2=null;
         [range1, range2] = searchField.searchPosition('chr17:7566932-7595655');
 
        expect(range1[0]).to.be.above(2000000000);

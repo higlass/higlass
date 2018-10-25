@@ -1,86 +1,119 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { SortableHandle } from 'react-sortable-hoc';
+
+import { getDarkTheme } from './services';
 
 // Styles
 import '../styles/TrackControl.module.scss';
 
-export class TrackControl extends React.Component {
-  render() {
-    let className = this.props.isVisible ?
-      'track-control-active' : 'track-control';
+const getClassNames = (props) => {
+  let className = props.isVisible
+    ? 'track-control-active' : 'track-control';
 
-    className += this.props.isAlignLeft ?
-      ' track-control-left' : '';
+  className += props.isAlignLeft
+    ? ' track-control-left' : '';
 
-    className += this.props.isVertical ?
-      ' track-control-vertical' : '';
+  className += props.isVertical
+    ? ' track-control-vertical' : '';
 
-    className += this.props.paddingRight ?
-      ' track-control-padding-right' : '';
+  className += props.paddingRight
+    ? ' track-control-padding-right' : '';
 
-    let buttonClassName = 'track-control-button';
+  if (getDarkTheme()) className += ' track-control-dark';
 
-    buttonClassName += this.props.isVertical ?
-      ' track-control-button-vertical' : '';
+  return className;
+};
 
-    const Handle = SortableHandle(() => (
+const getButtonClassNames = (props) => {
+  let buttonClassName = 'track-control-button';
+
+  buttonClassName += props.isVertical
+    ? ' track-control-button-vertical' : '';
+
+  return buttonClassName;
+};
+
+let imgConfig;
+let imgClose;
+
+let oldProps = null;
+let DragHandle = null;
+
+const TrackControl = (props) => {
+  // Avoid constant recreating that button when the props didn't change.
+  // Damn React could be a little smarter here...
+  if (
+    !props
+    || !oldProps
+    || Object.keys(props).some(key => oldProps[key] !== props[key])
+  ) {
+    oldProps = props;
+    DragHandle = SortableHandle(() => (
       <svg
         className="no-zoom"
-        style={this.props.imgStyleMove}
-        styleName={buttonClassName}
+        style={Object.assign({ height: '20px', width: '20px' }, props.imgStyleMove)}
+        styleName={getButtonClassNames(props)}
       >
+        <title>Move track</title>
         <use xlinkHref="#move" />
       </svg>
     ));
+  }
 
-    return (
-      <div styleName={className}>
+  return (
+    <div styleName={getClassNames(props)}>
 
-        {this.props.isMoveable && <Handle />}
+      {props.isMoveable && (<DragHandle />) }
 
+      <svg
+        ref={(c) => { imgConfig = c; }}
+        className="no-zoom"
+        onClick={() => {
+          props.onConfigTrackMenuOpened(
+            props.uid,
+            imgConfig.getBoundingClientRect()
+          );
+        }}
+        style={Object.assign({ height: '20px', width: '20px' }, props.imgStyleSettings)}
+        styleName={getButtonClassNames(props)}
+      >
+        <title>Configure track</title>
+        <use xlinkHref="#cog" />
+      </svg>
+
+      {props.onAddSeries
+      && (
         <svg
           className="no-zoom"
-          onClick={() => {
-            const imgDom = ReactDOM.findDOMNode(this.imgConfig);
-            const bbox = imgDom.getBoundingClientRect();
-            this.props.onConfigTrackMenuOpened(this.props.uid, bbox);
-          }}
-          ref={(c) => { this.imgConfig = c; }}
-          style={this.props.imgStyleSettings}
-          styleName={buttonClassName}
+          onClick={() => props.onAddSeries(props.uid)}
+          style={Object.assign({ height: '20px', width: '20px' }, props.imgStyleAdd)}
+          styleName={getButtonClassNames(props)}
         >
-          <use xlinkHref="#cog" />
-        </svg>
-
-        <svg
-          className="no-zoom"
-          onClick={() => this.props.onAddSeries(this.props.uid)}
-          ref={(c) => { this.imgAdd = c; }}
-          style={this.props.imgStyleAdd}
-          styleName={buttonClassName}
-        >
+          <title>Add series</title>
           <use xlinkHref="#plus" />
         </svg>
+      )
+      }
 
-        <svg
-          className="no-zoom"
-          onClick={() => {
-            const imgDom = ReactDOM.findDOMNode(this.imgClose);
-            const bbox = imgDom.getBoundingClientRect();
-            this.props.onCloseTrackMenuOpened(this.props.uid, bbox);
-          }}
-          ref={(c) => { this.imgClose = c; }}
-          style={this.props.imgStyleClose}
-          styleName={buttonClassName}
-        >
-          <use xlinkHref="#cross" />
-        </svg>
-      </div>
-    );
-  }
-}
+      <svg
+        ref={(c) => { imgClose = c; }}
+        className="no-zoom"
+        onClick={() => {
+          props.onCloseTrackMenuOpened(
+            props.uid,
+            imgClose.getBoundingClientRect()
+          );
+        }}
+        style={Object.assign({ height: '20px', width: '20px' }, props.imgStyleClose)}
+        styleName={getButtonClassNames(props)}
+      >
+        <title>Close track</title>
+        <use xlinkHref="#cross" />
+      </svg>
+    </div>
+  );
+};
 
 TrackControl.propTypes = {
   imgStyleAdd: PropTypes.object,

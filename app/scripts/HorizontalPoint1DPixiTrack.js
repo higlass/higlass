@@ -1,13 +1,8 @@
 import { scaleLinear, scaleLog } from 'd3-scale';
-import { HorizontalLine1DPixiTrack } from './HorizontalLine1DPixiTrack';
-import { colorToHex } from './utils';
-import { dictValues } from './utils';
+import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
+import { colorToHex, dictValues } from './utils';
 
-export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
-    super(scene, server, uid, handleTilesetInfoReceived, option, animate, onValueScaleChanged);
-  }
-
+class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
   /**
    * Create whatever is needed to draw this tile.
    */
@@ -22,9 +17,7 @@ export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     this.renderTile(tile);
   }
 
-  drawTile(tile) {
-
-  }
+  drawTile() {}
 
   renderTile(tile) {
     super.drawTile(tile);
@@ -140,7 +133,7 @@ export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
   /**
    * Export an SVG representation of this track
    *
-   * @returns {[DOMNode,DOMNode]} The two returned DOM nodes are both SVG
+   * @returns {Array} The two returned DOM nodes are both SVG
    * elements [base,track]. Base is a parent which contains track as a
    * child. Track is clipped with a clipping rectangle contained in base.
    *

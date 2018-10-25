@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 
-export class LeftTrackModifier {
+class LeftTrackModifier {
   constructor(originalTrack) {
     this.scene = originalTrack.scene;
 
@@ -114,6 +114,10 @@ export class LeftTrackModifier {
     return this;
   }
 
+  getMouseOverHtml(trackX, trackY) {
+    return this.originalTrack.getMouseOverHtml(trackY, trackX);
+  }
+
   draw() {
     this.originalTrack.draw();
   }
@@ -123,6 +127,13 @@ export class LeftTrackModifier {
     this.yScale(newYScale);
 
     this.originalTrack.refreshTiles();
+
+    if (this.originalTrack.leftTrackZoomed) {
+      // the track implements its own left-oriented zooming and scrolling
+      this.originalTrack.leftTrackZoomed(newXScale, newYScale, k, tx, ty);
+      this.originalTrack.draw();
+      return;
+    }
 
     const offset = this.originalTrack._xScale(0) - k * this.originalTrack._refXScale(0);
     this.originalTrack.pMobile.position.x = offset + this.originalTrack.position[0];
@@ -164,6 +175,14 @@ export class LeftTrackModifier {
     }
 
     return [output, output];
+  }
+
+
+  respondsToPosition(x, y) {
+    return (
+      (x >= this.position[0] && x <= this.dimensions[0] + this.position[0])
+      && (y >= this.position[1] && y <= this.dimensions[1] + this.position[1])
+    );
   }
 }
 

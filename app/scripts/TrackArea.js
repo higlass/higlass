@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { SortableHandle } from 'react-sortable-hoc';
 
-export class TrackArea extends React.Component {
+class TrackArea extends React.Component {
   constructor(props) {
     super(props);
 

@@ -6,21 +6,30 @@ branches:
   - master
   - develop
   - /^v.*$/
+addons:
+  apt:
+    packages:
+      - xvfb
+install:
+    - npm install -g xvfb-maybe
 before_script:
-- export CHROME_BIN=chromium-browser
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
-- npm install --quiet -g gulp
-- npm install
+    - export CHROME_BIN=chromium-browser
+    - export DISPLAY=:99.0
+    - sh -e /etc/init.d/xvfb start
+    - npm install --quiet -g gulp
+    - npm install
+script:
+    - npm run compile
+    - xvfb-maybe ./node_modules/karma/bin/karma start karma.conf.js --single-run
 before_deploy:
-- npm run compile
+    - npm run compile
 deploy:
     - provider: npm
       skip_cleanup: true
       file: dist.zip
       email: pkerpedjiev@gmail.com
       api_key:
-          secure: lX+QiVA0uWWAD5FajOC2nJGRI4CjSh/MoPY9KTSsJBVATmyms5nNHB8FfYT2PBAikRR65ap5QbTnia5TajgstTduWj5AG7MnBblexB6Y/T7kPX7fKf0iknWex55ZU+FP6RnwZCyyxhORd7FstO3gf8IjulTYNyztK2jAQ4yAapWOdLbvgpo/OHdDVVxFWNqH0PbdFyAQs9KEZaR2IwtpV4KgVUSMKY6vUC+lPvUE8gp//GqKjizdLT/GXnaabXZqcljp3zrhENmOI+525dbYXz0ApCJw7MVS+2quo2j0NqrvVAUey8zmh9+nt5dAX8Vsv2wCZmAe8hUNsWujX48E2v9T5ibeP1SrzhDybGtzCxSY1WjnK23SXPL9w9kfVxUqQAn76OqpQeTGIjgM3ubyNxS/QE4iocQ6YPUrdJLFQL0eG2P9lrvBaBftoM8RtoY6GKDIFxrnE2HKKBwqngEdj7ujuagRbk6MCFlaCvjSQQ6ev1LNc/GFwAHiOW68HDjKJQGxi0VpVUuwgvOaYaE/hUXaMeHOPdYUnDxpDHBDP3QHz2cXhWwsF7HTV8ej/P9LCbjSd8Rs9cfzfQZtFBSzygMUX/ilIVF+WUpdHxV25aUPZsjm4GqEgkTV5gdDlxeTrrB4GMNwCkJQBiigAY8nhbu5UxalhhbH6zwhkEcqBTg=
+          secure: AGI4b3s8m+mKdVAVBR+d5EdYdYAeLhFy76o8WzQ7KwGSIAsIfmwjejqs4BRvq2m3kDdUqNF4fUhG1L2yXsqGXdKqDYnICL+IiKJAKrtdrsx4Y8J31OdeYX8J4MrYzFYsHAyg2bO0D2JNKe0K5b1ykks3qZd9p+Q/4jMjekmNB/T4rBOKjg1bxm0deULQabsLyonjY/IoLc+vjuNmT9VLw9SXw5d8yWTeWszHL8QmQ/UFKZVxF1EfaxJU/9/R/QKQgrAXHsElGfS9+dfhMmZTW8+3kNbB8/lHGkoF+9LrqnRWI6/R8OorqHSLmomfJJuK4iS2Z7Ull561vG67lNrgj7EZ3F2Rjrn4I82T2V/fYBCU/xvIsp2a+MUXvScWu3ONtNJCLGXL7qHQuVN6UjTyVH9J010fIz1qeY264Q/HSVv+PnAueN6e3j9RmrYIf4bVL9OxsNPhOZbUOi/xvg/WBkNifhrT/n65wgopyT5tzwK9Tk8Kyp6aJlaDsqFBtc7gZhOn8MIPsAYAvszfXlNHFqfOrvRQqV/UWoaBkBFEVJwlVZzUWmbNz0wIFs3QJjabR5/wR8GRUpRmugTMR1OE6JYwiIGhteW55p9Wm1SbHZw7RT3VIENpovxmGhbT4TxsZ8UcFk6fknIUH8F1S7K2+Uwxu5Wb0DT7SoD/Lfh0u+E=
       on:
         branch: master
         tags: true

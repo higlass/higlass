@@ -1,3 +1,13 @@
+/**
+ * Generate a SVG line
+ * @param   {number}  x1  Start X
+ * @param   {number}  y1  Start Y
+ * @param   {number}  x2  End X
+ * @param   {number}  y2  End Y
+ * @param   {number}  strokeWidth  Line width
+ * @param   {number}  strokeColor  Color HEX string
+ * @return  {object}  SVG line object
+ */
 export const svgLine = (x1, y1, x2, y2, strokeWidth, strokeColor) => {
   const line = document.createElement('line');
 

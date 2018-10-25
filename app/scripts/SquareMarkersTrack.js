@@ -4,7 +4,7 @@ import { tileProxy } from './services';
 
 import { colorToHex } from './utils';
 
-export class SquareMarkersTrack extends TiledPixiTrack {
+class SquareMarkersTrack extends TiledPixiTrack {
   constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
     super(scene, server, uid, handleTilesetInfoReceived, option, animate);
 
@@ -16,7 +16,7 @@ export class SquareMarkersTrack extends TiledPixiTrack {
    */
   tileToLocalId(tile) {
     // tile contains [zoomLevel, xPos, yPos]
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    return `${tile.join('.')}`;
   }
 
   /**
@@ -24,7 +24,7 @@ export class SquareMarkersTrack extends TiledPixiTrack {
    */
   tileToRemoteId(tile) {
     // tile contains [zoomLevel, xPos, yPos]
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    return `${tile.join('.')}`;
   }
 
   localToRemoteId(remoteId) {

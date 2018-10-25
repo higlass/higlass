@@ -5,8 +5,7 @@ import PropTypes from 'prop-types';
 
 const _debugStates = [];
 
-
-export class Autocomplete extends React.Component {
+class Autocomplete extends React.Component {
   constructor(props) {
     super(props);
 
