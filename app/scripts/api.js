@@ -321,6 +321,26 @@ const api = function api(context) {
           break;
       }
     },
+    
+    /**
+     * Get a Promise which returns a Blob containing a PNG for the current view.
+     * It's possible to get string of the PNG bytes from that:
+     *
+     * hgApi.exportAsPngBlobPromise().then(function(blob) {
+     *   var reader = new FileReader();
+     *   reader.addEventListener("loadend", function() {
+     *     var array = new Uint8Array(reader.result.slice(0,8));
+     *     console.log(array);
+     *     console.log(new TextDecoder("iso-8859-2").decode(array));
+     *   });
+     *   reader.readAsArrayBuffer(blob);
+     * });
+     *
+     * @returns {promise}
+     */
+    exportAsPngBlobPromise() {
+      return self.createPNGBlobPromise();
+    },
 
     /**
      * Get the current view as an SVG. Relies on all the tracks implementing

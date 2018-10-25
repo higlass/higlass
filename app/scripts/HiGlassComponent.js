@@ -938,33 +938,39 @@ class HiGlassComponent extends React.Component {
     download('export.svg', this.createSVGString());
   }
   
+  createPNGBlobPromise() {
+    return new Promise((resolve, reject) => {
+      // It would seem easier to call canvas.toDataURL()...
+      // Except that with webgl context, it swaps buffers after drawing
+      // and you don't have direct access to what is on-screen.
+      // (You end up getting a PNG of the desired dimensions, but it is empty.)
+      //
+      // We'd either need to 
+      // - Turn on preserveDrawingBuffer and rerender, and add a callback
+      // - Or leave it off, and somehow synchronously export before the swap
+      // - Or look into low-level stuff like copyBufferSubData.
+      //
+      // Basing it on the SVG also guarantees us that the two exports are the same.
+      
+      const svgString = this.createSVGString();
+      
+      const img = new Image(this.canvasElement.width, this.canvasElement.height);
+      img.src = "data:image/svg+xml;base64," + btoa(svgString);
+      img.onload = () => {
+          const targetCanvas = document.createElement('canvas');
+          // TODO: I have no idea why dimensions are doubled!
+          targetCanvas.width = this.canvasElement.width / 2;
+          targetCanvas.height = this.canvasElement.height / 2;
+          targetCanvas.getContext('2d').drawImage(img, 0, 0);
+          targetCanvas.toBlob((blob) => { resolve(blob) });
+      };
+    });
+  }
+  
   handleExportPNG() {
-    // It would seem easier to call canvas.toDataURL()...
-    // Except that with webgl context, it swaps buffers after drawing
-    // and you don't have direct access to what is on-screen.
-    // (You end up getting a PNG of the desired dimensions, but it is empty.)
-    //
-    // We'd either need to 
-    // - Turn on preserveDrawingBuffer and rerender, and add a callback
-    // - Or leave it off, and somehow synchronously export before the swap
-    // - Or look into low-level stuff like copyBufferSubData.
-    //
-    // Basing it on the SVG also guarantees us that the two exports are the same.
-    
-    const svgString = this.createSVGString();
-    
-    const img = new Image(this.canvasElement.width, this.canvasElement.height);
-    img.src = "data:image/svg+xml;base64," + btoa(svgString);
-    img.onload = () => {
-        const targetCanvas = document.createElement('canvas');
-        // TODO: I have no idea why dimensions are doubled!
-        targetCanvas.width = this.canvasElement.width / 2;
-        targetCanvas.height = this.canvasElement.height / 2;
-        targetCanvas.getContext('2d').drawImage(img, 0, 0);
-        targetCanvas.toBlob((blob) => {
-          download('export.png', blob);
-        });
-    }
+    this.createPNGBlobPromise().then((blob) => {
+      download('export.png', blob) 
+    });
   }
 
   /*
