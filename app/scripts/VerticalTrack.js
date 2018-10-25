@@ -7,7 +7,7 @@ const STYLES = {
   pointerEvents: 'all',
 };
 
-export class VerticalTrack extends MoveableTrack {
+class VerticalTrack extends MoveableTrack {
   getControls(isVisible) {
     return (
       <TrackControl

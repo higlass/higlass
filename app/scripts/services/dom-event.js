@@ -48,7 +48,7 @@ const unregister = (event, element) => {
  * @param {string} event - Name of the event to listen to.
  * @param {object} newElement - DOM element which to listen to.
  */
-const register = (event, newElement) => {
+const register = (event, newElement, useCapture = false) => {
   if (!newElement || registeredEls[event] === newElement) { return; }
 
   if (registeredEls[event]) {
@@ -56,7 +56,9 @@ const register = (event, newElement) => {
   }
 
   registeredEls[event] = newElement;
-  registeredEls[event].addEventListener(event, getEventHandler(event));
+  registeredEls[event].addEventListener(
+    event, getEventHandler(event), useCapture
+  );
 };
 
 /**

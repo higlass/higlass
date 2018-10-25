@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { arrayMove } from 'react-sortable-hoc';
 
-export class ListWrapper extends React.Component {
+class ListWrapper extends React.Component {
   constructor({ items }) {
     super();
     this.state = {

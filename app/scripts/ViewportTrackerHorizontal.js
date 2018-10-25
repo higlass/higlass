@@ -4,7 +4,7 @@ import slugid from 'slugid';
 
 import SVGTrack from './SVGTrack';
 
-export class ViewportTrackerHorizontal extends SVGTrack {
+class ViewportTrackerHorizontal extends SVGTrack {
   constructor(
     svgElement,
     registerViewportChanged,
@@ -108,7 +108,8 @@ export class ViewportTrackerHorizontal extends SVGTrack {
       .attr('fill', this.options.projectionFillColor)
       .attr('stroke', this.options.projectionStrokeColor)
       .attr('fill-opacity', this.options.projectionFillOpacity)
-      .attr('stroke-opacity', this.options.projectionStrokeOpacity);
+      .attr('stroke-opacity', this.options.projectionStrokeOpacity)
+      .attr('stroke-width', this.options.strokeWidth);
   }
 
   draw() {

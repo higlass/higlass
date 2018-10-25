@@ -2,6 +2,10 @@
   position: relative;
 }
 
+.higlass-dark-theme {
+  background: black;
+}
+
 .higlass-canvas {
   position: absolute;
   width: 100%;
@@ -9,8 +13,7 @@
 }
 
 .higlass-drawing-surface {
-  position: absolute;
-  opacity: 0;
+  position: relative;
 }
 
 .higlass-svg {
@@ -20,4 +23,23 @@
   left: 0;
   top: 0;
   pointer-events: none;
+}
+
+.tiled-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.track-mouseover-menu {
+    position: fixed;
+    z-index: 1;
+    margin: 17px 0 0 9px;
+    padding: 0 0.25rem;
+    font-size: 0.8em;
+    pointer-events: none;
+    background: white;
+    border-radius: 0.25rem;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1),
+                0 0 3px 0 rgba(0, 0, 0, 0.075),
+                0 0 7px 0 rgba(0, 0, 0, 0.05);
 }

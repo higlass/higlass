@@ -1,12 +1,17 @@
 import { axisLeft } from 'd3-axis';
-import { SVGTrack } from './SVGTrack.js';
 
-export class LeftAxisTrack extends SVGTrack {
+import SVGTrack from './SVGTrack';
+
+class LeftAxisTrack extends SVGTrack {
   constructor(svgElement) {
     super(svgElement);
 
     this.axis = axisLeft(this._yScale);
     this.gAxis = this.gMain.append('g');
+
+    // to make sure that the isWaitingOnTiles functions
+    // return immediately
+    this.tilesetInfo = true;
   }
 
   setDimensions(newDimensions) {

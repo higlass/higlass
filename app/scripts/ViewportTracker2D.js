@@ -1,9 +1,10 @@
-import SVGTrack from './SVGTrack.js';
 import slugid from 'slugid';
 import { brush } from 'd3-brush';
 import { event } from 'd3-selection';
 
-export class ViewportTracker2D extends SVGTrack {
+import SVGTrack from './SVGTrack';
+
+class ViewportTracker2D extends SVGTrack {
   constructor(
     svgElement,
     registerViewportChanged,
@@ -24,11 +25,10 @@ export class ViewportTracker2D extends SVGTrack {
     this.viewportXDomain = null;
     this.viewportYDomain = null;
 
+    const maxHalf = Number.MAX_VALUE / 2;
+
     this.brush = brush(true)
-      .extent([
-        [-Number.MAX_VALUE, -Number.MAX_VALUE],
-        [Number.MAX_VALUE, Number.MAX_VALUE],
-      ])
+      .extent([[-maxHalf, -maxHalf], [maxHalf, maxHalf]])
       .on('brush', this.brushed.bind(this));
 
     this.gBrush = this.gMain
@@ -36,8 +36,16 @@ export class ViewportTracker2D extends SVGTrack {
       .attr('id', `brush-${this.uid}`)
       .call(this.brush);
 
+    /*
+    // This is used to draw a border that is completely outside of the 
+    // drawn rectangle
+    this.gBorder = this.gMain
+      .append('path')
+      .style('pointer-events', 'none');
+    */
+
     // turn off the ability to select new regions for this brush
-    this.gBrush.selectAll(`.overlay-${this.uid}`)
+    this.gBrush.selectAll('.overlay')
       .style('pointer-events', 'none');
 
     // turn off the ability to modify the aspect ratio of the brush
@@ -101,7 +109,15 @@ export class ViewportTracker2D extends SVGTrack {
       .attr('fill', this.options.projectionFillColor)
       .attr('stroke', this.options.projectionStrokeColor)
       .attr('fill-opacity', this.options.projectionFillOpacity)
-      .attr('stroke-opacity', this.options.projectionStrokeOpacity);
+      .attr('stroke-opacity', this.options.projectionStrokeOpacity)
+      .attr('stroke-width', this.options.strokeWidth);
+
+    /*
+    this.gBorder
+      .style('fill', this.options.projectionStrokeColor)
+      .style('opacity', this.options.projectionStrokeOpacity)
+    */
+      
   }
 
   draw() {
@@ -122,6 +138,14 @@ export class ViewportTracker2D extends SVGTrack {
     this.brush.on('brush', null);
     this.gBrush.call(this.brush.move, dest);
     this.brush.on('brush', this.brushed.bind(this));
+
+    /*
+    const sW = this.options.strokeWidth;
+
+    this.gBorder
+    .attr('d', `M${x0} ${y0} H ${x1} V ${y1} H ${x0} V ${y0 - sW} H ${x0 - sW} V ${y1 + sW} H ${x1 + sW} V ${y0 - sW} H ${x0 - sW} V ${y0}`);
+
+  */
   }
 
   zoomed(newXScale, newYScale) {

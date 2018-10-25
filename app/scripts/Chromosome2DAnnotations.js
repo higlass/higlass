@@ -1,10 +1,10 @@
 import { color } from 'd3-color';
 import * as PIXI from 'pixi.js';
 
-import { PixiTrack } from './PixiTrack';
-import { ChromosomeInfo } from './ChromosomeInfo';
+import PixiTrack from './PixiTrack';
+import ChromosomeInfo from './ChromosomeInfo';
 
-export class Chromosome2DAnnotations extends PixiTrack {
+class Chromosome2DAnnotations extends PixiTrack {
   constructor(scene, chromInfoPath, options) {
     super(scene, options);
 
