@@ -927,39 +927,46 @@ class HiGlassComponent extends React.Component {
     return svgString;
   }
 
-  createDataURI() {
-    // If Canvas is used with a webgl context, there are actually two buffers.
-    // To get the one that isn't blank, you can either:
-    // -- set "preserveDrawingBuffer: true", with a performance penalty,
-    // -- or redraw in the same event as you call toDataURL,
-    // so it doesn't have a chance to swap buffers.
-    this.forceRefreshView();
-    const dataURI = this.canvasElement.toDataURL();
-    console.log('if non-zero, likely blank (AABA)',
-                (dataURI.match(/AABAgQIEC/g) || []).length);
-    // console.log('if non-zero, likely blank (LOLL)',
-    //             (dataURI.match(/LOLLX9QhH/g) || []).length);
-    return dataURI;
-  }
-
   handleExportSVG() {
     download('export.svg', this.createSVGString());
   }
   
   handleExportPNG() {
-    // download() makes a Blob, so canvas.toBlob() would be more direct...
-    // except that method takes a callback so it's asynchronous,
-    // and that gives the browser time to swap buffers,
-    // and we end up with a blank image.
-    const dataURI = this.createDataURI();
-    const base64 = dataURI.replace("data:image/png;base64,", "");
-    const byteCharacters = atob(base64);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (var i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    // It would seem easier to call canvas.toDataURL()...
+    // Except that with webgl context, it is swapping buffers after drawing
+    // and you don't have direct access to what is on-screen.
+    // (You end up getting a PNG of the desired dimensions, but it is empty.)
+    //
+    // We'd either need to 
+    // - Turn on preserveDrawingBuffer and rerender, and add a callback
+    // - Leave it off, and somehow synchronously export before the buffers swap
+    // - Or look into low-level stuff like copyBufferSubData.
+    //
+    // Basing it on the SVG does guarantee us that the two exports are the same.
+    
+    const svgString = this.createSVGString();
+    const img = new Image();
+    img.src = "data:image/svg+xml;base64," + btoa(svgString);
+    img.onload = function() {
+        // after this, Canvas’ origin-clean is DIRTY
+        const targetCanvas = document.createElement('canvas');
+        const context = targetCanvas.getContext('2d');
+        context.drawImage(img, 0, 0);
+        // download() makes a Blob, so canvas.toBlob() would be more direct...
+        // except that method takes a callback so it's asynchronous,
+        // and that gives the browser time to swap buffers,
+        // and we end up with a blank image.
+        const dataURI = targetCanvas.toDataURL();
+        const base64 = dataURI.replace("data:image/png;base64,", "");
+        const byteCharacters = atob(base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (var i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        download('export.png', byteArray);
+        // TODO: Cleanup
     }
-    const byteArray = new Uint8Array(byteNumbers);
-    download('export.png', byteArray);
   }
 
   /*
