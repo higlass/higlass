@@ -947,7 +947,7 @@ class HiGlassComponent extends React.Component {
     const svgString = this.createSVGString();
     const img = new Image();
     img.src = "data:image/svg+xml;base64," + btoa(svgString);
-    img.onload = function() {
+    img.onload = () => {
         // after this, Canvas’ origin-clean is DIRTY
         const targetCanvas = document.createElement('canvas');
         const context = targetCanvas.getContext('2d');

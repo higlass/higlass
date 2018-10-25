@@ -323,15 +323,6 @@ const api = function api(context) {
     },
 
     /**
-     * Get the current view as a Data URI
-     *
-     * @returns {string} A data URI describing the current state of the canvas
-     */
-    exportAsPng() {
-      return self.createDataURI();
-    },
-
-    /**
      * Get the current view as an SVG. Relies on all the tracks implementing
      * their respective exportAsSVG methods.
      *
