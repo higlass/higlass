@@ -1,7 +1,7 @@
 import React from 'react';
 import { SortableContainer } from 'react-sortable-hoc';
 
-export const SortableList = SortableContainer(
+const SortableList = SortableContainer(
   ({
     className,
     items,

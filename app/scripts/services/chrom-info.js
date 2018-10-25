@@ -1,4 +1,5 @@
 import { tsvParseRows } from 'd3-dsv';
+import { parseChromsizesRows } from '../ChromosomeInfo';
 
 const cache = {};
 
@@ -6,37 +7,14 @@ const getFromCache = (url, fallback) =>
   (cache[url] ? Promise.resolve(cache[url]) : fallback(url));
 
 const parseChromInfo = (text) => {
+  if (text.length == 0)
+    return null;
+
   const tsv = tsvParseRows(text);
-  const cumValues = [];
-  const chromLengths = {};
-  const chrPositions = {};
-
-  let totalLength = 0;
-
-  for (let i = 0; i < tsv.length; i++) {
-    const length = Number(tsv[i][1]);
-    totalLength += length;
-
-    const newValue = {
-      id: i,
-      chr: tsv[i][0],
-      pos: totalLength - length,
-    };
-
-    cumValues.push(newValue);
-    chrPositions[newValue.chr] = newValue;
-    chromLengths[tsv[i][0]] = length;
-  }
-
-  return {
-    cumPositions: cumValues,
-    chrPositions,
-    totalLength,
-    chromLengths,
-  };
+  return parseChromsizesRows(tsv);
 };
 
-const getFromRemote = url => fetch(url)
+const getFromRemote = url => fetch(url, {credentials: 'same-origin'})
   .then(response => response.text())
   .then(text => parseChromInfo(text))
   .catch((error) => {

@@ -4,7 +4,11 @@
 .add-track-position-table {
   border-collapse: collapse;
   margin: 5px;
-  color: $gray-dark
+  color: $gray-dark;
+}
+
+.add-track-position-table-dark {
+  color: $gray-light;
 }
 
 .add-track-position-other {

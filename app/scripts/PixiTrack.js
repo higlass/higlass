@@ -2,15 +2,91 @@ import { formatPrefix, precisionPrefix } from 'd3-format';
 import * as PIXI from 'pixi.js';
 import slugid from 'slugid';
 
-import { Track } from './Track.js';
+import Track from './Track';
 
 import { colorToHex } from './utils';
 
+/**
+ * Format a resolution relative to the highest possible resolution.
+ *
+ * The highest possible resolution determines the granularity of the
+ * formatting (e.g. 20K vs 20000)
+ * @param {int} resolution The resolution to format (e.g. 30000)
+ * @param {int} maxResolutionSize The maximum possible resolution (e.g. 1000)
+ *
+ * @returns {string} A formatted resolution string (e.g. "30K")
+ */
+function formatResolutionText(resolution, maxResolutionSize) {
+  const pp = precisionPrefix(maxResolutionSize, resolution);
+  const f = formatPrefix(`.${pp}`, resolution);
+  const formattedResolution = f(resolution);
 
-export class PixiTrack extends Track {
+  return formattedResolution;
+}
+
+/**
+ * Get a text description of a resolution based on a zoom level
+ * and a list of resolutions
+ *
+ * @param {list} resolutions: A list of resolutions (e.g. [1000,2000,3000])
+ * @param {int} zoomLevel: The current zoom level (e.g. 4)
+ *
+ * @returns {string} A formatted string representation of the zoom level
+ *   (e.g. "30K")
+ */
+function getResolutionBasedResolutionText(resolutions, zoomLevel) {
+  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
+  const resolution = sortedResolutions[zoomLevel];
+  const maxResolutionSize = sortedResolutions[sortedResolutions.length - 1];
+
+  return formatResolutionText(resolution, maxResolutionSize);
+}
+
+/**
+ * Get a text description of the resolution based on the zoom level
+ * max width of the dataset, the bins per dimension and the maximum
+ * zoom.
+ *
+ * @param {int} zoomLevel The current zoomLevel (e.g. 0)
+ * @param {int} max_width The max width
+ *   (e.g. 2 ** maxZoom * highestResolution * binsPerDimension)
+ * @param {int} bins_per_dimension The number of bins per tile dimension
+ *   (e.g. 256)
+ * @param {int} maxZoom The maximum zoom level for this tileset
+ *
+ * @returns {string} A formatted string representation of the zoom level
+ *   (e.g. "30K")
+ */
+function getWidthBasedResolutionText(
+  zoomLevel, maxWidth, binsPerDimension, maxZoom
+) {
+  const resolution = maxWidth / ((2 ** zoomLevel) * binsPerDimension);
+
+  // we can't display a NaN resolution
+  if (!isNaN(resolution)) {
+    // what is the maximum possible resolution?
+    // this will determine how we format the lower resolutions
+    const maxResolutionSize = maxWidth / ((2 ** maxZoom) * binsPerDimension);
+
+    const pp = precisionPrefix(maxResolutionSize, resolution);
+    const f = formatPrefix(`.${pp}`, resolution);
+    const formattedResolution = f(resolution);
+
+    return formattedResolution;
+  }
+  console.warn(
+    'NaN resolution, screen is probably too small. Dimensions:',
+    this.dimensions,
+  );
+
+  return '';
+}
+
+class PixiTrack extends Track {
   /**
    * @param scene: A PIXI.js scene to draw everything to.
    * @param options: A set of options that describe how this track is rendered.
+    this.pMain.position.x = this.position[0];
    *          - labelPosition: If the label is to be drawn, where should it be drawn?
    *          - labelText: What should be drawn in the label. If either labelPosition
    *                  or labelText are false, no label will be drawn.
@@ -34,19 +110,27 @@ export class PixiTrack extends Track {
 
     // for drawing the track label (often its name)
     this.pBorder = new PIXI.Graphics();
+    this.pBackground = new PIXI.Graphics();
+    this.pForeground = new PIXI.Graphics();
     this.pLabel = new PIXI.Graphics();
     this.pMobile = new PIXI.Graphics();
     this.pAxis = new PIXI.Graphics();
+
+    // for drawing information on mouseover events
+    this.pMouseOver = new PIXI.Graphics();
 
     this.scene.addChild(this.pBase);
 
     this.pBase.addChild(this.pMasked);
 
+    this.pMasked.addChild(this.pBackground);
     this.pMasked.addChild(this.pMain);
     this.pMasked.addChild(this.pMask);
     this.pMasked.addChild(this.pMobile);
     this.pMasked.addChild(this.pBorder);
     this.pMasked.addChild(this.pLabel);
+    this.pMasked.addChild(this.pForeground);
+    this.pMasked.addChild(this.pMouseOver);
     this.pBase.addChild(this.pAxis);
 
     this.pMasked.mask = this.pMask;
@@ -58,14 +142,29 @@ export class PixiTrack extends Track {
 
     this.options = Object.assign(this.options, options);
 
-    const labelTextText = this.options.name ? this.options.name :
-      (this.tilesetInfo ? this.tilesetInfo.name : '');
+    let labelTextText = this.options.name
+      ? this.options.name
+      : this.tilesetInfo ? this.tilesetInfo.name : '';
+
+    if (!this.options.labelPosition || this.options.labelPosition === 'hidden') {
+      labelTextText = '';
+    }
+
     this.labelTextFontFamily = 'Arial';
     this.labelTextFontSize = 12;
 
-    this.labelText = new PIXI.Text(labelTextText, { fontSize: `${this.labelTextFontSize}px`,
-      fontFamily: this.labelTextFontFamily,
-      fill: 'black' });
+    this.labelText = new PIXI.Text(
+      labelTextText, {
+        fontSize: `${this.labelTextFontSize}px`,
+        fontFamily: this.labelTextFontFamily,
+        fill: 'black'
+      });
+
+    this.errorText = new PIXI.Text('',
+      { fontSize: '12px', fontFamily: 'Arial', fill: 'red' });
+    this.errorText.anchor.x = 0.5;
+    this.errorText.anchor.y = 0.5;
+    this.pLabel.addChild(this.errorText);
 
     this.pLabel.addChild(this.labelText);
   }
@@ -77,20 +176,34 @@ export class PixiTrack extends Track {
   setPosition(newPosition) {
     this.position = newPosition;
 
+    this.drawBorder();
+    this.drawLabel();
+    this.drawBackground();
     this.setMask(this.position, this.dimensions);
+    this.setForeground();
   }
 
   setDimensions(newDimensions) {
     super.setDimensions(newDimensions);
 
+    this.drawBorder();
+    this.drawLabel();
+    this.drawBackground();
     this.setMask(this.position, this.dimensions);
+    this.setForeground();
   }
 
   setMask(position, dimensions) {
     this.pMask.clear();
     this.pMask.beginFill();
+
     this.pMask.drawRect(position[0], position[1], dimensions[0], dimensions[1]);
     this.pMask.endFill();
+  }
+
+  setForeground() {
+    this.pForeground.position.y = this.position[1];
+    this.pForeground.position.x = this.position[0];
   }
 
   /**
@@ -98,6 +211,7 @@ export class PixiTrack extends Track {
    * graphics from the scene
    */
   remove() {
+    // the entire PIXI stage was probably removed
     this.pBase.clear();
     this.scene.removeChild(this.pBase);
   }
@@ -127,8 +241,58 @@ export class PixiTrack extends Track {
     );
   }
 
+  drawError() {
+    this.errorText.x = this.position[0] + this.dimensions[0] / 2;
+    this.errorText.y = this.position[1] + this.dimensions[1] / 2;
+
+    this.errorText.text = this.errorTextText;
+
+    if (this.errorTextText && this.errorTextText.length) {
+      // draw a red border around the track to bring attention to its
+      // error
+      const graphics = this.pBorder;
+
+      graphics.clear();
+      graphics.lineStyle(1, colorToHex('red'));
+
+      graphics.drawRect(
+        this.position[0],
+        this.position[1],
+        this.dimensions[0],
+        this.dimensions[1],
+      );
+    }
+  }
+
+  drawBackground() {
+    const graphics = this.pBackground;
+
+    graphics.clear();
+
+    if (!this.options || !this.options.backgroundColor) {
+      return;
+    }
+
+    let opacity = 1;
+    let color = this.options.backgroundColor;
+
+    if (this.options.backgroundColor == 'transparent') {
+      opacity = 0;
+      color = 'white';
+    }
+
+    const hexColor = colorToHex(color);
+    graphics.beginFill(hexColor, opacity);
+
+    graphics.drawRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1]);
+  }
+
   drawLabel() {
+    if (!this.labelText) return;
+
     const graphics = this.pLabel;
+
+    graphics.clear();
 
     if (!this.options || !this.options.labelPosition) {
       // don't display the track label
@@ -136,17 +300,12 @@ export class PixiTrack extends Track {
       return;
     }
 
-    graphics.clear();
-
-    if (this.options.labelBackgroundOpacity) {
-      graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity);
-    } else {
-      graphics.beginFill(0xFFFFFF, 0);
-    }
-
-    const stroke = colorToHex(
-      this.options.labelColor ? this.options.labelColor : 'black',
+    graphics.beginFill(
+      colorToHex(this.options.labelBackgroundColor || 'white'),
+      +this.options.labelBackgroundOpacity || 0.5
     );
+
+    const stroke = colorToHex(this.options.labelColor || 'black');
     const labelBackgroundMargin = 2;
 
     // we can't draw a label if there's no space
@@ -165,27 +324,23 @@ export class PixiTrack extends Track {
       this.tilesetInfo.max_width &&
       this.tilesetInfo.bins_per_dimension
     ) {
-      const maxWidth = this.tilesetInfo.max_width;
-      const binsPerDimension = this.tilesetInfo.bins_per_dimension;
-      const maxZoom = this.tilesetInfo.max_zoom;
+      const formattedResolution = getWidthBasedResolutionText(
+        this.calculateZoomLevel(),
+        this.tilesetInfo.max_width,
+        this.tilesetInfo.bins_per_dimension,
+        this.tilesetInfo.max_zoom);
 
-      const resolution = maxWidth / ((2 ** this.calculateZoomLevel()) * binsPerDimension);
 
-      // we can't display a NaN resolution
-      if (!isNaN(resolution)) {
-        const maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+      labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
+    } else if (
+      this.tilesetInfo &&
+      this.tilesetInfo.resolutions) {
 
-        const pp = precisionPrefix(maxResolutionSize, resolution);
-        const f = formatPrefix(`.${pp}`, resolution);
-        const formattedResolution = f(resolution);
+      const formattedResolution = getResolutionBasedResolutionText(
+        this.tilesetInfo.resolutions,
+        this.calculateZoomLevel());
 
-        labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
-      } else {
-        console.warn(
-          'NaN resolution, screen is probably too small. Dimensions:',
-          this.dimensions,
-        );
-      }
+      labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     }
 
     if (this.options && this.options.dataTransform) {
@@ -329,6 +484,10 @@ export class PixiTrack extends Track {
   rerender(options) {
     this.options = options;
     this.draw();
+    this.drawBackground();
+    this.drawLabel();
+    this.drawError();
+    this.drawBorder();
   }
 
   /**
@@ -336,24 +495,37 @@ export class PixiTrack extends Track {
    */
   draw() {
     // this rectangle is cleared by functions that override this draw method
-    this.drawBorder();
-    this.drawLabel();
+    // this.drawBorder();
+    // this.drawLabel();
   }
 
   /**
    * Export an SVG representation of this track
    *
-   * @returns {[DOMNode,DOMNode]} The two returned DOM nodes are both SVG
+   * @returns {Array} The two returned DOM nodes are both SVG
    * elements [base,track]. Base is a parent which contains track as a
    * child. Track is clipped with a clipping rectangle contained in base.
    *
    */
   exportSVG() {
     const gBase = document.createElement('g');
+    const rectBackground = document.createElement('rect');
+
+    rectBackground.setAttribute('x', `${this.position[0]}`);
+    rectBackground.setAttribute('y', `${this.position[1]}`);
+    rectBackground.setAttribute('width', `${this.dimensions[0]}`);
+    rectBackground.setAttribute('height', `${this.dimensions[1]}`);
+
+    if (this.options && this.options.backgroundColor) {
+      rectBackground.setAttribute('fill', this.options.backgroundColor);
+    } else {
+      rectBackground.setAttribute('fill-opacity', '0');
+    }
 
     const gClipped = document.createElement('g');
     gClipped.setAttribute('class', 'g-clipped');
     gBase.appendChild(gClipped);
+    gClipped.appendChild(rectBackground);
 
     const gTrack = document.createElement('g');
     gClipped.setAttribute('class', 'g-track');

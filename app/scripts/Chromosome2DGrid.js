@@ -1,14 +1,14 @@
 import * as PIXI from 'pixi.js';
 
-import { PixiTrack } from './PixiTrack';
-import { ChromosomeInfo } from './ChromosomeInfo';
-import { SearchField } from './search_field';
+import PixiTrack from './PixiTrack';
+import ChromosomeInfo from './ChromosomeInfo';
+import SearchField from './SearchField';
 
 import { colorToHex } from './utils';
 
-export class Chromosome2DGrid extends PixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, chromInfoPath) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+class Chromosome2DGrid extends PixiTrack {
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, chromInfoPath) {
+    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
 
     this.searchField = null;
     this.chromInfo = null;
@@ -17,7 +17,7 @@ export class Chromosome2DGrid extends PixiTrack {
     let chromSizesPath = chromInfoPath;
 
     if (!chromSizesPath) {
-      chromSizesPath = `${server}/chrom-sizes/?id=${uid}`;
+      chromSizesPath = `${dataConfig.server}/chrom-sizes/?id=${dataConfig.tilesetUid}`;
     }
 
     ChromosomeInfo(chromSizesPath, (newChromInfo) => {

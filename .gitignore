@@ -1,4 +1,6 @@
+app/local
 app/test2.html
+app/test3.html
 yarn.lock
 build/
 npm-debug.log
@@ -24,3 +26,5 @@ jsons/
 dist
 report.html
 docs/_build
+package-lock.json
+webpack-stats.json

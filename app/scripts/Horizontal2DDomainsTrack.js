@@ -1,10 +1,11 @@
-import { TiledPixiTrack } from './TiledPixiTrack';
+import TiledPixiTrack from './TiledPixiTrack';
+
 import { tileProxy } from './services';
 import { colorToHex } from './utils';
 
-export class Horizontal2DDomainsTrack extends TiledPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, option, animate);
+class Horizontal2DDomainsTrack extends TiledPixiTrack {
+  constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate) {
+    super(scene, dataConfig, handleTilesetInfoReceived, option, animate);
 
     this.drawnRects = new Set();
     this.pMain = this.pMobile;
@@ -16,7 +17,7 @@ export class Horizontal2DDomainsTrack extends TiledPixiTrack {
          */
 
     // tile contains [zoomLevel, xPos, yPos]
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    return `${tile.join('.')}`;
   }
 
   tileToRemoteId(tile) {
@@ -25,7 +26,7 @@ export class Horizontal2DDomainsTrack extends TiledPixiTrack {
          */
 
     // tile contains [zoomLevel, xPos, yPos]
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    return `${tile.join('.')}`;
   }
 
   localToRemoteId(remoteId) {
@@ -170,6 +171,9 @@ export class Horizontal2DDomainsTrack extends TiledPixiTrack {
     graphics.lineStyle(1 / this.pMain.scale.x, stroke, 1);
     graphics.beginFill(fill, 0.4);
     graphics.alpha = this.options.rectangleDomainOpacity ? this.options.rectangleDomainOpacity : 0.5;
+
+    if (!tile.tileData.sort)
+      return;
 
     // line needs to be scaled down so that it doesn't become huge
     for (const td of tile.tileData) {

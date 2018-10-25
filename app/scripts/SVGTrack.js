@@ -1,9 +1,9 @@
 import { select } from 'd3-selection';
 import slugid from 'slugid';
 
-import Track from './Track.js';
+import Track from './Track';
 
-export class SVGTrack extends Track {
+class SVGTrack extends Track {
   constructor(svgElement) {
     super();
     /**

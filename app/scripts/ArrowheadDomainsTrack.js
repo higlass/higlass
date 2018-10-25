@@ -1,34 +1,39 @@
-import { TiledPixiTrack } from './TiledPixiTrack';
+import TiledPixiTrack from './TiledPixiTrack';
 
 // Services
 import { tileProxy } from './services';
+import { create } from './services/pub-sub';
 
 // Utils
 import { colorToHex } from './utils';
 
-export class ArrowheadDomainsTrack extends TiledPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, option, animate);
+class ArrowheadDomainsTrack extends TiledPixiTrack {
+  constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate) {
+    super(scene, dataConfig, handleTilesetInfoReceived, option, animate);
 
     this.drawnRects = {};
+
+    // Create a custom pubSub interface
+    const { publish, subscribe, unsubscribe } = create({});
+    this.publish = publish;
+    this.subscribe = subscribe;
+    this.unsubscribe = unsubscribe;
   }
 
+  /*
+   * The local tile identifier
+   */
   tileToLocalId(tile) {
-    /*
-         * The local tile identifier
-         */
-
     // tile contains [zoomLevel, xPos, yPos]
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    return `${tile.join('.')}`;
   }
 
+  /**
+   * The tile identifier used on the server
+   */
   tileToRemoteId(tile) {
-    /**
-         * The tile identifier used on the server
-         */
-
     // tile contains [zoomLevel, xPos, yPos]
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    return `${tile.join('.')}`;
   }
 
   localToRemoteId(remoteId) {
@@ -37,12 +42,16 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
   }
 
   calculateZoomLevel() {
-    const xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+    const xZoomLevel = tileProxy.calculateZoomLevel(
+      this._xScale,
       this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0]);
-    const yZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+      this.tilesetInfo.max_pos[0]
+    );
+    const yZoomLevel = tileProxy.calculateZoomLevel(
+      this._xScale,
       this.tilesetInfo.min_pos[1],
-      this.tilesetInfo.max_pos[1]);
+      this.tilesetInfo.max_pos[1]
+    );
 
     let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
     zoomLevel = Math.min(zoomLevel, this.maxZoom);
@@ -50,22 +59,22 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
     return zoomLevel;
   }
 
+  /**
+   * Set which tiles are visible right now.
+   *
+   * @param tiles: A set of tiles which will be considered the currently visible
+   * tile positions.
+   */
   setVisibleTiles(tilePositions) {
-    /**
-         * Set which tiles are visible right now.
-         *
-         * @param tiles: A set of tiles which will be considered the currently visible
-         * tile positions.
-         */
     this.visibleTiles = tilePositions.map(x => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
     }));
 
-    this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
+    this.visibleTileIds = new Set(this.visibleTiles.map(x => x.remoteId));
   }
 
-  calculateVisibleTiles(mirrorTiles = true) {
+  calculateVisibleTiles() {
     // if we don't know anything about this dataset, no point
     // in trying to get tiles
     if (!this.tilesetInfo) { return; }
@@ -73,17 +82,23 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
     this.zoomLevel = this.calculateZoomLevel();
     // this.zoomLevel = 0;
 
-    this.xTiles = tileProxy.calculateTiles(this.zoomLevel, this._xScale,
+    this.xTiles = tileProxy.calculateTiles(
+      this.zoomLevel,
+      this._xScale,
       this.tilesetInfo.min_pos[0],
       this.tilesetInfo.max_pos[0],
       this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width);
+      this.tilesetInfo.max_width
+    );
 
-    this.yTiles = tileProxy.calculateTiles(this.zoomLevel, this._yScale,
+    this.yTiles = tileProxy.calculateTiles(
+      this.zoomLevel,
+      this._yScale,
       this.tilesetInfo.min_pos[1],
       this.tilesetInfo.max_pos[1],
       this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width);
+      this.tilesetInfo.max_width
+    );
 
     const rows = this.xTiles;
     const cols = this.yTiles;
@@ -101,21 +116,18 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
       }
     }
 
-    //
     this.setVisibleTiles(tiles);
   }
 
-
-  initTile(tile) {
-    /**
-         * Create whatever is needed to draw this tile.
-         */
-
+  /**
+   * Create whatever is needed to draw this tile.
+   */
+  initTile(/* tile */) {
     // this.drawTile(tile);
   }
 
-  destroyTile(tile, graphics) {
-
+  destroyTile() {
+    // Nothing
   }
 
   draw() {
@@ -125,11 +137,10 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
   }
 
   drawTile(tile) {
-    if (!tile.graphics) { return; }
-
-    // console.log('tile:', tile);
-    // console.log('Id2DTiled drawTile...');
     const graphics = tile.graphics;
+
+    if (!graphics) { return; }
+
     graphics.clear();
 
     const stroke = colorToHex(this.options.rectangleDomainStrokeColor || 'black');
@@ -153,45 +164,94 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
 
     graphics.alpha = this.options.rectangleDomainOpacity || 0.5;
 
+    const minSquareSize = (
+      this.options.minSquareSize
+      && this.options.minSquareSize !== 'none'
+    )
+      ? +this.options.minSquareSize
+      : 0;
+
+    const minThres = this.options.rectangleMinSize
+      ? +this.options.rectangleMinSize
+      : 0;
+
+    const xMin = this._xScale.range()[0];
+    const xMax = this._xScale.range()[1];
+    const yMin = this._yScale.range()[0];
+    const yMax = this._yScale.range()[1];
+
+    if (!tile.tileData.length) return;
+
     // line needs to be scaled down so that it doesn't become huge
-    for (const td of tile.tileData) {
-      const line = td.fields;
+    tile.tileData
+      .filter(td => !(td.uid in this.drawnRects))
+      .forEach((td) => {
+        const startX = this._xScale(td.xStart);
+        const endX = this._xScale(td.xEnd);
 
-      const startX = this._xScale(td.xStart);
-      const endX = this._xScale(td.xEnd);
+        const startY = this._yScale(td.yStart);
+        const endY = this._yScale(td.yEnd);
 
-      const startY = this._yScale(td.yStart);
-      const endY = this._yScale(td.yEnd);
+        const uid = td.uid;
 
-      const uid = td.uid;
+        const width = endX - startX;
+        const height = endY - startY;
 
-      const width = endX - startX;
-      const height = endY - startY;
+        let drawnRect = {
+          x: startX,
+          y: startY,
+          width,
+          height
+        };
 
-      if (uid in this.drawnRects) { continue; } // we've already drawn this rectangle in another tile
-
-
-      let drawnRect = { x: startX, y: startY, width: endY - startY, height: endX - startX };
-
-      if (this.options.minSquareSize && this.options.minSquareSize != 'none') {
-        if (width < +this.options.minSquareSize || height < +this.options.minSquareSize) {
-          const newWidth = this.options.minSquareSize;
-          const newHeight = this.options.minSquareSize;
-          
-          drawnRect = {x: (startX + endX) / 2, y: (startY + endY) / 2,
-            width: newWidth, height: newHeight};
+        if (minSquareSize) {
+          if (width < minSquareSize || height < minSquareSize) {
+            drawnRect = {
+              x: startX - (minSquareSize / 2),
+              y: startY - (minSquareSize / 2),
+              width: minSquareSize,
+              height: minSquareSize
+            };
+          }
         }
-      } 
 
-      this.drawnRects[uid] = drawnRect;
+        this.drawnRects[uid] = drawnRect;
 
-      graphics.drawRect(drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height);
-    }
+        const dRxMax = drawnRect.x + drawnRect.width;
+        const dRyMax = drawnRect.y + drawnRect.height;
+
+        // Only draw annotations that falls somehow within the viewport
+        if (
+          (drawnRect.x > xMin && drawnRect.x < xMax) ||
+          (dRxMax > xMin && dRxMax < xMax) ||
+          (drawnRect.y > yMin && drawnRect.y < yMax) ||
+          (dRyMax > yMin && dRyMax < yMax)
+        ) {
+          if (drawnRect.width > minThres || drawnRect.height > minThres) {
+            graphics.drawRect(
+              drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height
+            );
+
+            this.publish('annotationDrawn', {
+              trackUuid: this.uuid,
+              annotationUuid: uid,
+              viewPos: [
+                drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height
+              ],
+              dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd],
+              importance: td.importance,
+              info: {
+                patternType: this.options.patternType
+              }
+            });
+          }
+        }
+      });
   }
 
   exportSVG() {
-    let track = null,
-      base = null;
+    let track = null;
+    let base = null;
 
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
@@ -206,26 +266,33 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
     track.appendChild(output);
 
     for (let tile of this.visibleAndFetchedTiles()) {
-      tile.tileData.forEach((td, i) => {
-        let gTile = document.createElement('g')
+      // this tile has no data
+      if (!tile.tileData || !tile.tileData.length) continue;
+
+      tile.tileData.forEach((td) => {
+        const gTile = document.createElement('g');
         gTile.setAttribute('transform',
           `translate(${tile.graphics.position.x},${tile.graphics.position.y})scale(${tile.graphics.scale.x},${tile.graphics.scale.y})`);
         output.appendChild(gTile);
 
         if (td.uid in this.drawnRects) {
-          let rect = this.drawnRects[td.uid];
+          const rect = this.drawnRects[td.uid];
 
-          let r = document.createElement('rect');
+          const r = document.createElement('rect');
           r.setAttribute('x', rect.x);
           r.setAttribute('y', rect.y);
           r.setAttribute('width', rect.width);
           r.setAttribute('height', rect.height);
 
-          r.setAttribute('fill',  this.options.fillColor ? this.options.fillColor : 'grey')
+          r.setAttribute(
+            'fill', this.options.fillColor ? this.options.fillColor : 'grey'
+          );
           r.setAttribute('opacity', 0.3);
 
-          r.style.stroke = this.options.fillColor ? this.options.fillColor : 'grey';
-          r.style.strokeWidth = "1px";
+          r.style.stroke = this.options.fillColor
+            ? this.options.fillColor
+            : 'grey';
+          r.style.strokeWidth = '1px';
 
           gTile.appendChild(r);
         }
@@ -243,6 +310,13 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
   }
 
   zoomed(newXScale, newYScale) {
+    if (
+      this.xScale().domain()[0] === newXScale.domain()[0] &&
+      this.xScale().domain()[1] === newXScale.domain()[1] &&
+      this.yScale().domain()[0] === newYScale.domain()[0] &&
+      this.yScale().domain()[1] === newYScale.domain()[1]
+    ) return;
+
     this.xScale(newXScale);
     this.yScale(newYScale);
 

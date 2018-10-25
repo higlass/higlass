@@ -1,35 +1,28 @@
-const stack = {};
-
-/**
- * Publish an event.
- *
- * @param {string} event - Event type to be published.
- * @param {any} news - The news to be published.
- */
-const publish = (event, news) => {
-  if (!stack[event]) { return; }
-
-  stack[event].forEach(listener => listener(news));
+const STACK = {
+  __times: {}
 };
 
 /**
  * Subscribe to an event.
- *
  * @param {string} event - Event name to subscribe to.
- * @param {function} callback - Function to be called when event of type `event`
- *   is published.
- * @return {object} Object with the event name and index of the callback
- *   function on the event stack. The object can be used to unsubscribe.
+ * @param {function} callback - Function to be called when event of type
+ *   `event` is published.
+ * @param {number} times - Number of times the callback should called for the
+ *   given event. The event listener will automatically be unsubscribed once
+ *   the number of calls exceeds `times`.
+ * @return {object} Object with the event name and the callback. The object
+ *   can be used to unsubscribe.
  */
-const subscribe = (event, callback) => {
+const subscribe = (stack = STACK) => (event, callback, times = Infinity) => {
   if (!stack[event]) {
     stack[event] = [];
+    stack.__times[event] = [];
   }
 
-  return {
-    event,
-    id: stack[event].push(callback) - 1,
-  };
+  stack[event].push(callback);
+  stack.__times[event].push(parseInt(times, 10) || Infinity);
+
+  return { event, callback };
 };
 
 /**
@@ -39,30 +32,48 @@ const subscribe = (event, callback) => {
  *   object provided by `subscribe()`.
  * @param {function} callback - Callback function to be unsubscribed. It is
  *   ignored if `id` is provided.
- * @param {int} id - Index of the callback function to be removed from the
- *   event stack. The index is returned by `subscribe()`.
  */
-const unsubscribe = (event, callback, id) => {
-  let eventName = event;
-  let listenerId = id;
+const unsubscribe = (stack = STACK) => (event, callback) => {
+  if (!stack[event]) return;
 
   if (typeof event === 'object') {
-    eventName = event.event;
-    listenerId = event.id;
-  } else {
-    listenerId = typeof id !== 'undefined' ? id : stack[eventName].indexOf(callback);
+    event = event.event; // eslint-disable-line no-param-reassign
+    callback = event.callback; // eslint-disable-line no-param-reassign
   }
 
-  if (!stack[eventName]) { return; }
-  if (listenerId === -1 || listenerId >= stack[eventName].length) { return; }
+  const id = stack[event].indexOf(callback);
 
-  stack[eventName].splice(listenerId, 1);
+  if (!stack[event]) return;
+  if (id === -1 || id >= stack[event].length) return;
+
+  stack[event].splice(id, 1);
+  stack.__times[event].splice(id, 1);
 };
 
-const pubSub = {
-  publish,
-  subscribe,
-  unsubscribe,
+/**
+ * Publish an event.
+ *
+ * @param {string} event - Event type to be published.
+ * @param {any} news - The news to be published.
+ */
+const publish = (stack = STACK) => (event, news) => {
+  if (!stack[event]) return;
+
+  const unsubscriber = unsubscribe(STACK);
+
+  stack[event].forEach((listener, i) => {
+    listener(news);
+    if (!(stack.__times[event][i] -= 1)) unsubscriber(event, listener);
+  });
 };
 
-export default pubSub;
+export const create = (stack = STACK) => {
+  if (!stack.__times) stack.__times = {};
+  return {
+    publish: publish(stack),
+    subscribe: subscribe(stack),
+    unsubscribe: unsubscribe(stack),
+  };
+};
+
+export default create();

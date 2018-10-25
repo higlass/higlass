@@ -1,4 +1,3 @@
-import { json } from 'd3-request';
 import React from 'react';
 import {
   Col,
@@ -10,10 +9,12 @@ import {
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 
+import { tileProxy } from './services';
+
 // Configs
 import { TRACKS_INFO } from './configs';
 
-export class TilesetFinder extends React.Component {
+class TilesetFinder extends React.Component {
   constructor(props) {
     super(props);
 
@@ -21,15 +22,28 @@ export class TilesetFinder extends React.Component {
 
     // local tracks are ones that don't have a filetype associated with them
     this.localTracks = TRACKS_INFO
-      .filter(x => x.local && !x.hidden)
-      .filter(x => x.orientation == this.props.orientation)
-      .filter(x => !x.hidden);
+      .filter(x => x.local && !x.hidden);
 
-    this.localTracks.forEach(x => x.uuid = slugid.nice());
+    this.augmentedTracksInfo = TRACKS_INFO;
+    if (window.higlassTracksByType) {
+      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
+        this.augmentedTracksInfo.push(window.higlassTracksByType[pluginTrackType].config);
+      });
+    }
+
+    if (props.datatype) {
+      this.localTracks = this.localTracks.filter(x => x.datatype[0] === props.datatype);
+    } else {
+      this.localTracks = this.localTracks.filter(x => x.orientation === this.props.orientation);
+    }
+
+
+    this.localTracks.forEach((x) => { x.uuid = slugid.nice(); });
 
     const newOptions = this.prepareNewEntries('', this.localTracks, {});
     const availableTilesetKeys = Object.keys(newOptions);
     const selectedUuid = availableTilesetKeys.length ? [availableTilesetKeys[0]] : null;
+    this.mounted = false;
 
     this.state = {
       selectedUuid,
@@ -40,11 +54,24 @@ export class TilesetFinder extends React.Component {
     this.requestTilesetLists();
   }
 
-  serverUidKey(server, uid) {
-    /**
-         * Create a key for a server and uid
-         */
-    return `${server}/${uid}`;
+  componentDidMount() {
+    // we want to query for a list of tracks that are compatible with this
+    // track orientation
+
+    this.mounted = true;
+
+    this.requestTilesetLists();
+
+    if (!this.state.selectedUuid)
+      return;
+
+    const selectedTilesets = [this.state.options[this.state.selectedUuid]];
+
+    if (selectedTilesets) { this.props.selectedTilesetChanged(selectedTilesets); }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   prepareNewEntries(sourceServer, newEntries, existingOptions) {
@@ -74,27 +101,36 @@ export class TilesetFinder extends React.Component {
     return newOptions;
   }
 
-  componentDidMount() {
-    // we want to query for a list of tracks that are compatible with this
-    // track orientation
-
-
-    this.requestTilesetLists();
-
-    const selectedTilesets = [this.state.options[this.state.selectedUuid]];
-
-    if (selectedTilesets) { this.props.selectedTilesetChanged(selectedTilesets); }
+  serverUidKey(server, uid) {
+    /**
+         * Create a key for a server and uid
+         */
+    return `${server}/${uid}`;
   }
 
+
   requestTilesetLists() {
-    const datatypes = new Set(TRACKS_INFO
-      .filter(x => x.datatype)
-      .filter(x => x.orientation == this.props.orientation)
-      .map(x => x.datatype));
-    const datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
+    let datatypesQuery = null;
+
+    if (this.props.datatype) {
+      datatypesQuery = `dt=${this.props.datatype}`;
+    } else {
+      const datatypes = new Set([].concat.apply([], this.augmentedTracksInfo
+        .filter(x => x.datatype)
+        .filter(x => x.orientation == this.props.orientation)
+        .map(x => x.datatype)));
+
+
+      datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
+    }
+
+    if (!this.props.trackSourceServers) {
+      console.warn("No track source servers specified in the viewconf");
+      return;
+    }
 
     this.props.trackSourceServers.forEach((sourceServer) => {
-      json(`${sourceServer}/tilesets/?limit=10000&${datatypesQuery}`,
+      tileProxy.json(`${sourceServer}/tilesets/?limit=10000&${datatypesQuery}`,
         (error, data) => {
           if (error) {
             console.error('ERROR:', error);
@@ -106,14 +142,16 @@ export class TilesetFinder extends React.Component {
             // if there isn't a selected tileset, select the first received one
             if (!selectedUuid) {
               selectedUuid = availableTilesetKeys.length ? [availableTilesetKeys[0]] : null;
-              const selectedTileset = this.state.options[selectedUuid];
-              this.props.selectedTilesetChanged(selectedTileset);
+              const selectedTileset = this.state.options[selectedUuid[0]];
+              this.props.selectedTilesetChanged([selectedTileset]);
             }
 
-            this.setState({
-              selectedUuid,
-              options: newOptions,
-            });
+            if (this.mounted) {
+              this.setState({
+                selectedUuid,
+                options: newOptions,
+              });
+            }
           }
         });
     });
@@ -127,8 +165,6 @@ export class TilesetFinder extends React.Component {
 
     // this should give the dataset the PlotType that's selected in the parent
     // this.props.selectedTilesetChanged(this.state.options[x.target.value]);
-
-    // console.log('x.target.value:', x.target.value);
 
     const value = this.state.options[x.target.value];
     this.props.onDoubleClick(value);
@@ -155,8 +191,8 @@ export class TilesetFinder extends React.Component {
     });
   }
 
-  handleSelect(x) {
-    const selectedOptions = ReactDOM.findDOMNode(this.multiSelect).selectedOptions;
+  handleSelect() {
+    const { selectedOptions } = ReactDOM.findDOMNode(this.multiSelect);
     const selectedOptionsList = [];
 
     for (let i = 0; i < selectedOptions.length; i++) {
@@ -180,9 +216,15 @@ export class TilesetFinder extends React.Component {
     }
 
     // the list of tilesets / tracks available
-    const options = optionsList
-      .filter(x => x.name.toLowerCase().includes(this.state.filter))
-      .map(x => (<option
+    const sortedOptions = optionsList
+      .filter(x => x.name.toLowerCase().includes(this.state.filter));
+ 
+    sortedOptions.sort((a, b) => (
+      a.name.toLowerCase().localeCompare(b.name.toLowerCase(), 'en')
+    ));
+
+    const options = sortedOptions.map(x => (
+      <option
         onDoubleClick={this.handleOptionDoubleClick.bind(this)}
         key={x.serverUidKey}
         value={x.serverUidKey}
@@ -193,29 +235,33 @@ export class TilesetFinder extends React.Component {
     const form = (
       <Form
         horizontal
+        onSubmit={(evt) => { evt.preventDefault(); }}
       >
-        <FormGroup >
+        <FormGroup>
           <Col sm={3}>
-            <ControlLabel>{'Select tileset'}</ControlLabel>
+            <ControlLabel>{ 'Select tileset' }</ControlLabel>
           </Col>
-          <Col smOffset={5} sm={4}>
+          <Col 
+            sm={4}
+            smOffset={5} 
+          >
             <FormControl
-              placeholder="Search Term"
               ref={(c) => { this.searchBox = c; }}
-              onChange={this.handleSearchChange.bind(this)}
               autoFocus={true}
+              onChange={this.handleSearchChange.bind(this)}
+              placeholder="Search Term"
             />
             <div style={{ height: 10 }} />
           </Col>
           <Col sm={12}>
             <FormControl
+              ref={(c) => { this.multiSelect = c; }}
+              className="tileset-list"
               componentClass="select"
               multiple
-              className={'tileset-list'}
-              value={this.state.selectedUuid ? this.state.selectedUuid : ['x']}
               onChange={this.handleSelect.bind(this)}
-              ref={c => this.multiSelect = c}
               size={15}
+              value={this.state.selectedUuid ? this.state.selectedUuid : ['x']}
             >
               {options}
             </FormControl>

@@ -5,7 +5,7 @@ import AxisPixi from './AxisPixi';
 
 import { colorToHex } from './utils';
 
-export class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
+class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
   constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
     super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 

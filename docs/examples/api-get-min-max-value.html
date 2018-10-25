@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>getMinMaxValue() &middot; HiGlass</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/page.css">
+  <link rel="stylesheet" href="hglib.css">
+  <script crossorigin src="https://unpkg.com/react@16.5/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16.5/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.2/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+</head>
+<body >
+  <div
+    id="demo"
+    style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem"
+  ></div>
+</body>
+<script src='hglib.js'></script>
+<script>
+const viewConfig = {
+  editable: true,
+  zoomFixed: false,
+  trackSourceServers: [
+    'http://higlass.io/api/v1'
+  ],
+  exportViewUrl: 'http://higlass.io/api/v1/viewconfs/',
+  views: [
+    {
+      uid: 'aa',
+      initialXDomain: [
+        7595655.0000270605,
+        2507738795.9999733
+      ],
+      initialYDomain: [
+        -545671929.4383738,
+        3061006380.438374
+      ],
+      autocompleteSource: 'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
+      genomePositionSearchBoxVisible: false,
+      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+      tracks: {
+        top: [
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
+            uid: 'line1',
+            type: 'horizontal-line',
+            options: {
+              labelColor: 'black',
+              labelPosition: 'hidden',
+              axisPositionHorizontal: 'left',
+              lineStrokeColor: '#DBA9E8',
+              valueScaling: 'linear',
+              valueScaleMin: 2 * (10 ** 6),
+              valueScaleMax: 4 * (10 ** 6),
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              barOpacity: 1,
+              name: 'GM12878-E116-H3K4me1.fc.signal',
+            },
+            height: 60,
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
+            uid: 'bar1',
+            type: 'horizontal-bar',
+            options: {
+              labelColor: 'black',
+              labelPosition: 'hidden',
+              axisPositionHorizontal: 'left',
+              barFillColor: '#DBA9E8',
+              valueScaling: 'linear',
+              valueScaleMin: 2 * (10 ** 6),
+              valueScaleMax: 4 * (10 ** 6),
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              barOpacity: 1,
+              name: 'GM12878-E116-H3K4me1.fc.signal',
+            },
+            height: 60,
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
+            uid: 'line2',
+            type: 'horizontal-line',
+            options: {
+              labelColor: 'black',
+              labelPosition: 'hidden',
+              axisPositionHorizontal: 'left',
+              lineStrokeColor: '#AE8EEA',
+              valueScaling: 'linear',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              barOpacity: 1,
+              name: 'GM12878-E116-H3K4me1.fc.signal',
+            },
+            height: 60,
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
+            uid: 'bar2',
+            type: 'horizontal-bar',
+            options: {
+              labelColor: 'black',
+              labelPosition: 'hidden',
+              axisPositionHorizontal: 'left',
+              barFillColor: '#AE8EEA',
+              valueScaling: 'linear',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              barOpacity: 1,
+              name: 'GM12878-E116-H3K4me1.fc.signal',
+            },
+            height: 60,
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'cE0nGyd0Q_yVYSyBUe89Ww',
+            uid: 'line3',
+            type: 'horizontal-line',
+            options: {
+              labelColor: 'black',
+              labelPosition: 'hidden',
+              axisPositionHorizontal: 'left',
+              lineStrokeColor: '#AFAEEA',
+              valueScaling: 'linear',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              barOpacity: 1,
+              name: 'GM12878-E116-H3K4me3.fc.signal',
+            },
+            height: 60,
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'cE0nGyd0Q_yVYSyBUe89Ww',
+            uid: 'bar3',
+            type: 'horizontal-bar',
+            options: {
+              labelColor: 'black',
+              labelPosition: 'hidden',
+              axisPositionHorizontal: 'left',
+              barFillColor: '#AFAEEA',
+              valueScaling: 'linear',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              barOpacity: 1,
+              name: 'GM12878-E116-H3K4me3.fc.signal',
+            },
+            height: 60,
+          },
+          {
+            name: 'Gene Annotations (hg19)',
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            uid: 'genes',
+            type: 'horizontal-gene-annotations',
+            options: {
+              labelPosition: 'hidden',
+              name: 'Gene Annotations (hg19)',
+              labelColor: 'black',
+              plusStrandColor: '#7BA6EA',
+              minusStrandColor: '#5AC0EA',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: false,
+              mousePositionColor: '#999999'
+            },
+            height: 60,
+          },
+          {
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            type: 'horizontal-chromosome-labels',
+            position: 'top',
+            name: 'Chromosome Labels (hg19)',
+            height: 30,
+            uid: 'chroms',
+            options: {
+              color: '#4FEAE9',
+              showMousePosition: false,
+              mousePositionColor: '#999999'
+            },
+          }
+        ],
+        left: [],
+        center: [{
+          uid: 'c1',
+          type: 'combined',
+          contents: [
+            {
+              server: 'http://higlass.io/api/v1',
+              tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
+              type: 'heatmap',
+              position: 'center',
+              options: {
+                colorRange: [
+                  '#FFFFFF',
+                  '#7EFFDF',
+                  '#45B17C',
+                  '#006015',
+                  '#000000'
+                ],
+                colorbarPosition: 'topRight',
+                colorbarLabelsPosition: 'outside',
+                maxZoom: null,
+                labelPosition: 'bottomLeft',
+                name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
+                trackBorderWidth: 0,
+                trackBorderColor: 'black',
+                heatmapValueScaling: 'log',
+                scaleStartPercent: '0.00000',
+                scaleEndPercent: '1.00000',
+                backgroundColor: '#ffffff',
+                showMousePosition: false,
+                showTooltip: false
+              },
+              uid: 'heatmap1',
+              name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
+              transforms: [
+                {
+                  name: 'ICE',
+                  value: 'weight'
+                }
+              ],
+            },
+          ],
+        }],
+        right: [],
+        bottom: [],
+      },
+      layout: {
+        w: 12,
+        h: 12,
+        x: 0,
+        y: 0,
+        i: 'aa',
+        moved: false,
+        static: false
+      },
+    }
+  ],
+};
+
+const api = hglib.viewer(
+  document.getElementById('demo'), viewConfig, { bounded: true },
+);
+
+setTimeout(() => {
+  console.log('FAST:');
+  console.log('Min-Max for line1:', api.getMinMaxValue(null, 'line1'));
+  console.log('Min-Max for bar1:', api.getMinMaxValue(null, 'bar1'));
+  console.log('Min-Max for line3:', api.getMinMaxValue(null, 'line3'));
+  console.log('Min-Max for bar3:', api.getMinMaxValue(null, 'bar3'));
+  console.log('Min-Max for heatmap1:', api.getMinMaxValue(null, 'heatmap1'));
+  console.log('Min-Max for genes:', api.getMinMaxValue(null, 'genes'));
+  console.log('Min-Max for chroms:', api.getMinMaxValue(null, 'chroms'));
+}, 2000);
+
+setTimeout(() => {
+  console.log('\n----------\n');
+  console.log('SLOW:');
+  console.log('Visible Min-Max for line1:', api.getMinMaxValue(null, 'line1', true));
+  console.log('Visible Min-Max for bar1:', api.getMinMaxValue(null, 'bar1', true));
+  console.log('Visible Min-Max for line3:', api.getMinMaxValue(null, 'line3', true));
+  console.log('Visible Min-Max for bar3:', api.getMinMaxValue(null, 'bar3', true));
+  console.log('Visible Min-Max for heatmap1:', api.getMinMaxValue(null, 'heatmap1', true));
+  console.log('Visible Min-Max for genes:', api.getMinMaxValue(null, 'genes', true));
+  console.log('Visible Min-Max for chroms:', api.getMinMaxValue(null, 'chroms', true));
+}, 3000);
+
+</script>
+</html>
