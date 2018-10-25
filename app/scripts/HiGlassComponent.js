@@ -949,15 +949,17 @@ class HiGlassComponent extends React.Component {
     // - Or leave it off, and somehow synchronously export before the swap
     // - Or look into low-level stuff like copyBufferSubData.
     //
-    // Basing it on the SVG does guarantee us that the two exports are the same.
+    // Basing it on the SVG also guarantees us that the two exports are the same.
     
     const svgString = this.createSVGString();
     
     const img = new Image(this.canvasElement.width, this.canvasElement.height);
     img.src = "data:image/svg+xml;base64," + btoa(svgString);
     img.onload = () => {
-        // after this, Canvas’ origin-clean is DIRTY
         const targetCanvas = document.createElement('canvas');
+        // TODO: I have no idea why dimensions are doubled!
+        targetCanvas.width = this.canvasElement.width / 2;
+        targetCanvas.height = this.canvasElement.height / 2;
         const context = targetCanvas.getContext('2d');
         context.drawImage(img, 0, 0);
         // download() makes a Blob, so canvas.toBlob() would be more direct...
