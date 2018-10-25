@@ -923,8 +923,15 @@ class HiGlassComponent extends React.Component {
 
     svgString = svgString.replace(/<a0:/g, '<');
     svgString = svgString.replace(/<\/a0:/g, '</');
-
-    return svgString;
+    
+    // FF is fussier than Chrome, and requires dimensions on the SVG,
+    // if it is to be used as an image src.
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=700533
+    const w = this.canvasElement.width;
+    const h = this.canvasElement.height;
+    const dimensionedSvgString = `<svg width="${w}" height="${h}" ` + svgString.slice(4);
+    
+    return dimensionedSvgString;
   }
 
   handleExportSVG() {
@@ -933,19 +940,20 @@ class HiGlassComponent extends React.Component {
   
   handleExportPNG() {
     // It would seem easier to call canvas.toDataURL()...
-    // Except that with webgl context, it is swapping buffers after drawing
+    // Except that with webgl context, it swaps buffers after drawing
     // and you don't have direct access to what is on-screen.
     // (You end up getting a PNG of the desired dimensions, but it is empty.)
     //
     // We'd either need to 
     // - Turn on preserveDrawingBuffer and rerender, and add a callback
-    // - Leave it off, and somehow synchronously export before the buffers swap
+    // - Or leave it off, and somehow synchronously export before the swap
     // - Or look into low-level stuff like copyBufferSubData.
     //
     // Basing it on the SVG does guarantee us that the two exports are the same.
     
     const svgString = this.createSVGString();
-    const img = new Image();
+    
+    const img = new Image(this.canvasElement.width, this.canvasElement.height);
     img.src = "data:image/svg+xml;base64," + btoa(svgString);
     img.onload = () => {
         // after this, Canvas’ origin-clean is DIRTY
