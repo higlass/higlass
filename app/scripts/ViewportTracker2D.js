@@ -65,6 +65,7 @@ class ViewportTracker2D extends SVGTrack {
 
     // the viewport will call this.viewportChanged immediately upon
     // hearing registerViewportChanged
+    this.rerender();
     this.draw();
   }
 
@@ -117,7 +118,6 @@ class ViewportTracker2D extends SVGTrack {
       .style('fill', this.options.projectionStrokeColor)
       .style('opacity', this.options.projectionStrokeOpacity)
     */
-      
   }
 
   draw() {

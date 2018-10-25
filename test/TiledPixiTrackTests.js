@@ -51,7 +51,7 @@ describe('Simple HiGlassComponent', () => {
       // console.log('trackObj', trackObject);
 
       const dataChangedCb = (data) => {
-        console.log('data', data);
+        // console.log('data', data);
       };
 
       trackObject.on('dataChanged', dataChangedCb);

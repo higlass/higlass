@@ -37,7 +37,7 @@ npm run start
 
 ### Tests
 
-The tests for the React components and API functions are located in the `test` directory.
+The tests for the React components and API functions are located in the `test` directory. To save time and only run relevant tests, open `karma.conf.js` and select the test files to run before running `test-watch`.
 
 ```
 npm run test-watch

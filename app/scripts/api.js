@@ -269,6 +269,56 @@ const api = function api(context) {
     },
 
     /**
+     * Change the current view port to a certain data location.  When ``animateTime`` is
+     * greater than 0, animate the transition.
+
+     * If working with genomic data, a chromosome info file will need to be used in
+     * order to calculate "data" coordinates from chromosome coordinates. "Data"
+     * coordinates are simply the coordinates as if the chromosomes were placed next
+     * to each other.
+     *
+     * @param {string} viewUid The identifier of the view to zoom
+     * @param {Number} start1Abs The x start position
+     * @param {Number} end1Abs The x end position
+     * @param {Number} start2Abs (optional) The y start position. If not specified
+     *    start1Abs will be used.
+     * @param {Number} end2Abs (optional) The y end position. If not specified
+     *    end1Abs will be used
+     * @param {Number} animateTime The time to spend zooming to the specified location
+     * @example
+     *    // Absolute coordinates
+     * hgApi.zoomTo('view1', 1000000, 1100000, 2000000, 2100000, 500);
+     * // Chromosomal coordinates
+     * hglib
+     *   // Pass in the URL of your chrom sizes
+     *   .ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv')
+     *   // Now we can use the chromInfo object to convert
+     *   .then((chromInfo) => {
+     *     // Go to PTEN
+     *     hgApi.zoomTo(
+     *       viewConfig.views[0].uid,
+     *       chromInfo.chrToAbs(['chr10', 89596071]),
+     *       chromInfo.chrToAbs(['chr10', 89758810]),
+     *       chromInfo.chrToAbs(['chr10', 89596071]),
+     *       chromInfo.chrToAbs(['chr10', 89758810]),
+     *       2500  // Animation time
+     *     );
+     *   });
+     *   // Just in case, let us catch errors
+     *   .catch(error => console.error('Oh boy...', error))
+     */
+    zoomTo(
+      viewUid,
+      start1Abs,
+      end1Abs,
+      start2Abs,
+      end2Abs,
+      animateTime = 0,
+    ) {
+      self.zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime);
+    },
+
+    /**
      * Zoom so that the entirety of all the datasets in a view
      * are visible.
      * The passed in ``viewUid`` should refer to a view which is present. If it
@@ -410,57 +460,6 @@ const api = function api(context) {
 
       return getTrackObjectFromHGC(self, newViewId, newTrackId);
     },
-
-    /**
-     * Change the current view port to a certain data location.  When ``animateTime`` is
-     * greater than 0, animate the transition.
-
-     * If working with genomic data, a chromosome info file will need to be used in
-     * order to calculate "data" coordinates from chromosome coordinates. "Data"
-     * coordinates are simply the coordinates as if the chromosomes were placed next
-     * to each other.
-     *
-     * @param {string} viewUid The identifier of the view to zoom
-     * @param {Number} start1Abs The x start position
-     * @param {Number} end1Abs The x end position
-     * @param {Number} start2Abs (optional) The y start position. If not specified
-     *    start1Abs will be used.
-     * @param {Number} end2Abs (optional) The y end position. If not specified
-     *    end1Abs will be used
-     * @param {Number} animateTime The time to spend zooming to the specified location
-     * @example
-     *    // Absolute coordinates
-     * hgApi.zoomTo('view1', 1000000, 1100000, 2000000, 2100000, 500);
-     * // Chromosomal coordinates
-     * hglib
-     *   // Pass in the URL of your chrom sizes
-     *   .ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv')
-     *   // Now we can use the chromInfo object to convert
-     *   .then((chromInfo) => {
-     *     // Go to PTEN
-     *     hgApi.zoomTo(
-     *       viewConfig.views[0].uid,
-     *       chromInfo.chrToAbs(['chr10', 89596071]),
-     *       chromInfo.chrToAbs(['chr10', 89758810]),
-     *       chromInfo.chrToAbs(['chr10', 89596071]),
-     *       chromInfo.chrToAbs(['chr10', 89758810]),
-     *       2500  // Animation time
-     *     );
-     *   });
-     *   // Just in case, let us catch errors
-     *   .catch(error => console.error('Oh boy...', error))
-     */
-    zoomTo(
-      viewUid,
-      start1Abs,
-      end1Abs,
-      start2Abs,
-      end2Abs,
-      animateTime = 0,
-    ) {
-      self.zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime);
-    },
-
 
     /**
      * Cancel a subscription.

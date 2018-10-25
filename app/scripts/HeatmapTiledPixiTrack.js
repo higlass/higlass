@@ -154,6 +154,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     const relX = x - this.position[0];
     const relY = y - this.position[1];
+
     let data = this.getVisibleRectangleData(
       relX - Math.ceil(this.dataLensSize / 2),
       relY - Math.ceil(this.dataLensSize / 2),
@@ -829,6 +830,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    *
    */
   getVisibleRectangleData(x, y, width, height) {
+    // console.log(x,y,width,height);
     let zoomLevel = this.calculateZoomLevel();
     zoomLevel = this.tilesetInfo.max_zoom
       ? Math.min(this.tilesetInfo.max_zoom, zoomLevel) : zoomLevel;
@@ -865,7 +867,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       // get the tile's position and width (in data coordinates)
       // if it's mirrored then we have to switch the position indeces
       const { tileX, tileY, tileWidth, tileHeight } = this.getTilePosAndDimensions(
-        tile.tileData.zoomLevel, tilePos, this.binsPerTile());
+        tile.tileData.zoomLevel, tilePos, this.binsPerTile()
+      );
 
       let tileData = tile.dataArray;
 
@@ -918,15 +921,17 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   initTile(tile) {
     super.initTile(tile);
 
-    // no data present
-    if (this.scale.minValue == null || this.scale.maxValue == null) return;
-
     // prepare the data for fast retrieval in getVisibleRectangleData
     if (tile.tileData.dense.length === this.binsPerTile() ** 2) {
       tile.dataArray = ndarray(
         Array.from(tile.tileData.dense),
         [this.binsPerTile(), this.binsPerTile()]
       );
+    }
+
+    // no data present
+    if (this.scale.minValue == null || this.scale.maxValue == null) {
+      return;
     }
 
     this.renderTile(tile);

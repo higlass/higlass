@@ -44,8 +44,8 @@ class OSMTilesTrack extends PixiTrack {
     this.maxX = +this.options.maxPos || 180;
     // HiGlass currently only supports squared tile sets but maybe in the
     // future...
-    this.minY = this.minX;
-    this.maxY = this.maxX;
+    this.minY = this.options.minY || this.minX;
+    this.maxY = this.options.maxY || this.maxX;
 
     this.maxZoom = 19;
     this.maxWidth = this.maxX - this.minX;
@@ -210,8 +210,8 @@ class OSMTilesTrack extends PixiTrack {
     this.yTiles = tileProxy.calculateTiles(
       this.zoomLevel,
       this._yScale,
-      this.minX,
-      this.maxX,
+      this.minY,
+      this.maxY,
       this.maxZoom,
       this.maxWidth
     );
