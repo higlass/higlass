@@ -964,7 +964,6 @@ class HiGlassComponent extends React.Component {
         targetCanvas.toBlob((blob) => {
           download('export.png', blob);
         });
-        // TODO: Cleanup
     }
   }
 

@@ -14,6 +14,7 @@ export function download(filename, stringOrBlob) {
     document.body.appendChild(elem);
     elem.click();
     document.body.removeChild(elem);
+    URL.revokeObjectURL(elem.href);
   }
 }
 
