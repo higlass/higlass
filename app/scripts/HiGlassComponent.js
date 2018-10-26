@@ -2671,8 +2671,6 @@ class HiGlassComponent extends React.Component {
      */
     const { views } = this.state;
 
-    console.log('newAssembly', newAssembly);
-
     views[viewUid].genomePositionSearchBox.chromInfoId = newAssembly;
     views[viewUid].genomePositionSearchBox.autocompleteId = newAutocompleteId;
     views[viewUid].genomePositionSearchBox.autocompleteServer = newServer;
