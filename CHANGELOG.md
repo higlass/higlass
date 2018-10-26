@@ -1,12 +1,13 @@
-## v1.2.10
+## v1.3.0
 
 - Added TiledPixiTrack.on event handler
 - Added getTrackObject to exports
-
-## v1.2.9
-
+- Added support for overlay tracks
 - Minor bug fix wherein valueScaleMin and valueScaleMax weren't used when set to 0
 - Cloned views split vertically first (#259)
+- Change component height when a new viewconf is passed in
+- Add a fudge factor to ensure that the entire view is shown in the
+grid layout
 
 ## v1.2.8
 

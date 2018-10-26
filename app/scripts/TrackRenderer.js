@@ -16,6 +16,7 @@ import TopAxisTrack from './TopAxisTrack';
 import LeftAxisTrack from './LeftAxisTrack';
 import CombinedTrack from './CombinedTrack';
 import BedLikeTrack from './BedLikeTrack';
+import OverlayTrack from './OverlayTrack';
 
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 import HorizontalPoint1DPixiTrack from './HorizontalPoint1DPixiTrack';
@@ -207,10 +208,11 @@ class TrackRenderer extends React.Component {
 
     this.pStage = new PIXI.Graphics();
     this.pMask = new PIXI.Graphics();
+    this.pOutline = new PIXI.Graphics();
     this.pBackground = new PIXI.Graphics();
 
     this.pStage.addChild(this.pMask);
-    this.pStage.addChild(this.pBackground);
+    this.pStage.addChild(this.pOutline);
 
     this.currentProps.pixiStage.addChild(this.pStage);
 
@@ -443,6 +445,13 @@ class TrackRenderer extends React.Component {
       this.currentProps.height
     );
     this.pMask.endFill();
+
+    // show the bounds of this view
+    /*
+    this.pOutline.clear();
+    this.pOutline.lineStyle(1, '#000', 1);
+    this.pOutline.drawRect(this.xPositionOffset, this.yPositionOffset, this.currentProps.width, this.currentProps.height);
+    */
   }
 
   setBackground() {
@@ -1670,6 +1679,14 @@ class TrackRenderer extends React.Component {
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+      case 'overlay-track':
+        //console.log('horizontal-overlay-track');
+        return new OverlayTrack(
+          this.pStage,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );

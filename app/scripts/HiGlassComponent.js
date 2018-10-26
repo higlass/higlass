@@ -434,8 +434,6 @@ class HiGlassComponent extends React.Component {
   componentWillReceiveProps(newProps) {
     const viewsByUid = this.loadIfRemoteViewConfig(newProps.viewConfig);
 
-    console.log('componentWillReceiveProps', newProps);
-
     if (newProps.options.authToken !== this.prevAuthToken) {
       // we go a new auth token so we should reload everything
       setTileProxyAuthHeader(newProps.options.authToken);
@@ -451,6 +449,12 @@ class HiGlassComponent extends React.Component {
       }
 
       this.prevAuthToken = newProps.options.authToken;
+    }
+
+    // make sure that the current view is tall enough to display
+    // all the tracks (if unbounded, which is checked in adjustLayout...)
+    for (let view of dictValues(viewsByUid)) {
+      this.adjustLayoutToTrackSizes(view);
     }
 
     this.setState({
@@ -665,7 +669,7 @@ class HiGlassComponent extends React.Component {
    * visible?
    */
   isEditable() {
-    // console.log('editable:', this.props.options, this.state.viewConfig);   
+    // console.log('editable:', this.props.options, this.state.viewConfig);
     if (!this.props.options || !('editable' in this.props.options)) {
       return this.state.viewConfig.editable;
     }
@@ -2108,7 +2112,9 @@ class HiGlassComponent extends React.Component {
    */
   adjustLayoutToTrackSizes(view) {
     // if the view is too short, expand the view so that it fits this track
-    if (!view.layout) { return; }
+    if (!view.layout) {
+      return;
+    }
 
     let totalTrackHeight = 0;
 
@@ -2665,8 +2671,6 @@ class HiGlassComponent extends React.Component {
      */
     const { views } = this.state;
 
-    console.log('newAssembly', newAssembly);
-
     views[viewUid].genomePositionSearchBox.chromInfoId = newAssembly;
     views[viewUid].genomePositionSearchBox.autocompleteId = newAutocompleteId;
     views[viewUid].genomePositionSearchBox.autocompleteServer = newServer;
@@ -3050,8 +3054,7 @@ class HiGlassComponent extends React.Component {
       typeof viewId === 'undefined' || viewsIds.indexOf(viewId) === -1
     ) {
       console.error(
-        '🦄 listen to me: you forgot to give me a proper view ID. ' +
-        'I can\'t do nothing without that. 💩',
+        'onLocationChange either missing a viewId or passed an invalid viewId: ', viewId
       );
       return null;
     }
@@ -3472,7 +3475,8 @@ class HiGlassComponent extends React.Component {
             }
             setCentersFunction={(c) => { this.setCenters[view.uid] = c; }}
             svgElement={this.state.svgElement}
-            trackSourceServers={this.state.viewConfig.trackSourceServers}
+            trackSourceServers={this.props.viewConfig.trackSourceServers}
+            overlays={view.overlays}
             tracks={view.tracks}
             viewOptions={view.options}
             metaTracks={view.metaTracks}
