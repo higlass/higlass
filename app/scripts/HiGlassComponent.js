@@ -434,8 +434,6 @@ class HiGlassComponent extends React.Component {
   componentWillReceiveProps(newProps) {
     const viewsByUid = this.loadIfRemoteViewConfig(newProps.viewConfig);
 
-    console.log('componentWillReceiveProps', newProps);
-
     if (newProps.options.authToken !== this.prevAuthToken) {
       // we go a new auth token so we should reload everything
       setTileProxyAuthHeader(newProps.options.authToken);
