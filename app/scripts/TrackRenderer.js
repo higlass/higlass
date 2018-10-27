@@ -383,8 +383,10 @@ class TrackRenderer extends React.Component {
    * @param  {Object}  e  Event to be dispatched.
    */
   dispatchEvent(e) {
+    // console.log('de e:', e);
     if (e.sourceUid === this.uid) {
       if (e.type !== 'contextmenu') {
+        // console.log('forwarding', this.element);
         forwardEvent(e, this.element);
       }
     }
@@ -420,6 +422,7 @@ class TrackRenderer extends React.Component {
     if (!this.elementSelection || !this.currentProps.zoomable) return;
 
     // add back the previous transform
+    // console.log('zoom:', this.elementSelection.node());
     this.elementSelection.call(this.zoomBehavior);
     this.zoomBehavior.transform(this.elementSelection, this.zoomTransform);
   }
@@ -1821,9 +1824,20 @@ class TrackRenderer extends React.Component {
 
     this.eventTracker = this.eventTrackerOld;
 
+    /*
+    this.element.addEventListener('mousewheel', (evt) => {
+      console.log('element mw', evt)
+    })
+    
+    this.element.addEventListener('wheel', (evt) => {
+      console.log('wheel', evt);
+    })
+    */
+
     this.eventTracker.addEventListener('click', this.boundForwardEvent);
     this.eventTracker.addEventListener('contextmenu', this.boundForwardContextMenu);
     this.eventTracker.addEventListener('dblclick', this.boundForwardEvent);
+    this.eventTracker.addEventListener('mousewheel', this.boundForwardEvent);
     this.eventTracker.addEventListener('wheel', this.boundForwardEvent);
     this.eventTracker.addEventListener('dragstart', this.boundForwardEvent);
     this.eventTracker.addEventListener('selectstart', this.boundForwardEvent);
@@ -1859,7 +1873,7 @@ class TrackRenderer extends React.Component {
     this.eventTracker.removeEventListener('click', this.boundForwardEvent);
     this.eventTracker.removeEventListener('contextmenu', this.boundForwardContextMenu);
     this.eventTracker.removeEventListener('dblclick', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('wheel', this.boundForwardEvent);
+    this.eventTracker.removeEventListener('mousewheel', this.boundForwardEvent);
     this.eventTracker.removeEventListener('dragstart', this.boundForwardEvent);
     this.eventTracker.removeEventListener('selectstart', this.boundForwardEvent);
 
@@ -1893,6 +1907,8 @@ class TrackRenderer extends React.Component {
   }
 
   forwardEvent(e) {
+    // console.log('fe e:', e);
+    
     e.sourceUid = this.uid;
     pubSub.publish('app.event', e);
   }
