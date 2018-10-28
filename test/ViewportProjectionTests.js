@@ -70,6 +70,8 @@ describe('Simple HiGlassComponent', () => {
       waitForTransitionsFinished(hgc.instance(), () => {
         const ixd2 = hgc.instance().xScales.aa.domain();
 
+        console.log('ixd1', ixd1, 'ixd2', ixd2);
+
         // shouldn't have zoomed because deltaY = 0
         expect(ixd1[0]).to.eql(ixd2[0]);
         expect(ixd1[1]).to.eql(ixd2[1]);

@@ -3114,7 +3114,7 @@ class HiGlassComponent extends React.Component {
 
     const views = dictValues(this.state.views);
     console.log('views:', views);
-    console.log('tiledAreas:', this.tiledAreas);
+    console.log('tiledAreas:', this.tiledAreasDivs);
 
     for (let i = 0; i < views.length; i++) {
       const tiledPlot = this.tiledPlots[views[i].uid];
