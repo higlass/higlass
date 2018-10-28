@@ -3113,14 +3113,16 @@ class HiGlassComponent extends React.Component {
     let foundTiledPlot;
 
     const views = dictValues(this.state.views);
-    console.log('views:', views);
-    console.log('tiledAreas:', this.tiledAreasDivs);
+    // console.log('views:', views);
+    // console.log('tiledAreas:', this.tiledAreasDivs);
 
     for (let i = 0; i < views.length; i++) {
       const tiledPlot = this.tiledPlots[views[i].uid];
 
+      console.log('1');
       const area = this.tiledAreasDivs[views[i].uid].getBoundingClientRect();
-
+      console.log('2');
+      
       const { top, left } = area;
       const bottom = top + area.height;
       const right = left + area.width;
