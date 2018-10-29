@@ -574,7 +574,6 @@ HiGlass provides a set of accessors and exporters to retrieve data from HiGlass 
   const currentLocationOfViewId = hgv.getLocation('viewId');
   const currentRangeSelection = hgv.getRangeSelection();
   const currentViewConfig = hgv.exportAsViewConfString();
-  const pngSnapshot = hgv.exportAsPng();  // Data URI
   const svgSnapshot = hgv.exportAsSvg();  // XML string
 
 
