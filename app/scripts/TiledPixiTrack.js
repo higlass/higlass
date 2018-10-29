@@ -58,7 +58,7 @@ class TiledPixiTrack extends PixiTrack {
    *
    * @param (PIXI.scene) scene A PIXI.js scene to draw everything to.
    * @param (Object) dataConfig: A data source. Usually a
-   *  ``{server: 'x/api/v1/', tilesetUuid: 'y'}`` Object.
+   *  ``{{server: 'x/api/v1/', tilesetUuid: 'y'}}`` Object.
    * @param {Object} handleTilesetInfoReceived: A callback to do something once once the tileset
    *  info is received. Usually it registers some information about the tileset with its
    * definition

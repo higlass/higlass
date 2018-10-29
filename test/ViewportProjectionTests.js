@@ -34,11 +34,13 @@ describe('Simple HiGlassComponent', () => {
 
     it("Ensure that the viewport projection's borders are black", (done) => {
       // the idea is to make sure the borders of the viewport projection are black
-      const viewportRect = select(hgc.instance().topDiv).select('rect.selection');
+      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'GWbBXmaFQTO8tia0-wljaA');
+      const viewportRect = trackObj.gMain.select('rect.selection');
 
       // console.log('viewportRect', viewportRect);
       // console.log('componentDiv', viewportRect.style('color'), viewportRect.style('fill'));
 
+      // console.log('check');
       expect(viewportRect.style('color')).to.eql('rgb(51, 51, 51)');
       expect(viewportRect.style('fill')).to.eql('rgb(0, 0, 0)');
 
@@ -46,18 +48,9 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it("Dispatches an empty mousewheel event on the viewport projection", (done) => {
-      var evt = new WheelEvent('wheel', {
-        deltaX: 0,
-        deltaY: 0,
-        deltaZ: 0,
-        deltaMode: 0,
-        clientX: 343,
-        clientY: 246,
-        screenX: -1238,
-        screenY: 343,
-        view: window,
-        bubbles: true,
-        cancelable: true
+      var evt = new WheelEvent('wheel', { deltaX: 0, deltaY: 0, deltaZ: 0,
+        deltaMode: 0, clientX: 343, clientY: 246, screenX: -1238,
+        screenY: 343, view: window, bubbles: true, cancelable: true
       })
 
       const trackObj = getTrackObjectFromHGC(hgc.instance(), 
@@ -70,7 +63,7 @@ describe('Simple HiGlassComponent', () => {
       waitForTransitionsFinished(hgc.instance(), () => {
         const ixd2 = hgc.instance().xScales.aa.domain();
 
-        console.log('ixd1', ixd1, 'ixd2', ixd2);
+        // console.log('ixd1', ixd1, 'ixd2', ixd2);
 
         // shouldn't have zoomed because deltaY = 0
         expect(ixd1[0]).to.eql(ixd2[0]);
