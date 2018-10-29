@@ -229,7 +229,7 @@ class TilesetFinder extends React.Component {
         key={x.serverUidKey}
         value={x.serverUidKey}
       >
-        {x.name}
+        {`${x.name} | ${x.coordSystem}`}
       </option>));
 
     const form = (

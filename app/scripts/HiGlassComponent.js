@@ -3377,6 +3377,14 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
+    if (evt.path.indexOf(this.topDiv) < 0) {
+      // ignore events that don't come from within the
+      // HiGlass container
+      return;
+    }
+
+    // console.log('evt:', evt);
+
     // forward the wheel event back to the TrackRenderer that it should go to
     // this is so that we can zoom when there's a viewport projection present
     const hoveredTiledPlot = this.getTiledPlotAtPosition(evt.clientX, evt.clientY);
