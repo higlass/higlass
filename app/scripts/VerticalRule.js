@@ -44,6 +44,24 @@ export default class VerticalRule extends mix(PixiTrack).with(RuleMixin, Vertica
     this.xPosition = xPosition;
   }
 
+  exportSVG() {
+    const output = document.createElement('g');
+    output.setAttribute('transform',
+      `translate(${this.position[0]},${this.position[1]})`);
+    
+    const verticalLine = document.createElement('line');
+    verticalLine.setAttribute('x1', this._xScale(this.xPosition));
+    verticalLine.setAttribute('y1', 0);
+    verticalLine.setAttribute('x2', this._xScale(this.xPosition))
+    verticalLine.setAttribute('y2', this.dimensions[1]);
+    verticalLine.setAttribute('stroke', 'black');
+    verticalLine.setAttribute('stroke-width', '2');
+    verticalLine.setAttribute('stroke-dasharray', '5 3')
+    output.appendChild(verticalLine);
+    
+    return [output];
+  }
+
   draw() {
     const graphics = this.pMain;
     graphics.clear();

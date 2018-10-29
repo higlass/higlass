@@ -33,6 +33,34 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
 
     this.draw();
   }
+  
+  exportSVG() {
+    const output = document.createElement('g');
+    output.setAttribute('transform',
+      `translate(${this.position[0]},${this.position[1]})`);
+    
+    const horizontalLine = document.createElement('line');
+    horizontalLine.setAttribute('x1', 0);
+    horizontalLine.setAttribute('y1', this._yScale(this.yPosition));
+    horizontalLine.setAttribute('x2', this.dimensions[0])
+    horizontalLine.setAttribute('y2', this._yScale(this.yPosition));
+    horizontalLine.setAttribute('stroke', 'black');
+    horizontalLine.setAttribute('stroke-width', '2');
+    horizontalLine.setAttribute('stroke-dasharray', '5 3')
+    output.appendChild(horizontalLine);
+    
+    const verticalLine = document.createElement('line');
+    verticalLine.setAttribute('x1', this._xScale(this.xPosition));
+    verticalLine.setAttribute('y1', 0);
+    verticalLine.setAttribute('x2', this._xScale(this.xPosition))
+    verticalLine.setAttribute('y2', this.dimensions[1]);
+    verticalLine.setAttribute('stroke', 'black');
+    verticalLine.setAttribute('stroke-width', '2');
+    verticalLine.setAttribute('stroke-dasharray', '5 3')
+    output.appendChild(verticalLine);
+    
+    return [output];
+  }
 
   drawHorizontalRule(graphics) {
     const strokeWidth = 1;
