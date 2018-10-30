@@ -274,15 +274,14 @@ const testViewConfig = {
   }
 };
 
-window.hglib.createHgComponent(
+const hgApi = hglib.viewer(
   document.getElementById('development-demo'),
   testViewConfig,
   { bounded: true },
-  (api) => { window.hgApi = api; }
 );
 
 setTimeout(() => {
-  window.hgApi.activateTool('select');
+  hgApi.activateTool('select');
 }, 2000);
 
 const rangeSelectionHander = (rangeSelection) => {
@@ -292,10 +291,10 @@ const rangeSelectionHander = (rangeSelection) => {
     rangeSelection.genomicRange,
   );
 };
-window.hgApi.on('rangeSelection', rangeSelectionHander);
+hgApi.on('rangeSelection', rangeSelectionHander);
 
 setTimeout(() => {
-  window.hgApi.off('rangeSelection', rangeSelectionHander);
+  hgApi.off('rangeSelection', rangeSelectionHander);
 }, 10000);
 
 </script>

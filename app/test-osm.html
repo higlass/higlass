@@ -161,10 +161,11 @@ const testViewConfig = {
   }
 };
 
-window.hglib.createHgComponent(
+hglib.viewer(
   document.getElementById('development-demo'),
   testViewConfig,
-  { bounded: true }
+  { bounded: true },
 );
+
 </script>
 </html>
