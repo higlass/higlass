@@ -252,6 +252,10 @@
             ],
             "position": "top",
             "options": {}
+          },
+          {
+            'type': 'overlay-track',
+            'uid': 'overlay'
           }
         ],
         "left": [],
@@ -327,7 +331,9 @@ hglib.ChromosomeInfo("//s3.amazonaws.com/pkerp/public/b37_chromInfo.txt", functi
           1000);
       })
       .each(function(d) {
-        console.log('d', d);
+        console.log('draw overlay', d);
+        
+        // TODO: Draw overlay?
       })
       .append('div')
       .style("display", "flex")
@@ -372,34 +378,31 @@ hglib.ChromosomeInfo("//s3.amazonaws.com/pkerp/public/b37_chromInfo.txt", functi
           }))
       .each(function(d,i) {
         var templateJson = JSON.parse(JSON.stringify(testViewConfig));
-          templateJson.hideHeader = true;
-          templateJson.editable = false;
-          templateJson.zoomFixed = true;
-          templateJson.views = templateJson.views.slice(0,1);
-            templateJson.views[0].tracks.top = [
-              testViewConfig.views[0].tracks.top[0],
-              testViewConfig.views[0].tracks.top[1]
-              ];
-            templateJson.views[0].tracks.left = [];
-          //templateJson.views[0].tracks.center[0].contents[0].options.colorbarPosition = 'hidden';
-          //templateJson.views[0].tracks.center[0].contents[0].options.labelPosition = 'hidden';
+        templateJson.hideHeader = true;
+        templateJson.editable = false;
+        templateJson.zoomFixed = true;
+        templateJson.views = templateJson.views.slice(0,1);
+        templateJson.views[0].tracks.top = [
+          testViewConfig.views[0].tracks.top[0],
+          testViewConfig.views[0].tracks.top[1]
+        ];
+        templateJson.views[0].tracks.left = [];
+        //templateJson.views[0].tracks.center[0].contents[0].options.colorbarPosition = 'hidden';
+        //templateJson.views[0].tracks.center[0].contents[0].options.labelPosition = 'hidden';
+        
         var absStart = chromInfo.chrPositions[d.chromosome].pos + +d.start;
         var absEnd = chromInfo.chrPositions[d.chromosome].pos + +d.end;
         var padding = (absEnd - absStart) / 2;
         console.log('absStart:', absStart, 'absEnd', absEnd)
 
-          templateJson.views[0].initialXDomain = [absStart - padding, absEnd + padding];
-          templateJson.views[0].initialYDomain = [absStart - padding, absEnd + padding];
-            hglib.viewer(
-                document.getElementById('cnv-' + i),
-             templateJson,
-                { 
-                    bounded: true,
-                    renderer: 'canvas'
-                }
-                );
-        });
-      ;
+        templateJson.views[0].initialXDomain = [absStart - padding, absEnd + padding];
+        templateJson.views[0].initialYDomain = [absStart - padding, absEnd + padding];
+        hglib.viewer(
+          document.getElementById('cnv-' + i),
+          templateJson,
+          { bounded: true, renderer: 'canvas' }
+        );
+      });
 
       window.hgApi.on('location', function(data) {
         // console.log('data.xDomain:', data.xDomain);
