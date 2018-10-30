@@ -674,6 +674,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           } else {
             r.setAttribute('fill', this.options.minusStrandColor);
           }
+          r.setAttribute('opacity', '0.3');
 
           gTile.appendChild(r);
         });
