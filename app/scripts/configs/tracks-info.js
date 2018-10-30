@@ -1213,6 +1213,22 @@ export const TRACKS_INFO = [
     },
   },
   {
+    type: 'raster-tiles',
+    datatype: ['map-tiles'],
+    local: true,
+    orientation: '2d',
+    hidden: true,
+    name: 'Raster Tiles',
+    thumbnail: svgGeoMapIcon,
+    availableOptions: [
+      'labelPosition',
+      'name',
+    ],
+    defaultOptions: {
+      labelPosition: 'bottomRight',
+    },
+  },
+  {
     type: 'image-tiles',
     datatype: ['image-tiles'],
     local: true,

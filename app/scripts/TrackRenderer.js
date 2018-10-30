@@ -55,6 +55,7 @@ import CrossRule from './CrossRule';
 import OSMTilesTrack from './OSMTilesTrack';
 import OSMTileIdsTrack from './OSMTileIdsTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
+import RasterTilesTrack from './RasterTilesTrack';
 
 import SVGTrack from './SVGTrack';
 
@@ -1677,6 +1678,12 @@ class TrackRenderer extends React.Component {
           track.accessToken
         );
 
+      case 'raster-tiles':
+        return new RasterTilesTrack(
+          this.pStage,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
       case 'bedlike':
         return new BedLikeTrack(
           this.pStage,

@@ -1063,6 +1063,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       base = document.createElement('g');
       track = base;
     }
+    console.log('base:', base, 'track:', track);
 
     const output = document.createElement('g');
     track.appendChild(output);
