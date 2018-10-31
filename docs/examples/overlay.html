@@ -39,6 +39,15 @@ const viewConfig = {
       autocompleteSource: 'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
       genomePositionSearchBoxVisible: false,
       chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+      overlays: [
+        {
+          uid: 'overlay',
+          includes: ['horizontal-bar', 'horizontal-chromosome-labels'],
+          'options': {
+            'extent': [[1000000000, 2000000000]]
+          }
+        }
+      ],
       tracks: {
         top: [
           {
@@ -46,17 +55,20 @@ const viewConfig = {
             server: 'http://higlass.io/api/v1',
             tilesetUid: 'b6qFe7fOSnaX-YkP2kzN1w',
             type: 'horizontal-bar',
+            uid: 'horizontal-bar'
           },
           {
             name: 'Gene Annotations (hg19)',
             server: 'http://higlass.io/api/v1',
             tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
             type: 'horizontal-gene-annotations',
+            uid: 'horizontal-gene-annotations'
           },
           {
             chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
             type: 'horizontal-chromosome-labels',
             name: 'Chromosome Labels (hg19)',
+            uid: 'horizontal-chromosome-labels'
           }
         ],
         left: [
