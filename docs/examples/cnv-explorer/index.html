@@ -308,7 +308,7 @@
 
 hglib.ChromosomeInfo("//s3.amazonaws.com/pkerp/public/b37_chromInfo.txt", function(chromInfo) {
     console.log('chromInfo:', chromInfo);
-  d3.tsv('cnv-explorer-data/8c4ebff2-8318-4046-98f5-da8f6b1a9e3b.consensus.20170119.somatic.cna.annotated.txt', function(error, data)  {
+  d3.tsv('8c4ebff2-8318-4046-98f5-da8f6b1a9e3b.consensus.20170119.somatic.cna.annotated.txt', function(error, data)  {
     data = data.filter(d => d.total_cn < 2 || d.total_cn > 3)
     var divs = d3.select('#sv-list')
       .selectAll('div')
