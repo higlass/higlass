@@ -41,10 +41,24 @@ const viewConfig = {
       chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
       overlays: [
         {
-          uid: 'overlay',
+          uid: 'horizontal-overlay',
           includes: ['horizontal-bar', 'horizontal-chromosome-labels'],
           'options': {
             'extent': [[1000000000, 2000000000]]
+          }
+        },
+        {
+          uid: 'vertical-overlay-1',
+          includes: ['vertical-line'],
+          'options': {
+            'extent': [[0, 1000000000]]
+          }
+        },
+        {
+          uid: 'vertical-overlay-2',
+          includes: ['vertical-line'],
+          'options': {
+            'extent': [[2000000000, 3000000000]]
           }
         }
       ],
@@ -76,7 +90,7 @@ const viewConfig = {
             server: 'http://higlass.io/api/v1',
             tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
             type: 'vertical-line',
-            position: 'left',
+            uid: 'vertical-line'
           },
           {
             chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',

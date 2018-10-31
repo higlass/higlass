@@ -13,11 +13,7 @@ const MAX_TEXTS = 20;
 export class OverlayTrack extends PixiTrack {
   constructor(scene, options, animate) {
     super(scene, options);
-
-    //console.log('options:', options);
-
     this.options = options || {};
-    //console.log('this.options:', this.options);
     this.drawnRects = {};
   }
 
@@ -29,17 +25,9 @@ export class OverlayTrack extends PixiTrack {
     graphics.clear();
     graphics.beginFill(fill, 0.3);
 
-    //console.log('_xScale', this._xScale.range());
-    // console.log('this.dimensions:', this.dimensions);
-
     for (let i = 0; i < this.options.orientationsAndPositions.length; i++) {
       let orientation = this.options.orientationsAndPositions[i].orientation;
       let position = this.options.orientationsAndPositions[i].position;
-
-      /*
-      console.log('this.position:', this.position);
-      console.log('position.left:', position.left);
-      */
 
       if (orientation === '1d-horizontal') {
         let xPos = this.position[0] + position.left + 
@@ -49,22 +37,22 @@ export class OverlayTrack extends PixiTrack {
         let width = this._xScale(this.options.extent[0][1]) - 
           xPos + position.left + this.position[0];
 
-        /*
-        console.log('top:', yPos);
-        console.log('height:', position.height);
-        console.log('yPos:', yPos);
-        console.log('width:', width);
-        console.log('height:', height);
-        */
-
         graphics.drawRect(xPos, yPos, width, height);
       }
-
-        /*
-      console.log('orientation:', orientation);
-      console.log('position:', position);
-      console.log('this.extent', this.extent);
-      */
+      
+      if (orientation === '1d-vertical') {
+        let xPos = this.position[0] + position.left;
+        let yPos = this.position[1] + position.top + 
+          this._yScale(this.options.extent[0][0]);
+        let height = this._yScale(this.options.extent[0][1]) -
+          yPos + position.top + this.position[1];
+        let width = position.width;
+        
+        this._xScale(this.options.extent[0][1]) - 
+          xPos + position.left + this.position[0];
+        
+        graphics.drawRect(xPos, yPos, width, height);
+      }
     }
   }
 
