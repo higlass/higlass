@@ -3057,7 +3057,7 @@ class HiGlassComponent extends React.Component {
     }
 
     if (
-      !(+start1Abs >= 0 && +end1Abs >= 0)
+      isNaN(start1Abs) || isNaN(end1Abs)
     ) {
       const coords = [start1Abs, end1Abs].join(', ');
       console.warn([

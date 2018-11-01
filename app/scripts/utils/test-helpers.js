@@ -195,3 +195,10 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
 
   return [div, hgc];
 };
+
+export const removeHGComponent = (div) => {
+  // console.log('removing', div);
+
+  ReactDOM.unmountComponentAtNode(div);
+  document.body.removeChild(div);
+}

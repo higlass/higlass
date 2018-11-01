@@ -12,6 +12,7 @@ import { expect } from 'chai';
 import {
   waitForTransitionsFinished,
   waitForTilesLoaded,
+  removeHGComponent,
 } from '../app/scripts/utils';
 
 import {
@@ -45,7 +46,7 @@ describe('Simple HiGlassComponent', () => {
       // console.log('viewHeaders:', component.viewHeaders);
       expect(Object.keys(component.viewHeaders).length).to.be.above(0);
 
-      document.body.removeChild(div);
+      removeHGComponent(div);
     });
 
     it('zooms to negative domain', (done) => {
@@ -57,8 +58,7 @@ describe('Simple HiGlassComponent', () => {
 
       waitForTransitionsFinished(api.getComponent(), () => {
         expect(api.getComponent().yScales.a.domain()[0]).to.be.below(0);
-        document.body.removeChild(div);
-
+        removeHGComponent(div);
         done();
       });
     });
@@ -84,7 +84,7 @@ describe('Simple HiGlassComponent', () => {
           // trackObj.getVisibleRectangleData(24,8,11,11);
 
           // console.log('visi', trackObj.visibleAndFetchedTiles());
-          document.body.removeChild(div);
+          removeHGComponent(div);
           done();
         });
       });
@@ -100,7 +100,7 @@ describe('Simple HiGlassComponent', () => {
         -23.274695776773807, -23.27906532393644))
         .to.throw('Invalid viewUid. Current present uuids: a');
 
-      document.body.removeChild(div);
+      removeHGComponent(div);
     });
 
     it('creates a non editable component', () => {
@@ -111,7 +111,7 @@ describe('Simple HiGlassComponent', () => {
 
       // console.log('viewHeaders:', component.viewHeaders);
       expect(Object.keys(component.viewHeaders).length).to.eql(0);
-      document.body.removeChild(div);
+      removeHGComponent(div);
     });
 
     it('retrieves a track', () => {
@@ -126,7 +126,31 @@ describe('Simple HiGlassComponent', () => {
 
       // console.log('viewHeaders:', component.viewHeaders);
       // expect(Object.keys(component.viewHeaders).length).to.eql(0);
-      document.body.removeChild(div);
+      removeHGComponent(div);
+    });
+
+    it('zooms to a negative location', (done) => {
+      const [div, api] = createElementAndAPI(simpleCenterViewConfig,
+        { editable: false, bounded: true });
+
+      // const component = api.getComponent();
+      const viewconf = api.getViewConfig();
+
+      // console.log('viewconf.initialXDomain', api.getComponent().xScales.a.domain());
+      api.zoomTo('a', -10000000, 10000000);
+
+      waitForTransitionsFinished(api.getComponent(), () => {
+        waitForTilesLoaded(api.getComponent() , () => {
+          // console.log('viewconf.initialXDomain', api.getViewConfig());
+
+          removeHGComponent(div);
+          done();
+        })
+      });
+
+      // console.log('viewHeaders:', component.viewHeaders);
+      // expect(Object.keys(component.viewHeaders).length).to.eql(0);
+
     });
     
     // it('creates a new component with different options and checks'

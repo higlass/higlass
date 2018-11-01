@@ -12,6 +12,7 @@ import { expect } from 'chai';
 import {
   waitForTransitionsFinished,
   waitForTilesLoaded,
+  removeHGComponent,
 } from '../app/scripts/utils';
 
 import {
@@ -56,6 +57,7 @@ describe('Simple HiGlassComponent', () => {
       // console.log('viewHeaders:', component.viewHeaders);
       // expect(Object.keys(component.viewHeaders).length).to.be.above(0);
 
+      removeHGComponent(div);
       //document.body.removeChild(div);
     });
     
