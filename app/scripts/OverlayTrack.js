@@ -29,11 +29,17 @@ export class OverlayTrack extends PixiTrack {
       let orientation = oAndP.orientation;
       let position = oAndP.position;
       
+      let mask = new PIXI.Graphics();
+      mask.beginFill();
+      // TODO: What am I missing that would provide the 10 and 45?
+      mask.drawRect(position.left + 10, position.top + 45, position.width, position.height);
+      mask.endFill();
+      
       let width, height;
       let xPos = this.position[0] + position.left;
       let yPos = this.position[1] + position.top;
-      let extent0 = this.options.extent[0][0]
-      let extent1 = this.options.extent[0][1]
+      let extent0 = this.options.extent[0][0];
+      let extent1 = this.options.extent[0][1];
       
       if (['1d-horizontal', '2d'].includes(orientation)) {
          xPos += this._xScale(extent0);
@@ -49,7 +55,7 @@ export class OverlayTrack extends PixiTrack {
          height = position.height;
       }
 
-      graphics.drawRect(xPos, yPos, width, height);
+      graphics.drawRect(xPos, yPos, width, height).mask = mask;
     }
   }
 
