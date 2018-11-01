@@ -3141,6 +3141,8 @@ describe('Simple HiGlassComponent', () => {
         hgc.unmount();
         hgc.detach();
       }
+
+      done();
     });
   });
   
