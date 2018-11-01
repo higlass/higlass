@@ -1,7 +1,7 @@
-var webpackConfig = require('./webpack.config.js');
-require('babel-polyfill');
+const webpackConfig = require('./webpack.config.js');
+require('babel-polyfill');  // eslint-disable-line import/no-extraneous-dependencies
 
-module.exports = function(config) {
+module.exports = (config) => {
   config.set({
     basePath: '',
     frameworks: ['jasmine'],
