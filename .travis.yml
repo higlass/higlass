@@ -14,6 +14,10 @@ before_script:
     - npm install --quiet -g gulp
     - npm install
 script:
+    #  TODO: Extract this to standalone script with output folding.
+    - set -e
+    #  TODO: Eventually, lint everything.
+    - ./node_modules/eslint/bin/eslint.js karma.conf.js
     - npm run compile
     - xvfb-maybe ./node_modules/karma/bin/karma start karma.conf.js --single-run
 before_deploy:
