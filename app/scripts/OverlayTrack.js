@@ -46,12 +46,23 @@ export class OverlayTrack extends PixiTrack {
           yPos + position.top + this.position[1];
         let width = position.width;
         
+        graphics.drawRect(xPos, yPos, width, height);
+      } else if (orientation === '2d'){
+        let xPos = this.position[0] + position.left + 
+          this._xScale(this.options.extent[0][0]);
+        let yPos = this.position[1] + position.top + 
+          this._yScale(this.options.extent[0][0]);
+        let height = this._yScale(this.options.extent[0][1]) -
+          yPos + position.top + this.position[1];
+        let width = this._xScale(this.options.extent[0][1]) - 
+          xPos + position.left + this.position[0];
+        
         this._xScale(this.options.extent[0][1]) - 
           xPos + position.left + this.position[0];
         
         graphics.drawRect(xPos, yPos, width, height);
       } else {
-        console.log('here!')
+        console.warn('Unrecognized orientation:', orientation);
       }
     }
   }
