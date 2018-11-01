@@ -28,25 +28,22 @@ export class OverlayTrack extends PixiTrack {
     for (let oAndP of this.options.orientationsAndPositions) {
       let orientation = oAndP.orientation;
       let position = oAndP.position;
-      let xPos, yPos, width, height;
+      
+      let width, height;
+      let xPos = this.position[0] + position.left;
+      let yPos = this.position[1] + position.top;
       
       if (['1d-horizontal', '2d'].includes(orientation)) {
-        xPos = this.position[0] + position.left + 
-          this._xScale(this.options.extent[0][0]);
-         width = this._xScale(this.options.extent[0][1]) - 
-          xPos + position.left + this.position[0];
-      } else {        
-         xPos = this.position[0] + position.left;
+         xPos += this._xScale(this.options.extent[0][0]);
+         width = this._xScale(this.options.extent[0][1]) - this._xScale(this.options.extent[0][0]);
+      } else {       
          width = position.width;
       }
       
       if (['1d-vertical', '2d'].includes(orientation)) {
-         yPos = this.position[1] + position.top + 
-          this._yScale(this.options.extent[0][0]);
-         height = this._yScale(this.options.extent[0][1]) -
-          yPos + position.top + this.position[1];
+         yPos += this._yScale(this.options.extent[0][0]);
+         height = this._yScale(this.options.extent[0][1]) - this._yScale(this.options.extent[0][0]);
       } else {
-         yPos = this.position[1] + position.top;
          height = position.height;
       }
 
