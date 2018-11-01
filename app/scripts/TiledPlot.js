@@ -979,18 +979,36 @@ class TiledPlot extends React.Component {
               }
               const orientation =  TRACKS_INFO_BY_TYPE[includedTrack.type].orientation;
 
-              const positionedTrack = positionedTracks.filter(
+              
+              const combinedTracks = positionedTracks.filter(
+                track => track.track.type === 'combined');
+              const flattenedTracks = [];
+              for (let track of combinedTracks) {
+                for (let content of track.track.contents) {
+                  flattenedTracks.push({
+                    track: { uid: content.uid },
+                    left: track.left,
+                    top: track.top,
+                    width: track.width,
+                    height: track.height
+                  })
+                }
+              }
+              const matchingPositionedTracks = flattenedTracks.concat(positionedTracks).filter(
                 track => track.track.uid == trackUuid);
 
-              if (!positionedTrack.length)
-                // couldn't find a matching track, somebody must have included
-                // an invalid uuid
+              if (!matchingPositionedTracks.length) {
+                console.warn(`Cound not find positionedTrack with uid "${trackUuid}"`);
                 return null;
+              }
+              // Multiple matches are fine: They can come from combined tracks.
+              // If there are multiple matches, coordinates should be the same,
+              // and we'll take the first one, arbitrarily.
               const position = {
-                left: positionedTrack[0].left,
-                top: positionedTrack[0].top,
-                width: positionedTrack[0].width,
-                height: positionedTrack[0].height,
+                left: matchingPositionedTracks[0].left,
+                top: matchingPositionedTracks[0].top,
+                width: matchingPositionedTracks[0].width,
+                height: matchingPositionedTracks[0].height,
               };
 
               return {
@@ -1014,7 +1032,6 @@ class TiledPlot extends React.Component {
           track: overlayDef,
         };
       });
-
       return overlayDefs;
     }
 

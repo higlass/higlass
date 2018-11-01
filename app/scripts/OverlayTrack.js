@@ -25,9 +25,9 @@ export class OverlayTrack extends PixiTrack {
     graphics.clear();
     graphics.beginFill(fill, 0.3);
 
-    for (let i = 0; i < this.options.orientationsAndPositions.length; i++) {
-      let orientation = this.options.orientationsAndPositions[i].orientation;
-      let position = this.options.orientationsAndPositions[i].position;
+    for (let oAndP of this.options.orientationsAndPositions) {
+      let orientation = oAndP.orientation;
+      let position = oAndP.position;
 
       if (orientation === '1d-horizontal') {
         let xPos = this.position[0] + position.left + 
@@ -38,9 +38,7 @@ export class OverlayTrack extends PixiTrack {
           xPos + position.left + this.position[0];
 
         graphics.drawRect(xPos, yPos, width, height);
-      }
-      
-      if (orientation === '1d-vertical') {
+      } else if (orientation === '1d-vertical') {
         let xPos = this.position[0] + position.left;
         let yPos = this.position[1] + position.top + 
           this._yScale(this.options.extent[0][0]);
@@ -52,6 +50,8 @@ export class OverlayTrack extends PixiTrack {
           xPos + position.left + this.position[0];
         
         graphics.drawRect(xPos, yPos, width, height);
+      } else {
+        console.log('here!')
       }
     }
   }

@@ -60,6 +60,13 @@ const viewConfig = {
           'options': {
             'extent': [[2000000000, 3000000000]]
           }
+        },
+        {
+          uid: 'heatmap-overlay',
+          includes: ['heatmap'],
+          'options': {
+            'extent': [[1100000000, 1900000000], [1100000000, 1900000000]]
+          }
         }
       ],
       tracks: {
@@ -107,6 +114,7 @@ const viewConfig = {
                 server: 'http://higlass.io/api/v1',
                 tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
                 type: 'heatmap',
+                uid: 'heatmap',
                 name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb'
               },
               {
