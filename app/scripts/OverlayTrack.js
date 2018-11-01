@@ -28,42 +28,29 @@ export class OverlayTrack extends PixiTrack {
     for (let oAndP of this.options.orientationsAndPositions) {
       let orientation = oAndP.orientation;
       let position = oAndP.position;
-
-      if (orientation === '1d-horizontal') {
-        let xPos = this.position[0] + position.left + 
+      let xPos, yPos, width, height;
+      
+      if (['1d-horizontal', '2d'].includes(orientation)) {
+        xPos = this.position[0] + position.left + 
           this._xScale(this.options.extent[0][0]);
-        let yPos = this.position[1] + position.top;
-        let height = position.height;
-        let width = this._xScale(this.options.extent[0][1]) - 
+         width = this._xScale(this.options.extent[0][1]) - 
           xPos + position.left + this.position[0];
-
-        graphics.drawRect(xPos, yPos, width, height);
-      } else if (orientation === '1d-vertical') {
-        let xPos = this.position[0] + position.left;
-        let yPos = this.position[1] + position.top + 
-          this._yScale(this.options.extent[0][0]);
-        let height = this._yScale(this.options.extent[0][1]) -
-          yPos + position.top + this.position[1];
-        let width = position.width;
-        
-        graphics.drawRect(xPos, yPos, width, height);
-      } else if (orientation === '2d'){
-        let xPos = this.position[0] + position.left + 
-          this._xScale(this.options.extent[0][0]);
-        let yPos = this.position[1] + position.top + 
-          this._yScale(this.options.extent[0][0]);
-        let height = this._yScale(this.options.extent[0][1]) -
-          yPos + position.top + this.position[1];
-        let width = this._xScale(this.options.extent[0][1]) - 
-          xPos + position.left + this.position[0];
-        
-        this._xScale(this.options.extent[0][1]) - 
-          xPos + position.left + this.position[0];
-        
-        graphics.drawRect(xPos, yPos, width, height);
-      } else {
-        console.warn('Unrecognized orientation:', orientation);
+      } else {        
+         xPos = this.position[0] + position.left;
+         width = position.width;
       }
+      
+      if (['1d-vertical', '2d'].includes(orientation)) {
+         yPos = this.position[1] + position.top + 
+          this._yScale(this.options.extent[0][0]);
+         height = this._yScale(this.options.extent[0][1]) -
+          yPos + position.top + this.position[1];
+      } else {
+         yPos = this.position[1] + position.top;
+         height = position.height;
+      }
+
+      graphics.drawRect(xPos, yPos, width, height);
     }
   }
 
