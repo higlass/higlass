@@ -3061,9 +3061,9 @@ class HiGlassComponent extends React.Component {
     ) {
       const coords = [start1Abs, end1Abs].join(', ');
       console.warn([
-        `Invalid coordinates (${coords}). All coordinates need to be numbers`,
-        'and should represent absolute coordinates (not chromosome',
-        'coordinates).',
+        `Invalid coordinates (${coords}). All coordinates need to be numbers
+        and should represent absolute coordinates (not chromosome
+        coordinates).`,
       ].join(' '));
       return;
     }

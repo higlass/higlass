@@ -6,7 +6,7 @@ import {
 
 import Adapter from 'enzyme-adapter-react-16';
 
-// import { expect } from 'chai';
+import { expect } from 'chai';
 
 // Utils
 import {
@@ -49,9 +49,8 @@ describe('Simple HiGlassComponent', () => {
         bounded: true
       });
 
-      // const component = api.getComponent();
-
-      // expect(Object.keys(component.viewHeaders).length).to.be.above(0);
+      const component = api.getComponent();
+      expect(Object.keys(component.viewHeaders).length).to.be.above(0);
 
       removeHGComponent(div);
     });
