@@ -13,6 +13,7 @@ module.exports = function(config) {
       'node_modules/pixi.js/dist/pixi.js',
       'node_modules/react-bootstrap/dist/react-bootstrap.js',
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
+      'build/hglib.css',
       'test/**/*.+(js|jsx)',
       // 'test/OSMTests.js',
       // 'test/TiledPixiTrackTests.js',
@@ -23,7 +24,6 @@ module.exports = function(config) {
       // 'test/AddAndRemoveViewconfTests.js',
       // 'test/HiGlassComponentTest.js',
       // 'test/HiGlassComponentCreationTests.js',
-      'build/hglib.css',
     ],
 
     preprocessors: {

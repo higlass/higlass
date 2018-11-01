@@ -3133,4 +3133,15 @@ describe('Simple HiGlassComponent', () => {
     });
 
   });
+
+  
+  describe('Cleanup', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+    });
+  });
+  
 });
