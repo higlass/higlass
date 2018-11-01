@@ -49,10 +49,8 @@ describe('Simple HiGlassComponent', () => {
         hgc.instance(), "heatmap1"
       );
 
-      // console.log('trackObj', trackObject);
 
       const dataChangedCb = (data) => {
-        // console.log('data', data);
       };
 
       trackObject.on('dataChanged', dataChangedCb);
@@ -70,12 +68,9 @@ describe('Simple HiGlassComponent', () => {
           done();
         });
       });
-      // console.log('trackObject:', trackObject);
-      // done();
     });
 
     afterAll((done) => {
-      // document.body.removeChild(div);
       removeHGComponent(div);
 
       done();

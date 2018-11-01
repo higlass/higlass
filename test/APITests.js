@@ -43,7 +43,6 @@ describe('Simple HiGlassComponent', () => {
 
       const component = api.getComponent();
 
-      // console.log('viewHeaders:', component.viewHeaders);
       expect(Object.keys(component.viewHeaders).length).to.be.above(0);
 
       removeHGComponent(div);
@@ -71,19 +70,14 @@ describe('Simple HiGlassComponent', () => {
 
       waitForTransitionsFinished(api.getComponent(), () => {
         waitForTilesLoaded(api.getComponent(), () => {
-          // console.log(api.getComponent().yScales.a.domain());
 
           expect(api.getComponent().yScales.a.domain()[0]).to.be.above(2);
 
           const trackObj = api.getTrackObject('a', 'heatmap1');
-          // console.log('trackObj', trackObj);
-          // trackObj.getMouseOverHtml(50,50);
 
           const rd = trackObj.getVisibleRectangleData(285, 156, 11, 11);
           expect(rd.data.length).to.eql(1);
-          // trackObj.getVisibleRectangleData(24,8,11,11);
 
-          // console.log('visi', trackObj.visibleAndFetchedTiles());
           removeHGComponent(div);
           done();
         });
@@ -109,7 +103,6 @@ describe('Simple HiGlassComponent', () => {
 
       const component = api.getComponent();
 
-      // console.log('viewHeaders:', component.viewHeaders);
       expect(Object.keys(component.viewHeaders).length).to.eql(0);
       removeHGComponent(div);
     });
@@ -118,14 +111,11 @@ describe('Simple HiGlassComponent', () => {
       const [div, api] = createElementAndAPI(simpleCenterViewConfig,
         { editable: false });
 
-      // const component = api.getComponent();
       const viewconf = api.getViewConfig();
       const trackObj = api.getTrackObject(viewconf.views[0].tracks.center[0].uid);
 
       expect(trackObj).to.exist;
 
-      // console.log('viewHeaders:', component.viewHeaders);
-      // expect(Object.keys(component.viewHeaders).length).to.eql(0);
       removeHGComponent(div);
     });
 
@@ -133,23 +123,17 @@ describe('Simple HiGlassComponent', () => {
       const [div, api] = createElementAndAPI(simpleCenterViewConfig,
         { editable: false, bounded: true });
 
-      // const component = api.getComponent();
       const viewconf = api.getViewConfig();
 
-      // console.log('viewconf.initialXDomain', api.getComponent().xScales.a.domain());
       api.zoomTo('a', -10000000, 10000000);
 
       waitForTransitionsFinished(api.getComponent(), () => {
         waitForTilesLoaded(api.getComponent() , () => {
-          // console.log('viewconf.initialXDomain', api.getViewConfig());
 
           removeHGComponent(div);
           done();
         })
       });
-
-      // console.log('viewHeaders:', component.viewHeaders);
-      // expect(Object.keys(component.viewHeaders).length).to.eql(0);
 
     });
     
@@ -173,9 +157,6 @@ describe('Simple HiGlassComponent', () => {
 
     //   // check to make sure that the two components have different
     //   // auth headers
-
-    //   document.body.removeChild(div);
-    //   document.body.removeChild(div1);
     // });
   });
 });

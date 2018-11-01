@@ -6,12 +6,10 @@ import {
 
 import Adapter from 'enzyme-adapter-react-16';
 
-import { expect } from 'chai';
+// import { expect } from 'chai';
 
 // Utils
 import {
-  waitForTransitionsFinished,
-  waitForTilesLoaded,
   removeHGComponent,
 } from '../app/scripts/utils';
 
@@ -47,20 +45,17 @@ describe('Simple HiGlassComponent', () => {
       osmConf.views[0].initialYDomain = [-42.4, -42.3];
       osmConf.views[0].layout.w = 12;
 
-      // console.log('track:', track);
       const [div, api] = createElementAndAPI(osmConf, {
         bounded: true
       });
 
-      const component = api.getComponent();
+      // const component = api.getComponent();
 
-      // console.log('viewHeaders:', component.viewHeaders);
       // expect(Object.keys(component.viewHeaders).length).to.be.above(0);
 
       removeHGComponent(div);
-      //document.body.removeChild(div);
     });
-    
+
     // it('creates a new component with different options and checks'
     //   + 'whether the global options object of the first object has changed', () => {
     //   // create one div and set an auth header
@@ -82,8 +77,6 @@ describe('Simple HiGlassComponent', () => {
     //   // check to make sure that the two components have different
     //   // auth headers
 
-    //   document.body.removeChild(div);
-    //   document.body.removeChild(div1);
     // });
   });
 });
