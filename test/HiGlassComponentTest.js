@@ -3141,6 +3141,10 @@ describe('Simple HiGlassComponent', () => {
         hgc.unmount();
         hgc.detach();
       }
+      
+      if (div) {
+        global.document.body.removeChild(div);
+      }
 
       done();
     });
