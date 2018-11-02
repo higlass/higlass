@@ -62,15 +62,19 @@ const viewConfig = {
           },
           {
             name: 'GSE63525 GM12878 primary+replicate HiCCUPS looplist (1D)',
-            server: '//localhost:8001/api/v1',
-            tilesetUid: 'hiccups-loops-1d',
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'N3g_OsVITeulp6cUs2EaJA',
             uid: 'hiccups-loops-1d',
             type: 'bedlike',
             options: {
               labelPosition: 'hidden',
               showMousePosition: true,
               mousePositionColor: '#999999',
-              valueColumn: 4,
+              // This is a stupid example but it's the only file I found and the
+              // normal data column #4 is empty for this file. So for the sake
+              // of demonstrating the functionality it should be okay but
+              // normally one would use `valueColumn: 4`
+              valueColumn: 2,
               colorEncoding: true,
               colorRange: [
                 '#0b24fb', '#4ADFCF', '#FC005B', '#FDA428'
