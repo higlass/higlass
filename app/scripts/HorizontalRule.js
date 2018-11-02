@@ -31,6 +31,25 @@ export const HorizontalRuleMixin = Mixin((superclass) => class extends superclas
       pos += dashLength + dashGap;
     }
   }
+  
+  exportSVG() {
+    const output = document.createElement('g');
+    output.setAttribute('transform',
+      `translate(${this.position[0]},${this.position[1]})`);
+    
+    const verticalLine = document.createElement('line');
+    verticalLine.setAttribute('x1', 0);
+    verticalLine.setAttribute('y1', this._yScale(this.yPosition));
+    verticalLine.setAttribute('x2', this.dimensions[0])
+    verticalLine.setAttribute('y2', this._yScale(this.yPosition));
+    verticalLine.setAttribute('stroke', 'black');
+    verticalLine.setAttribute('stroke-width', '2');
+    verticalLine.setAttribute('stroke-dasharray', '5 3')
+    output.appendChild(verticalLine);
+    
+    return [output];
+  }
+
 
   isMouseOverHorizontalLine(mousePos) {
       if (Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) < this.MOUSEOVER_RADIUS) {
