@@ -16,7 +16,7 @@ module.exports = (config) => {
       'build/hglib.css',
       'test/**/*.+(js|jsx)',
       // 'test/PngExportTest.js',
-       // 'test/OSMTests.js',
+      // 'test/OSMTests.js',
       // 'test/TiledPixiTrackTests.js',
       // 'test/ViewManipulationTests.js',
       // 'test/ChromSizesTests.js',
