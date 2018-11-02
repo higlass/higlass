@@ -14,8 +14,7 @@ before_script:
     - npm install --quiet -g gulp
     - npm install
 script:
-    - npm run compile
-    - xvfb-maybe ./node_modules/karma/bin/karma start karma.conf.js --single-run
+    - ./test.sh
 before_deploy:
     - npm run compile
 deploy:
