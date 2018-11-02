@@ -11,6 +11,7 @@ import { expect } from 'chai';
 // Utils
 import {
   mountHGComponent,
+  removeHGComponent,
 } from '../app/scripts/utils';
 
 
@@ -32,7 +33,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     afterAll((done) => {
-      document.body.removeChild(div);
+      removeHGComponent(div);
 
       done();
     });

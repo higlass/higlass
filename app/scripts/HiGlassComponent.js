@@ -3057,13 +3057,13 @@ class HiGlassComponent extends React.Component {
     }
 
     if (
-      !(+start1Abs >= 0 && +end1Abs >= 0)
+      isNaN(start1Abs) || isNaN(end1Abs)
     ) {
       const coords = [start1Abs, end1Abs].join(', ');
       console.warn([
-        `Invalid coordinates (${coords}). All coordinates need to be numbers`,
-        'and should represent absolute coordinates (not chromosome',
-        'coordinates).',
+        `Invalid coordinates (${coords}). All coordinates need to be numbers
+        and should represent absolute coordinates (not chromosome
+        coordinates).`,
       ].join(' '));
       return;
     }

@@ -12,6 +12,11 @@ import {
   simpleCenterViewConfig,
 } from './view-configs';
 
+// Utils
+import {
+  removeHGComponent,
+} from '../app/scripts/utils';
+
 import {
   viewer
 } from '../app/scripts/hglib';
@@ -55,7 +60,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     afterAll((done) => {
-      document.body.removeChild(div);
+      removeHGComponent(div);
 
       done();
     });

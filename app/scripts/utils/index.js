@@ -72,5 +72,6 @@ export {
   waitForJsonComplete,
   waitForTilesLoaded,
   waitForTransitionsFinished,
-  mountHGComponent
+  mountHGComponent,
+  removeHGComponent,
 } from './test-helpers';
