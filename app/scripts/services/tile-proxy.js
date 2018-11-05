@@ -9,8 +9,6 @@ import {
   tileResponseToData,
 } from '../worker';
 
-const MAX_FETCH_TILES = 15;
-
 /*
 const str = document.currentScript.src
 const pathName = str.substring(0, str.lastIndexOf("/"));
@@ -59,6 +57,8 @@ import { trimTrailingSlash as tts } from '../utils';
 
 // Config
 import { TILE_FETCH_DEBOUNCE } from '../configs';
+
+const MAX_FETCH_TILES = 15;
 
 const sessionId = slugid.nice();
 export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports
@@ -121,9 +121,7 @@ export const setTileProxyAuthHeader = (newHeader) => {
   authHeader = newHeader;
 };
 
-export const getTileProxyAuthHeader = () => {
-  return authHeader;
-};
+export const getTileProxyAuthHeader = () => authHeader;
 
 export function fetchMultiRequestTiles(req) {
   const sessionId = req.sessionId;
@@ -159,7 +157,7 @@ export function fetchMultiRequestTiles(req) {
 
       const p = new Promise(((resolve, reject) => {
         pubSub.publish('requestSent', outUrl);
-        const params = {}
+        const params = {};
 
         params.outUrl = outUrl;
         params.server = server;
@@ -317,7 +315,7 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
  * @param {int} zoomLevel: The current zoomLevel
  * @param {Number} position: The position (in absolute coordinates) to caculate the tile and position in tile for
  */
-export const calculateTileAndPosInTile = function(tilesetInfo, maxDim, dataStartPos, zoomLevel, position) {
+export const calculateTileAndPosInTile = function (tilesetInfo, maxDim, dataStartPos, zoomLevel, position) {
   let tileWidth = null;
   const PIXELS_PER_TILE = tilesetInfo.bins_per_dimension || 256;
 
@@ -331,7 +329,7 @@ export const calculateTileAndPosInTile = function(tilesetInfo, maxDim, dataStart
   const posInTile = Math.floor(PIXELS_PER_TILE * (position - tilePos * tileWidth) / tileWidth);
 
   return [tilePos, posInTile];
-}
+};
 
 /**
  * Calculate the tiles that should be visible get a data domain
@@ -380,10 +378,10 @@ export const calculateTiles = (
 
 export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
   if (tilesetInfo.resolutions) {
-    const sortedResolutions = tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
+    const sortedResolutions = tilesetInfo.resolutions.map(x => +x).sort((a, b) => b - a);
     return sortedResolutions[zoomLevel] * binsPerTile;
   }
-  return tilesetInfo.max_width / (2 ** zoomLevel)
+  return tilesetInfo.max_width / (2 ** zoomLevel);
 };
 
 /**
@@ -410,7 +408,8 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
     Math.ceil(Math.min(
       maxX,
-      ((scale.domain()[1] - minX) - epsilon)) / tileWidth),
+      ((scale.domain()[1] - minX) - epsilon)
+    ) / tileWidth),
   );
 
   if (tileRange.length > MAX_TILES) {
@@ -432,25 +431,24 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
  * @param {func} errorCb: A callback that gets called when there is an error
  */
 export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
-  const url =
-    `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
-    pubSub.publish('requestSent', url);
-    json(url, (error, data) => {
-      pubSub.publish('requestReceived', url);
-      if (error) {
-        // console.log('error:', error);
-        // don't do anything
-        // no tileset info just means we can't do anything with this file...
-        if (errorCb) {
-          errorCb(`Error retrieving tilesetInfo from: ${server}`);
-        }  else {
-          console.warn("Error retrieving: ", url);
-        }
+  const url = `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
+  pubSub.publish('requestSent', url);
+  json(url, (error, data) => {
+    pubSub.publish('requestReceived', url);
+    if (error) {
+      // console.log('error:', error);
+      // don't do anything
+      // no tileset info just means we can't do anything with this file...
+      if (errorCb) {
+        errorCb(`Error retrieving tilesetInfo from: ${server}`);
       } else {
-        // console.log('got data', data);
-        doneCb(data);
+        console.warn('Error retrieving: ', url);
       }
-    });
+    } else {
+      // console.log('got data', data);
+      doneCb(data);
+    }
+  });
 };
 
 /**
