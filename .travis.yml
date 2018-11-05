@@ -34,7 +34,7 @@ deploy:
   - <<: *s3
     upload-dir: develop
     on:
-      branch: true
+      branch: develop
   - <<: *s3
     upload-dir: latest
     on:
