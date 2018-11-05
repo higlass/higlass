@@ -28,9 +28,13 @@ deploy:
     bucket: higlass-docs-demo
     local-dir: docs/_build/html
     acl: public_read
+    on:
+      all_branches: true
   # We could deploy for master, develop, and then a catch-all like this.
   # on:
-  #   branch: mccalluc/simplify-docs-deploy
+  #   branch: master
+  # ... or ...
+  #   branch: develop
   
     # - provider: npm
     #   skip_cleanup: true
