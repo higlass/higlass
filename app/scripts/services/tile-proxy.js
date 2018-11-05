@@ -2,6 +2,7 @@ import { range } from 'd3-array';
 import slugid from 'slugid';
 
 import {
+  workerFetchTiles, // eslint-disable-line import/named
   workerGetTiles,
   workerSetPix,
 } from '../worker';
@@ -310,12 +311,15 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
  * the given element.
  *
  * @param {object} tilesetInfo: The information about this tileset
- * @param {Number} maxDim: The maximum width of the dataset (only used for tilesets without resolutions)
+ * @param {Number} maxDim: The maximum width of the dataset (only used for
+ *        tilesets without resolutions)
  * @param {Number} dataStartPos: The position where the data begins
  * @param {int} zoomLevel: The current zoomLevel
- * @param {Number} position: The position (in absolute coordinates) to caculate the tile and position in tile for
+ * @param {Number} position: The position (in absolute coordinates) to caculate
+ *                 the tile and position in tile for
  */
-export const calculateTileAndPosInTile = function (tilesetInfo, maxDim, dataStartPos, zoomLevel, position) {
+export const calculateTileAndPosInTile = function (tilesetInfo, maxDim,
+  dataStartPos, zoomLevel, position) {
   let tileWidth = null;
   const PIXELS_PER_TILE = tilesetInfo.bins_per_dimension || 256;
 
