@@ -1,23 +1,22 @@
 language: node_js
 node_js:
 - '6'
-# addons:
-#   apt:
-#     packages:
-#       - xvfb
-# install:
-#     - npm install -g xvfb-maybe
-# before_script:
-#     - export CHROME_BIN=chromium-browser
-#     - export DISPLAY=:99.0
-#     - sh -e /etc/init.d/xvfb start
-#     - npm install --quiet -g gulp
-#     - npm install
+addons:
+  apt:
+    packages:
+      - xvfb
+install:
+    - npm install -g xvfb-maybe
+before_script:
+    - export CHROME_BIN=chromium-browser
+    - export DISPLAY=:99.0
+    - sh -e /etc/init.d/xvfb start
+    - npm install --quiet -g gulp
+    - npm install
 script:
-    - echo 'Skip tests while developing docs'
-    #- ./test.sh
+    - ./test.sh
 before_deploy:
-    #- npm run compile
+    - npm run compile
     - pip install --user -r docs/requirements.txt
     - pushd docs; ./build.sh; popd
 deploy:
