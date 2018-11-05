@@ -21,7 +21,8 @@ before_deploy:
     - pip install --user -r docs/requirements.txt
     - pushd docs; ./build.sh; popd
 deploy:
-  - provider: s3
+  - &s3
+    provider: s3
     access_key_id: AKIAJEBDS3PGJWAMFIYA
     secret_access_key:
       secure: Q/Av1blshd00BsEWFOq9Ey0iGTxyBLabHxEVdTUn6acXYYFp4HVZBG0SiWcK7oAnR4178Dv5CGa/fxByds1mefU/MJfxEnNOOP/rALhsvZ9hpqSqXJQSbAlHtcbKlAbtNUPTHyIoiggdrt+FZmzgdq4TcHINDGLSKjgveZl14tQ7iUjp21RD58aAVTnzHsXGYWdY2hwE5VtZ5k5QDMZMprWmir/hNFs1QiiXO+hBAlZ2vfmH33BROMaQncUCXWW6f5i5zHfT5wTXU/RS8+LuQl/uYFlc4C4sBLA+nxQ8nmUBlShxgMNaQ/m0N4hZEOqAwc75FNTC/EiYMr6tXwF+C5gw5y8ZwAjQJI7KKFPWMwrJo4KRY8xnxStd39C6gj7r3Wwo/ZxZjmUAGUn74naVdtxNDFlzID8LkqmsEk128fWtjAVpEG2AdQXvv6oRDJbsreCESFKz+KCDPrjyS07A5gCp/REojP4X3QME55tn5k9IwnmsKujWKw5EGsWv4x5NiIqR4x+tR8uuaXhNZsgPkbGA3KF3Cr/oB8ROjugpYRLoHhKu/q1SQi8GWS/k++CONB8ZICxnq4OPVMGCuWj4QEZfU6S+qkuVejcFbkTzxfZ7/t4uG4Q88jwirgVpcIn3AEaeA1nm157TNs2UL4tejVdr2eKaIHIf7UiZs3w9h3A=
@@ -29,12 +30,15 @@ deploy:
     local-dir: docs/_build/html
     acl: public_read
     on:
+      branch: master
+  - <<: *s3
+    upload-dir: develop
+    on:
+      branch: true
+  - <<: *s3
+    upload-dir: latest
+    on:
       all_branches: true
-  # We could deploy for master, develop, and then a catch-all like this.
-  # on:
-  #   branch: master
-  # ... or ...
-  #   branch: develop
   
     # - provider: npm
     #   skip_cleanup: true
