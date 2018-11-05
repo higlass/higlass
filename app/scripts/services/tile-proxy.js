@@ -1,12 +1,9 @@
-import { scaleLog, scaleLinear } from 'd3-scale';
 import { range } from 'd3-array';
 import slugid from 'slugid';
 
 import {
   workerGetTiles,
-  workerFetchTiles,
   workerSetPix,
-  tileResponseToData,
 } from '../worker';
 
 /*
