@@ -6,7 +6,7 @@ const cache = {};
 const getFromCache = (url, fallback) => (cache[url] ? Promise.resolve(cache[url]) : fallback(url));
 
 const parseChromInfo = (text) => {
-  if (text.length == 0) return null;
+  if (text.length === 0) return null;
 
   const tsv = tsvParseRows(text);
   return parseChromsizesRows(tsv);
