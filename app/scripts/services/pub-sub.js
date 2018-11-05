@@ -37,8 +37,7 @@ const unsubscribe = (stack = STACK) => (event, callback) => {
   if (!stack[event]) return;
 
   if (typeof event === 'object') {
-    event = event.event; // eslint-disable-line no-param-reassign
-    callback = event.callback; // eslint-disable-line no-param-reassign
+    ({ event, callback } = event); // eslint-disable-line no-param-reassign
   }
 
   const id = stack[event].indexOf(callback);
