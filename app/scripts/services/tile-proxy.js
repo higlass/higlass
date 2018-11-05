@@ -37,7 +37,8 @@ setPixPool.run(function(params, done) {
 const fetchTilesPool = new Pool(10);
 fetchTilesPool.run(function(params, done) {
   try {
-    worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds, params.authHeader, done);
+    worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds,
+    params.authHeader, done);
     // done.transfer({
     // pixData: pixData
     // }, [pixData.buffer]);
@@ -59,7 +60,7 @@ const MAX_FETCH_TILES = 15;
 
 const sessionId = slugid.nice();
 export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports
-export let authHeader = null;
+export let authHeader = null; // eslint-disable-line import/no-mutable-exports
 
 const debounce = (func, wait) => {
   let timeout;
@@ -121,8 +122,7 @@ export const setTileProxyAuthHeader = (newHeader) => {
 export const getTileProxyAuthHeader = () => authHeader;
 
 export function fetchMultiRequestTiles(req) {
-  const sessionId = req.sessionId;
-  const requests = req.requests;
+  const requests = req.requests; // eslint-disable-line prefer-destructuring
   const fetchPromises = [];
 
   const requestsByServer = {};
@@ -152,6 +152,8 @@ export function fetchMultiRequestTiles(req) {
       const renderParams = theseTileIds.map(x => `d=${x}`).join('&');
       const outUrl = `${server}/tiles/?${renderParams}&s=${sessionId}`;
 
+      /* eslint-disable no-loop-func */
+      /* eslint-disable no-unused-vars */
       const p = new Promise(((resolve, reject) => {
         pubSub.publish('requestSent', outUrl);
         const params = {};
@@ -161,7 +163,8 @@ export function fetchMultiRequestTiles(req) {
         params.theseTileIds = theseTileIds;
         params.authHeader = authHeader;
 
-        workerGetTiles(params.outUrl, params.server, params.theseTileIds, params.authHeader, resolve);
+        workerGetTiles(params.outUrl, params.server, params.theseTileIds,
+          params.authHeader, resolve);
 
         /*
         fetchTilesPool.send(params)
