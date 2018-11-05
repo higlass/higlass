@@ -18,8 +18,8 @@ script:
     #- ./test.sh
 before_deploy:
     #- npm run compile
-    - pip install -r docs/requirements.txt
-    - pushd docs && ./build.sh
+    - pip install --user -r docs/requirements.txt
+    - pushd docs; ./build.sh; popd
 deploy:
   - provider: s3
     access_key_id: AKIAJEBDS3PGJWAMFIYA
