@@ -62,7 +62,9 @@ const publish = (stack = STACK) => (event, news) => {
 
   stack[event].forEach((listener, i) => {
     listener(news);
-    if (!(stack.__times[event][i] -= 1)) unsubscriber(event, listener);
+    if (!(stack.__times[event][i] -= 1)) { // eslint-disable-line no-cond-assign
+      unsubscriber(event, listener);
+    }
   });
 };
 
