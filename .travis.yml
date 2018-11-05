@@ -18,7 +18,7 @@ script:
 before_deploy:
     - npm run compile
     - pip install --user -r docs/requirements.txt
-    - pushd docs; mkdir -p _build/html; ./build.sh; popd
+    - pushd docs; ./build.sh; popd
 deploy:
   - &s3
     provider: s3
