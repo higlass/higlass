@@ -33,7 +33,8 @@ module.exports = (config) => {
       'test/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
     },
 
-    webpack: webpackConfig,
+    // webpackConfig(env, argv)
+    webpack: webpackConfig({}, {}),
 
     webpackServer: {
       noInfo: true, // please don't spam the console when running in karma!
