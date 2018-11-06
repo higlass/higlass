@@ -15,8 +15,6 @@ before_script:
     - npm install
 script:
     - ./test.sh
-before_deploy:
-    - npm run compile
 deploy:
     - provider: npm
       skip_cleanup: true
