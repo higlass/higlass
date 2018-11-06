@@ -498,8 +498,15 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.pColorbarArea.visible = true;
 
     if (!this.valueScale) { return; }
-    if (Number.isNaN(this.valueScale.domain()[0])
-      || Number.isNaN(this.valueScale.domain()[1])) { return; }
+    // TODO:
+    // Behavior of prefered alternative is significantly different;
+    // Not sure which we really want.
+    // isNaN(undefined) === true
+    // Number.isNaN(undefined) === false
+    if (isNaN(this.valueScale.domain()[0])  // eslint-disable-line no-restricted-globals
+      || isNaN(this.valueScale.domain()[1])) { // eslint-disable-line no-restricted-globals
+      return;
+    }
 
 
     const colorbarAreaHeight = Math.min(
