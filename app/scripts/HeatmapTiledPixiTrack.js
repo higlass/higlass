@@ -727,11 +727,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       `translate(${this.pColorbarArea.x}, ${this.pColorbarArea.y})`,
     );
 
-    gColorbarArea.setAttribute(
-      'transform',
-      `translate(${this.pColorbarArea.x}, ${this.pColorbarArea.y})`,
-    );
-
     const rectColorbarArea = document.createElement('rect');
     gColorbarArea.appendChild(rectColorbarArea);
 
