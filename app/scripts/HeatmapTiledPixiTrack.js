@@ -755,7 +755,19 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       .range([0, this.colorbarHeight]);
     const colorHeight = (this.colorbarHeight) / 256.0;
 
-    for (let i = 0; i < 256; i++) {
+    // Does this work????
+    const axisValueScale = this.valueScale.copy();
+
+    for (let i = 0; i < 256; i++) { // compare with canvas: "i < this.colorBarHeight"
+      if (!(i % 16)) {
+        console.log('>>>', i, posScale(i), axisValueScale.invert(i), this.limitedValueScale(axisValueScale.invert(i)));
+      }
+      
+      // console.log('>>>', posScale(i), axisValueScale.invert(i), this.limitedValueScale(axisValueScale.invert(i)));
+      // 0-180 1.29-0.00003 0-360
+      // middle third:
+      // "     "            -200-932
+    
       const rectColor = document.createElement('rect');
       gColorbar.appendChild(rectColor);
 
@@ -764,8 +776,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       rectColor.setAttribute('width', COLORBAR_WIDTH);
       rectColor.setAttribute('height', colorHeight);
       rectColor.setAttribute('class', 'color-rect');
-
-      rectColor.setAttribute('style', `fill: rgb(${this.colorScale[i][0]}, ${this.colorScale[i][1]}, ${this.colorScale[i][2]})`);
+      
+      const limitedIndex = Math.min(this.colorScale.length - 1, Math.max(0, Math.floor(this.limitedValueScale(axisValueScale.invert(i)))));
+      const color = this.colorScale[limitedIndex];
+      rectColor.setAttribute('style', `fill: rgb(${color[0]}, ${color[1]}, ${color[2]})`);
     }
 
     const gAxisHolder = document.createElement('g');
@@ -774,7 +788,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       `translate(${this.axis.pAxis.position.x},${this.axis.pAxis.position.y})`);
 
     let gAxis = null;
-    const axisValueScale = this.valueScale.copy().range([this.colorbarHeight, 0]);
 
     if (
       this.options.colorbarPosition === 'topLeft'
