@@ -844,12 +844,12 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     zoomLevel = this.tilesetInfo.max_zoom
       ? Math.min(this.tilesetInfo.max_zoom, zoomLevel) : zoomLevel;
 
-    const tileWidth = tileProxy.calculateTileWidth(
+    const calculatedWidth = tileProxy.calculateTileWidth(
       this.tilesetInfo, zoomLevel, this.binsPerTile()
     );
 
     // BP resolution of a tile's bin (i.e., numbe of base pairs per bin / pixel)
-    const tileRes = tileWidth / this.binsPerTile();
+    const tileRes = calculatedWidth / this.binsPerTile();
     // console.log('tileWidth:', tileWidth);
 
     // the data domain of the currently visible region
@@ -875,7 +875,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
       // get the tile's position and width (in data coordinates)
       // if it's mirrored then we have to switch the position indeces
-      const { tileX, tileY, tileWidth, tileHeight } = this.getTilePosAndDimensions(
+      const {
+        tileX, tileY, tileWidth, tileHeight
+      } = this.getTilePosAndDimensions(
         tile.tileData.zoomLevel, tilePos, this.binsPerTile()
       );
 
