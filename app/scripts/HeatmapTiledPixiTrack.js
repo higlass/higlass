@@ -498,8 +498,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.pColorbarArea.visible = true;
 
     if (!this.valueScale) { return; }
-    if (isNaN(this.valueScale.domain()[0])
-      || isNaN(this.valueScale.domain()[1])) { return; }
+    if (Number.isNaN(this.valueScale.domain()[0])
+      || Number.isNaN(this.valueScale.domain()[1])) { return; }
 
 
     const colorbarAreaHeight = Math.min(
@@ -623,8 +623,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     if (!this.options) {
       this.options = { scaleStartPercent: 0, scaleEndPercent: 1 };
-    }
-    else {
+    } else {
       if (!this.options.scaleStartPercent) { this.options.scaleStartPercent = 0; }
       if (!this.options.scaleEndPercent) { this.options.scaleEndPercent = 1; }
     }
