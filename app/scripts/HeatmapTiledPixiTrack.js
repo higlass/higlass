@@ -750,12 +750,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     rectColorbarArea.setAttribute('height', colorbarAreaHeight);
     rectColorbarArea.setAttribute('style', 'fill: white; stroke-width: 0; opacity: 0.7');
 
+    const barsToDraw = 256;
     const posScale = scaleLinear()
-      .domain([0, 255])
+      .domain([0, barsToDraw - 1])
       .range([0, this.colorbarHeight]);
-    const colorHeight = (this.colorbarHeight) / 256.0;
+    const colorHeight = (this.colorbarHeight) / barsToDraw;
 
-    for (let i = 0; i < 256; i++) {
+    for (let i = 0; i < barsToDraw; i++) {
       const rectColor = document.createElement('rect');
       gColorbar.appendChild(rectColor);
 
