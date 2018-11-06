@@ -6,6 +6,9 @@
   "main": "dist/hglib.js",
   "unpkg": "dist/hglib.min.js",
   "jsdelivr": "dist/hglib.min.js",
+  "files": [
+    "dist/"
+  ],
   "keywords": [
     "hi-c",
     "genomics",
