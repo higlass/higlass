@@ -330,7 +330,7 @@ export const calculateTileAndPosInTile = function (tilesetInfo, maxDim,
   }
 
   const tilePos = Math.floor((position - dataStartPos) / tileWidth);
-  const posInTile = Math.floor(PIXELS_PER_TILE * (position - tilePos * tileWidth) / tileWidth);
+  const posInTile = Math.floor(PIXELS_PER_TILE * (position - (tilePos * tileWidth)) / tileWidth);
 
   return [tilePos, posInTile];
 };
@@ -368,7 +368,8 @@ export const calculateTiles = (
 
   /*
   console.log('minX:', minX, 'zoomLevel:', zoomLevel);
-  console.log('domain:', scale.domain(), scale.domain()[0] - minX, ((scale.domain()[0] - minX) / tileWidth))
+  console.log('domain:', scale.domain(), scale.domain()[0] - minX,
+  ((scale.domain()[0] - minX) / tileWidth))
   */
 
   return range(
@@ -405,7 +406,7 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
   // console.log('PIXELS_PER_TILE:', PIXELS_PER_TILE);
 
   if (!maxX) {
-    maxX = Number.MAX_VALUE;
+    maxX = Number.MAX_VALUE; // eslint-disable-line no-param-reassign
   }
 
   let tileRange = range(
