@@ -318,8 +318,8 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
  * @param {Number} position: The position (in absolute coordinates) to caculate
  *                 the tile and position in tile for
  */
-export const calculateTileAndPosInTile = function (tilesetInfo, maxDim,
-  dataStartPos, zoomLevel, position) {
+export function calculateTileAndPosInTile(tilesetInfo, maxDim, dataStartPos,
+  zoomLevel, position) {
   let tileWidth = null;
   const PIXELS_PER_TILE = tilesetInfo.bins_per_dimension || 256;
 
@@ -333,7 +333,7 @@ export const calculateTileAndPosInTile = function (tilesetInfo, maxDim,
   const posInTile = Math.floor(PIXELS_PER_TILE * (position - (tilePos * tileWidth)) / tileWidth);
 
   return [tilePos, posInTile];
-};
+}
 
 /**
  * Calculate the tiles that should be visible get a data domain
@@ -438,7 +438,8 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
 export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
   const url = `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
   pubSub.publish('requestSent', url);
-  json(url, (error, data) => {
+  // TODO: Is this used?
+  json(url, (error, data) => { // eslint-disable-line
     pubSub.publish('requestReceived', url);
     if (error) {
       // console.log('error:', error);
