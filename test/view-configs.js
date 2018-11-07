@@ -1,4 +1,177 @@
-export const geneAnnotationsOnly = 
+export const osmConf =
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1"
+  ],
+  "exportViewUrl": "/api/v1/viewconfs",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        936467263.9009547,
+        937119339.4135379
+      ],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "visible": false
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [{
+          "type": "top-axis",
+        }],
+        "left": [{
+          "type": "left-axis",
+        }
+        ],
+        "center": [
+          {
+            "type": "osm-tiles",
+            "options": {
+              "maxPos": 3096000000,
+              "minPos": 0,
+              "maxZoom": 19,
+              "labelPosition": "hidden"
+            },
+            "position": "center",
+            "uid": "M6CV28O9Tq2H7U2w1yvorw",
+            "name": "OSM Tiles",
+            "width": 1677,
+            "height": 932
+          }
+        ],
+        "right": [],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 6,
+        "h": 25,
+        "x": 0,
+        "y": 0,
+        "i": "Hg2oHLKOSlmros3FKxWDRg",
+        "moved": false,
+        "static": false
+      },
+      "initialYDomain": [
+        1144694580.1977904,
+        1146047244.4996018
+      ],
+      "genomePositionSearchBoxVisible": true
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}
+
+export const geneAnnotationsOnly1 = 
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1"
+  ],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        2506844966.0043917,
+        2509052369.327333
+      ],
+      "initialYDomain": [
+        2507686542.0666137,
+        2510171986.3338466
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": false,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "name": "Gene Annotations (hg19)",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "genes1",
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelPosition": "outerTop",
+              "name": "Gene Annotations (hg19)",
+              "labelColor": "black",
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "fontSize": 11,
+              "geneAnnotationHeight": 10,
+              "geneLabelPosition": "outside",
+              "geneStrandSpacing": 4
+            },
+            "width": 913,
+            "height": 60,
+            "position": "top",
+            "header": ""
+          }
+        ],
+        "left": [],
+        "center": [],
+        "right": [],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      },
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "visible": true,
+        "chromInfoId": "hg19",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+};
+
+export const geneAnnotationsOnly =
 {
   "editable": true,
   "zoomFixed": false,
@@ -988,6 +1161,8 @@ export const simpleCenterViewConfig =
 {
   "editable": true,
   "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1"],
   "views": [
     {
       "uid": "a",

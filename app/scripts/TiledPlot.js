@@ -257,7 +257,7 @@ class TiledPlot extends React.Component {
     }
   }
 
-    /*
+  /*
   getDefaultChromSizes() {
     try {
       const centralHeatmap = this.findCentralHeatmapTrack(
@@ -278,7 +278,7 @@ class TiledPlot extends React.Component {
       e.clientX, e.clientY,
       bBox.left, bBox.left + bBox.width,
       bBox.top, bBox.top + bBox.height,
-    )
+    );
 
     if (!isClickWithin) return;
 
@@ -356,7 +356,7 @@ class TiledPlot extends React.Component {
     const track = getTrackByUid(this.props.tracks, trackUid);
 
     if (!track) {
-      console.warn("Strange, track not found:", trackUid);
+      console.warn('Strange, track not found:', trackUid);
       return;
     }
 
@@ -372,7 +372,7 @@ class TiledPlot extends React.Component {
     track.header = tilesetInfo.header;
     track.binsPerDimension = tilesetInfo.bins_per_dimension;
     if (tilesetInfo.resolutions) {
-      track.maxZoom = tilesetInfo.resolutions.length-1;
+      track.maxZoom = tilesetInfo.resolutions.length - 1;
       track.resolutions = tilesetInfo.resolutions;
     } else {
       track.maxZoom = tilesetInfo.max_zoom;
@@ -467,12 +467,12 @@ class TiledPlot extends React.Component {
       addDivisorDialog: null,
     });
 
-    const numerator = series.data ?
-      {
+    const numerator = series.data
+      ? {
         server: series.data.server,
         tilesetUid: series.data.tilesetUid
-      } :
-      {
+      }
+      : {
         server: series.server,
         tilesetUid: series.tilesetUid
       };
@@ -480,7 +480,7 @@ class TiledPlot extends React.Component {
     const denominator = {
       server: newTrack[0].server,
       tilesetUid: newTrack[0].uuid
-    }
+    };
 
     this.handleChangeTrackData(series.uid,
       {
@@ -503,21 +503,22 @@ class TiledPlot extends React.Component {
 
     const datatype = TRACKS_INFO_BY_TYPE[series.type].datatype[0];
 
-    const atm =
-        (<AddTrackModal
-          host={this.state.addTrackHost}
-          onCancel={()=>{
-            this.setState({
-              addDivisorDialog: null,
-              });
-          }}
-          onTracksChosen={ (newTrack) => this.handleDivisorChosen(series, newTrack) }
-          datatype={datatype}
-          ref={(c) => { this.addTrackModal = c; }}
-          show={this.state.addDivisorDialog != null}
-          trackSourceServers={this.props.trackSourceServers}
-          hidePlotTypeChooser={true}
-        />);
+    const atm = (
+      <AddTrackModal
+        ref={(c) => { this.addTrackModal = c; }}
+        datatype={datatype}
+        hidePlotTypeChooser={true}
+        host={this.state.addTrackHost}
+        onCancel={() => {
+          this.setState({
+            addDivisorDialog: null,
+          });
+        }}
+        onTracksChosen={newTrack => this.handleDivisorChosen(series, newTrack)}
+        show={this.state.addDivisorDialog != null}
+        trackSourceServers={this.props.trackSourceServers}
+      />
+    );
 
     return atm;
   }
@@ -563,12 +564,12 @@ class TiledPlot extends React.Component {
   }
 
   handleResizeTrack(uid, width, height) {
-    const tracks = this.state.tracks;
+    const { tracks } = this.state;
 
     for (const trackType in tracks) {
       const theseTracks = tracks[trackType];
 
-      const filteredTracks = theseTracks.filter(d => d.uid == uid);
+      const filteredTracks = theseTracks.filter(d => d.uid === uid);
 
       if (filteredTracks.length > 0) {
         filteredTracks[0].width = width;
@@ -591,6 +592,7 @@ class TiledPlot extends React.Component {
       contextMenuCustomItems: null,
     });
   }
+
   handleLockValueScale(uid) {
     this.closeMenus();
 
@@ -740,9 +742,15 @@ class TiledPlot extends React.Component {
     });
   }
 
+  createOverlays(overlays) {
+    for (const trackType in overlays) {
+      for (let i = 0; i < tracks[trackType].length; i++) { tracksAndLocations.push({ track: tracks[trackType][i], location: trackType }); }
+    }
+  }
+
   createTracksAndLocations() {
     const tracksAndLocations = [];
-    const tracks = this.state.tracks;
+    const { tracks } = this.state;
 
     TRACK_LOCATIONS.forEach((location) => {
       if (tracks[location]) {
@@ -770,7 +778,7 @@ class TiledPlot extends React.Component {
     let left = this.props.horizontalMargin;
     let right = this.props.horizontalMargin;
     let width = this.centerWidth;
-    let height = track.height;
+    let { height } = track;
     let offsetX = 0;
     let offsetY = 0;
 
@@ -804,7 +812,7 @@ class TiledPlot extends React.Component {
 
       case 'left':
         top += this.topHeight;
-        width = track.width;
+        ( { width } = track);
         height = this.centerHeight;
 
         for (let i = 0; i < this.state.tracks.left.length; i++) {
@@ -820,7 +828,7 @@ class TiledPlot extends React.Component {
       case 'right':
         left += this.leftWidth + this.centerWidth + this.galleryDim;
         top += this.topHeight;
-        width = track.width;
+        ( { width } = track);
         height = this.centerHeight;
 
         for (let i = 0; i < this.state.tracks.right.length; i++) {
@@ -897,7 +905,13 @@ class TiledPlot extends React.Component {
       console.warn('Track with unknown position present:', location, track);
     }
 
-    return { left, top, width, height, track };
+    return {
+      left,
+      top,
+      width,
+      height,
+      track
+    };
   }
 
   /**
@@ -914,6 +928,97 @@ class TiledPlot extends React.Component {
       if (tracks[i].type === 'heatmap') return tracks[i];
     }
     return undefined;
+  }
+
+  trackUuidToOrientation(trackUuid) {
+    /**
+     * Obtain the orientation of the track defined
+     * by the Uuid and return it.
+     *
+     * Parameters
+     * ----------
+     *  trackUuid: 'xsdfsd'
+     *
+     * Returns
+     * -------
+     *  orientation: '1d-horizontal'
+     */
+
+  }
+
+  overlayTracks(positionedTracks) {
+    /**
+     * Return the current set of overlay tracks.
+     *
+     * These have no positions of their own because
+     * they depend on other tracks to be drawn first.
+     *
+     * Parameters
+     * ----------
+     *  positionedTracks: The tracks along with their positions
+     *
+     * Returns
+     * -------
+     *  overlaysWithOrientationsAndPositions: []
+     *
+     */
+    if (this.props.overlays) {
+      const overlayDefs = this.props.overlays.map((overlayTrack) => {
+
+        const overlayDef = {
+          uid: overlayTrack.uid || slugid.nice(),
+          includes: overlayTrack.includes,
+          type: 'overlay-track',
+          options: Object.assign(overlayTrack.options, {
+            orientationsAndPositions: overlayTrack.includes.map((trackUuid) => {
+              // translate a trackUuid into that track's orientation
+              const includedTrack = getTrackByUid(this.props.tracks, trackUuid);
+              if (!includedTrack) {
+                console.warn(`OverlayTrack included uid (${trackUuid}) not found in the track list`);
+                return null;
+              }
+              const orientation =  TRACKS_INFO_BY_TYPE[includedTrack.type].orientation;
+
+              const positionedTrack = positionedTracks.filter(
+                track => track.track.uid == trackUuid);
+
+              if (!positionedTrack.length)
+                // couldn't find a matching track, somebody must have included
+                // an invalid uuid
+                return null;
+              const position = {
+                left: positionedTrack[0].left,
+                top: positionedTrack[0].top,
+                width: positionedTrack[0].width,
+                height: positionedTrack[0].height,
+              };
+
+              return {
+                orientation: orientation,
+                position: position
+              };
+            })
+            .filter(x => x) //filter out null entries
+          })
+        }
+
+        // the 2 * verticalMargin is to make up for the space taken away
+        // in render(): this.centerHeight = this.state.height...
+        return {
+          top: 0,
+          left: 0,
+          width: this.leftWidth + this.centerWidth + this.rightWidth,
+          height: this.topHeight + this.centerHeight
+          + this.bottomHeight
+          + 2 * this.props.verticalMargin,
+          track: overlayDef,
+        };
+      });
+
+      return overlayDefs;
+    }
+
+    return [];
   }
 
   positionedTracks() {
@@ -938,7 +1043,7 @@ class TiledPlot extends React.Component {
     this.createTracksAndLocations();
 
     const trackElements = positionedTracks.map((trackPosition) => {
-      const track = trackPosition.track;
+      const { track } = trackPosition;
 
       return (
         <div
@@ -967,11 +1072,12 @@ class TiledPlot extends React.Component {
     const track = getTrackByUid(this.props.tracks, trackUid);
     let trackObject = null;
 
-    if (hostTrackUid != trackUid) {
+    if (hostTrackUid !== trackUid) {
       // the track whose data we're trying to export is part of a combined track
-      trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject.createdTracks[track.uid];
+      trackObject = this.trackRenderer
+        .trackDefObjects[hostTrackUid].trackObject.createdTracks[track.uid];
     } else {
-      trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject;
+      ({ trackObject } = this.trackRenderer.trackDefObjects[hostTrackUid]);
     }
 
     trackObject.exportData();
@@ -985,8 +1091,7 @@ class TiledPlot extends React.Component {
   listTracksAtPosition(x, y, isReturnTrackObj = false) {
     const trackObjectsAtPosition = [];
 
-    if (!this.trackRenderer)
-      return;
+    if (!this.trackRenderer) return;
 
     for (const uid in this.trackRenderer.trackDefObjects) {
       const trackObj = this.trackRenderer.trackDefObjects[uid].trackObject;
@@ -1001,12 +1106,14 @@ class TiledPlot extends React.Component {
           if (this.props.tracks.center) {
             if (this.props.tracks.center.contents) {
               for (let i = 0; i < this.props.tracks.center.contents.length; i++) {
-                if (this.props.tracks.center.contents[i].uid == uid) {
+                if (this.props.tracks.center.contents[i].uid === uid) {
                   trackObj.is2d = true;
                 }
               }
             } else {
-              if (this.props.tracks.center && this.props.tracks.center.length && this.props.tracks.center[0].uid == uid) {
+              if (this.props.tracks.center
+                && this.props.tracks.center.length
+                && this.props.tracks.center[0].uid === uid) {
                 trackObj.is2d = true;
               }
             }
@@ -1116,7 +1223,6 @@ class TiledPlot extends React.Component {
       newYDomain = [minPos[1], maxPos[1]];
     }
 
-
     this.props.onDataDomainChanged(newXDomain, newYDomain);
   }
 
@@ -1156,6 +1262,7 @@ class TiledPlot extends React.Component {
   updatablePropsToString(props) {
     return JSON.stringify({
       tracks: props.tracks,
+      overlays: props.overlays,
       viewOptions: props.viewOptions,
       uid: props.uid,
       addTrackPosition: props.addTrackPosition,
@@ -1645,6 +1752,7 @@ class TiledPlot extends React.Component {
       </div>
     );
 
+
     const leftTracks = (
       <div
         key="leftTracksPlot"
@@ -1840,7 +1948,8 @@ class TiledPlot extends React.Component {
 
     this.createTrackPositionTexts();
 
-    const positionedTracks = this.positionedTracks();
+    let positionedTracks = this.positionedTracks();
+    positionedTracks = positionedTracks.concat(this.overlayTracks(positionedTracks));
 
     let trackRenderer = null;
     if (this.state.sizeMeasured) {
@@ -1947,7 +2056,9 @@ class TiledPlot extends React.Component {
     if (this.props.chooseTrackHandler) {
       // We want to choose a track and call a function. To choose the track, we display
       // an overlay on top of each track
-      overlays = positionedTracks.map((pTrack) => {
+      overlays = positionedTracks
+        .filter(pTrack => pTrack.track.position != 'whole')
+        .map((pTrack) => {
         let background = 'transparent';
         let border = 'none';
 
@@ -2071,7 +2182,7 @@ class TiledPlot extends React.Component {
         },
       },
       */
-    ]
+    ];
 
     this.eventListeners.forEach(
       event => document.addEventListener(event.name, event.callback, false)

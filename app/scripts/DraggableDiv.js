@@ -284,71 +284,38 @@ class DraggableDiv extends React.Component {
     const resizeWidth = 10;
     const resizeHeight = 10;
 
-    const bottomStyle = {
+    const horizStyle = {
       left: (this.state.width / 2) - (resizeWidth / 2),
-      bottom: 1,
       width: resizeWidth,
       borderBottom: `1px solid ${dragColor}`,
       borderTop: `1px solid ${dragColor}`,
     };
-    const topStyle = {
-      left: (this.state.width / 2) - (resizeWidth / 2),
-      top: 1,
-      width: resizeWidth,
-      borderBottom: `1px solid ${dragColor}`,
-      borderTop: `1px solid ${dragColor}`,
-    };
-    const leftStyle = {
+
+    const vertStyle = {
       left: 1,
       top: (this.state.height / 2) - (resizeHeight / 2),
       height: resizeHeight,
       borderLeft: `1px solid ${dragColor}`,
       borderRight: `1px solid ${dragColor}`,
     };
-    const rightStyle = {
-      right: 1,
-      top: (this.state.height / 2) - (resizeHeight / 2),
-      height: resizeHeight,
-      borderLeft: `1px solid ${dragColor}`,
-      borderRight: `1px solid ${dragColor}`,
+
+    const styles = {
+      bottom: { ...horizStyle, bottom: 1 },
+      top: { ...horizStyle, top: 1 },
+      left: { ...vertStyle, left: 1 },
+      right: { ...vertStyle, right: 1 },
     };
 
-    const resizeHandleDivs = {
-      bottom: (
-        <div
-          key="bottom"
-          ref={(c) => { this.bottomHandle = c; }}
-          styleName="bottom-draggable-handle"
-          style={bottomStyle}
-        />
-      ),
-      top: (
-        <div
-          key="top"
-          ref={(c) => { this.topHandle = c; }}
-          styleName="top-draggable-handle"
-          style={topStyle}
-        />
-      ),
-      right: (
-        <div
-          key="right"
-          ref={(c) => { this.rightHandle = c; }}
-          styleName="right-draggable-handle"
-          style={rightStyle}
-        />
-      ),
-      left: (
-        <div
-          key="left"
-          ref={(c) => { this.leftHandle = c; }}
-          styleName="left-draggable-handle"
-          style={leftStyle}
-        />
-      )
-    };
     const resizeHandles = [...this.props.resizeHandles]
-      .map(x => resizeHandleDivs[x]);
+      .map(x => (
+        <div
+          key={x}
+          ref={(c) => { this[`${x}Handle`] = c; }}
+          styleName={`${x}-draggable-handle`}
+          style={styles[x]}
+          title="Resize track"
+        />
+      ));
 
     return (
       <div

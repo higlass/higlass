@@ -15,7 +15,7 @@ class AddTrackPositionMenu extends React.Component {
         <div styleName="add-track-position-span">{'Add Track...'}</div>
         <table styleName={tableStyleNames}>
           <tbody>
-            <tr>
+            <tr style={{ height: '30px' }}>
               <td styleName="add-track-position-other" />
               <td
                 onClick={() => this.props.onTrackPositionChosen('top')}
@@ -37,7 +37,7 @@ class AddTrackPositionMenu extends React.Component {
                 styleName="add-track-position-middle-right"
               >{'right'}</td>
             </tr>
-            <tr>
+            <tr style={{ height: '30px' }}>
               <td styleName="add-track-position-other" />
               <td
                 onClick={() => this.props.onTrackPositionChosen('bottom')}

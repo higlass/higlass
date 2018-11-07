@@ -2,20 +2,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>getMinMaxValue() | HiGlass</title>
+  <title>Chromosome Label Track &middot; HiGlass</title>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="styles/page.css">
   <link rel="stylesheet" href="hglib.css">
-<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.2/pixi.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react@16.5/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16.5/umd/react-dom.development.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.2/pixi.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
 </head>
 <body >
   <div
     id="demo"
-    style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem"
+    style="position: absolute; left: 1.5rem; top: 1.5rem; bottom: 1.5rem; right: 1.5rem"
   ></div>
 </body>
 <script src='hglib.js'></script>
@@ -60,7 +60,7 @@ const viewConfig = {
               showMousePosition: false,
               mousePositionColor: '#999999'
             },
-            height: 36,
+            height: 56,
           },
           {
             chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
@@ -68,14 +68,13 @@ const viewConfig = {
             position: 'top',
             name: 'Chromosome Labels (hg19)',
             height: 10,
-            uid: 'chroms',
+            uid: 'chroms1',
             options: {
-              color: '#ffffff',
+              color: '#4f3de5',
               fontSize: 8,
               fontIsLeftAligned: true,
               tickHeight: 4,
-              tickColor: '#ffffff',
-              stroke: '#ff00ff'
+              tickColor: '#4f3de5',
             },
           },
           {
@@ -83,7 +82,29 @@ const viewConfig = {
             type: 'horizontal-chromosome-labels',
             position: 'top',
             name: 'Chromosome Labels (hg19)',
+            height: 14,
             uid: 'chroms2',
+            options: {
+              color: '#ffffff',
+              fontSize: 12,
+              fontIsLeftAligned: true,
+              tickHeight: 6,
+              tickColor: '#ffffff',
+              stroke: '#45b17c'
+            },
+          },
+          {
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            type: 'horizontal-chromosome-labels',
+            position: 'top',
+            name: 'Chromosome Labels (hg19)',
+            uid: 'chroms3',
+            height: 24,
+            options: {
+              fontSize: 12,
+              color: '#fc005b',
+              tickColor: '#fc005b'
+            }
           }
         ],
         left: [
@@ -112,13 +133,13 @@ const viewConfig = {
             position: 'top',
             name: 'Chromosome Labels (hg19)',
             width: 10,
-            uid: 'chroms3',
+            uid: 'chroms4',
             options: {
-              color: '#000000',
+              color: '#4f3de5',
               fontSize: 8,
               fontIsLeftAligned: true,
               tickHeight: 4,
-              tickColor: '#000000',
+              tickColor: '#4f3de5',
             },
           },
           {
@@ -126,7 +147,29 @@ const viewConfig = {
             type: 'vertical-chromosome-labels',
             position: 'top',
             name: 'Chromosome Labels (hg19)',
-            uid: 'chroms4',
+            width: 14,
+            uid: 'chroms5',
+            options: {
+              color: '#ffffff',
+              fontSize: 12,
+              fontIsLeftAligned: true,
+              tickHeight: 6,
+              tickColor: '#ffffff',
+              stroke: '#45b17c'
+            },
+          },
+          {
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            type: 'vertical-chromosome-labels',
+            position: 'top',
+            name: 'Chromosome Labels (hg19)',
+            uid: 'chroms6',
+            width: 24,
+            options: {
+              fontSize: 12,
+              color: '#fc005b',
+              tickColor: '#fc005b'
+            }
           }
         ],
         center: [],

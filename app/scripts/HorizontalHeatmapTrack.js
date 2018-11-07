@@ -229,7 +229,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
    * Convert the raw tile data to a rendered array of values which can be represented as a sprite.
    *
    * @param tile: The data structure containing all the tile information. Relevant to
-   *              this function are tile.tileData = {'dense': [...], ...}
+   *              this function are tile.tileData = \{'dense': [...], ...\}
    *              and tile.graphics
    */
   renderTile(tile) {

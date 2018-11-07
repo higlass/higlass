@@ -486,6 +486,7 @@ class PixiTrack extends Track {
     this.draw();
     this.drawBackground();
     this.drawLabel();
+    this.drawError();
     this.drawBorder();
   }
 
@@ -501,7 +502,7 @@ class PixiTrack extends Track {
   /**
    * Export an SVG representation of this track
    *
-   * @returns {[DOMNode,DOMNode]} The two returned DOM nodes are both SVG
+   * @returns {Array} The two returned DOM nodes are both SVG
    * elements [base,track]. Base is a parent which contains track as a
    * child. Track is clipped with a clipping rectangle contained in base.
    *
@@ -515,10 +516,11 @@ class PixiTrack extends Track {
     rectBackground.setAttribute('width', `${this.dimensions[0]}`);
     rectBackground.setAttribute('height', `${this.dimensions[1]}`);
 
-    if (this.options && this.options.backgroundColor)
+    if (this.options && this.options.backgroundColor) {
       rectBackground.setAttribute('fill', this.options.backgroundColor);
-    else
-      rectBackground.setAttribute('fill', 'transparent');
+    } else {
+      rectBackground.setAttribute('fill-opacity', '0');
+    }
 
     const gClipped = document.createElement('g');
     gClipped.setAttribute('class', 'g-clipped');

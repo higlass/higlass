@@ -1,11 +1,6 @@
 language: node_js
 node_js:
 - '6'
-branches:
-  only:
-  - master
-  - develop
-  - /^v.*$/
 addons:
   apt:
     packages:
@@ -19,25 +14,46 @@ before_script:
     - npm install --quiet -g gulp
     - npm install
 script:
-    - npm run compile
-    - xvfb-maybe ./node_modules/karma/bin/karma start karma.conf.js --single-run
+    - ./test.sh
 before_deploy:
     - npm run compile
+    - pip install --user -r docs/requirements.txt
+    - pushd docs; ./build.sh; popd
 deploy:
-    - provider: npm
-      skip_cleanup: true
-      file: dist.zip
-      email: pkerpedjiev@gmail.com
-      api_key:
-          secure: lX+QiVA0uWWAD5FajOC2nJGRI4CjSh/MoPY9KTSsJBVATmyms5nNHB8FfYT2PBAikRR65ap5QbTnia5TajgstTduWj5AG7MnBblexB6Y/T7kPX7fKf0iknWex55ZU+FP6RnwZCyyxhORd7FstO3gf8IjulTYNyztK2jAQ4yAapWOdLbvgpo/OHdDVVxFWNqH0PbdFyAQs9KEZaR2IwtpV4KgVUSMKY6vUC+lPvUE8gp//GqKjizdLT/GXnaabXZqcljp3zrhENmOI+525dbYXz0ApCJw7MVS+2quo2j0NqrvVAUey8zmh9+nt5dAX8Vsv2wCZmAe8hUNsWujX48E2v9T5ibeP1SrzhDybGtzCxSY1WjnK23SXPL9w9kfVxUqQAn76OqpQeTGIjgM3ubyNxS/QE4iocQ6YPUrdJLFQL0eG2P9lrvBaBftoM8RtoY6GKDIFxrnE2HKKBwqngEdj7ujuagRbk6MCFlaCvjSQQ6ev1LNc/GFwAHiOW68HDjKJQGxi0VpVUuwgvOaYaE/hUXaMeHOPdYUnDxpDHBDP3QHz2cXhWwsF7HTV8ej/P9LCbjSd8Rs9cfzfQZtFBSzygMUX/ilIVF+WUpdHxV25aUPZsjm4GqEgkTV5gdDlxeTrrB4GMNwCkJQBiigAY8nhbu5UxalhhbH6zwhkEcqBTg=
-      on:
-        branch: master
-        tags: true
-    - provider: releases
-      skip_cleanup: true
-      file: dist.zip
-      api_key:
-          secure: Pr3uxqR7ihrbpIOecTNaI4lJ1eqwNqpzqtWptVOffyZfmJ3EEfJu2swRgpr7Zi2AP6R5IhVdZJ9ZkRFqV0ei8S+OzFSNhYMoqr1ISvP7VxVKxUaDhWeqEE1umRJ6rENQko8mxqC9e8zW8Mx7U/IAnHXfHFlicYwrt5y/xGBOjhaF9W9sPBPG41QTaLswP1Cp5Tyti2rlZ1K6cWFX01gQugVJsdK5/b27wjoq/LKez6xRu2fa0i+FRGhKiYDh/OCduSh4AIEw9jFssjxC87eHP4CyIBYlUhRSqgcT3DMsuw7uxiVBUwrqB2B9GgcWspmN5LWNpHNE1Y/1e2xgPruxu/bhyXd3ZDNdD4iLt/eGVLbLVOjzK8xuhL7X0H9zd4DtheSfOBj6PRw7qUbLiSHt/qUVo9SosWhzOz/2Q0l2+7d8n/oJx5dzNKzQeVrxp5pM9aMph467BxBJQ6h8/KjXf3FO84DmHUyRR4yW4x+LlKlYWpmtQoOf8tjt1Jd0wj7fZyvq0UVcTSBFdQiAsaU75ItBOFXZaUgqYJqKKtT8+DKzbGd8Jw78qzmWuiPkvMh+FxAzVBQq9D1Jr8jFlUz3iBc+BC8N+DV+1tFKlgaBq/SxJ6jcXwhqOBHva6F2RctbG77M94hYYxcmtazO2QwADj2elvxsje7B2XR8O+WPuNs=
-      on:
-        tags: true
-        branch: master
+  - &s3
+    provider: s3
+    skip_cleanup: true
+    access_key_id: AKIAJEBDS3PGJWAMFIYA
+    secret_access_key:
+      secure: Q/Av1blshd00BsEWFOq9Ey0iGTxyBLabHxEVdTUn6acXYYFp4HVZBG0SiWcK7oAnR4178Dv5CGa/fxByds1mefU/MJfxEnNOOP/rALhsvZ9hpqSqXJQSbAlHtcbKlAbtNUPTHyIoiggdrt+FZmzgdq4TcHINDGLSKjgveZl14tQ7iUjp21RD58aAVTnzHsXGYWdY2hwE5VtZ5k5QDMZMprWmir/hNFs1QiiXO+hBAlZ2vfmH33BROMaQncUCXWW6f5i5zHfT5wTXU/RS8+LuQl/uYFlc4C4sBLA+nxQ8nmUBlShxgMNaQ/m0N4hZEOqAwc75FNTC/EiYMr6tXwF+C5gw5y8ZwAjQJI7KKFPWMwrJo4KRY8xnxStd39C6gj7r3Wwo/ZxZjmUAGUn74naVdtxNDFlzID8LkqmsEk128fWtjAVpEG2AdQXvv6oRDJbsreCESFKz+KCDPrjyS07A5gCp/REojP4X3QME55tn5k9IwnmsKujWKw5EGsWv4x5NiIqR4x+tR8uuaXhNZsgPkbGA3KF3Cr/oB8ROjugpYRLoHhKu/q1SQi8GWS/k++CONB8ZICxnq4OPVMGCuWj4QEZfU6S+qkuVejcFbkTzxfZ7/t4uG4Q88jwirgVpcIn3AEaeA1nm157TNs2UL4tejVdr2eKaIHIf7UiZs3w9h3A=
+    bucket: higlass-docs-demo
+    local-dir: docs/_build/html
+    acl: public_read
+    on:
+      branch: master
+  - <<: *s3
+    upload-dir: develop
+    on:
+      branch: develop
+  - <<: *s3
+    upload-dir: latest
+    on:
+      all_branches: true
+  
+  - provider: npm
+    skip_cleanup: true
+    file: dist.zip
+    email: pkerpedjiev@gmail.com
+    api_key:
+        secure: AGI4b3s8m+mKdVAVBR+d5EdYdYAeLhFy76o8WzQ7KwGSIAsIfmwjejqs4BRvq2m3kDdUqNF4fUhG1L2yXsqGXdKqDYnICL+IiKJAKrtdrsx4Y8J31OdeYX8J4MrYzFYsHAyg2bO0D2JNKe0K5b1ykks3qZd9p+Q/4jMjekmNB/T4rBOKjg1bxm0deULQabsLyonjY/IoLc+vjuNmT9VLw9SXw5d8yWTeWszHL8QmQ/UFKZVxF1EfaxJU/9/R/QKQgrAXHsElGfS9+dfhMmZTW8+3kNbB8/lHGkoF+9LrqnRWI6/R8OorqHSLmomfJJuK4iS2Z7Ull561vG67lNrgj7EZ3F2Rjrn4I82T2V/fYBCU/xvIsp2a+MUXvScWu3ONtNJCLGXL7qHQuVN6UjTyVH9J010fIz1qeY264Q/HSVv+PnAueN6e3j9RmrYIf4bVL9OxsNPhOZbUOi/xvg/WBkNifhrT/n65wgopyT5tzwK9Tk8Kyp6aJlaDsqFBtc7gZhOn8MIPsAYAvszfXlNHFqfOrvRQqV/UWoaBkBFEVJwlVZzUWmbNz0wIFs3QJjabR5/wR8GRUpRmugTMR1OE6JYwiIGhteW55p9Wm1SbHZw7RT3VIENpovxmGhbT4TxsZ8UcFk6fknIUH8F1S7K2+Uwxu5Wb0DT7SoD/Lfh0u+E=
+    on:
+      branch: master
+      tags: true
+  - provider: releases
+    skip_cleanup: true
+    file: dist.zip
+    api_key:
+        secure: Pr3uxqR7ihrbpIOecTNaI4lJ1eqwNqpzqtWptVOffyZfmJ3EEfJu2swRgpr7Zi2AP6R5IhVdZJ9ZkRFqV0ei8S+OzFSNhYMoqr1ISvP7VxVKxUaDhWeqEE1umRJ6rENQko8mxqC9e8zW8Mx7U/IAnHXfHFlicYwrt5y/xGBOjhaF9W9sPBPG41QTaLswP1Cp5Tyti2rlZ1K6cWFX01gQugVJsdK5/b27wjoq/LKez6xRu2fa0i+FRGhKiYDh/OCduSh4AIEw9jFssjxC87eHP4CyIBYlUhRSqgcT3DMsuw7uxiVBUwrqB2B9GgcWspmN5LWNpHNE1Y/1e2xgPruxu/bhyXd3ZDNdD4iLt/eGVLbLVOjzK8xuhL7X0H9zd4DtheSfOBj6PRw7qUbLiSHt/qUVo9SosWhzOz/2Q0l2+7d8n/oJx5dzNKzQeVrxp5pM9aMph467BxBJQ6h8/KjXf3FO84DmHUyRR4yW4x+LlKlYWpmtQoOf8tjt1Jd0wj7fZyvq0UVcTSBFdQiAsaU75ItBOFXZaUgqYJqKKtT8+DKzbGd8Jw78qzmWuiPkvMh+FxAzVBQq9D1Jr8jFlUz3iBc+BC8N+DV+1tFKlgaBq/SxJ6jcXwhqOBHva6F2RctbG77M94hYYxcmtazO2QwADj2elvxsje7B2XR8O+WPuNs=
+    on:
+      tags: true
+      branch: master

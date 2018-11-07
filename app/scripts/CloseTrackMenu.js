@@ -14,7 +14,7 @@ const CloseTrackMenu = props => (
     <ContextMenuItem
       onClick={() => props.onCloseTrack(props.tracks[0].uid)}
     >
-      {'Close track'}
+      {'Close all series'}
     </ContextMenuItem>
   </div>
 );

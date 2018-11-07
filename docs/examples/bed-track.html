@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bed Track &middot; HiGlass</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/page.css">
+  <link rel="stylesheet" href="hglib.css">
+  <script crossorigin src="https://unpkg.com/react@16.5/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16.5/umd/react-dom.development.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.2/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+</head>
+<body >
+  <div
+    id="demo"
+    style="position: absolute; left: 1.5rem; top: 1.5rem; bottom: 1.5rem; right: 1.5rem"
+  ></div>
+</body>
+<script src='hglib.js'></script>
+<script>
+const viewConfig = {
+  editable: true,
+  zoomFixed: false,
+  trackSourceServers: [
+    'http://higlass.io/api/v1'
+  ],
+  exportViewUrl: 'http://higlass.io/api/v1/viewconfs/',
+  views: [
+    {
+      uid: 'aa',
+      initialXDomain: [
+        7595655.0000270605,
+        2507738795.9999733
+      ],
+      initialYDomain: [
+        -545671929.4383738,
+        3061006380.438374
+      ],
+      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+      tracks: {
+        top: [
+          {
+            name: 'Gene Annotations (hg19)',
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            uid: 'genes',
+            type: 'horizontal-gene-annotations',
+            options: {
+              labelPosition: 'hidden',
+              name: 'Gene Annotations (hg19)',
+              labelColor: '#999999',
+              plusStrandColor: '#999999',
+              minusStrandColor: '#999999',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: false,
+              mousePositionColor: '#999999'
+            },
+            height: 56,
+          },
+          {
+            name: 'GSE63525 GM12878 primary+replicate HiCCUPS looplist (1D)',
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'N3g_OsVITeulp6cUs2EaJA',
+            uid: 'hiccups-loops-1d',
+            type: 'bedlike',
+            options: {
+              labelPosition: 'hidden',
+              showMousePosition: true,
+              mousePositionColor: '#999999',
+              // This is a stupid example but it's the only file I found and the
+              // normal data column #4 is empty for this file. So for the sake
+              // of demonstrating the functionality it should be okay but
+              // normally one would use `valueColumn: 4`
+              valueColumn: 2,
+              colorEncoding: true,
+              colorRange: [
+                '#0b24fb', '#4ADFCF', '#FC005B', '#FDA428'
+              ],
+            },
+            height: 56,
+          },
+        ],
+        left: [],
+        center: [],
+        right: [],
+        bottom: [],
+      },
+      layout: {
+        w: 12,
+        h: 12,
+        x: 0,
+        y: 0,
+        i: 'aa',
+        moved: false,
+        static: false
+      },
+    }
+  ],
+};
+
+const api = hglib.viewer(
+  document.getElementById('demo'), viewConfig, { bounded: true },
+);
+
+</script>
+</html>

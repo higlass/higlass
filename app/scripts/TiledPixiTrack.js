@@ -25,19 +25,22 @@ import { ZOOM_DEBOUNCE } from './configs';
  * @param {string} defaultScaling: The default scaling type to use in case
  * 'scalingType' is null (e.g. 'linear' or 'log')
  *
- * @returns {array} An array of [string, scale] containin the scale type and a scale with an appropriately set domain and range
+ * @returns {array} An array of [string, scale] containin the scale type 
+ *  and a scale with an appropriately set domain and range
  */
-export const getValueScale = function(scalingType, minValue, pseudocountIn, maxValue, defaultScaling) {
+export function getValueScale(scalingType, minValue, pseudocountIn, maxValue, defaultScaling) {
   const scalingTypeToUse = scalingType || defaultScaling;
-  const pseudocount = 0; //purposely set to not equal pseudocountIn for now
-                         // eventually this will be an option
 
-  if (scalingTypeToUse == 'log' && minValue > 0) {
+  // purposely set to not equal pseudocountIn for now
+  // eventually this will be an option
+  const pseudocount = 0; 
+
+  if (scalingTypeToUse === 'log' && minValue > 0) {
     return ['log', scaleLog().range([254, 0])
       .domain([minValue + pseudocount, maxValue + pseudocount])];
   }
 
-  if (scalingTypeToUse == 'log') {
+  if (scalingTypeToUse === 'log') {
     // warn the users that their desired scaling type couldn't be used
     // console.warn('Negative values present in data. Defaulting to linear scale: ', minValue);
   }
@@ -50,9 +53,17 @@ class TiledPixiTrack extends PixiTrack {
   /**
    * A track that must pull remote tiles
    *
-   * @param scene: A PIXI.js scene to draw everything to.
-   * @param server: The server to pull tiles from.
-   * @param tilesetUid: The data set to get the tiles from the server
+   * @param (PIXI.scene) scene A PIXI.js scene to draw everything to.
+   * @param (Object) dataConfig: A data source. Usually a
+   *  ``{{server: 'x/api/v1/', tilesetUuid: 'y'}}`` Object.
+   * @param {Object} handleTilesetInfoReceived: A callback to do something once once the tileset
+   *  info is received. Usually it registers some information about the tileset with its
+   * definition
+   * @param {Object} options The track's options
+   * @param {function} animate A function to redraw this track. Typically called when an
+   *  asynchronous event occurs (i.e. tiles loaded)
+   * @param {function} onValueScaleChanged The range of values has changed so we need to inform
+   *  the higher ups that the value scale has changed. Only occurs on tracks with ``dense`` data.
    */
   constructor(pubSub, scene, dataConfig, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
     super(pubSub, scene, options);
@@ -87,6 +98,8 @@ class TiledPixiTrack extends PixiTrack {
     this.fixedValueScaleMin = null;
     this.valueScaleMax = null;
     this.fixedValueScaleMax = null;
+
+    this.listeners = {};
 
     this.animate = animate;
     this.onValueScaleChanged = onValueScaleChanged;
@@ -123,10 +136,11 @@ class TiledPixiTrack extends PixiTrack {
       }
 
       // console.log('tilesetInfo:', this.tilesetInfo);
-      if (this.tilesetInfo.resolutions)
+      if (this.tilesetInfo.resolutions) {
         this.maxZoom = this.tilesetInfo.resolutions.length;
-      else
+      } else {
         this.maxZoom = +this.tilesetInfo.max_zoom;
+      }
 
       if (this.options && this.options.maxZoom) {
         if (this.options.maxZoom >= 0) {
@@ -147,7 +161,7 @@ class TiledPixiTrack extends PixiTrack {
       this.checkValueScaleLimits();
 
       this.draw();
-      this.drawLabel(); //draw the label so that the current resolution is displayed
+      this.drawLabel(); // draw the label so that the current resolution is displayed
       this.animate();
     });
 
@@ -187,6 +201,37 @@ class TiledPixiTrack extends PixiTrack {
     }
   }
 
+  /**
+   * Register an event listener for track events. Currently, the only supported
+   * event is ``dataChanged``.
+   *
+   * @param {string} event The event to listen for
+   * @param {function} callback The callback to call when the event occurs. The
+   *  parameters for the event depend on the event called.
+   * 
+   * @example
+   *
+   * ..code-block::
+   *
+   *  trackObj.on('dataChanged', (newData) => {
+   *   console.log('newData:', newData)
+   *  });
+   */
+  on(event, callback) {
+    if (!this.listeners[event]) {
+      this.listeners[event] = [];
+    }
+
+    this.listeners[event].push(callback);
+  }
+
+  off(event, callback) {
+    const id = this.listeners[event].indexOf(callback);
+    if (id === -1 || id >= this.listeners[event].length) return;
+
+    this.listeners[event].splice(id, 1);
+  }
+
   rerender(options) {
     super.rerender(options);
 
@@ -196,10 +241,11 @@ class TiledPixiTrack extends PixiTrack {
 
     this.checkValueScaleLimits();
 
-    if (this.tilesetInfo.resolutions)
+    if (this.tilesetInfo.resolutions) {
       this.maxZoom = this.tilesetInfo.resolutions.length;
-    else
+    } else {
       this.maxZoom = +this.tilesetInfo.max_zoom;
+    }
 
     if (this.options && this.options.maxZoom) {
       if (this.options.maxZoom >= 0) {
@@ -303,9 +349,7 @@ class TiledPixiTrack extends PixiTrack {
   removeTiles(toRemoveIds) {
     // if there's nothing to remove, don't bother doing anything
     if (
-      !toRemoveIds.length ||
-      !this.areAllVisibleTilesLoaded() ||
-      this.renderingTiles.size
+      !toRemoveIds.length || !this.areAllVisibleTilesLoaded() || this.renderingTiles.size
     ) {
       return;
     }
@@ -415,7 +459,7 @@ class TiledPixiTrack extends PixiTrack {
   }
 
 
-  initTile(tile) {
+  initTile(/* tile */) {
     // create the tile
     // should be overwritten by child classes
     this.scale.minRawValue = this.minVisibleValue();
@@ -425,11 +469,11 @@ class TiledPixiTrack extends PixiTrack {
     this.scale.maxValue = this.scale.maxRawValue;
   }
 
-  updateTile(tile) {
+  updateTile(/* tile */) {
     // console.log("ERROR: unimplemented updateTile:", this);
   }
 
-  destroyTile(tile) {
+  destroyTile(/* tile */) {
     // remove all data structures needed to draw this tile
   }
 
@@ -442,7 +486,7 @@ class TiledPixiTrack extends PixiTrack {
     this.renderVersion += 1;
 
     for (let i = 0; i < fetchedTileIDs.length; i++) {
-      //console.log('this.tileGraphics', this.tileGraphics);
+      // console.log('this.tileGraphics', this.tileGraphics);
       if (!(fetchedTileIDs[i] in this.tileGraphics)) {
         // console.trace('adding:', fetchedTileIDs[i]);
 
@@ -484,6 +528,12 @@ class TiledPixiTrack extends PixiTrack {
     this.addMissingGraphics();
     this.removeOldTiles();
     this.updateExistingGraphics();
+
+    if (this.listeners.dataChanged) {
+      for (const callback of this.listeners.dataChanged) {
+        callback(this.visibleAndFetchedTiles().map(x => x.tileData));
+      }
+    }
   }
 
   loadTileData(tile, dataLoader) {
@@ -525,7 +575,7 @@ class TiledPixiTrack extends PixiTrack {
    */
   receivedTiles(loadedTiles) {
     for (let i = 0; i < this.visibleTiles.length; i++) {
-      const tileId = this.visibleTiles[i].tileId;
+      const { tileId } = this.visibleTiles[i];
 
       if (!loadedTiles[this.visibleTiles[i].remoteId]) { continue; }
 
@@ -545,7 +595,7 @@ class TiledPixiTrack extends PixiTrack {
       }
     }
 
-    const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
+    // const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
     // console.log('fetchedTileIDs:', fetchedTileIDs);
     // console.log('fetching:', this.fetching);
 
@@ -574,7 +624,9 @@ class TiledPixiTrack extends PixiTrack {
     // Let HiGlass know we need to re-render
     // check if the value scale has changed
     if (this.valueScale) {
-      if (!this.prevValueScale || JSON.stringify(this.valueScale.domain()) != JSON.stringify(this.prevValueScale.domain())) {
+      if (!this.prevValueScale
+        || JSON.stringify(this.valueScale.domain())
+        !== JSON.stringify(this.prevValueScale.domain())) {
         // console.log('here', this.onValueScaleChanged);
         // if (this.prevValueScale)
         // console.log('this.prevValueScale.domain()', this.prevValueScale.domain());
@@ -609,13 +661,11 @@ class TiledPixiTrack extends PixiTrack {
         }] tilesetUid: [${this.tilesetUid}]`;
       }
 
-      this.trackNotFoundText.x = this.position[0];
-      this.trackNotFoundText.y = this.position[1];
-
+      ([this.trackNotFoundText.x, this.trackNotFoundText.y] = this.position);
       /*
-            if (this.flipText)
-                this.trackNotFoundText.scale.x = -1;
-            */
+      if (this.flipText)
+          this.trackNotFoundText.scale.x = -1;
+      */
 
       this.trackNotFoundText.visible = true;
     } else {
@@ -636,7 +686,7 @@ class TiledPixiTrack extends PixiTrack {
   /**
    * Draw a tile on some graphics
    */
-  drawTile(tileData, graphics) {}
+  drawTile(/* tileData, graphics */) {}
 
   calculateMedianVisibleValue() {
     if (this.areAllVisibleTilesLoaded()) {
@@ -710,7 +760,7 @@ class TiledPixiTrack extends PixiTrack {
       : max;
   }
 
-  makeValueScale(minValue, medianValue, maxValue, margin) {
+  makeValueScale(minValue, medianValue, maxValue, inMargin) {
     /*
      * Create a value scale that will be used to position values
      * along the y axis.
@@ -737,8 +787,20 @@ class TiledPixiTrack extends PixiTrack {
     let valueScale = null;
     let offsetValue = 0;
 
+    let margin = inMargin;
+
     if (margin === null || typeof margin === 'undefined') {
       margin = 6;  // set a default value
+    }
+
+    let minDimension = Math.min(this.dimensions[1] - margin, margin);
+    let maxDimension = Math.max(this.dimensions[1] - margin, margin);
+
+    if (this.dimensions[1] - margin < margin) {
+      // if the track becomes smaller than the margins, then just draw a flat
+      // line in the center
+      minDimension = this.dimensions[1] / 2;
+      maxDimension = this.dimensions[1] / 2;
     }
 
     if (this.options.valueScaling === 'log') {
@@ -746,11 +808,12 @@ class TiledPixiTrack extends PixiTrack {
 
       if (!offsetValue) { offsetValue = minValue; }
 
+
       valueScale = scaleLog()
         // .base(Math.E)
         .domain([offsetValue, maxValue + offsetValue])
         // .domain([offsetValue, this.maxValue()])
-        .range([this.dimensions[1] - margin, margin]);
+        .range([minDimension, maxDimension]);
 
       // pseudocount = offsetValue;
     } else if (this.options.valueScaling === 'quantile') {
@@ -774,7 +837,7 @@ class TiledPixiTrack extends PixiTrack {
       // linear scale
       valueScale = scaleLinear()
         .domain([minValue, maxValue])
-        .range([this.dimensions[1] - margin, margin]);
+        .range([maxDimension, minDimension]);
     }
 
     return [valueScale, offsetValue];

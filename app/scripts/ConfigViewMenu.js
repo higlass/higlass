@@ -236,6 +236,12 @@ class ConfigViewMenu extends ContextMenuContainer {
         >
         {'Export views as SVG'}
         </ContextMenuItem>
+        
+        <ContextMenuItem
+          onClick={() => this.props.onExportPNG()}
+        >
+        {'Export views as PNG'}
+        </ContextMenuItem>
 
         <ContextMenuItem
           onClick={() => this.props.onExportViewAsJSON()}
@@ -258,6 +264,7 @@ class ConfigViewMenu extends ContextMenuContainer {
 
 ConfigViewMenu.propTypes = {
   onExportSVG: PropTypes.func,
+  onExportPNG: PropTypes.func,
   onExportViewAsJSON: PropTypes.func,
   onExportViewAsLink: PropTypes.func,
   onLockLocation: PropTypes.func,

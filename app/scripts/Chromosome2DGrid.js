@@ -8,7 +8,7 @@ import { colorToHex } from './utils';
 
 class Chromosome2DGrid extends PixiTrack {
   constructor(pubSub, scene, dataConfig, handleTilesetInfoReceived, options, animate, chromInfoPath) {
-    super(pubSub, scene, dataConfig, handleTilesetInfoReceived, options, animate);
+    super(pubSub, scene, options);
 
     this.searchField = null;
     this.chromInfo = null;
@@ -63,13 +63,6 @@ class Chromosome2DGrid extends PixiTrack {
   }
 
   draw() {
-    const leftChrom = null;
-    const rightChrom = null;
-    const topChrom = null;
-    const bottomChrom = null;
-
-    const allTexts = [];
-
     if (!this.texts) { return; }
 
     if (!this.searchField) { return; }
@@ -80,8 +73,7 @@ class Chromosome2DGrid extends PixiTrack {
   setPosition(newPosition) {
     super.setPosition(newPosition);
 
-    this.pMain.position.y = this.position[1];
-    this.pMain.position.x = this.position[0];
+    ([this.pMain.position.x, this.pMain.position.y] = this.position);
   }
 
   zoomed(newXScale, newYScale) {
@@ -92,8 +84,8 @@ class Chromosome2DGrid extends PixiTrack {
   }
 
   exportSVG() {
-    let track = null,
-      base = null;
+    let track = null;
+    let base = null;
 
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
@@ -109,9 +101,10 @@ class Chromosome2DGrid extends PixiTrack {
     output.setAttribute('transform',
       `translate(${this.position[0]},${this.position[1]})`);
 
-    if (!this.chromInfo)
+    if (!this.chromInfo) {
     // we haven't received the chromosome info yet
-    { return [base, track]; }
+      return [base, track];
+    }
 
     const strokeColor = this.options.gridStrokeColor ? this.options.gridStrokeColor : 'blue';
     const strokeWidth = this.options.gridStrokeWidth;

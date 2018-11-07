@@ -61,6 +61,15 @@ export const TRACKS_INFO = [
     defaultOptions: {},
   },
   {
+    type: 'simple-svg',
+    datatype: [],
+    local: false,
+    minHeight: 100,
+    minWidth: 100,
+    orientation: '2d',
+    exportable: true,
+  },
+  {
     type: 'heatmap',
     datatype: ['matrix'],
     local: false,
@@ -288,7 +297,7 @@ export const TRACKS_INFO = [
     datatype: ['vector'],
     local: false,
     orientation: '1d-horizontal',
-    minHeight: 100,
+    minHeight: 1,
     thumbnail: null,
     availableOptions: [
       'labelPosition',
@@ -608,6 +617,7 @@ export const TRACKS_INFO = [
     name: '2D Tile Outlines',
     thumbnail: svg2DTilesIcon,
   },
+
   {
     type: 'horizontal-1d-value-interval',
     datatype: ['bed-value'],
@@ -1079,7 +1089,7 @@ export const TRACKS_INFO = [
     type: 'horizontal-chromosome-labels',
     datatype: ['chromsizes'],
     orientation: '1d-horizontal',
-    minHeight: 10,
+    minHeight: 35,
     defaultHeight: 30,
     name: 'Chromosome Axis',
     thumbnail: null,
@@ -1104,7 +1114,7 @@ export const TRACKS_INFO = [
     type: 'vertical-chromosome-labels',
     datatype: ['chromsizes'],
     orientation: '1d-vertical',
-    minWidth: 10,
+    minWidth: 35,
     defaultWidth: 30,
     name: 'Chromosome Axis',
     thumbnail: null,
@@ -1164,6 +1174,27 @@ export const TRACKS_INFO = [
     },
   },
   {
+    type: 'osm-2d-tile-ids',
+    datatype: ['map-tiles'],
+    local: false,
+    orientation: '2d',
+    name: 'OSM Tile Outlines',
+    thumbnail: svg2DTilesIcon,
+    availableOptions: [
+      'minPos',
+      'maxPos',
+      'maxZoom',
+      'labelPosition',
+      'name',
+    ],
+    defaultOptions: {
+      minPos: -180,
+      maxPos: 180,
+      maxZoom: 19,
+      labelPosition: 'bottomRight',
+    },
+  },
+  {
     type: 'mapbox-tiles',
     datatype: ['map-tiles'],
     local: true,
@@ -1178,6 +1209,22 @@ export const TRACKS_INFO = [
     ],
     defaultOptions: {
       style: 'mapbox.streets',
+      labelPosition: 'bottomRight',
+    },
+  },
+  {
+    type: 'raster-tiles',
+    datatype: ['map-tiles'],
+    local: true,
+    orientation: '2d',
+    hidden: true,
+    name: 'Raster Tiles',
+    thumbnail: svgGeoMapIcon,
+    availableOptions: [
+      'labelPosition',
+      'name',
+    ],
+    defaultOptions: {
       labelPosition: 'bottomRight',
     },
   },

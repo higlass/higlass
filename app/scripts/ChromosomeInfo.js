@@ -36,26 +36,29 @@ export function parseChromsizesRows(data) {
 function ChromosomeInfo(filepath, success, pubSub = fakePubSub) {
   const ret = {};
 
-  ret.absToChr = absPos => (this.chromInfo
-    ? absToChr(absPos, this.chromInfo)
+  ret.absToChr = absPos => (ret.chrPositions
+    ? absToChr(absPos, ret)
     : null
   );
 
-  ret.chrToAbs = chrPos => (this.chromInfo
-    ? chrToAbs(...chrPos, this.chromInfo)
+  ret.chrToAbs = ([chrName, chrPos] = []) => (ret.chrPositions
+    ? chrToAbs(chrName, chrPos, ret)
     : null
   );
 
   return tileProxy.text(filepath, (error, chrInfoText) => {
     if (error) {
-      console.warn('Chromosome info not found at:', filepath);
+      // console.warn('Chromosome info not found at:', filepath);
       if (success) success(null);
-    }
-    const data = tsvParseRows(chrInfoText);
-    const chromInfo = parseChromsizesRows(data);
+    } else {
+      const data = tsvParseRows(chrInfoText);
+      const chromInfo = parseChromsizesRows(data);
 
-    ret.chromInfo = chromInfo;
-    if (success) success(chromInfo);
+      Object.keys(chromInfo).forEach((key) => {
+        ret[key] = chromInfo[key];
+      });
+      if (success) success(ret);
+    }
   }, pubSub).then(() => ret);
 }
 

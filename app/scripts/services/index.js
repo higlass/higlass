@@ -5,6 +5,7 @@ export {
   default as tileProxy,
   requestsInFlight,
   setTileProxyAuthHeader,
+  getTileProxyAuthHeader,
   authHeader
 } from './tile-proxy';
 export { getDarkTheme, setDarkTheme } from './is-dark-theme';

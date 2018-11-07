@@ -71,7 +71,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   renderTile(tile) {
     if (!tile.graphics) return;
 
-    const graphics = tile.graphics;
+    const { graphics } = tile;
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
@@ -191,7 +191,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     }
   }
 
-  rerender(options) {
+  rerender(options, force) {
     if (options && options.colorRange) {
       if (options.colorRangeGradient) {
         this.setColorGradient(options.colorRange);
@@ -200,7 +200,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       }
     }
 
-    super.rerender(options);
+    super.rerender(options, force);
   }
 
   draw() {
@@ -211,13 +211,14 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     Object.values(this.fetchedTiles).forEach((tile) => {
       // scaling between tiles
       const tileK = (
-        (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
-        (this._xScale.domain()[1] - this._xScale.domain()[0])
+        (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
+        / (this._xScale.domain()[1] - this._xScale.domain()[0])
       );
 
       const newRange = this._xScale.domain().map(tile.drawnAtScale);
 
       const posOffset = newRange[0];
+
       tile.graphics.scale.x = tileK;
       tile.graphics.position.x = -posOffset * tileK;
     });
@@ -258,7 +259,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   /**
    * Export an SVG representation of this track
    *
-   * @returns {[DOMNode,DOMNode]} The two returned DOM nodes are both SVG
+   * @returns {Array} The two returned DOM nodes are both SVG
    * elements [base,track]. Base is a parent which contains track as a
    * child. Track is clipped with a clipping rectangle contained in base.
    *
@@ -311,8 +312,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     // add the axis to the export
     if (
-      this.options.axisPositionHorizontal === 'left' ||
-      this.options.axisPositionVertical === 'top'
+      this.options.axisPositionHorizontal === 'left'
+      || this.options.axisPositionVertical === 'top'
     ) {
       // left axis are shown at the beginning of the plot
       const gDrawnAxis = this.axis.exportAxisLeftSVG(
@@ -320,8 +321,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       );
       gAxis.appendChild(gDrawnAxis);
     } else if (
-      this.options.axisPositionHorizontal === 'right' ||
-      this.options.axisPositionVertical === 'bottom'
+      this.options.axisPositionHorizontal === 'right'
+      || this.options.axisPositionVertical === 'bottom'
     ) {
       const gDrawnAxis = this.axis.exportAxisRightSVG(
         this.valueScale, this.dimensions[1]

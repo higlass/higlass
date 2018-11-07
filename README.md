@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/hms-dbmi/higlass.svg?branch=master)](https://travis-ci.org/hms-dbmi/higlass)
-[![Live Docs](https://img.shields.io/badge/docs-live-red.svg?colorB=0f5d92)](https://hms-dbmi.github.io/higlass-docs/)
+[![Build Status](https://travis-ci.org/higlass/higlass.svg?branch=master)](https://travis-ci.org/hms-dbmi/higlass)
+[![Live Docs](https://img.shields.io/badge/docs-live-red.svg?colorB=0f5d92)](https://docs.higlass.io/)
 [![DOI](https://zenodo.org/badge/56026057.svg)](https://zenodo.org/badge/latestdoi/56026057)
 
 
@@ -15,6 +15,10 @@ the results with the community.
 A live instance can be found at [http://higlass.io](http://higlass.io). A [Docker container](https://github.com/hms-dbmi/higlass-docker) is available for running an instance locally, although we recommend using the [higlass-manage](https://github.com/pkerpedjiev/higlass-manage) package to start, stop and configure local instances.
 
 For documentation about how to use and install HiGlass, please visit [http://docs.higlass.io](http://docs.higlass.io).
+
+### Citation
+
+Kerpedjiev, P., Abdennur, N., Lekschas, F., McCallum, C., Dinkla, K., Strobelt, H., ... & Gehlenborg, N. *HiGlass: Web-based Visual Exploration and Analysis of Genome Interaction Maps.* Genome Biology (2018): 19:125. https://doi.org/10.1186/s13059-018-1486-1
 
 ### Example
 
@@ -33,7 +37,7 @@ npm run start
 
 ### Tests
 
-The tests for the React components and API functions are located in the `test` directory.
+The tests for the React components and API functions are located in the `test` directory. To save time and only run relevant tests, open `karma.conf.js` and select the test files to run before running `test-watch`.
 
 ```
 npm run test-watch
@@ -67,42 +71,9 @@ HiGlass provides an API for controlling the component from within a Javascript s
 </div>
 
 <script>
-var testViewConfig =
-{
-  "editable": true,
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
-  "exportViewUrl": "http://higlass.io/api/v1/viewconfs",
-  "views": [
-    {
-      "uid": "view1",
-      "tracks": {
-        "center": [
-              {
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-                "type": "heatmap"
-              }
-        ]
-      },
-      "genomePositionSearchBox": {
-        "autocompleteServer": "http://higlass.io/api/v1",
-        "chromInfoServer": "http://higlass.io/api/v1",
-        "visible": true,
-        "chromInfoId": "hg19",
-        "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
-      }
-    }
-  ],
-
-}
-
-
 const api = hglib.createHgComponent(
     document.getElementById('development-demo'),
-    testViewConfig,
+    'http://higlass.io/api/v1/viewconfs/?d=default',
     { bounded: true }
 );
 </script>

@@ -41,8 +41,7 @@ const unsubscribe = stack => (event, callback) => {
   if (!stack[event]) return;
 
   if (typeof event === 'object') {
-    event = event.event; // eslint-disable-line no-param-reassign
-    callback = event.callback; // eslint-disable-line no-param-reassign
+    ({ event, callback } = event); // eslint-disable-line no-param-reassign
   }
 
   const id = stack[event].indexOf(callback);
@@ -67,7 +66,9 @@ const publish = stack => (event, news) => {
 
   stack[event].forEach((listener, i) => {
     listener(news);
-    if (!(stack.__times[event][i] -= 1)) unsubscriber(event, listener);
+    if (!(stack.__times[event][i] -= 1)) { // eslint-disable-line no-cond-assign
+      unsubscriber(event, listener);
+    }
   });
 };
 

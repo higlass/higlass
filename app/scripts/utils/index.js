@@ -37,6 +37,9 @@ export { default as map } from './map';
 export { default as max } from './max';
 export { default as min } from './min';
 export { default as mod } from './mod';
+export { default as ndarrayAssign } from './ndarray-assign';
+export { default as ndarrayFlatten } from './ndarray-flatten';
+export { default as ndarrayToList } from './ndarray-to-list';
 export { default as numericifyVersion } from './numericify-version';
 export { default as objVals } from './obj-vals';
 export { default as or } from './or';
@@ -61,3 +64,15 @@ export { default as trimTrailingSlash } from './trim-trailing-slash';
 export { default as valueToColor } from './value-to-color';
 export { default as expandCombinedTracks } from './expand-combined-tracks';
 export { default as segmentsToRows } from './segments-to-rows';
+export {
+  getTrackObjectFromHGC,
+  getTrackRenderer,
+  getTiledPlot,
+} from './get-higlass-components';
+export {
+  waitForJsonComplete,
+  waitForTilesLoaded,
+  waitForTransitionsFinished,
+  mountHGComponent,
+  removeHGComponent,
+} from './test-helpers';

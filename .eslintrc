@@ -18,6 +18,12 @@
     },
     "ecmascript": 6
   },
+  "globals": {
+    "beforeEach": true,
+    "describe": true,
+    "expect": true,
+    "it": true
+  },
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
@@ -30,6 +36,7 @@
     "guard-for-in": 0,
     "jsx-quotes": 1,
     "no-bitwise": 0,
+    "no-console": ["error", { "allow": ["warn", "error"] }],
     "no-continue": 0,
     "no-mixed-operators": ["error", { "allowSamePrecedence": true }],
     "no-multi-spaces": ["error", { "ignoreEOLComments": true }],

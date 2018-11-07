@@ -130,6 +130,107 @@ class GenomePositionSearchBox extends React.Component {
     this.props.removeViewportChangedListener();
   }
 
+  onAutocompleteChange(evt, value) {
+    this.positionText = value;
+    this.setState({
+      value,
+      loading: true
+    });
+
+    this.changedPart = null;
+    const spaceParts = value.split(/ /);
+    let partIndex = 0;
+    const newParts = [];
+    let changedAtStartOfWord = false;
+
+    for (let j = 0; j < spaceParts.length; j++) {
+      const parts = spaceParts[j].split(/-/);
+
+      for (let i = 0; i < parts.length; i++) {
+        partIndex += 1;
+        newParts.push(parts[i]);
+
+        if (i === 0) changedAtStartOfWord = true;
+        else changedAtStartOfWord = false;
+
+        if (i === this.prevParts.length) {
+          // new part added
+          this.changedPart = partIndex - 1;
+          break;
+        }
+
+        if (parts[i] !== this.prevParts[i]) {
+          this.changedPart = partIndex - 1;
+          break;
+        }
+      }
+    }
+
+    this.prevParts = newParts;
+
+    // no autocomplete repository is provided, so we don't try to autcomplete anything
+    if (!(this.state.autocompleteServer && this.state.autocompleteId)) {
+      return;
+    }
+
+    if (this.changedPart != null) {
+      // if something has changed in the input text
+      this.setState({
+        loading: true
+      });
+      // send out a request for the autcomplete suggestions
+      let url = `${this.state.autocompleteServer}/suggest/`;
+      url += `?d=${this.state.autocompleteId}&ac=${newParts[this.changedPart].toLowerCase()}`;
+      tileProxy.json(url, (error, data) => {
+        if (error) {
+          this.setState({
+            loading: false,
+            genes: []
+          });
+        } else {
+          if (this.changedPart > 0 && !changedAtStartOfWord) {
+            // send out another request for genes with dashes in them
+            // but we need to distinguish things that have a dash in front
+            // from things that just have a space in front
+
+            let url1 = `${this.state.autocompleteServer}/suggest/`;
+            url1 += `?d=${this.state.autocompleteId}&ac=`;
+            url1 += `${newParts[this.changedPart-1].toLowerCase()}-${newParts[this.changedPart].toLowerCase()}`;
+            tileProxy.json(url1, (error1, data1) => {
+              if (error1) {
+                this.setState({
+                  loading: false,
+                  genes: data,
+                });
+              } else {
+                this.setState({
+                  loading: false,
+                  genes: data1.concat(data),
+                });
+              }
+            });
+          } else {
+            // we've received a list of autocomplete suggestions
+            this.setState({ loading: false, genes: data });
+          }
+        }
+      });
+    }
+  }
+
+  setAvailableAssemblies() {
+    const chromsizeKeys = new Set(dictKeys(this.availableChromSizes));
+
+    const commonKeys = new Set([...chromsizeKeys]);
+
+    if (this.gpsbForm) {
+      // only set the state if this comonent is mounted
+      this.setState({
+        availableAssemblies: [...commonKeys],
+      });
+    }
+  }
+
   setSelectedAssembly(assemblyName) {
     // component is probably about to be unmounted
     if (!this.mounted) return;
@@ -173,74 +274,38 @@ class GenomePositionSearchBox extends React.Component {
     this.fetchChromInfo(serverAndChromInfoToUse.uuid, serverAndChromInfoToUse.server);
   }
 
-  fetchChromInfo(chromInfoId, server) {
-    /**
-     * The user has selected an assembly to use for the coordinate search box
-     *
-     * Parameters
-     * ----------
-     *  chromInfoId: string
-     *      The name of the chromosome info set to use
-     *
-     * Returns
-     * -------
-     *  null
-     *      Once the appropriate ChromInfo file is fetched, it is stored locally
-     */
+  setPositionText() {
+    if (!this.mounted) { return; }
+    if (!this.searchField) { return; }
 
-    ChromosomeInfo(`${server}/chrom-sizes/?id=${chromInfoId}`, (newChromInfo) => {
-      tileProxy.json(`${server}/tileset_info/?d=${chromInfoId}`, (error, tilesetInfo) => {
-        if (this.gpsbForm) {
-          // only set the state if this component is mounted
-          this.setState({
-            selectedAssembly: tilesetInfo[chromInfoId].coordSystem,
-          });
-        }
-      });
+    const positionString = this.searchField.scalesToPositionText(this.xScale,
+      this.yScale,
+      this.props.twoD);
 
-      this.chromInfo = newChromInfo;
-      this.searchField = new SearchField(this.chromInfo);
+    // ReactDOM.findDOMNode( this.refs.searchFieldText).value = positionString;
+    // used for autocomplete
+    this.prevParts = positionString.split(/[ -]/);
 
-      this.setPositionText();
-    }, this.props.pubSub);
+    // console.log('this.autocompleteMenu', this.autocompleteMenu.inputEl);
+    if (this.gpsbForm) {
+      this.positionText = positionString;
+
+
+      // this.origPositionText is used to reset the text if somebody clicks submit
+      // on an empty field
+      this.origPositionText = positionString;
+
+      this.autocompleteMenu.inputEl.value = positionString;
+      // this.setState({ value: positionString });
+    }
   }
 
-  findAvailableAutocompleteSources() {
-    if (!this.props.trackSourceServers) {
-      // if there's no available track source servers
-      // we can't search for autocomplete sources
-      return;
-    }
+  scalesChanged(xScale, yScale) {
+    this.xScale = xScale;
+    this.yScale = yScale;
 
-    this.props.trackSourceServers.forEach((sourceServer) => {
-      tileProxy.json(`${sourceServer}/tilesets/?limit=100&dt=gene-annotation`, (error, data) => {
-        if (error) {
-          console.error(error);
-        } else {
-          data.results.forEach((x) => {
-            if (!(x.coordSystem in this.availableAutocompletes)) {
-              this.availableAutocompletes[x.coordSystem] = new Set();
-            }
-
-            this.availableAutocompletes[x.coordSystem].add({ server: sourceServer, acId: x.uuid });
-            this.setAvailableAssemblies();
-          });
-
-          if (!this.state.autocompleteId) {
-            // We don't have an autocomplete source yet, so set the one matching the current
-            // assembly
-            if (this.gpsbForm) {
-              // only set the state if this component is mounted
-              if (this.availableAutocompletes[this.props.chromInfoId]) {
-                this.setState({
-                  autocompleteId: [...this.availableAutocompletes[this.props.chromInfoId]][0].acId,
-                });
-              }
-            }
-          }
-        }
-      });
-    });
+    // make sure that this component is loaded first
+    this.setPositionText();
   }
 
   findAvailableChromSizes() {
@@ -283,50 +348,87 @@ class GenomePositionSearchBox extends React.Component {
     });
   }
 
-  setAvailableAssemblies() {
-    const chromsizeKeys = new Set(dictKeys(this.availableChromSizes));
+  findAvailableAutocompleteSources() {
+    if (!this.props.trackSourceServers) {
+      // if there's no available track source servers
+      // we can't search for autocomplete sources
+      return;
+    }
 
-    const commonKeys = new Set([...chromsizeKeys]);
+    this.props.trackSourceServers.forEach((sourceServer) => {
+      tileProxy.json(`${sourceServer}/tilesets/?limit=100&dt=gene-annotation`, (error, data) => {
+        if (error) {
+          console.error(error);
+        } else {
+          data.results.forEach((x) => {
+            if (!(x.coordSystem in this.availableAutocompletes)) {
+              this.availableAutocompletes[x.coordSystem] = new Set();
+            }
 
-    if (this.gpsbForm) {
-      // only set the state if this comonent is mounted
-      this.setState({
-        availableAssemblies: [...commonKeys],
+            this.availableAutocompletes[x.coordSystem].add({ server: sourceServer, acId: x.uuid });
+            this.setAvailableAssemblies();
+          });
+
+          if (!this.state.autocompleteId) {
+            // We don't have an autocomplete source yet, so set the one matching the current
+            // assembly
+            if (this.gpsbForm) {
+              // only set the state if this component is mounted
+              if (this.availableAutocompletes[this.props.chromInfoId]) {
+                this.setState({
+                  autocompleteId: [...this.availableAutocompletes[this.props.chromInfoId]][0].acId,
+                });
+              }
+            }
+          }
+        }
       });
-    }
+    });
   }
 
-  scalesChanged(xScale, yScale) {
-    this.xScale = xScale, this.yScale = yScale;
+  /**
+   * The user has selected an assembly to use for the coordinate search box.
+   * Once the appropriate ChromInfo file is fetched, it is stored locally
+   *
+   * @param {string} chromInfoId The name of the chromosome info set to use
+   */
+  fetchChromInfo(chromInfoId, server) {
+    // console.log('chromInfoId', chromInfoId);
 
-    // make sure that this component is loaded first
-    this.setPositionText();
-  }
+    ChromosomeInfo(`${server}/chrom-sizes/?id=${chromInfoId}`, (newChromInfo) => {
+      if (!newChromInfo) {
+        return;
+      }
 
-  setPositionText() {
-    if (!this.mounted) { return; }
-    if (!this.searchField) { return; }
+      // console.log('error1', error1);
+      tileProxy.json(`${server}/tileset_info/?d=${chromInfoId}`, (error2, tilesetInfo) => {
+        if (error2) {
+          return;
+        }
 
-    const positionString = this.searchField.scalesToPositionText(this.xScale,
-      this.yScale,
-      this.props.twoD);
+        if (this.gpsbForm) {
+          // only set the state if this component is mounted
+          this.setState({
+            selectedAssembly: tilesetInfo[chromInfoId].coordSystem,
+          });
+        }
+      });
 
-    // ReactDOM.findDOMNode( this.refs.searchFieldText).value = positionString;
-    // used for autocomplete
-    this.prevParts = positionString.split(/[ -]/);
+      this.chromInfo = newChromInfo;
+      this.searchField = new SearchField(this.chromInfo);
 
-    //console.log('this.autocompleteMenu', this.autocompleteMenu.inputEl);
-    if (this.gpsbForm) {
-      this.positionText = positionString;
-      this.autocompleteMenu.inputEl.value = positionString;
-      //this.setState({ value: positionString });
-    }
+      this.setPositionText();
+    }, this.props.pubSub);
   }
 
   autocompleteKeyPress() {
     const ENTER_KEY_CODE = 13;
 
-    if (event.keyCode == ENTER_KEY_CODE) { this.buttonClick(); }
+    if (event.keyCode === ENTER_KEY_CODE) { this.buttonClick(); }
+  }
+
+  genePositionToSearchBarText(genePosition) {
+
   }
 
   replaceGenesWithLoadedPositions(genePositions) {
@@ -338,56 +440,75 @@ class GenomePositionSearchBox extends React.Component {
     for (let i = 0; i < spaceParts.length; i++) {
       const dashParts = spaceParts[i].split('-');
 
-      for (let j = 0; j < dashParts.length; j++) {
-        // if we're in this function, this gene name must have been loaded
-        const genePosition = genePositions[dashParts[j].toLowerCase()];
+      // check if this "word" is a gene symbol which can be replaced
 
-        if (!genePosition) {
-          continue;
+      // iterate over chunks, checking what the maximum replaceable
+      // unit is
+      let j = 0;
+      let k = 0;
+      let spacePart = '';
+
+      while (j < dashParts.length) {
+        k = dashParts.length;
+
+        while (k > j) {
+          const dashChunk = dashParts.slice(j, k).join('-').toLowerCase();
+
+          if (genePositions[dashChunk]) {
+            const genePosition = genePositions[dashChunk];
+            const extension = Math.floor((genePosition.txEnd - genePosition.txStart) / 4);
+
+            if (j === 0 && k < dashParts.length) {
+              // there's more parts so this is the first part
+              spacePart = `${genePosition.chr}:${genePosition.txStart - extension}`;
+            } else if (j === 0 && k === dashParts.length) {
+              // there's only one part so this is a position
+              spacePart = `${genePosition.chr}:${genePosition.txStart - extension}-${genePosition.txEnd + extension}`;
+            } else {
+              spacePart += `- ${genePosition.chr}:${genePosition.txEnd + extension}`;
+              // it's the last part of a range
+            }
+            break;
+          } else if (k === j + 1) {
+            if (spacePart.length) {
+              spacePart += '-';
+            }
+
+            spacePart += dashChunk;
+          }
+
+          k -= 1;
         }
 
-        // elongate the span of the gene so that it doesn't take up the entire
-        // view
-        const extension = Math.floor((genePosition.txEnd - genePosition.txStart) / 4);
-
-        if (dashParts.length == 1) {
-          // no range, just a position
-          dashParts[j] = `${genePosition.chr}:${genePosition.txStart - extension
-          }-${genePosition.txEnd + extension}`;
-        } else if (j == 0) {
-          // first part of a range
-
-          dashParts[j] = `${genePosition.chr}:${genePosition.txStart - extension}`;
-        } else {
-          // last part of a range
-
-          dashParts[j] = `${genePosition.chr}:${genePosition.txEnd + extension}`;
-        }
-
-        spaceParts[i] = dashParts.join('-');
+        // console.log('j:', j, k);
+        j = k + 1;
       }
+
+      spaceParts[i] = spacePart;
     }
 
     const newValue = spaceParts.join(' ');
     this.prevParts = newValue.split(/[ -]/);
 
     this.positionText = newValue;
-    this.setState({ value: newValue });
+    this.setState({
+      value: newValue,
+    });
   }
 
   replaceGenesWithPositions(finished) {
     // replace any gene names in the input with their corresponding positions
-    const value_parts = this.positionText.split(/[ -]/);
+    const valueParts = this.positionText.split(/[ -]/);
     let q = queue();
 
-    for (let i = 0; i < value_parts.length; i++) {
-      if (value_parts[i].length == 0) { continue; }
+    for (let i = 0; i < valueParts.length; i++) {
+      if (valueParts[i].length == 0) { continue; }
 
-      const [chr, pos, retPos] = this.searchField.parsePosition(value_parts[i]);
+      const [chr, pos, retPos] = this.searchField.parsePosition(valueParts[i]);
 
       if (retPos == null || isNaN(retPos)) {
         // not a chromsome position, let's see if it's a gene name
-        const url = `${this.state.autocompleteServer}/suggest/?d=${this.state.autocompleteId}&ac=${value_parts[i].toLowerCase()}`;
+        const url = `${this.state.autocompleteServer}/suggest/?d=${this.state.autocompleteId}&ac=${valueParts[i].toLowerCase()}`;
         q = q.defer(tileProxy.json, url);
       }
     }
@@ -417,10 +538,16 @@ class GenomePositionSearchBox extends React.Component {
     this.setState({ genes: [] }); // no menu should be open
 
     this.replaceGenesWithPositions(() => {
-      const searchFieldValue = this.positionText; // ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
+      const searchFieldValue = this.positionText;
+      // ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
 
       if (this.searchField != null) {
         let [range1, range2] = this.searchField.searchPosition(searchFieldValue);
+
+        if (!range1) {
+          this.setPositionText(this.origPositionText);
+          return;
+        }
 
         if ((range1 && (isNaN(range1[0]) || isNaN(range1[1]))) ||
           (range2 && (isNaN(range2[0]) || isNaN(range2[1])))) {
@@ -449,63 +576,39 @@ class GenomePositionSearchBox extends React.Component {
     return parts.join(separator).replace(replace, separator);
   }
 
-
-  onAutocompleteChange(event, value) {
-    this.positionText = value;
-    this.setState({ value, loading: true });
-
-    const parts = value.split(/[ -]/);
-    this.changedPart = null;
-
-    for (let i = 0; i < parts.length; i++) {
-      if (i == this.prevParts.length) {
-        // new part added
-        this.changedPart = i;
-        break;
-      }
-
-      if (parts[i] != this.prevParts[i]) {
-        this.changedPart = i;
-        break;
-      }
-    }
-
-    this.prevParts = parts;
-
-    // no autocomplete repository is provided, so we don't try to autcomplete anything
-    if (!(this.state.autocompleteServer && this.state.autocompleteId)) {
-      return;
-    }
-
-    if (this.changedPart != null) {
-      // if something has changed in the input text
-      this.setState({ loading: true });
-      // send out a request for the autcomplete suggestions
-      const url = `${this.state.autocompleteServer}/suggest/?d=${this.state.autocompleteId}&ac=${parts[this.changedPart].toLowerCase()}`;
-      tileProxy.json(url, (error, data) => {
-        if (error) {
-          this.setState({ loading: false, genes: [] });
-          return;
-        }
-
-        // we've received a list of autocomplete suggestions
-        this.setState({ loading: false, genes: data });
-      });
-    }
-  }
-
   geneSelected(value, objct) {
     const parts = this.positionText.split(' ');
     let partCount = this.changedPart;
 
     // change the part that was selected
     for (let i = 0; i < parts.length; i++) {
-      const dash_parts = parts[i].split('-');
-      if (partCount > dash_parts.length - 1) {
-        partCount -= dash_parts.length;
+      const dashParts = parts[i].split('-');
+      const geneParts = objct.geneName.split('-');
+
+      if (partCount > dashParts.length - 1) {
+        partCount -= dashParts.length;
       } else {
-        dash_parts[partCount] = objct.geneName;
-        parts[i] = dash_parts.join('-');
+        dashParts[partCount] = objct.geneName;
+
+        if (geneParts.length === 2
+          && partCount > 0
+          && dashParts[partCount - 1].toLowerCase() === geneParts[0].toLowerCase()) {
+          // the gene to be added contains a dash and is
+          // meant to replace a part of the previous gene
+          // e.g. SOX2-O should be replaced with SOX2-OT
+
+          const newDashParts = dashParts.slice(0, partCount-1);
+          newDashParts.push(geneParts.join('-'));
+
+          if (partCount < dashParts.length - 1) {
+            newDashParts.push(dashParts.slice(partCount + 1));
+          }
+
+          parts[i] = newDashParts.join('-');
+        } else {
+          parts[i] = dashParts.join('-');
+        }
+
         break;
       }
     }
@@ -572,23 +675,21 @@ class GenomePositionSearchBox extends React.Component {
   render() {
     const assemblyMenuItems = this.state.availableAssemblies.map(x => (
       <MenuItem
-        eventKey={x}
         key={x}
+        eventKey={x}
       >
         {x}
       </MenuItem>
     ));
 
-    let className = this.state.isFocused ?
-      'styles.genome-position-search-focus' : 'styles.genome-position-search';
+    let className = this.state.isFocused
+      ? 'styles.genome-position-search-focus'
+      : 'styles.genome-position-search';
 
-    const classNameButton = this.state.isFocused ?
-      'styles.genome-position-search-bar-button-focus' :
-      'styles.genome-position-search-bar-button';
+    const classNameButton = this.state.isFocused
+      ? 'styles.genome-position-search-bar-button-focus'
+      : 'styles.genome-position-search-bar-button';
 
-    const classNameIcon = this.state.isFocused ?
-      'styles.genome-position-search-bar-icon-focus' :
-      'styles.genome-position-search-bar-icon';
 
     if (getDarkTheme()) className += ' styles.genome-position-search-dark';
 
@@ -613,6 +714,7 @@ class GenomePositionSearchBox extends React.Component {
           getItemValue={item => item.geneName}
           inputProps={{
             className: styles['genome-position-search-bar'],
+            title: "Current location: enter a symbol or location to change the position of the current view",
           }}
           items={this.state.genes}
           menuStyle={{

@@ -15,7 +15,12 @@ class MapboxTilesTrack extends OSMTilesTrack {
     super(pubSub, scene, options, animate);
 
     this.style = options.style;
-    this.accessToken = accessToken;
+
+    if (!this.options.accessToken) {
+        this.errorTextText = "No access token provided in the viewconf options ('accessToken' option)."
+
+        this.drawError();
+    }
   }
 
   rerender(newOptions) {
@@ -39,7 +44,7 @@ class MapboxTilesTrack extends OSMTilesTrack {
       mapStyle = this.options.style;
     }
 
-    const src = `http://api.tiles.mapbox.com/v4/${mapStyle}/${tileZxy[0]}/${tileZxy[1]}/${tileZxy[2]}.png?access_token=${this.accessToken}`;
+    const src = `http://api.tiles.mapbox.com/v4/${mapStyle}/${tileZxy[0]}/${tileZxy[1]}/${tileZxy[2]}.png?access_token=${this.options.accessToken}`;
 
     return src;
   }

@@ -61,6 +61,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     // create texts
     tile.texts = {};
 
+    // console.log('tile:', tile.tileId, tile.tileData);
     tile.rectGraphics = new PIXI.Graphics();
     tile.textBgGraphics = new PIXI.Graphics();
     tile.textGraphics = new PIXI.Graphics();
@@ -78,6 +79,9 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     tile.tileData.forEach((td, i) => {
       const geneInfo = td.fields;
+      const geneName = geneInfo[3];
+      const geneId = this.geneId(geneInfo);
+
       let fill = this.options.plusStrandColor || 'blue';
 
       if (geneInfo[5] === '-') {
@@ -89,9 +93,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       // don't draw texts for the latter entries in the tile
       if (i >= MAX_TEXTS) return;
 
-      // geneInfo[3] is the gene symbol
       const text = new PIXI.Text(
-        geneInfo[3],
+        geneName,
         {
           fontSize: `${this.fontSize}px`,
           fontFamily: FONT_FAMILY,
@@ -105,7 +108,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       text.anchor.x = 0.5;
       text.anchor.y = 1;
 
-      tile.texts[geneInfo[3]] = text; // index by geneName
+      tile.texts[geneId] = text; // index by geneName
 
       tile.textGraphics.addChild(text);
     });
@@ -130,18 +133,20 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           // contain gene annotations stretching multiple tiles. By removing this tile
           // the annotation visualization will be gone but the other tiles might still
           // contain its data.
-          const reRender = Object.keys(this.drawnGenes[zoomLevel][gene].otherTileIds)
-            .some((tileId) => {
-              if (tileIds[tileId]) {
-                this.drawnGenes[zoomLevel][gene].otherTileIds[tileId] = undefined;
-                delete this.drawnGenes[zoomLevel][gene].otherTileIds[tileId];
-                this.drawnGenes[zoomLevel][gene].tileId = tileId;
-                this.renderTile(tileIds[tileId]);
-                return true;
-              }
-              return false;
-            });
-          if (!reRender) this.drawnGenes[zoomLevel][gene] = undefined;
+          if (this.drawnGenes[zoomLevel][gene]) {
+            const reRender = Object.keys(this.drawnGenes[zoomLevel][gene].otherTileIds)
+              .some((tileId) => {
+                if (tileIds[tileId]) {
+                  this.drawnGenes[zoomLevel][gene].otherTileIds[tileId] = undefined;
+                  delete this.drawnGenes[zoomLevel][gene].otherTileIds[tileId];
+                  this.drawnGenes[zoomLevel][gene].tileId = tileId;
+                  this.renderTile(tileIds[tileId]);
+                  return true;
+                }
+                return false;
+              });
+            if (!reRender) this.drawnGenes[zoomLevel][gene] = undefined;
+          }
         });
     }
   }
@@ -172,6 +177,10 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
   drawTile() {}
 
+  geneId(geneInfo) {
+    return `${geneInfo[0]}_${geneInfo[1]}_${geneInfo[2]}_${geneInfo[3]}`;
+  }
+
   renderTile(tile) {
     if (!tile.initialized) return;
 
@@ -189,7 +198,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     fill['+'] = colorToHex(this.options.plusStrandColor || 'blue');
     fill['-'] = colorToHex(this.options.minusStrandColor || 'red');
 
-    const furz = tile.tileData
+    tile.tileData
       .filter((td) => {
         if (!this.drawnGenes[zoomLevel]) this.drawnGenes[zoomLevel] = {};
 
@@ -224,10 +233,10 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         const exonEnds = geneInfo[13];
 
         const txMiddle = (txStart + txEnd) / 2;
-
         let yMiddle = this.dimensions[1] / 2;
-        const geneName = geneInfo[3];
+        const geneId = this.geneId(geneInfo);
 
+        // console.log('geneInfo:', geneInfo);
         if (geneInfo[5] === '+') {
           // genes on the + strand drawn above and in a user-specified color or the
           // default blue
@@ -254,9 +263,9 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           if (geneInfo.length < 14) {
             // don't draw if the input is invalid
             console.warn(
-              'Gene annotations have less than 14 columns (chrName, chrStart, chrEnd, ' +
-              'symbol, importance, transcript_name, geneId, transcript_type, "-", ' +
-              'txStart, txEnd, exonStarts, exonEnds):',
+              'Gene annotations have less than 14 columns (chrName, chrStart, chrEnd, '
+              + 'symbol, importance, transcript_name, geneId, transcript_type, "-", '
+              + 'txStart, txEnd, exonStarts, exonEnds):',
               geneInfo
             );
           } else {
@@ -300,7 +309,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         // don't draw texts for the latter entries in the tile
         if (i >= MAX_TEXTS) return;
 
-        const text = tile.texts[geneName];
+        const text = tile.texts[geneId];
 
         if (!text) return;
 
@@ -310,13 +319,13 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           fill: fill[geneInfo[5]]
         };
 
-        if (!(geneInfo[3] in tile.textWidths)) {
+        if (!(geneId in tile.textWidths)) {
           text.updateTransform();
           const textWidth = text.getBounds().width;
           const textHeight = text.getBounds().height;
 
-          tile.textWidths[geneInfo[3]] = textWidth;
-          tile.textHeights[geneInfo[3]] = textHeight;
+          tile.textWidths[geneId] = textWidth;
+          tile.textHeights[geneId] = textHeight;
         }
       });
   }
@@ -419,14 +428,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     return polys;
   }
 
-  /**
-  * Position a gene annotation's text at its expected location.
-  * @param {td}: A piece of tile data
-  */
-  positionText(td) {
-
-  }
-
   draw() {
     super.draw();
 
@@ -445,8 +446,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         if (!tile.drawnAtScale) return false;
 
         const tileK = (
-          (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
-          (this._xScale.domain()[1] - this._xScale.domain()[0])
+          (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
+          / (this._xScale.domain()[1] - this._xScale.domain()[0])
         );
 
         return tileK > 3;
@@ -461,8 +462,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       .filter(tile => tile.drawnAtScale)
       .forEach((tile) => {
         const tileK = (
-          (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
-          (this._xScale.domain()[1] - this._xScale.domain()[0])
+          (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
+          / (this._xScale.domain()[1] - this._xScale.domain()[0])
         );
         const newRange = this._xScale.domain().map(tile.drawnAtScale);
 
@@ -484,7 +485,11 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
           const geneInfo = td.fields;
           const geneName = geneInfo[3];
-          const text = tile.texts[geneName];
+          const geneId = this.geneId(geneInfo);
+
+          const text = tile.texts[geneId];
+
+          // console.log('visible geneName:', geneName);
 
           if (!text) return;
 
@@ -513,10 +518,25 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           text.position.x = this._xScale(txMiddle);
           text.position.y = textYMiddle;
 
+          if (!tile.textWidths[geneId]) {
+            // if we haven't measured the text's width in renderTile, do it now
+            // this can occur if the same gene is in more than one tile, so its
+            // dimensions are measured for the first tile and not for the second
+            const textWidth = text.getBounds().width;
+            const textHeight = text.getBounds().height;
+
+            // console.log('textWidth:', textWidth);
+            // console.log('textHeight:', textHeight);
+
+            tile.textHeights[geneId] = textHeight;
+            tile.textWidths[geneId] = textWidth;
+          }
+
           if (!parentInFetched) {
             text.visible = true;
 
             const TEXT_MARGIN = 3;
+
 
             if (this.flipText) {
               // when flipText is set, that means that the track is being displayed
@@ -524,15 +544,17 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
               this.allBoxes.push([
                 text.position.x,
                 textYMiddle - fontSizeHalf - 1,
-                text.position.x + tile.textHeights[geneInfo[3]] + TEXT_MARGIN,
-                textYMiddle + fontSizeHalf - 1
+                text.position.x + tile.textHeights[geneId] + TEXT_MARGIN,
+                textYMiddle + fontSizeHalf - 1,
+                geneName
               ]);
             } else {
               this.allBoxes.push([
                 text.position.x,
                 textYMiddle - fontSizeHalf - 1,
-                text.position.x + tile.textWidths[geneInfo[3]] + TEXT_MARGIN,
-                textYMiddle + fontSizeHalf - 1
+                text.position.x + tile.textWidths[geneId] + TEXT_MARGIN,
+                textYMiddle + fontSizeHalf - 1,
+                geneName
               ]);
             }
 
@@ -542,6 +564,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
               caption: geneName,
               strand: geneInfo[5]
             });
+
             allTiles.push(tile.textBgGraphics);
           } else {
             text.visible = false;
@@ -651,6 +674,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           } else {
             r.setAttribute('fill', this.options.minusStrandColor);
           }
+          r.setAttribute('opacity', '0.3');
 
           gTile.appendChild(r);
         });

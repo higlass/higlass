@@ -22,7 +22,7 @@ class TilesetFinder extends React.Component {
 
     // local tracks are ones that don't have a filetype associated with them
     this.localTracks = TRACKS_INFO
-      .filter(x => x.local && !x.hidden)
+      .filter(x => x.local && !x.hidden);
 
     this.augmentedTracksInfo = TRACKS_INFO;
     if (window.higlassTracksByType) {
@@ -31,13 +31,14 @@ class TilesetFinder extends React.Component {
       });
     }
 
-    if (props.datatype)
-      this.localTracks = this.localTracks.filter(x => x.datatype[0] == props.datatype);
-    else
-      this.localTracks = this.localTracks.filter(x => x.orientation == this.props.orientation);
+    if (props.datatype) {
+      this.localTracks = this.localTracks.filter(x => x.datatype[0] === props.datatype);
+    } else {
+      this.localTracks = this.localTracks.filter(x => x.orientation === this.props.orientation);
+    }
 
 
-    this.localTracks.forEach(x => x.uuid = slugid.nice());
+    this.localTracks.forEach((x) => { x.uuid = slugid.nice(); });
 
     const newOptions = this.prepareNewEntries('', this.localTracks, {});
     const availableTilesetKeys = Object.keys(newOptions);
@@ -53,11 +54,24 @@ class TilesetFinder extends React.Component {
     this.requestTilesetLists();
   }
 
-  serverUidKey(server, uid) {
-    /**
-         * Create a key for a server and uid
-         */
-    return `${server}/${uid}`;
+  componentDidMount() {
+    // we want to query for a list of tracks that are compatible with this
+    // track orientation
+
+    this.mounted = true;
+
+    this.requestTilesetLists();
+
+    if (!this.state.selectedUuid)
+      return;
+
+    const selectedTilesets = [this.state.options[this.state.selectedUuid]];
+
+    if (selectedTilesets) { this.props.selectedTilesetChanged(selectedTilesets); }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   prepareNewEntries(sourceServer, newEntries, existingOptions) {
@@ -87,25 +101,13 @@ class TilesetFinder extends React.Component {
     return newOptions;
   }
 
-  componentDidMount() {
-    // we want to query for a list of tracks that are compatible with this
-    // track orientation
-
-    this.mounted = true;
-
-    this.requestTilesetLists();
-
-    if (!this.state.selectedUuid)
-      return;
-
-    const selectedTilesets = [this.state.options[this.state.selectedUuid]];
-
-    if (selectedTilesets) { this.props.selectedTilesetChanged(selectedTilesets); }
+  serverUidKey(server, uid) {
+    /**
+         * Create a key for a server and uid
+         */
+    return `${server}/${uid}`;
   }
 
-  componentWillUnmount() {
-    this.mounted = false;
-  }
 
   requestTilesetLists() {
     let datatypesQuery = null;
@@ -189,8 +191,8 @@ class TilesetFinder extends React.Component {
     });
   }
 
-  handleSelect(x) {
-    const selectedOptions = ReactDOM.findDOMNode(this.multiSelect).selectedOptions;
+  handleSelect() {
+    const { selectedOptions } = ReactDOM.findDOMNode(this.multiSelect);
     const selectedOptionsList = [];
 
     for (let i = 0; i < selectedOptions.length; i++) {
@@ -214,43 +216,52 @@ class TilesetFinder extends React.Component {
     }
 
     // the list of tilesets / tracks available
-    const options = optionsList
-      .filter(x => x.name.toLowerCase().includes(this.state.filter))
-      .map(x => (<option
+    const sortedOptions = optionsList
+      .filter(x => x.name.toLowerCase().includes(this.state.filter));
+ 
+    sortedOptions.sort((a, b) => (
+      a.name.toLowerCase().localeCompare(b.name.toLowerCase(), 'en')
+    ));
+
+    const options = sortedOptions.map(x => (
+      <option
         onDoubleClick={this.handleOptionDoubleClick.bind(this)}
         key={x.serverUidKey}
         value={x.serverUidKey}
       >
-        {x.name}
+        {`${x.name} | ${x.coordSystem}`}
       </option>));
 
     const form = (
       <Form
         horizontal
-        onSubmit={(evt) => {evt.preventDefault()}}
+        onSubmit={(evt) => { evt.preventDefault(); }}
       >
         <FormGroup>
           <Col sm={3}>
-            <ControlLabel>{'Select tileset'}</ControlLabel>
+            <ControlLabel>{ 'Select tileset' }</ControlLabel>
           </Col>
-          <Col smOffset={5} sm={4}>
+          <Col 
+            sm={4}
+            smOffset={5} 
+          >
             <FormControl
-              placeholder="Search Term"
               ref={(c) => { this.searchBox = c; }}
-              onChange={this.handleSearchChange.bind(this)}
               autoFocus={true}
+              onChange={this.handleSearchChange.bind(this)}
+              placeholder="Search Term"
             />
             <div style={{ height: 10 }} />
           </Col>
           <Col sm={12}>
             <FormControl
+              ref={(c) => { this.multiSelect = c; }}
+              className="tileset-list"
               componentClass="select"
               multiple
-              className={'tileset-list'}
-              value={this.state.selectedUuid ? this.state.selectedUuid : ['x']}
               onChange={this.handleSelect.bind(this)}
-              ref={c => this.multiSelect = c}
               size={15}
+              value={this.state.selectedUuid ? this.state.selectedUuid : ['x']}
             >
               {options}
             </FormControl>

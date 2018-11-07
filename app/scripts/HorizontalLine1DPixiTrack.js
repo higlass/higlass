@@ -223,7 +223,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   /**
    * Export an SVG representation of this track
    *
-   * @returns {[DOMNode,DOMNode]} The two returned DOM nodes are both SVG
+   * @returns {Array} The two returned DOM nodes are both SVG
    * elements [base,track]. Base is a parent which contains track as a
    * child. Track is clipped with a clipping rectangle contained in base.
    *

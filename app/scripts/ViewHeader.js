@@ -123,8 +123,12 @@ class ViewHeader extends React.Component {
             position={this.state.configMenuPosition}
 
             onExportSVG={() => {
-              this.setState({ configMenuUid: null });
+              this.setState({ configMenuUid: null }); // hide the menu
               this.props.onExportSVG();
+            }}
+            onExportPNG={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onExportPNG();
             }}
             onClearView = {() => {
               this.setState({ configMenuUid: null }); // hide the menu
@@ -232,7 +236,10 @@ class ViewHeader extends React.Component {
               <use xlinkHref="#select" />
             </svg>
           )}
-          <div styleName="multitrack-header-grabber">
+          <div 
+            styleName="multitrack-header-grabber"
+            title="Drag to move the view"
+          >
 
             <div /><div /><div />
           </div>
@@ -250,6 +257,7 @@ class ViewHeader extends React.Component {
             onClick={this.props.onAddView}
             styleName={classNameIcon}
           >
+            <title>Add new view (clone this view)</title>
             <use xlinkHref="#copy" />
           </svg>
 
@@ -258,6 +266,7 @@ class ViewHeader extends React.Component {
             onClick={() => this.handleConfigMenuOpened(this.props.viewUid)}
             styleName={classNameIcon}
           >
+            <title>Configure this view</title>
             <use xlinkHref="#cog" />
           </svg>
 
@@ -266,6 +275,7 @@ class ViewHeader extends React.Component {
             onClick={() => this.handleAddTrackPositionMenuOpened(this.props.viewUid)}
             styleName={classNameIcon}
           >
+            <title>Add Track</title>
             <use xlinkHref="#plus" />
           </svg>
 
@@ -273,6 +283,7 @@ class ViewHeader extends React.Component {
             onClick={this.props.onCloseView}
             styleName={classNameIcon}
           >
+            <title>Close View</title>
             <use xlinkHref="#cross" />
           </svg>
         </nav>
@@ -296,6 +307,7 @@ ViewHeader.propTypes = {
   onClearView: PropTypes.func.isRequired,
   onCloseView: PropTypes.func.isRequired,
   onExportSVG: PropTypes.func.isRequired,
+  onExportPNG: PropTypes.func.isRequired,
   onExportViewsAsJSON: PropTypes.func.isRequired,
   onExportViewsAsLink: PropTypes.func.isRequired,
   onLockLocation: PropTypes.func.isRequired,
