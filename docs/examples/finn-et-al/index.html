@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles/page.css">
     <link rel="stylesheet" href="/hglib.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.0/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.0/react-dom.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -41,28 +41,15 @@ hglib
       ];
     }
 
-    function makeViewConf(regions) {
+    function makeViewConf(regions1d) {
       return {
         editable: true,
         zoomFixed: false,
-        trackSourceServers: [
-          'http://higlass.io/api/v1',
-          'http://localhost:8989/api/v1'
-        ],
-        exportViewUrl: 'http://localhost:8000/api/v1/viewconfs/',
         views: [
           {
             uid: 'aa',
-            initialXDomain: [1000000000, 3000000000],
-            initialYDomain: [1000000000, 3000000000],
-            autocompleteSource: 'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
-            genomePositionSearchBox: {
-              autocompleteId: 'OHJakQICQD6gTD7skx4EWA',
-              autocompleteServer: 'http://higlass.io/api/v1',
-              chromInfoId: 'hg19',
-              chromInfoServer: 'http://higlass.io/api/v1',
-              visible: true
-            },
+            initialXDomain: [0, 3500000000],
+            initialYDomain: [0, 3500000000],
             chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
             tracks: {
               top: [
@@ -75,8 +62,7 @@ hglib
                 {
                   type: 'horizontal-1d-annotations',
                   options: {
-                    // TODO: consider chromosomes
-                    regions: regions,
+                    regions: regions1d,
                     minRectWidth: 3,
                     fillOpacity: 0.1,
                     stroke: 'blue',
@@ -122,6 +108,27 @@ hglib
                       maxWidth: 4194304000,
                       binsPerDimension: 256,
                       maxZoom: 14
+                    },
+                    { 
+                      type: '2d-chromosome-annotations', // or 2d-annotations?
+                      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+                      options: {  
+                        minRectWidth: 6,
+                        minRectHeight: 6,
+                        regions:[  
+                           [  // chrom1, start1, end1, chrom2, start2, end2, color-fill, color-line, min-width, min-height
+                              "chr1",
+                              0,
+                              200000000,
+                              "chr1",
+                              0,
+                              200000000,
+                              "rgba(255, 85, 0, 0.66)",
+                              "rgba(255, 85, 0, 0.66)",
+                              8, 8
+                           ],
+                        ]
+                      }
                     },
                     {
                       type: '2d-chromosome-grid',
@@ -175,7 +182,7 @@ hglib
       );
     } 
 
-    d3.csv('annotations.csv', handleRow, render);
+    d3.csv('annotations-1d.csv', handleRow, render);
   }
 )
 </script>
