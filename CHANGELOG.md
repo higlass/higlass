@@ -6,8 +6,8 @@
 - Minor bug fix wherein valueScaleMin and valueScaleMax weren't used when set to 0
 - Cloned views split vertically first (#259)
 - Change component height when a new viewconf is passed in
-- Add a fudge factor to ensure that the entire view is shown in the
-grid layout
+- Add a fudge factor to ensure that the entire view is shown in the grid layout
+- Fix minified build
 
 ## v1.2.8
 
