@@ -50,7 +50,6 @@ const viewConfig = {
             uid: 'genes',
             type: 'horizontal-gene-annotations',
             options: {
-              labelPosition: 'hidden',
               name: 'Gene Annotations (hg19)',
               labelColor: '#999999',
               plusStrandColor: '#999999',
@@ -60,7 +59,7 @@ const viewConfig = {
               showMousePosition: false,
               mousePositionColor: '#999999'
             },
-            height: 36,
+            height: 54,
           },
           {
             server: 'http://higlass.io/api/v1',
@@ -69,7 +68,13 @@ const viewConfig = {
             type: 'horizontal-bar',
             options: {
               axisPositionHorizontal: 'left',
-              labelPosition: 'hidden',
+              labelPosition: 'topLeft',
+              labelLeftMargin: 10,
+              labelTopMargin: 10,
+              labelBackgroundColor: 'black',
+              labelColor: 'white',
+              labelBackgroundOpacity: 0.33,
+              labelTextOpacity: 0.8,
               colorRange: [
                 '#d3d7ff',
                 '#b1a6f2',
@@ -80,7 +85,7 @@ const viewConfig = {
               ],
               colorRangeGradient: true,
             },
-            height: 36,
+            height: 72,
           },
           {
             server: 'http://higlass.io/api/v1',
@@ -90,7 +95,13 @@ const viewConfig = {
             options: {
               align: 'top',
               axisPositionHorizontal: 'left',
-              labelPosition: 'hidden',
+              labelPosition: 'topRight',
+              labelRightMargin: 10,
+              labelTopMargin: 10,
+              labelBackgroundColor: 'black',
+              labelColor: 'white',
+              labelBackgroundOpacity: 0.33,
+              labelTextOpacity: 0.8,
               colorRange: [
                 '#b2fff0',
                 '#92edd9',
@@ -101,7 +112,7 @@ const viewConfig = {
               ],
               colorRangeGradient: true,
             },
-            height: 36,
+            height: 72,
           },
           {
             server: 'http://higlass.io/api/v1',
@@ -110,7 +121,13 @@ const viewConfig = {
             type: 'horizontal-bar',
             options: {
               axisPositionHorizontal: 'left',
-              labelPosition: 'hidden',
+              labelPosition: 'bottomLeft',
+              labelLeftMargin: 10,
+              labelBottomMargin: 10,
+              labelBackgroundColor: 'black',
+              labelColor: 'white',
+              labelBackgroundOpacity: 0.33,
+              labelTextOpacity: 0.8,
               colorRange: [
                 '#ffdb9e',
                 '#f7c67d',
@@ -120,7 +137,7 @@ const viewConfig = {
                 '#704700'
               ],
             },
-            height: 36,
+            height: 72,
           },
           {
             server: 'http://higlass.io/api/v1',
@@ -130,7 +147,13 @@ const viewConfig = {
             options: {
               align: 'top',
               axisPositionHorizontal: 'left',
-              labelPosition: 'hidden',
+              labelPosition: 'bottomRight',
+              labelRightMargin: 10,
+              labelBottomMargin: 10,
+              labelBackgroundColor: 'black',
+              labelColor: 'white',
+              labelBackgroundOpacity: 0.33,
+              labelTextOpacity: 0.8,
               colorRange: [
                 '#ffafe2',
                 '#f68fcb',
@@ -140,7 +163,7 @@ const viewConfig = {
                 '#6d0045'
               ],
             },
-            height: 36,
+            height: 72,
           },
           {
             chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
@@ -156,7 +179,143 @@ const viewConfig = {
             },
           }
         ],
-        left: [],
+        left: [
+          {
+            name: 'Gene Annotations (hg19)',
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            uid: 'genes2',
+            type: 'vertical-gene-annotations',
+            options: {
+              name: 'Gene Annotations (hg19)',
+              labelColor: '#999999',
+              plusStrandColor: '#999999',
+              minusStrandColor: '#999999',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: false,
+              mousePositionColor: '#999999'
+            },
+            width: 54,
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
+            uid: 'bar12',
+            type: 'vertical-bar',
+            options: {
+              axisPositionHorizontal: 'left',
+              labelPosition: 'topLeft',
+              labelLeftMargin: 10,
+              labelTopMargin: 10,
+              labelBackgroundColor: 'black',
+              labelColor: 'white',
+              labelBackgroundOpacity: 0.33,
+              labelTextOpacity: 0.8,
+              colorRange: [
+                '#d3d7ff',
+                '#b1a6f2',
+                '#8b77e4',
+                '#5e48d5',
+                '#0115c6',
+                '#000863'
+              ],
+              colorRangeGradient: true,
+            },
+            width: 72,
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'PdAaSdibTLK34hCw7ubqKA',
+            uid: 'bar22',
+            type: 'vertical-bar',
+            options: {
+              align: 'top',
+              axisPositionHorizontal: 'left',
+              labelPosition: 'topRight',
+              labelRightMargin: 10,
+              labelTopMargin: 10,
+              labelBackgroundColor: 'black',
+              labelColor: 'white',
+              labelBackgroundOpacity: 0.33,
+              labelTextOpacity: 0.8,
+              colorRange: [
+                '#b2fff0',
+                '#92edd9',
+                '#71ddc3',
+                '#4ccbae',
+                '#03ba98',
+                '#006350'
+              ],
+              colorRangeGradient: true,
+            },
+            width: 72,
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
+            uid: 'bar32',
+            type: 'vertical-bar',
+            options: {
+              axisPositionHorizontal: 'left',
+              labelPosition: 'bottomLeft',
+              labelLeftMargin: 10,
+              labelBottomMargin: 10,
+              labelBackgroundColor: 'black',
+              labelColor: 'white',
+              labelBackgroundOpacity: 0.33,
+              labelTextOpacity: 0.8,
+              colorRange: [
+                '#ffdb9e',
+                '#f7c67d',
+                '#eeb25b',
+                '#e49e38',
+                '#d88a02',
+                '#704700'
+              ],
+            },
+            width: 72,
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'PdAaSdibTLK34hCw7ubqKA',
+            uid: 'bar42',
+            type: 'vertical-bar',
+            options: {
+              align: 'top',
+              axisPositionHorizontal: 'left',
+              labelPosition: 'bottomRight',
+              labelRightMargin: 10,
+              labelBottomMargin: 10,
+              labelBackgroundColor: 'black',
+              labelColor: 'white',
+              labelBackgroundOpacity: 0.33,
+              labelTextOpacity: 0.8,
+              colorRange: [
+                '#ffafe2',
+                '#f68fcb',
+                '#eb6eb4',
+                '#e0489e',
+                '#d30089',
+                '#6d0045'
+              ],
+            },
+            width: 72,
+          },
+          {
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            type: 'vertical-chromosome-labels',
+            position: 'top',
+            name: 'Chromosome Labels (hg19)',
+            width: 24,
+            uid: 'chroms2',
+            options: {
+              color: '#999999',
+              showMousePosition: false,
+              mousePositionColor: '#999999'
+            },
+          }
+        ],
         center: [],
         right: [],
         bottom: [],
