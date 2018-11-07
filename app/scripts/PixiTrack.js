@@ -160,6 +160,11 @@ class PixiTrack extends Track {
         fill: 'black'
       });
 
+    this.labelLeftMargin = +this.options.labelLeftMargin || 0;
+    this.labelRightMargin = +this.options.labelRightMargin || 0;
+    this.labelTopMargin = +this.options.labelTopMargin || 0;
+    this.labelBottomMargin = +this.options.labelBottomMargin || 0;
+
     this.errorText = new PIXI.Text('',
       { fontSize: '12px', fontFamily: 'Arial', fill: 'red' });
     this.errorText.anchor.x = 0.5;
@@ -276,7 +281,7 @@ class PixiTrack extends Track {
     let opacity = 1;
     let color = this.options.backgroundColor;
 
-    if (this.options.backgroundColor == 'transparent') {
+    if (this.options.backgroundColor === 'transparent') {
       opacity = 0;
       color = 'white';
     }
@@ -284,7 +289,12 @@ class PixiTrack extends Track {
     const hexColor = colorToHex(color);
     graphics.beginFill(hexColor, opacity);
 
-    graphics.drawRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1]);
+    graphics.drawRect(
+      this.position[0],
+      this.position[1],
+      this.dimensions[0],
+      this.dimensions[1]
+    );
   }
 
   drawLabel() {
@@ -305,7 +315,7 @@ class PixiTrack extends Track {
       +this.options.labelBackgroundOpacity || 0.5
     );
 
-    const stroke = colorToHex(this.options.labelColor || 'black');
+    const fontColor = colorToHex(this.options.labelColor || 'black');
     const labelBackgroundMargin = 2;
 
     // we can't draw a label if there's no space
@@ -367,7 +377,7 @@ class PixiTrack extends Track {
     this.labelText.style = {
       fontSize: `${this.labelTextFontSize}px`,
       fontFamily: this.labelTextFontFamily,
-      fill: stroke,
+      fill: fontColor,
     };
     this.labelText.alpha = typeof this.options.labelTextOpacity !== 'undefined'
       ? this.options.labelTextOpacity
@@ -378,8 +388,8 @@ class PixiTrack extends Track {
     if (this.flipText) { this.labelText.scale.x = -1; }
 
     if (this.options.labelPosition === 'topLeft') {
-      this.labelText.x = this.position[0];
-      this.labelText.y = this.position[1];
+      this.labelText.x = this.position[0] + this.labelLeftMargin;
+      this.labelText.y = this.position[1] + this.labelTopMargin;
 
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 0;
@@ -387,8 +397,8 @@ class PixiTrack extends Track {
       this.labelText.x += this.labelText.width / 2;
 
       graphics.drawRect(
-        this.position[0],
-        this.position[1],
+        this.position[0] + this.labelLeftMargin,
+        this.position[1] + this.labelTopMargin,
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin
       );
@@ -396,15 +406,15 @@ class PixiTrack extends Track {
       (this.options.labelPosition === 'bottomLeft' && !this.flipText)
       || (this.options.labelPosition === 'topRight' && this.flipText)
     ) {
-      this.labelText.x = this.position[0];
-      this.labelText.y = this.position[1] + this.dimensions[1];
+      this.labelText.x = this.position[0] + this.labelLeftMargin;
+      this.labelText.y = this.position[1] + this.dimensions[1] - this.labelBottomMargin;
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 1;
 
       this.labelText.x += this.labelText.width / 2;
       graphics.drawRect(
-        this.position[0],
-        this.position[1] + this.dimensions[1] - this.labelText.height - labelBackgroundMargin,
+        this.position[0] + this.labelLeftMargin,
+        this.position[1] + this.dimensions[1] - this.labelText.height - labelBackgroundMargin - this.labelBottomMargin,
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin
       );
@@ -412,22 +422,22 @@ class PixiTrack extends Track {
       (this.options.labelPosition === 'topRight' && !this.flipText)
       || (this.options.labelPosition === 'bottomLeft' && this.flipText)
     ) {
-      this.labelText.x = this.position[0] + this.dimensions[0];
-      this.labelText.y = this.position[1];
+      this.labelText.x = this.position[0] + this.dimensions[0] - this.labelRightMargin;
+      this.labelText.y = this.position[1] + this.labelTopMargin;
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 0;
 
       this.labelText.x -= this.labelText.width / 2;
 
       graphics.drawRect(
-        this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin,
-        this.position[1],
+        this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin - this.labelRightMargin,
+        this.position[1] + this.labelTopMargin,
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin
       );
     } else if (this.options.labelPosition === 'bottomRight') {
-      this.labelText.x = this.position[0] + this.dimensions[0];
-      this.labelText.y = this.position[1] + this.dimensions[1];
+      this.labelText.x = this.position[0] + this.dimensions[0] - this.labelRightMargin;
+      this.labelText.y = this.position[1] + this.dimensions[1] - this.labelBottomMargin;
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 1;
 
@@ -436,8 +446,8 @@ class PixiTrack extends Track {
       this.labelText.x -= this.labelText.width / 2;
 
       graphics.drawRect(
-        this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin,
-        this.position[1] + this.dimensions[1] - this.labelText.height - labelBackgroundMargin,
+        this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin - this.labelRightMargin,
+        this.position[1] + this.dimensions[1] - this.labelText.height - labelBackgroundMargin - this.labelBottomMargin,
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin,
       );
