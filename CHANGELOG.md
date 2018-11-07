@@ -8,6 +8,7 @@
 - Change component height when a new viewconf is passed in
 - Add a fudge factor to ensure that the entire view is shown in the grid layout
 - Fix minified build
+- Fix a minor visual glitch in the gene annotation track
 
 ## v1.2.8
 
