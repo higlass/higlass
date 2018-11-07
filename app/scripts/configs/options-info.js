@@ -36,6 +36,8 @@ const AVAILABLE_WIDTHS_AND_NONE = Object.assign(
   AVAILABLE_WIDTHS, { none: { name: 'none', value: 'none' } }
 );
 
+const AVAILABLE_MARGIN = sizesInPx([0, 2, 4, 8, 16, 32, 64, 128, 256]);
+
 const OPACITY_OPTIONS = sizesInPx([0.0, 0.2, 0.4, 0.6, 0.8, 1.0], '%', 100);
 
 // these values define the options that are visible in the track config
@@ -54,6 +56,22 @@ export const OPTIONS_INFO = {
       linear: { name: 'Linear', value: 'linear' },
       log: { name: 'Log', value: 'log' },
     },
+  },
+  labelLeftMargin: {
+    name: 'Label Left Margin',
+    inlineOptions: AVAILABLE_MARGIN
+  },
+  labelRightMargin: {
+    name: 'Label Right Margin',
+    inlineOptions: AVAILABLE_MARGIN
+  },
+  labelTopMargin: {
+    name: 'Label Top Margin',
+    inlineOptions: AVAILABLE_MARGIN
+  },
+  labelBottomMargin: {
+    name: 'Label Bottom Margin',
+    inlineOptions: AVAILABLE_MARGIN
   },
   lineStrokeWidth: {
     name: 'Stroke Width',
