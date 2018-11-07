@@ -59,20 +59,14 @@ hglib
     }
     
     function render(regions1d) {
-      const regions2d = [handle2DRow({
-        chr1: 5,
-        start1: 0,
-        end1: 100000000,
-        chr2: 7,
-        start2: 0,
-        end2: 100000000,
-      })]
-      const viewConf = makeViewConf(regions1d, regions2d);
-      const hgApi = hglib.viewer(
-        document.getElementById('development-demo'),
-        viewConf,
-        { bounded: true },
-      );
+      d3.csv('annotations-2d.csv', handle2DRow, function(regions2d) {
+        const viewConf = makeViewConf(regions1d, regions2d);
+        hglib.viewer(
+          document.getElementById('development-demo'),
+          viewConf,
+          { bounded: true },
+        );    
+      });
     } 
 
     d3.csv('annotations-1d.csv', handle1DRow, render);
