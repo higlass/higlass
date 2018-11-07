@@ -3,6 +3,7 @@
 - Added TiledPixiTrack.on event handler
 - Added getTrackObject to exports
 - Added support for overlay tracks
+- Added ability to define label margins
 - Minor bug fix wherein valueScaleMin and valueScaleMax weren't used when set to 0
 - Cloned views split vertically first (#259)
 - Change component height when a new viewconf is passed in
