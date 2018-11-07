@@ -386,24 +386,32 @@ class PixiTrack extends Track {
 
       this.labelText.x += this.labelText.width / 2;
 
-      graphics.drawRect(this.position[0],
+      graphics.drawRect(
+        this.position[0],
         this.position[1],
         this.labelText.width + labelBackgroundMargin,
-        this.labelText.height + labelBackgroundMargin);
-    } else if ((this.options.labelPosition === 'bottomLeft' && !this.flipText) ||
-                   (this.options.labelPosition === 'topRight' && this.flipText)) {
+        this.labelText.height + labelBackgroundMargin
+      );
+    } else if (
+      (this.options.labelPosition === 'bottomLeft' && !this.flipText)
+      || (this.options.labelPosition === 'topRight' && this.flipText)
+    ) {
       this.labelText.x = this.position[0];
       this.labelText.y = this.position[1] + this.dimensions[1];
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 1;
 
       this.labelText.x += this.labelText.width / 2;
-      graphics.drawRect(this.position[0],
+      graphics.drawRect(
+        this.position[0],
         this.position[1] + this.dimensions[1] - this.labelText.height - labelBackgroundMargin,
         this.labelText.width + labelBackgroundMargin,
-        this.labelText.height + labelBackgroundMargin);
-    } else if ((this.options.labelPosition === 'topRight' && !this.flipText) ||
-                   (this.options.labelPosition === 'bottomLeft' && this.flipText)) {
+        this.labelText.height + labelBackgroundMargin
+      );
+    } else if (
+      (this.options.labelPosition === 'topRight' && !this.flipText)
+      || (this.options.labelPosition === 'bottomLeft' && this.flipText)
+    ) {
       this.labelText.x = this.position[0] + this.dimensions[0];
       this.labelText.y = this.position[1];
       this.labelText.anchor.x = 0.5;
@@ -411,10 +419,12 @@ class PixiTrack extends Track {
 
       this.labelText.x -= this.labelText.width / 2;
 
-      graphics.drawRect(this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin,
+      graphics.drawRect(
+        this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin,
         this.position[1],
         this.labelText.width + labelBackgroundMargin,
-        this.labelText.height + labelBackgroundMargin);
+        this.labelText.height + labelBackgroundMargin
+      );
     } else if (this.options.labelPosition === 'bottomRight') {
       this.labelText.x = this.position[0] + this.dimensions[0];
       this.labelText.y = this.position[1] + this.dimensions[1];
@@ -431,8 +441,10 @@ class PixiTrack extends Track {
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin,
       );
-    } else if ((this.options.labelPosition === 'outerLeft' && !this.flipText) ||
-                   (this.options.labelPosition === 'outerTop' && this.flipText)) {
+    } else if (
+      (this.options.labelPosition === 'outerLeft' && !this.flipText)
+      || (this.options.labelPosition === 'outerTop' && this.flipText)
+    ) {
       this.labelText.x = this.position[0];
       this.labelText.y = this.position[1] + this.dimensions[1] / 2;
 
@@ -440,8 +452,10 @@ class PixiTrack extends Track {
       this.labelText.anchor.y = 0.5;
 
       this.labelText.x -= this.labelText.width / 2 + 3;
-    } else if ((this.options.labelPosition === 'outerTop' && !this.flipText) ||
-                   (this.options.labelPosition === 'outerLeft' && this.flipText)) {
+    } else if (
+      (this.options.labelPosition === 'outerTop' && !this.flipText)
+      || (this.options.labelPosition === 'outerLeft' && this.flipText)
+    ) {
       this.labelText.x = this.position[0] + this.dimensions[0] / 2;
       this.labelText.y = this.position[1];
 
@@ -449,8 +463,10 @@ class PixiTrack extends Track {
       this.labelText.anchor.y = 0.5;
 
       this.labelText.y -= this.labelText.height / 2 + 3;
-    } else if ((this.options.labelPosition === 'outerBottom' && !this.flipText) ||
-                   (this.options.labelPosition === 'outerRight' && this.flipText)) {
+    } else if (
+      (this.options.labelPosition === 'outerBottom' && !this.flipText)
+      || (this.options.labelPosition === 'outerRight' && this.flipText)
+    ) {
       this.labelText.x = this.position[0] + this.dimensions[0] / 2;
       this.labelText.y = this.position[1] + this.dimensions[1];
 
@@ -458,8 +474,10 @@ class PixiTrack extends Track {
       this.labelText.anchor.y = 0.5;
 
       this.labelText.y += this.labelText.height / 2 + 3;
-    } else if ((this.options.labelPosition == 'outerRight' && !this.flipText) ||
-                   (this.options.labelPosition == 'outerBottom' && this.flipText)) {
+    } else if (
+      (this.options.labelPosition == 'outerRight' && !this.flipText)
+      || (this.options.labelPosition == 'outerBottom' && this.flipText)
+    ) {
       this.labelText.x = this.position[0] + this.dimensions[0];
       this.labelText.y = this.position[1] + this.dimensions[1] / 2;
 
@@ -471,10 +489,12 @@ class PixiTrack extends Track {
       this.labelText.visible = false;
     }
 
-    if (this.options.labelPosition == 'outerLeft' ||
-            this.options.labelPosition == 'outerRight' ||
-            this.options.labelPosition == 'outerTop' ||
-            this.options.labelPosition == 'outerBottom') {
+    if (
+      this.options.labelPosition == 'outerLeft'
+      || this.options.labelPosition == 'outerRight'
+      || this.options.labelPosition == 'outerTop'
+      || this.options.labelPosition == 'outerBottom'
+    ) {
       this.pLabel.setParent(this.pBase);
     } else {
       this.pLabel.setParent(this.pMasked);
