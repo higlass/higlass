@@ -15,8 +15,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.js"></script>
-<script src="https://d3js.org/d3-dsv.v1.min.js"></script>
-<script src="https://d3js.org/d3-fetch.v1.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
 </head>
 <body >
     <div style="height: 50px" />
@@ -31,136 +30,142 @@
 </script>
 <script>
 
-d3.csv('annotations.csv', function(data) {
-  
-  const viewConfig = {
-    editable: true,
-    zoomFixed: false,
-    trackSourceServers: [
-      'http://higlass.io/api/v1',
-      'http://localhost:8989/api/v1'
-    ],
-    exportViewUrl: 'http://localhost:8000/api/v1/viewconfs/',
-    views: [
-      {
-        uid: 'aa',
-        initialXDomain: [1000000000, 3000000000],
-        initialYDomain: [1000000000, 3000000000],
-        autocompleteSource: 'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
-        genomePositionSearchBox: {
-          autocompleteId: 'OHJakQICQD6gTD7skx4EWA',
-          autocompleteServer: 'http://higlass.io/api/v1',
-          chromInfoId: 'hg19',
-          chromInfoServer: 'http://higlass.io/api/v1',
-          visible: true
-        },
-        chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-        tracks: {
-          top: [
-            {
-              chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-              type: 'horizontal-chromosome-labels',
-              name: 'Chromosome Labels (hg19)',
-              height: 30
-            },
-            {
-              type: 'horizontal-1d-annotations',
-              options: {
-                // TODO: consider chromosomes
-                regions: data.map((row) => [+row.start, +row.end]),
-                minRectWidth: 3,
-                fillOpacity: 0.1,
-                stroke: 'blue',
-                strokePos: ['left', 'right'],
-                strokeWidth: 2,
-                strokeOpacity: 0.6,
-              }
-            }
-          ],
-          left: [
-            {
-              chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-              type: 'vertical-chromosome-labels',
-              name: 'Chromosome Labels (hg19)',
-              width: 30
-            }
-          ],
-          center: [
-            {
-              type: 'combined',
-              height: 200,
-              contents: [
-                {
-                  server: 'http://higlass.io/api/v1',
-                  tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
-                  type: 'heatmap',
-                  position: 'center',
-                  options: {
-                    colorRange: [
-                      '#FFFFFF',
-                      '#F8E71C',
-                      '#F5A623',
-                      '#D0021B'
-                    ],
-                    colorbarPosition: 'topRight',
-                    colorbarLabelsPosition: 'outside',
-                    maxZoom: null,
-                    labelPosition: 'bottomLeft',
-                    name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb'
-                  },
-                  uid: 'heatmap1',
-                  name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
-                  maxWidth: 4194304000,
-                  binsPerDimension: 256,
-                  maxZoom: 14
-                },
-                {
-                  type: '2d-chromosome-grid',
-                  datatype: [
-                    'chromosome-2d-grid'
-                  ],
-                  local: true,
-                  orientation: '2d',
-                  name: 'Chromosome Grid (hg19)',
-                  chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-                  thumbnail: null,
-                  uuid: 'TIlwFtqxTX-ndtM7Y9k1bw',
-                  server: '',
-                  tilesetUid: 'TIlwFtqxTX-ndtM7Y9k1bw',
-                  serverUidKey: '/TIlwFtqxTX-ndtM7Y9k1bw',
-                  uid: 'LUVqXXu2QYiO8XURIwyUyA',
+function handleRow(row) {
+  return [+row.start, +row.end];
+}
+
+d3.csv('annotations.csv',
+  handleRow,
+  function(regions) {    
+    const viewConfig = {
+      editable: true,
+      zoomFixed: false,
+      trackSourceServers: [
+        'http://higlass.io/api/v1',
+        'http://localhost:8989/api/v1'
+      ],
+      exportViewUrl: 'http://localhost:8000/api/v1/viewconfs/',
+      views: [
+        {
+          uid: 'aa',
+          initialXDomain: [1000000000, 3000000000],
+          initialYDomain: [1000000000, 3000000000],
+          autocompleteSource: 'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
+          genomePositionSearchBox: {
+            autocompleteId: 'OHJakQICQD6gTD7skx4EWA',
+            autocompleteServer: 'http://higlass.io/api/v1',
+            chromInfoId: 'hg19',
+            chromInfoServer: 'http://higlass.io/api/v1',
+            visible: true
+          },
+          chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+          tracks: {
+            top: [
+              {
+                chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+                type: 'horizontal-chromosome-labels',
+                name: 'Chromosome Labels (hg19)',
+                height: 30
+              },
+              {
+                type: 'horizontal-1d-annotations',
+                options: {
+                  // TODO: consider chromosomes
+                  regions: regions,
+                  minRectWidth: 3,
+                  fillOpacity: 0.1,
+                  stroke: 'blue',
+                  strokePos: ['left', 'right'],
+                  strokeWidth: 2,
+                  strokeOpacity: 0.6,
                 }
+              }
+            ],
+            left: [
+              {
+                chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+                type: 'vertical-chromosome-labels',
+                name: 'Chromosome Labels (hg19)',
+                width: 30
+              }
+            ],
+            center: [
+              {
+                type: 'combined',
+                height: 200,
+                contents: [
+                  {
+                    server: 'http://higlass.io/api/v1',
+                    tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
+                    type: 'heatmap',
+                    position: 'center',
+                    options: {
+                      colorRange: [
+                        '#FFFFFF',
+                        '#F8E71C',
+                        '#F5A623',
+                        '#D0021B'
+                      ],
+                      colorbarPosition: 'topRight',
+                      colorbarLabelsPosition: 'outside',
+                      maxZoom: null,
+                      labelPosition: 'bottomLeft',
+                      name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb'
+                    },
+                    uid: 'heatmap1',
+                    name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
+                    maxWidth: 4194304000,
+                    binsPerDimension: 256,
+                    maxZoom: 14
+                  },
+                  {
+                    type: '2d-chromosome-grid',
+                    datatype: [
+                      'chromosome-2d-grid'
+                    ],
+                    local: true,
+                    orientation: '2d',
+                    name: 'Chromosome Grid (hg19)',
+                    chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+                    thumbnail: null,
+                    uuid: 'TIlwFtqxTX-ndtM7Y9k1bw',
+                    server: '',
+                    tilesetUid: 'TIlwFtqxTX-ndtM7Y9k1bw',
+                    serverUidKey: '/TIlwFtqxTX-ndtM7Y9k1bw',
+                    uid: 'LUVqXXu2QYiO8XURIwyUyA',
+                  }
 
-              ]
-            }
-          ],
-        },
-        layout: {
-          w: 12,
-          h: 12,
-          x: 0,
-          y: 0,
-          i: 'aa',
-          moved: false,
-          static: false
+                ]
+              }
+            ],
+          },
+          layout: {
+            w: 12,
+            h: 12,
+            x: 0,
+            y: 0,
+            i: 'aa',
+            moved: false,
+            static: false
+          }
         }
+      ],
+      zoomLocks: {
+        locksByViewUid: {},
+        locksDict: {}
+      },
+      locationLocks: {
+        locksByViewUid: {},
+        locksDict: {}
       }
-    ],
-    zoomLocks: {
-      locksByViewUid: {},
-      locksDict: {}
-    },
-    locationLocks: {
-      locksByViewUid: {},
-      locksDict: {}
-    }
-  };
+    };
 
-  const hgApi = hglib.viewer(
-    document.getElementById('development-demo'),
-    viewConfig,
-    { bounded: true },
-  );
-});
+    const hgApi = hglib.viewer(
+      document.getElementById('development-demo'),
+      viewConfig,
+      { bounded: true },
+    );
+  }  
+);
 </script>
 </html>
