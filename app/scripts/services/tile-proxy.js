@@ -7,9 +7,14 @@ import {
   workerSetPix,
 } from '../worker';
 
-import { fake as fakePubSub } from '../services/pub-sub';
+import { trimTrailingSlash as tts } from '../utils';
 
-const MAX_FETCH_TILES = 20;
+// Config
+import { TILE_FETCH_DEBOUNCE } from '../configs';
+
+import { fake as fakePubSub } from './pub-sub';
+
+const MAX_FETCH_TILES = 15;
 
 /*
 const str = document.currentScript.src
@@ -52,13 +57,6 @@ fetchTilesPool.run(function(params, done) {
   }
 }, [workerPath]);
 */
-
-import { trimTrailingSlash as tts } from '../utils';
-
-// Config
-import { TILE_FETCH_DEBOUNCE } from '../configs';
-
-const MAX_FETCH_TILES = 15;
 
 const sessionId = slugid.nice();
 export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports

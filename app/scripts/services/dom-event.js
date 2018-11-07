@@ -31,7 +31,7 @@ const registeredEls = {};
  * @param {string} event - Name of the event to stop listening from.
  * @param {object} element - DOM element which we listened to.
  */
-const unregister = pubSub => (event, element) => {
+const unregister = (event, element) => {
   if (!registeredEls[event] && registeredEls[event] !== element) return;
 
   registeredEls[event].removeEventListener(
@@ -70,7 +70,7 @@ const register = pubSub => (event, newElement, useCapture = false) => {
  */
 const domEvent = pubSub => ({
   register: register(pubSub),
-  unregister: unregister(pubSub),
+  unregister,
 });
 
 export default domEvent;

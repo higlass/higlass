@@ -101,4 +101,6 @@ const fake = {
 
 export default create;
 
-export { fake, globalPubSub, Provider, withPubSub };
+export {
+  fake, globalPubSub, Provider, withPubSub
+};
