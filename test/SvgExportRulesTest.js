@@ -1,4 +1,4 @@
-/* eslint-env node, mocha */
+/* eslint-env node, jasmine, mocha */
 import {
   configure,
 } from 'enzyme';
@@ -19,66 +19,66 @@ configure({ adapter: new Adapter() });
 describe('SVG Export', () => {
   let hgc = null;
   let div = null;
-  
+
   const viewConf = {
-    "editable": true,
-    "zoomFixed": false,
-    "trackSourceServers": [
-      "http://higlass.io/api/v1"
+    editable: true,
+    zoomFixed: false,
+    trackSourceServers: [
+      'http://higlass.io/api/v1'
     ],
-    "views": [
+    views: [
       {
-        "uid": "aa",
-        "initialXDomain": [
+        uid: 'aa',
+        initialXDomain: [
           7595655.0000270605,
           2507738795.999973
         ],
-        "initialYDomain": [
+        initialYDomain: [
           25120022.810774326,
           2490214428.189226
         ],
-        "genomePositionSearchBoxVisible": false,
-        "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-        "tracks": {
-          "top": [],
-          "left": [],
-          "center": [],
-          "right": [],
-          "bottom": [],
-          "whole": [
+        genomePositionSearchBoxVisible: false,
+        chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+        tracks: {
+          top: [],
+          left: [],
+          center: [],
+          right: [],
+          bottom: [],
+          whole: [
             {
-              "type": "cross-rule",
-              "x": 1000000000,
-              "y": 1000000000,
-              "position": "whole",
-              "options": {},
-              "name": "Cross Rule",
+              type: 'cross-rule',
+              x: 1000000000,
+              y: 1000000000,
+              position: 'whole',
+              options: {},
+              name: 'Cross Rule',
             },
             {
-              "type": "horizontal-rule",
-              "y": 2000000000,
-              "position": "whole",
-              "options": {},
-              "name": "Horizontal Rule",
+              type: 'horizontal-rule',
+              y: 2000000000,
+              position: 'whole',
+              options: {},
+              name: 'Horizontal Rule',
             },
             {
-              "type": "vertical-rule",
-              "x": 2000000000,
-              "position": "whole",
-              "options": {},
-              "name": "Vertical Rule",
+              type: 'vertical-rule',
+              x: 2000000000,
+              position: 'whole',
+              options: {},
+              name: 'Vertical Rule',
             }
           ],
-          "gallery": []
+          gallery: []
         },
-        "layout": {
-          "w": 12,
-          "h": 12,
-          "x": 0,
-          "y": 0,
-          "i": "aa",
-          "moved": false,
-          "static": false
+        layout: {
+          w: 12,
+          h: 12,
+          x: 0,
+          y: 0,
+          i: 'aa',
+          moved: false,
+          static: false
         }
       }
     ]
