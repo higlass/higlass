@@ -3,8 +3,8 @@ import * as PIXI from 'pixi.js';
 import TiledPixiTrack from './TiledPixiTrack';
 
 // Services
-import { pubSub, tileProxy } from './services';
-import { create } from './services/pub-sub';
+import { tileProxy } from './services';
+import createPubSub from './services/pub-sub';
 
 // Utils
 import { colorToHex, max, min } from './utils';
@@ -22,7 +22,7 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     this.options.minSquareSize = +this.options.minSquareSize;
 
-    const { publish, subscribe, unsubscribe } = create({});
+    const { publish, subscribe, unsubscribe } = createPubSub({});
     this.publish = publish;
     this.subscribe = subscribe;
     this.unsubscribe = unsubscribe;
