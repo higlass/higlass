@@ -3723,16 +3723,16 @@ class HiGlassComponent extends React.Component {
     }
 
     return (
-      <PubSubProvider value={pubSub}>
-        <div
-          key={this.uid}
-          ref={(c) => { this.topDiv = c; }}
-          className="higlass"
-          onMouseLeave={this.onMouseLeaveHandlerBound}
-          onMouseMove={this.mouseMoveHandlerBound}
-          onWheel={this.onWheelHandlerBound}
-          styleName={styleNames}
-        >
+      <div
+        key={this.uid}
+        ref={(c) => { this.topDiv = c; }}
+        className="higlass"
+        onMouseLeave={this.onMouseLeaveHandlerBound}
+        onMouseMove={this.mouseMoveHandlerBound}
+        onWheel={this.onWheelHandlerBound}
+        styleName={styleNames}
+      >
+        <PubSubProvider value={pubSub}>
           <canvas
             key={this.uid}
             ref={(c) => { this.canvasElement = c; }}
@@ -3759,8 +3759,8 @@ class HiGlassComponent extends React.Component {
             styleName="styles.higlass-svg"
           />
           {exportLinkModal}
-        </div>
-      </PubSubProvider>
+        </PubSubProvider>
+      </div>
     );
   }
 }
