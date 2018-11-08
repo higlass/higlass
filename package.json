@@ -4,6 +4,11 @@
   "description": "HiGlass Hi-C / genomic / large data viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/hglib.js",
+  "unpkg": "dist/hglib.min.js",
+  "jsdelivr": "dist/hglib.min.js",
+  "files": [
+    "dist/"
+  ],
   "keywords": [
     "hi-c",
     "genomics",
@@ -11,13 +16,12 @@
     "tracks"
   ],
   "scripts": {
-    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --content-base app --profile --inline | grep -v '\\[\\d*\\]'",
-    "build-watch": "rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; NODE_ENV=watch ./node_modules/webpack/bin/webpack.js; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css;",
-    "build": "rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; NODE_ENV=development ./node_modules/webpack/bin/webpack.js; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css;",
-    "compile": "rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; NODE_ENV=production ./node_modules/webpack/bin/webpack.js -p --display-optimization-bailout; cp build/hglib.min.js dist/; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css; zip -r dist.zip dist",
-    "compile-debug": "rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; ./node_modules/webpack/bin/webpack.js; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css; zip -r dist.zip dist",
-    "test": "./node_modules/karma/bin/karma start karma.conf.js",
-    "test-watch": "NODE_ENV=development; npm run build && ./node_modules/karma/bin/karma start karma.conf.js"
+    "start": "webpack-dev-server --config ./webpack.config.js --mode development --content-base app",
+    "build-watch": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; webpack --config ./webpack.config.js --mode development --watch; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css;",
+    "build": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; webpack --config ./webpack.config.js --mode development; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css;",
+    "compile": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; webpack --config ./webpack.config.js --mode production; cp build/hglib.min.js dist/; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css; zip -r dist.zip dist",
+    "test": "karma start karma.conf.js",
+    "test-watch": "npm run build && karma start karma.conf.js"
   },
   "repository": {
     "type": "git",
@@ -72,6 +76,7 @@
     "slugid": "^1.1.0",
     "threads": "^0.7.2",
     "transform-loader": "^0.2.3",
+    "unminified-webpack-plugin": "^2.0.0",
     "url-join": "^1.1.0",
     "url-parse": "^1.4.3",
     "vkbeautify": "^0.99.3",
@@ -118,22 +123,23 @@
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-phantomjs2-launcher": "^0.5.0",
     "karma-sourcemap-loader": "^0.3.7",
+    "karma-verbose-reporter": "0.0.6",
     "karma-webpack": "^2.0.9",
     "main-bower-files": "^2.13.1",
-    "mini-css-extract-plugin": "^0.4.3",
+    "mini-css-extract-plugin": "^0.4.4",
     "mversion": "^1.10.1",
-    "node-sass": "^4.7.2",
+    "node-sass": "^4.10.0",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
-    "postcss-flexbugs-fixes": "^3.2.0",
-    "postcss-loader": "^2.0.10",
-    "postcss-scss": "^1.0.3",
+    "postcss-flexbugs-fixes": "^4.1.0",
+    "postcss-loader": "^3.0.0",
+    "postcss-scss": "^2.0.0",
     "react-test-renderer": "^16.5.0",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
-    "terser-webpack-plugin": "^1.1.0",
-    "webpack": "^4.19.1",
-    "webpack-bundle-analyzer": "^3.0.2",
-    "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.8"
+    "uglifyjs-webpack-plugin": "^2.0.1",
+    "webpack": "^4.25.1",
+    "webpack-bundle-analyzer": "^3.0.3",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
   }
 }
