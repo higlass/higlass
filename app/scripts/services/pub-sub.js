@@ -83,7 +83,14 @@ const create = (stack = { __times: {} }) => {
 
 const globalPubSub = create(GLOBAL_STACK);
 
-const { Provider, Consumer } = React.createContext();
+const fake = {
+  __fake__: true,
+  publish: toVoid,
+  subscribe: toVoid,
+  unsubscribe: toVoid
+};
+
+const { Provider, Consumer } = React.createContext(fake);
 
 // Higher order component
 const withPubSub = Component => React.forwardRef((props, ref) => (
@@ -91,13 +98,6 @@ const withPubSub = Component => React.forwardRef((props, ref) => (
     {pubSub => <Component ref={ref} {...props} pubSub={pubSub} />}
   </Consumer>
 ));
-
-const fake = {
-  __fake__: true,
-  publish: toVoid,
-  subscribe: toVoid,
-  unsubscribe: toVoid
-};
 
 export default create;
 
