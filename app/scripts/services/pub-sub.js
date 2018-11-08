@@ -86,11 +86,11 @@ const globalPubSub = create(GLOBAL_STACK);
 const { Provider, Consumer } = React.createContext();
 
 // Higher order component
-const withPubSub = Component => props => (
+const withPubSub = Component => React.forwardRef((props, ref) => (
   <Consumer>
-    {pubSub => <Component {...props} pubSub={pubSub} />}
+    {pubSub => <Component ref={ref} {...props} pubSub={pubSub} />}
   </Consumer>
-);
+));
 
 const fake = {
   __fake__: true,
