@@ -123,8 +123,12 @@ class ViewHeader extends React.Component {
             position={this.state.configMenuPosition}
 
             onExportSVG={() => {
-              this.setState({ configMenuUid: null });
+              this.setState({ configMenuUid: null }); // hide the menu
               this.props.onExportSVG();
+            }}
+            onExportPNG={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onExportPNG();
             }}
             onClearView = {() => {
               this.setState({ configMenuUid: null }); // hide the menu
@@ -303,6 +307,7 @@ ViewHeader.propTypes = {
   onClearView: PropTypes.func.isRequired,
   onCloseView: PropTypes.func.isRequired,
   onExportSVG: PropTypes.func.isRequired,
+  onExportPNG: PropTypes.func.isRequired,
   onExportViewsAsJSON: PropTypes.func.isRequired,
   onExportViewsAsLink: PropTypes.func.isRequired,
   onLockLocation: PropTypes.func.isRequired,

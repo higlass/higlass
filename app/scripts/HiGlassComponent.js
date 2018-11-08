@@ -234,6 +234,7 @@ class HiGlassComponent extends React.Component {
     this.keyUpHandlerBound = this.keyUpHandler.bind(this);
     this.resizeHandlerBound = this.resizeHandler.bind(this);
     this.mousewheelHandlerBound = this.mousewheelHandler.bind(this);
+    this.wheelHandlerBound = this.wheelHandler.bind(this);
     this.resizeHandlerBound = this.resizeHandler.bind(this);
     this.dispatchEventBound = this.dispatchEvent.bind(this);
     this.animateOnMouseMoveHandlerBound = this.animateOnMouseMoveHandler.bind(this);
@@ -255,6 +256,7 @@ class HiGlassComponent extends React.Component {
     domEvent.register('resize', window);
     domEvent.register('orientationchange', window);
     domEvent.register('mousewheel', window);
+    domEvent.register('wheel', window);
     domEvent.register('mousedown', window, true);
     domEvent.register('mouseup', window, true);
     domEvent.register('click', window, true);
@@ -264,7 +266,8 @@ class HiGlassComponent extends React.Component {
       pubSub.subscribe('keydown', this.keyDownHandlerBound),
       pubSub.subscribe('keyup', this.keyUpHandlerBound),
       pubSub.subscribe('resize', this.resizeHandlerBound),
-      pubSub.subscribe('mousewheel', this.mousewheelHandlerBound),
+      pubSub.subscribe('mousewheel', this.onWheelHandlerBound),
+      pubSub.subscribe('wheel', this.onWheelHandlerBound),
       pubSub.subscribe('orientationchange', this.resizeHandlerBound),
       pubSub.subscribe('app.event', this.dispatchEventBound),
       pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandlerBound),
@@ -492,6 +495,7 @@ class HiGlassComponent extends React.Component {
     domEvent.unregister('keyup', document);
     domEvent.unregister('scroll', document);
     domEvent.unregister('mousewheel', window);
+    domEvent.unregister('wheel', window);
     domEvent.unregister('mousedown', window);
     domEvent.unregister('mouseup', window);
     domEvent.unregister('click', window);
@@ -513,6 +517,16 @@ class HiGlassComponent extends React.Component {
   }
 
   mousewheelHandler(e) {
+    console.log('mousewheel');
+
+    if (hasParent(e.target, this.topDiv) && !this.isZoomFixed()) {
+      e.preventDefault();
+    }
+  }
+
+  wheelHandler(e) {
+    console.log('wheel');
+
     if (hasParent(e.target, this.topDiv) && !this.isZoomFixed()) {
       e.preventDefault();
     }
@@ -926,16 +940,54 @@ class HiGlassComponent extends React.Component {
 
     svgString = svgString.replace(/<a0:/g, '<');
     svgString = svgString.replace(/<\/a0:/g, '</');
-
-    return svgString;
-  }
-
-  createDataURI() {
-    return this.canvasElement.toDataURL();
+    
+    // FF is fussier than Chrome, and requires dimensions on the SVG,
+    // if it is to be used as an image src.
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=700533
+    const w = this.canvasElement.width;
+    const h = this.canvasElement.height;
+    const dimensionedSvgString = `<svg width="${w}" height="${h}" ` + svgString.slice(4);
+    
+    return dimensionedSvgString;
   }
 
   handleExportSVG() {
     download('export.svg', this.createSVGString());
+  }
+  
+  createPNGBlobPromise() {
+    return new Promise((resolve, reject) => {
+      // It would seem easier to call canvas.toDataURL()...
+      // Except that with webgl context, it swaps buffers after drawing
+      // and you don't have direct access to what is on-screen.
+      // (You end up getting a PNG of the desired dimensions, but it is empty.)
+      //
+      // We'd either need to 
+      // - Turn on preserveDrawingBuffer and rerender, and add a callback
+      // - Or leave it off, and somehow synchronously export before the swap
+      // - Or look into low-level stuff like copyBufferSubData.
+      //
+      // Basing it on the SVG also guarantees us that the two exports are the same.
+      
+      const svgString = this.createSVGString();
+      
+      const img = new Image(this.canvasElement.width, this.canvasElement.height);
+      img.src = "data:image/svg+xml;base64," + btoa(svgString);
+      img.onload = () => {
+          const targetCanvas = document.createElement('canvas');
+          // TODO: I have no idea why dimensions are doubled!
+          targetCanvas.width = this.canvasElement.width / 2;
+          targetCanvas.height = this.canvasElement.height / 2;
+          targetCanvas.getContext('2d').drawImage(img, 0, 0);
+          targetCanvas.toBlob((blob) => { resolve(blob) });
+      };
+    });
+  }
+  
+  handleExportPNG() {
+    this.createPNGBlobPromise().then((blob) => {
+      download('export.png', blob) 
+    });
   }
 
   /*
@@ -3004,13 +3056,13 @@ class HiGlassComponent extends React.Component {
     }
 
     if (
-      !(+start1Abs >= 0 && +end1Abs >= 0)
+      isNaN(start1Abs) || isNaN(end1Abs)
     ) {
       const coords = [start1Abs, end1Abs].join(', ');
       console.warn([
-        `Invalid coordinates (${coords}). All coordinates need to be numbers`,
-        'and should represent absolute coordinates (not chromosome',
-        'coordinates).',
+        `Invalid coordinates (${coords}). All coordinates need to be numbers
+        and should represent absolute coordinates (not chromosome
+        coordinates).`,
       ].join(' '));
       return;
     }
@@ -3098,12 +3150,16 @@ class HiGlassComponent extends React.Component {
     let foundTiledPlot;
 
     const views = dictValues(this.state.views);
+    // console.log('views:', views);
+    // console.log('tiledAreas:', this.tiledAreasDivs);
 
     for (let i = 0; i < views.length; i++) {
       const tiledPlot = this.tiledPlots[views[i].uid];
 
+      // console.log('1');
       const area = this.tiledAreasDivs[views[i].uid].getBoundingClientRect();
-
+      // console.log('2');
+        
       const { top, left } = area;
       const bottom = top + area.height;
       const right = left + area.width;
@@ -3343,22 +3399,46 @@ class HiGlassComponent extends React.Component {
   }
 
   onWheelHandler(evt) {
+    // console.log('owh:', evt);
     const zoomFixed = (
       this.props.zoomFixed
       || this.props.options.zoomFixed
       || this.props.viewConfig.zoomFixed
     );
 
-    if (evt.forwared || zoomFixed) return;
+    if (evt.forwarded || zoomFixed) {
+      evt.stopPropagation();
+      evt.preventDefault();
+      // console.trace('stopped', evt.sourceUid);
+
+      return;
+    }
+
+    if (evt.path.indexOf(this.topDiv) < 0) {
+      // ignore events that don't come from within the
+      // HiGlass container
+      return;
+    }
+
+    // console.log('evt:', evt);
 
     // forward the wheel event back to the TrackRenderer that it should go to
     // this is so that we can zoom when there's a viewport projection present
     const hoveredTiledPlot = this.getTiledPlotAtPosition(evt.clientX, evt.clientY);
+    // console.log('hoveredTiledPlot:', hoveredTiledPlot);
+
     if (hoveredTiledPlot) {
       const { trackRenderer } = hoveredTiledPlot;
-      evt.forwared = true;
+      evt.forwarded = true;
 
-      forwardEvent(evt.nativeEvent, trackRenderer.element);
+      // console.log('here1', evt);
+      if (evt) {
+        // console.trace('here', evt.sourceUid);
+        forwardEvent(evt, trackRenderer.eventTracker );
+
+        // evt.stopPropagation();
+        evt.preventDefault();
+      }
     }
   }
 
@@ -3534,6 +3614,7 @@ class HiGlassComponent extends React.Component {
             onClearView={() => this.handleClearView(view.uid)}
             onCloseView={() => this.handleCloseView(view.uid)}
             onExportSVG={this.handleExportSVG.bind(this)}
+            onExportPNG={this.handleExportPNG.bind(this)}
             onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
             onExportViewsAsLink={this.handleExportViewsAsLink.bind(this)}
             onLockLocation={uid =>
@@ -3651,7 +3732,6 @@ class HiGlassComponent extends React.Component {
         className="higlass"
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
-        onWheel={this.onWheelHandlerBound}
         styleName={styleNames}
       >
         <canvas

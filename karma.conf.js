@@ -1,7 +1,7 @@
-var webpackConfig = require('./webpack.config.js');
-require('babel-polyfill');
+const webpackConfig = require('./webpack.config.js');
+require('babel-polyfill');  // eslint-disable-line import/no-extraneous-dependencies
 
-module.exports = function(config) {
+module.exports = (config) => {
   config.set({
     basePath: '',
     frameworks: ['jasmine'],
@@ -13,8 +13,10 @@ module.exports = function(config) {
       'node_modules/pixi.js/dist/pixi.js',
       'node_modules/react-bootstrap/dist/react-bootstrap.js',
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
+      'build/hglib.css',
       //'test/**/*.+(js|jsx)',
       'test/SvgExportRulesTest.js',
+      // 'test/PngExportTest.js',
       // 'test/OSMTests.js',
       // 'test/TiledPixiTrackTests.js',
       // 'test/ViewManipulationTests.js',
@@ -24,7 +26,6 @@ module.exports = function(config) {
       // 'test/AddAndRemoveViewconfTests.js',
       // 'test/HiGlassComponentTest.js',
       // 'test/HiGlassComponentCreationTests.js',
-      'build/hglib.css',
     ],
 
     preprocessors: {
@@ -33,7 +34,8 @@ module.exports = function(config) {
       'test/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
     },
 
-    webpack: webpackConfig,
+    // webpackConfig(env, argv)
+    webpack: webpackConfig({}, {}),
 
     webpackServer: {
       noInfo: true, // please don't spam the console when running in karma!
@@ -45,6 +47,7 @@ module.exports = function(config) {
       'karma-sourcemap-loader',
       'karma-chrome-launcher',
       'karma-phantomjs2-launcher',
+      'karma-verbose-reporter'
     ],
 
     babelPreprocessor: {
@@ -52,7 +55,7 @@ module.exports = function(config) {
         presets: ['airbnb'],
       },
     },
-    reporters: ['progress'],
+    reporters: ['verbose'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_DEBUG,

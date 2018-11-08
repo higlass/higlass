@@ -51,6 +51,11 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.fontSize = +this.options.fontSize || FONT_SIZE;
     this.geneLabelPos = this.options.geneLabelPosition || GENE_LABEL_POS;
     this.geneRectHeight = +this.options.geneAnnotationHeight || GENE_RECT_HEIGHT;
+
+    // Don't ask me why but rectangles and triangles seem to be drawn 2px larger
+    // than they should be
+    this.geneRectHeight -= 2;
+
     this.geneTriangleHeight = 0.6 * this.geneRectHeight || TRIANGLE_HEIGHT;
     this.geneStrandSpacing = +this.options.geneStrandSpacing || GENE_STRAND_SPACING;
     this.geneStrandHSpacing = this.geneStrandSpacing / 2;
@@ -361,7 +366,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       ? this.halfRectHHeight - this.geneStrandHSpacing - this.geneRectHHeight - lineHHeight
       : this.halfRectHHeight + this.geneStrandHSpacing + this.geneRectHHeight - lineHHeight;
 
-    const yExonPos = yPos - (exonHeight / 2) + (lineHeight / 2);
+    const yExonPos = yPos - this.geneRectHHeight + lineHHeight;
 
     const polys = [];
     let poly = [
@@ -674,6 +679,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           } else {
             r.setAttribute('fill', this.options.minusStrandColor);
           }
+          r.setAttribute('opacity', '0.3');
 
           gTile.appendChild(r);
         });

@@ -61,6 +61,15 @@ export const TRACKS_INFO = [
     defaultOptions: {},
   },
   {
+    type: 'simple-svg',
+    datatype: [],
+    local: false,
+    minHeight: 100,
+    minWidth: 100,
+    orientation: '2d',
+    exportable: true,
+  },
+  {
     type: 'heatmap',
     datatype: ['matrix'],
     local: false,
@@ -1200,6 +1209,22 @@ export const TRACKS_INFO = [
     ],
     defaultOptions: {
       style: 'mapbox.streets',
+      labelPosition: 'bottomRight',
+    },
+  },
+  {
+    type: 'raster-tiles',
+    datatype: ['map-tiles'],
+    local: true,
+    orientation: '2d',
+    hidden: true,
+    name: 'Raster Tiles',
+    thumbnail: svgGeoMapIcon,
+    availableOptions: [
+      'labelPosition',
+      'name',
+    ],
+    defaultOptions: {
       labelPosition: 'bottomRight',
     },
   },

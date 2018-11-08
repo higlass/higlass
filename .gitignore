@@ -3,6 +3,7 @@ app/test2.html
 app/test3.html
 yarn.lock
 build/
+docs/_build/
 npm-debug.log
 **/*.un~
 *.swo

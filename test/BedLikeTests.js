@@ -11,6 +11,7 @@ import { expect } from 'chai';
 // Utils
 import {
   mountHGComponent,
+  removeHGComponent,
   getTrackObjectFromHGC
 } from '../app/scripts/utils';
 
@@ -32,14 +33,12 @@ describe('Simple HiGlassComponent', () => {
         viewConf.views[0].uid,
         viewConf.views[0].tracks.top[0].uid);
 
-      //console.log('trackObj:', trackObj);
       expect(Object.keys(trackObj.drawnRects).length).to.be.above(0);
       done();
     });
 
     afterAll((done) => {
-      document.body.removeChild(div);
-
+      removeHGComponent(div);
       done();
     });
   });

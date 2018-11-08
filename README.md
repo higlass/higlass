@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/hms-dbmi/higlass.svg?branch=master)](https://travis-ci.org/hms-dbmi/higlass)
+[![Build Status](https://travis-ci.org/higlass/higlass.svg?branch=master)](https://travis-ci.org/hms-dbmi/higlass)
 [![Live Docs](https://img.shields.io/badge/docs-live-red.svg?colorB=0f5d92)](https://docs.higlass.io/)
 [![DOI](https://zenodo.org/badge/56026057.svg)](https://zenodo.org/badge/latestdoi/56026057)
 
@@ -71,42 +71,9 @@ HiGlass provides an API for controlling the component from within a Javascript s
 </div>
 
 <script>
-var testViewConfig =
-{
-  "editable": true,
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
-  "exportViewUrl": "http://higlass.io/api/v1/viewconfs",
-  "views": [
-    {
-      "uid": "view1",
-      "tracks": {
-        "center": [
-              {
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-                "type": "heatmap"
-              }
-        ]
-      },
-      "genomePositionSearchBox": {
-        "autocompleteServer": "http://higlass.io/api/v1",
-        "chromInfoServer": "http://higlass.io/api/v1",
-        "visible": true,
-        "chromInfoId": "hg19",
-        "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
-      }
-    }
-  ],
-
-}
-
-
 const api = hglib.createHgComponent(
     document.getElementById('development-demo'),
-    testViewConfig,
+    'http://higlass.io/api/v1/viewconfs/?d=default',
     { bounded: true }
 );
 </script>

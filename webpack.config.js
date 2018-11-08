@@ -3,29 +3,27 @@
 const autoprefixer = require('autoprefixer');
 const path = require('path');
 const webpack = require('webpack');
-const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const UnminifiedWebpackPlugin = require('unminified-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-console.log('NODE_ENV:', process.env.NODE_ENV)
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-module.exports = {
-  mode: process.env.NODE_ENV === "production" ? "production" : "development",
+module.exports = (env, argv) => ({
+  mode: argv.mode === 'production' ? 'production' : 'development',
   context: `${__dirname}/app`,
   entry: {
-    hglib: ['./scripts/hglib.js'],
-    'hglib.min': ['./scripts/hglib.js'],
-    worker: ['./scripts/worker.js'],
+    hglib: './scripts/hglib.js',
+    worker: './scripts/worker.js',
   },
-  watch: process.env.NODE_ENV === 'watch',
+  watch: !!argv.watch,
   watchOptions: {
     aggregateTimeout: 300,
     poll: 1000,
     ignored: /node_modules/,
   },
-  devtool: 'cheap-source-map',
+  // devtool: 'cheap-source-map',
   devServer: {
     contentBase: [
       path.resolve(__dirname, 'app'),
@@ -37,24 +35,22 @@ module.exports = {
   output: {
     path: `${__dirname}/build`,
     publicPath: '/',
-    filename: '[name].js',
+    // UnminifiedWebpackPlugin requires the `.min` extension but
+    // in development mode the unminified version is ignored anyway. This means
+    // the default build is unminified *but* would have the `.min` extension,
+    // which would cause webpack-dev-server to fail because `hglib.js` is
+    // missing. Hence we need to change the template based on the mode.
+    filename: argv.mode === 'production' ? '[name].min.js' : '[name].js',
     libraryTarget: 'umd',
     library: '[name]',
   },
   optimization: {
-    minimize: process.env.NODE_ENV === 'production',
+    minimize: argv.mode === 'production',
     minimizer: [
-      new TerserPlugin({
-        cache: true,
-        parallel: true,
+      new UglifyJsPlugin({
         include: /\.min\.js$/,
-        sourceMap: false,
       }),
-      new OptimizeCSSAssetsPlugin({
-        cssProcessorOptions: {
-          sourceMap: false
-        },
-      })
+      new OptimizeCSSAssetsPlugin()
     ]
   },
   module: {
@@ -137,7 +133,7 @@ module.exports = {
             options: {
               importLoaders: 2,
               localIdentName: '[name]_[local]-[hash:base64:5]',
-              minimize:  false,
+              minimize: false,
               modules: true,
               sourceMap: false,
             },
@@ -213,6 +209,7 @@ module.exports = {
     new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
     new MiniCssExtractPlugin('hglib.css'),
     new webpack.optimize.ModuleConcatenationPlugin(),
+    new UnminifiedWebpackPlugin(),
     // new BundleAnalyzerPlugin(),
   ],
-};
+});
