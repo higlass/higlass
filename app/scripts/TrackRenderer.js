@@ -111,6 +111,9 @@ class TrackRenderer extends React.Component {
 
     this.uid = slugid.nice();
 
+    this.availableForPlugins = AVAILABLE_FOR_PLUGINS;
+    this.availableForPlugins.services.pubSub = this.props.pubSub;
+
     this.mounted = false;
 
     // create a zoom behavior that we'll just use to transform selections
@@ -1706,8 +1709,9 @@ class TrackRenderer extends React.Component {
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
-       case 'osm-2d-tile-ids':
+      case 'osm-2d-tile-ids':
         return new OSMTileIdsTrack(
+          this.props.pubSub,
           this.pStage,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
@@ -1724,6 +1728,7 @@ class TrackRenderer extends React.Component {
 
       case 'raster-tiles':
         return new RasterTilesTrack(
+          this.props.pubSub,
           this.pStage,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
@@ -1739,8 +1744,8 @@ class TrackRenderer extends React.Component {
         );
 
       case 'overlay-track':
-        //console.log('horizontal-overlay-track');
         return new OverlayTrack(
+          this.props.pubSub,
           this.pStage,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
@@ -1788,8 +1793,9 @@ class TrackRenderer extends React.Component {
 
       case 'simple-svg':
         return new SVGTrack(
-            this.svgElement
-          );
+          this.props.pubSub,
+          this.svgElement
+        );
 
       default: {
         // Check if a plugin track is available
@@ -1799,7 +1805,6 @@ class TrackRenderer extends React.Component {
           try {
             return new pluginTrack.track(
               AVAILABLE_FOR_PLUGINS,
-              this.props.pubSub,
               this.pStage,
               track,
               dataConfig,
@@ -1886,7 +1891,7 @@ class TrackRenderer extends React.Component {
     this.element.addEventListener('mousewheel', (evt) => {
       console.log('element mw', evt)
     })
-    
+
     this.element.addEventListener('wheel', (evt) => {
       console.log('wheel', evt);
     })
@@ -1966,7 +1971,7 @@ class TrackRenderer extends React.Component {
 
   forwardEvent(e) {
     // console.log('fe e:', e);
-    
+
     e.sourceUid = this.uid;
     this.props.pubSub.publish('app.event', e);
   }

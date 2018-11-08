@@ -11,8 +11,8 @@ const GENE_RECT_HEIGHT = 10;
 const MAX_TEXTS = 20;
 
 export class OverlayTrack extends PixiTrack {
-  constructor(scene, options, animate) {
-    super(scene, options);
+  constructor(pubSub, scene, options, animate) {
+    super(pubSub, scene, options);
 
     //console.log('options:', options);
 
@@ -42,11 +42,11 @@ export class OverlayTrack extends PixiTrack {
       */
 
       if (orientation === '1d-horizontal') {
-        let xPos = this.position[0] + position.left + 
+        let xPos = this.position[0] + position.left +
           this._xScale(this.options.extent[0][0]);
         let yPos = this.position[1] + position.top;
         let height = position.height;
-        let width = this._xScale(this.options.extent[0][1]) - 
+        let width = this._xScale(this.options.extent[0][1]) -
           xPos + position.left + this.position[0];
 
         /*
