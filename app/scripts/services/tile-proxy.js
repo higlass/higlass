@@ -505,7 +505,7 @@ export const tileDataToPixData = (
 
   // comment this and uncomment the code afterwards to enable threading
 
-  if (true) {
+  if (true) {  // eslint-disable-line no-constant-condition
     const pixData = workerSetPix(
       tileData.dense.length,
       tileData.dense,
