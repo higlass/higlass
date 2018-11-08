@@ -3406,7 +3406,6 @@ class HiGlassComponent extends React.Component {
   }
 
   onWheelHandler(evt) {
-    // console.log('owh:', evt);
     const zoomFixed = (
       this.props.zoomFixed
       || this.props.options.zoomFixed
@@ -3416,32 +3415,26 @@ class HiGlassComponent extends React.Component {
     if (evt.forwarded || zoomFixed) {
       evt.stopPropagation();
       evt.preventDefault();
-      // console.trace('stopped', evt.sourceUid);
 
       return;
     }
 
-    if (evt.path.indexOf(this.topDiv) < 0) {
+    if (!hasParent(evt.target, this.topDiv)) {
       // ignore events that don't come from within the
       // HiGlass container
       return;
     }
 
-    // console.log('evt:', evt);
-
     // forward the wheel event back to the TrackRenderer that it should go to
     // this is so that we can zoom when there's a viewport projection present
     const hoveredTiledPlot = this.getTiledPlotAtPosition(evt.clientX, evt.clientY);
-    // console.log('hoveredTiledPlot:', hoveredTiledPlot);
 
     if (hoveredTiledPlot) {
       const { trackRenderer } = hoveredTiledPlot;
       evt.forwarded = true;
 
-      // console.log('here1', evt);
       if (evt) {
-        // console.trace('here', evt.sourceUid);
-        forwardEvent(evt, trackRenderer.eventTracker );
+        forwardEvent(evt, trackRenderer.eventTracker);
 
         // evt.stopPropagation();
         evt.preventDefault();
