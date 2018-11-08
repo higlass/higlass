@@ -13,6 +13,7 @@ end eslint
 
 start compile
 npm run compile
+[ -e dist.zip ] || die 'Missing dist.zip'
 end compile
 
 start karma
