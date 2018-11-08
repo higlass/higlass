@@ -14,7 +14,7 @@ before_script:
     - npm install --quiet -g gulp
     - npm install
 script:
-    - ./test.sh
+    - ./travis_build_test.sh
 before_deploy:
     - pip install --user -r docs/requirements.txt
     - cd docs; ./build.sh; cd -
