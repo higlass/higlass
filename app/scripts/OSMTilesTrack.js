@@ -23,10 +23,10 @@ class OSMTilesTrack extends PixiTrack {
    * @param tilesetUid: The data set to get the tiles from the server
    */
   constructor(pubSub, scene, options, animate) {
-    // Force OpenStreetMaps copyright
-    options.name = `© OpenStreetMap${options.name ? `\n${options.name}` : ''}`;
-
     super(pubSub, scene, options);
+
+    // Force OpenStreetMaps copyright
+    this.options.name = `© OpenStreetMap${options.name ? `\n${options.name}` : ''}`;
 
     // the tiles which should be visible (although they're not necessarily fetched)
     this.visibleTiles = new Set();
