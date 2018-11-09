@@ -81,7 +81,7 @@ export const osmConf =
   }
 }
 
-export const geneAnnotationsOnly1 = 
+export const geneAnnotationsOnly1 =
 {
   "editable": true,
   "zoomFixed": false,
@@ -320,7 +320,7 @@ export const geneAnnotationsOnly =
   }
 };
 
-export const annotationsTilesView = 
+export const annotationsTilesView =
 {
   "editable": true,
   "zoomFixed": false,
@@ -399,7 +399,7 @@ export const annotationsTilesView =
   }
 }
 
-export const horizontalAndVerticalMultivec = 
+export const horizontalAndVerticalMultivec =
   {
   "editable": true,
   "trackSourceServers": [
@@ -536,7 +536,7 @@ export const horizontalAndVerticalMultivec =
   }
 }
 
-export const divergentTrackConfig = 
+export const divergentTrackConfig =
 {
   "zoomFixed": false,
   "views": [
@@ -778,7 +778,7 @@ export const divergentTrackConfig =
   }
 }
 
-export const exportDataConfig = 
+export const exportDataConfig =
 {
   "editable": true,
   "trackSourceServers": [
@@ -1007,7 +1007,7 @@ export const exportDataConfig =
   }
 }
 
-export const divisionViewConfig = 
+export const divisionViewConfig =
 {
   "editable": true,
   "zoomFixed": false,
@@ -1063,7 +1063,7 @@ export const divisionViewConfig =
               {
                 "data": {
                   "type": "divided",
-                  'children': [ 
+                  'children': [
                     {
                       "server": "http://higlass.io/api/v1",
                       "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
@@ -1157,7 +1157,7 @@ export const divisionViewConfig =
   }
 };
 
-export const simpleCenterViewConfig = 
+export const simpleCenterViewConfig =
 {
   "editable": true,
   "zoomFixed": false,
@@ -1273,7 +1273,47 @@ export const simpleCenterViewConfig =
   }
 }
 
-export const rectangleDomains = 
+export const simple1dAnnotation = {
+  editable: true,
+  zoomFixed: false,
+  trackSourceServers: ['http://higlass.io/api/v1'],
+  views: [
+    {
+      uid: 'a',
+      initialXDomain: [0, 100],
+      initialYDomain: [0, 100],
+      tracks: {
+        top: [
+          {
+            uid: 'b',
+            type: 'horizontal-1d-annotations',
+            height: 300,
+            options: {
+              regions: [
+                [0, 100],
+              ],
+            }
+          }
+        ],
+        left: [],
+        center: [],
+        bottom: [],
+        right: []
+      },
+      layout: {
+        w: 12,
+        h: 12,
+        x: 0,
+        y: 0,
+        i: 'a',
+        moved: false,
+        static: false
+      }
+    }
+  ],
+};
+
+export const rectangleDomains =
   {
   "editable": true,
   "zoomFixed": false,
@@ -1404,7 +1444,7 @@ export const rectangleDomains =
   }
 }
 
-export const invalidTrackConfig = 
+export const invalidTrackConfig =
 {
   "editable": true,
   "zoomFixed": false,
@@ -1472,7 +1512,7 @@ export const invalidTrackConfig =
   }
 }
 
-export const oneTrackConfig = 
+export const oneTrackConfig =
 {
   "editable": true,
   "zoomFixed": false,
@@ -1575,7 +1615,7 @@ export const oneTrackConfig =
     }
   }
 }
-export const chromosomeGridTrack = 
+export const chromosomeGridTrack =
               {
                 "type": "2d-chromosome-grid",
                 "local": true,
@@ -1752,7 +1792,7 @@ export const oneZoomedOutViewConf = {
   }
 }
 
-export const threeViews = 
+export const threeViews =
 {
   "editable": true,
   "zoomFixed": false,
@@ -1950,45 +1990,45 @@ export const threeViews =
   "locationLocks": {}
 }
 
-export const fritzBug2 = 
-{  
+export const fritzBug2 =
+{
    "editable":false,
-   "trackSourceServers":[  
+   "trackSourceServers":[
       "/api/v1"
    ],
    "exportViewUrl":"http://higlass.io/api/v1/viewconfs/",
    "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19&type=json&cum=1",
-   "views":[  
-      {  
+   "views":[
+      {
          "uid":"a_",
          "zoomFixed":true,
-         "initialXDomain":[  
+         "initialXDomain":[
             2829728720,
             2881033286
          ],
-         "initialYDomain":[  
+         "initialYDomain":[
             2829728720,
             2881033286
          ],
          "autocompleteSource":"http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
          "genomePositionSearchBoxVisible":false,
          "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
-         "tracks":{  
-            "top":[  
-               {  
+         "tracks":{
+            "top":[
+               {
                   "uid":"b",
                   "type":"horizontal-gene-annotations",
                   "height":60,
                   "tilesetUid":"OHJakQICQD6gTD7skx4EWA",
                   "server":"http://higlass.io/api/v1",
                   "name":"Gene Annotations",
-                  "options":{  
+                  "options":{
                      "name":"Gene Annotations (hg19)",
                      "minusStrandColor":"#999",
                      "plusStrandColor":"#999"
                   }
                },
-               {  
+               {
                   "uid":"c",
                   "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
                   "type":"horizontal-chromosome-labels",
@@ -1996,8 +2036,8 @@ export const fritzBug2 =
                   "height":30
                }
             ],
-            "left":[  
-               {  
+            "left":[
+               {
                   "uid":"d",
                   "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
                   "type":"vertical-chromosome-labels",
@@ -2005,19 +2045,19 @@ export const fritzBug2 =
                   "width":30
                }
             ],
-            "center":[  
-               {  
+            "center":[
+               {
                   "uid":"e",
                   "type":"combined",
                   "height":200,
-                  "contents":[  
-                     {  
+                  "contents":[
+                     {
                         "uid":"f",
                         "server":"https://hgs.vcg.rc.fas.harvard.edu/api/v1",
                         "tilesetUid":"rao-gm12878-1kbmr",
                         "type":"heatmap",
-                        "options":{  
-                           "colorRange":[  
+                        "options":{
+                           "colorRange":[
                               "#fff",
                               "#bbb",
                               "#777",
@@ -2031,15 +2071,15 @@ export const fritzBug2 =
                   ],
                   "position":"center"
                },
-               {  
+               {
                   "uid":"a.2d",
                   "type":"2d-chromosome-annotations",
                   "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
-                  "options":{  
+                  "options":{
                      "minRectWidth":6,
                      "minRectHeight":6,
-                     "regions":[  
-                        [  
+                     "regions":[
+                        [
                            "chr22",
                            17535000,
                            17540000,
@@ -2049,7 +2089,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            17980000,
                            17990000,
@@ -2059,7 +2099,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            17980000,
                            17985000,
@@ -2069,7 +2109,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            18250000,
                            18260000,
@@ -2079,7 +2119,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            18550000,
                            18555000,
@@ -2089,7 +2129,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            18625000,
                            18630000,
@@ -2099,7 +2139,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            20260000,
                            20270000,
@@ -2109,7 +2149,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            19460000,
                            19465000,
@@ -2119,7 +2159,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            19900000,
                            19905000,
@@ -2129,7 +2169,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            20270000,
                            20275000,
@@ -2139,7 +2179,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            20810000,
                            20815000,
@@ -2149,7 +2189,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            21050000,
                            21060000,
@@ -2159,7 +2199,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            21050000,
                            21060000,
@@ -2169,7 +2209,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            21040000,
                            21045000,
@@ -2179,7 +2219,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            22295000,
                            22300000,
@@ -2189,7 +2229,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23250000,
                            23255000,
@@ -2199,7 +2239,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23280000,
                            23290000,
@@ -2209,7 +2249,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23480000,
                            23485000,
@@ -2219,7 +2259,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23245000,
                            23250000,
@@ -2229,7 +2269,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23285000,
                            23290000,
@@ -2239,7 +2279,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23280000,
                            23285000,
@@ -2249,7 +2289,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23030000,
                            23040000,
@@ -2259,7 +2299,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23190000,
                            23195000,
@@ -2269,7 +2309,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23630000,
                            23640000,
@@ -2279,7 +2319,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23280000,
                            23285000,
@@ -2289,7 +2329,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50970000,
                            50980000,
@@ -2299,7 +2339,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23625000,
                            23630000,
@@ -2309,7 +2349,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23720000,
                            23730000,
@@ -2319,7 +2359,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23465000,
                            23470000,
@@ -2329,7 +2369,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23620000,
                            23625000,
@@ -2339,7 +2379,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25070000,
                            25080000,
@@ -2349,7 +2389,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24100000,
                            24110000,
@@ -2359,7 +2399,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24190000,
                            24195000,
@@ -2369,7 +2409,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25830000,
                            25835000,
@@ -2379,7 +2419,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24190000,
                            24200000,
@@ -2389,7 +2429,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25710000,
                            25715000,
@@ -2399,7 +2439,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24190000,
                            24195000,
@@ -2409,7 +2449,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24915000,
                            24920000,
@@ -2419,7 +2459,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24910000,
                            24920000,
@@ -2429,7 +2469,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25140000,
                            25150000,
@@ -2439,7 +2479,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25985000,
                            25990000,
@@ -2449,7 +2489,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26720000,
                            26730000,
@@ -2459,7 +2499,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26170000,
                            26175000,
@@ -2469,7 +2509,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26725000,
                            26730000,
@@ -2479,7 +2519,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26725000,
                            26730000,
@@ -2489,7 +2529,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            27040000,
                            27050000,
@@ -2499,7 +2539,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26855000,
                            26860000,
@@ -2509,7 +2549,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            27040000,
                            27050000,
@@ -2519,7 +2559,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            28400000,
                            28410000,
@@ -2529,7 +2569,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            28405000,
                            28410000,
@@ -2539,7 +2579,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29220000,
                            29230000,
@@ -2549,7 +2589,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            28985000,
                            28990000,
@@ -2559,7 +2599,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29225000,
                            29230000,
@@ -2569,7 +2609,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29435000,
                            29440000,
@@ -2579,7 +2619,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29640000,
                            29645000,
@@ -2589,7 +2629,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29435000,
                            29440000,
@@ -2599,7 +2639,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29640000,
                            29645000,
@@ -2609,7 +2649,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29595000,
                            29600000,
@@ -2619,7 +2659,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29640000,
                            29645000,
@@ -2629,7 +2669,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30480000,
                            30490000,
@@ -2639,7 +2679,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29920000,
                            29925000,
@@ -2649,7 +2689,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30400000,
                            30405000,
@@ -2659,7 +2699,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30480000,
                            30485000,
@@ -2669,7 +2709,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30655000,
                            30660000,
@@ -2679,7 +2719,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30680000,
                            30685000,
@@ -2689,7 +2729,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30785000,
                            30790000,
@@ -2699,7 +2739,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30785000,
                            30790000,
@@ -2709,7 +2749,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30875000,
                            30880000,
@@ -2719,7 +2759,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30875000,
                            30880000,
@@ -2729,7 +2769,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            31150000,
                            31155000,
@@ -2739,7 +2779,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            31315000,
                            31320000,
@@ -2749,7 +2789,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            31625000,
                            31630000,
@@ -2759,7 +2799,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32025000,
                            32030000,
@@ -2769,7 +2809,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32340000,
                            32345000,
@@ -2779,7 +2819,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32470000,
                            32480000,
@@ -2789,7 +2829,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32340000,
                            32350000,
@@ -2799,7 +2839,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32470000,
                            32475000,
@@ -2809,7 +2849,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33020000,
                            33025000,
@@ -2819,7 +2859,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33190000,
                            33195000,
@@ -2829,7 +2869,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33380000,
                            33385000,
@@ -2839,7 +2879,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33595000,
                            33600000,
@@ -2849,7 +2889,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35520000,
                            35530000,
@@ -2859,7 +2899,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33910000,
                            33915000,
@@ -2869,7 +2909,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33970000,
                            33975000,
@@ -2879,7 +2919,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34310000,
                            34315000,
@@ -2889,7 +2929,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34485000,
                            34490000,
@@ -2899,7 +2939,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35520000,
                            35530000,
@@ -2909,7 +2949,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34310000,
                            34315000,
@@ -2919,7 +2959,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34505000,
                            34510000,
@@ -2929,7 +2969,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33970000,
                            33975000,
@@ -2939,7 +2979,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34500000,
                            34505000,
@@ -2949,7 +2989,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35540000,
                            35550000,
@@ -2959,7 +2999,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35410000,
                            35420000,
@@ -2969,7 +3009,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35540000,
                            35550000,
@@ -2979,7 +3019,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35535000,
                            35540000,
@@ -2989,7 +3029,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36510000,
                            36520000,
@@ -2999,7 +3039,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35980000,
                            35985000,
@@ -3009,7 +3049,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36015000,
                            36020000,
@@ -3019,7 +3059,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36310000,
                            36320000,
@@ -3029,7 +3069,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36520000,
                            36525000,
@@ -3039,7 +3079,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36515000,
                            36520000,
@@ -3049,7 +3089,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36575000,
                            36580000,
@@ -3059,7 +3099,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36860000,
                            36865000,
@@ -3069,7 +3109,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37370000,
                            37380000,
@@ -3079,7 +3119,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37590000,
                            37600000,
@@ -3089,7 +3129,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37250000,
                            37255000,
@@ -3099,7 +3139,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37375000,
                            37380000,
@@ -3109,7 +3149,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37370000,
                            37380000,
@@ -3119,7 +3159,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37610000,
                            37620000,
@@ -3129,7 +3169,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37295000,
                            37300000,
@@ -3139,7 +3179,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37580000,
                            37585000,
@@ -3149,7 +3189,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37850000,
                            37855000,
@@ -3159,7 +3199,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37850000,
                            37855000,
@@ -3169,7 +3209,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            38075000,
                            38080000,
@@ -3179,7 +3219,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            38255000,
                            38260000,
@@ -3189,7 +3229,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            38355000,
                            38360000,
@@ -3199,7 +3239,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39520000,
                            39530000,
@@ -3209,7 +3249,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39395000,
                            39400000,
@@ -3219,7 +3259,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39510000,
                            39515000,
@@ -3229,7 +3269,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39545000,
                            39550000,
@@ -3239,7 +3279,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39710000,
                            39715000,
@@ -3249,7 +3289,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39510000,
                            39515000,
@@ -3259,7 +3299,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39705000,
                            39710000,
@@ -3269,7 +3309,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39915000,
                            39920000,
@@ -3279,7 +3319,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            40430000,
                            40435000,
@@ -3289,7 +3329,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            40740000,
                            40745000,
@@ -3299,7 +3339,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            40740000,
                            40750000,
@@ -3309,7 +3349,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41040000,
                            41045000,
@@ -3319,7 +3359,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41290000,
                            41300000,
@@ -3329,7 +3369,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41040000,
                            41045000,
@@ -3339,7 +3379,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41290000,
                            41300000,
@@ -3349,7 +3389,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41480000,
                            41485000,
@@ -3359,7 +3399,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41910000,
                            41915000,
@@ -3369,7 +3409,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            42335000,
                            42340000,
@@ -3379,7 +3419,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            42335000,
                            42340000,
@@ -3389,7 +3429,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            42830000,
                            42835000,
@@ -3399,7 +3439,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43050000,
                            43055000,
@@ -3409,7 +3449,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43160000,
                            43165000,
@@ -3419,7 +3459,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43740000,
                            43745000,
@@ -3429,7 +3469,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43740000,
                            43745000,
@@ -3439,7 +3479,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43775000,
                            43780000,
@@ -3449,7 +3489,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45020000,
                            45030000,
@@ -3459,7 +3499,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            44480000,
                            44485000,
@@ -3469,7 +3509,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45020000,
                            45025000,
@@ -3479,7 +3519,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45020000,
                            45025000,
@@ -3489,7 +3529,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45130000,
                            45135000,
@@ -3499,7 +3539,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45490000,
                            45495000,
@@ -3509,7 +3549,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45830000,
                            45835000,
@@ -3519,7 +3559,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45945000,
                            45950000,
@@ -3529,7 +3569,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            47985000,
                            47990000,
@@ -3539,7 +3579,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46375000,
                            46380000,
@@ -3549,7 +3589,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46510000,
                            46515000,
@@ -3559,7 +3599,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46700000,
                            46710000,
@@ -3569,7 +3609,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46940000,
                            46950000,
@@ -3579,7 +3619,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46935000,
                            46940000,
@@ -3589,7 +3629,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            48880000,
                            48890000,
@@ -3599,7 +3639,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50315000,
                            50320000,
@@ -3609,7 +3649,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50465000,
                            50470000,
@@ -3619,7 +3659,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50650000,
                            50655000,
@@ -3629,7 +3669,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50465000,
                            50470000,
@@ -3639,7 +3679,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50650000,
                            50655000,
@@ -3649,7 +3689,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50935000,
                            50940000,
@@ -3659,7 +3699,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50760000,
                            50765000,
@@ -3672,25 +3712,25 @@ export const fritzBug2 =
                      ]
                   }
                },
-               {  
+               {
                   "uid":"a_.viewport-projection-center",
                   "type":"viewport-projection-center",
                   "fromViewUid":"__a_",
-                  "options":{  
+                  "options":{
                      "projectionFillColor":"rgba(232, 230, 255, 1)",
                      "projectionStrokeColor":"rgba(99, 87, 255, 1)"
                   },
                   "name":"Viewport Projection"
                }
             ],
-            "right":[  
+            "right":[
 
             ],
-            "bottom":[  
+            "bottom":[
 
             ]
          },
-         "layout":{  
+         "layout":{
             "w":12,
             "h":6,
             "x":0,
@@ -3700,36 +3740,36 @@ export const fritzBug2 =
             "static":false
          }
       },
-      {  
+      {
          "uid":"__a_",
          "zoomFixed":false,
-         "initialXDomain":[  
+         "initialXDomain":[
             2829728720,
             2881033286
          ],
-         "initialYDomain":[  
+         "initialYDomain":[
             2829728720,
             2881033286
          ],
          "autocompleteSource":"http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
          "genomePositionSearchBoxVisible":true,
          "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
-         "tracks":{  
-            "top":[  
-               {  
+         "tracks":{
+            "top":[
+               {
                   "uid":"_b",
                   "type":"horizontal-gene-annotations",
                   "height":60,
                   "tilesetUid":"OHJakQICQD6gTD7skx4EWA",
                   "server":"http://higlass.io/api/v1",
                   "name":"Gene Annotations",
-                  "options":{  
+                  "options":{
                      "name":"Gene Annotations (hg19)",
                      "minusStrandColor":"#999",
                      "plusStrandColor":"#999"
                   }
                },
-               {  
+               {
                   "uid":"_c",
                   "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
                   "type":"horizontal-chromosome-labels",
@@ -3737,8 +3777,8 @@ export const fritzBug2 =
                   "height":30
                }
             ],
-            "left":[  
-               {  
+            "left":[
+               {
                   "uid":"_d",
                   "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
                   "type":"vertical-chromosome-labels",
@@ -3746,19 +3786,19 @@ export const fritzBug2 =
                   "width":30
                }
             ],
-            "center":[  
-               {  
+            "center":[
+               {
                   "uid":"_e",
                   "type":"combined",
                   "height":200,
-                  "contents":[  
-                     {  
+                  "contents":[
+                     {
                         "uid":"_f",
                         "server":"https://hgs.vcg.rc.fas.harvard.edu/api/v1",
                         "tilesetUid":"rao-gm12878-1kbmr",
                         "type":"heatmap",
-                        "options":{  
-                           "colorRange":[  
+                        "options":{
+                           "colorRange":[
                               "#fff",
                               "#bbb",
                               "#777",
@@ -3772,15 +3812,15 @@ export const fritzBug2 =
                   ],
                   "position":"center"
                },
-               {  
+               {
                   "uid":"_a.2d",
                   "type":"2d-chromosome-annotations",
                   "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
-                  "options":{  
+                  "options":{
                      "minRectWidth":6,
                      "minRectHeight":6,
-                     "regions":[  
-                        [  
+                     "regions":[
+                        [
                            "chr22",
                            17535000,
                            17540000,
@@ -3790,7 +3830,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            17980000,
                            17990000,
@@ -3800,7 +3840,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            17980000,
                            17985000,
@@ -3810,7 +3850,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            18250000,
                            18260000,
@@ -3820,7 +3860,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            18550000,
                            18555000,
@@ -3830,7 +3870,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            18625000,
                            18630000,
@@ -3840,7 +3880,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            20260000,
                            20270000,
@@ -3850,7 +3890,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            19460000,
                            19465000,
@@ -3860,7 +3900,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            19900000,
                            19905000,
@@ -3870,7 +3910,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            20270000,
                            20275000,
@@ -3880,7 +3920,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            20810000,
                            20815000,
@@ -3890,7 +3930,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            21050000,
                            21060000,
@@ -3900,7 +3940,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            21050000,
                            21060000,
@@ -3910,7 +3950,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            21040000,
                            21045000,
@@ -3920,7 +3960,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            22295000,
                            22300000,
@@ -3930,7 +3970,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23250000,
                            23255000,
@@ -3940,7 +3980,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23280000,
                            23290000,
@@ -3950,7 +3990,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23480000,
                            23485000,
@@ -3960,7 +4000,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23245000,
                            23250000,
@@ -3970,7 +4010,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23285000,
                            23290000,
@@ -3980,7 +4020,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23280000,
                            23285000,
@@ -3990,7 +4030,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23030000,
                            23040000,
@@ -4000,7 +4040,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23190000,
                            23195000,
@@ -4010,7 +4050,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23630000,
                            23640000,
@@ -4020,7 +4060,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23280000,
                            23285000,
@@ -4030,7 +4070,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50970000,
                            50980000,
@@ -4040,7 +4080,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23625000,
                            23630000,
@@ -4050,7 +4090,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23720000,
                            23730000,
@@ -4060,7 +4100,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23465000,
                            23470000,
@@ -4070,7 +4110,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23620000,
                            23625000,
@@ -4080,7 +4120,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25070000,
                            25080000,
@@ -4090,7 +4130,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24100000,
                            24110000,
@@ -4100,7 +4140,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24190000,
                            24195000,
@@ -4110,7 +4150,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25830000,
                            25835000,
@@ -4120,7 +4160,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24190000,
                            24200000,
@@ -4130,7 +4170,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25710000,
                            25715000,
@@ -4140,7 +4180,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24190000,
                            24195000,
@@ -4150,7 +4190,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24915000,
                            24920000,
@@ -4160,7 +4200,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24910000,
                            24920000,
@@ -4170,7 +4210,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25140000,
                            25150000,
@@ -4180,7 +4220,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25985000,
                            25990000,
@@ -4190,7 +4230,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26720000,
                            26730000,
@@ -4200,7 +4240,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26170000,
                            26175000,
@@ -4210,7 +4250,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26725000,
                            26730000,
@@ -4220,7 +4260,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26725000,
                            26730000,
@@ -4230,7 +4270,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            27040000,
                            27050000,
@@ -4240,7 +4280,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26855000,
                            26860000,
@@ -4250,7 +4290,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            27040000,
                            27050000,
@@ -4260,7 +4300,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            28400000,
                            28410000,
@@ -4270,7 +4310,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            28405000,
                            28410000,
@@ -4280,7 +4320,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29220000,
                            29230000,
@@ -4290,7 +4330,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            28985000,
                            28990000,
@@ -4300,7 +4340,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29225000,
                            29230000,
@@ -4310,7 +4350,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29435000,
                            29440000,
@@ -4320,7 +4360,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29640000,
                            29645000,
@@ -4330,7 +4370,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29435000,
                            29440000,
@@ -4340,7 +4380,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29640000,
                            29645000,
@@ -4350,7 +4390,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29595000,
                            29600000,
@@ -4360,7 +4400,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29640000,
                            29645000,
@@ -4370,7 +4410,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30480000,
                            30490000,
@@ -4380,7 +4420,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29920000,
                            29925000,
@@ -4390,7 +4430,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30400000,
                            30405000,
@@ -4400,7 +4440,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30480000,
                            30485000,
@@ -4410,7 +4450,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30655000,
                            30660000,
@@ -4420,7 +4460,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30680000,
                            30685000,
@@ -4430,7 +4470,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30785000,
                            30790000,
@@ -4440,7 +4480,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30785000,
                            30790000,
@@ -4450,7 +4490,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30875000,
                            30880000,
@@ -4460,7 +4500,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30875000,
                            30880000,
@@ -4470,7 +4510,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            31150000,
                            31155000,
@@ -4480,7 +4520,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            31315000,
                            31320000,
@@ -4490,7 +4530,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            31625000,
                            31630000,
@@ -4500,7 +4540,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32025000,
                            32030000,
@@ -4510,7 +4550,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32340000,
                            32345000,
@@ -4520,7 +4560,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32470000,
                            32480000,
@@ -4530,7 +4570,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32340000,
                            32350000,
@@ -4540,7 +4580,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32470000,
                            32475000,
@@ -4550,7 +4590,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33020000,
                            33025000,
@@ -4560,7 +4600,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33190000,
                            33195000,
@@ -4570,7 +4610,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33380000,
                            33385000,
@@ -4580,7 +4620,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33595000,
                            33600000,
@@ -4590,7 +4630,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35520000,
                            35530000,
@@ -4600,7 +4640,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33910000,
                            33915000,
@@ -4610,7 +4650,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33970000,
                            33975000,
@@ -4620,7 +4660,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34310000,
                            34315000,
@@ -4630,7 +4670,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34485000,
                            34490000,
@@ -4640,7 +4680,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35520000,
                            35530000,
@@ -4650,7 +4690,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34310000,
                            34315000,
@@ -4660,7 +4700,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34505000,
                            34510000,
@@ -4670,7 +4710,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33970000,
                            33975000,
@@ -4680,7 +4720,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34500000,
                            34505000,
@@ -4690,7 +4730,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35540000,
                            35550000,
@@ -4700,7 +4740,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35410000,
                            35420000,
@@ -4710,7 +4750,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35540000,
                            35550000,
@@ -4720,7 +4760,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35535000,
                            35540000,
@@ -4730,7 +4770,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36510000,
                            36520000,
@@ -4740,7 +4780,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35980000,
                            35985000,
@@ -4750,7 +4790,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36015000,
                            36020000,
@@ -4760,7 +4800,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36310000,
                            36320000,
@@ -4770,7 +4810,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36520000,
                            36525000,
@@ -4780,7 +4820,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36515000,
                            36520000,
@@ -4790,7 +4830,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36575000,
                            36580000,
@@ -4800,7 +4840,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36860000,
                            36865000,
@@ -4810,7 +4850,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37370000,
                            37380000,
@@ -4820,7 +4860,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37590000,
                            37600000,
@@ -4830,7 +4870,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37250000,
                            37255000,
@@ -4840,7 +4880,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37375000,
                            37380000,
@@ -4850,7 +4890,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37370000,
                            37380000,
@@ -4860,7 +4900,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37610000,
                            37620000,
@@ -4870,7 +4910,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37295000,
                            37300000,
@@ -4880,7 +4920,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37580000,
                            37585000,
@@ -4890,7 +4930,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37850000,
                            37855000,
@@ -4900,7 +4940,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37850000,
                            37855000,
@@ -4910,7 +4950,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            38075000,
                            38080000,
@@ -4920,7 +4960,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            38255000,
                            38260000,
@@ -4930,7 +4970,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            38355000,
                            38360000,
@@ -4940,7 +4980,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39520000,
                            39530000,
@@ -4950,7 +4990,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39395000,
                            39400000,
@@ -4960,7 +5000,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39510000,
                            39515000,
@@ -4970,7 +5010,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39545000,
                            39550000,
@@ -4980,7 +5020,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39710000,
                            39715000,
@@ -4990,7 +5030,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39510000,
                            39515000,
@@ -5000,7 +5040,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39705000,
                            39710000,
@@ -5010,7 +5050,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39915000,
                            39920000,
@@ -5020,7 +5060,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            40430000,
                            40435000,
@@ -5030,7 +5070,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            40740000,
                            40745000,
@@ -5040,7 +5080,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            40740000,
                            40750000,
@@ -5050,7 +5090,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41040000,
                            41045000,
@@ -5060,7 +5100,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41290000,
                            41300000,
@@ -5070,7 +5110,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41040000,
                            41045000,
@@ -5080,7 +5120,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41290000,
                            41300000,
@@ -5090,7 +5130,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41480000,
                            41485000,
@@ -5100,7 +5140,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41910000,
                            41915000,
@@ -5110,7 +5150,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            42335000,
                            42340000,
@@ -5120,7 +5160,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            42335000,
                            42340000,
@@ -5130,7 +5170,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            42830000,
                            42835000,
@@ -5140,7 +5180,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43050000,
                            43055000,
@@ -5150,7 +5190,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43160000,
                            43165000,
@@ -5160,7 +5200,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43740000,
                            43745000,
@@ -5170,7 +5210,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43740000,
                            43745000,
@@ -5180,7 +5220,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43775000,
                            43780000,
@@ -5190,7 +5230,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45020000,
                            45030000,
@@ -5200,7 +5240,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            44480000,
                            44485000,
@@ -5210,7 +5250,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45020000,
                            45025000,
@@ -5220,7 +5260,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45020000,
                            45025000,
@@ -5230,7 +5270,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45130000,
                            45135000,
@@ -5240,7 +5280,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45490000,
                            45495000,
@@ -5250,7 +5290,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45830000,
                            45835000,
@@ -5260,7 +5300,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45945000,
                            45950000,
@@ -5270,7 +5310,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            47985000,
                            47990000,
@@ -5280,7 +5320,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46375000,
                            46380000,
@@ -5290,7 +5330,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46510000,
                            46515000,
@@ -5300,7 +5340,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46700000,
                            46710000,
@@ -5310,7 +5350,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46940000,
                            46950000,
@@ -5320,7 +5360,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46935000,
                            46940000,
@@ -5330,7 +5370,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            48880000,
                            48890000,
@@ -5340,7 +5380,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50315000,
                            50320000,
@@ -5350,7 +5390,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50465000,
                            50470000,
@@ -5360,7 +5400,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50650000,
                            50655000,
@@ -5370,7 +5410,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50465000,
                            50470000,
@@ -5380,7 +5420,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50650000,
                            50655000,
@@ -5390,7 +5430,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50935000,
                            50940000,
@@ -5400,7 +5440,7 @@ export const fritzBug2 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50760000,
                            50765000,
@@ -5414,14 +5454,14 @@ export const fritzBug2 =
                   }
                }
             ],
-            "right":[  
+            "right":[
 
             ],
-            "bottom":[  
+            "bottom":[
 
             ]
          },
-         "layout":{  
+         "layout":{
             "w":12,
             "h":6,
             "x":0,
@@ -5433,13 +5473,13 @@ export const fritzBug2 =
          "selectionView":true
       }
    ],
-   "zoomLocks":{  
-      "locksByViewUid":{  
+   "zoomLocks":{
+      "locksByViewUid":{
          "__a_":"lockWurst"
       },
-      "locksDict":{  
-         "lockWurst":{  
-            "__a_":[  
+      "locksDict":{
+         "lockWurst":{
+            "__a_":[
                1,
                1,
                1
@@ -5447,13 +5487,13 @@ export const fritzBug2 =
          }
       }
    },
-   "locationLocks":{  
-      "locksByViewUid":{  
+   "locationLocks":{
+      "locksByViewUid":{
          "__a_":"lockWurst"
       },
-      "locksDict":{  
-         "lockWurst":{  
-            "__a_":[  
+      "locksDict":{
+         "lockWurst":{
+            "__a_":[
                1,
                1,
                1
@@ -5463,45 +5503,45 @@ export const fritzBug2 =
    }
 }
 
-export const fritzBug1 = 
-{  
+export const fritzBug1 =
+{
    "editable":false,
-   "trackSourceServers":[  
+   "trackSourceServers":[
       "/api/v1"
    ],
    "exportViewUrl":"http://higlass.io/api/v1/viewconfs/",
    "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19&type=json&cum=1",
-   "views":[  
-      {  
+   "views":[
+      {
          "uid":"a",
          "zoomFixed":true,
-         "initialXDomain":[  
+         "initialXDomain":[
             2829728720,
             2881033286
          ],
-         "initialYDomain":[  
+         "initialYDomain":[
             2829728720,
             2881033286
          ],
          "autocompleteSource":"http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
          "genomePositionSearchBoxVisible":false,
          "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
-         "tracks":{  
-            "top":[  
-               {  
+         "tracks":{
+            "top":[
+               {
                   "uid":"b",
                   "type":"horizontal-gene-annotations",
                   "height":60,
                   "tilesetUid":"OHJakQICQD6gTD7skx4EWA",
                   "server":"http://higlass.io/api/v1",
                   "name":"Gene Annotations",
-                  "options":{  
+                  "options":{
                      "name":"Gene Annotations (hg19)",
                      "minusStrandColor":"#999",
                      "plusStrandColor":"#999"
                   }
                },
-               {  
+               {
                   "uid":"c",
                   "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
                   "type":"horizontal-chromosome-labels",
@@ -5509,8 +5549,8 @@ export const fritzBug1 =
                   "height":30
                }
             ],
-            "left":[  
-               {  
+            "left":[
+               {
                   "uid":"d",
                   "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
                   "type":"vertical-chromosome-labels",
@@ -5518,19 +5558,19 @@ export const fritzBug1 =
                   "width":30
                }
             ],
-            "center":[  
-               {  
+            "center":[
+               {
                   "uid":"e",
                   "type":"combined",
                   "height":200,
-                  "contents":[  
-                     {  
+                  "contents":[
+                     {
                         "uid":"f",
                         "server":"https://hgs.vcg.rc.fas.harvard.edu/api/v1",
                         "tilesetUid":"rao-gm12878-1kbmr",
                         "type":"heatmap",
-                        "options":{  
-                           "colorRange":[  
+                        "options":{
+                           "colorRange":[
                               "#fff",
                               "#bbb",
                               "#777",
@@ -5544,15 +5584,15 @@ export const fritzBug1 =
                   ],
                   "position":"center"
                },
-               {  
+               {
                   "uid":"a.2d",
                   "type":"2d-chromosome-annotations",
                   "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
-                  "options":{  
+                  "options":{
                      "minRectWidth":6,
                      "minRectHeight":6,
-                     "regions":[  
-                        [  
+                     "regions":[
+                        [
                            "chr22",
                            17535000,
                            17540000,
@@ -5562,7 +5602,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            17980000,
                            17990000,
@@ -5572,7 +5612,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            17980000,
                            17985000,
@@ -5582,7 +5622,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            18250000,
                            18260000,
@@ -5592,7 +5632,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            18550000,
                            18555000,
@@ -5602,7 +5642,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            18625000,
                            18630000,
@@ -5612,7 +5652,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            20260000,
                            20270000,
@@ -5622,7 +5662,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            19460000,
                            19465000,
@@ -5632,7 +5672,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            19900000,
                            19905000,
@@ -5642,7 +5682,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            20270000,
                            20275000,
@@ -5652,7 +5692,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            20810000,
                            20815000,
@@ -5662,7 +5702,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            21050000,
                            21060000,
@@ -5672,7 +5712,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            21050000,
                            21060000,
@@ -5682,7 +5722,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            21040000,
                            21045000,
@@ -5692,7 +5732,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            22295000,
                            22300000,
@@ -5702,7 +5742,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23250000,
                            23255000,
@@ -5712,7 +5752,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23280000,
                            23290000,
@@ -5722,7 +5762,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23480000,
                            23485000,
@@ -5732,7 +5772,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23245000,
                            23250000,
@@ -5742,7 +5782,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23285000,
                            23290000,
@@ -5752,7 +5792,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23280000,
                            23285000,
@@ -5762,7 +5802,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23030000,
                            23040000,
@@ -5772,7 +5812,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23190000,
                            23195000,
@@ -5782,7 +5822,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23630000,
                            23640000,
@@ -5792,7 +5832,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23280000,
                            23285000,
@@ -5802,7 +5842,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50970000,
                            50980000,
@@ -5812,7 +5852,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23625000,
                            23630000,
@@ -5822,7 +5862,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23720000,
                            23730000,
@@ -5832,7 +5872,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23465000,
                            23470000,
@@ -5842,7 +5882,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            23620000,
                            23625000,
@@ -5852,7 +5892,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25070000,
                            25080000,
@@ -5862,7 +5902,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24100000,
                            24110000,
@@ -5872,7 +5912,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24190000,
                            24195000,
@@ -5882,7 +5922,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25830000,
                            25835000,
@@ -5892,7 +5932,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24190000,
                            24200000,
@@ -5902,7 +5942,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25710000,
                            25715000,
@@ -5912,7 +5952,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24190000,
                            24195000,
@@ -5922,7 +5962,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24915000,
                            24920000,
@@ -5932,7 +5972,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            24910000,
                            24920000,
@@ -5942,7 +5982,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25140000,
                            25150000,
@@ -5952,7 +5992,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            25985000,
                            25990000,
@@ -5962,7 +6002,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26720000,
                            26730000,
@@ -5972,7 +6012,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26170000,
                            26175000,
@@ -5982,7 +6022,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26725000,
                            26730000,
@@ -5992,7 +6032,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26725000,
                            26730000,
@@ -6002,7 +6042,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            27040000,
                            27050000,
@@ -6012,7 +6052,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            26855000,
                            26860000,
@@ -6022,7 +6062,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            27040000,
                            27050000,
@@ -6032,7 +6072,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            28400000,
                            28410000,
@@ -6042,7 +6082,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            28405000,
                            28410000,
@@ -6052,7 +6092,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29220000,
                            29230000,
@@ -6062,7 +6102,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            28985000,
                            28990000,
@@ -6072,7 +6112,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29225000,
                            29230000,
@@ -6082,7 +6122,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29435000,
                            29440000,
@@ -6092,7 +6132,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29640000,
                            29645000,
@@ -6102,7 +6142,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29435000,
                            29440000,
@@ -6112,7 +6152,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29640000,
                            29645000,
@@ -6122,7 +6162,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29595000,
                            29600000,
@@ -6132,7 +6172,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29640000,
                            29645000,
@@ -6142,7 +6182,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30480000,
                            30490000,
@@ -6152,7 +6192,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            29920000,
                            29925000,
@@ -6162,7 +6202,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30400000,
                            30405000,
@@ -6172,7 +6212,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30480000,
                            30485000,
@@ -6182,7 +6222,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30655000,
                            30660000,
@@ -6192,7 +6232,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30680000,
                            30685000,
@@ -6202,7 +6242,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30785000,
                            30790000,
@@ -6212,7 +6252,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30785000,
                            30790000,
@@ -6222,7 +6262,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30875000,
                            30880000,
@@ -6232,7 +6272,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            30875000,
                            30880000,
@@ -6242,7 +6282,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            31150000,
                            31155000,
@@ -6252,7 +6292,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            31315000,
                            31320000,
@@ -6262,7 +6302,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            31625000,
                            31630000,
@@ -6272,7 +6312,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32025000,
                            32030000,
@@ -6282,7 +6322,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32340000,
                            32345000,
@@ -6292,7 +6332,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32470000,
                            32480000,
@@ -6302,7 +6342,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32340000,
                            32350000,
@@ -6312,7 +6352,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            32470000,
                            32475000,
@@ -6322,7 +6362,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33020000,
                            33025000,
@@ -6332,7 +6372,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33190000,
                            33195000,
@@ -6342,7 +6382,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33380000,
                            33385000,
@@ -6352,7 +6392,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33595000,
                            33600000,
@@ -6362,7 +6402,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35520000,
                            35530000,
@@ -6372,7 +6412,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33910000,
                            33915000,
@@ -6382,7 +6422,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33970000,
                            33975000,
@@ -6392,7 +6432,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34310000,
                            34315000,
@@ -6402,7 +6442,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34485000,
                            34490000,
@@ -6412,7 +6452,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35520000,
                            35530000,
@@ -6422,7 +6462,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34310000,
                            34315000,
@@ -6432,7 +6472,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34505000,
                            34510000,
@@ -6442,7 +6482,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            33970000,
                            33975000,
@@ -6452,7 +6492,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            34500000,
                            34505000,
@@ -6462,7 +6502,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35540000,
                            35550000,
@@ -6472,7 +6512,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35410000,
                            35420000,
@@ -6482,7 +6522,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35540000,
                            35550000,
@@ -6492,7 +6532,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35535000,
                            35540000,
@@ -6502,7 +6542,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36510000,
                            36520000,
@@ -6512,7 +6552,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            35980000,
                            35985000,
@@ -6522,7 +6562,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36015000,
                            36020000,
@@ -6532,7 +6572,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36310000,
                            36320000,
@@ -6542,7 +6582,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36520000,
                            36525000,
@@ -6552,7 +6592,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36515000,
                            36520000,
@@ -6562,7 +6602,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36575000,
                            36580000,
@@ -6572,7 +6612,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            36860000,
                            36865000,
@@ -6582,7 +6622,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37370000,
                            37380000,
@@ -6592,7 +6632,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37590000,
                            37600000,
@@ -6602,7 +6642,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37250000,
                            37255000,
@@ -6612,7 +6652,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37375000,
                            37380000,
@@ -6622,7 +6662,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37370000,
                            37380000,
@@ -6632,7 +6672,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37610000,
                            37620000,
@@ -6642,7 +6682,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37295000,
                            37300000,
@@ -6652,7 +6692,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37580000,
                            37585000,
@@ -6662,7 +6702,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37850000,
                            37855000,
@@ -6672,7 +6712,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            37850000,
                            37855000,
@@ -6682,7 +6722,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            38075000,
                            38080000,
@@ -6692,7 +6732,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            38255000,
                            38260000,
@@ -6702,7 +6742,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            38355000,
                            38360000,
@@ -6712,7 +6752,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39520000,
                            39530000,
@@ -6722,7 +6762,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39395000,
                            39400000,
@@ -6732,7 +6772,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39510000,
                            39515000,
@@ -6742,7 +6782,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39545000,
                            39550000,
@@ -6752,7 +6792,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39710000,
                            39715000,
@@ -6762,7 +6802,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39510000,
                            39515000,
@@ -6772,7 +6812,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39705000,
                            39710000,
@@ -6782,7 +6822,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            39915000,
                            39920000,
@@ -6792,7 +6832,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            40430000,
                            40435000,
@@ -6802,7 +6842,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            40740000,
                            40745000,
@@ -6812,7 +6852,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            40740000,
                            40750000,
@@ -6822,7 +6862,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41040000,
                            41045000,
@@ -6832,7 +6872,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41290000,
                            41300000,
@@ -6842,7 +6882,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41040000,
                            41045000,
@@ -6852,7 +6892,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41290000,
                            41300000,
@@ -6862,7 +6902,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41480000,
                            41485000,
@@ -6872,7 +6912,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            41910000,
                            41915000,
@@ -6882,7 +6922,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            42335000,
                            42340000,
@@ -6892,7 +6932,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            42335000,
                            42340000,
@@ -6902,7 +6942,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            42830000,
                            42835000,
@@ -6912,7 +6952,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43050000,
                            43055000,
@@ -6922,7 +6962,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43160000,
                            43165000,
@@ -6932,7 +6972,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43740000,
                            43745000,
@@ -6942,7 +6982,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43740000,
                            43745000,
@@ -6952,7 +6992,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            43775000,
                            43780000,
@@ -6962,7 +7002,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45020000,
                            45030000,
@@ -6972,7 +7012,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            44480000,
                            44485000,
@@ -6982,7 +7022,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45020000,
                            45025000,
@@ -6992,7 +7032,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45020000,
                            45025000,
@@ -7002,7 +7042,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45130000,
                            45135000,
@@ -7012,7 +7052,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45490000,
                            45495000,
@@ -7022,7 +7062,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45830000,
                            45835000,
@@ -7032,7 +7072,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            45945000,
                            45950000,
@@ -7042,7 +7082,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            47985000,
                            47990000,
@@ -7052,7 +7092,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46375000,
                            46380000,
@@ -7062,7 +7102,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46510000,
                            46515000,
@@ -7072,7 +7112,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46700000,
                            46710000,
@@ -7082,7 +7122,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46940000,
                            46950000,
@@ -7092,7 +7132,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            46935000,
                            46940000,
@@ -7102,7 +7142,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            48880000,
                            48890000,
@@ -7112,7 +7152,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50315000,
                            50320000,
@@ -7122,7 +7162,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50465000,
                            50470000,
@@ -7132,7 +7172,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50650000,
                            50655000,
@@ -7142,7 +7182,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50465000,
                            50470000,
@@ -7152,7 +7192,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50650000,
                            50655000,
@@ -7162,7 +7202,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50935000,
                            50940000,
@@ -7172,7 +7212,7 @@ export const fritzBug1 =
                            "rgba(255, 85, 0, 0.66)",
                            "rgba(255, 85, 0, 0.66)"
                         ],
-                        [  
+                        [
                            "chr22",
                            50760000,
                            50765000,
@@ -7186,14 +7226,14 @@ export const fritzBug1 =
                   }
                }
             ],
-            "right":[  
+            "right":[
 
             ],
-            "bottom":[  
+            "bottom":[
 
             ]
          },
-         "layout":{  
+         "layout":{
             "w":12,
             "h":12,
             "x":0,
@@ -7204,15 +7244,15 @@ export const fritzBug1 =
          }
       }
    ],
-   "zoomLocks":{  
+   "zoomLocks":{
 
    },
-   "locationLocks":{  
+   "locationLocks":{
 
    }
 }
 
-export const project1D = 
+export const project1D =
     {
   "zoomFixed": false,
   "views": [
@@ -7476,7 +7516,7 @@ export const project1D =
   }
 }
 
-export const noGPSB = 
+export const noGPSB =
 {
   "editable": true,
   "zoomFixed": false,
@@ -7496,7 +7536,7 @@ export const noGPSB =
         1806579890.9341388
       ],
       "tracks": {
-        "top": [ 
+        "top": [
             {
             "name": "Gene Annotations (mm9)",
             "server": "http://higlass.io/api/v1",
@@ -7584,7 +7624,7 @@ export const noGPSB =
   ]
 }
 
-export const onlyGPSB = 
+export const onlyGPSB =
 {
   "editable": true,
   "zoomFixed": false,
@@ -7632,7 +7672,7 @@ export const onlyGPSB =
   ]
 }
 
-export const testViewConfX2 = 
+export const testViewConfX2 =
 {
   "zoomFixed": false,
   "views": [
@@ -8000,7 +8040,7 @@ export const testViewConfX1 = {
   }
 };
 
-export const largeHorizontalHeatmapTrack = 
+export const largeHorizontalHeatmapTrack =
           {
             "filetype": "cooler",
             "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
@@ -8023,7 +8063,7 @@ export const largeHorizontalHeatmapTrack =
             "position": "top"
           }
 
-export const horizontalHeatmapTrack = 
+export const horizontalHeatmapTrack =
           {
             "filetype": "cooler",
             "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
@@ -8048,7 +8088,7 @@ export const horizontalHeatmapTrack =
             "height": 200,
           }
 
-export const verticalHeatmapTrack = 
+export const verticalHeatmapTrack =
           {
             "name": "Rao et al. (2014) HUVEC MboI (allreps) 1kb",
             "server": "http://higlass.io/api/v1",
@@ -8163,7 +8203,7 @@ export const horizontalDiagonalTrackViewConf =
   }
 }
 
-export const chromInfoTrack = 
+export const chromInfoTrack =
           {
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
@@ -8202,7 +8242,7 @@ export const heatmapTrack = {
                 "position": "center"
               };
 
-export const twoViewConfig = 
+export const twoViewConfig =
 {
   "editable": true,
   "zoomFixed": false,
@@ -8435,7 +8475,7 @@ export const twoViewConfig =
   }
 }
 
-export const valueIntervalTrackViewConf = 
+export const valueIntervalTrackViewConf =
 {
   "editable": true,
   "zoomFixed": false,
@@ -8613,7 +8653,7 @@ export const valueIntervalTrackViewConf =
   }
 }
 
-export const oneViewConfig = 
+export const oneViewConfig =
 {
   "editable": true,
   "zoomFixed": false,
@@ -8782,5 +8822,5 @@ export const oneViewConfig =
   }
 }
 
-export const paperFigure1 = 
+export const paperFigure1 =
         {"zoomFixed": false, "views": [{"layout": {"i": "CxSCeaTbQbmmz2_3MX23Sw", "h": 7, "moved": false, "static": false, "w": 6, "y": 6, "x": 0}, "uid": "CxSCeaTbQbmmz2_3MX23Sw", "initialYDomain": [1962672822.9475927, 1980413599.926114], "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&", "initialXDomain": [1955319057.3167546, 1983601455.3984554], "tracks": {"bottom": [], "top": [{"orientation": "1d-horizontal", "name": "Chromosome Axis (mm9)", "tilesetUid": "cGSJELSNRyOaExsJL0KejQ", "local": true, "minHeight": 30, "thumbnail": null, "server": "", "width": 462, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "top", "height": 30, "type": "horizontal-chromosome-labels", "options": {}, "uid": "EsCrHgpLQoSO8fJo8PX-9w"}, {"name": "Gene Annotations (mm9)", "maxWidth": 4294967296, "tilesetUid": "GUm5aBiLRCyz2PsBea7Yzg", "filetype": "beddb", "server": "http://higlass.io/api/v1", "width": 692, "position": "top", "height": 60, "type": "horizontal-gene-annotations", "options": {"labelColor": "black", "plusStrandColor": "black", "minusStrandColor": "grey", "labelPosition": "hidden", "name": "Gene Annotations (mm9)"}, "uid": "TrVU7C7cTuGdf6rqqOqVsA"}, {"name": "WT H3K27ac (chr14)", "maxWidth": 134217728, "tilesetUid": "MnHp30AcSGmUf36zPaf1KA", "filetype": "hitile", "server": "http://higlass.io/api/v1", "width": 462, "position": "top", "height": 31, "type": "horizontal-line", "options": {"name": "WT H3K27ac (chr14)", "valueScaling": "linear", "lineStrokeColor": "green", "labelPosition": "topLeft", "labelColor": "black", "axisPositionHorizontal": "right"}, "uid": "H3adAzSXQCS1ejqu_etcXA"}, {"name": "Schwarzer et al (2016) WT H3K4me3 (chr14)", "maxWidth": 134217728, "tilesetUid": "EsZnlyoZQzenXHfeoxLsPw", "filetype": "hitile", "server": "http://higlass.io/api/v1", "width": 462, "position": "top", "height": 25, "type": "horizontal-line", "options": {"name": "WT H3K4me3 (chr14)", "valueScaling": "linear", "lineStrokeColor": "grey", "labelPosition": "topLeft", "labelColor": "black", "axisPositionHorizontal": "right"}, "uid": "a0FwXQAzTY-wuIA0VOCPPQ"}], "right": [{"name": "Schwarzer et al (2016) WT H3K27ac (chr14)", "maxWidth": 134217728, "tilesetUid": "MnHp30AcSGmUf36zPaf1KA", "filetype": "hitile", "server": "http://higlass.io/api/v1", "width": 28, "position": "right", "height": 345, "type": "vertical-line", "options": {"name": "WT H3K27ac (chr14)", "valueScaling": "linear", "lineStrokeColor": "green", "labelPosition": "bottomLeft", "axisPositionVertical": "top", "labelColor": "black"}, "uid": "Lza_OzzQReSm-hIoTTk2fA"}, {"name": "Schwarzer et al (2016) WT H3K4me3 (chr14)", "maxWidth": 134217728, "tilesetUid": "EsZnlyoZQzenXHfeoxLsPw", "filetype": "hitile", "server": "http://higlass.io/api/v1", "width": 22, "position": "right", "height": 345, "type": "vertical-line", "options": {"name": "WT H3K4me3 (chr14)", "valueScaling": "linear", "lineStrokeColor": "grey", "labelPosition": "bottomLeft", "axisPositionVertical": "top", "labelColor": "black"}, "uid": "K3bc4N4mSu2cVOmR1PHTwQ"}], "center": [{"position": "center", "type": "combined", "uid": "NxjqAn6FS4OTeTWslGK2cw", "contents": [{"uid": "BmYR9dxuR9WP6nGeWQoXug", "maxWidth": 4194304000, "tilesetUid": "cTc3lt_7StSgcrr1kHWidQ", "binsPerDimension": 256, "filetype": "cooler", "server": "http://higlass.io/api/v1", "width": 20, "position": "center", "height": 20, "type": "heatmap", "options": {"maxZoom": null, "labelPosition": "bottomRight", "colorRange": ["white", "rgba(245,166,35,1.0)", "rgba(208,2,27,1.0)", "black"], "name": "WT (chr14)"}, "name": "Schwarzer et al (2016) WT (chr14)"}], "options": {}}], "left": [{"orientation": "1d-vertical", "name": "Chromosome Axis (mm9)", "tilesetUid": "BmjsajIaREq4P3lXQGsmXw", "local": true, "minHeight": 30, "thumbnail": null, "server": "", "minWidth": 30, "width": 30, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "left", "height": 30, "type": "vertical-chromosome-labels", "options": {}, "uid": "NlkjnKsoSGmfsrWKRfgBYA"}]}, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "genomePositionSearchBoxVisible": false}, {"layout": {"i": "KrP5zcaVSxqCj6mEI8WA2A", "h": 7, "moved": false, "static": false, "w": 6, "y": 6, "x": 6}, "uid": "KrP5zcaVSxqCj6mEI8WA2A", "initialYDomain": [1962724245.489579, 1980362177.3841279], "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&", "initialXDomain": [1955344768.5877693, 1983575744.1274405], "tracks": {"bottom": [], "top": [{"orientation": "1d-horizontal", "name": "Chromosome Axis (mm19)", "tilesetUid": "W1N2NIDPRZSckKMlHAKzwA", "local": true, "minHeight": 30, "thumbnail": null, "server": "", "width": 472, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "top", "height": 30, "type": "horizontal-chromosome-labels", "options": {}, "uid": "AWcBqpmASpmA01tpfgwWOg"}, {"name": "Gene Annotations (mm9)", "maxWidth": 4294967296, "tilesetUid": "GUm5aBiLRCyz2PsBea7Yzg", "filetype": "beddb", "server": "http://higlass.io/api/v1", "width": 692, "position": "top", "height": 60, "type": "horizontal-gene-annotations", "options": {"labelColor": "black", "plusStrandColor": "black", "minusStrandColor": "grey", "labelPosition": "hidden", "name": "Gene Annotations (mm9)"}, "uid": "CNJmjwCWS--luAsiVZPO1A"}, {"name": "Schwarzer et al (2016) NIPBL H3K27ac (chr14)", "maxWidth": 134217728, "tilesetUid": "YtyvhRBuQoChw4hq7xxnlA", "filetype": "hitile", "server": "http://higlass.io/api/v1", "width": 551, "position": "top", "height": 31, "type": "horizontal-line", "options": {"name": "NIPBL H3K27ac (chr14)", "valueScaling": "linear", "lineStrokeColor": "green", "labelPosition": "topLeft", "labelColor": "black", "axisPositionHorizontal": "right"}, "uid": "OXr0hmySTCS1aQGZOhG-sg"}, {"name": "Schwarzer et al (2016) NIPBL H3K4me3 (chr14)", "maxWidth": 134217728, "tilesetUid": "LeW3Ri4aQSevDwVgEzGu0A", "filetype": "hitile", "server": "http://higlass.io/api/v1", "width": 472, "position": "top", "height": 27, "type": "horizontal-line", "options": {"name": "NIPBL H3K4me3 (chr14)", "valueScaling": "linear", "lineStrokeColor": "grey", "labelPosition": "topLeft", "labelColor": "black", "axisPositionHorizontal": "right"}, "uid": "RbiifZcBSwyojs8DOrlB3g"}], "right": [], "center": [{"position": "center", "type": "combined", "uid": "fE84rvqYRWeSoiaSm-AoRg", "contents": [{"name": "Schwarzer et al (2016) NIPBL (chr14)", "maxWidth": 4194304000, "tilesetUid": "J2IoKaXJSG-5bH1pITTtTg", "binsPerDimension": 256, "filetype": "cooler", "server": "http://higlass.io/api/v1", "width": 20, "position": "center", "height": 20, "type": "heatmap", "options": {"maxZoom": null, "labelPosition": "bottomRight", "colorRange": ["white", "rgba(245,166,35,1.0)", "rgba(208,2,27,1.0)", "black"], "name": "NIPBL (chr14)"}, "uid": "C-qiOuzdQhmkDB_5nvugpA"}], "options": {}}], "left": [{"orientation": "1d-vertical", "name": "Chromosome Axis (mm9)", "tilesetUid": "WeUIOO4oQO6FO6g2PWPhnw", "local": true, "minHeight": 30, "thumbnail": null, "server": "", "minWidth": 30, "width": 30, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "left", "height": 30, "type": "vertical-chromosome-labels", "options": {}, "uid": "UqH0mt73TqSebs_nFzqHvw"}, {"name": "Schwarzer et al (2016) NIPBL H3K27ac (chr14)", "maxWidth": 134217728, "tilesetUid": "YtyvhRBuQoChw4hq7xxnlA", "filetype": "hitile", "server": "http://higlass.io/api/v1", "width": 27, "position": "left", "height": 338, "type": "vertical-line", "options": {"name": "NIPBL H3K27ac (chr14)", "valueScaling": "linear", "lineStrokeColor": "green", "labelPosition": "bottomLeft", "axisPositionVertical": "top", "labelColor": "black"}, "uid": "LLf91rc9T3aYRXWkDrqwEQ"}, {"name": "Schwarzer et al (2016) NIPBL H3K4me3 (chr14)", "maxWidth": 134217728, "tilesetUid": "LeW3Ri4aQSevDwVgEzGu0A", "filetype": "hitile", "server": "http://higlass.io/api/v1", "width": 24, "position": "left", "height": 338, "type": "vertical-line", "options": {"name": "NIPBL H3K4me3 (chr14)", "valueScaling": "linear", "lineStrokeColor": "grey", "labelPosition": "bottomLeft", "axisPositionVertical": "top", "labelColor": "black"}, "uid": "LP7bzdrzTzyngJ7zig_TgA"}]}, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "genomePositionSearchBoxVisible": false}, {"layout": {"i": "eJLMGjH7Qm-zm_F_hqjXkw", "h": 6, "moved": false, "static": false, "w": 6, "y": 0, "x": 0}, "uid": "eJLMGjH7Qm-zm_F_hqjXkw", "initialYDomain": [1958397626.623477, 2005959872.963051], "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&", "initialXDomain": [1923427381.786578, 2011505615.7487524], "tracks": {"bottom": [], "top": [{"name": "Gene Annotations (mm9)", "maxWidth": 4294967296, "tilesetUid": "GUm5aBiLRCyz2PsBea7Yzg", "filetype": "beddb", "server": "http://higlass.io/api/v1", "width": 513, "position": "top", "height": 60, "type": "horizontal-gene-annotations", "options": {"labelColor": "black", "plusStrandColor": "black", "minusStrandColor": "grey", "labelPosition": "hidden", "name": "Gene Annotations (mm9)"}, "uid": "M2YZ4JBQSWS0rR--oiDKhA"}, {"orientation": "1d-horizontal", "name": "Chromosome Axis (mm9)", "tilesetUid": "cGSJELSNRyOaExsJL0KejQ", "local": true, "minHeight": 30, "thumbnail": null, "server": "", "width": 615, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "top", "height": 30, "type": "horizontal-chromosome-labels", "options": {}, "uid": "EsCrHgpLQoSO8fJo8PX-9w"}], "right": [], "center": [{"position": "center", "type": "combined", "uid": "Dbaw-ZX2RMqOx_1ogCGA8Q", "contents": [{"uid": "e8OrP0OmRoiEb434kSoypg", "maxWidth": 4194304000, "tilesetUid": "cTc3lt_7StSgcrr1kHWidQ", "binsPerDimension": 256, "filetype": "cooler", "server": "http://higlass.io/api/v1", "width": 20, "position": "center", "height": 20, "type": "heatmap", "options": {"maxZoom": null, "labelPosition": "bottomRight", "colorRange": ["white", "rgba(245,166,35,1.0)", "rgba(208,2,27,1.0)", "black"], "name": "WT (chr14)"}, "name": "Schwarzer et al (2016) WT (chr14)"}, {"fromViewUid": "CxSCeaTbQbmmz2_3MX23Sw", "uid": "DQ8YUWtcQqWdep86bJ84HQ", "position": "center", "type": "viewport-projection-center", "options": {"projectionFillOpacity": 0.3, "projectionStrokeColor": "#777", "projectionFillColor": "#777", "projectionStrokeOpacity": 0.3}, "name": "Viewport Projection"}], "options": {}}], "left": [{"orientation": "1d-vertical", "name": "Chromosome Axis (mm9)", "tilesetUid": "fs487zYMSMG5XLPXsakQ3g", "local": true, "minHeight": 30, "thumbnail": null, "server": "", "minWidth": 30, "width": 30, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "left", "height": 30, "type": "vertical-chromosome-labels", "options": {}, "uid": "aiYnl3phRPCMfwyKxKaSow"}]}, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "genomePositionSearchBoxVisible": false}, {"layout": {"i": "BI8YmooFSCuI9zluz_ehnA", "h": 6, "moved": false, "static": false, "w": 6, "y": 0, "x": 6}, "uid": "BI8YmooFSCuI9zluz_ehnA", "initialYDomain": [1958397626.6234653, 2005959872.9630625], "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&", "initialXDomain": [1926803714.0884414, 2008129283.446889], "tracks": {"bottom": [], "top": [{"name": "Gene Annotations (mm9)", "maxWidth": 4294967296, "tilesetUid": "GUm5aBiLRCyz2PsBea7Yzg", "filetype": "beddb", "server": "http://higlass.io/api/v1", "width": 513, "position": "top", "height": 60, "type": "horizontal-gene-annotations", "options": {"labelColor": "black", "plusStrandColor": "black", "minusStrandColor": "grey", "labelPosition": "hidden", "name": "Gene Annotations (mm9)"}, "uid": "Fw793pB8RGOBLJETFtQLsQ"}, {"orientation": "1d-horizontal", "name": "Chromosome Axis (mm19)", "tilesetUid": "W1N2NIDPRZSckKMlHAKzwA", "local": true, "minHeight": 30, "thumbnail": null, "server": "", "width": 615, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "top", "height": 30, "type": "horizontal-chromosome-labels", "options": {}, "uid": "AWcBqpmASpmA01tpfgwWOg"}], "right": [], "center": [{"position": "center", "type": "combined", "uid": "fE84rvqYRWeSoiaSm-AoRg", "contents": [{"name": "Schwarzer et al (2016) NIPBL (chr14)", "maxWidth": 4194304000, "tilesetUid": "J2IoKaXJSG-5bH1pITTtTg", "binsPerDimension": 256, "filetype": "cooler", "server": "http://higlass.io/api/v1", "width": 20, "position": "center", "height": 20, "type": "heatmap", "options": {"maxZoom": null, "labelPosition": "bottomRight", "colorRange": ["white", "rgba(245,166,35,1.0)", "rgba(208,2,27,1.0)", "black"], "name": "NIPBL (chr14)"}, "uid": "C-qiOuzdQhmkDB_5nvugpA"}, {"fromViewUid": "KrP5zcaVSxqCj6mEI8WA2A", "uid": "aO17E_ZNRXuO4VfFTG-4mQ", "position": "center", "type": "viewport-projection-center", "options": {"projectionFillOpacity": 0.3, "projectionStrokeColor": "#777", "projectionFillColor": "black", "projectionStrokeOpacity": 0.3}, "name": "Viewport Projection"}], "options": {}}], "left": [{"orientation": "1d-vertical", "name": "Chromosome Axis (mm9)", "tilesetUid": "Wf4p2PxkQNqy5EC5RzhanQ", "local": true, "minHeight": 30, "thumbnail": null, "server": "", "minWidth": 30, "width": 76, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "left", "height": 324, "type": "vertical-chromosome-labels", "options": {}, "uid": "XRk4dwN7QGyMpfvd06k1bA"}]}, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "genomePositionSearchBoxVisible": false}], "editable": true, "exportViewUrl": "http://higlass.io/api/v1/viewconfs", "zoomLocks": {"locksByViewUid": {"eJLMGjH7Qm-zm_F_hqjXkw": "YJXc4Aw6R4mPtFhvQcr0AQ", "KrP5zcaVSxqCj6mEI8WA2A": "HN3V4ktbRZW_PqfebGXxig", "CxSCeaTbQbmmz2_3MX23Sw": "HN3V4ktbRZW_PqfebGXxig", "BI8YmooFSCuI9zluz_ehnA": "YJXc4Aw6R4mPtFhvQcr0AQ"}, "locksDict": {"YJXc4Aw6R4mPtFhvQcr0AQ": {"eJLMGjH7Qm-zm_F_hqjXkw": [1966916755.7812533, 1972013566.595924, 79705.25699186325], "BI8YmooFSCuI9zluz_ehnA": [1966916755.7812533, 1972013566.595924, 79705.25699186325]}, "HN3V4ktbRZW_PqfebGXxig": {"KrP5zcaVSxqCj6mEI8WA2A": [1974905964.0722282, 1957723677.693444, 406590.3164639473], "CxSCeaTbQbmmz2_3MX23Sw": [1974905964.0722282, 1957723677.693444, 406590.3164639473]}}}, "trackSourceServers": ["http://higlass.io/api/v1"], "locationLocks": {"locksByViewUid": {"aa": "egICCyYGTkGnm9wWAKg6yw", "Kq_XUAkFQjmMjoMJ8ocYNA": "Evo2PbNxQpq0JcT8Gd0zqQ", "eJLMGjH7Qm-zm_F_hqjXkw": "Evo2PbNxQpq0JcT8Gd0zqQ", "CxSCeaTbQbmmz2_3MX23Sw": "egICCyYGTkGnm9wWAKg6yw", "BI8YmooFSCuI9zluz_ehnA": "Evo2PbNxQpq0JcT8Gd0zqQ", "KrP5zcaVSxqCj6mEI8WA2A": "egICCyYGTkGnm9wWAKg6yw"}, "locksDict": {"Evo2PbNxQpq0JcT8Gd0zqQ": {"eJLMGjH7Qm-zm_F_hqjXkw": [1966916755.7812533, 1972013566.595924, 79705.25699186325], "Kq_XUAkFQjmMjoMJ8ocYNA": [1966916755.7812533, 1972013566.595924, 79705.25699186325], "BI8YmooFSCuI9zluz_ehnA": [1966916755.7812533, 1972013566.595924, 79705.25699186325]}, "egICCyYGTkGnm9wWAKg6yw": {"aa": [1974905964.0722282, 1957723677.6934438, 406590.3164639473], "KrP5zcaVSxqCj6mEI8WA2A": [1974905964.0722282, 1957723677.693444, 406590.3164639473], "CxSCeaTbQbmmz2_3MX23Sw": [1974905964.0722282, 1957723677.693444, 406590.3164639473]}}}}

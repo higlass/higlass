@@ -17,6 +17,7 @@ import {
 
 import {
   simpleCenterViewConfig,
+  simple1dAnnotation,
 } from './view-configs';
 
 import {
@@ -24,6 +25,16 @@ import {
 } from '../app/scripts/hglib';
 
 configure({ adapter: new Adapter() });
+
+function findCanvas(element) {
+  if (element.tagName.toLowerCase() === 'canvas') return element;
+  let canvas;
+  element.childNodes.forEach((childElement) => {
+    const el = findCanvas(childElement);
+    if (el) canvas = el;
+  });
+  return canvas;
+}
 
 function createElementAndAPI(viewConfig, options) {
   const div = global.document.createElement('div');
@@ -123,6 +134,40 @@ describe('Simple HiGlassComponent', () => {
           done();
         });
       });
+    });
+
+    it('listens to click events', (done) => {
+      [div, api] = createElementAndAPI(
+        simple1dAnnotation,
+        { editable: false, bounded: true }
+      );
+
+      const canvas = findCanvas(div);
+
+      let clicked = false;
+
+      api.on('click', () => { clicked = true; });
+
+      const createPointerEvent = (type, x, y) => new PointerEvent(type, {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+        // WARNING: The following property is absolutely crucial to have the
+        // event being picked up by PIXI. Do not remove under no curcumstances!
+        pointerType: 'mouse',
+        screenX: x,
+        screenY: y,
+        clientX: x,
+        clientY: y
+      });
+
+      canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 100));
+      canvas.dispatchEvent(createPointerEvent('pointerup', 100, 100));
+
+      setTimeout(() => {
+        expect(clicked).to.equal(true);
+        done();
+      }, 50);
     });
 
     afterEach(() => {
