@@ -44,8 +44,7 @@ describe('Simple HiGlassComponent', () => {
       );
 
 
-      const dataChangedCb = (data) => {
-      };
+      const dataChangedCb = () => {};
 
       trackObject.on('dataChanged', dataChangedCb);
 
