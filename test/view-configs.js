@@ -8508,8 +8508,9 @@ export const valueIntervalTrackViewConf = {
             minWidth: 30,
             minHeight: 30,
             name: 'Chromosome Axis (hg19)',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'N12wVGG9SPiTkk03yUayUw',
+            // These keys were added later, but had no effect because of order:
+            // server: 'http://higlass.io/api/v1',
+            // tilesetUid: 'N12wVGG9SPiTkk03yUayUw',
             thumbnail: null,
             server: '',
             tilesetUid: 'HZ8jVQNAQFCd4DCcWPrR8A',
