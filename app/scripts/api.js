@@ -254,7 +254,7 @@ const api = function api(context) {
      * @example
      *
      * hgv.setTrackValueScale(myView, myTrack, 0, 100); // Sets the scaling to [0, 100]
-     * hgv.setTrackValueScale(myView, myTrack); // Unsets the fixed scaling, i.e., enables 
+     * hgv.setTrackValueScale(myView, myTrack); // Unsets the fixed scaling, i.e., enables
      * dynamic scaling again.
      */
     setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
@@ -382,7 +382,7 @@ const api = function api(context) {
           break;
       }
     },
-    
+
     /**
      * Get a Promise which returns a Blob containing a PNG for the current view.
      * It's possible to get string of the PNG bytes from that:
@@ -493,6 +493,10 @@ const api = function api(context) {
         : listenerId;
 
       switch (event) {
+        case 'click':
+          apiPubSub.unsubscribe('click', callback);
+          break;
+
         case 'location':
           self.offLocationChange(viewId, listenerId);
           break;
@@ -539,7 +543,7 @@ const api = function api(context) {
      *        yRange: [0, 317]
      *    }
      *
-     * ``rangeSelection:`` Returns a BED- (1D) or BEDPE (1d) array of the selected data and 
+     * ``rangeSelection:`` Returns a BED- (1D) or BEDPE (1d) array of the selected data and
      * genomic range (if chrom-sizes are available)
      *
      * .. code-block:: javascript
@@ -610,6 +614,9 @@ const api = function api(context) {
      */
     on(event, callback, viewId, callbackId) {
       switch (event) {
+        case 'click':
+          return apiPubSub.subscribe('click', callback);
+
         case 'location':
           // returns a set of scales (xScale, yScale) on every zoom event
           return self.onLocationChange(viewId, callback, callbackId);
