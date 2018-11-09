@@ -33,7 +33,8 @@ module.exports = (config) => {
       'test/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
     },
 
-    webpack: webpackConfig,
+    // webpackConfig(env, argv)
+    webpack: webpackConfig({}, {}),
 
     webpackServer: {
       noInfo: true, // please don't spam the console when running in karma!
@@ -45,6 +46,7 @@ module.exports = (config) => {
       'karma-sourcemap-loader',
       'karma-chrome-launcher',
       'karma-phantomjs2-launcher',
+      'karma-verbose-reporter'
     ],
 
     babelPreprocessor: {
@@ -52,7 +54,7 @@ module.exports = (config) => {
         presets: ['airbnb'],
       },
     },
-    reporters: ['progress'],
+    reporters: ['verbose'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_DEBUG,
