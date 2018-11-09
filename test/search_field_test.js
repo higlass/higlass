@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import SearchField from '../app/scripts/SearchField';
 import { ChromosomeInfo } from '../app/scripts/ChromosomeInfo';
 
-import { chromInfoHg19 } from './chrom_info';
+import chromInfoHg19 from './chrom_info';
 
 
 describe('A search field', () => {
