@@ -14,11 +14,10 @@ before_script:
     - npm install --quiet -g gulp
     - npm install
 script:
-    - ./test.sh
+    - ./travis_build_test.sh
 before_deploy:
-    - npm run compile
     - pip install --user -r docs/requirements.txt
-    - pushd docs; ./build.sh; popd
+    - cd docs; ./build.sh; cd -
 deploy:
   - &s3
     provider: s3
