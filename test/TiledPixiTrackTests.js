@@ -44,9 +44,9 @@ describe('Simple HiGlassComponent', () => {
       );
     });
 
-    it("Ensure we can set a dataChanged listener", (done) => {
+    it('Ensure we can set a dataChanged listener', (done) => {
       const trackObject = getTrackObjectFromHGC(
-        hgc.instance(), "heatmap1"
+        hgc.instance(), 'heatmap1'
       );
 
 
