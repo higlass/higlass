@@ -13,27 +13,24 @@ import {
   removeHGComponent,
 } from '../app/scripts/utils';
 
-/* eslint-disable */
-const viewConf = {
-  "views": [
+const baseConf = {
+  views: [
     {
-      "tracks": {
-        "center": [
+      tracks: {
+        center: [
           {
-            "type": "combined",
-            "contents": [
+            type: 'combined',
+            contents: [
               {
-                "server": "//higlass.io/api/v1",
-                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-                "type": "heatmap",
-                "options": {
-                  "colorRange": [
-                    "white",
-                    "black"
+                server: '//higlass.io/api/v1',
+                tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
+                type: 'heatmap',
+                options: {
+                  colorRange: [
+                    'white',
+                    'black'
                   ],
-                  "heatmapValueScaling": "log",
-                  "scaleStartPercent": "0.00000",
-                  "scaleEndPercent": "1.00000"
+                  heatmapValueScaling: 'log'
                 }
               },
             ]
@@ -47,26 +44,53 @@ const viewConf = {
 configure({ adapter: new Adapter() });
 
 describe('PNG Export', () => {
-  let hgc = null;
-  let div = null;
-
-  describe('tests', () => {
+  describe('color bars 0-1', () => {
+    let hgc = null;
+    let div = null;
     beforeAll((done) => {
+      const viewConf = JSON.parse(JSON.stringify(baseConf));
+      const options = viewConf.views[0].tracks.center[0].contents[0].options;
+      options.scaleStartPercent = 0;
+      options.scaleEndPercent = 1;
       ([div, hgc] = mountHGComponent(div, hgc, viewConf,
         done));
     });
 
-    it('Exports to SVG', () => {
+    it('scales correctly', () => {
       const svg = hgc.instance().createSVG();
       const colorBar = svg.getElementsByClassName('color-bar')[0];
       const rects = colorBar.getElementsByTagName('rect');
-      
-      const colorBarText = new XMLSerializer().serializeToString(colorBar);
-      // If the logic changed, and rgb(0, 0, 0) was included,
-      // that would be ok, but it should be intentional.
-      expect(colorBarText).not.to.contain('rgb(0, 0, 0)');
-      expect(colorBarText).to.contain('rgb(1, 1, 1)');
-      expect(colorBarText).to.contain('rgb(255, 255, 255)');
+      expect(rects.length).to.equal(257);
+      expect(rects[1].getAttribute('style')).to.equal('fill: rgb(1, 1, 1)');
+      expect(rects[127].getAttribute('style')).to.equal('fill: rgb(127, 127, 127)');
+      expect(rects[255].getAttribute('style')).to.equal('fill: rgb(255, 255, 255)');
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+  });
+
+  describe('color bars 0.5-1', () => {
+    let hgc = null;
+    let div = null;
+    beforeAll((done) => {
+      const viewConf = JSON.parse(JSON.stringify(baseConf));
+      const options = viewConf.views[0].tracks.center[0].contents[0].options;
+      options.scaleStartPercent = 0.5;
+      options.scaleEndPercent = 1;
+      ([div, hgc] = mountHGComponent(div, hgc, viewConf,
+        done));
+    });
+
+    it('scales correctly', () => {
+      const svg = hgc.instance().createSVG();
+      const colorBar = svg.getElementsByClassName('color-bar')[0];
+      const rects = colorBar.getElementsByTagName('rect');
+      expect(rects.length).to.equal(257);
+      expect(rects[1].getAttribute('style')).to.equal('fill: rgb(1, 1, 1)');
+      expect(rects[127].getAttribute('style')).to.equal('fill: rgb(255, 255, 255)');
+      expect(rects[255].getAttribute('style')).to.equal('fill: rgb(255, 255, 255)');
     });
 
     afterAll(() => {
