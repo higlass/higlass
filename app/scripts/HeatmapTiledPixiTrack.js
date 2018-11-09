@@ -716,6 +716,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
   exportColorBarSVG() {
     const gColorbarArea = document.createElement('g');
+    gColorbarArea.setAttribute('class', 'color-bar');
 
     if (
       !this.options.colorbarPosition
