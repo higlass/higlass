@@ -1,9 +1,8 @@
-import { scaleLinear } from 'd3-scale';
 import { expect } from 'chai';
-import SearchField from '../app/scripts/SearchField.js';
-import { ChromosomeInfo } from '../app/scripts/ChromosomeInfo.js';
+import SearchField from '../app/scripts/SearchField';
+import { ChromosomeInfo } from '../app/scripts/ChromosomeInfo';
 
-import { chromInfoHg19 } from './chrom_info.js';
+import { chromInfoHg19 } from './chrom_info';
 
 
 describe('A search field', () => {
@@ -12,8 +11,8 @@ describe('A search field', () => {
   const searchField = new SearchField(chromInfoHg19);
 
   it('should search for ranges', () => {
-    let range1 = null; let
-      range2 = null;
+    let range1 = null;
+    let range2 = null;
     [range1, range2] = searchField.searchPosition('chr17:7566932-7595655');
 
     expect(range1[0]).to.be.above(2000000000);

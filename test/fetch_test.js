@@ -8,10 +8,10 @@ describe('tile-proxy json', () => {
   });
 
   it('handles json callback', (done) => {
-	  api.json(
-	    'http://higlass.io/api/v1/available-chrom-sizes/',
-	    (status, json_response) => {
-        expect(Object.keys(json_response)).to.eql(['count', 'results']);
+    api.json(
+      'http://higlass.io/api/v1/available-chrom-sizes/',
+      (status, jsonResponse) => {
+        expect(Object.keys(jsonResponse)).to.eql(['count', 'results']);
         done();
       }
     );
@@ -31,9 +31,9 @@ describe('tile-proxy text', () => {
   it('handles text callback', (done) => {
     api.text(
       'http://higlass.io/api/v1/available-chrom-sizes/',
-      (status, text_response) => {
-        expect(text_response).to.have.string('count');
-        expect(text_response).to.have.string('results');
+      (status, textResponse) => {
+        expect(textResponse).to.have.string('count');
+        expect(textResponse).to.have.string('results');
         done();
       }
     );
