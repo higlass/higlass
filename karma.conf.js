@@ -14,7 +14,8 @@ module.exports = (config) => {
       'node_modules/react-bootstrap/dist/react-bootstrap.js',
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
       'build/hglib.css',
-      'test/**/*.+(js|jsx)',
+      // 'test/**/*.+(js|jsx)',
+      'test/ChromSizesTests.js'
       // 'test/PngExportTest.js',
       // 'test/OSMTests.js',
       // 'test/TiledPixiTrackTests.js',
