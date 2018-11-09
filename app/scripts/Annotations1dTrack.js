@@ -3,6 +3,10 @@ import * as PIXI from 'pixi.js';
 
 import PixiTrack from './PixiTrack';
 
+import pubSub from './services/pub-sub';
+
+const MAX_CLICK_DELAY = 300;
+
 class Annotations1dTrack extends PixiTrack {
   constructor(scene, options, isVertical) {
     super(scene, options);
@@ -10,14 +14,12 @@ class Annotations1dTrack extends PixiTrack {
     this.options = options;
     this.isVertical = isVertical;
 
-    this.drawnRects = new Set();
+    this.rects = {};
 
     this.defaultColor = color('red');
   }
 
   draw() {
-    this.drawnRects.clear();
-
     const globalMinRectWidth = typeof this.options.minRectWidth !== 'undefined'
       ? this.options.minRectWidth
       : 10;
@@ -53,10 +55,21 @@ class Annotations1dTrack extends PixiTrack {
     const graphics = this.pMain;
     graphics.clear();
 
+    const timeStamp = performance.now();
+
     // Regions have to follow the following form:
     // start, end, fill, stroke, fillOpacity, strokeOpcaity, min-size
     // If `color-line` is not given, `color-fill` is used
     this.options.regions.forEach((region) => {
+      const id = `${region[0]}-${region[1]}`;
+
+      if (!this.rects[id]) {
+        this.rects[id] = { graphics: new PIXI.Graphics() };
+        graphics.addChild(this.rects[id].graphics);
+      }
+
+      this.rects[id].timeStamp = timeStamp;
+
       const fill = color(region[2]) || globalFill;
       let stroke = color(region[3]) || globalStroke;
 
@@ -164,13 +177,44 @@ class Annotations1dTrack extends PixiTrack {
         );
       }
 
+      // Make annotation clickable
+      this.rects[id].graphics.clear();
+      this.rects[id].graphics.interactive = true;
+      this.rects[id].graphics.buttonMode = true;
+
       graphics.beginFill(fillHex, +region[4] || globalFillOpacity);
       if (this.isVertical) {
         graphics.drawRect(0, start, this.dimensions[0], width);
+        this.rects[id].graphics.hitArea = new PIXI.Rectangle(
+          0, start, this.dimensions[0], width
+        );
       } else {
         graphics.drawRect(start, 0, width, this.dimensions[1]);
+        this.rects[id].graphics.hitArea = new PIXI.Rectangle(
+          start, 0, width, this.dimensions[1]
+        );
       }
+
+      this.rects[id].graphics.mousedown = () => {
+        this.rects[id].mouseDownTime = performance.now();
+      };
+
+      this.rects[id].graphics.mouseup = (event) => {
+        if (performance.now() - this.rects[id].mouseDownTime < MAX_CLICK_DELAY) {
+          pubSub.publish('app.click', {
+            type: 'annotation',
+            event,
+            payload: region
+          });
+        }
+      };
     });
+
+    // Remove outdated rects
+    Object
+      .values(this.rects)
+      .filter(rect => rect.timeStamp !== timeStamp)
+      .forEach(rect => graphics.removeChild(rect.graphics));
   }
 
   setPosition(newPosition) {
