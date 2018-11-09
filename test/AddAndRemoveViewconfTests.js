@@ -34,8 +34,6 @@ describe('Simple HiGlassComponent', () => {
 
       api = viewer(div, simpleCenterViewConfig, {});
 
-      const p = api.setViewConfig(simpleCenterViewConfig);
-
       done();
 
       // p.then(() => {
