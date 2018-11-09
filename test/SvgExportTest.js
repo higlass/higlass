@@ -29,8 +29,7 @@ const baseConf = {
                   colorRange: [
                     'white',
                     'black'
-                  ],
-                  heatmapValueScaling: 'log'
+                  ]
                 }
               },
             ]
@@ -43,8 +42,8 @@ const baseConf = {
 
 configure({ adapter: new Adapter() });
 
-describe('PNG Export', () => {
-  describe('color bars 0-1', () => {
+describe('SVG Export', () => {
+  describe('color bars 0-1 log', () => {
     let hgc = null;
     let div = null;
     beforeAll((done) => {
@@ -52,6 +51,7 @@ describe('PNG Export', () => {
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0;
       options.scaleEndPercent = 1;
+      options.heatmapValueScaling = 'log';
       ([div, hgc] = mountHGComponent(div, hgc, viewConf,
         done));
     });
@@ -71,7 +71,7 @@ describe('PNG Export', () => {
     });
   });
 
-  describe('color bars 0.5-1', () => {
+  describe('color bars 0.5-1 log', () => {
     let hgc = null;
     let div = null;
     beforeAll((done) => {
@@ -79,6 +79,7 @@ describe('PNG Export', () => {
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0.5;
       options.scaleEndPercent = 1;
+      options.heatmapValueScaling = 'log';
       ([div, hgc] = mountHGComponent(div, hgc, viewConf,
         done));
     });
