@@ -229,7 +229,7 @@ class HiGlassComponent extends React.Component {
     this.prevMouseHoverTrack = null;
     this.zooming = false;
 
-    // Bounded functions
+    // Bound functions
     this.appClickHandlerBound = this.appClickHandler.bind(this);
     this.keyDownHandlerBound = this.keyDownHandler.bind(this);
     this.keyUpHandlerBound = this.keyUpHandler.bind(this);
