@@ -6,6 +6,6 @@ Why is it necessary?
 
 ## Checklist
 
-[ ] Unit tests verifying it works (`test` directory)
-[ ] Documentation updated (for new features)
-[ ] Examples, if applicable
+[ ] Unit tests added or updated
+[ ] Documentation added or updated
+[ ] Example added or updated
