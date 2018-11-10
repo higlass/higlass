@@ -1,0 +1,148 @@
+@import url("alabaster.css");
+@import url('//fonts.googleapis.com/css?family=Overpass:300,800|Roboto+Mono');
+
+li {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+p.caption {
+    font-size: 90%;
+}
+
+div.body h1 { margin-bottom: 0.8em; font-size: 210%; }
+div.body h2 { font-size: 160%; }
+div.body h3 { font-size: 130%; }
+div.body h4 { font-size: 125%; }
+div.body h5 { font-size: 100%; }
+div.body h6 { font-size: 100%; }
+
+div.body h1, div.body h2, div.body h3,
+div.body h4, div.body h5, div.body h6,
+div.sphinxsidebar h1, div.sphinxsidebar h2,
+div.sphinxsidebar h3, div.sphinxsidebar h4,
+div.sphinxsidebar h5, div.sphinxsidebar h6 {
+    font-family: 'Overpass', sans-serif;
+    font-weight: 800;
+    line-height: 1.1em;
+}
+
+div.body h1,
+div.body h2 {
+    color: #000;
+}
+
+div.sphinxsidebar h3 {
+    font-size: 16px;
+}
+
+div.sphinxsidebar input {
+    box-sizing: border-box;
+    font-family: 'Overpass', sans-serif;
+    font-weight: 200;
+    line-height: 1.75;
+}
+
+div.sphinxsidebar form {
+    display: flex;
+}
+
+div.sphinxsidebar #searchbox {
+    margin-top: 1.5em;
+}
+
+div.sphinxsidebar #searchbox input[type="text"] {
+    padding-top: 0;
+    padding-bottom: 0;
+    border-right: 0;
+    border-radius: 4px 0 0 4px;
+}
+
+div.sphinxsidebar #searchbox input[type="submit"] {
+    padding-top: 0;
+    padding-bottom: 0;
+    border-radius: 0 4px 4px 0;
+}
+
+div.sphinxsidebar ul {
+    color: #999;
+}
+
+div.sphinxsidebar ul li.toctree-l2 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+div.sphinxsidebar ul li.toctree-l2 > a {
+    font-size: 100%;
+    color: #666;
+    border-bottom: none;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+div.sphinxsidebar ul li.toctree-l1 > a {
+    line-height: 1.8em;
+    font-size: 110%;
+    font-weight: 800;
+    border-bottom: none;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+div.sphinxsidebarwrapper {
+    padding-top: 0;
+}
+
+div.sphinxsidebarwrapper > ul.current {
+    margin-top: 0;
+}
+
+div.sphinxsidebarwrapper h1.logo {
+    margin-top: 0;
+    overflow: hidden;
+    font-size: 16px;
+}
+
+div.sphinxsidebarwrapper h1.logo a {
+    margin-left: -3.75em;
+    border-bottom: 0;
+}
+
+div.sphinxsidebarwrapper h1.logo a:after {
+    content: ' Home';
+}
+
+div.body li {
+    line-height: 1.5em;
+}
+
+div.body p {
+    line-height: 1.5em;
+}
+
+body {
+    font-family: 'Overpass', sans-serif;
+    font-size: 16px;
+    line-height: 1.5em;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+a:active {
+    text-decoration: none;
+}
+
+pre, tt, code {
+    font-family: 'Roboto Mono', 'Consolas', 'Menlo', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+}
