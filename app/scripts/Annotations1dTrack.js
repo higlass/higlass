@@ -5,6 +5,11 @@ import PixiTrack from './PixiTrack';
 
 import pubSub from './services/pub-sub';
 
+// Maximum delay in ms between mousedown and mouseup that is registered as a
+// click. Note we need to use mousedown and mouseup as PIXI doesn't recognize
+// click events with out current setup. Since most UIs treat long clicks as
+// either something special or a cancelation we follow best practices and
+// implement a threshold on the delay as well.
 const MAX_CLICK_DELAY = 300;
 
 class Annotations1dTrack extends PixiTrack {
@@ -55,6 +60,10 @@ class Annotations1dTrack extends PixiTrack {
     const graphics = this.pMain;
     graphics.clear();
 
+    // The time stamp is used to keep track which rectangles have been drawn per
+    // draw call. Each rectangle previously drawn that is not visible anymore
+    // (i.e., is not drawn in the current draw call) will be removed at the end
+    // by checking against the time stamp.
     const timeStamp = performance.now();
 
     // Regions have to follow the following form:
@@ -210,7 +219,8 @@ class Annotations1dTrack extends PixiTrack {
       };
     });
 
-    // Remove outdated rects
+    // Remove outdated rects, i.e., rects whos time stamp is not the current
+    // time stamp stored above.
     Object
       .values(this.rects)
       .filter(rect => rect.timeStamp !== timeStamp)
