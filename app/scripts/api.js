@@ -532,6 +532,16 @@ const api = function api(context) {
      *
      * **Event types**
      *
+     * ``click``: Returns clicked objects. (Currently only clicks on 1D annotations are captured.)
+     *
+     * .. code-block:: javascript
+     *
+     *     {
+     *       type: 'annotation',
+     *       event: { ... },
+     *       payload: [230000000, 561000000]
+     *     }
+     *
      * ``location:`` Returns an object describing the visible region
      *
      * .. code-block:: javascript
