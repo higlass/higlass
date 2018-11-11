@@ -78,10 +78,6 @@ const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
 const VIEW_HEADER_HEIGHT = 20;
 
-// Create global pubSub
-const pubSub = createPubSub();
-const domEvent = createDomEvent(pubSub);
-
 class HiGlassComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -92,6 +88,9 @@ class HiGlassComponent extends React.Component {
         'HiGlass requires React v15.6 or higher. Current version: ', React.version
       );
     }
+
+    this.pubSub = createPubSub();
+    this.domEvent = createDomEvent(this.pubSub);
 
     this.pubSubs = [];
 
@@ -224,7 +223,7 @@ class HiGlassComponent extends React.Component {
     // Set up API
     const {
       public: api, destroy: apiDestroy, publish: apiPublish
-    } = createApi(this, pubSub);
+    } = createApi(this, this.pubSub);
     this.api = api;
     this.apiDestroy = apiDestroy;
     this.apiPublish = apiPublish;
@@ -262,32 +261,32 @@ class HiGlassComponent extends React.Component {
   }
 
   componentWillMount() {
-    domEvent.register('keydown', document);
-    domEvent.register('keyup', document);
-    domEvent.register('scroll', document);
-    domEvent.register('resize', window);
-    domEvent.register('orientationchange', window);
-    domEvent.register('mousewheel', window);
-    domEvent.register('wheel', window);
-    domEvent.register('mousedown', window, true);
-    domEvent.register('mouseup', window, true);
-    domEvent.register('click', window, true);
-    domEvent.register('mousemove', window);
+    this.domEvent.register('keydown', document);
+    this.domEvent.register('keyup', document);
+    this.domEvent.register('scroll', document);
+    this.domEvent.register('resize', window);
+    this.domEvent.register('orientationchange', window);
+    this.domEvent.register('mousewheel', window);
+    this.domEvent.register('wheel', window);
+    this.domEvent.register('mousedown', window, true);
+    this.domEvent.register('mouseup', window, true);
+    this.domEvent.register('click', window, true);
+    this.domEvent.register('mousemove', window);
 
     this.pubSubs.push(
-      pubSub.subscribe('keydown', this.keyDownHandlerBound),
-      pubSub.subscribe('keyup', this.keyUpHandlerBound),
-      pubSub.subscribe('resize', this.resizeHandlerBound),
-      pubSub.subscribe('mousewheel', this.onWheelHandlerBound),
-      pubSub.subscribe('wheel', this.onWheelHandlerBound),
-      pubSub.subscribe('orientationchange', this.resizeHandlerBound),
-      pubSub.subscribe('app.event', this.dispatchEventBound),
-      pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandlerBound),
-      pubSub.subscribe('trackDropped', this.trackDroppedHandlerBound),
-      pubSub.subscribe('app.zoomStart', this.zoomStartHandlerBound),
-      pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
-      pubSub.subscribe('app.zoom', this.zoomHandlerBound),
-      pubSub.subscribe('requestReceived', this.requestReceivedHandlerBound),
+      this.pubSub.subscribe('keydown', this.keyDownHandlerBound),
+      this.pubSub.subscribe('keyup', this.keyUpHandlerBound),
+      this.pubSub.subscribe('resize', this.resizeHandlerBound),
+      this.pubSub.subscribe('mousewheel', this.onWheelHandlerBound),
+      this.pubSub.subscribe('wheel', this.onWheelHandlerBound),
+      this.pubSub.subscribe('orientationchange', this.resizeHandlerBound),
+      this.pubSub.subscribe('app.event', this.dispatchEventBound),
+      this.pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandlerBound),
+      this.pubSub.subscribe('trackDropped', this.trackDroppedHandlerBound),
+      this.pubSub.subscribe('app.zoomStart', this.zoomStartHandlerBound),
+      this.pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
+      this.pubSub.subscribe('app.zoom', this.zoomHandlerBound),
+      this.pubSub.subscribe('requestReceived', this.requestReceivedHandlerBound),
     );
 
     if (this.props.getApi) {
@@ -503,17 +502,17 @@ class HiGlassComponent extends React.Component {
     // then the resize sensor will never have been initiated
     if (this.resizeSensor) this.resizeSensor.detach();
 
-    domEvent.unregister('keydown', document);
-    domEvent.unregister('keyup', document);
-    domEvent.unregister('scroll', document);
-    domEvent.unregister('mousewheel', window);
-    domEvent.unregister('wheel', window);
-    domEvent.unregister('mousedown', window);
-    domEvent.unregister('mouseup', window);
-    domEvent.unregister('click', window);
-    domEvent.unregister('mousemove', window);
+    this.domEvent.unregister('keydown', document);
+    this.domEvent.unregister('keyup', document);
+    this.domEvent.unregister('scroll', document);
+    this.domEvent.unregister('mousewheel', window);
+    this.domEvent.unregister('wheel', window);
+    this.domEvent.unregister('mousedown', window);
+    this.domEvent.unregister('mouseup', window);
+    this.domEvent.unregister('click', window);
+    this.domEvent.unregister('mousemove', window);
 
-    this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
+    this.pubSubs.forEach(subscription => this.pubSub.unsubscribe(subscription));
     this.pubSubs = [];
 
     this.apiDestroy();
@@ -557,7 +556,7 @@ class HiGlassComponent extends React.Component {
 
   animateOnMouseMoveHandler(active) {
     if (active && !this.animateOnMouseMove) {
-      this.pubSubs.push(pubSub.subscribe('app.mouseMove', this.animateBound));
+      this.pubSubs.push(this.pubSub.subscribe('app.mouseMove', this.animateBound));
     }
     this.animateOnMouseMove = active;
   }
@@ -3238,9 +3237,7 @@ class HiGlassComponent extends React.Component {
       hoveredTracks,
     };
 
-    pubSub.publish(
-      'app.mouseMove', evt
-    );
+    this.pubSub.publish('app.mouseMove', evt);
 
     this.showHoverMenu(evt);
   }
@@ -3734,7 +3731,7 @@ class HiGlassComponent extends React.Component {
         onWheel={this.onWheelHandlerBound}
         styleName={styleNames}
       >
-        <PubSubProvider value={pubSub}>
+        <PubSubProvider value={this.pubSub}>
           <canvas
             key={this.uid}
             ref={(c) => { this.canvasElement = c; }}
