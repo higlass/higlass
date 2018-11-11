@@ -1,4 +1,5 @@
 /* eslint-env node, mocha */
+import ReactDOM from 'react-dom';
 import {
   configure,
   // render,
@@ -17,7 +18,7 @@ import {
 
 import {
   simpleCenterViewConfig,
-  simple1dAnnotation,
+  simple1And2dAnnotations,
 } from './view-configs';
 
 import {
@@ -37,6 +38,20 @@ function findCanvas(element) {
 }
 
 function createElementAndAPI(viewConfig, options) {
+  // Tests do not seem to be independent. I tried to enforce that existing DOM
+  // children of `body` are removed (and react apps unmounted) but although this
+  // should not have any impact on the test it actually leads to weird errors
+  // indicating that there is some shared global state between HG instances.
+  // const body = global.document.body;
+  // while (body.firstChild) {
+  //   try {
+  //     ReactDOM.unmountComponentAtNode(body.firstChild);
+  //   } catch (e) {
+  //     // Nothing
+  //   }
+  //   body.removeChild(body.firstChild);
+  // }
+
   const div = global.document.createElement('div');
   global.document.body.appendChild(div);
 
@@ -131,29 +146,37 @@ describe('Simple HiGlassComponent', () => {
 
       waitForTransitionsFinished(api.getComponent(), () => {
         waitForTilesLoaded(api.getComponent(), () => {
+          api.destroy();
           done();
         });
       });
     });
 
+    // Fritz: This test fails but if you comment out all the other tests it will
+    // succeed!? Also, if you move this test to the top it will succeed but
+    // tests number 3, 4, and 6 will fail all of a sudden! Therefore, I assume
+    // the test itself work just fine but there's something fundamentally broken
+    // with our test setup or with HG. Either way, the HG instances must have
+    // some shared state that influences each other. I am giving up for now but
+    // we need to look into this again.
     it('listens to click events', (done) => {
       [div, api] = createElementAndAPI(
-        simple1dAnnotation,
+        simple1And2dAnnotations,
         { editable: false, bounded: true }
       );
 
       const canvas = findCanvas(div);
 
-      let clicked = false;
+      let clicked = 0;
 
-      api.on('click', () => { clicked = true; });
+      api.on('click', () => { clicked++; });
 
       const createPointerEvent = (type, x, y) => new PointerEvent(type, {
         view: window,
         bubbles: true,
         cancelable: true,
         // WARNING: The following property is absolutely crucial to have the
-        // event being picked up by PIXI. Do not remove under no curcumstances!
+        // event being picked up by PIXI. Do not remove under no circumstances!
         pointerType: 'mouse',
         screenX: x,
         screenY: y,
@@ -161,13 +184,23 @@ describe('Simple HiGlassComponent', () => {
         clientY: y
       });
 
-      canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 100));
-      canvas.dispatchEvent(createPointerEvent('pointerup', 100, 100));
+      waitForTilesLoaded(api.getComponent(), () => {
+        setTimeout(() => {
+          canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 200));
+          canvas.dispatchEvent(createPointerEvent('pointerup', 100, 200));
+        }, 0);
 
-      setTimeout(() => {
-        expect(clicked).to.equal(true);
-        done();
-      }, 50);
+        setTimeout(() => {
+          canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 100));
+          canvas.dispatchEvent(createPointerEvent('pointerup', 100, 100));
+        }, 50);
+
+        setTimeout(() => {
+          expect(clicked).to.equal(2);
+          api.destroy();
+          done();
+        }, 100);
+      });
     });
 
     afterEach(() => {
