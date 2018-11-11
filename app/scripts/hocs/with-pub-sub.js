@@ -12,11 +12,11 @@ const fake = {
 const { Provider, Consumer } = React.createContext(fake);
 
 // Higher order component
-const withPubSub = Component => props => (
+const withPubSub = Component => React.forwardRef((props, ref) => (
   <Consumer>
     {pubSub => <Component {...props} pubSub={pubSub} />}
   </Consumer>
-);
+));
 
 export default withPubSub;
 
