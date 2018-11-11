@@ -586,7 +586,7 @@ function fetchEither(url, callback, textOrJson, pubSub) {
  * @param callback: Callback to execute with content from fetch
  */
 function text(url, callback, pubSub) {
-  return fetchEither(url, callback, 'text');
+  return fetchEither(url, callback, 'text', pubSub);
 }
 
 function sleep(ms) {
@@ -604,7 +604,7 @@ async function json(url, callback, pubSub) {
     await sleep(1);
   }
   // console.log('url:', url);
-  return fetchEither(url, callback, 'json');
+  return fetchEither(url, callback, 'json', pubSub);
 }
 
 const api = {

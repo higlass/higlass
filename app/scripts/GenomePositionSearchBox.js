@@ -382,7 +382,7 @@ class GenomePositionSearchBox extends React.Component {
             }
           }
         }
-      });
+      }, this.props.pubSub);
     });
   }
 
@@ -418,7 +418,7 @@ class GenomePositionSearchBox extends React.Component {
       this.searchField = new SearchField(this.chromInfo);
 
       this.setPositionText();
-    });
+    }, this.props.pubSub);
   }
 
   autocompleteKeyPress() {
