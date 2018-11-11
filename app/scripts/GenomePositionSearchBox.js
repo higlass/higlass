@@ -21,7 +21,7 @@ import { getDarkTheme, tileProxy } from './services';
 import withPubSub from './hocs/with-pub-sub';
 
 // Utils
-import { scalesCenterAndK, dictKeys } from './utils';
+import { scalesCenterAndK, dictKeys, toVoid } from './utils';
 
 // Styles
 import styles from '../styles/GenomePositionSearchBox.module.scss'; // eslint-disable-line no-unused-vars
@@ -208,13 +208,13 @@ class GenomePositionSearchBox extends React.Component {
                   genes: data1.concat(data),
                 });
               }
-            });
+            }, this.props.pubSub);
           } else {
             // we've received a list of autocomplete suggestions
             this.setState({ loading: false, genes: data });
           }
         }
-      });
+      }, this.props.pubSub);
     }
   }
 
@@ -344,7 +344,7 @@ class GenomePositionSearchBox extends React.Component {
             );
           }
         }
-      });
+      }, this.props.pubSub);
     });
   }
 
@@ -509,7 +509,7 @@ class GenomePositionSearchBox extends React.Component {
       if (retPos == null || isNaN(retPos)) {
         // not a chromsome position, let's see if it's a gene name
         const url = `${this.state.autocompleteServer}/suggest/?d=${this.state.autocompleteId}&ac=${valueParts[i].toLowerCase()}`;
-        q = q.defer(tileProxy.json, url);
+        q = q.defer(tileProxy.json, url, toVoid, this.props.pubSub);
       }
     }
 
