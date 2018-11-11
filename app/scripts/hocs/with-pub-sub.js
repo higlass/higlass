@@ -14,7 +14,7 @@ const { Provider, Consumer } = React.createContext(fake);
 // Higher order component
 const withPubSub = Component => React.forwardRef((props, ref) => (
   <Consumer>
-    {pubSub => <Component {...props} pubSub={pubSub} />}
+    {pubSub => <Component ref={ref} {...props} pubSub={pubSub} />}
   </Consumer>
 ));
 
