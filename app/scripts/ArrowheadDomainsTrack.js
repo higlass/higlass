@@ -1,8 +1,9 @@
+import createPubSub from 'pub-sub-es';
+
 import TiledPixiTrack from './TiledPixiTrack';
 
 // Services
 import { tileProxy } from './services';
-import createPubSub from './services/pub-sub';
 
 // Utils
 import { colorToHex } from './utils';

@@ -1,4 +1,5 @@
 import ReactDOM from 'react-dom';
+import createPubSub from 'pub-sub-es';
 
 import {
   setDarkTheme,
@@ -13,8 +14,6 @@ import {
   MOUSE_TOOL_MOVE,
   MOUSE_TOOL_SELECT,
 } from './configs';
-
-import createPubSub from './services/pub-sub';
 
 const api = function api(context, pubSub) {
   const self = context;

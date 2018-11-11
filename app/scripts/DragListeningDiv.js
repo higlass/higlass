@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import slugid from 'slugid';
 
-import { withPubSub } from './services/pub-sub';
+import withPubSub from './hocs/with-pub-sub';
 
 import {
   DEFAULT_TRACKS_FOR_DATATYPE,

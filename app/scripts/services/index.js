@@ -1,6 +1,5 @@
 export { default as chromInfo } from './chrom-info';
 export { default as createDomEvent } from './dom-event';
-export { default as createPubSub } from './pub-sub';
 export {
   default as tileProxy,
   requestsInFlight,

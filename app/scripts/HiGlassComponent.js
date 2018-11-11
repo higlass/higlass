@@ -9,6 +9,7 @@ import { ResizeSensor, ElementQueries } from 'css-element-queries';
 import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
 import parse from 'url-parse';
+import createPubSub from 'pub-sub-es';
 
 import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
@@ -20,6 +21,9 @@ import { createSymbolIcon } from './symbol';
 import { all as icons } from './icons';
 import createApi from './api';
 
+// Higher-order components
+import { Provider as PubSubProvider } from './hocs/with-pub-sub';
+
 // Services
 import {
   chromInfo,
@@ -30,8 +34,6 @@ import {
   tileProxy,
   requestsInFlight,
 } from './services';
-
-import createPubSub, { Provider as PubSubProvider } from './services/pub-sub';
 
 // Utils
 import {

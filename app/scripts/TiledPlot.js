@@ -21,8 +21,8 @@ import VerticalTiledPlot from './VerticalTiledPlot';
 import ViewContextMenu from './ViewContextMenu';
 // import {HeatmapOptions} from './HeatmapOptions';
 
-// Services
-import { withPubSub } from './services/pub-sub';
+// Higher-order components
+import withPubSub from './hocs/with-pub-sub';
 
 // Utils
 import {

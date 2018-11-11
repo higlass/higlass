@@ -18,7 +18,7 @@ import PopupMenu from './PopupMenu';
 
 // Services
 import { getDarkTheme, tileProxy } from './services';
-import { withPubSub } from './services/pub-sub';
+import withPubSub from './hocs/with-pub-sub';
 
 // Utils
 import { scalesCenterAndK, dictKeys } from './utils';
@@ -412,13 +412,13 @@ class GenomePositionSearchBox extends React.Component {
             selectedAssembly: tilesetInfo[chromInfoId].coordSystem,
           });
         }
-      });
+      }, this.props.pubSub);
 
       this.chromInfo = newChromInfo;
       this.searchField = new SearchField(this.chromInfo);
 
       this.setPositionText();
-    }, this.props.pubSub);
+    });
   }
 
   autocompleteKeyPress() {

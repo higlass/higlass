@@ -59,6 +59,9 @@ import RasterTilesTrack from './RasterTilesTrack';
 
 import SVGTrack from './SVGTrack';
 
+// Higher-order components
+import withPubSub from './hocs/with-pub-sub';
+
 // Utils
 import {
   colorToHex,
@@ -70,7 +73,6 @@ import {
 
 // Services
 import { getDarkTheme } from './services';
-import { withPubSub } from './services/pub-sub';
 
 // Configs
 import {
@@ -1698,8 +1700,8 @@ class TrackRenderer extends React.Component {
           dataConfig,
           handleTilesetInfoReceived,
           track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid)),
-        );
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        ));
 
       case 'osm-tiles':
         return new OSMTilesTrack(

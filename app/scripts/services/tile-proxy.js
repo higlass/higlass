@@ -12,8 +12,6 @@ import { trimTrailingSlash as tts } from '../utils';
 // Config
 import { TILE_FETCH_DEBOUNCE } from '../configs';
 
-import { fake as fakePubSub } from './pub-sub';
-
 const MAX_FETCH_TILES = 15;
 
 /*
@@ -122,7 +120,7 @@ export const setTileProxyAuthHeader = (newHeader) => {
 export const getTileProxyAuthHeader = () => authHeader;
 
 // Fritz: is this function used anywhere?
-export function fetchMultiRequestTiles(req, pubSub = fakePubSub) {
+export function fetchMultiRequestTiles(req, pubSub) {
   const requests = req.requests; // eslint-disable-line prefer-destructuring
 
   const fetchPromises = [];
@@ -437,7 +435,7 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
  * @param {func} errorCb: A callback that gets called when there is an error
  */
 
-export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub = fakePubSub) => {
+export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
   const url = `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
   pubSub.publish('requestSent', url);
   // TODO: Is this used?
@@ -545,7 +543,7 @@ export const tileDataToPixData = (
   }
 };
 
-function fetchEither(url, callback, textOrJson, pubSub = fakePubSub) {
+function fetchEither(url, callback, textOrJson, pubSub) {
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
