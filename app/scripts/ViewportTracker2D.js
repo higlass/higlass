@@ -5,16 +5,14 @@ import { event } from 'd3-selection';
 import SVGTrack from './SVGTrack';
 
 class ViewportTracker2D extends SVGTrack {
-  constructor(
-    pubSub,
-    svgElement,
-    registerViewportChanged,
-    removeViewportChanged,
-    setDomainsCallback,
-    options,
-  ) {
+  constructor(context, options) {
     // create a clipped SVG Path
-    super(pubSub, svgElement, true);
+    super(context, options);
+    const {
+      registerViewportChanged,
+      removeViewportChanged,
+      setDomainsCallback,
+    } = context;
 
     const uid = slugid.nice();
     this.uid = uid;

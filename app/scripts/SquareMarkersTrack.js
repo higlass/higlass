@@ -5,8 +5,8 @@ import { tileProxy } from './services';
 import { colorToHex } from './utils';
 
 class SquareMarkersTrack extends TiledPixiTrack {
-  constructor(pubSub, scene, server, uid, handleTilesetInfoReceived, option, animate) {
-    super(pubSub, scene, server, uid, handleTilesetInfoReceived, option, animate);
+  constructor(context, options) {
+    super(context, options);
 
     this.drawnRects = new Set();
   }

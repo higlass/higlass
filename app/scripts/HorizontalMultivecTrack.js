@@ -5,34 +5,9 @@ import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import { tileProxy } from './services';
 
 export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
-  constructor(
-    pubSub,
-    scene,
-    dataConfig,
-    handleTilesetInfoReceived,
-    options,
-    animate,
-    svgElement,
-    onValueScaleChanged,
-    onTrackOptionsChanged,
-    onMouseMoveZoom
-  ) {
-    super(
-      pubSub,
-      scene,
-      dataConfig,
-      handleTilesetInfoReceived,
-      options,
-      animate,
-      svgElement,
-      onValueScaleChanged,
-      onTrackOptionsChanged,
-      onMouseMoveZoom
-    );
-
-    //this.pMain = this.pMobile;
+  constructor(context, options) {
+    super(context, options);
     this.pMain = this.pMobile;
-
   }
 
   tileDataToCanvas(pixData) {

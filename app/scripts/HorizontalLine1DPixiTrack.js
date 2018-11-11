@@ -7,27 +7,14 @@ import { colorToHex } from './utils';
 import { tileProxy } from './services';
 
 class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
-  constructor(
-    pubSub,
-    scene,
-    dataConfig,
-    handleTilesetInfoReceived,
-    option,
-    animate,
-    onValueScaleChanged,
-  ) {
-    super(
-      pubSub,
-      scene,
-      dataConfig,
-      handleTilesetInfoReceived,
-      option,
-      animate,
-      () => {
-        this.drawAxis(this.valueScale);
-        onValueScaleChanged();
-      }
-    );
+  constructor(context, options) {
+    // Fritz: this smells very hacky!
+    const newContext = { ...context };
+    newContext.onValueScaleChanged = () => {
+      this.drawAxis(this.valueScale);
+      context.onValueScaleChanged();
+    };
+    super(context, options);
   }
 
   stopHover() {

@@ -22,8 +22,9 @@ class OSMTilesTrack extends PixiTrack {
    * @param server: The server to pull tiles from.
    * @param tilesetUid: The data set to get the tiles from the server
    */
-  constructor(pubSub, scene, options, animate) {
-    super(pubSub, scene, options);
+  constructor(context, options) {
+    super(context, options);
+    const { animate } = context;
 
     // Force OpenStreetMaps copyright
     this.options.name = `© OpenStreetMap${options.name ? `\n${options.name}` : ''}`;

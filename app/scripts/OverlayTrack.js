@@ -11,13 +11,10 @@ const GENE_RECT_HEIGHT = 10;
 const MAX_TEXTS = 20;
 
 export class OverlayTrack extends PixiTrack {
-  constructor(pubSub, scene, options, animate) {
-    super(pubSub, scene, options);
-
-    //console.log('options:', options);
+  constructor(context, options) {
+    super(context, options);
 
     this.options = options || {};
-    //console.log('this.options:', this.options);
     this.drawnRects = {};
   }
 

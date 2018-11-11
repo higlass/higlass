@@ -8,24 +8,8 @@ import { colorDomainToRgbaArray } from './utils';
 import { HEATED_OBJECT_MAP } from './configs';
 
 class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
-  constructor(
-    pubSub,
-    scene,
-    dataConfig,
-    handleTilesetInfoReceived,
-    options = {},
-    animate,
-    onValueScaleChanged,
-  ) {
-    super(
-      pubSub,
-      scene,
-      dataConfig,
-      handleTilesetInfoReceived,
-      options,
-      animate,
-      onValueScaleChanged
-    );
+  constructor(context, options) {
+    super(context, options);
 
     this.setColorScale(options.colorRange);
 

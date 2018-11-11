@@ -12,8 +12,9 @@ import { colorToHex, max, min } from './utils';
 const MOUSE_CLICK_TIME = 250;
 
 class Annotations2dTrack extends TiledPixiTrack {
-  constructor(pubSub, scene, dataConfig, handleTilesetInfoReceived, options, animate) {
-    super(pubSub, scene, dataConfig, handleTilesetInfoReceived, options, animate);
+  constructor(context, options) {
+    super(context, options);
+    const { pubSub } = context;
 
     this.drawnAnnotations = {};
     this.drawnAnnoGfx = {};

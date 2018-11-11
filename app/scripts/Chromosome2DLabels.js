@@ -9,8 +9,9 @@ import { absToChr } from './utils';
 
 
 class Chromosome2DLabels extends PixiTrack {
-  constructor(pubSub, scene, dataConfig, handleTilesetInfoReceived, options, animate) {
-    super(pubSub, scene, options);
+  constructor(context, options) {
+    super(context, options);
+    const { dataConfig, animate, pubSub } = context;
 
     this.searchField = null;
     this.chromInfo = null;
@@ -56,7 +57,7 @@ class Chromosome2DLabels extends PixiTrack {
       }
       this.draw();
       this.animate();
-    }, this.pubSub);
+    }, pubSub);
   }
 
   draw() {

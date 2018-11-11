@@ -3,8 +3,8 @@ import { axisTop } from 'd3-axis';
 import SVGTrack from './SVGTrack';
 
 class TopAxisTrack extends SVGTrack {
-  constructor(pubSub, svgElement) {
-    super(pubSub, svgElement);
+  constructor(context, options) {
+    super(context, options);
 
     this.axis = axisTop(this._xScale);
     this.gAxis = this.gMain.append('g');

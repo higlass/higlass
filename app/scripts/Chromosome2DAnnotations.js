@@ -5,15 +5,16 @@ import PixiTrack from './PixiTrack';
 import ChromosomeInfo from './ChromosomeInfo';
 
 class Chromosome2DAnnotations extends PixiTrack {
-  constructor(pubSub, scene, chromInfoPath, options) {
-    super(pubSub, scene, options);
+  constructor(context, options) {
+    super(context, options);
+    const { chromInfoPath, pubSub } = context;
 
     this.drawnRects = new Set();
 
     ChromosomeInfo(chromInfoPath, (newChromInfo) => {
       this.chromInfo = newChromInfo;
       this.draw();
-    }, this.pubSub);
+    }, pubSub);
   }
 
   draw() {

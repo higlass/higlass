@@ -1,13 +1,13 @@
 import slugid from 'slugid';
 
 class CombinedTrack {
-  constructor(pubSub, trackDefs, trackCreator) {
-    this.childTracks = trackDefs.map(trackCreator);
+  constructor({ tracks, createTrackObject }) {
+    this.childTracks = tracks.map(createTrackObject);
     this.createdTracks = {};
-    this.uid = slugid.nice()
+    this.uid = slugid.nice();
 
     this.childTracks.forEach((ct, i) => {
-      this.createdTracks[trackDefs[i].uid] = ct;
+      this.createdTracks[tracks[i].uid] = ct;
     });
 
     for (let i = 0; i < this.childTracks.length; i++) {

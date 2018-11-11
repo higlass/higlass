@@ -9,8 +9,8 @@ class MapboxTilesTrack extends OSMTilesTrack {
    * @param server: The server to pull tiles from.
    * @param tilesetUid: The data set to get the tiles from the server
    */
-  constructor(pubSub, scene, options, animate, accessToken) {
-    super(pubSub, scene, options, animate);
+  constructor(context, options) {
+    super(context, options);
 
     // Force Mapbox and OpenStreetMaps copyright
     this.options.name = `© Mapbox © OpenStreetMap${options.name ? `\n${options.name}` : ''}`;

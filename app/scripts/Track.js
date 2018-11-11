@@ -4,7 +4,7 @@ import { scaleLinear } from 'd3-scale';
 import { isWithin } from './utils';
 
 class Track {
-  constructor(pubSub) {
+  constructor({ pubSub }) {
     this._xScale = scaleLinear();
     this._yScale = scaleLinear();
 

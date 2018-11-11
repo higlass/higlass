@@ -5,26 +5,9 @@ import { segmentsToRows } from './utils';
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
-  constructor(
-    pubSub,
-    scene,
-    dataConfig,
-    handleTilesetInfoReceived,
-    options,
-    animate,
-    onValueScaleChanged,
-  ) {
-    super(
-      pubsub,
-      scene,
-      dataConfig,
-      handleTilesetInfoReceived,
-      options,
-      animate,
-      onValueScaleChanged,
-    );
+  constructor(...args) {
+    super(...args);
 
-    // console.log('CNVInterval:', this);
     this.seen = new Set();
     this.pMain = this.pMobile;
 

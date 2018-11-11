@@ -5,16 +5,14 @@ import slugid from 'slugid';
 import SVGTrack from './SVGTrack';
 
 class ViewportTrackerHorizontal extends SVGTrack {
-  constructor(
-    pubSub,
-    svgElement,
-    registerViewportChanged,
-    removeViewportChanged,
-    setDomainsCallback,
-    options
-  ) {
+  constructor(context, options) {
     // create a clipped SVG Path
-    super(pubSub, svgElement, true);
+    super(context, options);
+    const {
+      registerViewportChanged,
+      removeViewportChanged,
+      setDomainsCallback,
+    } = context;
 
     const uid = slugid.nice();
     this.uid = uid;
@@ -27,8 +25,7 @@ class ViewportTrackerHorizontal extends SVGTrack {
     this.viewportYDomain = null;
 
     this.brush = brush(true)
-      .on('brush', this.brushed.bind(this))
-    ;
+      .on('brush', this.brushed.bind(this));
 
     this.gBrush = this.gMain
       .append('g')

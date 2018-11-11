@@ -10,7 +10,7 @@ import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
 import AxisPixi from './AxisPixi';
 
 // Services
-import { pubSub, tileProxy } from './services';
+import { tileProxy } from './services';
 
 import {
   absToChr,
@@ -39,34 +39,23 @@ const BINS_PER_TILE = 256;
 
 
 class HeatmapTiledPixiTrack extends TiledPixiTrack {
-  constructor(
-    pubSub,
-    scene,
-    dataConfig,
-    handleTilesetInfoReceived,
-    options,
-    animate,
-    svgElement,
-    onValueScaleChanged,
-    onTrackOptionsChanged,
-    onMouseMoveZoom
-  ) {
-    /**
-     * @param scene: A PIXI.js scene to draw everything to.
-     */
-    super(
+  constructor(context, options) {
+    // Fritz: this smells very hacky!
+    const newContext = { ...context };
+    newContext.onValueScaleChanged = () => {
+      context.onValueScaleChanged();
+      this.drawColorbar();
+    };
+    super(context, options);
+    const {
       pubSub,
-      scene,
-      dataConfig,
-      handleTilesetInfoReceived,
-      options,
       animate,
-      () => {
-        onValueScaleChanged();
-        this.drawColorbar();
-      },
-    );
+      svgElement,
+      onTrackOptionsChanged,
+      onMouseMoveZoom,
+    } = context;
 
+    this.pubSub = pubSub;
     this.is2d = true;
     this.animate = animate;
     this.uid = slugid.nice();
@@ -112,7 +101,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     if (this.onMouseMoveZoom) {
       this.pubSubs.push(
-        pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this))
+        this.pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this))
       );
     }
 
@@ -406,12 +395,12 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const startDomain = axisValueScale.invert(selection[1]);
 
     const startPercent = (
-      (startDomain - axisValueScale.domain()[0])
-      / (axisValueScale.domain()[1] - axisValueScale.domain()[0])
+      (startDomain - axisValueScale.domain()[0]) /
+      (axisValueScale.domain()[1] - axisValueScale.domain()[0])
     );
     const endPercent = (
-      (endDomain - axisValueScale.domain()[0])
-      / (axisValueScale.domain()[1] - axisValueScale.domain()[0])
+      (endDomain - axisValueScale.domain()[0]) /
+      (axisValueScale.domain()[1] - axisValueScale.domain()[0])
     );
 
     newOptions.scaleStartPercent = startPercent.toFixed(SCALE_LIMIT_PRECISION);

@@ -17,28 +17,9 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
    * @param scene: A PIXI.js scene to draw everything to.
    * @param dataConfig: An object defining where the data should be pulled from
    */
-  constructor(
-    pubSub,
-    scene,
-    dataConfig,
-    handleTilesetInfoReceived,
-    options,
-    animate,
-    svgElement,
-    onValueScaleChanged,
-    onTrackOptionsChanged,
-  ) {
-    super(
-      pubSub,
-      scene,
-      dataConfig,
-      handleTilesetInfoReceived,
-      options,
-      animate,
-      svgElement,
-      onValueScaleChanged,
-      onTrackOptionsChanged,
-    );
+  constructor(context, options) {
+    super(context, options);
+    const { animate } = context;
 
     this.pMain = this.pMobile;
 

@@ -1,12 +1,12 @@
 import PixiTrack from './PixiTrack';
 
 class UnknownPixiTrack extends PixiTrack {
-  constructor(pubSub, stage, def) {
-    super(pubSub, stage, def);
+  constructor(context, options) {
+    super(context, options);
     // so that the tests checking for retrieved tilesetInfo pass
     this.tilesetInfo = {};
 
-    this.errorTextText = `Unknown track type: ${def.type}`;
+    this.errorTextText = `Unknown track type: ${options.type}`;
   }
 
   zoomed() {

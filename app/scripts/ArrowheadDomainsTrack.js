@@ -9,8 +9,8 @@ import { tileProxy } from './services';
 import { colorToHex } from './utils';
 
 class ArrowheadDomainsTrack extends TiledPixiTrack {
-  constructor(pubSub, scene, dataConfig, handleTilesetInfoReceived, option, animate) {
-    super(pubSub, scene, dataConfig, handleTilesetInfoReceived, option, animate);
+  constructor(...args) {
+    super(...args);
 
     this.drawnRects = {};
 
