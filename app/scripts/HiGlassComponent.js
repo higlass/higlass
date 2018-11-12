@@ -18,7 +18,7 @@ import ChromosomeInfo from './ChromosomeInfo';
 
 import { createSymbolIcon } from './symbol';
 import { all as icons } from './icons';
-import api, { destroy as apiDestroy, publish as apiPublish } from './api';
+import createApi from './api';
 
 // Services
 import {
@@ -215,7 +215,11 @@ class HiGlassComponent extends React.Component {
     this.attachedToDOM = false;
 
     // Set up API
-    this.api = api(this);
+    const api = createApi(this);
+    // This is used internally only to broadcast events and destroy the API.
+    this.apiInternal = api.private;
+    // This is being exported from `hglib.viewer`
+    this.api = api.public;
 
     this.viewChangeListener = [];
 
@@ -506,7 +510,7 @@ class HiGlassComponent extends React.Component {
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
 
-    apiDestroy();
+    this.apiInternal.destroy();
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
@@ -3024,7 +3028,7 @@ class HiGlassComponent extends React.Component {
    */
   rangeSelectionHandler(range) {
     this.rangeSelection = range;
-    apiPublish('rangeSelection', range);
+    this.apiInternal.publish('rangeSelection', range);
   }
 
   offViewChange(listenerId) {
@@ -3352,14 +3356,14 @@ class HiGlassComponent extends React.Component {
    * Handle internally broadcasted click events
    */
   appClickHandler(data) {
-    apiPublish('click', data);
+    this.apiInternal.publish('click', data);
   }
 
   /**
    * Handle mousemove and zoom events.
    */
   mouseMoveZoomHandler(data) {
-    apiPublish('mouseMoveZoom', data);
+    this.apiInternal.publish('mouseMoveZoom', data);
   }
 
   /**
