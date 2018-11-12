@@ -203,6 +203,6 @@ export const removeHGComponent = (div) => {
     ReactDOM.unmountComponentAtNode(div);
     document.body.removeChild(div);
   } catch (e) {
-    console.warn('Couldnt remove child', div, e);
+    console.warn('Couldn\'t remove child', div, e);
   }
 };
