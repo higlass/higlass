@@ -11,6 +11,7 @@ import { expect } from 'chai';
 
 // Utils
 import {
+  some,
   waitForTransitionsFinished,
   waitForTilesLoaded,
   removeHGComponent,
@@ -30,10 +31,14 @@ configure({ adapter: new Adapter() });
 function findCanvas(element) {
   if (element.tagName.toLowerCase() === 'canvas') return element;
   let canvas;
-  element.childNodes.forEach((childElement) => {
+  some((childElement) => {
     const el = findCanvas(childElement);
-    if (el) canvas = el;
-  });
+    if (el) {
+      canvas = el;
+      return true;
+    }
+    return false;
+  })(element.children);
   return canvas;
 }
 
