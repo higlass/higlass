@@ -189,6 +189,11 @@ describe('Simple HiGlassComponent', () => {
         clientY: y
       });
 
+      setTimeout(() => {
+        canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 100));
+        canvas.dispatchEvent(createPointerEvent('pointerup', 100, 100));
+      }, 0);
+
       waitForTilesLoaded(api.getComponent(), () => {
         setTimeout(() => {
           canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 200));
@@ -196,15 +201,10 @@ describe('Simple HiGlassComponent', () => {
         }, 0);
 
         setTimeout(() => {
-          canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 100));
-          canvas.dispatchEvent(createPointerEvent('pointerup', 100, 100));
-        }, 50);
-
-        setTimeout(() => {
           expect(clicked).to.equal(2);
           api.destroy();
           done();
-        }, 100);
+        }, 0);
       });
     });
 
