@@ -1,11 +1,4 @@
 /* eslint-env node, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
-import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 // Utils
@@ -19,22 +12,7 @@ import {
   simpleCenterViewConfig,
 } from './view-configs';
 
-import {
-  viewer
-} from '../app/scripts/hglib';
-
-configure({ adapter: new Adapter() });
-
-function createElementAndAPI(viewConfig, options) {
-  const div = global.document.createElement('div');
-  global.document.body.appendChild(div);
-
-  div.setAttribute('style', 'width:600px; height: 400px; background-color: lightgreen');
-
-  const api = viewer(div, viewConfig, options);
-
-  return [div, api];
-}
+import createElementAndApi from './utils/create-element-and-api';
 
 describe('Simple HiGlassComponent', () => {
   let div = null;
@@ -42,7 +20,7 @@ describe('Simple HiGlassComponent', () => {
 
   describe('Options tests', () => {
     it('creates an editable component', () => {
-      ([div, api] = createElementAndAPI(simpleCenterViewConfig));
+      ([div, api] = createElementAndApi(simpleCenterViewConfig));
 
       const component = api.getComponent();
 
@@ -50,7 +28,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('zooms to negative domain', (done) => {
-      ([div, api] = createElementAndAPI(simpleCenterViewConfig,
+      ([div, api] = createElementAndApi(simpleCenterViewConfig,
         { editable: false }));
 
       api.zoomTo('a', 6.069441699652629, 6.082905691828387,
@@ -63,7 +41,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('zooms to just x and y', (done) => {
-      ([div, api] = createElementAndAPI(simpleCenterViewConfig,
+      ([div, api] = createElementAndApi(simpleCenterViewConfig,
         { editable: false }));
 
       api.zoomTo('a', 6.069441699652629, 6.082905691828387, null, null, 100);
@@ -85,7 +63,7 @@ describe('Simple HiGlassComponent', () => {
     it('zoom to a nonexistent view', () => {
       // complete me, should throw an error rather than complaining
       // "Cannot read property 'copy' of undefined thrown"
-      ([div, api] = createElementAndAPI(simpleCenterViewConfig,
+      ([div, api] = createElementAndApi(simpleCenterViewConfig,
         { editable: false }));
 
       expect(() => api.zoomTo('nonexistent', 6.069441699652629, 6.082905691828387,
@@ -94,7 +72,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('creates a non editable component', () => {
-      ([div, api] = createElementAndAPI(simpleCenterViewConfig,
+      ([div, api] = createElementAndApi(simpleCenterViewConfig,
         { editable: false }));
 
       const component = api.getComponent();
@@ -103,7 +81,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('retrieves a track', () => {
-      ([div, api] = createElementAndAPI(simpleCenterViewConfig,
+      ([div, api] = createElementAndApi(simpleCenterViewConfig,
         { editable: false }));
 
       const viewconf = api.getViewConfig();
@@ -113,7 +91,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('zooms to a negative location', (done) => {
-      ([div, api] = createElementAndAPI(simpleCenterViewConfig,
+      ([div, api] = createElementAndApi(simpleCenterViewConfig,
         { editable: false, bounded: true }));
 
       api.zoomTo('a', -10000000, 10000000);
