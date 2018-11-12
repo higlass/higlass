@@ -1,5 +1,4 @@
 /* eslint-env node, mocha */
-import ReactDOM from 'react-dom';
 import {
   configure,
   // render,
@@ -14,7 +13,6 @@ import {
   some,
   waitForTransitionsFinished,
   waitForTilesLoaded,
-  removeHGComponent,
 } from '../app/scripts/utils';
 
 import {
@@ -43,20 +41,6 @@ function findCanvas(element) {
 }
 
 function createElementAndAPI(viewConfig, options) {
-  // Tests do not seem to be independent. I tried to enforce that existing DOM
-  // children of `body` are removed (and react apps unmounted) but although this
-  // should not have any impact on the test it actually leads to weird errors
-  // indicating that there is some shared global state between HG instances.
-  // const body = global.document.body;
-  // while (body.firstChild) {
-  //   try {
-  //     ReactDOM.unmountComponentAtNode(body.firstChild);
-  //   } catch (e) {
-  //     // Nothing
-  //   }
-  //   body.removeChild(body.firstChild);
-  // }
-
   const div = global.document.createElement('div');
   global.document.body.appendChild(div);
 
@@ -151,7 +135,6 @@ describe('Simple HiGlassComponent', () => {
 
       waitForTransitionsFinished(api.getComponent(), () => {
         waitForTilesLoaded(api.getComponent(), () => {
-          api.destroy();
           done();
         });
       });
@@ -202,14 +185,21 @@ describe('Simple HiGlassComponent', () => {
 
         setTimeout(() => {
           expect(clicked).to.equal(2);
-          api.destroy();
+
           done();
         }, 0);
       });
     });
 
     afterEach(() => {
-      removeHGComponent(div);
+      if (api) {
+        api.destroy();
+        api = undefined;
+      }
+      if (div) {
+        document.body.removeChild(div);
+        div = undefined;
+      }
     });
 
     // it('creates a new component with different options and checks'
