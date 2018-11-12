@@ -1,9 +1,9 @@
 import { viewer } from '../../app/scripts/hglib';
 
-export default function createElementAndAPI(viewConfig, options) {
-  const div = global.document.createElement('div');
-  global.document.body.appendChild(div);
+import createDiv from './create-div';
 
+export default function createElementAndAPI(viewConfig, options) {
+  const div = createDiv();
   div.setAttribute('style', 'width:600px; height: 400px; background-color: lightgreen');
 
   const api = viewer(div, viewConfig, options);
