@@ -20,4 +20,4 @@ const withPubSub = Component => React.forwardRef((props, ref) => (
 
 export default withPubSub;
 
-export { Provider };
+export { fake, Provider };
