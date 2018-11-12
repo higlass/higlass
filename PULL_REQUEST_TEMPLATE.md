@@ -4,7 +4,7 @@ What was changed in this pull request?
 
 Why is it necessary?
 
-Does it fix an existing issue? If so, please provide a link.
+Fixes #___
 
 ## Checklist
 
