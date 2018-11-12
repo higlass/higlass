@@ -8,6 +8,9 @@ import {
 } from 'react-bootstrap';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
+import CheckboxTree from 'react-checkbox-tree';
+import 'react-checkbox-tree/lib/react-checkbox-tree.css';
+
 
 import { tileProxy } from './services';
 
@@ -49,6 +52,8 @@ class TilesetFinder extends React.Component {
       selectedUuid,
       options: newOptions,
       filter: '',
+      checked: [],
+      expanded: [],
     };
 
     this.requestTilesetLists();
@@ -117,7 +122,7 @@ class TilesetFinder extends React.Component {
     } else {
       const datatypes = new Set([].concat.apply([], this.augmentedTracksInfo
         .filter(x => x.datatype)
-        .filter(x => x.orientation == this.props.orientation)
+        .filter(x => x.orientation === this.props.orientation)
         .map(x => x.datatype)));
 
 
@@ -192,7 +197,7 @@ class TilesetFinder extends React.Component {
   }
 
   handleSelect() {
-    const { selectedOptions } = ReactDOM.findDOMNode(this.multiSelect);
+    const { selectedOptions } = this.multiSelect;
     const selectedOptionsList = [];
 
     for (let i = 0; i < selectedOptions.length; i++) {
@@ -204,7 +209,7 @@ class TilesetFinder extends React.Component {
   }
 
   handleSearchChange() {
-    const domElement = ReactDOM.findDOMNode(this.searchBox);
+    const domElement = this.searchBox;
 
     this.setState({ filter: domElement.value });
   }
@@ -218,7 +223,7 @@ class TilesetFinder extends React.Component {
     // the list of tilesets / tracks available
     const sortedOptions = optionsList
       .filter(x => x.name.toLowerCase().includes(this.state.filter));
- 
+
     sortedOptions.sort((a, b) => (
       a.name.toLowerCase().localeCompare(b.name.toLowerCase(), 'en')
     ));
@@ -226,11 +231,20 @@ class TilesetFinder extends React.Component {
     const options = sortedOptions.map(x => (
       <option
         onDoubleClick={this.handleOptionDoubleClick.bind(this)}
-        key={x.serverUidKey}
         value={x.serverUidKey}
+        key={x.serverUidKey}
       >
         {`${x.name} | ${x.coordSystem}`}
       </option>));
+
+    const nodes = [{
+        value: 'mars',
+        label: 'Mars',
+        children: [
+            { value: 'phobos', label: 'Phobos' },
+            { value: 'deimos', label: 'Deimos' },
+        ],
+    }];
 
     const form = (
       <Form
@@ -239,14 +253,14 @@ class TilesetFinder extends React.Component {
       >
         <FormGroup>
           <Col sm={3}>
-            <ControlLabel>{ 'Select tileset' }</ControlLabel>
+            <ControlLabel>Select tileset</ControlLabel>
           </Col>
-          <Col 
+          <Col
             sm={4}
-            smOffset={5} 
+            smOffset={5}
           >
             <FormControl
-              ref={(c) => { this.searchBox = c; }}
+              inputRef={(c) => { this.searchBox = c; }}
               autoFocus={true}
               onChange={this.handleSearchChange.bind(this)}
               placeholder="Search Term"
@@ -254,17 +268,13 @@ class TilesetFinder extends React.Component {
             <div style={{ height: 10 }} />
           </Col>
           <Col sm={12}>
-            <FormControl
-              ref={(c) => { this.multiSelect = c; }}
-              className="tileset-list"
-              componentClass="select"
-              multiple
-              onChange={this.handleSelect.bind(this)}
-              size={15}
-              value={this.state.selectedUuid ? this.state.selectedUuid : ['x']}
-            >
-              {options}
-            </FormControl>
+            <CheckboxTree
+                nodes={nodes}
+                checked={this.state.checked}
+                expanded={this.state.expanded}
+                onCheck={checked => this.setState({ checked })}
+                onExpand={expanded => this.setState({ expanded })}
+            />
           </Col>
         </FormGroup>
       </Form>
