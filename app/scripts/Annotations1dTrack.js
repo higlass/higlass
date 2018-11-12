@@ -219,7 +219,7 @@ class Annotations1dTrack extends PixiTrack {
       };
     });
 
-    // Remove outdated rects, i.e., rects whos time stamp is not the current
+    // Remove outdated rects, i.e., rects whose time stamp is not the current
     // time stamp stored above.
     Object
       .values(this.rects)

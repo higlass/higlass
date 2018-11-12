@@ -176,7 +176,7 @@ describe('Simple HiGlassComponent', () => {
         bubbles: true,
         cancelable: true,
         // WARNING: The following property is absolutely crucial to have the
-        // event being picked up by PIXI. Do not remove under no circumstances!
+        // event being picked up by PIXI. Do not remove under any circumstances!
         pointerType: 'mouse',
         screenX: x,
         screenY: y,

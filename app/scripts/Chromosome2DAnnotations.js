@@ -8,7 +8,7 @@ import pubSub from './services/pub-sub';
 
 // Maximum delay in ms between mousedown and mouseup that is registered as a
 // click. Note we need to use mousedown and mouseup as PIXI doesn't recognize
-// click events with out current setup. Since most UIs treat long clicks as
+// click events with our current setup. Since most UIs treat long clicks as
 // either something special or a cancelation we follow best practices and
 // implement a threshold on the delay as well.
 const MAX_CLICK_DELAY = 300;
