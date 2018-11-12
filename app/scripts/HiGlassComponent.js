@@ -430,7 +430,7 @@ class HiGlassComponent extends React.Component {
         this.unsetOnLocationChange.forEach(({ viewId, callback, callbackId }) => {
           this.onLocationChange(viewId, callback, callbackId);
         });
-      });
+      }, this.pubSub);
     } else {
       views = this.processViewConfig(
         JSON.parse(JSON.stringify(viewConfig))
