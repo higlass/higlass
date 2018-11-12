@@ -7,7 +7,7 @@ import { requestsInFlight } from '../services';
 import {
   getTrackObjectFromHGC,
   getTrackRenderer,
-} from '.';
+} from './get-higlass-components';
 
 import HiGlassComponent from '../HiGlassComponent';
 
@@ -176,7 +176,7 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
 
   const style = (options && options.style) || 'width:800px; background-color: lightgreen;';
   const bounded = (options && options.bounded) || false;
-  
+
   const div = global.document.createElement('div');
   global.document.body.appendChild(div);
 
