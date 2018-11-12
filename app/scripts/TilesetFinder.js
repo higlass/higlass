@@ -6,13 +6,13 @@ import {
   FormControl,
   FormGroup,
 } from 'react-bootstrap';
-import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 import CheckboxTree from 'react-checkbox-tree';
-import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 
 
 import { tileProxy } from './services';
+import '../styles/TilesetFinder.css';
+
 
 // Configs
 import { TRACKS_INFO } from './configs';
@@ -66,13 +66,6 @@ class TilesetFinder extends React.Component {
     this.mounted = true;
 
     this.requestTilesetLists();
-
-    if (!this.state.selectedUuid)
-      return;
-
-    const selectedTilesets = [this.state.options[this.state.selectedUuid]];
-
-    if (selectedTilesets) { this.props.selectedTilesetChanged(selectedTilesets); }
   }
 
   componentWillUnmount() {
@@ -120,17 +113,16 @@ class TilesetFinder extends React.Component {
     if (this.props.datatype) {
       datatypesQuery = `dt=${this.props.datatype}`;
     } else {
-      const datatypes = new Set([].concat.apply([], this.augmentedTracksInfo
+      const datatypes = new Set([].concat(...this.augmentedTracksInfo
         .filter(x => x.datatype)
         .filter(x => x.orientation === this.props.orientation)
         .map(x => x.datatype)));
-
 
       datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
     }
 
     if (!this.props.trackSourceServers) {
-      console.warn("No track source servers specified in the viewconf");
+      console.warn('No track source servers specified in the viewconf');
       return;
     }
 
@@ -140,9 +132,10 @@ class TilesetFinder extends React.Component {
           if (error) {
             console.error('ERROR:', error);
           } else {
-            const newOptions = this.prepareNewEntries(sourceServer, data.results, this.state.options);
+            const newOptions = this.prepareNewEntries(sourceServer,
+              data.results, this.state.options);
             const availableTilesetKeys = Object.keys(newOptions);
-            let selectedUuid = this.state.selectedUuid;
+            let { selectedUuid } = this.state;
 
             // if there isn't a selected tileset, select the first received one
             if (!selectedUuid) {
@@ -162,15 +155,11 @@ class TilesetFinder extends React.Component {
     });
   }
 
-  handleOptionDoubleClick(x, y) {
-    /**
-         * Double clicked on an element. Should be selected
-         * and this window will be closed.
-         */
-
-    // this should give the dataset the PlotType that's selected in the parent
-    // this.props.selectedTilesetChanged(this.state.options[x.target.value]);
-
+  /**
+   * Double clicked on an element. Should be selected
+   * and this window will be closed.
+   */
+  handleOptionDoubleClick(x /* , y */) {
     const value = this.state.options[x.target.value];
     this.props.onDoubleClick(value);
   }
@@ -184,9 +173,6 @@ class TilesetFinder extends React.Component {
       selectedValues.push(selectedOptions[i]);
       selectedTilesets.push(this.state.options[selectedOptions[i]]);
     }
-
-
-    //
 
     this.props.selectedTilesetChanged(selectedTilesets);
 
@@ -214,7 +200,22 @@ class TilesetFinder extends React.Component {
     this.setState({ filter: domElement.value });
   }
 
-  partitionByGroup(optionsList) {
+  /*
+   * Create the nested checkbox tree by partitioning the
+   * list of available datasets according to their group
+   *
+   * @param {dict} datasetsDict A dictionary of id -> tileset
+   *  def mappings
+   * @param {string} filter A string to filter the results by
+   * @returns {list} A list of items that define the nested checkbox
+   *  structure
+   *  {
+   *    'name': 'blah',
+   *    'value': 'blah',
+   *    'children': 'blah',
+   *  }
+   */
+  partitionByGroup(datasetsDict, filter) {
     const itemsByGroup = {
       '': {
         name: '',
@@ -223,7 +224,13 @@ class TilesetFinder extends React.Component {
       }
     };
 
-    for (const item of optionsList) {
+    for (const uuid of Object.keys(datasetsDict)) {
+      const item = datasetsDict[uuid];
+
+      if (!item.name.toLowerCase().includes(filter)) {
+        continue;
+      }
+
       if ('group' in item) {
         if (!(item.group in itemsByGroup)) {
           itemsByGroup[item.group] = {
@@ -235,12 +242,12 @@ class TilesetFinder extends React.Component {
 
         itemsByGroup[item.group].children.push({
           label: item.name,
-          value: item.uuid,
+          value: uuid,
         });
       } else {
         itemsByGroup[''].children.push({
           label: item.name,
-          value: item.uuid,
+          value: uuid,
         });
       }
     }
@@ -249,11 +256,33 @@ class TilesetFinder extends React.Component {
     // coollapse the group lists into one list of objects
     for (const group of Object.keys(itemsByGroup)) {
       if (group !== '') {
+        itemsByGroup[group].children.sort(
+          (a, b) => a.label.toLowerCase().localeCompare(
+            b.label.toLowerCase(), 'en'
+          )
+        );
+
         allItems.push(itemsByGroup[group]);
       }
     }
 
+    allItems.sort(
+      (a, b) => a.label.toLowerCase().localeCompare(
+        b.label.toLowerCase(), 'en'
+      )
+    );
+
     return allItems;
+  }
+
+  handleChecked(checked) {
+    this.handleSelectedOptions(checked);
+
+    this.setState({ checked });
+  }
+
+  handleExpanded(expanded) {
+    this.setState({ expanded });
   }
 
   render() {
@@ -262,36 +291,10 @@ class TilesetFinder extends React.Component {
       optionsList.push(this.state.options[key]);
     }
 
-    console.log('optionsList:', optionsList);
-    const nestedItems = this.partitionByGroup(optionsList);
-
-    console.log(nestedItems);
-
-    // the list of tilesets / tracks available
-    const sortedOptions = optionsList
-      .filter(x => x.name.toLowerCase().includes(this.state.filter));
-
-    sortedOptions.sort((a, b) => (
-      a.name.toLowerCase().localeCompare(b.name.toLowerCase(), 'en')
-    ));
-
-    const options = sortedOptions.map(x => (
-      <option
-        onDoubleClick={this.handleOptionDoubleClick.bind(this)}
-        value={x.serverUidKey}
-        key={x.serverUidKey}
-      >
-        {`${x.name} | ${x.coordSystem}`}
-      </option>));
-
-    const nodes = [{
-        value: 'mars',
-        label: 'Mars',
-        children: [
-            { value: 'phobos', label: 'Phobos' },
-            { value: 'deimos', label: 'Deimos' },
-        ],
-    }];
+    const nestedItems = this.partitionByGroup(
+      this.state.options,
+      this.state.filter
+    );
 
     const form = (
       <Form
@@ -314,16 +317,19 @@ class TilesetFinder extends React.Component {
             />
             <div style={{ height: 10 }} />
           </Col>
-          <Col sm={12}>
-            <CheckboxTree
-                nodes={nestedItems}
-                checked={this.state.checked}
-                expanded={this.state.expanded}
-                onCheck={checked => this.setState({ checked })}
-                onExpand={expanded => this.setState({ expanded })}
-            />
-          </Col>
         </FormGroup>
+        <div
+          className="tileset-finder-checkbox-tree"
+          styleName="tileset-finder-checkbox-tree"
+        >
+          <CheckboxTree
+              nodes={nestedItems}
+              checked={this.state.checked}
+              expanded={this.state.expanded}
+              onCheck={this.handleChecked.bind(this)}
+              onExpand={this.handleExpanded.bind(this)}
+          />
+        </div>
       </Form>
     );
 

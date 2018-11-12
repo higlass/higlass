@@ -16,7 +16,8 @@ const localViewConf =
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "//localhost:8000/api/v1"
+//    "//localhost:8000/api/v1"
+    "//higlass.io/api/v1"
   ],
   "exportViewUrl": "/api/v1/viewconfs",
   "views": [
@@ -52,37 +53,6 @@ configure({ adapter: new Adapter() });
 describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
-
-  describe('Tileset checkbox tests', () => {
-    beforeAll((done) => {
-      ([div, hgc] = mountHGComponent(div, hgc,
-        localViewConf,
-        done,
-        {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        })
-      );
-    });
-
-    it("Opens the Add Track Modal", (done) => {
-      const tiledPlot = hgc.instance().tiledPlots.aa;
-      tiledPlot.handleAddTrack('center');
-
-      hgc.update();
-
-      done();
-    });
-
-    afterAll((done) => {
-      // removeHGComponent(div);
-      div = null;
- 
-      done();
-    });
-  });
-
-  return;
 
   describe('Multiple track addition', () => {
     let atm = null;
