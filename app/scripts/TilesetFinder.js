@@ -214,11 +214,58 @@ class TilesetFinder extends React.Component {
     this.setState({ filter: domElement.value });
   }
 
+  partitionByGroup(optionsList) {
+    const itemsByGroup = {
+      '': {
+        name: '',
+        value: '',
+        children: [],
+      }
+    };
+
+    for (const item of optionsList) {
+      if ('group' in item) {
+        if (!(item.group in itemsByGroup)) {
+          itemsByGroup[item.group] = {
+            value: item.group,
+            label: item.group,
+            children: [],
+          };
+        }
+
+        itemsByGroup[item.group].children.push({
+          label: item.name,
+          value: item.uuid,
+        });
+      } else {
+        itemsByGroup[''].children.push({
+          label: item.name,
+          value: item.uuid,
+        });
+      }
+    }
+
+    const allItems = itemsByGroup[''].children;
+    // coollapse the group lists into one list of objects
+    for (const group of Object.keys(itemsByGroup)) {
+      if (group !== '') {
+        allItems.push(itemsByGroup[group]);
+      }
+    }
+
+    return allItems;
+  }
+
   render() {
     const optionsList = [];
     for (const key in this.state.options) {
       optionsList.push(this.state.options[key]);
     }
+
+    console.log('optionsList:', optionsList);
+    const nestedItems = this.partitionByGroup(optionsList);
+
+    console.log(nestedItems);
 
     // the list of tilesets / tracks available
     const sortedOptions = optionsList
@@ -269,7 +316,7 @@ class TilesetFinder extends React.Component {
           </Col>
           <Col sm={12}>
             <CheckboxTree
-                nodes={nodes}
+                nodes={nestedItems}
                 checked={this.state.checked}
                 expanded={this.state.expanded}
                 onCheck={checked => this.setState({ checked })}
