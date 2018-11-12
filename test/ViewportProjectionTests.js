@@ -1,47 +1,41 @@
-/* eslint-env node, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
-import Adapter from 'enzyme-adapter-react-16';
-
-import { expect } from 'chai';
+/* eslint-env node, jasmine */
 
 // Utils
 import {
-  mountHGComponent,
-  removeHGComponent,
+  waitForTilesLoaded,
   getTrackObjectFromHGC,
   waitForTransitionsFinished,
 } from '../app/scripts/utils';
 
-
-configure({ adapter: new Adapter() });
+import createElementAndApi from './utils/create-element-and-api';
+import removeDiv from './utils/remove-div';
+import viewConfig from './view-configs/viewport-projection';
 
 describe('Simple HiGlassComponent', () => {
-  let hgc = null;
-  let div = null;
+  let api;
+  let div;
 
   describe('Viewport projection tests', () => {
-    beforeAll((done) => {
-      ([div, hgc] = mountHGComponent(div, hgc, 'http://higlass.io/api/v1/viewconfs/?d=Y7FtjugjR6OIV_P2DRqCSg',
-        done));
+    beforeEach(() => {
+      [div, api] = createElementAndApi(viewConfig);
     });
 
     it("Ensure that the viewport projection's borders are black", (done) => {
-      // the idea is to make sure the borders of the viewport projection are black
-      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'GWbBXmaFQTO8tia0-wljaA');
-      const viewportRect = trackObj.gMain.select('rect.selection');
+      waitForTilesLoaded(api.getComponent(), () => {
+        setTimeout(() => {
+          // the idea is to make sure the borders of the viewport projection are black
+          const trackObj = getTrackObjectFromHGC(
+            api.getComponent(), 'aa', 'GWbBXmaFQTO8tia0-wljaA', true
+          );
 
-      // console.log('viewportRect', viewportRect);
-      // console.log('componentDiv', viewportRect.style('color'), viewportRect.style('fill'));
+          const viewportRect = trackObj.gMain.select('rect.selection');
 
-      // console.log('check');
-      expect(viewportRect.style('color')).to.eql('rgb(51, 51, 51)');
-      expect(viewportRect.style('fill')).to.eql('rgb(0, 0, 0)');
+          expect(viewportRect.style('color')).toEqual('rgb(51, 51, 51)');
+          expect(viewportRect.style('fill')).toEqual('rgb(0, 0, 0)');
 
-      done();
+          done();
+        }, 0);
+      });
     });
 
     it('Dispatches an empty mousewheel event on the viewport projection', (done) => {
@@ -60,21 +54,22 @@ describe('Simple HiGlassComponent', () => {
           cancelable: true
         });
 
-      const trackObj = getTrackObjectFromHGC(hgc.instance(),
-        'aa', 'GWbBXmaFQTO8tia0-wljaA');
-      const ixd1 = hgc.instance().xScales.aa.domain();
+      const trackObj = getTrackObjectFromHGC(
+        api.getComponent(),
+        'aa',
+        'GWbBXmaFQTO8tia0-wljaA'
+      );
+      const ixd1 = api.getComponent().xScales.aa.domain();
 
 
       trackObj.gMain.node().dispatchEvent(evt);
 
-      waitForTransitionsFinished(hgc.instance(), () => {
-        const ixd2 = hgc.instance().xScales.aa.domain();
-
-        // console.log('ixd1', ixd1, 'ixd2', ixd2);
+      waitForTransitionsFinished(api.getComponent(), () => {
+        const ixd2 = api.getComponent().xScales.aa.domain();
 
         // shouldn't have zoomed because deltaY = 0
-        expect(ixd1[0]).to.eql(ixd2[0]);
-        expect(ixd1[1]).to.eql(ixd2[1]);
+        expect(ixd1[0]).toEqual(ixd2[0]);
+        expect(ixd1[1]).toEqual(ixd2[1]);
 
         done();
       });
@@ -96,28 +91,32 @@ describe('Simple HiGlassComponent', () => {
           cancelable: true
         });
 
-      const trackObj = getTrackObjectFromHGC(hgc.instance(),
-        'aa', 'GWbBXmaFQTO8tia0-wljaA');
-      const ixd1 = hgc.instance().xScales.aa.domain();
+      const trackObj = getTrackObjectFromHGC(
+        api.getComponent(),
+        'aa',
+        'GWbBXmaFQTO8tia0-wljaA'
+      );
+      const ixd1 = api.getComponent().xScales.aa.domain();
 
 
       trackObj.gMain.node().dispatchEvent(evt);
 
-      waitForTransitionsFinished(hgc.instance(), () => {
-        const ixd2 = hgc.instance().xScales.aa.domain();
+      waitForTransitionsFinished(api.getComponent(), () => {
+        const ixd2 = api.getComponent().xScales.aa.domain();
 
         // shouldn't have zoomed because deltaY = 0
-        expect(ixd1[0]).to.not.eql(ixd2[0]);
-        expect(ixd1[1]).to.not.eql(ixd2[1]);
+        expect(ixd1[0]).not.toEqual(ixd2[0]);
+        expect(ixd1[1]).not.toEqual(ixd2[1]);
 
         done();
       });
     });
 
-    afterAll((done) => {
-      removeHGComponent(div);
-
-      done();
+    afterEach(() => {
+      api.destroy();
+      removeDiv(div);
+      api = undefined;
+      div = undefined;
     });
   });
 });
