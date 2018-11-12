@@ -1,7 +1,4 @@
-/* eslint-env node, mocha */
-import { expect } from 'chai';
-
-// Utils
+/* eslint-env node, jasmine */
 import {
   waitForTransitionsFinished,
   waitForTilesLoaded,
@@ -24,7 +21,7 @@ describe('Simple HiGlassComponent', () => {
 
       const component = api.getComponent();
 
-      expect(Object.keys(component.viewHeaders).length).to.be.above(0);
+      expect(Object.keys(component.viewHeaders).length).toBeGreaterThan(0);
     });
 
     it('zooms to negative domain', (done) => {
@@ -35,7 +32,7 @@ describe('Simple HiGlassComponent', () => {
         -23.27906532393644, -23.274695776773807, 100);
 
       waitForTransitionsFinished(api.getComponent(), () => {
-        expect(api.getComponent().yScales.a.domain()[0]).to.be.below(0);
+        expect(api.getComponent().yScales.a.domain()[0]).toBeLessThan(0);
         done();
       });
     });
@@ -48,12 +45,12 @@ describe('Simple HiGlassComponent', () => {
 
       waitForTransitionsFinished(api.getComponent(), () => {
         waitForTilesLoaded(api.getComponent(), () => {
-          expect(api.getComponent().yScales.a.domain()[0]).to.be.above(2);
+          expect(api.getComponent().yScales.a.domain()[0]).toBeGreaterThan(2);
 
           const trackObj = api.getTrackObject('a', 'heatmap1');
 
           const rd = trackObj.getVisibleRectangleData(285, 156, 11, 11);
-          expect(rd.data.length).to.eql(1);
+          expect(rd.data.length).toEqual(1);
 
           done();
         });
@@ -68,7 +65,7 @@ describe('Simple HiGlassComponent', () => {
 
       expect(() => api.zoomTo('nonexistent', 6.069441699652629, 6.082905691828387,
         -23.274695776773807, -23.27906532393644))
-        .to.throw('Invalid viewUid. Current present uuids: a');
+        .toThrow('Invalid viewUid. Current present uuids: a');
     });
 
     it('creates a non editable component', () => {
@@ -77,7 +74,7 @@ describe('Simple HiGlassComponent', () => {
 
       const component = api.getComponent();
 
-      expect(Object.keys(component.viewHeaders).length).to.eql(0);
+      expect(Object.keys(component.viewHeaders).length).toEqual(0);
     });
 
     it('retrieves a track', () => {
@@ -87,7 +84,7 @@ describe('Simple HiGlassComponent', () => {
       const viewconf = api.getViewConfig();
       const trackObj = api.getTrackObject(viewconf.views[0].tracks.center[0].uid);
 
-      expect(trackObj).to.exist;
+      expect(trackObj).toBeDefined();
     });
 
     it('zooms to a negative location', (done) => {
