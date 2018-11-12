@@ -13,6 +13,7 @@ end eslint
 
 start compile
 npm run compile
+[ -e dist.zip ] || die 'Missing dist.zip: Please check that it was produced by npm compile in build.sh.'
 end compile
 
 start karma

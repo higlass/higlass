@@ -1,6 +1,8 @@
-==========================================
-HiGlass: A Multiscale Genomic Data Browser
-==========================================
+==================================
+HiGlass: A Multiscale Data Browser
+==================================
+
+**develoment docs**
 
 `HiGlass <higlass.io>`_ is a viewer for large-scale genomic data. It takes
 ideas introduced in genome browsers such as the `UCSC Genome Browser
@@ -163,4 +165,10 @@ crucial are listed below.
     :hidden:
     :glob:
 
-    *
+    tutorial
+    javascript_api
+    python_api
+    jupyter
+    data_preparation
+    track_types
+    developer 

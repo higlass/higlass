@@ -6,7 +6,8 @@ const webpack = require('webpack');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const UnminifiedWebpackPlugin = require('unminified-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+
 
 const packageJson = require('./package.json');
 
@@ -49,7 +50,7 @@ module.exports = (env, argv) => ({
   optimization: {
     minimize: argv.mode === 'production',
     minimizer: [
-      new UglifyJsPlugin({
+      new TerserPlugin({
         include: /\.min\.js$/,
       }),
       new OptimizeCSSAssetsPlugin()
