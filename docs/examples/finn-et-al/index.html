@@ -15,7 +15,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.0/react-dom.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.js"></script>
-<script src="http://d3js.org/d3.v4.min.js"></script><!-- TODO: Why does d3.v5 fail? -->
+<script src="http://d3js.org/d3.v5.min.js"></script>
 </head>
 <body >
     <div style="height: 50px" />
@@ -59,7 +59,7 @@
       }
       
       function render(regions1d) {
-        d3.csv('annotations-2d.csv', handle2DRow, function(regions2d) {
+        d3.csv('annotations-2d.csv', handle2DRow).then(function(regions2d) {
           const viewConf = makeViewConf(regions1d, regions2d);
           hglib.viewer(
             document.getElementById('development-demo'),
@@ -69,7 +69,7 @@
         });
       } 
 
-      d3.csv('annotations-1d.csv', handle1DRow, render);
+      d3.csv('annotations-1d.csv', handle1DRow).then(render);
     }
   )
 })();
