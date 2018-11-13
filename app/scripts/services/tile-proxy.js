@@ -569,9 +569,12 @@ function fetchEither(url, callback, textOrJson, pubSub) {
     })
     .then((content) => {
       callback(undefined, content);
+      return content;
     })
     .catch((error) => {
+      console.error(error);
       callback(error, undefined);
+      return error;
     })
     .finally(() => {
       pubSub.publish('requestReceived', url);
@@ -600,6 +603,7 @@ function sleep(ms) {
  * @param callback: Callback to execute with content from fetch
  */
 async function json(url, callback, pubSub) {
+  // Fritz: What is going on here? Can someone explain?
   if (url.indexOf('hg19') >= 0) {
     await sleep(1);
   }
