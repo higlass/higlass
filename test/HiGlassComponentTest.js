@@ -668,9 +668,7 @@ describe('Simple HiGlassComponent', () => {
       const track = getTrackByUid(views.aa.tracks, 'heatmap1');
       track.options.colorbarPosition = 'hidden';
 
-      hgc.instance().setState(
-        views: views,
-      );
+      hgc.instance().setState({ views });
 
       const selection = select(ReactDOM.findDOMNode(hgc.instance()))
         .selectAll('.selection');
@@ -680,9 +678,7 @@ describe('Simple HiGlassComponent', () => {
       expect(selection.size()).toEqual(1);
 
       track.options.colorbarPosition = 'topLeft';
-      hgc.instance().setState(
-        views: views,
-      );
+      hgc.instance().setState({ views });
     });
 
 

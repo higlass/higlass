@@ -78,5 +78,13 @@
     "react/react-in-jsx-scope": 1,
     "react/self-closing-comp": 1,
     "react/sort-comp": 1
-  }
+  },
+  "overrides": [
+    {
+      "files": ["test/**/*.js"],
+      "rules": {
+        "no-use-before-define": 0 // So viewconfs can be below the body of the test.
+      }
+    }
+  ]
 }
