@@ -23,7 +23,8 @@ export default class DataFetcher {
 
     if (this.dataConfig.children) {
       // convert each child into an object
-      this.dataConfig.children = dataConfig.children.map(c => new DataFetcher(c));
+      this.dataConfig.children = dataConfig.children
+        .map(c => new DataFetcher(c, pubSub));
     }
   }
 
@@ -135,9 +136,7 @@ export default class DataFetcher {
         }, this.pubSub, true)
       });
       promise.then((returnedTiles) => {
-        // console.log('tileIds:', tileIds);
         const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
-        // console.log('tilesetUid:', tilesetUid);
         const newTiles = {};
 
         for (let i = 0; i < tileIds.length; i++) {
@@ -154,7 +153,6 @@ export default class DataFetcher {
       // fetch their data before returning to the parent
       const promises = this.dataConfig.children
         .map(x => new Promise((resolve) => {
-          console.log('CHECK ME', x);
           x.fetchTilesDebounced(resolve, tileIds);
         }));
 
@@ -306,7 +304,6 @@ export default class DataFetcher {
       // we need to extract the row corresponding to the data we need
 
       const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
-      // console.log('tilesetUid:', tilesetUid);
       const newTiles = {};
 
       for (let i = 0; i < newTileIds.length; i++) {
@@ -368,49 +365,53 @@ export default class DataFetcher {
   }
 
   makeDivided(returnedTiles, tileIds) {
-      if (returnedTiles.length < 2) {
-        console.warn(
-          'Only one tileset specified for a divided datafetcher:',
-          this.dataConfig
+    if (returnedTiles.length < 2) {
+      console.warn(
+        'Only one tileset specified for a divided datafetcher:',
+        this.dataConfig
+      );
+    }
+
+    // const numeratorTilesetUid = dictValues(returnedTiles[0])[0].tilesetUid;
+    // const denominatorTilesetUid = dictValues(returnedTiles[1])[0].tilesetUid;
+
+    const newTiles = {};
+
+    for (let i = 0; i < tileIds.length; i++) {
+      // const numeratorUid = this.fullTileId(numeratorTilesetUid, tileIds[i]);
+      // const denominatorUid = this.fullTileId(denominatorTilesetUid, tileIds[i]);
+      const zoomLevel = returnedTiles[0][tileIds[i]].zoomLevel;
+      const tilePos = returnedTiles[0][tileIds[i]].tilePos;
+
+      let newTile = {
+        zoomLevel,
+        tilePos,
+        tilePositionId: tileIds[i],
+      };
+
+      if (
+        returnedTiles[0][tileIds[i]].dense
+        && returnedTiles[1][tileIds[i]].dense
+      ) {
+        const newData = this.divideData(
+          returnedTiles[0][tileIds[i]].dense,
+          returnedTiles[1][tileIds[i]].dense
         );
+
+        newTile = {
+          dense: newData,
+          minNonZero: minNonZero(newData),
+          maxNonZero: maxNonZero(newData),
+          zoomLevel,
+          tilePos,
+          tilePositionId: tileIds[i],
+        };
       }
 
-      // const numeratorTilesetUid = dictValues(returnedTiles[0])[0].tilesetUid;
-      // const denominatorTilesetUid = dictValues(returnedTiles[1])[0].tilesetUid;
-
-      const newTiles = {};
-
-      for (let i = 0; i < tileIds.length; i++) {
-        // const numeratorUid = this.fullTileId(numeratorTilesetUid, tileIds[i]);
-        // const denominatorUid = this.fullTileId(denominatorTilesetUid, tileIds[i]);
-        const zoomLevel = returnedTiles[0][tileIds[i]].zoomLevel;
-        const tilePos = returnedTiles[0][tileIds[i]].tilePos;
-
-        let newTile = {
-            zoomLevel,
-            tilePos,
-            tilePositionId: tileIds[i],
-          };
-
-        if (returnedTiles[0][tileIds[i]].dense &&
-          returnedTiles[1][tileIds[i]].dense)  {
-          const newData = this.divideData(returnedTiles[0][tileIds[i]].dense,
-            returnedTiles[1][tileIds[i]].dense);
-
-          newTile = {
-            dense: newData,
-            minNonZero: minNonZero(newData),
-            maxNonZero: maxNonZero(newData),
-            zoomLevel,
-            tilePos,
-            tilePositionId: tileIds[i],
-          };
-        }
-
-        // returned ids will be indexed by the tile id and won't include the
-        // tileset uid
-        newTiles[tileIds[i]] = newTile;
-      }
+      // returned ids will be indexed by the tile id and won't include the
+      // tileset uid
+      newTiles[tileIds[i]] = newTile;
+    }
 
     return newTiles;
   }
