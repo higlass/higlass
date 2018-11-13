@@ -1,4 +1,3 @@
-import { queue } from 'd3-queue';
 import { select, event } from 'd3-selection';
 import React from 'react';
 import slugid from 'slugid';
@@ -499,39 +498,41 @@ class GenomePositionSearchBox extends React.Component {
   replaceGenesWithPositions(finished) {
     // replace any gene names in the input with their corresponding positions
     const valueParts = this.positionText.split(/[ -]/);
-    let q = queue();
+    const requests = [];
 
     for (let i = 0; i < valueParts.length; i++) {
-      if (valueParts[i].length == 0) { continue; }
+      if (valueParts[i].length === 0) { continue; }
 
       const [chr, pos, retPos] = this.searchField.parsePosition(valueParts[i]);
 
       if (retPos == null || isNaN(retPos)) {
         // not a chromsome position, let's see if it's a gene name
         const url = `${this.state.autocompleteServer}/suggest/?d=${this.state.autocompleteId}&ac=${valueParts[i].toLowerCase()}`;
-        q = q.defer(tileProxy.json, url, toVoid, this.props.pubSub);
+        requests.push(tileProxy.json(url, toVoid, this.props.pubSub));
       }
     }
 
-    q.awaitAll((error, files) => {
-      if (files) {
-        const genePositions = {};
+    Promise
+      .all(requests)
+      .then((files) => {
+        if (files) {
+          const genePositions = {};
 
-        // extract the position of the top match from the list of files
-        for (let i = 0; i < files.length; i++) {
-          if (!files[i][0]) { continue; }
+          // extract the position of the top match from the list of files
+          for (let i = 0; i < files.length; i++) {
+            if (!files[i][0]) { continue; }
 
-          for (let j = 0; j < files[i].length; j++) {
-            genePositions[files[i][j].geneName.toLowerCase()] =
-              files[i][j];
+            for (let j = 0; j < files[i].length; j++) {
+              genePositions[files[i][j].geneName.toLowerCase()] = files[i][j];
+            }
           }
+
+          this.replaceGenesWithLoadedPositions(genePositions);
+
+          finished();
         }
-
-        this.replaceGenesWithLoadedPositions(genePositions);
-
-        finished();
-      }
-    });
+      })
+      .catch(error => console.error(error));
   }
 
   buttonClick() {
@@ -539,7 +540,6 @@ class GenomePositionSearchBox extends React.Component {
 
     this.replaceGenesWithPositions(() => {
       const searchFieldValue = this.positionText;
-      // ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
 
       if (this.searchField != null) {
         let [range1, range2] = this.searchField.searchPosition(searchFieldValue);
@@ -549,7 +549,8 @@ class GenomePositionSearchBox extends React.Component {
           return;
         }
 
-        if ((range1 && (isNaN(range1[0]) || isNaN(range1[1]))) ||
+        if (
+          (range1 && (isNaN(range1[0]) || isNaN(range1[1]))) ||
           (range2 && (isNaN(range2[0]) || isNaN(range2[1])))) {
           return;
         }
