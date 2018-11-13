@@ -1,16 +1,10 @@
-/* eslint-env node, mocha */
+/* eslint-env node, jasmine, mocha */
 import {
   configure,
   // render,
 } from 'enzyme';
 
-import {
-  select
-} from 'd3-selection';
-
 import Adapter from 'enzyme-adapter-react-16';
-
-import { expect } from 'chai';
 
 // Utils
 import {
@@ -44,14 +38,13 @@ describe('Simple HiGlassComponent', () => {
       );
     });
 
-    it("Ensure we can set a dataChanged listener", (done) => {
+    it('Ensure we can set a dataChanged listener', (done) => {
       const trackObject = getTrackObjectFromHGC(
-        hgc.instance(), "heatmap1"
+        hgc.instance(), 'heatmap1'
       );
 
 
-      const dataChangedCb = (data) => {
-      };
+      const dataChangedCb = () => {};
 
       trackObject.on('dataChanged', dataChangedCb);
 

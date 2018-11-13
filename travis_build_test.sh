@@ -11,7 +11,8 @@ start eslint
 ./node_modules/eslint/bin/eslint.js \
   karma.conf.js \
   app/scripts/HeatmapTiledPixiTrack.js \
-  app/scripts/services
+  app/scripts/services \
+  test
 end eslint
 
 start compile

@@ -1,4 +1,4 @@
-/* eslint-env node, mocha */
+/* eslint-env node, jasmine, mocha */
 import {
   configure,
   // render,
@@ -33,9 +33,7 @@ describe('Simple HiGlassComponent', () => {
       global.document.body.appendChild(div);
 
       api = viewer(div, simpleCenterViewConfig, {});
-
-      const p = api.setViewConfig(simpleCenterViewConfig);
-
+      api.setViewConfig(simpleCenterViewConfig);
       done();
 
       // p.then(() => {
