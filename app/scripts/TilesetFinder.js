@@ -182,15 +182,9 @@ class TilesetFinder extends React.Component {
       selectedTilesets.push(this.state.options[selectedOptions[i]]);
     }
 
-
-    //
-
     this.props.selectedTilesetChanged(selectedTilesets);
 
-    this.setState({
-      selectedUuid: selectedValues,
-      // selectedUuid: selectedValues
-    });
+    this.setState({ selectedUuid: selectedValues });
   }
 
   handleSelect() {
