@@ -1,11 +1,4 @@
 import React from 'react';
-import {
-  Col,
-  ControlLabel,
-  Form,
-  FormControl,
-  FormGroup,
-} from 'react-bootstrap';
 import slugid from 'slugid';
 import CheckboxTree from 'react-checkbox-tree';
 
@@ -66,6 +59,7 @@ class TilesetFinder extends React.Component {
     this.mounted = true;
 
     this.requestTilesetLists();
+    this.searchBox.focus();
   }
 
   componentWillUnmount() {
@@ -297,27 +291,25 @@ class TilesetFinder extends React.Component {
     );
 
     const form = (
-      <Form
-        horizontal
+      <form
         onSubmit={(evt) => { evt.preventDefault(); }}
       >
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel>Select tileset</ControlLabel>
-          </Col>
-          <Col
-            sm={4}
-            smOffset={5}
+        <div
+          className="tileset-finder-search-bar"
+        >
+          <span
+            className="tileset-finder-label"
           >
-            <FormControl
-              inputRef={(c) => { this.searchBox = c; }}
-              autoFocus={true}
-              onChange={this.handleSearchChange.bind(this)}
-              placeholder="Search Term"
-            />
-            <div style={{ height: 10 }} />
-          </Col>
-        </FormGroup>
+            Select tileset:
+          </span>
+          <input
+            ref={(c) => { this.searchBox = c; }}
+            className="tileset-finder-search-box"
+            onChange={this.handleSearchChange.bind(this)}
+            placeholder="Search Term"
+            type='text'
+          />
+        </div>
         <div
           className="tileset-finder-checkbox-tree"
           styleName="tileset-finder-checkbox-tree"
@@ -330,7 +322,7 @@ class TilesetFinder extends React.Component {
               onExpand={this.handleExpanded.bind(this)}
           />
         </div>
-      </Form>
+      </form>
     );
 
     return (

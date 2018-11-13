@@ -1,4 +1,4 @@
-/* eslint-env node, mocha */
+/* eslint-env node, jasmine */
 import {
   configure,
   // render,
@@ -11,34 +11,6 @@ import {
   oneViewConfig
 } from './view-configs';
 
-const localViewConf = 
-{
-  "editable": true,
-  "zoomFixed": false,
-  "trackSourceServers": [
-//    "//localhost:8000/api/v1"
-    "//higlass.io/api/v1"
-  ],
-  "exportViewUrl": "/api/v1/viewconfs",
-  "views": [
-    {
-      "uid": "aa",
-      "initialXDomain": [
-        3.725290298461914e-9,
-        3100000000
-      ],
-      "tracks": {
-        "top": [],
-        "left": [],
-        "center": [],
-        "right": [],
-        "bottom": [],
-        "whole": [],
-        "gallery": []
-      }
-    }
-  ]
-}
 
 // Utils
 import {
@@ -79,7 +51,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.update();
 
       atm = tiledPlot.addTrackModal;
-      const inputField = ReactDOM.findDOMNode(atm.tilesetFinder.searchBox);
+      const inputField = atm.tilesetFinder.searchBox;
 
       // make sure the input field is equal to the document's active element
       // e.g. that it has focus
@@ -89,7 +61,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('should select one plot type and double click', (done) => {
-      const tilesetFinder = atm.tilesetFinder;
+      const { tilesetFinder } = atm;
       tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ']);
       hgc.update();
 
@@ -108,7 +80,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('should select two different plot types', (done) => {
-      const tilesetFinder = atm.tilesetFinder;
+      const { tilesetFinder } = atm;
 
       tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/TO3D5uHjSt6pyDPEpc1hpA', 'http://higlass.io/api/v1/Nn8aA4qbTnmaa-oGGbuE-A']);
 
@@ -131,7 +103,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('should select a few different tracks and check for the plot type selection', (done) => {
-      const tilesetFinder = atm.tilesetFinder;
+      const { tilesetFinder } = atm;
 
       tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ',
         'http://higlass.io/api/v1/GUm5aBiLRCyz2PsBea7Yzg']);
@@ -171,9 +143,8 @@ describe('Simple HiGlassComponent', () => {
 
     afterAll((done) => {
       removeHGComponent(div);
-      
+
       done();
     });
-
   });
 });

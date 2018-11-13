@@ -187,7 +187,6 @@ AddTrackModal.defaultProps = {
 };
 
 AddTrackModal.propTypes = {
-  host: PropTypes.object,
   onCancel: PropTypes.func.isRequired,
   onTracksChosen: PropTypes.func.isRequired,
   position: PropTypes.string,

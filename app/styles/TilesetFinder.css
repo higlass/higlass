@@ -1,3 +1,17 @@
+.tileset-finder-label {
+  font-weight: 700;
+}
+
+.tileset-finder-search-box {
+  margin-left: 10px;
+}
+
+.tileset-finder-search-bar {
+  display: flex;
+  margin-left: 5px;
+  justify-content: space-between;
+  align-items: center;
+}
 .tileset-finder-checkbox-tree {
     max-height: 50vh;
     max-width: 90vw;
