@@ -1,4 +1,4 @@
-/* eslint-env node, mocha */
+/* eslint-env node, jasmine */
 import {
   configure,
   mount,
@@ -8,7 +8,6 @@ import {
 
 import Adapter from 'enzyme-adapter-react-16';
 
-import { expect } from 'chai';
 import { select } from 'd3-selection';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -148,7 +147,7 @@ describe('Simple HiGlassComponent', () => {
 
         // make sure none of the chromosome labels are left
         // over after zooming
-        expect(svgText.indexOf('chr11')).to.eql(-1);
+        expect(svgText.indexOf('chr11')).toEqual(-1);
 
         // hgc.instance().handleExportSVG();
         done();
@@ -196,7 +195,6 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'cdkn2b-as1');
       hgc.update();
-      // console.log('xScale', hgc.instance().xScales.aa.domain());
 
       hgc.instance().genomePositionSearchBoxes.aa.buttonClick();
       hgc.update();
@@ -204,11 +202,10 @@ describe('Simple HiGlassComponent', () => {
       waitForJsonComplete(() => {
         waitForTransitionsFinished(hgc.instance(), () => {
           const secondDomain = hgc.instance().xScales.aa.domain();
-          // console.log('domains:', firstDomain, secondDomain);
           // make sure that we zoomed somwhere
 
-          expect(firstDomain[0]).to.not.eql(secondDomain[0]);
-          expect(firstDomain[1]).to.not.eql(secondDomain[1]);
+          expect(firstDomain[0]).not.toEqual(secondDomain[0]);
+          expect(firstDomain[1]).not.toEqual(secondDomain[1]);
           done();
         });
       });
@@ -296,7 +293,7 @@ describe('Simple HiGlassComponent', () => {
         }
       }
 
-      expect(hasSmaller).to.eql(true);
+      expect(hasSmaller).toEqual(true);
 
       const { views } = hgc.instance().state;
       track = getTrackByUid(views.aa.tracks, 'rectangles1');
@@ -321,7 +318,7 @@ describe('Simple HiGlassComponent', () => {
         }
       }
 
-      expect(hasSmaller).to.eql(false);
+      expect(hasSmaller).toEqual(false);
 
       const { views } = hgc.instance().state;
       track = getTrackByUid(views.aa.tracks, 'rectangles1');
@@ -372,7 +369,7 @@ describe('Simple HiGlassComponent', () => {
       let svg = hgc.instance().createSVG();
       let svgText = new XMLSerializer().serializeToString(svg);
 
-      expect(svgText.indexOf('rect')).to.be.above(0);
+      expect(svgText.indexOf('rect')).toBeGreaterThan(0);
       // hgc.instance().handleExportSVG();
       //
 
@@ -409,7 +406,7 @@ describe('Simple HiGlassComponent', () => {
       // const svg = hgc.instance().createSVG();
       // const svgText = new XMLSerializer().serializeToString(svg);
 
-      // expect(svgText.indexOf('dy="-17"')).to.be.above(0);
+      // expect(svgText.indexOf('dy="-17"')).toBeGreaterThan(0);
       // hgc.instance().handleExportSVG();
 
       done();
@@ -472,14 +469,14 @@ describe('Simple HiGlassComponent', () => {
 
       // check to make sure that the horizontal labels shifted down
       // the horizontal lines' labels should be shifted down
-      expect(svgText.indexOf('dy="14"')).to.be.above(0);
+      expect(svgText.indexOf('dy="14"')).toBeGreaterThan(0);
 
       // check to make sure that chromosome tick labels are there
-      expect(svgText.indexOf('chr17: 40,500,000')).to.be.above(0);
+      expect(svgText.indexOf('chr17: 40,500,000')).toBeGreaterThan(0);
 
       // check to make sure that the chromosome ticks are present
-      expect(svgText.indexOf('line x1')).to.be.above(0);
-      expect(svgText.indexOf('#777777')).to.be.above(0);
+      expect(svgText.indexOf('line x1')).toBeGreaterThan(0);
+      expect(svgText.indexOf('#777777')).toBeGreaterThan(0);
 
       // hgc.instance().handleExportSVG();
 
@@ -567,8 +564,8 @@ describe('Simple HiGlassComponent', () => {
       const validSeries = getTrackByUid(views.aa.tracks, 'line1');
       const trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, validSeries);
 
-      expect(trackTypeItems.props.menuItems).to.have.property('horizontal-line');
-      expect(trackTypeItems.props.menuItems).to.have.property('horizontal-point');
+      expect(trackTypeItems.props.menuItems['horizontal-line']).toBeDefined();
+      expect(trackTypeItems.props.menuItems['horizontal-point']).toBeDefined();
 
       done();
     });
@@ -578,8 +575,8 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().tiledPlots.aa.handleChangeTrackType('line1', 'horizontal-bar');
 
       // make sure that the uid of the top track has been changed
-      expect(hgc.instance().state.views.aa.tracks.top[0].uid).to.not.eql('line1');
-      expect(hgc.instance().state.views.aa.tracks.top[0].type).to.eql('horizontal-bar');
+      expect(hgc.instance().state.views.aa.tracks.top[0].uid).not.toEqual('line1');
+      expect(hgc.instance().state.views.aa.tracks.top[0].type).toEqual('horizontal-bar');
 
       done();
     });
@@ -617,8 +614,8 @@ describe('Simple HiGlassComponent', () => {
 
       data = tp.getVisibleRectangleData(0, 0, tp.dimensions[0], tp.dimensions[1]);
 
-      expect(data.shape[0]).to.eql(975);
-      expect(data.shape[1]).to.eql(234);
+      expect(data.shape[0]).toEqual(975);
+      expect(data.shape[1]).toEqual(234);
 
       // tp.exportData();
 
@@ -656,14 +653,13 @@ describe('Simple HiGlassComponent', () => {
     it('has a colorbar', () => {
       const heatmap = hgc.instance().tiledPlots.aa.trackRenderer
         .trackDefObjects.c1.trackObject.createdTracks.heatmap1;
-      expect(heatmap.pColorbarArea.x).to.be.below(heatmap.dimensions[0] / 2);
+      expect(heatmap.pColorbarArea.x).toBeLessThan(heatmap.dimensions[0] / 2);
 
-      const selection = select(ReactDOM.findDOMNode(hgc.instance()))
-        .selectAll('.selection');
+      const selection = select(div).selectAll('.selection');
 
       // we expect a colorbar selector brush to be visible
       // in both views
-      expect(selection.size()).to.eql(2);
+      expect(selection.size()).toEqual(2);
     });
 
     it('hides the colorbar', () => {
@@ -681,7 +677,7 @@ describe('Simple HiGlassComponent', () => {
 
       // we expect a colorbar selector brush to be hidden
       // in one of the views
-      expect(selection.size()).to.be.eql(1);
+      expect(selection.size()).toEqual(1);
 
       track.options.colorbarPosition = 'topLeft';
       hgc.instance().setState(
@@ -728,9 +724,9 @@ describe('Simple HiGlassComponent', () => {
         valueScaling: 'linear',
       };
 
-      expect(getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').options.valueScaling).to.eql('log');
+      expect(getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').options.valueScaling).toEqual('log');
       hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
-      expect(getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').options.valueScaling).to.eql('linear');
+      expect(getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').options.valueScaling).toEqual('linear');
 
       newOptions.valueScaling = 'log';
       hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
@@ -745,14 +741,14 @@ describe('Simple HiGlassComponent', () => {
       // hgc.instance().handleExportSVG();
 
       // Make sure we have an axis that is offset from the origin
-      // expect(svgText.indexOf('id="axis" transform="translate(390, 68)"')).to.be.above(0);
+      // expect(svgText.indexOf('id="axis" transform="translate(390, 68)"')).toBeGreaterThan(0);
 
       // make sure that we have this color in the colorbar (this is part of the custard
       // color map)
-      expect(svgText.indexOf('rgb(231, 104, 32)')).to.be.above(0);
+      expect(svgText.indexOf('rgb(231, 104, 32)')).toBeGreaterThan(0);
 
       // make sure that this color, which is part of the afmhot colormap is not exported
-      expect(svgText.indexOf('rgb(171, 43, 0)')).to.be.below(0);
+      expect(svgText.indexOf('rgb(171, 43, 0)')).toBeLessThan(0);
 
       const line1 = hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects.line1.trackObject;
 
@@ -763,7 +759,7 @@ describe('Simple HiGlassComponent', () => {
 
       // let axis = svg.getElementById('axis');
       // make sure we have a tick mark for 200000
-      expect(axisText.indexOf('1e+5')).to.be.above(0);
+      expect(axisText.indexOf('1e+5')).toBeGreaterThan(0);
     });
 
     it('Adds a chromInfo track', (done) => {
@@ -842,7 +838,7 @@ describe('Simple HiGlassComponent', () => {
       //
       const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
 
-      expect(track.pColorbarArea.visible).to.eql(false);
+      expect(track.pColorbarArea.visible).toEqual(false);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -925,9 +921,9 @@ describe('Simple HiGlassComponent', () => {
 
       const trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
 
-      expect(trackTypeItems.props.menuItems).to.have.property('horizontal-gene-annotations');
-      expect(trackTypeItems.props.menuItems).to.have.property('horizontal-1d-tiles');
-      expect(trackTypeItems.props.menuItems).to.not.have.property('horizontal-line');
+      expect(trackTypeItems.props.menuItems['horizontal-gene-annotations']).toBeDefined();
+      expect(trackTypeItems.props.menuItems['horizontal-1d-tiles']).toBeDefined();
+      expect(trackTypeItems.props.menuItems['horizontal-line']).toBeUndefined();
 
       done();
     });
@@ -974,7 +970,7 @@ describe('Simple HiGlassComponent', () => {
     it('exports as JSON and makes sure that the scales are locked', (done) => {
       const data = hgc.instance().getViewsAsString();
 
-      expect(data).to.contain('valueScaleLocks');
+      expect(data.indexOf('valueScaleLocks')).toBeGreaterThanOrEqual(0);
 
       done();
     });
@@ -993,9 +989,9 @@ describe('Simple HiGlassComponent', () => {
       const heatmap2Track = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
       expect(heatmap1Track.options.scaleStartPercent)
-        .to
-        .eql(heatmap2Track.options.scaleStartPercent);
-      expect(heatmap1Track.options.scaleEndPercent).to.eql(heatmap2Track.options.scaleEndPercent);
+        .toEqual(heatmap2Track.options.scaleStartPercent);
+      expect(heatmap1Track.options.scaleEndPercent)
+        .toEqual(heatmap2Track.options.scaleEndPercent);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1017,16 +1013,16 @@ describe('Simple HiGlassComponent', () => {
       // const zl1 = track1.calculateZoomLevel();
       // const zl2 = track2.calculateZoomLevel();
 
-      
+
       // console.log('zl1:', track1.calculateZoomLevel());
       // console.log('zl2:', track2.calculateZoomLevel());
 
       // the zoom levels are different because one view is slightly larger
       // than the other
-      // expect(zl1).to.eql(zl2);
-      
+      // expect(zl1).toEqual(zl2);
 
-      expect(domain1[1]).to.eql(domain2[1]);
+
+      expect(domain1[1]).toEqual(domain2[1]);
 
       done();
     });
@@ -1048,7 +1044,7 @@ describe('Simple HiGlassComponent', () => {
       const domain1 = track1.valueScale.domain();
       const domain2 = track2.valueScale.domain();
 
-      expect(domain1[1]).to.not.eql(domain2[1]);
+      expect(domain1[1]).not.toEqual(domain2[1]);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1072,7 +1068,7 @@ describe('Simple HiGlassComponent', () => {
       const domain1 = track1.valueScale.domain();
       const domain2 = track2.valueScale.domain();
 
-      expect(domain1[1]).to.eql(domain2[1]);
+      expect(domain1[1]).toEqual(domain2[1]);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1091,8 +1087,8 @@ describe('Simple HiGlassComponent', () => {
       const domain1 = track1.valueScale.domain();
       const domain2 = track2.valueScale.domain();
 
-      expect(domain1[1]).to.be.below(1);
-      expect(domain1[1]).to.eql(domain2[1]);
+      expect(domain1[1]).toBeLessThan(1);
+      expect(domain1[1]).toEqual(domain2[1]);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1114,7 +1110,7 @@ describe('Simple HiGlassComponent', () => {
       const domain1 = track1.valueScale.domain();
       const domain2 = track2.valueScale.domain();
 
-      expect(domain1[1]).to.not.eql(domain2[1]);
+      expect(domain1[1]).not.toEqual(domain2[1]);
 
       // hgc.instance().handleUnlockValueScale('aa', 'heatmap1');
 
@@ -1159,11 +1155,11 @@ describe('Simple HiGlassComponent', () => {
     it('Replaces and displays a new track', (done) => {
       // hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'heatmap3');
 
-      const track = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap3'); 
+      const track = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap3');
 
       // make sure that the newly added track is rendered
-      expect(track.pMain.position.x).to.be.above(404);
-      expect(track.pMain.position.x).to.be.below(406);
+      expect(track.pMain.position.x).toBeGreaterThan(404);
+      expect(track.pMain.position.x).toBeLessThan(406);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1251,8 +1247,8 @@ describe('Simple HiGlassComponent', () => {
 
       const trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
 
-      expect(trackTypeItems.props.menuItems).to.not.have.property('horizontal-line');
-      expect(trackTypeItems.props.menuItems).to.not.have.property('horizontal-point');
+      expect(trackTypeItems.props.menuItems['horizontal-line']).toBeUndefined();
+      expect(trackTypeItems.props.menuItems['horizontal-point']).toBeUndefined();
 
       done();
     });
@@ -1312,10 +1308,10 @@ describe('Simple HiGlassComponent', () => {
 
     it('ensures both views zoomed to the data extent', () => {
       expect(hgc.instance().xScales.aa.domain()[0])
-        .to.eql(hgc.instance().xScales.view2.domain()[0]);
+        .toEqual(hgc.instance().xScales.view2.domain()[0]);
 
       expect(hgc.instance().xScales.aa.domain()[1])
-        .to.eql(hgc.instance().xScales.view2.domain()[1]);
+        .toEqual(hgc.instance().xScales.view2.domain()[1]);
     });
   });
 
@@ -1388,7 +1384,7 @@ describe('Simple HiGlassComponent', () => {
     it('Ensures that the track object was resized', (done) => {
       const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1');
 
-      expect(track.dimensions[1]).to.eql(49);
+      expect(track.dimensions[1]).toEqual(49);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1425,7 +1421,7 @@ describe('Simple HiGlassComponent', () => {
       // where the issue was that the genome position search box was being
       // styled with a margin-bottom of 10px, fixed by setting the style of
       // genome-position-search to specify margin-bottom app/styles/GenomePositionSearchBox.css
-      expect(hgc.instance().state.views.aa.layout.h).to.be.eql(6);
+      expect(hgc.instance().state.views.aa.layout.h).toEqual(6);
 
       done();
     });
@@ -1437,7 +1433,8 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
       hgc.setState(hgc.instance().state);
 
-      expect(getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').labelText.alpha).to.be.below(0.21);
+      expect(getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').labelText.alpha)
+        .toBeLessThan(0.21);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1449,7 +1446,8 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleTrackOptionsChanged('aa', 'line2', newOptions);
       hgc.setState(hgc.instance().state);
 
-      expect(getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').labelText.alpha).to.be.below(0.21);
+      expect(getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').labelText.alpha)
+        .toBeLessThan(0.21);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1506,12 +1504,12 @@ describe('Simple HiGlassComponent', () => {
       // the viewconf contains a location lock, we need to ignore it
       //
       const track = getTrackObjectFromHGC(hgc.instance(), 'bb', 'line2');
-      expect(track.labelText.text.indexOf('hg19')).to.eql(0);
+      expect(track.labelText.text.indexOf('hg19')).toEqual(0);
 
       const overlayElements = document.getElementsByClassName('overlay');
 
       // there should be two colorbars
-      expect(overlayElements.length).to.eql(2);
+      expect(overlayElements.length).toEqual(2);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1522,7 +1520,7 @@ describe('Simple HiGlassComponent', () => {
       const overlayElements = document.getElementsByClassName('overlay');
 
       // we should have created an overlay element
-      expect(overlayElements.length).to.eql(3);
+      expect(overlayElements.length).toEqual(3);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1539,7 +1537,7 @@ describe('Simple HiGlassComponent', () => {
 
     it('Should make sure that the track labels still contain the assembly', (done) => {
       const track = getTrackObjectFromHGC(hgc.instance(), 'bb', 'line2');
-      expect(track.labelText.text.indexOf('hg19')).to.eql(0);
+      expect(track.labelText.text.indexOf('hg19')).toEqual(0);
       waitForTilesLoaded(hgc.instance(), done);
     });
 
@@ -1572,8 +1570,8 @@ describe('Simple HiGlassComponent', () => {
       // console.log('preResizeYDomain:', preResizeYDomain);
       // console.log('postResizeYDomain:', postResizeYDomain);
 
-      expect(preResizeYDomain[1] - postResizeYDomain[1]).to.be.below(0.0001);
-      expect(preResizeYDomain[1] - postResizeYDomain[1]).to.be.below(0.0001);
+      expect(preResizeYDomain[1] - postResizeYDomain[1]).toBeLessThan(0.0001);
+      expect(preResizeYDomain[1] - postResizeYDomain[1]).toBeLessThan(0.0001);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1622,7 +1620,7 @@ describe('Simple HiGlassComponent', () => {
 
       // make sure the input field is equal to the document's active element
       // e.g. that it has focus
-      expect(inputField).to.be.eql(document.activeElement);
+      expect(inputField).toEqual(document.activeElement);
 
       waitForJsonComplete(done);
     });
@@ -1679,7 +1677,7 @@ describe('Simple HiGlassComponent', () => {
 
       let ptc = atm.plotTypeChooser;
 
-      expect(ptc.AVAILABLE_TRACK_TYPES.length).to.eql(0);
+      expect(ptc.AVAILABLE_TRACK_TYPES.length).toEqual(0);
 
       tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/NNlxhMSCSnCaukAtdoKNXw',
         'http://higlass.io/api/v1/GGKJ59R-RsKtwgIgFohOhA']);
@@ -1690,7 +1688,7 @@ describe('Simple HiGlassComponent', () => {
 
 
       // should just have the horizontal-heatmap track type
-      expect(ptc.AVAILABLE_TRACK_TYPES.length).to.eql(1);
+      expect(ptc.AVAILABLE_TRACK_TYPES.length).toEqual(1);
 
       done();
     });
@@ -1701,7 +1699,7 @@ describe('Simple HiGlassComponent', () => {
       // hgc.update();
       const viewConf = JSON.parse(hgc.instance().getViewsAsString());
 
-      expect(viewConf.views[0].tracks.top.length).to.eql(6);
+      expect(viewConf.views[0].tracks.top.length).toEqual(6);
 
       hgc.update();
 
@@ -1746,10 +1744,10 @@ describe('Simple HiGlassComponent', () => {
     it('Should show a grid', (done) => {
       const outputJSON = JSON.parse(hgc.instance().getViewsAsString());
 
-      expect(outputJSON.views[0].tracks.center[0]).to.have.property('contents');
+      expect(outputJSON.views[0].tracks.center[0].contents).toBeDefined();
 
       // should have two tracks
-      expect(outputJSON.views[0].tracks.center[0].contents.length).to.be.above(1);
+      expect(outputJSON.views[0].tracks.center[0].contents.length).toBeGreaterThan(1);
 
       waitForJsonComplete(done);
     });
@@ -1819,12 +1817,12 @@ describe('Simple HiGlassComponent', () => {
       const domain2 = heatmapTrack.limitedValueScale.domain();
 
       // we don't expect the other view to change
-      expect(domain1[0]).to.not.eql(domain2[0]);
+      expect(domain1[0]).not.toEqual(domain2[0]);
 
-      
+
       // console.log('domain1:', domain1);
       // console.log('domain2:', domain2);
-      
+
 
       done();
     });
@@ -1853,8 +1851,8 @@ describe('Simple HiGlassComponent', () => {
 
       const heatmap2Track = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
-      expect(heatmapTrack.options.scaleStartPercent).to.eql(heatmap2Track.options.scaleStartPercent);
-      expect(heatmapTrack.options.scaleEndPercent).to.eql(heatmap2Track.options.scaleEndPercent);
+      expect(heatmapTrack.options.scaleStartPercent).toEqual(heatmap2Track.options.scaleStartPercent);
+      expect(heatmapTrack.options.scaleEndPercent).toEqual(heatmap2Track.options.scaleEndPercent);
 
       done();
     });
@@ -1962,7 +1960,7 @@ describe('Simple HiGlassComponent', () => {
         const view = JSON.parse(viewconf).views[0];
         const newMidY = (view.initialYDomain[0] + view.initialYDomain[1]) / 2;
 
-        expect(midY).to.eql(newMidY);
+        expect(midY).toEqual(newMidY);
       });
       hgc.update();
       waitForTilesLoaded(hgc.instance(), done);
@@ -2030,7 +2028,7 @@ describe('Simple HiGlassComponent', () => {
     it ('Zooms a nonexistant view to the center', (done) => {
       const badFn = () => hgc.instance().api.zoomToDataExtent('xxx');
 
-      expect(badFn).to.throw();
+      expect(badFn).toThrow();
       done();
     });
   });
@@ -2106,7 +2104,7 @@ describe('Simple HiGlassComponent', () => {
 
       // console.log('checking...', hgc.instance().pixiStage.children);
       // since we removed one of the children, there should be only one left
-      expect(hgc.instance().pixiStage.children.length).to.eql(1);
+      expect(hgc.instance().pixiStage.children.length).toEqual(1);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2159,8 +2157,8 @@ describe('Simple HiGlassComponent', () => {
       const [aaCenterX, aaCenterY, aaK] = scalesCenterAndK(aaXScale, aaYScale);
       const [bbCenterX, bbCenterY, bbK] = scalesCenterAndK(bbXScale, bbYScale);
 
-      expect(aaCenterX - bbCenterX).to.be.below(0.001);
-      expect(aaCenterY - bbCenterY).to.be.below(0.001);
+      expect(aaCenterX - bbCenterX).toBeLessThan(0.001);
+      expect(aaCenterY - bbCenterY).toBeLessThan(0.001);
 
       done();
     });
@@ -2188,8 +2186,8 @@ describe('Simple HiGlassComponent', () => {
       const [aaCenterX, aaCenterY, aaK] = scalesCenterAndK(aaXScale, aaYScale);
       const [ccCenterX, ccCenterY, ccK] = scalesCenterAndK(ccXScale, ccYScale);
 
-      expect(aaCenterX - ccCenterX).to.be.below(0.001);
-      expect(aaCenterY - ccCenterY).to.be.below(0.001);
+      expect(aaCenterX - ccCenterX).toBeLessThan(0.001);
+      expect(aaCenterY - ccCenterY).toBeLessThan(0.001);
 
 
       waitForTilesLoaded(hgc.instance(), done);
@@ -2232,7 +2230,7 @@ describe('Simple HiGlassComponent', () => {
 
       // make sure the input field is equal to the document's active element
       // e.g. that it has focus
-      expect(inputField).to.be.eql(document.activeElement);
+      expect(inputField).toEqual(document.activeElement);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2280,8 +2278,8 @@ describe('Simple HiGlassComponent', () => {
       const pAxis = track.axis.pAxis;
 
       // we want the axis labels to be to the left of the end of the track
-      expect(pAxis.position.x).to.be.above(track.position[0]);
-      expect(pAxis.children[0].x).to.be.below(0);
+      expect(pAxis.position.x).toBeGreaterThan(track.position[0]);
+      expect(pAxis.children[0].x).toBeLessThan(0);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2298,8 +2296,8 @@ describe('Simple HiGlassComponent', () => {
 
 
       // we want the axis labels to be to the left of the end of the track
-      expect(pAxis.position.x).to.be.above(track.position[0]);
-      expect(pAxis.children[0].x).to.be.above(0);
+      expect(pAxis.position.x).toBeGreaterThan(track.position[0]);
+      expect(pAxis.children[0].x).toBeGreaterThan(0);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2315,8 +2313,8 @@ describe('Simple HiGlassComponent', () => {
       const pAxis = track.axis.pAxis;
 
       // we want the axis labels to be to the left of the end of the track
-      expect(pAxis.position.x).to.be.eql(track.position[0]);
-      expect(pAxis.children[0].x).to.be.below(0);
+      expect(pAxis.position.x).toEqual(track.position[0]);
+      expect(pAxis.children[0].x).toBeLessThan(0);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2332,8 +2330,8 @@ describe('Simple HiGlassComponent', () => {
       const pAxis = track.axis.pAxis;
 
       // we want the axis labels to be to the left of the end of the track
-      expect(pAxis.position.x).to.be.eql(track.position[0]);
-      expect(pAxis.children[0].x).to.be.above(0);
+      expect(pAxis.position.x).toEqual(track.position[0]);
+      expect(pAxis.children[0].x).toBeGreaterThan(0);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2350,8 +2348,8 @@ describe('Simple HiGlassComponent', () => {
       const pAxis = track.axis.pAxis;
 
       // we want the axis labels to be to the left of the end of the track
-      expect(pAxis.position.x).to.be.eql(track.position[0]);
-      expect(pAxis.children[0].x).to.be.above(0);
+      expect(pAxis.position.x).toEqual(track.position[0]);
+      expect(pAxis.children[0].x).toBeGreaterThan(0);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2368,8 +2366,8 @@ describe('Simple HiGlassComponent', () => {
       const pAxis = track.axis.pAxis;
 
       // we want the axis labels to be to the left of the end of the track
-      expect(pAxis.position.x).to.be.eql(track.position[0]);
-      expect(pAxis.children[0].x).to.be.below(0);
+      expect(pAxis.position.x).toEqual(track.position[0]);
+      expect(pAxis.children[0].x).toBeLessThan(0);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2386,8 +2384,8 @@ describe('Simple HiGlassComponent', () => {
       const pAxis = track.axis.pAxis;
 
       // we want the axis labels to be to the left of the end of the track
-      expect(pAxis.position.x).to.be.above(track.position[0]);
-      expect(pAxis.children[0].x).to.be.above(0);
+      expect(pAxis.position.x).toBeGreaterThan(track.position[0]);
+      expect(pAxis.children[0].x).toBeGreaterThan(0);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2403,8 +2401,8 @@ describe('Simple HiGlassComponent', () => {
       const pAxis = track.axis.pAxis;
 
       // we want the axis labels to be to the left of the end of the track
-      expect(pAxis.position.x).to.be.above(track.position[0]);
-      expect(pAxis.children[0].x).to.be.below(0);
+      expect(pAxis.position.x).toBeGreaterThan(track.position[0]);
+      expect(pAxis.children[0].x).toBeLessThan(0);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2439,10 +2437,10 @@ describe('Simple HiGlassComponent', () => {
     it("doesn't export maxWidth or filetype", () => {
       const viewString = hgc.instance().getViewsAsString();
 
-      // expect(viewString.indexOf('1d-value-interval')).to.be.above(0);
-      expect(viewString.indexOf('maxWidth')).to.be.below(0);
-      expect(viewString.indexOf('filetype')).to.be.below(0);
-      expect(viewString.indexOf('binsPerDimension')).to.be.below(0);
+      // expect(viewString.indexOf('1d-value-interval')).toBeGreaterThan(0);
+      expect(viewString.indexOf('maxWidth')).toBeLessThan(0);
+      expect(viewString.indexOf('filetype')).toBeLessThan(0);
+      expect(viewString.indexOf('binsPerDimension')).toBeLessThan(0);
     });
   });
 
@@ -2490,22 +2488,27 @@ describe('Simple HiGlassComponent', () => {
 
       let [range1, range2] = gpsb.searchField.searchPosition('  chr1:1-1000 & chr1:2001-3000');
 
-      expect(range1[0]).to.eql(1);
-      expect(range1[1]).to.eql(1000);
+      expect(range1[0]).toEqual(1);
+      expect(range1[1]).toEqual(1000);
 
-      expect(range2[0]).to.eql(2001);
-      expect(range2[1]).to.eql(3000);
+      expect(range2[0]).toEqual(2001);
+      expect(range2[1]).toEqual(3000);
 
       [range1, range2] = gpsb.searchField.searchPosition('chr1:1-1000 & chr1:2001-3000');
 
-      expect(range1[0]).to.eql(1);
-      expect(range1[1]).to.eql(1000);
+      expect(range1[0]).toEqual(1);
+      expect(range1[1]).toEqual(1000);
 
       done();
     });
 
     it('Ensures that hg38 is in the list of available assemblies', (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes.aa.state.availableAssemblies).to.include('hg38');
+      expect(
+        hgc
+          .instance()
+          .genomePositionSearchBoxes.aa.state.availableAssemblies
+          .indexOf('hg38')
+      ).toBeGreaterThanOrEqual(0);
       done();
     });
 
@@ -2519,7 +2522,7 @@ describe('Simple HiGlassComponent', () => {
     it('Checks that mm9 was properly set and switches back to hg19', (done) => {
       hgc.update();
       const button = new ReactWrapper(hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton, true);
-      expect(button.props().title).to.be.eql('mm9');
+      expect(button.props().title).toEqual('mm9');
 
       hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('hg19');
 
@@ -2529,7 +2532,7 @@ describe('Simple HiGlassComponent', () => {
     it('Checks that hg19 was properly', (done) => {
       hgc.update();
       const button = new ReactWrapper(hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton, true);
-      expect(button.props().title).to.be.eql('hg19');
+      expect(button.props().title).toEqual('hg19');
 
       waitForJsonComplete(done);
     });
@@ -2593,7 +2596,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Expect the the chosen rowHeight to be less than 24', (done) => {
-      expect(hgc.instance().state.rowHeight).to.be.below(24);
+      expect(hgc.instance().state.rowHeight).toBeLessThan(24);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2635,7 +2638,7 @@ describe('Simple HiGlassComponent', () => {
 
       const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vh1');
 
-      expect(track.originalTrack.axis.track.flipText).to.eql(true);
+      expect(track.originalTrack.axis.track.flipText).toEqual(true);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2652,7 +2655,7 @@ describe('Simple HiGlassComponent', () => {
       });
 
       // make sure the heatmap was flipped
-      expect(trackObj.pMain.scale.y).to.be.below(0);
+      expect(trackObj.pMain.scale.y).toBeLessThan(0);
 
       done();
     });
@@ -2669,7 +2672,7 @@ describe('Simple HiGlassComponent', () => {
     it('should add a heatmap', (done) => {
       // height defined in the testViewConf file, just the chromosome names
       // track
-      expect(totalTrackPixelHeight(hgc.instance().state.views.aa)).to.eql(57);
+      expect(totalTrackPixelHeight(hgc.instance().state.views.aa)).toEqual(57);
 
       hgc.instance().handleTrackAdded('aa', horizontalHeatmapTrack, 'top');
 
@@ -2685,7 +2688,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.setState(hgc.instance().state);
       const horizontalHeatmap = getTrackObjectFromHGC(hgc.instance(), 'aa', 'hh1');
 
-      expect(horizontalHeatmap.options.labelBackgroundOpacity).to.eql(0.5);
+      expect(horizontalHeatmap.options.labelBackgroundOpacity).toEqual(0.5);
 
       done();
     });
@@ -2709,7 +2712,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.setState(hgc.instance().state);
 
       // make sure that the view has grown
-      expect(hgc.instance().state.views.aa.layout.h).to.be.above(prevHeight);
+      expect(hgc.instance().state.views.aa.layout.h).toBeGreaterThan(prevHeight);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2752,7 +2755,7 @@ describe('Simple HiGlassComponent', () => {
       // make sure that the trackRenderer is now smaller than it was before
       // we deleted the tracks
       const newTrackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer.currentProps.height;
-      expect(newTrackRendererHeight).to.be.below(trackRendererHeight);
+      expect(newTrackRendererHeight).toBeLessThan(trackRendererHeight);
       waitForTilesLoaded(hgc.instance(), done);
     });
 
@@ -2776,8 +2779,8 @@ describe('Simple HiGlassComponent', () => {
       // let nextTrackRendererHeight = hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
       const nextTotalHeight = hgc.instance().calculateViewDimensions(newView).totalHeight;
 
-      // expect(nextTrackRendererHeight).to.be.equal(prevTrackRendererHeight - 57);
-      expect(nextTotalHeight).to.be.below(prevTotalHeight);
+      // expect(nextTrackRendererHeight).toEqual(prevTrackRendererHeight - 57);
+      expect(nextTotalHeight).toBeLessThan(prevTotalHeight);
 
       // setTimeout(done, shortLoadTime);
       done();
@@ -2811,7 +2814,7 @@ describe('Simple HiGlassComponent', () => {
 
       const newHeight = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3').dimensions[1]
       console.log('prevHeight:', prevHeight, 'newHeight:', newHeight);
-      expect(prevHeight).to.eql(newHeight);
+      expect(prevHeight).toEqual(newHeight);
 
       waitForTilesLoaded(hgc.instance(), done);
       */
@@ -2836,7 +2839,7 @@ describe('Simple HiGlassComponent', () => {
 
       const nextSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3').dimensions[1];
 
-      // expect(nextSize).to.be.eql(prevSize);
+      // expect(nextSize).toEqual(prevSize);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2927,10 +2930,10 @@ describe('Simple HiGlassComponent', () => {
       div.setAttribute('style', 'width:800px;background-color: lightgreen');
       div.setAttribute('id', 'simple-hg-component');
 
-      hgc = mount(<HiGlassComponent 
+      hgc = mount(<HiGlassComponent
         options={{bounded: false}}
         viewConfig={noGPSB}
-      />, 
+      />,
         {attachTo: div});
 
       hgc.update();
@@ -2939,20 +2942,20 @@ describe('Simple HiGlassComponent', () => {
 
     it ("Makes the search box visible", (done) => {
       let assemblyPickButton = hgc.find('.assembly-pick-button');
-      //expect(assemblyPickButton.length).to.eql(0);
+      //expect(assemblyPickButton.length).toEqual(0);
 
       hgc.instance().handleTogglePositionSearchBox('aa');
       hgc.update();
 
       assemblyPickButton = hgc.find('.assembly-pick-button');
-      //expect(assemblyPickButton.length).to.eql(1);
+      //expect(assemblyPickButton.length).toEqual(1);
 
       waitForJsonComplete(done);
     });
 
     it ("Makes sure that the search box points to mm9", (done) => {
       hgc.update();
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).to.eql('mm9');
+      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).toEqual('mm9');
 
       done();
     });
@@ -2972,7 +2975,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it ("Makes sure that no genes are loaded", (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes.length).to.eql(0)
+      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes.length).toEqual(0)
 
       done();
     });
@@ -3004,8 +3007,8 @@ describe('Simple HiGlassComponent', () => {
     it ("Expects the view to have changed location", (done) => {
       let zoomTransform = hgc.instance().tiledPlots['aa'].trackRenderer.zoomTransform;
 
-      expect(zoomTransform.k - 47).to.be.below(1);
-      expect(zoomTransform.x - 2224932).to.be.below(1);
+      expect(zoomTransform.k - 47).toBeLessThan(1);
+      expect(zoomTransform.x - 2224932).toBeLessThan(1);
 
       done();
     });
@@ -3022,8 +3025,8 @@ describe('Simple HiGlassComponent', () => {
 
     it ("Checks the selected genes", (done) => {
       // don't use the human autocomplete id
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.autocompleteId).to.not.eql('OHJakQICQD6gTD7skx4EWA')
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('Gt(ROSA)26Sor');
+      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.autocompleteId).not.toEqual('OHJakQICQD6gTD7skx4EWA')
+      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).toEqual('Gt(ROSA)26Sor');
 
       waitForJsonComplete(done);
     });
@@ -3056,8 +3059,8 @@ describe('Simple HiGlassComponent', () => {
     it ("Expects the view to have changed location", (done) => {
       let zoomTransform = hgc.instance().tiledPlots['aa'].trackRenderer.zoomTransform;
 
-      expect(zoomTransform.k - 234).to.be.below(1);
-      expect(zoomTransform.x + 7656469).to.be.below(1);
+      expect(zoomTransform.k - 234).toBeLessThan(1);
+      expect(zoomTransform.x + 7656469).toBeLessThan(1);
 
       done();
     });
@@ -3065,13 +3068,13 @@ describe('Simple HiGlassComponent', () => {
 
     it ("Ensures that the autocomplete has changed", (done) => {
       hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, '');
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.autocompleteId).to.eql('OHJakQICQD6gTD7skx4EWA')
+      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.autocompleteId).toEqual('OHJakQICQD6gTD7skx4EWA')
 
       waitForJsonComplete(done);
     });
 
     it ("Ensure that newly loaded genes are from hg19", (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('TP53');
+      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).toEqual('TP53');
 
       done();
     });
@@ -3090,7 +3093,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it ("Make sure it has mouse genes", (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('Gt(ROSA)26Sor');
+      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).toEqual('Gt(ROSA)26Sor');
 
       done();
     });
@@ -3103,12 +3106,12 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it ("Makes the search box invisible", (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).to.eql('hg19');
+      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).toEqual('hg19');
       hgc.instance().handleTogglePositionSearchBox('aa');
       hgc.update();
 
       let assemblyPickButton = hgc.find('.assembly-pick-button');
-      expect(assemblyPickButton.length).to.eql(0);
+      expect(assemblyPickButton.length).toEqual(0);
 
       waitForJsonComplete(done);
     });
@@ -3121,27 +3124,27 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it ("Ensures that selected assembly is hg19", (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).to.eql('hg19');
+      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).toEqual('hg19');
 
       done();
     });
 
     it ("checks that the div hasn't grown too much", (done) => {
-      expect(div.clientHeight).to.be.below(500);
+      expect(div.clientHeight).toBeLessThan(500);
 
       done();
     });
 
   });
 
-  
+
   describe('Cleanup', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
         hgc.unmount();
         hgc.detach();
       }
-      
+
       if (div) {
         global.document.body.removeChild(div);
       }
@@ -3149,5 +3152,5 @@ describe('Simple HiGlassComponent', () => {
       done();
     });
   });
-  
+
 });

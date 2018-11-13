@@ -100,7 +100,6 @@
     "bootstrap": "^3.3.7",
     "brfs": "1.4.3",
     "browser-sync": "^2.24.7",
-    "chai": "^3.5.0",
     "css-loader": "^0.28.8",
     "d3-brush": "github:flekschas/d3-brush",
     "del": "~2.2.0",
