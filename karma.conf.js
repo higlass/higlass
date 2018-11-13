@@ -14,7 +14,6 @@ module.exports = (config) => {
       'node_modules/react-bootstrap/dist/react-bootstrap.js',
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
       'node_modules/font-awesome/css/font-awesome.css',
-      'node_modules/font-awesome/fonts/fontawesome-webfont.woff2',
       'build/hglib.css',
       // 'test/**/*.+(js|jsx)',
       'test/AddTrackTests.js',
