@@ -72,47 +72,47 @@ describe('Simple HiGlassComponent', () => {
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
   describe('API tests', () => {
-      it('Cleans up previously created instances and mounts a new component', (done) => {
-        if (hgc) {
-          hgc.unmount();
-          hgc.detach();
-        }
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
 
-        if (div) {
-          global.document.body.removeChild(div);
-        }
+      if (div) {
+        global.document.body.removeChild(div);
+      }
 
-        div = global.document.createElement('div');
-        global.document.body.appendChild(div);
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
 
-        div.setAttribute('style', 'width:800px;background-color: lightgreen');
-        div.setAttribute('id', 'simple-hg-component');
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
 
-        hgc = mount(<HiGlassComponent
+      hgc = mount(<HiGlassComponent
           options={{ bounded: false }}
           viewConfig={osmConf}
-        />, { attachTo: div });
+      />, { attachTo: div });
 
-        hgc.update();
-        waitForTilesLoaded(hgc.instance(), done);
-        //done();
-      });
-
-      it('Switches to the osm tles track', (done) => {
-        const { views } = hgc.instance().state;
-        // console.log('views:', views);
-
-        const view = views.aa;
-
-        view.tracks.center[0].type = 'osm-2d-tile-ids';
-        view.tracks.center[0].uid = 'bb';
-
-        hgc.setState({
-          views,
-        })
-        done();
-      });
+      hgc.update();
+      waitForTilesLoaded(hgc.instance(), done);
+      // done();
     });
+
+    it('Switches to the osm tles track', (done) => {
+      const { views } = hgc.instance().state;
+      // console.log('views:', views);
+
+      const view = views.aa;
+
+      view.tracks.center[0].type = 'osm-2d-tile-ids';
+      view.tracks.center[0].uid = 'bb';
+
+      hgc.setState({
+        views,
+      });
+      done();
+    });
+  });
 
   describe('API tests', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -155,14 +155,13 @@ describe('Simple HiGlassComponent', () => {
       });
     });
 
-    it ('Zooms a little closer', (done) => {
+    it('Zooms a little closer', (done) => {
       hgc.instance().zoomTo('aa', 165061, 945306);
 
       waitForTransitionsFinished(hgc.instance(), () => {
         done();
-      })
-    })
-
+      });
+    });
   });
 
   describe('Genome position search box tests', () => {
@@ -368,9 +367,9 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it ("Exports to SVG", (done) => {
-      let svg = hgc.instance().createSVG();
-      let svgText = new XMLSerializer().serializeToString(svg);
+    it('Exports to SVG', (done) => {
+      const svg = hgc.instance().createSVG();
+      const svgText = new XMLSerializer().serializeToString(svg);
 
       expect(svgText.indexOf('rect')).to.be.above(0);
       // hgc.instance().handleExportSVG();
@@ -1013,14 +1012,14 @@ describe('Simple HiGlassComponent', () => {
       // const zl1 = track1.calculateZoomLevel();
       // const zl2 = track2.calculateZoomLevel();
 
-      
+
       // console.log('zl1:', track1.calculateZoomLevel());
       // console.log('zl2:', track2.calculateZoomLevel());
 
       // the zoom levels are different because one view is slightly larger
       // than the other
       // expect(zl1).to.eql(zl2);
-      
+
 
       expect(domain1[1]).to.eql(domain2[1]);
 
@@ -1155,7 +1154,7 @@ describe('Simple HiGlassComponent', () => {
     it('Replaces and displays a new track', (done) => {
       // hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'heatmap3');
 
-      const track = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap3'); 
+      const track = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap3');
 
       // make sure that the newly added track is rendered
       expect(track.pMain.position.x).to.be.above(404);
@@ -1336,7 +1335,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: true }}
         viewConfig={horizontalAndVerticalMultivec}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1598,7 +1597,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: false }}
         viewConfig={oneViewConfig}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1726,7 +1725,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: false }}
         viewConfig={oneZoomedOutViewConf}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForJsonComplete(done);
     });
@@ -1771,7 +1770,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: true }}
         viewConfig={twoViewConfig}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       /*
             for (let viewId of hgc.instance().iterateOverViews()) {
@@ -1817,10 +1816,10 @@ describe('Simple HiGlassComponent', () => {
       // we don't expect the other view to change
       expect(domain1[0]).to.not.eql(domain2[0]);
 
-      
+
       // console.log('domain1:', domain1);
       // console.log('domain2:', domain2);
-      
+
 
       done();
     });
@@ -1854,7 +1853,6 @@ describe('Simple HiGlassComponent', () => {
 
       done();
     });
-
   });
 
   describe('Colormap tests', () => {
@@ -1877,7 +1875,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: true }}
         viewConfig={twoViewConfig}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1887,12 +1885,12 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().tiledPlots.aa.handleConfigureTrack(
         twoViewConfig.views[0].tracks.center[0].contents[0],
-        HeatmapOptions);
+        HeatmapOptions
+      );
 
       waitForTilesLoaded(hgc.instance(), done);
     });
   });
-
 
 
   describe('Divergent tracks', () => {
@@ -1915,14 +1913,14 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: true }}
         viewConfig={divergentTrackConfig}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       hgc.update();
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it ('Exports the views as SVG', (done) => {
-      //hgc.instance().handleExportSVG();
+    it('Exports the views as SVG', (done) => {
+      // hgc.instance().handleExportSVG();
 
       done();
     });
@@ -1967,7 +1965,7 @@ describe('Simple HiGlassComponent', () => {
       // to the left
     });
 
-    it ('Gets and sets the viewconfig', (done) => {
+    it('Gets and sets the viewconfig', (done) => {
       const viewConf = hgc.instance().getViewsAsString();
 
       const newViews = hgc.instance().processViewConfig(JSON.parse(viewConf));
@@ -2008,7 +2006,7 @@ describe('Simple HiGlassComponent', () => {
       // to the left
     });
 
-    it ('Sets a new viewconfig', (done) => {
+    it('Sets a new viewconfig', (done) => {
       const p = hgc.instance().api.setViewConfig(twoViewConfig);
 
       p.then(() => {
@@ -2017,20 +2015,19 @@ describe('Simple HiGlassComponent', () => {
       });
     });
 
-    it ('Zooms one of the views to the center', (done) => {
+    it('Zooms one of the views to the center', (done) => {
       hgc.instance().api.zoomToDataExtent('view2');
 
       done();
     });
 
-    it ('Zooms a nonexistant view to the center', (done) => {
+    it('Zooms a nonexistant view to the center', (done) => {
       const badFn = () => hgc.instance().api.zoomToDataExtent('xxx');
 
       expect(badFn).to.throw();
       done();
     });
   });
-
 
 
   describe('Colormap tests', () => {
@@ -2053,7 +2050,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: true }}
         viewConfig={twoViewConfig}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2063,7 +2060,8 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().tiledPlots.aa.handleConfigureTrack(
         twoViewConfig.views[0].tracks.center[0].contents[0],
-        HeatmapOptions);
+        HeatmapOptions
+      );
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2089,7 +2087,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: true }}
         viewConfig={twoViewConfig}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2131,7 +2129,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: true }}
         viewConfig={threeViews}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2141,7 +2139,8 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleZoomLockChosen('aa', 'bb');
 
       hgc.instance().tiledPlots.aa.trackRenderer.setCenter(
-        1799508622.8021536, 1801234331.7949603, 17952.610495328903);
+        1799508622.8021536, 1801234331.7949603, 17952.610495328903
+      );
       waitForTilesLoaded(hgc.instance(), done);
     });
 
@@ -2169,7 +2168,8 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleZoomLockChosen('bb', 'cc');
 
       hgc.instance().tiledPlots.aa.trackRenderer.setCenter(
-        1799509622.8021536, 1801244331.7949603, 17952.610495328903);
+        1799509622.8021536, 1801244331.7949603, 17952.610495328903
+      );
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2213,7 +2213,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: true }}
         viewConfig={oneViewConfig}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2256,7 +2256,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: false }}
         viewConfig={oneViewConfig}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2427,7 +2427,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: true }}
         viewConfig={twoViewConfig}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2463,7 +2463,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: false }}
         viewConfig={onlyGPSB}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       hgc.update();
       waitForTilesLoaded(hgc.instance(), done);
@@ -2566,7 +2566,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: true }}
         viewConfig={newViewConf}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2617,7 +2617,7 @@ describe('Simple HiGlassComponent', () => {
         options={{ bounded: false }}
         viewConfig={horizontalDiagonalTrackViewConf}
       />,
-        { attachTo: div });
+      { attachTo: div });
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2791,7 +2791,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Should add a bottom track and have the new height', (done) => {
-      const prevHeight = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap3').dimensions[1]
+      const prevHeight = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap3').dimensions[1];
 
       const newTrack = JSON.parse(JSON.stringify(horizontalHeatmapTrack));
       newTrack.uid = 'xyx1';
@@ -2898,7 +2898,7 @@ describe('Simple HiGlassComponent', () => {
       // to the left
     });
 
-    it ('clones itself', (done) => {
+    it('clones itself', (done) => {
       hgc.instance().handleAddView(hgc.instance().state.views.aa);
 
       done();
@@ -2906,8 +2906,8 @@ describe('Simple HiGlassComponent', () => {
   });
 
 
-  describe("Starting with no genome position search box", () => {
-    it ('Cleans up previously created instances and mounts a new component', (done) => {
+  describe('Starting with no genome position search box', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
         hgc.unmount();
         hgc.detach();
@@ -2923,72 +2923,72 @@ describe('Simple HiGlassComponent', () => {
       div.setAttribute('style', 'width:800px;background-color: lightgreen');
       div.setAttribute('id', 'simple-hg-component');
 
-      hgc = mount(<HiGlassComponent 
-        options={{bounded: false}}
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
         viewConfig={noGPSB}
-      />, 
-        {attachTo: div});
+      />,
+      { attachTo: div });
 
       hgc.update();
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it ("Makes the search box visible", (done) => {
+    it('Makes the search box visible', (done) => {
       let assemblyPickButton = hgc.find('.assembly-pick-button');
-      //expect(assemblyPickButton.length).to.eql(0);
+      // expect(assemblyPickButton.length).to.eql(0);
 
       hgc.instance().handleTogglePositionSearchBox('aa');
       hgc.update();
 
       assemblyPickButton = hgc.find('.assembly-pick-button');
-      //expect(assemblyPickButton.length).to.eql(1);
+      // expect(assemblyPickButton.length).to.eql(1);
 
       waitForJsonComplete(done);
     });
 
-    it ("Makes sure that the search box points to mm9", (done) => {
+    it('Makes sure that the search box points to mm9', (done) => {
       hgc.update();
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).to.eql('mm9');
+      expect(hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly).to.eql('mm9');
 
       done();
     });
 
-    it ("Switch the selected genome to dm3", (done) => {
-      hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('dm3');
+    it('Switch the selected genome to dm3', (done) => {
+      hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('dm3');
       hgc.update();
 
       waitForJsonComplete(done);
     });
 
-    it ("Searches for the w gene", (done) => {
+    it('Searches for the w gene', (done) => {
       // this gene previously did nothing when searching for it
-      hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'w');
+      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'w');
 
       waitForJsonComplete(done);
     });
 
-    it ("Makes sure that no genes are loaded", (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes.length).to.eql(0)
+    it('Makes sure that no genes are loaded', (done) => {
+      expect(hgc.instance().genomePositionSearchBoxes.aa.state.genes.length).to.eql(0);
 
       done();
     });
 
-    it ("Switch the selected genome to mm9", (done) => {
-      hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('mm9');
+    it('Switch the selected genome to mm9', (done) => {
+      hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('mm9');
       hgc.update();
 
       waitForJsonComplete(done);
     });
 
-    it ("Searches for the Clock gene", (done) => {
+    it('Searches for the Clock gene', (done) => {
       // this gene previously did nothing when searching for it
-      hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'Clock');
+      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'Clock');
 
       waitForJsonComplete(done);
     });
 
-    it ("Clicks the search positions", (done) => {
-      hgc.instance().genomePositionSearchBoxes['aa'].buttonClick();
+    it('Clicks the search positions', (done) => {
+      hgc.instance().genomePositionSearchBoxes.aa.buttonClick();
 
       waitForJsonComplete(() => {
         waitForTransitionsFinished(hgc.instance(), () => {
@@ -2997,8 +2997,8 @@ describe('Simple HiGlassComponent', () => {
       });
     });
 
-    it ("Expects the view to have changed location", (done) => {
-      let zoomTransform = hgc.instance().tiledPlots['aa'].trackRenderer.zoomTransform;
+    it('Expects the view to have changed location', (done) => {
+      const zoomTransform = hgc.instance().tiledPlots.aa.trackRenderer.zoomTransform;
 
       expect(zoomTransform.k - 47).to.be.below(1);
       expect(zoomTransform.x - 2224932).to.be.below(1);
@@ -3006,41 +3006,41 @@ describe('Simple HiGlassComponent', () => {
       done();
     });
 
-    it ("Checks that autocomplete fetches some genes", (done) => {
-      //hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, "t");
-      //new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'].autocompleteMenu, true).simulate('change', { value: 't'});
-      //new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'], true).setState({value: 't'});
-      hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'T');
+    it('Checks that autocomplete fetches some genes', (done) => {
+      // hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, "t");
+      // new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'].autocompleteMenu, true).simulate('change', { value: 't'});
+      // new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'], true).setState({value: 't'});
+      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'T');
       hgc.update();
 
       waitForJsonComplete(done);
     });
 
-    it ("Checks the selected genes", (done) => {
+    it('Checks the selected genes', (done) => {
       // don't use the human autocomplete id
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.autocompleteId).to.not.eql('OHJakQICQD6gTD7skx4EWA')
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('Gt(ROSA)26Sor');
+      expect(hgc.instance().genomePositionSearchBoxes.aa.state.autocompleteId).to.not.eql('OHJakQICQD6gTD7skx4EWA');
+      expect(hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName).to.eql('Gt(ROSA)26Sor');
 
       waitForJsonComplete(done);
     });
 
 
-    it ("Switch the selected genome to hg19", (done) => {
-      hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('hg19');
+    it('Switch the selected genome to hg19', (done) => {
+      hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('hg19');
       hgc.update();
 
       waitForJsonComplete(done);
     });
 
-    it ("Sets the text to TP53", (done) => {
-      hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'TP53');
+    it('Sets the text to TP53', (done) => {
+      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'TP53');
       hgc.update();
 
       waitForJsonComplete(done);
     });
 
-    it ("Clicks on the search button", (done) => {
-      hgc.instance().genomePositionSearchBoxes['aa'].buttonClick();
+    it('Clicks on the search button', (done) => {
+      hgc.instance().genomePositionSearchBoxes.aa.buttonClick();
 
       waitForJsonComplete(() => {
         waitForTransitionsFinished(hgc.instance(), () => {
@@ -3049,8 +3049,8 @@ describe('Simple HiGlassComponent', () => {
       });
     });
 
-    it ("Expects the view to have changed location", (done) => {
-      let zoomTransform = hgc.instance().tiledPlots['aa'].trackRenderer.zoomTransform;
+    it('Expects the view to have changed location', (done) => {
+      const zoomTransform = hgc.instance().tiledPlots.aa.trackRenderer.zoomTransform;
 
       expect(zoomTransform.k - 234).to.be.below(1);
       expect(zoomTransform.x + 7656469).to.be.below(1);
@@ -3059,85 +3059,84 @@ describe('Simple HiGlassComponent', () => {
     });
 
 
-    it ("Ensures that the autocomplete has changed", (done) => {
-      hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, '');
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.autocompleteId).to.eql('OHJakQICQD6gTD7skx4EWA')
+    it('Ensures that the autocomplete has changed', (done) => {
+      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, '');
+      expect(hgc.instance().genomePositionSearchBoxes.aa.state.autocompleteId).to.eql('OHJakQICQD6gTD7skx4EWA');
 
       waitForJsonComplete(done);
     });
 
-    it ("Ensure that newly loaded genes are from hg19", (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('TP53');
+    it('Ensure that newly loaded genes are from hg19', (done) => {
+      expect(hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName).to.eql('TP53');
 
       done();
     });
 
-    it ("Switches back to mm9", (done) => {
-      hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('mm9');
+    it('Switches back to mm9', (done) => {
+      hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('mm9');
       hgc.update();
 
       waitForJsonComplete(done);
     });
 
-    it ("Mock type something", (done) => {
-      hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, '');
+    it('Mock type something', (done) => {
+      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, '');
 
       waitForJsonComplete(done);
     });
 
-    it ("Make sure it has mouse genes", (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('Gt(ROSA)26Sor');
+    it('Make sure it has mouse genes', (done) => {
+      expect(hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName).to.eql('Gt(ROSA)26Sor');
 
       done();
     });
 
-    it ("Switches back to hg19", (done) => {
-      hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('hg19');
+    it('Switches back to hg19', (done) => {
+      hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('hg19');
       hgc.update();
 
       waitForJsonComplete(done);
     });
 
-    it ("Makes the search box invisible", (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).to.eql('hg19');
+    it('Makes the search box invisible', (done) => {
+      expect(hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly).to.eql('hg19');
       hgc.instance().handleTogglePositionSearchBox('aa');
       hgc.update();
 
-      let assemblyPickButton = hgc.find('.assembly-pick-button');
+      const assemblyPickButton = hgc.find('.assembly-pick-button');
       expect(assemblyPickButton.length).to.eql(0);
 
       waitForJsonComplete(done);
     });
 
-    it ("Makes the search box visible again", (done) => {
+    it('Makes the search box visible again', (done) => {
       hgc.instance().handleTogglePositionSearchBox('aa');
       hgc.update();
 
       waitForJsonComplete(done);
     });
 
-    it ("Ensures that selected assembly is hg19", (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).to.eql('hg19');
+    it('Ensures that selected assembly is hg19', (done) => {
+      expect(hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly).to.eql('hg19');
 
       done();
     });
 
-    it ("checks that the div hasn't grown too much", (done) => {
+    it("checks that the div hasn't grown too much", (done) => {
       expect(div.clientHeight).to.be.below(500);
 
       done();
     });
-
   });
 
-  
+
   describe('Cleanup', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
         hgc.unmount();
         hgc.detach();
       }
-      
+
       if (div) {
         global.document.body.removeChild(div);
       }
@@ -3145,5 +3144,4 @@ describe('Simple HiGlassComponent', () => {
       done();
     });
   });
-  
 });
