@@ -15,7 +15,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
     this.drawnRects = {};
 
     // Create a custom pubSub interface
-    const { publish, subscribe, unsubscribe } = createPubSub({});
+    const { publish, subscribe, unsubscribe } = createPubSub();
     this.publish = publish;
     this.subscribe = subscribe;
     this.unsubscribe = unsubscribe;

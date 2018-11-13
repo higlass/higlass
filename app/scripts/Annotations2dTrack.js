@@ -23,7 +23,7 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     this.options.minSquareSize = +this.options.minSquareSize;
 
-    const { publish, subscribe, unsubscribe } = createPubSub({});
+    const { publish, subscribe, unsubscribe } = createPubSub();
     this.publish = publish;
     this.subscribe = subscribe;
     this.unsubscribe = unsubscribe;
