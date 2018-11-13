@@ -2481,7 +2481,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Selects mm9', (done) => {
-      const dropdownButton = hgc.find('.assembly-pick-button');
+      hgc.find('.assembly-pick-button');
       hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('mm9');
 
       waitForJsonComplete(done);
@@ -2489,7 +2489,9 @@ describe('Simple HiGlassComponent', () => {
 
     it('Checks that mm9 was properly set and switches back to hg19', (done) => {
       hgc.update();
-      const button = new ReactWrapper(hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton, true);
+      const button = new ReactWrapper(
+        hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton, true
+      );
       expect(button.props().title).to.be.eql('mm9');
 
       hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('hg19');
@@ -2499,7 +2501,9 @@ describe('Simple HiGlassComponent', () => {
 
     it('Checks that hg19 was properly', (done) => {
       hgc.update();
-      const button = new ReactWrapper(hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton, true);
+      const button = new ReactWrapper(
+        hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton, true
+      );
       expect(button.props().title).to.be.eql('hg19');
 
       waitForJsonComplete(done);
@@ -2507,9 +2511,6 @@ describe('Simple HiGlassComponent', () => {
   });
 
   describe('Window resizing', () => {
-    const vpUid = null;
-    const vp2DUid = null;
-
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
         hgc.unmount();
@@ -2612,7 +2613,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Should flip the vertical heatmap', (done) => {
-      const views = hgc.instance().state.views;
+      const { views } = hgc.instance().state;
       const track = getTrackByUid(views.aa.tracks, 'vh1');
 
       track.options.oneDHeatmapFlipped = 'yes';
