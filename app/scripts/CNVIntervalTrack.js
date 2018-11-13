@@ -5,8 +5,8 @@ import { segmentsToRows } from './utils';
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
-  constructor(...args) {
-    super(...args);
+  constructor(context, options) {
+    super(context, options);
 
     this.seen = new Set();
     this.pMain = this.pMobile;
