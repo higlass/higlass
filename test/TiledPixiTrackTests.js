@@ -1,4 +1,4 @@
-/* eslint-env node, jasmine, mocha */
+/* eslint-env node, jasmine */
 import {
   configure,
   // render,

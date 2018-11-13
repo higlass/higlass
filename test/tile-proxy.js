@@ -1,3 +1,4 @@
+/* eslint-env node, jasmine */
 import { expect } from 'chai';
 
 import tileProxy from '../app/scripts/services/tile-proxy';
