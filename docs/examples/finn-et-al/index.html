@@ -29,8 +29,8 @@
 <script src='/hglib.js'></script>
 <script src='makeViewConf.js'></script>
 <script>
-(function() {
-  const chromInfoPromise = hglib.ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv')
+(() => {
+  const chromInfoPromise = hglib.ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv');
 
   chromInfoPromise.then((chromInfo) => {
       function handle1DRow(row) {
@@ -58,18 +58,18 @@
         ]
       }
       
-      function render(regions1d) {
-        d3.csv('annotations-2d.csv', handle2DRow).then(function(regions2d) {
-          const viewConf = makeViewConf(regions1d, regions2d);
-          hglib.viewer(
-            document.getElementById('development-demo'),
-            viewConf,
-            { bounded: true },
-          );    
-        });
-      } 
+      const annotations1dPromise = d3.csv('annotations-1d.csv', handle1DRow);
+      const annotations2dPromise = d3.csv('annotations-2d.csv', handle2DRow);
 
-      d3.csv('annotations-1d.csv', handle1DRow).then(render);
+      Promise.all([annotations1dPromise, annotations2dPromise]).then(values => {
+        [regions1d, regions2d] = values;
+        const viewConf = makeViewConf(regions1d, regions2d);
+        hglib.viewer(
+          document.getElementById('development-demo'),
+          viewConf,
+          { bounded: true },
+        );
+      });
     }
   )
 })();
