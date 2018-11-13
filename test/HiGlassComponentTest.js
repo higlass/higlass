@@ -2199,7 +2199,7 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.update();
 
-      const inputField = ReactDOM.findDOMNode(tiledPlot.addTrackModal.tilesetFinder.searchBox);
+      const inputField = ReactDOM.findDOMNode(tiledPlot.addTrackModal.tilesetFinder.searchBox); // eslint-disable-line
 
       // make sure the input field is equal to the document's active element
       // e.g. that it has focus
@@ -2248,7 +2248,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
 
       const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1');
-      const pAxis = track.axis.pAxis;
+      const { pAxis } = track.axis;
 
       // we want the axis labels to be to the left of the end of the track
       expect(pAxis.position.x).to.be.above(track.position[0]);
@@ -2265,7 +2265,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
 
       const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1');
-      const pAxis = track.axis.pAxis;
+      const { pAxis } = track.axis;
 
 
       // we want the axis labels to be to the left of the end of the track
@@ -2283,7 +2283,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
 
       const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1');
-      const pAxis = track.axis.pAxis;
+      const { pAxis } = track.axis;
 
       // we want the axis labels to be to the left of the end of the track
       expect(pAxis.position.x).to.be.eql(track.position[0]);
@@ -2300,7 +2300,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
 
       const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1');
-      const pAxis = track.axis.pAxis;
+      const { pAxis } = track.axis;
 
       // we want the axis labels to be to the left of the end of the track
       expect(pAxis.position.x).to.be.eql(track.position[0]);
@@ -2318,7 +2318,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
 
       const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vline1').originalTrack;
-      const pAxis = track.axis.pAxis;
+      const { pAxis } = track.axis;
 
       // we want the axis labels to be to the left of the end of the track
       expect(pAxis.position.x).to.be.eql(track.position[0]);
@@ -2336,7 +2336,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
 
       const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vline1').originalTrack;
-      const pAxis = track.axis.pAxis;
+      const { pAxis } = track.axis;
 
       // we want the axis labels to be to the left of the end of the track
       expect(pAxis.position.x).to.be.eql(track.position[0]);
@@ -2354,7 +2354,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
 
       const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vline1').originalTrack;
-      const pAxis = track.axis.pAxis;
+      const { pAxis } = track.axis;
 
       // we want the axis labels to be to the left of the end of the track
       expect(pAxis.position.x).to.be.above(track.position[0]);
@@ -2371,7 +2371,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
 
       const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vline1').originalTrack;
-      const pAxis = track.axis.pAxis;
+      const { pAxis } = track.axis;
 
       // we want the axis labels to be to the left of the end of the track
       expect(pAxis.position.x).to.be.above(track.position[0]);
