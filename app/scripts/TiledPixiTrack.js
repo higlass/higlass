@@ -68,11 +68,14 @@ class TiledPixiTrack extends PixiTrack {
   constructor(context, options) {
     super(context, options);
     const {
+      pubSub,
       dataConfig,
       handleTilesetInfoReceived,
       animate,
       onValueScaleChanged
     } = context;
+
+    this.pubSub = pubSub;
 
     // keep track of which render we're on so that we save ourselves
     // rerendering all rendering in the same version will have the same
