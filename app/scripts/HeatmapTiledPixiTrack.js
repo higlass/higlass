@@ -46,7 +46,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       context.onValueScaleChanged();
       this.drawColorbar();
     };
-    super(context, options);
+    super(newContext, options);
     const {
       pubSub,
       animate,
