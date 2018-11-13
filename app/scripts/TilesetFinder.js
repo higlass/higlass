@@ -11,6 +11,8 @@ import slugid from 'slugid';
 
 import { tileProxy } from './services';
 
+import withPubSub from './hocs/with-pub-sub';
+
 // Configs
 import { TRACKS_INFO } from './configs';
 
@@ -153,7 +155,7 @@ class TilesetFinder extends React.Component {
               });
             }
           }
-        });
+        }, this.props.pubSub);
     });
   }
 
@@ -218,7 +220,7 @@ class TilesetFinder extends React.Component {
     // the list of tilesets / tracks available
     const sortedOptions = optionsList
       .filter(x => x.name.toLowerCase().includes(this.state.filter));
- 
+
     sortedOptions.sort((a, b) => (
       a.name.toLowerCase().localeCompare(b.name.toLowerCase(), 'en')
     ));
@@ -241,9 +243,9 @@ class TilesetFinder extends React.Component {
           <Col sm={3}>
             <ControlLabel>{ 'Select tileset' }</ControlLabel>
           </Col>
-          <Col 
+          <Col
             sm={4}
-            smOffset={5} 
+            smOffset={5}
           >
             <FormControl
               ref={(c) => { this.searchBox = c; }}
@@ -278,4 +280,4 @@ class TilesetFinder extends React.Component {
   }
 }
 
-export default TilesetFinder;
+export default withPubSub(TilesetFinder);
