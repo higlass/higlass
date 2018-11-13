@@ -657,7 +657,7 @@ describe('Simple HiGlassComponent', () => {
         .trackDefObjects.c1.trackObject.createdTracks.heatmap1;
       expect(heatmap.pColorbarArea.x).to.be.below(heatmap.dimensions[0] / 2);
 
-      const selection = select(ReactDOM.findDOMNode(hgc.instance()))
+      const selection = select(ReactDOM.findDOMNode(hgc.instance())) // eslint-disable-line
         .selectAll('.selection');
 
       // we expect a colorbar selector brush to be visible
@@ -673,7 +673,7 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().setState({ views });
 
-      const selection = select(ReactDOM.findDOMNode(hgc.instance()))
+      const selection = select(ReactDOM.findDOMNode(hgc.instance())) // eslint-disable-line
         .selectAll('.selection');
 
       // we expect a colorbar selector brush to be hidden
@@ -1455,9 +1455,6 @@ describe('Simple HiGlassComponent', () => {
   });
 
   describe('1D viewport projection', () => {
-    let vpUid = null;
-    let vp2DUid = null;
-
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
         hgc.unmount();
@@ -1512,7 +1509,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Should add a vertical viewport projection', (done) => {
-      vpUid = hgc.instance().handleViewportProjected('bb', 'aa', 'vline1');
+      hgc.instance().handleViewportProjected('bb', 'aa', 'vline1');
       // move the viewport just a little bit
       const overlayElements = document.getElementsByClassName('overlay');
 
@@ -1523,7 +1520,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Should project the viewport of view2 onto the gene annotations track', (done) => {
-      vpUid = hgc.instance().handleViewportProjected('bb', 'aa', 'ga1');
+      hgc.instance().handleViewportProjected('bb', 'aa', 'ga1');
       hgc.instance().tiledPlots.aa.trackRenderer.setCenter(2540607259.217122,
         2541534691.921077,
         195.2581009864807);
@@ -1542,33 +1539,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().tiledPlots.bb.trackRenderer.setCenter(2540607259.217122,
         2541534691.921077,
         87.50166702270508);
-      vp2DUid = hgc.instance().handleViewportProjected('bb', 'aa', 'heatmap3');
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Resize the 1D projection', (done) => {
-      const viewportTracker = getTrackObjectFromHGC(hgc.instance(), 'aa', vpUid);
-      const viewport2DTracker = getTrackObjectFromHGC(hgc.instance(), 'aa', vp2DUid);
-
-      // the 2D viewport tracker domains shouldn't change
-      // what??? this is impossible since the yDomain
-      // this test is invalid
-      // TODO: Add a bug report for this
-      done();
-      return;
-
-      const preResizeYDomain = viewport2DTracker.viewportYDomain;
-      viewportTracker.setDomainsCallback([2540588996.465288, 2540640947.3589344],
-        [2541519510.3818445, 2541549873.460309]);
-
-      const postResizeYDomain = JSON.parse(JSON.stringify(viewport2DTracker.viewportYDomain));
-
-      // console.log('preResizeYDomain:', preResizeYDomain);
-      // console.log('postResizeYDomain:', postResizeYDomain);
-
-      expect(preResizeYDomain[1] - postResizeYDomain[1]).to.be.below(0.0001);
-      expect(preResizeYDomain[1] - postResizeYDomain[1]).to.be.below(0.0001);
+      hgc.instance().handleViewportProjected('bb', 'aa', 'heatmap3');
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -1613,7 +1584,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.update();
 
       atm = tiledPlot.addTrackModal;
-      const inputField = ReactDOM.findDOMNode(atm.tilesetFinder.searchBox);
+      const inputField = ReactDOM.findDOMNode(atm.tilesetFinder.searchBox); // eslint-disable-line react/no-find-dom-node
 
       // make sure the input field is equal to the document's active element
       // e.g. that it has focus
@@ -1623,7 +1594,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('should select one plot type and double click', (done) => {
-      const tilesetFinder = atm.tilesetFinder;
+      const { tilesetFinder } = atm;
       tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ']);
       hgc.update();
 
@@ -1642,7 +1613,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('should select two different plot types', (done) => {
-      const tilesetFinder = atm.tilesetFinder;
+      const { tilesetFinder } = atm;
 
       tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/TO3D5uHjSt6pyDPEpc1hpA', 'http://higlass.io/api/v1/Nn8aA4qbTnmaa-oGGbuE-A']);
 
