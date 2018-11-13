@@ -1584,7 +1584,7 @@ describe('Simple HiGlassComponent', () => {
       hgc.update();
 
       atm = tiledPlot.addTrackModal;
-      const inputField = ReactDOM.findDOMNode(atm.tilesetFinder.searchBox); // eslint-disable-line react/no-find-dom-node
+      const inputField = ReactDOM.findDOMNode(atm.tilesetFinder.searchBox); // eslint-disable-line
 
       // make sure the input field is equal to the document's active element
       // e.g. that it has focus
@@ -1636,7 +1636,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('should select a few different tracks and check for the plot type selection', (done) => {
-      const tilesetFinder = atm.tilesetFinder;
+      const { tilesetFinder } = atm;
 
       tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ',
         'http://higlass.io/api/v1/GUm5aBiLRCyz2PsBea7Yzg']);
@@ -1764,7 +1764,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Changes the position of the brush to the top right', (done) => {
-      const views = hgc.instance().state.views;
+      const { views } = hgc.instance().state;
       views.aa.tracks.center[0].contents[0].options.colorbarPosition = 'topRight';
 
       hgc.instance().setState({ views });
@@ -1774,15 +1774,15 @@ describe('Simple HiGlassComponent', () => {
 
 
     it('Moves the brush on one of the views', (done) => {
-      const heatmapTrack = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
 
-      const domain1 = heatmapTrack.limitedValueScale.domain();
+      const domain1 = track.limitedValueScale.domain();
 
 
-      heatmapTrack.gColorscaleBrush.call(heatmapTrack.scaleBrush.move,
+      track.gColorscaleBrush.call(heatmapTrack.scaleBrush.move,
         [0, 100]);
 
-      const domain2 = heatmapTrack.limitedValueScale.domain();
+      const domain2 = track.limitedValueScale.domain();
 
       // we don't expect the other view to change
       expect(domain1[0]).to.not.eql(domain2[0]);
@@ -1797,30 +1797,34 @@ describe('Simple HiGlassComponent', () => {
 
     it('locks the scales and recenters the page', (done) => {
       hgc.instance().handleValueScaleLocked('aa', 'heatmap1', 'view2', 'heatmap2');
-      const track1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
-      const track2 = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
+      getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
+      getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
       // zoom out a little bit
-      hgc.instance().tiledPlots.aa.trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 28874.21283197403);
+      hgc.instance().tiledPlots.aa.trackRenderer.setCenter(
+        1799432348.8692136, 1802017603.5768778, 28874.21283197403
+      );
 
       waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('Moves the brush on one view and makes sure it moves on the other', (done) => {
-      const heatmapTrack = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
 
       // console.log('lvs1', heatmapTrack.limitedValueScale.domain());
 
       // move the brush down to limit the amount of visible data
-      heatmapTrack.gColorscaleBrush.call(heatmapTrack.scaleBrush.move,
+      track.gColorscaleBrush.call(track.scaleBrush.move,
         [0, 100]);
 
       // console.log('lvs2', heatmapTrack.limitedValueScale.domain());
 
       const heatmap2Track = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
-      expect(heatmapTrack.options.scaleStartPercent).to.eql(heatmap2Track.options.scaleStartPercent);
-      expect(heatmapTrack.options.scaleEndPercent).to.eql(heatmap2Track.options.scaleEndPercent);
+      expect(heatmapTrack.options.scaleStartPercent)
+        .to.eql(heatmap2Track.options.scaleStartPercent);
+      expect(heatmapTrack.options.scaleEndPercent)
+        .to.eql(heatmap2Track.options.scaleEndPercent);
 
       done();
     });
@@ -1924,8 +1928,8 @@ describe('Simple HiGlassComponent', () => {
       const midY = (view.initialYDomain[0] + view.initialYDomain[1]) / 2;
 
       hgc.instance().onViewChange((viewconf) => {
-        const view = JSON.parse(viewconf).views[0];
-        const newMidY = (view.initialYDomain[0] + view.initialYDomain[1]) / 2;
+        const viewconfView = JSON.parse(viewconf).views[0];
+        const newMidY = (viewconfView.initialYDomain[0] + viewconfView.initialYDomain[1]) / 2;
 
         expect(midY).to.eql(newMidY);
       });
@@ -2122,8 +2126,8 @@ describe('Simple HiGlassComponent', () => {
       const bbXScale = hgc.instance().xScales.bb;
       const bbYScale = hgc.instance().yScales.bb;
 
-      const [aaCenterX, aaCenterY, aaK] = scalesCenterAndK(aaXScale, aaYScale);
-      const [bbCenterX, bbCenterY, bbK] = scalesCenterAndK(bbXScale, bbYScale);
+      const [aaCenterX, aaCenterY] = scalesCenterAndK(aaXScale, aaYScale);
+      const [bbCenterX, bbCenterY] = scalesCenterAndK(bbXScale, bbYScale);
 
       expect(aaCenterX - bbCenterX).to.be.below(0.001);
       expect(aaCenterY - bbCenterY).to.be.below(0.001);
@@ -2152,8 +2156,8 @@ describe('Simple HiGlassComponent', () => {
       const ccXScale = hgc.instance().xScales.cc;
       const ccYScale = hgc.instance().yScales.cc;
 
-      const [aaCenterX, aaCenterY, aaK] = scalesCenterAndK(aaXScale, aaYScale);
-      const [ccCenterX, ccCenterY, ccK] = scalesCenterAndK(ccXScale, ccYScale);
+      const [aaCenterX, aaCenterY] = scalesCenterAndK(aaXScale, aaYScale);
+      const [ccCenterX, ccCenterY] = scalesCenterAndK(ccXScale, ccYScale);
 
       expect(aaCenterX - ccCenterX).to.be.below(0.001);
       expect(aaCenterY - ccCenterY).to.be.below(0.001);
