@@ -2666,7 +2666,8 @@ describe('Simple HiGlassComponent', () => {
       const horizontalHeatmap = getTrackObjectFromHGC(hgc.instance(), 'aa', 'hh1');
 
       const svg = horizontalHeatmap.exportColorBarSVG();
-      const rect = svg.getElementsByClassName('color-rect')[0];
+      const rects = svg.getElementsByClassName('color-rect');
+      expect(rects.length).to.be.above(0);
 
       // let svgText = new XMLSerializer().serializeToString(svg);
 
@@ -2738,14 +2739,16 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Checks to make sure the newly added heatmap was large enough and deletes a track', (done) => {
-      const prevTrackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer.currentProps.height;
-      const prevTotalHeight = hgc.instance().calculateViewDimensions(hgc.instance().state.views.aa).totalHeight;
+      const prevTotalHeight = hgc.instance().calculateViewDimensions(
+        hgc.instance().state.views.aa
+      ).totalHeight;
 
       const newView = hgc.instance().handleCloseTrack('aa', 'hcl').aa;
       hgc.setState(hgc.instance().state);
       // hgc.instance().tiledPlots['aa'].measureSize();
 
-      // let nextTrackRendererHeight = hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
+      // let nextTrackRendererHeight =
+      // hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
       const nextTotalHeight = hgc.instance().calculateViewDimensions(newView).totalHeight;
 
       // expect(nextTrackRendererHeight).to.be.equal(prevTrackRendererHeight - 57);
@@ -2767,7 +2770,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Should add a bottom track and have the new height', (done) => {
-      const prevHeight = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap3').dimensions[1];
+      const prevHeight = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap3').dimensions[1]; // eslint-disable-line
 
       const newTrack = JSON.parse(JSON.stringify(horizontalHeatmapTrack));
       newTrack.uid = 'xyx1';
@@ -2781,7 +2784,8 @@ describe('Simple HiGlassComponent', () => {
 
       // adding a new track should not make the previous one smaller
 
-      const newHeight = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3').dimensions[1]
+      const newHeight = hgc.instance().tiledPlots.aa.trackRenderer
+      .getTrackObject('heatmap3').dimensions[1]
       console.log('prevHeight:', prevHeight, 'newHeight:', newHeight);
       expect(prevHeight).to.eql(newHeight);
 
@@ -2800,13 +2804,13 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Should delete the bottom track and not resize the center', (done) => {
-      const prevSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3').dimensions[1];
+      const prevSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3').dimensions[1]; // eslint-disable-line
 
       hgc.instance().handleCloseTrack('aa', 'xyx1');
       hgc.setState(hgc.instance().state);
       hgc.instance().tiledPlots.aa.measureSize();
 
-      const nextSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3').dimensions[1];
+      const nextSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3').dimensions[1]; // eslint-disable-line
 
       // expect(nextSize).to.be.eql(prevSize);
 
@@ -2911,13 +2915,13 @@ describe('Simple HiGlassComponent', () => {
 
     it('Makes the search box visible', (done) => {
       let assemblyPickButton = hgc.find('.assembly-pick-button');
-      // expect(assemblyPickButton.length).to.eql(0);
+      expect(assemblyPickButton.length).to.eql(0);
 
       hgc.instance().handleTogglePositionSearchBox('aa');
       hgc.update();
 
       assemblyPickButton = hgc.find('.assembly-pick-button');
-      // expect(assemblyPickButton.length).to.eql(1);
+      expect(assemblyPickButton.length).to.eql(1);
 
       waitForJsonComplete(done);
     });
@@ -2974,7 +2978,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Expects the view to have changed location', (done) => {
-      const zoomTransform = hgc.instance().tiledPlots.aa.trackRenderer.zoomTransform;
+      const { zoomTransform } = hgc.instance().tiledPlots.aa.trackRenderer;
 
       expect(zoomTransform.k - 47).to.be.below(1);
       expect(zoomTransform.x - 2224932).to.be.below(1);
@@ -2984,8 +2988,10 @@ describe('Simple HiGlassComponent', () => {
 
     it('Checks that autocomplete fetches some genes', (done) => {
       // hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, "t");
-      // new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'].autocompleteMenu, true).simulate('change', { value: 't'});
-      // new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'], true).setState({value: 't'});
+      // new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa']
+      //   .autocompleteMenu, true).simulate('change', { value: 't'});
+      // new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'],
+      //   true).setState({value: 't'});
       hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'T');
       hgc.update();
 
@@ -3026,7 +3032,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Expects the view to have changed location', (done) => {
-      const zoomTransform = hgc.instance().tiledPlots.aa.trackRenderer.zoomTransform;
+      const { zoomTransform } = hgc.instance().tiledPlots.aa.trackRenderer;
 
       expect(zoomTransform.k - 234).to.be.below(1);
       expect(zoomTransform.x + 7656469).to.be.below(1);
