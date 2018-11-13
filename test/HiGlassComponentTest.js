@@ -1779,7 +1779,7 @@ describe('Simple HiGlassComponent', () => {
       const domain1 = track.limitedValueScale.domain();
 
 
-      track.gColorscaleBrush.call(heatmapTrack.scaleBrush.move,
+      track.gColorscaleBrush.call(track.scaleBrush.move,
         [0, 100]);
 
       const domain2 = track.limitedValueScale.domain();
