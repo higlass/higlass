@@ -33,7 +33,7 @@ describe('Simple HiGlassComponent', () => {
       global.document.body.appendChild(div);
 
       api = viewer(div, simpleCenterViewConfig, {});
-
+      api.setViewConfig(simpleCenterViewConfig);
       done();
 
       // p.then(() => {

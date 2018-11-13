@@ -22,6 +22,27 @@ describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
 
+  describe('BedLikeTrack tests', () => {
+    beforeAll((done) => {
+      ([div, hgc] = mountHGComponent(div, hgc, viewConf, done));
+    });
+
+    it('Ensures that the track was rendered', (done) => {
+      expect(hgc.instance().state.viewConfig.editable).to.eql(true);
+      const trackObj = getTrackObjectFromHGC(hgc.instance(),
+        viewConf.views[0].uid,
+        viewConf.views[0].tracks.top[0].uid);
+
+      expect(Object.keys(trackObj.drawnRects).length).to.be.above(0);
+      done();
+    });
+
+    afterAll((done) => {
+      removeHGComponent(div);
+      done();
+    });
+  });
+
   const viewConf = {
     editable: true,
     zoomFixed: false,
@@ -88,25 +109,4 @@ describe('Simple HiGlassComponent', () => {
       locksDict: {}
     }
   };
-
-  describe('BedLikeTrack tests', () => {
-    beforeAll((done) => {
-      ([div, hgc] = mountHGComponent(div, hgc, viewConf, done));
-    });
-
-    it('Ensures that the track was rendered', (done) => {
-      expect(hgc.instance().state.viewConfig.editable).to.eql(true);
-      const trackObj = getTrackObjectFromHGC(hgc.instance(),
-        viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[0].uid);
-
-      expect(Object.keys(trackObj.drawnRects).length).to.be.above(0);
-      done();
-    });
-
-    afterAll((done) => {
-      removeHGComponent(div);
-      done();
-    });
-  });
 });
