@@ -30,9 +30,8 @@
 <script src='makeViewConf.js'></script>
 <script>
 (() => {
-  const chromInfoPromise = hglib.ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv');
-
-  chromInfoPromise.then((chromInfo) => {
+  hglib.ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv')
+    .then((chromInfo) => {
       function handle1DRow(row) {
         const chromosome = 'chr' + row.chr;
         return [
@@ -57,19 +56,19 @@
           8, 8
         ]
       }
-      
-      const annotations1dPromise = d3.csv('annotations-1d.csv', handle1DRow);
-      const annotations2dPromise = d3.csv('annotations-2d.csv', handle2DRow);
 
-      Promise.all([annotations1dPromise, annotations2dPromise]).then(values => {
-        [regions1d, regions2d] = values;
-        const viewConf = makeViewConf(regions1d, regions2d);
-        hglib.viewer(
-          document.getElementById('development-demo'),
-          viewConf,
-          { bounded: true },
-        );
-      });
+      Promise.all([
+        d3.csv('annotations-1d.csv', handle1DRow),
+        d3.csv('annotations-2d.csv', handle2DRow)
+      ]).then(
+        ([regions1d, regions2d]) => {
+          hglib.viewer(
+            document.getElementById('development-demo'),
+            makeViewConf(regions1d, regions2d),
+            { bounded: true },
+          );
+        }
+      );
     }
   )
 })();
