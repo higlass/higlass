@@ -14,8 +14,8 @@ import {
 import '../styles/AddTrackModal.css';
 
 class AddTrackModal extends React.Component {
-  constructor(...args) {
-    super(...args);
+  constructor(props) {
+    super(props);
 
     this.tilesetFinder = null;
     this.multiSelect = null;
