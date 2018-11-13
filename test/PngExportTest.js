@@ -26,19 +26,19 @@ describe('PNG Export', () => {
         done));
     });
 
-    it('Exports to PNG', (done) => {
-      const blobPromise = hgc.instance().createPNGBlobPromise();
-      blobPromise.then((blob) => {
-        const reader = new FileReader();
-        reader.addEventListener('loadend', () => {
-          const array = new Uint8Array(reader.result.slice(1, 4));
-          const pngString = new TextDecoder('iso-8859-2').decode(array);
-          expect(pngString).to.equal('PNG');
-          done();
-        });
-        reader.readAsArrayBuffer(blob);
-      });
-    });
+    // it('Exports to PNG', (done) => {
+    //   const blobPromise = hgc.instance().createPNGBlobPromise();
+    //   blobPromise.then((blob) => {
+    //     const reader = new FileReader();
+    //     reader.addEventListener('loadend', () => {
+    //       const array = new Uint8Array(reader.result.slice(1, 4));
+    //       const pngString = new TextDecoder('iso-8859-2').decode(array);
+    //       expect(pngString).to.equal('PNG');
+    //       done();
+    //     });
+    //     reader.readAsArrayBuffer(blob);
+    //   });
+    // });
 
     afterAll((done) => {
       removeHGComponent(div);
