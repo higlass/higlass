@@ -125,7 +125,7 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
  *  True if any of the tracks are waiting for tiles, false otherwise.
  */
 export const isWaitingOnTiles = (hgc) => {
-  for (const track of hgc.iterateOverTracks()) {    
+  for (const track of hgc.iterateOverTracks()) {
     let trackObj = getTrackObjectFromHGC(hgc, track.viewId, track.trackId);
 
     if (track.track.type === 'viewport-projection-vertical'

@@ -12,6 +12,7 @@ start eslint
   karma.conf.js \
   app/scripts/HeatmapTiledPixiTrack.js \
   app/scripts/services \
+  app/scripts/utils \
   test
 end eslint
 

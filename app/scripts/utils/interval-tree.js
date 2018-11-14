@@ -26,7 +26,7 @@ const IntervalTreeNode = function (start, end, left, right) {
   this.right = right;
 };
 
-  /**
+/**
    * Interval tree.
    *
    * @public
@@ -118,8 +118,8 @@ IntervalTree.prototype.contains = function (point) {
 };
 
 function intersects(a, b) {
-  return (a[0] <= b[0] && a[1] >= b[0]) || (a[0] <= b[1] && a[1] >= b[1]) ||
-      (b[0] <= a[0] && b[1] >= a[0]) || (b[0] <= a[1] && b[1] >= a[1]);
+  return (a[0] <= b[0] && a[1] >= b[0]) || (a[0] <= b[1] && a[1] >= b[1])
+      || (b[0] <= a[0] && b[1] >= a[0]) || (b[0] <= a[1] && b[1] >= a[1]);
 }
 
 function intersectsHelper(interval, node) {
@@ -201,67 +201,66 @@ IntervalTree.prototype.findMax = function (node) {
 };
 
 // adjust the max value
-IntervalTree.prototype._removeHelper =
-   function (interval, node) {
-     if (!node) {
-       return;
-     }
-     if (node.interval[0] === interval[0] &&
-        node.interval[1] === interval[1]) {
-       // When left and right children exists
-       if (node.left && node.right) {
-         let replacement = node.left;
-         while (replacement.left) {
-           replacement = replacement.left;
-         }
-         const temp = replacement.interval;
-         replacement.interval = node.interval;
-         node.interval = temp;
-         this._removeHelper(replacement.interval, node);
-       } else {
-         // When only left or right child exists
-         let side = 'left';
-         if (node.right) {
-           side = 'right';
-         }
-         const parentNode = node.parentNode;
-         if (parentNode) {
-           if (parentNode.left === node) {
-             parentNode.left = node[side];
-           } else {
-             parentNode.right = node[side];
-           }
-           if (node[side]) {
-             node[side].parentNode = parentNode;
-           }
-         } else {
-           this.root = node[side];
-           // last node removed
-           if (this.root) {
-             this.root.parentNode = null;
-           }
-         }
-       }
-       // Adjust the max value
-       const p = node.parentNode;
-       if (p) {
-         let maxNode = this.findMax(p);
-         const max = maxNode.interval[1];
-         while (maxNode) {
-           if (maxNode.max === node.interval[1]) {
-             maxNode.max = max;
-             maxNode = maxNode.parentNode;
-           } else {
-             maxNode = false;
-           }
-         }
-       }
-     } else {
-       // could be optimized
-       this._removeHelper(interval, node.left);
-       this._removeHelper(interval, node.right);
-     }
-   };
+IntervalTree.prototype._removeHelper = function (interval, node) {
+  if (!node) {
+    return;
+  }
+  if (node.interval[0] === interval[0]
+        && node.interval[1] === interval[1]) {
+    // When left and right children exists
+    if (node.left && node.right) {
+      let replacement = node.left;
+      while (replacement.left) {
+        replacement = replacement.left;
+      }
+      const temp = replacement.interval;
+      replacement.interval = node.interval;
+      node.interval = temp;
+      this._removeHelper(replacement.interval, node);
+    } else {
+      // When only left or right child exists
+      let side = 'left';
+      if (node.right) {
+        side = 'right';
+      }
+      const parentNode = node.parentNode;
+      if (parentNode) {
+        if (parentNode.left === node) {
+          parentNode.left = node[side];
+        } else {
+          parentNode.right = node[side];
+        }
+        if (node[side]) {
+          node[side].parentNode = parentNode;
+        }
+      } else {
+        this.root = node[side];
+        // last node removed
+        if (this.root) {
+          this.root.parentNode = null;
+        }
+      }
+    }
+    // Adjust the max value
+    const p = node.parentNode;
+    if (p) {
+      let maxNode = this.findMax(p);
+      const max = maxNode.interval[1];
+      while (maxNode) {
+        if (maxNode.max === node.interval[1]) {
+          maxNode.max = max;
+          maxNode = maxNode.parentNode;
+        } else {
+          maxNode = false;
+        }
+      }
+    }
+  } else {
+    // could be optimized
+    this._removeHelper(interval, node.left);
+    this._removeHelper(interval, node.right);
+  }
+};
 
 /**
    * Remove interval from the tree.

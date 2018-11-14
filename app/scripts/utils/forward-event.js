@@ -6,10 +6,10 @@ import cloneEvent from './clone-event';
  * @param   {object}  target  Target HTML element for the event.
  */
 const forwardEvent = (event, target) => {
-const newEvent = cloneEvent(event);
-    if (event.type === 'mousewheel') {
-        console.log('fede newEvent', target)
-    }
+  const newEvent = cloneEvent(event);
+  if (event.type === 'mousewheel') {
+    console.log('fede newEvent', target);
+  }
   target.dispatchEvent(newEvent);
 };
 

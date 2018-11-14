@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 
 import { pubSub } from '../services';
 
-import { hexStrToInt } from './';
+import { hexStrToInt } from '.';
 
 const COLOR = 0xaaaaaa;
 const ALPHA = 1.0;
