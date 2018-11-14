@@ -14,6 +14,8 @@ import {
 } from '../app/scripts/utils';
 
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
+
 configure({ adapter: new Adapter() });
 
 describe('PNG Export', () => {
