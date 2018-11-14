@@ -44,7 +44,7 @@ import VerticalTrack from '../VerticalTrack';
 // Factories
 import ContextMenuItem from '../ContextMenuItem';
 import DataFetcher from '../DataFetcher';
-import { LruCache } from '../factories';
+import LruCache from '../factories';
 
 // Services
 import * as services from '../services';

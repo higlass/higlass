@@ -15,6 +15,9 @@ start eslint
   test
 end eslint
 
+#app/scripts/configs \
+#app/scripts/factories \
+
 start compile
 npm run compile
 [ -e dist.zip ] || die 'Missing dist.zip: Please check that it was produced by npm compile in build.sh.'
