@@ -10,13 +10,12 @@ die() { set +v; echo "$*" 1>&2 ; sleep 1; exit 1; }
 start eslint
 ./node_modules/eslint/bin/eslint.js \
   karma.conf.js \
+  app/scripts/configs \
+  app/scripts/factories \
   app/scripts/HeatmapTiledPixiTrack.js \
   app/scripts/services \
   test
 end eslint
-
-#app/scripts/configs \
-#app/scripts/factories \
 
 start compile
 npm run compile
