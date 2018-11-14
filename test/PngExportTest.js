@@ -28,7 +28,7 @@ describe('PNG Export', () => {
         done));
     });
 
-    it('Exports to PNG', (done) => {      
+    it('Exports to PNG', (done) => {
       const blobPromise = hgc.instance().createPNGBlobPromise();
       blobPromise.then((blob) => {
         const reader = new FileReader();
