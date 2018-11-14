@@ -14,9 +14,11 @@ import {
 } from '../app/scripts/utils';
 
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
+
 configure({ adapter: new Adapter() });
 
-xdescribe('PNG Export', () => {
+describe('PNG Export', () => {
   let hgc = null;
   let div = null;
 
@@ -26,7 +28,7 @@ xdescribe('PNG Export', () => {
         done));
     });
 
-    it('Exports to PNG', (done) => {
+    it('Exports to PNG', (done) => {      
       const blobPromise = hgc.instance().createPNGBlobPromise();
       blobPromise.then((blob) => {
         const reader = new FileReader();

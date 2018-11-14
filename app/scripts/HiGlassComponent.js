@@ -408,7 +408,7 @@ class HiGlassComponent extends React.Component {
     let views = {};
     if (typeof viewConfig === 'string') {
       // Load external viewConfig
-      tileProxy.json(viewConfig, (error, remoteViewConfig) => {
+      tileProxy.json(viewConfig, (error, remoteViewConfig) => {        
         viewConfig = remoteViewConfig;
         this.setState({
           views: this.processViewConfig(
@@ -517,16 +517,12 @@ class HiGlassComponent extends React.Component {
   }
 
   mousewheelHandler(e) {
-    console.log('mousewheel');
-
     if (hasParent(e.target, this.topDiv) && !this.isZoomFixed()) {
       e.preventDefault();
     }
   }
 
   wheelHandler(e) {
-    console.log('wheel');
-
     if (hasParent(e.target, this.topDiv) && !this.isZoomFixed()) {
       e.preventDefault();
     }
