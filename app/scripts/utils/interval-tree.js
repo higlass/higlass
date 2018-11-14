@@ -75,7 +75,7 @@ function addHelper(node, interval) {
    * @public
    * @param {Array} intreval Array with start and end points of the interval.
    */
-IntervalTree.prototype.add = function (interval) {
+IntervalTree.prototype.add = function add(interval) {
   if (!this.root) {
     this.root = new IntervalTreeNode(interval[0], interval[1]);
     this.root.max = interval[1];
@@ -113,7 +113,7 @@ function contains(point, node) {
    * @param {Number} point Point which should be checked.
    * @return {Boolean} True if point belongs to one of the intervals.
    */
-IntervalTree.prototype.contains = function (point) {
+IntervalTree.prototype.contains = function _contains(point) {
   return contains(point, this.root);
 };
 
@@ -149,7 +149,7 @@ function intersectsHelper(interval, node) {
    * @param {Array} interval Interval which should be checked.
    * @return {Boolean} True if interval intersects with one of the intervals.
    */
-IntervalTree.prototype.intersects = function (interval) {
+IntervalTree.prototype.intersects = function _intersects(interval) {
   return intersectsHelper(interval, this.root);
 };
 
@@ -167,7 +167,7 @@ function heightHelper(node) {
    * @method
    * @return {Number} Height of the tree.
    */
-IntervalTree.prototype.height = function () {
+IntervalTree.prototype.height = function height() {
   return heightHelper(this.root);
 };
 
@@ -179,7 +179,7 @@ IntervalTree.prototype.height = function () {
    * @param {IntervalTreeNode} node Root node of subtree.
    * @return {IntervalTreeNode} IntervalTreeNode with the largest endpoint.
    */
-IntervalTree.prototype.findMax = function (node) {
+IntervalTree.prototype.findMax = function findMax(node) {
   const stack = [node];
   let current;
   let max = -Infinity;
@@ -201,7 +201,7 @@ IntervalTree.prototype.findMax = function (node) {
 };
 
 // adjust the max value
-IntervalTree.prototype._removeHelper = function (interval, node) {
+IntervalTree.prototype._removeHelper = function _removeHelper(interval, node) {
   if (!node) {
     return;
   }
@@ -269,6 +269,6 @@ IntervalTree.prototype._removeHelper = function (interval, node) {
    * @method
    * @param {Array} intreval Array with start and end of the interval.
    */
-IntervalTree.prototype.remove = function (interval) {
+IntervalTree.prototype.remove = function remove(interval) {
   return this._removeHelper(interval, this.root);
 };
