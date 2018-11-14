@@ -1,4 +1,4 @@
-const IntervalTreeNode = function (start, end, left, right) {
+function IntervalTreeNode(start, end, left, right) {
   /**
      * Node interval.
      * @member {Array}
@@ -24,7 +24,7 @@ const IntervalTreeNode = function (start, end, left, right) {
      * @member {IntervalTreeNode}
      */
   this.right = right;
-};
+}
 
 /**
    * Interval tree.

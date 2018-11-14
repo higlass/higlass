@@ -71,13 +71,15 @@ const showMousePosition = (
    * @param  {Object}  e  Event object.
    */
   const mouseMoveHandler = (event) => {
-    const x = event.isFromVerticalTrack
-      ? event.dataY
-      : event.dataX;
-
-    const y = event.isFromVerticalTrack
-      ? event.dataY
-      : event.isFrom2dTrack ? event.dataY : event.dataX;
+    let x;
+    let y;
+    if (event.isFromVerticalTrack) {
+      x = event.dataY;
+      y = event.dataY;
+    } else {
+      x = event.dataX;
+      y = event.isFrom2dTrack ? event.dataY : event.dataX;
+    }
 
     // 2d or central tracks are not offset and rather rely on a mask, i.e., the
     // top left *visible* position is *not* [0,0] but given by `getPosition()`.

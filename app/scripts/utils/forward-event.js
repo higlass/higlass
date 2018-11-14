@@ -7,9 +7,6 @@ import cloneEvent from './clone-event';
  */
 const forwardEvent = (event, target) => {
   const newEvent = cloneEvent(event);
-  if (event.type === 'mousewheel') {
-    console.log('fede newEvent', target);
-  }
   target.dispatchEvent(newEvent);
 };
 
