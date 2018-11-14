@@ -49,6 +49,7 @@ function put(key, value) {
   }
   // increase the size counter
   this.size += 1;
+  return undefined;
 }
 
 /**
@@ -96,7 +97,7 @@ function shift() {
 function get(key, returnEntry) {
   // First, find our cache entry
   const entry = this._keymap[key];
-  if (entry === undefined) return; // Not cached. Sorry.
+  if (entry === undefined) return undefined; // Not cached. Sorry.
   // As <key> was found in the cache, register it as being requested recently
   if (entry === this.tail) {
     // Already the most recenlty used entry, so no need to update the list
@@ -155,7 +156,7 @@ function set(key, value) {
  */
 function remove(key) {
   const entry = this._keymap[key];
-  if (!entry) return;
+  if (!entry) return undefined;
   delete this._keymap[entry.key]; // need to do delete unfortunately
   if (entry.newer && entry.older) {
     // relink the older entry with the newer entry
@@ -207,12 +208,14 @@ function keys() {
  */
 function forEach(fun, context, desc) {
   let entry;
+  /* eslint-disable no-param-reassign */
   if (context === true) {
     desc = true;
     context = undefined;
   } else if (typeof context !== 'object') {
     context = this;
   }
+  /* eslint-enable */
   if (desc) {
     entry = this.tail;
     while (entry) {
