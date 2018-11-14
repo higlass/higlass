@@ -53,7 +53,7 @@ import * as services from '../services';
 import * as utils from '../utils';
 
 // Configs
-import * as configs from '../configs';
+import * as configs from '.';
 
 const libraries = {
   PIXI,
