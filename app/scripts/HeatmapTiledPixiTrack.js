@@ -1266,7 +1266,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     if (this.options && this.options.heatmapValueScaling === 'log') {
       if (data > 0) {
-        return `${positionText}<b>Value:</b> 1e${format('.3f')(Math.log(data))}`;
+        return `${positionText}<b>Value:</b> 1e${format('.3f')(Math.log(data) / Math.log(10))}`;
       }
 
       if (data === 0) {
