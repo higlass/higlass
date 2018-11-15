@@ -169,10 +169,12 @@ describe('Simple HiGlassComponent', () => {
             .dispatchEvent(createMouseEvent('mousemove', 330, 730));
           expect(moved2).toEqual(true);
 
-          api2.destroy();
-          removeDiv(div2);
+          setTimeout(() => {
+            done();
 
-          done();
+            api2.destroy();
+            removeDiv(div2);
+          }, 0);
         }, 0);
       });
     });
