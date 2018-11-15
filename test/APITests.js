@@ -115,63 +115,65 @@ describe('Simple HiGlassComponent', () => {
         simpleCenterViewConfig, { editable: false, bounded: true }
       );
 
-      expect(api).not.toEqual(api2);
+      setTimeout(() => {
+        expect(api).not.toEqual(api2);
 
-      const hgc = api.getComponent();
-      const hgc2 = api2.getComponent();
+        const hgc = api.getComponent();
+        const hgc2 = api2.getComponent();
 
-      let counter = 0;
-      let counter2 = 0;
+        let counter = 0;
+        let counter2 = 0;
 
-      api.on('rangeSelection', () => { ++counter; });
-      api2.on('rangeSelection', () => { ++counter2; });
+        api.on('rangeSelection', () => { ++counter; });
+        api2.on('rangeSelection', () => { ++counter2; });
 
-      hgc.apiPublish('rangeSelection', 'a');
-      hgc.apiPublish('rangeSelection', 'a');
+        hgc.apiPublish('rangeSelection', 'a');
+        hgc.apiPublish('rangeSelection', 'a');
 
-      expect(counter).toEqual(2);
-      expect(counter2).toEqual(0);
+        expect(counter).toEqual(2);
+        expect(counter2).toEqual(0);
 
-      hgc2.apiPublish('rangeSelection', 'b');
+        hgc2.apiPublish('rangeSelection', 'b');
 
-      expect(counter).toEqual(2);
-      expect(counter2).toEqual(1);
+        expect(counter).toEqual(2);
+        expect(counter2).toEqual(1);
 
-      let moved = false;
-      let moved2 = false;
+        let moved = false;
+        let moved2 = false;
 
-      const createMouseEvent = (type, x, y) => new MouseEvent(type, {
-        view: window,
-        bubbles: true,
-        cancelable: true,
-        // WARNING: The following property is absolutely crucial to have the
-        // event being picked up by PIXI. Do not remove under any circumstances!
-        // pointerType: 'mouse',
-        screenX: x,
-        screenY: y,
-        clientX: x,
-        clientY: y
-      });
+        const createMouseEvent = (type, x, y) => new MouseEvent(type, {
+          view: window,
+          bubbles: true,
+          cancelable: true,
+          // WARNING: The following property is absolutely crucial to have the
+          // event being picked up by PIXI. Do not remove under any circumstances!
+          // pointerType: 'mouse',
+          screenX: x,
+          screenY: y,
+          clientX: x,
+          clientY: y
+        });
 
-      api.on('mouseMoveZoom', () => { moved = true; });
-      api2.on('mouseMoveZoom', () => { moved2 = true; });
+        api.on('mouseMoveZoom', () => { moved = true; });
+        api2.on('mouseMoveZoom', () => { moved2 = true; });
 
-      waitForTilesLoaded(api.getComponent(), () => {
-        div
-          .querySelector('.center-track')
-          .dispatchEvent(createMouseEvent('mousemove', 330, 230));
-        expect(moved).toEqual(true);
-        expect(moved2).toEqual(false);
+        waitForTilesLoaded(api.getComponent(), () => {
+          div
+            .querySelector('.center-track')
+            .dispatchEvent(createMouseEvent('mousemove', 330, 230));
+          expect(moved).toEqual(true);
+          expect(moved2).toEqual(false);
 
-        div2
-          .querySelector('.center-track')
-          .dispatchEvent(createMouseEvent('mousemove', 330, 730));
-        expect(moved2).toEqual(true);
+          div2
+            .querySelector('.center-track')
+            .dispatchEvent(createMouseEvent('mousemove', 330, 730));
+          expect(moved2).toEqual(true);
 
-        api2.destroy();
-        removeDiv(div2);
+          api2.destroy();
+          removeDiv(div2);
 
-        done();
+          done();
+        }, 0);
       });
     });
 
