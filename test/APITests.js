@@ -153,8 +153,8 @@ describe('Simple HiGlassComponent', () => {
         clientY: y
       });
 
-      api.on('mouseMoveZoom', (e) => { moved = true; });
-      api2.on('mouseMoveZoom', (e) => { moved2 = true; });
+      api.on('mouseMoveZoom', () => { moved = true; });
+      api2.on('mouseMoveZoom', () => { moved2 = true; });
 
       waitForTilesLoaded(api.getComponent(), () => {
         div
