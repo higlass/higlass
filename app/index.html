@@ -16,6 +16,10 @@
   overflow: hidden;
   height: 50%;
 }
+#preview {
+  position: absolute;
+  top: 50%;
+}
 </style>
 
 <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
@@ -37,8 +41,18 @@ d3.json('viewConf.json').then((viewConfig) => {
     { bounded: true },
   );
 
+  function renderPreview() {
+    // TODO: Is there a way to register an onload callback with HiGlass?
+    setTimeout(() => {
+      document.getElementById('preview').innerHTML = hgApi.exportAsSvg();
+    }, 1000);
+  }
+  renderPreview();
+
+  // TODO: This does not seem to work: Is there a different event we should register?
   hgApi.on('view', () => {
     console.log('View Config changed');
+    renderPreview();
   });
 })
 </script>
