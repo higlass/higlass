@@ -215,11 +215,12 @@ class HiGlassComponent extends React.Component {
     this.attachedToDOM = false;
 
     // Set up API
-    const api = createApi(this);
-    // This is used internally only to broadcast events and destroy the API.
-    this.apiInternal = api.private;
-    // This is being exported from `hglib.viewer`
-    this.api = api.public;
+    const {
+      public: api, destroy: apiDestroy, publish: apiPublish
+    } = createApi(this);
+    this.api = api;
+    this.apiDestroy = apiDestroy;
+    this.apiPublish = apiPublish;
 
     this.viewChangeListener = [];
 
@@ -414,7 +415,7 @@ class HiGlassComponent extends React.Component {
     let views = {};
     if (typeof viewConfig === 'string') {
       // Load external viewConfig
-      tileProxy.json(viewConfig, (error, remoteViewConfig) => {        
+      tileProxy.json(viewConfig, (error, remoteViewConfig) => {
         viewConfig = remoteViewConfig;
         this.setState({
           views: this.processViewConfig(
@@ -510,7 +511,7 @@ class HiGlassComponent extends React.Component {
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
 
-    this.apiInternal.destroy();
+    this.apiDestroy();
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
@@ -3024,7 +3025,7 @@ class HiGlassComponent extends React.Component {
    */
   rangeSelectionHandler(range) {
     this.rangeSelection = range;
-    this.apiInternal.publish('rangeSelection', range);
+    this.apiPublish('rangeSelection', range);
   }
 
   offViewChange(listenerId) {
@@ -3352,14 +3353,14 @@ class HiGlassComponent extends React.Component {
    * Handle internally broadcasted click events
    */
   appClickHandler(data) {
-    this.apiInternal.publish('click', data);
+    this.apiPublish('click', data);
   }
 
   /**
    * Handle mousemove and zoom events.
    */
   mouseMoveZoomHandler(data) {
-    this.apiInternal.publish('mouseMoveZoom', data);
+    this.apiPublish('mouseMoveZoom', data);
   }
 
   /**

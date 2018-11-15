@@ -32,10 +32,8 @@ const createApi = function api(context) {
 
   // Public API
   return {
-    private: {
-      destroy,
-      publish: apiPubSub.publish
-    },
+    destroy,
+    publish: apiPubSub.publish,
     public: {
       /**
        * Set an auth header to be included with all tile requests.
@@ -107,8 +105,10 @@ const createApi = function api(context) {
        *  The following enpoint restricts the size of range selection equally for 1D or
        *  2D tracks to a certain length (specified in absolute coordinates).
        *
-       * @param {Number} [minSize = 0]  Minimum range selection. ``undefined`` unsets the value.
-       * @param {Number} [maxSize = Infinity] Maximum range selection. ``undefined`` unsets the value.
+       * @param {Number} [minSize = 0]  Minimum range selection.
+       *   ``undefined`` unsets the value.
+       * @param {Number} [maxSize = Infinity] Maximum range selection.
+       *   ``undefined`` unsets the value.
        * @example
        *
        * hgv.activateTool('select'); // Activate select tool
@@ -216,7 +216,8 @@ const createApi = function api(context) {
        * @example
        * hgv.shareViewConfigAsLink('http://localhost:8989/api/v1/viewconfs')
        * .then((sharedViewConfig) => {
-       *   console.log(`Shared view config (ID: ${sharedViewConfig.id}) is available at ${sharedViewConfig.url}`)
+       *   const { id, url } = sharedViewConfig;
+       *   console.log(`Shared view config (ID: ${id}) is available at ${url}`)
        * })
        * .catch((err) => { console.error('Something did not work. Sorry', err); })
        */
