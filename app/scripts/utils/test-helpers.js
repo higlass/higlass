@@ -2,6 +2,8 @@ import {
   mount
 } from 'enzyme';
 
+import ReactDOM from 'react-dom';
+
 import { requestsInFlight } from '../services';
 
 import {
@@ -99,9 +101,7 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
      * -------
      *  Nothing
      */
-  const TILE_LOADING_CHECK_INTERVAL = 100;
   // console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
-
   if (isWaitingOnTiles(hgc)) {
     setTimeout(() => {
       waitForTilesLoaded(hgc, tilesLoadedCallback);
@@ -125,7 +125,7 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
  *  True if any of the tracks are waiting for tiles, false otherwise.
  */
 export const isWaitingOnTiles = (hgc) => {
-  for (const track of hgc.iterateOverTracks()) {
+  for (const track of hgc.iterateOverTracks()) {    
     let trackObj = getTrackObjectFromHGC(hgc, track.viewId, track.trackId);
 
     if (track.track.type === 'viewport-projection-vertical'
@@ -189,8 +189,9 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
   />, { attachTo: div });
 
   hgc.update();
-  waitForTilesLoaded(hgc.instance(), () => {
-    waitForJsonComplete(done);
+
+  waitForJsonComplete(() => {
+    waitForTilesLoaded(hgc.instance(), done);
   });
 
   return [div, hgc];
@@ -199,4 +200,4 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
 export const removeHGComponent = (div) => {
   ReactDOM.unmountComponentAtNode(div);
   document.body.removeChild(div);
-}
+};

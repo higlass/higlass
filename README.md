@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/higlass/higlass.svg?branch=master)](https://travis-ci.org/hms-dbmi/higlass)
+[![Build Status](https://travis-ci.org/higlass/higlass.svg?branch=master)](https://travis-ci.org/higlass/higlass)
 [![Live Docs](https://img.shields.io/badge/docs-live-red.svg?colorB=0f5d92)](https://docs.higlass.io/)
 [![DOI](https://zenodo.org/badge/56026057.svg)](https://zenodo.org/badge/latestdoi/56026057)
 

@@ -419,7 +419,7 @@ class HiGlassComponent extends React.Component {
     let views = {};
     if (typeof viewConfig === 'string') {
       // Load external viewConfig
-      tileProxy.json(viewConfig, (error, remoteViewConfig) => {
+      tileProxy.json(viewConfig, (error, remoteViewConfig) => {        
         viewConfig = remoteViewConfig;
         this.setState({
           views: this.processViewConfig(
