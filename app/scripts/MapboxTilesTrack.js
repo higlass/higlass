@@ -13,8 +13,6 @@ class MapboxTilesTrack extends OSMTilesTrack {
     super(context, options);
 
     // Force Mapbox and OpenStreetMaps copyright
-    this.options.name = `© Mapbox © OpenStreetMap${options.name ? `\n${options.name}` : ''}`;
-
     this.style = options.style;
 
     if (!this.options.accessToken) {
