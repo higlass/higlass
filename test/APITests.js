@@ -2,7 +2,6 @@
 import {
   waitForTransitionsFinished,
   waitForTilesLoaded,
-  removeHGComponent,
 } from '../app/scripts/utils';
 
 import {
@@ -10,6 +9,7 @@ import {
 } from './view-configs';
 
 import createElementAndApi from './utils/create-element-and-api';
+import removeDiv from './utils/remove-div';
 
 describe('Simple HiGlassComponent', () => {
   let div = null;
@@ -100,8 +100,48 @@ describe('Simple HiGlassComponent', () => {
       });
     });
 
+    it('APIs are independent', (done) => {
+      ([div, api] = createElementAndApi(simpleCenterViewConfig,
+        { editable: false, bounded: true }));
+
+      const [div2, api2] = createElementAndApi(
+        simpleCenterViewConfig,
+        { editable: false, bounded: true }
+      );
+
+      expect(api).not.toEqual(api2);
+
+      const hgc = api.getComponent();
+      const hgc2 = api2.getComponent();
+
+      let counter = 0;
+      let counter2 = 0;
+
+      api.on('rangeSelection', () => { ++counter; });
+      api2.on('rangeSelection', () => { ++counter2; });
+
+      hgc.apiPublish('rangeSelection', 'a');
+      hgc.apiPublish('rangeSelection', 'a');
+
+      expect(counter).toEqual(2);
+      expect(counter2).toEqual(0);
+
+      hgc2.apiPublish('rangeSelection', 'b');
+
+      expect(counter).toEqual(2);
+      expect(counter2).toEqual(1);
+
+      api2.destroy();
+      removeDiv(div2);
+
+      done();
+    });
+
     afterEach(() => {
-      removeHGComponent(div);
+      api.destroy();
+      removeDiv(div);
+      api = undefined;
+      div = undefined;
     });
 
     // it('creates a new component with different options and checks'
