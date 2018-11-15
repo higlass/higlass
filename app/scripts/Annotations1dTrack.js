@@ -10,7 +10,7 @@ import pubSub from './services/pub-sub';
 // click events with out current setup. Since most UIs treat long clicks as
 // either something special or a cancelation we follow best practices and
 // implement a threshold on the delay as well.
-const MAX_CLICK_DELAY = 300;
+import { MAX_CLICK_DELAY } from './configs';
 
 class Annotations1dTrack extends PixiTrack {
   constructor(scene, options, isVertical) {
@@ -209,6 +209,7 @@ class Annotations1dTrack extends PixiTrack {
       };
 
       this.rects[id].graphics.mouseup = (event) => {
+
         if (performance.now() - this.rects[id].mouseDownTime < MAX_CLICK_DELAY) {
           pubSub.publish('app.click', {
             type: 'annotation',
