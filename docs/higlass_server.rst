@@ -123,11 +123,9 @@ To filter by datatype, use the `dt=datatype` parameter:
 
 Retrieving properties of a tileset, for a specific `uuid`:
 
-    curl localhost:8000/api/v1/tilesets/${uuid}/
-
 .. code-block:: bash
-    
-    curl localhost:8000/api/v1/tilesets
+
+    curl localhost:8000/api/v1/tilesets/${uuid}/
     
 To delete a tileset, specify the tileset `uuid` in the URL, and use the `DELETE` method with authentication credentials:
 
