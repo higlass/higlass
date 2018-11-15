@@ -388,12 +388,14 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const endDomain = axisValueScale.invert(selection[0]);
     const startDomain = axisValueScale.invert(selection[1]);
 
+    // Fritz: I am disabling ESLint here twice because moving the slash onto the
+    // next line breaks my editors style template somehow.
     const startPercent = (
-      (startDomain - axisValueScale.domain()[0]) /
+      (startDomain - axisValueScale.domain()[0]) /  // eslint-disable-line operator-linebreak
       (axisValueScale.domain()[1] - axisValueScale.domain()[0])
     );
     const endPercent = (
-      (endDomain - axisValueScale.domain()[0]) /
+      (endDomain - axisValueScale.domain()[0]) /  // eslint-disable-line operator-linebreak
       (axisValueScale.domain()[1] - axisValueScale.domain()[0])
     );
 
@@ -669,8 +671,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       const value = this.limitedValueScale(axisValueScale.invert(i));
 
       const rgbIdx = Math.max(0, Math.min(254, Math.floor(value)));
-      // console.log('rgbIdx:', rgbIdx);
-      // console.log('this.colorScale:', this.colorScale[rgbIdx]);
 
       this.pColorbar.beginFill(
         colorToHex(
@@ -825,7 +825,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    *
    */
   getVisibleRectangleData(x, y, width, height) {
-    // console.log(x,y,width,height);
     let zoomLevel = this.calculateZoomLevel();
     zoomLevel = this.tilesetInfo.max_zoom
       ? Math.min(this.tilesetInfo.max_zoom, zoomLevel) : zoomLevel;
@@ -836,7 +835,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     // BP resolution of a tile's bin (i.e., numbe of base pairs per bin / pixel)
     const tileRes = calculatedWidth / this.binsPerTile();
-    // console.log('tileWidth:', tileWidth);
 
     // the data domain of the currently visible region
     const xDomain = [this._xScale.invert(x), this._xScale.invert(x + width)];
@@ -1196,7 +1194,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         this.tilesetInfo.max_width
       );
 
-      // console.log('ytiles');
       this.yTiles = tileProxy.calculateTiles(
         this.zoomLevel,
         this._yScale,
@@ -1207,7 +1204,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       );
     }
 
-    // console.log('this.xTiles:', this.xTiles, this.yTiles);
     this.setVisibleTiles(
       this.tilesToId(this.xTiles, this.yTiles, this.zoomLevel, this.mirrorTiles())
     );
