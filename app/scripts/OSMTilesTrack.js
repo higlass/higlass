@@ -27,7 +27,7 @@ class OSMTilesTrack extends PixiTrack {
     const { animate } = context;
 
     // Force OpenStreetMaps copyright
-    this.options.name = `© OpenStreetMap${options.name ? `\n${options.name}` : ''}`;
+    // this.options.name = `© OpenStreetMap${options.name ? `\n${options.name}` : ''}`;
 
     // the tiles which should be visible (although they're not necessarily fetched)
     this.visibleTiles = new Set();
