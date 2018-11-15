@@ -44,7 +44,7 @@ import VerticalTrack from '../VerticalTrack';
 // Factories
 import ContextMenuItem from '../ContextMenuItem';
 import DataFetcher from '../DataFetcher';
-import { LruCache } from '../factories';
+import LruCache from '../factories';
 
 // Services
 import * as services from '../services';
@@ -53,7 +53,7 @@ import * as services from '../services';
 import * as utils from '../utils';
 
 // Configs
-import * as configs from '../configs';
+import * as configs from '.';
 
 const libraries = {
   PIXI,

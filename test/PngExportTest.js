@@ -1,4 +1,4 @@
-/* eslint-env node, mocha */
+/* eslint-env node, jasmine, mocha */
 import {
   configure,
 } from 'enzyme';
@@ -13,6 +13,8 @@ import {
   removeHGComponent,
 } from '../app/scripts/utils';
 
+
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
 
 configure({ adapter: new Adapter() });
 

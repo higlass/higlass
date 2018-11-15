@@ -2,6 +2,8 @@ import {
   mount
 } from 'enzyme';
 
+import ReactDOM from 'react-dom';
+
 import { requestsInFlight } from '../services';
 
 import {
@@ -99,9 +101,7 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
      * -------
      *  Nothing
      */
-  const TILE_LOADING_CHECK_INTERVAL = 100;
   // console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
-
   if (isWaitingOnTiles(hgc)) {
     setTimeout(() => {
       waitForTilesLoaded(hgc, tilesLoadedCallback);
@@ -189,8 +189,9 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
   />, { attachTo: div });
 
   hgc.update();
-  waitForTilesLoaded(hgc.instance(), () => {
-    waitForJsonComplete(done);
+
+  waitForJsonComplete(() => {
+    waitForTilesLoaded(hgc.instance(), done);
   });
 
   return [div, hgc];
@@ -199,10 +200,6 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
 export const removeHGComponent = (div) => {
   if (!div) return;
 
-  try {
-    ReactDOM.unmountComponentAtNode(div);
-    document.body.removeChild(div);
-  } catch (e) {
-    console.warn('Couldn\'t remove child', div, e);
-  }
+  ReactDOM.unmountComponentAtNode(div);
+  document.body.removeChild(div);
 };

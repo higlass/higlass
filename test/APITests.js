@@ -1,4 +1,4 @@
-/* eslint-env node, mocha */
+/* eslint-env node, jasmine, mocha */
 import {
   configure,
   // render,
@@ -124,7 +124,7 @@ describe('Simple HiGlassComponent', () => {
       const viewconf = api.getViewConfig();
       const trackObj = api.getTrackObject(viewconf.views[0].tracks.center[0].uid);
 
-      expect(trackObj).to.exist;
+      expect(trackObj).to.exist; // eslint-disable-line no-unused-expressions
     });
 
     it('zooms to a negative location', (done) => {
