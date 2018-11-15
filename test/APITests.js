@@ -170,10 +170,9 @@ describe('Simple HiGlassComponent', () => {
           expect(moved2).toEqual(true);
 
           setTimeout(() => {
-            done();
-
             api2.destroy();
             removeDiv(div2);
+            done();
           }, 0);
         }, 0);
       });
