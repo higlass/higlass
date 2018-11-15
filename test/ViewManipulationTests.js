@@ -1,12 +1,8 @@
-/* eslint-env node, mocha */
+/* eslint-env node, jasmine, mocha */
 import {
   configure,
   // render,
 } from 'enzyme';
-
-import {
-  select
-} from 'd3-selection';
 
 import Adapter from 'enzyme-adapter-react-16';
 
@@ -55,7 +51,7 @@ describe('Simple HiGlassComponent', () => {
 
     afterAll((done) => {
       removeHGComponent(div);
-      
+
       done();
     });
   });
