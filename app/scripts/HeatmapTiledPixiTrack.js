@@ -146,19 +146,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const relX = x - this.position[0];
     const relY = y - this.position[1];
 
-    let data = this.getVisibleRectangleData(
+    const data = this.getVisibleRectangleData(
       relX - Math.ceil(this.dataLensSize / 2),
       relY - Math.ceil(this.dataLensSize / 2),
       this.dataLensSize,
       this.dataLensSize
     );
     if (!data) return;
-
-    try {
-      data = ndarrayFlatten(data);
-    } catch (err) {
-      // Nothing
-    }
 
     const dim = this.dataLensSize;
 
@@ -171,7 +165,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       );
     } catch (err) { /* Nothing */ }
 
-    if (!data.length || !toRgb) return;
+    if (!data.data.length || !toRgb) return;
 
     let center = [
       Math.round(this._xScale.invert(relX)),
