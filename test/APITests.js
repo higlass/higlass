@@ -17,7 +17,7 @@ describe('Simple HiGlassComponent', () => {
 
   describe('Options tests', () => {
     it('creates an editable component', () => {
-      ([div, api] = createElementAndApi(simpleCenterViewConfig));
+      [div, api] = createElementAndApi(simpleCenterViewConfig);
 
       const component = api.getComponent();
 
@@ -25,8 +25,9 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('zooms to negative domain', (done) => {
-      ([div, api] = createElementAndApi(simpleCenterViewConfig,
-        { editable: false }));
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false }
+      );
 
       api.zoomTo('a', 6.069441699652629, 6.082905691828387,
         -23.27906532393644, -23.274695776773807, 100);
@@ -38,8 +39,9 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('zooms to just x and y', (done) => {
-      ([div, api] = createElementAndApi(simpleCenterViewConfig,
-        { editable: false }));
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false }
+      );
 
       api.zoomTo('a', 6.069441699652629, 6.082905691828387, null, null, 100);
 
@@ -60,8 +62,9 @@ describe('Simple HiGlassComponent', () => {
     it('zoom to a nonexistent view', () => {
       // complete me, should throw an error rather than complaining
       // "Cannot read property 'copy' of undefined thrown"
-      ([div, api] = createElementAndApi(simpleCenterViewConfig,
-        { editable: false }));
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false }
+      );
 
       expect(() => api.zoomTo('nonexistent', 6.069441699652629, 6.082905691828387,
         -23.274695776773807, -23.27906532393644))
@@ -69,8 +72,9 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('creates a non editable component', () => {
-      ([div, api] = createElementAndApi(simpleCenterViewConfig,
-        { editable: false }));
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false }
+      );
 
       const component = api.getComponent();
 
@@ -78,8 +82,9 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('retrieves a track', () => {
-      ([div, api] = createElementAndApi(simpleCenterViewConfig,
-        { editable: false }));
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false }
+      );
 
       const viewconf = api.getViewConfig();
       const trackObj = api.getTrackObject(viewconf.views[0].tracks.center[0].uid);
@@ -88,8 +93,9 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('zooms to a negative location', (done) => {
-      ([div, api] = createElementAndApi(simpleCenterViewConfig,
-        { editable: false, bounded: true }));
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false, bounded: true }
+      );
 
       api.zoomTo('a', -10000000, 10000000);
 
@@ -101,12 +107,12 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('APIs are independent', (done) => {
-      ([div, api] = createElementAndApi(simpleCenterViewConfig,
-        { editable: false, bounded: true }));
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false, bounded: true }
+      );
 
       const [div2, api2] = createElementAndApi(
-        simpleCenterViewConfig,
-        { editable: false, bounded: true }
+        simpleCenterViewConfig, { editable: false, bounded: true }
       );
 
       expect(api).not.toEqual(api2);
