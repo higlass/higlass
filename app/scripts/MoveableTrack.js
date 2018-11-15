@@ -28,7 +28,7 @@ class MoveableTrack extends TrackArea {
         className={this.props.className}
         onMouseEnter={this.handleMouseEnter.bind(this)}
         onMouseLeave={(/* e */) => {
-          // This let to https://github.com/hms-dbmi/higlass/issues/263
+          // This let to https://github.com/higlass/higlass/issues/263
           // Therefore I disabled it.
           // if (checkMousePosVsEl(
           //   e.nativeEvent.clientX, e.nativeEvent.clientY, this.el

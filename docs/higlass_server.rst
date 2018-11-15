@@ -115,11 +115,31 @@ To filter by a specific filetype, use the `t=filetype` parameter:
 
     curl localhost:8000/api/v1/tilesets?t=cooler
 
-To fileter by datatype, use the `dt=datatype` parameter:
+To filter by datatype, use the `dt=datatype` parameter:
 
 .. code-block:: bash
 
     curl localhost:8000/api/v1/tilesets?dt=matrix
+
+Retrieving properties of a tileset, for a specific `uuid`:
+
+    curl localhost:8000/api/v1/tilesets/${uuid}/
+
+.. code-block:: bash
+    
+    curl localhost:8000/api/v1/tilesets
+    
+To delete a tileset, specify the tileset `uuid` in the URL, and use the `DELETE` method with authentication credentials:
+
+.. code-block:: bash
+
+    curl --user ${username}:${password} --request DELETE http://localhost:8000/api/v1/tilesets/${uuid}/
+    
+To modify a tileset name, specify the tileset `uuid` in the URL, use the `PUT` method with authentication credentials, and specify the new name in the JSON object passed to the request:
+
+.. code-block:: bash
+
+    curl --user ${username}:${password} --request PUT --header "Content-Type: application/json" --data '{"name":"new_name_of_tileset"}' http://localhost:8000/api/v1/tilesets/${uuid}/
 
 Testing
 ^^^^^^^
@@ -133,3 +153,7 @@ Or to test a more specific code block:
 .. code-block:: bash
 
     python manage.py test tilesets.tests.CoolerTest.test_transforms --failfast
+    
+Tests of deletion and modification routes:
+
+    python manage.py test tilesets.tests.PermissionsTest
