@@ -34,7 +34,7 @@
 </body>
 <script src='hglib.js'></script>
 <script>
-d3.json('viewConf.json').then((viewConfig) => {
+d3.json(location.search.slice(1) || 'viewConf.json').then((viewConfig) => {
   const hgApi = hglib.viewer(
     document.getElementById('demo'),
     viewConfig,
@@ -42,10 +42,10 @@ d3.json('viewConf.json').then((viewConfig) => {
   );
 
   function renderPreview() {
-    // TODO: Is there a way to register an onload callback with HiGlass?
     setTimeout(() => {
       document.getElementById('preview').innerHTML = hgApi.exportAsSvg();
     }, 1000);
+    // Issue #386 is for adding an "onLoad" event, which would be better than this.
   }
   renderPreview();
 
