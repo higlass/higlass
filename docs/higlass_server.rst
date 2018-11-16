@@ -133,7 +133,7 @@ To delete a tileset, specify the tileset `uuid` in the URL, and use the `DELETE`
 
     curl --user ${username}:${password} --request DELETE http://localhost:8000/api/v1/tilesets/${uuid}/
     
-To modify a tileset name, specify the tileset `uuid` in the URL, use the `PUT` method with authentication credentials, and specify the new name in the JSON object passed to the request:
+To modify a tileset's name, specify the tileset `uuid` in the URL, use the `PUT` method with authentication credentials, and specify the new name in the JSON object passed to the request:
 
 .. code-block:: bash
 
