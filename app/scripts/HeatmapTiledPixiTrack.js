@@ -746,7 +746,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     );
 
     const colorbarAreaHeight = Math.min(
-      this.dimensions[1], COLORBAR_MAX_HEIGHT,
+      this.dimensions[1] / 2, COLORBAR_MAX_HEIGHT,
     );
     this.colorbarHeight = colorbarAreaHeight - (2 * COLORBAR_MARGIN);
     const colorbarAreaWidth = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + (2 * COLORBAR_MARGIN);
@@ -791,16 +791,18 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     let gAxis = null;
 
+    const axisValueScale = this.valueScale.copy()
+      .range([this.colorbarHeight, 0]);
     if (
       this.options.colorbarPosition === 'topLeft'
       || this.options.colorbarPosition === 'bottomLeft'
     ) {
-      gAxis = this.axis.exportAxisRightSVG(this.valueScale, this.colorbarHeight);
+      gAxis = this.axis.exportAxisRightSVG(axisValueScale, this.colorbarHeight);
     } else if (
       this.options.colorbarPosition === 'topRight'
       || this.options.colorbarPosition === 'bottomRight'
     ) {
-      gAxis = this.axis.exportAxisLeftSVG(this.valueScale, this.colorbarHeight);
+      gAxis = this.axis.exportAxisLeftSVG(axisValueScale, this.colorbarHeight);
     }
 
     gAxisHolder.appendChild(gAxis);
