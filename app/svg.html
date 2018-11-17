@@ -34,7 +34,7 @@
 </body>
 <script src='hglib.js'></script>
 <script>
-d3.json(location.search.slice(1) || 'viewConf.json').then((viewConfig) => {
+d3.json(location.search.slice(1).replace('http://higlass.io/app/?config=', 'http://higlass.io/api/v1/viewconfs/?d=') || 'viewConf.json').then((viewConfig) => {
   const hgApi = hglib.viewer(
     document.getElementById('demo'),
     viewConfig,
