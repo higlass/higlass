@@ -49,9 +49,13 @@ d3.json(location.search.slice(1) || 'viewConf.json').then((viewConfig) => {
   }
   renderPreview();
 
-  // TODO: This does not seem to work: Is there a different event we should register?
-  hgApi.on('view', () => {
-    console.log('View Config changed');
+  hgApi.on('location', (event) => {
+    console.log('location event', event);
+    renderPreview();
+  });
+  
+  hgApi.on('viewConfig', (event) => {
+    console.log('viewConfig event', event);
     renderPreview();
   });
 })
