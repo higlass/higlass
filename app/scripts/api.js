@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import createPubSub from 'pub-sub-es';
+import createPubSub, { globalPubSub } from 'pub-sub-es';
 
 import {
   setDarkTheme,
@@ -32,6 +32,39 @@ const api = function api(context, pubSub) {
     publish: apiPubSub.publish,
     // Public API
     public: {
+      /**
+       * Reload all of the tiles
+       */
+      setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally = false) {
+        self.isBroadcastMousePositionGlobally = isBroadcastMousePositionGlobally;
+
+        if (
+          self.isBroadcastMousePositionGlobally
+          && !self.broadcastMousePositionGloballyListener
+          && self.animateOnMouseMove
+        ) {
+          self.broadcastMousePositionGloballyListener = globalPubSub.subscribe(
+            'higlass.mouseMove', self.animateOnGlobalEventBound
+          );
+          self.pubSubs.push(self.broadcastMousePositionGloballyListener);
+        }
+
+        if (
+          self.isBroadcastMousePositionGlobally
+          && !self.broadcastMousePositionGloballyListener
+        ) {
+          const index = self.pubSubs.findIndex(
+            listener => listener === self.broadcastMousePositionGloballyListener
+          );
+
+          globalPubSub.unsubscribe(self.broadcastMousePositionGloballyListener);
+
+          if (index >= 0) self.pubSubs.splice(index, 1);
+
+          self.broadcastMousePositionGloballyListener = undefined;
+        }
+      },
+
       /**
        * Set an auth header to be included with all tile requests.
        *

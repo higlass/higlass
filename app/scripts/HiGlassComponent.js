@@ -9,7 +9,7 @@ import { ResizeSensor, ElementQueries } from 'css-element-queries';
 import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
 import parse from 'url-parse';
-import createPubSub from 'pub-sub-es';
+import createPubSub, { globalPubSub } from 'pub-sub-es';
 
 import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
@@ -254,6 +254,7 @@ class HiGlassComponent extends React.Component {
     this.zoomHandlerBound = this.zoomHandler.bind(this);
     this.trackDroppedHandlerBound = this.trackDroppedHandler.bind(this);
     this.animateBound = this.animate.bind(this);
+    this.animateOnGlobalEventBound = this.animateOnGlobalEvent.bind(this);
     this.requestReceivedHandlerBound = this.requestReceivedHandler.bind(this);
     this.onWheelHandlerBound = this.onWheelHandler.bind(this);
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
@@ -419,7 +420,7 @@ class HiGlassComponent extends React.Component {
     let views = {};
     if (typeof viewConfig === 'string') {
       // Load external viewConfig
-      tileProxy.json(viewConfig, (error, remoteViewConfig) => {        
+      tileProxy.json(viewConfig, (error, remoteViewConfig) => {
         viewConfig = remoteViewConfig;
         this.setState({
           views: this.processViewConfig(
@@ -626,6 +627,10 @@ class HiGlassComponent extends React.Component {
 
       this.isRequestingAnimationFrame = false;
     });
+  }
+
+  animateOnGlobalEvent({ sourceUid } = {}) {
+    if (sourceUid !== this.uid) this.animate();
   }
 
   measureSize() {
@@ -3238,6 +3243,17 @@ class HiGlassComponent extends React.Component {
     };
 
     this.pubSub.publish('app.mouseMove', evt);
+
+    if (this.isBroadcastMousePositionGlobally) {
+      const eventDataOnly = { ...evt };
+      eventDataOnly.origEvt = undefined;
+      eventDataOnly.track = undefined;
+      eventDataOnly.hoveredTracks = undefined;
+      delete eventDataOnly.origEvt;
+      delete eventDataOnly.track;
+      delete eventDataOnly.hoveredTracks;
+      globalPubSub.publish('higlass.mouseMove', eventDataOnly);
+    }
 
     this.showHoverMenu(evt);
   }
