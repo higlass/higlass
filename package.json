@@ -62,7 +62,7 @@
     "path": "^0.12.7",
     "pixi.js": "^4.6.2",
     "prop-types": "^15.6.0",
-    "pub-sub-es": "^1.1.0",
+    "pub-sub-es": "^1.1.2",
     "react": "^16.5.0",
     "react-autocomplete": "github:tiemevanveen/react-autocomplete#fix-176",
     "react-bootstrap": "0.32.1",
