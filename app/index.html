@@ -111,7 +111,10 @@ const viewConfig = {
                   trackBorderColor: 'black',
                   heatmapValueScaling: 'log',
                   scaleStartPercent: '0.00000',
-                  scaleEndPercent: '1.00000'
+                  scaleEndPercent: '1.00000',
+                  mousePositionColor: 'black',
+                  showMousePosition: true,
+                  showMousePositionGlobally: true,
                 },
                 uid: 'heatmap1',
                 name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
@@ -124,24 +127,6 @@ const viewConfig = {
                 width: 667,
                 height: 828
               },
-              {
-                type: '2d-chromosome-grid',
-                local: true,
-                orientation: '2d',
-                name: 'Chromosome Grid (hg19)',
-                chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-                thumbnail: null,
-                server: '',
-                tilesetUid: 'TIlwFtqxTX-ndtM7Y9k1bw',
-                uid: 'LUVqXXu2QYiO8XURIwyUyA',
-                options: {
-                  lineStrokeWidth: 1,
-                  lineStrokeColor: 'grey'
-                },
-                position: 'center',
-                width: 667,
-                height: 828
-              }
             ],
             position: 'center',
             options: {},
@@ -182,6 +167,6 @@ const hgApi = hglib.viewer(
   { bounded: true },
 );
 
-hgApi.on('mouseMoveZoom', (e) => console.log('mouseMoveZoom', e));
+hgApi.setBroadcastMousePositionGlobally(true);
 </script>
 </html>
