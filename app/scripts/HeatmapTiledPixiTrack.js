@@ -106,7 +106,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.options.showMousePositionGlobally
+      );
     }
 
     this.prevOptions = JSON.stringify(options);
@@ -284,13 +286,15 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // hopefully draw isn't rerendering all the tiles
     // this.drawColorbar();
 
-    if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
-    }
-
-    if (this.options && !this.options.showMousePosition && this.hideMousePosition) {
+    if (this.hideMousePosition) {
       this.hideMousePosition();
       this.hideMousePosition = undefined;
+    }
+
+    if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.showMousePositionGlobally
+      );
     }
   }
 
