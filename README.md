@@ -35,6 +35,9 @@ npm install
 npm run start
 ```
 
+Many examples are available, but http://localhost:8080/svg is useful during development:
+It renders an SVG below the interactive visualization so it's easy to spot differences.
+
 ### Tests
 
 The tests for the React components and API functions are located in the `test` directory. To save time and only run relevant tests, open `karma.conf.js` and select the test files to run before running `test-watch`.
