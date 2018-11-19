@@ -26,7 +26,6 @@
 <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.2/pixi.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
-<script src="http://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
   <div id="demo"></div>
@@ -34,15 +33,18 @@
 </body>
 <script src='/hglib.js'></script>
 <script>
-d3.json(
+fetch(
   location.search.slice(1).replace(
     'http://higlass.io/app/?config=',
     'http://higlass.io/api/v1/viewconfs/?d='
-  ) || 'viewConf.json')
-  .then((viewConfig) => {
+  ) || 'viewconf.json')
+  .then((response) => {
+    return response.json();
+  })
+  .then((viewconfig) => {
     const hgApi = hglib.viewer(
       document.getElementById('demo'),
-      viewConfig,
+      viewconfig,
       { bounded: true },
     );
 
