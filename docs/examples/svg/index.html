@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HiGlass</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link rel="stylesheet" href="hglib.css">
+<link rel="stylesheet" href="/hglib.css">
 
 <style type="text/css">
 #demo {
@@ -32,32 +32,37 @@
   <div id="demo"></div>
   <div id="preview"></div>
 </body>
-<script src='hglib.js'></script>
+<script src='/hglib.js'></script>
 <script>
-d3.json(location.search.slice(1).replace('http://higlass.io/app/?config=', 'http://higlass.io/api/v1/viewconfs/?d=') || 'viewConf.json').then((viewConfig) => {
-  const hgApi = hglib.viewer(
-    document.getElementById('demo'),
-    viewConfig,
-    { bounded: true },
-  );
+d3.json(
+  location.search.slice(1).replace(
+    'http://higlass.io/app/?config=',
+    'http://higlass.io/api/v1/viewconfs/?d='
+  ) || 'viewConf.json')
+  .then((viewConfig) => {
+    const hgApi = hglib.viewer(
+      document.getElementById('demo'),
+      viewConfig,
+      { bounded: true },
+    );
 
-  function renderPreview() {
-    setTimeout(() => {
-      document.getElementById('preview').innerHTML = hgApi.exportAsSvg();
-    }, 1000);
-    // Issue #386 is for adding an "onLoad" event, which would be better than this.
-  }
-  renderPreview();
+    function renderPreview() {
+      setTimeout(() => {
+        document.getElementById('preview').innerHTML = hgApi.exportAsSvg();
+      }, 1000);
+      // Issue #386 is for adding an "onLoad" event, which would be better than this.
+    }
+    renderPreview();
 
-  hgApi.on('location', (event) => {
-    console.log('location event', event);
-    renderPreview();
+    hgApi.on('location', (event) => {
+      console.log('location event', event);
+      renderPreview();
+    });
+    
+    hgApi.on('viewConfig', (event) => {
+      console.log('viewConfig event', event);
+      renderPreview();
+    });
   });
-  
-  hgApi.on('viewConfig', (event) => {
-    console.log('viewConfig event', event);
-    renderPreview();
-  });
-})
 </script>
 </html>
