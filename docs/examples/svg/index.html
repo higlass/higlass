@@ -77,7 +77,7 @@ fetch(
     });
     
     hgApi.on('viewConfig', (event) => {
-      console.log('viewConfig event', event);
+      console.log('viewConfig event', JSON.parse(event));
       renderPreview();
     });
   });
