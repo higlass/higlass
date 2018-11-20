@@ -169,7 +169,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       const xPos = this._xScale(tileXScale(i));
       const yPos = this.valueScale(tileValues[i] + offsetValue);
 
-      if (this.options.valueScaling === 'log' && tileValues[i] === 0) {
+      if ((this.options.valueScaling === 'log' && tileValues[i] === 0) || Number.isNaN(yPos)) {
         if (currentSegment.length > 1) {
           tile.segments.push(currentSegment);
         }
