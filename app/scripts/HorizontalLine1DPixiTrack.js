@@ -151,32 +151,39 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     const strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
     graphics.lineStyle(strokeWidth, stroke, 1);
 
-    const logScaling = this.options.valueScaling === 'log';
+    tile.segments = [];
+    let currentSegment = [];
 
     for (let i = 0; i < tileValues.length; i++) {
       const xPos = this._xScale(tileXScale(i));
       const yPos = this.valueScale(tileValues[i] + offsetValue);
 
-      tile.xValues[i] = xPos;
-      tile.yValues[i] = yPos;
-
-      if (i === 0) {
-        graphics.moveTo(xPos, yPos);
+      if (this.options.valueScaling === 'log' && tileValues[i] === 0) {
+        if (currentSegment.length > 1) {
+          tile.segments.push(currentSegment);
+        }
+        // Just ignore 1-element segments.
+        currentSegment = [];
         continue;
       }
 
       if (tileXScale(i) > this.tilesetInfo.max_pos[0]) {
-        // this data is in the last tile and extends beyond the length
-        // of the coordinate system
+        // Data is in the last tile and extends beyond the coordinate system.
         break;
       }
 
-      // if we're using log scaling and there's a 0 value, we shouldn't draw it
-      // because it's invalid
-      if (logScaling && tileValues[i] === 0) {
-        graphics.moveTo(xPos, yPos);
-      } else {
-        graphics.lineTo(xPos, yPos);
+      currentSegment.push([xPos, yPos]);
+    }
+    if (currentSegment.length > 1) {
+      tile.segments.push(currentSegment);
+    }
+
+    for (const segment of tile.segments) {
+      const first = segment[0];
+      const rest = segment.slice(1);
+      graphics.moveTo(first[0], first[1]);
+      for (const point of rest) {
+        graphics.lineTo(point[0], point[1]);
       }
     }
   }
@@ -239,10 +246,17 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       const g = document.createElement('path');
       g.setAttribute('fill', 'transparent');
       g.setAttribute('stroke', stroke);
-      let d = `M${tile.xValues[0]} ${tile.yValues[0]}`;
-      for (let i = 0; i < tile.xValues.length; i++) {
-        d += `L${tile.xValues[i]} ${tile.yValues[i]}`;
+      let d = '';
+
+      for (const segment of tile.segments) {
+        const first = segment[0];
+        const rest = segment.slice(1);
+        d += `M${first[0]} ${first[1]}`;
+        for (const point of rest) {
+          d += `L${point[0]} ${point[1]}`;
+        }
       }
+
       g.setAttribute('d', d);
       output.appendChild(g);
     });

@@ -182,6 +182,8 @@ const hgApi = hglib.viewer(
   { bounded: true },
 );
 
-hgApi.on('mouseMoveZoom', (e) => console.log('mouseMoveZoom', e));
+hgApi.on('viewConfig', () => {
+  console.log('View Config changed');
+});
 </script>
 </html>
