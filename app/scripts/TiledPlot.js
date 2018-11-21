@@ -492,8 +492,6 @@ class TiledPlot extends React.Component {
       });
   }
 
-
-
   getAddDivisorDialog() {
     if (!this.state.addDivisorDialog) {
       return null;
@@ -515,6 +513,7 @@ class TiledPlot extends React.Component {
           });
         }}
         onTracksChosen={newTrack => this.handleDivisorChosen(series, newTrack)}
+        onTrackSourceChanged={this.props.onTrackSourceChanged}
         show={this.state.addDivisorDialog != null}
         trackSourceServers={this.props.trackSourceServers}
       />
@@ -2140,6 +2139,7 @@ class TiledPlot extends React.Component {
           host={this.state.addTrackHost}
           onCancel={this.handleNoTrackAdded.bind(this)}
           onTracksChosen={this.handleTracksAdded.bind(this)}
+          onTrackSourceChanged={this.props.onTrackSourceChanged}
           position={position}
           ref={(c) => { this.addTrackModal = c; }}
           show={this.state.addTrackPosition != null || this.props.addTrackPosition != null}
@@ -2224,6 +2224,7 @@ TiledPlot.propTypes = {
   onTracksAdded: PropTypes.func,
   onTrackOptionsChanged: PropTypes.func,
   onTrackPositionChosen: PropTypes.func,
+  onTrackSourceChanged: PropTypes.func,
   onValueScaleChanged: PropTypes.func,
   onUnlockValueScale: PropTypes.func,
   rangeSelection1dSize: PropTypes.array,

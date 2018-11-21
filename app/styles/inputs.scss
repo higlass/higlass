@@ -1,0 +1,17 @@
+@import './colors';
+@import './transitions';
+
+.hg-input {
+  height: 2em;
+  padding: 0 0.25em;
+  font-size: 1em;
+  line-height: 2em;
+  border: 1px solid $gray-light;
+  border-radius: 0.25rem;
+  background: $white;
+  transition: border-color $fast $ease;
+
+  &:hover {
+    border-color: $blue;
+  }
+}

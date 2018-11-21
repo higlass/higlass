@@ -1,0 +1,26 @@
+@import './colors';
+@import './transitions';
+
+.hg-button {
+  height: 2em;
+  padding: 0 0.5em;
+  font-size: 1em;
+  line-height: 2em;
+  border: 1px solid $gray-light;
+  border-radius: 0.25rem;
+  background: $white;
+  transition: color $fast $ease,
+              border-color $fast $ease,
+              background $fast $ease;
+
+  &:hover {
+    color: $black;
+    border-color: $gray-medium;
+    background: $gray-lightest;
+  }
+
+  &:disabled {
+    color: $gray-light;
+    cursor: not-allowed;
+  }
+}

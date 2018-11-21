@@ -69,7 +69,11 @@ import {
 import styles from '../styles/HiGlass.module.scss'; // eslint-disable-line no-unused-vars
 import stylesMTHeader from '../styles/ViewHeader.module.scss'; // eslint-disable-line no-unused-vars
 
-import stylesGlobal from '../styles/HiGlass.scss'; // eslint-disable-line no-unused-vars
+import '../styles/flexbox.scss';
+import '../styles/buttons.scss';
+import '../styles/inputs.scss';
+
+import '../styles/HiGlass.scss';
 
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
@@ -247,6 +251,7 @@ class HiGlassComponent extends React.Component {
     this.onWheelHandlerBound = this.onWheelHandler.bind(this);
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
     this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
+    this.onTrackSourceChangedBound = this.onTrackSourceChanged.bind(this);
   }
 
   componentWillMount() {
@@ -400,6 +405,14 @@ class HiGlassComponent extends React.Component {
     return this.tiledPlots[viewUid].trackRenderer;
   }
 
+  onTrackSourceChanged(newTrackSource) {
+    this.setState((prevState) => {
+      const newViewConfig = { ...prevState.viewConfig };
+      newViewConfig.trackSourceServers = [...newTrackSource];
+      return { viewConfig: newViewConfig };
+    });
+  }
+
   /**
    * Check if the passed in viewConfig is remote (i.e. is a string).
    * If it is, fetch it before proceeding
@@ -408,7 +421,7 @@ class HiGlassComponent extends React.Component {
     let views = {};
     if (typeof viewConfig === 'string') {
       // Load external viewConfig
-      tileProxy.json(viewConfig, (error, remoteViewConfig) => {        
+      tileProxy.json(viewConfig, (error, remoteViewConfig) => {
         viewConfig = remoteViewConfig;
         this.setState({
           views: this.processViewConfig(
@@ -937,21 +950,21 @@ class HiGlassComponent extends React.Component {
 
     svgString = svgString.replace(/<a0:/g, '<');
     svgString = svgString.replace(/<\/a0:/g, '</');
-    
+
     // FF is fussier than Chrome, and requires dimensions on the SVG,
     // if it is to be used as an image src.
     // https://bugzilla.mozilla.org/show_bug.cgi?id=700533
     const w = this.canvasElement.width;
     const h = this.canvasElement.height;
     const dimensionedSvgString = `<svg width="${w}" height="${h}" ` + svgString.slice(4);
-    
+
     return dimensionedSvgString;
   }
 
   handleExportSVG() {
     download('export.svg', this.createSVGString());
   }
-  
+
   createPNGBlobPromise() {
     return new Promise((resolve, reject) => {
       // It would seem easier to call canvas.toDataURL()...
@@ -959,15 +972,15 @@ class HiGlassComponent extends React.Component {
       // and you don't have direct access to what is on-screen.
       // (You end up getting a PNG of the desired dimensions, but it is empty.)
       //
-      // We'd either need to 
+      // We'd either need to
       // - Turn on preserveDrawingBuffer and rerender, and add a callback
       // - Or leave it off, and somehow synchronously export before the swap
       // - Or look into low-level stuff like copyBufferSubData.
       //
       // Basing it on the SVG also guarantees us that the two exports are the same.
-      
+
       const svgString = this.createSVGString();
-      
+
       const img = new Image(this.canvasElement.width, this.canvasElement.height);
       img.src = "data:image/svg+xml;base64," + btoa(svgString);
       img.onload = () => {
@@ -980,10 +993,10 @@ class HiGlassComponent extends React.Component {
       };
     });
   }
-  
+
   handleExportPNG() {
     this.createPNGBlobPromise().then((blob) => {
-      download('export.png', blob) 
+      download('export.png', blob)
     });
   }
 
@@ -1026,7 +1039,7 @@ class HiGlassComponent extends React.Component {
         if (!this.xScales[key] || !this.yScales[key]) { continue; }
 
         if (key == uid) {// no need to notify oneself that the scales have changed
-          continue; 
+          continue;
         }
 
         const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key],
@@ -1722,15 +1735,15 @@ class HiGlassComponent extends React.Component {
         if (view.tracks.center[0].contents) {
           // combined track in the center
           for (const track of view.tracks.center[0].contents) {
-            centerHeight = Math.max(centerHeight, track.height 
+            centerHeight = Math.max(centerHeight, track.height
               ? track.height : defaultCenterHeight);
-            centerWidth = Math.max(centerWidth, track.width 
+            centerWidth = Math.max(centerWidth, track.width
               ? track.width : defaultCenterWidth);
           }
         } else {
-          centerHeight = view.tracks.center[0].height 
+          centerHeight = view.tracks.center[0].height
             ? view.tracks.center[0].height : defaultCenterHeight;
-          centerWidth = view.tracks.center[0].width 
+          centerWidth = view.tracks.center[0].width
             ? view.tracks.center[0].width : defaultCenterWidth;
         }
 
@@ -3156,7 +3169,7 @@ class HiGlassComponent extends React.Component {
       // console.log('1');
       const area = this.tiledAreasDivs[views[i].uid].getBoundingClientRect();
       // console.log('2');
-        
+
       const { top, left } = area;
       const bottom = top + area.height;
       const right = left + area.width;
@@ -3225,7 +3238,7 @@ class HiGlassComponent extends React.Component {
       sourceUid: this.uid,
       hoveredTracks,
     };
-    
+
     pubSub.publish(
       'app.mouseMove', evt
     );
@@ -3527,6 +3540,7 @@ class HiGlassComponent extends React.Component {
             onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
             onRangeSelection={this.rangeSelectionHandler.bind(this)}
             onScalesChanged={(x, y) => this.handleScalesChanged(view.uid, x, y)}
+            onTrackSourceChanged={this.onTrackSourceChangedBound}
             onTrackOptionsChanged={
               (trackId, options) =>
                 this.handleTrackOptionsChanged(view.uid, trackId, options)
@@ -3551,7 +3565,7 @@ class HiGlassComponent extends React.Component {
             }
             setCentersFunction={(c) => { this.setCenters[view.uid] = c; }}
             svgElement={this.state.svgElement}
-            trackSourceServers={this.props.viewConfig.trackSourceServers}
+            trackSourceServers={this.state.viewConfig.trackSourceServers}
             overlays={view.overlays}
             tracks={view.tracks}
             viewOptions={view.options}

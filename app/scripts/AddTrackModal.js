@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Modal, Button } from 'react-bootstrap';
 
 import TilesetFinder from './TilesetFinder';
+import TrackSourceEditor from './TrackSourceEditor';
 import PlotTypeChooser from './PlotTypeChooser';
 
 // Configs
@@ -24,17 +25,52 @@ class AddTrackModal extends React.Component {
 
     this.state = {
       selectedTilesets: [{ datatype: 'none' }],
-      normalizeTilesetUuid: null,
+      showSetTrackSources: false,
     };
+
+    this.onToggleSetTrackSourcesBound = this.onToggleSetTrackSources.bind(this);
+  }
+
+  onToggleSetTrackSources() {
+    this.setState(prevState => ({ showSetTrackSources: !prevState.showSetTrackSources }));
+  }
+
+  getOrientation(position) {
+    /**
+     * Get the track available track orientations for the given
+     * track position. Generally "top" or "bottom" equal "1d-horizontal",
+     * "left" or "right" correspond to "1d-vertical" and "center" means "2d".
+     *
+     * Arguments
+     * ---------
+     *  position: string
+     *
+     * Returns
+     * -------
+     *
+     *  A string containing the track orientation.
+     */
+    let orientation = null;
+
+    if (position === 'top' || position === 'bottom') {
+      orientation = '1d-horizontal';
+    } else if (position === 'left' || position === 'right') {
+      orientation = '1d-vertical';
+    } else {
+      orientation = '2d';
+    }
+
+    return orientation;
   }
 
   handleSubmit(evt) {
-    this.props.onTracksChosen(this.state.selectedTilesets,
+    this.props.onTracksChosen(
+      this.state.selectedTilesets,
       this.props.position,
-      this.props.host);
+      this.props.host
+    );
 
-    if (evt)
-      evt.preventDefault();
+    if (evt) evt.preventDefault();
   }
 
   selectedTilesetsChanged(selectedTilesets) {
@@ -97,50 +133,8 @@ class AddTrackModal extends React.Component {
     });
   }
 
-  getOrientation(position) {
-    /**
-     * Get the track available track orientations for the given
-     * track position. Generally "top" or "bottom" equal "1d-horizontal",
-     * "left" or "right" correspond to "1d-vertical" and "center" means "2d".
-     *
-     * Arguments
-     * ---------
-     *  position: string
-     *
-     * Returns
-     * -------
-     *
-     *  A string containing the track orientation.
-     */
-    let orientation = null;
-
-    if (position === 'top' || position === 'bottom') {
-      orientation = '1d-horizontal';
-    } else if (position === 'left' || position === 'right') {
-      orientation = '1d-vertical';
-    } else {
-      orientation = '2d';
-    }
-
-    return orientation;
-  }
-
   render() {
     const orientation = this.getOrientation(this.props.position);
-
-    const form = (
-      <div>
-        <TilesetFinder
-          onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
-          onTracksChosen={value => this.props.onTracksChosen(value, this.props.position)}
-          orientation={orientation}
-          datatype={this.props.datatype}
-          ref={(c) => { this.tilesetFinder = c; }}
-          selectedTilesetChanged={this.selectedTilesetsChanged.bind(this)}
-          trackSourceServers={this.props.trackSourceServers}
-        />
-      </div>
-    );
 
     return (
       <Modal
@@ -148,23 +142,46 @@ class AddTrackModal extends React.Component {
         show={this.props.show}
       >
         <Modal.Header closeButton>
-          <Modal.Title>{'Add Track'}</Modal.Title>
+          <Modal.Title>Add Track</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          { form }
-          { 
-            this.props.hidePlotTypeChooser ? null : 
-            <PlotTypeChooser
-              ref={(c) => { this.plotTypeChooser = c; }}
-              datatypes={this.state.selectedTilesets.map(x => x.datatype)}
-              onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
-              orientation={orientation}
+          <TilesetFinder
+            ref={(c) => { this.tilesetFinder = c; }}
+            datatype={this.props.datatype}
+            onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
+            onTracksChosen={value => this.props.onTracksChosen(value, this.props.position)}
+            orientation={orientation}
+            selectedTilesetChanged={this.selectedTilesetsChanged.bind(this)}
+            trackSourceServers={this.props.trackSourceServers}
+          />
+          {!this.props.hidePlotTypeChooser && (
+            <div>
+              <h5>Choose track type</h5>
+              <PlotTypeChooser
+                ref={(c) => { this.plotTypeChooser = c; }}
+                datatypes={this.state.selectedTilesets.map(x => x.datatype)}
+                onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
+                orientation={orientation}
+              />
+            </div>
+          )}
+          <button
+            className="hg-button"
+            onClick={this.onToggleSetTrackSourcesBound}
+            type="button"
+          >
+            Set track source servers
+          </button>
+          {this.state.showSetTrackSources && (
+            <TrackSourceEditor
+              onTrackSourceChanged={this.props.onTrackSourceChanged}
+              trackSources={this.props.trackSourceServers}
             />
-          }
+          )}
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.props.onCancel}>{'Cancel'}</Button>
-          <Button onClick={this.handleSubmit.bind(this)}>{'Submit'}</Button>
+          <Button onClick={this.props.onCancel}>Cancel</Button>
+          <Button onClick={this.handleSubmit.bind(this)}>Submit</Button>
         </Modal.Footer>
       </Modal>
     );
@@ -172,14 +189,18 @@ class AddTrackModal extends React.Component {
 }
 
 AddTrackModal.defaultProps = {
+  hidePlotTypeChooser: false,
   position: 'top',
   show: false,
 };
 
 AddTrackModal.propTypes = {
-  host: PropTypes.object,
+  datatype: PropTypes.string.isRequired,
+  hidePlotTypeChooser: PropTypes.bool,
+  host: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
   onTracksChosen: PropTypes.func.isRequired,
+  onTrackSourceChanged: PropTypes.func.isRequired,
   position: PropTypes.string,
   show: PropTypes.bool,
   trackSourceServers: PropTypes.array.isRequired,

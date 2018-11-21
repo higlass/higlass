@@ -416,8 +416,8 @@ const hgApi = hglib.viewer(
   { bounded: true },
 );
 
-hgApi.on('viewConfig', () => {
-  console.log('View Config changed');
+hgApi.on('viewConfig', (viewConfig) => {
+  console.log('View Config changed', JSON.parse(viewConfig).trackSourceServers);
 });
 </script>
 </html>

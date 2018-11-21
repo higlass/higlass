@@ -1,0 +1,38 @@
+.track-source {
+  margin-bottom: 0.125em;
+}
+
+.track-source-input {
+  position: relative;
+  margin-right: 0.125em;
+  border-radius: 0.25rem 0 0 0.25rem;
+
+  &:active,
+  &:focus,
+  &:hover {
+    z-index: 1;
+  }
+}
+
+.track-source-delete {
+  position: relative;
+  border-radius: 0;
+
+  &:active,
+  &:focus,
+  &:hover {
+    z-index: 1;
+  }
+}
+
+.track-source-save {
+  position: relative;
+  margin-left: 0.125em;
+  border-radius: 0 0.25rem 0.25rem 0;
+
+  &:active,
+  &:focus,
+  &:hover {
+    z-index: 1;
+  }
+}
