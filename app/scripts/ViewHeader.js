@@ -29,7 +29,6 @@ class ViewHeader extends React.Component {
     this.plusImg = null;
 
     this.state = {
-      addTrackPositionMenuUid: null,
       addTrackPositionMenuPosition: null,
       configMenuUid: null,
       configMenuPosition: null,
@@ -63,9 +62,8 @@ class ViewHeader extends React.Component {
    * The user has clicked on the 'plus' sign at the top of a TiledPlot
    * so we need to open the Track Position Chooser dialog
    */
-  handleAddTrackPositionMenuOpened(uid) {
+  handleAddTrackPositionMenuOpened() {
     this.setState({
-      addTrackPositionMenuUid: uid,
       addTrackPositionMenuPosition: this.plusImg.getBoundingClientRect(),
     });
   }
@@ -80,7 +78,6 @@ class ViewHeader extends React.Component {
     this.props.onTrackPositionChosen(position);
 
     this.setState({
-      addTrackPositionMenuUid: null,
       addTrackPositionMenuPosition: null,
     });
   }
@@ -95,7 +92,6 @@ class ViewHeader extends React.Component {
           onMenuClosed={
             () => {
               this.setState({
-                addTrackPositionMenuUid: null,
                 addTrackPositionMenuPosition: null,
               });
             }
@@ -119,20 +115,17 @@ class ViewHeader extends React.Component {
           onMenuClosed={() => this.setState({ configMenuUid: null })}
         >
           <ConfigViewMenu
-            orientation="left"
-            position={this.state.configMenuPosition}
-
-            onExportSVG={() => {
+            onClearView={() => {
               this.setState({ configMenuUid: null }); // hide the menu
-              this.props.onExportSVG();
+              this.props.onClearView();
             }}
             onExportPNG={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onExportPNG();
             }}
-            onClearView = {() => {
+            onExportSVG={() => {
               this.setState({ configMenuUid: null }); // hide the menu
-              this.props.onClearView();
+              this.props.onExportSVG();
             }}
             onExportViewAsJSON={() => {
               this.setState({ configMenuUid: null }); // hide the menu
@@ -154,13 +147,13 @@ class ViewHeader extends React.Component {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onLockZoomAndLocation(this.state.configMenuUid);
             }}
-            onProjectViewport={() => {
-              this.setState({ configMenuUid: null }); // hide the menu
-              this.props.onProjectViewport(this.state.configMenuUid);
-            }}
             onOptionsChanged={(newOptions) => {
               this.props.onViewOptionsChanged(newOptions);
               this.setState({ configMenuUid: null }); // hide the menu
+            }}
+            onProjectViewport={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onProjectViewport(this.state.configMenuUid);
             }}
             onTakeAndLockZoomAndLocation={() => {
               this.setState({ configMenuUid: null }); // hide the menu
@@ -198,6 +191,8 @@ class ViewHeader extends React.Component {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onZoomToData(this.state.configMenuUid);
             }}
+            orientation="left"
+            position={this.state.configMenuPosition}
           />
         </PopupMenu>
       );
@@ -236,21 +231,22 @@ class ViewHeader extends React.Component {
               <use xlinkHref="#select" />
             </svg>
           )}
-          <div 
+          <div
             styleName="multitrack-header-grabber"
             title="Drag to move the view"
           >
-
-            <div /><div /><div />
+            <div />
+            <div />
+            <div />
           </div>
-          {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR &&
+          {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR && (
             <div styleName="multitrack-header-search">
               {
                 this.props.isGenomePositionSearchBoxVisible &&
                 GenomePositionSearchBox
               }
             </div>
-          }
+          )}
         </div>
         <nav styleName="multitrack-header-nav-list">
           <svg
@@ -320,6 +316,7 @@ ViewHeader.propTypes = {
   onUnlockLocation: PropTypes.func.isRequired,
   onUnlockZoom: PropTypes.func.isRequired,
   onUnlockZoomAndLocation: PropTypes.func.isRequired,
+  onViewOptionsChanged: PropTypes.func.isRequired,
   onYankLocation: PropTypes.func.isRequired,
   onYankZoom: PropTypes.func.isRequired,
   onYankZoomAndLocation: PropTypes.func.isRequired,
