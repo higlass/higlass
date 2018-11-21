@@ -171,8 +171,12 @@ describe('Simple HiGlassComponent', () => {
 
           setTimeout(() => {
             api2.destroy();
-            removeDiv(div2);
-            done();
+            setTimeout(() => {
+              removeDiv(div2);
+              setTimeout(() => {
+                done();
+              }, 0);
+            }, 0);
           }, 0);
         }, 0);
       });
