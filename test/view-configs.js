@@ -1264,6 +1264,75 @@ export const simpleCenterViewConfig = {
   }
 };
 
+export const simple1And2dAnnotations = {
+  editable: true,
+  zoomFixed: false,
+  trackSourceServers: ['http://higlass.io/api/v1'],
+  views: [
+    {
+      uid: 'a',
+      initialXDomain: [1000000, 2000000],
+      initialYDomain: [1000000, 2000000],
+      tracks: {
+        top: [
+          {
+            uid: 'b',
+            type: 'horizontal-1d-annotations',
+            height: 100,
+            options: {
+              regions: [
+                [1000000, 2000000],
+              ],
+            }
+          }
+        ],
+        left: [],
+        center: [
+          {
+            type: 'combined',
+            height: 200,
+            contents: [
+              {
+                server: 'http://higlass.io/api/v1',
+                tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
+                uid: 'heatmap1',
+                type: 'heatmap',
+              },
+              {
+                type: '2d-chromosome-annotations',
+                uid: '2d-chromosome-annotations',
+                chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+                options: {
+                  minRectWidth: 6,
+                  minRectHeight: 6,
+                  regions: [
+                    [
+                      'chr1', 1000000, 2000000,
+                      'chr1', 1000000, 2000000,
+                      'rgba(255, 0, 0, 0.33)', 'rgba(255, 0, 0, 0.66)'
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        bottom: [],
+        right: []
+      },
+      layout: {
+        w: 12,
+        h: 12,
+        x: 0,
+        y: 0,
+        i: 'a',
+        moved: false,
+        static: false
+      }
+    }
+  ],
+};
+
 export const rectangleDomains = {
   editable: true,
   zoomFixed: false,

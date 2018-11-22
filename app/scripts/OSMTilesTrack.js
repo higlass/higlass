@@ -4,7 +4,7 @@ import * as PIXI from 'pixi.js';
 import PixiTrack from './PixiTrack';
 
 // Services
-import { 
+import {
   tileProxy
 } from './services';
 
@@ -22,10 +22,12 @@ class OSMTilesTrack extends PixiTrack {
    * @param server: The server to pull tiles from.
    * @param tilesetUid: The data set to get the tiles from the server
    */
-  constructor(scene, options, animate) {
+  constructor(context, options) {
+    super(context, options);
+    const { animate } = context;
+
     // Force OpenStreetMaps copyright
-    // options.name = `© OpenStreetMap${options.name ? `\n${options.name}` : ''}`;
-    super(scene, options);
+    // this.options.name = `© OpenStreetMap${options.name ? `\n${options.name}` : ''}`;
 
     // the tiles which should be visible (although they're not necessarily fetched)
     this.visibleTiles = new Set();

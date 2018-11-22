@@ -8,9 +8,6 @@ import DataFetcher from './DataFetcher';
 import PixiTrack from './PixiTrack';
 
 // Utils
-import { pubSub } from './services';
-
-// Utils
 import { debounce } from './utils';
 
 // Configs
@@ -28,7 +25,7 @@ import { ZOOM_DEBOUNCE } from './configs';
  * @param {string} defaultScaling: The default scaling type to use in case
  * 'scalingType' is null (e.g. 'linear' or 'log')
  *
- * @returns {array} An array of [string, scale] containin the scale type 
+ * @returns {array} An array of [string, scale] containin the scale type
  *  and a scale with an appropriately set domain and range
  */
 export function getValueScale(scalingType, minValue, pseudocountIn, maxValue, defaultScaling) {
@@ -36,7 +33,7 @@ export function getValueScale(scalingType, minValue, pseudocountIn, maxValue, de
 
   // purposely set to not equal pseudocountIn for now
   // eventually this will be an option
-  const pseudocount = 0; 
+  const pseudocount = 0;
 
   if (scalingTypeToUse === 'log' && minValue > 0) {
     return ['log', scaleLog().range([254, 0])
@@ -68,8 +65,17 @@ class TiledPixiTrack extends PixiTrack {
    * @param {function} onValueScaleChanged The range of values has changed so we need to inform
    *  the higher ups that the value scale has changed. Only occurs on tracks with ``dense`` data.
    */
-  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
-    super(scene, options);
+  constructor(context, options) {
+    super(context, options);
+    const {
+      pubSub,
+      dataConfig,
+      handleTilesetInfoReceived,
+      animate,
+      onValueScaleChanged
+    } = context;
+
+    this.pubSub = pubSub;
 
     // keep track of which render we're on so that we save ourselves
     // rerendering all rendering in the same version will have the same
@@ -111,7 +117,7 @@ class TiledPixiTrack extends PixiTrack {
     // if the tileset info is not found
     this.prevValueScale = null;
 
-    this.dataFetcher = new DataFetcher(dataConfig);
+    this.dataFetcher = new DataFetcher(dataConfig, this.pubSub);
 
     // To indicate that this track is requiring a tileset info
     this.tilesetInfo = null;
@@ -211,7 +217,7 @@ class TiledPixiTrack extends PixiTrack {
    * @param {string} event The event to listen for
    * @param {function} callback The callback to call when the event occurs. The
    *  parameters for the event depend on the event called.
-   * 
+   *
    * @example
    *
    * ..code-block::
@@ -648,7 +654,7 @@ class TiledPixiTrack extends PixiTrack {
     // 1. Check if all visible tiles are loaded
     // 2. If `true` then send out event
     if (this.areAllVisibleTilesLoaded()) {
-      pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
+      this.pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
     }
   }
 
@@ -675,7 +681,7 @@ class TiledPixiTrack extends PixiTrack {
       this.trackNotFoundText.visible = false;
     }
 
-    pubSub.publish('TiledPixiTrack.tilesDrawnStart', { uuid: this.uuid });
+    this.pubSub.publish('TiledPixiTrack.tilesDrawnStart', { uuid: this.uuid });
 
     super.draw();
 
@@ -683,7 +689,7 @@ class TiledPixiTrack extends PixiTrack {
       tilesetUid => this.drawTile(this.fetchedTiles[tilesetUid])
     );
 
-    pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
+    this.pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
   }
 
   /**

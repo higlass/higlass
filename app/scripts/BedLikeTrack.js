@@ -24,8 +24,8 @@ const MAX_TILE_ENTRIES = 5000;
 const MIN_RECT_WIDTH = 2;
 
 class BedLikeTrack extends HorizontalTiled1DPixiTrack {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
-    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
+  constructor(context, options) {
+    super(context, options);
     this.textFontSize = '10px';
     this.textFontFamily = 'Arial';
 
@@ -480,7 +480,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
       // scale the rectangles
       //
-      const tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) 
+      const tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
         / (this._xScale.domain()[1] - this._xScale.domain()[0]);
       const newRange = this._xScale.domain().map(tile.drawnAtScale);
 

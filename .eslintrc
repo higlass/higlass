@@ -19,10 +19,7 @@
     "ecmascript": 6
   },
   "globals": {
-    "beforeEach": true,
-    "describe": true,
-    "expect": true,
-    "it": true
+    "VERSION": false
   },
   "parserOptions": {
     "ecmaFeatures": {

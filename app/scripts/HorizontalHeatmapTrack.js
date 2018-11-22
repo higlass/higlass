@@ -17,26 +17,9 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
    * @param scene: A PIXI.js scene to draw everything to.
    * @param dataConfig: An object defining where the data should be pulled from
    */
-  constructor(
-    scene,
-    dataConfig,
-    handleTilesetInfoReceived,
-    options,
-    animate,
-    svgElement,
-    onValueScaleChanged,
-    onTrackOptionsChanged,
-  ) {
-    super(
-      scene,
-      dataConfig,
-      handleTilesetInfoReceived,
-      options,
-      animate,
-      svgElement,
-      onValueScaleChanged,
-      onTrackOptionsChanged,
-    );
+  constructor(context, options) {
+    super(context, options);
+    const { animate } = context;
 
     this.pMain = this.pMobile;
 
@@ -271,12 +254,12 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     if (tile.renderInfo) {
       // console.log('same scaletype', scaleType, tile.renderInfo.scaleType);
       if (tile.renderInfo.scaleType == scaleType) {
-        if (tile.renderInfo.scaleDomain 
+        if (tile.renderInfo.scaleDomain
           && tile.renderInfo.scaleDomain[0] == this.limitedValueScale.domain()[0]
           && tile.renderInfo.scaleDomain[1] == this.limitedValueScale.domain()[1])
           toUpdate = false;
       }
-    } 
+    }
 
     if (!toUpdate)
       return;

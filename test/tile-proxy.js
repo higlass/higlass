@@ -1,26 +1,29 @@
+/* eslint-env node, jasmine */
 import { expect } from 'chai';
-import api from '../app/scripts/services/tile-proxy';
 
+import tileProxy from '../app/scripts/services/tile-proxy';
+import { fake as fakePubSub } from '../app/scripts/hocs/with-pub-sub';
 
-describe('tile-proxy json', () => {
+describe('tileProxy.json()', () => {
   it('is a function', () => {
-    expect(typeof (api.json)).to.eql('function');
+    expect(typeof tileProxy.json).to.eql('function');
   });
 
   it('handles json callback', (done) => {
-    api.json(
+    tileProxy.json(
       'http://higlass.io/api/v1/available-chrom-sizes/',
       (status, jsonResponse) => {
         expect(Object.keys(jsonResponse)).to.eql(['count', 'results']);
         done();
-      }
+      },
+      fakePubSub
     );
   });
 });
 
 describe('tile-proxy text', () => {
   it('is a function', () => {
-    expect(typeof (api.json)).to.eql('function');
+    expect(typeof tileProxy.json).to.eql('function');
   });
 
   /*
@@ -29,13 +32,14 @@ describe('tile-proxy text', () => {
   is an uninformative timeout. Perhaps get rid of our catch?
   */
   it('handles text callback', (done) => {
-    api.text(
+    tileProxy.text(
       'http://higlass.io/api/v1/available-chrom-sizes/',
       (status, textResponse) => {
         expect(textResponse).to.have.string('count');
         expect(textResponse).to.have.string('results');
         done();
-      }
+      },
+      fakePubSub
     );
   });
 });

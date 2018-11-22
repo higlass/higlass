@@ -68,7 +68,7 @@ The function returns an instance of the public API of a HiGlass component.
 
 A full example of an inline HiGlass component can be found in the `HiGlass
 GitHub repository
-<https://github.com/hms-dbmi/higlass/blob/develop/app/api.html>`_.
+<https://github.com/higlass/higlass/blob/develop/app/api.html>`_.
 
 
 **Example**
