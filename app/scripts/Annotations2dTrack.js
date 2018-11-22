@@ -261,31 +261,43 @@ class Annotations2dTrack extends TiledPixiTrack {
       annotation.x, annotation.y, annotation.width, annotation.height
     ];
 
-    if (this.options.isClickable) {
-      let rectGfx = this.drawnAnnoGfx[uid];
-      if (!rectGfx) {
-        rectGfx = new PIXI.Graphics();
-        this.drawnAnnoGfx[uid] = rectGfx;
-      }
-
-      if (graphics.children.indexOf(rectGfx) === -1) {
-        graphics.addChild(rectGfx);
-      }
-
-      this._drawRect(rectGfx, viewPos, uid);
-
-      graphics.interactive = true;
-      rectGfx.interactive = true;
-      rectGfx.buttonMode = true;
-
-      rectGfx.mouseover = () => this.hover(rectGfx, viewPos, uid);
-      rectGfx.mouseout = () => this.blur(rectGfx, viewPos, uid);
-
-      rectGfx.mousedown = () => this.mouseDown();
-      rectGfx.mouseup = () => this.mouseUp(rectGfx, viewPos, uid);
-    } else {
-      graphics.drawRect(...viewPos);
+    let rectGfx = this.drawnAnnoGfx[uid];
+    if (!rectGfx) {
+      rectGfx = new PIXI.Graphics();
+      this.drawnAnnoGfx[uid] = rectGfx;
     }
+
+    if (graphics.children.indexOf(rectGfx) === -1) {
+      graphics.addChild(rectGfx);
+    }
+
+    this._drawRect(rectGfx, viewPos, uid);
+
+    graphics.interactive = true;
+    rectGfx.interactive = true;
+    rectGfx.buttonMode = true;
+
+    const payload = {
+      id,
+      uid,
+      dataPos,
+      importance,
+      info,
+      viewPos: [
+        annotation.x, annotation.y,
+        // To have the same format as `dataPos`, i.e.:
+        // a quadruple of [x0, y0, x1, y1]
+        annotation.x + annotation.width, annotation.y + annotation.height
+      ]
+    };
+
+    rectGfx.mouseover = () => this.hover(rectGfx, viewPos, uid);
+    rectGfx.mouseout = () => this.blur(rectGfx, viewPos, uid);
+
+    rectGfx.mousedown = () => this.mouseDown();
+    rectGfx.mouseup = event => this.mouseUp(
+      rectGfx, viewPos, uid, event, payload
+    );
 
     if (!silent) {
       this.publish(
@@ -347,17 +359,22 @@ class Annotations2dTrack extends TiledPixiTrack {
     return proc => proc(graphics, viewPos, uid);
   }
 
-  click(graphics, viewPos, uid) {
+  click(graphics, viewPos, uid, event, payload) {
     this.select(graphics, viewPos, uid);
+    pubSub.publish('app.click', {
+      type: 'annotation',
+      event,
+      payload
+    });
   }
 
   mouseDown() {
     this.sT = performance.now();
   }
 
-  mouseUp(graphics, viewPos, uid) {
+  mouseUp(graphics, viewPos, uid, event, payload) {
     if (performance.now() - this.sT <= MOUSE_CLICK_TIME) {
-      this.click(graphics, viewPos, uid);
+      this.click(graphics, viewPos, uid, event, payload);
     }
   }
 

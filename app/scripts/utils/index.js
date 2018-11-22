@@ -55,6 +55,7 @@ export { default as rgbToHex } from './rgb-to-hex';
 export { default as scalesCenterAndK } from './scales-center-and-k';
 export { default as scalesToGenomeLoci } from './scales-to-genome-loci';
 export { default as showMousePosition } from './show-mouse-position';
+export { default as some } from './some';
 export { default as sum } from './sum';
 export { default as svgLine } from './svg-line';
 export { default as tileToCanvas } from './tile-to-canvas';

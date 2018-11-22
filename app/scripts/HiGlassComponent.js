@@ -240,7 +240,8 @@ class HiGlassComponent extends React.Component {
     this.prevMouseHoverTrack = null;
     this.zooming = false;
 
-    // Bounded functions
+    // Bound functions
+    this.appClickHandlerBound = this.appClickHandler.bind(this);
     this.keyDownHandlerBound = this.keyDownHandler.bind(this);
     this.keyUpHandlerBound = this.keyUpHandler.bind(this);
     this.resizeHandlerBound = this.resizeHandler.bind(this);
@@ -419,7 +420,7 @@ class HiGlassComponent extends React.Component {
     let views = {};
     if (typeof viewConfig === 'string') {
       // Load external viewConfig
-      tileProxy.json(viewConfig, (error, remoteViewConfig) => {        
+      tileProxy.json(viewConfig, (error, remoteViewConfig) => {
         viewConfig = remoteViewConfig;
         this.setState({
           views: this.processViewConfig(
@@ -3349,6 +3350,13 @@ class HiGlassComponent extends React.Component {
    */
   hideHoverMenu() {
     select('body').selectAll('.track-mouseover-menu').remove();
+  }
+
+  /**
+   * Handle internally broadcasted click events
+   */
+  appClickHandler(data) {
+    this.apiPublish('click', data);
   }
 
   /**

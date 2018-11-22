@@ -4,12 +4,21 @@ import * as PIXI from 'pixi.js';
 import PixiTrack from './PixiTrack';
 import ChromosomeInfo from './ChromosomeInfo';
 
+import pubSub from './services/pub-sub';
+
+// Maximum delay in ms between mousedown and mouseup that is registered as a
+// click. Note we need to use mousedown and mouseup as PIXI doesn't recognize
+// click events with our current setup. Since most UIs treat long clicks as
+// either something special or a cancelation we follow best practices and
+// implement a threshold on the delay as well.
+const MAX_CLICK_DELAY = 300;
+
 class Chromosome2DAnnotations extends PixiTrack {
   constructor(context, options) {
     super(context, options);
     const { chromInfoPath, pubSub } = context;
 
-    this.drawnRects = new Set();
+    this.rects = {};
 
     ChromosomeInfo(chromInfoPath, (newChromInfo) => {
       this.chromInfo = newChromInfo;
@@ -20,8 +29,6 @@ class Chromosome2DAnnotations extends PixiTrack {
   draw() {
     if (!this.chromInfo) { return; }
 
-    this.drawnRects.clear();
-
     const minRectWidth = this.options.minRectWidth ? this.options.minRectWidth : 10;
     const minRectHeight = this.options.minRectWidth ? this.options.minRectHeight : 10;
 
@@ -29,10 +36,25 @@ class Chromosome2DAnnotations extends PixiTrack {
     const graphics = this.pMain;
     graphics.clear();
 
+    // The time stamp is used to keep track which rectangles have been drawn per
+    // draw call. Each rectangle previously drawn that is not visible anymore
+    // (i.e., is not drawn in the current draw call) will be removed at the end
+    // by checking against the time stamp.
+    const timeStamp = performance.now();
+
     // Regions have to follow the following form:
     // chrom1, start1, end1, chrom2, start2, end2, color-fill, color-line, min-width, min-height
     // If `color-line` is not given, `color-fill` is used
-    for (const region of this.options.regions) {
+    this.options.regions.forEach((region) => {
+      const id = region.slice(0, 6).join('-');
+
+      if (!this.rects[id]) {
+        this.rects[id] = { graphics: new PIXI.Graphics() };
+        graphics.addChild(this.rects[id].graphics);
+      }
+
+      this.rects[id].timeStamp = timeStamp;
+
       const colorFill = color(region[6]);
       let colorLine = color(region[7]);
 
@@ -74,7 +96,29 @@ class Chromosome2DAnnotations extends PixiTrack {
       }
 
       graphics.drawRect(startX, startY, width, height);
-    }
+
+      // Make annotation clickable
+      this.rects[id].graphics.clear();
+      this.rects[id].graphics.interactive = true;
+      this.rects[id].graphics.buttonMode = true;
+      this.rects[id].graphics.hitArea = new PIXI.Rectangle(
+        startX, startY, width, height
+      );
+
+      this.rects[id].graphics.mousedown = () => {
+        this.rects[id].mouseDownTime = performance.now();
+      };
+
+      this.rects[id].graphics.mouseup = (event) => {
+        if (performance.now() - this.rects[id].mouseDownTime < MAX_CLICK_DELAY) {
+          pubSub.publish('app.click', {
+            type: 'annotation',
+            event,
+            payload: region
+          });
+        }
+      };
+    });
   }
 
   setPosition(newPosition) {

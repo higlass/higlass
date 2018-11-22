@@ -1,15 +1,31 @@
 /* eslint-env node, jasmine */
 import {
+  some,
   waitForTransitionsFinished,
   waitForTilesLoaded,
 } from '../app/scripts/utils';
 
 import {
   simpleCenterViewConfig,
+  simple1And2dAnnotations,
 } from './view-configs';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
+
+function findCanvas(element) {
+  if (element.tagName.toLowerCase() === 'canvas') return element;
+  let canvas;
+  some((childElement) => {
+    const el = findCanvas(childElement);
+    if (el) {
+      canvas = el;
+      return true;
+    }
+    return false;
+  })(element.children);
+  return canvas;
+}
 
 describe('Simple HiGlassComponent', () => {
   let div = null;
@@ -178,6 +194,57 @@ describe('Simple HiGlassComponent', () => {
               }, 0);
             }, 0);
           }, 0);
+        }, 0);
+      });
+    });
+
+    // Fritz: This test fails but if you comment out all the other tests it will
+    // succeed!? Also, if you move this test to the top it will succeed but
+    // tests number 3, 4, and 6 will fail all of a sudden! Therefore, I assume
+    // the test itself work just fine but there's something fundamentally broken
+    // with our test setup or with HG. Either way, the HG instances must have
+    // some shared state that influences each other. I am giving up for now but
+    // we need to look into this again.
+    it('listens to click events', (done) => {
+      [div, api] = createElementAndApi(
+        simple1And2dAnnotations,
+        { editable: false, bounded: true }
+      );
+
+      const canvas = findCanvas(div);
+
+      let clicked = 0;
+
+      api.on('click', () => { clicked++; });
+
+      const createPointerEvent = (type, x, y) => new PointerEvent(type, {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+        // WARNING: The following property is absolutely crucial to have the
+        // event being picked up by PIXI. Do not remove under any circumstances!
+        pointerType: 'mouse',
+        screenX: x,
+        screenY: y,
+        clientX: x,
+        clientY: y
+      });
+
+      setTimeout(() => {
+        canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 100));
+        canvas.dispatchEvent(createPointerEvent('pointerup', 100, 100));
+      }, 0);
+
+      waitForTilesLoaded(api.getComponent(), () => {
+        setTimeout(() => {
+          canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 200));
+          canvas.dispatchEvent(createPointerEvent('pointerup', 100, 200));
+        }, 0);
+
+        setTimeout(() => {
+          expect(clicked).to.equal(2);
+
+          done();
         }, 0);
       });
     });

@@ -125,28 +125,28 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
  *  True if any of the tracks are waiting for tiles, false otherwise.
  */
 export const isWaitingOnTiles = (hgc) => {
-  for (const track of hgc.iterateOverTracks()) {    
+  for (const track of hgc.iterateOverTracks()) {
     let trackObj = getTrackObjectFromHGC(hgc, track.viewId, track.trackId);
 
-    if (track.track.type === 'viewport-projection-vertical'
-        || track.track.type === 'viewport-projection-horizontal'
-        || track.track.type === 'viewport-projection-center'
-        || track.track.type === 'osm-tiles'
-        || track.track.type === 'osm-2d-tile-ids') continue;
+    if (
+      track.track.type === 'viewport-projection-vertical'
+      || track.track.type === 'viewport-projection-horizontal'
+      || track.track.type === 'viewport-projection-center'
+      || track.track.type === 'osm-tiles'
+      || track.track.type === 'osm-2d-tile-ids'
+      || track.track.type === 'horizontal-1d-annotations'
+      || track.track.type === 'vertical-1d-annotations'
+      || track.track.type === '2d-chromosome-annotations'
+    ) continue;
 
     if (trackObj.originalTrack) { trackObj = trackObj.originalTrack; }
 
-    if (!trackObj) {
-      // console.warn('no track obj', getTrackObject(hgc, track.viewId, track.trackId));
-    }
-
     if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
-      // console.warn('no tileset info');
+      console.warn(
+        `Track uuid:${trackObj.uuid} has no tileset or chromosome info`
+      );
       return true;
     }
-
-    // if (trackObj.fetching)
-    //   console.log('trackObj.fetching.size:', trackObj.fetching);
 
     if (trackObj.fetching && trackObj.fetching.size) {
       return true;
@@ -198,6 +198,8 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
 };
 
 export const removeHGComponent = (div) => {
+  if (!div) return;
+
   ReactDOM.unmountComponentAtNode(div);
   document.body.removeChild(div);
 };

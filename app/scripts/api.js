@@ -15,11 +15,13 @@ import {
   MOUSE_TOOL_SELECT,
 } from './configs';
 
-const api = function api(context, pubSub) {
+
+const createApi = function api(context, pubSub) {
   const self = context;
-  const apiPubSub = createPubSub();
 
   let pubSubs = [];
+
+  const apiPubSub = createPubSub();
 
   const destroy = () => {
     pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
@@ -103,8 +105,10 @@ const api = function api(context, pubSub) {
        *  The following enpoint restricts the size of range selection equally for 1D or
        *  2D tracks to a certain length (specified in absolute coordinates).
        *
-       * @param {Number} [minSize = 0]  Minimum range selection. ``undefined`` unsets the value.
-       * @param {Number} [maxSize = Infinity] Maximum range selection. ``undefined`` unsets the value.
+       * @param {Number} [minSize = 0]  Minimum range selection.
+       *   ``undefined`` unsets the value.
+       * @param {Number} [maxSize = Infinity] Maximum range selection.
+       *   ``undefined`` unsets the value.
        * @example
        *
        * hgv.activateTool('select'); // Activate select tool
@@ -212,7 +216,8 @@ const api = function api(context, pubSub) {
        * @example
        * hgv.shareViewConfigAsLink('http://localhost:8989/api/v1/viewconfs')
        * .then((sharedViewConfig) => {
-       *   console.log(`Shared view config (ID: ${sharedViewConfig.id}) is available at ${sharedViewConfig.url}`)
+       *   const { id, url } = sharedViewConfig;
+       *   console.log(`Shared view config (ID: ${id}) is available at ${url}`)
        * })
        * .catch((err) => { console.error('Something did not work. Sorry', err); })
        */
@@ -494,6 +499,10 @@ const api = function api(context, pubSub) {
           : listenerId;
 
         switch (event) {
+          case 'click':
+            apiPubSub.unsubscribe('click', callback);
+            break;
+
           case 'location':
             self.offLocationChange(viewId, listenerId);
             break;
@@ -528,6 +537,16 @@ const api = function api(context, pubSub) {
        * - mouseMoveZoom
        *
        * **Event types**
+       *
+       * ``click``: Returns clicked objects. (Currently only clicks on 1D annotations are captured.)
+       *
+       * .. code-block:: javascript
+       *
+       *     {
+       *       type: 'annotation',
+       *       event: { ... },
+       *       payload: [230000000, 561000000]
+       *     }
        *
        * ``location:`` Returns an object describing the visible region
        *
@@ -611,6 +630,9 @@ const api = function api(context, pubSub) {
        */
       on(event, callback, viewId, callbackId) {
         switch (event) {
+          case 'click':
+            return apiPubSub.subscribe('click', callback);
+
           case 'location':
             // returns a set of scales (xScale, yScale) on every zoom event
             return self.onLocationChange(viewId, callback, callbackId);
@@ -627,10 +649,9 @@ const api = function api(context, pubSub) {
           default:
             return undefined;
         }
-      },
+      }
     }
   };
 };
 
-
-export default api;
+export default createApi;
