@@ -239,8 +239,6 @@ class HiGlassComponent extends React.Component {
     this.keyDownHandlerBound = this.keyDownHandler.bind(this);
     this.keyUpHandlerBound = this.keyUpHandler.bind(this);
     this.resizeHandlerBound = this.resizeHandler.bind(this);
-    this.mousewheelHandlerBound = this.mousewheelHandler.bind(this);
-    this.wheelHandlerBound = this.wheelHandler.bind(this);
     this.resizeHandlerBound = this.resizeHandler.bind(this);
     this.dispatchEventBound = this.dispatchEvent.bind(this);
     this.animateOnMouseMoveHandlerBound = this.animateOnMouseMoveHandler.bind(this);
@@ -250,7 +248,7 @@ class HiGlassComponent extends React.Component {
     this.trackDroppedHandlerBound = this.trackDroppedHandler.bind(this);
     this.animateBound = this.animate.bind(this);
     this.requestReceivedHandlerBound = this.requestReceivedHandler.bind(this);
-    this.onWheelHandlerBound = this.onWheelHandler.bind(this);
+    this.wheelHandlerBound = this.wheelHandler.bind(this);
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
     this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
   }
@@ -261,7 +259,6 @@ class HiGlassComponent extends React.Component {
     domEvent.register('scroll', document);
     domEvent.register('resize', window);
     domEvent.register('orientationchange', window);
-    domEvent.register('mousewheel', window);
     domEvent.register('wheel', window);
     domEvent.register('mousedown', window, true);
     domEvent.register('mouseup', window, true);
@@ -273,8 +270,7 @@ class HiGlassComponent extends React.Component {
       pubSub.subscribe('keydown', this.keyDownHandlerBound),
       pubSub.subscribe('keyup', this.keyUpHandlerBound),
       pubSub.subscribe('resize', this.resizeHandlerBound),
-      pubSub.subscribe('mousewheel', this.onWheelHandlerBound),
-      pubSub.subscribe('wheel', this.onWheelHandlerBound),
+      pubSub.subscribe('wheel', this.wheelHandlerBound),
       pubSub.subscribe('orientationchange', this.resizeHandlerBound),
       pubSub.subscribe('app.event', this.dispatchEventBound),
       pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandlerBound),
@@ -325,9 +321,6 @@ class HiGlassComponent extends React.Component {
     this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
     window.addEventListener('focus', this.boundRefreshView);
-
-    // The mousewheel is already listened to. This handler is also never removed
-    // window.addEventListener('mousewheel', this.mousewheelHandler.bind(this), true);
 
     dictValues(this.state.views).forEach((v) => {
       if (!v.layout) {
@@ -501,7 +494,6 @@ class HiGlassComponent extends React.Component {
     domEvent.unregister('keydown', document);
     domEvent.unregister('keyup', document);
     domEvent.unregister('scroll', document);
-    domEvent.unregister('mousewheel', window);
     domEvent.unregister('wheel', window);
     domEvent.unregister('mousedown', window);
     domEvent.unregister('mouseup', window);
@@ -521,18 +513,6 @@ class HiGlassComponent extends React.Component {
     if (!this.canvasElement) return;
 
     forwardEvent(e, this.canvasElement);
-  }
-
-  mousewheelHandler(e) {
-    if (hasParent(e.target, this.topDiv) && !this.isZoomFixed()) {
-      e.preventDefault();
-    }
-  }
-
-  wheelHandler(e) {
-    if (hasParent(e.target, this.topDiv) && !this.isZoomFixed()) {
-      e.preventDefault();
-    }
   }
 
   trackDroppedHandler() {
@@ -3409,20 +3389,24 @@ class HiGlassComponent extends React.Component {
     );
   }
 
-  onWheelHandler(evt) {
-    // console.log('owh:', evt);
-    const zoomFixed = (
+  wheelHandler(evt) {
+    const isZoomFixed = (
       this.props.zoomFixed
       || this.props.options.zoomFixed
       || this.props.viewConfig.zoomFixed
     );
 
-    if (evt.forwarded || zoomFixed) {
+    const isTargetCanvas = evt.target === this.canvasElement;
+
+    if (evt.forwarded || isZoomFixed || isTargetCanvas) {
       evt.stopPropagation();
       evt.preventDefault();
-      // console.trace('stopped', evt.sourceUid);
 
       return;
+    }
+
+    if (hasParent(evt.target, this.topDiv) && !isZoomFixed) {
+      evt.preventDefault();
     }
 
     if (evt.path.indexOf(this.topDiv) < 0) {
@@ -3431,21 +3415,15 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
-    // console.log('evt:', evt);
-
     // forward the wheel event back to the TrackRenderer that it should go to
     // this is so that we can zoom when there's a viewport projection present
     const hoveredTiledPlot = this.getTiledPlotAtPosition(evt.clientX, evt.clientY);
-    // console.log('hoveredTiledPlot:', hoveredTiledPlot);
 
     if (hoveredTiledPlot) {
       const { trackRenderer } = hoveredTiledPlot;
-      evt.forwarded = true;
 
-      // console.log('here1', evt);
       if (evt) {
-        // console.trace('here', evt.sourceUid);
-        forwardEvent(evt, trackRenderer.eventTracker );
+        forwardEvent(evt, trackRenderer.eventTracker);
 
         // evt.stopPropagation();
         evt.preventDefault();
