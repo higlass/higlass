@@ -12,7 +12,7 @@ Hi-C and other genomic data from different experimental conditions and can be us
 identify salient outcomes of experimental perturbations, generate new hypotheses, and share
 the results with the community.
 
-A live instance can be found at [http://higlass.io](http://higlass.io). A [Docker container](https://github.com/hms-dbmi/higlass-docker) is available for running an instance locally, although we recommend using the [higlass-manage](https://github.com/pkerpedjiev/higlass-manage) package to start, stop and configure local instances.
+A live instance can be found at [http://higlass.io](http://higlass.io). A [Docker container](https://github.com/higlass/higlass-docker) is available for running an instance locally, although we recommend using the [higlass-manage](https://github.com/pkerpedjiev/higlass-manage) package to start, stop and configure local instances.
 
 For documentation about how to use and install HiGlass, please visit [http://docs.higlass.io](http://docs.higlass.io).
 
@@ -83,10 +83,10 @@ const api = hglib.createHgComponent(
 ```
 ### Related
 
-* [HiGlass Manage](https://github.com/hms-dbmi/higlass-manage) - Easy to use interface for deploying a local HiGlass instance
-* [HiGlass Docker](https://github.com/hms-dbmi/higlass-docker) - Build an image containing all the components necessary to deploy HiGlass
-* [HiGlass Server](https://github.com/hms-dbmi/higlass-server) - Server component for serving multi-resolution data
-* [HiGlass Website](https://github.com/hms-dbmi/higlass-website) - The code for the web site hosted at http://higlass.io
+* [HiGlass Manage](https://github.com/higlass/higlass-manage) - Easy to use interface for deploying a local HiGlass instance
+* [HiGlass Docker](https://github.com/higlass/higlass-docker) - Build an image containing all the components necessary to deploy HiGlass
+* [HiGlass Server](https://github.com/higlass/higlass-server) - Server component for serving multi-resolution data
+* [HiGlass Website](https://github.com/higlass/higlass-website) - The code for the web site hosted at http://higlass.io
 
 ### License
 

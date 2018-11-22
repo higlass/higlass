@@ -181,4 +181,6 @@ Or to test a more specific code block:
     
 Tests of deletion and modification routes:
 
+.. code-block:: bash
+
     python manage.py test tilesets.tests.PermissionsTest
