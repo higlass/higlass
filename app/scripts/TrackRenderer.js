@@ -390,12 +390,8 @@ class TrackRenderer extends React.Component {
    * @param  {Object}  e  Event to be dispatched.
    */
   dispatchEvent(e) {
-    // console.log('de e:', e);
-    if (e.sourceUid === this.uid) {
-      if (e.type !== 'contextmenu') {
-        // console.log('forwarding', this.element);
-        forwardEvent(e, this.element);
-      }
+    if (e.sourceUid === this.uid && e.type !== 'contextmenu') {
+      forwardEvent(e, this.element);
     }
   }
 
@@ -1566,20 +1562,9 @@ class TrackRenderer extends React.Component {
 
     this.eventTracker = this.eventTrackerOld;
 
-    /*
-    this.element.addEventListener('mousewheel', (evt) => {
-      console.log('element mw', evt)
-    })
-
-    this.element.addEventListener('wheel', (evt) => {
-      console.log('wheel', evt);
-    })
-    */
-
     this.eventTracker.addEventListener('click', this.boundForwardEvent);
     this.eventTracker.addEventListener('contextmenu', this.boundForwardContextMenu);
     this.eventTracker.addEventListener('dblclick', this.boundForwardEvent);
-    this.eventTracker.addEventListener('mousewheel', this.boundForwardEvent);
     this.eventTracker.addEventListener('wheel', this.boundForwardEvent);
     this.eventTracker.addEventListener('dragstart', this.boundForwardEvent);
     this.eventTracker.addEventListener('selectstart', this.boundForwardEvent);
@@ -1615,7 +1600,7 @@ class TrackRenderer extends React.Component {
     this.eventTracker.removeEventListener('click', this.boundForwardEvent);
     this.eventTracker.removeEventListener('contextmenu', this.boundForwardContextMenu);
     this.eventTracker.removeEventListener('dblclick', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('mousewheel', this.boundForwardEvent);
+    this.eventTracker.removeEventListener('wheel', this.boundForwardEvent);
     this.eventTracker.removeEventListener('dragstart', this.boundForwardEvent);
     this.eventTracker.removeEventListener('selectstart', this.boundForwardEvent);
 
@@ -1644,14 +1629,13 @@ class TrackRenderer extends React.Component {
     window.removeEventListener('scroll', this.boundScrollEvent);
   }
 
-  scrollEvent(e) {
+  scrollEvent() {
     this.elementPos = this.element.getBoundingClientRect();
   }
 
   forwardEvent(e) {
-    // console.log('fe e:', e);
-
     e.sourceUid = this.uid;
+    e.forwarded = true;
     this.props.pubSub.publish('app.event', e);
   }
 
