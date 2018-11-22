@@ -5,22 +5,9 @@ import { tileProxy } from './services';
 import { showMousePosition } from './utils';
 
 class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
-  constructor(
-    scene,
-    dataConfig,
-    handleTilesetInfoReceived,
-    options,
-    animate,
-    onValueScaleChanged,
-  ) {
-    super(
-      scene,
-      dataConfig,
-      handleTilesetInfoReceived,
-      options,
-      animate,
-      onValueScaleChanged
-    );
+  constructor(context, options) {
+    super(context, options);
+    const { animate } = context;
 
     this.axis = new AxisPixi(this);
     this.pBase.addChild(this.axis.pAxis);

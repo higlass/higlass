@@ -9,7 +9,7 @@ import { requestsInFlight } from '../services';
 import {
   getTrackObjectFromHGC,
   getTrackRenderer,
-} from '.';
+} from './get-higlass-components';
 
 import HiGlassComponent from '../HiGlassComponent';
 

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import slugid from 'slugid';
 
-import { pubSub } from './services';
+import withPubSub from './hocs/with-pub-sub';
 
 import {
   DEFAULT_TRACKS_FOR_DATATYPE,
@@ -11,7 +11,7 @@ import {
 // Styles
 import '../styles/DragListeningDiv.module.scss';
 
-export default class DragListeningDiv extends React.Component {
+class DragListeningDiv extends React.Component {
   constructor(props) {
     super(props);
 
@@ -54,7 +54,7 @@ export default class DragListeningDiv extends React.Component {
           };
 
           this.props.onTrackDropped(newTrack);
-          pubSub.publish('trackDropped', newTrack);
+          this.pubSub.publish('trackDropped', newTrack);
         }}
         style={Object.assign({
           background,
@@ -80,3 +80,5 @@ DragListeningDiv.propTypes = {
   onTrackDropped: PropTypes.func,
   position: PropTypes.string.isRequired,
 };
+
+export default withPubSub(DragListeningDiv);

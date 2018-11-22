@@ -9,8 +9,6 @@ export const getTrackObjectFromHGC = (hgc, viewUid, trackUid) => {
     newViewUid = Object.values(hgc.state.views)[0].uid;
   }
 
-  // console.log('newViewUid', newViewUid, newTrackUid);
-
   return hgc.tiledPlots[newViewUid].trackRenderer.getTrackObject(newTrackUid);
 };
 

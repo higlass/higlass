@@ -1,14 +1,4 @@
-/* eslint-env node, jasmine, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
-import Adapter from 'enzyme-adapter-react-16';
-
-import { expect } from 'chai';
-
-// Utils
+/* eslint-env node, jasmine */
 import {
   some,
   waitForTransitionsFinished,
@@ -20,11 +10,8 @@ import {
   simple1And2dAnnotations,
 } from './view-configs';
 
-import {
-  viewer
-} from '../app/scripts/hglib';
-
-configure({ adapter: new Adapter() });
+import createElementAndApi from './utils/create-element-and-api';
+import removeDiv from './utils/remove-div';
 
 function findCanvas(element) {
   if (element.tagName.toLowerCase() === 'canvas') return element;
@@ -40,57 +27,48 @@ function findCanvas(element) {
   return canvas;
 }
 
-function createElementAndAPI(viewConfig, options) {
-  const div = global.document.createElement('div');
-  global.document.body.appendChild(div);
-
-  div.setAttribute('style', 'width:600px; height: 400px; background-color: lightgreen');
-
-  const api = viewer(div, viewConfig, options);
-
-  return [div, api];
-}
-
 describe('Simple HiGlassComponent', () => {
   let div = null;
   let api = null;
 
   describe('Options tests', () => {
     it('creates an editable component', () => {
-      ([div, api] = createElementAndAPI(simpleCenterViewConfig));
+      [div, api] = createElementAndApi(simpleCenterViewConfig);
 
       const component = api.getComponent();
 
-      expect(Object.keys(component.viewHeaders).length).to.be.above(0);
+      expect(Object.keys(component.viewHeaders).length).toBeGreaterThan(0);
     });
 
     it('zooms to negative domain', (done) => {
-      ([div, api] = createElementAndAPI(simpleCenterViewConfig,
-        { editable: false }));
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false }
+      );
 
       api.zoomTo('a', 6.069441699652629, 6.082905691828387,
         -23.27906532393644, -23.274695776773807, 100);
 
       waitForTransitionsFinished(api.getComponent(), () => {
-        expect(api.getComponent().yScales.a.domain()[0]).to.be.below(0);
+        expect(api.getComponent().yScales.a.domain()[0]).toBeLessThan(0);
         done();
       });
     });
 
     it('zooms to just x and y', (done) => {
-      ([div, api] = createElementAndAPI(simpleCenterViewConfig,
-        { editable: false }));
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false }
+      );
 
       api.zoomTo('a', 6.069441699652629, 6.082905691828387, null, null, 100);
 
       waitForTransitionsFinished(api.getComponent(), () => {
         waitForTilesLoaded(api.getComponent(), () => {
-          expect(api.getComponent().yScales.a.domain()[0]).to.be.above(2);
+          expect(api.getComponent().yScales.a.domain()[0]).toBeGreaterThan(2);
 
           const trackObj = api.getTrackObject('a', 'heatmap1');
 
           const rd = trackObj.getVisibleRectangleData(285, 156, 11, 11);
-          expect(rd.data.length).to.eql(1);
+          expect(rd.data.length).toEqual(1);
 
           done();
         });
@@ -100,36 +78,40 @@ describe('Simple HiGlassComponent', () => {
     it('zoom to a nonexistent view', () => {
       // complete me, should throw an error rather than complaining
       // "Cannot read property 'copy' of undefined thrown"
-      ([div, api] = createElementAndAPI(simpleCenterViewConfig,
-        { editable: false }));
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false }
+      );
 
       expect(() => api.zoomTo('nonexistent', 6.069441699652629, 6.082905691828387,
         -23.274695776773807, -23.27906532393644))
-        .to.throw('Invalid viewUid. Current present uuids: a');
+        .toThrow('Invalid viewUid. Current present uuids: a');
     });
 
     it('creates a non editable component', () => {
-      ([div, api] = createElementAndAPI(simpleCenterViewConfig,
-        { editable: false }));
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false }
+      );
 
       const component = api.getComponent();
 
-      expect(Object.keys(component.viewHeaders).length).to.eql(0);
+      expect(Object.keys(component.viewHeaders).length).toEqual(0);
     });
 
     it('retrieves a track', () => {
-      ([div, api] = createElementAndAPI(simpleCenterViewConfig,
-        { editable: false }));
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false }
+      );
 
       const viewconf = api.getViewConfig();
       const trackObj = api.getTrackObject(viewconf.views[0].tracks.center[0].uid);
 
-      expect(trackObj).to.exist; // eslint-disable-line no-unused-expressions
+      expect(trackObj).toBeDefined();
     });
 
     it('zooms to a negative location', (done) => {
-      ([div, api] = createElementAndAPI(simpleCenterViewConfig,
-        { editable: false, bounded: true }));
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false, bounded: true }
+      );
 
       api.zoomTo('a', -10000000, 10000000);
 
@@ -137,6 +119,94 @@ describe('Simple HiGlassComponent', () => {
         waitForTilesLoaded(api.getComponent(), () => {
           done();
         });
+      });
+    });
+
+    it('APIs are independent', (done) => {
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false, bounded: true }
+      );
+
+      const [div2, api2] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false, bounded: true }
+      );
+
+      setTimeout(() => {
+        expect(api).not.toEqual(api2);
+
+        const hgc = api.getComponent();
+        const hgc2 = api2.getComponent();
+
+        let counter = 0;
+        let counter2 = 0;
+
+        api.on('rangeSelection', () => { ++counter; });
+        api2.on('rangeSelection', () => { ++counter2; });
+
+        hgc.apiPublish('rangeSelection', 'a');
+        hgc.apiPublish('rangeSelection', 'a');
+
+        expect(counter).toEqual(2);
+        expect(counter2).toEqual(0);
+
+        hgc2.apiPublish('rangeSelection', 'b');
+
+        expect(counter).toEqual(2);
+        expect(counter2).toEqual(1);
+
+        let moved = false;
+        let moved2 = false;
+
+        const createMouseEvent = (type, x, y) => new MouseEvent(type, {
+          view: window,
+          bubbles: true,
+          cancelable: true,
+          // WARNING: The following property is absolutely crucial to have the
+          // event being picked up by PIXI. Do not remove under any circumstances!
+          // pointerType: 'mouse',
+          screenX: x,
+          screenY: y,
+          clientX: x,
+          clientY: y
+        });
+
+        api.on('mouseMoveZoom', () => { moved = true; });
+        api2.on('mouseMoveZoom', () => { moved2 = true; });
+
+        waitForTilesLoaded(api.getComponent(), () => {
+          setTimeout(() => {
+            div
+              .querySelector('.center-track')
+              .dispatchEvent(createMouseEvent('mousemove', 330, 230));
+
+            setTimeout(() => {
+              expect(moved).toEqual(true);
+              expect(moved2).toEqual(false);
+
+              setTimeout(() => {
+                div2
+                  .querySelector('.center-track')
+                  .dispatchEvent(createMouseEvent('mousemove', 330, 730));
+
+                setTimeout(() => {
+                  expect(moved2).toEqual(true);
+
+                  setTimeout(() => {
+                    api2.destroy();
+
+                    setTimeout(() => {
+                      removeDiv(div2);
+
+                      setTimeout(() => {
+                        done();
+                      }, 0);
+                    }, 0);
+                  }, 0);
+                }, 0);
+              }, 0);
+            }, 0);
+          }, 0);
+        }, 0);
       });
     });
 
@@ -148,9 +218,8 @@ describe('Simple HiGlassComponent', () => {
     // some shared state that influences each other. I am giving up for now but
     // we need to look into this again.
     it('listens to click events', (done) => {
-      [div, api] = createElementAndAPI(
-        simple1And2dAnnotations,
-        { editable: false, bounded: true }
+      [div, api] = createElementAndApi(
+        simple1And2dAnnotations, { editable: false, bounded: true }
       );
 
       const canvas = findCanvas(div);
@@ -166,40 +235,36 @@ describe('Simple HiGlassComponent', () => {
         // WARNING: The following property is absolutely crucial to have the
         // event being picked up by PIXI. Do not remove under any circumstances!
         pointerType: 'mouse',
-        screenX: x,
-        screenY: y,
+        screenX: x + 80,
+        screenY: y + 80,
         clientX: x,
         clientY: y
       });
 
-      setTimeout(() => {
-        canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 100));
-        canvas.dispatchEvent(createPointerEvent('pointerup', 100, 100));
-      }, 0);
-
       waitForTilesLoaded(api.getComponent(), () => {
         setTimeout(() => {
-          canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 200));
-          canvas.dispatchEvent(createPointerEvent('pointerup', 100, 200));
-        }, 0);
+          canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 100));
+          canvas.dispatchEvent(createPointerEvent('pointerup', 100, 100));
 
-        setTimeout(() => {
-          expect(clicked).to.equal(2);
+          setTimeout(() => {
+            canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 200));
+            canvas.dispatchEvent(createPointerEvent('pointerup', 100, 200));
+          }, 0);
 
-          done();
+          setTimeout(() => {
+            expect(clicked).toEqual(2);
+
+            done();
+          }, 0);
         }, 0);
       });
     });
 
     afterEach(() => {
-      if (api) {
-        api.destroy();
-        api = undefined;
-      }
-      if (div) {
-        document.body.removeChild(div);
-        div = undefined;
-      }
+      api.destroy();
+      removeDiv(div);
+      api = undefined;
+      div = undefined;
     });
 
     // it('creates a new component with different options and checks'

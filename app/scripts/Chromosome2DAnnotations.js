@@ -4,8 +4,6 @@ import * as PIXI from 'pixi.js';
 import PixiTrack from './PixiTrack';
 import ChromosomeInfo from './ChromosomeInfo';
 
-import pubSub from './services/pub-sub';
-
 // Maximum delay in ms between mousedown and mouseup that is registered as a
 // click. Note we need to use mousedown and mouseup as PIXI doesn't recognize
 // click events with our current setup. Since most UIs treat long clicks as
@@ -14,15 +12,17 @@ import pubSub from './services/pub-sub';
 const MAX_CLICK_DELAY = 300;
 
 class Chromosome2DAnnotations extends PixiTrack {
-  constructor(scene, chromInfoPath, options) {
-    super(scene, options);
+  constructor(context, options) {
+    super(context, options);
+    const { chromInfoPath, pubSub } = context;
 
+    this.pubSub = pubSub;
     this.rects = {};
 
     ChromosomeInfo(chromInfoPath, (newChromInfo) => {
       this.chromInfo = newChromInfo;
       this.draw();
-    });
+    }, this.pubSub);
   }
 
   draw() {
@@ -110,7 +110,7 @@ class Chromosome2DAnnotations extends PixiTrack {
 
       this.rects[id].graphics.mouseup = (event) => {
         if (performance.now() - this.rects[id].mouseDownTime < MAX_CLICK_DELAY) {
-          pubSub.publish('app.click', {
+          this.pubSub.publish('app.click', {
             type: 'annotation',
             event,
             payload: region

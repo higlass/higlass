@@ -108,5 +108,7 @@ export default {
   factories,
   services,
   utils,
-  configs
+  configs,
+  // Defined globally by webpack.
+  VERSION
 };

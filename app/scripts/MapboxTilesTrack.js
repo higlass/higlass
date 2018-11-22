@@ -9,17 +9,15 @@ class MapboxTilesTrack extends OSMTilesTrack {
    * @param server: The server to pull tiles from.
    * @param tilesetUid: The data set to get the tiles from the server
    */
-  constructor(scene, options, animate, accessToken) {
-    // Force Mapbox and OpenStreetMaps copyright
-    // options.name = `© Mapbox © OpenStreetMap${options.name ? `\n${options.name}` : ''}`;
-    super(scene, options, animate);
+  constructor(context, options) {
+    super(context, options);
 
+    // Force Mapbox and OpenStreetMaps copyright
     this.style = options.style;
 
     if (!this.options.accessToken) {
-        this.errorTextText = "No access token provided in the viewconf options ('accessToken' option)."
-
-        this.drawError();
+      this.errorTextText = "No access token provided in the viewconf options ('accessToken' option)."
+      this.drawError();
     }
   }
 

@@ -1,10 +1,10 @@
 import * as PIXI from 'pixi.js';
+import createPubSub from 'pub-sub-es';
 
 import TiledPixiTrack from './TiledPixiTrack';
 
 // Services
-import { pubSub, tileProxy } from './services';
-import { create } from './services/pub-sub';
+import { tileProxy } from './services';
 
 // Utils
 import { colorToHex, max, min } from './utils';
@@ -12,8 +12,9 @@ import { colorToHex, max, min } from './utils';
 const MOUSE_CLICK_TIME = 250;
 
 class Annotations2dTrack extends TiledPixiTrack {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
-    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
+  constructor(context, options) {
+    super(context, options);
+    const { pubSub } = context;
 
     this.drawnAnnotations = {};
     this.drawnAnnoGfx = {};
@@ -22,7 +23,7 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     this.options.minSquareSize = +this.options.minSquareSize;
 
-    const { publish, subscribe, unsubscribe } = create({});
+    const { publish, subscribe, unsubscribe } = createPubSub();
     this.publish = publish;
     this.subscribe = subscribe;
     this.unsubscribe = unsubscribe;

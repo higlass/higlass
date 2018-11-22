@@ -1,4 +1,5 @@
 import ReactDOM from 'react-dom';
+import createPubSub from 'pub-sub-es';
 
 import {
   setDarkTheme,
@@ -14,26 +15,24 @@ import {
   MOUSE_TOOL_SELECT,
 } from './configs';
 
-import pubSub, { create } from './services/pub-sub';
 
-const createApi = function api(context) {
+const createApi = function api(context, pubSub) {
   const self = context;
 
-  let stack = {};
   let pubSubs = [];
 
-  const apiPubSub = create(stack);
+  const apiPubSub = createPubSub();
 
   const destroy = () => {
     pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     pubSubs = [];
-    stack = {};
   };
 
-  // Public API
+  // Internal API
   return {
     destroy,
     publish: apiPubSub.publish,
+    // Public API
     public: {
       /**
        * Set an auth header to be included with all tile requests.
@@ -45,7 +44,7 @@ const createApi = function api(context) {
         setTileProxyAuthHeader(newHeader);
 
         // we need to re-request all the tiles
-        this.reload();
+        self.reload();
       },
 
       /**
@@ -72,6 +71,7 @@ const createApi = function api(context) {
       },
 
       destroy() {
+        destroy();
         ReactDOM.unmountComponentAtNode(self.topDiv.parentNode);
       },
 
@@ -653,6 +653,5 @@ const createApi = function api(context) {
     }
   };
 };
-
 
 export default createApi;

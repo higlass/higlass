@@ -6,8 +6,8 @@ import AxisPixi from './AxisPixi';
 import { colorToHex } from './utils';
 
 class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+  constructor(context, options) {
+    super(context, options);
 
     this.axis = new AxisPixi(this);
     this.pBase.addChild(this.axis.pAxis);
