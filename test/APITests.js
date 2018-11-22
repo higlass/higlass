@@ -174,23 +174,35 @@ describe('Simple HiGlassComponent', () => {
         api2.on('mouseMoveZoom', () => { moved2 = true; });
 
         waitForTilesLoaded(api.getComponent(), () => {
-          div
-            .querySelector('.center-track')
-            .dispatchEvent(createMouseEvent('mousemove', 330, 230));
-          expect(moved).toEqual(true);
-          expect(moved2).toEqual(false);
-
-          div2
-            .querySelector('.center-track')
-            .dispatchEvent(createMouseEvent('mousemove', 330, 730));
-          expect(moved2).toEqual(true);
-
           setTimeout(() => {
-            api2.destroy();
+            div
+              .querySelector('.center-track')
+              .dispatchEvent(createMouseEvent('mousemove', 330, 230));
+
             setTimeout(() => {
-              removeDiv(div2);
+              expect(moved).toEqual(true);
+              expect(moved2).toEqual(false);
+
               setTimeout(() => {
-                done();
+                div2
+                  .querySelector('.center-track')
+                  .dispatchEvent(createMouseEvent('mousemove', 330, 730));
+
+                setTimeout(() => {
+                  expect(moved2).toEqual(true);
+
+                  setTimeout(() => {
+                    api2.destroy();
+
+                    setTimeout(() => {
+                      removeDiv(div2);
+
+                      setTimeout(() => {
+                        done();
+                      }, 0);
+                    }, 0);
+                  }, 0);
+                }, 0);
               }, 0);
             }, 0);
           }, 0);
@@ -207,8 +219,7 @@ describe('Simple HiGlassComponent', () => {
     // we need to look into this again.
     it('listens to click events', (done) => {
       [div, api] = createElementAndApi(
-        simple1And2dAnnotations,
-        { editable: false, bounded: true }
+        simple1And2dAnnotations, { editable: false, bounded: true }
       );
 
       const canvas = findCanvas(div);
@@ -224,27 +235,27 @@ describe('Simple HiGlassComponent', () => {
         // WARNING: The following property is absolutely crucial to have the
         // event being picked up by PIXI. Do not remove under any circumstances!
         pointerType: 'mouse',
-        screenX: x,
-        screenY: y,
+        screenX: x + 80,
+        screenY: y + 80,
         clientX: x,
         clientY: y
       });
 
-      setTimeout(() => {
-        canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 100));
-        canvas.dispatchEvent(createPointerEvent('pointerup', 100, 100));
-      }, 0);
-
       waitForTilesLoaded(api.getComponent(), () => {
         setTimeout(() => {
-          canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 200));
-          canvas.dispatchEvent(createPointerEvent('pointerup', 100, 200));
-        }, 0);
+          canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 100));
+          canvas.dispatchEvent(createPointerEvent('pointerup', 100, 100));
 
-        setTimeout(() => {
-          expect(clicked).to.equal(2);
+          setTimeout(() => {
+            canvas.dispatchEvent(createPointerEvent('pointerdown', 100, 200));
+            canvas.dispatchEvent(createPointerEvent('pointerup', 100, 200));
+          }, 0);
 
-          done();
+          setTimeout(() => {
+            expect(clicked).toEqual(2);
+
+            done();
+          }, 0);
         }, 0);
       });
     });
