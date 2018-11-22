@@ -20,7 +20,7 @@
     "build-watch": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; webpack --config ./webpack.config.js --mode development --watch; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css;",
     "build": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; webpack --config ./webpack.config.js --mode development; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css;",
     "compile": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; webpack --config ./webpack.config.js --mode production; cp build/hglib.min.js dist/; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css; zip -r dist.zip dist",
-    "test": "karma start karma.conf.js",
+    "test": "karma start karma.conf.js --single-run",
     "test-watch": "npm run build && karma start karma.conf.js"
   },
   "repository": {

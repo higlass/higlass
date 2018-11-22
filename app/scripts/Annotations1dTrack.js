@@ -3,6 +3,15 @@ import * as PIXI from 'pixi.js';
 
 import PixiTrack from './PixiTrack';
 
+import pubSub from './services/pub-sub';
+
+// Maximum delay in ms between mousedown and mouseup that is registered as a
+// click. Note we need to use mousedown and mouseup as PIXI doesn't recognize
+// click events with out current setup. Since most UIs treat long clicks as
+// either something special or a cancelation we follow best practices and
+// implement a threshold on the delay as well.
+import { MAX_CLICK_DELAY } from './configs';
+
 class Annotations1dTrack extends PixiTrack {
   constructor(scene, options, isVertical) {
     super(scene, options);
@@ -10,14 +19,12 @@ class Annotations1dTrack extends PixiTrack {
     this.options = options;
     this.isVertical = isVertical;
 
-    this.drawnRects = new Set();
+    this.rects = {};
 
     this.defaultColor = color('red');
   }
 
   draw() {
-    this.drawnRects.clear();
-
     const globalMinRectWidth = typeof this.options.minRectWidth !== 'undefined'
       ? this.options.minRectWidth
       : 10;
@@ -53,10 +60,25 @@ class Annotations1dTrack extends PixiTrack {
     const graphics = this.pMain;
     graphics.clear();
 
+    // The time stamp is used to keep track which rectangles have been drawn per
+    // draw call. Each rectangle previously drawn that is not visible anymore
+    // (i.e., is not drawn in the current draw call) will be removed at the end
+    // by checking against the time stamp.
+    const timeStamp = performance.now();
+
     // Regions have to follow the following form:
     // start, end, fill, stroke, fillOpacity, strokeOpcaity, min-size
     // If `color-line` is not given, `color-fill` is used
     this.options.regions.forEach((region) => {
+      const id = `${region[0]}-${region[1]}`;
+
+      if (!this.rects[id]) {
+        this.rects[id] = { graphics: new PIXI.Graphics() };
+        graphics.addChild(this.rects[id].graphics);
+      }
+
+      this.rects[id].timeStamp = timeStamp;
+
       const fill = color(region[2]) || globalFill;
       let stroke = color(region[3]) || globalStroke;
 
@@ -164,13 +186,46 @@ class Annotations1dTrack extends PixiTrack {
         );
       }
 
+      // Make annotation clickable
+      this.rects[id].graphics.clear();
+      this.rects[id].graphics.interactive = true;
+      this.rects[id].graphics.buttonMode = true;
+
       graphics.beginFill(fillHex, +region[4] || globalFillOpacity);
       if (this.isVertical) {
         graphics.drawRect(0, start, this.dimensions[0], width);
+        this.rects[id].graphics.hitArea = new PIXI.Rectangle(
+          0, start, this.dimensions[0], width
+        );
       } else {
         graphics.drawRect(start, 0, width, this.dimensions[1]);
+        this.rects[id].graphics.hitArea = new PIXI.Rectangle(
+          start, 0, width, this.dimensions[1]
+        );
       }
+
+      this.rects[id].graphics.mousedown = () => {
+        this.rects[id].mouseDownTime = performance.now();
+      };
+
+      this.rects[id].graphics.mouseup = (event) => {
+
+        if (performance.now() - this.rects[id].mouseDownTime < MAX_CLICK_DELAY) {
+          pubSub.publish('app.click', {
+            type: 'annotation',
+            event,
+            payload: region
+          });
+        }
+      };
     });
+
+    // Remove outdated rects, i.e., rects whose time stamp is not the current
+    // time stamp stored above.
+    Object
+      .values(this.rects)
+      .filter(rect => rect.timeStamp !== timeStamp)
+      .forEach(rect => graphics.removeChild(rect.graphics));
   }
 
   setPosition(newPosition) {

@@ -18,7 +18,7 @@ import ChromosomeInfo from './ChromosomeInfo';
 
 import { createSymbolIcon } from './symbol';
 import { all as icons } from './icons';
-import api, { destroy as apiDestroy, publish as apiPublish } from './api';
+import createApi from './api';
 
 // Services
 import {
@@ -215,7 +215,12 @@ class HiGlassComponent extends React.Component {
     this.attachedToDOM = false;
 
     // Set up API
-    this.api = api(this);
+    const {
+      public: api, destroy: apiDestroy, publish: apiPublish
+    } = createApi(this);
+    this.api = api;
+    this.apiDestroy = apiDestroy;
+    this.apiPublish = apiPublish;
 
     this.viewChangeListener = [];
 
@@ -229,7 +234,8 @@ class HiGlassComponent extends React.Component {
     this.prevMouseHoverTrack = null;
     this.zooming = false;
 
-    // Bounded functions
+    // Bound functions
+    this.appClickHandlerBound = this.appClickHandler.bind(this);
     this.keyDownHandlerBound = this.keyDownHandler.bind(this);
     this.keyUpHandlerBound = this.keyUpHandler.bind(this);
     this.resizeHandlerBound = this.resizeHandler.bind(this);
@@ -263,6 +269,7 @@ class HiGlassComponent extends React.Component {
     domEvent.register('mousemove', window);
 
     this.pubSubs.push(
+      pubSub.subscribe('app.click', this.appClickHandlerBound),
       pubSub.subscribe('keydown', this.keyDownHandlerBound),
       pubSub.subscribe('keyup', this.keyUpHandlerBound),
       pubSub.subscribe('resize', this.resizeHandlerBound),
@@ -408,7 +415,7 @@ class HiGlassComponent extends React.Component {
     let views = {};
     if (typeof viewConfig === 'string') {
       // Load external viewConfig
-      tileProxy.json(viewConfig, (error, remoteViewConfig) => {        
+      tileProxy.json(viewConfig, (error, remoteViewConfig) => {
         viewConfig = remoteViewConfig;
         this.setState({
           views: this.processViewConfig(
@@ -504,7 +511,7 @@ class HiGlassComponent extends React.Component {
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
 
-    apiDestroy();
+    this.apiDestroy();
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
@@ -937,21 +944,21 @@ class HiGlassComponent extends React.Component {
 
     svgString = svgString.replace(/<a0:/g, '<');
     svgString = svgString.replace(/<\/a0:/g, '</');
-    
+
     // FF is fussier than Chrome, and requires dimensions on the SVG,
     // if it is to be used as an image src.
     // https://bugzilla.mozilla.org/show_bug.cgi?id=700533
     const w = this.canvasElement.width;
     const h = this.canvasElement.height;
     const dimensionedSvgString = `<svg width="${w}" height="${h}" ` + svgString.slice(4);
-    
+
     return dimensionedSvgString;
   }
 
   handleExportSVG() {
     download('export.svg', this.createSVGString());
   }
-  
+
   createPNGBlobPromise() {
     return new Promise((resolve, reject) => {
       // It would seem easier to call canvas.toDataURL()...
@@ -959,15 +966,15 @@ class HiGlassComponent extends React.Component {
       // and you don't have direct access to what is on-screen.
       // (You end up getting a PNG of the desired dimensions, but it is empty.)
       //
-      // We'd either need to 
+      // We'd either need to
       // - Turn on preserveDrawingBuffer and rerender, and add a callback
       // - Or leave it off, and somehow synchronously export before the swap
       // - Or look into low-level stuff like copyBufferSubData.
       //
       // Basing it on the SVG also guarantees us that the two exports are the same.
-      
+
       const svgString = this.createSVGString();
-      
+
       const img = new Image(this.canvasElement.width, this.canvasElement.height);
       img.src = "data:image/svg+xml;base64," + btoa(svgString);
       img.onload = () => {
@@ -980,10 +987,10 @@ class HiGlassComponent extends React.Component {
       };
     });
   }
-  
+
   handleExportPNG() {
     this.createPNGBlobPromise().then((blob) => {
-      download('export.png', blob) 
+      download('export.png', blob)
     });
   }
 
@@ -1026,7 +1033,7 @@ class HiGlassComponent extends React.Component {
         if (!this.xScales[key] || !this.yScales[key]) { continue; }
 
         if (key == uid) {// no need to notify oneself that the scales have changed
-          continue; 
+          continue;
         }
 
         const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key],
@@ -1722,15 +1729,15 @@ class HiGlassComponent extends React.Component {
         if (view.tracks.center[0].contents) {
           // combined track in the center
           for (const track of view.tracks.center[0].contents) {
-            centerHeight = Math.max(centerHeight, track.height 
+            centerHeight = Math.max(centerHeight, track.height
               ? track.height : defaultCenterHeight);
-            centerWidth = Math.max(centerWidth, track.width 
+            centerWidth = Math.max(centerWidth, track.width
               ? track.width : defaultCenterWidth);
           }
         } else {
-          centerHeight = view.tracks.center[0].height 
+          centerHeight = view.tracks.center[0].height
             ? view.tracks.center[0].height : defaultCenterHeight;
-          centerWidth = view.tracks.center[0].width 
+          centerWidth = view.tracks.center[0].width
             ? view.tracks.center[0].width : defaultCenterWidth;
         }
 
@@ -2181,8 +2188,8 @@ class HiGlassComponent extends React.Component {
 
     if (!this.props.options.bounded) {
       view.layout.h = Math.ceil(
-        (totalTrackHeight + MARGIN_HEIGHT)
-        / (this.state.rowHeight + MARGIN_HEIGHT),
+        (totalTrackHeight + MARGIN_HEIGHT) /
+        (this.state.rowHeight + MARGIN_HEIGHT),
       );
     }
   }
@@ -3018,7 +3025,7 @@ class HiGlassComponent extends React.Component {
    */
   rangeSelectionHandler(range) {
     this.rangeSelection = range;
-    apiPublish('rangeSelection', range);
+    this.apiPublish('rangeSelection', range);
   }
 
   offViewChange(listenerId) {
@@ -3156,7 +3163,7 @@ class HiGlassComponent extends React.Component {
       // console.log('1');
       const area = this.tiledAreasDivs[views[i].uid].getBoundingClientRect();
       // console.log('2');
-        
+
       const { top, left } = area;
       const bottom = top + area.height;
       const right = left + area.width;
@@ -3225,7 +3232,7 @@ class HiGlassComponent extends React.Component {
       sourceUid: this.uid,
       hoveredTracks,
     };
-    
+
     pubSub.publish(
       'app.mouseMove', evt
     );
@@ -3343,10 +3350,17 @@ class HiGlassComponent extends React.Component {
   }
 
   /**
+   * Handle internally broadcasted click events
+   */
+  appClickHandler(data) {
+    this.apiPublish('click', data);
+  }
+
+  /**
    * Handle mousemove and zoom events.
    */
   mouseMoveZoomHandler(data) {
-    apiPublish('mouseMoveZoom', data);
+    this.apiPublish('mouseMoveZoom', data);
   }
 
   /**
