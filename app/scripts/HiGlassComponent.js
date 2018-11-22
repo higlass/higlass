@@ -275,6 +275,7 @@ class HiGlassComponent extends React.Component {
     this.domEvent.register('mousemove', window);
 
     this.pubSubs.push(
+      this.pubSub.subscribe('app.click', this.appClickHandlerBound),
       this.pubSub.subscribe('keydown', this.keyDownHandlerBound),
       this.pubSub.subscribe('keyup', this.keyUpHandlerBound),
       this.pubSub.subscribe('resize', this.resizeHandlerBound),
