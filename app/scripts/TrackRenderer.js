@@ -1210,6 +1210,14 @@ class TrackRenderer extends React.Component {
         server: trimTrailingSlash(track.server),
         tilesetUid: track.tilesetUid
       };
+
+      if (track.fileUrl) {
+        dataConfig.fileUrl = track.fileUrl;
+      }
+
+      if (track.filetype) {
+        dataConfig.filetype = track.filetype;
+      }
     }
 
     switch (track.type) {
