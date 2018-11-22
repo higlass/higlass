@@ -3,8 +3,6 @@ import * as PIXI from 'pixi.js';
 
 import PixiTrack from './PixiTrack';
 
-import pubSub from './services/pub-sub';
-
 // Maximum delay in ms between mousedown and mouseup that is registered as a
 // click. Note we need to use mousedown and mouseup as PIXI doesn't recognize
 // click events with out current setup. Since most UIs treat long clicks as
@@ -16,6 +14,7 @@ class Annotations1dTrack extends PixiTrack {
   constructor(context, options, isVertical) {
     super(context, options);
 
+    this.pubSub = context.pubSub;
     this.options = options;
     this.isVertical = isVertical;
 
@@ -209,9 +208,8 @@ class Annotations1dTrack extends PixiTrack {
       };
 
       this.rects[id].graphics.mouseup = (event) => {
-
         if (performance.now() - this.rects[id].mouseDownTime < MAX_CLICK_DELAY) {
-          pubSub.publish('app.click', {
+          this.pubSub.publish('app.click', {
             type: 'annotation',
             event,
             payload: region
