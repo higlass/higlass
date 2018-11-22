@@ -1,14 +1,20 @@
 ## v1.3.0
 
-- Added TiledPixiTrack.on event handler
-- Added getTrackObject to exports
+- Added `TiledPixiTrack.on` event handler to listen to data changes
+- Added several API endpoints: `getComponent()`, `setAuthHeader()`, `getAuthHeader()`,
+- Added export of several utility functions: `waitForJsonComplete()`, `waitForTilesLoaded()`, `waitForTransitionsFinished()`, `mountHGComponent()`, `getTrackObjectFromHGC()`
 - Added support for overlay tracks
-- Minor bug fix wherein valueScaleMin and valueScaleMax weren't used when set to 0
+- Added support for click event handling of 1D and 2D annotations from `1d-annotation` and `chromosome-2d-annotations` tracks
 - Cloned views split vertically first (#259)
 - Change component height when a new viewconf is passed in
 - Add a fudge factor to ensure that the entire view is shown in the grid layout
-- Fix minified build
+- Refactored the pub-sub service to avoid implicit global event listening
 - Fix a minor visual glitch in the gene annotation track
+- Fix several issue with SVG export
+- Minor bug fix wherein valueScaleMin and valueScaleMax weren't used when set to 0
+- Fix #401
+- Fix #395
+- Fix #360
 
 ## v1.2.8
 
