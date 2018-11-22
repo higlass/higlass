@@ -38,8 +38,8 @@ export const VerticalRuleMixin = Mixin(superclass => class extends superclass {
 });
 
 export default class VerticalRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
-  constructor(stage, xPosition, options, animate) {
-    super(stage, options, animate);
+  constructor(pubSub, stage, xPosition, options, animate) {
+    super(pubSub, stage, options, animate);
 
     this.xPosition = xPosition;
   }

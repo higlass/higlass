@@ -33,17 +33,17 @@ const viewConfig = {
   trackSourceServers: [
     'http://higlass.io/api/v1'
   ],
-  exportViewUrl: 'http://higlass.io/api/v1/viewconfs/',
+  exportViewUrl: 'http://localhost:8000/api/v1/viewconfs/',
   views: [
     {
       uid: 'aa',
       initialXDomain: [
-        7595655.0000270605,
-        2507738795.9999733
+        -128227010.6076158,
+        3227095876.810823
       ],
       initialYDomain: [
-        -545671929.4383738,
-        3061006380.438374
+        -679063376.6830564,
+        3737688490.1136293
       ],
       autocompleteSource: 'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
       genomePositionSearchBoxVisible: false,
@@ -51,170 +51,17 @@ const viewConfig = {
       tracks: {
         top: [
           {
-            name: 'wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig',
-            created: '2017-02-03T17:46:58.349271Z',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'b6qFe7fOSnaX-YkP2kzN1w',
-            uid: 'WCGssXHmQTGOkdRgweYKkQ',
-            type: 'horizontal-bar',
-            options: {
-              labelColor: 'black',
-              labelPosition: 'topLeft',
-              axisPositionHorizontal: 'right',
-              barFillColor: 'darkgreen',
-              valueScaling: 'linear',
-              trackBorderWidth: 0,
-              trackBorderColor: 'black',
-              labelTextOpacity: 0.4,
-              barOpacity: 1,
-              name: 'wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig'
-            },
-            width: 479,
-            height: 20,
-            position: 'top'
-          },
-          {
-            name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
-            created: '2017-02-03T00:28:06.909619Z',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
-            uid: 'YLnxkBvQQxG-UNLxP9wR8g',
-            type: 'horizontal-heatmap',
-            options: {
-              labelPosition: 'bottomRight',
-              labelColor: 'black',
-              colorRange: [
-                'white',
-                'rgba(245,166,35,1.0)',
-                'rgba(208,2,27,1.0)',
-                'black'
-              ],
-              maxZoom: null,
-              trackBorderWidth: 0,
-              trackBorderColor: 'black',
-              name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
-              backgroundColor: '#eeeeee'
-            },
-            width: 479,
-            height: 85,
-            transforms: [
-              {
-                name: 'ICE',
-                value: 'weight'
-              }
-            ],
-            position: 'top'
-          },
-          {
-            name: 'Gene Annotations (hg19)',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            uid: 'BEEMEjU7QCa2krDO9C0yOQ',
-            type: 'horizontal-gene-annotations',
-            options: {
-              labelPosition: 'outerTop',
-              name: 'Gene Annotations (hg19)',
-              labelColor: 'black',
-              plusStrandColor: 'blue',
-              minusStrandColor: 'red',
-              trackBorderWidth: 0,
-              trackBorderColor: 'black',
-              showMousePosition: false,
-              mousePositionColor: '#999999'
-            },
-            width: 479,
-            height: 60,
-            position: 'top',
-            header: ''
-          },
-          {
-            name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
-            type: 'horizontal-line',
-            options: {
-              labelColor: 'red',
-              labelPosition: 'outerLeft',
-              axisPositionHorizontal: 'right',
-              lineStrokeColor: 'blue',
-              name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
-              valueScaling: 'log',
-              lineStrokeWidth: 1,
-              trackBorderWidth: 0,
-              trackBorderColor: 'black',
-              labelTextOpacity: 0.4,
-              showMousePosition: false,
-              mousePositionColor: '#999999',
-              showTooltip: false
-            },
-            width: 479,
-            height: 20,
-            position: 'top',
-            uid: 'RzZlBf58Q7WanbmbZRv-lA'
-          },
-          {
             chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
             type: 'horizontal-chromosome-labels',
             position: 'top',
             name: 'Chromosome Labels (hg19)',
             height: 30,
             uid: 'I1QUF22JQJuJ38j9PS4iqw',
-            options: {
-              showMousePosition: false,
-              mousePositionColor: '#999999'
-            },
-            width: 479
+            options: {},
+            width: 667
           }
         ],
         left: [
-          {
-            name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
-            type: 'vertical-line',
-            options: {
-              labelColor: 'red',
-              labelPosition: 'outerLeft',
-              axisPositionHorizontal: 'right',
-              lineStrokeColor: 'blue',
-              name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
-              valueScaling: 'log',
-              axisPositionVertical: 'top',
-              lineStrokeWidth: 1,
-              trackBorderWidth: 0,
-              trackBorderColor: 'black',
-              labelTextOpacity: 0.4,
-              showMousePosition: false,
-              showTooltip: false,
-              mousePositionColor: '#999999'
-            },
-            width: 20,
-            position: 'left',
-            uid: 'Y8NKUAFQR1SYGrYJMbEoeQ',
-            height: 691
-          },
-          {
-            type: 'vertical-gene-annotations',
-            width: 60,
-            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            server: 'http://higlass.io/api/v1',
-            position: 'left',
-            name: 'Gene Annotations (hg19)',
-            options: {
-              labelPosition: 'bottomRight',
-              name: 'Gene Annotations (hg19)',
-              labelColor: 'black',
-              plusStrandColor: 'blue',
-              minusStrandColor: 'red',
-              trackBorderWidth: 0,
-              trackBorderColor: 'black',
-              showMousePosition: false,
-              mousePositionColor: '#999999'
-            },
-            uid: 'OgnAEKSHRaG-gR1RqPOuBQ',
-            height: 691,
-            header: ''
-          },
           {
             chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
             type: 'vertical-chromosome-labels',
@@ -222,22 +69,30 @@ const viewConfig = {
             name: 'Chromosome Labels (hg19)',
             width: 30,
             uid: 'a-mFiHnBQ8uuI6UG3USWVA',
-            options: {
-              showMousePosition: false,
-              mousePositionColor: '#999999'
-            },
-            height: 691
+            options: {},
+            height: 828
           }
         ],
         center: [
           {
             uid: 'c1',
             type: 'combined',
-            height: 691,
+            height: 828,
             contents: [
               {
-                server: 'http://higlass.io/api/v1',
-                tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
+                data: {
+                  type: 'divided',
+                  'children': [
+                    {
+                      server: 'http://higlass.io/api/v1',
+                      tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
+                    },
+                    {
+                      server: 'http://higlass.io/api/v1',
+                      tilesetUid: 'ZCvntCKST0KUvQPGcCbJGA',
+                    }
+                  ]
+                },
                 type: 'heatmap',
                 position: 'center',
                 options: {
@@ -256,11 +111,7 @@ const viewConfig = {
                   trackBorderColor: 'black',
                   heatmapValueScaling: 'log',
                   scaleStartPercent: '0.00000',
-                  scaleEndPercent: '1.00000',
-                  backgroundColor: '#eeeeee',
-                  showMousePosition: false,
-                  mousePositionColor: '#999999',
-                  showTooltip: true
+                  scaleEndPercent: '1.00000'
                 },
                 uid: 'heatmap1',
                 name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
@@ -270,8 +121,8 @@ const viewConfig = {
                     value: 'weight'
                   }
                 ],
-                width: 479,
-                height: 691
+                width: 667,
+                height: 828
               },
               {
                 type: '2d-chromosome-grid',
@@ -288,95 +139,17 @@ const viewConfig = {
                   lineStrokeColor: 'grey'
                 },
                 position: 'center',
-                width: 479,
-                height: 691
+                width: 667,
+                height: 828
               }
             ],
             position: 'center',
             options: {},
-            width: 479
+            width: 667
           }
         ],
-        right: [
-          {
-            type: 'vertical-gene-annotations',
-            width: 60,
-            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            server: 'http://higlass.io/api/v1',
-            name: 'Gene Annotations (hg19)',
-            options: {
-              labelPosition: 'outerBottom',
-              name: 'Gene Annotations (hg19)',
-              labelColor: 'black',
-              plusStrandColor: 'blue',
-              minusStrandColor: 'red',
-              trackBorderWidth: 0,
-              trackBorderColor: 'black',
-              showMousePosition: false,
-              mousePositionColor: '#999999'
-            },
-            position: 'right',
-            uid: 'Fbw5wZb8Soe1JgQQ2Z6EoA',
-            height: 691,
-            header: ''
-          },
-          {
-            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            type: 'vertical-chromosome-labels',
-            name: 'Chromosome Labels (hg19)',
-            width: 30,
-            options: {
-              labelPosition: 'outerBottom',
-              name: 'Chromosome labels',
-              showMousePosition: false,
-              mousePositionColor: '#999999'
-            },
-            position: 'right',
-            uid: 'VdplA_MaRuqvlKvJaCKpGA',
-            height: 691
-          }
-        ],
-        bottom: [
-          {
-            name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
-            type: 'horizontal-line',
-            options: {
-              labelPosition: 'outerLeft',
-              axisPositionHorizontal: 'right',
-              lineStrokeColor: 'blue',
-              name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
-              valueScaling: 'log',
-              labelColor: 'black',
-              lineStrokeWidth: 1,
-              trackBorderWidth: 0,
-              trackBorderColor: 'black',
-              labelTextOpacity: 0.4,
-              showMousePosition: false,
-              mousePositionColor: '#999999',
-              showTooltip: false
-            },
-            width: 479,
-            height: 50,
-            position: 'bottom',
-            uid: 'NlTkTBTCS--0qpB9Kn_ohw'
-          }
-        ],
-        whole: [
-          {
-            type: 'cross-rule',
-            x: 1103691812.8496904,
-            y: 1338569560.9603324,
-            position: 'whole',
-            options: {},
-            uid: 'btFjZjl2Tkm3hmjVhWBqTA',
-            name: 'Cross Rule',
-            width: 20,
-            height: 20
-          }
-        ],
-        gallery: []
+        right: [],
+        bottom: []
       },
       layout: {
         w: 12,
@@ -386,13 +159,6 @@ const viewConfig = {
         i: 'aa',
         moved: false,
         static: false
-      },
-      genomePositionSearchBox: {
-        autocompleteServer: 'http://higlass.io/api/v1',
-        chromInfoServer: 'http://higlass.io/api/v1',
-        visible: true,
-        chromInfoId: 'hg19',
-        autocompleteId: 'OHJakQICQD6gTD7skx4EWA'
       }
     }
   ],
@@ -416,7 +182,7 @@ const hgApi = hglib.viewer(
   { bounded: true },
 );
 
-hgApi.on('view', () => {
+hgApi.on('viewConfig', () => {
   console.log('View Config changed');
 });
 </script>

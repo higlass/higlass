@@ -31,7 +31,9 @@
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.viewcode', 'sphinx.ext.imgmath', 'sphinx.ext.todo']
+extensions = ['sphinx.ext.viewcode', 'sphinx.ext.imgmath', 'sphinx.ext.todo', 'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx_js']
+
+js_source_path = '../higlass/app/scripts/'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -70,6 +72,7 @@ language = None
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+# html_extra_path = ['examples']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'

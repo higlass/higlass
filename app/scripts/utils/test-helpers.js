@@ -2,12 +2,14 @@ import {
   mount
 } from 'enzyme';
 
+import ReactDOM from 'react-dom';
+
 import { requestsInFlight } from '../services';
 
 import {
   getTrackObjectFromHGC,
   getTrackRenderer,
-} from '.';
+} from './get-higlass-components';
 
 import HiGlassComponent from '../HiGlassComponent';
 
@@ -99,9 +101,7 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
      * -------
      *  Nothing
      */
-  const TILE_LOADING_CHECK_INTERVAL = 100;
   // console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
-
   if (isWaitingOnTiles(hgc)) {
     setTimeout(() => {
       waitForTilesLoaded(hgc, tilesLoadedCallback);
@@ -128,25 +128,25 @@ export const isWaitingOnTiles = (hgc) => {
   for (const track of hgc.iterateOverTracks()) {
     let trackObj = getTrackObjectFromHGC(hgc, track.viewId, track.trackId);
 
-    if (track.track.type === 'viewport-projection-vertical'
-        || track.track.type === 'viewport-projection-horizontal'
-        || track.track.type === 'viewport-projection-center'
-        || track.track.type === 'osm-tiles'
-        || track.track.type === 'osm-2d-tile-ids') continue;
+    if (
+      track.track.type === 'viewport-projection-vertical'
+      || track.track.type === 'viewport-projection-horizontal'
+      || track.track.type === 'viewport-projection-center'
+      || track.track.type === 'osm-tiles'
+      || track.track.type === 'osm-2d-tile-ids'
+      || track.track.type === 'horizontal-1d-annotations'
+      || track.track.type === 'vertical-1d-annotations'
+      || track.track.type === '2d-chromosome-annotations'
+    ) continue;
 
     if (trackObj.originalTrack) { trackObj = trackObj.originalTrack; }
 
-    if (!trackObj) {
-      // console.warn('no track obj', getTrackObject(hgc, track.viewId, track.trackId));
-    }
-
     if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
-      // console.warn('no tileset info');
+      console.warn(
+        `Track uuid:${trackObj.uuid} has no tileset or chromosome info`
+      );
       return true;
     }
-
-    // if (trackObj.fetching)
-    //   console.log('trackObj.fetching.size:', trackObj.fetching);
 
     if (trackObj.fetching && trackObj.fetching.size) {
       return true;
@@ -176,7 +176,7 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
 
   const style = (options && options.style) || 'width:800px; background-color: lightgreen;';
   const bounded = (options && options.bounded) || false;
-  
+
   const div = global.document.createElement('div');
   global.document.body.appendChild(div);
 
@@ -189,14 +189,17 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
   />, { attachTo: div });
 
   hgc.update();
-  waitForTilesLoaded(hgc.instance(), () => {
-    waitForJsonComplete(done);
+
+  waitForJsonComplete(() => {
+    waitForTilesLoaded(hgc.instance(), done);
   });
 
   return [div, hgc];
 };
 
 export const removeHGComponent = (div) => {
+  if (!div) return;
+
   ReactDOM.unmountComponentAtNode(div);
   document.body.removeChild(div);
-}
+};

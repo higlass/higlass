@@ -7,6 +7,8 @@ import { tileProxy } from './services';
 import '../styles/TilesetFinder.css';
 
 
+import withPubSub from './hocs/with-pub-sub';
+
 // Configs
 import { TRACKS_INFO } from './configs';
 
@@ -145,7 +147,7 @@ class TilesetFinder extends React.Component {
               });
             }
           }
-        });
+        }, this.props.pubSub);
     });
   }
 
@@ -170,10 +172,7 @@ class TilesetFinder extends React.Component {
 
     this.props.selectedTilesetChanged(selectedTilesets);
 
-    this.setState({
-      selectedUuid: selectedValues,
-      // selectedUuid: selectedValues
-    });
+    this.setState({ selectedUuid: selectedValues });
   }
 
   handleSelect() {
@@ -333,4 +332,4 @@ class TilesetFinder extends React.Component {
   }
 }
 
-export default TilesetFinder;
+export default withPubSub(TilesetFinder);

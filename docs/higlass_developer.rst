@@ -26,7 +26,7 @@ External tracks should be included **before** the hglib.js import:
 
     <script src="https://unpkg.com/higlass-multivec@0.1.10/dist/higlass-multivec.js"></script>
 
-Instructions for instantiating the component and interacting with it are in the 
+Instructions for instantiating the component and interacting with it are in the
 `Public API section <higlass_developer.html#public-api>`_.
 
 Public API
@@ -321,13 +321,13 @@ Get the min and max value of the visible data of a track.
     absolute range is ``[1, 18]`` but you have fixed the output range to
     ``[4, 5]`` you would normally retrieve ``[4, 5]``. Having this option set to
     ``true`` retrieves the absolute ``[1, 18]`` range.
-    
+
 **Examples:**
 
 .. code-block:: javascript
 
   const [minVal, maxVal] = hgv.getMinMaxValue('myView', 'myTrack');
-  
+
 **Demos:**
 
 - `Base example <examples/api-get-min-max-value.html>`_
@@ -393,7 +393,7 @@ domains of your view config.
 
 ``viewId: string``
     The view identifier. If you have only one view you can omit this parameter.
-    
+
 **Examples:**
 
 .. code-block:: javascript
@@ -465,19 +465,31 @@ HiGlass exposes the following event, which one can subscribe to via this method:
 
 **Event types**
 
-``location:`` Returns an object describing the visible region
+``click``: Returns clicked objects. (Currently only clicks on 1D annotations are captured.)
 
 .. code-block:: javascript
 
     {
-        xDomain: [1347750580.3773856, 1948723324.787681],
-        xRange: [0, 346],
-        yDomain: [1856870481.5391564, 2407472678.0075483],
-        yRange: [0, 317]
+      type: 'annotation',
+      event: { ... },
+      payload: [230000000, 561000000]
+    }
+
+`Live example in the console <examples/1d-annotations.html>`_
+
+``location``: Returns an object describing the visible region
+
+.. code-block:: javascript
+
+    {
+      xDomain: [1347750580.3773856, 1948723324.787681],
+      xRange: [0, 346],
+      yDomain: [1856870481.5391564, 2407472678.0075483],
+      yRange: [0, 317]
     }
 
 
-``rangeSelection:`` Returns a BED- (1D) or BEDPE (1d) array of the selected data and genomic range (if chrom-sizes are available)
+``rangeSelection``: Returns a BED- (1D) or BEDPE (1d) array of the selected data and genomic range (if chrom-sizes are available)
 
 .. code-block:: javascript
 
@@ -499,9 +511,9 @@ HiGlass exposes the following event, which one can subscribe to via this method:
   // 2D or BEDPE-like array
   [["chr1", 249200621, "chr2", 50000], ["chr3", 197972430, "chr4", 50000]]
 
-``viewConfig:`` Returns the current view config.
+``viewConfig``: Returns the current view config.
 
-``mouseMoveZoom:`` Returns the raw data around the mouse cursors screen location and the related genomic location.
+``mouseMoveZoom``: Returns the raw data around the mouse cursors screen location and the related genomic location.
 
 .. code-block:: javascript
 

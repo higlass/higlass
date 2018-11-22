@@ -221,12 +221,13 @@ class AxisPixi {
 
     let stroke = 'black';
 
-    if (this.track) {
-      stroke = this.track.options.lineStrokeColor
-        ? this.track.options.lineStrokeColor
-        : 'blue';
+    if (this.track && this.track.options.lineStrokeColor) {
+      stroke = this.track.options.lineStrokeColor;
     }
-
+    // TODO: On the canvas, there is no vertical line beside the scale,
+    // but it also has the draggable control to the right.
+    // Confirm that this difference between SVG and Canvas is intentional,
+    // and if not, remove this.
     if (getDarkTheme()) stroke = '#cccccc';
 
     const line = document.createElement('path');
@@ -248,10 +249,8 @@ class AxisPixi {
     // factor out the styling for axis lines
     let stroke = 'black';
 
-    if (this.track) {
-      stroke = this.track.options.lineStrokeColor
-        ? this.track.options.lineStrokeColor
-        : 'blue';
+    if (this.track && this.track.options.lineStrokeColor) {
+      stroke = this.track.options.lineStrokeColor;
     }
 
     if (getDarkTheme()) stroke = '#cccccc';
@@ -280,12 +279,6 @@ class AxisPixi {
 
   exportAxisLeftSVG(valueScale, axisHeight) {
     const gAxis = this.exportVerticalAxis(axisHeight);
-
-    const line = this.createAxisSVGLine();
-    gAxis.appendChild(line);
-
-    line.setAttribute('d',
-      `M0,0 L${-(TICK_MARGIN + TICK_LENGTH)},0`);
 
     for (let i = 0; i < this.axisTexts.length; i++) {
       const tick = this.tickValues[i];

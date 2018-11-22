@@ -4,13 +4,6 @@ import OSMTilesTrack from './OSMTilesTrack';
 import PixiTrack from './PixiTrack';
 
 class OSMTileIdsTrack extends OSMTilesTrack {
-  constructor(scene, options, animate) {
-    super(scene, options, animate);
-
-    //this.zoomed(this._xScale, this._yScale);
-  }
-
-  
   initTile(tile) {
     initTile.bind(this)(tile);
 
@@ -28,7 +21,7 @@ class OSMTileIdsTrack extends OSMTilesTrack {
     //
     return true;
   }
-  
+
   fetchNewTiles(toFetch) {
     // no real fetching involved... we just need to display the data
     toFetch.map((x) => {
