@@ -11,7 +11,7 @@ To follow the steps in this tutorial you will require the following software pac
 - Docker (https://www.docker.com/community-edition): Docker is program that
   lets you run "containers" hosting software and its dependencies
 - Python
-- ``higlass-manage``: This package is a wrapper for the Docker commands used to run a local instance. It can be installed using ``pip install higlass-manage``. Brief documentation can be found `at its GitHub project page <https://github.com/hms-dbmi/higlass-manage>`_
+- ``higlass-manage``: This package is a wrapper for the Docker commands used to run a local instance. It can be installed using ``pip install higlass-manage``. Brief documentation can be found `at its GitHub project page <https://github.com/higlass/higlass-manage>`_
 
 Quickly viewing a dataset
 -------------------------

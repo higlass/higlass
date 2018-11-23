@@ -150,11 +150,54 @@ To filter by a specific filetype, use the `t=filetype` parameter:
 
     curl localhost:8000/api/v1/tilesets?t=cooler
 
-To fileter by datatype, use the `dt=datatype` parameter:
+To filter by datatype, use the `dt=datatype` parameter:
 
 .. code-block:: bash
 
     curl localhost:8000/api/v1/tilesets?dt=matrix
+
+Retrieving properties of a tileset, for a specific `uuid`:  
+
+ .. code-block:: bash 
+
+    curl localhost:8000/api/v1/tilesets/${uuid}/ 
+      
+To delete a tileset, specify the tileset `uuid` in the URL, and use the `DELETE` method with authentication credentials:  
+
+ .. code-block:: bash 
+
+    curl --user ${username}:${password} --request DELETE http://localhost:8000/api/v1/tilesets/${uuid}/  
+      
+To modify a tileset name, specify the tileset `uuid` in the URL, use the `PATCH` method with authentication credentials, and specify the new name in the JSON object passed to the request: 
+
+ .. code-block:: bash 
+
+    curl --user ${username}:${password} --request PATCH --header "Content-Type: application/json" --data '{"name":"new_name_of_tileset"}' http://localhost:8000/api/v1/tilesets/${uuid}/ 
+      
+Management commands 
+^^^^^^^^^^^^^^^^^^^ 
+ The following commands may be run while logged into a non-Docker HiGlass instance and offer functionality to list and manipulate tileset records.  
+ To retrieve a list of available tilesets: 
+
+ .. code-block:: bash 
+
+     python manage.py list_tilesets 
+      
+To modify the name of a tileset:  
+
+ .. code-block:: bash 
+
+     python manage.py modify_tileset --uuid=${uuid} --name=${name}  
+      
+.. note::  At this time, the `modify_tileset` command only provides the ability to modify the tileset name. Future revisions may provide logic to modify other tileset fields.  
+
+ To delete a tileset: 
+
+ .. code-block:: bash 
+
+     python manage.py delete_tileset --uuid=${uuid} 
+      
+.. note::  The `delete_tileset` command will delete the tileset record from the database backend. It will also delete the underlying file from the HiGlass server's `media/uploads` folder, and fail if this file cannot be removed.
 
 Testing
 ^^^^^^^
@@ -168,3 +211,9 @@ Or to test a more specific code block:
 .. code-block:: bash
 
     python manage.py test tilesets.tests.CoolerTest.test_transforms --failfast
+
+Tests of deletion and modification routes:  
+
+ .. code-block:: bash 
+
+    python manage.py test tilesets.tests.PermissionsTest

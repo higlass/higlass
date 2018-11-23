@@ -127,7 +127,7 @@ database, assigns them a uid, and makes them accessible through its API at
 Tracks
 ======
 
-Tracks can be placed into four distinct areas: top, bottom, left, right or
+Tracks can be placed into five distinct areas: top, bottom, left, right or
 center. The location of the track determines what type of data can be shown in
 it. Center tracks are used to show data that can be zoomed along two axes.
 Horizontal (top, bottom) and vertical (left, right) are used to show data that
