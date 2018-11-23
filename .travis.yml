@@ -41,6 +41,7 @@ matrix:
         language: python 
         python: 3.6
         install: pip install -r docs/requirements.txt
+        script: cd docs; ./build.sh; cd -
         before_deploy:
             - pip install --user -r docs/requirements.txt
             - cd docs; ./build.sh; cd -
