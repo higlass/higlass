@@ -30,7 +30,7 @@ datatype: ``bedlike``
 The bedlike track is intended to display generic interval data. It is used to
 render tracks with a `bedlike` datatype. This usually comes from the `beddb`
 filetype. Regular bed-like files can be converted to beddb using the instructions
-in the `data preparation section <data_preparation.html#bed-files>`_.
+in the `data preparation section <data_preparation.html#bed-files>`__.
 
 **Color Encoding:**
 
@@ -95,8 +95,8 @@ displayed at different resolutions depending on the current zoom level. To
 limit the resolution of the displayed data, users can set the `Zoom Limit`
 configuration option.
 
-1D Heatmap
-==========
+Rotated 2D Heatmap
+==================
 
 .. image:: img/horizontal-heatmap-thumb.png
     :align: right
@@ -104,8 +104,8 @@ configuration option.
 track-type: ``horizontal-heatmap``
 datatype: ``matrix``
 
-1D heatmaps are regulat 2D heatmaps sliced across the diagonal and rotated 45
-degrees. The base of the 1D heatmap is always the diagonal of the 2D heatmap.
+Rotated 2D heatmaps are regular 2D heatmaps sliced across the diagonal and rotated 45
+degrees. The base of the heatmap is always the diagonal of the 2D heatmap.
 This is useful for displaying data, such as HiC, which has prominent features
 along the diagonal.
 
@@ -122,7 +122,7 @@ track-type: ``2d-rectangle-domains``
 The rectangle domains track shows rectangular regions on the heatmap. These are
 commonly aggregated using clodius based on some importance using the ``clodius
 bedpe`` command. See the `data preparation section
-<data_preparation.html#bedpe-like-files>`_ for an example of the aggregation
+<data_preparation.html#bedpe-like-files>`__ for an example of the aggregation
 command.
 
 .. code-block:: bash
@@ -194,7 +194,7 @@ Point tracks display 1D vector data. Unlike :ref:`line tracks <line-track>`,
 they are well suited to data with NaNs because they do not require two points
 to draw something.
 
-.. _point-track:
+.. _1d-heatmap:
 
 1D Heatmap
 ==========

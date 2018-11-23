@@ -20,14 +20,14 @@ library that displays heatmaps, tracks, etc. In a sense, this is the meat of
 the application. The vast majority of the updates are on this component.
 
 .. |higlass-client| replace:: **higlass-client**
-.. _higlass-client: https://github.com/higlass/higlass 
+.. _higlass-client: https://github.com/hms-dbmi/higlass 
 
 |higlass-website|_  - This is the
 website that embeds the higlass-client. It can contain multiple higlass clients
 (as on the front page of higlass.io).
 
 .. |higlass-website| replace:: **higlass-website**
-.. _higlass-website: https://github.com/higlass/higlass-website
+.. _higlass-website: https://github.com/hms-dbmi/higlass-website
 
 |higlass-server|_ - The server manages data and serves it to the client in
 small chunks that match the current zoom level and location. It is a python
@@ -36,7 +36,7 @@ http://higlass.io/api/v1/tilesets lists the tilesets that the server knows
 about.
 
 .. |higlass-server| replace:: **higlass-server**
-.. _higlass-server: https://github.com/higlass/higlass-server
+.. _higlass-server: https://github.com/hms-dbmi/higlass-server
 
 |higlass-docker|_  - This docker
 container contains all three of the above repositories and packages them so
@@ -46,7 +46,7 @@ the docker container. The versions of all the components is accessible at
 http://higlass.io/version.txt
 
 .. |higlass-docker| replace:: **higlass-docker**
-.. _higlass-docker: https://github.com/higlass/higlass-docker
+.. _higlass-docker: https://github.com/hms-dbmi/higlass-docker
 
 Track types
 ~~~~~~~~~~~
@@ -171,4 +171,8 @@ crucial are listed below.
     jupyter
     data_preparation
     track_types
+    views
+    higlass_server
+    higlass_docker
+    view_config
     developer 
