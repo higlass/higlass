@@ -23,6 +23,6 @@ npm run compile
 [ -e dist.zip ] || die 'Missing dist.zip: Please check that it was produced by npm compile in build.sh.'
 end compile
 
-start karma
-xvfb-maybe ./node_modules/karma/bin/karma start karma.conf.js --single-run
-end karma
+# start karma
+# xvfb-maybe ./node_modules/karma/bin/karma start karma.conf.js --single-run
+# end karma
