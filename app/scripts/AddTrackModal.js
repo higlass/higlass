@@ -152,8 +152,8 @@ class AddTrackModal extends React.Component {
         </Modal.Header>
         <Modal.Body>
           { form }
-          { 
-            this.props.hidePlotTypeChooser ? null : 
+          {
+            this.props.hidePlotTypeChooser ? null :
             <PlotTypeChooser
               ref={(c) => { this.plotTypeChooser = c; }}
               datatypes={this.state.selectedTilesets.map(x => x.datatype)}

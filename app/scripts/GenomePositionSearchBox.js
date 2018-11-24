@@ -1,4 +1,3 @@
-import { queue } from 'd3-queue';
 import { select, event } from 'd3-selection';
 import React from 'react';
 import slugid from 'slugid';
@@ -18,9 +17,10 @@ import PopupMenu from './PopupMenu';
 
 // Services
 import { getDarkTheme, tileProxy } from './services';
+import withPubSub from './hocs/with-pub-sub';
 
 // Utils
-import { scalesCenterAndK, dictKeys } from './utils';
+import { scalesCenterAndK, dictKeys, toVoid } from './utils';
 
 // Styles
 import styles from '../styles/GenomePositionSearchBox.module.scss'; // eslint-disable-line no-unused-vars
@@ -133,7 +133,7 @@ class GenomePositionSearchBox extends React.Component {
     this.positionText = value;
     this.setState({
       value,
-      loading: true 
+      loading: true
     });
 
     this.changedPart = null;
@@ -174,8 +174,8 @@ class GenomePositionSearchBox extends React.Component {
 
     if (this.changedPart != null) {
       // if something has changed in the input text
-      this.setState({ 
-        loading: true 
+      this.setState({
+        loading: true
       });
       // send out a request for the autcomplete suggestions
       let url = `${this.state.autocompleteServer}/suggest/`;
@@ -190,7 +190,7 @@ class GenomePositionSearchBox extends React.Component {
           if (this.changedPart > 0 && !changedAtStartOfWord) {
             // send out another request for genes with dashes in them
             // but we need to distinguish things that have a dash in front
-            // from things that just have a space in front 
+            // from things that just have a space in front
 
             let url1 = `${this.state.autocompleteServer}/suggest/`;
             url1 += `?d=${this.state.autocompleteId}&ac=`;
@@ -207,13 +207,13 @@ class GenomePositionSearchBox extends React.Component {
                   genes: data1.concat(data),
                 });
               }
-            });
+            }, this.props.pubSub);
           } else {
             // we've received a list of autocomplete suggestions
-            this.setState({ loading: false, genes: data });          
+            this.setState({ loading: false, genes: data });
           }
         }
-      });
+      }, this.props.pubSub);
     }
   }
 
@@ -289,6 +289,7 @@ class GenomePositionSearchBox extends React.Component {
     if (this.gpsbForm) {
       this.positionText = positionString;
 
+
       // this.origPositionText is used to reset the text if somebody clicks submit
       // on an empty field
       this.origPositionText = positionString;
@@ -342,7 +343,7 @@ class GenomePositionSearchBox extends React.Component {
             );
           }
         }
-      });
+      }, this.props.pubSub);
     });
   }
 
@@ -354,7 +355,7 @@ class GenomePositionSearchBox extends React.Component {
     }
 
     this.props.trackSourceServers.forEach((sourceServer) => {
-      tileProxy.json(`${sourceServer}/tilesets/?limit=100&dt=gene-annotation`, (error, data) => {  
+      tileProxy.json(`${sourceServer}/tilesets/?limit=100&dt=gene-annotation`, (error, data) => {
         if (error) {
           console.error(error);
         } else {
@@ -380,7 +381,7 @@ class GenomePositionSearchBox extends React.Component {
             }
           }
         }
-      });
+      }, this.props.pubSub);
     });
   }
 
@@ -410,13 +411,13 @@ class GenomePositionSearchBox extends React.Component {
             selectedAssembly: tilesetInfo[chromInfoId].coordSystem,
           });
         }
-      });
+      }, this.props.pubSub);
 
       this.chromInfo = newChromInfo;
       this.searchField = new SearchField(this.chromInfo);
 
       this.setPositionText();
-    });
+    }, this.props.pubSub);
   }
 
   autocompleteKeyPress() {
@@ -497,47 +498,48 @@ class GenomePositionSearchBox extends React.Component {
   replaceGenesWithPositions(finished) {
     // replace any gene names in the input with their corresponding positions
     const valueParts = this.positionText.split(/[ -]/);
-    let q = queue();
+    const requests = [];
 
     for (let i = 0; i < valueParts.length; i++) {
-      if (valueParts[i].length == 0) { continue; }
+      if (valueParts[i].length === 0) { continue; }
 
       const [chr, pos, retPos] = this.searchField.parsePosition(valueParts[i]);
 
       if (retPos == null || isNaN(retPos)) {
         // not a chromsome position, let's see if it's a gene name
         const url = `${this.state.autocompleteServer}/suggest/?d=${this.state.autocompleteId}&ac=${valueParts[i].toLowerCase()}`;
-        q = q.defer(tileProxy.json, url);
+        requests.push(tileProxy.json(url, toVoid, this.props.pubSub));
       }
     }
 
-    q.awaitAll((error, files) => {
-      if (files) {
-        const genePositions = {};
+    Promise
+      .all(requests)
+      .then((files) => {
+        if (files) {
+          const genePositions = {};
 
-        // extract the position of the top match from the list of files
-        for (let i = 0; i < files.length; i++) {
-          if (!files[i][0]) { continue; }
+          // extract the position of the top match from the list of files
+          for (let i = 0; i < files.length; i++) {
+            if (!files[i][0]) { continue; }
 
-          for (let j = 0; j < files[i].length; j++) {
-            genePositions[files[i][j].geneName.toLowerCase()] =
-              files[i][j];
+            for (let j = 0; j < files[i].length; j++) {
+              genePositions[files[i][j].geneName.toLowerCase()] = files[i][j];
+            }
           }
+
+          this.replaceGenesWithLoadedPositions(genePositions);
+
+          finished();
         }
-
-        this.replaceGenesWithLoadedPositions(genePositions);
-
-        finished();
-      }
-    });
+      })
+      .catch(error => console.error(error));
   }
 
   buttonClick() {
     this.setState({ genes: [] }); // no menu should be open
 
     this.replaceGenesWithPositions(() => {
-      const searchFieldValue = this.positionText; 
-      // ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
+      const searchFieldValue = this.positionText;
 
       if (this.searchField != null) {
         let [range1, range2] = this.searchField.searchPosition(searchFieldValue);
@@ -547,7 +549,8 @@ class GenomePositionSearchBox extends React.Component {
           return;
         }
 
-        if ((range1 && (isNaN(range1[0]) || isNaN(range1[1]))) ||
+        if (
+          (range1 && (isNaN(range1[0]) || isNaN(range1[1]))) ||
           (range2 && (isNaN(range2[0]) || isNaN(range2[1])))) {
           return;
         }
@@ -764,4 +767,4 @@ GenomePositionSearchBox.propTypes = {
   twoD: PropTypes.bool,
 };
 
-export default GenomePositionSearchBox;
+export default withPubSub(GenomePositionSearchBox);

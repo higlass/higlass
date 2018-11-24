@@ -12,7 +12,7 @@
  * @method  debounce
  * @author  Fritz Lekschas
  * @date    2017-01-14
- * @param   {Functiom}   func       Function to be debounced
+ * @param   {Function}   func       Function to be debounced
  * @param   {Number}     wait       Number of milliseconds to debounce the
  *   function call.
  * @param   {Boolean}    immediate  If `true` function is not debounced.

@@ -20,15 +20,9 @@ const TICK_TEXT_SEPARATION = 2;
 const TICK_COLOR = 0x777777;
 
 class HorizontalChromosomeLabels extends PixiTrack {
-  constructor(
-    scene,
-    dataConfig,
-    handleTilesetInfoReceived,
-    options,
-    animate,
-    chromInfoPath
-  ) {
-    super(scene, options);
+  constructor(context, options) {
+    super(context, options);
+    const { dataConfig, animate, chromInfoPath } = context;
 
     this.searchField = null;
     this.chromInfo = null;
@@ -87,7 +81,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
       this.draw();
       this.animate();
-    });
+    }, this.pubSub);
   }
 
   initChromLabels() {

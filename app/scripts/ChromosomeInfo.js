@@ -32,7 +32,7 @@ export function parseChromsizesRows(data) {
   };
 }
 
-function ChromosomeInfo(filepath, success) {
+function ChromosomeInfo(filepath, success, pubSub) {
   const ret = {};
 
   ret.absToChr = absPos => (ret.chrPositions
@@ -58,7 +58,7 @@ function ChromosomeInfo(filepath, success) {
       });
       if (success) success(ret);
     }
-  }).then(() => ret);
+  }, pubSub).then(() => ret);
 }
 
 export default ChromosomeInfo;

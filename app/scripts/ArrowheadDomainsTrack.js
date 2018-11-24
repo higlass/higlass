@@ -1,20 +1,21 @@
+import createPubSub from 'pub-sub-es';
+
 import TiledPixiTrack from './TiledPixiTrack';
 
 // Services
 import { tileProxy } from './services';
-import { create } from './services/pub-sub';
 
 // Utils
 import { colorToHex } from './utils';
 
 class ArrowheadDomainsTrack extends TiledPixiTrack {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate) {
-    super(scene, dataConfig, handleTilesetInfoReceived, option, animate);
+  constructor(...args) {
+    super(...args);
 
     this.drawnRects = {};
 
     // Create a custom pubSub interface
-    const { publish, subscribe, unsubscribe } = create({});
+    const { publish, subscribe, unsubscribe } = createPubSub();
     this.publish = publish;
     this.subscribe = subscribe;
     this.unsubscribe = unsubscribe;

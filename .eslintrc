@@ -19,10 +19,7 @@
     "ecmascript": 6
   },
   "globals": {
-    "beforeEach": true,
-    "describe": true,
-    "expect": true,
-    "it": true
+    "VERSION": false
   },
   "parserOptions": {
     "ecmaFeatures": {
@@ -43,6 +40,7 @@
     "no-param-reassign": ["error", { "props": false }],
     "no-plusplus": 0,
     "no-underscore-dangle": 0,
+    "prefer-destructuring": 0,
     "react/destructuring-assignment": 0,
     "react/display-name": 0,
     "react/forbid-prop-types": 0,

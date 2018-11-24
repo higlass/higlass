@@ -1,3 +1,4 @@
+/* eslint-env node, jasmine */
 import ndarray from 'ndarray';
 import ndarrayFlatten from '../app/scripts/utils/ndarray-flatten';
 

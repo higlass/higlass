@@ -5,15 +5,14 @@ import { event } from 'd3-selection';
 import SVGTrack from './SVGTrack';
 
 class ViewportTracker2D extends SVGTrack {
-  constructor(
-    svgElement,
-    registerViewportChanged,
-    removeViewportChanged,
-    setDomainsCallback,
-    options,
-  ) {
+  constructor(context, options) {
     // create a clipped SVG Path
-    super(svgElement, true);
+    super(context, options);
+    const {
+      registerViewportChanged,
+      removeViewportChanged,
+      setDomainsCallback,
+    } = context;
 
     const uid = slugid.nice();
     this.uid = uid;
@@ -37,7 +36,7 @@ class ViewportTracker2D extends SVGTrack {
       .call(this.brush);
 
     /*
-    // This is used to draw a border that is completely outside of the 
+    // This is used to draw a border that is completely outside of the
     // drawn rectangle
     this.gBorder = this.gMain
       .append('path')

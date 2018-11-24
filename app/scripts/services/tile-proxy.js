@@ -7,6 +7,13 @@ import {
   workerSetPix,
 } from '../worker';
 
+import { trimTrailingSlash as tts } from '../utils';
+
+// Config
+import { TILE_FETCH_DEBOUNCE } from '../configs';
+
+const MAX_FETCH_TILES = 15;
+
 /*
 const str = document.currentScript.src
 const pathName = str.substring(0, str.lastIndexOf("/"));
@@ -49,16 +56,6 @@ fetchTilesPool.run(function(params, done) {
 }, [workerPath]);
 */
 
-
-import pubSub from './pub-sub';
-
-import { trimTrailingSlash as tts } from '../utils';
-
-// Config
-import { TILE_FETCH_DEBOUNCE } from '../configs';
-
-const MAX_FETCH_TILES = 15;
-
 const sessionId = slugid.nice();
 export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports
 export let authHeader = null; // eslint-disable-line import/no-mutable-exports
@@ -86,14 +83,14 @@ const debounce = (func, wait) => {
     requestMapper = {};
   };
 
-  const debounced = (request) => {
+  const debounced = (request, ...args) => {
     bundleRequests(request);
 
     const later = () => {
       func({
         sessionId,
         requests: bundledRequest,
-      });
+      }, ...args);
       reset();
     };
 
@@ -122,8 +119,10 @@ export const setTileProxyAuthHeader = (newHeader) => {
 
 export const getTileProxyAuthHeader = () => authHeader;
 
-export function fetchMultiRequestTiles(req) {
+// Fritz: is this function used anywhere?
+export function fetchMultiRequestTiles(req, pubSub) {
   const requests = req.requests; // eslint-disable-line prefer-destructuring
+
   const fetchPromises = [];
 
   const requestsByServer = {};
@@ -435,7 +434,8 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
  * @param {func} doneCb: A callback that gets called when the data is retrieved
  * @param {func} errorCb: A callback that gets called when there is an error
  */
-export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
+
+export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
   const url = `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
   pubSub.publish('requestSent', url);
   // TODO: Is this used?
@@ -454,7 +454,7 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
       // console.log('got data', data);
       doneCb(data);
     }
-  });
+  }, pubSub);
 };
 
 /**
@@ -543,7 +543,7 @@ export const tileDataToPixData = (
   }
 };
 
-function fetchEither(url, callback, textOrJson) {
+function fetchEither(url, callback, textOrJson, pubSub) {
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
@@ -569,9 +569,12 @@ function fetchEither(url, callback, textOrJson) {
     })
     .then((content) => {
       callback(undefined, content);
+      return content;
     })
     .catch((error) => {
+      console.error(error);
       callback(error, undefined);
+      return error;
     })
     .finally(() => {
       pubSub.publish('requestReceived', url);
@@ -585,8 +588,8 @@ function fetchEither(url, callback, textOrJson) {
  * @param url: URL to fetch
  * @param callback: Callback to execute with content from fetch
  */
-function text(url, callback) {
-  return fetchEither(url, callback, 'text');
+function text(url, callback, pubSub) {
+  return fetchEither(url, callback, 'text', pubSub);
 }
 
 function sleep(ms) {
@@ -599,12 +602,13 @@ function sleep(ms) {
  * @param url: URL to fetch
  * @param callback: Callback to execute with content from fetch
  */
-async function json(url, callback) {
+async function json(url, callback, pubSub) {
+  // Fritz: What is going on here? Can someone explain?
   if (url.indexOf('hg19') >= 0) {
     await sleep(1);
   }
   // console.log('url:', url);
-  return fetchEither(url, callback, 'json');
+  return fetchEither(url, callback, 'json', pubSub);
 }
 
 const api = {
