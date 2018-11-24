@@ -87,9 +87,11 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         }
 
         // geneInfo[3] is the gene symbol
-        const text = new PIXI.Text(geneInfo[3], { fontSize: this.textFontSize,
+        const text = new PIXI.Text(geneInfo[3], {
+          fontSize: this.textFontSize,
           fontFamily: this.textFontFamily,
-          fill: colorToHex(fill) });
+          fill: colorToHex(fill)
+        });
         if (this.flipText) { text.scale.x = -1; }
 
         text.anchor.x = 0.5;
@@ -116,7 +118,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     if (tile.tileData && tile.tileData.length) {
       tile.tileData.forEach((td, i) => {
-
         if (this.drawnRects[zoomLevel] && this.drawnRects[zoomLevel][td.uid]) {
           if (this.drawnRects[zoomLevel][td.uid][2] == tile.tileId) {
             // this was the tile that drew that rectangle
@@ -452,10 +453,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       visibleAndFetchedIds
         .map(x => this.fetchedTiles[x])
         .filter(x => x.tileData && x.tileData.length)
-        .map((x) => { return x.tileData
-            .sort((a,b) => b.importance - a.importance)
-            .slice(0, MAX_TILE_ENTRIES)
-            .map(y => +y.fields[+this.options.valueColumn - 1]); })
+        .map(x => x.tileData
+          .sort((a, b) => b.importance - a.importance)
+          .slice(0, MAX_TILE_ENTRIES)
+          .map(y => +y.fields[+this.options.valueColumn - 1]))
     ).filter(x => x > 0);
 
     this.medianVisibleValue = median(values);

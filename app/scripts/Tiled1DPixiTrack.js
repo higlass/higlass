@@ -66,7 +66,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
   }
 
- calculateVisibleTiles() {
+  calculateVisibleTiles() {
     // if we don't know anything about this dataset, no point
     // in trying to get tiles
     if (!this.tilesetInfo) { return; }
@@ -115,7 +115,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
       // the default bins per tile which should
       // not be used because the right value should be in the tileset info
 
-      let binsPerTile = binsPerTileIn || BINS_PER_TILE;
+      const binsPerTile = binsPerTileIn || BINS_PER_TILE;
 
       const sortedResolutions = this.tilesetInfo.resolutions
         .map(x => +x)
@@ -123,13 +123,15 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
       const chosenResolution = sortedResolutions[zoomLevel];
 
-      let tileWidth =  chosenResolution * binsPerTile;
-      let tileHeight = tileWidth;
+      const tileWidth = chosenResolution * binsPerTile;
+      const tileHeight = tileWidth;
 
-      let tileX = chosenResolution * binsPerTile * tilePos[0];
-      let tileY = chosenResolution * binsPerTile * tilePos[1];
+      const tileX = chosenResolution * binsPerTile * tilePos[0];
+      const tileY = chosenResolution * binsPerTile * tilePos[1];
 
-      return { tileX, tileY, tileWidth, tileHeight };
+      return {
+        tileX, tileY, tileWidth, tileHeight
+      };
     }
 
     // max_width should be substitutable with 2 ** tilesetInfo.max_zoom
@@ -145,10 +147,12 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     const tileX = minX + xTilePos * tileWidth;
     const tileY = minY + yTilePos * tileHeight;
 
-    return { tileX,
+    return {
+      tileX,
       tileY,
       tileWidth,
-      tileHeight };
+      tileHeight
+    };
   }
 
   updateTile(tile) {

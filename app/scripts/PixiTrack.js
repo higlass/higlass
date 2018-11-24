@@ -159,7 +159,8 @@ class PixiTrack extends Track {
         fontSize: `${this.labelTextFontSize}px`,
         fontFamily: this.labelTextFontFamily,
         fill: 'black'
-      });
+      }
+    );
 
     this.errorText = new PIXI.Text('',
       { fontSize: '12px', fontFamily: 'Arial', fill: 'red' });
@@ -321,25 +322,26 @@ class PixiTrack extends Track {
       : (this.tilesetInfo ? this.tilesetInfo.name : '');
 
     if (
-      this.tilesetInfo &&
-      this.tilesetInfo.max_width &&
-      this.tilesetInfo.bins_per_dimension
+      this.tilesetInfo
+      && this.tilesetInfo.max_width
+      && this.tilesetInfo.bins_per_dimension
     ) {
       const formattedResolution = getWidthBasedResolutionText(
         this.calculateZoomLevel(),
         this.tilesetInfo.max_width,
         this.tilesetInfo.bins_per_dimension,
-        this.tilesetInfo.max_zoom);
+        this.tilesetInfo.max_zoom
+      );
 
 
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     } else if (
-      this.tilesetInfo &&
-      this.tilesetInfo.resolutions) {
-
+      this.tilesetInfo
+      && this.tilesetInfo.resolutions) {
       const formattedResolution = getResolutionBasedResolutionText(
         this.tilesetInfo.resolutions,
-        this.calculateZoomLevel());
+        this.calculateZoomLevel()
+      );
 
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     }
@@ -391,8 +393,8 @@ class PixiTrack extends Track {
         this.position[1],
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin);
-    } else if ((this.options.labelPosition === 'bottomLeft' && !this.flipText) ||
-                   (this.options.labelPosition === 'topRight' && this.flipText)) {
+    } else if ((this.options.labelPosition === 'bottomLeft' && !this.flipText)
+                   || (this.options.labelPosition === 'topRight' && this.flipText)) {
       this.labelText.x = this.position[0];
       this.labelText.y = this.position[1] + this.dimensions[1];
       this.labelText.anchor.x = 0.5;
@@ -403,8 +405,8 @@ class PixiTrack extends Track {
         this.position[1] + this.dimensions[1] - this.labelText.height - labelBackgroundMargin,
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin);
-    } else if ((this.options.labelPosition === 'topRight' && !this.flipText) ||
-                   (this.options.labelPosition === 'bottomLeft' && this.flipText)) {
+    } else if ((this.options.labelPosition === 'topRight' && !this.flipText)
+                   || (this.options.labelPosition === 'bottomLeft' && this.flipText)) {
       this.labelText.x = this.position[0] + this.dimensions[0];
       this.labelText.y = this.position[1];
       this.labelText.anchor.x = 0.5;
@@ -432,8 +434,8 @@ class PixiTrack extends Track {
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin,
       );
-    } else if ((this.options.labelPosition === 'outerLeft' && !this.flipText) ||
-                   (this.options.labelPosition === 'outerTop' && this.flipText)) {
+    } else if ((this.options.labelPosition === 'outerLeft' && !this.flipText)
+                   || (this.options.labelPosition === 'outerTop' && this.flipText)) {
       this.labelText.x = this.position[0];
       this.labelText.y = this.position[1] + this.dimensions[1] / 2;
 
@@ -441,8 +443,8 @@ class PixiTrack extends Track {
       this.labelText.anchor.y = 0.5;
 
       this.labelText.x -= this.labelText.width / 2 + 3;
-    } else if ((this.options.labelPosition === 'outerTop' && !this.flipText) ||
-                   (this.options.labelPosition === 'outerLeft' && this.flipText)) {
+    } else if ((this.options.labelPosition === 'outerTop' && !this.flipText)
+                   || (this.options.labelPosition === 'outerLeft' && this.flipText)) {
       this.labelText.x = this.position[0] + this.dimensions[0] / 2;
       this.labelText.y = this.position[1];
 
@@ -450,8 +452,8 @@ class PixiTrack extends Track {
       this.labelText.anchor.y = 0.5;
 
       this.labelText.y -= this.labelText.height / 2 + 3;
-    } else if ((this.options.labelPosition === 'outerBottom' && !this.flipText) ||
-                   (this.options.labelPosition === 'outerRight' && this.flipText)) {
+    } else if ((this.options.labelPosition === 'outerBottom' && !this.flipText)
+                   || (this.options.labelPosition === 'outerRight' && this.flipText)) {
       this.labelText.x = this.position[0] + this.dimensions[0] / 2;
       this.labelText.y = this.position[1] + this.dimensions[1];
 
@@ -459,8 +461,8 @@ class PixiTrack extends Track {
       this.labelText.anchor.y = 0.5;
 
       this.labelText.y += this.labelText.height / 2 + 3;
-    } else if ((this.options.labelPosition == 'outerRight' && !this.flipText) ||
-                   (this.options.labelPosition == 'outerBottom' && this.flipText)) {
+    } else if ((this.options.labelPosition == 'outerRight' && !this.flipText)
+                   || (this.options.labelPosition == 'outerBottom' && this.flipText)) {
       this.labelText.x = this.position[0] + this.dimensions[0];
       this.labelText.y = this.position[1] + this.dimensions[1] / 2;
 
@@ -472,10 +474,10 @@ class PixiTrack extends Track {
       this.labelText.visible = false;
     }
 
-    if (this.options.labelPosition == 'outerLeft' ||
-            this.options.labelPosition == 'outerRight' ||
-            this.options.labelPosition == 'outerTop' ||
-            this.options.labelPosition == 'outerBottom') {
+    if (this.options.labelPosition == 'outerLeft'
+            || this.options.labelPosition == 'outerRight'
+            || this.options.labelPosition == 'outerTop'
+            || this.options.labelPosition == 'outerBottom') {
       this.pLabel.setParent(this.pBase);
     } else {
       this.pLabel.setParent(this.pMasked);
@@ -545,10 +547,10 @@ class PixiTrack extends Track {
     clipPath.appendChild(clipPolygon);
 
 
-    clipPolygon.setAttribute('points', `${this.position[0]},${this.position[1]} ` +
-                `${this.position[0] + this.dimensions[0]},${this.position[1]} ` +
-                `${this.position[0] + this.dimensions[0]},${this.position[1] + this.dimensions[1]} ` +
-                `${this.position[0]},${this.position[1] + this.dimensions[1]} `);
+    clipPolygon.setAttribute('points', `${this.position[0]},${this.position[1]} `
+                + `${this.position[0] + this.dimensions[0]},${this.position[1]} `
+                + `${this.position[0] + this.dimensions[0]},${this.position[1] + this.dimensions[1]} `
+                + `${this.position[0]},${this.position[1] + this.dimensions[1]} `);
 
     // the clipping area needs to be a clipPath element
     const clipPathId = slugid.nice();
@@ -563,7 +565,7 @@ class PixiTrack extends Track {
     // instead
 
     const paddingBottom = 3;
-    const labelTextHeight = (this.labelTextFontSize+2) * (lineParts.length) + paddingBottom;
+    const labelTextHeight = (this.labelTextFontSize + 2) * (lineParts.length) + paddingBottom;
 
     if (this.labelText.anchor.y == 0.5) {
       ddy = labelTextHeight / 2;
@@ -583,16 +585,15 @@ class PixiTrack extends Track {
       // http://stackoverflow.com/a/16701952/899470
 
       text.innerText = lineParts[i];
-      if (this.options.labelPosition === 'topLeft' ||
-        this.options.labelPosition === 'topRight') {
-        let dy = ddy + ((i + 1) * (this.labelTextFontSize + 2)) ;
+      if (this.options.labelPosition === 'topLeft'
+        || this.options.labelPosition === 'topRight') {
+        const dy = ddy + ((i + 1) * (this.labelTextFontSize + 2));
         text.setAttribute('dy', dy);
-      }
-      else if (
-        this.options.labelPosition === 'bottomLeft' ||
-        this.options.labelPosition === 'bottomRight'
+      } else if (
+        this.options.labelPosition === 'bottomLeft'
+        || this.options.labelPosition === 'bottomRight'
       ) {
-        text.setAttribute('dy', ddy + (i * (this.labelTextFontSize + 2)) );
+        text.setAttribute('dy', ddy + (i * (this.labelTextFontSize + 2)));
       }
 
       text.setAttribute('fill', this.options.labelColor);

@@ -189,13 +189,12 @@ class CombinedTrack {
 
   stopHover() {
     for (const childTrack of this.childTracks) {
-      if (childTrack.stopHover)
-        childTrack.stopHover();
+      if (childTrack.stopHover) childTrack.stopHover();
     }
   }
 
   getMouseOverHtml(trackX, trackY) {
-    let mouseOverHtml = ''
+    let mouseOverHtml = '';
 
     for (const childTrack of this.childTracks) {
       if (childTrack.getMouseOverHtml) {
@@ -203,14 +202,13 @@ class CombinedTrack {
 
         if (trackHtml && trackHtml.length) {
           mouseOverHtml += trackHtml;
-          mouseOverHtml += "<br/>"
+          mouseOverHtml += '<br/>';
         }
-
       }
     }
 
     return mouseOverHtml;
-  };
+  }
 }
 
 export default CombinedTrack;

@@ -20,7 +20,9 @@ class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {
     // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored,
 
     tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`,
-      { fontFamily: 'Arial', fontSize: 32, fill: 0xff1010, align: 'center' });
+      {
+        fontFamily: 'Arial', fontSize: 32, fill: 0xff1010, align: 'center'
+      });
 
     // tile.text.y = 100;
     tile.textGraphics.addChild(tile.text);

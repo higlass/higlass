@@ -172,8 +172,7 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
     graphics.beginFill(fill, 0.4);
     graphics.alpha = this.options.rectangleDomainOpacity ? this.options.rectangleDomainOpacity : 0.5;
 
-    if (!tile.tileData.sort)
-      return;
+    if (!tile.tileData.sort) return;
 
     // line needs to be scaled down so that it doesn't become huge
     for (const td of tile.tileData) {

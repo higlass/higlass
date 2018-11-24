@@ -24,7 +24,9 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored,
 
     tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`,
-      { fontFamily: 'Arial', fontSize: 32, fill: 0xff1010, align: 'center' });
+      {
+        fontFamily: 'Arial', fontSize: 32, fill: 0xff1010, align: 'center'
+      });
 
     // tile.text.y = 100;
     tile.textGraphics.addChild(tile.text);
@@ -48,7 +50,9 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
 
     const graphics = tile.graphics;
 
-    const { tileX, tileY, tileWidth, tileHeight } = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
+    const {
+      tileX, tileY, tileWidth, tileHeight
+    } = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
       tile.tileData.tilePos);
 
     // the text needs to be scaled down so that it doesn't become huge
@@ -91,7 +95,6 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     graphics.lineStyle(0, 0x0000FF, 1);
     graphics.drawRect(rectX, 0, tileScaledWidth, tileScaledHeight);
   }
-
 }
 
 export default IdHorizontal1DTiledPixiTrack;

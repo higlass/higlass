@@ -6,7 +6,9 @@ export function drawTile(tile) {
 
   // console.log('Id2DTiled drawTile...', tile);
   const graphics = tile.graphics;
-  const { tileX, tileY, tileWidth, tileHeight } = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
+  const {
+    tileX, tileY, tileWidth, tileHeight
+  } = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
     tile.tileData.tilePos);
 
   // console.log('tileX:', tileX, 'tileY:', tileY, 'tileWidth:', tileWidth, 'tileHeight:', tileHeight);
@@ -70,10 +72,14 @@ export function initTile(tile) {
   if (tile.mirrored) {
     // mirrored tiles have their x and y coordinates reversed
     tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${[tile.tileData.tilePos[1], tile.tileData.tilePos[0]].join('/')}`,
-      { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
+      {
+        fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center'
+      });
   } else {
     tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`,
-      { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
+      {
+        fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center'
+      });
   }
 
   // tile.text.y = 100;

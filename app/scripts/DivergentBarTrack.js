@@ -7,13 +7,13 @@ import { colorToHex } from './utils';
 
 class DivergentBarTrack extends BarTrack {
   renderTile(tile) {
-    //super.drawTile(tile);
+    // super.drawTile(tile);
     if (!tile.graphics) { return; }
 
     const graphics = tile.graphics;
 
-    const { tileX, tileWidth } = this.getTilePosAndDimensions(tile.tileData.zoomLevel, 
-      tile.tileData.tilePos, 
+    const { tileX, tileWidth } = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
+      tile.tileData.tilePos,
       this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension);
     const tileValues = tile.tileData.dense;
 
@@ -22,7 +22,7 @@ class DivergentBarTrack extends BarTrack {
     let pseudocount = 0; // if we use a log scale, then we'll set a pseudocount
     // equal to the smallest non-zero value
     this.valueScale = null;
-    
+
 
     // console.log('valueScaling:', this.options.valueScaling);
     if (this.options.valueScaling == 'log') {
@@ -42,7 +42,7 @@ class DivergentBarTrack extends BarTrack {
         .range([this.dimensions[1], 0]);
     }
 
-      /*
+    /*
     tile.scale = {
       minValue: this.valueScale.domain()[0],
       maxValue: this.valueScale.domain()[1]
@@ -95,7 +95,7 @@ class DivergentBarTrack extends BarTrack {
       const yPos = this.valueScale(tileValues[i] + pseudocount);
 
       const width = this._xScale(tileXScale(i + 1)) - xPos;
-      //const height = this.dimensions[1] - yPos;
+      // const height = this.dimensions[1] - yPos;
 
       if (yPos > baseline) {
         graphics.beginFill(bottomColorHex, opacity);

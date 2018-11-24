@@ -32,10 +32,12 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
         if (seen.has(this.uid(x))) { return null; }
         seen.add(this.uid(x));
         // console.log('length:', +x[2] - +x[1], 'id', tile.tileId)
-        return { from: +x[1],
+        return {
+          from: +x[1],
           to: +x[2],
           type: x[4],
-          uid: this.uid(x) };
+          uid: this.uid(x)
+        };
       })
       .filter(x => x); // filter out null values
 

@@ -11,7 +11,6 @@ class OSMTileIdsTrack extends OSMTilesTrack {
   }
 
   drawTile(tile) {
-
     drawTile.bind(this)(tile);
   }
 
@@ -50,7 +49,7 @@ class OSMTileIdsTrack extends OSMTilesTrack {
   draw() {
     super.draw();
 
-    //this.animate();
+    // this.animate();
   }
 }
 

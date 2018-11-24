@@ -35,7 +35,7 @@
     "no-bitwise": 0,
     "no-console": ["error", { "allow": ["warn", "error"] }],
     "no-continue": 0,
-    "no-mixed-operators": ["error", { "allowSamePrecedence": true }],
+    "no-mixed-operators": 0,
     "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
     "no-param-reassign": ["error", { "props": false }],
     "no-plusplus": 0,
