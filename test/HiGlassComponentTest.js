@@ -1542,31 +1542,34 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Resize the 1D projection', (done) => {
-      const viewportTracker = getTrackObjectFromHGC(hgc.instance(), 'aa', vpUid);
-      const viewport2DTracker = getTrackObjectFromHGC(hgc.instance(), 'aa', vp2DUid);
-
-      // the 2D viewport tracker domains shouldn't change
-      // what??? this is impossible since the yDomain
-      // this test is invalid
-      // TODO: Add a bug report for this
-      done();
-      return;
-
-      const preResizeYDomain = viewport2DTracker.viewportYDomain;
-      viewportTracker.setDomainsCallback([2540588996.465288, 2540640947.3589344],
-        [2541519510.3818445, 2541549873.460309]);
-
-      const postResizeYDomain = JSON.parse(JSON.stringify(viewport2DTracker.viewportYDomain));
-
-      // console.log('preResizeYDomain:', preResizeYDomain);
-      // console.log('postResizeYDomain:', postResizeYDomain);
-
-      expect(preResizeYDomain[1] - postResizeYDomain[1]).toBeLessThan(0.0001);
-      expect(preResizeYDomain[1] - postResizeYDomain[1]).toBeLessThan(0.0001);
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
+    // it('Resize the 1D projection', (done) => {
+    //   // TODO: This test isn't doing anything,
+    //   // and it references variables which are out of scope.
+    //
+    //   const viewportTracker = getTrackObjectFromHGC(hgc.instance(), 'aa', vpUid);
+    //   const viewport2DTracker = getTrackObjectFromHGC(hgc.instance(), 'aa', vp2DUid);
+    //
+    //   // the 2D viewport tracker domains shouldn't change
+    //   // what??? this is impossible since the yDomain
+    //   // this test is invalid
+    //   // TODO: Add a bug report for this
+    //   done();
+    //   return;
+    //
+    //   const preResizeYDomain = viewport2DTracker.viewportYDomain;
+    //   viewportTracker.setDomainsCallback([2540588996.465288, 2540640947.3589344],
+    //     [2541519510.3818445, 2541549873.460309]);
+    //
+    //   const postResizeYDomain = JSON.parse(JSON.stringify(viewport2DTracker.viewportYDomain));
+    //
+    //   // console.log('preResizeYDomain:', preResizeYDomain);
+    //   // console.log('postResizeYDomain:', postResizeYDomain);
+    //
+    //   expect(preResizeYDomain[1] - postResizeYDomain[1]).toBeLessThan(0.0001);
+    //   expect(preResizeYDomain[1] - postResizeYDomain[1]).toBeLessThan(0.0001);
+    //
+    //   waitForTilesLoaded(hgc.instance(), done);
+    // });
   });
 
   describe('Multiple track addition', () => {
@@ -2694,7 +2697,7 @@ describe('Simple HiGlassComponent', () => {
 
       const svg = horizontalHeatmap.exportColorBarSVG();
       const rects = svg.getElementsByClassName('color-rect');
-      expect(rects.length).to.be.above(0);
+      expect(rects.length).toBeGreaterThan(0);
 
       // let svgText = new XMLSerializer().serializeToString(svg);
 
