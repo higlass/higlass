@@ -17,7 +17,7 @@ class DivergentBarTrack extends BarTrack {
       this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension);
     const tileValues = tile.tileData.dense;
 
-    if (tileValues.length == 0) { return; }
+    if (tileValues.length === 0) { return; }
 
     let pseudocount = 0; // if we use a log scale, then we'll set a pseudocount
     // equal to the smallest non-zero value
@@ -25,7 +25,7 @@ class DivergentBarTrack extends BarTrack {
 
 
     // console.log('valueScaling:', this.options.valueScaling);
-    if (this.options.valueScaling == 'log') {
+    if (this.options.valueScaling === 'log') {
       let offsetValue = this.medianVisibleValue;
 
       if (!this.medianVisibleValue) { offsetValue = this.minVisibleValue(); }
@@ -52,7 +52,7 @@ class DivergentBarTrack extends BarTrack {
     graphics.clear();
     this.drawAxis(this.valueScale);
 
-    if (this.options.valueScaling == 'log' && this.valueScale.domain()[1] < 0) {
+    if (this.options.valueScaling === 'log' && this.valueScale.domain()[1] < 0) {
       console.warn('Negative values present when using a log scale', this.valueScale.domain());
       return;
     }
@@ -82,7 +82,7 @@ class DivergentBarTrack extends BarTrack {
 
     // the line at which the values will diverge
     let baseline = 0;
-    if (this.options.valueScaling == 'log') {
+    if (this.options.valueScaling === 'log') {
       baseline = this.valueScale(1);
     } else {
       baseline = this.valueScale(0);

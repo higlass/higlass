@@ -149,7 +149,7 @@ class CombinedTrack {
   }
 
   minValue() {
-    if (arguments.length == 0) {
+    if (arguments.length === 0) {
       const minValues = this.childTracks
         .filter(x => x.minValue) // filter for tracks which have the minValue function
         .map(x => x.minValue()) // get the minValue for each track
@@ -165,7 +165,7 @@ class CombinedTrack {
   }
 
   maxValue(_) {
-    if (arguments.length == 0) {
+    if (arguments.length === 0) {
       const maxValues = this.childTracks
         .filter(x => x.maxValue) // filter for tracks which have the minValue function
         .map(x => x.maxValue()) // get the minValue for each track

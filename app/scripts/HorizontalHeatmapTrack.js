@@ -225,7 +225,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     this.valueScale = valueScale;
     let pseudocount = 0;
 
-    if (scaleType == 'log') pseudocount = this.valueScale.domain()[0];
+    if (scaleType === 'log') pseudocount = this.valueScale.domain()[0];
 
     this.limitedValueScale = this.valueScale.copy();
 
@@ -257,10 +257,10 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     let toUpdate = true;
     if (tile.renderInfo) {
       // console.log('same scaletype', scaleType, tile.renderInfo.scaleType);
-      if (tile.renderInfo.scaleType == scaleType) {
+      if (tile.renderInfo.scaleType === scaleType) {
         if (tile.renderInfo.scaleDomain
-          && tile.renderInfo.scaleDomain[0] == this.limitedValueScale.domain()[0]
-          && tile.renderInfo.scaleDomain[1] == this.limitedValueScale.domain()[1]) toUpdate = false;
+          && tile.renderInfo.scaleDomain[0] === this.limitedValueScale.domain()[0]
+          && tile.renderInfo.scaleDomain[1] === this.limitedValueScale.domain()[1]) toUpdate = false;
       }
     }
 
@@ -322,7 +322,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         this.refreshTiles();
         */
       },
-      this.mirrorTiles && !tile.mirrored && tile.tileData.tilePos[0] == tile.tileData.tilePos[1]
+      this.mirrorTiles && !tile.mirrored && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
     );
   }
 

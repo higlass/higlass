@@ -278,7 +278,7 @@ class PixiTrack extends Track {
     let opacity = 1;
     let color = this.options.backgroundColor;
 
-    if (this.options.backgroundColor == 'transparent') {
+    if (this.options.backgroundColor === 'transparent') {
       opacity = 0;
       color = 'white';
     }
@@ -461,8 +461,8 @@ class PixiTrack extends Track {
       this.labelText.anchor.y = 0.5;
 
       this.labelText.y += this.labelText.height / 2 + 3;
-    } else if ((this.options.labelPosition == 'outerRight' && !this.flipText)
-                   || (this.options.labelPosition == 'outerBottom' && this.flipText)) {
+    } else if ((this.options.labelPosition === 'outerRight' && !this.flipText)
+                   || (this.options.labelPosition === 'outerBottom' && this.flipText)) {
       this.labelText.x = this.position[0] + this.dimensions[0];
       this.labelText.y = this.position[1] + this.dimensions[1] / 2;
 
@@ -474,10 +474,10 @@ class PixiTrack extends Track {
       this.labelText.visible = false;
     }
 
-    if (this.options.labelPosition == 'outerLeft'
-            || this.options.labelPosition == 'outerRight'
-            || this.options.labelPosition == 'outerTop'
-            || this.options.labelPosition == 'outerBottom') {
+    if (this.options.labelPosition === 'outerLeft'
+            || this.options.labelPosition === 'outerRight'
+            || this.options.labelPosition === 'outerTop'
+            || this.options.labelPosition === 'outerBottom') {
       this.pLabel.setParent(this.pBase);
     } else {
       this.pLabel.setParent(this.pMasked);
@@ -567,9 +567,9 @@ class PixiTrack extends Track {
     const paddingBottom = 3;
     const labelTextHeight = (this.labelTextFontSize + 2) * (lineParts.length) + paddingBottom;
 
-    if (this.labelText.anchor.y == 0.5) {
+    if (this.labelText.anchor.y === 0.5) {
       ddy = labelTextHeight / 2;
-    } else if (this.labelText.anchor.y == 1) {
+    } else if (this.labelText.anchor.y === 1) {
       ddy = -labelTextHeight;
     }
 
@@ -598,9 +598,9 @@ class PixiTrack extends Track {
 
       text.setAttribute('fill', this.options.labelColor);
 
-      if (this.labelText.anchor.x == 0.5) {
+      if (this.labelText.anchor.x === 0.5) {
         text.setAttribute('text-anchor', 'middle');
-      } else if (this.labelText.anchor.x == 1) {
+      } else if (this.labelText.anchor.x === 1) {
         text.setAttribute('text-anchor', 'end');
       }
 

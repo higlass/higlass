@@ -119,7 +119,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     if (tile.tileData && tile.tileData.length) {
       tile.tileData.forEach((td, i) => {
         if (this.drawnRects[zoomLevel] && this.drawnRects[zoomLevel][td.uid]) {
-          if (this.drawnRects[zoomLevel][td.uid][2] == tile.tileId) {
+          if (this.drawnRects[zoomLevel][td.uid][2] === tile.tileId) {
             // this was the tile that drew that rectangle
             delete this.drawnRects[zoomLevel][td.uid];
           }

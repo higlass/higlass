@@ -69,7 +69,7 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
   minVisibleValue() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
-    if (visibleAndFetchedIds.length == 0) {
+    if (visibleAndFetchedIds.length === 0) {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
@@ -83,7 +83,7 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
   maxVisibleValue() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
-    if (visibleAndFetchedIds.length == 0) {
+    if (visibleAndFetchedIds.length === 0) {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
