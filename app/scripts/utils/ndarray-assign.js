@@ -2,7 +2,7 @@ import cwise from 'cwise';
 
 const ndarrayAssign = (target, source) => {
   const numSource = +source;
-  const isScalar = !isNaN(numSource); // eslint-disable-line no-restricted-globals
+  const isScalar = !Number.isNaN(numSource);
 
   if (isScalar) {
     cwise({
