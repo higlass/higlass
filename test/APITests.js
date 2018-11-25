@@ -6,6 +6,7 @@ import {
 } from '../app/scripts/utils';
 
 import {
+  emptyConf,
   simpleCenterViewConfig,
   simple1And2dAnnotations,
 } from './view-configs';
@@ -120,6 +121,14 @@ describe('Simple HiGlassComponent', () => {
           done();
         });
       });
+    });
+
+    it('has version', (done) => {
+      [div, api] = createElementAndApi(emptyConf, { editable: false });
+
+      expect(api.version).toEqual(VERSION);
+
+      done();
     });
 
     it('APIs are independent', (done) => {
