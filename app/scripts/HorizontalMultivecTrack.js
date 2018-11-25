@@ -107,7 +107,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   }
 
   calculateZoomLevel() {
-    if (!this.tilesetInfo) return;
+    if (!this.tilesetInfo) return undefined;
 
     const minX = this.tilesetInfo.min_pos[0];
 
@@ -115,7 +115,8 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     if (this.tilesetInfo.resolutions) {
       zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
-        this.tilesetInfo.resolutions, this._xScale, minX);
+        this.tilesetInfo.resolutions, this._xScale, minX
+      );
     } else {
       zoomIndexX = tileProxy.calculateZoomLevel(
         this._xScale,
@@ -169,13 +170,14 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
    * @return {array} [zoomLevel, tilePos]
    */
   getTilePosAtPosition(trackX, trackY) {
-    if (!this.tilesetInfo) return;
+    if (!this.tilesetInfo) return undefined;
 
     const zoomLevel = this.calculateZoomLevel();
 
     // the width of the tile in base pairs
     const tileWidth = tileProxy.calculateTileWidth(
-      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size);
+      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
+    );
 
     // the position of the tile containing the query position
     const tilePos = this._xScale.invert(trackX) / tileWidth;
@@ -194,7 +196,8 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     // the width of the tile in base pairs
     const tileWidth = tileProxy.calculateTileWidth(
-      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size);
+      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
+    );
 
     // the position of the tile containing the query position
     const tilePos = this._xScale.invert(trackX) / tileWidth;

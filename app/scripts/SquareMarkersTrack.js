@@ -137,8 +137,6 @@ class SquareMarkersTrack extends TiledPixiTrack {
 
     // line needs to be scaled down so that it doesn't become huge
     for (const td of tile.tileData) {
-      const line = td.fields;
-
       const startX = this._xScale(td.xStart);
       const endX = this._xScale(td.xEnd);
 

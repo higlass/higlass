@@ -104,15 +104,14 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     // this.zoomLevel = 0;
     const expandedXScale = this._xScale.copy();
 
-    const xDomainWidth = this._xScale.domain()[1] - this._xScale.domain()[0];
-    const xRangeWidth = this._xScale.range()[1] - this._xScale.range()[0];
-
     // we need to expand the domain of the X-scale because we are showing diagonal tiles.
     // to make sure the view is covered up the entire height, we need to expand by
     // viewHeight * sqrt(2)
     // on each side
-    expandedXScale.domain([this._xScale.invert(this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)),
-      this._xScale.invert(this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2))]);
+    expandedXScale.domain([
+      this._xScale.invert(this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)),
+      this._xScale.invert(this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2))
+    ]);
 
     if (this.tilesetInfo.resolutions) {
       const sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a, b) => b - a);
@@ -146,7 +145,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     const zoomLevel = this.zoomLevel;
 
     const maxWidth = this.tilesetInfo.max_width;
-    const tileWidth = maxWidth / Math.pow(2, zoomLevel);
+    const tileWidth = maxWidth / 2 ** zoomLevel;
 
     // if we're mirroring tiles, then we only need tiles along the diagonal
     const tiles = [];
@@ -204,9 +203,6 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
 
     const tileEndX = tileX + tileWidth;
     const tileEndY = tileY + tileHeight;
-
-    const spriteWidth = this._refXScale(tileEndX) - this._refXScale(tileX);
-    const spriteHeight = this._refYScale(tileEndY) - this._refYScale(tileY);
 
     sprite.width = this._refXScale(tileEndX) - this._refXScale(tileX);
     sprite.height = this._refYScale(tileEndY) - this._refYScale(tileY);
@@ -394,7 +390,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     );
 
     for (const tile of this.visibleAndFetchedTiles()) {
-		  const gGraphics = document.createElement('g');
+      const gGraphics = document.createElement('g');
       const graphics = tile.graphics;
       const graphicsRotation = graphics.rotation * 180 / Math.PI;
       const transformText = `translate(${graphics.position.x},${graphics.position.y}) rotate(${graphicsRotation}) scale(${graphics.scale.x},${graphics.scale.y}) translate(${-graphics.pivot.x},${-graphics.pivot.y})`;

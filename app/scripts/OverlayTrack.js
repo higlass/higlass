@@ -1,14 +1,7 @@
 import PixiTrack from './PixiTrack';
 
-// Services
-import { tileProxy } from './services';
-
 // Utils
 import { colorToHex } from './utils';
-
-const GENE_RECT_WIDTH = 1;
-const GENE_RECT_HEIGHT = 10;
-const MAX_TEXTS = 20;
 
 export class OverlayTrack extends PixiTrack {
   constructor(context, options) {

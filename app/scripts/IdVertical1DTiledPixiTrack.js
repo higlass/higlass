@@ -17,7 +17,8 @@ class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {
 
     const graphics = tile.graphics;
     tile.textGraphics = new PIXI.Graphics();
-    // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored,
+    // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/')
+    // + '/' + tile.mirrored,
 
     tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`,
       {
@@ -59,7 +60,7 @@ class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {
     //   / (this._refXScale(1) - this._refXScale(0))
     // );
     const tSY = 1 / (
-      (this._yScale(1) - this._yScale(0)) 
+      (this._yScale(1) - this._yScale(0))
       / (this._refYScale(1) - this._refYScale(0))
     );
 

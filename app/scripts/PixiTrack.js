@@ -63,7 +63,7 @@ function getWidthBasedResolutionText(
   const resolution = maxWidth / ((2 ** zoomLevel) * binsPerDimension);
 
   // we can't display a NaN resolution
-  if (!isNaN(resolution)) {
+  if (!Number.isNaN(resolution)) {
     // what is the maximum possible resolution?
     // this will determine how we format the lower resolutions
     const maxResolutionSize = maxWidth / ((2 ** maxZoom) * binsPerDimension);
@@ -143,10 +143,12 @@ class PixiTrack extends Track {
 
     this.options = Object.assign(this.options, options);
 
-    let labelTextText = this.options.name
-      ? this.options.name
-      : this.tilesetInfo ? this.tilesetInfo.name : '';
-
+    let labelTextText;
+    if (this.options.name) {
+      labelTextText = this.options.name;
+    } else {
+      labelTextText = this.tilesetInfo ? this.tilesetInfo.name : '';
+    }
     if (!this.options.labelPosition || this.options.labelPosition === 'hidden') {
       labelTextText = '';
     }
@@ -317,9 +319,11 @@ class PixiTrack extends Track {
       ? `${this.tilesetInfo.coordSystem} | `
       : '';
 
-    labelTextText += this.options.name
-      ? this.options.name
-      : (this.tilesetInfo ? this.tilesetInfo.name : '');
+    if (this.options.name) {
+      labelTextText += this.options.name;
+    } else {
+      labelTextText += this.tilesetInfo ? this.tilesetInfo.name : '';
+    }
 
     if (
       this.tilesetInfo
@@ -418,7 +422,8 @@ class PixiTrack extends Track {
         this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin,
         this.position[1],
         this.labelText.width + labelBackgroundMargin,
-        this.labelText.height + labelBackgroundMargin);
+        this.labelText.height + labelBackgroundMargin
+      );
     } else if (this.options.labelPosition === 'bottomRight') {
       this.labelText.x = this.position[0] + this.dimensions[0];
       this.labelText.y = this.position[1] + this.dimensions[1];

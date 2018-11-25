@@ -141,8 +141,8 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     const minX = this.tilesetInfo.min_pos[0];
     const minY = this.tilesetInfo.min_pos[1];
 
-    const tileWidth = totalWidth / Math.pow(2, zoomLevel);
-    const tileHeight = totalHeight / Math.pow(2, zoomLevel);
+    const tileWidth = totalWidth / 2 ** zoomLevel;
+    const tileHeight = totalHeight / 2 ** zoomLevel;
 
     const tileX = minX + xTilePos * tileWidth;
     const tileY = minY + yTilePos * tileHeight;
