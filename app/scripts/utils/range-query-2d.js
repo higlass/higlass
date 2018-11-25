@@ -11,7 +11,7 @@ import { addArrays, accessorTransposition } from '.';
  * @param  {Integer}  xOff  X offset in regards to `outList`.
  * @param  {Integer}  yOff  Y offset in regards to `outList`.
  * @param  {Boolean}  mirrored  If `true` mirror query.
- * @param  {Array}  outList  Typed array to be set in place. 
+ * @param  {Array}  outList  Typed array to be set in place.
  *        1D representation of a 2D array (e.g. ass = new Uint8ClampedArray(10);)
  * @return  {Array}  Sub array.
  */

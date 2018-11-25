@@ -17,6 +17,6 @@ const expandCombinedTracks = (trackList) => {
   }
 
   return newTracks;
-}
+};
 
 export default expandCombinedTracks;
