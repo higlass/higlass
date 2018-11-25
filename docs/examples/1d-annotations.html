@@ -378,5 +378,11 @@ const viewConfig = {
 window.hgApi = window.hglib.viewer(
   document.getElementById('demo'), viewConfig, { bounded: true },
 );
+
+window.hgApi.on(
+  'click', ({ type, event, payload }) => {
+    console.log('Clicked on ', type, '\n', event, '\n', payload);
+  }
+);
 </script>
 </html>

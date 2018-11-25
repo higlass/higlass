@@ -100,7 +100,8 @@ export const OPTIONS_INFO = {
   colorScale: {
     name: 'Color Scale',
     inlineOptions: {
-      epilogos: { name: 'Epilogos',
+      epilogos: {
+        name: 'Epilogos',
         values: [
           '#FF0000',
           '#FF4500',

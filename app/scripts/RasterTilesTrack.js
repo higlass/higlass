@@ -9,17 +9,14 @@ class RasterTilesTrack extends OSMTilesTrack {
    * @param server: The server to pull tiles from.
    * @param tilesetUid: The data set to get the tiles from the server
    */
-  constructor(scene, options, animate, accessToken) {
-    // Force Mapbox and OpenStreetMaps copyright
-    // options.name = `© Mapbox © OpenStreetMap${options.name ? `\n${options.name}` : ''}`;
-    super(scene, options, animate);
+  constructor(context, options) {
+    super(context, options);
 
     this.style = options.style;
 
     if (!this.options.tileSource) {
-        this.errorTextText = "No tile source string provided in the options. It should be in the form of http://a.com/{z}/{x}/{y}"
-
-        this.drawError();
+      this.errorTextText = "No tile source string provided in the options. It should be in the form of http://a.com/{z}/{x}/{y}"
+      this.drawError();
     }
   }
 

@@ -1,1 +1,1 @@
-export { default as LruCache } from './LruCache';
+export { default } from './LruCache';

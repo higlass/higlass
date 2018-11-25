@@ -40,8 +40,9 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
    *  animate: callback
    *      Function to be called when something in this track changes.
    */
-  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
-    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
+  constructor(context, options) {
+    super(context, options);
+    const { animate } = context;
 
     this.animate = animate;
     this.options = options;

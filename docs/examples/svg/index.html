@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HiGlass</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="/hglib.css">
+
+<style type="text/css">
+#demo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  overflow: hidden;
+  height: 50%;
+}
+#preview {
+  position: absolute;
+  top: 50%;
+}
+#url {
+  position: absolute;
+  z-index: 1000;
+  bottom: 0%;
+  width: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+</style>
+
+<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.2/pixi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+</head>
+<body>
+  <div id="demo"></div>
+  <div id="preview"></div>
+  <input id="url" placeholder="viewconf url">
+</body>
+<script src='/hglib.js'></script>
+<script>
+const urlInput = document.getElementById('url');
+urlInput.value = location.search.slice(1);
+urlInput.onchange = (event) => {
+  const url = event.target.value;
+  location.search = '?' + url;
+}
+
+fetch(
+  location.search.slice(1).replace(
+    'http://higlass.io/app/?config=',
+    'http://higlass.io/api/v1/viewconfs/?d='
+  ) || 'viewconf.json')
+  .then((response) => {
+    return response.json();
+  })
+  .then((viewconf) => {
+    const hgApi = hglib.viewer(
+      document.getElementById('demo'),
+      viewconf,
+      { bounded: true },
+    );
+
+    function renderPreview() {
+      setTimeout(() => {
+        document.getElementById('preview').innerHTML = hgApi.exportAsSvg();
+      }, 1000);
+      // Issue #386 is for adding an "onLoad" event, which would be better than this.
+    }
+    renderPreview();
+
+    hgApi.on('location', (event) => {
+      console.log('location event', event);
+      renderPreview();
+    });
+    
+    hgApi.on('viewConfig', (event) => {
+      console.log('viewConfig event', event);
+      renderPreview();
+    });
+  });
+</script>
+</html>
