@@ -434,11 +434,12 @@ class CenterTrack extends React.Component {
       return false;
     });
 
-    const rangeSelectorClass = this.props.isRangeSelectionActive ? (
-      this.props.is1dRangeSelection
-        ? 'stylesTrack.track-range-selection-active-secondary'
-        : 'stylesTrack.track-range-selection-active-primary'
-    ) : 'stylesTrack.track-range-selection';
+    let rangeSelectorClass = 'stylesTrack.track-range-selection';
+    if (this.props.isRangeSelectionActive) {
+      rangeSelectorClass += this.props.is1dRangeSelection
+        ? '-active-secondary'
+        : '-active-primary';
+    }
 
     const rangeSelectorGroup1dClass = !this.props.is1dRangeSelection
       ? 'stylesTrack.track-range-selection-group-inactive'

@@ -4,15 +4,14 @@ import React from 'react';
 import DraggableDiv from './DraggableDiv';
 import TrackArea from './TrackArea';
 
-import { isWithin } from './utils';
-
-
-const checkMousePosVsEl = (x, y, el) => {
-  const bBox = el.getBoundingClientRect();
-  return isWithin(
-    x, y, bBox.left, bBox.left + bBox.width, bBox.top, bBox.top + bBox.height
-  );
-};
+// See commented out block in "render()".
+//
+// const checkMousePosVsEl = (x, y, el) => {
+//   const bBox = el.getBoundingClientRect();
+//   return isWithin(
+//     x, y, bBox.left, bBox.left + bBox.width, bBox.top, bBox.top + bBox.height
+//   );
+// };
 
 class MoveableTrack extends TrackArea {
   constructor(props) {

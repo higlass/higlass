@@ -77,7 +77,6 @@ class DivergentBarTrack extends BarTrack {
 
     const opacity = 'barOpacity' in this.options ? this.options.barOpacity : 1;
 
-    const j = 0;
     tile.drawnAtScale = this._xScale.copy();
 
     // the line at which the values will diverge
@@ -105,10 +104,10 @@ class DivergentBarTrack extends BarTrack {
         this.addSVGInfo(tile, xPos, yPos, width, baseline - yPos, topColor);
       }
 
-      if (tileXScale(i) > this.tilesetInfo.max_pos[0])
+      if (tileXScale(i) > this.tilesetInfo.max_pos[0]) { break; }
       // this data is in the last tile and extends beyond the length
       // of the coordinate system
-      { break; }
+
 
       graphics.drawRect(xPos,
         tile.svgData.barYValues[i],

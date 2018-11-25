@@ -105,7 +105,7 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
   }
 
   destroyTile(tile) {
-    tile.tileData.discrete.map((x) => {
+    tile.tileData.discrete.forEach((x) => {
       const uid = x[x.length - 2];
 
       if (this.seen.has(uid)) { this.seen.delete(uid); }

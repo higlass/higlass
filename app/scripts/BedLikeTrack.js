@@ -17,11 +17,9 @@ import {
 // Configs
 import { HEATED_OBJECT_MAP } from './configs';
 
-const GENE_RECT_WIDTH = 1;
 const GENE_RECT_HEIGHT = 10;
 const MAX_TEXTS = 1000;
 const MAX_TILE_ENTRIES = 5000;
-const MIN_RECT_WIDTH = 2;
 
 class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
@@ -399,7 +397,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             .sort((a, b) => b.importance - a.importance)
             .slice(0, MAX_TILE_ENTRIES)
             .map(y => +y.fields[+this.options.valueColumn - 1])
-            .filter(y => !isNaN(y))
+            .filter(y => !Number.isNaN(y))
         ))
     );
 
@@ -427,7 +425,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             .sort((a, b) => b.importance - a.importance)
             .slice(0, MAX_TILE_ENTRIES)
             .map(y => +y.fields[+this.options.valueColumn - 1])
-            .filter(y => !isNaN(y))
+            .filter(y => !Number.isNaN(y))
         ))
     );
 

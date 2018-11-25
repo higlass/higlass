@@ -29,7 +29,8 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     const graphics = tile.graphics;
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
-      tile.tileData.zoomLevel, tile.tileData.tilePos);
+      tile.tileData.zoomLevel, tile.tileData.tilePos
+    );
     const tileValues = tile.tileData.dense;
 
     if (tileValues.length === 0) { return; }
@@ -81,7 +82,6 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
 
     graphics.beginFill(pointColor, 1);
 
-    const j = 0;
     tile.drawnAtScale = this._xScale.copy();
 
     for (let i = 0; i < tileValues.length; i++) {
@@ -94,10 +94,9 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
       tile.barWidths[i] = squareSide / this.pMain.scale.x;
       tile.barHeights[i] = squareSide / this.pMain.scale.y;
 
-      if (tileXScale(i) > this.tilesetInfo.max_pos[0])
+      if (tileXScale(i) > this.tilesetInfo.max_pos[0]) { break; }
       // this data is in the last tile and extends beyond the length
       // of the coordinate system
-      { break; }
 
 
       // console.log('drawRect');
@@ -152,8 +151,6 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     track.appendChild(output);
     output.setAttribute('transform',
       `translate(${this.position[0]},${this.position[1]})`);
-
-    const stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
 
     for (const tile of this.visibleAndFetchedTiles()) {
       for (let i = 0; i < tile.barXValues.length; i++) {
