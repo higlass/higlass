@@ -513,6 +513,7 @@ export const TRACKS_INFO = [
     orientation: '1d-horizontal',
     availableOptions: [
       'align',
+      'axisLabelFormatting',
       'labelPosition',
       'labelColor',
       'labelTextOpacity',
@@ -532,6 +533,7 @@ export const TRACKS_INFO = [
     ],
     defaultOptions: {
       align: 'bottom',
+      axisLabelFormatting: 'scientific',
       labelColor: 'black',
       labelPosition: 'topLeft',
       axisPositionHorizontal: 'right',
