@@ -1,7 +1,5 @@
 import * as PIXI from 'pixi.js';
 
-import { pubSub } from '../services';
-
 import { hexStrToInt } from '.';
 
 const COLOR = 0xaaaaaa;
