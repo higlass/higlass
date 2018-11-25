@@ -39,6 +39,9 @@ const createApi = function api(context, pubSub) {
        * @return {string} Version number
        */
       get version() {
+        // Note, `VERSION` is exposed by webpack across the entire app. I.e.,
+        // it's globally available within the build but not outside. See
+        // `plugins` in `webpack.config.js`
         return VERSION;
       },
 
