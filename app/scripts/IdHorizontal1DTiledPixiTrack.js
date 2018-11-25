@@ -21,7 +21,7 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
 
     const graphics = tile.graphics;
     tile.textGraphics = new PIXI.Graphics();
-    // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') 
+    // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/')
     // + '/' + tile.mirrored,
 
     tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`,
@@ -52,7 +52,7 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     const graphics = tile.graphics;
 
     const {
-      tileX, tileY, tileWidth, tileHeight
+      tileX, tileY, tileWidth
     } = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
       tile.tileData.tilePos);
 
@@ -85,7 +85,6 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     tile.textGraphics.position.y = tileScaledHeight / 2;
 
     const rectX = this._refXScale(tileX);
-    const rectY = 0;
 
     // position the graphics
     // graphics.drawRect(rectX, 0, tileScaledWidth, tileScaledHeight);
