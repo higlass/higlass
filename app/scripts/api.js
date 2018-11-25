@@ -35,6 +35,14 @@ const createApi = function api(context, pubSub) {
     // Public API
     public: {
       /**
+       * HiGlass version
+       * @return {string} Version number
+       */
+      get version() {
+        return VERSION;
+      },
+
+      /**
        * Set an auth header to be included with all tile requests.
        *
        * @param {string} newHeader The contensts of the header to be included.
