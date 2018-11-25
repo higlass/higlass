@@ -5,15 +5,13 @@ import slugid from 'slugid';
 import SVGTrack from './SVGTrack';
 
 class ViewportTrackerVertical extends SVGTrack {
-  constructor(
-    svgElement,
-    registerViewportChanged,
-    removeViewportChanged,
-    setDomainsCallback,
-    options
-  ) {
-    // create a clipped SVG Path
-    super(svgElement, true);
+  constructor(context, options) {
+    super(context, options);
+    const {
+      registerViewportChanged,
+      removeViewportChanged,
+      setDomainsCallback,
+    } = context;
 
     const uid = slugid.nice();
     this.uid = uid;

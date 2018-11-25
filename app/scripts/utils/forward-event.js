@@ -6,8 +6,7 @@ import cloneEvent from './clone-event';
  * @param   {object}  target  Target HTML element for the event.
  */
 const forwardEvent = (event, target) => {
-  const newEvent = cloneEvent(event);
-  target.dispatchEvent(newEvent);
+  target.dispatchEvent(cloneEvent(event));
 };
 
 export default forwardEvent;

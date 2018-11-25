@@ -11,6 +11,7 @@ const ALPHA = 1.0;
  * Actual interface for initializing to show the mouse location
  *
  * @param  {Object}  pubSubs  PubSub service.
+ * @param  {Object}  pubSubs  Subscribed PubSub events.
  * @param  {Object}  options  Track options.
  * @param  {Function}  getScales  Getter for the track's X and Y scales.
  * @param  {Function}  getPosition  Getter for the track's position.
@@ -22,6 +23,7 @@ const ALPHA = 1.0;
  * @return  {Object}  PIXI graphics the mouse location is drawn on.
  */
 const showMousePosition = (
+  pubSub,
   pubSubs,
   options,
   getScales,
@@ -120,6 +122,7 @@ const setupShowMousePosition = (context, is2d = false) => {
   const getScales = () => [context.xScale(), context.yScale()];
 
   const graphics = showMousePosition(
+    context.pubSub,
     context.pubSubs,
     context.options,
     getScales,

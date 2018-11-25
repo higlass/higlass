@@ -18,7 +18,7 @@ export const IS_TRACK_RANGE_SELECTABLE = (track) => {
 
     case 'combined': {
       return track.contents
-        .map(track => IS_TRACK_RANGE_SELECTABLE(track))
+        .map(t => IS_TRACK_RANGE_SELECTABLE(t))
         .reduce(or, false);
     }
 

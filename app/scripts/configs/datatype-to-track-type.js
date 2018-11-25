@@ -4,7 +4,7 @@ export const DATATYPE_TO_TRACK_TYPE = (orientation) => {
   const localDatatypeToTrackType = {};
 
   TRACKS_INFO
-    .filter(x => x.orientation == orientation)
+    .filter(x => x.orientation === orientation)
     .forEach((ti) => {
       let datatypes = ti.datatype;
 

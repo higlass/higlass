@@ -1,5 +1,3 @@
-import pubSub from './pub-sub';
-
 /**
  * Supported event handlers.
  *
@@ -13,7 +11,7 @@ const customEventHandlers = {};
  * @param {string} eventName - Name of the event.
  * @return {function} Either a custom or generic event handler.
  */
-const getEventHandler = (eventName) => {
+const getEventHandler = (eventName, pubSub) => {
   if (customEventHandlers[eventName]) {
     return customEventHandlers[eventName];
   }
@@ -34,9 +32,12 @@ const registeredEls = {};
  * @param {object} element - DOM element which we listened to.
  */
 const unregister = (event, element) => {
-  if (!registeredEls[event] && registeredEls[event] !== element) { return; }
+  if (!registeredEls[event] && registeredEls[event] !== element) return;
 
-  registeredEls[event].removeEventListener(event, getEventHandler(event));
+  registeredEls[event].removeEventListener(
+    event,
+    registeredEls[event].__handler__
+  );
 
   registeredEls[event] = undefined;
   delete registeredEls[event];
@@ -48,16 +49,17 @@ const unregister = (event, element) => {
  * @param {string} event - Name of the event to listen to.
  * @param {object} newElement - DOM element which to listen to.
  */
-const register = (event, newElement, useCapture = false) => {
-  if (!newElement || registeredEls[event] === newElement) { return; }
+const register = pubSub => (event, newElement, useCapture = false) => {
+  if (!newElement || registeredEls[event] === newElement) return;
 
   if (registeredEls[event]) {
     unregister(registeredEls[event]);
   }
 
   registeredEls[event] = newElement;
+  registeredEls[event].__handler__ = getEventHandler(event, pubSub);
   registeredEls[event].addEventListener(
-    event, getEventHandler(event), useCapture
+    event, registeredEls[event].__handler__, useCapture
   );
 };
 
@@ -66,9 +68,9 @@ const register = (event, newElement, useCapture = false) => {
  *
  * @type {object}
  */
-const domEvent = {
-  register,
+const domEvent = pubSub => ({
+  register: register(pubSub),
   unregister,
-};
+});
 
 export default domEvent;
