@@ -15,6 +15,7 @@ start eslint
   app/scripts/HeatmapTiledPixiTrack.js \
   app/scripts/services \
   app/scripts/*Track.js \
+  app/scripts/utils \
   test
 end eslint
 

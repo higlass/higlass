@@ -1,4 +1,5 @@
 test/HiGlassComponentTest.js
+app/scripts/utils/test-helpers.js
 
 # I've worked on these Track files, but a couple trickier issues remain
 # for each, and I didn't want those issues to get buried in a huge PR.

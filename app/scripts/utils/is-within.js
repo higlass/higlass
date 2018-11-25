@@ -9,8 +9,8 @@
  * @return  {boolean}  If `true` the [x,y] point is in the rectangle.
  */
 const isWithin = (x, y, minX, maxX, minY, maxY) => (
-  x >= minX && x <= maxX &&
-  y >= minY && y <= maxY
+  x >= minX && x <= maxX
+  && y >= minY && y <= maxY
 );
 
 export default isWithin;
