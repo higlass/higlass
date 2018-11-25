@@ -64,7 +64,8 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     let zoomLevel = Math.min(xZoomLevel, this.maxZoom);
     zoomLevel = Math.max(zoomLevel, 0);
     // console.log('xScale', this._xScale.domain(), this.maxZoom);
-    // console.log('zoomLevel:', zoomLevel, this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
+    // console.log('zoomLevel:', zoomLevel, this.tilesetInfo.min_pos[0],
+    //   this.tilesetInfo.max_pos[0]);
 
     return zoomLevel;
   }

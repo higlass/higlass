@@ -147,7 +147,8 @@ class SquareMarkersTrack extends TiledPixiTrack {
 
       const uid = td.uid;
 
-      if (this.drawnRects.has(uid)) { continue; } // we've already drawn this rectangle in another tile
+      if (this.drawnRects.has(uid)) { continue; }
+      // we've already drawn this rectangle in another tile
 
       this.drawnRects.add(uid);
 

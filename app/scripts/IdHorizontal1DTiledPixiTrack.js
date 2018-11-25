@@ -21,7 +21,8 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
 
     const graphics = tile.graphics;
     tile.textGraphics = new PIXI.Graphics();
-    // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored,
+    // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') 
+    // + '/' + tile.mirrored,
 
     tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`,
       {
@@ -57,8 +58,14 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
 
     // the text needs to be scaled down so that it doesn't become huge
     // when we zoom in
-    const tSX = 1 / ((this._xScale(1) - this._xScale(0)) / (this._refXScale(1) - this._refXScale(0)));
-    // let tSY = 1 / ((this._yScale(1) - this._yScale(0)) / (this._refYScale(1) - this._refYScale(0)));
+    const tSX = 1 / (
+      (this._xScale(1) - this._xScale(0))
+      / (this._refXScale(1) - this._refXScale(0))
+    );
+    // let tSY = 1 / (
+    //   (this._yScale(1) - this._yScale(0))
+    //   / (this._refYScale(1) - this._refYScale(0))
+    // );
 
     tile.text.scale.x = tSX;
     // tile.text.scale.y = tSY;

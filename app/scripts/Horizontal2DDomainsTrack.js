@@ -88,8 +88,10 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
     // we need to expand the domain of the X-scale because we are showing diagonal tiles.
     // to make sure the view is covered up the entire height, we need to expand by viewHeight * sqrt(2)
     // on each side
-    expandedXScale.domain([this._xScale.invert(this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)),
-      this._xScale.invert(this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2))]);
+    expandedXScale.domain([
+      this._xScale.invert(this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)),
+      this._xScale.invert(this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2))
+    ]);
 
     this.xTiles = tileProxy.calculateTiles(this.zoomLevel, expandedXScale,
       this.tilesetInfo.min_pos[0],
@@ -165,12 +167,15 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
 
     graphics.clear();
 
-    const stroke = colorToHex(this.options.rectangleDomainStrokeColor ? this.options.rectangleDomainStrokeColor : 'black');
-    const fill = colorToHex(this.options.rectangleDomainFillColor ? this.options.rectangleDomainFillColor : 'grey');
+    const stroke = colorToHex(this.options.rectangleDomainStrokeColor
+      ? this.options.rectangleDomainStrokeColor : 'black');
+    const fill = colorToHex(this.options.rectangleDomainFillColor
+      ? this.options.rectangleDomainFillColor : 'grey');
 
     graphics.lineStyle(1 / this.pMain.scale.x, stroke, 1);
     graphics.beginFill(fill, 0.4);
-    graphics.alpha = this.options.rectangleDomainOpacity ? this.options.rectangleDomainOpacity : 0.5;
+    graphics.alpha = this.options.rectangleDomainOpacity
+      ? this.options.rectangleDomainOpacity : 0.5;
 
     if (!tile.tileData.sort) return;
 
@@ -186,7 +191,8 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
 
       const uid = td.uid;
 
-      if (this.drawnRects.has(uid)) { continue; } // we've already drawn this rectangle in another tile
+      if (this.drawnRects.has(uid)) { continue; }
+      // we've already drawn this rectangle in another tile
 
       this.drawnRects.add(uid);
       graphics.drawRect(startX, startY, endX - startX, endY - startY);
@@ -234,7 +240,8 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
 
   zoomed(newXScale, newYScale, k, tx, ty) {
     super.zoomed(newXScale, newYScale, k, tx, ty);
-    // console.log('zoomed this.pMain.position:', this.pMain.position.x, this.pMain.position.y, this.pMain.scale.x, this.pMain.scale.y);
+    // console.log('zoomed this.pMain.position:', this.pMain.position.x, this.pMain.position.y,
+    // this.pMain.scale.x, this.pMain.scale.y);
 
     this.pMain.position.x = tx;
     this.pMain.position.y = this.position[1] + this.dimensions[1]; // translateY;

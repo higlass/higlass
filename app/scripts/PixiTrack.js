@@ -414,7 +414,8 @@ class PixiTrack extends Track {
 
       this.labelText.x -= this.labelText.width / 2;
 
-      graphics.drawRect(this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin,
+      graphics.drawRect(
+        this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin,
         this.position[1],
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin);

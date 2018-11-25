@@ -108,7 +108,8 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     const xRangeWidth = this._xScale.range()[1] - this._xScale.range()[0];
 
     // we need to expand the domain of the X-scale because we are showing diagonal tiles.
-    // to make sure the view is covered up the entire height, we need to expand by viewHeight * sqrt(2)
+    // to make sure the view is covered up the entire height, we need to expand by
+    // viewHeight * sqrt(2)
     // on each side
     expandedXScale.domain([this._xScale.invert(this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)),
       this._xScale.invert(this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2))]);
@@ -155,7 +156,10 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       for (let j = i; j < cols.length; j++) {
         // the length between the bottom of the track and the bottom corner of the tile
         // draw it out to understand better!
-        const tileBottomPosition = ((j - i) - 2) * (this._xScale(tileWidth) - this._xScale(0)) * Math.sqrt(2) / 2;
+        const tileBottomPosition = ((j - i) - 2)
+          * (this._xScale(tileWidth) - this._xScale(0))
+          * Math.sqrt(2)
+          / 2;
 
         if (tileBottomPosition > this.dimensions[1]) {
           // this tile won't be visible so we don't need to fetch it
@@ -260,7 +264,9 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       if (tile.renderInfo.scaleType === scaleType) {
         if (tile.renderInfo.scaleDomain
           && tile.renderInfo.scaleDomain[0] === this.limitedValueScale.domain()[0]
-          && tile.renderInfo.scaleDomain[1] === this.limitedValueScale.domain()[1]) toUpdate = false;
+          && tile.renderInfo.scaleDomain[1] === this.limitedValueScale.domain()[1]) {
+          toUpdate = false;
+        }
       }
     }
 

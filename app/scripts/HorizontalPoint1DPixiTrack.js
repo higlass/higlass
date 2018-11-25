@@ -28,7 +28,8 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
 
     const graphics = tile.graphics;
 
-    const { tileX, tileWidth } = this.getTilePosAndDimensions(tile.tileData.zoomLevel, tile.tileData.tilePos);
+    const { tileX, tileWidth } = this.getTilePosAndDimensions(
+      tile.tileData.zoomLevel, tile.tileData.tilePos);
     const tileValues = tile.tileData.dense;
 
     if (tileValues.length === 0) { return; }
@@ -114,7 +115,8 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
 
     for (const tile of dictValues(this.fetchedTiles)) {
       // scaling between tiles
-      const tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) / (this._xScale.domain()[1] - this._xScale.domain()[0]);
+      const tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
+        / (this._xScale.domain()[1] - this._xScale.domain()[0]);
 
       // let posOffset = newRange[0];
 

@@ -73,9 +73,11 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    const min = Math.min.apply(null, visibleAndFetchedIds.map(x => +Math.min(...(this.fetchedTiles[x].tileData
-      .filter(y => !isNaN(y.fields[3]))
-      .map(y => +y.fields[3])))));
+    const min = Math.min.apply(null, visibleAndFetchedIds.map(
+      x => +Math.min(...(this.fetchedTiles[x].tileData
+        .filter(y => !isNaN(y.fields[3]))
+        .map(y => +y.fields[3])))
+    ));
 
     return min;
   }
@@ -88,9 +90,11 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
     }
 
 
-    const max = Math.max.apply(null, visibleAndFetchedIds.map(x => +Math.max(...(this.fetchedTiles[x].tileData
-      .filter(y => !isNaN(y.fields[3]))
-      .map(y => +y.fields[3])))));
+    const max = Math.max.apply(null, visibleAndFetchedIds.map(
+      x => +Math.max(...(this.fetchedTiles[x].tileData
+        .filter(y => !isNaN(y.fields[3]))
+        .map(y => +y.fields[3])))
+    ));
 
     return max;
   }

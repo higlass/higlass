@@ -54,8 +54,14 @@ class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {
 
     // the text needs to be scaled down so that it doesn't become huge
     // when we zoom in
-    // let tSX = 1 / ((this._xScale(1) - this._xScale(0)) / (this._refXScale(1) - this._refXScale(0)));
-    const tSY = 1 / ((this._yScale(1) - this._yScale(0)) / (this._refYScale(1) - this._refYScale(0)));
+    // let tSX = 1 / (
+    //   (this._xScale(1) - this._xScale(0))
+    //   / (this._refXScale(1) - this._refXScale(0))
+    // );
+    const tSY = 1 / (
+      (this._yScale(1) - this._yScale(0)) 
+      / (this._refYScale(1) - this._refYScale(0))
+    );
 
     // tile.text.scale.x = tSX;
     tile.text.scale.x = tSY;
