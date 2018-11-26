@@ -61,7 +61,8 @@ class CenterTrack extends React.Component {
         this.rangeSelectionTriggeredXYEnd = false;
       }
       return this.state !== nextState;
-    } if (this.props.rangeSelection !== nextProps.rangeSelection) {
+    }
+    if (this.props.rangeSelection !== nextProps.rangeSelection) {
       const dim1 = nextProps.rangeSelection[0] || null;
 
       if (this.props.is1dRangeSelection) {
@@ -462,49 +463,49 @@ class CenterTrack extends React.Component {
       >
         {isBrushable
           && (
-<svg
-            style={{
-              height: this.props.height,
-              width: this.props.width,
-            }}
-            styleName={rangeSelectorClass}
-            xmlns="http://www.w3.org/2000/svg"
->
-            <g
-              ref={(el) => { this.brushElX = select(el); }}
-              styleName={rangeSelectorGroup1dClass}
-            />
-            <g
-              ref={(el) => { this.brushElY = select(el); }}
-              styleName={rangeSelectorGroup1dClass}
-            />
-            <g
-              ref={(el) => { this.brushElXY = select(el); }}
-              styleName={rangeSelectorGroup2dClass}
-            />
-</svg>
+            <svg
+              style={{
+                height: this.props.height,
+                width: this.props.width,
+              }}
+              styleName={rangeSelectorClass}
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g
+                ref={(el) => { this.brushElX = select(el); }}
+                styleName={rangeSelectorGroup1dClass}
+              />
+              <g
+                ref={(el) => { this.brushElY = select(el); }}
+                styleName={rangeSelectorGroup1dClass}
+              />
+              <g
+                ref={(el) => { this.brushElXY = select(el); }}
+                styleName={rangeSelectorGroup2dClass}
+              />
+            </svg>
           )
         }
         {this.props.editable
           // show track controls if config menu is visible or
           // mouse is within the bounds of the track
           && (
-<TrackControl
-            imgStyleAdd={STYLES}
-            imgStyleClose={STYLES}
-            imgStyleMove={STYLES}
-            imgStyleSettings={STYLES}
-            isMoveable={false}
-            isVisible={
-              this.state.isVisible
-              || this.props.uid === this.props.configTrackMenuId
-            }
-            onAddSeries={this.props.onAddSeries}
-            onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
-            onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
-            paddingRight={menuClash}
-            uid={this.props.uid}
-/>
+            <TrackControl
+              imgStyleAdd={STYLES}
+              imgStyleClose={STYLES}
+              imgStyleMove={STYLES}
+              imgStyleSettings={STYLES}
+              isMoveable={false}
+              isVisible={
+                this.state.isVisible
+                || this.props.uid === this.props.configTrackMenuId
+              }
+              onAddSeries={this.props.onAddSeries}
+              onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
+              onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
+              paddingRight={menuClash}
+              uid={this.props.uid}
+            />
           )
         }
       </div>
