@@ -15,6 +15,7 @@ module.exports = (config) => {
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
       'build/hglib.css',
       'test/**/*.+(js|jsx)',
+      // 'test/AxisTests.js',
       // 'test/PngExportTest.js',
       // 'test/OSMTests.js',
       // 'test/TiledPixiTrackTests.js',

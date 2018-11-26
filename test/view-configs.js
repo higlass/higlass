@@ -1,3 +1,37 @@
+export const emptyConf = {
+  editable: true,
+  zoomFixed: false,
+  trackSourceServers: [],
+  exportViewUrl: '',
+  views: [
+    {
+      uid: 'aa',
+      initialXDomain: [0, 100],
+      autocompleteSource: '',
+      genomePositionSearchBox: {},
+      chromInfoPath: '',
+      tracks: {
+        top: [],
+        left: [],
+        center: [],
+        right: [],
+        bottom: [],
+        whole: [],
+        gallery: []
+      },
+      layout: {
+        w: 12,
+        h: 12,
+        x: 0,
+        y: 0,
+        moved: false,
+        static: false
+      },
+      genomePositionSearchBoxVisible: true
+    }
+  ],
+};
+
 export const osmConf = {
   editable: true,
   zoomFixed: false,
