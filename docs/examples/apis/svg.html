@@ -55,7 +55,7 @@ if (!location.search.slice(1)) {
     location.search.slice(1).replace(
       'http://higlass.io/app/?config=',
       'http://higlass.io/api/v1/viewconfs/?d='
-    ) || '../viewconfs/default.json')
+    ))
     .then((response) => {
       return response.json();
     })
