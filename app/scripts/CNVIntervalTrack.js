@@ -32,10 +32,12 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
         if (seen.has(this.uid(x))) { return null; }
         seen.add(this.uid(x));
         // console.log('length:', +x[2] - +x[1], 'id', tile.tileId)
-        return { from: +x[1],
+        return {
+          from: +x[1],
           to: +x[2],
           type: x[4],
-          uid: this.uid(x) };
+          uid: this.uid(x)
+        };
       })
       .filter(x => x); // filter out null values
 
@@ -103,7 +105,7 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
   }
 
   destroyTile(tile) {
-    tile.tileData.discrete.map((x) => {
+    tile.tileData.discrete.forEach((x) => {
       const uid = x[x.length - 2];
 
       if (this.seen.has(uid)) { this.seen.delete(uid); }

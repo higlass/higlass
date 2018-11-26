@@ -1,2 +1,14 @@
 test/HiGlassComponentTest.js
 app/scripts/utils/test-helpers.js
+
+# I've worked on these Track files, but a couple trickier issues remain
+# for each, and I didn't want those issues to get buried in a huge PR.
+app/scripts/Annotations2dTrack.js
+app/scripts/BedLikeTrack.js
+app/scripts/CNVIntervalTrack.js
+app/scripts/CombinedTrack.js
+app/scripts/HorizontalMultivecTrack.js
+app/scripts/IdHorizontal1DTiledPixiTrack.js
+app/scripts/OSMTileIdsTrack.js
+app/scripts/TiledPixiTrack.js
+app/scripts/ValueIntervalTrack.js
