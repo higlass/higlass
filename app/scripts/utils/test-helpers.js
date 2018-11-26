@@ -137,6 +137,7 @@ export const isWaitingOnTiles = (hgc) => {
       || track.track.type === 'horizontal-1d-annotations'
       || track.track.type === 'vertical-1d-annotations'
       || track.track.type === '2d-chromosome-annotations'
+      || track.track.type === 'cross-rule'
     ) continue;
 
     if (trackObj.originalTrack) { trackObj = trackObj.originalTrack; }
