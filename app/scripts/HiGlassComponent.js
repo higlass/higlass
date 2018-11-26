@@ -45,6 +45,7 @@ import {
   download,
   fillInMinWidths,
   forwardEvent,
+  getElementDim,
   getTrackByUid,
   getTrackObjById,
   getTrackPositionByUid,
@@ -376,6 +377,7 @@ class HiGlassComponent extends React.Component {
 
     this.waitForDOMAttachment(() => {
       ElementQueries.listen();
+
       this.resizeSensor = new ResizeSensor(
         this.element.parentNode, this.updateAfterResize.bind(this),
       );
@@ -612,9 +614,7 @@ class HiGlassComponent extends React.Component {
   }
 
   measureSize() {
-    const heightOffset = 0;
-    const height = this.element.clientHeight - heightOffset;
-    const width = this.element.clientWidth;
+    const [width, height] = getElementDim(this.element);
 
     if (width > 0 && height > 0) {
       this.setState({
