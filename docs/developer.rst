@@ -1,4 +1,4 @@
-Developer Documentation
+Contributor Guidelines
 ***********************
 
 Contributions are in the form of issues, code, documentation are always very welcome. The
