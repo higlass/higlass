@@ -20,7 +20,6 @@ class AxisPixi {
     this.axisTextFontFamily = 'Arial';
     this.axisTextFontSize = 10;
 
-    this.tickFormat = format('.2');
     // hi
   }
 
@@ -40,6 +39,14 @@ class AxisPixi {
     let i = 0;
 
     const color = getDarkTheme() ? '#cccccc' : 'black';
+
+    if (!this.track.options
+      || !this.track.options.axisLabelFormatting
+      || this.track.options.axisLabelFormatting === 'scientific') {
+      this.tickFormat = format('.2');
+    } else {
+      this.tickFormat = x => x;
+    }
 
     while (i < this.tickValues.length) {
       const tick = this.tickValues[i];
@@ -73,36 +80,13 @@ class AxisPixi {
 
   calculateAxisTickValues(valueScale, axisHeight) {
     const tickCount = Math.max(Math.ceil(axisHeight / TICK_HEIGHT), 1);
-    const i = 0;
-
 
     // create scale ticks but not all the way to the top
+    // tick values have not been formatted here
     let tickValues = valueScale.ticks(tickCount);
-    // console.log('valueScale', valueScale, tickValues, valueScale.domain());
-
-    if (axisHeight < 100) {
-      // console.log('short axis');
-    }
-
-    if (axisHeight > 100) {
-      // console.log('valueScale.domain()', valueScale.domain());
-      // console.log('valueScale.range()', valueScale.range());
-      // console.log('tickValues[0]', tickValues[0], 'tickValues[-1]', tickValues[tickValues.length-1]);
-    }
-
-    /*
-            ticks(valueScale.invert(MARGIN_BOTTOM),
-                          valueScale.invert(this.dimensions[1] - MARGIN_TOP),
-                          tickCount);
-        */
 
     if (tickValues.length < 1) {
       tickValues = valueScale.ticks(tickCount + 1);
-      /*
-            tickValues = ticks(valueScale.invert(MARGIN_BOTTOM),
-                          valueScale.invert(axisHeight - MARGIN_TOP),
-                          tickCount + 1);
-            */
 
       if (tickValues.length > 1) {
         // sometimes the ticks function will return 0 and then 2

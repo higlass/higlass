@@ -1,5 +1,6 @@
 ## v1.3.0
 
+- Added the `axisLabelFormatting` option to 1d quantitative tracks
 - Added TiledPixiTrack.on event handler
 - Added getTrackObject to exports
 - Added support for overlay tracks

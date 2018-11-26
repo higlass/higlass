@@ -18,7 +18,7 @@ const base64ToCanvas = (base64, width, height) => {
     };
 
     img.onerror = () => {
-      reject('Could not convert base64 to canvas');
+      reject(new Error('Could not convert base64 to canvas'));
     };
 
     img.src = `data:image/png;base64,${base64}`;

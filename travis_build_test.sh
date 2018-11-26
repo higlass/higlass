@@ -14,7 +14,7 @@ start eslint
   app/scripts/factories \
   app/scripts/HeatmapTiledPixiTrack.js \
   app/scripts/services \
-  app/scripts/DataFetcher.js \
+  app/scripts/utils \
   test
 end eslint
 
