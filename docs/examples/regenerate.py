@@ -4,7 +4,7 @@ import json
 import re
 
 def track_types(viewconf_string):
-    return set(match[1] for match in re.finditer(r'"type": "([^"]+)"', viewconf_string))
+    return sorted(set(match[1] for match in re.finditer(r'"type": "([^"]+)"', viewconf_string)))
 
 def list_to_html(vc_list):
     return '\n'.join([
