@@ -155,7 +155,7 @@ Track Data Sources
 ------------------
 
 Tracks can load data from two sources: data stored on a higlass server,
-identified by a server and ``tilesetUid`` or data stored at an http-accessible
+ie, identified by a server and ``tilesetUid``, or data stored at an http-accessible
 url and read through a higlass server. The latter approach is still currently
 experimental.
 
