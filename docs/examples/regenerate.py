@@ -11,7 +11,7 @@ def list_to_html(vc_list):
         '<a href="{}">{}</a>: {}<br>'.format(
           info['href'], info['title'], ' '.join(track_types(info['viewconf']))
         )
-        for info in local_vc_list
+        for info in vc_list
     ])
     
 dir = os.path.dirname(os.path.realpath(__file__))
@@ -31,13 +31,13 @@ for filename in local_vc:
 
 gist_url = 'https://gist.githubusercontent.com/pkerpedjiev/104f6c37fbfd0d7d41c73a06010a3b7e/raw/4e65ed9bf8bb1bb24ecaea088bba2d718a18c233'
 remote_vc = requests.get(gist_url).json()
-remote_vc_dict = {}
+remote_vc_list = []
 for example in remote_vc:
-    remote_vc_dict[example['url']] = {'title': example['title']}
-remote_vc_html = '\n'.join([
-    '<a href="apis/svg.html?{}">{}</a><br>'.format(url, info['title']) 
-    for (url, info) in remote_vc_dict.items()
-])
+    remote_vc_list.append({
+        'href': example['url'],
+        'title': example['title'],
+        'viewconf': requests.get(example['url'].replace('/app/?config=', '/api/v1/viewconfs/?d=')).text
+    })
 
 print('''
 <html>
@@ -55,4 +55,4 @@ print('''
 </body>
 </html>
 '''
-.format(api_html, list_to_html(local_vc_list), remote_vc_html))
+.format(api_html, list_to_html(local_vc_list), list_to_html(remote_vc_list)))
