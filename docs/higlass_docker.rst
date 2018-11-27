@@ -4,7 +4,7 @@ Docker
 Running locally
 ----------------
 
-HiGlass can also be run locally as a docker container. The [higlass-docker](https://github.com/hms-dbmi/higlass-docker) repository contains detailed information about how to set it up and run it.
+HiGlass can also be run locally as a docker container. The [higlass-docker](https://github.com/higlass/higlass-docker) repository contains detailed information about how to set it up and run it.
 
 The simple example below stops any running higlass containers, removes them, pulls the latest version and runs it.
 
