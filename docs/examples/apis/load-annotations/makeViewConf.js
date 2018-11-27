@@ -1,6 +1,5 @@
-function makeViewConf(viewconf, regions1d, regions2d) {
+function makeViewConf(viewconf, regions1DBait, regions1DTarget, regions2D) {
   const annotation1DOptions = {
-    regions: regions1d,
     minRectWidth: 3,
     fillOpacity: 0.1,
     stroke: 'blue',
@@ -10,11 +9,11 @@ function makeViewConf(viewconf, regions1d, regions2d) {
   };
   const annotations1DHorizontal = {
     type: 'horizontal-1d-annotations',
-    options: annotation1DOptions
+    options: Object.assign({ regions: regions1DBait }, annotation1DOptions)
   };
   const annotations1DVertical = {
     type: 'vertical-1d-annotations',
-    options: annotation1DOptions
+    options: Object.assign({ regions: regions1DTarget }, annotation1DOptions)
   };
   const annotations2D = {
     type: '2d-chromosome-annotations', // or 2d-annotations?
@@ -22,7 +21,7 @@ function makeViewConf(viewconf, regions1d, regions2d) {
     options: {
       minRectWidth: 6,
       minRectHeight: 6,
-      regions: regions2d.map(row => row.concat([
+      regions: regions2D.map(row => row.concat([
         'rgba(0, 0, 128, 0.66)', '',
         8, 8
       ]))

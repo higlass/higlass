@@ -9,6 +9,22 @@ function main() {
         ];
       }
 
+      function extractBait(row) {
+        const chromosome = 'chr' + row.bait_chr;
+        return [
+          chromInfo.chrToAbs([chromosome, +row.bait_start]),
+          chromInfo.chrToAbs([chromosome, +row.bait_end])
+        ];
+      }
+
+      function extractTarget(row) {
+        const chromosome = 'chr' + row.target_chr;
+        return [
+          chromInfo.chrToAbs([chromosome, +row.target_start]),
+          chromInfo.chrToAbs([chromosome, +row.target_end])
+        ];
+      }
+
       function handle2DRow(row) {
         return [
           // chrom1, start1, end1,
@@ -16,7 +32,7 @@ function main() {
           // color-fill, color-line, min-width, min-height
           "chr" + row.bait_chr,
           row.bait_start,
-          row.bait_ent,
+          row.bait_end,
           "chr" + row.target_chr,
           row.target_start,
           row.target_end
@@ -25,13 +41,14 @@ function main() {
 
       Promise.all([
         d3.json('viewconf.json'),
-        d3.csv('annotations-1d.csv', handle1DRow),
+        d3.csv('annotations-2d.csv', extractBait),
+        d3.csv('annotations-2d.csv', extractTarget),
         d3.csv('annotations-2d.csv', handle2DRow)
       ]).then(
-        ([viewconf, regions1d, regions2d]) => {
+        ([viewconf, regions1DBait, regions1DTarget, regions2D]) => {
           hglib.viewer(
             document.getElementById('demo'),
-            makeViewConf(viewconf, regions1d, regions2d),
+            makeViewConf(viewconf, regions1DBait, regions1DTarget, regions2D),
             { bounded: true },
           );
         }
