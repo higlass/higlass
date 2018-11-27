@@ -98,7 +98,7 @@ trackSourceServers
 
 The field `trackSourceServers` at the root level of the viewconf tells higlass
 where it can find tracks to load. If you have a local instance running, then
-`http://localhost/api/v1` should be included. Our public instance at
+`http://localhost:8989/api/v1` should be included. Our public instance at
 `http://higlass.io` also provides access to a number of public datasets.
 
 .. code-block:: javascript
