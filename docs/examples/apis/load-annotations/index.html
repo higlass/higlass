@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <head>
-  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>HiGlass</title>
   <style type="text/css">
@@ -8,13 +7,13 @@
       display:none;
   }
   </style>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="/styles/page.css">
   <link rel="stylesheet" href="/hglib.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.0/react.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.0/react-dom.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.js"></script>
+  <script crossorigin src="https://unpkg.com/react@16.5/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16.5/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.2/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
   <script src="http://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
@@ -33,8 +32,9 @@
 <script src='makeViewConf.js'></script>
 <script>
 (() => {
-  hglib.ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv')
-    .then((chromInfo) => {
+  hglib.ChromosomeInfo(
+    '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+    (chromInfo) => {
       function handle1DRow(row) {
         const chromosome = 'chr' + row.chr;
         return [
@@ -48,12 +48,12 @@
           // chrom1, start1, end1, 
           // chrom2, start2, end2, 
           // color-fill, color-line, min-width, min-height
-          "chr" + row.chr1,
-          row.start1,
-          row.end1,
-          "chr" + row.chr2,
-          row.start2,
-          row.end2,
+          "chr" + row.bait_chr,
+          row.bait_start,
+          row.bait_ent,
+          "chr" + row.target_chr,
+          row.target_start,
+          row.target_end,
           "rgba(255, 85, 0, 0.66)",
           "rgba(255, 85, 0, 0.66)",
           8, 8
@@ -72,7 +72,8 @@
           );
         }
       );
-    }
+    },
+    hglib.pubSub
   )
 })();
 </script>
