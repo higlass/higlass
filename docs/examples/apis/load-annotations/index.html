@@ -52,21 +52,19 @@
           row.bait_ent,
           "chr" + row.target_chr,
           row.target_start,
-          row.target_end,
-          "rgba(255, 85, 0, 0.66)",
-          "rgba(255, 85, 0, 0.66)",
-          8, 8
+          row.target_end
         ]
       }
 
       Promise.all([
+        d3.json('viewconf.json'),
         d3.csv('annotations-1d.csv', handle1DRow),
         d3.csv('annotations-2d.csv', handle2DRow)
       ]).then(
-        ([regions1d, regions2d]) => {
+        ([viewconf, regions1d, regions2d]) => {
           hglib.viewer(
             document.getElementById('demo'),
-            makeViewConf(regions1d, regions2d),
+            makeViewConf(viewconf, regions1d, regions2d),
             { bounded: true },
           );
         }
