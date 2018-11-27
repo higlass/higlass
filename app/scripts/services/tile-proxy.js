@@ -457,6 +457,7 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
   }, pubSub);
 };
 
+
 /**
  * Render 2D tile data. Convert the raw values to an array of
  * color values

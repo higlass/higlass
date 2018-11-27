@@ -10,27 +10,27 @@ Embedding HiGlass in web page
 HiGlass can be included in any web page by including the relevant
 javascript and css files:
 
-.. code-block:: javascript
+.. code-block:: html
 
-    <link rel="stylesheet" href="https://unpkg.com/higlass@1.1.5/dist/styles/hglib.css" type="text/css">
+    <link rel="stylesheet" href="https://unpkg.com/higlass@1.2.6/dist/hglib.css" type="text/css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.1/pixi.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
 
-    <script src="https://unpkg.com/higlass@1.1.5/dist/scripts/hglib.js"></script>
+    <script src="https://unpkg.com/higlass@1.2.6/dist/hglib[.min].js"></script>
 
 External tracks should be included **before** the hglib.js import:
 
-.. code-block:: javascript
+.. code-block:: html
 
     <script src="https://unpkg.com/higlass-multivec@0.1.10/dist/higlass-multivec.js"></script>
 
 Instructions for instantiating the component and interacting with it are in the 
-`Public API section <higlass_developer.html#public-api>`_.
+`Public API section <javascript_api.html#api-functions>`_.
 
 Available endpoints
 -------------------
@@ -61,8 +61,7 @@ try to fetch a remote viewconfig.
 The ``options`` parameter can currently only specify the ``bounded`` property
 which tells the HiGlass component to fill all the space in the containing
 element. Note that if ``bounded`` is set to true, then ``element`` must have a
-fixed height. ``callback`` is used to return an api variable which can be used
-to access HiGlass events.
+fixed height. 
 
 The function returns an instance of the public API of a HiGlass component.
 
@@ -165,6 +164,10 @@ API Functions
 
 .. js:autofunction:: getRangeSelection
 
+.. js:autofunction:: getTrackObject
+
+.. js:autofunction:: getViewConfig
+
 .. js:autofunction:: shareViewConfigAsLink
 
 .. js:autofunction:: zoomToDataExtent
@@ -175,10 +178,16 @@ API Functions
 
 .. js:autofunction:: exportAsSvg
 
-.. js:autofunction:: exportAsPng
+.. js:autofunction:: exportAsPngBlobPromise
 
 .. js:autofunction:: exportAsViewConfString
 
 .. js:autofunction:: shareViewConfigAsLink
 
-.. js:autofunction:: on
+.. js:autofunction:: public.on
+
+TiledPixiTrack Functions
+========================
+
+.. js:autoclass:: TiledPixiTrack
+  :members: on
