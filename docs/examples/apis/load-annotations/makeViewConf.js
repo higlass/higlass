@@ -1,15 +1,20 @@
 function makeViewConf(viewconf, regions1d, regions2d) {
-  const annotations1D = {
+  const annotation1DOptions = {
+    regions: regions1d,
+    minRectWidth: 3,
+    fillOpacity: 0.1,
+    stroke: 'blue',
+    strokePos: ['left', 'right'],
+    strokeWidth: 2,
+    strokeOpacity: 0.6,
+  };
+  const annotations1DHorizontal = {
     type: 'horizontal-1d-annotations',
-    options: {
-      regions: regions1d,
-      minRectWidth: 3,
-      fillOpacity: 0.1,
-      stroke: 'blue',
-      strokePos: ['left', 'right'],
-      strokeWidth: 2,
-      strokeOpacity: 0.6,
-    }
+    options: annotation1DOptions
+  };
+  const annotations1DVertical = {
+    type: 'vertical-1d-annotations',
+    options: annotation1DOptions
   };
   const annotations2D = {
     type: '2d-chromosome-annotations', // or 2d-annotations?
@@ -23,7 +28,8 @@ function makeViewConf(viewconf, regions1d, regions2d) {
       ]))
     }
   };
-  viewconf.views[0].tracks.top.push(annotations1D);
+  viewconf.views[0].tracks.top.push(annotations1DHorizontal);
+  viewconf.views[0].tracks.left.push(annotations1DVertical);
   viewconf.views[0].tracks.center[0].contents.push(annotations2D);
   return viewconf;
 }
