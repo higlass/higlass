@@ -13,7 +13,7 @@ The simple example below stops any running higlass containers, removes them, pul
   docker stop higlass-container; 
   docker rm higlass-container;
 
-  docker pull gehlenborglab/higlass:v0.4.17 # higher versions are experimental and may or may not work
+  docker pull gehlenborglab/higlass:v0.4.33 # higher versions are experimental and may or may not work
 
 
   docker run --detach \
