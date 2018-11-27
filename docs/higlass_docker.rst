@@ -24,7 +24,7 @@ The simple example below stops any running higlass containers, removes them, pul
            gehlenborglab/higlass:v0.4.17
 
 
-The higlass website should now be visible at ``http://localhost:8989``. Take a look at the documentation for `adding a new track <https://github.com/hms-dbmi/higlass/wiki/Common-Tasks#adding-a-new-track>`_ to see how to display data.
+The higlass website should now be visible at ``http://localhost:8989``. Take a look at the documentation for `adding a new track <https://github.com/higlass/higlass/wiki/Common-Tasks#adding-a-new-track>`_ to see how to display data.
 
 Running remotely
 ----------------
