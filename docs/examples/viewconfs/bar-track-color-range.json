@@ -1,0 +1,153 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1"
+  ],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        7595655.0000270605,
+        2507738795.9999733
+      ],
+      "initialYDomain": [
+        -545671929.4383738,
+        3061006380.438374
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": false,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "name": "Gene Annotations (hg19)",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "genes",
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelPosition": "hidden",
+              "name": "Gene Annotations (hg19)",
+              "labelColor": "#999999",
+              "plusStrandColor": "#999999",
+              "minusStrandColor": "#999999",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "showMousePosition": false,
+              "mousePositionColor": "#999999"
+            },
+            "height": 36
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
+            "uid": "bar1",
+            "type": "horizontal-bar",
+            "options": {
+              "axisPositionHorizontal": "left",
+              "labelPosition": "hidden",
+              "colorRange": [
+                "#d3d7ff",
+                "#b1a6f2",
+                "#8b77e4",
+                "#5e48d5",
+                "#0115c6",
+                "#000863"
+              ],
+              "colorRangeGradient": true
+            },
+            "height": 36
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "PdAaSdibTLK34hCw7ubqKA",
+            "uid": "bar2",
+            "type": "horizontal-bar",
+            "options": {
+              "align": "top",
+              "axisPositionHorizontal": "left",
+              "labelPosition": "hidden",
+              "colorRange": [
+                "#b2fff0",
+                "#92edd9",
+                "#71ddc3",
+                "#4ccbae",
+                "#03ba98",
+                "#006350"
+              ],
+              "colorRangeGradient": true
+            },
+            "height": 36
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
+            "uid": "bar3",
+            "type": "horizontal-bar",
+            "options": {
+              "axisPositionHorizontal": "left",
+              "labelPosition": "hidden",
+              "colorRange": [
+                "#ffdb9e",
+                "#f7c67d",
+                "#eeb25b",
+                "#e49e38",
+                "#d88a02",
+                "#704700"
+              ]
+            },
+            "height": 36
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "PdAaSdibTLK34hCw7ubqKA",
+            "uid": "bar4",
+            "type": "horizontal-bar",
+            "options": {
+              "align": "top",
+              "axisPositionHorizontal": "left",
+              "labelPosition": "hidden",
+              "colorRange": [
+                "#ffafe2",
+                "#f68fcb",
+                "#eb6eb4",
+                "#e0489e",
+                "#d30089",
+                "#6d0045"
+              ]
+            },
+            "height": 36
+          },
+          {
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "type": "horizontal-chromosome-labels",
+            "position": "top",
+            "name": "Chromosome Labels (hg19)",
+            "height": 24,
+            "uid": "chroms",
+            "options": {
+              "color": "#999999",
+              "showMousePosition": false,
+              "mousePositionColor": "#999999"
+            }
+          }
+        ],
+        "left": [],
+        "center": [],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      }
+    }
+  ]
+}

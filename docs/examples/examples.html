@@ -1,0 +1,56 @@
+<html>
+<body>
+  <h2>API examples</h2>
+  <!--
+    ls docs/examples/apis/ | perl -ne 'chomp; print qq{<a href="apis/$_">$_</a><br>\n}'
+  -->
+  <a href="apis/get-min-max-value.html">get-min-max-value.html</a><br>
+  <a href="apis/load-annotations">load-annotations</a><br>
+  <a href="apis/set-track-value-scale-limits.html">set-track-value-scale-limits.html</a><br>
+  <a href="apis/svg.html">svg.html</a><br>
+  <a href="apis/zoom-to.html">zoom-to.html</a><br>
+  
+  <h2>Viewconf examples</h2>
+  <h3>local</h3>
+  <!--
+    ls docs/examples/viewconfs/ | perl -ne 'chomp; print qq{<a href="apis/svg.html?/viewconfs/$_">$_</a><br>\n}'
+  -->
+  <a href="apis/svg.html?/viewconfs/1d-annotations.json">1d-annotations.json</a><br>
+  <a href="apis/svg.html?/viewconfs/1d-heatmap-track-2.json">1d-heatmap-track-2.json</a><br>
+  <a href="apis/svg.html?/viewconfs/1d-heatmap-track.json">1d-heatmap-track.json</a><br>
+  <a href="apis/svg.html?/viewconfs/bar-track-color-range.json">bar-track-color-range.json</a><br>
+  <a href="apis/svg.html?/viewconfs/chromosome-labels.json">chromosome-labels.json</a><br>
+  <a href="apis/svg.html?/viewconfs/default.json">default.json</a><br>
+  <a href="apis/svg.html?/viewconfs/gene-annotations.json">gene-annotations.json</a><br>
+  
+  <h3>higlass.io</h3>
+  <!--
+    curl https://gist.githubusercontent.com/pkerpedjiev/104f6c37fbfd0d7d41c73a06010a3b7e/raw/4e65ed9bf8bb1bb24ecaea088bba2d718a18c233/higlass-examples.json | python -c 'import sys, json; print("\n".join(["<a href=\"apis/svg.html?{}\">{}</a><br>".format(ex["url"], ex["title"]) for ex in json.load(sys.stdin)]))'
+  -->
+  <a href="apis/svg.html?http://higlass.io/app/?config=L4nKi6eGSzWOpi-rU2DAMA">Epilogos</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=MSHhOBbOSW6iIovB5yk6BA">HiC Data vs. Maps</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=OPPFtzbuR76vtUIshTEOGA">Comparison of different balancing methods (VC, KR, and ICE)</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=IPCHmdOQR4CDY2sqj5VJHQ">2D TAD caller comparison (Forcato et al 2017, Fig. 3)</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=JALHH-HzQGeJCaJaU9EwTA">TAD caller comparison (Forcato et al 2017, Fig. 3)</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=Tf2-ublRTey9hiBKMlgzwg">Figure 1 from HiGlass paper (Kerpedjiev et al 2017, data from Schwarzer et al 2017)</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=Q5LdNchQRLSZ_0yKsTEoiw">Figure 2 from HiGlass paper (Kerpedjiev et al 2017, data from Schwarzer et al 2017)</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=LguhdXQ3QY61fhTviF3urw">Two independent views</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=M39Opmf5TFSpzi3odFGbYQ">Chromosome grid</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=YTNBiN7gTU-z-Z0RU24-2g">Six linked views</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=VCIcCD3AQSivEdZajrW5GA">A lone blemish</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=AgHaxkDFRWu3xR7WGJ8ONA">A potential structural variant in K562</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=CafCfq2wQtyD_BbBj6HbpA">Zoom limited view</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=Wxxdw3aDTwyyx9TweoxWWQ">Horizontal diagonal heatmap</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=PwGNs8hlTjK9M3rUbcXs1Q">Exceptionally strong regions</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=RAbl5b4sQGS22EH2onVKoA">Effect of RAD21 cleavage</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=czoXK8QJSvGw36t6-NlKxg">Variable region</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=S1WIolKxQQGtUUo0RteSWw">Stronger contacts between chr17 and chr19 than between chr17 and chr18</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=OwPq374bQj6pKQ97iyhXKg">Mini-views</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=Y5ZUqLeiQwmd8_Pax5BCKA">Structural variant in GM12878?</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=CTx4k9irR8GX3EKUNevxBQ">Weak bin</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=A__ler6aS-eBAXwdMTIjSg">Standout streak</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=HncLr3ySQx6t_AGlqN0zhA">Diagonal and off-diagonal</a><br>
+  <a href="apis/svg.html?http://higlass.io/app/?config=HncLr3ySQx6t_AGlqN0zhA">One overview and three detail views</a><br>
+  
+</body>
+</html>

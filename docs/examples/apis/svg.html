@@ -41,45 +41,49 @@
 </body>
 <script src='/hglib.js'></script>
 <script>
-const urlInput = document.getElementById('url');
-urlInput.value = location.search.slice(1);
-urlInput.onchange = (event) => {
-  const url = event.target.value;
-  location.search = '?' + url;
-}
+if (!location.search.slice(1)) {
+  location.search = '?/viewconfs/default.json';
+} else {
+  const urlInput = document.getElementById('url');
+  urlInput.value = location.search.slice(1);
+  urlInput.onchange = (event) => {
+    const url = event.target.value;
+    location.search = '?' + url;
+  }
 
-fetch(
-  location.search.slice(1).replace(
-    'http://higlass.io/app/?config=',
-    'http://higlass.io/api/v1/viewconfs/?d='
-  ) || 'viewconf.json')
-  .then((response) => {
-    return response.json();
-  })
-  .then((viewconf) => {
-    const hgApi = hglib.viewer(
-      document.getElementById('demo'),
-      viewconf,
-      { bounded: true },
-    );
+  fetch(
+    location.search.slice(1).replace(
+      'http://higlass.io/app/?config=',
+      'http://higlass.io/api/v1/viewconfs/?d='
+    ))
+    .then((response) => {
+      return response.json();
+    })
+    .then((viewconf) => {
+      const hgApi = hglib.viewer(
+        document.getElementById('demo'),
+        viewconf,
+        { bounded: true },
+      );
 
-    function renderPreview() {
-      setTimeout(() => {
-        document.getElementById('preview').innerHTML = hgApi.exportAsSvg();
-      }, 1000);
-      // Issue #386 is for adding an "onLoad" event, which would be better than this.
-    }
-    renderPreview();
-
-    hgApi.on('location', (event) => {
-      console.log('location event', event);
+      function renderPreview() {
+        setTimeout(() => {
+          document.getElementById('preview').innerHTML = hgApi.exportAsSvg();
+        }, 1000);
+        // Issue #386 is for adding an "onLoad" event, which would be better than this.
+      }
       renderPreview();
+
+      hgApi.on('location', (event) => {
+        console.log('location event', event);
+        renderPreview();
+      });
+      
+      hgApi.on('viewConfig', (event) => {
+        console.log('viewConfig event', JSON.parse(event));
+        renderPreview();
+      });
     });
-    
-    hgApi.on('viewConfig', (event) => {
-      console.log('viewConfig event', JSON.parse(event));
-      renderPreview();
-    });
-  });
+  }
 </script>
 </html>
