@@ -3,6 +3,9 @@ import requests
 import json
 import re
 
+def track_types(viewconf_string):
+    return set(match[1] for match in re.finditer(r'"type": "([^"]+)"', viewconf_string))
+
 dir = os.path.dirname(os.path.realpath(__file__))
 
 api_examples = os.listdir(os.path.join(dir, 'apis'))
@@ -15,16 +18,19 @@ for vc in local_vc:
         local_vc_dict[vc] = f.read()
 local_vc_html = '\n'.join([
     '<a href="apis/svg.html?/viewconfs/{0}">{0}</a>: {1}<br>'.format(
-      filename, ' '.join(set(match[1] for match in re.finditer(r'"type": "([^"]+)"', viewconf)))
+      filename, ' '.join(track_types(viewconf))
     )
     for filename, viewconf in local_vc_dict.items()
 ])
 
 gist_url = 'https://gist.githubusercontent.com/pkerpedjiev/104f6c37fbfd0d7d41c73a06010a3b7e/raw/4e65ed9bf8bb1bb24ecaea088bba2d718a18c233'
 remote_vc = requests.get(gist_url).json()
+remote_vc_dict = {}
+for example in remote_vc:
+    remote_vc_dict[example['url']] = {'title': example['title']}
 remote_vc_html = '\n'.join([
-    '<a href="apis/svg.html?{}">{}</a><br>'.format(ex['url'], ex['title']) 
-    for ex in remote_vc
+    '<a href="apis/svg.html?{}">{}</a><br>'.format(url, info['title']) 
+    for (url, info) in remote_vc_dict.items()
 ])
 
 print('''
