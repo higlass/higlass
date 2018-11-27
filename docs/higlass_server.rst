@@ -29,7 +29,7 @@ Additionally, the following settings are set via ``config.json`` (see ``config.j
 
 ``DEBUG`` - If ``true`` the server is started in debug mode.
 
-``INSTALLED_APPS`` - A list of django extension.
+``INSTALLED_APPS`` - A list of django extensions.
 
 ``LOG_LEVEL_CONSOLE`` - Define the console log level.
 
