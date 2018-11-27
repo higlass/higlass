@@ -32,9 +32,8 @@
 <script src='makeViewConf.js'></script>
 <script>
 (() => {
-  hglib.ChromosomeInfo(
-    '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-    (chromInfo) => {
+  hglib.ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv')
+    .then((chromInfo) => {
       function handle1DRow(row) {
         const chromosome = 'chr' + row.chr;
         return [
@@ -72,8 +71,7 @@
           );
         }
       );
-    },
-    hglib.pubSub
+    }
   )
 })();
 </script>
