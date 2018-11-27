@@ -26,12 +26,12 @@
         "static": true
       },
       "initialXDomain": [
-        -10000000,
-        3300000000
+        0,
+        200000000
       ],
       "initialYDomain": [
-        817163461.5384614,
-        2274836538.4615383
+        0,
+        200000000
       ],
       "autocompleteSource": "/api/v1/suggest/?d=P0PLbQMwTYGy-5uPIQid7A&",
       "genomePositionSearchBox": {
