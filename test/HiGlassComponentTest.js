@@ -2918,21 +2918,6 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Makes the search box visible', (done) => {
-      // Assertions were commented out, but the test is meaningless without them.
-      // Re-enable and see if it works...
-      const button0 = hgc.find('.assembly-pick-button');
-      expect(button0.length).toEqual(0);
-
-      hgc.instance().handleTogglePositionSearchBox('aa');
-      hgc.update();
-
-      const button1 = hgc.find('.assembly-pick-button');
-      expect(button1.length).toEqual(1);
-
-      waitForJsonComplete(done);
-    });
-
     it('Makes sure that the search box points to mm9', (done) => {
       hgc.update();
       expect(hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly).toEqual('mm9');
