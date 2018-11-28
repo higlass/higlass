@@ -1,5 +1,5 @@
 function main() {
-  hglib.ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv')
+  hglib.ChromosomeInfo('https://raw.githubusercontent.com/igvteam/igv/v2.4.16/genomes/sizes/hg38.chrom.sizes')
     .then((chromInfo) => {
       function handle1DRow(row) {
         const chromosome = 'chr' + row.chr;
