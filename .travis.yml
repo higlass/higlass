@@ -17,7 +17,7 @@ script:
     - ./travis_build_test.sh
 before_deploy:
     - wget http://repo.continuum.io/miniconda/Miniconda3-4.3.21-Linux-x86_64.sh -O miniconda.sh
-    - bash miniconda.sh -b -p -f $HOME/miniconda
+    - bash miniconda.sh -b -f -p $HOME/miniconda
     - export PATH="$HOME/miniconda/bin:$PATH"
     - conda install --yes python=3.6
     - pip install --user -r docs/requirements.txt
