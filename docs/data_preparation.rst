@@ -430,6 +430,14 @@ Creating a HiGlass Track
 Importing into HiGlass
 ^^^^^^^^^^^^^^^^^^^^^^
 
+The resulting beddb file can be imported using ``higlass-manage``:
+
+.. code-block:: bash
+
+    higlass-manage ingest --filetype beddb --datatype gene-annotations gene.annotations.beddb
+
+Or to a live server using ``curl``:
+
 .. code-block:: bash
 
     curl -u `cat ~/.higlass-server-login`    \
