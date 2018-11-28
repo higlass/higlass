@@ -669,8 +669,8 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.instance().setState({ views });
 
-      const selection = select(ReactDOM.findDOMNode(hgc.instance())) // eslint-disable-line
-        .selectAll('.selection');
+      // eslint-disable-next-line react/no-find-dom-node
+      const selection = select(ReactDOM.findDOMNode(hgc.instance())).selectAll('.selection');
 
       // we expect a colorbar selector brush to be hidden
       // in one of the views
@@ -1541,35 +1541,6 @@ describe('Simple HiGlassComponent', () => {
 
       waitForTilesLoaded(hgc.instance(), done);
     });
-
-    // it('Resize the 1D projection', (done) => {
-    //   // TODO: This test isn't doing anything,
-    //   // and it references variables which are out of scope.
-    //
-    //   const viewportTracker = getTrackObjectFromHGC(hgc.instance(), 'aa', vpUid);
-    //   const viewport2DTracker = getTrackObjectFromHGC(hgc.instance(), 'aa', vp2DUid);
-    //
-    //   // the 2D viewport tracker domains shouldn't change
-    //   // what??? this is impossible since the yDomain
-    //   // this test is invalid
-    //   // TODO: Add a bug report for this
-    //   done();
-    //   return;
-    //
-    //   const preResizeYDomain = viewport2DTracker.viewportYDomain;
-    //   viewportTracker.setDomainsCallback([2540588996.465288, 2540640947.3589344],
-    //     [2541519510.3818445, 2541549873.460309]);
-    //
-    //   const postResizeYDomain = JSON.parse(JSON.stringify(viewport2DTracker.viewportYDomain));
-    //
-    //   // console.log('preResizeYDomain:', preResizeYDomain);
-    //   // console.log('postResizeYDomain:', postResizeYDomain);
-    //
-    //   expect(preResizeYDomain[1] - postResizeYDomain[1]).toBeLessThan(0.0001);
-    //   expect(preResizeYDomain[1] - postResizeYDomain[1]).toBeLessThan(0.0001);
-    //
-    //   waitForTilesLoaded(hgc.instance(), done);
-    // });
   });
 
   describe('Multiple track addition', () => {
@@ -1611,7 +1582,8 @@ describe('Simple HiGlassComponent', () => {
       hgc.update();
 
       atm = tiledPlot.addTrackModal;
-      const inputField = ReactDOM.findDOMNode(atm.tilesetFinder.searchBox); // eslint-disable-line
+      // eslint-disable-next-line react/no-find-dom-node
+      const inputField = ReactDOM.findDOMNode(atm.tilesetFinder.searchBox);
 
       // make sure the input field is equal to the document's active element
       // e.g. that it has focus
@@ -1846,9 +1818,9 @@ describe('Simple HiGlassComponent', () => {
 
       const heatmap2Track = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
-      expect(heatmapTrack.options.scaleStartPercent)
+      expect(track.options.scaleStartPercent)
         .toEqual(heatmap2Track.options.scaleStartPercent);
-      expect(heatmapTrack.options.scaleEndPercent)
+      expect(track.options.scaleEndPercent)
         .toEqual(heatmap2Track.options.scaleEndPercent);
 
       done();
@@ -2224,7 +2196,8 @@ describe('Simple HiGlassComponent', () => {
 
       hgc.update();
 
-      const inputField = ReactDOM.findDOMNode(tiledPlot.addTrackModal.tilesetFinder.searchBox); // eslint-disable-line
+      // eslint-disable-next-line react/no-find-dom-node
+      const inputField = ReactDOM.findDOMNode(tiledPlot.addTrackModal.tilesetFinder.searchBox);
 
       // make sure the input field is equal to the document's active element
       // e.g. that it has focus
@@ -2511,7 +2484,6 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Selects mm9', (done) => {
-      hgc.find('.assembly-pick-button');
       hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('mm9');
 
       waitForJsonComplete(done);
@@ -2800,7 +2772,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Should add a bottom track and have the new height', (done) => {
-      const prevHeight = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap3').dimensions[1]; // eslint-disable-line
+      // const prevHeight = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap3').dimensions[1];
 
       const newTrack = JSON.parse(JSON.stringify(horizontalHeatmapTrack));
       newTrack.uid = 'xyx1';
@@ -2834,15 +2806,18 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Should delete the bottom track and not resize the center', (done) => {
-      const prevSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3').dimensions[1]; // eslint-disable-line
+      const prevSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3')
+        .dimensions[1];
 
       hgc.instance().handleCloseTrack('aa', 'xyx1');
       hgc.setState(hgc.instance().state);
       hgc.instance().tiledPlots.aa.measureSize();
 
-      const nextSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3').dimensions[1]; // eslint-disable-line
+      const nextSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3')
+        .dimensions[1];
 
-      // expect(nextSize).toEqual(prevSize);
+      // Was commented out: Uncomment and see if it works...
+      expect(nextSize).toEqual(prevSize);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2944,14 +2919,16 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Makes the search box visible', (done) => {
-      hgc.find('.assembly-pick-button');
-      // expect(assemblyPickButton.length).toEqual(0);
+      // Assertions were commented out, but the test is meaningless without them.
+      // Re-enable and see if it works...
+      const button0 = hgc.find('.assembly-pick-button');
+      expect(button0.length).toEqual(0);
 
       hgc.instance().handleTogglePositionSearchBox('aa');
       hgc.update();
 
-      hgc.find('.assembly-pick-button');
-      // expect(assemblyPickButton.length).toEqual(1);
+      const button1 = hgc.find('.assembly-pick-button');
+      expect(button1.length).toEqual(1);
 
       waitForJsonComplete(done);
     });
@@ -3017,11 +2994,6 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('Checks that autocomplete fetches some genes', (done) => {
-      // hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, "t");
-      // new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa']
-      //   .autocompleteMenu, true).simulate('change', { value: 't'});
-      // new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'],
-      //   true).setState({value: 't'});
       hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'T');
       hgc.update();
 
