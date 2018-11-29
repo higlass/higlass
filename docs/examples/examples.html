@@ -1,49 +1,66 @@
 
-<html>
-<body>
-<h2>API examples</h2>
-<a href="apis/get-min-max-value.html">get-min-max-value.html</a><br>
+    <html>
+    <head><style>
+    th {
+      height: 140px;
+      white-space: nowrap;
+    }
+    th > div {
+      transform: 
+        translate(0px, 51px)
+        rotate(-45deg);
+      width: 30px;
+    }
+    tr:hover {
+      background-color: lightgrey;
+    }
+    </style></head>
+    <body>
+    <h2>API examples</h2>
+    <a href="apis/get-min-max-value.html">get-min-max-value.html</a><br>
 <a href="apis/load-annotations">load-annotations</a><br>
 <a href="apis/set-track-value-scale-limits.html">set-track-value-scale-limits.html</a><br>
 <a href="apis/svg.html">svg.html</a><br>
 <a href="apis/zoom-to.html">zoom-to.html</a><br>
 
-<h2>Viewconf examples</h2>
-<h3>local</h3>
-<a href="apis/svg.html?/viewconfs/1d-annotations.json">1d-annotations.json</a>: combined heatmap horizontal-1d-annotations horizontal-bar horizontal-chromosome-labels horizontal-gene-annotations vertical-1d-annotations vertical-bar vertical-chromosome-labels vertical-gene-annotations<br>
-<a href="apis/svg.html?/viewconfs/1d-heatmap-track-2.json">1d-heatmap-track-2.json</a>: horizontal-1d-heatmap horizontal-chromosome-labels horizontal-gene-annotations<br>
-<a href="apis/svg.html?/viewconfs/1d-heatmap-track.json">1d-heatmap-track.json</a>: combined heatmap horizontal-1d-heatmap horizontal-bar horizontal-chromosome-labels horizontal-gene-annotations horizontal-line vertical-1d-heatmap vertical-bar vertical-chromosome-labels vertical-gene-annotations vertical-line<br>
-<a href="apis/svg.html?/viewconfs/bar-track-color-range.json">bar-track-color-range.json</a>: horizontal-bar horizontal-chromosome-labels horizontal-gene-annotations<br>
-<a href="apis/svg.html?/viewconfs/chromosome-labels.json">chromosome-labels.json</a>: horizontal-chromosome-labels horizontal-gene-annotations vertical-chromosome-labels vertical-gene-annotations<br>
-<a href="apis/svg.html?/viewconfs/default.json">default.json</a>: 2d-chromosome-grid combined cross-rule heatmap horizontal-bar horizontal-chromosome-labels horizontal-gene-annotations horizontal-heatmap horizontal-line vertical-chromosome-labels vertical-gene-annotations vertical-line<br>
-<a href="apis/svg.html?/viewconfs/gene-annotations.json">gene-annotations.json</a>: horizontal-gene-annotations vertical-gene-annotations<br>
+    <h2>Viewconf examples</h2>
+    <table>
+    <tr><td></td><th><div>2d-chromosome-grid</div></th><th><div>2d-rectangle-domains</div></th><th><div>combined</div></th><th><div>cross-rule</div></th><th><div>heatmap</div></th><th><div>horizontal-1d-annotations</div></th><th><div>horizontal-1d-heatmap</div></th><th><div>horizontal-2d-rectangle-domains</div></th><th><div>horizontal-bar</div></th><th><div>horizontal-chromosome-labels</div></th><th><div>horizontal-gene-annotations</div></th><th><div>horizontal-heatmap</div></th><th><div>horizontal-line</div></th><th><div>horizontal-stacked-bar</div></th><th><div>osm-tiles</div></th><th><div>vertical-1d-annotations</div></th><th><div>vertical-1d-heatmap</div></th><th><div>vertical-bar</div></th><th><div>vertical-chromosome-labels</div></th><th><div>vertical-gene-annotations</div></th><th><div>vertical-line</div></th><th><div>viewport-projection-center</div></th></tr>
+    <tr><td>local</td></tr>
+    <tr><td><a href="apis/svg.html?/viewconfs/1d-annotations.json">1d-annotations.json</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td>X</td><td></td><td></td><td>X</td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td></td><td>X</td><td>X</td><td>X</td><td></td><td></td></tr>
+<tr><td><a href="apis/svg.html?/viewconfs/1d-heatmap-track-2.json">1d-heatmap-track-2.json</a></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="apis/svg.html?/viewconfs/1d-heatmap-track.json">1d-heatmap-track.json</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td>X</td><td></td><td>X</td><td>X</td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td>X</td><td>X</td><td>X</td><td>X</td><td>X</td><td></td></tr>
+<tr><td><a href="apis/svg.html?/viewconfs/bar-track-color-range.json">bar-track-color-range.json</a></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="apis/svg.html?/viewconfs/chromosome-labels.json">chromosome-labels.json</a></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td></tr>
+<tr><td><a href="apis/svg.html?/viewconfs/default.json">default.json</a></td><td>X</td><td></td><td>X</td><td>X</td><td>X</td><td></td><td></td><td></td><td>X</td><td>X</td><td>X</td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td>X</td><td></td></tr>
+<tr><td><a href="apis/svg.html?/viewconfs/gene-annotations.json">gene-annotations.json</a></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td></tr>
+    <tr><td>higlass.io</td></tr>
+    <tr><td><a href="http://higlass.io/app/?config=L4nKi6eGSzWOpi-rU2DAMA">Epilogos</a></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=MSHhOBbOSW6iIovB5yk6BA">HiC Data vs. Maps</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td>X</td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=OPPFtzbuR76vtUIshTEOGA">Comparison of different balancing methods (VC, KR, and ICE)</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=IPCHmdOQR4CDY2sqj5VJHQ">2D TAD caller comparison (Forcato et al 2017, Fig. 3)</a></td><td></td><td>X</td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=JALHH-HzQGeJCaJaU9EwTA">TAD caller comparison (Forcato et al 2017, Fig. 3)</a></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=Tf2-ublRTey9hiBKMlgzwg">Figure 1 from HiGlass paper (Kerpedjiev et al 2017, data from Schwarzer et al 2017)</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td>X</td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td>X</td></tr>
+<tr><td><a href="http://higlass.io/app/?config=Q5LdNchQRLSZ_0yKsTEoiw">Figure 2 from HiGlass paper (Kerpedjiev et al 2017, data from Schwarzer et al 2017)</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td>X</td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td>X</td><td></td><td>X</td></tr>
+<tr><td><a href="http://higlass.io/app/?config=LguhdXQ3QY61fhTviF3urw">Two independent views</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=M39Opmf5TFSpzi3odFGbYQ">Chromosome grid</a></td><td>X</td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=YTNBiN7gTU-z-Z0RU24-2g">Six linked views</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=VCIcCD3AQSivEdZajrW5GA">A lone blemish</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=AgHaxkDFRWu3xR7WGJ8ONA">A potential structural variant in K562</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=CafCfq2wQtyD_BbBj6HbpA">Zoom limited view</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td></td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=Wxxdw3aDTwyyx9TweoxWWQ">Horizontal diagonal heatmap</a></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=PwGNs8hlTjK9M3rUbcXs1Q">Exceptionally strong regions</a></td><td>X</td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=RAbl5b4sQGS22EH2onVKoA">Effect of RAD21 cleavage</a></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=czoXK8QJSvGw36t6-NlKxg">Variable region</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=S1WIolKxQQGtUUo0RteSWw">Stronger contacts between chr17 and chr19 than between chr17 and chr18</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=OwPq374bQj6pKQ97iyhXKg">Mini-views</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td>X</td></tr>
+<tr><td><a href="http://higlass.io/app/?config=Y5ZUqLeiQwmd8_Pax5BCKA">Structural variant in GM12878?</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=CTx4k9irR8GX3EKUNevxBQ">Weak bin</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=A__ler6aS-eBAXwdMTIjSg">Standout streak</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td><td>X</td><td></td><td></td></tr>
+<tr><td><a href="http://higlass.io/app/?config=HncLr3ySQx6t_AGlqN0zhA">Diagonal and off-diagonal</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td></tr>
+<tr><td><a href="http://higlass.io/app/?config=HncLr3ySQx6t_AGlqN0zhA">One overview and three detail views</a></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>X</td></tr>
+    </table>
 
-<h3>higlass.io</h3>
-<a href="http://higlass.io/app/?config=L4nKi6eGSzWOpi-rU2DAMA">Epilogos</a>: horizontal-chromosome-labels horizontal-gene-annotations horizontal-stacked-bar<br>
-<a href="http://higlass.io/app/?config=MSHhOBbOSW6iIovB5yk6BA">HiC Data vs. Maps</a>: combined heatmap horizontal-chromosome-labels horizontal-gene-annotations osm-tiles vertical-chromosome-labels vertical-gene-annotations<br>
-<a href="http://higlass.io/app/?config=OPPFtzbuR76vtUIshTEOGA">Comparison of different balancing methods (VC, KR, and ICE)</a>: combined heatmap horizontal-chromosome-labels vertical-chromosome-labels<br>
-<a href="http://higlass.io/app/?config=IPCHmdOQR4CDY2sqj5VJHQ">2D TAD caller comparison (Forcato et al 2017, Fig. 3)</a>: 2d-rectangle-domains combined heatmap horizontal-chromosome-labels vertical-chromosome-labels<br>
-<a href="http://higlass.io/app/?config=JALHH-HzQGeJCaJaU9EwTA">TAD caller comparison (Forcato et al 2017, Fig. 3)</a>: horizontal-2d-rectangle-domains horizontal-chromosome-labels horizontal-heatmap<br>
-<a href="http://higlass.io/app/?config=Tf2-ublRTey9hiBKMlgzwg">Figure 1 from HiGlass paper (Kerpedjiev et al 2017, data from Schwarzer et al 2017)</a>: combined heatmap horizontal-bar horizontal-chromosome-labels horizontal-gene-annotations vertical-bar vertical-chromosome-labels viewport-projection-center<br>
-<a href="http://higlass.io/app/?config=Q5LdNchQRLSZ_0yKsTEoiw">Figure 2 from HiGlass paper (Kerpedjiev et al 2017, data from Schwarzer et al 2017)</a>: combined heatmap horizontal-bar horizontal-chromosome-labels horizontal-gene-annotations vertical-bar vertical-chromosome-labels vertical-gene-annotations viewport-projection-center<br>
-<a href="http://higlass.io/app/?config=LguhdXQ3QY61fhTviF3urw">Two independent views</a>: combined heatmap horizontal-chromosome-labels horizontal-gene-annotations vertical-chromosome-labels vertical-gene-annotations<br>
-<a href="http://higlass.io/app/?config=M39Opmf5TFSpzi3odFGbYQ">Chromosome grid</a>: 2d-chromosome-grid combined heatmap horizontal-chromosome-labels horizontal-gene-annotations vertical-chromosome-labels vertical-gene-annotations<br>
-<a href="http://higlass.io/app/?config=YTNBiN7gTU-z-Z0RU24-2g">Six linked views</a>: combined heatmap horizontal-chromosome-labels horizontal-gene-annotations vertical-chromosome-labels vertical-gene-annotations<br>
-<a href="http://higlass.io/app/?config=VCIcCD3AQSivEdZajrW5GA">A lone blemish</a>: combined heatmap horizontal-chromosome-labels horizontal-line vertical-chromosome-labels vertical-line<br>
-<a href="http://higlass.io/app/?config=AgHaxkDFRWu3xR7WGJ8ONA">A potential structural variant in K562</a>: combined heatmap horizontal-chromosome-labels horizontal-gene-annotations vertical-chromosome-labels vertical-gene-annotations<br>
-<a href="http://higlass.io/app/?config=CafCfq2wQtyD_BbBj6HbpA">Zoom limited view</a>: combined heatmap horizontal-chromosome-labels horizontal-line vertical-chromosome-labels vertical-line<br>
-<a href="http://higlass.io/app/?config=Wxxdw3aDTwyyx9TweoxWWQ">Horizontal diagonal heatmap</a>: horizontal-chromosome-labels horizontal-gene-annotations horizontal-heatmap<br>
-<a href="http://higlass.io/app/?config=PwGNs8hlTjK9M3rUbcXs1Q">Exceptionally strong regions</a>: 2d-chromosome-grid combined heatmap horizontal-chromosome-labels horizontal-gene-annotations vertical-chromosome-labels vertical-gene-annotations<br>
-<a href="http://higlass.io/app/?config=RAbl5b4sQGS22EH2onVKoA">Effect of RAD21 cleavage</a>: horizontal-chromosome-labels horizontal-gene-annotations horizontal-heatmap<br>
-<a href="http://higlass.io/app/?config=czoXK8QJSvGw36t6-NlKxg">Variable region</a>: combined heatmap horizontal-chromosome-labels horizontal-gene-annotations vertical-chromosome-labels vertical-gene-annotations<br>
-<a href="http://higlass.io/app/?config=S1WIolKxQQGtUUo0RteSWw">Stronger contacts between chr17 and chr19 than between chr17 and chr18</a>: combined heatmap horizontal-chromosome-labels horizontal-gene-annotations vertical-chromosome-labels vertical-gene-annotations<br>
-<a href="http://higlass.io/app/?config=OwPq374bQj6pKQ97iyhXKg">Mini-views</a>: combined heatmap horizontal-chromosome-labels horizontal-gene-annotations vertical-chromosome-labels vertical-gene-annotations viewport-projection-center<br>
-<a href="http://higlass.io/app/?config=Y5ZUqLeiQwmd8_Pax5BCKA">Structural variant in GM12878?</a>: combined heatmap horizontal-chromosome-labels horizontal-gene-annotations vertical-chromosome-labels vertical-gene-annotations<br>
-<a href="http://higlass.io/app/?config=CTx4k9irR8GX3EKUNevxBQ">Weak bin</a>: combined heatmap horizontal-chromosome-labels horizontal-gene-annotations vertical-chromosome-labels vertical-gene-annotations<br>
-<a href="http://higlass.io/app/?config=A__ler6aS-eBAXwdMTIjSg">Standout streak</a>: combined heatmap horizontal-chromosome-labels horizontal-gene-annotations vertical-chromosome-labels vertical-gene-annotations<br>
-<a href="http://higlass.io/app/?config=HncLr3ySQx6t_AGlqN0zhA">Diagonal and off-diagonal</a>: combined heatmap horizontal-chromosome-labels horizontal-heatmap viewport-projection-center<br>
-<a href="http://higlass.io/app/?config=HncLr3ySQx6t_AGlqN0zhA">One overview and three detail views</a>: combined heatmap horizontal-chromosome-labels horizontal-heatmap viewport-projection-center<br>
-
-</body>
-</html>
-
+    </body>
+    </html>
+    
