@@ -1,0 +1,131 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1"
+  ],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        1552559325.0271199,
+        1579839764.5046995
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": false,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "genes1",
+            "type": "horizontal-gene-annotations",
+            "height": 24,
+            "options": {
+              "labelPosition": "hidden",
+              "labelColor": "black",
+              "plusStrandColor": "black",
+              "minusStrandColor": "black",
+              "trackBorderWidth": 0,
+              "showMousePosition": false,
+              "fontSize": 8,
+              "geneAnnoHeight": 8,
+              "geneLabelPosition": "inside",
+              "geneStrandSpacing": 2
+            }
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "genes2",
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelPosition": "hidden"
+            }
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "genes3",
+            "type": "horizontal-gene-annotations",
+            "height": 24,
+            "options": {
+              "labelPosition": "hidden",
+              "plusStrandColor": "#8D16B8",
+              "minusStrandColor": "#B85F03",
+              "trackBorderWidth": 0,
+              "showMousePosition": false,
+              "fontSize": 8,
+              "geneAnnoHeight": 8,
+              "geneStrandSpacing": 2
+            }
+          }
+        ],
+        "left": [
+          {
+            "name": "Gene Annotations (hg19)",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "genes4",
+            "type": "vertical-gene-annotations",
+            "width": 24,
+            "options": {
+              "labelPosition": "hidden",
+              "name": "Gene Annotations (hg19)",
+              "labelColor": "black",
+              "plusStrandColor": "black",
+              "minusStrandColor": "black",
+              "trackBorderWidth": 0,
+              "showMousePosition": false,
+              "fontSize": 8,
+              "geneAnnoHeight": 8,
+              "geneLabelPosition": "inside",
+              "geneStrandSpacing": 2
+            }
+          },
+          {
+            "name": "Gene Annotations (hg19)",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "genes5",
+            "type": "vertical-gene-annotations",
+            "options": {
+              "labelPosition": "hidden"
+            }
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "genes6",
+            "type": "vertical-gene-annotations",
+            "width": 24,
+            "options": {
+              "labelPosition": "hidden",
+              "plusStrandColor": "#8D16B8",
+              "minusStrandColor": "#B85F03",
+              "trackBorderWidth": 0,
+              "showMousePosition": false,
+              "fontSize": 8,
+              "geneAnnoHeight": 8,
+              "geneStrandSpacing": 2
+            }
+          }
+        ],
+        "center": [],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      }
+    }
+  ]
+}

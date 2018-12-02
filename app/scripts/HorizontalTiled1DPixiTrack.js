@@ -42,7 +42,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     }
   }
 
-calculateZoomLevel() {
+  calculateZoomLevel() {
     // offset by 2 because 1D tiles are more dense than 2D tiles
     // 1024 points per tile vs 256 for 2D tiles
     if (this.tilesetInfo.resolutions) {
@@ -54,18 +54,18 @@ calculateZoomLevel() {
       return zoomIndexX;
     }
 
-  // the tileProxy calculateZoomLevel function only cares about the
-  // difference between the minimum and maximum position
+    // the tileProxy calculateZoomLevel function only cares about the
+    // difference between the minimum and maximum position
     const xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
       this.tilesetInfo.min_pos[0],
       this.tilesetInfo.max_pos[0],
-      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size
-    );
+      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size);
 
     let zoomLevel = Math.min(xZoomLevel, this.maxZoom);
     zoomLevel = Math.max(zoomLevel, 0);
-  //console.log('xScale', this._xScale.domain(), this.maxZoom);
-  //console.log('zoomLevel:', zoomLevel, this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
+    // console.log('xScale', this._xScale.domain(), this.maxZoom);
+    // console.log('zoomLevel:', zoomLevel, this.tilesetInfo.min_pos[0],
+    //   this.tilesetInfo.max_pos[0]);
 
     return zoomLevel;
   }

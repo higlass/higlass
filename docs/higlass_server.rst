@@ -9,7 +9,7 @@ Configuration
 -------------
 
 The HiGlass server accepts a number of options to customize its use.
-Most of these options are set using environment variables before the
+Some of these options are set using environment variables before the
 server is started:
 
 .. code-block:: bash
@@ -25,6 +25,41 @@ it's not specified, then no in-memory tile caching will be performed.
 ``REDIS_PORT`` - The port for redis server to use for tile caching. If it's not
 set and a host is provided, the default port will be used.
 
+Additionally, the following settings are set via ``config.json`` (see ``config.json.sample`` as an example):
+
+``DEBUG`` - If ``true`` the server is started in debug mode.
+
+``INSTALLED_APPS`` - A list of django extensions.
+
+``LOG_LEVEL_CONSOLE`` - Define the console log level.
+
+``LOG_LEVEL_FILE`` - Define the file log level.
+
+``LOG_LEVEL_DJANGO`` - Define the django log level.
+
+``LOG_LEVEL_CHROMS`` - Define the chroms log level.
+
+``LOG_LEVEL_FRAGMENTS`` - Define the fragments log level.
+
+``LOG_LEVEL_TILESETS`` - Define the tilesets log level.
+
+``UPLOAD_ENABLED`` - If ``true`` the HiGlass server accepts any kinds of uploads.
+
+``PUBLIC_UPLOAD_ENABLED`` - If ``true`` the HiGlass server accepts public uploads.
+
+``REDIS_HOST`` - IP address of your Redis server.
+
+``REDIS_PORT`` - Port number of your Redis server.
+
+``SNIPPET_HIC_MAX_OUT_DIM`` - If specified it limits the maximum size (in pixels) of the longer side of a Hi-C snippet.
+
+``SNIPPET_HIC_MAX_DATA_DIM`` - If specified it limits the maximum size (in bins) of the longer side of the snippet that is pulled out of a cooler file.
+
+``SNIPPET_IMG_MAX_OUT_DIM`` - If specified it limits the maximum size (in pixels) of the longer side of an image snippet.
+
+``SNIPPET_OSM_MAX_DATA_DIM`` - If specified it limits the maximum size (in pixels) of the longer side of the OSM tiles that are pulled out for getting the image snippet.
+
+``SNIPPET_IMT_MAX_DATA_DIM`` - If specified it limits the maximum size (in pixels) of the longer side of the image tiles that are pulled out for getting the image snippet.
 
 
 Development
@@ -121,49 +156,47 @@ To filter by datatype, use the `dt=datatype` parameter:
 
     curl localhost:8000/api/v1/tilesets?dt=matrix
 
-Retrieving properties of a tileset, for a specific `uuid`:
+Retrieving properties of a tileset, for a specific `uuid`:  
 
-.. code-block:: bash
+ .. code-block:: bash 
 
-    curl localhost:8000/api/v1/tilesets/${uuid}/
-    
-To delete a tileset, specify the tileset `uuid` in the URL, and use the `DELETE` method with authentication credentials:
+    curl localhost:8000/api/v1/tilesets/${uuid}/ 
+      
+To delete a tileset, specify the tileset `uuid` in the URL, and use the `DELETE` method with authentication credentials:  
 
-.. code-block:: bash
+ .. code-block:: bash 
 
-    curl --user ${username}:${password} --request DELETE http://localhost:8000/api/v1/tilesets/${uuid}/
-    
-To modify a tileset name, specify the tileset `uuid` in the URL, use the `PATCH` method with authentication credentials, and specify the new name in the JSON object passed to the request:
+    curl --user ${username}:${password} --request DELETE http://localhost:8000/api/v1/tilesets/${uuid}/  
+      
+To modify a tileset name, specify the tileset `uuid` in the URL, use the `PATCH` method with authentication credentials, and specify the new name in the JSON object passed to the request: 
 
-.. code-block:: bash
+ .. code-block:: bash 
 
-    curl --user ${username}:${password} --request PATCH --header "Content-Type: application/json" --data '{"name":"new_name_of_tileset"}' http://localhost:8000/api/v1/tilesets/${uuid}/
-    
-Management commands
-^^^^^^^^^^^^^^^^^^^
+    curl --user ${username}:${password} --request PATCH --header "Content-Type: application/json" --data '{"name":"new_name_of_tileset"}' http://localhost:8000/api/v1/tilesets/${uuid}/ 
+      
+Management commands 
+^^^^^^^^^^^^^^^^^^^ 
+ The following commands may be run while logged into a non-Docker HiGlass instance and offer functionality to list and manipulate tileset records.  
+ To retrieve a list of available tilesets: 
 
-The following commands may be run while logged into a non-Docker HiGlass instance and offer functionality to list and manipulate tileset records.
+ .. code-block:: bash 
 
-To retrieve a list of available tilesets:
+     python manage.py list_tilesets 
+      
+To modify the name of a tileset:  
 
-.. code-block:: bash
+ .. code-block:: bash 
 
-    python manage.py list_tilesets
-    
-To modify the name of a tileset:
+     python manage.py modify_tileset --uuid=${uuid} --name=${name}  
+      
+.. note::  At this time, the `modify_tileset` command only provides the ability to modify the tileset name. Future revisions may provide logic to modify other tileset fields.  
 
-.. code-block:: bash
+ To delete a tileset: 
 
-    python manage.py modify_tileset --uuid=${uuid} --name=${name}
-    
-.. note::  At this time, the `modify_tileset` command only provides the ability to modify the tileset name. Future revisions may provide logic to modify other tileset fields.
+ .. code-block:: bash 
 
-To delete a tileset:
-
-.. code-block:: bash
-
-    python manage.py delete_tileset --uuid=${uuid}
-    
+     python manage.py delete_tileset --uuid=${uuid} 
+      
 .. note::  The `delete_tileset` command will delete the tileset record from the database backend. It will also delete the underlying file from the HiGlass server's `media/uploads` folder, and fail if this file cannot be removed.
 
 Testing
@@ -178,9 +211,9 @@ Or to test a more specific code block:
 .. code-block:: bash
 
     python manage.py test tilesets.tests.CoolerTest.test_transforms --failfast
-    
-Tests of deletion and modification routes:
 
-.. code-block:: bash
+Tests of deletion and modification routes:  
+
+ .. code-block:: bash 
 
     python manage.py test tilesets.tests.PermissionsTest
