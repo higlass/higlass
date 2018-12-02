@@ -15,7 +15,7 @@ module.exports = (config) => {
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
       'node_modules/font-awesome/css/font-awesome.css',
       'build/hglib.css',
-      // 'test/**/*.+(js|jsx)',
+      'test/**/*.+(js|jsx)',
       // 'test/AddTrackTests.js',
       // 'test/MinimalViewconfTest.js'
       // 'test/AxisTests.js',
@@ -25,7 +25,7 @@ module.exports = (config) => {
       // 'test/ViewManipulationTests.js',
       // 'test/ChromSizesTests.js',
       // 'test/ViewportProjectionTests.js',
-      'test/APITests.js',
+      // 'test/APITests.js',
       // 'test/AddAndRemoveViewconfTests.js',
       // 'test/HiGlassComponentTest.js',
       // 'test/HiGlassComponentCreationTests.js',

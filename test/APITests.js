@@ -86,7 +86,6 @@ describe('Simple HiGlassComponent', () => {
       // expect(Object.keys(component.viewHeaders).length).toBeGreaterThan(0);
     });
 
-    return;
     it('creates an editable component', () => {
       [div, api] = createElementAndApi(simpleCenterViewConfig);
 
