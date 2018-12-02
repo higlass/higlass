@@ -227,7 +227,7 @@ class TilesetFinder extends React.Component {
       if ('project_name' in item) {
         const group = item.project_name;
 
-        if (!(item.project in itemsByGroup)) {
+        if (!(group in itemsByGroup)) {
           itemsByGroup[group] = {
             value: group,
             label: group,
