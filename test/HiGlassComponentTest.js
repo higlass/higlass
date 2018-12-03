@@ -2918,6 +2918,20 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
+    it('Makes the search box visible', (done) => {
+      // TODO: This may create state which is necessary for the following tests.
+      // In which case, it should be a `before` or `before_each` and not `it`.
+      // let assemblyPickButton =
+      hgc.find('.assembly-pick-button');
+      // expect(assemblyPickButton.length).toEqual(0);
+      hgc.instance().handleTogglePositionSearchBox('aa');
+      hgc.update();
+      // assemblyPickButton =
+      hgc.find('.assembly-pick-button');
+      // expect(assemblyPickButton.length).toEqual(1);
+      waitForJsonComplete(done);
+    });
+
     it('Makes sure that the search box points to mm9', (done) => {
       hgc.update();
       expect(hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly).toEqual('mm9');
