@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/higlass/higlass.svg?branch=master)](https://travis-ci.org/higlass/higlass)
 [![Live Docs](https://img.shields.io/badge/docs-live-red.svg?colorB=0f5d92)](https://docs.higlass.io/)
 [![DOI](https://zenodo.org/badge/56026057.svg)](https://zenodo.org/badge/latestdoi/56026057)
-[![Slack](https://img.shields.io/badge/join-slack-blue.svg)](https://bit.ly/higlass-slack)
+[![Slack](https://now-examples-slackin-zukqykuatj.now.sh/badge.svg)](https://now-examples-slackin-zukqykuatj.now.sh/)
 
 
 ### Introduction
