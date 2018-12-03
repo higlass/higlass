@@ -176,26 +176,41 @@ To modify a tileset name, specify the tileset `uuid` in the URL, use the `PATCH`
       
 Management commands 
 ^^^^^^^^^^^^^^^^^^^ 
- The following commands may be run while logged into a non-Docker HiGlass instance and offer functionality to list and manipulate tileset records.  
- To retrieve a list of available tilesets: 
 
- .. code-block:: bash 
+The following commands may be run while logged into a non-Docker HiGlass
+instance and offer functionality to list and manipulate tileset records.
 
-     python manage.py list_tilesets 
+Ingesting data:
+
+.. code-block:: bash
+
+  python manage.py ingest_tileset --filename my.cool --filetype cooler --datatype matrix \
+    --project-name "Experiment 3" --coordSystem hg19
+
+Use the filename parameter to indicate where the data file resides, the filetype to tell
+the server how to read the data, the datatype to tell the client how it can be displayed,
+the coordinate system to indicate which chromosome sizes to use, and the project name to
+group it with other tilesets (available in v1.3.0 and above).
+
+To retrieve a list of available tilesets:
+
+.. code-block:: bash 
+
+  python manage.py list_tilesets 
       
 To modify the name of a tileset:  
 
- .. code-block:: bash 
+.. code-block:: bash 
 
-     python manage.py modify_tileset --uuid=${uuid} --name=${name}  
+  python manage.py modify_tileset --uuid=${uuid} --name=${name}  
       
 .. note::  At this time, the `modify_tileset` command only provides the ability to modify the tileset name. Future revisions may provide logic to modify other tileset fields.  
 
  To delete a tileset: 
 
- .. code-block:: bash 
+.. code-block:: bash 
 
-     python manage.py delete_tileset --uuid=${uuid} 
+  python manage.py delete_tileset --uuid=${uuid} 
       
 .. note::  The `delete_tileset` command will delete the tileset record from the database backend. It will also delete the underlying file from the HiGlass server's `media/uploads` folder, and fail if this file cannot be removed.
 
@@ -204,16 +219,16 @@ Testing
 
 .. code-block:: bash
 
-    python manage.py test tilesets --failfast
+  python manage.py test tilesets --failfast
 
 Or to test a more specific code block:
 
 .. code-block:: bash
 
-    python manage.py test tilesets.tests.CoolerTest.test_transforms --failfast
+  python manage.py test tilesets.tests.CoolerTest.test_transforms --failfast
 
 Tests of deletion and modification routes:  
 
- .. code-block:: bash 
+.. code-block:: bash 
 
-    python manage.py test tilesets.tests.PermissionsTest
+  python manage.py test tilesets.tests.PermissionsTest
