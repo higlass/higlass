@@ -197,15 +197,15 @@ class TilesetFinder extends React.Component {
    * Create the nested checkbox tree by partitioning the
    * list of available datasets according to their group
    *
-   * @param {dict} datasetsDict A dictionary of id -> tileset
+   * @param {object} datasetsDict A dictionary of id -> tileset
    *  def mappings
    * @param {string} filter A string to filter the results by
-   * @returns {list} A list of items that define the nested checkbox
+   * @returns {array} A list of items that define the nested checkbox
    *  structure
    *  {
    *    'name': 'blah',
    *    'value': 'blah',
-   *    'children': 'blah',
+   *    'children': [],
    *  }
    */
   partitionByGroup(datasetsDict, filter) {

@@ -135,7 +135,6 @@ class AddTrackModal extends React.Component {
 
   render() {
     const orientation = this.getOrientation(this.props.position);
-
     const form = (
       <div>
         <TilesetFinder

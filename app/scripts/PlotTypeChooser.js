@@ -91,13 +91,14 @@ class PlotTypeChooser extends React.Component {
     }
 
     return (<div>
-      { AVAILABLE_TRACK_TYPESList.length ?
-        (<div 
+      { AVAILABLE_TRACK_TYPESList.length
+        && (<div
           className='plot-type-container'
           > 
             { AVAILABLE_TRACK_TYPESList }
           </div>
-        ) : null }
+        )
+      }
     </div>);
   }
 }
