@@ -82,14 +82,14 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
     // this.zoomLevel = 0;
     const expandedXScale = this._xScale.copy();
 
-    const xDomainWidth = this._xScale.domain()[1] - this._xScale.domain()[0];
-    const xRangeWidth = this._xScale.range()[1] - this._xScale.range()[0];
-
     // we need to expand the domain of the X-scale because we are showing diagonal tiles.
-    // to make sure the view is covered up the entire height, we need to expand by viewHeight * sqrt(2)
+    // to make sure the view is covered up the entire height, we need to expand by
+    // viewHeight * sqrt(2)
     // on each side
-    expandedXScale.domain([this._xScale.invert(this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)),
-      this._xScale.invert(this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2))]);
+    expandedXScale.domain([
+      this._xScale.invert(this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)),
+      this._xScale.invert(this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2))
+    ]);
 
     this.xTiles = tileProxy.calculateTiles(this.zoomLevel, expandedXScale,
       this.tilesetInfo.min_pos[0],
@@ -108,7 +108,7 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
     const zoomLevel = this.zoomLevel;
 
     const maxWidth = this.tilesetInfo.max_width;
-    const tileWidth = maxWidth / Math.pow(2, zoomLevel);
+    const tileWidth = maxWidth / 2 ** zoomLevel;
 
     // if we're mirroring tiles, then we only need tiles along the diagonal
     const tiles = [];
@@ -118,7 +118,9 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
       for (let j = i; j < cols.length; j++) {
         // the length between the bottom of the track and the bottom corner of the tile
         // draw it out to understand better!
-        const tileBottomPosition = ((j - i) - 2) * (this._xScale(tileWidth) - this._xScale(0)) * Math.sqrt(2) / 2;
+        const tileBottomPosition = ((j - i) - 2)
+          * (this._xScale(tileWidth) - this._xScale(0))
+          * Math.sqrt(2) / 2;
 
         if (tileBottomPosition > this.dimensions[1]) {
           // this tile won't be visible so we don't need to fetch it
@@ -165,20 +167,20 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
 
     graphics.clear();
 
-    const stroke = colorToHex(this.options.rectangleDomainStrokeColor ? this.options.rectangleDomainStrokeColor : 'black');
-    const fill = colorToHex(this.options.rectangleDomainFillColor ? this.options.rectangleDomainFillColor : 'grey');
+    const stroke = colorToHex(this.options.rectangleDomainStrokeColor
+      ? this.options.rectangleDomainStrokeColor : 'black');
+    const fill = colorToHex(this.options.rectangleDomainFillColor
+      ? this.options.rectangleDomainFillColor : 'grey');
 
     graphics.lineStyle(1 / this.pMain.scale.x, stroke, 1);
     graphics.beginFill(fill, 0.4);
-    graphics.alpha = this.options.rectangleDomainOpacity ? this.options.rectangleDomainOpacity : 0.5;
+    graphics.alpha = this.options.rectangleDomainOpacity
+      ? this.options.rectangleDomainOpacity : 0.5;
 
-    if (!tile.tileData.sort)
-      return;
+    if (!tile.tileData.sort) return;
 
     // line needs to be scaled down so that it doesn't become huge
     for (const td of tile.tileData) {
-      const line = td.fields;
-
       const startX = this._refXScale(td.xStart);
       const endX = this._refXScale(td.xEnd);
 
@@ -187,7 +189,8 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
 
       const uid = td.uid;
 
-      if (this.drawnRects.has(uid)) { continue; } // we've already drawn this rectangle in another tile
+      if (this.drawnRects.has(uid)) { continue; }
+      // we've already drawn this rectangle in another tile
 
       this.drawnRects.add(uid);
       graphics.drawRect(startX, startY, endX - startX, endY - startY);
@@ -235,7 +238,8 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
 
   zoomed(newXScale, newYScale, k, tx, ty) {
     super.zoomed(newXScale, newYScale, k, tx, ty);
-    // console.log('zoomed this.pMain.position:', this.pMain.position.x, this.pMain.position.y, this.pMain.scale.x, this.pMain.scale.y);
+    // console.log('zoomed this.pMain.position:', this.pMain.position.x, this.pMain.position.y,
+    // this.pMain.scale.x, this.pMain.scale.y);
 
     this.pMain.position.x = tx;
     this.pMain.position.y = this.position[1] + this.dimensions[1]; // translateY;

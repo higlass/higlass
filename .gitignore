@@ -26,3 +26,4 @@ docs/_build
 package-lock.json
 webpack-stats.json
 dist
+lib/vendor

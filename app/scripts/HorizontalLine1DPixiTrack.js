@@ -158,7 +158,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       const xPos = this._xScale(tileXScale(i));
       const yPos = this.valueScale(tileValues[i] + offsetValue);
 
-      if (this.options.valueScaling === 'log' && tileValues[i] === 0) {
+      if ((this.options.valueScaling === 'log' && tileValues[i] === 0) || Number.isNaN(yPos)) {
         if (currentSegment.length > 1) {
           tile.segments.push(currentSegment);
         }
@@ -271,15 +271,15 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     // add the axis to the export
     if (
-      this.options.axisPositionHorizontal === 'left' ||
-      this.options.axisPositionVertical === 'top'
+      this.options.axisPositionHorizontal === 'left'
+      || this.options.axisPositionVertical === 'top'
     ) {
       // left axis are shown at the beginning of the plot
       const gDrawnAxis = this.axis.exportAxisLeftSVG(this.valueScale, this.dimensions[1]);
       gAxis.appendChild(gDrawnAxis);
     } else if (
-      this.options.axisPositionHorizontal === 'right' ||
-      this.options.axisPositionVertical === 'bottom'
+      this.options.axisPositionHorizontal === 'right'
+      || this.options.axisPositionVertical === 'bottom'
     ) {
       const gDrawnAxis = this.axis.exportAxisRightSVG(this.valueScale, this.dimensions[1]);
       gAxis.appendChild(gDrawnAxis);

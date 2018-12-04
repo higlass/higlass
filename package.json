@@ -1,21 +1,13 @@
 {
   "name": "higlass",
-  "version": "1.3.0-rc.2",
+  "version": "1.3.0-rc.3",
   "description": "HiGlass Hi-C / genomic / large data viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/hglib.js",
   "unpkg": "dist/hglib.min.js",
   "jsdelivr": "dist/hglib.min.js",
-  "files": [
-    "app",
-    "dist"
-  ],
-  "keywords": [
-    "hi-c",
-    "genomics",
-    "matrix",
-    "tracks"
-  ],
+  "files": ["app", "dist"],
+  "keywords": ["hi-c", "genomics", "matrix", "tracks"],
   "scripts": {
     "start": "webpack-dev-server --config ./webpack.config.js --mode development --content-base app",
     "build-watch": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; webpack --config ./webpack.config.js --mode development --watch; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css;",
@@ -67,6 +59,7 @@
     "react": "^16.6.3",
     "react-autocomplete": "github:tiemevanveen/react-autocomplete#fix-176",
     "react-bootstrap": "0.32.1",
+    "react-checkbox-tree": "^1.4.1",
     "react-color": "^2.13.8",
     "react-contextmenu": "^2.9.2",
     "react-dimensions": "^1.3.1",
@@ -114,6 +107,7 @@
     "eslint-plugin-react": "^7.11.1",
     "fast-css-loader": "^1.0.2",
     "fast-sass-loader": "^1.4.6",
+    "font-awesome": "^4.7.0",
     "fs": "0.0.2",
     "jasmine": "^2.8.0",
     "jasmine-core": "^2.8.0",

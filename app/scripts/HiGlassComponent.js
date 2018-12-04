@@ -45,6 +45,7 @@ import {
   download,
   fillInMinWidths,
   forwardEvent,
+  getElementDim,
   getTrackByUid,
   getTrackObjById,
   getTrackPositionByUid,
@@ -154,8 +155,8 @@ class HiGlassComponent extends React.Component {
 
     this.viewconfLoaded = false;
 
-    let { viewConfig } = this.props;
-    let views = this.loadIfRemoteViewConfig(this.props.viewConfig);
+    const { viewConfig } = this.props;
+    const views = this.loadIfRemoteViewConfig(this.props.viewConfig);
 
     if (props.options.authToken) {
       setTileProxyAuthHeader(props.options.authToken);
@@ -376,6 +377,7 @@ class HiGlassComponent extends React.Component {
 
     this.waitForDOMAttachment(() => {
       ElementQueries.listen();
+
       this.resizeSensor = new ResizeSensor(
         this.element.parentNode, this.updateAfterResize.bind(this),
       );
@@ -561,11 +563,50 @@ class HiGlassComponent extends React.Component {
     this.pixiRenderer.render(this.pixiStage);
   }
 
+  /**
+   * Add default track options. These can come from two places:
+   *
+   * 1. The track definitions (options/tracks-info.js)
+   * 2. The default options passed into the component
+   *
+   * Of these, #2 takes precendence over #1.
+   *
+   * @param {array} track The track to add default options to
+   */
   addDefaultOptions(track) {
     const trackInfo = this.getTrackInfo(track.type);
     if (!trackInfo) return;
 
+    if (typeof track.options === 'undefined') {
+      track.options = {};
+    }
+
     const trackOptions = track.options ? track.options : {};
+
+    if (this.props.options.defaultOptions) {
+      if (this.props.options.defaultOptions.trackSpecific
+        && this.props.options.defaultOptions.trackSpecific[track.type]) {
+        // track specific options take precedence over all options
+
+        const options = this.props.options.defaultOptions.trackSpecific[track.type];
+
+        for (const optionName in options) {
+          track.options[optionName] = typeof (track.options[optionName]) !== 'undefined'
+            ? track.options[optionName]
+            : JSON.parse(JSON.stringify(options[optionName]));
+        }
+      }
+
+      if (this.props.options.defaultOptions.all) {
+        const options = this.props.options.defaultOptions.all;
+
+        for (const optionName in options) {
+          track.options[optionName] = typeof (track.options[optionName]) !== 'undefined'
+            ? track.options[optionName]
+            : JSON.parse(JSON.stringify(options[optionName]));
+        }
+      }
+    }
 
     if (trackInfo.defaultOptions) {
       if (!track.options) {
@@ -612,9 +653,7 @@ class HiGlassComponent extends React.Component {
   }
 
   measureSize() {
-    const heightOffset = 0;
-    const height = this.element.clientHeight - heightOffset;
-    const width = this.element.clientWidth;
+    const [width, height] = getElementDim(this.element);
 
     if (width > 0 && height > 0) {
       this.setState({

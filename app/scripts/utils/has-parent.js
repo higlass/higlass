@@ -18,6 +18,6 @@ const hasParent = (el, target) => {
   }
 
   return false;
-}
+};
 
 export default hasParent;

@@ -927,7 +927,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     // no data present
-    if (this.scale.minValue == null || this.scale.maxValue == null) {
+    if (this.scale.minValue === null || this.scale.maxValue === null) {
       return;
     }
 
