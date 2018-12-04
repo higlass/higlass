@@ -197,15 +197,15 @@ class TilesetFinder extends React.Component {
    * Create the nested checkbox tree by partitioning the
    * list of available datasets according to their group
    *
-   * @param {dict} datasetsDict A dictionary of id -> tileset
+   * @param {object} datasetsDict A dictionary of id -> tileset
    *  def mappings
    * @param {string} filter A string to filter the results by
-   * @returns {list} A list of items that define the nested checkbox
+   * @returns {array} A list of items that define the nested checkbox
    *  structure
    *  {
    *    'name': 'blah',
    *    'value': 'blah',
-   *    'children': 'blah',
+   *    'children': [],
    *  }
    */
   partitionByGroup(datasetsDict, filter) {
@@ -290,6 +290,16 @@ class TilesetFinder extends React.Component {
       this.state.options,
       this.state.filter
     );
+    const svgStyle = {
+      width: 15,
+      height: 15,
+      top: 2,
+      right: 2,
+      position: 'relative',
+    };
+
+    const halfSvgStyle = JSON.parse(JSON.stringify(svgStyle));
+    halfSvgStyle.opacity = 0.5;
 
     const form = (
       <form
@@ -321,6 +331,16 @@ class TilesetFinder extends React.Component {
               expanded={this.state.expanded}
               onCheck={this.handleChecked.bind(this)}
               onExpand={this.handleExpanded.bind(this)}
+              icons={{
+                uncheck: <svg style={svgStyle}><use xlinkHref="#square_o" /></svg>,
+                check: <svg style={svgStyle}><use xlinkHref="#check_square_o" /></svg>,
+                halfcheck: <svg style={halfSvgStyle}><use xlinkHref="#check_square_o" /></svg>,
+                leaf: <svg style={svgStyle}><use xlinkHref="#file_o" /></svg>,
+                expandClose: <svg style={svgStyle}><use xlinkHref="#chevron_right" /></svg>,
+                expandOpen: <svg style={svgStyle}><use xlinkHref="#chevron_down" /></svg>,
+                parentClose: <svg style={svgStyle}><use xlinkHref="#folder_o" /></svg>,
+                parentOpen: <svg style={svgStyle}><use xlinkHref="#folder_open_o" /></svg>,
+              }}
           />
         </div>
       </form>
