@@ -32,6 +32,7 @@ module.exports = (env, argv) => ({
       path.resolve(__dirname, 'app'),
       path.resolve(__dirname, 'docs', 'examples'),
       path.resolve(__dirname, 'node_modules'),
+      path.resolve(__dirname, 'lib', 'vendor')
     ],
     publicPath: '/'
   },

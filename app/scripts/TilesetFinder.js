@@ -1,15 +1,11 @@
 import React from 'react';
-import {
-  Col,
-  ControlLabel,
-  Form,
-  FormControl,
-  FormGroup,
-} from 'react-bootstrap';
-import ReactDOM from 'react-dom';
 import slugid from 'slugid';
+import CheckboxTree from 'react-checkbox-tree';
+
 
 import { tileProxy } from './services';
+import '../styles/TilesetFinder.css';
+
 
 import withPubSub from './hocs/with-pub-sub';
 
@@ -51,6 +47,8 @@ class TilesetFinder extends React.Component {
       selectedUuid,
       options: newOptions,
       filter: '',
+      checked: [],
+      expanded: [],
     };
 
     this.requestTilesetLists();
@@ -63,13 +61,7 @@ class TilesetFinder extends React.Component {
     this.mounted = true;
 
     this.requestTilesetLists();
-
-    if (!this.state.selectedUuid)
-      return;
-
-    const selectedTilesets = [this.state.options[this.state.selectedUuid]];
-
-    if (selectedTilesets) { this.props.selectedTilesetChanged(selectedTilesets); }
+    this.searchBox.focus();
   }
 
   componentWillUnmount() {
@@ -117,17 +109,16 @@ class TilesetFinder extends React.Component {
     if (this.props.datatype) {
       datatypesQuery = `dt=${this.props.datatype}`;
     } else {
-      const datatypes = new Set([].concat.apply([], this.augmentedTracksInfo
+      const datatypes = new Set([].concat(...this.augmentedTracksInfo
         .filter(x => x.datatype)
-        .filter(x => x.orientation == this.props.orientation)
+        .filter(x => x.orientation === this.props.orientation)
         .map(x => x.datatype)));
-
 
       datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
     }
 
     if (!this.props.trackSourceServers) {
-      console.warn("No track source servers specified in the viewconf");
+      console.warn('No track source servers specified in the viewconf');
       return;
     }
 
@@ -137,9 +128,10 @@ class TilesetFinder extends React.Component {
           if (error) {
             console.error('ERROR:', error);
           } else {
-            const newOptions = this.prepareNewEntries(sourceServer, data.results, this.state.options);
+            const newOptions = this.prepareNewEntries(sourceServer,
+              data.results, this.state.options);
             const availableTilesetKeys = Object.keys(newOptions);
-            let selectedUuid = this.state.selectedUuid;
+            let { selectedUuid } = this.state;
 
             // if there isn't a selected tileset, select the first received one
             if (!selectedUuid) {
@@ -159,15 +151,11 @@ class TilesetFinder extends React.Component {
     });
   }
 
-  handleOptionDoubleClick(x, y) {
-    /**
-         * Double clicked on an element. Should be selected
-         * and this window will be closed.
-         */
-
-    // this should give the dataset the PlotType that's selected in the parent
-    // this.props.selectedTilesetChanged(this.state.options[x.target.value]);
-
+  /**
+   * Double clicked on an element. Should be selected
+   * and this window will be closed.
+   */
+  handleOptionDoubleClick(x /* , y */) {
     const value = this.state.options[x.target.value];
     this.props.onDoubleClick(value);
   }
@@ -188,7 +176,7 @@ class TilesetFinder extends React.Component {
   }
 
   handleSelect() {
-    const { selectedOptions } = ReactDOM.findDOMNode(this.multiSelect);
+    const { selectedOptions } = this.multiSelect;
     const selectedOptionsList = [];
 
     for (let i = 0; i < selectedOptions.length; i++) {
@@ -200,9 +188,96 @@ class TilesetFinder extends React.Component {
   }
 
   handleSearchChange() {
-    const domElement = ReactDOM.findDOMNode(this.searchBox);
+    const domElement = this.searchBox;
 
     this.setState({ filter: domElement.value });
+  }
+
+  /*
+   * Create the nested checkbox tree by partitioning the
+   * list of available datasets according to their group
+   *
+   * @param {dict} datasetsDict A dictionary of id -> tileset
+   *  def mappings
+   * @param {string} filter A string to filter the results by
+   * @returns {list} A list of items that define the nested checkbox
+   *  structure
+   *  {
+   *    'name': 'blah',
+   *    'value': 'blah',
+   *    'children': 'blah',
+   *  }
+   */
+  partitionByGroup(datasetsDict, filter) {
+    const itemsByGroup = {
+      '': {
+        name: '',
+        value: '',
+        children: [],
+      }
+    };
+
+    for (const uuid of Object.keys(datasetsDict)) {
+      const item = datasetsDict[uuid];
+
+      if (!item.name.toLowerCase().includes(filter)) {
+        continue;
+      }
+
+      if ('project_name' in item) {
+        const group = item.project_name;
+
+        if (!(group in itemsByGroup)) {
+          itemsByGroup[group] = {
+            value: group,
+            label: group,
+            children: [],
+          };
+        }
+
+        itemsByGroup[group].children.push({
+          label: item.name,
+          value: uuid,
+        });
+      } else {
+        itemsByGroup[''].children.push({
+          label: item.name,
+          value: uuid,
+        });
+      }
+    }
+
+    const allItems = itemsByGroup[''].children;
+    // coollapse the group lists into one list of objects
+    for (const group of Object.keys(itemsByGroup)) {
+      if (group !== '') {
+        itemsByGroup[group].children.sort(
+          (a, b) => a.label.toLowerCase().localeCompare(
+            b.label.toLowerCase(), 'en'
+          )
+        );
+
+        allItems.push(itemsByGroup[group]);
+      }
+    }
+
+    allItems.sort(
+      (a, b) => a.label.toLowerCase().localeCompare(
+        b.label.toLowerCase(), 'en'
+      )
+    );
+
+    return allItems;
+  }
+
+  handleChecked(checked) {
+    this.handleSelectedOptions(checked);
+
+    this.setState({ checked });
+  }
+
+  handleExpanded(expanded) {
+    this.setState({ expanded });
   }
 
   render() {
@@ -211,59 +286,44 @@ class TilesetFinder extends React.Component {
       optionsList.push(this.state.options[key]);
     }
 
-    // the list of tilesets / tracks available
-    const sortedOptions = optionsList
-      .filter(x => x.name.toLowerCase().includes(this.state.filter));
-
-    sortedOptions.sort((a, b) => (
-      a.name.toLowerCase().localeCompare(b.name.toLowerCase(), 'en')
-    ));
-
-    const options = sortedOptions.map(x => (
-      <option
-        onDoubleClick={this.handleOptionDoubleClick.bind(this)}
-        key={x.serverUidKey}
-        value={x.serverUidKey}
-      >
-        {`${x.name} | ${x.coordSystem}`}
-      </option>));
+    const nestedItems = this.partitionByGroup(
+      this.state.options,
+      this.state.filter
+    );
 
     const form = (
-      <Form
-        horizontal
+      <form
         onSubmit={(evt) => { evt.preventDefault(); }}
       >
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel>{ 'Select tileset' }</ControlLabel>
-          </Col>
-          <Col
-            sm={4}
-            smOffset={5}
+        <div
+          className="tileset-finder-search-bar"
+        >
+          <span
+            className="tileset-finder-label"
           >
-            <FormControl
-              ref={(c) => { this.searchBox = c; }}
-              autoFocus={true}
-              onChange={this.handleSearchChange.bind(this)}
-              placeholder="Search Term"
-            />
-            <div style={{ height: 10 }} />
-          </Col>
-          <Col sm={12}>
-            <FormControl
-              ref={(c) => { this.multiSelect = c; }}
-              className="tileset-list"
-              componentClass="select"
-              multiple
-              onChange={this.handleSelect.bind(this)}
-              size={15}
-              value={this.state.selectedUuid ? this.state.selectedUuid : ['x']}
-            >
-              {options}
-            </FormControl>
-          </Col>
-        </FormGroup>
-      </Form>
+            Select tileset:
+          </span>
+          <input
+            ref={(c) => { this.searchBox = c; }}
+            className="tileset-finder-search-box"
+            onChange={this.handleSearchChange.bind(this)}
+            placeholder="Search Term"
+            type='text'
+          />
+        </div>
+        <div
+          className="tileset-finder-checkbox-tree"
+          styleName="tileset-finder-checkbox-tree"
+        >
+          <CheckboxTree
+              nodes={nestedItems}
+              checked={this.state.checked}
+              expanded={this.state.expanded}
+              onCheck={this.handleChecked.bind(this)}
+              onExpand={this.handleExpanded.bind(this)}
+          />
+        </div>
+      </form>
     );
 
     return (
