@@ -114,6 +114,7 @@
     "eslint-plugin-react": "^7.11.1",
     "fast-css-loader": "^1.0.2",
     "fast-sass-loader": "^1.4.6",
+    "font-awesome": "^4.7.0",
     "fs": "0.0.2",
     "jasmine": "^2.8.0",
     "jasmine-core": "^2.8.0",

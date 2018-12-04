@@ -290,7 +290,6 @@ class TilesetFinder extends React.Component {
       this.state.options,
       this.state.filter
     );
-
     const svgStyle = {
       width: 15,
       height: 15,
