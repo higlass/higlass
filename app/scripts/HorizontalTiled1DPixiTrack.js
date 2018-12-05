@@ -100,30 +100,36 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
       return;
     }
 
-
-    if (this.options.axisPositionHorizontal === 'left'
-            || this.options.axisPositionVertical === 'top') {
+    if (
+      this.options.axisPositionHorizontal === 'left'
+      || this.options.axisPositionVertical === 'top'
+    ) {
       // left axis are shown at the beginning of the plot
-
       this.axis.pAxis.position.x = this.position[0];
       this.axis.pAxis.position.y = this.position[1];
 
       this.axis.drawAxisRight(valueScale, this.dimensions[1]);
-    } else if (this.options.axisPositionHorizontal === 'outsideLeft'
-            || this.options.axisPositionVertical === 'outsideTop') {
+    } else if (
+      this.options.axisPositionHorizontal === 'outsideLeft'
+      || this.options.axisPositionVertical === 'outsideTop'
+    ) {
       // left axis are shown at the beginning of the plot
 
       this.axis.pAxis.position.x = this.position[0];
       this.axis.pAxis.position.y = this.position[1];
 
       this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
-    } else if (this.options.axisPositionHorizontal === 'right'
-            || this.options.axisPositionVertical === 'bottom') {
+    } else if (
+      this.options.axisPositionHorizontal === 'right'
+      || this.options.axisPositionVertical === 'bottom'
+    ) {
       this.axis.pAxis.position.x = this.position[0] + this.dimensions[0];
       this.axis.pAxis.position.y = this.position[1];
       this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
-    } else if (this.options.axisPositionHorizontal === 'outsideRight'
-            || this.options.axisPositionVertical === 'outsideBottom') {
+    } else if (
+      this.options.axisPositionHorizontal === 'outsideRight'
+      || this.options.axisPositionVertical === 'outsideBottom'
+    ) {
       this.axis.pAxis.position.x = this.position[0] + this.dimensions[0];
       this.axis.pAxis.position.y = this.position[1];
       this.axis.drawAxisRight(valueScale, this.dimensions[1]);
