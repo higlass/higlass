@@ -2010,15 +2010,14 @@ class TiledPlot extends React.Component {
           onMenuClosed={this.closeMenus.bind(this)}
         >
           <ConfigTrackMenu
-            ref={(c) => { this.configTrackMenu = c; }}
             closeMenu={this.closeMenus.bind(this)}
             onAddSeries={this.handleAddSeries.bind(this)}
-          onAddTrack={this.handleAddTrack.bind(this)})}
-          onChangeTrackType={this.handleChangeTrackType.bind(this)})}
-onCloseTrack={this.handleCloseTrack.bind(this)}.bind(this)}
-        onConfigureTrack={this.handleConfigureTrack.bind(this)}is)}
+            onAddTrack={this.handleAddTrack.bind(this)}
+            onChangeTrackType={this.handleChangeTrackType.bind(this)}
+            onCloseTrack={this.handleCloseTrack.bind(this)}
+            onConfigureTrack={this.handleConfigureTrack.bind(this)}
             onExportData={this.handleExportTrackData.bind(this)}
-            
+            onLockValueScale={this.handleLockValueScale.bind(this)}
             onReplaceTrack={this.handleReplaceTrack.bind(this)}
             onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
             onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
