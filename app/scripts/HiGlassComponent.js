@@ -3727,7 +3727,6 @@ class HiGlassComponent extends React.Component {
 
         // Custom props
         cols={12}
-        width={this.state.width}
         draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}
         isDraggable={this.isEditable()}
         isResizable={this.isEditable()}
@@ -3748,6 +3747,7 @@ class HiGlassComponent extends React.Component {
         // `useCSSTransforms` (it's default `true`)
         // and set `measureBeforeMount={true}`.
         useCSSTransforms={this.mounted}
+        width={this.state.width}
       >
         {this.tiledAreas}
       </ReactGridLayout>
