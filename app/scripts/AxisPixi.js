@@ -19,8 +19,6 @@ class AxisPixi {
     this.axisTexts = [];
     this.axisTextFontFamily = 'Arial';
     this.axisTextFontSize = 10;
-
-    // hi
   }
 
   startAxis(axisHeight) {
