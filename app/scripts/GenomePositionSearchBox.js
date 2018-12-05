@@ -694,48 +694,46 @@ class GenomePositionSearchBox extends React.Component {
 
     return (
       <FormGroup
-        ref={c => this.gpsbForm = c}
         bsSize="small"
         styleName={className}
+        ref={c => this.gpsbForm = c}
       >
         <DropdownButton
-          ref={c => this.assemblyPickButton = c}
           bsSize="small"
           className={styles['genome-position-search-bar-button']}
           id={this.uid}
           onSelect={this.handleAssemblySelect.bind(this)}
+          ref={c => this.assemblyPickButton = c}
           title={this.state.selectedAssembly ? this.state.selectedAssembly : '(none)'}
         >
           {assemblyMenuItems}
         </DropdownButton>
 
         <Autocomplete
-          ref={c => this.autocompleteMenu = c}
           getItemValue={item => item.geneName}
           inputProps={{
-            classNameitems={this.state.genes}le={{
-     menuStyle={{
+            className: styles['genome-position-search-bar'],
+            title: "Current location: enter a symbol or location to change the position of the current view",
+          }}
+          items={this.state.genes}
+          menuStyle={{
             position: 'absolute',
-           onChange={this.onAutocompleteChange.bind(this)}  onFocus={this.focusHandler.bind(this)}',
-          }}this.menuPosition.left,
+            left: this.menuPosition.left,
             top: this.menuPosition.top,
             border: '1px solid black',
           }}
           onChange={this.onAutocompleteChange.bind(this)}
           onFocus={this.focusHandler.bind(this)}
           onMenuVisibilityChange={this.handleMenuVisibilityChange.bind(this)}
-      onSubmit={this.searchFieldSubmit.bind(this)}dlerenderItem={(item, isHighlighted) => (
-         
+          onSelect={(value, objct) => this.geneSelected(value, objct)}
           onSubmit={this.searchFieldSubmit.bind(this)}
           ref={c => this.autocompleteMenu = c}
           renderItem={(item, isHighlighted) => (
             <div
-              key={item.refseqid}
               id={item.refseqid}
+              key={item.refseqid}
               style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
-            >
-{item.geneName}
-</div>
+            >{item.geneName}</div>
           )}
           renderMenu={this.handleRenderMenu.bind(this)}
           value={this.positionText}
