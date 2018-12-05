@@ -1,0 +1,100 @@
+// This is "minimal" in terms of the requirements placed on authors:
+// Many checks have been turned off if --fix didn't work, and the manual fix wasn't obvious
+{
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "airbnb",
+    "plugin:react/recommended"
+  ],
+  "plugins": [
+    "react"
+  ],
+  "settings": {
+    "react": {
+      "pragma": "React"
+    },
+    "ecmascript": 6
+  },
+  "globals": {
+    "VERSION": false
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 6
+  },
+  "rules": {
+    "class-methods-use-this": 0,
+    "comma-dangle": 0,
+    "guard-for-in": 0,
+    "jsx-quotes": 1,
+    "no-bitwise": 0,
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-continue": 0,
+    "no-mixed-operators": 0,
+    "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
+    "no-param-reassign": ["error", { "props": false }],
+    "no-plusplus": 0,
+    "no-underscore-dangle": 0,
+    "prefer-destructuring": 0,
+    "react/destructuring-assignment": 0,
+    "react/display-name": 0,
+    "react/forbid-prop-types": 0,
+    "react/jsx-boolean-value": 0,
+    "react/jsx-closing-bracket-location": 1,
+    "react/jsx-curly-spacing": 1,
+    "react/jsx-equals-spacing": 1,
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/jsx-handler-names": 0,
+    "react/jsx-indent": 0,
+    "react/jsx-indent-props": 0,
+    "react/jsx-key": 1,
+    "react/jsx-max-props-per-line": 1,
+    "react/jsx-no-bind": [0, {"ignoreRefs": true }],
+    "react/jsx-no-duplicate-props": 1,
+    "react/jsx-no-literals": 0,
+    "react/jsx-no-undef": 1,
+    "react/jsx-pascal-case": 1,
+    "react/jsx-sort-props": 1,
+    "react/jsx-uses-react": 1,
+    "react/jsx-uses-vars": 1,
+    "no-restricted-syntax": 0,
+    "react/no-danger": 1,
+    "react/no-deprecated": 1,
+    "react/no-did-mount-set-state": 1,
+    "react/no-did-update-set-state": 1,
+    "react/no-direct-mutation-state": 1,
+    "react/no-is-mounted": 1,
+    "react/no-multi-comp": 1,
+    "react/no-set-state": 0,
+    "react/no-string-refs": 1,
+    "react/no-unknown-property": 1,
+    "react/prefer-es6-class": 1,
+    "react/prop-types": 1,
+    "react/react-in-jsx-scope": 1,
+    "react/self-closing-comp": 1,
+    "react/sort-comp": 1
+  },
+  "overrides": [
+    {
+      "files": ["test/**/*.js"],
+      "rules": {
+        "no-use-before-define": 0 // So viewconfs can be below the body of the test.
+      }
+    },
+    {
+      "files": ["app/scripts/*Track.js"],
+      "rules": {
+        "no-unused-vars": ["error", { "args": "none" }]
+        // There are many instances where an interface expects parameters,
+        // but the code doesn't use them, sometimes because it's a stub.
+      }
+    }
+  ]
+}
