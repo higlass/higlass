@@ -100,7 +100,7 @@ class AxisPixi {
 
   drawAxisLeft(valueScale, axisHeight) {
     // Draw a left-oriented axis (ticks pointing to the right)
-    this.startAxis(this.pAxis, axisHeight);
+    this.startAxis(axisHeight);
     this.createAxisTexts(valueScale, axisHeight);
 
     const graphics = this.pAxis;
@@ -114,8 +114,8 @@ class AxisPixi {
     }
 
     // draw the top, potentially unlabelled, ticke
-    // graphics.moveTo(0, 0);
-    // graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), 0);
+    graphics.moveTo(0, 0);
+    graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), 0);
 
     graphics.moveTo(0, axisHeight);
     graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), axisHeight);
