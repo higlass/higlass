@@ -1,3 +1,7 @@
+## v1.4.0
+
+- Add new public event `cursorLocation`. See [`docs/examples/apis/cursor-location.html`](docs/examples/apis/cursor-location.html) for an example.
+
 ## v1.3.0
 
 - Added `TiledPixiTrack.on` event handler to listen to data changes
