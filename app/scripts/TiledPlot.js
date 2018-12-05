@@ -1716,7 +1716,7 @@ class TiledPlot extends React.Component {
 
     const topTracks = (
       <div
-        key="topTracksDiv"
+        className="top-track-container"
         style={{
           left: this.leftWidth + this.props.horizontalMargin,
           top: this.props.verticalMargin,
@@ -1755,7 +1755,7 @@ class TiledPlot extends React.Component {
 
     const leftTracks = (
       <div
-        key="leftTracksPlot"
+        className="left-track-container"
         style={{
           left: this.props.horizontalMargin,
           top: this.topHeight + this.props.verticalMargin,
@@ -1792,14 +1792,16 @@ class TiledPlot extends React.Component {
     );
 
     const rightTracks = (
-      <div style={{
-        right: this.props.horizontalMargin,
-        top: this.topHeight + this.props.verticalMargin,
-        width: this.rightWidthNoGallery,
-        height: this.centerHeight,
-        outline: trackOutline,
-        position: 'absolute',
-      }}
+      <div
+        className="right-track-container"
+        style={{
+          right: this.props.horizontalMargin,
+          top: this.topHeight + this.props.verticalMargin,
+          width: this.rightWidthNoGallery,
+          height: this.centerHeight,
+          outline: trackOutline,
+          position: 'absolute',
+        }}
       >
         <VerticalTiledPlot
           configTrackMenuId={this.state.configTrackMenuId}
@@ -1829,14 +1831,16 @@ class TiledPlot extends React.Component {
     );
 
     const bottomTracks = (
-      <div style={{
-        left: this.leftWidth + this.props.horizontalMargin,
-        bottom: this.props.verticalMargin,
-        width: this.centerWidth,
-        height: this.bottomHeightNoGallery,
-        outline: trackOutline,
-        position: 'absolute',
-      }}
+      <div
+        className="bottom-track-container"
+        style={{
+          left: this.leftWidth + this.props.horizontalMargin,
+          bottom: this.props.verticalMargin,
+          width: this.centerWidth,
+          height: this.bottomHeightNoGallery,
+          outline: trackOutline,
+          position: 'absolute',
+        }}
       >
         <HorizontalTiledPlot
           configTrackMenuId={this.state.configTrackMenuId}
@@ -1893,6 +1897,7 @@ class TiledPlot extends React.Component {
 
     let centerTrack = (
       <div
+        className="center-track-container"
         style={{
           left: this.leftWidth + this.props.horizontalMargin,
           top: this.props.verticalMargin + this.topHeight,
@@ -2154,8 +2159,6 @@ class TiledPlot extends React.Component {
         ref={(c) => { this.divTiledPlot = c; }}
         className="tiled-plot-div"
         styleName="styles.tiled-plot"
-        onDragEnter={(evt) => {
-        }}
       >
         {trackRenderer}
         {overlays}
