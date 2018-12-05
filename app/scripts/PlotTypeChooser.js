@@ -62,51 +62,51 @@ class PlotTypeChooser extends React.Component {
           const plotTypeClass = this.state.selectedPlotType.type == x.type ? 'plot-type-selected' : 'unselected';
           const imgTag = trackTypeToInfo[x.type].thumbnail
             ? (
-<div
-              dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
-              style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle' }}
-/>
+              <div
+                dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
+                style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle' }}
+              />
             )
             : (
-<div style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle' }}>
-              <svg height={20} width={30} />
-</div>
+              <div style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle' }}>
+                <svg height={20} width={30} />
+              </div>
             );
           return (
-<li
-            key={x.type}
-            className={plotTypeClass}
-            onClick={
-              (e) => {
-                this.setState({ selectedPlotType: x });
-                this.props.onPlotTypeSelected(x.type);
+            <li
+              key={x.type}
+              className={plotTypeClass}
+              onClick={
+                (e) => {
+                  this.setState({ selectedPlotType: x });
+                  this.props.onPlotTypeSelected(x.type);
+                }
               }
-            }
-            style={{ listStyle: 'none', paddingLeft: 5, paddingBottom: 0 }}
->
-
-            {imgTag}
-            <span
-              style={{ verticalAlign: 'middle' }}
+              style={{ listStyle: 'none', paddingLeft: 5, paddingBottom: 0 }}
             >
-              {x.type}
-            </span>
-</li>
+              {imgTag}
+              <span
+                style={{ verticalAlign: 'middle' }}
+              >
+                {x.type}
+              </span>
+            </li>
           );
         });
     }
 
     return (
-<div>
-      { AVAILABLE_TRACK_TYPESList.length > 0
-        && (<div
-          className="plot-type-container"
-        >
-            { AVAILABLE_TRACK_TYPESList }
+      <div>
+        { AVAILABLE_TRACK_TYPESList.length > 0
+          && (
+            <div
+              className="plot-type-container"
+            >
+              { AVAILABLE_TRACK_TYPESList }
             </div>
-        )
-      }
-</div>
+          )
+        }
+      </div>
     );
   }
 }

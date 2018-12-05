@@ -62,11 +62,11 @@ class NestedContextMenu extends ContextMenuContainer {
           {menuItem.name}
           {menuItem.children
             && (
-<svg
-              styleName="play-icon"
->
-              <use xlinkHref="#play" />
-</svg>
+              <svg
+                styleName="play-icon"
+              >
+                <use xlinkHref="#play" />
+              </svg>
             )
           }
         </ContextMenuItem>,

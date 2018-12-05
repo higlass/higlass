@@ -2129,8 +2129,8 @@ class TiledPlot extends React.Component {
       ? this.state.addTrackPosition : this.props.addTrackPosition;
 
     if (this.state.addTrackPosition || this.props.addTrackPosition) {
-      addTrackModal =        (
-<AddTrackModal
+      addTrackModal = (
+        <AddTrackModal
           host={this.state.addTrackHost}
           onCancel={this.handleNoTrackAdded.bind(this)}
           onTracksChosen={this.handleTracksAdded.bind(this)}
@@ -2139,7 +2139,7 @@ class TiledPlot extends React.Component {
           show={this.state.addTrackPosition != null || this.props.addTrackPosition != null}
           trackSourceServers={this.props.trackSourceServers}
         />
-);
+      );
     }
 
     // track renderer needs to enclose all the other divs so that it

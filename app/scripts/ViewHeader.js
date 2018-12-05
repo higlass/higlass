@@ -240,9 +240,9 @@ class ViewHeader extends React.Component {
             styleName="multitrack-header-grabber"
             title="Drag to move the view"
           >
-
             <div />
-<div /><div />
+            <div />
+            <div />
           </div>
           {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR
             && <div styleName="multitrack-header-search">

@@ -86,9 +86,9 @@ export const getSeriesItems = (
           {(x.name && x.name.length) ? x.name : x.uid}
           { onItemMouseEnter && onItemMouseLeave
             ? (
-<svg styleName="play-icon">
-              <use xlinkHref="#play" />
-</svg>
+              <svg styleName="play-icon">
+                <use xlinkHref="#play" />
+              </svg>
             )
             : null
           }

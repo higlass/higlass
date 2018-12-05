@@ -196,15 +196,15 @@ class VerticalTiledPlot extends React.Component {
       <div styleName="styles.vertical-tiled-plot">
         {isBrushable
           && (
-<svg
-            ref={(el) => { this.brushEl = select(el); }}
-            style={{
-              height: this.props.height,
-              width,
-            }}
-            styleName={rangeSelectorClass}
-            xmlns="http://www.w3.org/2000/svg"
-/>
+            <svg
+              ref={(el) => { this.brushEl = select(el); }}
+              style={{
+                height: this.props.height,
+                width,
+              }}
+              styleName={rangeSelectorClass}
+              xmlns="http://www.w3.org/2000/svg"
+            />
           )
         }
         <ListWrapper

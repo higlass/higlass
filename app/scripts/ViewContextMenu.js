@@ -90,24 +90,24 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
         {
           this.hasMatrixTrack(this.props.tracks)
           && (
-<ContextMenuItem
-            onClick={this.handleAddHorizontalSection.bind(this)}
-            onMouseEnter={e => this.handleOtherMouseEnter(e)}
->
-            {'Add Horizontal Cross Section'}
-</ContextMenuItem>
+            <ContextMenuItem
+              onClick={this.handleAddHorizontalSection.bind(this)}
+              onMouseEnter={e => this.handleOtherMouseEnter(e)}
+            >
+              {'Add Horizontal Cross Section'}
+            </ContextMenuItem>
           )
         }
         {
           this.hasMatrixTrack(this.props.tracks)
 
           && (
-<ContextMenuItem
-            onClick={this.handleAddVerticalSection.bind(this)}
-            onMouseEnter={e => this.handleOtherMouseEnter(e)}
->
-            {'Add Vertical Cross Section'}
-</ContextMenuItem>
+            <ContextMenuItem
+              onClick={this.handleAddVerticalSection.bind(this)}
+              onMouseEnter={e => this.handleOtherMouseEnter(e)}
+            >
+              {'Add Vertical Cross Section'}
+            </ContextMenuItem>
           )
         }
 

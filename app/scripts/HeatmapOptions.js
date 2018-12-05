@@ -113,114 +113,114 @@ class HeatmapOptions extends React.Component {
         : null; // closebutton
 
       return (
-<td
-        key={`l${i}`}
-        style={{
-          border: '0px solid',
-          position: 'relative',
-          outline: 'none',
-        }}
->
-        {closeButton}
-        <SketchInlinePicker
-          key={i}
-          color={this.state.colors[i]}
-          onChange={(c) => {
-            this.state.colors[i] = c;
-            this.handleColorsChanged(this.state.colors);
-          }
-          }
-        />
-</td>
+        <td
+          key={`l${i}`}
+          style={{
+            border: '0px solid',
+            position: 'relative',
+            outline: 'none',
+          }}
+        >
+          {closeButton}
+          <SketchInlinePicker
+            key={i}
+            color={this.state.colors[i]}
+            onChange={(c) => {
+              this.state.colors[i] = c;
+              this.handleColorsChanged(this.state.colors);
+            }
+            }
+          />
+        </td>
       );
     });
 
     const addButton = this.state.colors.length < 4
       ? (
-<td
-        style={{
-          border: '0px solid',
-          position: 'relative',
-          outline: 'none',
-        }}
->
-        <div
+        <td
           style={{
-            height: 24,
-            marginLeft: 5,
+            border: '0px solid',
+            position: 'relative',
+            outline: 'none',
           }}
-
         >
-          <svg
-            height="10px"
-            onClick={this.handleAddColor.bind(this)}
+          <div
             style={{
-              opacity: 0.5,
+              height: 24,
+              marginLeft: 5,
             }}
-            width="10px"
+
           >
-            <use xlinkHref="#plus" />
-          </svg>
-        </div>
-</td>
+            <svg
+              height="10px"
+              onClick={this.handleAddColor.bind(this)}
+              style={{
+                opacity: 0.5,
+              }}
+              width="10px"
+            >
+              <use xlinkHref="#plus" />
+            </svg>
+          </div>
+        </td>
       )
       : null; // addButton
 
     return (
-<Modal
-      className="hg-modal"
-      onHide={this.props.handleCancel}
-      show={true}
->
-      <Modal.Header closeButton>
-        <Modal.Title>Heatmap Options</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <table className="table-track-options">
-          <thead />
-          <tbody>
-            <tr>
-              <td className="td-track-options">
-                {'Colors'}
-              </td>
-            </tr>
-            <tr>
-              <td className="td-track-options">
-                <table>
-                  <tbody>
-                    <tr>
-                      {colorFields}
-                      {addButton}
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
+      <Modal
+        className="hg-modal"
+        onHide={this.props.handleCancel}
+        show={true}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Heatmap Options</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <table className="table-track-options">
+            <thead />
+            <tbody>
+              <tr>
+                <td className="td-track-options">
+                  {'Colors'}
+                </td>
+              </tr>
+              <tr>
+                <td className="td-track-options">
+                  <table>
+                    <tbody>
+                      <tr>
+                        {colorFields}
+                        {addButton}
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
 
-            </tr>
-            <tr>
-              <td className="td-track-options">
-                {'Preview'}
-              </td>
-            </tr>
-            <tr>
-              <td className="td-track-options" rowSpan="2">
-                <div style={{ width: 200 }}>
-                  <HiGlassComponent
-                    options={{ bounded: false }}
-                    viewConfig={mvConfig}
-                  />
-                </div>
-              </td>
-            </tr>
-            <tr />
-          </tbody>
-        </table>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={this.props.onCancel}>Cancel</Button>
-        <Button onClick={this.handleSubmit.bind(this)}>Submit</Button>
-      </Modal.Footer>
-</Modal>
+              </tr>
+              <tr>
+                <td className="td-track-options">
+                  {'Preview'}
+                </td>
+              </tr>
+              <tr>
+                <td className="td-track-options" rowSpan="2">
+                  <div style={{ width: 200 }}>
+                    <HiGlassComponent
+                      options={{ bounded: false }}
+                      viewConfig={mvConfig}
+                    />
+                  </div>
+                </td>
+              </tr>
+              <tr />
+            </tbody>
+          </table>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={this.props.onCancel}>Cancel</Button>
+          <Button onClick={this.handleSubmit.bind(this)}>Submit</Button>
+        </Modal.Footer>
+      </Modal>
     );
   }
 }

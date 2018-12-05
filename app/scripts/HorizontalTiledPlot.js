@@ -195,15 +195,15 @@ class HorizontalTiledPlot extends React.Component {
       <div styleName="styles.horizontal-tiled-plot">
         {isBrushable
           && (
-<svg
-            ref={(el) => { this.brushEl = select(el); }}
-            style={{
-              height,
-              width: this.props.width,
-            }}
-            styleName={rangeSelectorClass}
-            xmlns="http://www.w3.org/2000/svg"
-/>
+            <svg
+              ref={(el) => { this.brushEl = select(el); }}
+              style={{
+                height,
+                width: this.props.width,
+              }}
+              styleName={rangeSelectorClass}
+              xmlns="http://www.w3.org/2000/svg"
+            />
           )
         }
         <ListWrapper
