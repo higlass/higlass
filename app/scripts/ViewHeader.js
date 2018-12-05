@@ -119,18 +119,20 @@ class ViewHeader extends React.Component {
           onMenuClosed={() => this.setState({ configMenuUid: null })}
         >
           <ConfigViewMenu
-            onClearView = {() => {
+            orientation="left"
+            position={this.state.configMenuPosition}
+
+            onExportSVG={() => {
               this.setState({ configMenuUid: null }); // hide the menu
-              this.props.onClearView();
+              this.props.onExportSVG();
             }}
             onExportPNG={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onExportPNG();
             }}
-
-            onExportSVG={() => {
+            onClearView = {() => {
               this.setState({ configMenuUid: null }); // hide the menu
-              this.props.onExportSVG();
+              this.props.onClearView();
             }}
             onExportViewAsJSON={() => {
               this.setState({ configMenuUid: null }); // hide the menu
@@ -139,21 +141,23 @@ class ViewHeader extends React.Component {
             onExportViewAsLink={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onExportViewsAsLink();
-            }}onLockLocation={() => {
+            }}
+            onLockLocation={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onLockLocation(this.state.configMenuUid);
+            }}
             onLockZoom={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onLockZoom(this.state.configMenuUid);
-            }}iewsAsonLockZoomAndLocation={() => {
+            }}
+            onLockZoomAndLocation={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onLockZoomAndLocation(this.state.configMenuUid);
-            }onOptionsChanged={(newOptions) => {
-              this.props.onViewOptionsChanged(newOptions);
+            }}
+            onProjectViewport={() => {
               this.setState({ configMenuUid: null }); // hide the menu
-            }}oonProjectViewport={() => {
-              this.setState({ configMenuUid: null }); // hide the menu
-              this.props.onProjectVi
+              this.props.onProjectViewport(this.state.configMenuUid);
+            }}
             onOptionsChanged={(newOptions) => {
               this.props.onViewOptionsChanged(newOptions);
               this.setState({ configMenuUid: null }); // hide the menu

@@ -1465,20 +1465,26 @@ class TiledPlot extends React.Component {
             closeMenu={this.closeMenus.bind(this)}
             coords={[this.state.contextMenuDataX, this.state.contextMenuDataY]}
             customItems={this.state.contextMenuCustomItems}
-            onAddDivisor={this.handleAddDivisor.bind(this)}
+            onAddSeries={this.handleAddSeries.bind(this)}
             // Can only add one new track at a time
             // because "whole" tracks are always drawn on top of each other,
             // the notion of Series is unnecessary and so 'host' is null
-            onAddSeries={this.handleAddSeries.bind(this)}
+            onAddTrack={(newTrack) => {
+              this.props.onTracksAdded([newTrack], newTrack.position, null);
+
+              this.handleCloseContextMenu();
+            }}
             onChangeTrackType={this.handleChangeTrackType.bind(this)}
-            onChangeTrackData={this.handleChangeTrackData.bindonAddTrack={(newTrack) => {
-              this.props.onTracksAdded([neonChangeTrackData={this.handleChangeTrackData.bind(this)}ndleCloseContonChangeTrackType={this.handleChangeTrackType.bind(this)} ononCloseTrack={this.handleCloseTrack.bind(this)}           onConfigureTrack={this.handleConfigureTrack.bind(this)}
+            onChangeTrackData={this.handleChangeTrackData.bind(this)}
+            onAddDivisor={this.handleAddDivisor.bind(this)}
+            onCloseTrack={this.handleCloseTrack.bind(this)}
+            onConfigureTrack={this.handleConfigureTrack.bind(this)}
             onExportData={this.handleExportTrackData.bind(this)}
             onLockValueScale={this.handleLockValueScale.bind(this)}
             onReplaceTrack={this.handleReplaceTrack.bind(this)}
             onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
             onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
-            orientation="right"
+            orientation={'right'}
             position={this.state.contextMenuPosition}
             tracks={relevantTracks}
             trackSourceServers={this.props.trackSourceServers}
