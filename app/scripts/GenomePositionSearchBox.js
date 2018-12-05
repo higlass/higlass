@@ -186,8 +186,7 @@ class GenomePositionSearchBox extends React.Component {
             loading: false,
             genes: []
           });
-        } else {
-          if (this.changedPart > 0 && !changedAtStartOfWord) {
+        } else if (this.changedPart > 0 && !changedAtStartOfWord) {
             // send out another request for genes with dashes in them
             // but we need to distinguish things that have a dash in front
             // from things that just have a space in front
@@ -212,7 +211,6 @@ class GenomePositionSearchBox extends React.Component {
             // we've received a list of autocomplete suggestions
             this.setState({ loading: false, genes: data });
           }
-        }
       }, this.props.pubSub);
     }
   }
@@ -550,8 +548,8 @@ class GenomePositionSearchBox extends React.Component {
         }
 
         if (
-          (range1 && (isNaN(range1[0]) || isNaN(range1[1]))) ||
-          (range2 && (isNaN(range2[0]) || isNaN(range2[1])))) {
+          (range1 && (isNaN(range1[0]) || isNaN(range1[1])))
+          || (range2 && (isNaN(range2[0]) || isNaN(range2[1])))) {
           return;
         }
 
@@ -598,7 +596,7 @@ class GenomePositionSearchBox extends React.Component {
           // meant to replace a part of the previous gene
           // e.g. SOX2-O should be replaced with SOX2-OT
 
-          const newDashParts = dashParts.slice(0, partCount-1);
+          const newDashParts = dashParts.slice(0, partCount - 1);
           newDashParts.push(geneParts.join('-'));
 
           if (partCount < dashParts.length - 1) {
@@ -696,46 +694,48 @@ class GenomePositionSearchBox extends React.Component {
 
     return (
       <FormGroup
+        ref={c => this.gpsbForm = c}
         bsSize="small"
         styleName={className}
-        ref={c => this.gpsbForm = c}
       >
         <DropdownButton
+          ref={c => this.assemblyPickButton = c}
           bsSize="small"
           className={styles['genome-position-search-bar-button']}
           id={this.uid}
           onSelect={this.handleAssemblySelect.bind(this)}
-          ref={c => this.assemblyPickButton = c}
           title={this.state.selectedAssembly ? this.state.selectedAssembly : '(none)'}
         >
           {assemblyMenuItems}
         </DropdownButton>
 
         <Autocomplete
+          ref={c => this.autocompleteMenu = c}
           getItemValue={item => item.geneName}
           inputProps={{
-            className: styles['genome-position-search-bar'],
-            title: "Current location: enter a symbol or location to change the position of the current view",
-          }}
-          items={this.state.genes}
-          menuStyle={{
+            classNameitems={this.state.genes}le={{
+     menuStyle={{
             position: 'absolute',
-            left: this.menuPosition.left,
+           onChange={this.onAutocompleteChange.bind(this)}  onFocus={this.focusHandler.bind(this)}',
+          }}this.menuPosition.left,
             top: this.menuPosition.top,
             border: '1px solid black',
           }}
           onChange={this.onAutocompleteChange.bind(this)}
           onFocus={this.focusHandler.bind(this)}
           onMenuVisibilityChange={this.handleMenuVisibilityChange.bind(this)}
-          onSelect={(value, objct) => this.geneSelected(value, objct)}
+      onSubmit={this.searchFieldSubmit.bind(this)}dlerenderItem={(item, isHighlighted) => (
+         
           onSubmit={this.searchFieldSubmit.bind(this)}
           ref={c => this.autocompleteMenu = c}
           renderItem={(item, isHighlighted) => (
             <div
-              id={item.refseqid}
               key={item.refseqid}
+              id={item.refseqid}
               style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
-            >{item.geneName}</div>
+            >
+{item.geneName}
+</div>
           )}
           renderMenu={this.handleRenderMenu.bind(this)}
           value={this.positionText}

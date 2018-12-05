@@ -60,17 +60,22 @@ class PlotTypeChooser extends React.Component {
         .map((x) => {
           const thumbnail = trackTypeToInfo[x.type].thumbnail;
           const plotTypeClass = this.state.selectedPlotType.type == x.type ? 'plot-type-selected' : 'unselected';
-          const imgTag = trackTypeToInfo[x.type].thumbnail ?
-            (<div
-              style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle' }}
+          const imgTag = trackTypeToInfo[x.type].thumbnail
+            ? (
+<div
               dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
-            />) :
-            (<div style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle' }} >
-              <svg width={30} height={20} />
-            </div>);
-          return (<li
-            className={plotTypeClass}
+              style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle' }}
+/>
+            )
+            : (
+<div style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle' }}>
+              <svg height={20} width={30} />
+</div>
+            );
+          return (
+<li
             key={x.type}
+            className={plotTypeClass}
             onClick={
               (e) => {
                 this.setState({ selectedPlotType: x });
@@ -78,7 +83,7 @@ class PlotTypeChooser extends React.Component {
               }
             }
             style={{ listStyle: 'none', paddingLeft: 5, paddingBottom: 0 }}
-          >
+>
 
             {imgTag}
             <span
@@ -86,20 +91,23 @@ class PlotTypeChooser extends React.Component {
             >
               {x.type}
             </span>
-          </li>);
+</li>
+          );
         });
     }
 
-    return (<div>
+    return (
+<div>
       { AVAILABLE_TRACK_TYPESList.length > 0
         && (<div
-          className='plot-type-container'
-          > 
+          className="plot-type-container"
+        >
             { AVAILABLE_TRACK_TYPESList }
-          </div>
+            </div>
         )
       }
-    </div>);
+</div>
+    );
   }
 }
 

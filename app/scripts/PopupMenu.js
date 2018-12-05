@@ -12,6 +12,7 @@ class PopupMenu extends React.Component {
     this.contextMenuHandlerBound = this.contextMenuHandler.bind(this);
     this.resizeHandlerBound = this.resizeHandler.bind(this);
   }
+
   componentDidMount() {
     this.popup = document.createElement('div');
     document.body.appendChild(this.popup);

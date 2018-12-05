@@ -4,7 +4,7 @@ import { absToChr } from './utils';
 
 class SearchField {
   constructor(chromInfo) {
-    //console.trace('chromInfo:', chromInfo)
+    // console.trace('chromInfo:', chromInfo)
     this.chromInfo = chromInfo;
     this.chromInfoBisector = bisector(d => d.pos).left;
   }
@@ -68,26 +68,22 @@ class SearchField {
     if (positionParts.length > 1) {
       chr = positionParts[0];
       pos = +positionParts[1].replace(/,/g, ''); // chromosome specified
-    } else {
-      if (positionParts[0] in this.chromInfo.chrPositions) {
-        // is this an entire chromosome
-        chr = positionParts[0];
-        pos = 0;
+    } else if (positionParts[0] in this.chromInfo.chrPositions) {
+      // is this an entire chromosome
+      chr = positionParts[0];
+      pos = 0;
 
-        if (prevChr != null) {
-          // this chromosome is part of a range so we actually
-          // want to search to the end of it
-          pos = +this.chromInfo.chromLengths[chr];
-        }
-
-      } else {
-        // no it's just a position without a chromosome
-        pos = +positionParts[0].replace(/,/g, ''); // no chromosome specified
-        chr = null;
-
-        if (prevChr)
-          chr = prevChr;
+      if (prevChr != null) {
+        // this chromosome is part of a range so we actually
+        // want to search to the end of it
+        pos = +this.chromInfo.chromLengths[chr];
       }
+    } else {
+      // no it's just a position without a chromosome
+      pos = +positionParts[0].replace(/,/g, ''); // no chromosome specified
+      chr = null;
+
+      if (prevChr) chr = prevChr;
     }
 
     let retPos = null;
@@ -117,8 +113,10 @@ class SearchField {
   matchRangesToLarger(range1, range2) {
     // if one range is wider than the other, then adjust the other
     // so that it is just as wide
-    let smaller = null,
-      larger = null;
+    const smaller = null;
+
+
+    const larger = null;
 
     if ((range1[1] - range1[0]) < (range2[1] - range2[0])) {
       const toExpand = (range2[1] - range2[0]) - (range1[1] - range1[0]);
@@ -143,8 +141,10 @@ class SearchField {
     let parts = term.split('-'); // split on a
     parts = parts.filter(d => d.length > 0);
 
-    let pos1 = null,
-      pos2 = null;
+    const pos1 = null;
+
+
+    const pos2 = null;
     let range = null;
 
 
@@ -157,7 +157,7 @@ class SearchField {
       let [chr1, chrPos1, genomePos1] = this.parsePosition(parts[0]);
       let [chr2, chrPos2, genomePos2] = this.parsePosition(parts[1], chr1);
 
-      let tempRange1 = [genomePos1, genomePos2];
+      const tempRange1 = [genomePos1, genomePos2];
 
       [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1]);
       [chr2, chrPos2, genomePos2] = this.parsePosition(parts[0], chr1);
@@ -170,33 +170,30 @@ class SearchField {
         [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1], chr2);
       }
 
-      let tempRange2 = [genomePos1, genomePos2];
+      const tempRange2 = [genomePos1, genomePos2];
 
       // return the wider of the two ranges
       // e.g. searching for chr1-chr2 vs chr2-chr1
-      if (tempRange2[1] - tempRange2[0] > tempRange1[1] - tempRange1[0])
-        return tempRange2
-      else
-        return tempRange1
-    } else {
-      // only a locus specified and no range
-      // is the locus an entire chromosome?
-
-      if (parts[0] in this.chromInfo.chrPositions) {
-        let chromPosition = this.chromInfo.chrPositions[parts[0]].pos;
-
-        // if somebody has entered an entire chromosome, we return
-        // it's length as the range
-        range = [+chromPosition,
-          +chromPosition + +this.chromInfo.chromLengths[parts[0]]];
-
-      } else {
-        // e.g. ("chr1:540340")
-        const [chr1, chrPos1, pos1] = this.parsePosition(parts[0]);
-
-        range = [pos1 - 8000000, pos1 + 8000000];
-      }
+      if (tempRange2[1] - tempRange2[0] > tempRange1[1] - tempRange1[0]) return tempRange2;
+      return tempRange1;
     }
+    // only a locus specified and no range
+    // is the locus an entire chromosome?
+
+    if (parts[0] in this.chromInfo.chrPositions) {
+      const chromPosition = this.chromInfo.chrPositions[parts[0]].pos;
+
+      // if somebody has entered an entire chromosome, we return
+      // it's length as the range
+      range = [+chromPosition,
+        +chromPosition + +this.chromInfo.chromLengths[parts[0]]];
+    } else {
+      // e.g. ("chr1:540340")
+      const [chr1, chrPos1, pos1] = this.parsePosition(parts[0]);
+
+      range = [pos1 - 8000000, pos1 + 8000000];
+    }
+
 
     if (range[0] > range[1]) { return [range[1], range[0]]; }
 
@@ -228,8 +225,10 @@ class SearchField {
   }
 
   searchPosition(text) {
-    let range1 = null,
-      range2 = null;
+    let range1 = null;
+
+
+    let range2 = null;
     text = text.trim(); // remove whitespace from the ends of the string
 
     // extract offset

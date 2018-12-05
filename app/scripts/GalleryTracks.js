@@ -108,7 +108,7 @@ class GalleryTracks extends React.Component {
                 onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
                 onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
                 uid={track.uid || index}
-              />
+                />
               )
             }
           </div>

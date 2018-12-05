@@ -24,8 +24,8 @@ class Autocomplete extends React.Component {
         if (!itemsLength) return;
         const { highlightedIndex } = this.state;
         const index = (
-          highlightedIndex === null ||
-          highlightedIndex === itemsLength - 1
+          highlightedIndex === null
+          || highlightedIndex === itemsLength - 1
         ) ? 0 : highlightedIndex + 1;
         this._performAutoCompleteOnKeyUp = true;
         this.setState({
@@ -40,8 +40,8 @@ class Autocomplete extends React.Component {
         if (!itemsLength) return;
         const { highlightedIndex } = this.state;
         const index = (
-          highlightedIndex === 0 ||
-          highlightedIndex === null
+          highlightedIndex === 0
+          || highlightedIndex === null
         ) ? itemsLength - 1 : highlightedIndex - 1;
         this._performAutoCompleteOnKeyUp = true;
         this.setState({
@@ -106,11 +106,11 @@ class Autocomplete extends React.Component {
     this._performAutoCompleteOnUpdate = true;
     // If `items` has changed we want to reset `highlightedIndex`
     // since it probably no longer refers to a relevant item
-    if (this.props.items !== nextProps.items ||
+    if (this.props.items !== nextProps.items
       // The entries in `items` may have been changed even though the
       // object reference remains the same, double check by seeing
       // if `highlightedIndex` points to an existing item
-      this.state.highlightedIndex >= nextProps.items.length) {
+      || this.state.highlightedIndex >= nextProps.items.length) {
       this.setState({ highlightedIndex: null });
     }
   }
@@ -188,8 +188,8 @@ class Autocomplete extends React.Component {
     const { highlightedIndex } = this.state;
     const items = this.getFilteredItems();
     if (items.length === 0) { return; }
-    const matchedItem = highlightedIndex !== null ?
-      items[highlightedIndex] : items[0];
+    const matchedItem = highlightedIndex !== null
+      ? items[highlightedIndex] : items[0];
     const itemValue = this.props.getItemValue(matchedItem);
     const itemValueDoesMatch = (itemValue.toLowerCase().indexOf(
       this.props.value.toLowerCase(),
@@ -279,8 +279,8 @@ class Autocomplete extends React.Component {
 
   isInputFocused() {
     return (
-      this.inputEl.ownerDocument &&
-      (this.inputEl === this.inputEl.ownerDocument.activeElement)
+      this.inputEl.ownerDocument
+      && (this.inputEl === this.inputEl.ownerDocument.activeElement)
     );
   }
 
@@ -314,6 +314,7 @@ class Autocomplete extends React.Component {
       >
         <input
           {...inputProps}
+          ref={el => this.inputEl = el}
           aria-autocomplete="list"
           autoComplete="off"
           onBlur={this.composeEventHandlers(
@@ -327,8 +328,7 @@ class Autocomplete extends React.Component {
           )}
           onFocus={this.composeEventHandlers(
             this.handleInputFocus.bind(this),
-            inputProps.onFocus && inputProps.onFocus.bind(this),
-          )}
+            inputProps.onFocus && inp
           onKeyDown={this.composeEventHandlers(
             this.handleKeyDown.bind(this),
             inputProps.onKeyDown && inputProps.onKeyDown.bind(this),

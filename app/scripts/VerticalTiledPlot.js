@@ -55,7 +55,7 @@ class VerticalTiledPlot extends React.Component {
       }
       this.rangeSelectionTriggeredEnd = false;
       return this.state !== nextState;
-    } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
+    } if (this.props.rangeSelection !== nextProps.rangeSelection) {
       const accessor = this.props.is1dRangeSelection ? 0 : 1;
 
       this.moveBrush(
@@ -107,9 +107,9 @@ class VerticalTiledPlot extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !this.sourceEvent ||
-      !this.props.onRangeSelection ||
-      rangeSelectionMoved
+      !this.sourceEvent
+      || !this.props.onRangeSelection
+      || rangeSelectionMoved
     ) return;
 
     this.rangeSelectionTriggered = true;
@@ -188,14 +188,15 @@ class VerticalTiledPlot extends React.Component {
       .map(track => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
 
-    const rangeSelectorClass = this.props.isRangeSelectionActive ?
-      'stylesTrack.track-range-selection-active' :
-      'stylesTrack.track-range-selection';
+    const rangeSelectorClass = this.props.isRangeSelectionActive
+      ? 'stylesTrack.track-range-selection-active'
+      : 'stylesTrack.track-range-selection';
 
     return (
       <div styleName="styles.vertical-tiled-plot">
-        {isBrushable &&
-          <svg
+        {isBrushable
+          && (
+<svg
             ref={(el) => { this.brushEl = select(el); }}
             style={{
               height: this.props.height,
@@ -203,7 +204,8 @@ class VerticalTiledPlot extends React.Component {
             }}
             styleName={rangeSelectorClass}
             xmlns="http://www.w3.org/2000/svg"
-          />
+/>
+          )
         }
         <ListWrapper
           axis="x"

@@ -43,8 +43,8 @@ const SortableList = SortableContainer(
         editable,
         handleResizeTrack,
         resizeHandles,
-      }),
-    );
+      }
+    ), );
 
     return (
       <div

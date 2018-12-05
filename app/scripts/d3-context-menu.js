@@ -13,8 +13,10 @@ function contextMenu(menu, opts) {
   let initialPos = null;
   let parentStart = null;
 
-  let openCallback,
-    closeCallback;
+  let openCallback;
+
+
+  let closeCallback;
 
   if (typeof opts === 'function') {
     openCallback = opts;
@@ -172,10 +174,12 @@ function contextMenu(menu, opts) {
 
           let childrenContextMenu = null;
           if (orientation == 'left') {
-            childrenContextMenu = contextMenu(d.children, { rootElement: currentThis,
+            childrenContextMenu = contextMenu(d.children, {
+              rootElement: currentThis,
               pos: [boundingRect.left + window.pageXOffset,
                 boundingRect.top - 2 + window.pageYOffset],
-              orientation: 'left' });
+              orientation: 'left'
+            });
           } else {
             childrenContextMenu = contextMenu(d.children,
               {
@@ -183,7 +187,8 @@ function contextMenu(menu, opts) {
                   boundingRect.top - 2 + window.pageYOffset],
                 rootElement: currentThis,
                 parentStart: [boundingRect.left + window.pageXOffset,
-                  boundingRect.top - 2 + window.pageYOffset] });
+                  boundingRect.top - 2 + window.pageYOffset]
+              });
           }
 
           d.childUid = childrenContextMenu.apply(this, [data, i, true,

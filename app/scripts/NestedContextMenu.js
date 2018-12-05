@@ -60,12 +60,14 @@ class NestedContextMenu extends ContextMenuContainer {
           onMouseLeave={this.handleMouseLeave}
         >
           {menuItem.name}
-          {menuItem.children &&
-            <svg
+          {menuItem.children
+            && (
+<svg
               styleName="play-icon"
-            >
+>
               <use xlinkHref="#play" />
-            </svg>
+</svg>
+            )
           }
         </ContextMenuItem>,
       );

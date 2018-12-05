@@ -323,7 +323,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
       this.allTexts.push({
         importance: text.hashValue,
-        text: text,
+        text,
         caption: null
       });
     }

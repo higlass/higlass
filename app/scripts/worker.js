@@ -147,33 +147,35 @@ function float32(h) {
    * values should be encoded as float32
    */
 
-  let h_exp, h_sig;
-  let f_sgn, f_exp, f_sig;
+  let h_exp; let
+    h_sig;
+  let f_sgn; let f_exp; let
+    f_sig;
 
-  h_exp = (h&0x7c00);
-  f_sgn = (h&0x8000) << 16;
+  h_exp = (h & 0x7c00);
+  f_sgn = (h & 0x8000) << 16;
   switch (h_exp) {
-      case 0x0000: /* 0 or subnormal */
-          h_sig = (h&0x03ff);
-          /* Signed zero */
-          if (h_sig == 0) {
-              return f_sgn;
-          }
-          /* Subnormal */
-          h_sig <<= 1;
-          while ((h_sig&0x0400) == 0) {
-              h_sig <<= 1;
-              h_exp++;
-          }
-          f_exp = ((127 - 15 - h_exp)) << 23;
-          f_sig = ((h_sig&0x03ff)) << 13;
-          return f_sgn + f_exp + f_sig;
-      case 0x7c00: /* inf or NaN */
-          /* All-ones exponent and a copy of the significand */
-          return f_sgn + 0x7f800000 + (((h&0x03ff)) << 13);
-      default: /* normalized */
-          /* Just need to adjust the exponent and shift */
-          return f_sgn + (((h&0x7fff) + 0x1c000) << 13);
+    case 0x0000: /* 0 or subnormal */
+      h_sig = (h & 0x03ff);
+      /* Signed zero */
+      if (h_sig == 0) {
+        return f_sgn;
+      }
+      /* Subnormal */
+      h_sig <<= 1;
+      while ((h_sig & 0x0400) == 0) {
+        h_sig <<= 1;
+        h_exp++;
+      }
+      f_exp = ((127 - 15 - h_exp)) << 23;
+      f_sig = ((h_sig & 0x03ff)) << 13;
+      return f_sgn + f_exp + f_sig;
+    case 0x7c00: /* inf or NaN */
+      /* All-ones exponent and a copy of the significand */
+      return f_sgn + 0x7f800000 + (((h & 0x03ff)) << 13);
+    default: /* normalized */
+      /* Just need to adjust the exponent and shift */
+      return f_sgn + (((h & 0x7fff) + 0x1c000) << 13);
   }
 }
 
@@ -207,9 +209,9 @@ function _uint16ArrayToFloat32Array(uint16array) {
  * data that can be used by higlass
  */
 export function tileResponseToData(data, server, theseTileIds) {
-  if (!data)  {
+  if (!data) {
     // probably an error
-    data = {}
+    data = {};
   }
 
   for (const thisId of theseTileIds) {
@@ -266,22 +268,17 @@ export function tileResponseToData(data, server, theseTileIds) {
 
 export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
   const headers = {
-        'content-type': 'application/json'
-      };
+    'content-type': 'application/json'
+  };
 
-  if (authHeader)
-    headers['Authorization'] = authHeader;
+  if (authHeader) headers.Authorization = authHeader;
 
   fetch(outUrl, {
-      credentials: 'same-origin',
-      headers: headers
-    }
-    )
-    .then(response => {
-      return response.json()
-    }
-    )
-    .then(data =>  {
+    credentials: 'same-origin',
+    headers
+  })
+    .then(response => response.json())
+    .then((data) => {
       data = tileResponseToData(data, server, theseTileIds);
 
       done(data);
@@ -291,10 +288,9 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
         .filter(x => x.dense)
         .map(x => x.dense);
       */
-      //.map(x => x.dense.buffer);
+      // .map(x => x.dense.buffer);
 
-      //done.transfer(data, denses);
+      // done.transfer(data, denses);
     })
-  .catch(err =>
-    console.log('err:', err));
+    .catch(err => console.log('err:', err));
 }

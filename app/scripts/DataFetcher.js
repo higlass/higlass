@@ -62,7 +62,7 @@ export default class DataFetcher {
             finished(tilesetInfo[this.dataConfig.tilesetUid]);
           },
           (error) => {
-            finished({'error': error});
+            finished({ error });
           },
           this.pubSub
         );
@@ -123,17 +123,17 @@ export default class DataFetcher {
      */
     if (this.dataConfig.type == 'horizontal-section') {
       this.fetchHorizontalSection(receivedTiles, tileIds);
-    }  else if (this.dataConfig.type == 'vertical-section') {
-      this.fetchHorizontalSection(receivedTiles, tileIds, vertical=true);
+    } else if (this.dataConfig.type == 'vertical-section') {
+      this.fetchHorizontalSection(receivedTiles, tileIds, vertical = true);
     } else if (!this.dataConfig.children) {
       // no children, just return the fetched tiles as is
-      const promise = new Promise(resolve => {
+      const promise = new Promise((resolve) => {
         tileProxy.fetchTilesDebounced({
           id: slugid.nice(),
           server: this.dataConfig.server,
           done: resolve,
           ids: tileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
-        }, this.pubSub, true)
+        }, this.pubSub, true);
       });
       promise.then((returnedTiles) => {
         const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
@@ -197,7 +197,7 @@ export default class DataFetcher {
     const result = new Float32Array(numeratorData.length);
 
     for (let i = 0; i < result.length; i++) {
-      if (denominatorData[i] === 0.) result[i] = NaN;
+      if (denominatorData[i] === 0.0) result[i] = NaN;
       else result[i] = numeratorData[i] / denominatorData[i];
     }
 
@@ -226,16 +226,15 @@ export default class DataFetcher {
   extractDataSlice(inputData, arrayShape, sliceIndex, axis) {
     if (!axis) {
       return inputData.slice(arrayShape[1] * sliceIndex, arrayShape[1] * (sliceIndex + 1));
-    } else {
-      const returnArray = new Array(arrayShape[1]);
-      for (let i = sliceIndex; i < inputData.length; i += arrayShape[0]) {
-        returnArray[Math.floor(i / arrayShape[0])] = inputData[i]
-      }
-      return returnArray;
     }
+    const returnArray = new Array(arrayShape[1]);
+    for (let i = sliceIndex; i < inputData.length; i += arrayShape[0]) {
+      returnArray[Math.floor(i / arrayShape[0])] = inputData[i];
+    }
+    return returnArray;
   }
 
-  fetchHorizontalSection(receivedTiles, tileIds, vertical=false) {
+  fetchHorizontalSection(receivedTiles, tileIds, vertical = false) {
     // We want to take a horizontal section of a 2D dataset
     // that means that a 1D track is requesting data from a 2D source
     // because the 1D track only requests 1D tiles, we need to calculate
@@ -243,11 +242,11 @@ export default class DataFetcher {
     const newTileIds = [];
     const mirrored = [];
 
-    for (let tileId of tileIds) {
+    for (const tileId of tileIds) {
       const parts = tileId.split('.');
       const zoomLevel = +parts[0];
       const xTilePos = +parts[1];
-      let otherPos = null;
+      const otherPos = null;
 
       // this is a dummy scale that we'll use to fetch tile positions
       // along the y-axis of the 2D dataset (we already have the x positions
@@ -259,7 +258,7 @@ export default class DataFetcher {
       // this needs to be consolidated into one function eventually
       let yTiles = [];
 
-      if (this.dataConfig.tilesetInfo && this.dataConfig.tilesetInfo.resolutions)  {
+      if (this.dataConfig.tilesetInfo && this.dataConfig.tilesetInfo.resolutions) {
         const sortedResolutions = this.dataConfig.tilesetInfo.resolutions
           .map(x => +x)
           .sort((a, b) => b - a);
@@ -269,7 +268,7 @@ export default class DataFetcher {
           scale,
           this.dataConfig.tilesetInfo.min_pos[vertical ? 1 : 0],
           this.dataConfig.tilesetInfo.max_pos[vertical ? 1 : 0]
-        )
+        );
       } else {
         yTiles = tileProxy.calculateTiles(zoomLevel,
           scale,
@@ -278,27 +277,24 @@ export default class DataFetcher {
           this.dataConfig.tilesetInfo.max_zoom,
           this.dataConfig.tilesetInfo.max_width);
       }
-      const sortedPosition = [xTilePos, yTiles[0]].sort((a,b) => a - b);
+      const sortedPosition = [xTilePos, yTiles[0]].sort((a, b) => a - b);
 
       // make note of whether we reversed the x and y tile positions
-      if (sortedPosition[0] == xTilePos)
-        mirrored.push(false);
-      else
-        mirrored.push(true);
+      if (sortedPosition[0] == xTilePos) mirrored.push(false);
+      else mirrored.push(true);
 
-      const newTileId = `${zoomLevel}.${sortedPosition[0]}.${sortedPosition[1]}`
+      const newTileId = `${zoomLevel}.${sortedPosition[0]}.${sortedPosition[1]}`;
       newTileIds.push(newTileId);
       // we may need to add something about the data transform
     }
 
     // actually fetch the new tileIds
-    const promise = new Promise(resolve =>
-      tileProxy.fetchTilesDebounced({
-        id: slugid.nice(),
-        server: this.dataConfig.server,
-        done: resolve,
-        ids: newTileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
-      }, this.pubSub));
+    const promise = new Promise(resolve => tileProxy.fetchTilesDebounced({
+      id: slugid.nice(),
+      server: this.dataConfig.server,
+      done: resolve,
+      ids: newTileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
+    }, this.pubSub));
     promise.then((returnedTiles) => {
       // we've received some new tiles, but they're 2D
       // we need to extract the row corresponding to the data we need
@@ -325,8 +321,8 @@ export default class DataFetcher {
 
         if (xTilePos == yTilePos) {
           // this is tile along the diagonal that we have to mirror
-          dataSlice = this.extractDataSlice(tile.dense, [256,256], sliceIndex);
-          const mirroredDataSlice = this.extractDataSlice(tile.dense, [256,256], sliceIndex, 1);
+          dataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex);
+          const mirroredDataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex, 1);
           for (let j = 0; j < dataSlice.length; j++) {
             dataSlice[j] += mirroredDataSlice[j];
           }
@@ -334,9 +330,9 @@ export default class DataFetcher {
           // this tile is in the upper right triangle but the data is only available for
           // the lower left so we have to mirror it
           if (mirrored[i]) {
-            dataSlice = this.extractDataSlice(tile.dense, [256,256], sliceIndex, 1);
+            dataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex, 1);
           } else {
-            dataSlice = this.extractDataSlice(tile.dense, [256,256], sliceIndex);
+            dataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex);
           }
         }
 
@@ -353,7 +349,7 @@ export default class DataFetcher {
           server: tile.server,
           tilePos: mirrored[i] ? [yTilePos] : [xTilePos],
           tilePositionId: tileIds[i],
-          tilesetUid: tilesetUid,
+          tilesetUid,
           zoomLevel: tile.zoomLevel,
         };
 

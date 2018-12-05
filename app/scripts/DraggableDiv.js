@@ -311,8 +311,8 @@ class DraggableDiv extends React.Component {
         <div
           key={x}
           ref={(c) => { this[`${x}Handle`] = c; }}
-          styleName={`${x}-draggable-handle`}
           style={styles[x]}
+          styleName={`${x}-draggable-handle`}
           title="Resize track"
         />
       ));

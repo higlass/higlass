@@ -16,7 +16,7 @@ export const getAllTracksAndSubtracks = (tracks) => {
   let series = [];
 
   // check if this is a combined track (has contents)
-  for (let track of tracks) {
+  for (const track of tracks) {
     if (track.contents) {
       series = series.concat(track.contents);
     } else {
@@ -53,8 +53,7 @@ export const getSeriesItems = (
 
   if (window.higlassTracksByType) {
     Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
-      TRACKS_INFO_BY_TYPE[pluginTrackType] =
-        window.higlassTracksByType[pluginTrackType].config;
+      TRACKS_INFO_BY_TYPE[pluginTrackType] = window.higlassTracksByType[pluginTrackType].config;
     });
   }
 
@@ -66,10 +65,10 @@ export const getSeriesItems = (
     const imgTag = thumbnail ? (
       <div
         dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
-        styleName='context-menu-icon'
+        styleName="context-menu-icon"
       />
     ) : (
-      <div styleName='context-menu-icon'><svg /></div>
+      <div styleName="context-menu-icon"><svg /></div>
     );
 
     return (
@@ -85,12 +84,13 @@ export const getSeriesItems = (
           styleName="context-menu-span"
         >
           {(x.name && x.name.length) ? x.name : x.uid}
-          { onItemMouseEnter && onItemMouseLeave ?
-            <svg styleName="play-icon" >
+          { onItemMouseEnter && onItemMouseLeave
+            ? (
+<svg styleName="play-icon">
               <use xlinkHref="#play" />
-            </svg>
-            :
-            null
+</svg>
+            )
+            : null
           }
         </span>
       </ContextMenuItem>

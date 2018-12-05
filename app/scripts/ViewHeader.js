@@ -119,20 +119,18 @@ class ViewHeader extends React.Component {
           onMenuClosed={() => this.setState({ configMenuUid: null })}
         >
           <ConfigViewMenu
-            orientation="left"
-            position={this.state.configMenuPosition}
-
-            onExportSVG={() => {
+            onClearView = {() => {
               this.setState({ configMenuUid: null }); // hide the menu
-              this.props.onExportSVG();
+              this.props.onClearView();
             }}
             onExportPNG={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onExportPNG();
             }}
-            onClearView = {() => {
+
+            onExportSVG={() => {
               this.setState({ configMenuUid: null }); // hide the menu
-              this.props.onClearView();
+              this.props.onExportSVG();
             }}
             onExportViewAsJSON={() => {
               this.setState({ configMenuUid: null }); // hide the menu
@@ -141,23 +139,21 @@ class ViewHeader extends React.Component {
             onExportViewAsLink={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onExportViewsAsLink();
-            }}
-            onLockLocation={() => {
+            }}onLockLocation={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onLockLocation(this.state.configMenuUid);
-            }}
             onLockZoom={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onLockZoom(this.state.configMenuUid);
-            }}
-            onLockZoomAndLocation={() => {
+            }}iewsAsonLockZoomAndLocation={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onLockZoomAndLocation(this.state.configMenuUid);
-            }}
-            onProjectViewport={() => {
+            }onOptionsChanged={(newOptions) => {
+              this.props.onViewOptionsChanged(newOptions);
               this.setState({ configMenuUid: null }); // hide the menu
-              this.props.onProjectViewport(this.state.configMenuUid);
-            }}
+            }}oonProjectViewport={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onProjectVi
             onOptionsChanged={(newOptions) => {
               this.props.onViewOptionsChanged(newOptions);
               this.setState({ configMenuUid: null }); // hide the menu
@@ -212,11 +208,11 @@ class ViewHeader extends React.Component {
       },
     );
 
-    let className = this.state.isFocused ?
-      'multitrack-header-focus' : 'multitrack-header';
+    let className = this.state.isFocused
+      ? 'multitrack-header-focus' : 'multitrack-header';
 
-    const classNameIcon = this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR ?
-      'multitrack-header-icon-squeazed' : 'multitrack-header-icon';
+    const classNameIcon = this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR
+      ? 'multitrack-header-icon-squeazed' : 'multitrack-header-icon';
 
     if (getDarkTheme()) {
       className += ' multitrack-header-dark';
@@ -236,18 +232,19 @@ class ViewHeader extends React.Component {
               <use xlinkHref="#select" />
             </svg>
           )}
-          <div 
+          <div
             styleName="multitrack-header-grabber"
             title="Drag to move the view"
           >
 
-            <div /><div /><div />
+            <div />
+<div /><div />
           </div>
-          {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR &&
-            <div styleName="multitrack-header-search">
+          {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR
+            && <div styleName="multitrack-header-search">
               {
-                this.props.isGenomePositionSearchBoxVisible &&
-                GenomePositionSearchBox
+                this.props.isGenomePositionSearchBoxVisible
+                && GenomePositionSearchBox
               }
             </div>
           }
