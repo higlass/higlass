@@ -360,6 +360,11 @@ export const OPTIONS_INFO = {
     },
   },
 
+  axisMargin: {
+    name: 'Axis Margin',
+    inlineOptions: sizesInPx([0, 10, 20, 30, 40, 50, 100, 200, 400], 'px'),
+  },
+
   colorbarPosition: {
     name: 'Colorbar Position',
     inlineOptions: {
