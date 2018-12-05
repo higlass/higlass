@@ -518,6 +518,10 @@ const createApi = function api(context, pubSub) {
             apiPubSub.unsubscribe('click', callback);
             break;
 
+          case 'cursorLocation':
+            apiPubSub.unsubscribe('cursorLocation', callback);
+            break;
+
           case 'location':
             self.offLocationChange(viewId, listenerId);
             break;
@@ -562,6 +566,23 @@ const createApi = function api(context, pubSub) {
        *       event: { ... },
        *       payload: [230000000, 561000000]
        *     }
+       *
+       * ``cursorLocation:`` Returns an object describing the location under the cursor
+       *
+       * .. code-block:: javascript
+       *
+       *    {
+       *        absX: 100,
+       *        absY: 200,
+       *        relX: 50,
+       *        relY: 150,
+       *        relTrackX: 50,
+       *        relTrackY: 100,
+       *        dataX: 10000,
+       *        dataY: 123456,
+       *        isFrom2dTrack: false,
+       *        isFromVerticalTrack: false,
+       *    }
        *
        * ``location:`` Returns an object describing the visible region
        *
@@ -647,6 +668,9 @@ const createApi = function api(context, pubSub) {
         switch (event) {
           case 'click':
             return apiPubSub.subscribe('click', callback);
+
+          case 'cursorLocation':
+            return apiPubSub.subscribe('cursorLocation', callback);
 
           case 'location':
             // returns a set of scales (xScale, yScale) on every zoom event
