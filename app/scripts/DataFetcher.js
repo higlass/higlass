@@ -121,9 +121,9 @@ export default class DataFetcher {
      *  tileIds: []
      *    The tile ids to fetch
      */
-    if (this.dataConfig.type == 'horizontal-section') {
+    if (this.dataConfig.type === 'horizontal-section') {
       this.fetchHorizontalSection(receivedTiles, tileIds);
-    } else if (this.dataConfig.type == 'vertical-section') {
+    } else if (this.dataConfig.type === 'vertical-section') {
       this.fetchHorizontalSection(receivedTiles, tileIds, vertical = true);
     } else if (!this.dataConfig.children) {
       // no children, just return the fetched tiles as is
@@ -280,7 +280,7 @@ export default class DataFetcher {
       const sortedPosition = [xTilePos, yTiles[0]].sort((a, b) => a - b);
 
       // make note of whether we reversed the x and y tile positions
-      if (sortedPosition[0] == xTilePos) mirrored.push(false);
+      if (sortedPosition[0] === xTilePos) mirrored.push(false);
       else mirrored.push(true);
 
       const newTileId = `${zoomLevel}.${sortedPosition[0]}.${sortedPosition[1]}`;
@@ -319,7 +319,7 @@ export default class DataFetcher {
 
         let dataSlice = null;
 
-        if (xTilePos == yTilePos) {
+        if (xTilePos === yTilePos) {
           // this is tile along the diagonal that we have to mirror
           dataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex);
           const mirroredDataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex, 1);

@@ -358,7 +358,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
         {
         /*
-          this.props.series.type == 'heatmap' ?
+          this.props.series.type === 'heatmap' ?
           <ContextMenuItem
             onClick={() => {
               this.props.onDivideSeries(this.props.series.uid);

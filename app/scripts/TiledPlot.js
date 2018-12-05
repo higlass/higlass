@@ -514,7 +514,7 @@ class TiledPlot extends React.Component {
           });
         }}
         onTracksChosen={newTrack => this.handleDivisorChosen(series, newTrack)}
-        show={this.state.addDivisorDialog != null}
+        show={this.state.addDivisorDialog !== null}
         trackSourceServers={this.props.trackSourceServers}
       />
     );
@@ -978,7 +978,7 @@ class TiledPlot extends React.Component {
               const orientation = TRACKS_INFO_BY_TYPE[includedTrack.type].orientation;
 
               const positionedTrack = positionedTracks.filter(
-                track => track.track.uid == trackUuid
+                track => track.track.uid === trackUuid
 );
 
               if (!positionedTrack.length)
@@ -2052,7 +2052,7 @@ class TiledPlot extends React.Component {
       // We want to choose a track and call a function. To choose the track, we display
       // an overlay on top of each track
       overlays = positionedTracks
-        .filter(pTrack => pTrack.track.position != 'whole')
+        .filter(pTrack => pTrack.track.position !== 'whole')
         .map((pTrack) => {
           let background = 'transparent';
           let border = 'none';
@@ -2136,7 +2136,7 @@ class TiledPlot extends React.Component {
           onTracksChosen={this.handleTracksAdded.bind(this)}
           position={position}
           ref={(c) => { this.addTrackModal = c; }}
-          show={this.state.addTrackPosition != null || this.props.addTrackPosition != null}
+          show={this.state.addTrackPosition !== null || this.props.addTrackPosition !== null}
           trackSourceServers={this.props.trackSourceServers}
         />
       );

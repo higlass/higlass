@@ -72,7 +72,7 @@ export const isApplicationOf = (proto, mixin) => proto.hasOwnProperty(_appliedMi
  * chain
  */
 export const hasMixin = (o, mixin) => {
-  while (o != null) {
+  while (o !== null) {
     if (isApplicationOf(o, mixin)) return true;
     o = Object.getPrototypeOf(o);
   }

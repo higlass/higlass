@@ -172,7 +172,7 @@ class GenomePositionSearchBox extends React.Component {
       return;
     }
 
-    if (this.changedPart != null) {
+    if (this.changedPart !== null) {
       // if something has changed in the input text
       this.setState({
         loading: true
@@ -503,7 +503,7 @@ class GenomePositionSearchBox extends React.Component {
 
       const [chr, pos, retPos] = this.searchField.parsePosition(valueParts[i]);
 
-      if (retPos == null || isNaN(retPos)) {
+      if (retPos === null || isNaN(retPos)) {
         // not a chromsome position, let's see if it's a gene name
         const url = `${this.state.autocompleteServer}/suggest/?d=${this.state.autocompleteId}&ac=${valueParts[i].toLowerCase()}`;
         requests.push(tileProxy.json(url, toVoid, this.props.pubSub));
@@ -539,7 +539,7 @@ class GenomePositionSearchBox extends React.Component {
     this.replaceGenesWithPositions(() => {
       const searchFieldValue = this.positionText;
 
-      if (this.searchField != null) {
+      if (this.searchField !== null) {
         let [range1, range2] = this.searchField.searchPosition(searchFieldValue);
 
         if (!range1) {

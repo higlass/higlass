@@ -158,12 +158,12 @@ function float32(h) {
     case 0x0000: /* 0 or subnormal */
       hSig = (h & 0x03ff);
       /* Signed zero */
-      if (hSig == 0) {
+      if (hSig === 0) {
         return fSgn;
       }
       /* Subnormal */
       hSig <<= 1;
-      while ((hSig & 0x0400) == 0) {
+      while ((hSig & 0x0400) === 0) {
         hSig <<= 1;
         hExp++;
       }
@@ -234,7 +234,7 @@ export function tileResponseToData(data, server, theseTileIds) {
       let a;
 
 
-      if (data[key].dtype == 'float16') {
+      if (data[key].dtype === 'float16') {
         // data is encoded as float16s
         /* comment out until next empty line for 32 bit arrays */
         const uint16Array = new Uint16Array(arrayBuffer);
@@ -251,8 +251,8 @@ export function tileResponseToData(data, server, theseTileIds) {
       data[key].maxNonZero = maxNonZero(a);
 
       /*
-                      if (data[key]['minNonZero'] == Number.MAX_SAFE_INTEGER &&
-                          data[key]['maxNonZero'] == Number.MIN_SAFE_INTEGER) {
+                      if (data[key]['minNonZero'] === Number.MAX_SAFE_INTEGER &&
+                          data[key]['maxNonZero'] === Number.MIN_SAFE_INTEGER) {
                           // if there's no values except 0,
                           // then do use it as the min value
 

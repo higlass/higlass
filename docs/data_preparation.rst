@@ -338,7 +338,7 @@ Processing
     # output -> geneid \t refseq_id
 
     cat ~/data/genbank-data/${ASSEMBLY}/gene2refseq \
-        | awk -F $'\t' '{ split($4,a,"."); if (a[1] != "-") print $2 "\t" a[1];}' \
+        | awk -F $'\t' '{ split($4,a,"."); if (a[1] !== "-") print $2 "\t" a[1];}' \
         | sort \
         | uniq  \
         > ~/data/genbank-data/${ASSEMBLY}/geneid_refseqid

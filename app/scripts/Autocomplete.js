@@ -54,7 +54,7 @@ class Autocomplete extends React.Component {
         if (this.state.isOpen === false) {
           // menu is closed so there is no selection to accept -> do nothing
 
-        } else if (this.state.highlightedIndex == null) {
+        } else if (this.state.highlightedIndex === null) {
           // input has focus but no menu item is selected + enter is hit -> close the menu, highlight whatever's in input
           this.setState({
             isOpen: false,

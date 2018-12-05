@@ -10,7 +10,7 @@ class SearchField {
   }
 
   scalesToPositionText(xScale, yScale, twoD = false) {
-    if (this.chromInfo == null) { return ''; } // chromosome info hasn't been loaded yet
+    if (this.chromInfo === null) { return ''; } // chromosome info hasn't been loaded yet
 
     if (!xScale || !yScale) { return ''; }
 
@@ -23,7 +23,7 @@ class SearchField {
     let positionString = null;
     const stringFormat = format(',d');
 
-    if (x1[0] != x2[0]) {
+    if (x1[0] !== x2[0]) {
       // different chromosomes
 
       positionString = `${x1[0]}:${stringFormat(Math.floor(x1[1]))}-${x2[0]}:${stringFormat(Math.ceil(x2[1]))}`;
@@ -34,7 +34,7 @@ class SearchField {
     }
 
     if (twoD) {
-      if (y1[0] != y2[0]) {
+      if (y1[0] !== y2[0]) {
         // different chromosomes
         positionString += ` & ${y1[0]}:${stringFormat(Math.floor(y1[1]))}-${y2[0]}:${stringFormat(Math.ceil(y2[1]))}`;
       } else {
@@ -73,7 +73,7 @@ class SearchField {
       chr = positionParts[0];
       pos = 0;
 
-      if (prevChr != null) {
+      if (prevChr !== null) {
         // this chromosome is part of a range so we actually
         // want to search to the end of it
         pos = +this.chromInfo.chromLengths[chr];
@@ -91,9 +91,9 @@ class SearchField {
     if (isNaN(pos)) { retPos = null; }
 
     // queries like chr1:1000-2000
-    if (chr == null) { chr = prevChr; }
+    if (chr === null) { chr = prevChr; }
 
-    if (chr == null) {
+    if (chr === null) {
       // no chromosome provided, so this is just a number
       retPos = pos;
     } else if (chr in this.chromInfo.chrPositions) {
@@ -134,7 +134,7 @@ class SearchField {
     // tp53 to adh1b
     // tp53 (nm_000546) to adh1b
 
-    if (term.length == 0) { return null; }
+    if (term.length === 0) { return null; }
 
     // shitty ass regex to deal with negative positions
     // (which aren't even valid genomic coordinates)
@@ -148,7 +148,7 @@ class SearchField {
     let range = null;
 
 
-    if (parts[0].indexOf('-') == 0) {
+    if (parts[0].indexOf('-') === 0) {
       parts[0] = parts[0].slice(3, parts[0].length);
     }
 
@@ -162,7 +162,7 @@ class SearchField {
       [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1]);
       [chr2, chrPos2, genomePos2] = this.parsePosition(parts[0], chr1);
 
-      if (chr1 == null && chr2 != null) {
+      if (chr1 === null && chr2 !== null) {
         // somembody entered a string like chr17:1000-2000
         // and when we try to search the rever, the first chromosome
         // is null
@@ -212,9 +212,9 @@ class SearchField {
     const parts = offsetText.split(':');
     // console.log('parseOffset parts:', parts);
 
-    if (parts.length == 0) { return [[0, 0], [0, 0]]; }
+    if (parts.length === 0) { return [[0, 0], [0, 0]]; }
 
-    if (parts.length == 1) {
+    if (parts.length === 1) {
       const sparts = parts[0].split(',');
       return [[+sparts[0], +sparts[1]], [0, 0]];
     }
@@ -258,7 +258,7 @@ class SearchField {
       range1 = this.getSearchRange(parts[0]);
     }
 
-    if (range1 != null && range2 != null) {
+    if (range1 !== null && range2 !== null) {
       [range1, range2] = this.matchRangesToLarger(range1, range2);
     }
 

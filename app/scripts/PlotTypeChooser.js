@@ -59,7 +59,7 @@ class PlotTypeChooser extends React.Component {
         .sort((a, b) => a.type < b.type)
         .map((x) => {
           const thumbnail = trackTypeToInfo[x.type].thumbnail;
-          const plotTypeClass = this.state.selectedPlotType.type == x.type ? 'plot-type-selected' : 'unselected';
+          const plotTypeClass = this.state.selectedPlotType.type === x.type ? 'plot-type-selected' : 'unselected';
           const imgTag = trackTypeToInfo[x.type].thumbnail
             ? (
               <div

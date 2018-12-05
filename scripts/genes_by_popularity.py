@@ -6,7 +6,7 @@ from pyspark.sql import *
 sqlContext = SQLContext(sc)
 # get the gene_id -> pubmed mapping
 gene2pubmed = (sc.textFile(op.join(base_dir, "data/gene2pubmed"))
-                 .filter(lambda x: x[0] != '#')
+                 .filter(lambda x: x[0] !== '#')
                  .map(lambda x: x.split('\t'))
                  .map(lambda p: {'taxid': int(p[0]), 'geneid': int(p[1]), 'pmid': int(p[2]), 'count': 1}))
                  
@@ -14,7 +14,7 @@ gene2pubmed = (sc.textFile(op.join(base_dir, "data/gene2pubmed"))
 #schemaGene2Pubmed.registerTempTable("gene2pubmed")
 
 gene2refseq = (sc.textFile(op.join(base_dir, "data/gene2refseq"))
-                 .filter(lambda x: x[0] != '#')
+                 .filter(lambda x: x[0] !== '#')
                  .map(lambda x: x.split('\t'))
                  .map(lambda p:   { 'taxid': int(p[0]), 
                                     'geneid' :int(p[1]), 
@@ -25,7 +25,7 @@ gene2refseq = (sc.textFile(op.join(base_dir, "data/gene2refseq"))
                                     'assembly': p[12]}))
                                     
 gene_info = (sc.textFile(op.join(base_dir, "data/gene_info"))
-             .filter(lambda x: x[0] != '#')
+             .filter(lambda x: x[0] !== '#')
              .map(lambda x: x.split('\t'))
              .map(lambda x: { 'taxid': int(x[0]),
                               'geneid': int(x[1]),
@@ -140,7 +140,7 @@ gene_starts = sqlContext.sql('select gene2refseq.geneid, start_pos from gene2pub
 result.take(1)
 
 gene_info = (sc.textFile(op.join(base_dir, "data/gene_info"))
-               .filter(lambda x: x[0] != '#')
+               .filter(lambda x: x[0] !== '#')
                .map(lambda x: x.split('\t'))
                .map(lambda p: Row(tax_id=int(p[0]),
                                   GeneID=int(p[1]),
