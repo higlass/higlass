@@ -147,46 +147,46 @@ function float32(h) {
    * values should be encoded as float32
    */
 
-  let h_exp; let
-    h_sig;
-  let f_sgn; let f_exp; let
-    f_sig;
+  let hExp; let
+    hSig;
+  let fSgn; let fExp; let
+    fSig;
 
-  h_exp = (h & 0x7c00);
-  f_sgn = (h & 0x8000) << 16;
-  switch (h_exp) {
+  hExp = (h & 0x7c00);
+  fSgn = (h & 0x8000) << 16;
+  switch (hExp) {
     case 0x0000: /* 0 or subnormal */
-      h_sig = (h & 0x03ff);
+      hSig = (h & 0x03ff);
       /* Signed zero */
-      if (h_sig == 0) {
-        return f_sgn;
+      if (hSig == 0) {
+        return fSgn;
       }
       /* Subnormal */
-      h_sig <<= 1;
-      while ((h_sig & 0x0400) == 0) {
-        h_sig <<= 1;
-        h_exp++;
+      hSig <<= 1;
+      while ((hSig & 0x0400) == 0) {
+        hSig <<= 1;
+        hExp++;
       }
-      f_exp = ((127 - 15 - h_exp)) << 23;
-      f_sig = ((h_sig & 0x03ff)) << 13;
-      return f_sgn + f_exp + f_sig;
+      fExp = ((127 - 15 - hExp)) << 23;
+      fSig = ((hSig & 0x03ff)) << 13;
+      return fSgn + fExp + fSig;
     case 0x7c00: /* inf or NaN */
       /* All-ones exponent and a copy of the significand */
-      return f_sgn + 0x7f800000 + (((h & 0x03ff)) << 13);
+      return fSgn + 0x7f800000 + (((h & 0x03ff)) << 13);
     default: /* normalized */
       /* Just need to adjust the exponent and shift */
-      return f_sgn + (((h & 0x7fff) + 0x1c000) << 13);
+      return fSgn + (((h & 0x7fff) + 0x1c000) << 13);
   }
 }
 
 function _base64ToArrayBuffer(base64) {
-  const binary_string = atob(base64);
-  const len = binary_string.length;
+  const binaryString = atob(base64);
+  const len = binaryString.length;
 
   const bytes = new Uint8Array(len);
 
   for (let i = 0; i < len; i++) {
-    bytes[i] = binary_string.charCodeAt(i);
+    bytes[i] = binaryString.charCodeAt(i);
   }
 
   return bytes.buffer;

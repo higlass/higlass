@@ -47,7 +47,7 @@ class PlotTypeChooser extends React.Component {
   }
 
   render() {
-    let AVAILABLE_TRACK_TYPESList = 'No plot types available for track';
+    let AVAILABLE_TRACK_TYPES_LIST = 'No plot types available for track';
     const trackTypeToInfo = {};
 
     TRACKS_INFO.forEach((ti) => {
@@ -55,7 +55,7 @@ class PlotTypeChooser extends React.Component {
     });
 
     if (this.AVAILABLE_TRACK_TYPES) {
-      AVAILABLE_TRACK_TYPESList = this.AVAILABLE_TRACK_TYPES
+      AVAILABLE_TRACK_TYPES_LIST = this.AVAILABLE_TRACK_TYPES
         .sort((a, b) => a.type < b.type)
         .map((x) => {
           const thumbnail = trackTypeToInfo[x.type].thumbnail;
@@ -97,12 +97,12 @@ class PlotTypeChooser extends React.Component {
 
     return (
       <div>
-        { AVAILABLE_TRACK_TYPESList.length > 0
+        { AVAILABLE_TRACK_TYPES_LIST.length > 0
           && (
             <div
               className="plot-type-container"
             >
-              { AVAILABLE_TRACK_TYPESList }
+              { AVAILABLE_TRACK_TYPES_LIST }
             </div>
           )
         }

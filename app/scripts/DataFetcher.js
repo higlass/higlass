@@ -336,9 +336,6 @@ export default class DataFetcher {
           }
         }
 
-        const min_value = Math.min.apply(null, dataSlice);
-        const max_value = Math.max.apply(null, dataSlice);
-
         const newTile = {
           min_value: Math.min.apply(null, dataSlice),
           max_value: Math.max.apply(null, dataSlice),
