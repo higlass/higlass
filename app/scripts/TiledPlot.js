@@ -2113,7 +2113,7 @@ class TiledPlot extends React.Component {
           onCancel: () => {
             this.setState({
               trackOptions: null,
-            },);
+            });
           },
           onTrackOptionsChanged: newOptions => newOptions,
           onSubmit: (newOptions) => {
