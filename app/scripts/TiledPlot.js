@@ -1698,7 +1698,6 @@ class TiledPlot extends React.Component {
       .map(x => x.width).reduce(sum, 0);
     this.rightWidth = this.rightWidthNoGallery + this.galleryDim;
 
-
     this.centerHeight = (
       this.state.height
       - this.topHeight
@@ -2215,34 +2214,34 @@ TiledPlot.propTypes = {
   horizontalMargin: PropTypes.number,
   initialXDomain: PropTypes.array,
   initialYDomain: PropTypes.array,
+  metaTracks: PropTypes.array,
   mouseTool: PropTypes.string,
   onCloseTrack: PropTypes.func,
   onDataDomainChanged: PropTypes.func,
   onLockValueScale: PropTypes.func,
   onMouseMoveZoom: PropTypes.func,
-  onNoTrackAdded: PropTypes.func,
   onNewTilesLoaded: PropTypes.func,
+  onNoTrackAdded: PropTypes.func,
   onRangeSelection: PropTypes.func.isRequired,
   onScalesChanged: PropTypes.func,
-  onTracksAdded: PropTypes.func,
   onTrackOptionsChanged: PropTypes.func,
   onTrackPositionChosen: PropTypes.func,
-  onValueScaleChanged: PropTypes.func,
+  onTracksAdded: PropTypes.func,
   onUnlockValueScale: PropTypes.func,
+  onValueScaleChanged: PropTypes.func,
+  pixiStage: PropTypes.object,
+  pluginTracks: PropTypes.object,
   rangeSelection1dSize: PropTypes.array,
   rangeSelectionToInt: PropTypes.bool,
   registerDraggingChangedListener: PropTypes.func,
   removeDraggingChangedListener: PropTypes.func,
   setCentersFunction: PropTypes.func,
-  pixiStage: PropTypes.object,
-  pluginTracks: PropTypes.object,
   svgElement: PropTypes.object,
-  trackSourceServers: PropTypes.array,
   tracks: PropTypes.object,
-  metaTracks: PropTypes.array,
+  trackSourceServers: PropTypes.array,
+  uid: PropTypes.string,
   verticalMargin: PropTypes.number,
   viewOptions: PropTypes.object,
-  uid: PropTypes.string,
   zoomable: PropTypes.bool,
   zoomToDataExtentOnInit: PropTypes.bool
 };
