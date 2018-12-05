@@ -54,7 +54,8 @@ class HorizontalTiledPlot extends React.Component {
       }
       this.rangeSelectionTriggeredEnd = false;
       return this.state !== nextState;
-    } if (this.props.rangeSelection !== nextProps.rangeSelection) {
+    }
+    if (this.props.rangeSelection !== nextProps.rangeSelection) {
       this.moveBrush(
         nextProps.rangeSelection[0]
           ? nextProps.rangeSelection[0]
