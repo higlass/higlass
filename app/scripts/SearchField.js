@@ -102,7 +102,7 @@ class SearchField {
     } else {
       // provided chromosome doesn't exit
 
-      // console.log("Search error: No chromInfo specified or chromosome (" + chr + ") not in chromInfo");
+      // console.log("Error: No chromInfo specified or chromosome (" + chr + ") not in chromInfo");
       retPos = null;
     }
 

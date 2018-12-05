@@ -219,7 +219,7 @@ export default class DataFetcher {
    * Extract a slice from a matrix at a given position.
    *
    * @param {array} inputData: An array containing a matrix stored row-wise
-   * @param {array} arrayShape: The shape of the array, should be a two element array e.g. [256,256].
+   * @param {array} arrayShape: Shape of the array; should be a two element array e.g. [256,256].
    * @param {int} sliceIndex: The index across which to take the slice
    * @returns {array} an array corresponding to a slice of this matrix
   */
@@ -308,11 +308,13 @@ export default class DataFetcher {
         const xTilePos = +parts[1];
         const yTilePos = +parts[2];
 
-        const [tilePos, sliceIndex] = tileProxy.calculateTileAndPosInTile(this.dataConfig.tilesetInfo,
+        const [tilePos, sliceIndex] = tileProxy.calculateTileAndPosInTile(
+          this.dataConfig.tilesetInfo,
           this.dataConfig.tilesetInfo.max_width,
           this.dataConfig.tilesetInfo.min_pos[1],
           zoomLevel,
-          +this.dataConfig.slicePos);
+          +this.dataConfig.slicePos
+        );
 
         const fullTileId = this.fullTileId(tilesetUid, newTileIds[i]);
         const tile = returnedTiles[fullTileId];

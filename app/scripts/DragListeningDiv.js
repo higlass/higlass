@@ -43,7 +43,8 @@ class DragListeningDiv extends React.Component {
             console.warn('unknown track type:', evtJson);
           }
 
-          const defaultTrackType = DEFAULT_TRACKS_FOR_DATATYPE[evtJson.datatype][this.props.position];
+          const defaultTrackType =
+            DEFAULT_TRACKS_FOR_DATATYPE[evtJson.datatype][this.props.position];
 
           const newTrack = {
             type: defaultTrackType,

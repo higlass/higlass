@@ -743,7 +743,9 @@ class TiledPlot extends React.Component {
 
   createOverlays(overlays) {
     for (const trackType in overlays) {
-      for (let i = 0; i < tracks[trackType].length; i++) { tracksAndLocations.push({ track: tracks[trackType][i], location: trackType }); }
+      for (let i = 0; i < tracks[trackType].length; i++) {
+        tracksAndLocations.push({ track: tracks[trackType][i], location: trackType });
+      }
     }
   }
 
@@ -1193,13 +1195,15 @@ class TiledPlot extends React.Component {
     }
 
     // set the initial domain
-    const left = this.trackRenderer.currentProps.marginLeft + this.trackRenderer.currentProps.leftWidth;
+    const left = this.trackRenderer.currentProps.marginLeft
+      + this.trackRenderer.currentProps.leftWidth;
     let newXDomain = [
       left,
       left + this.trackRenderer.currentProps.centerWidth,
     ].map(this.trackRenderer.zoomTransform.rescaleX(this.trackRenderer.xScale).invert);
 
-    const top = this.trackRenderer.currentProps.marginTop + this.trackRenderer.currentProps.topHeight;
+    const top = this.trackRenderer.currentProps.marginTop
+      + this.trackRenderer.currentProps.topHeight;
     let newYDomain = [
       top,
       top + this.trackRenderer.currentProps.centerHeight,
@@ -2024,7 +2028,8 @@ class TiledPlot extends React.Component {
             ref={(c) => { this.configTrackMenu = c; }}
             position={this.state.configTrackMenuLocation}
             tracks={[getTrackByUid(this.props.tracks, this.state.configTrackMenuId)]}
-            trackOrientation={getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
+            trackOrientation={
+              getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
           />
         </PopupMenu>
       );

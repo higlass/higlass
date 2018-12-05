@@ -74,8 +74,8 @@ function contextMenu(menu, opts) {
     const currentThis = this;
 
     if (useMouse) {
-      if (rootElement === null) { mousePos = mouse(this); } else { mousePos = mouse(rootElement); } // for recursive menus, we need the mouse
-      // position relative to another element
+      mousePos = mouse(rootElement === null ? this : rootElement);
+      // for recursive menus, we need the mouse position relative to another element
     }
 
     clickAway = clickAwayFunc;
