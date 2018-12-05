@@ -191,7 +191,10 @@ class HorizontalTiledPlot extends React.Component {
       'stylesTrack.track-range-selection';
 
     return (
-      <div styleName="styles.horizontal-tiled-plot">
+      <div
+        className="horizontal-tiled-plot"
+        styleName="styles.horizontal-tiled-plot"
+      >
         {isBrushable &&
           <svg
             ref={(el) => { this.brushEl = select(el); }}
