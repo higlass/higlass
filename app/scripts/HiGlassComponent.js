@@ -2113,24 +2113,21 @@ class HiGlassComponent extends React.Component {
             newTrack],
         };
         tracks.center = [newCombined];
+      } else if (tracks.center[0].type === 'combined') {
+        // if it's a combined track, we just need to add this track to the
+        // contents
+        tracks.center[0].contents.push(newTrack);
       } else {
-        // center track exists
-        if (tracks.center[0].type === 'combined') {
-          // if it's a combined track, we just need to add this track to the
-          // contents
-          tracks.center[0].contents.push(newTrack);
-        } else {
-          // if it's not, we have to create a new combined track
-          const newCombined = {
-            uid: slugid.nice(),
-            type: 'combined',
-            contents: [
-              tracks.center[0],
-              newTrack],
-          };
+        // if it's not, we have to create a new combined track
+        const newCombined = {
+          uid: slugid.nice(),
+          type: 'combined',
+          contents: [
+            tracks.center[0],
+            newTrack],
+        };
 
-          tracks.center = [newCombined];
-        }
+        tracks.center = [newCombined];
       }
     } else {
       // otherwise, we want it at the end of the track list
@@ -3240,8 +3237,8 @@ class HiGlassComponent extends React.Component {
 
     if (hoveredTrack) {
       dataX = !hoveredTrack.flipText
-        ? hoveredTrack._xScale.invert(relTrackPos[0])  // dataX
-        : hoveredTrack._xScale.invert(relTrackPos[1]);  // dataY
+        ? hoveredTrack._xScale.invert(relTrackPos[0]) // dataX
+        : hoveredTrack._xScale.invert(relTrackPos[1]); // dataY
 
       dataY = hoveredTrack.is2d
         ? hoveredTrack._yScale.invert(relTrackPos[1])

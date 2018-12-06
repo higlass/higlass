@@ -217,7 +217,7 @@ class TiledPlot extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.rangeSelection !== this.state.rangeSelection) {
-      let genomicRange = [null, null];  // Default range
+      let genomicRange = [null, null]; // Default range
 
       if (
         this.state.defaultChromSizes
