@@ -951,7 +951,7 @@ class HiGlassComponent extends React.Component {
     svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
     for (const tiledPlot of dictValues(this.tiledPlots)) {
-      if (!tiledPlot) continue; //probalby opened and closed
+      if (!tiledPlot) continue; // probably opened and closed
 
       for (const trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
         if (trackDefObject.trackObject.exportSVG) {
