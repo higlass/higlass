@@ -191,9 +191,10 @@ class GenomePositionSearchBox extends React.Component {
           // but we need to distinguish things that have a dash in front
           // from things that just have a space in front
 
-          let url1 = `${this.state.autocompleteServer}/suggest/`;
-          url1 += `?d=${this.state.autocompleteId}&ac=`;
-          url1 += `${newParts[this.changedPart-1].toLowerCase()}-${newParts[this.changedPart].toLowerCase()}`;
+          const url1 = `${this.state.autocompleteServer}/suggest/`
+            + `?d=${this.state.autocompleteId}`
+            + `&ac=${newParts[this.changedPart - 1].toLowerCase()}`
+            + `-${newParts[this.changedPart].toLowerCase()}`;
           tileProxy.json(url1, (error1, data1) => {
             if (error1) {
               this.setState({

@@ -82,7 +82,6 @@
     "react/require-default-props": 0,
     "semi": 0,
     "space-in-parens": 0,
-    "space-infix-ops": 0,
     "spaced-comment": 0,
     
     // Below here should match .eslintrc,
