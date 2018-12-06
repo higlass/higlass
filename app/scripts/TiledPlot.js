@@ -981,12 +981,13 @@ class TiledPlot extends React.Component {
 
               const positionedTrack = positionedTracks.filter(
                 track => track.track.uid === trackUuid
-);
+              );
 
-              if (!positionedTrack.length)
+              if (!positionedTrack.length) {
                 // couldn't find a matching track, somebody must have included
                 // an invalid uuid
-                {return null;}
+                return null;
+              }
               const position = {
                 left: positionedTrack[0].left,
                 top: positionedTrack[0].top,
@@ -1114,9 +1115,8 @@ class TiledPlot extends React.Component {
             } else if (this.props.tracks.center
                 && this.props.tracks.center.length
                 && this.props.tracks.center[0].uid === uid) {
-                trackObj.is2d = true;
-              }
-
+              trackObj.is2d = true;
+            }
           }
 
           trackObjectsAtPosition.push(trackObj);

@@ -187,30 +187,30 @@ class GenomePositionSearchBox extends React.Component {
             genes: []
           });
         } else if (this.changedPart > 0 && !changedAtStartOfWord) {
-            // send out another request for genes with dashes in them
-            // but we need to distinguish things that have a dash in front
-            // from things that just have a space in front
+          // send out another request for genes with dashes in them
+          // but we need to distinguish things that have a dash in front
+          // from things that just have a space in front
 
-            let url1 = `${this.state.autocompleteServer}/suggest/`;
-            url1 += `?d=${this.state.autocompleteId}&ac=`;
-            url1 += `${newParts[this.changedPart-1].toLowerCase()}-${newParts[this.changedPart].toLowerCase()}`;
-            tileProxy.json(url1, (error1, data1) => {
-              if (error1) {
-                this.setState({
-                  loading: false,
-                  genes: data,
-                });
-              } else {
-                this.setState({
-                  loading: false,
-                  genes: data1.concat(data),
-                });
-              }
-            }, this.props.pubSub);
-          } else {
-            // we've received a list of autocomplete suggestions
-            this.setState({ loading: false, genes: data });
-          }
+          let url1 = `${this.state.autocompleteServer}/suggest/`;
+          url1 += `?d=${this.state.autocompleteId}&ac=`;
+          url1 += `${newParts[this.changedPart-1].toLowerCase()}-${newParts[this.changedPart].toLowerCase()}`;
+          tileProxy.json(url1, (error1, data1) => {
+            if (error1) {
+              this.setState({
+                loading: false,
+                genes: data,
+              });
+            } else {
+              this.setState({
+                loading: false,
+                genes: data1.concat(data),
+              });
+            }
+          }, this.props.pubSub);
+        } else {
+          // we've received a list of autocomplete suggestions
+          this.setState({ loading: false, genes: data });
+        }
       }, this.props.pubSub);
     }
   }

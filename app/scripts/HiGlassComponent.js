@@ -1004,12 +1004,12 @@ class HiGlassComponent extends React.Component {
       const img = new Image(this.canvasElement.width, this.canvasElement.height);
       img.src = "data:image/svg+xml;base64," + btoa(svgString);
       img.onload = () => {
-          const targetCanvas = document.createElement('canvas');
-          // TODO: I have no idea why dimensions are doubled!
-          targetCanvas.width = this.canvasElement.width / 2;
-          targetCanvas.height = this.canvasElement.height / 2;
-          targetCanvas.getContext('2d').drawImage(img, 0, 0);
-          targetCanvas.toBlob((blob) => { resolve(blob) });
+        const targetCanvas = document.createElement('canvas');
+        // TODO: I have no idea why dimensions are doubled!
+        targetCanvas.width = this.canvasElement.width / 2;
+        targetCanvas.height = this.canvasElement.height / 2;
+        targetCanvas.getContext('2d').drawImage(img, 0, 0);
+        targetCanvas.toBlob((blob) => { resolve(blob) });
       };
     });
   }
@@ -2410,10 +2410,10 @@ class HiGlassComponent extends React.Component {
 
   deserializeValueScaleLocks(viewConfig) {
     if (viewConfig.valueScaleLocks) {
-        for (let viewUid of dictKeys(viewConfig.valueScaleLocks.locksByViewUid)) {
-            this.valueScaleLocks[viewUid] = viewConfig.valueScaleLocks
-                .locksDict[viewConfig.valueScaleLocks.locksByViewUid[viewUid]];
-        }
+      for (let viewUid of dictKeys(viewConfig.valueScaleLocks.locksByViewUid)) {
+        this.valueScaleLocks[viewUid] = viewConfig.valueScaleLocks
+          .locksDict[viewConfig.valueScaleLocks.locksByViewUid[viewUid]];
+      }
     }
   }
 

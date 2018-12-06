@@ -30,7 +30,7 @@
     "ecmaVersion": 6
   },
   "rules": {
-    // Turn a lot of rules: We plan to fix one kind of error at a time, so we can remove these exceptions,
+    // Turn a lot of rules off: We plan to fix one kind of error at a time, so we can remove these exceptions,
     // and eventually delete this file and just have one .exlintrc. 
     "arrow-body-style": 0,
     "arrow-parens": 0,
@@ -42,7 +42,6 @@
     "import/no-extraneous-dependencies": 0,
     "import/no-named-as-default": 0,
     "import/prefer-default-export": 0,
-    "indent": 0,
     "jsx-a11y/anchor-is-valid": 0,
     "jsx-a11y/click-events-have-key-events": 0,
     "jsx-a11y/no-noninteractive-element-interactions": 0,
