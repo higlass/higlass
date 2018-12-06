@@ -895,7 +895,6 @@ class HiGlassComponent extends React.Component {
    * @param listenerUid: The uid of the listener itself.
    */
   removeDraggingChangedListener(viewUid, listenerUid) {
-
     if (this.draggingChangedListeners.hasOwnProperty(viewUid)) {
       const listeners = this.draggingChangedListeners[viewUid];
 
@@ -1899,7 +1898,6 @@ class HiGlassComponent extends React.Component {
    * @param {viewUid} Thie view's identifier
    */
   handleClearView(viewUid) {
-
     const { views } = this.state;
 
     views[viewUid].tracks.top = [];
@@ -2599,7 +2597,6 @@ class HiGlassComponent extends React.Component {
    * Check if we can place a view at this position
    */
   viewPositionAvailable(pX, pY, w, h) {
-
     const pEndX = pX + w;
     const pEndY = pY + h;
 
@@ -2901,8 +2898,6 @@ class HiGlassComponent extends React.Component {
    * @param viewUidsPresent (Set): The view uids which are available
    */
   isTrackValid(track, viewUidsPresent) {
-
-
     if (track.type === 'viewport-projection-center') {
       if (!viewUidsPresent.has(track.fromViewUid)) {
         return false;

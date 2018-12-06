@@ -63,7 +63,6 @@
     "no-use-before-define": 0,
     "no-useless-escape": 0,
     "operator-linebreak": 0,
-    "padded-blocks": 0,
     "prefer-const": 0,
     "prefer-spread": 0,
     "prefer-template": 0,
