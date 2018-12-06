@@ -1058,7 +1058,8 @@ class HiGlassComponent extends React.Component {
 
         if (!this.xScales[key] || !this.yScales[key]) { continue; }
 
-        if (key === uid) {// no need to notify oneself that the scales have changed
+        if (key === uid) {
+          // no need to notify oneself that the scales have changed
           continue;
         }
 
