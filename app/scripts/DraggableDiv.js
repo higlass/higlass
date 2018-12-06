@@ -93,7 +93,9 @@ class DraggableDiv extends React.Component {
     newWidth = newWidth > this.minWidth ? newWidth : this.minWidth;
 
     let newLeft = this.dragStartLeft + ms[0] - this.dragStartMousePos[0];
-    newLeft = newWidth > this.minWidth ? newLeft : this.dragStartLeft + this.dragStartWidth - this.minWidth;
+    newLeft = newWidth > this.minWidth
+      ? newLeft
+      : this.dragStartLeft + this.dragStartWidth - this.minWidth;
 
     this.setState({
       left: newLeft,

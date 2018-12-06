@@ -62,10 +62,8 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
   }
 
   isMouseOverHorizontalLine(mousePos) {
-    if (Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) < this.MOUSEOVER_RADIUS) {
-      return true;
-    }
-    return false;
+    return Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition))
+      < this.MOUSEOVER_RADIUS;
   }
 }
 

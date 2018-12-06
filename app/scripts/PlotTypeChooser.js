@@ -15,7 +15,8 @@ class PlotTypeChooser extends React.Component {
     super(props);
 
     this.DATATYPE_TO_TRACK_TYPE = DATATYPE_TO_TRACK_TYPE(this.props.orientation);
-    this.AVAILABLE_TRACK_TYPES = AVAILABLE_TRACK_TYPES(this.props.datatypes, this.props.orientation);
+    this.AVAILABLE_TRACK_TYPES =
+      AVAILABLE_TRACK_TYPES(this.props.datatypes, this.props.orientation);
 
     this.state = {
       selectedPlotType: this.AVAILABLE_TRACK_TYPES[0],
@@ -47,7 +48,7 @@ class PlotTypeChooser extends React.Component {
   }
 
   render() {
-    let AVAILABLE_TRACK_TYPESList = 'No plot types available for track';
+    let AVAILABLE_TRACK_TYPES_LIST = 'No plot types available for track';
     const trackTypeToInfo = {};
 
     TRACKS_INFO.forEach((ti) => {
@@ -55,11 +56,11 @@ class PlotTypeChooser extends React.Component {
     });
 
     if (this.AVAILABLE_TRACK_TYPES) {
-      AVAILABLE_TRACK_TYPESList = this.AVAILABLE_TRACK_TYPES
+      AVAILABLE_TRACK_TYPES_LIST = this.AVAILABLE_TRACK_TYPES
         .sort((a, b) => a.type < b.type)
         .map((x) => {
           const thumbnail = trackTypeToInfo[x.type].thumbnail;
-          const plotTypeClass = this.state.selectedPlotType.type == x.type ? 'plot-type-selected' : 'unselected';
+          const plotTypeClass = this.state.selectedPlotType.type === x.type ? 'plot-type-selected' : 'unselected';
           const imgTag = trackTypeToInfo[x.type].thumbnail
             ? (
               <div
@@ -97,12 +98,12 @@ class PlotTypeChooser extends React.Component {
 
     return (
       <div>
-        { AVAILABLE_TRACK_TYPESList.length > 0
+        { AVAILABLE_TRACK_TYPES_LIST.length > 0
           && (
             <div
               className="plot-type-container"
             >
-              { AVAILABLE_TRACK_TYPESList }
+              { AVAILABLE_TRACK_TYPES_LIST }
             </div>
           )
         }

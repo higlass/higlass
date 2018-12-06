@@ -121,9 +121,9 @@ export default class DataFetcher {
      *  tileIds: []
      *    The tile ids to fetch
      */
-    if (this.dataConfig.type == 'horizontal-section') {
+    if (this.dataConfig.type === 'horizontal-section') {
       this.fetchHorizontalSection(receivedTiles, tileIds);
-    } else if (this.dataConfig.type == 'vertical-section') {
+    } else if (this.dataConfig.type === 'vertical-section') {
       this.fetchHorizontalSection(receivedTiles, tileIds, vertical = true);
     } else if (!this.dataConfig.children) {
       // no children, just return the fetched tiles as is
@@ -219,7 +219,7 @@ export default class DataFetcher {
    * Extract a slice from a matrix at a given position.
    *
    * @param {array} inputData: An array containing a matrix stored row-wise
-   * @param {array} arrayShape: The shape of the array, should be a two element array e.g. [256,256].
+   * @param {array} arrayShape: Shape of the array; should be a two element array e.g. [256,256].
    * @param {int} sliceIndex: The index across which to take the slice
    * @returns {array} an array corresponding to a slice of this matrix
   */
@@ -280,7 +280,7 @@ export default class DataFetcher {
       const sortedPosition = [xTilePos, yTiles[0]].sort((a, b) => a - b);
 
       // make note of whether we reversed the x and y tile positions
-      if (sortedPosition[0] == xTilePos) mirrored.push(false);
+      if (sortedPosition[0] === xTilePos) mirrored.push(false);
       else mirrored.push(true);
 
       const newTileId = `${zoomLevel}.${sortedPosition[0]}.${sortedPosition[1]}`;
@@ -308,18 +308,20 @@ export default class DataFetcher {
         const xTilePos = +parts[1];
         const yTilePos = +parts[2];
 
-        const [tilePos, sliceIndex] = tileProxy.calculateTileAndPosInTile(this.dataConfig.tilesetInfo,
+        const [tilePos, sliceIndex] = tileProxy.calculateTileAndPosInTile(
+          this.dataConfig.tilesetInfo,
           this.dataConfig.tilesetInfo.max_width,
           this.dataConfig.tilesetInfo.min_pos[1],
           zoomLevel,
-          +this.dataConfig.slicePos);
+          +this.dataConfig.slicePos
+        );
 
         const fullTileId = this.fullTileId(tilesetUid, newTileIds[i]);
         const tile = returnedTiles[fullTileId];
 
         let dataSlice = null;
 
-        if (xTilePos == yTilePos) {
+        if (xTilePos === yTilePos) {
           // this is tile along the diagonal that we have to mirror
           dataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex);
           const mirroredDataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex, 1);
@@ -335,9 +337,6 @@ export default class DataFetcher {
             dataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex);
           }
         }
-
-        const min_value = Math.min.apply(null, dataSlice);
-        const max_value = Math.max.apply(null, dataSlice);
 
         const newTile = {
           min_value: Math.min.apply(null, dataSlice),

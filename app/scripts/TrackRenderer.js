@@ -456,7 +456,9 @@ class TrackRenderer extends React.Component {
     /*
     this.pOutline.clear();
     this.pOutline.lineStyle(1, '#000', 1);
-    this.pOutline.drawRect(this.xPositionOffset, this.yPositionOffset, this.currentProps.width, this.currentProps.height);
+    this.pOutline.drawRect(
+      this.xPositionOffset, this.yPositionOffset, this.currentProps.width, this.currentProps.height
+    );
     */
   }
 

@@ -33,7 +33,9 @@ export const HorizontalRuleMixin = Mixin(superclass => class extends superclass 
   }
 
   isMouseOverHorizontalLine(mousePos) {
-    if (Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) < this.MOUSEOVER_RADIUS) {
+    if (
+      Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) < this.MOUSEOVER_RADIUS
+    ) {
       return true;
     }
     return false;
