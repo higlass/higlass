@@ -138,11 +138,11 @@ class AddTrackModal extends React.Component {
     const form = (
       <div>
         <TilesetFinder
+          ref={(c) => { this.tilesetFinder = c; }}
+          datatype={this.props.datatype}
           onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
           onTracksChosen={value => this.props.onTracksChosen(value, this.props.position)}
           orientation={orientation}
-          datatype={this.props.datatype}
-          ref={(c) => { this.tilesetFinder = c; }}
           selectedTilesetChanged={this.selectedTilesetsChanged.bind(this)}
           trackSourceServers={this.props.trackSourceServers}
         />

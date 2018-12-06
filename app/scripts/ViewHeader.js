@@ -212,11 +212,11 @@ class ViewHeader extends React.Component {
       },
     );
 
-    let className = this.state.isFocused ?
-      'multitrack-header-focus' : 'multitrack-header';
+    let className = this.state.isFocused
+      ? 'multitrack-header-focus' : 'multitrack-header';
 
-    const classNameIcon = this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR ?
-      'multitrack-header-icon-squeazed' : 'multitrack-header-icon';
+    const classNameIcon = this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR
+      ? 'multitrack-header-icon-squeazed' : 'multitrack-header-icon';
 
     if (getDarkTheme()) {
       className += ' multitrack-header-dark';
@@ -236,18 +236,19 @@ class ViewHeader extends React.Component {
               <use xlinkHref="#select" />
             </svg>
           )}
-          <div 
+          <div
             styleName="multitrack-header-grabber"
             title="Drag to move the view"
           >
-
-            <div /><div /><div />
+            <div />
+            <div />
+            <div />
           </div>
-          {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR &&
-            <div styleName="multitrack-header-search">
+          {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR
+            && <div styleName="multitrack-header-search">
               {
-                this.props.isGenomePositionSearchBoxVisible &&
-                GenomePositionSearchBox
+                this.props.isGenomePositionSearchBoxVisible
+                && GenomePositionSearchBox
               }
             </div>
           }

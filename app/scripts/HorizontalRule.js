@@ -5,7 +5,7 @@ import RuleMixin from './RuleMixin';
 
 import { colorToHex } from './utils';
 
-export const HorizontalRuleMixin = Mixin((superclass) => class extends superclass {
+export const HorizontalRuleMixin = Mixin(superclass => class extends superclass {
   drawHorizontalRule(graphics) {
     const strokeWidth = 1;
 
@@ -19,8 +19,8 @@ export const HorizontalRuleMixin = Mixin((superclass) => class extends superclas
 
     let pos = 0;
 
-    let dashLength = 5;
-    let dashGap = 3;
+    const dashLength = 5;
+    const dashGap = 3;
 
     // console.log('this._yScale.range()', this._yScale.range());
 
@@ -33,9 +33,11 @@ export const HorizontalRuleMixin = Mixin((superclass) => class extends superclas
   }
 
   isMouseOverHorizontalLine(mousePos) {
-      if (Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) < this.MOUSEOVER_RADIUS) {
-        return true;
-      }
+    if (
+      Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) < this.MOUSEOVER_RADIUS
+    ) {
+      return true;
+    }
     return false;
   }
 });
@@ -49,11 +51,11 @@ class HorizontalRule extends mix(PixiTrack).with(RuleMixin, HorizontalRuleMixin)
 
 
   mouseMoveHandler(mousePos) {
-    if (this.isWithin(mousePos.x, mousePos.y) &&
-      this.isMouseOverHorizontalLine(mousePos)) {
-        this.highlighted = true;
-        this.draw();
-        return;
+    if (this.isWithin(mousePos.x, mousePos.y)
+      && this.isMouseOverHorizontalLine(mousePos)) {
+      this.highlighted = true;
+      this.draw();
+      return;
     }
 
     this.highlighted = false;
@@ -67,7 +69,6 @@ class HorizontalRule extends mix(PixiTrack).with(RuleMixin, HorizontalRuleMixin)
     this.drawHorizontalRule(graphics);
     this.animate();
   }
-
 }
 
 export default HorizontalRule;

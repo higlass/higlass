@@ -7,5 +7,5 @@ const packageJson = require('../package.json');
 module.exports = function () {
   return new webpack.DefinePlugin({
     XYLOPHON: JSON.stringify(packageJson.version),
-  })
+  });
 };

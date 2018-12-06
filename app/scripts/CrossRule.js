@@ -48,8 +48,8 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
 
     let pos = 0;
 
-    let dashLength = 5;
-    let dashGap = 3;
+    const dashLength = 5;
+    const dashGap = 3;
 
     // console.log('this._yScale.range()', this._yScale.range());
 
@@ -62,10 +62,8 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
   }
 
   isMouseOverHorizontalLine(mousePos) {
-      if (Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) < this.MOUSEOVER_RADIUS) {
-        return true;
-      }
-    return false;
+    return Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition))
+      < this.MOUSEOVER_RADIUS;
   }
 }
 

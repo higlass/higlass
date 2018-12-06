@@ -23,8 +23,8 @@ class DragListeningDiv extends React.Component {
   render() {
     // color red if not enabled, green if a track is not top
     // and red otherwise
-    const background = this.props.enabled ?
-      (this.state.dragOnTop ? 'green' : 'blue') : 'red';
+    const background = this.props.enabled
+      ? (this.state.dragOnTop ? 'green' : 'blue') : 'red';
 
     const styleNames = this.props.enabled ? 'drag-listening-div-active' : '';
 
@@ -39,7 +39,7 @@ class DragListeningDiv extends React.Component {
 
           const evtJson = this.props.draggingHappening;
 
-          if (!evtJson.datatype in DEFAULT_TRACKS_FOR_DATATYPE) {
+          if (!(evtJson.datatype in DEFAULT_TRACKS_FOR_DATATYPE)) {
             console.warn('unknown track type:', evtJson);
           }
 

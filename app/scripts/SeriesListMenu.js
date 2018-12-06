@@ -100,7 +100,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
     return (
       <NestedContextMenu
-        key='config-series-menu'
+        key="config-series-menu"
         closeMenu={this.props.closeMenu}
         menuItems={menuItems}
         orientation={this.state.orientation}
@@ -123,8 +123,6 @@ export default class SeriesListMenu extends ContextMenuContainer {
    * @param (Object) track The track definition for this series (as in the viewconf)
      */
   getTrackTypeItems(position, bbox, track) {
-
-
     // get the datatype of the current track
     //
 
@@ -172,7 +170,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
     return (
       <NestedContextMenu
-        key='track-type-items'
+        key="track-type-items"
         closeMenu={this.props.closeMenu}
         menuItems={menuItems}
         orientation={this.state.orientation}
@@ -299,8 +297,8 @@ export default class SeriesListMenu extends ContextMenuContainer {
     return (
       <div
         ref={(c) => { this.div = c; }}
-        onMouseLeave={this.props.handleMouseLeave}
         data-menu-type="SeriesListMenu"
+        onMouseLeave={this.props.handleMouseLeave}
         style={{
           left: this.state.left,
           top: this.state.top,
@@ -360,7 +358,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
         {
         /*
-          this.props.series.type == 'heatmap' ?
+          this.props.series.type === 'heatmap' ?
           <ContextMenuItem
             onClick={() => {
               this.props.onDivideSeries(this.props.series.uid);
