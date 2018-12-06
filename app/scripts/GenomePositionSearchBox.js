@@ -694,22 +694,23 @@ class GenomePositionSearchBox extends React.Component {
 
     return (
       <FormGroup
+        ref={c => this.gpsbForm = c}
         bsSize="small"
         styleName={className}
-        ref={c => this.gpsbForm = c}
       >
         <DropdownButton
+          ref={c => this.assemblyPickButton = c}
           bsSize="small"
           className={styles['genome-position-search-bar-button']}
           id={this.uid}
           onSelect={this.handleAssemblySelect.bind(this)}
-          ref={c => this.assemblyPickButton = c}
           title={this.state.selectedAssembly ? this.state.selectedAssembly : '(none)'}
         >
           {assemblyMenuItems}
         </DropdownButton>
 
         <Autocomplete
+          ref={c => this.autocompleteMenu = c}
           getItemValue={item => item.geneName}
           inputProps={{
             className: styles['genome-position-search-bar'],
@@ -727,11 +728,10 @@ class GenomePositionSearchBox extends React.Component {
           onMenuVisibilityChange={this.handleMenuVisibilityChange.bind(this)}
           onSelect={(value, objct) => this.geneSelected(value, objct)}
           onSubmit={this.searchFieldSubmit.bind(this)}
-          ref={c => this.autocompleteMenu = c}
           renderItem={(item, isHighlighted) => (
             <div
-              id={item.refseqid}
               key={item.refseqid}
+              id={item.refseqid}
               style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
             >{item.geneName}</div>
           )}
