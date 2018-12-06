@@ -2368,15 +2368,20 @@ class HiGlassComponent extends React.Component {
         if (zoomLocked) { this.handleUnlock(viewUid, this.zoomLocks); }
 
         if (viewUid in this.locationLocks) {
-          locationLocked = fromView in this.locationLocks[viewUid]; }
-        if (locationLocked) { this.handleUnlock(viewUid, this.locationLocks); }
+          locationLocked = fromView in this.locationLocks[viewUid];
+        }
+        if (locationLocked) {
+          this.handleUnlock(viewUid, this.locationLocks);
+        }
 
         this.handleScalesChanged(fromView, tXScale, tYScale, true);
 
         if (zoomLocked) {
-          this.addLock(viewUid, fromView, this.zoomLocks, this.viewScalesLockData); }
+          this.addLock(viewUid, fromView, this.zoomLocks, this.viewScalesLockData);
+        }
         if (locationLocked) {
-          this.addLock(viewUid, fromView, this.locationLocks, this.viewScalesLockData); }
+          this.addLock(viewUid, fromView, this.locationLocks, this.viewScalesLockData);
+        }
       };
     }
   }
