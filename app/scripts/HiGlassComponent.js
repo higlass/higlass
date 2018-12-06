@@ -2210,8 +2210,8 @@ class HiGlassComponent extends React.Component {
 
     if (!this.props.options.bounded) {
       view.layout.h = Math.ceil(
-        (totalTrackHeight + MARGIN_HEIGHT) /
-        (this.state.rowHeight + MARGIN_HEIGHT),
+        (totalTrackHeight + MARGIN_HEIGHT)
+        / (this.state.rowHeight + MARGIN_HEIGHT),
       );
     }
   }
@@ -2348,8 +2348,9 @@ class HiGlassComponent extends React.Component {
     ) {
       const fromView = track.fromViewUid;
 
-      track.registerViewportChanged =
-       (trackId, listener) => this.addScalesChangedListener(fromView, trackId, listener),
+      track.registerViewportChanged = (trackId, listener) => this.addScalesChangedListener(
+        fromView, trackId, listener
+      ),
       track.removeViewportChanged = trackId => this.removeScalesChangedListener(fromView, trackId),
       track.setDomainsCallback = (xDomain, yDomain) => {
         const tXScale = scaleLinear().domain(xDomain).range(this.xScales[fromView].range());
@@ -2846,8 +2847,9 @@ class HiGlassComponent extends React.Component {
 
     if (sortedAssemblyCounts.length) { selectedAssembly = sortedAssemblyCounts[0][0]; }
 
-    view.genomePositionSearchBox =
-      this.createGenomePostionSearchBoxEntry(view.genomePositionSearchBox, selectedAssembly);
+    view.genomePositionSearchBox = this.createGenomePostionSearchBoxEntry(
+      view.genomePositionSearchBox, selectedAssembly
+    );
     view.genomePositionSearchBox.visible = !view.genomePositionSearchBox.visible;
 
     this.refreshView();
@@ -3530,15 +3532,16 @@ class HiGlassComponent extends React.Component {
 
             // Custom props
             addTrackPosition={
-              this.state.addTrackPositionView === view.uid ?
-                this.state.addTrackPosition : null
+              this.state.addTrackPositionView === view.uid
+                ? this.state.addTrackPosition
+                : null
             }
             addTrackPositionMenuPosition={addTrackPositionMenuPosition}
             canvasElement={this.state.canvasElement}
             chooseTrackHandler={
-              this.state.chooseTrackHandler ?
-                trackId => this.state.chooseTrackHandler(view.uid, trackId) :
-                null
+              this.state.chooseTrackHandler
+                ? trackId => this.state.chooseTrackHandler(view.uid, trackId)
+                : null
             }
             chromInfoPath={view.chromInfoPath}
             draggingHappening={this.state.draggingHappening}
@@ -3642,8 +3645,7 @@ class HiGlassComponent extends React.Component {
             // Custom props
             getGenomePositionSearchBox={getGenomePositionSearchBox}
             isGenomePositionSearchBoxVisible={
-              view.genomePositionSearchBox &&
-              view.genomePositionSearchBox.visible
+              view.genomePositionSearchBox && view.genomePositionSearchBox.visible
             }
             mouseTool={this.state.mouseTool}
             onAddView={() => this.handleAddView(view)}
