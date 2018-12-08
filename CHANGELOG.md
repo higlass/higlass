@@ -1,3 +1,7 @@
+## v1.4.0
+
+- Make view spacing adjustable via initialization options. See [/docs/examples/apis/adjust-view-spacing.html](/docs/examples/apis/adjust-view-spacing.html) for an example.
+
 ## v1.3.0
 
 - Added `TiledPixiTrack.on` event handler to listen to data changes
