@@ -8,7 +8,7 @@ import { expect } from 'chai';
 // Utils
 import {
   mountHGComponent,
-  removeHGComponent,
+  // removeHGComponent,
   getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
