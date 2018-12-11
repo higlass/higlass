@@ -52,7 +52,7 @@ const showMousePosition = (
    * @param  {Boolean}   isNoClear  If `true` do not clear the graphics.
    */
   const drawMousePosition = (mousePos, isHorizontal, isNoClear) => {
-    if (!isNoClear) clearMousePosition();
+    if (!isNoClear) graphics.clear();
 
     graphics.lineStyle(1, color, alpha);
 
