@@ -102,6 +102,8 @@ const showMousePosition = (
 
     // Also draw the second dimension
     if (is2d) drawMousePosition(getScales()[1](y) + offset[1], true, true);
+
+    return graphics;
   };
 
   pubSubs.push(pubSub.subscribe('app.mouseMove', mouseMoveHandler));
