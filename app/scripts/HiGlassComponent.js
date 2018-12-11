@@ -946,13 +946,12 @@ class HiGlassComponent extends React.Component {
   }
 
   createSVG() {
-    const outputSVG = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n';
     const svg = document.createElement('svg');
     svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
     svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
     for (const tiledPlot of dictValues(this.tiledPlots)) {
-      if (!tiledPlot) continue; //probalby opened and closed
+      if (!tiledPlot) continue; // probalby opened and closed
 
       for (const trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
         if (trackDefObject.trackObject.exportSVG) {

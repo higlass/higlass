@@ -3,7 +3,6 @@ import { mix } from './mixwith';
 
 import PixiTrack from './PixiTrack';
 import RuleMixin from './RuleMixin';
-import { HorizontalRuleMixin } from './HorizontalRule';
 import { VerticalRuleMixin } from './VerticalRule';
 
 class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
@@ -36,7 +35,7 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
   }
 
   drawHorizontalRule(graphics) {
-    const strokeWidth = 1;
+    const strokeWidth = 2;
 
     let stroke = colorToHex('black');
 
@@ -44,7 +43,7 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
       stroke = colorToHex('red');
     }
 
-    graphics.lineStyle(2, stroke, 1);
+    graphics.lineStyle(strokeWidth, stroke, 1);
 
     let pos = 0;
 
