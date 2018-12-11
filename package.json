@@ -22,6 +22,7 @@
     "compile": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; mkdir -p dist/; webpack --config ./webpack.config.js --mode production; cp build/hglib.min.js dist/; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css; zip -r dist.zip dist",
     "lint": "eslint app test karma.conf.js webpack.config.js",
     "lint-minimal": "eslint -c .eslintrc-minimal app test karma.conf.js webpack.config.js",
+    "fix-minimal": "eslint -c .eslintrc-minimal --fix app test karma.conf.js webpack.config.js",
     "precommit": "NODE_ENV=production lint-staged",
     "test": "karma start karma.conf.js --single-run",
     "test-watch": "npm run build && karma start karma.conf.js"
