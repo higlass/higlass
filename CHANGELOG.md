@@ -1,3 +1,7 @@
+## v1.3.1
+
+- Clear mouse position indicator when leaving the root dom element, on blurring the window, and when no track is hovered
+
 ## v1.3.0
 
 - Added the ability to specify default track options through the API
