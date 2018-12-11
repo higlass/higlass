@@ -952,7 +952,7 @@ class HiGlassComponent extends React.Component {
     svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
     for (const tiledPlot of dictValues(this.tiledPlots)) {
-      if (!tiledPlot) continue; //probalby opened and closed
+      if (!tiledPlot) continue; // probalby opened and closed
 
       for (const trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
         if (trackDefObject.trackObject.exportSVG) {
@@ -986,7 +986,7 @@ class HiGlassComponent extends React.Component {
   }
 
   createPNGBlobPromise() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       // It would seem easier to call canvas.toDataURL()...
       // Except that with webgl context, it swaps buffers after drawing
       // and you don't have direct access to what is on-screen.
@@ -1002,21 +1002,21 @@ class HiGlassComponent extends React.Component {
       const svgString = this.createSVGString();
 
       const img = new Image(this.canvasElement.width, this.canvasElement.height);
-      img.src = "data:image/svg+xml;base64," + btoa(svgString);
+      img.src = `data:image/svg+xml;base64,${btoa(svgString)}`;
       img.onload = () => {
-          const targetCanvas = document.createElement('canvas');
-          // TODO: I have no idea why dimensions are doubled!
-          targetCanvas.width = this.canvasElement.width / 2;
-          targetCanvas.height = this.canvasElement.height / 2;
-          targetCanvas.getContext('2d').drawImage(img, 0, 0);
-          targetCanvas.toBlob((blob) => { resolve(blob) });
+        const targetCanvas = document.createElement('canvas');
+        // TODO: I have no idea why dimensions are doubled!
+        targetCanvas.width = this.canvasElement.width / 2;
+        targetCanvas.height = this.canvasElement.height / 2;
+        targetCanvas.getContext('2d').drawImage(img, 0, 0);
+        targetCanvas.toBlob((blob) => { resolve(blob); });
       };
     });
   }
 
   handleExportPNG() {
     this.createPNGBlobPromise().then((blob) => {
-      download('export.png', blob)
+      download('export.png', blob);
     });
   }
 
@@ -2547,7 +2547,7 @@ class HiGlassComponent extends React.Component {
           id: _json.uid,
           url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
         };
-      })
+      });
 
     if (!fromApi) {
       req
