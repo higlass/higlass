@@ -799,7 +799,7 @@ class TiledPixiTrack extends PixiTrack {
     let margin = inMargin;
 
     if (margin === null || typeof margin === 'undefined') {
-      margin = 6;  // set a default value
+      margin = 6; // set a default value
     }
 
     let minDimension = Math.min(this.dimensions[1] - margin, margin);

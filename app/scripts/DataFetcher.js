@@ -328,14 +328,12 @@ export default class DataFetcher {
           for (let j = 0; j < dataSlice.length; j++) {
             dataSlice[j] += mirroredDataSlice[j];
           }
-        } else {
+        } else if (mirrored[i]) {
           // this tile is in the upper right triangle but the data is only available for
           // the lower left so we have to mirror it
-          if (mirrored[i]) {
-            dataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex, 1);
-          } else {
-            dataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex);
-          }
+          dataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex, 1);
+        } else {
+          dataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex);
         }
 
         const newTile = {

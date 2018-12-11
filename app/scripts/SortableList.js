@@ -44,7 +44,7 @@ const SortableList = SortableContainer(
         handleResizeTrack,
         resizeHandles,
       }
-    ), );
+    ));
 
     return (
       <div

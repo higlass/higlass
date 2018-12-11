@@ -187,8 +187,8 @@ class AxisPixi {
       while (j >= 0) {
         // go through and hide all overlapping tick marks
         if (
-          (this.axisTexts[i].y + this.axisTexts[i].height / 2) >
-          (this.axisTexts[j].y - this.axisTexts[j].height / 2)
+          (this.axisTexts[i].y + this.axisTexts[i].height / 2)
+          > (this.axisTexts[j].y - this.axisTexts[j].height / 2)
         ) {
           this.axisTexts[j].visible = false;
         } else {
