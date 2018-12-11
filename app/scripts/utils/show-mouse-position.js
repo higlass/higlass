@@ -41,7 +41,6 @@ const showMousePosition = (
   // Graphics for cursor position
   const graphics = new PIXI.Graphics();
 
-  const clearMousePosition = () => { graphics.clear(); };
 
   /**
    * Draw 1D mouse location (cross) hair onto the PIXI graphics.
