@@ -31,7 +31,7 @@
   },
   "rules": {
     // Turn a lot of rules: We plan to fix one kind of error at a time, so we can remove these exceptions,
-    // and eventually delete this file and just have one .exlintrc. 
+    // and eventually delete this file and just have one .exlintrc.
     "arrow-body-style": 0,
     "arrow-parens": 0,
     "block-spacing": 0,
@@ -87,11 +87,10 @@
     "react/no-unused-state": 0,
     "react/prefer-stateless-function": 0,
     "react/require-default-props": 0,
-    "semi": 0,
     "space-in-parens": 0,
     "space-infix-ops": 0,
     "spaced-comment": 0,
-    
+
     // Below here should match .eslintrc,
     // except where we've turned off some rules completely.
     "class-methods-use-this": 0,
