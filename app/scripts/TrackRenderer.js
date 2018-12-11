@@ -1243,6 +1243,16 @@ class TrackRenderer extends React.Component {
       onMouseMoveZoom: this.props.onMouseMoveZoom,
       chromInfoPath: track.chromInfoPath,
     };
+
+    // for horizontal and vertical rules
+    if (track.y) {
+      context.yPosition = track.y;
+    }
+
+    if (track.x) {
+      context.xPosition = track.x;
+    }
+
     const options = track.options;
 
     switch (track.type) {
