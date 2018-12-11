@@ -1,5 +1,5 @@
 const webpackConfig = require('./webpack.config.js');
-require('babel-polyfill');  // eslint-disable-line import/no-extraneous-dependencies
+require('babel-polyfill'); // eslint-disable-line import/no-extraneous-dependencies
 
 module.exports = (config) => {
   config.set({
