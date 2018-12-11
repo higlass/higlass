@@ -130,7 +130,7 @@ class ViewHeader extends React.Component {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onExportPNG();
             }}
-            onClearView = {() => {
+            onClearView={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onClearView();
             }}

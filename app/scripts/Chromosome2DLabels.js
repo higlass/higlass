@@ -36,8 +36,10 @@ class Chromosome2DLabels extends PixiTrack {
 
         for (let j = 0; j < this.chromInfo.cumPositions.length; j++) {
           const textStr = `${this.chromInfo.cumPositions[i].chr}/${this.chromInfo.cumPositions[j].chr}`;
-          const text = new PIXI.Text(textStr,
-            { fontSize: '14px', fontFamily: 'Arial', fill: 'red' }, );
+          const text = new PIXI.Text(
+            textStr,
+            { fontSize: '14px', fontFamily: 'Arial', fill: 'red' }
+          );
 
           text.anchor.x = 0.5;
           text.anchor.y = 0.5;

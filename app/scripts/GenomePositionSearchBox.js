@@ -193,7 +193,7 @@ class GenomePositionSearchBox extends React.Component {
 
             let url1 = `${this.state.autocompleteServer}/suggest/`;
             url1 += `?d=${this.state.autocompleteId}&ac=`;
-            url1 += `${newParts[this.changedPart-1].toLowerCase()}-${newParts[this.changedPart].toLowerCase()}`;
+            url1 += `${newParts[this.changedPart - 1].toLowerCase()}-${newParts[this.changedPart].toLowerCase()}`;
             tileProxy.json(url1, (error1, data1) => {
               if (error1) {
                 this.setState({
@@ -713,7 +713,7 @@ class GenomePositionSearchBox extends React.Component {
           getItemValue={item => item.geneName}
           inputProps={{
             className: styles['genome-position-search-bar'],
-            title: "Current location: enter a symbol or location to change the position of the current view",
+            title: 'Current location: enter a symbol or location to change the position of the current view',
           }}
           items={this.state.genes}
           menuStyle={{
