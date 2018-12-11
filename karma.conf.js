@@ -16,7 +16,7 @@ module.exports = (config) => {
       'node_modules/font-awesome/css/font-awesome.css',
       'build/hglib.css',
       'test/**/*.+(js|jsx)',
-      //'test/RuleTests.js',
+      // 'test/RuleTests.js',
       // 'test/MinimalViewconfTest.js'
       // 'test/AxisTests.js',
       // 'test/PngExportTest.js',
