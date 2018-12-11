@@ -953,7 +953,7 @@ export const TRACKS_INFO = [
   },
   {
     type: 'horizontal-1d-annotations',
-    datatype: ['nothing'],  // Unfortunately one has to specify something here
+    datatype: ['nothing'], // Unfortunately one has to specify something here
     local: false,
     orientation: '1d-horizontal',
     name: 'Horizontal 1D Annotations',
@@ -979,7 +979,7 @@ export const TRACKS_INFO = [
   },
   {
     type: 'vertical-1d-annotations',
-    datatype: ['nothing'],  // Unfortunately one has to specify something here
+    datatype: ['nothing'], // Unfortunately one has to specify something here
     local: false,
     orientation: '1d-vertical',
     name: 'Vertical 1D Annotations',

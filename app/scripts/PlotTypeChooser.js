@@ -15,8 +15,9 @@ class PlotTypeChooser extends React.Component {
     super(props);
 
     this.DATATYPE_TO_TRACK_TYPE = DATATYPE_TO_TRACK_TYPE(this.props.orientation);
-    this.AVAILABLE_TRACK_TYPES =
-      AVAILABLE_TRACK_TYPES(this.props.datatypes, this.props.orientation);
+    this.AVAILABLE_TRACK_TYPES = AVAILABLE_TRACK_TYPES(
+      this.props.datatypes, this.props.orientation
+    );
 
     this.state = {
       selectedPlotType: this.AVAILABLE_TRACK_TYPES[0],
