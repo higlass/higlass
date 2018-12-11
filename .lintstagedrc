@@ -1,0 +1,11 @@
+
+{
+  "app/**/*.js": [
+    "eslint -c .eslintrc-minimal --fix",
+    "git add"
+  ],
+  "test/**/*.js": [
+    "eslint -c .eslintrc-minimal --fix",
+    "git add"
+  ]
+}
