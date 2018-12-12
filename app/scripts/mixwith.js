@@ -59,9 +59,9 @@ export const apply = (superclass, mixin) => {
  * @return {boolean} whether `proto` is a prototype created by the application of
  * `mixin` to a superclass
  */
-export const isApplicationOf = (proto, mixin) =>
-  proto.hasOwnProperty(_appliedMixin) && proto[_appliedMixin] === unwrap(mixin);
-
+export const isApplicationOf = (proto, mixin) => (
+  proto.hasOwnProperty(_appliedMixin) && proto[_appliedMixin] === unwrap(mixin)
+);
 /**
  * Returns `true` iff `o` has an application of `mixin` on its prototype
  * chain.

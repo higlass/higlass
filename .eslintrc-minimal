@@ -36,7 +36,6 @@
     "arrow-parens": 0,
     "consistent-return": 0,
     "global-require": 0,
-    "implicit-arrow-linebreak": 0,
     "import/no-extraneous-dependencies": 0,
     "import/no-named-as-default": 0,
     "import/prefer-default-export": 0,
