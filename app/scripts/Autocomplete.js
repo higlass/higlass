@@ -260,7 +260,7 @@ class Autocomplete extends React.Component {
   }
 
   handleInputBlur() {
-    this.props.onFocus && this.props.onFocus();
+    if (this.props.onFocus) { this.props.onFocus(); }
     if (this._ignoreBlur) { return; }
     this.setState({
       isOpen: false,
@@ -269,7 +269,7 @@ class Autocomplete extends React.Component {
   }
 
   handleInputFocus() {
-    this.props.onFocus && this.props.onFocus(true);
+    if (this.props.onFocus) { this.props.onFocus(true); }
     if (this._ignoreBlur) {
       this.setIgnoreBlur(false);
       return;
