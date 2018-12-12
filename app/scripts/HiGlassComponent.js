@@ -464,7 +464,7 @@ class HiGlassComponent extends React.Component {
 
     // make sure that the current view is tall enough to display
     // all the tracks (if unbounded, which is checked in adjustLayout...)
-    for (let view of dictValues(viewsByUid)) {
+    for (const view of dictValues(viewsByUid)) {
       this.adjustLayoutToTrackSizes(view);
     }
 
@@ -2411,7 +2411,7 @@ class HiGlassComponent extends React.Component {
 
   deserializeValueScaleLocks(viewConfig) {
     if (viewConfig.valueScaleLocks) {
-      for (let viewUid of dictKeys(viewConfig.valueScaleLocks.locksByViewUid)) {
+      for (const viewUid of dictKeys(viewConfig.valueScaleLocks.locksByViewUid)) {
         this.valueScaleLocks[viewUid] = viewConfig.valueScaleLocks
           .locksDict[viewConfig.valueScaleLocks.locksByViewUid[viewUid]];
       }
