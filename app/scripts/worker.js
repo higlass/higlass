@@ -278,10 +278,7 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
   })
     .then(response => response.json())
     .then((data) => {
-      data = tileResponseToData(data, server, theseTileIds);
-
-      done(data);
-
+      done(tileResponseToData(data, server, theseTileIds));
       /*
       const denses = Object.values(data)
         .filter(x => x.dense)
