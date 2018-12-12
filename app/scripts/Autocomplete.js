@@ -323,6 +323,7 @@ class Autocomplete extends React.Component {
       >
         <input
           {...inputProps}
+          ref={el => this.inputEl = el}
           aria-autocomplete="list"
           autoComplete="off"
           onBlur={this.composeEventHandlers(
@@ -346,7 +347,6 @@ class Autocomplete extends React.Component {
             this.handleKeyUp.bind(this),
             inputProps.onKeyUp && inputProps.onKeyUp.bind(this),
           )}
-          ref={el => this.inputEl = el}
           role="combobox"
           value={this.props.value}
         />

@@ -3548,15 +3548,12 @@ class HiGlassComponent extends React.Component {
             horizontalMargin={this.horizontalMargin}
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
-            xDomainLimits={view.xDomainLimits}
-            yDomainLimits={view.yDomainLimits}
-            zoomLimits={view.zoomLimits}
-            zoomToDataExtentOnInit={this.zoomToDataExtentOnInit.has(view.uid)}
+            metaTracks={view.metaTracks}
             mouseTool={this.state.mouseTool}
-            onChangeTrackType={(trackId, newType) => (
-              this.handleChangeTrackType(view.uid, trackId, newType))}
             onChangeTrackData={(trackId, newData) => (
               this.handleChangeTrackData(view.uid, trackId, newData))}
+            onChangeTrackType={(trackId, newType) => (
+              this.handleChangeTrackType(view.uid, trackId, newType))}
             onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
             onDataDomainChanged={(xDomain, yDomain) => (
               this.handleDataDomainChanged(view.uid, xDomain, yDomain))}
@@ -3573,6 +3570,7 @@ class HiGlassComponent extends React.Component {
               this.handleTracksAdded(view.uid, newTracks, position, host))}
             onUnlockValueScale={uid => this.handleUnlockValueScale(view.uid, uid)}
             onValueScaleChanged={uid => this.syncValueScales(view.uid, uid)}
+            overlays={view.overlays}
             pixiStage={this.pixiStage}
             pluginTracks={this.state.pluginTracks}
             rangeSelection1dSize={this.state.rangeSelection1dSize}
@@ -3583,15 +3581,17 @@ class HiGlassComponent extends React.Component {
               this.removeDraggingChangedListener(view.uid, view.uid, listener))}
             setCentersFunction={(c) => { this.setCenters[view.uid] = c; }}
             svgElement={this.state.svgElement}
-            trackSourceServers={this.props.viewConfig.trackSourceServers}
-            overlays={view.overlays}
             tracks={view.tracks}
-            viewOptions={view.options}
-            metaTracks={view.metaTracks}
+            trackSourceServers={this.props.viewConfig.trackSourceServers}
             uid={view.uid}
             verticalMargin={this.verticalMargin}
+            viewOptions={view.options}
             // dragging={this.state.dragging}
+            xDomainLimits={view.xDomainLimits}
+            yDomainLimits={view.yDomainLimits}
             zoomable={!zoomFixed}
+            zoomLimits={view.zoomLimits}
+            zoomToDataExtentOnInit={this.zoomToDataExtentOnInit.has(view.uid)}
           />
         );
 
@@ -3629,10 +3629,7 @@ class HiGlassComponent extends React.Component {
 
         const multiTrackHeader = this.isEditable() && !this.state.viewConfig.hideHeader ? (
           <ViewHeader
-            // Reserved props
             ref={(c) => { this.viewHeaders[view.uid] = c; }}
-
-            // Custom props
             getGenomePositionSearchBox={getGenomePositionSearchBox}
             isGenomePositionSearchBoxVisible={
               view.genomePositionSearchBox && view.genomePositionSearchBox.visible
@@ -3641,8 +3638,8 @@ class HiGlassComponent extends React.Component {
             onAddView={() => this.handleAddView(view)}
             onClearView={() => this.handleClearView(view.uid)}
             onCloseView={() => this.handleCloseView(view.uid)}
-            onExportSVG={this.handleExportSVG.bind(this)}
             onExportPNG={this.handleExportPNG.bind(this)}
+            onExportSVG={this.handleExportSVG.bind(this)}
             onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
             onExportViewsAsLink={this.handleExportViewsAsLink.bind(this)}
             onLockLocation={uid => (
@@ -3664,13 +3661,13 @@ class HiGlassComponent extends React.Component {
             }}
             onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(this)}
             onTrackPositionChosen={position => this.handleTrackPositionChosen(view.uid, position)}
-            onViewOptionsChanged={newOptions => this.handleViewOptionsChanged(view.uid, newOptions)}
             onUnlockLocation={uid => this.handleUnlock(uid, this.locationLocks)}
             onUnlockZoom={uid => this.handleUnlock(uid, this.zoomLocks)}
             onUnlockZoomAndLocation={(uid) => {
               this.handleUnlock(uid, this.zoomLocks);
               this.handleUnlock(uid, this.locationLocks);
             }}
+            onViewOptionsChanged={newOptions => this.handleViewOptionsChanged(view.uid, newOptions)}
             onYankLocation={uid => (
               this.handleYankFunction(uid, this.handleLocationYanked.bind(this)))}
             onYankZoom={uid => this.handleYankFunction(uid, this.handleZoomYanked.bind(this))}
@@ -3720,7 +3717,6 @@ class HiGlassComponent extends React.Component {
 
         // Custom props
         cols={12}
-        width={this.state.width}
         draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}
         isDraggable={this.isEditable()}
         isResizable={this.isEditable()}
@@ -3741,6 +3737,7 @@ class HiGlassComponent extends React.Component {
         // `useCSSTransforms` (it's default `true`)
         // and set `measureBeforeMount={true}`.
         useCSSTransforms={this.mounted}
+        width={this.state.width}
       >
         {this.tiledAreas}
       </ReactGridLayout>
