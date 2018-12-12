@@ -232,7 +232,7 @@ class SearchField {
     text = text.trim(); // remove whitespace from the ends of the string
 
     // extract offset
-    const offsetRe = /\[offset\ (.+?)\]/.exec(text);
+    const offsetRe = /\[offset (.+?)\]/.exec(text);
 
     // the offset is the distance before the first chromosome
     // or the distance after the last chromosome of the given
