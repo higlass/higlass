@@ -3085,7 +3085,7 @@ class HiGlassComponent extends React.Component {
 
   zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime) {
     if (!(viewUid in this.setCenters)) {
-      throw `Invalid viewUid. Current present uuids: ${Object.keys(this.setCenters).join(',')}`;
+      throw Error(`Invalid viewUid. Current uuids: ${Object.keys(this.setCenters).join(',')}`);
     }
 
     if (
