@@ -2349,8 +2349,8 @@ class HiGlassComponent extends React.Component {
 
       track.registerViewportChanged = (trackId, listener) => this.addScalesChangedListener(
         fromView, trackId, listener
-      ),
-      track.removeViewportChanged = trackId => this.removeScalesChangedListener(fromView, trackId),
+      );
+      track.removeViewportChanged = trackId => this.removeScalesChangedListener(fromView, trackId);
       track.setDomainsCallback = (xDomain, yDomain) => {
         const tXScale = scaleLinear().domain(xDomain).range(this.xScales[fromView].range());
         const tYScale = scaleLinear().domain(yDomain).range(this.yScales[fromView].range());
