@@ -258,6 +258,7 @@ class HiGlassComponent extends React.Component {
     this.wheelHandlerBound = this.wheelHandler.bind(this);
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
     this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
+    this.onBlurHandlerBound = this.onBlurHandler.bind(this);
   }
 
   componentWillMount() {
@@ -271,9 +272,11 @@ class HiGlassComponent extends React.Component {
     this.domEvent.register('mouseup', window, true);
     this.domEvent.register('click', window, true);
     this.domEvent.register('mousemove', window);
+    this.domEvent.register('blur', window);
 
     this.pubSubs.push(
       this.pubSub.subscribe('app.click', this.appClickHandlerBound),
+      this.pubSub.subscribe('blur', this.onBlurHandlerBound),
       this.pubSub.subscribe('keydown', this.keyDownHandlerBound),
       this.pubSub.subscribe('keyup', this.keyUpHandlerBound),
       this.pubSub.subscribe('resize', this.resizeHandlerBound),
@@ -3424,7 +3427,13 @@ class HiGlassComponent extends React.Component {
   }
 
   onMouseLeaveHandler() {
+    this.pubSub.publish('app.mouseLeave');
     this.hideHoverMenu();
+    this.animate();
+  }
+
+  onBlurHandler() {
+    this.animate();
   }
 
   isZoomFixed(view) {
