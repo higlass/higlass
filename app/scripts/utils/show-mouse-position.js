@@ -43,7 +43,7 @@ const showMousePosition = (
 
   // This clears the mouse position graphics, i.e., the mouse position will not
   // be visible afterwards.
-  const clearMousePositionGraphics = () => { graphics.clear(); };
+  const clearGraphics = () => { graphics.clear(); };
 
   /**
    * Draw 1D mouse location (cross) hair onto the PIXI graphics.
@@ -54,7 +54,7 @@ const showMousePosition = (
    * @param  {Boolean}   isNoClear  If `true` do not clear the graphics.
    */
   const drawMousePosition = (mousePos, isHorizontal, isNoClear) => {
-    if (!isNoClear) clearMousePositionGraphics();
+    if (!isNoClear) clearGraphics();
 
     graphics.lineStyle(1, color, alpha);
 
@@ -76,7 +76,7 @@ const showMousePosition = (
    */
   const mouseMoveHandler = (event) => {
     if (!event.hoveredTracks.length) {
-      clearMousePositionGraphics();
+      clearGraphics();
       return graphics;
     }
 
@@ -109,8 +109,8 @@ const showMousePosition = (
   };
 
   pubSubs.push(pubSub.subscribe('app.mouseMove', mouseMoveHandler));
-  pubSubs.push(pubSub.subscribe('app.mouseLeave', clearMousePositionGraphics));
-  pubSubs.push(pubSub.subscribe('blur', clearMousePositionGraphics));
+  pubSubs.push(pubSub.subscribe('app.mouseLeave', clearGraphics));
+  pubSubs.push(pubSub.subscribe('blur', clearGraphics));
 
   return graphics;
 };
