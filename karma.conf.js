@@ -1,5 +1,5 @@
 const webpackConfig = require('./webpack.config.js');
-require('babel-polyfill');  // eslint-disable-line import/no-extraneous-dependencies
+require('babel-polyfill'); // eslint-disable-line import/no-extraneous-dependencies
 
 module.exports = (config) => {
   config.set({
@@ -16,6 +16,7 @@ module.exports = (config) => {
       'node_modules/font-awesome/css/font-awesome.css',
       'build/hglib.css',
       'test/**/*.+(js|jsx)',
+      // 'test/RuleTests.js',
       // 'test/MinimalViewconfTest.js'
       // 'test/AxisTests.js',
       // 'test/PngExportTest.js',

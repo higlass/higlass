@@ -129,7 +129,7 @@ class ContextMenuContainer extends React.Component {
 
       if (leftPosition < 0) {
         if (parentBbox.left + parentBbox.width + bbox.width > window.innerWidth) {
-          leftPosition = 0;  // goes off the side either way
+          leftPosition = 0; // goes off the side either way
         } else {
           // switch to the right
           leftPosition = parentBbox.left + parentBbox.width;
