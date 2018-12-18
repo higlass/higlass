@@ -143,7 +143,8 @@ export const Cached = mixin => wrap(mixin, (superclass) => {
 
   let cachedApplications = superclass[_cachedApplications];
   if (!cachedApplications) {
-    cachedApplications = superclass[_cachedApplications] = new Map();
+    superclass[_cachedApplications] = new Map();
+    cachedApplications = superclass[_cachedApplications];
   }
 
   let application = cachedApplications.get(mixin);

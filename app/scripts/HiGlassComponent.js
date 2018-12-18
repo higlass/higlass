@@ -467,7 +467,7 @@ class HiGlassComponent extends React.Component {
 
     // make sure that the current view is tall enough to display
     // all the tracks (if unbounded, which is checked in adjustLayout...)
-    for (let view of dictValues(viewsByUid)) {
+    for (const view of dictValues(viewsByUid)) {
       this.adjustLayoutToTrackSizes(view);
     }
 
@@ -2352,8 +2352,8 @@ class HiGlassComponent extends React.Component {
 
       track.registerViewportChanged = (trackId, listener) => this.addScalesChangedListener(
         fromView, trackId, listener
-      ),
-      track.removeViewportChanged = trackId => this.removeScalesChangedListener(fromView, trackId),
+      );
+      track.removeViewportChanged = trackId => this.removeScalesChangedListener(fromView, trackId);
       track.setDomainsCallback = (xDomain, yDomain) => {
         const tXScale = scaleLinear().domain(xDomain).range(this.xScales[fromView].range());
         const tYScale = scaleLinear().domain(yDomain).range(this.yScales[fromView].range());
@@ -2414,7 +2414,7 @@ class HiGlassComponent extends React.Component {
 
   deserializeValueScaleLocks(viewConfig) {
     if (viewConfig.valueScaleLocks) {
-      for (let viewUid of dictKeys(viewConfig.valueScaleLocks.locksByViewUid)) {
+      for (const viewUid of dictKeys(viewConfig.valueScaleLocks.locksByViewUid)) {
         this.valueScaleLocks[viewUid] = viewConfig.valueScaleLocks
           .locksDict[viewConfig.valueScaleLocks.locksByViewUid[viewUid]];
       }
@@ -3088,7 +3088,7 @@ class HiGlassComponent extends React.Component {
 
   zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime) {
     if (!(viewUid in this.setCenters)) {
-      throw `Invalid viewUid. Current present uuids: ${Object.keys(this.setCenters).join(',')}`;
+      throw Error(`Invalid viewUid. Current uuids: ${Object.keys(this.setCenters).join(',')}`);
     }
 
     if (

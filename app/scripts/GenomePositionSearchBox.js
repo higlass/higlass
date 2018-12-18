@@ -541,7 +541,9 @@ class GenomePositionSearchBox extends React.Component {
       const searchFieldValue = this.positionText;
 
       if (this.searchField !== null) {
-        let [range1, range2] = this.searchField.searchPosition(searchFieldValue);
+        const rangePair = this.searchField.searchPosition(searchFieldValue);
+        const range1 = rangePair[0];
+        let range2 = rangePair[1];
 
         if (!range1) {
           this.setPositionText(this.origPositionText);
