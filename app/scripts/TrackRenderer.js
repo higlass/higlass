@@ -1184,7 +1184,7 @@ class TrackRenderer extends React.Component {
             definition: track,
           };
           try {
-            return new pluginTrack.track(
+            return new pluginTrack.track( // eslint-disable-line new-cap
               AVAILABLE_FOR_PLUGINS,
               context,
               track.options,
@@ -1495,7 +1495,7 @@ class TrackRenderer extends React.Component {
           context.baseEl = this.baseEl;
           context.definition = track;
           try {
-            return new pluginTrack.track(
+            return new pluginTrack.track( // eslint-disable-line new-cap
               AVAILABLE_FOR_PLUGINS,
               context,
               options
