@@ -2543,12 +2543,10 @@ class HiGlassComponent extends React.Component {
       .catch((err) => {
         console.warn('err:', err);
       })
-      .then((_json) => {
-        return {
-          id: _json.uid,
-          url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
-        };
-      });
+      .then(_json => ({
+        id: _json.uid,
+        url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
+      }));
 
     if (!fromApi) {
       req
