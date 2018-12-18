@@ -1093,7 +1093,7 @@ class TiledPlot extends React.Component {
   listTracksAtPosition(x, y, isReturnTrackObj = false) {
     const trackObjectsAtPosition = [];
 
-    if (!this.trackRenderer) return;
+    if (!this.trackRenderer) return undefined;
 
     for (const uid in this.trackRenderer.trackDefObjects) {
       const trackObj = this.trackRenderer.trackDefObjects[uid].trackObject;
@@ -1509,7 +1509,7 @@ class TiledPlot extends React.Component {
 
     if (!(datatype in DEFAULT_TRACKS_FOR_DATATYPE)) {
       console.warn('unknown data type:', evtJson.higlassTrack);
-      return;
+      return undefined;
     }
 
     const defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype];
