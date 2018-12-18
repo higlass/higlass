@@ -977,7 +977,7 @@ class HiGlassComponent extends React.Component {
     // https://bugzilla.mozilla.org/show_bug.cgi?id=700533
     const w = this.canvasElement.width;
     const h = this.canvasElement.height;
-    const dimensionedSvgString = `<svg width="${w}" height="${h}" ` + svgString.slice(4);
+    const dimensionedSvgString = `<svg width="${w}" height="${h}" ${svgString.slice(4)}`;
 
     return dimensionedSvgString;
   }
