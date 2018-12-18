@@ -141,10 +141,6 @@ class SearchField {
     let parts = term.split('-'); // split on a
     parts = parts.filter(d => d.length > 0);
 
-    const pos1 = null;
-
-
-    const pos2 = null;
     let range = null;
 
 

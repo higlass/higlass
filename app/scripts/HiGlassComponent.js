@@ -1042,9 +1042,6 @@ class HiGlassComponent extends React.Component {
       }
     }
 
-    const [centerX, centerY, k] = scalesCenterAndK(xScale, yScale);
-    // console.log('tx, ty, k', [centerX, centerY, k]);
-
     if (this.zoomLocks[uid]) {
       // this view is locked to another
       const lockGroup = this.zoomLocks[uid];
@@ -1751,26 +1748,26 @@ class HiGlassComponent extends React.Component {
 
     if (view.tracks.center && dictValues(view.tracks.center).length > 0) {
       if (!view.tracks.center[0].contents || view.tracks.center[0].contents.length > 0) {
-        let centerHeight = null;
-        let centerWidth = null;
+        let height = null;
+        let width = null;
 
         if (view.tracks.center[0].contents) {
           // combined track in the center
           for (const track of view.tracks.center[0].contents) {
-            centerHeight = Math.max(centerHeight, track.height
+            height = Math.max(height, track.height
               ? track.height : defaultCenterHeight);
-            centerWidth = Math.max(centerWidth, track.width
+            width = Math.max(width, track.width
               ? track.width : defaultCenterWidth);
           }
         } else {
-          centerHeight = view.tracks.center[0].height
+          height = view.tracks.center[0].height
             ? view.tracks.center[0].height : defaultCenterHeight;
-          centerWidth = view.tracks.center[0].width
+          width = view.tracks.center[0].width
             ? view.tracks.center[0].width : defaultCenterWidth;
         }
 
-        currHeight += centerHeight;
-        currWidth += centerWidth;
+        currHeight += height;
+        currWidth += width;
       }
     } else if (((view.tracks.top && dictValues(view.tracks.top).length > 1)
       || (view.tracks.bottom && dictValues(view.tracks.bottom).length > 1))
