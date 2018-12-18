@@ -5,6 +5,8 @@ import React from 'react';
 
 import { getDarkTheme } from './services/is-dark-theme';
 
+import '../styles/DraggableDiv.module.scss';
+
 class DraggableDiv extends React.Component {
   constructor(props) {
     super(props);
