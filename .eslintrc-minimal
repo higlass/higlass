@@ -46,7 +46,6 @@
     "jsx-a11y/role-has-required-aria-props": 0,
     "new-cap": 0,
     "no-dupe-class-members": 0,
-    "no-nested-ternary": 0,
     "no-param-reassign": 0,
     "no-prototype-builtins": 0,
     "no-restricted-globals": 0,
