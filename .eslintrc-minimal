@@ -67,7 +67,6 @@
     "react/no-find-dom-node": 0,
     "react/no-this-in-sfc": 0,
     "react/no-typos": 0,
-    "react/no-unused-prop-types": 0,
     "react/no-unused-state": 0,
     "react/prefer-stateless-function": 0,
     "react/require-default-props": 0,

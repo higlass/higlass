@@ -758,8 +758,6 @@ GenomePositionSearchBox.propTypes = {
   autocompleteId: PropTypes.string,
   autocompleteServer: PropTypes.string,
   chromInfoId: PropTypes.string,
-  isFocused: PropTypes.bool,
-  onFocus: PropTypes.func,
   onSelectedAssemblyChanged: PropTypes.func,
   registerViewportChangedListener: PropTypes.func,
   removeViewportChangedListener: PropTypes.func,

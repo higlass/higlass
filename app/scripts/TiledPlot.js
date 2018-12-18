@@ -2205,7 +2205,6 @@ TiledPlot.propTypes = {
   addTrackPosition: PropTypes.string,
   canvasElement: PropTypes.object,
   chooseTrackHandler: PropTypes.func,
-  chromInfoPath: PropTypes.string,
   dragging: PropTypes.bool,
   editable: PropTypes.bool,
   horizontalMargin: PropTypes.number,

@@ -120,14 +120,10 @@ TrackControl.propTypes = {
   imgStyleClose: PropTypes.object,
   imgStyleMove: PropTypes.object,
   imgStyleSettings: PropTypes.object,
-  isAlignLeft: PropTypes.bool,
   isMoveable: PropTypes.bool,
-  isVertical: PropTypes.bool,
-  isVisible: PropTypes.bool,
   onConfigTrackMenuOpened: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onAddSeries: PropTypes.func,
-  paddingRight: PropTypes.bool,
   uid: PropTypes.string,
 };
 
