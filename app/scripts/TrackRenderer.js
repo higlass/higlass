@@ -329,7 +329,7 @@ class TrackRenderer extends React.Component {
       const trackObject = this.trackDefObjects[track.track.uid].trackObject;
       trackObject.rerender(options);
 
-      if (track.track.hasOwnProperty('contents')) {
+      if (Object.prototype.hasOwnProperty.call(track.track, 'contents')) {
         const ctDefs = {};
         for (const ct of track.track.contents) {
           ctDefs[ct.uid] = ct;

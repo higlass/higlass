@@ -881,7 +881,7 @@ class HiGlassComponent extends React.Component {
    *    Event handler is called with parameters (xScale, yScale)
    */
   addDraggingChangedListener(viewUid, listenerUid, eventHandler) {
-    if (!this.draggingChangedListeners.hasOwnProperty(viewUid)) {
+    if (!Object.prototype.hasOwnProperty.call(this.draggingChangedListeners, viewUid)) {
       this.draggingChangedListeners[viewUid] = {};
     }
 
@@ -898,11 +898,11 @@ class HiGlassComponent extends React.Component {
    * @param listenerUid: The uid of the listener itself.
    */
   removeDraggingChangedListener(viewUid, listenerUid) {
-    if (this.draggingChangedListeners.hasOwnProperty(viewUid)) {
+    if (Object.prototype.hasOwnProperty.call(this.draggingChangedListeners, viewUid)) {
       const listeners = this.draggingChangedListeners[viewUid];
 
 
-      if (listeners.hasOwnProperty(listenerUid)) {
+      if (Object.prototype.hasOwnProperty.call(listeners, listenerUid)) {
         // make sure the listener doesn't think we're still
         // dragging
         listeners[listenerUid](false);
@@ -1090,7 +1090,7 @@ class HiGlassComponent extends React.Component {
 
         // notify the listeners of all locked views that the scales of
         // this view have changed
-        if (this.scalesChangedListeners.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(this.scalesChangedListeners, key)) {
           dictValues(this.scalesChangedListeners[key]).forEach((x) => {
             x(newXScale, newYScale);
           });
@@ -1139,7 +1139,7 @@ class HiGlassComponent extends React.Component {
 
         // notify the listeners of all locked views that the scales of
         // this view have changed
-        if (this.scalesChangedListeners.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(this.scalesChangedListeners, key)) {
           dictValues(this.scalesChangedListeners[key]).forEach((x) => {
             x(newXScale, newYScale);
           });
@@ -2925,7 +2925,7 @@ class HiGlassComponent extends React.Component {
 
     for (const v of dictValues(viewsByUid)) {
       for (const trackOrientation of ['left', 'top', 'center', 'right', 'bottom']) {
-        if (v.tracks && v.tracks.hasOwnProperty(trackOrientation)) {
+        if (v.tracks && Object.prototype.hasOwnProperty.call(v.tracks, trackOrientation)) {
           // filter out invalid tracks
           v.tracks[trackOrientation] = v.tracks[trackOrientation]
             .filter(t => this.isTrackValid(t, viewUidsSet));
