@@ -1653,17 +1653,19 @@ class TiledPlot extends React.Component {
         >
           { topDisplayed ? topDiv : null }
           { hasVerticalComponent
-            && <div
-              style={{
-                display: 'flex',
-                height: (topDisplayed || bottomDisplayed) ? '40%' : '100%',
-                width: '100%',
-              }}
-            >
-              { leftDisplayed ? leftDiv : null }
-              { centerDisplayed ? centerDiv : null }
-              { rightDisplayed ? rightDiv : null}
-            </div>
+            && (
+              <div
+                style={{
+                  display: 'flex',
+                  height: (topDisplayed || bottomDisplayed) ? '40%' : '100%',
+                  width: '100%',
+                }}
+              >
+                { leftDisplayed ? leftDiv : null }
+                { centerDisplayed ? centerDiv : null }
+                { rightDisplayed ? rightDiv : null}
+              </div>
+            )
           }
           { bottomDisplayed ? bottomDiv : null }
         </div>
