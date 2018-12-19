@@ -448,7 +448,7 @@ class TiledPixiTrack extends PixiTrack {
   maxValue(_) {
     if (_) {
       this.scale.maxValue = _;
-      return undefined;
+      return this;
     }
     return this.valueScaleMax !== null
       ? this.valueScaleMax
