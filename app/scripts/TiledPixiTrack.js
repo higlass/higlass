@@ -438,7 +438,7 @@ class TiledPixiTrack extends PixiTrack {
   minValue(_) {
     if (_) {
       this.scale.minValue = _;
-      return undefined;
+      return this;
     }
     return this.valueScaleMin !== null
       ? this.valueScaleMin
