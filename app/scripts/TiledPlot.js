@@ -1555,7 +1555,7 @@ class TiledPlot extends React.Component {
           draggingHappening={this.props.draggingHappening}
           enabled={topAllowed}
           onTrackDropped={track => this.handleTracksAdded([track], 'top')}
-          position={'top'}
+          position="top"
           style={{
             border: '1px solid black',
             flexGrow: 1,
@@ -1577,7 +1577,7 @@ class TiledPlot extends React.Component {
           draggingHappening={this.props.draggingHappening}
           enabled={bottomAllowed}
           onTrackDropped={track => this.handleTracksAdded([track], 'bottom')}
-          position={'bottom'}
+          position="bottom"
           style={{
             border: '1px solid black',
             flexGrow: 1,
@@ -1592,7 +1592,7 @@ class TiledPlot extends React.Component {
         draggingHappening={this.props.draggingHappening}
         enabled={leftAllowed}
         onTrackDropped={track => this.handleTracksAdded([track], 'left')}
-        position={'left'}
+        position="left"
         style={{
           border: '1px solid black',
           flexGrow: 1,
@@ -1606,7 +1606,7 @@ class TiledPlot extends React.Component {
         enabled={centerAllowed}
         enabled={centerAllowed}
         onTrackDropped={track => this.handleTracksAdded([track], 'center')}
-        position={'center'}
+        position="center"
 
         style={{
           border: '1px solid black',
@@ -1653,17 +1653,19 @@ class TiledPlot extends React.Component {
         >
           { topDisplayed ? topDiv : null }
           { hasVerticalComponent
-            && <div
-              style={{
-                display: 'flex',
-                height: (topDisplayed || bottomDisplayed) ? '40%' : '100%',
-                width: '100%',
-              }}
-            >
-              { leftDisplayed ? leftDiv : null }
-              { centerDisplayed ? centerDiv : null }
-              { rightDisplayed ? rightDiv : null}
-            </div>
+            && (
+              <div
+                style={{
+                  display: 'flex',
+                  height: (topDisplayed || bottomDisplayed) ? '40%' : '100%',
+                  width: '100%',
+                }}
+              >
+                { leftDisplayed ? leftDiv : null }
+                { centerDisplayed ? centerDiv : null }
+                { rightDisplayed ? rightDiv : null}
+              </div>
+            )
           }
           { bottomDisplayed ? bottomDiv : null }
         </div>
@@ -2069,7 +2071,7 @@ class TiledPlot extends React.Component {
           return (
           <div
             key={pTrack.track.uid}
-            className={'tiled-plot-track-overlay'}
+            className="tiled-plot-track-overlay"
 
             // we want to remove the mouseOverOverlayUid so that next time we try
             // to choose an overlay track, the previously selected one isn't

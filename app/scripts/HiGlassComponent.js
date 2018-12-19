@@ -977,7 +977,7 @@ class HiGlassComponent extends React.Component {
     // https://bugzilla.mozilla.org/show_bug.cgi?id=700533
     const w = this.canvasElement.width;
     const h = this.canvasElement.height;
-    const dimensionedSvgString = `<svg width="${w}" height="${h}" ` + svgString.slice(4);
+    const dimensionedSvgString = `<svg width="${w}" height="${h}" ${svgString.slice(4)}`;
 
     return dimensionedSvgString;
   }
@@ -1041,9 +1041,6 @@ class HiGlassComponent extends React.Component {
         });
       }
     }
-
-    const [centerX, centerY, k] = scalesCenterAndK(xScale, yScale);
-    // console.log('tx, ty, k', [centerX, centerY, k]);
 
     if (this.zoomLocks[uid]) {
       // this view is locked to another
@@ -1751,26 +1748,26 @@ class HiGlassComponent extends React.Component {
 
     if (view.tracks.center && dictValues(view.tracks.center).length > 0) {
       if (!view.tracks.center[0].contents || view.tracks.center[0].contents.length > 0) {
-        let centerHeight = null;
-        let centerWidth = null;
+        let height = null;
+        let width = null;
 
         if (view.tracks.center[0].contents) {
           // combined track in the center
           for (const track of view.tracks.center[0].contents) {
-            centerHeight = Math.max(centerHeight, track.height
+            height = Math.max(height, track.height
               ? track.height : defaultCenterHeight);
-            centerWidth = Math.max(centerWidth, track.width
+            width = Math.max(width, track.width
               ? track.width : defaultCenterWidth);
           }
         } else {
-          centerHeight = view.tracks.center[0].height
+          height = view.tracks.center[0].height
             ? view.tracks.center[0].height : defaultCenterHeight;
-          centerWidth = view.tracks.center[0].width
+          width = view.tracks.center[0].width
             ? view.tracks.center[0].width : defaultCenterWidth;
         }
 
-        currHeight += centerHeight;
-        currWidth += centerWidth;
+        currHeight += height;
+        currWidth += width;
       }
     } else if (((view.tracks.top && dictValues(view.tracks.top).length > 1)
       || (view.tracks.bottom && dictValues(view.tracks.bottom).length > 1))
@@ -2546,12 +2543,10 @@ class HiGlassComponent extends React.Component {
       .catch((err) => {
         console.warn('err:', err);
       })
-      .then((_json) => {
-        return {
-          id: _json.uid,
-          url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
-        };
-      });
+      .then(_json => ({
+        id: _json.uid,
+        url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
+      }));
 
     if (!fromApi) {
       req
