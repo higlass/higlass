@@ -736,7 +736,9 @@ class GenomePositionSearchBox extends React.Component {
               key={item.refseqid}
               id={item.refseqid}
               style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
-            >{item.geneName}</div>
+            >
+              {item.geneName}
+            </div>
           )}
           renderMenu={this.handleRenderMenu.bind(this)}
           value={this.positionText}

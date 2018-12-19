@@ -5,7 +5,7 @@ import React from 'react';
 
 import { getDarkTheme } from './services/is-dark-theme';
 
-import styles from '../styles/DraggableDiv.module.scss'; // eslint-disable-line no-unused-vars
+import '../styles/DraggableDiv.module.scss';
 
 class DraggableDiv extends React.Component {
   constructor(props) {
