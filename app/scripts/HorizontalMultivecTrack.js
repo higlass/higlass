@@ -128,17 +128,14 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     return zoomIndexX;
   }
 
-  /*
-   * The local tile identifier.
+  /**
+   * Create the local tile identifier, which be used with the
+   * tile stores in TiledPixiTrack
    *
-   * tile contains [zoomLevel, xPos, yPos]
+   * @param {array} tile: [zoomLevel, xPos]
    */
   tileToLocalId(tile) {
-    if (tile.dataTransform && tile.dataTransform !== 'default') {
-      return `${tile.join('.')}.${tile.mirrored}.${tile.dataTransform}`;
-    }
-
-    return `${tile.join('.')}.${tile.mirrored}`;
+    return tile.join('.');
   }
 
   /**
@@ -148,7 +145,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
    * @param {array} tile: [zoomLevel, xPos]
    */
   tileToRemoteId(tile) {
-    return `${tile.join('.')}`;
+    return tile.join('.');
   }
 
   /**
