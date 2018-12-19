@@ -7,31 +7,11 @@ class TrackArea extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      controlsVisible: false,
-    };
+    this.state = {};
   }
 
   shouldComponentUpdate() {
     return !this.resizing;
-  }
-
-  handleMouseEnter() {
-    this.setState({
-      controlsVisible: true,
-    });
-  }
-
-  handleMouseLeave() {
-    this.setState({
-      controlsVisible: false,
-    });
-  }
-
-  handleMouseMove() {
-    this.setState({
-      controlsVisible: true,
-    });
   }
 
   getControls() {

@@ -24,8 +24,7 @@ class ContextMenuContainer extends React.Component {
     this.state = {
       orientation: this.props.orientation ? this.props.orientation : 'right',
       left: this.props.position.left,
-      top: this.props.position.top,
-      submenuShown: null
+      top: this.props.position.top
     };
   }
 
@@ -50,12 +49,7 @@ class ContextMenuContainer extends React.Component {
 
   /* ---------------------------- Custom Methods ---------------------------- */
 
-  handleItemMouseEnterWithRect(clientRect, series) {
-    this.setState({
-      submenuShown: series,
-      submenuSourceBbox: clientRect,
-    });
-  }
+  handleItemMouseEnterWithRect() {}
 
   handleItemMouseEnter(evt, series) {
     this.handleItemMouseEnterWithRect(
@@ -65,11 +59,7 @@ class ContextMenuContainer extends React.Component {
 
   handleMouseLeave() {}
 
-  handleOtherMouseEnter() {
-    this.setState({
-      submenuShown: null
-    });
-  }
+  handleOtherMouseEnter() {}
 
   /*
   handleSeriesMouseEnter(evt, uid) {

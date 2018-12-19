@@ -131,10 +131,6 @@ class GenomePositionSearchBox extends React.Component {
 
   onAutocompleteChange(evt, value) {
     this.positionText = value;
-    this.setState({
-      value,
-      loading: true
-    });
 
     this.changedPart = null;
     const spaceParts = value.split(/ /);
@@ -174,16 +170,12 @@ class GenomePositionSearchBox extends React.Component {
 
     if (this.changedPart !== null) {
       // if something has changed in the input text
-      this.setState({
-        loading: true
-      });
       // send out a request for the autcomplete suggestions
       let url = `${this.state.autocompleteServer}/suggest/`;
       url += `?d=${this.state.autocompleteId}&ac=${newParts[this.changedPart].toLowerCase()}`;
       tileProxy.json(url, (error, data) => {
         if (error) {
           this.setState({
-            loading: false,
             genes: []
           });
         } else if (this.changedPart > 0 && !changedAtStartOfWord) {
@@ -198,19 +190,17 @@ class GenomePositionSearchBox extends React.Component {
           tileProxy.json(url1, (error1, data1) => {
             if (error1) {
               this.setState({
-                loading: false,
                 genes: data,
               });
             } else {
               this.setState({
-                loading: false,
                 genes: data1.concat(data),
               });
             }
           }, this.props.pubSub);
         } else {
           // we've received a list of autocomplete suggestions
-          this.setState({ loading: false, genes: data });
+          this.setState({ genes: data });
         }
       }, this.props.pubSub);
     }
@@ -489,9 +479,6 @@ class GenomePositionSearchBox extends React.Component {
     this.prevParts = newValue.split(/[ -]/);
 
     this.positionText = newValue;
-    this.setState({
-      value: newValue,
-    });
   }
 
   replaceGenesWithPositions(finished) {
@@ -626,7 +613,7 @@ class GenomePositionSearchBox extends React.Component {
     this.prevParts = parts.join(' ').split(/[ -]/);
 
     this.positionText = parts.join(' ');
-    this.setState({ value: parts.join(' '), genes: [] });
+    this.setState({ genes: [] });
   }
 
   handleMenuVisibilityChange(isOpen, inputEl) {
@@ -636,10 +623,6 @@ class GenomePositionSearchBox extends React.Component {
       left: box.left,
       top: box.top + box.height,
     };
-
-    this.setState({
-      menuOpened: isOpen,
-    });
   }
 
   handleRenderMenu(items) {
