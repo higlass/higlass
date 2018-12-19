@@ -374,10 +374,12 @@ Autocomplete.defaultProps = {
   onSelect() {},
   renderMenu(items, value, style) {
     return (
+      /* eslint-disable react/no-this-in-sfc */
       <div
         children={items}
         style={{ ...style, ...this.menuStyle }}
       />
+      /* eslint-enable react/no-this-in-sfc */
     );
   },
   shouldItemRender() { return true; },
