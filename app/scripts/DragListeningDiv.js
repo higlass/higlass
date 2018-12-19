@@ -72,8 +72,8 @@ DragListeningDiv.defaultProps = {
 
 DragListeningDiv.propTypes = {
   enabled: PropTypes.bool,
-  style: PropTypes.obj,
-  draggingHappening: PropTypes.obj,
+  style: PropTypes.object,
+  draggingHappening: PropTypes.object,
   onTrackDropped: PropTypes.func,
   position: PropTypes.string.isRequired,
 };
