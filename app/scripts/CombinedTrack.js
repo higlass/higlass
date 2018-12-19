@@ -162,6 +162,7 @@ class CombinedTrack {
         childTrack.minValue(_);
       }
     }
+    return undefined;
   }
 
   maxValue(_) {
@@ -178,6 +179,7 @@ class CombinedTrack {
         childTrack.maxValue(_);
       }
     }
+    return undefined;
   }
 
   respondsToPosition(x, y) {

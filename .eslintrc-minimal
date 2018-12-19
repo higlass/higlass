@@ -32,7 +32,6 @@
   "rules": {
     // Turn a lot of rules off: We plan to fix one kind of error at a time, so we can remove these exceptions,
     // and eventually delete this file and just have one .exlintrc. 
-    "consistent-return": 0,
     "import/no-extraneous-dependencies": 0,
     "import/no-named-as-default": 0,
     "import/prefer-default-export": 0,
