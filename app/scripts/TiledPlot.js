@@ -710,34 +710,35 @@ class TiledPlot extends React.Component {
   }
 
   handleSortEnd(sortedTracks) {
-    // some tracks were reordered in the list so we need to reorder them in the original
-    // dataset
-    const tracks = this.state.tracks;
+    this.setState((prevState) => {
+      // some tracks were reordered in the list so we need to reorder them in the original
+      // dataset
+      const tracks = prevState.tracks;
 
-    // calculate the positions of the sortedTracks
-    const positions = {};
-    for (let i = 0; i < sortedTracks.length; i++) {
-      positions[sortedTracks[i].uid] = i;
-    }
-
-    for (const trackType in tracks) {
-      const theseTracks = tracks[trackType];
-      if (!theseTracks.length) { continue; }
-
-      if (theseTracks[0].uid in positions) {
-        const newTracks = new Array(theseTracks.length);
-        // this is the right track position
-        for (let i = 0; i < theseTracks.length; i++) {
-          newTracks[positions[theseTracks[i].uid]] = theseTracks[i];
-        }
-
-        tracks[trackType] = newTracks;
+      // calculate the positions of the sortedTracks
+      const positions = {};
+      for (let i = 0; i < sortedTracks.length; i++) {
+        positions[sortedTracks[i].uid] = i;
       }
-    }
 
-    this.setState({
-      tracks,
-      forceUpdate: Math.random(),
+      for (const trackType in tracks) {
+        const theseTracks = tracks[trackType];
+        if (!theseTracks.length) { continue; }
+
+        if (theseTracks[0].uid in positions) {
+          const newTracks = new Array(theseTracks.length);
+          // this is the right track position
+          for (let i = 0; i < theseTracks.length; i++) {
+            newTracks[positions[theseTracks[i].uid]] = theseTracks[i];
+          }
+
+          tracks[trackType] = newTracks;
+        }
+      }
+      return {
+        tracks,
+        forceUpdate: Math.random(),
+      };
     });
   }
 
