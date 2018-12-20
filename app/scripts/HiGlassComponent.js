@@ -2852,7 +2852,6 @@ class HiGlassComponent extends React.Component {
     this.refreshView();
 
     this.setState({
-      views: this.state.views,
       configMenuUid: null,
     });
   }
