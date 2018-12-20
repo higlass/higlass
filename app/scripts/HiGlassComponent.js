@@ -17,7 +17,7 @@ import ExportLinkModal from './ExportLinkModal';
 import ViewHeader from './ViewHeader';
 import ChromosomeInfo from './ChromosomeInfo';
 
-import { createSymbolIcon } from './symbol';
+import createSymbolIcon from './symbol';
 import { all as icons } from './icons';
 import createApi from './api';
 
