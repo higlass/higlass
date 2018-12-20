@@ -1372,16 +1372,18 @@ class TiledPlot extends React.Component {
     const scale = axis === 'x' ? this.xScale : this.yScale;
 
     return (range) => {
-      const newRangeSelection = this.state.is1dRangeSelection
-        ? [null, null] : this.state.rangeSelection.slice();
+      this.setState((prevState) => {
+        const newRangeSelection = prevState.is1dRangeSelection
+          ? [null, null] : prevState.rangeSelection.slice();
 
-      const accessor = !this.state.is1dRangeSelection && axis === 'y' ? 1 : 0;
+        const accessor = !prevState.is1dRangeSelection && axis === 'y' ? 1 : 0;
 
-      newRangeSelection[accessor] = this.rangeViewToDataLoci(range, scale);
+        newRangeSelection[accessor] = this.rangeViewToDataLoci(range, scale);
 
-      this.setState({
-        rangeSelection: newRangeSelection,
-        rangeSelectionEnd: false,
+        return {
+          rangeSelection: newRangeSelection,
+          rangeSelectionEnd: false,
+        };
       });
     };
   }

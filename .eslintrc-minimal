@@ -49,7 +49,7 @@
     "no-use-before-define": 0,
     "react/button-has-type": 0,
     "react/jsx-closing-tag-location": 0,
-    "react/no-access-state-in-setstate": 0,
+    "react/no-access-state-in-setstate": 0, // In progress...
     "react/no-array-index-key": 0,
     "react/no-children-prop": 0,
     "react/no-find-dom-node": 0,
