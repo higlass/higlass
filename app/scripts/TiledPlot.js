@@ -1327,41 +1327,43 @@ class TiledPlot extends React.Component {
     const scale = axis === 'x' ? this.xScale : this.yScale;
 
     return (range) => {
-      const newRangeSelection = this.state.is1dRangeSelection
-        ? [null, null] : this.state.rangeSelection.slice();
+      this.setState((prevState) => {
+        const newRangeSelection = prevState.is1dRangeSelection
+          ? [null, null] : prevState.rangeSelection.slice();
 
-      const accessor = !this.state.is1dRangeSelection && axis === 'y' ? 1 : 0;
+        const accessor = !this.state.is1dRangeSelection && axis === 'y' ? 1 : 0;
 
-      let dataPos = this.rangeViewToDataLoci(range, scale);
+        let dataPos = this.rangeViewToDataLoci(range, scale);
 
-      // Enforce range selection size constraints
-      const size = dataPos[1] - dataPos[0];
-      if (this.props.rangeSelection1dSize[0] > size) {
-        // Blow selection up
-        const center = dataPos[0] + (size / 2);
-        dataPos = [
-          center - (this.props.rangeSelection1dSize[0] / 2),
-          center + (this.props.rangeSelection1dSize[0] / 2)
-        ];
-      } else if (this.props.rangeSelection1dSize[1] < size) {
-        // Shrink selection
-        const center = dataPos[0] + (size / 2);
-        dataPos = [
-          center - (this.props.rangeSelection1dSize[1] / 2),
-          center + (this.props.rangeSelection1dSize[1] / 2)
-        ];
-      }
+        // Enforce range selection size constraints
+        const size = dataPos[1] - dataPos[0];
+        if (this.props.rangeSelection1dSize[0] > size) {
+          // Blow selection up
+          const center = dataPos[0] + (size / 2);
+          dataPos = [
+            center - (this.props.rangeSelection1dSize[0] / 2),
+            center + (this.props.rangeSelection1dSize[0] / 2)
+          ];
+        } else if (this.props.rangeSelection1dSize[1] < size) {
+          // Shrink selection
+          const center = dataPos[0] + (size / 2);
+          dataPos = [
+            center - (this.props.rangeSelection1dSize[1] / 2),
+            center + (this.props.rangeSelection1dSize[1] / 2)
+          ];
+        }
 
-      newRangeSelection[accessor] = dataPos;
+        newRangeSelection[accessor] = dataPos;
 
-      if (this.props.rangeSelectionToInt) {
-        newRangeSelection[accessor] = newRangeSelection[accessor]
-          .map(x => Math.round(x));
-      }
+        if (this.props.rangeSelectionToInt) {
+          newRangeSelection[accessor] = newRangeSelection[accessor]
+            .map(x => Math.round(x));
+        }
 
-      this.setState({
-        rangeSelection: newRangeSelection,
-        rangeSelectionEnd: true,
+        return {
+          rangeSelection: newRangeSelection,
+          rangeSelectionEnd: true,
+        };
       });
     };
   }
