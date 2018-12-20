@@ -15,7 +15,7 @@ import {
 // Utils
 import {
   removeHGComponent,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 import {
   viewer

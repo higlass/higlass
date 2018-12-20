@@ -2,10 +2,13 @@
 
 // Utils
 import {
-  waitForTilesLoaded,
   getTrackObjectFromHGC,
-  waitForTransitionsFinished,
 } from '../app/scripts/utils';
+
+import {
+  waitForTilesLoaded,
+  waitForTransitionsFinished,
+} from './utils/test-helpers';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';

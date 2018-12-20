@@ -11,7 +11,7 @@ import { expect } from 'chai';
 // Utils
 import {
   removeHGComponent,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 import {
   osmConf,

@@ -8,13 +8,15 @@ import Adapter from 'enzyme-adapter-react-16';
 
 // Utils
 import {
-  mountHGComponent,
-  removeHGComponent,
   getTrackObjectFromHGC,
-  waitForTransitionsFinished,
-  waitForTilesLoaded,
 } from '../app/scripts/utils';
 
+import {
+  mountHGComponent,
+  removeHGComponent,
+  waitForTransitionsFinished,
+  waitForTilesLoaded,
+} from './utils/test-helpers';
 
 import {
   simpleCenterViewConfig,

@@ -9,10 +9,13 @@ import { expect } from 'chai';
 import Adapter from 'enzyme-adapter-react-16';
 
 import {
-  mountHGComponent,
-  removeHGComponent,
   getTrackObjectFromHGC
 } from '../app/scripts/utils';
+
+import {
+  mountHGComponent,
+  removeHGComponent,
+} from './utils/test-helpers';
 
 configure({ adapter: new Adapter() });
 

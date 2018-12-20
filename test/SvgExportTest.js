@@ -11,7 +11,7 @@ import { expect } from 'chai';
 import {
   mountHGComponent,
   removeHGComponent,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 const baseConf = {
   views: [

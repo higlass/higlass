@@ -9,10 +9,6 @@ export { default as SVGTrack } from './SVGTrack';
 
 // export functions that are useful for testing
 export {
-  waitForJsonComplete,
-  waitForTilesLoaded,
-  waitForTransitionsFinished,
-  mountHGComponent,
   getTrackObjectFromHGC,
 } from './utils';
 

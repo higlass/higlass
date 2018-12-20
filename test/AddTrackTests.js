@@ -18,7 +18,7 @@ import {
   removeHGComponent,
   waitForTilesLoaded,
   waitForJsonComplete,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 configure({ adapter: new Adapter() });
 

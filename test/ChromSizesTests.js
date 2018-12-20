@@ -10,10 +10,13 @@ import { expect } from 'chai';
 
 // Utils
 import {
+  getTrackObjectFromHGC
+} from '../app/scripts/utils';
+
+import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 const viewconf = {
   editable: true,

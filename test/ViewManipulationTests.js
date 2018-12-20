@@ -13,7 +13,7 @@ import {
   mountHGComponent,
   removeHGComponent,
   waitForTilesLoaded,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 configure({ adapter: new Adapter() });
 

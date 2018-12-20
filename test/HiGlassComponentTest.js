@@ -23,10 +23,13 @@ import {
   getTrackByUid,
   getTrackObjectFromHGC,
   getTiledPlot,
+} from '../app/scripts/utils';
+
+import {
   waitForJsonComplete,
   waitForTilesLoaded,
   waitForTransitionsFinished,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 // View configs
 import {

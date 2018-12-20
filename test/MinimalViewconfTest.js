@@ -9,7 +9,7 @@ import { expect } from 'chai';
 import {
   mountHGComponent,
   removeHGComponent,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 configure({ adapter: new Adapter() });
 describe('Minimal viewconfs', () => {

@@ -7,10 +7,12 @@ import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 // Utils
 import {
-  mountHGComponent,
-  // removeHGComponent,
-  getTrackObjectFromHGC,
+  getTrackObjectFromHGC
 } from '../app/scripts/utils';
+
+import {
+  mountHGComponent,
+} from './utils/test-helpers';
 
 configure({ adapter: new Adapter() });
 describe('Minimal viewconfs', () => {

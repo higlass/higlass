@@ -1,9 +1,12 @@
 /* eslint-env node, jasmine */
 import {
   some,
+} from '../app/scripts/utils';
+
+import {
   waitForTransitionsFinished,
   waitForTilesLoaded,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 import {
   emptyConf,

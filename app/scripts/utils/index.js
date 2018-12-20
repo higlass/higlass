@@ -72,10 +72,3 @@ export {
   getTrackRenderer,
   getTiledPlot,
 } from './get-higlass-components';
-export {
-  waitForJsonComplete,
-  waitForTilesLoaded,
-  waitForTransitionsFinished,
-  mountHGComponent,
-  removeHGComponent,
-} from './test-helpers';

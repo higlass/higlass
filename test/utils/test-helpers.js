@@ -4,14 +4,14 @@ import {
 
 import ReactDOM from 'react-dom';
 
-import { requestsInFlight } from '../services';
+import { requestsInFlight } from '../../app/scripts/services';
 
 import {
   getTrackObjectFromHGC,
   getTrackRenderer,
-} from './get-higlass-components';
+} from '../../app/scripts/utils/get-higlass-components';
 
-import HiGlassComponent from '../HiGlassComponent';
+import HiGlassComponent from '../../app/scripts/HiGlassComponent';
 
 const TILE_LOADING_CHECK_INTERVAL = 100;
 
