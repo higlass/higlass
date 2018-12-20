@@ -1576,8 +1576,7 @@ class HiGlassComponent extends React.Component {
 
   forceRefreshView() {
     // force everything to rerender
-
-    this.setState(this.state);
+    this.setState(this.state); // eslint-disable-line react/no-access-state-in-setstate
   }
 
   refreshView(timeout = SHORT_DRAG_TIMEOUT) {
@@ -1926,13 +1925,15 @@ class HiGlassComponent extends React.Component {
 
     // if this view was zoom locked to another, we need to unlock it
     this.handleUnlock(uid, this.zoomLocks);
-    delete this.state.views[uid];
-
-    const viewsByUid = this.removeInvalidTracks(this.state.views);
 
     // might want to notify the views that they're beig closed
-    this.setState({
-      views: viewsByUid,
+    this.setState((prevState) => {
+      delete prevState.views[uid];
+
+      const viewsByUid = this.removeInvalidTracks(prevState.views);
+      return {
+        views: viewsByUid,
+      };
     });
   }
 
