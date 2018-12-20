@@ -1971,9 +1971,9 @@ class HiGlassComponent extends React.Component {
       }
     }
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
   }
 
   handleNoTrackAdded() {
@@ -2019,9 +2019,9 @@ class HiGlassComponent extends React.Component {
     trackConfig.uid = slugid.nice();
     trackConfig.type = newType;
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
   }
 
   /**
@@ -2045,9 +2045,9 @@ class HiGlassComponent extends React.Component {
     trackConfig.uid = slugid.nice();
     trackConfig.data = newData;
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
   }
 
   /**
@@ -2240,9 +2240,9 @@ class HiGlassComponent extends React.Component {
     this.storeTrackSizes(viewId);
     this.adjustLayoutToTrackSizes(this.state.views[viewId]);
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
 
     return this.state.views;
   }
@@ -2691,9 +2691,9 @@ class HiGlassComponent extends React.Component {
 
     this.state.views[newView.uid] = newView;
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
   }
 
   /**
@@ -2870,9 +2870,9 @@ class HiGlassComponent extends React.Component {
     track.options = Object.assign(track.options, newOptions);
 
     if (this.mounted) {
-      this.setState({
-        views: this.state.views,
-      });
+      this.setState(prevState => ({
+        views: prevState.views,
+      }));
     }
   }
 
@@ -2886,9 +2886,9 @@ class HiGlassComponent extends React.Component {
     view.options = Object.assign(view.options || {}, newOptions);
 
     if (this.mounted) {
-      this.setState({
-        views: this.state.views,
-      });
+      this.setState(prevState => ({
+        views: prevState.views,
+      }));
     }
   }
 
