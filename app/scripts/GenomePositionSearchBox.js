@@ -748,6 +748,7 @@ class GenomePositionSearchBox extends React.Component {
         <button
           onClick={this.buttonClick.bind(this)}
           styleName={classNameButton}
+          type="button"
         >
           <Glyphicon glyph="search" />
         </button>
