@@ -34,23 +34,26 @@ class HeatmapOptions extends React.Component {
     this.props.onSubmit(this.props.track.options);
   }
 
+  /**
+   * Add a color to the end
+   */
   handleAddColor() {
-    /**
-         * Add a color to the end
-         */
-    this.setState({
-      colors: this.state.colors.concat(this.state.colors[this.state.colors.length - 1]),
-    });
+    this.setState(prevState => ({
+      colors: prevState.colors.concat(
+        prevState.colors[prevState.colors.length - 1]
+      ),
+    }));
   }
 
+  /**
+   * Remove one of the colors from the color map
+   */
   handleRemoveColor(i) {
-    /**
-         * Remove one of the colors from the color map
-         */
-
-    this.setState({
-      colors: this.state.colors.slice(0, i).concat(this.state.colors.slice(i + 1)),
-    });
+    this.setState(prevState => ({
+      colors: prevState.colors.slice(0, i).concat(
+        prevState.colors.slice(i + 1)
+      ),
+    }));
   }
 
   render() {

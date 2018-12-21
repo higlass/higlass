@@ -710,34 +710,35 @@ class TiledPlot extends React.Component {
   }
 
   handleSortEnd(sortedTracks) {
-    // some tracks were reordered in the list so we need to reorder them in the original
-    // dataset
-    const tracks = this.state.tracks;
+    this.setState((prevState) => {
+      // some tracks were reordered in the list so we need to reorder them in the original
+      // dataset
+      const tracks = prevState.tracks;
 
-    // calculate the positions of the sortedTracks
-    const positions = {};
-    for (let i = 0; i < sortedTracks.length; i++) {
-      positions[sortedTracks[i].uid] = i;
-    }
-
-    for (const trackType in tracks) {
-      const theseTracks = tracks[trackType];
-      if (!theseTracks.length) { continue; }
-
-      if (theseTracks[0].uid in positions) {
-        const newTracks = new Array(theseTracks.length);
-        // this is the right track position
-        for (let i = 0; i < theseTracks.length; i++) {
-          newTracks[positions[theseTracks[i].uid]] = theseTracks[i];
-        }
-
-        tracks[trackType] = newTracks;
+      // calculate the positions of the sortedTracks
+      const positions = {};
+      for (let i = 0; i < sortedTracks.length; i++) {
+        positions[sortedTracks[i].uid] = i;
       }
-    }
 
-    this.setState({
-      tracks,
-      forceUpdate: Math.random(),
+      for (const trackType in tracks) {
+        const theseTracks = tracks[trackType];
+        if (!theseTracks.length) { continue; }
+
+        if (theseTracks[0].uid in positions) {
+          const newTracks = new Array(theseTracks.length);
+          // this is the right track position
+          for (let i = 0; i < theseTracks.length; i++) {
+            newTracks[positions[theseTracks[i].uid]] = theseTracks[i];
+          }
+
+          tracks[trackType] = newTracks;
+        }
+      }
+      return {
+        tracks,
+        forceUpdate: Math.random(),
+      };
     });
   }
 
@@ -1327,41 +1328,43 @@ class TiledPlot extends React.Component {
     const scale = axis === 'x' ? this.xScale : this.yScale;
 
     return (range) => {
-      const newRangeSelection = this.state.is1dRangeSelection
-        ? [null, null] : this.state.rangeSelection.slice();
+      this.setState((prevState) => {
+        const newRangeSelection = prevState.is1dRangeSelection
+          ? [null, null] : prevState.rangeSelection.slice();
 
-      const accessor = !this.state.is1dRangeSelection && axis === 'y' ? 1 : 0;
+        const accessor = !this.state.is1dRangeSelection && axis === 'y' ? 1 : 0;
 
-      let dataPos = this.rangeViewToDataLoci(range, scale);
+        let dataPos = this.rangeViewToDataLoci(range, scale);
 
-      // Enforce range selection size constraints
-      const size = dataPos[1] - dataPos[0];
-      if (this.props.rangeSelection1dSize[0] > size) {
-        // Blow selection up
-        const center = dataPos[0] + (size / 2);
-        dataPos = [
-          center - (this.props.rangeSelection1dSize[0] / 2),
-          center + (this.props.rangeSelection1dSize[0] / 2)
-        ];
-      } else if (this.props.rangeSelection1dSize[1] < size) {
-        // Shrink selection
-        const center = dataPos[0] + (size / 2);
-        dataPos = [
-          center - (this.props.rangeSelection1dSize[1] / 2),
-          center + (this.props.rangeSelection1dSize[1] / 2)
-        ];
-      }
+        // Enforce range selection size constraints
+        const size = dataPos[1] - dataPos[0];
+        if (this.props.rangeSelection1dSize[0] > size) {
+          // Blow selection up
+          const center = dataPos[0] + (size / 2);
+          dataPos = [
+            center - (this.props.rangeSelection1dSize[0] / 2),
+            center + (this.props.rangeSelection1dSize[0] / 2)
+          ];
+        } else if (this.props.rangeSelection1dSize[1] < size) {
+          // Shrink selection
+          const center = dataPos[0] + (size / 2);
+          dataPos = [
+            center - (this.props.rangeSelection1dSize[1] / 2),
+            center + (this.props.rangeSelection1dSize[1] / 2)
+          ];
+        }
 
-      newRangeSelection[accessor] = dataPos;
+        newRangeSelection[accessor] = dataPos;
 
-      if (this.props.rangeSelectionToInt) {
-        newRangeSelection[accessor] = newRangeSelection[accessor]
-          .map(x => Math.round(x));
-      }
+        if (this.props.rangeSelectionToInt) {
+          newRangeSelection[accessor] = newRangeSelection[accessor]
+            .map(x => Math.round(x));
+        }
 
-      this.setState({
-        rangeSelection: newRangeSelection,
-        rangeSelectionEnd: true,
+        return {
+          rangeSelection: newRangeSelection,
+          rangeSelectionEnd: true,
+        };
       });
     };
   }
@@ -1372,16 +1375,18 @@ class TiledPlot extends React.Component {
     const scale = axis === 'x' ? this.xScale : this.yScale;
 
     return (range) => {
-      const newRangeSelection = this.state.is1dRangeSelection
-        ? [null, null] : this.state.rangeSelection.slice();
+      this.setState((prevState) => {
+        const newRangeSelection = prevState.is1dRangeSelection
+          ? [null, null] : prevState.rangeSelection.slice();
 
-      const accessor = !this.state.is1dRangeSelection && axis === 'y' ? 1 : 0;
+        const accessor = !prevState.is1dRangeSelection && axis === 'y' ? 1 : 0;
 
-      newRangeSelection[accessor] = this.rangeViewToDataLoci(range, scale);
+        newRangeSelection[accessor] = this.rangeViewToDataLoci(range, scale);
 
-      this.setState({
-        rangeSelection: newRangeSelection,
-        rangeSelectionEnd: false,
+        return {
+          rangeSelection: newRangeSelection,
+          rangeSelectionEnd: false,
+        };
       });
     };
   }

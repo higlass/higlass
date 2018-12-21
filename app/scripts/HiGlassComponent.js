@@ -1576,8 +1576,7 @@ class HiGlassComponent extends React.Component {
 
   forceRefreshView() {
     // force everything to rerender
-
-    this.setState(this.state);
+    this.setState(this.state); // eslint-disable-line react/no-access-state-in-setstate
   }
 
   refreshView(timeout = SHORT_DRAG_TIMEOUT) {
@@ -1926,13 +1925,15 @@ class HiGlassComponent extends React.Component {
 
     // if this view was zoom locked to another, we need to unlock it
     this.handleUnlock(uid, this.zoomLocks);
-    delete this.state.views[uid];
-
-    const viewsByUid = this.removeInvalidTracks(this.state.views);
 
     // might want to notify the views that they're beig closed
-    this.setState({
-      views: viewsByUid,
+    this.setState((prevState) => {
+      delete prevState.views[uid];
+
+      const viewsByUid = this.removeInvalidTracks(prevState.views);
+      return {
+        views: viewsByUid,
+      };
     });
   }
 
@@ -1971,9 +1972,9 @@ class HiGlassComponent extends React.Component {
       }
     }
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
   }
 
   handleNoTrackAdded() {
@@ -2019,9 +2020,9 @@ class HiGlassComponent extends React.Component {
     trackConfig.uid = slugid.nice();
     trackConfig.type = newType;
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
   }
 
   /**
@@ -2045,9 +2046,9 @@ class HiGlassComponent extends React.Component {
     trackConfig.uid = slugid.nice();
     trackConfig.data = newData;
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
   }
 
   /**
@@ -2240,9 +2241,9 @@ class HiGlassComponent extends React.Component {
     this.storeTrackSizes(viewId);
     this.adjustLayoutToTrackSizes(this.state.views[viewId]);
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
 
     return this.state.views;
   }
@@ -2691,9 +2692,9 @@ class HiGlassComponent extends React.Component {
 
     this.state.views[newView.uid] = newView;
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
   }
 
   /**
@@ -2852,7 +2853,6 @@ class HiGlassComponent extends React.Component {
     this.refreshView();
 
     this.setState({
-      views: this.state.views,
       configMenuUid: null,
     });
   }
@@ -2870,9 +2870,9 @@ class HiGlassComponent extends React.Component {
     track.options = Object.assign(track.options, newOptions);
 
     if (this.mounted) {
-      this.setState({
-        views: this.state.views,
-      });
+      this.setState(prevState => ({
+        views: prevState.views,
+      }));
     }
   }
 
@@ -2886,9 +2886,9 @@ class HiGlassComponent extends React.Component {
     view.options = Object.assign(view.options || {}, newOptions);
 
     if (this.mounted) {
-      this.setState({
-        views: this.state.views,
-      });
+      this.setState(prevState => ({
+        views: prevState.views,
+      }));
     }
   }
 
