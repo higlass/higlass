@@ -7,7 +7,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const UnminifiedWebpackPlugin = require('unminified-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-
+const SassOptimizer = require('./scripts/sass-optimizer.js');
 
 const packageJson = require('./package.json');
 
@@ -32,6 +32,7 @@ module.exports = (env, argv) => ({
       path.resolve(__dirname, 'app'),
       path.resolve(__dirname, 'docs', 'examples'),
       path.resolve(__dirname, 'node_modules'),
+      path.resolve(__dirname, 'lib', 'vendor')
     ],
     publicPath: '/'
   },
@@ -215,6 +216,7 @@ module.exports = (env, argv) => ({
     new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
     new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
     new MiniCssExtractPlugin('hglib.css'),
+    new SassOptimizer('*.scss'),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new UnminifiedWebpackPlugin(),
     // new BundleAnalyzerPlugin(),

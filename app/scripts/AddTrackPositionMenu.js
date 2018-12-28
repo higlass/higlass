@@ -12,7 +12,7 @@ class AddTrackPositionMenu extends React.Component {
 
     return (
       <div>
-        <div styleName="add-track-position-span">{'Add Track...'}</div>
+        <div styleName="add-track-position-span">Add Track...</div>
         <table styleName={tableStyleNames}>
           <tbody>
             <tr style={{ height: '30px' }}>

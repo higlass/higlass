@@ -13,8 +13,10 @@ function contextMenu(menu, opts) {
   let initialPos = null;
   let parentStart = null;
 
-  let openCallback,
-    closeCallback;
+  let openCallback;
+
+
+  let closeCallback;
 
   if (typeof opts === 'function') {
     openCallback = opts;
@@ -72,8 +74,8 @@ function contextMenu(menu, opts) {
     const currentThis = this;
 
     if (useMouse) {
-      if (rootElement == null) { mousePos = mouse(this); } else { mousePos = mouse(rootElement); } // for recursive menus, we need the mouse
-      // position relative to another element
+      mousePos = mouse(rootElement === null ? this : rootElement);
+      // for recursive menus, we need the mouse position relative to another element
     }
 
     clickAway = clickAwayFunc;
@@ -136,7 +138,7 @@ function contextMenu(menu, opts) {
         select(this)
           .classed('d3-context-menu-selected', true);
 
-        if (openChildMenuUid != null) {
+        if (openChildMenuUid !== null) {
           // there's a child menu open
 
           // unselect all items
@@ -153,7 +155,7 @@ function contextMenu(menu, opts) {
             return;
           }
 
-          if (d.childUid == openChildMenuUid) {
+          if (d.childUid === openChildMenuUid) {
             // the correct child menu is already open
             return;
           }
@@ -171,11 +173,13 @@ function contextMenu(menu, opts) {
           const boundingRect = this.getBoundingClientRect();
 
           let childrenContextMenu = null;
-          if (orientation == 'left') {
-            childrenContextMenu = contextMenu(d.children, { rootElement: currentThis,
+          if (orientation === 'left') {
+            childrenContextMenu = contextMenu(d.children, {
+              rootElement: currentThis,
               pos: [boundingRect.left + window.pageXOffset,
                 boundingRect.top - 2 + window.pageYOffset],
-              orientation: 'left' });
+              orientation: 'left'
+            });
           } else {
             childrenContextMenu = contextMenu(d.children,
               {
@@ -183,7 +187,8 @@ function contextMenu(menu, opts) {
                   boundingRect.top - 2 + window.pageYOffset],
                 rootElement: currentThis,
                 parentStart: [boundingRect.left + window.pageXOffset,
-                  boundingRect.top - 2 + window.pageYOffset] });
+                  boundingRect.top - 2 + window.pageYOffset]
+              });
           }
 
           d.childUid = childrenContextMenu.apply(this, [data, i, true,
@@ -196,7 +201,7 @@ function contextMenu(menu, opts) {
           .classed('d3-context-menu-selected', true);
       })
       .on('mouseleave', function (d, i) {
-        if (openChildMenuUid == null) {
+        if (openChildMenuUid === null) {
           select(this)
             .classed('d3-context-menu-selected', false);
         }
@@ -222,7 +227,7 @@ function contextMenu(menu, opts) {
     const contextMenuSelection = select(`.d3-context-menu-${uid}`)
       .style('display', 'block');
 
-    if (initialPos == null) {
+    if (initialPos === null) {
       select(`.d3-context-menu-${uid}`)
         .style('left', `${d3.event.pageX - 2}px`)
         .style('top', `${d3.event.pageY - 2}px`);
@@ -235,16 +240,16 @@ function contextMenu(menu, opts) {
     // check if the menu disappears off the side of the window
     const boundingRect = contextMenuSelection.node().getBoundingClientRect();
 
-    if (boundingRect.left + boundingRect.width > window.innerWidth || orientation == 'left') {
+    if (boundingRect.left + boundingRect.width > window.innerWidth || orientation === 'left') {
       orientation = 'left';
 
       // menu goes of the end of the window, position it the other way
-      if (initialPos == null) {
+      if (initialPos === null) {
         // place the menu where the user clicked
         select(`.d3-context-menu-${uid}`)
           .style('left', `${d3.event.pageX - 2 - boundingRect.width}px`)
           .style('top', `${d3.event.pageY - 2}px`);
-      } else if (parentStart != null) {
+      } else if (parentStart !== null) {
         select(`.d3-context-menu-${uid}`)
           .style('left', `${parentStart[0] - boundingRect.width}px`)
           .style('top', `${parentStart[1]}px`);

@@ -1,9 +1,9 @@
-import { mix } from './mixwith';
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { mix } from './mixwith';
 
-import {expandCombinedTracks} from './utils';
+import { expandCombinedTracks } from './utils';
 import { getSeriesItems } from './SeriesListItems';
 
 import ContextMenuItem from './ContextMenuItem';
@@ -27,8 +27,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
       ? React.Children.map(this.props.customItems,
         child => React.cloneElement(
           child, { onMouseEnter: (e) => { this.handleOtherMouseEnter(e); } }
-        )
-      )
+        ))
       : null;
 
     let styleNames = 'context-menu';
@@ -89,23 +88,27 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
         <hr styleName="context-menu-hr" />
 
         {
-          this.hasMatrixTrack(this.props.tracks) &&
-          <ContextMenuItem
-            onMouseEnter={e => this.handleOtherMouseEnter(e)}
-            onClick={ this.handleAddHorizontalSection.bind(this) }
-          >
-            {'Add Horizontal Cross Section'}
-          </ContextMenuItem>
+          this.hasMatrixTrack(this.props.tracks)
+          && (
+            <ContextMenuItem
+              onClick={this.handleAddHorizontalSection.bind(this)}
+              onMouseEnter={e => this.handleOtherMouseEnter(e)}
+            >
+              {'Add Horizontal Cross Section'}
+            </ContextMenuItem>
+          )
         }
         {
-          this.hasMatrixTrack(this.props.tracks) &&
+          this.hasMatrixTrack(this.props.tracks)
 
-          <ContextMenuItem
-            onMouseEnter={e => this.handleOtherMouseEnter(e)}
-            onClick={ this.handleAddVerticalSection.bind(this) }
-          >
-            {'Add Vertical Cross Section'}
-          </ContextMenuItem>
+          && (
+            <ContextMenuItem
+              onClick={this.handleAddVerticalSection.bind(this)}
+              onMouseEnter={e => this.handleOtherMouseEnter(e)}
+            >
+              {'Add Vertical Cross Section'}
+            </ContextMenuItem>
+          )
         }
 
         { /* from the SeriesListSubmenuMixin */ }
@@ -118,12 +121,12 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
 
   hasMatrixTrack(tracks) {
     const trackList = expandCombinedTracks(this.props.tracks);
-    return trackList.filter(track => track.type == 'heatmap').length > 0;
+    return trackList.filter(track => track.type === 'heatmap').length > 0;
   }
 
   handleAddHorizontalSection() {
     const trackList = expandCombinedTracks(this.props.tracks);
-    const matrixTrack = trackList.filter(track => track.type == 'heatmap')[0];
+    const matrixTrack = trackList.filter(track => track.type === 'heatmap')[0];
 
     this.props.onAddTrack({
       type: 'horizontal-rule',
@@ -131,24 +134,24 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
       position: 'whole',
     });
     this.props.onAddTrack({
-      "data": {
-        "type": "horizontal-section",
-        "server": matrixTrack.server,
-        "tilesetUid": matrixTrack.tilesetUid,
-        "slicePos":this.props.coords[1],
+      data: {
+        type: 'horizontal-section',
+        server: matrixTrack.server,
+        tilesetUid: matrixTrack.tilesetUid,
+        slicePos: this.props.coords[1],
       },
-      "options": {
+      options: {
         valueScaling: 'log',
       },
-      "type": "horizontal-bar",
-      "height": 30,
-      "position": "top",
+      type: 'horizontal-bar',
+      height: 30,
+      position: 'top',
     });
   }
 
   handleAddVerticalSection() {
     const trackList = expandCombinedTracks(this.props.tracks);
-    const matrixTrack = trackList.filter(track => track.type == 'heatmap')[0];
+    const matrixTrack = trackList.filter(track => track.type === 'heatmap')[0];
 
     this.props.onAddTrack({
       type: 'vertical-rule',
@@ -156,18 +159,18 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
       position: 'whole',
     });
     this.props.onAddTrack({
-      "data": {
-        "type": "vertical-section",
-        "server": matrixTrack.server,
-        "tilesetUid": matrixTrack.tilesetUid,
-        "slicePos":this.props.coords[0],
+      data: {
+        type: 'vertical-section',
+        server: matrixTrack.server,
+        tilesetUid: matrixTrack.tilesetUid,
+        slicePos: this.props.coords[0],
       },
-      "options": {
+      options: {
         valueScaling: 'log',
       },
-      "type": "vertical-bar",
-      "height": 30,
-      "position": "left",
+      type: 'vertical-bar',
+      height: 30,
+      position: 'left',
     });
   }
 }

@@ -391,11 +391,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // Fritz: I am disabling ESLint here twice because moving the slash onto the
     // next line breaks my editors style template somehow.
     const startPercent = (
-      (startDomain - axisValueScale.domain()[0]) /  // eslint-disable-line operator-linebreak
+      (startDomain - axisValueScale.domain()[0]) / // eslint-disable-line operator-linebreak
       (axisValueScale.domain()[1] - axisValueScale.domain()[0])
     );
     const endPercent = (
-      (endDomain - axisValueScale.domain()[0]) /  // eslint-disable-line operator-linebreak
+      (endDomain - axisValueScale.domain()[0]) / // eslint-disable-line operator-linebreak
       (axisValueScale.domain()[1] - axisValueScale.domain()[0])
     );
 
@@ -490,7 +490,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // Not sure which we really want.
     // isNaN(undefined) === true
     // Number.isNaN(undefined) === false
-    if (isNaN(this.valueScale.domain()[0])  // eslint-disable-line no-restricted-globals
+    if (isNaN(this.valueScale.domain()[0]) // eslint-disable-line no-restricted-globals
       || isNaN(this.valueScale.domain()[1])) { // eslint-disable-line no-restricted-globals
       return;
     }
@@ -927,7 +927,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     // no data present
-    if (this.scale.minValue == null || this.scale.maxValue == null) {
+    if (this.scale.minValue === null || this.scale.maxValue === null) {
       return;
     }
 

@@ -48,7 +48,7 @@ specified in the viewconf. It is a work in progress.
 Genome Position Search Box
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The genome position search box section a view config is specific to each view.
+The genome position search box section of a view config is specific to each view.
 It is used to search for locations in the view. The full configuration has a
 pointer to a chromSizes file and an autocomplete source which will provide
 suggestions for gene names. The autocomplete source should point to a `gene-
@@ -98,7 +98,7 @@ trackSourceServers
 
 The field `trackSourceServers` at the root level of the viewconf tells higlass
 where it can find tracks to load. If you have a local instance running, then
-`http://localhost/api/v1` should be included. Our public instance at
+`http://localhost:8989/api/v1` should be included. Our public instance at
 `http://higlass.io` also provides access to a number of public datasets.
 
 .. code-block:: javascript
@@ -155,7 +155,7 @@ Track Data Sources
 ------------------
 
 Tracks can load data from two sources: data stored on a higlass server,
-identified by a server and ``tilesetUid`` or data stored at an http-accessible
+ie, identified by a server and ``tilesetUid``, or data stored at an http-accessible
 url and read through a higlass server. The latter approach is still currently
 experimental.
 

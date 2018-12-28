@@ -1,5 +1,8 @@
 ## v1.3.0
 
+- Added the ability to specify default track options through the API
+- Added nesting to the tileset finder so that tilesets can be grouped together into categories
+- Added the `axisLabelFormatting` option to 1d quantitative tracks
 - Added TiledPixiTrack.on event handler
 - Added getTrackObject to exports
 - Added support for overlay tracks

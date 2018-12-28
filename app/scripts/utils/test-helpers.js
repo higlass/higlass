@@ -128,28 +128,23 @@ export const isWaitingOnTiles = (hgc) => {
   for (const track of hgc.iterateOverTracks()) {
     let trackObj = getTrackObjectFromHGC(hgc, track.viewId, track.trackId);
 
-    if (
-      track.track.type === 'viewport-projection-vertical'
-      || track.track.type === 'viewport-projection-horizontal'
-      || track.track.type === 'viewport-projection-center'
-      || track.track.type === 'osm-tiles'
-      || track.track.type === 'osm-2d-tile-ids'
-      || track.track.type === 'horizontal-1d-annotations'
-      || track.track.type === 'vertical-1d-annotations'
-      || track.track.type === '2d-chromosome-annotations'
-    ) continue;
+    if (!track.track.server && !track.track.tilesetUid) {
+      continue;
+    } else if (track.track.server && track.track.tilesetUid) {
+      if (trackObj.originalTrack) { trackObj = trackObj.originalTrack; }
 
-    if (trackObj.originalTrack) { trackObj = trackObj.originalTrack; }
+      if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
+        console.warn(
+          `Track uuid:${trackObj.uuid} has no tileset or chromosome info`
+        );
+        return true;
+      }
 
-    if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
-      console.warn(
-        `Track uuid:${trackObj.uuid} has no tileset or chromosome info`
-      );
-      return true;
-    }
-
-    if (trackObj.fetching && trackObj.fetching.size) {
-      return true;
+      if (trackObj.fetching && trackObj.fetching.size) {
+        return true;
+      }
+    } else {
+      throw Error('"server" and "tilesetUid" belong together');
     }
   }
 

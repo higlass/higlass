@@ -24,8 +24,8 @@ class Autocomplete extends React.Component {
         if (!itemsLength) return;
         const { highlightedIndex } = this.state;
         const index = (
-          highlightedIndex === null ||
-          highlightedIndex === itemsLength - 1
+          highlightedIndex === null
+          || highlightedIndex === itemsLength - 1
         ) ? 0 : highlightedIndex + 1;
         this._performAutoCompleteOnKeyUp = true;
         this.setState({
@@ -40,8 +40,8 @@ class Autocomplete extends React.Component {
         if (!itemsLength) return;
         const { highlightedIndex } = this.state;
         const index = (
-          highlightedIndex === 0 ||
-          highlightedIndex === null
+          highlightedIndex === 0
+          || highlightedIndex === null
         ) ? itemsLength - 1 : highlightedIndex - 1;
         this._performAutoCompleteOnKeyUp = true;
         this.setState({
@@ -54,15 +54,17 @@ class Autocomplete extends React.Component {
         if (this.state.isOpen === false) {
           // menu is closed so there is no selection to accept -> do nothing
 
-        } else if (this.state.highlightedIndex == null) {
-          // input has focus but no menu item is selected + enter is hit -> close the menu, highlight whatever's in input
+        } else if (this.state.highlightedIndex === null) {
+          // input has focus but no menu item is selected + enter is hit
+          // -> close the menu, highlight whatever's in input
           this.setState({
             isOpen: false,
           }, () => {
             this.inputEl.select();
           });
         } else {
-          // text entered + menu item has been highlighted + enter is hit -> update value to that of selected menu item, close the menu
+          // text entered + menu item has been highlighted + enter is hit
+          // -> update value to that of selected menu item, close the menu
           event.preventDefault();
           const item = this.getFilteredItems()[this.state.highlightedIndex];
           const value = this.props.getItemValue(item);
@@ -106,11 +108,11 @@ class Autocomplete extends React.Component {
     this._performAutoCompleteOnUpdate = true;
     // If `items` has changed we want to reset `highlightedIndex`
     // since it probably no longer refers to a relevant item
-    if (this.props.items !== nextProps.items ||
+    if (this.props.items !== nextProps.items
       // The entries in `items` may have been changed even though the
       // object reference remains the same, double check by seeing
       // if `highlightedIndex` points to an existing item
-      this.state.highlightedIndex >= nextProps.items.length) {
+      || this.state.highlightedIndex >= nextProps.items.length) {
       this.setState({ highlightedIndex: null });
     }
   }
@@ -144,7 +146,9 @@ class Autocomplete extends React.Component {
   }
 
   handleKeyDown(event) {
-    if (this.keyDownHandlers[event.key]) { this.keyDownHandlers[event.key].call(this, event); } else {
+    if (this.keyDownHandlers[event.key]) {
+      this.keyDownHandlers[event.key].call(this, event);
+    } else {
       this.setState({
         highlightedIndex: null,
         isOpen: true,
@@ -188,8 +192,8 @@ class Autocomplete extends React.Component {
     const { highlightedIndex } = this.state;
     const items = this.getFilteredItems();
     if (items.length === 0) { return; }
-    const matchedItem = highlightedIndex !== null ?
-      items[highlightedIndex] : items[0];
+    const matchedItem = highlightedIndex !== null
+      ? items[highlightedIndex] : items[0];
     const itemValue = this.props.getItemValue(matchedItem);
     const itemValueDoesMatch = (itemValue.toLowerCase().indexOf(
       this.props.value.toLowerCase(),
@@ -238,7 +242,8 @@ class Autocomplete extends React.Component {
         { cursor: 'default' },
       );
       return React.cloneElement(element, {
-        onMouseDown: () => this.setIgnoreBlur(true), // Ignore blur to prevent menu from de-rendering before we can process click
+        onMouseDown: () => this.setIgnoreBlur(true),
+        // Ignore blur to prevent menu from de-rendering before we can process click
         onMouseEnter: () => this.highlightItemFromMouse(index),
         onClick: () => this.selectItemFromMouse(item),
         ref: `item-${index}`,
@@ -279,14 +284,18 @@ class Autocomplete extends React.Component {
 
   isInputFocused() {
     return (
-      this.inputEl.ownerDocument &&
-      (this.inputEl === this.inputEl.ownerDocument.activeElement)
+      this.inputEl.ownerDocument
+      && (this.inputEl === this.inputEl.ownerDocument.activeElement)
     );
   }
 
   handleInputClick() {
     // Input will not be focused if it's disabled
-    if (this.isInputFocused() && this.state.isOpen === false) { this.setState({ isOpen: true }); } else if (this.state.highlightedIndex !== null && !this._ignoreClick) { this.selectItemFromMouse(this.getFilteredItems()[this.state.highlightedIndex]); }
+    if (this.isInputFocused() && this.state.isOpen === false) {
+      this.setState({ isOpen: true });
+    } else if (this.state.highlightedIndex !== null && !this._ignoreClick) {
+      this.selectItemFromMouse(this.getFilteredItems()[this.state.highlightedIndex]);
+    }
     this._ignoreClick = false;
   }
 
@@ -344,7 +353,9 @@ class Autocomplete extends React.Component {
         {('open' in this.props ? this.props.open : this.state.isOpen) && this.renderMenu()}
         {this.props.debug && (
           <pre style={{ marginLeft: 300 }}>
-            {JSON.stringify(_debugStates.slice(_debugStates.length - 5, _debugStates.length), null, 2)}
+            {JSON.stringify(
+              _debugStates.slice(_debugStates.length - 5, _debugStates.length), null, 2
+            )}
           </pre>
         )}
       </div>

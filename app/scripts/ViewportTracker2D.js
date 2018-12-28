@@ -143,7 +143,8 @@ class ViewportTracker2D extends SVGTrack {
     const sW = this.options.strokeWidth;
 
     this.gBorder
-    .attr('d', `M${x0} ${y0} H ${x1} V ${y1} H ${x0} V ${y0 - sW} H ${x0 - sW} V ${y1 + sW} H ${x1 + sW} V ${y0 - sW} H ${x0 - sW} V ${y0}`);
+    .attr('d', `M${x0} ${y0} H ${x1} V ${y1} H ${x0} V ${y0 - sW} H ${x0 - sW}
+                V ${y1 + sW} H ${x1 + sW} V ${y0 - sW} H ${x0 - sW} V ${y0}`);
 
   */
   }

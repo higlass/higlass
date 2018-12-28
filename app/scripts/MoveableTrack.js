@@ -4,15 +4,14 @@ import React from 'react';
 import DraggableDiv from './DraggableDiv';
 import TrackArea from './TrackArea';
 
-import { isWithin } from './utils';
-
-
-const checkMousePosVsEl = (x, y, el) => {
-  const bBox = el.getBoundingClientRect();
-  return isWithin(
-    x, y, bBox.left, bBox.left + bBox.width, bBox.top, bBox.top + bBox.height
-  );
-};
+// See commented out block in "render()".
+//
+// const checkMousePosVsEl = (x, y, el) => {
+//   const bBox = el.getBoundingClientRect();
+//   return isWithin(
+//     x, y, bBox.left, bBox.left + bBox.width, bBox.top, bBox.top + bBox.height
+//   );
+// };
 
 class MoveableTrack extends TrackArea {
   constructor(props) {
@@ -43,17 +42,16 @@ class MoveableTrack extends TrackArea {
         }}
       >
         <DraggableDiv
-          height={this.props.height}
           key={this.props.uid}
-          resizeHandles={this.props.editable ?
-            this.props.resizeHandles : new Set()
+          height={this.props.height}
+          resizeHandles={this.props.editable
+            ? this.props.resizeHandles : new Set()
           }
-          sizeChanged={stuff =>
-            this.props.handleResizeTrack(
-              this.props.uid,
-              stuff.width,
-              stuff.height,
-            )
+          sizeChanged={stuff => this.props.handleResizeTrack(
+            this.props.uid,
+            stuff.width,
+            stuff.height,
+          )
           }
           style={{ background: 'transparent' }}
           uid={this.props.uid}

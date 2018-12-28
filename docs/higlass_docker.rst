@@ -4,7 +4,7 @@ Docker
 Running locally
 ----------------
 
-HiGlass can also be run locally as a docker container. The [higlass-docker](https://github.com/hms-dbmi/higlass-docker) repository contains detailed information about how to set it up and run it.
+HiGlass can also be run locally as a docker container. The [higlass-docker](https://github.com/higlass/higlass-docker) repository contains detailed information about how to set it up and run it.
 
 The simple example below stops any running higlass containers, removes them, pulls the latest version and runs it.
 
@@ -13,7 +13,7 @@ The simple example below stops any running higlass containers, removes them, pul
   docker stop higlass-container; 
   docker rm higlass-container;
 
-  docker pull gehlenborglab/higlass:v0.4.17 # higher versions are experimental and may or may not work
+  docker pull gehlenborglab/higlass:v0.4.33 # higher versions are experimental and may or may not work
 
 
   docker run --detach \
@@ -24,7 +24,7 @@ The simple example below stops any running higlass containers, removes them, pul
            gehlenborglab/higlass:v0.4.17
 
 
-The higlass website should now be visible at ``http://localhost:8989``. Take a look at the documentation for `adding a new track <https://github.com/hms-dbmi/higlass/wiki/Common-Tasks#adding-a-new-track>`_ to see how to display data.
+The higlass website should now be visible at ``http://localhost:8989``. Take a look at the documentation for `adding a new track <https://github.com/higlass/higlass/wiki/Common-Tasks#adding-a-new-track>`_ to see how to display data.
 
 Running remotely
 ----------------

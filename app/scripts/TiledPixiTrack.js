@@ -2,7 +2,7 @@ import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
 import * as PIXI from 'pixi.js';
-import { parseChromsizesRows } from './ChromosomeInfo.js';
+import { parseChromsizesRows } from './ChromosomeInfo';
 
 import DataFetcher from './DataFetcher';
 import PixiTrack from './PixiTrack';
@@ -799,7 +799,7 @@ class TiledPixiTrack extends PixiTrack {
     let margin = inMargin;
 
     if (margin === null || typeof margin === 'undefined') {
-      margin = 6;  // set a default value
+      margin = 6; // set a default value
     }
 
     let minDimension = Math.min(this.dimensions[1] - margin, margin);

@@ -1,5 +1,5 @@
 const webpackConfig = require('./webpack.config.js');
-require('babel-polyfill');  // eslint-disable-line import/no-extraneous-dependencies
+require('babel-polyfill'); // eslint-disable-line import/no-extraneous-dependencies
 
 module.exports = (config) => {
   config.set({
@@ -13,8 +13,12 @@ module.exports = (config) => {
       'node_modules/pixi.js/dist/pixi.js',
       'node_modules/react-bootstrap/dist/react-bootstrap.js',
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
+      'node_modules/font-awesome/css/font-awesome.css',
       'build/hglib.css',
       'test/**/*.+(js|jsx)',
+      // 'test/RuleTests.js',
+      // 'test/MinimalViewconfTest.js'
+      // 'test/AxisTests.js',
       // 'test/PngExportTest.js',
       // 'test/OSMTests.js',
       // 'test/TiledPixiTrackTests.js',

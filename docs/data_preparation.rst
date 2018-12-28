@@ -217,7 +217,7 @@ as columns:
     chr3    198022430
     ...
 
-Chromosome sizes can be import into the higlass server using the ``--filetype chromsizes-tsv`` and ``--datatype chromsizes`` parameters. A ``coordSystem`` should be included to identify the assembly that these chromosomes define.
+Chromosome sizes can be imported into the higlass server using the ``--filetype chromsizes-tsv`` and ``--datatype chromsizes`` parameters. A ``coordSystem`` should be included to identify the assembly that these chromosomes define.
 
 | ``ingest_tileset --filetype chromsizes-tsv --datatype chromsizes --coordSystem hg19 chromSizes.tsv``
 
@@ -338,7 +338,7 @@ Processing
     # output -> geneid \t refseq_id
 
     cat ~/data/genbank-data/${ASSEMBLY}/gene2refseq \
-        | awk -F $'\t' '{ split($4,a,"."); if (a[1] != "-") print $2 "\t" a[1];}' \
+        | awk -F $'\t' '{ split($4,a,"."); if (a[1] !== "-") print $2 "\t" a[1];}' \
         | sort \
         | uniq  \
         > ~/data/genbank-data/${ASSEMBLY}/geneid_refseqid

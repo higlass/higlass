@@ -159,8 +159,13 @@ datatype: ``vector``
 
 Line tracks display 1D vector data. Because each line segment requires two
 adjacent points to be present, data with lots of NaNs may lead to a fragmented
-plot. For such data, the :ref:`bar track <bar-track>` or :ref:`point track <point-track>` may be more
-appropriate.
+plot. For such data, the :ref:`bar track <bar-track>` or :ref:`point track
+<point-track>` may be more appropriate.
+
+Options
+--------
+
+**axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
 
 .. _bar-track:
 
@@ -174,6 +179,11 @@ track-type: ``horizontal-bar``
 datatype: ``vector``
 
 Bar tracks display 1D vector data as bars.
+
+Options
+--------
+
+**axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
 
 **Demos:**
 
@@ -193,6 +203,11 @@ datatype: ``vector``
 Point tracks display 1D vector data. Unlike :ref:`line tracks <line-track>`,
 they are well suited to data with NaNs because they do not require two points
 to draw something.
+
+Options
+--------
+
+**axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
 
 .. _1d-heatmap:
 

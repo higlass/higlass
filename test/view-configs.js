@@ -1,3 +1,37 @@
+export const emptyConf = {
+  editable: true,
+  zoomFixed: false,
+  trackSourceServers: [],
+  exportViewUrl: '',
+  views: [
+    {
+      uid: 'aa',
+      initialXDomain: [0, 100],
+      autocompleteSource: '',
+      genomePositionSearchBox: {},
+      chromInfoPath: '',
+      tracks: {
+        top: [],
+        left: [],
+        center: [],
+        right: [],
+        bottom: [],
+        whole: [],
+        gallery: []
+      },
+      layout: {
+        w: 12,
+        h: 12,
+        x: 0,
+        y: 0,
+        moved: false,
+        static: false
+      },
+      genomePositionSearchBoxVisible: true
+    }
+  ],
+};
+
 export const osmConf = {
   editable: true,
   zoomFixed: false,
@@ -1104,8 +1138,6 @@ export const divisionViewConfig = {
                 name: 'Chromosome Grid (hg19)',
                 chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
                 thumbnail: null,
-                server: '',
-                tilesetUid: 'TIlwFtqxTX-ndtM7Y9k1bw',
                 uid: 'LUVqXXu2QYiO8XURIwyUyA',
                 options: {
                   lineStrokeWidth: 1,
@@ -1174,8 +1206,6 @@ export const simpleCenterViewConfig = {
             name: 'Top Axis',
             thumbnail: {},
             defaultOptions: {},
-            server: '',
-            tilesetUid: 'UKZhWC_FSCG1xHlN0c2bqQ',
             uid: 'd8focpO5TKKd2TB8QONd9w',
             options: {},
             width: 20,
@@ -1191,8 +1221,6 @@ export const simpleCenterViewConfig = {
             name: 'Left Axis',
             thumbnail: {},
             minWidth: 100,
-            server: '',
-            tilesetUid: 'Np6Sa4zwQa6bERCm5xBnGA',
             uid: 'RhdSji35SgOOJyqcy81zcg',
             options: {},
             width: 100,
@@ -1401,8 +1429,6 @@ export const rectangleDomains = {
                 name: 'Chromosome Grid (hg19)',
                 chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
                 thumbnail: null,
-                server: '',
-                tilesetUid: 'TIlwFtqxTX-ndtM7Y9k1bw',
                 uid: 'LUVqXXu2QYiO8XURIwyUyA',
                 options: {
                   lineStrokeWidth: 1,
@@ -8542,8 +8568,6 @@ export const valueIntervalTrackViewConf = {
             name: 'Chromosome Axis (mm9)',
             chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
             thumbnail: null,
-            server: '',
-            tilesetUid: 'bdM4fbUGQVuAv09iWcOefQ',
             uid: 'K8ctyFcBQGCXnHBSeCQpaQ',
             options: {},
             width: 20,
@@ -8581,8 +8605,6 @@ export const valueIntervalTrackViewConf = {
             // server: 'http://higlass.io/api/v1',
             // tilesetUid: 'N12wVGG9SPiTkk03yUayUw',
             thumbnail: null,
-            server: '',
-            tilesetUid: 'HZ8jVQNAQFCd4DCcWPrR8A',
             uid: 'Boe4m22pQwS2D7QqVpaV6w',
             options: {},
             width: 30,
@@ -8837,7 +8859,7 @@ export const paperFigure1 = {
     tracks: {
       bottom: [],
       top: [{
-        orientation: '1d-horizontal', name: 'Chromosome Axis (mm9)', tilesetUid: 'cGSJELSNRyOaExsJL0KejQ', local: true, minHeight: 30, thumbnail: null, server: '', width: 462, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'top', height: 30, type: 'horizontal-chromosome-labels', options: {}, uid: 'EsCrHgpLQoSO8fJo8PX-9w'
+        orientation: '1d-horizontal', name: 'Chromosome Axis (mm9)', local: true, minHeight: 30, thumbnail: null, width: 462, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'top', height: 30, type: 'horizontal-chromosome-labels', options: {}, uid: 'EsCrHgpLQoSO8fJo8PX-9w'
       }, {
         name: 'Gene Annotations (mm9)',
         maxWidth: 4294967296,
@@ -8933,7 +8955,7 @@ export const paperFigure1 = {
         options: {}
       }],
       left: [{
-        orientation: '1d-vertical', name: 'Chromosome Axis (mm9)', tilesetUid: 'BmjsajIaREq4P3lXQGsmXw', local: true, minHeight: 30, thumbnail: null, server: '', minWidth: 30, width: 30, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'left', height: 30, type: 'vertical-chromosome-labels', options: {}, uid: 'NlkjnKsoSGmfsrWKRfgBYA'
+        orientation: '1d-vertical', name: 'Chromosome Axis (mm9)', local: true, minHeight: 30, thumbnail: null, minWidth: 30, width: 30, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'left', height: 30, type: 'vertical-chromosome-labels', options: {}, uid: 'NlkjnKsoSGmfsrWKRfgBYA'
       }]
     },
     chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv',
@@ -8949,7 +8971,7 @@ export const paperFigure1 = {
     tracks: {
       bottom: [],
       top: [{
-        orientation: '1d-horizontal', name: 'Chromosome Axis (mm19)', tilesetUid: 'W1N2NIDPRZSckKMlHAKzwA', local: true, minHeight: 30, thumbnail: null, server: '', width: 472, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'top', height: 30, type: 'horizontal-chromosome-labels', options: {}, uid: 'AWcBqpmASpmA01tpfgwWOg'
+        orientation: '1d-horizontal', name: 'Chromosome Axis (mm19)', local: true, minHeight: 30, thumbnail: null, width: 472, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'top', height: 30, type: 'horizontal-chromosome-labels', options: {}, uid: 'AWcBqpmASpmA01tpfgwWOg'
       }, {
         name: 'Gene Annotations (mm9)',
         maxWidth: 4294967296,
@@ -9017,7 +9039,7 @@ export const paperFigure1 = {
         options: {}
       }],
       left: [{
-        orientation: '1d-vertical', name: 'Chromosome Axis (mm9)', tilesetUid: 'WeUIOO4oQO6FO6g2PWPhnw', local: true, minHeight: 30, thumbnail: null, server: '', minWidth: 30, width: 30, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'left', height: 30, type: 'vertical-chromosome-labels', options: {}, uid: 'UqH0mt73TqSebs_nFzqHvw'
+        orientation: '1d-vertical', name: 'Chromosome Axis (mm9)', local: true, minHeight: 30, thumbnail: null, minWidth: 30, width: 30, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'left', height: 30, type: 'vertical-chromosome-labels', options: {}, uid: 'UqH0mt73TqSebs_nFzqHvw'
       }, {
         name: 'Schwarzer et al (2016) NIPBL H3K27ac (chr14)',
         maxWidth: 134217728,
@@ -9075,7 +9097,7 @@ export const paperFigure1 = {
         },
         uid: 'M2YZ4JBQSWS0rR--oiDKhA'
       }, {
-        orientation: '1d-horizontal', name: 'Chromosome Axis (mm9)', tilesetUid: 'cGSJELSNRyOaExsJL0KejQ', local: true, minHeight: 30, thumbnail: null, server: '', width: 615, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'top', height: 30, type: 'horizontal-chromosome-labels', options: {}, uid: 'EsCrHgpLQoSO8fJo8PX-9w'
+        orientation: '1d-horizontal', name: 'Chromosome Axis (mm9)', local: true, minHeight: 30, thumbnail: null, width: 615, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'top', height: 30, type: 'horizontal-chromosome-labels', options: {}, uid: 'EsCrHgpLQoSO8fJo8PX-9w'
       }],
       right: [],
       center: [{
@@ -9110,7 +9132,7 @@ export const paperFigure1 = {
         options: {}
       }],
       left: [{
-        orientation: '1d-vertical', name: 'Chromosome Axis (mm9)', tilesetUid: 'fs487zYMSMG5XLPXsakQ3g', local: true, minHeight: 30, thumbnail: null, server: '', minWidth: 30, width: 30, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'left', height: 30, type: 'vertical-chromosome-labels', options: {}, uid: 'aiYnl3phRPCMfwyKxKaSow'
+        orientation: '1d-vertical', name: 'Chromosome Axis (mm9)', local: true, minHeight: 30, thumbnail: null, minWidth: 30, width: 30, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'left', height: 30, type: 'vertical-chromosome-labels', options: {}, uid: 'aiYnl3phRPCMfwyKxKaSow'
       }]
     },
     chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv',
@@ -9140,7 +9162,7 @@ export const paperFigure1 = {
         },
         uid: 'Fw793pB8RGOBLJETFtQLsQ'
       }, {
-        orientation: '1d-horizontal', name: 'Chromosome Axis (mm19)', tilesetUid: 'W1N2NIDPRZSckKMlHAKzwA', local: true, minHeight: 30, thumbnail: null, server: '', width: 615, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'top', height: 30, type: 'horizontal-chromosome-labels', options: {}, uid: 'AWcBqpmASpmA01tpfgwWOg'
+        orientation: '1d-horizontal', name: 'Chromosome Axis (mm19)', local: true, minHeight: 30, thumbnail: null, width: 615, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'top', height: 30, type: 'horizontal-chromosome-labels', options: {}, uid: 'AWcBqpmASpmA01tpfgwWOg'
       }],
       right: [],
       center: [{
@@ -9175,7 +9197,7 @@ export const paperFigure1 = {
         options: {}
       }],
       left: [{
-        orientation: '1d-vertical', name: 'Chromosome Axis (mm9)', tilesetUid: 'Wf4p2PxkQNqy5EC5RzhanQ', local: true, minHeight: 30, thumbnail: null, server: '', minWidth: 30, width: 76, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'left', height: 324, type: 'vertical-chromosome-labels', options: {}, uid: 'XRk4dwN7QGyMpfvd06k1bA'
+        orientation: '1d-vertical', name: 'Chromosome Axis (mm9)', local: true, minHeight: 30, thumbnail: null, minWidth: 30, width: 76, chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv', position: 'left', height: 324, type: 'vertical-chromosome-labels', options: {}, uid: 'XRk4dwN7QGyMpfvd06k1bA'
       }]
     },
     chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv',

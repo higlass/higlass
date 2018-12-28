@@ -15,7 +15,7 @@ export default class ConfigureSeriesMenu extends ContextMenuContainer {
           left: this.state.left,
           top: this.state.top,
         }}
-        styleName={'context-menu'}
+        styleName="context-menu"
       />
     );
   }
