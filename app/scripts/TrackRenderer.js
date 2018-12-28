@@ -1224,6 +1224,16 @@ class TrackRenderer extends React.Component {
       };
     }
 
+    if (track.fileUrl) {
+      dataConfig.fileUrl = track.fileUrl;
+
+      if (!track.filetype) {
+        console.warn('fileUrl present without fileType:', track);
+      } else {
+        dataConfig.filetype = track.filetype;
+      }
+    }
+
     // To simplify the context creation via ES6 object shortcuts.
     const context = {
       pubSub: this.props.pubSub,
