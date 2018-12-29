@@ -371,11 +371,13 @@ export default class DataFetcher {
         const xTilePos = +parts[1];
         const yTilePos = +parts[2];
 
-        const [tilePos, sliceIndex] = tileProxy.calculateTileAndPosInTile(this.dataConfig.tilesetInfo,
+        const [tilePos, sliceIndex] = tileProxy.calculateTileAndPosInTile(
+          this.dataConfig.tilesetInfo,
           this.dataConfig.tilesetInfo.max_width,
           this.dataConfig.tilesetInfo.min_pos[1],
           zoomLevel,
-          +this.dataConfig.slicePos);
+          +this.dataConfig.slicePos
+        );
 
         const fullTileId = this.fullTileId(tilesetUid, newTileIds[i]);
         const tile = returnedTiles[fullTileId];
