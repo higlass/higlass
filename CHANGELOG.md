@@ -1,3 +1,7 @@
+## v1.3.1
+
+- Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
+
 ## v1.3.0
 
 - Added the ability to specify default track options through the API
