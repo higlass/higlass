@@ -82,7 +82,7 @@ describe('Simple HiGlassComponent', () => {
       const viewconf = component.getViewsAsJson();
       const trackConf = viewconf.views[0].tracks.top[0];
 
-      expect(trackConf.options.showTooltip).toEqual(false);
+      expect(trackConf.options.showTooltip).toEqual(undefined);
       // expect(Object.keys(component.viewHeaders).length).toBeGreaterThan(0);
     });
 
