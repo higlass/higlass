@@ -36,7 +36,7 @@ describe('Simple HiGlassComponent', () => {
     it('creates a track with default options', () => {
       [div, api] = createElementAndApi(simpleCenterViewConfig,
         {
-          defaultOptions: {
+          defaultTrackOptions: {
             all: {
               showTooltip: true,
             }
