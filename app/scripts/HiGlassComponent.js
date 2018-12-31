@@ -583,7 +583,6 @@ class HiGlassComponent extends React.Component {
 
     const trackOptions = track.options ? track.options : {};
 
-    console.log('options', this.props.options)
     if (this.props.options.defaultTrackOptions) {
       if (this.props.options.defaultTrackOptions.trackSpecific
         && this.props.options.defaultTrackOptions.trackSpecific[track.type]) {
