@@ -541,7 +541,9 @@ class GenomePositionSearchBox extends React.Component {
       const searchFieldValue = this.positionText;
 
       if (this.searchField !== null) {
-        let [range1, range2] = this.searchField.searchPosition(searchFieldValue);
+        const rangePair = this.searchField.searchPosition(searchFieldValue);
+        const range1 = rangePair[0];
+        let range2 = rangePair[1];
 
         if (!range1) {
           this.setPositionText(this.origPositionText);
@@ -734,7 +736,9 @@ class GenomePositionSearchBox extends React.Component {
               key={item.refseqid}
               id={item.refseqid}
               style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
-            >{item.geneName}</div>
+            >
+              {item.geneName}
+            </div>
           )}
           renderMenu={this.handleRenderMenu.bind(this)}
           value={this.positionText}
@@ -744,6 +748,7 @@ class GenomePositionSearchBox extends React.Component {
         <button
           onClick={this.buttonClick.bind(this)}
           styleName={classNameButton}
+          type="button"
         >
           <Glyphicon glyph="search" />
         </button>

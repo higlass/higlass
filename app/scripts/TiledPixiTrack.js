@@ -438,21 +438,21 @@ class TiledPixiTrack extends PixiTrack {
   minValue(_) {
     if (_) {
       this.scale.minValue = _;
-    } else {
-      return this.valueScaleMin !== null
-        ? this.valueScaleMin
-        : this.scale.minValue;
+      return this;
     }
+    return this.valueScaleMin !== null
+      ? this.valueScaleMin
+      : this.scale.minValue;
   }
 
   maxValue(_) {
     if (_) {
       this.scale.maxValue = _;
-    } else {
-      return this.valueScaleMax !== null
-        ? this.valueScaleMax
-        : this.scale.maxValue;
+      return this;
     }
+    return this.valueScaleMax !== null
+      ? this.valueScaleMax
+      : this.scale.maxValue;
   }
 
   minRawValue() {
@@ -708,22 +708,17 @@ class TiledPixiTrack extends PixiTrack {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    const values = [].concat.apply(
-      [],
-      visibleAndFetchedIds
-        .filter(x => this.fetchedTiles[x].tileData.dense)
-        .map(x => Array.from(this.fetchedTiles[x].tileData.dense))
-    ).filter(x => x > 0);
+    const values = [].concat(...visibleAndFetchedIds
+      .filter(x => this.fetchedTiles[x].tileData.dense)
+      .map(x => Array.from(this.fetchedTiles[x].tileData.dense))).filter(x => x > 0);
 
     this.medianVisibleValue = median(values);
     return this.medianVisibleValue;
   }
 
   allVisibleValues() {
-    return [].concat.apply(
-      [],
-      this.visibleAndFetchedIds().map(x => Array.from(this.fetchedTiles[x].tileData.dense))
-    );
+    return [].concat(...this.visibleAndFetchedIds()
+      .map(x => Array.from(this.fetchedTiles[x].tileData.dense)));
   }
 
   minVisibleValue(ignoreFixedScale = false) {

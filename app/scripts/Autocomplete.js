@@ -260,7 +260,7 @@ class Autocomplete extends React.Component {
   }
 
   handleInputBlur() {
-    this.props.onFocus && this.props.onFocus();
+    if (this.props.onFocus) { this.props.onFocus(); }
     if (this._ignoreBlur) { return; }
     this.setState({
       isOpen: false,
@@ -269,7 +269,7 @@ class Autocomplete extends React.Component {
   }
 
   handleInputFocus() {
-    this.props.onFocus && this.props.onFocus(true);
+    if (this.props.onFocus) { this.props.onFocus(true); }
     if (this._ignoreBlur) {
       this.setIgnoreBlur(false);
       return;
@@ -323,6 +323,7 @@ class Autocomplete extends React.Component {
       >
         <input
           {...inputProps}
+          ref={el => this.inputEl = el}
           aria-autocomplete="list"
           autoComplete="off"
           onBlur={this.composeEventHandlers(
@@ -346,7 +347,6 @@ class Autocomplete extends React.Component {
             this.handleKeyUp.bind(this),
             inputProps.onKeyUp && inputProps.onKeyUp.bind(this),
           )}
-          ref={el => this.inputEl = el}
           role="combobox"
           value={this.props.value}
         />
@@ -374,10 +374,12 @@ Autocomplete.defaultProps = {
   onSelect() {},
   renderMenu(items, value, style) {
     return (
+      /* eslint-disable react/no-this-in-sfc */
       <div
         children={items}
         style={{ ...style, ...this.menuStyle }}
       />
+      /* eslint-enable react/no-this-in-sfc */
     );
   },
   shouldItemRender() { return true; },

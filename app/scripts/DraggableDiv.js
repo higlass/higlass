@@ -5,7 +5,7 @@ import React from 'react';
 
 import { getDarkTheme } from './services/is-dark-theme';
 
-import styles from '../styles/DraggableDiv.module.scss'; // eslint-disable-line no-unused-vars
+import '../styles/DraggableDiv.module.scss';
 
 class DraggableDiv extends React.Component {
   constructor(props) {
@@ -155,7 +155,6 @@ class DraggableDiv extends React.Component {
       : this.dragStartLeft + this.dragStartWidth - this.minWidth;
 
     this.setState({
-      top: this.state.top,
       left: newLeft,
       width: newWidth,
       height: newHeight
@@ -175,8 +174,6 @@ class DraggableDiv extends React.Component {
     newHeight = newHeight > this.minHeight ? newHeight : this.minHeight;
 
     this.setState({
-      top: this.state.top,
-      left: this.state.left,
       width: newWidth,
       height: newHeight
     });
@@ -202,7 +199,6 @@ class DraggableDiv extends React.Component {
 
     this.setState({
       top: newTop,
-      left: this.state.left,
       width: newWidth,
       height: newHeight
     });

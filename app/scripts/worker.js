@@ -147,13 +147,12 @@ function float32(h) {
    * values should be encoded as float32
    */
 
-  let hExp; let
-    hSig;
-  let fSgn; let fExp; let
-    fSig;
+  let hExp = h & 0x7c00;
+  let hSig;
+  let fExp;
+  let fSig;
 
-  hExp = (h & 0x7c00);
-  fSgn = (h & 0x8000) << 16;
+  const fSgn = (h & 0x8000) << 16;
   switch (hExp) {
     case 0x0000: /* 0 or subnormal */
       hSig = (h & 0x03ff);
@@ -279,10 +278,7 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
   })
     .then(response => response.json())
     .then((data) => {
-      data = tileResponseToData(data, server, theseTileIds);
-
-      done(data);
-
+      done(tileResponseToData(data, server, theseTileIds));
       /*
       const denses = Object.values(data)
         .filter(x => x.dense)
