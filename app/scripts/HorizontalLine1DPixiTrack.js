@@ -287,6 +287,22 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     return [base, track];
   }
+
+  tileToLocalId(tile) {
+    // tile
+    if (this.options.summary && this.options.summary !== 'mean') {
+      return `${tile.join('.')}.${this.options.summary}`;
+    }
+    return `${tile.join('.')}`;
+  }
+
+  tileToRemoteId(tile) {
+    // tile
+    if (this.options.summary && this.options.summary !== 'mean') {
+      return `${tile.join('.')}.${this.options.summary}`;
+    }
+    return `${tile.join('.')}`;
+  }
 }
 
 export default HorizontalLine1DPixiTrack;
