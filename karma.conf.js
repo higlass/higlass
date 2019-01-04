@@ -22,7 +22,7 @@ module.exports = (config) => {
       // 'test/AxisTests.js',
       // 'test/PngExportTest.js',
       // 'test/OSMTests.js',
-      // 'test/TiledPixiTrackTests.js',
+      'test/TiledPixiTrackTests.js',
       // 'test/ViewManipulationTests.js',
       // 'test/ChromSizesTests.js',
       // 'test/ViewportProjectionTests.js',

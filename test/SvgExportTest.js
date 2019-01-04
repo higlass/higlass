@@ -53,7 +53,12 @@ describe('SVG Export', () => {
       options.scaleEndPercent = 1;
       options.heatmapValueScaling = 'log';
       ([div, hgc] = mountHGComponent(div, hgc, viewConf,
-        done));
+        done,
+        {
+          style: 'width:800px; height:800px; background-color: lightgreen',
+          bounded: true,
+        })
+      );
     });
 
     it('scales correctly', () => {
