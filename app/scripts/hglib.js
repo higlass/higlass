@@ -58,7 +58,7 @@ const launch = (element, config, options) => {
  * * **editable** *(bool)* - Can the layout be changed? If false, the view headers will
   be hidden. This can also be specified in the viewconfig using the ``editable`` option.
   The value passed here overrides the value in the viewconf. [default=true]
- * * **defaultOptions** *(dict)* - Specify a set of default options that will be used for
+ * * **defaultTrackOptions** *(dict)* - Specify a set of default options that will be used for
  *  newly added tracks. These can be broken down into two types: `all` - affecting all
  *  all track types and `trackSpecific` which will affect only some track types. See the
  *  example below for a concrete demonstration.
@@ -75,7 +75,7 @@ const launch = (element, config, options) => {
  *  document.getElementById('development-demo'),
  *  testViewConfig,
  *  { bounded: true,
- *   defaultOptions: {
+ *   defaultTrackOptions: {
  *     all: {
  *       showTooltip: true,
  *     },

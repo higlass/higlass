@@ -36,7 +36,7 @@ describe('Simple HiGlassComponent', () => {
     it('creates a track with default options', () => {
       [div, api] = createElementAndApi(simpleCenterViewConfig,
         {
-          defaultOptions: {
+          defaultTrackOptions: {
             all: {
               showTooltip: true,
             }
@@ -59,7 +59,7 @@ describe('Simple HiGlassComponent', () => {
       const viewconf = component.getViewsAsJson();
       const trackConf = viewconf.views[0].tracks.top[0];
 
-      expect(trackConf.options.showTooltip).toEqual(true);
+      expect(trackConf.options.showTooltip).toEqual(undefined);
       // expect(Object.keys(component.viewHeaders).length).toBeGreaterThan(0);
     });
 
