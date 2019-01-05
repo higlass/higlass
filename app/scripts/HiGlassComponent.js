@@ -576,7 +576,7 @@ class HiGlassComponent extends React.Component {
    *
    * @param {array} track The track to add default options to
    */
-  addDefaultOptions(track) {
+  addDefaultTrackOptions(track) {
     const trackInfo = this.getTrackInfo(track.type);
     if (!trackInfo) return;
 
@@ -586,12 +586,12 @@ class HiGlassComponent extends React.Component {
 
     const trackOptions = track.options ? track.options : {};
 
-    if (this.props.options.defaultOptions) {
-      if (this.props.options.defaultOptions.trackSpecific
-        && this.props.options.defaultOptions.trackSpecific[track.type]) {
+    if (this.props.options.defaultTrackOptions) {
+      if (this.props.options.defaultTrackOptions.trackSpecific
+        && this.props.options.defaultTrackOptions.trackSpecific[track.type]) {
         // track specific options take precedence over all options
 
-        const options = this.props.options.defaultOptions.trackSpecific[track.type];
+        const options = this.props.options.defaultTrackOptions.trackSpecific[track.type];
 
         for (const optionName in options) {
           track.options[optionName] = typeof (track.options[optionName]) !== 'undefined'
@@ -600,8 +600,8 @@ class HiGlassComponent extends React.Component {
         }
       }
 
-      if (this.props.options.defaultOptions.all) {
-        const options = this.props.options.defaultOptions.all;
+      if (this.props.options.defaultTrackOptions.all) {
+        const options = this.props.options.defaultTrackOptions.all;
 
         for (const optionName in options) {
           track.options[optionName] = typeof (track.options[optionName]) !== 'undefined'
@@ -2063,14 +2063,14 @@ class HiGlassComponent extends React.Component {
    *  describing this track
    */
   handleTrackAdded(viewId, newTrack, position, host = null) {
-    this.addDefaultOptions(newTrack);
+    this.addDefaultTrackOptions(newTrack);
 
     // make sure the new track has a uid
     if (!newTrack.uid) newTrack.uid = slugid.nice();
 
     if (newTrack.contents) {
       // add default options to combined tracks
-      for (const ct of newTrack.contents) { this.addDefaultOptions(ct); }
+      for (const ct of newTrack.contents) { this.addDefaultTrackOptions(ct); }
     }
 
     this.addNameToTrack(newTrack);
@@ -3013,11 +3013,11 @@ class HiGlassComponent extends React.Component {
       // add default options (as specified in config.js
       // (e.g. line color, heatmap color scales, etc...)
       looseTracks.forEach((t) => {
-        this.addDefaultOptions(t);
+        this.addDefaultTrackOptions(t);
 
         if (t.contents) {
           // add default options to combined tracks
-          for (const ct of t.contents) { this.addDefaultOptions(ct); }
+          for (const ct of t.contents) { this.addDefaultTrackOptions(ct); }
         }
       });
 
@@ -3435,7 +3435,7 @@ class HiGlassComponent extends React.Component {
     return (
       this.props.zoomFixed
       || this.props.options.zoomFixed
-      || this.props.viewConfig.zoomFixed
+      || this.state.viewConfig.zoomFixed
       || (view && view.zoomFixed)
     );
   }
@@ -3447,7 +3447,7 @@ class HiGlassComponent extends React.Component {
     const isZoomFixed = (
       this.props.zoomFixed
       || this.props.options.zoomFixed
-      || this.props.viewConfig.zoomFixed
+      || this.state.viewConfig.zoomFixed
     );
 
     const isTargetCanvas = evt.target === this.canvasElement;

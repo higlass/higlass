@@ -28,7 +28,7 @@ function findCanvas(element) {
   return canvas;
 }
 
-describe('Simple HiGlassComponent', () => {
+describe('API Tests', () => {
   let div = null;
   let api = null;
 
@@ -36,7 +36,7 @@ describe('Simple HiGlassComponent', () => {
     it('creates a track with default options', () => {
       [div, api] = createElementAndApi(simpleCenterViewConfig,
         {
-          defaultOptions: {
+          defaultTrackOptions: {
             all: {
               showTooltip: true,
             }
