@@ -138,7 +138,7 @@ describe('API Tests', () => {
 
       expect(() => api.zoomTo('nonexistent', 6.069441699652629, 6.082905691828387,
         -23.274695776773807, -23.27906532393644))
-        .toThrow('Invalid viewUid. Current present uuids: a');
+        .toThrowError('Invalid viewUid. Current uuids: a');
     });
 
     it('creates a non editable component', () => {

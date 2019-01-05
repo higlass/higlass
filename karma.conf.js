@@ -14,9 +14,10 @@ module.exports = (config) => {
       'node_modules/react-bootstrap/dist/react-bootstrap.js',
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
       'node_modules/font-awesome/css/font-awesome.css',
-      // 'build/hglib.css',
-      // 'test/SVGExportTest.js',
+      'build/hglib.css',
       'test/**/*.+(js|jsx)',
+      // 'test/SVGExportTest.js',
+      // 'test/AxisTests.js', // Passes when run in isolation, but fails as part of suite.
       // 'test/RuleTests.js',
       // 'test/MinimalViewconfTest.js'
       // 'test/AxisTests.js',

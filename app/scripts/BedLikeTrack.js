@@ -446,16 +446,13 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    const values = [].concat.apply(
-      [],
-      visibleAndFetchedIds
-        .map(x => this.fetchedTiles[x])
-        .filter(x => x.tileData && x.tileData.length)
-        .map(x => x.tileData
-          .sort((a, b) => b.importance - a.importance)
-          .slice(0, MAX_TILE_ENTRIES)
-          .map(y => +y.fields[+this.options.valueColumn - 1]))
-    ).filter(x => x > 0);
+    const values = [].concat(...visibleAndFetchedIds
+      .map(x => this.fetchedTiles[x])
+      .filter(x => x.tileData && x.tileData.length)
+      .map(x => x.tileData
+        .sort((a, b) => b.importance - a.importance)
+        .slice(0, MAX_TILE_ENTRIES)
+        .map(y => +y.fields[+this.options.valueColumn - 1]))).filter(x => x > 0);
 
     this.medianVisibleValue = median(values);
   }

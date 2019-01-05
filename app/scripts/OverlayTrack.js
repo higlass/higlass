@@ -3,7 +3,7 @@ import PixiTrack from './PixiTrack';
 // Utils
 import { colorToHex } from './utils';
 
-export class OverlayTrack extends PixiTrack {
+class OverlayTrack extends PixiTrack {
   constructor(context, options) {
     super(context, options);
 

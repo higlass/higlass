@@ -12,7 +12,7 @@ start eslint
 # while we work to get individual files up to something higher.
 ./node_modules/eslint/bin/eslint.js \
   --ignore-path .eslintignore-minimal \
-  --config .eslintrc-minimal . || die 'Low-bar horizontal linting failed'
+  --config .eslintrc-minimal app test || die 'Low-bar horizontal linting failed'
 ./node_modules/eslint/bin/eslint.js \
   karma.conf.js \
   app/scripts/configs \
