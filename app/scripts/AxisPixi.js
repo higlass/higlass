@@ -20,7 +20,6 @@ class AxisPixi {
     this.axisTextFontFamily = 'Arial';
     this.axisTextFontSize = 10;
 
-    this.tickFormat = format('.2');
     // hi
   }
 
@@ -40,6 +39,14 @@ class AxisPixi {
     let i = 0;
 
     const color = getDarkTheme() ? '#cccccc' : 'black';
+
+    if (!this.track.options
+      || !this.track.options.axisLabelFormatting
+      || this.track.options.axisLabelFormatting === 'scientific') {
+      this.tickFormat = format('.2');
+    } else {
+      this.tickFormat = x => x;
+    }
 
     while (i < this.tickValues.length) {
       const tick = this.tickValues[i];
@@ -73,36 +80,13 @@ class AxisPixi {
 
   calculateAxisTickValues(valueScale, axisHeight) {
     const tickCount = Math.max(Math.ceil(axisHeight / TICK_HEIGHT), 1);
-    const i = 0;
-
 
     // create scale ticks but not all the way to the top
+    // tick values have not been formatted here
     let tickValues = valueScale.ticks(tickCount);
-    // console.log('valueScale', valueScale, tickValues, valueScale.domain());
-
-    if (axisHeight < 100) {
-      // console.log('short axis');
-    }
-
-    if (axisHeight > 100) {
-      // console.log('valueScale.domain()', valueScale.domain());
-      // console.log('valueScale.range()', valueScale.range());
-      // console.log('tickValues[0]', tickValues[0], 'tickValues[-1]', tickValues[tickValues.length-1]);
-    }
-
-    /*
-            ticks(valueScale.invert(MARGIN_BOTTOM),
-                          valueScale.invert(this.dimensions[1] - MARGIN_TOP),
-                          tickCount);
-        */
 
     if (tickValues.length < 1) {
       tickValues = valueScale.ticks(tickCount + 1);
-      /*
-            tickValues = ticks(valueScale.invert(MARGIN_BOTTOM),
-                          valueScale.invert(axisHeight - MARGIN_TOP),
-                          tickCount + 1);
-            */
 
       if (tickValues.length > 1) {
         // sometimes the ticks function will return 0 and then 2
@@ -142,7 +126,8 @@ class AxisPixi {
       const tick = this.tickValues[i];
 
       // draw ticks to the left of the axis
-      this.axisTexts[i].x = -(TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2);
+      this.axisTexts[i].x = -(
+        TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2);
       this.axisTexts[i].y = valueScale(tick);
 
       graphics.moveTo(-TICK_MARGIN, valueScale(tick));
@@ -173,7 +158,8 @@ class AxisPixi {
     for (let i = 0; i < this.axisTexts.length; i++) {
       const tick = this.tickValues[i];
 
-      this.axisTexts[i].x = (TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2);
+      this.axisTexts[i].x = TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width
+        / 2;
       this.axisTexts[i].y = valueScale(tick);
 
       graphics.moveTo(TICK_MARGIN, valueScale(tick));
@@ -200,7 +186,10 @@ class AxisPixi {
 
       while (j >= 0) {
         // go through and hide all overlapping tick marks
-        if ((this.axisTexts[i].y + this.axisTexts[i].height / 2) > (this.axisTexts[j].y - this.axisTexts[j].height / 2)) {
+        if (
+          (this.axisTexts[i].y + this.axisTexts[i].height / 2)
+          > (this.axisTexts[j].y - this.axisTexts[j].height / 2)
+        ) {
           this.axisTexts[j].visible = false;
         } else {
           // because the tick marks are ordered from top to bottom, if this
@@ -319,11 +308,11 @@ class AxisPixi {
       const tick = this.tickValues[i];
       const text = this.axisTexts[i];
 
-      const line = this.createAxisSVGLine();
+      const tickLine = this.createAxisSVGLine();
 
-      gAxis.appendChild(line);
+      gAxis.appendChild(tickLine);
 
-      line.setAttribute('d',
+      tickLine.setAttribute('d',
         `M${TICK_MARGIN},${valueScale(tick)} L${TICK_MARGIN + TICK_LENGTH},${valueScale(tick)}`);
 
       const g = document.createElement('g');

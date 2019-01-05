@@ -11,20 +11,22 @@ class ExportLinkModal extends React.Component {
   }
 
   render() {
-    const linkLocation = this.props.linkLocation ?
-      (<input
-        readOnly={true}
-        style={{ width: 500 }}
-        value={this.props.linkLocation}
-      />) :
+    const linkLocation = this.props.linkLocation
+      ? (
+        <input
+          readOnly={true}
+          style={{ width: 500 }}
+          value={this.props.linkLocation}
+        />
+      )
 
-      (<div>
+      : (<div>
         <span
-          className="glyphicon glyphicon-refresh glyphicon-refresh-animate"
           aria-hidden="true"
+          className="glyphicon glyphicon-refresh glyphicon-refresh-animate"
         />
         <span>&nbsp;&nbsp;We are generating your link...</span>
-      </div>
+         </div>
       );
 
     return (
@@ -46,7 +48,7 @@ class ExportLinkModal extends React.Component {
           show={true}
         >
           <Modal.Header closeButton>
-            <Modal.Title>{'Share view link'}</Modal.Title>
+            <Modal.Title>Share view link</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             {linkLocation}

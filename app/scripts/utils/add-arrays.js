@@ -8,7 +8,7 @@ const STD_ACC = i => i;
  *
  * @example
  * ```
- * addArrays([1,2,3], [2,3,4,5]) == [3,5,7]
+ * addArrays([1,2,3], [2,3,4,5]) === [3,5,7]
  * ```
  *
  * @param  {Array}  a1  First array of numbers
@@ -17,7 +17,6 @@ const STD_ACC = i => i;
  *   useful when a2 represents a transformed (e.g., transposed matrix).
  * @return  {Array}  Combination of both arrays.
  */
-const addArrays = (a1, a2, accessor = STD_ACC) =>
-  a1.map((val, i) => val + a2[accessor(i)]);
+const addArrays = (a1, a2, accessor = STD_ACC) => a1.map((val, i) => val + a2[accessor(i)]);
 
 export default addArrays;

@@ -35,7 +35,7 @@
     "no-bitwise": 0,
     "no-console": ["error", { "allow": ["warn", "error"] }],
     "no-continue": 0,
-    "no-mixed-operators": ["error", { "allowSamePrecedence": true }],
+    "no-mixed-operators": 0,
     "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
     "no-param-reassign": ["error", { "props": false }],
     "no-plusplus": 0,
@@ -84,6 +84,14 @@
       "files": ["test/**/*.js"],
       "rules": {
         "no-use-before-define": 0 // So viewconfs can be below the body of the test.
+      }
+    },
+    {
+      "files": ["app/scripts/*Track.js"],
+      "rules": {
+        "no-unused-vars": ["error", { "args": "none" }]
+        // There are many instances where an interface expects parameters,
+        // but the code doesn't use them, sometimes because it's a stub.
       }
     }
   ]

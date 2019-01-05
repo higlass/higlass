@@ -1,8 +1,19 @@
+## v1.3.1
+
+
+- Clear mouse position indicator when leaving the root dom element, on blurring the window, and when no track is hovered
+
 ## v1.3.0
 
+- Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
 - Added `TiledPixiTrack.on` event handler to listen to data changes
 - Added several API endpoints: `getComponent()`, `setAuthHeader()`, `getAuthHeader()`,
 - Added export of several utility functions: `waitForJsonComplete()`, `waitForTilesLoaded()`, `waitForTransitionsFinished()`, `mountHGComponent()`, `getTrackObjectFromHGC()`
+- Added the ability to specify default track options through the API
+- Added nesting to the tileset finder so that tilesets can be grouped together into categories
+- Added the `axisLabelFormatting` option to 1d quantitative tracks
+- Added TiledPixiTrack.on event handler
+- Added getTrackObject to exports
 - Added support for overlay tracks
 - Added support for click event handling of 1D and 2D annotations from `1d-annotation` and `chromosome-2d-annotations` tracks
 - Cloned views split vertically first (#259)

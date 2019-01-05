@@ -147,8 +147,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
       const canvas = gradient(
         this.colorGradientColors,
-        1, this.dimensions[1],  // width, height
-        0, 0, 0, this.dimensions[1]  // fromX, fromY, toX, toY
+        1, this.dimensions[1], // width, height
+        0, 0, 0, this.dimensions[1] // fromX, fromY, toX, toY
       );
 
       barSprite = new PIXI.Sprite(
@@ -167,6 +167,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
       if (isTopAligned) yPos = 0;
 
+      if (Number.isNaN(height) || height < 0 || yPos < 0) continue;
       this.addSVGInfo(tile, xPos, yPos, width, height, color);
 
       // this data is in the last tile and extends beyond the length

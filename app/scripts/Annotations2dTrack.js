@@ -235,14 +235,18 @@ class Annotations2dTrack extends TiledPixiTrack {
       graphics,
       id: td.id,
       uid,
-      annotation: { x: startX, y: startY, width, height },
+      annotation: {
+        x: startX, y: startY, width, height
+      },
       dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd],
       importance: td.importance,
       info
     };
   }
 
-  drawAnnotation({ graphics, id, uid, annotation, dataPos, importance, info }, silent) {
+  drawAnnotation({
+    graphics, id, uid, annotation, dataPos, importance, info
+  }, silent) {
     if (this.options.minSquareSize) {
       if (
         annotation.width < this.options.minSquareSize

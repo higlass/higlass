@@ -6,6 +6,7 @@ import {
 } from '../app/scripts/utils';
 
 import {
+  emptyConf,
   simpleCenterViewConfig,
   simple1And2dAnnotations,
 } from './view-configs';
@@ -27,11 +28,64 @@ function findCanvas(element) {
   return canvas;
 }
 
-describe('Simple HiGlassComponent', () => {
+describe('API Tests', () => {
   let div = null;
   let api = null;
 
   describe('Options tests', () => {
+    it('creates a track with default options', () => {
+      [div, api] = createElementAndApi(simpleCenterViewConfig,
+        {
+          defaultTrackOptions: {
+            all: {
+              showTooltip: true,
+            }
+          }
+        });
+
+      const newTrack = {
+        filetype: 'hitile',
+        datatype: 'vector',
+        name: 'wgEncodeLicrHistoneLiverH3k27acMAdult8wksC57bl6StdSig.hitile',
+        coordSystem: 'mm9',
+        server: 'http://higlass.io/api/v1',
+        tilesetUid: 'DLtSFl7jRI6m4eqbU7sCQg',
+        type: 'horizontal-line',
+      };
+
+      const component = api.getComponent();
+      component.handleTrackAdded('a', newTrack, 'top');
+
+      const viewconf = component.getViewsAsJson();
+      const trackConf = viewconf.views[0].tracks.top[0];
+
+      expect(trackConf.options.showTooltip).toEqual(true);
+      // expect(Object.keys(component.viewHeaders).length).toBeGreaterThan(0);
+    });
+
+    it('creates a track without default options', () => {
+      [div, api] = createElementAndApi(simpleCenterViewConfig);
+
+      const newTrack = {
+        filetype: 'hitile',
+        datatype: 'vector',
+        name: 'wgEncodeLicrHistoneLiverH3k27acMAdult8wksC57bl6StdSig.hitile',
+        coordSystem: 'mm9',
+        server: 'http://higlass.io/api/v1',
+        tilesetUid: 'DLtSFl7jRI6m4eqbU7sCQg',
+        type: 'horizontal-line',
+      };
+
+      const component = api.getComponent();
+      component.handleTrackAdded('a', newTrack, 'top');
+
+      const viewconf = component.getViewsAsJson();
+      const trackConf = viewconf.views[0].tracks.top[0];
+
+      expect(trackConf.options.showTooltip).toEqual(false);
+      // expect(Object.keys(component.viewHeaders).length).toBeGreaterThan(0);
+    });
+
     it('creates an editable component', () => {
       [div, api] = createElementAndApi(simpleCenterViewConfig);
 
@@ -84,7 +138,7 @@ describe('Simple HiGlassComponent', () => {
 
       expect(() => api.zoomTo('nonexistent', 6.069441699652629, 6.082905691828387,
         -23.274695776773807, -23.27906532393644))
-        .toThrow('Invalid viewUid. Current present uuids: a');
+        .toThrowError('Invalid viewUid. Current uuids: a');
     });
 
     it('creates a non editable component', () => {
@@ -120,6 +174,14 @@ describe('Simple HiGlassComponent', () => {
           done();
         });
       });
+    });
+
+    it('has version', (done) => {
+      [div, api] = createElementAndApi(emptyConf, { editable: false });
+
+      expect(api.version).toEqual(VERSION);
+
+      done();
     });
 
     it('APIs are independent', (done) => {

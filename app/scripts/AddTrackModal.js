@@ -24,7 +24,6 @@ class AddTrackModal extends React.Component {
 
     this.state = {
       selectedTilesets: [{ datatype: 'none' }],
-      normalizeTilesetUuid: null,
     };
   }
 
@@ -33,12 +32,21 @@ class AddTrackModal extends React.Component {
       this.props.position,
       this.props.host);
 
-    if (evt)
+    if (evt) {
       evt.preventDefault();
+    }
   }
 
-  selectedTilesetsChanged(selectedTilesets) {
+  selectedTilesetsChanged(selectedTilesetsIn) {
     let allSame = true;
+    let selectedTilesets = null;
+
+    if (selectedTilesetsIn.length === 0) {
+      // no tilesets are selected
+      selectedTilesets = [{ datatype: 'none' }];
+    } else {
+      selectedTilesets = selectedTilesetsIn;
+    }
 
     const firstDatatype = selectedTilesets[0].datatype;
     for (const tileset of selectedTilesets) {
@@ -86,7 +94,7 @@ class AddTrackModal extends React.Component {
   }
 
   handlePlotTypeSelected(newPlotType) {
-    const selectedTilesets = this.state.selectedTilesets;
+    const { selectedTilesets } = this.state;
 
     for (const tileset of selectedTilesets) { tileset.type = newPlotType; }
 
@@ -127,15 +135,14 @@ class AddTrackModal extends React.Component {
 
   render() {
     const orientation = this.getOrientation(this.props.position);
-
     const form = (
       <div>
         <TilesetFinder
+          ref={(c) => { this.tilesetFinder = c; }}
+          datatype={this.props.datatype}
           onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
           onTracksChosen={value => this.props.onTracksChosen(value, this.props.position)}
           orientation={orientation}
-          datatype={this.props.datatype}
-          ref={(c) => { this.tilesetFinder = c; }}
           selectedTilesetChanged={this.selectedTilesetsChanged.bind(this)}
           trackSourceServers={this.props.trackSourceServers}
         />
@@ -148,23 +155,25 @@ class AddTrackModal extends React.Component {
         show={this.props.show}
       >
         <Modal.Header closeButton>
-          <Modal.Title>{'Add Track'}</Modal.Title>
+          <Modal.Title>Add Track</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           { form }
           {
-            this.props.hidePlotTypeChooser ? null :
-            <PlotTypeChooser
-              ref={(c) => { this.plotTypeChooser = c; }}
-              datatypes={this.state.selectedTilesets.map(x => x.datatype)}
-              onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
-              orientation={orientation}
-            />
+            this.props.hidePlotTypeChooser ? null
+              : (
+                <PlotTypeChooser
+                  ref={(c) => { this.plotTypeChooser = c; }}
+                  datatypes={this.state.selectedTilesets.map(x => x.datatype)}
+                  onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
+                  orientation={orientation}
+                />
+              )
           }
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.props.onCancel}>{'Cancel'}</Button>
-          <Button onClick={this.handleSubmit.bind(this)}>{'Submit'}</Button>
+          <Button onClick={this.props.onCancel}>Cancel</Button>
+          <Button onClick={this.handleSubmit.bind(this)}>Submit</Button>
         </Modal.Footer>
       </Modal>
     );
@@ -177,7 +186,6 @@ AddTrackModal.defaultProps = {
 };
 
 AddTrackModal.propTypes = {
-  host: PropTypes.object,
   onCancel: PropTypes.func.isRequired,
   onTracksChosen: PropTypes.func.isRequired,
   position: PropTypes.string,

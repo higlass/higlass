@@ -1,4 +1,4 @@
-import { rgb } from 'd3-color';
+import { rgb as d3rgb } from 'd3-color';
 import React from 'react';
 import reactCSS from 'reactcss';
 import { SketchPicker } from 'react-color';
@@ -7,7 +7,7 @@ class SketchInlinePicker extends React.Component {
   constructor(props) {
     super(props);
 
-    const startColor = rgb(props.color);
+    const startColor = d3rgb(props.color);
 
     this.state = {
       displayColorPicker: false,
@@ -21,7 +21,7 @@ class SketchInlinePicker extends React.Component {
   }
 
   handleClick() {
-    this.setState({ displayColorPicker: !this.state.displayColorPicker });
+    this.setState(prevState => ({ displayColorPicker: !prevState.displayColorPicker }));
   }
 
   handleClose() {
@@ -69,14 +69,15 @@ class SketchInlinePicker extends React.Component {
 
     return (
       <div>
-        <div style={styles.swatch} onClick={this.handleClick.bind(this)}>
+        <div onClick={this.handleClick.bind(this)} style={styles.swatch}>
           <div style={styles.color} />
         </div>
-        { this.state.displayColorPicker ? <div style={styles.popover}>
-          <div style={styles.cover} onClick={this.handleClose.bind(this)} />
-          <SketchPicker color={this.state.color} onChange={this.handleChange.bind(this)} />
-        </div> : null }
-
+        { this.state.displayColorPicker ? (
+          <div style={styles.popover}>
+            <div onClick={this.handleClose.bind(this)} style={styles.cover} />
+            <SketchPicker color={this.state.color} onChange={this.handleChange.bind(this)} />
+          </div>
+        ) : null }
       </div>
     );
   }

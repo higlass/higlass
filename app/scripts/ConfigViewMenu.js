@@ -236,7 +236,7 @@ class ConfigViewMenu extends ContextMenuContainer {
         >
         {'Export views as SVG'}
         </ContextMenuItem>
-        
+
         <ContextMenuItem
           onClick={() => this.props.onExportPNG()}
         >

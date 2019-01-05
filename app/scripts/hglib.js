@@ -58,7 +58,10 @@ const launch = (element, config, options) => {
  * * **editable** *(bool)* - Can the layout be changed? If false, the view headers will
   be hidden. This can also be specified in the viewconfig using the ``editable`` option.
   The value passed here overrides the value in the viewconf. [default=true]
- *
+ * * **defaultTrackOptions** *(dict)* - Specify a set of default options that will be used for
+ *  newly added tracks. These can be broken down into two types: `all` - affecting all
+ *  all track types and `trackSpecific` which will affect only some track types. See the
+ *  example below for a concrete demonstration.
  * @param  {Object}  element  DOM element the HiGlass component should be
  *   attached to.
  * @param  {Object|String}  viewConfig  The viewconfig to load. If this parameter is a string
@@ -71,8 +74,18 @@ const launch = (element, config, options) => {
  * const hgv = hglib.viewer(
  *  document.getElementById('development-demo'),
  *  testViewConfig,
- *  { bounded: true },
- * );
+ *  { bounded: true,
+ *   defaultTrackOptions: {
+ *     all: {
+ *       showTooltip: true,
+ *     },
+ *     trackSpecific: {
+ *      'heatmap': {
+ *        showTooltip: false,
+ *      }
+ *     }
+ *   }
+ * });
  *
  * @return  {Object}  Newly created HiGlass component.
  */

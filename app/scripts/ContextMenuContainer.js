@@ -99,9 +99,9 @@ class ContextMenuContainer extends React.Component {
     this.divDom = ReactDOM.findDOMNode(this.div);
     const bbox = this.divDom.getBoundingClientRect();
 
-    const parentBbox = this.props.parentBbox ?
-      this.props.parentBbox :
-      {
+    const parentBbox = this.props.parentBbox
+      ? this.props.parentBbox
+      : {
         top: this.props.position.top,
         left: this.props.position.left,
         width: 0,
@@ -127,9 +127,9 @@ class ContextMenuContainer extends React.Component {
     if (this.state.orientation === 'left') {
       let leftPosition = parentBbox.left - bbox.width;
 
-      if (leftPosition < 0)  {
+      if (leftPosition < 0) {
         if (parentBbox.left + parentBbox.width + bbox.width > window.innerWidth) {
-          leftPosition = 0;  // goes off the side either way
+          leftPosition = 0; // goes off the side either way
         } else {
           // switch to the right
           leftPosition = parentBbox.left + parentBbox.width;
@@ -141,9 +141,9 @@ class ContextMenuContainer extends React.Component {
       this.setState({
         left: leftPosition,
         top: topPosition,
-        orientation: orientation
+        orientation
       });
-    }  else {
+    } else {
       let leftPosition = parentBbox.left + parentBbox.width;
 
       if ((parentBbox.left + parentBbox.width + bbox.width) > window.innerWidth) {
@@ -154,14 +154,13 @@ class ContextMenuContainer extends React.Component {
         } else {
           leftPosition = parentBbox.left - bbox.width;
           orientation = 'left';
-
         }
       }
 
       this.setState({
         left: leftPosition,
         top: topPosition,
-        orientation: orientation
+        orientation
       });
     }
   }
@@ -169,8 +168,8 @@ class ContextMenuContainer extends React.Component {
   /* ------------------------------ Rendering ------------------------------- */
 
   render() {
-    const stylePosition = this.state.left ?
-      {
+    const stylePosition = this.state.left
+      ? {
         left: this.state.left
       } : {
         right: this.state.right
@@ -186,16 +185,16 @@ class ContextMenuContainer extends React.Component {
 
     if (getDarkTheme()) stylenames += ' context-menu-dark';
 
-    return(
+    return (
       <div
-        className={'context-menu-item'}
         ref={c => this.div = c}
+        className="context-menu-item"
         style={wholeStyle}
         styleName={stylenames}
       >
         {this.props.children}
       </div>
-    )
+    );
   }
 }
 
@@ -204,6 +203,6 @@ ContextMenuContainer.propTypes = {
   orientation: PropTypes.string,
   parentBbox: PropTypes.object,
   position: PropTypes.object
-}
+};
 
 export default ContextMenuContainer;

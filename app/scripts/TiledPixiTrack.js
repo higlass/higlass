@@ -2,7 +2,7 @@ import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
 import * as PIXI from 'pixi.js';
-import {parseChromsizesRows} from './ChromosomeInfo.js';
+import { parseChromsizesRows } from './ChromosomeInfo';
 
 import DataFetcher from './DataFetcher';
 import PixiTrack from './PixiTrack';
@@ -438,21 +438,21 @@ class TiledPixiTrack extends PixiTrack {
   minValue(_) {
     if (_) {
       this.scale.minValue = _;
-    } else {
-      return this.valueScaleMin !== null
-        ? this.valueScaleMin
-        : this.scale.minValue;
+      return this;
     }
+    return this.valueScaleMin !== null
+      ? this.valueScaleMin
+      : this.scale.minValue;
   }
 
   maxValue(_) {
     if (_) {
       this.scale.maxValue = _;
-    } else {
-      return this.valueScaleMax !== null
-        ? this.valueScaleMax
-        : this.scale.maxValue;
+      return this;
     }
+    return this.valueScaleMax !== null
+      ? this.valueScaleMax
+      : this.scale.maxValue;
   }
 
   minRawValue() {
@@ -708,22 +708,17 @@ class TiledPixiTrack extends PixiTrack {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    const values = [].concat.apply(
-      [],
-      visibleAndFetchedIds
-        .filter(x => this.fetchedTiles[x].tileData.dense)
-        .map(x => Array.from(this.fetchedTiles[x].tileData.dense))
-    ).filter(x => x > 0);
+    const values = [].concat(...visibleAndFetchedIds
+      .filter(x => this.fetchedTiles[x].tileData.dense)
+      .map(x => Array.from(this.fetchedTiles[x].tileData.dense))).filter(x => x > 0);
 
     this.medianVisibleValue = median(values);
     return this.medianVisibleValue;
   }
 
   allVisibleValues() {
-    return [].concat.apply(
-      [],
-      this.visibleAndFetchedIds().map(x => Array.from(this.fetchedTiles[x].tileData.dense))
-    );
+    return [].concat(...this.visibleAndFetchedIds()
+      .map(x => Array.from(this.fetchedTiles[x].tileData.dense)));
   }
 
   minVisibleValue(ignoreFixedScale = false) {
@@ -799,7 +794,7 @@ class TiledPixiTrack extends PixiTrack {
     let margin = inMargin;
 
     if (margin === null || typeof margin === 'undefined') {
-      margin = 6;  // set a default value
+      margin = 6; // set a default value
     }
 
     let minDimension = Math.min(this.dimensions[1] - margin, margin);
