@@ -28,7 +28,7 @@ function findCanvas(element) {
   return canvas;
 }
 
-describe('Simple HiGlassComponent', () => {
+describe('API Tests', () => {
   let div = null;
   let api = null;
 
@@ -82,7 +82,7 @@ describe('Simple HiGlassComponent', () => {
       const viewconf = component.getViewsAsJson();
       const trackConf = viewconf.views[0].tracks.top[0];
 
-      expect(trackConf.options.showTooltip).toEqual(undefined);
+      expect(trackConf.options.showTooltip).toEqual(false);
       // expect(Object.keys(component.viewHeaders).length).toBeGreaterThan(0);
     });
 
