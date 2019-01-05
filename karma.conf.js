@@ -26,7 +26,7 @@ module.exports = (config) => {
       // 'test/ViewManipulationTests.js',
       // 'test/ChromSizesTests.js',
       // 'test/ViewportProjectionTests.js',
-      // 'test/APITests.js',
+      'test/APITests.js',
       // 'test/AddAndRemoveViewconfTests.js',
       // 'test/HiGlassComponentTest.js',
       // 'test/HiGlassComponentCreationTests.js',
