@@ -21,6 +21,8 @@ start eslint
   app/scripts/services \
   app/scripts/*Track.js \
   app/scripts/utils \
+  app/scripts/DataFetcher.js \
+  app/scripts/utils \
   test || die 'High-bar vertical linting failed'
 end eslint
 
