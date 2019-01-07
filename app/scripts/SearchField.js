@@ -147,20 +147,24 @@ class SearchField {
 
     if (parts.length > 1) {
       // calculate the range in one direction
-      let [chr1, chrPos1, genomePos1] = this.parsePosition(parts[0]);
-      let [chr2, chrPos2, genomePos2] = this.parsePosition(parts[1], chr1);
+      let posTriple1 = this.parsePosition(parts[0]);
+      let chr1 = posTriple1[0];
+      let genomePos1 = posTriple1[2];
+
+      const posTriple2 = this.parsePosition(parts[1], chr1);
+      const chr2 = posTriple2[0];
+      const genomePos2 = posTriple2[2];
 
       const tempRange1 = [genomePos1, genomePos2];
-
-      [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1]);
-      [chr2, chrPos2, genomePos2] = this.parsePosition(parts[0], chr1);
 
       if (chr1 === null && chr2 !== null) {
         // somembody entered a string like chr17:1000-2000
         // and when we try to search the rever, the first chromosome
         // is null
         // we have to pass in the previous chromosome as a prevChrom
-        [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1], chr2);
+        posTriple1 = this.parsePosition(parts[1], chr2);
+        chr1 = posTriple1[0];
+        genomePos1 = posTriple1[2];
       }
 
       const tempRange2 = [genomePos1, genomePos2];
@@ -182,9 +186,8 @@ class SearchField {
         +chromPosition + +this.chromInfo.chromLengths[parts[0]]];
     } else {
       // e.g. ("chr1:540340")
-      const [chr1, chrPos1, pos1] = this.parsePosition(parts[0]);
-
-      range = [pos1 - 8000000, pos1 + 8000000];
+      const genomePos1 = this.parsePosition(parts[0])[2];
+      range = [genomePos1 - 8000000, genomePos1 + 8000000];
     }
 
 

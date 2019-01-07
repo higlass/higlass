@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { Collapse, Panel, Checkbox } from 'react-bootstrap';
 
 import CollapsePanel from './CollapsePanel';
