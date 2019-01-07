@@ -742,14 +742,6 @@ class TiledPlot extends React.Component {
     });
   }
 
-  createOverlays(overlays) {
-    for (const trackType in overlays) {
-      for (let i = 0; i < tracks[trackType].length; i++) {
-        tracksAndLocations.push({ track: tracks[trackType][i], location: trackType });
-      }
-    }
-  }
-
   createTracksAndLocations() {
     const tracksAndLocations = [];
     const { tracks } = this.state;
