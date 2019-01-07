@@ -1,5 +1,6 @@
 ## v1.3.1
 
+- Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
 - Clear mouse position indicator when leaving the root dom element, on blurring the window, and when no track is hovered
 
 ## v1.3.0

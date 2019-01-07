@@ -438,21 +438,21 @@ class TiledPixiTrack extends PixiTrack {
   minValue(_) {
     if (_) {
       this.scale.minValue = _;
-    } else {
-      return this.valueScaleMin !== null
-        ? this.valueScaleMin
-        : this.scale.minValue;
+      return this;
     }
+    return this.valueScaleMin !== null
+      ? this.valueScaleMin
+      : this.scale.minValue;
   }
 
   maxValue(_) {
     if (_) {
       this.scale.maxValue = _;
-    } else {
-      return this.valueScaleMax !== null
-        ? this.valueScaleMax
-        : this.scale.maxValue;
+      return this;
     }
+    return this.valueScaleMax !== null
+      ? this.valueScaleMax
+      : this.scale.maxValue;
   }
 
   minRawValue() {

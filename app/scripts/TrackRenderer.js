@@ -1184,7 +1184,7 @@ class TrackRenderer extends React.Component {
             definition: track,
           };
           try {
-            return new pluginTrack.track(
+            return new pluginTrack.track( // eslint-disable-line new-cap
               AVAILABLE_FOR_PLUGINS,
               context,
               track.options,
@@ -1222,6 +1222,16 @@ class TrackRenderer extends React.Component {
         server: trimTrailingSlash(track.server),
         tilesetUid: track.tilesetUid
       };
+    }
+
+    if (track.fileUrl) {
+      dataConfig.fileUrl = track.fileUrl;
+
+      if (!track.filetype) {
+        console.warn('fileUrl present without fileType:', track);
+      } else {
+        dataConfig.filetype = track.filetype;
+      }
     }
 
     // To simplify the context creation via ES6 object shortcuts.
@@ -1495,7 +1505,7 @@ class TrackRenderer extends React.Component {
           context.baseEl = this.baseEl;
           context.definition = track;
           try {
-            return new pluginTrack.track(
+            return new pluginTrack.track( // eslint-disable-line new-cap
               AVAILABLE_FOR_PLUGINS,
               context,
               options

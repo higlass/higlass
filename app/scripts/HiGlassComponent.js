@@ -17,7 +17,7 @@ import ExportLinkModal from './ExportLinkModal';
 import ViewHeader from './ViewHeader';
 import ChromosomeInfo from './ChromosomeInfo';
 
-import { createSymbolIcon } from './symbol';
+import createSymbolIcon from './symbol';
 import { all as icons } from './icons';
 import createApi from './api';
 
@@ -576,7 +576,7 @@ class HiGlassComponent extends React.Component {
    *
    * @param {array} track The track to add default options to
    */
-  addDefaultOptions(track) {
+  addDefaultTrackOptions(track) {
     const trackInfo = this.getTrackInfo(track.type);
     if (!trackInfo) return;
 
@@ -586,12 +586,12 @@ class HiGlassComponent extends React.Component {
 
     const trackOptions = track.options ? track.options : {};
 
-    if (this.props.options.defaultOptions) {
-      if (this.props.options.defaultOptions.trackSpecific
-        && this.props.options.defaultOptions.trackSpecific[track.type]) {
+    if (this.props.options.defaultTrackOptions) {
+      if (this.props.options.defaultTrackOptions.trackSpecific
+        && this.props.options.defaultTrackOptions.trackSpecific[track.type]) {
         // track specific options take precedence over all options
 
-        const options = this.props.options.defaultOptions.trackSpecific[track.type];
+        const options = this.props.options.defaultTrackOptions.trackSpecific[track.type];
 
         for (const optionName in options) {
           track.options[optionName] = typeof (track.options[optionName]) !== 'undefined'
@@ -600,8 +600,8 @@ class HiGlassComponent extends React.Component {
         }
       }
 
-      if (this.props.options.defaultOptions.all) {
-        const options = this.props.options.defaultOptions.all;
+      if (this.props.options.defaultTrackOptions.all) {
+        const options = this.props.options.defaultTrackOptions.all;
 
         for (const optionName in options) {
           track.options[optionName] = typeof (track.options[optionName]) !== 'undefined'
@@ -977,7 +977,7 @@ class HiGlassComponent extends React.Component {
     // https://bugzilla.mozilla.org/show_bug.cgi?id=700533
     const w = this.canvasElement.width;
     const h = this.canvasElement.height;
-    const dimensionedSvgString = `<svg width="${w}" height="${h}" ` + svgString.slice(4);
+    const dimensionedSvgString = `<svg width="${w}" height="${h}" ${svgString.slice(4)}`;
 
     return dimensionedSvgString;
   }
@@ -1041,9 +1041,6 @@ class HiGlassComponent extends React.Component {
         });
       }
     }
-
-    const [centerX, centerY, k] = scalesCenterAndK(xScale, yScale);
-    // console.log('tx, ty, k', [centerX, centerY, k]);
 
     if (this.zoomLocks[uid]) {
       // this view is locked to another
@@ -1579,8 +1576,7 @@ class HiGlassComponent extends React.Component {
 
   forceRefreshView() {
     // force everything to rerender
-
-    this.setState(this.state);
+    this.setState(this.state); // eslint-disable-line react/no-access-state-in-setstate
   }
 
   refreshView(timeout = SHORT_DRAG_TIMEOUT) {
@@ -1751,26 +1747,26 @@ class HiGlassComponent extends React.Component {
 
     if (view.tracks.center && dictValues(view.tracks.center).length > 0) {
       if (!view.tracks.center[0].contents || view.tracks.center[0].contents.length > 0) {
-        let centerHeight = null;
-        let centerWidth = null;
+        let height = null;
+        let width = null;
 
         if (view.tracks.center[0].contents) {
           // combined track in the center
           for (const track of view.tracks.center[0].contents) {
-            centerHeight = Math.max(centerHeight, track.height
+            height = Math.max(height, track.height
               ? track.height : defaultCenterHeight);
-            centerWidth = Math.max(centerWidth, track.width
+            width = Math.max(width, track.width
               ? track.width : defaultCenterWidth);
           }
         } else {
-          centerHeight = view.tracks.center[0].height
+          height = view.tracks.center[0].height
             ? view.tracks.center[0].height : defaultCenterHeight;
-          centerWidth = view.tracks.center[0].width
+          width = view.tracks.center[0].width
             ? view.tracks.center[0].width : defaultCenterWidth;
         }
 
-        currHeight += centerHeight;
-        currWidth += centerWidth;
+        currHeight += height;
+        currWidth += width;
       }
     } else if (((view.tracks.top && dictValues(view.tracks.top).length > 1)
       || (view.tracks.bottom && dictValues(view.tracks.bottom).length > 1))
@@ -1929,13 +1925,15 @@ class HiGlassComponent extends React.Component {
 
     // if this view was zoom locked to another, we need to unlock it
     this.handleUnlock(uid, this.zoomLocks);
-    delete this.state.views[uid];
-
-    const viewsByUid = this.removeInvalidTracks(this.state.views);
 
     // might want to notify the views that they're beig closed
-    this.setState({
-      views: viewsByUid,
+    this.setState((prevState) => {
+      delete prevState.views[uid];
+
+      const viewsByUid = this.removeInvalidTracks(prevState.views);
+      return {
+        views: viewsByUid,
+      };
     });
   }
 
@@ -1974,9 +1972,9 @@ class HiGlassComponent extends React.Component {
       }
     }
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
   }
 
   handleNoTrackAdded() {
@@ -2022,9 +2020,9 @@ class HiGlassComponent extends React.Component {
     trackConfig.uid = slugid.nice();
     trackConfig.type = newType;
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
   }
 
   /**
@@ -2048,9 +2046,9 @@ class HiGlassComponent extends React.Component {
     trackConfig.uid = slugid.nice();
     trackConfig.data = newData;
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
   }
 
   /**
@@ -2065,14 +2063,14 @@ class HiGlassComponent extends React.Component {
    *  describing this track
    */
   handleTrackAdded(viewId, newTrack, position, host = null) {
-    this.addDefaultOptions(newTrack);
+    this.addDefaultTrackOptions(newTrack);
 
     // make sure the new track has a uid
     if (!newTrack.uid) newTrack.uid = slugid.nice();
 
     if (newTrack.contents) {
       // add default options to combined tracks
-      for (const ct of newTrack.contents) { this.addDefaultOptions(ct); }
+      for (const ct of newTrack.contents) { this.addDefaultTrackOptions(ct); }
     }
 
     this.addNameToTrack(newTrack);
@@ -2243,9 +2241,9 @@ class HiGlassComponent extends React.Component {
     this.storeTrackSizes(viewId);
     this.adjustLayoutToTrackSizes(this.state.views[viewId]);
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
 
     return this.state.views;
   }
@@ -2546,12 +2544,10 @@ class HiGlassComponent extends React.Component {
       .catch((err) => {
         console.warn('err:', err);
       })
-      .then((_json) => {
-        return {
-          id: _json.uid,
-          url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
-        };
-      });
+      .then(_json => ({
+        id: _json.uid,
+        url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
+      }));
 
     if (!fromApi) {
       req
@@ -2696,9 +2692,9 @@ class HiGlassComponent extends React.Component {
 
     this.state.views[newView.uid] = newView;
 
-    this.setState({
-      views: this.state.views,
-    });
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
   }
 
   /**
@@ -2857,7 +2853,6 @@ class HiGlassComponent extends React.Component {
     this.refreshView();
 
     this.setState({
-      views: this.state.views,
       configMenuUid: null,
     });
   }
@@ -2875,9 +2870,9 @@ class HiGlassComponent extends React.Component {
     track.options = Object.assign(track.options, newOptions);
 
     if (this.mounted) {
-      this.setState({
-        views: this.state.views,
-      });
+      this.setState(prevState => ({
+        views: prevState.views,
+      }));
     }
   }
 
@@ -2891,9 +2886,9 @@ class HiGlassComponent extends React.Component {
     view.options = Object.assign(view.options || {}, newOptions);
 
     if (this.mounted) {
-      this.setState({
-        views: this.state.views,
-      });
+      this.setState(prevState => ({
+        views: prevState.views,
+      }));
     }
   }
 
@@ -3018,11 +3013,11 @@ class HiGlassComponent extends React.Component {
       // add default options (as specified in config.js
       // (e.g. line color, heatmap color scales, etc...)
       looseTracks.forEach((t) => {
-        this.addDefaultOptions(t);
+        this.addDefaultTrackOptions(t);
 
         if (t.contents) {
           // add default options to combined tracks
-          for (const ct of t.contents) { this.addDefaultOptions(ct); }
+          for (const ct of t.contents) { this.addDefaultTrackOptions(ct); }
         }
       });
 
@@ -3440,7 +3435,7 @@ class HiGlassComponent extends React.Component {
     return (
       this.props.zoomFixed
       || this.props.options.zoomFixed
-      || this.props.viewConfig.zoomFixed
+      || this.state.viewConfig.zoomFixed
       || (view && view.zoomFixed)
     );
   }
@@ -3452,7 +3447,7 @@ class HiGlassComponent extends React.Component {
     const isZoomFixed = (
       this.props.zoomFixed
       || this.props.options.zoomFixed
-      || this.props.viewConfig.zoomFixed
+      || this.state.viewConfig.zoomFixed
     );
 
     const isTargetCanvas = evt.target === this.canvasElement;

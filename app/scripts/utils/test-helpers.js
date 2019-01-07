@@ -172,6 +172,9 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
   const style = (options && options.style) || 'width:800px; background-color: lightgreen;';
   const bounded = (options && options.bounded) || false;
 
+  // console.log('check:', options && options.style)
+  // console.log('style:', style, "options:", options, "style", options.style);
+
   const div = global.document.createElement('div');
   global.document.body.appendChild(div);
 

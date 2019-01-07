@@ -27,9 +27,9 @@ export class SeriesOptions extends React.Component {
   }
 
   toggleAdvancedVisible() {
-    this.setState({
-      advancedVisible: !this.state.advancedVisible,
-    });
+    this.setState(prevState => ({
+      advancedVisible: !prevState.advancedVisible,
+    }));
   }
 
 
