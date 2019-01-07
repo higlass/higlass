@@ -81,10 +81,11 @@ class HeatmapOptions extends React.Component {
       }]
     };
 
-    const colorFields = this.state.colors.map((x, i) => {
+    const colorFields = this.state.colors.map((color, i) => {
       // only let colors be removed if there's more than two present
       const closeButton = (this.state.colors.length > 2 && i === this.state.colors.length - 1)
-        ? (<div
+        ? (
+        <div
           style={{
             background: 'white',
             position: 'absolute',
@@ -111,13 +112,13 @@ class HeatmapOptions extends React.Component {
           >
             <use xlinkHref="#cross" />
           </svg>
-           </div>
+        </div>
         )
         : null; // closebutton
 
       return (
         <td
-          key={`l${i}`}
+          key={color}
           style={{
             border: '0px solid',
             position: 'relative',
@@ -126,8 +127,8 @@ class HeatmapOptions extends React.Component {
         >
           {closeButton}
           <SketchInlinePicker
-            key={i}
-            color={this.state.colors[i]}
+            key={color}
+            color={color}
             onChange={(c) => {
               this.state.colors[i] = c;
               this.handleColorsChanged(this.state.colors);

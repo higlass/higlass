@@ -31,7 +31,7 @@
   },
   "rules": {
     // Turn a lot of rules off: We plan to fix one kind of error at a time, so we can remove these exceptions,
-    // and eventually delete this file and just have one .exlintrc. 
+    // and eventually delete this file and just have one .exlintrc.
     "import/no-extraneous-dependencies": 0,
     "jsx-a11y/anchor-is-valid": 0,
     "jsx-a11y/click-events-have-key-events": 0,
@@ -45,13 +45,13 @@
     "no-undef": 0,
     "no-unused-vars": 0,
     "no-use-before-define": 0,
-    "react/no-array-index-key": 0,
+    // TODO: "react/no-array-index-key": 0,
     "react/no-children-prop": 0,
     "react/no-find-dom-node": 0,
     "react/no-unused-prop-types": 0,
     "react/no-unused-state": 0,
     "react/require-default-props": 0,
-    
+
     // By default, this is a warning, but most properties were in order,
     // and the few exceptions added a lot of noise to the logs.
     "react/jsx-sort-props": ["error"],
