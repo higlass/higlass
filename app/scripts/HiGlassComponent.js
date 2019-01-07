@@ -1047,7 +1047,7 @@ class HiGlassComponent extends React.Component {
       const lockGroup = this.zoomLocks[uid];
       const lockGroupItems = dictItems(lockGroup);
 
-
+      // eslint-disable-next-line no-unused-vars
       const [centerX, centerY, k] = scalesCenterAndK(this.xScales[uid], this.yScales[uid]);
 
       for (let i = 0; i < lockGroupItems.length; i++) {
@@ -1061,11 +1061,10 @@ class HiGlassComponent extends React.Component {
           continue;
         }
 
+        // eslint-disable-next-line no-unused-vars
         const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key],
           this.yScales[key]);
 
-        const dx = value[0] - lockGroup[uid][0];
-        const dy = value[1] - lockGroup[uid][1];
         const rk = value[2] / lockGroup[uid][2];
 
         // let newCenterX = centerX + dx;
@@ -1100,8 +1099,8 @@ class HiGlassComponent extends React.Component {
       const lockGroup = this.locationLocks[uid];
       const lockGroupItems = dictItems(lockGroup);
 
+      // eslint-disable-next-line no-unused-vars
       const [centerX, centerY, k] = scalesCenterAndK(this.xScales[uid], this.yScales[uid]);
-
 
       for (let i = 0; i < lockGroupItems.length; i++) {
         const key = lockGroupItems[i][0];
@@ -1109,6 +1108,7 @@ class HiGlassComponent extends React.Component {
 
         if (!this.xScales[key] || !this.yScales[key]) { continue; }
 
+        // eslint-disable-next-line no-unused-vars
         const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key],
           this.yScales[key]);
 
@@ -1400,10 +1400,10 @@ class HiGlassComponent extends React.Component {
     const targetXScale = this.xScales[uid1];
     const targetYScale = this.yScales[uid1];
 
-
+    // eslint-disable-next-line no-unused-vars
     const [targetCenterX, targetCenterY, targetK] = scalesCenterAndK(targetXScale, targetYScale);
+    // eslint-disable-next-line no-unused-vars
     const [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(sourceXScale, sourceYScale);
-
 
     // set target center
     this.setCenters[uid1](sourceCenterX, sourceCenterY, targetK, true);
@@ -1425,9 +1425,10 @@ class HiGlassComponent extends React.Component {
     const targetXScale = this.xScales[uid1];
     const targetYScale = this.yScales[uid1];
 
+    // eslint-disable-next-line no-unused-vars
     const [targetCenterX, targetCenterY, targetK] = scalesCenterAndK(targetXScale, targetYScale);
+    // eslint-disable-next-line no-unused-vars
     const [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(sourceXScale, sourceYScale);
-
 
     // set target center
     this.setCenters[uid1](targetCenterX, targetCenterY, sourceK, true);
