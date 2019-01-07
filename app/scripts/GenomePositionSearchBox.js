@@ -551,8 +551,8 @@ class GenomePositionSearchBox extends React.Component {
         }
 
         if (
-          (range1 && (isNaN(range1[0]) || isNaN(range1[1])))
-          || (range2 && (isNaN(range2[0]) || isNaN(range2[1])))) {
+          (range1 && (Number.isNaN(+range1[0]) || Number.isNaN(+range1[1])))
+          || (range2 && (Number.isNaN(+range2[0]) || Number.isNaN(+range2[1])))) {
           return;
         }
 
