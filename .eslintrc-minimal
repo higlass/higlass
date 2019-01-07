@@ -31,7 +31,7 @@
   },
   "rules": {
     // Turn a lot of rules off: We plan to fix one kind of error at a time, so we can remove these exceptions,
-    // and eventually delete this file and just have one .exlintrc. 
+    // and eventually delete this file and just have one .exlintrc.
     "import/no-extraneous-dependencies": 0,
     "jsx-a11y/anchor-is-valid": 0,
     "jsx-a11y/click-events-have-key-events": 0,
@@ -39,7 +39,6 @@
     "jsx-a11y/no-static-element-interactions": 0,
     "jsx-a11y/role-has-required-aria-props": 0,
     "no-param-reassign": 0,
-    "no-prototype-builtins": 0,
     "no-restricted-globals": 0,
     "no-return-assign": 0,
     "no-undef": 0,
@@ -51,7 +50,7 @@
     "react/no-unused-prop-types": 0,
     "react/no-unused-state": 0,
     "react/require-default-props": 0,
-    
+
     // By default, this is a warning, but most properties were in order,
     // and the few exceptions added a lot of noise to the logs.
     "react/jsx-sort-props": ["error"],
@@ -69,6 +68,7 @@
     // "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
     // "no-param-reassign": ["error", { "props": false }],
     "no-plusplus": 0,
+    "no-prototype-builtins": 0,
     "no-underscore-dangle": 0,
     "prefer-destructuring": 0,
     "react/destructuring-assignment": 0,
