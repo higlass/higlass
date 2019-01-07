@@ -3418,7 +3418,7 @@ class HiGlassComponent extends React.Component {
     ChromosomeInfo(chromInfoPath, (newChromInfo) => {
       this.chromInfo = newChromInfo;
       callback();
-    }, pubSub);
+    }, this.pubSub);
   }
 
   onMouseLeaveHandler() {
