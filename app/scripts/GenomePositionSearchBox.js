@@ -502,7 +502,7 @@ class GenomePositionSearchBox extends React.Component {
     for (let i = 0; i < valueParts.length; i++) {
       if (valueParts[i].length === 0) { continue; }
 
-      const [chr, pos, retPos] = this.searchField.parsePosition(valueParts[i]);
+      const retPos = this.searchField.parsePosition(valueParts[i])[2];
 
       if (retPos === null || isNaN(retPos)) {
         // not a chromsome position, let's see if it's a gene name
