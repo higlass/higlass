@@ -1,3 +1,4 @@
+import * as PIXI from 'pixi.js';
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
