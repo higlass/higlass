@@ -159,7 +159,7 @@ class TiledPlot extends React.Component {
 
   componentDidMount() {
     this.mounted = true;
-    this.element = this.divTiledPlot;
+    this.element = ReactDOM.findDOMNode(this);
     this.canvasElement = ReactDOM.findDOMNode(this.props.canvasElement);
 
     // new ResizeSensor(this.element, this.measureSize.bind(this));
