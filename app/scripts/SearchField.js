@@ -113,16 +113,13 @@ class SearchField {
   matchRangesToLarger(range1, range2) {
     // if one range is wider than the other, then adjust the other
     // so that it is just as wide
-    const smaller = null;
-
-
-    const larger = null;
-
-    if ((range1[1] - range1[0]) < (range2[1] - range2[0])) {
-      const toExpand = (range2[1] - range2[0]) - (range1[1] - range1[0]);
+    const range1diff = range1[1] - range1[0];
+    const range2diff = range2[1] - range2[0];
+    if (range1diff < range2diff) {
+      const toExpand = range2diff - range1diff;
       return [[range1[0] - toExpand / 2, range1[1] + toExpand / 2], range2];
     }
-    const toExpand = (range1[1] - range1[0]) - (range2[1] - range2[0]);
+    const toExpand = range1diff - range2diff;
     return [range1, [range2[0] - toExpand / 2, range2[1] + toExpand / 2]];
   }
 

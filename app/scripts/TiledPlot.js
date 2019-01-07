@@ -1521,9 +1521,6 @@ class TiledPlot extends React.Component {
     const presentTracks = new Set(['top', 'left', 'right', 'center', 'bottom']
       .filter(x => (x in this.state.tracks && this.state.tracks[x].length)));
 
-    const numVertical = 0;
-    const numHorizontal = 0;
-
     const topAllowed = 'top' in defaultTracks;
     const leftAllowed = 'left' in defaultTracks;
     const rightAllowed = 'right' in defaultTracks;

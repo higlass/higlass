@@ -19,8 +19,6 @@ export class SeriesOptions extends React.Component {
   }
 
   handleNormalizeCheckboxChanged(e) {
-    const domElement = ReactDOM.findDOMNode(this.normalizeCheckbox);
-
     this.setState({
       normalizeChecked: e.target.checked,
     });
