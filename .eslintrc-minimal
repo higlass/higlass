@@ -82,7 +82,7 @@
     "react/jsx-key": 1,
     "react/jsx-max-props-per-line": 1,
     "react/jsx-no-bind": [0, {"ignoreRefs": true }],
-    "react/jsx-no-duplicate-props": 1,
+    "react/jsx-no-duplicate-props": 2,
     "react/jsx-no-literals": 0,
     "react/jsx-no-undef": 1,
     "react/jsx-pascal-case": 1,
