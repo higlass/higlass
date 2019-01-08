@@ -39,6 +39,7 @@
     "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
     "no-param-reassign": ["error", { "props": false }],
     "no-plusplus": 0,
+    "no-prototype-builtins": 0,
     "no-underscore-dangle": 0,
     "prefer-destructuring": 0,
     "react/destructuring-assignment": 0,
