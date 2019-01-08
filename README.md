@@ -36,8 +36,8 @@ npm install
 npm run start
 ```
 
-Many examples are available, but http://localhost:8080/svg is useful during development:
-It renders an SVG below the interactive visualization so it's easy to spot differences.
+This starts a server in development mode at http://localhost:8080/.
+A [full list](http://localhost:8080/examples.html) of examples is available.
 
 ### Tests
 
@@ -94,4 +94,3 @@ const api = hglib.createHgComponent(
 ### License
 
 HiGlass is provided under the MIT License.
-
