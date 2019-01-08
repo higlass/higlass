@@ -108,7 +108,7 @@ export function workerSetPix(
       // and its mirror will fill in that space
       if (ignoreUpperRight && Math.floor(i / tileWidth) < i % tileWidth) {
         rgbIdx = 255;
-      } else if (isNaN(d)) {
+      } else if (Number.isNaN(+d)) {
         rgbIdx = 255;
       } else {
         // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
