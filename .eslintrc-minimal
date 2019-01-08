@@ -60,6 +60,7 @@
     "jsx-quotes": 1,
     "no-bitwise": 0,
     // "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-constant-condition": 2,
     "no-continue": 0,
     "no-mixed-operators": 0,
     // "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
