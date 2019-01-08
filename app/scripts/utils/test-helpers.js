@@ -87,33 +87,6 @@ export const waitForJsonComplete = (finished) => {
   }
 };
 
-export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
-  /**
-     * Wait until all of the tiles in the HiGlassComponent are loaded
-     * until calling the callback
-     *
-     * Arguments
-     * ---------
-     *  hgc: Enzyme wrapper for a HiGlassComponent
-     *      The componentthat we're waiting on
-     *  tilesLoadedCallback: function
-     *      The callback to call whenever all of the tiles
-     *      have been loaded.
-     * Returns
-     * -------
-     *  Nothing
-     */
-  // console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
-  if (isWaitingOnTiles(hgc)) {
-    setTimeout(() => {
-      waitForTilesLoaded(hgc, tilesLoadedCallback);
-    }, TILE_LOADING_CHECK_INTERVAL);
-  } else {
-    // console.log('finished');
-    tilesLoadedCallback();
-  }
-};
-
 /**
  * Check if a HiGlassComponent is still waiting on tiles from a remote
  * server.
@@ -151,6 +124,33 @@ export const isWaitingOnTiles = (hgc) => {
   }
 
   return false;
+};
+
+export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
+  /**
+     * Wait until all of the tiles in the HiGlassComponent are loaded
+     * until calling the callback
+     *
+     * Arguments
+     * ---------
+     *  hgc: Enzyme wrapper for a HiGlassComponent
+     *      The componentthat we're waiting on
+     *  tilesLoadedCallback: function
+     *      The callback to call whenever all of the tiles
+     *      have been loaded.
+     * Returns
+     * -------
+     *  Nothing
+     */
+  // console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
+  if (isWaitingOnTiles(hgc)) {
+    setTimeout(() => {
+      waitForTilesLoaded(hgc, tilesLoadedCallback);
+    }, TILE_LOADING_CHECK_INTERVAL);
+  } else {
+    // console.log('finished');
+    tilesLoadedCallback();
+  }
 };
 
 /**
