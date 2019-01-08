@@ -1,4 +1,6 @@
-import {
+// In this project, these methods are only used in tests,
+// but plugin tracks also make use of them... so not really extraneous.
+import { // eslint-disable-line import/no-extraneous-dependencies
   mount
 } from 'enzyme';
 

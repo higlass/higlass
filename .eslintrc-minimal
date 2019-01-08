@@ -31,8 +31,7 @@
   },
   "rules": {
     // Turn a lot of rules off: We plan to fix one kind of error at a time, so we can remove these exceptions,
-    // and eventually delete this file and just have one .exlintrc.
-    "import/no-extraneous-dependencies": 0,
+    // and eventually delete this file and just have one .exlintrc. 
     "jsx-a11y/anchor-is-valid": 0,
     "jsx-a11y/click-events-have-key-events": 0,
     "jsx-a11y/no-noninteractive-element-interactions": 0,
