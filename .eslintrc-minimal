@@ -43,7 +43,6 @@
     "no-undef": 0,
     "no-unused-vars": 0,
     "react/no-array-index-key": 0,
-    "react/no-children-prop": 0,
     "react/no-find-dom-node": 0,
     "react/no-unused-prop-types": 0,
     "react/no-unused-state": 0,
