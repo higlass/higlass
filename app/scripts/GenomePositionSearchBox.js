@@ -504,7 +504,7 @@ class GenomePositionSearchBox extends React.Component {
 
       const [chr, pos, retPos] = this.searchField.parsePosition(valueParts[i]);
 
-      if (retPos === null || isNaN(retPos)) {
+      if (retPos === null || Number.isNaN(+retPos)) {
         // not a chromsome position, let's see if it's a gene name
         const url = `${this.state.autocompleteServer}/suggest/?d=${this.state.autocompleteId}&ac=${valueParts[i].toLowerCase()}`;
         requests.push(tileProxy.json(url, toVoid, this.props.pubSub));
@@ -551,8 +551,8 @@ class GenomePositionSearchBox extends React.Component {
         }
 
         if (
-          (range1 && (isNaN(range1[0]) || isNaN(range1[1])))
-          || (range2 && (isNaN(range2[0]) || isNaN(range2[1])))) {
+          (range1 && (Number.isNaN(+range1[0]) || Number.isNaN(+range1[1])))
+          || (range2 && (Number.isNaN(+range2[0]) || Number.isNaN(+range2[1])))) {
           return;
         }
 
