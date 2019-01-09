@@ -506,42 +506,40 @@ export const tileDataToPixData = (
 
   // comment this and uncomment the code afterwards to enable threading
 
-  if (true) {
-    const pixData = workerSetPix(
-      tileData.dense.length,
-      tileData.dense,
-      valueScaleType,
-      valueScaleDomain,
-      pseudocount,
-      colorScale,
-      ignoreUpperRight
-    );
+  const pixData = workerSetPix(
+    tileData.dense.length,
+    tileData.dense,
+    valueScaleType,
+    valueScaleDomain,
+    pseudocount,
+    colorScale,
+    ignoreUpperRight
+  );
 
-    finished({ pixData });
-  } else {
-    const newTileData = new Float32Array(tileData.dense.length);
-    newTileData.set(tileData.dense);
-    /*
-    var params = {
-      size: newTileData.length,
-      data: newTileData,
-      valueScaleType: valueScaleType,
-      valueScaleDomain: valueScaleDomain,
-      pseudocount: pseudocount,
-      colorScale: colorScale
-    };
+  finished({ pixData });
 
-    setPixPool.send(params, [ newTileData.buffer ])
-      .promise()
-      .then(returned => {
-        finished(returned);
-      })
-      .catch(reason => {
-        finished(null);
-      });
-    ;
-    */
-  }
+  // const newTileData = new Float32Array(tileData.dense.length);
+  // newTileData.set(tileData.dense);
+  /*
+  var params = {
+    size: newTileData.length,
+    data: newTileData,
+    valueScaleType: valueScaleType,
+    valueScaleDomain: valueScaleDomain,
+    pseudocount: pseudocount,
+    colorScale: colorScale
+  };
+
+  setPixPool.send(params, [ newTileData.buffer ])
+    .promise()
+    .then(returned => {
+      finished(returned);
+    })
+    .catch(reason => {
+      finished(null);
+    });
+  ;
+  */
 };
 
 function fetchEither(url, callback, textOrJson, pubSub) {
