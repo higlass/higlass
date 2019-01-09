@@ -40,7 +40,6 @@
     "no-param-reassign": 0,
     "no-return-assign": 0,
     "no-undef": 0,
-    "react/no-array-index-key": 0,
     "react/no-find-dom-node": 0,
     "react/no-unused-prop-types": 0,
     "react/no-unused-state": 0,
