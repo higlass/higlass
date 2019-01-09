@@ -113,13 +113,11 @@ class SearchField {
   matchRangesToLarger(range1, range2) {
     // if one range is wider than the other, then adjust the other
     // so that it is just as wide
-    const range1diff = range1[1] - range1[0];
-    const range2diff = range2[1] - range2[0];
-    if (range1diff < range2diff) {
-      const toExpand = range2diff - range1diff;
+    if ((range1[1] - range1[0]) < (range2[1] - range2[0])) {
+      const toExpand = (range2[1] - range2[0]) - (range1[1] - range1[0]);
       return [[range1[0] - toExpand / 2, range1[1] + toExpand / 2], range2];
     }
-    const toExpand = range1diff - range2diff;
+    const toExpand = (range1[1] - range1[0]) - (range2[1] - range2[0]);
     return [range1, [range2[0] - toExpand / 2, range2[1] + toExpand / 2]];
   }
 
@@ -147,24 +145,22 @@ class SearchField {
 
     if (parts.length > 1) {
       // calculate the range in one direction
-      let posTriple1 = this.parsePosition(parts[0]);
-      let chr1 = posTriple1[0];
-      let genomePos1 = posTriple1[2];
-
-      const posTriple2 = this.parsePosition(parts[1], chr1);
-      const chr2 = posTriple2[0];
-      const genomePos2 = posTriple2[2];
+      /* eslint-disable no-unused-vars */
+      let [chr1, chrPos1, genomePos1] = this.parsePosition(parts[0]);
+      let [chr2, chrPos2, genomePos2] = this.parsePosition(parts[1], chr1);
+      /* eslint-enable no-unused-vars */
 
       const tempRange1 = [genomePos1, genomePos2];
+
+      [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1]);
+      [chr2, chrPos2, genomePos2] = this.parsePosition(parts[0], chr1);
 
       if (chr1 === null && chr2 !== null) {
         // somembody entered a string like chr17:1000-2000
         // and when we try to search the rever, the first chromosome
         // is null
         // we have to pass in the previous chromosome as a prevChrom
-        posTriple1 = this.parsePosition(parts[1], chr2);
-        chr1 = posTriple1[0];
-        genomePos1 = posTriple1[2];
+        [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1], chr2);
       }
 
       const tempRange2 = [genomePos1, genomePos2];
@@ -178,16 +174,18 @@ class SearchField {
     // is the locus an entire chromosome?
 
     if (parts[0] in this.chromInfo.chrPositions) {
-      const chromPosition = this.chromInfo.chrPositions[parts[0]].pos;
+      const chromPosition = +this.chromInfo.chrPositions[parts[0]].pos;
 
       // if somebody has entered an entire chromosome, we return
       // it's length as the range
-      range = [+chromPosition,
-        +chromPosition + +this.chromInfo.chromLengths[parts[0]]];
+      range = [chromPosition,
+        chromPosition + +this.chromInfo.chromLengths[parts[0]]];
     } else {
       // e.g. ("chr1:540340")
-      const genomePos1 = this.parsePosition(parts[0])[2];
-      range = [genomePos1 - 8000000, genomePos1 + 8000000];
+      // eslint-disable-next-line no-unused-vars
+      const [chr1, chrPos1, pos1] = this.parsePosition(parts[0]);
+
+      range = [pos1 - 8000000, pos1 + 8000000];
     }
 
 
