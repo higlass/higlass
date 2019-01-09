@@ -644,18 +644,16 @@ class GenomePositionSearchBox extends React.Component {
 
   handleRenderMenu(items) {
     return (
-      <PopupMenu
-        children={items}
-      >
+      <PopupMenu>
         <div
-          children={items}
           style={{
             left: this.menuPosition.left,
             top: this.menuPosition.top,
           }}
           styleName="styles.genome-position-search-bar-suggestions"
-        />
-
+        >
+          {items}
+        </div>
       </PopupMenu>
     );
   }
