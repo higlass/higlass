@@ -3088,7 +3088,7 @@ class HiGlassComponent extends React.Component {
     }
 
     if (
-      isNaN(start1Abs) || isNaN(end1Abs)
+      Number.isNaN(+start1Abs) || Number.isNaN(+end1Abs)
     ) {
       const coords = [start1Abs, end1Abs].join(', ');
       console.warn([
@@ -3099,7 +3099,7 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
-    if (isNaN(start2Abs) || isNaN(end2Abs)
+    if (Number.isNaN(+start2Abs) || Number.isNaN(+end2Abs)
       || start2Abs === null || end2Abs === null) {
       start2Abs = start1Abs;
       end2Abs = end1Abs;

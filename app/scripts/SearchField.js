@@ -88,7 +88,7 @@ class SearchField {
 
     let retPos = null;
 
-    if (isNaN(pos)) { retPos = null; }
+    if (Number.isNaN(pos)) { retPos = null; }
 
     // queries like chr1:1000-2000
     if (chr === null) { chr = prevChr; }

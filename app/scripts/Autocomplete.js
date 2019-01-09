@@ -376,9 +376,10 @@ Autocomplete.defaultProps = {
     return (
       /* eslint-disable react/no-this-in-sfc */
       <div
-        children={items}
         style={{ ...style, ...this.menuStyle }}
-      />
+      >
+        {items}
+      </div>
       /* eslint-enable react/no-this-in-sfc */
     );
   },
