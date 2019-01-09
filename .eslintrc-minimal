@@ -31,7 +31,7 @@
   },
   "rules": {
     // Turn a lot of rules off: We plan to fix one kind of error at a time, so we can remove these exceptions,
-    // and eventually delete this file and just have one .exlintrc. 
+    // and eventually delete this file and just have one .exlintrc.
     "jsx-a11y/anchor-is-valid": 0,
     "jsx-a11y/click-events-have-key-events": 0,
     "jsx-a11y/no-noninteractive-element-interactions": 0,
@@ -60,6 +60,7 @@
     "jsx-quotes": 1,
     "no-bitwise": 0,
     // "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-constant-condition": 2,
     "no-continue": 0,
     "no-mixed-operators": 0,
     // "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
@@ -74,7 +75,7 @@
     "react/jsx-boolean-value": 0,
     "react/jsx-closing-bracket-location": 1,
     "react/jsx-curly-spacing": 1,
-    "react/jsx-equals-spacing": 1,
+    "react/jsx-equals-spacing": 2,
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/jsx-handler-names": 0,
     "react/jsx-indent": 0,
@@ -82,7 +83,7 @@
     "react/jsx-key": 1,
     "react/jsx-max-props-per-line": 1,
     "react/jsx-no-bind": [0, {"ignoreRefs": true }],
-    "react/jsx-no-duplicate-props": 1,
+    "react/jsx-no-duplicate-props": 2,
     "react/jsx-no-literals": 0,
     "react/jsx-no-undef": 1,
     "react/jsx-pascal-case": 1,

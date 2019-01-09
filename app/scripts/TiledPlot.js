@@ -1609,7 +1609,6 @@ class TiledPlot extends React.Component {
       <DragListeningDiv
         draggingHappening={this.props.draggingHappening}
         enabled={centerAllowed}
-        enabled={centerAllowed}
         onTrackDropped={track => this.handleTracksAdded([track], 'center')}
         position="center"
 

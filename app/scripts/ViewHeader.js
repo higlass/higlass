@@ -119,7 +119,7 @@ class ViewHeader extends React.Component {
           onMenuClosed={() => this.setState({ configMenuUid: null })}
         >
           <ConfigViewMenu
-            onClearView = {() => {
+            onClearView={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onClearView();
             }}
