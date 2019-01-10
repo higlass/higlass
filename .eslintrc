@@ -56,7 +56,7 @@
     "guard-for-in": 0,
     "jsx-quotes": 2,
     "no-bitwise": 0,
-    // "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-console": ["error", { "allow": ["warn", "error"] }],
     "no-constant-condition": 2,
     "no-continue": 0,
     "no-mixed-operators": 0,
