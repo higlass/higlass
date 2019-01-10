@@ -32,11 +32,6 @@
   "rules": {
     // Turn a lot of rules off: We plan to fix one kind of error at a time, so we can remove these exceptions,
     // and eventually delete this file and just have one .exlintrc.
-    "jsx-a11y/anchor-is-valid": 0,
-    "jsx-a11y/click-events-have-key-events": 0,
-    "jsx-a11y/no-noninteractive-element-interactions": 0,
-    "jsx-a11y/no-static-element-interactions": 0,
-    "jsx-a11y/role-has-required-aria-props": 0,
     "no-param-reassign": 0,
     "no-return-assign": 0,
     "no-undef": 0,
@@ -52,6 +47,11 @@
 
     // Below here should match .eslintrc,
     // except for the properties tweaked above.
+    "jsx-a11y/anchor-is-valid": 0,
+    "jsx-a11y/click-events-have-key-events": 0,
+    "jsx-a11y/no-noninteractive-element-interactions": 0,
+    "jsx-a11y/no-static-element-interactions": 0,
+    "jsx-a11y/role-has-required-aria-props": 0,
     "class-methods-use-this": 0,
     "comma-dangle": 0,
     "guard-for-in": 0,
