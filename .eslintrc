@@ -34,7 +34,7 @@
     "no-return-assign": 0, // https://github.com/higlass/higlass/issues/480
     "no-undef": 0, // https://github.com/higlass/higlass/pull/506
     "react/no-find-dom-node": 0, // https://github.com/higlass/higlass/issues/510
-    "react/require-default-props": 0,
+    "react/require-default-props": 0, // https://github.com/higlass/higlass/issues/523
 
     // Below, if it's turned off (0), we definitely do not care about the rule.
     // If it's turned on (2), and you have a violation, either
