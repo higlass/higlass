@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { Collapse, Panel, Checkbox } from 'react-bootstrap';
 
 import CollapsePanel from './CollapsePanel';
@@ -19,8 +18,6 @@ export class SeriesOptions extends React.Component {
   }
 
   handleNormalizeCheckboxChanged(e) {
-    const domElement = ReactDOM.findDOMNode(this.normalizeCheckbox);
-
     this.setState({
       normalizeChecked: e.target.checked,
     });

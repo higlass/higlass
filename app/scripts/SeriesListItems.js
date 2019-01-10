@@ -49,8 +49,6 @@ export const getSeriesItems = (
 ) => {
   if (!tracks) return null;
 
-  const trackTypeToInfo = {};
-
   if (window.higlassTracksByType) {
     Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
       TRACKS_INFO_BY_TYPE[pluginTrackType] = window.higlassTracksByType[pluginTrackType].config;
