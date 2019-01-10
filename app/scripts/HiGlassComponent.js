@@ -63,6 +63,7 @@ import {
   DEFAULT_SERVER,
   MOUSE_TOOL_MOVE,
   MOUSE_TOOL_SELECT,
+  MOUSE_TOOL_SELECT_LIMITED,
   LOCATION_LISTENER_PREFIX,
   LONG_DRAG_TIMEOUT,
   SHORT_DRAG_TIMEOUT,
@@ -173,6 +174,9 @@ class HiGlassComponent extends React.Component {
       switch (this.props.options.mouseTool) {
         case MOUSE_TOOL_SELECT:
           mouseTool = MOUSE_TOOL_SELECT;
+          break;
+        case MOUSE_TOOL_SELECT_LIMITED:
+          mouseTool = MOUSE_TOOL_SELECT_LIMITED;
           break;
         default:
           break;

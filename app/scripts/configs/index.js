@@ -6,6 +6,8 @@ export const MOUSE_TOOL_MOVE = 'move';
 
 export const MOUSE_TOOL_SELECT = 'select';
 
+export const MOUSE_TOOL_SELECT_LIMITED = 'select-limited';
+
 export const TILE_FETCH_DEBOUNCE = 100;
 
 // Number of milliseconds zoom-related actions (e.g., tile loading) are debounced

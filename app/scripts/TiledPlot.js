@@ -37,6 +37,7 @@ import {
 import {
   DEFAULT_TRACKS_FOR_DATATYPE,
   MOUSE_TOOL_SELECT,
+  MOUSE_TOOL_SELECT_LIMITED,
   TRACKS_INFO_BY_TYPE,
   TRACK_LOCATIONS
 } from './configs';
@@ -1737,7 +1738,11 @@ class TiledPlot extends React.Component {
           handleResizeTrack={this.handleResizeTrack.bind(this)}
           handleSortEnd={this.handleSortEnd.bind(this)}
           is1dRangeSelection={this.state.is1dRangeSelection}
-          isRangeSelectionActive={this.props.mouseTool === MOUSE_TOOL_SELECT}
+          isLimitedRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT_LIMITED}
+          isRangeSelectionActive={
+            this.props.mouseTool === MOUSE_TOOL_SELECT
+            || this.props.mouseTool === MOUSE_TOOL_SELECT_LIMITED
+          }
           onAddSeries={this.handleAddSeries.bind(this)}
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
@@ -1926,7 +1931,11 @@ class TiledPlot extends React.Component {
             editable={this.props.editable}
             height={this.centerHeight}
             is1dRangeSelection={this.state.is1dRangeSelection}
-            isRangeSelectionActive={this.props.mouseTool === MOUSE_TOOL_SELECT}
+            isLimitedRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT_LIMITED}
+            isRangeSelectionActive={
+              this.props.mouseTool === MOUSE_TOOL_SELECT
+              || this.props.mouseTool === MOUSE_TOOL_SELECT_LIMITED
+            }            
             onAddSeries={this.handleAddSeries.bind(this)}
             onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
             onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
@@ -2158,8 +2167,7 @@ class TiledPlot extends React.Component {
       <div
         ref={(c) => { this.divTiledPlot = c; }}
         className="tiled-plot-div"
-        onDragEnter={(evt) => {
-        }}
+        onDragEnter={() => {}}
         styleName="styles.tiled-plot"
       >
         {trackRenderer}
@@ -2204,6 +2212,7 @@ class TiledPlot extends React.Component {
 TiledPlot.defaultProps = {
   pluginTracks: {},
   metaTracks: [],
+  mouseTool: MOUSE_TOOL_SELECT,
   zoomable: true,
 };
 

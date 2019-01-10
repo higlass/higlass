@@ -13,6 +13,7 @@ import {
 import {
   MOUSE_TOOL_MOVE,
   MOUSE_TOOL_SELECT,
+  MOUSE_TOOL_SELECT_LIMITED,
 } from './configs';
 
 
@@ -392,6 +393,10 @@ const createApi = function api(context, pubSub) {
         switch (tool) {
           case 'select':
             self.setMouseTool(MOUSE_TOOL_SELECT);
+            break;
+
+          case 'select-limited':
+            self.setMouseTool(MOUSE_TOOL_SELECT_LIMITED);
             break;
 
           default:

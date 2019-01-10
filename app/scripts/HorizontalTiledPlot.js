@@ -40,6 +40,7 @@ class HorizontalTiledPlot extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.rangeSelectionTriggered) {
+      // range selection came from this tiled plot
       this.rangeSelectionTriggered = false;
       if (
         this.rangeSelectionTriggeredEnd
@@ -54,6 +55,18 @@ class HorizontalTiledPlot extends React.Component {
       }
       this.rangeSelectionTriggeredEnd = false;
       return this.state !== nextState;
+    }
+    console.log('ilrs:', this.props.isLimitedRangeSelection);
+    
+    if (this.props.isLimitedRangeSelection) {
+      // limited mouse tool means that we only select regions
+      // within their own tiledplots, so notifications that the
+      // range selection has changed can be ignored
+      // console.log('removeBrush');
+      // this.removeBrush();
+      this.moveBrush(null);
+      console.log('from different plot');
+      return true;
     }
     if (this.props.rangeSelection !== nextProps.rangeSelection) {
       this.moveBrush(
@@ -148,6 +161,7 @@ class HorizontalTiledPlot extends React.Component {
   moveBrush(rangeSelection, animate = false) {
     if (!this.brushEl) { return; }
 
+    console.log('rangeSelection:', rangeSelection);
     const relRange = rangeSelection ? [
       this.props.scale(rangeSelection[0]),
       this.props.scale(rangeSelection[1]),

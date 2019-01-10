@@ -62,6 +62,15 @@ class CenterTrack extends React.Component {
       }
       return this.state !== nextState;
     }
+    
+    if (this.props.isLimitedRangeSelection) {
+      // limited mouse tool means that we only select regions
+      // within their own tiledplots, so notifications that the
+      // range selection has changed can be ignored
+      // this.moveBrushXY(null);
+      return true;
+    }
+
     if (this.props.rangeSelection !== nextProps.rangeSelection) {
       const dim1 = nextProps.rangeSelection[0] || null;
 
@@ -334,7 +343,7 @@ class CenterTrack extends React.Component {
   moveBrushXY(rangeSelection, animate = false) {
     if (!this.brushEl && !this.sourceEvent) { return; }
 
-    const relRange = [
+    const relRange = rangeSelection ? [
       [
         this.props.scaleX(rangeSelection[0][0]),
         this.props.scaleY(rangeSelection[1][0]),
@@ -343,7 +352,7 @@ class CenterTrack extends React.Component {
         this.props.scaleX(rangeSelection[0][1]),
         this.props.scaleY(rangeSelection[1][1]),
       ],
-    ];
+    ] : null;
 
     this.rangeSelectionMoved = true;
     this.rangeSelectionMovedEnd = true;
