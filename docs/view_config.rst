@@ -107,8 +107,7 @@ in a list:
     ]
   }
 
-The rest of this section, when it is written, will refer to elements within
-the individual view sections.
+The rest of this section refers to elements within the individual view sections.
 
 UIDs
 ^^^^
