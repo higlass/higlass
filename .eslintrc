@@ -28,6 +28,11 @@
     "ecmaVersion": 6
   },
   "rules": {
+    "jsx-a11y/anchor-is-valid": 0,
+    "jsx-a11y/click-events-have-key-events": 0,
+    "jsx-a11y/no-noninteractive-element-interactions": 0,
+    "jsx-a11y/no-static-element-interactions": 0,
+    "jsx-a11y/role-has-required-aria-props": 0,
     "class-methods-use-this": 0,
     "comma-dangle": 0,
     "guard-for-in": 0,
@@ -75,7 +80,6 @@
     "react/no-set-state": 0,
     "react/no-string-refs": 1,
     "react/no-unknown-property": 1,
-    "react/no-unused-prop-types": 0,
     "react/prefer-es6-class": 1,
     "react/prop-types": 1,
     "react/react-in-jsx-scope": 1,
