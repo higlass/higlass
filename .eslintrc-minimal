@@ -36,7 +36,6 @@
     "no-return-assign": 0,
     "no-undef": 0,
     "react/no-find-dom-node": 0,
-    "react/no-unused-prop-types": 0,
     "react/require-default-props": 0,
 
     // In many cases, we want consistent method signatures,
@@ -100,6 +99,7 @@
     "react/no-set-state": 0,
     "react/no-string-refs": 1,
     "react/no-unknown-property": 2,
+    "react/no-unused-prop-types": 0,
     "react/no-unused-state": 0,
     "react/prefer-es6-class": 2,
     "react/prop-types": 1,
