@@ -1,7 +1,5 @@
-import * as PIXI from 'pixi.js';
 import { initTile, drawTile } from './Id2DTiledPixiTrack';
 import OSMTilesTrack from './OSMTilesTrack';
-import PixiTrack from './PixiTrack';
 
 class OSMTileIdsTrack extends OSMTilesTrack {
   initTile(tile) {

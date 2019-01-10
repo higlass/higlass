@@ -35,10 +35,13 @@
     "no-param-reassign": 0,
     "no-return-assign": 0,
     "no-undef": 0,
-    "no-unused-vars": 0,
     "react/no-find-dom-node": 0,
     "react/no-unused-prop-types": 0,
     "react/require-default-props": 0,
+
+    // In many cases, we want consistent method signatures,
+    // even if a particular instance does not use all the parameters.
+    "no-unused-vars": ["error", { "args": "none" }],
 
     // By default, this is a warning, but most properties were in order,
     // and the few exceptions added a lot of noise to the logs.
