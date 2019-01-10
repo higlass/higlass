@@ -113,15 +113,6 @@
       "rules": {
         "no-use-before-define": 0 // So viewconfs can be below the body of the test.
       }
-    },
-    {
-      "files": ["app/scripts/*Track.js"],
-      "rules": {
-        // TODO: turn this back on when the ignore is removed above.
-        // "no-unused-vars": ["error", { "args": "none" }]
-        // There are many instances where an interface expects parameters,
-        // but the code doesn't use them, sometimes because it's a stub.
-      }
     }
   ]
 }
