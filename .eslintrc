@@ -1,5 +1,3 @@
-// This is "minimal" in terms of the requirements placed on authors:
-// Rules have been turned off if --fix didn't work, and the manual fix wasn't obvious.
 {
   "parser": "babel-eslint",
   "env": {
