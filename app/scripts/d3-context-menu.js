@@ -5,7 +5,6 @@ import '../styles/d3-context-menu.css';
 
 function contextMenu(menu, opts) {
   let previouslyMouseUp = false;
-  let clickAway = {};
   const uid = slugid.nice();
   let rootElement = null;
   let orientation = 'right'; // display the menu to the right of the mouse click
@@ -69,7 +68,6 @@ function contextMenu(menu, opts) {
   return function (data, index, pMouseUp = false,
     clickAwayFunc = function () { }, useMouse = false) {
     const elm = this;
-    const contextMenuPos = null;
     let mousePos = null;
     const currentThis = this;
 
