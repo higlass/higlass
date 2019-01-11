@@ -48,6 +48,8 @@ import ViewportTracker2D from './ViewportTracker2D';
 import ViewportTrackerHorizontal from './ViewportTrackerHorizontal';
 import ViewportTrackerVertical from './ViewportTrackerVertical';
 
+import SelectionTrackHorizontal from './SelectionTrackHorizontal';
+
 import HorizontalRule from './HorizontalRule';
 import VerticalRule from './VerticalRule';
 import CrossRule from './CrossRule';
@@ -1379,6 +1381,21 @@ class TrackRenderer extends React.Component {
           context.removeViewportChanged = track.removeViewportChanged;
           context.setDomainsCallback = track.setDomainsCallback;
           return new ViewportTrackerVertical(context, options);
+        }
+        return new Track(context, options);
+
+      case 'selection-track-horizontal':
+        console.log('track:', track);
+        // TODO: Fix this so that these functions are defined somewhere else
+        if (
+          track.registerSelectionChanged
+          && track.removeSelectionChanged
+          && track.setDomainsCallback
+        ) {
+          context.registerSelectionChanged = track.registerSelectionChanged;
+          context.removeSelectionChanged = track.removeSelectionChanged;
+          context.setDomainsCallback = track.setDomainsCallback;
+          return new SelectionTrackHorizontal(context, options);
         }
         return new Track(context, options);
 

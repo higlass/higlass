@@ -743,6 +743,27 @@ export const TRACKS_INFO = [
     },
   },
   {
+    type: 'selection-track-horizontal',
+    datatype: ['1d-projection'],
+    local: true,
+    hidden: true,
+    orientation: '1d-horizontal',
+    name: 'Viewport Projection',
+    availableOptions: [
+      'brushFillColor',
+      'strokeColor',
+      'strokeWidth',
+      'strokeOpacity'
+    ],
+    defaultOptions: {
+      fillColor: '#777',
+      strokeColor: '#777',
+      fillOpacity: 0.3,
+      strokeOpacity: 0.7,
+      strokeWidth: 1,
+    },
+  },
+  {
     type: 'viewport-projection-center',
     datatype: ['2d-projection'],
     local: true,

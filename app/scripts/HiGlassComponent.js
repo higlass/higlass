@@ -1379,7 +1379,9 @@ class HiGlassComponent extends React.Component {
         fromViewUid: fromView,
       };
 
-      this.addCallbacks(toView, newTrack);
+      this.addViewportProjectionCallbacks(toView, newTrack);
+      this.addSelectionTrackCallbacks(toView, newTrack);
+
       this.handleTrackAdded(toView, newTrack, position, hostTrack);
     }
     this.setState({
@@ -2335,13 +2337,13 @@ class HiGlassComponent extends React.Component {
   }
 
   /**
-   * Add callbacks for functions that need them
+   * Add viewport projection callbacks for functions that need them
    *
    * Done in place.
    *
    * @param track: A view with tracks.
    */
-  addCallbacks(viewUid, track) {
+  addViewportProjectionCallbacks(viewUid, track) {
     if (track.type === 'viewport-projection-center'
           || track.type === 'viewport-projection-horizontal'
           || track.type === 'viewport-projection-vertical'
@@ -2384,6 +2386,26 @@ class HiGlassComponent extends React.Component {
           this.addLock(viewUid, fromView, this.locationLocks, this.viewScalesLockData);
         }
       };
+    }
+  }
+
+  /**
+   * Add viewport projection callbacks for functions that need them
+   *
+   * Done in place.
+   *
+   * @param track: A view with tracks.
+   */
+  addSelectionCallbacks(viewUid, track) {
+    if (track.type === 'selection-track-center'
+          || track.type === 'selection-track-horizontal'
+          || track.type === 'selection-track-vertical'
+    ) {
+      const fromView = track.fromViewUid;
+
+      track.registerSelectionChanged = (trackId, listener) => {};
+      track.removeSelectionChanged = (trackId) => {};
+      track.setDomainsCallback = (xDomain, yDomain) =>  {};
     }
   }
 
@@ -2688,7 +2710,10 @@ class HiGlassComponent extends React.Component {
     newView.uid = slugid.nice();
     newView.layout.i = newView.uid;
 
-    positionedTracksToAllTracks(newView.tracks).forEach(t => this.addCallbacks(newView.uid, t));
+    positionedTracksToAllTracks(newView.tracks).forEach(t => {
+      this.addViewportProjectionCallbacks(newView.uid, t);
+      this.addSelectionCallbacks(newView.uid, t);
+    });
 
     this.state.views[newView.uid] = newView;
 
@@ -3005,7 +3030,10 @@ class HiGlassComponent extends React.Component {
       looseTracks = this.addUidsToTracks(looseTracks);
       looseTracks = this.addNamesToTracks(looseTracks);
 
-      looseTracks.forEach(t => this.addCallbacks(v.uid, t));
+      looseTracks.forEach(t => {
+        this.addViewportProjectionCallbacks(v.uid, t);
+        this.addSelectionCallbacks(v.uid, t);
+      });
 
       // make sure that the layout for this view refers to this view
       if (v.layout) { v.layout.i = v.uid; }
