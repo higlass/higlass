@@ -19,17 +19,9 @@ class OverlayTrack extends PixiTrack {
     graphics.clear();
     graphics.beginFill(fill, 0.3);
 
-    // console.log('_xScale', this._xScale.range());
-    // console.log('this.dimensions:', this.dimensions);
-
     for (let i = 0; i < this.options.orientationsAndPositions.length; i++) {
       const orientation = this.options.orientationsAndPositions[i].orientation;
       const position = this.options.orientationsAndPositions[i].position;
-
-      /*
-      console.log('this.position:', this.position);
-      console.log('position.left:', position.left);
-      */
 
       if (orientation === '1d-horizontal') {
         const xPos = this.position[0] + position.left
@@ -39,22 +31,8 @@ class OverlayTrack extends PixiTrack {
         const width = this._xScale(this.options.extent[0][1])
           - xPos + position.left + this.position[0];
 
-        /*
-        console.log('top:', yPos);
-        console.log('height:', position.height);
-        console.log('yPos:', yPos);
-        console.log('width:', width);
-        console.log('height:', height);
-        */
-
         graphics.drawRect(xPos, yPos, width, height);
       }
-
-      /*
-      console.log('orientation:', orientation);
-      console.log('position:', position);
-      console.log('this.extent', this.extent);
-      */
     }
   }
 
@@ -79,6 +57,7 @@ class OverlayTrack extends PixiTrack {
 
   exportSVG() {
     // TODO: implement me
+    console.warn('Overlay tracks cannot be exported as SVG yet.');
   }
 }
 
