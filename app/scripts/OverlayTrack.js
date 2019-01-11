@@ -25,7 +25,7 @@ class OverlayTrack extends PixiTrack {
       const orientation = this.options.orientationsAndPositions[i].orientation;
       const position = this.options.orientationsAndPositions[i].position;
 
-      if (orientation === '1d-horizontal') {
+      if (orientation === '1d-horizontal' || orientation === '2d') {
         const xPos = this.position[0]
           + position.left
           + this._xScale(this.options.extent[0][0]);
@@ -39,7 +39,7 @@ class OverlayTrack extends PixiTrack {
         graphics.drawRect(xPos, yPos, width, height);
       }
 
-      if (orientation === '1d-vertical') {
+      if (orientation === '1d-vertical' || orientation === '2d') {
         const xPos = this.position[0] + position.left;
         const yPos = this.position[1]
           + position.top
