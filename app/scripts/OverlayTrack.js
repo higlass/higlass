@@ -19,7 +19,7 @@ class OverlayTrack extends PixiTrack {
     );
 
     graphics.clear();
-    graphics.beginFill(fill, 0.3);
+    graphics.beginFill(fill, this.options.fillOpacity || 0.3);
 
     for (let i = 0; i < this.options.orientationsAndPositions.length; i++) {
       const orientation = this.options.orientationsAndPositions[i].orientation;
