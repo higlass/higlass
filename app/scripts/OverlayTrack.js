@@ -38,6 +38,20 @@ class OverlayTrack extends PixiTrack {
 
         graphics.drawRect(xPos, yPos, width, height);
       }
+
+      if (orientation === '1d-vertical') {
+        const xPos = this.position[0] + position.left;
+        const yPos = this.position[1]
+          + position.top
+          + this._yScale(this.options.extent[0][0]);
+        const width = position.width;
+        const height = this._yScale(this.options.extent[0][1])
+          - yPos
+          + position.top
+          + this.position[1];
+
+        graphics.drawRect(xPos, yPos, width, height);
+      }
     }
   }
 
