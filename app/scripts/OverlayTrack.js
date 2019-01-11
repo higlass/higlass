@@ -14,7 +14,9 @@ class OverlayTrack extends PixiTrack {
   draw() {
     super.draw();
     const graphics = this.pMain;
-    const fill = colorToHex(this.options.fillColor ? this.options.fillColor : 'blue');
+    const fill = colorToHex(
+      this.options.fillColor ? this.options.fillColor : 'blue'
+    );
 
     graphics.clear();
     graphics.beginFill(fill, 0.3);
@@ -24,12 +26,15 @@ class OverlayTrack extends PixiTrack {
       const position = this.options.orientationsAndPositions[i].position;
 
       if (orientation === '1d-horizontal') {
-        const xPos = this.position[0] + position.left
+        const xPos = this.position[0]
+          + position.left
           + this._xScale(this.options.extent[0][0]);
         const yPos = this.position[1] + position.top;
         const height = position.height;
         const width = this._xScale(this.options.extent[0][1])
-          - xPos + position.left + this.position[0];
+          - xPos
+          + position.left
+          + this.position[0];
 
         graphics.drawRect(xPos, yPos, width, height);
       }
