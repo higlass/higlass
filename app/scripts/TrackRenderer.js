@@ -1385,7 +1385,8 @@ class TrackRenderer extends React.Component {
         return new Track(context, options);
 
       case 'selection-track-horizontal':
-        console.log('track:', track);
+        context.xDomain = track.xDomain;
+
         // TODO: Fix this so that these functions are defined somewhere else
         if (
           track.registerSelectionChanged

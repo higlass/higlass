@@ -107,6 +107,10 @@ class HiGlassComponent extends React.Component {
     // keep track of the xScales of each Track Renderer
     this.xScales = {};
     this.yScales = {};
+
+    this.selectionXDomains = {};
+    this.selectionYDomains = {};
+
     this.topDiv = null;
     this.zoomToDataExtentOnInit = new Set();
 
@@ -120,6 +124,7 @@ class HiGlassComponent extends React.Component {
     // to be fast
     // indexed by view uid and then listener uid
     this.scalesChangedListeners = {};
+    this.selectionChangedListeners = {};
     this.draggingChangedListeners = {};
     this.valueScalesChangedListeners = {};
 
@@ -127,6 +132,7 @@ class HiGlassComponent extends React.Component {
     // between views
     this.zoomLocks = {};
     this.locationLocks = {};
+    this.selectionLocks = {};
 
     this.prevAuthToken = props.options.authToken;
 
@@ -987,7 +993,7 @@ class HiGlassComponent extends React.Component {
   }
 
   createPNGBlobPromise() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       // It would seem easier to call canvas.toDataURL()...
       // Except that with webgl context, it swaps buffers after drawing
       // and you don't have direct access to what is on-screen.
@@ -1019,6 +1025,72 @@ class HiGlassComponent extends React.Component {
     this.createPNGBlobPromise().then((blob) => {
       download('export.png', blob);
     });
+  }
+
+  /*
+   * The selection scales changed.
+   *
+   * Mark the new scales and update any locked views.
+   *
+   * @param uid: The view of whom the scales have changed.
+   */
+  handleSelectionChanged(uid, xDomain, yDomain, notify = true) {
+    // console.log('hsc:', xScale.domain());
+
+    this.selectionXDomains[uid] = xDomain;
+    this.selectionYDomains[uid] = yDomain;
+
+    if (notify) {
+      if (uid in this.selectionChangedListeners) {
+        dictValues(this.selectionChangedListeners[uid]).forEach((x) => {
+          x(xDomain, yDomain);
+        });
+      }
+    }
+
+    if (this.selectionLocks[uid]) {
+      // this view is locked to another
+      const lockGroup = this.selectionLocks[uid];
+      const lockGroupItems = dictItems(lockGroup);
+
+
+      for (let i = 0; i < lockGroupItems.length; i++) {
+        const key = lockGroupItems[i][0];
+
+        if (!this.selectionXDomains[key]
+          || !this.selectionYDomains[key]) { continue; }
+
+        if (key === uid) {
+          // no need to notify oneself that the scales have changed
+          continue;
+        }
+
+        if (!this.setSelections[key]) { continue; }
+
+        // the key here is the target of the selection lock
+        // so we need to set its selection scales to the
+        // current views selection scales
+        this.setSelections[key](
+          xDomain, yDomain, false
+        );
+
+        this.selectionXDomains[key] = xDomain;
+        this.selectionYDomains[key] = yDomain;
+
+        // notify the listeners of all locked selections that the
+        // scales of this view have changed
+        if (this.selectionChangedListeners.hasOwnProperty(key)) {
+          dictValues(this.selectionChangedListeners[key]).forEach((x) => {
+            x(xDomain, yDomain);
+          });
+        }
+      }
+    }
+
+    this.animate();
+
+    // Call view change handler
+    this.triggerViewChangeDb();
   }
 
   /*
@@ -1402,10 +1474,10 @@ class HiGlassComponent extends React.Component {
     const targetXScale = this.xScales[uid1];
     const targetYScale = this.yScales[uid1];
 
-
+    // eslint-disable-next-line no-unused-vars
     const [targetCenterX, targetCenterY, targetK] = scalesCenterAndK(targetXScale, targetYScale);
+    // eslint-disable-next-line no-unused-vars
     const [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(sourceXScale, sourceYScale);
-
 
     // set target center
     this.setCenters[uid1](sourceCenterX, sourceCenterY, targetK, true);
@@ -1427,7 +1499,9 @@ class HiGlassComponent extends React.Component {
     const targetXScale = this.xScales[uid1];
     const targetYScale = this.yScales[uid1];
 
+    // eslint-disable-next-line no-unused-vars
     const [targetCenterX, targetCenterY, targetK] = scalesCenterAndK(targetXScale, targetYScale);
+    // eslint-disable-next-line no-unused-vars
     const [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(sourceXScale, sourceYScale);
 
 
@@ -2403,9 +2477,44 @@ class HiGlassComponent extends React.Component {
     ) {
       const fromView = track.fromViewUid;
 
-      track.registerSelectionChanged = (trackId, listener) => {};
-      track.removeSelectionChanged = (trackId) => {};
-      track.setDomainsCallback = (xDomain, yDomain) =>  {};
+      track.registerSelectionChanged = (trackId, listener) => {
+
+      };
+      track.removeSelectionChanged = (trackId) => {
+
+      };
+      track.setDomainsCallback = (xDomain, yDomain) =>  {
+        let selectionLocked = false;
+
+        // if we drag the brush and this view is locked to others, we don't
+        // want the movement we induce in them to come back and modify this
+        // view and set up a feedback loop
+        if (viewUid in this.selectionLocks) {
+          selectionLocked = fromView in this.selectionLocks[viewUid];
+        }
+
+        if (selectionLocked) {
+          this.handleUnlock(viewUid, this.selectionLocks);
+        }
+
+        this.handleSelectionChanged(fromView, xDomain, yDomain, true);
+
+        if (selectionLocked) {
+          this.addLock(viewUid, fromView,
+            this.selectionLocks, () => { });
+        }
+      };
+    }
+  }
+
+  deserializeSelectionLocks(viewConfig) {
+    this.selectionLocks = {};
+
+    if (viewConfig.selectionLocks) {
+      for (const viewUid of dictKeys(viewConfig.selectionLocks.locksByViewUid)) {
+        this.selectionLocks[viewUid] = viewConfig.selectionLocks
+          .locksDict[viewConfig.selectionLocks.locksByViewUid[viewUid]];
+      }
     }
   }
 
@@ -2493,6 +2602,10 @@ class HiGlassComponent extends React.Component {
           }
         }
 
+        if (track.type === 'selection-track-horizontal') {
+          track.xDomain = this.selectionXDomains[track.uid];
+        }
+
         if ('serverUidKey' in track) { delete track.serverUidKey; }
         if ('uuid' in track) { delete track.uuid; }
         if ('private' in track) { delete track.private; }
@@ -2514,6 +2627,7 @@ class HiGlassComponent extends React.Component {
       return newView;
     });
 
+    newJson.selectionLocks = this.serializeLocks(this.selectionLocks);
     newJson.zoomLocks = this.serializeLocks(this.zoomLocks);
     newJson.locationLocks = this.serializeLocks(this.locationLocks);
     newJson.valueScaleLocks = this.serializeLocks(this.valueScaleLocks);
@@ -2710,7 +2824,7 @@ class HiGlassComponent extends React.Component {
     newView.uid = slugid.nice();
     newView.layout.i = newView.uid;
 
-    positionedTracksToAllTracks(newView.tracks).forEach(t => {
+    positionedTracksToAllTracks(newView.tracks).forEach((t) => {
       this.addViewportProjectionCallbacks(newView.uid, t);
       this.addSelectionCallbacks(newView.uid, t);
     });
@@ -3030,7 +3144,7 @@ class HiGlassComponent extends React.Component {
       looseTracks = this.addUidsToTracks(looseTracks);
       looseTracks = this.addNamesToTracks(looseTracks);
 
-      looseTracks.forEach(t => {
+      looseTracks.forEach((t) => {
         this.addViewportProjectionCallbacks(v.uid, t);
         this.addSelectionCallbacks(v.uid, t);
       });
