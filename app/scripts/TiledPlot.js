@@ -965,77 +965,79 @@ class TiledPlot extends React.Component {
      *
      */
     if (this.props.overlays) {
-      const overlayDefs = this.props.overlays.map((overlayTrack) => {
-        const overlayDef = {
-          uid: overlayTrack.uid || slugid.nice(),
-          includes: overlayTrack.includes,
-          type: 'overlay-track',
-          options: Object.assign(overlayTrack.options, {
-            orientationsAndPositions: overlayTrack.includes.map((trackUuid) => {
-              // translate a trackUuid into that track's orientation
-              const includedTrack = getTrackByUid(this.props.tracks, trackUuid);
-              const trackPos = includedTrack.position;
-              if (!includedTrack) {
-                console.warn(`OverlayTrack included uid (${trackUuid}) not found in the track list`);
-                return null;
-              }
+      const overlayDefs = this.props.overlays
+        .filter(overlayTrack => overlayTrack.includes && overlayTrack.includes.length)
+        .map((overlayTrack) => {
+          const overlayDef = {
+            uid: overlayTrack.uid || slugid.nice(),
+            includes: overlayTrack.includes,
+            type: 'overlay-track',
+            options: Object.assign(overlayTrack.options, {
+              orientationsAndPositions: overlayTrack.includes.map((trackUuid) => {
+                // translate a trackUuid into that track's orientation
+                const includedTrack = getTrackByUid(this.props.tracks, trackUuid);
+                const trackPos = includedTrack.position;
+                if (!includedTrack) {
+                  console.warn(`OverlayTrack included uid (${trackUuid}) not found in the track list`);
+                  return null;
+                }
 
-              let orientation;
-              if (trackPos === 'top' || trackPos === 'bottom') {
-                orientation = '1d-horizontal';
-              }
+                let orientation;
+                if (trackPos === 'top' || trackPos === 'bottom') {
+                  orientation = '1d-horizontal';
+                }
 
-              if (trackPos === 'left' || trackPos === 'right') {
-                orientation = '1d-vertical';
-              }
+                if (trackPos === 'left' || trackPos === 'right') {
+                  orientation = '1d-vertical';
+                }
 
-              if (trackPos === 'center') {
-                orientation = '2d';
-              }
+                if (trackPos === 'center') {
+                  orientation = '2d';
+                }
 
-              if (!orientation) {
-                console.warn('Only top, bottom, left, right, or center tracks can be overlaid at the moment');
-                return null;
-              }
+                if (!orientation) {
+                  console.warn('Only top, bottom, left, right, or center tracks can be overlaid at the moment');
+                  return null;
+                }
 
-              const positionedTrack = positionedTracks.filter(
-                track => track.track.uid === trackUuid
-              );
+                const positionedTrack = positionedTracks.filter(
+                  track => track.track.uid === trackUuid
+                );
 
-              if (!positionedTrack.length) {
-                // couldn't find a matching track, somebody must have included
-                // an invalid uuid
-                return null;
-              }
+                if (!positionedTrack.length) {
+                  // couldn't find a matching track, somebody must have included
+                  // an invalid uuid
+                  return null;
+                }
 
-              const position = {
-                left: positionedTrack[0].left,
-                top: positionedTrack[0].top,
-                width: positionedTrack[0].width,
-                height: positionedTrack[0].height,
-              };
+                const position = {
+                  left: positionedTrack[0].left,
+                  top: positionedTrack[0].top,
+                  width: positionedTrack[0].width,
+                  height: positionedTrack[0].height,
+                };
 
-              return {
-                orientation,
-                position
-              };
+                return {
+                  orientation,
+                  position
+                };
+              })
+                .filter(x => x) // filter out null entries
             })
-              .filter(x => x) // filter out null entries
-          })
-        };
+          };
 
-        // the 2 * verticalMargin is to make up for the space taken away
-        // in render(): this.centerHeight = this.state.height...
-        return {
-          top: 0,
-          left: 0,
-          width: this.leftWidth + this.centerWidth + this.rightWidth,
-          height: this.topHeight + this.centerHeight
-          + this.bottomHeight
-          + 2 * this.props.verticalMargin,
-          track: overlayDef,
-        };
-      });
+          // the 2 * verticalMargin is to make up for the space taken away
+          // in render(): this.centerHeight = this.state.height...
+          return {
+            top: 0,
+            left: 0,
+            width: this.leftWidth + this.centerWidth + this.rightWidth,
+            height: this.topHeight + this.centerHeight
+            + this.bottomHeight
+            + 2 * this.props.verticalMargin,
+            track: overlayDef,
+          };
+        });
 
       return overlayDefs;
     }
