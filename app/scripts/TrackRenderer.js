@@ -36,9 +36,7 @@ import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
 
 import SquareMarkersTrack from './SquareMarkersTrack';
 import Chromosome2DLabels from './Chromosome2DLabels';
-import HorizontalChromosomeGrid from './HorizontalChromosomeGrid';
-import VerticalChromosomeGrid from './VerticalChromosomeGrid';
-import Chromosome2DGrid from './Chromosome2DGrid';
+import ChromosomeGrid from './ChromosomeGrid';
 import Chromosome2DAnnotations from './Chromosome2DAnnotations';
 import HorizontalChromosomeLabels from './HorizontalChromosomeLabels';
 
@@ -1426,13 +1424,15 @@ class TrackRenderer extends React.Component {
         return new Chromosome2DLabels(context, options);
 
       case 'horizontal-chromosome-grid':
-        return new HorizontalChromosomeGrid(context, options);
+        context.orientation = '1d-horizontal';
+        return new ChromosomeGrid(context, options);
 
       case 'vertical-chromosome-grid':
-        return new VerticalChromosomeGrid(context, options);
+        context.orientation = '1d-vertical';
+        return new ChromosomeGrid(context, options);
 
       case '2d-chromosome-grid':
-        return new Chromosome2DGrid(context, options);
+        return new ChromosomeGrid(context, options);
 
       case 'horizontal-chromosome-labels':
         // chromInfoPath is passed in for backwards compatibility
