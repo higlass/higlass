@@ -1037,9 +1037,11 @@ class HiGlassComponent extends React.Component {
   handleSelectionChanged(uid, xDomain, yDomain) {
     // console.log('hsc:', xScale.domain());
     for (const { viewId, trackId, track } of this.iterateOverTracks()) {
-      if (track.type === 'selection-track-horizontal'
-        && track.uid !== uid ) {
-        let trackObj = getTrackObjById(
+      if (
+        track.type === 'selection-track-horizontal'
+        && track.uid !== uid
+        ) {
+        const trackObj = getTrackObjById(
           this.tiledPlots,
           viewId,
           trackId

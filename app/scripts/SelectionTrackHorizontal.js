@@ -31,6 +31,7 @@ class SelectionTrackHorizontal extends SVGTrack {
 
     this.brush = brush(true)
       .on('brush', this.brushed.bind(this))
+      .on('end', this.brushEnded.bind(this));
 
     this.gBrush = this.gMain
       .append('g')
@@ -67,6 +68,15 @@ class SelectionTrackHorizontal extends SVGTrack {
     this.draw();
   }
 
+  brushEnded() {
+    console.log('brushended', event.selection);
+
+    if (event.selection === null) {
+      this.setDomainsCallback(null, this.selectionYDomain);
+    }
+
+  }
+
   brushed() {
     /**
      * Should only be called  on active brushing, not in response to the
@@ -82,7 +92,7 @@ class SelectionTrackHorizontal extends SVGTrack {
 
     this.selectionXDomain = xDomain;
     this.selectionYDomain = xDomain;
-    console.log('xDomain:', xDomain);
+    // console.log('xDomain:', xDomain);
     // console.log('yDomain:', yDomain);
 
     this.setDomainsCallback(xDomain, yDomain);
@@ -90,7 +100,6 @@ class SelectionTrackHorizontal extends SVGTrack {
   }
 
   selectionChanged(selectionXDomain, selectionYDomain) {
-    // console.log('selection changed:', selectionXScale.domain());
     this.selectionXDomain = selectionXDomain;
     this.selectionYDomain = selectionYDomain;
 
@@ -119,21 +128,25 @@ class SelectionTrackHorizontal extends SVGTrack {
       return;
     }
 
-    if (!this.selectionXDomain) { return; }
+    let dest = null;
 
-    const x0 = this._xScale(this.selectionXDomain[0]);
-    const y0 = 0;
+    if (this.selectionXDomain) {
+      const x0 = this._xScale(this.selectionXDomain[0]);
+      const y0 = 0;
 
-    const x1 = this._xScale(this.selectionXDomain[1]);
-    const y1 = this.dimensions[1];
+      const x1 = this._xScale(this.selectionXDomain[1]);
+      const y1 = this.dimensions[1];
 
-    const dest = [[x0, y0], [x1, y1]];
+      dest = [[x0, y0], [x1, y1]];
+    }
 
     // user hasn't actively brushed so we don't want to emit a
     // 'brushed' event
     this.brush.on('brush', null);
+    this.brush.on('end', null);
     this.gBrush.call(this.brush.move, dest);
     this.brush.on('brush', this.brushed.bind(this));
+    this.brush.on('end', this.brushEnded.bind(this));
   }
 
   zoomed(newXScale, newYScale) {
