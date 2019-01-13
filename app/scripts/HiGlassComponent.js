@@ -1034,59 +1034,23 @@ class HiGlassComponent extends React.Component {
    *
    * @param uid: The view of whom the scales have changed.
    */
-  handleSelectionChanged(uid, xDomain, yDomain, notify = true) {
+  handleSelectionChanged(uid, xDomain, yDomain) {
     // console.log('hsc:', xScale.domain());
-
-    this.selectionXDomains[uid] = xDomain;
-    this.selectionYDomains[uid] = yDomain;
-
-    if (notify) {
-      if (uid in this.selectionChangedListeners) {
-        dictValues(this.selectionChangedListeners[uid]).forEach((x) => {
-          x(xDomain, yDomain);
-        });
-      }
-    }
-
-    if (this.selectionLocks[uid]) {
-      // this view is locked to another
-      const lockGroup = this.selectionLocks[uid];
-      const lockGroupItems = dictItems(lockGroup);
-
-
-      for (let i = 0; i < lockGroupItems.length; i++) {
-        const key = lockGroupItems[i][0];
-
-        if (!this.selectionXDomains[key]
-          || !this.selectionYDomains[key]) { continue; }
-
-        if (key === uid) {
-          // no need to notify oneself that the scales have changed
-          continue;
-        }
-
-        if (!this.setSelections[key]) { continue; }
-
-        // the key here is the target of the selection lock
-        // so we need to set its selection scales to the
-        // current views selection scales
-        this.setSelections[key](
-          xDomain, yDomain, false
+    for (const { viewId, trackId, track } of this.iterateOverTracks()) {
+      if (track.type === 'selection-track-horizontal'
+        && track.uid !== uid ) {
+        let trackObj = getTrackObjById(
+          this.tiledPlots,
+          viewId,
+          trackId
         );
 
-        this.selectionXDomains[key] = xDomain;
-        this.selectionYDomains[key] = yDomain;
-
-        // notify the listeners of all locked selections that the
-        // scales of this view have changed
-        if (this.selectionChangedListeners.hasOwnProperty(key)) {
-          dictValues(this.selectionChangedListeners[key]).forEach((x) => {
-            x(xDomain, yDomain);
-          });
-        }
+        trackObj.selectionChanged(
+          xDomain,
+          yDomain
+        );
       }
     }
-
     this.animate();
 
     // Call view change handler
@@ -2483,26 +2447,8 @@ class HiGlassComponent extends React.Component {
       track.removeSelectionChanged = (trackId) => {
 
       };
-      track.setDomainsCallback = (xDomain, yDomain) =>  {
-        let selectionLocked = false;
-
-        // if we drag the brush and this view is locked to others, we don't
-        // want the movement we induce in them to come back and modify this
-        // view and set up a feedback loop
-        if (viewUid in this.selectionLocks) {
-          selectionLocked = fromView in this.selectionLocks[viewUid];
-        }
-
-        if (selectionLocked) {
-          this.handleUnlock(viewUid, this.selectionLocks);
-        }
-
+      track.setDomainsCallback = (xDomain, yDomain) => {
         this.handleSelectionChanged(fromView, xDomain, yDomain, true);
-
-        if (selectionLocked) {
-          this.addLock(viewUid, fromView,
-            this.selectionLocks, () => { });
-        }
       };
     }
   }

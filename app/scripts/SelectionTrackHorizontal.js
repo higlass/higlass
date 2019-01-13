@@ -30,14 +30,12 @@ class SelectionTrackHorizontal extends SVGTrack {
     }
 
     this.brush = brush(true)
-      .on('brush', this.brushed.bind(this));
+      .on('brush', this.brushed.bind(this))
 
     this.gBrush = this.gMain
       .append('g')
       .attr('id', `brush-${this.uid}`)
       .call(this.brush);
-
-    console.log('adding brush:', this.uid);
 
     // turn off the ability to select new regions for this brush
     this.gBrush.selectAll('.overlay')
@@ -84,18 +82,15 @@ class SelectionTrackHorizontal extends SVGTrack {
 
     this.selectionXDomain = xDomain;
     this.selectionYDomain = xDomain;
-    // console.log('xDomain:', xDomain);
+    console.log('xDomain:', xDomain);
     // console.log('yDomain:', yDomain);
 
     this.setDomainsCallback(xDomain, yDomain);
     this.draw();
   }
 
-  selectionChanged(selectionXScale, selectionYScale, update = true) {
+  selectionChanged(selectionXDomain, selectionYDomain) {
     // console.log('selection changed:', selectionXScale.domain());
-    const selectionXDomain = selectionXScale.domain();
-    const selectionYDomain = selectionYScale.domain();
-
     this.selectionXDomain = selectionXDomain;
     this.selectionYDomain = selectionYDomain;
 
@@ -121,11 +116,8 @@ class SelectionTrackHorizontal extends SVGTrack {
 
   draw() {
     if (!this._xScale || !this.yScale) {
-      console.log('returning');
-      return; 
+      return;
     }
-
-    console.log('this.selectionXDomain', this.selectionXDomain);
 
     if (!this.selectionXDomain) { return; }
 
@@ -136,8 +128,6 @@ class SelectionTrackHorizontal extends SVGTrack {
     const y1 = this.dimensions[1];
 
     const dest = [[x0, y0], [x1, y1]];
-
-    console.log('dest:', dest[0], dest[1]);
 
     // user hasn't actively brushed so we don't want to emit a
     // 'brushed' event
