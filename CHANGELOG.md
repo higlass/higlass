@@ -17,6 +17,7 @@
 - Add a fudge factor to ensure that the entire view is shown in the grid layout
 - Fix minified build
 - Fix a minor visual glitch in the gene annotation track
+- Expose `mix()` from `mixwith` to plugin tracks
 
 ## v1.2.8
 
