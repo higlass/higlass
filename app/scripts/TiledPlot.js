@@ -968,10 +968,14 @@ class TiledPlot extends React.Component {
       const overlayDefs = this.props.overlays
         .filter(overlayTrack => overlayTrack.includes && overlayTrack.includes.length)
         .map((overlayTrack) => {
-          const overlayDef = {
+          const type = overlayTrack.type
+            ? `overlay-${overlayTrack.type}-track`
+            : 'overlay-track';
+
+          const overlayDef = Object.assign({}, overlayTrack, {
             uid: overlayTrack.uid || slugid.nice(),
             includes: overlayTrack.includes,
-            type: 'overlay-track',
+            type,
             options: Object.assign(overlayTrack.options, {
               orientationsAndPositions: overlayTrack.includes.map((trackUuid) => {
                 // translate a trackUuid into that track's orientation
@@ -1024,7 +1028,7 @@ class TiledPlot extends React.Component {
               })
                 .filter(x => x) // filter out null entries
             })
-          };
+          });
 
           // the 2 * verticalMargin is to make up for the space taken away
           // in render(): this.centerHeight = this.state.height...

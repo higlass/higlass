@@ -1483,6 +1483,10 @@ class TrackRenderer extends React.Component {
       case 'overlay-track':
         return new OverlayTrack(context, options);
 
+      case 'overlay-chromosome-grid-track':
+        context.isOverlay = true;
+        return new ChromosomeGrid(context, options);
+
       case 'horizontal-rule':
         return new HorizontalRule(context, options);
 
