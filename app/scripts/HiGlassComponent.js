@@ -957,9 +957,9 @@ class HiGlassComponent extends React.Component {
 
       for (const trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
         if (trackDefObject.trackObject.exportSVG) {
-          const trackSVG = trackDefObject.trackObject.exportSVG()[0];
+          const trackSVG = trackDefObject.trackObject.exportSVG();
 
-          svg.appendChild(trackSVG);
+          if (trackSVG) svg.appendChild(trackSVG[0]);
         }
       }
     }
