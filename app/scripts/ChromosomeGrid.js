@@ -197,8 +197,8 @@ class ChromosomeGrid extends PixiTrack {
       return [base, track];
     }
 
-    const strokeColor = this.options.gridStrokeColor ? this.options.gridStrokeColor : 'blue';
-    const strokeWidth = this.options.gridStrokeWidth;
+    const strokeColor = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
+    const strokeWidth = this.options.lineStrokeWidth;
 
     for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
       const chrPos = this.chromInfo.cumPositions[i];
