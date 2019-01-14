@@ -84,34 +84,35 @@ class HeatmapOptions extends React.Component {
     const colorFields = this.state.colors.map((x, i) => {
       // only let colors be removed if there's more than two present
       const closeButton = (this.state.colors.length > 2 && i === this.state.colors.length - 1)
-        ? (<div
-          style={{
-            background: 'white',
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            opacity: 1,
-            width: 14,
-            height: 14,
-            borderRadius: 2,
-
-          }}
-        >
-          <svg
-            height="10px"
-            onClick={() => this.handleRemoveColor(i)}
+        ? (
+          <div
             style={{
+              background: 'white',
               position: 'absolute',
-              top: 2,
-              right: 2,
-              opacity: 0.5,
-              width: 10,
-              height: 10,
+              top: 0,
+              right: 0,
+              opacity: 1,
+              width: 14,
+              height: 14,
+              borderRadius: 2,
+
             }}
           >
-            <use xlinkHref="#cross" />
-          </svg>
-           </div>
+            <svg
+              height="10px"
+              onClick={() => this.handleRemoveColor(i)}
+              style={{
+                position: 'absolute',
+                top: 2,
+                right: 2,
+                opacity: 0.5,
+                width: 10,
+                height: 10,
+              }}
+            >
+              <use xlinkHref="#cross" />
+            </svg>
+          </div>
         )
         : null; // closebutton
 

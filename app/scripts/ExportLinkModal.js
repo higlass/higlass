@@ -20,13 +20,14 @@ class ExportLinkModal extends React.Component {
         />
       )
 
-      : (<div>
-        <span
-          aria-hidden="true"
-          className="glyphicon glyphicon-refresh glyphicon-refresh-animate"
-        />
-        <span>&nbsp;&nbsp;We are generating your link...</span>
-         </div>
+      : (
+        <div>
+          <span
+            aria-hidden="true"
+            className="glyphicon glyphicon-refresh glyphicon-refresh-animate"
+          />
+          <span>&nbsp;&nbsp;We are generating your link...</span>
+        </div>
       );
 
     return (
@@ -57,7 +58,8 @@ class ExportLinkModal extends React.Component {
             <Button onClick={this.props.onDone}>Done</Button>
           </Modal.Footer>
         </Modal>
-      </div>);
+      </div>
+    );
   }
 }
 
