@@ -1150,18 +1150,15 @@ export const OPTIONS_INFO = {
     },
   },
 
-  summary: {
-    name: 'Summary Statistics',
+  aggregationMode: {
+    name: 'Aggregation Mode',
     inlineOptions: {},
     generateOptions: (track) => {
       const inlineOptions = [];
 
-      if (track.summaries) {
-        Object.values(track.summaries).forEach((summary) => {
-          inlineOptions.push({
-            name: summary.name,
-            value: summary.value,
-          });
+      if (track.aggregationModes) {
+        Object.values(track.aggregationModes).forEach(({ name, value }) => {
+          inlineOptions.push({ name, value });
         });
       } else {
         inlineOptions.push({ name: 'Default', value: 'default' });

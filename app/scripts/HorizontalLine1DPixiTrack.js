@@ -289,8 +289,8 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   }
 
   tileToLocalId(tile) {
-    if (this.options.summary && this.options.summary !== 'mean') {
-      return `${tile.join('.')}.${this.options.summary}`;
+    if (this.options.aggregationMode && this.options.aggregationMode !== 'mean') {
+      return `${tile.join('.')}.${this.options.aggregationMode}`;
     }
     return `${tile.join('.')}`;
   }

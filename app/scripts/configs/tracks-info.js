@@ -203,7 +203,7 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'mousePositionColor',
-      'summary'
+      'aggregationMode'
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -241,7 +241,7 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'mousePositionColor',
-      'summary'
+      'aggregationMode'
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -279,7 +279,7 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'mousePositionColor',
-      'summary'
+      'aggregationMode'
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -436,7 +436,7 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'mousePositionColor',
-      'summary'
+      'aggregationMode'
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -542,7 +542,7 @@ export const TRACKS_INFO = [
       'barOpacity',
       'showMousePosition',
       'showTooltip',
-      'summary'
+      'aggregationMode'
     ],
     defaultOptions: {
       align: 'bottom',
@@ -582,7 +582,7 @@ export const TRACKS_INFO = [
       'barOpacity',
       'showMousePosition',
       'showTooltip',
-      'summary'
+      'aggregationMode'
     ],
     defaultOptions: {
       align: 'bottom',

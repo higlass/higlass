@@ -369,7 +369,7 @@ class TiledPlot extends React.Component {
     track.name = tilesetInfo.name;
     track.maxWidth = tilesetInfo.max_width;
     track.transforms = tilesetInfo.transforms;
-    track.summaries = tilesetInfo.summaries;
+    track.aggregationModes = tilesetInfo.aggregation_modes;
     track.header = tilesetInfo.header;
     track.binsPerDimension = tilesetInfo.bins_per_dimension;
     if (tilesetInfo.resolutions) {
