@@ -1150,6 +1150,27 @@ export const OPTIONS_INFO = {
     },
   },
 
+  summary: {
+    name: 'Summary Statistics',
+    inlineOptions: {
+      default: { name: 'Default', value: 'default' },
+    },
+    generateOptions: (track) => {
+      const inlineOptions = [];
+
+      if (track.summaries) {
+        Object.values(track.summaries).forEach((summary) => {
+          inlineOptions.push({
+            name: summary.name,
+            value: summary.value,
+          });
+        });
+      }
+
+      return inlineOptions;
+    },
+  },
+
   maxZoom: {
     name: 'Zoom limit',
     inlineOptions: {
