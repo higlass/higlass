@@ -18,6 +18,7 @@
 - Fix minified build
 - Fix a minor visual glitch in the gene annotation track
 - Expose `mix()` from `mixwith` to plugin tracks
+- Support different aggregation modes (mean, min, max, std) for bigWig files
 
 ## v1.2.8
 
