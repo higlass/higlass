@@ -196,11 +196,11 @@ the import will also fail. If a `coordSystem` is specified for the bigWig, but n
 
 TLDR: The simplest way to import a bigWig is to have a ``chromsizes`` present e.g. 
 
-| ``ingest_tileset --filetype chromsizes-tsv --datatype chromsizes --coordSystem hg19 chromSizes.tsv``
+| ``ingest_tileset --filetype chromsizes-tsv --datatype chromsizes --coordSystem hg19 --filename chromSizes.tsv``
 
 and then to add the bigWig with the same ``coordSystem``: 
 
-| ``ingest_tileset --filetype bigwig --datatype vector --coordSystem hg19 chromSizes.tsv``
+| ``ingest_tileset --filetype bigwig --datatype vector --coordSystem hg19 --filename cnvs_hw.bigWig``
 
 
 Chromosome Sizes
