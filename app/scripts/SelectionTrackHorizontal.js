@@ -1,5 +1,5 @@
 import { brush } from 'd3-brush';
-import { event } from 'd3-selection';
+import { select, event } from 'd3-selection';
 import slugid from 'slugid';
 
 import SVGTrack from './SVGTrack';
@@ -33,10 +33,30 @@ class SelectionTrackHorizontal extends SVGTrack {
       .on('brush', this.brushed.bind(this))
       .on('end', this.brushEnded.bind(this));
 
+    this.gBrush = null;
+    this.selected = null;
+
+    // the selection will call this.selectionChanged immediately upon
+    // hearing registerSelectionChanged
+    this.draw();
+
+    registerSelectionChanged(uid, this.selectionChanged.bind(this));
+  }
+
+  /**
+   * Enable the brush. If a parameter is passed, create
+   * the brush on top of that rectangle.
+   *
+   * @param  {int} onRect The index of the rectangle on which to
+   *                      center the brush.
+   * @return {null}       Nothing.
+   */
+  enableBrush(onRect) {
     this.gBrush = this.gMain
       .append('g')
-      .attr('id', `brush-${this.uid}`)
-      .call(this.brush);
+      .attr('id', `brush-${this.uid}`);
+
+    this.gBrush.call(this.brush);
 
     // turn off the ability to select new regions for this brush
     this.gBrush.selectAll('.overlay')
@@ -61,11 +81,15 @@ class SelectionTrackHorizontal extends SVGTrack {
     this.gBrush.selectAll('.handle--s')
       .style('pointer-events', 'none');
 
-    registerSelectionChanged(uid, this.selectionChanged.bind(this));
+    if (onRect !== null) {
+      this.selectionXDomain =
+        this.options.savedRegions[onRect][0];
+      this.draw();
+    }
+  }
 
-    // the selection will call this.selectionChanged immediately upon
-    // hearing registerSelectionChanged
-    this.draw();
+  disableBrush() {
+    this.gMain.remove();
   }
 
   brushEnded() {
@@ -115,12 +139,14 @@ class SelectionTrackHorizontal extends SVGTrack {
 
   rerender() {
     // set the fill and stroke colors
-    this.gBrush.selectAll('.selection')
-      .attr('fill', this.options.projectionFillColor)
-      .attr('stroke', this.options.projectionStrokeColor)
-      .attr('fill-opacity', this.options.projectionFillOpacity)
-      .attr('stroke-opacity', this.options.projectionStrokeOpacity)
-      .attr('stroke-width', this.options.strokeWidth);
+    if (this.gBrush) {
+      this.gBrush.selectAll('.selection')
+        .attr('fill', this.options.projectionFillColor)
+        .attr('stroke', this.options.projectionStrokeColor)
+        .attr('fill-opacity', this.options.projectionFillOpacity)
+        .attr('stroke-opacity', this.options.projectionStrokeOpacity)
+        .attr('stroke-width', this.options.strokeWidth);
+    }
   }
 
   draw() {
@@ -140,13 +166,46 @@ class SelectionTrackHorizontal extends SVGTrack {
       dest = [[x0, y0], [x1, y1]];
     }
 
-    // user hasn't actively brushed so we don't want to emit a
-    // 'brushed' event
-    this.brush.on('brush', null);
-    this.brush.on('end', null);
-    this.gBrush.call(this.brush.move, dest);
-    this.brush.on('brush', this.brushed.bind(this));
-    this.brush.on('end', this.brushEnded.bind(this));
+    let rectSelection = this.gMain.selectAll('.region')
+      .data(this.options.savedRegions.filter(
+        (d, i) => i !== this.selected
+      ));
+
+    rectSelection
+      .enter()
+      .append('rect')
+      .classed('region', true)
+      .attr('fill', this.options.projectionFillColor)
+      .attr('stroke', 'yellow')
+      .attr('fill-opacity', this.options.projectionFillOpacity)
+      .attr('stroke-opacity', this.options.projectionStrokeOpacity)
+      .attr('stroke-width', this.options.strokeWidth)
+      .style('pointer-events', 'all');
+
+    rectSelection.exit()
+      .remove();
+
+    rectSelection = this.gMain.selectAll('.region')
+      .attr('x', d => this._xScale(d[0][0]))
+      .attr('y', 0)
+      .attr('width', d => this._xScale(d[0][1]) - this._xScale(d[0][0]))
+      .attr('height', this.dimensions[1])
+      .on('click', (d, i) => {
+        console.log('click:', d, i);
+        this.selected = i;
+        this.enableBrush(i);
+      });
+
+
+    if (this.gBrush) {
+      // user hasn't actively brushed so we don't want to emit a
+      // 'brushed' event
+      this.brush.on('brush', null);
+      this.brush.on('end', null);
+      this.gBrush.call(this.brush.move, dest);
+      this.brush.on('brush', this.brushed.bind(this));
+      this.brush.on('end', this.brushEnded.bind(this));
+    }
   }
 
   zoomed(newXScale, newYScale) {

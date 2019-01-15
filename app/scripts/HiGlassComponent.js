@@ -631,6 +631,7 @@ class HiGlassComponent extends React.Component {
   }
 
   keyDownHandler(event) {
+    console.log('keydown', event);
     if (this.props.options.rangeSelectionOnAlt && event.key === 'Alt') {
       this.setState({
         mouseTool: MOUSE_TOOL_SELECT,
@@ -1040,7 +1041,7 @@ class HiGlassComponent extends React.Component {
       if (
         track.type === 'selection-track-horizontal'
         && track.uid !== uid
-        ) {
+      ) {
         const trackObj = getTrackObjById(
           this.tiledPlots,
           viewId,
@@ -1053,6 +1054,11 @@ class HiGlassComponent extends React.Component {
         );
       }
     }
+
+    this.rangeSelectionHandler({
+      dataRange: [xDomain, yDomain]
+    });
+
     this.animate();
 
     // Call view change handler
