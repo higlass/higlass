@@ -1152,9 +1152,7 @@ export const OPTIONS_INFO = {
 
   summary: {
     name: 'Summary Statistics',
-    inlineOptions: {
-      default: { name: 'Default', value: 'default' },
-    },
+    inlineOptions: {},
     generateOptions: (track) => {
       const inlineOptions = [];
 
@@ -1165,6 +1163,8 @@ export const OPTIONS_INFO = {
             value: summary.value,
           });
         });
+      } else {
+        inlineOptions.push({ name: 'Default', value: 'default' });
       }
 
       return inlineOptions;
