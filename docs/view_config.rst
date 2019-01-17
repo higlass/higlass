@@ -50,7 +50,7 @@ the root-level metadata. The sections below will delve into views and tracks.
 
   editable: [true | false]
 
-Sepcifies whether this viewconf will have a view header.
+Specifies whether this viewconf will have a view header.
 
 .. code-block:: javascript
 
