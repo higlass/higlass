@@ -30,3 +30,4 @@ docs/_build
 package-lock.json
 webpack-stats.json
 lib/vendor
+app/test_*
