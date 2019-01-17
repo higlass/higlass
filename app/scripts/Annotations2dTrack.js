@@ -365,7 +365,7 @@ class Annotations2dTrack extends TiledPixiTrack {
 
   click(graphics, viewPos, uid, event, payload) {
     this.select(graphics, viewPos, uid);
-    pubSub.publish('app.click', {
+    pubSub.publish('app.click', { // eslint-disable-line no-undef
       type: 'annotation',
       event,
       payload
@@ -413,7 +413,7 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     if (this.options.onSelect && !silent) {
       window[this.options.onSelect](uid);
-      pubSub.publish('annoSelected', uid);
+      pubSub.publish('annoSelected', uid); // eslint-disable-line no-undef
     }
 
     if (prevGfx && prevUid) {
