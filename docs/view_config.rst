@@ -31,7 +31,7 @@ Upload a viewconf to the server
 
 A local viewconf can be sent to the server by sending a ``POST`` request. Make
 sure the actual viewconf is wrapped in the ``viewconf`` section of the posted
-json (e.g. `{"viewconf": myViewConf}`):
+json (e.g. `{"viewconf": myViewconf}`):
 
 .. code-block:: bash
 
