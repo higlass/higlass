@@ -1,3 +1,7 @@
+## v1.4.0
+
+- Add `constIndicstors` as an option to 1D tracks for displaying a visual indicator (e.g., a line) at a constant value.
+
 ## v1.3.1
 
 - Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
