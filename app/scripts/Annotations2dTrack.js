@@ -365,7 +365,7 @@ class Annotations2dTrack extends TiledPixiTrack {
 
   click(graphics, viewPos, uid, event, payload) {
     this.select(graphics, viewPos, uid);
-    pubSub.publish('app.click', { // eslint-disable-line no-undef
+    this.pubSub.publish('app.click', {
       type: 'annotation',
       event,
       payload
