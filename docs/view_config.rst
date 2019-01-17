@@ -114,9 +114,9 @@ exportViewUrl
 ^^^^^^^^^^^^^
 
 The ``exportViewUrl`` field in the viewconf specifies which server should be used
-to store exported viewconfs. This server stores exported viewconfs in its 
+to store exported viewconfs. This server stores exported viewconfs in its
 database, assigns them a uid, and makes them accessible through its API at
-``/api/v1/viewconfs/uid/``. 
+``/api/v1/viewconfs/uid/``.
 
 .. code-block:: javascript
 
@@ -202,3 +202,48 @@ Each track can specify a set of options defining how it will be drawn.
 Some of the more important ones are:
 
 -  ``valueScaleMin`` and ``valueScaleMax``: control the minimum and maximum values rendered by the track. If either is not defined, then it will be set according to the visible data (i.e. the minimum value of the scale will be the minimum value in the visible data and the same for the maximum)
+
+Overlay Tracks
+==============
+
+Overlay tracks can be placed over normal tracks and can span all five distinct
+areas: top, bottom, left, right or center. The location of the track is
+determined by the tracks it should overlay. Overlay tracks by default visualize
+semi-transparent rectengles as annotations. Currently the only other type of
+overlay tracks that is supported is chromosome-grid.
+
+Each set of tracks is placed within a view under overlays. An overlay track
+needs to contain an includes property. Otherwise the options depend on the type
+of overlay
+
+.. code-block:: javascript
+
+    {
+      "views": [
+        {
+          "overlays": [
+            {
+              "uid": "overlay-annotation",
+              "includes": ["track1", "track2", "track3"],
+              // Default definitions for annotations
+              "options": {
+                "extent": [
+                  [1000000000, 1100000000]
+                ]
+              }
+            },
+            {
+              "uid": "overlay-chromosome-grid",
+              "includes": ["track1", "track2", "track3"],
+              "type": "chromosome-grid",
+              // Same definitions as the chromosome-grid track
+              "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+              "options": {
+                "lineStrokeWidth": 1,
+                "lineStrokeColor": "grey"
+              }
+            }
+          ]
+        }
+      ],
+    }
