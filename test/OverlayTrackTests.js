@@ -42,8 +42,6 @@ describe('Overlay Track:', () => {
 
       const overlayTrack = posTracks[posTracks.length - 1];
 
-      console.log(trackRenderer.trackDefObjects[overlayTrack.track.uid]);
-
       expect(overlayTrack.track.type).toEqual('overlay-track');
 
       const overlayTrackInfo = trackRenderer
