@@ -148,7 +148,7 @@ class CombinedTrack {
     // console.log('COMBINED TRACK rerender...');
   }
 
-  minValue() {
+  minValue(_) {
     if (arguments.length === 0) {
       const minValues = this.childTracks
         .filter(x => x.minValue) // filter for tracks which have the minValue function
