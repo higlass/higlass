@@ -54,12 +54,10 @@ Specifies whether this viewconf will have a view header.
 
 .. code-block:: javascript
 
-    {
-      "trackSourceServers": [
-        "http://higlass.io/api/v1",
-        "http://localhost:8989/api/v1"
-      ],
-    }
+    "trackSourceServers": [
+      "http://higlass.io/api/v1",
+      "http://localhost:8989/api/v1"
+    ],
 
 Where should the list of available tracks be pulled from? The field
 `trackSourceServers` at the root level of the viewconf tells higlass where it
@@ -74,10 +72,12 @@ can find tracks to load. If you have a local instance running, then
         "exportViewUrl": "/api/v1/viewconfs",
     }
 
-The ``exportViewUrl`` field in the viewconf specifies which server should be used
-to store exported viewconfs. This server stores exported viewconfs in its 
+The ``exportViewUrl`` field in the viewconf specifies which endpoint should be used
+to store exported viewconfs. This endpoint stores exported viewconfs in its 
 database, assigns them a uid, and makes them accessible through its API at
-``/api/v1/viewconfs/uid/``. 
+``/api/v1/viewconfs/uid/``. The default points to a url on the same server that
+is hosting the higlass application. It can also be changed to point to an
+external location (i.e. 'http://higlass.my.department.com/api/v1/viewconfs').
 
 
 
