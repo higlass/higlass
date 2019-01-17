@@ -33,14 +33,27 @@ describe('Overlay Track:', () => {
 
       expect(numNormalTracks).toEqual(4);
 
-      const posTracks = hgc.tiledPlots[viewConf.views[0].uid]
-        .trackRenderer.props.positionedTracks;
+      const trackRenderer = hgc.tiledPlots[viewConf.views[0].uid]
+        .trackRenderer;
+
+      const posTracks = trackRenderer.props.positionedTracks;
 
       expect(posTracks.length).toEqual(5);
 
       const overlayTrack = posTracks[posTracks.length - 1];
 
+      console.log(trackRenderer.trackDefObjects[overlayTrack.track.uid]);
+
       expect(overlayTrack.track.type).toEqual('overlay-track');
+
+      const overlayTrackInfo = trackRenderer
+        .trackDefObjects[overlayTrack.track.uid];
+
+      const overlayTrackDef = overlayTrackInfo.trackDef;
+      const overlayTrackObj = overlayTrackInfo.trackObject;
+
+      expect(overlayTrackDef.width).toEqual(overlayTrackObj.dimensions[0]);
+      expect(overlayTrackDef.height).toEqual(overlayTrackObj.dimensions[1]);
 
       done();
     });
