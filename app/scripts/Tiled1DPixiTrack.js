@@ -220,6 +220,34 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
       })
       .reduce((smallest, current) => aggregate(smallest, ...current), limit);
   }
+
+  /**
+   * Get the data value at a relative pixel position
+   * @param   {number}  relPos  Relative pixel position, where 0 indicates the
+   *   start of the track
+   * @return  {number}  The data value at `relPos`
+   */
+  getDataAtPos(relPos) {
+    let value;
+
+    if (!this.tilesetInfo) return value;
+
+    const zoomLevel = this.calculateZoomLevel();
+    const tileWidth = tileProxy.calculateTileWidth(
+      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
+    );
+    const tilePos = this._xScale.invert(relPos) / tileWidth;
+    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
+    const fetchedTile = this.fetchedTiles[tileId];
+
+    if (!fetchedTile) return value;
+
+    const posInTileX = (
+      fetchedTile.tileData.dense.length * (tilePos - Math.floor(tilePos))
+    );
+
+    return fetchedTile.tileData.dense[Math.floor(posInTileX)];
+  }
 }
 
 export default Tiled1DPixiTrack;
