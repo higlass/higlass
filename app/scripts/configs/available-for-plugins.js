@@ -4,6 +4,20 @@
 
 // Libraries
 import * as PIXI from 'pixi.js';
+import * as d3Array from 'd3-array';
+import * as d3Axis from 'd3-axis';
+import * as d3Brush from 'd3-brush';
+import * as d3Color from 'd3-color';
+import * as d3Drag from 'd3-drag';
+import * as d3Dsv from 'd3-dsv';
+import * as d3Format from 'd3-format';
+import * as d3Geo from 'd3-geo';
+import * as d3Queue from 'd3-queue';
+import * as d3Request from 'd3-request';
+import * as d3Scale from 'd3-scale';
+import * as d3Selection from 'd3-selection';
+import * as d3Transition from 'd3-transition';
+import * as d3Zoom from 'd3-zoom';
 import { mix } from '../mixwith';
 
 // Tracks
@@ -57,6 +71,20 @@ import * as utils from '../utils';
 import * as configs from '.';
 
 const libraries = {
+  d3Array,
+  d3Axis,
+  d3Brush,
+  d3Color,
+  d3Drag,
+  d3Dsv,
+  d3Format,
+  d3Geo,
+  d3Queue,
+  d3Request,
+  d3Scale,
+  d3Selection,
+  d3Transition,
+  d3Zoom,
   PIXI,
   mix,
 };
