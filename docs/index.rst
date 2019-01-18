@@ -171,6 +171,7 @@ crucial are listed below.
     jupyter
     data_preparation
     track_types
+    plugin_tracks
     views
     higlass_server
     higlass_docker
