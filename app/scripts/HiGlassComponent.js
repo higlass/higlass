@@ -2209,11 +2209,11 @@ class HiGlassComponent extends React.Component {
 
     const MARGIN_HEIGHT = this.isEditable() ? 10 : 0;
 
+    totalTrackHeight += MARGIN_HEIGHT;
+    const rowHeight = this.state.rowHeight + MARGIN_HEIGHT;
+
     if (!this.props.options.bounded) {
-      view.layout.h = Math.ceil(
-        (totalTrackHeight + MARGIN_HEIGHT)
-        / (this.state.rowHeight + MARGIN_HEIGHT),
-      );
+      view.layout.h = Math.ceil(totalTrackHeight / rowHeight);
     }
   }
 
