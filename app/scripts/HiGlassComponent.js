@@ -544,6 +544,7 @@ class HiGlassComponent extends React.Component {
 
   animateOnMouseMoveHandler(active) {
     if (active && !this.animateOnMouseMove) {
+      console.log()
       this.pubSubs.push(this.pubSub.subscribe('app.mouseMove', this.animateBound));
     }
     this.animateOnMouseMove = active;
@@ -3216,8 +3217,10 @@ class HiGlassComponent extends React.Component {
   mouseMoveHandler(e) {
     if (!this.topDiv) return;
 
+    const absX = e.clientX;
+    const absY = e.clientY;
     const relPos = clientPoint(this.topDiv, e);
-    const hoveredTiledPlot = this.getTiledPlotAtPosition(e.clientX, e.clientY);
+    const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
 
     const hoveredTracks = hoveredTiledPlot
       ? hoveredTiledPlot.listTracksAtPosition(relPos[0], relPos[1], true)
@@ -3262,6 +3265,19 @@ class HiGlassComponent extends React.Component {
     };
 
     this.pubSub.publish('app.mouseMove', evt);
+
+    this.apiPublish('cursorLocation', {
+      absX,
+      absY,
+      relX: evt.x,
+      relY: evt.y,
+      relTrackX: evt.relTrackX,
+      relTrackY: evt.relTrackY,
+      dataX: evt.dataX,
+      dataY: evt.dataY,
+      isFrom2dTrack: evt.isFrom2dTrack,
+      isFromVerticalTrack: evt.isFromVerticalTrack,
+    });
 
     this.showHoverMenu(evt);
   }

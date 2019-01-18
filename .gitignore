@@ -1,6 +1,4 @@
 app/local
-app/test2.html
-app/test3.html
 yarn.lock
 build/
 docs/_build/
@@ -18,16 +16,15 @@ notebooks/.ipynb_checkpoints/**
 notebooks/**/*.log
 .tmp
 *.pyc
-bower_components/
 node_modules/
 jsons/
 .DS_Store
 *.zip
 .idea/
-dist
 report.html
 docs/_build
 package-lock.json
 webpack-stats.json
+dist
 lib/vendor
 app/test_*
