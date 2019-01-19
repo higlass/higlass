@@ -967,11 +967,29 @@ class TiledPlot extends React.Component {
             orientationsAndPositions: overlayTrack.includes.map((trackUuid) => {
               // translate a trackUuid into that track's orientation
               const includedTrack = getTrackByUid(this.props.tracks, trackUuid);
+              const trackPos = includedTrack.position;
               if (!includedTrack) {
                 console.warn(`OverlayTrack included uid (${trackUuid}) not found in the track list`);
                 return null;
               }
-              const orientation = TRACKS_INFO_BY_TYPE[includedTrack.type].orientation;
+
+              let orientation;
+              if (trackPos === 'top' || trackPos === 'bottom') {
+                orientation = '1d-horizontal';
+              }
+
+              if (trackPos === 'left' || trackPos === 'right') {
+                orientation = '1d-vertical';
+              }
+
+              if (trackPos === 'center') {
+                orientation = '2d';
+              }
+
+              if (!orientation) {
+                console.warn('Only top, bottom, left, right, or center tracks can be overlaid at the moment');
+                return null;
+              }
 
               const positionedTrack = positionedTracks.filter(
                 track => track.track.uid === trackUuid
@@ -982,6 +1000,7 @@ class TiledPlot extends React.Component {
                 // an invalid uuid
                 return null;
               }
+
               const position = {
                 left: positionedTrack[0].left,
                 top: positionedTrack[0].top,
