@@ -2,6 +2,7 @@
 
 - Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
 - Clear mouse position indicator when leaving the root dom element, on blurring the window, and when no track is hovered
+- Expose D3 libraries to plugin tracks
 
 ## v1.3.0
 
