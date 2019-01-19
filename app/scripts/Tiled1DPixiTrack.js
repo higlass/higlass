@@ -7,6 +7,22 @@ import { tileProxy } from './services';
 const BINS_PER_TILE = 1024;
 
 class Tiled1DPixiTrack extends TiledPixiTrack {
+  constructor(context, options) {
+    super(context, options);
+
+    const {
+      onMouseMoveZoom,
+    } = context;
+
+    this.onMouseMoveZoom = onMouseMoveZoom;
+
+    if (this.onMouseMoveZoom) {
+      this.pubSubs.push(
+        this.pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this))
+      );
+    }
+  }
+
   initTile(tile) {
     /**
          * We don't need to do anything but draw the tile.
@@ -247,6 +263,24 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     );
 
     return fetchedTile.tileData.dense[Math.floor(posInTileX)];
+  }
+
+  mouseMoveHandler({ x, y } = {}) {
+    if (!this.isWithin(x, y)) return;
+
+    this.mouseX = x;
+    this.mouseY = y;
+
+    this.mouseMoveZoomHandler();
+  }
+
+  mouseMoveZoomHandler() {
+    // Implemented in the horizontal and vertical sub-classes
+  }
+
+  zoomed(...args) {
+    super.zoomed(...args);
+    this.mouseMoveZoomHandler();
   }
 }
 

@@ -129,6 +129,33 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
       this.axis.drawAxisRight(valueScale, this.dimensions[1]);
     }
   }
+
+  mouseMoveZoomHandler(absX = this.mouseX, absY = this.mouseY) {
+    if (
+      typeof absX === 'undefined'
+      || !this.areAllVisibleTilesLoaded()
+      || !this.tilesetInfo
+    ) return;
+
+    const relX = absX - this.position[0];
+    const relY = absY - this.position[1];
+    const dataX = this._xScale.invert(relX);
+    const dataY = this._yScale.invert(relY);
+
+    const data = this.getDataAtPos(relX);
+    if (!data) return;
+
+    this.onMouseMoveZoom({
+      data,
+      absX,
+      absY,
+      relX,
+      relY,
+      dataX,
+      dataY,
+      orientstion: '1d-horizontal'
+    });
+  }
 }
 
 export default HorizontalTiled1DPixiTrack;
