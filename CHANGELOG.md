@@ -1,6 +1,6 @@
 ## v1.4.0
 
-- Add `constIndicstors` as an option to 1D tracks for displaying a visual indicator (e.g., a line) at a constant value.
+- Add `constIndicators` as an option to 1D tracks for displaying a visual indicator (e.g., a line) at a constant value.
 
 ## v1.3.1
 
@@ -22,6 +22,7 @@
 - Fix minified build
 - Fix a minor visual glitch in the gene annotation track
 - Expose `mix()` from `mixwith` to plugin tracks
+- Support different aggregation modes (mean, min, max, std) for bigWig files
 
 ## v1.2.8
 

@@ -1,9 +1,11 @@
-import { mouse, select, selectAll } from 'd3-selection';
+import {
+  mouse, select, selectAll, event
+} from 'd3-selection';
 import slugid from 'slugid';
 
 import '../styles/d3-context-menu.css';
 
-function contextMenu(menu, opts) {
+function contextMenu(menu, optsIn) {
   let previouslyMouseUp = false;
   const uid = slugid.nice();
   let rootElement = null;
@@ -11,6 +13,7 @@ function contextMenu(menu, opts) {
   // or parent elemement
   let initialPos = null;
   let parentStart = null;
+  let opts = optsIn;
 
   let openCallback;
 
@@ -65,8 +68,8 @@ function contextMenu(menu, opts) {
   });
 
   // this gets executed when a contextmenu event occurs
-  return function (data, index, pMouseUp = false,
-    clickAwayFunc = function () { }, useMouse = false) {
+  return function onContextMenu(data, index, pMouseUp = false,
+    clickAwayFunc, useMouse = false) {
     const elm = this;
     let mousePos = null;
     const currentThis = this;
@@ -76,19 +79,18 @@ function contextMenu(menu, opts) {
       // for recursive menus, we need the mouse position relative to another element
     }
 
-    clickAway = clickAwayFunc;
     let openChildMenuUid = null;
 
     previouslyMouseUp = pMouseUp;
 
     selectAll(`.d3-context-menu-${uid}`).html('');
     const list = selectAll(`.d3-context-menu-${uid}`)
-      .on('contextmenu', (d) => {
+      .on('contextmenu', () => {
         select(`.d3-context-menu-${uid}`).style('display', 'none');
         orientation = 'right';
 
-        d3.event.preventDefault();
-        d3.event.stopPropagation();
+        event.preventDefault();
+        event.stopPropagation();
       })
       .append('ul');
 
@@ -119,7 +121,7 @@ function contextMenu(menu, opts) {
         }
         return (typeof d.title === 'string') ? d.title : d.title(data);
       })
-      .on('click', (d, i) => {
+      .on('click', (d) => {
         if (d.disabled) return; // do nothing if disabled
         if (!d.action) return; // headers have no "action"
         d.action(elm, data, index, mousePos);
@@ -132,7 +134,7 @@ function contextMenu(menu, opts) {
           closeCallback();
         }
       })
-      .on('mouseenter', function (d, i) {
+      .on('mouseenter', function mouseEnter(d, i) {
         select(this)
           .classed('d3-context-menu-selected', true);
 
@@ -198,7 +200,7 @@ function contextMenu(menu, opts) {
         select(this)
           .classed('d3-context-menu-selected', true);
       })
-      .on('mouseleave', function (d, i) {
+      .on('mouseleave', () => {
         if (openChildMenuUid === null) {
           select(this)
             .classed('d3-context-menu-selected', false);
@@ -227,8 +229,8 @@ function contextMenu(menu, opts) {
 
     if (initialPos === null) {
       select(`.d3-context-menu-${uid}`)
-        .style('left', `${d3.event.pageX - 2}px`)
-        .style('top', `${d3.event.pageY - 2}px`);
+        .style('left', `${event.pageX - 2}px`)
+        .style('top', `${event.pageY - 2}px`);
     } else {
       select(`.d3-context-menu-${uid}`)
         .style('left', `${initialPos[0]}px`)
@@ -245,8 +247,8 @@ function contextMenu(menu, opts) {
       if (initialPos === null) {
         // place the menu where the user clicked
         select(`.d3-context-menu-${uid}`)
-          .style('left', `${d3.event.pageX - 2 - boundingRect.width}px`)
-          .style('top', `${d3.event.pageY - 2}px`);
+          .style('left', `${event.pageX - 2 - boundingRect.width}px`)
+          .style('top', `${event.pageY - 2}px`);
       } else if (parentStart !== null) {
         select(`.d3-context-menu-${uid}`)
           .style('left', `${parentStart[0] - boundingRect.width}px`)
@@ -262,8 +264,8 @@ function contextMenu(menu, opts) {
 
     if (previouslyMouseUp) { return uid; }
 
-    d3.event.preventDefault();
-    d3.event.stopPropagation();
+    event.preventDefault();
+    event.stopPropagation();
     // d3.event.stopImmediatePropagation();
     //
     return uid;
