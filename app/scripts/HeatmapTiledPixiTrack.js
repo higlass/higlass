@@ -132,7 +132,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * @param  {Number}  x  Relative X coordinate.
    * @param  {Number}  y  Relative Y coordinate
    */
-  mouseMoveZoomHandler(x = this.mouseX, y = this.mouseY) {
+  mouseMoveZoomHandler(absX = this.mouseX, absY = this.mouseY) {
     if (
       typeof x === 'undefined'
       || typeof y === 'undefined'
@@ -143,8 +143,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       return;
     }
 
-    const relX = x - this.position[0];
-    const relY = y - this.position[1];
+    const relX = absX - this.position[0];
+    const relY = absY - this.position[1];
 
     const data = this.getVisibleRectangleData(
       relX - Math.ceil(this.dataLensSize / 2),
@@ -153,6 +153,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.dataLensSize
     );
     if (!data) return;
+
+    const dataLens = this.getVisibleRectangleData(
+      relX - Math.ceil(this.dataLensSize / 2),
+      relY - Math.ceil(this.dataLensSize / 2),
+      this.dataLensSize,
+      this.dataLensSize
+    );
 
     const dim = this.dataLensSize;
 
@@ -167,10 +174,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     if (!data.data.length || !toRgb) return;
 
-    let center = [
-      Math.round(this._xScale.invert(relX)),
-      Math.round(this._yScale.invert(relY))
-    ];
+
+    const dataX = Math.round(this._xScale.invert(relX));
+    const dataY = Math.round(this._yScale.invert(relY));
+
+    let center = [dataX, dataY];
     let xRange = [
       Math.round(this._xScale.invert(relX - this.dataLensLPad)),
       Math.round(this._xScale.invert(relX + this.dataLensRPad))
@@ -187,7 +195,22 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     this.onMouseMoveZoom({
-      data, dim, toRgb, center, xRange, yRange, rel: !!this.chromInfo
+      data,
+      absX,
+      absY,
+      relX,
+      relY,
+      dataX,
+      dataY,
+      orientstion: '2d',
+      // Specific to 2D matrices
+      dataLens,
+      dim,
+      toRgb,
+      center,
+      xRange,
+      yRange,
+      rel: !!this.chromInfo
     });
   }
 
