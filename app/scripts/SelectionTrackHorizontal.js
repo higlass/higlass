@@ -97,6 +97,10 @@ class SelectionTrackHorizontal extends SVGTrack {
 
     if (event.selection === null) {
       this.setDomainsCallback(null, this.selectionYDomain);
+
+      this.gBrush.selectAll('.overlay')
+      .attr("cursor", "move")
+
     }
 
   }
