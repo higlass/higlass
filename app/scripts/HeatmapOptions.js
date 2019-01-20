@@ -116,6 +116,8 @@ class HeatmapOptions extends React.Component {
         : null; // closebutton
 
       return (
+        /* eslint-disable react/no-array-index-key */
+        // Colors may be repeated, so the array index is the best choice here.
         <td
           key={`l${i}`}
           style={{
@@ -135,6 +137,7 @@ class HeatmapOptions extends React.Component {
             }
           />
         </td>
+        /* eslint-enable react/no-array-index-key */
       );
     });
 
