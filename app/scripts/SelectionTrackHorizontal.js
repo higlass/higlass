@@ -1,5 +1,5 @@
 import { brush } from 'd3-brush';
-import { select, event } from 'd3-selection';
+import { event } from 'd3-selection';
 import slugid from 'slugid';
 
 import SVGTrack from './SVGTrack';
@@ -16,7 +16,30 @@ class SelectionTrackHorizontal extends SVGTrack {
 
     const uid = slugid.nice();
     this.uid = uid;
+    this.context = context;
     this.options = options;
+    this.newSelection = false;
+
+    this.context.pubSub.subscribe(
+      'app.mouseClick', () => {
+        console.log('mouseClick');
+        this.disableBrush();
+      }
+    );
+
+    this.context.pubSub.subscribe(
+      'app.selectionStarted', () => {
+        this.newSelection = true;
+        this.enableBrush();
+      }
+    );
+
+    this.context.pubSub.subscribe(
+      'app.selectionEnded', () => {
+        this.newSelection = false;
+        this.disableBrush();
+      }
+    );
 
     this.removeSelectionChanged = removeSelectionChanged;
     this.setDomainsCallback = setDomainsCallback;
@@ -81,28 +104,33 @@ class SelectionTrackHorizontal extends SVGTrack {
     this.gBrush.selectAll('.handle--s')
       .style('pointer-events', 'none');
 
-    if (onRect !== null) {
-      this.selectionXDomain =
-        this.options.savedRegions[onRect][0];
+    if (onRect !== null && onRect !== undefined) {
+      console.log('enabling', onRect);
+      // we've clicked on an existing selection so don't
+      // allow selecting regions outside of it
+      this.gBrush.selectAll('.overlay')
+        .style('pointer-events', 'none');
+
+      this.selectionXDomain = this.options.savedRegions[onRect][0];
       this.draw();
     }
   }
 
   disableBrush() {
-    this.gMain.remove();
+    if (this.gBrush) {
+      this.selected = null;
+      this.gBrush.remove();
+      this.draw();
+    }
   }
 
   brushEnded() {
-    console.log('brushended', event.selection);
-
     if (event.selection === null) {
       this.setDomainsCallback(null, this.selectionYDomain);
 
       this.gBrush.selectAll('.overlay')
-      .attr("cursor", "move")
-
+        .attr('cursor', 'move');
     }
-
   }
 
   brushed() {
@@ -122,6 +150,18 @@ class SelectionTrackHorizontal extends SVGTrack {
     this.selectionYDomain = xDomain;
     // console.log('xDomain:', xDomain);
     // console.log('yDomain:', yDomain);
+    if (this.selected !== null
+      && this.selected !== undefined) {
+      this.options.savedRegions[this.selected][0] = this.selectionXDomain;
+    } else if (this.newSelection) {
+      // Nothing is selected, so we've just started brushing
+      // a new selection. Create a new section
+      this.selected = this.options.savedRegions.length;
+      this.options.savedRegions.push([
+        this.selectionXDomain,
+        null
+      ]);
+    }
 
     this.setDomainsCallback(xDomain, yDomain);
     this.draw();
@@ -175,6 +215,8 @@ class SelectionTrackHorizontal extends SVGTrack {
         (d, i) => i !== this.selected
       ));
 
+    // previously drawn selections can be interacted with
+    // necessary for enabling the click event below
     rectSelection
       .enter()
       .append('rect')
@@ -195,9 +237,11 @@ class SelectionTrackHorizontal extends SVGTrack {
       .attr('width', d => this._xScale(d[0][1]) - this._xScale(d[0][0]))
       .attr('height', this.dimensions[1])
       .on('click', (d, i) => {
-        console.log('click:', d, i);
         this.selected = i;
         this.enableBrush(i);
+
+        event.preventDefault();
+        event.stopPropagation();
       });
 
 
@@ -206,6 +250,7 @@ class SelectionTrackHorizontal extends SVGTrack {
       // 'brushed' event
       this.brush.on('brush', null);
       this.brush.on('end', null);
+      console.log('moving brush:', this.options.savedRegions);
       this.gBrush.call(this.brush.move, dest);
       this.brush.on('brush', this.brushed.bind(this));
       this.brush.on('end', this.brushEnded.bind(this));

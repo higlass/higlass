@@ -264,6 +264,7 @@ class HiGlassComponent extends React.Component {
     this.wheelHandlerBound = this.wheelHandler.bind(this);
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
     this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
+    this.mouseClickHandlerBound = this.mouseClickHandler.bind(this);
     this.onBlurHandlerBound = this.onBlurHandler.bind(this);
   }
 
@@ -631,8 +632,8 @@ class HiGlassComponent extends React.Component {
   }
 
   keyDownHandler(event) {
-    console.log('keydown', event);
     if (this.props.options.rangeSelectionOnAlt && event.key === 'Alt') {
+      this.pubSub.publish('app.selectionStarted');
       this.setState({
         mouseTool: MOUSE_TOOL_SELECT,
       });
@@ -641,6 +642,7 @@ class HiGlassComponent extends React.Component {
 
   keyUpHandler(event) {
     if (this.props.options.rangeSelectionOnAlt && event.key === 'Alt') {
+      this.pubSub.publish('app.selectionEnded');
       this.setState({
         mouseTool: MOUSE_TOOL_MOVE,
       });
@@ -3523,6 +3525,12 @@ class HiGlassComponent extends React.Component {
     this.animate();
   }
 
+  mouseClickHandler() {
+    this.pubSub.publish('app.mouseClick');
+    this.hideHoverMenu();
+    this.animate();
+  }
+
   onBlurHandler() {
     this.animate();
   }
@@ -3856,6 +3864,7 @@ class HiGlassComponent extends React.Component {
         className="higlass"
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
+        onClick={this.mouseClickHandlerBound}
         onWheel={this.onWheelHandlerBound}
         styleName={styleNames}
       >
