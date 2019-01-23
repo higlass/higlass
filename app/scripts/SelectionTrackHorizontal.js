@@ -29,6 +29,7 @@ class SelectionTrackHorizontal extends SVGTrack {
 
     this.context.pubSub.subscribe(
       'app.selectionStarted', () => {
+        this.disableBrush();
         this.newSelection = true;
         this.enableBrush();
       }
@@ -119,6 +120,7 @@ class SelectionTrackHorizontal extends SVGTrack {
   disableBrush() {
     if (this.gBrush) {
       this.selected = null;
+      this.selectionXDomain = null;
       this.gBrush.remove();
       this.draw();
     }
@@ -156,6 +158,7 @@ class SelectionTrackHorizontal extends SVGTrack {
     } else if (this.newSelection) {
       // Nothing is selected, so we've just started brushing
       // a new selection. Create a new section
+      console.log('adding:', this.selectionXDomain);
       this.selected = this.options.savedRegions.length;
       this.options.savedRegions.push([
         this.selectionXDomain,
@@ -211,9 +214,12 @@ class SelectionTrackHorizontal extends SVGTrack {
     }
 
     let rectSelection = this.gMain.selectAll('.region')
-      .data(this.options.savedRegions.filter(
-        (d, i) => i !== this.selected
-      ));
+      .data(
+        this.options.savedRegions
+          .map((r, i) => [r, i]) // keep track of the index of each
+        // rectangle so that we can use it to alter the selection later
+          .filter(r => r[1] !== this.selected)
+      );
 
     // previously drawn selections can be interacted with
     // necessary for enabling the click event below
@@ -232,13 +238,14 @@ class SelectionTrackHorizontal extends SVGTrack {
       .remove();
 
     rectSelection = this.gMain.selectAll('.region')
-      .attr('x', d => this._xScale(d[0][0]))
+      .attr('x', d => this._xScale(d[0][0][0]))
       .attr('y', 0)
-      .attr('width', d => this._xScale(d[0][1]) - this._xScale(d[0][0]))
+      .attr('width', d => this._xScale(d[0][0][1]) - this._xScale(d[0][0][0]))
       .attr('height', this.dimensions[1])
-      .on('click', (d, i) => {
-        this.selected = i;
-        this.enableBrush(i);
+      .on('click', (d) => {
+        this.disableBrush();
+        this.selected = d[1];
+        this.enableBrush(d[1]);
 
         event.preventDefault();
         event.stopPropagation();
@@ -250,7 +257,7 @@ class SelectionTrackHorizontal extends SVGTrack {
       // 'brushed' event
       this.brush.on('brush', null);
       this.brush.on('end', null);
-      console.log('moving brush:', this.options.savedRegions);
+      // console.log('moving brush:', this.options.savedRegions);
       this.gBrush.call(this.brush.move, dest);
       this.brush.on('brush', this.brushed.bind(this));
       this.brush.on('end', this.brushEnded.bind(this));

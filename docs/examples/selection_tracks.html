@@ -161,7 +161,6 @@ let currentRange = null;
 const rangeListenerId = hgv.on(
   'rangeSelection',
   range => {
-    console.log('dataRange:', range.dataRange);
     currentRange = range.dataRange;
 
     const minValue = Math.min(
