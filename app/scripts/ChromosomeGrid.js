@@ -174,45 +174,58 @@ class ChromosomeGrid extends PixiTrack {
     this.draw();
   }
 
+  createSvgLine(x1, x2, y1, y2, stroke, strokeWidth) {
+    const line = document.createElement('line');
+
+    line.setAttribute('x1', x1);
+    line.setAttribute('x2', x2);
+
+    line.setAttribute('y1', y1);
+    line.setAttribute('y2', y2);
+
+    line.setAttribute('stroke', stroke);
+    line.setAttribute('stroke-width', strokeWidth);
+
+    return line;
+  }
+
   drawLinesSvg(output, orientation, width, height, left = 0, top = 0) {
-    let strokeColor = this.options.lineStrokeColor
+    const strokeColor = this.options.lineStrokeColor
       ? this.options.lineStrokeColor : 'blue';
     const strokeWidth = this.options.lineStrokeWidth;
+
+    // First horizontal line
+    if (orientation === '2d' || orientation === '1d-vertical') {
+      const y = this._yScale(0) + top;
+      output.appendChild(this.createSvgLine(
+        left, width + left, y, y, strokeColor, strokeWidth
+      ));
+    }
+
+    // First vertical line
+    if (orientation === '2d' || orientation === '1d-horizontal') {
+      const x = this._xScale(0) + left;
+      output.appendChild(this.createSvgLine(
+        x, x, top, height + top, strokeColor, strokeWidth
+      ));
+    }
 
     for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
       const chrPos = this.chromInfo.cumPositions[i];
       const chrEnd = chrPos.pos + +this.chromInfo.chromLengths[chrPos.chr] + 1;
 
       if (orientation === '2d' || orientation === '1d-vertical') {
-        const line = document.createElement('line');
-
-        // draw horizontal lines (all start at x=0)
-        line.setAttribute('x1', left);
-        line.setAttribute('x2', width + left);
-
-        line.setAttribute('y1', this._yScale(chrEnd) + top);
-        line.setAttribute('y2', this._yScale(chrEnd) + top);
-
-        line.setAttribute('stroke', strokeColor);
-        line.setAttribute('stroke-width', strokeWidth);
-
-        output.appendChild(line);
+        const y = this._yScale(chrEnd) + top;
+        output.appendChild(this.createSvgLine(
+          left, width + left, y, y, strokeColor, strokeWidth
+        ));
       }
 
       if (orientation === '2d' || orientation === '1d-horizontal') {
-        // draw vertical lines (all start at y=0)
-        const line = document.createElement('line');
-
-        line.setAttribute('x1', this._xScale(chrEnd) + left);
-        line.setAttribute('x2', this._xScale(chrEnd) + left);
-
-        line.setAttribute('y1', top);
-        line.setAttribute('y2', height + top);
-
-        line.setAttribute('stroke', strokeColor);
-        line.setAttribute('stroke-width', strokeWidth);
-
-        output.appendChild(line);
+        const x = this._xScale(chrEnd) + left;
+        output.appendChild(this.createSvgLine(
+          x, x, top, height + top, strokeColor, strokeWidth
+        ));
       }
     }
   }
