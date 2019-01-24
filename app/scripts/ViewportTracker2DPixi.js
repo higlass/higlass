@@ -38,11 +38,6 @@ export default class ViewportTracker2D extends PixiTrack {
     this.draw();
   }
 
-  close() {
-    // remove the event handler that updates this viewport tracker
-    this.removeViewportChanged(uid);
-  }
-
   draw() {
     const graphics = this.pMain;
 

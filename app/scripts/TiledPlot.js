@@ -369,6 +369,7 @@ class TiledPlot extends React.Component {
     track.name = tilesetInfo.name;
     track.maxWidth = tilesetInfo.max_width;
     track.transforms = tilesetInfo.transforms;
+    track.aggregationModes = tilesetInfo.aggregation_modes;
     track.header = tilesetInfo.header;
     track.binsPerDimension = tilesetInfo.bins_per_dimension;
     if (tilesetInfo.resolutions) {
@@ -740,14 +741,6 @@ class TiledPlot extends React.Component {
         forceUpdate: Math.random(),
       };
     });
-  }
-
-  createOverlays(overlays) {
-    for (const trackType in overlays) {
-      for (let i = 0; i < tracks[trackType].length; i++) {
-        tracksAndLocations.push({ track: tracks[trackType][i], location: trackType });
-      }
-    }
   }
 
   createTracksAndLocations() {

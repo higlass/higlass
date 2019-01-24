@@ -1,13 +1,18 @@
+import * as PIXI from 'pixi.js';
+
 import Tiled1DPixiTrack from './Tiled1DPixiTrack';
 import AxisPixi from './AxisPixi';
 
 import { tileProxy } from './services';
-import { showMousePosition } from './utils';
+import { colorToHex, showMousePosition } from './utils';
 
 class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
   constructor(context, options) {
     super(context, options);
     const { animate } = context;
+
+    this.constIndicator = new PIXI.Graphics();
+    this.pMain.addChild(this.constIndicator);
 
     this.axis = new AxisPixi(this);
     this.pBase.addChild(this.axis.pAxis);
@@ -83,6 +88,11 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     return this._xScale;
   }
 
+  draw() {
+    super.draw();
+    this.drawConstIndicator();
+  }
+
   drawAxis(valueScale) {
     // either no axis position is specified
     if (!this.options.axisPositionVertical && !this.options.axisPositionHorizontal) {
@@ -128,6 +138,181 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
       this.axis.pAxis.position.y = this.position[1];
       this.axis.drawAxisRight(valueScale, this.dimensions[1]);
     }
+  }
+
+  drawConstIndicator() {
+    this.constIndicator.clear();
+    while (this.constIndicator.children[0]) {
+      this.constIndicator.removeChild(this.constIndicator.children[0]);
+    }
+
+    if (!this.options.constIndicators || !this.valueScale) return;
+
+    this.options.constIndicators.forEach(({
+      color = 'black',
+      opacity = 1.0,
+      label = null,
+      labelColor = 'black',
+      labelOpacity = 1.0,
+      labelPosition = 'leftTop',
+      labelSize = 12,
+      value = 0,
+    } = {}) => {
+      const colorHex = colorToHex(color);
+      const labelColorHex = colorToHex(labelColor);
+
+      this.constIndicator.beginFill(colorHex, opacity);
+
+      const y = this.valueScale(value);
+      let xOffset = 0;
+      let widthOffset = 0;
+
+      if (label) {
+        const labelG = new PIXI.Text(
+          label,
+          {
+            fontFamily: 'Arial',
+            fontSize: labelSize,
+            fill: labelColorHex,
+          }
+        );
+        labelG.alpha = labelOpacity;
+
+        switch (labelPosition) {
+          case 'right':
+            labelG.anchor.x = 1;
+            labelG.anchor.y = 0.5;
+            labelG.x = this.position[0] + this.dimensions[0] - 6;
+            labelG.y = y;
+            widthOffset = labelG.width + 8;
+            break;
+
+          case 'rightBottom':
+            labelG.anchor.x = 1;
+            labelG.anchor.y = 0;
+            labelG.x = this.position[0] + this.dimensions[0] - 6;
+            labelG.y = y;
+            break;
+
+          case 'rightTop':
+            labelG.anchor.x = 1;
+            labelG.anchor.y = 1;
+            labelG.x = this.position[0] + this.dimensions[0] - 6;
+            labelG.y = y;
+            break;
+
+          case 'left':
+            labelG.anchor.x = 0;
+            labelG.anchor.y = 0.5;
+            labelG.x = this.position[0] + 2;
+            labelG.y = y;
+            xOffset = labelG.width + 4;
+            break;
+
+          case 'leftBottom':
+            labelG.anchor.x = 0;
+            labelG.anchor.y = 0;
+            labelG.x = this.position[0] + 2;
+            labelG.y = y;
+            break;
+
+          case 'leftTop':
+          default:
+            labelG.anchor.x = 0;
+            labelG.anchor.y = 1;
+            labelG.x = this.position[0] + 2;
+            labelG.y = y;
+            break;
+        }
+        this.constIndicator.addChild(labelG);
+      }
+
+      this.constIndicator.drawRect(
+        this.position[0] + xOffset, y, this.dimensions[0] - widthOffset, 1
+      );
+    });
+  }
+
+  exportSVG() {
+    let track = null;
+    let base = null;
+
+    if (super.exportSVG) {
+      [base, track] = super.exportSVG();
+    } else {
+      base = document.createElement('g');
+      track = base;
+    }
+
+    base.setAttribute('class', 'horizontal-tiled-1d-track');
+    const output = document.createElement('g');
+
+    track.appendChild(output);
+
+    if (this.options.constIndicators) {
+      this.options.constIndicators.forEach(({
+        color = 'black',
+        opacity = 1.0,
+        label = null,
+        labelColor = 'black',
+        labelOpacity = 1.0,
+        labelPosition = 'leftTop',
+        labelSize = 12,
+        value = 0,
+      } = {}) => {
+        const y = this.valueScale(value);
+
+        if (label) {
+          const labelEl = document.createElement('text');
+          labelEl.textContent = label;
+
+          labelEl.setAttribute('x', this.position[0]);
+          labelEl.setAttribute('y', y);
+          labelEl.setAttribute('style', `font-family: 'Arial'; font-size: ${labelSize}px; fill: ${labelColor}; fill-opacity: ${labelOpacity};`);
+
+          switch (labelPosition) {
+            case 'rightBottom':
+              labelEl.setAttribute('x', this.position[0] + this.dimensions[0] - 6);
+              labelEl.setAttribute('y', y + labelSize + 2);
+              labelEl.setAttribute('text-anchor', 'end');
+              break;
+
+            case 'right':
+            case 'rightTop':
+              labelEl.setAttribute('x', this.position[0] + this.dimensions[0] - 6);
+              labelEl.setAttribute('y', y - 2);
+              labelEl.setAttribute('text-anchor', 'end');
+              break;
+
+            case 'leftBottom':
+              labelEl.setAttribute('x', this.position[0] + 2);
+              labelEl.setAttribute('y', y + labelSize + 2);
+              break;
+
+            case 'left':
+            case 'leftTop':
+            default:
+              labelEl.setAttribute('x', this.position[0] + 2);
+              labelEl.setAttribute('y', y - 2);
+              break;
+          }
+
+          output.appendChild(labelEl);
+        }
+
+        const line = document.createElement('line');
+        line.setAttribute('x1', this.position[0]);
+        line.setAttribute('y1', y);
+        line.setAttribute('x2', this.dimensions[0]);
+        line.setAttribute('y2', y);
+        line.setAttribute('stroke', color);
+        line.setAttribute('stroke-opacity', opacity);
+
+        output.appendChild(line);
+      });
+    }
+
+    return [base, track];
   }
 }
 

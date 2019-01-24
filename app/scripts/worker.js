@@ -288,5 +288,5 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
 
       // done.transfer(data, denses);
     })
-    .catch(err => console.log('err:', err));
+    .catch(err => console.warn('err:', err));
 }

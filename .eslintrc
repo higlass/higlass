@@ -28,6 +28,21 @@
     "ecmaVersion": 6
   },
   "rules": {
+    // TODOs:
+
+    "no-param-reassign": 0, // https://github.com/higlass/higlass/issues/483
+    "no-return-assign": 0, // https://github.com/higlass/higlass/issues/480
+    "no-undef": 0, // https://github.com/higlass/higlass/pull/506
+    "react/no-find-dom-node": 0, // https://github.com/higlass/higlass/issues/510
+    "react/require-default-props": 0, // https://github.com/higlass/higlass/issues/523
+
+    // Below, if it's turned off (0), we definitely do not care about the rule.
+    // If it's turned on (2), and you have a violation, either
+    //   - fix it
+    //   - eslint-disable just your line
+    //   - or turn it off globally; we might be too picky.
+    // If it's a warning (1), we'd like to turn it either fully on or fully off, eventually.
+
     "jsx-a11y/anchor-is-valid": 0,
     "jsx-a11y/click-events-have-key-events": 0,
     "jsx-a11y/no-noninteractive-element-interactions": 0,
@@ -36,56 +51,56 @@
     "class-methods-use-this": 0,
     "comma-dangle": 0,
     "guard-for-in": 0,
-    "jsx-quotes": 1,
+    "jsx-quotes": 2,
     "no-bitwise": 0,
-    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-console": [2, { "allow": ["warn", "error"] }],
     "no-constant-condition": 2,
     "no-continue": 0,
     "no-mixed-operators": 0,
-    "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
-    "no-param-reassign": ["error", { "props": false }],
+    "no-multi-spaces": [2, { "ignoreEOLComments": true }],
     "no-plusplus": 0,
     "no-prototype-builtins": 0,
     "no-underscore-dangle": 0,
+    "no-unused-vars": [2, { "args": "none" }],
     "prefer-destructuring": 0,
     "react/destructuring-assignment": 0,
     "react/display-name": 0,
     "react/forbid-prop-types": 0,
     "react/jsx-boolean-value": 0,
-    "react/jsx-closing-bracket-location": 1,
-    "react/jsx-curly-spacing": 1,
+    "react/jsx-closing-bracket-location": 2,
+    "react/jsx-curly-spacing": 2,
     "react/jsx-equals-spacing": 2,
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx"] }],
     "react/jsx-handler-names": 0,
     "react/jsx-indent": 0,
     "react/jsx-indent-props": 0,
-    "react/jsx-key": 1,
-    "react/jsx-max-props-per-line": 1,
+    "react/jsx-key": 2,
+    "react/jsx-max-props-per-line": 2,
     "react/jsx-no-bind": [0, {"ignoreRefs": true }],
     "react/jsx-no-duplicate-props": 2,
     "react/jsx-no-literals": 0,
-    "react/jsx-no-undef": 1,
-    "react/jsx-pascal-case": 1,
-    "react/jsx-sort-props": 1,
-    "react/jsx-uses-react": 1,
-    "react/jsx-uses-vars": 1,
+    "react/jsx-no-undef": 2,
+    "react/jsx-pascal-case": 2,
+    "react/jsx-sort-props": 2,
+    "react/jsx-uses-react": 2,
+    "react/jsx-uses-vars": 2,
     "no-restricted-syntax": 0,
     "react/no-danger": 1,
-    "react/no-deprecated": 1,
+    "react/no-deprecated": 2,
     "react/no-did-mount-set-state": 1,
-    "react/no-did-update-set-state": 1,
+    "react/no-did-update-set-state": 2,
     "react/no-direct-mutation-state": 1,
-    "react/no-is-mounted": 1,
-    "react/no-multi-comp": 1,
+    "react/no-is-mounted": 2,
+    "react/no-multi-comp": 2,
     "react/no-set-state": 0,
     "react/no-string-refs": 1,
-    "react/no-unknown-property": 1,
+    "react/no-unknown-property": 2,
     "react/no-unused-prop-types": 0,
     "react/no-unused-state": 0,
-    "react/prefer-es6-class": 1,
+    "react/prefer-es6-class": 2,
     "react/prop-types": 1,
     "react/react-in-jsx-scope": 1,
-    "react/self-closing-comp": 1,
+    "react/self-closing-comp": 2,
     "react/sort-comp": 1
   },
   "overrides": [
@@ -93,14 +108,6 @@
       "files": ["test/**/*.js"],
       "rules": {
         "no-use-before-define": 0 // So viewconfs can be below the body of the test.
-      }
-    },
-    {
-      "files": ["app/scripts/*Track.js"],
-      "rules": {
-        "no-unused-vars": ["error", { "args": "none" }]
-        // There are many instances where an interface expects parameters,
-        // but the code doesn't use them, sometimes because it's a stub.
       }
     }
   ]

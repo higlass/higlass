@@ -28,147 +28,261 @@
 <script src='hglib.js'></script>
 <script>
 const viewConfig = {
-  editable: true,
   zoomFixed: false,
-  trackSourceServers: [
-    'http://higlass.io/api/v1'
-  ],
-  exportViewUrl: 'http://localhost:8000/api/v1/viewconfs/',
   views: [
     {
-      uid: 'aa',
-      initialXDomain: [
-        -128227010.6076158,
-        3227095876.810823
-      ],
-      initialYDomain: [
-        -679063376.6830564,
-        3737688490.1136293
-      ],
-      autocompleteSource: 'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
-      genomePositionSearchBoxVisible: false,
-      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-      tracks: {
-        top: [
-          {
-            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            type: 'horizontal-chromosome-labels',
-            position: 'top',
-            name: 'Chromosome Labels (hg19)',
-            height: 30,
-            uid: 'I1QUF22JQJuJ38j9PS4iqw',
-            options: {},
-            width: 667
-          }
-        ],
-        left: [
-          {
-            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            type: 'vertical-chromosome-labels',
-            position: 'left',
-            name: 'Chromosome Labels (hg19)',
-            width: 30,
-            uid: 'a-mFiHnBQ8uuI6UG3USWVA',
-            options: {},
-            height: 828
-          }
-        ],
-        center: [
-          {
-            uid: 'c1',
-            type: 'combined',
-            height: 828,
-            contents: [
-              {
-                data: {
-                  type: 'divided',
-                  'children': [
-                    {
-                      server: 'http://higlass.io/api/v1',
-                      tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
-                    },
-                    {
-                      server: 'http://higlass.io/api/v1',
-                      tilesetUid: 'ZCvntCKST0KUvQPGcCbJGA',
-                    }
-                  ]
-                },
-                type: 'heatmap',
-                position: 'center',
-                options: {
-                  colorRange: [
-                    '#FFFFFF',
-                    '#F8E71C',
-                    '#F5A623',
-                    '#D0021B'
-                  ],
-                  colorbarPosition: 'topRight',
-                  colorbarLabelsPosition: 'outside',
-                  maxZoom: null,
-                  labelPosition: 'bottomLeft',
-                  name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
-                  trackBorderWidth: 0,
-                  trackBorderColor: 'black',
-                  heatmapValueScaling: 'log',
-                  scaleStartPercent: '0.00000',
-                  scaleEndPercent: '1.00000'
-                },
-                uid: 'heatmap1',
-                name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
-                transforms: [
-                  {
-                    name: 'ICE',
-                    value: 'weight'
-                  }
-                ],
-                width: 667,
-                height: 828
-              },
-              {
-                type: '2d-chromosome-grid',
-                local: true,
-                orientation: '2d',
-                name: 'Chromosome Grid (hg19)',
-                chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-                thumbnail: null,
-                server: '',
-                tilesetUid: 'TIlwFtqxTX-ndtM7Y9k1bw',
-                uid: 'LUVqXXu2QYiO8XURIwyUyA',
-                options: {
-                  lineStrokeWidth: 1,
-                  lineStrokeColor: 'grey'
-                },
-                position: 'center',
-                width: 667,
-                height: 828
-              }
-            ],
-            position: 'center',
-            options: {},
-            width: 667
-          }
-        ],
-        right: [],
-        bottom: []
-      },
       layout: {
         w: 12,
-        h: 12,
+        h: 7,
         x: 0,
         y: 0,
         i: 'aa',
         moved: false,
         static: false
+      },
+      uid: 'aa',
+      initialYDomain: [
+        2534823997.9776945,
+        2547598956.834603
+      ],
+      autocompleteSource: '/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
+      initialXDomain: [
+        2521015726.4619913,
+        2558682921.8435397
+      ],
+      tracks: {
+        left: [],
+        top: [
+          {
+            uid: 'genes',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-gene-annotations',
+            height: 48,
+            options: {
+              labelColor: 'black',
+              plusStrandColor: 'black',
+              name: 'Gene Annotations (hg19)',
+              labelPosition: 'hidden',
+              minusStrandColor: 'black',
+              fontSize: 11,
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: true,
+              mousePositionColor: '#000000',
+              geneAnnotationHeight: 10,
+              geneLabelPosition: 'outside',
+              geneStrandSpacing: 4
+            },
+            name: 'Gene Annotations (hg19)',
+          },
+          {
+            uid: 'line1',
+            tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
+            height: 20,
+            width: 1890,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K27ac.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#4a35fc',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K27ac.fc.signal'
+          },
+          {
+            uid: 'line2',
+            tilesetUid: 'PdAaSdibTLK34hCw7ubqKA',
+            height: 20,
+            width: 1890,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K27me3.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#d104fa',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K27me3.fc.signal'
+          },
+          {
+            uid: 'line3',
+            tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
+            height: 20,
+            width: 1890,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K4me1.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#ff0000',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K4me1.fc.signal'
+          },
+          {
+            uid: 'line4',
+            tilesetUid: 'cE0nGyd0Q_yVYSyBUe89Ww',
+            height: 20,
+            width: 1890,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K4me3.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: 'orange',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K4me3.fc.signal'
+          },
+          {
+            uid: 'chroms',
+            height: 18,
+            width: 1890,
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            position: 'top',
+            type: 'horizontal-chromosome-labels',
+            options: {
+              color: '#777777',
+              stroke: '#FFFFFF',
+              fontSize: 11,
+              fontIsLeftAligned: true,
+              showMousePosition: true,
+              mousePositionColor: '#000000'
+            },
+            name: 'Chromosome Labels (hg19)'
+          }
+        ],
+        right: [],
+        center: [
+          {
+            uid: 'center',
+            type: 'combined',
+            contents: [
+              {
+                name: '[hicnorm] Rao et al. (2014) GM12878 MboI Primary',
+                created: '2017-05-17T13:37:06.974876Z',
+                server: 'http://higlass.io/api/v1',
+                tilesetUid: 'dVBREuC2SvO01uXYMUh2aQ',
+                uid: 'Yqetzqw6Qfy-hREAJhAXEA',
+                type: 'heatmap',
+                options: {
+                  backgroundColor: '#eeeeee',
+                  labelPosition: 'topLeft',
+                  labelTextOpacity: 0.4,
+                  colorRange: [
+                    'white',
+                    'rgba(245,166,35,1.0)',
+                    'rgba(208,2,27,1.0)',
+                    'black'
+                  ],
+                  maxZoom: null,
+                  colorbarPosition: 'topRight',
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'black',
+                  heatmapValueScaling: 'log',
+                  showMousePosition: true,
+                  mousePositionColor: '#000000',
+                  showTooltip: true,
+                  name: '[hicnorm] Rao et al. (2014) GM12878 MboI Primary',
+                  scaleStartPercent: '0.00000',
+                  scaleEndPercent: '1.00000'
+                },
+                width: 100,
+                height: 100,
+                transforms: [],
+                position: 'center'
+              }
+            ],
+            position: 'center'
+          }
+        ],
+        bottom: [],
+        whole: [],
+        gallery: []
+      },
+      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+      genomePositionSearchBoxVisible: false,
+      genomePositionSearchBox: {
+        visible: true,
+        chromInfoServer: 'http://higlass.io/api/v1',
+        chromInfoId: 'hg19',
+        autocompleteServer: 'http://higlass.io/api/v1',
+        autocompleteId: 'OHJakQICQD6gTD7skx4EWA'
       }
     }
   ],
+  editable: true,
+  exportViewUrl: '/api/v1/viewconfs',
   zoomLocks: {
     locksByViewUid: {},
     locksDict: {}
   },
+  trackSourceServers: [
+    'http://higlass.io/api/v1'
+  ],
   locationLocks: {
-    locksByViewUid: {},
-    locksDict: {}
+    locksByViewUid: {
+      aa: 'PkNgAl3mSIqttnSsCewngw',
+      ewZvJwlDSei_dbpIAkGMlg: 'PkNgAl3mSIqttnSsCewngw'
+    },
+    locksDict: {
+      PkNgAl3mSIqttnSsCewngw: {
+        aa: [
+          1550000000,
+          1550000000,
+          3380588.876772046
+        ],
+        ewZvJwlDSei_dbpIAkGMlg: [
+          1550000000.0000002,
+          1549999999.9999993,
+          3380588.876772046
+        ],
+        uid: 'PkNgAl3mSIqttnSsCewngw'
+      }
+    }
   },
   valueScaleLocks: {
     locksByViewUid: {},
