@@ -1,8 +1,6 @@
 ## v1.3.1
 
-- Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
-- Clear mouse position indicator when leaving the root dom element, on blurring the window, and when no track is hovered
-- Expose D3 libraries to plugin tracks
+- Add `constIndicators` as an option to 1D tracks for displaying a visual indicator (e.g., a line) at a constant value.
 
 ## v1.3.0
 
@@ -19,6 +17,9 @@
 - Fix minified build
 - Fix a minor visual glitch in the gene annotation track
 - Expose `mix()` from `mixwith` to plugin tracks
+- Support different aggregation modes (mean, min, max, std) for bigWig files
+- Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
+- Clear mouse position indicator when leaving the root dom element, on blurring the window, and when no track is hovered
 
 ## v1.2.8
 

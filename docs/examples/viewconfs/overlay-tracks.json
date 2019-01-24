@@ -1,0 +1,106 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": ["http://higlass.io/api/v1"],
+  "exportViewUrl": "http://localhost:8000/api/v1/viewconfs/",
+  "views": [{
+    "uid": "aa",
+    "initialXDomain": [-128227010, 3227095876],
+    "initialYDomain": [-679063376, 3737688490],
+    "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+    "genomePositionSearchBoxVisible": false,
+    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+    "tracks": {
+      "top": [{
+        "server": "http://higlass.io/api/v1",
+        "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+        "uid": "genes-top",
+        "type": "horizontal-gene-annotations"
+      }, {
+        "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+        "type": "horizontal-chromosome-labels",
+        "position": "top",
+        "uid": "chroms-top"
+      }],
+      "left": [{
+        "server": "http://higlass.io/api/v1",
+        "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+        "uid": "genes-left",
+        "type": "vertical-gene-annotations"
+      }, {
+        "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+        "type": "vertical-chromosome-labels",
+        "position": "left",
+        "name": "Chromosome Labels (hg19)",
+        "uid": "chroms-left"
+      }],
+      "center": [{
+        "uid": "center",
+        "type": "combined",
+        "contents": [{
+          "data": {
+            "type": "divided",
+            "children": [{
+              "server": "http://higlass.io/api/v1",
+              "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ"
+            }, {
+              "server": "http://higlass.io/api/v1",
+              "tilesetUid": "ZCvntCKST0KUvQPGcCbJGA"
+            }]
+          },
+          "type": "heatmap",
+          "position": "center",
+          "options": {
+            "colorRange": ["#FFFFFF", "#F8E71C", "#F5A623", "#D0021B"],
+            "colorbarPosition": "topRight",
+            "colorbarLabelsPosition": "outside",
+            "maxZoom": null,
+            "labelPosition": "bottomLeft",
+            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+            "trackBorderWidth": 0,
+            "trackBorderColor": "black",
+            "heatmapValueScaling": "log",
+            "scaleStartPercent": "0.00000",
+            "scaleEndPercent": "1.00000"
+          },
+          "uid": "heatmap",
+          "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+          "transforms": [{
+            "name": "ICE",
+            "value": "weight"
+          }]
+        }, {
+          "type": "2d-chromosome-grid",
+          "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+          "tilesetUid": "TIlwFtqxTX-ndtM7Y9k1bw",
+          "uid": "LUVqXXu2QYiO8XURIwyUyA",
+          "options": {
+            "lineStrokeWidth": 1,
+            "lineStrokeColor": "grey"
+          }
+        }]
+      }],
+      "right": [],
+      "bottom": []
+    },
+    "layout": {
+      "w": 12,
+      "h": 12,
+      "x": 0,
+      "y": 0,
+      "i": "aa",
+      "moved": false,
+      "static": false
+    },
+    "overlays": [{
+      "uid": "overlay",
+      "type": "",
+      "includes": ["chroms-top", "chroms-left", "genes-top", "genes-left", "center"],
+      "options": {
+        "extent": [
+          [1000000000, 1100000000]
+        ]
+      }
+    }]
+  }]
+}
