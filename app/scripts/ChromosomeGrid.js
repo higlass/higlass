@@ -196,18 +196,22 @@ class ChromosomeGrid extends PixiTrack {
 
     // First horizontal line
     if (orientation === '2d' || orientation === '1d-vertical') {
-      const y = this._yScale(0) + top;
-      output.appendChild(this.createSvgLine(
-        left, width + left, y, y, strokeColor, strokeWidth
-      ));
+      const y = this._yScale(0);
+      if (y > 0 && y < top + height) {
+        output.appendChild(this.createSvgLine(
+          left, width + left, y + top, y + top, strokeColor, strokeWidth
+        ));
+      }
     }
 
     // First vertical line
     if (orientation === '2d' || orientation === '1d-horizontal') {
-      const x = this._xScale(0) + left;
-      output.appendChild(this.createSvgLine(
-        x, x, top, height + top, strokeColor, strokeWidth
-      ));
+      const x = this._xScale(0);
+      if (x > 0 && x < left + width) {
+        output.appendChild(this.createSvgLine(
+          x + left, x + left, top, height + top, strokeColor, strokeWidth
+        ));
+      }
     }
 
     for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
@@ -215,17 +219,21 @@ class ChromosomeGrid extends PixiTrack {
       const chrEnd = chrPos.pos + +this.chromInfo.chromLengths[chrPos.chr] + 1;
 
       if (orientation === '2d' || orientation === '1d-vertical') {
-        const y = this._yScale(chrEnd) + top;
-        output.appendChild(this.createSvgLine(
-          left, width + left, y, y, strokeColor, strokeWidth
-        ));
+        const y = this._yScale(chrEnd);
+        if (y > 0 && y < top + height) {
+          output.appendChild(this.createSvgLine(
+            left, width + left, y + top, y + top, strokeColor, strokeWidth
+          ));
+        }
       }
 
       if (orientation === '2d' || orientation === '1d-horizontal') {
-        const x = this._xScale(chrEnd) + left;
-        output.appendChild(this.createSvgLine(
-          x, x, top, height + top, strokeColor, strokeWidth
-        ));
+        const x = this._xScale(chrEnd);
+        if (x > 0 && x < left + width) {
+          output.appendChild(this.createSvgLine(
+            x + left, x + left, top, height + top, strokeColor, strokeWidth
+          ));
+        }
       }
     }
   }
