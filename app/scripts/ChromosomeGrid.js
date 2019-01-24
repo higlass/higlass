@@ -174,6 +174,49 @@ class ChromosomeGrid extends PixiTrack {
     this.draw();
   }
 
+  drawLinesSvg(output, orientation, width, height, left = 0, top = 0) {
+    let strokeColor = this.options.lineStrokeColor
+      ? this.options.lineStrokeColor : 'blue';
+    const strokeWidth = this.options.lineStrokeWidth;
+
+    for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
+      const chrPos = this.chromInfo.cumPositions[i];
+      const chrEnd = chrPos.pos + +this.chromInfo.chromLengths[chrPos.chr] + 1;
+
+      if (orientation === '2d' || orientation === '1d-vertical') {
+        const line = document.createElement('line');
+
+        // draw horizontal lines (all start at x=0)
+        line.setAttribute('x1', left);
+        line.setAttribute('x2', width + left);
+
+        line.setAttribute('y1', this._yScale(chrEnd) + top);
+        line.setAttribute('y2', this._yScale(chrEnd) + top);
+
+        line.setAttribute('stroke', strokeColor);
+        line.setAttribute('stroke-width', strokeWidth);
+
+        output.appendChild(line);
+      }
+
+      if (orientation === '2d' || orientation === '1d-horizontal') {
+        // draw vertical lines (all start at y=0)
+        const line = document.createElement('line');
+
+        line.setAttribute('x1', this._xScale(chrEnd) + left);
+        line.setAttribute('x2', this._xScale(chrEnd) + left);
+
+        line.setAttribute('y1', top);
+        line.setAttribute('y2', height + top);
+
+        line.setAttribute('stroke', strokeColor);
+        line.setAttribute('stroke-width', strokeWidth);
+
+        output.appendChild(line);
+      }
+    }
+  }
+
   exportSVG() {
     let track = null;
     let base = null;
@@ -189,52 +232,26 @@ class ChromosomeGrid extends PixiTrack {
 
     base.setAttribute('id', 'ChromosomeGrid');
 
-    output.setAttribute('transform',
-      `translate(${this.position[0]},${this.position[1]})`);
+    output.setAttribute(
+      'transform',
+      `translate(${this.position[0]},${this.position[1]})`
+    );
 
     if (!this.chromInfo) {
     // we haven't received the chromosome info yet
       return [base, track];
     }
 
-    const strokeColor = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
-    const strokeWidth = this.options.lineStrokeWidth;
-
-    for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
-      const chrPos = this.chromInfo.cumPositions[i];
-      const chrEnd = chrPos.pos + +this.chromInfo.chromLengths[chrPos.chr] + 1;
-
-      if (this.orientation === '2d' || this.orientation === '1d-horizontal') {
-        const line = document.createElement('line');
-
-        // draw horizontal lines (all start at x=0)
-        line.setAttribute('x1', 0);
-        line.setAttribute('x2', this.dimensions[0]);
-
-        line.setAttribute('y1', this._yScale(chrEnd));
-        line.setAttribute('y2', this._yScale(chrEnd));
-
-        line.setAttribute('stroke', strokeColor);
-        line.setAttribute('stroke-width', strokeWidth);
-
-        output.appendChild(line);
+    if (this.isOverlay) {
+      for (let i = 0; i < this.options.orientationsAndPositions.length; i++) {
+        const orientation = this.options.orientationsAndPositions[i].orientation;
+        const {
+          left, top, width, height
+        } = this.options.orientationsAndPositions[i].position;
+        this.drawLinesSvg(output, orientation, width, height, left, top);
       }
-
-      if (this.orientation === '2d' || this.orientation === '1d-vertical') {
-        // draw vertical lines (all start at y=0)
-        const line = document.createElement('line');
-
-        line.setAttribute('x1', this._xScale(chrEnd));
-        line.setAttribute('x2', this._xScale(chrEnd));
-
-        line.setAttribute('y1', 0);
-        line.setAttribute('y1', this.dimensions[1]);
-
-        line.setAttribute('stroke', strokeColor);
-        line.setAttribute('stroke-width', strokeWidth);
-
-        output.appendChild(line);
-      }
+    } else {
+      this.drawLinesSvg(output, this.orientation, ...this.dimensions);
     }
 
     return [base, track];
