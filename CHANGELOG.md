@@ -1,3 +1,7 @@
+## v1.3.1
+
+- Add `constIndicators` as an option to 1D tracks for displaying a visual indicator (e.g., a line) at a constant value.
+
 ## v1.3.0
 
 - Added the ability to specify default track options through the API
