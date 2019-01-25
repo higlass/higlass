@@ -407,7 +407,7 @@ export const OPTIONS_INFO = {
 
   labelColor: {
     name: 'Label Color',
-    inlineOptions: AVAILABLE_COLORS,
+    inlineOptions: { ...AVAILABLE_COLORS, ...SPECIAL_COLORS },
   },
 
   labelPosition: {

@@ -8,8 +8,6 @@ import { expect } from 'chai';
 // Utils
 import {
   mountHGComponent,
-  // removeHGComponent,
-  getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
@@ -23,21 +21,21 @@ describe('Minimal viewconfs', () => {
           tracks: {
             top: [
               {
-                "name": "wgEncodeLicrHistoneLiverH3k04me3UE14halfC57bl6StdSig.hitile",
-                "created": "2017-11-02T15:37:26.351612Z",
-                "project": null,
-                "project_name": "",
-                "description": "",
-                "server": "//higlass.io/api/v1",
-                "tilesetUid": "Hj6L9JuNRnC1004qQqV_LQ",
-                "uid": "a",
-                "type": "horizontal-bar",
-                "options": {
-                  "barFillColor": "red"
+                name: 'wgEncodeLicrHistoneLiverH3k04me3UE14halfC57bl6StdSig.hitile',
+                created: '2017-11-02T15:37:26.351612Z',
+                project: null,
+                project_name: '',
+                description: '',
+                server: '//higlass.io/api/v1',
+                tilesetUid: 'Hj6L9JuNRnC1004qQqV_LQ',
+                uid: 'a',
+                type: 'horizontal-bar',
+                options: {
+                  barFillColor: 'red'
                 },
-                "width": 1109,
-                "height": 106,
-                "position": "top"
+                width: 1109,
+                height: 106,
+                position: 'top'
               }
             ]
           }
