@@ -6,8 +6,16 @@
   "main": "dist/hglib.js",
   "unpkg": "dist/hglib.min.js",
   "jsdelivr": "dist/hglib.min.js",
-  "files": ["app", "dist"],
-  "keywords": ["hi-c", "genomics", "matrix", "tracks"],
+  "files": [
+    "app",
+    "dist"
+  ],
+  "keywords": [
+    "hi-c",
+    "genomics",
+    "matrix",
+    "tracks"
+  ],
   "scripts": {
     "start": "webpack-dev-server --config ./webpack.config.js --mode development --content-base app",
     "build-watch": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; webpack --config ./webpack.config.js --mode development --watch; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css;",

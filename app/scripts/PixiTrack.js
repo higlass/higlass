@@ -291,6 +291,22 @@ class PixiTrack extends Track {
     graphics.drawRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1]);
   }
 
+  /**
+   * Determine the label color based on the number of options.
+   *
+   * @return {string} The color to use for the label.
+   */
+  getLabelColor() {
+    if (this.options.labelColor
+      && this.options.labelColor !== '[use-stroke]') {
+      return this.options.labelColor;
+    }
+
+    return this.options.lineStrokeColor
+      || this.options.barFillColor
+      || 'black';
+  }
+
   drawLabel() {
     if (!this.labelText) return;
 
@@ -309,7 +325,7 @@ class PixiTrack extends Track {
       +this.options.labelBackgroundOpacity || 0.5
     );
 
-    const stroke = colorToHex(this.options.labelColor || 'black');
+    const stroke = colorToHex(this.getLabelColor());
     const labelBackgroundMargin = 2;
 
     // we can't draw a label if there's no space
@@ -322,7 +338,8 @@ class PixiTrack extends Track {
     if (this.options.name) {
       labelTextText += this.options.name;
     } else {
-      labelTextText += this.tilesetInfo ? this.tilesetInfo.name : '';
+      labelTextText += this.tilesetInfo
+        ? this.tilesetInfo.name : '';
     }
 
     if (

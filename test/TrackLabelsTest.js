@@ -16,6 +16,7 @@ configure({ adapter: new Adapter() });
 describe('Minimal viewconfs', () => {
   describe('Minimal with CrossRule', () => {
     const viewconf = {
+      editable: true,
       views: [
         {
           uid: 'aa',
@@ -29,10 +30,10 @@ describe('Minimal viewconfs', () => {
                 "description": "",
                 "server": "//higlass.io/api/v1",
                 "tilesetUid": "Hj6L9JuNRnC1004qQqV_LQ",
-                "uid": "cmjlHgD5RG---0Ke8dJI7g",
+                "uid": "a",
                 "type": "horizontal-bar",
                 "options": {
-                  "barFillColor": "brown"
+                  "barFillColor": "red"
                 },
                 "width": 1109,
                 "height": 106,
@@ -49,15 +50,10 @@ describe('Minimal viewconfs', () => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
 
-    it('can load and unload', () => {
-      expect(true).to.equal(true);
-    });
+    it('sets the label to the color of the bars', () => {
+      const obj = hgc.instance().getTrackObject('aa', 'a');
 
-    it('has a position', () => {
-      const obj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'a');
-
-      expect(obj.xPosition).to.eql(100);
-      expect(obj.yPosition).to.eql(100);
+      expect(obj.labelText._style._fill).to.eql('#ff0000');
     });
 
     afterAll(() => {
