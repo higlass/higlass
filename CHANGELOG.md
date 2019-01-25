@@ -4,22 +4,31 @@
 
 ## v1.3.0
 
+- Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
+- Added `TiledPixiTrack.on` event handler to listen to data changes
+- Added several API endpoints: `getComponent()`, `setAuthHeader()`, `getAuthHeader()`,
+- Added export of several utility functions: `waitForJsonComplete()`, `waitForTilesLoaded()`, `waitForTransitionsFinished()`, `mountHGComponent()`, `getTrackObjectFromHGC()`
 - Added the ability to specify default track options through the API
 - Added nesting to the tileset finder so that tilesets can be grouped together into categories
 - Added the `axisLabelFormatting` option to 1d quantitative tracks
 - Added TiledPixiTrack.on event handler
 - Added getTrackObject to exports
 - Added support for overlay tracks
-- Minor bug fix wherein valueScaleMin and valueScaleMax weren't used when set to 0
+- Added support for click event handling of 1D and 2D annotations from `1d-annotation` and `chromosome-2d-annotations` tracks
 - Cloned views split vertically first (#259)
 - Change component height when a new viewconf is passed in
 - Add a fudge factor to ensure that the entire view is shown in the grid layout
-- Fix minified build
+- Refactored the pub-sub service to avoid implicit global event listening
 - Fix a minor visual glitch in the gene annotation track
 - Expose `mix()` from `mixwith` to plugin tracks
 - Support different aggregation modes (mean, min, max, std) for bigWig files
 - Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
 - Clear mouse position indicator when leaving the root dom element, on blurring the window, and when no track is hovered
+- Fix several issue with SVG export
+- Minor bug fix wherein valueScaleMin and valueScaleMax weren't used when set to 0
+- Fix #401
+- Fix #395
+- Fix #360
 
 ## v1.2.8
 
@@ -102,7 +111,7 @@
 ## v1.1.4
 
 - Fix the checkAllTilesetInfoReceived function so that it ignores left and top
-axis tracks
+  axis tracks
 - First release to be registered with Zenodo
 
 ## v1.1.3
@@ -112,9 +121,9 @@ axis tracks
 ## v1.1.2
 
 - Inline the SVG styles so they aren't overwritten by other elments on the
-page
+  page
 - Inline TrackControl svg styles so they aren't overwritten by page css
-settings
+  settings
 - Clear gene annotation graphics before redrawing
 
 ## v1.1.1
@@ -188,13 +197,15 @@ settings
 - Fixed and robustified range selection API
 - Display error message on error
 - Don't error when displaying menus when invalid track type is
-entered
+  entered
 - Added an endpoint for sharing view configs as a link (`shareViewConfigAsLink()`) and exporting them as png and svg (`get('png' || 'svg')`)
 - Simplified `hglib` API
 - Updated third-party libs to get rid of deprecation warnings for React v16
 - Fixed small bug in placing rules
 - Display error when failing to retrieve tilesetInfo
+
 * Added support for cross-section tracks
+
 - Rendering improvements
 
 ## v0.10.22 (2018-02-22)
@@ -213,7 +224,7 @@ entered
 
 - Fixed api variable in HiGlassComponent
 - Fixed relToAbsChromPos so that it converts locations to numbers before
-adding
+  adding
 - Added strokeWidth as an option to the viewport projection track
 
 ## v0.10.19 (2018-02-11)
@@ -263,17 +274,17 @@ adding
 ## v0.10.9 (2018-01-13)
 
 - Skipping a version because the latest version wasn't specified in
-package.json
+  package.json
 
 ## v0.10.8
 
 - Skipping a version because the latest version wasn't specified in
-package.json
+  package.json
 
 ## v0.10.7 (2018-01-13)
 
 - Show current data resolution in tiled sets containing raw resolutions rather
-than zoom levels
+  than zoom levels
 
 ## v0.10.6 (2017-12-28)
 
@@ -284,8 +295,8 @@ than zoom levels
 ## v0.10.5 (2017-12-27)
 
 - Fixed bug in TrackRenderer.setUpInitialScales where updating the view with
-new equivalent initial domains and different dimensions led to the view being
-misplaced
+  new equivalent initial domains and different dimensions led to the view being
+  misplaced
 - Added z-index to popup menus
 
 ## v0.10.4 (2017-12-16)
@@ -347,7 +358,7 @@ misplaced
 
 - Fix gene annotation coloring bug
 - Fix menu clash error that occurs when a center track is specified
-without a combined track
+  without a combined track
 - Zoom into entire chromosomes by just entering its name
 
 ## v0.9.10 (2017-11-01)
@@ -370,7 +381,7 @@ without a combined track
 ## v0.9.7 (2017-10-31)
 
 - Initialize scales when viewconfig is loaded rather than on
-handleScalesChanged
+  handleScalesChanged
 
 ## v0.9.6 (2017-10-31)
 
@@ -422,10 +433,10 @@ handleScalesChanged
 - Redraw TiledPixiTracks after the tileset info has been received
 - Remove value scale locks on handleCloseTrack
 - Check that tiledPlot is defined in createSVG to fix the export
-failing when there's two side-by-side by views created after closing
-one
+  failing when there's two side-by-side by views created after closing
+  one
 - Fixed the "Failed: network error" issue in chrome by changing the
-"download" function in utils.js
+  "download" function in utils.js
 
 ## v0.8.43
 
@@ -467,13 +478,13 @@ one
 ## v0.8.33
 
 - Removed the outside colorbar labels option (it's a little
-ambiguous on the right side since the labels will be adjacent
-to the other axis elements.
+  ambiguous on the right side since the labels will be adjacent
+  to the other axis elements.
 
 ## v0.8.32
 
 - Removed tests from package.json so that build completes (tests fail on
-travis for some reason)
+  travis for some reason)
 
 ## v0.8.31
 
@@ -540,7 +551,7 @@ travis for some reason)
 ## v0.8.16 - 2017-06-27
 
 - Fixed a regression where closing views didn't remove the associated PIXI
-Components
+  Components
 - Increased the drag timeout time to 5 seconds
 
 ## v0.8.15 - 2017-06-26
@@ -555,7 +566,7 @@ Components
 
 - Option to draw borders around tracks
 - Option to change the stroke, fill colors and opacity of the
-horizontal-2d-rectangle-domains track
+  horizontal-2d-rectangle-domains track
 
 ## v0.8.12 - 2017-06-26
 
@@ -565,9 +576,8 @@ horizontal-2d-rectangle-domains track
 
 - Fixed double click track addition bug
 - Mask view boundaries so that when the tracks are too large
-to fit inside, they don't overflow outside of their view
+  to fit inside, they don't overflow outside of their view
 - Added favicon
-
 
 ## v0.8.10 - 2017-06-25
 
@@ -647,25 +657,25 @@ to fit inside, they don't overflow outside of their view
 
 - Lower the default resolution of lines for performance reasons
 - Added outsideLeft, outsideRight, outsideTop and outsideBottom
-as available axis positions
+  as available axis positions
 
 ## v0.6.8
 
 - Component sizes are adjsuted on component load
 - Genome position search box styling is set to not
-have a bottom margin
+  have a bottom margin
 
 ## v0.6.7
 
 - Unbounded functionality to increase the size of the layout if new tracks are
-added which increase its size
+  added which increase its size
 - Configurable track label background opacity
 - Fixed: vertical colorbar label mirroring
 
 ## v0.6.6
 
 - Bug fix: closing a track which had a value scale lock with another track now
-works
+  works
 
 ## v0.6.5
 
@@ -677,9 +687,8 @@ works
 
 - Added value scale locking
 - Fixed bug where newly added heatmaps didn't render (syncTrackObjects needs
-to call applyZoomTransform)
-- Fixed bug where new chromosome axis didn't appear after being added
-	- Had to call animate after the chromosome info was received
+  to call applyZoomTransform)
+- Fixed bug where new chromosome axis didn't appear after being added - Had to call animate after the chromosome info was received
 
 ## v0.6.3
 
@@ -717,11 +726,10 @@ to call applyZoomTransform)
 ## v0.5.14
 
 - Revert the initialXDomain changes Fritz introduced because they were causing
-issues with faithful reproduction of viewconfs
+  issues with faithful reproduction of viewconfs
 - Change 'tilesetInfo not loaded message' to 'loading...' until we either get
-an error or the tileset is loaded
+  an error or the tileset is loaded
 - Omit certain fields from JSON export (HiGlassComponenent.getViewsAsString)
-
 
 ## v0.5.12
 
@@ -734,7 +742,7 @@ an error or the tileset is loaded
 ## v0.5.10
 
 - Fix Chromosome2DAnnotations not being drawn by calling draw after the
-ChromosomeInfo is loaded
+  ChromosomeInfo is loaded
 - Zoom to the currently visible data
 - Use the minimum position to load data that is not located at the origin
 - Viewconf downloads work on Firefox
@@ -745,9 +753,8 @@ ChromosomeInfo is loaded
 - Fixed top and left axis not appearing bug
 - Fixed chromosome horizontal labels not appearing
 - Show minValue pixels by scaling from minValue to maxValue + minValue and
-adding minValue to each pixel
+  adding minValue to each pixel
 - Fix viewport projection error when new viewconfig is passed
-
 
 ## v0.5.9
 
@@ -773,11 +780,11 @@ adding minValue to each pixel
 
 - Add per-view `zoomFixed` settings
 - Added configurable viewport projection colors (projectionFillColor,
-projectionStrokeColor)
+  projectionStrokeColor)
 - Added an empty .npmignore to prevent it from excluding the dist/
-directory specified in the .gitignore
+  directory specified in the .gitignore
 - Enhance 2D annotations by supporting RGBA, fill and stroke-dependent coloring,
-and locus-wise min width / height definitions
+  and locus-wise min width / height definitions
 - Remove builds. Use NPM
 
 ## v0.5.4
@@ -786,7 +793,7 @@ and locus-wise min width / height definitions
 - Update existing tracks before adding new ones in syncTrackObjects
 - Removed the "Move up" menu item
 - Deep copy incoming viewconfs so that changing them outside of the component
-leads to an update
+  leads to an update
 - Added onLocationChanged event listener
 
 ## v0.5.3
@@ -796,20 +803,19 @@ leads to an update
 ## v0.5.2
 
 - Don't draw data that extends beyond the end of the assembly
-- Fixed bug where data was being hidden in empty (all 0) tiles
-	- Changed minVisibleValue and maxVisibleValue in TiledPixiTrack
+- Fixed bug where data was being hidden in empty (all 0) tiles - Changed minVisibleValue and maxVisibleValue in TiledPixiTrack
 - Label the horizontal and vertical line tracks by default
 
 ## v0.5.1
 
 - Configurable gene annotation colors
 - Added chromosome annotations tracks for programmatically addeable
-annotations
+  annotations
 - Fixed the 'Cannot read property 0 of undefined' bug when tileset info is
-inaccessible
+  inaccessible
 - Remove track resize handles when the component isn't editable
 - Fix bug associated with setting a new initial[X/Y]Domain where the
-cumulativeCenterOffset wasn't being reset
+  cumulativeCenterOffset wasn't being reset
 - Bug fix where if a view doesn't have a uid we should assign it one
 
 ## v0.5.0
@@ -843,11 +849,13 @@ cumulativeCenterOffset wasn't being reset
 ## v0.4.30
 
 - Added a minimum width to left-axis so that it doesn't only show the last two
-digits by default
+  digits by default
+
 * Added horizontal and vertical heatmaps
+
 - Styling changes for the Configure track controls
 - Fixed the bug with AddTrackMenu cancel button turning black by properly
-increasing the number of visible tilesets in TilesetFinder
+  increasing the number of visible tilesets in TilesetFinder
 - Added options to allow flipping horizontal and vertical charts
 - Fixed NaN prefix bug
 - Fixed invalid negative value attributes for <rect> bug
@@ -856,7 +864,7 @@ increasing the number of visible tilesets in TilesetFinder
 
 - Moved default heatmap information to lower right hand corner
 - Fixed a bug which distorted the view when initialized with an initial X
-scale and Y scale
+  scale and Y scale
 - Added white to red, white to green and white to blue scales
 - Added axes for the 1D tracks
 - Took the ID out of the view header
@@ -865,9 +873,9 @@ scale and Y scale
 ## v0.4.28
 
 - Fixed critical regression where track replacement wasn't working because
-newly created tracks didn't have their options set
+  newly created tracks didn't have their options set
 - Fixed a regression where track movement wasn't working because TiledPlot
-wasn't being updated
+  wasn't being updated
 - Increase the size of the tileset selector
 
 ## v0.4.27
@@ -888,7 +896,7 @@ wasn't being updated
 - Fractional zoom lock
 - Faster config menu loading
 - Faster track addition by limiting the udpates of TiledPlot (using
-shouldComponentUpdate)
+  shouldComponentUpdate)
 
 ## v0.4.21
 
@@ -898,7 +906,7 @@ shouldComponentUpdate)
 ## v0.4.20
 
 - Changed tile API location to use included server value rather than
-prepending '//'
+  prepending '//'
 
 ## v0.4.19
 
@@ -923,10 +931,11 @@ prepending '//'
 - Fritz's lazy animation
 - Fritz's public API
 - Minimum height for tracks can be specified in track type definition in
-config.js
+  config.js
 - New chromosome 2D grid (for hg19)
 - New chromosome 1D axis (for hg19)
 - New chromosome horizontal axis (for hg19)
 
 * larger change
+
 - minor change
