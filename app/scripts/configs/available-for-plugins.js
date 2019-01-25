@@ -4,7 +4,9 @@
 
 // Libraries
 import * as PIXI from 'pixi.js';
+
 import slugid from 'slugid';
+import { mix } from '../mixwith';
 
 // Tracks
 import Annotations2dTrack from '../Annotations2dTrack';
@@ -58,6 +60,8 @@ import * as configs from '.';
 
 const libraries = {
   PIXI, slugid,
+  PIXI,
+  mix,
 };
 
 const tracks = {

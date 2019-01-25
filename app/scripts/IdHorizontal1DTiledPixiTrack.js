@@ -1,3 +1,4 @@
+import * as PIXI from 'pixi.js';
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
@@ -52,7 +53,7 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     const graphics = tile.graphics;
 
     const {
-      tileX, tileY, tileWidth
+      tileX, tileWidth
     } = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
       tile.tileData.tilePos);
 

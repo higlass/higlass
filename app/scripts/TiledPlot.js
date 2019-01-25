@@ -369,6 +369,7 @@ class TiledPlot extends React.Component {
     track.name = tilesetInfo.name;
     track.maxWidth = tilesetInfo.max_width;
     track.transforms = tilesetInfo.transforms;
+    track.aggregationModes = tilesetInfo.aggregation_modes;
     track.header = tilesetInfo.header;
     track.binsPerDimension = tilesetInfo.bins_per_dimension;
     if (tilesetInfo.resolutions) {
@@ -742,14 +743,6 @@ class TiledPlot extends React.Component {
     });
   }
 
-  createOverlays(overlays) {
-    for (const trackType in overlays) {
-      for (let i = 0; i < tracks[trackType].length; i++) {
-        tracksAndLocations.push({ track: tracks[trackType][i], location: trackType });
-      }
-    }
-  }
-
   createTracksAndLocations() {
     const tracksAndLocations = [];
     const { tracks } = this.state;
@@ -974,11 +967,29 @@ class TiledPlot extends React.Component {
             orientationsAndPositions: overlayTrack.includes.map((trackUuid) => {
               // translate a trackUuid into that track's orientation
               const includedTrack = getTrackByUid(this.props.tracks, trackUuid);
+              const trackPos = includedTrack.position;
               if (!includedTrack) {
                 console.warn(`OverlayTrack included uid (${trackUuid}) not found in the track list`);
                 return null;
               }
-              const orientation = TRACKS_INFO_BY_TYPE[includedTrack.type].orientation;
+
+              let orientation;
+              if (trackPos === 'top' || trackPos === 'bottom') {
+                orientation = '1d-horizontal';
+              }
+
+              if (trackPos === 'left' || trackPos === 'right') {
+                orientation = '1d-vertical';
+              }
+
+              if (trackPos === 'center') {
+                orientation = '2d';
+              }
+
+              if (!orientation) {
+                console.warn('Only top, bottom, left, right, or center tracks can be overlaid at the moment');
+                return null;
+              }
 
               const positionedTrack = positionedTracks.filter(
                 track => track.track.uid === trackUuid
@@ -989,6 +1000,7 @@ class TiledPlot extends React.Component {
                 // an invalid uuid
                 return null;
               }
+
               const position = {
                 left: positionedTrack[0].left,
                 top: positionedTrack[0].top,
@@ -1520,9 +1532,6 @@ class TiledPlot extends React.Component {
     const defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype];
     const presentTracks = new Set(['top', 'left', 'right', 'center', 'bottom']
       .filter(x => (x in this.state.tracks && this.state.tracks[x].length)));
-
-    const numVertical = 0;
-    const numHorizontal = 0;
 
     const topAllowed = 'top' in defaultTracks;
     const leftAllowed = 'left' in defaultTracks;
