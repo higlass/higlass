@@ -11,6 +11,34 @@ class OverlayTrack extends PixiTrack {
     this.drawnRects = {};
   }
 
+  drawHorizontalOverlay(graphics, position, extent) {
+    const xPos = this.position[0]
+      + position.left
+      + this._xScale(extent[0]);
+    const yPos = this.position[1] + position.top;
+    const height = position.height;
+    const width = this._xScale(extent[1])
+      - xPos
+      + position.left
+      + this.position[0];
+
+    graphics.drawRect(xPos, yPos, width, height);
+  }
+
+  drawVerticalOverlay(graphics, position, extent) {
+    const xPos = this.position[0] + position.left;
+    const yPos = this.position[1]
+      + position.top
+      + this._yScale(extent.length === 4 ? extent[2] : extent[0]);
+    const width = position.width;
+    const height = this._yScale(extent.length === 4 ? extent[3] : extent[1])
+      - yPos
+      + position.top
+      + this.position[1];
+
+    graphics.drawRect(xPos, yPos, width, height);
+  }
+
   draw() {
     super.draw();
     const graphics = this.pMain;
@@ -21,38 +49,19 @@ class OverlayTrack extends PixiTrack {
     graphics.clear();
     graphics.beginFill(fill, this.options.fillOpacity || 0.3);
 
-    for (let i = 0; i < this.options.orientationsAndPositions.length; i++) {
-      const orientation = this.options.orientationsAndPositions[i].orientation;
-      const position = this.options.orientationsAndPositions[i].position;
-
-      if (orientation === '1d-horizontal' || orientation === '2d') {
-        const xPos = this.position[0]
-          + position.left
-          + this._xScale(this.options.extent[0][0]);
-        const yPos = this.position[1] + position.top;
-        const height = position.height;
-        const width = this._xScale(this.options.extent[0][1])
-          - xPos
-          + position.left
-          + this.position[0];
-
-        graphics.drawRect(xPos, yPos, width, height);
+    this.options.orientationsAndPositions.forEach((op) => {
+      if (op.orientation === '1d-horizontal' || op.orientation === '2d') {
+        this.options.extent.forEach(extent => this.drawHorizontalOverlay(
+          graphics, op.position, extent
+        ));
       }
 
-      if (orientation === '1d-vertical' || orientation === '2d') {
-        const xPos = this.position[0] + position.left;
-        const yPos = this.position[1]
-          + position.top
-          + this._yScale(this.options.extent[0][0]);
-        const width = position.width;
-        const height = this._yScale(this.options.extent[0][1])
-          - yPos
-          + position.top
-          + this.position[1];
-
-        graphics.drawRect(xPos, yPos, width, height);
+      if (op.orientation === '1d-vertical' || op.orientation === '2d') {
+        this.options.extent.forEach(extent => this.drawVerticalOverlay(
+          graphics, op.position, extent
+        ));
       }
-    }
+    });
   }
 
   zoomed(newXScale, newYScale) {
