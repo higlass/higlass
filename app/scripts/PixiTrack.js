@@ -298,7 +298,7 @@ class PixiTrack extends Track {
    */
   getLabelColor() {
     if (this.options.labelColor
-      && this.options.labelColor !== '[use-stroke]') {
+      && this.options.labelColor !== '[glyph-color]') {
       return this.options.labelColor;
     }
 

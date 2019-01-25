@@ -166,7 +166,7 @@ Options
 --------
 
 **axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
-
+**lineStrokeColor**: - A valid color (e.g. ``black``) or to track the color of the line use ``[glyph-color]``.
 **constIndicators**: Array of constant value indicators - A constant value indicator display a line for a constant value, e.g., a minimum or maximum value. This property is also available on other 1D tracks like ``Bar`` and ``Point`` tracks. See the following for an example:
 
 .. code-block:: javascript
@@ -190,6 +190,7 @@ Options
     }
   }
 
+
 .. _bar-track:
 
 Bar
@@ -207,6 +208,7 @@ Options
 --------
 
 **axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
+**barFillColor**: - A valid color (e.g. ``black``) or to track the color of the bars use ``[glyph-color]``.
 
 **Demos:**
 

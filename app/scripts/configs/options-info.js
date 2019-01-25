@@ -31,6 +31,10 @@ const AVAILABLE_COLORS = {
   white: { name: 'White', value: 'white' },
 };
 
+const SPECIAL_COLORS = {
+  use_stroke: { name: 'Glyph color', value: '[glyph-color]' },
+};
+
 const AVAILABLE_WIDTHS = sizesInPx([1, 2, 3, 5, 8, 13, 21]);
 const AVAILABLE_WIDTHS_AND_NONE = Object.assign(
   AVAILABLE_WIDTHS, { none: { name: 'none', value: 'none' } }

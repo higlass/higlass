@@ -546,7 +546,7 @@ export const TRACKS_INFO = [
     ],
     defaultOptions: {
       align: 'bottom',
-      labelColor: '[use-stroke]',
+      labelColor: '[glyph-color]',
       labelPosition: 'topLeft',
       axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
