@@ -81,6 +81,9 @@ const createApi = function api(context, pubSub) {
         console.warn('Not implemented yet!');
       },
 
+      /**
+       * Destroy HiGlass instance
+       */
       destroy() {
         destroy();
         ReactDOM.unmountComponentAtNode(self.topDiv.parentNode);
@@ -282,6 +285,7 @@ const createApi = function api(context, pubSub) {
        * Choose a theme.
        */
       setDarkTheme(darkTheme) {
+        console.warn('Please note that the dark mode is still in beta');
         setDarkTheme(!!darkTheme);
       },
 

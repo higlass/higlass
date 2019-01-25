@@ -19,6 +19,7 @@ import * as d3Selection from 'd3-selection';
 import * as d3Transition from 'd3-transition';
 import * as d3Zoom from 'd3-zoom';
 import { mix } from '../mixwith';
+import slugid from 'slugid';
 
 // Tracks
 import Annotations2dTrack from '../Annotations2dTrack';
@@ -87,6 +88,7 @@ const libraries = {
   d3Zoom,
   PIXI,
   mix,
+  PIXI, slugid,
 };
 
 const tracks = {
