@@ -146,20 +146,25 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const relX = absX - this.position[0];
     const relY = absY - this.position[1];
 
-    const data = this.getVisibleRectangleData(
-      relX - Math.ceil(this.dataLensSize / 2),
-      relY - Math.ceil(this.dataLensSize / 2),
-      this.dataLensSize,
-      this.dataLensSize
-    );
+    let data;
+    try {
+      data = this.getVisibleRectangleData(relX, relY, 1, 1).get(0, 0);
+    } catch (e) {
+      return;
+    }
     if (!data) return;
 
-    const dataLens = this.getVisibleRectangleData(
-      relX - Math.ceil(this.dataLensSize / 2),
-      relY - Math.ceil(this.dataLensSize / 2),
-      this.dataLensSize,
-      this.dataLensSize
-    );
+    let dataLens;
+    try {
+      dataLens = this.getVisibleRectangleData(
+        relX - Math.ceil(this.dataLensSize / 2),
+        relY - Math.ceil(this.dataLensSize / 2),
+        this.dataLensSize,
+        this.dataLensSize
+      );
+    } catch (e) {
+      // Nothing
+    }
 
     const dim = this.dataLensSize;
 
@@ -172,7 +177,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       );
     } catch (err) { /* Nothing */ }
 
-    if (!data.data.length || !toRgb) return;
+    if (!toRgb) return;
 
 
     const dataX = Math.round(this._xScale.invert(relX));
