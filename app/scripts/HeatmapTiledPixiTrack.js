@@ -210,7 +210,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       center,
       xRange,
       yRange,
-      rel: !!this.chromInfo
+      isGenomicCoords: !!this.chromInfo
     });
   }
 

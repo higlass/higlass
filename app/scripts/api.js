@@ -658,7 +658,7 @@ const createApi = function api(context, pubSub) {
        *    // Range of the y data or genomic position (as a BEDPE array)
        *    yRange,
        *    // If `true` `center`, `xRange`, and `yRange` are given in genomic positions
-       *    rel
+       *    isGenomicCoords
        *  }
        *
        * @param {string} event One of the events described below
