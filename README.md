@@ -89,7 +89,7 @@ const api = hglib.createHgComponent(
 * [HiGlass Manage](https://github.com/higlass/higlass-manage) - Easy to use interface for deploying a local HiGlass instance
 * [HiGlass Docker](https://github.com/higlass/higlass-docker) - Build an image containing all the components necessary to deploy HiGlass
 * [HiGlass Server](https://github.com/higlass/higlass-server) - Server component for serving multi-resolution data
-* [HiGlass Website](https://github.com/higlass/higlass-website) - The code for the web site hosted at http://higlass.io
+* [HiGlass App](https://github.com/higlass/higlass-app) - The code for the web application hosted at http://higlass.io
 
 ### License
 

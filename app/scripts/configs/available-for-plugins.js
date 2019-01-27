@@ -61,6 +61,7 @@ const libraries = {
   PIXI,
   mix,
   slugid,
+  PIXI
 };
 
 const tracks = {

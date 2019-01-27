@@ -27,4 +27,4 @@ package-lock.json
 webpack-stats.json
 dist
 lib/vendor
-app/test_*
+app/test*.html

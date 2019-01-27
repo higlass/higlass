@@ -640,21 +640,45 @@ Other Data (multivec)
 ---------------------
 
 Multivec files are datatype agnostic. For use with generic data, create a
-`segments` file containing the maximum value for each segment. A segment is an
-arbitrary set of discontinuous blocks that the data is partitioned into. If the
-data has no natural grouping, one segment can be used which contains the
-maximum x value in the dataset:
+`segments` file containing the length of each segment. A segment is an
+arbitrary set of discontinuous blocks that the data is partitioned into. In the
+case of genomics data, segments correspond to chromosomes. If the
+data has no natural grouping, it can all be lumped into one "segment"
+which is wide enough to accommodate all the data points. Below is an
+example of a dataset grouped into two "segments".
 
 .. code-block:: bash
 
     segment1    20000
+    segment2    40000
 
-The individual datapoints should then be formatted as follows:
+Data will be displayed as if the segments were laid out end to end:: 
 
 .. code-block:: bash
 
-    segment_name    start   end value
-    segment1    10  100 5
+    |---------------|------------------------------|
+         segment1               segment2
+
+The individual datapoints should then be formatted as in the block below. Each
+row in this file corresponds to a column in the displayed plot. Each ``value``
+is one of sections of the stacked bar plot or matrix that is rendered by the 
+multivec plot. 
+
+.. code-block:: bash
+
+    segment_name    start  end  value1  value2   value3
+    segment1            0 10000      1       2        1
+    segment2        20000 30000      1       1        1
+
+.. code-block:: bash
+
+             ______ 
+            |______|                 ______
+            |      |                |______|
+            |______|                |______|
+            |      |                |      |
+    |---------------|------------------------------|
+         segment1               segment2 
 
 This can be converted to a multivec file using the following command:
 
@@ -664,6 +688,10 @@ This can be converted to a multivec file using the following command:
         data.tsv \
         --chromsizes-file segments.tsv \
         --starting-resolution 1 
+
+This command can also take the parameter ``--row-infos-filename rows.txt`` to 
+describe, in human readable text, each row (e.g. cell types). The passed 
+file should have as many rows as there are rows in the multivec matrix.
 
 The resulting output file can be ingested using ``higlass-manage``:
 
