@@ -163,7 +163,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
       relY,
       dataX,
       dataY,
-      orientstion: '1d-horizontal'
+      orientation: '1d-horizontal'
     });
   }
 
