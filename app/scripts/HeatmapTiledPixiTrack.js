@@ -129,13 +129,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   /**
    * Mouse move and zoom handler. Is triggered on both events.
    *
-   * @param  {Number}  x  Relative X coordinate.
-   * @param  {Number}  y  Relative Y coordinate
+   * @param  {Number}  absX  Absolute X coordinate.
+   * @param  {Number}  absY  Absolute Y coordinate
    */
   mouseMoveZoomHandler(absX = this.mouseX, absY = this.mouseY) {
     if (
-      typeof x === 'undefined'
-      || typeof y === 'undefined'
+      typeof absX === 'undefined'
+      || typeof absY === 'undefined'
       || !this.areAllVisibleTilesLoaded()
     ) return;
 
