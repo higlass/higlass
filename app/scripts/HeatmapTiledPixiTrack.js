@@ -200,6 +200,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     this.onMouseMoveZoom({
+      trackId: this.id,
       data,
       absX,
       absY,

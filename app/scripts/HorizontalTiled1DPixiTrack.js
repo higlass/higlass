@@ -147,15 +147,29 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
       || !this.tilesetInfo
     ) return;
 
+    let dataPosX = 0;
+    let dataPosY = 0;
+    let orientation = '1d-horizontal';
+
+    if (this.isLeftModified) {
+      dataPosX = absY - this.position[1];
+      dataPosY = absX - this.position[0];
+      orientation = '1d-vertical';
+    } else {
+      dataPosX = absX - this.position[0];
+      dataPosY = absY - this.position[1];
+    }
+
     const relX = absX - this.position[0];
     const relY = absY - this.position[1];
-    const dataX = this._xScale.invert(relX);
-    const dataY = this._yScale.invert(relY);
+    const dataX = this._xScale.invert(dataPosX);
+    const dataY = this._yScale.invert(dataPosY);
 
-    const data = this.getDataAtPos(relX);
+    const data = this.getDataAtPos(dataPosX);
     if (!data) return;
 
     this.onMouseMoveZoom({
+      trackId: this.id,
       data,
       absX,
       absY,
@@ -163,7 +177,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
       relY,
       dataX,
       dataY,
-      orientation: '1d-horizontal'
+      orientation
     });
   }
 
