@@ -31,6 +31,7 @@
 - Fix #401
 - Fix #395
 - Fix #360
+- Support different aggregation modes (mean, min, max, std) for bigWig files
 
 ## v1.2.8
 
