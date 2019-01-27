@@ -17,6 +17,10 @@ class LeftTrackModifier {
 
     this.moveToOrigin.rotation = Math.PI / 2;
 
+    // Indicate that the track has been flipped. This is generally the same as
+    // `originalTrack.flipText` but `flipText` is semantically not that clear
+    originalTrack.isLeftModified = true;
+
     // If the original track has text labels, we need to flip
     // them horizontally, otherwise they'll be mirrored.
     originalTrack.flipText = true;
