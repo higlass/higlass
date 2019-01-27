@@ -4,7 +4,8 @@ import { scaleLinear } from 'd3-scale';
 import { isWithin } from './utils';
 
 class Track {
-  constructor({ pubSub }) {
+  constructor({ id, pubSub }) {
+    this.id = id;
     this._xScale = scaleLinear();
     this._yScale = scaleLinear();
 
@@ -36,13 +37,25 @@ class Track {
    * @return {Boolean}  If `true` location is within the track.
    */
   isWithin(x, y) {
+    let xx = x;
+    let yy = y;
+    let left = this.position[0];
+    let top = this.position[1];
+
+    if (this.isLeftModified) {
+      xx = y;
+      yy = x;
+      left = this.position[1];
+      top = this.position[0];
+    }
+
     return isWithin(
-      x,
-      y,
-      this.position[0],
-      this.dimensions[0] + this.position[0],
-      this.position[1],
-      this.dimensions[1] + this.position[1]
+      xx,
+      yy,
+      left,
+      this.dimensions[0] + left,
+      top,
+      this.dimensions[1] + top
     );
   }
 

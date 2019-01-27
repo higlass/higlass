@@ -1235,6 +1235,7 @@ class TrackRenderer extends React.Component {
 
     // To simplify the context creation via ES6 object shortcuts.
     const context = {
+      id: track.uid,
       pubSub: this.props.pubSub,
       scene: this.pStage,
       dataConfig,
