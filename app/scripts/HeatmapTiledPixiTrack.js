@@ -202,7 +202,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       relY,
       dataX,
       dataY,
-      orientstion: '2d',
+      orientation: '2d',
       // Specific to 2D matrices
       dataLens,
       dim,
