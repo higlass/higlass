@@ -53,7 +53,8 @@ const viewConf = {
       includes: ['chroms-top', 'chroms-left', 'genes-top', 'genes-left'],
       options: {
         extent: [
-          [1000000000, 1100000000]
+          [1000000000, 1100000000],
+          [1400000000, 1500000000, 1600000000, 1700000000]
         ]
       }
     }]

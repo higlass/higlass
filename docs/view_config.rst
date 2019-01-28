@@ -268,7 +268,13 @@ overlay tracks that is supported is chromosome-grid.
 
 Each set of tracks is placed within a view under overlays. An overlay track
 needs to contain an includes property. Otherwise the options depend on the type
-of overlay
+of overlay.
+
+The extent option for overlay-annotation tracks is an array of tuples representing
+the start and end of each section that should be overlaid. The tuples can be either
+2-tuple or 4-tuple. 2-tuple indicates that horizontal and vertical start and end
+coordinates are the same, 4-tuple indicates that horizontal and vertical start and
+end coordinates are different: [start, end] vs [x-start, x-end, y-start, y-end].
 
 .. code-block:: javascript
 
@@ -282,8 +288,10 @@ of overlay
               // Default definitions for annotations
               "options": {
                 "extent": [
-                  [1000000000, 1100000000]
-                ]
+                  [1000000000, 1100000000],
+                  [1200000000, 1300000000, 1400000, 1500000]
+                ],
+                "fillColor": "blue"
               }
             },
             {
