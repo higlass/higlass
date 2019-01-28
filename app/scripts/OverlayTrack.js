@@ -12,6 +12,8 @@ class OverlayTrack extends PixiTrack {
   }
 
   drawHorizontalOverlay(graphics, position, extent) {
+    if (extent.length < 2) return;
+
     const xPos = this.position[0]
       + position.left
       + this._xScale(extent[0]);
@@ -26,12 +28,14 @@ class OverlayTrack extends PixiTrack {
   }
 
   drawVerticalOverlay(graphics, position, extent) {
+    if (extent.length < 2) return;
+
     const xPos = this.position[0] + position.left;
     const yPos = this.position[1]
       + position.top
-      + this._yScale(extent.length === 4 ? extent[2] : extent[0]);
+      + this._yScale(extent.length >= 4 ? extent[2] : extent[0]);
     const width = position.width;
-    const height = this._yScale(extent.length === 4 ? extent[3] : extent[1])
+    const height = this._yScale(extent.length >= 4 ? extent[3] : extent[1])
       - yPos
       + position.top
       + this.position[1];
