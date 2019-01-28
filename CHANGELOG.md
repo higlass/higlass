@@ -1,6 +1,8 @@
 ## v1.3.1
 
 - Add `constIndicators` as an option to 1D tracks for displaying a visual indicator (e.g., a line) at a constant value.
+- Add new public event `cursorLocation`. See [`docs/examples/apis/cursor-location.html`](docs/examples/apis/cursor-location.html) for an example.
+- Extend `mouseMoveZoom` event to support 1D data tracks.
 - Expose D3 libraries to plugin tracks
 
 ## v1.3.0
@@ -30,6 +32,7 @@
 - Fix #401
 - Fix #395
 - Fix #360
+- Support different aggregation modes (mean, min, max, std) for bigWig files
 
 ## v1.2.8
 
