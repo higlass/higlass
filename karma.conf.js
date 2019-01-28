@@ -17,6 +17,7 @@ module.exports = (config) => {
       'build/hglib.css',
       'test/**/*.+(js|jsx)',
       // 'test/TrackLabelsTest.jsx',
+      // 'test/PluginTrackTests.js',
       // 'test/AxisTests.js',
       // 'test/SVGExportTest.js',
       // 'test/AxisTests.js', // Passes when run in isolation, but fails as part of suite.

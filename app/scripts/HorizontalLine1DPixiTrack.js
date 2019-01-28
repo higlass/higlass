@@ -23,32 +23,10 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   }
 
   getMouseOverHtml(trackX) {
-    if (!this.tilesetInfo || !this.options.showTooltip) return '';
-
-    const zoomLevel = this.calculateZoomLevel();
-    const tileWidth = tileProxy.calculateTileWidth(
-      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
-    );
-
-    // the position of the tile containing the query position
-    const tilePos = this._xScale.invert(trackX) / tileWidth;
-    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
-
-    const fetchedTile = this.fetchedTiles[tileId];
-    if (!fetchedTile) return '';
-
-    const posInTileX = fetchedTile.tileData.dense.length * (tilePos - Math.floor(tilePos));
-
-    let value = '';
+    const value = this.getDataAtPos(trackX);
     let textValue = '';
 
-    if (fetchedTile) {
-      const index = Math.floor(posInTileX);
-      value = fetchedTile.tileData.dense[index];
-      textValue = format('.3f')(value);
-    } else {
-      return '';
-    }
+    if (value) textValue = format('.3f')(value);
 
     const graphics = this.pMouseOver;
     const colorHex = 0;
