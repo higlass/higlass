@@ -36,8 +36,10 @@ npm install
 npm run start
 ```
 
-This starts a server in development mode at http://localhost:8080/.
-A [full list](http://localhost:8080/examples.html) of examples is available.
+This starts a server in development mode at http://localhost:8080/. 
+
+Once started, a list of the examples can be found at [http://localhost:8080/examples.html](http://localhost:8080/examples.html).
+Template viewconfs located at `/docs/examples/viewconfs` can viewed directly at urls such as  [http://localhost:8080/apis/svg.html?/viewconfs/overlay-tracks.json](http://localhost:8080/apis/svg.html?/viewconfs/overlay-tracks.json).
 
 ### Tests
 

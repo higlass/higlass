@@ -140,6 +140,47 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     }
   }
 
+  mouseMoveZoomHandler(absX = this.mouseX, absY = this.mouseY) {
+    if (
+      typeof absX === 'undefined'
+      || !this.areAllVisibleTilesLoaded()
+      || !this.tilesetInfo
+    ) return;
+
+    let dataPosX = 0;
+    let dataPosY = 0;
+    let orientation = '1d-horizontal';
+
+    if (this.isLeftModified) {
+      dataPosX = absY - this.position[1];
+      dataPosY = absX - this.position[0];
+      orientation = '1d-vertical';
+    } else {
+      dataPosX = absX - this.position[0];
+      dataPosY = absY - this.position[1];
+    }
+
+    const relX = absX - this.position[0];
+    const relY = absY - this.position[1];
+    const dataX = this._xScale.invert(dataPosX);
+    const dataY = this._yScale.invert(dataPosY);
+
+    const data = this.getDataAtPos(dataPosX);
+    if (!data) return;
+
+    this.onMouseMoveZoom({
+      trackId: this.id,
+      data,
+      absX,
+      absY,
+      relX,
+      relY,
+      dataX,
+      dataY,
+      orientation
+    });
+  }
+
   drawConstIndicator() {
     this.constIndicator.clear();
     while (this.constIndicator.children[0]) {

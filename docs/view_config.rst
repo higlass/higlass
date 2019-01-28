@@ -147,6 +147,36 @@ assigned values of ``[0,1]]``.
         ]
     }
 
+trackSourceServers
+^^^^^^^^^^^^^^^^^^
+
+The field `trackSourceServers` at the root level of the viewconf tells higlass
+where it can find tracks to load. If you have a local instance running, then
+`http://localhost:8989/api/v1` should be included. Our public instance at
+`http://higlass.io` also provides access to a number of public datasets.
+
+.. code-block:: javascript
+
+    {
+      "trackSourceServers": [
+        "http://higlass.io/api/v1",
+        "http://localhost:8989/api/v1"
+      ],
+    }
+
+exportViewUrl
+^^^^^^^^^^^^^
+
+The ``exportViewUrl`` field in the viewconf specifies which server should be used
+to store exported viewconfs. This server stores exported viewconfs in its
+database, assigns them a uid, and makes them accessible through its API at
+``/api/v1/viewconfs/uid/``.
+
+.. code-block:: javascript
+
+    {
+        "exportViewUrl": "/api/v1/viewconfs",
+    }
 
 Tracks
 ======

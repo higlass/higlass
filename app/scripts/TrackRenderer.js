@@ -36,7 +36,7 @@ import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
 
 import SquareMarkersTrack from './SquareMarkersTrack';
 import Chromosome2DLabels from './Chromosome2DLabels';
-import Chromosome2DGrid from './Chromosome2DGrid';
+import ChromosomeGrid from './ChromosomeGrid';
 import Chromosome2DAnnotations from './Chromosome2DAnnotations';
 import HorizontalChromosomeLabels from './HorizontalChromosomeLabels';
 
@@ -1235,6 +1235,7 @@ class TrackRenderer extends React.Component {
 
     // To simplify the context creation via ES6 object shortcuts.
     const context = {
+      id: track.uid,
       pubSub: this.props.pubSub,
       scene: this.pStage,
       dataConfig,
@@ -1423,8 +1424,16 @@ class TrackRenderer extends React.Component {
       case '2d-chromosome-labels':
         return new Chromosome2DLabels(context, options);
 
+      case 'horizontal-chromosome-grid':
+        context.orientation = '1d-horizontal';
+        return new ChromosomeGrid(context, options);
+
+      case 'vertical-chromosome-grid':
+        context.orientation = '1d-vertical';
+        return new ChromosomeGrid(context, options);
+
       case '2d-chromosome-grid':
-        return new Chromosome2DGrid(context, options);
+        return new ChromosomeGrid(context, options);
 
       case 'horizontal-chromosome-labels':
         // chromInfoPath is passed in for backwards compatibility
@@ -1474,6 +1483,10 @@ class TrackRenderer extends React.Component {
 
       case 'overlay-track':
         return new OverlayTrack(context, options);
+
+      case 'overlay-chromosome-grid-track':
+        context.isOverlay = true;
+        return new ChromosomeGrid(context, options);
 
       case 'horizontal-rule':
         return new HorizontalRule(context, options);
