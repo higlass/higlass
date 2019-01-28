@@ -987,7 +987,7 @@ class HiGlassComponent extends React.Component {
   }
 
   createPNGBlobPromise() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       // It would seem easier to call canvas.toDataURL()...
       // Except that with webgl context, it swaps buffers after drawing
       // and you don't have direct access to what is on-screen.
