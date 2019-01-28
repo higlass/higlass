@@ -68,7 +68,7 @@ describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
 
-  jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
   describe('API tests', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
