@@ -53,19 +53,21 @@ class OverlayTrack extends PixiTrack {
     graphics.clear();
     graphics.beginFill(fill, this.options.fillOpacity || 0.3);
 
-    this.options.orientationsAndPositions.forEach((op) => {
-      if (op.orientation === '1d-horizontal' || op.orientation === '2d') {
-        this.options.extent.forEach(extent => this.drawHorizontalOverlay(
-          graphics, op.position, extent
-        ));
-      }
+    if (Array.isArray(this.options.extent)) {
+      this.options.orientationsAndPositions.forEach((op) => {
+        if (op.orientation === '1d-horizontal' || op.orientation === '2d') {
+          this.options.extent.forEach(extent => this.drawHorizontalOverlay(
+            graphics, op.position, extent
+          ));
+        }
 
-      if (op.orientation === '1d-vertical' || op.orientation === '2d') {
-        this.options.extent.forEach(extent => this.drawVerticalOverlay(
-          graphics, op.position, extent
-        ));
-      }
-    });
+        if (op.orientation === '1d-vertical' || op.orientation === '2d') {
+          this.options.extent.forEach(extent => this.drawVerticalOverlay(
+            graphics, op.position, extent
+          ));
+        }
+      });
+    }
   }
 
   zoomed(newXScale, newYScale) {
