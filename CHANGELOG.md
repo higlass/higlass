@@ -1,6 +1,7 @@
 ## v1.3.1
 
 - Add `constIndicators` as an option to 1D tracks for displaying a visual indicator (e.g., a line) at a constant value.
+- Expose D3 libraries to plugin tracks
 
 ## v1.3.0
 

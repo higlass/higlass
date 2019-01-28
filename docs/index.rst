@@ -20,7 +20,7 @@ library that displays heatmaps, tracks, etc. In a sense, this is the meat of
 the application. The vast majority of the updates are on this component.
 
 .. |higlass-client| replace:: **higlass-client**
-.. _higlass-client: https://github.com/higlass/higlass 
+.. _higlass-client: https://github.com/higlass/higlass
 
 |higlass-website|_  - This is the
 website that embeds the higlass-client. It can contain multiple higlass clients
@@ -62,7 +62,7 @@ combinations of data.
     :height: 72px
     :align: center
     :figwidth: 100px
-    
+
     Bed-like intervals
 
 .. figure:: img/gene-annotations-track-thumb.png
@@ -128,14 +128,14 @@ different file formats.
 .. figure:: img/higlass-heatmap-screenshot.png
     :align: right
     :figwidth: 300px
-    
+
     A screenshot of HiGlass displaying a Hi-C contact matrix along with tracks
     for gene annotations chromosome labels.
 
 .. figure:: img/higlass-dual-genome-browser-screenshot.png
     :align: right
     :figwidth: 300px
-    
+
     A screenshot of HiGlass displaying a context-detail type view of two
     regions of the mouse genome. The locations of the two detail regions on the
     bottom are highlighted in the context view on top.
@@ -171,8 +171,9 @@ crucial are listed below.
     jupyter
     data_preparation
     track_types
+    plugin_tracks
     views
     higlass_server
     higlass_docker
     view_config
-    developer 
+    developer
