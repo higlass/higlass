@@ -60,7 +60,7 @@ import * as configs from '.';
 const libraries = {
   PIXI,
   mix,
-  slugid,
+  slugid
 };
 
 const tracks = {
