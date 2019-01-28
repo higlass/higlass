@@ -1,6 +1,7 @@
 ## v1.3.1
 
 - Add `constIndicators` as an option to 1D tracks for displaying a visual indicator (e.g., a line) at a constant value.
+- Added `[glyph-color]` as the default option for line and bar tracks
 - Add new public event `cursorLocation`. See [`docs/examples/apis/cursor-location.html`](docs/examples/apis/cursor-location.html) for an example.
 - Extend `mouseMoveZoom` event to support 1D data tracks.
 - Expose D3 libraries to plugin tracks

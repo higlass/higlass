@@ -4,6 +4,7 @@
 
 // Libraries
 import * as PIXI from 'pixi.js';
+
 import * as d3Array from 'd3-array';
 import * as d3Axis from 'd3-axis';
 import * as d3Brush from 'd3-brush';
@@ -18,6 +19,7 @@ import * as d3Scale from 'd3-scale';
 import * as d3Selection from 'd3-selection';
 import * as d3Transition from 'd3-transition';
 import * as d3Zoom from 'd3-zoom';
+
 import slugid from 'slugid';
 import { mix } from '../mixwith';
 
