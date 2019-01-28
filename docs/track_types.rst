@@ -167,6 +167,29 @@ Options
 
 **axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
 
+**constIndicators**: Array of constant value indicators - A constant value indicator display a line for a constant value, e.g., a minimum or maximum value. This property is also available on other 1D tracks like ``Bar`` and ``Point`` tracks. See the following for an example:
+
+.. code-block:: javascript
+
+  {
+    type: 'horizontal-line',
+    ...
+    options: {
+      constIndicators: [
+        {
+          color: '#000000',
+          opacity: 0.33,
+          label: 'Max',
+          labelPosition: 'leftBottom',
+          labelColor: '#000000',
+          labelOpacity: 0.25,
+          value: 60000
+        },
+      ],
+      ...
+    }
+  }
+
 .. _bar-track:
 
 Bar

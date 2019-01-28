@@ -502,9 +502,9 @@ class GenomePositionSearchBox extends React.Component {
     for (let i = 0; i < valueParts.length; i++) {
       if (valueParts[i].length === 0) { continue; }
 
-      const [chr, pos, retPos] = this.searchField.parsePosition(valueParts[i]);
+      const retPos = this.searchField.parsePosition(valueParts[i])[2];
 
-      if (retPos === null || isNaN(retPos)) {
+      if (retPos === null || Number.isNaN(+retPos)) {
         // not a chromsome position, let's see if it's a gene name
         const url = `${this.state.autocompleteServer}/suggest/?d=${this.state.autocompleteId}&ac=${valueParts[i].toLowerCase()}`;
         requests.push(tileProxy.json(url, toVoid, this.props.pubSub));
@@ -541,7 +541,9 @@ class GenomePositionSearchBox extends React.Component {
       const searchFieldValue = this.positionText;
 
       if (this.searchField !== null) {
-        let [range1, range2] = this.searchField.searchPosition(searchFieldValue);
+        const rangePair = this.searchField.searchPosition(searchFieldValue);
+        const range1 = rangePair[0];
+        let range2 = rangePair[1];
 
         if (!range1) {
           this.setPositionText(this.origPositionText);
@@ -549,8 +551,8 @@ class GenomePositionSearchBox extends React.Component {
         }
 
         if (
-          (range1 && (isNaN(range1[0]) || isNaN(range1[1])))
-          || (range2 && (isNaN(range2[0]) || isNaN(range2[1])))) {
+          (range1 && (Number.isNaN(+range1[0]) || Number.isNaN(+range1[1])))
+          || (range2 && (Number.isNaN(+range2[0]) || Number.isNaN(+range2[1])))) {
           return;
         }
 
@@ -642,18 +644,16 @@ class GenomePositionSearchBox extends React.Component {
 
   handleRenderMenu(items) {
     return (
-      <PopupMenu
-        children={items}
-      >
+      <PopupMenu>
         <div
-          children={items}
           style={{
             left: this.menuPosition.left,
             top: this.menuPosition.top,
           }}
           styleName="styles.genome-position-search-bar-suggestions"
-        />
-
+        >
+          {items}
+        </div>
       </PopupMenu>
     );
   }
@@ -734,7 +734,9 @@ class GenomePositionSearchBox extends React.Component {
               key={item.refseqid}
               id={item.refseqid}
               style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
-            >{item.geneName}</div>
+            >
+              {item.geneName}
+            </div>
           )}
           renderMenu={this.handleRenderMenu.bind(this)}
           value={this.positionText}
@@ -744,6 +746,7 @@ class GenomePositionSearchBox extends React.Component {
         <button
           onClick={this.buttonClick.bind(this)}
           styleName={classNameButton}
+          type="button"
         >
           <Glyphicon glyph="search" />
         </button>

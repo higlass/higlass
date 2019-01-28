@@ -1150,6 +1150,24 @@ export const OPTIONS_INFO = {
     },
   },
 
+  aggregationMode: {
+    name: 'Aggregation Mode',
+    inlineOptions: {},
+    generateOptions: (track) => {
+      const inlineOptions = [];
+
+      if (track.aggregationModes) {
+        Object.values(track.aggregationModes).forEach(({ name, value }) => {
+          inlineOptions.push({ name, value });
+        });
+      } else {
+        inlineOptions.push({ name: 'Default', value: 'default' });
+      }
+
+      return inlineOptions;
+    },
+  },
+
   maxZoom: {
     name: 'Zoom limit',
     inlineOptions: {

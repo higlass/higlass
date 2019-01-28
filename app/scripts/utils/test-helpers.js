@@ -1,4 +1,6 @@
-import {
+// In this project, these methods are only used in tests,
+// but plugin tracks also make use of them... so not really extraneous.
+import { // eslint-disable-line import/no-extraneous-dependencies
   mount
 } from 'enzyme';
 
@@ -85,33 +87,6 @@ export const waitForJsonComplete = (finished) => {
   }
 };
 
-export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
-  /**
-     * Wait until all of the tiles in the HiGlassComponent are loaded
-     * until calling the callback
-     *
-     * Arguments
-     * ---------
-     *  hgc: Enzyme wrapper for a HiGlassComponent
-     *      The componentthat we're waiting on
-     *  tilesLoadedCallback: function
-     *      The callback to call whenever all of the tiles
-     *      have been loaded.
-     * Returns
-     * -------
-     *  Nothing
-     */
-  // console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
-  if (isWaitingOnTiles(hgc)) {
-    setTimeout(() => {
-      waitForTilesLoaded(hgc, tilesLoadedCallback);
-    }, TILE_LOADING_CHECK_INTERVAL);
-  } else {
-    // console.log('finished');
-    tilesLoadedCallback();
-  }
-};
-
 /**
  * Check if a HiGlassComponent is still waiting on tiles from a remote
  * server.
@@ -151,6 +126,33 @@ export const isWaitingOnTiles = (hgc) => {
   return false;
 };
 
+export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
+  /**
+     * Wait until all of the tiles in the HiGlassComponent are loaded
+     * until calling the callback
+     *
+     * Arguments
+     * ---------
+     *  hgc: Enzyme wrapper for a HiGlassComponent
+     *      The componentthat we're waiting on
+     *  tilesLoadedCallback: function
+     *      The callback to call whenever all of the tiles
+     *      have been loaded.
+     * Returns
+     * -------
+     *  Nothing
+     */
+  // console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
+  if (isWaitingOnTiles(hgc)) {
+    setTimeout(() => {
+      waitForTilesLoaded(hgc, tilesLoadedCallback);
+    }, TILE_LOADING_CHECK_INTERVAL);
+  } else {
+    // console.log('finished');
+    tilesLoadedCallback();
+  }
+};
+
 /**
  * Mount a new HiGlassComponent and unmount the previously visible one.
  *
@@ -171,6 +173,9 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
 
   const style = (options && options.style) || 'width:800px; background-color: lightgreen;';
   const bounded = (options && options.bounded) || false;
+
+  // console.log('check:', options && options.style)
+  // console.log('style:', style, "options:", options, "style", options.style);
 
   const div = global.document.createElement('div');
   global.document.body.appendChild(div);

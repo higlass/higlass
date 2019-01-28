@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
@@ -37,7 +36,7 @@ import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
 
 import SquareMarkersTrack from './SquareMarkersTrack';
 import Chromosome2DLabels from './Chromosome2DLabels';
-import Chromosome2DGrid from './Chromosome2DGrid';
+import ChromosomeGrid from './ChromosomeGrid';
 import Chromosome2DAnnotations from './Chromosome2DAnnotations';
 import HorizontalChromosomeLabels from './HorizontalChromosomeLabels';
 
@@ -1184,7 +1183,7 @@ class TrackRenderer extends React.Component {
             definition: track,
           };
           try {
-            return new pluginTrack.track(
+            return new pluginTrack.track( // eslint-disable-line new-cap
               AVAILABLE_FOR_PLUGINS,
               context,
               track.options,
@@ -1224,8 +1223,19 @@ class TrackRenderer extends React.Component {
       };
     }
 
+    if (track.fileUrl) {
+      dataConfig.fileUrl = track.fileUrl;
+
+      if (!track.filetype) {
+        console.warn('fileUrl present without fileType:', track);
+      } else {
+        dataConfig.filetype = track.filetype;
+      }
+    }
+
     // To simplify the context creation via ES6 object shortcuts.
     const context = {
+      id: track.uid,
       pubSub: this.props.pubSub,
       scene: this.pStage,
       dataConfig,
@@ -1243,6 +1253,16 @@ class TrackRenderer extends React.Component {
       onMouseMoveZoom: this.props.onMouseMoveZoom,
       chromInfoPath: track.chromInfoPath,
     };
+
+    // for horizontal and vertical rules
+    if (track.y) {
+      context.yPosition = track.y;
+    }
+
+    if (track.x) {
+      context.xPosition = track.x;
+    }
+
     const options = track.options;
 
     switch (track.type) {
@@ -1404,8 +1424,16 @@ class TrackRenderer extends React.Component {
       case '2d-chromosome-labels':
         return new Chromosome2DLabels(context, options);
 
+      case 'horizontal-chromosome-grid':
+        context.orientation = '1d-horizontal';
+        return new ChromosomeGrid(context, options);
+
+      case 'vertical-chromosome-grid':
+        context.orientation = '1d-vertical';
+        return new ChromosomeGrid(context, options);
+
       case '2d-chromosome-grid':
-        return new Chromosome2DGrid(context, options);
+        return new ChromosomeGrid(context, options);
 
       case 'horizontal-chromosome-labels':
         // chromInfoPath is passed in for backwards compatibility
@@ -1456,6 +1484,10 @@ class TrackRenderer extends React.Component {
       case 'overlay-track':
         return new OverlayTrack(context, options);
 
+      case 'overlay-chromosome-grid-track':
+        context.isOverlay = true;
+        return new ChromosomeGrid(context, options);
+
       case 'horizontal-rule':
         return new HorizontalRule(context, options);
 
@@ -1485,7 +1517,7 @@ class TrackRenderer extends React.Component {
           context.baseEl = this.baseEl;
           context.definition = track;
           try {
-            return new pluginTrack.track(
+            return new pluginTrack.track( // eslint-disable-line new-cap
               AVAILABLE_FOR_PLUGINS,
               context,
               options

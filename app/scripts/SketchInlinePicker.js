@@ -1,4 +1,4 @@
-import { rgb } from 'd3-color';
+import { rgb as d3rgb } from 'd3-color';
 import React from 'react';
 import reactCSS from 'reactcss';
 import { SketchPicker } from 'react-color';
@@ -7,7 +7,7 @@ class SketchInlinePicker extends React.Component {
   constructor(props) {
     super(props);
 
-    const startColor = rgb(props.color);
+    const startColor = d3rgb(props.color);
 
     this.state = {
       displayColorPicker: false,
@@ -21,7 +21,7 @@ class SketchInlinePicker extends React.Component {
   }
 
   handleClick() {
-    this.setState({ displayColorPicker: !this.state.displayColorPicker });
+    this.setState(prevState => ({ displayColorPicker: !prevState.displayColorPicker }));
   }
 
   handleClose() {

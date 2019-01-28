@@ -36,8 +36,10 @@ npm install
 npm run start
 ```
 
-Many examples are available, but http://localhost:8080/svg is useful during development:
-It renders an SVG below the interactive visualization so it's easy to spot differences.
+This starts a server in development mode at http://localhost:8080/. 
+
+Once started, a list of the examples can be found at [http://localhost:8080/examples.html](http://localhost:8080/examples.html).
+Template viewconfs located at `/docs/examples/viewconfs` can viewed directly at urls such as  [http://localhost:8080/apis/svg.html?/viewconfs/overlay-tracks.json](http://localhost:8080/apis/svg.html?/viewconfs/overlay-tracks.json).
 
 ### Tests
 
@@ -84,14 +86,13 @@ const api = hglib.createHgComponent(
 ```
 ### Related
 
-[![diagram of related tools](https://docs.google.com/drawings/d/e/2PACX-1vSCiCzfQ8FEyHPFSq7jJD6XmzC760xH1Zr4FIcCMzFmqAlrmYEBMId8gM42uz0okmvuEaxetyPPZ9VG/pub?w=960&h=720)](https://docs.google.com/drawings/d/1Xedi5ZRtbRdt2g20qpl_lWs4BMqc2DKZ2ZOoJvpHw9U/edit)
+[![diagram of related tools](https://docs.google.com/drawings/d/e/2PACX-1vSCiCzfQ8FEyHPFSq7jJD6XmzC760xH1Zr4FIcCMzFmqAlrmYEBMId8gM42uz0okmvuEaxetyPPZ9VG/pub?w=600&h=450)](https://docs.google.com/drawings/d/1Xedi5ZRtbRdt2g20qpl_lWs4BMqc2DKZ2ZOoJvpHw9U/edit)
 
 * [HiGlass Manage](https://github.com/higlass/higlass-manage) - Easy to use interface for deploying a local HiGlass instance
 * [HiGlass Docker](https://github.com/higlass/higlass-docker) - Build an image containing all the components necessary to deploy HiGlass
 * [HiGlass Server](https://github.com/higlass/higlass-server) - Server component for serving multi-resolution data
-* [HiGlass Website](https://github.com/higlass/higlass-website) - The code for the web site hosted at http://higlass.io
+* [HiGlass App](https://github.com/higlass/higlass-app) - The code for the web application hosted at http://higlass.io
 
 ### License
 
 HiGlass is provided under the MIT License.
-
