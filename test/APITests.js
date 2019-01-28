@@ -226,6 +226,10 @@ describe('API Tests', () => {
     });
 
     it('APIs are independent', (done) => {
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false, bounded: true }
+      );
+
       done();
       /* Turning this test off because it periodically
        * and inexplicablye fails
