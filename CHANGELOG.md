@@ -2,6 +2,11 @@
 
 - Add `constIndicators` as an option to 1D tracks for displaying a visual indicator (e.g., a line) at a constant value.
 - Added `[glyph-color]` as the default option for line and bar tracks
+- Add new public event `cursorLocation`. See [`docs/examples/apis/cursor-location.html`](docs/examples/apis/cursor-location.html) for an example.
+- Extend `mouseMoveZoom` event to support 1D data tracks.
+- Expose D3 libraries to plugin tracks
+- Overlay tracks now properly allow for extent to include multiple ranges.
+- Overlay tracks can now optionally have extent ranges configured as a 4-tuple, separating x ranges from y ranges
 
 ## v1.3.0
 
@@ -30,6 +35,7 @@
 - Fix #401
 - Fix #395
 - Fix #360
+- Support different aggregation modes (mean, min, max, std) for bigWig files
 
 ## v1.2.8
 

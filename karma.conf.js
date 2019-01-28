@@ -3,6 +3,12 @@ require('babel-polyfill'); // eslint-disable-line import/no-extraneous-dependenc
 
 module.exports = (config) => {
   config.set({
+    /** * maximum number of tries a browser will attempt in the case
+     * of a disconnection */
+    browserDisconnectTolerance: 2,
+    /** * How long will Karma wait for a message from a browser before
+     * disconnecting from it (in ms). */
+    browserNoActivityTimeout: 50000,
     basePath: '',
     frameworks: ['jasmine'],
 
@@ -17,6 +23,7 @@ module.exports = (config) => {
       'build/hglib.css',
       'test/**/*.+(js|jsx)',
       // 'test/TrackLabelsTest.jsx',
+      // 'test/PluginTrackTests.js',
       // 'test/AxisTests.js',
       // 'test/SVGExportTest.js',
       // 'test/AxisTests.js', // Passes when run in isolation, but fails as part of suite.

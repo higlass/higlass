@@ -957,9 +957,9 @@ class HiGlassComponent extends React.Component {
 
       for (const trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
         if (trackDefObject.trackObject.exportSVG) {
-          const trackSVG = trackDefObject.trackObject.exportSVG()[0];
+          const trackSVG = trackDefObject.trackObject.exportSVG();
 
-          svg.appendChild(trackSVG);
+          if (trackSVG) svg.appendChild(trackSVG[0]);
         }
       }
     }
@@ -987,7 +987,7 @@ class HiGlassComponent extends React.Component {
   }
 
   createPNGBlobPromise() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       // It would seem easier to call canvas.toDataURL()...
       // Except that with webgl context, it swaps buffers after drawing
       // and you don't have direct access to what is on-screen.
@@ -2209,11 +2209,11 @@ class HiGlassComponent extends React.Component {
 
     const MARGIN_HEIGHT = this.isEditable() ? 10 : 0;
 
+    totalTrackHeight += MARGIN_HEIGHT;
+    const rowHeight = this.state.rowHeight + MARGIN_HEIGHT;
+
     if (!this.props.options.bounded) {
-      view.layout.h = Math.ceil(
-        (totalTrackHeight + MARGIN_HEIGHT)
-        / (this.state.rowHeight + MARGIN_HEIGHT),
-      );
+      view.layout.h = Math.ceil(totalTrackHeight / rowHeight);
     }
   }
 
@@ -3216,8 +3216,10 @@ class HiGlassComponent extends React.Component {
   mouseMoveHandler(e) {
     if (!this.topDiv) return;
 
+    const absX = e.clientX;
+    const absY = e.clientY;
     const relPos = clientPoint(this.topDiv, e);
-    const hoveredTiledPlot = this.getTiledPlotAtPosition(e.clientX, e.clientY);
+    const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
 
     const hoveredTracks = hoveredTiledPlot
       ? hoveredTiledPlot.listTracksAtPosition(relPos[0], relPos[1], true)
@@ -3262,6 +3264,19 @@ class HiGlassComponent extends React.Component {
     };
 
     this.pubSub.publish('app.mouseMove', evt);
+
+    this.apiPublish('cursorLocation', {
+      absX,
+      absY,
+      relX: evt.x,
+      relY: evt.y,
+      relTrackX: evt.relTrackX,
+      relTrackY: evt.relTrackY,
+      dataX: evt.dataX,
+      dataY: evt.dataY,
+      isFrom2dTrack: evt.isFrom2dTrack,
+      isFromVerticalTrack: evt.isFromVerticalTrack,
+    });
 
     this.showHoverMenu(evt);
   }

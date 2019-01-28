@@ -1,6 +1,8 @@
 const viewConf = {
-  editable: false,
+  editable: true,
   zoomFixed: false,
+  trackSourceServers: ['http://higlass.io/api/v1'],
+  exportViewUrl: 'http://localhost:8000/api/v1/viewconfs/',
   views: [{
     uid: 'aa',
     initialXDomain: [-128227010, 3227095876],
@@ -11,12 +13,6 @@ const viewConf = {
           tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
           uid: 'genes-top',
           type: 'horizontal-gene-annotations'
-        },
-        {
-          chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-          type: 'horizontal-chromosome-labels',
-          position: 'top',
-          uid: 'chroms-top'
         }
       ],
       left: [
@@ -25,13 +21,6 @@ const viewConf = {
           tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
           uid: 'genes-left',
           type: 'vertical-gene-annotations'
-        },
-        {
-          chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-          type: 'vertical-chromosome-labels',
-          position: 'left',
-          name: 'Chromosome Labels (hg19)',
-          uid: 'chroms-left'
         }
       ],
       center: [],
@@ -47,17 +36,18 @@ const viewConf = {
       moved: false,
       static: false
     },
-    overlays: [{
-      uid: 'overlay',
-      type: '',
-      includes: ['chroms-top', 'chroms-left', 'genes-top', 'genes-left'],
-      options: {
-        extent: [
-          [1000000000, 1100000000],
-          [1400000000, 1500000000, 1600000000, 1700000000]
-        ]
+    overlays: [
+      {
+        uid: 'overlay-chroms',
+        type: 'chromosome-grid',
+        includes: ['genes-top', 'genes-left'],
+        chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+        options: {
+          lineStrokeWidth: 1,
+          lineStrokeColor: 'grey'
+        }
       }
-    }]
+    ]
   }]
 };
 
