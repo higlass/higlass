@@ -3,6 +3,12 @@ require('babel-polyfill'); // eslint-disable-line import/no-extraneous-dependenc
 
 module.exports = (config) => {
   config.set({
+    /** * maximum number of tries a browser will attempt in the case
+     * of a disconnection */
+    browserDisconnectTolerance: 2,
+    /** * How long will Karma wait for a message from a browser before
+     * disconnecting from it (in ms). */
+    browserNoActivityTimeout: 50000,
     basePath: '',
     frameworks: ['jasmine'],
 
