@@ -4,7 +4,6 @@ import { scaleLinear } from 'd3-scale';
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 import { colorToHex } from './utils';
-import { tileProxy } from './services';
 
 class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
