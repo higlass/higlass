@@ -24,7 +24,7 @@
     "lint": "eslint app test karma.conf.js webpack.config.js",
     "lint-minimal": "eslint -c .eslintrc-minimal app test karma.conf.js webpack.config.js",
     "fix-minimal": "eslint -c .eslintrc-minimal --fix app test karma.conf.js webpack.config.js",
-    "precommit": "NODE_ENV=production lint-staged",
+    "precommit": "lint-staged",
     "test": "karma start karma.conf.js --single-run",
     "test-watch": "npm run build && karma start karma.conf.js"
   },
