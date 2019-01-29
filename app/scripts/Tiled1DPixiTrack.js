@@ -265,7 +265,13 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
       this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos))
     );
 
-    return fetchedTile.tileData.dense[Math.floor(posInTileX)];
+    if (fetchedTile.tileData.dense) {
+      // gene annotation tracks, for example, don't have dense
+      // data
+      return fetchedTile.tileData.dense[Math.floor(posInTileX)];
+    } else {
+      return null;
+    }
   }
 
   mouseMoveHandler({ x, y } = {}) {

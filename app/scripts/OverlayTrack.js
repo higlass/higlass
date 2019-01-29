@@ -14,15 +14,43 @@ class OverlayTrack extends PixiTrack {
   drawHorizontalOverlay(graphics, position, extent) {
     if (!extent || extent.length < 2) return;
 
-    const xPos = this.position[0]
+    let xPos = this.position[0]
       + position.left
       + this._xScale(extent[0]);
     const yPos = this.position[1] + position.top;
+
     const height = position.height;
-    const width = this._xScale(extent[1])
+
+
+    // the position of the left bounary of this track
+    const leftPosition = this.position[0] + position.left;
+    const rightPosition = this.position[0] + position.left + position.width;
+
+    if (xPos > rightPosition) {
+      // this annotation is off the bottom
+      return;
+    }
+
+    if (xPos < leftPosition) {
+      // this overlay is partially off the left side of the
+      // track and needs to be truncated
+      xPos = this.position[0] + position.left;
+    }
+
+    let width = this._xScale(extent[1])
       - xPos
       + position.left
       + this.position[0];
+
+    if (width < 0) {
+      // this overlay is off the left end of the track and
+      // doesn't need to be drawn
+      return;
+    }
+
+    if (xPos + width > rightPosition) {
+      width += rightPosition - (xPos + width);
+    }
 
     graphics.drawRect(xPos, yPos, width, height);
   }
@@ -31,14 +59,40 @@ class OverlayTrack extends PixiTrack {
     if (!extent || extent.length < 2) return;
 
     const xPos = this.position[0] + position.left;
-    const yPos = this.position[1]
+    let yPos = this.position[1]
       + position.top
       + this._yScale(extent.length >= 4 ? extent[2] : extent[0]);
+
+    // the position of the left bounary of this track
+    const topPosition = this.position[1] + position.top;
+    const bottomPosition = this.position[1] + position.top + position.height;
+
+    if (yPos > bottomPosition) {
+      // this annotation is off the bottom
+      return;
+    }
+
+    if (yPos < topPosition) {
+      // this overlay is partially off the top side of the
+      // track and needs to be truncated
+      yPos = topPosition;
+    }
+
     const width = position.width;
-    const height = this._yScale(extent.length >= 4 ? extent[3] : extent[1])
+    let height = this._yScale(extent.length >= 4 ? extent[3] : extent[1])
       - yPos
       + position.top
       + this.position[1];
+
+    if (height < 0) {
+      // this overlay is off the top end of the track and
+      // doesn't need to be drawn
+      return;
+    }
+
+    if (yPos + height > bottomPosition) {
+      height += bottomPosition - (yPos + height);
+    }
 
     graphics.drawRect(xPos, yPos, width, height);
   }
