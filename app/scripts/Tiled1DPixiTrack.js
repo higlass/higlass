@@ -252,6 +252,9 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     const tileWidth = tileProxy.calculateTileWidth(
       this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
     );
+
+    // console.log('dataPos:', this._xScale.invert(relPos));
+
     const tilePos = this._xScale.invert(relPos) / tileWidth;
     const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
     const fetchedTile = this.fetchedTiles[tileId];
@@ -259,10 +262,16 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     if (!fetchedTile) return value;
 
     const posInTileX = (
-      fetchedTile.tileData.dense.length * (tilePos - Math.floor(tilePos))
+      this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos))
     );
 
-    return fetchedTile.tileData.dense[Math.floor(posInTileX)];
+    if (fetchedTile.tileData.dense) {
+      // gene annotation tracks, for example, don't have dense
+      // data
+      return fetchedTile.tileData.dense[Math.floor(posInTileX)];
+    }
+
+    return null;
   }
 
   mouseMoveHandler({ x, y } = {}) {
