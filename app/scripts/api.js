@@ -290,8 +290,8 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
-       * Change the current view port to a certain data location.  When ``animateTime`` is
-       * greater than 0, animate the transition.
+       * Change the current view port to a certain data location.
+       * When ``animateTime`` is greater than 0, animate the transition.
 
        * If working with genomic data, a chromosome info file will need to be used in
        * order to calculate "data" coordinates from chromosome coordinates. "Data"
@@ -327,6 +327,15 @@ const createApi = function api(context, pubSub) {
        *   });
        *   // Just in case, let us catch errors
        *   .catch(error => console.error('Oh boy...', error))
+       * // Using getLocation() for coordinates
+       * let firstViewLoc = hgApi.getLocation(oldViewUid);
+       * hgApi.zoomTo(
+       *  viewUid,
+       *  firstViewLoc["xDomain"][0],
+       *  firstViewLoc["xDomain"][1],
+       *  firstViewLoc["yDomain"][0],
+       *  firstViewLoc["yDomain"][1]
+       * );
        */
       zoomTo(
         viewUid,
