@@ -22,6 +22,11 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   }
 
   getMouseOverHtml(trackX) {
+    // if we're not supposed to show the tooltip, don't show it
+    // we return here so that the mark isn't drawn in the code
+    // below
+    if (!this.tilesetInfo || !this.options.showTooltip) return '';
+
     const value = this.getDataAtPos(trackX);
     let textValue = '';
 
