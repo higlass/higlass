@@ -636,6 +636,52 @@ This can be aggregated into multivec format:
         --num-rows 15 \
         --format epilogos
 
+States Data (multivec)
+----------------------
+
+A bed file with categorical data, e.g from chromHMM. The data consist of positions and states for each segment in categorical data::
+
+  chr1	0	10000	Quies
+  chr1	10000	10400	FaireW
+  chr1	10400	15800	Low
+  chr1	15800	16000	Pol2
+  chr1	16000	16400	Gen3'
+  chr1	16400	16600	Elon
+  chr1	16600	139000	Quies
+  chr1	139000	139200	Ctcf
+
+This can be aggregated to multivec format:
+
+.. code-block:: bash
+
+    clodius convert bedfile_to_multivec \
+        hg38/all.KL.bed.gz \
+        --assembly hg38 \
+        --starting-resolution 200 \
+        --row-infos-filename row_infos.txt \
+        --num-rows 7 \
+        --format states
+        --row_infos-filename rows_info.txt
+        
+A rows_info.txt file is required in the parameter ``--row-infos-filename`` for this type of data. This file contains the name of the states in the bedfile. e.g. rows_infos.txt::
+
+     Quies
+     FaireW
+     Low
+     Pol2
+     Gen3'
+     Elon
+     ctcf
+    
+The number of rows with the name of the states in the rows_info.txt file must match the number of states in the bedfile and that number should be stated in the ``--num-rows`` parameter. 
+   
+The resulting output file can be ingested using ``higlass-manage``:
+
+.. code-block:: bash
+
+    higlass-manage.py ingest --filetype multivec --datatype multivec data.mv5
+
+
 Other Data (multivec)
 ---------------------
 
