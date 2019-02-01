@@ -64,7 +64,7 @@ class AddTrackModal extends React.Component {
       for (const tileset of selectedTilesets) {
         let datatypes = [tileset.datatype];
 
-        if (tileset.filetype == 'cooler') {
+        if (tileset.filetype === 'cooler') {
           datatypes = [tileset.datatype, 'chromsizes'];
         }
 
