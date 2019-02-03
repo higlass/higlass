@@ -1,6 +1,7 @@
 ## v1.4.1
 
 - Allow users to choose adding the chromosome grid overlay from the Add Track Dialog when selecting a cooler file.
+- Expose version from hglib. E.g., `window.hglib.version`
 
 ## v1.4.0
 
