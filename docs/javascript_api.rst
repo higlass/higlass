@@ -39,7 +39,7 @@ Available endpoints
 
   import { HiGlassComponent, ChromosomeInfo, viewer, version } from 'higlass';
 
-HiGlass exports three endpoints for your convenience. ``viewer`` is the main
+HiGlass exports four endpoints for your convenience. ``viewer`` is the main
 endpoint to create a new HiGlass component. ``HiGlassComponent`` can be used
 to integrate HiGlass in your React application. ``ChromosomeInfo`` is a class
 for converting absolute coordinates to chromosome coordinates. It's used
