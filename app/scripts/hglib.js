@@ -16,6 +16,8 @@ export {
   getTrackObjectFromHGC,
 } from './utils';
 
+export const version = VERSION;
+
 const launch = (element, config, options) => {
   /**
    * The instance's public API will be passed into the callback
