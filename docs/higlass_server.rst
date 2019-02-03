@@ -174,6 +174,28 @@ To modify a tileset name, specify the tileset `uuid` in the URL, use the `PATCH`
 
     curl --user ${username}:${password} --request PATCH --header "Content-Type: application/json" --data '{"name":"new_name_of_tileset"}' http://localhost:8000/api/v1/tilesets/${uuid}/ 
       
+Tile JSON Response Format
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Tiles returned by the server vary according to the data type but
+all are indexed by their tile id. The example below is a tile response
+from a bedlike track.
+
+.. code-block:: bash
+
+  {
+    "OHJakQICQD6gTD7skx4EWA.3.2": [
+      { "uid": "US2sjy_8SlGuy-0iSshcDQ", "importance": 457.0, "fields": [...] }
+    ]
+  }
+
+The `uid` is used to unique identify annotations. This is necessary
+because annotations that span multiple tiles are returned in every tile
+they intersect. The `importance` determines the priority with which
+annotations are hidden. Annotations with a lower `importance` are hidden
+before annotations with a higher importance. The `fields` field
+contains the actual columns from the bed file.
+
 Management commands 
 ^^^^^^^^^^^^^^^^^^^ 
 
