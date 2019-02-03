@@ -1,4 +1,4 @@
-## v1.3.1
+## v1.4.0
 
 - Add `constIndicators` as an option to 1D tracks for displaying a visual indicator (e.g., a line) at a constant value.
 - Added `[glyph-color]` as the default option for line and bar tracks
