@@ -178,7 +178,8 @@ Tile JSON Response Format
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Tiles returned by the server vary according to the data type but
-all are indexed by their tile id:
+all are indexed by their tile id. The example below is a tile response
+from a bedlike track.
 
 .. code-block:: bash
 
@@ -188,6 +189,12 @@ all are indexed by their tile id:
     ]
   }
 
+The `uid` is used to unique identify annotations. This is necessary
+because annotations that span multiple tiles are returned in every tile
+they intersect. The `importance` determines the priority with which
+annotations are hidden. Annotations with a lower `importance` are hidden
+before annotations with a higher importance. The `fields` field
+contains the actual columns from the bed file.
 
 Management commands 
 ^^^^^^^^^^^^^^^^^^^ 
