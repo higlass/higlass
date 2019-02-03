@@ -1,4 +1,4 @@
-Javascript API 
+Javascript API
 ##############
 
 Overview
@@ -29,7 +29,7 @@ External tracks should be included **before** the hglib.js import:
 
     <script src="https://unpkg.com/higlass-multivec@0.1.10/dist/higlass-multivec.js"></script>
 
-Instructions for instantiating the component and interacting with it are in the 
+Instructions for instantiating the component and interacting with it are in the
 `Public API section <javascript_api.html#api-functions>`_.
 
 Available endpoints
@@ -37,14 +37,15 @@ Available endpoints
 
 .. code-block:: javascript
 
-  import { HiGlassComponent, ChromosomeInfo, viewer } from 'higlass';
+  import { HiGlassComponent, ChromosomeInfo, viewer, version } from 'higlass';
 
-HiGlass exports three endpoints for your convenience. ``viewer`` is the main
+HiGlass exports four endpoints for your convenience. ``viewer`` is the main
 endpoint to create a new HiGlass component. ``HiGlassComponent`` can be used
 to integrate HiGlass in your React application. ``ChromosomeInfo`` is a class
 for converting absolute coordinates to chromosome coordinates. It's used
 internally and made available to convert absolute range selection into
-chromosome range selections.
+chromosome range selections. ``version`` is a string of the current version of
+HiGlass.
 
 Creating an inline HiGlass component
 ------------------------------------
@@ -61,7 +62,7 @@ try to fetch a remote viewconfig.
 The ``options`` parameter can currently only specify the ``bounded`` property
 which tells the HiGlass component to fill all the space in the containing
 element. Note that if ``bounded`` is set to true, then ``element`` must have a
-fixed height. 
+fixed height.
 
 The function returns an instance of the public API of a HiGlass component.
 

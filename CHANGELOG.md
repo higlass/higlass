@@ -1,3 +1,7 @@
+## v1.4.1
+
+- Expose version from hglib. E.g., `window.hglib.version`
+
 ## v1.4.0
 
 - Add `constIndicators` as an option to 1D tracks for displaying a visual indicator (e.g., a line) at a constant value.
