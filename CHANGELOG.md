@@ -1,6 +1,6 @@
 ## v1.4.1
 
-- Add chromosome grid and label overlays directly from cooler files
+- Allow users to choose adding the chromosome grid overlay from the Add Track Dialog when selecting a cooler file.
 
 ## v1.4.0
 
