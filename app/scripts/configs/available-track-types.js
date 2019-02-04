@@ -27,6 +27,7 @@ export const AVAILABLE_TRACK_TYPES = (datatypes, orientation) => {
   );
 
 
+  console.warn('datatypes', datatypes);
   for (const datatype of datatypes) {
     // datatype should actually be an array of datatypes
     const dataTypeSet = new Set(datatype);
@@ -37,6 +38,7 @@ export const AVAILABLE_TRACK_TYPES = (datatypes, orientation) => {
       )
     );
   }
+  console.warn('availableTrackTypes', availableTrackTypes);
 
   return [...availableTrackTypes];
 };
