@@ -121,6 +121,7 @@ describe('Simple HiGlassComponent', () => {
 
       ptc = atm.plotTypeChooser;
 
+      console.warn('ptc.AVAILABLE_TRACK_TYPES', ptc.AVAILABLE_TRACK_TYPES);
       // should just have the horizontal-heatmap track type
       expect(ptc.AVAILABLE_TRACK_TYPES.length).to.eql(3);
 
