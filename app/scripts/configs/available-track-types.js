@@ -27,6 +27,7 @@ export const AVAILABLE_TRACK_TYPES = (datatypes, orientation) => {
   );
 
 
+  console.warn('availableTrackTypes:', [...availableTrackTypes]);
   console.warn('datatypes', datatypes);
   for (const datatype of datatypes) {
     // datatype should actually be an array of datatypes
@@ -37,8 +38,9 @@ export const AVAILABLE_TRACK_TYPES = (datatypes, orientation) => {
         x => x.datatype.filter(y => dataTypeSet.has(y)).length > 0
       )
     );
+
+    console.warn('availableTrackTypes', [...availableTrackTypes]);
   }
-  console.warn('availableTrackTypes', availableTrackTypes);
 
   return [...availableTrackTypes];
 };
