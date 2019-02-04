@@ -26,7 +26,6 @@ export const AVAILABLE_TRACK_TYPES = (datatypes, orientation) => {
       .flatMap(x => x)
   );
 
-
   for (const datatype of datatypes) {
     // datatype should actually be an array of datatypes
     const dataTypeSet = new Set(datatype);
