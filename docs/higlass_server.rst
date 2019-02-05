@@ -16,6 +16,8 @@ server is started:
 
     export OPTION=value; python manage.py runserver
 
+``APP_BASEPATH`` - Allow access to the admin interface at ``http://server.com/$APP_BASEPATH/admin``. 
+
 ``BASE_DIR`` - Set the Django base directory. This is where Django will 
 look for the database and the media directories.
 
