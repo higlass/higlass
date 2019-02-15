@@ -56,16 +56,20 @@ class NestedContextMenu extends ContextMenuContainer {
         <ContextMenuItem
           key={menuItemKey}
           onClick={menuItem.handler ? menuItem.handler : () => null}
-          onMouseEnter={menuItem.children ? e => this.handleItemMouseEnter(e, menuItem) : this.handleOtherMouseEnter.bind(this)}
+          onMouseEnter={menuItem.children
+            ? e => this.handleItemMouseEnter(e, menuItem)
+            : this.handleOtherMouseEnter.bind(this)}
           onMouseLeave={this.handleMouseLeave}
         >
           {menuItem.name}
-          {menuItem.children &&
-            <svg
-              styleName="play-icon"
-            >
-              <use xlinkHref="#play" />
-            </svg>
+          {menuItem.children
+            && (
+              <svg
+                styleName="play-icon"
+              >
+                <use xlinkHref="#play" />
+              </svg>
+            )
           }
         </ContextMenuItem>,
       );

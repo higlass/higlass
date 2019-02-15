@@ -1,4 +1,6 @@
-import {
+// In this project, these methods are only used in tests,
+// but plugin tracks also make use of them... so not really extraneous.
+import { // eslint-disable-line import/no-extraneous-dependencies
   mount
 } from 'enzyme';
 
@@ -85,6 +87,45 @@ export const waitForJsonComplete = (finished) => {
   }
 };
 
+/**
+ * Check if a HiGlassComponent is still waiting on tiles from a remote
+ * server.
+ *
+ * Arguments
+ * ---------
+ *  hgc: enzyme wrapper for a HiGlassComponent
+ *
+ * Returns
+ * -------
+ *  True if any of the tracks are waiting for tiles, false otherwise.
+ */
+export const isWaitingOnTiles = (hgc) => {
+  for (const track of hgc.iterateOverTracks()) {
+    let trackObj = getTrackObjectFromHGC(hgc, track.viewId, track.trackId);
+
+    if (!track.track.server && !track.track.tilesetUid) {
+      continue;
+    } else if (track.track.server && track.track.tilesetUid) {
+      if (trackObj.originalTrack) { trackObj = trackObj.originalTrack; }
+
+      if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
+        console.warn(
+          `Track uuid:${trackObj.uuid} has no tileset or chromosome info`
+        );
+        return true;
+      }
+
+      if (trackObj.fetching && trackObj.fetching.size) {
+        return true;
+      }
+    } else {
+      throw Error('"server" and "tilesetUid" belong together');
+    }
+  }
+
+  return false;
+};
+
 export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
   /**
      * Wait until all of the tiles in the HiGlassComponent are loaded
@@ -113,50 +154,6 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
 };
 
 /**
- * Check if a HiGlassComponent is still waiting on tiles from a remote
- * server.
- *
- * Arguments
- * ---------
- *  hgc: enzyme wrapper for a HiGlassComponent
- *
- * Returns
- * -------
- *  True if any of the tracks are waiting for tiles, false otherwise.
- */
-export const isWaitingOnTiles = (hgc) => {
-  for (const track of hgc.iterateOverTracks()) {    
-    let trackObj = getTrackObjectFromHGC(hgc, track.viewId, track.trackId);
-
-    if (track.track.type === 'viewport-projection-vertical'
-        || track.track.type === 'viewport-projection-horizontal'
-        || track.track.type === 'viewport-projection-center'
-        || track.track.type === 'osm-tiles'
-        || track.track.type === 'osm-2d-tile-ids') continue;
-
-    if (trackObj.originalTrack) { trackObj = trackObj.originalTrack; }
-
-    if (!trackObj) {
-      // console.warn('no track obj', getTrackObject(hgc, track.viewId, track.trackId));
-    }
-
-    if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
-      // console.warn('no tileset info');
-      return true;
-    }
-
-    // if (trackObj.fetching)
-    //   console.log('trackObj.fetching.size:', trackObj.fetching);
-
-    if (trackObj.fetching && trackObj.fetching.size) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
-/**
  * Mount a new HiGlassComponent and unmount the previously visible one.
  *
  * @param {HTML Element} div A div element to detach and recreate for the component
@@ -176,6 +173,9 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
 
   const style = (options && options.style) || 'width:800px; background-color: lightgreen;';
   const bounded = (options && options.bounded) || false;
+
+  // console.log('check:', options && options.style)
+  // console.log('style:', style, "options:", options, "style", options.style);
 
   const div = global.document.createElement('div');
   global.document.body.appendChild(div);
@@ -198,6 +198,8 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
 };
 
 export const removeHGComponent = (div) => {
+  if (!div) return;
+
   ReactDOM.unmountComponentAtNode(div);
   document.body.removeChild(div);
 };

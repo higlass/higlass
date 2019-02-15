@@ -17,7 +17,7 @@ and the built files should be part of the commit.
 
 For a local preview, run `./serve.sh`.
 
-[hga]: https://github.com/hms-dbmi/higlass-app
-[hgd]: https://github.com/hms-dbmi/higlass-docker
-[hgs]: https://github.com/hms-dbmi/higlass-server
-[hgv]: https://github.com/hms-dbmi/higlass
+[hga]: https://github.com/higlass/higlass-app
+[hgd]: https://github.com/higlass/higlass-docker
+[hgs]: https://github.com/higlass/higlass-server
+[hgv]: https://github.com/higlass/higlass

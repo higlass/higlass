@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/higlass/higlass.svg?branch=master)](https://travis-ci.org/higlass/higlass)
 [![Live Docs](https://img.shields.io/badge/docs-live-red.svg?colorB=0f5d92)](https://docs.higlass.io/)
 [![DOI](https://zenodo.org/badge/56026057.svg)](https://zenodo.org/badge/latestdoi/56026057)
+[![Slack](https://now-examples-slackin-zukqykuatj.now.sh/badge.svg)](https://now-examples-slackin-zukqykuatj.now.sh/)
 
 
 ### Introduction
@@ -12,7 +13,7 @@ Hi-C and other genomic data from different experimental conditions and can be us
 identify salient outcomes of experimental perturbations, generate new hypotheses, and share
 the results with the community.
 
-A live instance can be found at [http://higlass.io](http://higlass.io). A [Docker container](https://github.com/hms-dbmi/higlass-docker) is available for running an instance locally, although we recommend using the [higlass-manage](https://github.com/pkerpedjiev/higlass-manage) package to start, stop and configure local instances.
+A live instance can be found at [http://higlass.io](http://higlass.io). A [Docker container](https://github.com/higlass/higlass-docker) is available for running an instance locally, although we recommend using the [higlass-manage](https://github.com/pkerpedjiev/higlass-manage) package to start, stop and configure local instances.
 
 For documentation about how to use and install HiGlass, please visit [http://docs.higlass.io](http://docs.higlass.io).
 
@@ -34,6 +35,11 @@ To run higlass from its source code simply run the following:
 npm install
 npm run start
 ```
+
+This starts a server in development mode at http://localhost:8080/. 
+
+Once started, a list of the examples can be found at [http://localhost:8080/examples.html](http://localhost:8080/examples.html).
+Template viewconfs located at `/docs/examples/viewconfs` can viewed directly at urls such as  [http://localhost:8080/apis/svg.html?/viewconfs/overlay-tracks.json](http://localhost:8080/apis/svg.html?/viewconfs/overlay-tracks.json).
 
 ### Tests
 
@@ -80,12 +86,13 @@ const api = hglib.createHgComponent(
 ```
 ### Related
 
-* [HiGlass Manage](https://github.com/hms-dbmi/higlass-manage) - Easy to use interface for deploying a local HiGlass instance
-* [HiGlass Docker](https://github.com/hms-dbmi/higlass-docker) - Build an image containing all the components necessary to deploy HiGlass
-* [HiGlass Server](https://github.com/hms-dbmi/higlass-server) - Server component for serving multi-resolution data
-* [HiGlass Website](https://github.com/hms-dbmi/higlass-website) - The code for the web site hosted at http://higlass.io
+[![diagram of related tools](https://docs.google.com/drawings/d/e/2PACX-1vSCiCzfQ8FEyHPFSq7jJD6XmzC760xH1Zr4FIcCMzFmqAlrmYEBMId8gM42uz0okmvuEaxetyPPZ9VG/pub?w=600&h=450)](https://docs.google.com/drawings/d/1Xedi5ZRtbRdt2g20qpl_lWs4BMqc2DKZ2ZOoJvpHw9U/edit)
+
+* [HiGlass Manage](https://github.com/higlass/higlass-manage) - Easy to use interface for deploying a local HiGlass instance
+* [HiGlass Docker](https://github.com/higlass/higlass-docker) - Build an image containing all the components necessary to deploy HiGlass
+* [HiGlass Server](https://github.com/higlass/higlass-server) - Server component for serving multi-resolution data
+* [HiGlass App](https://github.com/higlass/higlass-app) - The code for the web application hosted at http://higlass.io
 
 ### License
 
 HiGlass is provided under the MIT License.
-

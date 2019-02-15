@@ -31,6 +31,10 @@ const AVAILABLE_COLORS = {
   white: { name: 'White', value: 'white' },
 };
 
+const SPECIAL_COLORS = {
+  use_stroke: { name: 'Glyph color', value: '[glyph-color]' },
+};
+
 const AVAILABLE_WIDTHS = sizesInPx([1, 2, 3, 5, 8, 13, 21]);
 const AVAILABLE_WIDTHS_AND_NONE = Object.assign(
   AVAILABLE_WIDTHS, { none: { name: 'none', value: 'none' } }
@@ -41,6 +45,19 @@ const OPACITY_OPTIONS = sizesInPx([0.0, 0.2, 0.4, 0.6, 0.8, 1.0], '%', 100);
 // these values define the options that are visible in the track config
 // menu
 export const OPTIONS_INFO = {
+  axisLabelFormatting: {
+    name: 'Axis Label Formatting',
+    inlineOptions: {
+      normal: {
+        name: 'normal',
+        value: 'normal',
+      },
+      scientific: {
+        name: 'scientific',
+        value: 'scientific'
+      },
+    }
+  },
   heatmapValueScaling: {
     name: 'Value Scaling',
     inlineOptions: {
@@ -100,7 +117,8 @@ export const OPTIONS_INFO = {
   colorScale: {
     name: 'Color Scale',
     inlineOptions: {
-      epilogos: { name: 'Epilogos',
+      epilogos: {
+        name: 'Epilogos',
         values: [
           '#FF0000',
           '#FF4500',
@@ -389,7 +407,7 @@ export const OPTIONS_INFO = {
 
   labelColor: {
     name: 'Label Color',
-    inlineOptions: AVAILABLE_COLORS,
+    inlineOptions: { ...AVAILABLE_COLORS, ...SPECIAL_COLORS },
   },
 
   labelPosition: {
@@ -1130,6 +1148,24 @@ export const OPTIONS_INFO = {
             value: transform.value,
           });
         }
+      }
+
+      return inlineOptions;
+    },
+  },
+
+  aggregationMode: {
+    name: 'Aggregation Mode',
+    inlineOptions: {},
+    generateOptions: (track) => {
+      const inlineOptions = [];
+
+      if (track.aggregationModes) {
+        Object.values(track.aggregationModes).forEach(({ name, value }) => {
+          inlineOptions.push({ name, value });
+        });
+      } else {
+        inlineOptions.push({ name: 'Default', value: 'default' });
       }
 
       return inlineOptions;

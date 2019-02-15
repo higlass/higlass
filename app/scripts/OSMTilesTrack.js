@@ -318,7 +318,9 @@ class OSMTilesTrack extends PixiTrack {
     const tileX = this.minX + (tilePos[0] * tileWidth);
     const tileY = this.minY + (tilePos[1] * tileHeight);
 
-    return { tileX, tileY, tileWidth, tileHeight };
+    return {
+      tileX, tileY, tileWidth, tileHeight
+    };
   }
 
   setSpriteProperties(sprite, zoomLevel, tilePos) {

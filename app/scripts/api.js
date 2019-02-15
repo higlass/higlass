@@ -15,11 +15,13 @@ import {
   MOUSE_TOOL_SELECT,
 } from './configs';
 
-const api = function api(context, pubSub) {
+
+const createApi = function api(context, pubSub) {
   const self = context;
-  const apiPubSub = createPubSub();
 
   let pubSubs = [];
+
+  const apiPubSub = createPubSub();
 
   const destroy = () => {
     pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
@@ -33,7 +35,18 @@ const api = function api(context, pubSub) {
     // Public API
     public: {
       /**
-       * Reload all of the tiles
+       * HiGlass version
+       * @return {string} Version number
+       */
+      get version() {
+        // Note, `VERSION` is exposed by webpack across the entire app. I.e.,
+        // it's globally available within the build but not outside. See
+        // `plugins` in `webpack.config.js`
+        return VERSION;
+      },
+
+      /**
+       * Enable broadcasting mouse position globally
        */
       setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally = false) {
         self.isBroadcastMousePositionGlobally = isBroadcastMousePositionGlobally;
@@ -101,6 +114,9 @@ const api = function api(context, pubSub) {
         console.warn('Not implemented yet!');
       },
 
+      /**
+       * Destroy HiGlass instance
+       */
       destroy() {
         destroy();
         ReactDOM.unmountComponentAtNode(self.topDiv.parentNode);
@@ -136,8 +152,10 @@ const api = function api(context, pubSub) {
        *  The following enpoint restricts the size of range selection equally for 1D or
        *  2D tracks to a certain length (specified in absolute coordinates).
        *
-       * @param {Number} [minSize = 0]  Minimum range selection. ``undefined`` unsets the value.
-       * @param {Number} [maxSize = Infinity] Maximum range selection. ``undefined`` unsets the value.
+       * @param {Number} [minSize = 0]  Minimum range selection.
+       *   ``undefined`` unsets the value.
+       * @param {Number} [maxSize = Infinity] Maximum range selection.
+       *   ``undefined`` unsets the value.
        * @example
        *
        * hgv.activateTool('select'); // Activate select tool
@@ -245,7 +263,8 @@ const api = function api(context, pubSub) {
        * @example
        * hgv.shareViewConfigAsLink('http://localhost:8989/api/v1/viewconfs')
        * .then((sharedViewConfig) => {
-       *   console.log(`Shared view config (ID: ${sharedViewConfig.id}) is available at ${sharedViewConfig.url}`)
+       *   const { id, url } = sharedViewConfig;
+       *   console.log(`Shared view config (ID: ${id}) is available at ${url}`)
        * })
        * .catch((err) => { console.error('Something did not work. Sorry', err); })
        */
@@ -299,12 +318,13 @@ const api = function api(context, pubSub) {
        * Choose a theme.
        */
       setDarkTheme(darkTheme) {
+        console.warn('Please note that the dark mode is still in beta');
         setDarkTheme(!!darkTheme);
       },
 
       /**
-       * Change the current view port to a certain data location.  When ``animateTime`` is
-       * greater than 0, animate the transition.
+       * Change the current view port to a certain data location.
+       * When ``animateTime`` is greater than 0, animate the transition.
 
        * If working with genomic data, a chromosome info file will need to be used in
        * order to calculate "data" coordinates from chromosome coordinates. "Data"
@@ -340,6 +360,15 @@ const api = function api(context, pubSub) {
        *   });
        *   // Just in case, let us catch errors
        *   .catch(error => console.error('Oh boy...', error))
+       * // Using getLocation() for coordinates
+       * let firstViewLoc = hgApi.getLocation(oldViewUid);
+       * hgApi.zoomTo(
+       *  viewUid,
+       *  firstViewLoc["xDomain"][0],
+       *  firstViewLoc["xDomain"][1],
+       *  firstViewLoc["yDomain"][0],
+       *  firstViewLoc["yDomain"][1]
+       * );
        */
       zoomTo(
         viewUid,
@@ -527,6 +556,14 @@ const api = function api(context, pubSub) {
           : listenerId;
 
         switch (event) {
+          case 'click':
+            apiPubSub.unsubscribe('click', callback);
+            break;
+
+          case 'cursorLocation':
+            apiPubSub.unsubscribe('cursorLocation', callback);
+            break;
+
           case 'location':
             self.offLocationChange(viewId, listenerId);
             break;
@@ -561,6 +598,33 @@ const api = function api(context, pubSub) {
        * - mouseMoveZoom
        *
        * **Event types**
+       *
+       * ``click``: Returns clicked objects. (Currently only clicks on 1D annotations are captured.)
+       *
+       * .. code-block:: javascript
+       *
+       *     {
+       *       type: 'annotation',
+       *       event: { ... },
+       *       payload: [230000000, 561000000]
+       *     }
+       *
+       * ``cursorLocation:`` Returns an object describing the location under the cursor
+       *
+       * .. code-block:: javascript
+       *
+       *    {
+       *        absX: 100,
+       *        absY: 200,
+       *        relX: 50,
+       *        relY: 150,
+       *        relTrackX: 50,
+       *        relTrackY: 100,
+       *        dataX: 10000,
+       *        dataY: 123456,
+       *        isFrom2dTrack: false,
+       *        isFromVerticalTrack: false,
+       *    }
        *
        * ``location:`` Returns an object describing the visible region
        *
@@ -598,19 +662,45 @@ const api = function api(context, pubSub) {
        *
        * ``viewConfig:`` Returns the current view config.
        *
-       * ``mouseMoveZoom:`` Returns the raw data around the mouse cursors screen location
-       * and the related genomic location.
+       * ``mouseMoveZoom:`` Returns the location and data at the mouse cursor's
+       * screen location.
        *
        * .. code-block:: javascript
        *
        *  {
-       *    data, // Raw Float32Array
-       *    dim,  // Dimension of the lens (the lens is squared)
-       *    toRgb,  // Current float-to-rgb converter
-       *    center,  // BED array of the cursors genomic location
-       *    xRange,  // BEDPE array of the x genomic range
-       *    yRange,  // BEDPE array of the y genomic range
-       *    rel  // If true the above three genomic locations are relative
+       *    // Float value of the hovering track
+       *    data,
+       *    // Absolute x screen position of the cursor in px
+       *    absX,
+       *    // Absolute y screen position of the cursor in px
+       *    absY,
+       *    // X screen position of the cursor in px relative to the track extent.
+       *    relX,
+       *    // Y screen position of the cursor in px relative to the track extent.
+       *    relY,
+       *    // Data x position of the cursor relative to the track's data.
+       *    dataX,
+       *    // Data y position of the cursor relative to the track's data.
+       *    dataY,
+       *    // Track orientation, i.e., '1d-horizontal', '1d-vertical', or '2d'
+       *    orientation: '1d-horizontal',
+       *
+       *    // The following properties are only returned when hovering 2D tracks:
+       *    // Raw Float32Array
+       *    dataLens,
+       *    // Dimension of the lens, e.g., 3 (the lens is squared so `3` corresponds
+       *    // to a 3x3 matrix represented by an array of length 9)
+       *    dim,
+       *    // Function for converting the raw data values to rgb values
+       *    toRgb,
+       *    // Center position of the data or genomic position (as a BED array)
+       *    center,
+       *    // Range of the x data or genomic position (as a BEDPE array)
+       *    xRange,
+       *    // Range of the y data or genomic position (as a BEDPE array)
+       *    yRange,
+       *    // If `true` `center`, `xRange`, and `yRange` are given in genomic positions
+       *    isGenomicCoords
        *  }
        *
        * @param {string} event One of the events described below
@@ -644,6 +734,12 @@ const api = function api(context, pubSub) {
        */
       on(event, callback, viewId, callbackId) {
         switch (event) {
+          case 'click':
+            return apiPubSub.subscribe('click', callback);
+
+          case 'cursorLocation':
+            return apiPubSub.subscribe('cursorLocation', callback);
+
           case 'location':
             // returns a set of scales (xScale, yScale) on every zoom event
             return self.onLocationChange(viewId, callback, callbackId);
@@ -660,10 +756,9 @@ const api = function api(context, pubSub) {
           default:
             return undefined;
         }
-      },
+      }
     }
   };
 };
 
-
-export default api;
+export default createApi;

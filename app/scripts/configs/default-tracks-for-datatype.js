@@ -1,35 +1,35 @@
 export const DEFAULT_TRACKS_FOR_DATATYPE = {
-  'matrix': {
-    'center': 'heatmap',
-    'top': 'horizontal-heatmap',
-    'left': 'vertical-heatmap',
-    'right': 'vertical-heatmap',
-    'bottom': 'horizontal-heatmap',
+  matrix: {
+    center: 'heatmap',
+    top: 'horizontal-heatmap',
+    left: 'vertical-heatmap',
+    right: 'vertical-heatmap',
+    bottom: 'horizontal-heatmap',
   },
-  'vector': {
-    'top': 'horizontal-bar',
-    'bottom': 'horizontal-bar',
-    'left': 'vertical-bar',
-    'right': 'vertical-bar',
+  vector: {
+    top: 'horizontal-bar',
+    bottom: 'horizontal-bar',
+    left: 'vertical-bar',
+    right: 'vertical-bar',
   },
-  'multivec': {
-    'top': 'horizontal-multivec',
-    'bottom': 'horizontal-multivec',
+  multivec: {
+    top: 'horizontal-multivec',
+    bottom: 'horizontal-multivec',
   },
   'geo-json': {
-    'center': 'geo-json',
+    center: 'geo-json',
   },
   'gene-annotations': {
-    'top': 'horizontal-gene-annotations',
-    'bottom': 'horizontal-gene-annotations',
-    'left': 'vertical-gene-annotations',
-    'right': 'horizontal-gene-annotations',
+    top: 'horizontal-gene-annotations',
+    bottom: 'horizontal-gene-annotations',
+    left: 'vertical-gene-annotations',
+    right: 'horizontal-gene-annotations',
   },
-  'bedlike': {
-    'top': 'bedlike',
-    'bottom': 'bedlike',
-    'left': 'vertical-bedlike',
-    'right': 'vertical-bedlike',
+  bedlike: {
+    top: 'bedlike',
+    bottom: 'bedlike',
+    left: 'vertical-bedlike',
+    right: 'vertical-bedlike',
   },
 };
 

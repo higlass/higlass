@@ -4,7 +4,6 @@ import { scaleLinear } from 'd3-scale';
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 import { colorToHex } from './utils';
-import { tileProxy } from './services';
 
 class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
@@ -23,32 +22,15 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   }
 
   getMouseOverHtml(trackX) {
+    // if we're not supposed to show the tooltip, don't show it
+    // we return here so that the mark isn't drawn in the code
+    // below
     if (!this.tilesetInfo || !this.options.showTooltip) return '';
 
-    const zoomLevel = this.calculateZoomLevel();
-    const tileWidth = tileProxy.calculateTileWidth(
-      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
-    );
-
-    // the position of the tile containing the query position
-    const tilePos = this._xScale.invert(trackX) / tileWidth;
-    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
-
-    const fetchedTile = this.fetchedTiles[tileId];
-    if (!fetchedTile) return '';
-
-    const posInTileX = fetchedTile.tileData.dense.length * (tilePos - Math.floor(tilePos));
-
-    let value = '';
+    const value = this.getDataAtPos(trackX);
     let textValue = '';
 
-    if (fetchedTile) {
-      const index = Math.floor(posInTileX);
-      value = fetchedTile.tileData.dense[index];
-      textValue = format('.3f')(value);
-    } else {
-      return '';
-    }
+    if (value) textValue = format('.3f')(value);
 
     const graphics = this.pMouseOver;
     const colorHex = 0;
@@ -151,32 +133,39 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     const strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
     graphics.lineStyle(strokeWidth, stroke, 1);
 
-    const logScaling = this.options.valueScaling === 'log';
+    tile.segments = [];
+    let currentSegment = [];
 
     for (let i = 0; i < tileValues.length; i++) {
       const xPos = this._xScale(tileXScale(i));
       const yPos = this.valueScale(tileValues[i] + offsetValue);
 
-      tile.xValues[i] = xPos;
-      tile.yValues[i] = yPos;
-
-      if (i === 0) {
-        graphics.moveTo(xPos, yPos);
+      if ((this.options.valueScaling === 'log' && tileValues[i] === 0) || Number.isNaN(yPos)) {
+        if (currentSegment.length > 1) {
+          tile.segments.push(currentSegment);
+        }
+        // Just ignore 1-element segments.
+        currentSegment = [];
         continue;
       }
 
       if (tileXScale(i) > this.tilesetInfo.max_pos[0]) {
-        // this data is in the last tile and extends beyond the length
-        // of the coordinate system
+        // Data is in the last tile and extends beyond the coordinate system.
         break;
       }
 
-      // if we're using log scaling and there's a 0 value, we shouldn't draw it
-      // because it's invalid
-      if (logScaling && tileValues[i] === 0) {
-        graphics.moveTo(xPos, yPos);
-      } else {
-        graphics.lineTo(xPos, yPos);
+      currentSegment.push([xPos, yPos]);
+    }
+    if (currentSegment.length > 1) {
+      tile.segments.push(currentSegment);
+    }
+
+    for (const segment of tile.segments) {
+      const first = segment[0];
+      const rest = segment.slice(1);
+      graphics.moveTo(first[0], first[1]);
+      for (const point of rest) {
+        graphics.lineTo(point[0], point[1]);
       }
     }
   }
@@ -239,10 +228,17 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       const g = document.createElement('path');
       g.setAttribute('fill', 'transparent');
       g.setAttribute('stroke', stroke);
-      let d = `M${tile.xValues[0]} ${tile.yValues[0]}`;
-      for (let i = 0; i < tile.xValues.length; i++) {
-        d += `L${tile.xValues[i]} ${tile.yValues[i]}`;
+      let d = '';
+
+      for (const segment of tile.segments) {
+        const first = segment[0];
+        const rest = segment.slice(1);
+        d += `M${first[0]} ${first[1]}`;
+        for (const point of rest) {
+          d += `L${point[0]} ${point[1]}`;
+        }
       }
+
       g.setAttribute('d', d);
       output.appendChild(g);
     });
@@ -257,21 +253,32 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     // add the axis to the export
     if (
-      this.options.axisPositionHorizontal === 'left' ||
-      this.options.axisPositionVertical === 'top'
+      this.options.axisPositionHorizontal === 'left'
+      || this.options.axisPositionVertical === 'top'
     ) {
       // left axis are shown at the beginning of the plot
       const gDrawnAxis = this.axis.exportAxisLeftSVG(this.valueScale, this.dimensions[1]);
       gAxis.appendChild(gDrawnAxis);
     } else if (
-      this.options.axisPositionHorizontal === 'right' ||
-      this.options.axisPositionVertical === 'bottom'
+      this.options.axisPositionHorizontal === 'right'
+      || this.options.axisPositionVertical === 'bottom'
     ) {
       const gDrawnAxis = this.axis.exportAxisRightSVG(this.valueScale, this.dimensions[1]);
       gAxis.appendChild(gDrawnAxis);
     }
 
     return [base, track];
+  }
+
+  tileToLocalId(tile) {
+    if (this.options.aggregationMode && this.options.aggregationMode !== 'mean') {
+      return `${tile.join('.')}.${this.options.aggregationMode}`;
+    }
+    return `${tile.join('.')}`;
+  }
+
+  tileToRemoteId(tile) {
+    return this.tileToLocalId(tile);
   }
 }
 

@@ -45,6 +45,10 @@ const showMousePosition = (
   // Graphics for cursor position
   const graphics = new PIXI.Graphics();
 
+  // This clears the mouse position graphics, i.e., the mouse position will not
+  // be visible afterwards.
+  const clearGraphics = () => { graphics.clear(); };
+
   /**
    * Draw 1D mouse location (cross) hair onto the PIXI graphics.
    *
@@ -54,7 +58,7 @@ const showMousePosition = (
    * @param  {Boolean}   isNoClear  If `true` do not clear the graphics.
    */
   const drawMousePosition = (mousePos, isHorizontal, isNoClear) => {
-    if (!isNoClear) graphics.clear();
+    if (!isNoClear) clearGraphics();
 
     graphics.lineStyle(1, color, alpha);
 
@@ -75,13 +79,20 @@ const showMousePosition = (
    * @param  {Object}  e  Event object.
    */
   const mouseMoveHandler = (event) => {
-    const x = event.isFromVerticalTrack
-      ? event.dataY
-      : event.dataX;
+    if (!event.hoveredTracks.length) {
+      clearGraphics();
+      return graphics;
+    }
 
-    const y = event.isFromVerticalTrack
-      ? event.dataY
-      : event.isFrom2dTrack ? event.dataY : event.dataX;
+    let x;
+    let y;
+    if (event.isFromVerticalTrack) {
+      x = event.dataY;
+      y = event.dataY;
+    } else {
+      x = event.dataX;
+      y = event.isFrom2dTrack ? event.dataY : event.dataX;
+    }
 
     // 2d or central tracks are not offset and rather rely on a mask, i.e., the
     // top left *visible* position is *not* [0,0] but given by `getPosition()`.
@@ -97,9 +108,13 @@ const showMousePosition = (
 
     // Also draw the second dimension
     if (is2d) drawMousePosition(getScales()[1](y) + offset[1], true, true);
+
+    return graphics;
   };
 
   pubSubs.push(pubSub.subscribe('app.mouseMove', mouseMoveHandler));
+  pubSubs.push(pubSub.subscribe('app.mouseLeave', clearGraphics));
+  pubSubs.push(pubSub.subscribe('blur', clearGraphics));
 
   if (isGlobal) {
     pubSubs.push(globalPubSub.subscribe('higlass.mouseMove', mouseMoveHandler));

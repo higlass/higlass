@@ -9,14 +9,14 @@ Configuration
 -------------
 
 The HiGlass server accepts a number of options to customize its use.
-Most of these options are set using environment variables before the
+Some of these options are set using environment variables before the
 server is started:
 
 .. code-block:: bash
 
     export OPTION=value; python manage.py runserver
 
-``BASE_DIR`` - Set the Django base directory. This is where Django will 
+``BASE_DIR`` - Set the Django base directory. This is where Django will
 look for the database and the media directories.
 
 ``REDIS_HOST`` - The host name for the redis server to use for tile caching.  If
@@ -25,6 +25,41 @@ it's not specified, then no in-memory tile caching will be performed.
 ``REDIS_PORT`` - The port for redis server to use for tile caching. If it's not
 set and a host is provided, the default port will be used.
 
+Additionally, the following settings are set via ``config.json`` (see ``config.json.sample`` as an example):
+
+``DEBUG`` - If ``true`` the server is started in debug mode.
+
+``INSTALLED_APPS`` - A list of django extensions.
+
+``LOG_LEVEL_CONSOLE`` - Define the console log level.
+
+``LOG_LEVEL_FILE`` - Define the file log level.
+
+``LOG_LEVEL_DJANGO`` - Define the django log level.
+
+``LOG_LEVEL_CHROMS`` - Define the chroms log level.
+
+``LOG_LEVEL_FRAGMENTS`` - Define the fragments log level.
+
+``LOG_LEVEL_TILESETS`` - Define the tilesets log level.
+
+``UPLOAD_ENABLED`` - If ``true`` the HiGlass server accepts any kinds of uploads.
+
+``PUBLIC_UPLOAD_ENABLED`` - If ``true`` the HiGlass server accepts public uploads.
+
+``REDIS_HOST`` - IP address of your Redis server.
+
+``REDIS_PORT`` - Port number of your Redis server.
+
+``SNIPPET_HIC_MAX_OUT_DIM`` - If specified it limits the maximum size (in pixels) of the longer side of a Hi-C snippet.
+
+``SNIPPET_HIC_MAX_DATA_DIM`` - If specified it limits the maximum size (in bins) of the longer side of the snippet that is pulled out of a cooler file.
+
+``SNIPPET_IMG_MAX_OUT_DIM`` - If specified it limits the maximum size (in pixels) of the longer side of an image snippet.
+
+``SNIPPET_OSM_MAX_DATA_DIM`` - If specified it limits the maximum size (in pixels) of the longer side of the OSM tiles that are pulled out for getting the image snippet.
+
+``SNIPPET_IMT_MAX_DATA_DIM`` - If specified it limits the maximum size (in pixels) of the longer side of the image tiles that are pulled out for getting the image snippet.
 
 
 Development
@@ -33,7 +68,7 @@ Development
 Running the server locally:
 
 .. code-block:: bash
-    
+
     python manage.py runserver 8000
 
 Testing
@@ -54,7 +89,7 @@ that contain the test:
     python manage.py test tilesets.tests.CoolerTest.test_get_multi_tiles
 
 Chromosome sizes
-^^^^^^^^^^^^^^^^ 
+^^^^^^^^^^^^^^^^
 Chromosome sizes specify the lengths of the chromosomes that make up an
 assembly. While they have no intrinsic biological order, HiGlass displays all
 chromosomes together on a line so the order of the entries in the file does
@@ -83,12 +118,12 @@ Or using curl:
         -F "name=Chromosomes (mm10)" \
         http://higlass.io/api/v1/tilesets/
 
-This should return a JSON object contain a UUID to confirm that the data has been 
+This should return a JSON object contain a UUID to confirm that the data has been
 added to the server:
 
 .. code-block:: json
 
-    {  
+    {
        "uuid":"DRpJETNeTAShnhng6KhhXw",
        "datafile":"http://higlass.io/api/v1/tilesets/media/uploads/chromInfo_ui7zU3M.txt",
        "filetype":"chromsizes-tsv",
@@ -106,7 +141,7 @@ API
 Retrieving a list of available tilesets:
 
 .. code-block:: bash
-    
+
     curl localhost:8000/api/v1/tilesets
 
 To filter by a specific filetype, use the `t=filetype` parameter:
@@ -115,21 +150,114 @@ To filter by a specific filetype, use the `t=filetype` parameter:
 
     curl localhost:8000/api/v1/tilesets?t=cooler
 
-To fileter by datatype, use the `dt=datatype` parameter:
+To filter by datatype, use the `dt=datatype` parameter:
 
 .. code-block:: bash
 
     curl localhost:8000/api/v1/tilesets?dt=matrix
+
+Use the `dt` parameter to get gene annotations and chromsizes:
+
+.. code-block:: bash
+
+    curl localhost:8000/api/v1/tilesets?dt=gene-annotation
+    curl localhost:8000/api/v1/tilesets?dt=chromsizes
+
+Retrieving properties of a tileset, for a specific `uuid`:
+
+ .. code-block:: bash
+
+    curl localhost:8000/api/v1/tilesets/${uuid}/
+
+To delete a tileset, specify the tileset `uuid` in the URL, and use the `DELETE` method with authentication credentials:
+
+ .. code-block:: bash
+
+    curl --user ${username}:${password} --request DELETE http://localhost:8000/api/v1/tilesets/${uuid}/
+
+To modify a tileset name, specify the tileset `uuid` in the URL, use the `PATCH` method with authentication credentials, and specify the new name in the JSON object passed to the request:
+
+ .. code-block:: bash
+
+    curl --user ${username}:${password} --request PATCH --header "Content-Type: application/json" --data '{"name":"new_name_of_tileset"}' http://localhost:8000/api/v1/tilesets/${uuid}/
+
+Tile JSON Response Format
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Tiles returned by the server vary according to the data type but
+all are indexed by their tile id. The example below is a tile response
+from a bedlike track.
+
+.. code-block:: bash
+
+  {
+    "OHJakQICQD6gTD7skx4EWA.3.2": [
+      { "uid": "US2sjy_8SlGuy-0iSshcDQ", "importance": 457.0, "fields": [...] }
+    ]
+  }
+
+The `uid` is used to unique identify annotations. This is necessary
+because annotations that span multiple tiles are returned in every tile
+they intersect. The `importance` determines the priority with which
+annotations are hidden. Annotations with a lower `importance` are hidden
+before annotations with a higher importance. The `fields` field
+contains the actual columns from the bed file.
+
+Management commands
+^^^^^^^^^^^^^^^^^^^
+
+The following commands may be run while logged into a non-Docker HiGlass
+instance and offer functionality to list and manipulate tileset records.
+
+Ingesting data:
+
+.. code-block:: bash
+
+  python manage.py ingest_tileset --filename my.cool --filetype cooler --datatype matrix \
+    --project-name "Experiment 3" --coordSystem hg19
+
+Use the filename parameter to indicate where the data file resides, the filetype to tell
+the server how to read the data, the datatype to tell the client how it can be displayed,
+the coordinate system to indicate which chromosome sizes to use, and the project name to
+group it with other tilesets (available in v1.3.0 and above).
+
+To retrieve a list of available tilesets:
+
+.. code-block:: bash
+
+  python manage.py list_tilesets
+
+To modify the name of a tileset:
+
+.. code-block:: bash
+
+  python manage.py modify_tileset --uuid=${uuid} --name=${name}
+
+.. note::  At this time, the `modify_tileset` command only provides the ability to modify the tileset name. Future revisions may provide logic to modify other tileset fields.
+
+ To delete a tileset:
+
+.. code-block:: bash
+
+  python manage.py delete_tileset --uuid=${uuid}
+
+.. note::  The `delete_tileset` command will delete the tileset record from the database backend. It will also delete the underlying file from the HiGlass server's `media/uploads` folder, and fail if this file cannot be removed.
 
 Testing
 ^^^^^^^
 
 .. code-block:: bash
 
-    python manage.py test tilesets --failfast
+  python manage.py test tilesets --failfast
 
 Or to test a more specific code block:
 
 .. code-block:: bash
 
-    python manage.py test tilesets.tests.CoolerTest.test_transforms --failfast
+  python manage.py test tilesets.tests.CoolerTest.test_transforms --failfast
+
+Tests of deletion and modification routes:
+
+.. code-block:: bash
+
+  python manage.py test tilesets.tests.PermissionsTest

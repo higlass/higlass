@@ -1,7 +1,7 @@
 export function download(filename, stringOrBlob) {
   // yanked from here
   // https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
-  
+
   const blob = typeof stringOrBlob === 'string'
     ? new Blob([stringOrBlob], { type: 'application/octet-stream' })
     : stringOrBlob;

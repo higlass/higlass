@@ -28,17 +28,19 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
 
     const graphics = tile.graphics;
 
-    const { tileX, tileWidth } = this.getTilePosAndDimensions(tile.tileData.zoomLevel, tile.tileData.tilePos);
+    const { tileX, tileWidth } = this.getTilePosAndDimensions(
+      tile.tileData.zoomLevel, tile.tileData.tilePos
+    );
     const tileValues = tile.tileData.dense;
 
-    if (tileValues.length == 0) { return; }
+    if (tileValues.length === 0) { return; }
 
     let pseudocount = 0; // if we use a log scale, then we'll set a pseudocount
     // equal to the smallest non-zero value
     this.valueScale = null;
 
     // console.log('valueScaling:', this.options.valueScaling);
-    if (this.options.valueScaling == 'log') {
+    if (this.options.valueScaling === 'log') {
       let offsetValue = this.medianVisibleValue;
 
       if (!this.medianVisibleValue) { offsetValue = this.minVisibleValue(); }
@@ -59,7 +61,7 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
 
     this.drawAxis(this.valueScale);
 
-    if (this.options.valueScaling == 'log' && this.valueScale.domain()[1] < 0) {
+    if (this.options.valueScaling === 'log' && this.valueScale.domain()[1] < 0) {
       console.warn('Negative values present when using a log scale', this.valueScale.domain());
       return;
     }
@@ -80,7 +82,6 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
 
     graphics.beginFill(pointColor, 1);
 
-    const j = 0;
     tile.drawnAtScale = this._xScale.copy();
 
     for (let i = 0; i < tileValues.length; i++) {
@@ -93,10 +94,9 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
       tile.barWidths[i] = squareSide / this.pMain.scale.x;
       tile.barHeights[i] = squareSide / this.pMain.scale.y;
 
-      if (tileXScale(i) > this.tilesetInfo.max_pos[0])
+      if (tileXScale(i) > this.tilesetInfo.max_pos[0]) { break; }
       // this data is in the last tile and extends beyond the length
       // of the coordinate system
-      { break; }
 
 
       // console.log('drawRect');
@@ -114,7 +114,8 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
 
     for (const tile of dictValues(this.fetchedTiles)) {
       // scaling between tiles
-      const tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) / (this._xScale.domain()[1] - this._xScale.domain()[0]);
+      const tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
+        / (this._xScale.domain()[1] - this._xScale.domain()[0]);
 
       // let posOffset = newRange[0];
 
@@ -151,8 +152,6 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     output.setAttribute('transform',
       `translate(${this.position[0]},${this.position[1]})`);
 
-    const stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
-
     for (const tile of this.visibleAndFetchedTiles()) {
       for (let i = 0; i < tile.barXValues.length; i++) {
         const rect = document.createElement('rect');
@@ -183,15 +182,15 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
 
     // add the axis to the export
     if (
-      this.options.axisPositionHorizontal === 'left' ||
-      this.options.axisPositionVertical === 'top'
+      this.options.axisPositionHorizontal === 'left'
+      || this.options.axisPositionVertical === 'top'
     ) {
       // left axis are shown at the beginning of the plot
       const gDrawnAxis = this.axis.exportAxisLeftSVG(this.valueScale, this.dimensions[1]);
       gAxis.appendChild(gDrawnAxis);
     } else if (
-      this.options.axisPositionHorizontal === 'right' ||
-      this.options.axisPositionVertical === 'bottom'
+      this.options.axisPositionHorizontal === 'right'
+      || this.options.axisPositionVertical === 'bottom'
     ) {
       const gDrawnAxis = this.axis.exportAxisRightSVG(this.valueScale, this.dimensions[1]);
       gAxis.appendChild(gDrawnAxis);

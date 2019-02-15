@@ -61,7 +61,8 @@ class CenterTrack extends React.Component {
         this.rangeSelectionTriggeredXYEnd = false;
       }
       return this.state !== nextState;
-    } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
+    }
+    if (this.props.rangeSelection !== nextProps.rangeSelection) {
       const dim1 = nextProps.rangeSelection[0] || null;
 
       if (this.props.is1dRangeSelection) {
@@ -118,10 +119,10 @@ class CenterTrack extends React.Component {
 
   addBrush1d() {
     if (
-      !this.brushElX ||
-      !this.brushElY || (
-        this.brushElXOld === this.brushElX &&
-        this.brushElYOld === this.brushElY
+      !this.brushElX
+      || !this.brushElY || (
+        this.brushElXOld === this.brushElX
+        && this.brushElYOld === this.brushElY
       )
     ) { return; }
 
@@ -174,10 +175,10 @@ class CenterTrack extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !this.sourceEvent ||
-      !this.props.onRangeSelectionX ||
-      !this.props.is1dRangeSelection ||
-      rangeSelectionMoved
+      !this.sourceEvent
+      || !this.props.onRangeSelectionX
+      || !this.props.is1dRangeSelection
+      || rangeSelectionMoved
     ) return;
 
     this.rangeSelectionTriggeredX = true;
@@ -189,10 +190,10 @@ class CenterTrack extends React.Component {
     this.rangeSelectionMovedEnd = false;
 
     if (
-      !this.sourceEvent ||
-      !this.props.onRangeSelectionX ||
-      !this.props.is1dRangeSelection ||
-      rangeSelectionMovedEnd
+      !this.sourceEvent
+      || !this.props.onRangeSelectionX
+      || !this.props.is1dRangeSelection
+      || rangeSelectionMovedEnd
     ) return;
 
     this.rangeSelectionTriggeredX = true;
@@ -206,10 +207,10 @@ class CenterTrack extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !this.sourceEvent ||
-      !this.props.onRangeSelectionY ||
-      !this.props.is1dRangeSelection ||
-      rangeSelectionMoved
+      !this.sourceEvent
+      || !this.props.onRangeSelectionY
+      || !this.props.is1dRangeSelection
+      || rangeSelectionMoved
     ) return;
 
     this.rangeSelectionTriggeredY = true;
@@ -221,10 +222,10 @@ class CenterTrack extends React.Component {
     this.rangeSelectionMovedEnd = false;
 
     if (
-      !this.sourceEvent ||
-      !this.props.onRangeSelectionY ||
-      !this.props.is1dRangeSelection ||
-      rangeSelectionMovedEnd
+      !this.sourceEvent
+      || !this.props.onRangeSelectionY
+      || !this.props.is1dRangeSelection
+      || rangeSelectionMovedEnd
     ) return;
 
     this.rangeSelectionTriggeredY = true;
@@ -238,10 +239,10 @@ class CenterTrack extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !this.sourceEvent ||
-      !this.props.onRangeSelectionXY ||
-      rangeSelectionMoved ||
-      this.props.is1dRangeSelection
+      !this.sourceEvent
+      || !this.props.onRangeSelectionXY
+      || rangeSelectionMoved
+      || this.props.is1dRangeSelection
     ) return;
 
     this.rangeSelectionTriggeredXY = true;
@@ -434,19 +435,20 @@ class CenterTrack extends React.Component {
       return false;
     });
 
-    const rangeSelectorClass = this.props.isRangeSelectionActive ? (
-      this.props.is1dRangeSelection ?
-        'stylesTrack.track-range-selection-active-secondary' :
-        'stylesTrack.track-range-selection-active-primary'
-    ) : 'stylesTrack.track-range-selection';
+    let rangeSelectorClass = 'stylesTrack.track-range-selection';
+    if (this.props.isRangeSelectionActive) {
+      rangeSelectorClass += this.props.is1dRangeSelection
+        ? '-active-secondary'
+        : '-active-primary';
+    }
 
-    const rangeSelectorGroup1dClass = !this.props.is1dRangeSelection ?
-      'stylesTrack.track-range-selection-group-inactive' :
-      '';
+    const rangeSelectorGroup1dClass = !this.props.is1dRangeSelection
+      ? 'stylesTrack.track-range-selection-group-inactive'
+      : '';
 
-    const rangeSelectorGroup2dClass = this.props.is1dRangeSelection ?
-      'stylesTrack.track-range-selection-group-inactive' :
-      '';
+    const rangeSelectorGroup2dClass = this.props.is1dRangeSelection
+      ? 'stylesTrack.track-range-selection-group-inactive'
+      : '';
 
     return (
       <div
@@ -459,48 +461,52 @@ class CenterTrack extends React.Component {
         }}
         styleName="styles.center-track"
       >
-        {isBrushable &&
-          <svg
-            style={{
-              height: this.props.height,
-              width: this.props.width,
-            }}
-            styleName={rangeSelectorClass}
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g
-              ref={(el) => { this.brushElX = select(el); }}
-              styleName={rangeSelectorGroup1dClass}
-            />
-            <g
-              ref={(el) => { this.brushElY = select(el); }}
-              styleName={rangeSelectorGroup1dClass}
-            />
-            <g
-              ref={(el) => { this.brushElXY = select(el); }}
-              styleName={rangeSelectorGroup2dClass}
-            />
-          </svg>
+        {isBrushable
+          && (
+            <svg
+              style={{
+                height: this.props.height,
+                width: this.props.width,
+              }}
+              styleName={rangeSelectorClass}
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g
+                ref={(el) => { this.brushElX = select(el); }}
+                styleName={rangeSelectorGroup1dClass}
+              />
+              <g
+                ref={(el) => { this.brushElY = select(el); }}
+                styleName={rangeSelectorGroup1dClass}
+              />
+              <g
+                ref={(el) => { this.brushElXY = select(el); }}
+                styleName={rangeSelectorGroup2dClass}
+              />
+            </svg>
+          )
         }
-        {this.props.editable &&
+        {this.props.editable
           // show track controls if config menu is visible or
           // mouse is within the bounds of the track
-          <TrackControl
-            imgStyleAdd={STYLES}
-            imgStyleClose={STYLES}
-            imgStyleMove={STYLES}
-            imgStyleSettings={STYLES}
-            isMoveable={false}
-            isVisible={
-              this.state.isVisible ||
-              this.props.uid === this.props.configTrackMenuId
-            }
-            onAddSeries={this.props.onAddSeries}
-            onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
-            onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
-            paddingRight={menuClash}
-            uid={this.props.uid}
-          />
+          && (
+            <TrackControl
+              imgStyleAdd={STYLES}
+              imgStyleClose={STYLES}
+              imgStyleMove={STYLES}
+              imgStyleSettings={STYLES}
+              isMoveable={false}
+              isVisible={
+                this.state.isVisible
+                || this.props.uid === this.props.configTrackMenuId
+              }
+              onAddSeries={this.props.onAddSeries}
+              onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
+              onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
+              paddingRight={menuClash}
+              uid={this.props.uid}
+            />
+          )
         }
       </div>
     );

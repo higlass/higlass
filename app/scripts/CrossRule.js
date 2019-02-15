@@ -3,7 +3,6 @@ import { mix } from './mixwith';
 
 import PixiTrack from './PixiTrack';
 import RuleMixin from './RuleMixin';
-import { HorizontalRuleMixin } from './HorizontalRule';
 import { VerticalRuleMixin } from './VerticalRule';
 
 class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
@@ -36,7 +35,7 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
   }
 
   drawHorizontalRule(graphics) {
-    const strokeWidth = 1;
+    const strokeWidth = 2;
 
     let stroke = colorToHex('black');
 
@@ -44,12 +43,12 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
       stroke = colorToHex('red');
     }
 
-    graphics.lineStyle(2, stroke, 1);
+    graphics.lineStyle(strokeWidth, stroke, 1);
 
     let pos = 0;
 
-    let dashLength = 5;
-    let dashGap = 3;
+    const dashLength = 5;
+    const dashGap = 3;
 
     // console.log('this._yScale.range()', this._yScale.range());
 
@@ -62,10 +61,8 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
   }
 
   isMouseOverHorizontalLine(mousePos) {
-      if (Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) < this.MOUSEOVER_RADIUS) {
-        return true;
-      }
-    return false;
+    return Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition))
+      < this.MOUSEOVER_RADIUS;
   }
 }
 

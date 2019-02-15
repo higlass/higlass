@@ -131,13 +131,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   /**
    * Mouse move and zoom handler. Is triggered on both events.
    *
-   * @param  {Number}  x  Relative X coordinate.
-   * @param  {Number}  y  Relative Y coordinate
+   * @param  {Number}  absX  Absolute X coordinate.
+   * @param  {Number}  absY  Absolute Y coordinate
    */
-  mouseMoveZoomHandler(x = this.mouseX, y = this.mouseY) {
+  mouseMoveZoomHandler(absX = this.mouseX, absY = this.mouseY) {
     if (
-      typeof x === 'undefined'
-      || typeof y === 'undefined'
+      typeof absX === 'undefined'
+      || typeof absY === 'undefined'
       || !this.areAllVisibleTilesLoaded()
     ) return;
 
@@ -145,16 +145,28 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       return;
     }
 
-    const relX = x - this.position[0];
-    const relY = y - this.position[1];
+    const relX = absX - this.position[0];
+    const relY = absY - this.position[1];
 
-    const data = this.getVisibleRectangleData(
-      relX - Math.ceil(this.dataLensSize / 2),
-      relY - Math.ceil(this.dataLensSize / 2),
-      this.dataLensSize,
-      this.dataLensSize
-    );
+    let data;
+    try {
+      data = this.getVisibleRectangleData(relX, relY, 1, 1).get(0, 0);
+    } catch (e) {
+      return;
+    }
     if (!data) return;
+
+    let dataLens;
+    try {
+      dataLens = this.getVisibleRectangleData(
+        relX - Math.ceil(this.dataLensSize / 2),
+        relY - Math.ceil(this.dataLensSize / 2),
+        this.dataLensSize,
+        this.dataLensSize
+      );
+    } catch (e) {
+      // Nothing
+    }
 
     const dim = this.dataLensSize;
 
@@ -167,12 +179,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       );
     } catch (err) { /* Nothing */ }
 
-    if (!data.data.length || !toRgb) return;
+    if (!toRgb) return;
 
-    let center = [
-      Math.round(this._xScale.invert(relX)),
-      Math.round(this._yScale.invert(relY))
-    ];
+
+    const dataX = Math.round(this._xScale.invert(relX));
+    const dataY = Math.round(this._yScale.invert(relY));
+
+    let center = [dataX, dataY];
     let xRange = [
       Math.round(this._xScale.invert(relX - this.dataLensLPad)),
       Math.round(this._xScale.invert(relX + this.dataLensRPad))
@@ -189,7 +202,23 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     this.onMouseMoveZoom({
-      data, dim, toRgb, center, xRange, yRange, rel: !!this.chromInfo
+      trackId: this.id,
+      data,
+      absX,
+      absY,
+      relX,
+      relY,
+      dataX,
+      dataY,
+      orientation: '2d',
+      // Specific to 2D matrices
+      dataLens,
+      dim,
+      toRgb,
+      center,
+      xRange,
+      yRange,
+      isGenomicCoords: !!this.chromInfo
     });
   }
 
@@ -395,11 +424,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // Fritz: I am disabling ESLint here twice because moving the slash onto the
     // next line breaks my editors style template somehow.
     const startPercent = (
-      (startDomain - axisValueScale.domain()[0]) /  // eslint-disable-line operator-linebreak
+      (startDomain - axisValueScale.domain()[0]) / // eslint-disable-line operator-linebreak
       (axisValueScale.domain()[1] - axisValueScale.domain()[0])
     );
     const endPercent = (
-      (endDomain - axisValueScale.domain()[0]) /  // eslint-disable-line operator-linebreak
+      (endDomain - axisValueScale.domain()[0]) / // eslint-disable-line operator-linebreak
       (axisValueScale.domain()[1] - axisValueScale.domain()[0])
     );
 
@@ -494,7 +523,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // Not sure which we really want.
     // isNaN(undefined) === true
     // Number.isNaN(undefined) === false
-    if (isNaN(this.valueScale.domain()[0])  // eslint-disable-line no-restricted-globals
+    if (isNaN(this.valueScale.domain()[0]) // eslint-disable-line no-restricted-globals
       || isNaN(this.valueScale.domain()[1])) { // eslint-disable-line no-restricted-globals
       return;
     }
@@ -735,7 +764,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     );
 
     const colorbarAreaHeight = Math.min(
-      this.dimensions[1], COLORBAR_MAX_HEIGHT,
+      this.dimensions[1] / 2, COLORBAR_MAX_HEIGHT,
     );
     this.colorbarHeight = colorbarAreaHeight - (2 * COLORBAR_MARGIN);
     const colorbarAreaWidth = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + (2 * COLORBAR_MARGIN);
@@ -780,16 +809,18 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     let gAxis = null;
 
+    const axisValueScale = this.valueScale.copy()
+      .range([this.colorbarHeight, 0]);
     if (
       this.options.colorbarPosition === 'topLeft'
       || this.options.colorbarPosition === 'bottomLeft'
     ) {
-      gAxis = this.axis.exportAxisRightSVG(this.valueScale, this.colorbarHeight);
+      gAxis = this.axis.exportAxisRightSVG(axisValueScale, this.colorbarHeight);
     } else if (
       this.options.colorbarPosition === 'topRight'
       || this.options.colorbarPosition === 'bottomRight'
     ) {
-      gAxis = this.axis.exportAxisLeftSVG(this.valueScale, this.colorbarHeight);
+      gAxis = this.axis.exportAxisLeftSVG(axisValueScale, this.colorbarHeight);
     }
 
     gAxisHolder.appendChild(gAxis);
@@ -929,7 +960,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     // no data present
-    if (this.scale.minValue == null || this.scale.maxValue == null) {
+    if (this.scale.minValue === null || this.scale.maxValue === null) {
       return;
     }
 

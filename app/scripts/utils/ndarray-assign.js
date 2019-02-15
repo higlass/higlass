@@ -2,7 +2,7 @@ import cwise from 'cwise';
 
 const ndarrayAssign = (target, source) => {
   const numSource = +source;
-  const isScalar = !isNaN(numSource);
+  const isScalar = !Number.isNaN(numSource);
 
   if (isScalar) {
     cwise({

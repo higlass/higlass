@@ -17,7 +17,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       canvas.width = this.tilesetInfo.shape[0];
       canvas.height = this.tilesetInfo.shape[1];
     } else {
-      canvas.width = this.tilesetInfo.tile_size; //, pixData.length / 4);
+      canvas.width = this.tilesetInfo.tile_size; // , pixData.length / 4);
       canvas.height = 1;
     }
 
@@ -88,7 +88,8 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         this._xScale,
         this.tilesetInfo.min_pos[0],
         null,
-        this.tilesetInfo.tile_size);
+        this.tilesetInfo.tile_size
+      );
     } else {
       this.xTiles = tileProxy.calculateTiles(
         this.zoomLevel,
@@ -106,15 +107,16 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   }
 
   calculateZoomLevel() {
-    if (!this.tilesetInfo)
-      return;
+    if (!this.tilesetInfo) return undefined;
 
-    let minX = this.tilesetInfo.min_pos[0];
+    const minX = this.tilesetInfo.min_pos[0];
 
     let zoomIndexX = null;
 
     if (this.tilesetInfo.resolutions) {
-      zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(this.tilesetInfo.resolutions, this._xScale, minX);
+      zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
+        this.tilesetInfo.resolutions, this._xScale, minX
+      );
     } else {
       zoomIndexX = tileProxy.calculateZoomLevel(
         this._xScale,
@@ -126,19 +128,6 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     return zoomIndexX;
   }
 
-  /*
-   * The local tile identifier.
-   *
-   * tile contains [zoomLevel, xPos, yPos]
-   */
-  tileToLocalId(tile) {
-    if (tile.dataTransform && tile.dataTransform !== 'default') {
-      return `${tile.join('.')}.${tile.mirrored}.${tile.dataTransform}`;
-    }
-
-    return `${tile.join('.')}.${tile.mirrored}`;
-  }
-
   /**
    * Create the local tile identifier, which be used with the
    * tile stores in TiledPixiTrack
@@ -146,7 +135,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
    * @param {array} tile: [zoomLevel, xPos]
    */
   tileToLocalId(tile) {
-    return `${tile.join('.')}`;
+    return tile.join('.');
   }
 
   /**
@@ -156,7 +145,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
    * @param {array} tile: [zoomLevel, xPos]
    */
   tileToRemoteId(tile) {
-    return `${tile.join('.')}`;
+    return tile.join('.');
   }
 
   /**
@@ -168,13 +157,14 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
    * @return {array} [zoomLevel, tilePos]
    */
   getTilePosAtPosition(trackX, trackY) {
-    if (!this.tilesetInfo)
-      return;
+    if (!this.tilesetInfo) return undefined;
 
     const zoomLevel = this.calculateZoomLevel();
 
     // the width of the tile in base pairs
-    const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size);
+    const tileWidth = tileProxy.calculateTileWidth(
+      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
+    );
 
     // the position of the tile containing the query position
     const tilePos = this._xScale.invert(trackX) / tileWidth;
@@ -192,7 +182,9 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const zoomLevel = this.calculateZoomLevel();
 
     // the width of the tile in base pairs
-    const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size);
+    const tileWidth = tileProxy.calculateTileWidth(
+      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
+    );
 
     // the position of the tile containing the query position
     const tilePos = this._xScale.invert(trackX) / tileWidth;
@@ -200,10 +192,10 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     // the position of query within the tile
     let posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
-    const posInTileY = (trackY / this.dimensions[1])  * numRows;
+    const posInTileY = (trackY / this.dimensions[1]) * numRows;
 
 
-    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)])
+    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
     const fetchedTile = this.fetchedTiles[tileId];
 
     let value = '';
@@ -226,19 +218,19 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       } else {
         index = fetchedTile.tileData.dense.length * Math.floor(posInTileY) + Math.floor(posInTileX);
       }
-      value = format(".3f")(fetchedTile.tileData.dense[index]);
+      value = format('.3f')(fetchedTile.tileData.dense[index]);
     }
 
     // add information about the row
     if (this.tilesetInfo.row_infos) {
-      value += "<br/>";
+      value += '<br/>';
       value += this.tilesetInfo.row_infos[Math.floor(posInTileY)];
     }
 
     return `${value}`;
   }
 
-    /**
+  /**
      * Get some information to display when the mouse is over this
      * track
      *
@@ -249,12 +241,11 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
      *
      */
   getMouseOverHtml(trackX, trackY) {
-    if (!this.tilesetInfo)
-      return '';
+    if (!this.tilesetInfo) return '';
 
     const tilePos = this.getTilePosAtPosition(trackX, trackY);
 
-    let output = "Data value: " + this.getVisibleData(trackX, trackY) + "</br>";
+    let output = `Data value: ${this.getVisibleData(trackX, trackY)}</br>`;
     output += `Zoom level: ${tilePos[0]} tile position: ${tilePos[1]}`;
 
     return output;

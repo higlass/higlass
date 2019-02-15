@@ -190,6 +190,7 @@ export const TRACKS_INFO = [
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
+      'axisLabelFormatting',
       'axisPositionHorizontal',
       'lineStrokeWidth',
       'lineStrokeColor',
@@ -202,10 +203,12 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'mousePositionColor',
+      'aggregationMode'
     ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'topLeft',
+      axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       lineStrokeColor: 'blue',
       lineStrokeWidth: 1,
@@ -238,6 +241,7 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'mousePositionColor',
+      'aggregationMode'
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -275,6 +279,7 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'mousePositionColor',
+      'aggregationMode'
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -419,6 +424,7 @@ export const TRACKS_INFO = [
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
+      'axisLabelFormatting',
       'axisPositionVertical',
       'lineStrokeWidth',
       'lineStrokeColor',
@@ -430,10 +436,12 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'mousePositionColor',
+      'aggregationMode'
     ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'bottomLeft',
+      axisLabelFormatting: 'scientific',
       axisPositionVertical: 'top',
       lineStrokeWidth: 1,
       lineStrokeColor: 'blue',
@@ -456,6 +464,7 @@ export const TRACKS_INFO = [
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
+      'axisLabelFormatting',
       'axisPositionHorizontal',
       'pointColor',
       'pointSize',
@@ -466,6 +475,7 @@ export const TRACKS_INFO = [
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'topLeft',
+      axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       pointColor: 'red',
       pointSize: 3,
@@ -485,6 +495,7 @@ export const TRACKS_INFO = [
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
+      'axisLabelFormatting',
       'axisPositionHorizontal',
       'barFillColorTop',
       'barFillColorBottom',
@@ -497,6 +508,7 @@ export const TRACKS_INFO = [
       labelColor: 'black',
       labelPosition: 'topLeft',
       axisPositionHorizontal: 'right',
+      axisLabelFormatting: 'scientific',
       barFillColorBottom: 'red',
       barFillColorTop: 'green',
       valueScaling: 'linear',
@@ -517,6 +529,7 @@ export const TRACKS_INFO = [
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
+      'axisLabelFormatting',
       'axisPositionHorizontal',
       'barFillColor',
       'colorRange',
@@ -529,11 +542,13 @@ export const TRACKS_INFO = [
       'barOpacity',
       'showMousePosition',
       'showTooltip',
+      'aggregationMode'
     ],
     defaultOptions: {
       align: 'bottom',
-      labelColor: 'black',
+      labelColor: '[glyph-color]',
       labelPosition: 'topLeft',
+      axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       barFillColor: 'darkgreen',
       valueScaling: 'linear',
@@ -554,6 +569,7 @@ export const TRACKS_INFO = [
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
+      'axisLabelFormatting',
       'axisPositionHorizontal',
       'barFillColor',
       'colorRange',
@@ -566,11 +582,13 @@ export const TRACKS_INFO = [
       'barOpacity',
       'showMousePosition',
       'showTooltip',
+      'aggregationMode'
     ],
     defaultOptions: {
       align: 'bottom',
       labelColor: 'black',
       labelPosition: 'topLeft',
+      axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       barFillColor: 'darkgreen',
       valueScaling: 'linear',
@@ -590,6 +608,7 @@ export const TRACKS_INFO = [
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
+      'axisLabelFormatting',
       'axisPositionHorizontal',
       'lineStrokeWidth',
       'lineStrokeColor',
@@ -600,6 +619,7 @@ export const TRACKS_INFO = [
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'topLeft',
+      axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       lineStrokeColor: 'red',
       lineStrokeWidth: 1,
@@ -939,7 +959,7 @@ export const TRACKS_INFO = [
   },
   {
     type: 'horizontal-1d-annotations',
-    datatype: ['nothing'],  // Unfortunately one has to specify something here
+    datatype: ['nothing'], // Unfortunately one has to specify something here
     local: false,
     orientation: '1d-horizontal',
     name: 'Horizontal 1D Annotations',
@@ -965,7 +985,7 @@ export const TRACKS_INFO = [
   },
   {
     type: 'vertical-1d-annotations',
-    datatype: ['nothing'],  // Unfortunately one has to specify something here
+    datatype: ['nothing'], // Unfortunately one has to specify something here
     local: false,
     orientation: '1d-vertical',
     name: 'Vertical 1D Annotations',
@@ -1051,6 +1071,44 @@ export const TRACKS_INFO = [
     datatype: 'any',
     local: true,
     orientation: 'any',
+  },
+  {
+    type: 'horizontal-chromosome-grid',
+    datatype: ['chromsizes'],
+    local: false,
+    orientation: '1d-horizontal',
+    name: 'Chromosome Grid',
+    chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+    thumbnail: null,
+    availableOptions: [
+      'lineStrokeWidth',
+      'lineStrokeColor',
+      'showMousePosition'
+    ],
+    defaultOptions: {
+      lineStrokeWidth: 1,
+      lineStrokeColor: 'grey',
+      showMousePosition: false,
+    },
+  },
+  {
+    type: 'vertical-chromosome-grid',
+    datatype: ['chromsizes'],
+    local: false,
+    orientation: '1d-vertical',
+    name: 'Chromosome Grid',
+    chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+    thumbnail: null,
+    availableOptions: [
+      'lineStrokeWidth',
+      'lineStrokeColor',
+      'showMousePosition'
+    ],
+    defaultOptions: {
+      lineStrokeWidth: 1,
+      lineStrokeColor: 'grey',
+      showMousePosition: false,
+    },
   },
   {
     type: '2d-chromosome-grid',

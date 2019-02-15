@@ -92,7 +92,7 @@ And displaying the dataset in the client:
             hgc.Track(track_type='heatmap', position='center',
                      tileset_uuid=ts.uuid, 
                       api_url=server.api_address,
-                      height=250
+                      height=250,
                      options={ 'valueScaleMax': 0.5 }),
 
         ])
@@ -287,3 +287,31 @@ And finally, we can create a HiGlass client in the browser to view the data:
 
 .. image:: img/jupyter-labelled-points.png
 
+Other constructs
+""""""""""""""""
+
+The examples containing dense data above use the `bundled_tiles_wrapper_2d`
+function to translate lists of tile_ids to tile data. This consolidates tiles
+that are within rectangular blocks and fulfills them simultaneously. The
+return type is a list of ``(tile_id, formatted_tile_data)`` tuples.
+
+In cases where we don't have such a function handy, there's the simpler
+`tiles_wrapper_2d` which expects the target to fullfill just single tile
+requests:
+
+.. code-block:: python
+
+    import hgflask.server as hgse
+    import hgflask.tilesets as hfti
+    import hgtiles.format as hgfo
+    import hgtiles.utils as hgut
+
+    ts = hfti.Tileset(
+        tileset_info=tileset_info,
+        tiles=lambda tile_ids: hgut.tiles_wrapper_2d(tile_ids,
+                        lambda z,x,y: hgfo.format_dense_tile(tile_data(z, x, y)))
+    )
+
+    server = hgse.start([ts])
+
+In this case, we expect *tile_data* to simply return a matrix of values.
