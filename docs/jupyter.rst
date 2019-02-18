@@ -1,5 +1,5 @@
-Jupyter Notebooks
-#################
+Python & Jupyter
+################
 
 Python `Jupyter notebooks <http://jupyter.org/>`_ are an excellent way to
 experiment with data science and visualization. Using the higlass-jupyter
@@ -14,10 +14,10 @@ and enable the jupyter extension:
 
 .. code-block:: bash
 
-    pip install jupyter hgflask higlass-jupyter 
+    pip install jupyter higlass-python 
 
-    jupyter nbextension install --py --sys-prefix --symlink higlass_jupyter
-    jupyter nbextension enable --py --sys-prefix higlass_jupyter
+    jupyter nbextension install --py --sys-prefix --symlink higlass
+    jupyter nbextension enable --py --sys-prefix higlass
 
 
 Uninstalling
@@ -25,10 +25,89 @@ Uninstalling
 
 .. code-block:: bash
 
-    jupyter nbextension uninstall --py --sys-prefix higlass_jupyter
+    jupyter nbextension uninstall --py --sys-prefix higlass
 
-Usage
------
+Tilesets
+--------
+
+To display data, we need to define a tileset. Tilesets define two functions:
+``tileset_info``:
+
+.. code-block:: python
+
+    > ts1 = hgti.bigwig('http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig')
+    > ts1.tileset_info()
+    {
+     'min_pos': [0],
+     'max_pos': [4294967296],
+     'max_width': 4294967296,
+     'tile_size': 1024,
+     'max_zoom': 22,
+     'chromsizes': [['chr1', 249250621],
+                    ['chr2', 243199373],
+                    ...],
+     'aggregation_modes': {'mean': {'name': 'Mean', 'value': 'mean'},
+                           'min': {'name': 'Min', 'value': 'min'},
+                           'max': {'name': 'Max', 'value': 'max'},
+                           'std': {'name': 'Standard Deviation', 'value': 'std'}},
+     'range_modes': {'minMax': {'name': 'Min-Max', 'value': 'minMax'},
+                     'whisker': {'name': 'Whisker', 'value': 'whisker'}}
+     }
+
+and ``tiles``:
+
+.. code-block:: python
+
+    > ts1.tiles(['x.0.0'])
+    [('x.0.0',
+      {'min_value': 0.0,
+       'max_value': 9.119079544037932,
+       'dense': 'Rh25PwcCcz...',   # base64 string encoding the array of data
+       'size': 1,
+       'dtype': 'float32'})]
+
+The tiles function will always take an array of tile ids of the form ``id.z.x[.y][.transform]``
+where ``z`` is the zoom level, ``x`` is the tile's x position, ``y`` is the tile's 
+y position (for 2D tilesets) and ``transform`` is some transform to be applied to the
+data (e.g. normalization types like ``ice``).
+
+Examples
+--------
+
+The examples below demonstrate how to use the HiGlass Python API to view
+data locally in a Jupyter notebook or a browser-based HiGlass instance.
+
+Remote bigWig Files
+^^^^^^^^^^^^^^^^^^^
+
+bigWig files can be loaded either from the local disk or from remote http
+servers. The example below demonstrates how to load a remote bigWig file from
+the UCSC genome browser's archives. Note that this is a network-heavy operation
+that may take a long time to complete with a slow internet connection.
+
+.. code-block:: python
+
+    import higlass
+    import higlass.client as hgc
+    import higlass.tilesets as hgti
+
+    ts1 = hgti.bigwig('http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig')
+
+    tr1 = hgc.Track('horizontal-bar', tileset=ts1)
+    view1 = hgc.View([tr1])
+    (display, server, viewconf) = higlass.display([view1])
+
+    display
+
+Multi-resolution matrices
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Multi-resolution matrices, as their name implies, store dense matrices at multiple
+resolutions so that they can be quickly viewed in their entirety on a web browser.
+
+.. code-block:: python
+
+
 
 To instantiate a HiGlass component within a Jupyter notebook, we first need
 to specify which data should be loaded. This can be accomplished with the 
