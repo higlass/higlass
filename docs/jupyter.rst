@@ -235,9 +235,9 @@ Then we can define the data and tell the server how to render it.
         hgc.View([
             hgc.Track(track_type='top-axis', position='top'),
             hgc.Track(track_type='left-axis', position='left'),
-            hgc.Track(track_type='heatmap', position='center',
-                     tileset_uuid=ts.uuid,
-                      server=server.api_address,
+            hgc.Track(track_type='heatmap', 
+                      position='center',
+                      tileset=ts,
                       height=250,
                      options={ 'valueScaleMax': 0.5 }),
 
@@ -266,11 +266,10 @@ Then we have to set up a data server to output the data in "tiles".
 
 .. code-block:: python
 
-    import hgtiles.points as hgpo
-    import hgtiles.utils as hgut
+    import clodius.tiles.points as hgpo
+    import clodius.tiles.utils as hgut
 
-    import hgflask.server as hfse
-    import hgflask.tilesets as hfti
+    import higlass.tilesets as hgti
 
     import numpy as np
     import pandas as pd
@@ -285,7 +284,7 @@ Then we have to set up a data server to output the data in "tiles".
     # get the tileset info (bounds and such) of the dataset
     tsinfo = hgpo.tileset_info(df, 'x', 'y')
 
-    ts = hfti.Tileset(
+    ts = hgti.Tileset(
         tileset_info=lambda: tsinfo,
         tiles=lambda tile_ids: hgpo.format_data(
                     hgut.bundled_tiles_wrapper_2d(tile_ids,
@@ -299,24 +298,21 @@ And finally, we can create a HiGlass client in the browser to view the data:
 
 .. code-block:: python
 
-    import hgflask.client as hfc
-    import higlass_jupyter as hiju
+    import higlass.client as hgc
 
-    hgc = hfc.ViewConf([
-        hfc.View([
-            hfc.Track(
+
+    (display, server, viewconf) = higlass.display([
+        hgc.View([
+            hgc.Track(
                 track_type='labelled-points-track',
                 position='center',
-                tileset_uuid=ts.uuid,
-                api_url=server.api_address,
+                tileset=ts,
                 height=200,
                 options={
                     'labelField': 'v'
                 })
         ])
     ])
-
-    hiju.HiGlassDisplay(viewconf=hgc.to_json())
 
 .. image:: img/jupyter-labelled-points.png
 
@@ -334,10 +330,9 @@ requests:
 
 .. code-block:: python
 
-    import hgflask.server as hgse
-    import hgflask.tilesets as hfti
-    import hgtiles.format as hgfo
-    import hgtiles.utils as hgut
+    import higlass.tilesets as hgti
+    import clodius.tiles.format as hgfo
+    import clodius.tiles.utils as hgut
 
     ts = hfti.Tileset(
         tileset_info=tileset_info,
@@ -345,6 +340,5 @@ requests:
                         lambda z,x,y: hgfo.format_dense_tile(tile_data(z, x, y)))
     )
 
-    server = hgse.start([ts])
 
 In this case, we expect *tile_data* to simply return a matrix of values.
