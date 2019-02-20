@@ -13,7 +13,7 @@ The simple example below stops any running higlass containers, removes them, pul
   docker stop higlass-container; 
   docker rm higlass-container;
 
-  docker pull gehlenborglab/higlass:v0.4.33 # higher versions are experimental and may or may not work
+  docker pull higlass/higlass-docker:v0.6.1 # higher versions are experimental and may or may not work
 
 
   docker run --detach \
@@ -21,7 +21,7 @@ The simple example below stops any running higlass containers, removes them, pul
              --volume ~/hg-data:/data \
              --volume ~/tmp:/tmp \
              --name higlass-container \
-           gehlenborglab/higlass:v0.4.17
+           higlass/higlass-docker:v0.6.1
 
 
 The higlass website should now be visible at ``http://localhost:8989``. Take a look at the documentation for `adding a new track <https://github.com/higlass/higlass/wiki/Common-Tasks#adding-a-new-track>`_ to see how to display data.
@@ -39,7 +39,7 @@ For security reasons, an instance created this way will not be accessible from h
            --volume ~/tmp:/tmp \
            --name higlass-container \
            -e SITE_URL=my.higlass.org \
-           gehlenborglab/higlass:v0.4.17
+           higlass/higlass-docker:v0.6.1
 
 To use the admin interface for managing the available datasets, a superuser needs to created:
 
