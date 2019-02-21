@@ -267,19 +267,18 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           && (xEndPos - xStartPos < GENE_RECT_HEIGHT / 2)
         ) { // only draw if it's not too wide
           drawnPoly = [
-            xStartPos, rectY,
-            xStartPos + (GENE_RECT_HEIGHT / 2),
-            rectY + (rectHeight / 2),
-            xStartPos, rectY + rectHeight
+            xStartPos, rectY, // top
+            xStartPos + (GENE_RECT_HEIGHT / 2), rectY + (rectHeight / 2), // right point
+            xStartPos, rectY + rectHeight // bottom
           ];
 
           if (geneInfo[5] === '+') {
             tile.rectGraphics.drawPolygon(drawnPoly);
           } else {
             drawnPoly = [
-              xStartPos, rectY,
-              xStartPos - (GENE_RECT_HEIGHT / 2), rectY + (rectHeight / 2),
-              xStartPos, rectY + rectHeight
+              xEndPos, rectY, // top
+              xEndPos - (GENE_RECT_HEIGHT / 2), rectY + (rectHeight / 2), // left point
+              xEndPos, rectY + rectHeight // bottom
             ];
             tile.rectGraphics.drawPolygon(drawnPoly);
           }
@@ -292,13 +291,20 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
               xEndPos - (GENE_RECT_HEIGHT / 2), rectY + rectHeight, // right bottom
               xStartPos, rectY + rectHeight // left bottom
             ];
-          } else {
+          } else if (geneInfo[5] === '-') {
             drawnPoly = [
               xStartPos + (GENE_RECT_HEIGHT / 2), rectY, // left top
               xEndPos, rectY, // right top
               xEndPos, rectY + rectHeight, // right bottom
               xStartPos + (GENE_RECT_HEIGHT / 2), rectY + rectHeight, // left bottom
               xStartPos, rectY + rectHeight / 2
+            ];
+          } else {
+            drawnPoly = [
+              xStartPos, rectY, // left top
+              xEndPos, rectY, // right top
+              xEndPos, rectY + rectHeight, // right bottom
+              xStartPos, rectY + rectHeight, // left bottom
             ];
           }
 
@@ -393,7 +399,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       }
     }
 
-    let maxValue = 0;
+    const maxValue = 0;
 
     // let rendered = 0;
 
@@ -403,8 +409,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       // console.log('maxPlusRows', maxPlusRows);
       // console.log('maxMinusRows', maxMinusRows);
 
-      let fill = colorToHex(this.options.fillColor ? this.options.fillColor : 'blue');
-      let minusStrandFill = colorToHex('purple');
+      const fill = colorToHex(this.options.fillColor ? this.options.fillColor : 'blue');
+      const minusStrandFill = colorToHex('purple');
 
       console.log('tile +:', tile.plusStrandRows);
       console.log('tile -:', tile.minusStrandRows);
@@ -413,7 +419,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       const plusHeight = maxPlusRows * this.dimensions[1]
         / (maxPlusRows + maxMinusRows) - MIDDLE_SPACE / 2;
 
-      this.renderRows(tile, tile.plusStrandRows, maxPlusRows, 
+      this.renderRows(tile, tile.plusStrandRows, maxPlusRows,
         0, plusHeight, fill);
       this.renderRows(tile, tile.minusStrandRows, maxMinusRows,
         plusHeight + MIDDLE_SPACE / 2, this.dimensions[1], minusStrandFill);
