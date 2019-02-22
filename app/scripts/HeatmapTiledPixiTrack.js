@@ -107,7 +107,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(
-        this, this.is2d, this.options.showMousePositionGlobally
+        this, this.is2d, this.options.showGlobalMousePosition
       );
     }
 
@@ -322,7 +322,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(
-        this, this.is2d, this.showMousePositionGlobally
+        this, this.is2d, this.options.showGlobalMousePosition
       );
     }
   }
