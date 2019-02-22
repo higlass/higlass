@@ -79,7 +79,7 @@ const showMousePosition = (
    * @param  {Object}  e  Event object.
    */
   const mouseMoveHandler = (event) => {
-    if (!event.hoveredTracks.length) {
+    if (event.hoveredTracks && !event.hoveredTracks.length) {
       clearGraphics();
       return graphics;
     }
