@@ -46,7 +46,9 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
-       * Enable broadcasting mouse position globally
+       * Enable or disable broadcasting the mouse position globally
+       * @param {boolean} isBroadcastMousePositionGlobally - If `true` the mouse
+       *   position will be broadcasted globally.
        */
       setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally = false) {
         self.isBroadcastMousePositionGlobally = isBroadcastMousePositionGlobally;

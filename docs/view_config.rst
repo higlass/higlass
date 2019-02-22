@@ -257,6 +257,10 @@ Some of the more important ones are:
 
 -  ``valueScaleMin`` and ``valueScaleMax``: control the minimum and maximum values rendered by the track. If either is not defined, then it will be set according to the visible data (i.e. the minimum value of the scale will be the minimum value in the visible data and the same for the maximum)
 
+- ``showMousePosition``: enables a visual crosshair at the mouse cursor's location across the track
+
+- ``showGlobalMousePosition``: enables a visual crosshair at the mouse cursor's location in another HiGlass instance. This option will only ensure that the globally broadcasted mouse cursor location will be rendered but it does not turn on global broadcasting of the mouse cursor location. To do that you have to call ``setBroadcastMousePositionGlobally(true)`` from the JS API.
+
 Overlay Tracks
 ==============
 

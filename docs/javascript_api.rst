@@ -187,6 +187,8 @@ API Functions
 
 .. js:autofunction:: public.on
 
+.. js:autofunction:: setBroadcastMousePositionGlobally
+
 TiledPixiTrack Functions
 ========================
 
