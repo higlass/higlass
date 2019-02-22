@@ -19,6 +19,7 @@ server is started:
 ``APP_BASEPATH`` - Allow access to the admin interface at ``http://server.com/$APP_BASEPATH/admin``. 
 
 ``BASE_DIR`` - Set the Django base directory. This is where Django will 
+
 look for the database and the media directories.
 
 ``REDIS_HOST`` - The host name for the redis server to use for tile caching.  If
@@ -70,7 +71,7 @@ Development
 Running the server locally:
 
 .. code-block:: bash
-    
+
     python manage.py runserver 8000
 
 Testing
@@ -91,7 +92,7 @@ that contain the test:
     python manage.py test tilesets.tests.CoolerTest.test_get_multi_tiles
 
 Chromosome sizes
-^^^^^^^^^^^^^^^^ 
+^^^^^^^^^^^^^^^^
 Chromosome sizes specify the lengths of the chromosomes that make up an
 assembly. While they have no intrinsic biological order, HiGlass displays all
 chromosomes together on a line so the order of the entries in the file does
@@ -120,12 +121,12 @@ Or using curl:
         -F "name=Chromosomes (mm10)" \
         http://higlass.io/api/v1/tilesets/
 
-This should return a JSON object contain a UUID to confirm that the data has been 
+This should return a JSON object contain a UUID to confirm that the data has been
 added to the server:
 
 .. code-block:: json
 
-    {  
+    {
        "uuid":"DRpJETNeTAShnhng6KhhXw",
        "datafile":"http://higlass.io/api/v1/tilesets/media/uploads/chromInfo_ui7zU3M.txt",
        "filetype":"chromsizes-tsv",
@@ -143,7 +144,7 @@ API
 Retrieving a list of available tilesets:
 
 .. code-block:: bash
-    
+
     curl localhost:8000/api/v1/tilesets
 
 To filter by a specific filetype, use the `t=filetype` parameter:
@@ -158,24 +159,31 @@ To filter by datatype, use the `dt=datatype` parameter:
 
     curl localhost:8000/api/v1/tilesets?dt=matrix
 
-Retrieving properties of a tileset, for a specific `uuid`:  
+Use the `dt` parameter to get gene annotations and chromsizes:
 
- .. code-block:: bash 
+.. code-block:: bash
 
-    curl localhost:8000/api/v1/tilesets/${uuid}/ 
-      
-To delete a tileset, specify the tileset `uuid` in the URL, and use the `DELETE` method with authentication credentials:  
+    curl localhost:8000/api/v1/tilesets?dt=gene-annotation
+    curl localhost:8000/api/v1/tilesets?dt=chromsizes
 
- .. code-block:: bash 
+Retrieving properties of a tileset, for a specific `uuid`:
 
-    curl --user ${username}:${password} --request DELETE http://localhost:8000/api/v1/tilesets/${uuid}/  
-      
-To modify a tileset name, specify the tileset `uuid` in the URL, use the `PATCH` method with authentication credentials, and specify the new name in the JSON object passed to the request: 
+ .. code-block:: bash
 
- .. code-block:: bash 
+    curl localhost:8000/api/v1/tilesets/${uuid}/
 
-    curl --user ${username}:${password} --request PATCH --header "Content-Type: application/json" --data '{"name":"new_name_of_tileset"}' http://localhost:8000/api/v1/tilesets/${uuid}/ 
-      
+To delete a tileset, specify the tileset `uuid` in the URL, and use the `DELETE` method with authentication credentials:
+
+ .. code-block:: bash
+
+    curl --user ${username}:${password} --request DELETE http://localhost:8000/api/v1/tilesets/${uuid}/
+
+To modify a tileset name, specify the tileset `uuid` in the URL, use the `PATCH` method with authentication credentials, and specify the new name in the JSON object passed to the request:
+
+ .. code-block:: bash
+
+    curl --user ${username}:${password} --request PATCH --header "Content-Type: application/json" --data '{"name":"new_name_of_tileset"}' http://localhost:8000/api/v1/tilesets/${uuid}/
+
 Tile JSON Response Format
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -198,8 +206,8 @@ annotations are hidden. Annotations with a lower `importance` are hidden
 before annotations with a higher importance. The `fields` field
 contains the actual columns from the bed file.
 
-Management commands 
-^^^^^^^^^^^^^^^^^^^ 
+Management commands
+^^^^^^^^^^^^^^^^^^^
 
 The following commands may be run while logged into a non-Docker HiGlass
 instance and offer functionality to list and manipulate tileset records.
@@ -218,24 +226,24 @@ group it with other tilesets (available in v1.3.0 and above).
 
 To retrieve a list of available tilesets:
 
-.. code-block:: bash 
+.. code-block:: bash
 
-  python manage.py list_tilesets 
-      
-To modify the name of a tileset:  
+  python manage.py list_tilesets
 
-.. code-block:: bash 
+To modify the name of a tileset:
 
-  python manage.py modify_tileset --uuid=${uuid} --name=${name}  
-      
-.. note::  At this time, the `modify_tileset` command only provides the ability to modify the tileset name. Future revisions may provide logic to modify other tileset fields.  
+.. code-block:: bash
 
- To delete a tileset: 
+  python manage.py modify_tileset --uuid=${uuid} --name=${name}
 
-.. code-block:: bash 
+.. note::  At this time, the `modify_tileset` command only provides the ability to modify the tileset name. Future revisions may provide logic to modify other tileset fields.
 
-  python manage.py delete_tileset --uuid=${uuid} 
-      
+ To delete a tileset:
+
+.. code-block:: bash
+
+  python manage.py delete_tileset --uuid=${uuid}
+
 .. note::  The `delete_tileset` command will delete the tileset record from the database backend. It will also delete the underlying file from the HiGlass server's `media/uploads` folder, and fail if this file cannot be removed.
 
 Testing
@@ -251,8 +259,8 @@ Or to test a more specific code block:
 
   python manage.py test tilesets.tests.CoolerTest.test_transforms --failfast
 
-Tests of deletion and modification routes:  
+Tests of deletion and modification routes:
 
-.. code-block:: bash 
+.. code-block:: bash
 
   python manage.py test tilesets.tests.PermissionsTest
