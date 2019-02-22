@@ -1,3 +1,7 @@
+## v1.5.0
+
+- Allow sharing the mouse position globally. See [`docs/examples/others/global-mouse-position.html`](docs/examples/others/global-mouse-position.html) for an example.
+
 ## v1.4.2
 
 - Fix #568, #569
