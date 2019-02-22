@@ -413,7 +413,7 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     if (this.options.onSelect && !silent) {
       window[this.options.onSelect](uid);
-    this.pubSub.publish('app.click', {
+      this.pubSub.publish('annoSelected', uid);
     }
 
     if (prevGfx && prevUid) {
