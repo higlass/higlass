@@ -32,7 +32,6 @@
 
     "no-param-reassign": 0, // https://github.com/higlass/higlass/issues/483
     "no-return-assign": 0, // https://github.com/higlass/higlass/issues/480
-    "no-undef": 0, // https://github.com/higlass/higlass/pull/506
     "react/no-find-dom-node": 0, // https://github.com/higlass/higlass/issues/510
     "react/require-default-props": 0, // https://github.com/higlass/higlass/issues/523
 
