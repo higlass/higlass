@@ -1,0 +1,98 @@
+const viewconfig = {
+  editable: true,
+  zoomFixed: false,
+  trackSourceServers: ['http://higlass.io/api/v1'],
+  exportViewUrl: 'http://higlass.io/api/v1/viewconfs/',
+  views: [
+    {
+      uid: 'aa',
+      initialXDomain: [7595655.0000270605, 2507738795.9999733],
+      initialYDomain: [-545671929.4383738, 3061006380.438374],
+      autocompleteSource:
+        'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
+      genomePositionSearchBoxVisible: false,
+      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+      tracks: {
+        top: [
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            uid: 'genes',
+            type: 'horizontal-gene-annotations',
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
+            uid: 'bar1',
+            type: 'horizontal-bar',
+            options: {
+              labelPosition: 'topLeft',
+              labelLeftMargin: 10,
+              labelTopMargin: 10,
+            },
+            height: 72
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'PdAaSdibTLK34hCw7ubqKA',
+            uid: 'bar2',
+            type: 'horizontal-bar',
+            options: {
+              align: 'top',
+              labelPosition: 'topRight',
+              labelRightMargin: 10,
+              labelTopMargin: 10,
+            },
+            height: 72
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
+            uid: 'bar3',
+            type: 'horizontal-bar',
+            options: {
+              labelPosition: 'bottomLeft',
+              labelLeftMargin: 10,
+              labelBottomMargin: 10,
+            },
+            height: 72
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'PdAaSdibTLK34hCw7ubqKA',
+            uid: 'bar4',
+            type: 'horizontal-bar',
+            options: {
+              align: 'top',
+              labelPosition: 'bottomRight',
+              labelRightMargin: 10,
+              labelBottomMargin: 10,
+            },
+            height: 72
+          },
+          {
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            type: 'horizontal-chromosome-labels',
+            position: 'top',
+            height: 24,
+            uid: 'chroms',
+          }
+        ],
+        left: [],
+        center: [],
+        right: [],
+        bottom: []
+      },
+      layout: {
+        w: 12,
+        h: 12,
+        x: 0,
+        y: 0,
+        i: 'aa',
+        moved: false,
+        static: false
+      }
+    }
+  ]
+};
+export default viewconfig;
