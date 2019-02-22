@@ -1,4 +1,6 @@
 /* eslint-env node, jasmine */
+import { globalPubSub } from 'pub-sub-es';
+
 import {
   some,
   waitForTransitionsFinished,
@@ -221,6 +223,63 @@ describe('API Tests', () => {
           expect(moved['v-line']).toEqual(true);
           expect(moved.heatmap).toEqual(true);
           done();
+        }, 0);
+      });
+    });
+
+    it('global mouse position broadcasting', (done) => {
+      [div, api] = createElementAndApi(
+        simple1dHorizontalVerticalAnd2dDataTrack,
+        { editable: false, bounded: true }
+      );
+
+      api.setBroadcastMousePositionGlobally(true);
+
+      let mouseMoveEvt = null;
+
+      globalPubSub.subscribe('higlass.mouseMove', (evt) => {
+        mouseMoveEvt = evt;
+      });
+
+      const createMouseEvent = (type, x, y) => new MouseEvent(type, {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+        // WARNING: The following property is absolutely crucial to have the
+        // event being picked up by PIXI. Do not remove under any circumstances!
+        // pointerType: 'mouse',
+        screenX: x,
+        screenY: y,
+        clientX: x,
+        clientY: y
+      });
+
+      waitForTilesLoaded(api.getComponent(), () => {
+        const tiledPlotDiv = div.querySelector('.tiled-plot-div');
+
+        tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150, 150));
+
+        setTimeout(() => {
+          expect(mouseMoveEvt).not.toEqual(null);
+          expect(mouseMoveEvt.x).toEqual(150);
+          expect(mouseMoveEvt.y).toEqual(150);
+          expect(mouseMoveEvt.relTrackX).toEqual(85);
+          expect(mouseMoveEvt.relTrackY).toEqual(85);
+          expect(Math.round(mouseMoveEvt.dataX)).toEqual(1670179850);
+          expect(Math.round(mouseMoveEvt.dataY)).toEqual(1832488682);
+          expect(mouseMoveEvt.isFrom2dTrack).toEqual(true);
+          expect(mouseMoveEvt.isFromVerticalTrack).toEqual(false);
+          expect(mouseMoveEvt.sourceUid).toBeDefined();
+          expect(mouseMoveEvt.noHoveredTracks).toEqual(false);
+
+          mouseMoveEvt = null;
+          api.setBroadcastMousePositionGlobally(false);
+          tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150, 150));
+
+          setTimeout(() => {
+            expect(mouseMoveEvt).toEqual(null);
+            done();
+          }, 0);
         }, 0);
       });
     });
