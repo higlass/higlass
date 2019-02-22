@@ -27,7 +27,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     if (pixData.length) {
-      const pix = new ImageData(pixData, pixData.length / 4, canvas.height);
+      const pix = new ImageData(pixData, canvas.width, canvas.height);
       ctx.putImageData(pix, 0, 0);
     }
 
@@ -78,8 +78,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     this.zoomLevel = this.calculateZoomLevel();
 
-
-    if (this.tilesetInfo.resolution) {
+    if (this.tilesetInfo.resolutions) {
       const sortedResolutions = this.tilesetInfo.resolutions
         .map(x => +x).sort((a, b) => b - a);
 

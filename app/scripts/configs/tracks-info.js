@@ -203,6 +203,7 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'mousePositionColor',
+      'aggregationMode'
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -240,6 +241,7 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'mousePositionColor',
+      'aggregationMode'
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -277,6 +279,7 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'mousePositionColor',
+      'aggregationMode'
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -433,6 +436,7 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'mousePositionColor',
+      'aggregationMode'
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -538,10 +542,11 @@ export const TRACKS_INFO = [
       'barOpacity',
       'showMousePosition',
       'showTooltip',
+      'aggregationMode'
     ],
     defaultOptions: {
       align: 'bottom',
-      labelColor: 'black',
+      labelColor: '[glyph-color]',
       labelPosition: 'topLeft',
       axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
@@ -577,6 +582,7 @@ export const TRACKS_INFO = [
       'barOpacity',
       'showMousePosition',
       'showTooltip',
+      'aggregationMode'
     ],
     defaultOptions: {
       align: 'bottom',
@@ -1065,6 +1071,44 @@ export const TRACKS_INFO = [
     datatype: 'any',
     local: true,
     orientation: 'any',
+  },
+  {
+    type: 'horizontal-chromosome-grid',
+    datatype: ['chromsizes'],
+    local: false,
+    orientation: '1d-horizontal',
+    name: 'Chromosome Grid',
+    chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+    thumbnail: null,
+    availableOptions: [
+      'lineStrokeWidth',
+      'lineStrokeColor',
+      'showMousePosition'
+    ],
+    defaultOptions: {
+      lineStrokeWidth: 1,
+      lineStrokeColor: 'grey',
+      showMousePosition: false,
+    },
+  },
+  {
+    type: 'vertical-chromosome-grid',
+    datatype: ['chromsizes'],
+    local: false,
+    orientation: '1d-vertical',
+    name: 'Chromosome Grid',
+    chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+    thumbnail: null,
+    availableOptions: [
+      'lineStrokeWidth',
+      'lineStrokeColor',
+      'showMousePosition'
+    ],
+    defaultOptions: {
+      lineStrokeWidth: 1,
+      lineStrokeColor: 'grey',
+      showMousePosition: false,
+    },
   },
   {
     type: '2d-chromosome-grid',

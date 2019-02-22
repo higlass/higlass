@@ -20,7 +20,12 @@ class TilesetFinder extends React.Component {
 
     // local tracks are ones that don't have a filetype associated with them
     this.localTracks = TRACKS_INFO
-      .filter(x => x.local && !x.hidden);
+      .filter(x => x.local && !x.hidden)
+      .map((x) => {
+        const y = Object.assign({}, x);
+        y.datatype = x.datatype[0];
+        return y;
+      });
 
     this.augmentedTracksInfo = TRACKS_INFO;
     if (window.higlassTracksByType) {

@@ -166,6 +166,30 @@ Options
 --------
 
 **axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
+**lineStrokeColor**: - A valid color (e.g. ``black``) or to track the color of the line use ``[glyph-color]``.
+**constIndicators**: Array of constant value indicators - A constant value indicator display a line for a constant value, e.g., a minimum or maximum value. This property is also available on other 1D tracks like ``Bar`` and ``Point`` tracks. See the following for an example:
+
+.. code-block:: javascript
+
+  {
+    type: 'horizontal-line',
+    ...
+    options: {
+      constIndicators: [
+        {
+          color: '#000000',
+          opacity: 0.33,
+          label: 'Max',
+          labelPosition: 'leftBottom',
+          labelColor: '#000000',
+          labelOpacity: 0.25,
+          value: 60000
+        },
+      ],
+      ...
+    }
+  }
+
 
 .. _bar-track:
 
@@ -184,6 +208,7 @@ Options
 --------
 
 **axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
+**barFillColor**: - A valid color (e.g. ``black``) or to track the color of the bars use ``[glyph-color]``.
 
 **Demos:**
 
@@ -256,7 +281,7 @@ Chromosome Labels
     :align: right
 
 track-type: ``horizontal-chromosome-labes``
-datatype: ``chromsizes``
+datatype: ``chromsizes`` or ``cooler``
 filetypes: ``chromsizes-tsv``
 
 The chromosome labels track shows the names of the chromosomes. Its data is
@@ -276,7 +301,7 @@ Chromosome Grid
     :align: right
 
 track-type: ``2d-chromosome-grid``
-datatype: ``chromsizes``
+datatype: ``chromsizes`` or ``cooler``
 filetypes: ``chromsizes-tsv``
 
 A chromosome grid displays the boundaries of chromosomes on the 2D area. Its
@@ -287,6 +312,19 @@ selectable from the "Add Track Dialog".
 
 To find the chromosome grid in the list of tracks, search for "chromosomes" when
 adding a track to the *center* view.
+
+Horizontal Chromosome Grid
+==========================
+
+.. image:: img/horizontal-chromosome-labels-thumb.png
+    :align: right
+
+track-type: ``horizontal-chromosome-lables``
+datatype: ``chromsizes`` or ``cooler``
+filetypes: ``chromsizes-tsv``
+
+The horizontal chromosome grid shows the locations of
+chromosome boundaries on a 1D track.
 
 Stacked Bars
 ============

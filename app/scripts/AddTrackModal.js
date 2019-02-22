@@ -62,7 +62,13 @@ class AddTrackModal extends React.Component {
       // more than one dataype present, we assign the default track type
       // to each tileset
       for (const tileset of selectedTilesets) {
-        tileset.type = AVAILABLE_TRACK_TYPES([tileset.datatype],
+        let datatypes = [tileset.datatype];
+
+        if (tileset.filetype === 'cooler') {
+          datatypes = [tileset.datatype, 'chromsizes'];
+        }
+
+        tileset.type = AVAILABLE_TRACK_TYPES([datatypes],
           this.getOrientation(this.props.position))[0].type;
       }
     }
@@ -164,7 +170,14 @@ class AddTrackModal extends React.Component {
               : (
                 <PlotTypeChooser
                   ref={(c) => { this.plotTypeChooser = c; }}
-                  datatypes={this.state.selectedTilesets.map(x => x.datatype)}
+                  datatypes={this.state.selectedTilesets.map((x) => {
+                    if (x.filetype === 'cooler') {
+                      // cooler files can also supply chromsizes
+                      return [x.datatype, 'chromsizes'];
+                    }
+
+                    return [x.datatype];
+                  })}
                   onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
                   orientation={orientation}
                 />

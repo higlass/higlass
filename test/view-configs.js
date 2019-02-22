@@ -1,3 +1,156 @@
+/* eslint quotes: 0 */  // --> OFF
+/* eslint quote-props: 0 */  // --> OFF
+
+
+export const horizontalLineEnd = {
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "/api/v1",
+    "http://higlass.io/api/v1"
+  ],
+  "exportViewUrl": "/api/v1/viewconfs/",
+  "views": [
+    {
+      "tracks": {
+        "top": [
+          {
+            "type": "top-axis",
+            "local": true,
+            "orientation": "1d-horizontal",
+            "name": "Top Axis",
+            "thumbnail": {},
+            "defaultOptions": {},
+            "uid": "RUyAone_RH2aFqj80bsfUQ",
+            "options": {},
+            "width": 20,
+            "height": 20,
+            "position": "top"
+          },
+          {
+            "name": "wgEncodeSydhTfbsGm12878InputStdSig",
+            "created": "2017-02-03T17:48:00.630172Z",
+            "project": null,
+            "project_name": "",
+            "description": "",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "Nn8aA4qbTnmaa-oGGbuE-A",
+            "uid": "Q9_8OTS7R2WwsryxSDNlFQ",
+            "type": "horizontal-line",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "axisLabelFormatting": "scientific",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "lineStrokeWidth": 1,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "showTooltip": true,
+              "name": "wgEncodeSydhTfbsGm12878InputStdSig"
+            },
+            "width": 570,
+            "height": 20,
+            "position": "top"
+          },
+          {
+            "name": "Gene Annotations (hg19)",
+            "created": "2017-02-05T19:31:52.412319Z",
+            "project": null,
+            "project_name": "",
+            "description": "",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "WpKwI4TOTzG6fEC5wyPXUA",
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "fontSize": 11,
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "geneAnnotationHeight": 10,
+              "geneLabelPosition": "outside",
+              "geneStrandSpacing": 4,
+              "name": "Gene Annotations (hg19)"
+            },
+            "width": 20,
+            "height": 24,
+            "header": "",
+            "position": "top"
+          },
+          {
+            "name": "Chromosome Axis",
+            "created": "2017-06-06T17:03:01.273116Z",
+            "project": null,
+            "project_name": "",
+            "description": "",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
+            "uid": "A56224PKTf6oX2pj2ZxCuA",
+            "type": "horizontal-chromosome-labels",
+            "options": {
+              "color": "#777777",
+              "stroke": "#FFFFFF",
+              "fontSize": 12,
+              "fontIsAligned": false,
+              "showMousePosition": false,
+              "mousePositionColor": "#999999"
+            },
+            "width": 570,
+            "height": 35,
+            "position": "top"
+          }
+        ],
+        "left": [],
+        "center": [],
+        "right": [],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "initialXDomain": [
+        2315931901.9099894,
+        3761936264.711727
+      ],
+      "initialYDomain": [
+        949343383.5863687,
+        931585435.2712595
+      ],
+      "layout": {
+        "w": 12,
+        "h": 3,
+        "x": 0,
+        "y": 0,
+        "i": "P6f09PHDQxeukRNnBhOLFg",
+        "moved": false,
+        "static": false
+      },
+      "uid": "P6f09PHDQxeukRNnBhOLFg"
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+};
+
 export const emptyConf = {
   editable: true,
   zoomFixed: false,
