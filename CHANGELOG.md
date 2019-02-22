@@ -1,6 +1,6 @@
 ## v1.5.0
 
-- Added ability to define label margins
+- Added ability to define label margins. See [`docs/examples/viewconfs/label-margin.json`](docs/examples/viewconfs/label-margin.json) for an example.
 
 ## v1.4.1
 
