@@ -3266,6 +3266,7 @@ class HiGlassComponent extends React.Component {
       origEvt: e,
       sourceUid: this.uid,
       hoveredTracks,
+      noHoveredTracks: hoveredTracks.length === 0,
     };
 
     this.pubSub.publish('app.mouseMove', evt);
