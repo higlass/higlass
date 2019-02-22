@@ -1,3 +1,7 @@
+## v1.4.2
+
+- Fix #568, #569
+
 ## v1.4.1
 
 - Allow users to choose adding the chromosome grid overlay from the Add Track Dialog when selecting a cooler file.
