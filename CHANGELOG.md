@@ -1,6 +1,10 @@
-## v1.4.2
+## v1.5.0
 
 - Add a new option to tracks that support axis: `axisMargin` to add some margin to an axis. See [docs/examples/viewconfs/axis-margin.json](docs/examples/viewconfs/axis-margin.json) for an example
+
+## v1.4.2
+
+- Fix #568, #569
 
 ## v1.4.1
 
