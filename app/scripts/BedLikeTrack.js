@@ -17,14 +17,16 @@ import {
 // Configs
 import { HEATED_OBJECT_MAP } from './configs';
 
-const GENE_RECT_HEIGHT = 10;
+const GENE_RECT_HEIGHT = 16;
 const MAX_TEXTS = 1000;
 const MAX_TILE_ENTRIES = 5000;
+const ALTERNATING_OFFSET = 5;
+
 
 class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
     super(context, options);
-    this.textFontSize = '10px';
+    this.textFontSize = '12px';
     this.textFontFamily = 'Arial';
 
     this.drawnRects = {};
@@ -79,32 +81,33 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
       tile.plusStrandRows = plusStrandRows;
       tile.minusStrandRows = minusStrandRows;
-      // tile.tileData.forEach((td, i) => {
-      //   const geneInfo = td.fields;
-      //   const fill = this.options.fillColor ? this.options.fillColor : 'blue';
 
-      //   tile.textWidths = {};
+      tile.tileData.forEach((td, i) => {
+        const geneInfo = td.fields;
+        const fill = this.options.fillColor ? this.options.fillColor : 'blue';
 
-      //   // don't draw texts for the latter entries in the tile
-      //   if (i >= MAX_TEXTS) {
-      //     return;
-      //   }
+        tile.textWidths = {};
+        tile.textHeights = {};
 
-      //   // geneInfo[3] is the gene symbol
-      //   const text = new PIXI.Text(geneInfo[3], {
-      //     fontSize: this.textFontSize,
-      //     fontFamily: this.textFontFamily,
-      //     fill: colorToHex(fill)
-      //   });
-      //   if (this.flipText) { text.scale.x = -1; }
+        // don't draw texts for the latter entries in the tile
+        if (i >= MAX_TEXTS) {
+          return;
+        }
 
-      //   text.anchor.x = 0.5;
-      //   text.anchor.y = 1;
+        // geneInfo[3] is the gene symbol
+        const text = new PIXI.Text(geneInfo[3], {
+          fontSize: this.textFontSize,
+          fontFamily: this.textFontFamily,
+          fill: colorToHex(fill)
+        });
+        if (this.flipText) { text.scale.x = -1; }
 
-      //   tile.texts[geneInfo[3]] = text; // index by geneName
+        text.anchor.x = 0.5;
+        text.anchor.y = 0.5;
 
-      //   tile.textGraphics.addChild(text);
-      // });
+        tile.texts[geneInfo[3]] = text; // index by geneName
+        tile.textGraphics.addChild(text);
+      });
     }
 
     tile.initialized = true;
@@ -192,7 +195,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   allVisibleRects() {
     const allRects = {};
 
-    Object.values(this.fetchedTiles).map((x) => {
+    Object.values(this.fetchedTiles).forEach((x) => {
       if (!x.plusStrandRows) return;
 
       for (const row of x.plusStrandRows[0]) {
@@ -234,9 +237,63 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return allRects;
   }
 
+  drawPoly(tile, xStartPos, xEndPos, rectY, rectHeight, strand) {
+    let drawnPoly = null;
+
+    if (
+      (strand === '+' || strand === '-')
+      && (xEndPos - xStartPos < GENE_RECT_HEIGHT / 2)
+    ) { // only draw if it's not too wide
+      drawnPoly = [
+        xStartPos, rectY, // top
+        xStartPos + (GENE_RECT_HEIGHT / 2), rectY + (rectHeight / 2), // right point
+        xStartPos, rectY + rectHeight // bottom
+      ];
+
+      if (strand === '+') {
+        tile.rectGraphics.drawPolygon(drawnPoly);
+      } else {
+        drawnPoly = [
+          xEndPos, rectY, // top
+          xEndPos - (GENE_RECT_HEIGHT / 2), rectY + (rectHeight / 2), // left point
+          xEndPos, rectY + rectHeight // bottom
+        ];
+        tile.rectGraphics.drawPolygon(drawnPoly);
+      }
+    } else {
+      if (strand === '+') {
+        drawnPoly = [
+          xStartPos, rectY, // left top
+          xEndPos - (GENE_RECT_HEIGHT / 2), rectY, // right top
+          xEndPos, rectY + (rectHeight / 2),
+          xEndPos - (GENE_RECT_HEIGHT / 2), rectY + rectHeight, // right bottom
+          xStartPos, rectY + rectHeight // left bottom
+        ];
+      } else if (strand === '-') {
+        drawnPoly = [
+          xStartPos + (GENE_RECT_HEIGHT / 2), rectY, // left top
+          xEndPos, rectY, // right top
+          xEndPos, rectY + rectHeight, // right bottom
+          xStartPos + (GENE_RECT_HEIGHT / 2), rectY + rectHeight, // left bottom
+          xStartPos, rectY + rectHeight / 2
+        ];
+      } else {
+        drawnPoly = [
+          xStartPos, rectY, // left top
+          xEndPos, rectY, // right top
+          xEndPos, rectY + rectHeight, // right bottom
+          xStartPos, rectY + rectHeight, // left bottom
+        ];
+      }
+
+      tile.rectGraphics.drawPolygon(drawnPoly);
+    }
+
+    return drawnPoly;
+  }
+
   renderRows(tile, rows, maxRows, startY, endY, fill) {
     const zoomLevel = +tile.tileId.split('.')[0];
-    const ALTERNATING_OFFSET = 5;
     // console.log('startY', startY, 'endY', endY, range(maxRows), rows);
 
     const rowScale = scaleBand()
@@ -254,33 +311,20 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       for (let i = 0; i < rows[j].length; i++) {
         // rendered += 1;
         const td = rows[j][i].value;
-        // don't draw anything that has already been drawn
-        if (zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel]) {
-          // indicate that this tile wants to draw this rectangle again
-          // this.drawnRects[zoomLevel][td.uid][2].add(tile.tileId);
-          continue;
-        }
-
         const geneInfo = td.fields;
+        const geneName = geneInfo[3];
 
         // the returned positions are chromosome-based and they need to
         // be converted to genome-based
         const chrOffset = +td.chrOffset;
-
         const txStart = +geneInfo[1] + chrOffset;
         const txEnd = +geneInfo[2] + chrOffset;
-        // const exonStarts = geneInfo[12];
-        // const exonEnds = geneInfo[13];
-
         const txMiddle = (txStart + txEnd) / 2;
-
         let yMiddle = rowScale(j) + (rowScale.step() / 2);
-
-        // let textYMiddle = rowScale(j) + (rowScale.step() / 2);
-        const geneName = geneInfo[3];
-        // let rectHeight = rowScale.step() / 2;
         let rectHeight = GENE_RECT_HEIGHT;
 
+        // if the regions are scaled according to a value column their height needs to
+        // be adjusted
         if (this.options && this.options.valueColumn) {
           if (this.options.colorEncoding) {
             const rgb = valueToColor(
@@ -304,7 +348,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         // yMiddle -= 8;
 
         const opacity = this.options.fillOpacity || 0.3;
-
         tile.rectGraphics.lineStyle(1, fill, opacity);
         tile.rectGraphics.beginFill(fill, opacity);
         // let height = valueScale(Math.log(+geneInfo[4]));
@@ -312,83 +355,38 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
         // const rectX = this._xScale(txMiddle) - (rectHeight / 2);
         let rectY = yMiddle - (rectHeight / 2);
-
         const xStartPos = this._xScale(txStart);
         const xEndPos = this._xScale(txEnd);
 
-        let drawnPoly = null;
-
-        // check if every other region should be offset from the mean height
         if (this.options.alternating) {
-          if (allRects[td.uid].alternatingStartPosition) {
+          const rect = allRects[td.uid];
+
+          if (rect.alternatingStartPosition) {
             rectY -= ALTERNATING_OFFSET / 2;
           } else {
             rectY += ALTERNATING_OFFSET / 2;
           }
         }
 
-        if (
-          geneInfo.length > 5
-          && (geneInfo[5] === '+' || geneInfo[5] === '-')
-          && (xEndPos - xStartPos < GENE_RECT_HEIGHT / 2)
-        ) { // only draw if it's not too wide
-          drawnPoly = [
-            xStartPos, rectY, // top
-            xStartPos + (GENE_RECT_HEIGHT / 2), rectY + (rectHeight / 2), // right point
-            xStartPos, rectY + rectHeight // bottom
+        // don't draw anything that has already been drawn
+        if (!(zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel])) {
+          if (!this.drawnRects[zoomLevel]) this.drawnRects[zoomLevel] = {};
+
+          const drawnPoly = this.drawPoly(tile, xStartPos, xEndPos,
+            rectY, rectHeight, geneInfo[5]);
+
+          this.drawnRects[zoomLevel][td.uid] = [
+            drawnPoly,
+            {
+              start: txStart,
+              end: txEnd,
+              value: td,
+            },
+            tile.tileId
           ];
-
-          if (geneInfo[5] === '+') {
-            tile.rectGraphics.drawPolygon(drawnPoly);
-          } else {
-            drawnPoly = [
-              xEndPos, rectY, // top
-              xEndPos - (GENE_RECT_HEIGHT / 2), rectY + (rectHeight / 2), // left point
-              xEndPos, rectY + rectHeight // bottom
-            ];
-            tile.rectGraphics.drawPolygon(drawnPoly);
-          }
-        } else {
-          if (geneInfo[5] === '+') {
-            drawnPoly = [
-              xStartPos, rectY, // left top
-              xEndPos - (GENE_RECT_HEIGHT / 2), rectY, // right top
-              xEndPos, rectY + (rectHeight / 2),
-              xEndPos - (GENE_RECT_HEIGHT / 2), rectY + rectHeight, // right bottom
-              xStartPos, rectY + rectHeight // left bottom
-            ];
-          } else if (geneInfo[5] === '-') {
-            drawnPoly = [
-              xStartPos + (GENE_RECT_HEIGHT / 2), rectY, // left top
-              xEndPos, rectY, // right top
-              xEndPos, rectY + rectHeight, // right bottom
-              xStartPos + (GENE_RECT_HEIGHT / 2), rectY + rectHeight, // left bottom
-              xStartPos, rectY + rectHeight / 2
-            ];
-          } else {
-            drawnPoly = [
-              xStartPos, rectY, // left top
-              xEndPos, rectY, // right top
-              xEndPos, rectY + rectHeight, // right bottom
-              xStartPos, rectY + rectHeight, // left bottom
-            ];
-          }
-
-          tile.rectGraphics.drawPolygon(drawnPoly);
         }
 
-        if (!this.drawnRects[zoomLevel]) this.drawnRects[zoomLevel] = {};
-
-        this.drawnRects[zoomLevel][td.uid] = [
-          drawnPoly,
-          {
-            start: txStart,
-            end: txEnd,
-            value: td,
-          },
-          tile.tileId
-        ];
-
+        // console.log('geneName:', geneName);
         // tile probably hasn't been initialized yet
         if (!tile.texts) return;
 
@@ -400,7 +398,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         const text = tile.texts[geneName];
 
         text.position.x = this._xScale(txMiddle);
-        // text.position.y = textYMiddle;
+        text.position.y = rectY + rectHeight / 2;
+
         text.style = {
           fontSize: this.textFontSize,
           fontFamily: this.textFontFamily,
@@ -410,8 +409,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         if (!(geneInfo[3] in tile.textWidths)) {
           text.updateTransform();
           const textWidth = text.getBounds().width;
+          const textHeight = text.getBounds().height;
 
           tile.textWidths[geneInfo[3]] = textWidth;
+          tile.textHeights[geneInfo[3]] = textHeight;
         }
       }
     }
@@ -605,52 +606,52 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
       // move the texts
 
-      // const parentInFetched = this.parentInFetched(tile);
+      const parentInFetched = this.parentInFetched(tile);
 
       if (!tile.initialized) { continue; }
 
-      // if (tile.tileData && tile.tileData.length) {
-      //   tile.tileData.forEach((td) => {
-      //     if (!tile.texts) {
-      //       // tile probably hasn't been initialized yet
-      //       return;
-      //     }
+      if (tile.tileData && tile.tileData.length) {
+        tile.tileData.forEach((td) => {
+          if (!tile.texts) {
+            // tile probably hasn't been initialized yet
+            return;
+          }
 
-      //     const geneInfo = td.fields;
-      //     const geneName = geneInfo[3];
-      //     const text = tile.texts[geneName];
+          const geneInfo = td.fields;
+          const geneName = geneInfo[3];
+          const text = tile.texts[geneName];
 
-      //     if (!text) { return; }
+          if (!text) { return; }
 
-      //     const chrOffset = +td.chrOffset;
-      //     const txStart = +geneInfo[1] + chrOffset;
-      //     const txEnd = +geneInfo[2] + chrOffset;
-      //     const txMiddle = (txStart + txEnd) / 2;
-      //     let textYMiddle = this.dimensions[1] / 2;
-      //     textYMiddle += 10;
+          const chrOffset = +td.chrOffset;
+          const txStart = +geneInfo[1] + chrOffset;
+          const txEnd = +geneInfo[2] + chrOffset;
+          const txMiddle = (txStart + txEnd) / 2;
 
-      //     text.position.x = this._xScale(txMiddle);
-      //     text.position.y = textYMiddle;
+          text.position.x = this._xScale(txMiddle);
 
+          if (!parentInFetched) {
+            text.visible = true;
 
-      //     if (!parentInFetched) {
-      //       // TODO, change the line below to true if texts are desired in the future
-      //       text.visible = false;
+            // TODO, change the line below to true if texts are desired in the future
+            // text.visible = false;
 
-      //       const TEXT_MARGIN = 3;
-      //       this.allBoxes.push([text.position.x - TEXT_MARGIN, textYMiddle - 1,
-      //         text.position.x + tile.textWidths[geneInfo[3]] + TEXT_MARGIN, textYMiddle + 1]);
-      //       this.allTexts.push({
-      //         importance: +geneInfo[5],
-      //         text,
-      //         caption: geneName,
-      //         strand: geneInfo[5]
-      //       });
-      //     } else {
-      //       text.visible = false;
-      //     }
-      //   });
-      // }
+            const TEXT_MARGIN = 3;
+            this.allBoxes.push([text.position.x - TEXT_MARGIN,
+              text.position.y - tile.textHeights[geneInfo[3]] / 2,
+              text.position.x + tile.textWidths[geneInfo[3]] + TEXT_MARGIN,
+              text.position.y + tile.textHeights[geneInfo[3]] / 2]);
+            this.allTexts.push({
+              importance: td.importance,
+              text,
+              caption: geneName,
+              strand: geneInfo[5]
+            });
+          } else {
+            text.visible = false;
+          }
+        });
+      }
     }
 
     /*
@@ -683,7 +684,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             return box;
         });
         */
-
     boxIntersect(allBoxes, (i, j) => {
       if (allTexts[i].importance > allTexts[j].importance) {
         allTexts[j].text.visible = false;
