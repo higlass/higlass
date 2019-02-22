@@ -24,9 +24,7 @@ class ViewportTrackerVertical extends SVGTrack {
     this.viewportYDomain = null;
 
     this.brush = brush(true)
-      .on('brush', this.brushed.bind(this))
-    ;
-
+      .on('brush', this.brushed.bind(this));
     this.gBrush = this.gMain
       .append('g')
       .attr('id', `brush-${this.uid}`)

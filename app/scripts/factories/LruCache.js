@@ -67,7 +67,7 @@ function put(key, value) {
  *   }
  */
 function shift() {
-  // todo: handle special case when limit == 1
+  // todo: handle special case when limit === 1
   const entry = this.head;
   if (entry) {
     if (this.head.newer) {

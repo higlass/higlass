@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>on('mouseMoveZoom') &middot; HiGlass</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/hglib.css">
+  <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16.6/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.2/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+</head>
+<body >
+  <div
+    id="demo"
+    style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem"
+  ></div>
+</body>
+<script src='/hglib.js'></script>
+<script>
+const viewConfig = {
+  editable: true,
+  zoomFixed: false,
+  trackSourceServers: ['http://higlass.io/api/v1'],
+  views: [
+    {
+      uid: 'a',
+      initialXDomain: [1480820463, 2550144059],
+      initialYDomain: [1569819845, 2433776657],
+      tracks: {
+        top: [
+          {
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            type: 'horizontal-chromosome-labels',
+            uid: 'top-chroms',
+            options: {
+              showMousePosition: true,
+              mousePositionColor: '#999999'
+            }
+          },
+          {
+            type: 'horizontal-line',
+            tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
+            server: 'http://higlass.io/api/v1',
+            uid: 'h-line',
+            height: 60,
+            options: {
+              showTooltip: true
+            }
+          }
+        ],
+        left: [
+          {
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            type: 'vertical-chromosome-labels',
+            uid: 'left-chroms',
+            options: {
+              showMousePosition: true,
+              mousePositionColor: '#999999'
+            }
+          },
+          {
+            type: 'vertical-line',
+            tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
+            server: 'http://higlass.io/api/v1',
+            uid: 'v-line',
+            width: 60,
+            options: {
+              showTooltip: true
+            }
+          }
+        ],
+        center: [
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
+            type: 'heatmap',
+            position: 'center',
+            uid: 'heatmap',
+            options: {
+              showTooltip: true
+            }
+          }
+        ],
+        bottom: [],
+        right: []
+      },
+      layout: {
+        w: 11,
+        h: 14,
+        x: 0,
+        y: 0,
+        i: 'a',
+        moved: false,
+        static: false
+      }
+    }
+  ],
+};
+
+const api = hglib.viewer(
+  document.getElementById('demo'), viewConfig, { bounded: true },
+);
+
+hglib
+  .ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv')
+  .then((chromInfo) => {
+    api.on('mouseMoveZoom', (event) => {
+      const genomePos = event.orientation === '2d'
+        ? `${chromInfo.absToChr(event.dataX)}-${chromInfo.absToChr(event.dataY)}`
+        : chromInfo.absToChr(event.dataX);
+
+      console.log(
+        `MouseMoveZoom over ${event.trackId} track (${event.orientation})`,
+        event,
+        `at ${genomePos}`
+      );
+    });
+  });
+</script>
+</html>

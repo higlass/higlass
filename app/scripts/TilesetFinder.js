@@ -20,7 +20,12 @@ class TilesetFinder extends React.Component {
 
     // local tracks are ones that don't have a filetype associated with them
     this.localTracks = TRACKS_INFO
-      .filter(x => x.local && !x.hidden);
+      .filter(x => x.local && !x.hidden)
+      .map((x) => {
+        const y = Object.assign({}, x);
+        y.datatype = x.datatype[0];
+        return y;
+      });
 
     this.augmentedTracksInfo = TRACKS_INFO;
     if (window.higlassTracksByType) {
@@ -318,7 +323,7 @@ class TilesetFinder extends React.Component {
             className="tileset-finder-search-box"
             onChange={this.handleSearchChange.bind(this)}
             placeholder="Search Term"
-            type='text'
+            type="text"
           />
         </div>
         <div
@@ -326,11 +331,8 @@ class TilesetFinder extends React.Component {
           styleName="tileset-finder-checkbox-tree"
         >
           <CheckboxTree
-              nodes={nestedItems}
               checked={this.state.checked}
               expanded={this.state.expanded}
-              onCheck={this.handleChecked.bind(this)}
-              onExpand={this.handleExpanded.bind(this)}
               icons={{
                 uncheck: <svg style={svgStyle}><use xlinkHref="#square_o" /></svg>,
                 check: <svg style={svgStyle}><use xlinkHref="#check_square_o" /></svg>,
@@ -341,6 +343,9 @@ class TilesetFinder extends React.Component {
                 parentClose: <svg style={svgStyle}><use xlinkHref="#folder_o" /></svg>,
                 parentOpen: <svg style={svgStyle}><use xlinkHref="#folder_open_o" /></svg>,
               }}
+              nodes={nestedItems}
+              onCheck={this.handleChecked.bind(this)}
+              onExpand={this.handleExpanded.bind(this)}
           />
         </div>
       </form>

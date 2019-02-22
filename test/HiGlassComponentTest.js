@@ -68,7 +68,7 @@ describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
 
-  jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
   describe('API tests', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -1540,137 +1540,6 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().handleViewportProjected('bb', 'aa', 'heatmap3');
 
       waitForTilesLoaded(hgc.instance(), done);
-    });
-  });
-
-  describe('Multiple track addition', () => {
-    let atm = null;
-
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: false }}
-        viewConfig={oneViewConfig}
-      />,
-      { attachTo: div });
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('should open the AddTrackModal', (done) => {
-      // this was to test an example from the higlass-website demo page
-      // where the issue was that the genome position search box was being
-      // styled with a margin-bottom of 10px, fixed by setting the style of
-      // genome-position-search to specify margin-bottom app/styles/GenomePositionSearchBox.css
-      const tiledPlot = hgc.instance().tiledPlots.aa;
-      tiledPlot.handleAddTrack('top');
-
-      hgc.update();
-
-      atm = tiledPlot.addTrackModal;
-      // eslint-disable-next-line react/no-find-dom-node
-      const inputField = ReactDOM.findDOMNode(atm.tilesetFinder.searchBox);
-
-      // make sure the input field is equal to the document's active element
-      // e.g. that it has focus
-      expect(inputField).toEqual(document.activeElement);
-
-      waitForJsonComplete(done);
-    });
-
-    it('should select one plot type and double click', (done) => {
-      const { tilesetFinder } = atm;
-      tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ']);
-      hgc.update();
-
-      tilesetFinder.props.onDoubleClick(tilesetFinder.state.options['http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ']);
-
-      waitForJsonComplete(done);
-    });
-
-    it('should reopen the AddTrackModal', (done) => {
-      // open up the add track dialog for the next tests
-      const tiledPlot = hgc.instance().tiledPlots.aa;
-      tiledPlot.handleAddTrack('top');
-      hgc.update();
-      atm = tiledPlot.addTrackModal;
-      waitForJsonComplete(done);
-    });
-
-    it('should select two different plot types', (done) => {
-      const { tilesetFinder } = atm;
-
-      tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/TO3D5uHjSt6pyDPEpc1hpA', 'http://higlass.io/api/v1/Nn8aA4qbTnmaa-oGGbuE-A']);
-
-      hgc.update();
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('should add these plot types', (done) => {
-      atm.handleSubmit();
-
-      const tiledPlot = hgc.instance().tiledPlots.aa;
-      tiledPlot.handleAddTrack('top');
-
-      hgc.update();
-
-      atm = tiledPlot.addTrackModal;
-
-      waitForJsonComplete(done);
-    });
-
-    it('should select a few different tracks and check for the plot type selection', (done) => {
-      const { tilesetFinder } = atm;
-
-      tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ',
-        'http://higlass.io/api/v1/GUm5aBiLRCyz2PsBea7Yzg']);
-
-      hgc.update();
-
-      let ptc = atm.plotTypeChooser;
-
-      expect(ptc.AVAILABLE_TRACK_TYPES.length).toEqual(0);
-
-      tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/NNlxhMSCSnCaukAtdoKNXw',
-        'http://higlass.io/api/v1/GGKJ59R-RsKtwgIgFohOhA']);
-
-      hgc.update();
-
-      ptc = atm.plotTypeChooser;
-
-
-      // should just have the horizontal-heatmap track type
-      expect(ptc.AVAILABLE_TRACK_TYPES.length).toEqual(1);
-
-      done();
-    });
-
-    it('should add the selected tracks', (done) => {
-      // atm.unmount();
-      atm.handleSubmit();
-      // hgc.update();
-      const viewConf = JSON.parse(hgc.instance().getViewsAsString());
-
-      expect(viewConf.views[0].tracks.top.length).toEqual(6);
-
-      hgc.update();
-
-      done();
     });
   });
 

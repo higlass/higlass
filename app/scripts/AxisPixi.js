@@ -317,11 +317,11 @@ class AxisPixi {
       const tick = this.tickValues[i];
       const text = this.axisTexts[i];
 
-      const anotherLine = this.createAxisSVGLine();
+      const tickLine = this.createAxisSVGLine();
 
-      gAxis.appendChild(anotherLine);
+      gAxis.appendChild(tickLine);
 
-      anotherLine.setAttribute(
+      tickLine.setAttribute(
         'd',
         `M${TICK_MARGIN},${valueScale(tick)} L${TICK_MARGIN + TICK_LENGTH},${valueScale(tick)}`
       );
