@@ -277,17 +277,28 @@ class AxisPixi {
   exportAxisLeftSVG(valueScale, axisHeight) {
     const gAxis = this.exportVerticalAxis(axisHeight);
 
+    const topTickLine = this.createAxisSVGLine();
+    gAxis.appendChild(topTickLine);
+    topTickLine.setAttribute('d', `M0,0 L${+(TICK_MARGIN + TICK_LENGTH)},0`);
+
+    const bottomTickLine = this.createAxisSVGLine();
+    gAxis.appendChild(bottomTickLine);
+    bottomTickLine.setAttribute(
+      'd',
+      `M0,${axisHeight} L${+(TICK_MARGIN + TICK_LENGTH)},${axisHeight}`
+    );
+
     for (let i = 0; i < this.axisTexts.length; i++) {
       const tick = this.tickValues[i];
       const text = this.axisTexts[i];
 
-      const line = this.createAxisSVGLine();
+      const tickLine = this.createAxisSVGLine();
 
-      gAxis.appendChild(line);
+      gAxis.appendChild(tickLine);
 
-      line.setAttribute(
+      tickLine.setAttribute(
         'd',
-        `M${-TICK_MARGIN},${valueScale(tick)} L${-(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`
+        `M${+TICK_MARGIN},${valueScale(tick)} L${+(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`
       );
 
       const g = document.createElement('g');
@@ -308,10 +319,16 @@ class AxisPixi {
   exportAxisRightSVG(valueScale, axisHeight) {
     const gAxis = this.exportVerticalAxis(axisHeight);
 
-    const line = this.createAxisSVGLine();
-    gAxis.appendChild(line);
+    const topTickLine = this.createAxisSVGLine();
+    gAxis.appendChild(topTickLine);
+    topTickLine.setAttribute('d', `M0,0 L${-(TICK_MARGIN + TICK_LENGTH)},0`);
 
-    line.setAttribute('d', `M0,0 L${TICK_MARGIN + TICK_LENGTH},0`);
+    const bottomTickLine = this.createAxisSVGLine();
+    gAxis.appendChild(bottomTickLine);
+    bottomTickLine.setAttribute(
+      'd',
+      `M0,${axisHeight} L${-(TICK_MARGIN + TICK_LENGTH)},${axisHeight}`
+    );
 
     for (let i = 0; i < this.axisTexts.length; i++) {
       const tick = this.tickValues[i];
@@ -323,7 +340,7 @@ class AxisPixi {
 
       tickLine.setAttribute(
         'd',
-        `M${TICK_MARGIN},${valueScale(tick)} L${TICK_MARGIN + TICK_LENGTH},${valueScale(tick)}`
+        `M${-TICK_MARGIN},${valueScale(tick)} L${-(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`
       );
 
       const g = document.createElement('g');
