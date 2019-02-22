@@ -28,6 +28,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.textFontFamily = 'Arial';
 
     this.drawnRects = {};
+    this.allDrawnRects = {};
 
     if (this.options.colorEncoding) {
       if (this.options.colorRange) {
@@ -179,18 +180,75 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   updateTile(tile) {
     // this.destroyTile(tile);
-    console.log('updateTile:', tile.tileId);
+    // console.log('updateTile:', tile.tileId);
     this.renderTile(tile);
+  }
+
+  /**
+   * Use this only when there's one row
+   *
+   * @return {[type]} [description]
+   */
+  allVisibleRects() {
+    const allRects = {};
+
+    Object.values(this.fetchedTiles).map((x) => {
+      if (!x.plusStrandRows) return;
+
+      for (const row of x.plusStrandRows[0]) {
+        if (!allRects[row.value.uid]) {
+          allRects[row.value.uid] = row;
+        }
+      }
+    });
+
+    const sortedRows = Object.values(allRects)
+      .sort((a, b) => a.from - b.from);
+
+    let startPos = 0;
+    let startAlternating = 0;
+
+    // find if any values have alternativeStartPosition set
+    for (let i = 0; i < sortedRows.length; i++) {
+      if (sortedRows[i].alternatingStartPosition !== undefined) {
+        startPos = i;
+        startAlternating = sortedRows[i].alternatingStartPosition;
+        break;
+      }
+    }
+
+
+    for (let i = startPos; i < sortedRows.length; i++) {
+      sortedRows[i].alternatingStartPosition = (startAlternating + i - startPos) % 2;
+    }
+
+    for (let i = startPos; i >= 0; i--) {
+      sortedRows[i].alternatingStartPosition = (startAlternating + startPos - i) % 2;
+    }
+
+    // sortedRows.forEach((x, i) => {
+    //   allRects[x.value.uid].alternatingStartPosition = i % 2;
+    // });
+    // console.log('sortedRows:', sortedRows);
+
+    return allRects;
   }
 
   renderRows(tile, rows, maxRows, startY, endY, fill) {
     const zoomLevel = +tile.tileId.split('.')[0];
-
+    const ALTERNATING_OFFSET = 5;
     // console.log('startY', startY, 'endY', endY, range(maxRows), rows);
 
     const rowScale = scaleBand()
       .domain(range(maxRows))
       .range([startY, endY]);
+
+    this.allVisibleRects();
+    let allRects = null;
+
+    if (this.options.alternating) {
+      allRects = this.allVisibleRects();
+    }
 
     for (let j = 0; j < rows.length; j++) {
       for (let i = 0; i < rows[j].length; i++) {
@@ -249,17 +307,25 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
         tile.rectGraphics.lineStyle(1, fill, opacity);
         tile.rectGraphics.beginFill(fill, opacity);
-
         // let height = valueScale(Math.log(+geneInfo[4]));
         // let width= height;
 
         // const rectX = this._xScale(txMiddle) - (rectHeight / 2);
-        const rectY = yMiddle - (rectHeight / 2);
+        let rectY = yMiddle - (rectHeight / 2);
 
         const xStartPos = this._xScale(txStart);
         const xEndPos = this._xScale(txEnd);
 
         let drawnPoly = null;
+
+        // check if every other region should be offset from the mean height
+        if (this.options.alternating) {
+          if (allRects[td.uid].alternatingStartPosition) {
+            rectY -= ALTERNATING_OFFSET / 2;
+          } else {
+            rectY += ALTERNATING_OFFSET / 2;
+          }
+        }
 
         if (
           geneInfo.length > 5
@@ -399,21 +465,14 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       }
     }
 
-    const maxValue = 0;
-
     // let rendered = 0;
 
     if (tile.tileData && tile.tileData.length) {
-      const { rows } = tile;
-
       // console.log('maxPlusRows', maxPlusRows);
       // console.log('maxMinusRows', maxMinusRows);
 
       const fill = colorToHex(this.options.fillColor ? this.options.fillColor : 'blue');
       const minusStrandFill = colorToHex('purple');
-
-      console.log('tile +:', tile.plusStrandRows);
-      console.log('tile -:', tile.minusStrandRows);
 
       const MIDDLE_SPACE = 0;
       const plusHeight = maxPlusRows * this.dimensions[1]
@@ -725,8 +784,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo,
     //   zoomLevel, this.tilesetInfo.tile_size);
 
-    // the position of the tile containing the query position
+    // // the position of the tile containing the query position
     // const tilePos = this._xScale.invert(trackX) / tileWidth;
+    // console.log('tilePos', tilePos);
 
     // const posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
 
