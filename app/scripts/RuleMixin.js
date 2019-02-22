@@ -1,16 +1,20 @@
 import { Mixin } from './mixwith';
-import { pubSub } from './services';
 
 const RuleMixin = Mixin(superclass => class extends superclass {
-  constructor(stage, options, animate) {
-    super(stage, options);
-
-    this.pubSubs.push(pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this)));
+  constructor(context, options) {
+    super(context, options);
+    const { animate } = context;
 
     this.highlighted = false;
     this.animate = animate;
 
     this.MOUSEOVER_RADIUS = 4;
+
+    this.pubSub = context.pubSub;
+
+    this.pubSubs.push(
+      this.pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this))
+    );
   }
 
   setPosition(newPosition) {

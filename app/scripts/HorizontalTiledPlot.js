@@ -54,7 +54,8 @@ class HorizontalTiledPlot extends React.Component {
       }
       this.rangeSelectionTriggeredEnd = false;
       return this.state !== nextState;
-    } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
+    }
+    if (this.props.rangeSelection !== nextProps.rangeSelection) {
       this.moveBrush(
         nextProps.rangeSelection[0]
           ? nextProps.rangeSelection[0]
@@ -104,9 +105,9 @@ class HorizontalTiledPlot extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !this.sourceEvent ||
-      !this.props.onRangeSelection ||
-      rangeSelectionMoved
+      !this.sourceEvent
+      || !this.props.onRangeSelection
+      || rangeSelectionMoved
     ) return;
 
     this.rangeSelectionTriggered = true;
@@ -186,22 +187,24 @@ class HorizontalTiledPlot extends React.Component {
       .map(track => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
 
-    const rangeSelectorClass = this.props.isRangeSelectionActive ?
-      'stylesTrack.track-range-selection-active' :
-      'stylesTrack.track-range-selection';
+    const rangeSelectorClass = this.props.isRangeSelectionActive
+      ? 'stylesTrack.track-range-selection-active'
+      : 'stylesTrack.track-range-selection';
 
     return (
       <div styleName="styles.horizontal-tiled-plot">
-        {isBrushable &&
-          <svg
-            ref={(el) => { this.brushEl = select(el); }}
-            style={{
-              height,
-              width: this.props.width,
-            }}
-            styleName={rangeSelectorClass}
-            xmlns="http://www.w3.org/2000/svg"
-          />
+        {isBrushable
+          && (
+            <svg
+              ref={(el) => { this.brushEl = select(el); }}
+              style={{
+                height,
+                width: this.props.width,
+              }}
+              styleName={rangeSelectorClass}
+              xmlns="http://www.w3.org/2000/svg"
+            />
+          )
         }
         <ListWrapper
           className={`${stylesPlot.list} ${stylesPlot.stylizedList}`}

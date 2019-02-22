@@ -11,7 +11,7 @@ To follow the steps in this tutorial you will require the following software pac
 - Docker (https://www.docker.com/community-edition): Docker is program that
   lets you run "containers" hosting software and its dependencies
 - Python
-- ``higlass-manage``: This package is a wrapper for the Docker commands used to run a local instance. It can be installed using ``pip install higlass-manage``. Brief documentation can be found `at its GitHub project page <https://github.com/pkerpedjiev/higlass-manage>`_
+- ``higlass-manage``: This package is a wrapper for the Docker commands used to run a local instance. It can be installed using ``pip install higlass-manage``. Brief documentation can be found `at its GitHub project page <https://github.com/higlass/higlass-manage>`_
 
 Quickly viewing a dataset
 -------------------------
@@ -59,7 +59,9 @@ Adding data
 
 HiGlass supports a number of `different data types <data_preparation.html>`_. 
 
-Use the ingest command to add new data. Generally data requires a filetype and a datatype. This can sometimes (i.e. in the case of cooler and bigwig files) be inferred from the file itself.
+Use the ingest command to add new data. Generally data requires a filetype and
+a datatype. This can sometimes (i.e. in the case of cooler and bigwig files)
+be inferred from the file itself.
 
 .. code-block:: bash
 
@@ -72,7 +74,18 @@ In other, more ambiguous cases, it needs to be explicitly specified:
     higlass-manage ingest my_file.bed --filetype bedfile \
         --datatype bedlike --assembly hg19
 
-Note that bedfiles don't store chromosome sizes so they need to be passed in using either the ``--assembly`` or ``--chromsizes-filename`` parameters.
+Note that bedfiles don't store chromosome sizes so they need to be passed in
+using either the ``--assembly`` or ``--chromsizes-filename`` parameters.
+
+Project Names
+^^^^^^^^^^^^^
+
+As of v1.3, HiGlass lets you group tilesets together as projects. To use
+this functionality, use the `--project-name` parameter with the `ingest`
+command. If multiple tilesets are assigned the same project name, they
+will appear together in the "Add Track Dialog" of the HiGlass client.
+
+.. image:: img/add_track_groups.png
 
 Viewing data in the client
 --------------------------
@@ -112,3 +125,16 @@ And we get our results
     Behold the added heatmap.
 
 The same procedure can be used to add bigwig files on the top, left, right and bottom positions of the view.
+
+Creating a superuser
+--------------------
+
+To manipulate the data available on the local instance it is necessary to create a super user using 
+``higlass-manage``:
+
+.. code-block:: bash
+    
+    higlass-manage createsuperuser
+
+This user can then be used to log in to http://localhost:8989/admin, or wherever the HiGlass instance
+is currently running.

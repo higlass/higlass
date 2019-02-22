@@ -1,3 +1,4 @@
+/* eslint-env node, jasmine */
 import { expect } from 'chai';
 import SearchField from '../app/scripts/SearchField';
 

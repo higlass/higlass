@@ -1,5 +1,5 @@
 Contributor Guidelines
-**********************
+***********************
 
 Contributions are in the form of issues, code, documentation are always very welcome. The
 following are a set of guidelines to help ensure that contributions can be smoothly 

@@ -1,20 +1,21 @@
+import createPubSub from 'pub-sub-es';
+
 import TiledPixiTrack from './TiledPixiTrack';
 
 // Services
 import { tileProxy } from './services';
-import { create } from './services/pub-sub';
 
 // Utils
 import { colorToHex } from './utils';
 
 class ArrowheadDomainsTrack extends TiledPixiTrack {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate) {
-    super(scene, dataConfig, handleTilesetInfoReceived, option, animate);
+  constructor(...args) {
+    super(...args);
 
     this.drawnRects = {};
 
     // Create a custom pubSub interface
-    const { publish, subscribe, unsubscribe } = create({});
+    const { publish, subscribe, unsubscribe } = createPubSub();
     this.publish = publish;
     this.subscribe = subscribe;
     this.unsubscribe = unsubscribe;
@@ -222,10 +223,10 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
 
         // Only draw annotations that falls somehow within the viewport
         if (
-          (drawnRect.x > xMin && drawnRect.x < xMax) ||
-          (dRxMax > xMin && dRxMax < xMax) ||
-          (drawnRect.y > yMin && drawnRect.y < yMax) ||
-          (dRyMax > yMin && dRyMax < yMax)
+          (drawnRect.x > xMin && drawnRect.x < xMax)
+          || (dRxMax > xMin && dRxMax < xMax)
+          || (drawnRect.y > yMin && drawnRect.y < yMax)
+          || (dRyMax > yMin && dRyMax < yMax)
         ) {
           if (drawnRect.width > minThres || drawnRect.height > minThres) {
             graphics.drawRect(
@@ -265,7 +266,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
 
     track.appendChild(output);
 
-    for (let tile of this.visibleAndFetchedTiles()) {
+    for (const tile of this.visibleAndFetchedTiles()) {
       // this tile has no data
       if (!tile.tileData || !tile.tileData.length) continue;
 
@@ -311,10 +312,10 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
 
   zoomed(newXScale, newYScale) {
     if (
-      this.xScale().domain()[0] === newXScale.domain()[0] &&
-      this.xScale().domain()[1] === newXScale.domain()[1] &&
-      this.yScale().domain()[0] === newYScale.domain()[0] &&
-      this.yScale().domain()[1] === newYScale.domain()[1]
+      this.xScale().domain()[0] === newXScale.domain()[0]
+      && this.xScale().domain()[1] === newXScale.domain()[1]
+      && this.yScale().domain()[0] === newYScale.domain()[0]
+      && this.yScale().domain()[1] === newYScale.domain()[1]
     ) return;
 
     this.xScale(newXScale);

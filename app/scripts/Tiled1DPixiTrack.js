@@ -7,6 +7,22 @@ import { tileProxy } from './services';
 const BINS_PER_TILE = 1024;
 
 class Tiled1DPixiTrack extends TiledPixiTrack {
+  constructor(context, options) {
+    super(context, options);
+
+    const {
+      onMouseMoveZoom,
+    } = context;
+
+    this.onMouseMoveZoom = onMouseMoveZoom;
+
+    if (this.onMouseMoveZoom) {
+      this.pubSubs.push(
+        this.pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this))
+      );
+    }
+  }
+
   initTile(tile) {
     /**
          * We don't need to do anything but draw the tile.
@@ -66,7 +82,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
   }
 
- calculateVisibleTiles() {
+  calculateVisibleTiles() {
     // if we don't know anything about this dataset, no point
     // in trying to get tiles
     if (!this.tilesetInfo) { return; }
@@ -115,7 +131,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
       // the default bins per tile which should
       // not be used because the right value should be in the tileset info
 
-      let binsPerTile = binsPerTileIn || BINS_PER_TILE;
+      const binsPerTile = binsPerTileIn || BINS_PER_TILE;
 
       const sortedResolutions = this.tilesetInfo.resolutions
         .map(x => +x)
@@ -123,13 +139,15 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
       const chosenResolution = sortedResolutions[zoomLevel];
 
-      let tileWidth =  chosenResolution * binsPerTile;
-      let tileHeight = tileWidth;
+      const tileWidth = chosenResolution * binsPerTile;
+      const tileHeight = tileWidth;
 
-      let tileX = chosenResolution * binsPerTile * tilePos[0];
-      let tileY = chosenResolution * binsPerTile * tilePos[1];
+      const tileX = chosenResolution * binsPerTile * tilePos[0];
+      const tileY = chosenResolution * binsPerTile * tilePos[1];
 
-      return { tileX, tileY, tileWidth, tileHeight };
+      return {
+        tileX, tileY, tileWidth, tileHeight
+      };
     }
 
     // max_width should be substitutable with 2 ** tilesetInfo.max_zoom
@@ -139,16 +157,18 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     const minX = this.tilesetInfo.min_pos[0];
     const minY = this.tilesetInfo.min_pos[1];
 
-    const tileWidth = totalWidth / Math.pow(2, zoomLevel);
-    const tileHeight = totalHeight / Math.pow(2, zoomLevel);
+    const tileWidth = totalWidth / 2 ** zoomLevel;
+    const tileHeight = totalHeight / 2 ** zoomLevel;
 
     const tileX = minX + xTilePos * tileWidth;
     const tileY = minY + yTilePos * tileHeight;
 
-    return { tileX,
+    return {
+      tileX,
       tileY,
       tileWidth,
-      tileHeight };
+      tileHeight
+    };
   }
 
   updateTile(tile) {
@@ -215,6 +235,61 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
         return tile.tileData.dense.slice(start, end);
       })
       .reduce((smallest, current) => aggregate(smallest, ...current), limit);
+  }
+
+  /**
+   * Get the data value at a relative pixel position
+   * @param   {number}  relPos  Relative pixel position, where 0 indicates the
+   *   start of the track
+   * @return  {number}  The data value at `relPos`
+   */
+  getDataAtPos(relPos) {
+    let value;
+
+    if (!this.tilesetInfo) return value;
+
+    const zoomLevel = this.calculateZoomLevel();
+    const tileWidth = tileProxy.calculateTileWidth(
+      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
+    );
+
+    // console.log('dataPos:', this._xScale.invert(relPos));
+
+    const tilePos = this._xScale.invert(relPos) / tileWidth;
+    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
+    const fetchedTile = this.fetchedTiles[tileId];
+
+    if (!fetchedTile) return value;
+
+    const posInTileX = (
+      this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos))
+    );
+
+    if (fetchedTile.tileData.dense) {
+      // gene annotation tracks, for example, don't have dense
+      // data
+      return fetchedTile.tileData.dense[Math.floor(posInTileX)];
+    }
+
+    return null;
+  }
+
+  mouseMoveHandler({ x, y } = {}) {
+    if (!this.isWithin(x, y)) return;
+
+    this.mouseX = x;
+    this.mouseY = y;
+
+    this.mouseMoveZoomHandler();
+  }
+
+  mouseMoveZoomHandler() {
+    // Implemented in the horizontal and vertical sub-classes
+  }
+
+  zoomed(...args) {
+    super.zoomed(...args);
+    this.mouseMoveZoomHandler();
   }
 }
 

@@ -1,13 +1,11 @@
 import { scaleLinear } from 'd3-scale';
 
 // Services
-import { pubSub } from './services';
-
-// Services
 import { isWithin } from './utils';
 
 class Track {
-  constructor() {
+  constructor({ id, pubSub }) {
+    this.id = id;
     this._xScale = scaleLinear();
     this._yScale = scaleLinear();
 
@@ -21,11 +19,13 @@ class Track {
     this.position = [0, 0];
     this.dimensions = [1, 1];
     this.options = {};
+    this.pubSub = pubSub;
     this.pubSubs = [];
 
-    // subscribe to mouseMove events
     this.pubSubs.push(
-      pubSub.subscribe('app.mouseMove', this.defaultMouseMoveHandler.bind(this))
+      this.pubSub.subscribe(
+        'app.mouseMove', this.defaultMouseMoveHandler.bind(this)
+      )
     );
   }
 
@@ -37,13 +37,25 @@ class Track {
    * @return {Boolean}  If `true` location is within the track.
    */
   isWithin(x, y) {
+    let xx = x;
+    let yy = y;
+    let left = this.position[0];
+    let top = this.position[1];
+
+    if (this.isLeftModified) {
+      xx = y;
+      yy = x;
+      left = this.position[1];
+      top = this.position[0];
+    }
+
     return isWithin(
-      x,
-      y,
-      this.position[0],
-      this.dimensions[0] + this.position[0],
-      this.position[1],
-      this.dimensions[1] + this.position[1]
+      xx,
+      yy,
+      left,
+      this.dimensions[0] + left,
+      top,
+      this.dimensions[1] + top
     );
   }
 
@@ -130,9 +142,9 @@ class Track {
 
   /*
    * A blank handler for MouseMove / Zoom events. Should be overriden
-   * by individual tracks to provide 
+   * by individual tracks to provide
    *
-   * @param {obj} evt: 
+   * @param {obj} evt:
    *
    * @returns nothing
    */
@@ -142,7 +154,7 @@ class Track {
 
   remove() {
     // Clear all pubSub subscriptions
-    this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
+    this.pubSubs.forEach(subscription => this.pubSub.unsubscribe(subscription));
     this.pubSubs = [];
   }
 

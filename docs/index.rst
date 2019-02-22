@@ -20,14 +20,14 @@ library that displays heatmaps, tracks, etc. In a sense, this is the meat of
 the application. The vast majority of the updates are on this component.
 
 .. |higlass-client| replace:: **higlass-client**
-.. _higlass-client: https://github.com/hms-dbmi/higlass 
+.. _higlass-client: https://github.com/higlass/higlass
 
 |higlass-website|_  - This is the
 website that embeds the higlass-client. It can contain multiple higlass clients
 (as on the front page of higlass.io).
 
 .. |higlass-website| replace:: **higlass-website**
-.. _higlass-website: https://github.com/hms-dbmi/higlass-website
+.. _higlass-website: https://github.com/higlass/higlass-website
 
 |higlass-server|_ - The server manages data and serves it to the client in
 small chunks that match the current zoom level and location. It is a python
@@ -36,7 +36,7 @@ http://higlass.io/api/v1/tilesets lists the tilesets that the server knows
 about.
 
 .. |higlass-server| replace:: **higlass-server**
-.. _higlass-server: https://github.com/hms-dbmi/higlass-server
+.. _higlass-server: https://github.com/higlass/higlass-server
 
 |higlass-docker|_  - This docker
 container contains all three of the above repositories and packages them so
@@ -46,7 +46,7 @@ the docker container. The versions of all the components is accessible at
 http://higlass.io/version.txt
 
 .. |higlass-docker| replace:: **higlass-docker**
-.. _higlass-docker: https://github.com/hms-dbmi/higlass-docker
+.. _higlass-docker: https://github.com/higlass/higlass-docker
 
 Track types
 ~~~~~~~~~~~
@@ -62,7 +62,7 @@ combinations of data.
     :height: 72px
     :align: center
     :figwidth: 100px
-    
+
     Bed-like intervals
 
 .. figure:: img/gene-annotations-track-thumb.png
@@ -128,14 +128,14 @@ different file formats.
 .. figure:: img/higlass-heatmap-screenshot.png
     :align: right
     :figwidth: 300px
-    
+
     A screenshot of HiGlass displaying a Hi-C contact matrix along with tracks
     for gene annotations chromosome labels.
 
 .. figure:: img/higlass-dual-genome-browser-screenshot.png
     :align: right
     :figwidth: 300px
-    
+
     A screenshot of HiGlass displaying a context-detail type view of two
     regions of the mouse genome. The locations of the two detail regions on the
     bottom are highlighted in the context view on top.
@@ -171,4 +171,9 @@ crucial are listed below.
     jupyter
     data_preparation
     track_types
-    developer 
+    plugin_tracks
+    views
+    higlass_server
+    higlass_docker
+    view_config
+    developer
