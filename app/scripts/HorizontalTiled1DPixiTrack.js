@@ -23,7 +23,9 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     this.pubSubs = [];
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.options.showGlobalMousePosition
+      );
     }
   }
 
@@ -38,7 +40,9 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     this.options = options;
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.options.showGlobalMousePosition
+      );
     }
 
     if (!this.options.showMousePosition && this.hideMousePosition) {

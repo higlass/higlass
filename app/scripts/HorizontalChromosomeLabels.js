@@ -63,7 +63,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.pubSubs = [];
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.options.showGlobalMousePosition
+      );
     }
 
     let chromSizesPath = chromInfoPath;
@@ -134,7 +136,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
     super.rerender(options, force);
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.options.showGlobalMousePosition
+      );
     }
 
     if (!this.options.showMousePosition && this.hideMousePosition) {
