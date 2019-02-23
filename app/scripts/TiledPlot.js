@@ -318,16 +318,11 @@ class TiledPlot extends React.Component {
   }
 
   measureSize() {
-    const width = this.element.clientWidth;
-    const elementHeight = this.element.clientHeight;
-    const tracksHeight = this.topHeight + this.centerHeight + this.bottomHeight;
-    const height = Math.max(elementHeight, tracksHeight);
-
-    if (width > 0 && height > 0) {
+    if (this.element.clientWidth > 0 && this.element.clientHeight > 0) {
       this.setState({
         sizeMeasured: true,
-        width,
-        height,
+        width: this.element.clientWidth,
+        height: this.element.clientHeight,
       });
     }
   }
