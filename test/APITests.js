@@ -191,6 +191,8 @@ describe('API Tests', () => {
     it('adjust view spacing', (done) => {
       const options = {
         pixelPreciseMarginPadding: true,
+        containingPaddingX: 0,
+        containingPaddingY: 0,
         viewMarginTop: 32,
         viewMarginBottom: 6,
         viewMarginLeft: 32,
