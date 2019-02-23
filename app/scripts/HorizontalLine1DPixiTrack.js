@@ -4,7 +4,6 @@ import { scaleLinear } from 'd3-scale';
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 import { colorToHex } from './utils';
-import { tileProxy } from './services';
 
 class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
@@ -23,32 +22,15 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   }
 
   getMouseOverHtml(trackX) {
+    // if we're not supposed to show the tooltip, don't show it
+    // we return here so that the mark isn't drawn in the code
+    // below
     if (!this.tilesetInfo || !this.options.showTooltip) return '';
 
-    const zoomLevel = this.calculateZoomLevel();
-    const tileWidth = tileProxy.calculateTileWidth(
-      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
-    );
-
-    // the position of the tile containing the query position
-    const tilePos = this._xScale.invert(trackX) / tileWidth;
-    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
-
-    const fetchedTile = this.fetchedTiles[tileId];
-    if (!fetchedTile) return '';
-
-    const posInTileX = fetchedTile.tileData.dense.length * (tilePos - Math.floor(tilePos));
-
-    let value = '';
+    const value = this.getDataAtPos(trackX);
     let textValue = '';
 
-    if (fetchedTile) {
-      const index = Math.floor(posInTileX);
-      value = fetchedTile.tileData.dense[index];
-      textValue = format('.3f')(value);
-    } else {
-      return '';
-    }
+    if (value) textValue = format('.3f')(value);
 
     const graphics = this.pMouseOver;
     const colorHex = 0;
@@ -286,6 +268,17 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     }
 
     return [base, track];
+  }
+
+  tileToLocalId(tile) {
+    if (this.options.aggregationMode && this.options.aggregationMode !== 'mean') {
+      return `${tile.join('.')}.${this.options.aggregationMode}`;
+    }
+    return `${tile.join('.')}`;
+  }
+
+  tileToRemoteId(tile) {
+    return this.tileToLocalId(tile);
   }
 }
 

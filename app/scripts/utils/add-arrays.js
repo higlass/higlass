@@ -8,7 +8,7 @@ const STD_ACC = i => i;
  *
  * @example
  * ```
- * addArrays([1,2,3], [2,3,4,5]) == [3,5,7]
+ * addArrays([1,2,3], [2,3,4,5]) === [3,5,7]
  * ```
  *
  * @param  {Array}  a1  First array of numbers

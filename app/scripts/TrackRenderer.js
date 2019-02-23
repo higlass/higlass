@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
@@ -37,7 +36,7 @@ import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
 
 import SquareMarkersTrack from './SquareMarkersTrack';
 import Chromosome2DLabels from './Chromosome2DLabels';
-import Chromosome2DGrid from './Chromosome2DGrid';
+import ChromosomeGrid from './ChromosomeGrid';
 import Chromosome2DAnnotations from './Chromosome2DAnnotations';
 import HorizontalChromosomeLabels from './HorizontalChromosomeLabels';
 
@@ -155,14 +154,14 @@ class TrackRenderer extends React.Component {
     this.zoomLimits = [0, Infinity];
 
     this.prevCenterX = (
-      this.currentProps.paddingLeft +
-      this.currentProps.leftWidth +
-      (this.currentProps.centerWidth / 2)
+      this.currentProps.paddingLeft
+      + this.currentProps.leftWidth
+      + (this.currentProps.centerWidth / 2)
     );
     this.prevCenterY = (
-      this.currentProps.paddingTop +
-      this.currentProps.topHeight +
-      (this.currentProps.centerHeight / 2)
+      this.currentProps.paddingTop
+      + this.currentProps.topHeight
+      + (this.currentProps.centerHeight / 2)
     );
 
     // The offset of the center from the original. Used to keep the scales centered on resize events
@@ -297,8 +296,8 @@ class TrackRenderer extends React.Component {
     );
 
     this.setUpScales(
-      nextProps.width !== this.props.width ||
-      nextProps.height !== this.props.height,
+      nextProps.width !== this.props.width
+      || nextProps.height !== this.props.height,
     );
 
     this.svgElement = nextProps.svgElement;
@@ -456,7 +455,9 @@ class TrackRenderer extends React.Component {
     /*
     this.pOutline.clear();
     this.pOutline.lineStyle(1, '#000', 1);
-    this.pOutline.drawRect(this.xPositionOffset, this.yPositionOffset, this.currentProps.width, this.currentProps.height);
+    this.pOutline.drawRect(
+      this.xPositionOffset, this.yPositionOffset, this.currentProps.width, this.currentProps.height
+    );
     */
   }
 
@@ -475,8 +476,6 @@ class TrackRenderer extends React.Component {
       this.currentProps.height
     );
     this.pBackground.endFill();
-
-
   }
 
   windowScrolled() {
@@ -516,16 +515,16 @@ class TrackRenderer extends React.Component {
     // worry about resetting anything
     // initial domains should only change when loading a new viewconfig
     if (
-      initialXDomain[0] === this.initialXDomain[0] &&
-      initialXDomain[1] === this.initialXDomain[1] &&
-      initialYDomain[0] === this.initialYDomain[0] &&
-      initialYDomain[1] === this.initialYDomain[1] &&
-      xDomainLimits[0] === this.xDomainLimits[0] &&
-      xDomainLimits[1] === this.xDomainLimits[1] &&
-      yDomainLimits[0] === this.yDomainLimits[0] &&
-      yDomainLimits[1] === this.yDomainLimits[1] &&
-      zoomLimits[0] === this.zoomLimits[0] &&
-      zoomLimits[1] === this.zoomLimits[1]
+      initialXDomain[0] === this.initialXDomain[0]
+      && initialXDomain[1] === this.initialXDomain[1]
+      && initialYDomain[0] === this.initialYDomain[0]
+      && initialYDomain[1] === this.initialYDomain[1]
+      && xDomainLimits[0] === this.xDomainLimits[0]
+      && xDomainLimits[1] === this.xDomainLimits[1]
+      && yDomainLimits[0] === this.yDomainLimits[0]
+      && yDomainLimits[1] === this.yDomainLimits[1]
+      && zoomLimits[0] === this.zoomLimits[0]
+      && zoomLimits[1] === this.zoomLimits[1]
     ) return;
 
     // only update the initial domain
@@ -548,29 +547,29 @@ class TrackRenderer extends React.Component {
     this.drawableToDomainY = scaleLinear()
       .domain([
         (
-          this.currentProps.paddingTop +
-          this.currentProps.topHeight +
-          (this.currentProps.centerHeight / 2) -
-          (this.currentProps.centerWidth / 2)
+          this.currentProps.paddingTop
+          + this.currentProps.topHeight
+          + (this.currentProps.centerHeight / 2)
+          - (this.currentProps.centerWidth / 2)
         ),
         (
-          this.currentProps.paddingTop +
-          this.currentProps.topHeight +
-          (this.currentProps.centerHeight / 2) +
-          (this.currentProps.centerWidth / 2)
+          this.currentProps.paddingTop
+          + this.currentProps.topHeight
+          + (this.currentProps.centerHeight / 2)
+          + (this.currentProps.centerWidth / 2)
         ),
       ])
       .range([initialYDomain[0], initialYDomain[1]]);
 
     this.prevCenterX = (
-      this.currentProps.paddingLeft +
-      this.currentProps.leftWidth +
-      (this.currentProps.centerWidth / 2)
+      this.currentProps.paddingLeft
+      + this.currentProps.leftWidth
+      + (this.currentProps.centerWidth / 2)
     );
     this.prevCenterY = (
-      this.currentProps.paddingTop +
-      this.currentProps.topHeight +
-      (this.currentProps.centerHeight / 2)
+      this.currentProps.paddingTop
+      + this.currentProps.topHeight
+      + (this.currentProps.centerHeight / 2)
     );
   }
 
@@ -712,12 +711,12 @@ class TrackRenderer extends React.Component {
 
     if (this.dragging) {
       this.yPositionOffset = (
-        this.element.getBoundingClientRect().top -
-        this.currentProps.canvasElement.getBoundingClientRect().top
+        this.element.getBoundingClientRect().top
+        - this.currentProps.canvasElement.getBoundingClientRect().top
       );
       this.xPositionOffset = (
-        this.element.getBoundingClientRect().left -
-        this.currentProps.canvasElement.getBoundingClientRect().left
+        this.element.getBoundingClientRect().left
+        - this.currentProps.canvasElement.getBoundingClientRect().left
       );
 
       this.setMask();
@@ -974,14 +973,14 @@ class TrackRenderer extends React.Component {
     const k = refK / sourceK;
 
     const middleViewX = (
-      this.currentProps.paddingLeft +
-      this.currentProps.leftWidth +
-      (this.currentProps.centerWidth / 2)
+      this.currentProps.paddingLeft
+      + this.currentProps.leftWidth
+      + (this.currentProps.centerWidth / 2)
     );
     const middleViewY = (
-      this.currentProps.paddingTop +
-      this.currentProps.topHeight +
-      (this.currentProps.centerHeight / 2)
+      this.currentProps.paddingTop
+      + this.currentProps.topHeight
+      + (this.currentProps.centerHeight / 2)
     );
 
     // After applying the zoom transform, the xScale of the target centerX
@@ -1094,7 +1093,8 @@ class TrackRenderer extends React.Component {
             [
               props.paddingLeft,
               props.width - props.paddingLeft
-            ].map(this.zoomedXScale.invert))
+            ].map(this.zoomedXScale.invert)
+          )
           .range(
             [0, props.width - (2 * props.paddingLeft)]
           );
@@ -1104,7 +1104,8 @@ class TrackRenderer extends React.Component {
             [
               props.paddingTop,
               props.height - props.paddingTop
-            ].map(this.zoomedYScale.invert))
+            ].map(this.zoomedYScale.invert)
+          )
           .range([0, props.height - (2 * props.paddingTop)]);
 
         track.zoomed(
@@ -1123,7 +1124,8 @@ class TrackRenderer extends React.Component {
             [
               props.paddingLeft + props.leftWidthNoGallery,
               props.paddingLeft + props.leftWidth + props.centerWidth + props.galleryDim,
-            ].map(this.zoomedXScale.invert))
+            ].map(this.zoomedXScale.invert)
+          )
           .range(
             [0, props.centerWidth + (2 * props.galleryDim)]
           );
@@ -1133,7 +1135,8 @@ class TrackRenderer extends React.Component {
             [
               props.paddingTop + props.topHeightNoGallery,
               props.paddingTop + props.topHeight + props.centerHeight + props.galleryDim,
-            ].map(this.zoomedYScale.invert))
+            ].map(this.zoomedYScale.invert)
+          )
           .range([0, props.centerHeight - (2 * props.galleryDim)]);
 
         track.zoomed(
@@ -1180,7 +1183,7 @@ class TrackRenderer extends React.Component {
             definition: track,
           };
           try {
-            return new pluginTrack.track(
+            return new pluginTrack.track( // eslint-disable-line new-cap
               AVAILABLE_FOR_PLUGINS,
               context,
               track.options,
@@ -1220,8 +1223,19 @@ class TrackRenderer extends React.Component {
       };
     }
 
+    if (track.fileUrl) {
+      dataConfig.fileUrl = track.fileUrl;
+
+      if (!track.filetype) {
+        console.warn('fileUrl present without fileType:', track);
+      } else {
+        dataConfig.filetype = track.filetype;
+      }
+    }
+
     // To simplify the context creation via ES6 object shortcuts.
     const context = {
+      id: track.uid,
       pubSub: this.props.pubSub,
       scene: this.pStage,
       dataConfig,
@@ -1239,6 +1253,16 @@ class TrackRenderer extends React.Component {
       onMouseMoveZoom: this.props.onMouseMoveZoom,
       chromInfoPath: track.chromInfoPath,
     };
+
+    // for horizontal and vertical rules
+    if (track.y) {
+      context.yPosition = track.y;
+    }
+
+    if (track.x) {
+      context.xPosition = track.x;
+    }
+
     const options = track.options;
 
     switch (track.type) {
@@ -1400,8 +1424,16 @@ class TrackRenderer extends React.Component {
       case '2d-chromosome-labels':
         return new Chromosome2DLabels(context, options);
 
+      case 'horizontal-chromosome-grid':
+        context.orientation = '1d-horizontal';
+        return new ChromosomeGrid(context, options);
+
+      case 'vertical-chromosome-grid':
+        context.orientation = '1d-vertical';
+        return new ChromosomeGrid(context, options);
+
       case '2d-chromosome-grid':
-        return new Chromosome2DGrid(context, options);
+        return new ChromosomeGrid(context, options);
 
       case 'horizontal-chromosome-labels':
         // chromInfoPath is passed in for backwards compatibility
@@ -1452,6 +1484,10 @@ class TrackRenderer extends React.Component {
       case 'overlay-track':
         return new OverlayTrack(context, options);
 
+      case 'overlay-chromosome-grid-track':
+        context.isOverlay = true;
+        return new ChromosomeGrid(context, options);
+
       case 'horizontal-rule':
         return new HorizontalRule(context, options);
 
@@ -1481,7 +1517,7 @@ class TrackRenderer extends React.Component {
           context.baseEl = this.baseEl;
           context.definition = track;
           try {
-            return new pluginTrack.track(
+            return new pluginTrack.track( // eslint-disable-line new-cap
               AVAILABLE_FOR_PLUGINS,
               context,
               options

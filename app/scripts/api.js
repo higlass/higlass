@@ -290,8 +290,8 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
-       * Change the current view port to a certain data location.  When ``animateTime`` is
-       * greater than 0, animate the transition.
+       * Change the current view port to a certain data location.
+       * When ``animateTime`` is greater than 0, animate the transition.
 
        * If working with genomic data, a chromosome info file will need to be used in
        * order to calculate "data" coordinates from chromosome coordinates. "Data"
@@ -327,6 +327,15 @@ const createApi = function api(context, pubSub) {
        *   });
        *   // Just in case, let us catch errors
        *   .catch(error => console.error('Oh boy...', error))
+       * // Using getLocation() for coordinates
+       * let firstViewLoc = hgApi.getLocation(oldViewUid);
+       * hgApi.zoomTo(
+       *  viewUid,
+       *  firstViewLoc["xDomain"][0],
+       *  firstViewLoc["xDomain"][1],
+       *  firstViewLoc["yDomain"][0],
+       *  firstViewLoc["yDomain"][1]
+       * );
        */
       zoomTo(
         viewUid,
@@ -518,6 +527,10 @@ const createApi = function api(context, pubSub) {
             apiPubSub.unsubscribe('click', callback);
             break;
 
+          case 'cursorLocation':
+            apiPubSub.unsubscribe('cursorLocation', callback);
+            break;
+
           case 'location':
             self.offLocationChange(viewId, listenerId);
             break;
@@ -563,6 +576,23 @@ const createApi = function api(context, pubSub) {
        *       payload: [230000000, 561000000]
        *     }
        *
+       * ``cursorLocation:`` Returns an object describing the location under the cursor
+       *
+       * .. code-block:: javascript
+       *
+       *    {
+       *        absX: 100,
+       *        absY: 200,
+       *        relX: 50,
+       *        relY: 150,
+       *        relTrackX: 50,
+       *        relTrackY: 100,
+       *        dataX: 10000,
+       *        dataY: 123456,
+       *        isFrom2dTrack: false,
+       *        isFromVerticalTrack: false,
+       *    }
+       *
        * ``location:`` Returns an object describing the visible region
        *
        * .. code-block:: javascript
@@ -599,19 +629,45 @@ const createApi = function api(context, pubSub) {
        *
        * ``viewConfig:`` Returns the current view config.
        *
-       * ``mouseMoveZoom:`` Returns the raw data around the mouse cursors screen location
-       * and the related genomic location.
+       * ``mouseMoveZoom:`` Returns the location and data at the mouse cursor's
+       * screen location.
        *
        * .. code-block:: javascript
        *
        *  {
-       *    data, // Raw Float32Array
-       *    dim,  // Dimension of the lens (the lens is squared)
-       *    toRgb,  // Current float-to-rgb converter
-       *    center,  // BED array of the cursors genomic location
-       *    xRange,  // BEDPE array of the x genomic range
-       *    yRange,  // BEDPE array of the y genomic range
-       *    rel  // If true the above three genomic locations are relative
+       *    // Float value of the hovering track
+       *    data,
+       *    // Absolute x screen position of the cursor in px
+       *    absX,
+       *    // Absolute y screen position of the cursor in px
+       *    absY,
+       *    // X screen position of the cursor in px relative to the track extent.
+       *    relX,
+       *    // Y screen position of the cursor in px relative to the track extent.
+       *    relY,
+       *    // Data x position of the cursor relative to the track's data.
+       *    dataX,
+       *    // Data y position of the cursor relative to the track's data.
+       *    dataY,
+       *    // Track orientation, i.e., '1d-horizontal', '1d-vertical', or '2d'
+       *    orientation: '1d-horizontal',
+       *
+       *    // The following properties are only returned when hovering 2D tracks:
+       *    // Raw Float32Array
+       *    dataLens,
+       *    // Dimension of the lens, e.g., 3 (the lens is squared so `3` corresponds
+       *    // to a 3x3 matrix represented by an array of length 9)
+       *    dim,
+       *    // Function for converting the raw data values to rgb values
+       *    toRgb,
+       *    // Center position of the data or genomic position (as a BED array)
+       *    center,
+       *    // Range of the x data or genomic position (as a BEDPE array)
+       *    xRange,
+       *    // Range of the y data or genomic position (as a BEDPE array)
+       *    yRange,
+       *    // If `true` `center`, `xRange`, and `yRange` are given in genomic positions
+       *    isGenomicCoords
        *  }
        *
        * @param {string} event One of the events described below
@@ -647,6 +703,9 @@ const createApi = function api(context, pubSub) {
         switch (event) {
           case 'click':
             return apiPubSub.subscribe('click', callback);
+
+          case 'cursorLocation':
+            return apiPubSub.subscribe('cursorLocation', callback);
 
           case 'location':
             // returns a set of scales (xScale, yScale) on every zoom event

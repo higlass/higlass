@@ -1,8 +1,14 @@
 const webpackConfig = require('./webpack.config.js');
-require('babel-polyfill');  // eslint-disable-line import/no-extraneous-dependencies
+require('babel-polyfill'); // eslint-disable-line import/no-extraneous-dependencies
 
 module.exports = (config) => {
   config.set({
+    /** * maximum number of tries a browser will attempt in the case
+     * of a disconnection */
+    browserDisconnectTolerance: 2,
+    /** * How long will Karma wait for a message from a browser before
+     * disconnecting from it (in ms). */
+    browserNoActivityTimeout: 50000,
     basePath: '',
     frameworks: ['jasmine'],
 
@@ -16,8 +22,15 @@ module.exports = (config) => {
       'node_modules/font-awesome/css/font-awesome.css',
       'build/hglib.css',
       'test/**/*.+(js|jsx)',
-      // 'test/MinimalViewconfTest.js'
+      // 'test/AddTrackTests.js',
+      // 'test/Horizontal1DTrackTests.js'
+      // 'test/TrackLabelsTest.jsx',
+      // 'test/PluginTrackTests.js',
       // 'test/AxisTests.js',
+      // 'test/SVGExportTest.js',
+      // 'test/AxisTests.js', // Passes when run in isolation, but fails as part of suite.
+      // 'test/RuleTests.js',
+      // 'test/MinimalViewconfTest.js'
       // 'test/PngExportTest.js',
       // 'test/OSMTests.js',
       // 'test/TiledPixiTrackTests.js',

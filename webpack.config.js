@@ -106,6 +106,7 @@ module.exports = (env, argv) => ({
               // https://github.com/facebookincubator/create-react-app/issues/2677
               ident: 'postcss',
               plugins: () => [
+                // eslint-disable-next-line global-require
                 require('postcss-flexbugs-fixes'),
                 autoprefixer({
                   browsers: [
@@ -149,6 +150,7 @@ module.exports = (env, argv) => ({
               // https://github.com/facebookincubator/create-react-app/issues/2677
               ident: 'postcss',
               plugins: () => [
+                // eslint-disable-next-line global-require
                 require('postcss-flexbugs-fixes'),
                 autoprefixer({
                   browsers: [

@@ -1,15 +1,37 @@
-## v1.4.0
+## v1.5.0
 
 - Make view spacing adjustable via initialization options. See [/docs/examples/apis/adjust-view-spacing.html](/docs/examples/apis/adjust-view-spacing.html) for an example.
 
+## v1.4.2
+
+- Fix #568, #569
+
+## v1.4.1
+
+- Allow users to choose adding the chromosome grid overlay from the Add Track Dialog when selecting a cooler file.
+- Expose version from hglib. E.g., `window.hglib.version`
+
+## v1.4.0
+
+- Add `constIndicators` as an option to 1D tracks for displaying a visual indicator (e.g., a line) at a constant value.
+- Added `[glyph-color]` as the default option for line and bar tracks
+- Add new public event `cursorLocation`. See [`docs/examples/apis/cursor-location.html`](docs/examples/apis/cursor-location.html) for an example.
+- Extend `mouseMoveZoom` event to support 1D data tracks.
+- Expose D3 libraries to plugin tracks
+- Overlay tracks now properly allow for extent to include multiple ranges.
+- Overlay tracks can now optionally have extent ranges configured as a 4-tuple, separating x ranges from y ranges
+
 ## v1.3.0
 
+- Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
 - Added `TiledPixiTrack.on` event handler to listen to data changes
 - Added several API endpoints: `getComponent()`, `setAuthHeader()`, `getAuthHeader()`,
 - Added export of several utility functions: `waitForJsonComplete()`, `waitForTilesLoaded()`, `waitForTransitionsFinished()`, `mountHGComponent()`, `getTrackObjectFromHGC()`
 - Added the ability to specify default track options through the API
 - Added nesting to the tileset finder so that tilesets can be grouped together into categories
 - Added the `axisLabelFormatting` option to 1d quantitative tracks
+- Added TiledPixiTrack.on event handler
+- Added getTrackObject to exports
 - Added support for overlay tracks
 - Added support for click event handling of 1D and 2D annotations from `1d-annotation` and `chromosome-2d-annotations` tracks
 - Cloned views split vertically first (#259)
@@ -17,11 +39,16 @@
 - Add a fudge factor to ensure that the entire view is shown in the grid layout
 - Refactored the pub-sub service to avoid implicit global event listening
 - Fix a minor visual glitch in the gene annotation track
+- Expose `mix()` from `mixwith` to plugin tracks
+- Support different aggregation modes (mean, min, max, std) for bigWig files
+- Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
+- Clear mouse position indicator when leaving the root dom element, on blurring the window, and when no track is hovered
 - Fix several issue with SVG export
 - Minor bug fix wherein valueScaleMin and valueScaleMax weren't used when set to 0
 - Fix #401
 - Fix #395
 - Fix #360
+- Support different aggregation modes (mean, min, max, std) for bigWig files
 
 ## v1.2.8
 

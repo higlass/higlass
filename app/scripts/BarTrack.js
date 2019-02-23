@@ -147,8 +147,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
       const canvas = gradient(
         this.colorGradientColors,
-        1, this.dimensions[1],  // width, height
-        0, 0, 0, this.dimensions[1]  // fromX, fromY, toX, toY
+        1, this.dimensions[1], // width, height
+        0, 0, 0, this.dimensions[1] // fromX, fromY, toX, toY
       );
 
       barSprite = new PIXI.Sprite(

@@ -7,6 +7,22 @@ import { tileProxy } from './services';
 const BINS_PER_TILE = 1024;
 
 class Tiled1DPixiTrack extends TiledPixiTrack {
+  constructor(context, options) {
+    super(context, options);
+
+    const {
+      onMouseMoveZoom,
+    } = context;
+
+    this.onMouseMoveZoom = onMouseMoveZoom;
+
+    if (this.onMouseMoveZoom) {
+      this.pubSubs.push(
+        this.pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this))
+      );
+    }
+  }
+
   initTile(tile) {
     /**
          * We don't need to do anything but draw the tile.
@@ -219,6 +235,61 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
         return tile.tileData.dense.slice(start, end);
       })
       .reduce((smallest, current) => aggregate(smallest, ...current), limit);
+  }
+
+  /**
+   * Get the data value at a relative pixel position
+   * @param   {number}  relPos  Relative pixel position, where 0 indicates the
+   *   start of the track
+   * @return  {number}  The data value at `relPos`
+   */
+  getDataAtPos(relPos) {
+    let value;
+
+    if (!this.tilesetInfo) return value;
+
+    const zoomLevel = this.calculateZoomLevel();
+    const tileWidth = tileProxy.calculateTileWidth(
+      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
+    );
+
+    // console.log('dataPos:', this._xScale.invert(relPos));
+
+    const tilePos = this._xScale.invert(relPos) / tileWidth;
+    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
+    const fetchedTile = this.fetchedTiles[tileId];
+
+    if (!fetchedTile) return value;
+
+    const posInTileX = (
+      this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos))
+    );
+
+    if (fetchedTile.tileData.dense) {
+      // gene annotation tracks, for example, don't have dense
+      // data
+      return fetchedTile.tileData.dense[Math.floor(posInTileX)];
+    }
+
+    return null;
+  }
+
+  mouseMoveHandler({ x, y } = {}) {
+    if (!this.isWithin(x, y)) return;
+
+    this.mouseX = x;
+    this.mouseY = y;
+
+    this.mouseMoveZoomHandler();
+  }
+
+  mouseMoveZoomHandler() {
+    // Implemented in the horizontal and vertical sub-classes
+  }
+
+  zoomed(...args) {
+    super.zoomed(...args);
+    this.mouseMoveZoomHandler();
   }
 }
 

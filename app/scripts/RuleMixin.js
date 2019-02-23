@@ -9,6 +9,12 @@ const RuleMixin = Mixin(superclass => class extends superclass {
     this.animate = animate;
 
     this.MOUSEOVER_RADIUS = 4;
+
+    this.pubSub = context.pubSub;
+
+    this.pubSubs.push(
+      this.pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this))
+    );
   }
 
   setPosition(newPosition) {
