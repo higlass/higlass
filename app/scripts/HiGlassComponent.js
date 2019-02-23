@@ -61,6 +61,8 @@ import {
 // Configs
 import {
   DEFAULT_SERVER,
+  DEFAULT_CONTAINER_PADDING_X,
+  DEFAULT_CONTAINER_PADDING_Y,
   DEFAULT_VIEW_MARGIN,
   DEFAULT_VIEW_PADDING,
   MOUSE_TOOL_MOVE,
@@ -165,6 +167,13 @@ class HiGlassComponent extends React.Component {
     this.viewPaddingRight = +props.options.viewPaddingRight >= 0
       ? +props.options.viewPaddingRight
       : DEFAULT_VIEW_PADDING;
+
+    this.containingPaddingX = +props.options.containingPaddingX >= 0
+      ? +props.options.containingPaddingX
+      : DEFAULT_CONTAINER_PADDING_X;
+    this.containingPaddingY = +props.options.containingPaddingY >= 0
+      ? +props.options.containingPaddingY
+      : DEFAULT_CONTAINER_PADDING_Y;
 
     this.genomePositionSearchBox = null;
     this.viewHeaders = {};
@@ -3790,7 +3799,7 @@ class HiGlassComponent extends React.Component {
 
         // Custom props
         cols={12}
-        containerPadding={[0, 0]}
+        containerPadding={[this.containingPaddingX, this.containingPaddingY]}
         draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}
         isDraggable={this.isEditable()}
         isResizable={this.isEditable()}
