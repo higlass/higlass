@@ -39,11 +39,19 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.3/pixi.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
 </head>
-<body >
-  <div
-    id="demo"
-    style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem"
-  ></div>
+<body>
+  <div style="position: absolute; left: 0; top: 0; right: 0; height: 50vh; box-shadow: 0 1px 0 0 #eee; overflow: hidden;">
+    <div
+      id="demo"
+      style="position: absolute; left: 1rem; top: 1rem; right: 1rem; bottom: 0.5rem;"
+    ></div>
+  </div>
+  <div style="position: absolute; left: 0; top: 50vh; right: 0; bottom: 0; box-shadow: 0 -1px 0 0 #eee; overflow: hidden;">
+    <div
+      id="svg"
+      style="position: absolute; left: 1rem; top: 0.5rem; right: 1rem; bottom: 1rem;"
+    ></div>
+  </div>
 </body>
 <script src='/hglib.js'></script>
 <script>
@@ -169,7 +177,7 @@ const viewConfig = {
   ]
 };
 
-hglib.viewer(
+const hgApi = hglib.viewer(
   document.getElementById('demo'),
   viewConfig,
   {
@@ -184,5 +192,15 @@ hglib.viewer(
     viewPaddingRight: 6,
   },
 );
+
+function renderPreview() {
+  setTimeout(() => {
+    document.getElementById('svg').innerHTML = hgApi.exportAsSvg();
+  }, 1500);
+}
+
+hgApi.on('viewConfig', renderPreview);
+
+renderPreview();
 </script>
 </html>
