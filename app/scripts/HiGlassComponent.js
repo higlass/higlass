@@ -1492,15 +1492,11 @@ class HiGlassComponent extends React.Component {
    * of the available space in the div.
    */
   updateRowHeight() {
-    if (!this.props.options) return;
-
-    if (!this.props.options.bounded) {
-      if (this.props.options.acurate) {
-        // we want acturate height so set the row height to 1px
-        this.setState({
-          rowHeight: 1,
-        });
-      }
+    if (
+      !(this.props.options && this.props.options.bounded)
+      || this.props.options.pixelPreciseMarginPadding
+    ) {
+      // not bounded so we don't need to update the row height
       return;
     }
 
