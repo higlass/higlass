@@ -59,10 +59,14 @@ HiGlassComponent inside the element ``element`` with a viewconfig passed in as
 ``config``. If ``config`` is a string, it is interpreted as a url and used to
 try to fetch a remote viewconfig.
 
-The ``options`` parameter can currently only specify the ``bounded`` property
-which tells the HiGlass component to fill all the space in the containing
+The ``options`` parameter can have the following properties:
+
+- ``bounded``: tells the HiGlass component to fill all the space in the containing
 element. Note that if ``bounded`` is set to true, then ``element`` must have a
-fixed height.
+fixed height
+- ``pixelPreciseMarginPadding``: if ``true`` apply pixel precise view height, padding, and margin.
+- ``viewMarginTop``, ``viewMarginBottom``, ``viewMarginLeft``, and ``viewMarginRight``: top, bottom, left, right margin between views in pixels. The margin area *is not interactive*, i.e., dragging on the margin area *will not change* the location of the view!
+- ``viewPaddingTop``, ``viewPaddingBottom``, ``viewPaddingLeft``, and ``viewPaddingRight``: top, bottom, left, right padding between views in pixels. The padding area *is interactive*, i.e., dragging on the margin area *will change* the location of the view!
 
 The function returns an instance of the public API of a HiGlass component.
 
