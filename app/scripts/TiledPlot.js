@@ -778,8 +778,8 @@ class TiledPlot extends React.Component {
     let offsetX = 0;
     let offsetY = 0;
 
-    const verticalMargin = this.props.paddingTop + this.props.paddingBottom;
-    const horizontalMargin = this.props.paddingLeft + this.props.paddingRight;
+    const verticalPadding = this.props.paddingTop + this.props.paddingBottom;
+    const horizontalPadding = this.props.paddingLeft + this.props.paddingRight;
 
     switch (location) {
       case 'top':
@@ -854,13 +854,13 @@ class TiledPlot extends React.Component {
           this.state.width
           - this.leftWidthNoGallery
           - this.rightWidthNoGallery
-          - (2 * horizontalMargin)
+          - (2 * horizontalPadding)
         );
         height = (
           this.state.height
           - this.topHeightNoGallery
           - this.bottomHeightNoGallery
-          - (2 * verticalMargin)
+          - (2 * verticalPadding)
         );
         offsetX = this.galleryDim;
         offsetY = this.galleryDim;
@@ -1751,8 +1751,8 @@ class TiledPlot extends React.Component {
       <div
         className="top-track-container"
         style={{
-          left: this.leftWidth + this.props.paddingLeft,
-          top: this.props.paddingTop,
+          left: this.leftWidth + this.props.marginLeft,
+          top: this.props.marginTop,
           width: this.centerWidth,
           height: this.topHeightNoGallery,
           outline: trackOutline,
