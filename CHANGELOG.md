@@ -1,6 +1,6 @@
 ## v1.5.0
 
-- Make view spacing adjustable via initialization options. See [/docs/examples/apis/adjust-view-spacing.html](/docs/examples/apis/adjust-view-spacing.html) for an example.
+- Make view spacing adjustable via initialization options. See [/docs/examples/others/adjust-view-spacing.html](/docs/examples/others/adjust-view-spacing.html) for an example.
 
 ## v1.4.2
 
