@@ -9,7 +9,7 @@ import { colorToHex, showMousePosition } from './utils';
 class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
   constructor(context, options) {
     super(context, options);
-    const { animate } = context;
+    const { animate, isShowGlobalMousePosition } = context;
 
     this.constIndicator = new PIXI.Graphics();
     this.pMain.addChild(this.constIndicator);
@@ -19,12 +19,13 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
 
     this.animate = animate;
     this.options = options;
+    this.isShowGlobalMousePosition = isShowGlobalMousePosition;
 
     this.pubSubs = [];
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(
-        this, this.is2d, this.options.showGlobalMousePosition
+        this, this.is2d, this.isShowGlobalMousePosition()
       );
     }
   }
@@ -41,7 +42,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(
-        this, this.is2d, this.options.showGlobalMousePosition
+        this, this.is2d, this.isShowGlobalMousePosition()
       );
     }
 

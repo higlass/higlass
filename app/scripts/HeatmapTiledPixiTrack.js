@@ -53,6 +53,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       svgElement,
       onTrackOptionsChanged,
       onMouseMoveZoom,
+      isShowGlobalMousePosition
     } = context;
 
     this.pubSub = pubSub;
@@ -62,6 +63,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.scaleBrush = brushY();
 
     this.onTrackOptionsChanged = onTrackOptionsChanged;
+    this.isShowGlobalMousePosition = isShowGlobalMousePosition;
 
     // Graphics for drawing the colorbar
     this.pColorbarArea = new PIXI.Graphics();
@@ -107,7 +109,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(
-        this, this.is2d, this.options.showGlobalMousePosition
+        this, this.is2d, this.isShowGlobalMousePosition()
       );
     }
 
@@ -322,7 +324,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(
-        this, this.is2d, this.options.showGlobalMousePosition
+        this, this.is2d, this.isShowGlobalMousePosition()
       );
     }
   }
