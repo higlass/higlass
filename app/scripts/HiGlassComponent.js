@@ -162,8 +162,16 @@ class HiGlassComponent extends React.Component {
       setTileProxyAuthHeader(props.options.authToken);
     }
 
+    this.pixiRoot = new PIXI.Container();
+    this.pixiRoot.interactive = true;
+
     this.pixiStage = new PIXI.Container();
     this.pixiStage.interactive = true;
+    this.pixiRoot.addChild(this.pixiStage);
+
+    this.pixiMask = new PIXI.Graphics();
+    this.pixiRoot.addChild(this.pixiMask);
+    this.pixiStage.mask = this.pixiMask;
 
     this.element = null;
 
@@ -259,6 +267,7 @@ class HiGlassComponent extends React.Component {
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
     this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
     this.onBlurHandlerBound = this.onBlurHandler.bind(this);
+    this.onViewScrollBound = this.onViewScroll.bind(this);
   }
 
   componentWillMount() {
@@ -289,6 +298,7 @@ class HiGlassComponent extends React.Component {
       this.pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
       this.pubSub.subscribe('app.zoom', this.zoomHandlerBound),
       this.pubSub.subscribe('requestReceived', this.requestReceivedHandlerBound),
+      this.pubSub.subscribe('app.viewScroll', this.onViewScrollBound),
     );
 
     if (this.props.getApi) {
@@ -480,7 +490,7 @@ class HiGlassComponent extends React.Component {
     // let width = this.element.clientWidth;
     // let height = this.element.clientHeight;
 
-    this.pixiRenderer.render(this.pixiStage);
+    this.pixiRenderer.render(this.pixiRoot);
   }
 
   componentDidUpdate() {
@@ -558,12 +568,17 @@ class HiGlassComponent extends React.Component {
     const width = this.element.parentNode.clientWidth;
     const height = this.element.parentNode.clientHeight;
 
+    this.pixiMask
+      .beginFill(0xFFFFFF)
+      .drawRect(0, 0, width, height)
+      .endFill();
+
     this.pixiRenderer.resize(width, height);
 
     this.pixiRenderer.view.style.width = `${width}px`;
     this.pixiRenderer.view.style.height = `${height}px`;
 
-    this.pixiRenderer.render(this.pixiStage);
+    this.pixiRenderer.render(this.pixiRoot);
   }
 
   /**
@@ -649,7 +664,7 @@ class HiGlassComponent extends React.Component {
       // component was probably unmounted
       if (!this.pixiRenderer) return;
 
-      this.pixiRenderer.render(this.pixiStage);
+      this.pixiRenderer.render(this.pixiRoot);
 
       this.isRequestingAnimationFrame = false;
     });
@@ -3411,6 +3426,12 @@ class HiGlassComponent extends React.Component {
 
   }
 
+  onViewScroll(scrollTop) {
+    this.scrollTop = scrollTop;
+    this.pixiStage.y = -this.scrollTop;
+    this.animate();
+  }
+
   setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
     const track = getTrackObjById(this.tiledPlots, viewId, trackId);
 
@@ -3457,8 +3478,9 @@ class HiGlassComponent extends React.Component {
   }
 
   wheelHandler(evt) {
-    // The event forwarder wasn't written for React's SyntheticEvent
+    if (this.props.options.scrollable) return;
 
+    // The event forwarder wasn't written for React's SyntheticEvent
     const nativeEvent = evt.nativeEvent || evt;
     const isZoomFixed = (
       this.props.zoomFixed
@@ -3599,6 +3621,7 @@ class HiGlassComponent extends React.Component {
               this.addDraggingChangedListener(view.uid, view.uid, listener))}
             removeDraggingChangedListener={listener => (
               this.removeDraggingChangedListener(view.uid, view.uid, listener))}
+            scrollable={this.props.options.scrollable}
             setCentersFunction={(c) => { this.setCenters[view.uid] = c; }}
             svgElement={this.state.svgElement}
             tracks={view.tracks}

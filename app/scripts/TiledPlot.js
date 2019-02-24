@@ -2003,6 +2003,7 @@ class TiledPlot extends React.Component {
           positionedTracks={positionedTracks}
           registerDraggingChangedListener={this.props.registerDraggingChangedListener}
           removeDraggingChangedListener={this.props.removeDraggingChangedListener}
+          scrollable={this.props.scrollable}
           setCentersFunction={this.props.setCentersFunction}
           svgElement={this.props.svgElement}
           topHeight={this.topHeight}
@@ -2219,6 +2220,7 @@ class TiledPlot extends React.Component {
 TiledPlot.defaultProps = {
   pluginTracks: {},
   metaTracks: [],
+  scrollable: false,
   zoomable: true,
 };
 
@@ -2250,6 +2252,7 @@ TiledPlot.propTypes = {
   rangeSelectionToInt: PropTypes.bool,
   registerDraggingChangedListener: PropTypes.func,
   removeDraggingChangedListener: PropTypes.func,
+  scrollable: PropTypes.bool,
   setCentersFunction: PropTypes.func,
   pixiStage: PropTypes.object,
   pluginTracks: PropTypes.object,

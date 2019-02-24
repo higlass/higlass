@@ -100,6 +100,7 @@ class TrackRenderer extends React.Component {
 
     this.yPositionOffset = 0;
     this.xPositionOffset = 0;
+    this.scrollTop = 0;
 
     this.scrollTimeout = null;
     this.activeTransitions = 0;
@@ -192,6 +193,7 @@ class TrackRenderer extends React.Component {
     this.boundForwardEvent = this.forwardEvent.bind(this);
     this.boundScrollEvent = this.scrollEvent.bind(this);
     this.boundForwardContextMenu = this.forwardContextMenu.bind(this);
+    this.onScrollHandlerBound = this.onScrollHandler.bind(this);
   }
 
   componentWillMount() {
@@ -445,7 +447,7 @@ class TrackRenderer extends React.Component {
     this.pMask.beginFill();
     this.pMask.drawRect(
       this.xPositionOffset,
-      this.yPositionOffset,
+      this.yPositionOffset + this.scrollTop,
       this.currentProps.width,
       this.currentProps.height
     );
@@ -1675,6 +1677,12 @@ class TrackRenderer extends React.Component {
     this.props.pubSub.publish('app.event', e);
   }
 
+  onScrollHandler(e) {
+    this.scrollTop = e.target.scrollTop;
+    this.setMask();
+    this.props.pubSub.publish('app.viewScroll', this.scrollTop);
+  }
+
   /* ------------------------------- Render ------------------------------- */
 
   render() {
@@ -1696,6 +1704,11 @@ class TrackRenderer extends React.Component {
         <div
           ref={(c) => { this.eventTracker = c; }}
           className="track-renderer-events"
+          onScroll={this.onScrollHandlerBound}
+          style={{
+            overflowX: 'hidden',
+            overflowY: this.props.scrollable ? 'auto' : 'hidden',
+          }}
           styleName="track-renderer-events"
         >
           {this.currentProps.children}
@@ -1721,6 +1734,7 @@ TrackRenderer.defaultProps = {
   marginLeft: 0,
   marginTop: 0,
   positionedTracks: [],
+  scrollable: false,
   topHeight: 0,
   topHeightNoGallery: 0,
   width: 0,
@@ -1750,12 +1764,14 @@ TrackRenderer.propTypes = {
   pluginTracks: PropTypes.object,
   positionedTracks: PropTypes.array,
   metaTracks: PropTypes.array,
+  scrollable: PropTypes.bool,
   setCentersFunction: PropTypes.func,
   svgElement: PropTypes.object.isRequired,
   topHeight: PropTypes.number,
   topHeightNoGallery: PropTypes.number,
   viewOptions: PropTypes.object,
   width: PropTypes.number,
+  zoomable: PropTypes.bool.isRequired,
 };
 
 export default withPubSub(TrackRenderer);
