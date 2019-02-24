@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Global Mouse Position &middot; HiGlass</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="/hglib.css">
+
+<style type="text/css">
+#container {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 600px;
+  height: 400px;
+  background: #eee;
+  overflow: hidden;
+}
+#demo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+</style>
+
+<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.2/pixi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+</head>
+<body>
+  <div id="container">
+    <div id="demo"></div>
+  </div>
+</body>
+<script src='/hglib.js'></script>
+<script>
+const h = 6;
+const viewConfig = {
+  zoomFixed: true,
+  views: [
+    {
+      layout: { w: 12, h, x: 0, y: 0 * h, i: 'a', moved: false, static: false },
+      uid: 'a',
+      initialXDomain: [0, 2547598956],
+      tracks: {
+        top: [
+          {
+            uid: 'genes',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-gene-annotations',
+            height: 64,
+            options: {
+              labelColor: 'black',
+              plusStrandColor: 'black',
+              name: 'Gene Annotations (hg19)',
+              labelPosition: 'hidden',
+              minusStrandColor: 'black',
+              fontSize: 12,
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              geneAnnotationHeight: 12,
+              geneLabelPosition: 'outside',
+              geneStrandSpacing: 4
+            },
+            name: 'Gene Annotations (hg19)',
+          },
+          {
+            uid: 'chroms',
+            height: 20,
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            position: 'top',
+            type: 'horizontal-chromosome-labels',
+            options: {
+              color: '#777777',
+              stroke: '#FFFFFF',
+              fontSize: 12,
+              fontIsLeftAligned: true,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000'
+            },
+            name: 'Chromosome Labels (hg19)'
+          },
+          {
+            uid: 'line1',
+            tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
+            height: 64,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K27ac.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: 'blue',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K27ac.fc.signal'
+          },
+        ],
+      },
+    },
+    {
+      layout: { w: 12, h, x: 0, y: 1 * h, i: 'b', moved: false, static: false },
+      uid: 'b',
+      initialXDomain: [0, 2547598956],
+      tracks: {
+        top: [
+          {
+            uid: 'genes',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-gene-annotations',
+            height: 64,
+            options: {
+              labelColor: 'black',
+              plusStrandColor: 'black',
+              name: 'Gene Annotations (hg19)',
+              labelPosition: 'hidden',
+              minusStrandColor: 'black',
+              fontSize: 12,
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              geneAnnotationHeight: 12,
+              geneLabelPosition: 'outside',
+              geneStrandSpacing: 4
+            },
+            name: 'Gene Annotations (hg19)',
+          },
+          {
+            uid: 'chroms',
+            height: 20,
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            position: 'top',
+            type: 'horizontal-chromosome-labels',
+            options: {
+              color: '#777777',
+              stroke: '#FFFFFF',
+              fontSize: 12,
+              fontIsLeftAligned: true,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000'
+            },
+            name: 'Chromosome Labels (hg19)'
+          },
+          {
+            uid: 'line2',
+            tilesetUid: 'PdAaSdibTLK34hCw7ubqKA',
+            height: 64,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K27me3.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#7414cc',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K27me3.fc.signal'
+          },
+        ],
+      },
+    },
+    {
+      layout: { w: 12, h, x: 0, y: 2 * h, i: 'c', moved: false, static: false },
+      uid: 'c',
+      initialXDomain: [0, 2547598956],
+      tracks: {
+        top: [
+          {
+            uid: 'genes',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-gene-annotations',
+            height: 64,
+            options: {
+              labelColor: 'black',
+              plusStrandColor: 'black',
+              name: 'Gene Annotations (hg19)',
+              labelPosition: 'hidden',
+              minusStrandColor: 'black',
+              fontSize: 12,
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              geneAnnotationHeight: 12,
+              geneLabelPosition: 'outside',
+              geneStrandSpacing: 4
+            },
+            name: 'Gene Annotations (hg19)',
+          },
+          {
+            uid: 'chroms',
+            height: 20,
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            position: 'top',
+            type: 'horizontal-chromosome-labels',
+            options: {
+              color: '#777777',
+              stroke: '#FFFFFF',
+              fontSize: 12,
+              fontIsLeftAligned: true,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000'
+            },
+            name: 'Chromosome Labels (hg19)'
+          },
+          {
+            uid: 'line3',
+            tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
+            height: 48,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K4me1.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#a800a8',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K4me1.fc.signal'
+          },
+        ],
+      },
+    },
+    {
+      layout: { w: 12, h, x: 0, y: 3 * h, i: 'd', moved: false, static: false },
+      uid: 'd',
+      initialXDomain: [0, 2547598956],
+      tracks: {
+        top: [
+          {
+            uid: 'genes',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-gene-annotations',
+            height: 64,
+            options: {
+              labelColor: 'black',
+              plusStrandColor: 'black',
+              name: 'Gene Annotations (hg19)',
+              labelPosition: 'hidden',
+              minusStrandColor: 'black',
+              fontSize: 12,
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              geneAnnotationHeight: 12,
+              geneLabelPosition: 'outside',
+              geneStrandSpacing: 4
+            },
+            name: 'Gene Annotations (hg19)',
+          },
+          {
+            uid: 'chroms',
+            height: 20,
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            position: 'top',
+            type: 'horizontal-chromosome-labels',
+            options: {
+              color: '#777777',
+              stroke: '#FFFFFF',
+              fontSize: 12,
+              fontIsLeftAligned: true,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000'
+            },
+            name: 'Chromosome Labels (hg19)'
+          },
+          {
+            uid: 'line4',
+            tilesetUid: 'cE0nGyd0Q_yVYSyBUe89Ww',
+            height: 64,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K4me3.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#c51671',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K4me3.fc.signal'
+          },
+        ],
+      },
+    },
+    {
+      layout: { w: 12, h, x: 0, y: 4 * h, i: 'e', moved: false, static: false },
+      uid: 'e',
+      initialXDomain: [0, 2547598956],
+      tracks: {
+        top: [
+          {
+            uid: 'genes',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-gene-annotations',
+            height: 64,
+            options: {
+              labelColor: 'black',
+              plusStrandColor: 'black',
+              name: 'Gene Annotations (hg19)',
+              labelPosition: 'hidden',
+              minusStrandColor: 'black',
+              fontSize: 12,
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              geneAnnotationHeight: 12,
+              geneLabelPosition: 'outside',
+              geneStrandSpacing: 4
+            },
+            name: 'Gene Annotations (hg19)',
+          },
+          {
+            uid: 'chroms',
+            height: 20,
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            position: 'top',
+            type: 'horizontal-chromosome-labels',
+            options: {
+              color: '#777777',
+              stroke: '#FFFFFF',
+              fontSize: 12,
+              fontIsLeftAligned: true,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000'
+            },
+            name: 'Chromosome Labels (hg19)'
+          },
+          {
+            uid: 'line5',
+            tilesetUid: 'cE0nGyd0Q_yVYSyBUe89Ww',
+            height: 64,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K4me3.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#ff0000',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K4me3.fc.signal'
+          },
+        ],
+      },
+    },
+    {
+      layout: { w: 12, h, x: 0, y: 5 * h, i: 'f', moved: false, static: false },
+      uid: 'f',
+      initialXDomain: [0, 2547598956],
+      tracks: {
+        top: [
+          {
+            uid: 'genes',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-gene-annotations',
+            height: 64,
+            options: {
+              labelColor: 'black',
+              plusStrandColor: 'black',
+              name: 'Gene Annotations (hg19)',
+              labelPosition: 'hidden',
+              minusStrandColor: 'black',
+              fontSize: 12,
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              geneAnnotationHeight: 12,
+              geneLabelPosition: 'outside',
+              geneStrandSpacing: 4
+            },
+            name: 'Gene Annotations (hg19)',
+          },
+          {
+            uid: 'chroms',
+            height: 20,
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            position: 'top',
+            type: 'horizontal-chromosome-labels',
+            options: {
+              color: '#777777',
+              stroke: '#FFFFFF',
+              fontSize: 12,
+              fontIsLeftAligned: true,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000'
+            },
+            name: 'Chromosome Labels (hg19)'
+          },
+          {
+            uid: 'line6',
+            tilesetUid: 'cE0nGyd0Q_yVYSyBUe89Ww',
+            height: 64,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K4me3.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#f2a93b',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K4me3.fc.signal'
+          },
+        ],
+      },
+    },
+    {
+      layout: { w: 12, h, x: 0, y: 6 * h, i: 'g', moved: false, static: false },
+      uid: 'g',
+      initialXDomain: [0, 2547598956],
+      tracks: {
+        top: [
+          {
+            uid: 'genes',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-gene-annotations',
+            height: 64,
+            options: {
+              labelColor: 'black',
+              plusStrandColor: 'black',
+              name: 'Gene Annotations (hg19)',
+              labelPosition: 'hidden',
+              minusStrandColor: 'black',
+              fontSize: 12,
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              geneAnnotationHeight: 12,
+              geneLabelPosition: 'outside',
+              geneStrandSpacing: 4
+            },
+            name: 'Gene Annotations (hg19)',
+          },
+          {
+            uid: 'chroms',
+            height: 20,
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            position: 'top',
+            type: 'horizontal-chromosome-labels',
+            options: {
+              color: '#777777',
+              stroke: '#FFFFFF',
+              fontSize: 12,
+              fontIsLeftAligned: true,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000'
+            },
+            name: 'Chromosome Labels (hg19)'
+          },
+          {
+            uid: 'line7',
+            tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
+            height: 64,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K27ac.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: 'blue',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K27ac.fc.signal'
+          },
+        ],
+      },
+    },
+    {
+      layout: { w: 12, h, x: 0, y: 7 * h, i: 'h', moved: false, static: false },
+      uid: 'h',
+      initialXDomain: [0, 2547598956],
+      tracks: {
+        top: [
+          {
+            uid: 'genes',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-gene-annotations',
+            height: 64,
+            options: {
+              labelColor: 'black',
+              plusStrandColor: 'black',
+              name: 'Gene Annotations (hg19)',
+              labelPosition: 'hidden',
+              minusStrandColor: 'black',
+              fontSize: 12,
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              geneAnnotationHeight: 12,
+              geneLabelPosition: 'outside',
+              geneStrandSpacing: 4
+            },
+            name: 'Gene Annotations (hg19)',
+          },
+          {
+            uid: 'chroms',
+            height: 20,
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            position: 'top',
+            type: 'horizontal-chromosome-labels',
+            options: {
+              color: '#777777',
+              stroke: '#FFFFFF',
+              fontSize: 12,
+              fontIsLeftAligned: true,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000'
+            },
+            name: 'Chromosome Labels (hg19)'
+          },
+          {
+            uid: 'line8',
+            tilesetUid: 'PdAaSdibTLK34hCw7ubqKA',
+            height: 64,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K27me3.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#7414cc',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K27me3.fc.signal'
+          },
+        ],
+      },
+    },
+    {
+      layout: { w: 12, h, x: 0, y: 8 * h, i: 'i', moved: false, static: false },
+      uid: 'i',
+      initialXDomain: [0, 2547598956],
+      tracks: {
+        top: [
+          {
+            uid: 'genes',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-gene-annotations',
+            height: 64,
+            options: {
+              labelColor: 'black',
+              plusStrandColor: 'black',
+              name: 'Gene Annotations (hg19)',
+              labelPosition: 'hidden',
+              minusStrandColor: 'black',
+              fontSize: 12,
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              geneAnnotationHeight: 12,
+              geneLabelPosition: 'outside',
+              geneStrandSpacing: 4
+            },
+            name: 'Gene Annotations (hg19)',
+          },
+          {
+            uid: 'chroms',
+            height: 20,
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            position: 'top',
+            type: 'horizontal-chromosome-labels',
+            options: {
+              color: '#777777',
+              stroke: '#FFFFFF',
+              fontSize: 12,
+              fontIsLeftAligned: true,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000'
+            },
+            name: 'Chromosome Labels (hg19)'
+          },
+          {
+            uid: 'line9',
+            tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
+            height: 48,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K4me1.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#a800a8',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K4me1.fc.signal'
+          },
+        ],
+      },
+    },
+    {
+      layout: { w: 12, h, x: 0, y: 9 * h, i: 'j', moved: false, static: false },
+      uid: 'j',
+      initialXDomain: [0, 2547598956],
+      tracks: {
+        top: [
+          {
+            uid: 'genes',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-gene-annotations',
+            height: 64,
+            options: {
+              labelColor: 'black',
+              plusStrandColor: 'black',
+              name: 'Gene Annotations (hg19)',
+              labelPosition: 'hidden',
+              minusStrandColor: 'black',
+              fontSize: 12,
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              geneAnnotationHeight: 12,
+              geneLabelPosition: 'outside',
+              geneStrandSpacing: 4
+            },
+            name: 'Gene Annotations (hg19)',
+          },
+          {
+            uid: 'chroms',
+            height: 20,
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            position: 'top',
+            type: 'horizontal-chromosome-labels',
+            options: {
+              color: '#777777',
+              stroke: '#FFFFFF',
+              fontSize: 12,
+              fontIsLeftAligned: true,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000'
+            },
+            name: 'Chromosome Labels (hg19)'
+          },
+          {
+            uid: 'line10',
+            tilesetUid: 'cE0nGyd0Q_yVYSyBUe89Ww',
+            height: 64,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K4me3.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#c51671',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K4me3.fc.signal'
+          },
+        ],
+      },
+    },
+    {
+      layout: { w: 12, h, x: 0, y: 10 * h, i: 'k', moved: false, static: false },
+      uid: 'k',
+      initialXDomain: [0, 2547598956],
+      tracks: {
+        top: [
+          {
+            uid: 'genes',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-gene-annotations',
+            height: 64,
+            options: {
+              labelColor: 'black',
+              plusStrandColor: 'black',
+              name: 'Gene Annotations (hg19)',
+              labelPosition: 'hidden',
+              minusStrandColor: 'black',
+              fontSize: 12,
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              geneAnnotationHeight: 12,
+              geneLabelPosition: 'outside',
+              geneStrandSpacing: 4
+            },
+            name: 'Gene Annotations (hg19)',
+          },
+          {
+            uid: 'chroms',
+            height: 20,
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            position: 'top',
+            type: 'horizontal-chromosome-labels',
+            options: {
+              color: '#777777',
+              stroke: '#FFFFFF',
+              fontSize: 12,
+              fontIsLeftAligned: true,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000'
+            },
+            name: 'Chromosome Labels (hg19)'
+          },
+          {
+            uid: 'line11',
+            tilesetUid: 'cE0nGyd0Q_yVYSyBUe89Ww',
+            height: 64,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K4me3.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#ff0000',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K4me3.fc.signal'
+          },
+        ],
+      },
+    },
+    {
+      layout: { w: 12, h, x: 0, y: 11 * h, i: 'l', moved: false, static: false },
+      uid: 'l',
+      initialXDomain: [0, 2547598956],
+      tracks: {
+        top: [
+          {
+            uid: 'genes',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-gene-annotations',
+            height: 64,
+            options: {
+              labelColor: 'black',
+              plusStrandColor: 'black',
+              name: 'Gene Annotations (hg19)',
+              labelPosition: 'hidden',
+              minusStrandColor: 'black',
+              fontSize: 12,
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              geneAnnotationHeight: 12,
+              geneLabelPosition: 'outside',
+              geneStrandSpacing: 4
+            },
+            name: 'Gene Annotations (hg19)',
+          },
+          {
+            uid: 'chroms',
+            height: 20,
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            position: 'top',
+            type: 'horizontal-chromosome-labels',
+            options: {
+              color: '#777777',
+              stroke: '#FFFFFF',
+              fontSize: 12,
+              fontIsLeftAligned: true,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000'
+            },
+            name: 'Chromosome Labels (hg19)'
+          },
+          {
+            uid: 'line12',
+            tilesetUid: 'cE0nGyd0Q_yVYSyBUe89Ww',
+            height: 64,
+            position: 'top',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K4me3.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#f2a93b',
+              labelPosition: 'topLeft',
+              labelColor: 'black',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showGlobalMousePosition: true,
+              mousePositionColor: '#000000',
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K4me3.fc.signal'
+          },
+        ],
+      },
+    }
+  ],
+  editable: false,
+  exportViewUrl: '/api/v1/viewconfs',
+  trackSourceServers: ['http://higlass.io/api/v1'],
+};
+
+const hgApi = hglib.viewer(
+  document.getElementById('demo'),
+  viewConfig,
+  {
+    bounded: true,
+    scrollable: true,
+  },
+);
+</script>
+</html>
