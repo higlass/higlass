@@ -1472,7 +1472,10 @@ class HiGlassComponent extends React.Component {
    * of the available space in the div.
    */
   updateRowHeight() {
-    if (!(this.props.options && this.props.options.bounded)) {
+    if (
+      !(this.props.options && this.props.options.bounded)
+      || (this.props.options && this.props.options.scrollable)
+    ) {
       // not bounded so we don't need to update the row height
       return;
     }
