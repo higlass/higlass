@@ -322,10 +322,6 @@ export const OPTIONS_INFO = {
     name: 'Show Mouse Position',
     inlineOptions: YES_NO
   },
-  showGlobalMousePosition: {
-    name: 'Show Global Mouse Position',
-    inlineOptions: YES_NO
-  },
   showTooltip: {
     name: 'Show Tooltip',
     inlineOptions: YES_NO
