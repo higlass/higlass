@@ -59,10 +59,15 @@ HiGlassComponent inside the element ``element`` with a viewconfig passed in as
 ``config``. If ``config`` is a string, it is interpreted as a url and used to
 try to fetch a remote viewconfig.
 
-The ``options`` parameter can currently only specify the ``bounded`` property
-which tells the HiGlass component to fill all the space in the containing
-element. Note that if ``bounded`` is set to true, then ``element`` must have a
-fixed height.
+The ``options`` parameter can have the following properties:
+
+- ``bounded``: property which tells the HiGlass component to fill all the space in the containing element. Note that if ``bounded`` is set to true, then ``element`` must have a fixed height.
+
+- ``broadcastMousePositionGlobally``: if ``true`` the relative mouse position of this HiGlass instances (in data coordinates) will be broadcasted globally. This allows you to show the global mouse position in another HiGlass instance within the same browser tab or another browser tab.
+
+- ``showGlobalMousePosition``: if ``true`` any globally broadcasted mouse position will be shown for all tracks that have ``options.showMousePosition = true``.
+
+- ``globalMousePosition``: if ``true`` this will turn on ``broadcastMousePositionGlobally`` and ``showGlobalMousePosition``. This is basically a convenience option to quickly broadcast and show global mouse positions.
 
 The function returns an instance of the public API of a HiGlass component.
 
@@ -188,6 +193,10 @@ API Functions
 .. js:autofunction:: public.on
 
 .. js:autofunction:: setBroadcastMousePositionGlobally
+
+.. js:autofunction:: setShowGlobalMousePosition
+
+.. js:autofunction:: setGlobalMousePosition
 
 TiledPixiTrack Functions
 ========================

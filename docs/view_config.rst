@@ -259,8 +259,6 @@ Some of the more important ones are:
 
 - ``showMousePosition``: enables a visual crosshair at the mouse cursor's location across the track
 
-- ``showGlobalMousePosition``: enables a visual crosshair at the mouse cursor's location in another HiGlass instance. This option will only ensure that the globally broadcasted mouse cursor location will be rendered but it does not turn on global broadcasting of the mouse cursor location. To do that you have to call ``setBroadcastMousePositionGlobally(true)`` from the JS API.
-
 Overlay Tracks
 ==============
 
