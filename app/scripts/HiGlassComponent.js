@@ -260,6 +260,15 @@ class HiGlassComponent extends React.Component {
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
     this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
     this.onBlurHandlerBound = this.onBlurHandler.bind(this);
+
+    this.setBroadcastMousePositionGlobally(
+      this.props.options.broadcastMousePositionGlobally
+      || this.props.options.globalMousePosition
+    );
+    this.setShowGlobalMousePosition(
+      this.props.options.showGlobalMousePosition
+      || this.props.options.globalMousePosition
+    );
   }
 
   componentWillMount() {
@@ -294,6 +303,33 @@ class HiGlassComponent extends React.Component {
 
     if (this.props.getApi) {
       this.props.getApi(this.api);
+    }
+  }
+
+  setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally = false) {
+    this.isBroadcastMousePositionGlobally = isBroadcastMousePositionGlobally;
+  }
+
+  setShowGlobalMousePosition(isShowGlobalMousePosition = false) {
+    this.isShowGlobalMousePosition = isShowGlobalMousePosition;
+
+    if (this.isShowGlobalMousePosition && !this.globalMousePositionListener) {
+      this.globalMousePositionListener = globalPubSub.subscribe(
+        'higlass.mouseMove', this.animateOnGlobalEventBound
+      );
+      this.pubSubs.push(this.globalMousePositionListener);
+    }
+
+    if (this.isShowGlobalMousePosition && !this.globalMousePositionListener) {
+      const index = this.pubSubs.findIndex(
+        listener => listener === this.globalMousePositionListener
+      );
+
+      globalPubSub.unsubscribe(this.globalMousePositionListener);
+
+      if (index >= 0) this.pubSubs.splice(index, 1);
+
+      this.globalMousePositionListener = undefined;
     }
   }
 
@@ -657,7 +693,7 @@ class HiGlassComponent extends React.Component {
   }
 
   animateOnGlobalEvent({ sourceUid } = {}) {
-    if (sourceUid !== this.uid) this.animate();
+    if (sourceUid !== this.uid && this.animateOnMouseMove) this.animate();
   }
 
   measureSize() {
@@ -3585,6 +3621,7 @@ class HiGlassComponent extends React.Component {
             horizontalMargin={this.horizontalMargin}
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
+            isShowGlobalMousePosition={this.isShowGlobalMousePosition}
             metaTracks={view.metaTracks}
             mouseTool={this.state.mouseTool}
             onChangeTrackData={(trackId, newData) => (

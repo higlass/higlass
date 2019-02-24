@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import createPubSub, { globalPubSub } from 'pub-sub-es';
+import createPubSub from 'pub-sub-es';
 
 import {
   setDarkTheme,
@@ -50,34 +50,37 @@ const createApi = function api(context, pubSub) {
        * @param {boolean} isBroadcastMousePositionGlobally - If `true` the mouse
        *   position will be broadcasted globally.
        */
-      setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally = false) {
-        self.isBroadcastMousePositionGlobally = isBroadcastMousePositionGlobally;
+      setBroadcastMousePositionGlobally(
+        isBroadcastMousePositionGlobally = false
+      ) {
+        self.setBroadcastMousePositionGlobally(
+          isBroadcastMousePositionGlobally
+        );
+      },
 
-        if (
-          self.isBroadcastMousePositionGlobally
-          && !self.broadcastMousePositionGloballyListener
-          && self.animateOnMouseMove
-        ) {
-          self.broadcastMousePositionGloballyListener = globalPubSub.subscribe(
-            'higlass.mouseMove', self.animateOnGlobalEventBound
-          );
-          self.pubSubs.push(self.broadcastMousePositionGloballyListener);
-        }
+      /**
+       * Enable or disable showing the global mouse position
+       * @param {boolean} isShowGlobalMousePosition - If `true` the global mouse
+       *   position will be shown for any track that has
+       *   `options.showMousePosition = true`.
+       */
+      setShowGlobalMousePosition(isShowGlobalMousePosition = false) {
+        self.setShowGlobalMousePosition(
+          isShowGlobalMousePosition
+        );
+      },
 
-        if (
-          self.isBroadcastMousePositionGlobally
-          && !self.broadcastMousePositionGloballyListener
-        ) {
-          const index = self.pubSubs.findIndex(
-            listener => listener === self.broadcastMousePositionGloballyListener
-          );
-
-          globalPubSub.unsubscribe(self.broadcastMousePositionGloballyListener);
-
-          if (index >= 0) self.pubSubs.splice(index, 1);
-
-          self.broadcastMousePositionGloballyListener = undefined;
-        }
+      /**
+       * Convinience function to enable / disable the global mouse position
+       * @description This function is equivalent to calling
+       *   `setBroadcastMousePositionGlobally()` and
+       *   `setShowGlobalMousePosition()`.
+       * @param {boolean} isGlobalMousePosition - If `true` the global mouse
+       *   position will be shown and broadcasted.
+       */
+      setGlobalMousePosition(isGlobalMousePosition = false) {
+        self.setBroadcastMousePositionGlobally(isGlobalMousePosition);
+        self.setShowGlobalMousePosition(isGlobalMousePosition);
       },
 
       /**
