@@ -305,17 +305,19 @@ const viewConfig = {
 const hgApi1 = hglib.viewer(
   document.getElementById('demo1'),
   viewConfig,
-  { bounded: true },
+  {
+    bounded: true,
+    globalMousePosition: true,
+  },
 );
-
-hgApi1.setBroadcastMousePositionGlobally(true);
 
 const hgApi2 = hglib.viewer(
   document.getElementById('demo2'),
   viewConfig,
-  { bounded: true },
+  {
+    bounded: true,
+    globalMousePosition: true,
+  },
 );
-
-hgApi2.setBroadcastMousePositionGlobally(true);
 </script>
 </html>
