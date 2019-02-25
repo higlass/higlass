@@ -82,32 +82,34 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       tile.plusStrandRows = plusStrandRows;
       tile.minusStrandRows = minusStrandRows;
 
-      tile.tileData.forEach((td, i) => {
-        const geneInfo = td.fields;
-        const fill = this.options.fillColor ? this.options.fillColor : 'blue';
+      if (this.options.showTexts) {
+        tile.tileData.forEach((td, i) => {
+          const geneInfo = td.fields;
+          const fill = this.options.fillColor ? this.options.fillColor : 'blue';
 
-        tile.textWidths = {};
-        tile.textHeights = {};
+          tile.textWidths = {};
+          tile.textHeights = {};
 
-        // don't draw texts for the latter entries in the tile
-        if (i >= MAX_TEXTS) {
-          return;
-        }
+          // don't draw texts for the latter entries in the tile
+          if (i >= MAX_TEXTS) {
+            return;
+          }
 
-        // geneInfo[3] is the gene symbol
-        const text = new PIXI.Text(geneInfo[3], {
-          fontSize: this.textFontSize,
-          fontFamily: this.textFontFamily,
-          fill: colorToHex(fill)
+          // geneInfo[3] is the gene symbol
+          const text = new PIXI.Text(geneInfo[3], {
+            fontSize: this.textFontSize,
+            fontFamily: this.textFontFamily,
+            fill: colorToHex(fill)
+          });
+          if (this.flipText) { text.scale.x = -1; }
+
+          text.anchor.x = 0.5;
+          text.anchor.y = 0.5;
+
+          tile.texts[geneInfo[3]] = text; // index by geneName
+          tile.textGraphics.addChild(text);
         });
-        if (this.flipText) { text.scale.x = -1; }
-
-        text.anchor.x = 0.5;
-        text.anchor.y = 0.5;
-
-        tile.texts[geneInfo[3]] = text; // index by geneName
-        tile.textGraphics.addChild(text);
-      });
+      }
     }
 
     tile.initialized = true;
@@ -177,6 +179,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     for (const tile of this.visibleAndFetchedTiles()) {
       this.destroyTile(tile);
+      this.initTile(tile);
       this.renderTile(tile);
     }
   }
@@ -225,7 +228,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       sortedRows[i].alternatingStartPosition = (startAlternating + i - startPos) % 2;
     }
 
-    for (let i = startPos; i >= 0; i--) {
+    for (let i = startPos; i >= 0 && sortedRows.length; i--) {
       sortedRows[i].alternatingStartPosition = (startAlternating + startPos - i) % 2;
     }
 
@@ -234,6 +237,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // });
     // console.log('sortedRows:', sortedRows);
 
+    // console.log('visibleAndFetchedIds', this.visibleAndFetchedIds());
     return allRects;
   }
 
@@ -386,6 +390,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           ];
         }
 
+        if (!this.options.showTexts) continue;
         // console.log('geneName:', geneName);
         // tile probably hasn't been initialized yet
         if (!tile.texts) return;

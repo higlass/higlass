@@ -1315,8 +1315,11 @@ export const TRACKS_INFO = [
       'colorEncoding',
       'colorRange',
       'colorEncodingRange',
+      'showTexts',
+      'alternating',
     ],
     defaultOptions: {
+      alternating: false,
       fillColor: 'blue',
       axisPositionHorizontal: 'right',
       labelColor: 'black',
@@ -1325,6 +1328,7 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       valueColumn: null,
       colorEncoding: false,
+      showTexts: false,
       colorRange: [
         '#000000', '#652537', '#bf5458', '#fba273', '#ffffe0'
       ],

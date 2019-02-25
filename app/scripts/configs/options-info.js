@@ -88,6 +88,14 @@ export const OPTIONS_INFO = {
     name: 'Sort Largest On Top',
     inlineOptions: YES_NO
   },
+  showTexts: {
+    name: 'Show texts',
+    inlineOptions: YES_NO
+  },
+  alternating: {
+    name: 'Alternating',
+    inlineOptions: YES_NO
+  },
   minSquareSize: {
     name: 'Minimum size',
     inlineOptions: AVAILABLE_WIDTHS_AND_NONE,
