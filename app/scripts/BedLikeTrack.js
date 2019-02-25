@@ -20,7 +20,7 @@ import { HEATED_OBJECT_MAP } from './configs';
 const GENE_RECT_HEIGHT = 16;
 const MAX_TEXTS = 1000;
 const MAX_TILE_ENTRIES = 5000;
-const ALTERNATING_OFFSET = 5;
+const STAGGERED_OFFSET = 5;
 
 
 class BedLikeTrack extends HorizontalTiled1DPixiTrack {
@@ -212,28 +212,28 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       .sort((a, b) => a.from - b.from);
 
     let startPos = 0;
-    let startAlternating = 0;
+    let startStaggered = 0;
 
-    // find if any values have alternativeStartPosition set
+    // find if any values have staggeredStartPosition set
     for (let i = 0; i < sortedRows.length; i++) {
-      if (sortedRows[i].alternatingStartPosition !== undefined) {
+      if (sortedRows[i].staggeredStartPosition !== undefined) {
         startPos = i;
-        startAlternating = sortedRows[i].alternatingStartPosition;
+        startStaggered = sortedRows[i].staggeredStartPosition;
         break;
       }
     }
 
 
     for (let i = startPos; i < sortedRows.length; i++) {
-      sortedRows[i].alternatingStartPosition = (startAlternating + i - startPos) % 2;
+      sortedRows[i].staggeredStartPosition = (startStaggered + i - startPos) % 2;
     }
 
     for (let i = startPos; i >= 0 && sortedRows.length; i--) {
-      sortedRows[i].alternatingStartPosition = (startAlternating + startPos - i) % 2;
+      sortedRows[i].staggeredStartPosition = (startStaggered + startPos - i) % 2;
     }
 
     // sortedRows.forEach((x, i) => {
-    //   allRects[x.value.uid].alternatingStartPosition = i % 2;
+    //   allRects[x.value.uid].staggeredStartPosition = i % 2;
     // });
     // console.log('sortedRows:', sortedRows);
 
@@ -307,7 +307,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.allVisibleRects();
     let allRects = null;
 
-    if (this.options.alternating) {
+    if (this.options.staggered) {
       allRects = this.allVisibleRects();
     }
 
@@ -362,13 +362,13 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         const xStartPos = this._xScale(txStart);
         const xEndPos = this._xScale(txEnd);
 
-        if (this.options.alternating) {
+        if (this.options.staggered) {
           const rect = allRects[td.uid];
 
-          if (rect.alternatingStartPosition) {
-            rectY -= ALTERNATING_OFFSET / 2;
+          if (rect.staggeredStartPosition) {
+            rectY -= STAGGERED_OFFSET / 2;
           } else {
-            rectY += ALTERNATING_OFFSET / 2;
+            rectY += STAGGERED_OFFSET / 2;
           }
         }
 

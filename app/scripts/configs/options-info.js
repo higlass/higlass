@@ -92,8 +92,8 @@ export const OPTIONS_INFO = {
     name: 'Show texts',
     inlineOptions: YES_NO
   },
-  alternating: {
-    name: 'Alternating',
+  staggered: {
+    name: 'Staggered',
     inlineOptions: YES_NO
   },
   minSquareSize: {
