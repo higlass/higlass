@@ -59,10 +59,11 @@ HiGlassComponent inside the element ``element`` with a viewconfig passed in as
 ``config``. If ``config`` is a string, it is interpreted as a url and used to
 try to fetch a remote viewconfig.
 
-The ``options`` parameter can currently only specify the ``bounded`` property
-which tells the HiGlass component to fill all the space in the containing
-element. Note that if ``bounded`` is set to true, then ``element`` must have a
-fixed height.
+The ``options`` parameter can currently have:
+
+- ``bounded``: this property tells the HiGlass component to fill all the space in the containing element. Note that if ``bounded`` is set to true, then ``element`` must have a fixed height.
+
+- ``noTrackMenu``: if ``true`` the context menu is disabled.
 
 The function returns an instance of the public API of a HiGlass component.
 
