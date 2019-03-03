@@ -14,6 +14,8 @@ import {
   getTrackObjectFromHGC
 } from '../app/scripts/utils';
 
+import viewconf from './view-configs/axis';
+
 configure({ adapter: new Adapter() });
 
 describe('Simple HiGlassComponent', () => {
@@ -22,13 +24,15 @@ describe('Simple HiGlassComponent', () => {
 
   describe('Axis texts', () => {
     beforeAll((done) => {
-      ([div, hgc] = mountHGComponent(div, hgc,
-        'http://higlass.io/api/v1/viewconfs/?d=R-oOO7ohTgaqByNuD7X4-g',
+      [div, hgc] = mountHGComponent(
+        div,
+        hgc,
+        viewconf,
         done,
         {
           style: 'width:800px; height:400px; background-color: lightgreen',
           bounded: true,
-        })
+        }
       );
     });
 
@@ -55,6 +59,16 @@ describe('Simple HiGlassComponent', () => {
       for (const text of texts1) {
         expect(text.indexOf('e')).to.be.above(0);
       }
+    });
+
+    it('Checks the axis margin', () => {
+      const track1 = getTrackObjectFromHGC(hgc.instance(),
+        'Cs0jaHTuQXuibqx36Ew1xg', 'frcXuRouRpa_XSm5awtt3Q');
+
+      const axisMargin = 10;
+
+      expect(track1.position[0] + track1.dimensions[0] - axisMargin)
+        .to.equal(track1.axis.pAxis.position.x);
     });
 
     afterAll((done) => {
