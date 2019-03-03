@@ -210,11 +210,10 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     super.draw();
 
     Object.values(this.fetchedTiles).forEach((tile) => {
+      const tDomain = tile.drawnAtScale.domain();
+      const xDomain = this._xScale.domain();
       // scaling between tiles
-      const tileK = (
-        (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
-        / (this._xScale.domain()[1] - this._xScale.domain()[0])
-      );
+      const tileK = (tDomain[1] - tDomain[0]) / (xDomain[1] - xDomain[0]);
 
       const newRange = this._xScale.domain().map(tile.drawnAtScale);
 
