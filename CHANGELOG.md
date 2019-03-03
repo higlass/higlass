@@ -1,3 +1,7 @@
+## v1.5.0
+
+- Allow disabling the track menu by adding `noTrackMenu: true` to the options when calling `hglib.viewer()`.
+
 ## v1.4.2
 
 - Fix #568, #569
