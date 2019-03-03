@@ -90,6 +90,11 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       0
     );
 
+    // Important when when using `options.valueScaleMin` or
+    // `options.valueScaleMax` such that the y position later on doesn't get
+    // negative
+    valueScale.clamp(true);
+
     this.valueScale = valueScale;
 
     const colorScale = valueScale.copy();
