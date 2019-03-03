@@ -19,8 +19,6 @@ class AxisPixi {
     this.axisTexts = [];
     this.axisTextFontFamily = 'Arial';
     this.axisTextFontSize = 10;
-
-    // hi
   }
 
   startAxis(axisHeight) {
@@ -102,7 +100,7 @@ class AxisPixi {
 
   drawAxisLeft(valueScale, axisHeight) {
     // Draw a left-oriented axis (ticks pointing to the right)
-    this.startAxis(this.pAxis, axisHeight);
+    this.startAxis(axisHeight);
     this.createAxisTexts(valueScale, axisHeight);
 
     const graphics = this.pAxis;
@@ -116,8 +114,8 @@ class AxisPixi {
     }
 
     // draw the top, potentially unlabelled, ticke
-    // graphics.moveTo(0, 0);
-    // graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), 0);
+    graphics.moveTo(0, 0);
+    graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), 0);
 
     graphics.moveTo(0, axisHeight);
     graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), axisHeight);
@@ -127,7 +125,11 @@ class AxisPixi {
 
       // draw ticks to the left of the axis
       this.axisTexts[i].x = -(
-        TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2);
+        TICK_MARGIN
+        + TICK_LENGTH
+        + TICK_LABEL_MARGIN
+        + (this.axisTexts[i].width / 2)
+      );
       this.axisTexts[i].y = valueScale(tick);
 
       graphics.moveTo(-TICK_MARGIN, valueScale(tick));
@@ -158,8 +160,12 @@ class AxisPixi {
     for (let i = 0; i < this.axisTexts.length; i++) {
       const tick = this.tickValues[i];
 
-      this.axisTexts[i].x = TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width
-        / 2;
+      this.axisTexts[i].x = (
+        TICK_MARGIN
+        + TICK_LENGTH
+        + TICK_LABEL_MARGIN
+        + (this.axisTexts[i].width / 2)
+      );
       this.axisTexts[i].y = valueScale(tick);
 
       graphics.moveTo(TICK_MARGIN, valueScale(tick));
@@ -175,7 +181,9 @@ class AxisPixi {
 
   hideOverlappingAxisLabels() {
     // show all tick marks initially
-    for (let i = this.axisTexts.length - 1; i >= 0; i--) { this.axisTexts[i].visible = true; }
+    for (let i = this.axisTexts.length - 1; i >= 0; i--) {
+      this.axisTexts[i].visible = true;
+    }
 
     for (let i = this.axisTexts.length - 1; i >= 0; i--) {
       // if this tick mark is invisible, it's not going to
@@ -269,16 +277,29 @@ class AxisPixi {
   exportAxisLeftSVG(valueScale, axisHeight) {
     const gAxis = this.exportVerticalAxis(axisHeight);
 
+    const topTickLine = this.createAxisSVGLine();
+    gAxis.appendChild(topTickLine);
+    topTickLine.setAttribute('d', `M0,0 L${+(TICK_MARGIN + TICK_LENGTH)},0`);
+
+    const bottomTickLine = this.createAxisSVGLine();
+    gAxis.appendChild(bottomTickLine);
+    bottomTickLine.setAttribute(
+      'd',
+      `M0,${axisHeight} L${+(TICK_MARGIN + TICK_LENGTH)},${axisHeight}`
+    );
+
     for (let i = 0; i < this.axisTexts.length; i++) {
       const tick = this.tickValues[i];
       const text = this.axisTexts[i];
 
-      const line = this.createAxisSVGLine();
+      const tickLine = this.createAxisSVGLine();
 
-      gAxis.appendChild(line);
+      gAxis.appendChild(tickLine);
 
-      line.setAttribute('d',
-        `M${-TICK_MARGIN},${valueScale(tick)} L${-(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`);
+      tickLine.setAttribute(
+        'd',
+        `M${+TICK_MARGIN},${valueScale(tick)} L${+(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`
+      );
 
       const g = document.createElement('g');
       gAxis.appendChild(g);
@@ -298,11 +319,16 @@ class AxisPixi {
   exportAxisRightSVG(valueScale, axisHeight) {
     const gAxis = this.exportVerticalAxis(axisHeight);
 
-    const line = this.createAxisSVGLine();
-    gAxis.appendChild(line);
+    const topTickLine = this.createAxisSVGLine();
+    gAxis.appendChild(topTickLine);
+    topTickLine.setAttribute('d', `M0,0 L${-(TICK_MARGIN + TICK_LENGTH)},0`);
 
-    line.setAttribute('d',
-      `M0,0 L${TICK_MARGIN + TICK_LENGTH},0`);
+    const bottomTickLine = this.createAxisSVGLine();
+    gAxis.appendChild(bottomTickLine);
+    bottomTickLine.setAttribute(
+      'd',
+      `M0,${axisHeight} L${-(TICK_MARGIN + TICK_LENGTH)},${axisHeight}`
+    );
 
     for (let i = 0; i < this.axisTexts.length; i++) {
       const tick = this.tickValues[i];
@@ -312,8 +338,10 @@ class AxisPixi {
 
       gAxis.appendChild(tickLine);
 
-      tickLine.setAttribute('d',
-        `M${TICK_MARGIN},${valueScale(tick)} L${TICK_MARGIN + TICK_LENGTH},${valueScale(tick)}`);
+      tickLine.setAttribute(
+        'd',
+        `M${-TICK_MARGIN},${valueScale(tick)} L${-(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`
+      );
 
       const g = document.createElement('g');
       gAxis.appendChild(g);
