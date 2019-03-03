@@ -168,13 +168,6 @@ class HiGlassComponent extends React.Component {
       ? +props.options.viewPaddingRight
       : DEFAULT_VIEW_PADDING;
 
-    this.containerPaddingX = +props.options.containerPaddingX >= 0
-      ? +props.options.containerPaddingX
-      : DEFAULT_CONTAINER_PADDING_X;
-    this.containerPaddingY = +props.options.containerPaddingY >= 0
-      ? +props.options.containerPaddingY
-      : DEFAULT_CONTAINER_PADDING_Y;
-
     this.genomePositionSearchBox = null;
     this.viewHeaders = {};
 
@@ -3788,6 +3781,18 @@ class HiGlassComponent extends React.Component {
 
     layouts = JSON.parse(JSON.stringify(layouts)); // make sure to copy the layouts
 
+    const defaultContainerPaddingX = this.isEditable()
+      ? DEFAULT_CONTAINER_PADDING_X : 0;
+    const defaultContainerPaddingY = this.isEditable()
+      ? DEFAULT_CONTAINER_PADDING_Y : 0;
+
+    const containerPaddingX = +this.props.options.containerPaddingX >= 0
+      ? +this.props.options.containerPaddingX
+      : defaultContainerPaddingX;
+    const containerPaddingY = +this.props.options.containerPaddingY >= 0
+      ? +this.props.options.containerPaddingY
+      : defaultContainerPaddingY;
+
     const gridLayout = (
       <ReactGridLayout
         // Reserved props
@@ -3795,7 +3800,7 @@ class HiGlassComponent extends React.Component {
 
         // Custom props
         cols={12}
-        containerPadding={[this.containerPaddingX, this.containerPaddingY]}
+        containerPadding={[containerPaddingX, containerPaddingY]}
         draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}
         isDraggable={this.isEditable()}
         isResizable={this.isEditable()}
