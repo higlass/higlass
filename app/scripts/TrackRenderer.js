@@ -1582,7 +1582,7 @@ class TrackRenderer extends React.Component {
 
   forwardContextMenu(e) {
     // Do never forward the contextmenu event when ALT is being hold down.
-    if (this.props.noTrackMenu || e.altKey) return;
+    if (this.props.disableTrackMenu || e.altKey) return;
 
     e.preventDefault();
 
@@ -1732,6 +1732,7 @@ TrackRenderer.propTypes = {
   centerHeight: PropTypes.number,
   centerWidth: PropTypes.number,
   children: PropTypes.array,
+  disableTrackMenu: PropTypes.bool,
   galleryDim: PropTypes.number,
   height: PropTypes.number,
   initialXDomain: PropTypes.array,
@@ -1744,7 +1745,6 @@ TrackRenderer.propTypes = {
   leftWidthNoGallery: PropTypes.number,
   marginLeft: PropTypes.number,
   marginTop: PropTypes.number,
-  noTrackMenu: PropTypes.bool,
   onMouseMoveZoom: PropTypes.func,
   onScalesChanged: PropTypes.func.isRequired,
   pixiStage: PropTypes.object.isRequired,

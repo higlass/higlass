@@ -1981,6 +1981,7 @@ class TiledPlot extends React.Component {
           canvasElement={this.canvasElement}
           centerHeight={this.centerHeight}
           centerWidth={this.centerWidth}
+          disableTrackMenu={this.props.disableTrackMenu}
           dragging={this.props.dragging}
           galleryDim={this.galleryDim}
           height={this.state.height}
@@ -2227,13 +2228,13 @@ TiledPlot.propTypes = {
   canvasElement: PropTypes.object,
   chooseTrackHandler: PropTypes.func,
   chromInfoPath: PropTypes.string,
+  disableTrackMenu: PropTypes.bool,
   dragging: PropTypes.bool,
   editable: PropTypes.bool,
   horizontalMargin: PropTypes.number,
   initialXDomain: PropTypes.array,
   initialYDomain: PropTypes.array,
   mouseTool: PropTypes.string,
-  noTrackMenu: PropTypes.bool,
   onCloseTrack: PropTypes.func,
   onDataDomainChanged: PropTypes.func,
   onLockValueScale: PropTypes.func,
