@@ -1,0 +1,187 @@
+{
+  "zoomFixed": false,
+  "views": [
+    {
+      "layout": {
+        "w": 12,
+        "h": 6,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      },
+      "uid": "aa",
+      "initialYDomain": [2541320068.253662, 2541325651.38588],
+      "initialXDomain": [2540172918.0011406, 2540208277.8385234],
+      "tracks": {
+        "left": [],
+        "top": [
+          {
+            "uid": "chrom-labels",
+            "height": 35,
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "type": "horizontal-chromosome-labels",
+            "options": {
+              "color": "#777777",
+              "stroke": "#FFFFFF",
+              "fontSize": 12
+            }
+          },
+          {
+            "uid": "gene-annotations",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "height": 60,
+            "server": "//higlass.io/api/v1",
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "plusStrandColor": "black",
+              "labelPosition": "hidden",
+              "minusStrandColor": "black",
+              "fontSize": 11,
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "geneAnnotationHeight": 10,
+              "geneLabelPosition": "outside",
+              "geneStrandSpacing": 4
+            }
+          },
+          {
+            "uid": "line1",
+            "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
+            "height": 48,
+            "server": "//higlass.io/api/v1",
+            "type": "horizontal-line",
+            "options": {
+              "name": "GM12878-E116-H3K27ac.fc.signal",
+              "lineStrokeWidth": 2,
+              "lineStrokeColor": "blue",
+              "axisPositionHorizontal": "right",
+              "labelColor": "black",
+              "labelTextOpacity": 1
+            }
+          },
+          {
+            "uid": "line2",
+            "tilesetUid": "PdAaSdibTLK34hCw7ubqKA",
+            "height": 48,
+            "server": "//higlass.io/api/v1",
+            "type": "horizontal-line",
+            "options": {
+              "name": "GM12878-E116-H3K27me3.fc.signal",
+              "lineStrokeWidth": 2,
+              "lineStrokeColor": "turquoise",
+              "axisPositionHorizontal": "right",
+              "axisLabelFormatting": "scientific",
+              "labelColor": "black",
+              "labelTextOpacity": 1
+            }
+          },
+          {
+            "uid": "line3",
+            "tilesetUid": "e0DYtZBSTqiMLHoaimsSpg",
+            "height": 48,
+            "server": "//higlass.io/api/v1",
+            "type": "horizontal-line",
+            "options": {
+              "name": "GM12878-E116-H3K4me1.fc.signal",
+              "lineStrokeWidth": 2,
+              "lineStrokeColor": "red",
+              "axisPositionHorizontal": "right",
+              "labelColor": "black",
+              "labelTextOpacity": 1
+            }
+          },
+          {
+            "uid": "line4",
+            "tilesetUid": "cE0nGyd0Q_yVYSyBUe89Ww",
+            "height": 48,
+            "position": "top",
+            "server": "//higlass.io/api/v1",
+            "type": "horizontal-line",
+            "options": {
+              "name": "GM12878-E116-H3K4me3.fc.signal",
+              "lineStrokeWidth": 2,
+              "lineStrokeColor": "orange",
+              "axisPositionHorizontal": "right",
+              "labelColor": "black",
+              "labelTextOpacity": 1
+            }
+          },
+          {
+            "uid": "bar1",
+            "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
+            "height": 48,
+            "server": "//higlass.io/api/v1",
+            "type": "horizontal-bar",
+            "options": {
+              "name": "GM12878-E116-H3K27ac.fc.signal",
+              "barFillColor": "blue",
+              "axisPositionHorizontal": "right",
+              "labelColor": "black",
+              "labelTextOpacity": 1,
+              "barMinHeightAtZero": 1,
+              "barMinHeightAtZeroOpacity": 0.5
+            }
+          },
+          {
+            "uid": "bar2",
+            "tilesetUid": "PdAaSdibTLK34hCw7ubqKA",
+            "height": 48,
+            "server": "//higlass.io/api/v1",
+            "type": "horizontal-bar",
+            "options": {
+              "name": "GM12878-E116-H3K27me3.fc.signal",
+              "barFillColor": "turquoise",
+              "axisPositionHorizontal": "right",
+              "labelColor": "black",
+              "labelTextOpacity": 1,
+              "barMinHeightAtZero": 1,
+              "barMinHeightAtZeroOpacity": 0.5
+            }
+          },
+          {
+            "uid": "bar3",
+            "tilesetUid": "e0DYtZBSTqiMLHoaimsSpg",
+            "height": 48,
+            "server": "//higlass.io/api/v1",
+            "type": "horizontal-bar",
+            "options": {
+              "name": "GM12878-E116-H3K4me1.fc.signal",
+              "barFillColor": "red",
+              "axisPositionHorizontal": "right",
+              "labelColor": "black",
+              "labelTextOpacity": 1,
+              "barMinHeightAtZero": 1,
+              "barMinHeightAtZeroOpacity": 0.5
+            }
+          },
+          {
+            "uid": "bar4",
+            "tilesetUid": "cE0nGyd0Q_yVYSyBUe89Ww",
+            "height": 48,
+            "position": "top",
+            "server": "//higlass.io/api/v1",
+            "type": "horizontal-bar",
+            "options": {
+              "name": "GM12878-E116-H3K4me3.fc.signal",
+              "barFillColor": "orange",
+              "axisPositionHorizontal": "right",
+              "labelColor": "black",
+              "labelTextOpacity": 1,
+              "barMinHeightAtZero": 1,
+              "barMinHeightAtZeroOpacity": 0.5
+            }
+          }
+        ]
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv"
+    }
+  ],
+  "editable": true,
+  "exportViewUrl": "/api/v1/viewconfs",
+  "trackSourceServers": [
+    "//higlass.io/api/v1"
+  ]
+}
