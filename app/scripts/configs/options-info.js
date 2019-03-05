@@ -210,6 +210,14 @@ export const OPTIONS_INFO = {
     name: 'Bar opacity',
     inlineOptions: OPACITY_OPTIONS,
   },
+  barMinHeightAtZero: {
+    name: 'Min. bar height at 0 vals',
+    inlineOptions: AVAILABLE_WIDTHS,
+  },
+  barMinHeightAtZeroOpacity: {
+    name: 'Opacity of min. bars at 0 vals',
+    inlineOptions: OPACITY_OPTIONS,
+  },
   fillOpacity: {
     name: 'Fill Opacity',
     inlineOptions: OPACITY_OPTIONS,

@@ -549,7 +549,9 @@ export const TRACKS_INFO = [
       'barOpacity',
       'showMousePosition',
       'showTooltip',
-      'aggregationMode'
+      'aggregationMode',
+      'barMinHeightAtZero',
+      'barMinHeightAtZeroOpacity'
     ],
     defaultOptions: {
       align: 'bottom',
@@ -590,7 +592,9 @@ export const TRACKS_INFO = [
       'barOpacity',
       'showMousePosition',
       'showTooltip',
-      'aggregationMode'
+      'aggregationMode',
+      'barMinHeightAtZero',
+      'barMinHeightAtZeroOpacity'
     ],
     defaultOptions: {
       align: 'bottom',
