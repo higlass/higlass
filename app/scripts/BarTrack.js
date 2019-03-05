@@ -159,9 +159,26 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       barSprite.width = this._xScale(tileX + tileWidth) - barSprite.x;
     }
 
+    const maxYPos = (
+      this.dimensions[1] - +this.options.barMinHeightAtZero || Infinity
+    );
+    const barMinHeightOpacity = (
+      this.options.barMinHeightAtZeroOpacity || opacity
+    );
+
     for (let i = 0; i < tileValues.length; i++) {
+      const value = tileValues[i] + pseudocount;
+
       xPos = this._xScale(tileXScale(i));
-      yPos = this.valueScale(tileValues[i] + pseudocount);
+      yPos = this.valueScale(value);
+
+      if (value === 0 && maxYPos !== null && yPos > maxYPos) {
+        yPos = maxYPos;
+        graphics.beginFill(colorHex, barMinHeightOpacity);
+      } else {
+        graphics.beginFill(colorHex, opacity);
+      }
+
       width = this._xScale(tileXScale(i + 1)) - xPos;
       height = this.dimensions[1] - yPos;
 
