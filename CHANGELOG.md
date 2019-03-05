@@ -1,6 +1,7 @@
 ## v1.5.0
 
 - Add a new option to tracks that support axis: `axisMargin` to add some margin to an axis. See [docs/examples/viewconfs/axis-margin.json](docs/examples/viewconfs/axis-margin.json) for an example
+- Add a new option to BarTrack for drawing bars with a min. height at positions where the value is zero. See [`/apis/svg.html?/viewconfs/bar-min-height-at-zero.json`](/apis/svg.html?/viewconfs/bar-min-height-at-zero.json) for an example.
 
 ## v1.4.2
 
