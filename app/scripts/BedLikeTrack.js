@@ -107,6 +107,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           text.anchor.y = 0.5;
 
           tile.texts[geneInfo[3]] = text; // index by geneName
+          // console.log('adding text:', text.text);
           tile.textGraphics.addChild(text);
         });
       }
@@ -372,8 +373,11 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           }
         }
 
+        let alreadyDrawn = true;
         // don't draw anything that has already been drawn
         if (!(zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel])) {
+          alreadyDrawn = false;
+
           if (!this.drawnRects[zoomLevel]) this.drawnRects[zoomLevel] = {};
 
           const drawnPoly = this.drawPoly(tile, xStartPos, xEndPos,
@@ -404,6 +408,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
         text.position.x = this._xScale(txMiddle);
         text.position.y = rectY + rectHeight / 2;
+
+        if (alreadyDrawn) {
+          text.alreadyDrawn = true;
+        }
 
         text.style = {
           fontSize: this.textFontSize,
@@ -635,7 +643,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
           text.position.x = this._xScale(txMiddle);
 
-          if (!parentInFetched) {
+          if (!parentInFetched && !text.alreadyDrawn) {
             text.visible = true;
 
             // TODO, change the line below to true if texts are desired in the future
