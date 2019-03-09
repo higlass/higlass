@@ -42,11 +42,11 @@ describe('BarTrack tests', () => {
     );
 
     waitForTilesLoaded(hgc.instance(), () => {
-      expect(trackObj.demarcationLine.fillColor)
-        .to.eql(colorToHex(trackConf.options.demarcationLineColor));
+      expect(trackObj.zeroLine.fillColor)
+        .to.eql(colorToHex(trackConf.options.zeroLineColor));
 
-      expect(trackObj.demarcationLine.fillAlpha)
-        .to.eql(trackConf.options.demarcationLineOpacity);
+      expect(trackObj.zeroLine.fillAlpha)
+        .to.eql(trackConf.options.zeroLineOpacity);
 
       expect(
         Object.values(trackObj.fetchedTiles).every(tile => tile.svgData)

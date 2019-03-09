@@ -121,8 +121,8 @@
               "axisPositionHorizontal": "right",
               "labelColor": "black",
               "labelTextOpacity": 1,
-              "demarcationLine": true,
-              "demarcationLineColor": "red"
+              "zeroLineVisible": true,
+              "zeroLineColor": "red"
             }
           },
           {
@@ -137,7 +137,7 @@
               "axisPositionHorizontal": "right",
               "labelColor": "black",
               "labelTextOpacity": 1,
-              "demarcationLine": true
+              "zeroLineVisible": true
             }
           },
           {
@@ -152,9 +152,9 @@
               "axisPositionHorizontal": "right",
               "labelColor": "black",
               "labelTextOpacity": 1,
-              "demarcationLine": true,
-              "demarcationLineColor": "#000",
-              "demarcationLineOpacity": 0.1
+              "zeroLineVisible": true,
+              "zeroLineColor": "#000",
+              "zeroLineOpacity": 0.1
             }
           },
           {
@@ -171,7 +171,7 @@
               "axisPositionHorizontal": "right",
               "labelColor": "black",
               "labelTextOpacity": 1,
-              "demarcationLine": true
+              "zeroLineVisible": true
             }
           }
         ]

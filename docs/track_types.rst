@@ -211,11 +211,11 @@ Options
 
 - **barFillColor**: A valid color (e.g. ``black``) or to track the color of the bars use ``[glyph-color]``.
 
-- **demarcationLine**: If ``true`` draw a demarcation line at the bottom of a bar track.
+- **zeroLineVisible**: If ``true`` draws a demarcation line at the bottom of a bar track, i.e., at the zero value.
 
-- **demarcationLineColor**: The color of the demarcation line. If ``undefined`` the bar fill color (``barFillColor``) will be used.
+- **zeroLineColor**: The color of the zero line. If ``undefined`` the bar fill color (``barFillColor``) will be used.
 
-- **demarcationLineOpacity**: The opacity of the demarcation line. If ``undefined`` the bar opacity (``barOpacity``) will be used.
+- **zeroLineOpacity**: The opacity of the zero line. If ``undefined`` the bar opacity (``barOpacity``) will be used.
 
 **Demos:**
 

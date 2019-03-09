@@ -13,8 +13,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   constructor(...args) {
     super(...args);
 
-    this.demarcationLine = new PIXI.Graphics();
-    this.pMain.addChild(this.demarcationLine);
+    this.zeroLine = new PIXI.Graphics();
+    this.pMain.addChild(this.zeroLine);
 
     if (this.options && this.options.colorRange) {
       if (this.options.colorRangeGradient) {
@@ -209,23 +209,23 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     super.rerender(options, force);
   }
 
-  drawDemarcationLine() {
-    this.demarcationLine.clear();
+  drawZeroLine() {
+    this.zeroLine.clear();
 
     const color = colorToHex(this.options.barFillColor || 'grey');
     const opacity = +this.options.barOpacity || 1;
 
-    const demarcationColor = this.options.demarcationLineColor
-      ? colorToHex(this.options.demarcationLineColor)
+    const demarcationColor = this.options.zeroLineColor
+      ? colorToHex(this.options.zeroLineColor)
       : color;
 
-    const demarcationOpacity = Number.isNaN(+this.options.demarcationLineOpacity)
+    const demarcationOpacity = Number.isNaN(+this.options.zeroLineOpacity)
       ? opacity
-      : +this.options.demarcationLineOpacity;
+      : +this.options.zeroLineOpacity;
 
-    this.demarcationLine.beginFill(demarcationColor, demarcationOpacity);
+    this.zeroLine.beginFill(demarcationColor, demarcationOpacity);
 
-    this.demarcationLine.drawRect(
+    this.zeroLine.drawRect(
       0,
       this.dimensions[1] - 1,
       this.dimensions[0],
@@ -233,25 +233,25 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     );
   }
 
-  drawDemarcationLineSvg(output) {
-    const demarcationLine = document.createElement('rect');
-    demarcationLine.setAttribute('id', 'demarcation-line');
+  drawZeroLineSvg(output) {
+    const zeroLine = document.createElement('rect');
+    zeroLine.setAttribute('id', 'zero-line');
 
-    demarcationLine.setAttribute('x', 0);
-    demarcationLine.setAttribute('y', this.dimensions[1] - 1);
-    demarcationLine.setAttribute('height', 1);
-    demarcationLine.setAttribute('width', this.dimensions[0]);
+    zeroLine.setAttribute('x', 0);
+    zeroLine.setAttribute('y', this.dimensions[1] - 1);
+    zeroLine.setAttribute('height', 1);
+    zeroLine.setAttribute('width', this.dimensions[0]);
 
-    demarcationLine.setAttribute(
+    zeroLine.setAttribute(
       'fill',
-      this.options.demarcationLineColor || this.options.barFillColor
+      this.options.zeroLineColor || this.options.barFillColor
     );
-    demarcationLine.setAttribute(
+    zeroLine.setAttribute(
       'fill-opacity',
-      this.options.demarcationLineOpacity || this.options.barOpacity
+      this.options.zeroLineOpacity || this.options.barOpacity
     );
 
-    output.appendChild(demarcationLine);
+    output.appendChild(zeroLine);
   }
 
   draw() {
@@ -259,8 +259,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     // but rather its parent's
     super.draw();
 
-    if (this.options.demarcationLine) this.drawDemarcationLine();
-    else this.demarcationLine.clear();
+    if (this.options.zeroLineVisible) this.drawZeroLine();
+    else this.zeroLine.clear();
 
     Object.values(this.fetchedTiles).forEach((tile) => {
       const domainScale = tile.drawnAtScale.domain();
@@ -333,7 +333,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     output.setAttribute('transform',
       `translate(${this.position[0]},${this.position[1]})`);
 
-    if (this.options.demarcationLine) this.drawDemarcationLineSvg(output);
+    if (this.options.zeroLine) this.drawZeroLineSvg(output);
 
     this.visibleAndFetchedTiles()
       .filter(tile => tile.svgData && tile.svgData.barXValues)
