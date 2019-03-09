@@ -1,7 +1,7 @@
 ## v1.5.0
 
 - Add a new option to tracks that support axis: `axisMargin` to add some margin to an axis. See [docs/examples/viewconfs/axis-margin.json](docs/examples/viewconfs/axis-margin.json) for an example
-- Fix #291
+- Fix #291: allow web page scrolling when zoomFixed is set to true
 
 ## v1.4.2
 
