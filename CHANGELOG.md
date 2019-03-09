@@ -30,6 +30,10 @@
 - Overlay tracks now properly allow for extent to include multiple ranges.
 - Overlay tracks can now optionally have extent ranges configured as a 4-tuple, separating x ranges from y ranges
 
+## v1.3.1
+
+- Clear mouse position indicator when leaving the root dom element, on blurring the window, and when no track is hovered
+
 ## v1.3.0
 
 - Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
