@@ -550,8 +550,9 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'aggregationMode',
-      'barMinHeightAtZero',
-      'barMinHeightAtZeroOpacity'
+      'demarcationLine',
+      'demarcationLineColor',
+      'demarcationLineOpacity',
     ],
     defaultOptions: {
       align: 'bottom',

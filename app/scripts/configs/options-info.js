@@ -210,12 +210,16 @@ export const OPTIONS_INFO = {
     name: 'Bar opacity',
     inlineOptions: OPACITY_OPTIONS,
   },
-  barMinHeightAtZero: {
-    name: 'Min. bar height at 0 vals',
-    inlineOptions: AVAILABLE_WIDTHS,
+  demarcationLine: {
+    name: 'Demarcation line',
+    inlineOptions: YES_NO,
   },
-  barMinHeightAtZeroOpacity: {
-    name: 'Opacity of min. bars at 0 vals',
+  demarcationLineColor: {
+    name: 'Demarcation color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
+  demarcationLineOpacity: {
+    name: 'Demarcation opacity',
     inlineOptions: OPACITY_OPTIONS,
   },
   fillOpacity: {

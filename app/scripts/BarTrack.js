@@ -260,6 +260,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     super.draw();
 
     if (this.options.demarcationLine) this.drawDemarcationLine();
+    else this.demarcationLine.clear();
 
     Object.values(this.fetchedTiles).forEach((tile) => {
       const domainScale = tile.drawnAtScale.domain();
