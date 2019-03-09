@@ -43,6 +43,7 @@ const AVAILABLE_WIDTHS_AND_NONE = Object.assign(
 const AVAILABLE_MARGIN = sizesInPx([0, 2, 4, 8, 16, 32, 64, 128, 256]);
 
 const OPACITY_OPTIONS = sizesInPx([0.0, 0.2, 0.4, 0.6, 0.8, 1.0], '%', 100);
+const OPACITY_OPTIONS_NO_ZERO = sizesInPx([0.2, 0.4, 0.6, 0.8, 1.0], '%', 100);
 
 // these values define the options that are visible in the track config
 // menu
@@ -227,6 +228,18 @@ export const OPTIONS_INFO = {
   barOpacity: {
     name: 'Bar opacity',
     inlineOptions: OPACITY_OPTIONS,
+  },
+  zeroLineVisible: {
+    name: 'Zero line visible',
+    inlineOptions: YES_NO,
+  },
+  zeroLineColor: {
+    name: 'Zero line color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
+  zeroLineOpacity: {
+    name: 'Zero line opacity',
+    inlineOptions: OPACITY_OPTIONS_NO_ZERO,
   },
   fillOpacity: {
     name: 'Fill Opacity',

@@ -13,6 +13,9 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   constructor(...args) {
     super(...args);
 
+    this.zeroLine = new PIXI.Graphics();
+    this.pMain.addChild(this.zeroLine);
+
     if (this.options && this.options.colorRange) {
       if (this.options.colorRangeGradient) {
         this.setColorGradient(this.options.colorRange);
@@ -212,6 +215,51 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     super.rerender(options, force);
   }
 
+  drawZeroLine() {
+    this.zeroLine.clear();
+
+    const color = colorToHex(this.options.barFillColor || 'grey');
+    const opacity = +this.options.barOpacity || 1;
+
+    const demarcationColor = this.options.zeroLineColor
+      ? colorToHex(this.options.zeroLineColor)
+      : color;
+
+    const demarcationOpacity = Number.isNaN(+this.options.zeroLineOpacity)
+      ? opacity
+      : +this.options.zeroLineOpacity;
+
+    this.zeroLine.beginFill(demarcationColor, demarcationOpacity);
+
+    this.zeroLine.drawRect(
+      0,
+      this.dimensions[1] - 1,
+      this.dimensions[0],
+      1
+    );
+  }
+
+  drawZeroLineSvg(output) {
+    const zeroLine = document.createElement('rect');
+    zeroLine.setAttribute('id', 'zero-line');
+
+    zeroLine.setAttribute('x', 0);
+    zeroLine.setAttribute('y', this.dimensions[1] - 1);
+    zeroLine.setAttribute('height', 1);
+    zeroLine.setAttribute('width', this.dimensions[0]);
+
+    zeroLine.setAttribute(
+      'fill',
+      this.options.zeroLineColor || this.options.barFillColor
+    );
+    zeroLine.setAttribute(
+      'fill-opacity',
+      this.options.zeroLineOpacity || this.options.barOpacity
+    );
+
+    output.appendChild(zeroLine);
+  }
+
   getXScaleAndOffset(drawnAtScale) {
     const dA = drawnAtScale.domain();
     const dB = this._xScale.domain();
@@ -230,6 +278,9 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     // we don't want to call HorizontalLine1DPixiTrack's draw function
     // but rather its parent's
     super.draw();
+
+    if (this.options.zeroLineVisible) this.drawZeroLine();
+    else this.zeroLine.clear();
 
     Object.values(this.fetchedTiles).forEach((tile) => {
       const [graphicsXScale, graphicsXPos] = this.getXScaleAndOffset(tile.drawnAtScale);
@@ -291,6 +342,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     track.appendChild(output);
     output.setAttribute('transform',
       `translate(${this.position[0]},${this.position[1]})`);
+
+    if (this.options.zeroLine) this.drawZeroLineSvg(output);
 
     this.visibleAndFetchedTiles()
       .filter(tile => tile.svgData && tile.svgData.barXValues)
