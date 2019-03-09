@@ -55,7 +55,7 @@ header.
 
 .. code-block:: javascript
 
-  disableTrackMenu: [true | false]
+  disableTrackMenu: [true | false] (default: false)
 
 The property ``disableTrackMenu`` specifies whether this viewconf will have a
 track context menu.
