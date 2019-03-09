@@ -224,7 +224,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     super.draw();
 
     Object.values(this.fetchedTiles).forEach((tile) => {
-      const [xScale, xPos] = this.getXScaleAndOffset(tile.drawnAtScale);
+      const [graphicsXScale, graphicsXPos] = this.getXScaleAndOffset(tile.drawnAtScale);
 
       tile.graphics.scale.x = xScale;
       tile.graphics.position.x = xPos;
