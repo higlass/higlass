@@ -29,9 +29,9 @@ const viewconfig = {
               axisPositionHorizontal: 'right',
               labelColor: 'black',
               labelTextOpacity: 1,
-              demarcationLine: true,
-              demarcationLineColor: 'red',
-              demarcationLineOpacity: 0.5
+              zeroLineVisible: true,
+              zeroLineColor: 'red',
+              zeroLineOpacity: 0.5
             }
           }
         ]
