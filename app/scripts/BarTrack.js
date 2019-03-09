@@ -73,6 +73,9 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     const { graphics } = tile;
 
+    // Reset svg data to avoid overplotting
+    tile.svgData = undefined;
+
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
       tile.tileData.tilePos,
@@ -89,6 +92,11 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       this.maxValue(),
       0
     );
+
+    // Important when when using `options.valueScaleMin` or
+    // `options.valueScaleMax` such that the y position later on doesn't become
+    // negative
+    valueScale.clamp(true);
 
     this.valueScale = valueScale;
 
@@ -204,24 +212,30 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     super.rerender(options, force);
   }
 
+  getXScaleAndOffset(drawnAtScale) {
+    const dA = drawnAtScale.domain();
+    const dB = this._xScale.domain();
+
+    // scaling between tiles
+    const tileK = (dA[1] - dA[0]) / (dB[1] - dB[0]);
+
+    const newRange = this._xScale.domain().map(drawnAtScale);
+
+    const posOffset = newRange[0];
+
+    return [tileK, -posOffset * tileK];
+  }
+
   draw() {
     // we don't want to call HorizontalLine1DPixiTrack's draw function
     // but rather its parent's
     super.draw();
 
     Object.values(this.fetchedTiles).forEach((tile) => {
-      // scaling between tiles
-      const tileK = (
-        (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
-        / (this._xScale.domain()[1] - this._xScale.domain()[0])
-      );
+      const [graphicsXScale, graphicsXPos] = this.getXScaleAndOffset(tile.drawnAtScale);
 
-      const newRange = this._xScale.domain().map(tile.drawnAtScale);
-
-      const posOffset = newRange[0];
-
-      tile.graphics.scale.x = tileK;
-      tile.graphics.position.x = -posOffset * tileK;
+      tile.graphics.scale.x = graphicsXScale;
+      tile.graphics.position.x = graphicsXPos;
     });
   }
 
@@ -281,6 +295,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     this.visibleAndFetchedTiles()
       .filter(tile => tile.svgData && tile.svgData.barXValues)
       .forEach((tile) => {
+        // const [xScale, xPos] = this.getXScaleAndOffset(tile.drawnAtScale);
         const data = tile.svgData;
 
         for (let i = 0; i < data.barXValues.length; i++) {
@@ -288,6 +303,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
           rect.setAttribute('fill', data.barColors[i]);
           rect.setAttribute('stroke', data.barColors[i]);
 
+          // rect.setAttribute('x', (data.barXValues[i] + xPos) * xScale);
           rect.setAttribute('x', data.barXValues[i]);
           rect.setAttribute('y', data.barYValues[i]);
           rect.setAttribute('height', data.barHeights[i]);

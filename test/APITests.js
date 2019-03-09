@@ -13,6 +13,8 @@ import {
   simple1And2dAnnotations,
 } from './view-configs';
 
+import adjustViewSpacingConf from './view-configs/adjust-view-spacing';
+
 import simple1dHorizontalVerticalAnd2dDataTrack from './view-configs/simple-1d-horizontal-vertical-and-2d-data-track';
 
 import createElementAndApi from './utils/create-element-and-api';
@@ -184,6 +186,61 @@ describe('API Tests', () => {
       [div, api] = createElementAndApi(emptyConf, { editable: false });
 
       expect(api.version).toEqual(VERSION);
+
+      done();
+    });
+
+    it('adjust view spacing', (done) => {
+      const options = {
+        pixelPreciseMarginPadding: true,
+        containingPaddingX: 0,
+        containingPaddingY: 0,
+        viewMarginTop: 32,
+        viewMarginBottom: 6,
+        viewMarginLeft: 32,
+        viewMarginRight: 6,
+        viewPaddingTop: 32,
+        viewPaddingBottom: 6,
+        viewPaddingLeft: 32,
+        viewPaddingRight: 6,
+      };
+
+      [div, api] = createElementAndApi(adjustViewSpacingConf, options);
+
+      const tiledPlotEl = div.querySelector('.tiled-plot-div');
+      const trackRendererEl = div.querySelector('.track-renderer-div');
+      const topTrackEl = div.querySelector('.top-track-container');
+
+      // We need to get the parent of tiledPlotDiv because margin is apparently
+      // not included in the BBox width and height.
+      const tiledPlotBBox = tiledPlotEl.parentNode.getBoundingClientRect();
+      const trackRendererBBox = trackRendererEl.getBoundingClientRect();
+      const topTrackBBox = topTrackEl.getBoundingClientRect();
+
+      const totalViewHeight = adjustViewSpacingConf.views[0].tracks.top
+        .reduce((height, track) => height + track.height, 0);
+
+      expect(topTrackBBox.height).toEqual(totalViewHeight);
+      expect(trackRendererBBox.height).toEqual(
+        totalViewHeight + options.viewPaddingTop + options.viewPaddingBottom
+      );
+      expect(tiledPlotBBox.height).toEqual(
+        totalViewHeight
+        + options.viewPaddingTop
+        + options.viewPaddingBottom
+        + options.viewMarginTop
+        + options.viewMarginBottom
+      );
+      expect(trackRendererBBox.width).toEqual(
+        topTrackBBox.width + options.viewPaddingLeft + options.viewPaddingRight
+      );
+      expect(tiledPlotBBox.width).toEqual(
+        topTrackBBox.width
+        + options.viewPaddingLeft
+        + options.viewPaddingRight
+        + options.viewMarginLeft
+        + options.viewMarginRight
+      );
 
       done();
     });

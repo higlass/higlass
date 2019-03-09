@@ -259,6 +259,8 @@ Some of the more important ones are:
 
 - ``showMousePosition``: enables a visual crosshair at the mouse cursor's location across the track
 
+- ``axisMargin``: sets a margin to the very end of the plot. For example, if ``axisPositionHorizontal === 'left'`` and ``axisMargin === 10`` then the axis will be drawn 10px from the left side of the track.
+
 Overlay Tracks
 ==============
 
