@@ -61,6 +61,10 @@ import {
 // Configs
 import {
   DEFAULT_SERVER,
+  DEFAULT_CONTAINER_PADDING_X,
+  DEFAULT_CONTAINER_PADDING_Y,
+  DEFAULT_VIEW_MARGIN,
+  DEFAULT_VIEW_PADDING,
   MOUSE_TOOL_MOVE,
   MOUSE_TOOL_SELECT,
   LOCATION_LISTENER_PREFIX,
@@ -100,7 +104,6 @@ class HiGlassComponent extends React.Component {
     this.resizeSensor = null;
 
     this.uid = slugid.nice();
-    this.rowHeight = 40;
     this.tiledPlots = {};
     this.genomePositionSearchBoxes = {};
 
@@ -139,10 +142,31 @@ class HiGlassComponent extends React.Component {
     this.plusImg = {};
     this.configImg = {};
 
-    this.horizontalMargin = typeof props.options.horizontalMargin !== 'undefined'
-      ? props.options.horizontalMargin : 5;
-    this.verticalMargin = typeof props.options.verticalMargin !== 'undefined'
-      ? props.options.verticalMargin : 5;
+    this.viewMarginTop = +props.options.viewMarginTop >= 0
+      ? +props.options.viewMarginTop
+      : DEFAULT_VIEW_MARGIN;
+    this.viewMarginBottom = +props.options.viewMarginBottom >= 0
+      ? +props.options.viewMarginBottom
+      : DEFAULT_VIEW_MARGIN;
+    this.viewMarginLeft = +props.options.viewMarginLeft >= 0
+      ? +props.options.viewMarginLeft
+      : DEFAULT_VIEW_MARGIN;
+    this.viewMarginRight = +props.options.viewMarginRight >= 0
+      ? +props.options.viewMarginRight
+      : DEFAULT_VIEW_MARGIN;
+
+    this.viewPaddingTop = +props.options.viewPaddingTop >= 0
+      ? +props.options.viewPaddingTop
+      : DEFAULT_VIEW_PADDING;
+    this.viewPaddingBottom = +props.options.viewPaddingBottom >= 0
+      ? +props.options.viewPaddingBottom
+      : DEFAULT_VIEW_PADDING;
+    this.viewPaddingLeft = +props.options.viewPaddingLeft >= 0
+      ? +props.options.viewPaddingLeft
+      : DEFAULT_VIEW_PADDING;
+    this.viewPaddingRight = +props.options.viewPaddingRight >= 0
+      ? +props.options.viewPaddingRight
+      : DEFAULT_VIEW_PADDING;
 
     this.genomePositionSearchBox = null;
     this.viewHeaders = {};
@@ -192,6 +216,10 @@ class HiGlassComponent extends React.Component {
       );
     }
 
+    const rowHeight = this.props.options.pixelPreciseMarginPadding
+      ? 1
+      : 30;
+
     this.mounted = false;
     this.state = {
       bounded: this.props.options.bounded || false,
@@ -199,7 +227,7 @@ class HiGlassComponent extends React.Component {
       currentBreakpoint: 'lg',
       width: 0,
       height: 0,
-      rowHeight: 30,
+      rowHeight,
       svgElement: null,
       canvasElement: null,
       views,
@@ -215,7 +243,7 @@ class HiGlassComponent extends React.Component {
       rangeSelectionToInt: false,
     };
 
-    dictValues(views).map(view => this.adjustLayoutToTrackSizes(view));
+    Object.values(views).map(view => this.adjustLayoutToTrackSizes(view));
 
     // monitor whether this element is attached to the DOM so that
     // we can determine whether to add the resizesensor
@@ -332,11 +360,11 @@ class HiGlassComponent extends React.Component {
     this.element = ReactDOM.findDOMNode(this);
     window.addEventListener('focus', this.boundRefreshView);
 
-    dictValues(this.state.views).forEach((v) => {
-      if (!v.layout) {
-        v.layout = this.generateViewLayout(v);
+    Object.values(this.state.views).forEach((view) => {
+      if (!view.layout) {
+        view.layout = this.generateViewLayout(view);
       } else {
-        v.layout.i = v.uid;
+        view.layout.i = view.uid;
       }
     });
 
@@ -1500,7 +1528,10 @@ class HiGlassComponent extends React.Component {
    * of the available space in the div.
    */
   updateRowHeight() {
-    if (!(this.props.options && this.props.options.bounded)) {
+    if (
+      !(this.props.options && this.props.options.bounded)
+      || this.props.options.pixelPreciseMarginPadding
+    ) {
       // not bounded so we don't need to update the row height
       return;
     }
@@ -1722,8 +1753,18 @@ class HiGlassComponent extends React.Component {
     const defaultVerticalWidth = 0;
     const defaultCenterHeight = 100;
     const defaultCenterWidth = 100;
-    let currHeight = this.horizontalMargin * 2;
-    let currWidth = this.verticalMargin * 2;
+    let currHeight = (
+      this.viewMarginTop
+      + this.viewMarginBottom
+      + this.viewPaddingTop
+      + this.viewPaddingBottom
+    );
+    let currWidth = (
+      this.viewMarginLeft
+      + this.viewMarginRight
+      + this.viewPaddingLeft
+      + this.viewPaddingRight
+    );
     // currWidth will generally be ignored because it will just be set to
     // the width of the enclosing container
     let minNecessaryHeight = 0;
@@ -1903,8 +1944,8 @@ class HiGlassComponent extends React.Component {
 
       /*
         if ('center' in view.tracks || 'left' in view.tracks || 'right' in view.tracks) {
-            let desiredHeight = elementWidth - leftWidth - rightWidth - 2 * this.horizontalMargin;
-            desiredHeight +=  topHeight + bottomHeight + 2*this.verticalMargin + 20;
+            let desiredHeight = ((elementWidth - leftWidth - rightWidth - 2 * this.viewMarginTop) );
+            desiredHeight +=  topHeight + bottomHeight + 2*this.viewMarginBottom + 20;
 
             // how much height is left in the browser?
 
@@ -2233,17 +2274,15 @@ class HiGlassComponent extends React.Component {
    */
   adjustLayoutToTrackSizes(view) {
     // if the view is too short, expand the view so that it fits this track
-    if (!view.layout) {
-      return;
-    }
+    if (!view.layout) return;
+
+    const isEditable = this.isEditable();
 
     let totalTrackHeight = 0;
 
     // we are not checking for this.viewHeaders because this function may be
     // called before the component is mounted
-    if (this.isEditable()) {
-      totalTrackHeight += VIEW_HEADER_HEIGHT;
-    }
+    if (isEditable) totalTrackHeight += VIEW_HEADER_HEIGHT;
 
     // the tracks are larger than the height of the current view, so we need
     // to extend it
@@ -3511,16 +3550,21 @@ class HiGlassComponent extends React.Component {
 
     const isTargetCanvas = evt.target === this.canvasElement;
 
-    if (nativeEvent.forwarded || isZoomFixed || isTargetCanvas) {
-      evt.stopPropagation();
-      evt.preventDefault();
-
-      return;
-    }
-
     if (!hasParent(nativeEvent.target, this.topDiv)) {
       // ignore events that don't come from within the
       // HiGlass container
+      return;
+    }
+
+    if (isZoomFixed) {
+      // ignore events when in zoom fixed mode
+      return;
+    }
+
+    if (nativeEvent.forwarded || isTargetCanvas) {
+      evt.stopPropagation();
+      evt.preventDefault();
+
       return;
     }
 
@@ -3609,9 +3653,12 @@ class HiGlassComponent extends React.Component {
             disableTrackMenu={this.isTrackMenuDisabled()}
             draggingHappening={this.state.draggingHappening}
             editable={this.isEditable()}
-            horizontalMargin={this.horizontalMargin}
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
+            marginBottom={this.viewMarginBottom}
+            marginLeft={this.viewMarginLeft}
+            marginRight={this.viewMarginRight}
+            marginTop={this.viewMarginTop}
             metaTracks={view.metaTracks}
             mouseTool={this.state.mouseTool}
             onChangeTrackData={(trackId, newData) => (
@@ -3635,6 +3682,10 @@ class HiGlassComponent extends React.Component {
             onUnlockValueScale={uid => this.handleUnlockValueScale(view.uid, uid)}
             onValueScaleChanged={uid => this.syncValueScales(view.uid, uid)}
             overlays={view.overlays}
+            paddingBottom={this.viewPaddingBottom}
+            paddingLeft={this.viewPaddingLeft}
+            paddingRight={this.viewPaddingRight}
+            paddingTop={this.viewPaddingTop}
             pixiStage={this.pixiStage}
             pluginTracks={this.state.pluginTracks}
             rangeSelection1dSize={this.state.rangeSelection1dSize}
@@ -3774,9 +3825,26 @@ class HiGlassComponent extends React.Component {
       )
       : null;
 
-    let layouts = this.mounted ? dictValues(this.state.views)
-      .filter(x => x.layout).map(x => x.layout) : [];
+    let layouts = this.mounted
+      ? Object
+        .values(this.state.views)
+        .filter(view => view.layout)
+        .map(view => view.layout)
+      : [];
+
     layouts = JSON.parse(JSON.stringify(layouts)); // make sure to copy the layouts
+
+    const defaultContainerPaddingX = this.isEditable()
+      ? DEFAULT_CONTAINER_PADDING_X : 0;
+    const defaultContainerPaddingY = this.isEditable()
+      ? DEFAULT_CONTAINER_PADDING_Y : 0;
+
+    const containerPaddingX = +this.props.options.containerPaddingX >= 0
+      ? +this.props.options.containerPaddingX
+      : defaultContainerPaddingX;
+    const containerPaddingY = +this.props.options.containerPaddingY >= 0
+      ? +this.props.options.containerPaddingY
+      : defaultContainerPaddingY;
 
     const gridLayout = (
       <ReactGridLayout
@@ -3785,6 +3853,7 @@ class HiGlassComponent extends React.Component {
 
         // Custom props
         cols={12}
+        containerPadding={[containerPaddingX, containerPaddingY]}
         draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}
         isDraggable={this.isEditable()}
         isResizable={this.isEditable()}

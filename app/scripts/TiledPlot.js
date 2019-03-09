@@ -318,15 +318,11 @@ class TiledPlot extends React.Component {
   }
 
   measureSize() {
-    const heightOffset = 0;
-    const height = this.element.clientHeight - heightOffset;
-    const width = this.element.clientWidth;
-
-    if (width > 0 && height > 0) {
+    if (this.element.clientWidth > 0 && this.element.clientHeight > 0) {
       this.setState({
         sizeMeasured: true,
-        width,
-        height,
+        width: this.element.clientWidth,
+        height: this.element.clientHeight,
       });
     }
   }
@@ -768,14 +764,17 @@ class TiledPlot extends React.Component {
    *          (e.g. {left: 10, top: 20, width: 30, height: 40}
    */
   calculateTrackPosition(track, location) {
-    let top = this.props.verticalMargin;
-    let bottom = this.props.verticalMargin;
-    let left = this.props.horizontalMargin;
-    let right = this.props.horizontalMargin;
+    let top = this.props.paddingTop;
+    let bottom = this.props.paddingBottom;
+    let left = this.props.paddingLeft;
+    let right = this.props.paddingRight;
     let width = this.centerWidth;
-    let { height } = track;
+    let height = track.height;
     let offsetX = 0;
     let offsetY = 0;
+
+    const verticalPadding = this.props.paddingTop + this.props.paddingBottom;
+    const horizontalPadding = this.props.paddingLeft + this.props.paddingRight;
 
     switch (location) {
       case 'top':
@@ -807,7 +806,7 @@ class TiledPlot extends React.Component {
 
       case 'left':
         top += this.topHeight;
-        ({ width } = track);
+        width = track.width;
         height = this.centerHeight;
 
         for (let i = 0; i < this.state.tracks.left.length; i++) {
@@ -823,7 +822,7 @@ class TiledPlot extends React.Component {
       case 'right':
         left += this.leftWidth + this.centerWidth + this.galleryDim;
         top += this.topHeight;
-        ({ width } = track);
+        width = track.width;
         height = this.centerHeight;
 
         for (let i = 0; i < this.state.tracks.right.length; i++) {
@@ -850,13 +849,13 @@ class TiledPlot extends React.Component {
           this.state.width
           - this.leftWidthNoGallery
           - this.rightWidthNoGallery
-          - (2 * this.props.horizontalMargin)
+          - (2 * horizontalPadding)
         );
         height = (
           this.state.height
           - this.topHeightNoGallery
           - this.bottomHeightNoGallery
-          - (2 * this.props.verticalMargin)
+          - (2 * verticalPadding)
         );
         offsetX = this.galleryDim;
         offsetY = this.galleryDim;
@@ -1249,7 +1248,7 @@ class TiledPlot extends React.Component {
   resetViewport() {
     // Set the initial domain
     const left = (
-      this.trackRenderer.currentProps.marginLeft
+      this.trackRenderer.currentProps.paddingLeft
       + this.trackRenderer.currentProps.leftWidth
     );
     const newXDomain = [
@@ -1259,7 +1258,7 @@ class TiledPlot extends React.Component {
       .rescaleX(this.trackRenderer.xScale).invert);
 
     const top = (
-      this.trackRenderer.currentProps.marginTop
+      this.trackRenderer.currentProps.paddingTop
       + this.trackRenderer.currentProps.topHeight
     );
     const newYDomain = [
@@ -1285,9 +1284,15 @@ class TiledPlot extends React.Component {
       uid: props.uid,
       addTrackPosition: props.addTrackPosition,
       editable: props.editable,
-      horizontalMargin: props.horizontalMargin,
+      marginTop: props.marginTop,
+      marginBottom: props.marginBottom,
+      marginLeft: props.marginLeft,
+      marginRight: props.marginRight,
+      paddingTop: props.paddingTop,
+      paddingBottom: props.paddingBottom,
+      paddingLeft: props.paddingLeft,
+      paddingRight: props.paddingRight,
       mouseTool: props.mouseTool,
-      verticalTiledPlot: props.verticalMargin,
       initialXDomain: props.initialXDomain,
       initialYDomain: props.initialYDomain,
       trackSourceServers: props.trackSourceServers,
@@ -1717,28 +1722,32 @@ class TiledPlot extends React.Component {
       .map(x => x.width).reduce(sum, 0);
     this.rightWidth = this.rightWidthNoGallery + this.galleryDim;
 
+    const verticalPadding = this.props.paddingTop + this.props.paddingBottom;
+    const horizontalPadding = this.props.paddingLeft + this.props.paddingRight;
 
-    this.centerHeight = (
+    this.centerHeight = Math.max(
+      0,
       this.state.height
       - this.topHeight
       - this.bottomHeight
-      - (2 * this.props.verticalMargin)
+      - verticalPadding
     );
-    this.centerWidth = (
+    this.centerWidth = Math.max(
+      0,
       this.state.width
       - this.leftWidth
       - this.rightWidth
-      - (2 * this.props.horizontalMargin)
+      - horizontalPadding
     );
 
     const trackOutline = 'none';
 
     const topTracks = (
       <div
-        key="topTracksDiv"
+        className="top-track-container"
         style={{
-          left: this.leftWidth + this.props.horizontalMargin,
-          top: this.props.verticalMargin,
+          left: this.leftWidth + this.props.marginLeft,
+          top: this.props.marginTop,
           width: this.centerWidth,
           height: this.topHeightNoGallery,
           outline: trackOutline,
@@ -1774,10 +1783,10 @@ class TiledPlot extends React.Component {
 
     const leftTracks = (
       <div
-        key="leftTracksPlot"
+        className="left-track-container"
         style={{
-          left: this.props.horizontalMargin,
-          top: this.topHeight + this.props.verticalMargin,
+          left: this.props.marginLeft,
+          top: this.topHeight + this.props.marginTop,
           width: this.leftWidthNoGallery,
           height: this.centerHeight,
           outline: trackOutline,
@@ -1811,14 +1820,16 @@ class TiledPlot extends React.Component {
     );
 
     const rightTracks = (
-      <div style={{
-        right: this.props.horizontalMargin,
-        top: this.topHeight + this.props.verticalMargin,
-        width: this.rightWidthNoGallery,
-        height: this.centerHeight,
-        outline: trackOutline,
-        position: 'absolute',
-      }}
+      <div
+        className="right-track-container"
+        style={{
+          right: this.props.marginRight,
+          top: this.topHeight + this.props.marginTop,
+          width: this.rightWidthNoGallery,
+          height: this.centerHeight,
+          outline: trackOutline,
+          position: 'absolute',
+        }}
       >
         <VerticalTiledPlot
           configTrackMenuId={this.state.configTrackMenuId}
@@ -1848,14 +1859,16 @@ class TiledPlot extends React.Component {
     );
 
     const bottomTracks = (
-      <div style={{
-        left: this.leftWidth + this.props.horizontalMargin,
-        bottom: this.props.verticalMargin,
-        width: this.centerWidth,
-        height: this.bottomHeightNoGallery,
-        outline: trackOutline,
-        position: 'absolute',
-      }}
+      <div
+        className="bottom-track-container"
+        style={{
+          left: this.leftWidth + this.props.marginLeft,
+          bottom: this.props.marginBottom,
+          width: this.centerWidth,
+          height: this.bottomHeightNoGallery,
+          outline: trackOutline,
+          position: 'absolute',
+        }}
       >
         <HorizontalTiledPlot
           configTrackMenuId={this.state.configTrackMenuId}
@@ -1888,8 +1901,8 @@ class TiledPlot extends React.Component {
         key="galleryTracksDiv"
         className="gallery-track-container"
         style={{
-          left: this.leftWidthNoGallery + this.props.horizontalMargin,
-          top: this.topHeightNoGallery + this.props.verticalMargin,
+          left: this.leftWidthNoGallery + this.props.marginLeft,
+          top: this.topHeightNoGallery + this.props.marginTop,
           width: this.centerWidth + (2 * this.galleryDim),
           height: this.centerHeight + (2 * this.galleryDim),
           outline: trackOutline,
@@ -1912,9 +1925,10 @@ class TiledPlot extends React.Component {
 
     let centerTrack = (
       <div
+        className="center-track-container"
         style={{
-          left: this.leftWidth + this.props.horizontalMargin,
-          top: this.props.verticalMargin + this.topHeight,
+          left: this.leftWidth + this.props.paddingLeft,
+          top: verticalPadding + this.topHeight,
           width: this.centerWidth,
           height: this.bottomHeight,
           outline: trackOutline,
@@ -1928,8 +1942,8 @@ class TiledPlot extends React.Component {
         <div
           className="center-track-container"
           style={{
-            left: this.leftWidth + this.props.horizontalMargin,
-            top: this.props.verticalMargin + this.topHeight,
+            left: this.leftWidth + this.props.paddingLeft,
+            top: verticalPadding + this.topHeight,
             width: this.centerWidth,
             height: this.centerHeight,
             outline: trackOutline,
@@ -1990,8 +2004,6 @@ class TiledPlot extends React.Component {
           isRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT}
           leftWidth={this.leftWidth}
           leftWidthNoGallery={this.leftWidthNoGallery}
-          marginLeft={this.props.horizontalMargin}
-          marginTop={this.props.verticalMargin}
           metaTracks={this.props.metaTracks}
           onMouseMoveZoom={this.props.onMouseMoveZoom}
           onNewTilesLoaded={this.props.onNewTilesLoaded}
@@ -1999,6 +2011,8 @@ class TiledPlot extends React.Component {
           onTilesetInfoReceived={this.handleTilesetInfoReceived.bind(this)}
           onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
           onValueScaleChanged={this.props.onValueScaleChanged}
+          paddingLeft={this.props.paddingLeft}
+          paddingTop={this.props.paddingTop}
           pixiStage={this.props.pixiStage}
           pluginTracks={this.props.pluginTracks}
           positionedTracks={positionedTracks}
@@ -2174,7 +2188,11 @@ class TiledPlot extends React.Component {
       <div
         ref={(c) => { this.divTiledPlot = c; }}
         className="tiled-plot-div"
-        onDragEnter={(evt) => {
+        style={{
+          marginBottom: this.props.marginBottom,
+          marginLeft: this.props.marginLeft,
+          marginRight: this.props.marginRight,
+          marginTop: this.props.marginTop,
         }}
         styleName="styles.tiled-plot"
       >
@@ -2231,37 +2249,43 @@ TiledPlot.propTypes = {
   disableTrackMenu: PropTypes.bool,
   dragging: PropTypes.bool,
   editable: PropTypes.bool,
-  horizontalMargin: PropTypes.number,
   initialXDomain: PropTypes.array,
   initialYDomain: PropTypes.array,
+  marginBottom: PropTypes.number.isRequired,
+  marginLeft: PropTypes.number.isRequired,
+  marginRight: PropTypes.number.isRequired,
+  marginTop: PropTypes.number.isRequired,
+  paddingBottom: PropTypes.number.isRequired,
+  paddingLeft: PropTypes.number.isRequired,
+  paddingRight: PropTypes.number.isRequired,
+  paddingTop: PropTypes.number.isRequired,
+  metaTracks: PropTypes.array,
   mouseTool: PropTypes.string,
   onCloseTrack: PropTypes.func,
   onDataDomainChanged: PropTypes.func,
   onLockValueScale: PropTypes.func,
   onMouseMoveZoom: PropTypes.func,
-  onNoTrackAdded: PropTypes.func,
   onNewTilesLoaded: PropTypes.func,
+  onNoTrackAdded: PropTypes.func,
   onRangeSelection: PropTypes.func.isRequired,
   onScalesChanged: PropTypes.func,
-  onTracksAdded: PropTypes.func,
   onTrackOptionsChanged: PropTypes.func,
   onTrackPositionChosen: PropTypes.func,
-  onValueScaleChanged: PropTypes.func,
+  onTracksAdded: PropTypes.func,
   onUnlockValueScale: PropTypes.func,
+  onValueScaleChanged: PropTypes.func,
+  pixiStage: PropTypes.object,
+  pluginTracks: PropTypes.object,
   rangeSelection1dSize: PropTypes.array,
   rangeSelectionToInt: PropTypes.bool,
   registerDraggingChangedListener: PropTypes.func,
   removeDraggingChangedListener: PropTypes.func,
   setCentersFunction: PropTypes.func,
-  pixiStage: PropTypes.object,
-  pluginTracks: PropTypes.object,
   svgElement: PropTypes.object,
-  trackSourceServers: PropTypes.array,
   tracks: PropTypes.object,
-  metaTracks: PropTypes.array,
-  verticalMargin: PropTypes.number,
-  viewOptions: PropTypes.object,
+  trackSourceServers: PropTypes.array,
   uid: PropTypes.string,
+  viewOptions: PropTypes.object,
   zoomable: PropTypes.bool,
   zoomToDataExtentOnInit: PropTypes.bool
 };
