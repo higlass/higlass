@@ -53,6 +53,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       svgElement,
       onTrackOptionsChanged,
       onMouseMoveZoom,
+      isShowGlobalMousePosition
     } = context;
 
     this.pubSub = pubSub;
@@ -62,6 +63,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.scaleBrush = brushY();
 
     this.onTrackOptionsChanged = onTrackOptionsChanged;
+    this.isShowGlobalMousePosition = isShowGlobalMousePosition;
 
     // Graphics for drawing the colorbar
     this.pColorbarArea = new PIXI.Graphics();
@@ -106,7 +108,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.isShowGlobalMousePosition()
+      );
     }
 
     this.prevOptions = JSON.stringify(options);
@@ -313,13 +317,15 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // hopefully draw isn't rerendering all the tiles
     // this.drawColorbar();
 
-    if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
-    }
-
-    if (this.options && !this.options.showMousePosition && this.hideMousePosition) {
+    if (this.hideMousePosition) {
       this.hideMousePosition();
       this.hideMousePosition = undefined;
+    }
+
+    if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.isShowGlobalMousePosition()
+      );
     }
   }
 

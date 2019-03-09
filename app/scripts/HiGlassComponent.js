@@ -9,7 +9,7 @@ import { ResizeSensor, ElementQueries } from 'css-element-queries';
 import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
 import parse from 'url-parse';
-import createPubSub from 'pub-sub-es';
+import createPubSub, { globalPubSub } from 'pub-sub-es';
 
 import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
@@ -282,11 +282,21 @@ class HiGlassComponent extends React.Component {
     this.zoomHandlerBound = this.zoomHandler.bind(this);
     this.trackDroppedHandlerBound = this.trackDroppedHandler.bind(this);
     this.animateBound = this.animate.bind(this);
+    this.animateOnGlobalEventBound = this.animateOnGlobalEvent.bind(this);
     this.requestReceivedHandlerBound = this.requestReceivedHandler.bind(this);
     this.wheelHandlerBound = this.wheelHandler.bind(this);
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
     this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
     this.onBlurHandlerBound = this.onBlurHandler.bind(this);
+
+    this.setBroadcastMousePositionGlobally(
+      this.props.options.broadcastMousePositionGlobally
+      || this.props.options.globalMousePosition
+    );
+    this.setShowGlobalMousePosition(
+      this.props.options.showGlobalMousePosition
+      || this.props.options.globalMousePosition
+    );
   }
 
   componentWillMount() {
@@ -321,6 +331,33 @@ class HiGlassComponent extends React.Component {
 
     if (this.props.getApi) {
       this.props.getApi(this.api);
+    }
+  }
+
+  setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally = false) {
+    this.isBroadcastMousePositionGlobally = isBroadcastMousePositionGlobally;
+  }
+
+  setShowGlobalMousePosition(isShowGlobalMousePosition = false) {
+    this.isShowGlobalMousePosition = isShowGlobalMousePosition;
+
+    if (this.isShowGlobalMousePosition && !this.globalMousePositionListener) {
+      this.globalMousePositionListener = globalPubSub.subscribe(
+        'higlass.mouseMove', this.animateOnGlobalEventBound
+      );
+      this.pubSubs.push(this.globalMousePositionListener);
+    }
+
+    if (this.isShowGlobalMousePosition && !this.globalMousePositionListener) {
+      const index = this.pubSubs.findIndex(
+        listener => listener === this.globalMousePositionListener
+      );
+
+      globalPubSub.unsubscribe(this.globalMousePositionListener);
+
+      if (index >= 0) this.pubSubs.splice(index, 1);
+
+      this.globalMousePositionListener = undefined;
     }
   }
 
@@ -681,6 +718,10 @@ class HiGlassComponent extends React.Component {
 
       this.isRequestingAnimationFrame = false;
     });
+  }
+
+  animateOnGlobalEvent({ sourceUid } = {}) {
+    if (sourceUid !== this.uid && this.animateOnMouseMove) this.animate();
   }
 
   measureSize() {
@@ -3337,15 +3378,35 @@ class HiGlassComponent extends React.Component {
       relTrackY: (hoveredTrack && hoveredTrack.flipText) ? relTrackPos[0] : relTrackPos[1],
       dataX,
       dataY,
-      isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,
-      isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText,
+      // See below why we need these derived boolean values
+      isFrom2dTrack: !!(hoveredTrack && hoveredTrack.is2d),
+      isFromVerticalTrack: !!(hoveredTrack && hoveredTrack.flipText),
       track: hoveredTrack,
       origEvt: e,
       sourceUid: this.uid,
       hoveredTracks,
+      // See below why we need these derived boolean values
+      noHoveredTracks: hoveredTracks.length === 0,
     };
 
     this.pubSub.publish('app.mouseMove', evt);
+
+    if (this.isBroadcastMousePositionGlobally) {
+      // In order to broadcast information globally with the
+      // Broadcast Channel API we have to remove properties that reference local
+      // objects as those can't be cloned and broadcasted to another context
+      // (i.e., another browser window or tab).
+      // This is also the reason why created some derived boolean variables,
+      // like `noHoveredTracks`.
+      const eventDataOnly = { ...evt };
+      eventDataOnly.origEvt = undefined;
+      eventDataOnly.track = undefined;
+      eventDataOnly.hoveredTracks = undefined;
+      delete eventDataOnly.origEvt;
+      delete eventDataOnly.track;
+      delete eventDataOnly.hoveredTracks;
+      globalPubSub.publish('higlass.mouseMove', eventDataOnly);
+    }
 
     this.apiPublish('cursorLocation', {
       absX,
@@ -3655,6 +3716,7 @@ class HiGlassComponent extends React.Component {
             editable={this.isEditable()}
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
+            isShowGlobalMousePosition={this.isShowGlobalMousePosition}
             marginBottom={this.viewMarginBottom}
             marginLeft={this.viewMarginLeft}
             marginRight={this.viewMarginRight}

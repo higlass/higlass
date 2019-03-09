@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { globalPubSub } from 'pub-sub-es';
 
 import { hexStrToInt } from '.';
 
@@ -18,6 +19,8 @@ const ALPHA = 1.0;
  *   flipped from horizontal to vertical.
  * @param  {Boolean}  is2d  If `true` draw both dimensions of the mouse
  *   location.
+ * @param  {Boolean}  isGlobal   If `true` local and global events will trigger
+ *   the mouse position drawing.
  * @return  {Object}  PIXI graphics the mouse location is drawn on.
  */
 const showMousePosition = (
@@ -28,7 +31,8 @@ const showMousePosition = (
   getPosition,
   getDimensions,
   getIsFlipped,
-  is2d
+  is2d,
+  isGlobal
 ) => {
   pubSub.publish('app.animateOnMouseMove', true);
 
@@ -75,7 +79,7 @@ const showMousePosition = (
    * @param  {Object}  e  Event object.
    */
   const mouseMoveHandler = (event) => {
-    if (!event.hoveredTracks.length) {
+    if (event.noHoveredTracks) {
       clearGraphics();
       return graphics;
     }
@@ -112,6 +116,10 @@ const showMousePosition = (
   pubSubs.push(pubSub.subscribe('app.mouseLeave', clearGraphics));
   pubSubs.push(pubSub.subscribe('blur', clearGraphics));
 
+  if (isGlobal) {
+    pubSubs.push(globalPubSub.subscribe('higlass.mouseMove', mouseMoveHandler));
+  }
+
   return graphics;
 };
 
@@ -126,9 +134,11 @@ const showMousePosition = (
  * @param  {Object}  context  Class context, i.e., `this`.
  * @param  {Boolean}  is2d   If `true` both dimensions of the mouse location
  *   should be shown. E.g., on a central track.
+ * @param  {Boolean}  isGlobal   If `true` local and global events will trigger
+ *   the mouse position drawing.
  * @return  {Function}  Method to remove graphics showing the mouse location.
  */
-const setupShowMousePosition = (context, is2d = false) => {
+const setupShowMousePosition = (context, is2d = false, isGlobal = false) => {
   const scene = is2d ? context.pMasked : (context.pForeground || context.pMain);
   const getScales = () => [context.xScale(), context.yScale()];
 
@@ -141,6 +151,7 @@ const setupShowMousePosition = (context, is2d = false) => {
     context.getDimensions.bind(context),
     context.getProp('flipText'),
     is2d,
+    isGlobal
   );
 
   scene.addChild(graphics);

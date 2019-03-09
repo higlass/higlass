@@ -1252,6 +1252,7 @@ class TrackRenderer extends React.Component {
       },
       onMouseMoveZoom: this.props.onMouseMoveZoom,
       chromInfoPath: track.chromInfoPath,
+      isShowGlobalMousePosition: () => this.props.isShowGlobalMousePosition
     };
 
     // for horizontal and vertical rules
@@ -1715,6 +1716,7 @@ TrackRenderer.defaultProps = {
   height: 0,
   initialXDomain: [],
   initialYDomain: [],
+  isShowGlobalMousePosition: false,
   isRangeSelection: false,
   leftWidth: 0,
   leftWidthNoGallery: 0,
@@ -1737,6 +1739,7 @@ TrackRenderer.propTypes = {
   height: PropTypes.number,
   initialXDomain: PropTypes.array,
   initialYDomain: PropTypes.array,
+  isShowGlobalMousePosition: PropTypes.bool,
   isRangeSelection: PropTypes.bool,
   leftWidth: PropTypes.number,
   leftWidthNoGallery: PropTypes.number,

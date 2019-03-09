@@ -2002,6 +2002,7 @@ class TiledPlot extends React.Component {
           initialXDomain={this.props.initialXDomain}
           initialYDomain={this.props.initialYDomain}
           isRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT}
+          isShowGlobalMousePosition={this.props.isShowGlobalMousePosition}
           leftWidth={this.leftWidth}
           leftWidthNoGallery={this.leftWidthNoGallery}
           metaTracks={this.props.metaTracks}
@@ -2236,6 +2237,7 @@ class TiledPlot extends React.Component {
 }
 
 TiledPlot.defaultProps = {
+  isShowGlobalMousePosition: false,
   pluginTracks: {},
   metaTracks: [],
   zoomable: true,
@@ -2251,6 +2253,7 @@ TiledPlot.propTypes = {
   editable: PropTypes.bool,
   initialXDomain: PropTypes.array,
   initialYDomain: PropTypes.array,
+  isShowGlobalMousePosition: PropTypes.bool,
   marginBottom: PropTypes.number.isRequired,
   marginLeft: PropTypes.number.isRequired,
   marginRight: PropTypes.number.isRequired,
