@@ -209,11 +209,13 @@ Options
 
 - **axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
 
-- **barFillColor**: - A valid color (e.g. ``black``) or to track the color of the bars use ``[glyph-color]``.
+- **barFillColor**: A valid color (e.g. ``black``) or to track the color of the bars use ``[glyph-color]``.
 
-- **barMinHeightAtZero**: - Height in pixel of fake bars that are to be drawn at position where the value is zero if the height is greater than zero. Drawing something at positions with zero value can help to demarcate tracks. The resulting effect is similar to the plot produced by ``horizontal-line``, i.e., even if the value is zero a thin line is drawn.
+- **demarcationLine**: If ``true`` draw a demarcation line at the bottom of a bar track.
 
-- **barMinHeightAtZeroOpacity**: - The opacity of bars drawn at positions where the value is zero. This option is useful to deemphasize the bars.
+- **demarcationLineColor**: The color of the demarcation line. If ``undefined`` the bar fill color (``barFillColor``) will be used.
+
+- **demarcationLineOpacity**: The opacity of the demarcation line. If ``undefined`` the bar opacity (``barOpacity``) will be used.
 
 **Demos:**
 
