@@ -6,7 +6,8 @@
 - Make view spacing adjustable via initialization options. See [/docs/examples/others/adjust-view-spacing.html](/docs/examples/others/adjust-view-spacing.html) for an example.
 - Add a new option to tracks that support axis: `axisMargin` to add some margin to an axis. See [docs/examples/viewconfs/axis-margin.json](docs/examples/viewconfs/axis-margin.json) for an example
 - Add a new option to BarTrack for drawing a demarcation line at the bottom of the track, i.e., at the zero value. See [`/apis/svg.html?/viewconfs/bar-zero-line.json`](/apis/svg.html?/viewconfs/bar-zero-line.json) for an example.
-- Fix an issue with small offsets when exporting bar tracks to SVG
+- Fixed an issue with small offsets when exporting bar tracks to SVG
+- Fixed an issue where bars in a `BarTrack` related to values higher than `valueScaleMax` were not drawn.
 - Fix #291: allow web page scrolling when zoomFixed is set to true
 - Fix #578: BarTrack SVG export overplotting error.
 
