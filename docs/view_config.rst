@@ -48,17 +48,14 @@ the root-level metadata. The sections below will delve into views and tracks.
 
 .. code-block:: javascript
 
-  editable: [true | false]
+  editable: [true | false] (default: true)
+  viewEditable: [true | false] (default: true)
+  tracksEditable: [true | false] (default: true)
 
-The property ``editable`` specifies whether this viewconf will have a view
-header.
-
-.. code-block:: javascript
-
-  disableTrackMenu: [true | false]
-
-The property ``disableTrackMenu`` specifies whether this viewconf will have a
-track context menu.
+The property ``viewEditable`` specifies whether this viewconf will have a view
+header and the property ``viewEditable`` determines if tracks have a context
+menu. ``editable`` will force both properties to either be ``true`` or
+``false``.
 
 .. code-block:: javascript
 

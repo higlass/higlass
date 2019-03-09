@@ -1,6 +1,6 @@
 ## v1.5.0
 
-- Allow disabling the track menu by adding `noTrackMenu: true` to the options when calling `hglib.viewer()`.
+- Allow disabling the change of views and tracks separately by setting `viewEditable: false` and `tracksEditable: false` in your view config.
 
 ## v1.4.2
 
