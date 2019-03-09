@@ -76,6 +76,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     const { graphics } = tile;
 
+    // Reset svg data to avoid overplotting
     tile.svgData = undefined;
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(

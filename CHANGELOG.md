@@ -2,6 +2,8 @@
 
 - Add a new option to tracks that support axis: `axisMargin` to add some margin to an axis. See [docs/examples/viewconfs/axis-margin.json](docs/examples/viewconfs/axis-margin.json) for an example
 - Add a new option to BarTrack for drawing a demarcation line at the bottom of the track. See [`/apis/svg.html?/viewconfs/bar-demarcation.json`](/apis/svg.html?/viewconfs/bar-demarcation.json) for an example.
+- Fix #291: allow web page scrolling when zoomFixed is set to true
+- Fix #578: BarTrack SVG export overplotting error.
 
 ## v1.4.2
 
