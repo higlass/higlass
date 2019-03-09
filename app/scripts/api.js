@@ -71,7 +71,7 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
-       * Convinience function to enable / disable the global mouse position
+       * Convenience function to enable / disable the global mouse position
        * @description This function is equivalent to calling
        *   `setBroadcastMousePositionGlobally()` and
        *   `setShowGlobalMousePosition()`.
