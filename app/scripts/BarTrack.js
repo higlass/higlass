@@ -73,6 +73,9 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     const { graphics } = tile;
 
+    // Reset svg data to avoid overplotting
+    tile.svgData = undefined;
+
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
       tile.tileData.tilePos,
@@ -89,6 +92,11 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       this.maxValue(),
       0
     );
+
+    // Important when when using `options.valueScaleMin` or
+    // `options.valueScaleMax` such that the y position later on doesn't become
+    // negative
+    valueScale.clamp(true);
 
     this.valueScale = valueScale;
 
