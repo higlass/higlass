@@ -75,12 +75,12 @@ if (!location.search.slice(1)) {
       renderPreview();
 
       hgApi.on('location', (event) => {
-        console.log('location event', event);
+        // console.log('location event', event);
         renderPreview();
       });
 
       hgApi.on('viewConfig', (event) => {
-        console.log('viewConfig event', JSON.parse(event));
+        // console.log('viewConfig event', JSON.parse(event));
         renderPreview();
       });
     });
