@@ -3335,18 +3335,26 @@ class HiGlassComponent extends React.Component {
       relTrackY: (hoveredTrack && hoveredTrack.flipText) ? relTrackPos[0] : relTrackPos[1],
       dataX,
       dataY,
+      // See below why we need these derived boolean values
       isFrom2dTrack: !!(hoveredTrack && hoveredTrack.is2d),
       isFromVerticalTrack: !!(hoveredTrack && hoveredTrack.flipText),
       track: hoveredTrack,
       origEvt: e,
       sourceUid: this.uid,
       hoveredTracks,
+      // See below why we need these derived boolean values
       noHoveredTracks: hoveredTracks.length === 0,
     };
 
     this.pubSub.publish('app.mouseMove', evt);
 
     if (this.isBroadcastMousePositionGlobally) {
+      // In order to broadcast information globally with the
+      // Broadcast Channel API we have to remove properties that reference local
+      // objects as those can't be cloned and broadcasted to another context
+      // (i.e., another browser window or tab).
+      // This is also the reason why created some derived boolean variables,
+      // like `noHoveredTracks`.
       const eventDataOnly = { ...evt };
       eventDataOnly.origEvt = undefined;
       eventDataOnly.track = undefined;
