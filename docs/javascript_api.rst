@@ -68,6 +68,7 @@ fixed height
 - ``containerPaddingX`` and ``containerPaddingY``: x and y padding react grid layout containers. The x padding resembles left and right padding of the entire react grid layout container, i.e., it can be interpreted as the global padding of an HiGlass instance. The y padding stands for the top and bottom padding but in case that the HiGlass view is not bound it will only add padding to the top. You can find out more about the container padding at https://github.com/STRML/react-grid-layout#grid-layout-props.
 - ``viewMarginTop``, ``viewMarginBottom``, ``viewMarginLeft``, and ``viewMarginRight``: top, bottom, left, right margin between **views** in pixels. The margin area *is not interactive*, i.e., dragging on the margin area *will not change* the location of the view!
 - ``viewPaddingTop``, ``viewPaddingBottom``, ``viewPaddingLeft``, and ``viewPaddingRight``: top, bottom, left, right padding between **views** in pixels. The padding area *is interactive*, i.e., dragging on the margin area *will change* the location of the view!
+- ``disableTrackMenu``:  (default: ``false``) if ``true`` the context menu is disabled.
 
 The function returns an instance of the public API of a HiGlass component.
 
