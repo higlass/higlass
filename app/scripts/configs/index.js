@@ -1,5 +1,13 @@
 /* ------------------------------- Primitives ------------------------------- */
 
+export const DEFAULT_VIEW_MARGIN = 0;
+
+export const DEFAULT_VIEW_PADDING = 5;
+
+export const DEFAULT_CONTAINER_PADDING_X = 10;
+
+export const DEFAULT_CONTAINER_PADDING_Y = 10;
+
 export const MAX_CLICK_DELAY = 300;
 
 export const MOUSE_TOOL_MOVE = 'move';
