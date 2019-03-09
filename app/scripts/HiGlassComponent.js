@@ -3468,16 +3468,21 @@ class HiGlassComponent extends React.Component {
 
     const isTargetCanvas = evt.target === this.canvasElement;
 
-    if (nativeEvent.forwarded || isZoomFixed || isTargetCanvas) {
-      evt.stopPropagation();
-      evt.preventDefault();
-
-      return;
-    }
-
     if (!hasParent(nativeEvent.target, this.topDiv)) {
       // ignore events that don't come from within the
       // HiGlass container
+      return;
+    }
+
+    if (isZoomFixed) {
+      // ignore events when in zoom fixed mode
+      return;
+    }
+
+    if (nativeEvent.forwarded || isTargetCanvas) {
+      evt.stopPropagation();
+      evt.preventDefault();
+
       return;
     }
 
