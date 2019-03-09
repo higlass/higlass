@@ -13,6 +13,9 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   constructor(...args) {
     super(...args);
 
+    this.demarcationLine = new PIXI.Graphics();
+    this.pMain.addChild(this.demarcationLine);
+
     if (this.options && this.options.colorRange) {
       if (this.options.colorRangeGradient) {
         this.setColorGradient(this.options.colorRange);
@@ -72,6 +75,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     if (!tile.graphics) return;
 
     const { graphics } = tile;
+
+    tile.svgData = undefined;
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
@@ -159,26 +164,9 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       barSprite.width = this._xScale(tileX + tileWidth) - barSprite.x;
     }
 
-    const maxYPos = (
-      this.dimensions[1] - +this.options.barMinHeightAtZero || Infinity
-    );
-    const barMinHeightOpacity = (
-      this.options.barMinHeightAtZeroOpacity || opacity
-    );
-
     for (let i = 0; i < tileValues.length; i++) {
-      const value = tileValues[i] + pseudocount;
-
       xPos = this._xScale(tileXScale(i));
-      yPos = this.valueScale(value);
-
-      if (value === 0 && maxYPos !== null && yPos > maxYPos) {
-        yPos = maxYPos;
-        graphics.beginFill(colorHex, barMinHeightOpacity);
-      } else {
-        graphics.beginFill(colorHex, opacity);
-      }
-
+      yPos = this.valueScale(tileValues[i] + pseudocount);
       width = this._xScale(tileXScale(i + 1)) - xPos;
       height = this.dimensions[1] - yPos;
 
@@ -221,16 +209,65 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     super.rerender(options, force);
   }
 
+  drawDemarcationLine() {
+    this.demarcationLine.clear();
+
+    const color = colorToHex(this.options.barFillColor || 'grey');
+    const opacity = +this.options.barOpacity || 1;
+
+    const demarcationColor = this.options.demarcationLineColor
+      ? colorToHex(this.options.demarcationLineColor)
+      : color;
+
+    const demarcationOpacity = Number.isNaN(+this.options.demarcationLineOpacity)
+      ? opacity
+      : +this.options.demarcationLineOpacity;
+
+    this.demarcationLine.beginFill(demarcationColor, demarcationOpacity);
+
+    this.demarcationLine.drawRect(
+      0,
+      this.dimensions[1] - 1,
+      this.dimensions[0],
+      1
+    );
+  }
+
+  drawDemarcationLineSvg(output) {
+    const demarcationLine = document.createElement('rect');
+    demarcationLine.setAttribute('id', 'demarcation-line');
+
+    demarcationLine.setAttribute('x', 0);
+    demarcationLine.setAttribute('y', this.dimensions[1] - 1);
+    demarcationLine.setAttribute('height', 1);
+    demarcationLine.setAttribute('width', this.dimensions[0]);
+
+    demarcationLine.setAttribute(
+      'fill',
+      this.options.demarcationLineColor || this.options.barFillColor
+    );
+    demarcationLine.setAttribute(
+      'fill-opacity',
+      this.options.demarcationLineOpacity || this.options.barOpacity
+    );
+
+    output.appendChild(demarcationLine);
+  }
+
   draw() {
     // we don't want to call HorizontalLine1DPixiTrack's draw function
     // but rather its parent's
     super.draw();
 
+    if (this.options.demarcationLine) this.drawDemarcationLine();
+
     Object.values(this.fetchedTiles).forEach((tile) => {
+      const domainScale = tile.drawnAtScale.domain();
+      const domainX = this._xScale.domain();
+
       // scaling between tiles
       const tileK = (
-        (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
-        / (this._xScale.domain()[1] - this._xScale.domain()[0])
+        (domainScale[1] - domainScale[0]) / (domainX[1] - domainX[0])
       );
 
       const newRange = this._xScale.domain().map(tile.drawnAtScale);
@@ -294,6 +331,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     track.appendChild(output);
     output.setAttribute('transform',
       `translate(${this.position[0]},${this.position[1]})`);
+
+    if (this.options.demarcationLine) this.drawDemarcationLineSvg(output);
 
     this.visibleAndFetchedTiles()
       .filter(tile => tile.svgData && tile.svgData.barXValues)

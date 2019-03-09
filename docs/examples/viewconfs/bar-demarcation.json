@@ -121,8 +121,8 @@
               "axisPositionHorizontal": "right",
               "labelColor": "black",
               "labelTextOpacity": 1,
-              "barMinHeightAtZero": 1,
-              "barMinHeightAtZeroOpacity": 0.5
+              "demarcationLine": true,
+              "demarcationLineColor": "red"
             }
           },
           {
@@ -137,8 +137,7 @@
               "axisPositionHorizontal": "right",
               "labelColor": "black",
               "labelTextOpacity": 1,
-              "barMinHeightAtZero": 1,
-              "barMinHeightAtZeroOpacity": 0.5
+              "demarcationLine": true
             }
           },
           {
@@ -153,8 +152,9 @@
               "axisPositionHorizontal": "right",
               "labelColor": "black",
               "labelTextOpacity": 1,
-              "barMinHeightAtZero": 1,
-              "barMinHeightAtZeroOpacity": 0.5
+              "demarcationLine": true,
+              "demarcationLineColor": "#000",
+              "demarcationLineOpacity": 0.1
             }
           },
           {
@@ -167,11 +167,11 @@
             "options": {
               "name": "GM12878-E116-H3K4me3.fc.signal",
               "barFillColor": "orange",
+              "barOpacity": 0.25,
               "axisPositionHorizontal": "right",
               "labelColor": "black",
               "labelTextOpacity": 1,
-              "barMinHeightAtZero": 1,
-              "barMinHeightAtZeroOpacity": 0.5
+              "demarcationLine": true
             }
           }
         ]
