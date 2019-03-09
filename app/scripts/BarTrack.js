@@ -227,7 +227,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       const [graphicsXScale, graphicsXPos] = this.getXScaleAndOffset(tile.drawnAtScale);
 
       tile.graphics.scale.x = graphicsXScale;
-      tile.graphics.position.x = xPos;
+      tile.graphics.position.x = graphicsXPos;
     });
   }
 
