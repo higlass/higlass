@@ -1987,8 +1987,8 @@ class TiledPlot extends React.Component {
           initialXDomain={this.props.initialXDomain}
           initialYDomain={this.props.initialYDomain}
           isRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT}
-          isRisShowGlobalMousePosition={this.props.isShowGlobalMousePosition}
-leftWidth={this.leftWidth}
+          isShowGlobalMousePosition={this.props.isShowGlobalMousePosition}
+          leftWidth={this.leftWidth}
           leftWidthNoGallery={this.leftWidthNoGallery}
           marginLeft={this.props.horizontalMargin}
           marginTop={this.props.verticalMargin}
