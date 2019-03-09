@@ -63,7 +63,7 @@ The ``options`` parameter can currently have:
 
 - ``bounded``: this property tells the HiGlass component to fill all the space in the containing element. Note that if ``bounded`` is set to true, then ``element`` must have a fixed height.
 
-- ``disableTrackMenu``: if ``true`` the context menu is disabled.
+- ``disableTrackMenu``:  (default: ``false``) if ``true`` the context menu is disabled.
 
 The function returns an instance of the public API of a HiGlass component.
 
