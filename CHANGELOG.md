@@ -1,6 +1,8 @@
 ## v1.5.0
 
 - Allow sharing the mouse position globally. See [`docs/examples/others/global-mouse-position.html`](docs/examples/others/global-mouse-position.html) for an example.
+- Allow disabling the change of views and tracks separately by setting `viewEditable: false` and `tracksEditable: false` in your view config.
+- Added ability to define label margins. See [`docs/examples/viewconfs/label-margin.json`](docs/examples/viewconfs/label-margin.json) for an example.
 - Make view spacing adjustable via initialization options. See [/docs/examples/others/adjust-view-spacing.html](/docs/examples/others/adjust-view-spacing.html) for an example.
 - Add a new option to tracks that support axis: `axisMargin` to add some margin to an axis. See [docs/examples/viewconfs/axis-margin.json](docs/examples/viewconfs/axis-margin.json) for an example
 - Fix an issue with small offsets when exporting bar tracks to SVG
@@ -38,6 +40,7 @@
 - Added TiledPixiTrack.on event handler
 - Added getTrackObject to exports
 - Added support for overlay tracks
+- Minor bug fix wherein valueScaleMin and valueScaleMax weren't used when set to 0
 - Added support for click event handling of 1D and 2D annotations from `1d-annotation` and `chromosome-2d-annotations` tracks
 - Cloned views split vertically first (#259)
 - Change component height when a new viewconf is passed in

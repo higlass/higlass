@@ -258,6 +258,8 @@ const viewConfig = {
     }
   ],
   editable: true,
+  viewEditable: true,
+  tracksEditable: true,
   exportViewUrl: '/api/v1/viewconfs',
   zoomLocks: {
     locksByViewUid: {},
@@ -296,7 +298,7 @@ const viewConfig = {
 const hgApi = hglib.viewer(
   document.getElementById('demo'),
   viewConfig,
-  { bounded: true },
+  { bounded: true, editable: false },
 );
 
 hgApi.setBroadcastMousePositionGlobally(true);

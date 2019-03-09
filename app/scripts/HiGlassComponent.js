@@ -784,12 +784,55 @@ class HiGlassComponent extends React.Component {
    * visible?
    */
   isEditable() {
-    // console.log('editable:', this.props.options, this.state.viewConfig);
     if (!this.props.options || !('editable' in this.props.options)) {
       return this.state.viewConfig.editable;
     }
 
     return this.props.options.editable && this.state.viewConfig.editable;
+  }
+
+  /**
+   * Can views be added, removed or rearranged and are the view headers
+   * visible?
+   */
+  isTrackMenuDisabled() {
+    if (
+      this.props.options && (
+        this.props.options.editable === false
+        || this.props.options.tracksEditable === false
+      )
+    ) {
+      return true;
+    }
+
+    return (
+      this.state.viewConfig && (
+        this.state.viewConfig.tracksEditable === false
+        || this.state.viewConfig.editable === false
+      )
+    );
+  }
+
+  /**
+   * Can views be added, removed or rearranged and are the view headers
+   * visible?
+   */
+  isViewHeaderDisabled() {
+    if (
+      this.props.options && (
+        this.props.options.editable === false
+        || this.props.options.viewEditable === false
+      )
+    ) {
+      return true;
+    }
+
+    return (
+      this.state.viewConfig && (
+        this.state.viewConfig.viewEditable === false
+        || this.state.viewConfig.editable === false
+      )
+    );
   }
 
   /**
@@ -3668,6 +3711,7 @@ class HiGlassComponent extends React.Component {
                 : null
             }
             chromInfoPath={view.chromInfoPath}
+            disableTrackMenu={this.isTrackMenuDisabled()}
             draggingHappening={this.state.draggingHappening}
             editable={this.isEditable()}
             initialXDomain={view.initialXDomain}
@@ -3760,7 +3804,11 @@ class HiGlassComponent extends React.Component {
           );
         };
 
-        const multiTrackHeader = this.isEditable() && !this.state.viewConfig.hideHeader ? (
+        const multiTrackHeader = (
+          this.isEditable()
+          && !this.isViewHeaderDisabled()
+          && !this.state.viewConfig.hideHeader
+        ) ? (
           <ViewHeader
             ref={(c) => { this.viewHeaders[view.uid] = c; }}
             getGenomePositionSearchBox={getGenomePositionSearchBox}
@@ -3812,7 +3860,7 @@ class HiGlassComponent extends React.Component {
             onZoomToData={uid => this.handleZoomToData(uid)}
             viewUid={view.uid}
           />
-        ) : null;
+          ) : null;
 
         return (
           <div
