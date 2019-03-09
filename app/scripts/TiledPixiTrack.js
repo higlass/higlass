@@ -185,11 +185,13 @@ class TiledPixiTrack extends PixiTrack {
   }
 
   setFixedValueScaleMin(value) {
-    this.fixedValueScaleMin = +value || null;
+    if (!Number.isNaN(value)) this.fixedValueScaleMin = +value;
+    else this.fixedValueScaleMin = null;
   }
 
   setFixedValueScaleMax(value) {
-    this.fixedValueScaleMax = +value || null;
+    if (!Number.isNaN(value)) this.fixedValueScaleMax = +value;
+    else this.fixedValueScaleMax = null;
   }
 
   checkValueScaleLimits() {
