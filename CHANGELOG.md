@@ -8,6 +8,7 @@
 - Add a new option to BarTrack for drawing a demarcation line at the bottom of the track, i.e., at the zero value. See [`/apis/svg.html?/viewconfs/bar-zero-line.json`](/apis/svg.html?/viewconfs/bar-zero-line.json) for an example.
 - Fixed an issue with small offsets when exporting bar tracks to SVG
 - Fixed an issue where bars in a `BarTrack` related to values higher than `valueScaleMax` were not drawn.
+- Fixed an issue with `hgApi.setTrackValueScaleLimits`
 - Fix #291: allow web page scrolling when zoomFixed is set to true
 - Fix #578: BarTrack SVG export overplotting error.
 
