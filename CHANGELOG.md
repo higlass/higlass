@@ -11,6 +11,7 @@
 - Fixed an issue with `hgApi.setTrackValueScaleLimits`
 - Fix #291: allow web page scrolling when zoomFixed is set to true
 - Fix #578: BarTrack SVG export overplotting error.
+- Fix #584: Reset viewport is broken
 
 ## v1.4.2
 
