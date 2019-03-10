@@ -13,8 +13,8 @@ import {
   simple1And2dAnnotations,
 } from './view-configs';
 
+import simpleHeatmapViewConf from './view-configs/simple-heatmap';
 import adjustViewSpacingConf from './view-configs/adjust-view-spacing';
-
 import simple1dHorizontalVerticalAnd2dDataTrack from './view-configs/simple-1d-horizontal-vertical-and-2d-data-track';
 
 import createElementAndApi from './utils/create-element-and-api';
@@ -129,6 +129,34 @@ describe('API Tests', () => {
 
           const rd = trackObj.getVisibleRectangleData(285, 156, 11, 11);
           expect(rd.data.length).toEqual(1);
+
+          done();
+        });
+      });
+    });
+
+    it('reset viewport after zoom', (done) => {
+      [div, api] = createElementAndApi(
+        simpleHeatmapViewConf, { editable: false }
+      );
+
+      const hgc = api.getComponent();
+
+      waitForTilesLoaded(hgc, () => {
+        const initialXDomain = hgc.xScales.a.domain();
+
+        const newXDomain = [1000000000, 2000000000];
+
+        api.zoomTo('a', ...newXDomain, null, null, 100);
+
+        waitForTransitionsFinished(hgc, () => {
+          expect(Math.round(hgc.xScales.a.domain()[0])).toEqual(newXDomain[0]);
+          expect(Math.round(hgc.xScales.a.domain()[1])).toEqual(newXDomain[1]);
+
+          api.resetViewport('a');
+
+          expect(Math.round(hgc.xScales.a.domain()[0])).toEqual(initialXDomain[0]);
+          expect(Math.round(hgc.xScales.a.domain()[1])).toEqual(initialXDomain[1]);
 
           done();
         });
