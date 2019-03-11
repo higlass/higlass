@@ -107,6 +107,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           text.anchor.y = 0.5;
 
           tile.texts[geneInfo[3]] = text; // index by geneName
+
           // console.log('adding text:', text.text);
           tile.textGraphics.addChild(text);
         });
@@ -143,8 +144,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   destroyTile(tile) {
     // remove texts
-
     this.removeTileRects(tile);
+
+    tile.graphics.removeChild(tile.textGraphics);
+    tile.graphics.removeChild(tile.rectGraphics);
   }
 
   removeTiles(toRemoveIds) {
