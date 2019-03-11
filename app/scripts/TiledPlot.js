@@ -1246,34 +1246,15 @@ class TiledPlot extends React.Component {
   }
 
   resetViewport() {
-    // Set the initial domain
-    const left = (
-      this.trackRenderer.currentProps.paddingLeft
-      + this.trackRenderer.currentProps.leftWidth
-    );
-    const newXDomain = [
-      left,
-      left + this.trackRenderer.currentProps.centerWidth,
-    ].map(this.trackRenderer.zoomTransform
-      .rescaleX(this.trackRenderer.xScale).invert);
-
-    const top = (
-      this.trackRenderer.currentProps.paddingTop
-      + this.trackRenderer.currentProps.topHeight
-    );
-    const newYDomain = [
-      top,
-      top + this.trackRenderer.currentProps.centerHeight,
-    ].map(this.trackRenderer.zoomTransform
-      .rescaleY(this.trackRenderer.yScale).invert);
-
     // Reset the zoom transform
     this.trackRenderer.zoomTransform.k = 1;
     this.trackRenderer.zoomTransform.x = 0;
     this.trackRenderer.zoomTransform.y = 0;
     this.trackRenderer.applyZoomTransform();
 
-    this.props.onDataDomainChanged(newXDomain, newYDomain);
+    this.props.onDataDomainChanged(
+      this.props.initialXDomain, this.props.initialYDomain
+    );
   }
 
   updatablePropsToString(props) {
