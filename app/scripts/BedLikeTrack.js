@@ -99,7 +99,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           const text = new PIXI.Text(geneInfo[3], {
             fontSize: this.textFontSize,
             fontFamily: this.textFontFamily,
-            fill: colorToHex(fill)
+            fill: colorToHex(fill),
+            stroke: colorToHex('white'),
+            strokeThickness: 1,
           });
           if (this.flipText) { text.scale.x = -1; }
 
@@ -254,7 +256,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     ) { // only draw if it's not too wide
       drawnPoly = [
         xStartPos, rectY, // top
-        xStartPos + (GENE_RECT_HEIGHT / 2), rectY + (rectHeight / 2), // right point
+        xStartPos + (rectHeight / 2), rectY + (rectHeight / 2), // right point
         xStartPos, rectY + rectHeight // bottom
       ];
 
@@ -263,7 +265,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       } else {
         drawnPoly = [
           xEndPos, rectY, // top
-          xEndPos - (GENE_RECT_HEIGHT / 2), rectY + (rectHeight / 2), // left point
+          xEndPos - (rectHeight / 2), rectY + (rectHeight / 2), // left point
           xEndPos, rectY + rectHeight // bottom
         ];
         tile.rectGraphics.drawPolygon(drawnPoly);
@@ -272,17 +274,17 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       if (strand === '+') {
         drawnPoly = [
           xStartPos, rectY, // left top
-          xEndPos - (GENE_RECT_HEIGHT / 2), rectY, // right top
+          xEndPos - (rectHeight / 2), rectY, // right top
           xEndPos, rectY + (rectHeight / 2),
-          xEndPos - (GENE_RECT_HEIGHT / 2), rectY + rectHeight, // right bottom
+          xEndPos - (rectHeight / 2), rectY + rectHeight, // right bottom
           xStartPos, rectY + rectHeight // left bottom
         ];
       } else if (strand === '-') {
         drawnPoly = [
-          xStartPos + (GENE_RECT_HEIGHT / 2), rectY, // left top
+          xStartPos + (rectHeight / 2), rectY, // left top
           xEndPos, rectY, // right top
           xEndPos, rectY + rectHeight, // right bottom
-          xStartPos + (GENE_RECT_HEIGHT / 2), rectY + rectHeight, // left bottom
+          xStartPos + (rectHeight / 2), rectY + rectHeight, // left bottom
           xStartPos, rectY + rectHeight / 2
         ];
       } else {
@@ -329,7 +331,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         const txEnd = +geneInfo[2] + chrOffset;
         const txMiddle = (txStart + txEnd) / 2;
         let yMiddle = rowScale(j) + (rowScale.step() / 2);
-        let rectHeight = GENE_RECT_HEIGHT;
+        let rectHeight = this.options.rectHeight || GENE_RECT_HEIGHT;
 
         // if the regions are scaled according to a value column their height needs to
         // be adjusted
@@ -420,6 +422,13 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           fontSize: this.textFontSize,
           fontFamily: this.textFontFamily,
           fill,
+          // stroke: 'white',
+          // strokeThickness: 2,
+          // fontWeight: 600,
+          // dropShadow: true,
+          // dropShadowColor: 'white',
+          // dropShadowDistance: 0,
+          // dropShadowBlur: 10,
         };
 
         if (!(geneInfo[3] in tile.textWidths)) {
