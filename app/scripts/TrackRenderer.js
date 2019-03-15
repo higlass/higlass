@@ -154,12 +154,12 @@ class TrackRenderer extends React.Component {
     this.zoomLimits = [0, Infinity];
 
     this.prevCenterX = (
-      this.currentProps.marginLeft
+      this.currentProps.paddingLeft
       + this.currentProps.leftWidth
       + (this.currentProps.centerWidth / 2)
     );
     this.prevCenterY = (
-      this.currentProps.marginTop
+      this.currentProps.paddingTop
       + this.currentProps.topHeight
       + (this.currentProps.centerHeight / 2)
     );
@@ -539,21 +539,21 @@ class TrackRenderer extends React.Component {
 
     this.drawableToDomainX = scaleLinear()
       .domain([
-        this.currentProps.marginLeft + this.currentProps.leftWidth,
-        this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth,
+        this.currentProps.paddingLeft + this.currentProps.leftWidth,
+        this.currentProps.paddingLeft + this.currentProps.leftWidth + this.currentProps.centerWidth,
       ])
       .range([initialXDomain[0], initialXDomain[1]]);
 
     this.drawableToDomainY = scaleLinear()
       .domain([
         (
-          this.currentProps.marginTop
+          this.currentProps.paddingTop
           + this.currentProps.topHeight
           + (this.currentProps.centerHeight / 2)
           - (this.currentProps.centerWidth / 2)
         ),
         (
-          this.currentProps.marginTop
+          this.currentProps.paddingTop
           + this.currentProps.topHeight
           + (this.currentProps.centerHeight / 2)
           + (this.currentProps.centerWidth / 2)
@@ -562,12 +562,12 @@ class TrackRenderer extends React.Component {
       .range([initialYDomain[0], initialYDomain[1]]);
 
     this.prevCenterX = (
-      this.currentProps.marginLeft
+      this.currentProps.paddingLeft
       + this.currentProps.leftWidth
       + (this.currentProps.centerWidth / 2)
     );
     this.prevCenterY = (
-      this.currentProps.marginTop
+      this.currentProps.paddingTop
       + this.currentProps.topHeight
       + (this.currentProps.centerHeight / 2)
     );
@@ -580,8 +580,8 @@ class TrackRenderer extends React.Component {
       initialYDomain: props.initialYDomain,
       width: props.width,
       height: props.height,
-      marginLeft: props.marginLeft,
-      marginRight: props.marginRight,
+      paddingLeft: props.paddingLeft,
+      paddingTop: props.paddingTop,
       leftWidth: props.leftWidth,
       topHeight: props.topHeight,
       dragging: props.dragging,
@@ -597,12 +597,12 @@ class TrackRenderer extends React.Component {
 
   setUpScales(notify = false) {
     const currentCenterX = (
-      this.currentProps.marginLeft
+      this.currentProps.paddingLeft
       + this.currentProps.leftWidth
       + (this.currentProps.centerWidth / 2)
     );
     const currentCenterY = (
-      this.currentProps.marginTop
+      this.currentProps.paddingTop
       + this.currentProps.topHeight
       + (this.currentProps.centerHeight / 2)
     );
@@ -973,12 +973,12 @@ class TrackRenderer extends React.Component {
     const k = refK / sourceK;
 
     const middleViewX = (
-      this.currentProps.marginLeft
+      this.currentProps.paddingLeft
       + this.currentProps.leftWidth
       + (this.currentProps.centerWidth / 2)
     );
     const middleViewY = (
-      this.currentProps.marginTop
+      this.currentProps.paddingTop
       + this.currentProps.topHeight
       + (this.currentProps.centerHeight / 2)
     );
@@ -1062,8 +1062,8 @@ class TrackRenderer extends React.Component {
 
   applyZoomTransform(notify = true) {
     const props = this.currentProps;
-    const marginleft = props.marginLeft + props.leftWidth;
-    const marginTop = props.marginTop + props.topHeight;
+    const paddingleft = props.paddingLeft + props.leftWidth;
+    const paddingTop = props.paddingTop + props.topHeight;
 
     // These props are apparently used elsewhere, for example the context menu
     this.zoomedXScale = this.zoomTransform.rescaleX(this.xScale);
@@ -1071,13 +1071,13 @@ class TrackRenderer extends React.Component {
 
     const newXScale = scaleLinear()
       .domain([
-        marginleft, marginleft + props.centerWidth
+        paddingleft, paddingleft + props.centerWidth
       ].map(this.zoomedXScale.invert))
       .range([0, props.centerWidth]);
 
     const newYScale = scaleLinear()
       .domain([
-        marginTop, marginTop + props.centerHeight
+        paddingTop, paddingTop + props.centerHeight
       ].map(this.zoomedYScale.invert))
       .range([0, props.centerHeight]);
 
@@ -1091,22 +1091,22 @@ class TrackRenderer extends React.Component {
         const trackXScale = scaleLinear()
           .domain(
             [
-              props.marginLeft,
-              props.width - props.marginLeft
+              props.paddingLeft,
+              props.width - props.paddingLeft
             ].map(this.zoomedXScale.invert)
           )
           .range(
-            [0, props.width - (2 * props.marginLeft)]
+            [0, props.width - (2 * props.paddingLeft)]
           );
 
         const trackYScale = scaleLinear()
           .domain(
             [
-              props.marginTop,
-              props.height - props.marginTop
+              props.paddingTop,
+              props.height - props.paddingTop
             ].map(this.zoomedYScale.invert)
           )
-          .range([0, props.height - (2 * props.marginTop)]);
+          .range([0, props.height - (2 * props.paddingTop)]);
 
         track.zoomed(
           trackXScale,
@@ -1122,8 +1122,8 @@ class TrackRenderer extends React.Component {
         const trackXScale = scaleLinear()
           .domain(
             [
-              props.marginLeft + props.leftWidthNoGallery,
-              props.marginLeft + props.leftWidth + props.centerWidth + props.galleryDim,
+              props.paddingLeft + props.leftWidthNoGallery,
+              props.paddingLeft + props.leftWidth + props.centerWidth + props.galleryDim,
             ].map(this.zoomedXScale.invert)
           )
           .range(
@@ -1133,8 +1133,8 @@ class TrackRenderer extends React.Component {
         const trackYScale = scaleLinear()
           .domain(
             [
-              props.marginTop + props.topHeightNoGallery,
-              props.marginTop + props.topHeight + props.centerHeight + props.galleryDim,
+              props.paddingTop + props.topHeightNoGallery,
+              props.paddingTop + props.topHeight + props.centerHeight + props.galleryDim,
             ].map(this.zoomedYScale.invert)
           )
           .range([0, props.centerHeight - (2 * props.galleryDim)]);
@@ -1153,8 +1153,8 @@ class TrackRenderer extends React.Component {
         this.zoomTransform.k,
         this.zoomTransform.x + this.xPositionOffset,
         this.zoomTransform.y + this.yPositionOffset,
-        props.marginLeft + props.leftWidth,
-        props.marginTop + props.topHeight,
+        props.paddingLeft + props.leftWidth,
+        props.paddingTop + props.topHeight,
       );
     }
 
@@ -1252,6 +1252,7 @@ class TrackRenderer extends React.Component {
       },
       onMouseMoveZoom: this.props.onMouseMoveZoom,
       chromInfoPath: track.chromInfoPath,
+      isShowGlobalMousePosition: () => this.props.isShowGlobalMousePosition
     };
 
     // for horizontal and vertical rules
@@ -1582,7 +1583,7 @@ class TrackRenderer extends React.Component {
 
   forwardContextMenu(e) {
     // Do never forward the contextmenu event when ALT is being hold down.
-    if (e.altKey) return;
+    if (this.props.disableTrackMenu || e.altKey) return;
 
     e.preventDefault();
 
@@ -1715,11 +1716,12 @@ TrackRenderer.defaultProps = {
   height: 0,
   initialXDomain: [],
   initialYDomain: [],
+  isShowGlobalMousePosition: false,
   isRangeSelection: false,
   leftWidth: 0,
   leftWidthNoGallery: 0,
-  marginLeft: 0,
-  marginTop: 0,
+  paddingLeft: 0,
+  paddingTop: 0,
   positionedTracks: [],
   topHeight: 0,
   topHeightNoGallery: 0,
@@ -1732,30 +1734,32 @@ TrackRenderer.propTypes = {
   centerHeight: PropTypes.number,
   centerWidth: PropTypes.number,
   children: PropTypes.array,
+  disableTrackMenu: PropTypes.bool,
   galleryDim: PropTypes.number,
   height: PropTypes.number,
   initialXDomain: PropTypes.array,
   initialYDomain: PropTypes.array,
-  xDomainLimits: PropTypes.array,
-  yDomainLimits: PropTypes.array,
-  zoomDomain: PropTypes.array,
+  isShowGlobalMousePosition: PropTypes.bool,
   isRangeSelection: PropTypes.bool,
   leftWidth: PropTypes.number,
   leftWidthNoGallery: PropTypes.number,
-  marginLeft: PropTypes.number,
-  marginTop: PropTypes.number,
+  paddingLeft: PropTypes.number,
+  paddingTop: PropTypes.number,
+  metaTracks: PropTypes.array,
   onMouseMoveZoom: PropTypes.func,
   onScalesChanged: PropTypes.func.isRequired,
   pixiStage: PropTypes.object.isRequired,
   pluginTracks: PropTypes.object,
   positionedTracks: PropTypes.array,
-  metaTracks: PropTypes.array,
   setCentersFunction: PropTypes.func,
   svgElement: PropTypes.object.isRequired,
   topHeight: PropTypes.number,
   topHeightNoGallery: PropTypes.number,
   viewOptions: PropTypes.object,
   width: PropTypes.number,
+  xDomainLimits: PropTypes.array,
+  yDomainLimits: PropTypes.array,
+  zoomDomain: PropTypes.array,
 };
 
 export default withPubSub(TrackRenderer);

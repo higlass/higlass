@@ -1,0 +1,62 @@
+const viewconf = {
+  zoomFixed: false,
+  views: [
+    {
+      layout: {
+        w: 12,
+        h: 12,
+        x: 0,
+        y: 0,
+        i: 'aa',
+        moved: false,
+        static: false
+      },
+      uid: 'aa',
+      initialYDomain: [0, 2547598956],
+      initialXDomain: [0, 2547598956],
+      tracks: {
+        left: [],
+        top: [],
+        right: [],
+        center: [
+          {
+            uid: 'c1',
+            type: 'combined',
+            height: 200,
+            contents: [
+              {
+                server: '//higlass.io/api/v1',
+                tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
+                type: 'heatmap',
+                uid: 'heatmap',
+                options: {
+                  labelPosition: 'bottomRight',
+                  colorRange: [
+                    'white',
+                    'rgba(245,166,35,1.0)',
+                    'rgba(208,2,27,1.0)',
+                    'black'
+                  ],
+                  showMousePosition: true,
+                  showGlobalMousePosition: true,
+                  mousePositionColor: 'black'
+                },
+              }
+            ],
+          }
+        ],
+        bottom: [],
+        whole: [],
+        gallery: []
+      },
+      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+    }
+  ],
+  editable: true,
+  exportViewUrl: '/api/v1/viewconfs',
+  trackSourceServers: [
+    'http://higlass.io/api/v1'
+  ],
+};
+
+export default viewconf;
