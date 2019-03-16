@@ -50,12 +50,21 @@ HiGlass.
 Creating an inline HiGlass component
 ------------------------------------
 
+There are two ways to create a HiGlass component within a web page. The first pretends to return the api synchronously. This usually works but it's not guaranteed:
+
 .. code-block:: javascript
 
   const hgv = hglib.viewer(element, config, options);
 
-Create a new HiGlass viewer within a web page. This initializes a
-HiGlassComponent inside the element ``element`` with a viewconfig passed in as
+The second, invoked by passing a `true` as the fourth parameter, returns a promise that can be resolved to an api object:
+
+.. code-block:: javascript
+
+  const hgv = hglib.viewer(element, config, options);
+  const hgvPromise = hglib.viewer(element, config, options, true);
+  hgvPromise.then(api => ...)
+
+Both methods initialize a HiGlassComponent inside the element ``element`` with a viewconfig passed in as
 ``config``. If ``config`` is a string, it is interpreted as a url and used to
 try to fetch a remote viewconfig.
 

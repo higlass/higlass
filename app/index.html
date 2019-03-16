@@ -298,13 +298,14 @@ const viewConfig = {
 const hgApi = hglib.viewer(
   document.getElementById('demo'),
   viewConfig,
-  { bounded: true, editable: false },
+  { bounded: true, editable: false }
 );
 
-hgApi.setBroadcastMousePositionGlobally(true);
+  hgApi.setBroadcastMousePositionGlobally(true);
 
-hgApi.on('viewConfig', () => {
-  console.log('View Config changed');
-});
+  hgApi.on('viewConfig', () => {
+    console.log('View Config changed');
+  });
+
 </script>
 </html>

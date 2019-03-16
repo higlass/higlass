@@ -7,6 +7,8 @@ import {
   waitForTilesLoaded,
 } from '../app/scripts/utils';
 
+import { viewer } from '../app/scripts/hglib';
+
 import {
   emptyConf,
   simpleCenterViewConfig,
@@ -67,6 +69,20 @@ describe('API Tests', () => {
 
       expect(trackConf.options.showTooltip).toEqual(true);
       // expect(Object.keys(component.viewHeaders).length).toBeGreaterThan(0);
+    });
+
+    it('creates an API using a promise', (done) => {
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:600px; height: 400px; background-color: lightgreen');
+
+      const p = viewer(div, simpleCenterViewConfig, undefined, true);
+      p.then((hgApi) => {
+        expect(hgApi).not.toEqual(null);
+        api = hgApi;
+        done();
+      });
     });
 
     it('creates a track without default options', () => {
