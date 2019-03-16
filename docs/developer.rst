@@ -100,7 +100,8 @@ To get the track object associated with a view and track uid:
         getTrackObjectFromHGC
     } from '../app/scripts/utils';
 
-    const trackObj = getTrackObjectFromHGC
+    const trackObj = getTrackObjectFromHGC(hgc.instance(),
+        'view_uid', 'track_uid')
 
 Contributor Guidelines
 =======================
