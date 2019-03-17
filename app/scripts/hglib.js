@@ -122,7 +122,7 @@ export const viewer = (element, viewConfig, options,
    */
 
   if (refAsPromise) {
-    const p = launch(element, viewConfig, options, refAsPromise);
+    return launch(element, viewConfig, options, asPromise).then(hg => hg.api);
     return p.then(hg => hg.api);
   }
 
