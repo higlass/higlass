@@ -15,39 +15,81 @@ import {
   getTrackObjectFromHGC
 } from '../app/scripts/utils';
 
+import {
+  exportDataConfig
+} from './view-configs';
+
 configure({ adapter: new Adapter() });
 
-describe('Heatmaps', () => {
-  let hgc = null;
-  let div = null;
+describe('Testing', () => {
+  describe('Export heatmap data', () => {
+    let hgc = null;
+    let div = null;
 
-  beforeAll((done) => {
-    ([div, hgc] = mountHGComponent(div, hgc,
-      viewconf,
-      done,
-      {
-        style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true,
-      })
-    );
+    beforeAll((done) => {
+      ([div, hgc] = mountHGComponent(div, hgc,
+        exportDataConfig,
+        done,
+        {
+          style: 'width:600px;height:1200px;background-color: lightgreen',
+          bounded: true,
+        })
+      );
+    });
+
+    it('once', (done) => {
+      const tp = getTrackObjectFromHGC(hgc.instance(), 'NagBzk-AQZuoY0bqG-Yy0Q', 'PdEzdgsxRymGelD5xfKlNA');
+      let data = tp.getVisibleRectangleData(262, 298, 1, 1);
+
+      data = tp.getVisibleRectangleData(0, 0, tp.dimensions[0], tp.dimensions[1]);
+
+      expect(data.shape[0]).to.eql(756);
+      expect(data.shape[1]).to.eql(234);
+
+      // tp.exportData();
+
+      done();
+    });
+
+    afterAll((done) => {
+      removeHGComponent(div);
+
+      done();
+    });
   });
 
-  it('should respect zoom limits', (done) => {
-    // add your tests here
+  describe('Heatmaps', () => {
+    let hgc = null;
+    let div = null;
 
-    const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
-    const rectData = trackObj.getVisibleRectangleData(547, 18, 1, 1);
+    beforeAll((done) => {
+      ([div, hgc] = mountHGComponent(div, hgc,
+        viewconf,
+        done,
+        {
+          style: 'width:800px; height:400px; background-color: lightgreen',
+          bounded: true,
+        })
+      );
+    });
 
-    expect(rectData.shape[0]).to.eql(0);
-    expect(rectData.shape[1]).to.eql(0);
+    it('should respect zoom limits', (done) => {
+      // add your tests here
 
-    done();
-  });
+      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
+      const rectData = trackObj.getVisibleRectangleData(547, 18, 1, 1);
 
-  afterAll((done) => {
-    removeHGComponent(div);
+      expect(rectData.shape[0]).to.eql(0);
+      expect(rectData.shape[1]).to.eql(0);
 
-    done();
+      done();
+    });
+
+    afterAll((done) => {
+      removeHGComponent(div);
+
+      done();
+    });
   });
 });
 
