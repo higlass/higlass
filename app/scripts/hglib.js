@@ -51,7 +51,7 @@ const launch = (element, config, options, asPromise = false) => {
 
   ReactDOM.render(
     <HiGlassComponent
-      ref={c => component = c}
+      ref={(c) => { component = c; }}
       options={options || {}}
       viewConfig={config}
     />,
