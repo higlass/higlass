@@ -18,7 +18,7 @@ export {
 
 export const version = VERSION;
 
-const launch = (element, config, options, refAsPromise = false) => {
+const launch = (element, config, options, asPromise = false) => {
   /**
    * The instance's public API will be passed into the callback
    *
@@ -31,14 +31,11 @@ const launch = (element, config, options, refAsPromise = false) => {
    * @param {Object} options Options that affect how the component is drawn and
    * and behaves.
    *
-   * @param {Object} componentCallback A callback to be called once the component
-   * is rendered. If it's not passed in, the block until the component is created.
-   *
    * @param {Object} promise Return the ref as a promise or not.
    * @return  {Object} The instance's public API
    */
-  if (refAsPromise) {
-    const p = new Promise((resolve, reject) => {
+  if (asPromise) {
+    return new Promise((resolve, reject) => {
       ReactDOM.render(
         <HiGlassComponent
           ref={c => resolve(c)}
@@ -48,8 +45,6 @@ const launch = (element, config, options, refAsPromise = false) => {
         element
       );
     });
-
-    return p;
   }
 
   let component = null;
@@ -113,7 +108,7 @@ const launch = (element, config, options, refAsPromise = false) => {
  * @return  {Object}  Newly created HiGlass component.
  */
 export const viewer = (element, viewConfig, options,
-  refAsPromise = false) => {
+  asPromise = false) => {
   /**
    * Available options:
    *
@@ -121,9 +116,8 @@ export const viewer = (element, viewConfig, options,
    *      Fit the container to the bounds of the element
    */
 
-  if (refAsPromise) {
+  if (asPromise) {
     return launch(element, viewConfig, options, asPromise).then(hg => hg.api);
-    return p.then(hg => hg.api);
   }
 
   return launch(element, viewConfig, options).api;
