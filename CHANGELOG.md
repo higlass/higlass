@@ -1,3 +1,7 @@
+## v1.5.1
+
+- Fixed UI hanging on mouseover of zoomed out matrix bug
+
 ## v1.5.0
 
 - Allow sharing the mouse position globally. See [`docs/examples/others/global-mouse-position.html`](docs/examples/others/global-mouse-position.html) for an example.
