@@ -9,7 +9,7 @@
 HiGlass is a web-based viewer for datasets too large to view at once.
 It features synchronized navigation of multiple views as well as continuous zooming and panning
 for navigation across genomic loci and resolutions. It supports visual comparison of
-genomic and other data from different experimental conditions and can be used to efficiently
+genomic (e.g., Hi-C, ChIP-seq, or bed annotations) and other data (e.g., geographic maps, gigapixel images, or abstract 1D and 2D sequential data) from different experimental conditions and can be used to efficiently
 identify salient outcomes of experimental perturbations, generate new hypotheses, and share
 the results with the community.
 
