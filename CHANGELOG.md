@@ -1,6 +1,7 @@
 ## v1.5.1
 
 - Fixed UI hanging on mouseover of zoomed out matrix bug
+- Fixed #588: horizontal heatmap zoom limit bug
 
 ## v1.5.0
 

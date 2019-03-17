@@ -23,6 +23,7 @@ module.exports = (config) => {
       'build/hglib.css',
       'test/**/*.+(js|jsx)',
       // 'test/HeatmapTests.js',
+      // 'test/HorizontalHeatmapTests.js',
       // 'test/AddTrackTests.js',
       // 'test/Horizontal1DTrackTests.js'
       // 'test/TrackLabelsTest.jsx',
