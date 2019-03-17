@@ -1,5 +1,5 @@
-Jupyter Notebooks
-#################
+Python & Jupyter
+################
 
 Python `Jupyter notebooks <http://jupyter.org/>`_ are an excellent way to
 experiment with data science and visualization. Using the higlass-jupyter
@@ -14,10 +14,10 @@ and enable the jupyter extension:
 
 .. code-block:: bash
 
-    pip install jupyter hgflask higlass-jupyter 
+    pip install jupyter higlass-python 
 
-    jupyter nbextension install --py --sys-prefix --symlink higlass_jupyter
-    jupyter nbextension enable --py --sys-prefix higlass_jupyter
+    jupyter nbextension install --py --sys-prefix --symlink higlass
+    jupyter nbextension enable --py --sys-prefix higlass
 
 
 Uninstalling
@@ -25,10 +25,16 @@ Uninstalling
 
 .. code-block:: bash
 
-    jupyter nbextension uninstall --py --sys-prefix higlass_jupyter
+    jupyter nbextension uninstall --py --sys-prefix higlass
 
-Usage
------
+Examples
+--------
+
+The examples below demonstrate how to use the HiGlass Python API to view
+data locally in a Jupyter notebook or a browser-based HiGlass instance.
+
+Jupyter HiGlass Component
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To instantiate a HiGlass component within a Jupyter notebook, we first need
 to specify which data should be loaded. This can be accomplished with the 
@@ -36,27 +42,49 @@ help of the ``hgflask.client`` module:
 
 .. code-block:: python
 
-    import higlass_jupyter as hiju
-    import hgflask.client as hgc
+    import higlass
+    import higlass.client as hgc
 
-    conf = hgc.ViewConf([
-        hgc.View([
-            hgc.Track(track_type='top-axis', position='top'),   
-            hgc.Track(track_type='heatmap', position='center',
-                     tileset_uuid='CQMd6V_cRw6iCI_-Unl3PQ', 
-                      api_url="http://higlass.io/api/v1/",
-                      height=250,
-                     options={ 'valueScaleMax': 0.5 }),
+    view1 = hgc.View([
+        hgc.Track(track_type='top-axis', position='top'),   
+        hgc.Track(track_type='heatmap', position='center',
+                 tileset_uuid='CQMd6V_cRw6iCI_-Unl3PQ', 
+                  server="http://higlass.io/api/v1/",
+                  height=250,
+                 options={ 'valueScaleMax': 0.5 }),
 
-        ])
     ])
 
-    hiju.HiGlassDisplay(viewconf=conf.to_json())
+    (display, server, viewconf) = higlass.display([view1])
+    display
 
 The result is a fully interactive HiGlass view direcly embedded in the Jupyter
 notebook.
 
 .. image:: img/remote-hic.png
+
+Remote bigWig Files
+^^^^^^^^^^^^^^^^^^^
+
+bigWig files can be loaded either from the local disk or from remote http
+servers. The example below demonstrates how to load a remote bigWig file from
+the UCSC genome browser's archives. Note that this is a network-heavy operation
+that may take a long time to complete with a slow internet connection.
+
+.. code-block:: python
+
+    import higlass
+    import higlass.client as hgc
+    import higlass.tilesets as hgti
+
+    ts1 = hgti.bigwig('http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig')
+
+    tr1 = hgc.Track('horizontal-bar', tileset=ts1)
+    view1 = hgc.View([tr1])
+    (display, server, viewconf) = higlass.display([view1])
+
+    display
+
 
 Serving local data
 ^^^^^^^^^^^^^^^^^^
@@ -71,34 +99,16 @@ Creating the server:
 
 .. code-block:: python
 
-    import hgflask.tilesets as hfti
-    import hgflask.server as hgse
+    import higlass
+    import higlass.client as hgc
+    import higlass.tilesets as hgti
 
-    ts = hfti.cooler(
-        '../data/Dixon2012-J1-NcoI-R1-filtered.100kb.multires.cool')
+    ts1 = hgti.cooler('../data/Dixon2012-J1-NcoI-R1-filtered.100kb.multires.cool')
+    tr1 = hgc.Track('heatmap', tileset=ts1)
+    view1 = hgc.View([tr1])
+    (display, server, viewconf) = higlass.display([view1])
 
-    server = hgse.start(tilesets=[ts])
-
-And displaying the dataset in the client:
-
-.. code-block:: python
-
-    import higlass_jupyter as hiju
-    import hgflask.client as hgc
-
-    conf = hgc.ViewConf([
-        hgc.View([
-            hgc.Track(track_type='top-axis', position='top'),   
-            hgc.Track(track_type='heatmap', position='center',
-                     tileset_uuid=ts.uuid, 
-                      api_url=server.api_address,
-                      height=250,
-                     options={ 'valueScaleMax': 0.5 }),
-
-        ])
-    ])
-
-    hiju.HiGlassDisplay(viewconf=conf.to_json())
+    display
 
 
 .. image:: img/jupyter-hic-heatmap.png
@@ -113,50 +123,85 @@ according to the chromosome info in the specified file.
 
 .. code-block:: python
 
-    import hgtiles.chromsizes as hgch
-
-    import hgflask.server as hgse
-    import hgflask.tilesets as hfti
-
+    import clodius.tiles.chromsizes as ctc
+    import higlass
+    import higlass.client as hgc
+    import higlass.tilesets as hgti
 
     chromsizes_fp = '../data/chromSizes_hg19_reordered.tsv'
     bigwig_fp = '../data/wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.bigWig'
+        
+    chromsizes = ctc.get_tsv_chromsizes(chromsizes_fp)
 
-    chromsizes = hgch.get_tsv_chromsizes(chromsizes_fp)
+    ts_r = hgti.bigwig(bigwig_fp, chromsizes=chromsizes)
+    cs_r = hgti.chromsizes(chromsizes_fp)
+        
+    tr0 = hgc.Track('top-axis')
+    tr1 = hgc.Track('horizontal-bar', tileset=ts_r)
+    tr2 = hgc.Track('horizontal-chromosome-labels',
+                    position='top', tileset=cs_r)
 
-    ts_r = hfti.bigwig(bigwig_fp, chromsizes=chromsizes)
-    cs_r = hfti.chromsizes(chromsizes_fp)
+    view1 = hgc.View([tr0, tr1, tr2])
+    (display, server, viewconf) = higlass.display([view1])
 
-    server = hgse.start(tilesets=[ts_r, cs_r])
+    display
 
 The client view will be composed such that three tracks are visible. Two of them
 are served from the local server.
 
-.. code-block:: python
-
-    import higlass_jupyter as hiju
-    import hgflask.client as hgc
-
-    conf = hgc.ViewConf([
-        hgc.View([
-            hgc.Track(track_type='top-axis', position='top'),
-            
-            hgc.Track(track_type='horizontal-chromosome-labels', position='top',
-                     tileset_uuid=cs_r.uuid, api_url=server.api_address),
-            hgc.Track(track_type='horizontal-bar', position='top', 
-                      tileset_uuid=ts_r.uuid, api_url=server.api_address,
-                     options={ 'height': 40 }),
-        ])
-    ])
-
-    hiju.HiGlassDisplay(viewconf=conf.to_json())
-
 .. image:: img/jupyter-bigwig.png
+
 
 Serving custom data
 ^^^^^^^^^^^^^^^^^^^
 
-We can also explore a numpy matrix. To start let's make the matrix using the
+
+To display data, we need to define a tileset. Tilesets define two functions:
+``tileset_info``:
+
+.. code-block:: python
+
+    > ts1 = hgti.bigwig('http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig')
+    > ts1.tileset_info()
+    {
+     'min_pos': [0],
+     'max_pos': [4294967296],
+     'max_width': 4294967296,
+     'tile_size': 1024,
+     'max_zoom': 22,
+     'chromsizes': [['chr1', 249250621],
+                    ['chr2', 243199373],
+                    ...],
+     'aggregation_modes': {'mean': {'name': 'Mean', 'value': 'mean'},
+                           'min': {'name': 'Min', 'value': 'min'},
+                           'max': {'name': 'Max', 'value': 'max'},
+                           'std': {'name': 'Standard Deviation', 'value': 'std'}},
+     'range_modes': {'minMax': {'name': 'Min-Max', 'value': 'minMax'},
+                     'whisker': {'name': 'Whisker', 'value': 'whisker'}}
+     }
+
+and ``tiles``:
+
+.. code-block:: python
+
+    > ts1.tiles(['x.0.0'])
+    [('x.0.0',
+      {'min_value': 0.0,
+       'max_value': 9.119079544037932,
+       'dense': 'Rh25PwcCcz...',   # base64 string encoding the array of data
+       'size': 1,
+       'dtype': 'float32'})]
+
+The tiles function will always take an array of tile ids of the form ``id.z.x[.y][.transform]``
+where ``z`` is the zoom level, ``x`` is the tile's x position, ``y`` is the tile's 
+y position (for 2D tilesets) and ``transform`` is some transform to be applied to the
+data (e.g. normalization types like ``ice``).
+
+Numpy Matrix
+""""""""""""
+
+By way of example, let's explore a numpy matrix by implementing the `tileset_info` and `tiles`
+functions described above. To start let's make the matrix using the
 `Eggholder function <https://en.wikipedia.org/wiki/Test_functions_for_optimization>`_.
 
 .. code-block:: python
@@ -177,40 +222,28 @@ Then we can define the data and tell the server how to render it.
 .. code-block:: python
 
     import functools as ft
-    import hgtiles.npmatrix as hgnp
+    import clodius.tiles.npmatrix as hgnp
+    import higlass.client as hgc
+    import higlass.tilesets as hgti
 
-    import hgflask.server as hgse
-    import hgflask.tilesets as hfti
-
-    ts = hfti.Tileset(
+    ts = hgti.Tileset(
         tileset_info=lambda: hgnp.tileset_info(data),
         tiles=lambda tids: hgnp.tiles_wrapper(data, tids)
     )
 
-    server = hgse.start([ts])
-
-Finally, we create the HiGlass component which renders it, along with
-axis labels:
-
-.. code-block:: python
-
-    import higlass_jupyter as hiju
-    import hgflask.client as hgc
-
-    conf = hgc.ViewConf([
+    (display, server, viewconf) = higlass.display([
         hgc.View([
-            hgc.Track(track_type='top-axis', position='top'), 
+            hgc.Track(track_type='top-axis', position='top'),
             hgc.Track(track_type='left-axis', position='left'),
-            hgc.Track(track_type='heatmap', position='center',
-                     tileset_uuid=ts.uuid, 
-                      api_url=server.api_address,
+            hgc.Track(track_type='heatmap', 
+                      position='center',
+                      tileset=ts,
                       height=250,
                      options={ 'valueScaleMax': 0.5 }),
 
         ])
     ])
-
-    hiju.HiGlassDisplay(viewconf=conf.to_json())
+    display
 
 .. image:: img/eggholder-function.png
 
@@ -233,11 +266,10 @@ Then we have to set up a data server to output the data in "tiles".
 
 .. code-block:: python
 
-    import hgtiles.points as hgpo
-    import hgtiles.utils as hgut
+    import clodius.tiles.points as hgpo
+    import clodius.tiles.utils as hgut
 
-    import hgflask.server as hfse
-    import hgflask.tilesets as hfti
+    import higlass.tilesets as hgti
 
     import numpy as np
     import pandas as pd
@@ -252,7 +284,7 @@ Then we have to set up a data server to output the data in "tiles".
     # get the tileset info (bounds and such) of the dataset
     tsinfo = hgpo.tileset_info(df, 'x', 'y')
 
-    ts = hfti.Tileset(
+    ts = hgti.Tileset(
         tileset_info=lambda: tsinfo,
         tiles=lambda tile_ids: hgpo.format_data(
                     hgut.bundled_tiles_wrapper_2d(tile_ids,
@@ -266,24 +298,21 @@ And finally, we can create a HiGlass client in the browser to view the data:
 
 .. code-block:: python
 
-    import hgflask.client as hfc
-    import higlass_jupyter as hiju
+    import higlass.client as hgc
 
-    hgc = hfc.ViewConf([
-        hfc.View([
-            hfc.Track(
+
+    (display, server, viewconf) = higlass.display([
+        hgc.View([
+            hgc.Track(
                 track_type='labelled-points-track',
                 position='center',
-                tileset_uuid=ts.uuid,
-                api_url=server.api_address,
+                tileset=ts,
                 height=200,
                 options={
                     'labelField': 'v'
                 })
         ])
     ])
-
-    hiju.HiGlassDisplay(viewconf=hgc.to_json())
 
 .. image:: img/jupyter-labelled-points.png
 
@@ -301,10 +330,9 @@ requests:
 
 .. code-block:: python
 
-    import hgflask.server as hgse
-    import hgflask.tilesets as hfti
-    import hgtiles.format as hgfo
-    import hgtiles.utils as hgut
+    import higlass.tilesets as hgti
+    import clodius.tiles.format as hgfo
+    import clodius.tiles.utils as hgut
 
     ts = hfti.Tileset(
         tileset_info=tileset_info,
@@ -312,6 +340,5 @@ requests:
                         lambda z,x,y: hgfo.format_dense_tile(tile_data(z, x, y)))
     )
 
-    server = hgse.start([ts])
 
 In this case, we expect *tile_data* to simply return a matrix of values.

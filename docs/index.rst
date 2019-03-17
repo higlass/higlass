@@ -167,7 +167,6 @@ crucial are listed below.
 
     tutorial
     javascript_api
-    python_api
     jupyter
     data_preparation
     track_types

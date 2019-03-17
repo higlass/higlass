@@ -53,6 +53,8 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   }
 
   calculateZoomLevel() {
+    let zoomLevel = null;
+
     if (this.tilesetInfo.resolutions) {
       const zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
         this.tilesetInfo.resolutions,
@@ -68,26 +70,30 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         this.tilesetInfo.max_pos[1]
       );
 
-      return Math.min(zoomIndexX, zoomIndexY);
+      zoomLevel = Math.min(zoomIndexX, zoomIndexY);
+    } else {
+      const xZoomLevel = tileProxy.calculateZoomLevel(
+        this._xScale,
+        this.tilesetInfo.min_pos[0],
+        this.tilesetInfo.max_pos[0],
+      );
+
+      const yZoomLevel = tileProxy.calculateZoomLevel(
+        this._xScale,
+        this.tilesetInfo.min_pos[1],
+        this.tilesetInfo.max_pos[1],
+      );
+
+      zoomLevel = Math.max(xZoomLevel, yZoomLevel);
+      zoomLevel = Math.min(zoomLevel, this.maxZoom);
     }
 
-    const xZoomLevel = tileProxy.calculateZoomLevel(
-      this._xScale,
-      this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0],
-    );
-
-    const yZoomLevel = tileProxy.calculateZoomLevel(
-      this._xScale,
-      this.tilesetInfo.min_pos[1],
-      this.tilesetInfo.max_pos[1],
-    );
-
-    let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
-    zoomLevel = Math.min(zoomLevel, this.maxZoom);
-
     if (this.options && this.options.maxZoom) {
-      if (this.options.maxZoom >= 0) { zoomLevel = Math.min(this.options.maxZoom, zoomLevel); } else { console.error('Invalid maxZoom on track:', this); }
+      if (this.options.maxZoom >= 0) {
+        zoomLevel = Math.min(this.options.maxZoom, zoomLevel);
+      } else {
+        console.error('Invalid maxZoom on track:', this);
+      }
     }
 
     return zoomLevel;
