@@ -1,3 +1,7 @@
+## v1.5.1
+
+- Fixed #588: horizontal heatmap zoom limit bug
+
 ## v1.5.0
 
 - Allow sharing the mouse position globally. See [`docs/examples/others/global-mouse-position.html`](docs/examples/others/global-mouse-position.html) for an example.
