@@ -107,7 +107,7 @@ const launch = (element, config, options, asPromise = false) => {
  *
  * @return  {Object}  Newly created HiGlass component.
  */
-export const viewer = (element, viewConfig, options,
+export const viewer = (element, viewConfig, options, asPromise = false) => {
   asPromise = false) => {
   /**
    * Available options:
