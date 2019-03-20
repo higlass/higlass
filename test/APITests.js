@@ -80,7 +80,6 @@ describe('API Tests', () => {
       const p = viewer(div, simpleCenterViewConfig, undefined, true);
       p.then((hgApi) => {
         expect(hgApi).not.toEqual(null);
-        api = hgApi;
         done();
       });
     });
