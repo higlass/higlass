@@ -59,7 +59,11 @@ const register = pubSub => (event, newElement, useCapture = false) => {
   registeredEls[event] = newElement;
   registeredEls[event].__handler__ = getEventHandler(event, pubSub);
   registeredEls[event].addEventListener(
-    event, registeredEls[event].__handler__, useCapture
+    event, registeredEls[event].__handler__,
+    {
+      capture: useCapture,
+      passive: false,
+    }
   );
 };
 
