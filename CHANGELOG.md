@@ -1,6 +1,7 @@
 ## v1.5.1
 
 - Fixed #588: horizontal heatmap zoom limit bug
+- Fixed #596: scrolling while zooming bug introduced in latest chrome
 
 ## v1.5.0
 
