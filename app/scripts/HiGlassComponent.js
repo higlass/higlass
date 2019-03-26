@@ -130,13 +130,12 @@ class HiGlassComponent extends React.Component {
     // between views
     this.zoomLocks = {};
     this.locationLocks = {};
-    this.valueScaleLocks = {};
-
-    this.prevAuthToken = props.options.authToken;
 
     // locks that keep the value scales synchronized between
     // *tracks* (which can be in different views)
+    this.valueScaleLocks = {};
 
+    this.prevAuthToken = props.options.authToken;
     this.setCenters = {};
 
     this.plusImg = {};
