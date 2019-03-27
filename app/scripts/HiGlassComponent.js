@@ -131,12 +131,11 @@ class HiGlassComponent extends React.Component {
     this.zoomLocks = {};
     this.locationLocks = {};
 
-    this.prevAuthToken = props.options.authToken;
-
     // locks that keep the value scales synchronized between
     // *tracks* (which can be in different views)
     this.valueScaleLocks = {};
 
+    this.prevAuthToken = props.options.authToken;
     this.setCenters = {};
 
     this.plusImg = {};
@@ -2535,6 +2534,8 @@ class HiGlassComponent extends React.Component {
   }
 
   deserializeValueScaleLocks(viewConfig) {
+    this.valueScaleLocks = {};
+
     if (viewConfig.valueScaleLocks) {
       for (const viewUid of dictKeys(viewConfig.valueScaleLocks.locksByViewUid)) {
         this.valueScaleLocks[viewUid] = viewConfig.valueScaleLocks
@@ -3120,10 +3121,6 @@ class HiGlassComponent extends React.Component {
       // Add names to all the tracks
       let looseTracks = positionedTracksToAllTracks(v.tracks);
 
-      this.deserializeZoomLocks(viewConfig);
-      this.deserializeLocationLocks(viewConfig);
-      this.deserializeValueScaleLocks(viewConfig);
-
       // give tracks their default names (e.g. 'type': 'top-axis'
       // will get a name of 'Top Axis'
       looseTracks = this.addUidsToTracks(looseTracks);
@@ -3149,6 +3146,10 @@ class HiGlassComponent extends React.Component {
         v.layout = this.generateViewLayout(v);
       }
     });
+
+    this.deserializeZoomLocks(viewConfig);
+    this.deserializeLocationLocks(viewConfig);
+    this.deserializeValueScaleLocks(viewConfig);
 
     viewsByUid = this.removeInvalidTracks(viewsByUid);
 
