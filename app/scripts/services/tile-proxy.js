@@ -408,12 +408,14 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
     maxX = Number.MAX_VALUE; // eslint-disable-line no-param-reassign
   }
 
+  const lowerBound = Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth));
+  const upperBound = Math.ceil(Math.min(
+    maxX,
+    ((scale.domain()[1] - minX) - epsilon)
+  ) / tileWidth);
   let tileRange = range(
-    Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
-    Math.ceil(Math.min(
-      maxX,
-      ((scale.domain()[1] - minX) - epsilon)
-    ) / tileWidth),
+    lowerBound,
+    upperBound,
   );
 
   if (tileRange.length > MAX_TILES) {
