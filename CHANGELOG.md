@@ -1,6 +1,11 @@
 ## v1.5.1
 
+- Fixed UI hanging on mouseover of zoomed out matrix bug
 - Fixed #588: horizontal heatmap zoom limit bug
+- Reset value scale locks when new viewconf is added
+- Added a default track type for the chromsizes datatype
+- Fixed drag handler pubSub reference
+- Fixed #596: scrolling while zooming bug introduced in latest chrome
 
 ## v1.5.0
 
