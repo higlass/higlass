@@ -455,6 +455,7 @@ const createApi = function api(context, pubSub) {
        * Get a Promise which returns a Blob containing a PNG for the current view.
        * It's possible to get string of the PNG bytes from that:
        *
+       * @example
        * hgApi.exportAsPngBlobPromise().then(function(blob) {
        *   var reader = new FileReader();
        *   reader.addEventListener("loadend", function() {

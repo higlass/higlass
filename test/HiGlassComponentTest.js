@@ -36,7 +36,6 @@ import {
   geneAnnotationsOnly1,
   annotationsTilesView,
   horizontalAndVerticalMultivec,
-  exportDataConfig,
   invalidTrackConfig,
   divergentTrackConfig,
   divisionViewConfig,
@@ -578,47 +577,6 @@ describe('Simple HiGlassComponent', () => {
       expect(hgc.instance().state.views.aa.tracks.top[0].type).toEqual('horizontal-bar');
 
       done();
-    });
-  });
-
-  describe('Export data', () => {
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:600px;height:1200px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: true }}
-        viewConfig={exportDataConfig}
-      />,
-      { attachTo: div });
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('once', (done) => {
-      const tp = getTrackObjectFromHGC(hgc.instance(), 'NagBzk-AQZuoY0bqG-Yy0Q', 'PdEzdgsxRymGelD5xfKlNA');
-      let data = tp.getVisibleRectangleData(262, 298, 1, 1);
-
-      data = tp.getVisibleRectangleData(0, 0, tp.dimensions[0], tp.dimensions[1]);
-
-      expect(data.shape[0]).toEqual(975);
-      expect(data.shape[1]).toEqual(234);
-
-      // tp.exportData();
-
-      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
