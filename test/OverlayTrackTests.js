@@ -51,6 +51,8 @@ describe('Overlay Track:', () => {
       const overlayTrackDef = overlayTrackInfo.trackDef;
       const overlayTrackObj = overlayTrackInfo.trackObject;
 
+      expect(overlayTrack.height).toBeGreaterThan(0);
+
       expect(overlayTrackDef.width).toEqual(overlayTrackObj.dimensions[0]);
       expect(overlayTrackDef.height).toEqual(overlayTrackObj.dimensions[1]);
 

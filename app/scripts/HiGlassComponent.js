@@ -2213,12 +2213,12 @@ class HiGlassComponent extends React.Component {
       return null;
     }
 
-    newTrack.width = this.getTrackInfo(newTrack.type).minWidth
-      ? this.getTrackInfo(newTrack.type).minWidth
-      : this.minVerticalWidth;
-    newTrack.height = this.getTrackInfo(newTrack.type).minHeight
-      ? this.getTrackInfo(newTrack.type).minHeight
-      : this.minHorizontalHeight;
+    newTrack.width = this.getTrackInfo(newTrack.type).defaultWidth
+      || this.getTrackInfo(newTrack.type).minWidth
+      || this.minVerticalWidth;
+    newTrack.height = this.getTrackInfo(newTrack.type).defaultHeight
+      || this.getTrackInfo(newTrack.type).minHeight
+      || this.minHorizontalHeight;
 
     const { tracks } = this.state.views[viewId];
     if (position === 'left' || position === 'top') {
