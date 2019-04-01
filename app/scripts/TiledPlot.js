@@ -1516,12 +1516,24 @@ class TiledPlot extends React.Component {
     const evtJson = this.props.draggingHappening;
     const datatype = evtJson.datatype;
 
-    if (!(datatype in DEFAULT_TRACKS_FOR_DATATYPE)) {
+    if (!(datatype in DEFAULT_TRACKS_FOR_DATATYPE) && !evtJson.defaultTracks) {
       console.warn('unknown data type:', evtJson.higlassTrack);
       return undefined;
     }
 
-    const defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype];
+    let defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype];
+
+    if (evtJson.defaultTracks) {
+      if (defaultTracks) {
+        defaultTracks = Object.assign(
+          defaultTracks,
+          evtJson.defaultTracks
+        );
+      } else {
+        defaultTracks = evtJson.defaultTracks;
+      }
+    }
+
     const presentTracks = new Set(['top', 'left', 'right', 'center', 'bottom']
       .filter(x => (x in this.state.tracks && this.state.tracks[x].length)));
 
@@ -1558,10 +1570,10 @@ class TiledPlot extends React.Component {
       >
         { (topDisplayed && (centerDisplayed || leftDisplayed)) ? topLeftDiv : null }
         <DragListeningDiv
+          defaultTrackType={defaultTracks.top}
           draggingHappening={this.props.draggingHappening}
           enabled={topAllowed}
           onTrackDropped={track => this.handleTracksAdded([track], 'top')}
-          position="top"
           style={{
             border: '1px solid black',
             flexGrow: 1,
@@ -1580,10 +1592,10 @@ class TiledPlot extends React.Component {
       >
         { (topDisplayed && (centerDisplayed || leftDisplayed)) ? topLeftDiv : null }
         <DragListeningDiv
+          defaultTrackType={defaultTracks.bottom}
           draggingHappening={this.props.draggingHappening}
           enabled={bottomAllowed}
           onTrackDropped={track => this.handleTracksAdded([track], 'bottom')}
-          position="bottom"
           style={{
             border: '1px solid black',
             flexGrow: 1,
@@ -1595,10 +1607,10 @@ class TiledPlot extends React.Component {
 
     const leftDiv = (
       <DragListeningDiv
+        defaultTrackType={defaultTracks.left}
         draggingHappening={this.props.draggingHappening}
         enabled={leftAllowed}
         onTrackDropped={track => this.handleTracksAdded([track], 'left')}
-        position="left"
         style={{
           border: '1px solid black',
           flexGrow: 1,
@@ -1608,6 +1620,7 @@ class TiledPlot extends React.Component {
 
     const centerDiv = (
       <DragListeningDiv
+        defaultTrackType={defaultTracks.center}
         draggingHappening={this.props.draggingHappening}
         enabled={centerAllowed}
         onTrackDropped={track => this.handleTracksAdded([track], 'center')}
@@ -1622,9 +1635,9 @@ class TiledPlot extends React.Component {
 
     const rightDiv = React.cloneElement(leftDiv,
       {
+        defaultTrackType: defaultTracks.right,
         enabled: rightAllowed,
         onTrackDropped: track => this.handleTracksAdded([track], 'right'),
-        position: 'right',
       });
 
     return (

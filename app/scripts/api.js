@@ -278,9 +278,26 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
-       * Show overlays where this track can be positioned
+       * Show overlays where this track can be positioned. This
+       * function will take a track definition and display red
+       * or green overlays highlighting where the track can be
+       * placed on the view.
        *
        * @param {obj} track { server, tilesetUid, datatype }
+       *
+       * @example
+       *
+       *  var lineTrack = {
+       *   "server": "http://higlass.io/api/v1",
+       *   "tilesetUid": "WtBJUYawQzS9M2WVIIHnlA",
+       *   "datatype": "multivec",
+       *   "defaultTracks": {
+       *       top: "horizontal-stacked-bar",
+       *       bottom: "horizontal-multivec"
+       *   },
+       * }
+       *
+       * window.hgApi.showAvailableTrackPositions(lineTrack);
        */
       showAvailableTrackPositions(track) {
         self.setState({
