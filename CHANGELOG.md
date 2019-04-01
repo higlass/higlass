@@ -1,3 +1,7 @@
+## v1.5.3
+
+- Specify default track types directly in `showAvailableTrackTypes` API 
+
 ## v1.5.1
 
 - Fixed UI hanging on mouseover of zoomed out matrix bug
