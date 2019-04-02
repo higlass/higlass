@@ -1,5 +1,6 @@
 /* eslint-env node, jasmine */
 import { globalPubSub } from 'pub-sub-es';
+import { select } from 'd3-selection';
 
 import {
   some,
@@ -39,6 +40,39 @@ describe('API Tests', () => {
   let api = null;
 
   describe('Options tests', () => {
+    it('shows linear-labels as available track', () => {
+      [div, api] = createElementAndApi(simpleCenterViewConfig);
+
+      api.showAvailableTrackPositions(
+        {
+          server: 'http://higlass.io/api/v1',
+          tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+          datatype: 'linear-labels',
+        }
+      );
+
+      // before providing default tracks, higlass shouldn't know
+      // which tracks are compatible with this datatype and shouldn't
+      // display any drag listening divs
+      let selection = select(div).selectAll('.DragListeningDiv');
+      expect(selection.size()).toEqual(0);
+
+      api.showAvailableTrackPositions(
+        {
+          server: 'http://higlass.io/api/v1',
+          tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+          datatype: 'linear-labels',
+          defaultTracks: {
+            top: 'linear-labels',
+            bottom: 'linear-labels'
+          },
+        }
+      );
+
+      selection = select(div).selectAll('.DragListeningDiv');
+      expect(selection.size()).toEqual(3);
+    });
+
     it('creates a track with default options', () => {
       [div, api] = createElementAndApi(simpleCenterViewConfig,
         {
