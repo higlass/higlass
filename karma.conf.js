@@ -66,7 +66,7 @@ module.exports = (config) => {
       'karma-phantomjs2-launcher',
       'karma-verbose-reporter'
     ],
-// 
+
     babelPreprocessor: {
       options: {
         presets: ['airbnb'],
