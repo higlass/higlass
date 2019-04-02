@@ -16,7 +16,10 @@ server is started:
 
     export OPTION=value; python manage.py runserver
 
-``BASE_DIR`` - Set the Django base directory. This is where Django will
+``APP_BASEPATH`` - Allow access to the admin interface at ``http://server.com/$APP_BASEPATH/admin``. 
+
+``BASE_DIR`` - Set the Django base directory. This is where Django will 
+
 look for the database and the media directories.
 
 ``REDIS_HOST`` - The host name for the redis server to use for tile caching.  If

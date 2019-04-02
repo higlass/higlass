@@ -207,8 +207,15 @@ Bar tracks display 1D vector data as bars.
 Options
 --------
 
-**axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
-**barFillColor**: - A valid color (e.g. ``black``) or to track the color of the bars use ``[glyph-color]``.
+- **axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
+
+- **barFillColor**: A valid color (e.g. ``black``) or to track the color of the bars use ``[glyph-color]``.
+
+- **zeroLineVisible**: If ``true`` draws a demarcation line at the bottom of a bar track, i.e., at the zero value.
+
+- **zeroLineColor**: The color of the zero line. If ``undefined`` the bar fill color (``barFillColor``) will be used.
+
+- **zeroLineOpacity**: The opacity of the zero line. If ``undefined`` the bar opacity (``barOpacity``) will be used.
 
 **Demos:**
 

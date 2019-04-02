@@ -51,7 +51,7 @@ class DragListeningDiv extends React.Component {
           };
 
           this.props.onTrackDropped(newTrack);
-          this.pubSub.publish('trackDropped', newTrack);
+          this.props.pubSub.publish('trackDropped', newTrack);
         }}
         style={Object.assign({
           background,

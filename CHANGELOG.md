@@ -1,3 +1,31 @@
+## v1.5.1
+
+- Fixed UI hanging on mouseover of zoomed out matrix bug
+- Fixed #588: horizontal heatmap zoom limit bug
+- Reset value scale locks when new viewconf is added
+- Added a default track type for the chromsizes datatype
+- Fixed drag handler pubSub reference
+- Fixed #596: scrolling while zooming bug introduced in latest chrome
+
+## v1.5.0
+
+- Allow sharing the mouse position globally. See [`docs/examples/others/global-mouse-position.html`](docs/examples/others/global-mouse-position.html) for an example.
+- Allow disabling the change of views and tracks separately by setting `viewEditable: false` and `tracksEditable: false` in your view config.
+- Added ability to define label margins. See [`docs/examples/viewconfs/label-margin.json`](docs/examples/viewconfs/label-margin.json) for an example.
+- Make view spacing adjustable via initialization options. See [/docs/examples/others/adjust-view-spacing.html](/docs/examples/others/adjust-view-spacing.html) for an example.
+- Add a new option to tracks that support axis: `axisMargin` to add some margin to an axis. See [docs/examples/viewconfs/axis-margin.json](docs/examples/viewconfs/axis-margin.json) for an example
+- Add a new option to BarTrack for drawing a demarcation line at the bottom of the track, i.e., at the zero value. See [`/apis/svg.html?/viewconfs/bar-zero-line.json`](/apis/svg.html?/viewconfs/bar-zero-line.json) for an example.
+- Fixed an issue with small offsets when exporting bar tracks to SVG
+- Fixed an issue where bars in a `BarTrack` related to values higher than `valueScaleMax` were not drawn.
+- Fixed an issue with `hgApi.setTrackValueScaleLimits`
+- Fix #291: allow web page scrolling when zoomFixed is set to true
+- Fix #578: BarTrack SVG export overplotting error.
+- Fix #584: Reset viewport is broken
+
+## v1.4.2
+
+- Fix #568, #569
+
 ## v1.4.1
 
 - Allow users to choose adding the chromosome grid overlay from the Add Track Dialog when selecting a cooler file.
@@ -13,6 +41,10 @@
 - Overlay tracks now properly allow for extent to include multiple ranges.
 - Overlay tracks can now optionally have extent ranges configured as a 4-tuple, separating x ranges from y ranges
 
+## v1.3.1
+
+- Clear mouse position indicator when leaving the root dom element, on blurring the window, and when no track is hovered
+
 ## v1.3.0
 
 - Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
@@ -25,6 +57,7 @@
 - Added TiledPixiTrack.on event handler
 - Added getTrackObject to exports
 - Added support for overlay tracks
+- Minor bug fix wherein valueScaleMin and valueScaleMax weren't used when set to 0
 - Added support for click event handling of 1D and 2D annotations from `1d-annotation` and `chromosome-2d-annotations` tracks
 - Cloned views split vertically first (#259)
 - Change component height when a new viewconf is passed in
