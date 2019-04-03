@@ -21,7 +21,22 @@ const GENE_RECT_HEIGHT = 16;
 const MAX_TEXTS = 1000;
 const MAX_TILE_ENTRIES = 5000;
 const STAGGERED_OFFSET = 5;
+const TEXT_FONT_SIZE = '12px';
+const TEXT_FONT_FAMILY = 'Arial';
 
+// the label text should have a white outline so that it's more
+// visible against a similar colored background
+const TEXT_STYLE = {
+  fontSize: TEXT_FONT_SIZE,
+  fontFamily: TEXT_FONT_FAMILY,
+  stroke: 'white',
+  strokeThickness: 2,
+  fontWeight: 400,
+  dropShadow: true,
+  dropShadowColor: 'white',
+  dropShadowDistance: 0,
+  dropShadowBlur: 2,
+};
 
 class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
@@ -101,7 +116,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             fontFamily: this.textFontFamily,
             fill: colorToHex(fill),
             stroke: colorToHex('white'),
-            strokeThickness: 1,
+            strokeThickness: 2,
           });
           if (this.flipText) { text.scale.x = -1; }
 
@@ -418,18 +433,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           text.alreadyDrawn = true;
         }
 
-        text.style = {
-          fontSize: this.textFontSize,
-          fontFamily: this.textFontFamily,
-          fill,
-          // stroke: 'white',
-          // strokeThickness: 2,
-          // fontWeight: 600,
-          // dropShadow: true,
-          // dropShadowColor: 'white',
-          // dropShadowDistance: 0,
-          // dropShadowBlur: 10,
-        };
+        text.style = Object.assign(TEXT_STYLE, { fill });
 
         if (!(geneInfo[3] in tile.textWidths)) {
           text.updateTransform();
