@@ -47,6 +47,20 @@ describe('API Tests', () => {
         {
           server: 'http://higlass.io/api/v1',
           tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+          datatype: 'yyyyy',
+          defaultTracks: ['xxxxx'],
+        }
+      );
+
+      // we don't know what type of track 'xxxx' is and what
+      // datatype 'yyyy' is so let's not show any overlays
+      selection = select(div).selectAll('.DragListeningDiv');
+      expect(selection.size()).toEqual(0);
+
+      api.showAvailableTrackPositions(
+        {
+          server: 'http://higlass.io/api/v1',
+          tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
           datatype: 'linear-labels',
         }
       );
@@ -62,7 +76,7 @@ describe('API Tests', () => {
           server: 'http://higlass.io/api/v1',
           tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
           datatype: 'linear-labels',
-          defaultTracks: ['linear-labels'],
+          defaultTracks: ['heatmap', 'horizontal-heatmap'],
         }
       );
 

@@ -1527,8 +1527,7 @@ class TiledPlot extends React.Component {
       '1d-vertical': ['left', 'right']
     };
 
-    let defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype] || {};
-
+    const defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype] || {};
 
     if (evtJson.defaultTracks) {
       for (const trackType of evtJson.defaultTracks) {
@@ -1541,17 +1540,6 @@ class TiledPlot extends React.Component {
             defaultTracks[position] = trackType;
           }
         }
-      }
-    }
-
-    if (evtJson.defaultTracks) {
-      if (defaultTracks) {
-        defaultTracks = Object.assign(
-          defaultTracks,
-          evtJson.defaultTracks
-        );
-      } else {
-        defaultTracks = evtJson.defaultTracks;
       }
     }
 
@@ -1571,7 +1559,7 @@ class TiledPlot extends React.Component {
     const bottomDisplayed = ('bottom' in defaultTracks && hasVerticalComponent);
     const leftDisplayed = ('left' in defaultTracks && hasVerticalComponent);
     const rightDisplayed = ('right' in defaultTracks && hasVerticalComponent);
-    const centerDisplayed = ('center' in defaultTracks || hasVerticalComponent);
+    const centerDisplayed = (Object.keys(defaultTracks).length && ('center' in defaultTracks || hasVerticalComponent));
 
     const topLeftDiv = (
       <div
