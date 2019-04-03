@@ -287,7 +287,7 @@ const createApi = function api(context, pubSub) {
        *
        * @example
        *
-       *  var lineTrack = {
+       *  let lineTrack = {
        *   "server": "http://higlass.io/api/v1",
        *   "tilesetUid": "WtBJUYawQzS9M2WVIIHnlA",
        *   "datatype": "multivec",
