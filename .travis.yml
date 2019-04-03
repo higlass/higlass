@@ -28,18 +28,19 @@ deploy:
     skip_cleanup: true
     access_key_id: AKIAJEBDS3PGJWAMFIYA
     secret_access_key:
-      secure: Q/Av1blshd00BsEWFOq9Ey0iGTxyBLabHxEVdTUn6acXYYFp4HVZBG0SiWcK7oAnR4178Dv5CGa/fxByds1mefU/MJfxEnNOOP/rALhsvZ9hpqSqXJQSbAlHtcbKlAbtNUPTHyIoiggdrt+FZmzgdq4TcHINDGLSKjgveZl14tQ7iUjp21RD58aAVTnzHsXGYWdY2hwE5VtZ5k5QDMZMprWmir/hNFs1QiiXO+hBAlZ2vfmH33BROMaQncUCXWW6f5i5zHfT5wTXU/RS8+LuQl/uYFlc4C4sBLA+nxQ8nmUBlShxgMNaQ/m0N4hZEOqAwc75FNTC/EiYMr6tXwF+C5gw5y8ZwAjQJI7KKFPWMwrJo4KRY8xnxStd39C6gj7r3Wwo/ZxZjmUAGUn74naVdtxNDFlzID8LkqmsEk128fWtjAVpEG2AdQXvv6oRDJbsreCESFKz+KCDPrjyS07A5gCp/REojP4X3QME55tn5k9IwnmsKujWKw5EGsWv4x5NiIqR4x+tR8uuaXhNZsgPkbGA3KF3Cr/oB8ROjugpYRLoHhKu/q1SQi8GWS/k++CONB8ZICxnq4OPVMGCuWj4QEZfU6S+qkuVejcFbkTzxfZ7/t4uG4Q88jwirgVpcIn3AEaeA1nm157TNs2UL4tejVdr2eKaIHIf7UiZs3w9h3A=
-    bucket: higlass-docs-demo
+        secure: R4Pc/VerKw7RWhKqU8Oko63B+cAYzfEORlejNnJA8aKIkXrezZHWXaUmN27V5925cLS1Oi5nhxPn81J1jCSft9JkRNJEr/Q3IS0KE7wh7d+Z3vSbdRb+QONnxKkaWI9sDTSPvffkpeGaUfFTIiueEnRqVWDYqh3ssn1GXfF8+KhzcZTQaLHmf8PDT1B0eKEeFzYwtwl+fwQO1rEQDnctvU4RTg1wirSaeHhLxNeEB7DgorJ6xEic44xiCk9GBd8phNhSGr8Llr4Ku3LjRW/yZvC9vNxfQClp3+PN36MK6OHJ2DNKzRaPUE1Rmf11D8HqgAgJKVS1TMj3ttinYxKeltk+qkYFLFFKWt3bydFV03RVmxyof7MvgPNHIpgwVux0nsTE0lg2bpriRZGnhx4+9YI0u4QfX90TpgB+mBABaNwWtE7JHceLltlcBxwKBSUn774XRzLQUVVKhaq+ZD3XJLxI49L6ZDUjCR0rRkAhheDhPbWKhxAORxwO/FiNCIcPqdciM1fezydDj6mU2qLmUPsPqL0viqxJdr5tbToKBE95xeMiLmTMxTHqn2ALE3s9688hRpEhiuhcfU+0mySC1PdYy4Uek6JQwyQYFZNFSmfX6KM9MXfYw/agPhx/GtFCfQAkYTaWMxkekgMwUDnD3upOS8eDmNF3Enl+2CsfK9c=
+    bucket: higlass
+    upload-dir: docs
     local-dir: docs/_build/html
     acl: public_read
     on:
       branch: master
   - <<: *s3
-    upload-dir: develop
+    upload-dir: docs-develop
     on:
       branch: develop
   - <<: *s3
-    upload-dir: latest
+    upload-dir: docs-latest
     on:
       all_branches: true
   
