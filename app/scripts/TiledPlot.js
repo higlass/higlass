@@ -1521,7 +1521,28 @@ class TiledPlot extends React.Component {
       return undefined;
     }
 
-    let defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype];
+    const orientationToPositions = {
+      '1d-horizontal': ['top', 'bottom'],
+      '2d': ['center'],
+      '1d-vertical': ['left', 'right']
+    };
+
+    let defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype] || {};
+
+
+    if (evtJson.defaultTracks) {
+      for (const trackType of evtJson.defaultTracks) {
+        if (!TRACKS_INFO_BY_TYPE[trackType]) {
+          console.warn('unknown track type', trackType);
+        } else {
+          for (const position of orientationToPositions[
+            TRACKS_INFO_BY_TYPE[trackType
+            ].orientation]) {
+            defaultTracks[position] = trackType;
+          }
+        }
+      }
+    }
 
     if (evtJson.defaultTracks) {
       if (defaultTracks) {

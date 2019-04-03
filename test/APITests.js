@@ -62,10 +62,7 @@ describe('API Tests', () => {
           server: 'http://higlass.io/api/v1',
           tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
           datatype: 'linear-labels',
-          defaultTracks: {
-            top: 'linear-labels',
-            bottom: 'linear-labels'
-          },
+          defaultTracks: ['linear-labels'],
         }
       );
 

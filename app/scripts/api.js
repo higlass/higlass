@@ -291,10 +291,7 @@ const createApi = function api(context, pubSub) {
        *   "server": "http://higlass.io/api/v1",
        *   "tilesetUid": "WtBJUYawQzS9M2WVIIHnlA",
        *   "datatype": "multivec",
-       *   "defaultTracks": {
-       *       top: "horizontal-stacked-bar",
-       *       bottom: "horizontal-multivec"
-       *   },
+       *   "defaultTracks": ['horizontal-stacked-bar']
        * }
        *
        * window.hgApi.showAvailableTrackPositions(lineTrack);
