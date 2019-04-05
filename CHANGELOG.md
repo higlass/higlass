@@ -1,3 +1,7 @@
+## v1.5.3
+
+- Updated the docs deploy directory
+
 ## v1.5.1
 
 - Fixed UI hanging on mouseover of zoomed out matrix bug
