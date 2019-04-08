@@ -1,5 +1,6 @@
 ## v1.5.3
 
+- Specify default track types directly in `showAvailableTrackTypes` API 
 - Updated the docs deploy directory
 - Updated the javascript API example to include a full working html page
 

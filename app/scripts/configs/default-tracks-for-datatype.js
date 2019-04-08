@@ -19,10 +19,6 @@ export const DEFAULT_TRACKS_FOR_DATATYPE = {
     left: 'vertical-bar',
     right: 'vertical-bar',
   },
-  multivec: {
-    top: 'horizontal-multivec',
-    bottom: 'horizontal-multivec',
-  },
   'geo-json': {
     center: 'geo-json',
   },
