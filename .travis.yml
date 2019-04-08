@@ -12,6 +12,7 @@ before_script:
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
     - npm install --quiet -g gulp
+    - npm install -g jsdoc
     - npm install
 script:
     - ./travis_build_test.sh
@@ -26,20 +27,21 @@ deploy:
   - &s3
     provider: s3
     skip_cleanup: true
-    access_key_id: AKIAJEBDS3PGJWAMFIYA
+    access_key_id: AKIAZLS5EJLSAIAWUCX3
     secret_access_key:
-      secure: Q/Av1blshd00BsEWFOq9Ey0iGTxyBLabHxEVdTUn6acXYYFp4HVZBG0SiWcK7oAnR4178Dv5CGa/fxByds1mefU/MJfxEnNOOP/rALhsvZ9hpqSqXJQSbAlHtcbKlAbtNUPTHyIoiggdrt+FZmzgdq4TcHINDGLSKjgveZl14tQ7iUjp21RD58aAVTnzHsXGYWdY2hwE5VtZ5k5QDMZMprWmir/hNFs1QiiXO+hBAlZ2vfmH33BROMaQncUCXWW6f5i5zHfT5wTXU/RS8+LuQl/uYFlc4C4sBLA+nxQ8nmUBlShxgMNaQ/m0N4hZEOqAwc75FNTC/EiYMr6tXwF+C5gw5y8ZwAjQJI7KKFPWMwrJo4KRY8xnxStd39C6gj7r3Wwo/ZxZjmUAGUn74naVdtxNDFlzID8LkqmsEk128fWtjAVpEG2AdQXvv6oRDJbsreCESFKz+KCDPrjyS07A5gCp/REojP4X3QME55tn5k9IwnmsKujWKw5EGsWv4x5NiIqR4x+tR8uuaXhNZsgPkbGA3KF3Cr/oB8ROjugpYRLoHhKu/q1SQi8GWS/k++CONB8ZICxnq4OPVMGCuWj4QEZfU6S+qkuVejcFbkTzxfZ7/t4uG4Q88jwirgVpcIn3AEaeA1nm157TNs2UL4tejVdr2eKaIHIf7UiZs3w9h3A=
-    bucket: higlass-docs-demo
+      secure: cUzdgd+U/V2gi7OeUbUrd6QSC8u/ixrOYj3xvVao4G40PuxYMLpUqZ6kUF/7sAwGbugq9t8tHhhEaL1ByVDmH+F9LJG68tFbjsqQKaTo1OYYK49i9SeXLkgwnUacn8wYAT0DwMg/ghsiTjBXIRE+aL1JZX5j1lx0MhKNuit+1zP7TB4F+nltDGasZY2sPP+4CNJLmpF7Yrt2YIa+DGA3sFhsVqTLyVTtJwNAPS5gp7NgWj1dcfYxs/0PJ/SZRVblUXtjnAY353EdOjeeTSNDPnQhK5UUUVG83hP7iIC4r1zbaKxlgKE0aDbs8RLovrbS71r079m99aHMiALSs/cFNojcXRBerM/kgkqcQElMkkN2dJY9nGgu1WHJC3X36cXZ4d33OJxhAaP3fz9B7Vcw6X9BC1g/F+IsdozsNOmSqZSEva1Z2l09lIe5ZNxPEP/Yhu/2tWb+zFfPr5hwmsx9fsdXIqxtctYwA9ec83nj1pJdgYNfs9Ul0HJcQdB+T2G7qT3wA1HZEMjoKvsVw7pV8WHXeXJx+8VI01L6YMsOY2DIeB/maYgVcc4FoxU9dVKXpXN2FoHDNS98C4V5tuV+baIonaW451W2TTu5lPxtT7lKyRfRVh+C/w01byc64fG6AhanAwlO0m9KShoS6RQkpIUqx8OnQ+3F9YH+xYGEa6Q=
+    bucket: higlass
+    upload-dir: docs
     local-dir: docs/_build/html
     acl: public_read
     on:
       branch: master
   - <<: *s3
-    upload-dir: develop
+    upload-dir: docs-develop
     on:
       branch: develop
   - <<: *s3
-    upload-dir: latest
+    upload-dir: docs-latest
     on:
       all_branches: true
   
