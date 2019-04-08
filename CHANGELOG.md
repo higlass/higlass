@@ -1,6 +1,7 @@
 ## v1.5.3
 
 - Updated the docs deploy directory
+- Updated the javascript API example to include a full working html page
 
 ## v1.5.1
 
