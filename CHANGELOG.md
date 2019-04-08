@@ -1,3 +1,7 @@
+## v1.5.3
+
+- Updated the javascript API example to include a full working html page
+
 ## v1.5.1
 
 - Fixed UI hanging on mouseover of zoomed out matrix bug
