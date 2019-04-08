@@ -1,3 +1,8 @@
+## v1.5.3
+
+- Let HorizontalLineTracks look up tileset_info.tile_size
+  and tileset_info.bins_per_dimension
+
 ## v1.5.1
 
 - Fixed UI hanging on mouseover of zoomed out matrix bug
