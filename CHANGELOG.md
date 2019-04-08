@@ -1,5 +1,7 @@
 ## v1.5.3
 
+- Let HorizontalLineTracks look up tileset_info.tile_size
+  and tileset_info.bins_per_dimension
 - Specify default track types directly in `showAvailableTrackTypes` API 
 - Updated the docs deploy directory
 - Updated the javascript API example to include a full working html page
