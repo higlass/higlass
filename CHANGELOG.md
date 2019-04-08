@@ -3,6 +3,12 @@
 - Specify default track types directly in `showAvailableTrackTypes` API 
 - Updated the docs deploy directory
 - Updated the javascript API example to include a full working html page
+- Use default height for new tracks rather than min height. Fixes
+newly added gene annotations so that they show names without having
+to be resized
+- Fixed bug that was causing overlay tracks to not appear
+- Fixed horizontal-vector-heatmap error thrown bug by padding incomplete
+  incoming data arrays
 
 ## v1.5.1
 
@@ -12,10 +18,6 @@
 - Added a default track type for the chromsizes datatype
 - Fixed drag handler pubSub reference
 - Fixed #596: scrolling while zooming bug introduced in latest chrome
-- Use default height for new tracks rather than min height. Fixes
-newly added gene annotations so that they show names without having
-to be resized
-- Fixed bug that was causing overlay tracks to not appear
 
 ## v1.5.0
 
