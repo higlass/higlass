@@ -1030,7 +1030,7 @@ class TiledPlot extends React.Component {
             width: this.leftWidth + this.centerWidth + this.rightWidth,
             height: this.topHeight + this.centerHeight
             + this.bottomHeight
-            + 2 * this.props.verticalMargin,
+            + this.props.marginTop + this.props.marginBottom,
             track: overlayDef,
           };
         });

@@ -22,6 +22,7 @@ module.exports = (config) => {
       'node_modules/font-awesome/css/font-awesome.css',
       'build/hglib.css',
       'test/**/*.+(js|jsx)',
+      // 'test/OverlayTrackTests.js',
       // 'test/HorizontalMultivecTests.js',
       // 'test/HeatmapTests.js',
       // 'test/HorizontalHeatmapTests.js',
