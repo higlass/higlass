@@ -103,14 +103,32 @@ export const viewer = (element, viewConfig, options) => {
   return hg.api;
 };
 
-export const subviewer = (element, xDomain, yDomain, subviewConfig, options) => {
+export const subviewer = (element, [xMin, xMax, yMin, yMax], subviewConfig, options) => {
+  if (!subviewConfig.options.colorbarPosition) {
+    subviewConfig.options.colorbarPosition = 'hidden';
+    // If the colorbar were all SVG, I could change the colorbar Z position,
+    // and move the whole thing around, but apart from the handlebars,
+    // I think it's all part of the canvas, right?
+  }
+  if (!subviewConfig.options.labelTextOpacity) {
+    subviewConfig.options.labelTextOpacity = 0;
+    // TODO: There is still a rectangle in the lower right... Is there an easy way to just turn
+    // off the label? Or to make it transparent? In PixiTrack I see this:
+    //   if (!this.options || !this.options.labelPosition) {
+    //     // don't display the track label
+    //     this.labelText.opacity = 0;
+    //     return;
+    //   }
+  }
+  const id = 'arbitary-id';
   const viewConfig = {
     editable: false,
     zoomFixed: false,
     views: [
       {
-        initialXDomain: xDomain,
-        initialYDomain: yDomain,
+        uid: id,
+        initialXDomain: [xMin, xMax],
+        initialYDomain: [yMin, yMax],
         tracks: {
           center: [subviewConfig],
         },
@@ -125,5 +143,5 @@ export const subviewer = (element, xDomain, yDomain, subviewConfig, options) => 
       },
     ],
   };
-  return viewer(element, viewConfig, { bounded: true });
+  return [id, viewer(element, viewConfig, { bounded: true })];
 };
