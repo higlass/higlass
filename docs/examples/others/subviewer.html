@@ -20,14 +20,26 @@ const subviewConfig = {
   "type": "heatmap",
   "options": {
     "colorRange": ["white", "#000"],
-    "colorbarPosition": "topRight",
+    "colorbarPosition": "hidden",
+    // If the colorbar were all SVG, I change the colorbar Z position, and move the whole thing around,
+    // but apart from the handlebars, I think it's all part of the canvas, right?
     "heatmapValueScaling": "log",
     "scaleStartPercent": 0,
-    "scaleEndPercent": 1
+    "scaleEndPercent": 1,
+    "labelTextOpacity": 0,
+    // TODO: There is still a rectangle in the lower right... Is there an easy way to just turn
+    // off the label? Or to make it transparent? In PixiTrack I see this:
+    //   if (!this.options || !this.options.labelPosition) {
+    //     // don't display the track label
+    //     this.labelText.opacity = 0;
+    //     return;
+    //   }
+    "labelBackgroundOpacity": 0, // Does not do anything.
   }
 };
 window.hglib.subviewer(
   document.getElementById('demo'),
+  [0, 3100000000],
   subviewConfig,
 );
 </script>
