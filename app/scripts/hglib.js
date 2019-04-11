@@ -104,5 +104,25 @@ export const viewer = (element, viewConfig, options) => {
 };
 
 export const subviewer = (element, subviewConfig, options) => {
-  element.innerHTML = 'Hello World!';
+  const viewConfig = {
+    editable: false,
+    zoomFixed: false,
+    views: [
+      {
+        initialXDomain: [0, 3100000000],
+        tracks: {
+          center: [subviewConfig],
+        },
+        layout: {
+          w: 12,
+          h: 12,
+          x: 0,
+          y: 0,
+          moved: false,
+          static: false,
+        },
+      },
+    ],
+  };
+  return viewer(element, viewConfig, options);
 };

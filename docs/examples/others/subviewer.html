@@ -3,34 +3,34 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Subviewer &middot; HiGlass</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="/hglib.css">
-
-<style type="text/css">
-#demo {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  overflow: hidden;
-}
-</style>
 
 <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.2/pixi.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
 </head>
 <body>
-  <div id="demo"></div>
+  <div id="demo" style="width: 500px; height: 500px;"></div>
 </body>
 <script src='/hglib.js'></script>
 <script>
-const hgApi = hglib.subviewer(
+const subviewConfig = {
+  "server": "//higlass.io/api/v1",
+  "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+  "type": "heatmap",
+  "options": {
+    "colorRange": ["white", "black"],
+    "colorbarPosition": "topRight",
+    "heatmapValueScaling": "log",
+    "showMousePosition": false,
+    "scaleStartPercent": "0.00000",
+    "scaleEndPercent": "1.00000"
+  }
+};
+window.hglib.subviewer(
   document.getElementById('demo'),
-  {},
-  {},
+  subviewConfig,
+  { bounded: true },
 );
 </script>
 </html>
