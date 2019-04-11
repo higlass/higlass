@@ -36,7 +36,7 @@ const [hgId, hg] = window.hglib.subviewer(
 );
 setInterval(() => {
   t += 1;
-  hg.zoomTo(hgId, ...domain(t * 1000000), 0)
+  hg.zoomTo(hgId, ...domain(t * 1000000), 1)
 }, 100 /* ie: 10 per second */)
 </script>
 </html>
