@@ -102,3 +102,7 @@ export const viewer = (element, viewConfig, options) => {
 
   return hg.api;
 };
+
+export const subviewer = (element, subviewConfig, options) => {
+  element.innerHTML = 'Hello World!';
+};
