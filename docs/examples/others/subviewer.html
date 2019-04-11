@@ -19,18 +19,16 @@ const subviewConfig = {
   "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
   "type": "heatmap",
   "options": {
-    "colorRange": ["white", "black"],
+    "colorRange": ["white", "#000"],
     "colorbarPosition": "topRight",
     "heatmapValueScaling": "log",
-    "showMousePosition": false,
-    "scaleStartPercent": "0.00000",
-    "scaleEndPercent": "1.00000"
+    "scaleStartPercent": 0,
+    "scaleEndPercent": 1
   }
 };
 window.hglib.subviewer(
   document.getElementById('demo'),
   subviewConfig,
-  { bounded: true },
 );
 </script>
 </html>

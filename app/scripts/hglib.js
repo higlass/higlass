@@ -124,5 +124,5 @@ export const subviewer = (element, subviewConfig, options) => {
       },
     ],
   };
-  return viewer(element, viewConfig, options);
+  return viewer(element, viewConfig, { bounded: true });
 };
