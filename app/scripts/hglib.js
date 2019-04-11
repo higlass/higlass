@@ -103,13 +103,14 @@ export const viewer = (element, viewConfig, options) => {
   return hg.api;
 };
 
-export const subviewer = (element, domain, subviewConfig, options) => {
+export const subviewer = (element, xDomain, yDomain, subviewConfig, options) => {
   const viewConfig = {
     editable: false,
     zoomFixed: false,
     views: [
       {
-        initialXDomain: domain,
+        initialXDomain: xDomain,
+        initialYDomain: yDomain,
         tracks: {
           center: [subviewConfig],
         },
