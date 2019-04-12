@@ -3603,7 +3603,6 @@ class HiGlassComponent extends React.Component {
 
   wheelHandler(evt) {
     // The event forwarder wasn't written for React's SyntheticEvent
-
     const nativeEvent = evt.nativeEvent || evt;
     const isZoomFixed = (
       this.props.zoomFixed
