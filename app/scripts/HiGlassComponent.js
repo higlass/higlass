@@ -304,6 +304,7 @@ class HiGlassComponent extends React.Component {
     this.domEvent.register('scroll', document);
     this.domEvent.register('resize', window);
     this.domEvent.register('orientationchange', window);
+
     this.domEvent.register('wheel', window);
     this.domEvent.register('mousedown', window, true);
     this.domEvent.register('mouseup', window, true);
