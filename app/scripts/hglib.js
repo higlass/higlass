@@ -143,5 +143,8 @@ export const trackViewer = (element, [xMin, xMax, yMin, yMax], trackConfig, opti
       },
     ],
   };
-  return [id, viewer(element, viewConfig, { bounded: true })];
+  return {
+    id,
+    hgApi: viewer(element, viewConfig, { bounded: true })
+  };
 };

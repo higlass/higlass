@@ -26,17 +26,17 @@ const trackConfig = {
   }
 };
 let t = 0;
-function domain(t) {
-  return [t, t + 300000000, t + 10000000, t + 31000000];
+function domain(d) {
+  return [d, 300000000 + d, 10000000 + d, 31000000 + d];
 }
-const [hgId, hg] = window.hglib.trackViewer(
+const {id, hgApi} = window.hglib.trackViewer(
   document.getElementById('demo'),
   domain(t),
   trackConfig,
 );
 setInterval(() => {
   t += 1;
-  hg.zoomTo(hgId, ...domain(t * 1000000), 1)
+  hgApi.zoomTo(id, ...domain(t * 1000000), 1)
 }, 100 /* ie: 10 per second */)
 </script>
 </html>
