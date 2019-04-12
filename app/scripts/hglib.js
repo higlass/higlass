@@ -120,6 +120,10 @@ export const trackViewer = (element, [xMin, xMax, yMin, yMax], trackConfig, opti
     //     return;
     //   }
   }
+  if (!trackConfig.options.labelPosition) {
+    trackConfig.options.labelPosition = false;
+    // TODO: Is this best idiom?
+  }
   const id = 'arbitary-id';
   const viewConfig = {
     editable: false,
