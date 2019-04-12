@@ -38,7 +38,7 @@ Jupyter HiGlass Component
 
 To instantiate a HiGlass component within a Jupyter notebook, we first need
 to specify which data should be loaded. This can be accomplished with the 
-help of the ``hgflask.client`` module:
+help of the ``higlass.client`` module:
 
 .. code-block:: python
 
