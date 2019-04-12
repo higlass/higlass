@@ -14,7 +14,7 @@
 </body>
 <script src='/hglib.js'></script>
 <script>
-const subviewConfig = {
+const trackConfig = {
   "server": "//higlass.io/api/v1",
   "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
   "type": "heatmap",
@@ -29,10 +29,10 @@ let t = 0;
 function domain(t) {
   return [t, t + 300000000, t + 10000000, t + 31000000];
 }
-const [hgId, hg] = window.hglib.subviewer(
+const [hgId, hg] = window.hglib.trackViewer(
   document.getElementById('demo'),
   domain(t),
-  subviewConfig,
+  trackConfig,
 );
 setInterval(() => {
   t += 1;
