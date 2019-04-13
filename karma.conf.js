@@ -21,7 +21,7 @@ module.exports = (config) => {
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
       'node_modules/font-awesome/css/font-awesome.css',
       'build/hglib.css',
-      // 'test/**/*.+(js|jsx)',
+      'test/**/*.+(js|jsx)',
       // 'test/OverlayTrackTests.js',
       // 'test/HorizontalMultivecTests.js',
       // 'test/HeatmapTests.js',
