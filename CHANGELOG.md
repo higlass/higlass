@@ -1,3 +1,7 @@
+## v1.5.4
+
+- Fix the multiple component passive event issue by replacing the dom-event.js handlers with a class so that each component maintains its own context
+
 ## v1.5.3
 
 - Let HorizontalLineTracks look up tileset_info.tile_size
