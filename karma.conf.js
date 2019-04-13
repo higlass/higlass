@@ -40,7 +40,7 @@ module.exports = (config) => {
       // 'test/TiledPixiTrackTests.js',
       // 'test/ViewManipulationTests.js',
       // 'test/ChromSizesTests.js',
-      'test/ViewportProjectionTests.js',
+      // 'test/ViewportProjectionTests.js',
       // 'test/APITests.js',
       // 'test/AddAndRemoveViewconfTests.js',
       // 'test/HiGlassComponentTest.js',
