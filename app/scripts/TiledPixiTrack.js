@@ -222,8 +222,6 @@ class TiledPixiTrack extends PixiTrack {
    *
    * @example
    *
-   * ..code-block::
-   *
    *  trackObj.on('dataChanged', (newData) => {
    *   console.log('newData:', newData)
    *  });
