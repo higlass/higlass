@@ -395,7 +395,7 @@ const createApi = function api(context, pubSub) {
         end1Abs,
         start2Abs,
         end2Abs,
-        animateTime = 0,
+        animateTime = 1,
       ) {
         self.zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime);
       },
