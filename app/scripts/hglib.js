@@ -106,23 +106,9 @@ export const viewer = (element, viewConfig, options) => {
 export const trackViewer = (element, [xMin, xMax, yMin, yMax], trackConfig, options) => {
   if (!trackConfig.options.colorbarPosition) {
     trackConfig.options.colorbarPosition = 'hidden';
-    // If the colorbar were all SVG, I could change the colorbar Z position,
-    // and move the whole thing around, but apart from the handlebars,
-    // I think it's all part of the canvas, right?
-  }
-  if (!trackConfig.options.labelTextOpacity) {
-    trackConfig.options.labelTextOpacity = 0;
-    // TODO: There is still a rectangle in the lower right... Is there an easy way to just turn
-    // off the label? Or to make it transparent? In PixiTrack I see this:
-    //   if (!this.options || !this.options.labelPosition) {
-    //     // don't display the track label
-    //     this.labelText.opacity = 0;
-    //     return;
-    //   }
   }
   if (!trackConfig.options.labelPosition) {
-    trackConfig.options.labelPosition = false;
-    // TODO: Is this best idiom?
+    trackConfig.options.labelPosition = 'hidden';
   }
   const id = 'arbitary-id';
   const viewConfig = {
