@@ -8,7 +8,7 @@ addons:
 before_install:
     # Make sure we have a version which supports "npm ci".
     # https://github.com/travis-ci/travis-ci/issues/4653#issuecomment-379397837
-    - before_install: dpkg --compare-versions `npm -v` ge 5.8 || npm i -g npm@^5.8
+    - dpkg --compare-versions `npm -v` ge 5.8 || npm i -g npm@^5.8
 install:
     - npm install -g xvfb-maybe
 before_script:
