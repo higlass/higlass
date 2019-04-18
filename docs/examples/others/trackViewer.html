@@ -34,9 +34,10 @@ const {id, hgApi} = window.hglib.trackViewer(
   domain(t),
   trackConfig,
 );
+var urlParams = new URLSearchParams(window.location.search);
 setInterval(() => {
   t += 1;
-  hgApi.zoomTo(id, ...domain(t * 1000000), 1)
-}, 100 /* ie: 10 per second */)
+  hgApi.zoomTo(id, ...domain(t * 1000000), urlParams.get('animateTime'))
+}, urlParams.get('delay') || 100 /* ie: 10 per second */)
 </script>
 </html>
