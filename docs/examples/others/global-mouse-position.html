@@ -2,14 +2,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HiGlass</title>
+<title>Global Mouse Position &middot; HiGlass</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link rel="stylesheet" href="hglib.css">
+<link rel="stylesheet" href="/hglib.css">
 
 <style type="text/css">
-#demo {
+#left {
+  position: absolute;
+  top: 0;
+  right: 50vw;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+}
+#demo1 {
   position: absolute;
   left: 1rem;
+  top: 1rem;
+  bottom: 1rem;
+  right: 0.5rem;
+  overflow: hidden;
+}
+#right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 50vw;
+  overflow: hidden;
+}
+#demo2 {
+  position: absolute;
+  left: 0.5rem;
   top: 1rem;
   bottom: 1rem;
   right: 1rem;
@@ -23,9 +47,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
 </head>
 <body>
-  <div id="demo"></div>
+  <div id="left">
+    <div id="demo1"></div>
+  </div>
+  <div id="right">
+    <div id="demo2"></div>
+  </div>
 </body>
-<script src='hglib.js'></script>
+<script src='/hglib.js'></script>
 <script>
 const viewConfig = {
   zoomFixed: false,
@@ -33,7 +62,7 @@ const viewConfig = {
     {
       layout: {
         w: 12,
-        h: 7,
+        h: 12,
         x: 0,
         y: 0,
         i: 'aa',
@@ -41,15 +70,8 @@ const viewConfig = {
         static: false
       },
       uid: 'aa',
-      initialYDomain: [
-        2534823997.9776945,
-        2547598956.834603
-      ],
-      autocompleteSource: '/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
-      initialXDomain: [
-        2521015726.4619913,
-        2558682921.8435397
-      ],
+      initialYDomain: [0, 2547598956],
+      initialXDomain: [0, 2547598956],
       tracks: {
         left: [],
         top: [
@@ -59,7 +81,7 @@ const viewConfig = {
             position: 'top',
             server: 'http://higlass.io/api/v1',
             type: 'horizontal-gene-annotations',
-            height: 48,
+            height: 54,
             options: {
               labelColor: 'black',
               plusStrandColor: 'black',
@@ -70,6 +92,7 @@ const viewConfig = {
               trackBorderWidth: 0,
               trackBorderColor: 'black',
               showMousePosition: true,
+              showGlobalMousePosition: true,
               mousePositionColor: '#000000',
               geneAnnotationHeight: 10,
               geneLabelPosition: 'outside',
@@ -97,6 +120,7 @@ const viewConfig = {
               trackBorderColor: 'black',
               labelTextOpacity: 0.4,
               showMousePosition: true,
+              showGlobalMousePosition: true,
               mousePositionColor: '#000000',
               showTooltip: false
             },
@@ -122,6 +146,7 @@ const viewConfig = {
               trackBorderColor: 'black',
               labelTextOpacity: 0.4,
               showMousePosition: true,
+              showGlobalMousePosition: true,
               mousePositionColor: '#000000',
               showTooltip: false
             },
@@ -147,6 +172,7 @@ const viewConfig = {
               trackBorderColor: 'black',
               labelTextOpacity: 0.4,
               showMousePosition: true,
+              showGlobalMousePosition: true,
               mousePositionColor: '#000000',
               showTooltip: false
             },
@@ -172,6 +198,7 @@ const viewConfig = {
               trackBorderColor: 'black',
               labelTextOpacity: 0.4,
               showMousePosition: true,
+              showGlobalMousePosition: true,
               mousePositionColor: '#000000',
               showTooltip: false
             },
@@ -190,6 +217,7 @@ const viewConfig = {
               fontSize: 11,
               fontIsLeftAligned: true,
               showMousePosition: true,
+              showGlobalMousePosition: true,
               mousePositionColor: '#000000'
             },
             name: 'Chromosome Labels (hg19)'
@@ -198,48 +226,29 @@ const viewConfig = {
         right: [],
         center: [
           {
-            uid: 'center',
+            uid: 'c1',
             type: 'combined',
+            height: 200,
             contents: [
               {
-                name: '[hicnorm] Rao et al. (2014) GM12878 MboI Primary',
-                created: '2017-05-17T13:37:06.974876Z',
-                server: 'http://higlass.io/api/v1',
-                tilesetUid: 'dVBREuC2SvO01uXYMUh2aQ',
-                uid: 'Yqetzqw6Qfy-hREAJhAXEA',
+                server: '//higlass.io/api/v1',
+                tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
                 type: 'heatmap',
+                uid: 'heatmap',
                 options: {
-                  backgroundColor: '#eeeeee',
-                  labelPosition: 'topLeft',
-                  labelTextOpacity: 0.4,
+                  labelPosition: 'bottomRight',
                   colorRange: [
                     'white',
                     'rgba(245,166,35,1.0)',
                     'rgba(208,2,27,1.0)',
                     'black'
                   ],
-                  maxZoom: null,
-                  colorbarPosition: 'topRight',
-                  trackBorderWidth: 0,
-                  trackBorderColor: 'black',
-                  heatmapValueScaling: 'log',
                   showMousePosition: true,
-                  mousePositionColor: '#000000',
-                  showTooltip: true,
-                  name: '[hicnorm] Rao et al. (2014) GM12878 MboI Primary',
-                  scaleStartPercent: '0.00000',
-                  scaleEndPercent: '1.00000',
-                  mousePositionColor: 'black',
-                  showMousePosition: true,
-                  showMousePositionGlobally: true,
+                  showGlobalMousePosition: true,
+                  mousePositionColor: 'black'
                 },
-                width: 100,
-                height: 100,
-                transforms: [],
-                position: 'center'
               }
             ],
-            position: 'center'
           }
         ],
         bottom: [],
@@ -258,8 +267,6 @@ const viewConfig = {
     }
   ],
   editable: true,
-  viewEditable: true,
-  tracksEditable: true,
   exportViewUrl: '/api/v1/viewconfs',
   zoomLocks: {
     locksByViewUid: {},
@@ -295,16 +302,22 @@ const viewConfig = {
   }
 };
 
-const hgApi = hglib.viewer(
-  document.getElementById('demo'),
+const hgApi1 = hglib.viewer(
+  document.getElementById('demo1'),
   viewConfig,
-  { bounded: true, editable: false },
+  {
+    bounded: true,
+    globalMousePosition: true,
+  },
 );
 
-hgApi.setBroadcastMousePositionGlobally(true);
-
-hgApi.on('viewConfig', () => {
-  console.log('View Config changed');
-});
+const hgApi2 = hglib.viewer(
+  document.getElementById('demo2'),
+  viewConfig,
+  {
+    bounded: true,
+    globalMousePosition: true,
+  },
+);
 </script>
 </html>

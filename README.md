@@ -1,15 +1,16 @@
 [![Build Status](https://travis-ci.org/higlass/higlass.svg?branch=master)](https://travis-ci.org/higlass/higlass)
-[![Live Docs](https://img.shields.io/badge/docs-live-red.svg?colorB=0f5d92)](https://docs.higlass.io/)
+[![Live Docs](https://img.shields.io/badge/docs-live-red.svg?colorB=0f9256)](https://docs.higlass.io/)
 [![DOI](https://zenodo.org/badge/56026057.svg)](https://zenodo.org/badge/latestdoi/56026057)
+[![Twitter](https://img.shields.io/badge/news-twitter-red.svg?colorB=6930bf)](https://twitter.com/higlass_io)
 [![Slack](https://now-examples-slackin-zukqykuatj.now.sh/badge.svg)](https://now-examples-slackin-zukqykuatj.now.sh/)
 
 
 ### Introduction
 
-HiGlass is a web-based viewer for genome interaction maps
-featuring synchronized navigation of multiple views as well as continuous zooming and panning
+HiGlass is a web-based viewer for datasets too large to view at once.
+It features synchronized navigation of multiple views as well as continuous zooming and panning
 for navigation across genomic loci and resolutions. It supports visual comparison of
-Hi-C and other genomic data from different experimental conditions and can be used to efficiently
+genomic (e.g., Hi-C, ChIP-seq, or bed annotations) and other data (e.g., geographic maps, gigapixel images, or abstract 1D and 2D sequential data) from different experimental conditions and can be used to efficiently
 identify salient outcomes of experimental perturbations, generate new hypotheses, and share
 the results with the community.
 

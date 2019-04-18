@@ -9,7 +9,7 @@ import { colorToHex, showMousePosition } from './utils';
 class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
   constructor(context, options) {
     super(context, options);
-    const { animate } = context;
+    const { animate, isShowGlobalMousePosition } = context;
 
     this.constIndicator = new PIXI.Graphics();
     this.pMain.addChild(this.constIndicator);
@@ -19,11 +19,14 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
 
     this.animate = animate;
     this.options = options;
+    this.isShowGlobalMousePosition = isShowGlobalMousePosition;
 
     this.pubSubs = [];
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.isShowGlobalMousePosition()
+      );
     }
   }
 
@@ -38,7 +41,9 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     this.options = options;
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.isShowGlobalMousePosition()
+      );
     }
 
     if (!this.options.showMousePosition && this.hideMousePosition) {
@@ -110,31 +115,38 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
       return;
     }
 
+    const margin = this.options.axisMargin || 0;
 
-    if (this.options.axisPositionHorizontal === 'left'
-            || this.options.axisPositionVertical === 'top') {
+    if (
+      this.options.axisPositionHorizontal === 'left'
+      || this.options.axisPositionVertical === 'top'
+    ) {
       // left axis are shown at the beginning of the plot
-
-      this.axis.pAxis.position.x = this.position[0];
+      this.axis.pAxis.position.x = this.position[0] + margin;
       this.axis.pAxis.position.y = this.position[1];
 
       this.axis.drawAxisRight(valueScale, this.dimensions[1]);
-    } else if (this.options.axisPositionHorizontal === 'outsideLeft'
-            || this.options.axisPositionVertical === 'outsideTop') {
+    } else if (
+      this.options.axisPositionHorizontal === 'outsideLeft'
+      || this.options.axisPositionVertical === 'outsideTop'
+    ) {
       // left axis are shown at the beginning of the plot
-
-      this.axis.pAxis.position.x = this.position[0];
+      this.axis.pAxis.position.x = this.position[0] + margin;
       this.axis.pAxis.position.y = this.position[1];
 
       this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
-    } else if (this.options.axisPositionHorizontal === 'right'
-            || this.options.axisPositionVertical === 'bottom') {
-      this.axis.pAxis.position.x = this.position[0] + this.dimensions[0];
+    } else if (
+      this.options.axisPositionHorizontal === 'right'
+      || this.options.axisPositionVertical === 'bottom'
+    ) {
+      this.axis.pAxis.position.x = this.position[0] + this.dimensions[0] - margin;
       this.axis.pAxis.position.y = this.position[1];
       this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
-    } else if (this.options.axisPositionHorizontal === 'outsideRight'
-            || this.options.axisPositionVertical === 'outsideBottom') {
-      this.axis.pAxis.position.x = this.position[0] + this.dimensions[0];
+    } else if (
+      this.options.axisPositionHorizontal === 'outsideRight'
+      || this.options.axisPositionVertical === 'outsideBottom'
+    ) {
+      this.axis.pAxis.position.x = this.position[0] + this.dimensions[0] - margin;
       this.axis.pAxis.position.y = this.position[1];
       this.axis.drawAxisRight(valueScale, this.dimensions[1]);
     }

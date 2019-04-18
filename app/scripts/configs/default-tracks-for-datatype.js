@@ -1,4 +1,11 @@
 export const DEFAULT_TRACKS_FOR_DATATYPE = {
+  chromsizes: {
+    center: '2d-chromosome-grid',
+    top: 'horizontal-chromosome-labels',
+    left: 'vertical-chromosome-labels',
+    bottom: 'horizontal-chromosome-labels',
+    right: 'vertical-chromosome-labels',
+  },
   matrix: {
     center: 'heatmap',
     top: 'horizontal-heatmap',

@@ -48,9 +48,14 @@ the root-level metadata. The sections below will delve into views and tracks.
 
 .. code-block:: javascript
 
-  editable: [true | false]
+  editable: [true | false] (default: true)
+  viewEditable: [true | false] (default: true)
+  tracksEditable: [true | false] (default: true)
 
-Specifies whether this viewconf will have a view header.
+The property ``viewEditable`` specifies whether this viewconf will have a view
+header and the property ``viewEditable`` determines if tracks have a context
+menu. ``editable`` will force both properties to either be ``true`` or
+``false``.
 
 .. code-block:: javascript
 
@@ -256,6 +261,12 @@ Each track can specify a set of options defining how it will be drawn.
 Some of the more important ones are:
 
 -  ``valueScaleMin`` and ``valueScaleMax``: control the minimum and maximum values rendered by the track. If either is not defined, then it will be set according to the visible data (i.e. the minimum value of the scale will be the minimum value in the visible data and the same for the maximum)
+
+- ``showMousePosition``: enables a visual crosshair at the mouse cursor's location across the track
+
+- ``labelLeftMargin``, ``labelRightMargin``, ``labelTopMargin``, and ``labelBottomMargin``: add a margin to the track label. The effect is identical to CSS margin, i.e., ``labelLeftMargin === 10`` will push the label 10px to the right if ``labelPosition === 'left'``.
+
+- ``axisMargin``: sets a margin to the very end of the plot. For example, if ``axisPositionHorizontal === 'left'`` and ``axisMargin === 10`` then the axis will be drawn 10px from the left side of the track.
 
 Overlay Tracks
 ==============

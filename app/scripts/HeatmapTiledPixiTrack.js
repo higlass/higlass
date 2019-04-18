@@ -53,6 +53,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       svgElement,
       onTrackOptionsChanged,
       onMouseMoveZoom,
+      isShowGlobalMousePosition
     } = context;
 
     this.pubSub = pubSub;
@@ -62,6 +63,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.scaleBrush = brushY();
 
     this.onTrackOptionsChanged = onTrackOptionsChanged;
+    this.isShowGlobalMousePosition = isShowGlobalMousePosition;
 
     // Graphics for drawing the colorbar
     this.pColorbarArea = new PIXI.Graphics();
@@ -106,7 +108,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.isShowGlobalMousePosition()
+      );
     }
 
     this.prevOptions = JSON.stringify(options);
@@ -313,13 +317,15 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // hopefully draw isn't rerendering all the tiles
     // this.drawColorbar();
 
-    if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
-    }
-
-    if (this.options && !this.options.showMousePosition && this.hideMousePosition) {
+    if (this.hideMousePosition) {
       this.hideMousePosition();
       this.hideMousePosition = undefined;
+    }
+
+    if (this.options && this.options.showMousePosition && !this.hideMousePosition) {
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.isShowGlobalMousePosition()
+      );
     }
   }
 
@@ -871,11 +877,23 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const xDomain = [this._xScale.invert(x), this._xScale.invert(x + width)];
     const yDomain = [this._yScale.invert(y), this._yScale.invert(y + height)];
 
+    // we need to limit the domain of the requested region
+    // to the bounds of the data
+    const limitedXDomain = [
+      Math.max(xDomain[0], this.tilesetInfo.min_pos[0]),
+      Math.min(xDomain[1], this.tilesetInfo.max_pos[0])
+    ];
+
+    const limitedYDomain = [
+      Math.max(yDomain[0], this.tilesetInfo.min_pos[1]),
+      Math.min(yDomain[1], this.tilesetInfo.max_pos[1])
+    ];
+
     // the bounds of the currently visible region in bins
-    const leftXBin = Math.floor(xDomain[0] / tileRes);
-    const leftYBin = Math.floor(yDomain[0] / tileRes);
-    const binWidth = Math.ceil((xDomain[1] - xDomain[0]) / tileRes);
-    const binHeight = Math.ceil((yDomain[1] - yDomain[0]) / tileRes);
+    const leftXBin = Math.floor(limitedXDomain[0] / tileRes);
+    const leftYBin = Math.floor(limitedYDomain[0] / tileRes);
+    const binWidth = Math.max(0, Math.ceil((limitedXDomain[1] - limitedXDomain[0]) / tileRes));
+    const binHeight = Math.max(0, Math.ceil((limitedYDomain[1] - limitedYDomain[0]) / tileRes));
 
     const out = ndarray(
       new Array(binHeight * binWidth).fill(NaN),

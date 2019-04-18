@@ -46,6 +46,44 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
+       * Enable or disable broadcasting the mouse position globally
+       * @param {boolean} isBroadcastMousePositionGlobally - If `true` the mouse
+       *   position will be broadcasted globally.
+       */
+      setBroadcastMousePositionGlobally(
+        isBroadcastMousePositionGlobally = false
+      ) {
+        self.setBroadcastMousePositionGlobally(
+          isBroadcastMousePositionGlobally
+        );
+      },
+
+      /**
+       * Enable or disable showing the global mouse position
+       * @param {boolean} isShowGlobalMousePosition - If `true` the global mouse
+       *   position will be shown for any track that has
+       *   `options.showMousePosition = true`.
+       */
+      setShowGlobalMousePosition(isShowGlobalMousePosition = false) {
+        self.setShowGlobalMousePosition(
+          isShowGlobalMousePosition
+        );
+      },
+
+      /**
+       * Convenience function to enable / disable the global mouse position
+       * @description This function is equivalent to calling
+       *   `setBroadcastMousePositionGlobally()` and
+       *   `setShowGlobalMousePosition()`.
+       * @param {boolean} isGlobalMousePosition - If `true` the global mouse
+       *   position will be shown and broadcasted.
+       */
+      setGlobalMousePosition(isGlobalMousePosition = false) {
+        self.setBroadcastMousePositionGlobally(isGlobalMousePosition);
+        self.setShowGlobalMousePosition(isGlobalMousePosition);
+      },
+
+      /**
        * Set an auth header to be included with all tile requests.
        *
        * @param {string} newHeader The contensts of the header to be included.
@@ -417,6 +455,7 @@ const createApi = function api(context, pubSub) {
        * Get a Promise which returns a Blob containing a PNG for the current view.
        * It's possible to get string of the PNG bytes from that:
        *
+       * @example
        * hgApi.exportAsPngBlobPromise().then(function(blob) {
        *   var reader = new FileReader();
        *   reader.addEventListener("loadend", function() {

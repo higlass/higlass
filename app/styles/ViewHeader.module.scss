@@ -111,7 +111,10 @@ $unit: 24px;
   }
 }
 
-.multitrack-header-nav-list {
+.multitrack-header-nav-list,
+// Only required because the stupid Bootstrap library overwrites the display
+// property otherwise
+.multitrack-header > nav {
   display: flex;
 }
 

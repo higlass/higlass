@@ -22,7 +22,12 @@ const TICK_COLOR = 0x777777;
 class HorizontalChromosomeLabels extends PixiTrack {
   constructor(context, options) {
     super(context, options);
-    const { dataConfig, animate, chromInfoPath } = context;
+    const {
+      dataConfig,
+      animate,
+      chromInfoPath,
+      isShowGlobalMousePosition
+    } = context;
 
     this.searchField = null;
     this.chromInfo = null;
@@ -35,6 +40,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.tickTexts = {};
 
     this.options = options;
+    this.isShowGlobalMousePosition = isShowGlobalMousePosition;
 
     this.textFontSize = 12;
     this.textFontFamily = 'Arial';
@@ -63,7 +69,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.pubSubs = [];
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.isShowGlobalMousePosition()
+      );
     }
 
     let chromSizesPath = chromInfoPath;
@@ -134,7 +142,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
     super.rerender(options, force);
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.isShowGlobalMousePosition()
+      );
     }
 
     if (!this.options.showMousePosition && this.hideMousePosition) {

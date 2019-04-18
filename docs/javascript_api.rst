@@ -59,10 +59,23 @@ HiGlassComponent inside the element ``element`` with a viewconfig passed in as
 ``config``. If ``config`` is a string, it is interpreted as a url and used to
 try to fetch a remote viewconfig.
 
-The ``options`` parameter can currently only specify the ``bounded`` property
-which tells the HiGlass component to fill all the space in the containing
-element. Note that if ``bounded`` is set to true, then ``element`` must have a
-fixed height.
+The ``options`` parameter can have the following properties:
+
+- ``bounded``: tells the HiGlass component to fill all the space in the containing element. Note that if ``bounded`` is set to true, then ``element`` must have a fixed height
+
+- ``pixelPreciseMarginPadding``: if ``true`` apply pixel precise view height, padding, and margin.
+
+- ``containerPaddingX`` and ``containerPaddingY``: x and y padding react grid layout containers. The x padding resembles left and right padding of the entire react grid layout container, i.e., it can be interpreted as the global padding of an HiGlass instance. The y padding stands for the top and bottom padding but in case that the HiGlass view is not bound it will only add padding to the top. You can find out more about the container padding at https://github.com/STRML/react-grid-layout#grid-layout-props.
+
+- ``viewMarginTop``, ``viewMarginBottom``, ``viewMarginLeft``, and ``viewMarginRight``: top, bottom, left, right margin between **views** in pixels. The margin area *is not interactive*, i.e., dragging on the margin area *will not change* the location of the view!
+
+- ``viewPaddingTop``, ``viewPaddingBottom``, ``viewPaddingLeft``, and ``viewPaddingRight``: top, bottom, left, right padding between **views** in pixels. The padding area *is interactive*, i.e., dragging on the margin area *will change* the location of the view!
+
+- ``broadcastMousePositionGlobally``: if ``true`` the relative mouse position of this HiGlass instances (in data coordinates) will be broadcasted globally. This allows you to show the global mouse position in another HiGlass instance within the same browser tab or another browser tab.
+
+- ``showGlobalMousePosition``: if ``true`` any globally broadcasted mouse position will be shown for all tracks that have ``options.showMousePosition = true``.
+
+- ``globalMousePosition``: if ``true`` this will turn on ``broadcastMousePositionGlobally`` and ``showGlobalMousePosition``. This is basically a convenience option to quickly broadcast and show global mouse positions.
 
 The function returns an instance of the public API of a HiGlass component.
 
@@ -186,6 +199,12 @@ API Functions
 .. js:autofunction:: shareViewConfigAsLink
 
 .. js:autofunction:: public.on
+
+.. js:autofunction:: setBroadcastMousePositionGlobally
+
+.. js:autofunction:: setShowGlobalMousePosition
+
+.. js:autofunction:: setGlobalMousePosition
 
 TiledPixiTrack Functions
 ========================
