@@ -1534,10 +1534,16 @@ class TiledPlot extends React.Component {
         if (!TRACKS_INFO_BY_TYPE[trackType]) {
           console.warn('unknown track type', trackType);
         } else {
-          for (const position of orientationToPositions[
-            TRACKS_INFO_BY_TYPE[trackType
-            ].orientation]) {
-            defaultTracks[position] = trackType;
+          const orientation = orientationToPositions[TRACKS_INFO_BY_TYPE[trackType]];
+          if (!orientation) {
+            console.warn('Unknown orientation:', orientation,
+              'Should be one of', Object.keys(orientationToPositions));
+          } else {
+            for (const position of orientationToPositions[
+              TRACKS_INFO_BY_TYPE[trackType
+              ].orientation]) {
+              defaultTracks[position] = trackType;
+            }
           }
         }
       }
