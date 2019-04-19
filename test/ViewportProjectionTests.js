@@ -7,6 +7,10 @@ import {
   waitForTransitionsFinished,
 } from '../app/scripts/utils';
 
+import {
+  topAxisOnly,
+} from './view-configs';
+
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 import viewConfig from './view-configs/viewport-projection';
@@ -15,8 +19,12 @@ describe('Simple HiGlassComponent', () => {
   let api;
   let div;
 
+  let div0;
+  let api0;
+
   describe('Viewport projection tests', () => {
     beforeEach(() => {
+      [div0, api0] = createElementAndApi(topAxisOnly, {}, 600, 100);
       [div, api] = createElementAndApi(viewConfig);
     });
 
@@ -45,10 +53,10 @@ describe('Simple HiGlassComponent', () => {
           deltaY: 0,
           deltaZ: 0,
           deltaMode: 0,
-          clientX: 343,
-          clientY: 246,
-          screenX: -1238,
-          screenY: 343,
+          clientX: 262,
+          clientY: 572,
+          screenX: 284,
+          screenY: 696,
           view: window,
           bubbles: true,
           cancelable: true
@@ -82,10 +90,10 @@ describe('Simple HiGlassComponent', () => {
           deltaY: -4.01,
           deltaZ: 0,
           deltaMode: 0,
-          clientX: 343,
-          clientY: 246,
-          screenX: -1238,
-          screenY: 343,
+          clientX: 262,
+          clientY: 572,
+          screenX: 284,
+          screenY: 696,
           view: window,
           bubbles: true,
           cancelable: true
@@ -117,6 +125,11 @@ describe('Simple HiGlassComponent', () => {
       removeDiv(div);
       api = undefined;
       div = undefined;
+
+      api0.destroy();
+      removeDiv(div0);
+      api0 = undefined;
+      div0 = undefined;
     });
   });
 });

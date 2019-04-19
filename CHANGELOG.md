@@ -1,6 +1,29 @@
+## v1.5.4
+
+- Fix the multiple component passive event issue by replacing the dom-event.js handlers with a class so that each component maintains its own context
+
+## v1.5.3
+
+- Let HorizontalLineTracks look up tileset_info.tile_size
+  and tileset_info.bins_per_dimension
+- Specify default track types directly in `showAvailableTrackTypes` API 
+- Updated the docs deploy directory
+- Updated the javascript API example to include a full working html page
+- Use default height for new tracks rather than min height. Fixes
+newly added gene annotations so that they show names without having
+to be resized
+- Fixed bug that was causing overlay tracks to not appear
+- Fixed horizontal-vector-heatmap error thrown bug by padding incomplete
+  incoming data arrays
+
 ## v1.5.1
 
+- Fixed UI hanging on mouseover of zoomed out matrix bug
 - Fixed #588: horizontal heatmap zoom limit bug
+- Reset value scale locks when new viewconf is added
+- Added a default track type for the chromsizes datatype
+- Fixed drag handler pubSub reference
+- Fixed #596: scrolling while zooming bug introduced in latest chrome
 
 ## v1.5.0
 

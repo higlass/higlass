@@ -4,10 +4,6 @@ import slugid from 'slugid';
 
 import withPubSub from './hocs/with-pub-sub';
 
-import {
-  DEFAULT_TRACKS_FOR_DATATYPE,
-} from './configs';
-
 // Styles
 import '../styles/DragListeningDiv.module.scss';
 
@@ -37,21 +33,15 @@ class DragListeningDiv extends React.Component {
 
           const evtJson = this.props.draggingHappening;
 
-          if (!(evtJson.datatype in DEFAULT_TRACKS_FOR_DATATYPE)) {
-            console.warn('unknown track type:', evtJson);
-          }
-
-          const defaultType = DEFAULT_TRACKS_FOR_DATATYPE[evtJson.datatype][this.props.position];
-
           const newTrack = {
-            type: defaultType,
+            type: this.props.defaultTrackType,
             uid: slugid.nice(),
             tilesetUid: evtJson.tilesetUid,
             server: evtJson.server,
           };
 
           this.props.onTrackDropped(newTrack);
-          this.pubSub.publish('trackDropped', newTrack);
+          this.props.pubSub.publish('trackDropped', newTrack);
         }}
         style={Object.assign({
           background,

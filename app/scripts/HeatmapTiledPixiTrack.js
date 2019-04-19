@@ -877,11 +877,23 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const xDomain = [this._xScale.invert(x), this._xScale.invert(x + width)];
     const yDomain = [this._yScale.invert(y), this._yScale.invert(y + height)];
 
+    // we need to limit the domain of the requested region
+    // to the bounds of the data
+    const limitedXDomain = [
+      Math.max(xDomain[0], this.tilesetInfo.min_pos[0]),
+      Math.min(xDomain[1], this.tilesetInfo.max_pos[0])
+    ];
+
+    const limitedYDomain = [
+      Math.max(yDomain[0], this.tilesetInfo.min_pos[1]),
+      Math.min(yDomain[1], this.tilesetInfo.max_pos[1])
+    ];
+
     // the bounds of the currently visible region in bins
-    const leftXBin = Math.floor(xDomain[0] / tileRes);
-    const leftYBin = Math.floor(yDomain[0] / tileRes);
-    const binWidth = Math.ceil((xDomain[1] - xDomain[0]) / tileRes);
-    const binHeight = Math.ceil((yDomain[1] - yDomain[0]) / tileRes);
+    const leftXBin = Math.floor(limitedXDomain[0] / tileRes);
+    const leftYBin = Math.floor(limitedYDomain[0] / tileRes);
+    const binWidth = Math.max(0, Math.ceil((limitedXDomain[1] - limitedXDomain[0]) / tileRes));
+    const binHeight = Math.max(0, Math.ceil((limitedYDomain[1] - limitedYDomain[0]) / tileRes));
 
     const out = ndarray(
       new Array(binHeight * binWidth).fill(NaN),
@@ -1013,6 +1025,19 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const pseudocount = 0;
 
     this.renderingTiles.add(tile.tileId);
+
+    if (this.tilesetInfo.tile_size) {
+      if (tile.tileData.dense.length < this.tilesetInfo.tile_size) {
+        // we haven't gotten a full tile from the server so we want to pad
+        // it with nan values
+        const newArray = new Float32Array(this.tilesetInfo.tile_size);
+
+        newArray.fill(NaN);
+        newArray.set(tile.tileData.dense);
+
+        tile.tileData.dense = newArray;
+      }
+    }
 
     tileProxy.tileDataToPixData(
       tile,

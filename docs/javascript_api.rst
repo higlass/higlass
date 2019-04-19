@@ -12,22 +12,47 @@ javascript and css files:
 
 .. code-block:: html
 
-    <link rel="stylesheet" href="https://unpkg.com/higlass@1.2.6/dist/hglib.css" type="text/css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
+ <!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
 
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <link rel="stylesheet" href="hglib.css">
 
-    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.1/pixi.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/higlass@1.5.2/dist/hglib.css" type="text/css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
 
-    <script src="https://unpkg.com/higlass@1.2.6/dist/hglib[.min].js"></script>
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.1/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+
+  <script src="https://unpkg.com/higlass@1.5.2/dist/hglib.min.js"></script>
+
+</head>
+<body >
+  <div id="development-demo" style="width: 800px; 
+  background-color: white;"></div>
+</body>
+
+<script>
+
+const hgApi = hglib.viewer(
+  document.getElementById('development-demo'),
+  'http://higlass.io/api/v1/viewconfs/?d=default',
+  {
+    bounded: false,
+  }
+);
+
+</script>
+</html>
 
 External tracks should be included **before** the hglib.js import:
 
 .. code-block:: html
 
-    <script src="https://unpkg.com/higlass-multivec@0.1.10/dist/higlass-multivec.js"></script>
+    <script src="https://unpkg.com/higlass-multivec@0.2.0/dist/higlass-multivec.js"></script>
 
 Instructions for instantiating the component and interacting with it are in the
 `Public API section <javascript_api.html#api-functions>`_.
@@ -111,7 +136,7 @@ Creating a HiGlass component in your React app
   <HiGlassComponent
     options={options}
     viewConfig={viewConfig}
-  >
+  />
 
 Use the ``HiGlassComponent`` to create a HiGlass instance in react. The
 ``options`` prop is the same as explained above.
@@ -126,7 +151,7 @@ Use the ``HiGlassComponent`` to create a HiGlass instance in react. The
     ref={props.onRef}
     options={props.options}
     viewConfig={props.viewConfig}
-  >
+  />
 
   export default HiGlass;
 

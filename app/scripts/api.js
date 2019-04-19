@@ -278,9 +278,23 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
-       * Show overlays where this track can be positioned
+       * Show overlays where this track can be positioned. This
+       * function will take a track definition and display red
+       * or green overlays highlighting where the track can be
+       * placed on the view.
        *
        * @param {obj} track { server, tilesetUid, datatype }
+       *
+       * @example
+       *
+       *  let lineTrack = {
+       *   "server": "http://higlass.io/api/v1",
+       *   "tilesetUid": "WtBJUYawQzS9M2WVIIHnlA",
+       *   "datatype": "multivec",
+       *   "defaultTracks": ['horizontal-stacked-bar']
+       * }
+       *
+       * window.hgApi.showAvailableTrackPositions(lineTrack);
        */
       showAvailableTrackPositions(track) {
         self.setState({
@@ -455,6 +469,7 @@ const createApi = function api(context, pubSub) {
        * Get a Promise which returns a Blob containing a PNG for the current view.
        * It's possible to get string of the PNG bytes from that:
        *
+       * @example
        * hgApi.exportAsPngBlobPromise().then(function(blob) {
        *   var reader = new FileReader();
        *   reader.addEventListener("loadend", function() {

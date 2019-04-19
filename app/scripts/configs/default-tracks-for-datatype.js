@@ -1,4 +1,11 @@
 export const DEFAULT_TRACKS_FOR_DATATYPE = {
+  chromsizes: {
+    center: '2d-chromosome-grid',
+    top: 'horizontal-chromosome-labels',
+    left: 'vertical-chromosome-labels',
+    bottom: 'horizontal-chromosome-labels',
+    right: 'vertical-chromosome-labels',
+  },
   matrix: {
     center: 'heatmap',
     top: 'horizontal-heatmap',
@@ -11,10 +18,6 @@ export const DEFAULT_TRACKS_FOR_DATATYPE = {
     bottom: 'horizontal-bar',
     left: 'vertical-bar',
     right: 'vertical-bar',
-  },
-  multivec: {
-    top: 'horizontal-multivec',
-    bottom: 'horizontal-multivec',
   },
   'geo-json': {
     center: 'geo-json',
