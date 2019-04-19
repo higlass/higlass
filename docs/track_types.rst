@@ -30,7 +30,7 @@ datatype: ``bedlike``
 The bedlike track is intended to display generic interval data. It is used to
 render tracks with a `bedlike` datatype. This usually comes from the `beddb`
 filetype. Regular bed-like files can be converted to beddb using the instructions
-in the `data preparation section <data_preparation.html#bed-files>`__.
+in the `Clodius documentation <https://github.com/higlass/clodius/blob/develop/docs/data_preparation.rst#bed-files>`__.
 
 **Color Encoding:**
 
