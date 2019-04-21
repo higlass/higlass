@@ -127,7 +127,7 @@ Creating a HiGlass component in your React app
   <HiGlassComponent
     options={options}
     viewConfig={viewConfig}
-  >
+  />
 
 Use the ``HiGlassComponent`` to create a HiGlass instance in react. The
 ``options`` prop is the same as explained above.
@@ -142,7 +142,7 @@ Use the ``HiGlassComponent`` to create a HiGlass instance in react. The
     ref={props.onRef}
     options={props.options}
     viewConfig={props.viewConfig}
-  >
+  />
 
   export default HiGlass;
 
