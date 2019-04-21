@@ -1,6 +1,7 @@
 ## v1.5.5
 
 - Fixed #612: resolved an issue with caseinsensitive chromosome names
+- Destroy heatmap sprites and axis texts to mitigate memory leak
 
 ## v1.5.4
 
