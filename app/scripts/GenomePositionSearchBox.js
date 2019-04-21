@@ -448,7 +448,7 @@ class GenomePositionSearchBox extends React.Component {
         while (k > j) {
           const dashChunk = dashParts.slice(j, k).join('-');
 
-          if (genePositions[dashChunk]) {
+          if (genePositions[dashChunk.toLowerCase()]) {
             const genePosition = genePositions[dashChunk.toLowerCase()];
             const extension = Math.floor((genePosition.txEnd - genePosition.txStart) / 4);
 
