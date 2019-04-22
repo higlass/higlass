@@ -19,7 +19,6 @@ import ContextMenuContainer from './ContextMenuContainer';
 import HorizontalTiledPlot from './HorizontalTiledPlot';
 import VerticalTiledPlot from './VerticalTiledPlot';
 import ViewContextMenu from './ViewContextMenu';
-import Modal from './Modal';
 // import {HeatmapOptions} from './HeatmapOptions';
 
 // Higher-order components
@@ -240,6 +239,10 @@ class TiledPlot extends React.Component {
 
     if (prevProps.tracks.center !== this.props.tracks.center) {
       // this.getDefaultChromSizes();
+    }
+
+    if (this.state.addTrackPosition || this.props.addTrackPosition) {
+      this.props.pubSub.publish('app.openModal');
     }
   }
 
@@ -2169,27 +2172,6 @@ class TiledPlot extends React.Component {
       );
     }
 
-    let addTrackModal = null;
-    const position = this.state.addTrackPosition
-      ? this.state.addTrackPosition : this.props.addTrackPosition;
-
-    if (this.state.addTrackPosition || this.props.addTrackPosition) {
-      addTrackModal = (
-        <Modal
-          show={true}
-        />
-        // <AddTrackModal
-        //   ref={(c) => { this.addTrackModal = c; }}
-        //   host={this.state.addTrackHost}
-        //   onCancel={this.handleNoTrackAdded.bind(this)}
-        //   onTracksChosen={this.handleTracksAdded.bind(this)}
-        //   position={position}
-        //   show={this.state.addTrackPosition !== null || this.props.addTrackPosition !== null}
-        //   trackSourceServers={this.props.trackSourceServers}
-        // />
-      );
-    }
-
     // track renderer needs to enclose all the other divs so that it
     // can catch the zoom events
     return (
@@ -2206,7 +2188,7 @@ class TiledPlot extends React.Component {
       >
         {trackRenderer}
         {overlays}
-        {addTrackModal}
+        {/* addTrackModal */}
         {this.getAddDivisorDialog()}
         {configTrackMenu}
         {closeTrackMenu}
@@ -2284,6 +2266,7 @@ TiledPlot.propTypes = {
   onTracksAdded: PropTypes.func,
   onUnlockValueScale: PropTypes.func,
   onValueScaleChanged: PropTypes.func,
+  openModal: PropTypes.func,
   pixiStage: PropTypes.object,
   pluginTracks: PropTypes.object,
   rangeSelection1dSize: PropTypes.array,

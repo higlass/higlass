@@ -16,6 +16,7 @@ import GenomePositionSearchBox from './GenomePositionSearchBox';
 import ExportLinkModal from './ExportLinkModal';
 import ViewHeader from './ViewHeader';
 import ChromosomeInfo from './ChromosomeInfo';
+import Modal from './Modal';
 
 import createSymbolIcon from './symbol';
 import { all as icons } from './icons';
@@ -237,6 +238,7 @@ class HiGlassComponent extends React.Component {
       exportLinkModalOpen: false,
       exportLinkLocation: null,
       mouseTool,
+      modalOpened: false,
       isDarkTheme: false,
       rangeSelection1dSize: [0, Infinity],
       rangeSelectionToInt: false,
@@ -287,6 +289,8 @@ class HiGlassComponent extends React.Component {
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
     this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
     this.onBlurHandlerBound = this.onBlurHandler.bind(this);
+    this.onOpenModalBound = this.onOpenModal.bind(this);
+    this.onCloseModalBound = this.onCloseModal.bind(this);
 
     this.setBroadcastMousePositionGlobally(
       this.props.options.broadcastMousePositionGlobally
@@ -326,6 +330,8 @@ class HiGlassComponent extends React.Component {
       this.pubSub.subscribe('app.zoomStart', this.zoomStartHandlerBound),
       this.pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
       this.pubSub.subscribe('app.zoom', this.zoomHandlerBound),
+      this.pubSub.subscribe('app.openModal', this.onOpenModalBound),
+      this.pubSub.subscribe('app.closeModal', this.onCloseModalBound),
       this.pubSub.subscribe('requestReceived', this.requestReceivedHandlerBound),
     );
 
@@ -1562,6 +1568,14 @@ class HiGlassComponent extends React.Component {
       addTrackPosition: position,
       addTrackPositionView: viewUid,
     });
+  }
+
+  onCloseModal() {
+    this.setState({ modalOpened: false });
+  }
+
+  onOpenModal() {
+    this.setState({ modalOpened: true });
   }
 
   /**
@@ -3960,6 +3974,12 @@ class HiGlassComponent extends React.Component {
         styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>
+          {this.state.modalOpened && (
+            <Modal
+              handleClose={this.onCloseModalBound}
+              show={true}
+            />
+          )}
           <canvas
             key={this.uid}
             ref={(c) => { this.canvasElement = c; }}
