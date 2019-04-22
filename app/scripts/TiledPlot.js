@@ -19,6 +19,7 @@ import ContextMenuContainer from './ContextMenuContainer';
 import HorizontalTiledPlot from './HorizontalTiledPlot';
 import VerticalTiledPlot from './VerticalTiledPlot';
 import ViewContextMenu from './ViewContextMenu';
+import Modal from './Modal';
 // import {HeatmapOptions} from './HeatmapOptions';
 
 // Higher-order components
@@ -2174,15 +2175,18 @@ class TiledPlot extends React.Component {
 
     if (this.state.addTrackPosition || this.props.addTrackPosition) {
       addTrackModal = (
-        <AddTrackModal
-          ref={(c) => { this.addTrackModal = c; }}
-          host={this.state.addTrackHost}
-          onCancel={this.handleNoTrackAdded.bind(this)}
-          onTracksChosen={this.handleTracksAdded.bind(this)}
-          position={position}
-          show={this.state.addTrackPosition !== null || this.props.addTrackPosition !== null}
-          trackSourceServers={this.props.trackSourceServers}
+        <Modal
+          show={true}
         />
+        // <AddTrackModal
+        //   ref={(c) => { this.addTrackModal = c; }}
+        //   host={this.state.addTrackHost}
+        //   onCancel={this.handleNoTrackAdded.bind(this)}
+        //   onTracksChosen={this.handleTracksAdded.bind(this)}
+        //   position={position}
+        //   show={this.state.addTrackPosition !== null || this.props.addTrackPosition !== null}
+        //   trackSourceServers={this.props.trackSourceServers}
+        // />
       );
     }
 
