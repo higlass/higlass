@@ -103,7 +103,22 @@ export const viewer = (element, viewConfig, options) => {
   return hg.api;
 };
 
-export const trackViewer = (element, [xMin, xMax, yMin, yMax], trackConfig, options) => {
+/**
+ * A barebones implementation of a HiGlass view used to display a 2d track.
+ * Multiple layers can be used by specifying a `combined` track in `trackConfig`.
+ *
+ * Defaults to having no label and no colorbar.
+ * 
+ * If the aspect ratio defined by the parameter bounds doesn't match the aspect
+ * ration of the enclosing element, the x bounds will be respected and the y
+ * y coordinates will be truncated.
+ *
+ * @param {element|HTMLElement} The element to attach the viewer to
+ * @param {[xMin, xMax, yMin, yMax]|Array} The bounds of the track
+ * @param {trackConfig: Object} The standard HiGlass track definition type
+ * @returns {Object} A {id, hgApi} object
+ */ 
+export const trackViewer = (element, [xMin, xMax, yMin, yMax], trackConfig) => {
   if (!trackConfig.options.colorbarPosition) {
     trackConfig.options.colorbarPosition = 'hidden';
   }
