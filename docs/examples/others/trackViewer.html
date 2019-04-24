@@ -2,7 +2,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Subviewer &middot; HiGlass</title>
+<title>trackViewer &middot; HiGlass</title>
 <link rel="stylesheet" href="/hglib.css">
 
 <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
@@ -10,6 +10,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.2/pixi.min.js"></script>
 </head>
 <body>
+  <p>
+    If you only need to show one track,
+    <code>trackViewer</code> provides a simpler interface.
+  </p>
   <div id="demo" style="width: 90vw; height: 90vh;"></div>
 </body>
 <script src='/hglib.js'></script>
@@ -37,7 +41,9 @@ const {id, hgApi} = window.hglib.trackViewer(
 var urlParams = new URLSearchParams(window.location.search);
 setInterval(() => {
   t += 1;
-  hgApi.zoomTo(id, ...domain(t * 1000000), urlParams.get('animateTime'))
-}, urlParams.get('delay') || 100 /* ie: 10 per second */)
+  hgApi.zoomTo(id, ...domain(t * 1000000), 1)
+  // animateTime=0 should work just as well, but:
+  // https://github.com/higlass/higlass/issues/632
+}, 100 /* ie: 10 per second */)
 </script>
 </html>
