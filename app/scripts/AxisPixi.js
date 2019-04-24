@@ -73,6 +73,7 @@ class AxisPixi {
     while (this.axisTexts.length > this.tickValues.length) {
       const lastText = this.axisTexts.pop();
       this.pAxis.removeChild(lastText);
+      lastText.destroy(true);
     }
   }
 

@@ -1,3 +1,8 @@
+## v1.5.5
+
+- Fixed #612: resolved an issue with caseinsensitive chromosome names
+- Destroy heatmap sprites and axis texts to mitigate memory leak
+
 ## v1.5.4
 
 - Fix the multiple component passive event issue by replacing the dom-event.js handlers with a class so that each component maintains its own context
@@ -6,7 +11,7 @@
 
 - Let HorizontalLineTracks look up tileset_info.tile_size
   and tileset_info.bins_per_dimension
-- Specify default track types directly in `showAvailableTrackTypes` API 
+- Specify default track types directly in `showAvailableTrackTypes` API
 - Updated the docs deploy directory
 - Updated the javascript API example to include a full working html page
 - Use default height for new tracks rather than min height. Fixes

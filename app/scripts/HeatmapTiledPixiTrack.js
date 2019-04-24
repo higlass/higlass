@@ -1015,6 +1015,20 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
   }
 
+  destroyTile(tile) {
+    // sprite have to be explicitly destroyed in order to
+    // free the texture cache
+    tile.sprite.destroy(true);
+
+    tile.canvas = null;
+    tile.sprite = null;
+    tile.texture = null;
+
+    // this is a handy method for checking what's in the texture
+    // cache
+    // console.log('destroy', PIXI.utils.BaseTextureCache);
+  }
+
   /**
    * Render / draw a tile.
    *
@@ -1052,15 +1066,21 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
           const { graphics } = tile;
           const canvas = this.tileDataToCanvas(pixData.pixData);
 
+          if (tile.sprite) {
+            // if this tile has already been rendered with a sprite, we
+            // have to destroy it before creating a new one
+            tile.sprite.destroy(true);
+          }
 
           let sprite = null;
+          const texture = PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST);
 
           sprite = new PIXI.Sprite(
-            PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
+            texture
           );
 
           tile.sprite = sprite;
-
+          tile.texture = texture;
           // store the pixData so that we can export it
           tile.canvas = canvas;
           this.setSpriteProperties(
