@@ -2214,6 +2214,7 @@ class HiGlassComponent extends React.Component {
       return null;
     }
 
+    newTrack.position = position;
     newTrack.width = this.getTrackInfo(newTrack.type).defaultWidth
       || this.getTrackInfo(newTrack.type).minWidth
       || this.minVerticalWidth;

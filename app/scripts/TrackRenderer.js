@@ -75,7 +75,8 @@ import { getDarkTheme } from './services';
 
 // Configs
 import {
-  AVAILABLE_FOR_PLUGINS
+  AVAILABLE_FOR_PLUGINS,
+  TRACKS_INFO_BY_TYPE,
 } from './configs';
 
 // Styles
@@ -188,6 +189,16 @@ class TrackRenderer extends React.Component {
     this.metaTracks = {};
 
     this.pubSubs = [];
+
+    // if there's plugin tracks, they'll define new track
+    // types and we'll want to use their information when
+    // we look up the orientation of a track
+    if (window.higlassTracksByType) {
+      // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
+      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
+        TRACKS_INFO_BY_TYPE[pluginTrackType] = window.higlassTracksByType[pluginTrackType].config;
+      });
+    }
 
     this.boundForwardEvent = this.forwardEvent.bind(this);
     this.boundScrollEvent = this.scrollEvent.bind(this);
@@ -1206,6 +1217,16 @@ class TrackRenderer extends React.Component {
   }
 
   createTrackObject(track) {
+    const trackObject = this.createLocationAgnosticTrackObject(track);
+    if (track.position === 'left' || track.position === 'right') {
+      if (TRACKS_INFO_BY_TYPE[track.type].orientation === '1d-horizontal') {
+        return new LeftTrackModifier(trackObject);
+      }
+    }
+    return trackObject;
+  }
+
+  createLocationAgnosticTrackObject(track) {
     const handleTilesetInfoReceived = (x) => {
       this.currentProps.onTilesetInfoReceived(track.uid, x);
     };
