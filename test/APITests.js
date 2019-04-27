@@ -81,7 +81,7 @@ describe('API Tests', () => {
       );
 
       selection = select(div).selectAll('.DragListeningDiv');
-      expect(selection.size()).toEqual(3);
+      expect(selection.size()).toEqual(5);
     });
 
     it('creates a track with default options', () => {
