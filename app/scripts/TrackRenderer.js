@@ -1218,7 +1218,6 @@ class TrackRenderer extends React.Component {
 
   createTrackObject(track) {
     const trackObject = this.createLocationAgnosticTrackObject(track);
-
     if (track.position === 'left' || track.position === 'right') {
       if (TRACKS_INFO_BY_TYPE[track.type].orientation === '1d-horizontal') {
         return new LeftTrackModifier(trackObject);
