@@ -845,7 +845,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   binsPerTile() {
-    return this.tilesetInfo.bins_per_dimension || BINS_PER_TILE;
+    return (this.tilesetInfo && this.tilesetInfo.bins_per_dimension)
+    || (this.tilesetInfo && this.tilesetInfo.tile_size)
+    || BINS_PER_TILE;
   }
 
   /**
@@ -1274,6 +1276,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         this.tilesetInfo.max_pos[0],
         this.tilesetInfo.max_zoom,
         this.tilesetInfo.max_width
+          || (this.tilesetInfo.max_pos[0] - this.tilesetInfo.min_pos[0])
       );
 
       this.yTiles = tileProxy.calculateTiles(
@@ -1282,7 +1285,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         this.options.reverseYAxis ? -this.tilesetInfo.max_pos[1] : this.tilesetInfo.min_pos[1],
         this.options.reverseYAxis ? -this.tilesetInfo.min_pos[1] : this.tilesetInfo.max_pos[1],
         this.tilesetInfo.max_zoom,
-        this.tilesetInfo.max_width1 || this.tilesetInfo.max_width
+        this.tilesetInfo.max_width1
+          || this.tilesetInfo.max_width
+          || (this.tilesetInfo.max_pos[1] - this.tilesetInfo.min_pos[1])
       );
     }
 
@@ -1391,8 +1396,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const minY = this.options.reverseYAxis
       ? -this.tilesetInfo.max_pos[1] : this.tilesetInfo.min_pos[1];
 
-    const tileWidth = this.tilesetInfo.max_width / (2 ** zoomLevel);
-    const tileHeight = this.tilesetInfo.max_width / (2 ** zoomLevel);
+    const maxWidth = this.tilesetInfo.max_width
+      || (this.tilesetInfo.max_pos[0] - this.tilesetInfo.min_pos[0]);
+    const maxHeight = this.tilesetInfo.max_width1
+      || (this.tilesetInfo.max_pos[1] - this.tilesetInfo.min_pos[0]);
+
+    const tileWidth = maxWidth / (2 ** zoomLevel);
+    const tileHeight = maxHeight / (2 ** zoomLevel);
 
     const tileX = minX + (xTilePos * tileWidth);
     const tileY = minY + (yTilePos * tileHeight);

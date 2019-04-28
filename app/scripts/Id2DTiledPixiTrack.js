@@ -109,11 +109,19 @@ class Id2DTiledPixiTrack extends HeatmapTiledPixiTrack {
     this.drawTile(tile);
   }
 
+  renderTile(tile) {
+    // this is just here to override the parent's renderTile
+  }
+
   destroyTile(tile, graphics) {
 
   }
 
   drawTile(tile) {
+    if (!this.tilesetInfo) {
+      return;
+    }
+
     drawTile.bind(this)(tile);
   }
 
