@@ -1,3 +1,7 @@
+## v1.5.6
+
+- Allow any horizontal track to also be placed on the left or right
+
 ## v1.5.5
 
 - Fixed #612: resolved an issue with caseinsensitive chromosome names
