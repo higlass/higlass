@@ -1,3 +1,5 @@
+- Added an example of a map overlay
+
 ## v1.5.6
 
 - Allow any horizontal track to also be placed on the left or right
