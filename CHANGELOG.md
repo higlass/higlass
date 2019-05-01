@@ -1,3 +1,7 @@
+## v1.5.7
+
+- Switch to nearest neighbor interpolation for horizontal heatmaps
+
 ## v1.5.6
 
 - Allow any horizontal track to also be placed on the left or right

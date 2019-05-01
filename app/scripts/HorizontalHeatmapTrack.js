@@ -294,12 +294,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
           const canvas = this.tileDataToCanvas(pixData.pixData);
 
           let sprite = null;
-
-          if (tile.tileData.zoomLevel === this.maxZoom) {
-            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
-          } else {
-            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
-          }
+          sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
 
           tile.sprite = sprite;
           tile.canvas = canvas;
