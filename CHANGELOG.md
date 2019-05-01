@@ -1,5 +1,6 @@
 ## v1.5.7
 
+- Fix #637 - SVG export fill color doesn't match what is selected
 - Switch to nearest neighbor interpolation for horizontal heatmaps
 
 ## v1.5.6
