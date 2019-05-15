@@ -1,3 +1,7 @@
+## v1.5.6
+
+- Replace ReactBootstrap modal with custom modal to not rely on Bootstrap and support Jupyter
+
 ## v1.5.5
 
 - Fixed #612: resolved an issue with caseinsensitive chromosome names
