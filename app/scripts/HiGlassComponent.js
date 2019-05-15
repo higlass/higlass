@@ -13,7 +13,7 @@ import createPubSub, { globalPubSub } from 'pub-sub-es';
 
 import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
-import ExportLinkModal from './ExportLinkModal';
+import ExportLinkDialog from './ExportLinkDialog';
 import ViewHeader from './ViewHeader';
 import ChromosomeInfo from './ChromosomeInfo';
 
@@ -235,8 +235,6 @@ class HiGlassComponent extends React.Component {
       addTrackPositionMenuPosition: null,
 
       mouseOverOverlayUid: null,
-      exportLinkModalOpen: false,
-      exportLinkLocation: null,
       mouseTool,
       isDarkTheme: false,
       rangeSelection1dSize: [0, Infinity],
@@ -2655,17 +2653,8 @@ class HiGlassComponent extends React.Component {
   }
 
   handleExportViewsAsLink(
-    url = this.state.viewConfig.exportViewUrl,
-    fromApi = false
+    url = this.state.viewConfig.exportViewUrl, fromApi = false
   ) {
-    this.width = this.element.clientWidth;
-    this.height = this.element.clientHeight;
-
-    this.setState({
-      exportLinkModalOpen: !fromApi,
-      exportLinkLocation: null,
-    });
-
     const port = window.location.port === '' ? '' : `:${window.location.port}`;
 
     const req = fetch(
@@ -2696,7 +2685,12 @@ class HiGlassComponent extends React.Component {
     if (!fromApi) {
       req
         .then((sharedView) => {
-          this.setState({ exportLinkLocation: sharedView.url });
+          this.openModal(
+            <ExportLinkDialog
+              onDone={() => { this.closeModalBound(); }}
+              url={sharedView.url}
+            />
+          );
         })
         .catch(e => console.error('Exporting view config as link failed:', e));
     }
@@ -3895,17 +3889,6 @@ class HiGlassComponent extends React.Component {
       });
     }
 
-    const exportLinkModal = this.state.exportLinkModalOpen
-      ? (
-        <ExportLinkModal
-          height={this.height}
-          linkLocation={this.state.exportLinkLocation}
-          onDone={() => this.setState({ exportLinkModalOpen: false })}
-          width={this.width}
-        />
-      )
-      : null;
-
     let layouts = this.mounted
       ? Object
         .values(this.state.views)
@@ -4005,7 +3988,6 @@ class HiGlassComponent extends React.Component {
               }}
               styleName="styles.higlass-svg"
             />
-            {exportLinkModal}
           </ModalProvider>
         </PubSubProvider>
       </div>
