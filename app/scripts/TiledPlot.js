@@ -11,7 +11,6 @@ import CenterTrack from './CenterTrack';
 import DragListeningDiv from './DragListeningDiv';
 import GalleryTracks from './GalleryTracks';
 import TrackRenderer from './TrackRenderer';
-import AddTrackModal from './AddTrackModal';
 import AddTrackDialog from './AddTrackDialog';
 import ConfigTrackMenu from './ConfigTrackMenu';
 import CloseTrackMenu from './CloseTrackMenu';
@@ -146,6 +145,19 @@ class TiledPlot extends React.Component {
     this.contextMenuHandlerBound = this.contextMenuHandler.bind(this);
     this.handleNoTrackAddedBound = this.handleNoTrackAdded.bind(this);
     this.handleTracksAddedBound = this.handleTracksAdded.bind(this);
+    this.closeMenusBound = this.closeMenus.bind(this);
+    this.handleAddDivisorBound = this.handleAddDivisor.bind(this);
+    this.handleAddSeriesBound = this.handleAddSeries.bind(this);
+    this.handleChangeTrackDataBound = this.handleChangeTrackData.bind(this);
+    this.handleChangeTrackTypeBound = this.handleChangeTrackType.bind(this);
+    this.handleCloseTrackBound = this.handleCloseTrack.bind(this);
+    this.handleConfigureTrackBound = this.handleConfigureTrack.bind(this);
+    this.handleExportTrackDataBound = this.handleExportTrackData.bind(this);
+    this.handleLockValueScaleBound = this.handleLockValueScale.bind(this);
+    this.handleReplaceTrackBound = this.handleReplaceTrack.bind(this);
+    this.handleTrackOptionsChangedBound = this.handleTrackOptionsChanged.bind(this);
+    this.handleUnlockValueScaleBound = this.handleUnlockValueScale.bind(this);
+    this.onAddTrack = this.handleAddTrack.bind(this);
   }
 
   waitForDOMAttachment(callback) {
@@ -251,6 +263,25 @@ class TiledPlot extends React.Component {
           onCancel={this.handleNoTrackAddedBound}
           onTracksChosen={this.handleTracksAddedBound}
           position={this.state.addTrackPosition || this.props.addTrackPosition}
+          trackSourceServers={this.props.trackSourceServers}
+        />
+      );
+    }
+
+    if (this.state.addDivisorDialog) {
+      const series = this.state.addDivisorDialog;
+
+      this.props.modal.open(
+        <AddTrackDialog
+          datatype={TRACKS_INFO_BY_TYPE[series.type].datatype[0]}
+          hidePlotTypeChooser={true}
+          host={this.state.addTrackHost}
+          onCancel={() => {
+            this.setState({ addDivisorDialog: null });
+          }}
+          onTracksChosen={(newTrack) => {
+            this.handleDivisorChosen(series, newTrack);
+          }}
           trackSourceServers={this.props.trackSourceServers}
         />
       );
@@ -494,43 +525,13 @@ class TiledPlot extends React.Component {
       tilesetUid: newTrack[0].uuid
     };
 
-    this.handleChangeTrackData(series.uid,
+    this.handleChangeTrackData(
+      series.uid,
       {
         type: 'divided',
-        children: [
-          numerator,
-          denominator
-        ]
-      });
-  }
-
-
-  getAddDivisorDialog() {
-    if (!this.state.addDivisorDialog) {
-      return null;
-    }
-
-    const series = this.state.addDivisorDialog;
-
-    const datatype = TRACKS_INFO_BY_TYPE[series.type].datatype[0];
-
-    const atm = (
-      <AddTrackModal
-        datatype={datatype}
-        hidePlotTypeChooser={true}
-        host={this.state.addTrackHost}
-        onCancel={() => {
-          this.setState({
-            addDivisorDialog: null,
-          });
-        }}
-        onTracksChosen={newTrack => this.handleDivisorChosen(series, newTrack)}
-        show={this.state.addDivisorDialog !== null}
-        trackSourceServers={this.props.trackSourceServers}
-      />
+        children: [numerator, denominator]
+      }
     );
-
-    return atm;
   }
 
   handleDivideSeries(seriesUid) {
@@ -542,8 +543,6 @@ class TiledPlot extends React.Component {
      * Will start working with just heatmaps and then progress to
      * other track types.
      */
-
-
   }
 
   handleAddSeries(trackUid) {
@@ -1486,14 +1485,14 @@ class TiledPlot extends React.Component {
 
       return (
         <PopupMenu
-          onMenuClosed={this.closeMenus.bind(this)}
+          onMenuClosed={this.closeMenusBound}
         >
           <ViewContextMenu
-            closeMenu={this.closeMenus.bind(this)}
+            closeMenu={this.closeMenusBound}
             coords={[this.state.contextMenuDataX, this.state.contextMenuDataY]}
             customItems={this.state.contextMenuCustomItems}
-            onAddDivisor={this.handleAddDivisor.bind(this)}
-            onAddSeries={this.handleAddSeries.bind(this)}
+            onAddDivisor={this.handleAddDivisorBound}
+            onAddSeries={this.handleAddSeriesBound}
             // Can only add one new track at a time
             // because "whole" tracks are always drawn on top of each other,
             // the notion of Series is unnecessary and so 'host' is null
@@ -1501,15 +1500,15 @@ class TiledPlot extends React.Component {
               this.props.onTracksAdded([newTrack], newTrack.position, null);
               this.handleCloseContextMenu();
             }}
-            onChangeTrackData={this.handleChangeTrackData.bind(this)}
-            onChangeTrackType={this.handleChangeTrackType.bind(this)}
-            onCloseTrack={this.handleCloseTrack.bind(this)}
-            onConfigureTrack={this.handleConfigureTrack.bind(this)}
-            onExportData={this.handleExportTrackData.bind(this)}
-            onLockValueScale={this.handleLockValueScale.bind(this)}
-            onReplaceTrack={this.handleReplaceTrack.bind(this)}
-            onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
-            onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
+            onChangeTrackData={this.handleChangeTrackDataBound}
+            onChangeTrackType={this.handleChangeTrackTypeBound}
+            onCloseTrack={this.handleCloseTrackBound}
+            onConfigureTrack={this.handleConfigureTrackBound}
+            onExportData={this.handleExportTrackDataBound}
+            onLockValueScale={this.handleLockValueScaleBound}
+            onReplaceTrack={this.handleReplaceTrackBound}
+            onTrackOptionsChanged={this.handleTrackOptionsChangedBound}
+            onUnlockValueScale={this.handleUnlockValueScaleBound}
             orientation="right"
             position={this.state.contextMenuPosition}
             tracks={relevantTracks}
@@ -2064,21 +2063,22 @@ class TiledPlot extends React.Component {
     if (this.state.configTrackMenuId) {
       configTrackMenu = (
         <PopupMenu
-          onMenuClosed={this.closeMenus.bind(this)}
+          onMenuClosed={this.closeMenusBound}
         >
           <ConfigTrackMenu
             ref={(c) => { this.configTrackMenu = c; }}
-            closeMenu={this.closeMenus.bind(this)}
-            onAddSeries={this.handleAddSeries.bind(this)}
-            onAddTrack={this.handleAddTrack.bind(this)}
-            onChangeTrackType={this.handleChangeTrackType.bind(this)}
-            onCloseTrack={this.handleCloseTrack.bind(this)}
-            onConfigureTrack={this.handleConfigureTrack.bind(this)}
-            onExportData={this.handleExportTrackData.bind(this)}
-            onLockValueScale={this.handleLockValueScale.bind(this)}
-            onReplaceTrack={this.handleReplaceTrack.bind(this)}
-            onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
-            onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
+            closeMenu={this.closeMenusBound}
+            onAddDivisor={this.handleAddDivisorBound}
+            onAddSeries={this.handleAddSeriesBound}
+            onAddTrack={this.handleAddTrackBound}
+            onChangeTrackType={this.handleChangeTrackTypeBound}
+            onCloseTrack={this.handleCloseTrackBound}
+            onConfigureTrack={this.handleConfigureTrackBound}
+            onExportData={this.handleExportTrackDataBound}
+            onLockValueScale={this.handleLockValueScaleBound}
+            onReplaceTrack={this.handleReplaceTrackBound}
+            onTrackOptionsChanged={this.handleTrackOptionsChangedBound}
+            onUnlockValueScale={this.handleUnlockValueScaleBound}
             position={this.state.configTrackMenuLocation}
             trackOrientation={
               getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
@@ -2198,7 +2198,6 @@ class TiledPlot extends React.Component {
       >
         {trackRenderer}
         {overlays}
-        {this.getAddDivisorDialog()}
         {configTrackMenu}
         {closeTrackMenu}
         {trackOptionsElement}
