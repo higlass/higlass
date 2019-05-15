@@ -1526,7 +1526,7 @@ class TiledPlot extends React.Component {
     }
 
     const orientationToPositions = {
-      '1d-horizontal': ['top', 'bottom'],
+      '1d-horizontal': ['top', 'bottom', 'left', 'right'],
       '2d': ['center'],
       '1d-vertical': ['left', 'right']
     };
