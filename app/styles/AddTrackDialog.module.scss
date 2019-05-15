@@ -1,0 +1,34 @@
+.collapse-toggle-icon:before {
+    /* symbol for "opening" panels */
+    font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+    content: "\e159";    /* glyphicon glyphicon-expand, taken from bootstrap.css */
+    float: left;        /* adjust as needed */
+    padding-right: 3px;
+}
+
+.collapse-toggle-icon.collapsed:before {
+    /* symbol for "collapsed" panels */
+    content: "\e158";    /* glyphicon glyphicon-collapse-down, taken from bootstrap.css */
+}
+
+.modal-title {
+    font-family: "Roboto";
+    font-weight: 700;
+}
+
+.modal-container {
+  position: relative;
+}
+.modal-container .modal, .modal-container .modal-backdrop {
+  position: absolute;
+}
+
+.modal-dialog{
+    position: relative;
+    display: table; //This is important
+    overflow-y: auto;
+    overflow-x: auto;
+    width: 600px;
+    min-width: 300px;
+    margin: auto;
+}

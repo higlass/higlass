@@ -12,6 +12,7 @@ import DragListeningDiv from './DragListeningDiv';
 import GalleryTracks from './GalleryTracks';
 import TrackRenderer from './TrackRenderer';
 import AddTrackModal from './AddTrackModal';
+import AddTrackDialog from './AddTrackDialog';
 import ConfigTrackMenu from './ConfigTrackMenu';
 import CloseTrackMenu from './CloseTrackMenu';
 import PopupMenu from './PopupMenu';
@@ -23,6 +24,7 @@ import ViewContextMenu from './ViewContextMenu';
 
 // Higher-order components
 import withPubSub from './hocs/with-pub-sub';
+import withModal from './hocs/with-modal';
 
 // Utils
 import {
@@ -83,7 +85,6 @@ class TiledPlot extends React.Component {
     this.trackToReplace = null;
     this.trackRenderer = null;
 
-    this.addTrackModal = null;
     this.configTrackMenu = null;
 
     /*
@@ -143,6 +144,8 @@ class TiledPlot extends React.Component {
     this.previousPropsStr = '';
 
     this.contextMenuHandlerBound = this.contextMenuHandler.bind(this);
+    this.handleNoTrackAddedBound = this.handleNoTrackAdded.bind(this);
+    this.handleTracksAddedBound = this.handleTracksAdded.bind(this);
   }
 
   waitForDOMAttachment(callback) {
@@ -242,7 +245,15 @@ class TiledPlot extends React.Component {
     }
 
     if (this.state.addTrackPosition || this.props.addTrackPosition) {
-      this.props.pubSub.publish('app.openModal');
+      this.props.modal.open(
+        <AddTrackDialog
+          host={this.state.addTrackHost}
+          onCancel={this.handleNoTrackAddedBound}
+          onTracksChosen={this.handleTracksAddedBound}
+          position={this.state.addTrackPosition || this.props.addTrackPosition}
+          trackSourceServers={this.props.trackSourceServers}
+        />
+      );
     }
   }
 
@@ -505,7 +516,6 @@ class TiledPlot extends React.Component {
 
     const atm = (
       <AddTrackModal
-        ref={(c) => { this.addTrackModal = c; }}
         datatype={datatype}
         hidePlotTypeChooser={true}
         host={this.state.addTrackHost}
@@ -2188,7 +2198,6 @@ class TiledPlot extends React.Component {
       >
         {trackRenderer}
         {overlays}
-        {/* addTrackModal */}
         {this.getAddDivisorDialog()}
         {configTrackMenu}
         {closeTrackMenu}
@@ -2252,6 +2261,7 @@ TiledPlot.propTypes = {
   paddingRight: PropTypes.number.isRequired,
   paddingTop: PropTypes.number.isRequired,
   metaTracks: PropTypes.array,
+  modal: PropTypes.object,
   mouseTool: PropTypes.string,
   onCloseTrack: PropTypes.func,
   onDataDomainChanged: PropTypes.func,
@@ -2283,4 +2293,4 @@ TiledPlot.propTypes = {
   zoomToDataExtentOnInit: PropTypes.bool
 };
 
-export default withPubSub(TiledPlot);
+export default withPubSub(withModal(TiledPlot));

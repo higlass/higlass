@@ -1,18 +1,43 @@
-import styles from '../styles/Modal.module.scss'; // eslint-disable-line no-unused-vars
+import React from 'react';
+import PropTypes from 'prop-types';
 
-const Modal = ({ handleClose, show, children }) => {
-  const showHideStyleName = show
-    ? 'modal-modal styles.display-block' : 'styles.modal-modal styles.display-none';
+import Button from './Button';
+import Cross from './Cross';
+import withModal from './hocs/with-modal';
+
+import '../styles/Modal.module.scss';
+
+const Modal = (props) => {
+  const handleClose = () => {
+    props.modal.close();
+    if (props.onClose) props.onClose();
+  };
 
   return (
-    <div styleName={showHideStyleName}>
-      <section styleName="styles.modal-main">
-        {children}
-        <h1>Hi</h1>
-        <button onClick={handleClose}>close</button>
-      </section>
+    <div styleName="modal-background">
+      <div styleName="modal-wrap">
+        <div styleName="modal-window">
+          {props.closeButton && (
+            <Button onClick={handleClose}><Cross /></Button>
+          )}
+          <div styleName="modal-content">
+            {props.children}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Modal;
+Modal.defaultProps = {
+  closeButton: true
+};
+
+Modal.propTypes = {
+  children: PropTypes.element.isRequired,
+  closeButton: PropTypes.bool,
+  modal: PropTypes.object.isRequired,
+  onClose: PropTypes.func
+};
+
+export default withModal(Modal);

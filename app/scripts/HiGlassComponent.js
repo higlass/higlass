@@ -16,7 +16,6 @@ import GenomePositionSearchBox from './GenomePositionSearchBox';
 import ExportLinkModal from './ExportLinkModal';
 import ViewHeader from './ViewHeader';
 import ChromosomeInfo from './ChromosomeInfo';
-import Modal from './Modal';
 
 import createSymbolIcon from './symbol';
 import { all as icons } from './icons';
@@ -24,6 +23,7 @@ import createApi from './api';
 
 // Higher-order components
 import { Provider as PubSubProvider } from './hocs/with-pub-sub';
+import { Provider as ModalProvider } from './hocs/with-modal';
 
 // Services
 import {
@@ -238,10 +238,10 @@ class HiGlassComponent extends React.Component {
       exportLinkModalOpen: false,
       exportLinkLocation: null,
       mouseTool,
-      modalOpened: false,
       isDarkTheme: false,
       rangeSelection1dSize: [0, Infinity],
       rangeSelectionToInt: false,
+      modal: null,
     };
 
     Object.values(views).map(view => this.adjustLayoutToTrackSizes(view));
@@ -289,8 +289,13 @@ class HiGlassComponent extends React.Component {
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
     this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
     this.onBlurHandlerBound = this.onBlurHandler.bind(this);
-    this.onOpenModalBound = this.onOpenModal.bind(this);
-    this.onCloseModalBound = this.onCloseModal.bind(this);
+    this.openModalBound = this.openModal.bind(this);
+    this.closeModalBound = this.closeModal.bind(this);
+
+    this.modal = {
+      open: this.openModalBound,
+      close: this.closeModalBound
+    };
 
     this.setBroadcastMousePositionGlobally(
       this.props.options.broadcastMousePositionGlobally
@@ -330,8 +335,6 @@ class HiGlassComponent extends React.Component {
       this.pubSub.subscribe('app.zoomStart', this.zoomStartHandlerBound),
       this.pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
       this.pubSub.subscribe('app.zoom', this.zoomHandlerBound),
-      this.pubSub.subscribe('app.openModal', this.onOpenModalBound),
-      this.pubSub.subscribe('app.closeModal', this.onCloseModalBound),
       this.pubSub.subscribe('requestReceived', this.requestReceivedHandlerBound),
     );
 
@@ -709,6 +712,14 @@ class HiGlassComponent extends React.Component {
         mouseTool: MOUSE_TOOL_MOVE,
       });
     }
+  }
+
+  openModal(modal) {
+    this.setState({ modal });
+  }
+
+  closeModal() {
+    this.setState({ modal: null });
   }
 
   animate() {
@@ -1568,14 +1579,6 @@ class HiGlassComponent extends React.Component {
       addTrackPosition: position,
       addTrackPositionView: viewUid,
     });
-  }
-
-  onCloseModal() {
-    this.setState({ modalOpened: false });
-  }
-
-  onOpenModal() {
-    this.setState({ modalOpened: true });
   }
 
   /**
@@ -3974,38 +3977,35 @@ class HiGlassComponent extends React.Component {
         styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>
-          {this.state.modalOpened && (
-            <Modal
-              handleClose={this.onCloseModalBound}
-              show={true}
+          <ModalProvider value={this.modal}>
+            {this.state.modal}
+            <canvas
+              key={this.uid}
+              ref={(c) => { this.canvasElement = c; }}
+              styleName="styles.higlass-canvas"
             />
-          )}
-          <canvas
-            key={this.uid}
-            ref={(c) => { this.canvasElement = c; }}
-            styleName="styles.higlass-canvas"
-          />
-          <div
-            ref={(c) => { this.divDrawingSurface = c; }}
-            styleName="styles.higlass-drawing-surface"
-          >
-            {gridLayout}
-          </div>
-          <svg
-            ref={(c) => { this.svgElement = c; }}
-            style={{
-              // inline the styles so they aren't overriden by other css
-              // on the web page
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              left: 0,
-              top: 0,
-              pointerEvents: 'none',
-            }}
-            styleName="styles.higlass-svg"
-          />
-          {exportLinkModal}
+            <div
+              ref={(c) => { this.divDrawingSurface = c; }}
+              styleName="styles.higlass-drawing-surface"
+            >
+              {gridLayout}
+            </div>
+            <svg
+              ref={(c) => { this.svgElement = c; }}
+              style={{
+                // inline the styles so they aren't overriden by other css
+                // on the web page
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                left: 0,
+                top: 0,
+                pointerEvents: 'none',
+              }}
+              styleName="styles.higlass-svg"
+            />
+            {exportLinkModal}
+          </ModalProvider>
         </PubSubProvider>
       </div>
     );
