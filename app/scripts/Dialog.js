@@ -23,7 +23,7 @@ const Dialog = (props) => {
     <Modal closeButton={false}>
       <header styleName="dialog-header">
         <h3>{props.title}</h3>
-        <Button onClick={handleCancel} styleName="dialog-close-button"><Cross /></Button>
+        <Button onClick={handleCancel}><Cross /></Button>
       </header>
       <main>{props.children}</main>
       <footer styleName="dialog-footer">
