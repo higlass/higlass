@@ -63,10 +63,11 @@ function lineDragStart(ev) {
 
    var lineTrack = 
     {
-        "server": "http://localhost:8000/api/v1",
-        "tilesetUid": "KMj8e06yQtWg6Y7yhkt2lg",
-        "datatype": "arcs",
-      }
+        "server": "http://higlass.io/api/v1",
+        "tilesetUid": "WEAuzo5DQy6lEYw4kmgnDA",
+        "datatype": "vector",
+        "defaultTracks": ['horizontal-bar']
+    }
 
     window.hgApi.showAvailableTrackPositions(lineTrack);
 }
@@ -77,11 +78,8 @@ function multivecDragStart(ev) {
         "server": "http://higlass.io/api/v1",
         "tilesetUid": "WtBJUYawQzS9M2WVIIHnlA",
         "datatype": "multivec",
-        "defaultTracks": {
-            top: "horizontal-stacked-bar",
-            bottom: "horizontal-multivec"
-        },
-      }
+        "defaultTracks": [ "horizontal-stacked-bar"]
+    }
 
     ev.dataTransfer.setData("text/json", JSON.stringify(lineTrack));
     window.hgApi.showAvailableTrackPositions(lineTrack);
@@ -102,9 +100,10 @@ function linearLabelsDragStart(ev) {
 function heatmapDragStart(ev) {
    var heatmapTrack = 
     {
-        "server": "http://test1.resgen.io/api/v1",
-        "tilesetUid": "N4h3G6FjSOKs5GOIPANVEA",
+        "server": "http://higlass.io/api/v1",
+        "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
         "datatype": "matrix",
+        "defaultTracks": [ "heatmap"]
     } 
 
     console.log('heatmapDragStart(ev)');
@@ -128,17 +127,68 @@ function heatmapDragStart(ev) {
         1511074199.6112716
       ],
       "initialYDomain": [
-        1505212490.8607008,
-        1510254940.471237
+        1504683396.5786693,
+        1510784034.7532685
       ],
       "tracks": {
         "top": [],
         "left": [],
         "center": [
-
+          {
+            "uid": "KD3HH8QCTnWD96Xq7Y1Rrg",
+            "type": "combined",
+            "contents": [
+              {
+                "type": "heatmap",
+                "uid": "GW6HZwSmR5y-8Cbz22iK_A",
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "server": "http://higlass.io/api/v1",
+                "options": {
+                  "backgroundColor": "#eeeeee",
+                  "labelPosition": "bottomRight",
+                  "labelLeftMargin": 0,
+                  "labelRightMargin": 0,
+                  "labelTopMargin": 0,
+                  "labelBottomMargin": 0,
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "showMousePosition": false,
+                  "mousePositionColor": "#999999",
+                  "showTooltip": false,
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "width": 747,
+                "height": 522,
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                "transforms": [
+                  {
+                    "name": "ICE",
+                    "value": "weight"
+                  }
+                ],
+                "position": "center"
+              }
+            ],
+            "position": "center",
+            "width": 747,
+            "height": 522
+          }
         ],
         "bottom": [],
-        "right": []
+        "right": [],
+        "whole": [],
+        "gallery": []
       },
       "layout": {
         "w": 12,
