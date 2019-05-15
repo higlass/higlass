@@ -27,9 +27,13 @@ const Dialog = (props) => {
       </header>
       <main>{props.children}</main>
       <footer styleName="dialog-footer">
-        <Button onClick={handleCancel}>
-          {props.cancelTitle}
-        </Button>
+        {props.okayOnly ? (
+          <div />
+        ) : (
+          <Button onClick={handleCancel}>
+            {props.cancelTitle}
+          </Button>
+        )}
         <Button onClick={handleOkay}>
           {props.okayTitle}
         </Button>
@@ -40,6 +44,7 @@ const Dialog = (props) => {
 
 Dialog.defaultProps = {
   cancelTitle: 'Cancel',
+  okayOnly: false,
   okayTitle: 'Ok',
 };
 
@@ -48,6 +53,7 @@ Dialog.propTypes = {
   children: PropTypes.func.isRequired,
   modal: PropTypes.object.isRequired,
   okayTitle: PropTypes.string,
+  okayOnly: PropTypes.bool,
   onCancel: PropTypes.func.isRequired,
   onOkay: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
