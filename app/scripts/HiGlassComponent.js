@@ -713,10 +713,14 @@ class HiGlassComponent extends React.Component {
   }
 
   openModal(modal) {
-    this.setState({ modal });
+    this.setState({
+      // The following is only needed for testing purposes
+      modal: React.cloneElement(modal, { ref: (c) => { this.modalRef = c; } })
+    });
   }
 
   closeModal() {
+    this.modalRef = null;
     this.setState({ modal: null });
   }
 

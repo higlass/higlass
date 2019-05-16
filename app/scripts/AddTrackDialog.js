@@ -144,6 +144,8 @@ class AddTrackDialog extends React.Component {
     const form = (
       <div>
         <TilesetFinder
+          // Only for testing purposes
+          ref={(c) => { this.tilesetFinder = c; }}
           datatype={this.props.datatype}
           onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
           onTracksChosen={value => this.props.onTracksChosen(value, this.props.position)}
@@ -165,6 +167,8 @@ class AddTrackDialog extends React.Component {
         {
           !this.props.hidePlotTypeChooser && (
             <PlotTypeChooser
+              // Only for testing purposes
+              ref={(c) => { this.plotTypeChooser = c; }}
               datatypes={this.state.selectedTilesets.map((x) => {
                 if (x.filetype === 'cooler') {
                   // cooler files can also supply chromsizes
