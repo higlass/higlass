@@ -22,13 +22,11 @@ import {
 
 configure({ adapter: new Adapter() });
 
-describe('Simple HiGlassComponent', () => {
+describe('Add Track', () => {
   let hgc = null;
   let div = null;
 
   describe('Multiple track addition', () => {
-    let atm = null;
-
     beforeAll((done) => {
       ([div, hgc] = mountHGComponent(div, hgc,
         oneViewConfig,
@@ -40,32 +38,29 @@ describe('Simple HiGlassComponent', () => {
       );
     });
 
-    it('should open the AddTrackModal', (done) => {
+    it('should open the AddTrackDialog', (done) => {
       // this was to test an example from the higlass-website demo page
       // where the issue was that the genome position search box was being
       // styled with a margin-bottom of 10px, fixed by setting the style of
       // genome-position-search to specify margin-bottom app/styles/GenomePositionSearchBox.css
-      const tiledPlot = hgc.instance().tiledPlots.aa;
-      tiledPlot.handleAddTrack('top');
-
+      hgc.instance().tiledPlots.aa.handleAddTrack('top');
       hgc.update();
-
-      atm = tiledPlot.addTrackModal;
-      const inputField = atm.tilesetFinder.searchBox;
 
       // make sure the input field is equal to the document's active element
       // e.g. that it has focus
-      expect(inputField).to.be.eql(document.activeElement);
+      expect(document.activeElement.className).to.be.eql('tileset-finder-search-box');
 
       waitForJsonComplete(done);
     });
 
     it('should select one plot type and double click', (done) => {
-      const { tilesetFinder } = atm;
+      const { tilesetFinder } = hgc.instance().modalRef;
       tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ']);
       hgc.update();
 
-      tilesetFinder.props.onDoubleClick(tilesetFinder.state.options['http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ']);
+      tilesetFinder.props.onDoubleClick(
+        tilesetFinder.state.options['http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ']
+      );
 
       waitForJsonComplete(done);
     });
@@ -75,14 +70,17 @@ describe('Simple HiGlassComponent', () => {
       const tiledPlot = hgc.instance().tiledPlots.aa;
       tiledPlot.handleAddTrack('top');
       hgc.update();
-      atm = tiledPlot.addTrackModal;
+      expect(document.activeElement.className).to.be.eql('tileset-finder-search-box');
       waitForJsonComplete(done);
     });
 
     it('should select two different plot types', (done) => {
-      const { tilesetFinder } = atm;
+      const { tilesetFinder } = hgc.instance().modalRef;
 
-      tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/TO3D5uHjSt6pyDPEpc1hpA', 'http://higlass.io/api/v1/Nn8aA4qbTnmaa-oGGbuE-A']);
+      tilesetFinder.handleSelectedOptions([
+        'http://higlass.io/api/v1/TO3D5uHjSt6pyDPEpc1hpA',
+        'http://higlass.io/api/v1/Nn8aA4qbTnmaa-oGGbuE-A'
+      ]);
 
       hgc.update();
 
@@ -90,36 +88,38 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('should add these plot types', (done) => {
-      atm.handleSubmit();
+      hgc.instance().modalRef.handleSubmit();
 
       const tiledPlot = hgc.instance().tiledPlots.aa;
       tiledPlot.handleAddTrack('top');
 
       hgc.update();
 
-      atm = tiledPlot.addTrackModal;
-
       waitForJsonComplete(done);
     });
 
     it('should select a few different tracks and check for the plot type selection', (done) => {
-      const { tilesetFinder } = atm;
+      const { tilesetFinder } = hgc.instance().modalRef;
 
-      tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ',
-        'http://higlass.io/api/v1/GUm5aBiLRCyz2PsBea7Yzg']);
+      tilesetFinder.handleSelectedOptions([
+        'http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ',
+        'http://higlass.io/api/v1/GUm5aBiLRCyz2PsBea7Yzg'
+      ]);
 
       hgc.update();
 
-      let ptc = atm.plotTypeChooser;
+      let ptc = hgc.instance().modalRef.plotTypeChooser;
 
       expect(ptc.AVAILABLE_TRACK_TYPES.length).to.eql(0);
 
-      tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/NNlxhMSCSnCaukAtdoKNXw',
-        'http://higlass.io/api/v1/GGKJ59R-RsKtwgIgFohOhA']);
+      tilesetFinder.handleSelectedOptions([
+        'http://higlass.io/api/v1/NNlxhMSCSnCaukAtdoKNXw',
+        'http://higlass.io/api/v1/GGKJ59R-RsKtwgIgFohOhA'
+      ]);
 
       hgc.update();
 
-      ptc = atm.plotTypeChooser;
+      ptc = hgc.instance().modalRef.plotTypeChooser;
 
       // console.warn('ptc.AVAILABLE_TRACK_TYPES', ptc.AVAILABLE_TRACK_TYPES);
       // should just have the horizontal-heatmap track type
@@ -129,9 +129,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
     it('should add the selected tracks', (done) => {
-      // atm.unmount();
-      atm.handleSubmit();
-      // hgc.update();
+      hgc.instance().modalRef.handleSubmit();
       const viewConf = JSON.parse(hgc.instance().getViewsAsString());
 
       expect(viewConf.views[0].tracks.top.length).to.eql(6);
