@@ -7,7 +7,11 @@ const Button = React.forwardRef((props, ref) => (
   <button
     ref={ref}
     disable={props.disable}
+    onBlur={props.onBlur}
     onClick={props.onClick}
+    onMouseDown={props.onMouseDown}
+    onMouseOut={props.onMouseOut}
+    onMouseUp={props.onMouseUp}
     styleName={`button ${props.styleName}`}
     type="button"
   >
@@ -24,7 +28,11 @@ Button.defaultProps = {
 Button.propTypes = {
   children: PropTypes.func.isRequired,
   disable: PropTypes.func.isRequired,
+  onBlur: PropTypes.func,
   onClick: PropTypes.func,
+  onMouseDown: PropTypes.func,
+  onMouseOut: PropTypes.func,
+  onMouseUp: PropTypes.func,
   styleName: PropTypes.string,
   type: PropTypes.string,
 };
