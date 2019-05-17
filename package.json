@@ -68,7 +68,7 @@
     "pixi.js": "^4.6.2",
     "prismjs": "^1.16.0",
     "prop-types": "^15.6.0",
-    "pub-sub-es": "^1.2.0",
+    "pub-sub-es": "^1.2.1",
     "react": "^16.6.3",
     "react-autocomplete": "github:tiemevanveen/react-autocomplete#fix-176",
     "react-bootstrap": "0.32.1",
