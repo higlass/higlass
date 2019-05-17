@@ -16,6 +16,7 @@ import GenomePositionSearchBox from './GenomePositionSearchBox';
 import ExportLinkDialog from './ExportLinkDialog';
 import ViewHeader from './ViewHeader';
 import ChromosomeInfo from './ChromosomeInfo';
+import ViewConfigEditor from './ViewConfigEditor';
 
 import createSymbolIcon from './symbol';
 import { all as icons } from './icons';
@@ -289,6 +290,7 @@ class HiGlassComponent extends React.Component {
     this.onBlurHandlerBound = this.onBlurHandler.bind(this);
     this.openModalBound = this.openModal.bind(this);
     this.closeModalBound = this.closeModal.bind(this);
+    this.handleEditViewConfigBound = this.handleEditViewConfig.bind(this);
 
     this.modal = {
       open: this.openModalBound,
@@ -722,6 +724,48 @@ class HiGlassComponent extends React.Component {
   closeModal() {
     this.modalRef = null;
     this.setState({ modal: null });
+  }
+
+  handleEditViewConfig() {
+    const { viewConfig: viewConfigTmp } = this.state;
+    this.setState({ viewConfigTmp });
+    this.openModal(
+      <ViewConfigEditor
+        onCancel={() => {
+          const { viewConfigTmp: viewConfig } = this.state;
+          const views = this.processViewConfig(viewConfig);
+          for (const view of dictValues(views)) {
+            this.adjustLayoutToTrackSizes(view);
+          }
+          this.setState({
+            views,
+            viewConfig,
+            viewConfigTmp: null
+          });
+        }}
+        onChange={(viewConfigJson) => {
+          const viewConfig = JSON.parse(viewConfigJson);
+          const views = this.processViewConfig(viewConfig);
+          for (const view of dictValues(views)) {
+            this.adjustLayoutToTrackSizes(view);
+          }
+          this.setState({ views, viewConfig });
+        }}
+        onSave={(viewConfigJson) => {
+          const viewConfig = JSON.parse(viewConfigJson);
+          const views = this.processViewConfig(viewConfig);
+          for (const view of dictValues(views)) {
+            this.adjustLayoutToTrackSizes(view);
+          }
+          this.setState({
+            views,
+            viewConfig,
+            viewConfigTmp: null
+          });
+        }}
+        viewConfig={this.getViewsAsString()}
+      />
+    );
   }
 
   animate() {
@@ -3355,7 +3399,7 @@ class HiGlassComponent extends React.Component {
    * @param {object}  e  Event object.
    */
   mouseMoveHandler(e) {
-    if (!this.topDiv) return;
+    if (!this.topDiv || this.state.modal) return;
 
     const absX = e.clientX;
     const absY = e.clientY;
@@ -3618,6 +3662,8 @@ class HiGlassComponent extends React.Component {
   }
 
   wheelHandler(evt) {
+    if (this.state.modal) return;
+
     // The event forwarder wasn't written for React's SyntheticEvent
     const nativeEvent = evt.nativeEvent || evt;
     const isZoomFixed = (
@@ -3836,6 +3882,7 @@ class HiGlassComponent extends React.Component {
             onAddView={() => this.handleAddView(view)}
             onClearView={() => this.handleClearView(view.uid)}
             onCloseView={() => this.handleCloseView(view.uid)}
+            onEditViewConfig={this.handleEditViewConfigBound}
             onExportPNG={this.handleExportPNG.bind(this)}
             onExportSVG={this.handleExportSVG.bind(this)}
             onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
