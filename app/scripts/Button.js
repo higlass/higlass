@@ -12,10 +12,13 @@ const Button = React.forwardRef((props, ref) => (
     onMouseDown={props.onMouseDown}
     onMouseOut={props.onMouseOut}
     onMouseUp={props.onMouseUp}
-    styleName={`button ${props.styleName}`}
+    styleName="button"
     type="button"
   >
     {props.children}
+    {props.shortcut && (
+      <span styleName="button-shortcut">{props.shortcut}</span>
+    )}
   </button>
 ));
 
@@ -33,7 +36,7 @@ Button.propTypes = {
   onMouseDown: PropTypes.func,
   onMouseOut: PropTypes.func,
   onMouseUp: PropTypes.func,
-  styleName: PropTypes.string,
+  shortcut: PropTypes.string,
   type: PropTypes.string,
 };
 
