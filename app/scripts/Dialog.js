@@ -36,11 +36,11 @@ const Dialog = (props) => {
         {props.okayOnly ? (
           <div />
         ) : (
-          <Button onClick={handleCancel}>
+          <Button onClick={handleCancel} shortcut={props.cancelShortcut}>
             {props.cancelTitle}
           </Button>
         )}
-        <Button onClick={handleOkay}>
+        <Button onClick={handleOkay} shortcut={props.okayShortcut}>
           {props.okayTitle}
         </Button>
       </footer>
@@ -57,11 +57,13 @@ Dialog.defaultProps = {
 };
 
 Dialog.propTypes = {
+  cancelShortcut: PropTypes.string,
   cancelTitle: PropTypes.string,
   children: PropTypes.func.isRequired,
   hide: PropTypes.bool,
   maxHeight: PropTypes.bool,
   modal: PropTypes.object.isRequired,
+  okayShortcut: PropTypes.string,
   okayTitle: PropTypes.string,
   okayOnly: PropTypes.bool,
   onCancel: PropTypes.func.isRequired,
