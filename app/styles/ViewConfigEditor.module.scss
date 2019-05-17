@@ -1,15 +1,35 @@
+@import './colors';
+@import './transitions';
+
 .view-config-editor-header {
+  margin: -1rem -1rem 0 -1rem;
+  padding: 1rem;
   display: flex;
   justify-content: space-between;
+  background: $gray-lightest;
+
+  button {
+    display: flex;
+    align-items: center;
+    background: $gray-lightest;
+
+    &:hover {
+      background: $gray-lighter;
+      span {
+        color: $gray-dark;
+      }
+    }
+  }
 }
 
 .view-config-editor {
   position: absolute;
-  top: 4rem;
+  top: 5rem;
   right: 0;
   bottom: 0;
   left: 0;
-  padding: 0 0 0 1rem;
+  margin: 1px 0 0 0;
+  padding: 0;
   overflow: auto;
   font-size: 1.25rem;
 }

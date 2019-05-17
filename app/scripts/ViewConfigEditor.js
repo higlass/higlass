@@ -6,8 +6,10 @@ import 'prismjs/components/prism-json';
 
 import Button from './Button';
 import Dialog from './Dialog';
+import withModal from './hocs/with-modal';
+import withPubSub from './hocs/with-pub-sub';
+import { timeout } from './utils';
 
-// Styles
 import '../styles/ViewConfigEditor.module.scss';
 
 class ViewConfigEditor extends React.Component {
@@ -18,17 +20,82 @@ class ViewConfigEditor extends React.Component {
       code: props.viewConfig,
       hide: false,
     };
+
+    this.handleKeyDownBound = this.handleKeyDown.bind(this);
+    this.handleKeyUpBound = this.handleKeyUp.bind(this);
+    this.hideBound = this.hide.bind(this);
+    this.showBound = this.show.bind(this);
+
+    this.pubSubs = [];
+
+    this.pubSubs.push(
+      this.props.pubSub.subscribe('keydown', this.handleKeyDownBound),
+    );
+    this.pubSubs.push(
+      this.props.pubSub.subscribe('keyup', this.handleKeyUpBound),
+    );
   }
 
-  handleSubmit(evt) {
-    if (evt) evt.preventDefault();
+  async componentDidMount() {
+    if (this.editor) {
+      this.editor._input.focus();
+      this.editor._input.setSelectionRange(0, 0);
+      await timeout(0);
+      this.editorWrap.scrollTop = 0;
+    }
+  }
+
+  componentWillUnmount() {
+    this.pubSubs
+      .forEach(subscription => this.props.pubSub.unsubscribe(subscription));
+    this.pubSubs = [];
+  }
+
+  handleKeyDown(event) {
+    if (event.altKey) {
+      this.willHide = setTimeout(this.hideBound, 1000);
+    }
+    if (event.key === 's' && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
+      this.props.onChange(this.state.code);
+    }
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
+      this.props.onChange(this.state.code);
+      this.props.modal.close();
+    }
+  }
+
+  handleKeyUp(event) {
+    if (this.willHide) clearTimeout(this.willHide);
+    this.willHide = null;
+    this.setState({ hide: false });
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.props.modal.close();
+      this.props.onCancel();
+    }
+  }
+
+  handleSubmit(event) {
+    if (event) event.preventDefault();
 
     this.props.onSave(this.state.code);
+  }
+
+  hide() {
+    this.setState({ hide: true });
+  }
+
+  show() {
+    this.setState({ hide: false });
   }
 
   render() {
     return (
       <Dialog
+        cancelTitle="Discard Changes"
         hide={this.state.hide}
         maxHeight={true}
         okayTitle="Save and Close"
@@ -38,28 +105,33 @@ class ViewConfigEditor extends React.Component {
       >
         <header styleName="view-config-editor-header">
           <Button
-            onBlur={() => { this.setState({ hide: false }); }}
-            onMouseDown={() => { this.setState({ hide: true }); }}
-            onMouseOut={() => { this.setState({ hide: false }); }}
-            onMouseUp={() => { this.setState({ hide: false }); }}
+            onBlur={this.showBound}
+            onMouseDown={this.hideBound}
+            onMouseOut={this.showBound}
+            onMouseUp={this.showBound}
+            shortcut="ALT for 1s"
           >
             Hide While Mousedown
           </Button>
           <Button
             onClick={() => { this.props.onChange(this.state.code); }}
+            shortcut="⌘+S"
           >
             Save
           </Button>
         </header>
-        <div styleName="view-config-editor">
+        <div
+          ref={(c) => { this.editorWrap = c; }}
+          styleName="view-config-editor"
+        >
           <Editor
+            ref={(c) => { this.editor = c; }}
             highlight={code => highlight(code, languages.json)}
             onValueChange={(code) => { this.setState({ code }); }}
             padding={10}
             style={{
               fontFamily: '"Fira code", "Fira Mono", monospace',
-              fontSize: 'inherit',
-              overflow: 'auto'
+              fontSize: 'inherit'
             }}
             value={this.state.code}
           />
@@ -70,10 +142,12 @@ class ViewConfigEditor extends React.Component {
 }
 
 ViewConfigEditor.propTypes = {
+  modal: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
+  pubSub: PropTypes.object.isRequired,
   viewConfig: PropTypes.object.isRequired
 };
 
-export default ViewConfigEditor;
+export default withPubSub(withModal(ViewConfigEditor));
