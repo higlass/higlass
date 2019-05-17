@@ -21,6 +21,7 @@ class ViewConfigEditor extends React.Component {
       hide: false,
     };
 
+    this.handleChangeBound = this.handleChange.bind(this);
     this.handleKeyDownBound = this.handleKeyDown.bind(this);
     this.handleKeyUpBound = this.handleKeyUp.bind(this);
     this.hideBound = this.hide.bind(this);
@@ -49,6 +50,10 @@ class ViewConfigEditor extends React.Component {
     this.pubSubs
       .forEach(subscription => this.props.pubSub.unsubscribe(subscription));
     this.pubSubs = [];
+  }
+
+  handleChange(code) {
+    this.setState({ code });
   }
 
   handleKeyDown(event) {
@@ -129,7 +134,7 @@ class ViewConfigEditor extends React.Component {
           <Editor
             ref={(c) => { this.editor = c; }}
             highlight={code => highlight(code, languages.json)}
-            onValueChange={(code) => { this.setState({ code }); }}
+            onValueChange={this.handleChangeBound}
             padding={10}
             style={{
               fontFamily: '"Fira code", "Fira Mono", monospace',
