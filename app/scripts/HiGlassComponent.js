@@ -13,7 +13,7 @@ import createPubSub, { globalPubSub } from 'pub-sub-es';
 
 import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
-import ExportLinkModal from './ExportLinkModal';
+import ExportLinkDialog from './ExportLinkDialog';
 import ViewHeader from './ViewHeader';
 import ChromosomeInfo from './ChromosomeInfo';
 
@@ -23,6 +23,7 @@ import createApi from './api';
 
 // Higher-order components
 import { Provider as PubSubProvider } from './hocs/with-pub-sub';
+import { Provider as ModalProvider } from './hocs/with-modal';
 
 // Services
 import {
@@ -234,12 +235,11 @@ class HiGlassComponent extends React.Component {
       addTrackPositionMenuPosition: null,
 
       mouseOverOverlayUid: null,
-      exportLinkModalOpen: false,
-      exportLinkLocation: null,
       mouseTool,
       isDarkTheme: false,
       rangeSelection1dSize: [0, Infinity],
       rangeSelectionToInt: false,
+      modal: null,
     };
 
     Object.values(views).map(view => this.adjustLayoutToTrackSizes(view));
@@ -287,6 +287,13 @@ class HiGlassComponent extends React.Component {
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
     this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
     this.onBlurHandlerBound = this.onBlurHandler.bind(this);
+    this.openModalBound = this.openModal.bind(this);
+    this.closeModalBound = this.closeModal.bind(this);
+
+    this.modal = {
+      open: this.openModalBound,
+      close: this.closeModalBound
+    };
 
     this.setBroadcastMousePositionGlobally(
       this.props.options.broadcastMousePositionGlobally
@@ -703,6 +710,18 @@ class HiGlassComponent extends React.Component {
         mouseTool: MOUSE_TOOL_MOVE,
       });
     }
+  }
+
+  openModal(modal) {
+    this.setState({
+      // The following is only needed for testing purposes
+      modal: React.cloneElement(modal, { ref: (c) => { this.modalRef = c; } })
+    });
+  }
+
+  closeModal() {
+    this.modalRef = null;
+    this.setState({ modal: null });
   }
 
   animate() {
@@ -2638,17 +2657,8 @@ class HiGlassComponent extends React.Component {
   }
 
   handleExportViewsAsLink(
-    url = this.state.viewConfig.exportViewUrl,
-    fromApi = false
+    url = this.state.viewConfig.exportViewUrl, fromApi = false
   ) {
-    this.width = this.element.clientWidth;
-    this.height = this.element.clientHeight;
-
-    this.setState({
-      exportLinkModalOpen: !fromApi,
-      exportLinkLocation: null,
-    });
-
     const port = window.location.port === '' ? '' : `:${window.location.port}`;
 
     const req = fetch(
@@ -2679,7 +2689,12 @@ class HiGlassComponent extends React.Component {
     if (!fromApi) {
       req
         .then((sharedView) => {
-          this.setState({ exportLinkLocation: sharedView.url });
+          this.openModal(
+            <ExportLinkDialog
+              onDone={() => { this.closeModalBound(); }}
+              url={sharedView.url}
+            />
+          );
         })
         .catch(e => console.error('Exporting view config as link failed:', e));
     }
@@ -3878,17 +3893,6 @@ class HiGlassComponent extends React.Component {
       });
     }
 
-    const exportLinkModal = this.state.exportLinkModalOpen
-      ? (
-        <ExportLinkModal
-          height={this.height}
-          linkLocation={this.state.exportLinkLocation}
-          onDone={() => this.setState({ exportLinkModalOpen: false })}
-          width={this.width}
-        />
-      )
-      : null;
-
     let layouts = this.mounted
       ? Object
         .values(this.state.views)
@@ -3961,32 +3965,34 @@ class HiGlassComponent extends React.Component {
         styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>
-          <canvas
-            key={this.uid}
-            ref={(c) => { this.canvasElement = c; }}
-            styleName="styles.higlass-canvas"
-          />
-          <div
-            ref={(c) => { this.divDrawingSurface = c; }}
-            styleName="styles.higlass-drawing-surface"
-          >
-            {gridLayout}
-          </div>
-          <svg
-            ref={(c) => { this.svgElement = c; }}
-            style={{
-              // inline the styles so they aren't overriden by other css
-              // on the web page
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              left: 0,
-              top: 0,
-              pointerEvents: 'none',
-            }}
-            styleName="styles.higlass-svg"
-          />
-          {exportLinkModal}
+          <ModalProvider value={this.modal}>
+            {this.state.modal}
+            <canvas
+              key={this.uid}
+              ref={(c) => { this.canvasElement = c; }}
+              styleName="styles.higlass-canvas"
+            />
+            <div
+              ref={(c) => { this.divDrawingSurface = c; }}
+              styleName="styles.higlass-drawing-surface"
+            >
+              {gridLayout}
+            </div>
+            <svg
+              ref={(c) => { this.svgElement = c; }}
+              style={{
+                // inline the styles so they aren't overriden by other css
+                // on the web page
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                left: 0,
+                top: 0,
+                pointerEvents: 'none',
+              }}
+              styleName="styles.higlass-svg"
+            />
+          </ModalProvider>
         </PubSubProvider>
       </div>
     );

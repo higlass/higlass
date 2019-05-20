@@ -36,6 +36,8 @@ class ViewHeader extends React.Component {
       isFocused: false,
       width: -1,
     };
+
+    this.handleTrackPositionChosenBound = this.handleTrackPositionChosen.bind(this);
   }
 
   componentDidMount() {
@@ -106,7 +108,7 @@ class ViewHeader extends React.Component {
             position={this.state.addTrackPositionMenuPosition}
           >
             <AddTrackPositionMenu
-              onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
+              onTrackPositionChosen={this.handleTrackPositionChosenBound}
             />
           </ContextMenuContainer>
         </PopupMenu>

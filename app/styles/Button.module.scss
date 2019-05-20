@@ -1,0 +1,37 @@
+@import './colors';
+@import './transitions';
+
+.button {
+  display: block;
+  box-sizing: border-box;
+  padding: 0.5em 0.5em;
+  color: $black;
+  font-size: 1em;
+  line-height: 1em;
+  border: 0;
+  border-radius: .25rem;
+  background: $white;
+  box-shadow: 0 0 0 1px $gray-light;
+  transition: transform $fast $ease,
+              box-shadow $fast $ease,
+              background $fast $ease;
+  -webkit-appearance: none;
+}
+
+.button:hover {
+  background: $gray-lightest;
+  box-shadow: 0 0 0 1px $gray-light;
+}
+
+.button:focus {
+  box-shadow: 0 0 0 2px $blue-lighter;
+}
+
+.button:active {
+  transform: scale(0.9);
+}
+
+.button:hover, .button:focus, .button:active {
+  cursor: pointer;
+  outline: none;
+}
