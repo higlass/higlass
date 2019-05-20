@@ -1,3 +1,7 @@
+## v1.5.8
+
+- Updated `pub-sub-es` to version `1.2.1` to fix a bug in the shorthand event unsubscription
+
 ## v1.5.7
 
 - Fix #637 - SVG export fill color doesn't match what is selected
