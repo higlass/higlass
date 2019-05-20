@@ -1941,49 +1941,6 @@ describe('Simple HiGlassComponent', () => {
     });
   });
 
-  describe('AddTrackModal', () => {
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'height:400px; width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: true }}
-        viewConfig={oneViewConfig}
-      />,
-      { attachTo: div });
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('has the focus in the searchbar when adding a new track', (done) => {
-      const tiledPlot = hgc.instance().tiledPlots.aa;
-      tiledPlot.handleAddTrack('top');
-
-      hgc.update();
-
-      // eslint-disable-next-line react/no-find-dom-node
-      const inputField = ReactDOM.findDOMNode(tiledPlot.addTrackModal.tilesetFinder.searchBox);
-
-      // make sure the input field is equal to the document's active element
-      // e.g. that it has focus
-      expect(inputField).toEqual(document.activeElement);
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-  });
-
 
   describe('Single view', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
