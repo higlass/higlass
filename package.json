@@ -1,6 +1,6 @@
 {
   "name": "higlass",
-  "version": "1.5.6",
+  "version": "1.5.7",
   "description": "HiGlass Hi-C / genomic / large data viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/hglib.js",
@@ -67,7 +67,7 @@
     "path": "^0.12.7",
     "pixi.js": "^4.6.2",
     "prop-types": "^15.6.0",
-    "pub-sub-es": "^1.2.0",
+    "pub-sub-es": "^1.2.1",
     "react": "^16.6.3",
     "react-autocomplete": "github:tiemevanveen/react-autocomplete#fix-176",
     "react-bootstrap": "0.32.1",
