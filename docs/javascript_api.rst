@@ -12,41 +12,41 @@ javascript and css files:
 
 .. code-block:: html
 
- <!DOCTYPE html>
-<head>
-  <meta charset="utf-8">
+  <!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
 
-  <link rel="stylesheet" href="bootstrap.min.css">
-  <link rel="stylesheet" href="hglib.css">
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="hglib.css">
 
-  <link rel="stylesheet" href="https://unpkg.com/higlass@1.5.2/dist/hglib.css" type="text/css">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="https://unpkg.com/higlass@1.5.2/dist/hglib.css" type="text/css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
 
-  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.1/pixi.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.1/pixi.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
 
-  <script src="https://unpkg.com/higlass@1.5.2/dist/hglib.min.js"></script>
+    <script src="https://unpkg.com/higlass@1.5.2/dist/hglib.min.js"></script>
 
-</head>
-<body >
-  <div id="development-demo" style="width: 800px; 
-  background-color: white;"></div>
-</body>
+  </head>
+  <body >
+    <div id="development-demo" style="width: 800px; 
+    background-color: white;"></div>
+  </body>
 
-<script>
+  <script>
 
-const hgApi = hglib.viewer(
-  document.getElementById('development-demo'),
-  'http://higlass.io/api/v1/viewconfs/?d=default',
-  {
-    bounded: false,
-  }
-);
+  const hgApi = hglib.viewer(
+    document.getElementById('development-demo'),
+    'http://higlass.io/api/v1/viewconfs/?d=default',
+    {
+      bounded: false,
+    }
+  );
 
-</script>
-</html>
+  </script>
+  </html>
 
 External tracks should be included **before** the hglib.js import:
 
@@ -231,8 +231,3 @@ API Functions
 
 .. js:autofunction:: setGlobalMousePosition
 
-TiledPixiTrack Functions
-========================
-
-.. js:autoclass:: TiledPixiTrack
-  :members: on
