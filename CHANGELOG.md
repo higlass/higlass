@@ -3,6 +3,7 @@
 - Replace ReactBootstrap modal with custom modal to not rely on Bootstrap and support Jupyter
 - Updated `pub-sub-es` to version `1.2.1` to fix a bug in the shorthand event unsubscription
 - Removed the redundant Horizontal 1D Heatmap track
+- Added an example of a map overlay
 
 ## v1.5.7
 
