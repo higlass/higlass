@@ -22,7 +22,6 @@ import HorizontalPoint1DPixiTrack from './HorizontalPoint1DPixiTrack';
 import HorizontalMultivecTrack from './HorizontalMultivecTrack';
 import BarTrack from './BarTrack';
 import DivergentBarTrack from './DivergentBarTrack';
-import Horizontal1dHeatmapTrack from './Horizontal1dHeatmapTrack';
 
 import CNVIntervalTrack from './CNVIntervalTrack';
 import LeftTrackModifier from './LeftTrackModifier';
@@ -1307,20 +1306,12 @@ class TrackRenderer extends React.Component {
           new HorizontalMultivecTrack(context, options)
         );
 
-      case 'horizontal-1d-heatmap':
-        return new Horizontal1dHeatmapTrack(context, options);
-
       case 'horizontal-line':
         return new HorizontalLine1DPixiTrack(context, options);
 
       case 'vertical-line':
         return new LeftTrackModifier(
           new HorizontalLine1DPixiTrack(context, options),
-        );
-
-      case 'vertical-1d-heatmap':
-        return new LeftTrackModifier(
-          new Horizontal1dHeatmapTrack(context, options)
         );
 
       case 'horizontal-point':
