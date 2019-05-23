@@ -1107,8 +1107,8 @@ class HiGlassComponent extends React.Component {
 
     // FF is fussier than Chrome, and requires dimensions on the SVG,
     // if it is to be used as an image src.
-    svg.setAttribute('width', this.canvasElement.width);
-    svg.setAttribute('height', this.canvasElement.height);
+    svg.setAttribute('width', this.canvasElement.style.width);
+    svg.setAttribute('height', this.canvasElement.style.height);
 
     let svgString = vkbeautify.xml(new window.XMLSerializer().serializeToString(svg));
 
