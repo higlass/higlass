@@ -1,31 +1,50 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Button from './Button';
 import Dialog from './Dialog';
 
 import '../styles/ExportLinkDialog.module.scss';
 
-const ExportLinkDialog = props => (
-  <Dialog
-    okayOnly={true}
-    okayTitle="Done"
-    onOkay={props.onDone}
-    title="Share view link"
-  >
-    <p>
-      Copied to clipboard!
-      <span aria-label="Hooray" role="img"> 🎉</span>
-    </p>
-    <input
-      ref={(element) => { element.focus(); element.select(); document.execCommand('copy'); }}
-      onClick={(event) => { event.target.select(); }}
-      placeholder="Generating the link..."
-      readOnly={true}
-      styleName="full-width"
-      value={props.url}
-    />
-  </Dialog>
-);
+class ExportLinkDialog extends React.Component {
+  render() {
+    return (
+      <Dialog
+        okayOnly={true}
+        okayTitle="Done"
+        onOkay={this.props.onDone}
+        title="Share view link"
+      >
+        <p>
+          Copied to clipboard!
+          <span aria-label="Hooray" role="img"> 🎉</span>
+        </p>
+        <div styleName="export-link-dialog-wrapper">
+          <input
+            ref={(element) => {
+              this.input = element;
+              element.focus();
+              element.select();
+              document.execCommand('copy');
+            }}
+            onClick={(event) => { event.target.select(); }}
+            placeholder="Generating the link..."
+            readOnly={true}
+            value={this.props.url}
+          />
+          <Button
+            onClick={(event) => {
+              this.input.select();
+              document.execCommand('copy');
+            }}
+          >
+            Copy
+          </Button>
+        </div>
+      </Dialog>
+    );
+  }
+}
 
 ExportLinkDialog.defaultProps = {
   onDone: () => {},
