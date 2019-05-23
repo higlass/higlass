@@ -1124,25 +1124,19 @@ class HiGlassComponent extends React.Component {
       // and you don't have direct access to what is on-screen.
       // (You end up getting a PNG of the desired dimensions, but it is empty.)
       //
-      // We'd either need to
-      // - Turn on preserveDrawingBuffer and rerender, and add a callback
-      // - Or leave it off, and somehow synchronously export before the swap
-      // - Or look into low-level stuff like copyBufferSubData.
-      //
-      // Basing it on the SVG also guarantees us that the two exports are the same.
+      // Instead we render the currently visible buffer into a special render
+      // texture and extract that to a canvas object to get the blob. This
 
-      const svgString = this.createSVGString();
+      const renderTexture = PIXI.RenderTexture.create(
+        this.pixiRenderer.width / 2, this.pixiRenderer.height / 2
+      );
 
-      const img = new Image(this.canvasElement.width, this.canvasElement.height);
-      img.src = `data:image/svg+xml;base64,${btoa(svgString)}`;
-      img.onload = () => {
-        const targetCanvas = document.createElement('canvas');
-        // TODO: I have no idea why dimensions are doubled!
-        targetCanvas.width = this.canvasElement.width / 2;
-        targetCanvas.height = this.canvasElement.height / 2;
-        targetCanvas.getContext('2d').drawImage(img, 0, 0);
-        targetCanvas.toBlob((blob) => { resolve(blob); });
-      };
+      this.pixiRenderer.render(this.pixiStage, renderTexture);
+
+      this.pixiRenderer
+        .extract
+        .canvas(renderTexture)
+        .toBlob((blob) => { resolve(blob); });
     });
   }
 
