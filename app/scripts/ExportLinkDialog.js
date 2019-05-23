@@ -12,8 +12,13 @@ const ExportLinkDialog = props => (
     onOkay={props.onDone}
     title="Share view link"
   >
+    <p>
+      Copied to clipboard!
+      <span aria-label="Hooray" role="img"> 🎉</span>
+    </p>
     <input
-      onClick={event => event.target.select()}
+      ref={(element) => { element.focus(); element.select(); document.execCommand('copy'); }}
+      onClick={(event) => { event.target.select(); }}
       placeholder="Generating the link..."
       readOnly={true}
       styleName="full-width"
