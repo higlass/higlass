@@ -2659,7 +2659,7 @@ class HiGlassComponent extends React.Component {
   handleExportViewsAsLink(
     url = this.state.viewConfig.exportViewUrl, fromApi = false
   ) {
-    const port = window.location.port === '' ? '' : `:${window.location.port}`;
+    const parsedUrl = new URL(url, window.location.origin);
 
     const req = fetch(
       url,
@@ -2683,7 +2683,7 @@ class HiGlassComponent extends React.Component {
       })
       .then(_json => ({
         id: _json.uid,
-        url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
+        url: `${parsedUrl.origin}/app/?config=${_json.uid}`
       }));
 
     if (!fromApi) {
