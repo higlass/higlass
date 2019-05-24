@@ -39,6 +39,21 @@ json (e.g. `{"viewconf": myViewconf}`):
          -X POST \
          -d '{"viewconf": {"editable": true, "zoomFixed": false, "trackSourceServers": ["/api/v2", "http://higlass.io/api/v1"], "exportViewUrl": "/api/v1/viewconfs/", "views": [{"tracks": {"top": [], "left": [], "center": [], "right": [], "bottom": []}, "initialXDomain": [243883495.14563107, 2956116504.854369], "initialYDomain": [804660194.1747572, 2395339805.825243], "layout": {"w": 12, "h": 12, "x": 0, "y": 0, "i": "EwiSznw8ST2HF3CjHx-tCg", "moved": false, "static": false}, "uid": "EwiSznw8ST2HF3CjHx-tCg"}], "zoomLocks": {"locksByViewUid": {}, "locksDict": {}}, "locationLocks": {"locksByViewUid": {}, "locksDict": {}}, "valueScaleLocks": {"locksByViewUid": {}, "locksDict": {}}}}' http://localhost:8989/api/v1/viewconfs/
 
+Edit the view config online
+===========================
+
+The view config can be directly adjusted in the browser to give an easy access
+to all available options that might not otherwise be accessible through the
+user interface yet. To open the editor click on _cog wheel_ icon in the view
+header and select _Edit view config_.
+
+The editor support a couple of keyboard shortcuts to make editing fast:
+
+- ``CMD (or CTRL) + S `` to save and apply the view config
+- ``ESC`` to claose the modl and to undue all (saved but not finalized) changes introduced while editing the view config.
+- ``CMD (or CTRL) + Enter`` to save, apply, and finalize changes and close the modal
+- Hold ``ALT`` for 1 second to temporarily hide the modal. The modal will reappear as soon as you release ``ALT``.
+
 Viewconf Structure
 ==================
 

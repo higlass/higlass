@@ -1,10 +1,12 @@
 ## v1.5.8
 
+- Add a dialog to directly edit the view config in the browser
 - Replace ReactBootstrap modal with custom modal to not rely on Bootstrap and support Jupyter
 - Updated `pub-sub-es` to version `1.2.1` to fix a bug in the shorthand event unsubscription
 - Added an example of a map overlay
 - Fix #648: Auto select and copy URL when exporting a view by link
 - Fix #647: Shows correct URL when specifying an absolute URL as `exportViewUrl` in the viewconf
+- Fix #651: set correct namespace for SVG exports
 
 ## v1.5.7
 

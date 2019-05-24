@@ -16,6 +16,7 @@ import GenomePositionSearchBox from './GenomePositionSearchBox';
 import ExportLinkDialog from './ExportLinkDialog';
 import ViewHeader from './ViewHeader';
 import ChromosomeInfo from './ChromosomeInfo';
+import ViewConfigEditor from './ViewConfigEditor';
 
 import createSymbolIcon from './symbol';
 import { all as icons } from './icons';
@@ -289,6 +290,7 @@ class HiGlassComponent extends React.Component {
     this.onBlurHandlerBound = this.onBlurHandler.bind(this);
     this.openModalBound = this.openModal.bind(this);
     this.closeModalBound = this.closeModal.bind(this);
+    this.handleEditViewConfigBound = this.handleEditViewConfig.bind(this);
 
     this.modal = {
       open: this.openModalBound,
@@ -724,6 +726,48 @@ class HiGlassComponent extends React.Component {
     this.setState({ modal: null });
   }
 
+  handleEditViewConfig() {
+    const { viewConfig: viewConfigTmp } = this.state;
+    this.setState({ viewConfigTmp });
+    this.openModal(
+      <ViewConfigEditor
+        onCancel={() => {
+          const { viewConfigTmp: viewConfig } = this.state;
+          const views = this.processViewConfig(viewConfig);
+          for (const view of dictValues(views)) {
+            this.adjustLayoutToTrackSizes(view);
+          }
+          this.setState({
+            views,
+            viewConfig,
+            viewConfigTmp: null
+          });
+        }}
+        onChange={(viewConfigJson) => {
+          const viewConfig = JSON.parse(viewConfigJson);
+          const views = this.processViewConfig(viewConfig);
+          for (const view of dictValues(views)) {
+            this.adjustLayoutToTrackSizes(view);
+          }
+          this.setState({ views, viewConfig });
+        }}
+        onSave={(viewConfigJson) => {
+          const viewConfig = JSON.parse(viewConfigJson);
+          const views = this.processViewConfig(viewConfig);
+          for (const view of dictValues(views)) {
+            this.adjustLayoutToTrackSizes(view);
+          }
+          this.setState({
+            views,
+            viewConfig,
+            viewConfigTmp: null
+          });
+        }}
+        viewConfig={this.getViewsAsString()}
+      />
+    );
+  }
+
   animate() {
     if (this.isRequestingAnimationFrame) return;
 
@@ -1079,9 +1123,14 @@ class HiGlassComponent extends React.Component {
   }
 
   createSVG() {
-    const svg = document.createElement('svg');
-    svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
-    svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    const xmlns = 'http://www.w3.org/2000/xmlns/';
+    const xlinkns = 'http://www.w3.org/1999/xlink';
+    const svgns = 'http://www.w3.org/2000/svg';
+
+    const svg = document.createElementNS(svgns, 'svg');
+    svg.setAttributeNS(xmlns, 'xmlns', svgns);
+    svg.setAttributeNS(xmlns, 'xmlns:xlink', xlinkns);
+    svg.setAttribute('version', '1.1');
 
     for (const tiledPlot of dictValues(this.tiledPlots)) {
       if (!tiledPlot) continue; // probably opened and closed
@@ -1098,23 +1147,29 @@ class HiGlassComponent extends React.Component {
   }
 
   createSVGString() {
-    let svgString = vkbeautify.xml(new XMLSerializer().serializeToString(this.createSVG()));
+    const svg = this.createSVG();
+
+    // FF is fussier than Chrome, and requires dimensions on the SVG,
+    // if it is to be used as an image src.
+    svg.setAttribute('width', this.canvasElement.style.width);
+    svg.setAttribute('height', this.canvasElement.style.height);
+
+    let svgString = vkbeautify.xml(new window.XMLSerializer().serializeToString(svg));
 
     svgString = svgString.replace(/<a0:/g, '<');
     svgString = svgString.replace(/<\/a0:/g, '</');
 
-    // FF is fussier than Chrome, and requires dimensions on the SVG,
-    // if it is to be used as an image src.
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=700533
-    const w = this.canvasElement.width;
-    const h = this.canvasElement.height;
-    const dimensionedSvgString = `<svg width="${w}" height="${h}" ${svgString.slice(4)}`;
+    const xmlDeclaration = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>';
+    const doctype = '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
 
-    return dimensionedSvgString;
+    return `${xmlDeclaration}\n${doctype}\n${svgString}`;
   }
 
   handleExportSVG() {
-    download('export.svg', this.createSVGString());
+    download(
+      'export.svg',
+      new Blob([this.createSVGString()], { type: 'image/svg+xml' })
+    );
   }
 
   createPNGBlobPromise() {
@@ -3355,7 +3410,7 @@ class HiGlassComponent extends React.Component {
    * @param {object}  e  Event object.
    */
   mouseMoveHandler(e) {
-    if (!this.topDiv) return;
+    if (!this.topDiv || this.state.modal) return;
 
     const absX = e.clientX;
     const absY = e.clientY;
@@ -3618,6 +3673,8 @@ class HiGlassComponent extends React.Component {
   }
 
   wheelHandler(evt) {
+    if (this.state.modal) return;
+
     // The event forwarder wasn't written for React's SyntheticEvent
     const nativeEvent = evt.nativeEvent || evt;
     const isZoomFixed = (
@@ -3776,7 +3833,7 @@ class HiGlassComponent extends React.Component {
             setCentersFunction={(c) => { this.setCenters[view.uid] = c; }}
             svgElement={this.state.svgElement}
             tracks={view.tracks}
-            trackSourceServers={this.props.viewConfig.trackSourceServers}
+            trackSourceServers={this.state.viewConfig.trackSourceServers}
             uid={view.uid}
             verticalMargin={this.verticalMargin}
             viewOptions={view.options}
@@ -3836,6 +3893,7 @@ class HiGlassComponent extends React.Component {
             onAddView={() => this.handleAddView(view)}
             onClearView={() => this.handleClearView(view.uid)}
             onCloseView={() => this.handleCloseView(view.uid)}
+            onEditViewConfig={this.handleEditViewConfigBound}
             onExportPNG={this.handleExportPNG.bind(this)}
             onExportSVG={this.handleExportSVG.bind(this)}
             onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
