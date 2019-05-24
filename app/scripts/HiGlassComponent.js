@@ -422,10 +422,31 @@ class HiGlassComponent extends React.Component {
       autoResize: true,
     };
 
-    if (this.props.options.renderer === 'canvas') {
-      this.pixiRenderer = new PIXI.CanvasRenderer(rendererOptions);
-    } else {
-      this.pixiRenderer = new PIXI.Renderer(rendererOptions);
+    switch (PIXI.VERSION[0]) {
+      case '4':
+        console.warn(
+          'Deprecation warning: please update Pixi.js to version 5!'
+        );
+        if (this.props.options.renderer === 'canvas') {
+          this.pixiRenderer = new PIXI.CanvasRenderer(rendererOptions);
+        } else {
+          this.pixiRenderer = new PIXI.WebGLRenderer(rendererOptions);
+        }
+        break;
+
+      default:
+        console.warn(
+          'Deprecation warning: please update Pixi.js to version 5! '
+          + 'This version of Pixi.js is unsupported. Good luck 🤞'
+        );
+      // eslint-disable-next-line
+      case '5':
+        if (this.props.options.renderer === 'canvas') {
+          this.pixiRenderer = new PIXI.CanvasRenderer(rendererOptions);
+        } else {
+          this.pixiRenderer = new PIXI.Renderer(rendererOptions);
+        }
+        break;
     }
 
     // PIXI.RESOLUTION=2;

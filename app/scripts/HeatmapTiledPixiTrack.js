@@ -1073,10 +1073,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
           }
 
           let sprite = null;
-          const texture = PIXI.Texture.from(
-            canvas,
-            { scaleMode: PIXI.SCALE_MODES.NEAREST }
-          );
+          const texture = PIXI.VERSION[0] === '4'
+            ? PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
+            : PIXI.Texture.from(canvas, { scaleMode: PIXI.SCALE_MODES.NEAREST });
 
           sprite = new PIXI.Sprite(
             texture
