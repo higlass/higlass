@@ -14,9 +14,9 @@ const Modal = (props) => {
   };
 
   return (
-    <div styleName="modal-background">
+    <div styleName={`modal-background ${props.hide ? 'modal-hide' : ''}`}>
       <div styleName="modal-wrap">
-        <div styleName="modal-window">
+        <div styleName={`modal-window ${props.maxHeight ? 'modal-window-max-height' : ''}`}>
           {props.closeButton && (
             <Button onClick={handleClose}><Cross /></Button>
           )}
@@ -30,12 +30,16 @@ const Modal = (props) => {
 };
 
 Modal.defaultProps = {
-  closeButton: true
+  closeButton: true,
+  hide: false,
+  maxHeight: false,
 };
 
 Modal.propTypes = {
   children: PropTypes.element.isRequired,
   closeButton: PropTypes.bool,
+  hide: PropTypes.bool,
+  maxHeight: PropTypes.bool,
   modal: PropTypes.object.isRequired,
   onClose: PropTypes.func
 };
