@@ -1079,9 +1079,14 @@ class HiGlassComponent extends React.Component {
   }
 
   createSVG() {
-    const svg = document.createElement('svg');
-    svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
-    svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    const xmlns = 'http://www.w3.org/2000/xmlns/';
+    const xlinkns = 'http://www.w3.org/1999/xlink';
+    const svgns = 'http://www.w3.org/2000/svg';
+
+    const svg = document.createElementNS(svgns, 'svg');
+    svg.setAttributeNS(xmlns, 'xmlns', svgns);
+    svg.setAttributeNS(xmlns, 'xmlns:xlink', xlinkns);
+    svg.setAttribute('version', '1.1');
 
     for (const tiledPlot of dictValues(this.tiledPlots)) {
       if (!tiledPlot) continue; // probably opened and closed
@@ -1098,23 +1103,29 @@ class HiGlassComponent extends React.Component {
   }
 
   createSVGString() {
-    let svgString = vkbeautify.xml(new XMLSerializer().serializeToString(this.createSVG()));
+    const svg = this.createSVG();
+
+    // FF is fussier than Chrome, and requires dimensions on the SVG,
+    // if it is to be used as an image src.
+    svg.setAttribute('width', this.canvasElement.style.width);
+    svg.setAttribute('height', this.canvasElement.style.height);
+
+    let svgString = vkbeautify.xml(new window.XMLSerializer().serializeToString(svg));
 
     svgString = svgString.replace(/<a0:/g, '<');
     svgString = svgString.replace(/<\/a0:/g, '</');
 
-    // FF is fussier than Chrome, and requires dimensions on the SVG,
-    // if it is to be used as an image src.
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=700533
-    const w = this.canvasElement.width;
-    const h = this.canvasElement.height;
-    const dimensionedSvgString = `<svg width="${w}" height="${h}" ${svgString.slice(4)}`;
+    const xmlDeclaration = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>';
+    const doctype = '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
 
-    return dimensionedSvgString;
+    return `${xmlDeclaration}\n${doctype}\n${svgString}`;
   }
 
   handleExportSVG() {
-    download('export.svg', this.createSVGString());
+    download(
+      'export.svg',
+      new Blob([this.createSVGString()], { type: 'image/svg+xml' })
+    );
   }
 
   createPNGBlobPromise() {
