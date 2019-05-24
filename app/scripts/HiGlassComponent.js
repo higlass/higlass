@@ -413,6 +413,8 @@ class HiGlassComponent extends React.Component {
     });
 
     const rendererOptions = {
+      width: this.state.width,
+      height: this.state.height,
       view: this.canvasElement,
       antialias: true,
       transparent: true,
@@ -420,24 +422,10 @@ class HiGlassComponent extends React.Component {
       autoResize: true,
     };
 
-    if (this.props.options.renderer === 'webgl') {
-      this.pixiRenderer = new PIXI.WebGLRenderer(
-        this.state.width,
-        this.state.height,
-        rendererOptions
-      );
-    } else if (this.props.options.renderer === 'canvas') {
-      this.pixiRenderer = new PIXI.CanvasRenderer(
-        this.state.width,
-        this.state.height,
-        rendererOptions
-      );
+    if (this.props.options.renderer === 'canvas') {
+      this.pixiRenderer = new PIXI.CanvasRenderer(rendererOptions);
     } else {
-      this.pixiRenderer = PIXI.autoDetectRenderer(
-        this.state.width,
-        this.state.height,
-        rendererOptions
-      );
+      this.pixiRenderer = new PIXI.Renderer(rendererOptions);
     }
 
     // PIXI.RESOLUTION=2;
