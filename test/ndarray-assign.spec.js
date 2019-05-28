@@ -1,3 +1,4 @@
+/* eslint-env node, jasmine */
 import ndarray from 'ndarray';
 import ndarrayAssign from '../app/scripts/utils/ndarray-assign';
 

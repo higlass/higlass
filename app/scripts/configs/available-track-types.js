@@ -21,20 +21,23 @@ import { DATATYPE_TO_TRACK_TYPE } from '.';
  */
 export const AVAILABLE_TRACK_TYPES = (datatypes, orientation) => {
   const datatypesToTrackTypes = DATATYPE_TO_TRACK_TYPE(orientation);
+  let availableTrackTypes = new Set(
+    Object.values(datatypesToTrackTypes)
+      .flatMap(x => x)
+  );
 
-  const firstDatatype = datatypes[0];
-  let allSame = true;
   for (const datatype of datatypes) {
-    if (datatype !== firstDatatype) { allSame = false; }
+    // datatype should actually be an array of datatypes
+    const dataTypeSet = new Set(datatype);
+
+    availableTrackTypes = new Set(
+      [...availableTrackTypes].filter(
+        x => x.datatype.filter(y => dataTypeSet.has(y)).length > 0
+      )
+    );
   }
 
-  if (allSame) {
-    // only display available track types if all of the selected datasets are
-    // the same
-    return datatypesToTrackTypes[datatypes[0]];
-  }
-
-  return [];
+  return [...availableTrackTypes];
 };
 
 export default AVAILABLE_TRACK_TYPES;

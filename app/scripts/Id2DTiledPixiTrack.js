@@ -6,10 +6,12 @@ export function drawTile(tile) {
 
   // console.log('Id2DTiled drawTile...', tile);
   const graphics = tile.graphics;
-  const { tileX, tileY, tileWidth, tileHeight } = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
+  const {
+    tileX, tileY, tileWidth
+  } = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
     tile.tileData.tilePos);
 
-  // console.log('tileX:', tileX, 'tileY:', tileY, 'tileWidth:', tileWidth, 'tileHeight:', tileHeight);
+  // console.log('tileX:', tileX, 'tileY:', tileY, 'tileWidth:', tileWidth);
 
   // the text needs to be scaled down so that it doesn't become huge
   // when we zoom in
@@ -46,7 +48,8 @@ export function drawTile(tile) {
     tile.textGraphics.position.x = this._refXScale(tileY) + tileScaledWidth / 2;
     tile.textGraphics.position.y = this._refYScale(tileX) + tileScaledHeight / 2;
 
-    graphics.drawRect(this._refXScale(tileY), this._refYScale(tileX), tileScaledWidth, tileScaledHeight);
+    graphics.drawRect(this._refXScale(tileY), this._refYScale(tileX), tileScaledWidth,
+      tileScaledHeight);
   } else {
     const tileScaledWidth = this._refXScale(tileX + tileWidth) - this._refXScale(tileX);
     const tileScaledHeight = this._refYScale(tileY + tileWidth) - this._refYScale(tileY);
@@ -55,25 +58,28 @@ export function drawTile(tile) {
     tile.textGraphics.position.x = this._refXScale(tileX) + tileScaledWidth / 2;
     tile.textGraphics.position.y = this._refYScale(tileY) + tileScaledHeight / 2;
 
-    const x = this._refXScale(tileX);
-    const y = this._refYScale(tileY);
-
-    graphics.drawRect(this._refXScale(tileX), this._refYScale(tileY), tileScaledWidth, tileScaledHeight);
+    graphics.drawRect(this._refXScale(tileX), this._refYScale(tileY), tileScaledWidth,
+      tileScaledHeight);
   }
 }
 
 export function initTile(tile) {
   const graphics = tile.graphics;
   tile.textGraphics = new PIXI.Graphics();
-  // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored,
+  // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/')
+  // + '/' + tile.mirrored,
 
   if (tile.mirrored) {
     // mirrored tiles have their x and y coordinates reversed
     tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${[tile.tileData.tilePos[1], tile.tileData.tilePos[0]].join('/')}`,
-      { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
+      {
+        fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center'
+      });
   } else {
     tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`,
-      { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
+      {
+        fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center'
+      });
   }
 
   // tile.text.y = 100;
@@ -113,13 +119,13 @@ class Id2DTiledPixiTrack extends HeatmapTiledPixiTrack {
 
   fetchNewTiles(toFetch) {
     // no real fetching involved... we just need to display the data
-    toFetch.map((x) => {
+    toFetch.forEach((x) => {
       const key = x.remoteId;
       const keyParts = key.split('.');
 
       const data = {
         zoomLevel: keyParts[0],
-        tilePos: keyParts.slice(1, keyParts.length).map(x => +x),
+        tilePos: keyParts.slice(1, keyParts.length).map(keyPart => +keyPart),
       };
 
       this.fetchedTiles[x.tileId] = x;

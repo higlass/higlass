@@ -5,8 +5,8 @@ import { tileProxy } from './services';
 import { colorToHex } from './utils';
 
 class SquareMarkersTrack extends TiledPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, option, animate);
+  constructor(context, options) {
+    super(context, options);
 
     this.drawnRects = new Set();
   }
@@ -137,8 +137,6 @@ class SquareMarkersTrack extends TiledPixiTrack {
 
     // line needs to be scaled down so that it doesn't become huge
     for (const td of tile.tileData) {
-      const line = td.fields;
-
       const startX = this._xScale(td.xStart);
       const endX = this._xScale(td.xEnd);
 
@@ -147,7 +145,8 @@ class SquareMarkersTrack extends TiledPixiTrack {
 
       const uid = td.uid;
 
-      if (this.drawnRects.has(uid)) { continue; } // we've already drawn this rectangle in another tile
+      if (this.drawnRects.has(uid)) { continue; }
+      // we've already drawn this rectangle in another tile
 
       this.drawnRects.add(uid);
 

@@ -12,3 +12,4 @@ Fixes #___
 - [ ] Documentation added or updated
 - [ ] Example added or updated
 - [ ] Screenshot for visual changes (e.g. new tracks)
+- [ ] Updated CHANGELOG.md

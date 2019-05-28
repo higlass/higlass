@@ -4,28 +4,16 @@ import { scaleLinear } from 'd3-scale';
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 import { colorToHex } from './utils';
-import { tileProxy } from './services';
 
 class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
-  constructor(
-    scene,
-    dataConfig,
-    handleTilesetInfoReceived,
-    option,
-    animate,
-    onValueScaleChanged,
-  ) {
-    super(
-      scene,
-      dataConfig,
-      handleTilesetInfoReceived,
-      option,
-      animate,
-      () => {
-        this.drawAxis(this.valueScale);
-        onValueScaleChanged();
-      }
-    );
+  constructor(context, options) {
+    // Fritz: this smells very hacky!
+    const newContext = { ...context };
+    newContext.onValueScaleChanged = () => {
+      this.drawAxis(this.valueScale);
+      context.onValueScaleChanged();
+    };
+    super(newContext, options);
   }
 
   stopHover() {
@@ -34,32 +22,15 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   }
 
   getMouseOverHtml(trackX) {
+    // if we're not supposed to show the tooltip, don't show it
+    // we return here so that the mark isn't drawn in the code
+    // below
     if (!this.tilesetInfo || !this.options.showTooltip) return '';
 
-    const zoomLevel = this.calculateZoomLevel();
-    const tileWidth = tileProxy.calculateTileWidth(
-      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
-    );
-
-    // the position of the tile containing the query position
-    const tilePos = this._xScale.invert(trackX) / tileWidth;
-    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
-
-    const fetchedTile = this.fetchedTiles[tileId];
-    if (!fetchedTile) return '';
-
-    const posInTileX = fetchedTile.tileData.dense.length * (tilePos - Math.floor(tilePos));
-
-    let value = '';
+    const value = this.getDataAtPos(trackX);
     let textValue = '';
 
-    if (fetchedTile) {
-      const index = Math.floor(posInTileX);
-      value = fetchedTile.tileData.dense[index];
-      textValue = format('.3f')(value);
-    } else {
-      return '';
-    }
+    if (value) textValue = format('.3f')(value);
 
     const graphics = this.pMouseOver;
     const colorHex = 0;
@@ -156,7 +127,15 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     const stroke = colorToHex(this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue');
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
-    const tileXScale = scaleLinear().domain([0, this.tilesetInfo.tile_size])
+    if (!this.tilesetInfo.tile_size && !this.tilesetInfo.bins_per_dimension) {
+      console.warn('No tileset_info.tile_size or tileset_info.bins_per_dimension',
+        this.tilesetInfo);
+    }
+
+    const tileSize = this.tilesetInfo.tile_size
+      || this.tilesetInfo.bins_per_dimension;
+
+    const tileXScale = scaleLinear().domain([0, tileSize])
       .range([tileX, tileX + tileWidth]);
 
     const strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
@@ -169,7 +148,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       const xPos = this._xScale(tileXScale(i));
       const yPos = this.valueScale(tileValues[i] + offsetValue);
 
-      if (this.options.valueScaling === 'log' && tileValues[i] === 0) {
+      if ((this.options.valueScaling === 'log' && tileValues[i] === 0) || Number.isNaN(yPos)) {
         if (currentSegment.length > 1) {
           tile.segments.push(currentSegment);
         }
@@ -282,21 +261,32 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     // add the axis to the export
     if (
-      this.options.axisPositionHorizontal === 'left' ||
-      this.options.axisPositionVertical === 'top'
+      this.options.axisPositionHorizontal === 'left'
+      || this.options.axisPositionVertical === 'top'
     ) {
       // left axis are shown at the beginning of the plot
       const gDrawnAxis = this.axis.exportAxisLeftSVG(this.valueScale, this.dimensions[1]);
       gAxis.appendChild(gDrawnAxis);
     } else if (
-      this.options.axisPositionHorizontal === 'right' ||
-      this.options.axisPositionVertical === 'bottom'
+      this.options.axisPositionHorizontal === 'right'
+      || this.options.axisPositionVertical === 'bottom'
     ) {
       const gDrawnAxis = this.axis.exportAxisRightSVG(this.valueScale, this.dimensions[1]);
       gAxis.appendChild(gDrawnAxis);
     }
 
     return [base, track];
+  }
+
+  tileToLocalId(tile) {
+    if (this.options.aggregationMode && this.options.aggregationMode !== 'mean') {
+      return `${tile.join('.')}.${this.options.aggregationMode}`;
+    }
+    return `${tile.join('.')}`;
+  }
+
+  tileToRemoteId(tile) {
+    return this.tileToLocalId(tile);
   }
 }
 

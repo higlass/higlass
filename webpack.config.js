@@ -7,7 +7,9 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const UnminifiedWebpackPlugin = require('unminified-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const SassOptimizer = require('./scripts/sass-optimizer.js');
 
+const packageJson = require('./package.json');
 
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -30,6 +32,7 @@ module.exports = (env, argv) => ({
       path.resolve(__dirname, 'app'),
       path.resolve(__dirname, 'docs', 'examples'),
       path.resolve(__dirname, 'node_modules'),
+      path.resolve(__dirname, 'lib', 'vendor')
     ],
     publicPath: '/'
   },
@@ -103,6 +106,7 @@ module.exports = (env, argv) => ({
               // https://github.com/facebookincubator/create-react-app/issues/2677
               ident: 'postcss',
               plugins: () => [
+                // eslint-disable-next-line global-require
                 require('postcss-flexbugs-fixes'),
                 autoprefixer({
                   browsers: [
@@ -146,6 +150,7 @@ module.exports = (env, argv) => ({
               // https://github.com/facebookincubator/create-react-app/issues/2677
               ident: 'postcss',
               plugins: () => [
+                // eslint-disable-next-line global-require
                 require('postcss-flexbugs-fixes'),
                 autoprefixer({
                   browsers: [
@@ -200,6 +205,10 @@ module.exports = (env, argv) => ({
     },
   },
   plugins: [
+    // Expose version numbers.
+    new webpack.DefinePlugin({
+      VERSION: JSON.stringify(packageJson.version),
+    }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production')
@@ -209,6 +218,7 @@ module.exports = (env, argv) => ({
     new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
     new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
     new MiniCssExtractPlugin('hglib.css'),
+    new SassOptimizer('*.scss'),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new UnminifiedWebpackPlugin(),
     // new BundleAnalyzerPlugin(),

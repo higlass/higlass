@@ -231,12 +231,18 @@ class ConfigViewMenu extends ContextMenuContainer {
 
         <hr styleName="context-menu-hr" />
 
+        <ContextMenuItem onClick={e => this.props.onEditViewConfig(e)}>
+          Edit view config
+        </ContextMenuItem>
+
+        <hr styleName="context-menu-hr" />
+
         <ContextMenuItem
           onClick={() => this.props.onExportSVG()}
         >
         {'Export views as SVG'}
         </ContextMenuItem>
-        
+
         <ContextMenuItem
           onClick={() => this.props.onExportPNG()}
         >
@@ -263,6 +269,7 @@ class ConfigViewMenu extends ContextMenuContainer {
 }
 
 ConfigViewMenu.propTypes = {
+  onEditViewConfig: PropTypes.func.isRequired,
   onExportSVG: PropTypes.func,
   onExportPNG: PropTypes.func,
   onExportViewAsJSON: PropTypes.func,

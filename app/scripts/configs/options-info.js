@@ -31,16 +31,36 @@ const AVAILABLE_COLORS = {
   white: { name: 'White', value: 'white' },
 };
 
+const SPECIAL_COLORS = {
+  use_stroke: { name: 'Glyph color', value: '[glyph-color]' },
+};
+
 const AVAILABLE_WIDTHS = sizesInPx([1, 2, 3, 5, 8, 13, 21]);
 const AVAILABLE_WIDTHS_AND_NONE = Object.assign(
   AVAILABLE_WIDTHS, { none: { name: 'none', value: 'none' } }
 );
 
+const AVAILABLE_MARGIN = sizesInPx([0, 2, 4, 8, 16, 32, 64, 128, 256]);
+
 const OPACITY_OPTIONS = sizesInPx([0.0, 0.2, 0.4, 0.6, 0.8, 1.0], '%', 100);
+const OPACITY_OPTIONS_NO_ZERO = sizesInPx([0.2, 0.4, 0.6, 0.8, 1.0], '%', 100);
 
 // these values define the options that are visible in the track config
 // menu
 export const OPTIONS_INFO = {
+  axisLabelFormatting: {
+    name: 'Axis Label Formatting',
+    inlineOptions: {
+      normal: {
+        name: 'normal',
+        value: 'normal',
+      },
+      scientific: {
+        name: 'scientific',
+        value: 'scientific'
+      },
+    }
+  },
   heatmapValueScaling: {
     name: 'Value Scaling',
     inlineOptions: {
@@ -54,6 +74,22 @@ export const OPTIONS_INFO = {
       linear: { name: 'Linear', value: 'linear' },
       log: { name: 'Log', value: 'log' },
     },
+  },
+  labelLeftMargin: {
+    name: 'Label Left Margin',
+    inlineOptions: AVAILABLE_MARGIN
+  },
+  labelRightMargin: {
+    name: 'Label Right Margin',
+    inlineOptions: AVAILABLE_MARGIN
+  },
+  labelTopMargin: {
+    name: 'Label Top Margin',
+    inlineOptions: AVAILABLE_MARGIN
+  },
+  labelBottomMargin: {
+    name: 'Label Bottom Margin',
+    inlineOptions: AVAILABLE_MARGIN
   },
   lineStrokeWidth: {
     name: 'Stroke Width',
@@ -192,6 +228,18 @@ export const OPTIONS_INFO = {
   barOpacity: {
     name: 'Bar opacity',
     inlineOptions: OPACITY_OPTIONS,
+  },
+  zeroLineVisible: {
+    name: 'Zero line visible',
+    inlineOptions: YES_NO,
+  },
+  zeroLineColor: {
+    name: 'Zero line color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
+  zeroLineOpacity: {
+    name: 'Zero line opacity',
+    inlineOptions: OPACITY_OPTIONS_NO_ZERO,
   },
   fillOpacity: {
     name: 'Fill Opacity',
@@ -347,6 +395,11 @@ export const OPTIONS_INFO = {
     },
   },
 
+  axisMargin: {
+    name: 'Axis Margin',
+    inlineOptions: sizesInPx([0, 10, 20, 30, 40, 50, 100, 200, 400], 'px'),
+  },
+
   colorbarPosition: {
     name: 'Colorbar Position',
     inlineOptions: {
@@ -390,7 +443,7 @@ export const OPTIONS_INFO = {
 
   labelColor: {
     name: 'Label Color',
-    inlineOptions: AVAILABLE_COLORS,
+    inlineOptions: { ...AVAILABLE_COLORS, ...SPECIAL_COLORS },
   },
 
   labelPosition: {
@@ -1131,6 +1184,24 @@ export const OPTIONS_INFO = {
             value: transform.value,
           });
         }
+      }
+
+      return inlineOptions;
+    },
+  },
+
+  aggregationMode: {
+    name: 'Aggregation Mode',
+    inlineOptions: {},
+    generateOptions: (track) => {
+      const inlineOptions = [];
+
+      if (track.aggregationModes) {
+        Object.values(track.aggregationModes).forEach(({ name, value }) => {
+          inlineOptions.push({ name, value });
+        });
+      } else {
+        inlineOptions.push({ name: 'Default', value: 'default' });
       }
 
       return inlineOptions;

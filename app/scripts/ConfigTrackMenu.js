@@ -1,5 +1,5 @@
-import { mix } from './mixwith';
 import React from 'react';
+import { mix } from './mixwith';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';

@@ -23,7 +23,7 @@ const positionedTracksToAllTracks = (
     const theseTracks = tracks[trackType];
 
     theseTracks.forEach((x) => {
-      if (x.type == 'combined') {
+      if (x.type === 'combined') {
         // we don't really deal with nested combined tracks here,
         // but those shouldn't really be used anyway
         if (includeCombinedContents) {

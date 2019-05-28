@@ -1,0 +1,225 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "exportViewUrl": "/api/v1/viewconfs",
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "trackSourceServers": [
+    "https://higlass.io/api/v1"
+  ],
+  "views": [
+    {
+      "uid": "view-4dn-mcool-0",
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "view-4dn-mcool-0",
+        "moved": false,
+        "static": true
+      },
+      "initialXDomain": [
+        0,
+        200000000
+      ],
+      "initialYDomain": [
+        0,
+        200000000
+      ],
+      "autocompleteSource": "/api/v1/suggest/?d=P0PLbQMwTYGy-5uPIQid7A&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "https://higlass.io/api/v1",
+        "autocompleteId": "P0PLbQMwTYGy-5uPIQid7A",
+        "chromInfoServer": "https://higlass.io/api/v1",
+        "chromInfoId": "hg38",
+        "visible": true
+      },
+      "tracks": {
+        "top": [
+          {
+            "name": "Gene Annotations (hg38)",
+            "server": "https://higlass.io/api/v1",
+            "tilesetUid": "P0PLbQMwTYGy-5uPIQid7A",
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "plusStrandColor": "black",
+              "minusStrandColor": "black",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "name": "Gene Annotations (hg38)",
+              "fontSize": 11,
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "geneAnnotationHeight": 10,
+              "geneLabelPosition": "outside",
+              "geneStrandSpacing": 4
+            },
+            "minHeight": 55,
+            "height": 55,
+            "header": "1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14",
+            "position": "top",
+            "orientation": "1d-horizontal",
+            "uid": "top-annotation-track"
+          },
+          {
+            "name": "Chromosome Axis",
+            "server": "https://higlass.io/api/v1",
+            "tilesetUid": "NyITQvZsS_mOFNlz5C2LJg",
+            "type": "horizontal-chromosome-labels",
+            "local": true,
+            "minHeight": 30,
+            "thumbnail": null,
+            "options": {
+              "color": "#777777",
+              "stroke": "#FFFFFF",
+              "fontSize": 12,
+              "fontIsAligned": false,
+              "showMousePosition": false,
+              "mousePositionColor": "#999999"
+            },
+            "height": 35,
+            "position": "top",
+            "orientation": "1d-horizontal",
+            "uid": "top-chromosome-track"
+          }
+        ],
+        "left": [
+          {
+            "name": "Gene Annotations (hg38)",
+            "server": "https://higlass.io/api/v1",
+            "tilesetUid": "P0PLbQMwTYGy-5uPIQid7A",
+            "uid": "left-annotation-track",
+            "type": "vertical-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "plusStrandColor": "black",
+              "minusStrandColor": "black",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "name": "Gene Annotations (hg38)",
+              "fontSize": 11,
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "geneAnnoHeight": 10,
+              "geneLabelPosition": "outside",
+              "geneStrandSpacing": 4
+            },
+            "width": 55,
+            "header": "1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14",
+            "orientation": "1d-vertical",
+            "position": "left"
+          },
+          {
+            "name": "Chromosome Axis",
+            "server": "https://higlass.io/api/v1",
+            "tilesetUid": "NyITQvZsS_mOFNlz5C2LJg",
+            "uid": "left-chromosome-track",
+            "type": "vertical-chromosome-labels",
+            "options": {
+              "color": "#777777",
+              "stroke": "#FFFFFF",
+              "fontSize": 12,
+              "fontIsAligned": false,
+              "showMousePosition": false,
+              "mousePositionColor": "#999999"
+            },
+            "width": 35,
+            "minWidth": 20,
+            "orientation": "1d-vertical",
+            "position": "left"
+          }
+        ],
+        "center": [
+          {
+            "uid": "center-mcool-track",
+            "type": "combined",
+            "height": 550,
+            "contents": [
+              {
+                "server": "https://higlass.4dnucleome.org/api/v1",
+                "tilesetUid": "I4RBBc6zSwGb276r2sZYdg",
+                "type": "heatmap",
+                "position": "center",
+                "uid": "GjuZed1ySGW1IzZZqFB9BA",
+                "name": "4DNFIMDOXUT8.mcool",
+                "options": {
+                  "backgroundColor": "#eeeeee",
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "showMousePosition": false,
+                  "mousePositionColor": "#999999",
+                  "showTooltip": false,
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "transforms": [
+                  {
+                    "name": "ICE",
+                    "value": "weight"
+                  },
+                  {
+                    "name": "VC_SQRT",
+                    "value": "VC_SQRT"
+                  },
+                  {
+                    "name": "VC",
+                    "value": "VC"
+                  },
+                  {
+                    "name": "KR",
+                    "value": "KR"
+                  }
+                ],
+                "resolutions": [
+                  1000,
+                  2000,
+                  5000,
+                  10000,
+                  25000,
+                  50000,
+                  100000,
+                  250000,
+                  500000,
+                  1000000,
+                  2500000,
+                  5000000,
+                  10000000
+                ]
+              }
+            ],
+            "position": "center",
+            "options": {}
+          }
+        ],
+        "right": [],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      }
+    }
+  ],
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

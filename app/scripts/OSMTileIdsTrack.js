@@ -1,16 +1,7 @@
-import * as PIXI from 'pixi.js';
 import { initTile, drawTile } from './Id2DTiledPixiTrack';
 import OSMTilesTrack from './OSMTilesTrack';
-import PixiTrack from './PixiTrack';
 
 class OSMTileIdsTrack extends OSMTilesTrack {
-  constructor(scene, options, animate) {
-    super(scene, options, animate);
-
-    //this.zoomed(this._xScale, this._yScale);
-  }
-
-  
   initTile(tile) {
     initTile.bind(this)(tile);
 
@@ -18,7 +9,6 @@ class OSMTileIdsTrack extends OSMTilesTrack {
   }
 
   drawTile(tile) {
-
     drawTile.bind(this)(tile);
   }
 
@@ -28,16 +18,16 @@ class OSMTileIdsTrack extends OSMTilesTrack {
     //
     return true;
   }
-  
+
   fetchNewTiles(toFetch) {
     // no real fetching involved... we just need to display the data
-    toFetch.map((x) => {
+    toFetch.forEach((x) => {
       const key = x.remoteId;
       const keyParts = key.split('.');
 
       const data = {
         zoomLevel: keyParts[0],
-        tilePos: keyParts.slice(1, keyParts.length).map(x => +x),
+        tilePos: keyParts.slice(1, keyParts.length).map(keyPart => +keyPart),
       };
 
       this.fetchedTiles[x.tileId] = x;
@@ -57,7 +47,7 @@ class OSMTileIdsTrack extends OSMTilesTrack {
   draw() {
     super.draw();
 
-    //this.animate();
+    // this.animate();
   }
 }
 

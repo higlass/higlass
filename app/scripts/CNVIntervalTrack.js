@@ -5,23 +5,9 @@ import { segmentsToRows } from './utils';
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
-  constructor(
-    scene,
-    dataConfig,
-    handleTilesetInfoReceived,
-    options,
-    animate,
-    onValueScaleChanged,
-  ) {
-    super(scene,
-      dataConfig,
-      handleTilesetInfoReceived,
-      options,
-      animate,
-      onValueScaleChanged,
-    );
+  constructor(context, options) {
+    super(context, options);
 
-    // console.log('CNVInterval:', this);
     this.seen = new Set();
     this.pMain = this.pMobile;
 
@@ -46,10 +32,12 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
         if (seen.has(this.uid(x))) { return null; }
         seen.add(this.uid(x));
         // console.log('length:', +x[2] - +x[1], 'id', tile.tileId)
-        return { from: +x[1],
+        return {
+          from: +x[1],
           to: +x[2],
           type: x[4],
-          uid: this.uid(x) };
+          uid: this.uid(x)
+        };
       })
       .filter(x => x); // filter out null values
 
@@ -98,7 +86,7 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
     const visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     const tileDatas = visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.discrete);
-    const allTileData = [].concat.apply([], tileDatas);
+    const allTileData = [].concat(...tileDatas);
 
     this.drawAll(allTileData);
   }
@@ -117,7 +105,7 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
   }
 
   destroyTile(tile) {
-    tile.tileData.discrete.map((x) => {
+    tile.tileData.discrete.forEach((x) => {
       const uid = x[x.length - 2];
 
       if (this.seen.has(uid)) { this.seen.delete(uid); }

@@ -44,6 +44,37 @@ And then imported into higlass after copying to the docker temp directory (``cp 
             --datatype bedlike \
             --coordSystem b37
 
+A note about assemblies and coordinate systems
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+HiGlass doesn't really have a notion of an assembly. It only displays data
+where it's told to display it. When you aggregate a bedfile with using
+chromsizes-filename, it uses the lengths of the chromosomes to determine the
+offsets of the bedfile entries from the 0 position. So if aggregate and load
+the resulting the beddb file in HiGlass, you'll see the bedfile entries
+displayed as if the chromosomes in the chromsizes file were laid end to end.
+
+Now, if you want to see which chromosomes correspond to which positions along
+the x-axis or to have the search bar display "assembly" coordinates, you'll
+need to register the chromsizes file using:
+
+.. code-block:: bash
+
+    higlass-manage ingest \
+        --filetype chromsizes-tsv \
+        --datatype chromsizes \
+        --assembly galGal6 \
+        negspy/data/galGal6/chromInfo.txt 
+
+If you would like to be able to search for gene annotations in that assembly,
+you'll need to create a `gene annotation track
+</data_preparation.html#gene-annotation-tracks>`_.
+
+** Note that while the lack of assembly enforcement is generally the rule,
+`bigWig tracks </data_preparation.html#bigwig-files>`_ are a notable
+exception. All bigWig files have to be associated with a coordinate system
+that is already present in the HiGlass server in order to be ingested.
+
 Bedpe-like Files
 ----------------
 
@@ -179,7 +210,7 @@ vector datatype and bigwig filetype:
 
     docker exec higlass-container python \
             higlass-server/manage.py ingest_tileset \
-            --filename /tmp/cnvs_hw.hitile \
+            --filename /tmp/cnvs_hw.bigWig \
             --filetype bigwig \
             --datatype vector \
             --coordSystem hg19
@@ -196,11 +227,30 @@ the import will also fail. If a `coordSystem` is specified for the bigWig, but n
 
 TLDR: The simplest way to import a bigWig is to have a ``chromsizes`` present e.g. 
 
-| ``ingest_tileset --filetype chromsizes-tsv --datatype chromsizes --coordSystem hg19 chromSizes.tsv``
+| ``ingest_tileset --filetype chromsizes-tsv --datatype chromsizes --coordSystem hg19 --filename chromSizes.tsv``
 
 and then to add the bigWig with the same ``coordSystem``: 
 
-| ``ingest_tileset --filetype bigwig --datatype vector --coordSystem hg19 chromSizes.tsv``
+| ``ingest_tileset --filetype bigwig --datatype vector --coordSystem hg19 --filename cnvs_hw.bigWig``
+
+
+Chromosome Sizes
+----------------
+
+Chromosome sizes can be used to create chromosome label and chromosome grid tracks. 
+They consist of a tab-separated file containing chromosome names and sizes 
+as columns:
+
+.. code-block:: bash
+
+    chr1    249250621
+    chr2    243199373
+    chr3    198022430
+    ...
+
+Chromosome sizes can be imported into the higlass server using the ``--filetype chromsizes-tsv`` and ``--datatype chromsizes`` parameters. A ``coordSystem`` should be included to identify the assembly that these chromosomes define.
+
+| ``ingest_tileset --filetype chromsizes-tsv --datatype chromsizes --coordSystem hg19 chromSizes.tsv``
 
 
 Gene Annotation Tracks
@@ -617,25 +667,95 @@ This can be aggregated into multivec format:
         --num-rows 15 \
         --format epilogos
 
+States Data (multivec)
+----------------------
+
+A bed file with categorical data, e.g from chromHMM. The data consist of positions and states for each segment in categorical data::
+
+  chr1	0	10000	Quies
+  chr1	10000	10400	FaireW
+  chr1	10400	15800	Low
+  chr1	15800	16000	Pol2
+  chr1	16000	16400	Gen3'
+  chr1	16400	16600	Elon
+  chr1	16600	139000	Quies
+  chr1	139000	139200	Ctcf
+
+This can be aggregated to multivec format:
+
+.. code-block:: bash
+
+    clodius convert bedfile_to_multivec \
+        hg38/all.KL.bed.gz \
+        --assembly hg38 \
+        --starting-resolution 200 \
+        --row-infos-filename row_infos.txt \
+        --num-rows 7 \
+        --format states
+        --row_infos-filename rows_info.txt
+        
+A rows_info.txt file is required in the parameter ``--row-infos-filename`` for this type of data. This file contains the name of the states in the bedfile. e.g. rows_infos.txt::
+
+     Quies
+     FaireW
+     Low
+     Pol2
+     Gen3'
+     Elon
+     ctcf
+    
+The number of rows with the name of the states in the rows_info.txt file must match the number of states in the bedfile and that number should be stated in the ``--num-rows`` parameter. 
+   
+The resulting output file can be ingested using ``higlass-manage``:
+
+.. code-block:: bash
+
+    higlass-manage.py ingest --filetype multivec --datatype multivec data.mv5
+
+
 Other Data (multivec)
 ---------------------
 
 Multivec files are datatype agnostic. For use with generic data, create a
-`segments` file containing the maximum value for each segment. A segment is an
-arbitrary set of discontinuous blocks that the data is partitioned into. If the
-data has no natural grouping, one segment can be used which contains the
-maximum x value in the dataset:
+`segments` file containing the length of each segment. A segment is an
+arbitrary set of discontinuous blocks that the data is partitioned into. In the
+case of genomics data, segments correspond to chromosomes. If the
+data has no natural grouping, it can all be lumped into one "segment"
+which is wide enough to accommodate all the data points. Below is an
+example of a dataset grouped into two "segments".
 
 .. code-block:: bash
 
     segment1    20000
+    segment2    40000
 
-The individual datapoints should then be formatted as follows:
+Data will be displayed as if the segments were laid out end to end:: 
 
 .. code-block:: bash
 
-    segment_name    start   end value
-    segment1    10  100 5
+    |---------------|------------------------------|
+         segment1               segment2
+
+The individual datapoints should then be formatted as in the block below. Each
+row in this file corresponds to a column in the displayed plot. Each ``value``
+is one of sections of the stacked bar plot or matrix that is rendered by the 
+multivec plot. 
+
+.. code-block:: bash
+
+    segment_name    start  end  value1  value2   value3
+    segment1            0 10000      1       2        1
+    segment2        20000 30000      1       1        1
+
+.. code-block:: bash
+
+             ______ 
+            |______|                 ______
+            |      |                |______|
+            |______|                |______|
+            |      |                |      |
+    |---------------|------------------------------|
+         segment1               segment2 
 
 This can be converted to a multivec file using the following command:
 
@@ -645,6 +765,10 @@ This can be converted to a multivec file using the following command:
         data.tsv \
         --chromsizes-file segments.tsv \
         --starting-resolution 1 
+
+This command can also take the parameter ``--row-infos-filename rows.txt`` to 
+describe, in human readable text, each row (e.g. cell types). The passed 
+file should have as many rows as there are rows in the multivec matrix.
 
 The resulting output file can be ingested using ``higlass-manage``:
 

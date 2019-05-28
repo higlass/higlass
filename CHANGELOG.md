@@ -1,14 +1,119 @@
+## v1.5.8
+
+- Add a dialog to directly edit the view config in the browser
+- Replace ReactBootstrap modal with custom modal to not rely on Bootstrap and support Jupyter
+- Updated `pub-sub-es` to version `1.2.1` to fix a bug in the shorthand event unsubscription
+- Added an example of a map overlay
+- Fix #651: set correct namespace for SVG exports
+
+## v1.5.7
+
+- Fix #637 - SVG export fill color doesn't match what is selected
+- Switch to nearest neighbor interpolation for horizontal heatmaps
+
+## v1.5.6
+
+- Allow any horizontal track to also be placed on the left or right
+
+## v1.5.5
+
+- Fixed #612: resolved an issue with caseinsensitive chromosome names
+- Destroy heatmap sprites and axis texts to mitigate memory leak
+
+## v1.5.4
+
+- Fix the multiple component passive event issue by replacing the dom-event.js handlers with a class so that each component maintains its own context
+
+## v1.5.3
+
+- Let HorizontalLineTracks look up tileset_info.tile_size
+  and tileset_info.bins_per_dimension
+- Specify default track types directly in `showAvailableTrackTypes` API
+- Updated the docs deploy directory
+- Updated the javascript API example to include a full working html page
+- Use default height for new tracks rather than min height. Fixes
+newly added gene annotations so that they show names without having
+to be resized
+- Fixed bug that was causing overlay tracks to not appear
+- Fixed horizontal-vector-heatmap error thrown bug by padding incomplete
+  incoming data arrays
+
+## v1.5.1
+
+- Fixed UI hanging on mouseover of zoomed out matrix bug
+- Fixed #588: horizontal heatmap zoom limit bug
+- Reset value scale locks when new viewconf is added
+- Added a default track type for the chromsizes datatype
+- Fixed drag handler pubSub reference
+- Fixed #596: scrolling while zooming bug introduced in latest chrome
+
+## v1.5.0
+
+- Allow sharing the mouse position globally. See [`docs/examples/others/global-mouse-position.html`](docs/examples/others/global-mouse-position.html) for an example.
+- Allow disabling the change of views and tracks separately by setting `viewEditable: false` and `tracksEditable: false` in your view config.
+- Added ability to define label margins. See [`docs/examples/viewconfs/label-margin.json`](docs/examples/viewconfs/label-margin.json) for an example.
+- Make view spacing adjustable via initialization options. See [/docs/examples/others/adjust-view-spacing.html](/docs/examples/others/adjust-view-spacing.html) for an example.
+- Add a new option to tracks that support axis: `axisMargin` to add some margin to an axis. See [docs/examples/viewconfs/axis-margin.json](docs/examples/viewconfs/axis-margin.json) for an example
+- Add a new option to BarTrack for drawing a demarcation line at the bottom of the track, i.e., at the zero value. See [`/apis/svg.html?/viewconfs/bar-zero-line.json`](/apis/svg.html?/viewconfs/bar-zero-line.json) for an example.
+- Fixed an issue with small offsets when exporting bar tracks to SVG
+- Fixed an issue where bars in a `BarTrack` related to values higher than `valueScaleMax` were not drawn.
+- Fixed an issue with `hgApi.setTrackValueScaleLimits`
+- Fix #291: allow web page scrolling when zoomFixed is set to true
+- Fix #578: BarTrack SVG export overplotting error.
+- Fix #584: Reset viewport is broken
+
+## v1.4.2
+
+- Fix #568, #569
+
+## v1.4.1
+
+- Allow users to choose adding the chromosome grid overlay from the Add Track Dialog when selecting a cooler file.
+- Expose version from hglib. E.g., `window.hglib.version`
+
+## v1.4.0
+
+- Add `constIndicators` as an option to 1D tracks for displaying a visual indicator (e.g., a line) at a constant value.
+- Added `[glyph-color]` as the default option for line and bar tracks
+- Add new public event `cursorLocation`. See [`docs/examples/apis/cursor-location.html`](docs/examples/apis/cursor-location.html) for an example.
+- Extend `mouseMoveZoom` event to support 1D data tracks.
+- Expose D3 libraries to plugin tracks
+- Overlay tracks now properly allow for extent to include multiple ranges.
+- Overlay tracks can now optionally have extent ranges configured as a 4-tuple, separating x ranges from y ranges
+
+## v1.3.1
+
+- Clear mouse position indicator when leaving the root dom element, on blurring the window, and when no track is hovered
+
 ## v1.3.0
 
+- Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
+- Added `TiledPixiTrack.on` event handler to listen to data changes
+- Added several API endpoints: `getComponent()`, `setAuthHeader()`, `getAuthHeader()`,
+- Added export of several utility functions: `waitForJsonComplete()`, `waitForTilesLoaded()`, `waitForTransitionsFinished()`, `mountHGComponent()`, `getTrackObjectFromHGC()`
+- Added the ability to specify default track options through the API
+- Added nesting to the tileset finder so that tilesets can be grouped together into categories
+- Added the `axisLabelFormatting` option to 1d quantitative tracks
 - Added TiledPixiTrack.on event handler
 - Added getTrackObject to exports
 - Added support for overlay tracks
 - Minor bug fix wherein valueScaleMin and valueScaleMax weren't used when set to 0
+- Added support for click event handling of 1D and 2D annotations from `1d-annotation` and `chromosome-2d-annotations` tracks
 - Cloned views split vertically first (#259)
 - Change component height when a new viewconf is passed in
 - Add a fudge factor to ensure that the entire view is shown in the grid layout
-- Fix minified build
+- Refactored the pub-sub service to avoid implicit global event listening
 - Fix a minor visual glitch in the gene annotation track
+- Expose `mix()` from `mixwith` to plugin tracks
+- Support different aggregation modes (mean, min, max, std) for bigWig files
+- Changed `defaultOptions` to `defaultTrackOptions` in the hglib.viewer options.
+- Clear mouse position indicator when leaving the root dom element, on blurring the window, and when no track is hovered
+- Fix several issue with SVG export
+- Minor bug fix wherein valueScaleMin and valueScaleMax weren't used when set to 0
+- Fix #401
+- Fix #395
+- Fix #360
+- Support different aggregation modes (mean, min, max, std) for bigWig files
 
 ## v1.2.8
 
@@ -48,24 +153,24 @@
 
 ## v1.2.0
 
-- Add 1D heatmap track (#303): Alternative visual representation of 1D bigwig tracks. See https://github.com/hms-dbmi/higlass/pull/303 and https://github.com/hms-dbmi/higlass/blob/develop/docs/examples/1d-heatmap-track.html for an example.
+- Add 1D heatmap track (#303): Alternative visual representation of 1D bigwig tracks. See https://github.com/higlass/higlass/pull/303 and https://github.com/higlass/higlass/blob/develop/docs/examples/1d-heatmap-track.html for an example.
 
 ![1D Heatmap Track](https://user-images.githubusercontent.com/932103/43858298-a7463ece-9b1b-11e8-9da4-a6fccdde2406.png "1D Heatmap Track")
 
-- Add fixing y-scale of 1D data tracks (#297). See https://github.com/hms-dbmi/higlass/pull/297 and https://github.com/hms-dbmi/higlass/blob/develop/docs/examples/api-set-track-value-scale-limits.html for an example.
+- Add fixing y-scale of 1D data tracks (#297). See https://github.com/higlass/higlass/pull/297 and https://github.com/higlass/higlass/blob/develop/docs/examples/api-set-track-value-scale-limits.html for an example.
 - Add JS-API for resetting the viewport back to the initial x and y domains in the viewconfig (#289)
-- Add JS-API for adjusting the margin of the HiGlass instance (#286). See https://github.com/hms-dbmi/higlass/pull/286 for an example.
-- Add JS-API for getting the min and max value of a track (#298). See https://github.com/hms-dbmi/higlass/blob/develop/docs/examples/api-get-min-max-value.html for an example.
-- Enhance bed track (#278): support value encoding as the `y` offset or `color`. See https://github.com/hms-dbmi/higlass/pull/278 for an example.
-- Enhance gene annotation track (#314): See https://github.com/hms-dbmi/higlass/pull/314 and https://github.com/hms-dbmi/higlass/blob/develop/docs/examples/gene-annotations.html for an example.
+- Add JS-API for adjusting the margin of the HiGlass instance (#286). See https://github.com/higlass/higlass/pull/286 for an example.
+- Add JS-API for getting the min and max value of a track (#298). See https://github.com/higlass/higlass/blob/develop/docs/examples/api-get-min-max-value.html for an example.
+- Enhance bed track (#278): support value encoding as the `y` offset or `color`. See https://github.com/higlass/higlass/pull/278 for an example.
+- Enhance gene annotation track (#314): See https://github.com/higlass/higlass/pull/314 and https://github.com/higlass/higlass/blob/develop/docs/examples/gene-annotations.html for an example.
 
 ![Enhanced Gene Annotation Track](https://user-images.githubusercontent.com/932103/44225400-70b7f500-a15b-11e8-9656-d2ba161bccf7.png "Enhanced Gene Annotation Track")
 
-- Enhance chrom label track (#305): add support for adjusting the font size, font alignment, and font outline to use space more economically. See https://github.com/hms-dbmi/higlass/pull/305 and https://github.com/hms-dbmi/higlass/blob/develop/docs/examples/chromosome-labels.html for an example.
+- Enhance chrom label track (#305): add support for adjusting the font size, font alignment, and font outline to use space more economically. See https://github.com/higlass/higlass/pull/305 and https://github.com/higlass/higlass/blob/develop/docs/examples/chromosome-labels.html for an example.
 
 ![Enhanced Chrom Label Track](https://user-images.githubusercontent.com/932103/43924834-9baaf4c8-9bf3-11e8-8167-1ce1dce70849.png "Enhanced Chrom Label Track")
 
-- Enhance bar track (#304): add color and gradient encoding plus diverging tracks. See https://github.com/hms-dbmi/higlass/pull/304 and https://github.com/hms-dbmi/higlass/blob/develop/docs/examples/bar-track-color-range.html for an example.
+- Enhance bar track (#304): add color and gradient encoding plus diverging tracks. See https://github.com/higlass/higlass/pull/304 and https://github.com/higlass/higlass/blob/develop/docs/examples/bar-track-color-range.html for an example.
 
 ![Enhanced Bar Track](https://user-images.githubusercontent.com/932103/43865156-c00aa53a-9b2f-11e8-9213-bfd0af04f491.png "Enhanced Bar Track")
 
@@ -91,7 +196,7 @@
 ## v1.1.4
 
 - Fix the checkAllTilesetInfoReceived function so that it ignores left and top
-axis tracks
+  axis tracks
 - First release to be registered with Zenodo
 
 ## v1.1.3
@@ -101,9 +206,9 @@ axis tracks
 ## v1.1.2
 
 - Inline the SVG styles so they aren't overwritten by other elments on the
-page
+  page
 - Inline TrackControl svg styles so they aren't overwritten by page css
-settings
+  settings
 - Clear gene annotation graphics before redrawing
 
 ## v1.1.1
@@ -177,13 +282,15 @@ settings
 - Fixed and robustified range selection API
 - Display error message on error
 - Don't error when displaying menus when invalid track type is
-entered
+  entered
 - Added an endpoint for sharing view configs as a link (`shareViewConfigAsLink()`) and exporting them as png and svg (`get('png' || 'svg')`)
 - Simplified `hglib` API
 - Updated third-party libs to get rid of deprecation warnings for React v16
 - Fixed small bug in placing rules
 - Display error when failing to retrieve tilesetInfo
+
 * Added support for cross-section tracks
+
 - Rendering improvements
 
 ## v0.10.22 (2018-02-22)
@@ -202,7 +309,7 @@ entered
 
 - Fixed api variable in HiGlassComponent
 - Fixed relToAbsChromPos so that it converts locations to numbers before
-adding
+  adding
 - Added strokeWidth as an option to the viewport projection track
 
 ## v0.10.19 (2018-02-11)
@@ -252,17 +359,17 @@ adding
 ## v0.10.9 (2018-01-13)
 
 - Skipping a version because the latest version wasn't specified in
-package.json
+  package.json
 
 ## v0.10.8
 
 - Skipping a version because the latest version wasn't specified in
-package.json
+  package.json
 
 ## v0.10.7 (2018-01-13)
 
 - Show current data resolution in tiled sets containing raw resolutions rather
-than zoom levels
+  than zoom levels
 
 ## v0.10.6 (2017-12-28)
 
@@ -273,8 +380,8 @@ than zoom levels
 ## v0.10.5 (2017-12-27)
 
 - Fixed bug in TrackRenderer.setUpInitialScales where updating the view with
-new equivalent initial domains and different dimensions led to the view being
-misplaced
+  new equivalent initial domains and different dimensions led to the view being
+  misplaced
 - Added z-index to popup menus
 
 ## v0.10.4 (2017-12-16)
@@ -336,7 +443,7 @@ misplaced
 
 - Fix gene annotation coloring bug
 - Fix menu clash error that occurs when a center track is specified
-without a combined track
+  without a combined track
 - Zoom into entire chromosomes by just entering its name
 
 ## v0.9.10 (2017-11-01)
@@ -359,7 +466,7 @@ without a combined track
 ## v0.9.7 (2017-10-31)
 
 - Initialize scales when viewconfig is loaded rather than on
-handleScalesChanged
+  handleScalesChanged
 
 ## v0.9.6 (2017-10-31)
 
@@ -411,10 +518,10 @@ handleScalesChanged
 - Redraw TiledPixiTracks after the tileset info has been received
 - Remove value scale locks on handleCloseTrack
 - Check that tiledPlot is defined in createSVG to fix the export
-failing when there's two side-by-side by views created after closing
-one
+  failing when there's two side-by-side by views created after closing
+  one
 - Fixed the "Failed: network error" issue in chrome by changing the
-"download" function in utils.js
+  "download" function in utils.js
 
 ## v0.8.43
 
@@ -456,13 +563,13 @@ one
 ## v0.8.33
 
 - Removed the outside colorbar labels option (it's a little
-ambiguous on the right side since the labels will be adjacent
-to the other axis elements.
+  ambiguous on the right side since the labels will be adjacent
+  to the other axis elements.
 
 ## v0.8.32
 
 - Removed tests from package.json so that build completes (tests fail on
-travis for some reason)
+  travis for some reason)
 
 ## v0.8.31
 
@@ -529,7 +636,7 @@ travis for some reason)
 ## v0.8.16 - 2017-06-27
 
 - Fixed a regression where closing views didn't remove the associated PIXI
-Components
+  Components
 - Increased the drag timeout time to 5 seconds
 
 ## v0.8.15 - 2017-06-26
@@ -544,7 +651,7 @@ Components
 
 - Option to draw borders around tracks
 - Option to change the stroke, fill colors and opacity of the
-horizontal-2d-rectangle-domains track
+  horizontal-2d-rectangle-domains track
 
 ## v0.8.12 - 2017-06-26
 
@@ -554,9 +661,8 @@ horizontal-2d-rectangle-domains track
 
 - Fixed double click track addition bug
 - Mask view boundaries so that when the tracks are too large
-to fit inside, they don't overflow outside of their view
+  to fit inside, they don't overflow outside of their view
 - Added favicon
-
 
 ## v0.8.10 - 2017-06-25
 
@@ -636,25 +742,25 @@ to fit inside, they don't overflow outside of their view
 
 - Lower the default resolution of lines for performance reasons
 - Added outsideLeft, outsideRight, outsideTop and outsideBottom
-as available axis positions
+  as available axis positions
 
 ## v0.6.8
 
 - Component sizes are adjsuted on component load
 - Genome position search box styling is set to not
-have a bottom margin
+  have a bottom margin
 
 ## v0.6.7
 
 - Unbounded functionality to increase the size of the layout if new tracks are
-added which increase its size
+  added which increase its size
 - Configurable track label background opacity
 - Fixed: vertical colorbar label mirroring
 
 ## v0.6.6
 
 - Bug fix: closing a track which had a value scale lock with another track now
-works
+  works
 
 ## v0.6.5
 
@@ -666,9 +772,8 @@ works
 
 - Added value scale locking
 - Fixed bug where newly added heatmaps didn't render (syncTrackObjects needs
-to call applyZoomTransform)
-- Fixed bug where new chromosome axis didn't appear after being added
-	- Had to call animate after the chromosome info was received
+  to call applyZoomTransform)
+- Fixed bug where new chromosome axis didn't appear after being added - Had to call animate after the chromosome info was received
 
 ## v0.6.3
 
@@ -706,11 +811,10 @@ to call applyZoomTransform)
 ## v0.5.14
 
 - Revert the initialXDomain changes Fritz introduced because they were causing
-issues with faithful reproduction of viewconfs
+  issues with faithful reproduction of viewconfs
 - Change 'tilesetInfo not loaded message' to 'loading...' until we either get
-an error or the tileset is loaded
+  an error or the tileset is loaded
 - Omit certain fields from JSON export (HiGlassComponenent.getViewsAsString)
-
 
 ## v0.5.12
 
@@ -723,7 +827,7 @@ an error or the tileset is loaded
 ## v0.5.10
 
 - Fix Chromosome2DAnnotations not being drawn by calling draw after the
-ChromosomeInfo is loaded
+  ChromosomeInfo is loaded
 - Zoom to the currently visible data
 - Use the minimum position to load data that is not located at the origin
 - Viewconf downloads work on Firefox
@@ -734,9 +838,8 @@ ChromosomeInfo is loaded
 - Fixed top and left axis not appearing bug
 - Fixed chromosome horizontal labels not appearing
 - Show minValue pixels by scaling from minValue to maxValue + minValue and
-adding minValue to each pixel
+  adding minValue to each pixel
 - Fix viewport projection error when new viewconfig is passed
-
 
 ## v0.5.9
 
@@ -762,11 +865,11 @@ adding minValue to each pixel
 
 - Add per-view `zoomFixed` settings
 - Added configurable viewport projection colors (projectionFillColor,
-projectionStrokeColor)
+  projectionStrokeColor)
 - Added an empty .npmignore to prevent it from excluding the dist/
-directory specified in the .gitignore
+  directory specified in the .gitignore
 - Enhance 2D annotations by supporting RGBA, fill and stroke-dependent coloring,
-and locus-wise min width / height definitions
+  and locus-wise min width / height definitions
 - Remove builds. Use NPM
 
 ## v0.5.4
@@ -775,7 +878,7 @@ and locus-wise min width / height definitions
 - Update existing tracks before adding new ones in syncTrackObjects
 - Removed the "Move up" menu item
 - Deep copy incoming viewconfs so that changing them outside of the component
-leads to an update
+  leads to an update
 - Added onLocationChanged event listener
 
 ## v0.5.3
@@ -785,20 +888,19 @@ leads to an update
 ## v0.5.2
 
 - Don't draw data that extends beyond the end of the assembly
-- Fixed bug where data was being hidden in empty (all 0) tiles
-	- Changed minVisibleValue and maxVisibleValue in TiledPixiTrack
+- Fixed bug where data was being hidden in empty (all 0) tiles - Changed minVisibleValue and maxVisibleValue in TiledPixiTrack
 - Label the horizontal and vertical line tracks by default
 
 ## v0.5.1
 
 - Configurable gene annotation colors
 - Added chromosome annotations tracks for programmatically addeable
-annotations
+  annotations
 - Fixed the 'Cannot read property 0 of undefined' bug when tileset info is
-inaccessible
+  inaccessible
 - Remove track resize handles when the component isn't editable
 - Fix bug associated with setting a new initial[X/Y]Domain where the
-cumulativeCenterOffset wasn't being reset
+  cumulativeCenterOffset wasn't being reset
 - Bug fix where if a view doesn't have a uid we should assign it one
 
 ## v0.5.0
@@ -832,11 +934,13 @@ cumulativeCenterOffset wasn't being reset
 ## v0.4.30
 
 - Added a minimum width to left-axis so that it doesn't only show the last two
-digits by default
+  digits by default
+
 * Added horizontal and vertical heatmaps
+
 - Styling changes for the Configure track controls
 - Fixed the bug with AddTrackMenu cancel button turning black by properly
-increasing the number of visible tilesets in TilesetFinder
+  increasing the number of visible tilesets in TilesetFinder
 - Added options to allow flipping horizontal and vertical charts
 - Fixed NaN prefix bug
 - Fixed invalid negative value attributes for <rect> bug
@@ -845,7 +949,7 @@ increasing the number of visible tilesets in TilesetFinder
 
 - Moved default heatmap information to lower right hand corner
 - Fixed a bug which distorted the view when initialized with an initial X
-scale and Y scale
+  scale and Y scale
 - Added white to red, white to green and white to blue scales
 - Added axes for the 1D tracks
 - Took the ID out of the view header
@@ -854,9 +958,9 @@ scale and Y scale
 ## v0.4.28
 
 - Fixed critical regression where track replacement wasn't working because
-newly created tracks didn't have their options set
+  newly created tracks didn't have their options set
 - Fixed a regression where track movement wasn't working because TiledPlot
-wasn't being updated
+  wasn't being updated
 - Increase the size of the tileset selector
 
 ## v0.4.27
@@ -877,7 +981,7 @@ wasn't being updated
 - Fractional zoom lock
 - Faster config menu loading
 - Faster track addition by limiting the udpates of TiledPlot (using
-shouldComponentUpdate)
+  shouldComponentUpdate)
 
 ## v0.4.21
 
@@ -887,7 +991,7 @@ shouldComponentUpdate)
 ## v0.4.20
 
 - Changed tile API location to use included server value rather than
-prepending '//'
+  prepending '//'
 
 ## v0.4.19
 
@@ -912,10 +1016,11 @@ prepending '//'
 - Fritz's lazy animation
 - Fritz's public API
 - Minimum height for tracks can be specified in track type definition in
-config.js
+  config.js
 - New chromosome 2D grid (for hg19)
 - New chromosome 1D axis (for hg19)
 - New chromosome horizontal axis (for hg19)
 
 * larger change
+
 - minor change

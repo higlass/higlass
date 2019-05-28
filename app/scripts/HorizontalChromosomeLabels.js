@@ -20,15 +20,14 @@ const TICK_TEXT_SEPARATION = 2;
 const TICK_COLOR = 0x777777;
 
 class HorizontalChromosomeLabels extends PixiTrack {
-  constructor(
-    scene,
-    dataConfig,
-    handleTilesetInfoReceived,
-    options,
-    animate,
-    chromInfoPath
-  ) {
-    super(scene, options);
+  constructor(context, options) {
+    super(context, options);
+    const {
+      dataConfig,
+      animate,
+      chromInfoPath,
+      isShowGlobalMousePosition
+    } = context;
 
     this.searchField = null;
     this.chromInfo = null;
@@ -41,6 +40,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.tickTexts = {};
 
     this.options = options;
+    this.isShowGlobalMousePosition = isShowGlobalMousePosition;
 
     this.textFontSize = 12;
     this.textFontFamily = 'Arial';
@@ -69,7 +69,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.pubSubs = [];
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.isShowGlobalMousePosition()
+      );
     }
 
     let chromSizesPath = chromInfoPath;
@@ -87,7 +89,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
       this.draw();
       this.animate();
-    });
+    }, this.pubSub);
   }
 
   initChromLabels() {
@@ -140,7 +142,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
     super.rerender(options, force);
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.isShowGlobalMousePosition()
+      );
     }
 
     if (!this.options.showMousePosition && this.hideMousePosition) {
@@ -329,7 +333,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
       this.allTexts.push({
         importance: text.hashValue,
-        text: text,
+        text,
         caption: null
       });
     }
