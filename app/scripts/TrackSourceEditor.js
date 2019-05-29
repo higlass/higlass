@@ -1,21 +1,32 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import '../styles/TrackSourceEditor.module.scss';
+import Button from './Button';
+import Input from './Input';
+
+import styles from '../styles/TrackSourceEditor.module.scss';
 
 class TrackSourceEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { trackSources: [] };
-    this.onAddBound = this.onAdd.bind(this);
+    this.state = {
+      trackSources: new Array(props.trackSources).fill(undefined)
+    };
+
+    this.handleAddBound = this.handleAdd.bind(this);
+    this.handleSaveBound = this.handleSave.bind(this);
   }
 
-  onAdd() {
+  componentWillUpdate(newProps) {
+
+  }
+
+  handleAdd() {
     this.props.onTrackSourceChanged([...this.props.trackSources, '']);
   }
 
-  onChange(i) {
+  handleChange(i) {
     return ({ target: { value } }) => {
       this.setState((prevState) => {
         const newTrackSources = [...prevState.trackSources];
@@ -25,7 +36,7 @@ class TrackSourceEditor extends React.Component {
     };
   }
 
-  onDelete(i) {
+  handleDelete(i) {
     return () => {
       const newTrackSources = [...this.props.trackSources];
       newTrackSources.splice(i, 1);
@@ -33,61 +44,55 @@ class TrackSourceEditor extends React.Component {
     };
   }
 
-  onSave(i) {
-    return () => {
-      if (this.state.trackSources[i] === this.props.trackSources[i]) return;
-      const newTrackSources = [...this.props.trackSources];
-      newTrackSources[i] = this.state.trackSources[i];
-      this.props.onTrackSourceChanged(newTrackSources);
-      this.setState((prevState) => {
-        const newInternalTrackSources = [...prevState.trackSources];
+  handleSave() {
+    const newTrackSources = [...this.props.trackSources];
+
+    this.state.trackSources.forEach((trackSource, i) => {
+      newTrackSources[i] = trackSource;
+    });
+
+    this.props.onTrackSourceChanged(newTrackSources);
+
+    this.setState((prevState) => {
+      const newInternalTrackSources = [...prevState.trackSources];
+      newInternalTrackSources.forEach((trackSource, i) => {
         newInternalTrackSources[i] = undefined;
-        return { trackSources: newInternalTrackSources };
       });
-    };
+      return { trackSources: newInternalTrackSources };
+    });
   }
 
   render() {
     return (
       <div>
         {this.props.trackSources.map((trackSource, i) => (
-          <div key={trackSource} className="flex-c" styleName="track-source">
-            <input
-              className="flex-g-1 hg-input"
-              onChange={this.onChange(i)}
+          <div key={trackSource} styleName="styles.trackSource">
+            <Input
+              className={styles.trackSourceInput}
+              onChange={this.handleChange(i)}
               placeholder="Enter track source server"
-              styleName="track-source-input"
               type="url"
               value={this.state.trackSources[i] || trackSource}
             />
-            <button
-              className="hg-button"
-              onClick={this.onDelete(i)}
-              styleName="track-source-delete"
-              type="button"
+            <Button
+              className={styles.trackSourceDelete}
+              onClick={this.handleDelete(i)}
             >
               Delete
-            </button>
-            <button
-              className="hg-button"
-              disabled={!this.state.trackSources[i]}
-              onClick={this.onSave(i)}
-              styleName="track-source-save"
-              type="button"
-            >
-              Save
-            </button>
+            </Button>
           </div>
         ))}
-        <div className="flex-c">
-          <button
-            className="hg-button"
-            onClick={this.onAddBound}
-            type="button"
-          >
+        <footer styleName="styles.trackSourceFooter">
+          <Button onClick={this.handleAddBound}>
             Add new source
-          </button>
-        </div>
+          </Button>
+          <Button
+            className={styles.trackSourceSave}
+            onClick={this.handleSaveBound}
+          >
+            Save
+          </Button>
+        </footer>
       </div>
     );
   }
