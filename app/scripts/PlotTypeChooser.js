@@ -8,24 +8,28 @@ import {
 } from './configs';
 
 // Styles
-import '../styles/PlotTypeChooser.css';
+import '../styles/PlotTypeChooser.module.scss';
 
 class PlotTypeChooser extends React.Component {
   constructor(props) {
     super(props);
 
-    this.DATATYPE_TO_TRACK_TYPE = DATATYPE_TO_TRACK_TYPE(this.props.orientation);
+    this.DATATYPE_TO_TRACK_TYPE = DATATYPE_TO_TRACK_TYPE(
+      this.props.orientation
+    );
     this.AVAILABLE_TRACK_TYPES = AVAILABLE_TRACK_TYPES(
       this.props.datatypes, this.props.orientation
     );
 
     this.state = {
-      selectedPlotType: this.AVAILABLE_TRACK_TYPES[0],
+      selectedPlotType: undefined,
     };
   }
 
   componentWillReceiveProps(newProps) {
-    this.AVAILABLE_TRACK_TYPES = AVAILABLE_TRACK_TYPES(newProps.datatypes, this.props.orientation);
+    this.AVAILABLE_TRACK_TYPES = AVAILABLE_TRACK_TYPES(
+      newProps.datatypes, this.props.orientation
+    );
 
     if (!this.AVAILABLE_TRACK_TYPES) { return; }
 
@@ -61,35 +65,37 @@ class PlotTypeChooser extends React.Component {
         .sort((a, b) => a.type < b.type)
         .map((x) => {
           const thumbnail = trackTypeToInfo[x.type].thumbnail;
-          const plotTypeClass = this.state.selectedPlotType.type === x.type ? 'plot-type-selected' : 'unselected';
+          const plotTypeClass = (
+            this.state.selectedPlotType
+            && this.state.selectedPlotType.type === x.type
+          )
+            ? 'plot-type-selected'
+            : 'plot-type';
           const imgTag = trackTypeToInfo[x.type].thumbnail
             ? (
               <div
                 dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
-                style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle' }}
+                styleName="plot-type-choser-thumbnail"
               />
             )
             : (
-              <div style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle' }}>
-                <svg height={20} width={30} />
+              <div styleName="plot-type-choser-thumbnail">
+                <svg height={20} width={20} />
               </div>
             );
           return (
             <li
               key={x.type}
-              className={plotTypeClass}
               onClick={
                 (e) => {
                   this.setState({ selectedPlotType: x });
                   this.props.onPlotTypeSelected(x.type);
                 }
               }
-              style={{ listStyle: 'none', paddingLeft: 5, paddingBottom: 0 }}
+              styleName={plotTypeClass}
             >
               {imgTag}
-              <span
-                style={{ verticalAlign: 'middle' }}
-              >
+              <span styleName="plot-type-choser-label">
                 {x.type}
               </span>
             </li>
@@ -99,15 +105,11 @@ class PlotTypeChooser extends React.Component {
 
     return (
       <div>
-        { AVAILABLE_TRACK_TYPES_LIST.length > 0
-          && (
-            <div
-              className="plot-type-container"
-            >
-              { AVAILABLE_TRACK_TYPES_LIST }
-            </div>
-          )
-        }
+        {AVAILABLE_TRACK_TYPES_LIST.length > 0 && (
+          <div styleName="plot-type-choser">
+            { AVAILABLE_TRACK_TYPES_LIST }
+          </div>
+        )}
       </div>
     );
   }
