@@ -47,6 +47,8 @@ module.exports = (env, argv) => ({
     filename: argv.mode === 'production' ? '[name].min.js' : '[name].js',
     libraryTarget: 'umd',
     library: '[name]',
+    umdNamedDefine: true,
+    globalObject: '(typeof self !== \'undefined\' ? self : this)'
   },
   optimization: {
     minimize: argv.mode === 'production',
