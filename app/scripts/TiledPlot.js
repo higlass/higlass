@@ -262,6 +262,7 @@ class TiledPlot extends React.Component {
           host={this.state.addTrackHost}
           onCancel={this.handleNoTrackAddedBound}
           onTracksChosen={this.handleTracksAddedBound}
+          onTrackSourceChanged={this.props.onTrackSourceChanged}
           position={this.state.addTrackPosition || this.props.addTrackPosition}
           trackSourceServers={this.props.trackSourceServers}
         />
@@ -282,6 +283,7 @@ class TiledPlot extends React.Component {
           onTracksChosen={(newTrack) => {
             this.handleDivisorChosen(series, newTrack);
           }}
+          onTrackSourceChanged={this.props.onTrackSourceChanged}
           trackSourceServers={this.props.trackSourceServers}
         />
       );
