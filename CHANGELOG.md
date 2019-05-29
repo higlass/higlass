@@ -1,3 +1,7 @@
+## v1.6.0
+
+- Updated the track adding modal to allow adjusting the track source server
+
 ## v1.5.8
 
 - Add a dialog to directly edit the view config in the browser
