@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // Configs
 import {
@@ -14,87 +15,76 @@ class PlotTypeChooser extends React.Component {
   constructor(props) {
     super(props);
 
-    this.DATATYPE_TO_TRACK_TYPE = DATATYPE_TO_TRACK_TYPE(
+    this.datatypeToTrackType = DATATYPE_TO_TRACK_TYPE(
       this.props.orientation
     );
-    this.AVAILABLE_TRACK_TYPES = AVAILABLE_TRACK_TYPES(
+    this.availableTrackTypes = AVAILABLE_TRACK_TYPES(
       this.props.datatypes, this.props.orientation
     );
 
-    this.state = {
-      selectedPlotType: undefined,
-    };
-  }
-
-  componentWillReceiveProps(newProps) {
-    this.AVAILABLE_TRACK_TYPES = AVAILABLE_TRACK_TYPES(
-      newProps.datatypes, this.props.orientation
-    );
-
-    if (!this.AVAILABLE_TRACK_TYPES) { return; }
-
-    if (this.AVAILABLE_TRACK_TYPES.length > 0) {
-      if (!this.AVAILABLE_TRACK_TYPES.includes(this.state.selectedPlotType)) {
-        this.handlePlotTypeSelected(this.AVAILABLE_TRACK_TYPES[0]);
+    let selectedPlotType;
+    this.availableTrackTypes.some((track) => {
+      if (track.type === this.props.plotType) {
+        selectedPlotType = track;
+        return true;
       }
-    } else {
-      // no available track types
-      // this could be because the datatype is unknown
-      // or because there's multiple different datatypes
-    }
+      return false;
+    });
+
+    this.state = { selectedPlotType };
   }
 
   handlePlotTypeSelected(key) {
-    this.setState({
-      selectedPlotType: key,
-    });
+    return async () => {
+      await this.setState({
+        selectedPlotType: key,
+      });
 
-    this.props.onPlotTypeSelected(key.type);
+      this.props.onPlotTypeSelected(key.type);
+    };
   }
 
   render() {
-    let AVAILABLE_TRACK_TYPES_LIST = 'No plot types available for track';
+    let availableTrackTypesList = 'No plot types available for track';
     const trackTypeToInfo = {};
 
     TRACKS_INFO.forEach((ti) => {
       trackTypeToInfo[ti.type] = ti;
     });
 
-    if (this.AVAILABLE_TRACK_TYPES) {
-      AVAILABLE_TRACK_TYPES_LIST = this.AVAILABLE_TRACK_TYPES
+    this.availableTrackTypes = AVAILABLE_TRACK_TYPES(
+      this.props.datatypes, this.props.orientation
+    );
+
+    if (this.availableTrackTypes) {
+      availableTrackTypesList = this.availableTrackTypes
         .sort((a, b) => a.type < b.type)
         .map((x) => {
-          const thumbnail = trackTypeToInfo[x.type].thumbnail;
           const plotTypeClass = (
             this.state.selectedPlotType
             && this.state.selectedPlotType.type === x.type
           )
             ? 'plot-type-selected'
             : 'plot-type';
-          const imgTag = trackTypeToInfo[x.type].thumbnail
-            ? (
-              <div
-                dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
-                styleName="plot-type-choser-thumbnail"
-              />
-            )
-            : (
-              <div styleName="plot-type-choser-thumbnail">
-                <svg height={20} width={20} />
-              </div>
-            );
+
           return (
             <li
               key={x.type}
-              onClick={
-                (e) => {
-                  this.setState({ selectedPlotType: x });
-                  this.props.onPlotTypeSelected(x.type);
-                }
-              }
+              onClick={this.handlePlotTypeSelected(x)}
               styleName={plotTypeClass}
             >
-              {imgTag}
+              {trackTypeToInfo[x.type].thumbnail ? (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: trackTypeToInfo[x.type].thumbnail.outerHTML
+                  }}
+                  styleName="plot-type-choser-thumbnail"
+                />
+              ) : (
+                <div styleName="plot-type-choser-thumbnail">
+                  <svg height={20} width={20} />
+                </div>
+              )}
               <span styleName="plot-type-choser-label">
                 {x.type}
               </span>
@@ -105,14 +95,21 @@ class PlotTypeChooser extends React.Component {
 
     return (
       <div>
-        {AVAILABLE_TRACK_TYPES_LIST.length > 0 && (
+        {availableTrackTypesList.length > 0 && (
           <div styleName="plot-type-choser">
-            { AVAILABLE_TRACK_TYPES_LIST }
+            { availableTrackTypesList }
           </div>
         )}
       </div>
     );
   }
 }
+
+PlotTypeChooser.propTypes = {
+  datatypes: PropTypes.array.isRequired,
+  onPlotTypeSelected: PropTypes.func.isRequired,
+  orientation: PropTypes.string.isRequired,
+  plotType: PropTypes.string,
+};
 
 export default PlotTypeChooser;
