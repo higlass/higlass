@@ -71,7 +71,7 @@ class TrackSourceEditor extends React.Component {
             <Input
               className={styles.trackSourceInput}
               onChange={this.handleChange(i)}
-              placeholder="Enter track source server"
+              placeholder="http://higlass.io/api/v1"
               type="url"
               value={this.state.trackSources[i] || trackSource}
             />
