@@ -21,14 +21,40 @@ class AddTrackDialog extends React.Component {
     this.options = {};
 
     this.state = {
-      selectedTilesets: [{ datatype: 'none' }],
-      showSetTrackSources: false,
+      selectedTilesets: [],
+      activeTab: this.getActiveTab(),
     };
 
+    this.handlePlotTypeSelectedBound = this.handlePlotTypeSelected.bind(this);
+    this.handleSearchBoxBound = this.handleSearchBox.bind(this);
     this.handleSubmitBound = this.handleSubmit.bind(this);
     this.handleTilesetPickerDoubleClickBound = this.handleTilesetPickerDoubleClick.bind(this);
+    this.handleTrackChosenBound = this.handleTrackChosen.bind(this);
     this.selectedTilesetsChangedBound = this.selectedTilesetsChanged.bind(this);
-    this.toggleSetTrackSourcesBound = this.toggleSetTrackSources.bind(this);
+    this.handleTrackSourceSavedBound = this.handleTrackSourceSaved.bind(this);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.selectedTilesets.length === 0) {
+      this.selectedPlotType = undefined;
+    }
+  }
+
+  componentDidUpdate(props, state) {
+    if (this.updateTab) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        activeTab: this.getActiveTab()
+      });
+      this.updateTab = false;
+    }
+  }
+
+  getActiveTab() {
+    if (this.props.trackSourceServers.length === 0) return 'trackSources';
+    if (!this.state || this.state.selectedTilesets.length === 0) return 'datasets';
+    if (!this.selectedPlotType && !this.props.hidePlotTypeChooser) return 'trackTypes';
+    return 'configurations';
   }
 
   /**
@@ -81,9 +107,11 @@ class AddTrackDialog extends React.Component {
     this.selectedTilesetsChanged([tileset]);
 
     // should iterate over the selected tilesets
-    this.props.onTracksChosen(this.state.selectedTilesets,
+    this.props.onTracksChosen(
+      this.state.selectedTilesets,
       this.props.position,
-      this.props.host);
+      this.props.host
+    );
   }
 
   handleOptionsChanged(newOptions) {
@@ -97,9 +125,22 @@ class AddTrackDialog extends React.Component {
 
     this.selectedPlotType = newPlotType;
 
-    this.setState({
-      selectedTilesets,
-    });
+    this.updateTab = true;
+
+    this.setState({ selectedTilesets });
+  }
+
+  handleSearchBox(element) {
+    this.tilesetFinderSearchBox = element;
+  }
+
+  handleTrackChosen(value) {
+    this.props.onTracksChosen(value, this.props.position);
+  }
+
+  async handleTrackSourceSaved(sources) {
+    await this.props.onTrackSourceChanged(sources);
+    this.setState({ activeTab: this.getActiveTab() });
   }
 
   selectedTilesetsChanged(selectedTilesetsIn) {
@@ -138,31 +179,17 @@ class AddTrackDialog extends React.Component {
       }
     }
 
+    this.updateTab = true;
+
     this.setState({ selectedTilesets });
   }
 
-  toggleSetTrackSources() {
-    this.setState(prevState => ({
-      showSetTrackSources: !prevState.showSetTrackSources
-    }));
+  open(activeTab) {
+    return () => this.setState({ activeTab });
   }
 
   render() {
     const orientation = this.getOrientation(this.props.position);
-    const form = (
-      <div>
-        <TilesetFinder
-          // Only for testing purposes
-          ref={(c) => { this.tilesetFinder = c; }}
-          datatype={this.props.datatype}
-          onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
-          onTracksChosen={value => this.props.onTracksChosen(value, this.props.position)}
-          orientation={orientation}
-          selectedTilesetChanged={this.selectedTilesetsChanged.bind(this)}
-          trackSourceServers={this.props.trackSourceServers}
-        />
-      </div>
-    );
 
     return (
       <Dialog
@@ -171,38 +198,217 @@ class AddTrackDialog extends React.Component {
         onOkay={this.handleSubmitBound}
         title="Add Track"
       >
-        { form }
-        {
-          !this.props.hidePlotTypeChooser && (
-            <PlotTypeChooser
-              // Only for testing purposes
-              ref={(c) => { this.plotTypeChooser = c; }}
-              datatypes={this.state.selectedTilesets.map((x) => {
-                if (x.filetype === 'cooler') {
-                  // cooler files can also supply chromsizes
-                  return [x.datatype, 'chromsizes'];
-                }
-
-                return [x.datatype];
-              })}
-              onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
-              orientation={orientation}
-            />
-          )
-        }
-        <button
-          className="hg-button"
-          onClick={this.toggleSetTrackSourcesBound}
-          type="button"
+        <div
+          styleName={
+            this.state.activeTab === 'trackSources'
+              ? 'add-track-dialog-toggable-open'
+              : 'add-track-dialog-toggable'
+          }
         >
-          Set track source servers
-        </button>
-        {this.state.showSetTrackSources && (
-          <TrackSourceEditor
-            onTrackSourceChanged={this.props.onTrackSourceChanged}
-            trackSources={this.props.trackSourceServers}
-          />
+          <div
+            styleName={
+              this.state.activeTab === 'trackSources'
+                ? 'add-track-dialog-toggler-active'
+                : 'add-track-dialog-toggler'
+            }
+          >
+            <button onClick={this.open('trackSources')} type="button">
+              {this.props.trackSourceServers.length > 1 && (
+                <span>
+                  <span>Change track source servers: </span>
+                  <span styleName="add-track-dialog-toggler-value">
+                    {this.props.trackSourceServers[0]}
+                    &hellip;
+                  </span>
+                </span>
+              )}
+              {this.props.trackSourceServers.length === 1 && (
+                <span>
+                  <span>Change track source servers: </span>
+                  <span styleName="add-track-dialog-toggler-value">
+                    {this.props.trackSourceServers[0]}
+                  </span>
+                </span>
+              )}
+              {this.props.trackSourceServers.length === 0 && (
+                <span>Set track source servers</span>
+              )}
+              <span styleName="add-track-dialog-toggler-triangle" />
+            </button>
+          </div>
+          <div
+            styleName={
+              this.state.activeTab === 'trackSources'
+                ? 'add-track-dialog-toggable-content-open'
+                : 'add-track-dialog-toggable-content'
+            }
+          >
+            {this.state.activeTab === 'trackSources' && (
+              <TrackSourceEditor
+                onTrackSourceChanged={this.props.onTrackSourceChanged}
+                onTrackSourceSaved={this.handleTrackSourceSavedBound}
+                trackSources={this.props.trackSourceServers}
+              />
+            )}
+          </div>
+        </div>
+        <div
+          styleName={
+            this.state.activeTab === 'datasets'
+              ? 'add-track-dialog-toggable-open'
+              : 'add-track-dialog-toggable'
+          }
+        >
+          <div
+            styleName={
+              this.state.activeTab === 'datasets'
+                ? 'add-track-dialog-toggler-active'
+                : 'add-track-dialog-toggler'
+            }
+          >
+            <button onClick={this.open('datasets')} type="button">
+              {this.state.selectedTilesets.length > 1 && (
+                <span>
+                  <span>Change datasets: </span>
+                  <span styleName="add-track-dialog-toggler-value">
+                    {this.state.selectedTilesets[0].name}
+                    &hellip;
+                  </span>
+                </span>
+              )}
+              {this.state.selectedTilesets.length === 1 && (
+                <span>
+                  <span>Change datasets: </span>
+                  <span styleName="add-track-dialog-toggler-value">
+                    {this.state.selectedTilesets[0].name}
+                  </span>
+                </span>
+              )}
+              {this.state.selectedTilesets.length === 0 && (
+                <span>Select datasets</span>
+              )}
+              <span styleName="add-track-dialog-toggler-triangle" />
+            </button>
+          </div>
+          <div
+            styleName={
+              this.state.activeTab === 'datasets'
+                ? 'add-track-dialog-toggable-content-open'
+                : 'add-track-dialog-toggable-content'
+            }
+          >
+            {this.state.activeTab === 'datasets' && (
+              <TilesetFinder
+                // Only for testing purposes
+                ref={(c) => { this.tilesetFinder = c; }}
+                datatype={this.props.datatype}
+                onDoubleClick={this.handleTilesetPickerDoubleClickBound}
+                onTracksChosen={this.handleTrackChosenBound}
+                orientation={orientation}
+                searchBox={this.handleSearchBoxBound}
+                selectedTilesetChanged={this.selectedTilesetsChangedBound}
+                trackSourceServers={this.props.trackSourceServers}
+              />
+            )}
+          </div>
+        </div>
+        {!this.props.hidePlotTypeChooser && (
+          <div
+            styleName={
+              this.state.activeTab === 'trackTypes'
+                ? 'add-track-dialog-toggable-open'
+                : 'add-track-dialog-toggable'
+            }
+          >
+            <div
+              styleName={
+                this.state.activeTab === 'trackTypes'
+                  ? 'add-track-dialog-toggler-active'
+                  : 'add-track-dialog-toggler'
+              }
+            >
+              <button
+                disabled={this.state.selectedTilesets.length === 0}
+                onClick={this.open('trackTypes')}
+                type="button"
+              >
+                {this.selectedPlotType ? (
+                  <span>
+                    <span>Change track type: </span>
+                    <span styleName="add-track-dialog-toggler-value">
+                      {this.selectedPlotType}
+                    </span>
+                  </span>
+                ) : (
+                  <span>Select track type</span>
+                )}
+                <span styleName="add-track-dialog-toggler-triangle" />
+              </button>
+            </div>
+            <div
+              styleName={
+                this.state.activeTab === 'trackTypes'
+                  ? 'add-track-dialog-toggable-content-open'
+                  : 'add-track-dialog-toggable-content'
+              }
+            >
+              {this.state.activeTab === 'trackTypes' && (
+                <PlotTypeChooser
+                  // Only for testing purposes
+                  ref={(c) => { this.plotTypeChooser = c; }}
+                  datatypes={this.state.selectedTilesets.map((x) => {
+                    if (x.filetype === 'cooler') {
+                      // cooler files can also supply chromsizes
+                      return [x.datatype, 'chromsizes'];
+                    }
+
+                    return [x.datatype];
+                  })}
+                  onPlotTypeSelected={this.handlePlotTypeSelectedBound}
+                  orientation={orientation}
+                  plotType={this.selectedPlotType}
+                />
+              )}
+            </div>
+          </div>
         )}
+        <div
+          styleName={
+            this.state.activeTab === 'configurations'
+              ? 'add-track-dialog-toggable-open'
+              : 'add-track-dialog-toggable'
+          }
+        >
+          <div
+            styleName={
+              this.state.activeTab === 'configurations'
+                ? 'add-track-dialog-toggler-active'
+                : 'add-track-dialog-toggler'
+            }
+          >
+            <button
+              disabled={
+                this.state.selectedTilesets.length === 0 || !this.selectedPlotType
+              }
+              onClick={this.open('configurations')}
+              type="button"
+            >
+              <span>Configure track</span>
+              <span styleName="add-track-dialog-toggler-triangle" />
+            </button>
+          </div>
+          <div
+            styleName={
+              this.state.activeTab === 'configurations'
+                ? 'add-track-dialog-toggable-content-open'
+                : 'add-track-dialog-toggable-content'
+            }
+          >
+            {this.state.activeTab === 'configurations' && (
+              <p>Nice!</p>
+            )}
+          </div>
+        </div>
       </Dialog>
     );
   }

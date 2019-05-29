@@ -1,34 +1,94 @@
-.collapse-toggle-icon:before {
-    /* symbol for "opening" panels */
-    font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
-    content: "\e159";    /* glyphicon glyphicon-expand, taken from bootstrap.css */
-    float: left;        /* adjust as needed */
-    padding-right: 3px;
-}
+@import './colors';
+@import './transitions';
 
-.collapse-toggle-icon.collapsed:before {
-    /* symbol for "collapsed" panels */
-    content: "\e158";    /* glyphicon glyphicon-collapse-down, taken from bootstrap.css */
-}
-
-.modal-title {
-    font-family: "Roboto";
-    font-weight: 700;
-}
-
-.modal-container {
+.add-track-dialog-toggable, .add-track-dialog-toggable-open {
   position: relative;
-}
-.modal-container .modal, .modal-container .modal-backdrop {
-  position: absolute;
+  z-index: 2;
+  margin-top: -1px;
+
+  &:first-child {
+    margin-top: -11px;
+  }
+
+  &:last-child {
+    margin-bottom: -11px;
+  }
 }
 
-.modal-dialog{
-    position: relative;
-    display: table; //This is important
-    overflow-y: auto;
-    overflow-x: auto;
-    width: 600px;
-    min-width: 300px;
-    margin: auto;
+.add-track-dialog-toggler, .add-track-dialog-toggler-active {
+  position: relative;
+  display: block;
+  margin: 0 -10px 0;
+
+  button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 5px 10px;
+    text-align: left;
+    border-top: 1px solid $gray-light;
+    border-bottom: 1px solid $gray-light;
+    border-left: 1px solid $gray-lighter;
+    border-right: 1px solid $gray-lighter;
+    background: $gray-lighter;
+    transition: color $normal $ease,
+                font-weight $normal $ease,
+                border-color $normal $ease,
+                background $normal $ease;
+
+    &:focus {
+      outline: none;
+      border-color: $white;
+      box-shadow: 0 0 0 2px $blue-lighter;
+    }
+
+    &:disabled {
+      color: $gray-medium;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.add-track-dialog-toggler-active button {
+  color: $white;
+  font-weight: bold;
+  background: $primary;
+  border-color: $primary;
+}
+
+.add-track-dialog-toggler-triangle {
+  width: 0;
+  height: 0;
+  border-left: 0.5rem solid transparent;
+  border-right: 0.5rem solid transparent;
+  border-bottom: 0.5rem solid $gray-dark;
+  transition: transform $normal $ease,
+              border-bottom-color $normal $ease;
+}
+
+.add-track-dialog-toggler-active .add-track-dialog-toggler-triangle {
+  border-bottom-color: $white;
+  transform: rotate(180deg);
+}
+
+.add-track-dialog-toggler-value {
+  color: $gray-dark;
+  font-style: italic;
+  transition: opacity $normal $ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.add-track-dialog-toggler-active .add-track-dialog-toggler-value {
+  opacity: 0;
+}
+
+.add-track-dialog-toggable-content {
+  display: none;
+}
+
+.add-track-dialog-toggable-content-open {
+  padding: 5px 0 10px 0;
 }

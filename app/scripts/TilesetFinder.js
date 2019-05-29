@@ -1,22 +1,19 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import slugid from 'slugid';
 import CheckboxTree from 'react-checkbox-tree';
 
-
-import { tileProxy } from './services';
-import '../styles/TilesetFinder.css';
-
-
 import withPubSub from './hocs/with-pub-sub';
-
-// Configs
+import { tileProxy } from './services';
 import { TRACKS_INFO } from './configs';
+
+import '../styles/TilesetFinder.css';
+// eslint-disable-next-line
+import styles from '../styles/TilesetFinder.module.scss';
 
 class TilesetFinder extends React.Component {
   constructor(props) {
     super(props);
-
-    // this.localTracks = TRACKS_INFO.filter
 
     // local tracks are ones that don't have a filetype associated with them
     this.localTracks = TRACKS_INFO
@@ -30,23 +27,68 @@ class TilesetFinder extends React.Component {
     this.augmentedTracksInfo = TRACKS_INFO;
     if (window.higlassTracksByType) {
       Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
-        this.augmentedTracksInfo.push(window.higlassTracksByType[pluginTrackType].config);
+        this.augmentedTracksInfo.push(
+          window.higlassTracksByType[pluginTrackType].config
+        );
       });
     }
 
-    if (props.datatype) {
-      this.localTracks = this.localTracks.filter(x => x.datatype[0] === props.datatype);
-    } else {
-      this.localTracks = this.localTracks.filter(x => x.orientation === this.props.orientation);
-    }
-
+    this.localTracks = props.datatype
+      ? this.localTracks.filter(x => x.datatype[0] === props.datatype)
+      : this.localTracks.filter(x => x.orientation === this.props.orientation);
 
     this.localTracks.forEach((x) => { x.uuid = slugid.nice(); });
 
     const newOptions = this.prepareNewEntries('', this.localTracks, {});
     const availableTilesetKeys = Object.keys(newOptions);
-    const selectedUuid = availableTilesetKeys.length ? [availableTilesetKeys[0]] : null;
+    const selectedUuid = availableTilesetKeys.length
+      ? [availableTilesetKeys[0]]
+      : null;
+
     this.mounted = false;
+
+    this.icons = {
+      uncheck: (
+        <svg styleName="styles.tileset-finder-icon">
+          <use xlinkHref="#square_o" />
+        </svg>
+      ),
+      check: (
+        <svg styleName="styles.tileset-finder-icon">
+          <use xlinkHref="#check_square_o" />
+        </svg>
+      ),
+      halfcheck: (
+        <svg styleName="styles.tileset-finder-icon-half">
+          <use xlinkHref="#check_square_o" />
+        </svg>
+      ),
+      leaf: (
+        <svg styleName="styles.tileset-finder-icon">
+          <use xlinkHref="#file_o" />
+        </svg>
+      ),
+      expandClose: (
+        <svg styleName="styles.tileset-finder-icon">
+          <use xlinkHref="#chevron_right" />
+        </svg>
+      ),
+      expandOpen: (
+        <svg styleName="styles.tileset-finder-icon">
+          <use xlinkHref="#chevron_down" />
+        </svg>
+      ),
+      parentClose: (
+        <svg styleName="styles.tileset-finder-icon">
+          <use xlinkHref="#folder_o" />
+        </svg>
+      ),
+      parentOpen: (
+        <svg styleName="styles.tileset-finder-icon">
+          <use xlinkHref="#folder_open_o" />
+        </svg>
+      ),
+    };
 
     this.state = {
       selectedUuid,
@@ -73,11 +115,11 @@ class TilesetFinder extends React.Component {
     this.mounted = false;
   }
 
+  /**
+   * Add meta data to new tileset entries before adding
+   * them to the list of available options.
+   */
   prepareNewEntries(sourceServer, newEntries, existingOptions) {
-    /**
-         * Add meta data to new tileset entries before adding
-         * them to the list of available options.
-         */
     const newOptions = existingOptions;
 
     const entries = newEntries.map((ne) => {
@@ -100,13 +142,12 @@ class TilesetFinder extends React.Component {
     return newOptions;
   }
 
+  /**
+   * Create a key for a server and uid
+   */
   serverUidKey(server, uid) {
-    /**
-         * Create a key for a server and uid
-         */
     return `${server}/${uid}`;
   }
-
 
   requestTilesetLists() {
     let datatypesQuery = null;
@@ -140,7 +181,9 @@ class TilesetFinder extends React.Component {
 
             // if there isn't a selected tileset, select the first received one
             if (!selectedUuid) {
-              selectedUuid = availableTilesetKeys.length ? [availableTilesetKeys[0]] : null;
+              selectedUuid = availableTilesetKeys.length
+                ? [availableTilesetKeys[0]]
+                : null;
               const selectedTileset = this.state.options[selectedUuid[0]];
               this.props.selectedTilesetChanged([selectedTileset]);
             }
@@ -286,77 +329,48 @@ class TilesetFinder extends React.Component {
   }
 
   render() {
-    const optionsList = [];
-    for (const key in this.state.options) {
-      optionsList.push(this.state.options[key]);
-    }
-
     const nestedItems = this.partitionByGroup(
       this.state.options,
       this.state.filter
     );
-    const svgStyle = {
-      width: 15,
-      height: 15,
-      top: 2,
-      right: 2,
-      position: 'relative',
-    };
 
-    const halfSvgStyle = JSON.parse(JSON.stringify(svgStyle));
-    halfSvgStyle.opacity = 0.5;
-
-    const form = (
-      <form
-        onSubmit={(evt) => { evt.preventDefault(); }}
-      >
-        <div
-          className="tileset-finder-search-bar"
-        >
-          <span
-            className="tileset-finder-label"
-          >
-            Select tileset:
-          </span>
+    return (
+      <form onSubmit={(evt) => { evt.preventDefault(); }}>
+        <div>
           <input
             ref={(c) => { this.searchBox = c; }}
-            className="tileset-finder-search-box"
+            id="higlass-tileset-finder-search-box"
             onChange={this.handleSearchChange.bind(this)}
-            placeholder="Search Term"
+            placeholder="Search by name"
+            styleName="styles.tileset-finder-search-box"
             type="text"
           />
         </div>
         <div
           className="tileset-finder-checkbox-tree"
-          styleName="tileset-finder-checkbox-tree"
+          styleName="styles.tileset-finder-checkbox-tree"
         >
           <CheckboxTree
-              checked={this.state.checked}
-              expanded={this.state.expanded}
-              icons={{
-                uncheck: <svg style={svgStyle}><use xlinkHref="#square_o" /></svg>,
-                check: <svg style={svgStyle}><use xlinkHref="#check_square_o" /></svg>,
-                halfcheck: <svg style={halfSvgStyle}><use xlinkHref="#check_square_o" /></svg>,
-                leaf: <svg style={svgStyle}><use xlinkHref="#file_o" /></svg>,
-                expandClose: <svg style={svgStyle}><use xlinkHref="#chevron_right" /></svg>,
-                expandOpen: <svg style={svgStyle}><use xlinkHref="#chevron_down" /></svg>,
-                parentClose: <svg style={svgStyle}><use xlinkHref="#folder_o" /></svg>,
-                parentOpen: <svg style={svgStyle}><use xlinkHref="#folder_open_o" /></svg>,
-              }}
-              nodes={nestedItems}
-              onCheck={this.handleChecked.bind(this)}
-              onExpand={this.handleExpanded.bind(this)}
+            checked={this.state.checked}
+            expanded={this.state.expanded}
+            icons={this.icons}
+            nodes={nestedItems}
+            onCheck={this.handleChecked.bind(this)}
+            onExpand={this.handleExpanded.bind(this)}
           />
         </div>
       </form>
     );
-
-    return (
-      <div>
-        {form}
-      </div>
-    );
   }
 }
+
+TilesetFinder.propTypes = {
+  datatype: PropTypes.string.isRequired,
+  onDoubleClick: PropTypes.func.isRequired,
+  orientation: PropTypes.string.isRequired,
+  pubSub: PropTypes.object.isRequired,
+  selectedTilesetChanged: PropTypes.func.isRequired,
+  trackSourceServers: PropTypes.array.isRequired,
+};
 
 export default withPubSub(TilesetFinder);

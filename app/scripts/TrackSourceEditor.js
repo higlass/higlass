@@ -48,10 +48,10 @@ class TrackSourceEditor extends React.Component {
     const newTrackSources = [...this.props.trackSources];
 
     this.state.trackSources.forEach((trackSource, i) => {
-      newTrackSources[i] = trackSource;
+      newTrackSources[i] = trackSource || newTrackSources[i];
     });
 
-    this.props.onTrackSourceChanged(newTrackSources);
+    this.props.onTrackSourceSaved(newTrackSources);
 
     this.setState((prevState) => {
       const newInternalTrackSources = [...prevState.trackSources];
@@ -66,7 +66,8 @@ class TrackSourceEditor extends React.Component {
     return (
       <div>
         {this.props.trackSources.map((trackSource, i) => (
-          <div key={trackSource} styleName="styles.trackSource">
+          // eslint-disable-next-line react/no-array-index-key
+          <div key={`${trackSource}-${i}`} styleName="styles.trackSource">
             <Input
               className={styles.trackSourceInput}
               onChange={this.handleChange(i)}
@@ -100,6 +101,7 @@ class TrackSourceEditor extends React.Component {
 
 TrackSourceEditor.propTypes = {
   onTrackSourceChanged: PropTypes.func.isRequired,
+  onTrackSourceSaved: PropTypes.func.isRequired,
   trackSources: PropTypes.array.isRequired,
 };
 

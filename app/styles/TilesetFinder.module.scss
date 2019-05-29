@@ -1,0 +1,47 @@
+@import './colors';
+@import './transitions';
+
+.tileset-finder-label {
+  margin: 0;
+
+  label {
+    /* Only needed because of stupid Bootstrap styles */
+    font-weight: normal;
+  }
+}
+
+.tileset-finder-search-box {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 0.5rem 0.25rem;
+  border: 1px solid $gray-light;
+  border-radius: 0.25rem 0.25rem 0 0;
+
+  &:focus {
+    outline: none;
+    border-color: $blue-lighter;
+    box-shadow: 0 0 0 1px $blue-lighter;
+  }
+}
+
+.tileset-finder-checkbox-tree {
+  max-height: 50vh;
+  overflow-y: scroll;
+  padding: 0.25rem;
+  border: 1px solid $gray-light;
+  border-top: 0;
+  border-radius: 0 0 0.25rem 0.25rem;
+}
+
+.tileset-finder-icon, .tileset-finder-icon-half {
+  position: relative;
+  top: 2;
+  right: 2;
+  width: 15px;
+  height: 15px;
+}
+
+.tileset-finder-icon-half {
+  opacity: 0.5;
+}
