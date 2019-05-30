@@ -42,10 +42,10 @@ describe('BarTrack tests', () => {
     );
 
     waitForTilesLoaded(hgc.instance(), () => {
-      expect(trackObj.zeroLine.fillColor)
+      expect(trackObj.zeroLine.fill.color)
         .to.eql(colorToHex(trackConf.options.zeroLineColor));
 
-      expect(trackObj.zeroLine.fillAlpha)
+      expect(trackObj.zeroLine.fill.alpha)
         .to.eql(trackConf.options.zeroLineOpacity);
 
       expect(
