@@ -9,7 +9,7 @@ const Button = React.forwardRef((props, ref) => (
   // eslint-disable-next-line react/button-has-type
   <button
     ref={ref}
-    className={`${styles.button} ${props.className}`}
+    className={`${styles.button} ${props.primary ? styles.buttonPrimary : ''} ${props.className}`}
     disable={props.disable.toString()}
     onBlur={props.onBlur}
     onClick={props.onClick}
@@ -21,7 +21,7 @@ const Button = React.forwardRef((props, ref) => (
   >
     {props.children}
     {props.shortcut && (
-      <span styleName="button-shortcut">{props.shortcut}</span>
+      <span className={styles.buttonShortcut}>{props.shortcut}</span>
     )}
   </button>
 ));
@@ -35,6 +35,7 @@ Button.defaultProps = {
   onMouseDown: doNothing,
   onMouseOut: doNothing,
   onMouseUp: doNothing,
+  primary: false,
   type: 'button',
 };
 
@@ -47,6 +48,7 @@ Button.propTypes = {
   onMouseDown: PropTypes.func,
   onMouseOut: PropTypes.func,
   onMouseUp: PropTypes.func,
+  primary: PropTypes.bool,
   shortcut: PropTypes.string,
   type: PropTypes.string,
 };

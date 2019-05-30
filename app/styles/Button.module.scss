@@ -2,6 +2,7 @@
 @import './transitions';
 
 .button {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -38,7 +39,34 @@
   outline: none;
 }
 
-.button-shortcut {
+.buttonPrimary {
+  color: $white;
+  background: $blue-light;
+  box-shadow: 0 0 0 1px $blue;
+}
+
+.buttonPrimary:hover {
+  background: $blue;
+  box-shadow: 0 0 0 1px $blue;
+}
+
+.buttonPrimary:focus {
+  box-shadow: 0 0 0 2px $blue-lighter;
+}
+
+.buttonPrimary:focus:before {
+  content: '';
+  position: absolute;
+  display: block;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  left: 1px;
+  box-shadow: 0 0 0 1px $white;
+  border-radius: .25rem;
+}
+
+.buttonShortcut {
   padding: 0.1em 0.5rem;
   color: $gray-medium;
   font-size: 0.8em;
