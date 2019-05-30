@@ -1,7 +1,7 @@
 @import './colors';
 @import './transitions';
 
-.add-track-dialog-toggable, .add-track-dialog-toggable-open {
+.addTrackDialogToggable, .addTrackDialogToggableOpen {
   position: relative;
   z-index: 2;
   margin-top: -1px;
@@ -15,7 +15,7 @@
   }
 }
 
-.add-track-dialog-toggler, .add-track-dialog-toggler-active {
+.addTrackDialogToggler, .addTrackDialogTogglerActive {
   position: relative;
   display: block;
   margin: 0 -10px 0;
@@ -50,14 +50,14 @@
   }
 }
 
-.add-track-dialog-toggler-active button {
+.addTrackDialogTogglerActive button {
   color: $white;
   font-weight: bold;
   background: $primary;
   border-color: $primary;
 }
 
-.add-track-dialog-toggler-triangle {
+.addTrackDialogTogglerTriangle {
   width: 0;
   height: 0;
   border-left: 0.5rem solid transparent;
@@ -67,12 +67,12 @@
               border-bottom-color $normal $ease;
 }
 
-.add-track-dialog-toggler-active .add-track-dialog-toggler-triangle {
+.addTrackDialogTogglerActive .addTrackDialogTogglerTriangle {
   border-bottom-color: $white;
   transform: rotate(180deg);
 }
 
-.add-track-dialog-toggler-value {
+.addTrackDialogTogglerValue {
   color: $gray-dark;
   font-style: italic;
   transition: opacity $normal $ease;
@@ -81,14 +81,20 @@
   text-overflow: ellipsis;
 }
 
-.add-track-dialog-toggler-active .add-track-dialog-toggler-value {
+.addTrackDialogTogglerActive .addTrackDialogTogglerValue {
   opacity: 0;
 }
 
-.add-track-dialog-toggable-content {
+.addTrackDialogToggableContent {
   display: none;
 }
 
-.add-track-dialog-toggable-content-open {
+.addTrackDialogToggableContentOpen {
   padding: 5px 0 10px 0;
+}
+
+.addTrackDialogSubmit {
+  margin-top: 0.5rem;
+  width: 100%;
+  font-weight: bold;
 }

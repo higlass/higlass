@@ -1,16 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Button from './Button';
 import Dialog from './Dialog';
 import TilesetFinder from './TilesetFinder';
 import TrackSourceEditor from './TrackSourceEditor';
 import PlotTypeChooser from './PlotTypeChooser';
 
+import withModal from './hocs/with-modal';
+
 // Configs
 import { AVAILABLE_TRACK_TYPES } from './configs';
 
 // Styles
-import '../styles/AddTrackDialog.module.scss';
+import styles from '../styles/AddTrackDialog.module.scss';
 
 class AddTrackDialog extends React.Component {
   constructor(props) {
@@ -27,11 +30,12 @@ class AddTrackDialog extends React.Component {
 
     this.handlePlotTypeSelectedBound = this.handlePlotTypeSelected.bind(this);
     this.handleSearchBoxBound = this.handleSearchBox.bind(this);
+    this.handleSubmitAndCloseBound = this.handleSubmitAndClose.bind(this);
     this.handleSubmitBound = this.handleSubmit.bind(this);
     this.handleTilesetPickerDoubleClickBound = this.handleTilesetPickerDoubleClick.bind(this);
     this.handleTrackChosenBound = this.handleTrackChosen.bind(this);
-    this.selectedTilesetsChangedBound = this.selectedTilesetsChanged.bind(this);
     this.handleTrackSourceSavedBound = this.handleTrackSourceSaved.bind(this);
+    this.selectedTilesetsChangedBound = this.selectedTilesetsChanged.bind(this);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -54,7 +58,7 @@ class AddTrackDialog extends React.Component {
     if (this.props.trackSourceServers.length === 0) return 'trackSources';
     if (!this.state || this.state.selectedTilesets.length === 0) return 'datasets';
     if (!this.selectedPlotType && !this.props.hidePlotTypeChooser) return 'trackTypes';
-    return 'configurations';
+    return 'done';
   }
 
   /**
@@ -93,6 +97,11 @@ class AddTrackDialog extends React.Component {
       this.props.position,
       this.props.host
     );
+  }
+
+  handleSubmitAndClose(evt) {
+    this.handleSubmit(evt);
+    this.props.modal.close();
   }
 
   /**
@@ -199,24 +208,24 @@ class AddTrackDialog extends React.Component {
         title="Add Track"
       >
         <div
-          styleName={
+          className={
             this.state.activeTab === 'trackSources'
-              ? 'add-track-dialog-toggable-open'
-              : 'add-track-dialog-toggable'
+              ? styles.addTrackDialogToggableOpen
+              : styles.addTrackDialogToggable
           }
         >
           <div
-            styleName={
+            className={
               this.state.activeTab === 'trackSources'
-                ? 'add-track-dialog-toggler-active'
-                : 'add-track-dialog-toggler'
+                ? styles.addTrackDialogTogglerActive
+                : styles.addTrackDialogToggler
             }
           >
             <button onClick={this.open('trackSources')} type="button">
               {this.props.trackSourceServers.length > 1 && (
                 <span>
                   <span>Change track source servers: </span>
-                  <span styleName="add-track-dialog-toggler-value">
+                  <span className={styles.addTrackDialogTogglerValue}>
                     {this.props.trackSourceServers[0]}
                     &hellip;
                   </span>
@@ -225,7 +234,7 @@ class AddTrackDialog extends React.Component {
               {this.props.trackSourceServers.length === 1 && (
                 <span>
                   <span>Change track source servers: </span>
-                  <span styleName="add-track-dialog-toggler-value">
+                  <span className={styles.addTrackDialogTogglerValue}>
                     {this.props.trackSourceServers[0]}
                   </span>
                 </span>
@@ -233,14 +242,14 @@ class AddTrackDialog extends React.Component {
               {this.props.trackSourceServers.length === 0 && (
                 <span>Set track source servers</span>
               )}
-              <span styleName="add-track-dialog-toggler-triangle" />
+              <span className={styles.addTrackDialogTogglerTriangle} />
             </button>
           </div>
           <div
-            styleName={
+            className={
               this.state.activeTab === 'trackSources'
-                ? 'add-track-dialog-toggable-content-open'
-                : 'add-track-dialog-toggable-content'
+                ? styles.addTrackDialogToggableContentOpen
+                : styles.addTrackDialogToggableContent
             }
           >
             {this.state.activeTab === 'trackSources' && (
@@ -253,24 +262,24 @@ class AddTrackDialog extends React.Component {
           </div>
         </div>
         <div
-          styleName={
+          className={
             this.state.activeTab === 'datasets'
-              ? 'add-track-dialog-toggable-open'
-              : 'add-track-dialog-toggable'
+              ? styles.addTrackDialogToggableOpen
+              : styles.addTrackDialogToggable
           }
         >
           <div
-            styleName={
+            className={
               this.state.activeTab === 'datasets'
-                ? 'add-track-dialog-toggler-active'
-                : 'add-track-dialog-toggler'
+                ? styles.addTrackDialogTogglerActive
+                : styles.addTrackDialogToggler
             }
           >
             <button onClick={this.open('datasets')} type="button">
               {this.state.selectedTilesets.length > 1 && (
                 <span>
                   <span>Change datasets: </span>
-                  <span styleName="add-track-dialog-toggler-value">
+                  <span className={styles.addTrackDialogTogglerValue}>
                     {this.state.selectedTilesets[0].name}
                     &hellip;
                   </span>
@@ -279,7 +288,7 @@ class AddTrackDialog extends React.Component {
               {this.state.selectedTilesets.length === 1 && (
                 <span>
                   <span>Change datasets: </span>
-                  <span styleName="add-track-dialog-toggler-value">
+                  <span className={styles.addTrackDialogTogglerValue}>
                     {this.state.selectedTilesets[0].name}
                   </span>
                 </span>
@@ -287,14 +296,14 @@ class AddTrackDialog extends React.Component {
               {this.state.selectedTilesets.length === 0 && (
                 <span>Select datasets</span>
               )}
-              <span styleName="add-track-dialog-toggler-triangle" />
+              <span className={styles.addTrackDialogTogglerTriangle} />
             </button>
           </div>
           <div
-            styleName={
+            className={
               this.state.activeTab === 'datasets'
-                ? 'add-track-dialog-toggable-content-open'
-                : 'add-track-dialog-toggable-content'
+                ? styles.addTrackDialogToggableContentOpen
+                : styles.addTrackDialogToggableContent
             }
           >
             {this.state.activeTab === 'datasets' && (
@@ -314,17 +323,17 @@ class AddTrackDialog extends React.Component {
         </div>
         {!this.props.hidePlotTypeChooser && (
           <div
-            styleName={
+            className={
               this.state.activeTab === 'trackTypes'
-                ? 'add-track-dialog-toggable-open'
-                : 'add-track-dialog-toggable'
+                ? styles.addTrackDialogToggableOpen
+                : styles.addTrackDialogToggable
             }
           >
             <div
-              styleName={
+              className={
                 this.state.activeTab === 'trackTypes'
-                  ? 'add-track-dialog-toggler-active'
-                  : 'add-track-dialog-toggler'
+                  ? styles.addTrackDialogTogglerActive
+                  : styles.addTrackDialogToggler
               }
             >
               <button
@@ -335,21 +344,21 @@ class AddTrackDialog extends React.Component {
                 {this.selectedPlotType ? (
                   <span>
                     <span>Change track type: </span>
-                    <span styleName="add-track-dialog-toggler-value">
+                    <span className={styles.addTrackDialogTogglerValue}>
                       {this.selectedPlotType}
                     </span>
                   </span>
                 ) : (
                   <span>Select track type</span>
                 )}
-                <span styleName="add-track-dialog-toggler-triangle" />
+                <span className={styles.addTrackDialogTogglerTriangle} />
               </button>
             </div>
             <div
-              styleName={
+              className={
                 this.state.activeTab === 'trackTypes'
-                  ? 'add-track-dialog-toggable-content-open'
-                  : 'add-track-dialog-toggable-content'
+                  ? styles.addTrackDialogToggableContentOpen
+                  : styles.addTrackDialogToggableContent
               }
             >
               {this.state.activeTab === 'trackTypes' && (
@@ -372,43 +381,65 @@ class AddTrackDialog extends React.Component {
             </div>
           </div>
         )}
-        <div
-          styleName={
-            this.state.activeTab === 'configurations'
-              ? 'add-track-dialog-toggable-open'
-              : 'add-track-dialog-toggable'
-          }
-        >
-          <div
-            styleName={
-              this.state.activeTab === 'configurations'
-                ? 'add-track-dialog-toggler-active'
-                : 'add-track-dialog-toggler'
-            }
+        {
+          // <div
+          //   styleName={
+          //     this.state.activeTab === 'configurations'
+          //       ? 'add-track-dialog-toggable-open'
+          //       : 'add-track-dialog-toggable'
+          //   }
+          // >
+          //   <div
+          //     styleName={
+          //       this.state.activeTab === 'configurations'
+          //         ? 'add-track-dialog-toggler-active'
+          //         : 'add-track-dialog-toggler'
+          //     }
+          //   >
+          //     <button
+          //       disabled={
+          //         this.state.selectedTilesets.length === 0 || !this.selectedPlotType
+          //       }
+          //       onClick={this.open('configurations')}
+          //       type="button"
+          //     >
+          //       <span>Configure track</span>
+          //       <span className=styles.addTrackDialogTogglerTriangle} />
+          //     </button>
+          //   </div>
+          //   <div
+          //     className={
+          //       this.state.activeTab === 'configurations'
+          //         ? styles.addTrackDialogToggableContentOpen
+          //         : styles.addTrackDialogToggableContent
+          //     }
+          //   >
+          //     {this.state.activeTab === 'configurations' && (
+          //       <p>Nice!</p>
+          //     )}
+          //   </div>
+          //   <div
+          //     className={
+          //       this.state.activeTab === 'done'
+          //         ? styles.addTrackDialogToggableContentOpen
+          //         : styles.addTrackDialogToggableContent
+          //     }
+          //   >
+          //     {this.state.activeTab === 'done' && (
+          //       <Button>Add Track</Button>
+          //     )}
+          //   </div>
+          // </div>
+        }
+        {this.state.activeTab === 'done' && (
+          <Button
+            className={styles.addTrackDialogSubmit}
+            onClick={this.handleSubmitAndCloseBound}
+            primary={true}
           >
-            <button
-              disabled={
-                this.state.selectedTilesets.length === 0 || !this.selectedPlotType
-              }
-              onClick={this.open('configurations')}
-              type="button"
-            >
-              <span>Configure track</span>
-              <span styleName="add-track-dialog-toggler-triangle" />
-            </button>
-          </div>
-          <div
-            styleName={
-              this.state.activeTab === 'configurations'
-                ? 'add-track-dialog-toggable-content-open'
-                : 'add-track-dialog-toggable-content'
-            }
-          >
-            {this.state.activeTab === 'configurations' && (
-              <p>Nice!</p>
-            )}
-          </div>
-        </div>
+            Add Track!
+          </Button>
+        )}
       </Dialog>
     );
   }
@@ -423,6 +454,7 @@ AddTrackDialog.propTypes = {
   datatype: PropTypes.string.isRequired,
   hidePlotTypeChooser: PropTypes.bool,
   host: PropTypes.string.isRequired,
+  modal: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
   onTracksChosen: PropTypes.func.isRequired,
   onTrackSourceChanged: PropTypes.func.isRequired,
@@ -430,4 +462,4 @@ AddTrackDialog.propTypes = {
   trackSourceServers: PropTypes.array.isRequired,
 };
 
-export default AddTrackDialog;
+export default withModal(AddTrackDialog);
