@@ -75,8 +75,6 @@ class TiledPixiTrack extends PixiTrack {
       onValueScaleChanged
     } = context;
 
-    this.pubSub = pubSub;
-
     // keep track of which render we're on so that we save ourselves
     // rerendering all rendering in the same version will have the same
     // scaling so tiles rendered in the same version will have the same

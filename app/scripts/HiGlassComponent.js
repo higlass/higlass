@@ -204,6 +204,18 @@ class HiGlassComponent extends React.Component {
       }
     }
 
+    // console.log('window.higlassTracksByType:', window.higlassTracksByType);
+
+    // if (this.props.options.pluginTracks) {
+    //   if (!window.higlassTracksByType) {
+    //     window.higlassTracksByType = {};
+    //   }
+    //   for (let trackType in this.props.options.pluginTracks) {
+    //     window.higlassTracksByType[trackType] =
+    //       this.props.options.pluginTracks[trackType];
+    //   }
+    // }
+
     const pluginTracks = {};
     try {
       if (window.higlassTracks) {

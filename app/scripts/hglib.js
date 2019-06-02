@@ -6,6 +6,7 @@ export { default as ChromosomeInfo } from './ChromosomeInfo';
 export { default as HiGlassComponent } from './HiGlassComponent';
 
 export { default as SVGTrack } from './SVGTrack';
+export { default as TiledPixiTrack } from './TiledPixiTrack';
 
 // export functions that are useful for testing
 export {
