@@ -44,6 +44,37 @@ And then imported into higlass after copying to the docker temp directory (``cp 
             --datatype bedlike \
             --coordSystem b37
 
+A note about assemblies and coordinate systems
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+HiGlass doesn't really have a notion of an assembly. It only displays data
+where it's told to display it. When you aggregate a bedfile with using
+chromsizes-filename, it uses the lengths of the chromosomes to determine the
+offsets of the bedfile entries from the 0 position. So if aggregate and load
+the resulting the beddb file in HiGlass, you'll see the bedfile entries
+displayed as if the chromosomes in the chromsizes file were laid end to end.
+
+Now, if you want to see which chromosomes correspond to which positions along
+the x-axis or to have the search bar display "assembly" coordinates, you'll
+need to register the chromsizes file using:
+
+.. code-block:: bash
+
+    higlass-manage ingest \
+        --filetype chromsizes-tsv \
+        --datatype chromsizes \
+        --assembly galGal6 \
+        negspy/data/galGal6/chromInfo.txt 
+
+If you would like to be able to search for gene annotations in that assembly,
+you'll need to create a `gene annotation track
+</data_preparation.html#gene-annotation-tracks>`_.
+
+** Note that while the lack of assembly enforcement is generally the rule,
+`bigWig tracks </data_preparation.html#bigwig-files>`_ are a notable
+exception. All bigWig files have to be associated with a coordinate system
+that is already present in the HiGlass server in order to be ingested.
+
 Bedpe-like Files
 ----------------
 
