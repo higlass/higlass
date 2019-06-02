@@ -56,8 +56,6 @@ import OSMTileIdsTrack from './OSMTileIdsTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
 import RasterTilesTrack from './RasterTilesTrack';
 
-import TiledPixiTrack from './TiledPixiTrack';
-
 import SVGTrack from './SVGTrack';
 
 // Higher-order components
@@ -1255,12 +1253,6 @@ class TrackRenderer extends React.Component {
         dataConfig.filetype = track.filetype;
       }
     }
-
-    class MyTrack extends TiledPixiTrack {
-
-    }
-
-    const someTrack = new MyTrack({ scene: this.pStage }, {});
 
     // To simplify the context creation via ES6 object shortcuts.
     const context = {

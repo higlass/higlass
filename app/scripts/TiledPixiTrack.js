@@ -108,6 +108,7 @@ class TiledPixiTrack extends PixiTrack {
 
     this.listeners = {};
 
+    this.pubSub = pubSub;
     this.animate = animate;
     this.onValueScaleChanged = onValueScaleChanged;
 
@@ -115,7 +116,11 @@ class TiledPixiTrack extends PixiTrack {
     // if the tileset info is not found
     this.prevValueScale = null;
 
-    this.dataFetcher = new DataFetcher(dataConfig, this.pubSub);
+    if (!context.dataFetcher) {
+      this.dataFetcher = new DataFetcher(dataConfig, this.pubSub);
+    } else {
+      this.dataFetcher = context.dataFetcher;
+    }
 
     // To indicate that this track is requiring a tileset info
     this.tilesetInfo = null;
