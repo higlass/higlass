@@ -1298,10 +1298,12 @@ class TrackRenderer extends React.Component {
 
       case 'horizontal-multivec':
       case 'horizontal-vector-heatmap':
+      case 'horizontal-1d-heatmap':
         return new HorizontalMultivecTrack(context, options);
 
       case 'vertical-multivec':
       case 'vertical-vector-heatmap':
+      case 'vertical-1d-heatmap':
         return new LeftTrackModifier(
           new HorizontalMultivecTrack(context, options)
         );
