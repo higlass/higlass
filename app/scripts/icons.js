@@ -158,8 +158,6 @@ export const svgHorizontal1dHeatmap = parser.parseFromString(horizontal1dHeatmap
 
 const horizontalLineStr = `
 <svg width="20px" height="20px" viewBox="0 0 135 85" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>line</title>
-    <defs></defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <polyline id="Path" stroke="#4990E2" stroke-width="8" points="2 45.5625 20.7460938 6.3359375 36.828125 86.6484375 59.8945312 17.5742188 79.0390625 70.703125 99.9335938 27 112.769531 81.1601562 132.078125 3"></polyline>
     </g>
@@ -173,9 +171,6 @@ export const svgVerticalLineIcon = select(parser.parseFromString(horizontalLineS
 
 const tiles2DIconStr = `
 <svg width="20px" height="20px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 41 (35326) - http://www.bohemiancoding.com/sketch -->
-    <title>2d-tiles-icon</title>
-    <desc>Created with Sketch.</desc>
     <defs>
         <rect id="tiles2DIconStr-path-1" x="0" y="0" width="30" height="30"></rect>
         <mask id="tiles2DIconStr-mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="30" height="30" fill="white">
@@ -207,9 +202,6 @@ export const svg2DTilesIcon = parser.parseFromString(tiles2DIconStr, 'text/xml')
 
 const heatmap2DStr = `
 <svg width="20px" height="20px" viewBox="0 0 90 90" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 41 (35326) - http://www.bohemiancoding.com/sketch -->
-    <title>2d-heatmap</title>
-    <desc>Created with Sketch.</desc>
     <defs>
         <rect id="heatmap2DStr-path-1" x="0" y="0" width="30" height="30"></rect>
         <rect id="heatmap2DStr-path-2" x="30" y="0" width="30" height="30"></rect>
@@ -239,9 +231,6 @@ export const svg2DHeatmapIcon = parser.parseFromString(heatmap2DStr, 'text/xml')
 
 const axis1D = `
 <svg width="20px" height="20px" viewBox="0 0 77 33" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 41 (35326) - http://www.bohemiancoding.com/sketch -->
-    <title>axis-1d</title>
-    <desc>Created with Sketch.</desc>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <polyline id="Path" stroke="#979797" stroke-width="8" transform="translate(38.258485, 27.557860) scale(1, -1) translate(-38.258485, -27.557860) " points="4 27.05786 36.7512307 27.05786 72.5169695 27.05786"></polyline>
         <path d="M38,24.484375 L38,3" id="Path-2" stroke="#979797" stroke-width="4"></path>
@@ -256,9 +245,6 @@ export const svgVertical1DAxisIcon = select(parser.parseFromString(axis1D, 'text
 
 const geneAnnotations = `
 <svg width="20px" height="20px" viewBox="0 0 171 116" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 41 (35326) - http://www.bohemiancoding.com/sketch -->
-    <title>gene-annotations</title>
-    <desc>Created with Sketch.</desc>
     <defs>
         <rect id="geneAnnotations-path-1" x="34" y="0" width="24" height="116"></rect>
         <mask id="geneAnnotations-mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="24" height="116" fill="white">
@@ -290,9 +276,6 @@ export const svgVerticalGeneAnnotationsIcon = select(parser.parseFromString(gene
 
 const tiles1DIconStr = `
 <svg width="20px" height="20px" viewBox="0 0 180 90" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
-    <title>1d-tiles-icon</title>
-    <desc>Created with Sketch.</desc>
     <defs>
         <rect id="tiles1DIconStr-path-1" x="0" y="0" width="90" height="90"></rect>
         <mask id="tiles1DIconStr-mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="90" height="90" fill="white">
@@ -317,9 +300,6 @@ export const svgVertical1DTilesIcon = select(parser.parseFromString(tiles1DIconS
 
 const arrowHeadDomainsStr = `
 <svg width="20px" height="20px" viewBox="0 0 111 111" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
-    <title>arrowhead-domains</title>
-    <desc>Created with Sketch.</desc>
     <defs>
         <rect id="arrowHeadDomainsStr-path-1" x="0" y="0" width="90" height="90"></rect>
         <mask id="arrowHeadDomainsStr-mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="90" height="90" fill="white">
