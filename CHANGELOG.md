@@ -1,10 +1,13 @@
-## v1.5.8
+## v1.6.0
 
+- Updated `pixi.js` to version `5`. In your `html` files you need to replace the previous PixiJS loader with `<script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>` (or `<script crossorigin src="https://unpkg.com/pixi.js-legacy@5/dist/pixi-legacy.min.js"></script>` if you want to use the Canvas renderer)
+- Add a dialog to directly edit the view config in the browser
 - Replace ReactBootstrap modal with custom modal to not rely on Bootstrap and support Jupyter
 - Updated `pub-sub-es` to version `1.2.1` to fix a bug in the shorthand event unsubscription
 - Added an example of a map overlay
 - Fix #648: Auto select and copy URL when exporting a view by link
 - Fix #647: Shows correct URL when specifying an absolute URL as `exportViewUrl` in the viewconf
+- Fix #651: set correct namespace for SVG exports
 
 ## v1.5.7
 

@@ -125,6 +125,10 @@ class ViewHeader extends React.Component {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onClearView();
             }}
+            onEditViewConfig={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onEditViewConfig(this.state.configMenuUid);
+            }}
             onExportPNG={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onExportPNG();
@@ -310,6 +314,7 @@ ViewHeader.propTypes = {
   onAddView: PropTypes.func.isRequired,
   onClearView: PropTypes.func.isRequired,
   onCloseView: PropTypes.func.isRequired,
+  onEditViewConfig: PropTypes.func.isRequired,
   onExportSVG: PropTypes.func.isRequired,
   onExportPNG: PropTypes.func.isRequired,
   onExportViewsAsJSON: PropTypes.func.isRequired,
