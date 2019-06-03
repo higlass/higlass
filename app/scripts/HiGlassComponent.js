@@ -420,6 +420,8 @@ class HiGlassComponent extends React.Component {
     });
 
     const rendererOptions = {
+      width: this.state.width,
+      height: this.state.height,
       view: this.canvasElement,
       antialias: true,
       transparent: true,
@@ -427,24 +429,31 @@ class HiGlassComponent extends React.Component {
       autoResize: true,
     };
 
-    if (this.props.options.renderer === 'webgl') {
-      this.pixiRenderer = new PIXI.WebGLRenderer(
-        this.state.width,
-        this.state.height,
-        rendererOptions
-      );
-    } else if (this.props.options.renderer === 'canvas') {
-      this.pixiRenderer = new PIXI.CanvasRenderer(
-        this.state.width,
-        this.state.height,
-        rendererOptions
-      );
-    } else {
-      this.pixiRenderer = PIXI.autoDetectRenderer(
-        this.state.width,
-        this.state.height,
-        rendererOptions
-      );
+    switch (PIXI.VERSION[0]) {
+      case '4':
+        console.warn(
+          'Deprecation warning: please update Pixi.js to version 5!'
+        );
+        if (this.props.options.renderer === 'canvas') {
+          this.pixiRenderer = new PIXI.CanvasRenderer(rendererOptions);
+        } else {
+          this.pixiRenderer = new PIXI.WebGLRenderer(rendererOptions);
+        }
+        break;
+
+      default:
+        console.warn(
+          'Deprecation warning: please update Pixi.js to version 5! '
+          + 'This version of Pixi.js is unsupported. Good luck 🤞'
+        );
+      // eslint-disable-next-line
+      case '5':
+        if (this.props.options.renderer === 'canvas') {
+          this.pixiRenderer = new PIXI.CanvasRenderer(rendererOptions);
+        } else {
+          this.pixiRenderer = new PIXI.Renderer(rendererOptions);
+        }
+        break;
     }
 
     // PIXI.RESOLUTION=2;
@@ -2727,7 +2736,7 @@ class HiGlassComponent extends React.Component {
   handleExportViewsAsLink(
     url = this.state.viewConfig.exportViewUrl, fromApi = false
   ) {
-    const port = window.location.port === '' ? '' : `:${window.location.port}`;
+    const parsedUrl = new URL(url, window.location.origin);
 
     const req = fetch(
       url,
@@ -2751,7 +2760,7 @@ class HiGlassComponent extends React.Component {
       })
       .then(_json => ({
         id: _json.uid,
-        url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
+        url: `${parsedUrl.origin}/app/?config=${_json.uid}`
       }));
 
     if (!fromApi) {
