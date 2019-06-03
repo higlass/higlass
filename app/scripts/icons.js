@@ -27,6 +27,15 @@ export const ENLARGE = {
   viewBox: '0 0 512 512',
 };
 
+export const MAGNIFIER = {
+  id: 'magnifier',
+  paths: [
+    'M18.126 15.141a9.778 9.778 0 0 0 1.567-5.294C19.693 4.409 15.284 0 9.846 0S-.001 4.409-.001 9.847s4.409 9.847 9.847 9.847a9.775 9.775 0 0 0 5.294-1.567L21.014 24l2.984-2.984-5.872-5.875zm-8.28 1.738a7.034 7.034 0 1 1 0-14.067 7.034 7.034 0 0 1 0 14.067z',
+  ],
+  fillRule: 'evenodd',
+  viewBox: '0 0 24 24',
+};
+
 export const MINUS = {
   id: 'minus',
   paths: [
@@ -124,6 +133,7 @@ export const all = [
   COG,
   CROSS,
   ENLARGE,
+  MAGNIFIER,
   MINUS,
   MOVE,
   PLAY,

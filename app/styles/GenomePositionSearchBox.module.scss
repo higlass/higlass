@@ -60,6 +60,11 @@ $unit: 24px;
     color: $white;
     background: $active;
   }
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
 }
 
 .genome-position-search-bar-button-focus {

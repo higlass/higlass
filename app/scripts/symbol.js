@@ -10,10 +10,16 @@
  * @param   {Array}   paths    Array of path strings.
  * @param   {String}  viewBox  View box string.
  */
-export default function createSymbolIcon(el, id, paths, viewBox) {
+export default function createSymbolIcon(
+  el,
+  {
+    id, paths, viewBox, fillRule = null
+  }
+) {
   const symbol = el.append('symbol')
     .attr('id', id)
-    .attr('viewBox', viewBox);
+    .attr('viewBox', viewBox)
+    .attr('fill-rule', fillRule);
 
   paths.forEach(
     d => symbol.append('path').attr('d', d).attr('fill', 'currentColor'),
