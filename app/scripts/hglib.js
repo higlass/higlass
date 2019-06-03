@@ -153,3 +153,49 @@ export const trackViewer = (element, [xMin, xMax, yMin, yMax], trackConfig) => {
     hgApi: viewer(element, viewConfig, { bounded: true })
   };
 };
+
+/**
+ * React component wrapper around trackViewer.
+ * Accepts x, y, width, and height props, in addition to trackConfig,
+ * so HiGlass can be used to provide background imagery for Deck.gl.
+ */
+export class HiGlassTrackComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.id = `id-${Math.random()}`;
+  }
+
+  componentDidMount() {
+    this.initTrackViewer();
+  }
+
+  shouldComponentUpdate(nextProps) {
+    // For now, never re-render the component: Just re-zoom.
+    const {
+      x, y, width, height,
+    } = nextProps;
+    this.zoomTo(x, y, width, height);
+    return false;
+  }
+
+  initTrackViewer() {
+    const {
+      trackConfig,
+      x, y, width, height,
+    } = this.props;
+    const element = document.getElementById(this.id);
+    const { id, hgApi } = trackViewer(element, [x, x + width, y, y + height], trackConfig);
+    this.viewUid = id;
+    this.viewer = hgApi;
+  }
+
+  zoomTo(x, y, width, height) {
+    this.viewer.zoomTo(this.viewUid, x, x + width, y, y + height);
+  }
+
+  render() {
+    return (
+      <div id={this.id} style={{ height: '100%', width: '100%' }} />
+    );
+  }
+}
