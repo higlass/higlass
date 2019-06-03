@@ -4,7 +4,10 @@ import * as PIXI from 'pixi.js';
 // Services
 import { getDarkTheme } from './services';
 
-import { colorToHex } from './utils';
+import {
+  colorToHex,
+  createSVGElement
+} from './utils';
 
 const TICK_HEIGHT = 40;
 const TICK_MARGIN = 0;
@@ -214,7 +217,7 @@ class AxisPixi {
 
 
   exportVerticalAxis(axisHeight) {
-    const gAxis = document.createElement('g');
+    const gAxis = createSVGElement('g');
     gAxis.setAttribute('class', 'axis-vertical');
 
     let stroke = 'black';
@@ -228,7 +231,7 @@ class AxisPixi {
     // and if not, remove this.
     if (getDarkTheme()) stroke = '#cccccc';
 
-    const line = document.createElement('path');
+    const line = createSVGElement('path');
 
     line.setAttribute('fill', 'transparent');
     line.setAttribute('stroke', stroke);
@@ -253,7 +256,7 @@ class AxisPixi {
 
     if (getDarkTheme()) stroke = '#cccccc';
 
-    const line = document.createElement('path');
+    const line = createSVGElement('path');
     line.setAttribute('id', 'tick-mark');
     line.setAttribute('fill', 'transparent');
     line.setAttribute('stroke', stroke);
@@ -263,7 +266,7 @@ class AxisPixi {
 
   createAxisSVGText(text) {
     // factor out the creation of axis texts
-    const t = document.createElement('text');
+    const t = createSVGElement('text');
 
     t.innerHTML = text;
     t.setAttribute('id', 'axis-text');
@@ -302,7 +305,7 @@ class AxisPixi {
         `M${+TICK_MARGIN},${valueScale(tick)} L${+(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`
       );
 
-      const g = document.createElement('g');
+      const g = createSVGElement('g');
       gAxis.appendChild(g);
       if (text.visible) {
         const t = this.createAxisSVGText(text.text);
@@ -344,7 +347,7 @@ class AxisPixi {
         `M${-TICK_MARGIN},${valueScale(tick)} L${-(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`
       );
 
-      const g = document.createElement('g');
+      const g = createSVGElement('g');
       gAxis.appendChild(g);
 
       if (text.visible) {

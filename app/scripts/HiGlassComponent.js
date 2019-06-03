@@ -1139,7 +1139,6 @@ class HiGlassComponent extends React.Component {
         if (trackDefObject.trackObject.exportSVG) {
           const trackSVG = trackDefObject.trackObject.exportSVG();
 
-          console.log('appending', trackSVG[0]);
           if (trackSVG) svg.appendChild(trackSVG[0]);
         }
       }
@@ -1160,14 +1159,10 @@ class HiGlassComponent extends React.Component {
     svgString = svgString.replace(/<a0:/g, '<');
     svgString = svgString.replace(/<\/a0:/g, '</');
 
-    // FF is fussier than Chrome, and requires dimensions on the SVG,
-    // if it is to be used as an image src.
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=700533
-    const w = this.canvasElement.width;
-    const h = this.canvasElement.height;
-    const dimensionedSvgString = `<svg ${svgString.slice(4)}`;
-    const replacedNamespace = dimensionedSvgString.replace('xmlns="http://www.w3.org/1999/xhtml"', '');
-    return replacedNamespace;
+    const xmlDeclaration = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>';
+    const doctype = '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
+
+    return `${xmlDeclaration}\n${doctype}\n${svgString}`;
   }
 
   handleExportSVG() {

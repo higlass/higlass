@@ -7,7 +7,7 @@ import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import { tileProxy } from './services';
 
 // Utils
-import { colorDomainToRgbaArray } from './utils';
+import { colorDomainToRgbaArray, createSVGElement } from './utils';
 
 // Configs
 import { HEATED_OBJECT_MAP } from './configs';
@@ -382,7 +382,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
 
     [base, track] = super.superSVG();
 
-    const output = document.createElement('g');
+    const output = createSVGElement('g');
     track.appendChild(output);
 
     output.setAttribute(
@@ -391,7 +391,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     );
 
     for (const tile of this.visibleAndFetchedTiles()) {
-      const gGraphics = document.createElement('g');
+      const gGraphics = createSVGElement('g');
       const graphics = tile.graphics;
       const graphicsRotation = graphics.rotation * 180 / Math.PI;
       const transformText = `translate(${graphics.position.x},${graphics.position.y}) rotate(${graphicsRotation}) scale(${graphics.scale.x},${graphics.scale.y}) translate(${-graphics.pivot.x},${-graphics.pivot.y})`;
@@ -400,13 +400,13 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       );
 
       const rotation = tile.sprite.rotation * 180 / Math.PI;
-      const g = document.createElement('g');
+      const g = createSVGElement('g');
       g.setAttribute(
         'transform',
         `translate(${tile.sprite.x},${tile.sprite.y}) rotate(${rotation}) scale(${tile.sprite.scale.x},${tile.sprite.scale.y})`,
       );
 
-      const image = document.createElement('image');
+      const image = createSVGElement('image');
       image.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', tile.canvas.toDataURL());
       image.setAttribute('width', 256);
       image.setAttribute('height', 256);

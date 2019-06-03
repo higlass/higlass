@@ -4,7 +4,10 @@ import * as PIXI from 'pixi.js';
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 
 // Utils
-import { colorDomainToRgbaArray, colorToHex, gradient } from './utils';
+import {
+  colorDomainToRgbaArray, colorToHex,
+  createSVGElement, gradient
+} from './utils';
 
 const HEX_WHITE = colorToHex('#FFFFFF');
 
@@ -240,7 +243,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   drawZeroLineSvg(output) {
-    const zeroLine = document.createElement('rect');
+    const zeroLine = createSVGElement('rect');
     zeroLine.setAttribute('id', 'zero-line');
 
     zeroLine.setAttribute('x', 0);
@@ -337,7 +340,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     [base, track] = super.superSVG();
 
     base.setAttribute('class', 'exported-line-track');
-    const output = document.createElement('g');
+    const output = createSVGElement('g');
 
     track.appendChild(output);
     output.setAttribute('transform',
@@ -352,7 +355,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
         const data = tile.svgData;
 
         for (let i = 0; i < data.barXValues.length; i++) {
-          const rect = document.createElement('rect');
+          const rect = createSVGElement('rect');
           rect.setAttribute('fill', data.barColors[i]);
           rect.setAttribute('stroke', data.barColors[i]);
 
@@ -370,7 +373,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
         }
       });
 
-    const gAxis = document.createElement('g');
+    const gAxis = createSVGElement('g');
     gAxis.setAttribute('id', 'axis');
 
     // append the axis to base so that it's not clipped

@@ -8,7 +8,7 @@ import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 import { tileProxy } from './services';
 
 // Utils
-import { colorToHex } from './utils';
+import { colorToHex, createSVGElement } from './utils';
 
 const FONT_SIZE = 11;
 const FONT_FAMILY = 'Arial';
@@ -641,10 +641,10 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
     } else {
-      base = document.createElement('g');
+      base = createSVGElement('g');
       track = base;
     }
-    const output = document.createElement('g');
+    const output = createSVGElement('g');
     output.setAttribute('transform',
       `translate(${this.position[0]},${this.position[1]})`);
 
@@ -653,7 +653,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.visibleAndFetchedTiles()
       .filter(tile => tile.allRects)
       .forEach((tile) => {
-        const gTile = document.createElement('g');
+        const gTile = createSVGElement('g');
         gTile.setAttribute(
           'transform',
           `translate(${tile.rectGraphics.position.x},
@@ -663,7 +663,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         );
 
         tile.allRects.forEach((rect) => {
-          const r = document.createElement('path');
+          const r = createSVGElement('path');
 
           const poly = rect[0];
 
@@ -691,8 +691,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.allTexts
       .filter(text => text.text.visible)
       .forEach((text) => {
-        const g = document.createElement('g');
-        const t = document.createElement('text');
+        const g = createSVGElement('g');
+        const t = createSVGElement('text');
         t.setAttribute('text-anchor', 'middle');
         t.setAttribute('font-family', FONT_FAMILY);
         t.setAttribute('font-size', `${this.fontSize}px`);

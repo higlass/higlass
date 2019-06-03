@@ -11,7 +11,8 @@ import { tileProxy } from './services';
 
 // Utils
 import {
-  colorDomainToRgbaArray, colorToHex, rgbToHex, segmentsToRows, valueToColor
+  colorDomainToRgbaArray, colorToHex, createSVGElement,
+  rgbToHex, segmentsToRows, valueToColor
 } from './utils';
 
 // Configs
@@ -610,10 +611,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
     } else {
-      base = document.createElement('g');
+      base = createSVGElement('g');
       track = base;
     }
-    const output = document.createElement('g');
+    const output = createSVGElement('g');
     output.setAttribute('transform',
       `translate(${this.position[0]},${this.position[1]})`);
 
@@ -627,14 +628,14 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       tile.tileData.forEach((td) => {
         const zoomLevel = +tile.tileId.split('.')[0];
 
-        const gTile = document.createElement('g');
+        const gTile = createSVGElement('g');
         gTile.setAttribute('transform',
           `translate(${tile.rectGraphics.position.x},${tile.rectGraphics.position.y})scale(${tile.rectGraphics.scale.x},${tile.rectGraphics.scale.y})`);
         output.appendChild(gTile);
 
         if (this.drawnRects[zoomLevel] && td.uid in this.drawnRects[zoomLevel]) {
           const rect = this.drawnRects[zoomLevel][td.uid][0];
-          const r = document.createElement('path');
+          const r = createSVGElement('path');
           let d = `M ${rect[0]} ${rect[1]}`;
 
           for (let i = 2; i < rect.length; i += 2) {

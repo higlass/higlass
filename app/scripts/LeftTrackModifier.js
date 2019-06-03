@@ -1,5 +1,7 @@
 import * as PIXI from 'pixi.js';
 
+import { createSVGElement } from './utils';
+
 class LeftTrackModifier {
   constructor(originalTrack) {
     this.scene = originalTrack.scene;
@@ -164,14 +166,14 @@ class LeftTrackModifier {
   }
 
   exportSVG() {
-    const output = document.createElement('g');
+    const output = createSVGElement('g');
     output.setAttribute('transform',
       `translate(${this.moveToOrigin.position.x},${this.moveToOrigin.position.y})
                              rotate(90)
                              scale(${this.moveToOrigin.scale.x},${this.moveToOrigin.scale.y})`);
 
     if (this.originalTrack.exportSVG) {
-      const g = document.createElement('g');
+      const g = createSVGElement('g');
       g.setAttribute('transform',
         `translate(${this.originalTrack.pBase.position.x}, ${this.originalTrack.pBase.position.y})`);
 

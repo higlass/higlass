@@ -4,7 +4,8 @@ import slugid from 'slugid';
 
 import Track from './Track';
 
-import { colorToHex } from './utils';
+import { colorToHex, createSVGElement } from './utils';
+
 
 /**
  * Format a resolution relative to the highest possible resolution.
@@ -591,9 +592,9 @@ class PixiTrack extends Track {
    *
    */
   exportSVG() {
-    const gBase = document.createElement('g');
+    const gBase = createSVGElement('g');
     gBase.setAttribute('class', 'g-base');
-    const rectBackground = document.createElement('rect');
+    const rectBackground = createSVGElement('rect');
 
     rectBackground.setAttribute('x', `${this.position[0]}`);
     rectBackground.setAttribute('y', `${this.position[1]}`);
@@ -606,25 +607,25 @@ class PixiTrack extends Track {
       rectBackground.setAttribute('fill-opacity', '0');
     }
 
-    const gClipped = document.createElement('g');
+    const gClipped = createSVGElement('g');
     gClipped.setAttribute('class', 'g-clipped');
     gBase.appendChild(gClipped);
     gClipped.appendChild(rectBackground);
 
-    const gTrack = document.createElement('g');
+    const gTrack = createSVGElement('g');
     gTrack.setAttribute('class', 'g-track');
     gClipped.appendChild(gTrack);
 
-    const gLabels = document.createElement('g');
+    const gLabels = createSVGElement('g');
     gLabels.setAttribute('class', 'g-labels');
     gClipped.appendChild(gLabels); // labels should always appear on top of the track
 
     // define the clipping area as a polygon defined by the track's
     // dimensions on the canvas
-    const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+    const clipPath = createSVGElement('clipPath');
     gBase.appendChild(clipPath);
 
-    const clipPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    const clipPolygon = createSVGElement('polygon');
     clipPath.appendChild(clipPolygon);
 
 
@@ -656,7 +657,7 @@ class PixiTrack extends Track {
 
 
     for (let i = 0; i < lineParts.length; i++) {
-      const text = document.createElement('text');
+      const text = createSVGElement('text');
 
       text.setAttribute('font-family', this.labelTextFontFamily);
       text.setAttribute('font-size', `${this.labelTextFontSize}px`);
@@ -664,8 +665,7 @@ class PixiTrack extends Track {
       // break up newlines into separate tspan elements because SVG text
       // doesn't support line breaks:
       // http://stackoverflow.com/a/16701952/899470
-
-      text.innerText = lineParts[i];
+      text.innerHTML = lineParts[i];
       if (this.options.labelPosition === 'topLeft'
         || this.options.labelPosition === 'topRight') {
         const dy = ddy + ((i + 1) * (this.labelTextFontSize + 2));

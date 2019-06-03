@@ -7,7 +7,9 @@ import TiledPixiTrack from './TiledPixiTrack';
 import { tileProxy } from './services';
 
 // Utils
-import { colorToHex, max, min } from './utils';
+import {
+  colorToHex, createSVGElement, max, min
+} from './utils';
 
 const MOUSE_CLICK_TIME = 250;
 
@@ -443,11 +445,11 @@ class Annotations2dTrack extends TiledPixiTrack {
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
     } else {
-      base = document.createElement('g');
+      base = createSVGElement('g');
       track = base;
     }
 
-    const output = document.createElement('g');
+    const output = createSVGElement('g');
     output.setAttribute(
       'transform',
       `translate(${this.position[0]},${this.position[1]})`
@@ -459,7 +461,7 @@ class Annotations2dTrack extends TiledPixiTrack {
       .filter(tile => tile.tileData && tile.tileData.length)
       .map(tile => ({ graphics: tile.graphics, td: tile.tileData }))
       .forEach(({ td, graphics }) => {
-        const gTile = document.createElement('g');
+        const gTile = createSVGElement('g');
 
         gTile.setAttribute(
           'transform',
@@ -469,7 +471,7 @@ class Annotations2dTrack extends TiledPixiTrack {
 
         if (td.uid in this.drawnAnnotations) {
           const rect = this.drawnAnnotations[td.uid];
-          const r = document.createElement('rect');
+          const r = createSVGElement('rect');
 
           r.setAttribute('x', rect.x);
           r.setAttribute('y', rect.y);

@@ -3,6 +3,7 @@ import { format } from 'd3-format';
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
 import { tileProxy } from './services';
+import { createSVGElement } from './utils';
 
 export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   constructor(context, options) {
@@ -20,7 +21,6 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       canvas.width = this.tilesetInfo.tile_size; // , pixData.length / 4);
       canvas.height = 1;
     }
-    console.log('canvas.width:', canvas.width, 'canvas.height:', canvas.height);
 
     const ctx = canvas.getContext('2d');
 
@@ -258,11 +258,11 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
     } else {
-      base = document.createElement('g');
+      base = createSVGElement('g');
       track = base;
     }
 
-    const output = document.createElement('g');
+    const output = createSVGElement('g');
     track.appendChild(output);
 
     output.setAttribute(
@@ -272,13 +272,13 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     for (const tile of this.visibleAndFetchedTiles()) {
       const rotation = tile.sprite.rotation * 180 / Math.PI;
-      const g = document.createElement('g');
+      const g = createSVGElement('g');
       g.setAttribute(
         'transform',
         `translate(${tile.sprite.x},${tile.sprite.y}) rotate(${rotation}) scale(${tile.sprite.scale.x},${tile.sprite.scale.y})`,
       );
 
-      const image = document.createElement('image');
+      const image = createSVGElement('image');
       image.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', tile.canvas.toDataURL());
       image.setAttribute('width', tile.canvas.width);
       image.setAttribute('height', tile.canvas.height);
@@ -290,6 +290,6 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const gColorbar = this.exportColorBarSVG();
     track.appendChild(gColorbar);
 
-    return [base, base];
+    return [base, track];
   }
 }

@@ -4,7 +4,7 @@ import Tiled1DPixiTrack from './Tiled1DPixiTrack';
 import AxisPixi from './AxisPixi';
 
 import { tileProxy } from './services';
-import { colorToHex, showMousePosition } from './utils';
+import { colorToHex, createSVGElement, showMousePosition } from './utils';
 
 class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
   constructor(context, options) {
@@ -293,12 +293,12 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
     } else {
-      base = document.createElement('g');
+      base = createSVGElement('g');
       track = base;
     }
 
     base.setAttribute('class', 'horizontal-tiled-1d-track');
-    const output = document.createElement('g');
+    const output = createSVGElement('g');
 
     track.appendChild(output);
 
@@ -316,7 +316,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
         const y = this.valueScale(value);
 
         if (label) {
-          const labelEl = document.createElement('text');
+          const labelEl = createSVGElement('text');
           labelEl.textContent = label;
 
           labelEl.setAttribute('x', this.position[0]);
@@ -353,7 +353,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
           output.appendChild(labelEl);
         }
 
-        const line = document.createElement('line');
+        const line = createSVGElement('line');
         line.setAttribute('x1', this.position[0]);
         line.setAttribute('y1', y);
         line.setAttribute('x2', this.dimensions[0]);

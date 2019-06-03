@@ -3,7 +3,7 @@ import { scaleLinear } from 'd3-scale';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
-import { colorToHex } from './utils';
+import { colorToHex, createSVGElement } from './utils';
 
 class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
@@ -219,12 +219,12 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
     } else {
-      base = document.createElement('g');
+      base = createSVGElement('g');
       track = base;
     }
 
     base.setAttribute('class', 'exported-line-track');
-    const output = document.createElement('g');
+    const output = createSVGElement('g');
 
     track.appendChild(output);
     output.setAttribute('transform',
@@ -233,7 +233,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     const stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
 
     this.visibleAndFetchedTiles().forEach((tile) => {
-      const g = document.createElement('path');
+      const g = createSVGElement('path');
       g.setAttribute('fill', 'transparent');
       g.setAttribute('stroke', stroke);
       let d = '';
@@ -251,7 +251,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       output.appendChild(g);
     });
 
-    const gAxis = document.createElement('g');
+    const gAxis = createSVGElement('g');
     gAxis.setAttribute('id', 'axis');
 
     // append the axis to base so that it's not clipped

@@ -1,5 +1,7 @@
 import slugid from 'slugid';
 
+import { createSVGElement } from './utils';
+
 class CombinedTrack {
   constructor({ tracks, createTrackObject }) {
     this.childTracks = tracks.map(createTrackObject);
@@ -130,7 +132,7 @@ class CombinedTrack {
   }
 
   exportSVG() {
-    const svg = document.createElement('g');
+    const svg = createSVGElement('g');
 
     for (const childTrack of this.childTracks) {
       if (childTrack.exportSVG) {

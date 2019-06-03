@@ -1,3 +1,4 @@
+import { createSVGElement } from '.';
 /**
  * Generate a SVG line
  * @param   {number}  x1  Start X
@@ -9,7 +10,7 @@
  * @return  {object}  SVG line object
  */
 export const svgLine = (x1, y1, x2, y2, strokeWidth, strokeColor) => {
-  const line = document.createElement('line');
+  const line = createSVGElement('line');
 
   line.setAttribute('x1', x1);
   line.setAttribute('x2', x2);

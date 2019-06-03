@@ -9,6 +9,7 @@ import SearchField from './SearchField';
 import {
   absToChr,
   colorToHex,
+  createSVGElement,
   pixiTextToSvg,
   showMousePosition,
   svgLine
@@ -386,12 +387,12 @@ class HorizontalChromosomeLabels extends PixiTrack {
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
     } else {
-      base = document.createElement('g');
+      base = createSVGElement('g');
       track = base;
     }
     base.setAttribute('class', 'chromosome-labels');
 
-    const output = document.createElement('g');
+    const output = createSVGElement('g');
     track.appendChild(output);
 
     output.setAttribute('transform',
@@ -420,7 +421,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
             );
 
 
-            const line = document.createElement('line');
+            const line = createSVGElement('line');
 
             line.setAttribute('x1', text.tickLine[0]);
             line.setAttribute('y1', text.tickLine[1]);

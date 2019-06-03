@@ -68,6 +68,7 @@ export { default as trimTrailingSlash } from './trim-trailing-slash';
 export { default as valueToColor } from './value-to-color';
 export { default as expandCombinedTracks } from './expand-combined-tracks';
 export { default as segmentsToRows } from './segments-to-rows';
+export { default as createSVGElement } from './create-svg-element';
 export {
   getTrackObjectFromHGC,
   getTrackRenderer,

@@ -4,7 +4,7 @@ import PixiTrack from './PixiTrack';
 import ChromosomeInfo from './ChromosomeInfo';
 import SearchField from './SearchField';
 
-import { colorToHex } from './utils';
+import { colorToHex, createSVGElement } from './utils';
 
 class ChromosomeGrid extends PixiTrack {
   constructor(context, options) {
@@ -175,7 +175,7 @@ class ChromosomeGrid extends PixiTrack {
   }
 
   createSvgLine(x1, x2, y1, y2, stroke, strokeWidth) {
-    const line = document.createElement('line');
+    const line = createSVGElement('line');
 
     line.setAttribute('x1', x1);
     line.setAttribute('x2', x2);
@@ -245,10 +245,10 @@ class ChromosomeGrid extends PixiTrack {
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
     } else {
-      base = document.createElement('g');
+      base = createSVGElement('g');
       track = base;
     }
-    const output = document.createElement('g');
+    const output = createSVGElement('g');
     track.appendChild(output);
 
     base.setAttribute('id', 'ChromosomeGrid');

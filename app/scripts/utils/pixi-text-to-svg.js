@@ -1,3 +1,4 @@
+import { createSVGElement } from '.';
 /**
  * Export a PIXI text to an SVG element
  *
@@ -6,8 +7,8 @@
  * the given text.
  */
 export const pixiTextToSvg = (pixiText) => {
-  const g = document.createElement('g');
-  const t = document.createElement('text');
+  const g = createSVGElement('g');
+  const t = createSVGElement('text');
 
   t.setAttribute('text-anchor', 'middle');
   t.setAttribute('font-family', pixiText.style.fontFamily);

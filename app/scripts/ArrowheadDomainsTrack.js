@@ -6,7 +6,7 @@ import TiledPixiTrack from './TiledPixiTrack';
 import { tileProxy } from './services';
 
 // Utils
-import { colorToHex } from './utils';
+import { colorToHex, createSVGElement } from './utils';
 
 class ArrowheadDomainsTrack extends TiledPixiTrack {
   constructor(...args) {
@@ -257,10 +257,10 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
     } else {
-      base = document.createElement('g');
+      base = createSVGElement('g');
       track = base;
     }
-    const output = document.createElement('g');
+    const output = createSVGElement('g');
     output.setAttribute('transform',
       `translate(${this.position[0]},${this.position[1]})`);
 
@@ -271,7 +271,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
       if (!tile.tileData || !tile.tileData.length) continue;
 
       tile.tileData.forEach((td) => {
-        const gTile = document.createElement('g');
+        const gTile = createSVGElement('g');
         gTile.setAttribute('transform',
           `translate(${tile.graphics.position.x},${tile.graphics.position.y})scale(${tile.graphics.scale.x},${tile.graphics.scale.y})`);
         output.appendChild(gTile);
@@ -279,7 +279,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
         if (td.uid in this.drawnRects) {
           const rect = this.drawnRects[td.uid];
 
-          const r = document.createElement('rect');
+          const r = createSVGElement('rect');
           r.setAttribute('x', rect.x);
           r.setAttribute('y', rect.y);
           r.setAttribute('width', rect.width);

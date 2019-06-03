@@ -1,6 +1,6 @@
 import { scaleLinear, scaleLog } from 'd3-scale';
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
-import { colorToHex, dictValues } from './utils';
+import { colorToHex, createSVGElement, dictValues } from './utils';
 
 class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
   /**
@@ -146,7 +146,7 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     [base, track] = super.superSVG();
 
     base.setAttribute('class', 'exported-line-track');
-    const output = document.createElement('g');
+    const output = createSVGElement('g');
 
     track.appendChild(output);
     output.setAttribute('transform',
@@ -154,7 +154,7 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
 
     for (const tile of this.visibleAndFetchedTiles()) {
       for (let i = 0; i < tile.barXValues.length; i++) {
-        const rect = document.createElement('rect');
+        const rect = createSVGElement('rect');
 
         const strokeColor = this.options.lineStrokeColor || 'blue';
         const pointColor = this.options.pointColor || 'red';
@@ -172,7 +172,7 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
       }
     }
 
-    const gAxis = document.createElement('g');
+    const gAxis = createSVGElement('g');
     gAxis.setAttribute('id', 'axis');
 
     // append the axis to base so that it's not clipped
