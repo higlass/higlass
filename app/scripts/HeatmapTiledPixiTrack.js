@@ -1134,9 +1134,12 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     let track = null;
     let base = null;
 
+    console.log('super:', super.exportSVG);
+
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
     } else {
+      console.log('base = track');
       base = document.createElement('g');
       track = base;
     }
@@ -1169,7 +1172,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const gColorbar = this.exportColorBarSVG();
     track.appendChild(gColorbar);
 
-    return [base, base];
+    return [base, track];
   }
 
   zoomed(newXScale, newYScale, k, tx, ty) {

@@ -592,6 +592,7 @@ class PixiTrack extends Track {
    */
   exportSVG() {
     const gBase = document.createElement('g');
+    gBase.setAttribute('class', 'g-base');
     const rectBackground = document.createElement('rect');
 
     rectBackground.setAttribute('x', `${this.position[0]}`);
@@ -611,11 +612,11 @@ class PixiTrack extends Track {
     gClipped.appendChild(rectBackground);
 
     const gTrack = document.createElement('g');
-    gClipped.setAttribute('class', 'g-track');
+    gTrack.setAttribute('class', 'g-track');
     gClipped.appendChild(gTrack);
 
     const gLabels = document.createElement('g');
-    gClipped.setAttribute('class', 'g-labels');
+    gLabels.setAttribute('class', 'g-labels');
     gClipped.appendChild(gLabels); // labels should always appear on top of the track
 
     // define the clipping area as a polygon defined by the track's

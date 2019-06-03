@@ -2,7 +2,8 @@
 @import './transitions';
 
 .button {
-  display: block;
+  display: flex;
+  align-items: center;
   box-sizing: border-box;
   padding: 0.5em 0.5em;
   color: $black;
@@ -34,4 +35,11 @@
 .button:hover, .button:focus, .button:active {
   cursor: pointer;
   outline: none;
+}
+
+.button-shortcut {
+  padding: 0.1em 0.5rem;
+  color: $gray-medium;
+  font-size: 0.8em;
+  transition: color $fast $ease;
 }

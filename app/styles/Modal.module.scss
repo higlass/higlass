@@ -10,6 +10,11 @@
   left: 0;
   background: rgba(0, 0, 0, 0.666);
   animation: fade-in $normal $ease 1;
+  transition: opacity $normal $ease;
+}
+
+.modal-hide {
+  opacity: 0;
 }
 
 .modal-wrap {
@@ -18,19 +23,23 @@
   right: 2rem;
   bottom: 2rem;
   left: 2rem;
-  overflow: auto;
 }
 
 .modal-window {
   position: relative;
   width: 100%;
   max-width: 64rem;
+  max-height: 100%;
   margin-left: auto;
   margin-right: auto;
   color: $black;
   border-radius: 0.5rem;
   background: $white;
   animation: fade-scale-in $normal $ease 1;
+}
+
+.modal-window-max-height {
+  height: 100%;
 }
 
 .modal-content {
