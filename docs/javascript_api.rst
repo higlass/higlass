@@ -16,10 +16,7 @@ javascript and css files:
   <head>
     <meta charset="utf-8">
 
-    <link rel="stylesheet" href="bootstrap.min.css">
-    <link rel="stylesheet" href="hglib.css">
-
-    <link rel="stylesheet" href="https://unpkg.com/higlass@1.5.2/dist/hglib.css" type="text/css">
+    <link rel="stylesheet" href="https://unpkg.com/higlass@1.5.7/dist/hglib.css" type="text/css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
 
     <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
