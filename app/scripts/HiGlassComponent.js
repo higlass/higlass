@@ -482,7 +482,7 @@ class HiGlassComponent extends React.Component {
 
     // Add SVG Icons
     icons.forEach(
-      icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox),
+      icon => createSymbolIcon(baseSvg, icon),
     );
   }
 
