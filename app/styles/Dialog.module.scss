@@ -27,6 +27,10 @@
   padding: 1rem;
 }
 
+.dialog-main-full-height {
+  position: relative;
+}
+
 .dialog-main-max-height {
   position: absolute;
   z-index: 1;
@@ -34,7 +38,6 @@
   right: 0;
   bottom: 5rem;
   left: 0;
-  padding: 1rem;
   overflow: auto;
 }
 

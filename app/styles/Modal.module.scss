@@ -38,7 +38,7 @@
   animation: fade-scale-in $normal $ease 1;
 }
 
-.modal-window-max-height {
+.modal-window-full-height {
   height: 100%;
 }
 
@@ -46,9 +46,13 @@
   padding: 1rem;
 }
 
-.modal-content-max {
+.modal-content-full-height, .modal-content-max-height {
   display: grid;
   height: 100%;
+}
+
+.modal-content-max-height {
+  padding: 0;
 }
 
 @keyframes fade-in {
