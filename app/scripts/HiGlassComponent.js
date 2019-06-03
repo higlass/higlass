@@ -1109,8 +1109,8 @@ class HiGlassComponent extends React.Component {
     const w = this.canvasElement.width;
     const h = this.canvasElement.height;
     const dimensionedSvgString = `<svg width="${w}" height="${h}" ${svgString.slice(4)}`;
-
-    return dimensionedSvgString;
+    const replacedNamespace = dimensionedSvgString.replace('xmlns="http://www.w3.org/1999/xhtml"', '');
+    return replacedNamespace;
   }
 
   handleExportSVG() {
