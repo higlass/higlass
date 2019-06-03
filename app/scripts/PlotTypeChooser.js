@@ -96,9 +96,9 @@ class PlotTypeChooser extends React.Component {
     return (
       <div>
         {availableTrackTypesList.length > 0 && (
-          <div styleName="plot-type-choser">
+          <ul styleName="plot-type-choser">
             { availableTrackTypesList }
-          </div>
+          </ul>
         )}
       </div>
     );

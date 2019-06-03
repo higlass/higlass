@@ -6,26 +6,22 @@
   z-index: 2;
   margin-top: -1px;
 
-  &:first-child {
-    margin-top: -11px;
-  }
-
   &:last-child {
-    margin-bottom: -11px;
+    margin-bottom: -1px;
   }
 }
 
 .addTrackDialogToggler, .addTrackDialogTogglerActive {
   position: relative;
   display: block;
-  margin: 0 -10px 0;
 
   button {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 5px 10px;
+    padding: 0.5rem 1rem;
     text-align: left;
     border-top: 1px solid $gray-light;
     border-bottom: 1px solid $gray-light;
@@ -57,6 +53,34 @@
   border-color: $primary;
 }
 
+.addTrackDialogTogglerLabel {
+  white-space: nowrap;
+}
+
+.addTrackDialogTogglerValue {
+  position: relative;
+  flex-grow: 1;
+  height: 2rem;
+
+  span {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0.5rem;
+    color: $gray-dark;
+    font-style: italic;
+    transition: opacity $normal $ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.addTrackDialogTogglerActive .addTrackDialogTogglerValue {
+  opacity: 0;
+}
+
 .addTrackDialogTogglerTriangle {
   width: 0;
   height: 0;
@@ -72,29 +96,19 @@
   transform: rotate(180deg);
 }
 
-.addTrackDialogTogglerValue {
-  color: $gray-dark;
-  font-style: italic;
-  transition: opacity $normal $ease;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.addTrackDialogTogglerActive .addTrackDialogTogglerValue {
-  opacity: 0;
-}
-
 .addTrackDialogToggableContent {
   display: none;
 }
 
 .addTrackDialogToggableContentOpen {
-  padding: 5px 0 10px 0;
+  padding: 0.5rem 1rem 1rem 1rem;
+}
+
+.addTrackDialogNext, .addTrackDialogSubmit {
+  margin-top: 0.5rem;
+  width: 100%;
 }
 
 .addTrackDialogSubmit {
-  margin-top: 0.5rem;
-  width: 100%;
   font-weight: bold;
 }

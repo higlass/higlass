@@ -21,8 +21,9 @@
 }
 
 .plot-type-choser {
-  overflow-y: scroll;
-  max-height: 10rem;
+  overflow-y: auto;
+  max-height: 25rem;
+  padding: 0.5rem;
   border: 1px solid $gray-lighter;
   border-radius: 0.25rem;
 }

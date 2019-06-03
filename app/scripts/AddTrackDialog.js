@@ -28,6 +28,7 @@ class AddTrackDialog extends React.Component {
       activeTab: this.getActiveTab(),
     };
 
+    this.handleNextBound = this.handleNext.bind(this);
     this.handlePlotTypeSelectedBound = this.handlePlotTypeSelected.bind(this);
     this.handleSearchBoxBound = this.handleSearchBox.bind(this);
     this.handleSubmitAndCloseBound = this.handleSubmitAndClose.bind(this);
@@ -87,6 +88,12 @@ class AddTrackDialog extends React.Component {
     }
 
     return orientation;
+  }
+
+  handleNext() {
+    this.setState({
+      activeTab: this.getActiveTab()
+    });
   }
 
   handleSubmit(evt) {
@@ -188,8 +195,6 @@ class AddTrackDialog extends React.Component {
       }
     }
 
-    this.updateTab = true;
-
     this.setState({ selectedTilesets });
   }
 
@@ -202,6 +207,7 @@ class AddTrackDialog extends React.Component {
 
     return (
       <Dialog
+        maxHeight={46.75}
         okayTitle="Submit"
         onCancel={this.props.onCancel}
         onOkay={this.handleSubmitBound}
@@ -223,25 +229,25 @@ class AddTrackDialog extends React.Component {
           >
             <button onClick={this.open('trackSources')} type="button">
               {this.props.trackSourceServers.length > 1 && (
-                <span>
-                  <span>Change track source servers: </span>
-                  <span className={styles.addTrackDialogTogglerValue}>
-                    {this.props.trackSourceServers[0]}
-                    &hellip;
-                  </span>
+                <span className={styles.addTrackDialogTogglerLabel}>
+                  Change track source servers:
                 </span>
               )}
               {this.props.trackSourceServers.length === 1 && (
-                <span>
-                  <span>Change track source servers: </span>
-                  <span className={styles.addTrackDialogTogglerValue}>
-                    {this.props.trackSourceServers[0]}
-                  </span>
+                <span className={styles.addTrackDialogTogglerLabel}>
+                  Change track source server:
                 </span>
               )}
               {this.props.trackSourceServers.length === 0 && (
-                <span>Set track source servers</span>
+                <span className={styles.addTrackDialogTogglerLabel}>
+                  Set track source servers
+                </span>
               )}
+              <span className={styles.addTrackDialogTogglerValue}>
+              {this.props.trackSourceServers.length > 0 && (
+                <span>{this.props.trackSourceServers[0]}</span>
+              )}
+              </span>
               <span className={styles.addTrackDialogTogglerTriangle} />
             </button>
           </div>
@@ -277,25 +283,25 @@ class AddTrackDialog extends React.Component {
           >
             <button onClick={this.open('datasets')} type="button">
               {this.state.selectedTilesets.length > 1 && (
-                <span>
-                  <span>Change datasets: </span>
-                  <span className={styles.addTrackDialogTogglerValue}>
-                    {this.state.selectedTilesets[0].name}
-                    &hellip;
-                  </span>
+                <span className={styles.addTrackDialogTogglerLabel}>
+                  Change datasets:
                 </span>
               )}
               {this.state.selectedTilesets.length === 1 && (
-                <span>
-                  <span>Change datasets: </span>
-                  <span className={styles.addTrackDialogTogglerValue}>
-                    {this.state.selectedTilesets[0].name}
-                  </span>
+                <span className={styles.addTrackDialogTogglerLabel}>
+                  Change dataset:
                 </span>
               )}
               {this.state.selectedTilesets.length === 0 && (
-                <span>Select datasets</span>
+                <span className={styles.addTrackDialogTogglerLabel}>
+                  Select datasets
+                </span>
               )}
+              <span className={styles.addTrackDialogTogglerValue}>
+              {this.state.selectedTilesets.length > 0 && (
+                <span>{this.state.selectedTilesets[0].name}</span>
+              )}
+              </span>
               <span className={styles.addTrackDialogTogglerTriangle} />
             </button>
           </div>
@@ -307,17 +313,26 @@ class AddTrackDialog extends React.Component {
             }
           >
             {this.state.activeTab === 'datasets' && (
-              <TilesetFinder
-                // Only for testing purposes
-                ref={(c) => { this.tilesetFinder = c; }}
-                datatype={this.props.datatype}
-                onDoubleClick={this.handleTilesetPickerDoubleClickBound}
-                onTracksChosen={this.handleTrackChosenBound}
-                orientation={orientation}
-                searchBox={this.handleSearchBoxBound}
-                selectedTilesetChanged={this.selectedTilesetsChangedBound}
-                trackSourceServers={this.props.trackSourceServers}
-              />
+              <div>
+                <TilesetFinder
+                  // Only for testing purposes
+                  ref={(c) => { this.tilesetFinder = c; }}
+                  datatype={this.props.datatype}
+                  onDoubleClick={this.handleTilesetPickerDoubleClickBound}
+                  onTracksChosen={this.handleTrackChosenBound}
+                  orientation={orientation}
+                  searchBox={this.handleSearchBoxBound}
+                  selectedTilesetChanged={this.selectedTilesetsChangedBound}
+                  trackSourceServers={this.props.trackSourceServers}
+                />
+                <Button
+                  className={styles.addTrackDialogNext}
+                  disabled={this.state.selectedTilesets.length === 0}
+                  onClick={this.handleNextBound}
+                >
+                  Done
+                </Button>
+              </div>
             )}
           </div>
         </div>
@@ -437,7 +452,7 @@ class AddTrackDialog extends React.Component {
             onClick={this.handleSubmitAndCloseBound}
             primary={true}
           >
-            Add Track!
+            {this.state.selectedTilesets.length > 1 ? 'Add Tracks!' : 'Add Track!'}
           </Button>
         )}
       </Dialog>

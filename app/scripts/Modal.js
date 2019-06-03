@@ -16,11 +16,22 @@ const Modal = (props) => {
   return (
     <div styleName={`modal-background ${props.hide ? 'modal-hide' : ''}`}>
       <div styleName="modal-wrap">
-        <div styleName={`modal-window ${props.maxHeight ? 'modal-window-max-height' : ''}`}>
+        <div
+          style={{
+            height: Number.isFinite(props.maxHeight) ? '100%' : null,
+            maxHeight: Number.isFinite(props.maxHeight) ? `${props.maxHeight}rem` : null
+          }}
+          styleName={`modal-window ${Number.isFinite(props.maxHeight) ? 'modal-window-max-height' : ''}`}
+        >
           {props.closeButton && (
             <Button onClick={handleClose}><Cross /></Button>
           )}
-          <div styleName="modal-content">
+          <div
+            style={{
+              gridTemplateRows: `4rem minmax(auto, ${props.maxHeight - 9}rem) 5rem`
+            }}
+            styleName={`${props.maxHeight ? 'modal-content-max' : 'modal-content '}`}
+          >
             {props.children}
           </div>
         </div>
@@ -39,7 +50,7 @@ Modal.propTypes = {
   children: PropTypes.element.isRequired,
   closeButton: PropTypes.bool,
   hide: PropTypes.bool,
-  maxHeight: PropTypes.bool,
+  maxHeight: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   modal: PropTypes.object.isRequired,
   onClose: PropTypes.func
 };
