@@ -15,17 +15,13 @@ class ExportLinkDialog extends React.Component {
         onOkay={this.props.onDone}
         title="Share view link"
       >
-        <p>
-          Copied to clipboard!
-          <span aria-label="Hooray" role="img"> 🎉</span>
-        </p>
         <div styleName="export-link-dialog-wrapper">
           <input
             ref={(element) => {
+              if (!element) return;
               this.input = element;
               element.focus();
               element.select();
-              document.execCommand('copy');
             }}
             onClick={(event) => { event.target.select(); }}
             placeholder="Generating the link..."
