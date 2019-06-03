@@ -19,7 +19,6 @@ import ContextMenuContainer from './ContextMenuContainer';
 import HorizontalTiledPlot from './HorizontalTiledPlot';
 import VerticalTiledPlot from './VerticalTiledPlot';
 import ViewContextMenu from './ViewContextMenu';
-// import {HeatmapOptions} from './HeatmapOptions';
 
 // Higher-order components
 import withPubSub from './hocs/with-pub-sub';
@@ -86,13 +85,6 @@ class TiledPlot extends React.Component {
 
     this.configTrackMenu = null;
 
-    /*
-    let trackOptions = this.props.editable ?
-        {'track': this.props.tracks.center[0].contents[0],
-        'configComponent': HeatmapOptions}
-        : null;
-    */
-
     // these values should be changed in componentDidMount
     this.state = {
       sizeMeasured: false,
@@ -103,8 +95,6 @@ class TiledPlot extends React.Component {
       init: false,
       addTrackPosition: null,
       mouseOverOverlayUid: null,
-      // trackOptions: null
-      // trackOptions: trackOptions
       forceUpdate: 0, // a random value that will be assigned by
       // crucial functions to force an update
 
