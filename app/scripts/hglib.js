@@ -148,10 +148,9 @@ export const trackViewer = (element, [xMin, xMax, yMin, yMax], trackConfig) => {
       },
     ],
   };
-  return {
-    id,
-    hgApi: viewer(element, viewConfig, { bounded: true })
-  };
+  const hgApi = viewer(element, viewConfig, { bounded: true });
+  console.warn('>>> hgApi in trackViewer?', hgApi);
+  return { id, hgApi };
 };
 
 /**
@@ -185,6 +184,7 @@ export class HiGlassTrackComponent extends React.Component {
     } = this.props;
     const element = document.getElementById(this.id);
     const { id, hgApi } = trackViewer(element, [x, x + width, y, y + height], trackConfig);
+    console.warn('>>> hgApi in HiGlassTrackComponent?', hgApi);
     this.viewUid = id;
     this.viewer = hgApi;
   }
