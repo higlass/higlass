@@ -2900,11 +2900,11 @@ class HiGlassComponent extends React.Component {
 
     positionedTracksToAllTracks(newView.tracks).forEach(t => this.addCallbacks(newView.uid, t));
 
-    this.state.views[newView.uid] = newView;
-
-    this.setState(prevState => ({
-      views: prevState.views,
-    }));
+    this.setState((prevState) => {
+      const views = JSON.parse(JSON.stringify(prevState.views)); // eslint-disable-line no-shadow
+      views[newView.uid] = newView;
+      return { views };
+    });
   }
 
   /**
