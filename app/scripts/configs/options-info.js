@@ -3,7 +3,7 @@ import {
   precisionPrefix,
 } from 'd3-format';
 
-import HeatmapOptions from '../HeatmapOptions';
+import HeatmapColormapPicker from '../HeatmapColormapPicker';
 
 const sizesInPx = (sizes, unit = '', multiplier = 1) => sizes.reduce(
   (sizeOption, size) => {
@@ -1148,8 +1148,8 @@ export const OPTIONS_INFO = {
       custom: {
         name: 'Custom...',
         componentPickers: {
-          heatmap: HeatmapOptions,
-          'horizontal-heatmap': HeatmapOptions,
+          heatmap: HeatmapColormapPicker,
+          'horizontal-heatmap': HeatmapColormapPicker,
         },
       },
     },

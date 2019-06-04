@@ -1,0 +1,73 @@
+@import './colors';
+@import './transitions';
+
+.heatmapColormapPickerWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  h4 {
+    font-size: 1.5rem;
+  }
+}
+
+.heatmapColormapPickerColors {
+  display: flex;
+  padding: 0;
+
+  li {
+    list-style: none;
+    margin: 0;
+  }
+}
+
+.heatmapColormapPickerColor {
+  position: relative;
+}
+
+.heatmapColormapPickerColorRemover {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background: $white;
+
+  svg {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    opacity: 0.5;
+    width: 8px;
+    height: 8px;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.heatmapColormapPickerAddColor {
+  position: relative;
+  width: 46px;
+  height: 24px;
+  margin-left: 0.5rem;
+
+  svg {
+    position: absolute;
+    top: 5px;
+    left: 16px;
+    opacity: 0.5;
+    width: 14px;
+    height: 14px;
+  }
+
+  &:hover svg {
+    opacity: 1;
+  }
+}
+
+.heatmapColormapPickerPreview {
+  flex-grow: 1;
+}
