@@ -1,9 +1,9 @@
-.track-renderer {
+:global(.higlass) .track-renderer {
   position: relative;
 }
 
-.track-renderer-element,
-.track-renderer-events {
+:global(.higlass) .track-renderer-element,
+:global(.higlass) .track-renderer-events {
   position: absolute;
   top: 0;
   right: 0;
@@ -12,6 +12,6 @@
   z-index: -1;
 }
 
-.track-renderer-events {
+:global(.higlass) .track-renderer-events {
   z-index: 1;
 }

@@ -3,9 +3,9 @@
 
 $unit: 24px;
 
-.multitrack-header,
-.multitrack-header-focus,
-.multitrack-header-squeazed {
+:global(.higlass) .multitrack-header,
+:global(.higlass) .multitrack-header-focus,
+:global(.higlass) .multitrack-header-squeazed {
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -23,17 +23,17 @@ $unit: 24px;
               margin $fast $ease;
 }
 
-.multitrack-header-dark {
+:global(.higlass) .multitrack-header-dark {
   background: $gray-darkest;
 }
 
-.multitrack-header-focus {
+:global(.higlass) .multitrack-header-focus {
   height: $unit + ($unit / 3);
   margin-top: 0;
   margin-bottom: 0;
 }
 
-.multitrack-header-id {
+:global(.higlass) .multitrack-header-id {
   padding-left: 3px;
 
   &:before {
@@ -43,13 +43,13 @@ $unit: 24px;
   }
 }
 
-.multitrack-header-left {
+:global(.higlass) .multitrack-header-left {
   display: flex;
   flex-grow: 1;
 }
 
-.multitrack-header-grabber,
-.multitrack-header-grabber-squeazed {
+:global(.higlass) .multitrack-header-grabber,
+:global(.higlass) .multitrack-header-grabber-squeazed {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,17 +76,17 @@ $unit: 24px;
   }
 }
 
-.multitrack-header-dark .multitrack-header-grabber {
+:global(.higlass) .multitrack-header-dark .multitrack-header-grabber {
   div {
     background: $gray-dark;
   }
 }
 
-.multitrack-header-grabber-squeazed {
+:global(.higlass) .multitrack-header-grabber-squeazed {
   width: $unit / 1.25;
 }
 
-.multitrack-header-search {
+:global(.higlass) .multitrack-header-search {
   position: relative;
   flex-grow: 1;
   height: 100%;
@@ -105,21 +105,18 @@ $unit: 24px;
   }
 }
 
-.multitrack-header-dark .multitrack-header-search {
+:global(.higlass) .multitrack-header-dark .multitrack-header-search {
   &:after {
     background: $gray-dark;
   }
 }
 
-.multitrack-header-nav-list,
-// Only required because the stupid Bootstrap library overwrites the display
-// property otherwise
-.multitrack-header > nav {
+:global(.higlass) .multitrack-header-nav-list {
   display: flex;
 }
 
-.multitrack-header-icon,
-.multitrack-header-icon-squeazed {
+:global(.higlass) .multitrack-header-icon,
+:global(.higlass) .multitrack-header-icon-squeazed {
   width: $unit;
   height: 100%;
   padding: $unit / 4;
@@ -138,13 +135,13 @@ $unit: 24px;
   }
 }
 
-.mouse-tool-selection {
+:global(.higlass) .mouse-tool-selection {
   color: white;
   border-radius: $unit / 8 0 0 $unit / 8;
   background: $active;
 }
 
-.multitrack-header-icon-squeazed {
+:global(.higlass) .multitrack-header-icon-squeazed {
   width: $unit / 1.2  5;
   padding-left: $unit / 8;
   padding-right: $unit / 8;

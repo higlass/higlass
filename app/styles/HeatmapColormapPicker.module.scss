@@ -1,7 +1,7 @@
 @import './colors';
 @import './transitions';
 
-.heatmapColormapPickerWrapper {
+:global(.higlass) .heatmapColormapPickerWrapper {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -11,7 +11,7 @@
   }
 }
 
-.heatmapColormapPickerColors {
+:global(.higlass) .heatmapColormapPickerColors {
   display: flex;
   padding: 0;
 
@@ -21,11 +21,11 @@
   }
 }
 
-.heatmapColormapPickerColor {
+:global(.higlass) .heatmapColormapPickerColor {
   position: relative;
 }
 
-.heatmapColormapPickerColorRemover {
+:global(.higlass) .heatmapColormapPickerColorRemover {
   position: absolute;
   top: 0;
   right: 0;
@@ -48,7 +48,7 @@
   }
 }
 
-.heatmapColormapPickerAddColor {
+:global(.higlass) .heatmapColormapPickerAddColor {
   position: relative;
   width: 46px;
   height: 24px;
@@ -68,6 +68,6 @@
   }
 }
 
-.heatmapColormapPickerPreview {
+:global(.higlass) .heatmapColormapPickerPreview {
   flex-grow: 1;
 }

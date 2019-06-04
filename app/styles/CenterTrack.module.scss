@@ -1,9 +1,9 @@
-.center-track {
+:global(.higlass) .center-track {
   position: relative;
   background: transparent;
 }
 
-.center-track-container {
+:global(.higlass) .center-track-container {
   position: absolute;
   z-index: 1;
 }

@@ -3,8 +3,8 @@
 
 $buttonSize: 20px;
 
-.track-control,
-.track-control-vertical {
+:global(.higlass) .track-control,
+:global(.higlass) .track-control-vertical {
   position: absolute;
   z-index: 1;
   display: flex;
@@ -20,22 +20,22 @@ $buttonSize: 20px;
               box-shadow $fast $ease;
 }
 
-.track-control-dark,
-.track-control-dark .track-control-active {
+:global(.higlass) .track-control-dark,
+:global(.higlass) .track-control-dark .track-control-active {
   background: rgba(40, 40, 40, 0.85);
 }
 
-.track-control-vertical {
+:global(.higlass) .track-control-vertical {
   flex-direction: column-reverse;
 }
 
-.track-control-left {
+:global(.higlass) .track-control-left {
   left: $buttonSize / 10;
   right: auto;
 }
 
-.track-control-active,
-.track-control-vertical-active {
+:global(.higlass) .track-control-active,
+:global(.higlass) .track-control-vertical-active {
   opacity: 1;
   z-index: 1;
 
@@ -46,7 +46,7 @@ $buttonSize: 20px;
   }
 }
 
-.track-control-dark.track-control-active {
+:global(.higlass) .track-control-dark.track-control-active {
   &:hover { background: rgba(34, 34, 34, 0.95); }
 }
 
@@ -54,11 +54,11 @@ $buttonSize: 20px;
   composes: track-control;
 }
 
-.track-control-padding-right {
+:global(.higlass) .track-control-padding-right {
   right: 4 * $buttonSize;
 }
 
-.track-control-button {
+:global(.higlass) .track-control-button {
   width: $buttonSize;
   height: $buttonSize;
   padding: $buttonSize / 5;
@@ -83,7 +83,7 @@ $buttonSize: 20px;
   }
 }
 
-.track-control-dark .track-control-button {
+:global(.higlass) .track-control-dark .track-control-button {
   color: $gray-light;
 
   &:hover {
@@ -93,7 +93,7 @@ $buttonSize: 20px;
   }
 }
 
-.track-control-button-vertical {
+:global(.higlass) .track-control-button-vertical {
   &:first-child {
     border-radius: 0 0 $buttonSize / 8 $buttonSize / 8;
   }

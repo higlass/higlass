@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom';
 
 import intoTheVoid from './utils';
 
+import withRootDomEl from './hocs/with-root-dom-el';
+
 class PopupMenu extends React.Component {
   constructor(props) {
     super(props);
@@ -15,7 +17,11 @@ class PopupMenu extends React.Component {
 
   componentDidMount() {
     this.popup = document.createElement('div');
-    document.body.appendChild(this.popup);
+    this.rootDomEl = this.props.rootDomEl.get();
+
+    if (!this.rootDomEl) return;
+
+    this.rootDomEl.appendChild(this.popup);
 
     this.popup.style.zIndex = 99;
     this.popup.style.position = 'absolute';
@@ -37,7 +43,7 @@ class PopupMenu extends React.Component {
     document.removeEventListener('contextmenu', this.contextMenuHandlerBound, true);
     window.removeEventListener('resize', this.resizeHandlerBound, true);
     ReactDOM.unmountComponentAtNode(this.popup);
-    document.body.removeChild(this.popup);
+    this.rootDomEl.removeChild(this.popup);
   }
 
   _renderLayer() {
@@ -72,7 +78,8 @@ PopupMenu.defaultProps = {
 
 PopupMenu.propTypes = {
   children: PropTypes.node.isRequired,
-  onMenuClosed: PropTypes.func
+  onMenuClosed: PropTypes.func,
+  rootDomEl: PropTypes.object.isRequired
 };
 
-export default PopupMenu;
+export default withRootDomEl(PopupMenu);

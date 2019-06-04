@@ -1,7 +1,7 @@
 @import './colors';
 @import './transitions';
 
-.modal-background {
+:global(.higlass) .modal-background {
   position: absolute;
   z-index: 1000;
   top: 0;
@@ -13,11 +13,11 @@
   transition: opacity $normal $ease;
 }
 
-.modal-hide {
+:global(.higlass) .modal-hide {
   opacity: 0;
 }
 
-.modal-wrap {
+:global(.higlass) .modal-wrap {
   position: absolute;
   top: 2rem;
   right: 2rem;
@@ -25,7 +25,7 @@
   left: 2rem;
 }
 
-.modal-window {
+:global(.higlass) .modal-window {
   position: relative;
   width: 100%;
   max-width: 64rem;
@@ -38,11 +38,11 @@
   animation: fade-scale-in $normal $ease 1;
 }
 
-.modal-window-max-height {
+:global(.higlass) .modal-window-max-height {
   height: 100%;
 }
 
-.modal-content {
+:global(.higlass) .modal-content {
   padding: 1rem;
 }
 

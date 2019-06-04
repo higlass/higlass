@@ -1,7 +1,7 @@
 @import './colors';
 @import './transitions';
 
-.context-menu {
+:global(.higlass) .context-menu {
   position: fixed;
   background-color: rgba(255, 255, 255, 0.95);
   border: 1px solid $gray-lighter-rgba;
@@ -13,12 +13,12 @@
               0 1px 5px 0 $gray-lightest-rgba;
 }
 
-.context-menu-dark {
+:global(.higlass) .context-menu-dark {
   color: $gray-light;
   background-color: rgba(68, 68, 68, 0.97);
 }
 
-.context-menu-icon {
+:global(.higlass) .context-menu-icon {
   display: inline-block;
   margin-right: 3px;
   vertical-align: middle;
@@ -28,7 +28,7 @@
   }
 }
 
-.context-menu-item {
+:global(.higlass) .context-menu-item {
   padding: 2px;
   white-space: nowrap;
   border-radius: 2px;
@@ -41,21 +41,21 @@
   }
 }
 
-.context-menu-hr {
+:global(.higlass) .context-menu-hr {
   margin-top: 5px;
   margin-bottom: 5px;
   border: 0;
   border-top: 1px solid $gray-lighter-rgba;
 }
 
-.play-icon {
+:global(.higlass) .play-icon {
   width: 12px;
   height: 12px;
   position: absolute;
   right: 5px;
 }
 
-.context-menu-span {
+:global(.higlass) .context-menu-span {
   margin-right: 20px;
   vertical-align: middle;
   display: inline-block;
@@ -63,12 +63,12 @@
   white-space: nowrap;
 }
 
-.context-menu-thumbnail {
+:global(.higlass) .context-menu-thumbnail {
   margin-right: 10px;
   border: 1px solid #888888;
 }
 
-.context-menu-thumbnail-inline {
+:global(.higlass) .context-menu-thumbnail-inline {
   display: inline-block;
   margin-right: 10px;
   vertical-align: middle;

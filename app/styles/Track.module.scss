@@ -1,6 +1,6 @@
 @import './transitions';
 
-.track-range-selection {
+:global(.higlass) .track-range-selection {
   position: absolute;
   z-index: -1;
   opacity: 0;
@@ -22,11 +22,11 @@
   composes: track-range-selection-active;
 }
 
-.track-range-selection-group-inactive {
+:global(.higlass) .track-range-selection-group-inactive {
   display: none;
 }
 
-.track-range-selection-group-brush-selection {
+:global(.higlass) .track-range-selection-group-brush-selection {
   outline: 2px solid rgba(0, 0, 0, 0.33);
   fill: black;
   fill-opacity: 0.1;

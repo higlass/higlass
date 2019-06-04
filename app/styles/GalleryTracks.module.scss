@@ -1,4 +1,4 @@
-.gallery-tracks {
+:global(.higlass) .gallery-tracks {
   position: relative;
   top: 0;
   left: 0;
@@ -6,7 +6,7 @@
   height: 100%;
 }
 
-.gallery-track {
+:global(.higlass) .gallery-track {
   position: absolute;
   box-sizing: border-box;
   top: 0;
@@ -15,9 +15,9 @@
   left: 0;
 }
 
-.gallery-sub-track,
-.gallery-invisible-track {
+:global(.higlass) .gallery-sub-track,
+:global(.higlass) .gallery-invisible-track {
   position: absolute;
 }
 
-.gallery-sub-track {}
+:global(.higlass) .gallery-sub-track {}

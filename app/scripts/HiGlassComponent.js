@@ -25,6 +25,7 @@ import createApi from './api';
 // Higher-order components
 import { Provider as PubSubProvider } from './hocs/with-pub-sub';
 import { Provider as ModalProvider } from './hocs/with-modal';
+import { Provider as RootDomElProvider } from './hocs/with-root-dom-el';
 
 // Services
 import {
@@ -76,10 +77,9 @@ import {
 } from './configs';
 
 // Styles
-import styles from '../styles/HiGlass.module.scss'; // eslint-disable-line no-unused-vars
-import stylesMTHeader from '../styles/ViewHeader.module.scss'; // eslint-disable-line no-unused-vars
-
-import stylesGlobal from '../styles/HiGlass.scss'; // eslint-disable-line no-unused-vars
+import '../styles/HiGlass.scss';
+import styles from '../styles/HiGlass.module.scss';
+import stylesViewHeader from '../styles/ViewHeader.module.scss';
 
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
@@ -291,11 +291,14 @@ class HiGlassComponent extends React.Component {
     this.openModalBound = this.openModal.bind(this);
     this.closeModalBound = this.closeModal.bind(this);
     this.handleEditViewConfigBound = this.handleEditViewConfig.bind(this);
+    this.getRootDomElBound = this.getRootDomEl.bind(this);
 
     this.modal = {
       open: this.openModalBound,
       close: this.closeModalBound
     };
+
+    this.rootDomEl = { get: this.getRootDomElBound };
 
     this.setBroadcastMousePositionGlobally(
       this.props.options.broadcastMousePositionGlobally
@@ -484,6 +487,10 @@ class HiGlassComponent extends React.Component {
     icons.forEach(
       icon => createSymbolIcon(baseSvg, icon),
     );
+  }
+
+  getRootDomEl() {
+    return this.topDiv;
   }
 
   getTrackObject(viewUid, trackUid) {
@@ -3989,7 +3996,7 @@ class HiGlassComponent extends React.Component {
         // Custom props
         cols={12}
         containerPadding={[containerPaddingX, containerPaddingY]}
-        draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}
+        draggableHandle={`.${stylesViewHeader['multitrack-header-grabber']}`}
         isDraggable={this.isEditable()}
         isResizable={this.isEditable()}
         layout={layouts}
@@ -4031,36 +4038,38 @@ class HiGlassComponent extends React.Component {
         onWheel={this.onWheelHandlerBound}
         styleName={styleNames}
       >
-        <PubSubProvider value={this.pubSub}>
-          <ModalProvider value={this.modal}>
-            {this.state.modal}
-            <canvas
-              key={this.uid}
-              ref={(c) => { this.canvasElement = c; }}
-              styleName="styles.higlass-canvas"
-            />
-            <div
-              ref={(c) => { this.divDrawingSurface = c; }}
-              styleName="styles.higlass-drawing-surface"
-            >
-              {gridLayout}
-            </div>
-            <svg
-              ref={(c) => { this.svgElement = c; }}
-              style={{
-                // inline the styles so they aren't overriden by other css
-                // on the web page
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                left: 0,
-                top: 0,
-                pointerEvents: 'none',
-              }}
-              styleName="styles.higlass-svg"
-            />
-          </ModalProvider>
-        </PubSubProvider>
+        <RootDomElProvider value={this.rootDomEl}>
+          <PubSubProvider value={this.pubSub}>
+            <ModalProvider value={this.modal}>
+              {this.state.modal}
+              <canvas
+                key={this.uid}
+                ref={(c) => { this.canvasElement = c; }}
+                styleName="styles.higlass-canvas"
+              />
+              <div
+                ref={(c) => { this.divDrawingSurface = c; }}
+                styleName="styles.higlass-drawing-surface"
+              >
+                {gridLayout}
+              </div>
+              <svg
+                ref={(c) => { this.svgElement = c; }}
+                style={{
+                  // inline the styles so they aren't overriden by other css
+                  // on the web page
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  left: 0,
+                  top: 0,
+                  pointerEvents: 'none',
+                }}
+                styleName="styles.higlass-svg"
+              />
+            </ModalProvider>
+          </PubSubProvider>
+        </RootDomElProvider>
       </div>
     );
   }

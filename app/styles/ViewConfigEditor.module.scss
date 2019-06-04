@@ -1,7 +1,7 @@
 @import './colors';
 @import './transitions';
 
-.view-config-editor-header {
+:global(.higlass) .view-config-editor-header {
   margin: -1rem -1rem 0 -1rem;
   padding: 1rem;
   display: flex;
@@ -22,7 +22,7 @@
   }
 }
 
-.view-config-editor {
+:global(.higlass) .view-config-editor {
   position: absolute;
   top: 5rem;
   right: 0;

@@ -1,21 +1,21 @@
 @import './colors';
 @import './transitions';
 
-.add-track-position-table {
+:global(.higlass) .add-track-position-table {
   border-collapse: collapse;
   margin: 5px;
   color: $gray-dark;
 }
 
-.add-track-position-table-dark {
+:global(.higlass) .add-track-position-table-dark {
   color: $gray-light;
 }
 
-.add-track-position-other {
+:global(.higlass) .add-track-position-other {
   outline: none;
 }
 
-.add-track-position-top-center {
+:global(.higlass) .add-track-position-top-center {
   min-width: 80px;
   min-height: 20px;
   text-align: center;
@@ -31,7 +31,7 @@
   }
 }
 
-.add-track-position-middle-left {
+:global(.higlass) .add-track-position-middle-left {
   min-width: 40px;
   text-align: center;
   outline: none;
@@ -41,12 +41,12 @@
   border-radius: 2px 0 0 2px;
 }
 
-.add-track-position-middle-left:hover {
+:global(.higlass) .add-track-position-middle-left:hover {
   background-color: $active;
   color: $white;
 }
 
-.add-track-position-middle-right {
+:global(.higlass) .add-track-position-middle-right {
   min-width: 40px;
   text-align: center;
   outline: none;
@@ -56,23 +56,23 @@
   border-radius: 0 2px 2px 0;
 }
 
-.add-track-position-middle-right:hover {
+:global(.higlass) .add-track-position-middle-right:hover {
   background-color: $active;
   color: $white;
 }
 
-.add-track-position-middle-middle {
+:global(.higlass) .add-track-position-middle-middle {
   text-align: center;
   outline: none;
   border: 1px solid $gray;
 }
 
-.add-track-position-middle-middle:hover {
+:global(.higlass) .add-track-position-middle-middle:hover {
   background-color: $active;
   color: $white;
 }
 
-.add-track-position-bottom-middle {
+:global(.higlass) .add-track-position-bottom-middle {
   min-height: 20px;
   text-align: center;
   outline: none;
@@ -82,11 +82,11 @@
   border-radius: 0 0 2px 2px;
 }
 
-.add-track-position-bottom-middle:hover {
+:global(.higlass) .add-track-position-bottom-middle:hover {
   background-color: $active;
   color: $white;
 }
 
-.add-track-position-span {
+:global(.higlass) .add-track-position-span {
   margin: 5px;
 }

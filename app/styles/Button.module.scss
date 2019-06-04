@@ -1,7 +1,7 @@
 @import './colors';
 @import './transitions';
 
-.button {
+:global(.higlass) .button {
   display: flex;
   align-items: center;
   box-sizing: border-box;
@@ -19,25 +19,27 @@
   -webkit-appearance: none;
 }
 
-.button:hover {
+:global(.higlass) .button:hover {
   background: $gray-lightest;
   box-shadow: 0 0 0 1px $gray-light;
 }
 
-.button:focus {
+:global(.higlass) .button:focus {
   box-shadow: 0 0 0 2px $blue-lighter;
 }
 
-.button:active {
+:global(.higlass) .button:active {
   transform: scale(0.9);
 }
 
-.button:hover, .button:focus, .button:active {
+:global(.higlass) .button:hover,
+:global(.higlass) .button:focus,
+:global(.higlass) .button:active {
   cursor: pointer;
   outline: none;
 }
 
-.button-shortcut {
+:global(.higlass) .button-shortcut {
   padding: 0.1em 0.5rem;
   color: $gray-medium;
   font-size: 0.8em;
