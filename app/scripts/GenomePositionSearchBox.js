@@ -1,17 +1,12 @@
 import { select, event } from 'd3-selection';
+import PropTypes from 'prop-types';
 import React from 'react';
 import slugid from 'slugid';
-import {
-  FormGroup,
-  Glyphicon,
-  DropdownButton,
-  MenuItem,
-} from 'react-bootstrap';
-import PropTypes from 'prop-types';
 
 import { ZOOM_TRANSITION_DURATION } from './configs';
 import Autocomplete from './Autocomplete';
 import ChromosomeInfo from './ChromosomeInfo';
+import DropDownMenu from './DropDownMenu';
 import SearchField from './SearchField';
 import PopupMenu from './PopupMenu';
 
@@ -20,10 +15,10 @@ import { getDarkTheme, tileProxy } from './services';
 import withPubSub from './hocs/with-pub-sub';
 
 // Utils
-import { scalesCenterAndK, dictKeys, toVoid } from './utils';
+import { scalesCenterAndK, toVoid } from './utils';
 
 // Styles
-import styles from '../styles/GenomePositionSearchBox.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../styles/GenomePositionSearchBox.module.scss';
 
 class GenomePositionSearchBox extends React.Component {
   constructor(props) {
@@ -100,6 +95,9 @@ class GenomePositionSearchBox extends React.Component {
     }
 
     this.availableChromSizes = {};
+
+    this.handleRenderMenuBound = this.handleRenderMenu.bind(this);
+    this.handleSubmitBound = this.handleSubmit.bind(this);
 
     /*
     if (this.props.chromInfoServer && this.props.chromInfoId) {
@@ -217,16 +215,19 @@ class GenomePositionSearchBox extends React.Component {
   }
 
   setAvailableAssemblies() {
-    const chromsizeKeys = new Set(dictKeys(this.availableChromSizes));
-
-    const commonKeys = new Set([...chromsizeKeys]);
-
-    if (this.gpsbForm) {
-      // only set the state if this comonent is mounted
-      this.setState({
-        availableAssemblies: [...commonKeys],
+    const availableAssemblies = [];
+    new Set(Object.keys(this.availableChromSizes)).forEach((key) => {
+      availableAssemblies.push({
+        key,
+        label: key,
+        props: {
+          onClick: this.handleAssemblySelect(key)
+        },
       });
-    }
+    });
+
+    // only set the state if this comonent is mounted
+    if (this.form) this.setState({ availableAssemblies });
   }
 
   setSelectedAssembly(assemblyName) {
@@ -253,7 +254,7 @@ class GenomePositionSearchBox extends React.Component {
       this.props.onSelectedAssemblyChanged(assemblyName, newAcId,
         server);
 
-      if (this.gpsbForm) {
+      if (this.form) {
         this.setState({
           autocompleteId: newAcId,
         });
@@ -262,7 +263,7 @@ class GenomePositionSearchBox extends React.Component {
       this.props.onSelectedAssemblyChanged(assemblyName,
         null, server);
 
-      if (this.gpsbForm) {
+      if (this.form) {
         this.setState({
           autocompleteId: null,
         });
@@ -284,7 +285,7 @@ class GenomePositionSearchBox extends React.Component {
     // used for autocomplete
     this.prevParts = positionString.split(/[ -]/);
 
-    if (this.gpsbForm) {
+    if (this.form) {
       this.positionText = positionString;
 
 
@@ -369,7 +370,7 @@ class GenomePositionSearchBox extends React.Component {
           if (!this.state.autocompleteId) {
             // We don't have an autocomplete source yet, so set the one matching the current
             // assembly
-            if (this.gpsbForm) {
+            if (this.form) {
               // only set the state if this component is mounted
               if (this.availableAutocompletes[this.props.chromInfoId]) {
                 this.setState({
@@ -400,7 +401,7 @@ class GenomePositionSearchBox extends React.Component {
           return;
         }
 
-        if (this.gpsbForm) {
+        if (this.form) {
           // only set the state if this component is mounted
           this.setState({
             selectedAssembly: tilesetInfo[chromInfoId].coordSystem,
@@ -418,7 +419,7 @@ class GenomePositionSearchBox extends React.Component {
   autocompleteKeyPress() {
     const ENTER_KEY_CODE = 13;
 
-    if (event.keyCode === ENTER_KEY_CODE) { this.buttonClick(); }
+    if (event.keyCode === ENTER_KEY_CODE) { this.handleSubmit(); }
   }
 
   genePositionToSearchBarText(genePosition) {
@@ -529,7 +530,9 @@ class GenomePositionSearchBox extends React.Component {
       .catch(error => console.error(error));
   }
 
-  buttonClick() {
+  handleSubmit(e) {
+    if (e) e.preventDefault();
+
     this.setState({ genes: [] }); // no menu should be open
 
     this.replaceGenesWithPositions(() => {
@@ -561,10 +564,6 @@ class GenomePositionSearchBox extends React.Component {
         this.props.setCenters(centerX, centerY, k, ZOOM_TRANSITION_DURATION);
       }
     });
-  }
-
-  searchFieldSubmit() {
-    this.buttonClick();
   }
 
   pathJoin(parts, sep) {
@@ -653,12 +652,11 @@ class GenomePositionSearchBox extends React.Component {
     );
   }
 
-  handleAssemblySelect(evt) {
-    this.setSelectedAssembly(evt);
-
-    this.setState({
-      selectedAssembly: evt,
-    });
+  handleAssemblySelect(assembly) {
+    return () => {
+      this.setSelectedAssembly(assembly);
+      this.setState({ selectedAssembly: assembly });
+    };
   }
 
   focusHandler(isFocused) {
@@ -668,15 +666,6 @@ class GenomePositionSearchBox extends React.Component {
   }
 
   render() {
-    const assemblyMenuItems = this.state.availableAssemblies.map(x => (
-      <MenuItem
-        key={x}
-        eventKey={x}
-      >
-        {x}
-      </MenuItem>
-    ));
-
     let className = this.state.isFocused
       ? 'styles.genome-position-search-focus'
       : 'styles.genome-position-search';
@@ -689,21 +678,22 @@ class GenomePositionSearchBox extends React.Component {
     if (getDarkTheme()) className += ' styles.genome-position-search-dark';
 
     return (
-      <FormGroup
-        ref={c => this.gpsbForm = c}
-        bsSize="small"
+      <form
+        ref={c => this.form = c}
+        onSubmit={this.handleSubmitBound}
         styleName={className}
       >
-        <DropdownButton
-          ref={c => this.assemblyPickButton = c}
-          bsSize="small"
-          className={styles['genome-position-search-bar-button']}
+        <DropDownMenu
+          classNameDisclosure={styles['genome-position-search-bar-button']}
+          classNameMenu={styles['genome-position-search-menu']}
+          classNameMenuItem={styles['genome-position-search-menu-item']}
+          closeOnClick={true}
+          disclosureLabel={this.state.selectedAssembly || 'none'}
           id={this.uid}
-          onSelect={this.handleAssemblySelect.bind(this)}
-          title={this.state.selectedAssembly ? this.state.selectedAssembly : '(none)'}
-        >
-          {assemblyMenuItems}
-        </DropdownButton>
+          menuItems={this.state.availableAssemblies}
+          menuLabel="Assemblies"
+          onMouseMove={(e) => { e.stopPropagation(); }}
+        />
 
         <Autocomplete
           ref={c => this.autocompleteMenu = c}
@@ -723,7 +713,7 @@ class GenomePositionSearchBox extends React.Component {
           onFocus={this.focusHandler.bind(this)}
           onMenuVisibilityChange={this.handleMenuVisibilityChange.bind(this)}
           onSelect={(value, objct) => this.geneSelected(value, objct)}
-          onSubmit={this.searchFieldSubmit.bind(this)}
+          onSubmit={this.handleSubmitBound}
           renderItem={(item, isHighlighted) => (
             <div
               key={item.refseqid}
@@ -733,19 +723,22 @@ class GenomePositionSearchBox extends React.Component {
               {item.geneName}
             </div>
           )}
-          renderMenu={this.handleRenderMenu.bind(this)}
+          renderMenu={this.handleRenderMenuBound}
           value={this.positionText}
           wrapperStyle={{ width: '100%' }}
         />
 
         <button
-          onClick={this.buttonClick.bind(this)}
+          onClick={this.handleSubmitBound}
           styleName={classNameButton}
           type="button"
         >
-          <Glyphicon glyph="search" />
+          <svg>
+            <title>Search</title>
+            <use xlinkHref="#magnifier" />
+          </svg>
         </button>
-      </FormGroup>
+      </form>
     );
   }
 }

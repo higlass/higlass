@@ -56,7 +56,8 @@ $unit: 24px;
 
   &:active,
   &:focus,
-  &:hover {
+  &:hover,
+  &:not([aria-disabled="true"])[aria-expanded="true"] {
     color: $white;
     background: $active;
   }
@@ -70,6 +71,39 @@ $unit: 24px;
 .genome-position-search-bar-button-focus {
   color: $white;
   background: $active;
+}
+
+.genome-position-search-menu {
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  width: 10rem;
+  padding: 3px;
+  border: 1px solid $gray-lighter-rgba;
+  border-radius: 3px;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 3px 0 $gray-lighter-rgba,
+              0 1px 5px 0 $gray-lightest-rgba;
+}
+
+.genome-position-search-menu-item {
+  padding: 2px;
+  color: $black;
+  line-height: 1.5em;
+  text-align: left;
+  white-space: nowrap;
+  border: 0;
+  border-radius: 2px;
+  transition: background $fast $ease,
+              color $fast $ease;
+
+  &:hover {
+    color: $white;
+    background: $active;
+    cursor: pointer;
+    outline: none;
+  }
 }
 
 .genome-position-search-bar-icon,
