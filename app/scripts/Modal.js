@@ -14,7 +14,10 @@ const Modal = (props) => {
   };
 
   return (
-    <div styleName={`modal-background ${props.hide ? 'modal-hide' : ''}`}>
+    <div
+      onMouseMove={(e) => { e.stopPropagation(); }}
+      styleName={`modal-background ${props.hide ? 'modal-hide' : ''}`}
+    >
       <div styleName="modal-wrap">
         <div styleName={`modal-window ${props.maxHeight ? 'modal-window-max-height' : ''}`}>
           {props.closeButton && (
