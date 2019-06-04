@@ -138,7 +138,7 @@
     "karma-webpack": "^2.0.9",
     "lint-staged": "^8.1.1",
     "main-bower-files": "^2.13.1",
-    "mini-css-extract-plugin": "^0.4.4",
+    "mini-css-extract-plugin": "^0.7.0",
     "mversion": "^1.10.1",
     "node-sass": "^4.10.0",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
