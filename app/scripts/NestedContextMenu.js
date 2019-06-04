@@ -80,7 +80,7 @@ class NestedContextMenu extends ContextMenuContainer {
 
     return (
       <div
-        ref={c => this.div = c}
+        ref={(c) => { this.div = c; return c; }}
         style={{
           left: this.state.left,
           top: this.state.top,

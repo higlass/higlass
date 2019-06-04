@@ -323,7 +323,7 @@ class Autocomplete extends React.Component {
       >
         <input
           {...inputProps}
-          ref={el => this.inputEl = el}
+          ref={(el) => { this.inputEl = el; return el; }}
           aria-autocomplete="list"
           autoComplete="off"
           onBlur={this.composeEventHandlers(
