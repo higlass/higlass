@@ -3,7 +3,7 @@ import {
 } from 'd3-selection';
 import slugid from 'slugid';
 
-import '../styles/d3-context-menu.css';
+import './d3-context-menu.css';
 
 function contextMenu(menu, optsIn) {
   let previouslyMouseUp = false;
