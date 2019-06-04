@@ -8,9 +8,6 @@ import PlotTypeChooser from './PlotTypeChooser';
 // Configs
 import { AVAILABLE_TRACK_TYPES } from './configs';
 
-// Styles
-import '../styles/AddTrackDialog.module.scss';
-
 class AddTrackDialog extends React.Component {
   constructor(props) {
     super(props);
