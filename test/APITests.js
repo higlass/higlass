@@ -255,15 +255,13 @@ describe('API Tests', () => {
       });
     });
 
-    it('has version', (done) => {
+    it('has version', () => {
       [div, api] = createElementAndApi(emptyConf, { editable: false });
 
       expect(api.version).toEqual(VERSION);
-
-      done();
     });
 
-    it('adjust view spacing', (done) => {
+    it('adjust view spacing', () => {
       const options = {
         pixelPreciseMarginPadding: true,
         containingPaddingX: 0,
@@ -314,8 +312,6 @@ describe('API Tests', () => {
         + options.viewMarginLeft
         + options.viewMarginRight
       );
-
-      done();
     });
 
     it('mousemove and zoom events work for 1D and 2D tracks', (done) => {
@@ -414,12 +410,11 @@ describe('API Tests', () => {
       });
     });
 
-    it('APIs are independent', (done) => {
+    it('APIs are independent', () => {
       [div, api] = createElementAndApi(
         simpleCenterViewConfig, { editable: false, bounded: true }
       );
 
-      done();
       /* Turning this test off because it periodically
        * and inexplicablye fails
        */

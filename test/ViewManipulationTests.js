@@ -37,22 +37,18 @@ describe('Simple HiGlassComponent', () => {
       );
     });
 
-    it('ensures that valueScaleLocks are removed when the viewconf changes', (done) => {
+    it('ensures that valueScaleLocks are removed when the viewconf changes', () => {
       const newViews = hgc.instance().processViewConfig(emptyConf);
       hgc.setState({
         views: newViews,
       });
 
       expect(Object.keys(hgc.instance().valueScaleLocks).length).to.eql(0);
-
-      done();
     });
 
-    afterAll((done) => {
-      // removeHGComponent(div);
-
-      done();
-    });
+    // afterAll(() => {
+    //   // removeHGComponent(div);
+    // });
   });
 
   describe('Viewport projection tests', () => {
@@ -83,10 +79,8 @@ describe('Simple HiGlassComponent', () => {
       });
     });
 
-    afterAll((done) => {
+    afterAll(() => {
       removeHGComponent(div);
-
-      done();
     });
   });
 });

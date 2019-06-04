@@ -98,7 +98,7 @@ describe('Add Track', () => {
       waitForJsonComplete(done);
     });
 
-    it('should select a few different tracks and check for the plot type selection', (done) => {
+    it('should select a few different tracks and check for the plot type selection', () => {
       const { tilesetFinder } = hgc.instance().modalRef;
 
       tilesetFinder.handleSelectedOptions([
@@ -124,25 +124,19 @@ describe('Add Track', () => {
       // console.warn('ptc.AVAILABLE_TRACK_TYPES', ptc.AVAILABLE_TRACK_TYPES);
       // should just have the horizontal-heatmap track type
       expect(ptc.AVAILABLE_TRACK_TYPES.length).to.eql(3);
-
-      done();
     });
 
-    it('should add the selected tracks', (done) => {
+    it('should add the selected tracks', () => {
       hgc.instance().modalRef.handleSubmit();
       const viewConf = JSON.parse(hgc.instance().getViewsAsString());
 
       expect(viewConf.views[0].tracks.top.length).to.eql(6);
 
       hgc.update();
-
-      done();
     });
 
-    afterAll((done) => {
+    afterAll(() => {
       removeHGComponent(div);
-
-      done();
     });
   });
 });

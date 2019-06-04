@@ -51,13 +51,11 @@ describe('BarTrack tests', () => {
       expect(
         Object.values(trackObj.fetchedTiles).every(tile => tile.svgData)
       ).to.eql(true);
+      done();
     });
-
-    done();
   });
 
-  afterAll((done) => {
+  afterAll(() => {
     removeHGComponent(div);
-    done();
   });
 });

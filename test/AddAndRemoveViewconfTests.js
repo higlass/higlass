@@ -28,13 +28,12 @@ describe('Simple HiGlassComponent', () => {
   let api = null;
 
   describe('API tests', () => {
-    beforeAll((done) => {
+    beforeAll(() => {
       div = global.document.createElement('div');
       global.document.body.appendChild(div);
 
       api = viewer(div, simpleCenterViewConfig, {});
       api.setViewConfig(simpleCenterViewConfig);
-      done();
 
       // p.then(() => {
       //   console.log('done');
@@ -44,7 +43,7 @@ describe('Simple HiGlassComponent', () => {
       // ([div, hgc] = mountHGComponent(div, hgc, 'http://higlass.io/api/v1/viewconfs/?d=default', done));
     });
 
-    it('Ensures that setting a new viewconf changes the trackSourceServers', (done) => {
+    it('Ensures that setting a new viewconf changes the trackSourceServers', () => {
       const viewConf = JSON.parse(api.exportAsViewConfString());
       viewConf.trackSourceServers = ['http://blah'];
 
@@ -53,14 +52,10 @@ describe('Simple HiGlassComponent', () => {
       const newViewConf = JSON.parse(newApi.exportAsViewConfString());
 
       expect(newViewConf.trackSourceServers[0]).to.eql('http://blah');
-
-      done();
     });
 
-    afterAll((done) => {
+    afterAll(() => {
       removeHGComponent(div);
-
-      done();
     });
   });
 });
