@@ -107,7 +107,6 @@
     "babel-preset-airbnb": "^2.6.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.11.1",
-    "bootstrap": "^3.3.7",
     "brfs": "1.4.3",
     "browser-sync": "^2.24.7",
     "chai": "^3.5.0",
