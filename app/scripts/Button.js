@@ -1,35 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import '../styles/Button.module.scss';
+import styles from '../styles/Button.module.scss';
 
 const Button = React.forwardRef((props, ref) => (
   <button
     ref={ref}
+    className={`${styles.button} ${props.className || ''}`}
     disable={props.disable}
     onBlur={props.onBlur}
     onClick={props.onClick}
     onMouseDown={props.onMouseDown}
     onMouseOut={props.onMouseOut}
     onMouseUp={props.onMouseUp}
-    styleName="button"
     type="button"
   >
     {props.children}
     {props.shortcut && (
-      <span styleName="button-shortcut">{props.shortcut}</span>
+      <span styleName="styles.button-shortcut">{props.shortcut}</span>
     )}
   </button>
 ));
 
 Button.defaultProps = {
+  className: '',
   onClick: () => {},
-  styleName: '',
   type: 'button',
 };
 
 Button.propTypes = {
   children: PropTypes.func.isRequired,
+  className: PropTypes.string,
   disable: PropTypes.func.isRequired,
   onBlur: PropTypes.func,
   onClick: PropTypes.func,
