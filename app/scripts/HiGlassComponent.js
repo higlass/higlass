@@ -2684,7 +2684,7 @@ class HiGlassComponent extends React.Component {
         if ('description' in track) { delete track.description; }
         if ('created' in track) { delete track.created; }
         if ('project' in track) { delete track.project; }
-        if ('project_name' in track) { delete.track.project_name; }
+        if ('project_name' in track) { delete track.project_name; }
         if ('serverUidKey' in track) { delete track.serverUidKey; }
         if ('uuid' in track) { delete track.uuid; }
         if ('private' in track) { delete track.private; }
