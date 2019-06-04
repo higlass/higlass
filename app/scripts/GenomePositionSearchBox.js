@@ -690,12 +690,12 @@ class GenomePositionSearchBox extends React.Component {
 
     return (
       <FormGroup
-        ref={(c) => { this.gpsbForm = c; return c; }}
+        ref={(c) => { this.gpsbForm = c; }}
         bsSize="small"
         styleName={className}
       >
         <DropdownButton
-          ref={(c) => { this.assemblyPickButton = c; return c; }}
+          ref={(c) => { this.assemblyPickButton = c; }}
           bsSize="small"
           className={styles['genome-position-search-bar-button']}
           id={this.uid}
@@ -706,7 +706,7 @@ class GenomePositionSearchBox extends React.Component {
         </DropdownButton>
 
         <Autocomplete
-          ref={(c) => { this.autocompleteMenu = c; return c; }}
+          ref={(c) => { this.autocompleteMenu = c; }}
           getItemValue={item => item.geneName}
           inputProps={{
             className: styles['genome-position-search-bar'],
