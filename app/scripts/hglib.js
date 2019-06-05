@@ -5,8 +5,6 @@ import HiGlassComponent from './HiGlassComponent';
 export { default as ChromosomeInfo } from './ChromosomeInfo';
 export { default as HiGlassComponent } from './HiGlassComponent';
 
-export { default as SVGTrack } from './SVGTrack';
-
 // export functions that are useful for testing
 export {
   waitForJsonComplete,
