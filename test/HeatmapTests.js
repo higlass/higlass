@@ -37,7 +37,7 @@ describe('Testing', () => {
       );
     });
 
-    it('once', (done) => {
+    it('once', () => {
       const tp = getTrackObjectFromHGC(hgc.instance(), 'NagBzk-AQZuoY0bqG-Yy0Q', 'PdEzdgsxRymGelD5xfKlNA');
       let data = tp.getVisibleRectangleData(262, 298, 1, 1);
 
@@ -47,14 +47,10 @@ describe('Testing', () => {
       expect(data.shape[1]).to.eql(234);
 
       // tp.exportData();
-
-      done();
     });
 
-    afterAll((done) => {
+    afterAll(() => {
       removeHGComponent(div);
-
-      done();
     });
   });
 
@@ -73,7 +69,7 @@ describe('Testing', () => {
       );
     });
 
-    it('should respect zoom limits', (done) => {
+    it('should respect zoom limits', () => {
       // add your tests here
 
       const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
@@ -81,14 +77,10 @@ describe('Testing', () => {
 
       expect(rectData.shape[0]).to.eql(0);
       expect(rectData.shape[1]).to.eql(0);
-
-      done();
     });
 
-    afterAll((done) => {
+    afterAll(() => {
       removeHGComponent(div);
-
-      done();
     });
   });
 });

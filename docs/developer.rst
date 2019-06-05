@@ -17,7 +17,7 @@ Boilerplate
 -----------
 
 Use the following template and replace individual ``it`` blocks
-to set up new tests. Add this code to the `tests` directory and 
+to set up new tests. Add this code to the `tests` directory and
 add a line to `karma.conf.js` to include it in the tests.
 
 .. code-block:: javascript
@@ -56,19 +56,15 @@ add a line to `karma.conf.js` to include it in the tests.
         );
       });
 
-      it('should respect zoom limits', (done) => {
+      it('should respect zoom limits', () => {
         // add your tests here
 
         const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
         expect(trackObj.calculateZoomLevel()).to.eql(1);
-
-        done();
       });
 
-      afterAll((done) => {
+      afterAll(() => {
         removeHGComponent(div);
-
-        done();
       });
     });
 
@@ -107,11 +103,10 @@ Contributor Guidelines
 =======================
 
 Contributions are in the form of issues, code, documentation are always very welcome. The
-following are a set of guidelines to help ensure that contributions can be smoothly 
+following are a set of guidelines to help ensure that contributions can be smoothly
 merged into the existing code base:
 
 1. All code contributions should be accompanied by a test. Tests can be placed into the `test`
    folder.
-2. All added functions should include a jsdoc string for javascript code or a numpy style 
+2. All added functions should include a jsdoc string for javascript code or a numpy style
    docstring for python code.
-

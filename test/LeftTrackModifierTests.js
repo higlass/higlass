@@ -32,7 +32,7 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
-  it('should respect zoom limits', (done) => {
+  it('should respect zoom limits', () => {
     // add your tests here
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
@@ -40,14 +40,10 @@ describe('Horizontal heatmaps', () => {
     // trackObj is a LeftTrackModifier that contains the
     // original track
     expect(trackObj.originalTrack.id).to.eql('tt');
-
-    done();
   });
 
-  afterAll((done) => {
+  afterAll(() => {
     removeHGComponent(div);
-
-    done();
   });
 });
 
