@@ -4032,7 +4032,6 @@ class HiGlassComponent extends React.Component {
         className="higlass"
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
-        onWheel={this.onWheelHandlerBound}
         styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>
