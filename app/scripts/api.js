@@ -1,5 +1,8 @@
 import ReactDOM from 'react-dom';
 import createPubSub from 'pub-sub-es';
+import Ajv from 'ajv';
+
+import schema from '../schema.json';
 
 import {
   setDarkTheme,
@@ -189,6 +192,15 @@ const createApi = function api(context, pubSub) {
        *   all of the data for this viewconfig is loaded
        */
       setViewConfig(newViewConfig) {
+        const validate = new Ajv().compile(schema);
+        const valid = validate(newViewConfig);
+        if (validate.errors) {
+          console.warn(JSON.stringify(validate.errors, null, 2));
+        }
+        if (!valid) {
+          throw new Error('Invalid viewconf');
+        }
+
         const viewsByUid = self.processViewConfig(newViewConfig);
         const p = new Promise((resolve) => {
           this.requestsInFlight = 0;

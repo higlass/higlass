@@ -7,6 +7,8 @@ describe('Viewconf JSON schema', () => {
   const validate = new Ajv().compile(schema);
 
   [
+    // TODO: Make an index.json that we can keep up to date with the directory.
+    // (Unless there's some way to list the directory contents, but I don't think there is.)
     '1d-annotations.json',
     '1d-constant-indicators.json',
     '1d-heatmap-track-2.json',
@@ -44,6 +46,8 @@ describe('Viewconf JSON schema', () => {
           expect(valid).toEqual(true);
 
           done();
+          // If there are errors, the log can be noisy:
+          // We could put in special code to handle that, if it's worth it.
         });
       });
     });
