@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://higlass.io/#viewconf",
+  "title": "HiGlass viewconf",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["zoomFixed", "views"],
+  "properties": {
+    "editable": { "type": "boolean"},
+    "zoomFixed": { "type": "boolean"},
+    "exportViewUrl": { "type": "string"},
+    "trackSourceServers": { "type": "array"},
+    "views": { "type": "array"}
+  }
+}
