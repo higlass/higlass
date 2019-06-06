@@ -8,6 +8,21 @@ describe('Viewconf JSON schema', () => {
 
   [
     '1d-annotations.json',
+    '1d-constant-indicators.json',
+    '1d-heatmap-track-2.json',
+    '1d-heatmap-track.json',
+    'axis-margin.json',
+    'bar-track-color-range.json',
+    'bar-track.json',
+    'bar-zero-line.json',
+    'bigwig-aggregation-modes.json',
+    'chromosome-labels.json',
+    'default.json',
+    'gene-annotations.json',
+    'label-margin.json',
+    'overlay-chromosome-grid-track.json',
+    'overlay-track.json',
+    'overlay-tracks.json'
   ].forEach((viewconfName) => {
     it(`validates ${viewconfName}`, (done) => {
       const viewconfPath = `/base/docs/examples/viewconfs/${viewconfName}`;
@@ -21,8 +36,10 @@ describe('Viewconf JSON schema', () => {
 
       fetch(viewconfPath).then((viewconfResponse) => {
         viewconfResponse.json().then((viewconf) => {
-          // console.log('viewconf:', viewconf);
           const valid = validate(viewconf);
+          if (validate.errors) {
+            console.warn(JSON.stringify(validate.errors, null, 2));
+          }
           expect(validate.errors).toEqual(null);
           expect(valid).toEqual(true);
 

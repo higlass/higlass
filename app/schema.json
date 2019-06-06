@@ -6,10 +6,13 @@
   "additionalProperties": false,
   "required": ["zoomFixed", "views"],
   "properties": {
-    "editable": { "type": "boolean"},
-    "zoomFixed": { "type": "boolean"},
-    "exportViewUrl": { "type": "string"},
-    "trackSourceServers": { "type": "array"},
-    "views": { "type": "array"}
+    "editable": { "type": "boolean" },
+    "zoomFixed": { "type": "boolean" },
+    "zoomLocks": { "type": "object" },
+    "locationLocks": { "type": "object" },
+    "valueScaleLocks": { "type": "object" },
+    "exportViewUrl": { "type": "string" },
+    "trackSourceServers": { "type": "array" },
+    "views": { "type": "array" }
   }
 }
