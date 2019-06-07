@@ -14,7 +14,7 @@ end eslint
 start examples
 REGEN_SCRIPT='./docs/examples/regenerate-index.py'
 INDEX_JSON='docs/examples/index.json'
-diff <( $REGEN_SCRIPT ) $INDEX_JSON \
+diff --ignore-space-change <( $REGEN_SCRIPT ) $INDEX_JSON \
   || die "Update fixture index: '$REGEN_SCRIPT > $INDEX_JSON'"
 end examples
 
