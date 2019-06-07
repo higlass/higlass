@@ -4,14 +4,58 @@
   "title": "HiGlass viewconf",
   "type": "object",
   "additionalProperties": false,
+  "required": ["zoomFixed", "views"],
   "properties": {
     "editable": { "type": "boolean" },
     "zoomFixed": { "type": "boolean" },
-    "zoomLocks": { "type": "object" },
-    "locationLocks": { "type": "object" },
-    "valueScaleLocks": { "type": "object" },
     "exportViewUrl": { "type": "string" },
-    "trackSourceServers": { "type": "array" },
-    "views": { "type": "array" }
+    "trackSourceServers": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "zoomLocks": { "$ref": "#/definitions/locks" },
+    "locationLocks": { "$ref": "#/definitions/locks" },
+    "valueScaleLocks": { "$ref": "#/definitions/locks" },
+    "views": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/view" }
+    }
+  },
+  "definitions": {
+
+    "locks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["locksByViewUid", "locksDict"],
+      "properties": {
+        "locksByViewUid": { "type": "object", "TODO": "more precise" },
+        "locksDict": { "type": "object", "TODO": "more precise" }
+      }
+    },
+
+    "view": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tracks", "layout"],
+      "properties": {
+        "uid": { "type": "string" },
+        "initialXDomain": { "$ref": "#/definitions/domain" },
+        "initialYDomain": { "$ref": "#/definitions/domain" },
+        "autocompleteSource": { "type": "string" },
+        "genomePositionSearchBoxVisible": { "type": "boolean" },
+        "genomePositionSearchBox": { "type": "object", "TODO": "more precise" },
+        "chromInfoPath": { "type": "string" },
+        "tracks": { "type": "object", "TODO": "more precise" },
+        "layout": { "type": "object", "TODO": "more precise" },
+        "overlays": { "type": "array" }
+      }
+    },
+
+    "domain": {
+      "type": "array",
+      "items": { "type": "number" },
+      "maxItems": 2,
+      "minItems": 2
+    }
   }
 }
