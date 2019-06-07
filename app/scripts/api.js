@@ -198,7 +198,8 @@ const createApi = function api(context, pubSub) {
           console.warn(JSON.stringify(validate.errors, null, 2));
         }
         if (!valid) {
-          throw new Error('Invalid viewconf');
+          console.warn('Invalid viewconf');
+          // throw new Error('Invalid viewconf');
         }
 
         const viewsByUid = self.processViewConfig(newViewConfig);
