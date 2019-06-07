@@ -4,7 +4,6 @@
   "title": "HiGlass viewconf",
   "type": "object",
   "additionalProperties": false,
-  "required": ["zoomFixed", "views"],
   "properties": {
     "editable": { "type": "boolean" },
     "zoomFixed": { "type": "boolean" },
