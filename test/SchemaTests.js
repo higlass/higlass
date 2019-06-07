@@ -1,31 +1,12 @@
 /* eslint-env node, jasmine, mocha */
 import Ajv from 'ajv';
 import schema from '../app/schema.json';
-
+import viewconfNames from '../docs/examples/index.json';
 
 describe('Viewconf JSON schema', () => {
   const validate = new Ajv().compile(schema);
 
-  [
-    // TODO: Make an index.json that we can keep up to date with the directory.
-    // (Unless there's some way to list the directory contents, but I don't think there is.)
-    '1d-annotations.json',
-    '1d-constant-indicators.json',
-    '1d-heatmap-track-2.json',
-    '1d-heatmap-track.json',
-    'axis-margin.json',
-    'bar-track-color-range.json',
-    'bar-track.json',
-    'bar-zero-line.json',
-    'bigwig-aggregation-modes.json',
-    'chromosome-labels.json',
-    'default.json',
-    'gene-annotations.json',
-    'label-margin.json',
-    'overlay-chromosome-grid-track.json',
-    'overlay-track.json',
-    'overlay-tracks.json'
-  ].forEach((viewconfName) => {
+  viewconfNames.forEach((viewconfName) => {
     it(`validates ${viewconfName}`, (done) => {
       const viewconfPath = `/base/docs/examples/viewconfs/${viewconfName}`;
 
