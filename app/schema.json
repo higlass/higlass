@@ -45,8 +45,33 @@
         "genomePositionSearchBox": { "type": "object", "TODO": "more precise" },
         "chromInfoPath": { "type": "string" },
         "tracks": { "$ref": "#/definitions/tracks_object" },
-        "layout": { "type": "object", "TODO": "more precise" },
-        "overlays": { "type": "array" }
+        "layout": { "$ref": "#/definitions/layout" },
+        "overlays": { "type": "array", "items": { "$ref": "#/definitions/overlay" } }
+      }
+    },
+
+    "overlay": {
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "type": { "type": "string" },
+        "includes": { "type": "array" },
+        "options": { "type": "object" }
+      }
+    },
+
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["w", "h", "x", "y", "moved", "static"],
+      "properties": {
+        "w": { "type": "number" },
+        "h": { "type": "number" },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "i": { "type": "string" },
+        "moved": { "type": "boolean" },
+        "static": { "type": "boolean" }
       }
     },
 
@@ -65,7 +90,7 @@
     },
 
     "tracks_array": {
-      "note": "We can't enforce this because every track type has a different model. :(",
+      "note": "I don't think we can enforce this because every track type has a different model?",
       "type": "array",
       "items": {
         "type": "object",
