@@ -44,9 +44,50 @@
         "genomePositionSearchBoxVisible": { "type": "boolean" },
         "genomePositionSearchBox": { "type": "object", "TODO": "more precise" },
         "chromInfoPath": { "type": "string" },
-        "tracks": { "type": "object", "TODO": "more precise" },
+        "tracks": { "$ref": "#/definitions/tracks_object" },
         "layout": { "type": "object", "TODO": "more precise" },
         "overlays": { "type": "array" }
+      }
+    },
+
+    "tracks_object": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "left": { "type": "array" },
+        "right": { "type": "array" },
+        "top": { "type": "array" },
+        "bottom": { "type": "array" },
+        "center": { "type": "array" },
+        "whole": { "type": "array" },
+        "gallery": { "type": "array" }
+      }
+    },
+
+    "tracks_array": {
+      "note": "We can't enforce this because every track type has a different model. :(",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "server": { "type": "string" },
+          "tilesetUid": { "type": "string" },
+          "uid": { "type": "string" },
+          "type": { "type": "string" },
+          "height": { "type": "number" },
+          "position": { "type": "string" },
+          "name": { "type": "string" },
+          "options": { "type": "object" },
+          "header": { "type": "string" },
+          "width": { "type": "number" },
+          "chromInfoPath": { "type": "string" },
+          "created": { "type": "string" },
+          "project": { },
+          "project_name": { "type": "string" },
+          "description": { "type": "string" },
+          "contents": { "type": "array" }
+        }
       }
     },
 
