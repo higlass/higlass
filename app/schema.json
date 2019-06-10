@@ -27,8 +27,8 @@
       "additionalProperties": false,
       "required": ["locksByViewUid", "locksDict"],
       "properties": {
-        "locksByViewUid": { "type": "object", "additionalProperties": false },
-        "locksDict": { "type": "object", "additionalProperties": false }
+        "locksByViewUid": { "type": "object" },
+        "locksDict": { "type": "object" }
       }
     },
 
@@ -53,7 +53,7 @@
     "genomePositionSearchBox": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["autocompleteServer", "autocompleteId", "chromInfoServer", "chromInfoId", "visible"],
+      "required": ["chromInfoServer", "chromInfoId", "visible"],
       "properties": {
         "autocompleteServer": { "type": "string" },
         "autocompleteId": { "type": "string" },
