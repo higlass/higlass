@@ -16,6 +16,9 @@ REGEN_SCRIPT='./docs/examples/regenerate-index.py'
 INDEX_JSON='docs/examples/index.json'
 diff --ignore-space-change <( $REGEN_SCRIPT ) $INDEX_JSON \
   || die "Update fixture index: '$REGEN_SCRIPT > $INDEX_JSON'"
+# Compare the output of the regen script to the current index...
+# If there's a difference, it will be shown,
+# along with a one-liner to fix the problem.
 end examples
 
 start compile
