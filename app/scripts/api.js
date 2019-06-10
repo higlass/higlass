@@ -235,7 +235,17 @@ const createApi = function api(context, pubSub) {
        * @returns (Object) A JSON object describing the visible views
        */
       getViewConfig() {
-        return self.getViewsAsJson();
+        const newViewConfig = self.getViewsAsJson();
+        const validate = new Ajv().compile(schema);
+        const valid = validate(newViewConfig);
+        if (validate.errors) {
+          console.warn(JSON.stringify(validate.errors, null, 2));
+        }
+        if (!valid) {
+          console.warn('Invalid viewconf');
+          // throw new Error('Invalid viewconf');
+        }
+        return newViewConfig;
       },
       /**
        * Get the minimum and maximum visible values for a given track.
