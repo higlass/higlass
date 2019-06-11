@@ -1224,8 +1224,6 @@ class HiGlassComponent extends React.Component {
    * @param uid: The view of whom the scales have changed.
    */
   handleScalesChanged(uid, xScale, yScale, notify = true) {
-    // console.log('hsc:', xScale.domain());
-
     this.xScales[uid] = xScale;
     this.yScales[uid] = yScale;
 
@@ -1719,27 +1717,38 @@ class HiGlassComponent extends React.Component {
    * Notify the children that the layout has changed so that they
    * know to redraw themselves
    */
-  handleLayoutChange(layout /* , layouts */) {
-    if (!this.element) { return; }
+  handleLayoutChange(layout) {
+    if (!this.element) return;
 
-    for (const l of layout) {
+    let hasChanged = false;
+    layout.forEach((l) => {
       const view = this.state.views[l.i];
 
-      if (view) {
-        view.layout = l;
+      if (
+        view
+        && view.layout.x !== l.x
+        && view.layout.y !== l.y
+        && view.layout.w !== l.w
+        && view.layout.h !== l.h
+        && view.layout.i !== l.i
+      ) {
+        hasChanged = true;
+
+        // Bad design pattern. We directly manipulate the state and rely on
+        // `this.updateRowHeight()` to trigger that the state updated
+        view.layout.x = l.x;
+        view.layout.y = l.y;
+        view.layout.w = l.w;
+        view.layout.h = l.h;
+        view.layout.i = l.i;
       }
+    });
+
+    if (hasChanged) {
+      // The following method actually trigger a state update
+      this.updateRowHeight();
+      this.refreshView(LONG_DRAG_TIMEOUT);
     }
-
-    // some of the views have changed their height
-    /*
-      this.setState({
-          views: this.state.views
-      });
-      */
-
-    this.updateRowHeight();
-
-    this.refreshView(LONG_DRAG_TIMEOUT);
   }
 
   /**
@@ -2047,8 +2056,6 @@ class HiGlassComponent extends React.Component {
         leftWidth, rightWidth,
         centerWidth, centerHeight } = this.calculateViewDimensions(view);
 
-      // console.log(totalWidth, totalHeight, leftWidth, rightWidth, centerWidth, centerHeight);
-
       if (view.searchBox) { totalHeight += 30; }
 
       const heightGrid = Math.ceil(totalHeight / this.rowHeight);
@@ -2092,9 +2099,6 @@ class HiGlassComponent extends React.Component {
         layout.i = slugid.nice();
         */
     }
-
-
-    // console.trace('generated layout:', layout);
 
     return layout;
   }
@@ -2898,10 +2902,12 @@ class HiGlassComponent extends React.Component {
     newView.uid = slugid.nice();
     newView.layout.i = newView.uid;
 
-    positionedTracksToAllTracks(newView.tracks).forEach(t => this.addCallbacks(newView.uid, t));
+    positionedTracksToAllTracks(newView.tracks)
+      .forEach(t => this.addCallbacks(newView.uid, t));
 
     this.setState((prevState) => {
-      const views = JSON.parse(JSON.stringify(prevState.views)); // eslint-disable-line no-shadow
+      // eslint-disable-next-line no-shadow
+      const views = JSON.parse(JSON.stringify(prevState.views));
       views[newView.uid] = newView;
       return { views };
     });
@@ -3314,8 +3320,6 @@ class HiGlassComponent extends React.Component {
       end2Abs = end1Abs;
     }
 
-    // console.log('start1Abs', start1Abs, 'start2Abs', start2Abs);
-
     const [centerX, centerY, k] = scalesCenterAndK(
       this.xScales[viewUid].copy().domain([start1Abs, end1Abs]),
       this.yScales[viewUid].copy().domain([start2Abs, end2Abs]),
@@ -3391,15 +3395,11 @@ class HiGlassComponent extends React.Component {
     let foundTiledPlot;
 
     const views = dictValues(this.state.views);
-    // console.log('views:', views);
-    // console.log('tiledAreas:', this.tiledAreasDivs);
 
     for (let i = 0; i < views.length; i++) {
       const tiledPlot = this.tiledPlots[views[i].uid];
 
-      // console.log('1');
       const area = this.tiledAreasDivs[views[i].uid].getBoundingClientRect();
-      // console.log('2');
 
       const { top, left } = area;
       const bottom = top + area.height;
