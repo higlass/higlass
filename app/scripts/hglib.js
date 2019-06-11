@@ -7,6 +7,7 @@ export { default as HiGlassComponent } from './HiGlassComponent';
 
 export { default as SVGTrack } from './SVGTrack';
 export { default as TiledPixiTrack } from './TiledPixiTrack';
+export { default as HorizontalGeneAnnotationsTrack } from './HorizontalGeneAnnotationsTrack';
 
 // export functions that are useful for testing
 export {

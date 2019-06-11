@@ -657,7 +657,9 @@ class TiledPixiTrack extends PixiTrack {
     // 1. Check if all visible tiles are loaded
     // 2. If `true` then send out event
     if (this.areAllVisibleTilesLoaded()) {
-      this.pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
+      if (this.pubSub) {
+        this.pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
+      }
     }
   }
 
@@ -684,15 +686,18 @@ class TiledPixiTrack extends PixiTrack {
       this.trackNotFoundText.visible = false;
     }
 
-    this.pubSub.publish('TiledPixiTrack.tilesDrawnStart', { uuid: this.uuid });
-
+    if (this.pubSub) {
+      this.pubSub.publish('TiledPixiTrack.tilesDrawnStart', { uuid: this.uuid });
+    }
     super.draw();
 
     Object.keys(this.fetchedTiles).forEach(
       tilesetUid => this.drawTile(this.fetchedTiles[tilesetUid])
     );
 
-    this.pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
+    if (this.pubSub) {
+      this.pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
+    }
   }
 
   /**
