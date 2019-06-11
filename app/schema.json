@@ -99,7 +99,38 @@
         },
         "chromInfoPath": { "type": "string" },
         "tracks": { "type": "object", "TODO": "more precise" },
-        "layout": { "type": "object", "TODO": "more precise" },
+        "layout": {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "integer",
+              "title": "The X Position",
+              "default": 0
+            },
+            "y": {
+              "type": "integer",
+              "title": "The Y Position",
+              "default": 0
+            },
+            "w": {
+              "type": "integer",
+              "title": "Width",
+              "default": 12
+            },
+            "h": {
+              "type": "integer",
+              "title": "Height",
+              "default": 12
+            },
+            "i": {
+              "type": "string",
+              "title": "The View Identifier",
+              "default": "",
+              "examples": ["aa"],
+              "pattern": "^(.*)$"
+            }
+          }
+        },
         "overlays": { "type": "array" }
       }
     },
