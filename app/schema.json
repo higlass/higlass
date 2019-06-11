@@ -5,7 +5,18 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "editable": { "type": "boolean" },
+    "editable": {
+      "type": "boolean",
+      "default": true
+    },
+    "viewEditable": {
+      "type": "boolean",
+      "default": true
+    },
+    "tracksEditable": {
+      "type": "boolean",
+      "default": true
+    },
     "zoomFixed": { "type": "boolean" },
     "exportViewUrl": { "type": "string" },
     "trackSourceServers": {
@@ -40,9 +51,52 @@
         "uid": { "type": "string" },
         "initialXDomain": { "$ref": "#/definitions/domain" },
         "initialYDomain": { "$ref": "#/definitions/domain" },
-        "autocompleteSource": { "type": "string" },
-        "genomePositionSearchBoxVisible": { "type": "boolean" },
-        "genomePositionSearchBox": { "type": "object", "TODO": "more precise" },
+        "genomePositionSearchBox": {
+          "type": "object",
+          "title": "The Genome Position Search Box Schema",
+          "required": [
+            "autocompleteServer",
+            "autocompleteId",
+            "chromInfoServer",
+            "chromInfoId",
+            "visible"
+          ],
+          "properties": {
+            "autocompleteServer": {
+              "type": "string",
+              "title": "The Autocomplete Server URL",
+              "default": "",
+              "examples": ["//higlass.io/api/v1"],
+              "pattern": "^(.*)$"
+            },
+            "autocompleteId": {
+              "type": "string",
+              "title": "The Autocomplete ID",
+              "default": "",
+              "examples": ["OHJakQICQD6gTD7skx4EWA"],
+              "pattern": "^(.*)$"
+            },
+            "chromInfoServer": {
+              "type": "string",
+              "title": "The Chrominfo Server URL",
+              "default": "",
+              "examples": ["//higlass.io/api/v1"],
+              "pattern": "^(.*)$"
+            },
+            "chromInfoId": {
+              "type": "string",
+              "title": "The Chromosome Info ID",
+              "default": "",
+              "examples": ["hg19"],
+              "pattern": "^(.*)$"
+            },
+            "visible": {
+              "type": "boolean",
+              "title": "The Visible Schema",
+              "default": false
+            }
+          }
+        },
         "chromInfoPath": { "type": "string" },
         "tracks": { "type": "object", "TODO": "more precise" },
         "layout": { "type": "object", "TODO": "more precise" },
