@@ -66,8 +66,14 @@ export function maxNonZero(data) {
 }
 
 export function workerSetPix(
-  size, data, valueScaleType, valueScaleDomain, pseudocount, colorScale,
-  ignoreUpperRight = false
+  size,
+  data,
+  valueScaleType,
+  valueScaleDomain,
+  pseudocount,
+  colorScale,
+  ignoreUpperRight = false,
+  ignoreLowerLeft = false
 ) {
   /**
    * The pseudocount is generally the minimum non-zero value and is
@@ -76,41 +82,37 @@ export function workerSetPix(
   let valueScale = null;
 
   if (valueScaleType === 'log') {
-    valueScale = scaleLog()
-      .range([254, 0])
-      .domain(valueScaleDomain);
+    valueScale = scaleLog().range([254, 0]).domain(valueScaleDomain);
   } else {
     if (valueScaleType !== 'linear') {
-      console.warn('Unknown value scale type:', valueScaleType, ' Defaulting to linear');
+      console.warn(
+        'Unknown value scale type:', valueScaleType, ' Defaulting to linear'
+      );
     }
-    valueScale = scaleLinear()
-      .range([254, 0])
-      .domain(valueScaleDomain);
+    valueScale = scaleLinear().range([254, 0]).domain(valueScaleDomain);
   }
 
   const pixData = new Uint8ClampedArray(size * 4);
 
   let rgbIdx = 0;
-  let e = 0;
+  let d;
   const tileWidth = Math.sqrt(size);
-
-  // console.log('data.length:', data.length);
 
   try {
     for (let i = 0; i < data.length; i++) {
-      const d = data[i];
-      e = d; // for debugging
+      d = data[i];
 
-
+      // Transparent
       rgbIdx = 255;
 
-      // ignore the upper right portion of a tile because it's on the diagonal
-      // and its mirror will fill in that space
-      if (ignoreUpperRight && Math.floor(i / tileWidth) < i % tileWidth) {
-        rgbIdx = 255;
-      } else if (Number.isNaN(+d)) {
-        rgbIdx = 255;
-      } else {
+      if (
+        // ignore the upper right portion of a tile because it's on the diagonal
+        // and its mirror will fill in that space
+        !(ignoreUpperRight && Math.floor(i / tileWidth) < i % tileWidth)
+        && !(ignoreLowerLeft && Math.floor(i / tileWidth) > i % tileWidth)
+        // Ignore color if the value is invalid
+        && !Number.isNaN(+d)
+      ) {
         // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
         rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(d + pseudocount))));
       }
@@ -129,9 +131,9 @@ export function workerSetPix(
     console.warn('Odd datapoint');
     console.warn('valueScale.domain():', valueScale.domain());
     console.warn('valueScale.range():', valueScale.range());
-    console.warn('value:', valueScale(e + pseudocount));
+    console.warn('value:', valueScale(d + pseudocount));
     console.warn('pseudocount:', pseudocount);
-    console.warn('rgbIdx:', rgbIdx, 'd:', e, 'ct:', valueScale(e));
+    console.warn('rgbIdx:', rgbIdx, 'd:', d, 'ct:', valueScale(d));
     console.error('ERROR:', err);
     return pixData;
   }

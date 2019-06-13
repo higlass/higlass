@@ -1072,14 +1072,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
             tile.sprite.destroy(true);
           }
 
-          let sprite = null;
           const texture = PIXI.VERSION[0] === '4'
             ? PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
             : PIXI.Texture.from(canvas, { scaleMode: PIXI.SCALE_MODES.NEAREST });
 
-          sprite = new PIXI.Sprite(
-            texture
-          );
+          const sprite = new PIXI.Sprite(texture);
 
           tile.sprite = sprite;
           tile.texture = texture;
@@ -1097,8 +1094,15 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         }
         this.renderingTiles.delete(tile.tileId);
       },
-
-      this.mirrorTiles() && !tile.mirrored && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
+      (
+        this.mirrorTiles()
+        && !tile.mirrored
+        && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
+      ),
+      (
+        this.options.extent === 'upper-right'
+        && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
+      )
     );
   }
 
@@ -1224,15 +1228,17 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       for (let j = 0; j < cols.length; j++) {
         if (this.mirrorTiles()) {
           if (rows[i] >= cols[j]) {
-            // if we're in the upper triangular part of the matrix, then we need
-            // to load a mirrored tile
-            this.addTileId(tiles, zoomLevel, cols[j], rows[i], dataTransform, true);
-          } else {
+            if (this.options.extent !== 'lower-left') {
+              // if we're in the upper triangular part of the matrix, then we need
+              // to load a mirrored tile
+              this.addTileId(tiles, zoomLevel, cols[j], rows[i], dataTransform, true);
+            }
+          } else if (this.options.extent !== 'upper-right') {
             // otherwise, load an original tile
             this.addTileId(tiles, zoomLevel, rows[i], cols[j], dataTransform);
           }
 
-          if (rows[i] === cols[j]) {
+          if (rows[i] === cols[j] && this.options.extent === 'lower-left') {
             // on the diagonal, load original tiles
             this.addTileId(tiles, zoomLevel, rows[i], cols[j], dataTransform);
           }
@@ -1289,15 +1295,19 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     this.setVisibleTiles(
-      this.tilesToId(this.xTiles, this.yTiles, this.zoomLevel, this.mirrorTiles())
+      this.tilesToId(
+        this.xTiles,
+        this.yTiles,
+        this.zoomLevel
+      )
     );
   }
 
   mirrorTiles() {
-    if (this.tilesetInfo.mirror_tiles && this.tilesetInfo.mirror_tiles === 'false') {
-      return false;
-    }
-    return true;
+    return !(
+      this.tilesetInfo.mirror_tiles
+      && this.tilesetInfo.mirror_tiles === 'false'
+    );
   }
 
   getMouseOverHtml(trackX, trackY) {
