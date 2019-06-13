@@ -55,9 +55,9 @@ import {
   // loadChromInfos,
   numericifyVersion,
   objVals,
-  positionedTracksToAllTracks,
   scalesCenterAndK,
   scalesToGenomeLoci,
+  visitPositionedTracks
 } from './utils';
 
 // Configs
@@ -2375,17 +2375,15 @@ class HiGlassComponent extends React.Component {
    *  Nothing
    */
   storeTrackSizes(viewId) {
-    const looseTracks = positionedTracksToAllTracks(this.state.views[viewId].tracks);
+    visitPositionedTracks(
+      this.state.views[viewId].tracks,
+      (track) => {
+        const trackObj = this.tiledPlots[viewId].trackRenderer
+          .getTrackObject(track.uid);
 
-    for (const track of looseTracks) {
-      const trackObj = this.tiledPlots[viewId].trackRenderer.getTrackObject(track.uid);
-
-      if (!trackObj) {
-        continue;
+        if (trackObj) ([track.width, track.height] = trackObj.dimensions);
       }
-
-      ([track.width, track.height] = trackObj.dimensions);
-    }
+    );
   }
 
   /*
@@ -2669,39 +2667,43 @@ class HiGlassComponent extends React.Component {
     newJson.views = Object.values(this.state.views).map((k) => {
       const newView = JSON.parse(JSON.stringify(k));
 
-      for (const track of positionedTracksToAllTracks(newView.tracks)) {
-        if (track.server) {
-          const url = parse(track.server, {});
+      visitPositionedTracks(
+        newView.tracks,
+        (track) => {
+          if (track.server) {
+            const url = parse(track.server, {});
 
-          if (!url.hostname.length) {
-            // no hostname specified in the track source servers so we'll add the
-            // current URL's
-            const hostString = window.location.host;
-            const { protocol } = window.location;
-            const newUrl = `${protocol}//${hostString}${url.pathname}`;
+            if (!url.hostname.length) {
+              // no hostname specified in the track source servers so we'll add
+              // the current URL's
+              const hostString = window.location.host;
+              const { protocol } = window.location;
+              const newUrl = `${protocol}//${hostString}${url.pathname}`;
 
-            track.server = newUrl;
+              track.server = newUrl;
+            }
           }
-        }
 
-        delete track.name;
-        delete track.position;
-        delete track.description;
-        delete track.created;
-        delete track.project;
-        delete track.project_name;
-        delete track.serverUidKey;
-        delete track.uuid;
-        delete track.private;
-        delete track.maxZoom;
-        delete track.coordSystem;
-        delete track.coordSystem2;
-        delete track.datatype;
-        delete track.maxWidth;
-        delete track.datafile;
-        delete track.filetype;
-        delete track.binsPerDimension;
-      }
+          delete track.name;
+          delete track.position;
+          delete track.header;
+          delete track.description;
+          delete track.created;
+          delete track.project;
+          delete track.project_name;
+          delete track.serverUidKey;
+          delete track.uuid;
+          delete track.private;
+          delete track.maxZoom;
+          delete track.coordSystem;
+          delete track.coordSystem2;
+          delete track.datatype;
+          delete track.maxWidth;
+          delete track.datafile;
+          delete track.filetype;
+          delete track.binsPerDimension;
+        }
+      );
 
       newView.uid = k.uid;
       newView.initialXDomain = this.xScales[k.uid].domain();
@@ -2904,8 +2906,10 @@ class HiGlassComponent extends React.Component {
     newView.uid = slugid.nice();
     newView.layout.i = newView.uid;
 
-    positionedTracksToAllTracks(newView.tracks)
-      .forEach(t => this.addCallbacks(newView.uid, t));
+    visitPositionedTracks(
+      newView.tracks,
+      (track) => { this.addCallbacks(newView.uid, track); }
+    );
 
     this.setState((prevState) => {
       // eslint-disable-next-line no-shadow
@@ -2913,43 +2917,6 @@ class HiGlassComponent extends React.Component {
       views[newView.uid] = newView;
       return { views };
     });
-  }
-
-  /**
-   * Add a name to this track based on its track type.
-   *
-   * Name is added in-place.
-   *
-   * The list of track information can be found in config.js:TRACKS_INFO
-   */
-  addNameToTrack(track) {
-    const config = this.getTrackInfo(track.type);
-
-    if (config && config.name) track.name = config.name;
-
-    return track;
-  }
-
-  /**
-   * Add track names to the ones that have known names in config.js
-   */
-  addUidsToTracks(allTracks) {
-    allTracks.forEach((t) => {
-      if (!t.uid) { t.uid = slugid.nice(); }
-    });
-
-    return allTracks;
-  }
-
-  /**
-   * Add track names to the ones that have known names in config.js
-   */
-  addNamesToTracks(allTracks) {
-    allTracks.forEach((t) => {
-      if (!t.name) { this.addNameToTrack(t); }
-    });
-
-    return allTracks;
   }
 
   handleSelectedAssemblyChanged(viewUid, newAssembly, newAutocompleteId, newServer) {
@@ -3046,17 +3013,21 @@ class HiGlassComponent extends React.Component {
     const view = this.state.views[viewUid];
     view.genomePositionSearchBoxVisible = !view.genomePositionSearchBoxVisible;
 
-    const positionedTracks = positionedTracksToAllTracks(view.tracks);
-
     // count the number of tracks that are part of some assembly
     const assemblyCounts = {};
-    for (const track of positionedTracks) {
-      if (!track.coordSystem) { continue; }
 
-      if (!assemblyCounts[track.coordSystem]) { assemblyCounts[track.coordSystem] = 0; }
+    visitPositionedTracks(
+      view.tracks,
+      (track) => {
+        if (track.coordSystem) {
+          if (!assemblyCounts[track.coordSystem]) {
+            assemblyCounts[track.coordSystem] = 0;
+          }
 
-      assemblyCounts[track.coordSystem] += 1;
-    }
+          assemblyCounts[track.coordSystem] += 1;
+        }
+      }
+    );
 
     const sortedAssemblyCounts = dictItems(assemblyCounts).sort((a, b) => b[1] - a[1]);
     let selectedAssembly = 'hg19'; // always the default if nothing is otherwise selected
@@ -3211,31 +3182,23 @@ class HiGlassComponent extends React.Component {
         this.yScales[v.uid] = scaleLinear().domain(v.initialYDomain);
       }
 
-      // Add names to all the tracks
-      let looseTracks = positionedTracksToAllTracks(v.tracks);
+      visitPositionedTracks(
+        v.tracks,
+        (track) => {
+          this.addCallbacks(v.uid, track);
+          this.addDefaultTrackOptions(track);
 
-      // give tracks their default names (e.g. 'type': 'top-axis'
-      // will get a name of 'Top Axis'
-      looseTracks = this.addUidsToTracks(looseTracks);
-      looseTracks = this.addNamesToTracks(looseTracks);
-
-      looseTracks.forEach(t => this.addCallbacks(v.uid, t));
+          if (track.contents) {
+            // add default options to combined tracks
+            for (const ct of track.contents) this.addDefaultTrackOptions(ct);
+          }
+        }
+      );
 
       // make sure that the layout for this view refers to this view
-      if (v.layout) { v.layout.i = v.uid; }
-
-      // add default options (as specified in config.js
-      // (e.g. line color, heatmap color scales, etc...)
-      looseTracks.forEach((t) => {
-        this.addDefaultTrackOptions(t);
-
-        if (t.contents) {
-          // add default options to combined tracks
-          for (const ct of t.contents) { this.addDefaultTrackOptions(ct); }
-        }
-      });
-
-      if (!v.layout) {
+      if (v.layout) {
+        v.layout.i = v.uid;
+      } else {
         v.layout = this.generateViewLayout(v);
       }
     });
