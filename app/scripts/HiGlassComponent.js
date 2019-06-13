@@ -2666,9 +2666,8 @@ class HiGlassComponent extends React.Component {
 
   getViewsAsJson() {
     const newJson = JSON.parse(JSON.stringify(this.state.viewConfig));
-    newJson.views = dictItems(this.state.views).map((k) => {
-      const newView = JSON.parse(JSON.stringify(k[1]));
-      const uid = k[0];
+    newJson.views = Object.values(this.state.views).map((k) => {
+      const newView = JSON.parse(JSON.stringify(k));
 
       for (const track of positionedTracksToAllTracks(newView.tracks)) {
         if (track.server) {
@@ -2685,27 +2684,29 @@ class HiGlassComponent extends React.Component {
           }
         }
 
-        if ('description' in track) { delete track.description; }
-        if ('created' in track) { delete track.created; }
-        if ('project' in track) { delete track.project; }
-        if ('project_name' in track) { delete track.project_name; }
-        if ('serverUidKey' in track) { delete track.serverUidKey; }
-        if ('uuid' in track) { delete track.uuid; }
-        if ('private' in track) { delete track.private; }
-        if ('maxZoom' in track) { delete track.maxZoom; }
-        if ('coordSystem' in track) { delete track.coordSystem; }
-        if ('coordSystem2' in track) { delete track.coordSystem2; }
-        if ('datatype' in track) { delete track.datatype; }
-        if ('maxWidth' in track) { delete track.maxWidth; }
-        if ('datafile' in track) { delete track.datafile; }
-        if ('filetype' in track) { delete track.filetype; }
-        if ('binsPerDimension' in track) { delete track.binsPerDimension; }
+        delete track.name;
+        delete track.position;
+        delete track.description;
+        delete track.created;
+        delete track.project;
+        delete track.project_name;
+        delete track.serverUidKey;
+        delete track.uuid;
+        delete track.private;
+        delete track.maxZoom;
+        delete track.coordSystem;
+        delete track.coordSystem2;
+        delete track.datatype;
+        delete track.maxWidth;
+        delete track.datafile;
+        delete track.filetype;
+        delete track.binsPerDimension;
       }
       //
 
-      newView.uid = uid;
-      newView.initialXDomain = this.xScales[uid].domain();
-      newView.initialYDomain = this.yScales[uid].domain();
+      newView.uid = k.uid;
+      newView.initialXDomain = this.xScales[k.uid].domain();
+      newView.initialYDomain = this.yScales[k.uid].domain();
 
       return newView;
     });
