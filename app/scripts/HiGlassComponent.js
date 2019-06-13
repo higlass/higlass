@@ -2702,11 +2702,12 @@ class HiGlassComponent extends React.Component {
         delete track.filetype;
         delete track.binsPerDimension;
       }
-      //
 
       newView.uid = k.uid;
       newView.initialXDomain = this.xScales[k.uid].domain();
       newView.initialYDomain = this.yScales[k.uid].domain();
+
+      delete newView.layout.i;
 
       return newView;
     });

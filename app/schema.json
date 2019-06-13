@@ -121,13 +121,6 @@
               "type": "integer",
               "title": "Height",
               "default": 12
-            },
-            "i": {
-              "type": "string",
-              "title": "The View Identifier",
-              "default": "",
-              "examples": ["aa"],
-              "pattern": "^(.*)$"
             }
           }
         },
