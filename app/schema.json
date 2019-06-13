@@ -38,104 +38,106 @@
       "required": ["tracks", "layout"],
       "properties": {
         "uid": { "type": "string" },
-        "initialXDomain": { "$ref": "#/definitions/domain" },
-        "initialYDomain": { "$ref": "#/definitions/domain" },
+        "initialXDomain": { "$ref": "#/definitions/viewProperties/domain" },
+        "initialYDomain": { "$ref": "#/definitions/viewProperties/domain" },
         "autocompleteSource": { "type": "string" },
         "genomePositionSearchBoxVisible": { "type": "boolean" },
-        "genomePositionSearchBox": { "$ref": "#/definitions/genomePositionSearchBox" },
+        "genomePositionSearchBox": { "$ref": "#/definitions/viewProperties/genomePositionSearchBox" },
         "chromInfoPath": { "type": "string" },
-        "tracks": { "$ref": "#/definitions/tracks_object" },
-        "layout": { "$ref": "#/definitions/layout" },
-        "overlays": { "type": "array", "items": { "$ref": "#/definitions/overlay" } }
+        "tracks": { "$ref": "#/definitions/viewProperties/tracks_object" },
+        "layout": { "$ref": "#/definitions/viewProperties/layout" },
+        "overlays": { "type": "array", "items": { "$ref": "#/definitions/viewProperties/overlay" } }
       }
     },
 
-    "genomePositionSearchBox": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["chromInfoServer", "chromInfoId", "visible"],
-      "properties": {
-        "autocompleteServer": { "type": "string" },
-        "autocompleteId": { "type": "string" },
-        "chromInfoServer": { "type": "string" },
-        "chromInfoId": { "type": "string" },
-        "visible": { "type": "boolean" }
-      }
-    },
+    "viewProperties": {
+      "genomePositionSearchBox": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["chromInfoServer", "chromInfoId", "visible"],
+        "properties": {
+          "autocompleteServer": { "type": "string" },
+          "autocompleteId": { "type": "string" },
+          "chromInfoServer": { "type": "string" },
+          "chromInfoId": { "type": "string" },
+          "visible": { "type": "boolean" }
+        }
+      },
 
-    "overlay": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "uid": { "type": "string" },
-        "type": { "type": "string" },
-        "includes": { "type": "array" },
-        "options": { "type": "object" },
-        "chromInfoPath": { "type": "string" }
-      }
-    },
-
-    "layout": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["w", "h", "x", "y", "moved", "static"],
-      "properties": {
-        "w": { "type": "number" },
-        "h": { "type": "number" },
-        "x": { "type": "number" },
-        "y": { "type": "number" },
-        "i": { "type": "string" },
-        "moved": { "type": "boolean" },
-        "static": { "type": "boolean" }
-      }
-    },
-
-    "tracks_object": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "left": { "type": "array" },
-        "right": { "type": "array" },
-        "top": { "type": "array" },
-        "bottom": { "type": "array" },
-        "center": { "type": "array" },
-        "whole": { "type": "array" },
-        "gallery": { "type": "array" }
-      }
-    },
-
-    "tracks_array": {
-      "note": "I don't think we can enforce this because every track type has a different model?",
-      "type": "array",
-      "items": {
+      "overlay": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "server": { "type": "string" },
-          "tilesetUid": { "type": "string" },
           "uid": { "type": "string" },
           "type": { "type": "string" },
-          "height": { "type": "number" },
-          "position": { "type": "string" },
-          "name": { "type": "string" },
+          "includes": { "type": "array" },
           "options": { "type": "object" },
-          "header": { "type": "string" },
-          "width": { "type": "number" },
-          "chromInfoPath": { "type": "string" },
-          "created": { "type": "string" },
-          "project": { },
-          "project_name": { "type": "string" },
-          "description": { "type": "string" },
-          "contents": { "type": "array" }
+          "chromInfoPath": { "type": "string" }
         }
-      }
-    },
+      },
 
-    "domain": {
-      "type": "array",
-      "items": { "type": "number" },
-      "maxItems": 2,
-      "minItems": 2
+      "layout": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["w", "h", "x", "y", "moved", "static"],
+        "properties": {
+          "w": { "type": "number" },
+          "h": { "type": "number" },
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "i": { "type": "string" },
+          "moved": { "type": "boolean" },
+          "static": { "type": "boolean" }
+        }
+      },
+
+      "tracks_object": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "left": { "type": "array" },
+          "right": { "type": "array" },
+          "top": { "type": "array" },
+          "bottom": { "type": "array" },
+          "center": { "type": "array" },
+          "whole": { "type": "array" },
+          "gallery": { "type": "array" }
+        }
+      },
+
+      "tracks_array": {
+        "note": "I don't think we can enforce this because every track type has a different model?",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "server": { "type": "string" },
+            "tilesetUid": { "type": "string" },
+            "uid": { "type": "string" },
+            "type": { "type": "string" },
+            "height": { "type": "number" },
+            "position": { "type": "string" },
+            "name": { "type": "string" },
+            "options": { "type": "object" },
+            "header": { "type": "string" },
+            "width": { "type": "number" },
+            "chromInfoPath": { "type": "string" },
+            "created": { "type": "string" },
+            "project": { },
+            "project_name": { "type": "string" },
+            "description": { "type": "string" },
+            "contents": { "type": "array" }
+          }
+        }
+      },
+
+      "domain": {
+        "type": "array",
+        "items": { "type": "number" },
+        "maxItems": 2,
+        "minItems": 2
+      }
     }
   }
 }
