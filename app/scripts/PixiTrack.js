@@ -143,13 +143,7 @@ class PixiTrack extends Track {
 
     this.options = Object.assign(this.options, options);
 
-    let labelTextText = this.options.name
-      ? this.options.name
-      : this.tilesetInfo && this.tilesetInfo.name || '';
-
-    if (!this.options.labelPosition || this.options.labelPosition === 'hidden') {
-      labelTextText = '';
-    }
+    const labelTextText = this.getName();
 
     this.labelTextFontFamily = 'Arial';
     this.labelTextFontSize = 12;
@@ -313,6 +307,12 @@ class PixiTrack extends Track {
       || 'black';
   }
 
+  getName() {
+    return this.options.name
+      ? this.options.name
+      : this.tilesetInfo && this.tilesetInfo.name || '';
+  }
+
   drawLabel() {
     if (!this.labelText) return;
 
@@ -320,7 +320,11 @@ class PixiTrack extends Track {
 
     graphics.clear();
 
-    if (!this.options || !this.options.labelPosition) {
+    if (
+      !this.options
+      || !this.options.labelPosition
+      || this.options.labelPosition === 'hidden'
+    ) {
       // don't display the track label
       this.labelText.opacity = 0;
       return;
@@ -341,12 +345,7 @@ class PixiTrack extends Track {
       ? `${this.tilesetInfo.coordSystem} | `
       : '';
 
-    if (this.options.name) {
-      labelTextText += this.options.name;
-    } else {
-      labelTextText += this.tilesetInfo
-        ? this.tilesetInfo.name : '';
-    }
+    labelTextText += this.getName();
 
     if (
       this.tilesetInfo
@@ -359,7 +358,6 @@ class PixiTrack extends Track {
         this.tilesetInfo.bins_per_dimension,
         this.tilesetInfo.max_zoom
       );
-
 
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     } else if (
