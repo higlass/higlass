@@ -143,12 +143,10 @@ class PixiTrack extends Track {
 
     this.options = Object.assign(this.options, options);
 
-    let labelTextText;
-    if (this.options.name) {
-      labelTextText = this.options.name;
-    } else {
-      labelTextText = this.tilesetInfo ? this.tilesetInfo.name : '';
-    }
+    let labelTextText = this.options.name
+      ? this.options.name
+      : this.tilesetInfo && this.tilesetInfo.name || '';
+
     if (!this.options.labelPosition || this.options.labelPosition === 'hidden') {
       labelTextText = '';
     }
@@ -157,15 +155,18 @@ class PixiTrack extends Track {
     this.labelTextFontSize = 12;
 
     this.labelText = new PIXI.Text(
-      labelTextText, {
+      labelTextText,
+      {
         fontSize: `${this.labelTextFontSize}px`,
         fontFamily: this.labelTextFontFamily,
         fill: 'black'
       }
     );
 
-    this.errorText = new PIXI.Text('',
-      { fontSize: '12px', fontFamily: 'Arial', fill: 'red' });
+    this.errorText = new PIXI.Text(
+      '',
+      { fontSize: '12px', fontFamily: 'Arial', fill: 'red' }
+    );
     this.errorText.anchor.x = 0.5;
     this.errorText.anchor.y = 0.5;
     this.pLabel.addChild(this.errorText);
