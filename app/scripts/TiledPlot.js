@@ -295,12 +295,12 @@ class TiledPlot extends React.Component {
     this.pubSubs.forEach(subscription => this.props.pubSub.unsubscribe(subscription));
   }
 
-  addUidsToTracks(tracks) {
-    for (const key in tracks) {
-      for (let i = 0; i < tracks[key].length; i++) {
-        tracks[key][i].uid = tracks[key][i].uid ? tracks[key][i].uid : slugid.nice();
-      }
-    }
+  addUidsToTracks(positionedTracks) {
+    Object.keys(positionedTracks).forEach((position) => {
+      positionedTracks[position].forEach((track) => {
+        track.uid = track.uid || slugid.nice();
+      });
+    });
   }
 
   /*
