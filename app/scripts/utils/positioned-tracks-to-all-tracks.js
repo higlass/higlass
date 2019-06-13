@@ -13,29 +13,25 @@
  *   }
  */
 const positionedTracksToAllTracks = (
-  positionedTracks,
-  includeCombinedContents = true,
+  positionedTracks, inclCombinedTracks = true
 ) => {
-  const tracks = positionedTracks;
   const allTracks = [];
 
-  for (const trackType in tracks) {
-    const theseTracks = tracks[trackType];
-
-    theseTracks.forEach((x) => {
-      if (x.type === 'combined') {
+  Object.keys(positionedTracks).forEach((position) => {
+    positionedTracks[position].forEach((track) => {
+      if (track.type === 'combined') {
         // we don't really deal with nested combined tracks here,
         // but those shouldn't really be used anyway
-        if (includeCombinedContents) {
-          x.contents.forEach((y) => {
-            allTracks.push(Object.assign(y, { position: trackType }));
+        if (inclCombinedTracks) {
+          track.contents.forEach((y) => {
+            allTracks.push(Object.assign(y, { position }));
           });
         }
       }
 
-      allTracks.push(Object.assign(x, { position: trackType }));
+      allTracks.push(Object.assign(track, { position }));
     });
-  }
+  });
 
   return allTracks;
 };
