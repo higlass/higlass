@@ -55,7 +55,10 @@
                   "^(?!uid).": {
                     "type": "array",
                     "minLength": 3,
-                    "maxLength": 3
+                    "maxLength": 3,
+                    "items": {
+                      "type": "number"
+                    }
                   }
                 }
               }
@@ -69,8 +72,37 @@
         "additionalProperties": false,
         "required": ["locksByViewUid", "locksDict"],
         "properties": {
-          "locksByViewUid": { "type": "object" },
-          "locksDict": { "type": "object" }
+          "locksByViewUid": {
+            "type": "object",
+            "additionalProperties": false,
+            "patternProperties": {
+              ".": { "$ref": "#/definitions/locks/string22" }
+            }
+          },
+          "locksDict": {
+            "type": "object",
+            "additionalProperties": false,
+            "patternProperties": {
+              ".": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "uid": { "$ref": "#/definitions/locks/string22" }
+                },
+                "patternProperties": {
+                  "^(?!uid).": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["view", "track"],
+                    "properties": {
+                      "view": { "type": "string" },
+                      "track": { "$ref": "#/definitions/locks/string22" }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
