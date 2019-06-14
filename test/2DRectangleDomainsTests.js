@@ -16,7 +16,7 @@ import {
 
 configure({ adapter: new Adapter() });
 
-describe('Horizontal heatmaps', () => {
+describe('2D Rectangular Domains', () => {
   let hgc = null;
   let div = null;
 
