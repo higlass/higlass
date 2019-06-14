@@ -74,10 +74,7 @@ function getWidthBasedResolutionText(
 
     return formattedResolution;
   }
-  console.warn(
-    'NaN resolution, screen is probably too small. Dimensions:',
-    this.dimensions,
-  );
+  console.warn('NaN resolution, screen is probably too small.');
 
   return '';
 }
@@ -362,7 +359,8 @@ class PixiTrack extends Track {
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     } else if (
       this.tilesetInfo
-      && this.tilesetInfo.resolutions) {
+      && this.tilesetInfo.resolutions
+    ) {
       const formattedResolution = getResolutionBasedResolutionText(
         this.tilesetInfo.resolutions,
         this.calculateZoomLevel()
