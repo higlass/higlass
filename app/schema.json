@@ -28,8 +28,39 @@
         "additionalProperties": false,
         "required": ["locksByViewUid", "locksDict"],
         "properties": {
-          "locksByViewUid": { "type": "object" },
-          "locksDict": { "type": "object" }
+          "locksByViewUid": {
+            "type": "object",
+            "patternProperties": {
+              ".": {
+                "type": "string",
+                "minLength": 22,
+                "maxLength": 22
+              }
+            }
+          },
+          "locksDict": {
+            "type": "object",
+            "additionalProperties": false,
+            "patternProperties": {
+              ".": {
+                "type": "object",
+                "properties": {
+                  "uid": {
+                    "type": "string",
+                    "minLength": 22,
+                    "maxLength": 22
+                  }
+                },
+                "patternProperties": {
+                  "^(?!uid)$": {
+                    "type": "array",
+                    "minLength": 3,
+                    "maxLength": 3
+                  }
+                }
+              }
+            }
+          }
         }
       },
 

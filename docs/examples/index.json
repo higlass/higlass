@@ -12,6 +12,7 @@
   "default.json",
   "gene-annotations.json",
   "label-margin.json",
+  "lots-of-locks.json",
   "overlay-chromosome-grid-track.json",
   "overlay-track.json",
   "overlay-tracks.json"
