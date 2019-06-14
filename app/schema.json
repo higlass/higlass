@@ -12,9 +12,9 @@
       "type": "array",
       "items": { "type": "string" }
     },
-    "zoomLocks": { "$ref": "#/definitions/locks" },
-    "locationLocks": { "$ref": "#/definitions/locks" },
-    "valueScaleLocks": { "$ref": "#/definitions/locks" },
+    "zoomLocks": { "$ref": "#/definitions/locks/genericLocks" },
+    "locationLocks": { "$ref": "#/definitions/locks/genericLocks" },
+    "valueScaleLocks": { "$ref": "#/definitions/locks/valueScaleLocks" },
     "views": {
       "type": "array",
       "items": { "$ref": "#/definitions/view" }
@@ -23,12 +23,24 @@
   "definitions": {
 
     "locks": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["locksByViewUid", "locksDict"],
-      "properties": {
-        "locksByViewUid": { "type": "object" },
-        "locksDict": { "type": "object" }
+      "genericLocks": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["locksByViewUid", "locksDict"],
+        "properties": {
+          "locksByViewUid": { "type": "object" },
+          "locksDict": { "type": "object" }
+        }
+      },
+
+      "valueScaleLocks": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["locksByViewUid", "locksDict"],
+        "properties": {
+          "locksByViewUid": { "type": "object" },
+          "locksDict": { "type": "object" }
+        }
       }
     },
 
