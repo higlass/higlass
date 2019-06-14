@@ -241,8 +241,6 @@
     }
   ],
   "editable": true,
-  "viewEditable": true,
-  "tracksEditable": true,
   "exportViewUrl": "/api/v1/viewconfs",
   "zoomLocks": {
     "locksByViewUid": {},
