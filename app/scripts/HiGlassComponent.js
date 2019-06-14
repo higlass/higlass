@@ -2776,11 +2776,11 @@ class HiGlassComponent extends React.Component {
     return req;
   }
 
+  /*
+   * The initial[XY]Domain of a view has changed. Update its definition
+   * and rerender.
+   */
   handleDataDomainChanged(viewUid, newXDomain, newYDomain) {
-    /*
-         * The initial[XY]Domain of a view has changed. Update its definition
-         * and rerender.
-         */
     const { views } = this.state;
 
     views[viewUid].initialXDomain = newXDomain;
@@ -2893,6 +2893,7 @@ class HiGlassComponent extends React.Component {
     const jsonString = JSON.stringify(lastView);
 
     const newView = JSON.parse(jsonString); // ghetto copy
+
     newView.initialXDomain = this.xScales[newView.uid].domain();
     newView.initialYDomain = this.yScales[newView.uid].domain();
 
