@@ -9,7 +9,7 @@ describe('Viewconf JSON schema', () => {
   const validate = new Ajv().compile(schema);
 
   viewconfNames.forEach((viewconfName) => {
-    it(`validates original  of ${viewconfName}`, (done) => {
+    it(`validates original view config of ${viewconfName}`, (done) => {
       // (Extra space in message is to align the output of this test with the next.)
       const viewconfPath = `/base/docs/examples/viewconfs/${viewconfName}`;
 
