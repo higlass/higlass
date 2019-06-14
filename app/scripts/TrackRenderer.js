@@ -434,8 +434,6 @@ class TrackRenderer extends React.Component {
   addZoom() {
     if (!this.elementSelection || !this.currentProps.zoomable) return;
 
-    // add back the previous transform
-    // console.log('zoom:', this.elementSelection.node());
     this.elementSelection.call(this.zoomBehavior);
     this.zoomBehavior.transform(this.elementSelection, this.zoomTransform);
   }
@@ -671,9 +669,6 @@ class TrackRenderer extends React.Component {
 
     for (const uid in this.trackDefObjects) {
       const track = this.trackDefObjects[uid].trackObject;
-
-      // track.refXScale(this.xScale);
-      // track.refYScale(this.yScale);
 
       // e.g. when the track is resized... we want to redraw it
       track.refScalesChanged(this.xScale, this.yScale);
@@ -1032,7 +1027,6 @@ class TrackRenderer extends React.Component {
           this.activeTransitions -= 1;
         });
     } else {
-      // console.log('setting zoom', notify);
       setZoom();
     }
 
