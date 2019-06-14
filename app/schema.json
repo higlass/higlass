@@ -183,18 +183,37 @@
         "type": "array",
         "items": {
           "oneOf": [
-            { "$ref": "#/definitions/viewProperties/enum_track" },
-            { "$ref": "#/definitions/viewProperties/combined_track" },
-            { "$ref": "#/definitions/viewProperties/heatmap_track" }
+            { "$ref": "#/definitions/tracks/enum_track" },
+            { "$ref": "#/definitions/tracks/combined_track" },
+            { "$ref": "#/definitions/tracks/heatmap_track" }
           ]
         }
       },
 
+      "domain": {
+        "type": "array",
+        "items": { "type": "number" },
+        "maxItems": 2,
+        "minItems": 2
+      }
+    },
+
+    "tracks": {
       "heatmap_track": {
         "type": "object",
+        "additionalProperties": false,
         "properties": {
           "uid": { "type": "string" },
-          "type": { "const": "heatmap" }
+          "type": { "const": "heatmap" },
+          "data": { "type": "object" },
+          "server": { "type": "string" },
+          "tilesetUid": { "type": "string" },
+          "position": { "type": "string" },
+          "options": { "type": "object" },
+          "name": { "type": "string" },
+          "transforms": { "type": "array" },
+          "width": { "type": "number" },
+          "height": { "type": "number" }
         }
       },
 
@@ -297,13 +316,6 @@
           "x": { "type": "number" },
           "y": { "type": "number" }
         }
-      },
-
-      "domain": {
-        "type": "array",
-        "items": { "type": "number" },
-        "maxItems": 2,
-        "minItems": 2
       }
     }
   }
