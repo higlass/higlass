@@ -14,6 +14,8 @@ import {
   removeHGComponent,
 } from '../app/scripts/utils';
 
+import viewconf from './view-configs/loop-annotations';
+
 configure({ adapter: new Adapter() });
 
 describe('2D Rectangular Domains', () => {
@@ -22,7 +24,7 @@ describe('2D Rectangular Domains', () => {
 
   beforeAll((done) => {
     ([div, hgc] = mountHGComponent(div, hgc,
-      zoomLimitViewConf,
+      viewconf,
       done,
       {
         style: 'width:800px; height:400px; background-color: lightgreen',
@@ -40,6 +42,3 @@ describe('2D Rectangular Domains', () => {
     removeHGComponent(div);
   });
 });
-
-// enter either a viewconf link or a viewconf object
-const zoomLimitViewConf = 'http://higlass.io/api/v1/viewconfs/?d=Ku3x3sNqQ3KaNgurJNP_Bw';
