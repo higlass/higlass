@@ -182,29 +182,120 @@
       "tracks_array": {
         "type": "array",
         "items": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "server": { "type": "string" },
-            "tilesetUid": { "type": "string" },
-            "uid": { "type": "string" },
-            "type": { "type": "string" },
-            "height": { "type": "number" },
-            "position": { "type": "string" },
-            "name": { "type": "string" },
-            "options": { "type": "object" },
-            "header": { "type": "string" },
-            "width": { "type": "number" },
-            "chromInfoPath": { "type": "string" },
-            "created": { "type": "string" },
-            "project": { },
-            "project_name": { "type": "string" },
-            "description": { "type": "string" },
-            "contents": { "type": "array" },
-            "transforms": { "type": "array" },
-            "x": { "type": "number" },
-            "y": { "type": "number" }
-          }
+          "oneOf": [
+            { "$ref": "#/definitions/viewProperties/enum_track" },
+            { "$ref": "#/definitions/viewProperties/combined_track" },
+            { "$ref": "#/definitions/viewProperties/heatmap_track" }
+          ]
+        }
+      },
+
+      "heatmap_track": {
+        "type": "object",
+        "properties": {
+          "uid": { "type": "string" },
+          "type": { "const": "heatmap" }
+        }
+      },
+
+      "combined_track": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "uid": { "type": "string" },
+          "type": { "const": "combined" },
+          "position": { "type": "string" },
+          "options": { },
+          "width": { "type": "number" },
+          "height": { "type": "number" },
+          "contents": { "$ref": "#/definitions/viewProperties/tracks_array" }
+        }
+      },
+
+      "enum_track": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "server": { "type": "string" },
+          "tilesetUid": { "type": "string" },
+          "uid": { "type": "string" },
+          "type": {
+            "enum": [
+              "2d-annotations",
+              "2d-chromosome-annotations",
+              "2d-chromosome-grid",
+              "2d-chromosome-labels",
+              "2d-rectangle-domains",
+              "2d-tiles",
+              "arrowhead-domains",
+              "bedlike",
+              "cross-rule",
+              "horizontal-1d-annotations",
+              "horizontal-1d-heatmap",
+              "horizontal-1d-tiles",
+              "horizontal-1d-value-interval",
+              "horizontal-2d-rectangle-domains",
+              "horizontal-bar",
+              "horizontal-chromosome-grid",
+              "horizontal-chromosome-labels",
+              "horizontal-divergent-bar",
+              "horizontal-gene-annotations",
+              "horizontal-heatmap",
+              "horizontal-line",
+              "horizontal-multivec",
+              "horizontal-point",
+              "horizontal-rule",
+              "horizontal-vector-heatmap",
+              "image-tiles",
+              "left-axis",
+              "left-stacked-interval",
+              "mapbox-tiles",
+              "osm-2d-tile-ids",
+              "osm-tiles",
+              "raster-tiles",
+              "simple-svg",
+              "square-markers",
+              "top-axis",
+              "top-stacked-interval",
+              "vertical-1d-annotations",
+              "vertical-1d-heatmap",
+              "vertical-1d-tiles",
+              "vertical-1d-value-interval",
+              "vertical-2d-rectangle-domains",
+              "vertical-bar",
+              "vertical-bedlike",
+              "vertical-chromosome-grid",
+              "vertical-chromosome-labels",
+              "vertical-gene-annotations",
+              "vertical-heatmap",
+              "vertical-line",
+              "vertical-multivec",
+              "vertical-point",
+              "vertical-rule",
+              "vertical-vector-heatmap",
+              "viewport-projection-center",
+              "viewport-projection-horizontal",
+              "viewport-projection-vertical"
+            ]
+          },
+          "local": { "type": "boolean" },
+          "orientation": { "type": "string" },
+          "thumbnail": { },
+          "height": { "type": "number" },
+          "position": { "type": "string" },
+          "name": { "type": "string" },
+          "options": { "type": "object" },
+          "header": { "type": "string" },
+          "width": { "type": "number" },
+          "chromInfoPath": { "type": "string" },
+          "created": { "type": "string" },
+          "project": { },
+          "project_name": { "type": "string" },
+          "description": { "type": "string" },
+          "contents": { "type": "array" },
+          "transforms": { "type": "array" },
+          "x": { "type": "number" },
+          "y": { "type": "number" }
         }
       },
 
