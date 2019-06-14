@@ -101,9 +101,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.setDataLensSize(11);
     this.dataLens = new Float32Array(this.dataLensSize ** 2);
 
+    this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
+
     if (this.onMouseMoveZoom) {
       this.pubSubs.push(
-        this.pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this))
+        this.pubSub.subscribe('app.mouseMove', this.mouseMoveHandlerBound)
       );
     }
 
@@ -151,24 +153,17 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const relY = absY - this.position[1];
 
     let data;
-    try {
-      data = this.getVisibleRectangleData(relX, relY, 1, 1).get(0, 0);
-    } catch (e) {
-      return;
-    }
-    if (!data) return;
-
     let dataLens;
     try {
       dataLens = this.getVisibleRectangleData(
-        relX - Math.ceil(this.dataLensSize / 2),
-        relY - Math.ceil(this.dataLensSize / 2),
+        relX - this.dataLensPadding,
+        relY - this.dataLensPadding,
         this.dataLensSize,
         this.dataLensSize
       );
-    } catch (e) {
-      // Nothing
-    }
+      // The center value
+      data = dataLens.get(this.dataLensPadding, this.dataLensPadding);
+    } catch (e) { return; }
 
     const dim = this.dataLensSize;
 
@@ -179,22 +174,21 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         this.colorScale,
         this.valueScale.domain()[0]
       );
-    } catch (err) { /* Nothing */ }
+    } catch (err) { return; }
 
     if (!toRgb) return;
-
 
     const dataX = Math.round(this._xScale.invert(relX));
     const dataY = Math.round(this._yScale.invert(relY));
 
     let center = [dataX, dataY];
     let xRange = [
-      Math.round(this._xScale.invert(relX - this.dataLensLPad)),
-      Math.round(this._xScale.invert(relX + this.dataLensRPad))
+      Math.round(this._xScale.invert(relX - this.dataLensPadding)),
+      Math.round(this._xScale.invert(relX + this.dataLensPadding))
     ];
     let yRange = [
-      Math.round(this._yScale.invert(relY - this.dataLensLPad)),
-      Math.round(this._yScale.invert(relY + this.dataLensRPad))
+      Math.round(this._yScale.invert(relY - this.dataLensPadding)),
+      Math.round(this._yScale.invert(relY + this.dataLensPadding))
     ];
 
     if (this.chromInfo) {
@@ -837,11 +831,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    *   integer.
    */
   setDataLensSize(newDataLensSize) {
-    if (newDataLensSize % 2 !== 1) return;
-
-    this.dataLensSize = newDataLensSize;
-    this.dataLensLPad = Math.floor(this.dataLensSize / 2);
-    this.dataLensRPad = Math.ceil(this.dataLensSize / 2);
+    this.dataLensPadding = Math.max(0, Math.floor((newDataLensSize - 1) / 2));
+    this.dataLensSize = this.dataLensPadding * 2 + 1;
   }
 
   binsPerTile() {
@@ -914,12 +905,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         tile.tileData.zoomLevel, tilePos, this.binsPerTile()
       );
 
-      let tileData = tile.dataArray;
-
-      if (tile.mirrored) {
-        tileData = tileData.transpose(1, 0);
-      }
-
       // calculate the tile's position in bins
       const tileXStartBin = Math.floor(tileX / tileRes);
       const tileXEndBin = Math.floor((tileX + tileWidth) / tileRes);
@@ -927,8 +912,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       const tileYEndBin = Math.floor((tileY + tileHeight) / tileRes);
 
       // calculate which part of this tile is present in the current window
-      const tileSliceXStart = Math.max(leftXBin, tileXStartBin) - tileXStartBin;
-      const tileSliceYStart = Math.max(leftYBin, tileYStartBin) - tileYStartBin;
+      let tileSliceXStart = Math.max(leftXBin, tileXStartBin) - tileXStartBin;
+      let tileSliceYStart = Math.max(leftYBin, tileYStartBin) - tileYStartBin;
       const tileSliceXEnd = Math.min(leftXBin + binWidth, tileXEndBin) - tileXStartBin;
       const tileSliceYEnd = Math.min(leftYBin + binHeight, tileYEndBin) - tileYStartBin;
 
@@ -942,11 +927,17 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       // the region is outside of this tile
       if (tileSliceWidth < 0 || tileSliceHeight < 0) return;
 
+      if (tile.mirrored && tileSliceXStart > tileSliceYStart) {
+        const tmp = tileSliceXStart;
+        tileSliceXStart = tileSliceYStart;
+        tileSliceYStart = tmp;
+      }
+
       ndarrayAssign(
         out
           .hi(tileYOffset + tileSliceHeight, tileXOffset + tileSliceWidth)
           .lo(tileYOffset, tileXOffset),
-        tileData
+        tile.dataArray
           .hi(tileSliceYStart + tileSliceHeight, tileSliceXStart + tileSliceWidth)
           .lo(tileSliceYStart, tileSliceXStart)
       );
@@ -1319,13 +1310,18 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       return '';
     }
 
-    const currentResolution = tileProxy.calculateResolution(this.tilesetInfo,
-      this.zoomLevel);
+    const currentResolution = tileProxy.calculateResolution(
+      this.tilesetInfo, this.zoomLevel
+    );
 
-    const maxWidth = Math.max(this.tilesetInfo.max_pos[1] - this.tilesetInfo.min_pos[1],
-      this.tilesetInfo.max_pos[0] - this.tilesetInfo.min_pos[0]);
+    const maxWidth = Math.max(
+      this.tilesetInfo.max_pos[1] - this.tilesetInfo.min_pos[1],
+      this.tilesetInfo.max_pos[0] - this.tilesetInfo.min_pos[0]
+    );
 
-    const formatResolution = Math.ceil(Math.log(maxWidth / currentResolution) / Math.log(10));
+    const formatResolution = Math.ceil(
+      Math.log(maxWidth / currentResolution) / Math.log(10)
+    );
 
     this.setDataLensSize(1);
 
