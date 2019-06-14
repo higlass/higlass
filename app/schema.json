@@ -23,6 +23,12 @@
   "definitions": {
 
     "locks": {
+      "string22": {
+        "type": "string",
+        "minLength": 22,
+        "maxLength": 22
+      },
+
       "genericLocks": {
         "type": "object",
         "additionalProperties": false,
@@ -30,12 +36,9 @@
         "properties": {
           "locksByViewUid": {
             "type": "object",
+            "additionalProperties": false,
             "patternProperties": {
-              ".": {
-                "type": "string",
-                "minLength": 22,
-                "maxLength": 22
-              }
+              ".": { "$ref": "#/definitions/locks/string22" }
             }
           },
           "locksDict": {
@@ -44,15 +47,12 @@
             "patternProperties": {
               ".": {
                 "type": "object",
+                "additionalProperties": false,
                 "properties": {
-                  "uid": {
-                    "type": "string",
-                    "minLength": 22,
-                    "maxLength": 22
-                  }
+                  "uid": { "$ref": "#/definitions/locks/string22" }
                 },
                 "patternProperties": {
-                  "^(?!uid)$": {
+                  "^(?!uid).": {
                     "type": "array",
                     "minLength": 3,
                     "maxLength": 3
