@@ -4,20 +4,23 @@
   "title": "HiGlass viewconf",
   "type": "object",
   "additionalProperties": false,
+  "required": [],
   "properties": {
     "editable": { "type": "boolean" },
     "zoomFixed": { "type": "boolean" },
     "exportViewUrl": { "type": "string" },
     "trackSourceServers": {
       "type": "array",
-      "items": { "type": "string" }
+      "items": { "type": "string" },
+      "minLength": 1
     },
     "zoomLocks": { "$ref": "#/definitions/locks/genericLocks" },
     "locationLocks": { "$ref": "#/definitions/locks/genericLocks" },
     "valueScaleLocks": { "$ref": "#/definitions/locks/valueScaleLocks" },
     "views": {
       "type": "array",
-      "items": { "$ref": "#/definitions/view" }
+      "items": { "$ref": "#/definitions/view" },
+      "minLength": 1
     }
   },
   "definitions": {
@@ -29,18 +32,20 @@
         "maxLength": 22
       },
 
+      "locksByViewUid": {
+        "type": "object",
+        "additionalProperties": false,
+        "patternProperties": {
+          ".": { "$ref": "#/definitions/locks/string22" }
+        }
+      },
+
       "genericLocks": {
         "type": "object",
         "additionalProperties": false,
         "required": ["locksByViewUid", "locksDict"],
         "properties": {
-          "locksByViewUid": {
-            "type": "object",
-            "additionalProperties": false,
-            "patternProperties": {
-              ".": { "$ref": "#/definitions/locks/string22" }
-            }
-          },
+          "locksByViewUid": { "$ref": "#/definitions/locks/locksByViewUid" },
           "locksDict": {
             "type": "object",
             "additionalProperties": false,
@@ -72,13 +77,7 @@
         "additionalProperties": false,
         "required": ["locksByViewUid", "locksDict"],
         "properties": {
-          "locksByViewUid": {
-            "type": "object",
-            "additionalProperties": false,
-            "patternProperties": {
-              ".": { "$ref": "#/definitions/locks/string22" }
-            }
-          },
+          "locksByViewUid": { "$ref": "#/definitions/locks/locksByViewUid" },
           "locksDict": {
             "type": "object",
             "additionalProperties": false,
