@@ -10,6 +10,7 @@
   "bigwig-aggregation-modes.json",
   "chromosome-labels.json",
   "default.json",
+  "diagonal-split-heatmap.json",
   "gene-annotations.json",
   "label-margin.json",
   "overlay-chromosome-grid-track.json",
