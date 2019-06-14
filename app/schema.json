@@ -205,7 +205,14 @@
         "properties": {
           "uid": { "type": "string" },
           "type": { "const": "heatmap" },
-          "data": { "type": "object" },
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": { "type": "string" },
+              "children": { "type": "array" }
+            }
+          },
           "server": { "type": "string" },
           "tilesetUid": { "type": "string" },
           "position": { "type": "string" },
@@ -311,7 +318,6 @@
           "project": { },
           "project_name": { "type": "string" },
           "description": { "type": "string" },
-          "contents": { "type": "array" },
           "transforms": { "type": "array" },
           "x": { "type": "number" },
           "y": { "type": "number" }
