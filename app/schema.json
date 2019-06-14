@@ -169,18 +169,17 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "left": { "type": "array" },
-          "right": { "type": "array" },
-          "top": { "type": "array" },
-          "bottom": { "type": "array" },
-          "center": { "type": "array" },
-          "whole": { "type": "array" },
-          "gallery": { "type": "array" }
+          "left": { "$ref": "#/definitions/viewProperties/tracks_array" },
+          "right": { "$ref": "#/definitions/viewProperties/tracks_array" },
+          "top": { "$ref": "#/definitions/viewProperties/tracks_array" },
+          "bottom": { "$ref": "#/definitions/viewProperties/tracks_array" },
+          "center": { "$ref": "#/definitions/viewProperties/tracks_array" },
+          "whole": { "$ref": "#/definitions/viewProperties/tracks_array" },
+          "gallery": { "$ref": "#/definitions/viewProperties/tracks_array" }
         }
       },
 
       "tracks_array": {
-        "note": "I don't think we can enforce this because every track type has a different model?",
         "type": "array",
         "items": {
           "type": "object",
@@ -201,7 +200,10 @@
             "project": { },
             "project_name": { "type": "string" },
             "description": { "type": "string" },
-            "contents": { "type": "array" }
+            "contents": { "type": "array" },
+            "transforms": { "type": "array" },
+            "x": { "type": "number" },
+            "y": { "type": "number" }
           }
         }
       },
