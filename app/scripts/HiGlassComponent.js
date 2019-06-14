@@ -2286,8 +2286,6 @@ class HiGlassComponent extends React.Component {
       for (const ct of newTrack.contents) { this.addDefaultTrackOptions(ct); }
     }
 
-    this.addNameToTrack(newTrack);
-
     if (this.state.addTrackPosition) {
       // we've already added the track, remove the add track dialog
       this.setState({
