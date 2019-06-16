@@ -28,7 +28,9 @@ import { ZOOM_DEBOUNCE } from './configs';
  * @returns {array} An array of [string, scale] containin the scale type
  *  and a scale with an appropriately set domain and range
  */
-export function getValueScale(scalingType, minValue, pseudocountIn, maxValue, defaultScaling) {
+export function getValueScale(
+  scalingType, minValue, pseudocountIn, maxValue, defaultScaling
+) {
   const scalingTypeToUse = scalingType || defaultScaling;
 
   // purposely set to not equal pseudocountIn for now
@@ -36,8 +38,12 @@ export function getValueScale(scalingType, minValue, pseudocountIn, maxValue, de
   const pseudocount = 0;
 
   if (scalingTypeToUse === 'log' && minValue > 0) {
-    return ['log', scaleLog().range([254, 0])
-      .domain([minValue + pseudocount, maxValue + pseudocount])];
+    return [
+      'log',
+      scaleLog()
+        .range([254, 0])
+        .domain([minValue + pseudocount, maxValue + pseudocount])
+    ];
   }
 
   if (scalingTypeToUse === 'log') {
@@ -45,8 +51,7 @@ export function getValueScale(scalingType, minValue, pseudocountIn, maxValue, de
     // console.warn('Negative values present in data. Defaulting to linear scale: ', minValue);
   }
 
-  return ['linear', scaleLinear().range([254, 0])
-    .domain([minValue, maxValue])];
+  return ['linear', scaleLinear().range([254, 0]).domain([minValue, maxValue])];
 }
 
 class TiledPixiTrack extends PixiTrack {

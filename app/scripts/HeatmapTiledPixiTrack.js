@@ -251,9 +251,17 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   updateValueScale() {
     const [scaleType, valueScale] = getValueScale(
       (this.options && this.options.heatmapValueScaling) || 'log',
-      (typeof this.options.valueScaleMin === 'undefined' ? this.scale.minValue : this.valueScaleMin),
+      (
+        typeof this.options.valueScaleMin === 'undefined'
+          ? this.scale.minValue
+          : this.valueScaleMin
+      ),
       this.medianVisibleValue,
-      (typeof this.options.valueScaleMax === 'undefined' ? this.scale.maxValue : this.valueScaleMax),
+      (
+        typeof this.options.valueScaleMax === 'undefined'
+          ? this.scale.maxValue
+          : this.valueScaleMax
+      ),
       'log'
     );
 
