@@ -955,6 +955,12 @@ class HiGlassComponent extends React.Component {
 
         lockedTrack.valueScale.domain([allMin, allMax]);
 
+        // In TiledPixiTrack, we check if valueScale has changed before
+        // calling onValueScaleChanged. If we don't update prevValueScale
+        // here, that function won't get called and the value scales won't
+        // stay synced
+        lockedTrack.prevValueScale = lockedTrack.valueScale.copy();
+
         if (
           sourceTrack.options
           && typeof sourceTrack.options.scaleStartPercent !== 'undefined'
