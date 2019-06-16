@@ -124,6 +124,18 @@ class TiledPixiTrack extends PixiTrack {
 
     // To indicate that this track is requiring a tileset info
     this.tilesetInfo = null;
+    this.uuid = slugid.nice();
+
+    // this needs to be above the tilesetInfo() call because if that
+    // executes first, the call to draw() will complain that this text
+    // doesn't exist
+    this.trackNotFoundText = new PIXI.Text(
+      '', { fontSize: '12px', fontFamily: 'Arial', fill: 'black' }
+    );
+
+    this.pLabel.addChild(this.trackNotFoundText);
+
+    this.refreshTilesDebounced = debounce(this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
 
     this.dataFetcher.tilesetInfo((tilesetInfo) => {
       this.tilesetInfo = tilesetInfo;
@@ -176,15 +188,6 @@ class TiledPixiTrack extends PixiTrack {
       this.drawLabel(); // draw the label so that the current resolution is displayed
       this.animate();
     });
-
-    this.uuid = slugid.nice();
-    this.refreshTilesDebounced = debounce(this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
-
-    this.trackNotFoundText = new PIXI.Text(
-      '', { fontSize: '12px', fontFamily: 'Arial', fill: 'black' }
-    );
-
-    this.pLabel.addChild(this.trackNotFoundText);
   }
 
   setFixedValueScaleMin(value) {
