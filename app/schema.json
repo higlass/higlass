@@ -26,17 +26,13 @@
   "definitions": {
 
     "locks": {
-      "string22": {
-        "type": "string",
-        "minLength": 22,
-        "maxLength": 22
-      },
+      "slug": { "type": "string" },
 
       "locksByViewUid": {
         "type": "object",
         "additionalProperties": false,
         "patternProperties": {
-          ".": { "$ref": "#/definitions/locks/string22" }
+          ".": { "$ref": "#/definitions/locks/slug" }
         }
       },
 
@@ -54,7 +50,7 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "uid": { "$ref": "#/definitions/locks/string22" }
+                  "uid": { "$ref": "#/definitions/locks/slug" }
                 },
                 "patternProperties": {
                   "^(?!uid).": {
@@ -86,7 +82,7 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "uid": { "$ref": "#/definitions/locks/string22" }
+                  "uid": { "$ref": "#/definitions/locks/slug" }
                 },
                 "patternProperties": {
                   "^(?!uid).": {
@@ -95,7 +91,7 @@
                     "required": ["view", "track"],
                     "properties": {
                       "view": { "type": "string" },
-                      "track": { "$ref": "#/definitions/locks/string22" }
+                      "track": { "$ref": "#/definitions/locks/slug" }
                     }
                   }
                 }
