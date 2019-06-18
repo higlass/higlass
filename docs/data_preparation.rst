@@ -98,7 +98,7 @@ contain too many values and slow down the renderer:
         --output-file domains.txt.multires \
         domains.txt
 
-This requires the ``-chr1-col``, ``--from1-col``, ``--to1-col``, ``--chr2-col``,
+This requires the ``--chr1-col``, ``--from1-col``, ``--to1-col``, ``--chr2-col``,
 ``--from2-col``, ``--to2-col`` parameters to specify which columns in the datafile
 describe the x-extent and y-extent of the region.
 
@@ -108,10 +108,8 @@ value, contain ``random``, or if it's not specified, default to the size of the
 region.
 
 **BED files** can also be aggregated as BEDPE-like files for use with the
-`2d-rectangle-domains` track. The from1_col,to1_col and from2_col,to2_col
-parameters need to be set to the same columns. Example file:
-
-.. code-block:: bash
+``2d-rectangle-domains`` track. The from1_col,to1_col and from2_col,to2_col
+parameters need to be set to the same columns. Example file::
 
     chrZ    80050000        80100000        False   0.19240442973331        0.24341494300858102
     chrZ    81350000        81400000        False   0.5359549218130373      0.30888749507071034
