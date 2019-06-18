@@ -434,7 +434,7 @@ class OSMTilesTrack extends PixiTrack {
   getTileUrl(tileZxy) {
     const serverPrefixes = ['a', 'b', 'c'];
     const serverPrefixIndex = Math.floor(Math.random() * serverPrefixes.length);
-    const src = `http://${serverPrefixes[serverPrefixIndex]}.tile.openstreetmap.org/${tileZxy[0]}/${tileZxy[1]}/${tileZxy[2]}.png`;
+    const src = `https://${serverPrefixes[serverPrefixIndex]}.tile.openstreetmap.org/${tileZxy[0]}/${tileZxy[1]}/${tileZxy[2]}.png`;
 
     return src;
   }
