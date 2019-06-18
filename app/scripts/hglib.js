@@ -33,17 +33,16 @@ const launch = (element, config, options) => {
    *
    * @return  {Object} The instance's public API
    */
-  let component;
-
+  const ref = React.createRef();
   ReactDOM.render(
     <HiGlassComponent
-      ref={(c) => { component = c; }}
+      ref={ref}
       options={options || {}}
       viewConfig={config}
     />,
     element,
   );
-  return component;
+  return ref;
 };
 
 /**
