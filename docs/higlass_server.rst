@@ -88,11 +88,6 @@ To filter by datatype, use the `dt=datatype` parameter:
 .. code-block:: bash
 
   curl localhost:8000/api/v1/tilesets?dt=matrix
-
-Use the `dt` parameter to retrieve tilesets for a specfific datatype:
-
-.. code-block:: bash
-
   curl localhost:8000/api/v1/tilesets?dt=gene-annotation
   curl localhost:8000/api/v1/tilesets?dt=chromsizes
 
@@ -128,11 +123,11 @@ datatype, coordSystem and name of the dataset.
 .. code-block:: bash
 
   curl -u `cat ~/.higlass-server-login` \
-      -F "datafile=@/Users/peter/projects/negspy/negspy/data/mm10/chromInfo.txt" \
-      -F "filetype=chromsizes-tsv" \
-      -F "datatype=chromsizes" \
-      -F "coordSystem=mm10" \
-      -F "name=Chromosomes (mm10)" \
+      -F 'datafile=@/Users/peter/projects/negspy/negspy/data/mm10/chromInfo.txt' \
+      -F 'filetype=chromsizes-tsv' \
+      -F 'datatype=chromsizes' \
+      -F 'coordSystem=mm10' \
+      -F 'name=Chromosomes (mm10)' \
       http://higlass.io/api/v1/tilesets/
 
 Tile JSON Response Format
@@ -228,7 +223,7 @@ Or using curl:
         -F "name=Chromosomes (mm10)" \
         http://higlass.io/api/v1/tilesets/
 
-This should return a JSON object contain a UUID to confirm that the data has been
+This should return a JSON object containing a UUID to confirm that the data has been
 added to the server:
 
 .. code-block:: json
