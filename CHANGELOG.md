@@ -1,3 +1,7 @@
+## v1.5.8
+
+- Fix a value scale syncing bug
+
 ## v1.5.7
 
 - Fix #637 - SVG export fill color doesn't match what is selected
