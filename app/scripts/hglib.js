@@ -43,7 +43,7 @@ const launch = (element, config, options) => {
     />,
     element,
   );
-  return ref;
+  return ref.current;
 };
 
 /**
@@ -99,6 +99,5 @@ export const viewer = (element, viewConfig, options) => {
    *      Fit the container to the bounds of the element
    */
   const hg = launch(element, viewConfig, options);
-
   return hg.api;
 };
