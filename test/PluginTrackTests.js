@@ -15,7 +15,7 @@ describe('Overlay Track:', () => {
   let viewConf;
 
   describe('Annotation overlays:', () => {
-    it('Should render', (done) => {
+    it('Should render', () => {
       viewConf = dummyTrackViewConf;
 
       [div, api] = createElementAndApi(viewConf, { bound: true });
@@ -33,8 +33,6 @@ describe('Overlay Track:', () => {
       expect(dummyTrack.constructor.name).toEqual('DummyTrackClass');
 
       expect(dummyTrack.hgc).toEqual(trackRenderer.availableForPlugins);
-
-      done();
     });
 
     afterEach(() => {

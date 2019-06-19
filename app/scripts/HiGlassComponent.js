@@ -2681,6 +2681,10 @@ class HiGlassComponent extends React.Component {
           }
         }
 
+        if ('description' in track) { delete track.description; }
+        if ('created' in track) { delete track.created; }
+        if ('project' in track) { delete track.project; }
+        if ('project_name' in track) { delete track.project_name; }
         if ('serverUidKey' in track) { delete track.serverUidKey; }
         if ('uuid' in track) { delete track.uuid; }
         if ('private' in track) { delete track.private; }
@@ -2723,7 +2727,7 @@ class HiGlassComponent extends React.Component {
   handleExportViewsAsLink(
     url = this.state.viewConfig.exportViewUrl, fromApi = false
   ) {
-    const port = window.location.port === '' ? '' : `:${window.location.port}`;
+    const parsedUrl = new URL(url, window.location.origin);
 
     const req = fetch(
       url,
@@ -2747,7 +2751,7 @@ class HiGlassComponent extends React.Component {
       })
       .then(_json => ({
         id: _json.uid,
-        url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
+        url: `${parsedUrl.origin}/app/?config=${_json.uid}`
       }));
 
     if (!fromApi) {
@@ -2896,11 +2900,11 @@ class HiGlassComponent extends React.Component {
 
     positionedTracksToAllTracks(newView.tracks).forEach(t => this.addCallbacks(newView.uid, t));
 
-    this.state.views[newView.uid] = newView;
-
-    this.setState(prevState => ({
-      views: prevState.views,
-    }));
+    this.setState((prevState) => {
+      const views = JSON.parse(JSON.stringify(prevState.views)); // eslint-disable-line no-shadow
+      views[newView.uid] = newView;
+      return { views };
+    });
   }
 
   /**
@@ -4028,7 +4032,6 @@ class HiGlassComponent extends React.Component {
         className="higlass"
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
-        onWheel={this.onWheelHandlerBound}
         styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>

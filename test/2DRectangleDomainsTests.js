@@ -31,19 +31,13 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
-  it('export rectangles in the same color that they are in the view', (done) => {
-    // add your tests here
-
+  it('export rectangles in the same color that they are in the view', () => {
     const svgString = hgc.instance().createSVGString();
     expect(svgString.indexOf('cyan')).to.be.above(-1);
-
-    done();
   });
 
-  afterAll((done) => {
+  afterAll(() => {
     removeHGComponent(div);
-
-    done();
   });
 });
 
