@@ -6,7 +6,7 @@
 - Updated `pub-sub-es` to version `1.2.1` to fix a bug in the shorthand event unsubscription
 - Added an example of a map overlay
 - Improve performance of the `mousemove`-related event handling
-- Fix OSM track
+- Fix OSM track to avoid CORS issues in Chrome and allow setting `minPos` to `0`
 - Fix #648: Auto select and copy URL when exporting a view by link
 - Fix #647: Shows correct URL when specifying an absolute URL as `exportViewUrl` in the viewconf
 - Fix #651: set correct namespace for SVG exports
