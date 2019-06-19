@@ -202,6 +202,25 @@ and then to add the bigWig with the same ``coordSystem``:
 
 | ``ingest_tileset --filetype bigwig --datatype vector --coordSystem hg19 --filename cnvs_hw.bigWig``
 
+Creating bigWig files
+^^^^^^^^^^^^^^^^^^^^^
+
+bigWig files can be created from any BED-like file containing ``chrom``, ``start``,
+``end``, and ``value`` fields. Just make sure to get rid of the heading if there is one
+(``tail -n +2``) and to sort by chromosome and start position (``sort -k1,1
+-k2,2n``):
+
+.. code-block:: bash
+
+    tail -n +2 my_bed_file.tsv \
+        | sort -k1,1 -k2,2n \
+        | awk \
+        '{ if (NF >= 4) print $1 "\t" $2 "\t" $3 "\t" $5}' \
+        > my.bed;
+    bedGraphToBigWig my.bed assembly.chrom.sizes.tsv my.bw;
+
+The ``bedGraphToBigWig`` utility can be installed be either downloading the binary from
+the `UCSC genome browser <http://hgdownload.soe.ucsc.edu/admin/exe/>`_ or using `conda <https://anaconda.org/bioconda/ucsc-bedgraphtobigwig>`_. Note that the example above is only an example. Other input files may have more header lines or a different format.
 
 Chromosome Sizes
 ----------------
