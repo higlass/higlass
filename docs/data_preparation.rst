@@ -220,7 +220,7 @@ bigWig files can be created from any BED-like file containing ``chrom``, ``start
     bedGraphToBigWig my.bed assembly.chrom.sizes.tsv my.bw;
 
 The ``bedGraphToBigWig`` utility can be installed be either downloading the binary from
-the `UCSC genome browser <http://hgdownload.soe.ucsc.edu/admin/exe/>`_ or using `conda <https://anaconda.org/bioconda/ucsc-bedgraphtobigwig>`_.
+the `UCSC genome browser <http://hgdownload.soe.ucsc.edu/admin/exe/>`_ or using `conda <https://anaconda.org/bioconda/ucsc-bedgraphtobigwig>`_. Note that the example above is only an example. Other input files may have more header lines or a different format.
 
 Chromosome Sizes
 ----------------
