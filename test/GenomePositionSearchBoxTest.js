@@ -115,11 +115,9 @@ describe('Genome position search box tests', () => {
       waitForJsonComplete(done);
     });
 
-    it('Makes sure that the search box points to mm9', (done) => {
+    it('Makes sure that the search box points to mm9', () => {
       hgc.update();
       expect(hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly).toEqual('mm9');
-
-      done();
     });
 
     it('Switch the selected genome to dm3', (done) => {
@@ -136,10 +134,8 @@ describe('Genome position search box tests', () => {
       waitForJsonComplete(done);
     });
 
-    it('Makes sure that no genes are loaded', (done) => {
+    it('Makes sure that no genes are loaded', () => {
       expect(hgc.instance().genomePositionSearchBoxes.aa.state.genes.length).toEqual(0);
-
-      done();
     });
 
     it('Switch the selected genome to mm9', (done) => {
@@ -166,13 +162,11 @@ describe('Genome position search box tests', () => {
       });
     });
 
-    it('Expects the view to have changed location (1)', (done) => {
+    it('Expects the view to have changed location (1)', () => {
       const { zoomTransform } = hgc.instance().tiledPlots.aa.trackRenderer;
 
       expect(zoomTransform.k - 47).toBeLessThan(1);
       expect(zoomTransform.x - 2224932).toBeLessThan(1);
-
-      done();
     });
 
     it('Checks that autocomplete fetches some genes', (done) => {
@@ -217,13 +211,11 @@ describe('Genome position search box tests', () => {
       });
     });
 
-    it('Expects the view to have changed location (2)', (done) => {
+    it('Expects the view to have changed location (2)', () => {
       const { zoomTransform } = hgc.instance().tiledPlots.aa.trackRenderer;
 
       expect(zoomTransform.k - 234).toBeLessThan(1);
       expect(zoomTransform.x + 7656469).toBeLessThan(1);
-
-      done();
     });
 
     it('Ensures that the autocomplete has changed', (done) => {
@@ -234,11 +226,9 @@ describe('Genome position search box tests', () => {
       waitForJsonComplete(done);
     });
 
-    it('Ensure that newly loaded genes are from hg19', (done) => {
+    it('Ensure that newly loaded genes are from hg19', () => {
       expect(hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName)
         .toEqual('TP53');
-
-      done();
     });
 
     it('Switches back to mm9', (done) => {
@@ -254,11 +244,9 @@ describe('Genome position search box tests', () => {
       waitForJsonComplete(done);
     });
 
-    it('Make sure it has mouse genes', (done) => {
+    it('Make sure it has mouse genes', () => {
       expect(hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName)
         .toEqual('Gt(ROSA)26Sor');
-
-      done();
     });
 
     it('Switches back to hg19', (done) => {
@@ -287,17 +275,13 @@ describe('Genome position search box tests', () => {
       waitForJsonComplete(done);
     });
 
-    it('Ensures that selected assembly is hg19', (done) => {
+    it('Ensures that selected assembly is hg19', () => {
       expect(hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly)
         .toEqual('hg19');
-
-      done();
     });
 
-    it("checks that the div hasn't grown too much", (done) => {
+    it("checks that the div hasn't grown too much", () => {
       expect(div.clientHeight).toBeLessThan(500);
-
-      done();
     });
   });
 });

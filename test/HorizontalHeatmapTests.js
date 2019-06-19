@@ -32,20 +32,16 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
-  it('should respect zoom limits', (done) => {
+  it('should respect zoom limits', () => {
     // make sure that the correct zoom level is returned when a zoom
     // limit is set
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
     expect(trackObj.calculateZoomLevel()).to.eql(1);
-
-    done();
   });
 
-  afterAll((done) => {
+  afterAll(() => {
     removeHGComponent(div);
-
-    done();
   });
 });
 

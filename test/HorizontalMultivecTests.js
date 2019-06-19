@@ -29,14 +29,12 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
-  it('not have errors in the loaded viewconf', (done) => {
-    done();
-  });
+  // it('not have errors in the loaded viewconf', (done) => {
+  //   done();
+  // });
 
-  afterAll((done) => {
+  afterAll(() => {
     removeHGComponent(div);
-
-    done();
   });
 });
 

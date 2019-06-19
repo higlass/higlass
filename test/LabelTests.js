@@ -88,10 +88,8 @@ describe('Simple HiGlassComponent', () => {
       );
     });
 
-    afterAll((done) => {
+    afterAll(() => {
       removeHGComponent(div);
-
-      done();
     });
   });
 });
