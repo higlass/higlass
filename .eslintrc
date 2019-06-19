@@ -97,9 +97,9 @@
     "react/no-unused-state": 0,
     "react/prefer-es6-class": 2,
     "react/prop-types": 1,
-    "react/react-in-jsx-scope": 1,
+    "react/react-in-jsx-scope": 2,
     "react/self-closing-comp": 2,
-    "react/sort-comp": 1
+    "react/sort-comp": 0
   },
   "overrides": [
     {
