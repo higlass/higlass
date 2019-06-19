@@ -161,15 +161,17 @@ class TiledPlot extends React.Component {
   }
 
   waitForDOMAttachment(callback) {
-    if (!this.mounted) return;
-
-    const thisElement = ReactDOM.findDOMNode(this);
-
-    if (document.body.contains(thisElement)) {
-      callback();
-    } else {
-      requestAnimationFrame(() => this.waitForDOMAttachment(callback));
+    // console.log('wait...');
+    if (this.mounted) {
+      // console.log('mounted...');
+      if (document.body.contains(this.element)) {
+        // console.log('wait...')
+        callback();
+        return;
+      }
     }
+
+    requestAnimationFrame(() => this.waitForDOMAttachment(callback));
   }
 
   componentDidMount() {
