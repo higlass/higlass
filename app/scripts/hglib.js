@@ -4,7 +4,7 @@ import HiGlassComponent from './HiGlassComponent';
 
 export { default as ChromosomeInfo } from './ChromosomeInfo';
 export { default as HiGlassComponent } from './HiGlassComponent';
-export { default as HiGlassTrackComponent, trackViewer } from './HiGlassTrackComponent';
+export { default as HiGlassTrackComponent } from './HiGlassTrackComponent';
 
 export { default as schema } from '../schema.json';
 
