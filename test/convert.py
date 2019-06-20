@@ -8,6 +8,8 @@ with open('view-configs.js') as input:
             line = '{\n'
             with open('view-configs-new/{}.json'.format(export_match[1]), 'w') as output:
                 while not re.match(r'^\}', line):
+                    line = re.sub(r'^(\s+)(\w+):', r'\1"\2":', line)
+                    line = re.sub("'", '"', line)
                     output.write(line)
                     line = input.readline()
                 output.write('}\n')
