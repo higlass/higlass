@@ -1,4 +1,4 @@
-const viewconf = {
+{
   editable: false,
   zoomFixed: false,
   trackSourceServers: [
@@ -45,5 +45,3 @@ const viewconf = {
     }
   ]
 };
-
-export default viewconf;

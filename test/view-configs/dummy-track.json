@@ -1,4 +1,4 @@
-const viewconfig = {
+{
   editable: true,
   zoomFixed: false,
   trackSourceServers: ['//higlass.io/api/v1'],
@@ -31,4 +31,4 @@ const viewconfig = {
   }]
 };
 
-export default viewconfig;
+

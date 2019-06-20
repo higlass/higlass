@@ -1,4 +1,4 @@
-const viewconfig = {
+{
   zoomFixed: false,
   views: [
     {
@@ -45,4 +45,4 @@ const viewconfig = {
     '//higlass.io/api/v1'
   ]
 };
-export default viewconfig;
+

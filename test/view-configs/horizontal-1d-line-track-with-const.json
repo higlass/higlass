@@ -1,4 +1,4 @@
-const viewConf = {
+{
   editable: true,
   zoomFixed: false,
   views: [
@@ -59,4 +59,4 @@ const viewConf = {
   ]
 };
 
-export default viewConf;
+

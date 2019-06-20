@@ -1,4 +1,4 @@
-const viewConf = {
+{
   editable: true,
   zoomFixed: false,
   trackSourceServers: ['http://higlass.io/api/v1'],
@@ -51,4 +51,4 @@ const viewConf = {
   }]
 };
 
-export default viewConf;
+
