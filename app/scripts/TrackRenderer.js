@@ -1482,12 +1482,14 @@ class TrackRenderer extends React.Component {
           new ValueIntervalTrack(context, options)
         );
 
+      case 'osm':
       case 'osm-tiles':
         return new OSMTilesTrack(context, options);
 
       case 'osm-2d-tile-ids':
         return new OSMTileIdsTrack(context, options);
 
+      case 'mapbox':
       case 'mapbox-tiles':
         return new MapboxTilesTrack(context, options);
 
