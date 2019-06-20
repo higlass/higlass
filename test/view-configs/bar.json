@@ -44,5 +44,5 @@
   trackSourceServers: [
     '//higlass.io/api/v1'
   ]
-};
+}
 
