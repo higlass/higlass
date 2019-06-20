@@ -5,6 +5,7 @@
 - Replace ReactBootstrap modal with custom modal to not rely on Bootstrap and support Jupyter
 - Updated `pub-sub-es` to version `1.2.1` to fix a bug in the shorthand event unsubscription
 - Added an example of a map overlay
+- Update Mapbox endpoint. See [http://localhost:8080/others/mapbox.html](http://localhost:8080/others/mapbox.html) for an example.
 - Improve performance of the `mousemove`-related event handling
 - Fix OSM track
 - Fix #648: Auto select and copy URL when exporting a view by link
