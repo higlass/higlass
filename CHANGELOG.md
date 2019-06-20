@@ -13,6 +13,11 @@
 - Fix #647: Shows correct URL when specifying an absolute URL as `exportViewUrl` in the viewconf
 - Fix #651: set correct namespace for SVG exports
 
+## v1.5.8
+
+- Fix a value scale syncing bug
+- Update the docs
+
 ## v1.5.7
 
 - Fix #637 - SVG export fill color doesn't match what is selected
