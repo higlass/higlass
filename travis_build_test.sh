@@ -14,7 +14,7 @@ end eslint
 start viewconfs
 CMD='./docs/examples/regenerate-index.py docs/examples/viewconfs test/view-configs test/view-configs-more'
 $CMD
-git diff --exit-code || die "viewconf fixtures changed. To regenerate: $CMD"
+git diff --ignore-all-space --exit-code || die "viewconf fixtures changed. To regenerate: $CMD"
 end viewconfs
 
 start compile
