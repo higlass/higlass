@@ -16,7 +16,7 @@
             "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
             "type": "heatmap",
             "uid": "heatmap1",
-            "options": {},
+            "options": {}
           }
         ],
         "bottom": [],
@@ -34,4 +34,3 @@
     }
   ]
 }
-

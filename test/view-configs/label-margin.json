@@ -18,7 +18,7 @@
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
             "uid": "genes",
-            "type": "horizontal-gene-annotations",
+            "type": "horizontal-gene-annotations"
           },
           {
             "server": "http://higlass.io/api/v1",
@@ -28,7 +28,7 @@
             "options": {
               "labelPosition": "topLeft",
               "labelLeftMargin": 10,
-              "labelTopMargin": 10,
+              "labelTopMargin": 10
             },
             "height": 72
           },
@@ -41,7 +41,7 @@
               "align": "top",
               "labelPosition": "topRight",
               "labelRightMargin": 10,
-              "labelTopMargin": 10,
+              "labelTopMargin": 10
             },
             "height": 72
           },
@@ -53,7 +53,7 @@
             "options": {
               "labelPosition": "bottomLeft",
               "labelLeftMargin": 10,
-              "labelBottomMargin": 10,
+              "labelBottomMargin": 10
             },
             "height": 72
           },
@@ -66,7 +66,7 @@
               "align": "top",
               "labelPosition": "bottomRight",
               "labelRightMargin": 10,
-              "labelBottomMargin": 10,
+              "labelBottomMargin": 10
             },
             "height": 72
           },
@@ -75,7 +75,7 @@
             "type": "horizontal-chromosome-labels",
             "position": "top",
             "height": 24,
-            "uid": "chroms",
+            "uid": "chroms"
           }
         ],
         "left": [],
@@ -95,4 +95,3 @@
     }
   ]
 }
-

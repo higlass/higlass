@@ -23,12 +23,11 @@
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [{
-          "type": "top-axis",
+          "type": "top-axis"
         }],
         "left": [{
-          "type": "left-axis",
-        }
-        ],
+          "type": "left-axis"
+        }],
         "center": [
           {
             "type": "osm-tiles",

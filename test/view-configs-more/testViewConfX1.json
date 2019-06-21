@@ -161,7 +161,7 @@
             "options": {},
             "width": 961
           }
-        ],
+        ]
       },
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "genomePositionSearchBoxVisible": true
