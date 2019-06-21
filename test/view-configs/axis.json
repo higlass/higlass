@@ -58,9 +58,8 @@
     },
   ],
   "trackSourceServers": ["http://higlass.io/api/v1"],
-  "locationLocks": { locksByViewUid: {}, locksDict: {} },
-  "zoomLocks": { locksByViewUid: {}, locksDict: {} },
+  "locationLocks": { "locksByViewUid": {}, "locksDict": {} },
+  "zoomLocks": { "locksByViewUid": {}, "locksDict": {} },
   "exportViewUrl": "http://higlass.io/api/v1/viewconfs",
-  "valueScaleLocks": { locksByViewUid: {}, locksDict: {} }
+  "valueScaleLocks": { "locksByViewUid": {}, "locksDict": {} }
 }
-

@@ -27,7 +27,7 @@
             "uid": "bar1",
             "type": "horizontal-bar",
             "height": 36
-          },
+          }
         ],
         "left": [],
         "center": [],

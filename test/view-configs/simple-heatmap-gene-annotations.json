@@ -16,7 +16,7 @@
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
             "server": "http://higlass.io/api/v1",
             "options": {}
-          },
+          }
         ],
         "left": [],
         "center": [
@@ -43,4 +43,3 @@
     }
   ]
 }
-

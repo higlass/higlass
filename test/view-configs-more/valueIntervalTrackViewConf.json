@@ -95,9 +95,6 @@
             "minWidth": 30,
             "minHeight": 30,
             "name": "Chromosome Axis (hg19)",
-            // These keys were added later, but had no effect because of order:
-            // server: "http://higlass.io/api/v1",
-            // tilesetUid: "N12wVGG9SPiTkk03yUayUw",
             "thumbnail": null,
             "uid": "Boe4m22pQwS2D7QqVpaV6w",
             "options": {},
