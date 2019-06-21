@@ -124,7 +124,7 @@
       "genomePositionSearchBox": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["chromInfoServer", "chromInfoId", "visible"],
+        "required": [],
         "properties": {
           "autocompleteServer": { "type": "string" },
           "autocompleteId": { "type": "string" },
@@ -209,6 +209,7 @@
               "children": { "type": "array" }
             }
           },
+          "created": { "type": "string" },
           "server": { "type": "string" },
           "tilesetUid": { "type": "string" },
           "position": { "type": "string" },
@@ -252,6 +253,7 @@
               "arrowhead-domains",
               "bedlike",
               "cross-rule",
+              "dummy",
               "horizontal-1d-annotations",
               "horizontal-1d-heatmap",
               "horizontal-1d-tiles",
@@ -303,6 +305,7 @@
           "local": { "type": "boolean" },
           "orientation": { "type": "string" },
           "thumbnail": { },
+          "fromViewUid": { "type": "string" },
           "height": { "type": "number" },
           "position": { "type": "string" },
           "name": { "type": "string" },

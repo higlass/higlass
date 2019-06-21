@@ -40,21 +40,21 @@
                   "showMousePosition": true,
                   "showGlobalMousePosition": true,
                   "mousePositionColor": "black"
-                },
+                }
               }
-            ],
+            ]
           }
         ],
         "bottom": [],
         "whole": [],
         "gallery": []
       },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv"
     }
   ],
   "editable": true,
   "exportViewUrl": "/api/v1/viewconfs",
   "trackSourceServers": [
     "http://higlass.io/api/v1"
-  ],
+  ]
 }
