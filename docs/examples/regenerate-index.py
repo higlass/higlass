@@ -5,7 +5,8 @@ import os
 
 def main():
     dir = os.path.dirname(os.path.realpath(__file__))
-    viewconfs_dir = os.path.join(dir, 'viewconfs')
+    viewconfs_dir = os.path.join(dir, '../../test/view-configs')
+    conf_list = sorted(os.listdir(viewconfs_dir))
     print(json.dumps(
         sorted(os.listdir(viewconfs_dir)),
         indent=2

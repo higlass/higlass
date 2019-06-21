@@ -35,33 +35,7 @@
           }
         ],
         "left": [],
-        "center": [
-          /*
-{
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-                "type": "heatmap",
-                "position": "center",
-                "options": {
-                  "colorRange": [
-                    "white",
-                    "rgba(245,166,35,1.0)",
-                    "rgba(208,2,27,1.0)",
-                    "black"
-                  ],
-                  "colorbarPosition": "topLeft",
-                  "colorbarOrientation": "vertical",
-                  "colorbarLabelsPosition": "outside",
-                  "maxZoom": null,
-                  "labelPosition": "bottomRight",
-                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
-                },
-                "uid": "heatmap1",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "binsPerDimension": 256
-              }
-*/
-        ],
+        "center": [],
         "right": [],
         "bottom": []
       },

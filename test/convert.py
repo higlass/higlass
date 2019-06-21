@@ -6,7 +6,7 @@ with open('view-configs.js') as input:
         export_match = re.match(r'export const (\w+) = ', line)
         if export_match:
             line = '{\n'
-            with open('view-configs-new/{}.json'.format(export_match[1]), 'w') as output:
+            with open('view-configs-more/{}.json'.format(export_match[1]), 'w') as output:
                 while not re.match(r'^\}', line):
                     line = re.sub(r'^(\s+)(\w+):', r'\1"\2":', line)
                     line = re.sub("'", '"', line)
