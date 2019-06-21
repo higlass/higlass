@@ -55,7 +55,7 @@
       },
       "initialXDomain": [1081899806.8550227, 1097764936.0057092],
       "initialYDomain": [-3684650483.7164283, -3642881925.5160756]
-    },
+    }
   ],
   "trackSourceServers": ["http://higlass.io/api/v1"],
   "locationLocks": { "locksByViewUid": {}, "locksDict": {} },

@@ -56,11 +56,11 @@
                   "children": [
                     {
                       "server": "http://higlass.io/api/v1",
-                      "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                      "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ"
                     },
                     {
                       "server": "http://higlass.io/api/v1",
-                      "tilesetUid": "ZCvntCKST0KUvQPGcCbJGA",
+                      "tilesetUid": "ZCvntCKST0KUvQPGcCbJGA"
                     }
                   ]
                 },
