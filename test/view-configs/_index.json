@@ -1,0 +1,15 @@
+[
+  "adjust-view-spacing.json",
+  "axis.json",
+  "bar.json",
+  "dummy-track.json",
+  "global-mouse-position.json",
+  "horizontal-1d-line-track-with-const.json",
+  "label-margin.json",
+  "overlay-annotations-1d-2d.json",
+  "overlay-chrom-grid.json",
+  "simple-1d-horizontal-vertical-and-2d-data-track.json",
+  "simple-heatmap-gene-annotations.json",
+  "simple-heatmap.json",
+  "viewport-projection.json"
+]
