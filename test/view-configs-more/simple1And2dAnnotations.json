@@ -30,7 +30,7 @@
                 "server": "http://higlass.io/api/v1",
                 "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
                 "uid": "heatmap1",
-                "type": "heatmap",
+                "type": "heatmap"
               },
               {
                 "type": "2d-chromosome-annotations",
