@@ -97,6 +97,7 @@
     "webpack-dev-server is pinned because later versions did not serve all static directories: https://github.com/higlass/higlass/issues/623"
   ],
   "devDependencies": {
+    "ajv-cli": "^3.0.0",
     "autoprefixer": "^7.2.6",
     "babel": "^6.23.0",
     "babel-core": "^6.26.3",
