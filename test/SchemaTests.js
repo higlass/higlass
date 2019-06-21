@@ -1,7 +1,7 @@
 /* eslint-env node, jasmine, mocha */
 import Ajv from 'ajv';
 import schema from '../app/schema.json';
-import viewconfNames from '../docs/examples/index.json';
+import viewconfNames from '../docs/examples/viewconfs/_index.json';
 import createElementAndApi from './utils/create-element-and-api';
 
 
