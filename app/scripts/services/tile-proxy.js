@@ -84,6 +84,10 @@ const throttleAndDebounce = (func, interval, finalWait) => {
     requestMapper = {};
   };
 
+  // In a normal situation we would just call `func(...args)` but since we
+  // modify the first argument and always trigger `reset()` afterwards I created
+  // this helper function to avoid code duplication. Think of this function
+  // as the actual function call that is being throttled and debounced.
   const callFunc = (request, ...args) => {
     func({
       sessionId,
