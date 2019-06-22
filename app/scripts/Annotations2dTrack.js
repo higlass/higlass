@@ -197,6 +197,23 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     if (!tile.tileData.length) return;
 
+    if (this.options.interactive === false) {
+      graphics.clear();
+
+      this.setBorderStyle(
+        graphics,
+        this.options.rectangleDomainStrokeColor,
+        this.options.rectangleDomainStrokeWidth,
+        this.options.rectangleDomainStrokeOpacity
+      );
+
+      this.setFill(
+        graphics,
+        this.options.rectangleDomainFillColor,
+        this.options.rectangleDomainFillOpacity
+      );
+    }
+
     tile.tileData
       .filter(td => !(td.uid in this.drawnAnnotations) || force)
       .forEach((td) => {
@@ -265,43 +282,48 @@ class Annotations2dTrack extends TiledPixiTrack {
       annotation.x, annotation.y, annotation.width, annotation.height
     ];
 
-    let rectGfx = this.drawnAnnoGfx[uid];
-    if (!rectGfx) {
-      rectGfx = new PIXI.Graphics();
-      this.drawnAnnoGfx[uid] = rectGfx;
+    if (this.options.interactive) {
+      let rectGfx = this.drawnAnnoGfx[uid];
+
+      if (!rectGfx) {
+        rectGfx = new PIXI.Graphics();
+        this.drawnAnnoGfx[uid] = rectGfx;
+      }
+
+      if (graphics.children.indexOf(rectGfx) === -1) {
+        graphics.addChild(rectGfx);
+      }
+
+      this._drawRect(rectGfx, viewPos, uid);
+
+      graphics.interactive = true;
+      rectGfx.interactive = true;
+      rectGfx.buttonMode = true;
+
+      const payload = {
+        id,
+        uid,
+        dataPos,
+        importance,
+        info,
+        viewPos: [
+          annotation.x, annotation.y,
+          // To have the same format as `dataPos`, i.e.:
+          // a quadruple of [x0, y0, x1, y1]
+          annotation.x + annotation.width, annotation.y + annotation.height
+        ]
+      };
+
+      rectGfx.mouseover = () => this.hover(rectGfx, viewPos, uid);
+      rectGfx.mouseout = () => this.blur(rectGfx, viewPos, uid);
+
+      rectGfx.mousedown = () => this.mouseDown();
+      rectGfx.mouseup = event => this.mouseUp(
+        rectGfx, viewPos, uid, event, payload
+      );
+    } else {
+      graphics.drawRect(...viewPos);
     }
-
-    if (graphics.children.indexOf(rectGfx) === -1) {
-      graphics.addChild(rectGfx);
-    }
-
-    this._drawRect(rectGfx, viewPos, uid);
-
-    graphics.interactive = true;
-    rectGfx.interactive = true;
-    rectGfx.buttonMode = true;
-
-    const payload = {
-      id,
-      uid,
-      dataPos,
-      importance,
-      info,
-      viewPos: [
-        annotation.x, annotation.y,
-        // To have the same format as `dataPos`, i.e.:
-        // a quadruple of [x0, y0, x1, y1]
-        annotation.x + annotation.width, annotation.y + annotation.height
-      ]
-    };
-
-    rectGfx.mouseover = () => this.hover(rectGfx, viewPos, uid);
-    rectGfx.mouseout = () => this.blur(rectGfx, viewPos, uid);
-
-    rectGfx.mousedown = () => this.mouseDown();
-    rectGfx.mouseup = event => this.mouseUp(
-      rectGfx, viewPos, uid, event, payload
-    );
 
     if (!silent) {
       this.publish(
