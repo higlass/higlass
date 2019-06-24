@@ -21,7 +21,8 @@
       "type": "array",
       "items": { "$ref": "#/definitions/view" },
       "minLength": 1
-    }
+    },
+    "chromInfoPath": { "type": "string" }
   },
   "definitions": {
 
@@ -39,7 +40,7 @@
       "genericLocks": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["locksByViewUid", "locksDict"],
+        "required": [],
         "properties": {
           "locksByViewUid": { "$ref": "#/definitions/locks/locksByViewUid" },
           "locksDict": {
@@ -116,7 +117,9 @@
         "chromInfoPath": { "type": "string" },
         "tracks": { "$ref": "#/definitions/viewProperties/tracks_object" },
         "layout": { "$ref": "#/definitions/viewProperties/layout" },
-        "overlays": { "type": "array", "items": { "$ref": "#/definitions/viewProperties/overlay" } }
+        "overlays": { "type": "array", "items": { "$ref": "#/definitions/viewProperties/overlay" } },
+        "zoomFixed": { "type": "boolean" },
+        "selectionView": { "type": "boolean" }
       }
     },
 
@@ -217,7 +220,15 @@
           "name": { "type": "string" },
           "transforms": { "type": "array" },
           "width": { "type": "number" },
-          "height": { "type": "number" }
+          "height": { "type": "number" },
+          "binsPerDimension": { "type": "number" },
+          "orientation": { "type": "string" },
+          "local": { "type": "boolean" },
+          "thumbnail": { },
+          "maxWidth": { "type": "number" },
+          "minWidth": { "type": "number" },
+          "minHeight": { "type": "number" },
+          "filetype": { "type": "string" }
         }
       },
 
@@ -302,22 +313,28 @@
               "viewport-projection-vertical"
             ]
           },
-          "local": { "type": "boolean" },
-          "orientation": { "type": "string" },
-          "thumbnail": { },
-          "fromViewUid": { "type": "string" },
-          "height": { "type": "number" },
-          "position": { "type": "string" },
-          "name": { "type": "string" },
-          "options": { "type": "object" },
-          "header": { "type": "string" },
-          "width": { "type": "number" },
+          "binsPerDimension": { "type": "number" },
           "chromInfoPath": { "type": "string" },
           "created": { "type": "string" },
+          "defaultOptions": { "type": "object" },
+          "description": { "type": "string" },
+          "filetype": { "type": "string" },
+          "fromViewUid": { "type": "string" },
+          "header": { "type": "string" },
+          "height": { "type": "number" },
+          "local": { "type": "boolean" },
+          "maxWidth": { "type": "number" },
+          "minWidth": { "type": "number" },
+          "minHeight": { "type": "number" },
+          "name": { "type": "string" },
+          "options": { "type": "object" },
+          "orientation": { "type": "string" },
+          "position": { "type": "string" },
           "project": { },
           "project_name": { "type": "string" },
-          "description": { "type": "string" },
+          "thumbnail": { },
           "transforms": { "type": "array" },
+          "width": { "type": "number" },
           "x": { "type": "number" },
           "y": { "type": "number" }
         }

@@ -14,7 +14,7 @@ export { default as horizontalAndVerticalMultivec } from './view-configs-more/ho
 export { default as horizontalDiagonalTrackViewConf } from './view-configs-more/horizontalDiagonalTrackViewConf';
 export { default as horizontalHeatmapTrack } from './view-configs-tracks/horizontalHeatmapTrack';
 export { default as horizontalLineEnd } from './view-configs-more/horizontalLineEnd';
-export { default as invalidTrackConfig } from './view-configs-more/invalidTrackConfig';
+export { default as invalidTrackConfig } from './view-configs-invalid/invalidTrackConfig';
 export { default as largeHorizontalHeatmapTrack } from './view-configs-tracks/largeHorizontalHeatmapTrack';
 export { default as noGPSB } from './view-configs-more/noGPSB';
 export { default as oneTrackConfig } from './view-configs-more/oneTrackConfig';
