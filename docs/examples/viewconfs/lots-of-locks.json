@@ -69,10 +69,7 @@
         "w": 6,
         "h": 12,
         "x": 0,
-        "y": 0,
-        "i": "aa",
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "initialYDomain": [
         1044573613.4267673,
@@ -142,10 +139,7 @@
         "w": 6,
         "h": 12,
         "x": 6,
-        "y": 0,
-        "i": "G1Ew_OyNT7eGfKZG9_PkaA",
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "initialYDomain": [
         1044573613.4267726,
