@@ -1759,8 +1759,8 @@ class TiledPlot extends React.Component {
       <div
         className="top-track-container"
         style={{
-          left: this.leftWidth + this.props.marginLeft,
-          top: this.props.marginTop,
+          left: this.leftWidth + this.props.paddingLeft,
+          top: this.props.paddingTop,
           width: this.centerWidth,
           height: this.topHeightNoGallery,
           outline: trackOutline,
@@ -1798,8 +1798,8 @@ class TiledPlot extends React.Component {
       <div
         className="left-track-container"
         style={{
-          left: this.props.marginLeft,
-          top: this.topHeight + this.props.marginTop,
+          left: this.props.paddingLeft,
+          top: this.topHeight + this.props.paddingTop,
           width: this.leftWidthNoGallery,
           height: this.centerHeight,
           outline: trackOutline,
@@ -1836,8 +1836,8 @@ class TiledPlot extends React.Component {
       <div
         className="right-track-container"
         style={{
-          right: this.props.marginRight,
-          top: this.topHeight + this.props.marginTop,
+          right: this.props.paddingRight,
+          top: this.topHeight + this.props.paddingTop,
           width: this.rightWidthNoGallery,
           height: this.centerHeight,
           outline: trackOutline,
@@ -1875,8 +1875,8 @@ class TiledPlot extends React.Component {
       <div
         className="bottom-track-container"
         style={{
-          left: this.leftWidth + this.props.marginLeft,
-          bottom: this.props.marginBottom,
+          left: this.leftWidth + this.props.paddingLeft,
+          bottom: this.props.paddingBottom,
           width: this.centerWidth,
           height: this.bottomHeightNoGallery,
           outline: trackOutline,
@@ -1914,8 +1914,8 @@ class TiledPlot extends React.Component {
         key="galleryTracksDiv"
         className="gallery-track-container"
         style={{
-          left: this.leftWidthNoGallery + this.props.marginLeft,
-          top: this.topHeightNoGallery + this.props.marginTop,
+          left: this.leftWidthNoGallery + this.props.paddingLeft,
+          top: this.topHeightNoGallery + this.props.paddingTop,
           width: this.centerWidth + (2 * this.galleryDim),
           height: this.centerHeight + (2 * this.galleryDim),
           outline: trackOutline,
@@ -1940,8 +1940,8 @@ class TiledPlot extends React.Component {
       <div
         className="center-track-container"
         style={{
-          left: this.leftWidth + this.props.marginLeft,
-          top: this.topHeight + this.props.marginTop,
+          left: this.leftWidth + this.props.paddingLeft,
+          top: this.topHeight + this.props.paddingTop,
           width: this.centerWidth,
           height: this.bottomHeight,
           outline: trackOutline,
@@ -1955,8 +1955,8 @@ class TiledPlot extends React.Component {
         <div
           className="center-track-container"
           style={{
-            left: this.leftWidth + this.props.marginLeft,
-            top: this.topHeight + this.props.marginTop,
+            left: this.leftWidth + this.props.paddingLeft,
+            top: this.topHeight + this.props.paddingTop,
             width: this.centerWidth,
             height: this.centerHeight,
             outline: trackOutline,
