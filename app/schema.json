@@ -194,28 +194,25 @@
         "additionalProperties": false,
         "required": ["w", "h", "x", "y"],
         "properties": {
-          "type": "object",
-          "properties": {
-            "x": {
-              "type": "integer",
-              "title": "The X Position",
-              "default": 0
-            },
-            "y": {
-              "type": "integer",
-              "title": "The Y Position",
-              "default": 0
-            },
-            "w": {
-              "type": "integer",
-              "title": "Width",
-              "default": 12
-            },
-            "h": {
-              "type": "integer",
-              "title": "Height",
-              "default": 12
-            }
+          "x": {
+            "type": "integer",
+            "title": "The X Position",
+            "default": 0
+          },
+          "y": {
+            "type": "integer",
+            "title": "The Y Position",
+            "default": 0
+          },
+          "w": {
+            "type": "integer",
+            "title": "Width",
+            "default": 12
+          },
+          "h": {
+            "type": "integer",
+            "title": "Height",
+            "default": 12
           }
         }
       },
