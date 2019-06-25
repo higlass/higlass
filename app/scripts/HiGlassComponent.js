@@ -2225,7 +2225,9 @@ class HiGlassComponent extends React.Component {
   handleTracksAdded(viewId, newTracks, position, host) {
     this.storeTrackSizes(viewId);
 
-    for (const newTrack of newTracks) { this.handleTrackAdded(viewId, newTrack, position, host); }
+    for (const newTrack of newTracks) {
+      this.handleTrackAdded(viewId, newTrack, position, host);
+    }
   }
 
   /**
@@ -2316,12 +2318,16 @@ class HiGlassComponent extends React.Component {
       return null;
     }
 
+    const trackInfo = this.getTrackInfo(newTrack.type);
+
+    if (!trackInfo) return null;
+
     newTrack.position = position;
-    newTrack.width = this.getTrackInfo(newTrack.type).defaultWidth
-      || this.getTrackInfo(newTrack.type).minWidth
+    newTrack.width = trackInfo.defaultWidth
+      || trackInfo.minWidth
       || this.minVerticalWidth;
-    newTrack.height = this.getTrackInfo(newTrack.type).defaultHeight
-      || this.getTrackInfo(newTrack.type).minHeight
+    newTrack.height = trackInfo.defaultHeight
+      || trackInfo.minHeight
       || this.minHorizontalHeight;
 
     const { tracks } = this.state.views[viewId];
