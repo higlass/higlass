@@ -312,7 +312,7 @@
           "binsPerDimension": { "type": "number" },
           "chromInfoPath": { "type": "string" },
           "created": { "type": "string" },
-          "defaultOptions": { "type": "object" },
+          "defaultOptions": { "type": "object", "additionalProperties": false },
           "description": { "type": "string" },
           "filetype": { "type": "string" },
           "fromViewUid": { "type": "string" },
@@ -326,10 +326,10 @@
           "options": { "type": "object" },
           "orientation": { "type": "string" },
           "position": { "type": "string" },
-          "project": { },
+          "project": { "type": "null" },
           "project_name": { "type": "string" },
           "thumbnail": { "oneOf": [
-            { "type": "object" },
+            { "type": "object", "additionalProperties": false },
             { "type": "null" }
           ] },
           "transforms": { "type": "array" },
