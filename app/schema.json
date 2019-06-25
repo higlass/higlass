@@ -135,7 +135,6 @@
         "type": "object",
         "title": "The Genome Position Search Box Schema",
         "required": [
-          "autocompleteServer",
           "autocompleteId",
           "chromInfoServer",
           "chromInfoId",
