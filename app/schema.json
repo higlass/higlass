@@ -222,7 +222,6 @@
           "height": { "type": "number" },
           "orientation": { "type": "string" },
           "local": { "type": "boolean" },
-          "thumbnail": { },
           "maxWidth": { "type": "number" },
           "minWidth": { "type": "number" },
           "minHeight": { "type": "number" }
