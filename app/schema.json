@@ -212,7 +212,6 @@
               "children": { "type": "array" }
             }
           },
-          "created": { "type": "string" },
           "server": { "type": "string" },
           "tilesetUid": { "type": "string" },
           "position": { "type": "string" },

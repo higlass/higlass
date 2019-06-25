@@ -12,11 +12,12 @@ start eslint
 end eslint
 
 start viewconfs
-for F in docs/examples/viewconfs/* \
-         test/view-configs/* \
-         test/view-configs-more/*
-  do npx ajv validate -s app/schema.json -d $F \
-    || die "Invalid viewconf"
+ls docs/examples/viewconfs/* \
+  test/view-configs/* \
+  test/view-configs-more/* \
+  | sed 's/^/-d /' \
+  | xargs npx ajv validate -s app/schema.json --errors=text \
+  || die "Invalid viewconf fixtures"
 done
 end viewconfs
 
