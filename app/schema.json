@@ -328,7 +328,10 @@
           "position": { "type": "string" },
           "project": { },
           "project_name": { "type": "string" },
-          "thumbnail": { },
+          "thumbnail": { "oneOf": [
+            { "type": "object" },
+            { "type": "null" }
+          ] },
           "transforms": { "type": "array" },
           "width": { "type": "number" },
           "x": { "type": "number" },
