@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mapbox &middot; HiGlass</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/hglib.css">
+
+  <style type="text/css">
+    header, label, input {
+      line-height: 2.5rem
+    }
+
+    header {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      padding: 1rem 2rem;
+      background: #eeeeee;
+      line-height: 2rem
+    }
+
+    label {
+      margin: 0;
+    }
+
+    label + label {
+      margin-left: 1rem;
+    }
+
+    #demo {
+      position: absolute;
+      left: 1rem;
+      top: 5rem;
+      bottom: 1rem;
+      right: 1rem;
+      overflow: hidden;
+    }
+  </style>
+
+  <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16.6/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+</head>
+<body>
+  <header>
+    <label>
+      Access Token
+      <input
+        id="access-token"
+        type="text"
+      >
+    </label>
+    <label>
+      Map Style
+      <select id="map-style">
+        <option disabled>─ Streets ─────</option>
+        <option value="streets-v10">streets-v10</option>
+        <option value="streets-v9">streets-v9</option>
+        <option value="streets-v8">streets-v8</option>
+        <option disabled>─ Outdoors ────</option>
+        <option value="outdoors-v10">outdoors-v10</option>
+        <option value="outdoors-v9">outdoors-v9</option>
+        <option value="outdoors-v8">outdoors-v8</option>
+        <option disabled>─ Light ───────</option>
+        <option value="light-v9">light-v9</option>
+        <option value="light-v8">light-v8</option>
+        <option disabled>─ Dark ────────</option>
+        <option value="dark-v9">dark-v9</option>
+        <option value="dark-v8">dark-v8</option>
+      </select>
+    </label>
+    <button id="load">Load</button>
+  </header>
+  <div id="demo"></div>
+</body>
+<script src='/hglib.js'></script>
+<script>
+const viewConfig = {
+  zoomFixed: false,
+  views: [
+    {
+      layout: {
+        w: 12,
+        h: 12,
+        x: 0,
+        y: 0,
+      },
+      uid: 'aa',
+      initialXDomain: [-180, 180],
+      initialYDomain: [180, -180],
+      tracks: {
+        left: [],
+        top: [],
+        right: [],
+        center: [
+          {
+            type: 'mapbox',
+            uid: 'mapbox',
+            options: {
+              labelPosition: 'bottomRight',
+              showMousePosition: true,
+              mousePositionColor: 'yellow'
+            },
+          }
+        ],
+        bottom: [],
+        whole: [],
+        gallery: []
+      },
+    }
+  ],
+  editable: true,
+  exportViewUrl: '/api/v1/viewconfs',
+  zoomLocks: {
+    locksByViewUid: {},
+    locksDict: {}
+  },
+  trackSourceServers: [
+    'http://higlass.io/api/v1'
+  ],
+  locationLocks: {
+    locksByViewUid: {},
+    locksDict: {}
+  },
+  valueScaleLocks: {
+    locksByViewUid: {},
+    locksDict: {}
+  }
+};
+
+const accessTokenEl = document.querySelector('#access-token');
+const mapStyleEl = document.querySelector('#map-style');
+const loadEl = document.querySelector('#load');
+
+let accessToken = null;
+let mapStyle = mapStyleEl.value;
+
+let hgApi;
+let xDomain = [-180, 180];
+let yDomain = [180, -180];
+
+const loadHg = () => {
+  accessToken = accessTokenEl.value;
+  mapStyle = mapStyleEl.value;
+
+  if (!accessToken) {
+    console.error('No access token specified');
+    return;
+  }
+
+  // viewConfig.views[0].initialXDomain = [...xDomain];
+  // viewConfig.views[0].initialYDomain = [...yDomain];
+  viewConfig.views[0].tracks.center[0].options.accessToken = accessToken;
+  viewConfig.views[0].tracks.center[0].options.style = mapStyle;
+
+  hgApi = window.hglib.viewer(
+    document.getElementById('demo'),
+    JSON.parse(JSON.stringify(viewConfig)),
+    { bounded: true },
+  );
+
+  hgApi.zoomTo('aa', ...xDomain, ...yDomain, 0);
+
+  hgApi.on('location', ({ xDomain: newXDomain, yDomain: newYDomain }) => {
+    xDomain = [...newXDomain];
+    yDomain = [...newYDomain];
+  });
+};
+
+loadEl.addEventListener('click', () => {
+  loadHg();
+});
+</script>
+</html>
