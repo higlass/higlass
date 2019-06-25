@@ -201,6 +201,7 @@
       "heatmap_track": {
         "type": "object",
         "additionalProperties": false,
+        "required": [],
         "properties": {
           "uid": { "type": "string" },
           "type": { "const": "heatmap" },
@@ -231,6 +232,7 @@
       "combined_track": {
         "type": "object",
         "additionalProperties": false,
+        "required": ["contents"],
         "properties": {
           "contents": { "$ref": "#/definitions/viewProperties/tracks_array" },
           "height": { "type": "number" },
