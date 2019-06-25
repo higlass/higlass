@@ -38,6 +38,12 @@ describe('Add Track', () => {
       );
     });
 
+    it('should have one top track', () => {
+      const viewConf = JSON.parse(hgc.instance().getViewsAsString());
+      expect(viewConf.views[0].tracks.top.length).to.eql(1);
+      hgc.update();
+    });
+
     it('should open the AddTrackDialog', (done) => {
       // this was to test an example from the higlass-website demo page
       // where the issue was that the genome position search box was being
@@ -48,21 +54,31 @@ describe('Add Track', () => {
 
       // make sure the input field is equal to the document's active element
       // e.g. that it has focus
-      expect(document.activeElement.className).to.be.eql('tileset-finder-search-box');
+      expect(document.activeElement.id).to.be.eql('higlass-tileset-finder-search-box');
 
       waitForJsonComplete(done);
     });
 
     it('should select one plot type and double click', (done) => {
       const { tilesetFinder } = hgc.instance().modalRef;
-      tilesetFinder.handleSelectedOptions(['http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ']);
+
+      tilesetFinder.handleSelectedOptions(
+        ['http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ']
+      );
       hgc.update();
 
       tilesetFinder.props.onDoubleClick(
         tilesetFinder.state.options['http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ']
       );
+      hgc.update();
 
       waitForJsonComplete(done);
+    });
+
+    it('should have two top tracks', () => {
+      const viewConf = JSON.parse(hgc.instance().getViewsAsString());
+      expect(viewConf.views[0].tracks.top.length).to.eql(2);
+      hgc.update();
     });
 
     it('should reopen the AddTrackModal', (done) => {
@@ -70,7 +86,7 @@ describe('Add Track', () => {
       const tiledPlot = hgc.instance().tiledPlots.aa;
       tiledPlot.handleAddTrack('top');
       hgc.update();
-      expect(document.activeElement.className).to.be.eql('tileset-finder-search-box');
+      expect(document.activeElement.id).to.be.eql('higlass-tileset-finder-search-box');
       waitForJsonComplete(done);
     });
 
@@ -98,8 +114,14 @@ describe('Add Track', () => {
       waitForJsonComplete(done);
     });
 
+    it('should have one four tracks', () => {
+      const viewConf = JSON.parse(hgc.instance().getViewsAsString());
+      expect(viewConf.views[0].tracks.top.length).to.eql(4);
+    });
+
     it('should select a few different tracks and check for the plot type selection', () => {
-      const { tilesetFinder } = hgc.instance().modalRef;
+      const addTrackDialog = hgc.instance().modalRef;
+      const { tilesetFinder } = addTrackDialog;
 
       tilesetFinder.handleSelectedOptions([
         'http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ',
@@ -108,26 +130,34 @@ describe('Add Track', () => {
 
       hgc.update();
 
-      let ptc = hgc.instance().modalRef.plotTypeChooser;
+      expect(addTrackDialog.state.activeTab).to.eql('datasets');
 
-      expect(ptc.AVAILABLE_TRACK_TYPES.length).to.eql(0);
+      addTrackDialog.handleNext();
+      hgc.update();
+
+      expect(addTrackDialog.state.activeTab).to.eql('trackTypes');
+
+      let ptc = addTrackDialog.plotTypeChooser;
+
+      expect(ptc.availableTrackTypes.length).to.eql(0);
 
       tilesetFinder.handleSelectedOptions([
         'http://higlass.io/api/v1/NNlxhMSCSnCaukAtdoKNXw',
         'http://higlass.io/api/v1/GGKJ59R-RsKtwgIgFohOhA'
       ]);
 
+      addTrackDialog.handleNext();
       hgc.update();
 
-      ptc = hgc.instance().modalRef.plotTypeChooser;
+      ptc = addTrackDialog.plotTypeChooser;
 
       // console.warn('ptc.AVAILABLE_TRACK_TYPES', ptc.AVAILABLE_TRACK_TYPES);
       // should just have the horizontal-heatmap track type
-      expect(ptc.AVAILABLE_TRACK_TYPES.length).to.eql(3);
+      expect(ptc.availableTrackTypes.length).to.eql(3);
     });
 
     it('should add the selected tracks', () => {
-      hgc.instance().modalRef.handleSubmit();
+      hgc.instance().modalRef.handleSubmitAndClose();
       const viewConf = JSON.parse(hgc.instance().getViewsAsString());
 
       expect(viewConf.views[0].tracks.top.length).to.eql(6);
