@@ -8,7 +8,7 @@ import DataFetcher from './DataFetcher';
 import PixiTrack from './PixiTrack';
 
 // Utils
-import { debounce } from './utils';
+import { throttleAndDebounce } from './utils';
 
 // Configs
 import { ZOOM_DEBOUNCE } from './configs';
@@ -175,8 +175,9 @@ class TiledPixiTrack extends PixiTrack {
     });
 
     this.uuid = slugid.nice();
-    this.refreshTilesDebounced = debounce(
-      this.refreshTiles.bind(this), ZOOM_DEBOUNCE
+
+    this.refreshTilesDebounced = throttleAndDebounce(
+      this.refreshTiles.bind(this), ZOOM_DEBOUNCE, ZOOM_DEBOUNCE
     );
 
     this.trackNotFoundText = new PIXI.Text(
