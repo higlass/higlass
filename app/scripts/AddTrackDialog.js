@@ -99,6 +99,10 @@ class AddTrackDialog extends React.Component {
   handleSubmit(evt) {
     if (evt) evt.preventDefault();
 
+    this.state.selectedTilesets.forEach((tileset) => {
+      this.addDefaultTrackType(tileset);
+    });
+
     this.props.onTracksChosen(
       this.state.selectedTilesets,
       this.props.position,
@@ -120,14 +124,30 @@ class AddTrackDialog extends React.Component {
    *  tileset: { uuid: 'CXCX', filetype: 'cooler' ....}
    */
   handleTilesetPickerDoubleClick(tileset) {
-    this.selectedTilesetsChanged([tileset]);
+    this.addDefaultTrackType(tileset);
+
+    // This is an anti-pattern. We update the state of `selectedTilesets` but
+    // we don't until until it's changed and instead use it directly. To avoid
+    // inconsistencies I am returning the new state value to be able to use it
+    // here directly.
+    const selectedTilesets = this.selectedTilesetsChanged([tileset]);
 
     // should iterate over the selected tilesets
     this.props.onTracksChosen(
-      this.state.selectedTilesets,
+      selectedTilesets,
       this.props.position,
       this.props.host
     );
+  }
+
+  addDefaultTrackType(tileset) {
+    if (!tileset.type) {
+      // Let's use the first of the available track types
+      tileset.type = AVAILABLE_TRACK_TYPES(
+        this.datatypes(),
+        this.getOrientation(this.props.position)
+      )[0].type;
+    }
   }
 
   handleOptionsChanged(newOptions) {
@@ -178,7 +198,7 @@ class AddTrackDialog extends React.Component {
     if (allSame) {
       // only one datatype is present in the set of selected tilesets
       for (const tileset of selectedTilesets) {
-        tileset.type = this.selectedPlotType;
+        tileset.type = this.selectedPlotType || tileset.type;
       }
     } else {
       // more than one dataype present, we assign the default track type
@@ -196,10 +216,23 @@ class AddTrackDialog extends React.Component {
     }
 
     this.setState({ selectedTilesets });
+
+    return selectedTilesets;
   }
 
   open(activeTab) {
     return () => this.setState({ activeTab });
+  }
+
+  datatypes() {
+    return this.state.selectedTilesets.map((x) => {
+      if (x.filetype === 'cooler') {
+        // cooler files can also supply chromsizes
+        return [x.datatype, 'chromsizes'];
+      }
+
+      return [x.datatype];
+    });
   }
 
   render() {
@@ -380,14 +413,7 @@ class AddTrackDialog extends React.Component {
                 <PlotTypeChooser
                   // Only for testing purposes
                   ref={(c) => { this.plotTypeChooser = c; }}
-                  datatypes={this.state.selectedTilesets.map((x) => {
-                    if (x.filetype === 'cooler') {
-                      // cooler files can also supply chromsizes
-                      return [x.datatype, 'chromsizes'];
-                    }
-
-                    return [x.datatype];
-                  })}
+                  datatypes={this.datatypes()}
                   onPlotTypeSelected={this.handlePlotTypeSelectedBound}
                   orientation={orientation}
                   plotType={this.selectedPlotType}
