@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HiGlassTrackComponent &middot; HiGlass</title>
+<link rel="stylesheet" href="/hglib.css">
+
+<script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@16.6/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
+</head>
+<body>
+  <p>
+    If you only need to show one track with React,
+    <code>HiGlassTrackComponent</code> provides a simpler interface.
+  </p>
+  <div id="demo" style="width: 90vw; height: 90vh;"></div>
+</body>
+<script src='/hglib.js'></script>
+<script>
+const trackConfig = {
+  "server": "//higlass.io/api/v1",
+  "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+  "type": "heatmap",
+  "options": {
+    "colorRange": ["white", "#000"],
+    "heatmapValueScaling": "log",
+    "scaleStartPercent": 0,
+    "scaleEndPercent": 1,
+  }
+};
+
+ReactDOM.render(
+  React.createElement(
+    window.hglib.HiGlassTrackComponent,
+    {trackConfig: trackConfig, x: 0, y: 0, width: 10000000, height: 10000000}, null),
+  document.getElementById('demo')
+);
+</script>
+</html>

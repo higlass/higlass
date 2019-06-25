@@ -33,11 +33,11 @@ Kerpedjiev, P., Abdennur, N., Lekschas, F., McCallum, C., Dinkla, K., Strobelt, 
 To run higlass from its source code simply run the following:
 
 ```
-npm install
+npm clean-install
 npm run start
 ```
 
-This starts a server in development mode at http://localhost:8080/. 
+This starts a server in development mode at http://localhost:8080/.
 
 Once started, a list of the examples can be found at [http://localhost:8080/examples.html](http://localhost:8080/examples.html).
 Template viewconfs located at `/docs/examples/viewconfs` can viewed directly at urls such as  [http://localhost:8080/apis/svg.html?/viewconfs/overlay-tracks.json](http://localhost:8080/apis/svg.html?/viewconfs/overlay-tracks.json).
@@ -55,7 +55,7 @@ npm run test-watch
 - If the installation fails due to `sharp` > `node-gyp` try installing the node packages using `python2`:
 
   ```
-  npm i --python=/usr/bin/python2 && rm -rf node_modules/node-sass && npm i
+  npm ci --python=/usr/bin/python2 && rm -rf node_modules/node-sass && npm ci
   ```
 
 ### API

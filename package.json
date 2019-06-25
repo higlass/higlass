@@ -1,6 +1,6 @@
 {
   "name": "higlass",
-  "version": "1.5.7",
+  "version": "1.5.8",
   "description": "HiGlass Hi-C / genomic / large data viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/hglib.js",
@@ -41,6 +41,7 @@
     "react-dom": "^16.6.3"
   },
   "dependencies": {
+    "ajv": "^6.10.0",
     "box-intersect": "^1.0.1",
     "css-element-queries": "github:marcj/css-element-queries",
     "cwise": "^1.0.10",

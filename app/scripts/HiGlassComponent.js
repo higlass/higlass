@@ -1040,6 +1040,12 @@ class HiGlassComponent extends React.Component {
 
         lockedTrack.valueScale.domain([allMin, allMax]);
 
+        // In TiledPixiTrack, we check if valueScale has changed before
+        // calling onValueScaleChanged. If we don't update prevValueScale
+        // here, that function won't get called and the value scales won't
+        // stay synced
+        lockedTrack.prevValueScale = lockedTrack.valueScale.copy();
+
         if (
           sourceTrack.options
           && typeof sourceTrack.options.scaleStartPercent !== 'undefined'
@@ -2694,6 +2700,10 @@ class HiGlassComponent extends React.Component {
           }
         }
 
+        if ('description' in track) { delete track.description; }
+        if ('created' in track) { delete track.created; }
+        if ('project' in track) { delete track.project; }
+        if ('project_name' in track) { delete track.project_name; }
         if ('serverUidKey' in track) { delete track.serverUidKey; }
         if ('uuid' in track) { delete track.uuid; }
         if ('private' in track) { delete track.private; }
@@ -2909,11 +2919,11 @@ class HiGlassComponent extends React.Component {
 
     positionedTracksToAllTracks(newView.tracks).forEach(t => this.addCallbacks(newView.uid, t));
 
-    this.state.views[newView.uid] = newView;
-
-    this.setState(prevState => ({
-      views: prevState.views,
-    }));
+    this.setState((prevState) => {
+      const views = JSON.parse(JSON.stringify(prevState.views)); // eslint-disable-line no-shadow
+      views[newView.uid] = newView;
+      return { views };
+    });
   }
 
   /**
@@ -4042,7 +4052,6 @@ class HiGlassComponent extends React.Component {
         className="higlass"
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
-        onWheel={this.onWheelHandlerBound}
         styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>
