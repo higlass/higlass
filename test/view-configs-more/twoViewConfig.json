@@ -22,7 +22,6 @@
       "tracks": {
         "top": [
           {
-            "filetype": "hitile",
             "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
@@ -118,7 +117,6 @@
       "tracks": {
         "top": [
           {
-            "filetype": "hitile",
             "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.hitile",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
@@ -144,7 +142,6 @@
             "type": "combined",
             "contents": [
               {
-                "filetype": "cooler",
                 "name": "Dixon et al. (2015) H1_TB HindIII (allreps) 1kb",
                 "server": "http://higlass.io/api/v1",
                 "tilesetUid": "clU7yGb-S7eY4yNbdDlj9w",

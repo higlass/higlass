@@ -25,7 +25,6 @@
         "bottom": [],
         "top": [
           {
-            "filetype": "hitile",
             "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
@@ -43,7 +42,6 @@
             "uid": "hline1"
           },
           {
-            "filetype": "hitile",
             "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
@@ -85,7 +83,6 @@
         ],
         "left": [
           {
-            "filetype": "hitile",
             "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
@@ -132,7 +129,6 @@
             "height": 1088,
             "contents": [
               {
-                "filetype": "cooler",
                 "name": "Dixon et al. (2015) H1_TB HindIII (allreps) 1kb",
                 "server": "http://higlass.io/api/v1",
                 "tilesetUid": "B2LevKBtRNiCMX372rRPLQ",

@@ -225,8 +225,7 @@
           "thumbnail": { },
           "maxWidth": { "type": "number" },
           "minWidth": { "type": "number" },
-          "minHeight": { "type": "number" },
-          "filetype": { "type": "string" }
+          "minHeight": { "type": "number" }
         }
       },
 
