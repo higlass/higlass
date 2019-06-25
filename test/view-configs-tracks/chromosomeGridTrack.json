@@ -1,0 +1,16 @@
+{
+  "type": "2d-chromosome-grid",
+  "local": true,
+  "orientation": "2d",
+  "name": "Chromosome Grid (hg19)",
+  "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+  "thumbnail": null,
+  "uid": "LUVqXXu2QYiO8XURIwyUyA",
+  "options": {
+    "gridStrokeWidth": 1,
+    "gridStrokeColor": "grey",
+    "lineStrokeWidth": 1,
+    "lineStrokeColor": "grey"
+  },
+  "position": "center"
+}
