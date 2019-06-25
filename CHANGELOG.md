@@ -8,6 +8,7 @@
 - Support semi-transparent colormaps through RGBA colors
 - Update Mapbox endpoint. See [http://localhost:8080/others/mapbox.html](http://localhost:8080/others/mapbox.html) for an example.
 - Improve performance of the `mousemove`-related event handling
+- Fix a minor visual glitch with the positioning of the gallery track
 - Fix OSM track to avoid CORS issues in Chrome and allow setting `minPos` to `0`
 - Fix #648: Auto select and copy URL when exporting a view by link
 - Fix #647: Shows correct URL when specifying an absolute URL as `exportViewUrl` in the viewconf
