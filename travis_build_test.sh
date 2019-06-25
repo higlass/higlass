@@ -18,7 +18,6 @@ ls docs/examples/viewconfs/* \
   | sed 's/^/-d /' \
   | xargs npx ajv validate -s app/schema.json --errors=text \
   || die "Invalid viewconf fixtures"
-done
 end viewconfs
 
 start compile
