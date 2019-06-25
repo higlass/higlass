@@ -87,8 +87,7 @@
                   "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
                 },
                 "uid": "heatmap1",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "binsPerDimension": 256
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
               },
               {
                 "type": "2d-chromosome-grid",

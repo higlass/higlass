@@ -220,7 +220,6 @@
           "transforms": { "type": "array" },
           "width": { "type": "number" },
           "height": { "type": "number" },
-          "binsPerDimension": { "type": "number" },
           "orientation": { "type": "string" },
           "local": { "type": "boolean" },
           "thumbnail": { },

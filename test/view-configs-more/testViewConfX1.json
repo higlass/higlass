@@ -153,7 +153,6 @@
                 },
                 "width": 20,
                 "height": 20,
-                "binsPerDimension": 256,
                 "position": "center"
               }
             ],
