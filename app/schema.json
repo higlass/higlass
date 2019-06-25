@@ -108,18 +108,18 @@
       "additionalProperties": false,
       "required": ["tracks", "layout"],
       "properties": {
-        "uid": { "type": "string" },
+        "autocompleteSource": { "type": "string" },
+        "chromInfoPath": { "type": "string" },
+        "genomePositionSearchBox": { "$ref": "#/definitions/viewProperties/genomePositionSearchBox" },
+        "genomePositionSearchBoxVisible": { "type": "boolean" },
         "initialXDomain": { "$ref": "#/definitions/viewProperties/domain" },
         "initialYDomain": { "$ref": "#/definitions/viewProperties/domain" },
-        "autocompleteSource": { "type": "string" },
-        "genomePositionSearchBoxVisible": { "type": "boolean" },
-        "genomePositionSearchBox": { "$ref": "#/definitions/viewProperties/genomePositionSearchBox" },
-        "chromInfoPath": { "type": "string" },
-        "tracks": { "$ref": "#/definitions/viewProperties/tracks_object" },
         "layout": { "$ref": "#/definitions/viewProperties/layout" },
         "overlays": { "type": "array", "items": { "$ref": "#/definitions/viewProperties/overlay" } },
-        "zoomFixed": { "type": "boolean" },
-        "selectionView": { "type": "boolean" }
+        "selectionView": { "type": "boolean" },
+        "tracks": { "$ref": "#/definitions/viewProperties/tracks_object" },
+        "uid": { "type": "string" },
+        "zoomFixed": { "type": "boolean" }
       }
     },
 
@@ -129,10 +129,10 @@
         "additionalProperties": false,
         "required": [],
         "properties": {
-          "autocompleteServer": { "type": "string" },
           "autocompleteId": { "type": "string" },
-          "chromInfoServer": { "type": "string" },
+          "autocompleteServer": { "type": "string" },
           "chromInfoId": { "type": "string" },
+          "chromInfoServer": { "type": "string" },
           "visible": { "type": "boolean" }
         }
       },
@@ -141,11 +141,11 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "uid": { "type": "string" },
-          "type": { "type": "string" },
+          "chromInfoPath": { "type": "string" },
           "includes": { "type": "array" },
           "options": { "type": "object" },
-          "chromInfoPath": { "type": "string" }
+          "type": { "type": "string" },
+          "uid": { "type": "string" }
         }
       },
 
@@ -212,19 +212,19 @@
               "children": { "type": "array" }
             }
           },
-          "server": { "type": "string" },
-          "tilesetUid": { "type": "string" },
-          "position": { "type": "string" },
-          "options": { "type": "object" },
-          "name": { "type": "string" },
-          "transforms": { "type": "array" },
-          "width": { "type": "number" },
           "height": { "type": "number" },
-          "orientation": { "type": "string" },
           "local": { "type": "boolean" },
           "maxWidth": { "type": "number" },
+          "minHeight": { "type": "number" },
           "minWidth": { "type": "number" },
-          "minHeight": { "type": "number" }
+          "name": { "type": "string" },
+          "options": { "type": "object" },
+          "orientation": { "type": "string" },
+          "position": { "type": "string" },
+          "server": { "type": "string" },
+          "tilesetUid": { "type": "string" },
+          "transforms": { "type": "array" },
+          "width": { "type": "number" }
         }
       },
 
@@ -232,13 +232,13 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "uid": { "type": "string" },
-          "type": { "const": "combined" },
-          "position": { "type": "string" },
-          "options": { },
-          "width": { "type": "number" },
+          "contents": { "$ref": "#/definitions/viewProperties/tracks_array" },
           "height": { "type": "number" },
-          "contents": { "$ref": "#/definitions/viewProperties/tracks_array" }
+          "options": { },
+          "position": { "type": "string" },
+          "type": { "const": "combined" },
+          "uid": { "type": "string" },
+          "width": { "type": "number" }
         }
       },
 
