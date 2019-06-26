@@ -1726,7 +1726,6 @@ class HiGlassComponent extends React.Component {
   handleLayoutChange(layout) {
     if (!this.element) return;
 
-    let hasChanged = false;
     layout.forEach((l) => {
       const view = this.state.views[l.i];
 
@@ -1738,8 +1737,6 @@ class HiGlassComponent extends React.Component {
         && view.layout.h !== l.h
         && view.layout.i !== l.i
       ) {
-        hasChanged = true;
-
         // Bad design pattern. We directly manipulate the state and rely on
         // `this.updateRowHeight()` to trigger that the state updated
         view.layout.x = l.x;
@@ -1750,11 +1747,9 @@ class HiGlassComponent extends React.Component {
       }
     });
 
-    if (hasChanged) {
-      // The following method actually trigger a state update
-      this.updateRowHeight();
-      this.refreshView(LONG_DRAG_TIMEOUT);
-    }
+    // The following method actually trigger a state update
+    this.updateRowHeight();
+    this.refreshView(LONG_DRAG_TIMEOUT);
   }
 
   /**
