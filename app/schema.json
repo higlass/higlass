@@ -140,7 +140,7 @@
         "title": "The Genome Position Search Box Schema",
         "required": [
           "chromInfoServer",
-          "chromInfoId",
+          "chromInfoId"
         ],
         "properties": {
           "autocompleteServer": {
