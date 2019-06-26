@@ -36,6 +36,10 @@ const BRUSH_COLORBAR_GAP = 1;
 const BRUSH_MARGIN = 4;
 const SCALE_LIMIT_PRECISION = 5;
 const BINS_PER_TILE = 256;
+const COLORBAR_AREA_WIDTH = (
+  COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN
+  + BRUSH_COLORBAR_GAP + BRUSH_WIDTH + BRUSH_MARGIN
+);
 
 
 class HeatmapTiledPixiTrack extends TiledPixiTrack {
@@ -331,6 +335,18 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
   }
 
+  drawLabel() {
+    if (
+      this.options.labelPosition === this.options.colorbarPosition
+    ) {
+      this.labelXOffset = COLORBAR_AREA_WIDTH;
+    } else {
+      this.labelXOffset = 0;
+    }
+
+    super.drawLabel();
+  }
+
   tileDataToCanvas(pixData) {
     const canvas = document.createElement('canvas');
 
@@ -545,11 +561,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       return;
     }
 
-    const colorbarAreaWidth = (
-      COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN
-      + BRUSH_COLORBAR_GAP + BRUSH_WIDTH + BRUSH_MARGIN
-    );
-
     const axisValueScale = this.valueScale.copy()
       .range([this.colorbarHeight, 0]);
 
@@ -594,7 +605,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     if (this.options.colorbarPosition === 'topRight') {
       // draw the background for the colorbar
-      this.pColorbarArea.x = this.position[0] + this.dimensions[0] - colorbarAreaWidth;
+      this.pColorbarArea.x = this.position[0] + this.dimensions[0] - COLORBAR_AREA_WIDTH;
       this.pColorbarArea.y = this.position[1];
 
       this.pColorbar.y = COLORBAR_MARGIN;
@@ -612,7 +623,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     if (this.options.colorbarPosition === 'bottomRight') {
-      this.pColorbarArea.x = this.position[0] + this.dimensions[0] - colorbarAreaWidth;
+      this.pColorbarArea.x = this.position[0] + this.dimensions[0] - COLORBAR_AREA_WIDTH;
       this.pColorbarArea.y = this.position[1] + this.dimensions[1] - colorbarAreaHeight;
 
       this.pColorbar.y = COLORBAR_MARGIN;
@@ -650,7 +661,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       colorToHex(this.options.colorbarBackgroundColor || 'white'),
       +this.options.colorbarBackgroundOpacity || 0.6
     );
-    this.pColorbarArea.drawRect(0, 0, colorbarAreaWidth, colorbarAreaHeight);
+    this.pColorbarArea.drawRect(0, 0, COLORBAR_AREA_WIDTH, colorbarAreaHeight);
 
     if (!this.options) {
       this.options = { scaleStartPercent: 0, scaleEndPercent: 1 };
@@ -771,11 +782,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.dimensions[1] / 2, COLORBAR_MAX_HEIGHT,
     );
     this.colorbarHeight = colorbarAreaHeight - (2 * COLORBAR_MARGIN);
-    const colorbarAreaWidth = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + (2 * COLORBAR_MARGIN);
 
     rectColorbarArea.setAttribute('x', 0);
     rectColorbarArea.setAttribute('y', 0);
-    rectColorbarArea.setAttribute('width', colorbarAreaWidth);
+    rectColorbarArea.setAttribute('width', COLORBAR_AREA_WIDTH);
     rectColorbarArea.setAttribute('height', colorbarAreaHeight);
     rectColorbarArea.setAttribute('style', 'fill: white; stroke-width: 0; opacity: 0.7');
 
