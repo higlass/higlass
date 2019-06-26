@@ -9,10 +9,11 @@ import {
 } from '../app/scripts/utils';
 
 import {
-  emptyConf,
   simpleCenterViewConfig,
   simple1And2dAnnotations,
 } from './view-configs';
+
+import emptyConf from './view-configs-more/emptyConf';
 
 import simpleHeatmapViewConf from './view-configs/simple-heatmap';
 import adjustViewSpacingConf from './view-configs/adjust-view-spacing';
