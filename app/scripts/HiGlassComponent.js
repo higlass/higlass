@@ -3190,6 +3190,8 @@ class HiGlassComponent extends React.Component {
       visitPositionedTracks(
         v.tracks,
         (track) => {
+          if (!track.uid) track.uid = slugid.nice();
+
           this.addCallbacks(v.uid, track);
           this.addDefaultTrackOptions(track);
 
