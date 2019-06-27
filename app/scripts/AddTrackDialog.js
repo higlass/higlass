@@ -346,6 +346,7 @@ class AddTrackDialog extends React.Component {
                   orientation={orientation}
                   searchBox={this.handleSearchBoxBound}
                   selectedTilesetChanged={this.selectedTilesetsChangedBound}
+                  selectedTilesets={this.state.selectedTilesets.map(x => x.serverUidKey)}
                   trackSourceServers={this.props.trackSourceServers}
                 />
                 <Button

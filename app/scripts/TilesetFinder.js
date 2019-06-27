@@ -40,10 +40,7 @@ class TilesetFinder extends React.Component {
     this.localTracks.forEach((x) => { x.uuid = slugid.nice(); });
 
     const newOptions = this.prepareNewEntries('', this.localTracks, {});
-    const availableTilesetKeys = Object.keys(newOptions);
-    const selectedUuid = availableTilesetKeys.length
-      ? [availableTilesetKeys[0]]
-      : null;
+    const selectedUuid = this.props.selectedTilesets;
 
     this.mounted = false;
 
@@ -94,7 +91,7 @@ class TilesetFinder extends React.Component {
       selectedUuid,
       options: newOptions,
       filter: '',
-      checked: [],
+      checked: this.props.selectedTilesets,
       expanded: [],
     };
 
@@ -364,12 +361,17 @@ class TilesetFinder extends React.Component {
   }
 }
 
+TilesetFinder.defaultProps = {
+  selectedTilesets: [],
+};
+
 TilesetFinder.propTypes = {
   datatype: PropTypes.string.isRequired,
   onDoubleClick: PropTypes.func.isRequired,
   orientation: PropTypes.string.isRequired,
   pubSub: PropTypes.object.isRequired,
   selectedTilesetChanged: PropTypes.func.isRequired,
+  selectedTilesets: PropTypes.array,
   trackSourceServers: PropTypes.array.isRequired,
 };
 
