@@ -95,10 +95,7 @@
         "w": 5,
         "h": 12,
         "x": 0,
-        "y": 0,
-        "i": "aa",
-        "moved": false,
-        "static": false
+        "y": 0
       }
     },
     {
@@ -176,10 +173,7 @@
         "w": 6,
         "h": 12,
         "x": 6,
-        "y": 0,
-        "i": "view2",
-        "moved": false,
-        "static": false
+        "y": 0
       }
     }
   ],

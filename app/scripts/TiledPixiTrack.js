@@ -169,7 +169,7 @@ class TiledPixiTrack extends PixiTrack {
 
       if (!this.options) this.options = {};
 
-      this.options.name = this.options.name ? this.options.name : tilesetInfo.name;
+      this.options.name = this.options.name || tilesetInfo.name;
 
       this.checkValueScaleLimits();
 

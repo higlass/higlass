@@ -59,10 +59,7 @@
         "w": 12,
         "h": 12,
         "x": 0,
-        "y": 0,
-        "i": "aa",
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "genomePositionSearchBox": {
         "autocompleteServer": "http://higlass.io/api/v1",

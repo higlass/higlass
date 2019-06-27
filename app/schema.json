@@ -6,7 +6,18 @@
   "additionalProperties": false,
   "required": [],
   "properties": {
-    "editable": { "type": "boolean" },
+    "editable": {
+      "type": "boolean",
+      "default": true
+    },
+    "viewEditable": {
+      "type": "boolean",
+      "default": true
+    },
+    "tracksEditable": {
+      "type": "boolean",
+      "default": true
+    },
     "zoomFixed": { "type": "boolean" },
     "exportViewUrl": { "type": "string" },
     "trackSourceServers": {
@@ -126,14 +137,45 @@
     "viewProperties": {
       "genomePositionSearchBox": {
         "type": "object",
-        "additionalProperties": false,
-        "required": [],
+        "title": "The Genome Position Search Box Schema",
+        "required": [
+          "chromInfoServer",
+          "chromInfoId"
+        ],
         "properties": {
-          "autocompleteId": { "type": "string" },
-          "autocompleteServer": { "type": "string" },
-          "chromInfoId": { "type": "string" },
-          "chromInfoServer": { "type": "string" },
-          "visible": { "type": "boolean" }
+          "autocompleteServer": {
+            "type": "string",
+            "title": "The Autocomplete Server URL",
+            "default": "",
+            "examples": ["//higlass.io/api/v1"],
+            "pattern": "^(.*)$"
+          },
+          "autocompleteId": {
+            "type": "string",
+            "title": "The Autocomplete ID",
+            "default": "",
+            "examples": ["OHJakQICQD6gTD7skx4EWA"],
+            "pattern": "^(.*)$"
+          },
+          "chromInfoServer": {
+            "type": "string",
+            "title": "The Chrominfo Server URL",
+            "default": "",
+            "examples": ["//higlass.io/api/v1"],
+            "pattern": "^(.*)$"
+          },
+          "chromInfoId": {
+            "type": "string",
+            "title": "The Chromosome Info ID",
+            "default": "",
+            "examples": ["hg19"],
+            "pattern": "^(.*)$"
+          },
+          "visible": {
+            "type": "boolean",
+            "title": "The Visible Schema",
+            "default": false
+          }
         }
       },
 
@@ -152,15 +194,28 @@
       "layout": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["w", "h", "x", "y", "moved", "static"],
+        "required": ["w", "h", "x", "y"],
         "properties": {
-          "w": { "type": "number" },
-          "h": { "type": "number" },
-          "x": { "type": "number" },
-          "y": { "type": "number" },
-          "i": { "type": "string" },
-          "moved": { "type": "boolean" },
-          "static": { "type": "boolean" }
+          "x": {
+            "type": "integer",
+            "title": "The X Position",
+            "default": 0
+          },
+          "y": {
+            "type": "integer",
+            "title": "The Y Position",
+            "default": 0
+          },
+          "w": {
+            "type": "integer",
+            "title": "Width",
+            "default": 12
+          },
+          "h": {
+            "type": "integer",
+            "title": "Height",
+            "default": 12
+          }
         }
       },
 

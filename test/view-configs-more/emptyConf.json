@@ -8,7 +8,6 @@
       "uid": "aa",
       "initialXDomain": [0, 100],
       "autocompleteSource": "",
-      "genomePositionSearchBox": {},
       "chromInfoPath": "",
       "tracks": {
         "top": [],
@@ -23,11 +22,8 @@
         "w": 12,
         "h": 12,
         "x": 0,
-        "y": 0,
-        "moved": false,
-        "static": false
-      },
-      "genomePositionSearchBoxVisible": true
+        "y": 0
+      }
     }
   ]
 }
