@@ -3114,17 +3114,39 @@ class HiGlassComponent extends React.Component {
     const view = this.state.views[viewUid];
     const track = getTrackByUid(view.tracks, trackUid);
 
-    if (!track) {
-      return;
-    }
+    if (!track) return;
 
-    track.options = Object.assign(track.options, newOptions);
+    track.options = Object.assign(
+      track.options,
+      this.adjustNewTrackOptions(track, newOptions)
+    );
 
     if (this.mounted) {
       this.setState(prevState => ({
         views: prevState.views,
       }));
     }
+  }
+
+  /**
+   * For convenience we adjust some options based on certain settings.
+   * @param   {object}  track  Track whose options have changed
+   * @param   {object}  newOptions  New track options
+   * @return  {object}  Adjusted new track options
+   */
+  adjustNewTrackOptions(track, newOptions) {
+    if (track.type === 'heatmap') {
+      if (newOptions.extent === 'upper-right') {
+        newOptions.labelPosition = 'topRight';
+        newOptions.colorbarPosition = 'topRight';
+      }
+      if (newOptions.extent === 'lower-left') {
+        newOptions.labelPosition = 'bottomLeft';
+        newOptions.colorbarPosition = 'bottomLeft';
+      }
+    }
+
+    return newOptions;
   }
 
   handleViewOptionsChanged(viewUid, newOptions) {
