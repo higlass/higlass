@@ -11,15 +11,14 @@ start eslint
 ./node_modules/eslint/bin/eslint.js karma.conf.js app test
 end eslint
 
-start examples
-REGEN_SCRIPT='./docs/examples/regenerate-index.py'
-INDEX_JSON='docs/examples/index.json'
-diff --ignore-space-change <( $REGEN_SCRIPT ) $INDEX_JSON \
-  || die "Update fixture index: '$REGEN_SCRIPT > $INDEX_JSON'"
-# Compare the output of the regen script to the current index...
-# If there's a difference, it will be shown,
-# along with a one-liner to fix the problem.
-end examples
+start viewconfs
+ls docs/examples/viewconfs/* \
+  test/view-configs/* \
+  test/view-configs-more/* \
+  | sed 's/^/-d /' \
+  | xargs npx ajv validate -s app/schema.json --errors=text \
+  || die "Invalid viewconf fixtures"
+end viewconfs
 
 start compile
 npm run compile

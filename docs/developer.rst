@@ -13,6 +13,16 @@ To run the tests use:
 To only run specific test suites, open ``karma.conf.js`` and
 select which tests to run.
 
+JSON Schema
+-----------
+There are unit tests that validate all the viewconfs that have been
+checked in as fixtures. If you want to validate just one viewconf by hand:
+
+.. code-block:: bash
+
+  npm install -g ajv-cli
+  ajv validate -s app/schema.json -d docs/examples/viewconfs/default.json
+
 Boilerplate
 -----------
 

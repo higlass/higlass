@@ -1,6 +1,6 @@
 {
   "name": "higlass",
-  "version": "1.5.7",
+  "version": "1.5.8",
   "description": "HiGlass Hi-C / genomic / large data viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/hglib.js",
@@ -97,6 +97,7 @@
     "webpack-dev-server is pinned because later versions did not serve all static directories: https://github.com/higlass/higlass/issues/623"
   ],
   "devDependencies": {
+    "ajv-cli": "^3.0.0",
     "autoprefixer": "^7.2.6",
     "babel": "^6.23.0",
     "babel-core": "^6.26.3",
