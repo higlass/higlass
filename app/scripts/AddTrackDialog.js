@@ -184,11 +184,11 @@ class AddTrackDialog extends React.Component {
     let selectedTilesets = null;
 
     if (selectedTilesetsIn.length === 0) {
-      // no tilesets are selected
-      selectedTilesets = [{ datatype: 'none' }];
-    } else {
-      selectedTilesets = selectedTilesetsIn;
+      this.setState({ selectedTilesets: [] });
+      return [];
     }
+
+    selectedTilesets = selectedTilesetsIn;
 
     const firstDatatype = selectedTilesets[0].datatype;
     for (const tileset of selectedTilesets) {
@@ -261,14 +261,9 @@ class AddTrackDialog extends React.Component {
             }
           >
             <button onClick={this.open('trackSources')} type="button">
-              {this.props.trackSourceServers.length > 1 && (
+              {this.props.trackSourceServers.length >= 1 && (
                 <span className={styles.addTrackDialogTogglerLabel}>
-                  Change track source servers:
-                </span>
-              )}
-              {this.props.trackSourceServers.length === 1 && (
-                <span className={styles.addTrackDialogTogglerLabel}>
-                  Change track source server:
+                  Change track source server(s):
                 </span>
               )}
               {this.props.trackSourceServers.length === 0 && (
@@ -315,14 +310,9 @@ class AddTrackDialog extends React.Component {
             }
           >
             <button onClick={this.open('datasets')} type="button">
-              {this.state.selectedTilesets.length > 1 && (
+              {this.state.selectedTilesets.length >= 1 && (
                 <span className={styles.addTrackDialogTogglerLabel}>
-                  Change datasets:
-                </span>
-              )}
-              {this.state.selectedTilesets.length === 1 && (
-                <span className={styles.addTrackDialogTogglerLabel}>
-                  Change dataset:
+                  Change dataset(s):
                 </span>
               )}
               {this.state.selectedTilesets.length === 0 && (
