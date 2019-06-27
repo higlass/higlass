@@ -308,6 +308,17 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.prevOptions = strOptions;
     this.options = options;
 
+    if (this.prevOptions.extent !== this.options.extent) {
+      if (this.options.extent === 'upper-right') {
+        this.options.labelPosition = 'topRight';
+        this.options.colorbarPosition = 'topRight';
+      }
+      if (this.options.extent === 'lower-left') {
+        this.options.labelPosition = 'bottomLeft';
+        this.options.colorbarPosition = 'bottomLeft';
+      }
+    }
+
     super.rerender(options, force);
 
     // the normalization method may have changed
