@@ -428,7 +428,7 @@ class TiledPlot extends React.Component {
    * Check if all track which are expecting a tileset info have been loaded.
    */
   checkAllTilesetInfoReceived() {
-    // Do nothing is HiGlass initialized already
+    // Do nothing if HiGlass initialized already
     if (this.state.init || !this.props.zoomToDataExtentOnInit) return;
 
     // Get the total number of track that are expecting a tilesetInfo
@@ -449,8 +449,7 @@ class TiledPlot extends React.Component {
       .filter(tilesetInfo => typeof tilesetInfo !== 'undefined' && tilesetInfo !== true)
       .length;
 
-    const loadedTilesetInfos = Object.values(this.tracksByUidInit)
-      .filter(x => x).length;
+    const loadedTilesetInfos = Object.values(this.tracksByUidInit).length;
 
     if (allTilesetInfos === loadedTilesetInfos) {
       this.setState({ init: true });
