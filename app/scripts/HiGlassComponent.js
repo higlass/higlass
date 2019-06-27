@@ -3118,59 +3118,76 @@ class HiGlassComponent extends React.Component {
     if (!track) return;
 
     track.options = Object.assign(
-      track.options,
-      this.adjustNewTrackOptions(track, newOptions, view.tracks, viewUid)
+      track.options, this.adjustNewTrackOptions(track, newOptions)
     );
 
     if (this.mounted) {
       this.setState(prevState => ({
         views: prevState.views,
       }));
+      this.adjustOtherTrackOptions(track, newOptions, view.tracks, viewUid);
     }
   }
 
   /**
-   * For convenience we adjust some options based on certain settings.
+   * For convenience we adjust some options based on other options.
    * @param   {object}  track  Track whose options have changed
    * @param   {object}  newOptions  New track options
    * @return  {object}  Adjusted new track options
    */
-  adjustNewTrackOptions(track, newOptions, allTracks, viewUid) {
+  adjustNewTrackOptions(track, newOptions) {
     if (track.type === 'heatmap') {
       if (newOptions.extent === 'upper-right') {
         newOptions.labelPosition = 'topRight';
         newOptions.colorbarPosition = 'topRight';
-
-        if (
-          allTracks.center[0].type === 'combined'
-          && allTracks.center[0].contents.length > 1
-        ) {
-          allTracks.center[0].contents.some((otherTrack) => {
-            if (
-              otherTrack.type === 'heatmap'
-              && otherTrack.uid !== track.uid
-              && otherTrack.options.extent !== 'lower-left'
-            ) {
-              // Automatically change the extent of the other track to
-              // `lower-left``
-              const otherNewOptions = Object.assign(
-                {}, otherTrack.options, { extent: 'lower-left' }
-              );
-              this.handleTrackOptionsChanged(
-                viewUid, otherTrack.uid, otherNewOptions
-              );
-              return true;
-            }
-            return false;
-          });
-        }
       }
       if (newOptions.extent === 'lower-left') {
         newOptions.labelPosition = 'bottomLeft';
         newOptions.colorbarPosition = 'bottomLeft';
+      }
+    }
 
+    return newOptions;
+  }
+
+  /**
+   * For convenience we adjust some options of other tracks based on newly
+   * updated options.
+   * @param   {object}  track  Track whose options have changed
+   * @param   {object}  options  New track options
+   * @param   {list}  allTracks  All tracks
+   * @param   {string}  viewUid  Related view UID
+   */
+  adjustOtherTrackOptions(track, options, allTracks, viewUid) {
+    if (track.type === 'heatmap') {
+      if (
+        options.extent === 'upper-right'
+        && allTracks.center[0].type === 'combined'
+        && allTracks.center[0].contents.length > 1
+      ) {
+        allTracks.center[0].contents.some((otherTrack) => {
+          if (
+            otherTrack.type === 'heatmap'
+            && otherTrack.uid !== track.uid
+            && otherTrack.options.extent !== 'lower-left'
+          ) {
+            // Automatically change the extent of the other track to
+            // `lower-left``
+            const otherNewOptions = Object.assign(
+              {}, otherTrack.options, { extent: 'lower-left' }
+            );
+            this.handleTrackOptionsChanged(
+              viewUid, otherTrack.uid, otherNewOptions
+            );
+            return true;
+          }
+          return false;
+        });
+      }
+      if (options.extent === 'lower-left') {
         if (
-          allTracks.center[0].type === 'combined'
+          options.extent === 'lower-left'
+          && allTracks.center[0].type === 'combined'
           && allTracks.center[0].contents.length > 1
         ) {
           allTracks.center[0].contents.some((otherTrack) => {
@@ -3194,8 +3211,6 @@ class HiGlassComponent extends React.Component {
         }
       }
     }
-
-    return newOptions;
   }
 
   handleViewOptionsChanged(viewUid, newOptions) {
