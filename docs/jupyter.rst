@@ -327,7 +327,7 @@ auto-hiding points:
 .. code-block:: python
 
     %%javascript
-    require(["https://unpkg.com/higlass-labelled-points-track@0.1.7/dist/higlass-labelled-points-track"],
+    require(["https://unpkg.com/higlass-labelled-points-track@0.1.11/dist/higlass-labelled-points-track"],
         function(hglib) {
     });
 
