@@ -9,6 +9,7 @@
 - Support semi-transparent colormaps through RGBA colors
 - Update Mapbox endpoint. See [http://localhost:8080/others/mapbox.html](http://localhost:8080/others/mapbox.html) for an example.
 - Improve performance of the `mousemove`-related event handling
+- Remove unused properties from the exported view config
 - Improve performance of tiles fetching through a combination of throttling and debouncing
 - Fix a minor visual glitch with the positioning of track-related `div`s
 - Fix OSM track to avoid CORS issues in Chrome and allow setting `minPos` to `0`

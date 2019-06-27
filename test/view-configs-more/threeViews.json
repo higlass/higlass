@@ -62,10 +62,7 @@
         "w": 4,
         "h": 7,
         "x": 0,
-        "y": 0,
-        "i": "aa",
-        "moved": false,
-        "static": false
+        "y": 0
       }
     },
     {
@@ -123,10 +120,7 @@
         "w": 4,
         "h": 7,
         "x": 4,
-        "y": 0,
-        "i": "MGOAVH4ASU6NiVdSKCSFMA",
-        "moved": false,
-        "static": false
+        "y": 0
       }
     },
     {
@@ -184,10 +178,7 @@
         "w": 4,
         "h": 7,
         "x": 0,
-        "y": 7,
-        "i": "DHPiKLAyS-2zyxM3IknNAg",
-        "moved": false,
-        "static": false
+        "y": 7
       }
     }
   ],

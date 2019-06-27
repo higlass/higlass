@@ -74,10 +74,7 @@ function getWidthBasedResolutionText(
 
     return formattedResolution;
   }
-  console.warn(
-    'NaN resolution, screen is probably too small. Dimensions:',
-    this.dimensions,
-  );
+  console.warn('NaN resolution, screen is probably too small.');
 
   return '';
 }
@@ -143,15 +140,7 @@ class PixiTrack extends Track {
 
     this.options = Object.assign(this.options, options);
 
-    let labelTextText;
-    if (this.options.name) {
-      labelTextText = this.options.name;
-    } else {
-      labelTextText = this.tilesetInfo ? this.tilesetInfo.name : '';
-    }
-    if (!this.options.labelPosition || this.options.labelPosition === 'hidden') {
-      labelTextText = '';
-    }
+    const labelTextText = this.getName();
 
     this.labelTextFontFamily = 'Arial';
     this.labelTextFontSize = 12;
@@ -159,7 +148,8 @@ class PixiTrack extends Track {
     this.labelXOffset = 0;
 
     this.labelText = new PIXI.Text(
-      labelTextText, {
+      labelTextText,
+      {
         fontSize: `${this.labelTextFontSize}px`,
         fontFamily: this.labelTextFontFamily,
         fill: 'black'
@@ -167,8 +157,10 @@ class PixiTrack extends Track {
     );
     this.pLabel.addChild(this.labelText);
 
-    this.errorText = new PIXI.Text('',
-      { fontSize: '12px', fontFamily: 'Arial', fill: 'red' });
+    this.errorText = new PIXI.Text(
+      '',
+      { fontSize: '12px', fontFamily: 'Arial', fill: 'red' }
+    );
     this.errorText.anchor.x = 0.5;
     this.errorText.anchor.y = 0.5;
     this.pLabel.addChild(this.errorText);
@@ -313,6 +305,12 @@ class PixiTrack extends Track {
       || 'black';
   }
 
+  getName() {
+    return this.options.name
+      ? this.options.name
+      : this.tilesetInfo && this.tilesetInfo.name || '';
+  }
+
   drawLabel() {
     if (!this.labelText) return;
 
@@ -320,7 +318,11 @@ class PixiTrack extends Track {
 
     graphics.clear();
 
-    if (!this.options || !this.options.labelPosition) {
+    if (
+      !this.options
+      || !this.options.labelPosition
+      || this.options.labelPosition === 'hidden'
+    ) {
       // don't display the track label
       this.labelText.opacity = 0;
       return;
@@ -341,12 +343,7 @@ class PixiTrack extends Track {
       ? `${this.tilesetInfo.coordSystem} | `
       : '';
 
-    if (this.options.name) {
-      labelTextText += this.options.name;
-    } else {
-      labelTextText += this.tilesetInfo
-        ? this.tilesetInfo.name : '';
-    }
+    labelTextText += this.getName();
 
     if (
       this.tilesetInfo
@@ -360,11 +357,11 @@ class PixiTrack extends Track {
         this.tilesetInfo.max_zoom
       );
 
-
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     } else if (
       this.tilesetInfo
-      && this.tilesetInfo.resolutions) {
+      && this.tilesetInfo.resolutions
+    ) {
       const formattedResolution = getResolutionBasedResolutionText(
         this.tilesetInfo.resolutions,
         this.calculateZoomLevel()
