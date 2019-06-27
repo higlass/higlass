@@ -6,10 +6,7 @@
         "w": 12,
         "h": 16,
         "x": 0,
-        "y": 0,
-        "i": "aa",
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "uid": "aa",
       "initialYDomain": [

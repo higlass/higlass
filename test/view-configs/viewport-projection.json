@@ -78,10 +78,7 @@
       "w": 12,
       "h": 12,
       "x": 0,
-      "y": 0,
-      "i": "aa",
-      "moved": false,
-      "static": false
+      "y": 0
     },
     "initialYDomain": [1276863408.5778158, 1474332874.4920979]
   }, {
@@ -159,10 +156,7 @@
       "w": 12,
       "h": 12,
       "x": 0,
-      "y": 12,
-      "i": "Te_co5VgTBWXO-bzJrE_Ww",
-      "moved": false,
-      "static": false
+      "y": 12
     },
     "initialYDomain": [1343567228.0907576, 1359671780.3263152]
   }, {
@@ -227,10 +221,7 @@
       "w": 12,
       "h": 12,
       "x": 0,
-      "y": 24,
-      "i": "P3Bw-b8DRAiM0RkuQs8yxw",
-      "moved": false,
-      "static": false
+      "y": 24
     },
     "initialYDomain": [1349573297.8631985, 1350901646.1464818]
   }],

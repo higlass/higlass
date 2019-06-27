@@ -72,16 +72,12 @@
         "w": 6,
         "h": 6,
         "x": 0,
-        "y": 0,
-        "i": "a",
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "initialYDomain": [
         -542724630.897934,
         3449246960.478492
       ],
-      "genomePositionSearchBoxVisible": true,
       "genomePositionSearchBox": {
         "autocompleteServer": "http://higlass.io/api/v1",
         "chromInfoServer": "http://higlass.io/api/v1",
@@ -157,16 +153,12 @@
         "w": 6,
         "h": 6,
         "x": 6,
-        "y": 0,
-        "i": "NagBzk-AQZuoY0bqG-Yy0Q",
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "initialYDomain": [
         -542724630.8984827,
         3449246960.4790406
       ],
-      "genomePositionSearchBoxVisible": true,
       "genomePositionSearchBox": {
         "autocompleteServer": "http://higlass.io/api/v1",
         "chromInfoServer": "http://higlass.io/api/v1",

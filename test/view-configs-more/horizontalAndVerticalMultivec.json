@@ -101,10 +101,7 @@
         "w": 12,
         "h": 6,
         "x": 0,
-        "y": 0,
-        "i": "a",
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "initialYDomain": [
         1760499319.4073188,

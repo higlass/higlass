@@ -2,7 +2,7 @@
   "zoomFixed": false,
   "views": [{
     "layout": {
-      "i": "CxSCeaTbQbmmz2_3MX23Sw", "h": 7, "moved": false, "static": false, "w": 6, "y": 6, "x": 0
+      "h": 7, "w": 6, "y": 6, "x": 0
     },
     "uid": "CxSCeaTbQbmmz2_3MX23Sw",
     "initialYDomain": [1962672822.9475927, 1980413599.926114],
@@ -107,7 +107,7 @@
     "genomePositionSearchBoxVisible": false
   }, {
     "layout": {
-      "i": "KrP5zcaVSxqCj6mEI8WA2A", "h": 7, "moved": false, "static": false, "w": 6, "y": 6, "x": 6
+      "h": 7, "w": 6, "y": 6, "x": 6
     },
     "uid": "KrP5zcaVSxqCj6mEI8WA2A",
     "initialYDomain": [1962724245.489579, 1980362177.3841279],
@@ -212,7 +212,7 @@
     "genomePositionSearchBoxVisible": false
   }, {
     "layout": {
-      "i": "eJLMGjH7Qm-zm_F_hqjXkw", "h": 6, "moved": false, "static": false, "w": 6, "y": 0, "x": 0
+      "h": 6, "w": 6, "y": 0, "x": 0
     },
     "uid": "eJLMGjH7Qm-zm_F_hqjXkw",
     "initialYDomain": [1958397626.623477, 2005959872.963051],
@@ -274,7 +274,7 @@
     "genomePositionSearchBoxVisible": false
   }, {
     "layout": {
-      "i": "BI8YmooFSCuI9zluz_ehnA", "h": 6, "moved": false, "static": false, "w": 6, "y": 0, "x": 6
+      "h": 6, "w": 6, "y": 0, "x": 6
     },
     "uid": "BI8YmooFSCuI9zluz_ehnA",
     "initialYDomain": [1958397626.6234653, 2005959872.9630625],

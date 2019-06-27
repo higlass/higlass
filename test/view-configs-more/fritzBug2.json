@@ -1741,10 +1741,7 @@
         "w": 12,
         "h": 6,
         "x": 0,
-        "y": 0,
-        "i": "a",
-        "moved": false,
-        "static": false
+        "y": 0
       }
     },
     {
@@ -3472,10 +3469,7 @@
         "w": 12,
         "h": 6,
         "x": 0,
-        "y": 6,
-        "i": "__a_",
-        "moved": false,
-        "static": false
+        "y": 6
       },
       "selectionView": true
     }

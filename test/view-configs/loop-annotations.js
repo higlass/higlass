@@ -65,10 +65,7 @@ const viewconf = {
         w: 12,
         h: 12,
         x: 0,
-        y: 0,
-        i: 'aa',
-        moved: false,
-        static: false
+        y: 0
       },
       initialYDomain: [1331899068.573772, 1332271544.8197525]
     }
