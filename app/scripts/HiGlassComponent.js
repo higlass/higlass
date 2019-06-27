@@ -2335,6 +2335,7 @@ class HiGlassComponent extends React.Component {
         tracks.center[0].contents.push(newTrack);
 
         if (newTrack.type === 'heatmap') {
+          // For stacked heatmaps we will adjust some options automatically for convenience
           this.compatibilityfyStackedHeatmaps(newTrack, tracks.center[0]);
         }
       } else {
