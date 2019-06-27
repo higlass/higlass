@@ -2303,6 +2303,9 @@ class HiGlassComponent extends React.Component {
 
     const { tracks } = this.state.views[viewId];
 
+    let numTracks = 0;
+    visitPositionedTracks(tracks, () => numTracks++);
+
     if (position === 'left' || position === 'top') {
       // if we're adding a track on the left or the top, we want the
       // new track to appear at the begginning of the track list
@@ -2356,6 +2359,18 @@ class HiGlassComponent extends React.Component {
     }
 
     this.adjustLayoutToTrackSizes(this.state.views[viewId]);
+
+    if (Object.keys(this.state.views).length === 1 && numTracks === 0) {
+      // Zoom to data extent since this is the first track we added and we only
+      // have one view
+
+      // This doesn't work because the tilesetInfo is probably not there yet
+      this.handleZoomToData(viewId);
+
+      // This might work but sometimes `TiledPlot.handleTilesetInfoReceived`
+      // isn't triggered. E.g., when adding `dm6` as `chromosome-labels`.
+      this.zoomToDataExtentOnInit.add(viewId);
+    }
 
     return newTrack;
   }
