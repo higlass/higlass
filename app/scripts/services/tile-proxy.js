@@ -511,10 +511,16 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
  * threadpool
  */
 export const tileDataToPixData = (
-  tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished, ignoreUpperRight
+  tile,
+  valueScaleType,
+  valueScaleDomain,
+  pseudocount,
+  colorScale,
+  finished,
+  ignoreUpperRight,
+  ignoreLowerLeft,
 ) => {
   const { tileData } = tile;
-
 
   if (!tileData.dense) {
     // if we didn't get any data from the server, don't do anything
@@ -522,16 +528,28 @@ export const tileDataToPixData = (
     return;
   }
 
-  if (tile.mirrored
+  if (
+    tile.mirrored
+    // Data is already copied over
+    && !tile.isMirrored
     && tile.tileData.tilePos.length > 0
-    && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]) {
+    && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
+  ) {
     // if a center tile is mirrored, we'll just add its transpose
     const tileWidth = Math.floor(Math.sqrt(tile.tileData.dense.length));
-    for (let i = 0; i < tileWidth; i++) {
-      for (let j = 0; j < tileWidth; j++) {
-        tile.tileData.dense[(i * tileWidth) + j] = tile.tileData.dense[(j * tileWidth) + i];
+    for (let row = 0; row < tileWidth; row++) {
+      for (let col = row + 1; col < tileWidth; col++) {
+        tile.tileData.dense[(row * tileWidth) + col] = tile.tileData.dense[(col * tileWidth) + row];
       }
     }
+    if (ignoreLowerLeft) {
+      for (let row = 0; row < tileWidth; row++) {
+        for (let col = 0; col < row; col++) {
+          tile.tileData.dense[(row * tileWidth) + col] = NaN;
+        }
+      }
+    }
+    tile.isMirrored = true;
   }
 
   // console.log('tile', tile);
@@ -540,7 +558,6 @@ export const tileDataToPixData = (
   // const newTileData = tileData.dense;
 
   // comment this and uncomment the code afterwards to enable threading
-
   const pixData = workerSetPix(
     tileData.dense.length,
     tileData.dense,
@@ -548,7 +565,8 @@ export const tileDataToPixData = (
     valueScaleDomain,
     pseudocount,
     colorScale,
-    ignoreUpperRight
+    ignoreUpperRight,
+    ignoreLowerLeft
   );
 
   finished({ pixData });

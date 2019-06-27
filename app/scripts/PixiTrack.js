@@ -155,6 +155,8 @@ class PixiTrack extends Track {
 
     this.labelTextFontFamily = 'Arial';
     this.labelTextFontSize = 12;
+    // Used to avoid label/colormap clashes
+    this.labelXOffset = 0;
 
     this.labelText = new PIXI.Text(
       labelTextText, {
@@ -163,14 +165,13 @@ class PixiTrack extends Track {
         fill: 'black'
       }
     );
+    this.pLabel.addChild(this.labelText);
 
     this.errorText = new PIXI.Text('',
       { fontSize: '12px', fontFamily: 'Arial', fill: 'red' });
     this.errorText.anchor.x = 0.5;
     this.errorText.anchor.y = 0.5;
     this.pLabel.addChild(this.errorText);
-
-    this.pLabel.addChild(this.labelText);
   }
 
   setLabelText() {
@@ -412,7 +413,7 @@ class PixiTrack extends Track {
     const labelBottomMargin = +this.options.labelBottomMargin || 0;
 
     if (this.options.labelPosition === 'topLeft') {
-      this.labelText.x = this.position[0] + labelLeftMargin;
+      this.labelText.x = this.position[0] + labelLeftMargin + this.labelXOffset;
       this.labelText.y = this.position[1] + labelTopMargin;
 
       this.labelText.anchor.x = 0.5;
@@ -421,7 +422,7 @@ class PixiTrack extends Track {
       this.labelText.x += this.labelText.width / 2;
 
       graphics.drawRect(
-        this.position[0] + labelLeftMargin,
+        this.position[0] + labelLeftMargin + this.labelXOffset,
         this.position[1] + labelTopMargin,
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin
@@ -437,9 +438,9 @@ class PixiTrack extends Track {
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 1;
 
-      this.labelText.x += this.labelText.width / 2;
+      this.labelText.x += (this.labelText.width / 2) + this.labelXOffset;
       graphics.drawRect(
-        this.position[0] + (labelLeftMargin || labelTopMargin),
+        this.position[0] + (labelLeftMargin || labelTopMargin) + this.labelXOffset,
         (
           this.position[1]
           + this.dimensions[1]
@@ -461,7 +462,7 @@ class PixiTrack extends Track {
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 0;
 
-      this.labelText.x -= this.labelText.width / 2;
+      this.labelText.x -= (this.labelText.width / 2) + this.labelXOffset;
 
       graphics.drawRect(
         (
@@ -470,6 +471,7 @@ class PixiTrack extends Track {
           - this.labelText.width
           - labelBackgroundMargin
           - (labelRightMargin || labelBottomMargin)
+          - this.labelXOffset
         ),
         this.position[1] + (labelTopMargin || labelLeftMargin),
         this.labelText.width + labelBackgroundMargin,
@@ -483,7 +485,7 @@ class PixiTrack extends Track {
 
       // we set the anchor to 0.5 so that we can flip the text if the track
       // is rotated but that means we have to adjust its position
-      this.labelText.x -= this.labelText.width / 2;
+      this.labelText.x -= (this.labelText.width / 2) + this.labelXOffset;
 
       graphics.drawRect(
         (
@@ -492,6 +494,7 @@ class PixiTrack extends Track {
           - this.labelText.width
           - labelBackgroundMargin
           - labelRightMargin
+          - this.labelXOffset
         ),
         (
           this.position[1]

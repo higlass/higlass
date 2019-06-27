@@ -158,6 +158,7 @@ export const TRACKS_INFO = [
       showMousePosition: false,
       mousePositionColor: '#999999',
       showTooltip: false,
+      extent: 'full'
     },
     availableOptions: [
       'backgroundColor',
@@ -179,6 +180,7 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'mousePositionColor',
       'showTooltip',
+      'extent'
     ],
   },
   {

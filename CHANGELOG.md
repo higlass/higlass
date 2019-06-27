@@ -1,5 +1,6 @@
 ## v1.6.0
 
+- Add an option to restrict the extent of central heatmaps to the upper-right or lower-left corner to enable comparison of two heatmaps in the center. Run `npm start` and see [http://localhost:8080/apis/svg.html?/viewconfs/diagonal-split-heatmap.json](http://localhost:8080/apis/svg.html?/viewconfs/diagonal-split-heatmap.json) for an example
 - Updated `pixi.js` to version `5`. In your `html` files you need to replace the previous PixiJS loader with `<script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>` (or `<script crossorigin src="https://unpkg.com/pixi.js-legacy@5/dist/pixi-legacy.min.js"></script>` if you want to use the Canvas renderer)
 - Add a dialog to directly edit the view config in the browser
 - Replace ReactBootstrap modal with custom modal to not rely on Bootstrap and support Jupyter

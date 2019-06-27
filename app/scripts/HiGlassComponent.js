@@ -2312,6 +2312,7 @@ class HiGlassComponent extends React.Component {
       || this.minHorizontalHeight;
 
     const { tracks } = this.state.views[viewId];
+
     if (position === 'left' || position === 'top') {
       // if we're adding a track on the left or the top, we want the
       // new track to appear at the begginning of the track list
@@ -2332,6 +2333,11 @@ class HiGlassComponent extends React.Component {
         // if it's a combined track, we just need to add this track to the
         // contents
         tracks.center[0].contents.push(newTrack);
+
+        if (newTrack.type === 'heatmap') {
+          // For stacked heatmaps we will adjust some options automatically for convenience
+          this.compatibilityfyStackedHeatmaps(newTrack, tracks.center[0]);
+        }
       } else {
         // if it's not, we have to create a new combined track
         const newCombined = {
@@ -2339,10 +2345,15 @@ class HiGlassComponent extends React.Component {
           type: 'combined',
           contents: [
             tracks.center[0],
-            newTrack],
+            newTrack
+          ],
         };
 
         tracks.center = [newCombined];
+
+        if (newTrack.type === 'heatmap') {
+          this.compatibilityfyStackedHeatmaps(newTrack, newCombined);
+        }
       }
     } else {
       // otherwise, we want it at the end of the track list
@@ -2357,6 +2368,31 @@ class HiGlassComponent extends React.Component {
     this.adjustLayoutToTrackSizes(this.state.views[viewId]);
 
     return newTrack;
+  }
+
+  /**
+   * We're adding a new heatmap to a combined track. We need to make sure that
+   * their options are compatible.
+   *
+   * @param   {object}  newTrack  New heatmap track
+   * @param   {object}  combinedTrack  Combined track the new heatmap is added to
+   */
+  compatibilityfyStackedHeatmaps(newTrack, combinedTrack) {
+    let otherHeatmap;
+
+    const hasHeatmaps = combinedTrack.contents.some((track) => {
+      otherHeatmap = track;
+      return track.type === 'heatmap';
+    });
+
+    if (hasHeatmaps) {
+      // There already exist a heatmap let's set the background of the new
+      // heatmap to `transparent`
+      newTrack.options.backgroundColor = 'transparent';
+      newTrack.options.showTooltip = otherHeatmap.options.showTooltip;
+      newTrack.options.showMousePosition = otherHeatmap.options.showMousePosition;
+      newTrack.options.mousePositionColor = otherHeatmap.options.mousePositionColor;
+    }
   }
 
   /**
@@ -3079,16 +3115,101 @@ class HiGlassComponent extends React.Component {
     const view = this.state.views[viewUid];
     const track = getTrackByUid(view.tracks, trackUid);
 
-    if (!track) {
-      return;
-    }
+    if (!track) return;
 
-    track.options = Object.assign(track.options, newOptions);
+    track.options = Object.assign(
+      track.options, this.adjustNewTrackOptions(track, newOptions)
+    );
 
     if (this.mounted) {
       this.setState(prevState => ({
         views: prevState.views,
       }));
+      this.adjustOtherTrackOptions(track, newOptions, view.tracks, viewUid);
+    }
+  }
+
+  /**
+   * For convenience we adjust some options based on other options.
+   * @param   {object}  track  Track whose options have changed
+   * @param   {object}  newOptions  New track options
+   * @return  {object}  Adjusted new track options
+   */
+  adjustNewTrackOptions(track, newOptions) {
+    if (track.type === 'heatmap') {
+      if (newOptions.extent === 'upper-right') {
+        newOptions.labelPosition = 'topRight';
+        newOptions.colorbarPosition = 'topRight';
+      }
+      if (newOptions.extent === 'lower-left') {
+        newOptions.labelPosition = 'bottomLeft';
+        newOptions.colorbarPosition = 'bottomLeft';
+      }
+    }
+
+    return newOptions;
+  }
+
+  /**
+   * For convenience we adjust some options of other tracks based on newly
+   * updated options.
+   * @param   {object}  track  Track whose options have changed
+   * @param   {object}  options  New track options
+   * @param   {list}  allTracks  All tracks
+   * @param   {string}  viewUid  Related view UID
+   */
+  adjustOtherTrackOptions(track, options, allTracks, viewUid) {
+    if (track.type === 'heatmap') {
+      if (
+        options.extent === 'upper-right'
+        && allTracks.center[0].type === 'combined'
+        && allTracks.center[0].contents.length > 1
+      ) {
+        allTracks.center[0].contents.some((otherTrack) => {
+          if (
+            otherTrack.type === 'heatmap'
+            && otherTrack.uid !== track.uid
+            && otherTrack.options.extent !== 'lower-left'
+          ) {
+            // Automatically change the extent of the other track to
+            // `lower-left``
+            const otherNewOptions = Object.assign(
+              {}, otherTrack.options, { extent: 'lower-left' }
+            );
+            this.handleTrackOptionsChanged(
+              viewUid, otherTrack.uid, otherNewOptions
+            );
+            return true;
+          }
+          return false;
+        });
+      }
+      if (options.extent === 'lower-left') {
+        if (
+          options.extent === 'lower-left'
+          && allTracks.center[0].type === 'combined'
+          && allTracks.center[0].contents.length > 1
+        ) {
+          allTracks.center[0].contents.some((otherTrack) => {
+            if (
+              otherTrack.type === 'heatmap'
+              && otherTrack.uid !== track.uid
+              && otherTrack.options.extent !== 'upper-right'
+            ) {
+              // Automatically change the extent of the other track to
+              // `upper-right``
+              const otherNewOptions = Object.assign(
+                {}, otherTrack.options, { extent: 'upper-right' }
+              );
+              this.handleTrackOptionsChanged(
+                viewUid, otherTrack.uid, otherNewOptions
+              );
+              return true;
+            }
+            return false;
+          });
+        }
+      }
     }
   }
 
