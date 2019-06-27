@@ -1729,14 +1729,7 @@ class HiGlassComponent extends React.Component {
     layout.forEach((l) => {
       const view = this.state.views[l.i];
 
-      if (
-        view
-        && view.layout.x !== l.x
-        && view.layout.y !== l.y
-        && view.layout.w !== l.w
-        && view.layout.h !== l.h
-        && view.layout.i !== l.i
-      ) {
+      if (view) {
         // Bad design pattern. We directly manipulate the state and rely on
         // `this.updateRowHeight()` to trigger that the state updated
         view.layout.x = l.x;
