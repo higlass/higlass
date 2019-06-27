@@ -2306,6 +2306,7 @@ class HiGlassComponent extends React.Component {
       || this.minHorizontalHeight;
 
     const { tracks } = this.state.views[viewId];
+
     if (position === 'left' || position === 'top') {
       // if we're adding a track on the left or the top, we want the
       // new track to appear at the begginning of the track list
@@ -2326,6 +2327,10 @@ class HiGlassComponent extends React.Component {
         // if it's a combined track, we just need to add this track to the
         // contents
         tracks.center[0].contents.push(newTrack);
+
+        if (newTrack.type === 'heatmap') {
+          this.compatibilityfyStackedHeatmaps(newTrack, tracks.center[0]);
+        }
       } else {
         // if it's not, we have to create a new combined track
         const newCombined = {
@@ -2333,10 +2338,15 @@ class HiGlassComponent extends React.Component {
           type: 'combined',
           contents: [
             tracks.center[0],
-            newTrack],
+            newTrack
+          ],
         };
 
         tracks.center = [newCombined];
+
+        if (newTrack.type === 'heatmap') {
+          this.compatibilityfyStackedHeatmaps(newTrack, newCombined);
+        }
       }
     } else {
       // otherwise, we want it at the end of the track list
@@ -2351,6 +2361,31 @@ class HiGlassComponent extends React.Component {
     this.adjustLayoutToTrackSizes(this.state.views[viewId]);
 
     return newTrack;
+  }
+
+  /**
+   * We're adding a new heatmap to a combined track. We need to make sure that
+   * their options are compatible.
+   *
+   * @param   {object}  newTrack  New heatmap track
+   * @param   {object}  combinedTrack  Combined track the new heatmap is added to
+   */
+  compatibilityfyStackedHeatmaps(newTrack, combinedTrack) {
+    let otherHeatmap;
+
+    const hasHeatmaps = combinedTrack.contents.some((track) => {
+      otherHeatmap = track;
+      return track.type === 'heatmap';
+    });
+
+    if (hasHeatmaps) {
+      // There already exist a heatmap let's set the background of the new
+      // heatmap to `transparent`
+      newTrack.options.backgroundColor = 'transparent';
+      newTrack.options.showTooltip = otherHeatmap.options.showTooltip;
+      newTrack.options.showMousePosition = otherHeatmap.options.showMousePosition;
+      newTrack.options.mousePositionColor = otherHeatmap.options.mousePositionColor;
+    }
   }
 
   /**
