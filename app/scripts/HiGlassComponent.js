@@ -3118,7 +3118,7 @@ class HiGlassComponent extends React.Component {
 
     track.options = Object.assign(
       track.options,
-      this.adjustNewTrackOptions(track, newOptions)
+      this.adjustNewTrackOptions(track, newOptions, view.tracks, viewUid)
     );
 
     if (this.mounted) {
@@ -3134,15 +3134,63 @@ class HiGlassComponent extends React.Component {
    * @param   {object}  newOptions  New track options
    * @return  {object}  Adjusted new track options
    */
-  adjustNewTrackOptions(track, newOptions) {
+  adjustNewTrackOptions(track, newOptions, allTracks, viewUid) {
     if (track.type === 'heatmap') {
       if (newOptions.extent === 'upper-right') {
         newOptions.labelPosition = 'topRight';
         newOptions.colorbarPosition = 'topRight';
+
+        if (
+          allTracks.center[0].type === 'combined'
+          && allTracks.center[0].contents.length > 1
+        ) {
+          allTracks.center[0].contents.some((otherTrack) => {
+            if (
+              otherTrack.type === 'heatmap'
+              && otherTrack.uid !== track.uid
+              && otherTrack.options.extent !== 'lower-left'
+            ) {
+              // Automatically change the extent of the other track to
+              // `lower-left``
+              const otherNewOptions = Object.assign(
+                {}, otherTrack.options, { extent: 'lower-left' }
+              );
+              this.handleTrackOptionsChanged(
+                viewUid, otherTrack.uid, otherNewOptions
+              );
+              return true;
+            }
+            return false;
+          });
+        }
       }
       if (newOptions.extent === 'lower-left') {
         newOptions.labelPosition = 'bottomLeft';
         newOptions.colorbarPosition = 'bottomLeft';
+
+        if (
+          allTracks.center[0].type === 'combined'
+          && allTracks.center[0].contents.length > 1
+        ) {
+          allTracks.center[0].contents.some((otherTrack) => {
+            if (
+              otherTrack.type === 'heatmap'
+              && otherTrack.uid !== track.uid
+              && otherTrack.options.extent !== 'upper-right'
+            ) {
+              // Automatically change the extent of the other track to
+              // `upper-right``
+              const otherNewOptions = Object.assign(
+                {}, otherTrack.options, { extent: 'upper-right' }
+              );
+              this.handleTrackOptionsChanged(
+                viewUid, otherTrack.uid, otherNewOptions
+              );
+              return true;
+            }
+            return false;
+          });
+        }
       }
     }
 
