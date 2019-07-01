@@ -257,7 +257,7 @@ First we need to import the custom track type for displaying labelled points:
 
     %%javascript
 
-    require(["https://unpkg.com/higlass-labelled-points-track@0.1.7/dist/higlass-labelled-points-track"], 
+    require(["https://unpkg.com/higlass-labelled-points-track@0.1.11/dist/higlass-labelled-points-track"], 
         function(hglib) {
 
     });
@@ -265,11 +265,6 @@ First we need to import the custom track type for displaying labelled points:
 Then we have to set up a data server to output the data in "tiles".
 
 .. code-block:: python
-
-    import clodius.tiles.points as hgpo
-    import clodius.tiles.utils as hgut
-
-    import higlass.tilesets as hgti
 
     import numpy as np
     import pandas as pd
@@ -281,40 +276,81 @@ Then we have to set up a data server to output the data in "tiles".
         'v': range(1, length+1),
     })
 
-    # get the tileset info (bounds and such) of the dataset
-    tsinfo = hgpo.tileset_info(df, 'x', 'y')
+    import higlass
+    import higlass.tilesets as hgti
+    import higlass.client as hgcl
 
-    ts = hgti.Tileset(
-        tileset_info=lambda: tsinfo,
-        tiles=lambda tile_ids: hgpo.format_data(
-                    hgut.bundled_tiles_wrapper_2d(tile_ids,
-                        lambda z,x,y,width=1,height=1: hgpo.tiles(df, 'x', 'y',
-                            tsinfo, z, x, y, width, height))))
-
-    # start the server
-    server = hfse.start([ts])
-
-And finally, we can create a HiGlass client in the browser to view the data:
-
-.. code-block:: python
-
-    import higlass.client as hgc
-
+    ts = hgti.dfpoints(df, x_col='x', y_col='y')
 
     (display, server, viewconf) = higlass.display([
-        hgc.View([
-            hgc.Track(
-                track_type='labelled-points-track',
-                position='center',
-                tileset=ts,
-                height=200,
-                options={
-                    'labelField': 'v'
-                })
+        hgcl.View([
+            hgcl.Track('left-axis'),
+            hgcl.Track('top-axis'),
+            hgcl.Track('labelled-points-track', 
+                       tileset=ts,
+                       position='center',
+                       height=600,
+                       options={
+                            'xField': 'x',
+                            'yField': 'y',
+                            'labelField': 'v'
+                        }),
         ])
     ])
 
+    display
+
 .. image:: img/jupyter-labelled-points.png
+
+This same technique can be used to display points in a GeoJSON file.
+First we have to extract the values from the GeoJSON file and
+create a dataframe:
+
+.. code-block:: python
+
+    import math
+
+    def lat2y(a):
+      return 180.0/math.pi*math.log(math.tan(math.pi/4.0+a*(math.pi/180.0)/2.0))
+
+    x = [t['geometry']['coordinates'][0] for t in trees['features']]
+    y = [-lat2y(t['geometry']['coordinates'][1]) for t in trees['features']]
+    names = [t['properties']['SPECIES'] for t in trees['features']]
+
+    df = pd.DataFrame({ 'x': x, 'y': y, 'names': names })
+    df = df.sample(frac=1).reset_index(drop=True)
+
+And then create the tileset and track, as before.
+
+.. code-block:: python
+
+    import higlass
+    import higlass.tilesets as hgti
+    import higlass.client as hgcl
+
+    ts = hgti.dfpoints(df, x_col='x', y_col='y')
+
+    (display, server, viewconf) = higlass.display([
+        hgcl.View([
+            hgcl.Track('left-axis'),
+            hgcl.Track('top-axis'),
+            hgcl.Track('osm-tiles', position='center'),
+            hgcl.Track('labelled-points-track', 
+                       tileset=ts,
+                       position='center',
+                       height=600,
+                       options={
+                            'xField': 'x',
+                            'yField': 'y',
+                            'labelField': 'names'
+                        }),
+        ])
+    ])
+
+    display
+
+.. image:: img/geojson-jupyter.png
+
 
 Other constructs
 """"""""""""""""
