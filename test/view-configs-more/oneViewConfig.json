@@ -119,45 +119,5 @@
         "y": 0
       }
     }
-  ],
-  "zoomLocks": {
-    "locksByViewUid": {
-      "view2": "JAFSZPdmSWe72WgTnVDtbA",
-      "aa": "JAFSZPdmSWe72WgTnVDtbA"
-    },
-    "locksDict": {
-      "JAFSZPdmSWe72WgTnVDtbA": {
-        "view2": [
-          1812727561.5083356,
-          1873757116.378131,
-          475954.14177536964
-        ],
-        "aa": [
-          1812727561.5083356,
-          1873757116.378131,
-          475954.14177536964
-        ]
-      }
-    }
-  },
-  "locationLocks": {
-    "locksByViewUid": {
-      "view2": "fRq4SRH8TSyVveKqebWsxw",
-      "aa": "fRq4SRH8TSyVveKqebWsxw"
-    },
-    "locksDict": {
-      "fRq4SRH8TSyVveKqebWsxw": {
-        "view2": [
-          1812727561.5083356,
-          1873757116.378131,
-          475954.14177536964
-        ],
-        "aa": [
-          1812727561.5083356,
-          1873757116.378131,
-          475954.14177536964
-        ]
-      }
-    }
-  }
+  ]
 }

@@ -16,6 +16,7 @@
 - Fix #648: Auto select and copy URL when exporting a view by link
 - Fix #647: Shows correct URL when specifying an absolute URL as `exportViewUrl` in the viewconf
 - Fix #651: set correct namespace for SVG exports
+- Fix #593: zoom to data extent when adding the first track to an empty view
 
 ## v1.5.8
 
