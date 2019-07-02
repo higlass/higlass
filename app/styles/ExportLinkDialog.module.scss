@@ -1,3 +1,7 @@
-.full-width {
-  width: 100%;
+.export-link-dialog-wrapper {
+  display: flex;
+
+  input {
+    flex-grow: 1;
+  }
 }

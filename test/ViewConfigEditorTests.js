@@ -128,8 +128,7 @@ describe('View Config Editor', () => {
       .toEqual(30);
   });
 
-  afterAll((done) => {
+  afterAll(() => {
     removeHGComponent(div);
-    done();
   });
 });

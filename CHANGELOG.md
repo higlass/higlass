@@ -1,10 +1,27 @@
-## v1.5.8
+## v1.6.0
 
+- Add an option to restrict the extent of central heatmaps to the upper-right or lower-left corner to enable comparison of two heatmaps in the center. Run `npm start` and see [http://localhost:8080/apis/svg.html?/viewconfs/diagonal-split-heatmap.json](http://localhost:8080/apis/svg.html?/viewconfs/diagonal-split-heatmap.json) for an example
+- Updated `pixi.js` to version `5`. In your `html` files you need to replace the previous PixiJS loader with `<script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>` (or `<script crossorigin src="https://unpkg.com/pixi.js-legacy@5/dist/pixi-legacy.min.js"></script>` if you want to use the Canvas renderer)
 - Add a dialog to directly edit the view config in the browser
 - Replace ReactBootstrap modal with custom modal to not rely on Bootstrap and support Jupyter
 - Updated `pub-sub-es` to version `1.2.1` to fix a bug in the shorthand event unsubscription
 - Added an example of a map overlay
+- Support semi-transparent colormaps through RGBA colors
+- Update Mapbox endpoint. See [http://localhost:8080/others/mapbox.html](http://localhost:8080/others/mapbox.html) for an example.
+- Improve performance of the `mousemove`-related event handling
+- Remove unused properties from the exported view config
+- Improve performance of tiles fetching through a combination of throttling and debouncing
+- Fix a minor visual glitch with the positioning of track-related `div`s
+- Fix OSM track to avoid CORS issues in Chrome and allow setting `minPos` to `0`
+- Fix #648: Auto select and copy URL when exporting a view by link
+- Fix #647: Shows correct URL when specifying an absolute URL as `exportViewUrl` in the viewconf
 - Fix #651: set correct namespace for SVG exports
+- Fix #593: zoom to data extent when adding the first track to an empty view
+
+## v1.5.8
+
+- Fix a value scale syncing bug
+- Update the docs
 
 ## v1.5.7
 

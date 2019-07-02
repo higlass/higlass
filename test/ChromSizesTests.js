@@ -181,19 +181,16 @@ describe('Simple HiGlassComponent', () => {
       );
     });
 
-    it("Ensure that the viewport projection's borders are grey", (done) => {
+    it("Ensure that the viewport projection's borders are grey", () => {
       const trackObject = getTrackObjectFromHGC(
         hgc.instance(), 'Mw2aWH9TTcu38t5OZlCYyA'
       );
 
       expect(trackObject.options.lineStrokeColor).to.eql('grey');
-      done();
     });
 
-    afterAll((done) => {
+    afterAll(() => {
       removeHGComponent(div);
-
-      done();
     });
   });
 });

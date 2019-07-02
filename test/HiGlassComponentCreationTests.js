@@ -26,16 +26,12 @@ describe('Simple HiGlassComponent', () => {
       ([div, hgc] = mountHGComponent(div, hgc, 'http://higlass.io/api/v1/viewconfs/?d=default', done));
     });
 
-    it('Ensures that the viewconf state is editable', (done) => {
+    it('Ensures that the viewconf state is editable', () => {
       expect(hgc.instance().state.viewConfig.editable).to.eql(true);
-
-      done();
     });
 
-    afterAll((done) => {
+    afterAll(() => {
       removeHGComponent(div);
-
-      done();
     });
   });
 });
