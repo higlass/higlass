@@ -1,0 +1,29 @@
+.cross {
+  position: relative;
+  width: 1em;
+  height: 1em;
+}
+
+.cross:before, .cross:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 1em;
+  height: 1px;
+  background: black;
+  transform-origin: center;
+}
+
+.cross:before {
+  -webkit-transform: translate(0, -50%) rotate(45deg);
+  -moz-transform: translate(0, -50%) rotate(45deg);
+  transform: translate(0, -50%) rotate(45deg);
+}
+
+.cross:after {
+  -webkit-transform: translate(0, -50%) rotate(-45deg);
+  -moz-transform: translate(0, -50%) rotate(-45deg);
+  transform: translate(0, -50%) rotate(-45deg);
+}

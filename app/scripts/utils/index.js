@@ -46,7 +46,6 @@ export { default as numericifyVersion } from './numericify-version';
 export { default as objVals } from './obj-vals';
 export { default as or } from './or';
 export { default as pixiTextToSvg } from './pixi-text-to-svg';
-export { default as positionedTracksToAllTracks } from './positioned-tracks-to-all-tracks';
 export { default as q } from './q';
 export { default as reduce } from './reduce';
 export { default as rangeQuery2d } from './range-query-2d';
@@ -60,13 +59,17 @@ export { default as showMousePosition } from './show-mouse-position';
 export { default as some } from './some';
 export { default as sum } from './sum';
 export { default as svgLine } from './svg-line';
+export { default as throttleAndDebounce } from './throttle-and-debounce';
 export { default as tileToCanvas } from './tile-to-canvas';
+export { default as timeout } from './timeout';
 export { default as totalTrackPixelHeight } from './total-track-pixel-height';
 export { default as toVoid } from './to-void';
 export { default as trimTrailingSlash } from './trim-trailing-slash';
 export { default as valueToColor } from './value-to-color';
 export { default as expandCombinedTracks } from './expand-combined-tracks';
 export { default as segmentsToRows } from './segments-to-rows';
+export { default as visitPositionedTracks } from './visit-positioned-tracks';
+export { default as visitTracks } from './visit-tracks';
 export {
   getTrackObjectFromHGC,
   getTrackRenderer,

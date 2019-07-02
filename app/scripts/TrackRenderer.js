@@ -434,8 +434,6 @@ class TrackRenderer extends React.Component {
   addZoom() {
     if (!this.elementSelection || !this.currentProps.zoomable) return;
 
-    // add back the previous transform
-    // console.log('zoom:', this.elementSelection.node());
     this.elementSelection.call(this.zoomBehavior);
     this.zoomBehavior.transform(this.elementSelection, this.zoomTransform);
   }
@@ -671,9 +669,6 @@ class TrackRenderer extends React.Component {
 
     for (const uid in this.trackDefObjects) {
       const track = this.trackDefObjects[uid].trackObject;
-
-      // track.refXScale(this.xScale);
-      // track.refYScale(this.yScale);
 
       // e.g. when the track is resized... we want to redraw it
       track.refScalesChanged(this.xScale, this.yScale);
@@ -1032,7 +1027,6 @@ class TrackRenderer extends React.Component {
           this.activeTransitions -= 1;
         });
     } else {
-      // console.log('setting zoom', notify);
       setZoom();
     }
 
@@ -1488,12 +1482,14 @@ class TrackRenderer extends React.Component {
           new ValueIntervalTrack(context, options)
         );
 
+      case 'osm':
       case 'osm-tiles':
         return new OSMTilesTrack(context, options);
 
       case 'osm-2d-tile-ids':
         return new OSMTileIdsTrack(context, options);
 
+      case 'mapbox':
       case 'mapbox-tiles':
         return new MapboxTilesTrack(context, options);
 
@@ -1630,20 +1626,17 @@ class TrackRenderer extends React.Component {
     this.eventTracker.addEventListener('mouseover', this.boundForwardEvent);
     this.eventTracker.addEventListener('mouseenter', this.boundForwardEvent);
     this.eventTracker.addEventListener('mousedown', this.boundForwardEvent);
-    this.eventTracker.addEventListener('mousemove', this.boundForwardEvent);
     this.eventTracker.addEventListener('mouseup', this.boundForwardEvent);
     this.eventTracker.addEventListener('mouseout', this.boundForwardEvent);
     this.eventTracker.addEventListener('mouseleave', this.boundForwardEvent);
 
     this.eventTracker.addEventListener('touchstart', this.boundForwardEvent);
-    this.eventTracker.addEventListener('touchmove', this.boundForwardEvent);
     this.eventTracker.addEventListener('touchend', this.boundForwardEvent);
     this.eventTracker.addEventListener('touchcancel', this.boundForwardEvent);
 
     this.eventTracker.addEventListener('pointerover', this.boundForwardEvent);
     this.eventTracker.addEventListener('pointerenter', this.boundForwardEvent);
     this.eventTracker.addEventListener('pointerdown', this.boundForwardEvent);
-    this.eventTracker.addEventListener('pointermove', this.boundForwardEvent);
     this.eventTracker.addEventListener('pointerup', this.boundForwardEvent);
     this.eventTracker.addEventListener('pointercancel', this.boundForwardEvent);
     this.eventTracker.addEventListener('pointerout', this.boundForwardEvent);
@@ -1665,20 +1658,17 @@ class TrackRenderer extends React.Component {
     this.eventTracker.removeEventListener('mouseover', this.boundForwardEvent);
     this.eventTracker.removeEventListener('mouseenter', this.boundForwardEvent);
     this.eventTracker.removeEventListener('mousedown', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('mousemove', this.boundForwardEvent);
     this.eventTracker.removeEventListener('mouseup', this.boundForwardEvent);
     this.eventTracker.removeEventListener('mouseout', this.boundForwardEvent);
     this.eventTracker.removeEventListener('mouseleave', this.boundForwardEvent);
 
     this.eventTracker.removeEventListener('touchstart', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('touchmove', this.boundForwardEvent);
     this.eventTracker.removeEventListener('touchend', this.boundForwardEvent);
     this.eventTracker.removeEventListener('touchcancel', this.boundForwardEvent);
 
     this.eventTracker.removeEventListener('pointerover', this.boundForwardEvent);
     this.eventTracker.removeEventListener('pointerenter', this.boundForwardEvent);
     this.eventTracker.removeEventListener('pointerdown', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('pointermove', this.boundForwardEvent);
     this.eventTracker.removeEventListener('pointerup', this.boundForwardEvent);
     this.eventTracker.removeEventListener('pointercancel', this.boundForwardEvent);
     this.eventTracker.removeEventListener('pointerout', this.boundForwardEvent);

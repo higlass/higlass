@@ -44,6 +44,37 @@ And then imported into higlass after copying to the docker temp directory (``cp 
             --datatype bedlike \
             --coordSystem b37
 
+A note about assemblies and coordinate systems
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+HiGlass doesn't really have a notion of an assembly. It only displays data
+where it's told to display it. When you aggregate a bedfile with using
+chromsizes-filename, it uses the lengths of the chromosomes to determine the
+offsets of the bedfile entries from the 0 position. So if aggregate and load
+the resulting the beddb file in HiGlass, you'll see the bedfile entries
+displayed as if the chromosomes in the chromsizes file were laid end to end.
+
+Now, if you want to see which chromosomes correspond to which positions along
+the x-axis or to have the search bar display "assembly" coordinates, you'll
+need to register the chromsizes file using:
+
+.. code-block:: bash
+
+    higlass-manage ingest \
+        --filetype chromsizes-tsv \
+        --datatype chromsizes \
+        --assembly galGal6 \
+        negspy/data/galGal6/chromInfo.txt 
+
+If you would like to be able to search for gene annotations in that assembly,
+you'll need to create a `gene annotation track
+</data_preparation.html#gene-annotation-tracks>`_.
+
+** Note that while the lack of assembly enforcement is generally the rule,
+`bigWig tracks </data_preparation.html#bigwig-files>`_ are a notable
+exception. All bigWig files have to be associated with a coordinate system
+that is already present in the HiGlass server in order to be ingested.
+
 Bedpe-like Files
 ----------------
 
@@ -67,15 +98,33 @@ contain too many values and slow down the renderer:
         --output-file domains.txt.multires \
         domains.txt
 
-This requires the `--chr1-col`, `--from1-col`, `--to1-col`, `--chr2-col`,
-`--from2-col`, `--to2-col` parameters to specify which columns in the datafile
+This requires the ``--chr1-col``, ``--from1-col``, ``--to1-col``, ``--chr2-col``,
+``--from2-col``, ``--to2-col`` parameters to specify which columns in the datafile
 describe the x-extent and y-extent of the region.
 
 The priority with which regions are included in lower resolution tiles is
-specified by the `--impotance-column` parameter. This can either provide a
-value, contain `random`, or if it's not specified, default to the size of the
+specified by the ``--impotance-column`` parameter. This can either provide a
+value, contain ``random``, or if it's not specified, default to the size of the
 region.
 
+**BED files** can also be aggregated as BEDPE-like files for use with the
+``2d-rectangle-domains`` track. The from1_col,to1_col and from2_col,to2_col
+parameters need to be set to the same columns. Example file::
+
+    chrZ    80050000        80100000        False   0.19240442973331        0.24341494300858102
+    chrZ    81350000        81400000        False   0.5359549218130373      0.30888749507071034
+    chrZ    81750000        81800000        False   -0.5859846849030403     1.602383514196359
+
+With the aggregate command:
+
+.. code-block:: bash
+
+    clodius aggregate bedpe \
+    --chromsizes-filename galGal6.chrom.sizes \
+    --chr1-col 1 --chr2-col 1 \
+    --from1-col 2 --to1-col 3 \
+    --from2-col 2 --to2-col 3 \
+    --has-header  my_file.bed
 
 BedGraph files
 --------------

@@ -10,9 +10,9 @@
 </style>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="/hglib.css">
-      <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@16.6/umd/react-dom.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.3/pixi.min.js"></script>
+  <script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
 </head>
 <body >
@@ -61,7 +61,7 @@ function randomDragStart(ev) {
 
 function lineDragStart(ev) {
 
-   var lineTrack = 
+   var lineTrack =
     {
         "server": "http://higlass.io/api/v1",
         "tilesetUid": "WEAuzo5DQy6lEYw4kmgnDA",
@@ -73,7 +73,7 @@ function lineDragStart(ev) {
 }
 
 function multivecDragStart(ev) {
-   var lineTrack = 
+   var lineTrack =
     {
         "server": "http://higlass.io/api/v1",
         "tilesetUid": "WtBJUYawQzS9M2WVIIHnlA",
@@ -86,7 +86,7 @@ function multivecDragStart(ev) {
 }
 
 function linearLabelsDragStart(ev) {
-   var lineTrack = 
+   var lineTrack =
     {
         "server": "http://resgen.io/api/v1",
         "tilesetUid": "ZPIL0W2NTyadgTPMqfPqnw",
@@ -98,13 +98,13 @@ function linearLabelsDragStart(ev) {
 }
 
 function heatmapDragStart(ev) {
-   var heatmapTrack = 
+   var heatmapTrack =
     {
         "server": "http://higlass.io/api/v1",
         "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
         "datatype": "matrix",
         "defaultTracks": [ "heatmap"]
-    } 
+    }
 
     console.log('heatmapDragStart(ev)');
     window.hgApi.showAvailableTrackPositions(heatmapTrack);
