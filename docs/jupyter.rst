@@ -282,7 +282,7 @@ Then we have to set up a data server to output the data in "tiles".
 
     ts = hgti.dfpoints(df, x_col='x', y_col='y')
 
-    (display, server, viewconf) = higlass.display([
+    display, server, viewconf = higlass.display([
         hgcl.View([
             hgcl.Track('left-axis'),
             hgcl.Track('top-axis'),
