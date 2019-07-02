@@ -32,6 +32,7 @@ import {
   getTrackPositionByUid,
   isWithin,
   sum,
+  visitPositionedTracks,
 } from './utils';
 
 // Configs
@@ -120,6 +121,11 @@ class TiledPlot extends React.Component {
       contextMenuPosition: null,
       addDivisorDialog: null,
     };
+
+    // This should be `true` until one tracks was added and initialized.
+    // The main difference to `this.state.init` is that `reset` should be reset
+    // to `true` when the user removes all tracks and starts with a blank view!
+    this.reset = true;
 
     if (window.higlassTracksByType) {
       // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
@@ -219,6 +225,23 @@ class TiledPlot extends React.Component {
     );
 
     if (toUpdate) this.previousPropsStr = nextPropsStr;
+
+    const numPrevTracks = this.numTracks;
+
+    this.numTracks = 0;
+    // Note that there is no point in running the code below with
+    // `this.props.tracks` and `nextProps.tracks` because the object is mutable
+    // and so the props of `this.props.tracks` and `nextProps.tracks` are always
+    // identical. To work around this we store the number of tracks in
+    // `this.numTracks`
+    visitPositionedTracks(this.props.tracks, () => this.numTracks++);
+
+    // With `this.reset ||` we ensure that subsequent updates do not unset the
+    // `this.reset = true`. Only `this.checkAllTilesetInfoReceived()` should set
+    // `this.reset` to `false`.
+    this.reset = this.reset || (numPrevTracks === 0 && this.numTracks > 0);
+
+    if (!this.numTracks) this.tracksByUidInit = {};
 
     return toUpdate;
   }
@@ -429,7 +452,9 @@ class TiledPlot extends React.Component {
    */
   checkAllTilesetInfoReceived() {
     // Do nothing if HiGlass initialized already
-    if (this.state.init || !this.props.zoomToDataExtentOnInit) return;
+    if (
+      (this.state.init && !this.reset) || !this.props.zoomToDataExtentOnInit()
+    ) return;
 
     // Get the total number of track that are expecting a tilesetInfo
     const allTilesetInfos = Object.keys(this.trackRenderer.trackDefObjects)
@@ -453,6 +478,7 @@ class TiledPlot extends React.Component {
 
     if (allTilesetInfos === loadedTilesetInfos) {
       this.setState({ init: true });
+      this.reset = false;
       this.handleZoomToData();
     }
   }
@@ -2285,7 +2311,7 @@ TiledPlot.propTypes = {
   uid: PropTypes.string,
   viewOptions: PropTypes.object,
   zoomable: PropTypes.bool,
-  zoomToDataExtentOnInit: PropTypes.bool
+  zoomToDataExtentOnInit: PropTypes.func
 };
 
 export default withPubSub(withModal(TiledPlot));

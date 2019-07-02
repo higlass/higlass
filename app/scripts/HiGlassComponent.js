@@ -3951,7 +3951,7 @@ class HiGlassComponent extends React.Component {
             yDomainLimits={view.yDomainLimits}
             zoomable={!zoomFixed}
             zoomLimits={view.zoomLimits}
-            zoomToDataExtentOnInit={this.zoomToDataExtentOnInit.has(view.uid)}
+            zoomToDataExtentOnInit={() => this.zoomToDataExtentOnInit.has(view.uid)}
           />
         );
 
