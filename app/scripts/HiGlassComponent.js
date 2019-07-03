@@ -1138,13 +1138,9 @@ class HiGlassComponent extends React.Component {
   }
 
   createSVG() {
-    const xmlns = 'http://www.w3.org/2000/xmlns/';
-    const xlinkns = 'http://www.w3.org/1999/xlink';
-    const svgns = 'http://www.w3.org/2000/svg';
-
-    const svg = document.createElementNS(svgns, 'svg');
-    svg.setAttributeNS(xmlns, 'xmlns', svgns);
-    svg.setAttributeNS(xmlns, 'xmlns:xlink', xlinkns);
+    const svg = document.createElement('svg');
+    svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+    svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     svg.setAttribute('version', '1.1');
 
     for (const tiledPlot of dictValues(this.tiledPlots)) {
@@ -1173,6 +1169,14 @@ class HiGlassComponent extends React.Component {
 
     svgString = svgString.replace(/<a0:/g, '<');
     svgString = svgString.replace(/<\/a0:/g, '</');
+    // Remove duplicated xhtml namespace property
+    svgString = svgString.replace(
+      /(<svg[\n\r])(\s+xmlns="http:\/\/www\.w3\.org\/1999\/xhtml"[\n\r])/gm, '$1'
+    );
+    // Remove duplicated svg namespace
+    svgString = svgString.replace(
+      /(\s+<clipPath[\n\r]\s+)(xmlns="http:\/\/www\.w3\.org\/2000\/svg")/gm, '$1'
+    );
 
     const xmlDeclaration = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>';
     const doctype = '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
