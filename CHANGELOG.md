@@ -1,4 +1,4 @@
-**Next Version**
+## Next Version
 
 - Treat `tilesetInfo.mirror_tiles = false` as a falsy value
 
