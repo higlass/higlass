@@ -1,6 +1,9 @@
 ## Next Version
 
 - Really fix #651: set correct namespace for SVG exports
+- Treat `tilesetInfo.mirror_tiles = false` as a falsy value
+
+_[Detailed changes since v1.6.0](https://github.com/higlass/higlass/compare/v1.6.0...develop)_
 
 ## v1.6.0
 
@@ -22,28 +25,40 @@
 - Fix #651: set correct namespace for SVG exports
 - Fix #593: zoom to data extent when adding the first track to an empty view
 
+_[Detailed changes since v1.5.8](https://github.com/higlass/higlass/compare/v1.5.8...v1.6.0)_
+
 ## v1.5.8
 
 - Fix a value scale syncing bug
 - Update the docs
+
+_[Detailed changes since v1.5.7](https://github.com/higlass/higlass/compare/v1.5.7...v1.5.8)_
 
 ## v1.5.7
 
 - Fix #637 - SVG export fill color doesn't match what is selected
 - Switch to nearest neighbor interpolation for horizontal heatmaps
 
+_[Detailed changes since v1.5.8](https://github.com/higlass/higlass/compare/v1.5.6...v1.5.7)_
+
 ## v1.5.6
 
 - Allow any horizontal track to also be placed on the left or right
+
+_[Detailed changes since v1.5.8](https://github.com/higlass/higlass/compare/v1.5.6...v1.5.7)_
 
 ## v1.5.5
 
 - Fixed #612: resolved an issue with caseinsensitive chromosome names
 - Destroy heatmap sprites and axis texts to mitigate memory leak
 
+_[Detailed changes since v1.5.4](https://github.com/higlass/higlass/compare/v1.5.4...v1.5.5)_
+
 ## v1.5.4
 
 - Fix the multiple component passive event issue by replacing the dom-event.js handlers with a class so that each component maintains its own context
+
+_[Detailed changes since v1.5.3](https://github.com/higlass/higlass/compare/v1.5.3...v1.5.4)_
 
 ## v1.5.3
 
@@ -59,6 +74,8 @@ to be resized
 - Fixed horizontal-vector-heatmap error thrown bug by padding incomplete
   incoming data arrays
 
+_[Detailed changes since v1.5.1](https://github.com/higlass/higlass/compare/v1.5.1...v1.5.3)_
+
 ## v1.5.1
 
 - Fixed UI hanging on mouseover of zoomed out matrix bug
@@ -67,6 +84,8 @@ to be resized
 - Added a default track type for the chromsizes datatype
 - Fixed drag handler pubSub reference
 - Fixed #596: scrolling while zooming bug introduced in latest chrome
+
+_[Detailed changes since v1.5.0](https://github.com/higlass/higlass/compare/v1.5.0...v1.5.1)_
 
 ## v1.5.0
 
@@ -82,6 +101,8 @@ to be resized
 - Fix #291: allow web page scrolling when zoomFixed is set to true
 - Fix #578: BarTrack SVG export overplotting error.
 - Fix #584: Reset viewport is broken
+
+_[Detailed changes since v1.4.2](https://github.com/higlass/higlass/compare/v1.4.2...v1.5.0)_
 
 ## v1.4.2
 
