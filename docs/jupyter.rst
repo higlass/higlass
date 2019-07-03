@@ -355,10 +355,10 @@ projection and return it as ``(tile_id, tile_data)`` tuples.
 .. code-block:: python
 
     import math
-    def y2lat(a):
-      return 180.0/math.pi*(2.0*math.atan(math.exp(a*math.pi/180.0))-math.pi/2.0)
+    import numpy as np
+
     def lat2y(a):
-      return 180.0/math.pi*math.log(math.tan(math.pi/4.0+a*(math.pi/180.0)/2.0))
+      return 180.0/math.pi*np.log(np.tan(math.pi/4.0+a*(math.pi/180.0)/2.0))
 
     def point_tiles(z, x, y, width=1, height=1):
         geo_tile = ctg.get_tiles('../trees.geojson.gjdb', z, x, y, width, height)
