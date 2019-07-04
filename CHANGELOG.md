@@ -1,5 +1,6 @@
 ## Next Version
 
+- Fix visual glitches with the new Modal when run in `higlass-app`
 - Really fix #651: set correct namespace for SVG exports
 - Treat `tilesetInfo.mirror_tiles = false` as a falsy value
 - Fixed: `Save and Close` in the ViewConfigEditor works properly
