@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="author" content="Fritz Lekschas">
+  <meta name="description" content="A beautiful dark theme for beautiful people. Show the 3D Genome some love!">
+  <meta name="keywords" content="HiGlass, Dark Theme, Hi-C, 3D Genome, Genome Interaction Matrix">
+  <title>HiGlass: Dark Theme</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/hglib.css">
+  <style type="text/css">
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: black !important;
+  }
+  #demo {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+  }
+  </style>
+  <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16.6/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+</head>
+<body>
+  <div id="demo"></div>
+</body>
+<script src='/hglib.js'></script>
+<script>
+const viewConfig = {
+  editable: true,
+  zoomFixed: false,
+  trackSourceServers: [
+    'http://flemming.mit.edu:8080/api/v1'
+  ],
+  exportViewUrl: '/api/v1/viewconfs/',
+  views: [
+    {
+      tracks: {
+        center: [
+          {
+            uid: 'c',
+            type: 'combined',
+            contents: [
+              {
+                type: 'mapbox',
+                uid: 'mapbox',
+                options: {
+                  labelPosition: 'bottomRight',
+                  accessToken: 'pk.eyJ1IjoiZmxla3NjaGFzIiwiYSI6ImNqZXB2aWd4NDBmZTIzM3BjdGZudTFob2oifQ.Jnmp1xWJyS4_lRhzrZAFBQ',
+                  style: 'dark-v8',
+                  minPos: 1,
+                  maxPos: 40075016,
+                }
+              },
+              {
+                server: 'http://flemming.mit.edu:8080/api/v1',
+                tilesetUid: 'OT0ZD6qdQUCunNTIeq_ZJQ',
+                uid: 'RZd_D2XlS_2-or_fp_1EBg',
+                type: 'heatmap',
+                options: {
+                  backgroundColor: 'transparent',
+                  labelPosition: 'bottomRight',
+                  labelColor: '#ffffff',
+                  labelTextOpacity: 0.5,
+                  labelBackgroundColor: 'black',
+                  labelBackgroundOpacity: 0.01,
+                  labelLeftMargin: 0,
+                  labelRightMargin: 0,
+                  labelTopMargin: 0,
+                  labelBottomMargin: 0,
+                  colorRange: [
+                    'rgba(0, 0, 0, 0.01)',
+                    'rgba(34, 46, 84, 0.25)',
+                    'rgba(68, 141, 178, 0.5)',
+                    'rgba(104, 191, 48, 0.7)',
+                    'rgba(253, 255, 84, 0.8)',
+                    'rgba(253, 255, 255, 0.9)',
+                  ],
+                  colorbarBackgroundColor: 'black',
+                  colorbarBackgroundOpacity: 0.01,
+                  maxZoom: null,
+                  colorbarPosition: 'topRight',
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'black',
+                  heatmapValueScaling: 'log',
+                }
+              }
+            ]
+          }
+        ],
+      },
+      initialXDomain: [
+        11784450.649959948,
+        11822597.940904947
+      ],
+      initialYDomain: [
+        15049995.142009012,
+        15078071.54814453
+      ],
+      layout: {
+        w: 12,
+        h: 12,
+        x: 0,
+        y: 0,
+      },
+      uid: 'a'
+    }
+  ],
+};
+window.hgApi = window.hglib.viewer(
+  document.getElementById('demo'),
+  viewConfig,
+  { bounded: true, isDarkTheme: true },
+);
+</script>
+</html>
