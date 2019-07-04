@@ -624,7 +624,7 @@ function fetchEither(url, callback, textOrJson, pubSub) {
       return content;
     })
     .catch((error) => {
-      console.error(error);
+      console.error(`Could not fetch ${url}`, error);
       callback(error, undefined);
       return error;
     })
