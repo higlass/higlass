@@ -24,6 +24,7 @@ class ViewConfigEditor extends React.Component {
     this.handleChangeBound = this.handleChange.bind(this);
     this.handleKeyDownBound = this.handleKeyDown.bind(this);
     this.handleKeyUpBound = this.handleKeyUp.bind(this);
+    this.handleSubmitBound = this.handleSubmit.bind(this);
     this.hideBound = this.hide.bind(this);
     this.showBound = this.show.bind(this);
 
