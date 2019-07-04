@@ -1,6 +1,7 @@
 ## Next Version
 
 - Treat `tilesetInfo.mirror_tiles = false` as a falsy value
+- Fixed: `Save and Close` in the ViewConfigEditor works properly
 
 _[Detailed changes since v1.6.0](https://github.com/higlass/higlass/compare/v1.6.0...develop)_
 
