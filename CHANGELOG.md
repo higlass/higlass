@@ -1,5 +1,7 @@
 ## Next Version
 
+- Render `horizontal-heatmap` track properly in PIXI v4 and v5
+
 _[Detailed changes since v1.6.1](https://github.com/higlass/higlass/compare/v1.6.0...develop)_
 
 ## v1.6.1
