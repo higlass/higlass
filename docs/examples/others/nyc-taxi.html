@@ -9,19 +9,49 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="/hglib.css">
   <style type="text/css">
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-    background: black !important;
-  }
-  #demo {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    bottom: 1rem;
-    left: 1rem;
-  }
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: black !important;
+    }
+    header, label, input, button {
+      line-height: 2.5rem
+    }
+    header {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      padding: 1rem 2rem;
+      color: #666;
+      line-height: 2rem
+    }
+    label {
+      margin: 0;
+    }
+    label + label {
+      margin-left: 1rem;
+    }
+    input, button {
+      border-radius: 0.25rem;
+      border: 1px solid #222;
+    }
+    input {
+      background: black;
+    }
+    button {
+      color: #999;
+      background: #222;
+    }
+    #demo {
+      position: absolute;
+      left: 1rem;
+      top: 5rem;
+      bottom: 1rem;
+      right: 1rem;
+      overflow: hidden;
+    }
   </style>
   <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@16.6/umd/react-dom.production.min.js"></script>
@@ -29,12 +59,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
 </head>
 <body>
+  <header>
+    <span>To load Mapbox provide an</span>
+    <label>
+      access Token
+      <input
+        id="access-token"
+        type="text"
+      >
+    </label>
+    <button id="load">Load</button>
+  </header>
   <div id="demo"></div>
 </body>
 <script src='/hglib.js'></script>
 <script>
 const viewConfig = {
-  editable: true,
+  editable: false,
   zoomFixed: false,
   trackSourceServers: [
     'http://flemming.mit.edu:8080/api/v1'
@@ -49,20 +90,8 @@ const viewConfig = {
             type: 'combined',
             contents: [
               {
-                type: 'mapbox',
-                uid: 'mapbox',
-                options: {
-                  labelPosition: 'bottomRight',
-                  accessToken: 'pk.eyJ1IjoiZmxla3NjaGFzIiwiYSI6ImNqZXB2aWd4NDBmZTIzM3BjdGZudTFob2oifQ.Jnmp1xWJyS4_lRhzrZAFBQ',
-                  style: 'dark-v8',
-                  minPos: 1,
-                  maxPos: 40075016,
-                }
-              },
-              {
                 server: 'http://flemming.mit.edu:8080/api/v1',
                 tilesetUid: 'OT0ZD6qdQUCunNTIeq_ZJQ',
-                uid: 'RZd_D2XlS_2-or_fp_1EBg',
                 type: 'heatmap',
                 options: {
                   backgroundColor: 'transparent',
@@ -96,14 +125,8 @@ const viewConfig = {
           }
         ],
       },
-      initialXDomain: [
-        11784450.649959948,
-        11822597.940904947
-      ],
-      initialYDomain: [
-        15049995.142009012,
-        15078071.54814453
-      ],
+      initialXDomain: [11784450, 11822597],
+      initialYDomain: [15049995, 15078071],
       layout: {
         w: 12,
         h: 12,
@@ -114,6 +137,58 @@ const viewConfig = {
     }
   ],
 };
+
+const accessTokenEl = document.querySelector('#access-token');
+const loadEl = document.querySelector('#load');
+
+let accessToken = null;
+
+let hgApi;
+let xDomain = [11784450, 11822597];
+let yDomain = [15049995, 15078071];
+
+const loadHg = () => {
+  accessToken = accessTokenEl.value;
+
+  if (!accessToken) {
+    console.error('No access token specified');
+    return;
+  }
+
+  viewConfig.views[0].tracks.center[0].contents.unshift({
+    type: 'mapbox',
+    options: {
+      labelPosition: 'bottomRight',
+      accessToken,
+      style: 'dark-v8',
+      minPos: 1,
+      maxPos: 40075016,
+      name: '© Mapbox',
+      labelColor: '#ffffff',
+      labelTextOpacity: 0.66,
+      labelBackgroundColor: 'black',
+      labelBackgroundOpacity: 0.66,
+    }
+  });
+
+  hgApi = window.hglib.viewer(
+    document.getElementById('demo'),
+    JSON.parse(JSON.stringify(viewConfig)),
+    { bounded: true, isDarkTheme: true },
+  );
+
+  hgApi.zoomTo('a', ...xDomain, ...yDomain, 0);
+
+  hgApi.on('location', ({ xDomain: newXDomain, yDomain: newYDomain }) => {
+    xDomain = [...newXDomain];
+    yDomain = [...newYDomain];
+  });
+};
+
+loadEl.addEventListener('click', () => {
+  loadHg();
+});
+
 window.hgApi = window.hglib.viewer(
   document.getElementById('demo'),
   viewConfig,
