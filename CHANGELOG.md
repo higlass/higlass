@@ -1,11 +1,15 @@
 ## Next Version
 
+_[Detailed changes since v1.6.1](https://github.com/higlass/higlass/compare/v1.6.0...develop)_
+
+## v1.6.1
+
 - Fix visual glitches with the new Modal when run in `higlass-app`
 - Really fix #651: set correct namespace for SVG exports
 - Treat `tilesetInfo.mirror_tiles = false` as a falsy value
 - Fixed: `Save and Close` in the ViewConfigEditor works properly
 
-_[Detailed changes since v1.6.0](https://github.com/higlass/higlass/compare/v1.6.0...develop)_
+_[Detailed changes since v1.6.0](https://github.com/higlass/higlass/compare/v1.6.0...v1.6.1)_
 
 ## v1.6.0
 
