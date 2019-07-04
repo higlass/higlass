@@ -13,9 +13,6 @@
   align-items: center;
 }
 .tileset-finder-checkbox-tree {
-    max-height: 50vh;
-    max-width: 90vw;
-    overflow-y: scroll;
     margin: 5px;
     padding: 3px;
     border: 1px solid #aaaaaa;
