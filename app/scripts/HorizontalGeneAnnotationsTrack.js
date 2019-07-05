@@ -13,13 +13,315 @@ import { colorToHex } from './utils';
 const FONT_SIZE = 11;
 const FONT_FAMILY = 'Arial';
 const GENE_LABEL_POS = 'outside';
-const GENE_RECT_WIDTH = 1;
 const GENE_RECT_HEIGHT = 10;
 const GENE_STRAND_SPACING = 4;
 const TRIANGLE_HEIGHT = 6;
 const MAX_TEXTS = 20;
 const WHITE_HEX = colorToHex('#ffffff');
 const EXON_LINE_HEIGHT = 2;
+const MAX_TILE_ENTRIES = 100;
+const FILLER_HEIGHT = 14;
+
+const trackUtils = {
+  getTilePosAndDimensions: (tilesetInfo, tileId) => {
+    /**
+     * Get the tile's position in its coordinate system.
+     *
+     * See Tiled1DPIXITrack.js
+     */
+    const zoomLevel = +tileId.split('.')[0];
+    const xTilePos = +tileId.split('.')[1];
+
+    // max_width should be substitutable with 2 ** tilesetInfo.max_zoom
+    const totalWidth = tilesetInfo.max_width;
+
+    const minX = tilesetInfo.min_pos[0];
+
+    const tileWidth = totalWidth / 2 ** zoomLevel;
+
+    const tileX = minX + xTilePos * tileWidth;
+
+    return {
+      tileX,
+      tileWidth,
+    };
+  }
+};
+
+function externalInitTile(track, tile, options) {
+  const {
+    flipText,
+    fontSize,
+    fontFamily,
+    plusStrandColor,
+    minusStrandColor,
+    maxTileEntries,
+    maxTexts,
+  } = options;
+
+  const getGeneId = geneInfo => `${geneInfo[0]}_${geneInfo[1]}_${geneInfo[2]}_${geneInfo[3]}`;
+
+  // create texts
+  tile.texts = {};
+
+  tile.rectGraphics = new PIXI.Graphics();
+  tile.textBgGraphics = new PIXI.Graphics();
+  tile.textGraphics = new PIXI.Graphics();
+  tile.rectMaskGraphics = new PIXI.Graphics();
+
+  tile.graphics.addChild(tile.rectGraphics);
+  tile.graphics.addChild(tile.textBgGraphics);
+  tile.graphics.addChild(tile.textGraphics);
+  tile.graphics.addChild(tile.rectMaskGraphics);
+
+  tile.rectGraphics.mask = tile.rectMaskGraphics;
+
+  if (!tile.tileData.sort) return;
+
+  tile.tileData.sort((a, b) => b.importance - a.importance);
+  tile.tileData = tile.tileData.slice(0, maxTileEntries);
+
+  tile.tileData.forEach((td, i) => {
+    const geneInfo = td.fields;
+    const geneName = geneInfo[3];
+    const geneId = getGeneId(geneInfo);
+
+    let fill = plusStrandColor || 'blue';
+
+    if (geneInfo[5] === '-') {
+      fill = minusStrandColor || 'red';
+    }
+    tile.textWidths = {};
+    tile.textHeights = {};
+
+    // don't draw texts for the latter entries in the tile
+    if (i >= maxTexts) return;
+
+    const text = new PIXI.Text(
+      geneName,
+      {
+        fontSize: `${fontSize}px`,
+        fontFamily,
+        fill: colorToHex(fill)
+      }
+    );
+    text.interactive = true;
+
+    if (flipText) text.scale.x = -1;
+
+    text.anchor.x = 0.5;
+    text.anchor.y = 1;
+
+    tile.texts[geneId] = text; // index by geneName
+
+    tile.textGraphics.addChild(text);
+  });
+
+  tile.initialized = true;
+}
+
+function renderRects(track, tile, graphics, xScale, rects, color, alpha, centerY, height) {
+  const topY = centerY - height / 2;
+  tile.rectGraphics.beginFill(color, 0.1);
+  tile.rectGraphics.lineStyle(0, color);
+
+  rects.forEach((td) => {
+    const poly = [
+      xScale(td.xStart), topY,
+      xScale(td.xEnd), topY,
+      xScale(td.xEnd), topY + height,
+      xScale(td.xStart), topY + height,
+      xScale(td.xStart), topY,
+    ];
+
+    // console.log('poly:', poly);
+    tile.rectGraphics.drawPolygon(poly);
+    tile.allRects.push([poly, td.strand]);
+  });
+}
+
+function drawExons(
+  track, graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, centerY, height, strand
+) {
+  const topY = centerY - height / 2;
+
+  const exonOffsetStarts = exonStarts.split(',').map(x => +x + chrOffset);
+  const exonOffsetEnds = exonEnds.split(',').map(x => +x + chrOffset);
+
+  const xStartPos = track._xScale(txStart);
+  const xEndPos = track._xScale(txEnd);
+
+  const width = xEndPos - xStartPos;
+  const yMiddle = centerY;
+
+  const polys = [];
+  let poly = [
+    xStartPos, yMiddle - EXON_LINE_HEIGHT / 2,
+    xStartPos + width, yMiddle - EXON_LINE_HEIGHT / 2,
+    xStartPos + width, yMiddle + EXON_LINE_HEIGHT / 2,
+    xStartPos, yMiddle + EXON_LINE_HEIGHT / 2
+  ];
+
+  graphics.drawPolygon(poly);
+
+  // Draw the middle line
+  polys.push(poly);
+
+  for (
+    let j = Math.max(track.position[0], xStartPos);
+    j < Math.min(track.position[0] + track.dimensions[0], xStartPos + width);
+    j += 2 * height
+  ) {
+    if (strand === '+') {
+      poly = [
+        j, yMiddle - height / 2,
+        j + (height / 2), yMiddle,
+        j, yMiddle + height / 2
+      ];
+    } else {
+      poly = [
+        j, yMiddle - height / 2,
+        j - (height / 2), yMiddle,
+        j, yMiddle + height / 2
+      ];
+    }
+
+    polys.push(poly);
+    graphics.drawPolygon(poly);
+  }
+
+  for (let j = 0; j < exonOffsetStarts.length; j++) {
+    const exonStart = exonOffsetStarts[j];
+    const exonEnd = exonOffsetEnds[j];
+
+    const xStart = track._xScale(exonStart);
+    const localWidth = Math.max(1, track._xScale(exonEnd) - track._xScale(exonStart));
+
+    const localPoly = [
+      xStart, topY,
+      xStart + localWidth, topY,
+      xStart + localWidth, topY + height,
+      xStart, topY + height,
+      xStart, topY,
+    ];
+
+    polys.push(localPoly);
+    graphics.drawPolygon(localPoly);
+  }
+
+  return polys;
+}
+
+function renderGeneSymbols(track, tile, graphics, xScale, genes, color, alpha, centerY, height) {
+  const topY = centerY - height / 2;
+  tile.rectGraphics.beginFill(color, alpha);
+  // tile.rectGraphics.lineStyle(1, color, 0.2);
+
+  genes.forEach((gene) => {
+    const xStart = track._xScale(gene.xStart);
+
+    let poly = [];
+    if (gene.strand === '+') {
+      poly = [
+        xStart, topY,
+        xStart + (track.geneRectHeight / 2), topY + (track.geneRectHeight / 2),
+        xStart, topY + track.geneRectHeight
+      ];
+    } else {
+      poly = [
+        xStart, topY,
+        xStart - (track.geneRectHeight / 2), topY + (track.geneRectHeight / 2),
+        xStart, topY + track.geneRectHeight
+      ];
+    }
+
+    // console.log('poly:', poly);
+    tile.rectGraphics.drawPolygon(poly);
+    tile.allRects.push([poly, gene.strand]);
+  });
+}
+
+function renderGeneExons(track, tile, graphics, xScale, genes, color, alpha, centerY, height) {
+  genes.forEach((gene) => {
+    const geneInfo = gene.fields;
+    const chrOffset = +gene.chrOffset;
+
+    const exonStarts = geneInfo[12];
+    const exonEnds = geneInfo[13];
+    tile.allRects = tile.allRects.concat(
+      drawExons(
+        track,
+        tile.rectGraphics,
+        gene.xStart,
+        gene.xEnd,
+        exonStarts,
+        exonEnds,
+        chrOffset, // not used for now because we have just one chromosome
+        centerY,
+        height,
+        gene.strand
+      ).map(x => [x, gene.strand])
+    );
+  });
+}
+
+function renderGenes(track, tile, graphics, xScale, genes, color, alpha, centerY, height) {
+  const MIN_SIZE_FOR_EXONS = 10;
+
+  // partition the set of genes into those we need to draw
+  // exons for (i.e. those whose rendered size is > MIN_SIZE_FOR_EXONS)
+  // and those that we can just draw a small symbol for
+  // (i.e. those whose rendered size is < MIN_SIZE_FOR_EXONS)
+  const smallGenes = genes.filter(gene => (track._xScale(gene.xEnd) - track._xScale(gene.xStart)) < MIN_SIZE_FOR_EXONS);
+  const largeGenes = genes.filter(gene => (track._xScale(gene.xEnd) - track._xScale(gene.xStart)) >= MIN_SIZE_FOR_EXONS);
+
+  renderGeneSymbols(track, tile, graphics, xScale, smallGenes, color, alpha, centerY, height);
+  renderGeneExons(track, tile, graphics, xScale, largeGenes, color, alpha, centerY, height);
+}
+
+function renderMask(track, tile) {
+  const { tileX, tileWidth } = trackUtils.getTilePosAndDimensions(track.tilesetInfo, tile.tileId);
+
+  tile.rectMaskGraphics.clear();
+
+  console.log('tileX:', tileX, 'tileWidth:', tileWidth);
+  const randomColor = Math.floor(Math.random() * 16 ** 6);
+  tile.rectMaskGraphics.beginFill(randomColor, 0.3);
+
+  const x = track._xScale(tileX);
+  const y = 0;
+  const width = track._xScale(tileX + tileWidth) - track._xScale(tileX);
+  const height = track.dimensions[1];
+  console.log(x, y, width, height);
+  tile.rectMaskGraphics.drawRect(x, y, width, height);
+}
+
+function stretchRects(track) {
+  Object.values(track.fetchedTiles)
+    // tile hasn't been drawn properly because we likely got some
+    // bogus data from the server
+    .forEach((tile) => {
+      if (!tile.drawnAtScale) return false;
+      const tileK = (
+        (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
+        / (track._xScale.domain()[1] - track._xScale.domain()[0])
+      );
+
+      if (tileK > 3) {
+        // too stretched out, needs to be re-rendered
+        track.renderTile(tile);
+      } else {
+        // can be stretched a little bit, just need to set the scale
+        const newRange = track._xScale.domain().map(tile.drawnAtScale);
+        const posOffset = newRange[0];
+
+        tile.rectGraphics.scale.x = tileK;
+        tile.rectGraphics.position.x = -posOffset * tileK;
+        tile.rectMaskGraphics.scale.x = tileK;
+        tile.rectMaskGraphics.position.x = -posOffset * tileK;
+      }
+    });
+}
 
 class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
   /**
@@ -52,7 +354,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.fontSize = +this.options.fontSize || FONT_SIZE;
     this.geneLabelPos = this.options.geneLabelPosition || GENE_LABEL_POS;
     this.geneRectHeight = +this.options.geneAnnotationHeight || GENE_RECT_HEIGHT;
-
+    this.fillerHeight = +this.fillerHeight || FILLER_HEIGHT;
     // Don't ask me why but rectangles and triangles seem to be drawn 2px larger
     // than they should be
     this.geneRectHeight -= 2;
@@ -64,62 +366,15 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
   }
 
   initTile(tile) {
-    // create texts
-    tile.texts = {};
-
-    // console.log('tile:', tile.tileId, tile.tileData);
-    tile.rectGraphics = new PIXI.Graphics();
-    tile.textBgGraphics = new PIXI.Graphics();
-    tile.textGraphics = new PIXI.Graphics();
-
-    tile.graphics.addChild(tile.rectGraphics);
-    tile.graphics.addChild(tile.textBgGraphics);
-    tile.graphics.addChild(tile.textGraphics);
-
-    const MAX_TILE_ENTRIES = 50;
-
-    if (!tile.tileData.sort) return;
-
-    tile.tileData.sort((a, b) => b.importance - a.importance);
-    tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
-
-    tile.tileData.forEach((td, i) => {
-      const geneInfo = td.fields;
-      const geneName = geneInfo[3];
-      const geneId = this.geneId(geneInfo);
-
-      let fill = this.options.plusStrandColor || 'blue';
-
-      if (geneInfo[5] === '-') {
-        fill = this.options.minusStrandColor || 'red';
-      }
-      tile.textWidths = {};
-      tile.textHeights = {};
-
-      // don't draw texts for the latter entries in the tile
-      if (i >= MAX_TEXTS) return;
-
-      const text = new PIXI.Text(
-        geneName,
-        {
-          fontSize: `${this.fontSize}px`,
-          fontFamily: FONT_FAMILY,
-          fill: colorToHex(fill)
-        }
-      );
-      text.interactive = true;
-
-      if (this.flipText) text.scale.x = -1;
-
-      text.anchor.x = 0.5;
-      text.anchor.y = 1;
-
-      tile.texts[geneId] = text; // index by geneName
-
-      tile.textGraphics.addChild(text);
+    externalInitTile(this, tile, {
+      flipText: this.flipText,
+      fontSize: this.fontSize,
+      fontFamily: FONT_FAMILY,
+      plusStrandColor: this.options.plusStrandColor,
+      minusStrandColor: this.options.minusStrandColor,
+      maxTileEntries: MAX_TILE_ENTRIES,
+      maxTexts: MAX_TEXTS,
     });
-
-    tile.initialized = true;
 
     this.renderTile(tile);
   }
@@ -188,10 +443,10 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
   }
 
   renderTile(tile) {
+    console.log('rt');
     if (!tile.initialized) return;
 
     tile.allRects = [];
-
     // store the scale at while the tile was drawn at so that
     // we only resize it when redrawing
     tile.drawnAtScale = this._xScale.copy();
@@ -199,141 +454,37 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     tile.textBgGraphics.clear();
 
     const fill = {};
-    const zoomLevel = +tile.tileId.split('.')[0];
+    const FILLER_RECT_ALPHA = 0.3;
+    const GENE_ALPHA = 0.3;
 
     fill['+'] = colorToHex(this.options.plusStrandColor || 'blue');
     fill['-'] = colorToHex(this.options.minusStrandColor || 'red');
 
-    tile.tileData
-      .filter((td) => {
-        if (!this.drawnGenes[zoomLevel]) this.drawnGenes[zoomLevel] = {};
+    const plusFillerRects = tile.tileData.filter(td => td.type === 'filler' && td.strand === '+');
+    const minusFillerRects = tile.tileData.filter(td => td.type === 'filler' && td.strand === '-');
 
-        const gene = td.fields[3];
+    const plusGenes = tile.tileData.filter(td => td.type !== 'filler' && td.strand === '+');
+    const minusGenes = tile.tileData.filter(td => td.type !== 'filler' && td.strand === '-');
 
-        if (!this.drawnGenes[zoomLevel][gene]) {
-          this.drawnGenes[zoomLevel][gene] = {
-            tileId: tile.tileId,
-            otherTileIds: {},
-          };
-          return true;
-        }
+    const yMiddle = this.dimensions[1] / 2;
 
-        if (this.drawnGenes[zoomLevel][gene].tileId !== tile.tileId) {
-          this.drawnGenes[zoomLevel][gene].otherTileIds[tile.tileId] = true;
-        }
+    // const fillerGeneSpacing = (this.options.fillerHeight - this.geneRectHeight) / 2;
+    const plusStrandCenterY = yMiddle - this.fillerHeight / 2 - this.geneStrandSpacing / 2;
+    const minusStrandCenterY = yMiddle + this.fillerHeight / 2 + this.geneStrandSpacing / 2;
 
-        return (
-          !this.drawnGenes[zoomLevel][td.fields[3]]
-          || this.drawnGenes[zoomLevel][td.fields[3]].tileId === tile.tileId
-        );
-      })
-      .forEach((td, i) => {
-        const geneInfo = td.fields;
-        // the returned positions are chromosome-based and they need to
-        // be converted to genome-based
-        const chrOffset = +td.chrOffset;
+    console.log('plusFillerRects', tile.tileData);
 
-        const txStart = +geneInfo[1] + chrOffset;
-        const txEnd = +geneInfo[2] + chrOffset;
-        const exonStarts = geneInfo[12];
-        const exonEnds = geneInfo[13];
+    renderRects(this, tile, tile.rectGraphics, this._xScale, plusFillerRects,
+      fill['+'], FILLER_RECT_ALPHA, plusStrandCenterY, this.fillerHeight);
+    renderRects(this, tile, tile.rectGraphics, this._xScale, minusFillerRects,
+      fill['-'], FILLER_RECT_ALPHA, minusStrandCenterY, this.fillerHeight);
 
-        const txMiddle = (txStart + txEnd) / 2;
-        let yMiddle = this.dimensions[1] / 2;
-        const geneId = this.geneId(geneInfo);
+    renderGenes(this, tile, tile.rectGraphics, this._xScale, plusGenes,
+      fill['+'], GENE_ALPHA, plusStrandCenterY, this.geneRectHeight);
+    renderGenes(this, tile, tile.rectGraphics, this._xScale, minusGenes,
+      fill['-'], GENE_ALPHA, minusStrandCenterY, this.geneRectHeight);
 
-        // console.log('geneInfo:', geneInfo);
-        if (geneInfo[5] === '+') {
-          // genes on the + strand drawn above and in a user-specified color or the
-          // default blue
-          yMiddle -= this.geneRectHeight;
-          tile.rectGraphics.beginFill(fill['+'], 0.3);
-        } else {
-          // genes on the - strand drawn below and in a user-specified color or the
-          // default red
-          yMiddle += this.geneRectHeight;
-          tile.rectGraphics.beginFill(fill['-'], 0.3);
-        }
-
-        const rectX = this._xScale(txMiddle) - (GENE_RECT_WIDTH / 2);
-        const rectY = geneInfo[5] === '+'
-          ? yMiddle - (this.geneStrandSpacing / 2)
-          : yMiddle - this.geneRectHeight + (this.geneStrandSpacing / 2);
-
-        const xStartPos = this._xScale(txStart);
-        const xEndPos = this._xScale(txEnd);
-
-        const MIN_SIZE_FOR_EXONS = 10;
-
-        if (xEndPos - xStartPos > MIN_SIZE_FOR_EXONS) {
-          if (geneInfo.length < 14) {
-            // don't draw if the input is invalid
-            console.warn(
-              'Gene annotations have less than 14 columns (chrName, chrStart, chrEnd, '
-              + 'symbol, importance, transcript_name, geneId, transcript_type, "-", '
-              + 'txStart, txEnd, exonStarts, exonEnds):',
-              geneInfo
-            );
-          } else {
-            tile.allRects = tile.allRects.concat(
-              this.drawExons(
-                tile.rectGraphics,
-                txStart,
-                txEnd,
-                exonStarts,
-                exonEnds,
-                chrOffset,
-                yMiddle,
-                geneInfo[5]
-              ).map(x => [x, geneInfo[5]])
-            );
-          }
-        } else {
-          let poly = [];
-
-          if (geneInfo[5] === '+') {
-            poly = [
-              rectX, rectY,
-              rectX + (this.geneRectHeight / 2), rectY + (this.geneRectHeight / 2),
-              rectX, rectY + this.geneRectHeight
-            ];
-          } else {
-            poly = [
-              rectX, rectY,
-              rectX - (this.geneRectHeight / 2), rectY + (this.geneRectHeight / 2),
-              rectX, rectY + this.geneRectHeight
-            ];
-          }
-          tile.rectGraphics.drawPolygon(poly);
-
-          tile.allRects.push([poly, geneInfo[5]]);
-        }
-
-        // tile probably hasn't been initialized yet
-        if (!tile.texts) return;
-
-        // don't draw texts for the latter entries in the tile
-        if (i >= MAX_TEXTS) return;
-
-        const text = tile.texts[geneId];
-
-        if (!text) return;
-
-        text.style = {
-          fontSize: `${this.fontSize}px`,
-          fontFamily: FONT_FAMILY,
-          fill: fill[geneInfo[5]]
-        };
-
-        if (!(geneId in tile.textWidths)) {
-          text.updateTransform();
-          const textWidth = text.getBounds().width;
-          const textHeight = text.getBounds().height;
-
-          tile.textWidths[geneId] = textWidth;
-          tile.textHeights[geneId] = textHeight;
-        }
-      });
+    renderMask(this, tile);
   }
 
   calculateZoomLevel() {
@@ -349,91 +500,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     return zoomLevel;
   }
 
-  drawExons(
-    graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle, strand
-  ) {
-    const exonOffsetStarts = exonStarts.split(',').map(x => +x + chrOffset);
-    const exonOffsetEnds = exonEnds.split(',').map(x => +x + chrOffset);
-
-    const xStartPos = this._xScale(txStart);
-    const xEndPos = this._xScale(txEnd);
-
-    const lineHeight = EXON_LINE_HEIGHT;
-    const lineHHeight = lineHeight / 2;
-    const exonHeight = this.geneRectHeight;
-    const width = xEndPos - xStartPos;
-
-    const yPos = strand === '+'
-      ? this.halfRectHHeight - this.geneStrandHSpacing - this.geneRectHHeight - lineHHeight
-      : this.halfRectHHeight + this.geneStrandHSpacing + this.geneRectHHeight - lineHHeight;
-
-    const yExonPos = yPos - this.geneRectHHeight + lineHHeight;
-
-    const polys = [];
-    let poly = [
-      xStartPos, yPos,
-      xStartPos + width, yPos,
-      xStartPos + width, yPos + lineHeight,
-      xStartPos, yPos + lineHeight
-    ];
-
-    graphics.drawPolygon(poly);
-
-    // Draw the middle line
-    polys.push([
-      xStartPos, yPos,
-      xStartPos + width, yPos,
-      xStartPos + width, yPos + lineHeight,
-      xStartPos, yPos + lineHeight
-    ]);
-
-    for (
-      let j = Math.max(this.position[0], xStartPos);
-      j < Math.min(this.position[0] + this.dimensions[0], xStartPos + width);
-      j += 2 * this.geneRectHeight
-    ) {
-      if (strand === '+') {
-        poly = [
-          j, yExonPos + ((this.geneRectHeight - this.geneTriangleHeight) / 2),
-          j + (this.geneTriangleHeight / 2), yExonPos + (this.geneRectHeight / 2),
-          j, yExonPos + ((this.geneRectHeight + this.geneTriangleHeight) / 2)
-        ];
-      } else {
-        poly = [
-          j, yExonPos + ((this.geneRectHeight - this.geneTriangleHeight) / 2),
-          j - (this.geneTriangleHeight / 2), yExonPos + (this.geneRectHeight / 2),
-          j, yExonPos + ((this.geneRectHeight + this.geneTriangleHeight) / 2)
-        ];
-      }
-
-      polys.push(poly);
-      graphics.drawPolygon(poly);
-    }
-
-    for (let j = 0; j < exonOffsetStarts.length; j++) {
-      const exonStart = exonOffsetStarts[j];
-      const exonEnd = exonOffsetEnds[j];
-
-      const xStart = this._xScale(exonStart);
-      const localWidth = Math.max(1, this._xScale(exonEnd) - this._xScale(exonStart));
-      const height = exonHeight;
-
-      const localPoly = [
-        xStart, yExonPos,
-        xStart + localWidth, yExonPos,
-        xStart + localWidth, yExonPos + height,
-        xStart, yExonPos + height,
-        xStart, yExonPos,
-      ];
-
-      polys.push(localPoly);
-
-      graphics.drawPolygon(localPoly);
-    }
-
-    return polys;
-  }
-
   draw() {
     super.draw();
 
@@ -441,42 +507,16 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.allBoxes = [];
     const allTiles = [];
 
+    this.geneAreaHeight = Math.max(this.geneRectHeight, this.fillerHeight);
     const fontSizeHalf = this.fontSize / 2;
 
-    // go through once to make sure the tiles aren't being
-    // excessively stretched
-    Object.values(this.fetchedTiles)
-      // tile hasn't been drawn properly because we likely got some
-      // bogus data from the server
-      .filter((tile) => {
-        if (!tile.drawnAtScale) return false;
-
-        const tileK = (
-          (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
-          / (this._xScale.domain()[1] - this._xScale.domain()[0])
-        );
-
-        return tileK > 3;
-      })
-      .forEach((tile) => {
-        this.renderTile(tile);
-      });
+    stretchRects(this);
 
     Object.values(this.fetchedTiles)
       // tile hasn't been drawn properly because we likely got some
       // bogus data from the server
       .filter(tile => tile.drawnAtScale)
       .forEach((tile) => {
-        const tileK = (
-          (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
-          / (this._xScale.domain()[1] - this._xScale.domain()[0])
-        );
-        const newRange = this._xScale.domain().map(tile.drawnAtScale);
-
-        const posOffset = newRange[0];
-        tile.rectGraphics.scale.x = tileK;
-        tile.rectGraphics.position.x = -posOffset * tileK;
-
         tile.textBgGraphics.clear();
         tile.textBgGraphics.beginFill(WHITE_HEX);
 
@@ -505,20 +545,20 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           const txMiddle = (txStart + txEnd) / 2;
           let textYMiddle = this.dimensions[1] / 2;
 
-          const fontRectPadding = (this.geneRectHeight - this.fontSize) / 2;
+          const fontRectPadding = (this.geneAreaHeight - this.fontSize) / 2;
 
           if (geneInfo[5] === '+') {
             // genes on the + strand drawn above and in a user-specified color or the
             // default blue textYMiddle -= 10;
             textYMiddle -= this.geneLabelPos === 'inside'
               ? fontRectPadding + this.geneStrandSpacing - 2
-              : (this.fontSize / 2) + this.geneRectHeight - 2;
+              : (this.fontSize / 2) + this.geneAreaHeight - 2;
           } else {
             // genes on the - strand drawn below and in a user-specified color or the
             // default red
             textYMiddle += this.geneLabelPos === 'inside'
               ? this.fontSize + (this.geneStrandSpacing / 2) + fontRectPadding + 1
-              : (1.5 * this.fontSize) + this.geneRectHeight + 2;
+              : (1.5 * this.fontSize) + this.geneAreaHeight + 2;
           }
 
           text.position.x = this._xScale(txMiddle);
@@ -542,7 +582,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             text.visible = true;
 
             const TEXT_MARGIN = 3;
-
 
             if (this.flipText) {
               // when flipText is set, that means that the track is being displayed
