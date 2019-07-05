@@ -3935,6 +3935,7 @@ class HiGlassComponent extends React.Component {
             paddingLeft={this.viewPaddingLeft}
             paddingRight={this.viewPaddingRight}
             paddingTop={this.viewPaddingTop}
+            pixiRenderer={this.pixiRenderer}
             pixiStage={this.pixiStage}
             pluginTracks={this.state.pluginTracks}
             rangeSelection1dSize={this.state.rangeSelection1dSize}
