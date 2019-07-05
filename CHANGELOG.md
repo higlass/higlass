@@ -1,5 +1,7 @@
 ## Next Version
 
+- Add support for missing values (`NaN`s) to the 1D heatmap track
+
 _[Detailed changes since v1.6.2](https://github.com/higlass/higlass/compare/v1.6.2...develop)_
 
 ## v1.6.2
