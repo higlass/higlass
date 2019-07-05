@@ -115,6 +115,7 @@ class TrackRenderer extends React.Component {
 
     this.availableForPlugins = AVAILABLE_FOR_PLUGINS;
     this.availableForPlugins.services.pubSub = this.props.pubSub;
+    this.availableForPlugins.services.pixiRenderer = this.props.pixiRenderer;
 
     this.mounted = false;
 
@@ -1759,6 +1760,7 @@ TrackRenderer.propTypes = {
   metaTracks: PropTypes.array,
   onMouseMoveZoom: PropTypes.func,
   onScalesChanged: PropTypes.func.isRequired,
+  pixiRenderer: PropTypes.object.isRequired,
   pixiStage: PropTypes.object.isRequired,
   pluginTracks: PropTypes.object,
   positionedTracks: PropTypes.array,

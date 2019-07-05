@@ -2052,6 +2052,7 @@ class TiledPlot extends React.Component {
           onValueScaleChanged={this.props.onValueScaleChanged}
           paddingLeft={this.props.paddingLeft}
           paddingTop={this.props.paddingTop}
+          pixiRenderer={this.props.pixiRenderer}
           pixiStage={this.props.pixiStage}
           pluginTracks={this.props.pluginTracks}
           positionedTracks={positionedTracks}
@@ -2298,6 +2299,7 @@ TiledPlot.propTypes = {
   onUnlockValueScale: PropTypes.func,
   onValueScaleChanged: PropTypes.func,
   openModal: PropTypes.func,
+  pixiRenderer: PropTypes.object,
   pixiStage: PropTypes.object,
   pluginTracks: PropTypes.object,
   rangeSelection1dSize: PropTypes.array,
