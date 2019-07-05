@@ -1,5 +1,8 @@
 ## Next Version
 
+- Render `horizontal-heatmap` track properly in PIXI v4 and v5
+- Expose pixi renderer to plugin tracks to allow them to render textures from grsphics objects. (More here: https://github.com/pixijs/pixi.js/issues/5394)
+
 _[Detailed changes since v1.6.1](https://github.com/higlass/higlass/compare/v1.6.0...develop)_
 
 ## v1.6.1
