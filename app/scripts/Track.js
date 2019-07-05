@@ -5,8 +5,6 @@ import { isWithin } from './utils';
 
 class Track {
   constructor({ id, pubSub }) {
-    console.log('pubSub', pubSub);
-
     if (pubSub) {
       this.pubSub = pubSub;
     } else {
