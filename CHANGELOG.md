@@ -1,5 +1,7 @@
 ## Next Version
 
+- Fix #722: added `labelShowResolution` as an option to allow hiding the `[Current data resolution...]` text
+
 _[Detailed changes since v1.6.2](https://github.com/higlass/higlass/compare/v1.6.2...develop)_
 
 ## v1.6.2
