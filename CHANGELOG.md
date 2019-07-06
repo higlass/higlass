@@ -1,6 +1,7 @@
 ## Next Version
 
 - Add support for missing values (`NaN`s) to the 1D heatmap track
+- Truly fix #593: zoom to data extent when adding the first track to an empty view
 
 _[Detailed changes since v1.6.2](https://github.com/higlass/higlass/compare/v1.6.2...develop)_
 
