@@ -1,3 +1,9 @@
+## Next Version
+
+- Truly fix #593: zoom to data extent when adding the first track to an empty view
+
+_[Detailed changes since v1.6.3](https://github.com/higlass/higlass/compare/v1.6.3...develop)_
+
 ## v1.6.3
 
 - Dynamically update dark theme when the options change

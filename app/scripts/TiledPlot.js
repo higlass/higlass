@@ -457,26 +457,31 @@ class TiledPlot extends React.Component {
     ) return;
 
     // Get the total number of track that are expecting a tilesetInfo
-    const allTilesetInfos = Object.keys(this.trackRenderer.trackDefObjects)
+    const allTracksWithTilesetInfos = Object.keys(this.trackRenderer.trackDefObjects)
       // Map track to a list of tileset infos
       .map((trackUuid) => {
         const track = this.trackRenderer.trackDefObjects[trackUuid].trackObject;
-        if (track.childTracks) {
-          return track.childTracks.map(childTrack => childTrack.tilesetInfo);
-        }
-        return track.tilesetInfo;
+        if (track.childTracks) return track.childTracks;
+        return track;
       })
       // Needed because of combined tracks
       .reduce((a, b) => a.concat(b), [])
       // We distinguish between tracks that need a tileset info and those whoch
       // don't by comparing `undefined` vs something else, i.e., tracks that
       // need a tileset info will be initialized with `this.tilesetInfo = null;`.
-      .filter(tilesetInfo => typeof tilesetInfo !== 'undefined' && tilesetInfo !== true)
+      .filter(({ tilesetInfo }) => typeof tilesetInfo !== 'undefined' && tilesetInfo !== true);
+
+    // Reduce the list of tracks to a dictionary of track ids. This is useful
+    // to speedup the subsequent filtering
+    const trackUids = allTracksWithTilesetInfos
+      .reduce((a, b) => { a[b.id] = true; return a; }, {});
+
+    // Only could tracks that are suppose to get a tileset
+    const loadedTilesetInfos = Object.keys(this.tracksByUidInit)
+      .filter(trackUid => trackUids[trackUid])
       .length;
 
-    const loadedTilesetInfos = Object.values(this.tracksByUidInit).length;
-
-    if (allTilesetInfos === loadedTilesetInfos) {
+    if (allTracksWithTilesetInfos.length === loadedTilesetInfos) {
       this.setState({ init: true });
       this.reset = false;
       this.handleZoomToData();
