@@ -176,7 +176,7 @@ class HiGlassComponent extends React.Component {
 
     this.unsetOnLocationChange = [];
 
-    if (props.options.isDarkTheme) setDarkTheme();
+    setDarkTheme(!props.options.isDarkTheme);
 
     this.viewconfLoaded = false;
 
@@ -567,6 +567,8 @@ class HiGlassComponent extends React.Component {
   }
 
   componentDidUpdate() {
+    setDarkTheme(!this.props.options.isDarkTheme);
+
     this.animate();
     this.triggerViewChangeDb();
   }
