@@ -1,5 +1,6 @@
 ## Next Version
 
+- Dynamically update dark theme when the options change
 - Fix #722: added `labelShowResolution` as an option to allow hiding the `[Current data resolution...]` text
 - Add support for missing values (`NaN`s) to the 1D heatmap track
 
