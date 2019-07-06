@@ -1,8 +1,8 @@
-## Next Version
+## v1.6.4
 
 - Truly fix #593: zoom to data extent when adding the first track to an empty view
 
-_[Detailed changes since v1.6.3](https://github.com/higlass/higlass/compare/v1.6.3...develop)_
+_[Detailed changes since v1.6.3](https://github.com/higlass/higlass/compare/v1.6.3...v1.6.4)_
 
 ## v1.6.3
 
