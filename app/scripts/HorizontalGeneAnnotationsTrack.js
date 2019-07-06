@@ -272,8 +272,10 @@ function renderGenes(track, tile, graphics, xScale, genes, color, alpha, centerY
   // exons for (i.e. those whose rendered size is > MIN_SIZE_FOR_EXONS)
   // and those that we can just draw a small symbol for
   // (i.e. those whose rendered size is < MIN_SIZE_FOR_EXONS)
-  const smallGenes = genes.filter(gene => (track._xScale(gene.xEnd) - track._xScale(gene.xStart)) < MIN_SIZE_FOR_EXONS);
-  const largeGenes = genes.filter(gene => (track._xScale(gene.xEnd) - track._xScale(gene.xStart)) >= MIN_SIZE_FOR_EXONS);
+  const smallGenes = genes.filter(gene => (
+    track._xScale(gene.xEnd) - track._xScale(gene.xStart)) < MIN_SIZE_FOR_EXONS);
+  const largeGenes = genes.filter(gene => (
+    track._xScale(gene.xEnd) - track._xScale(gene.xStart)) >= MIN_SIZE_FOR_EXONS);
 
   renderGeneSymbols(track, tile, graphics, xScale, smallGenes, color, alpha, centerY, height);
   renderGeneExons(track, tile, graphics, xScale, largeGenes, color, alpha, centerY, height);
@@ -299,7 +301,7 @@ function stretchRects(track) {
     // tile hasn't been drawn properly because we likely got some
     // bogus data from the server
     .forEach((tile) => {
-      if (!tile.drawnAtScale) return false;
+      if (!tile.drawnAtScale) return;
       const tileK = (
         (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
         / (track._xScale.domain()[1] - track._xScale.domain()[0])
@@ -460,8 +462,10 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const plusFillerRects = tile.tileData.filter(td => td.type === 'filler' && td.strand === '+');
     const minusFillerRects = tile.tileData.filter(td => td.type === 'filler' && td.strand === '-');
 
-    const plusGenes = tile.tileData.filter(td => td.type !== 'filler' && td.strand === '+');
-    const minusGenes = tile.tileData.filter(td => td.type !== 'filler' && td.strand === '-');
+    const plusGenes = tile.tileData.filter(td => td.type !== 'filler'
+      && (td.strand === '+' || td.fields[5] === '+'));
+    const minusGenes = tile.tileData.filter(td => td.type !== 'filler'
+      && (td.strand === '-' || td.fields[5] === '-'));
 
     const yMiddle = this.dimensions[1] / 2;
 
@@ -473,8 +477,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       fill['+'], FILLER_RECT_ALPHA, plusStrandCenterY, this.fillerHeight);
     renderRects(this, tile, tile.rectGraphics, this._xScale, minusFillerRects,
       fill['-'], FILLER_RECT_ALPHA, minusStrandCenterY, this.fillerHeight);
-
-    console.log('tile:', tile);
 
     renderGenes(this, tile, tile.rectGraphics, this._xScale, plusGenes,
       fill['+'], GENE_ALPHA, plusStrandCenterY, this.geneRectHeight);
