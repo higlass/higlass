@@ -2808,7 +2808,7 @@ class HiGlassComponent extends React.Component {
       })
       .then(_json => ({
         id: _json.uid,
-        url: `${parsedUrl.origin}/app/?config=${_json.uid}`
+        url: `${parsedUrl.origin}/l/?d=${_json.uid}`
       }));
 
     if (!fromApi) {
