@@ -284,7 +284,6 @@ function renderMask(track, tile) {
 
   tile.rectMaskGraphics.clear();
 
-  console.log('tileX:', tileX, 'tileWidth:', tileWidth);
   const randomColor = Math.floor(Math.random() * 16 ** 6);
   tile.rectMaskGraphics.beginFill(randomColor, 0.3);
 
@@ -292,7 +291,6 @@ function renderMask(track, tile) {
   const y = 0;
   const width = track._xScale(tileX + tileWidth) - track._xScale(tileX);
   const height = track.dimensions[1];
-  console.log(x, y, width, height);
   tile.rectMaskGraphics.drawRect(x, y, width, height);
 }
 
@@ -443,7 +441,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
   }
 
   renderTile(tile) {
-    console.log('rt');
     if (!tile.initialized) return;
 
     tile.allRects = [];
@@ -472,12 +469,12 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const plusStrandCenterY = yMiddle - this.fillerHeight / 2 - this.geneStrandSpacing / 2;
     const minusStrandCenterY = yMiddle + this.fillerHeight / 2 + this.geneStrandSpacing / 2;
 
-    console.log('plusFillerRects', tile.tileData);
-
     renderRects(this, tile, tile.rectGraphics, this._xScale, plusFillerRects,
       fill['+'], FILLER_RECT_ALPHA, plusStrandCenterY, this.fillerHeight);
     renderRects(this, tile, tile.rectGraphics, this._xScale, minusFillerRects,
       fill['-'], FILLER_RECT_ALPHA, minusStrandCenterY, this.fillerHeight);
+
+    console.log('tile:', tile);
 
     renderGenes(this, tile, tile.rectGraphics, this._xScale, plusGenes,
       fill['+'], GENE_ALPHA, plusStrandCenterY, this.geneRectHeight);
