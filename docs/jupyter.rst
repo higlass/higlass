@@ -42,20 +42,20 @@ help of the ``higlass.client`` module:
 
 .. code-block:: python
 
+    from higlass.client import View, Track
     import higlass
-    import higlass.client as hgc
+    
 
-    view1 = hgc.View([
-        hgc.Track(track_type='top-axis', position='top'),   
-        hgc.Track(track_type='heatmap', position='center',
-                 tileset_uuid='CQMd6V_cRw6iCI_-Unl3PQ', 
-                  server="http://higlass.io/api/v1/",
-                  height=250,
-                 options={ 'valueScaleMax': 0.5 }),
-
+    view1 = View([
+        Track(track_type='top-axis', position='top'),   
+        Track(track_type='heatmap', position='center',
+              tileset_uuid='CQMd6V_cRw6iCI_-Unl3PQ', 
+              server="http://higlass.io/api/v1/",
+              height=250,
+              options={ 'valueScaleMax': 0.5 }),
     ])
 
-    (display, server, viewconf) = higlass.display([view1])
+    display, server, viewconf = higlass.display([view1])
     display
 
 The result is a fully interactive HiGlass view direcly embedded in the Jupyter
@@ -73,15 +73,16 @@ that may take a long time to complete with a slow internet connection.
 
 .. code-block:: python
 
-    import higlass
-    import higlass.client as hgc
-    import higlass.tilesets as hgti
+    from higlass.client import View, Track
+    import higlass.tilesets
 
-    ts1 = hgti.bigwig('http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig')
+    ts1 = higlass.tilesets.bigwig(
+        'http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/'
+        'wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig')
 
-    tr1 = hgc.Track('horizontal-bar', tileset=ts1)
-    view1 = hgc.View([tr1])
-    (display, server, viewconf) = higlass.display([view1])
+    tr1 = Track('horizontal-bar', tileset=ts1)
+    view1 = View([tr1])
+    display, server, viewconf = higlass.display([view1])
 
     display
 
@@ -99,14 +100,13 @@ Creating the server:
 
 .. code-block:: python
 
-    import higlass
-    import higlass.client as hgc
-    import higlass.tilesets as hgti
+    from higlass.client import View, Track
+    import higlass.tilesets
 
-    ts1 = hgti.cooler('../data/Dixon2012-J1-NcoI-R1-filtered.100kb.multires.cool')
-    tr1 = hgc.Track('heatmap', tileset=ts1)
-    view1 = hgc.View([tr1])
-    (display, server, viewconf) = higlass.display([view1])
+    ts1 = higlass.tilesets.cooler('../data/Dixon2012-J1-NcoI-R1-filtered.100kb.multires.cool')
+    tr1 = Track('heatmap', tileset=ts1)
+    view1 = View([tr1])
+    display, server, viewconf = higlass.display([view1])
 
     display
 
@@ -123,26 +123,28 @@ according to the chromosome info in the specified file.
 
 .. code-block:: python
 
-    import clodius.tiles.chromsizes as ctc
-    import higlass
-    import higlass.client as hgc
-    import higlass.tilesets as hgti
+
+    from higlass.client import View, Track
+    import higlass.tilesets
 
     chromsizes_fp = '../data/chromSizes_hg19_reordered.tsv'
     bigwig_fp = '../data/wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.bigWig'
         
-    chromsizes = ctc.get_tsv_chromsizes(chromsizes_fp)
+    with open(chromsizes_fp) as f:
+        chromsizes = []
+        for line in f.readlines():
+            chrom, size = line.split('\t')
+            chromsizes.append((chrom, int(size)))
 
-    ts_r = hgti.bigwig(bigwig_fp, chromsizes=chromsizes)
-    cs_r = hgti.chromsizes(chromsizes_fp)
-        
-    tr0 = hgc.Track('top-axis')
-    tr1 = hgc.Track('horizontal-bar', tileset=ts_r)
-    tr2 = hgc.Track('horizontal-chromosome-labels',
-                    position='top', tileset=cs_r)
+    cs = higlass.tilesets.chromsizes(chromsizes)
+    ts = higlass.tilesets.bigwig(bigwig_fp, chromsizes=chromsizes)
+    
+    tr0 = Track('top-axis')
+    tr1 = Track('horizontal-bar', tileset=ts)
+    tr2 = Track('horizontal-chromosome-labels', position='top', tileset=cs)
 
-    view1 = hgc.View([tr0, tr1, tr2])
-    (display, server, viewconf) = higlass.display([view1])
+    view1 = View([tr0, tr1, tr2])
+    display, server, viewconf = higlass.display([view1])
 
     display
 
@@ -161,7 +163,7 @@ To display data, we need to define a tileset. Tilesets define two functions:
 
 .. code-block:: python
 
-    > ts1 = hgti.bigwig('http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig')
+    > ts1 = higlass.tilesets.bigwig('http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig')
     > ts1.tileset_info()
     {
      'min_pos': [0],
@@ -206,40 +208,36 @@ functions described above. To start let's make the matrix using the
 
 .. code-block:: python
 
-    import math
     import numpy as np
-    import itertools as it
 
     dim = 2000
-
-    data = np.zeros((dim, dim))
-    for x,y in it.product(range(dim), repeat=2):
-        data[x][y] = (-(y + 47) * math.sin(math.sqrt(abs(x / 2 + (y+47)))) 
-                                 - x * math.sin(math.sqrt(abs(x - (y+47)))))
+    I, J = np.indices((dim, dim))
+    data = (
+        -(J + 47) * np.sin(np.sqrt(np.abs(I / 2 + (J + 47)))) 
+        - I * np.sin(np.sqrt(np.abs(I - (J + 47))))
+    )
 
 Then we can define the data and tell the server how to render it.
 
 .. code-block:: python
 
-    import functools as ft
-    import clodius.tiles.npmatrix as hgnp
-    import higlass.client as hgc
-    import higlass.tilesets as hgti
+    from  clodius.tiles import npmatrix
+    from higlass.tilesets import Tileset
 
-    ts = hgti.Tileset(
-        tileset_info=lambda: hgnp.tileset_info(data),
-        tiles=lambda tids: hgnp.tiles_wrapper(data, tids)
+    ts = Tileset(
+        tileset_info=lambda: npmatrix.tileset_info(data),
+        tiles=lambda tids: npmatrix.tiles_wrapper(data, tids)
     )
 
-    (display, server, viewconf) = higlass.display([
-        hgc.View([
-            hgc.Track(track_type='top-axis', position='top'),
-            hgc.Track(track_type='left-axis', position='left'),
-            hgc.Track(track_type='heatmap', 
-                      position='center',
-                      tileset=ts,
-                      height=250,
-                     options={ 'valueScaleMax': 0.5 }),
+    display, server, viewconf = higlass.display([
+        View([
+            Track(track_type='top-axis', position='top'),
+            Track(track_type='left-axis', position='left'),
+            Track(track_type='heatmap', 
+                  position='center',
+                  tileset=ts,
+                  height=250,
+                  options={ 'valueScaleMax': 0.5 }),
 
         ])
     ])
@@ -268,6 +266,8 @@ Then we have to set up a data server to output the data in "tiles".
 
     import numpy as np
     import pandas as pd
+    from higlass.client import View, Track
+    import higlass.tilesets
 
     length = int(1e6)
     df = pd.DataFrame({
@@ -276,25 +276,21 @@ Then we have to set up a data server to output the data in "tiles".
         'v': range(1, length+1),
     })
 
-    import higlass
-    import higlass.tilesets as hgti
-    import higlass.client as hgcl
-
-    ts = hgti.dfpoints(df, x_col='x', y_col='y')
+    ts = higlass.tilesets.dfpoints(df, x_col='x', y_col='y')
 
     display, server, viewconf = higlass.display([
-        hgcl.View([
-            hgcl.Track('left-axis'),
-            hgcl.Track('top-axis'),
-            hgcl.Track('labelled-points-track', 
-                       tileset=ts,
-                       position='center',
-                       height=600,
-                       options={
-                            'xField': 'x',
-                            'yField': 'y',
-                            'labelField': 'v'
-                        }),
+        View([
+            Track('left-axis'),
+            Track('top-axis'),
+            Track('labelled-points-track', 
+                   tileset=ts,
+                   position='center',
+                   height=600,
+                   options={
+                        'xField': 'x',
+                        'yField': 'y',
+                        'labelField': 'v'
+            }),
         ])
     ])
 
@@ -324,26 +320,25 @@ And then create the tileset and track, as before.
 
 .. code-block:: python
 
-    import higlass
-    import higlass.tilesets as hgti
-    import higlass.client as hgcl
+    from higlass.client import View, Track
+    import higlass.tilesets
 
-    ts = hgti.dfpoints(df, x_col='x', y_col='y')
+    ts = higlass.tilesets.dfpoints(df, x_col='x', y_col='y')
 
-    (display, server, viewconf) = higlass.display([
-        hgcl.View([
-            hgcl.Track('left-axis'),
-            hgcl.Track('top-axis'),
-            hgcl.Track('osm-tiles', position='center'),
-            hgcl.Track('labelled-points-track', 
-                       tileset=ts,
-                       position='center',
-                       height=600,
-                       options={
-                            'xField': 'x',
-                            'yField': 'y',
-                            'labelField': 'names'
-                        }),
+    display, server, viewconf = higlass.display([
+        View([
+            Track('left-axis'),
+            Track('top-axis'),
+            Track('osm-tiles', position='center'),
+            Track('labelled-points-track', 
+                   tileset=ts,
+                   position='center',
+                   height=600,
+                   options={
+                        'xField': 'x',
+                        'yField': 'y',
+                        'labelField': 'names'
+            }),
         ])
     ])
 
@@ -418,29 +413,26 @@ with an OSM layer and axes.
 
 .. code-block:: python
 
-    import higlass.tilesets as hgti
-    import clodius.tiles.points as hgpo
-    import clodius.tiles.utils as hgut
+    from clodius.tiles.utils import bundled_tiles_wrapper_2d
+    from higlass.tilesets import Tileset
+    from higlass.client import View, Track
 
-    ts = hgti.Tileset(
+    ts = Tileset(
         tileset_info=lambda: tileset_info(),
-        tiles=lambda tile_ids: 
-                hgut.bundled_tiles_wrapper_2d(tile_ids,
-                        lambda z,x,y,width=1,height=1: point_tiles(z, x, y, width, height)))
+        tiles=lambda tile_ids: bundled_tiles_wrapper_2d(
+            tile_ids,
+            lambda z,x,y,width=1,height=1: point_tiles(z, x, y, width, height)))
 
-    import higlass.client as hgc
-    import higlass
-
-    (display, server, viewconf) = higlass.display([
-        hgc.View([
-            hgc.Track(track_type='top-axis',),
-            hgc.Track(track_type='left-axis'),
-            hgc.Track(
+    display, server, viewconf = higlass.display([
+        View([
+            Track(track_type='top-axis',),
+            Track(track_type='left-axis'),
+            Track(
                 track_type='osm-tiles',
                 position='center',
                 height=400,
             ),
-            hgc.Track(
+            Track(
                 track_type='labelled-points-track',
                 position='center',
                 tileset=ts,
@@ -449,7 +441,7 @@ with an OSM layer and axes.
                     'xField': 'x',
                     'yField': 'y',
                     'labelField': 'label'
-                })
+            })
         ])
     ])
     display
@@ -472,14 +464,14 @@ requests:
 
 .. code-block:: python
 
-    import higlass.tilesets as hgti
-    import clodius.tiles.format as hgfo
-    import clodius.tiles.utils as hgut
+    from clodius.tiles.format import format_dense_tile
+    from clodius.tiles.utils import tiles_wrapper_2d
+    from higlass.tilesets import Tileset
 
-    ts = hfti.Tileset(
+    ts = Tileset(
         tileset_info=tileset_info,
-        tiles=lambda tile_ids: hgut.tiles_wrapper_2d(tile_ids,
-                        lambda z,x,y: hgfo.format_dense_tile(tile_data(z, x, y)))
+        tiles=lambda tile_ids: tiles_wrapper_2d(tile_ids,
+                        lambda z,x,y: format_dense_tile(tile_data(z, x, y)))
     )
 
 
