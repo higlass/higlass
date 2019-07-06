@@ -461,9 +461,7 @@ class TiledPlot extends React.Component {
       // Map track to a list of tileset infos
       .map((trackUuid) => {
         const track = this.trackRenderer.trackDefObjects[trackUuid].trackObject;
-        if (track.childTracks) {
-          return track.childTracks.map(childTrack => childTrack.tilesetInfo);
-        }
+        if (track.childTracks) return track.childTracks;
         return track;
       })
       // Needed because of combined tracks
