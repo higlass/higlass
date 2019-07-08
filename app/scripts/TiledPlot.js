@@ -590,7 +590,6 @@ class TiledPlot extends React.Component {
      * @param uid (string): The uid of the track to replace
      * @param orientation (string): The place where to put the new track
      */
-
     this.trackToReplace = uid;
     this.handleAddTrack(orientation);
   }
