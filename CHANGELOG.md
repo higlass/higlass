@@ -1,3 +1,9 @@
+## v1.6.5 
+
+- Fixed the replace track bug (where replacing a center track wouldn't do anything)
+
+_[Detailed changes since v1.6.3](https://github.com/higlass/higlass/compare/v1.6.3...v1.6.5)_
+
 ## v1.6.4
 
 - Truly fix #593: zoom to data extent when adding the first track to an empty view
