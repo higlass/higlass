@@ -319,6 +319,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   renderRows(tile, rows, maxRows, startY, endY, fill) {
     const zoomLevel = +tile.tileId.split('.')[0];
+    let maxValue = Number.MIN_SAFE_INTEGER;
     // console.log('startY', startY, 'endY', endY, range(maxRows), rows);
 
     const rowScale = scaleBand()
