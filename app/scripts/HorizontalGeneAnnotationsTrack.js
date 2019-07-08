@@ -19,7 +19,7 @@ const TRIANGLE_HEIGHT = 6;
 const MAX_TEXTS = 20;
 const WHITE_HEX = colorToHex('#ffffff');
 const EXON_LINE_HEIGHT = 2;
-const MAX_TILE_ENTRIES = 100;
+const MAX_TILE_ENTRIES = 400;
 const FILLER_HEIGHT = 14;
 
 const trackUtils = {
@@ -461,6 +461,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     const plusFillerRects = tile.tileData.filter(td => td.type === 'filler' && td.strand === '+');
     const minusFillerRects = tile.tileData.filter(td => td.type === 'filler' && td.strand === '-');
+
+    console.log('plusFillerRects', plusFillerRects, tile.tileData);
 
     const plusGenes = tile.tileData.filter(td => td.type !== 'filler'
       && (td.strand === '+' || td.fields[5] === '+'));
