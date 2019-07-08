@@ -75,6 +75,14 @@ export const OPTIONS_INFO = {
       log: { name: 'Log', value: 'log' },
     },
   },
+  extent: {
+    name: 'Extent',
+    inlineOptions: {
+      full: { name: 'Full', value: 'full' },
+      upperRight: { name: 'Upper Right', value: 'upper-right' },
+      lowerLeft: { name: 'Lower Left', value: 'lower-left' },
+    }
+  },
   labelLeftMargin: {
     name: 'Label Left Margin',
     inlineOptions: AVAILABLE_MARGIN
@@ -90,6 +98,10 @@ export const OPTIONS_INFO = {
   labelBottomMargin: {
     name: 'Label Bottom Margin',
     inlineOptions: AVAILABLE_MARGIN
+  },
+  labelShowResolution: {
+    name: 'Label Show Resolution',
+    inlineOptions: YES_NO,
   },
   lineStrokeWidth: {
     name: 'Stroke Width',

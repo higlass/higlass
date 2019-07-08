@@ -1,0 +1,24 @@
+{
+  "name": "Rao et al. (2014) HUVEC MboI (allreps) 1kb",
+  "server": "http://higlass.io/api/v1",
+  "tilesetUid": "JO9CouMTS_WKLnlYBRcw8A",
+  "uid": "vh1",
+  "type": "vertical-heatmap",
+  "options": {
+    "labelPosition": "bottomRight",
+    "labelColor": "black",
+    "colorRange": [
+      "white",
+      "rgba(245,166,35,1.0)",
+      "rgba(208,2,27,1.0)",
+      "black"
+    ],
+    "maxZoom": null,
+    "colorbarLabelsPosition": "inside",
+    "colorbarPosition": "topRight",
+    "name": "Rao et al. (2014) HUVEC MboI (allreps) 1kb"
+  },
+  "width": 100,
+  "height": 100,
+  "position": "left"
+}

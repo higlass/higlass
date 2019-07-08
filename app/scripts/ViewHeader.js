@@ -36,6 +36,8 @@ class ViewHeader extends React.Component {
       isFocused: false,
       width: -1,
     };
+
+    this.handleTrackPositionChosenBound = this.handleTrackPositionChosen.bind(this);
   }
 
   componentDidMount() {
@@ -106,7 +108,7 @@ class ViewHeader extends React.Component {
             position={this.state.addTrackPositionMenuPosition}
           >
             <AddTrackPositionMenu
-              onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
+              onTrackPositionChosen={this.handleTrackPositionChosenBound}
             />
           </ContextMenuContainer>
         </PopupMenu>
@@ -122,6 +124,10 @@ class ViewHeader extends React.Component {
             onClearView={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onClearView();
+            }}
+            onEditViewConfig={() => {
+              this.setState({ configMenuUid: null }); // hide the menu
+              this.props.onEditViewConfig(this.state.configMenuUid);
             }}
             onExportPNG={() => {
               this.setState({ configMenuUid: null }); // hide the menu
@@ -308,6 +314,7 @@ ViewHeader.propTypes = {
   onAddView: PropTypes.func.isRequired,
   onClearView: PropTypes.func.isRequired,
   onCloseView: PropTypes.func.isRequired,
+  onEditViewConfig: PropTypes.func.isRequired,
   onExportSVG: PropTypes.func.isRequired,
   onExportPNG: PropTypes.func.isRequired,
   onExportViewsAsJSON: PropTypes.func.isRequired,

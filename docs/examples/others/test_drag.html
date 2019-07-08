@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HiGlass</title>
+<style type="text/css">
+    .canvasjs-chart-credit {
+    display:none;
+}
+</style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/hglib.css">
+  <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16.6/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+</head>
+<body >
+    <div style="overflow-y: hidden; overflow-x: auto; width: 100%">
+        <div style="position:relative; -webkit-box-orient: vertical; -webkit-box-align: stretch; display: flex; flex-direction: column; align-items: stretch; z-index: 1;">
+            <div style="display: flex; flex-direction: column; align-items: stretch; -webkit-box-orient: vertical; -webkit-box-align: stretch">
+                <div style="display: flex; flex-direction: row; align-items: stretch; -webkit-box-orient: horizontal; -webkit-box-align: stretch; page-break-inside: avoid;">
+                    <div style="overflow-x: auto; flex: 1; max-width: calc(100% - 14ex);">
+                        <div style="position:relative; overflow:hidden;">
+                            <div style="width: 100%;" id='placeholder'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div style="display: flex">
+        <div style="draggable: true; border: 1px solid black" ondragstart="randomDragStart(event)" ondragend="dragEnd(event)"><img src="../images/thumbnails/heatmap-thumbnail.png"/></div>
+        <div style="draggable: true; border: 1px solid black" ondragstart="heatmapDragStart(event)"><img src="../images/thumbnails/heatmap-thumbnail.png"/></div>
+        <div style="draggable: true; border: 1px solid black" ondragstart="lineDragStart(event)"><img src="../images/thumbnails/horizontal-line-thumbnail.png"/></div>
+        <div style="draggable: true; border: 1px solid black" ondragstart="multivecDragStart(event)"><img src="../images/thumbnails/horizontal-multivec-thumbnail.png"/></div>
+    </div>
+</body>
+<script src="https://unpkg.com/higlass-multivec@0.2.0/dist/higlass-multivec.js"></script>
+<script src='/hglib.js'>
+</script>
+<script>
+
+console.log('window.higlassTracks', window.higlassTracks);
+function dragEnd(ev) {
+    //window.hgApi.hideAvailableTrackPositions();
+}
+
+function randomDragStart(ev) {
+    var track = {
+        "tilesetUid": "RZqUYTMLSsmNjnnpi_v6VA",
+        "server": "http://localhost:8000/api/v1",
+        "datatype": "geo-json",
+    }
+
+    window.hgApi.showAvailableTrackPositions(track);
+}
+
+function lineDragStart(ev) {
+
+   var lineTrack =
+    {
+        "server": "http://higlass.io/api/v1",
+        "tilesetUid": "WEAuzo5DQy6lEYw4kmgnDA",
+        "datatype": "vector",
+        "defaultTracks": ['horizontal-bar']
+    }
+
+    window.hgApi.showAvailableTrackPositions(lineTrack);
+}
+
+function multivecDragStart(ev) {
+   var lineTrack =
+    {
+        "server": "http://higlass.io/api/v1",
+        "tilesetUid": "WtBJUYawQzS9M2WVIIHnlA",
+        "datatype": "multivec",
+        "defaultTracks": [ "horizontal-stacked-bar"]
+    }
+
+    ev.dataTransfer.setData("text/json", JSON.stringify(lineTrack));
+    window.hgApi.showAvailableTrackPositions(lineTrack);
+}
+
+function linearLabelsDragStart(ev) {
+   var lineTrack =
+    {
+        "server": "http://resgen.io/api/v1",
+        "tilesetUid": "ZPIL0W2NTyadgTPMqfPqnw",
+        "datatype": "linear-labels",
+      }
+
+    ev.dataTransfer.setData("text/json", JSON.stringify(lineTrack));
+    window.hgApi.showAvailableTrackPositions(lineTrack);
+}
+
+function heatmapDragStart(ev) {
+   var heatmapTrack =
+    {
+        "server": "http://higlass.io/api/v1",
+        "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+        "datatype": "matrix",
+        "defaultTracks": [ "heatmap"]
+    }
+
+    console.log('heatmapDragStart(ev)');
+    window.hgApi.showAvailableTrackPositions(heatmapTrack);
+    //ev.dataTransfer.setData("text/json", JSON.stringify(heatmapTrack));
+}
+
+ var testViewConfig =
+{
+  "editable": true,
+  "trackSourceServers": [
+    "/api/v1",
+    "http://higlass.io/api/v1"
+  ],
+  "exportViewUrl": "/api/v1/viewconfs",
+  "views": [
+    {
+      "uid": "a",
+      "initialXDomain": [
+        1502666124.488715,
+        1511074199.6112716
+      ],
+      "initialYDomain": [
+        1504683396.5786693,
+        1510784034.7532685
+      ],
+      "tracks": {
+        "top": [],
+        "left": [],
+        "center": [
+          {
+            "uid": "KD3HH8QCTnWD96Xq7Y1Rrg",
+            "type": "combined",
+            "contents": [
+              {
+                "type": "heatmap",
+                "uid": "GW6HZwSmR5y-8Cbz22iK_A",
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "server": "http://higlass.io/api/v1",
+                "options": {
+                  "backgroundColor": "#eeeeee",
+                  "labelPosition": "bottomRight",
+                  "labelLeftMargin": 0,
+                  "labelRightMargin": 0,
+                  "labelTopMargin": 0,
+                  "labelBottomMargin": 0,
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "showMousePosition": false,
+                  "mousePositionColor": "#999999",
+                  "showTooltip": false,
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "width": 747,
+                "height": 522,
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                "transforms": [
+                  {
+                    "name": "ICE",
+                    "value": "weight"
+                  }
+                ],
+                "position": "center"
+              }
+            ],
+            "position": "center",
+            "width": 747,
+            "height": 522
+          }
+        ],
+        "bottom": [],
+        "right": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 6,
+        "x": 0,
+        "y": 0,
+        "i": "a",
+        "moved": false,
+        "static": false
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}
+ ;
+    function changeOverlay() {
+
+        hgcontainer = document.createElement('div');
+        hgcontainer.style.width = '100%';
+        // this.hgcontainer.style.margin = '1em';
+        // this.hgcontainer.style.boxSizing = 'border-box';
+        // this.hgcontainer.style.lineHeight = '48px';
+
+        hgdisplay = document.createElement('div');
+        hgdisplay.style.height = '600px';
+        hgdisplay.style.width = '100%';
+        hgdisplay.style.border = '1px solid black';
+        hgdisplay.style.borderRadius = '1%';
+        hgdisplay.style.borderColor = '#dddddd';
+
+        hgcontainer.appendChild(hgdisplay);
+
+        window.hgApi = hglib.viewer(
+                        hgdisplay,
+                        testViewConfig,
+                        { bounded: true }
+                    );
+
+
+      var el = document.getElementById('placeholder');
+      el.appendChild(hgcontainer);
+    }
+
+    changeOverlay();
+
+    // setTimeout(function () {
+    //   // Go to PTEN
+    //   window.hgApi.goTo(
+    //     testViewConfig.views[0].uid,
+    //     'chr10',
+    //     89596071,
+    //     89758810,
+    //     'chr10',
+    //     89596071,
+    //     89758810,
+    //     true,
+    //     10000
+    //   );
+    // }, 3000);
+
+    // setTimeout(function () {
+    //   // Go to Chr1 without animation
+    //   window.hgApi.goTo(
+    //     testViewConfig.views[0].uid,
+    //     'chr1',
+    //     0,
+    //     89758810,
+    //     'chr1',
+    //     0,
+    //     89758810
+    //   );
+    // }, 11000);
+
+
+</script>
+</html>

@@ -75,7 +75,8 @@ import { getDarkTheme } from './services';
 
 // Configs
 import {
-  AVAILABLE_FOR_PLUGINS
+  AVAILABLE_FOR_PLUGINS,
+  TRACKS_INFO_BY_TYPE,
 } from './configs';
 
 // Styles
@@ -114,6 +115,7 @@ class TrackRenderer extends React.Component {
 
     this.availableForPlugins = AVAILABLE_FOR_PLUGINS;
     this.availableForPlugins.services.pubSub = this.props.pubSub;
+    this.availableForPlugins.services.pixiRenderer = this.props.pixiRenderer;
 
     this.mounted = false;
 
@@ -188,6 +190,16 @@ class TrackRenderer extends React.Component {
     this.metaTracks = {};
 
     this.pubSubs = [];
+
+    // if there's plugin tracks, they'll define new track
+    // types and we'll want to use their information when
+    // we look up the orientation of a track
+    if (window.higlassTracksByType) {
+      // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
+      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
+        TRACKS_INFO_BY_TYPE[pluginTrackType] = window.higlassTracksByType[pluginTrackType].config;
+      });
+    }
 
     this.boundForwardEvent = this.forwardEvent.bind(this);
     this.boundScrollEvent = this.scrollEvent.bind(this);
@@ -423,8 +435,6 @@ class TrackRenderer extends React.Component {
   addZoom() {
     if (!this.elementSelection || !this.currentProps.zoomable) return;
 
-    // add back the previous transform
-    // console.log('zoom:', this.elementSelection.node());
     this.elementSelection.call(this.zoomBehavior);
     this.zoomBehavior.transform(this.elementSelection, this.zoomTransform);
   }
@@ -660,9 +670,6 @@ class TrackRenderer extends React.Component {
 
     for (const uid in this.trackDefObjects) {
       const track = this.trackDefObjects[uid].trackObject;
-
-      // track.refXScale(this.xScale);
-      // track.refYScale(this.yScale);
 
       // e.g. when the track is resized... we want to redraw it
       track.refScalesChanged(this.xScale, this.yScale);
@@ -1021,7 +1028,6 @@ class TrackRenderer extends React.Component {
           this.activeTransitions -= 1;
         });
     } else {
-      // console.log('setting zoom', notify);
       setZoom();
     }
 
@@ -1206,6 +1212,16 @@ class TrackRenderer extends React.Component {
   }
 
   createTrackObject(track) {
+    const trackObject = this.createLocationAgnosticTrackObject(track);
+    if (track.position === 'left' || track.position === 'right') {
+      if (TRACKS_INFO_BY_TYPE[track.type].orientation === '1d-horizontal') {
+        return new LeftTrackModifier(trackObject);
+      }
+    }
+    return trackObject;
+  }
+
+  createLocationAgnosticTrackObject(track) {
     const handleTilesetInfoReceived = (x) => {
       this.currentProps.onTilesetInfoReceived(track.uid, x);
     };
@@ -1467,12 +1483,14 @@ class TrackRenderer extends React.Component {
           new ValueIntervalTrack(context, options)
         );
 
+      case 'osm':
       case 'osm-tiles':
         return new OSMTilesTrack(context, options);
 
       case 'osm-2d-tile-ids':
         return new OSMTileIdsTrack(context, options);
 
+      case 'mapbox':
       case 'mapbox-tiles':
         return new MapboxTilesTrack(context, options);
 
@@ -1609,20 +1627,17 @@ class TrackRenderer extends React.Component {
     this.eventTracker.addEventListener('mouseover', this.boundForwardEvent);
     this.eventTracker.addEventListener('mouseenter', this.boundForwardEvent);
     this.eventTracker.addEventListener('mousedown', this.boundForwardEvent);
-    this.eventTracker.addEventListener('mousemove', this.boundForwardEvent);
     this.eventTracker.addEventListener('mouseup', this.boundForwardEvent);
     this.eventTracker.addEventListener('mouseout', this.boundForwardEvent);
     this.eventTracker.addEventListener('mouseleave', this.boundForwardEvent);
 
     this.eventTracker.addEventListener('touchstart', this.boundForwardEvent);
-    this.eventTracker.addEventListener('touchmove', this.boundForwardEvent);
     this.eventTracker.addEventListener('touchend', this.boundForwardEvent);
     this.eventTracker.addEventListener('touchcancel', this.boundForwardEvent);
 
     this.eventTracker.addEventListener('pointerover', this.boundForwardEvent);
     this.eventTracker.addEventListener('pointerenter', this.boundForwardEvent);
     this.eventTracker.addEventListener('pointerdown', this.boundForwardEvent);
-    this.eventTracker.addEventListener('pointermove', this.boundForwardEvent);
     this.eventTracker.addEventListener('pointerup', this.boundForwardEvent);
     this.eventTracker.addEventListener('pointercancel', this.boundForwardEvent);
     this.eventTracker.addEventListener('pointerout', this.boundForwardEvent);
@@ -1644,20 +1659,17 @@ class TrackRenderer extends React.Component {
     this.eventTracker.removeEventListener('mouseover', this.boundForwardEvent);
     this.eventTracker.removeEventListener('mouseenter', this.boundForwardEvent);
     this.eventTracker.removeEventListener('mousedown', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('mousemove', this.boundForwardEvent);
     this.eventTracker.removeEventListener('mouseup', this.boundForwardEvent);
     this.eventTracker.removeEventListener('mouseout', this.boundForwardEvent);
     this.eventTracker.removeEventListener('mouseleave', this.boundForwardEvent);
 
     this.eventTracker.removeEventListener('touchstart', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('touchmove', this.boundForwardEvent);
     this.eventTracker.removeEventListener('touchend', this.boundForwardEvent);
     this.eventTracker.removeEventListener('touchcancel', this.boundForwardEvent);
 
     this.eventTracker.removeEventListener('pointerover', this.boundForwardEvent);
     this.eventTracker.removeEventListener('pointerenter', this.boundForwardEvent);
     this.eventTracker.removeEventListener('pointerdown', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('pointermove', this.boundForwardEvent);
     this.eventTracker.removeEventListener('pointerup', this.boundForwardEvent);
     this.eventTracker.removeEventListener('pointercancel', this.boundForwardEvent);
     this.eventTracker.removeEventListener('pointerout', this.boundForwardEvent);
@@ -1748,6 +1760,7 @@ TrackRenderer.propTypes = {
   metaTracks: PropTypes.array,
   onMouseMoveZoom: PropTypes.func,
   onScalesChanged: PropTypes.func.isRequired,
+  pixiRenderer: PropTypes.object.isRequired,
   pixiStage: PropTypes.object.isRequired,
   pluginTracks: PropTypes.object,
   positionedTracks: PropTypes.array,

@@ -1,5 +1,6 @@
 /* eslint-env node, jasmine */
 import { globalPubSub } from 'pub-sub-es';
+import { select } from 'd3-selection';
 
 import {
   some,
@@ -8,10 +9,11 @@ import {
 } from '../app/scripts/utils';
 
 import {
-  emptyConf,
   simpleCenterViewConfig,
   simple1And2dAnnotations,
 } from './view-configs';
+
+import emptyConf from './view-configs-more/emptyConf';
 
 import simpleHeatmapViewConf from './view-configs/simple-heatmap';
 import adjustViewSpacingConf from './view-configs/adjust-view-spacing';
@@ -39,6 +41,50 @@ describe('API Tests', () => {
   let api = null;
 
   describe('Options tests', () => {
+    it('shows linear-labels as available track', () => {
+      [div, api] = createElementAndApi(simpleCenterViewConfig);
+
+      api.showAvailableTrackPositions(
+        {
+          server: 'http://higlass.io/api/v1',
+          tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+          datatype: 'yyyyy',
+          defaultTracks: ['xxxxx'],
+        }
+      );
+
+      // we don't know what type of track 'xxxx' is and what
+      // datatype 'yyyy' is so let's not show any overlays
+      selection = select(div).selectAll('.DragListeningDiv');
+      expect(selection.size()).toEqual(0);
+
+      api.showAvailableTrackPositions(
+        {
+          server: 'http://higlass.io/api/v1',
+          tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+          datatype: 'linear-labels',
+        }
+      );
+
+      // before providing default tracks, higlass shouldn't know
+      // which tracks are compatible with this datatype and shouldn't
+      // display any drag listening divs
+      let selection = select(div).selectAll('.DragListeningDiv');
+      expect(selection.size()).toEqual(0);
+
+      api.showAvailableTrackPositions(
+        {
+          server: 'http://higlass.io/api/v1',
+          tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+          datatype: 'linear-labels',
+          defaultTracks: ['heatmap', 'horizontal-heatmap'],
+        }
+      );
+
+      selection = select(div).selectAll('.DragListeningDiv');
+      expect(selection.size()).toEqual(5);
+    });
+
     it('creates a track with default options', () => {
       [div, api] = createElementAndApi(simpleCenterViewConfig,
         {
@@ -210,15 +256,13 @@ describe('API Tests', () => {
       });
     });
 
-    it('has version', (done) => {
+    it('has version', () => {
       [div, api] = createElementAndApi(emptyConf, { editable: false });
 
       expect(api.version).toEqual(VERSION);
-
-      done();
     });
 
-    it('adjust view spacing', (done) => {
+    it('adjust view spacing', () => {
       const options = {
         pixelPreciseMarginPadding: true,
         containingPaddingX: 0,
@@ -269,8 +313,6 @@ describe('API Tests', () => {
         + options.viewMarginLeft
         + options.viewMarginRight
       );
-
-      done();
     });
 
     it('mousemove and zoom events work for 1D and 2D tracks', (done) => {
@@ -369,12 +411,11 @@ describe('API Tests', () => {
       });
     });
 
-    it('APIs are independent', (done) => {
+    it('APIs are independent', () => {
       [div, api] = createElementAndApi(
         simpleCenterViewConfig, { editable: false, bounded: true }
       );
 
-      done();
       /* Turning this test off because it periodically
        * and inexplicablye fails
        */

@@ -163,8 +163,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         // draw it out to understand better!
         const tileBottomPosition = ((j - i) - 2)
           * (this._xScale(tileWidth) - this._xScale(0))
-          * Math.sqrt(2)
-          / 2;
+          * Math.sqrt(2) / 2;
 
         if (tileBottomPosition > this.dimensions[1]) {
           // this tile won't be visible so we don't need to fetch it
@@ -293,15 +292,11 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
 
           const canvas = this.tileDataToCanvas(pixData.pixData);
 
-          let sprite = null;
+          const texture = PIXI.VERSION[0] === '4'
+            ? PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
+            : PIXI.Texture.from(canvas, { scaleMode: PIXI.SCALE_MODES.NEAREST });
 
-          if (tile.tileData.zoomLevel === this.maxZoom) {
-            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
-          } else {
-            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
-          }
-
-          tile.sprite = sprite;
+          tile.sprite = new PIXI.Sprite(texture);
           tile.canvas = canvas;
 
           this.setSpriteProperties(

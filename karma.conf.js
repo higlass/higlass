@@ -21,28 +21,38 @@ module.exports = (config) => {
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
       'node_modules/font-awesome/css/font-awesome.css',
       'build/hglib.css',
+      {
+        pattern: 'docs/examples/viewconfs/*.json', watched: true, served: true, included: false
+      },
       'test/**/*.+(js|jsx)',
-      // 'test/HeatmapTests.js',
-      // 'test/HorizontalHeatmapTests.js',
-      // 'test/AddTrackTests.js',
-      // 'test/Horizontal1DTrackTests.js'
-      // 'test/TrackLabelsTest.jsx',
-      // 'test/PluginTrackTests.js',
-      // 'test/AxisTests.js',
-      // 'test/SVGExportTest.js',
-      // 'test/AxisTests.js', // Passes when run in isolation, but fails as part of suite.
-      // 'test/RuleTests.js',
-      // 'test/MinimalViewconfTest.js'
-      // 'test/PngExportTest.js',
-      // 'test/OSMTests.js',
-      // 'test/TiledPixiTrackTests.js',
-      // 'test/ViewManipulationTests.js',
-      // 'test/ChromSizesTests.js',
-      // 'test/ViewportProjectionTests.js',
-      // 'test/APITests.js',
+      // 'test/SchemaTests.js',
+      // 'test/2DRectangleDomainsTests.js',
       // 'test/AddAndRemoveViewconfTests.js',
-      // 'test/HiGlassComponentTest.js',
+      // 'test/AddTrackTests.js',
+      // 'test/APITests.js',
+      // 'test/AxisTests.js',
+      // 'test/AxisTests.js', // Passes when run in isolation, but fails as part of suite.
+      // 'test/BarTrackTests.js',
+      // 'test/ChromSizesTests.js',
+      // 'test/HeatmapTests.js',
       // 'test/HiGlassComponentCreationTests.js',
+      // 'test/HiGlassComponentTest.js',
+      // 'test/Horizontal1DTrackTests.js'
+      // 'test/HorizontalHeatmapTests.js',
+      // 'test/HorizontalMultivecTests.js',
+      // 'test/LeftTrackModifierTests.js',
+      // 'test/MinimalViewconfTest.js'
+      // 'test/OSMTests.js',
+      // 'test/OverlayTrackTests.js',
+      // 'test/PluginTrackTests.js',
+      // 'test/PngExportTest.js',
+      // 'test/RuleTests.js',
+      // 'test/SVGExportTest.js',
+      // 'test/TiledPixiTrackTests.js',
+      // 'test/TrackLabelsTest.jsx',
+      // 'test/ViewManipulationTests.js',
+      // 'test/ViewportProjectionTests.js',
+      // 'test/UtilsTests.js',
     ],
 
     preprocessors: {

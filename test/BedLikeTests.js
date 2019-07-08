@@ -27,19 +27,17 @@ describe('Simple HiGlassComponent', () => {
       ([div, hgc] = mountHGComponent(div, hgc, viewConf, done));
     });
 
-    it('Ensures that the track was rendered', (done) => {
+    it('Ensures that the track was rendered', () => {
       expect(hgc.instance().state.viewConfig.editable).to.eql(true);
       const trackObj = getTrackObjectFromHGC(hgc.instance(),
         viewConf.views[0].uid,
         viewConf.views[0].tracks.top[0].uid);
 
       expect(Object.keys(trackObj.drawnRects).length).to.be.above(0);
-      done();
     });
 
-    afterAll((done) => {
+    afterAll(() => {
       removeHGComponent(div);
-      done();
     });
   });
 

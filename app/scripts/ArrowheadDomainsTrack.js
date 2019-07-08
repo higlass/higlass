@@ -286,13 +286,11 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
           r.setAttribute('height', rect.height);
 
           r.setAttribute(
-            'fill', this.options.fillColor ? this.options.fillColor : 'grey'
+            'fill', this.options.rectangleDomainFillColor ? this.options.rectangleDomainFillColor : 'grey'
           );
           r.setAttribute('opacity', 0.3);
 
-          r.style.stroke = this.options.fillColor
-            ? this.options.fillColor
-            : 'grey';
+          r.style.stroke = 'black';
           r.style.strokeWidth = '1px';
 
           gTile.appendChild(r);

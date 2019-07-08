@@ -284,7 +284,6 @@ class GenomePositionSearchBox extends React.Component {
     // used for autocomplete
     this.prevParts = positionString.split(/[ -]/);
 
-    // console.log('this.autocompleteMenu', this.autocompleteMenu.inputEl);
     if (this.gpsbForm) {
       this.positionText = positionString;
 
@@ -391,14 +390,11 @@ class GenomePositionSearchBox extends React.Component {
    * @param {string} chromInfoId The name of the chromosome info set to use
    */
   fetchChromInfo(chromInfoId, server) {
-    // console.log('chromInfoId', chromInfoId);
-
     ChromosomeInfo(`${server}/chrom-sizes/?id=${chromInfoId}`, (newChromInfo) => {
       if (!newChromInfo) {
         return;
       }
 
-      // console.log('error1', error1);
       tileProxy.json(`${server}/tileset_info/?d=${chromInfoId}`, (error2, tilesetInfo) => {
         if (error2) {
           return;
@@ -450,10 +446,10 @@ class GenomePositionSearchBox extends React.Component {
         k = dashParts.length;
 
         while (k > j) {
-          const dashChunk = dashParts.slice(j, k).join('-').toLowerCase();
+          const dashChunk = dashParts.slice(j, k).join('-');
 
-          if (genePositions[dashChunk]) {
-            const genePosition = genePositions[dashChunk];
+          if (genePositions[dashChunk.toLowerCase()]) {
+            const genePosition = genePositions[dashChunk.toLowerCase()];
             const extension = Math.floor((genePosition.txEnd - genePosition.txStart) / 4);
 
             if (j === 0 && k < dashParts.length) {
@@ -478,7 +474,6 @@ class GenomePositionSearchBox extends React.Component {
           k -= 1;
         }
 
-        // console.log('j:', j, k);
         j = k + 1;
       }
 
@@ -695,12 +690,12 @@ class GenomePositionSearchBox extends React.Component {
 
     return (
       <FormGroup
-        ref={c => this.gpsbForm = c}
+        ref={(c) => { this.gpsbForm = c; }}
         bsSize="small"
         styleName={className}
       >
         <DropdownButton
-          ref={c => this.assemblyPickButton = c}
+          ref={(c) => { this.assemblyPickButton = c; }}
           bsSize="small"
           className={styles['genome-position-search-bar-button']}
           id={this.uid}
@@ -711,7 +706,7 @@ class GenomePositionSearchBox extends React.Component {
         </DropdownButton>
 
         <Autocomplete
-          ref={c => this.autocompleteMenu = c}
+          ref={(c) => { this.autocompleteMenu = c; }}
           getItemValue={item => item.geneName}
           inputProps={{
             className: styles['genome-position-search-bar'],
@@ -759,7 +754,9 @@ GenomePositionSearchBox.propTypes = {
   autocompleteId: PropTypes.string,
   autocompleteServer: PropTypes.string,
   chromInfoId: PropTypes.string,
+  chromInfoServer: PropTypes.string,
   isFocused: PropTypes.bool,
+  pubSub: PropTypes.func,
   onFocus: PropTypes.func,
   onSelectedAssemblyChanged: PropTypes.func,
   registerViewportChangedListener: PropTypes.func,

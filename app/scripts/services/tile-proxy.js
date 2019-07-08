@@ -60,10 +60,11 @@ const sessionId = slugid.nice();
 export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports
 export let authHeader = null; // eslint-disable-line import/no-mutable-exports
 
-const debounce = (func, wait) => {
+const throttleAndDebounce = (func, interval, finalWait) => {
   let timeout;
   let bundledRequest = [];
   let requestMapper = {};
+  let blockedCalls = 0;
 
   const bundleRequests = (request) => {
     const requestId = requestMapper[request.id];
@@ -83,19 +84,32 @@ const debounce = (func, wait) => {
     requestMapper = {};
   };
 
-  const debounced = (request, ...args) => {
-    bundleRequests(request);
+  // In a normal situation we would just call `func(...args)` but since we
+  // modify the first argument and always trigger `reset()` afterwards I created
+  // this helper function to avoid code duplication. Think of this function
+  // as the actual function call that is being throttled and debounced.
+  const callFunc = (request, ...args) => {
+    func({
+      sessionId,
+      requests: bundledRequest,
+    }, ...args);
+    reset();
+  };
 
+  const debounced = (request, ...args) => {
     const later = () => {
-      func({
-        sessionId,
-        requests: bundledRequest,
-      }, ...args);
-      reset();
+      // Since we throttle and debounce we should check whether there were
+      // actually multiple attempts to call this function after the most recent
+      // throttled call. If there were no more calls we don't have to call
+      // the function again.
+      if (blockedCalls > 0) {
+        callFunc(request, ...args);
+        blockedCalls = 0;
+      }
     };
 
     clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+    timeout = setTimeout(later, finalWait);
   };
 
   debounced.cancel = () => {
@@ -110,7 +124,24 @@ const debounce = (func, wait) => {
     });
   };
 
-  return debounced;
+  let wait = false;
+  const throttled = (request, ...args) => {
+    bundleRequests(request);
+
+    if (!wait) {
+      callFunc(request, ...args);
+      debounced(request, ...args);
+      wait = true;
+      blockedCalls = 0;
+      setTimeout(() => {
+        wait = false;
+      }, interval);
+    } else {
+      blockedCalls++;
+    }
+  };
+
+  return throttled;
 };
 
 export const setTileProxyAuthHeader = (newHeader) => {
@@ -121,7 +152,7 @@ export const getTileProxyAuthHeader = () => authHeader;
 
 // Fritz: is this function used anywhere?
 export function fetchMultiRequestTiles(req, pubSub) {
-  const requests = req.requests; // eslint-disable-line prefer-destructuring
+  const requests = req.requests;
 
   const fetchPromises = [];
 
@@ -215,7 +246,9 @@ export function fetchMultiRequestTiles(req, pubSub) {
  * @param server: A string with the server's url (e.g. "http://127.0.0.1")
  * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
  */
-export const fetchTilesDebounced = debounce(fetchMultiRequestTiles, TILE_FETCH_DEBOUNCE);
+export const fetchTilesDebounced = throttleAndDebounce(
+  fetchMultiRequestTiles, TILE_FETCH_DEBOUNCE, TILE_FETCH_DEBOUNCE
+);
 
 /**
  * Retrieve a set of tiles from the server
@@ -478,10 +511,16 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
  * threadpool
  */
 export const tileDataToPixData = (
-  tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished, ignoreUpperRight
+  tile,
+  valueScaleType,
+  valueScaleDomain,
+  pseudocount,
+  colorScale,
+  finished,
+  ignoreUpperRight,
+  ignoreLowerLeft,
 ) => {
   const { tileData } = tile;
-
 
   if (!tileData.dense) {
     // if we didn't get any data from the server, don't do anything
@@ -489,16 +528,28 @@ export const tileDataToPixData = (
     return;
   }
 
-  if (tile.mirrored
+  if (
+    tile.mirrored
+    // Data is already copied over
+    && !tile.isMirrored
     && tile.tileData.tilePos.length > 0
-    && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]) {
+    && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
+  ) {
     // if a center tile is mirrored, we'll just add its transpose
     const tileWidth = Math.floor(Math.sqrt(tile.tileData.dense.length));
-    for (let i = 0; i < tileWidth; i++) {
-      for (let j = 0; j < tileWidth; j++) {
-        tile.tileData.dense[(i * tileWidth) + j] = tile.tileData.dense[(j * tileWidth) + i];
+    for (let row = 0; row < tileWidth; row++) {
+      for (let col = row + 1; col < tileWidth; col++) {
+        tile.tileData.dense[(row * tileWidth) + col] = tile.tileData.dense[(col * tileWidth) + row];
       }
     }
+    if (ignoreLowerLeft) {
+      for (let row = 0; row < tileWidth; row++) {
+        for (let col = 0; col < row; col++) {
+          tile.tileData.dense[(row * tileWidth) + col] = NaN;
+        }
+      }
+    }
+    tile.isMirrored = true;
   }
 
   // console.log('tile', tile);
@@ -507,7 +558,6 @@ export const tileDataToPixData = (
   // const newTileData = tileData.dense;
 
   // comment this and uncomment the code afterwards to enable threading
-
   const pixData = workerSetPix(
     tileData.dense.length,
     tileData.dense,
@@ -515,7 +565,8 @@ export const tileDataToPixData = (
     valueScaleDomain,
     pseudocount,
     colorScale,
-    ignoreUpperRight
+    ignoreUpperRight,
+    ignoreLowerLeft
   );
 
   finished({ pixData });
@@ -573,7 +624,7 @@ function fetchEither(url, callback, textOrJson, pubSub) {
       return content;
     })
     .catch((error) => {
-      console.error(error);
+      console.error(`Could not fetch ${url}`, error);
       callback(error, undefined);
       return error;
     })

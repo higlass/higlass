@@ -1,6 +1,6 @@
 {
   "name": "higlass",
-  "version": "1.5.1",
+  "version": "1.6.5",
   "description": "HiGlass Hi-C / genomic / large data viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/hglib.js",
@@ -37,12 +37,13 @@
     "node": ">=0.12.0"
   },
   "peerDependencies": {
-    "pixi.js": "^4.8.2",
+    "pixi.js": "^5.0.3",
     "react": "^16.6.3",
     "react-bootstrap": "0.32.1",
     "react-dom": "^16.6.3"
   },
   "dependencies": {
+    "ajv": "^6.10.0",
     "box-intersect": "^1.0.1",
     "css-element-queries": "github:marcj/css-element-queries",
     "cwise": "^1.0.10",
@@ -65,9 +66,10 @@
     "eventemitter3": "^2.0.2",
     "ndarray": "^1.0.18",
     "path": "^0.12.7",
-    "pixi.js": "^4.6.2",
+    "pixi.js": "^5.0.3",
+    "prismjs": "^1.16.0",
     "prop-types": "^15.6.0",
-    "pub-sub-es": "^1.2.0",
+    "pub-sub-es": "^1.2.1",
     "react": "^16.6.3",
     "react-autocomplete": "github:tiemevanveen/react-autocomplete#fix-176",
     "react-bootstrap": "0.32.1",
@@ -78,6 +80,7 @@
     "react-dom": "^16.6.3",
     "react-grid-layout": "^0.16.6",
     "react-resizable": "^1.7.5",
+    "react-simple-code-editor": "^0.9.10",
     "react-sortable-hoc": "^0.6.7",
     "reactcss": "^1.2.3",
     "robust-point-in-polygon": "^1.0.3",
@@ -88,10 +91,13 @@
     "url-join": "^1.1.0",
     "url-parse": "^1.4.3",
     "vkbeautify": "^0.99.3",
-    "webpack-dev-server": "^3.1.8",
     "whatwg-fetch": "^3.0.0"
   },
+  "devDependenciesComments": [
+    "webpack-dev-server is pinned because later versions did not serve all static directories: https://github.com/higlass/higlass/issues/623"
+  ],
   "devDependencies": {
+    "ajv-cli": "^3.0.0",
     "autoprefixer": "^7.2.6",
     "babel": "^6.23.0",
     "babel-core": "^6.26.3",
@@ -150,6 +156,6 @@
     "webpack": "^4.25.1",
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.10"
+    "webpack-dev-server": "3.2.0"
   }
 }

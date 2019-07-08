@@ -1,0 +1,57 @@
+@import './colors';
+@import './sizes';
+@import './transitions';
+
+.dialog-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 (-1*$base)+px $base+px (-1*$base)+px;
+  padding: 0 $base+px $base+px $base+px;
+  border-bottom: 1px solid $gray-light;
+
+  h3 {
+    margin: 0;
+    padding: 0;
+    font-size: (2*$base)+px;
+    line-height: 1em;
+  }
+
+  button {
+    font-size: $base+px;
+  }
+}
+
+.dialog-main-max-height {
+  position: absolute;
+  z-index: 1;
+  top: (4*$base)+px;
+  right: 0;
+  bottom: (5*$base)+px;
+  left: 0;
+  padding: $base+px;
+  overflow: auto;
+}
+
+.dialog-footer, .dialog-footer-max-height {
+  display: flex;
+  justify-content: space-between;
+  margin: $base+px (-1*$base)+px 0 (-1*$base)+px;
+  padding: $base+px $base+px 0 $base+px;
+  border-top: 1px solid $gray-light;
+}
+
+.dialog-footer, .dialog-footer-max-height {
+  button {
+    font-size: (1.4*$base)+px;
+  }
+}
+
+.dialog-footer-max-height {
+  position: absolute;
+  z-index: 2;
+  left: $base+px;
+  right: $base+px;
+  bottom: $base+px;
+}

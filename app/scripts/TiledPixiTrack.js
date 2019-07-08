@@ -8,7 +8,7 @@ import DataFetcher from './DataFetcher';
 import PixiTrack from './PixiTrack';
 
 // Utils
-import { debounce } from './utils';
+import { throttleAndDebounce } from './utils';
 
 // Configs
 import { ZOOM_DEBOUNCE } from './configs';
@@ -28,7 +28,9 @@ import { ZOOM_DEBOUNCE } from './configs';
  * @returns {array} An array of [string, scale] containin the scale type
  *  and a scale with an appropriately set domain and range
  */
-export function getValueScale(scalingType, minValue, pseudocountIn, maxValue, defaultScaling) {
+export function getValueScale(
+  scalingType, minValue, pseudocountIn, maxValue, defaultScaling
+) {
   const scalingTypeToUse = scalingType || defaultScaling;
 
   // purposely set to not equal pseudocountIn for now
@@ -36,8 +38,12 @@ export function getValueScale(scalingType, minValue, pseudocountIn, maxValue, de
   const pseudocount = 0;
 
   if (scalingTypeToUse === 'log' && minValue > 0) {
-    return ['log', scaleLog().range([254, 0])
-      .domain([minValue + pseudocount, maxValue + pseudocount])];
+    return [
+      'log',
+      scaleLog()
+        .range([254, 0])
+        .domain([minValue + pseudocount, maxValue + pseudocount])
+    ];
   }
 
   if (scalingTypeToUse === 'log') {
@@ -45,8 +51,7 @@ export function getValueScale(scalingType, minValue, pseudocountIn, maxValue, de
     // console.warn('Negative values present in data. Defaulting to linear scale: ', minValue);
   }
 
-  return ['linear', scaleLinear().range([254, 0])
-    .domain([minValue, maxValue])];
+  return ['linear', scaleLinear().range([254, 0]).domain([minValue, maxValue])];
 }
 
 class TiledPixiTrack extends PixiTrack {
@@ -144,7 +149,6 @@ class TiledPixiTrack extends PixiTrack {
         return;
       }
 
-      // console.log('tilesetInfo:', this.tilesetInfo);
       if (this.tilesetInfo.resolutions) {
         this.maxZoom = this.tilesetInfo.resolutions.length;
       } else {
@@ -165,7 +169,7 @@ class TiledPixiTrack extends PixiTrack {
 
       if (!this.options) this.options = {};
 
-      this.options.name = this.options.name ? this.options.name : tilesetInfo.name;
+      this.options.name = this.options.name || tilesetInfo.name;
 
       this.checkValueScaleLimits();
 
@@ -175,7 +179,10 @@ class TiledPixiTrack extends PixiTrack {
     });
 
     this.uuid = slugid.nice();
-    this.refreshTilesDebounced = debounce(this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
+
+    this.refreshTilesDebounced = throttleAndDebounce(
+      this.refreshTiles.bind(this), ZOOM_DEBOUNCE, ZOOM_DEBOUNCE
+    );
 
     this.trackNotFoundText = new PIXI.Text(
       '', { fontSize: '12px', fontFamily: 'Arial', fill: 'black' }
@@ -221,8 +228,6 @@ class TiledPixiTrack extends PixiTrack {
    *  parameters for the event depend on the event called.
    *
    * @example
-   *
-   * ..code-block::
    *
    *  trackObj.on('dataChanged', (newData) => {
    *   console.log('newData:', newData)
@@ -365,8 +370,6 @@ class TiledPixiTrack extends PixiTrack {
       return;
     }
 
-    // console.log('removing:', toRemoveIds);
-
     toRemoveIds.forEach((x) => {
       const tileIdStr = x;
       this.destroyTile(this.fetchedTiles[tileIdStr]);
@@ -374,8 +377,6 @@ class TiledPixiTrack extends PixiTrack {
       if (tileIdStr in this.tileGraphics) {
         this.pMain.removeChild(this.tileGraphics[tileIdStr]);
         delete this.tileGraphics[tileIdStr];
-      } else {
-        // console.log('tileIdStr absent:', tileIdStr);
       }
 
       delete this.fetchedTiles[tileIdStr];
@@ -384,8 +385,6 @@ class TiledPixiTrack extends PixiTrack {
 
     this.synchronizeTilesAndGraphics();
     this.draw();
-
-    // console.log('# children', this.pMain.children.length, Object.keys(this.fetchedTiles).length);
   }
 
   zoomed(newXScale, newYScale, k = 1, tx = 0, ty = 0) {
@@ -481,7 +480,6 @@ class TiledPixiTrack extends PixiTrack {
   }
 
   updateTile(/* tile */) {
-    // console.log("ERROR: unimplemented updateTile:", this);
   }
 
   destroyTile(/* tile */) {
@@ -497,7 +495,6 @@ class TiledPixiTrack extends PixiTrack {
     this.renderVersion += 1;
 
     for (let i = 0; i < fetchedTileIDs.length; i++) {
-      // console.log('this.tileGraphics', this.tileGraphics);
       if (!(fetchedTileIDs[i] in this.tileGraphics)) {
         // console.trace('adding:', fetchedTileIDs[i]);
 
@@ -607,16 +604,12 @@ class TiledPixiTrack extends PixiTrack {
     }
 
     // const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
-    // console.log('fetchedTileIDs:', fetchedTileIDs);
-    // console.log('fetching:', this.fetching);
 
     for (const key in loadedTiles) {
       if (loadedTiles[key]) {
         const tileId = loadedTiles[key].tilePositionId;
-        // console.log('tileId:', tileId, 'fetching:', this.fetching);
 
         if (this.fetching.has(tileId)) {
-          // console.log('removing:', tileId, 'fetching:', this.fetching);
           this.fetching.delete(tileId);
         }
       }
@@ -637,11 +630,8 @@ class TiledPixiTrack extends PixiTrack {
     if (this.valueScale) {
       if (!this.prevValueScale
         || JSON.stringify(this.valueScale.domain())
-        !== JSON.stringify(this.prevValueScale.domain())) {
-        // console.log('here', this.onValueScaleChanged);
-        // if (this.prevValueScale)
-        // console.log('this.prevValueScale.domain()', this.prevValueScale.domain());
-        // console.log('this.valueScale.domain()', this.valueScale.domain());
+        !== JSON.stringify(this.prevValueScale.domain())
+      ) {
         this.prevValueScale = this.valueScale.copy();
 
         if (this.onValueScaleChanged) {

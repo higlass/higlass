@@ -1,5 +1,8 @@
 import ReactDOM from 'react-dom';
 import createPubSub from 'pub-sub-es';
+import Ajv from 'ajv';
+
+import schema from '../schema.json';
 
 import {
   setDarkTheme,
@@ -189,6 +192,16 @@ const createApi = function api(context, pubSub) {
        *   all of the data for this viewconfig is loaded
        */
       setViewConfig(newViewConfig) {
+        const validate = new Ajv().compile(schema);
+        const valid = validate(newViewConfig);
+        if (validate.errors) {
+          console.warn(JSON.stringify(validate.errors, null, 2));
+        }
+        if (!valid) {
+          console.warn('Invalid viewconf');
+          // throw new Error('Invalid viewconf');
+        }
+
         const viewsByUid = self.processViewConfig(newViewConfig);
         const p = new Promise((resolve) => {
           this.requestsInFlight = 0;
@@ -222,7 +235,17 @@ const createApi = function api(context, pubSub) {
        * @returns (Object) A JSON object describing the visible views
        */
       getViewConfig() {
-        return self.getViewsAsJson();
+        const newViewConfig = self.getViewsAsJson();
+        const validate = new Ajv().compile(schema);
+        const valid = validate(newViewConfig);
+        if (validate.errors) {
+          console.warn(JSON.stringify(validate.errors, null, 2));
+        }
+        if (!valid) {
+          console.warn('Invalid viewconf');
+          // throw new Error('Invalid viewconf');
+        }
+        return newViewConfig;
       },
       /**
        * Get the minimum and maximum visible values for a given track.
@@ -278,9 +301,23 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
-       * Show overlays where this track can be positioned
+       * Show overlays where this track can be positioned. This
+       * function will take a track definition and display red
+       * or green overlays highlighting where the track can be
+       * placed on the view.
        *
        * @param {obj} track { server, tilesetUid, datatype }
+       *
+       * @example
+       *
+       *  let lineTrack = {
+       *   "server": "http://higlass.io/api/v1",
+       *   "tilesetUid": "WtBJUYawQzS9M2WVIIHnlA",
+       *   "datatype": "multivec",
+       *   "defaultTracks": ['horizontal-stacked-bar']
+       * }
+       *
+       * window.hgApi.showAvailableTrackPositions(lineTrack);
        */
       showAvailableTrackPositions(track) {
         self.setState({
