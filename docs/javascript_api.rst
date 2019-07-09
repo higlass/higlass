@@ -212,7 +212,7 @@ API Functions
 
 .. js:autofunction:: setViewConfig
 
-.. js:autofunction:: zoomTo
+.. js:autofunction:: public.zoomTo
 
 .. js:autofunction:: exportAsSvg
 
