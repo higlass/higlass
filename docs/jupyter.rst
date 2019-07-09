@@ -101,9 +101,9 @@ Creating the server:
 .. code-block:: python
 
     from higlass.client import View, Track
-    import higlass.tilesets
+    from higlass.tilesets import cooler
 
-    ts1 = higlass.tilesets.cooler('../data/Dixon2012-J1-NcoI-R1-filtered.100kb.multires.cool')
+    ts1 = cooler('../data/Dixon2012-J1-NcoI-R1-filtered.100kb.multires.cool')
     tr1 = Track('heatmap', tileset=ts1)
     view1 = View([tr1])
     display, server, viewconf = higlass.display([view1])
@@ -125,6 +125,7 @@ according to the chromosome info in the specified file.
 
 
     from higlass.client import View, Track
+    from higlass.tilesets import bigwig, chromsizes
     import higlass.tilesets
 
     chromsizes_fp = '../data/chromSizes_hg19_reordered.tsv'
@@ -136,8 +137,8 @@ according to the chromosome info in the specified file.
             chrom, size = line.split('\t')
             chromsizes.append((chrom, int(size)))
 
-    cs = higlass.tilesets.chromsizes(chromsizes)
-    ts = higlass.tilesets.bigwig(bigwig_fp, chromsizes=chromsizes)
+    cs = chromsizes(chromsizes)
+    ts = bigwig(bigwig_fp, chromsizes=chromsizes)
     
     tr0 = Track('top-axis')
     tr1 = Track('horizontal-bar', tileset=ts)
@@ -163,7 +164,8 @@ To display data, we need to define a tileset. Tilesets define two functions:
 
 .. code-block:: python
 
-    > ts1 = higlass.tilesets.bigwig('http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig')
+    > from higlass.tilesets import bigwig
+    > ts1 = bigwig('http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig')
     > ts1.tileset_info()
     {
      'min_pos': [0],
@@ -267,7 +269,7 @@ Then we have to set up a data server to output the data in "tiles".
     import numpy as np
     import pandas as pd
     from higlass.client import View, Track
-    import higlass.tilesets
+    from higlass.tilesets import dfpoints
 
     length = int(1e6)
     df = pd.DataFrame({
@@ -276,7 +278,7 @@ Then we have to set up a data server to output the data in "tiles".
         'v': range(1, length+1),
     })
 
-    ts = higlass.tilesets.dfpoints(df, x_col='x', y_col='y')
+    ts = dfpoints(df, x_col='x', y_col='y')
 
     display, server, viewconf = higlass.display([
         View([
@@ -321,9 +323,9 @@ And then create the tileset and track, as before.
 .. code-block:: python
 
     from higlass.client import View, Track
-    import higlass.tilesets
+    from higlass.tilesets import dfpoints
 
-    ts = higlass.tilesets.dfpoints(df, x_col='x', y_col='y')
+    ts = dfpoints(df, x_col='x', y_col='y')
 
     display, server, viewconf = higlass.display([
         View([
@@ -358,7 +360,7 @@ auto-hiding points:
 .. code-block:: python
 
     %%javascript
-    require(["https://unpkg.com/higlass-labelled-points-track@0.1.7/dist/higlass-labelled-points-track"],
+    require(["https://unpkg.com/higlass-labelled-points-track@0.1.11/dist/higlass-labelled-points-track"],
         function(hglib) {
     });
 
