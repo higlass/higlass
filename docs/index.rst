@@ -2,30 +2,19 @@
 HiGlass: A Multiscale Data Browser
 ==================================
 
-`HiGlass <http://higlass.io/>`_ is a viewer for large-scale genomic data. It takes
-ideas introduced in genome browsers such as the `UCSC Genome Browser
-<https://genome.ucsc.edu/>`_ and combines them with inspirations from more
-recent HiC data browsers such as `Juicebox
-<http://www.aidenlab.org/juicebox/>`_ and implements them in a framework
-inspired by modern online maps (so-called `slippy maps
+`HiGlass <http://higlass.io/>`_ is a viewer for multi-scale data, originally designed to handle massive genomic data sets.
+HiGlass is built on a framework inspired by genome browsers and modern online maps (so-called `slippy maps
 <http://wiki.openstreetmap.org/wiki/Slippy_Map>`_) to form a fast, extensible
-and responsive viewer for diverse types of genomic data.
+and responsive viewer for diverse types of multi-scale data.
 
-The HiGlass application actually consists of four distinct components:
+The HiGlass application actually consists of distinct components:
 
-|higlass-client|_ - This is the Javascript
+|higlass-viewer|_ - This is the Javascript
 library that displays heatmaps, tracks, etc. In a sense, this is the meat of
 the application. The vast majority of the updates are on this component.
 
-.. |higlass-client| replace:: **higlass-client**
-.. _higlass-client: https://github.com/higlass/higlass
-
-|higlass-website|_  - This is the
-website that embeds the higlass-client. It can contain multiple higlass clients
-(as on the front page of higlass.io).
-
-.. |higlass-website| replace:: **higlass-website**
-.. _higlass-website: https://github.com/higlass/higlass-website
+.. |higlass-viewer| replace:: **higlass-viewer**
+.. _higlass-viewer: https://github.com/higlass/higlass
 
 |higlass-server|_ - The server manages data and serves it to the client in
 small chunks that match the current zoom level and location. It is a python
