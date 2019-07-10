@@ -122,16 +122,17 @@ function externalInitTile(track, tile, options) {
 
 function renderRects(track, tile, graphics, xScale, rects, color, alpha, centerY, height) {
   const topY = centerY - height / 2;
+  const FILLER_PADDING = 2;
   tile.rectGraphics.beginFill(color, 0.1);
   tile.rectGraphics.lineStyle(0, color);
 
   rects.forEach((td) => {
     const poly = [
-      xScale(td.xStart), topY,
-      xScale(td.xEnd), topY,
-      xScale(td.xEnd), topY + height,
-      xScale(td.xStart), topY + height,
-      xScale(td.xStart), topY,
+      xScale(td.xStart) - FILLER_PADDING, topY,
+      xScale(td.xEnd) + FILLER_PADDING, topY,
+      xScale(td.xEnd) + FILLER_PADDING, topY + height,
+      xScale(td.xStart) - FILLER_PADDING, topY + height,
+      xScale(td.xStart) - FILLER_PADDING, topY,
     ];
 
     // console.log('poly:', poly);
@@ -462,7 +463,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const plusFillerRects = tile.tileData.filter(td => td.type === 'filler' && td.strand === '+');
     const minusFillerRects = tile.tileData.filter(td => td.type === 'filler' && td.strand === '-');
 
-    console.log('plusFillerRects', plusFillerRects, tile.tileData);
+    // console.log('plusFillerRects', plusFillerRects, tile.tileData);
 
     const plusGenes = tile.tileData.filter(td => td.type !== 'filler'
       && (td.strand === '+' || td.fields[5] === '+'));
