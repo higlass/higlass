@@ -1,4 +1,10 @@
-## v1.6.5 
+## Next release
+
+- Fix #732: Remove the hold ALT feature as it's confusion and leads to a weird bug.
+
+_[Detailed changes since v1.6.3](https://github.com/higlass/higlass/compare/v1.6.5...v1.6.6)_
+
+## v1.6.5
 
 - Fixed the replace track bug (where replacing a center track wouldn't do anything)
 
