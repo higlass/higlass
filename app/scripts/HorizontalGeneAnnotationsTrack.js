@@ -19,7 +19,8 @@ const TRIANGLE_HEIGHT = 6;
 const MAX_TEXTS = 20;
 const WHITE_HEX = colorToHex('#ffffff');
 const EXON_LINE_HEIGHT = 2;
-const MAX_TILE_ENTRIES = 400;
+const MAX_GENE_ENTRIES = 50;
+const MAX_FILLER_ENTRIES = 5000;
 const FILLER_HEIGHT = 14;
 
 const trackUtils = {
@@ -55,7 +56,8 @@ function externalInitTile(track, tile, options) {
     fontFamily,
     plusStrandColor,
     minusStrandColor,
-    maxTileEntries,
+    maxGeneEntries,
+    maxFillerEntries,
     maxTexts,
   } = options;
 
@@ -79,7 +81,15 @@ function externalInitTile(track, tile, options) {
   if (!tile.tileData.sort) return;
 
   tile.tileData.sort((a, b) => b.importance - a.importance);
-  tile.tileData = tile.tileData.slice(0, maxTileEntries);
+
+  const geneEntries = tile.tileData
+    .filter(td => td.type !== 'filler')
+    .slice(0, maxGeneEntries);
+  const fillerEntries = tile.tileData
+    .filter(td => td.type === 'filler')
+    .slice(0, maxFillerEntries);
+
+  tile.tileData = geneEntries.concat(fillerEntries);
 
   tile.tileData.forEach((td, i) => {
     const geneInfo = td.fields;
@@ -122,7 +132,7 @@ function externalInitTile(track, tile, options) {
 
 function renderRects(track, tile, graphics, xScale, rects, color, alpha, centerY, height) {
   const topY = centerY - height / 2;
-  const FILLER_PADDING = 2;
+  const FILLER_PADDING = 0;
   tile.rectGraphics.beginFill(color, 0.1);
   tile.rectGraphics.lineStyle(0, color);
 
@@ -373,7 +383,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       fontFamily: FONT_FAMILY,
       plusStrandColor: this.options.plusStrandColor,
       minusStrandColor: this.options.minusStrandColor,
-      maxTileEntries: MAX_TILE_ENTRIES,
+      maxGeneEntries: MAX_GENE_ENTRIES,
+      maxFillerEntries: MAX_FILLER_ENTRIES,
       maxTexts: MAX_TEXTS,
     });
 
