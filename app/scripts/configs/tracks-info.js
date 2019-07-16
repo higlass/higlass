@@ -1122,7 +1122,8 @@ export const TRACKS_INFO = [
         labelColor: '#ffffff',
         labelBackgroundColor: '#000000',
         trackBorderColor: '#ffffff',
-        mousePositionColor: '#ffffff'
+        mousePositionColor: '#ffffff',
+        plusStrandColor: '#40a0ff',
       }
     },
   },
@@ -1178,7 +1179,8 @@ export const TRACKS_INFO = [
         labelColor: '#ffffff',
         labelBackgroundColor: '#000000',
         trackBorderColor: '#ffffff',
-        mousePositionColor: '#ffffff'
+        mousePositionColor: '#ffffff',
+        plusStrandColor: '#40a0ff',
       }
     },
   },
