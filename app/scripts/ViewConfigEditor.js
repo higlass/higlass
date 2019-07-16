@@ -70,8 +70,6 @@ class ViewConfigEditor extends React.Component {
   }
 
   handleKeyUp(event) {
-    if (this.willHide) clearTimeout(this.willHide);
-    this.willHide = null;
     this.setState({ hide: false });
 
     if (event.key === 'Escape') {
