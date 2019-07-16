@@ -1538,6 +1538,7 @@ class TiledPlot extends React.Component {
             onUnlockValueScale={this.handleUnlockValueScaleBound}
             orientation="right"
             position={this.state.contextMenuPosition}
+            theme={this.props.theme}
             tracks={relevantTracks}
             trackSourceServers={this.props.trackSourceServers}
           />
@@ -2108,6 +2109,7 @@ class TiledPlot extends React.Component {
             onTrackOptionsChanged={this.handleTrackOptionsChangedBound}
             onUnlockValueScale={this.handleUnlockValueScaleBound}
             position={this.state.configTrackMenuLocation}
+            theme={this.props.theme}
             trackOrientation={
               getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
             tracks={[getTrackByUid(this.props.tracks, this.state.configTrackMenuId)]}

@@ -10,7 +10,6 @@ import ContextMenuItem from './ContextMenuItem';
 import ContextMenuContainer from './ContextMenuContainer';
 import SeriesListSubmenuMixin from './SeriesListSubmenuMixin';
 
-import withTheme from './hocs/with-theme';
 import { THEME_DARK } from './configs';
 
 // Styles
@@ -180,7 +179,6 @@ ViewContextMenu.propTypes = {
   // the data coordinates where this context menu was initiated
   coords: PropTypes.array,
   customItems: PropTypes.array,
-  theme: PropTypes.symbol.isRequired,
 };
 
-export default withTheme(ViewContextMenu);
+export default ViewContextMenu;

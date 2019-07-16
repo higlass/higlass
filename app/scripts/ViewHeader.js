@@ -203,6 +203,7 @@ class ViewHeader extends React.Component {
             }}
             orientation="left"
             position={this.state.configMenuPosition}
+            theme={this.props.theme}
           />
         </PopupMenu>
       );

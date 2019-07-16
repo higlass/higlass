@@ -7,7 +7,6 @@ import SeriesListSubmenuMixin from './SeriesListSubmenuMixin';
 
 import { getSeriesItems } from './SeriesListItems';
 
-import withTheme from './hocs/with-theme';
 import { THEME_DARK } from './configs';
 
 // Styles
@@ -98,4 +97,4 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
   }
 }
 
-export default withTheme(ConfigTrackMenu);
+export default ConfigTrackMenu;

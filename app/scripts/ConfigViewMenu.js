@@ -5,8 +5,6 @@ import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
 import NestedContextMenu from './NestedContextMenu';
 
-import withTheme from './hocs/with-theme';
-
 // Styles
 import '../styles/ContextMenu.module.scss';
 
@@ -70,6 +68,7 @@ class ConfigViewMenu extends ContextMenuContainer {
         orientation={this.state.orientation}
         parentBbox={bbox}
         position={position}
+        theme={this.props.theme}
       />
     );
   }
@@ -123,22 +122,27 @@ class ConfigViewMenu extends ContextMenuContainer {
           {'Toggle position search box'}
         </ContextMenuItem>
 
-        <hr styleName="context-menu-hr" />
-
-        <ContextMenuItem
-          onClick={() => {}}
-          onMouseEnter={e => this.handleItemMouseEnter(e,
-            {
-              option: 'options',
-            })
-          }
-          onMouseLeave={e => this.handleMouseLeave(e)}
-        >
-          {'Options'}
-          <svg styleName="play-icon">
-            <use xlinkHref="#play" />
-          </svg>
-        </ContextMenuItem>
+        {
+          // Fritz: This seems to have been forgotten. The on-click handler does
+          // nothing so I comment this out
+          //
+          // <hr styleName="context-menu-hr" />
+          //
+          // <ContextMenuItem
+          //   onClick={() => {}}
+          //   onMouseEnter={e => this.handleItemMouseEnter(e,
+          //     {
+          //       option: 'options',
+          //     })
+          //   }
+          //   onMouseLeave={e => this.handleMouseLeave(e)}
+          // >
+          //   {'Options'}
+          //   <svg styleName="play-icon">
+          //     <use xlinkHref="#play" />
+          //   </svg>
+          // </ContextMenuItem>
+        }
 
         <hr styleName="context-menu-hr" />
 
@@ -291,4 +295,4 @@ ConfigViewMenu.propTypes = {
   theme: PropTypes.symbol,
 };
 
-export default withTheme(ConfigViewMenu);
+export default ConfigViewMenu;
