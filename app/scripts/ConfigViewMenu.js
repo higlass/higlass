@@ -5,13 +5,14 @@ import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
 import NestedContextMenu from './NestedContextMenu';
 
-import { getDarkTheme } from './services';
+import withTheme from './hocs/with-theme';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
 
 import {
   OPTIONS_INFO,
+  THEME_DARK,
 } from './configs';
 
 class ConfigViewMenu extends ContextMenuContainer {
@@ -104,7 +105,7 @@ class ConfigViewMenu extends ContextMenuContainer {
 
   render() {
     let styleNames = 'context-menu';
-    if (getDarkTheme()) styleNames += ' context-menu-dark';
+    if (this.props.theme === THEME_DARK) styleNames += ' context-menu-dark';
 
     return (
       <div
@@ -286,7 +287,8 @@ ConfigViewMenu.propTypes = {
   onYankLocation: PropTypes.func,
   onYankZoom: PropTypes.func,
   onYankZoomAndLocation: PropTypes.func,
-  onZoomToData: PropTypes.func
+  onZoomToData: PropTypes.func,
+  theme: PropTypes.symbol,
 };
 
-export default ConfigViewMenu;
+export default withTheme(ConfigViewMenu);

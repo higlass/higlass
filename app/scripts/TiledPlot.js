@@ -24,6 +24,7 @@ import ViewContextMenu from './ViewContextMenu';
 // Higher-order components
 import withPubSub from './hocs/with-pub-sub';
 import withModal from './hocs/with-modal';
+import withTheme from './hocs/with-theme';
 
 // Utils
 import {
@@ -2122,6 +2123,7 @@ class TiledPlot extends React.Component {
         >
           <ContextMenuContainer
             position={this.state.closeTrackMenuLocation}
+            theme={this.props.theme}
           >
             <CloseTrackMenu
               onCloseTrack={this.handleCloseTrack.bind(this)}
@@ -2312,6 +2314,7 @@ TiledPlot.propTypes = {
   removeDraggingChangedListener: PropTypes.func,
   setCentersFunction: PropTypes.func,
   svgElement: PropTypes.object,
+  theme: PropTypes.symbol.isRequired,
   tracks: PropTypes.object,
   trackSourceServers: PropTypes.array,
   uid: PropTypes.string,
@@ -2320,4 +2323,4 @@ TiledPlot.propTypes = {
   zoomToDataExtentOnInit: PropTypes.func
 };
 
-export default withPubSub(withModal(TiledPlot));
+export default withPubSub(withModal(withTheme(TiledPlot)));

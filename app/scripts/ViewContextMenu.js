@@ -10,7 +10,8 @@ import ContextMenuItem from './ContextMenuItem';
 import ContextMenuContainer from './ContextMenuContainer';
 import SeriesListSubmenuMixin from './SeriesListSubmenuMixin';
 
-import { getDarkTheme } from './services';
+import withTheme from './hocs/with-theme';
+import { THEME_DARK } from './configs';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
@@ -31,7 +32,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
       : null;
 
     let styleNames = 'context-menu';
-    if (getDarkTheme()) styleNames += ' context-menu-dark';
+    if (this.props.theme === THEME_DARK) styleNames += ' context-menu-dark';
 
     return (
       <div
@@ -179,6 +180,7 @@ ViewContextMenu.propTypes = {
   // the data coordinates where this context menu was initiated
   coords: PropTypes.array,
   customItems: PropTypes.array,
+  theme: PropTypes.symbol.isRequired,
 };
 
-export default ViewContextMenu;
+export default withTheme(ViewContextMenu);
