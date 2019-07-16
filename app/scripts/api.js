@@ -358,8 +358,19 @@ const createApi = function api(context, pubSub) {
       /**
        * Choose a theme.
        */
+      setDarkTheme(darkTheme) {
+        console.warn(
+          '`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.'
+        );
+        const theme = darkTheme ? 'dark' : 'light';
+        self.setTheme(theme);
+      },
+
+      /**
+       * Choose a theme.
+       */
       setTheme(theme) {
-        console.warn('Please note that theming is still in beta');
+        console.warn('Please note that theming is still in beta!');
         self.setTheme(theme);
       },
 
