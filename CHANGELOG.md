@@ -1,8 +1,10 @@
 ## Next release
 
 - Fix #732: Remove the hold ALT feature as it's confusion and leads to a weird bug.
+- Fix leaking dark mode setting
+- Change option to activate dark theme from `isDarkTheme: true` to `theme: 'dark'`. Also, use `setTheme()` of the JsAPI instead of `setDarkTheme()` from now on.
 
-_[Detailed changes since v1.6.3](https://github.com/higlass/higlass/compare/v1.6.5...v1.6.6)_
+_[Detailed changes since v1.6.4](https://github.com/higlass/higlass/compare/v1.6.5...develop)_
 
 ## v1.6.5
 
