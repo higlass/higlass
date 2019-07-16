@@ -61,28 +61,6 @@ describe('View Config Editor', () => {
       .toEqual(30);
   });
 
-  it('should hide on alt keydown', (done) => {
-    document.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 'Alt', altKey: true })
-    );
-    hgc.update();
-
-    setTimeout(() => {
-      hgc.update();
-      expect(hgc.instance().modalRef.state.hide).toBe(true);
-      done();
-    }, 1100);
-  });
-
-  it('should show on alt keyup', () => {
-    document.dispatchEvent(
-      new KeyboardEvent('keyup', { key: 'Alt', altKey: true })
-    );
-    hgc.update();
-
-    expect(hgc.instance().modalRef.state.hide).toBe(false);
-  });
-
   it('should revert changes and close on escape', () => {
     document.dispatchEvent(new KeyboardEvent('keyup', { key: 'Escape' }));
     hgc.update();
