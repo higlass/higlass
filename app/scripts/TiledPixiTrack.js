@@ -585,7 +585,7 @@ class TiledPixiTrack extends PixiTrack {
     for (let i = 0; i < this.visibleTiles.length; i++) {
       const { tileId } = this.visibleTiles[i];
 
-      if (!loadedTiles[this.visibleTiles[i].remoteId]) { continue; }
+      if (!loadedTiles[this.visibleTiles[i].remoteId]) continue;
 
 
       if (this.visibleTiles[i].remoteId in loadedTiles) {
@@ -594,8 +594,11 @@ class TiledPixiTrack extends PixiTrack {
           this.fetchedTiles[tileId] = this.visibleTiles[i];
         }
 
-
-        this.fetchedTiles[tileId].tileData = loadedTiles[this.visibleTiles[i].remoteId];
+        // Store a shallow copy. If necessary we perform a deep copy of the
+        // dense data in `tile-proxy.js :: tileDataToPixData()`
+        this.fetchedTiles[tileId].tileData = {
+          ...loadedTiles[this.visibleTiles[i].remoteId]
+        };
 
         if (this.fetchedTiles[tileId].tileData.error) {
           console.warn('Error in loaded tile', tileId, this.fetchedTiles[tileId].tileData);
@@ -617,8 +620,8 @@ class TiledPixiTrack extends PixiTrack {
 
 
     /*
-         * Mainly called to remove old unnecessary tiles
-         */
+     * Mainly called to remove old unnecessary tiles
+     */
     this.synchronizeTilesAndGraphics();
 
     // we need to draw when we receive new data
