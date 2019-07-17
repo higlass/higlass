@@ -7,21 +7,26 @@ HiGlass is built on a framework inspired by genome browsers and modern online ma
 <http://wiki.openstreetmap.org/wiki/Slippy_Map>`_) to form a fast, extensible
 and responsive viewer for diverse types of multi-scale data.
 
+The HiGlass framework consists of several distinct components:
+
+.. figure:: img/higlass-architecture.jpg
+    :align: center
+    :figwidth: 640px
+
 .. youtube:: v62k4Ok1S8g
     :height: 144
     :width: 256
     :align: right
+    :css: margin:0.5em 0.5em 0 0.5em;padding:0.5em 0.5em 0 0.5em;
 
     For an overview of HiGlass take a look at
     our talk from the SciPy conference 2019
 
-The HiGlass framework consists of distinct components:
-
-|higlass-viewer|_ - This is the Javascript
+|higlass.js|_ - This is the Javascript
 library that renders the tracks and provides the user interface. The vast majority of the updates are on this component.
 
-.. |higlass-viewer| replace:: **higlass-viewer**
-.. _higlass-viewer: https://github.com/higlass/higlass
+.. |higlass.js| replace:: **higlass.js**
+.. _higlass.js: https://github.com/higlass/higlass
 
 |higlass-server|_ - The server manages and serves the data to the client in
 small chunks that match the current zoom level and location. It is a python
