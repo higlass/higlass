@@ -2,7 +2,6 @@ import { range } from 'd3-array';
 import slugid from 'slugid';
 
 import {
-  // workerFetchTiles,
   workerGetTiles,
   workerSetPix,
 } from '../worker';
@@ -249,20 +248,6 @@ export function fetchMultiRequestTiles(req, pubSub) {
 export const fetchTilesDebounced = throttleAndDebounce(
   fetchMultiRequestTiles, TILE_FETCH_DEBOUNCE, TILE_FETCH_DEBOUNCE
 );
-
-/**
- * Retrieve a set of tiles from the server
- *
- * Plenty of room for optimization and caching here.
- *
- * @param server: A string with the server's url (e.g. "http://127.0.0.1")
- * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
- */
-// export const fetchTiles = (tilesetServer, tilesetIds, done) => workerFetchTiles(
-//   tilesetServer, tilesetIds, this.sessionId, (results) => {
-//     done(results);
-//   }
-// );
 
 /**
  * Calculate the zoom level from a list of available resolutions
@@ -676,7 +661,6 @@ const api = {
   calculateTileWidth,
   calculateZoomLevel,
   calculateZoomLevelFromResolutions,
-  // fetchTiles,
   fetchTilesDebounced,
   json,
   text,
