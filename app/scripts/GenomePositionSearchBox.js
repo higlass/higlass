@@ -9,18 +9,23 @@ import {
 } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
-import { ZOOM_TRANSITION_DURATION } from './configs';
 import Autocomplete from './Autocomplete';
 import ChromosomeInfo from './ChromosomeInfo';
 import SearchField from './SearchField';
 import PopupMenu from './PopupMenu';
 
 // Services
-import { getDarkTheme, tileProxy } from './services';
+import { tileProxy } from './services';
 import withPubSub from './hocs/with-pub-sub';
 
 // Utils
 import { scalesCenterAndK, dictKeys, toVoid } from './utils';
+
+// HOCS
+import withTheme from './hocs/with-theme';
+
+// Configs
+import { THEME_DARK, ZOOM_TRANSITION_DURATION } from './configs';
 
 // Styles
 import styles from '../styles/GenomePositionSearchBox.module.scss'; // eslint-disable-line no-unused-vars
@@ -686,7 +691,9 @@ class GenomePositionSearchBox extends React.Component {
       : 'styles.genome-position-search-bar-button';
 
 
-    if (getDarkTheme()) className += ' styles.genome-position-search-dark';
+    if (this.props.theme === THEME_DARK) {
+      className += ' styles.genome-position-search-dark';
+    }
 
     return (
       <FormGroup
@@ -762,8 +769,9 @@ GenomePositionSearchBox.propTypes = {
   registerViewportChangedListener: PropTypes.func,
   removeViewportChangedListener: PropTypes.func,
   setCenters: PropTypes.func,
+  theme: PropTypes.symbol.isRequired,
   trackSourceServers: PropTypes.array,
   twoD: PropTypes.bool,
 };
 
-export default withPubSub(GenomePositionSearchBox);
+export default withPubSub(withTheme(GenomePositionSearchBox));
