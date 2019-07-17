@@ -3,14 +3,15 @@
 - Fix #732: Remove the hold ALT feature as it's confusion and leads to a weird bug.
 - Fix leaking dark mode setting
 - Change option to activate dark theme from `isDarkTheme: true` to `theme: 'dark'`. Also, use `setTheme()` of the JsAPI instead of `setDarkTheme()` from now on.
+- Copy the tile data before mutation to fix an issue when displaying the same tileset twice (once in the upper right and lower left triangle)
 
-_[Detailed changes since v1.6.4](https://github.com/higlass/higlass/compare/v1.6.5...develop)_
+_[Detailed changes since v1.6.5](https://github.com/higlass/higlass/compare/v1.6.5...develop)_
 
 ## v1.6.5
 
 - Fixed the replace track bug (where replacing a center track wouldn't do anything)
 
-_[Detailed changes since v1.6.3](https://github.com/higlass/higlass/compare/v1.6.4...v1.6.5)_
+_[Detailed changes since v1.6.4](https://github.com/higlass/higlass/compare/v1.6.4...v1.6.5)_
 
 ## v1.6.4
 
