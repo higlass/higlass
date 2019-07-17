@@ -213,7 +213,7 @@ class IframeVideo(Directive):
         'height': directives.nonnegative_int,
         'width': directives.nonnegative_int,
         'align': align,
-        # 'caption': directives.unchanged,
+        'css': directives.unchanged,
     }
     default_width = 500
     default_height = 281
@@ -227,13 +227,13 @@ class IframeVideo(Directive):
             self.options['height'] = self.default_height
         if not self.options.get('align'):
             self.options['align'] = 'left'
-        # if not self.options.get('caption'):
-        #     self.options['caption'] = ''
+        if not self.options.get('css'):
+            self.options['css'] = ''
         return [nodes.raw('', self.html % self.options, format='html')]
 
 
 class Youtube(IframeVideo):
-    html = '<div class="figure align-%(align)s">\
+    html = '<div class="figure align-%(align)s" style="%(css)s">\
     <iframe src="http://www.youtube.com/embed/%(video_id)s" \
     width="%(width)u" height="%(height)u" frameborder="0" \
     webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>\
@@ -242,7 +242,7 @@ class Youtube(IframeVideo):
 
 
 class Vimeo(IframeVideo):
-    html = '<div class="figure align-%(align)s">\
+    html = '<div class="figure align-%(align)s" style="%(css)s">\
     <iframe src="http://player.vimeo.com/video/%(video_id)s" \
     width="%(width)u" height="%(height)u" frameborder="0" \
     webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>\
