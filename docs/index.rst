@@ -32,20 +32,24 @@ about.
 .. |higlass-server| replace:: **higlass-server**
 .. _higlass-server: https://github.com/higlass/higlass-server
 
-|higlass-docker|_  - This docker
-container contains all three of the above repositories and packages them so
-that they can be easily run without having to install and run each separately.
-An update in any of the above repositories will be reflected in an update in
-the docker container. The versions of all the components is accessible at
-http://higlass.io/version.txt
+|clodius|_ - This package implements the aggregation and tile generation logic for many common 1D and 2D data types.
 
-.. |higlass-docker| replace:: **higlass-docker**
-.. _higlass-docker: https://github.com/higlass/higlass-docker
+.. |clodius| replace:: **clodius**
+.. _clodius: https://github.com/higlass/clodius
 
 |higlass-python|_ - This package contains directives to locally visualize data with HiGlass in `Jupyter notebooks or Lab <https://jupyter.org>`_.
 
 .. |higlass-python| replace:: **higlass-python**
 .. _higlass-python: https://github.com/higlass/higlass-python
+
+|higlass-docker|_  - Our docker
+container consists all packages that are required to run HiGlass as a persistent server to make the installation process easier.
+An update in any of the above repositories will be reflected in an update in
+the docker container. The versions of all the components is accessible at
+https://higlass.io/version.txt
+
+.. |higlass-docker| replace:: **higlass-docker**
+.. _higlass-docker: https://github.com/higlass/higlass-docker
 
 Track types
 ~~~~~~~~~~~
