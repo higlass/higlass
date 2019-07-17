@@ -7,18 +7,25 @@ HiGlass is built on a framework inspired by genome browsers and modern online ma
 <http://wiki.openstreetmap.org/wiki/Slippy_Map>`_) to form a fast, extensible
 and responsive viewer for diverse types of multi-scale data.
 
-The HiGlass application actually consists of distinct components:
+.. youtube:: v62k4Ok1S8g
+    :height: 144
+    :width: 256
+    :align: right
+
+    For an overview of HiGlass take a look at
+    our talk from the SciPy conference 2019
+
+The HiGlass framework consists of distinct components:
 
 |higlass-viewer|_ - This is the Javascript
-library that displays heatmaps, tracks, etc. In a sense, this is the meat of
-the application. The vast majority of the updates are on this component.
+library that renders the tracks and provides the user interface. The vast majority of the updates are on this component.
 
 .. |higlass-viewer| replace:: **higlass-viewer**
 .. _higlass-viewer: https://github.com/higlass/higlass
 
-|higlass-server|_ - The server manages data and serves it to the client in
+|higlass-server|_ - The server manages and serves the data to the client in
 small chunks that match the current zoom level and location. It is a python
-django application that exposes an API.  For example,
+django application that exposes an API. For example,
 http://higlass.io/api/v1/tilesets lists the tilesets that the server knows
 about.
 
@@ -34,6 +41,11 @@ http://higlass.io/version.txt
 
 .. |higlass-docker| replace:: **higlass-docker**
 .. _higlass-docker: https://github.com/higlass/higlass-docker
+
+|higlass-python|_ - This package contains directives to locally visualize data with HiGlass in `Jupyter notebooks or Lab <https://jupyter.org>`_.
+
+.. |higlass-python| replace:: **higlass-python**
+.. _higlass-python: https://github.com/higlass/higlass-python
 
 Track types
 ~~~~~~~~~~~
