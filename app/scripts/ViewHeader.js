@@ -6,17 +6,16 @@ import ContextMenuContainer from './ContextMenuContainer';
 import ConfigViewMenu from './ConfigViewMenu';
 import AddTrackPositionMenu from './AddTrackPositionMenu';
 
+// HOCS
+import withTheme from './hocs/with-theme';
+
 // Configs
 import {
   MOUSE_TOOL_SELECT,
+  THEME_DARK,
   VIEW_HEADER_MED_WIDTH_SEARCH_BAR,
   VIEW_HEADER_MIN_WIDTH_SEARCH_BAR,
 } from './configs';
-
-// Services
-import {
-  getDarkTheme,
-} from './services';
 
 // Styles
 import '../styles/ViewHeader.module.scss';
@@ -106,6 +105,7 @@ class ViewHeader extends React.Component {
           <ContextMenuContainer
             orientation="left"
             position={this.state.addTrackPositionMenuPosition}
+            theme={this.props.theme}
           >
             <AddTrackPositionMenu
               onTrackPositionChosen={this.handleTrackPositionChosenBound}
@@ -203,6 +203,7 @@ class ViewHeader extends React.Component {
             }}
             orientation="left"
             position={this.state.configMenuPosition}
+            theme={this.props.theme}
           />
         </PopupMenu>
       );
@@ -223,7 +224,7 @@ class ViewHeader extends React.Component {
     const classNameIcon = this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR
       ? 'multitrack-header-icon-squeazed' : 'multitrack-header-icon';
 
-    if (getDarkTheme()) {
+    if (this.props.theme === THEME_DARK) {
       className += ' multitrack-header-dark';
     }
 
@@ -333,7 +334,8 @@ ViewHeader.propTypes = {
   onYankZoom: PropTypes.func.isRequired,
   onYankZoomAndLocation: PropTypes.func.isRequired,
   onZoomToData: PropTypes.func.isRequired,
+  theme: PropTypes.symbol.isRequired,
   viewUid: PropTypes.string.isRequired,
 };
 
-export default ViewHeader;
+export default withTheme(ViewHeader);

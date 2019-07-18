@@ -14,6 +14,8 @@ import {
   svgLine
 } from './utils';
 
+import { THEME_DARK } from './configs';
+
 const TICK_WIDTH = 200;
 const TICK_HEIGHT = 6;
 const TICK_TEXT_SEPARATION = 2;
@@ -44,7 +46,10 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     this.textFontSize = 12;
     this.textFontFamily = 'Arial';
-    this.textFontColor = '#777777';
+    this.textFontColor = '#808080';
+    this.textStrokeColor = this.getTheme() === THEME_DARK
+      ? '#000000'
+      : '#ffffff';
     this.pixiTextConfig = {
       fontSize: +this.options.fontSize
         ? `${+this.options.fontSize}px`
@@ -52,7 +57,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       fontFamily: this.textFontFamily,
       fill: this.options.color || this.textFontColor,
       lineJoin: 'round',
-      stroke: this.options.stroke || '#ffffff',
+      stroke: this.options.stroke || this.textStrokeColor,
       strokeThickness: 2
     };
     this.stroke = colorToHex(this.pixiTextConfig.stroke);

@@ -30,19 +30,16 @@ This file can be aggregated like so:
 .. code-block:: bash
 
     clodius aggregate bedfile \
-        --assembly hg19 \
+        --chromsizes-filename hg19.chrom.sizes \
         short.bed
+
+If the bed file has tab-separated values, that can be specified using the `--delimiter $'\t'` option.
 
 And then imported into higlass after copying to the docker temp directory (``cp short.bed.multires ~/hg-tmp/``):
 
 .. code-block:: bash
 
-     docker exec higlass-container python \
-        higlass-server/manage.py ingest_tileset \
-            --filename /tmp/short.bed.multires \
-            --filetype beddb \
-            --datatype bedlike \
-            --coordSystem b37
+     higlass-manage ingest short.bed.beddb
 
 A note about assemblies and coordinate systems
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -226,17 +223,12 @@ vector datatype and bigwig filetype:
 
 .. code-block:: bash
 
-    docker exec higlass-container python \
-            higlass-server/manage.py ingest_tileset \
-            --filename /tmp/cnvs_hw.bigWig \
-            --filetype bigwig \
-            --datatype vector \
-            --coordSystem hg19
+    higlass-manage ingest cnvs_hw.bigWig --assembly hg19
 
 **Important:** BigWig files have to be associated with a chromosome order!!
 This means that there needs to be a chromsizes file for the
-specified assembly (coordSystem) in the higlass database. If no ``coordSystem``
-is specified for the bigWig file in ``ingest_tileset``, HiGlass will try to 
+specified assembly in the higlass database. If no ``assembly``
+is specified for the bigWig file using the `--assembly` option, HiGlass will try to 
 find one in the database that matches the chromosomes present in the bigWig file. 
 If a ``chromsizes`` tileset is found, it's ``coordSystem`` will also be used for
 the bigWig file. If none are found, the import will fail. If more than one is found,
@@ -245,11 +237,11 @@ the import will also fail. If a `coordSystem` is specified for the bigWig, but n
 
 TLDR: The simplest way to import a bigWig is to have a ``chromsizes`` present e.g. 
 
-| ``ingest_tileset --filetype chromsizes-tsv --datatype chromsizes --coordSystem hg19 --filename chromSizes.tsv``
+| ``higlass-manage ingest --filetype chromsizes-tsv --datatype chromsizes --assembly hg19 chromSizes.tsv``
 
 and then to add the bigWig with the same ``coordSystem``: 
 
-| ``ingest_tileset --filetype bigwig --datatype vector --coordSystem hg19 --filename cnvs_hw.bigWig``
+| ``higlass-manage ingest --assembly hg19 cnvs_hw.bigWig``
 
 Creating bigWig files
 ^^^^^^^^^^^^^^^^^^^^^
@@ -287,7 +279,7 @@ as columns:
 
 Chromosome sizes can be imported into the higlass server using the ``--filetype chromsizes-tsv`` and ``--datatype chromsizes`` parameters. A ``coordSystem`` should be included to identify the assembly that these chromosomes define.
 
-| ``ingest_tileset --filetype chromsizes-tsv --datatype chromsizes --coordSystem hg19 chromSizes.tsv``
+| ``higlass-manage ingest --filetype chromsizes-tsv --datatype chromsizes --assembly hg19 chromSizes.tsv``
 
 
 Gene Annotation Tracks
