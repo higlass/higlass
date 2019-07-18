@@ -53,6 +53,7 @@ const SeriesListSubmenuMixin = Mixin(superclass => class extends superclass {
           parentBbox={bbox}
           position={position}
           series={this.state.submenuShown}
+          theme={this.props.theme}
           track={selectedTrack}
           trackOrientation={this.props.trackOrientation}
           trackSourceServers={this.props.trackSourceServers}
