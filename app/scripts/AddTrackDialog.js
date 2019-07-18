@@ -155,6 +155,7 @@ class AddTrackDialog extends React.Component {
 
     return (
       <Dialog
+        maxHeight={true}
         okayTitle="Submit"
         onCancel={this.props.onCancel}
         onOkay={this.handleSubmitBound}

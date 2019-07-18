@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { getDarkTheme } from './services';
+import { THEME_DARK } from './configs';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
@@ -183,11 +183,11 @@ class ContextMenuContainer extends React.Component {
 
     let stylenames = 'context-menu';
 
-    if (getDarkTheme()) stylenames += ' context-menu-dark';
+    if (this.props.theme === THEME_DARK) stylenames += ' context-menu-dark';
 
     return (
       <div
-        ref={c => this.div = c}
+        ref={(c) => { this.div = c; }}
         className="context-menu-item"
         style={wholeStyle}
         styleName={stylenames}
@@ -202,7 +202,8 @@ ContextMenuContainer.propTypes = {
   children: PropTypes.node,
   orientation: PropTypes.string,
   parentBbox: PropTypes.object,
-  position: PropTypes.object
+  position: PropTypes.object,
+  theme: PropTypes.symbol.isRequired,
 };
 
 export default ContextMenuContainer;

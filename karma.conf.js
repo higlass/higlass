@@ -21,7 +21,11 @@ module.exports = (config) => {
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
       'node_modules/font-awesome/css/font-awesome.css',
       'build/hglib.css',
+      {
+        pattern: 'docs/examples/viewconfs/*.json', watched: true, served: true, included: false
+      },
       'test/**/*.+(js|jsx)',
+      // 'test/SchemaTests.js',
       // 'test/2DRectangleDomainsTests.js',
       // 'test/AddAndRemoveViewconfTests.js',
       // 'test/AddTrackTests.js',
@@ -48,6 +52,7 @@ module.exports = (config) => {
       // 'test/TrackLabelsTest.jsx',
       // 'test/ViewManipulationTests.js',
       // 'test/ViewportProjectionTests.js',
+      // 'test/UtilsTests.js',
     ],
 
     preprocessors: {

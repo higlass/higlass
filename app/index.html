@@ -33,17 +33,13 @@ const viewConfig = {
         w: 12,
         h: 7,
         x: 0,
-        y: 0,
-        i: 'aa',
-        moved: false,
-        static: false
+        y: 0
       },
       uid: 'aa',
       initialYDomain: [
         2534823997.9776945,
         2547598956.834603
       ],
-      autocompleteSource: '/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
       initialXDomain: [
         2521015726.4619913,
         2558682921.8435397
@@ -54,14 +50,12 @@ const viewConfig = {
           {
             uid: 'genes',
             tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            position: 'top',
             server: 'http://higlass.io/api/v1',
             type: 'horizontal-gene-annotations',
             height: 48,
             options: {
               labelColor: 'black',
               plusStrandColor: 'black',
-              name: 'Gene Annotations (hg19)',
               labelPosition: 'hidden',
               minusStrandColor: 'black',
               fontSize: 11,
@@ -73,18 +67,14 @@ const viewConfig = {
               geneLabelPosition: 'outside',
               geneStrandSpacing: 4
             },
-            name: 'Gene Annotations (hg19)',
           },
           {
             uid: 'line1',
             tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
             height: 20,
-            width: 1890,
-            position: 'top',
             server: 'http://higlass.io/api/v1',
             type: 'horizontal-line',
             options: {
-              name: 'GM12878-E116-H3K27ac.fc.signal',
               valueScaling: 'linear',
               lineStrokeWidth: 2,
               lineStrokeColor: '#4a35fc',
@@ -97,19 +87,15 @@ const viewConfig = {
               showMousePosition: true,
               mousePositionColor: '#000000',
               showTooltip: false
-            },
-            name: 'GM12878-E116-H3K27ac.fc.signal'
+            }
           },
           {
             uid: 'line2',
             tilesetUid: 'PdAaSdibTLK34hCw7ubqKA',
             height: 20,
-            width: 1890,
-            position: 'top',
             server: 'http://higlass.io/api/v1',
             type: 'horizontal-line',
             options: {
-              name: 'GM12878-E116-H3K27me3.fc.signal',
               valueScaling: 'linear',
               lineStrokeWidth: 2,
               lineStrokeColor: '#d104fa',
@@ -123,18 +109,14 @@ const viewConfig = {
               mousePositionColor: '#000000',
               showTooltip: false
             },
-            name: 'GM12878-E116-H3K27me3.fc.signal'
           },
           {
             uid: 'line3',
             tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
             height: 20,
-            width: 1890,
-            position: 'top',
             server: 'http://higlass.io/api/v1',
             type: 'horizontal-line',
             options: {
-              name: 'GM12878-E116-H3K4me1.fc.signal',
               valueScaling: 'linear',
               lineStrokeWidth: 2,
               lineStrokeColor: '#ff0000',
@@ -148,18 +130,14 @@ const viewConfig = {
               mousePositionColor: '#000000',
               showTooltip: false
             },
-            name: 'GM12878-E116-H3K4me1.fc.signal'
           },
           {
             uid: 'line4',
             tilesetUid: 'cE0nGyd0Q_yVYSyBUe89Ww',
             height: 20,
-            width: 1890,
-            position: 'top',
             server: 'http://higlass.io/api/v1',
             type: 'horizontal-line',
             options: {
-              name: 'GM12878-E116-H3K4me3.fc.signal',
               valueScaling: 'linear',
               lineStrokeWidth: 2,
               lineStrokeColor: 'orange',
@@ -173,14 +151,11 @@ const viewConfig = {
               mousePositionColor: '#000000',
               showTooltip: false
             },
-            name: 'GM12878-E116-H3K4me3.fc.signal'
           },
           {
             uid: 'chroms',
             height: 18,
-            width: 1890,
             chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            position: 'top',
             type: 'horizontal-chromosome-labels',
             options: {
               color: '#777777',
@@ -190,7 +165,6 @@ const viewConfig = {
               showMousePosition: true,
               mousePositionColor: '#000000'
             },
-            name: 'Chromosome Labels (hg19)'
           }
         ],
         right: [],
@@ -200,12 +174,10 @@ const viewConfig = {
             type: 'combined',
             contents: [
               {
-                name: '[hicnorm] Rao et al. (2014) GM12878 MboI Primary',
-                created: '2017-05-17T13:37:06.974876Z',
                 server: 'http://higlass.io/api/v1',
                 tilesetUid: 'dVBREuC2SvO01uXYMUh2aQ',
-                uid: 'Yqetzqw6Qfy-hREAJhAXEA',
                 type: 'heatmap',
+                uid: 'Yqetzqw6Qfy-hREAJhAXEA',
                 options: {
                   backgroundColor: '#eeeeee',
                   labelPosition: 'topLeft',
@@ -224,20 +196,12 @@ const viewConfig = {
                   showMousePosition: true,
                   mousePositionColor: '#000000',
                   showTooltip: true,
-                  name: '[hicnorm] Rao et al. (2014) GM12878 MboI Primary',
                   scaleStartPercent: '0.00000',
                   scaleEndPercent: '1.00000',
-                  mousePositionColor: 'black',
-                  showMousePosition: true,
                   showMousePositionGlobally: true,
                 },
-                width: 100,
-                height: 100,
-                transforms: [],
-                position: 'center'
               }
             ],
-            position: 'center'
           }
         ],
         bottom: [],
@@ -245,7 +209,6 @@ const viewConfig = {
         gallery: []
       },
       chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-      genomePositionSearchBoxVisible: false,
       genomePositionSearchBox: {
         visible: true,
         chromInfoServer: 'http://higlass.io/api/v1',

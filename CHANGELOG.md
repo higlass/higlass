@@ -1,5 +1,56 @@
+## Next release
+
+_[Detailed changes since v1.6.6](https://github.com/higlass/higlass/compare/v1.6.6...develop)_
+
+# v1.6.6
+
+- Fix #732: Remove the hold ALT feature as it's confusion and leads to a weird bug.
+- Fix leaking dark mode setting
+- Change option to activate dark theme from `isDarkTheme: true` to `theme: 'dark'`. Also, use `setTheme()` of the JsAPI instead of `setDarkTheme()` from now on.
+- Copy the tile data before mutation to fix an issue when displaying the same tileset twice (once in the upper right and lower left triangle)
+
+_[Detailed changes since v1.6.5](https://github.com/higlass/higlass/compare/v1.6.5...v1.6.6)_
+
+## v1.6.5
+
+- Fixed the replace track bug (where replacing a center track wouldn't do anything)
+
+_[Detailed changes since v1.6.4](https://github.com/higlass/higlass/compare/v1.6.4...v1.6.5)_
+
+## v1.6.4
+
+- Truly fix #593: zoom to data extent when adding the first track to an empty view
+
+_[Detailed changes since v1.6.3](https://github.com/higlass/higlass/compare/v1.6.3...v1.6.4)_
+
+## v1.6.3
+
+- Dynamically update dark theme when the options change
+- Fix #722: added `labelShowResolution` as an option to allow hiding the `[Current data resolution...]` text
+- Add support for missing values (`NaN`s) to the 1D heatmap track
+- Use the new link format
+
+_[Detailed changes since v1.6.2](https://github.com/higlass/higlass/compare/v1.6.2...v1.6.3)_
+
+## v1.6.2
+
+- Render `horizontal-heatmap` track properly in PIXI v4 and v5
+- Expose pixi renderer to plugin tracks to allow them to render textures from graphics objects. (More here: https://github.com/pixijs/pixi.js/issues/5394)
+
+_[Detailed changes since v1.6.1](https://github.com/higlass/higlass/compare/v1.6.1...v1.6.2)_
+
+## v1.6.1
+
+- Fix visual glitches with the new Modal when run in `higlass-app`
+- Really fix #651: set correct namespace for SVG exports
+- Treat `tilesetInfo.mirror_tiles = false` as a falsy value
+- Fixed: `Save and Close` in the ViewConfigEditor works properly
+
+_[Detailed changes since v1.6.0](https://github.com/higlass/higlass/compare/v1.6.0...v1.6.1)_
+
 ## v1.6.0
 
+- Add an option to restrict the extent of central heatmaps to the upper-right or lower-left corner to enable comparison of two heatmaps in the center. Run `npm start` and see [http://localhost:8080/apis/svg.html?/viewconfs/diagonal-split-heatmap.json](http://localhost:8080/apis/svg.html?/viewconfs/diagonal-split-heatmap.json) for an example
 - Updated `pixi.js` to version `5`. In your `html` files you need to replace the previous PixiJS loader with `<script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>` (or `<script crossorigin src="https://unpkg.com/pixi.js-legacy@5/dist/pixi-legacy.min.js"></script>` if you want to use the Canvas renderer)
 - Add a dialog to directly edit the view config in the browser
 - Remove `react-bootstrap` components and `bootstrap` styling
@@ -7,27 +58,52 @@
 - Update modal/dialog to support Jupyter
 - Updated `pub-sub-es` to version `1.2.1` to fix a bug in the shorthand event unsubscription
 - Added an example of a map overlay
+- Support semi-transparent colormaps through RGBA colors
+- Update Mapbox endpoint. See [http://localhost:8080/others/mapbox.html](http://localhost:8080/others/mapbox.html) for an example.
+- Improve performance of the `mousemove`-related event handling
+- Remove unused properties from the exported view config
+- Improve performance of tiles fetching through a combination of throttling and debouncing
+- Fix a minor visual glitch with the positioning of track-related `div`s
+- Fix OSM track to avoid CORS issues in Chrome and allow setting `minPos` to `0`
 - Fix #648: Auto select and copy URL when exporting a view by link
 - Fix #647: Shows correct URL when specifying an absolute URL as `exportViewUrl` in the viewconf
 - Fix #651: set correct namespace for SVG exports
+- Fix #593: zoom to data extent when adding the first track to an empty view
+
+_[Detailed changes since v1.5.8](https://github.com/higlass/higlass/compare/v1.5.8...v1.6.0)_
+
+## v1.5.8
+
+- Fix a value scale syncing bug
+- Update the docs
+
+_[Detailed changes since v1.5.7](https://github.com/higlass/higlass/compare/v1.5.7...v1.5.8)_
 
 ## v1.5.7
 
 - Fix #637 - SVG export fill color doesn't match what is selected
 - Switch to nearest neighbor interpolation for horizontal heatmaps
 
+_[Detailed changes since v1.5.8](https://github.com/higlass/higlass/compare/v1.5.6...v1.5.7)_
+
 ## v1.5.6
 
 - Allow any horizontal track to also be placed on the left or right
+
+_[Detailed changes since v1.5.8](https://github.com/higlass/higlass/compare/v1.5.6...v1.5.7)_
 
 ## v1.5.5
 
 - Fixed #612: resolved an issue with caseinsensitive chromosome names
 - Destroy heatmap sprites and axis texts to mitigate memory leak
 
+_[Detailed changes since v1.5.4](https://github.com/higlass/higlass/compare/v1.5.4...v1.5.5)_
+
 ## v1.5.4
 
 - Fix the multiple component passive event issue by replacing the dom-event.js handlers with a class so that each component maintains its own context
+
+_[Detailed changes since v1.5.3](https://github.com/higlass/higlass/compare/v1.5.3...v1.5.4)_
 
 ## v1.5.3
 
@@ -43,6 +119,8 @@ to be resized
 - Fixed horizontal-vector-heatmap error thrown bug by padding incomplete
   incoming data arrays
 
+_[Detailed changes since v1.5.1](https://github.com/higlass/higlass/compare/v1.5.1...v1.5.3)_
+
 ## v1.5.1
 
 - Fixed UI hanging on mouseover of zoomed out matrix bug
@@ -51,6 +129,8 @@ to be resized
 - Added a default track type for the chromsizes datatype
 - Fixed drag handler pubSub reference
 - Fixed #596: scrolling while zooming bug introduced in latest chrome
+
+_[Detailed changes since v1.5.0](https://github.com/higlass/higlass/compare/v1.5.0...v1.5.1)_
 
 ## v1.5.0
 
@@ -66,6 +146,8 @@ to be resized
 - Fix #291: allow web page scrolling when zoomFixed is set to true
 - Fix #578: BarTrack SVG export overplotting error.
 - Fix #584: Reset viewport is broken
+
+_[Detailed changes since v1.4.2](https://github.com/higlass/higlass/compare/v1.4.2...v1.5.0)_
 
 ## v1.4.2
 

@@ -1,0 +1,12 @@
+name: higlass-docs
+channels:
+  - conda-forge
+
+dependencies:
+  - python>=3.7
+  - nodejs=10.*
+  - pip
+  - pip:
+    - Sphinx==1.6.5
+    - sphinx-autobuild
+    - sphinx-js

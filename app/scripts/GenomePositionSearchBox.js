@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import slugid from 'slugid';
 
-import { ZOOM_TRANSITION_DURATION } from './configs';
 import Autocomplete from './Autocomplete';
 import ChromosomeInfo from './ChromosomeInfo';
 import DropDownMenu from './DropDownMenu';
@@ -11,11 +10,17 @@ import SearchField from './SearchField';
 import PopupMenu from './PopupMenu';
 
 // Services
-import { getDarkTheme, tileProxy } from './services';
+import { tileProxy } from './services';
 import withPubSub from './hocs/with-pub-sub';
 
 // Utils
 import { scalesCenterAndK, toVoid } from './utils';
+
+// HOCS
+import withTheme from './hocs/with-theme';
+
+// Configs
+import { THEME_DARK, ZOOM_TRANSITION_DURATION } from './configs';
 
 // Styles
 import styles from '../styles/GenomePositionSearchBox.module.scss';
@@ -675,11 +680,13 @@ class GenomePositionSearchBox extends React.Component {
       : 'styles.genome-position-search-bar-button';
 
 
-    if (getDarkTheme()) className += ' styles.genome-position-search-dark';
+    if (this.props.theme === THEME_DARK) {
+      className += ' styles.genome-position-search-dark';
+    }
 
     return (
       <form
-        ref={c => this.form = c}
+        ref={(c) => { this.form = c; }}
         onSubmit={this.handleSubmitBound}
         styleName={className}
       >
@@ -696,7 +703,7 @@ class GenomePositionSearchBox extends React.Component {
         />
 
         <Autocomplete
-          ref={c => this.autocompleteMenu = c}
+          ref={(c) => { this.autocompleteMenu = c; }}
           getItemValue={item => item.geneName}
           inputProps={{
             className: styles['genome-position-search-bar'],
@@ -755,8 +762,9 @@ GenomePositionSearchBox.propTypes = {
   registerViewportChangedListener: PropTypes.func,
   removeViewportChangedListener: PropTypes.func,
   setCenters: PropTypes.func,
+  theme: PropTypes.symbol.isRequired,
   trackSourceServers: PropTypes.array,
   twoD: PropTypes.bool,
 };
 
-export default withPubSub(GenomePositionSearchBox);
+export default withPubSub(withTheme(GenomePositionSearchBox));

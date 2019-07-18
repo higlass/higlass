@@ -3,7 +3,8 @@ import { event, mouse, select } from 'd3-selection';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { getDarkTheme } from './services/is-dark-theme';
+import withTheme from './hocs/with-theme';
+import { THEME_DARK } from './configs';
 
 import '../styles/DraggableDiv.module.scss';
 
@@ -267,7 +268,7 @@ class DraggableDiv extends React.Component {
   /* ------------------------------ Rendering ------------------------------- */
 
   render() {
-    const dragColor = getDarkTheme() ? 'white' : 'black';
+    const dragColor = this.props.theme === THEME_DARK ? 'black' : 'white';
 
     const divStyle = {
       top: this.state.top,
@@ -339,7 +340,8 @@ DraggableDiv.propTypes = {
   trackClosed: PropTypes.func,
   trackRotated: PropTypes.func,
   uid: PropTypes.string,
-  width: PropTypes.number
+  width: PropTypes.number,
+  theme: PropTypes.symbol,
 };
 
-export default DraggableDiv;
+export default withTheme(DraggableDiv);

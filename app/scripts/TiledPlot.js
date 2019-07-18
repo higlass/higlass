@@ -23,6 +23,7 @@ import ViewContextMenu from './ViewContextMenu';
 // Higher-order components
 import withPubSub from './hocs/with-pub-sub';
 import withModal from './hocs/with-modal';
+import withTheme from './hocs/with-theme';
 
 // Utils
 import {
@@ -31,6 +32,7 @@ import {
   getTrackPositionByUid,
   isWithin,
   sum,
+  visitPositionedTracks,
 } from './utils';
 
 // Configs
@@ -110,6 +112,11 @@ class TiledPlot extends React.Component {
       contextMenuPosition: null,
       addDivisorDialog: null,
     };
+
+    // This should be `true` until one tracks was added and initialized.
+    // The main difference to `this.state.init` is that `reset` should be reset
+    // to `true` when the user removes all tracks and starts with a blank view!
+    this.reset = true;
 
     if (window.higlassTracksByType) {
       // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
@@ -210,6 +217,23 @@ class TiledPlot extends React.Component {
 
     if (toUpdate) this.previousPropsStr = nextPropsStr;
 
+    const numPrevTracks = this.numTracks;
+
+    this.numTracks = 0;
+    // Note that there is no point in running the code below with
+    // `this.props.tracks` and `nextProps.tracks` because the object is mutable
+    // and so the props of `this.props.tracks` and `nextProps.tracks` are always
+    // identical. To work around this we store the number of tracks in
+    // `this.numTracks`
+    visitPositionedTracks(this.props.tracks, () => this.numTracks++);
+
+    // With `this.reset ||` we ensure that subsequent updates do not unset the
+    // `this.reset = true`. Only `this.checkAllTilesetInfoReceived()` should set
+    // `this.reset` to `false`.
+    this.reset = this.reset || (numPrevTracks === 0 && this.numTracks > 0);
+
+    if (!this.numTracks) this.tracksByUidInit = {};
+
     return toUpdate;
   }
 
@@ -285,12 +309,12 @@ class TiledPlot extends React.Component {
     this.pubSubs.forEach(subscription => this.props.pubSub.unsubscribe(subscription));
   }
 
-  addUidsToTracks(tracks) {
-    for (const key in tracks) {
-      for (let i = 0; i < tracks[key].length; i++) {
-        tracks[key][i].uid = tracks[key][i].uid ? tracks[key][i].uid : slugid.nice();
-      }
-    }
+  addUidsToTracks(positionedTracks) {
+    Object.keys(positionedTracks).forEach((position) => {
+      positionedTracks[position].forEach((track) => {
+        track.uid = track.uid || slugid.nice();
+      });
+    });
   }
 
   /*
@@ -418,32 +442,39 @@ class TiledPlot extends React.Component {
    * Check if all track which are expecting a tileset info have been loaded.
    */
   checkAllTilesetInfoReceived() {
-    // Do nothing is HiGlass initialized already
-    if (this.state.init || !this.props.zoomToDataExtentOnInit) return;
+    // Do nothing if HiGlass initialized already
+    if (
+      (this.state.init && !this.reset) || !this.props.zoomToDataExtentOnInit()
+    ) return;
 
     // Get the total number of track that are expecting a tilesetInfo
-    const allTilesetInfos = Object.keys(this.trackRenderer.trackDefObjects)
+    const allTracksWithTilesetInfos = Object.keys(this.trackRenderer.trackDefObjects)
       // Map track to a list of tileset infos
       .map((trackUuid) => {
         const track = this.trackRenderer.trackDefObjects[trackUuid].trackObject;
-        if (track.childTracks) {
-          return track.childTracks.map(childTrack => childTrack.tilesetInfo);
-        }
-        return track.tilesetInfo;
+        if (track.childTracks) return track.childTracks;
+        return track;
       })
       // Needed because of combined tracks
       .reduce((a, b) => a.concat(b), [])
       // We distinguish between tracks that need a tileset info and those whoch
       // don't by comparing `undefined` vs something else, i.e., tracks that
       // need a tileset info will be initialized with `this.tilesetInfo = null;`.
-      .filter(tilesetInfo => typeof tilesetInfo !== 'undefined' && tilesetInfo !== true)
+      .filter(({ tilesetInfo }) => typeof tilesetInfo !== 'undefined' && tilesetInfo !== true);
+
+    // Reduce the list of tracks to a dictionary of track ids. This is useful
+    // to speedup the subsequent filtering
+    const trackUids = allTracksWithTilesetInfos
+      .reduce((a, b) => { a[b.id] = true; return a; }, {});
+
+    // Only could tracks that are suppose to get a tileset
+    const loadedTilesetInfos = Object.keys(this.tracksByUidInit)
+      .filter(trackUid => trackUids[trackUid])
       .length;
 
-    const loadedTilesetInfos = Object.values(this.tracksByUidInit)
-      .filter(x => x).length;
-
-    if (allTilesetInfos === loadedTilesetInfos) {
+    if (allTracksWithTilesetInfos.length === loadedTilesetInfos) {
       this.setState({ init: true });
+      this.reset = false;
       this.handleZoomToData();
     }
   }
@@ -550,7 +581,6 @@ class TiledPlot extends React.Component {
      * @param uid (string): The uid of the track to replace
      * @param orientation (string): The place where to put the new track
      */
-
     this.trackToReplace = uid;
     this.handleAddTrack(orientation);
   }
@@ -776,9 +806,6 @@ class TiledPlot extends React.Component {
     let offsetX = 0;
     let offsetY = 0;
 
-    const verticalPadding = this.props.paddingTop + this.props.paddingBottom;
-    const horizontalPadding = this.props.paddingLeft + this.props.paddingRight;
-
     switch (location) {
       case 'top':
         left += this.leftWidth;
@@ -852,13 +879,13 @@ class TiledPlot extends React.Component {
           this.state.width
           - this.leftWidthNoGallery
           - this.rightWidthNoGallery
-          - (2 * horizontalPadding)
+          - this.props.paddingLeft
         );
         height = (
           this.state.height
           - this.topHeightNoGallery
           - this.bottomHeightNoGallery
-          - (2 * verticalPadding)
+          - this.props.paddingTop
         );
         offsetX = this.galleryDim;
         offsetY = this.galleryDim;
@@ -1216,14 +1243,14 @@ class TiledPlot extends React.Component {
     }
 
     // set the initial domain
-    const left = this.trackRenderer.currentProps.marginLeft
+    const left = this.trackRenderer.currentProps.paddingLeft
       + this.trackRenderer.currentProps.leftWidth;
     let newXDomain = [
       left,
       left + this.trackRenderer.currentProps.centerWidth,
     ].map(this.trackRenderer.zoomTransform.rescaleX(this.trackRenderer.xScale).invert);
 
-    const top = this.trackRenderer.currentProps.marginTop
+    const top = this.trackRenderer.currentProps.paddingTop
       + this.trackRenderer.currentProps.topHeight;
     let newYDomain = [
       top,
@@ -1501,6 +1528,7 @@ class TiledPlot extends React.Component {
             onUnlockValueScale={this.handleUnlockValueScaleBound}
             orientation="right"
             position={this.state.contextMenuPosition}
+            theme={this.props.theme}
             tracks={relevantTracks}
             trackSourceServers={this.props.trackSourceServers}
           />
@@ -1752,8 +1780,8 @@ class TiledPlot extends React.Component {
       <div
         className="top-track-container"
         style={{
-          left: this.leftWidth + this.props.marginLeft,
-          top: this.props.marginTop,
+          left: this.leftWidth + this.props.paddingLeft,
+          top: this.props.paddingTop,
           width: this.centerWidth,
           height: this.topHeightNoGallery,
           outline: trackOutline,
@@ -1791,8 +1819,8 @@ class TiledPlot extends React.Component {
       <div
         className="left-track-container"
         style={{
-          left: this.props.marginLeft,
-          top: this.topHeight + this.props.marginTop,
+          left: this.props.paddingLeft,
+          top: this.topHeight + this.props.paddingTop,
           width: this.leftWidthNoGallery,
           height: this.centerHeight,
           outline: trackOutline,
@@ -1829,8 +1857,8 @@ class TiledPlot extends React.Component {
       <div
         className="right-track-container"
         style={{
-          right: this.props.marginRight,
-          top: this.topHeight + this.props.marginTop,
+          right: this.props.paddingRight,
+          top: this.topHeight + this.props.paddingTop,
           width: this.rightWidthNoGallery,
           height: this.centerHeight,
           outline: trackOutline,
@@ -1868,8 +1896,8 @@ class TiledPlot extends React.Component {
       <div
         className="bottom-track-container"
         style={{
-          left: this.leftWidth + this.props.marginLeft,
-          bottom: this.props.marginBottom,
+          left: this.leftWidth + this.props.paddingLeft,
+          bottom: this.props.paddingBottom,
           width: this.centerWidth,
           height: this.bottomHeightNoGallery,
           outline: trackOutline,
@@ -1907,8 +1935,8 @@ class TiledPlot extends React.Component {
         key="galleryTracksDiv"
         className="gallery-track-container"
         style={{
-          left: this.leftWidthNoGallery + this.props.marginLeft,
-          top: this.topHeightNoGallery + this.props.marginTop,
+          left: this.leftWidthNoGallery + this.props.paddingLeft,
+          top: this.topHeightNoGallery + this.props.paddingTop,
           width: this.centerWidth + (2 * this.galleryDim),
           height: this.centerHeight + (2 * this.galleryDim),
           outline: trackOutline,
@@ -1934,7 +1962,7 @@ class TiledPlot extends React.Component {
         className="center-track-container"
         style={{
           left: this.leftWidth + this.props.paddingLeft,
-          top: verticalPadding + this.topHeight,
+          top: this.topHeight + this.props.paddingTop,
           width: this.centerWidth,
           height: this.bottomHeight,
           outline: trackOutline,
@@ -1949,7 +1977,7 @@ class TiledPlot extends React.Component {
           className="center-track-container"
           style={{
             left: this.leftWidth + this.props.paddingLeft,
-            top: verticalPadding + this.topHeight,
+            top: this.topHeight + this.props.paddingTop,
             width: this.centerWidth,
             height: this.centerHeight,
             outline: trackOutline,
@@ -2020,6 +2048,7 @@ class TiledPlot extends React.Component {
           onValueScaleChanged={this.props.onValueScaleChanged}
           paddingLeft={this.props.paddingLeft}
           paddingTop={this.props.paddingTop}
+          pixiRenderer={this.props.pixiRenderer}
           pixiStage={this.props.pixiStage}
           pluginTracks={this.props.pluginTracks}
           positionedTracks={positionedTracks}
@@ -2070,6 +2099,7 @@ class TiledPlot extends React.Component {
             onTrackOptionsChanged={this.handleTrackOptionsChangedBound}
             onUnlockValueScale={this.handleUnlockValueScaleBound}
             position={this.state.configTrackMenuLocation}
+            theme={this.props.theme}
             trackOrientation={
               getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
             tracks={[getTrackByUid(this.props.tracks, this.state.configTrackMenuId)]}
@@ -2085,6 +2115,7 @@ class TiledPlot extends React.Component {
         >
           <ContextMenuContainer
             position={this.state.closeTrackMenuLocation}
+            theme={this.props.theme}
           >
             <CloseTrackMenu
               onCloseTrack={this.handleCloseTrack.bind(this)}
@@ -2266,6 +2297,7 @@ TiledPlot.propTypes = {
   onUnlockValueScale: PropTypes.func,
   onValueScaleChanged: PropTypes.func,
   openModal: PropTypes.func,
+  pixiRenderer: PropTypes.object,
   pixiStage: PropTypes.object,
   pluginTracks: PropTypes.object,
   rangeSelection1dSize: PropTypes.array,
@@ -2274,12 +2306,13 @@ TiledPlot.propTypes = {
   removeDraggingChangedListener: PropTypes.func,
   setCentersFunction: PropTypes.func,
   svgElement: PropTypes.object,
+  theme: PropTypes.symbol.isRequired,
   tracks: PropTypes.object,
   trackSourceServers: PropTypes.array,
   uid: PropTypes.string,
   viewOptions: PropTypes.object,
   zoomable: PropTypes.bool,
-  zoomToDataExtentOnInit: PropTypes.bool
+  zoomToDataExtentOnInit: PropTypes.func
 };
 
-export default withPubSub(withModal(TiledPlot));
+export default withPubSub(withModal(withTheme(TiledPlot)));

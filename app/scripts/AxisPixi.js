@@ -1,8 +1,8 @@
 import { format } from 'd3-format';
 import * as PIXI from 'pixi.js';
 
-// Services
-import { getDarkTheme } from './services';
+// Configs
+import { THEME_DARK } from './configs';
 
 import { colorToHex } from './utils';
 
@@ -25,7 +25,11 @@ class AxisPixi {
     const graphics = this.pAxis;
 
     graphics.clear();
-    graphics.lineStyle(1, 0x000000, 1);
+    graphics.lineStyle(
+      1,
+      this.track.getTheme() === THEME_DARK ? colorToHex('#ffffff') : 0x000000,
+      1
+    );
 
     // draw the axis line
     graphics.moveTo(0, 0);
@@ -36,7 +40,7 @@ class AxisPixi {
     this.tickValues = this.calculateAxisTickValues(valueScale, axisHeight);
     let i = 0;
 
-    const color = getDarkTheme() ? '#cccccc' : 'black';
+    const color = this.track.getTheme() === THEME_DARK ? 'white' : 'black';
 
     if (!this.track.options
       || !this.track.options.axisLabelFormatting
@@ -106,11 +110,10 @@ class AxisPixi {
 
     const graphics = this.pAxis;
 
-    if (getDarkTheme()) {
+    if (this.track.getTheme() === THEME_DARK) {
       graphics.lineStyle(
-        graphics.lineWidth,
-        colorToHex('#ffffff'),
-        0.33
+        graphics.lineWidth || graphics._lineStyle.width,
+        colorToHex('#ffffff')
       );
     }
 
@@ -150,6 +153,13 @@ class AxisPixi {
     this.createAxisTexts(valueScale, axisHeight);
 
     const graphics = this.pAxis;
+
+    if (this.track.getTheme() === THEME_DARK) {
+      graphics.lineStyle(
+        graphics.lineWidth || graphics._lineStyle.width,
+        colorToHex('#ffffff')
+      );
+    }
 
     // draw the top, potentially unlabelled, ticke
     graphics.moveTo(0, 0);
@@ -226,7 +236,7 @@ class AxisPixi {
     // but it also has the draggable control to the right.
     // Confirm that this difference between SVG and Canvas is intentional,
     // and if not, remove this.
-    if (getDarkTheme()) stroke = '#cccccc';
+    if (this.track.getTheme() === THEME_DARK) stroke = '#cccccc';
 
     const line = document.createElement('path');
 
@@ -251,7 +261,7 @@ class AxisPixi {
       stroke = this.track.options.lineStrokeColor;
     }
 
-    if (getDarkTheme()) stroke = '#cccccc';
+    if (this.track.getTheme() === THEME_DARK) stroke = '#cccccc';
 
     const line = document.createElement('path');
     line.setAttribute('id', 'tick-mark');

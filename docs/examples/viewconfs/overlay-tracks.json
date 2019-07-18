@@ -10,14 +10,13 @@
       "uid": "aa",
       "initialXDomain": [
         -237704035.38095224,
-        2626451655.6666665
+        2626451655.666667
       ],
       "initialYDomain": [
-        863573889.142857,
-        1911002726.5714283
+        -292727329.2758031,
+        3067303944.990089
       ],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "genomePositionSearchBoxVisible": false,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
@@ -27,8 +26,6 @@
             "uid": "genes-top",
             "type": "horizontal-gene-annotations",
             "height": 55,
-            "position": "top",
-            "name": "Gene Annotations (hg19)",
             "options": {
               "fontSize": 11,
               "labelColor": "black",
@@ -42,18 +39,19 @@
               "geneAnnotationHeight": 10,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4,
-              "name": "Gene Annotations (hg19)"
+              "name": "Gene Annotations (hg19)",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0
             },
-            "header": "",
             "width": 484
           },
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
-            "position": "top",
             "uid": "chroms-top",
-            "height": 30,
-            "name": "Chromosome Axis",
+            "height": 35,
             "options": {
               "color": "#777777",
               "stroke": "#FFFFFF",
@@ -72,8 +70,6 @@
             "uid": "genes-left",
             "type": "vertical-gene-annotations",
             "width": 55,
-            "position": "left",
-            "name": "Gene Annotations (hg19)",
             "options": {
               "fontSize": 11,
               "labelColor": "black",
@@ -87,18 +83,19 @@
               "geneAnnoHeight": 10,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4,
-              "name": "Gene Annotations (hg19)"
+              "name": "Gene Annotations (hg19)",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0
             },
-            "header": "",
             "height": 235
           },
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "vertical-chromosome-labels",
-            "position": "left",
-            "name": "Chromosome Labels (hg19)",
             "uid": "chroms-left",
-            "width": 30,
+            "width": 35,
             "options": {
               "color": "#777777",
               "stroke": "#FFFFFF",
@@ -130,7 +127,6 @@
                   ]
                 },
                 "type": "heatmap",
-                "position": "center",
                 "options": {
                   "colorRange": [
                     "#FFFFFF",
@@ -151,10 +147,13 @@
                   "backgroundColor": "#eeeeee",
                   "showMousePosition": false,
                   "mousePositionColor": "#999999",
-                  "showTooltip": false
+                  "showTooltip": false,
+                  "labelLeftMargin": 0,
+                  "labelRightMargin": 0,
+                  "labelTopMargin": 0,
+                  "labelBottomMargin": 0
                 },
                 "uid": "heatmap",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
                 "transforms": [
                   {
                     "name": "ICE",
@@ -173,8 +172,6 @@
                   "lineStrokeWidth": 1,
                   "lineStrokeColor": "grey"
                 },
-                "position": "center",
-                "name": "Chromosome Grid",
                 "width": 484,
                 "height": 235
               }
@@ -187,11 +184,6 @@
         ],
         "right": [
           {
-            "name": "Gene Annotations (hg19)",
-            "created": "2017-02-05T19:31:52.412319Z",
-            "project": null,
-            "project_name": "",
-            "description": "",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
             "uid": "eASIw-oLTDi5saG7t1jXlg",
@@ -209,21 +201,18 @@
               "geneAnnoHeight": 10,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4,
-              "name": "Gene Annotations (hg19)"
+              "name": "Gene Annotations (hg19)",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0
             },
             "width": 83,
-            "height": 235,
-            "header": "",
-            "position": "right"
+            "height": 235
           }
         ],
         "bottom": [
           {
-            "name": "Gene Annotations (hg19)",
-            "created": "2017-02-05T19:31:52.412319Z",
-            "project": null,
-            "project_name": "",
-            "description": "",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
             "uid": "M2EBW1djSbKQnitt0rT8vA",
@@ -241,12 +230,14 @@
               "geneAnnotationHeight": 10,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4,
-              "name": "Gene Annotations (hg19)"
+              "name": "Gene Annotations (hg19)",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0
             },
             "width": 484,
-            "height": 58,
-            "header": "",
-            "position": "bottom"
+            "height": 58
           }
         ],
         "whole": [],
@@ -256,10 +247,7 @@
         "w": 12,
         "h": 12,
         "x": 0,
-        "y": 0,
-        "i": "aa",
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "overlays": [
         {
@@ -289,27 +277,27 @@
               {
                 "orientation": "1d-horizontal",
                 "position": {
-                  "left": 90,
+                  "left": 95,
                   "top": 60,
-                  "width": 484,
-                  "height": 30
+                  "width": 1057,
+                  "height": 35
                 }
               },
               {
                 "orientation": "1d-vertical",
                 "position": {
                   "left": 60,
-                  "top": 90,
-                  "width": 30,
-                  "height": 177
+                  "top": 95,
+                  "width": 35,
+                  "height": 1240
                 }
               },
               {
                 "orientation": "1d-horizontal",
                 "position": {
-                  "left": 90,
+                  "left": 95,
                   "top": 5,
-                  "width": 484,
+                  "width": 1057,
                   "height": 55
                 }
               },
@@ -317,18 +305,18 @@
                 "orientation": "1d-vertical",
                 "position": {
                   "left": 5,
-                  "top": 90,
+                  "top": 95,
                   "width": 55,
-                  "height": 177
+                  "height": 1240
                 }
               },
               {
                 "orientation": "2d",
                 "position": {
-                  "left": 90,
-                  "top": 90,
-                  "width": 484,
-                  "height": 177
+                  "left": 95,
+                  "top": 95,
+                  "width": 1057,
+                  "height": 1240
                 }
               }
             ]

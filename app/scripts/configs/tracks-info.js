@@ -1,3 +1,5 @@
+import { THEME_DARK } from './themes';
+
 import {
   svg1DAxisIcon,
   svg1DTilesIcon,
@@ -14,7 +16,69 @@ import {
   svgGeoMapIcon,
 } from '../icons';
 
+const osm = {
+  type: 'osm-tiles',
+  datatype: ['map-tiles'],
+  local: true,
+  orientation: '2d',
+  hidden: true,
+  name: 'OSM Tiles',
+  thumbnail: svgGeoMapIcon,
+  availableOptions: [
+    'minPos',
+    'maxPos',
+    'maxZoom',
+    'labelPosition',
+    'labelLeftMargin',
+    'labelRightMargin',
+    'labelTopMargin',
+    'labelBottomMargin',
+    'name',
+  ],
+  defaultOptions: {
+    minPos: -180,
+    maxPos: 180,
+    maxZoom: 19,
+    labelPosition: 'bottomRight',
+    labelLeftMargin: 0,
+    labelRightMargin: 0,
+    labelTopMargin: 0,
+    labelBottomMargin: 0,
+  },
+};
+
+const mapbox = {
+  type: 'mapbox-tiles',
+  datatype: ['map-tiles'],
+  local: true,
+  orientation: '2d',
+  hidden: true,
+  name: 'Mapbox Tiles',
+  thumbnail: svgGeoMapIcon,
+  availableOptions: [
+    'style',
+    'labelPosition',
+    'labelLeftMargin',
+    'labelRightMargin',
+    'labelTopMargin',
+    'labelBottomMargin',
+    'name',
+  ],
+  defaultOptions: {
+    style: 'mapbox.streets',
+    labelPosition: 'bottomRight',
+    labelLeftMargin: 0,
+    labelRightMargin: 0,
+    labelTopMargin: 0,
+    labelBottomMargin: 0,
+  },
+};
+
 export const TRACKS_INFO = [
+  osm,
+  Object.assign({}, osm, { type: 'osm' }),
+  mapbox,
+  Object.assign({}, mapbox, { type: 'mapbox' }),
   {
     type: 'left-axis',
     datatype: ['axis'],
@@ -78,25 +142,6 @@ export const TRACKS_INFO = [
     orientation: '2d',
     thumbnail: svg2DHeatmapIcon,
     exportable: true,
-    defaultOptions: {
-      backgroundColor: '#eeeeee',
-      labelPosition: 'bottomRight',
-      labelLeftMargin: 0,
-      labelRightMargin: 0,
-      labelTopMargin: 0,
-      labelBottomMargin: 0,
-      colorRange: [ // corresponding to the fall colormap
-        'white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'
-      ],
-      maxZoom: null,
-      colorbarPosition: 'topRight',
-      trackBorderWidth: 0,
-      trackBorderColor: 'black',
-      heatmapValueScaling: 'log',
-      showMousePosition: false,
-      mousePositionColor: '#999999',
-      showTooltip: false,
-    },
     availableOptions: [
       'backgroundColor',
       'labelPosition',
@@ -104,10 +149,12 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
       'colorRange',
+      'colorbarBackgroundColor',
       'maxZoom',
       'dataTransform',
       'colorbarPosition',
@@ -117,7 +164,43 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'mousePositionColor',
       'showTooltip',
+      'extent'
     ],
+    defaultOptions: {
+      backgroundColor: '#eeeeee',
+      labelPosition: 'bottomRight',
+      labelLeftMargin: 0,
+      labelRightMargin: 0,
+      labelTopMargin: 0,
+      labelBottomMargin: 0,
+      labelShowResolution: true,
+      colorRange: [ // corresponding to the fall colormap
+        'white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'
+      ],
+      colorbarBackgroundColor: '#ffffff',
+      maxZoom: null,
+      colorbarPosition: 'topRight',
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+      heatmapValueScaling: 'log',
+      showMousePosition: false,
+      mousePositionColor: '#000000',
+      showTooltip: false,
+      extent: 'full'
+    },
+    defaultOptionsByTheme: {
+      [THEME_DARK]: {
+        backgroundColor: '#000000',
+        colorRange: [ // corresponding to the inverted fall colormap
+          'black', 'rgba(208,2,27,1.0)', 'rgba(245,166,35,1.0)', 'white'
+        ],
+        colorbarBackgroundColor: '#000000',
+        labelColor: '#ffffff',
+        labelBackgroundColor: '#000000',
+        trackBorderColor: '#ffffff',
+        mousePositionColor: '#ffffff'
+      }
+    },
   },
   {
     type: 'horizontal-heatmap',
@@ -134,6 +217,7 @@ export const TRACKS_INFO = [
       labelRightMargin: 0,
       labelTopMargin: 0,
       labelBottomMargin: 0,
+      labelShowResolution: true,
       labelColor: 'black',
       colorRange: [ // corresponding to the fall colormap
         'white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'
@@ -149,6 +233,7 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -176,6 +261,7 @@ export const TRACKS_INFO = [
       labelRightMargin: 0,
       labelTopMargin: 0,
       labelBottomMargin: 0,
+      labelShowResolution: true,
       labelColor: 'black',
       colorRange: [ // corresponding to the fall colormap
         'white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'
@@ -191,6 +277,7 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -215,8 +302,10 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'labelTextOpacity',
+      'labelBackgroundColor',
       'labelBackgroundOpacity',
       'axisLabelFormatting',
       'axisPositionHorizontal',
@@ -241,6 +330,8 @@ export const TRACKS_INFO = [
       labelRightMargin: 0,
       labelTopMargin: 0,
       labelBottomMargin: 0,
+      labelBackgroundColor: 'white',
+      labelShowResolution: false,
       axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       lineStrokeColor: 'blue',
@@ -250,8 +341,16 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       labelTextOpacity: 0.4,
       showMousePosition: false,
-      mousePositionColor: '#999999',
+      mousePositionColor: '#000000',
       showTooltip: false,
+    },
+    defaultOptionsByTheme: {
+      [THEME_DARK]: {
+        labelColor: '#ffffff',
+        labelBackgroundColor: '#000000',
+        trackBorderColor: '#ffffff',
+        mousePositionColor: '#ffffff'
+      }
     },
   },
   {
@@ -266,6 +365,7 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -288,6 +388,7 @@ export const TRACKS_INFO = [
       labelRightMargin: 0,
       labelTopMargin: 0,
       labelBottomMargin: 0,
+      labelShowResolution: false,
       axisPositionHorizontal: 'right',
       colorRange: [ // corresponding to the fall colormap
         'white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'
@@ -297,7 +398,7 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       labelTextOpacity: 0.4,
       showMousePosition: false,
-      mousePositionColor: '#999999',
+      mousePositionColor: '#000000',
       showTooltip: false,
     },
   },
@@ -313,6 +414,7 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -335,6 +437,7 @@ export const TRACKS_INFO = [
       labelRightMargin: 0,
       labelTopMargin: 0,
       labelBottomMargin: 0,
+      labelShowResolution: false,
       axisPositionHorizontal: 'right',
       colorRange: [ // corresponding to the fall colormap
         'white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'
@@ -344,7 +447,7 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       labelTextOpacity: 0.4,
       showMousePosition: false,
-      mousePositionColor: '#999999',
+      mousePositionColor: '#000000',
       showTooltip: false,
     },
   },
@@ -361,6 +464,7 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'valueScaling',
       'labelTextOpacity',
@@ -377,6 +481,7 @@ export const TRACKS_INFO = [
       labelRightMargin: 0,
       labelTopMargin: 0,
       labelBottomMargin: 0,
+      labelShowResolution: false,
       labelColor: 'black',
       labelTextOpacity: 0.4,
       valueScaling: 'linear',
@@ -398,6 +503,7 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'valueScaling',
       'labelTextOpacity',
@@ -414,6 +520,7 @@ export const TRACKS_INFO = [
       labelRightMargin: 0,
       labelTopMargin: 0,
       labelBottomMargin: 0,
+      labelShowResolution: false,
       labelColor: 'black',
       labelTextOpacity: 0.4,
       valueScaling: 'linear',
@@ -435,6 +542,7 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'valueScaling',
       'labelTextOpacity',
@@ -451,6 +559,7 @@ export const TRACKS_INFO = [
       labelRightMargin: 0,
       labelTopMargin: 0,
       labelBottomMargin: 0,
+      labelShowResolution: true,
       labelColor: 'black',
       labelTextOpacity: 0.4,
       valueScaling: 'linear',
@@ -472,6 +581,7 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'valueScaling',
       'labelTextOpacity',
@@ -490,6 +600,7 @@ export const TRACKS_INFO = [
       labelBottomMargin: 0,
       labelColor: 'black',
       labelTextOpacity: 0.4,
+      labelShowResolution: true,
       valueScaling: 'linear',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
@@ -508,6 +619,7 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -533,6 +645,7 @@ export const TRACKS_INFO = [
       labelRightMargin: 0,
       labelTopMargin: 0,
       labelBottomMargin: 0,
+      labelShowResolution: false,
       axisLabelFormatting: 'scientific',
       axisPositionVertical: 'top',
       lineStrokeWidth: 1,
@@ -543,7 +656,15 @@ export const TRACKS_INFO = [
       labelTextOpacity: 0.4,
       showMousePosition: false,
       showTooltip: false,
-      mousePositionColor: '#999999'
+      mousePositionColor: '#000000'
+    },
+    defaultOptionsByTheme: {
+      [THEME_DARK]: {
+        labelColor: '#ffffff',
+        labelBackgroundColor: '#000000',
+        trackBorderColor: '#ffffff',
+        mousePositionColor: '#ffffff'
+      }
     },
   },
   {
@@ -557,6 +678,7 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -576,6 +698,7 @@ export const TRACKS_INFO = [
       labelRightMargin: 0,
       labelTopMargin: 0,
       labelBottomMargin: 0,
+      labelShowResolution: false,
       axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       pointColor: 'red',
@@ -597,6 +720,7 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -617,6 +741,7 @@ export const TRACKS_INFO = [
       labelRightMargin: 0,
       labelTopMargin: 0,
       labelBottomMargin: 0,
+      labelShowResolution: false,
       axisPositionHorizontal: 'right',
       axisLabelFormatting: 'scientific',
       barFillColorBottom: 'red',
@@ -640,6 +765,7 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -670,6 +796,7 @@ export const TRACKS_INFO = [
       labelRightMargin: 0,
       labelTopMargin: 0,
       labelBottomMargin: 0,
+      labelShowResolution: false,
       axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       barFillColor: 'darkgreen',
@@ -692,6 +819,7 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -721,6 +849,7 @@ export const TRACKS_INFO = [
       labelRightMargin: 0,
       labelTopMargin: 0,
       labelBottomMargin: 0,
+      labelShowResolution: false,
       axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       barFillColor: 'darkgreen',
@@ -742,6 +871,7 @@ export const TRACKS_INFO = [
       'labelRightMargin',
       'labelTopMargin',
       'labelBottomMargin',
+      'labelShowResolution',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -761,6 +891,7 @@ export const TRACKS_INFO = [
       labelRightMargin: 0,
       labelTopMargin: 0,
       labelBottomMargin: 0,
+      labelShowResolution: false,
       axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       lineStrokeColor: 'red',
@@ -954,6 +1085,7 @@ export const TRACKS_INFO = [
       'labelBottomMargin',
       'labelColor',
       'labelTextOpacity',
+      'labelBackgroundColor',
       'labelBackgroundOpacity',
       'plusStrandColor',
       'minusStrandColor',
@@ -969,6 +1101,7 @@ export const TRACKS_INFO = [
     defaultOptions: {
       fontSize: 11,
       labelColor: 'black',
+      labelBackgroundColor: '#ffffff',
       labelPosition: 'hidden',
       labelLeftMargin: 0,
       labelRightMargin: 0,
@@ -979,10 +1112,19 @@ export const TRACKS_INFO = [
       trackBorderWidth: 0,
       trackBorderColor: 'black',
       showMousePosition: false,
-      mousePositionColor: '#999999',
+      mousePositionColor: '#000000',
       geneAnnotationHeight: 10,
       geneLabelPosition: 'outside',
       geneStrandSpacing: 4,
+    },
+    defaultOptionsByTheme: {
+      [THEME_DARK]: {
+        labelColor: '#ffffff',
+        labelBackgroundColor: '#000000',
+        trackBorderColor: '#ffffff',
+        mousePositionColor: '#ffffff',
+        plusStrandColor: '#40a0ff',
+      }
     },
   },
   {
@@ -1027,10 +1169,19 @@ export const TRACKS_INFO = [
       trackBorderWidth: 0,
       trackBorderColor: 'black',
       showMousePosition: false,
-      mousePositionColor: '#999999',
+      mousePositionColor: '#000000',
       geneAnnoHeight: 10,
       geneLabelPosition: 'outside',
       geneStrandSpacing: 4,
+    },
+    defaultOptionsByTheme: {
+      [THEME_DARK]: {
+        labelColor: '#ffffff',
+        labelBackgroundColor: '#000000',
+        trackBorderColor: '#ffffff',
+        mousePositionColor: '#ffffff',
+        plusStrandColor: '#40a0ff',
+      }
     },
   },
 
@@ -1388,17 +1539,24 @@ export const TRACKS_INFO = [
       'color',
       'stroke',
       'fontSize',
-      'fontIsAligned',
+      'fontIsLeftAligned',
       'showMousePosition',
       'mousePositionColor',
     ],
     defaultOptions: {
-      color: '#777777',
-      stroke: '#FFFFFF',
+      color: '#808080',
+      stroke: '#ffffff',
       fontSize: 12,
-      fontIsAligned: false,
+      fontIsLeftAligned: false,
       showMousePosition: false,
-      mousePositionColor: '#999999'
+      mousePositionColor: '#000000'
+    },
+    defaultOptionsByTheme: {
+      [THEME_DARK]: {
+        color: '#808080',
+        stroke: '#000000',
+        mousePositionColor: '#ffffff'
+      }
     },
   },
   {
@@ -1413,7 +1571,7 @@ export const TRACKS_INFO = [
       'color',
       'stroke',
       'fontSize',
-      'fontIsAligned',
+      'fontIsLeftAligned',
       'showMousePosition',
       'mousePositionColor',
     ],
@@ -1421,9 +1579,16 @@ export const TRACKS_INFO = [
       color: '#777777',
       stroke: '#FFFFFF',
       fontSize: 12,
-      fontIsAligned: false,
+      fontIsLeftAligned: false,
       showMousePosition: false,
-      mousePositionColor: '#999999'
+      mousePositionColor: '#000000'
+    },
+    defaultOptionsByTheme: {
+      [THEME_DARK]: {
+        color: '#808080',
+        stroke: '#000000',
+        mousePositionColor: '#ffffff'
+      }
     },
   },
   {
@@ -1441,36 +1606,6 @@ export const TRACKS_INFO = [
     orientation: '1d-horizontal',
     name: 'Horizontal 1D Tile Outlines',
     thumbnail: svg1DTilesIcon,
-  },
-  {
-    type: 'osm-tiles',
-    datatype: ['map-tiles'],
-    local: true,
-    orientation: '2d',
-    hidden: true,
-    name: 'OSM Tiles',
-    thumbnail: svgGeoMapIcon,
-    availableOptions: [
-      'minPos',
-      'maxPos',
-      'maxZoom',
-      'labelPosition',
-      'labelLeftMargin',
-      'labelRightMargin',
-      'labelTopMargin',
-      'labelBottomMargin',
-      'name',
-    ],
-    defaultOptions: {
-      minPos: -180,
-      maxPos: 180,
-      maxZoom: 19,
-      labelPosition: 'bottomRight',
-      labelLeftMargin: 0,
-      labelRightMargin: 0,
-      labelTopMargin: 0,
-      labelBottomMargin: 0,
-    },
   },
   {
     type: 'osm-2d-tile-ids',
@@ -1494,32 +1629,6 @@ export const TRACKS_INFO = [
       minPos: -180,
       maxPos: 180,
       maxZoom: 19,
-      labelPosition: 'bottomRight',
-      labelLeftMargin: 0,
-      labelRightMargin: 0,
-      labelTopMargin: 0,
-      labelBottomMargin: 0,
-    },
-  },
-  {
-    type: 'mapbox-tiles',
-    datatype: ['map-tiles'],
-    local: true,
-    orientation: '2d',
-    hidden: true,
-    name: 'Mapbox Tiles',
-    thumbnail: svgGeoMapIcon,
-    availableOptions: [
-      'style',
-      'labelPosition',
-      'labelLeftMargin',
-      'labelRightMargin',
-      'labelTopMargin',
-      'labelBottomMargin',
-      'name',
-    ],
-    defaultOptions: {
-      style: 'mapbox.streets',
       labelPosition: 'bottomRight',
       labelLeftMargin: 0,
       labelRightMargin: 0,

@@ -30,19 +30,16 @@ This file can be aggregated like so:
 .. code-block:: bash
 
     clodius aggregate bedfile \
-        --assembly hg19 \
+        --chromsizes-filename hg19.chrom.sizes \
         short.bed
+
+If the bed file has tab-separated values, that can be specified using the `--delimiter $'\t'` option.
 
 And then imported into higlass after copying to the docker temp directory (``cp short.bed.multires ~/hg-tmp/``):
 
 .. code-block:: bash
 
-     docker exec higlass-container python \
-        higlass-server/manage.py ingest_tileset \
-            --filename /tmp/short.bed.multires \
-            --filetype beddb \
-            --datatype bedlike \
-            --coordSystem b37
+     higlass-manage ingest short.bed.beddb
 
 A note about assemblies and coordinate systems
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -98,15 +95,33 @@ contain too many values and slow down the renderer:
         --output-file domains.txt.multires \
         domains.txt
 
-This requires the `--chr1-col`, `--from1-col`, `--to1-col`, `--chr2-col`,
-`--from2-col`, `--to2-col` parameters to specify which columns in the datafile
+This requires the ``--chr1-col``, ``--from1-col``, ``--to1-col``, ``--chr2-col``,
+``--from2-col``, ``--to2-col`` parameters to specify which columns in the datafile
 describe the x-extent and y-extent of the region.
 
 The priority with which regions are included in lower resolution tiles is
-specified by the `--impotance-column` parameter. This can either provide a
-value, contain `random`, or if it's not specified, default to the size of the
+specified by the ``--impotance-column`` parameter. This can either provide a
+value, contain ``random``, or if it's not specified, default to the size of the
 region.
 
+**BED files** can also be aggregated as BEDPE-like files for use with the
+``2d-rectangle-domains`` track. The from1_col,to1_col and from2_col,to2_col
+parameters need to be set to the same columns. Example file::
+
+    chrZ    80050000        80100000        False   0.19240442973331        0.24341494300858102
+    chrZ    81350000        81400000        False   0.5359549218130373      0.30888749507071034
+    chrZ    81750000        81800000        False   -0.5859846849030403     1.602383514196359
+
+With the aggregate command:
+
+.. code-block:: bash
+
+    clodius aggregate bedpe \
+    --chromsizes-filename galGal6.chrom.sizes \
+    --chr1-col 1 --chr2-col 1 \
+    --from1-col 2 --to1-col 3 \
+    --from2-col 2 --to2-col 3 \
+    --has-header  my_file.bed
 
 BedGraph files
 --------------
@@ -208,17 +223,12 @@ vector datatype and bigwig filetype:
 
 .. code-block:: bash
 
-    docker exec higlass-container python \
-            higlass-server/manage.py ingest_tileset \
-            --filename /tmp/cnvs_hw.bigWig \
-            --filetype bigwig \
-            --datatype vector \
-            --coordSystem hg19
+    higlass-manage ingest cnvs_hw.bigWig --assembly hg19
 
 **Important:** BigWig files have to be associated with a chromosome order!!
 This means that there needs to be a chromsizes file for the
-specified assembly (coordSystem) in the higlass database. If no ``coordSystem``
-is specified for the bigWig file in ``ingest_tileset``, HiGlass will try to 
+specified assembly in the higlass database. If no ``assembly``
+is specified for the bigWig file using the `--assembly` option, HiGlass will try to 
 find one in the database that matches the chromosomes present in the bigWig file. 
 If a ``chromsizes`` tileset is found, it's ``coordSystem`` will also be used for
 the bigWig file. If none are found, the import will fail. If more than one is found,
@@ -227,12 +237,31 @@ the import will also fail. If a `coordSystem` is specified for the bigWig, but n
 
 TLDR: The simplest way to import a bigWig is to have a ``chromsizes`` present e.g. 
 
-| ``ingest_tileset --filetype chromsizes-tsv --datatype chromsizes --coordSystem hg19 --filename chromSizes.tsv``
+| ``higlass-manage ingest --filetype chromsizes-tsv --datatype chromsizes --assembly hg19 chromSizes.tsv``
 
 and then to add the bigWig with the same ``coordSystem``: 
 
-| ``ingest_tileset --filetype bigwig --datatype vector --coordSystem hg19 --filename cnvs_hw.bigWig``
+| ``higlass-manage ingest --assembly hg19 cnvs_hw.bigWig``
 
+Creating bigWig files
+^^^^^^^^^^^^^^^^^^^^^
+
+bigWig files can be created from any BED-like file containing ``chrom``, ``start``,
+``end``, and ``value`` fields. Just make sure to get rid of the heading if there is one
+(``tail -n +2``) and to sort by chromosome and start position (``sort -k1,1
+-k2,2n``):
+
+.. code-block:: bash
+
+    tail -n +2 my_bed_file.tsv \
+        | sort -k1,1 -k2,2n \
+        | awk \
+        '{ if (NF >= 4) print $1 "\t" $2 "\t" $3 "\t" $5}' \
+        > my.bed;
+    bedGraphToBigWig my.bed assembly.chrom.sizes.tsv my.bw;
+
+The ``bedGraphToBigWig`` utility can be installed be either downloading the binary from
+the `UCSC genome browser <http://hgdownload.soe.ucsc.edu/admin/exe/>`_ or using `conda <https://anaconda.org/bioconda/ucsc-bedgraphtobigwig>`_. Note that the example above is only an example. Other input files may have more header lines or a different format.
 
 Chromosome Sizes
 ----------------
@@ -250,7 +279,7 @@ as columns:
 
 Chromosome sizes can be imported into the higlass server using the ``--filetype chromsizes-tsv`` and ``--datatype chromsizes`` parameters. A ``coordSystem`` should be included to identify the assembly that these chromosomes define.
 
-| ``ingest_tileset --filetype chromsizes-tsv --datatype chromsizes --coordSystem hg19 chromSizes.tsv``
+| ``higlass-manage ingest --filetype chromsizes-tsv --datatype chromsizes --assembly hg19 chromSizes.tsv``
 
 
 Gene Annotation Tracks

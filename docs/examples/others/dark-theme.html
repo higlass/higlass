@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Global Mouse Position &middot; HiGlass</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="/hglib.css">
+
+<style type="text/css">
+#left {
+  position: absolute;
+  top: 0;
+  right: 50vw;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+}
+#demo1 {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  bottom: 1rem;
+  right: 0.5rem;
+  overflow: hidden;
+}
+#right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 50vw;
+  overflow: hidden;
+}
+#demo2 {
+  position: absolute;
+  left: 0.5rem;
+  top: 1rem;
+  bottom: 1rem;
+  right: 1rem;
+  overflow: hidden;
+}
+</style>
+
+  <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16.6/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+</head>
+<body>
+  <div id="left">
+    <div id="demo1"></div>
+  </div>
+  <div id="right">
+    <div id="demo2"></div>
+  </div>
+</body>
+<script src='/hglib.js'></script>
+<script>
+const viewConfig = {
+  zoomFixed: false,
+  views: [
+    {
+      layout: {
+        w: 12,
+        h: 12,
+        x: 0,
+        y: 0,
+        i: 'aa',
+        moved: false,
+        static: false
+      },
+      uid: 'aa',
+      initialYDomain: [0, 2547598956],
+      initialXDomain: [0, 2547598956],
+      tracks: {
+        left: [],
+        top: [
+          {
+            uid: 'genes',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-gene-annotations',
+            height: 54,
+            options: {
+              labelPosition: 'hidden',
+              fontSize: 11,
+              trackBorderWidth: 0,
+              showMousePosition: true,
+              geneAnnotationHeight: 10,
+              geneLabelPosition: 'outside',
+              geneStrandSpacing: 4
+            },
+          },
+          {
+            uid: 'line1',
+            tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
+            height: 20,
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#4a35fc',
+              labelPosition: 'topLeft',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showTooltip: false
+            },
+          },
+          {
+            uid: 'line2',
+            tilesetUid: 'PdAaSdibTLK34hCw7ubqKA',
+            height: 20,
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K27me3.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#d104fa',
+              labelPosition: 'topLeft',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K27me3.fc.signal'
+          },
+          {
+            uid: 'line3',
+            tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
+            height: 20,
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              name: 'GM12878-E116-H3K4me1.fc.signal',
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: '#ff0000',
+              labelPosition: 'topLeft',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+              showTooltip: false
+            },
+            name: 'GM12878-E116-H3K4me1.fc.signal'
+          },
+          {
+            uid: 'line4',
+            tilesetUid: 'cE0nGyd0Q_yVYSyBUe89Ww',
+            height: 20,
+            server: 'http://higlass.io/api/v1',
+            type: 'horizontal-line',
+            options: {
+              valueScaling: 'linear',
+              lineStrokeWidth: 2,
+              lineStrokeColor: 'orange',
+              labelPosition: 'topLeft',
+              axisPositionHorizontal: 'right',
+              trackBorderWidth: 0,
+              labelTextOpacity: 0.4,
+              showMousePosition: true,
+            },
+          },
+          {
+            uid: 'chroms',
+            height: 18,
+            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            type: 'horizontal-chromosome-labels',
+            options: {
+              fontSize: 11,
+              fontIsLeftAligned: true,
+              showMousePosition: true,
+            },
+          }
+        ],
+        right: [],
+        center: [
+          {
+            uid: 'c1',
+            type: 'combined',
+            height: 200,
+            contents: [
+              {
+                server: '//higlass.io/api/v1',
+                tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
+                type: 'heatmap',
+                uid: 'heatmap',
+                options: {
+                  labelPosition: 'bottomRight',
+                  showMousePosition: true,
+                },
+              }
+            ],
+          }
+        ],
+      },
+      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+      genomePositionSearchBoxVisible: false,
+      genomePositionSearchBox: {
+        visible: true,
+        chromInfoServer: 'http://higlass.io/api/v1',
+        chromInfoId: 'hg19',
+        autocompleteServer: 'http://higlass.io/api/v1',
+        autocompleteId: 'OHJakQICQD6gTD7skx4EWA'
+      }
+    }
+  ],
+  editable: true,
+  exportViewUrl: '/api/v1/viewconfs',
+  trackSourceServers: [
+    'http://higlass.io/api/v1'
+  ],
+};
+
+const hgApi1 = hglib.viewer(
+  document.getElementById('demo1'),
+  viewConfig,
+  {
+    bounded: true,
+    theme: 'dark'
+  },
+);
+
+const hgApi2 = hglib.viewer(
+  document.getElementById('demo2'),
+  viewConfig,
+  {
+    bounded: true,
+  },
+);
+</script>
+</html>

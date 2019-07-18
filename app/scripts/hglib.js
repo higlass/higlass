@@ -4,8 +4,9 @@ import HiGlassComponent from './HiGlassComponent';
 
 export { default as ChromosomeInfo } from './ChromosomeInfo';
 export { default as HiGlassComponent } from './HiGlassComponent';
+export { default as HiGlassTrackComponent, trackViewer } from './HiGlassTrackComponent';
 
-export { default as SVGTrack } from './SVGTrack';
+export { default as schema } from '../schema.json';
 
 // export functions that are useful for testing
 export {
@@ -33,17 +34,16 @@ const launch = (element, config, options) => {
    *
    * @return  {Object} The instance's public API
    */
-  let component;
-
+  const ref = React.createRef();
   ReactDOM.render(
     <HiGlassComponent
-      ref={(c) => { component = c; }}
+      ref={ref}
       options={options || {}}
       viewConfig={config}
     />,
     element,
   );
-  return component;
+  return ref.current;
 };
 
 /**
@@ -99,57 +99,5 @@ export const viewer = (element, viewConfig, options) => {
    *      Fit the container to the bounds of the element
    */
   const hg = launch(element, viewConfig, options);
-
   return hg.api;
-};
-
-/**
- * A barebones implementation of a HiGlass view used to display a 2d track.
- * Multiple layers can be used by specifying a `combined` track in `trackConfig`.
- *
- * Defaults to having no label and no colorbar.
- *
- * If the aspect ratio defined by the parameter bounds doesn't match the aspect
- * ration of the enclosing element, the x bounds will be respected and the y
- * y coordinates will be truncated.
- *
- * @param {element|HTMLElement} The element to attach the viewer to
- * @param {[xMin, xMax, yMin, yMax]|Array} The bounds of the track
- * @param {trackConfig: Object} The standard HiGlass track definition type
- * @returns {Object} A {id, hgApi} object
- */
-export const trackViewer = (element, [xMin, xMax, yMin, yMax], trackConfig) => {
-  if (!trackConfig.options.colorbarPosition) {
-    trackConfig.options.colorbarPosition = 'hidden';
-  }
-  if (!trackConfig.options.labelPosition) {
-    trackConfig.options.labelPosition = 'hidden';
-  }
-  const id = 'arbitary-id';
-  const viewConfig = {
-    editable: false,
-    zoomFixed: false,
-    views: [
-      {
-        uid: id,
-        initialXDomain: [xMin, xMax],
-        initialYDomain: [yMin, yMax],
-        tracks: {
-          center: [trackConfig],
-        },
-        layout: {
-          w: 12,
-          h: 12,
-          x: 0,
-          y: 0,
-          moved: false,
-          static: false,
-        },
-      },
-    ],
-  };
-  return {
-    id,
-    hgApi: viewer(element, viewConfig, { bounded: true })
-  };
 };

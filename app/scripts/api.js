@@ -1,8 +1,10 @@
 import ReactDOM from 'react-dom';
 import createPubSub from 'pub-sub-es';
+import Ajv from 'ajv';
+
+import schema from '../schema.json';
 
 import {
-  setDarkTheme,
   setTileProxyAuthHeader,
 } from './services';
 
@@ -189,6 +191,16 @@ const createApi = function api(context, pubSub) {
        *   all of the data for this viewconfig is loaded
        */
       setViewConfig(newViewConfig) {
+        const validate = new Ajv().compile(schema);
+        const valid = validate(newViewConfig);
+        if (validate.errors) {
+          console.warn(JSON.stringify(validate.errors, null, 2));
+        }
+        if (!valid) {
+          console.warn('Invalid viewconf');
+          // throw new Error('Invalid viewconf');
+        }
+
         const viewsByUid = self.processViewConfig(newViewConfig);
         const p = new Promise((resolve) => {
           this.requestsInFlight = 0;
@@ -222,7 +234,17 @@ const createApi = function api(context, pubSub) {
        * @returns (Object) A JSON object describing the visible views
        */
       getViewConfig() {
-        return self.getViewsAsJson();
+        const newViewConfig = self.getViewsAsJson();
+        const validate = new Ajv().compile(schema);
+        const valid = validate(newViewConfig);
+        if (validate.errors) {
+          console.warn(JSON.stringify(validate.errors, null, 2));
+        }
+        if (!valid) {
+          console.warn('Invalid viewconf');
+          // throw new Error('Invalid viewconf');
+        }
+        return newViewConfig;
       },
       /**
        * Get the minimum and maximum visible values for a given track.
@@ -335,10 +357,22 @@ const createApi = function api(context, pubSub) {
 
       /**
        * Choose a theme.
+       * @deprecated since version 1.6.6. Use `setTheme()` instead.
        */
       setDarkTheme(darkTheme) {
-        console.warn('Please note that the dark mode is still in beta');
-        setDarkTheme(!!darkTheme);
+        console.warn(
+          '`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.'
+        );
+        const theme = darkTheme ? 'dark' : 'light';
+        self.setTheme(theme);
+      },
+
+      /**
+       * Choose a theme.
+       */
+      setTheme(theme) {
+        console.warn('Please note that theming is still in beta!');
+        self.setTheme(theme);
       },
 
       /**

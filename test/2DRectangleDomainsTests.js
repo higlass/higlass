@@ -14,15 +14,17 @@ import {
   removeHGComponent,
 } from '../app/scripts/utils';
 
+import viewconf from './view-configs/loop-annotations';
+
 configure({ adapter: new Adapter() });
 
-describe('Horizontal heatmaps', () => {
+describe('2D Rectangular Domains', () => {
   let hgc = null;
   let div = null;
 
   beforeAll((done) => {
     ([div, hgc] = mountHGComponent(div, hgc,
-      zoomLimitViewConf,
+      viewconf,
       done,
       {
         style: 'width:800px; height:400px; background-color: lightgreen',
@@ -31,21 +33,12 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
-  it('export rectangles in the same color that they are in the view', (done) => {
-    // add your tests here
-
+  it('export rectangles in the same color that they are in the view', () => {
     const svgString = hgc.instance().createSVGString();
     expect(svgString.indexOf('cyan')).to.be.above(-1);
-
-    done();
   });
 
-  afterAll((done) => {
+  afterAll(() => {
     removeHGComponent(div);
-
-    done();
   });
 });
-
-// enter either a viewconf link or a viewconf object
-const zoomLimitViewConf = 'http://higlass.io/api/v1/viewconfs/?d=Ku3x3sNqQ3KaNgurJNP_Bw';
