@@ -1,7 +1,7 @@
 Python & Jupyter
 ################
 
-Python `Jupyter notebooks <http://jupyter.org/>`_ are an excellent way to
+Python `Jupyter notebooks <https://jupyter.org>`_ are an excellent way to
 experiment with data science and visualization. Using the higlass-jupyter
 extension, you can use HiGlass directly from within a Jupyter notebook.
 
@@ -14,10 +14,17 @@ and enable the jupyter extension:
 
 .. code-block:: bash
 
-    pip install jupyter higlass-python 
+    pip install jupyter higlass-python
 
     jupyter nbextension install --py --sys-prefix --symlink higlass
     jupyter nbextension enable --py --sys-prefix higlass
+
+If you use `JupyterLab <https://jupyterlab.readthedocs.io/en/stable/>`_ you also have to run
+
+.. code-block:: bash
+
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager
+    jupyter labextension install higlass-jupyter
 
 
 Uninstalling
@@ -33,23 +40,25 @@ Examples
 The examples below demonstrate how to use the HiGlass Python API to view
 data locally in a Jupyter notebook or a browser-based HiGlass instance.
 
+For a fYou can find the demos from the talk at `github.com/higlass/scipy19 <https://github.com/higlass/scipy19>`_.
+
 Jupyter HiGlass Component
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To instantiate a HiGlass component within a Jupyter notebook, we first need
-to specify which data should be loaded. This can be accomplished with the 
+to specify which data should be loaded. This can be accomplished with the
 help of the ``higlass.client`` module:
 
 .. code-block:: python
 
     from higlass.client import View, Track
     import higlass
-    
+
 
     view1 = View([
-        Track(track_type='top-axis', position='top'),   
+        Track(track_type='top-axis', position='top'),
         Track(track_type='heatmap', position='center',
-              tileset_uuid='CQMd6V_cRw6iCI_-Unl3PQ', 
+              tileset_uuid='CQMd6V_cRw6iCI_-Unl3PQ',
               server="http://higlass.io/api/v1/",
               height=250,
               options={ 'valueScaleMax': 0.5 }),
@@ -130,7 +139,7 @@ according to the chromosome info in the specified file.
 
     chromsizes_fp = '../data/chromSizes_hg19_reordered.tsv'
     bigwig_fp = '../data/wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.bigWig'
-        
+
     with open(chromsizes_fp) as f:
         chromsizes = []
         for line in f.readlines():
@@ -139,7 +148,7 @@ according to the chromosome info in the specified file.
 
     cs = chromsizes(chromsizes)
     ts = bigwig(bigwig_fp, chromsizes=chromsizes)
-    
+
     tr0 = Track('top-axis')
     tr1 = Track('horizontal-bar', tileset=ts)
     tr2 = Track('horizontal-chromosome-labels', position='top', tileset=cs)
@@ -197,7 +206,7 @@ and ``tiles``:
        'dtype': 'float32'})]
 
 The tiles function will always take an array of tile ids of the form ``id.z.x[.y][.transform]``
-where ``z`` is the zoom level, ``x`` is the tile's x position, ``y`` is the tile's 
+where ``z`` is the zoom level, ``x`` is the tile's x position, ``y`` is the tile's
 y position (for 2D tilesets) and ``transform`` is some transform to be applied to the
 data (e.g. normalization types like ``ice``).
 
@@ -215,7 +224,7 @@ functions described above. To start let's make the matrix using the
     dim = 2000
     I, J = np.indices((dim, dim))
     data = (
-        -(J + 47) * np.sin(np.sqrt(np.abs(I / 2 + (J + 47)))) 
+        -(J + 47) * np.sin(np.sqrt(np.abs(I / 2 + (J + 47))))
         - I * np.sin(np.sqrt(np.abs(I - (J + 47))))
     )
 
@@ -235,7 +244,7 @@ Then we can define the data and tell the server how to render it.
         View([
             Track(track_type='top-axis', position='top'),
             Track(track_type='left-axis', position='left'),
-            Track(track_type='heatmap', 
+            Track(track_type='heatmap',
                   position='center',
                   tileset=ts,
                   height=250,
@@ -257,7 +266,7 @@ First we need to import the custom track type for displaying labelled points:
 
     %%javascript
 
-    require(["https://unpkg.com/higlass-labelled-points-track@0.1.11/dist/higlass-labelled-points-track"], 
+    require(["https://unpkg.com/higlass-labelled-points-track@0.1.11/dist/higlass-labelled-points-track"],
         function(hglib) {
 
     });
@@ -284,7 +293,7 @@ Then we have to set up a data server to output the data in "tiles".
         View([
             Track('left-axis'),
             Track('top-axis'),
-            Track('labelled-points-track', 
+            Track('labelled-points-track',
                    tileset=ts,
                    position='center',
                    height=600,
@@ -332,7 +341,7 @@ And then create the tileset and track, as before.
             Track('left-axis'),
             Track('top-axis'),
             Track('osm-tiles', position='center'),
-            Track('labelled-points-track', 
+            Track('labelled-points-track',
                    tileset=ts,
                    position='center',
                    height=600,
