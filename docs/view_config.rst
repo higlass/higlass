@@ -269,6 +269,27 @@ and ``filetype``
       "filetype": "bigwig"
     }
 
+Using ``data``
+^^^^^^^^^^^^^^
+
+In addition to using ``tilesetUid`` or ``fileUrl`` to specify a data source, the ``data`` section can be used to configure other data sources or to create data sources consisting of multiple tilesets, such as one matrix divided by another.
+
+Genbank files
+"""""""""""""
+
+A Genbank file data source will load a complete genbank file from a remote URL and serve that as a ``gene-annotations`` datatype. See the `horizontal-gene-annotations section <track_types.html#gene-annotations>`_ for an example of a track type that can be used with Genbank files.
+
+.. code-block:: javascript
+
+  {
+    "data": {
+      "type": "genbank",
+      "url": "https://pkerp.s3.amazonaws.com/public/GCA_000010365.1_ASM1036v1_genomic.gbff.gz"
+    }
+  }
+
+**Note** The Genbank data sources is limited in its detail. It currently only displays genes and the names of genes. More extensive support for gene annotations (e.g. exons) should be added in the `higlass/app/scripts/data-fetchers/genbank-fetcher.js` file.
+
 Track options
 --------------
 

@@ -1,3 +1,7 @@
+## v1.7.0
+
+- Implemented a genbank data fetcher for gene annotation tracks
+
 ## v1.6.0
 
 - Add an option to restrict the extent of central heatmaps to the upper-right or lower-left corner to enable comparison of two heatmaps in the center. Run `npm start` and see [http://localhost:8080/apis/svg.html?/viewconfs/diagonal-split-heatmap.json](http://localhost:8080/apis/svg.html?/viewconfs/diagonal-split-heatmap.json) for an example
