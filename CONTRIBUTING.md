@@ -23,7 +23,7 @@ HiGlass core members will be assigned to review your pull requests. Once the pul
 ### Pull Request Checklist ✅
 
 - Ensure that the title of incomplete pull requests starts with `[WIP]` (work in progress)
-- Ensure that your pull request answers all questions provided in the [pull request template](PULL_REQUEST_TEMPLATE.md).
+- Ensure that your pull request answers the relevant questions in the [pull request template](PULL_REQUEST_TEMPLATE.md).
 - Ensure that your pull requests successfully passes all continuous integration tests on [TravisCI](https://travis-ci.org/higlass).
 
 ## Coding Style 🎨
