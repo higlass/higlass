@@ -16,7 +16,7 @@
 
 ## Contribute Code 👩‍💻👨‍💻
 
-If you have improvements to HiGlass, send us your pull requests! If you're wondering what a _pull request_ is please checkout [GitHub's how to](https://help.github.com/articles/using-pull-requests/).
+If you have improvements to HiGlass, send us your pull requests! If you're wondering what a _pull request (PR)_ is please check out [GitHub's how to](https://help.github.com/articles/using-pull-requests/).
 
 HiGlass core members will be assigned to review your pull requests. Once the pull requests are approved and pass continuous integration checks, we will merge your pull request add it to the next scheduled release.
 
