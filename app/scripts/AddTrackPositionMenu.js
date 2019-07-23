@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { getDarkTheme } from './services/is-dark-theme';
+import withTheme from './hocs/with-theme';
+import { THEME_DARK } from './configs';
 
 import '../styles/AddTrackPositionMenu.module.scss';
 
 function AddTrackPositionMenu(props) {
   let tableStyleNames = 'add-track-position-table';
-  if (getDarkTheme()) tableStyleNames += ' add-track-position-table-dark';
+  if (props.theme === THEME_DARK) tableStyleNames += ' add-track-position-table-dark';
   return (
     <div>
       <div styleName="add-track-position-span">Add Track...</div>
@@ -61,6 +62,7 @@ function AddTrackPositionMenu(props) {
 
 AddTrackPositionMenu.propTypes = {
   onTrackPositionChosen: PropTypes.func.isRequired,
+  theme: PropTypes.symbol.isRequired,
 };
 
-export default AddTrackPositionMenu;
+export default withTheme(AddTrackPositionMenu);

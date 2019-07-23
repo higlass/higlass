@@ -53,6 +53,7 @@ module.exports = (config) => {
       // 'test/TrackLabelsTest.jsx',
       // 'test/ViewManipulationTests.js',
       // 'test/ViewportProjectionTests.js',
+      // 'test/UtilsTests.js',
     ],
 
     preprocessors: {

@@ -5,7 +5,6 @@ import Ajv from 'ajv';
 import schema from '../schema.json';
 
 import {
-  setDarkTheme,
   setTileProxyAuthHeader,
 } from './services';
 
@@ -358,10 +357,22 @@ const createApi = function api(context, pubSub) {
 
       /**
        * Choose a theme.
+       * @deprecated since version 1.6.6. Use `setTheme()` instead.
        */
       setDarkTheme(darkTheme) {
-        console.warn('Please note that the dark mode is still in beta');
-        setDarkTheme(!!darkTheme);
+        console.warn(
+          '`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.'
+        );
+        const theme = darkTheme ? 'dark' : 'light';
+        self.setTheme(theme);
+      },
+
+      /**
+       * Choose a theme.
+       */
+      setTheme(theme) {
+        console.warn('Please note that theming is still in beta!');
+        self.setTheme(theme);
       },
 
       /**

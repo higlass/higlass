@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>Minimal Working Example &middot; HiGlass</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/higlass@1.6.6/dist/hglib.css">
+
+  <style type="text/css">
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+  </style>
+
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-bootstrap@0.32.1/dist/react-bootstrap.min.js"></script>
+  <script crossorigin src="https://unpkg.com/higlass@1.6.6/dist/hglib.min.js"></script>
+</head>
+<body></body>
+<script>
+const hgApi = window.hglib.viewer(
+  document.body,
+  'https://higlass.io/api/v1/viewconfs/?d=default',
+  { bounded: true },
+);
+</script>
+</html>

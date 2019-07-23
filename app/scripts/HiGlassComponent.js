@@ -25,13 +25,12 @@ import createApi from './api';
 // Higher-order components
 import { Provider as PubSubProvider } from './hocs/with-pub-sub';
 import { Provider as ModalProvider } from './hocs/with-modal';
+import { Provider as ThemeProvider } from './hocs/with-theme';
 
 // Services
 import {
   chromInfo,
   createDomEvent,
-  getDarkTheme,
-  setDarkTheme,
   setTileProxyAuthHeader,
   tileProxy,
   requestsInFlight,
@@ -72,6 +71,8 @@ import {
   LOCATION_LISTENER_PREFIX,
   LONG_DRAG_TIMEOUT,
   SHORT_DRAG_TIMEOUT,
+  THEME_DARK,
+  THEME_LIGHT,
   TRACKS_INFO_BY_TYPE,
 } from './configs';
 
@@ -176,7 +177,7 @@ class HiGlassComponent extends React.Component {
 
     this.unsetOnLocationChange = [];
 
-    if (props.options.isDarkTheme) setDarkTheme();
+    this.setTheme(props.options.theme, props.options.isDarkTheme);
 
     this.viewconfLoaded = false;
 
@@ -578,6 +579,8 @@ class HiGlassComponent extends React.Component {
   }
 
   componentDidUpdate() {
+    this.setTheme(this.props.options.theme, this.props.options.isDarkTheme);
+
     this.animate();
     this.triggerViewChangeDb();
   }
@@ -614,6 +617,31 @@ class HiGlassComponent extends React.Component {
 
   /* ---------------------------- Custom Methods ---------------------------- */
 
+  setTheme(
+    newTheme = this.props.options.theme,
+    isDarkTheme = this.props.options.isDarkTheme
+  ) {
+    if (typeof isDarkTheme !== 'undefined') {
+      console.warn(
+        'The option `isDarkTheme` is deprecated. Please use `theme` instead.'
+      );
+      this.theme = isDarkTheme ? 'dark' : 'light';
+    } else {
+      switch (newTheme) {
+        case 'dark':
+          this.theme = THEME_DARK;
+          break;
+        case 'light':
+        case undefined:
+          this.theme = THEME_LIGHT;
+          break;
+        default:
+          console.warn(`Unknown theme "${newTheme}". Using light theme.`);
+          this.theme = THEME_LIGHT;
+          break;
+      }
+    }
+  }
 
   dispatchEvent(e) {
     if (!this.canvasElement) return;
@@ -706,13 +734,22 @@ class HiGlassComponent extends React.Component {
     }
 
     if (trackInfo.defaultOptions) {
+      const defaultThemeOptions = (
+        trackInfo.defaultOptionsByTheme
+        && trackInfo.defaultOptionsByTheme[this.theme]
+      ) ? trackInfo.defaultOptionsByTheme[this.theme] : {};
+
+      const defaultOptions = Object.assign(
+        {}, trackInfo.defaultOptions, defaultThemeOptions
+      );
+
       if (!track.options) {
-        track.options = JSON.parse(JSON.stringify(trackInfo.defaultOptions));
+        track.options = JSON.parse(JSON.stringify(defaultOptions));
       } else {
-        for (const optionName in trackInfo.defaultOptions) {
+        for (const optionName in defaultOptions) {
           track.options[optionName] = typeof (track.options[optionName]) !== 'undefined'
             ? track.options[optionName]
-            : JSON.parse(JSON.stringify(trackInfo.defaultOptions[optionName]));
+            : JSON.parse(JSON.stringify(defaultOptions[optionName]));
         }
       }
     } else { track.options = trackOptions; }
@@ -1149,13 +1186,9 @@ class HiGlassComponent extends React.Component {
   }
 
   createSVG() {
-    const xmlns = 'http://www.w3.org/2000/xmlns/';
-    const xlinkns = 'http://www.w3.org/1999/xlink';
-    const svgns = 'http://www.w3.org/2000/svg';
-
-    const svg = document.createElementNS(svgns, 'svg');
-    svg.setAttributeNS(xmlns, 'xmlns', svgns);
-    svg.setAttributeNS(xmlns, 'xmlns:xlink', xlinkns);
+    const svg = document.createElement('svg');
+    svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+    svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     svg.setAttribute('version', '1.1');
 
     for (const tiledPlot of dictValues(this.tiledPlots)) {
@@ -1184,6 +1217,14 @@ class HiGlassComponent extends React.Component {
 
     svgString = svgString.replace(/<a0:/g, '<');
     svgString = svgString.replace(/<\/a0:/g, '</');
+    // Remove duplicated xhtml namespace property
+    svgString = svgString.replace(
+      /(<svg[\n\r])(\s+xmlns="http:\/\/www\.w3\.org\/1999\/xhtml"[\n\r])/gm, '$1'
+    );
+    // Remove duplicated svg namespace
+    svgString = svgString.replace(
+      /(\s+<clipPath[\n\r]\s+)(xmlns="http:\/\/www\.w3\.org\/2000\/svg")/gm, '$1'
+    );
 
     const xmlDeclaration = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>';
     const doctype = '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
@@ -2813,7 +2854,7 @@ class HiGlassComponent extends React.Component {
       })
       .then(_json => ({
         id: _json.uid,
-        url: `${parsedUrl.origin}/app/?config=${_json.uid}`
+        url: `${parsedUrl.origin}/l/?d=${_json.uid}`
       }));
 
     if (!fromApi) {
@@ -3942,6 +3983,7 @@ class HiGlassComponent extends React.Component {
             paddingLeft={this.viewPaddingLeft}
             paddingRight={this.viewPaddingRight}
             paddingTop={this.viewPaddingTop}
+            pixiRenderer={this.pixiRenderer}
             pixiStage={this.pixiStage}
             pluginTracks={this.state.pluginTracks}
             rangeSelection1dSize={this.state.rangeSelection1dSize}
@@ -4128,7 +4170,7 @@ class HiGlassComponent extends React.Component {
 
     let styleNames = 'styles.higlass';
 
-    if (getDarkTheme()) {
+    if (this.theme === THEME_DARK) {
       styleNames += ' styles.higlass-dark-theme';
     }
 
@@ -4143,32 +4185,34 @@ class HiGlassComponent extends React.Component {
       >
         <PubSubProvider value={this.pubSub}>
           <ModalProvider value={this.modal}>
-            {this.state.modal}
-            <canvas
-              key={this.uid}
-              ref={(c) => { this.canvasElement = c; }}
-              styleName="styles.higlass-canvas"
-            />
-            <div
-              ref={(c) => { this.divDrawingSurface = c; }}
-              styleName="styles.higlass-drawing-surface"
-            >
-              {gridLayout}
-            </div>
-            <svg
-              ref={(c) => { this.svgElement = c; }}
-              style={{
-                // inline the styles so they aren't overriden by other css
-                // on the web page
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                left: 0,
-                top: 0,
-                pointerEvents: 'none',
-              }}
-              styleName="styles.higlass-svg"
-            />
+            <ThemeProvider value={this.theme}>
+              {this.state.modal}
+              <canvas
+                key={this.uid}
+                ref={(c) => { this.canvasElement = c; }}
+                styleName="styles.higlass-canvas"
+              />
+              <div
+                ref={(c) => { this.divDrawingSurface = c; }}
+                styleName="styles.higlass-drawing-surface"
+              >
+                {gridLayout}
+              </div>
+              <svg
+                ref={(c) => { this.svgElement = c; }}
+                style={{
+                  // inline the styles so they aren't overriden by other css
+                  // on the web page
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  left: 0,
+                  top: 0,
+                  pointerEvents: 'none',
+                }}
+                styleName="styles.higlass-svg"
+              />
+            </ThemeProvider>
           </ModalProvider>
         </PubSubProvider>
       </div>

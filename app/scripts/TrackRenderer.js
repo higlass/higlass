@@ -61,6 +61,7 @@ import SVGTrack from './SVGTrack';
 // Higher-order components
 import withPubSub from './hocs/with-pub-sub';
 import getDataFetcher from './data-fetchers/get-data-fetcher';
+import withTheme from './hocs/with-theme';
 
 // Utils
 import {
@@ -71,12 +72,10 @@ import {
   trimTrailingSlash,
 } from './utils';
 
-// Services
-import { getDarkTheme } from './services';
-
 // Configs
 import {
   AVAILABLE_FOR_PLUGINS,
+  THEME_DARK,
   TRACKS_INFO_BY_TYPE,
 } from './configs';
 
@@ -116,6 +115,7 @@ class TrackRenderer extends React.Component {
 
     this.availableForPlugins = AVAILABLE_FOR_PLUGINS;
     this.availableForPlugins.services.pubSub = this.props.pubSub;
+    this.availableForPlugins.services.pixiRenderer = this.props.pixiRenderer;
 
     this.mounted = false;
 
@@ -472,7 +472,7 @@ class TrackRenderer extends React.Component {
   }
 
   setBackground() {
-    const defBgColor = getDarkTheme() ? 'black' : 'white';
+    const defBgColor = this.props.theme === THEME_DARK ? 'black' : 'white';
     const bgColor = colorToHex((
       this.currentProps.viewOptions && this.currentProps.viewOptions.backgroundColor
     ) || defBgColor);
@@ -1271,7 +1271,8 @@ class TrackRenderer extends React.Component {
       },
       onMouseMoveZoom: this.props.onMouseMoveZoom,
       chromInfoPath: track.chromInfoPath,
-      isShowGlobalMousePosition: () => this.props.isShowGlobalMousePosition
+      isShowGlobalMousePosition: () => this.props.isShowGlobalMousePosition,
+      getTheme: () => this.props.theme,
     };
 
     // for horizontal and vertical rules
@@ -1763,11 +1764,13 @@ TrackRenderer.propTypes = {
   metaTracks: PropTypes.array,
   onMouseMoveZoom: PropTypes.func,
   onScalesChanged: PropTypes.func.isRequired,
+  pixiRenderer: PropTypes.object.isRequired,
   pixiStage: PropTypes.object.isRequired,
   pluginTracks: PropTypes.object,
   positionedTracks: PropTypes.array,
   setCentersFunction: PropTypes.func,
   svgElement: PropTypes.object.isRequired,
+  theme: PropTypes.symbol.isRequired,
   topHeight: PropTypes.number,
   topHeightNoGallery: PropTypes.number,
   viewOptions: PropTypes.object,
@@ -1777,4 +1780,4 @@ TrackRenderer.propTypes = {
   zoomDomain: PropTypes.array,
 };
 
-export default withPubSub(TrackRenderer);
+export default withPubSub(withTheme(TrackRenderer));

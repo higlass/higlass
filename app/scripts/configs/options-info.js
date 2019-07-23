@@ -99,6 +99,10 @@ export const OPTIONS_INFO = {
     name: 'Label Bottom Margin',
     inlineOptions: AVAILABLE_MARGIN
   },
+  labelShowResolution: {
+    name: 'Label Show Resolution',
+    inlineOptions: YES_NO,
+  },
   lineStrokeWidth: {
     name: 'Stroke Width',
     inlineOptions: AVAILABLE_WIDTHS,

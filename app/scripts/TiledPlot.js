@@ -24,6 +24,7 @@ import ViewContextMenu from './ViewContextMenu';
 // Higher-order components
 import withPubSub from './hocs/with-pub-sub';
 import withModal from './hocs/with-modal';
+import withTheme from './hocs/with-theme';
 
 // Utils
 import {
@@ -457,26 +458,31 @@ class TiledPlot extends React.Component {
     ) return;
 
     // Get the total number of track that are expecting a tilesetInfo
-    const allTilesetInfos = Object.keys(this.trackRenderer.trackDefObjects)
+    const allTracksWithTilesetInfos = Object.keys(this.trackRenderer.trackDefObjects)
       // Map track to a list of tileset infos
       .map((trackUuid) => {
         const track = this.trackRenderer.trackDefObjects[trackUuid].trackObject;
-        if (track.childTracks) {
-          return track.childTracks.map(childTrack => childTrack.tilesetInfo);
-        }
-        return track.tilesetInfo;
+        if (track.childTracks) return track.childTracks;
+        return track;
       })
       // Needed because of combined tracks
       .reduce((a, b) => a.concat(b), [])
       // We distinguish between tracks that need a tileset info and those whoch
       // don't by comparing `undefined` vs something else, i.e., tracks that
       // need a tileset info will be initialized with `this.tilesetInfo = null;`.
-      .filter(tilesetInfo => typeof tilesetInfo !== 'undefined' && tilesetInfo !== true)
+      .filter(({ tilesetInfo }) => typeof tilesetInfo !== 'undefined' && tilesetInfo !== true);
+
+    // Reduce the list of tracks to a dictionary of track ids. This is useful
+    // to speedup the subsequent filtering
+    const trackUids = allTracksWithTilesetInfos
+      .reduce((a, b) => { a[b.id] = true; return a; }, {});
+
+    // Only could tracks that are suppose to get a tileset
+    const loadedTilesetInfos = Object.keys(this.tracksByUidInit)
+      .filter(trackUid => trackUids[trackUid])
       .length;
 
-    const loadedTilesetInfos = Object.values(this.tracksByUidInit).length;
-
-    if (allTilesetInfos === loadedTilesetInfos) {
+    if (allTracksWithTilesetInfos.length === loadedTilesetInfos) {
       this.setState({ init: true });
       this.reset = false;
       this.handleZoomToData();
@@ -585,7 +591,6 @@ class TiledPlot extends React.Component {
      * @param uid (string): The uid of the track to replace
      * @param orientation (string): The place where to put the new track
      */
-
     this.trackToReplace = uid;
     this.handleAddTrack(orientation);
   }
@@ -1533,6 +1538,7 @@ class TiledPlot extends React.Component {
             onUnlockValueScale={this.handleUnlockValueScaleBound}
             orientation="right"
             position={this.state.contextMenuPosition}
+            theme={this.props.theme}
             tracks={relevantTracks}
             trackSourceServers={this.props.trackSourceServers}
           />
@@ -2052,6 +2058,7 @@ class TiledPlot extends React.Component {
           onValueScaleChanged={this.props.onValueScaleChanged}
           paddingLeft={this.props.paddingLeft}
           paddingTop={this.props.paddingTop}
+          pixiRenderer={this.props.pixiRenderer}
           pixiStage={this.props.pixiStage}
           pluginTracks={this.props.pluginTracks}
           positionedTracks={positionedTracks}
@@ -2102,6 +2109,7 @@ class TiledPlot extends React.Component {
             onTrackOptionsChanged={this.handleTrackOptionsChangedBound}
             onUnlockValueScale={this.handleUnlockValueScaleBound}
             position={this.state.configTrackMenuLocation}
+            theme={this.props.theme}
             trackOrientation={
               getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
             tracks={[getTrackByUid(this.props.tracks, this.state.configTrackMenuId)]}
@@ -2117,6 +2125,7 @@ class TiledPlot extends React.Component {
         >
           <ContextMenuContainer
             position={this.state.closeTrackMenuLocation}
+            theme={this.props.theme}
           >
             <CloseTrackMenu
               onCloseTrack={this.handleCloseTrack.bind(this)}
@@ -2298,6 +2307,7 @@ TiledPlot.propTypes = {
   onUnlockValueScale: PropTypes.func,
   onValueScaleChanged: PropTypes.func,
   openModal: PropTypes.func,
+  pixiRenderer: PropTypes.object,
   pixiStage: PropTypes.object,
   pluginTracks: PropTypes.object,
   rangeSelection1dSize: PropTypes.array,
@@ -2306,6 +2316,7 @@ TiledPlot.propTypes = {
   removeDraggingChangedListener: PropTypes.func,
   setCentersFunction: PropTypes.func,
   svgElement: PropTypes.object,
+  theme: PropTypes.symbol.isRequired,
   tracks: PropTypes.object,
   trackSourceServers: PropTypes.array,
   uid: PropTypes.string,
@@ -2314,4 +2325,4 @@ TiledPlot.propTypes = {
   zoomToDataExtentOnInit: PropTypes.func
 };
 
-export default withPubSub(withModal(TiledPlot));
+export default withPubSub(withModal(withTheme(TiledPlot)));
