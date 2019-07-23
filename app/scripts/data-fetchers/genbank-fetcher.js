@@ -623,11 +623,14 @@ class GBKDataFetcher {
 
   tilesetInfo(callback) {
     return this.dataPromise.then(() => {
+      const TILE_SIZE = 1024;
       let retVal = {};
       // retVal[this.trackUid] = {
       retVal = {
-        tile_size: 1024,
-        max_zoom: 22,
+        tile_size: TILE_SIZE,
+        max_zoom: Math.ceil(
+          Math.log(this.gbJson[0].size / TILE_SIZE) / Math.log(2)
+        ),
         max_width: this.gbJson[0].size,
         min_pos: [0],
         max_pos: [this.gbJson[0].size],
