@@ -1,6 +1,6 @@
 # Contributing to HiGlass
 
-🎉 Hooray, it's marvelous to see you here! 🥳 Thanks for considering to contribute to HiGlass. 👍
+🎉 Hooray, it's marvelous to see you here! Thanks for considering to contribute to HiGlass. 👍
 
 ## Help! I am lost... 😭
 
