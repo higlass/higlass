@@ -1,5 +1,6 @@
 ## Next release
 
+- Fix #743: the tool tip position now incorporates the scroll position
 - Fix drag handle styling (typo)
 - Make drag handle area (not the style) bigger so it's easier to grab
 
