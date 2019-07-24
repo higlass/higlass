@@ -1,5 +1,8 @@
 ## Next release
 
+- Fix drag handle styling (typo)
+- Make drag handle area (not the style) bigger so it's easier to grab
+
 _[Detailed changes since v1.6.6](https://github.com/higlass/higlass/compare/v1.6.6...develop)_
 
 # v1.6.6
