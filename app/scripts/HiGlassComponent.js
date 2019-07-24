@@ -3715,7 +3715,10 @@ class HiGlassComponent extends React.Component {
 
     mouseOverDiv = select('body').selectAll('.track-mouseover-menu');
     const mousePos = clientPoint(select('body').node(), evt.origEvt);
-
+    const normalizedMousePos = [
+      mousePos[0] - window.scrollX,
+      mousePos[1] - window.scrollY,
+    ];
 
     /*
     mouseOverDiv.selectAll('.mouseover-marker')
@@ -3726,8 +3729,8 @@ class HiGlassComponent extends React.Component {
     */
 
     mouseOverDiv
-      .style('left', `${mousePos[0]}px`)
-      .style('top', `${mousePos[1]}px`);
+      .style('left', `${normalizedMousePos[0]}px`)
+      .style('top', `${normalizedMousePos[1]}px`);
 
     // probably not over a track so there's no mouseover rectangle
     if (!mouseOverDiv.node()) return;
@@ -3737,13 +3740,17 @@ class HiGlassComponent extends React.Component {
     if (bbox.x + bbox.width > window.innerWidth) {
       // the overlay box is spilling outside of the track so switch
       // to showing it on the left
-      mouseOverDiv.style('left', `${(mousePos[0] - bbox.width)}px`);
+      mouseOverDiv.style(
+        'left', `${(normalizedMousePos[0] - bbox.width)}px`
+      );
     }
 
     if (bbox.y + bbox.height > window.innerHeight) {
       // the overlay box is spilling outside of the track so switch
       // to showing it on the left
-      mouseOverDiv.style('top', `${(mousePos[1] - bbox.height)}px`);
+      mouseOverDiv.style(
+        'top', `${(normalizedMousePos[1] - bbox.height)}px`
+      );
     }
 
     mouseOverDiv.html(mouseOverHtml);
