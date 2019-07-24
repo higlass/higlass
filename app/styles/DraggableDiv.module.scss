@@ -1,5 +1,4 @@
 @import './colors';
-@import './sizes';
 @import './transitions';
 
 .top-right-handle,
@@ -66,6 +65,9 @@
 .draggable-div:hover .left-draggable-handle,
 .draggable-div:hover .right-draggable-handle {
   opacity: 0.5;
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 0 3px 1px rgba(255, 255, 255, 0.75);
+  border-radius: 3px;
 }
 
 .top-draggable-handle:hover, .top-draggable-handle:active,
