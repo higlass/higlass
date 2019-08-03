@@ -102,6 +102,7 @@ Creating the server:
 
     from higlass.client import View, Track
     from higlass.tilesets import cooler
+    import higlass
 
     ts1 = cooler('../data/Dixon2012-J1-NcoI-R1-filtered.100kb.multires.cool')
     tr1 = Track('heatmap', tileset=ts1)
