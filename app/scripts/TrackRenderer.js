@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
 import { zoom, zoomIdentity } from 'd3-zoom';
-import { select, event } from 'd3-selection';
+import { select, event, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import slugid from 'slugid';
 
@@ -1045,6 +1045,29 @@ class TrackRenderer extends React.Component {
       ? zoomIdentity
       : event.transform;
 
+    const myWheelDelta = (dy, dm) => {
+      return dy * (dm ? 120 : 1) / 500;
+    };
+
+    if (event.sourceEvent && event.sourceEvent.deltaY) {
+      const dy = event.sourceEvent.deltaY;
+      const dm = event.sourceEvent.deltaMode;
+
+      const mwd = myWheelDelta(dy, dm);
+
+      console.log('event',
+        clientPoint(this.props.canvasElement, event.sourceEvent),
+        event.sourceEvent.offsetY);
+      console.log('event.dy:', event.sourceEvent.deltaY,
+        event.sourceEvent.deltaMode,
+        mwd, 2 ** mwd);
+
+      console.log('tracks:',
+        this.getTracksAtPosition(
+          ...clientPoint(this.props.canvasElement, event.sourceEvent)
+        )
+      );
+    }
     this.applyZoomTransform(true);
 
     this.props.pubSub.publish('app.zoom', event);
@@ -1052,6 +1075,32 @@ class TrackRenderer extends React.Component {
       event.sourceEvent.stopPropagation();
       event.sourceEvent.preventDefault();
     }
+  }
+
+  /**
+   * Return a list of tracks under this position.
+   *
+   * The position should be relative to this.props.canvasElement.
+   *
+   * @param  {Number} x The query x position
+   * @param  {Number} y The query y position
+   * @return {Array}   An array of tracks at this position
+   */
+  getTracksAtPosition(x, y) {
+    const foundTracks = [];
+
+    for (const uid in this.trackDefObjects) {
+      const track = this.trackDefObjects[uid].trackObject;
+
+      const withinX = track.position[0] <= x && x <= track.position[0] + track.dimensions[0];
+      const withinY = track.position[1] <= y && y <= track.position[1] + track.dimensions[1];
+
+      if (withinX && withinY) {
+        foundTracks.push(track);
+      }
+    }
+
+    return foundTracks;
   }
 
   zoomStarted() {
