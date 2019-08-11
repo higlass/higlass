@@ -278,7 +278,6 @@ class TrackRenderer extends React.Component {
      * The size of some tracks probably changed, so let's just
      * redraw them.
      */
-
     // don't initiate this component if it has nothing to draw on
     if (!nextProps.svgElement || !nextProps.canvasElement) {
       return;
@@ -1034,20 +1033,8 @@ class TrackRenderer extends React.Component {
     return last;
   }
 
-  /**
-   * Respond to a zoom event.
-   *
-   * We need to update our local record of the zoom transform and apply it
-   * to all the tracks.
-   */
-  zoomed() {
-    this.zoomTransform = !this.currentProps.zoomable
-      ? zoomIdentity
-      : event.transform;
-
-    const myWheelDelta = (dy, dm) => {
-      return dy * (dm ? 120 : 1) / 500;
-    };
+  valueScaleZoom() {
+    const myWheelDelta = (dy, dm) => dy * (dm ? 120 : 1) / 500;
 
     if (event.sourceEvent && event.sourceEvent.deltaY) {
       const dy = event.sourceEvent.deltaY;
@@ -1055,19 +1042,42 @@ class TrackRenderer extends React.Component {
 
       const mwd = myWheelDelta(dy, dm);
 
-      console.log('event',
-        clientPoint(this.props.canvasElement, event.sourceEvent),
-        event.sourceEvent.offsetY);
-      console.log('event.dy:', event.sourceEvent.deltaY,
-        event.sourceEvent.deltaMode,
-        mwd, 2 ** mwd);
+      // console.log('event',
+      //   clientPoint(this.props.canvasElement, event.sourceEvent),
+      //   event.sourceEvent.offsetY);
+      // console.log('event.dy:', event.sourceEvent.deltaY,
+      //   event.sourceEvent.deltaMode,
+      //   mwd, 2 ** mwd);
 
-      console.log('tracks:',
-        this.getTracksAtPosition(
-          ...clientPoint(this.props.canvasElement, event.sourceEvent)
-        )
-      );
+      // console.log('tracks:',
+      //   this.getTracksAtPosition(
+      //     ...clientPoint(this.props.canvasElement, event.sourceEvent)
+      //   )
+      // );
+
+      const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
+      for (const track of this.getTracksAtPosition(...cp)) {
+        track.zoomedY(cp[1] - track.position[1], 2 ** mwd);
+      }
     }
+  }
+
+  /**
+   * Respond to a zoom event.
+   *
+   * We need to update our local record of the zoom transform and apply it
+   * to all the tracks.
+   */
+  zoomed() {
+    if (this.props.valueScaleZoom) {
+      this.valueScaleZoom();
+      return;
+    }
+
+    this.zoomTransform = !this.currentProps.zoomable
+      ? zoomIdentity
+      : event.transform;
+
     this.applyZoomTransform(true);
 
     this.props.pubSub.publish('app.zoom', event);
@@ -1821,6 +1831,7 @@ TrackRenderer.propTypes = {
   width: PropTypes.number,
   xDomainLimits: PropTypes.array,
   yDomainLimits: PropTypes.array,
+  valueScaleZoom: PropTypes.bool,
   zoomDomain: PropTypes.array,
 };
 

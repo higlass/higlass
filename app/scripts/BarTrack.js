@@ -1,4 +1,6 @@
 import { scaleLinear } from 'd3-scale';
+import { zoomIdentity } from 'd3-zoom';
+
 import * as PIXI from 'pixi.js';
 
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
@@ -15,6 +17,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     this.zeroLine = new PIXI.Graphics();
     this.pMain.addChild(this.zeroLine);
+    this.valueScaleTransform = zoomIdentity;
 
     if (this.options && this.options.colorRange) {
       if (this.options.colorRangeGradient) {
@@ -292,6 +295,48 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
   zoomed(newXScale, newYScale) {
     super.zoomed(newXScale, newYScale);
+  }
+
+  zoomedY(yPos, kMultiplier) {
+    // console.log('yPos:', yPos, 'kMultiplier', kMultiplier);
+    // console.log('valueScale.domain', this.valueScale.domain());
+    const k0 = this.valueScaleTransform.k;
+    const xf = yPos;
+    const t0 = this.valueScaleTransform.x;
+    const k1 = k0 / kMultiplier;
+    const t1 = k0 * xf + t0 - k1 * xf;
+
+
+    // console.log('k0', k0, 't0', t0, 'k1:', k1, 't1', t1);
+    // we're only interested in scaling along one axis so we
+    // leave the translation of the other axis blank
+    this.valueScaleTransform = zoomIdentity.translate(t1, 0).scale(k1);
+    // console.log('vst:', this.valueScaleTransform);
+    this.zoomedValueScale = this.valueScaleTransform.rescaleX(this.valueScale);
+    // console.log('zoomedValueScale.domain()', this.zoomedValueScale.domain());
+    //
+    // this.pMain.scale.y = k1;
+    // this.pMain.position.y = t1;
+    Object.values(this.fetchedTiles).forEach((tile) => {
+      tile.graphics.scale.y = k1;
+      tile.graphics.position.y = t1;
+
+      this.zoomedValueScale = this.valueScaleTransform.rescaleX(this.valueScale);
+      this.drawAxis(this.zoomedValueScale);
+
+      const x = this.valueScale.clamp(false);
+      const transform = this.valueScaleTransform;
+      const range = x.range().map(
+        transform.invertX, transform
+      );
+
+      console.log('range:', range);
+      const domain = range.map(x.invert, x);
+      console.log('domain:', domain);
+      console.log('t0', t0, 't1:', t1);
+    });
+
+    this.animate();
   }
 
   /**
