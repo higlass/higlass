@@ -12,7 +12,7 @@ Fixes #___
 
 ## Checklist
 
-- [ ] Set proper GitHub labels
+- [ ] Set proper GitHub labels (e.g. v1.6+, ignore if you don't know)
 - [ ] Unit tests added or updated
 - [ ] Documentation added or updated
 - [ ] Example(s) added or updated
