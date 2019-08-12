@@ -172,6 +172,10 @@ class Track {
   zoomedY(trackY, kMultiplier) {
 
   }
+
+  movedY(dY) {
+
+  }
 }
 
 export default Track;

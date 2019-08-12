@@ -1059,6 +1059,11 @@ class TrackRenderer extends React.Component {
       for (const track of this.getTracksAtPosition(...cp)) {
         track.zoomedY(cp[1] - track.position[1], 2 ** mwd);
       }
+    } else if (event.sourceEvent && event.sourceEvent.movementY) {
+      // const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
+      for (const track of this.getTracksAtPosition(...this.zoomStartPos)) {
+        track.movedY(event.sourceEvent.movementY);
+      }
     }
   }
 
@@ -1116,11 +1121,18 @@ class TrackRenderer extends React.Component {
   zoomStarted() {
     this.zooming = true;
 
+    if (event.sourceEvent) {
+      this.zoomStartPos = clientPoint(this.props.canvasElement, event.sourceEvent);
+    }
+
+
     this.props.pubSub.publish('app.zoomStart');
   }
 
   zoomEnded() {
     this.zooming = false;
+
+    this.zoomStartPos = null;
 
     this.props.pubSub.publish('app.zoomEnd');
   }

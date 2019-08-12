@@ -297,22 +297,48 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     super.zoomed(newXScale, newYScale);
   }
 
+  movedY(dY) {
+    console.log('moved');
+    Object.values(this.fetchedTiles).forEach((tile) => {
+      const vst = this.valueScaleTransform;
+      this.valueScaleTransform = vst.translate(
+        0, dY / vst.k
+      );
+      tile.graphics.position.y = this.valueScaleTransform.y;
+    });
+    console.log('moved vst:', this.valueScaleTransform);
+
+    this.animate();
+  }
+
   zoomedY(yPos, kMultiplier) {
     // console.log('yPos:', yPos, 'kMultiplier', kMultiplier);
     // console.log('valueScale.domain', this.valueScale.domain());
     const k0 = this.valueScaleTransform.k;
-    const xf = yPos;
-    const t0 = this.valueScaleTransform.x;
+    const t0 = this.valueScaleTransform.y;
+    const dp = (yPos - t0) / k0;
     const k1 = k0 / kMultiplier;
-    const t1 = k0 * xf + t0 - k1 * xf;
-
+    const t1 = k0 * dp + t0 - k1 * dp;
+    // right now, the point at position 162 is at position 0
+    // 0 = 1 * 162 - 162
+    //
+    // we want that when k = 2, that point is still at position
+    // 0 = 2 * 162 - t1
+    //  ypos = k0 * dp + t0
+    //  dp = (ypos - t0) / k0
+    //  nypos = k1 * dp + t1
+    //  k1 * dp + t1 = k0 * dp + t0
+    //  t1 = k0 * dp +t0 - k1 * dp
 
     // console.log('k0', k0, 't0', t0, 'k1:', k1, 't1', t1);
     // we're only interested in scaling along one axis so we
     // leave the translation of the other axis blank
-    this.valueScaleTransform = zoomIdentity.translate(t1, 0).scale(k1);
-    // console.log('vst:', this.valueScaleTransform);
-    this.zoomedValueScale = this.valueScaleTransform.rescaleX(this.valueScale);
+    this.valueScaleTransform = zoomIdentity.translate(0, t1).scale(k1);
+    console.log('t0', t0, 't1', t1);
+    console.log('zoomed vst:', this.valueScaleTransform);
+    this.zoomedValueScale = this.valueScaleTransform.rescaleY(
+      this.valueScale.clamp(false)
+    );
     // console.log('zoomedValueScale.domain()', this.zoomedValueScale.domain());
     //
     // this.pMain.scale.y = k1;
@@ -321,19 +347,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       tile.graphics.scale.y = k1;
       tile.graphics.position.y = t1;
 
-      this.zoomedValueScale = this.valueScaleTransform.rescaleX(this.valueScale);
       this.drawAxis(this.zoomedValueScale);
-
-      const x = this.valueScale.clamp(false);
-      const transform = this.valueScaleTransform;
-      const range = x.range().map(
-        transform.invertX, transform
-      );
-
-      console.log('range:', range);
-      const domain = range.map(x.invert, x);
-      console.log('domain:', domain);
-      console.log('t0', t0, 't1:', t1);
     });
 
     this.animate();
