@@ -54,7 +54,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'HiGlass'
-copyright = '2017,2018 HiGlass Authors'
+copyright = '2017-2019 HiGlass Authors'
 author = 'HiGlass Authors'
 
 # The version info for the project you're documenting, acts as replacement for
