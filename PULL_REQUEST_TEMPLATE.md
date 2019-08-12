@@ -2,11 +2,9 @@
 
 > What was changed in this pull request?
 
-...
+
 
 > Why is it necessary?
-
-...
 
 Fixes #___
 
