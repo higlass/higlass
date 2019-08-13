@@ -1,11 +1,15 @@
 ## Next release
 
+_[Detailed changes since v1.6.7](https://github.com/higlass/higlass/compare/v1.6.7...develop)_
+
+## v1.6.7
+
 - Fix #747: the tooltip value wasn't shown because of an issue related to minimizing the code
 - Fix #743: the tooltip position now incorporates the scroll position
 - Fix drag handle styling (typo)
 - Make drag handle area (not the style) bigger so it's easier to grab
 
-_[Detailed changes since v1.6.6](https://github.com/higlass/higlass/compare/v1.6.6...develop)_
+_[Detailed changes since v1.6.6](https://github.com/higlass/higlass/compare/v1.6.6...v1.6.7)_
 
 # v1.6.6
 
