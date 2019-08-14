@@ -1037,34 +1037,26 @@ class TrackRenderer extends React.Component {
     const myWheelDelta = (dy, dm) => dy * (dm ? 120 : 1) / 500;
 
     if (event.sourceEvent && event.sourceEvent.deltaY) {
+      // mouse move probably from a drag event
       const dy = event.sourceEvent.deltaY;
       const dm = event.sourceEvent.deltaMode;
 
       const mwd = myWheelDelta(dy, dm);
-
-      // console.log('event',
-      //   clientPoint(this.props.canvasElement, event.sourceEvent),
-      //   event.sourceEvent.offsetY);
-      // console.log('event.dy:', event.sourceEvent.deltaY,
-      //   event.sourceEvent.deltaMode,
-      //   mwd, 2 ** mwd);
-
-      // console.log('tracks:',
-      //   this.getTracksAtPosition(
-      //     ...clientPoint(this.props.canvasElement, event.sourceEvent)
-      //   )
-      // );
 
       const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
       for (const track of this.getTracksAtPosition(...cp)) {
         track.zoomedY(cp[1] - track.position[1], 2 ** mwd);
       }
     } else if (event.sourceEvent && event.sourceEvent.movementY) {
+      // mouse wheel from zoom event
       // const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
       for (const track of this.getTracksAtPosition(...this.zoomStartPos)) {
         track.movedY(event.sourceEvent.movementY);
       }
     }
+
+    // reset the zoom transform
+    this.zoomTransform = this.zoomStartTransform;
   }
 
   /**
@@ -1074,7 +1066,7 @@ class TrackRenderer extends React.Component {
    * to all the tracks.
    */
   zoomed() {
-    if (this.props.valueScaleZoom) {
+    if (this.props.valueScaleZoom || this.valueScaleZooming) {
       this.valueScaleZoom();
       return;
     }
@@ -1125,7 +1117,13 @@ class TrackRenderer extends React.Component {
       this.zoomStartPos = clientPoint(this.props.canvasElement, event.sourceEvent);
     }
 
+    if (this.props.valueScaleZoom) {
+      this.valueScaleZooming = true;
+    }
 
+    // store the current transform because we'll need to
+    // revert it if this turns out to be a value scale zoom
+    this.zoomStartTransform = this.zoomTransform;
     this.props.pubSub.publish('app.zoomStart');
   }
 
@@ -1134,6 +1132,10 @@ class TrackRenderer extends React.Component {
 
     this.zoomStartPos = null;
 
+    if (this.valueScaleZooming) {
+      this.valueScaleZooming = false;
+      this.element.__zoom = this.zoomStartTransform;
+    }
     this.props.pubSub.publish('app.zoomEnd');
   }
 

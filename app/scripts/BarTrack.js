@@ -298,27 +298,41 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   movedY(dY) {
-    console.log('moved');
     Object.values(this.fetchedTiles).forEach((tile) => {
       const vst = this.valueScaleTransform;
-      this.valueScaleTransform = vst.translate(
-        0, dY / vst.k
-      );
+      const height = this.dimensions[1];
+
+      // clamp at the bottom and top
+      if (
+        vst.y + dY / vst.k > -(vst.k - 1) * height
+        && vst.y + dY / vst.k < 0
+      ) {
+        this.valueScaleTransform = vst.translate(
+          0, dY / vst.k
+        );
+      }
+
       tile.graphics.position.y = this.valueScaleTransform.y;
     });
-    console.log('moved vst:', this.valueScaleTransform);
 
     this.animate();
   }
 
   zoomedY(yPos, kMultiplier) {
-    // console.log('yPos:', yPos, 'kMultiplier', kMultiplier);
-    // console.log('valueScale.domain', this.valueScale.domain());
     const k0 = this.valueScaleTransform.k;
     const t0 = this.valueScaleTransform.y;
     const dp = (yPos - t0) / k0;
-    const k1 = k0 / kMultiplier;
-    const t1 = k0 * dp + t0 - k1 * dp;
+    const k1 = Math.max(k0 / kMultiplier, 1.0);
+    let t1 = k0 * dp + t0 - k1 * dp;
+
+    const height = this.dimensions[1];
+
+    // clamp at the bottom
+    t1 = Math.max(t1, -(k1 - 1) * height);
+
+    // clamp at the top
+    t1 = Math.min(t1, 0);
+
     // right now, the point at position 162 is at position 0
     // 0 = 1 * 162 - 162
     //
@@ -330,17 +344,12 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     //  k1 * dp + t1 = k0 * dp + t0
     //  t1 = k0 * dp +t0 - k1 * dp
 
-    // console.log('k0', k0, 't0', t0, 'k1:', k1, 't1', t1);
     // we're only interested in scaling along one axis so we
     // leave the translation of the other axis blank
     this.valueScaleTransform = zoomIdentity.translate(0, t1).scale(k1);
-    console.log('t0', t0, 't1', t1);
-    console.log('zoomed vst:', this.valueScaleTransform);
     this.zoomedValueScale = this.valueScaleTransform.rescaleY(
       this.valueScale.clamp(false)
     );
-    // console.log('zoomedValueScale.domain()', this.zoomedValueScale.domain());
-    //
     // this.pMain.scale.y = k1;
     // this.pMain.position.y = t1;
     Object.values(this.fetchedTiles).forEach((tile) => {
