@@ -1,8 +1,14 @@
+## v1.6.6
+
+- Added support for value scale zooming
+
+_[Detailed changes since v1.6.6](https://github.com/higlass/higlass/compare/v1.6.5...v1.6.6)_
+
 ## v1.6.5 
 
 - Fixed the replace track bug (where replacing a center track wouldn't do anything)
 
-_[Detailed changes since v1.6.3](https://github.com/higlass/higlass/compare/v1.6.4...v1.6.5)_
+_[Detailed changes since v1.6.5](https://github.com/higlass/higlass/compare/v1.6.4...v1.6.5)_
 
 ## v1.6.4
 
