@@ -717,8 +717,6 @@ class HiGlassComponent extends React.Component {
       });
     }
 
-    console.log('event.key', event.key);
-
     if (event.key === 'Shift') {
       this.setState({
         valueScaleZoom: true,
@@ -734,7 +732,6 @@ class HiGlassComponent extends React.Component {
     }
 
     if (event.key === 'Shift') {
-      console.log('setting false');
       this.setState({
         valueScaleZoom: false,
       });
