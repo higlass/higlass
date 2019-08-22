@@ -4,7 +4,7 @@ import { scaleLinear } from 'd3-scale';
 import { isWithin } from './utils';
 
 class Track {
-  constructor({ id, pubSub }) {
+  constructor({ id, pubSub, getTheme }) {
     this.id = id;
     this._xScale = scaleLinear();
     this._yScale = scaleLinear();
@@ -21,6 +21,7 @@ class Track {
     this.options = {};
     this.pubSub = pubSub;
     this.pubSubs = [];
+    this.getTheme = getTheme;
 
     this.pubSubs.push(
       this.pubSub.subscribe(
