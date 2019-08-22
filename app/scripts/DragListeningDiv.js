@@ -17,7 +17,7 @@ class DragListeningDiv extends React.Component {
   }
 
   render() {
-    // color red if not enabled, green if a track is not top and red otherwise
+    // color red if not enabled, green if a track is not top and blue otherwise
     let background = 'red';
 
     if (this.props.enabled && this.state.dragOnTop) {
