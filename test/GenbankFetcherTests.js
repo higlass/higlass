@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import GBKDataFetcher from '../app/scripts/data-fetchers/genbank-fetcher';
 
 
-describe('A search field', () => {
+describe('Genbank data fetcher', () => {
   const df = new GBKDataFetcher({
     url: 'https://pkerp.s3.amazonaws.com/public/GCA_000010365.1_ASM1036v1_genomic.gbff.gz',
   });
@@ -11,8 +11,7 @@ describe('A search field', () => {
   it('should fetch the tileset info', (done) => {
     df.tilesetInfo((tsInfo) => {
       expect(tsInfo.tile_size).to.eql(1024);
-      expect(tsInfo.max_zoom).to.eql(22);
-      expect(tsInfo.max);
+      expect(tsInfo.max_zoom).to.eql(8);
 
       done();
     });
