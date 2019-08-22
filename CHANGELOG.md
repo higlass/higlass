@@ -1,10 +1,8 @@
-## v1.7.0
-
-- Implemented a genbank data fetcher for gene annotation tracks
-
 ## Next release
 
 _[Detailed changes since v1.6.7](https://github.com/higlass/higlass/compare/v1.6.7...develop)_
+
+- Implemented a genbank data fetcher for gene annotation tracks
 
 ## v1.6.7
 
