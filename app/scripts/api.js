@@ -301,9 +301,11 @@ const createApi = function api(context, pubSub) {
 
       /**
        * Show overlays where this track can be positioned. This
-       * function will take a track definition and display red
-       * or green overlays highlighting where the track can be
-       * placed on the view.
+       * function will take a track definition and display red,
+       * blue or green overlays highlighting where the track can
+       * be placed on the view. Blue indicates that a track can
+       * be placed in that region, red that it can't and green that
+       * the mouse is currently over the given region.
        *
        * @param {obj} track { server, tilesetUid, datatype }
        *
