@@ -60,39 +60,52 @@ npm run test-watch
 
 ### API
 
-HiGlass provides an API for controlling the component from within a Javascript script. Complete documentation is availabe at [docs.higlass.io](http://docs.higlass.io/javascript_api.html). Example:
+HiGlass provides an API for controlling the component from with JavaScript. Below is a [minimal working example](docs/examples/others/minimal-working-example.html) to get started and the complete documentation is availabe at [docs.higlass.io](http://docs.higlass.io/javascript_api.html).
 
-```
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
-<link rel="stylesheet" href="https://unpkg.com/higlass@1.0.1/dist/styles/hglib.css" type="text/css">
+```html
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>Minimal Working Example &middot; HiGlass</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/higlass@1.6.6/dist/hglib.css">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.2/react.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/15.6.2/react-dom.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.2/pixi.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js"></script>
-<script src="https://unpkg.com/higlass@1.0.1/dist/scripts/hglib.js"></script>
+  <style type="text/css">
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+  </style>
 
-<div
-    id="development-demo"
-    style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem">
-</div>
-
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-bootstrap@0.32.1/dist/react-bootstrap.min.js"></script>
+  <script crossorigin src="https://unpkg.com/higlass@1.6.6/dist/hglib.min.js"></script>
+</head>
+<body></body>
 <script>
-const api = hglib.createHgComponent(
-    document.getElementById('development-demo'),
-    'http://higlass.io/api/v1/viewconfs/?d=default',
-    { bounded: true }
+const hgApi = window.hglib.viewer(
+  document.body,
+  'https://higlass.io/api/v1/viewconfs/?d=default',
+  { bounded: true },
 );
 </script>
+</html>
 ```
+
 ### Related
 
 [![diagram of related tools](https://docs.google.com/drawings/d/e/2PACX-1vSCiCzfQ8FEyHPFSq7jJD6XmzC760xH1Zr4FIcCMzFmqAlrmYEBMId8gM42uz0okmvuEaxetyPPZ9VG/pub?w=600&h=450)](https://docs.google.com/drawings/d/1Xedi5ZRtbRdt2g20qpl_lWs4BMqc2DKZ2ZOoJvpHw9U/edit)
 
+* [HiGlass Clodius](https://github.com/higlass/clodius) - Package that provides implementations for aggregation and tile generation for many common 1D and 2D data types
+* [HiGlass Python](https://github.com/higlass/higlass-python) - Python bindings to the HiGlass for tile serving, view config generation, and Jupyter Notebook + Lab integration.
 * [HiGlass Manage](https://github.com/higlass/higlass-manage) - Easy to use interface for deploying a local HiGlass instance
 * [HiGlass Docker](https://github.com/higlass/higlass-docker) - Build an image containing all the components necessary to deploy HiGlass
 * [HiGlass Server](https://github.com/higlass/higlass-server) - Server component for serving multi-resolution data
 * [HiGlass App](https://github.com/higlass/higlass-app) - The code for the web application hosted at http://higlass.io
+* [Cooler](https://github.com/mirnylab/cooler) - Package for efficient storage of and access to sparse 2D data
 
 ### License
 

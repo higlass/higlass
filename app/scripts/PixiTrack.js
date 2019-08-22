@@ -346,7 +346,8 @@ class PixiTrack extends Track {
     labelTextText += this.getName();
 
     if (
-      this.tilesetInfo
+      this.options.labelShowResolution
+      && this.tilesetInfo
       && this.tilesetInfo.max_width
       && this.tilesetInfo.bins_per_dimension
     ) {
@@ -359,7 +360,8 @@ class PixiTrack extends Track {
 
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     } else if (
-      this.tilesetInfo
+      this.options.labelShowResolution
+      && this.tilesetInfo
       && this.tilesetInfo.resolutions
     ) {
       const formattedResolution = getResolutionBasedResolutionText(

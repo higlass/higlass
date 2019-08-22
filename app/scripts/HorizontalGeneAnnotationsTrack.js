@@ -478,7 +478,11 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         tile.rectGraphics.position.x = -posOffset * tileK;
 
         tile.textBgGraphics.clear();
-        tile.textBgGraphics.beginFill(WHITE_HEX);
+        tile.textBgGraphics.beginFill(
+          typeof this.options.labelBackgroundColor !== 'undefined'
+            ? colorToHex(this.options.labelBackgroundColor)
+            : WHITE_HEX
+        );
 
         // move the texts
         const parentInFetched = this.parentInFetched(tile);
