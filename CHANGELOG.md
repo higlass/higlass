@@ -1,5 +1,7 @@
 ## Next release
 
+- Allow the creation of a custom data fetcher
+
 _[Detailed changes since v1.6.7](https://github.com/higlass/higlass/compare/v1.6.7...develop)_
 
 ## v1.6.7

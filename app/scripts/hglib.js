@@ -83,6 +83,9 @@ const launch = (element, config, options) => {
  *  document.getElementById('development-demo'),
  *  testViewConfig,
  *  { bounded: true,
+ *    pluginTracks: {
+ *      'my-track-type', MyTrackTypeClass
+ *    },
  *   defaultTrackOptions: {
  *     all: {
  *       showTooltip: true,
