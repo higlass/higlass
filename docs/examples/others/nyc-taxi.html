@@ -174,7 +174,7 @@ const loadHg = () => {
   hgApi = window.hglib.viewer(
     document.getElementById('demo'),
     JSON.parse(JSON.stringify(viewConfig)),
-    { bounded: true, isDarkTheme: true },
+    { bounded: true, theme: 'dark' },
   );
 
   hgApi.zoomTo('a', ...xDomain, ...yDomain, 0);
@@ -192,7 +192,7 @@ loadEl.addEventListener('click', () => {
 window.hgApi = window.hglib.viewer(
   document.getElementById('demo'),
   viewConfig,
-  { bounded: true, isDarkTheme: true },
+  { bounded: true, theme: 'dark' },
 );
 </script>
 </html>

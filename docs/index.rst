@@ -7,30 +7,51 @@ HiGlass is built on a framework inspired by genome browsers and modern online ma
 <http://wiki.openstreetmap.org/wiki/Slippy_Map>`_) to form a fast, extensible
 and responsive viewer for diverse types of multi-scale data.
 
-The HiGlass application actually consists of distinct components:
+The HiGlass framework consists of several distinct components:
 
-|higlass-viewer|_ - This is the Javascript
-library that displays heatmaps, tracks, etc. In a sense, this is the meat of
-the application. The vast majority of the updates are on this component.
+.. figure:: img/higlass-architecture.jpg
+    :align: center
+    :figwidth: 640px
 
-.. |higlass-viewer| replace:: **higlass-viewer**
-.. _higlass-viewer: https://github.com/higlass/higlass
+.. youtube:: v62k4Ok1S8g
+    :height: 144
+    :width: 256
+    :align: right
+    :css: margin:0.5em 0.5em 0 0.5em;padding:0.5em 0.5em 0 0.5em;
 
-|higlass-server|_ - The server manages data and serves it to the client in
+    For an overview of HiGlass take a look at
+    our talk from the SciPy conference 2019
+
+|higlass.js|_ - This is the Javascript
+library that renders the tracks and provides the user interface. The vast majority of the updates are on this component.
+
+.. |higlass.js| replace:: **higlass.js**
+.. _higlass.js: https://github.com/higlass/higlass
+
+|higlass-server|_ - The server manages and serves the data to the client in
 small chunks that match the current zoom level and location. It is a python
-django application that exposes an API.  For example,
+django application that exposes an API. For example,
 http://higlass.io/api/v1/tilesets lists the tilesets that the server knows
 about.
 
 .. |higlass-server| replace:: **higlass-server**
 .. _higlass-server: https://github.com/higlass/higlass-server
 
-|higlass-docker|_  - This docker
-container contains all three of the above repositories and packages them so
-that they can be easily run without having to install and run each separately.
+|clodius|_ - This package implements the aggregation and tile generation logic for many common 1D and 2D data types.
+
+.. |clodius| replace:: **clodius**
+.. _clodius: https://github.com/higlass/clodius
+
+|higlass-python|_ - This package contains directives to locally visualize data with HiGlass in `Jupyter notebooks or Lab <https://jupyter.org>`_.
+
+.. |higlass-python| replace:: **higlass-python**
+.. _higlass-python: https://github.com/higlass/higlass-python
+
+|higlass-docker|_  - Our docker
+container consists all packages that are required to run HiGlass as a persistent server to make the installation process easier.
 An update in any of the above repositories will be reflected in an update in
 the docker container. The versions of all the components is accessible at
-http://higlass.io/version.txt
+https://higlass.io/version.txt
 
 .. |higlass-docker| replace:: **higlass-docker**
 .. _higlass-docker: https://github.com/higlass/higlass-docker

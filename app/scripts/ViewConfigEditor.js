@@ -58,9 +58,6 @@ class ViewConfigEditor extends React.Component {
   }
 
   handleKeyDown(event) {
-    if (event.altKey) {
-      this.willHide = setTimeout(this.hideBound, 1000);
-    }
     if (event.key === 's' && (event.ctrlKey || event.metaKey)) {
       event.preventDefault();
       this.props.onChange(this.state.code);
@@ -73,8 +70,6 @@ class ViewConfigEditor extends React.Component {
   }
 
   handleKeyUp(event) {
-    if (this.willHide) clearTimeout(this.willHide);
-    this.willHide = null;
     this.setState({ hide: false });
 
     if (event.key === 'Escape') {
@@ -117,7 +112,6 @@ class ViewConfigEditor extends React.Component {
             onMouseDown={this.hideBound}
             onMouseOut={this.showBound}
             onMouseUp={this.showBound}
-            shortcut="ALT for 1s"
           >
             Hide While Mousedown
           </Button>
