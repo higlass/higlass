@@ -70,6 +70,7 @@ export { default as expandCombinedTracks } from './expand-combined-tracks';
 export { default as segmentsToRows } from './segments-to-rows';
 export { default as visitPositionedTracks } from './visit-positioned-tracks';
 export { default as visitTracks } from './visit-tracks';
+export { default as trackUtils } from './track-utils';
 export {
   getTrackObjectFromHGC,
   getTrackRenderer,
