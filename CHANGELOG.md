@@ -58,7 +58,6 @@ _[Detailed changes since v1.6.1](https://github.com/higlass/higlass/compare/v1.6
 - Fixed: `Save and Close` in the ViewConfigEditor works properly
 
 _[Detailed changes since v1.6.0](https://github.com/higlass/higlass/compare/v1.6.0...v1.6.1)_
->>>>>>> 12e938e043cc73687a13d7cecdf90d0e893691cc
 
 ## v1.6.0
 
