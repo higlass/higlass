@@ -678,6 +678,29 @@ class TrackRenderer extends React.Component {
     this.applyZoomTransform(notify);
   }
 
+  /**
+   * Get a track's viewconf definition by its object
+   */
+  getTrackDef(trackObjectIn) {
+    const trackDefItems = dictItems(this.trackDefObjects);
+
+    for (const [, { trackDef, trackObject }] of trackDefItems) {
+      if (trackObject === trackObjectIn) {
+        return trackDef.track;
+      }
+      if (trackDef.track.contents) {
+        // this is a combined track
+        for (const subTrackDef of trackDef.track.contents) {
+          if (trackObject.createdTracks[subTrackDef.uid] === trackObjectIn) {
+            return subTrackDef;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
   /*
    * Fetch the trackObject for a track with a given ID
    */
@@ -1033,27 +1056,29 @@ class TrackRenderer extends React.Component {
     return last;
   }
 
-  valueScaleZoom() {
-    const myWheelDelta = (dy, dm) => dy * (dm ? 120 : 1) / 500;
-
-    if (event.sourceEvent && event.sourceEvent.deltaY) {
-      // mouse move probably from a drag event
-      const dy = event.sourceEvent.deltaY;
-      const dm = event.sourceEvent.deltaMode;
-
-      const mwd = myWheelDelta(dy, dm);
-
-      const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
-      for (const track of this.getTracksAtPosition(...cp)) {
-        track.zoomedY(cp[1] - track.position[1], 2 ** mwd);
-      }
-    } else if (event.sourceEvent && event.sourceEvent.movementY) {
-      // mouse wheel from zoom event
-      // const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
-      for (const track of this.getTracksAtPosition(...this.zoomStartPos)) {
-        track.movedY(event.sourceEvent.movementY);
-      }
+  valueScaleMove() {
+    // mouse wheel from zoom event
+    // const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
+    for (const track of this.getTracksAtPosition(...this.zoomStartPos)) {
+      track.movedY(event.sourceEvent.movementY);
     }
+
+    this.zoomTransform = this.zoomStartTransform;
+  }
+
+  valueScaleZoom() {
+    // mouse move probably from a drag event
+    const dy = event.sourceEvent.deltaY;
+    const dm = event.sourceEvent.deltaMode;
+
+    const myWheelDelta = (dy, dm) => dy * (dm ? 120 : 1) / 500;
+    const mwd = myWheelDelta(dy, dm);
+
+    const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
+    for (const track of this.getTracksAtPosition(...cp)) {
+      track.zoomedY(cp[1] - track.position[1], 2 ** mwd);
+    }
+
 
     // reset the zoom transform
     this.zoomTransform = this.zoomStartTransform;
@@ -1067,16 +1092,59 @@ class TrackRenderer extends React.Component {
    */
   zoomed() {
     if (this.props.valueScaleZoom || this.valueScaleZooming) {
-      this.valueScaleZoom();
+      if (event.sourceEvent && event.sourceEvent.deltaY) {
+        this.valueScaleZoom();
+      } else if (event.sourceEvent && event.sourceEvent.movementY) {
+        this.valueScaleMove();
+      }
+
       return;
+    }
+
+    if (event && event.sourceEvent) {
+      console.log('event', event.sourceEvent.deltaY, event.sourceEvent.movementX, event.sourceEvent.movementY);
+      console.log('el', this.element.__zoom);
+    }
+
+    // the orientation of the track where we started zooming
+    // if it's a 1d-horizontal, then mousemove events shouldn't
+    // move the center track vertically
+    let trackOrientation = null;
+
+    // see what orientation of track we're over so that we decide
+    // whether to move the value scale or the position scale
+    if (this.zoomStartPos) {
+      const tracksAtZoomStart = this.getTracksAtPosition(...this.zoomStartPos);
+      if (tracksAtZoomStart.length) {
+        const trackAtZoomStart = tracksAtZoomStart[0];
+        const trackDef = this.getTrackDef(trackAtZoomStart);
+
+        trackOrientation = TRACKS_INFO_BY_TYPE[trackDef.type].orientation;
+      }
+    }
+
+    if (event.sourceEvent && !event.sourceEvent.deltaY && event.sourceEvent.movementY) {
+      this.valueScaleMove();
     }
 
     this.zoomTransform = !this.currentProps.zoomable
       ? zoomIdentity
       : event.transform;
 
+    if (trackOrientation === '1d-horizontal') {
+      // horizontal tracks shouldn't allow movement in the y direction
+      if (this.prevZoomTransform.k == this.zoomTransform.k) {
+        // don't move along y axis
+        this.zoomTransform = zoomIdentity.translate(
+          this.zoomTransform.x, this.prevZoomTransform.y
+        ).scale(this.zoomTransform.k);
+        this.element.__zoom = this.zoomTransform;
+      }
+    }
+
     this.applyZoomTransform(true);
 
+    this.prevZoomTransform = this.zoomTransform;
     this.props.pubSub.publish('app.zoom', event);
     if (event.sourceEvent) {
       event.sourceEvent.stopPropagation();
@@ -1096,9 +1164,19 @@ class TrackRenderer extends React.Component {
   getTracksAtPosition(x, y) {
     const foundTracks = [];
 
+    let tracksToVisit = [];
+
     for (const uid in this.trackDefObjects) {
       const track = this.trackDefObjects[uid].trackObject;
 
+      if (track.childTracks) {
+        tracksToVisit = tracksToVisit.concat(track.childTracks);
+      } else {
+        tracksToVisit.push(track);
+      }
+    }
+
+    for (const track of tracksToVisit) {
       const withinX = track.position[0] <= x && x <= track.position[0] + track.dimensions[0];
       const withinY = track.position[1] <= y && y <= track.position[1] + track.dimensions[1];
 
