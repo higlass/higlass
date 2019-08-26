@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+
+from __future__ import absolute_import
+from docutils import nodes
+from docutils.parsers.rst import Directive, directives
+
 # -*- coding: utf-8 -*-
 #
 # higlass documentation build configuration file, created by
@@ -49,7 +54,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'HiGlass'
-copyright = '2017,2018 HiGlass Authors'
+copyright = '2017-2019 HiGlass Authors'
 author = 'HiGlass Authors'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -176,4 +181,75 @@ texinfo_documents = [
 ]
 
 
+# -- Options for embedding YouTube and Vimeo videos -----------------------
 
+"""
+    ReST directive for embedding Youtube and Vimeo videos.
+    There are two directives added: ``youtube`` and ``vimeo``. The only
+    argument is the video id of the video to include.
+    Both directives have three optional arguments: ``height``, ``width``
+    and ``align``. Default height is 281 and default width is 500.
+    Example::
+        .. youtube:: anwy2MPT5RE
+            :height: 315
+            :width: 560
+            :align: left
+    :copyright: (c) 2012 by Danilo Bargen.
+    :license: BSD 3-clause
+"""
+
+
+def align(argument):
+    """Conversion function for the "align" option."""
+    return directives.choice(argument, ('left', 'center', 'right'))
+
+
+class IframeVideo(Directive):
+    has_content = True
+    required_arguments = 1
+    optional_arguments = 0
+    final_argument_whitespace = False
+    option_spec = {
+        'height': directives.nonnegative_int,
+        'width': directives.nonnegative_int,
+        'align': align,
+        'css': directives.unchanged,
+    }
+    default_width = 500
+    default_height = 281
+
+    def run(self):
+        self.options['video_id'] = directives.uri(self.arguments[0])
+        self.options['caption'] = '</br>'.join(self.content)
+        if not self.options.get('width'):
+            self.options['width'] = self.default_width
+        if not self.options.get('height'):
+            self.options['height'] = self.default_height
+        if not self.options.get('align'):
+            self.options['align'] = 'left'
+        if not self.options.get('css'):
+            self.options['css'] = ''
+        return [nodes.raw('', self.html % self.options, format='html')]
+
+
+class Youtube(IframeVideo):
+    html = '<div class="figure align-%(align)s" style="%(css)s">\
+    <iframe src="http://www.youtube.com/embed/%(video_id)s" \
+    width="%(width)u" height="%(height)u" frameborder="0" \
+    webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>\
+    <p class="caption"><span class="caption-text">%(caption)s</span>\
+    </p></div>'
+
+
+class Vimeo(IframeVideo):
+    html = '<div class="figure align-%(align)s" style="%(css)s">\
+    <iframe src="http://player.vimeo.com/video/%(video_id)s" \
+    width="%(width)u" height="%(height)u" frameborder="0" \
+    webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>\
+    <p class="caption"><span class="caption-text">%(caption)s</span>\
+    </p></div>'
+
+
+def setup(builder):
+    directives.register_directive('youtube', Youtube)
+    directives.register_directive('vimeo', Vimeo)

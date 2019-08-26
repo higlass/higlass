@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { SortableHandle } from 'react-sortable-hoc';
 
-import { getDarkTheme } from './services';
+import withTheme from './hocs/with-theme';
+import { THEME_DARK } from './configs';
 
 // Styles
 import '../styles/TrackControl.module.scss';
@@ -20,7 +21,7 @@ const getClassNames = (props) => {
   className += props.paddingRight
     ? ' track-control-padding-right' : '';
 
-  if (getDarkTheme()) className += ' track-control-dark';
+  if (props.theme === THEME_DARK) className += ' track-control-dark';
 
   return className;
 };
@@ -128,7 +129,8 @@ TrackControl.propTypes = {
   onCloseTrackMenuOpened: PropTypes.func,
   onAddSeries: PropTypes.func,
   paddingRight: PropTypes.bool,
+  theme: PropTypes.symbol.isRequired,
   uid: PropTypes.string,
 };
 
-export default TrackControl;
+export default withTheme(TrackControl);
