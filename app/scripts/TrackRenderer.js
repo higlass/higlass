@@ -1068,11 +1068,11 @@ class TrackRenderer extends React.Component {
 
   valueScaleZoom(orientation) {
     // mouse move probably from a drag event
-    const dy = event.sourceEvent.deltaY;
-    const dm = event.sourceEvent.deltaMode;
+    const mdy = event.sourceEvent.deltaY;
+    const mdm = event.sourceEvent.deltaMode;
 
     const myWheelDelta = (dy, dm) => dy * (dm ? 120 : 1) / 500;
-    const mwd = myWheelDelta(dy, dm);
+    const mwd = myWheelDelta(mdy, mdm);
 
     const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
 
