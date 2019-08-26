@@ -1056,17 +1056,17 @@ class TrackRenderer extends React.Component {
     return last;
   }
 
-  valueScaleMove() {
+  valueScaleMove(movement) {
     // mouse wheel from zoom event
     // const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
     for (const track of this.getTracksAtPosition(...this.zoomStartPos)) {
-      track.movedY(event.sourceEvent.movementY);
+      track.movedY(movement);
     }
 
     this.zoomTransform = this.zoomStartTransform;
   }
 
-  valueScaleZoom() {
+  valueScaleZoom(orientation) {
     // mouse move probably from a drag event
     const dy = event.sourceEvent.deltaY;
     const dm = event.sourceEvent.deltaMode;
@@ -1075,8 +1075,11 @@ class TrackRenderer extends React.Component {
     const mwd = myWheelDelta(dy, dm);
 
     const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
+
     for (const track of this.getTracksAtPosition(...cp)) {
-      track.zoomedY(cp[1] - track.position[1], 2 ** mwd);
+      const yPos = orientation === '1d-horizontal'
+        ? cp[1] - track.position[1] : cp[0] - track.position[0];
+      track.zoomedY(yPos, 2 ** mwd);
     }
 
 
@@ -1091,21 +1094,6 @@ class TrackRenderer extends React.Component {
    * to all the tracks.
    */
   zoomed() {
-    if (this.props.valueScaleZoom || this.valueScaleZooming) {
-      if (event.sourceEvent && event.sourceEvent.deltaY) {
-        this.valueScaleZoom();
-      } else if (event.sourceEvent && event.sourceEvent.movementY) {
-        this.valueScaleMove();
-      }
-
-      return;
-    }
-
-    if (event && event.sourceEvent) {
-      console.log('event', event.sourceEvent.deltaY, event.sourceEvent.movementX, event.sourceEvent.movementY);
-      console.log('el', this.element.__zoom);
-    }
-
     // the orientation of the track where we started zooming
     // if it's a 1d-horizontal, then mousemove events shouldn't
     // move the center track vertically
@@ -1123,23 +1111,56 @@ class TrackRenderer extends React.Component {
       }
     }
 
-    if (event.sourceEvent && !event.sourceEvent.deltaY && event.sourceEvent.movementY) {
-      this.valueScaleMove();
+    if (!trackOrientation || !event.sourceEvent) {
+      return;
+    }
+
+    // if somebody is holding down the shift key and is zooming over
+    // a 1d track, try to apply value scale zooming
+    if (this.props.valueScaleZoom || this.valueScaleZooming) {
+      if (event.sourceEvent.deltaY) {
+        this.valueScaleZoom(trackOrientation);
+      } else if (trackOrientation === '1d-horizontal') {
+        this.valueScaleMove(event.sourceEvent.movementY);
+      } else if (trackOrientation === '1d-vertical') {
+        this.valueScaleMove(event.sourceEvent.movementX);
+      }
+
+      return;
+    }
+
+    // if somebody is dragging along a 1d track, do value scale moving
+    if (trackOrientation === '1d-horizontal'
+      && event.sourceEvent.movementY) {
+      this.valueScaleMove(event.sourceEvent.movementY);
+    } else if (trackOrientation === '1d-vertical'
+      && event.sourceEvent.movementX) {
+      this.valueScaleMove(event.sourceEvent.movementX);
     }
 
     this.zoomTransform = !this.currentProps.zoomable
       ? zoomIdentity
       : event.transform;
 
-    if (trackOrientation === '1d-horizontal') {
-      // horizontal tracks shouldn't allow movement in the y direction
-      if (this.prevZoomTransform.k == this.zoomTransform.k) {
+    const zooming = this.prevZoomTransform.k !== this.zoomTransform.k;
+
+    // if there is dragging along a 1d track, only allow panning
+    // along the axis of the track
+    if (!zooming) {
+      if (trackOrientation === '1d-horizontal') {
+        // horizontal tracks shouldn't allow movement in the y direction
         // don't move along y axis
         this.zoomTransform = zoomIdentity.translate(
           this.zoomTransform.x, this.prevZoomTransform.y
         ).scale(this.zoomTransform.k);
-        this.element.__zoom = this.zoomTransform;
+      } else if (trackOrientation === '1d-vertical') {
+        // vertical tracks shouldn't allow movement in the x axis
+        this.zoomTransform = zoomIdentity.translate(
+          this.prevZoomTransform.x, this.zoomTransform.y
+        ).scale(this.zoomTransform.k);
       }
+
+      this.element.__zoom = this.zoomTransform;
     }
 
     this.applyZoomTransform(true);
