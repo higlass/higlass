@@ -2,7 +2,6 @@ import { range } from 'd3-array';
 import slugid from 'slugid';
 
 import {
-  workerFetchTiles, // eslint-disable-line import/named
   workerGetTiles,
   workerSetPix,
 } from '../worker';
@@ -248,20 +247,6 @@ export function fetchMultiRequestTiles(req, pubSub) {
  */
 export const fetchTilesDebounced = throttleAndDebounce(
   fetchMultiRequestTiles, TILE_FETCH_DEBOUNCE, TILE_FETCH_DEBOUNCE
-);
-
-/**
- * Retrieve a set of tiles from the server
- *
- * Plenty of room for optimization and caching here.
- *
- * @param server: A string with the server's url (e.g. "http://127.0.0.1")
- * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
- */
-export const fetchTiles = (tilesetServer, tilesetIds, done) => workerFetchTiles(
-  tilesetServer, tilesetIds, this.sessionId, (results) => {
-    done(results);
-  }
 );
 
 /**
@@ -535,6 +520,11 @@ export const tileDataToPixData = (
     && tile.tileData.tilePos.length > 0
     && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
   ) {
+    // Copy the data before mutating it in case the same data is used elsewhere.
+    // During throttling/debouncing tile requests we also merge the requests so
+    // the very same tile data might be used by different tracks.
+    tile.tileData.dense = tile.tileData.dense.slice();
+
     // if a center tile is mirrored, we'll just add its transpose
     const tileWidth = Math.floor(Math.sqrt(tile.tileData.dense.length));
     for (let row = 0; row < tileWidth; row++) {
@@ -671,7 +661,6 @@ const api = {
   calculateTileWidth,
   calculateZoomLevel,
   calculateZoomLevelFromResolutions,
-  fetchTiles,
   fetchTilesDebounced,
   json,
   text,

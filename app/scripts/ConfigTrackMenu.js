@@ -7,7 +7,7 @@ import SeriesListSubmenuMixin from './SeriesListSubmenuMixin';
 
 import { getSeriesItems } from './SeriesListItems';
 
-import { getDarkTheme } from './services';
+import { THEME_DARK } from './configs';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
@@ -29,7 +29,7 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
 
   render() {
     let styleNames = 'context-menu';
-    if (getDarkTheme()) styleNames += ' context-menu-dark';
+    if (this.props.theme === THEME_DARK) styleNames += ' context-menu-dark';
 
     return (
       <div

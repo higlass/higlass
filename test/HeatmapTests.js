@@ -12,7 +12,8 @@ import { expect } from 'chai';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC
+  getTrackObjectFromHGC,
+  waitForTilesLoaded
 } from '../app/scripts/utils';
 
 import {
@@ -93,7 +94,7 @@ describe('Heatmaps', () => {
     let div = null;
 
     beforeAll((done) => {
-      [div, hgc] = mountHGComponent(div, hgc, baseConf, done, { bounded: true });
+      [div, hgc] = mountHGComponent(div, hgc, baseConf, done);
     });
 
     it('should adjust options when new heatmap is added', () => {
@@ -111,7 +112,7 @@ describe('Heatmaps', () => {
       expect(options1.mousePositionColor).to.eql(options0.mousePositionColor);
     });
 
-    it('should adjust posiiton of name and colorbar when extent is triangular', () => {
+    it('should adjust position of name and colorbar when extent is triangular', () => {
       const views = JSON.parse(JSON.stringify(hgc.instance().state.views));
       const center = views.v.tracks.center[0];
 
@@ -135,6 +136,21 @@ describe('Heatmaps', () => {
       expect(options0.colorbarPosition).to.eql('bottomLeft');
       expect(options1.labelPosition).to.eql('topRight');
       expect(options1.colorbarPosition).to.eql('topRight');
+    });
+
+    it('tiles on the diagonal should be independent', (done) => {
+      const trackObj0 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap0');
+      const trackObj1 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap1');
+
+      waitForTilesLoaded(hgc.instance(), () => {
+        expect(trackObj0.fetchedTiles['2.1.1.false'].tileData)
+          .to.not.eql(trackObj1.fetchedTiles['2.1.1.true'].tileData);
+
+        expect(trackObj0.fetchedTiles['2.1.1.false'].tileData.dense)
+          .to.not.eql(trackObj1.fetchedTiles['2.1.1.true'].tileData.dense);
+
+        done();
+      });
     });
 
     afterAll(() => {
@@ -244,6 +260,7 @@ const baseConf = {
                 tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
                 type: 'heatmap',
                 uid: 'heatmap0',
+                height: 400,
                 options: {
                   colorRange: ['white', 'black'],
                   showMousePosition: true,
@@ -264,5 +281,6 @@ const heatmapTrack = {
   tilesetUid: 'B2LevKBtRNiCMX372rRPLQ',
   type: 'heatmap',
   uid: 'heatmap1',
+  height: 400,
   options: { colorRange: ['white', 'black'] }
 };
