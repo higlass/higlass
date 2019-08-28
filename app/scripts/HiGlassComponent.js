@@ -242,7 +242,6 @@ class HiGlassComponent extends React.Component {
       rangeSelection1dSize: [0, Infinity],
       rangeSelectionToInt: false,
       modal: null,
-      valueScaleZoom: false,
     };
 
     Object.values(views).map(view => this.adjustLayoutToTrackSizes(view));
@@ -751,24 +750,12 @@ class HiGlassComponent extends React.Component {
         mouseTool: MOUSE_TOOL_SELECT,
       });
     }
-
-    if (event.key === 'Shift') {
-      this.setState({
-        valueScaleZoom: true,
-      });
-    }
   }
 
   keyUpHandler(event) {
     if (this.props.options.rangeSelectionOnAlt && event.key === 'Alt') {
       this.setState({
         mouseTool: MOUSE_TOOL_MOVE,
-      });
-    }
-
-    if (event.key === 'Shift') {
-      this.setState({
-        valueScaleZoom: false,
       });
     }
   }
@@ -4006,7 +3993,6 @@ class HiGlassComponent extends React.Component {
             tracks={view.tracks}
             trackSourceServers={this.state.viewConfig.trackSourceServers}
             uid={view.uid}
-            valueScaleZoom={this.state.valueScaleZoom}
             verticalMargin={this.verticalMargin}
             viewOptions={view.options}
             // dragging={this.state.dragging}

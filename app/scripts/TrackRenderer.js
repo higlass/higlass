@@ -1116,7 +1116,7 @@ class TrackRenderer extends React.Component {
 
     // if somebody is holding down the shift key and is zooming over
     // a 1d track, try to apply value scale zooming
-    if (this.props.valueScaleZoom || this.valueScaleZooming) {
+    if (event.shiftKey || this.valueScaleZooming) {
       if (event.sourceEvent.deltaY) {
         this.valueScaleZoom(trackOrientation);
         return;
@@ -1214,10 +1214,10 @@ class TrackRenderer extends React.Component {
 
     if (event.sourceEvent) {
       this.zoomStartPos = clientPoint(this.props.canvasElement, event.sourceEvent);
-    }
 
-    if (this.props.valueScaleZoom) {
-      this.valueScaleZooming = true;
+      if (event.sourceEvent.shiftKey) {
+        this.valueScaleZooming = true;
+      }
     }
 
     // store the current transform because we'll need to
