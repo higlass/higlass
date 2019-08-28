@@ -1119,13 +1119,14 @@ class TrackRenderer extends React.Component {
     if (this.props.valueScaleZoom || this.valueScaleZooming) {
       if (event.sourceEvent.deltaY) {
         this.valueScaleZoom(trackOrientation);
-      } else if (trackOrientation === '1d-horizontal') {
+        return;
+      }
+
+      if (trackOrientation === '1d-horizontal') {
         this.valueScaleMove(event.sourceEvent.movementY);
       } else if (trackOrientation === '1d-vertical') {
         this.valueScaleMove(event.sourceEvent.movementX);
       }
-
-      return;
     }
 
     // if somebody is dragging along a 1d track, do value scale moving

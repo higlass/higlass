@@ -17,7 +17,7 @@ describe('Zoom tests', () => {
     [div, api] = createElementAndApi(viewConfig);
   });
 
-  const doMouseMove = (startX, startY) => {
+  const doMouseMove = (startX, startY, valueScaleZooming) => {
     // simulate a zoom drag event by doing a
     // mousedown, mousemove and mouseup
     const evtDown = new MouseEvent('mousedown',
@@ -45,7 +45,9 @@ describe('Zoom tests', () => {
       api.getComponent(),
       'aa',
     );
+    trackRenderer.valueScaleZooming = valueScaleZooming;
 
+    spyOn(trackRenderer, 'valueScaleMove');
     const prevTransform = trackRenderer.zoomTransform;
 
     trackRenderer.element.dispatchEvent(evtDown);
@@ -57,11 +59,12 @@ describe('Zoom tests', () => {
     const dx = newTransform.x - prevTransform.x;
     const dy = newTransform.y - prevTransform.y;
 
-    return [dx, dy];
+    return [dx, dy, trackRenderer];
   };
 
   it('Dispatches a mousewheel event on the horizontal track', (done) => {
-    const [dx, dy] = doMouseMove(345, 221);
+    // eslint-disable-next-line no-unused-vars
+    const [dx, dy, _] = doMouseMove(345, 221);
 
     expect(dy).toEqual(0);
     expect(dx).toEqual(2);
@@ -69,8 +72,19 @@ describe('Zoom tests', () => {
     done();
   });
 
-  it('Dispatches a mousewheel event on the horizontal track', (done) => {
-    const [dx, dy] = doMouseMove(348, 315);
+  it('Dispatches a mousewheel event on the horizontal track while vauleScaleZooming', (done) => {
+    const [dx, dy, trackRenderer] = doMouseMove(345, 221, true);
+
+    expect(dy).toEqual(0);
+    expect(dx).toEqual(2);
+
+    expect(trackRenderer.valueScaleMove).toHaveBeenCalled();
+    done();
+  });
+
+  it('Dispatches a mousewheel event on the center', (done) => {
+    // eslint-disable-next-line no-unused-vars
+    const [dx, dy, _] = doMouseMove(348, 315);
 
     expect(dy).toEqual(2);
     expect(dx).toEqual(2);
@@ -78,8 +92,9 @@ describe('Zoom tests', () => {
     done();
   });
 
-  it('Dispatches a mousewheel event on the horizontal track', (done) => {
-    const [dx, dy] = doMouseMove(56, 315);
+  it('Dispatches a mousewheel event on the left track', (done) => {
+    // eslint-disable-next-line no-unused-vars
+    const [dx, dy, _] = doMouseMove(56, 315);
 
     expect(dy).toEqual(2);
     expect(dx).toEqual(0);
