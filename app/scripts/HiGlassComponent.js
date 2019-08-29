@@ -206,12 +206,10 @@ class HiGlassComponent extends React.Component {
     }
 
     if (this.props.options.pluginTracks) {
-      if (!window.higlassTracksByType) {
-        window.higlassTracksByType = {};
-      }
-      for (const trackType in this.props.options.pluginTracks) {
-        window.higlassTracksByType[trackType] = this.props.options.pluginTracks[trackType];
-      }
+      window.higlassTracksByType = Object.assign(
+        window.higlassTracksByType || {},
+        this.props.options.pluginTracks
+      );
     }
 
     const pluginTracks = {};
