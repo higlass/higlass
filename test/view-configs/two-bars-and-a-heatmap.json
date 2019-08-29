@@ -85,39 +85,6 @@
                 },
                 "width": 470,
                 "height": 124,
-                "transforms": [
-                  {
-                    "name": "VC_SQRT",
-                    "value": "VC_SQRT"
-                  },
-                  {
-                    "name": "KR",
-                    "value": "KR"
-                  },
-                  {
-                    "name": "VC",
-                    "value": "VC"
-                  },
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
-                "resolutions": [
-                  1000,
-                  2000,
-                  5000,
-                  10000,
-                  25000,
-                  50000,
-                  100000,
-                  250000,
-                  500000,
-                  1000000,
-                  2500000,
-                  5000000,
-                  10000000
-                ]
               }
             ],
             "options": {},
