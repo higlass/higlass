@@ -1,4 +1,5 @@
 import { scaleLinear } from 'd3-scale';
+import { fake as fakePubSub } from './hocs/with-pub-sub';
 
 // Services
 import { isWithin } from './utils';
@@ -8,10 +9,7 @@ class Track {
     if (pubSub) {
       this.pubSub = pubSub;
     } else {
-      this.pubSub = {
-        subscribe: () => {},
-        publish: () => {},
-      };
+      this.pubSub = fakePubSub;
     }
 
     this.id = id;
