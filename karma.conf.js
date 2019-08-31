@@ -57,6 +57,13 @@ module.exports = (config) => {
       'test/TiledPixiTrackTests.js',
       'test/TrackLabelsTest.jsx',
       'test/UtilsTests.js',
+      'test/ndarray-assign.spec.js',
+      'test/ndarray-flatten.spec.js',
+      'test/ndarray-to-list.spec.js',
+      'test/search_field_test.js',
+      'test/tile-proxy.js',
+      'test/BedLikeTests.js',
+      'test/LabelTests.js',
     ],
 
     preprocessors: {
