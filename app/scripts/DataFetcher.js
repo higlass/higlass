@@ -14,6 +14,11 @@ export default class DataFetcher {
   constructor(dataConfig, pubSub) {
     this.tilesetInfoLoading = true;
 
+    if (!dataConfig) {
+      console.error('No dataconfig provided');
+      return;
+    }
+
     // copy the dataConfig so that it doesn't dirty so that
     // it doesn't get modified when we make objects of its
     // children below

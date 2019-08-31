@@ -305,6 +305,14 @@
         "properties": {
           "server": { "type": "string" },
           "tilesetUid": { "type": "string" },
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": { "type": "string" },
+              "url": { "type": "string"}
+            }
+          },
           "uid": { "type": "string" },
           "type": {
             "enum": [

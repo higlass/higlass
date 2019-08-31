@@ -60,6 +60,7 @@ import SVGTrack from './SVGTrack';
 
 // Higher-order components
 import withPubSub from './hocs/with-pub-sub';
+import getDataFetcher from './data-fetchers/get-data-fetcher';
 import withTheme from './hocs/with-theme';
 
 // Utils
@@ -1421,12 +1422,15 @@ class TrackRenderer extends React.Component {
       }
     }
 
+    const dataFetcher = getDataFetcher(dataConfig, this.props.pubSub);
+
     // To simplify the context creation via ES6 object shortcuts.
     const context = {
       id: track.uid,
       pubSub: this.props.pubSub,
       scene: this.pStage,
       dataConfig,
+      dataFetcher,
       handleTilesetInfoReceived,
       animate: () => {
         this.currentProps.onNewTilesLoaded(track.uid);

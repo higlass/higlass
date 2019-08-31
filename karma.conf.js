@@ -26,6 +26,7 @@ module.exports = (config) => {
       },
       'test/**/*.+(js|jsx)',
       // 'test/ZoomTests.js',
+      // 'test/GenbankFetcherTests.js',
       // 'test/SchemaTests.js',
       // 'test/2DRectangleDomainsTests.js',
       // 'test/AddAndRemoveViewconfTests.js',
