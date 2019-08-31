@@ -1111,32 +1111,30 @@ class TrackRenderer extends React.Component {
       }
     }
 
-    if (!trackOrientation || !event.sourceEvent) {
-      return;
-    }
+    if (trackOrientation && event.sourceEvent) {
+      // if somebody is holding down the shift key and is zooming over
+      // a 1d track, try to apply value scale zooming
+      if (event.shiftKey || this.valueScaleZooming) {
+        if (event.sourceEvent.deltaY) {
+          this.valueScaleZoom(trackOrientation);
+          return;
+        }
 
-    // if somebody is holding down the shift key and is zooming over
-    // a 1d track, try to apply value scale zooming
-    if (event.shiftKey || this.valueScaleZooming) {
-      if (event.sourceEvent.deltaY) {
-        this.valueScaleZoom(trackOrientation);
-        return;
+        if (trackOrientation === '1d-horizontal') {
+          this.valueScaleMove(event.sourceEvent.movementY);
+        } else if (trackOrientation === '1d-vertical') {
+          this.valueScaleMove(event.sourceEvent.movementX);
+        }
       }
 
-      if (trackOrientation === '1d-horizontal') {
+      // if somebody is dragging along a 1d track, do value scale moving
+      if (trackOrientation === '1d-horizontal'
+        && event.sourceEvent.movementY) {
         this.valueScaleMove(event.sourceEvent.movementY);
-      } else if (trackOrientation === '1d-vertical') {
+      } else if (trackOrientation === '1d-vertical'
+        && event.sourceEvent.movementX) {
         this.valueScaleMove(event.sourceEvent.movementX);
       }
-    }
-
-    // if somebody is dragging along a 1d track, do value scale moving
-    if (trackOrientation === '1d-horizontal'
-      && event.sourceEvent.movementY) {
-      this.valueScaleMove(event.sourceEvent.movementY);
-    } else if (trackOrientation === '1d-vertical'
-      && event.sourceEvent.movementX) {
-      this.valueScaleMove(event.sourceEvent.movementX);
     }
 
     this.zoomTransform = !this.currentProps.zoomable

@@ -32,6 +32,7 @@ module.exports = (config) => {
       // 'test/AddAndRemoveViewconfTests.js',
       // 'test/AddTrackTests.js',
       // 'test/APITests.js',
+      // 'test/GenomePositionSearchBoxTest.js',
       // 'test/AxisTests.js',
       // 'test/AxisTests.js', // Passes when run in isolation, but fails as part of suite.
       // 'test/BarTrackTests.js',
