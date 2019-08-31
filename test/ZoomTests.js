@@ -5,6 +5,8 @@ import {
   getTrackRenderer,
 } from '../app/scripts/utils';
 
+import emptyBody from './utils/empty-body';
+
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 import viewConfig from './view-configs/two-bars-and-a-heatmap';
@@ -14,6 +16,7 @@ describe('Zoom tests', () => {
   let div;
 
   beforeEach(() => {
+    emptyBody();
     [div, api] = createElementAndApi(viewConfig);
   });
 
