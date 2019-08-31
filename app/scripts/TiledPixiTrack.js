@@ -80,8 +80,6 @@ class TiledPixiTrack extends PixiTrack {
       onValueScaleChanged
     } = context;
 
-    this.pubSub = pubSub;
-
     // keep track of which render we're on so that we save ourselves
     // rerendering all rendering in the same version will have the same
     // scaling so tiles rendered in the same version will have the same
@@ -115,6 +113,7 @@ class TiledPixiTrack extends PixiTrack {
 
     this.listeners = {};
 
+    this.pubSub = pubSub;
     this.animate = animate;
     this.onValueScaleChanged = onValueScaleChanged;
 
@@ -122,10 +121,28 @@ class TiledPixiTrack extends PixiTrack {
     // if the tileset info is not found
     this.prevValueScale = null;
 
-    this.dataFetcher = new DataFetcher(dataConfig, this.pubSub);
+    if (!context.dataFetcher) {
+      this.dataFetcher = new DataFetcher(dataConfig, this.pubSub);
+    } else {
+      this.dataFetcher = context.dataFetcher;
+    }
 
     // To indicate that this track is requiring a tileset info
     this.tilesetInfo = null;
+    this.uuid = slugid.nice();
+
+    // this needs to be above the tilesetInfo() call because if that
+    // executes first, the call to draw() will complain that this text
+    // doesn't exist
+    this.trackNotFoundText = new PIXI.Text(
+      '', { fontSize: '12px', fontFamily: 'Arial', fill: 'black' }
+    );
+
+    this.pLabel.addChild(this.trackNotFoundText);
+
+    this.refreshTilesDebounced = throttleAndDebounce(
+      this.refreshTiles.bind(this), ZOOM_DEBOUNCE, ZOOM_DEBOUNCE
+    );
 
     this.dataFetcher.tilesetInfo((tilesetInfo) => {
       this.tilesetInfo = tilesetInfo;
@@ -177,18 +194,6 @@ class TiledPixiTrack extends PixiTrack {
       this.drawLabel(); // draw the label so that the current resolution is displayed
       this.animate();
     });
-
-    this.uuid = slugid.nice();
-
-    this.refreshTilesDebounced = throttleAndDebounce(
-      this.refreshTiles.bind(this), ZOOM_DEBOUNCE, ZOOM_DEBOUNCE
-    );
-
-    this.trackNotFoundText = new PIXI.Text(
-      '', { fontSize: '12px', fontFamily: 'Arial', fill: 'black' }
-    );
-
-    this.pLabel.addChild(this.trackNotFoundText);
   }
 
   setFixedValueScaleMin(value) {
@@ -662,7 +667,9 @@ class TiledPixiTrack extends PixiTrack {
     // 1. Check if all visible tiles are loaded
     // 2. If `true` then send out event
     if (this.areAllVisibleTilesLoaded()) {
-      this.pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
+      if (this.pubSub) {
+        this.pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
+      }
     }
   }
 
@@ -689,15 +696,18 @@ class TiledPixiTrack extends PixiTrack {
       this.trackNotFoundText.visible = false;
     }
 
-    this.pubSub.publish('TiledPixiTrack.tilesDrawnStart', { uuid: this.uuid });
-
+    if (this.pubSub) {
+      this.pubSub.publish('TiledPixiTrack.tilesDrawnStart', { uuid: this.uuid });
+    }
     super.draw();
 
     Object.keys(this.fetchedTiles).forEach(
       tilesetUid => this.drawTile(this.fetchedTiles[tilesetUid])
     );
 
-    this.pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
+    if (this.pubSub) {
+      this.pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
+    }
   }
 
   /**

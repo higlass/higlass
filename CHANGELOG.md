@@ -4,6 +4,8 @@
 
 _[Detailed changes since v1.6.7](https://github.com/higlass/higlass/compare/v1.6.7...develop)_
 
+- Implemented a genbank data fetcher for gene annotation tracks
+
 ## v1.6.7
 
 - Fix #747: the tooltip value wasn't shown because of an issue related to minimizing the code
