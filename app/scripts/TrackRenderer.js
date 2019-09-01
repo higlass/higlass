@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
 import { zoom, zoomIdentity } from 'd3-zoom';
-import { select, event } from 'd3-selection';
+import { select, event, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import slugid from 'slugid';
 
@@ -278,7 +278,6 @@ class TrackRenderer extends React.Component {
      * The size of some tracks probably changed, so let's just
      * redraw them.
      */
-
     // don't initiate this component if it has nothing to draw on
     if (!nextProps.svgElement || !nextProps.canvasElement) {
       return;
@@ -679,6 +678,29 @@ class TrackRenderer extends React.Component {
     this.applyZoomTransform(notify);
   }
 
+  /**
+   * Get a track's viewconf definition by its object
+   */
+  getTrackDef(trackObjectIn) {
+    const trackDefItems = dictItems(this.trackDefObjects);
+
+    for (const [, { trackDef, trackObject }] of trackDefItems) {
+      if (trackObject === trackObjectIn) {
+        return trackDef.track;
+      }
+      if (trackDef.track.contents) {
+        // this is a combined track
+        for (const subTrackDef of trackDef.track.contents) {
+          if (trackObject.createdTracks[subTrackDef.uid] === trackObjectIn) {
+            return subTrackDef;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
   /*
    * Fetch the trackObject for a track with a given ID
    */
@@ -1034,6 +1056,37 @@ class TrackRenderer extends React.Component {
     return last;
   }
 
+  valueScaleMove(movement) {
+    // mouse wheel from zoom event
+    // const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
+    for (const track of this.getTracksAtPosition(...this.zoomStartPos)) {
+      track.movedY(movement);
+    }
+
+    this.zoomTransform = this.zoomStartTransform;
+  }
+
+  valueScaleZoom(orientation) {
+    // mouse move probably from a drag event
+    const mdy = event.sourceEvent.deltaY;
+    const mdm = event.sourceEvent.deltaMode;
+
+    const myWheelDelta = (dy, dm) => dy * (dm ? 120 : 1) / 500;
+    const mwd = myWheelDelta(mdy, mdm);
+
+    const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
+
+    for (const track of this.getTracksAtPosition(...cp)) {
+      const yPos = orientation === '1d-horizontal'
+        ? cp[1] - track.position[1] : cp[0] - track.position[0];
+      track.zoomedY(yPos, 2 ** mwd);
+    }
+
+
+    // reset the zoom transform
+    this.zoomTransform = this.zoomStartTransform;
+  }
+
   /**
    * Respond to a zoom event.
    *
@@ -1041,12 +1094,77 @@ class TrackRenderer extends React.Component {
    * to all the tracks.
    */
   zoomed() {
+    // the orientation of the track where we started zooming
+    // if it's a 1d-horizontal, then mousemove events shouldn't
+    // move the center track vertically
+    let trackOrientation = null;
+
+    // see what orientation of track we're over so that we decide
+    // whether to move the value scale or the position scale
+    if (this.zoomStartPos) {
+      const tracksAtZoomStart = this.getTracksAtPosition(...this.zoomStartPos);
+      if (tracksAtZoomStart.length) {
+        const trackAtZoomStart = tracksAtZoomStart[0];
+        const trackDef = this.getTrackDef(trackAtZoomStart);
+
+        trackOrientation = TRACKS_INFO_BY_TYPE[trackDef.type].orientation;
+      }
+    }
+
+    if (trackOrientation && event.sourceEvent) {
+      // if somebody is holding down the shift key and is zooming over
+      // a 1d track, try to apply value scale zooming
+      if (event.shiftKey || this.valueScaleZooming) {
+        if (event.sourceEvent.deltaY) {
+          this.valueScaleZoom(trackOrientation);
+          return;
+        }
+
+        if (trackOrientation === '1d-horizontal') {
+          this.valueScaleMove(event.sourceEvent.movementY);
+        } else if (trackOrientation === '1d-vertical') {
+          this.valueScaleMove(event.sourceEvent.movementX);
+        }
+      }
+
+      // if somebody is dragging along a 1d track, do value scale moving
+      if (trackOrientation === '1d-horizontal'
+        && event.sourceEvent.movementY) {
+        this.valueScaleMove(event.sourceEvent.movementY);
+      } else if (trackOrientation === '1d-vertical'
+        && event.sourceEvent.movementX) {
+        this.valueScaleMove(event.sourceEvent.movementX);
+      }
+    }
+
     this.zoomTransform = !this.currentProps.zoomable
       ? zoomIdentity
       : event.transform;
 
+    const zooming = this.prevZoomTransform.k !== this.zoomTransform.k;
+
+    // if there is dragging along a 1d track, only allow panning
+    // along the axis of the track
+    if (!zooming) {
+      if (trackOrientation === '1d-horizontal') {
+        // horizontal tracks shouldn't allow movement in the y direction
+        // don't move along y axis
+        this.zoomTransform = zoomIdentity.translate(
+          this.zoomTransform.x, this.prevZoomTransform.y
+        ).scale(this.zoomTransform.k);
+      } else if (trackOrientation === '1d-vertical') {
+        // vertical tracks shouldn't allow movement in the x axis
+        this.zoomTransform = zoomIdentity.translate(
+          this.prevZoomTransform.x, this.zoomTransform.y
+        ).scale(this.zoomTransform.k);
+      }
+
+      this.element.__zoom = this.zoomTransform;
+    }
+
     this.applyZoomTransform(true);
 
+    this.prevZoomTransform = this.zoomTransform;
     this.props.pubSub.publish('app.zoom', event);
     if (event.sourceEvent) {
       event.sourceEvent.stopPropagation();
@@ -1054,15 +1172,68 @@ class TrackRenderer extends React.Component {
     }
   }
 
+  /**
+   * Return a list of tracks under this position.
+   *
+   * The position should be relative to this.props.canvasElement.
+   *
+   * @param  {Number} x The query x position
+   * @param  {Number} y The query y position
+   * @return {Array}   An array of tracks at this position
+   */
+  getTracksAtPosition(x, y) {
+    const foundTracks = [];
+
+    let tracksToVisit = [];
+
+    for (const uid in this.trackDefObjects) {
+      const track = this.trackDefObjects[uid].trackObject;
+
+      if (track.childTracks) {
+        tracksToVisit = tracksToVisit.concat(track.childTracks);
+      } else {
+        tracksToVisit.push(track);
+      }
+    }
+
+    for (const track of tracksToVisit) {
+      const withinX = track.position[0] <= x && x <= track.position[0] + track.dimensions[0];
+      const withinY = track.position[1] <= y && y <= track.position[1] + track.dimensions[1];
+
+      if (withinX && withinY) {
+        foundTracks.push(track);
+      }
+    }
+
+    return foundTracks;
+  }
+
   zoomStarted() {
     this.zooming = true;
 
+    if (event.sourceEvent) {
+      this.zoomStartPos = clientPoint(this.props.canvasElement, event.sourceEvent);
+
+      if (event.sourceEvent.shiftKey) {
+        this.valueScaleZooming = true;
+      }
+    }
+
+    // store the current transform because we'll need to
+    // revert it if this turns out to be a value scale zoom
+    this.zoomStartTransform = this.zoomTransform;
     this.props.pubSub.publish('app.zoomStart');
   }
 
   zoomEnded() {
     this.zooming = false;
 
+    this.zoomStartPos = null;
+
+    if (this.valueScaleZooming) {
+      this.valueScaleZooming = false;
+      this.element.__zoom = this.zoomStartTransform;
+    }
     this.props.pubSub.publish('app.zoomEnd');
   }
 
@@ -1777,6 +1948,7 @@ TrackRenderer.propTypes = {
   width: PropTypes.number,
   xDomainLimits: PropTypes.array,
   yDomainLimits: PropTypes.array,
+  valueScaleZoom: PropTypes.bool,
   zoomDomain: PropTypes.array,
 };
 

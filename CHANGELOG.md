@@ -1,6 +1,8 @@
 ## Next release
 
+- Add infrastructure for value scale zooming
 - Fixed the colors when dragging a track over a higlass display
+- Added support for value scale zooming
 
 _[Detailed changes since v1.6.7](https://github.com/higlass/higlass/compare/v1.6.7...develop)_
 
