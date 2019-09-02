@@ -21,7 +21,7 @@ const range = (start, end) => {
 /**
  * Calculate the zoom level from a list of available resolutions
  *
- * @param {list} resolutions A list of data resolutions (e.g. [100,1000])
+ * @param {array} resolutions A list of data resolutions (e.g. [100,1000])
  * @param {d3.scale} scale The current scale describing the domain and range
  *                         of the view.
  */
