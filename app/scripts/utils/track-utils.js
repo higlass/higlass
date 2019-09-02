@@ -91,8 +91,8 @@ const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
  *                              min_pos and max_pos arrays, each of which has one
  *                              value which stores the minimum and maximum data
  *                              positions respectively.
- * @param  {[type]} xScale      The current scale for the track.
- * @param  {[type]} maxZoom     The maximum zoom level allowed by the track.
+ * @param  {function} xScale    The current d3 scale for the track.
+ * @param  {int} maxZoom        The maximum zoom level allowed by the track.
  * @return {int}                The current zoom level of the track.
  */
 const calculate1DZoomLevel = (tilesetInfo, xScale, maxZoom) => {
@@ -103,8 +103,8 @@ const calculate1DZoomLevel = (tilesetInfo, xScale, maxZoom) => {
   // 1024 points per tile vs 256 for 2D tiles
   if (tilesetInfo.resolutions) {
     const zoomIndexX = calculateZoomLevelFromResolutions(
-      tilesetInfo.resolutions, this._xScale,
-      tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0] - 2
+      tilesetInfo.resolutions, xScale,
+      tilesetInfo.min_pos[0], tilesetInfo.max_pos[0] - 2
     );
 
     return zoomIndexX;
@@ -117,13 +117,8 @@ const calculate1DZoomLevel = (tilesetInfo, xScale, maxZoom) => {
     tilesetInfo.max_pos[0],
     tilesetInfo.bins_per_dimension || tilesetInfo.tile_size);
 
-  let zoomLevel = Math.min(xZoomLevel, maxZoom);
-  zoomLevel = Math.max(zoomLevel, 0);
-  // console.log('xScale', this._xScale.domain(), this.maxZoom);
-  // console.log('zoomLevel:', zoomLevel, this.tilesetInfo.min_pos[0],
-  //   this.tilesetInfo.max_pos[0]);
-
-  return zoomLevel;
+  const zoomLevel = Math.min(xZoomLevel, maxZoom);
+  return Math.max(zoomLevel, 0);
 };
 
 
