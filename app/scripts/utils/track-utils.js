@@ -51,7 +51,7 @@ const calculateZoomLevelFromResolutions = (resolutions, scale) => {
  * @param {d3.scale} scale The current scale used for the view.
  * @param {Number} minX The minimum possible X value
  * @param {Number} maxX The maximum possible x value
- * @param {int} binsPerTile The width of each tile
+ * @param {number} binsPerTile The width of each tile in whatever unit the x-axis is (bp for genomic data).
  */
 const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   const rangeWidth = scale.range()[1] - scale.range()[0];
@@ -87,16 +87,16 @@ const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
 /**
  * Calculate the current zoom level for a 1D track
  *
- * @param  {Object} tilesetInfo The tileset info for the track. Should contain
+ * @param  {object} tilesetInfo The tileset info for the track. Should contain
  *                              min_pos and max_pos arrays, each of which has one
  *                              value which stores the minimum and maximum data
  *                              positions respectively.
- * @param  {[type]} xScale      The current scale for the track.
- * @param  {[type]} maxZoom     The maximum zoom level allowed by the track.
- * @return {int}                The current zoom level of the track.
+ * @param  {function} xScale      The current D3 scale function for the track.
+ * @param  {number} maxZoom     The maximum zoom level allowed by the track.
+ * @return {number}                The current zoom level of the track.
  */
 const calculate1DZoomLevel = (tilesetInfo, xScale, maxZoom) => {
-  if (maxZoom === undefined) {
+  if (typeof maxZoom === 'undefined') {
     maxZoom = Number.MAX_SAFE_INTEGER;
   }
   // offset by 2 because 1D tiles are more dense than 2D tiles
@@ -182,7 +182,9 @@ const calculateTiles = (
  * @param minX: The minimum x position of the tileset
  * @param maxX: The maximum x position of the tileset
  */
-const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixelsPerTile) => {
+const calculateTilesFromResolution = (
+  resolution, scale, minX, maxX = Number.MAX_VALUE, pixelsPerTile = 256
+) => {
   const epsilon = 0.0000001;
   const PIXELS_PER_TILE = pixelsPerTile || 256;
   const tileWidth = resolution * PIXELS_PER_TILE;
