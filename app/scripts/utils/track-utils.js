@@ -7,7 +7,7 @@ import AxisPixi from '../AxisPixi';
  *
  * @param  {int} start Lower limit (included in result)
  * @param  {int} end   Upper limit (not included in result)
- * @return {int}       A list of consecutive integers from start to end
+ * @return {array}       A list of consecutive integers from start to end
  */
 const range = (start, end) => {
   const values = [];
