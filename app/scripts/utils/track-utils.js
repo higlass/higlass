@@ -1,6 +1,14 @@
 import { zoomIdentity } from 'd3-zoom';
 import AxisPixi from '../AxisPixi';
 
+/**
+ * The d3.range and python range functinons. Returns
+ * an array of consecutive integers between start and end.
+ *
+ * @param  {int} start Lower limit (included in result)
+ * @param  {int} end   Upper limit (not included in result)
+ * @return {int}       A list of consecutive integers from start to end
+ */
 const range = (start, end) => {
   const values = [];
   for (let i = start; i < end; i++) {
@@ -12,6 +20,10 @@ const range = (start, end) => {
 
 /**
  * Calculate the zoom level from a list of available resolutions
+ *
+ * @param {list} resolutions A list of data resolutions (e.g. [100,1000])
+ * @param {d3.scale} scale The current scale describing the domain and range
+ *                         of the view.
  */
 const calculateZoomLevelFromResolutions = (resolutions, scale) => {
   const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
@@ -34,7 +46,12 @@ const calculateZoomLevelFromResolutions = (resolutions, scale) => {
 };
 
 /**
- * Calculate the current zoom level.
+ * Calculate the current zoom level from powers of two resolutions.
+ *
+ * @param {d3.scale} scale The current scale used for the view.
+ * @param {Number} minX The minimum possible X value
+ * @param {Number} maxX The maximum possible x value
+ * @param {int} binsPerTile The width of each tile
  */
 const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   const rangeWidth = scale.range()[1] - scale.range()[0];
@@ -44,13 +61,14 @@ const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
     1,
   );
 
-  const viewResolution = 384;
-  // const viewResolution = 2048;
-
   // fun fact: the number 384 is halfway between 256 and 512
+  // this constant determines the maximum number of pixels that
+  // a tile can span
+  const VIEW_RESOLUTION = 384;
+
   const addedZoom = Math.max(
     0,
-    Math.ceil(Math.log(rangeWidth / viewResolution) / Math.LN2),
+    Math.ceil(Math.log(rangeWidth / VIEW_RESOLUTION) / Math.LN2),
   );
   let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + addedZoom;
 
@@ -66,6 +84,17 @@ const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   return zoomLevel;
 };
 
+/**
+ * Calculate the current zoom level for a 1D track
+ *
+ * @param  {Object} tilesetInfo The tileset info for the track. Should contain
+ *                              min_pos and max_pos arrays, each of which has one
+ *                              value which stores the minimum and maximum data
+ *                              positions respectively.
+ * @param  {[type]} xScale      The current scale for the track.
+ * @param  {[type]} maxZoom     The maximum zoom level allowed by the track.
+ * @return {int}                The current zoom level of the track.
+ */
 const calculate1DZoomLevel = (tilesetInfo, xScale, maxZoom) => {
   if (maxZoom === undefined) {
     maxZoom = Number.MAX_SAFE_INTEGER;
@@ -184,7 +213,15 @@ const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixelsPerTi
   return tileRange;
 };
 
-
+/**
+ * Calculate which tiles should be visible given a track's
+ * scale.
+ *
+ * @param  {Object} tilesetInfo The track's tileset info, containing either the `resolutions`
+ *                              list or min_pos and max_pos arrays
+ * @param  {d3.scale} scale     The track's scale.
+ * @return {Array}             A list of visible tiles (e.g. [[1,0],[1,1]])
+ */
 const calculate1DVisibleTiles = (tilesetInfo, scale) => {
   // if we don't know anything about this dataset, no point
   // in trying to get tiles
@@ -224,6 +261,13 @@ const calculate1DVisibleTiles = (tilesetInfo, scale) => {
   return tiles;
 };
 
+/**
+ * Draw an axis on a track. Where on the track the axis will be drawn
+ * is taken from the track's options.
+ *
+ * @param  {PixiTrack} track   The track to decorate with an axis.
+ * @param  {d3.scale} valueScale The scale that the axis should draw.
+ */
 const drawAxis = (track, valueScale) => {
   if (!track.axis) {
     track.axis = new AxisPixi(track);
@@ -282,6 +326,48 @@ const drawAxis = (track, valueScale) => {
   }
 };
 
+/**
+ * A track is being dragged along it's value scale axis.
+ *
+ * @param {PixiTrack} Track The track being dragged.
+ * @param  {Number} dY The change in y position.
+ */
+const movedY = (track, dY) => {
+  // see the reasoning behind why the code in
+  // zoomedY is commented out.
+
+  const vst = track.valueScaleTransform;
+  const { y, k } = vst;
+  const height = track.dimensions[1];
+
+  // clamp at the bottom and top
+  if (
+    y + dY / k > -(k - 1) * height
+    && y + dY / k < 0
+  ) {
+    track.valueScaleTransform = vst.translate(
+      0, dY / k
+    );
+  }
+
+  Object.values(track.fetchedTiles).forEach((tile) => {
+    tile.graphics.position.y = track.valueScaleTransform.y;
+  });
+
+  track.animate();
+};
+
+/**
+ * A track has received an event telling it to zoom along its
+ * vertical axis. Update the transform describing the position
+ * of its graphics.
+ *
+ * @param  {Number} yPos        The position the zoom event took place
+ * @param  {Number} kMultiplier How much the zoom level should be adjusted by
+ * @param  {d3.transform} transform   The track's current graphics transform.
+ * @param  {Number} height      The height of the track
+ * @return {d3.transform}            The track's new graphics transform.
+ */
 const zoomedY = (yPos, kMultiplier, transform, height) => {
   const k0 = transform.k;
   const t0 = transform.y;
@@ -312,6 +398,7 @@ const trackUtils = {
   calculate1DVisibleTiles,
   drawAxis,
   zoomedY,
+  movedY,
 };
 
 export default trackUtils;
