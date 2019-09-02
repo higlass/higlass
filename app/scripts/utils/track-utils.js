@@ -48,9 +48,9 @@ const calculateZoomLevelFromResolutions = (resolutions, scale) => {
 /**
  * Calculate the current zoom level from powers of two resolutions.
  *
- * @param {d3.scale} scale The current scale used for the view.
- * @param {Number} minX The minimum possible X value
- * @param {Number} maxX The maximum possible x value
+ * @param {function} scale The current D3 scale function used for the view.
+ * @param {number} minX The minimum possible X value
+ * @param {number} maxX The maximum possible x value
  * @param {number} binsPerTile The width of each tile in whatever
  *                             unit the x-axis is (bp for genomic data).
  */
@@ -200,10 +200,10 @@ const calculateTilesFromResolution = (
  * Calculate which tiles should be visible given a track's
  * scale.
  *
- * @param  {Object} tilesetInfo The track's tileset info, containing either the `resolutions`
+ * @param  {object} tilesetInfo The track's tileset info, containing either the `resolutions`
  *                              list or min_pos and max_pos arrays
- * @param  {d3.scale} scale     The track's scale.
- * @return {Array}             A list of visible tiles (e.g. [[1,0],[1,1]])
+ * @param  {function} scale     The track's D3 scale function.
+ * @return {array}             A list of visible tiles (e.g. [[1,0],[1,1]])
  */
 const calculate1DVisibleTiles = (tilesetInfo, scale) => {
   // if we don't know anything about this dataset, no point
@@ -312,8 +312,8 @@ const drawAxis = (track, valueScale) => {
 /**
  * A track is being dragged along it's value scale axis.
  *
- * @param {PixiTrack} Track The track being dragged.
- * @param  {Number} dY The change in y position.
+ * @param {object} Track The track instance being dragged.
+ * @param  {number} dY The change in y position.
  */
 const movedY = (track, dY) => {
   // see the reasoning behind why the code in
