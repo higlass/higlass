@@ -150,15 +150,7 @@ const calculateTiles = (
   // be calculated according to cumulative width
 
   const tileWidth = maxDim / (2 ** zoomLevelFinal);
-  // console.log('maxDim:', maxDim);
-
   const epsilon = 0.0000001;
-
-  /*
-  console.log('minX:', minX, 'zoomLevel:', zoomLevel);
-  console.log('domain:', scale.domain(), scale.domain()[0] - minX,
-  ((scale.domain()[0] - minX) / tileWidth))
-  */
 
   return range(
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
@@ -182,14 +174,8 @@ const calculateTilesFromResolution = (
   resolution, scale, minX, maxX = Number.MAX_VALUE, pixelsPerTile = 256
 ) => {
   const epsilon = 0.0000001;
-  const PIXELS_PER_TILE = pixelsPerTile || 256;
-  const tileWidth = resolution * PIXELS_PER_TILE;
+  const tileWidth = resolution * pixelsPerTile;
   const MAX_TILES = 20;
-  // console.log('PIXELS_PER_TILE:', PIXELS_PER_TILE);
-
-  if (!maxX) {
-    maxX = Number.MAX_VALUE; // eslint-disable-line no-param-reassign
-  }
 
   const lowerBound = Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth));
   const upperBound = Math.ceil(Math.min(
@@ -206,7 +192,6 @@ const calculateTilesFromResolution = (
     console.warn(`Too many visible tiles: ${tileRange.length} truncating to ${MAX_TILES}`);
     tileRange = tileRange.slice(0, MAX_TILES);
   }
-  // console.log('tileRange:', tileRange);
 
   return tileRange;
 };
