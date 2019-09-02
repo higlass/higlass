@@ -362,7 +362,7 @@ const movedY = (track, dY) => {
  * vertical axis. Update the transform describing the position
  * of its graphics.
  *
- * @param  {Number} yPos        The position the zoom event took place
+ * @param  {number} yPos        The position the zoom event took place
  * @param  {Number} kMultiplier How much the zoom level should be adjusted by
  * @param  {d3.transform} transform   The track's current graphics transform.
  * @param  {Number} height      The height of the track
