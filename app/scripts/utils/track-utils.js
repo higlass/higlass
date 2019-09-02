@@ -5,7 +5,7 @@ import AxisPixi from '../AxisPixi';
  * The d3.range and python range functinons. Returns
  * an array of consecutive integers between start and end.
  *
- * @param  {int} start Lower limit (included in result)
+ * @param  {number} start Lower limit (included in result)
  * @param  {int} end   Upper limit (not included in result)
  * @return {array}       A list of consecutive integers from start to end
  */
