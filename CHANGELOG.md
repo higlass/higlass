@@ -1,4 +1,4 @@
-## Next release
+## v1.6.8
 
 - Add infrastructure for value scale zooming
 - Fixed the colors when dragging a track over a higlass display
