@@ -1,4 +1,4 @@
-## Next release
+## v1.6.8
 
 - Add infrastructure for value scale zooming
 - Fixed the colors when dragging a track over a higlass display
@@ -18,7 +18,7 @@ _[Detailed changes since v1.6.7](https://github.com/higlass/higlass/compare/v1.6
 
 _[Detailed changes since v1.6.6](https://github.com/higlass/higlass/compare/v1.6.6...v1.6.7)_
 
-# v1.6.6
+## v1.6.6
 
 - Fix #732: Remove the hold ALT feature as it's confusion and leads to a weird bug.
 - Fix leaking dark mode setting
