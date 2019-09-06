@@ -56,8 +56,12 @@ function randomDragStart(ev) {
         "datatype": "geo-json",
     }
 
-    window.hgApi.showAvailableTrackPositions(track);
-}
+    window.hgApi.showTrackChooser(
+      (viewUid, trackUid) => {
+        console.log('viewUid:', viewUid, trackUid);
+      }
+    );
+  }
 
 function lineDragStart(ev) {
 
@@ -69,7 +73,11 @@ function lineDragStart(ev) {
         "defaultTracks": ['horizontal-bar']
     }
 
-    window.hgApi.showAvailableTrackPositions(lineTrack);
+    window.hgApi.showTrackChooser(
+      (viewUid, trackUid) => {
+        console.log('viewUid:', viewUid, trackUid);
+      }
+    );
 }
 
 function multivecDragStart(ev) {

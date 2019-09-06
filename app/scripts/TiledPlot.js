@@ -2138,6 +2138,7 @@ class TiledPlot extends React.Component {
 
     let overlays = null;
     if (this.props.chooseTrackHandler) {
+      console.log('adding choose track overlay');
       // We want to choose a track and call a function. To choose the track, we display
       // an overlay on top of each track
       overlays = positionedTracks
@@ -2164,6 +2165,8 @@ class TiledPlot extends React.Component {
               this.setState({ mouseOverOverlayUid: null });
               this.props.chooseTrackHandler(pTrack.track.uid);
             }}
+            onDragEnter={() => this.handleOverlayMouseEnter(pTrack.track.uid)}
+            onDragLeave={() => this.handleOverlayMouseLeave(pTrack.track.uid)}
             onMouseEnter={() => this.handleOverlayMouseEnter(pTrack.track.uid)}
             onMouseLeave={() => this.handleOverlayMouseLeave(pTrack.track.uid)}
             style={{
