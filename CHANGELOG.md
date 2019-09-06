@@ -1,13 +1,18 @@
+## v1.6.9
+
+- Enable brushing on bar, point, and 1d-heatmap tracks
+
+_[Detailed changes since v1.6.8](https://github.com/higlass/higlass/compare/v1.6.8...v1.6.9)_
+
 ## v1.6.8
 
 - Add infrastructure for value scale zooming
 - Fixed the colors when dragging a track over a higlass display
 - Added support for value scale zooming
 - Added utils/track-utils to provide track functionality for use without inheritance
-
-_[Detailed changes since v1.6.7](https://github.com/higlass/higlass/compare/v1.6.7...develop)_
-
 - Implemented a genbank data fetcher for gene annotation tracks
+
+_[Detailed changes since v1.6.7](https://github.com/higlass/higlass/compare/v1.6.7...v1.6.8)_
 
 ## v1.6.7
 
