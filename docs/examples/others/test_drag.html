@@ -45,10 +45,6 @@
 <script>
 
 console.log('window.higlassTracks', window.higlassTracks);
-function dragEnd(evt) {
-  // console.log('evt:', evt);
-    //window.hgApi.hideAvailableTrackPositions();
-}
 
 function randomDragStart(ev) {
     var track = {
@@ -87,12 +83,6 @@ function randomDragStart(ev) {
 
     //window.hgApi.hideAvailableTrackPositions();
     window.hgApi.showAvailableTrackPositions(track);
-
-    // window.hgApi.showTrackChooser(
-    //   (viewUid, trackUid) => {
-    //     console.log('viewUid:', viewUid, trackUid);
-    //   }
-    // );
   }
 
 function lineDragStart(ev) {
