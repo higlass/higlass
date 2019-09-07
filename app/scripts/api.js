@@ -345,7 +345,13 @@ const createApi = function api(context, pubSub) {
        */
       showTrackChooser(callback) {
         self.setState({
-          chooseTrackHandler: callback,
+          chooseTrackHandler: (...args) => {
+            self.setState({
+              chooseTrackHandler: null,
+            });
+
+            callback(...args);
+          },
         });
       },
 
