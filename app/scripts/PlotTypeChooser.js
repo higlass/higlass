@@ -1,5 +1,4 @@
 import React from 'react';
-import { select } from 'd3-selection';
 
 // Configs
 import {
@@ -15,8 +14,6 @@ class PlotTypeChooser extends React.Component {
   constructor(props) {
     super(props);
 
-    this.imageDiv = null;
-
     this.DATATYPE_TO_TRACK_TYPE = DATATYPE_TO_TRACK_TYPE(this.props.orientation);
     this.AVAILABLE_TRACK_TYPES = AVAILABLE_TRACK_TYPES(
       this.props.datatypes, this.props.orientation
@@ -25,20 +22,6 @@ class PlotTypeChooser extends React.Component {
     this.state = {
       selectedPlotType: this.AVAILABLE_TRACK_TYPES[0],
     };
-  }
-
-  componentDidUpdate() {
-    const ICON_WIDTH = 20;
-    const ICON_HEIGHT = 20;
-
-    if (this.imageDiv) {
-      // make sure that the SVG icons we use for tracks aren't
-      // too large
-      select(this.imageDiv)
-        .select('svg')
-        .attr('width', ICON_HEIGHT)
-        .attr('height', ICON_WIDTH);
-    }
   }
 
   componentWillReceiveProps(newProps) {
@@ -82,15 +65,8 @@ class PlotTypeChooser extends React.Component {
           const imgTag = trackTypeToInfo[x.type].thumbnail
             ? (
               <div
-                ref={(c) => { this.imageDiv = c; }}
+                className="track-thumbnail"
                 dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
-                style={{
-                  display: 'inline-block',
-                  marginRight: 10,
-                  verticalAlign: 'middle',
-                  height: 20,
-                  width: 30,
-                }}
               />
             )
             : (
