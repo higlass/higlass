@@ -1,6 +1,6 @@
 ## Next release
 
-- Add API call for show track chooser
+- Add API call for show track chooser (hgApi. showTrackChooser()`)
 
 _[Detailed changes since v1.6.9](https://github.com/higlass/higlass/compare/v1.6.9...develop)_
 
