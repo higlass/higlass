@@ -1,5 +1,6 @@
-## Next revision
+## Next release
 
+- Add API call for show track chooser (hgApi. showTrackChooser()`)
 - Limit icon size in plot type chooser
 
 _[Detailed changes since v1.6.9](https://github.com/higlass/higlass/compare/v1.6.9...develop)_

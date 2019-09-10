@@ -495,19 +495,18 @@ class TiledPlot extends React.Component {
     });
   }
 
-  handleOverlayMouseLeave() {
-    this.setState({
-      mouseOverOverlayUid: null,
-    });
+  handleOverlayMouseLeave(uid) {
+    if (uid === this.state.mouseOverOverlayUid) {
+      this.setState({
+        mouseOverOverlayUid: null,
+      });
+    }
   }
 
 
-  handleTrackPositionChosen(position) {
-    this.handleAddTrack(position);
-
-    // have our parent close the menu
-    // parent needs to do it because the button is located in the parent's scope
-    this.props.onTrackPositionChosen(position);
+  handleTrackPositionChosen(pTrack) {
+    this.setState({ mouseOverOverlayUid: null });
+    this.props.chooseTrackHandler(pTrack.track.uid);
   }
 
 
@@ -2160,10 +2159,14 @@ class TiledPlot extends React.Component {
             // to choose an overlay track, the previously selected one isn't
             // automatically highlighted
 
-            onClick={() => {
-              this.setState({ mouseOverOverlayUid: null });
-              this.props.chooseTrackHandler(pTrack.track.uid);
+            onClick={() => this.handleTrackPositionChosen(pTrack)}
+            onDragEnter={(evt) => {
+              this.handleOverlayMouseEnter(pTrack.track.uid);
+              evt.preventDefault();
             }}
+            onDragLeave={() => this.handleOverlayMouseLeave(pTrack.track.uid)}
+            onDragOver={evt => evt.preventDefault()}
+            onDrop={() => this.handleTrackPositionChosen(pTrack)}
             onMouseEnter={() => this.handleOverlayMouseEnter(pTrack.track.uid)}
             onMouseLeave={() => this.handleOverlayMouseLeave(pTrack.track.uid)}
             style={{

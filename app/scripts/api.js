@@ -336,6 +336,34 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
+       * Show the track chooser which highlights tracks
+       * when the mouse is over them.
+       *
+       * @param  {Function} callback (toViewUid, toTrackUid) =>: A function
+       *                             to be called when a track is chosen.
+       * @return {[type]}            [description]
+       */
+      showTrackChooser(callback) {
+        self.setState({
+          chooseTrackHandler: (...args) => {
+            self.setState({
+              chooseTrackHandler: null,
+            });
+
+            callback(...args);
+          },
+        });
+      },
+
+      /**
+       * Hide the track chooser.
+       */
+      hideTrackChooser() {
+        this.setState({
+          chooseTrackHandler: null,
+        });
+      },
+      /**
        *
        * When comparing different 1D tracks it can be desirable to fix their y or value
        * scale
