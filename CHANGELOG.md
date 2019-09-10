@@ -1,11 +1,15 @@
 ## Next release
 
+_[Detailed changes since v1.6.10](https://github.com/higlass/higlass/compare/v1.6.9...v1.6.10)_
+
+## v1.6.10
+
 - Add API call for show track chooser (hgApi. showTrackChooser()`)
 - Limit icon size in plot type chooser
 - Add non-gzipped support to genbank-fetcher
 - Better error handling for genbank fetcher
 
-_[Detailed changes since v1.6.9](https://github.com/higlass/higlass/compare/v1.6.9...develop)_
+_[Detailed changes since v1.6.9](https://github.com/higlass/higlass/compare/v1.6.9...v1.6.10)_
 
 ## v1.6.9
 
