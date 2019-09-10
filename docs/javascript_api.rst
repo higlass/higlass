@@ -129,7 +129,13 @@ Creating a HiGlass component in your React app
   />
 
 Use the ``HiGlassComponent`` to create a HiGlass instance in react. The
-``options`` prop is the same as explained above.
+``options`` prop is the same as explained above. Make sure to also include
+the styles in your html file:
+
+.. code-block:: html
+
+  <link rel="stylesheet" href="https://unpkg.com/higlass/dist/hglib.css" type="text/css">
+
 
 **Example**
 
