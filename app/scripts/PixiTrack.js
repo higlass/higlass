@@ -248,7 +248,6 @@ class PixiTrack extends Track {
       // draw a red border around the track to bring attention to its
       // error
       const graphics = this.pBorder;
-
       graphics.clear();
       graphics.lineStyle(1, colorToHex('red'));
 
@@ -582,6 +581,7 @@ class PixiTrack extends Track {
     // this rectangle is cleared by functions that override this draw method
     // this.drawBorder();
     // this.drawLabel();
+    this.drawError();
   }
 
   /**
