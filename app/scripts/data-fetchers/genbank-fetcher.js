@@ -121,7 +121,7 @@ class GBKDataFetcher {
         const gffText = gzipped ? pako.inflate(buffer, { to: 'string' }) : buffer;
         this.gbJson = genbankParser(gffText);
         this.cdss = shuffle(this.gbJson[0]
-          .features.filter(f => f.type === 'gene')
+          .features.filter(f => f.type === 'CDS')
           .sort((a, b) => a.start - b.start));
       });
   }
