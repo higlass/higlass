@@ -106,15 +106,19 @@ class GBKDataFetcher {
     this.dataConfig = dataConfig;
     this.trackUid = slugid.nice();
 
+    const extension = dataConfig.url.slice(dataConfig.url.length - 3);
+    const gzipped = extension === '.gz';
+    this.errorTxt = '';
+
     this.dataPromise = fetch(dataConfig.url, {
       headers: {
-        'Content-Encoding': 'gzip'
+        'Content-Encoding': gzipped ? 'gzip' : 'text/plain',
       },
       mode: 'cors'
     })
-      .then(response => response.arrayBuffer())
+      .then(response => (gzipped ? response.arrayBuffer() : response.text()))
       .then((buffer) => {
-        const gffText = pako.inflate(buffer, { to: 'string' });
+        const gffText = gzipped ? pako.inflate(buffer, { to: 'string' }) : buffer;
         this.gbJson = genbankParser(gffText);
         this.cdss = shuffle(this.gbJson[0]
           .features.filter(f => f.type === 'gene')
@@ -142,7 +146,14 @@ class GBKDataFetcher {
       }
 
       return retVal;
-    });
+    })
+      .catch((err) => {
+        if (callback) {
+          callback({
+            error: `Error parsing genbank: ${err}`,
+          });
+        }
+      });
   }
 
   fetchTilesDebounced(receivedTiles, tileIds) {
