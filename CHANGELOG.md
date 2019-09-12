@@ -1,5 +1,7 @@
 ## Next release
 
+- Overlay track bug fixes
+
 _[Detailed changes since v1.6.10](https://github.com/higlass/higlass/compare/v1.6.9...v1.6.10)_
 
 ## v1.6.10
