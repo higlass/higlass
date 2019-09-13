@@ -98,14 +98,14 @@ module.exports = (config) => {
     colors: true,
     logLevel: config.LOG_DEBUG,
     autoWatch: true,
-    browsers: ['Chrome', 'HeadlessChrome', 'MyHeadlessChrome'],
+    browsers: ['Chrome', 'HeadlessChrome'],
     singleRun: false,
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',
         flags: ['--no-sandbox'],
       },
-      MyHeadlessChrome: {
+      HeadlessChrome: {
         base: 'ChromeHeadless',
         flags: ['--disable-translate', '--disable-extensions', '--remote-debugging-port=9223']
       },

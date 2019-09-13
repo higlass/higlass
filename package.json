@@ -27,7 +27,7 @@
     "precommit": "lint-staged",
     "test": "karma start karma.conf.js --single-run",
     "test-watch": "npm run build && karma start karma.conf.js",
-    "test-watch-headless": "npm run build && karma start karma.conf.js --browsers MyHeadlessChrome"
+    "test-watch-headless": "npm run build && karma start karma.conf.js --browsers HeadlessChrome"
   },
   "repository": {
     "type": "git",

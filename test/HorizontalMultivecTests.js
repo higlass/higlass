@@ -1,110 +1,67 @@
 /* eslint-env node, jasmine */
 import {
   configure,
-  mount,
   // render,
 } from 'enzyme';
 
 import Adapter from 'enzyme-adapter-react-16';
 
-import React from 'react';
-
 // Utils
 import {
+  mountHGComponent,
+  removeHGComponent,
   getTrackObjectFromHGC,
-  waitForTilesLoaded,
 } from '../app/scripts/utils';
 
+// View configs
+import horizontalMultivecWithSmallerDimensions from './view-configs-more/horizontalMultivecWithSmallerDimensions';
+
+// Constants
 import {
   MIN_HORIZONTAL_HEIGHT,
   MIN_VERTICAL_WIDTH,
 } from '../app/scripts/configs';
 
-import HiGlassComponent from '../app/scripts/HiGlassComponent';
-
 configure({ adapter: new Adapter() });
 
-describe('Horizontal heatmap test suite', () => {
+describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
 
-  jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
-
-  describe('Multivec tests', () => {
-    it('Cleans up previously created instances and mounts viewConf1', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={viewConf1}
-      />, { attachTo: div });
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-      // done();
-    });
-
-    it('Cleans up previously created instances and mounts viewConf2', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={viewConf2}
-      />, { attachTo: div });
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-      // done();
-    });
-
-    it('Tests if track dimensions were overriden in viewConf2', (done) => {
-      const track = getTrackObjectFromHGC(hgc.instance(), 'viewConf2_uid', 'K_0GxgCvQfCHM56neOnHKg'); // uuid of horizontal-multivec
-      let width; const
-        height = track.dimensions;
-      if (height === MIN_HORIZONTAL_HEIGHT || width === MIN_VERTICAL_WIDTH) return;
-      done();
-    });
+  beforeAll((done) => {
+    ([div, hgc] = mountHGComponent(div, hgc,
+      viewConf1,
+      done,
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      })
+    );
   });
 
-  describe('Cleanup', () => {
-    it('Cleans up previously created instances and mounts a new component', () => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+  // it('not have errors in the loaded viewconf', (done) => {
+  //   done();
+  // });
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-    });
+  it('Test horizontal multivec with track containing smaller-than-default width and height', (done) => {
+    ([div, hgc] = mountHGComponent(div, hgc,
+      horizontalMultivecWithSmallerDimensions,
+      () => {
+        const track = getTrackObjectFromHGC(hgc.instance(), 'viewConf2_uid', 'K_0GxgCvQfCHM56neOnHKg'); // uuid of horizontal-multivec
+        const width = track.dimensions[0];
+        const height = track.dimensions[1];
+        if (height === MIN_HORIZONTAL_HEIGHT || width === MIN_VERTICAL_WIDTH) return;
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      })
+    );
+  });
+
+  afterAll(() => {
+    removeHGComponent(div);
   });
 });
 
@@ -329,146 +286,6 @@ const viewConf1 = {
         uid: 'PkNgAl3mSIqttnSsCewngw'
       }
     }
-  },
-  valueScaleLocks: {
-    locksByViewUid: {},
-    locksDict: {}
-  }
-};
-
-// minHeight view test
-const viewConf2 = {
-  editable: true,
-  trackSourceServers: [
-    '/api/v1',
-    'http://higlass.io/api/v1'
-  ],
-  exportViewUrl: '/api/v1/viewconfs',
-  views: [
-    {
-      initialXDomain: [
-        1348415434.4553869,
-        1574566466.6212506
-      ],
-      initialYDomain: [
-        507300305.20950717,
-        631829142.4426439
-      ],
-      tracks: {
-        top: [
-          {
-            type: 'horizontal-gene-annotations',
-            uid: 'VpV5Aqo0RfuIWRan6uG5xg',
-            tilesetUid: 'M9A9klpwTci5Vf4bHZ864g',
-            server: 'http://resgen.io/api/v1',
-            options: {
-              labelColor: 'black',
-              labelPosition: 'hidden',
-              plusStrandColor: 'blue',
-              minusStrandColor: 'red',
-              trackBorderWidth: 0,
-              trackBorderColor: 'black',
-              showMousePosition: false,
-              mousePositionColor: '#999999',
-              name: 'Gene Annotations (hg38)',
-              fontSize: 11,
-              labelLeftMargin: 0,
-              labelRightMargin: 0,
-              labelTopMargin: 0,
-              labelBottomMargin: 0,
-              geneAnnotationHeight: 10,
-              geneLabelPosition: 'outside',
-              geneStrandSpacing: 4,
-              labelBackgroundColor: '#ffffff'
-            },
-            width: 20,
-            height: 55
-          },
-          {
-            type: 'horizontal-chromosome-labels',
-            uid: 'JiAvihMvSwWZ64SMPl01xA',
-            tilesetUid: 'ZpZ8c5JJRUS1J7ZkofcUrg',
-            server: 'http://resgen.io/api/v1',
-            options: {
-              showMousePosition: false,
-              mousePositionColor: '#999999',
-              color: '#777777',
-              stroke: '#FFFFFF',
-              fontSize: 12,
-              fontIsAligned: false,
-              fontIsLeftAligned: false
-            },
-            width: 536,
-            height: 35
-          },
-          {
-            type: 'horizontal-multivec',
-            uid: 'K_0GxgCvQfCHM56neOnHKg',
-            tilesetUid: 'abohuD-sTbiyAPqh2y5OpA',
-            server: 'http://resgen.io/api/v1',
-            options: {
-              labelPosition: 'topLeft',
-              labelColor: 'black',
-              labelTextOpacity: 0.4,
-              valueScaling: 'linear',
-              trackBorderWidth: 0,
-              trackBorderColor: 'black',
-              heatmapValueScaling: 'log',
-              name: 'my_file_genome_wide_20180228.multires.mv5',
-              labelLeftMargin: 0,
-              labelRightMargin: 0,
-              labelTopMargin: 0,
-              labelBottomMargin: 0,
-              labelShowResolution: true
-            },
-            width: 33,
-            height: 50,
-            minWidth: 20,
-            minHeight: 20,
-            resolutions: [
-              16384000,
-              8192000,
-              4096000,
-              2048000,
-              1024000,
-              512000,
-              256000,
-              128000,
-              64000,
-              32000,
-              16000,
-              8000,
-              4000,
-              2000,
-              1000
-            ]
-          }
-        ],
-        left: [],
-        center: [],
-        bottom: [],
-        right: [],
-        whole: [],
-        gallery: []
-      },
-      layout: {
-        w: 12,
-        h: 6,
-        x: 0,
-        y: 0,
-        moved: false,
-        static: false
-      },
-      uid: 'viewConf2_uid'
-    }
-  ],
-  zoomLocks: {
-    locksByViewUid: {},
-    locksDict: {}
-  },
-  locationLocks: {
-    locksByViewUid: {},
-    locksDict: {}
   },
   valueScaleLocks: {
     locksByViewUid: {},
