@@ -531,7 +531,11 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       .filter(tile => tile.drawnAtScale)
       .forEach((tile) => {
         tile.textBgGraphics.clear();
-        tile.textBgGraphics.beginFill(WHITE_HEX);
+        tile.textBgGraphics.beginFill(
+          typeof this.options.labelBackgroundColor !== 'undefined'
+            ? colorToHex(this.options.labelBackgroundColor)
+            : WHITE_HEX
+        );
 
         // move the texts
         const parentInFetched = this.parentInFetched(tile);

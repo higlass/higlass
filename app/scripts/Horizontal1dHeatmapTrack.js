@@ -87,8 +87,13 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
     // const logScaling = this.options.valueScaling === 'log';
 
     for (let i = 0; i < tileValues.length; i++) {
-      const xPos = this._xScale(tileXScale(i));
+      if (Number.isNaN(tileValues[i])) continue;
+
       const rgbIdx = Math.round(this.valueScale(tileValues[i] + pseudocount));
+
+      if (Number.isNaN(+rgbIdx)) continue;
+
+      const xPos = this._xScale(tileXScale(i));
       const width = this._xScale(tileXScale(i + 1)) - xPos;
       const height = this.dimensions[1];
 

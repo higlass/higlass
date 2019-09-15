@@ -3,7 +3,8 @@ import { event, mouse, select } from 'd3-selection';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { getDarkTheme } from './services/is-dark-theme';
+import withTheme from './hocs/with-theme';
+import { THEME_DARK } from './configs';
 
 import '../styles/DraggableDiv.module.scss';
 
@@ -267,34 +268,27 @@ class DraggableDiv extends React.Component {
   /* ------------------------------ Rendering ------------------------------- */
 
   render() {
-    const dragColor = getDarkTheme() ? 'white' : 'black';
+    const dragColor = this.props.theme === THEME_DARK ? 'white' : 'black';
 
     const divStyle = {
       top: this.state.top,
       left: this.state.left,
       width: this.state.width,
       height: this.state.height,
-      backgroundColor: 'transparent',
-      boxSizing: 'border-box',
       opacity: this.props.opacity
     };
 
-    const resizeWidth = 10;
-    const resizeHeight = 10;
+    const resizeWidth = 24;
+    const resizeHeight = 24;
 
     const horizStyle = {
       left: (this.state.width / 2) - (resizeWidth / 2),
       width: resizeWidth,
-      borderBottom: `1px solid ${dragColor}`,
-      borderTop: `1px solid ${dragColor}`,
     };
 
     const vertStyle = {
-      left: 1,
       top: (this.state.height / 2) - (resizeHeight / 2),
       height: resizeHeight,
-      borderLeft: `1px solid ${dragColor}`,
-      borderRight: `1px solid ${dragColor}`,
     };
 
     const styles = {
@@ -312,7 +306,12 @@ class DraggableDiv extends React.Component {
           style={styles[x]}
           styleName={`${x}-draggable-handle`}
           title="Resize track"
-        />
+        >
+          <div
+            style={{ borderColor: dragColor }}
+            styleName={`${x}-draggable-handle-grabber`}
+          />
+        </div>
       ));
 
     return (
@@ -339,7 +338,8 @@ DraggableDiv.propTypes = {
   trackClosed: PropTypes.func,
   trackRotated: PropTypes.func,
   uid: PropTypes.string,
-  width: PropTypes.number
+  width: PropTypes.number,
+  theme: PropTypes.symbol,
 };
 
-export default DraggableDiv;
+export default withTheme(DraggableDiv);

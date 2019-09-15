@@ -2,9 +2,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import HiGlassComponent from './HiGlassComponent';
 
+// these exports can be used to create new tracks in outside
+// environments (e.g. Observable)
+import SVGTrack from './SVGTrack';
+import TiledPixiTrack from './TiledPixiTrack';
+import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
+
 export { default as ChromosomeInfo } from './ChromosomeInfo';
 export { default as HiGlassComponent } from './HiGlassComponent';
 export { default as HiGlassTrackComponent, trackViewer } from './HiGlassTrackComponent';
+
+export const tracks = {
+  SVGTrack,
+  TiledPixiTrack,
+  HorizontalGeneAnnotationsTrack,
+};
 
 export { default as schema } from '../schema.json';
 

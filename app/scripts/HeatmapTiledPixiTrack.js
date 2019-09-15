@@ -1315,7 +1315,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   mirrorTiles() {
     return !(
       this.tilesetInfo.mirror_tiles
-      && this.tilesetInfo.mirror_tiles === 'false'
+      && (
+        this.tilesetInfo.mirror_tiles === false
+        || this.tilesetInfo.mirror_tiles === 'false'
+      )
     );
   }
 

@@ -194,6 +194,12 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
   }
 
   drawConstIndicator() {
+    if (!this.constIndicator) {
+      // this can happen if we receive a tilesetInfo in the TiledPixiTrack
+      // constructor before we get a chance to initialize this object
+      return;
+    }
+
     this.constIndicator.clear();
     while (this.constIndicator.children[0]) {
       this.constIndicator.removeChild(this.constIndicator.children[0]);

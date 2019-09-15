@@ -10,3 +10,15 @@
     border-radius: 5px;
     max-height: 15vh;
 }
+
+.track-thumbnail {
+  width: 30px;
+  height: 20px;
+  display: inline-block;
+  margin-right: 10;
+  vertical-align: middle;
+}
+.track-thumbnail > svg {
+  width: 20px;
+  height: 20px;
+}
