@@ -31,7 +31,7 @@
               "name": "9ae0744a-9bc1-4cd7-b7cf-c6569ed9e4aa.consensus.20170119.somatic.cna.annotated.txt.multires"
             },
             "width": 902,
-            "height": 36,
+            "height": 36
           },
           {
             "filetype": "beddb",
@@ -59,7 +59,7 @@
             "uid": "K8ctyFcBQGCXnHBSeCQpaQ",
             "options": {},
             "width": 20,
-            "height": 30,
+            "height": 30
           }
         ],
         "left": [
@@ -76,7 +76,7 @@
               "name": "Gene Annotations (hg19)"
             },
             "width": 60,
-            "height": 20,
+            "height": 20
           },
           {
             "type": "vertical-chromosome-labels",
@@ -85,7 +85,7 @@
             "uid": "Boe4m22pQwS2D7QqVpaV6w",
             "options": {},
             "width": 30,
-            "height": 30,
+            "height": 30
           }
         ],
         "center": [
