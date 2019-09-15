@@ -11,7 +11,7 @@
     "tracks": {
       "bottom": [],
       "top": [{
-        "orientation": "1d-horizontal", "name": "Chromosome Axis (mm9)", "local": true, "minHeight": 30, "thumbnail": null, "width": 462, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "top", "height": 30, "type": "horizontal-chromosome-labels", "options": {}, "uid": "EsCrHgpLQoSO8fJo8PX-9w"
+        "orientation": "1d-horizontal", "name": "Chromosome Axis (mm9)", "local": true, "thumbnail": null, "width": 462, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "top", "height": 30, "type": "horizontal-chromosome-labels", "options": {}, "uid": "EsCrHgpLQoSO8fJo8PX-9w"
       }, {
         "name": "Gene Annotations (mm9)",
         "maxWidth": 4294967296,
@@ -100,7 +100,7 @@
         "options": {}
       }],
       "left": [{
-        "orientation": "1d-vertical", "name": "Chromosome Axis (mm9)", "local": true, "minHeight": 30, "thumbnail": null, "minWidth": 30, "width": 30, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "left", "height": 30, "type": "vertical-chromosome-labels", "options": {}, "uid": "NlkjnKsoSGmfsrWKRfgBYA"
+        "orientation": "1d-vertical", "name": "Chromosome Axis (mm9)", "local": true, "thumbnail": null, "width": 30, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "left", "height": 30, "type": "vertical-chromosome-labels", "options": {}, "uid": "NlkjnKsoSGmfsrWKRfgBYA"
       }]
     },
     "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
@@ -116,7 +116,7 @@
     "tracks": {
       "bottom": [],
       "top": [{
-        "orientation": "1d-horizontal", "name": "Chromosome Axis (mm19)", "local": true, "minHeight": 30, "thumbnail": null, "width": 472, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "top", "height": 30, "type": "horizontal-chromosome-labels", "options": {}, "uid": "AWcBqpmASpmA01tpfgwWOg"
+        "orientation": "1d-horizontal", "name": "Chromosome Axis (mm19)", "local": true, "thumbnail": null, "width": 472, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "top", "height": 30, "type": "horizontal-chromosome-labels", "options": {}, "uid": "AWcBqpmASpmA01tpfgwWOg"
       }, {
         "name": "Gene Annotations (mm9)",
         "maxWidth": 4294967296,
@@ -179,7 +179,7 @@
         "options": {}
       }],
       "left": [{
-        "orientation": "1d-vertical", "name": "Chromosome Axis (mm9)", "local": true, "minHeight": 30, "thumbnail": null, "minWidth": 30, "width": 30, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "left", "height": 30, "type": "vertical-chromosome-labels", "options": {}, "uid": "UqH0mt73TqSebs_nFzqHvw"
+        "orientation": "1d-vertical", "name": "Chromosome Axis (mm9)", "local": true, "thumbnail": null, "width": 30, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "left", "height": 30, "type": "vertical-chromosome-labels", "options": {}, "uid": "UqH0mt73TqSebs_nFzqHvw"
       }, {
         "name": "Schwarzer et al (2016) NIPBL H3K27ac (chr14)",
         "maxWidth": 134217728,
@@ -234,7 +234,7 @@
         },
         "uid": "M2YZ4JBQSWS0rR--oiDKhA"
       }, {
-        "orientation": "1d-horizontal", "name": "Chromosome Axis (mm9)", "local": true, "minHeight": 30, "thumbnail": null, "width": 615, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "top", "height": 30, "type": "horizontal-chromosome-labels", "options": {}, "uid": "EsCrHgpLQoSO8fJo8PX-9w"
+        "orientation": "1d-horizontal", "name": "Chromosome Axis (mm9)", "local": true, "thumbnail": null, "width": 615, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "top", "height": 30, "type": "horizontal-chromosome-labels", "options": {}, "uid": "EsCrHgpLQoSO8fJo8PX-9w"
       }],
       "right": [],
       "center": [{
@@ -267,7 +267,7 @@
         "options": {}
       }],
       "left": [{
-        "orientation": "1d-vertical", "name": "Chromosome Axis (mm9)", "local": true, "minHeight": 30, "thumbnail": null, "minWidth": 30, "width": 30, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "left", "height": 30, "type": "vertical-chromosome-labels", "options": {}, "uid": "aiYnl3phRPCMfwyKxKaSow"
+        "orientation": "1d-vertical", "name": "Chromosome Axis (mm9)", "local": true, "thumbnail": null, "width": 30, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "left", "height": 30, "type": "vertical-chromosome-labels", "options": {}, "uid": "aiYnl3phRPCMfwyKxKaSow"
       }]
     },
     "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
@@ -296,7 +296,7 @@
         },
         "uid": "Fw793pB8RGOBLJETFtQLsQ"
       }, {
-        "orientation": "1d-horizontal", "name": "Chromosome Axis (mm19)", "local": true, "minHeight": 30, "thumbnail": null, "width": 615, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "top", "height": 30, "type": "horizontal-chromosome-labels", "options": {}, "uid": "AWcBqpmASpmA01tpfgwWOg"
+        "orientation": "1d-horizontal", "name": "Chromosome Axis (mm19)", "local": true, "thumbnail": null, "width": 615, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "top", "height": 30, "type": "horizontal-chromosome-labels", "options": {}, "uid": "AWcBqpmASpmA01tpfgwWOg"
       }],
       "right": [],
       "center": [{
@@ -329,7 +329,7 @@
         "options": {}
       }],
       "left": [{
-        "orientation": "1d-vertical", "name": "Chromosome Axis (mm9)", "local": true, "minHeight": 30, "thumbnail": null, "minWidth": 30, "width": 76, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "left", "height": 324, "type": "vertical-chromosome-labels", "options": {}, "uid": "XRk4dwN7QGyMpfvd06k1bA"
+        "orientation": "1d-vertical", "name": "Chromosome Axis (mm9)", "local": true, "thumbnail": null, "width": 76, "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv", "position": "left", "height": 324, "type": "vertical-chromosome-labels", "options": {}, "uid": "XRk4dwN7QGyMpfvd06k1bA"
       }]
     },
     "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
