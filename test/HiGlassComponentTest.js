@@ -67,6 +67,103 @@ describe('Simple HiGlassComponent', () => {
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
+  describe('Invalid track type tests', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={invalidTrackConfig}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc.instance(), done);
+
+      // visual check that the heatmap track config menu is moved
+      // to the left
+    });
+
+    it('Opens the track type menu', () => {
+      const clickPosition = {
+        bottom: 85,
+        height: 28,
+        left: 246,
+        right: 274,
+        top: 57,
+        width: 28,
+        x: 246,
+        y: 57,
+      };
+      const uid = 'line1';
+
+      hgc.instance().tiledPlots.aa.handleConfigTrackMenuOpened(uid, clickPosition);
+      const cftm = hgc.instance().tiledPlots.aa.configTrackMenu;
+
+      const subMenuRect = {
+        bottom: 88,
+        height: 27,
+        left: 250,
+        right: 547.984375,
+        top: 61,
+        width: 297.984375,
+        x: 250,
+        y: 61,
+      };
+
+      const series = invalidTrackConfig.views[0].tracks.top;
+
+      // get the object corresponding to the series
+      cftm.handleItemMouseEnterWithRect(subMenuRect, series[0]);
+      const seriesObj = cftm.seriesListMenu;
+
+      const position = { left: 127.03125, top: 84 };
+      const bbox = {
+        bottom: 104,
+        height: 20,
+        left: 131.03125,
+        right: 246,
+        top: 84,
+        width: 114.96875,
+        x: 131.03125,
+        y: 84,
+      };
+
+      const trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
+
+      expect(trackTypeItems.props.menuItems['horizontal-line']).toBeUndefined();
+      expect(trackTypeItems.props.menuItems['horizontal-point']).toBeUndefined();
+    });
+
+    it('Opens the close track menu', () => {
+      const clickPosition = {
+        bottom: 85,
+        height: 28,
+        left: 246,
+        right: 274,
+        top: 57,
+        width: 28,
+        x: 246,
+        y: 57,
+      };
+      const uid = 'line1';
+
+      hgc.instance().tiledPlots.aa.handleCloseTrackMenuOpened(uid, clickPosition);
+    });
+  });
+
   describe('API tests', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
@@ -1043,102 +1140,6 @@ describe('Simple HiGlassComponent', () => {
     });
   });
 
-  describe('Invalid track type tests', () => {
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: false }}
-        viewConfig={invalidTrackConfig}
-      />, { attachTo: div });
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-
-      // visual check that the heatmap track config menu is moved
-      // to the left
-    });
-
-    it('Opens the track type menu', () => {
-      const clickPosition = {
-        bottom: 85,
-        height: 28,
-        left: 246,
-        right: 274,
-        top: 57,
-        width: 28,
-        x: 246,
-        y: 57,
-      };
-      const uid = 'line1';
-
-      hgc.instance().tiledPlots.aa.handleConfigTrackMenuOpened(uid, clickPosition);
-      const cftm = hgc.instance().tiledPlots.aa.configTrackMenu;
-
-      const subMenuRect = {
-        bottom: 88,
-        height: 27,
-        left: 250,
-        right: 547.984375,
-        top: 61,
-        width: 297.984375,
-        x: 250,
-        y: 61,
-      };
-
-      const series = invalidTrackConfig.views[0].tracks.top;
-
-      // get the object corresponding to the series
-      cftm.handleItemMouseEnterWithRect(subMenuRect, series[0]);
-      const seriesObj = cftm.seriesListMenu;
-
-      const position = { left: 127.03125, top: 84 };
-      const bbox = {
-        bottom: 104,
-        height: 20,
-        left: 131.03125,
-        right: 246,
-        top: 84,
-        width: 114.96875,
-        x: 131.03125,
-        y: 84,
-      };
-
-      const trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
-
-      expect(trackTypeItems.props.menuItems['horizontal-line']).toBeUndefined();
-      expect(trackTypeItems.props.menuItems['horizontal-point']).toBeUndefined();
-    });
-
-    it('Opens the close track menu', () => {
-      const clickPosition = {
-        bottom: 85,
-        height: 28,
-        left: 246,
-        right: 274,
-        top: 57,
-        width: 28,
-        x: 246,
-        y: 57,
-      };
-      const uid = 'line1';
-
-      hgc.instance().tiledPlots.aa.handleCloseTrackMenuOpened(uid, clickPosition);
-    });
-  });
   //
   // wait a bit of time for the data to be loaded from the server
   describe('Two linked views', () => {

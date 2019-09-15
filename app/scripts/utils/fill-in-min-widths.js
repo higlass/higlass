@@ -30,8 +30,9 @@ const fillInMinWidths = (tracks) => {
     .forEach(horizontalTracks => horizontalTracks
       .forEach((track) => {
         const trackInfo = TRACKS_INFO_BY_TYPE[track.type];
-        const options = track.options ? { ...track.options, ...trackInfo.defaultOptions }
-          : trackInfo.defaultOptions;
+        const defaultOptions = (trackInfo && trackInfo.defaultOptions) || {};
+        const options = track.options ? { ...track.options, ...defaultOptions }
+          : defaultOptions;
 
         if (!options.minHeight && track.height < options.minHeight) {
           track.height = options.minHeight || MIN_HORIZONTAL_HEIGHT;
@@ -47,8 +48,10 @@ const fillInMinWidths = (tracks) => {
     .forEach(verticalTracks => verticalTracks
       .forEach((track) => {
         const trackInfo = TRACKS_INFO_BY_TYPE[track.type];
-        const options = track.options ? { ...track.options, ...trackInfo.defaultOptions }
-          : trackInfo.defaultOptions;
+        const defaultOptions = (trackInfo && trackInfo.defaultOptions) || {};
+
+        const options = track.options ? { ...track.options, ...defaultOptions }
+          : defaultOptions;
 
         if (!options.minWidth && track.width < options.minWidth) {
           track.width = options.minWidth || MIN_VERTICAL_WIDTH;
