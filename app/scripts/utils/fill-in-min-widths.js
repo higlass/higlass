@@ -29,22 +29,12 @@ const fillInMinWidths = (tracks) => {
     .map(horizontalLocation => tracks[horizontalLocation])
     .forEach(horizontalTracks => horizontalTracks
       .forEach((track) => {
-        const trackInfo = TRACKS_INFO_BY_TYPE[track.type];
-
-        if (!track.minHeight && trackInfo && track.height < trackInfo.minHeight) {
-          track.height = trackInfo.minHeight || MIN_HORIZONTAL_HEIGHT;
-        }
-
-        if (track.minHeight && track.height < track.minHeight) {
-          track.height = track.minHeight;
+        if (!track.options.minHeight && track.height < track.options.minHeight) {
+          track.height = track.options.minHeight || MIN_HORIZONTAL_HEIGHT;
         }
 
         if (!track.height) {
-          track.height = (
-            (trackInfo && trackInfo.defaultHeight)
-            || (trackInfo && trackInfo.minHeight)
-            || MIN_HORIZONTAL_HEIGHT
-          );
+          track.height = track.options.minHeight || MIN_HORIZONTAL_HEIGHT;
         }
       }));
 

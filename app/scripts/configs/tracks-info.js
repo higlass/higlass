@@ -321,7 +321,8 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'mousePositionColor',
-      'aggregationMode'
+      'aggregationMode',
+      'minHeight',
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -341,6 +342,7 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       labelTextOpacity: 0.4,
       showMousePosition: false,
+      minHeight: 20,
       mousePositionColor: '#000000',
       showTooltip: false,
     },
