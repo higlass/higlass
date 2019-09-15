@@ -2,7 +2,6 @@
 import {
   MIN_HORIZONTAL_HEIGHT,
   MIN_VERTICAL_WIDTH,
-  TRACKS_INFO_BY_TYPE
 } from '../configs';
 
 /**
@@ -42,22 +41,12 @@ const fillInMinWidths = (tracks) => {
     .map(verticalLocation => tracks[verticalLocation])
     .forEach(verticalTracks => verticalTracks
       .forEach((track) => {
-        const trackInfo = TRACKS_INFO_BY_TYPE[track.type];
-
-        if (!track.minWidth && trackInfo && track.width < trackInfo.minWidth) {
-          track.width = trackInfo.minWidth || MIN_VERTICAL_WIDTH;
-        }
-
-        if (track.minWidth && track.width < track.minWidth) {
-          track.width = track.minWidth;
+        if (!track.options.minWidth && track.width < track.options.minWidth) {
+          track.width = track.options.minWidth || MIN_VERTICAL_WIDTH;
         }
 
         if (!track.width) {
-          track.width = (
-            (trackInfo && trackInfo.defaultWidth)
-            || (trackInfo && trackInfo.minWidth)
-            || MIN_VERTICAL_WIDTH
-          );
+          track.width = track.options.minWidth || MIN_VERTICAL_WIDTH;
         }
       }));
 
