@@ -1,6 +1,6 @@
 {
   "name": "higlass",
-  "version": "1.5.8",
+  "version": "1.6.10",
   "description": "HiGlass Hi-C / genomic / large data viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/hglib.js",
@@ -19,11 +19,11 @@
   "scripts": {
     "start": "webpack-dev-server --config ./webpack.config.js --mode development --content-base app",
     "build": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; webpack --config ./webpack.config.js --mode development; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css;",
+    "build-amd": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; webpack --config ./webpack.config.amd.js --mode development; cp build/hglib-amd.js dist/; cp build/hglib-amd.css dist/hglib-amd.css;",
+    "build-amd-dev": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; webpack --config ./webpack.config.amd.dev.js --mode development; cp build/hglib-amd-dev.js dist/; cp build/hglib-amd-dev.css dist/hglib-amd-dev.css;",
     "build-watch": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; webpack --config ./webpack.config.js --mode development --watch; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css;",
     "compile": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; webpack --config ./webpack.config.js --mode production; cp build/hglib.min.js dist/; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css; zip -r dist.zip dist",
     "lint": "eslint app test karma.conf.js webpack.config.js",
-    "lint-minimal": "eslint -c .eslintrc-minimal app test karma.conf.js webpack.config.js",
-    "fix-minimal": "eslint -c .eslintrc-minimal --fix app test karma.conf.js webpack.config.js",
     "precommit": "lint-staged",
     "test": "karma start karma.conf.js --single-run",
     "test-watch": "npm run build && karma start karma.conf.js"
@@ -64,7 +64,9 @@
     "dom-scroll-into-view": "^1.2.1",
     "enzyme-adapter-react-16": "^1.2.0",
     "eventemitter3": "^2.0.2",
+    "genbank-parser": "^1.0.0",
     "ndarray": "^1.0.18",
+    "pako": "^1.0.10",
     "path": "^0.12.7",
     "pixi.js": "^5.0.3",
     "prismjs": "^1.16.0",

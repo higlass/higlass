@@ -416,7 +416,7 @@ describe('Simple HiGlassComponent', () => {
 
       // check to make sure that the chromosome ticks are present
       expect(svgText.indexOf('line x1')).toBeGreaterThan(0);
-      expect(svgText.indexOf('#777777')).toBeGreaterThan(0);
+      expect(svgText.indexOf('#808080')).toBeGreaterThan(0);
 
       // hgc.instance().handleExportSVG();
     });

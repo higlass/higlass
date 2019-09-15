@@ -80,8 +80,6 @@ class TiledPixiTrack extends PixiTrack {
       onValueScaleChanged
     } = context;
 
-    this.pubSub = pubSub;
-
     // keep track of which render we're on so that we save ourselves
     // rerendering all rendering in the same version will have the same
     // scaling so tiles rendered in the same version will have the same
@@ -115,6 +113,7 @@ class TiledPixiTrack extends PixiTrack {
 
     this.listeners = {};
 
+    this.pubSub = pubSub;
     this.animate = animate;
     this.onValueScaleChanged = onValueScaleChanged;
 
@@ -122,10 +121,28 @@ class TiledPixiTrack extends PixiTrack {
     // if the tileset info is not found
     this.prevValueScale = null;
 
-    this.dataFetcher = new DataFetcher(dataConfig, this.pubSub);
+    if (!context.dataFetcher) {
+      this.dataFetcher = new DataFetcher(dataConfig, this.pubSub);
+    } else {
+      this.dataFetcher = context.dataFetcher;
+    }
 
     // To indicate that this track is requiring a tileset info
     this.tilesetInfo = null;
+    this.uuid = slugid.nice();
+
+    // this needs to be above the tilesetInfo() call because if that
+    // executes first, the call to draw() will complain that this text
+    // doesn't exist
+    this.trackNotFoundText = new PIXI.Text(
+      '', { fontSize: '12px', fontFamily: 'Arial', fill: 'black' }
+    );
+
+    this.pLabel.addChild(this.trackNotFoundText);
+
+    this.refreshTilesDebounced = throttleAndDebounce(
+      this.refreshTiles.bind(this), ZOOM_DEBOUNCE, ZOOM_DEBOUNCE
+    );
 
     this.dataFetcher.tilesetInfo((tilesetInfo) => {
       this.tilesetInfo = tilesetInfo;
@@ -177,18 +194,6 @@ class TiledPixiTrack extends PixiTrack {
       this.drawLabel(); // draw the label so that the current resolution is displayed
       this.animate();
     });
-
-    this.uuid = slugid.nice();
-
-    this.refreshTilesDebounced = throttleAndDebounce(
-      this.refreshTiles.bind(this), ZOOM_DEBOUNCE, ZOOM_DEBOUNCE
-    );
-
-    this.trackNotFoundText = new PIXI.Text(
-      '', { fontSize: '12px', fontFamily: 'Arial', fill: 'black' }
-    );
-
-    this.pLabel.addChild(this.trackNotFoundText);
   }
 
   setFixedValueScaleMin(value) {
@@ -585,7 +590,7 @@ class TiledPixiTrack extends PixiTrack {
     for (let i = 0; i < this.visibleTiles.length; i++) {
       const { tileId } = this.visibleTiles[i];
 
-      if (!loadedTiles[this.visibleTiles[i].remoteId]) { continue; }
+      if (!loadedTiles[this.visibleTiles[i].remoteId]) continue;
 
 
       if (this.visibleTiles[i].remoteId in loadedTiles) {
@@ -594,8 +599,24 @@ class TiledPixiTrack extends PixiTrack {
           this.fetchedTiles[tileId] = this.visibleTiles[i];
         }
 
-
-        this.fetchedTiles[tileId].tileData = loadedTiles[this.visibleTiles[i].remoteId];
+        // Fritz: Store a shallow copy. If necessary we perform a deep copy of
+        // the dense data in `tile-proxy.js :: tileDataToPixData()`
+        // Somehow 2d rectangular domain tiles do not come in the flavor of an
+        // object but an object array...
+        if (Array.isArray(loadedTiles[this.visibleTiles[i].remoteId])) {
+          const tileData = loadedTiles[this.visibleTiles[i].remoteId];
+          this.fetchedTiles[tileId].tileData = [...tileData];
+          // Fritz: this is sooo hacky... we should really not use object arrays
+          Object.keys(tileData)
+            .filter(key => Number.isNaN(+key))
+            .forEach((key) => {
+              this.fetchedTiles[tileId].tileData[key] = tileData[key];
+            });
+        } else {
+          this.fetchedTiles[tileId].tileData = {
+            ...loadedTiles[this.visibleTiles[i].remoteId]
+          };
+        }
 
         if (this.fetchedTiles[tileId].tileData.error) {
           console.warn('Error in loaded tile', tileId, this.fetchedTiles[tileId].tileData);
@@ -617,8 +638,8 @@ class TiledPixiTrack extends PixiTrack {
 
 
     /*
-         * Mainly called to remove old unnecessary tiles
-         */
+     * Mainly called to remove old unnecessary tiles
+     */
     this.synchronizeTilesAndGraphics();
 
     // we need to draw when we receive new data
@@ -646,7 +667,9 @@ class TiledPixiTrack extends PixiTrack {
     // 1. Check if all visible tiles are loaded
     // 2. If `true` then send out event
     if (this.areAllVisibleTilesLoaded()) {
-      this.pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
+      if (this.pubSub) {
+        this.pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
+      }
     }
   }
 
@@ -673,15 +696,18 @@ class TiledPixiTrack extends PixiTrack {
       this.trackNotFoundText.visible = false;
     }
 
-    this.pubSub.publish('TiledPixiTrack.tilesDrawnStart', { uuid: this.uuid });
-
+    if (this.pubSub) {
+      this.pubSub.publish('TiledPixiTrack.tilesDrawnStart', { uuid: this.uuid });
+    }
     super.draw();
 
     Object.keys(this.fetchedTiles).forEach(
       tilesetUid => this.drawTile(this.fetchedTiles[tilesetUid])
     );
 
-    this.pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
+    if (this.pubSub) {
+      this.pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
+    }
   }
 
   /**

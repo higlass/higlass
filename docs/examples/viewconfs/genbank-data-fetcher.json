@@ -1,0 +1,82 @@
+{
+  "editable": true,
+  "views": [
+    {
+      "uid": "NEceyGD-T8yUazEkVBa7dg",
+      "tracks": {
+        "top": [
+          {
+            "type": "top-axis",
+            "options": {},
+            "server": "http://localhost:8111/api/v1",
+            "height": 20,
+            "uid": "P2SAGA2XR-uwEhwto227sQ"
+          },
+          {
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "fontSize": 11,
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "geneAnnotationHeight": 10,
+              "geneLabelPosition": "outside",
+              "geneStrandSpacing": 4
+            },
+            "height": 100,
+            "uid": "FylkvVBTSumoJ959HT4-5A",
+            "data": {
+              "type": "genbank",
+              "url": "https://pkerp.s3.amazonaws.com/public/GCA_000010365.1_ASM1036v1_genomic.gbff.gz"
+            }
+          }
+        ],
+        "center": [],
+        "left": [],
+        "right": [],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 4,
+        "x": 0,
+        "y": 0
+      },
+      "initialXDomain": [
+        -85512.47525519133,
+        219987.45942133665
+      ],
+      "initialYDomain": [
+        -775868849.6453212,
+        -775868849.6453212
+      ]
+    }
+  ],
+  "trackSourceServers": [
+    "http://higlass.io/api/v1"
+  ],
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs",
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

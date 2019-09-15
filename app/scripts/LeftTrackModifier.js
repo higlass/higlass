@@ -155,6 +155,14 @@ class LeftTrackModifier {
     this.originalTrack.draw();
   }
 
+  zoomedY(yPos, kMultiplier) {
+    this.originalTrack.zoomedY(yPos, kMultiplier);
+  }
+
+  movedY(dY) {
+    this.originalTrack.movedY(dY);
+  }
+
   refScalesChanged(refXScale, refYScale) {
     this.originalTrack.refScalesChanged(refYScale, refXScale);
   }

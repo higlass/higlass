@@ -33,7 +33,7 @@
     </div>
 
     <div style="display: flex">
-        <div style="draggable: true; border: 1px solid black" ondragstart="randomDragStart(event)" ondragend="dragEnd(event)"><img src="../images/thumbnails/heatmap-thumbnail.png"/></div>
+        <div style="draggable: true; border: 1px solid black" ondragstart="randomDragStart(event)"><img src="../images/thumbnails/heatmap-thumbnail.png"/></div>
         <div style="draggable: true; border: 1px solid black" ondragstart="heatmapDragStart(event)"><img src="../images/thumbnails/heatmap-thumbnail.png"/></div>
         <div style="draggable: true; border: 1px solid black" ondragstart="lineDragStart(event)"><img src="../images/thumbnails/horizontal-line-thumbnail.png"/></div>
         <div style="draggable: true; border: 1px solid black" ondragstart="multivecDragStart(event)"><img src="../images/thumbnails/horizontal-multivec-thumbnail.png"/></div>
@@ -45,9 +45,6 @@
 <script>
 
 console.log('window.higlassTracks', window.higlassTracks);
-function dragEnd(ev) {
-    //window.hgApi.hideAvailableTrackPositions();
-}
 
 function randomDragStart(ev) {
     var track = {
@@ -56,8 +53,37 @@ function randomDragStart(ev) {
         "datatype": "geo-json",
     }
 
+    let prevX = -1;
+    let prevY = -1;
+
+    let timeout = null;
+
+    const dragged = (evt) => {
+      if (evt.clientX != prevX || evt.clientY != prevY) {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+
+        timeout = setTimeout(() => {
+          document.removeEventListener('drag', dragged);
+          window.hgApi.hideAvailableTrackPositions();
+         window.hgApi.showTrackChooser(
+           (viewUid, trackUid) => {
+             console.log('viewUid:', viewUid, trackUid);
+             }
+         );
+        }, 500);
+      }
+
+      prevX = evt.clientX;
+      prevY = evt.clientY;
+    }
+
+    document.addEventListener('drag', dragged);
+
+    //window.hgApi.hideAvailableTrackPositions();
     window.hgApi.showAvailableTrackPositions(track);
-}
+  }
 
 function lineDragStart(ev) {
 
@@ -69,7 +95,11 @@ function lineDragStart(ev) {
         "defaultTracks": ['horizontal-bar']
     }
 
-    window.hgApi.showAvailableTrackPositions(lineTrack);
+    window.hgApi.showTrackChooser(
+      (viewUid, trackUid) => {
+        console.log('viewUid:', viewUid, trackUid);
+      }
+    );
 }
 
 function multivecDragStart(ev) {
@@ -123,15 +153,16 @@ function heatmapDragStart(ev) {
     {
       "uid": "a",
       "initialXDomain": [
-        1502666124.488715,
-        1511074199.6112716
+        1502439972.6753309,
+        1517324845.500473
       ],
       "initialYDomain": [
-        1504683396.5786693,
-        1510784034.7532685
+        1504602643.1146064,
+        1515225230.3978314
       ],
       "tracks": {
-        "top": [],
+        "top": [
+        ],
         "left": [],
         "center": [
           {
@@ -166,26 +197,60 @@ function heatmapDragStart(ev) {
                   "showTooltip": false,
                   "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
                   "scaleStartPercent": "0.00000",
-                  "scaleEndPercent": "1.00000"
+                  "scaleEndPercent": "1.00000",
+                  "labelShowResolution": true,
+                  "colorbarBackgroundColor": "#ffffff",
+                  "extent": "full"
                 },
-                "width": 747,
-                "height": 522,
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                "width": 674,
+                "height": 542,
                 "transforms": [
                   {
                     "name": "ICE",
                     "value": "weight"
                   }
-                ],
-                "position": "center"
+                ]
               }
             ],
-            "position": "center",
-            "width": 747,
-            "height": 522
+            "width": 674,
+            "height": 542,
+            "options": {}
           }
         ],
-        "bottom": [],
+        "bottom": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "P1l8t23ZSk-akHgOM4I9dQ",
+            "uid": "YFqytm3RTc6SMn2Jmi_ntA",
+            "type": "horizontal-1d-heatmap",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "axisPositionHorizontal": "right",
+              "colorRange": [
+                "white",
+                "rgba(245,166,35,1.0)",
+                "rgba(208,2,27,1.0)",
+                "black"
+              ],
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "mousePositionColor": "#000000",
+              "showTooltip": false,
+              "name": "wgEncodeLicrHistoneLiverH3k04me1UE14halfC57bl6StdSig.hitile"
+            },
+            "width": 674,
+            "height": 61
+          }
+        ],
         "right": [],
         "whole": [],
         "gallery": []
@@ -195,7 +260,6 @@ function heatmapDragStart(ev) {
         "h": 6,
         "x": 0,
         "y": 0,
-        "i": "a",
         "moved": false,
         "static": false
       }
