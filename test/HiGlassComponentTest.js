@@ -67,6 +67,345 @@ describe('Simple HiGlassComponent', () => {
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
+  describe('Track positioning', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={horizontalDiagonalTrackViewConf}
+      />,
+      { attachTo: div });
+
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('should add and resize a vertical heatmp', (done) => {
+      hgc.instance().handleTrackAdded('aa', verticalHeatmapTrack, 'left');
+      hgc.instance().state.views.aa.tracks.left[0].width = 100;
+
+      hgc.setState(hgc.instance().state);
+      hgc.instance().tiledPlots.aa.measureSize();
+
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vh1');
+
+      expect(track.originalTrack.axis.track.flipText).toEqual(true);
+
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('Should flip the vertical heatmap', () => {
+      const { views } = hgc.instance().state;
+      const track = getTrackByUid(views.aa.tracks, 'vh1');
+
+      track.options.oneDHeatmapFlipped = 'yes';
+
+      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vh1').originalTrack;
+      hgc.setState({
+        views,
+      });
+
+      // make sure the heatmap was flipped
+      expect(trackObj.pMain.scale.y).toBeLessThan(0);
+    });
+
+    it('Should remove the vertical heatmap', (done) => {
+      hgc.instance().handleCloseTrack('aa', 'vh1');
+      hgc.setState(hgc.instance().state);
+      hgc.instance().tiledPlots.aa.measureSize();
+
+      // setTimeout(done, shortLoadTime);
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('should add a heatmap', (done) => {
+      // height defined in the testViewConf file, just the chromosome names
+      // track
+      expect(totalTrackPixelHeight(hgc.instance().state.views.aa)).toEqual(57);
+
+      hgc.instance().handleTrackAdded('aa', horizontalHeatmapTrack, 'top');
+
+      hgc.setState(hgc.instance().state);
+
+      // this should show the graphics, but it initially doesn't
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('should change the opacity of the label', () => {
+      hgc.instance().state.views.aa.tracks.top[0].options.labelBackgroundOpacity = 0.5;
+
+      hgc.setState(hgc.instance().state);
+      const horizontalHeatmap = getTrackObjectFromHGC(hgc.instance(), 'aa', 'hh1');
+
+      expect(horizontalHeatmap.options.labelBackgroundOpacity).toEqual(0.5);
+    });
+
+    it('should have a horizontal heatmap scale', () => {
+      const horizontalHeatmap = getTrackObjectFromHGC(hgc.instance(), 'aa', 'hh1');
+
+      const svg = horizontalHeatmap.exportColorBarSVG();
+      const rects = svg.getElementsByClassName('color-rect');
+      expect(rects.length).toBeGreaterThan(0);
+
+      // let svgText = new XMLSerializer().serializeToString(svg);
+    });
+
+    it('should add a large horizontal heatmap', (done) => {
+      // handleTrackAdded automatically sets the height
+      const prevHeight = hgc.instance().state.views.aa.layout.h;
+      hgc.instance().handleTrackAdded('aa', largeHorizontalHeatmapTrack, 'top');
+
+      hgc.setState(hgc.instance().state);
+
+      // make sure that the view has grown
+      expect(hgc.instance().state.views.aa.layout.h).toBeGreaterThan(prevHeight);
+
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+
+    it('should add a few more horizontal tracks', (done) => {
+      const numNewTracks = 5;
+      for (let i = 0; i < numNewTracks; i++) {
+        const newTrackJson = JSON.parse(JSON.stringify(largeHorizontalHeatmapTrack));
+        newTrackJson.uid = slugid.nice();
+        hgc.setState(hgc.instance().state);
+
+        hgc.instance().handleTrackAdded('aa', newTrackJson, 'top');
+      }
+
+      hgc.setState(hgc.instance().state);
+
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('updates the view and deletes some tracks', (done) => {
+      // hgc.update();
+      const trackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer.currentProps.height;
+
+      const numToDelete = 3;
+      const toDeleteUids = [];
+      for (let i = 0; i < numToDelete; i++) {
+        const trackUid = hgc.instance().state.views.aa.tracks.top[i].uid;
+        toDeleteUids.push(trackUid);
+      }
+
+      for (const uid of toDeleteUids) {
+        hgc.instance().handleCloseTrack('aa', uid);
+      }
+
+      hgc.setState(hgc.instance().state);
+
+      hgc.instance().tiledPlots.aa.measureSize();
+
+      // make sure that the trackRenderer is now smaller than it was before
+      // we deleted the tracks
+      const newTrackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer.currentProps.height;
+      expect(newTrackRendererHeight).toBeLessThan(trackRendererHeight);
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('Adds a center heatmap track', (done) => {
+      hgc.instance().handleTrackAdded('aa', heatmapTrack, 'center');
+
+      hgc.setState(hgc.instance().state);
+      hgc.instance().tiledPlots.aa.measureSize();
+
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('Checks to make sure the newly added heatmap was large enough and deletes a track', () => {
+      const prevTotalHeight = hgc.instance().calculateViewDimensions(
+        hgc.instance().state.views.aa
+      ).totalHeight;
+
+      const newView = hgc.instance().handleCloseTrack('aa', 'hcl').aa;
+      hgc.setState(hgc.instance().state);
+      // hgc.instance().tiledPlots['aa'].measureSize();
+
+      // let nextTrackRendererHeight =
+      // hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
+      const nextTotalHeight = hgc.instance().calculateViewDimensions(newView).totalHeight;
+
+      // expect(nextTrackRendererHeight).toEqual(prevTrackRendererHeight - 57);
+      expect(nextTotalHeight).toBeLessThan(prevTotalHeight);
+
+      // setTimeout(done, shortLoadTime);
+    });
+
+    it('Should resize the center track', (done) => {
+      const view = hgc.instance().state.views.aa;
+      view.layout.h += 2;
+
+      hgc.setState(hgc.instance().state);
+      hgc.instance().tiledPlots.aa.measureSize();
+
+      // setTimeout(done, shortLoadTime);
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('Should add a bottom track and have the new height', () => {
+      // const prevHeight = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap3').dimensions[1];
+
+      const newTrack = JSON.parse(JSON.stringify(horizontalHeatmapTrack));
+      newTrack.uid = 'xyx1';
+
+      hgc.instance().handleTrackAdded('aa', newTrack, 'bottom');
+      hgc.setState(hgc.instance().state);
+      hgc.instance().tiledPlots.aa.measureSize();
+      // skip this test for now
+
+      /*
+
+      // adding a new track should not make the previous one smaller
+
+      const newHeight = hgc.instance().tiledPlots.aa.trackRenderer
+      .getTrackObject('heatmap3').dimensions[1]
+      console.log('prevHeight:', prevHeight, 'newHeight:', newHeight);
+      expect(prevHeight).toEqual(newHeight);
+
+      waitForTilesLoaded(hgc.instance(), done);
+      */
+    });
+
+    it('Should resize the center', (done) => {
+      const view = hgc.instance().state.views.aa;
+      view.layout.h += 2;
+
+      hgc.setState(hgc.instance().state);
+      hgc.instance().tiledPlots.aa.measureSize();
+
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('Should delete the bottom track and not resize the center', (done) => {
+      const prevSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3')
+        .dimensions[1];
+
+      hgc.instance().handleCloseTrack('aa', 'xyx1');
+      hgc.setState(hgc.instance().state);
+      hgc.instance().tiledPlots.aa.measureSize();
+
+      const nextSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3')
+        .dimensions[1];
+
+      // Was commented out: Uncomment and see if it works...
+      expect(nextSize).toEqual(prevSize);
+
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+  });
+
+  describe('Invalid track type tests', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={invalidTrackConfig}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc.instance(), done);
+
+      // visual check that the heatmap track config menu is moved
+      // to the left
+    });
+
+    it('Opens the track type menu', () => {
+      const clickPosition = {
+        bottom: 85,
+        height: 28,
+        left: 246,
+        right: 274,
+        top: 57,
+        width: 28,
+        x: 246,
+        y: 57,
+      };
+      const uid = 'line1';
+
+      hgc.instance().tiledPlots.aa.handleConfigTrackMenuOpened(uid, clickPosition);
+      const cftm = hgc.instance().tiledPlots.aa.configTrackMenu;
+
+      const subMenuRect = {
+        bottom: 88,
+        height: 27,
+        left: 250,
+        right: 547.984375,
+        top: 61,
+        width: 297.984375,
+        x: 250,
+        y: 61,
+      };
+
+      const series = invalidTrackConfig.views[0].tracks.top;
+
+      // get the object corresponding to the series
+      cftm.handleItemMouseEnterWithRect(subMenuRect, series[0]);
+      const seriesObj = cftm.seriesListMenu;
+
+      const position = { left: 127.03125, top: 84 };
+      const bbox = {
+        bottom: 104,
+        height: 20,
+        left: 131.03125,
+        right: 246,
+        top: 84,
+        width: 114.96875,
+        x: 131.03125,
+        y: 84,
+      };
+
+      const trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
+
+      expect(trackTypeItems.props.menuItems['horizontal-line']).toBeUndefined();
+      expect(trackTypeItems.props.menuItems['horizontal-point']).toBeUndefined();
+    });
+
+    it('Opens the close track menu', () => {
+      const clickPosition = {
+        bottom: 85,
+        height: 28,
+        left: 246,
+        right: 274,
+        top: 57,
+        width: 28,
+        x: 246,
+        y: 57,
+      };
+      const uid = 'line1';
+
+      hgc.instance().tiledPlots.aa.handleCloseTrackMenuOpened(uid, clickPosition);
+    });
+  });
+
   describe('API tests', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
@@ -1043,102 +1382,6 @@ describe('Simple HiGlassComponent', () => {
     });
   });
 
-  describe('Invalid track type tests', () => {
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: false }}
-        viewConfig={invalidTrackConfig}
-      />, { attachTo: div });
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-
-      // visual check that the heatmap track config menu is moved
-      // to the left
-    });
-
-    it('Opens the track type menu', () => {
-      const clickPosition = {
-        bottom: 85,
-        height: 28,
-        left: 246,
-        right: 274,
-        top: 57,
-        width: 28,
-        x: 246,
-        y: 57,
-      };
-      const uid = 'line1';
-
-      hgc.instance().tiledPlots.aa.handleConfigTrackMenuOpened(uid, clickPosition);
-      const cftm = hgc.instance().tiledPlots.aa.configTrackMenu;
-
-      const subMenuRect = {
-        bottom: 88,
-        height: 27,
-        left: 250,
-        right: 547.984375,
-        top: 61,
-        width: 297.984375,
-        x: 250,
-        y: 61,
-      };
-
-      const series = invalidTrackConfig.views[0].tracks.top;
-
-      // get the object corresponding to the series
-      cftm.handleItemMouseEnterWithRect(subMenuRect, series[0]);
-      const seriesObj = cftm.seriesListMenu;
-
-      const position = { left: 127.03125, top: 84 };
-      const bbox = {
-        bottom: 104,
-        height: 20,
-        left: 131.03125,
-        right: 246,
-        top: 84,
-        width: 114.96875,
-        x: 131.03125,
-        y: 84,
-      };
-
-      const trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
-
-      expect(trackTypeItems.props.menuItems['horizontal-line']).toBeUndefined();
-      expect(trackTypeItems.props.menuItems['horizontal-point']).toBeUndefined();
-    });
-
-    it('Opens the close track menu', () => {
-      const clickPosition = {
-        bottom: 85,
-        height: 28,
-        left: 246,
-        right: 274,
-        top: 57,
-        width: 28,
-        x: 246,
-        y: 57,
-      };
-      const uid = 'line1';
-
-      hgc.instance().tiledPlots.aa.handleCloseTrackMenuOpened(uid, clickPosition);
-    });
-  });
   //
   // wait a bit of time for the data to be loaded from the server
   describe('Two linked views', () => {
@@ -2249,249 +2492,6 @@ describe('Simple HiGlassComponent', () => {
 
     it('Expect the the chosen rowHeight to be less than 24', (done) => {
       expect(hgc.instance().state.rowHeight).toBeLessThan(24);
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-  });
-
-
-  describe('Track positioning', () => {
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: false }}
-        viewConfig={horizontalDiagonalTrackViewConf}
-      />,
-      { attachTo: div });
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('should add and resize a vertical heatmp', (done) => {
-      hgc.instance().handleTrackAdded('aa', verticalHeatmapTrack, 'left');
-      hgc.instance().state.views.aa.tracks.left[0].width = 100;
-
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-
-      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vh1');
-
-      expect(track.originalTrack.axis.track.flipText).toEqual(true);
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Should flip the vertical heatmap', () => {
-      const { views } = hgc.instance().state;
-      const track = getTrackByUid(views.aa.tracks, 'vh1');
-
-      track.options.oneDHeatmapFlipped = 'yes';
-
-      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vh1').originalTrack;
-      hgc.setState({
-        views,
-      });
-
-      // make sure the heatmap was flipped
-      expect(trackObj.pMain.scale.y).toBeLessThan(0);
-    });
-
-    it('Should remove the vertical heatmap', (done) => {
-      hgc.instance().handleCloseTrack('aa', 'vh1');
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-
-      // setTimeout(done, shortLoadTime);
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('should add a heatmap', (done) => {
-      // height defined in the testViewConf file, just the chromosome names
-      // track
-      expect(totalTrackPixelHeight(hgc.instance().state.views.aa)).toEqual(57);
-
-      hgc.instance().handleTrackAdded('aa', horizontalHeatmapTrack, 'top');
-
-      hgc.setState(hgc.instance().state);
-
-      // this should show the graphics, but it initially doesn't
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('should change the opacity of the label', () => {
-      hgc.instance().state.views.aa.tracks.top[0].options.labelBackgroundOpacity = 0.5;
-
-      hgc.setState(hgc.instance().state);
-      const horizontalHeatmap = getTrackObjectFromHGC(hgc.instance(), 'aa', 'hh1');
-
-      expect(horizontalHeatmap.options.labelBackgroundOpacity).toEqual(0.5);
-    });
-
-    it('should have a horizontal heatmap scale', () => {
-      const horizontalHeatmap = getTrackObjectFromHGC(hgc.instance(), 'aa', 'hh1');
-
-      const svg = horizontalHeatmap.exportColorBarSVG();
-      const rects = svg.getElementsByClassName('color-rect');
-      expect(rects.length).toBeGreaterThan(0);
-
-      // let svgText = new XMLSerializer().serializeToString(svg);
-    });
-
-    it('should add a large horizontal heatmap', (done) => {
-      // handleTrackAdded automatically sets the height
-      const prevHeight = hgc.instance().state.views.aa.layout.h;
-      hgc.instance().handleTrackAdded('aa', largeHorizontalHeatmapTrack, 'top');
-
-      hgc.setState(hgc.instance().state);
-
-      // make sure that the view has grown
-      expect(hgc.instance().state.views.aa.layout.h).toBeGreaterThan(prevHeight);
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-
-    it('should add a few more horizontal tracks', (done) => {
-      const numNewTracks = 5;
-      for (let i = 0; i < numNewTracks; i++) {
-        const newTrackJson = JSON.parse(JSON.stringify(largeHorizontalHeatmapTrack));
-        newTrackJson.uid = slugid.nice();
-        hgc.setState(hgc.instance().state);
-
-        hgc.instance().handleTrackAdded('aa', newTrackJson, 'top');
-      }
-
-      hgc.setState(hgc.instance().state);
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('updates the view and deletes some tracks', (done) => {
-      // hgc.update();
-      const trackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer.currentProps.height;
-
-      const numToDelete = 3;
-      const toDeleteUids = [];
-      for (let i = 0; i < numToDelete; i++) {
-        const trackUid = hgc.instance().state.views.aa.tracks.top[i].uid;
-        toDeleteUids.push(trackUid);
-      }
-
-      for (const uid of toDeleteUids) {
-        hgc.instance().handleCloseTrack('aa', uid);
-      }
-
-      hgc.setState(hgc.instance().state);
-
-      hgc.instance().tiledPlots.aa.measureSize();
-
-      // make sure that the trackRenderer is now smaller than it was before
-      // we deleted the tracks
-      const newTrackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer.currentProps.height;
-      expect(newTrackRendererHeight).toBeLessThan(trackRendererHeight);
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Adds a center heatmap track', (done) => {
-      hgc.instance().handleTrackAdded('aa', heatmapTrack, 'center');
-
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Checks to make sure the newly added heatmap was large enough and deletes a track', () => {
-      const prevTotalHeight = hgc.instance().calculateViewDimensions(
-        hgc.instance().state.views.aa
-      ).totalHeight;
-
-      const newView = hgc.instance().handleCloseTrack('aa', 'hcl').aa;
-      hgc.setState(hgc.instance().state);
-      // hgc.instance().tiledPlots['aa'].measureSize();
-
-      // let nextTrackRendererHeight =
-      // hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
-      const nextTotalHeight = hgc.instance().calculateViewDimensions(newView).totalHeight;
-
-      // expect(nextTrackRendererHeight).toEqual(prevTrackRendererHeight - 57);
-      expect(nextTotalHeight).toBeLessThan(prevTotalHeight);
-
-      // setTimeout(done, shortLoadTime);
-    });
-
-    it('Should resize the center track', (done) => {
-      const view = hgc.instance().state.views.aa;
-      view.layout.h += 2;
-
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-
-      // setTimeout(done, shortLoadTime);
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Should add a bottom track and have the new height', () => {
-      // const prevHeight = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap3').dimensions[1];
-
-      const newTrack = JSON.parse(JSON.stringify(horizontalHeatmapTrack));
-      newTrack.uid = 'xyx1';
-
-      hgc.instance().handleTrackAdded('aa', newTrack, 'bottom');
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-      // skip this test for now
-
-      /*
-
-      // adding a new track should not make the previous one smaller
-
-      const newHeight = hgc.instance().tiledPlots.aa.trackRenderer
-      .getTrackObject('heatmap3').dimensions[1]
-      console.log('prevHeight:', prevHeight, 'newHeight:', newHeight);
-      expect(prevHeight).toEqual(newHeight);
-
-      waitForTilesLoaded(hgc.instance(), done);
-      */
-    });
-
-    it('Should resize the center', (done) => {
-      const view = hgc.instance().state.views.aa;
-      view.layout.h += 2;
-
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Should delete the bottom track and not resize the center', (done) => {
-      const prevSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3')
-        .dimensions[1];
-
-      hgc.instance().handleCloseTrack('aa', 'xyx1');
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-
-      const nextSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3')
-        .dimensions[1];
-
-      // Was commented out: Uncomment and see if it works...
-      expect(nextSize).toEqual(prevSize);
 
       waitForTilesLoaded(hgc.instance(), done);
     });

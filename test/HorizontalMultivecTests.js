@@ -10,7 +10,17 @@ import Adapter from 'enzyme-adapter-react-16';
 import {
   mountHGComponent,
   removeHGComponent,
+  getTrackObjectFromHGC,
 } from '../app/scripts/utils';
+
+// View configs
+import horizontalMultivecWithSmallerDimensions from './view-configs-more/horizontalMultivecWithSmallerDimensions';
+
+// Constants
+import {
+  MIN_HORIZONTAL_HEIGHT,
+  MIN_VERTICAL_WIDTH,
+} from '../app/scripts/configs';
 
 configure({ adapter: new Adapter() });
 
@@ -32,6 +42,23 @@ describe('Horizontal heatmaps', () => {
   // it('not have errors in the loaded viewconf', (done) => {
   //   done();
   // });
+
+  it('Test horizontal multivec with track containing smaller-than-default width and height', (done) => {
+    ([div, hgc] = mountHGComponent(div, hgc,
+      horizontalMultivecWithSmallerDimensions,
+      () => {
+        const track = getTrackObjectFromHGC(hgc.instance(), 'viewConf2_uid', 'K_0GxgCvQfCHM56neOnHKg'); // uuid of horizontal-multivec
+        const width = track.dimensions[0];
+        const height = track.dimensions[1];
+        if (height === MIN_HORIZONTAL_HEIGHT || width === MIN_VERTICAL_WIDTH) return;
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      })
+    );
+  });
 
   afterAll(() => {
     removeHGComponent(div);

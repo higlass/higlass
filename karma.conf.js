@@ -24,7 +24,6 @@ module.exports = (config) => {
       {
         pattern: 'docs/examples/viewconfs/*.json', watched: true, served: true, included: false
       },
-      // 'test/**/*.+(js|jsx)',
       'test/APITests.js',
       'test/OverlayTrackTests.js',
       'test/PngExportTest.js',
@@ -98,12 +97,16 @@ module.exports = (config) => {
     colors: true,
     logLevel: config.LOG_DEBUG,
     autoWatch: true,
-    browsers: ['Chrome'],
+    browsers: ['Chrome', 'HeadlessChrome'],
     singleRun: false,
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',
         flags: ['--no-sandbox'],
+      },
+      HeadlessChrome: {
+        base: 'ChromeHeadless',
+        flags: ['--disable-translate', '--disable-extensions', '--remote-debugging-port=9223']
       },
     },
   });

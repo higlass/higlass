@@ -19,30 +19,22 @@
           {
             "type": "top-axis",
             "local": true,
-            "orientation": "1d-horizontal",
             "name": "Top Axis",
-            "thumbnail": {},
-            "defaultOptions": {},
             "uid": "d8focpO5TKKd2TB8QONd9w",
             "options": {},
             "width": 20,
-            "height": 20,
-            "position": "top"
+            "height": 20
           }
         ],
         "left": [
           {
             "type": "left-axis",
             "local": true,
-            "orientation": "1d-vertical",
             "name": "Left Axis",
-            "thumbnail": {},
-            "minWidth": 100,
             "uid": "RhdSji35SgOOJyqcy81zcg",
             "options": {},
             "width": 100,
-            "height": 400,
-            "position": "left"
+            "height": 400
           }
         ],
         "center": [
@@ -70,7 +62,6 @@
               "scaleEndPercent": "1.00000"
             },
             "uid": "heatmap1",
-            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
             "transforms": [
               {
                 "name": "ICE",

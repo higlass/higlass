@@ -23,8 +23,6 @@
       "tracks": {
         "top": [
           {
-            "filetype": "beddb",
-            "name": "9ae0744a-9bc1-4cd7-b7cf-c6569ed9e4aa.consensus.20170119.somatic.cna.annotated.txt.multires",
             "server": "http://127.0.0.1:8989/api/v1",
             "tilesetUid": "WRfF4fKBR1S8gS5RSd-7YQ",
             "uid": "Pq_LNH6SRISVqrUl4n53Dg",
@@ -33,8 +31,7 @@
               "name": "9ae0744a-9bc1-4cd7-b7cf-c6569ed9e4aa.consensus.20170119.somatic.cna.annotated.txt.multires"
             },
             "width": 902,
-            "height": 36,
-            "position": "top"
+            "height": 36
           },
           {
             "filetype": "beddb",
@@ -57,22 +54,16 @@
           {
             "type": "horizontal-chromosome-labels",
             "local": true,
-            "orientation": "1d-horizontal",
-            "minHeight": 30,
             "name": "Chromosome Axis (mm9)",
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "thumbnail": null,
             "uid": "K8ctyFcBQGCXnHBSeCQpaQ",
             "options": {},
             "width": 20,
-            "height": 30,
-            "position": "top"
+            "height": 30
           }
         ],
         "left": [
           {
-            "filetype": "beddb",
-            "name": "Gene Annotations (hg19)",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
             "uid": "L5FM6--PTeaof462uQB0ww",
@@ -85,22 +76,16 @@
               "name": "Gene Annotations (hg19)"
             },
             "width": 60,
-            "height": 20,
-            "position": "left"
+            "height": 20
           },
           {
             "type": "vertical-chromosome-labels",
             "local": true,
-            "orientation": "1d-vertical",
-            "minWidth": 30,
-            "minHeight": 30,
             "name": "Chromosome Axis (hg19)",
-            "thumbnail": null,
             "uid": "Boe4m22pQwS2D7QqVpaV6w",
             "options": {},
             "width": 30,
-            "height": 30,
-            "position": "left"
+            "height": 30
           }
         ],
         "center": [
@@ -109,8 +94,6 @@
             "type": "combined",
             "contents": [
               {
-                "filetype": "bed2ddb",
-                "name": "9ae0744a-9bc1-4cd7-b7cf-c6569ed9e4aa.pcawg_consensus_1.6.161022.somatic.sv.bedpe.multires.db",
                 "server": "http://127.0.0.1:8989/api/v1",
                 "tilesetUid": "Vohl6uJnRfCjKrMh7HCoUA",
                 "uid": "JYciTCMsSPyHZ87vveCuIQ",
