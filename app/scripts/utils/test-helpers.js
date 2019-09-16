@@ -111,9 +111,9 @@ export const isWaitingOnTiles = (hgc) => {
       if (trackObj.originalTrack) { trackObj = trackObj.originalTrack; }
 
       if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
-        console.warn(
-          `Track uuid:${trackObj.uuid} has no tileset or chromosome info`
-        );
+        // console.warn(
+        //   `Track uuid:${trackObj.uuid} has no tileset or chromosome info`
+        // );
         return true;
       }
 

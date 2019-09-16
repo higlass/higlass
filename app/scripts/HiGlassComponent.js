@@ -1860,63 +1860,6 @@ class HiGlassComponent extends React.Component {
   }
 
   /**
-   * If tracks don't have specified dimensions, add in the known
-   * minimums
-   *
-   * Operates on the tracks stored for this TiledPlot.
-   */
-  fillInMinWidths(tracksDict) {
-    const horizontalLocations = ['top', 'bottom'];
-
-    // first make sure all track types are specified
-    // this will make the code later on simpler
-    if (!('center' in tracksDict)) { tracksDict.center = []; }
-    if (!('left' in tracksDict)) { tracksDict.left = []; }
-    if (!('right' in tracksDict)) { tracksDict.right = []; }
-    if (!('top' in tracksDict)) { tracksDict.top = []; }
-    if (!('bottom' in tracksDict)) { tracksDict.bottom = []; }
-
-    for (let j = 0; j < horizontalLocations.length; j++) {
-      const tracks = tracksDict[horizontalLocations[j]];
-
-      // e.g. no 'top' tracks
-      if (!tracks) { continue; }
-
-      for (let i = 0; i < tracks.length; i++) {
-        const trackInfo = this.getTrackInfo(tracks[i].type);
-
-        if (!('height' in tracks[i]) || (trackInfo && tracks[i].height < trackInfo.minHeight)) {
-          if (trackInfo && trackInfo.minHeight) {
-            tracks[i].height = trackInfo.minHeight;
-          } else { tracks[i].height = this.minHorizontalHeight; }
-        }
-      }
-    }
-
-    const verticalLocations = ['left', 'right'];
-
-    for (let j = 0; j < verticalLocations.length; j++) {
-      const tracks = tracksDict[verticalLocations[j]];
-
-      // e.g. no 'left' tracks
-      if (!tracks) { continue; }
-
-      for (let i = 0; i < tracks.length; i++) {
-        const trackInfo = this.getTrackInfo(tracks[i].type);
-
-        if (!('width' in tracks[i]) || (trackInfo && tracks[i].width < trackInfo.minWidth)) {
-          //
-          if (trackInfo && trackInfo.minWidth) {
-            tracks[i].width = trackInfo.minWidth;
-          } else { tracks[i].width = this.minVerticalWidth; }
-        }
-      }
-    }
-
-    return tracksDict;
-  }
-
-  /**
    * Get the dimensions for this view, counting just the tracks
    * that are present in it
    *
@@ -2009,6 +1952,7 @@ class HiGlassComponent extends React.Component {
       if (!view.tracks.center[0].contents || view.tracks.center[0].contents.length > 0) {
         let height = null;
         let width = null;
+
 
         if (view.tracks.center[0].contents) {
           // combined track in the center
@@ -2342,11 +2286,13 @@ class HiGlassComponent extends React.Component {
     }
 
     newTrack.position = position;
-    newTrack.width = this.getTrackInfo(newTrack.type).defaultWidth
-      || this.getTrackInfo(newTrack.type).minWidth
+    const trackInfo = this.getTrackInfo(newTrack.type);
+
+    newTrack.width = trackInfo.defaultWidth
+      || (trackInfo.defaultOptions && trackInfo.defaultOptions.minWidth)
       || this.minVerticalWidth;
-    newTrack.height = this.getTrackInfo(newTrack.type).defaultHeight
-      || this.getTrackInfo(newTrack.type).minHeight
+    newTrack.height = trackInfo.defaultHeight
+      || (trackInfo.defaultOptions && trackInfo.defaultOptions.minHeight)
       || this.minHorizontalHeight;
 
     const { tracks } = this.state.views[viewId];
