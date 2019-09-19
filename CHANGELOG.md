@@ -1,14 +1,18 @@
 ## Next release
 
+_[Detailed changes since v1.6.10](https://github.com/higlass/higlass/compare/v1.6.11...develop)_
+
+## v1.6.11
+
 - Overlay track bug fixes
-
-_[Detailed changes since v1.6.10](https://github.com/higlass/higlass/compare/v1.6.9...v1.6.10)_
-
+- Added `minWidth` and `minHeight` options to `overlays` for better guidance
 - Allow viewconf JSON to override minimum track height or width defaults, when a track specifies a `minHeight` or `minWidth` parameter
+
+_[Detailed changes since v1.6.10](https://github.com/higlass/higlass/compare/v1.6.10...v1.6.11)_
 
 ## v1.6.10
 
-- Add API call for show track chooser (hgApi. showTrackChooser()`)
+- Add API call for show track chooser (`hgApi.showTrackChooser()`)
 - Limit icon size in plot type chooser
 - Add non-gzipped support to genbank-fetcher
 - Better error handling for genbank fetcher
