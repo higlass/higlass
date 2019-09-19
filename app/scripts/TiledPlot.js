@@ -495,19 +495,18 @@ class TiledPlot extends React.Component {
     });
   }
 
-  handleOverlayMouseLeave() {
-    this.setState({
-      mouseOverOverlayUid: null,
-    });
+  handleOverlayMouseLeave(uid) {
+    if (uid === this.state.mouseOverOverlayUid) {
+      this.setState({
+        mouseOverOverlayUid: null,
+      });
+    }
   }
 
 
-  handleTrackPositionChosen(position) {
-    this.handleAddTrack(position);
-
-    // have our parent close the menu
-    // parent needs to do it because the button is located in the parent's scope
-    this.props.onTrackPositionChosen(position);
+  handleTrackPositionChosen(pTrack) {
+    this.setState({ mouseOverOverlayUid: null });
+    this.props.chooseTrackHandler(pTrack.track.uid);
   }
 
 
@@ -1012,7 +1011,7 @@ class TiledPlot extends React.Component {
               orientationsAndPositions: overlayTrack.includes.map((trackUuid) => {
                 // translate a trackUuid into that track's orientation
                 const includedTrack = getTrackByUid(this.props.tracks, trackUuid);
-                const trackPos = includedTrack.position;
+                const trackPos = getTrackPositionByUid(this.props.tracks, includedTrack.uid);
                 if (!includedTrack) {
                   console.warn(`OverlayTrack included uid (${trackUuid}) not found in the track list`);
                   return null;
@@ -1047,8 +1046,8 @@ class TiledPlot extends React.Component {
                 }
 
                 const position = {
-                  left: positionedTrack[0].left,
-                  top: positionedTrack[0].top,
+                  left: positionedTrack[0].left - this.props.paddingLeft,
+                  top: positionedTrack[0].top - this.props.paddingTop,
                   width: positionedTrack[0].width,
                   height: positionedTrack[0].height,
                 };
@@ -1065,8 +1064,8 @@ class TiledPlot extends React.Component {
           // the 2 * verticalMargin is to make up for the space taken away
           // in render(): this.centerHeight = this.state.height...
           return {
-            top: 0,
-            left: 0,
+            top: this.props.paddingTop,
+            left: this.props.paddingLeft,
             width: this.leftWidth + this.centerWidth + this.rightWidth,
             height: this.topHeight + this.centerHeight
             + this.bottomHeight
@@ -2160,10 +2159,14 @@ class TiledPlot extends React.Component {
             // to choose an overlay track, the previously selected one isn't
             // automatically highlighted
 
-            onClick={() => {
-              this.setState({ mouseOverOverlayUid: null });
-              this.props.chooseTrackHandler(pTrack.track.uid);
+            onClick={() => this.handleTrackPositionChosen(pTrack)}
+            onDragEnter={(evt) => {
+              this.handleOverlayMouseEnter(pTrack.track.uid);
+              evt.preventDefault();
             }}
+            onDragLeave={() => this.handleOverlayMouseLeave(pTrack.track.uid)}
+            onDragOver={evt => evt.preventDefault()}
+            onDrop={() => this.handleTrackPositionChosen(pTrack)}
             onMouseEnter={() => this.handleOverlayMouseEnter(pTrack.track.uid)}
             onMouseLeave={() => this.handleOverlayMouseLeave(pTrack.track.uid)}
             style={{
@@ -2242,14 +2245,6 @@ class TiledPlot extends React.Component {
 
   addEventListeners() {
     this.eventListeners = [
-      /*
-      {
-        name: 'dragstart',
-        callback: (event) => {
-          console.log('dragstart', event.dataTransfer.getData('text/json'));
-        },
-      },
-      */
     ];
 
     this.eventListeners.forEach(

@@ -94,9 +94,11 @@
       "includes": ["chroms-top", "chroms-left", "genes-top", "genes-left", "center"],
       "options": {
         "extent": [
-          [1000000000, 1100000000],
+          [1000000000, 1000000010],
           [1200000000, 1300000000, 1400000000, 1500000000]
-        ]
+        ],
+        "minWidth": 4,
+        "minHeight": 4
       }
     }]
   }]
