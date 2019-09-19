@@ -14,16 +14,19 @@ class OverlayTrack extends PixiTrack {
   drawHorizontalOverlay(graphics, position, extent, minWidth = 0) {
     if (!extent || extent.length < 2) return;
 
-    const xPos = this.position[0]
+    let xPos = this.position[0]
       + position.left
       + this._xScale(extent[0]);
 
     const yPos = this.position[1] + position.top;
     const height = position.height;
-    const width = Math.max(
-      minWidth,
-      this._xScale(extent[1]) - this._xScale(extent[0])
-    );
+    let width = this._xScale(extent[1]) - this._xScale(extent[0]);
+
+    if (width < minWidth) {
+      // To center the overlay
+      xPos -= (minWidth - width) / 2;
+      width = minWidth;
+    }
 
     graphics.drawRect(xPos, yPos, width, height);
   }
@@ -67,7 +70,11 @@ class OverlayTrack extends PixiTrack {
       height += bottomPosition - (yPos + height);
     }
 
-    height = Math.max(height, minHeight);
+    if (height < minHeight) {
+      // To center the overlay
+      yPos -= (minHeight - height) / 2;
+      height = minHeight;
+    }
 
     graphics.drawRect(xPos, yPos, width, height);
   }
@@ -90,13 +97,13 @@ class OverlayTrack extends PixiTrack {
       this.options.orientationsAndPositions.forEach((op) => {
         if (op.orientation === '1d-horizontal' || op.orientation === '2d') {
           this.options.extent.forEach(extent => this.drawHorizontalOverlay(
-            graphics, op.position, extent, minHeight
+            graphics, op.position, extent, minWidth
           ));
         }
 
         if (op.orientation === '1d-vertical' || op.orientation === '2d') {
           this.options.extent.forEach(extent => this.drawVerticalOverlay(
-            graphics, op.position, extent, minWidth
+            graphics, op.position, extent, minHeight
           ));
         }
       });
