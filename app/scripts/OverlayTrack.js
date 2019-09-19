@@ -11,7 +11,7 @@ class OverlayTrack extends PixiTrack {
     this.drawnRects = {};
   }
 
-  drawHorizontalOverlay(graphics, position, extent) {
+  drawHorizontalOverlay(graphics, position, extent, minWidth = 0) {
     if (!extent || extent.length < 2) return;
 
     const xPos = this.position[0]
@@ -20,12 +20,15 @@ class OverlayTrack extends PixiTrack {
 
     const yPos = this.position[1] + position.top;
     const height = position.height;
-    const width = this._xScale(extent[1]) - this._xScale(extent[0]);
+    const width = Math.max(
+      minWidth,
+      this._xScale(extent[1]) - this._xScale(extent[0])
+    );
 
     graphics.drawRect(xPos, yPos, width, height);
   }
 
-  drawVerticalOverlay(graphics, position, extent) {
+  drawVerticalOverlay(graphics, position, extent, minHeight = 0) {
     if (!extent || extent.length < 2) return;
 
     const xPos = this.position[0] + position.left;
@@ -64,6 +67,8 @@ class OverlayTrack extends PixiTrack {
       height += bottomPosition - (yPos + height);
     }
 
+    height = Math.max(height, minHeight);
+
     graphics.drawRect(xPos, yPos, width, height);
   }
 
@@ -78,17 +83,20 @@ class OverlayTrack extends PixiTrack {
     graphics.clear();
     graphics.beginFill(fill, this.options.fillOpacity || 0.3);
 
+    const minWidth = Math.max(0, +this.options.minWidth || 0);
+    const minHeight = Math.max(0, +this.options.minHeight || 0);
+
     if (Array.isArray(this.options.extent)) {
       this.options.orientationsAndPositions.forEach((op) => {
         if (op.orientation === '1d-horizontal' || op.orientation === '2d') {
           this.options.extent.forEach(extent => this.drawHorizontalOverlay(
-            graphics, op.position, extent
+            graphics, op.position, extent, minHeight
           ));
         }
 
         if (op.orientation === '1d-vertical' || op.orientation === '2d') {
           this.options.extent.forEach(extent => this.drawVerticalOverlay(
-            graphics, op.position, extent
+            graphics, op.position, extent, minWidth
           ));
         }
       });
