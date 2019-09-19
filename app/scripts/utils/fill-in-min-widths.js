@@ -39,7 +39,11 @@ const fillInMinWidths = (tracks) => {
         }
 
         if (!track.height) {
-          track.height = trackInfo.defaultHeight || options.minHeight || MIN_HORIZONTAL_HEIGHT;
+          track.height = (
+            (trackInfo && trackInfo.defaultHeight)
+            || options.minHeight
+            || MIN_HORIZONTAL_HEIGHT
+          );
         }
       }));
 
@@ -58,7 +62,11 @@ const fillInMinWidths = (tracks) => {
         }
 
         if (!track.width) {
-          track.width = trackInfo.defaultWidth || options.minWidth || MIN_VERTICAL_WIDTH;
+          track.width = (
+            (trackInfo && trackInfo.defaultWidth)
+            || options.minWidth
+            || MIN_VERTICAL_WIDTH
+          );
         }
       }));
 
