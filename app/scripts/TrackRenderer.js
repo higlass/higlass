@@ -1107,7 +1107,10 @@ class TrackRenderer extends React.Component {
         const trackAtZoomStart = tracksAtZoomStart[0];
         const trackDef = this.getTrackDef(trackAtZoomStart);
 
-        trackOrientation = TRACKS_INFO_BY_TYPE[trackDef.type].orientation;
+        if (TRACKS_INFO_BY_TYPE[trackDef.type]) {
+          // some track types (like overlay-track don't have a track info)
+          trackOrientation = TRACKS_INFO_BY_TYPE[trackDef.type].orientation;
+        }
       }
     }
 

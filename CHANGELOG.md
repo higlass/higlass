@@ -1,5 +1,7 @@
 ## Next release
 
+- Overlay track bug fixes
+
 _[Detailed changes since v1.6.10](https://github.com/higlass/higlass/compare/v1.6.9...v1.6.10)_
 
 - Allow viewconf JSON to override minimum track height or width defaults, when a track specifies a `minHeight` or `minWidth` parameter
