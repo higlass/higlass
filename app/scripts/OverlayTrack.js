@@ -14,43 +14,13 @@ class OverlayTrack extends PixiTrack {
   drawHorizontalOverlay(graphics, position, extent) {
     if (!extent || extent.length < 2) return;
 
-    let xPos = this.position[0]
+    const xPos = this.position[0]
       + position.left
       + this._xScale(extent[0]);
+
     const yPos = this.position[1] + position.top;
-
     const height = position.height;
-
-
-    // the position of the left bounary of this track
-    const leftPosition = this.position[0] + position.left;
-    const rightPosition = this.position[0] + position.left + position.width;
-
-    if (xPos > rightPosition) {
-      // this annotation is off the bottom
-      return;
-    }
-
-    if (xPos < leftPosition) {
-      // this overlay is partially off the left side of the
-      // track and needs to be truncated
-      xPos = this.position[0] + position.left;
-    }
-
-    let width = this._xScale(extent[1])
-      - xPos
-      + position.left
-      + this.position[0];
-
-    if (width < 0) {
-      // this overlay is off the left end of the track and
-      // doesn't need to be drawn
-      return;
-    }
-
-    if (xPos + width > rightPosition) {
-      width += rightPosition - (xPos + width);
-    }
+    const width = this._xScale(extent[1]) - this._xScale(extent[0]);
 
     graphics.drawRect(xPos, yPos, width, height);
   }
@@ -99,6 +69,7 @@ class OverlayTrack extends PixiTrack {
 
   draw() {
     super.draw();
+
     const graphics = this.pMain;
     const fill = colorToHex(
       this.options.fillColor ? this.options.fillColor : 'blue'
