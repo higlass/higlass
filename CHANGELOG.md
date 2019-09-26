@@ -2,6 +2,8 @@
 
 _[Detailed changes since v1.6.11](https://github.com/higlass/higlass/compare/v1.6.11...develop)_
 
+- Removed componentWillMount
+
 ## v1.6.11
 
 - Overlay track bug fixes
