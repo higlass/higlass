@@ -9,6 +9,10 @@ class Autocomplete extends React.Component {
   constructor(props) {
     super(props);
 
+    this._ignoreBlur = false;
+    this._performAutoCompleteOnUpdate = false;
+    this._performAutoCompleteOnKeyUp = false;
+
     this.state = {
       highlightedIndex: null,
       menuTop: 0,
@@ -96,12 +100,6 @@ class Autocomplete extends React.Component {
       isOpen: false,
       highlightedIndex: null,
     };
-  }
-
-  componentWillMount() {
-    this._ignoreBlur = false;
-    this._performAutoCompleteOnUpdate = false;
-    this._performAutoCompleteOnKeyUp = false;
   }
 
   componentWillReceiveProps(nextProps) {

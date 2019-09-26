@@ -315,42 +315,6 @@ class HiGlassComponent extends React.Component {
     );
   }
 
-  componentWillMount() {
-    this.domEvent.register('keydown', document);
-    this.domEvent.register('keyup', document);
-    this.domEvent.register('scroll', document);
-    this.domEvent.register('resize', window);
-    this.domEvent.register('orientationchange', window);
-
-    this.domEvent.register('wheel', window);
-    this.domEvent.register('mousedown', window, true);
-    this.domEvent.register('mouseup', window, true);
-    this.domEvent.register('click', window, true);
-    this.domEvent.register('mousemove', window);
-    this.domEvent.register('blur', window);
-
-    this.pubSubs.push(
-      this.pubSub.subscribe('app.click', this.appClickHandlerBound),
-      this.pubSub.subscribe('blur', this.onBlurHandlerBound),
-      this.pubSub.subscribe('keydown', this.keyDownHandlerBound),
-      this.pubSub.subscribe('keyup', this.keyUpHandlerBound),
-      this.pubSub.subscribe('resize', this.resizeHandlerBound),
-      this.pubSub.subscribe('wheel', this.wheelHandlerBound),
-      this.pubSub.subscribe('orientationchange', this.resizeHandlerBound),
-      this.pubSub.subscribe('app.event', this.dispatchEventBound),
-      this.pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandlerBound),
-      this.pubSub.subscribe('trackDropped', this.trackDroppedHandlerBound),
-      this.pubSub.subscribe('app.zoomStart', this.zoomStartHandlerBound),
-      this.pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
-      this.pubSub.subscribe('app.zoom', this.zoomHandlerBound),
-      this.pubSub.subscribe('requestReceived', this.requestReceivedHandlerBound),
-    );
-
-    if (this.props.getApi) {
-      this.props.getApi(this.api);
-    }
-  }
-
   setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally = false) {
     this.isBroadcastMousePositionGlobally = isBroadcastMousePositionGlobally;
   }
@@ -492,6 +456,41 @@ class HiGlassComponent extends React.Component {
     icons.forEach(
       icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox),
     );
+
+    // formerly in componentWillMount
+    this.domEvent.register('keydown', document);
+    this.domEvent.register('keyup', document);
+    this.domEvent.register('scroll', document);
+    this.domEvent.register('resize', window);
+    this.domEvent.register('orientationchange', window);
+
+    this.domEvent.register('wheel', window);
+    this.domEvent.register('mousedown', window, true);
+    this.domEvent.register('mouseup', window, true);
+    this.domEvent.register('click', window, true);
+    this.domEvent.register('mousemove', window);
+    this.domEvent.register('blur', window);
+
+    this.pubSubs.push(
+      this.pubSub.subscribe('app.click', this.appClickHandlerBound),
+      this.pubSub.subscribe('blur', this.onBlurHandlerBound),
+      this.pubSub.subscribe('keydown', this.keyDownHandlerBound),
+      this.pubSub.subscribe('keyup', this.keyUpHandlerBound),
+      this.pubSub.subscribe('resize', this.resizeHandlerBound),
+      this.pubSub.subscribe('wheel', this.wheelHandlerBound),
+      this.pubSub.subscribe('orientationchange', this.resizeHandlerBound),
+      this.pubSub.subscribe('app.event', this.dispatchEventBound),
+      this.pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandlerBound),
+      this.pubSub.subscribe('trackDropped', this.trackDroppedHandlerBound),
+      this.pubSub.subscribe('app.zoomStart', this.zoomStartHandlerBound),
+      this.pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
+      this.pubSub.subscribe('app.zoom', this.zoomHandlerBound),
+      this.pubSub.subscribe('requestReceived', this.requestReceivedHandlerBound),
+    );
+
+    if (this.props.getApi) {
+      this.props.getApi(this.api);
+    }
   }
 
   getTrackObject(viewUid, trackUid) {

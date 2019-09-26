@@ -204,9 +204,8 @@ class TrackRenderer extends React.Component {
     this.boundForwardEvent = this.forwardEvent.bind(this);
     this.boundScrollEvent = this.scrollEvent.bind(this);
     this.boundForwardContextMenu = this.forwardContextMenu.bind(this);
-  }
 
-  componentWillMount() {
+    // formerly in componentWillMount
     this.pubSubs = [];
     this.pubSubs.push(
       this.props.pubSub.subscribe('scroll', this.windowScrolledBound),
