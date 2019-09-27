@@ -24,7 +24,8 @@ class PlotTypeChooser extends React.Component {
     };
   }
 
-  componentWillReceiveProps(newProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(newProps) {
     this.AVAILABLE_TRACK_TYPES = AVAILABLE_TRACK_TYPES(newProps.datatypes, this.props.orientation);
 
     if (!this.AVAILABLE_TRACK_TYPES) { return; }

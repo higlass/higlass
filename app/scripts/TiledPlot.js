@@ -204,7 +204,8 @@ class TiledPlot extends React.Component {
     );
   }
 
-  componentWillReceiveProps(newProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(newProps) {
     this.addUidsToTracks(newProps.tracks);
 
     this.setState({
@@ -247,7 +248,8 @@ class TiledPlot extends React.Component {
     return toUpdate;
   }
 
-  componentWillUpdate() {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillUpdate() {
     /**
      * Need to determine the offset of this element relative to the canvas on which stuff
      * will be drawn

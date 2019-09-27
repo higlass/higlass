@@ -315,7 +315,8 @@ class HiGlassComponent extends React.Component {
     );
   }
 
-  componentWillMount() {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount() {
     this.domEvent.register('keydown', document);
     this.domEvent.register('keyup', document);
     this.domEvent.register('scroll', document);
@@ -536,7 +537,8 @@ class HiGlassComponent extends React.Component {
     return views;
   }
 
-  componentWillReceiveProps(newProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(newProps) {
     const viewsByUid = this.loadIfRemoteViewConfig(newProps.viewConfig);
 
     if (newProps.options.authToken !== this.prevAuthToken) {
@@ -567,7 +569,8 @@ class HiGlassComponent extends React.Component {
     });
   }
 
-  componentWillUpdate() {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillUpdate() {
     // let width = this.element.clientWidth;
     // let height = this.element.clientHeight;
 
