@@ -1,5 +1,7 @@
 ## Next release
 
+- Rename React lifecycle methods according to their recommendations
+
 _[Detailed changes since v1.6.11](https://github.com/higlass/higlass/compare/v1.6.11...develop)_
 
 ## v1.6.11
