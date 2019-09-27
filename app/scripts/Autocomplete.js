@@ -98,13 +98,15 @@ class Autocomplete extends React.Component {
     };
   }
 
-  componentWillMount() {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount() {
     this._ignoreBlur = false;
     this._performAutoCompleteOnUpdate = false;
     this._performAutoCompleteOnKeyUp = false;
   }
 
-  componentWillReceiveProps(nextProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this._performAutoCompleteOnUpdate = true;
     // If `items` has changed we want to reset `highlightedIndex`
     // since it probably no longer refers to a relevant item

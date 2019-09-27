@@ -35,7 +35,8 @@ class ContextMenuContainer extends React.Component {
     this.updateOrientation();
   }
 
-  componentWillReceiveProps(newProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(newProps) {
     this.adjusted = false;
 
     this.setState({

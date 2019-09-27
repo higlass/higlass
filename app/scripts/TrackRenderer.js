@@ -206,7 +206,8 @@ class TrackRenderer extends React.Component {
     this.boundForwardContextMenu = this.forwardContextMenu.bind(this);
   }
 
-  componentWillMount() {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount() {
     this.pubSubs = [];
     this.pubSubs.push(
       this.props.pubSub.subscribe('scroll', this.windowScrolledBound),
@@ -273,7 +274,8 @@ class TrackRenderer extends React.Component {
       .scaleExtent(this.zoomLimits);
   }
 
-  componentWillReceiveProps(nextProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps) {
     /**
      * The size of some tracks probably changed, so let's just
      * redraw them.

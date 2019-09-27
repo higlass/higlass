@@ -63,7 +63,8 @@ class DraggableDiv extends React.Component {
     select(this.rightHandle).call(this.dragRight);
   }
 
-  componentWillReceiveProps(newProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(newProps) {
     if ('width' in newProps) {
       this.setState({ width: newProps.width });
     }
