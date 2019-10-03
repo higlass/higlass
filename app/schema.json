@@ -185,7 +185,23 @@
         "properties": {
           "chromInfoPath": { "type": "string" },
           "includes": { "type": "array" },
-          "options": { "type": "object" },
+          "options": {
+            "type": "object",
+            "properties": {
+              "extent": { "type": "array" },
+              "minWidth": { "type": "number" },
+              "fill": { "type": "string" },
+              "fillOpacity": { "type": "number" },
+              "stroke": { "type": "string" },
+              "strokeOpacity": { "type": "number" },
+              "strokeWidth": { "type": "number" },
+              "strokePos": { "type": ["string", "array"] },
+              "outline": { "type": "string" },
+              "outlineOpacity": { "type": "number" },
+              "outlineWidth": { "type": "number" },
+              "outlinePos": { "type": ["string", "array"] }
+            }
+          },
           "type": { "type": "string" },
           "uid": { "type": "string" }
         }
