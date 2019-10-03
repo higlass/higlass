@@ -3,141 +3,141 @@ import PixiTrack from './PixiTrack';
 // Utils
 import { colorToHex } from './utils';
 
+const drawRectWithPositionedBorder = (
+  graphics,
+  xPos,
+  yPos,
+  width,
+  height,
+  fill,
+  stroke,
+  outline,
+  isVertical = false
+) => {
+  let finalXPos = xPos;
+  let finalYPos = yPos;
+  let finalWidth = width;
+  let finalHeight = height;
+
+  // The size of an outline is one dimensional so width when the outline
+  // is veritcal is the same as the height when the outline is horizontal.
+  // The reason I call the size `outline.width` is just to stay close to
+  // how the stroke is defined and the stroke definition is aligned to SVG's
+  // strokeWidth.
+  const outlineWidth = outline.width * 2 > width
+    ? width / 2 : outline.width;
+  const outlineHeight = outline.width * 2 > height
+    ? height / 2 : outline.width;
+
+  if (outline.positions && outline.positions.length) {
+    graphics.lineStyle(1, 0x000000, 0);
+    graphics.beginFill(outline.color, outline.opacity);
+
+    outline.positions.forEach((pos) => {
+      if (
+        pos === 'top' && !isVertical || pos === 'left' && isVertical
+      ) {
+        graphics.drawRect(
+          xPos - outlineWidth,
+          yPos - outlineHeight,
+          width + (outlineWidth * 2),
+          outlineHeight
+        );
+      } else if (
+        pos === 'bottom' && !isVertical || pos === 'right' && isVertical
+      ) {
+        graphics.drawRect(
+          xPos - outlineWidth,
+          yPos + height,
+          width + (outlineWidth * 2),
+          outlineHeight
+        );
+      } else if (
+        pos === 'left' && !isVertical || pos === 'top' && isVertical
+      ) {
+        graphics.drawRect(
+          xPos - outlineWidth,
+          yPos - outlineHeight,
+          outlineWidth,
+          height + (outlineHeight * 2)
+        );
+      } else if (
+        pos === 'right' && !isVertical || pos === 'bottom' && isVertical
+      ) {
+        graphics.drawRect(
+          xPos + width,
+          yPos - outlineHeight,
+          outlineWidth,
+          height + (outlineHeight * 2)
+        );
+      }
+    });
+  } else {
+    graphics.lineStyle(outline.width, outline.color, outline.opacity);
+    graphics.beginFill(0x000000, 0);
+    graphics.drawRect(
+      xPos - outlineWidth,
+      yPos - outlineHeight,
+      width + (outlineWidth * 2),
+      height + (outlineHeight * 2)
+    );
+  }
+
+  if (stroke.positions && stroke.positions.length) {
+    graphics.lineStyle(1, 0x000000, 0);
+    graphics.beginFill(stroke.color, stroke.opacity);
+
+    // The size of the stroke is one dimensional so width when the stroke
+    // is veritcal is the same as the height when the stroke is horizontal.
+    // The stroke definition is aligned to SVG's strokeWidth.
+    const strokeWidth = stroke.width * 2 > width
+      ? width / 2 : stroke.width;
+    const strokeHeight = stroke.width * 2 > height
+      ? height / 2 : stroke.width;
+
+    stroke.positions.forEach((pos) => {
+      if (
+        pos === 'top' && !isVertical || pos === 'left' && isVertical
+      ) {
+        graphics.drawRect(xPos, yPos, width, strokeHeight);
+        finalYPos += strokeHeight;
+        finalHeight -= strokeHeight;
+      } else if (
+        pos === 'bottom' && !isVertical || pos === 'right' && isVertical
+      ) {
+        graphics.drawRect(
+          xPos, yPos + height - strokeHeight, width, strokeHeight
+        );
+        finalHeight -= strokeHeight;
+      } else if (
+        pos === 'left' && !isVertical || pos === 'top' && isVertical
+      ) {
+        graphics.drawRect(xPos, yPos, strokeWidth, height);
+        finalXPos += strokeWidth;
+        finalWidth -= strokeWidth;
+      } else if (
+        pos === 'right' && !isVertical || pos === 'bottom' && isVertical
+      ) {
+        graphics.drawRect(
+          xPos + width - strokeWidth, yPos, strokeWidth, height
+        );
+        finalWidth -= strokeWidth;
+      }
+    });
+  } else {
+    graphics.lineStyle(stroke.width, stroke.color, stroke.opacity);
+  }
+
+  graphics.beginFill(fill.color, fill.opacity);
+  graphics.drawRect(finalXPos, finalYPos, finalWidth, finalHeight);
+};
+
 class OverlayTrack extends PixiTrack {
   constructor(context, options) {
     super(context, options);
 
     this.options = options || {};
     this.drawnRects = {};
-  }
-
-  drawWithPositionedBorder(
-    graphics,
-    xPos,
-    yPos,
-    width,
-    height,
-    fill,
-    stroke,
-    outline,
-    isVertical = false
-  ) {
-    let finalXPos = xPos;
-    let finalYPos = yPos;
-    let finalWidth = width;
-    let finalHeight = height;
-
-    // The size of an outline is one dimensional so width when the outline
-    // is veritcal is the same as the height when the outline is horizontal.
-    // The reason I call the size `outline.width` is just to stay close to
-    // how the stroke is defined and the stroke definition is aligned to SVG's
-    // strokeWidth.
-    const outlineWidth = outline.width * 2 > width
-      ? width / 2 : outline.width;
-    const outlineHeight = outline.width * 2 > height
-      ? height / 2 : outline.width;
-
-    if (outline.positions && outline.positions.length) {
-      graphics.lineStyle(1, 0x000000, 0);
-      graphics.beginFill(outline.color, outline.opacity);
-
-      outline.positions.forEach((pos) => {
-        if (
-          pos === 'top' && !isVertical || pos === 'left' && isVertical
-        ) {
-          graphics.drawRect(
-            xPos - outlineWidth,
-            yPos - outlineHeight,
-            width + (outlineWidth * 2),
-            outlineHeight
-          );
-        } else if (
-          pos === 'bottom' && !isVertical || pos === 'right' && isVertical
-        ) {
-          graphics.drawRect(
-            xPos - outlineWidth,
-            yPos + height,
-            width + (outlineWidth * 2),
-            outlineHeight
-          );
-        } else if (
-          pos === 'left' && !isVertical || pos === 'top' && isVertical
-        ) {
-          graphics.drawRect(
-            xPos - outlineWidth,
-            yPos - outlineHeight,
-            outlineWidth,
-            height + (outlineHeight * 2)
-          );
-        } else if (
-          pos === 'right' && !isVertical || pos === 'bottom' && isVertical
-        ) {
-          graphics.drawRect(
-            xPos + width,
-            yPos - outlineHeight,
-            outlineWidth,
-            height + (outlineHeight * 2)
-          );
-        }
-      });
-    } else {
-      graphics.lineStyle(outline.width, outline.color, outline.opacity);
-      graphics.beginFill(0x000000, 0);
-      graphics.drawRect(
-        xPos - outlineWidth,
-        yPos - outlineHeight,
-        width + (outlineWidth * 2),
-        height + (outlineHeight * 2)
-      );
-    }
-
-    if (stroke.positions && stroke.positions.length) {
-      graphics.lineStyle(1, 0x000000, 0);
-      graphics.beginFill(stroke.color, stroke.opacity);
-
-      // The size of the stroke is one dimensional so width when the stroke
-      // is veritcal is the same as the height when the stroke is horizontal.
-      // The stroke definition is aligned to SVG's strokeWidth.
-      const strokeWidth = stroke.width * 2 > width
-        ? width / 2 : stroke.width;
-      const strokeHeight = stroke.width * 2 > height
-        ? height / 2 : stroke.width;
-
-      stroke.positions.forEach((pos) => {
-        if (
-          pos === 'top' && !isVertical || pos === 'left' && isVertical
-        ) {
-          graphics.drawRect(xPos, yPos, width, strokeHeight);
-          finalYPos += strokeHeight;
-          finalHeight -= strokeHeight;
-        } else if (
-          pos === 'bottom' && !isVertical || pos === 'right' && isVertical
-        ) {
-          graphics.drawRect(
-            xPos, yPos + height - strokeHeight, width, strokeHeight
-          );
-          finalHeight -= strokeHeight;
-        } else if (
-          pos === 'left' && !isVertical || pos === 'top' && isVertical
-        ) {
-          graphics.drawRect(xPos, yPos, strokeWidth, height);
-          finalXPos += strokeWidth;
-          finalWidth -= strokeWidth;
-        } else if (
-          pos === 'right' && !isVertical || pos === 'bottom' && isVertical
-        ) {
-          graphics.drawRect(
-            xPos + width - strokeWidth, yPos, strokeWidth, height
-          );
-          finalWidth -= strokeWidth;
-        }
-      });
-    } else {
-      graphics.lineStyle(stroke.width, stroke.color, stroke.opacity);
-    }
-
-    graphics.beginFill(fill.color, fill.opacity);
-    graphics.drawRect(finalXPos, finalYPos, finalWidth, finalHeight);
   }
 
   drawHorizontalOverlay(
@@ -159,7 +159,7 @@ class OverlayTrack extends PixiTrack {
       width = minWidth;
     }
 
-    this.drawWithPositionedBorder(
+    drawRectWithPositionedBorder(
       graphics, xPos, yPos, width, height, fill, stroke, outline
     );
   }
@@ -211,7 +211,7 @@ class OverlayTrack extends PixiTrack {
       height = minHeight;
     }
 
-    this.drawWithPositionedBorder(
+    drawRectWithPositionedBorder(
       graphics, xPos, yPos, width, height, fill, stroke, outline, true
     );
   }
