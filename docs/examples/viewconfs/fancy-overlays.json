@@ -1,0 +1,133 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1"
+  ],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        7595655.0000270605,
+        2507738795.9999733
+      ],
+      "initialYDomain": [
+        -545671929.4383738,
+        3061006380.438374
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
+            "uid": "bars-horizontal",
+            "type": "horizontal-bar"
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "genes-horizontal",
+            "type": "horizontal-gene-annotations"
+          },
+          {
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "type": "horizontal-chromosome-labels",
+            "uid": "chroms-horizontal"
+          }
+        ],
+        "left": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
+            "uid": "bars-vertical",
+            "type": "vertical-bar"
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "genes-vertical",
+            "type": "vertical-gene-annotations"
+          },
+          {
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "type": "vertical-chromosome-labels",
+            "uid": "chroms-vertical"
+          }
+        ],
+        "center": [{
+          "uid": "heatmap",
+          "server": "http://higlass.io/api/v1",
+          "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+          "type": "heatmap"
+        }],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0
+      },
+      "overlays": [
+        {
+          "uid": "overlay-1",
+          "includes": [
+            "bars-horizontal",
+            "genes-horizontal",
+            "bars-vertical",
+            "genes-vertical"
+          ],
+          "options": {
+            "extent": [[230000000, 561000000]],
+            "minWidth": 3,
+            "fillOpacity": 0.1,
+            "stroke": "blue",
+            "strokePos": ["left", "right"],
+            "strokeWidth": 2,
+            "strokeOpacity": 0.6,
+            "outline": "yellow",
+            "outlineWidth": 16,
+            "outlineOpacity": 0.66,
+            "outlinePos": ["left", "right"]
+          }
+        },
+        {
+          "uid": "overlay-2",
+          "includes": [
+            "chroms-horizontal",
+            "chroms-vertical"
+          ],
+          "options": {
+            "extent": [[230000000, 561000000]],
+            "minWidth": 3,
+            "fill": "pink",
+            "fillOpacity": 0.3,
+            "stroke": "pink",
+            "strokeWidth": 3,
+            "strokeOpacity": 1,
+            "outline": "cyan",
+            "outlineWidth": 3
+          }
+        },
+        {
+          "uid": "overlay-3",
+          "includes": ["heatmap"],
+          "options": {
+            "extent": [[230000000, 561000000]],
+            "minWidth": 3,
+            "fill": "green",
+            "fillOpacity": 0.1,
+            "stroke": "green",
+            "strokePos": "right",
+            "strokeWidth": 4,
+            "strokeOpacity": 0.6
+          }
+        }
+      ]
+    }
+  ]
+}
