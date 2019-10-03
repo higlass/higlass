@@ -340,7 +340,17 @@ end coordinates are different: [start, end] vs [x-start, x-end, y-start, y-end].
                   [1000000000, 1100000000],
                   [1200000000, 1300000000, 1400000, 1500000]
                 ],
-                "fillColor": "blue"
+                "fillColor": "blue",
+                fill: "blue",
+                fillOpacity: 0.3,
+                stroke: "yellow",
+                strokeOpacity: 0.6,
+                strokeWidth: 2,
+                strokePos: ["left", "right"],
+                outline: "cyan"
+                outlineOpacity: 0.1337,
+                outlineWidth: 1337,
+                outlinePos: "top"
               }
             },
             {
