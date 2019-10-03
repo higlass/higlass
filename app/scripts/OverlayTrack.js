@@ -27,6 +27,11 @@ class OverlayTrack extends PixiTrack {
     let finalWidth = width;
     let finalHeight = height;
 
+    // The size of an outline is one dimensional so width when the outline
+    // is veritcal is the same as the height when the outline is horizontal.
+    // The reason I call the size `outline.width` is just to stay close to
+    // how the stroke is defined and the stroke definition is aligned to SVG's
+    // strokeWidth.
     const outlineWidth = outline.width * 2 > width
       ? width / 2 : outline.width;
     const outlineHeight = outline.width * 2 > height
@@ -90,6 +95,9 @@ class OverlayTrack extends PixiTrack {
       graphics.lineStyle(1, 0x000000, 0);
       graphics.beginFill(stroke.color, stroke.opacity);
 
+      // The size of the stroke is one dimensional so width when the stroke
+      // is veritcal is the same as the height when the stroke is horizontal.
+      // The stroke definition is aligned to SVG's strokeWidth.
       const strokeWidth = stroke.width * 2 > width
         ? width / 2 : stroke.width;
       const strokeHeight = stroke.width * 2 > height
