@@ -325,6 +325,23 @@ the start and end of each section that should be overlaid. The tuples can be eit
 coordinates are the same, 4-tuple indicates that horizontal and vertical start and
 end coordinates are different: [start, end] vs [x-start, x-end, y-start, y-end].
 
+**Options:**
+
+- ``extent`` [array] (default ``[]``)
+- ``minWidth`` [number] (default ``0``)
+- ``fill`` [string] (default ``blue``)
+- ``fillOpacity`` [number] (default ``0.3``)
+- ``stroke`` [string] (default ``blue``)
+- ``strokeOpacity`` [number] (default ``1``)
+- ``strokeWidth`` [number] (default ``0``)
+- ``strokePos`` [string, array] (default ``undefined``, which will drawn the stroke around the entire extent)
+- ``outline`` [string] (default ``white``)
+- ``outlineOpacity`` [number] (default ``1``)
+- ``outlineWidth`` [number] (default ``0``)
+- ``outlinePos`` [string, array] (default ``undefined``, which will drawn the stroke around the entire extent)
+
+**Example:**
+
 .. code-block:: javascript
 
     {
@@ -340,7 +357,7 @@ end coordinates are different: [start, end] vs [x-start, x-end, y-start, y-end].
                   [1000000000, 1100000000],
                   [1200000000, 1300000000, 1400000, 1500000]
                 ],
-                "fillColor": "blue",
+                minWidth: 3,
                 fill: "blue",
                 fillOpacity: 0.3,
                 stroke: "yellow",
