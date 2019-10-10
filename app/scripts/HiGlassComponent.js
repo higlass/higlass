@@ -3803,6 +3803,7 @@ class HiGlassComponent extends React.Component {
       this.props.zoomFixed
       || this.props.options.zoomFixed
       || this.state.viewConfig.zoomFixed
+      || this.props.options.scrollable
       || (view && view.zoomFixed)
     );
   }
@@ -3812,11 +3813,6 @@ class HiGlassComponent extends React.Component {
 
     // The event forwarder wasn't written for React's SyntheticEvent
     const nativeEvent = evt.nativeEvent || evt;
-    const isZoomFixed = (
-      this.props.zoomFixed
-      || this.props.options.zoomFixed
-      || this.state.viewConfig.zoomFixed
-    );
 
     const isTargetCanvas = evt.target === this.canvasElement;
 
@@ -3826,7 +3822,7 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
-    if (isZoomFixed) {
+    if (this.isZoomFixed()) {
       // ignore events when in zoom fixed mode
       return;
     }
@@ -3868,8 +3864,6 @@ class HiGlassComponent extends React.Component {
     // the right width
     if (this.mounted) {
       this.tiledAreas = dictValues(this.state.views).map((view) => {
-        const zoomFixed = this.isZoomFixed(view);
-
         // only show the add track menu for the tiled plot it was selected for
         const addTrackPositionMenuPosition = view.uid === this.state.addTrackPositionMenuUid
           ? this.state.addTrackPositionMenuPosition
@@ -3977,7 +3971,7 @@ class HiGlassComponent extends React.Component {
             // dragging={this.state.dragging}
             xDomainLimits={view.xDomainLimits}
             yDomainLimits={view.yDomainLimits}
-            zoomable={!zoomFixed}
+            zoomable={!this.isZoomFixed(view)}
             zoomLimits={view.zoomLimits}
             zoomToDataExtentOnInit={() => this.zoomToDataExtentOnInit.has(view.uid)}
           />
@@ -4198,6 +4192,7 @@ class HiGlassComponent extends React.Component {
 HiGlassComponent.defaultProps = {
   options: {},
   zoomFixed: false,
+  scrollable: false,
 };
 
 HiGlassComponent.propTypes = {
@@ -4207,6 +4202,7 @@ HiGlassComponent.propTypes = {
     PropTypes.object,
   ]).isRequired,
   zoomFixed: PropTypes.bool,
+  scrollable: PropTypes.bool,
 };
 
 export default HiGlassComponent;
