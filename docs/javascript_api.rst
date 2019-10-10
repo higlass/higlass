@@ -101,6 +101,12 @@ The ``options`` parameter can have the following properties:
 
 - ``globalMousePosition``: if ``true`` this will turn on ``broadcastMousePositionGlobally`` and ``showGlobalMousePosition``. This is basically a convenience option to quickly broadcast and show global mouse positions.
 
+- ``renderer``: if ``canvas`` HiGlass will render to the Canvas API. Otherwise
+it will use WebGL.
+
+- ``scrollable``: if ``true`` HiGlass allow you to scroll through views and set
+all views to zoom fixed.
+
 The function returns an instance of the public API of a HiGlass component.
 
 A full example of an inline HiGlass component can be found in the `HiGlass
@@ -229,4 +235,6 @@ API Functions
 .. js:autofunction:: setShowGlobalMousePosition
 
 .. js:autofunction:: setGlobalMousePosition
+
+.. js:autofunction:: option
 
