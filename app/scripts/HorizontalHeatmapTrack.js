@@ -53,6 +53,8 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   }
 
   calculateZoomLevel() {
+    let zoomLevel = null;
+
     if (this.tilesetInfo.resolutions) {
       const zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
         this.tilesetInfo.resolutions,
@@ -68,26 +70,30 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         this.tilesetInfo.max_pos[1]
       );
 
-      return Math.min(zoomIndexX, zoomIndexY);
+      zoomLevel = Math.min(zoomIndexX, zoomIndexY);
+    } else {
+      const xZoomLevel = tileProxy.calculateZoomLevel(
+        this._xScale,
+        this.tilesetInfo.min_pos[0],
+        this.tilesetInfo.max_pos[0],
+      );
+
+      const yZoomLevel = tileProxy.calculateZoomLevel(
+        this._xScale,
+        this.tilesetInfo.min_pos[1],
+        this.tilesetInfo.max_pos[1],
+      );
+
+      zoomLevel = Math.max(xZoomLevel, yZoomLevel);
+      zoomLevel = Math.min(zoomLevel, this.maxZoom);
     }
 
-    const xZoomLevel = tileProxy.calculateZoomLevel(
-      this._xScale,
-      this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0],
-    );
-
-    const yZoomLevel = tileProxy.calculateZoomLevel(
-      this._xScale,
-      this.tilesetInfo.min_pos[1],
-      this.tilesetInfo.max_pos[1],
-    );
-
-    let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
-    zoomLevel = Math.min(zoomLevel, this.maxZoom);
-
     if (this.options && this.options.maxZoom) {
-      if (this.options.maxZoom >= 0) { zoomLevel = Math.min(this.options.maxZoom, zoomLevel); } else { console.error('Invalid maxZoom on track:', this); }
+      if (this.options.maxZoom >= 0) {
+        zoomLevel = Math.min(this.options.maxZoom, zoomLevel);
+      } else {
+        console.error('Invalid maxZoom on track:', this);
+      }
     }
 
     return zoomLevel;
@@ -157,8 +163,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         // draw it out to understand better!
         const tileBottomPosition = ((j - i) - 2)
           * (this._xScale(tileWidth) - this._xScale(0))
-          * Math.sqrt(2)
-          / 2;
+          * Math.sqrt(2) / 2;
 
         if (tileBottomPosition > this.dimensions[1]) {
           // this tile won't be visible so we don't need to fetch it
@@ -287,15 +292,11 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
 
           const canvas = this.tileDataToCanvas(pixData.pixData);
 
-          let sprite = null;
+          const texture = PIXI.VERSION[0] === '4'
+            ? PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
+            : PIXI.Texture.from(canvas, { scaleMode: PIXI.SCALE_MODES.NEAREST });
 
-          if (tile.tileData.zoomLevel === this.maxZoom) {
-            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
-          } else {
-            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
-          }
-
-          tile.sprite = sprite;
+          tile.sprite = new PIXI.Sprite(texture);
           tile.canvas = canvas;
 
           this.setSpriteProperties(

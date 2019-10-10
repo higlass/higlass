@@ -2,10 +2,23 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import HiGlassComponent from './HiGlassComponent';
 
+// these exports can be used to create new tracks in outside
+// environments (e.g. Observable)
+import SVGTrack from './SVGTrack';
+import TiledPixiTrack from './TiledPixiTrack';
+import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
+
 export { default as ChromosomeInfo } from './ChromosomeInfo';
 export { default as HiGlassComponent } from './HiGlassComponent';
+export { default as HiGlassTrackComponent, trackViewer } from './HiGlassTrackComponent';
 
-export { default as SVGTrack } from './SVGTrack';
+export const tracks = {
+  SVGTrack,
+  TiledPixiTrack,
+  HorizontalGeneAnnotationsTrack,
+};
+
+export { default as schema } from '../schema.json';
 
 // export functions that are useful for testing
 export {
@@ -33,17 +46,16 @@ const launch = (element, config, options) => {
    *
    * @return  {Object} The instance's public API
    */
-  let component;
-
+  const ref = React.createRef();
   ReactDOM.render(
     <HiGlassComponent
-      ref={(c) => { component = c; }}
+      ref={ref}
       options={options || {}}
       viewConfig={config}
     />,
     element,
   );
-  return component;
+  return ref.current;
 };
 
 /**
@@ -99,6 +111,5 @@ export const viewer = (element, viewConfig, options) => {
    *      Fit the container to the bounds of the element
    */
   const hg = launch(element, viewConfig, options);
-
   return hg.api;
 };

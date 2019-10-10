@@ -1,4 +1,7 @@
 /* eslint-env node, jasmine */
+import { globalPubSub } from 'pub-sub-es';
+import { select } from 'd3-selection';
+
 import {
   some,
   waitForTransitionsFinished,
@@ -6,11 +9,14 @@ import {
 } from '../app/scripts/utils';
 
 import {
-  emptyConf,
   simpleCenterViewConfig,
   simple1And2dAnnotations,
 } from './view-configs';
 
+import emptyConf from './view-configs-more/emptyConf';
+
+import simpleHeatmapViewConf from './view-configs/simple-heatmap';
+import adjustViewSpacingConf from './view-configs/adjust-view-spacing';
 import simple1dHorizontalVerticalAnd2dDataTrack from './view-configs/simple-1d-horizontal-vertical-and-2d-data-track';
 
 import createElementAndApi from './utils/create-element-and-api';
@@ -35,6 +41,103 @@ describe('API Tests', () => {
   let api = null;
 
   describe('Options tests', () => {
+    it('adjust view spacing', () => {
+      const options = {
+        pixelPreciseMarginPadding: true,
+        containingPaddingX: 0,
+        containingPaddingY: 0,
+        viewMarginTop: 32,
+        viewMarginBottom: 6,
+        viewMarginLeft: 32,
+        viewMarginRight: 6,
+        viewPaddingTop: 32,
+        viewPaddingBottom: 6,
+        viewPaddingLeft: 32,
+        viewPaddingRight: 6,
+      };
+
+      [div, api] = createElementAndApi(adjustViewSpacingConf, options);
+
+      const tiledPlotEl = div.querySelector('.tiled-plot-div');
+      const trackRendererEl = div.querySelector('.track-renderer-div');
+      const topTrackEl = div.querySelector('.top-track-container');
+
+      // We need to get the parent of tiledPlotDiv because margin is apparently
+      // not included in the BBox width and height.
+      const tiledPlotBBox = tiledPlotEl.parentNode.getBoundingClientRect();
+      const trackRendererBBox = trackRendererEl.getBoundingClientRect();
+      const topTrackBBox = topTrackEl.getBoundingClientRect();
+
+      const totalViewHeight = adjustViewSpacingConf.views[0].tracks.top
+        .reduce((height, track) => height + track.height, 0);
+
+      expect(topTrackBBox.height).toEqual(totalViewHeight);
+      expect(trackRendererBBox.height).toEqual(
+        totalViewHeight + options.viewPaddingTop + options.viewPaddingBottom
+      );
+      expect(tiledPlotBBox.height).toEqual(
+        totalViewHeight
+        + options.viewPaddingTop
+        + options.viewPaddingBottom
+        + options.viewMarginTop
+        + options.viewMarginBottom
+      );
+      expect(trackRendererBBox.width).toEqual(
+        topTrackBBox.width + options.viewPaddingLeft + options.viewPaddingRight
+      );
+      expect(tiledPlotBBox.width).toEqual(
+        topTrackBBox.width
+        + options.viewPaddingLeft
+        + options.viewPaddingRight
+        + options.viewMarginLeft
+        + options.viewMarginRight
+      );
+    });
+
+    it('shows linear-labels as available track', () => {
+      [div, api] = createElementAndApi(simpleCenterViewConfig);
+
+      api.showAvailableTrackPositions(
+        {
+          server: 'http://higlass.io/api/v1',
+          tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+          datatype: 'yyyyy',
+          defaultTracks: ['xxxxx'],
+        }
+      );
+
+      // we don't know what type of track 'xxxx' is and what
+      // datatype 'yyyy' is so let's not show any overlays
+      selection = select(div).selectAll('.DragListeningDiv');
+      expect(selection.size()).toEqual(0);
+
+      api.showAvailableTrackPositions(
+        {
+          server: 'http://higlass.io/api/v1',
+          tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+          datatype: 'linear-labels',
+        }
+      );
+
+      // before providing default tracks, higlass shouldn't know
+      // which tracks are compatible with this datatype and shouldn't
+      // display any drag listening divs
+      let selection = select(div).selectAll('.DragListeningDiv');
+      expect(selection.size()).toEqual(0);
+
+      api.showAvailableTrackPositions(
+        {
+          server: 'http://higlass.io/api/v1',
+          tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+          datatype: 'linear-labels',
+          defaultTracks: ['heatmap', 'horizontal-heatmap'],
+        }
+      );
+
+      selection = select(div).selectAll('.DragListeningDiv');
+      expect(selection.size()).toEqual(5);
+    });
+
     it('creates a track with default options', () => {
       [div, api] = createElementAndApi(simpleCenterViewConfig,
         {
@@ -131,6 +234,34 @@ describe('API Tests', () => {
       });
     });
 
+    it('reset viewport after zoom', (done) => {
+      [div, api] = createElementAndApi(
+        simpleHeatmapViewConf, { editable: false }
+      );
+
+      const hgc = api.getComponent();
+
+      waitForTilesLoaded(hgc, () => {
+        const initialXDomain = hgc.xScales.a.domain();
+
+        const newXDomain = [1000000000, 2000000000];
+
+        api.zoomTo('a', ...newXDomain, null, null, 100);
+
+        waitForTransitionsFinished(hgc, () => {
+          expect(Math.round(hgc.xScales.a.domain()[0])).toEqual(newXDomain[0]);
+          expect(Math.round(hgc.xScales.a.domain()[1])).toEqual(newXDomain[1]);
+
+          api.resetViewport('a');
+
+          expect(Math.round(hgc.xScales.a.domain()[0])).toEqual(initialXDomain[0]);
+          expect(Math.round(hgc.xScales.a.domain()[1])).toEqual(initialXDomain[1]);
+
+          done();
+        });
+      });
+    });
+
     it('zoom to a nonexistent view', () => {
       // complete me, should throw an error rather than complaining
       // "Cannot read property 'copy' of undefined thrown"
@@ -178,12 +309,10 @@ describe('API Tests', () => {
       });
     });
 
-    it('has version', (done) => {
+    it('has version', () => {
       [div, api] = createElementAndApi(emptyConf, { editable: false });
 
       expect(api.version).toEqual(VERSION);
-
-      done();
     });
 
     it('mousemove and zoom events work for 1D and 2D tracks', (done) => {
@@ -225,12 +354,68 @@ describe('API Tests', () => {
       });
     });
 
-    it('APIs are independent', (done) => {
+    it('global mouse position broadcasting', (done) => {
+      [div, api] = createElementAndApi(
+        simple1dHorizontalVerticalAnd2dDataTrack,
+        { editable: false, bounded: true }
+      );
+
+      api.setBroadcastMousePositionGlobally(true);
+
+      let mouseMoveEvt = null;
+
+      globalPubSub.subscribe('higlass.mouseMove', (evt) => {
+        mouseMoveEvt = evt;
+      });
+
+      const createMouseEvent = (type, x, y) => new MouseEvent(type, {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+        // WARNING: The following property is absolutely crucial to have the
+        // event being picked up by PIXI. Do not remove under any circumstances!
+        // pointerType: 'mouse',
+        screenX: x,
+        screenY: y,
+        clientX: x,
+        clientY: y
+      });
+
+      waitForTilesLoaded(api.getComponent(), () => {
+        const tiledPlotDiv = div.querySelector('.tiled-plot-div');
+
+        tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150, 150));
+
+        setTimeout(() => {
+          expect(mouseMoveEvt).not.toEqual(null);
+          expect(mouseMoveEvt.x).toEqual(150);
+          expect(mouseMoveEvt.y).toEqual(150);
+          expect(mouseMoveEvt.relTrackX).toEqual(85);
+          expect(mouseMoveEvt.relTrackY).toEqual(85);
+          expect(Math.round(mouseMoveEvt.dataX)).toEqual(1670179850);
+          expect(Math.round(mouseMoveEvt.dataY)).toEqual(1832488682);
+          expect(mouseMoveEvt.isFrom2dTrack).toEqual(true);
+          expect(mouseMoveEvt.isFromVerticalTrack).toEqual(false);
+          expect(mouseMoveEvt.sourceUid).toBeDefined();
+          expect(mouseMoveEvt.noHoveredTracks).toEqual(false);
+
+          mouseMoveEvt = null;
+          api.setBroadcastMousePositionGlobally(false);
+          tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150, 150));
+
+          setTimeout(() => {
+            expect(mouseMoveEvt).toEqual(null);
+            done();
+          }, 0);
+        }, 0);
+      });
+    });
+
+    it('APIs are independent', () => {
       [div, api] = createElementAndApi(
         simpleCenterViewConfig, { editable: false, bounded: true }
       );
 
-      done();
       /* Turning this test off because it periodically
        * and inexplicablye fails
        */

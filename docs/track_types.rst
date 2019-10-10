@@ -95,6 +95,10 @@ displayed at different resolutions depending on the current zoom level. To
 limit the resolution of the displayed data, users can set the `Zoom Limit`
 configuration option.
 
+You can limit the extent of the heatmap to the upper right and lower left
+triangle via the track context menu or by setting ``extent`` option to
+``upper-right`` or ``lower-left`` respectively.
+
 Rotated 2D Heatmap
 ==================
 
@@ -207,8 +211,15 @@ Bar tracks display 1D vector data as bars.
 Options
 --------
 
-**axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
-**barFillColor**: - A valid color (e.g. ``black``) or to track the color of the bars use ``[glyph-color]``.
+- **axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
+
+- **barFillColor**: A valid color (e.g. ``black``) or to track the color of the bars use ``[glyph-color]``.
+
+- **zeroLineVisible**: If ``true`` draws a demarcation line at the bottom of a bar track, i.e., at the zero value.
+
+- **zeroLineColor**: The color of the zero line. If ``undefined`` the bar fill color (``barFillColor``) will be used.
+
+- **zeroLineOpacity**: The opacity of the zero line. If ``undefined`` the bar opacity (``barOpacity``) will be used.
 
 **Demos:**
 

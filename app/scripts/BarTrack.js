@@ -1,4 +1,6 @@
 import { scaleLinear } from 'd3-scale';
+import { zoomIdentity } from 'd3-zoom';
+
 import * as PIXI from 'pixi.js';
 
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
@@ -12,6 +14,10 @@ const HEX_WHITE = colorToHex('#FFFFFF');
 class BarTrack extends HorizontalLine1DPixiTrack {
   constructor(...args) {
     super(...args);
+
+    this.zeroLine = new PIXI.Graphics();
+    this.pMain.addChild(this.zeroLine);
+    this.valueScaleTransform = zoomIdentity;
 
     if (this.options && this.options.colorRange) {
       if (this.options.colorRangeGradient) {
@@ -73,6 +79,9 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     const { graphics } = tile;
 
+    // Reset svg data to avoid overplotting
+    tile.svgData = undefined;
+
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
       tile.tileData.tilePos,
@@ -89,6 +98,11 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       this.maxValue(),
       0
     );
+
+    // Important when when using `options.valueScaleMin` or
+    // `options.valueScaleMax` such that the y position later on doesn't become
+    // negative
+    valueScale.clamp(true);
 
     this.valueScale = valueScale;
 
@@ -204,29 +218,156 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     super.rerender(options, force);
   }
 
+  drawZeroLine() {
+    this.zeroLine.clear();
+
+    const color = colorToHex(this.options.barFillColor || 'grey');
+    const opacity = +this.options.barOpacity || 1;
+
+    const demarcationColor = this.options.zeroLineColor
+      ? colorToHex(this.options.zeroLineColor)
+      : color;
+
+    const demarcationOpacity = Number.isNaN(+this.options.zeroLineOpacity)
+      ? opacity
+      : +this.options.zeroLineOpacity;
+
+    this.zeroLine.beginFill(demarcationColor, demarcationOpacity);
+
+    this.zeroLine.drawRect(
+      0,
+      this.dimensions[1] - 1,
+      this.dimensions[0],
+      1
+    );
+  }
+
+  drawZeroLineSvg(output) {
+    const zeroLine = document.createElement('rect');
+    zeroLine.setAttribute('id', 'zero-line');
+
+    zeroLine.setAttribute('x', 0);
+    zeroLine.setAttribute('y', this.dimensions[1] - 1);
+    zeroLine.setAttribute('height', 1);
+    zeroLine.setAttribute('width', this.dimensions[0]);
+
+    zeroLine.setAttribute(
+      'fill',
+      this.options.zeroLineColor || this.options.barFillColor
+    );
+    zeroLine.setAttribute(
+      'fill-opacity',
+      this.options.zeroLineOpacity || this.options.barOpacity
+    );
+
+    output.appendChild(zeroLine);
+  }
+
+  getXScaleAndOffset(drawnAtScale) {
+    const dA = drawnAtScale.domain();
+    const dB = this._xScale.domain();
+
+    // scaling between tiles
+    const tileK = (dA[1] - dA[0]) / (dB[1] - dB[0]);
+
+    const newRange = this._xScale.domain().map(drawnAtScale);
+
+    const posOffset = newRange[0];
+
+    return [tileK, -posOffset * tileK];
+  }
+
   draw() {
     // we don't want to call HorizontalLine1DPixiTrack's draw function
     // but rather its parent's
     super.draw();
 
+    if (this.options.zeroLineVisible) this.drawZeroLine();
+    else this.zeroLine.clear();
+
     Object.values(this.fetchedTiles).forEach((tile) => {
-      // scaling between tiles
-      const tileK = (
-        (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
-        / (this._xScale.domain()[1] - this._xScale.domain()[0])
-      );
+      const [graphicsXScale, graphicsXPos] = this.getXScaleAndOffset(tile.drawnAtScale);
 
-      const newRange = this._xScale.domain().map(tile.drawnAtScale);
-
-      const posOffset = newRange[0];
-
-      tile.graphics.scale.x = tileK;
-      tile.graphics.position.x = -posOffset * tileK;
+      tile.graphics.scale.x = graphicsXScale;
+      tile.graphics.position.x = graphicsXPos;
     });
   }
 
   zoomed(newXScale, newYScale) {
     super.zoomed(newXScale, newYScale);
+  }
+
+  movedY(dY) {
+    // // see the reasoning behind why the code in
+    // // zoomedY is commented out.
+
+    // Object.values(this.fetchedTiles).forEach((tile) => {
+    //   const vst = this.valueScaleTransform;
+    //   const { y, k } = vst;
+    //   const height = this.dimensions[1];
+
+    //   // clamp at the bottom and top
+    //   if (
+    //     y + dY / k > -(k - 1) * height
+    //     && y + dY / k < 0
+    //   ) {
+    //     this.valueScaleTransform = vst.translate(
+    //       0, dY / k
+    //     );
+    //   }
+
+    //   tile.graphics.position.y = this.valueScaleTransform.y;
+    // });
+
+    // this.animate();
+  }
+
+  zoomedY(yPos, kMultiplier) {
+    // // this is commented out to serve as an example
+    // // of how valueScale zooming works
+    // // dont' want to support it just yet though
+
+    // const k0 = this.valueScaleTransform.k;
+    // const t0 = this.valueScaleTransform.y;
+    // const dp = (yPos - t0) / k0;
+    // const k1 = Math.max(k0 / kMultiplier, 1.0);
+    // let t1 = k0 * dp + t0 - k1 * dp;
+
+    // const height = this.dimensions[1];
+
+    // // clamp at the bottom
+    // t1 = Math.max(t1, -(k1 - 1) * height);
+
+    // // clamp at the top
+    // t1 = Math.min(t1, 0);
+
+    // // right now, the point at position 162 is at position 0
+    // // 0 = 1 * 162 - 162
+    // //
+    // // we want that when k = 2, that point is still at position
+    // // 0 = 2 * 162 - t1
+    // //  ypos = k0 * dp + t0
+    // //  dp = (ypos - t0) / k0
+    // //  nypos = k1 * dp + t1
+    // //  k1 * dp + t1 = k0 * dp + t0
+    // //  t1 = k0 * dp +t0 - k1 * dp
+
+    // // we're only interested in scaling along one axis so we
+    // // leave the translation of the other axis blank
+    // this.valueScaleTransform = zoomIdentity.translate(0, t1).scale(k1);
+    // this.zoomedValueScale = this.valueScaleTransform.rescaleY(
+    //   this.valueScale.clamp(false)
+    // );
+    // // this.pMain.scale.y = k1;
+    // // this.pMain.position.y = t1;
+    // Object.values(this.fetchedTiles).forEach((tile) => {
+    //   tile.graphics.scale.y = k1;
+    //   tile.graphics.position.y = t1;
+
+    //   this.drawAxis(this.zoomedValueScale);
+    // });
+
+    // this.animate();
   }
 
   /**
@@ -278,9 +419,12 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     output.setAttribute('transform',
       `translate(${this.position[0]},${this.position[1]})`);
 
+    if (this.options.zeroLine) this.drawZeroLineSvg(output);
+
     this.visibleAndFetchedTiles()
       .filter(tile => tile.svgData && tile.svgData.barXValues)
       .forEach((tile) => {
+        // const [xScale, xPos] = this.getXScaleAndOffset(tile.drawnAtScale);
         const data = tile.svgData;
 
         for (let i = 0; i < data.barXValues.length; i++) {
@@ -288,6 +432,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
           rect.setAttribute('fill', data.barColors[i]);
           rect.setAttribute('stroke', data.barColors[i]);
 
+          // rect.setAttribute('x', (data.barXValues[i] + xPos) * xScale);
           rect.setAttribute('x', data.barXValues[i]);
           rect.setAttribute('y', data.barYValues[i]);
           rect.setAttribute('height', data.barHeights[i]);

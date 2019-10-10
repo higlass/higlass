@@ -8,7 +8,6 @@
     "initialXDomain": [-128227010, 3227095876],
     "initialYDomain": [-679063376, 3737688490],
     "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-    "genomePositionSearchBoxVisible": false,
     "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
     "tracks": {
       "top": [{
@@ -78,10 +77,7 @@
       "w": 12,
       "h": 12,
       "x": 0,
-      "y": 0,
-      "i": "aa",
-      "moved": false,
-      "static": false
+      "y": 0
     },
     "overlays": [{
       "uid": "overlay",

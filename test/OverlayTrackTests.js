@@ -19,7 +19,7 @@ describe('Overlay Track:', () => {
   let viewConf;
 
   describe('Annotation overlays:', () => {
-    it('Should render', (done) => {
+    it('Should render', () => {
       viewConf = overlayAnnotations1d2dViewConf;
 
       [div, api] = createElementAndApi(viewConf, { bound: true });
@@ -51,10 +51,10 @@ describe('Overlay Track:', () => {
       const overlayTrackDef = overlayTrackInfo.trackDef;
       const overlayTrackObj = overlayTrackInfo.trackObject;
 
+      expect(overlayTrack.height).toBeGreaterThan(0);
+
       expect(overlayTrackDef.width).toEqual(overlayTrackObj.dimensions[0]);
       expect(overlayTrackDef.height).toEqual(overlayTrackObj.dimensions[1]);
-
-      done();
     });
 
     afterEach(() => {

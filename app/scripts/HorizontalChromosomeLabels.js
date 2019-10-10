@@ -14,6 +14,8 @@ import {
   svgLine
 } from './utils';
 
+import { THEME_DARK } from './configs';
+
 const TICK_WIDTH = 200;
 const TICK_HEIGHT = 6;
 const TICK_TEXT_SEPARATION = 2;
@@ -22,7 +24,12 @@ const TICK_COLOR = 0x777777;
 class HorizontalChromosomeLabels extends PixiTrack {
   constructor(context, options) {
     super(context, options);
-    const { dataConfig, animate, chromInfoPath } = context;
+    const {
+      dataConfig,
+      animate,
+      chromInfoPath,
+      isShowGlobalMousePosition
+    } = context;
 
     this.searchField = null;
     this.chromInfo = null;
@@ -35,10 +42,14 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.tickTexts = {};
 
     this.options = options;
+    this.isShowGlobalMousePosition = isShowGlobalMousePosition;
 
     this.textFontSize = 12;
     this.textFontFamily = 'Arial';
-    this.textFontColor = '#777777';
+    this.textFontColor = '#808080';
+    this.textStrokeColor = this.getTheme() === THEME_DARK
+      ? '#000000'
+      : '#ffffff';
     this.pixiTextConfig = {
       fontSize: +this.options.fontSize
         ? `${+this.options.fontSize}px`
@@ -46,7 +57,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       fontFamily: this.textFontFamily,
       fill: this.options.color || this.textFontColor,
       lineJoin: 'round',
-      stroke: this.options.stroke || '#ffffff',
+      stroke: this.options.stroke || this.textStrokeColor,
       strokeThickness: 2
     };
     this.stroke = colorToHex(this.pixiTextConfig.stroke);
@@ -63,7 +74,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.pubSubs = [];
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.isShowGlobalMousePosition()
+      );
     }
 
     let chromSizesPath = chromInfoPath;
@@ -134,7 +147,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
     super.rerender(options, force);
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
+      this.hideMousePosition = showMousePosition(
+        this, this.is2d, this.isShowGlobalMousePosition()
+      );
     }
 
     if (!this.options.showMousePosition && this.hideMousePosition) {

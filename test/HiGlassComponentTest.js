@@ -33,10 +33,8 @@ import {
   // paperFigure1,
   osmConf,
   geneAnnotationsOnly,
-  geneAnnotationsOnly1,
   annotationsTilesView,
   horizontalAndVerticalMultivec,
-  exportDataConfig,
   invalidTrackConfig,
   divergentTrackConfig,
   divisionViewConfig,
@@ -44,7 +42,6 @@ import {
   rectangleDomains,
   threeViews,
   project1D,
-  noGPSB,
   onlyGPSB,
   chromInfoTrack,
   heatmapTrack,
@@ -69,6 +66,345 @@ describe('Simple HiGlassComponent', () => {
   let div = null;
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
+  describe('Track positioning', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={horizontalDiagonalTrackViewConf}
+      />,
+      { attachTo: div });
+
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('should add and resize a vertical heatmp', (done) => {
+      hgc.instance().handleTrackAdded('aa', verticalHeatmapTrack, 'left');
+      hgc.instance().state.views.aa.tracks.left[0].width = 100;
+
+      hgc.setState(hgc.instance().state);
+      hgc.instance().tiledPlots.aa.measureSize();
+
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vh1');
+
+      expect(track.originalTrack.axis.track.flipText).toEqual(true);
+
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('Should flip the vertical heatmap', () => {
+      const { views } = hgc.instance().state;
+      const track = getTrackByUid(views.aa.tracks, 'vh1');
+
+      track.options.oneDHeatmapFlipped = 'yes';
+
+      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vh1').originalTrack;
+      hgc.setState({
+        views,
+      });
+
+      // make sure the heatmap was flipped
+      expect(trackObj.pMain.scale.y).toBeLessThan(0);
+    });
+
+    it('Should remove the vertical heatmap', (done) => {
+      hgc.instance().handleCloseTrack('aa', 'vh1');
+      hgc.setState(hgc.instance().state);
+      hgc.instance().tiledPlots.aa.measureSize();
+
+      // setTimeout(done, shortLoadTime);
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('should add a heatmap', (done) => {
+      // height defined in the testViewConf file, just the chromosome names
+      // track
+      expect(totalTrackPixelHeight(hgc.instance().state.views.aa)).toEqual(57);
+
+      hgc.instance().handleTrackAdded('aa', horizontalHeatmapTrack, 'top');
+
+      hgc.setState(hgc.instance().state);
+
+      // this should show the graphics, but it initially doesn't
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('should change the opacity of the label', () => {
+      hgc.instance().state.views.aa.tracks.top[0].options.labelBackgroundOpacity = 0.5;
+
+      hgc.setState(hgc.instance().state);
+      const horizontalHeatmap = getTrackObjectFromHGC(hgc.instance(), 'aa', 'hh1');
+
+      expect(horizontalHeatmap.options.labelBackgroundOpacity).toEqual(0.5);
+    });
+
+    it('should have a horizontal heatmap scale', () => {
+      const horizontalHeatmap = getTrackObjectFromHGC(hgc.instance(), 'aa', 'hh1');
+
+      const svg = horizontalHeatmap.exportColorBarSVG();
+      const rects = svg.getElementsByClassName('color-rect');
+      expect(rects.length).toBeGreaterThan(0);
+
+      // let svgText = new XMLSerializer().serializeToString(svg);
+    });
+
+    it('should add a large horizontal heatmap', (done) => {
+      // handleTrackAdded automatically sets the height
+      const prevHeight = hgc.instance().state.views.aa.layout.h;
+      hgc.instance().handleTrackAdded('aa', largeHorizontalHeatmapTrack, 'top');
+
+      hgc.setState(hgc.instance().state);
+
+      // make sure that the view has grown
+      expect(hgc.instance().state.views.aa.layout.h).toBeGreaterThan(prevHeight);
+
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+
+    it('should add a few more horizontal tracks', (done) => {
+      const numNewTracks = 5;
+      for (let i = 0; i < numNewTracks; i++) {
+        const newTrackJson = JSON.parse(JSON.stringify(largeHorizontalHeatmapTrack));
+        newTrackJson.uid = slugid.nice();
+        hgc.setState(hgc.instance().state);
+
+        hgc.instance().handleTrackAdded('aa', newTrackJson, 'top');
+      }
+
+      hgc.setState(hgc.instance().state);
+
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('updates the view and deletes some tracks', (done) => {
+      // hgc.update();
+      const trackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer.currentProps.height;
+
+      const numToDelete = 3;
+      const toDeleteUids = [];
+      for (let i = 0; i < numToDelete; i++) {
+        const trackUid = hgc.instance().state.views.aa.tracks.top[i].uid;
+        toDeleteUids.push(trackUid);
+      }
+
+      for (const uid of toDeleteUids) {
+        hgc.instance().handleCloseTrack('aa', uid);
+      }
+
+      hgc.setState(hgc.instance().state);
+
+      hgc.instance().tiledPlots.aa.measureSize();
+
+      // make sure that the trackRenderer is now smaller than it was before
+      // we deleted the tracks
+      const newTrackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer.currentProps.height;
+      expect(newTrackRendererHeight).toBeLessThan(trackRendererHeight);
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('Adds a center heatmap track', (done) => {
+      hgc.instance().handleTrackAdded('aa', heatmapTrack, 'center');
+
+      hgc.setState(hgc.instance().state);
+      hgc.instance().tiledPlots.aa.measureSize();
+
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('Checks to make sure the newly added heatmap was large enough and deletes a track', () => {
+      const prevTotalHeight = hgc.instance().calculateViewDimensions(
+        hgc.instance().state.views.aa
+      ).totalHeight;
+
+      const newView = hgc.instance().handleCloseTrack('aa', 'hcl').aa;
+      hgc.setState(hgc.instance().state);
+      // hgc.instance().tiledPlots['aa'].measureSize();
+
+      // let nextTrackRendererHeight =
+      // hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
+      const nextTotalHeight = hgc.instance().calculateViewDimensions(newView).totalHeight;
+
+      // expect(nextTrackRendererHeight).toEqual(prevTrackRendererHeight - 57);
+      expect(nextTotalHeight).toBeLessThan(prevTotalHeight);
+
+      // setTimeout(done, shortLoadTime);
+    });
+
+    it('Should resize the center track', (done) => {
+      const view = hgc.instance().state.views.aa;
+      view.layout.h += 2;
+
+      hgc.setState(hgc.instance().state);
+      hgc.instance().tiledPlots.aa.measureSize();
+
+      // setTimeout(done, shortLoadTime);
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('Should add a bottom track and have the new height', () => {
+      // const prevHeight = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap3').dimensions[1];
+
+      const newTrack = JSON.parse(JSON.stringify(horizontalHeatmapTrack));
+      newTrack.uid = 'xyx1';
+
+      hgc.instance().handleTrackAdded('aa', newTrack, 'bottom');
+      hgc.setState(hgc.instance().state);
+      hgc.instance().tiledPlots.aa.measureSize();
+      // skip this test for now
+
+      /*
+
+      // adding a new track should not make the previous one smaller
+
+      const newHeight = hgc.instance().tiledPlots.aa.trackRenderer
+      .getTrackObject('heatmap3').dimensions[1]
+      console.log('prevHeight:', prevHeight, 'newHeight:', newHeight);
+      expect(prevHeight).toEqual(newHeight);
+
+      waitForTilesLoaded(hgc.instance(), done);
+      */
+    });
+
+    it('Should resize the center', (done) => {
+      const view = hgc.instance().state.views.aa;
+      view.layout.h += 2;
+
+      hgc.setState(hgc.instance().state);
+      hgc.instance().tiledPlots.aa.measureSize();
+
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('Should delete the bottom track and not resize the center', (done) => {
+      const prevSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3')
+        .dimensions[1];
+
+      hgc.instance().handleCloseTrack('aa', 'xyx1');
+      hgc.setState(hgc.instance().state);
+      hgc.instance().tiledPlots.aa.measureSize();
+
+      const nextSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3')
+        .dimensions[1];
+
+      // Was commented out: Uncomment and see if it works...
+      expect(nextSize).toEqual(prevSize);
+
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+  });
+
+  describe('Invalid track type tests', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={invalidTrackConfig}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc.instance(), done);
+
+      // visual check that the heatmap track config menu is moved
+      // to the left
+    });
+
+    it('Opens the track type menu', () => {
+      const clickPosition = {
+        bottom: 85,
+        height: 28,
+        left: 246,
+        right: 274,
+        top: 57,
+        width: 28,
+        x: 246,
+        y: 57,
+      };
+      const uid = 'line1';
+
+      hgc.instance().tiledPlots.aa.handleConfigTrackMenuOpened(uid, clickPosition);
+      const cftm = hgc.instance().tiledPlots.aa.configTrackMenu;
+
+      const subMenuRect = {
+        bottom: 88,
+        height: 27,
+        left: 250,
+        right: 547.984375,
+        top: 61,
+        width: 297.984375,
+        x: 250,
+        y: 61,
+      };
+
+      const series = invalidTrackConfig.views[0].tracks.top;
+
+      // get the object corresponding to the series
+      cftm.handleItemMouseEnterWithRect(subMenuRect, series[0]);
+      const seriesObj = cftm.seriesListMenu;
+
+      const position = { left: 127.03125, top: 84 };
+      const bbox = {
+        bottom: 104,
+        height: 20,
+        left: 131.03125,
+        right: 246,
+        top: 84,
+        width: 114.96875,
+        x: 131.03125,
+        y: 84,
+      };
+
+      const trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
+
+      expect(trackTypeItems.props.menuItems['horizontal-line']).toBeUndefined();
+      expect(trackTypeItems.props.menuItems['horizontal-point']).toBeUndefined();
+    });
+
+    it('Opens the close track menu', () => {
+      const clickPosition = {
+        bottom: 85,
+        height: 28,
+        left: 246,
+        right: 274,
+        top: 57,
+        width: 28,
+        x: 246,
+        y: 57,
+      };
+      const uid = 'line1';
+
+      hgc.instance().tiledPlots.aa.handleCloseTrackMenuOpened(uid, clickPosition);
+    });
+  });
 
   describe('API tests', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -97,7 +433,7 @@ describe('Simple HiGlassComponent', () => {
       // done();
     });
 
-    it('Switches to the osm tles track', (done) => {
+    it('Switches to the osm tles track', () => {
       const { views } = hgc.instance().state;
       // console.log('views:', views);
 
@@ -109,7 +445,6 @@ describe('Simple HiGlassComponent', () => {
       hgc.setState({
         views,
       });
-      done();
     });
   });
 
@@ -159,54 +494,6 @@ describe('Simple HiGlassComponent', () => {
 
       waitForTransitionsFinished(hgc.instance(), () => {
         done();
-      });
-    });
-  });
-
-  describe('Genome position search box tests', () => {
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: false }}
-        viewConfig={geneAnnotationsOnly1}
-      />, { attachTo: div });
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Searches for cdkn2b-as1', (done) => {
-      const firstDomain = hgc.instance().xScales.aa.domain();
-
-      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'cdkn2b-as1');
-      hgc.update();
-
-      hgc.instance().genomePositionSearchBoxes.aa.buttonClick();
-      hgc.update();
-
-      waitForJsonComplete(() => {
-        waitForTransitionsFinished(hgc.instance(), () => {
-          const secondDomain = hgc.instance().xScales.aa.domain();
-          // make sure that we zoomed somwhere
-
-          expect(firstDomain[0]).not.toEqual(secondDomain[0]);
-          expect(firstDomain[1]).not.toEqual(secondDomain[1]);
-          done();
-        });
       });
     });
   });
@@ -331,10 +618,8 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Exports to SVG', (done) => {
+    it('Exports to SVG', () => {
       hgc.instance().createSVG();
-
-      done();
     });
   });
 
@@ -364,15 +649,12 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Exports to SVG', (done) => {
+    it('Exports to SVG', () => {
       const svg = hgc.instance().createSVG();
       const svgText = new XMLSerializer().serializeToString(svg);
 
       expect(svgText.indexOf('rect')).toBeGreaterThan(0);
       // hgc.instance().handleExportSVG();
-      //
-
-      done();
     });
 
 
@@ -401,17 +683,17 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Exports to SVG', (done) => {
-      // const svg = hgc.instance().createSVG();
-      // const svgText = new XMLSerializer().serializeToString(svg);
+    // it('Exports to SVG', (done) => {
+    //   // const svg = hgc.instance().createSVG();
+    //   // const svgText = new XMLSerializer().serializeToString(svg);
+    //
+    //   // expect(svgText.indexOf('dy="-17"')).toBeGreaterThan(0);
+    //   // hgc.instance().handleExportSVG();
+    //
+    //   done();
+    // });
 
-      // expect(svgText.indexOf('dy="-17"')).toBeGreaterThan(0);
-      // hgc.instance().handleExportSVG();
-
-      done();
-    });
-
-    it('Replaces one of the views and tries to export again', (done) => {
+    it('Replaces one of the views and tries to export again', () => {
       let { views } = hgc.instance().state;
 
       const newView = JSON.parse(JSON.stringify(views.aa));
@@ -430,8 +712,6 @@ describe('Simple HiGlassComponent', () => {
       // would maintain a reference to the closed view and we would try
       // to export it as SVG
       hgc.instance().createSVG();
-
-      done();
 
       // hgc.instance().createSVG();
     });
@@ -462,7 +742,7 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Exports to SVG', (done) => {
+    it('Exports to SVG', () => {
       const svg = hgc.instance().createSVG();
       const svgText = new XMLSerializer().serializeToString(svg);
 
@@ -475,11 +755,9 @@ describe('Simple HiGlassComponent', () => {
 
       // check to make sure that the chromosome ticks are present
       expect(svgText.indexOf('line x1')).toBeGreaterThan(0);
-      expect(svgText.indexOf('#777777')).toBeGreaterThan(0);
+      expect(svgText.indexOf('#808080')).toBeGreaterThan(0);
 
       // hgc.instance().handleExportSVG();
-
-      done();
     });
   });
 
@@ -512,7 +790,7 @@ describe('Simple HiGlassComponent', () => {
       // to the left
     });
 
-    it('Opens the track type menu', (done) => {
+    it('Opens the track type menu', () => {
       const clickPosition = {
         bottom: 85,
         height: 28,
@@ -565,60 +843,15 @@ describe('Simple HiGlassComponent', () => {
 
       expect(trackTypeItems.props.menuItems['horizontal-line']).toBeDefined();
       expect(trackTypeItems.props.menuItems['horizontal-point']).toBeDefined();
-
-      done();
     });
 
-    it('Changes the track type', (done) => {
+    it('Changes the track type', () => {
       // make sure that this doesn't error
       hgc.instance().tiledPlots.aa.handleChangeTrackType('line1', 'horizontal-bar');
 
       // make sure that the uid of the top track has been changed
       expect(hgc.instance().state.views.aa.tracks.top[0].uid).not.toEqual('line1');
       expect(hgc.instance().state.views.aa.tracks.top[0].type).toEqual('horizontal-bar');
-
-      done();
-    });
-  });
-
-  describe('Export data', () => {
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:600px;height:1200px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: true }}
-        viewConfig={exportDataConfig}
-      />,
-      { attachTo: div });
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('once', (done) => {
-      const tp = getTrackObjectFromHGC(hgc.instance(), 'NagBzk-AQZuoY0bqG-Yy0Q', 'PdEzdgsxRymGelD5xfKlNA');
-      let data = tp.getVisibleRectangleData(262, 298, 1, 1);
-
-      data = tp.getVisibleRectangleData(0, 0, tp.dimensions[0], tp.dimensions[1]);
-
-      expect(data.shape[0]).toEqual(975);
-      expect(data.shape[1]).toEqual(234);
-
-      // tp.exportData();
-
-      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -868,7 +1101,7 @@ describe('Simple HiGlassComponent', () => {
       // to the left
     });
 
-    it('Ensures that only the gene-annotations and 1d-tiles tracks are listed', (done) => {
+    it('Ensures that only the gene-annotations and 1d-tiles tracks are listed', () => {
       const clickPosition = {
         bottom: 85,
         height: 28,
@@ -919,8 +1152,6 @@ describe('Simple HiGlassComponent', () => {
       expect(trackTypeItems.props.menuItems['horizontal-gene-annotations']).toBeDefined();
       expect(trackTypeItems.props.menuItems['horizontal-1d-tiles']).toBeDefined();
       expect(trackTypeItems.props.menuItems['horizontal-line']).toBeUndefined();
-
-      done();
     });
   });
 
@@ -962,12 +1193,10 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('exports as JSON and makes sure that the scales are locked', (done) => {
+    it('exports as JSON and makes sure that the scales are locked', () => {
       const data = hgc.instance().getViewsAsString();
 
       expect(data.indexOf('valueScaleLocks')).toBeGreaterThanOrEqual(0);
-
-      done();
     });
 
     it('Moves the brush on one view and makes sure it moves on the other', (done) => {
@@ -998,7 +1227,7 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('ensures that the new track domains are equal', (done) => {
+    it('ensures that the new track domains are equal', () => {
       const track1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
       const track2 = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap2');
 
@@ -1016,10 +1245,7 @@ describe('Simple HiGlassComponent', () => {
       // than the other
       // expect(zl1).toEqual(zl2);
 
-
       expect(domain1[1]).toEqual(domain2[1]);
-
-      done();
     });
 
     it('unlocks the scales', (done) => {
@@ -1098,7 +1324,7 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('ensures that the new track domains are not equal', (done) => {
+    it('ensures that the new track domains are not equal', () => {
       const track1 = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap1');
       const track2 = hgc.instance().tiledPlots.view2.trackRenderer.getTrackObject('heatmap2');
 
@@ -1112,26 +1338,20 @@ describe('Simple HiGlassComponent', () => {
       // unlock the scales and zoom out
       // hgc.instance().tiledPlots['aa'].trackRenderer
       // .setCenter(1799432348.8692136, 1802017603.5768778, 2887.21283197403);
-
-      done();
     });
 
-    it('Lock view scales ', (done) => {
+    it('Lock view scales ', () => {
       hgc.instance().handleZoomLockChosen('aa', 'view2');
       hgc.instance().handleLocationLockChosen('aa', 'view2');
-
-      done();
     });
 
-    it('locks the value scales ', (done) => {
+    it('locks the value scales ', () => {
       // lock the value scales to ensure that removing the track doesn't
       // lead to an error
       hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'heatmap2');
-
-      done();
     });
 
-    it('Replaces and displays a new track', (done) => {
+    it('Replaces and displays a new track', () => {
       hgc.instance().handleCloseTrack('view2', 'c2');
       hgc.instance().handleTrackAdded('view2', heatmapTrack, 'center');
 
@@ -1143,8 +1363,6 @@ describe('Simple HiGlassComponent', () => {
         .trackRenderer.syncTrackObjects(
           hgc.instance().tiledPlots.view2.positionedTracks()
         );
-
-      done();
     });
 
     it('Replaces and displays a new track', (done) => {
@@ -1159,113 +1377,11 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Locks the scales again (after waiting for the previous tiles to load)', (done) => {
+    it('Locks the scales again (after waiting for the previous tiles to load)', () => {
       hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'heatmap3');
-
-      done();
     });
   });
 
-  describe('Invalid track type tests', () => {
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: false }}
-        viewConfig={invalidTrackConfig}
-      />, { attachTo: div });
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-
-      // visual check that the heatmap track config menu is moved
-      // to the left
-    });
-
-    it('Opens the track type menu', (done) => {
-      const clickPosition = {
-        bottom: 85,
-        height: 28,
-        left: 246,
-        right: 274,
-        top: 57,
-        width: 28,
-        x: 246,
-        y: 57,
-      };
-      const uid = 'line1';
-
-      hgc.instance().tiledPlots.aa.handleConfigTrackMenuOpened(uid, clickPosition);
-      const cftm = hgc.instance().tiledPlots.aa.configTrackMenu;
-
-      const subMenuRect = {
-        bottom: 88,
-        height: 27,
-        left: 250,
-        right: 547.984375,
-        top: 61,
-        width: 297.984375,
-        x: 250,
-        y: 61,
-      };
-
-      const series = invalidTrackConfig.views[0].tracks.top;
-
-      // get the object corresponding to the series
-      cftm.handleItemMouseEnterWithRect(subMenuRect, series[0]);
-      const seriesObj = cftm.seriesListMenu;
-
-      const position = { left: 127.03125, top: 84 };
-      const bbox = {
-        bottom: 104,
-        height: 20,
-        left: 131.03125,
-        right: 246,
-        top: 84,
-        width: 114.96875,
-        x: 131.03125,
-        y: 84,
-      };
-
-      const trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
-
-      expect(trackTypeItems.props.menuItems['horizontal-line']).toBeUndefined();
-      expect(trackTypeItems.props.menuItems['horizontal-point']).toBeUndefined();
-
-      done();
-    });
-
-    it('Opens the close track menu', (done) => {
-      const clickPosition = {
-        bottom: 85,
-        height: 28,
-        left: 246,
-        right: 274,
-        top: 57,
-        width: 28,
-        x: 246,
-        y: 57,
-      };
-      const uid = 'line1';
-
-      hgc.instance().tiledPlots.aa.handleCloseTrackMenuOpened(uid, clickPosition);
-
-      done();
-    });
-  });
   //
   // wait a bit of time for the data to be loaded from the server
   describe('Two linked views', () => {
@@ -1336,9 +1452,9 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('renders with no errors', (done) => {
-      done();
-    });
+    // it('renders with no errors', (done) => {
+    //   done();
+    // });
   });
 
   describe('Track Resizing', () => {
@@ -1411,14 +1527,12 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('should load the initial config', (done) => {
+    it('should load the initial config', () => {
       // this was to test an example from the higlass-website demo page
       // where the issue was that the genome position search box was being
       // styled with a margin-bottom of 10px, fixed by setting the style of
       // genome-position-search to specify margin-bottom app/styles/GenomePositionSearchBox.css
       expect(hgc.instance().state.views.aa.layout.h).toEqual(6);
-
-      done();
     });
 
     it('should change the opacity of the first text label to 20%', (done) => {
@@ -1631,17 +1745,15 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Changes the position of the brush to the top right', (done) => {
+    it('Changes the position of the brush to the top right', () => {
       const { views } = hgc.instance().state;
       views.aa.tracks.center[0].contents[0].options.colorbarPosition = 'topRight';
 
       hgc.instance().setState({ views });
-
-      done();
     });
 
 
-    it('Moves the brush on one of the views', (done) => {
+    it('Moves the brush on one of the views', () => {
       const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
 
       const domain1 = track.limitedValueScale.domain();
@@ -1657,8 +1769,6 @@ describe('Simple HiGlassComponent', () => {
 
       // console.log('domain1:', domain1);
       // console.log('domain2:', domain2);
-
-      done();
     });
 
     it('locks the scales and recenters the page', (done) => {
@@ -1674,7 +1784,7 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Moves the brush on one view and makes sure it moves on the other', (done) => {
+    it('Moves the brush on one view and makes sure it moves on the other', () => {
       const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
 
       // console.log('lvs1', heatmapTrack.limitedValueScale.domain());
@@ -1691,8 +1801,6 @@ describe('Simple HiGlassComponent', () => {
         .toEqual(heatmap2Track.options.scaleStartPercent);
       expect(track.options.scaleEndPercent)
         .toEqual(heatmap2Track.options.scaleEndPercent);
-
-      done();
     });
   });
 
@@ -1760,11 +1868,11 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Exports the views as SVG', (done) => {
-      // hgc.instance().handleExportSVG();
-
-      done();
-    });
+    // it('Exports the views as SVG', (done) => {
+    //   // hgc.instance().handleExportSVG();
+    //
+    //   done();
+    // });
   });
 
 
@@ -1806,15 +1914,13 @@ describe('Simple HiGlassComponent', () => {
       // to the left
     });
 
-    it('Gets and sets the viewconfig', (done) => {
+    it('Gets and sets the viewconfig', () => {
       const viewConf = hgc.instance().getViewsAsString();
 
       const newViews = hgc.instance().processViewConfig(JSON.parse(viewConf));
       hgc.setState({
         viewsByUid: newViews,
       });
-
-      done();
     });
   });
 
@@ -1856,17 +1962,14 @@ describe('Simple HiGlassComponent', () => {
       });
     });
 
-    it('Zooms one of the views to the center', (done) => {
+    it('Zooms one of the views to the center', () => {
       hgc.instance().api.zoomToDataExtent('view2');
-
-      done();
     });
 
-    it('Zooms a nonexistant view to the center', (done) => {
+    it('Zooms a nonexistant view to the center', () => {
       const badFn = () => hgc.instance().api.zoomToDataExtent('xxx');
 
       expect(badFn).toThrow();
-      done();
     });
   });
 
@@ -1985,7 +2088,7 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Checks to make sure that the two views have moved to the same place', (done) => {
+    it('Checks to make sure that the two views have moved to the same place', () => {
       const aaXScale = hgc.instance().xScales.aa;
       const aaYScale = hgc.instance().yScales.aa;
 
@@ -1997,8 +2100,6 @@ describe('Simple HiGlassComponent', () => {
 
       expect(aaCenterX - bbCenterX).toBeLessThan(0.001);
       expect(aaCenterY - bbCenterY).toBeLessThan(0.001);
-
-      done();
     });
 
     it('Links the third view', (done) => {
@@ -2028,49 +2129,6 @@ describe('Simple HiGlassComponent', () => {
       expect(aaCenterX - ccCenterX).toBeLessThan(0.001);
       expect(aaCenterY - ccCenterY).toBeLessThan(0.001);
 
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-  });
-
-  describe('AddTrackModal', () => {
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'height:400px; width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: true }}
-        viewConfig={oneViewConfig}
-      />,
-      { attachTo: div });
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('has the focus in the searchbar when adding a new track', (done) => {
-      const tiledPlot = hgc.instance().tiledPlots.aa;
-      tiledPlot.handleAddTrack('top');
-
-      hgc.update();
-
-      // eslint-disable-next-line react/no-find-dom-node
-      const inputField = ReactDOM.findDOMNode(tiledPlot.addTrackModal.tilesetFinder.searchBox);
-
-      // make sure the input field is equal to the document's active element
-      // e.g. that it has focus
-      expect(inputField).toEqual(document.activeElement);
 
       waitForTilesLoaded(hgc.instance(), done);
     });
@@ -2323,7 +2381,7 @@ describe('Simple HiGlassComponent', () => {
       waitForJsonComplete(done);
     });
 
-    it('Searches for strings with spaces at the beginning', (done) => {
+    it('Searches for strings with spaces at the beginning', () => {
       const gpsb = hgc.instance().genomePositionSearchBoxes.aa;
 
       let [range1, range2] = gpsb.searchField.searchPosition('  chr1:1-1000 & chr1:2001-3000');
@@ -2338,18 +2396,15 @@ describe('Simple HiGlassComponent', () => {
 
       expect(range1[0]).toEqual(1);
       expect(range1[1]).toEqual(1000);
-
-      done();
     });
 
-    it('Ensures that hg38 is in the list of available assemblies', (done) => {
+    it('Ensures that hg38 is in the list of available assemblies', () => {
       expect(
         hgc
           .instance()
           .genomePositionSearchBoxes.aa.state.availableAssemblies
           .indexOf('hg38')
       ).toBeGreaterThanOrEqual(0);
-      done();
     });
 
     it('Selects mm9', (done) => {
@@ -2443,256 +2498,6 @@ describe('Simple HiGlassComponent', () => {
   });
 
 
-  describe('Track positioning', () => {
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: false }}
-        viewConfig={horizontalDiagonalTrackViewConf}
-      />,
-      { attachTo: div });
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('should add and resize a vertical heatmp', (done) => {
-      hgc.instance().handleTrackAdded('aa', verticalHeatmapTrack, 'left');
-      hgc.instance().state.views.aa.tracks.left[0].width = 100;
-
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-
-      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vh1');
-
-      expect(track.originalTrack.axis.track.flipText).toEqual(true);
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Should flip the vertical heatmap', (done) => {
-      const { views } = hgc.instance().state;
-      const track = getTrackByUid(views.aa.tracks, 'vh1');
-
-      track.options.oneDHeatmapFlipped = 'yes';
-
-      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vh1').originalTrack;
-      hgc.setState({
-        views,
-      });
-
-      // make sure the heatmap was flipped
-      expect(trackObj.pMain.scale.y).toBeLessThan(0);
-
-      done();
-    });
-
-    it('Should remove the vertical heatmap', (done) => {
-      hgc.instance().handleCloseTrack('aa', 'vh1');
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-
-      // setTimeout(done, shortLoadTime);
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('should add a heatmap', (done) => {
-      // height defined in the testViewConf file, just the chromosome names
-      // track
-      expect(totalTrackPixelHeight(hgc.instance().state.views.aa)).toEqual(57);
-
-      hgc.instance().handleTrackAdded('aa', horizontalHeatmapTrack, 'top');
-
-      hgc.setState(hgc.instance().state);
-
-      // this should show the graphics, but it initially doesn't
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('should change the opacity of the label', (done) => {
-      hgc.instance().state.views.aa.tracks.top[0].options.labelBackgroundOpacity = 0.5;
-
-      hgc.setState(hgc.instance().state);
-      const horizontalHeatmap = getTrackObjectFromHGC(hgc.instance(), 'aa', 'hh1');
-
-      expect(horizontalHeatmap.options.labelBackgroundOpacity).toEqual(0.5);
-
-      done();
-    });
-
-    it('should have a horizontal heatmap scale', (done) => {
-      const horizontalHeatmap = getTrackObjectFromHGC(hgc.instance(), 'aa', 'hh1');
-
-      const svg = horizontalHeatmap.exportColorBarSVG();
-      const rects = svg.getElementsByClassName('color-rect');
-      expect(rects.length).toBeGreaterThan(0);
-
-      // let svgText = new XMLSerializer().serializeToString(svg);
-
-      done();
-    });
-
-    it('should add a large horizontal heatmap', (done) => {
-      // handleTrackAdded automatically sets the height
-      const prevHeight = hgc.instance().state.views.aa.layout.h;
-      hgc.instance().handleTrackAdded('aa', largeHorizontalHeatmapTrack, 'top');
-
-      hgc.setState(hgc.instance().state);
-
-      // make sure that the view has grown
-      expect(hgc.instance().state.views.aa.layout.h).toBeGreaterThan(prevHeight);
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-
-    it('should add a few more horizontal tracks', (done) => {
-      const numNewTracks = 5;
-      for (let i = 0; i < numNewTracks; i++) {
-        const newTrackJson = JSON.parse(JSON.stringify(largeHorizontalHeatmapTrack));
-        newTrackJson.uid = slugid.nice();
-        hgc.setState(hgc.instance().state);
-
-        hgc.instance().handleTrackAdded('aa', newTrackJson, 'top');
-      }
-
-      hgc.setState(hgc.instance().state);
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('updates the view and deletes some tracks', (done) => {
-      // hgc.update();
-      const trackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer.currentProps.height;
-
-      const numToDelete = 3;
-      const toDeleteUids = [];
-      for (let i = 0; i < numToDelete; i++) {
-        const trackUid = hgc.instance().state.views.aa.tracks.top[i].uid;
-        toDeleteUids.push(trackUid);
-      }
-
-      for (const uid of toDeleteUids) {
-        hgc.instance().handleCloseTrack('aa', uid);
-      }
-
-      hgc.setState(hgc.instance().state);
-
-      hgc.instance().tiledPlots.aa.measureSize();
-
-      // make sure that the trackRenderer is now smaller than it was before
-      // we deleted the tracks
-      const newTrackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer.currentProps.height;
-      expect(newTrackRendererHeight).toBeLessThan(trackRendererHeight);
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Adds a center heatmap track', (done) => {
-      hgc.instance().handleTrackAdded('aa', heatmapTrack, 'center');
-
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Checks to make sure the newly added heatmap was large enough and deletes a track', (done) => {
-      const prevTotalHeight = hgc.instance().calculateViewDimensions(
-        hgc.instance().state.views.aa
-      ).totalHeight;
-
-      const newView = hgc.instance().handleCloseTrack('aa', 'hcl').aa;
-      hgc.setState(hgc.instance().state);
-      // hgc.instance().tiledPlots['aa'].measureSize();
-
-      // let nextTrackRendererHeight =
-      // hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
-      const nextTotalHeight = hgc.instance().calculateViewDimensions(newView).totalHeight;
-
-      // expect(nextTrackRendererHeight).toEqual(prevTrackRendererHeight - 57);
-      expect(nextTotalHeight).toBeLessThan(prevTotalHeight);
-
-      // setTimeout(done, shortLoadTime);
-      done();
-    });
-
-    it('Should resize the center track', (done) => {
-      const view = hgc.instance().state.views.aa;
-      view.layout.h += 2;
-
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-
-      // setTimeout(done, shortLoadTime);
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Should add a bottom track and have the new height', (done) => {
-      // const prevHeight = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap3').dimensions[1];
-
-      const newTrack = JSON.parse(JSON.stringify(horizontalHeatmapTrack));
-      newTrack.uid = 'xyx1';
-
-      hgc.instance().handleTrackAdded('aa', newTrack, 'bottom');
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-      // skip this test for now
-      done();
-      /*
-
-      // adding a new track should not make the previous one smaller
-
-      const newHeight = hgc.instance().tiledPlots.aa.trackRenderer
-      .getTrackObject('heatmap3').dimensions[1]
-      console.log('prevHeight:', prevHeight, 'newHeight:', newHeight);
-      expect(prevHeight).toEqual(newHeight);
-
-      waitForTilesLoaded(hgc.instance(), done);
-      */
-    });
-
-    it('Should resize the center', (done) => {
-      const view = hgc.instance().state.views.aa;
-      view.layout.h += 2;
-
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Should delete the bottom track and not resize the center', (done) => {
-      const prevSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3')
-        .dimensions[1];
-
-      hgc.instance().handleCloseTrack('aa', 'xyx1');
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-
-      const nextSize = hgc.instance().tiledPlots.aa.trackRenderer.getTrackObject('heatmap3')
-        .dimensions[1];
-
-      // Was commented out: Uncomment and see if it works...
-      expect(nextSize).toEqual(prevSize);
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-  });
-
-
   describe('Check for menu clashing in the center track ', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
@@ -2752,244 +2557,13 @@ describe('Simple HiGlassComponent', () => {
       // to the left
     });
 
-    it('clones itself', (done) => {
+    it('clones itself', () => {
       hgc.instance().handleAddView(hgc.instance().state.views.aa);
-
-      done();
     });
   });
-
-
-  describe('Starting with no genome position search box', () => {
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: false }}
-        viewConfig={noGPSB}
-      />,
-      { attachTo: div });
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Makes the search box visible', (done) => {
-      // TODO: This may create state which is necessary for the following tests.
-      // In which case, it should be a `before` or `before_each` and not `it`.
-      // let assemblyPickButton =
-      hgc.find('.assembly-pick-button');
-      // expect(assemblyPickButton.length).toEqual(0);
-      hgc.instance().handleTogglePositionSearchBox('aa');
-      hgc.update();
-      // assemblyPickButton =
-      hgc.find('.assembly-pick-button');
-      // expect(assemblyPickButton.length).toEqual(1);
-      waitForJsonComplete(done);
-    });
-
-    it('Makes sure that the search box points to mm9', (done) => {
-      hgc.update();
-      expect(hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly).toEqual('mm9');
-
-      done();
-    });
-
-    it('Switch the selected genome to dm3', (done) => {
-      hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('dm3');
-      hgc.update();
-
-      waitForJsonComplete(done);
-    });
-
-    it('Searches for the w gene', (done) => {
-      // this gene previously did nothing when searching for it
-      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'w');
-
-      waitForJsonComplete(done);
-    });
-
-    it('Makes sure that no genes are loaded', (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes.aa.state.genes.length).toEqual(0);
-
-      done();
-    });
-
-    it('Switch the selected genome to mm9', (done) => {
-      hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('mm9');
-      hgc.update();
-
-      waitForJsonComplete(done);
-    });
-
-    it('Searches for the Clock gene', (done) => {
-      // this gene previously did nothing when searching for it
-      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'Clock');
-
-      waitForJsonComplete(done);
-    });
-
-    it('Clicks the search positions', (done) => {
-      hgc.instance().genomePositionSearchBoxes.aa.buttonClick();
-
-      waitForJsonComplete(() => {
-        waitForTransitionsFinished(hgc.instance(), () => {
-          waitForTilesLoaded(hgc.instance(), done);
-        });
-      });
-    });
-
-    it('Expects the view to have changed location', (done) => {
-      const { zoomTransform } = hgc.instance().tiledPlots.aa.trackRenderer;
-
-      expect(zoomTransform.k - 47).toBeLessThan(1);
-      expect(zoomTransform.x - 2224932).toBeLessThan(1);
-
-      done();
-    });
-
-    it('Checks that autocomplete fetches some genes', (done) => {
-      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'T');
-      hgc.update();
-
-      waitForJsonComplete(done);
-    });
-
-    it('Checks the selected genes', (done) => {
-      // don't use the human autocomplete id
-      expect(hgc.instance().genomePositionSearchBoxes.aa.state.autocompleteId)
-        .not.toEqual('OHJakQICQD6gTD7skx4EWA');
-      expect(hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName)
-        .toEqual('Gt(ROSA)26Sor');
-
-      waitForJsonComplete(done);
-    });
-
-
-    it('Switch the selected genome to hg19', (done) => {
-      hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('hg19');
-      hgc.update();
-
-      waitForJsonComplete(done);
-    });
-
-    it('Sets the text to TP53', (done) => {
-      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'TP53');
-      hgc.update();
-
-      waitForJsonComplete(done);
-    });
-
-    it('Clicks on the search button', (done) => {
-      hgc.instance().genomePositionSearchBoxes.aa.buttonClick();
-
-      waitForJsonComplete(() => {
-        waitForTransitionsFinished(hgc.instance(), () => {
-          waitForTilesLoaded(hgc.instance(), done);
-        });
-      });
-    });
-
-    it('Expects the view to have changed location', (done) => {
-      const { zoomTransform } = hgc.instance().tiledPlots.aa.trackRenderer;
-
-      expect(zoomTransform.k - 234).toBeLessThan(1);
-      expect(zoomTransform.x + 7656469).toBeLessThan(1);
-
-      done();
-    });
-
-    it('Ensures that the autocomplete has changed', (done) => {
-      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, '');
-      expect(hgc.instance().genomePositionSearchBoxes.aa.state.autocompleteId)
-        .toEqual('OHJakQICQD6gTD7skx4EWA');
-
-      waitForJsonComplete(done);
-    });
-
-    it('Ensure that newly loaded genes are from hg19', (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName)
-        .toEqual('TP53');
-
-      done();
-    });
-
-    it('Switches back to mm9', (done) => {
-      hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('mm9');
-      hgc.update();
-
-      waitForJsonComplete(done);
-    });
-
-    it('Mock type something', (done) => {
-      hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, '');
-
-      waitForJsonComplete(done);
-    });
-
-    it('Make sure it has mouse genes', (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName)
-        .toEqual('Gt(ROSA)26Sor');
-
-      done();
-    });
-
-    it('Switches back to hg19', (done) => {
-      hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('hg19');
-      hgc.update();
-
-      waitForJsonComplete(done);
-    });
-
-    it('Makes the search box invisible', (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly)
-        .toEqual('hg19');
-      hgc.instance().handleTogglePositionSearchBox('aa');
-      hgc.update();
-
-      const assemblyPickButton = hgc.find('.assembly-pick-button');
-      expect(assemblyPickButton.length).toEqual(0);
-
-      waitForJsonComplete(done);
-    });
-
-    it('Makes the search box visible again', (done) => {
-      hgc.instance().handleTogglePositionSearchBox('aa');
-      hgc.update();
-
-      waitForJsonComplete(done);
-    });
-
-    it('Ensures that selected assembly is hg19', (done) => {
-      expect(hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly)
-        .toEqual('hg19');
-
-      done();
-    });
-
-    it("checks that the div hasn't grown too much", (done) => {
-      expect(div.clientHeight).toBeLessThan(500);
-
-      done();
-    });
-  });
-
 
   describe('Cleanup', () => {
-    it('Cleans up previously created instances and mounts a new component', (done) => {
+    it('Cleans up previously created instances and mounts a new component', () => {
       if (hgc) {
         hgc.unmount();
         hgc.detach();
@@ -2998,8 +2572,6 @@ describe('Simple HiGlassComponent', () => {
       if (div) {
         global.document.body.removeChild(div);
       }
-
-      done();
     });
   });
 });

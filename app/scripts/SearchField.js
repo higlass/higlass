@@ -4,7 +4,6 @@ import { absToChr } from './utils';
 
 class SearchField {
   constructor(chromInfo) {
-    // console.trace('chromInfo:', chromInfo)
     this.chromInfo = chromInfo;
     this.chromInfoBisector = bisector(d => d.pos).left;
   }
@@ -86,24 +85,17 @@ class SearchField {
       if (prevChr) chr = prevChr;
     }
 
+    // If chromosome doesn't exit
     let retPos = null;
 
-    if (Number.isNaN(pos)) { retPos = null; }
-
-    // queries like chr1:1000-2000
-    if (chr === null) { chr = prevChr; }
-
     if (chr === null) {
+      // queries like chr1:1000-2000
+      chr = prevChr;
       // no chromosome provided, so this is just a number
       retPos = pos;
     } else if (chr in this.chromInfo.chrPositions) {
       // chromosome provided, everything is fine
       retPos = this.chromInfo.chrPositions[chr].pos + pos;
-    } else {
-      // provided chromosome doesn't exit
-
-      // console.log("Error: No chromInfo specified or chromosome (" + chr + ") not in chromInfo");
-      retPos = null;
     }
 
     // retPos is the genome position of this pair
@@ -204,7 +196,6 @@ class SearchField {
          */
 
     const parts = offsetText.split(':');
-    // console.log('parseOffset parts:', parts);
 
     if (parts.length === 0) { return [[0, 0], [0, 0]]; }
 

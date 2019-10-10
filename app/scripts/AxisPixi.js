@@ -1,8 +1,8 @@
 import { format } from 'd3-format';
 import * as PIXI from 'pixi.js';
 
-// Services
-import { getDarkTheme } from './services';
+// Configs
+import { THEME_DARK } from './configs';
 
 import { colorToHex } from './utils';
 
@@ -19,15 +19,17 @@ class AxisPixi {
     this.axisTexts = [];
     this.axisTextFontFamily = 'Arial';
     this.axisTextFontSize = 10;
-
-    // hi
   }
 
   startAxis(axisHeight) {
     const graphics = this.pAxis;
 
     graphics.clear();
-    graphics.lineStyle(1, 0x000000, 1);
+    graphics.lineStyle(
+      1,
+      this.track.getTheme() === THEME_DARK ? colorToHex('#ffffff') : 0x000000,
+      1
+    );
 
     // draw the axis line
     graphics.moveTo(0, 0);
@@ -38,7 +40,7 @@ class AxisPixi {
     this.tickValues = this.calculateAxisTickValues(valueScale, axisHeight);
     let i = 0;
 
-    const color = getDarkTheme() ? '#cccccc' : 'black';
+    const color = this.track.getTheme() === THEME_DARK ? 'white' : 'black';
 
     if (!this.track.options
       || !this.track.options.axisLabelFormatting
@@ -75,6 +77,7 @@ class AxisPixi {
     while (this.axisTexts.length > this.tickValues.length) {
       const lastText = this.axisTexts.pop();
       this.pAxis.removeChild(lastText);
+      lastText.destroy(true);
     }
   }
 
@@ -102,22 +105,21 @@ class AxisPixi {
 
   drawAxisLeft(valueScale, axisHeight) {
     // Draw a left-oriented axis (ticks pointing to the right)
-    this.startAxis(this.pAxis, axisHeight);
+    this.startAxis(axisHeight);
     this.createAxisTexts(valueScale, axisHeight);
 
     const graphics = this.pAxis;
 
-    if (getDarkTheme()) {
+    if (this.track.getTheme() === THEME_DARK) {
       graphics.lineStyle(
-        graphics.lineWidth,
-        colorToHex('#ffffff'),
-        0.33
+        graphics.lineWidth || graphics._lineStyle.width,
+        colorToHex('#ffffff')
       );
     }
 
     // draw the top, potentially unlabelled, ticke
-    // graphics.moveTo(0, 0);
-    // graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), 0);
+    graphics.moveTo(0, 0);
+    graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), 0);
 
     graphics.moveTo(0, axisHeight);
     graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), axisHeight);
@@ -127,7 +129,11 @@ class AxisPixi {
 
       // draw ticks to the left of the axis
       this.axisTexts[i].x = -(
-        TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2);
+        TICK_MARGIN
+        + TICK_LENGTH
+        + TICK_LABEL_MARGIN
+        + (this.axisTexts[i].width / 2)
+      );
       this.axisTexts[i].y = valueScale(tick);
 
       graphics.moveTo(-TICK_MARGIN, valueScale(tick));
@@ -148,6 +154,13 @@ class AxisPixi {
 
     const graphics = this.pAxis;
 
+    if (this.track.getTheme() === THEME_DARK) {
+      graphics.lineStyle(
+        graphics.lineWidth || graphics._lineStyle.width,
+        colorToHex('#ffffff')
+      );
+    }
+
     // draw the top, potentially unlabelled, ticke
     graphics.moveTo(0, 0);
     graphics.lineTo((TICK_MARGIN + TICK_LENGTH), 0);
@@ -158,8 +171,12 @@ class AxisPixi {
     for (let i = 0; i < this.axisTexts.length; i++) {
       const tick = this.tickValues[i];
 
-      this.axisTexts[i].x = TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width
-        / 2;
+      this.axisTexts[i].x = (
+        TICK_MARGIN
+        + TICK_LENGTH
+        + TICK_LABEL_MARGIN
+        + (this.axisTexts[i].width / 2)
+      );
       this.axisTexts[i].y = valueScale(tick);
 
       graphics.moveTo(TICK_MARGIN, valueScale(tick));
@@ -175,7 +192,9 @@ class AxisPixi {
 
   hideOverlappingAxisLabels() {
     // show all tick marks initially
-    for (let i = this.axisTexts.length - 1; i >= 0; i--) { this.axisTexts[i].visible = true; }
+    for (let i = this.axisTexts.length - 1; i >= 0; i--) {
+      this.axisTexts[i].visible = true;
+    }
 
     for (let i = this.axisTexts.length - 1; i >= 0; i--) {
       // if this tick mark is invisible, it's not going to
@@ -217,7 +236,7 @@ class AxisPixi {
     // but it also has the draggable control to the right.
     // Confirm that this difference between SVG and Canvas is intentional,
     // and if not, remove this.
-    if (getDarkTheme()) stroke = '#cccccc';
+    if (this.track.getTheme() === THEME_DARK) stroke = '#cccccc';
 
     const line = document.createElement('path');
 
@@ -242,7 +261,7 @@ class AxisPixi {
       stroke = this.track.options.lineStrokeColor;
     }
 
-    if (getDarkTheme()) stroke = '#cccccc';
+    if (this.track.getTheme() === THEME_DARK) stroke = '#cccccc';
 
     const line = document.createElement('path');
     line.setAttribute('id', 'tick-mark');
@@ -269,16 +288,29 @@ class AxisPixi {
   exportAxisLeftSVG(valueScale, axisHeight) {
     const gAxis = this.exportVerticalAxis(axisHeight);
 
+    const topTickLine = this.createAxisSVGLine();
+    gAxis.appendChild(topTickLine);
+    topTickLine.setAttribute('d', `M0,0 L${+(TICK_MARGIN + TICK_LENGTH)},0`);
+
+    const bottomTickLine = this.createAxisSVGLine();
+    gAxis.appendChild(bottomTickLine);
+    bottomTickLine.setAttribute(
+      'd',
+      `M0,${axisHeight} L${+(TICK_MARGIN + TICK_LENGTH)},${axisHeight}`
+    );
+
     for (let i = 0; i < this.axisTexts.length; i++) {
       const tick = this.tickValues[i];
       const text = this.axisTexts[i];
 
-      const line = this.createAxisSVGLine();
+      const tickLine = this.createAxisSVGLine();
 
-      gAxis.appendChild(line);
+      gAxis.appendChild(tickLine);
 
-      line.setAttribute('d',
-        `M${-TICK_MARGIN},${valueScale(tick)} L${-(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`);
+      tickLine.setAttribute(
+        'd',
+        `M${+TICK_MARGIN},${valueScale(tick)} L${+(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`
+      );
 
       const g = document.createElement('g');
       gAxis.appendChild(g);
@@ -298,11 +330,16 @@ class AxisPixi {
   exportAxisRightSVG(valueScale, axisHeight) {
     const gAxis = this.exportVerticalAxis(axisHeight);
 
-    const line = this.createAxisSVGLine();
-    gAxis.appendChild(line);
+    const topTickLine = this.createAxisSVGLine();
+    gAxis.appendChild(topTickLine);
+    topTickLine.setAttribute('d', `M0,0 L${-(TICK_MARGIN + TICK_LENGTH)},0`);
 
-    line.setAttribute('d',
-      `M0,0 L${TICK_MARGIN + TICK_LENGTH},0`);
+    const bottomTickLine = this.createAxisSVGLine();
+    gAxis.appendChild(bottomTickLine);
+    bottomTickLine.setAttribute(
+      'd',
+      `M0,${axisHeight} L${-(TICK_MARGIN + TICK_LENGTH)},${axisHeight}`
+    );
 
     for (let i = 0; i < this.axisTexts.length; i++) {
       const tick = this.tickValues[i];
@@ -312,8 +349,10 @@ class AxisPixi {
 
       gAxis.appendChild(tickLine);
 
-      tickLine.setAttribute('d',
-        `M${TICK_MARGIN},${valueScale(tick)} L${TICK_MARGIN + TICK_LENGTH},${valueScale(tick)}`);
+      tickLine.setAttribute(
+        'd',
+        `M${-TICK_MARGIN},${valueScale(tick)} L${-(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`
+      );
 
       const g = document.createElement('g');
       gAxis.appendChild(g);

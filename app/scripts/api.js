@@ -1,8 +1,10 @@
 import ReactDOM from 'react-dom';
 import createPubSub from 'pub-sub-es';
+import Ajv from 'ajv';
+
+import schema from '../schema.json';
 
 import {
-  setDarkTheme,
   setTileProxyAuthHeader,
 } from './services';
 
@@ -43,6 +45,44 @@ const createApi = function api(context, pubSub) {
         // it's globally available within the build but not outside. See
         // `plugins` in `webpack.config.js`
         return VERSION;
+      },
+
+      /**
+       * Enable or disable broadcasting the mouse position globally
+       * @param {boolean} isBroadcastMousePositionGlobally - If `true` the mouse
+       *   position will be broadcasted globally.
+       */
+      setBroadcastMousePositionGlobally(
+        isBroadcastMousePositionGlobally = false
+      ) {
+        self.setBroadcastMousePositionGlobally(
+          isBroadcastMousePositionGlobally
+        );
+      },
+
+      /**
+       * Enable or disable showing the global mouse position
+       * @param {boolean} isShowGlobalMousePosition - If `true` the global mouse
+       *   position will be shown for any track that has
+       *   `options.showMousePosition = true`.
+       */
+      setShowGlobalMousePosition(isShowGlobalMousePosition = false) {
+        self.setShowGlobalMousePosition(
+          isShowGlobalMousePosition
+        );
+      },
+
+      /**
+       * Convenience function to enable / disable the global mouse position
+       * @description This function is equivalent to calling
+       *   `setBroadcastMousePositionGlobally()` and
+       *   `setShowGlobalMousePosition()`.
+       * @param {boolean} isGlobalMousePosition - If `true` the global mouse
+       *   position will be shown and broadcasted.
+       */
+      setGlobalMousePosition(isGlobalMousePosition = false) {
+        self.setBroadcastMousePositionGlobally(isGlobalMousePosition);
+        self.setShowGlobalMousePosition(isGlobalMousePosition);
       },
 
       /**
@@ -151,6 +191,16 @@ const createApi = function api(context, pubSub) {
        *   all of the data for this viewconfig is loaded
        */
       setViewConfig(newViewConfig) {
+        const validate = new Ajv().compile(schema);
+        const valid = validate(newViewConfig);
+        if (validate.errors) {
+          console.warn(JSON.stringify(validate.errors, null, 2));
+        }
+        if (!valid) {
+          console.warn('Invalid viewconf');
+          // throw new Error('Invalid viewconf');
+        }
+
         const viewsByUid = self.processViewConfig(newViewConfig);
         const p = new Promise((resolve) => {
           this.requestsInFlight = 0;
@@ -184,7 +234,17 @@ const createApi = function api(context, pubSub) {
        * @returns (Object) A JSON object describing the visible views
        */
       getViewConfig() {
-        return self.getViewsAsJson();
+        const newViewConfig = self.getViewsAsJson();
+        const validate = new Ajv().compile(schema);
+        const valid = validate(newViewConfig);
+        if (validate.errors) {
+          console.warn(JSON.stringify(validate.errors, null, 2));
+        }
+        if (!valid) {
+          console.warn('Invalid viewconf');
+          // throw new Error('Invalid viewconf');
+        }
+        return newViewConfig;
       },
       /**
        * Get the minimum and maximum visible values for a given track.
@@ -240,9 +300,25 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
-       * Show overlays where this track can be positioned
+       * Show overlays where this track can be positioned. This
+       * function will take a track definition and display red,
+       * blue or green overlays highlighting where the track can
+       * be placed on the view. Blue indicates that a track can
+       * be placed in that region, red that it can't and green that
+       * the mouse is currently over the given region.
        *
        * @param {obj} track { server, tilesetUid, datatype }
+       *
+       * @example
+       *
+       *  let lineTrack = {
+       *   "server": "http://higlass.io/api/v1",
+       *   "tilesetUid": "WtBJUYawQzS9M2WVIIHnlA",
+       *   "datatype": "multivec",
+       *   "defaultTracks": ['horizontal-stacked-bar']
+       * }
+       *
+       * window.hgApi.showAvailableTrackPositions(lineTrack);
        */
       showAvailableTrackPositions(track) {
         self.setState({
@@ -259,6 +335,34 @@ const createApi = function api(context, pubSub) {
         });
       },
 
+      /**
+       * Show the track chooser which highlights tracks
+       * when the mouse is over them.
+       *
+       * @param  {Function} callback (toViewUid, toTrackUid) =>: A function
+       *                             to be called when a track is chosen.
+       * @return {[type]}            [description]
+       */
+      showTrackChooser(callback) {
+        self.setState({
+          chooseTrackHandler: (...args) => {
+            self.setState({
+              chooseTrackHandler: null,
+            });
+
+            callback(...args);
+          },
+        });
+      },
+
+      /**
+       * Hide the track chooser.
+       */
+      hideTrackChooser() {
+        this.setState({
+          chooseTrackHandler: null,
+        });
+      },
       /**
        *
        * When comparing different 1D tracks it can be desirable to fix their y or value
@@ -283,10 +387,22 @@ const createApi = function api(context, pubSub) {
 
       /**
        * Choose a theme.
+       * @deprecated since version 1.6.6. Use `setTheme()` instead.
        */
       setDarkTheme(darkTheme) {
-        console.warn('Please note that the dark mode is still in beta');
-        setDarkTheme(!!darkTheme);
+        console.warn(
+          '`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.'
+        );
+        const theme = darkTheme ? 'dark' : 'light';
+        self.setTheme(theme);
+      },
+
+      /**
+       * Choose a theme.
+       */
+      setTheme(theme) {
+        console.warn('Please note that theming is still in beta!');
+        self.setTheme(theme);
       },
 
       /**
@@ -417,6 +533,7 @@ const createApi = function api(context, pubSub) {
        * Get a Promise which returns a Blob containing a PNG for the current view.
        * It's possible to get string of the PNG bytes from that:
        *
+       * @example
        * hgApi.exportAsPngBlobPromise().then(function(blob) {
        *   var reader = new FileReader();
        *   reader.addEventListener("loadend", function() {

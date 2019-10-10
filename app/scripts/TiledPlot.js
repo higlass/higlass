@@ -11,7 +11,7 @@ import CenterTrack from './CenterTrack';
 import DragListeningDiv from './DragListeningDiv';
 import GalleryTracks from './GalleryTracks';
 import TrackRenderer from './TrackRenderer';
-import AddTrackModal from './AddTrackModal';
+import AddTrackDialog from './AddTrackDialog';
 import ConfigTrackMenu from './ConfigTrackMenu';
 import CloseTrackMenu from './CloseTrackMenu';
 import PopupMenu from './PopupMenu';
@@ -23,6 +23,8 @@ import ViewContextMenu from './ViewContextMenu';
 
 // Higher-order components
 import withPubSub from './hocs/with-pub-sub';
+import withModal from './hocs/with-modal';
+import withTheme from './hocs/with-theme';
 
 // Utils
 import {
@@ -31,6 +33,7 @@ import {
   getTrackPositionByUid,
   isWithin,
   sum,
+  visitPositionedTracks,
 } from './utils';
 
 // Configs
@@ -83,7 +86,6 @@ class TiledPlot extends React.Component {
     this.trackToReplace = null;
     this.trackRenderer = null;
 
-    this.addTrackModal = null;
     this.configTrackMenu = null;
 
     /*
@@ -121,6 +123,11 @@ class TiledPlot extends React.Component {
       addDivisorDialog: null,
     };
 
+    // This should be `true` until one tracks was added and initialized.
+    // The main difference to `this.state.init` is that `reset` should be reset
+    // to `true` when the user removes all tracks and starts with a blank view!
+    this.reset = true;
+
     if (window.higlassTracksByType) {
       // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
       Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
@@ -143,6 +150,21 @@ class TiledPlot extends React.Component {
     this.previousPropsStr = '';
 
     this.contextMenuHandlerBound = this.contextMenuHandler.bind(this);
+    this.handleNoTrackAddedBound = this.handleNoTrackAdded.bind(this);
+    this.handleTracksAddedBound = this.handleTracksAdded.bind(this);
+    this.closeMenusBound = this.closeMenus.bind(this);
+    this.handleAddDivisorBound = this.handleAddDivisor.bind(this);
+    this.handleAddSeriesBound = this.handleAddSeries.bind(this);
+    this.handleChangeTrackDataBound = this.handleChangeTrackData.bind(this);
+    this.handleChangeTrackTypeBound = this.handleChangeTrackType.bind(this);
+    this.handleCloseTrackBound = this.handleCloseTrack.bind(this);
+    this.handleConfigureTrackBound = this.handleConfigureTrack.bind(this);
+    this.handleExportTrackDataBound = this.handleExportTrackData.bind(this);
+    this.handleLockValueScaleBound = this.handleLockValueScale.bind(this);
+    this.handleReplaceTrackBound = this.handleReplaceTrack.bind(this);
+    this.handleTrackOptionsChangedBound = this.handleTrackOptionsChanged.bind(this);
+    this.handleUnlockValueScaleBound = this.handleUnlockValueScale.bind(this);
+    this.onAddTrack = this.handleAddTrack.bind(this);
   }
 
   waitForDOMAttachment(callback) {
@@ -182,7 +204,8 @@ class TiledPlot extends React.Component {
     );
   }
 
-  componentWillReceiveProps(newProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(newProps) {
     this.addUidsToTracks(newProps.tracks);
 
     this.setState({
@@ -205,10 +228,28 @@ class TiledPlot extends React.Component {
 
     if (toUpdate) this.previousPropsStr = nextPropsStr;
 
+    const numPrevTracks = this.numTracks;
+
+    this.numTracks = 0;
+    // Note that there is no point in running the code below with
+    // `this.props.tracks` and `nextProps.tracks` because the object is mutable
+    // and so the props of `this.props.tracks` and `nextProps.tracks` are always
+    // identical. To work around this we store the number of tracks in
+    // `this.numTracks`
+    visitPositionedTracks(this.props.tracks, () => this.numTracks++);
+
+    // With `this.reset ||` we ensure that subsequent updates do not unset the
+    // `this.reset = true`. Only `this.checkAllTilesetInfoReceived()` should set
+    // `this.reset` to `false`.
+    this.reset = this.reset || (numPrevTracks === 0 && this.numTracks > 0);
+
+    if (!this.numTracks) this.tracksByUidInit = {};
+
     return toUpdate;
   }
 
-  componentWillUpdate() {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillUpdate() {
     /**
      * Need to determine the offset of this element relative to the canvas on which stuff
      * will be drawn
@@ -240,6 +281,37 @@ class TiledPlot extends React.Component {
     if (prevProps.tracks.center !== this.props.tracks.center) {
       // this.getDefaultChromSizes();
     }
+
+    if (this.state.addTrackPosition || this.props.addTrackPosition) {
+      this.props.modal.open(
+        <AddTrackDialog
+          host={this.state.addTrackHost}
+          onCancel={this.handleNoTrackAddedBound}
+          onTracksChosen={this.handleTracksAddedBound}
+          position={this.state.addTrackPosition || this.props.addTrackPosition}
+          trackSourceServers={this.props.trackSourceServers}
+        />
+      );
+    }
+
+    if (this.state.addDivisorDialog) {
+      const series = this.state.addDivisorDialog;
+
+      this.props.modal.open(
+        <AddTrackDialog
+          datatype={TRACKS_INFO_BY_TYPE[series.type].datatype[0]}
+          hidePlotTypeChooser={true}
+          host={this.state.addTrackHost}
+          onCancel={() => {
+            this.setState({ addDivisorDialog: null });
+          }}
+          onTracksChosen={(newTrack) => {
+            this.handleDivisorChosen(series, newTrack);
+          }}
+          trackSourceServers={this.props.trackSourceServers}
+        />
+      );
+    }
   }
 
   componentWillUnmount() {
@@ -249,12 +321,12 @@ class TiledPlot extends React.Component {
     this.pubSubs.forEach(subscription => this.props.pubSub.unsubscribe(subscription));
   }
 
-  addUidsToTracks(tracks) {
-    for (const key in tracks) {
-      for (let i = 0; i < tracks[key].length; i++) {
-        tracks[key][i].uid = tracks[key][i].uid ? tracks[key][i].uid : slugid.nice();
-      }
-    }
+  addUidsToTracks(positionedTracks) {
+    Object.keys(positionedTracks).forEach((position) => {
+      positionedTracks[position].forEach((track) => {
+        track.uid = track.uid || slugid.nice();
+      });
+    });
   }
 
   /*
@@ -318,15 +390,11 @@ class TiledPlot extends React.Component {
   }
 
   measureSize() {
-    const heightOffset = 0;
-    const height = this.element.clientHeight - heightOffset;
-    const width = this.element.clientWidth;
-
-    if (width > 0 && height > 0) {
+    if (this.element.clientWidth > 0 && this.element.clientHeight > 0) {
       this.setState({
         sizeMeasured: true,
-        width,
-        height,
+        width: this.element.clientWidth,
+        height: this.element.clientHeight,
       });
     }
   }
@@ -386,32 +454,39 @@ class TiledPlot extends React.Component {
    * Check if all track which are expecting a tileset info have been loaded.
    */
   checkAllTilesetInfoReceived() {
-    // Do nothing is HiGlass initialized already
-    if (this.state.init || !this.props.zoomToDataExtentOnInit) return;
+    // Do nothing if HiGlass initialized already
+    if (
+      (this.state.init && !this.reset) || !this.props.zoomToDataExtentOnInit()
+    ) return;
 
     // Get the total number of track that are expecting a tilesetInfo
-    const allTilesetInfos = Object.keys(this.trackRenderer.trackDefObjects)
+    const allTracksWithTilesetInfos = Object.keys(this.trackRenderer.trackDefObjects)
       // Map track to a list of tileset infos
       .map((trackUuid) => {
         const track = this.trackRenderer.trackDefObjects[trackUuid].trackObject;
-        if (track.childTracks) {
-          return track.childTracks.map(childTrack => childTrack.tilesetInfo);
-        }
-        return track.tilesetInfo;
+        if (track.childTracks) return track.childTracks;
+        return track;
       })
       // Needed because of combined tracks
       .reduce((a, b) => a.concat(b), [])
       // We distinguish between tracks that need a tileset info and those whoch
       // don't by comparing `undefined` vs something else, i.e., tracks that
       // need a tileset info will be initialized with `this.tilesetInfo = null;`.
-      .filter(tilesetInfo => typeof tilesetInfo !== 'undefined' && tilesetInfo !== true)
+      .filter(({ tilesetInfo }) => typeof tilesetInfo !== 'undefined' && tilesetInfo !== true);
+
+    // Reduce the list of tracks to a dictionary of track ids. This is useful
+    // to speedup the subsequent filtering
+    const trackUids = allTracksWithTilesetInfos
+      .reduce((a, b) => { a[b.id] = true; return a; }, {});
+
+    // Only could tracks that are suppose to get a tileset
+    const loadedTilesetInfos = Object.keys(this.tracksByUidInit)
+      .filter(trackUid => trackUids[trackUid])
       .length;
 
-    const loadedTilesetInfos = Object.values(this.tracksByUidInit)
-      .filter(x => x).length;
-
-    if (allTilesetInfos === loadedTilesetInfos) {
+    if (allTracksWithTilesetInfos.length === loadedTilesetInfos) {
       this.setState({ init: true });
+      this.reset = false;
       this.handleZoomToData();
     }
   }
@@ -422,19 +497,18 @@ class TiledPlot extends React.Component {
     });
   }
 
-  handleOverlayMouseLeave() {
-    this.setState({
-      mouseOverOverlayUid: null,
-    });
+  handleOverlayMouseLeave(uid) {
+    if (uid === this.state.mouseOverOverlayUid) {
+      this.setState({
+        mouseOverOverlayUid: null,
+      });
+    }
   }
 
 
-  handleTrackPositionChosen(position) {
-    this.handleAddTrack(position);
-
-    // have our parent close the menu
-    // parent needs to do it because the button is located in the parent's scope
-    this.props.onTrackPositionChosen(position);
+  handleTrackPositionChosen(pTrack) {
+    this.setState({ mouseOverOverlayUid: null });
+    this.props.chooseTrackHandler(pTrack.track.uid);
   }
 
 
@@ -483,44 +557,13 @@ class TiledPlot extends React.Component {
       tilesetUid: newTrack[0].uuid
     };
 
-    this.handleChangeTrackData(series.uid,
+    this.handleChangeTrackData(
+      series.uid,
       {
         type: 'divided',
-        children: [
-          numerator,
-          denominator
-        ]
-      });
-  }
-
-
-  getAddDivisorDialog() {
-    if (!this.state.addDivisorDialog) {
-      return null;
-    }
-
-    const series = this.state.addDivisorDialog;
-
-    const datatype = TRACKS_INFO_BY_TYPE[series.type].datatype[0];
-
-    const atm = (
-      <AddTrackModal
-        ref={(c) => { this.addTrackModal = c; }}
-        datatype={datatype}
-        hidePlotTypeChooser={true}
-        host={this.state.addTrackHost}
-        onCancel={() => {
-          this.setState({
-            addDivisorDialog: null,
-          });
-        }}
-        onTracksChosen={newTrack => this.handleDivisorChosen(series, newTrack)}
-        show={this.state.addDivisorDialog !== null}
-        trackSourceServers={this.props.trackSourceServers}
-      />
+        children: [numerator, denominator]
+      }
     );
-
-    return atm;
   }
 
   handleDivideSeries(seriesUid) {
@@ -532,8 +575,6 @@ class TiledPlot extends React.Component {
      * Will start working with just heatmaps and then progress to
      * other track types.
      */
-
-
   }
 
   handleAddSeries(trackUid) {
@@ -551,7 +592,6 @@ class TiledPlot extends React.Component {
      * @param uid (string): The uid of the track to replace
      * @param orientation (string): The place where to put the new track
      */
-
     this.trackToReplace = uid;
     this.handleAddTrack(orientation);
   }
@@ -768,12 +808,12 @@ class TiledPlot extends React.Component {
    *          (e.g. {left: 10, top: 20, width: 30, height: 40}
    */
   calculateTrackPosition(track, location) {
-    let top = this.props.verticalMargin;
-    let bottom = this.props.verticalMargin;
-    let left = this.props.horizontalMargin;
-    let right = this.props.horizontalMargin;
+    let top = this.props.paddingTop;
+    let bottom = this.props.paddingBottom;
+    let left = this.props.paddingLeft;
+    let right = this.props.paddingRight;
     let width = this.centerWidth;
-    let { height } = track;
+    let height = track.height;
     let offsetX = 0;
     let offsetY = 0;
 
@@ -807,7 +847,7 @@ class TiledPlot extends React.Component {
 
       case 'left':
         top += this.topHeight;
-        ({ width } = track);
+        width = track.width;
         height = this.centerHeight;
 
         for (let i = 0; i < this.state.tracks.left.length; i++) {
@@ -823,7 +863,7 @@ class TiledPlot extends React.Component {
       case 'right':
         left += this.leftWidth + this.centerWidth + this.galleryDim;
         top += this.topHeight;
-        ({ width } = track);
+        width = track.width;
         height = this.centerHeight;
 
         for (let i = 0; i < this.state.tracks.right.length; i++) {
@@ -850,13 +890,13 @@ class TiledPlot extends React.Component {
           this.state.width
           - this.leftWidthNoGallery
           - this.rightWidthNoGallery
-          - (2 * this.props.horizontalMargin)
+          - this.props.paddingLeft
         );
         height = (
           this.state.height
           - this.topHeightNoGallery
           - this.bottomHeightNoGallery
-          - (2 * this.props.verticalMargin)
+          - this.props.paddingTop
         );
         offsetX = this.galleryDim;
         offsetY = this.galleryDim;
@@ -973,7 +1013,7 @@ class TiledPlot extends React.Component {
               orientationsAndPositions: overlayTrack.includes.map((trackUuid) => {
                 // translate a trackUuid into that track's orientation
                 const includedTrack = getTrackByUid(this.props.tracks, trackUuid);
-                const trackPos = includedTrack.position;
+                const trackPos = getTrackPositionByUid(this.props.tracks, includedTrack.uid);
                 if (!includedTrack) {
                   console.warn(`OverlayTrack included uid (${trackUuid}) not found in the track list`);
                   return null;
@@ -1008,8 +1048,8 @@ class TiledPlot extends React.Component {
                 }
 
                 const position = {
-                  left: positionedTrack[0].left,
-                  top: positionedTrack[0].top,
+                  left: positionedTrack[0].left - this.props.paddingLeft,
+                  top: positionedTrack[0].top - this.props.paddingTop,
                   width: positionedTrack[0].width,
                   height: positionedTrack[0].height,
                 };
@@ -1026,12 +1066,12 @@ class TiledPlot extends React.Component {
           // the 2 * verticalMargin is to make up for the space taken away
           // in render(): this.centerHeight = this.state.height...
           return {
-            top: 0,
-            left: 0,
+            top: this.props.paddingTop,
+            left: this.props.paddingLeft,
             width: this.leftWidth + this.centerWidth + this.rightWidth,
             height: this.topHeight + this.centerHeight
             + this.bottomHeight
-            + 2 * this.props.verticalMargin,
+            + this.props.marginTop + this.props.marginBottom,
             track: overlayDef,
           };
         });
@@ -1214,14 +1254,14 @@ class TiledPlot extends React.Component {
     }
 
     // set the initial domain
-    const left = this.trackRenderer.currentProps.marginLeft
+    const left = this.trackRenderer.currentProps.paddingLeft
       + this.trackRenderer.currentProps.leftWidth;
     let newXDomain = [
       left,
       left + this.trackRenderer.currentProps.centerWidth,
     ].map(this.trackRenderer.zoomTransform.rescaleX(this.trackRenderer.xScale).invert);
 
-    const top = this.trackRenderer.currentProps.marginTop
+    const top = this.trackRenderer.currentProps.paddingTop
       + this.trackRenderer.currentProps.topHeight;
     let newYDomain = [
       top,
@@ -1247,34 +1287,15 @@ class TiledPlot extends React.Component {
   }
 
   resetViewport() {
-    // Set the initial domain
-    const left = (
-      this.trackRenderer.currentProps.marginLeft
-      + this.trackRenderer.currentProps.leftWidth
-    );
-    const newXDomain = [
-      left,
-      left + this.trackRenderer.currentProps.centerWidth,
-    ].map(this.trackRenderer.zoomTransform
-      .rescaleX(this.trackRenderer.xScale).invert);
-
-    const top = (
-      this.trackRenderer.currentProps.marginTop
-      + this.trackRenderer.currentProps.topHeight
-    );
-    const newYDomain = [
-      top,
-      top + this.trackRenderer.currentProps.centerHeight,
-    ].map(this.trackRenderer.zoomTransform
-      .rescaleY(this.trackRenderer.yScale).invert);
-
     // Reset the zoom transform
     this.trackRenderer.zoomTransform.k = 1;
     this.trackRenderer.zoomTransform.x = 0;
     this.trackRenderer.zoomTransform.y = 0;
     this.trackRenderer.applyZoomTransform();
 
-    this.props.onDataDomainChanged(newXDomain, newYDomain);
+    this.props.onDataDomainChanged(
+      this.props.initialXDomain, this.props.initialYDomain
+    );
   }
 
   updatablePropsToString(props) {
@@ -1285,9 +1306,15 @@ class TiledPlot extends React.Component {
       uid: props.uid,
       addTrackPosition: props.addTrackPosition,
       editable: props.editable,
-      horizontalMargin: props.horizontalMargin,
+      marginTop: props.marginTop,
+      marginBottom: props.marginBottom,
+      marginLeft: props.marginLeft,
+      marginRight: props.marginRight,
+      paddingTop: props.paddingTop,
+      paddingBottom: props.paddingBottom,
+      paddingLeft: props.paddingLeft,
+      paddingRight: props.paddingRight,
       mouseTool: props.mouseTool,
-      verticalTiledPlot: props.verticalMargin,
       initialXDomain: props.initialXDomain,
       initialYDomain: props.initialYDomain,
       trackSourceServers: props.trackSourceServers,
@@ -1486,14 +1513,14 @@ class TiledPlot extends React.Component {
 
       return (
         <PopupMenu
-          onMenuClosed={this.closeMenus.bind(this)}
+          onMenuClosed={this.closeMenusBound}
         >
           <ViewContextMenu
-            closeMenu={this.closeMenus.bind(this)}
+            closeMenu={this.closeMenusBound}
             coords={[this.state.contextMenuDataX, this.state.contextMenuDataY]}
             customItems={this.state.contextMenuCustomItems}
-            onAddDivisor={this.handleAddDivisor.bind(this)}
-            onAddSeries={this.handleAddSeries.bind(this)}
+            onAddDivisor={this.handleAddDivisorBound}
+            onAddSeries={this.handleAddSeriesBound}
             // Can only add one new track at a time
             // because "whole" tracks are always drawn on top of each other,
             // the notion of Series is unnecessary and so 'host' is null
@@ -1501,17 +1528,18 @@ class TiledPlot extends React.Component {
               this.props.onTracksAdded([newTrack], newTrack.position, null);
               this.handleCloseContextMenu();
             }}
-            onChangeTrackData={this.handleChangeTrackData.bind(this)}
-            onChangeTrackType={this.handleChangeTrackType.bind(this)}
-            onCloseTrack={this.handleCloseTrack.bind(this)}
-            onConfigureTrack={this.handleConfigureTrack.bind(this)}
-            onExportData={this.handleExportTrackData.bind(this)}
-            onLockValueScale={this.handleLockValueScale.bind(this)}
-            onReplaceTrack={this.handleReplaceTrack.bind(this)}
-            onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
-            onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
+            onChangeTrackData={this.handleChangeTrackDataBound}
+            onChangeTrackType={this.handleChangeTrackTypeBound}
+            onCloseTrack={this.handleCloseTrackBound}
+            onConfigureTrack={this.handleConfigureTrackBound}
+            onExportData={this.handleExportTrackDataBound}
+            onLockValueScale={this.handleLockValueScaleBound}
+            onReplaceTrack={this.handleReplaceTrackBound}
+            onTrackOptionsChanged={this.handleTrackOptionsChangedBound}
+            onUnlockValueScale={this.handleUnlockValueScaleBound}
             orientation="right"
             position={this.state.contextMenuPosition}
+            theme={this.props.theme}
             tracks={relevantTracks}
             trackSourceServers={this.props.trackSourceServers}
           />
@@ -1530,12 +1558,33 @@ class TiledPlot extends React.Component {
     const evtJson = this.props.draggingHappening;
     const datatype = evtJson.datatype;
 
-    if (!(datatype in DEFAULT_TRACKS_FOR_DATATYPE)) {
+    if (!(datatype in DEFAULT_TRACKS_FOR_DATATYPE) && !evtJson.defaultTracks) {
       console.warn('unknown data type:', evtJson.higlassTrack);
       return undefined;
     }
 
-    const defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype];
+    const orientationToPositions = {
+      '1d-horizontal': ['top', 'bottom', 'left', 'right'],
+      '2d': ['center'],
+      '1d-vertical': ['left', 'right']
+    };
+
+    const defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype] || {};
+
+    if (evtJson.defaultTracks) {
+      for (const trackType of evtJson.defaultTracks) {
+        if (!TRACKS_INFO_BY_TYPE[trackType]) {
+          console.warn('unknown track type', trackType);
+        } else {
+          for (const position of orientationToPositions[
+            TRACKS_INFO_BY_TYPE[trackType
+            ].orientation]) {
+            defaultTracks[position] = trackType;
+          }
+        }
+      }
+    }
+
     const presentTracks = new Set(['top', 'left', 'right', 'center', 'bottom']
       .filter(x => (x in this.state.tracks && this.state.tracks[x].length)));
 
@@ -1552,7 +1601,7 @@ class TiledPlot extends React.Component {
     const bottomDisplayed = ('bottom' in defaultTracks && hasVerticalComponent);
     const leftDisplayed = ('left' in defaultTracks && hasVerticalComponent);
     const rightDisplayed = ('right' in defaultTracks && hasVerticalComponent);
-    const centerDisplayed = ('center' in defaultTracks || hasVerticalComponent);
+    const centerDisplayed = (Object.keys(defaultTracks).length && ('center' in defaultTracks || hasVerticalComponent));
 
     const topLeftDiv = (
       <div
@@ -1572,10 +1621,10 @@ class TiledPlot extends React.Component {
       >
         { (topDisplayed && (centerDisplayed || leftDisplayed)) ? topLeftDiv : null }
         <DragListeningDiv
+          defaultTrackType={defaultTracks.top}
           draggingHappening={this.props.draggingHappening}
           enabled={topAllowed}
           onTrackDropped={track => this.handleTracksAdded([track], 'top')}
-          position="top"
           style={{
             border: '1px solid black',
             flexGrow: 1,
@@ -1594,10 +1643,10 @@ class TiledPlot extends React.Component {
       >
         { (topDisplayed && (centerDisplayed || leftDisplayed)) ? topLeftDiv : null }
         <DragListeningDiv
+          defaultTrackType={defaultTracks.bottom}
           draggingHappening={this.props.draggingHappening}
           enabled={bottomAllowed}
           onTrackDropped={track => this.handleTracksAdded([track], 'bottom')}
-          position="bottom"
           style={{
             border: '1px solid black',
             flexGrow: 1,
@@ -1609,10 +1658,10 @@ class TiledPlot extends React.Component {
 
     const leftDiv = (
       <DragListeningDiv
+        defaultTrackType={defaultTracks.left}
         draggingHappening={this.props.draggingHappening}
         enabled={leftAllowed}
         onTrackDropped={track => this.handleTracksAdded([track], 'left')}
-        position="left"
         style={{
           border: '1px solid black',
           flexGrow: 1,
@@ -1622,6 +1671,7 @@ class TiledPlot extends React.Component {
 
     const centerDiv = (
       <DragListeningDiv
+        defaultTrackType={defaultTracks.center}
         draggingHappening={this.props.draggingHappening}
         enabled={centerAllowed}
         onTrackDropped={track => this.handleTracksAdded([track], 'center')}
@@ -1636,9 +1686,9 @@ class TiledPlot extends React.Component {
 
     const rightDiv = React.cloneElement(leftDiv,
       {
+        defaultTrackType: defaultTracks.right,
         enabled: rightAllowed,
         onTrackDropped: track => this.handleTracksAdded([track], 'right'),
-        position: 'right',
       });
 
     return (
@@ -1717,28 +1767,32 @@ class TiledPlot extends React.Component {
       .map(x => x.width).reduce(sum, 0);
     this.rightWidth = this.rightWidthNoGallery + this.galleryDim;
 
+    const verticalPadding = this.props.paddingTop + this.props.paddingBottom;
+    const horizontalPadding = this.props.paddingLeft + this.props.paddingRight;
 
-    this.centerHeight = (
+    this.centerHeight = Math.max(
+      0,
       this.state.height
       - this.topHeight
       - this.bottomHeight
-      - (2 * this.props.verticalMargin)
+      - verticalPadding
     );
-    this.centerWidth = (
+    this.centerWidth = Math.max(
+      0,
       this.state.width
       - this.leftWidth
       - this.rightWidth
-      - (2 * this.props.horizontalMargin)
+      - horizontalPadding
     );
 
     const trackOutline = 'none';
 
     const topTracks = (
       <div
-        key="topTracksDiv"
+        className="top-track-container"
         style={{
-          left: this.leftWidth + this.props.horizontalMargin,
-          top: this.props.verticalMargin,
+          left: this.leftWidth + this.props.paddingLeft,
+          top: this.props.paddingTop,
           width: this.centerWidth,
           height: this.topHeightNoGallery,
           outline: trackOutline,
@@ -1774,10 +1828,10 @@ class TiledPlot extends React.Component {
 
     const leftTracks = (
       <div
-        key="leftTracksPlot"
+        className="left-track-container"
         style={{
-          left: this.props.horizontalMargin,
-          top: this.topHeight + this.props.verticalMargin,
+          left: this.props.paddingLeft,
+          top: this.topHeight + this.props.paddingTop,
           width: this.leftWidthNoGallery,
           height: this.centerHeight,
           outline: trackOutline,
@@ -1811,14 +1865,16 @@ class TiledPlot extends React.Component {
     );
 
     const rightTracks = (
-      <div style={{
-        right: this.props.horizontalMargin,
-        top: this.topHeight + this.props.verticalMargin,
-        width: this.rightWidthNoGallery,
-        height: this.centerHeight,
-        outline: trackOutline,
-        position: 'absolute',
-      }}
+      <div
+        className="right-track-container"
+        style={{
+          right: this.props.paddingRight,
+          top: this.topHeight + this.props.paddingTop,
+          width: this.rightWidthNoGallery,
+          height: this.centerHeight,
+          outline: trackOutline,
+          position: 'absolute',
+        }}
       >
         <VerticalTiledPlot
           configTrackMenuId={this.state.configTrackMenuId}
@@ -1848,14 +1904,16 @@ class TiledPlot extends React.Component {
     );
 
     const bottomTracks = (
-      <div style={{
-        left: this.leftWidth + this.props.horizontalMargin,
-        bottom: this.props.verticalMargin,
-        width: this.centerWidth,
-        height: this.bottomHeightNoGallery,
-        outline: trackOutline,
-        position: 'absolute',
-      }}
+      <div
+        className="bottom-track-container"
+        style={{
+          left: this.leftWidth + this.props.paddingLeft,
+          bottom: this.props.paddingBottom,
+          width: this.centerWidth,
+          height: this.bottomHeightNoGallery,
+          outline: trackOutline,
+          position: 'absolute',
+        }}
       >
         <HorizontalTiledPlot
           configTrackMenuId={this.state.configTrackMenuId}
@@ -1888,8 +1946,8 @@ class TiledPlot extends React.Component {
         key="galleryTracksDiv"
         className="gallery-track-container"
         style={{
-          left: this.leftWidthNoGallery + this.props.horizontalMargin,
-          top: this.topHeightNoGallery + this.props.verticalMargin,
+          left: this.leftWidthNoGallery + this.props.paddingLeft,
+          top: this.topHeightNoGallery + this.props.paddingTop,
           width: this.centerWidth + (2 * this.galleryDim),
           height: this.centerHeight + (2 * this.galleryDim),
           outline: trackOutline,
@@ -1912,9 +1970,10 @@ class TiledPlot extends React.Component {
 
     let centerTrack = (
       <div
+        className="center-track-container"
         style={{
-          left: this.leftWidth + this.props.horizontalMargin,
-          top: this.props.verticalMargin + this.topHeight,
+          left: this.leftWidth + this.props.paddingLeft,
+          top: this.topHeight + this.props.paddingTop,
           width: this.centerWidth,
           height: this.bottomHeight,
           outline: trackOutline,
@@ -1928,8 +1987,8 @@ class TiledPlot extends React.Component {
         <div
           className="center-track-container"
           style={{
-            left: this.leftWidth + this.props.horizontalMargin,
-            top: this.props.verticalMargin + this.topHeight,
+            left: this.leftWidth + this.props.paddingLeft,
+            top: this.topHeight + this.props.paddingTop,
             width: this.centerWidth,
             height: this.centerHeight,
             outline: trackOutline,
@@ -1981,16 +2040,16 @@ class TiledPlot extends React.Component {
           canvasElement={this.canvasElement}
           centerHeight={this.centerHeight}
           centerWidth={this.centerWidth}
+          disableTrackMenu={this.props.disableTrackMenu}
           dragging={this.props.dragging}
           galleryDim={this.galleryDim}
           height={this.state.height}
           initialXDomain={this.props.initialXDomain}
           initialYDomain={this.props.initialYDomain}
           isRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT}
+          isShowGlobalMousePosition={this.props.isShowGlobalMousePosition}
           leftWidth={this.leftWidth}
           leftWidthNoGallery={this.leftWidthNoGallery}
-          marginLeft={this.props.horizontalMargin}
-          marginTop={this.props.verticalMargin}
           metaTracks={this.props.metaTracks}
           onMouseMoveZoom={this.props.onMouseMoveZoom}
           onNewTilesLoaded={this.props.onNewTilesLoaded}
@@ -1998,6 +2057,9 @@ class TiledPlot extends React.Component {
           onTilesetInfoReceived={this.handleTilesetInfoReceived.bind(this)}
           onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
           onValueScaleChanged={this.props.onValueScaleChanged}
+          paddingLeft={this.props.paddingLeft}
+          paddingTop={this.props.paddingTop}
+          pixiRenderer={this.props.pixiRenderer}
           pixiStage={this.props.pixiStage}
           pluginTracks={this.props.pluginTracks}
           positionedTracks={positionedTracks}
@@ -2032,22 +2094,24 @@ class TiledPlot extends React.Component {
     if (this.state.configTrackMenuId) {
       configTrackMenu = (
         <PopupMenu
-          onMenuClosed={this.closeMenus.bind(this)}
+          onMenuClosed={this.closeMenusBound}
         >
           <ConfigTrackMenu
             ref={(c) => { this.configTrackMenu = c; }}
-            closeMenu={this.closeMenus.bind(this)}
-            onAddSeries={this.handleAddSeries.bind(this)}
-            onAddTrack={this.handleAddTrack.bind(this)}
-            onChangeTrackType={this.handleChangeTrackType.bind(this)}
-            onCloseTrack={this.handleCloseTrack.bind(this)}
-            onConfigureTrack={this.handleConfigureTrack.bind(this)}
-            onExportData={this.handleExportTrackData.bind(this)}
-            onLockValueScale={this.handleLockValueScale.bind(this)}
-            onReplaceTrack={this.handleReplaceTrack.bind(this)}
-            onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
-            onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
+            closeMenu={this.closeMenusBound}
+            onAddDivisor={this.handleAddDivisorBound}
+            onAddSeries={this.handleAddSeriesBound}
+            onAddTrack={this.handleAddTrackBound}
+            onChangeTrackType={this.handleChangeTrackTypeBound}
+            onCloseTrack={this.handleCloseTrackBound}
+            onConfigureTrack={this.handleConfigureTrackBound}
+            onExportData={this.handleExportTrackDataBound}
+            onLockValueScale={this.handleLockValueScaleBound}
+            onReplaceTrack={this.handleReplaceTrackBound}
+            onTrackOptionsChanged={this.handleTrackOptionsChangedBound}
+            onUnlockValueScale={this.handleUnlockValueScaleBound}
             position={this.state.configTrackMenuLocation}
+            theme={this.props.theme}
             trackOrientation={
               getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
             tracks={[getTrackByUid(this.props.tracks, this.state.configTrackMenuId)]}
@@ -2063,6 +2127,7 @@ class TiledPlot extends React.Component {
         >
           <ContextMenuContainer
             position={this.state.closeTrackMenuLocation}
+            theme={this.props.theme}
           >
             <CloseTrackMenu
               onCloseTrack={this.handleCloseTrack.bind(this)}
@@ -2097,10 +2162,14 @@ class TiledPlot extends React.Component {
             // to choose an overlay track, the previously selected one isn't
             // automatically highlighted
 
-            onClick={() => {
-              this.setState({ mouseOverOverlayUid: null });
-              this.props.chooseTrackHandler(pTrack.track.uid);
+            onClick={() => this.handleTrackPositionChosen(pTrack)}
+            onDragEnter={(evt) => {
+              this.handleOverlayMouseEnter(pTrack.track.uid);
+              evt.preventDefault();
             }}
+            onDragLeave={() => this.handleOverlayMouseLeave(pTrack.track.uid)}
+            onDragOver={evt => evt.preventDefault()}
+            onDrop={() => this.handleTrackPositionChosen(pTrack)}
             onMouseEnter={() => this.handleOverlayMouseEnter(pTrack.track.uid)}
             onMouseLeave={() => this.handleOverlayMouseLeave(pTrack.track.uid)}
             style={{
@@ -2150,38 +2219,22 @@ class TiledPlot extends React.Component {
       );
     }
 
-    let addTrackModal = null;
-    const position = this.state.addTrackPosition
-      ? this.state.addTrackPosition : this.props.addTrackPosition;
-
-    if (this.state.addTrackPosition || this.props.addTrackPosition) {
-      addTrackModal = (
-        <AddTrackModal
-          ref={(c) => { this.addTrackModal = c; }}
-          host={this.state.addTrackHost}
-          onCancel={this.handleNoTrackAdded.bind(this)}
-          onTracksChosen={this.handleTracksAdded.bind(this)}
-          position={position}
-          show={this.state.addTrackPosition !== null || this.props.addTrackPosition !== null}
-          trackSourceServers={this.props.trackSourceServers}
-        />
-      );
-    }
-
     // track renderer needs to enclose all the other divs so that it
     // can catch the zoom events
     return (
       <div
         ref={(c) => { this.divTiledPlot = c; }}
         className="tiled-plot-div"
-        onDragEnter={(evt) => {
+        style={{
+          marginBottom: this.props.marginBottom,
+          marginLeft: this.props.marginLeft,
+          marginRight: this.props.marginRight,
+          marginTop: this.props.marginTop,
         }}
         styleName="styles.tiled-plot"
       >
         {trackRenderer}
         {overlays}
-        {addTrackModal}
-        {this.getAddDivisorDialog()}
         {configTrackMenu}
         {closeTrackMenu}
         {trackOptionsElement}
@@ -2195,14 +2248,6 @@ class TiledPlot extends React.Component {
 
   addEventListeners() {
     this.eventListeners = [
-      /*
-      {
-        name: 'dragstart',
-        callback: (event) => {
-          console.log('dragstart', event.dataTransfer.getData('text/json'));
-        },
-      },
-      */
     ];
 
     this.eventListeners.forEach(
@@ -2218,6 +2263,7 @@ class TiledPlot extends React.Component {
 }
 
 TiledPlot.defaultProps = {
+  isShowGlobalMousePosition: false,
   pluginTracks: {},
   metaTracks: [],
   scrollable: false,
@@ -2229,42 +2275,54 @@ TiledPlot.propTypes = {
   canvasElement: PropTypes.object,
   chooseTrackHandler: PropTypes.func,
   chromInfoPath: PropTypes.string,
+  disableTrackMenu: PropTypes.bool,
   dragging: PropTypes.bool,
   editable: PropTypes.bool,
-  horizontalMargin: PropTypes.number,
   initialXDomain: PropTypes.array,
   initialYDomain: PropTypes.array,
+  isShowGlobalMousePosition: PropTypes.bool,
+  marginBottom: PropTypes.number.isRequired,
+  marginLeft: PropTypes.number.isRequired,
+  marginRight: PropTypes.number.isRequired,
+  marginTop: PropTypes.number.isRequired,
+  paddingBottom: PropTypes.number.isRequired,
+  paddingLeft: PropTypes.number.isRequired,
+  paddingRight: PropTypes.number.isRequired,
+  paddingTop: PropTypes.number.isRequired,
+  metaTracks: PropTypes.array,
+  modal: PropTypes.object,
   mouseTool: PropTypes.string,
   onCloseTrack: PropTypes.func,
   onDataDomainChanged: PropTypes.func,
   onLockValueScale: PropTypes.func,
   onMouseMoveZoom: PropTypes.func,
-  onNoTrackAdded: PropTypes.func,
   onNewTilesLoaded: PropTypes.func,
+  onNoTrackAdded: PropTypes.func,
   onRangeSelection: PropTypes.func.isRequired,
   onScalesChanged: PropTypes.func,
-  onTracksAdded: PropTypes.func,
   onTrackOptionsChanged: PropTypes.func,
   onTrackPositionChosen: PropTypes.func,
-  onValueScaleChanged: PropTypes.func,
+  onTracksAdded: PropTypes.func,
   onUnlockValueScale: PropTypes.func,
+  onValueScaleChanged: PropTypes.func,
+  openModal: PropTypes.func,
+  pixiRenderer: PropTypes.object,
+  pixiStage: PropTypes.object,
+  pluginTracks: PropTypes.object,
   rangeSelection1dSize: PropTypes.array,
   rangeSelectionToInt: PropTypes.bool,
   registerDraggingChangedListener: PropTypes.func,
   removeDraggingChangedListener: PropTypes.func,
   scrollable: PropTypes.bool,
   setCentersFunction: PropTypes.func,
-  pixiStage: PropTypes.object,
-  pluginTracks: PropTypes.object,
   svgElement: PropTypes.object,
-  trackSourceServers: PropTypes.array,
+  theme: PropTypes.symbol.isRequired,
   tracks: PropTypes.object,
-  metaTracks: PropTypes.array,
-  verticalMargin: PropTypes.number,
-  viewOptions: PropTypes.object,
+  trackSourceServers: PropTypes.array,
   uid: PropTypes.string,
+  viewOptions: PropTypes.object,
   zoomable: PropTypes.bool,
-  zoomToDataExtentOnInit: PropTypes.bool
+  zoomToDataExtentOnInit: PropTypes.func
 };
 
-export default withPubSub(TiledPlot);
+export default withPubSub(withModal(withTheme(TiledPlot)));

@@ -39,6 +39,21 @@ json (e.g. `{"viewconf": myViewconf}`):
          -X POST \
          -d '{"viewconf": {"editable": true, "zoomFixed": false, "trackSourceServers": ["/api/v2", "http://higlass.io/api/v1"], "exportViewUrl": "/api/v1/viewconfs/", "views": [{"tracks": {"top": [], "left": [], "center": [], "right": [], "bottom": []}, "initialXDomain": [243883495.14563107, 2956116504.854369], "initialYDomain": [804660194.1747572, 2395339805.825243], "layout": {"w": 12, "h": 12, "x": 0, "y": 0, "i": "EwiSznw8ST2HF3CjHx-tCg", "moved": false, "static": false}, "uid": "EwiSznw8ST2HF3CjHx-tCg"}], "zoomLocks": {"locksByViewUid": {}, "locksDict": {}}, "locationLocks": {"locksByViewUid": {}, "locksDict": {}}, "valueScaleLocks": {"locksByViewUid": {}, "locksDict": {}}}}' http://localhost:8989/api/v1/viewconfs/
 
+Edit the view config online
+===========================
+
+The view config can be directly adjusted in the browser to give an easy access
+to all available options that might not otherwise be accessible through the
+user interface yet. To open the editor click on _cog wheel_ icon in the view
+header and select _Edit view config_.
+
+The editor support a couple of keyboard shortcuts to make editing fast:
+
+- ``CMD (or CTRL) + S `` to save and apply the view config
+- ``ESC`` to claose the modl and to undue all (saved but not finalized) changes introduced while editing the view config.
+- ``CMD (or CTRL) + Enter`` to save, apply, and finalize changes and close the modal
+- Hold ``ALT`` for 1 second to temporarily hide the modal. The modal will reappear as soon as you release ``ALT``.
+
 Viewconf Structure
 ==================
 
@@ -48,9 +63,14 @@ the root-level metadata. The sections below will delve into views and tracks.
 
 .. code-block:: javascript
 
-  editable: [true | false]
+  editable: [true | false] (default: true)
+  viewEditable: [true | false] (default: true)
+  tracksEditable: [true | false] (default: true)
 
-Specifies whether this viewconf will have a view header.
+The property ``viewEditable`` specifies whether this viewconf will have a view
+header and the property ``viewEditable`` determines if tracks have a context
+menu. ``editable`` will force both properties to either be ``true`` or
+``false``.
 
 .. code-block:: javascript
 
@@ -249,6 +269,27 @@ and ``filetype``
       "filetype": "bigwig"
     }
 
+Using ``data``
+^^^^^^^^^^^^^^
+
+In addition to using ``tilesetUid`` or ``fileUrl`` to specify a data source, the ``data`` section can be used to configure other data sources or to create data sources consisting of multiple tilesets, such as one matrix divided by another.
+
+Genbank files
+"""""""""""""
+
+A Genbank file data source will load a complete genbank file from a remote URL and serve that as a ``gene-annotations`` datatype. See the `horizontal-gene-annotations section <track_types.html#gene-annotations>`_ for an example of a track type that can be used with Genbank files.
+
+.. code-block:: javascript
+
+  {
+    "data": {
+      "type": "genbank",
+      "url": "https://pkerp.s3.amazonaws.com/public/GCA_000010365.1_ASM1036v1_genomic.gbff.gz"
+    }
+  }
+
+**Note** The Genbank data sources is limited in its detail. It currently only displays genes and the names of genes. More extensive support for gene annotations (e.g. exons) should be added in the `higlass/app/scripts/data-fetchers/genbank-fetcher.js` file.
+
 Track options
 --------------
 
@@ -256,6 +297,14 @@ Each track can specify a set of options defining how it will be drawn.
 Some of the more important ones are:
 
 -  ``valueScaleMin`` and ``valueScaleMax``: control the minimum and maximum values rendered by the track. If either is not defined, then it will be set according to the visible data (i.e. the minimum value of the scale will be the minimum value in the visible data and the same for the maximum)
+
+- ``showMousePosition``: enables a visual crosshair at the mouse cursor's location across the track
+
+- ``labelLeftMargin``, ``labelRightMargin``, ``labelTopMargin``, and ``labelBottomMargin``: add a margin to the track label. The effect is identical to CSS margin, i.e., ``labelLeftMargin === 10`` will push the label 10px to the right if ``labelPosition === 'left'``.
+
+- ``axisMargin``: sets a margin to the very end of the plot. For example, if ``axisPositionHorizontal === 'left'`` and ``axisMargin === 10`` then the axis will be drawn 10px from the left side of the track.
+
+- ``minHeight`` and ``minWidth``: useful for tracks which are generated programmatically or otherwise edited, which have a height or width smaller than default values that may otherwise constrain rendering.
 
 Overlay Tracks
 ==============
@@ -276,6 +325,23 @@ the start and end of each section that should be overlaid. The tuples can be eit
 coordinates are the same, 4-tuple indicates that horizontal and vertical start and
 end coordinates are different: [start, end] vs [x-start, x-end, y-start, y-end].
 
+**Options:**
+
+- ``extent`` [array] (default ``[]``)
+- ``minWidth`` [number] (default ``0``)
+- ``fill`` [string] (default ``blue``)
+- ``fillOpacity`` [number] (default ``0.3``)
+- ``stroke`` [string] (default ``blue``)
+- ``strokeOpacity`` [number] (default ``1``)
+- ``strokeWidth`` [number] (default ``0``)
+- ``strokePos`` [string, array] (default ``undefined``, which will drawn the stroke around the entire extent)
+- ``outline`` [string] (default ``white``)
+- ``outlineOpacity`` [number] (default ``1``)
+- ``outlineWidth`` [number] (default ``0``)
+- ``outlinePos`` [string, array] (default ``undefined``, which will drawn the stroke around the entire extent)
+
+**Example:**
+
 .. code-block:: javascript
 
     {
@@ -291,7 +357,17 @@ end coordinates are different: [start, end] vs [x-start, x-end, y-start, y-end].
                   [1000000000, 1100000000],
                   [1200000000, 1300000000, 1400000, 1500000]
                 ],
-                "fillColor": "blue"
+                minWidth: 3,
+                fill: "blue",
+                fillOpacity: 0.3,
+                stroke: "yellow",
+                strokeOpacity: 0.6,
+                strokeWidth: 2,
+                strokePos: ["left", "right"],
+                outline: "cyan"
+                outlineOpacity: 0.1337,
+                outlineWidth: 1337,
+                outlinePos: "top"
               }
             },
             {

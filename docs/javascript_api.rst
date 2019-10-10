@@ -12,22 +12,46 @@ javascript and css files:
 
 .. code-block:: html
 
-    <link rel="stylesheet" href="https://unpkg.com/higlass@1.2.6/dist/hglib.css" type="text/css">
+  <!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="https://unpkg.com/higlass@1.5.7/dist/hglib.css" type="text/css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
 
-
-    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.1/pixi.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
+    <!-- To render HiGlass with the Canvas API include the pixi.js-legacy instead of pixi.js -->
+    <!-- <script crossorigin src="https://unpkg.com/pixi.js-legacy@5/dist/pixi-legacy.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
 
-    <script src="https://unpkg.com/higlass@1.2.6/dist/hglib[.min].js"></script>
+    <script src="https://unpkg.com/higlass@1.6/dist/hglib.min.js"></script>
+
+  </head>
+  <body >
+    <div id="development-demo" style="width: 800px;
+    background-color: white;"></div>
+  </body>
+
+  <script>
+
+  const hgApi = hglib.viewer(
+    document.getElementById('development-demo'),
+    'http://higlass.io/api/v1/viewconfs/?d=default',
+    {
+      bounded: false,
+    }
+  );
+
+  </script>
+  </html>
 
 External tracks should be included **before** the hglib.js import:
 
 .. code-block:: html
 
-    <script src="https://unpkg.com/higlass-multivec@0.1.10/dist/higlass-multivec.js"></script>
+    <script src="https://unpkg.com/higlass-multivec@0.2.0/dist/higlass-multivec.js"></script>
 
 Instructions for instantiating the component and interacting with it are in the
 `Public API section <javascript_api.html#api-functions>`_.
@@ -59,10 +83,23 @@ HiGlassComponent inside the element ``element`` with a viewconfig passed in as
 ``config``. If ``config`` is a string, it is interpreted as a url and used to
 try to fetch a remote viewconfig.
 
-The ``options`` parameter can currently only specify the ``bounded`` property
-which tells the HiGlass component to fill all the space in the containing
-element. Note that if ``bounded`` is set to true, then ``element`` must have a
-fixed height.
+The ``options`` parameter can have the following properties:
+
+- ``bounded``: tells the HiGlass component to fill all the space in the containing element. Note that if ``bounded`` is set to true, then ``element`` must have a fixed height
+
+- ``pixelPreciseMarginPadding``: if ``true`` apply pixel precise view height, padding, and margin.
+
+- ``containerPaddingX`` and ``containerPaddingY``: x and y padding react grid layout containers. The x padding resembles left and right padding of the entire react grid layout container, i.e., it can be interpreted as the global padding of an HiGlass instance. The y padding stands for the top and bottom padding but in case that the HiGlass view is not bound it will only add padding to the top. You can find out more about the container padding at https://github.com/STRML/react-grid-layout#grid-layout-props.
+
+- ``viewMarginTop``, ``viewMarginBottom``, ``viewMarginLeft``, and ``viewMarginRight``: top, bottom, left, right margin between **views** in pixels. The margin area *is not interactive*, i.e., dragging on the margin area *will not change* the location of the view!
+
+- ``viewPaddingTop``, ``viewPaddingBottom``, ``viewPaddingLeft``, and ``viewPaddingRight``: top, bottom, left, right padding between **views** in pixels. The padding area *is interactive*, i.e., dragging on the margin area *will change* the location of the view!
+
+- ``broadcastMousePositionGlobally``: if ``true`` the relative mouse position of this HiGlass instances (in data coordinates) will be broadcasted globally. This allows you to show the global mouse position in another HiGlass instance within the same browser tab or another browser tab.
+
+- ``showGlobalMousePosition``: if ``true`` any globally broadcasted mouse position will be shown for all tracks that have ``options.showMousePosition = true``.
+
+- ``globalMousePosition``: if ``true`` this will turn on ``broadcastMousePositionGlobally`` and ``showGlobalMousePosition``. This is basically a convenience option to quickly broadcast and show global mouse positions.
 
 The function returns an instance of the public API of a HiGlass component.
 
@@ -89,7 +126,7 @@ Creating a HiGlass component in your React app
   <HiGlassComponent
     options={options}
     viewConfig={viewConfig}
-  >
+  />
 
 Use the ``HiGlassComponent`` to create a HiGlass instance in react. The
 ``options`` prop is the same as explained above.
@@ -104,7 +141,7 @@ Use the ``HiGlassComponent`` to create a HiGlass instance in react. The
     ref={props.onRef}
     options={props.options}
     viewConfig={props.viewConfig}
-  >
+  />
 
   export default HiGlass;
 
@@ -175,7 +212,7 @@ API Functions
 
 .. js:autofunction:: setViewConfig
 
-.. js:autofunction:: zoomTo
+.. js:autofunction:: public.zoomTo
 
 .. js:autofunction:: exportAsSvg
 
@@ -187,8 +224,9 @@ API Functions
 
 .. js:autofunction:: public.on
 
-TiledPixiTrack Functions
-========================
+.. js:autofunction:: setBroadcastMousePositionGlobally
 
-.. js:autoclass:: TiledPixiTrack
-  :members: on
+.. js:autofunction:: setShowGlobalMousePosition
+
+.. js:autofunction:: setGlobalMousePosition
+

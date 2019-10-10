@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Adjusted View Spacing &middot; HiGlass</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/hglib.css">
+
+  <style>
+    .react-grid-layout,
+    .react-grid-item,
+    .tiled-plot-div,
+    .horizontal-tiled-plot {
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+    }
+    .tiled-plot-div {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    .top-track-container {
+      background: rgba(0, 0, 255, 0.1);
+    }
+    .left-track-container {
+      background: rgba(0, 255, 0, 0.1);
+    }
+    .right-track-container {
+      background: rgba(255, 0, 0, 0.1);
+    }
+    .center-track-container {
+      background: rgba(0, 255, 255, 0.1);
+    }
+    .bottom-track-container {
+      background: rgba(255, 0, 255, 0.1);
+    }
+  </style>
+
+  <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16.6/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+</head>
+<body>
+  <div style="position: absolute; left: 0; top: 0; right: 0; height: 50vh; box-shadow: 0 1px 0 0 #eee; overflow: hidden;">
+    <div
+      id="demo"
+      style="position: absolute; left: 1rem; top: 1rem; right: 1rem; bottom: 0.5rem;"
+    ></div>
+  </div>
+  <div style="position: absolute; left: 0; top: 50vh; right: 0; bottom: 0; box-shadow: 0 -1px 0 0 #eee; overflow: hidden;">
+    <div
+      id="svg"
+      style="position: absolute; left: 1rem; top: 0.5rem; right: 1rem; bottom: 1rem;"
+    ></div>
+  </div>
+</body>
+<script src='/hglib.js'></script>
+<script>
+const viewConfig = {
+  editable: false,
+  zoomFixed: false,
+  trackSourceServers: [
+    'http://higlass.io/api/v1'
+  ],
+  exportViewUrl: 'http://higlass.io/api/v1/viewconfs/',
+  views: [
+    {
+      uid: 'a',
+      initialXDomain: [
+        7595655.0000270605,
+        2507738795.9999733
+      ],
+      tracks: {
+        top: [
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            uid: 'genes1',
+            type: 'horizontal-gene-annotations',
+            height: 24
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
+            uid: 'bar1',
+            type: 'horizontal-bar',
+            height: 36
+          },
+        ],
+        left: [],
+        center: [],
+        right: [],
+        bottom: []
+      },
+      layout: {
+        w: 12,
+        h: 0,
+        x: 0,
+        y: 0,
+        moved: false,
+        static: false
+      }
+    },
+    {
+      uid: 'b',
+      initialXDomain: [
+        7595655.0000270605,
+        2507738795.9999733
+      ],
+      tracks: {
+        top: [
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            uid: 'genes2',
+            type: 'horizontal-gene-annotations',
+            height: 24
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
+            uid: 'bar2',
+            type: 'horizontal-bar',
+            height: 36
+          },
+        ],
+        left: [],
+        center: [],
+        right: [],
+        bottom: []
+      },
+      layout: {
+        w: 12,
+        h: 0,
+        x: 0,
+        y: 0,
+        moved: false,
+        static: false
+      }
+    },
+    {
+      uid: 'c',
+      initialXDomain: [
+        7595655.0000270605,
+        2507738795.9999733
+      ],
+      tracks: {
+        top: [
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
+            uid: 'genes2',
+            type: 'horizontal-gene-annotations',
+            height: 24
+          },
+          {
+            server: 'http://higlass.io/api/v1',
+            tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
+            uid: 'bar2',
+            type: 'horizontal-bar',
+            height: 36
+          },
+        ],
+        left: [],
+        center: [],
+        right: [],
+        bottom: []
+      },
+      layout: {
+        w: 12,
+        h: 0,
+        x: 0,
+        y: 0,
+        moved: false,
+        static: false
+      }
+    }
+  ]
+};
+
+const hgApi = hglib.viewer(
+  document.getElementById('demo'),
+  viewConfig,
+  {
+    pixelPreciseMarginPadding: true,
+    containerPaddingX: 0,
+    containerPaddingY: 0,
+    viewMarginTop: 32,
+    viewMarginBottom: 6,
+    viewMarginLeft: 32,
+    viewMarginRight: 6,
+    viewPaddingTop: 32,
+    viewPaddingBottom: 6,
+    viewPaddingLeft: 32,
+    viewPaddingRight: 6,
+  },
+);
+
+function renderPreview() {
+  setTimeout(() => {
+    document.getElementById('svg').innerHTML = hgApi.exportAsSvg();
+  }, 1500);
+}
+
+hgApi.on('viewConfig', renderPreview);
+
+renderPreview();
+</script>
+</html>
