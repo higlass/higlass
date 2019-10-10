@@ -373,6 +373,14 @@ class TrackRenderer extends React.Component {
       }
     }
 
+    if (prevProps.zoomable !== this.props.zoomable) {
+      if (this.props.zoomable) {
+        this.addZoom();
+      } else {
+        this.removeZoom();
+      }
+    }
+
     this.addEventTracker();
   }
 
