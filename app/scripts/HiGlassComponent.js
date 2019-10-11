@@ -263,6 +263,8 @@ class HiGlassComponent extends React.Component {
     // we can determine whether to add the resizesensor
     this.attachedToDOM = false;
 
+    this.scrollTop = 0;
+
     // Set up API
     const {
       public: api, destroy: apiDestroy, publish: apiPublish
