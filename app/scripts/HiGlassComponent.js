@@ -259,8 +259,6 @@ class HiGlassComponent extends React.Component {
       modal: null,
     };
 
-    Object.values(views).map(view => this.adjustLayoutToTrackSizes(view));
-
     // monitor whether this element is attached to the DOM so that
     // we can determine whether to add the resizesensor
     this.attachedToDOM = false;
@@ -426,6 +424,8 @@ class HiGlassComponent extends React.Component {
     window.addEventListener('focus', this.boundRefreshView);
 
     Object.values(this.state.views).forEach((view) => {
+      this.adjustLayoutToTrackSizes(view);
+
       if (!view.layout) {
         view.layout = this.generateViewLayout(view);
       } else {
@@ -2477,7 +2477,11 @@ class HiGlassComponent extends React.Component {
     totalTrackHeight += MARGIN_HEIGHT;
     const rowHeight = this.state.rowHeight + MARGIN_HEIGHT;
 
-    if (!this.props.options.bounded) {
+    if (this.props.options.scrollable) {
+      view.layout.h = Math.ceil(
+        this.topDiv.parentNode.getBoundingClientRect().height / rowHeight
+      );
+    } else if (!this.props.options.bounded) {
       view.layout.h = Math.ceil(totalTrackHeight / rowHeight);
     }
   }
