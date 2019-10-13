@@ -71,6 +71,7 @@ export { default as segmentsToRows } from './segments-to-rows';
 export { default as visitPositionedTracks } from './visit-positioned-tracks';
 export { default as visitTracks } from './visit-tracks';
 export { default as trackUtils } from './track-utils';
+export { default as positionedTracksToAllTracks } from './positioned-tracks-to-all-tracks';
 
 export {
   getTrackObjectFromHGC,

@@ -1,3 +1,5 @@
+app/*higlass-pileup*
+
 app/local
 yarn.lock
 build/

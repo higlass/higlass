@@ -54,6 +54,7 @@ import {
   // loadChromInfos,
   numericifyVersion,
   objVals,
+  positionedTracksToAllTracks,
   scalesCenterAndK,
   scalesToGenomeLoci,
   visitPositionedTracks

@@ -587,7 +587,9 @@ export const tileDataToPixData = (
 
 function fetchEither(url, callback, textOrJson, pubSub) {
   requestsInFlight += 1;
-  pubSub.publish('requestSent', url);
+  if (pubSub) {
+    pubSub.publish('requestSent', url);
+  }
 
   let mime;
   if (textOrJson === 'text') {
@@ -619,7 +621,9 @@ function fetchEither(url, callback, textOrJson, pubSub) {
       return error;
     })
     .finally(() => {
-      pubSub.publish('requestReceived', url);
+      if (pubSub) {
+        pubSub.publish('requestReceived', url);
+      }
       requestsInFlight -= 1;
     });
 }
