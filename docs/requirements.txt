@@ -1,0 +1,3 @@
+Sphinx==1.6.5
+sphinx-autobuild
+sphinx-js

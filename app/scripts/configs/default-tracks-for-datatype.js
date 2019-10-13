@@ -3,48 +3,45 @@ export const DEFAULT_TRACKS_FOR_DATATYPE = {
     top: '1d-arcs',
     bottom: '1d-arcs',
   },
-  'matrix': {
-    'center': 'heatmap',
-    'top': 'horizontal-heatmap',
-    'left': 'vertical-heatmap',
-    'right': 'vertical-heatmap',
-    'bottom': 'horizontal-heatmap',
+  chromsizes: {
+    center: '2d-chromosome-grid',
+    top: 'horizontal-chromosome-labels',
+    left: 'vertical-chromosome-labels',
+    bottom: 'horizontal-chromosome-labels',
+    right: 'vertical-chromosome-labels',
   },
-  'vector': {
-    'top': 'horizontal-bar',
-    'bottom': 'horizontal-bar',
-    'left': 'vertical-bar',
-    'right': 'vertical-bar',
+  matrix: {
+    center: 'heatmap',
+    top: 'horizontal-heatmap',
+    left: 'vertical-heatmap',
+    right: 'vertical-heatmap',
+    bottom: 'horizontal-heatmap',
   },
-  'multivec': {
-    'top': 'horizontal-multivec',
-    'bottom': 'horizontal-multivec',
+  vector: {
+    top: 'horizontal-bar',
+    bottom: 'horizontal-bar',
+    left: 'vertical-bar',
+    right: 'vertical-bar',
   },
   'epilogos': {
     'top': 'horizontal-stacked-bar',
     'bottom': 'horizontal-stacked-bar',
   },
   'geo-json': {
-    'center': 'geo-json',
+    center: 'geo-json',
   },
   'gene-annotations': {
-    'top': 'horizontal-gene-annotations',
-    'bottom': 'horizontal-gene-annotations',
-    'left': 'vertical-gene-annotations',
-    'right': 'horizontal-gene-annotations',
-  },
-  'chromsizes': {
-    'top': 'horizontal-chromosome-labels',
-    'bottom': 'horizontal-chromosome-labels',
-    'center': '2d-chromosome-grid',
-    'left': 'vertical-chromosome-labels',
-    'right': 'vertical-chromosome-labels',
+    top: 'horizontal-gene-annotations',
+    bottom: 'horizontal-gene-annotations',
+    left: 'vertical-gene-annotations',
+    right: 'horizontal-gene-annotations',
   },
   'bedlike': {
     'top': 'bedlike',
     'bottom': 'bedlike',
     'left': 'vertical-bedlike',
     'right': 'vertical-bedlike',
+
   },
   'osm-tiles': {
     'center': 'osm-tiles',

@@ -11,8 +11,6 @@ function countTransform(count) {
 */
 const epsilon = 0.0000001;
 
-const MAX_FETCH_TILES = 20;
-
 export function minNonZero(data) {
   /**
    * Calculate the minimum non-zero value in the data
@@ -27,17 +25,17 @@ export function minNonZero(data) {
    *  minNonZero: float
    *    The minimum non-zero value in the array
    */
-   let minNonZero = Number.MAX_SAFE_INTEGER;
+  let minNonZeroNum = Number.MAX_SAFE_INTEGER;
 
   for (let i = 0; i < data.length; i++) {
     const x = data[i];
 
     if (x < epsilon && x > -epsilon) { continue; }
 
-    if (x < minNonZero) { minNonZero = x; }
+    if (x < minNonZeroNum) { minNonZeroNum = x; }
   }
 
-  return  minNonZero;
+  return minNonZeroNum;
 }
 
 export function maxNonZero(data) {
@@ -54,63 +52,67 @@ export function maxNonZero(data) {
    *  minNonZero: float
    *    The minimum non-zero value in the array
    */
-  let maxNonZero = Number.MIN_SAFE_INTEGER;
+  let maxNonZeroNum = Number.MIN_SAFE_INTEGER;
 
   for (let i = 0; i < data.length; i++) {
     const x = data[i];
 
     if (x < epsilon && x > -epsilon) { continue; }
 
-    if (x > maxNonZero) { maxNonZero = x; }
+    if (x > maxNonZeroNum) { maxNonZeroNum = x; }
   }
 
-  return maxNonZero;
+  return maxNonZeroNum;
 }
 
 export function workerSetPix(
-  size, data, valueScaleType, valueScaleDomain, pseudocount, colorScale, ignoreUpperRight=false
+  size,
+  data,
+  valueScaleType,
+  valueScaleDomain,
+  pseudocount,
+  colorScale,
+  ignoreUpperRight = false,
+  ignoreLowerLeft = false
 ) {
   /**
    * The pseudocount is generally the minimum non-zero value and is
    * used so that our log scaling doesn't lead to NaN values.
    */
-  const epsilon = 0.000001;
   let valueScale = null;
 
-  if (valueScaleType == 'log') {
-    valueScale = scaleLog()
-      .range([254,0])
-      .domain(valueScaleDomain)
+  if (valueScaleType === 'log') {
+    valueScale = scaleLog().range([254, 0]).domain(valueScaleDomain);
   } else {
-    if (valueScaleType != 'linear') {
-      console.warn('Unknown value scale type:', valueScaleType, ' Defaulting to linear');
+    if (valueScaleType !== 'linear') {
+      console.warn(
+        'Unknown value scale type:', valueScaleType, ' Defaulting to linear'
+      );
     }
-    valueScale = scaleLinear()
-      .range([254,0])
-      .domain(valueScaleDomain)
+    valueScale = scaleLinear().range([254, 0]).domain(valueScaleDomain);
   }
 
   const pixData = new Uint8ClampedArray(size * 4);
 
   let rgbIdx = 0;
-  let e = 0;
+  let d;
   const tileWidth = Math.sqrt(size);
 
   try {
     for (let i = 0; i < data.length; i++) {
-      const d = data[i];
-      e = d; // for debugging
+      d = data[i];
 
-
+      // Transparent
       rgbIdx = 255;
 
-      // ignore the upper right portion of a tile because it's on the diagonal
-      // and its mirror will fill in that space
-      if (ignoreUpperRight && Math.floor(i / tileWidth) < i % tileWidth) {
-        rgbIdx = 255;        
-      } else if (isNaN(d)) {
-        rgbIdx = 255;
-      } else {
+      if (
+        // ignore the upper right portion of a tile because it's on the diagonal
+        // and its mirror will fill in that space
+        !(ignoreUpperRight && Math.floor(i / tileWidth) < i % tileWidth)
+        && !(ignoreLowerLeft && Math.floor(i / tileWidth) > i % tileWidth)
+        // Ignore color if the value is invalid
+        && !Number.isNaN(+d)
+      ) {
         // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
         rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(d + pseudocount))));
       }
@@ -129,9 +131,9 @@ export function workerSetPix(
     console.warn('Odd datapoint');
     console.warn('valueScale.domain():', valueScale.domain());
     console.warn('valueScale.range():', valueScale.range());
-    console.warn('value:', valueScale(e + pseudocount));
+    console.warn('value:', valueScale(d + pseudocount));
     console.warn('pseudocount:', pseudocount);
-    console.warn('rgbIdx:', rgbIdx, 'd:', e, 'ct:', valueScale(e));
+    console.warn('rgbIdx:', rgbIdx, 'd:', d, 'ct:', valueScale(d));
     console.error('ERROR:', err);
     return pixData;
   }
@@ -147,44 +149,45 @@ function float32(h) {
    * values should be encoded as float32
    */
 
-  let h_exp, h_sig;
-  let f_sgn, f_exp, f_sig;
+  let hExp = h & 0x7c00;
+  let hSig;
+  let fExp;
+  let fSig;
 
-  h_exp = (h&0x7c00);
-  f_sgn = (h&0x8000) << 16;
-  switch (h_exp) {
-      case 0x0000: /* 0 or subnormal */
-          h_sig = (h&0x03ff);
-          /* Signed zero */
-          if (h_sig == 0) {
-              return f_sgn;
-          }
-          /* Subnormal */
-          h_sig <<= 1;
-          while ((h_sig&0x0400) == 0) {
-              h_sig <<= 1;
-              h_exp++;
-          }
-          f_exp = ((127 - 15 - h_exp)) << 23;
-          f_sig = ((h_sig&0x03ff)) << 13;
-          return f_sgn + f_exp + f_sig;
-      case 0x7c00: /* inf or NaN */
-          /* All-ones exponent and a copy of the significand */
-          return f_sgn + 0x7f800000 + (((h&0x03ff)) << 13);
-      default: /* normalized */
-          /* Just need to adjust the exponent and shift */
-          return f_sgn + (((h&0x7fff) + 0x1c000) << 13);
+  const fSgn = (h & 0x8000) << 16;
+  switch (hExp) {
+    case 0x0000: /* 0 or subnormal */
+      hSig = (h & 0x03ff);
+      /* Signed zero */
+      if (hSig === 0) {
+        return fSgn;
+      }
+      /* Subnormal */
+      hSig <<= 1;
+      while ((hSig & 0x0400) === 0) {
+        hSig <<= 1;
+        hExp++;
+      }
+      fExp = ((127 - 15 - hExp)) << 23;
+      fSig = ((hSig & 0x03ff)) << 13;
+      return fSgn + fExp + fSig;
+    case 0x7c00: /* inf or NaN */
+      /* All-ones exponent and a copy of the significand */
+      return fSgn + 0x7f800000 + (((h & 0x03ff)) << 13);
+    default: /* normalized */
+      /* Just need to adjust the exponent and shift */
+      return fSgn + (((h & 0x7fff) + 0x1c000) << 13);
   }
 }
 
 function _base64ToArrayBuffer(base64) {
-  const binary_string = atob(base64);
-  const len = binary_string.length;
+  const binaryString = atob(base64);
+  const len = binaryString.length;
 
   const bytes = new Uint8Array(len);
 
   for (let i = 0; i < len; i++) {
-    bytes[i] = binary_string.charCodeAt(i);
+    bytes[i] = binaryString.charCodeAt(i);
   }
 
   return bytes.buffer;
@@ -207,9 +210,9 @@ function _uint16ArrayToFloat32Array(uint16array) {
  * data that can be used by higlass
  */
 export function tileResponseToData(data, server, theseTileIds) {
-  if (!data)  {
+  if (!data) {
     // probably an error
-    data = {}
+    data = {};
   }
 
   for (const thisId of theseTileIds) {
@@ -232,7 +235,7 @@ export function tileResponseToData(data, server, theseTileIds) {
       let a;
 
 
-      if (data[key].dtype == 'float16') {
+      if (data[key].dtype === 'float16') {
         // data is encoded as float16s
         /* comment out until next empty line for 32 bit arrays */
         const uint16Array = new Uint16Array(arrayBuffer);
@@ -249,8 +252,8 @@ export function tileResponseToData(data, server, theseTileIds) {
       data[key].maxNonZero = maxNonZero(a);
 
       /*
-                      if (data[key]['minNonZero'] == Number.MAX_SAFE_INTEGER &&
-                          data[key]['maxNonZero'] == Number.MIN_SAFE_INTEGER) {
+                      if (data[key]['minNonZero'] === Number.MAX_SAFE_INTEGER &&
+                          data[key]['maxNonZero'] === Number.MIN_SAFE_INTEGER) {
                           // if there's no values except 0,
                           // then do use it as the min value
 
@@ -266,34 +269,26 @@ export function tileResponseToData(data, server, theseTileIds) {
 
 export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
   const headers = {
-        'content-type': 'application/json'
-      };
+    'content-type': 'application/json'
+  };
 
-  if (authHeader)
-    headers['Authorization'] = authHeader;
+  if (authHeader) headers.Authorization = authHeader;
 
   fetch(outUrl, {
-      headers,
-    }
-    )
-    .then(response => {
-      return response.json()
-    }
-    )
-    .then(data =>  {
-      data = tileResponseToData(data, server, theseTileIds);
-
-      done(data);
-
+    credentials: 'same-origin',
+    headers
+  })
+    .then(response => response.json())
+    .then((data) => {
+      done(tileResponseToData(data, server, theseTileIds));
       /*
       const denses = Object.values(data)
         .filter(x => x.dense)
         .map(x => x.dense);
       */
-      //.map(x => x.dense.buffer);
+      // .map(x => x.dense.buffer);
 
-      //done.transfer(data, denses);
+      // done.transfer(data, denses);
     })
-  .catch(err =>
-    console.log('err:', err));
+    .catch(err => console.warn('err:', err));
 }

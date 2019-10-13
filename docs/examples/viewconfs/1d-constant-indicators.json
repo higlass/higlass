@@ -1,0 +1,130 @@
+{
+  "editable": false,
+  "zoomFixed": false,
+  "views": [{
+    "initialXDomain": [1500000, 3000000],
+    "initialYDomain": [1500000, 3000000],
+    "tracks": {
+      "top": [{
+        "uid": "chroms",
+        "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+        "type": "horizontal-chromosome-labels"
+      }, {
+        "uid": "genes",
+        "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+        "server": "http://higlass.io/api/v1",
+        "type": "horizontal-gene-annotations"
+      }, {
+        "uid": "lines",
+        "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
+        "height": 200,
+        "server": "http://higlass.io/api/v1",
+        "type": "horizontal-line",
+        "options": {
+          "constIndicators": [{
+            "color": "#000000",
+            "opacity": 0.33,
+            "label": "Max",
+            "labelPosition": "leftBottom",
+            "labelColor": "#000000",
+            "labelOpacity": 0.25,
+            "value": 60000
+          }, {
+            "color": "#000000",
+            "opacity": 0.33,
+            "label": "Mean",
+            "labelPosition": "left",
+            "labelColor": "#000000",
+            "labelOpacity": 0.25,
+            "value": 30000
+          }, {
+            "color": "#000000",
+            "opacity": 0.33,
+            "label": "Min",
+            "labelPosition": "leftTop",
+            "labelColor": "#000000",
+            "labelOpacity": 0.25,
+            "value": 10000
+          }],
+          "showTooltip": true
+        }
+      }, {
+        "uid": "bars",
+        "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
+        "height": 200,
+        "server": "http://higlass.io/api/v1",
+        "type": "horizontal-bar",
+        "options": {
+          "barFillColor": "orange",
+          "axisPositionHorizontal": "left",
+          "constIndicators": [{
+            "color": "#000000",
+            "opacity": 0.33,
+            "label": "Max",
+            "labelPosition": "rightBottom",
+            "labelColor": "#000000",
+            "labelOpacity": 0.25,
+            "value": 60000
+          }, {
+            "color": "#000000",
+            "opacity": 0.33,
+            "label": "Mean",
+            "labelPosition": "right",
+            "labelColor": "#000000",
+            "labelOpacity": 0.25,
+            "value": 30000
+          }, {
+            "color": "#000000",
+            "opacity": 0.33,
+            "label": "Min",
+            "labelPosition": "rightTop",
+            "labelColor": "#000000",
+            "labelOpacity": 0.25,
+            "value": 10000
+          }],
+          "showTooltip": true
+        }
+      }, {
+        "uid": "points",
+        "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
+        "height": 200,
+        "server": "http://higlass.io/api/v1",
+        "type": "horizontal-point",
+        "options": {
+          "constIndicators": [{
+            "color": "#000000",
+            "opacity": 0.33,
+            "label": "Max",
+            "labelPosition": "leftBottom",
+            "labelColor": "#000000",
+            "labelOpacity": 0.25,
+            "value": 60000
+          }, {
+            "color": "#000000",
+            "opacity": 0.33,
+            "label": "Mean",
+            "labelPosition": "left",
+            "labelColor": "#000000",
+            "labelOpacity": 0.25,
+            "value": 30000
+          }, {
+            "color": "#000000",
+            "opacity": 0.33,
+            "label": "Min",
+            "labelPosition": "leftTop",
+            "labelColor": "#000000",
+            "labelOpacity": 0.25,
+            "value": 10000
+          }],
+          "showTooltip": true
+        }
+      }]
+    },
+    "layout": {
+      "w": 12,
+      "h": 12,
+      "x": 0,
+      "y": 0
+    }
+  }]
+}

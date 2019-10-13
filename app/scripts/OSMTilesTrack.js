@@ -4,7 +4,9 @@ import * as PIXI from 'pixi.js';
 import PixiTrack from './PixiTrack';
 
 // Services
-import { tileProxy } from './services';
+import {
+  tileProxy
+} from './services';
 
 // Utils
 import { debounce } from './utils';
@@ -20,11 +22,12 @@ class OSMTilesTrack extends PixiTrack {
    * @param server: The server to pull tiles from.
    * @param tilesetUid: The data set to get the tiles from the server
    */
-  constructor(scene, options, animate) {
-    // Force OpenStreetMaps copyright
-    options.name = `© OpenStreetMap${options.name ? `\n${options.name}` : ''}`;
+  constructor(context, options) {
+    super(context, options);
+    const { animate } = context;
 
-    super(scene, options);
+    // Force OpenStreetMaps copyright
+    // this.options.name = `© OpenStreetMap${options.name ? `\n${options.name}` : ''}`;
 
     // the tiles which should be visible (although they're not necessarily fetched)
     this.visibleTiles = new Set();
@@ -39,12 +42,25 @@ class OSMTilesTrack extends PixiTrack {
     // the graphics that have already been drawn for this track
     this.tileGraphics = {};
 
-    this.minX = +this.options.minPos || -180;
+    this.minX = (
+      typeof this.options.minPos !== 'undefined'
+      && !Number.isNaN(+this.options.minPos)
+    )
+      ? +this.options.minPos
+      : -180;
     this.maxX = +this.options.maxPos || 180;
+
+    this.maxX = (
+      typeof this.options.maxPos !== 'undefined'
+      && !Number.isNaN(+this.options.maxPos)
+    )
+      ? +this.options.maxPos
+      : 180;
+
     // HiGlass currently only supports squared tile sets but maybe in the
     // future...
-    this.minY = this.minX;
-    this.maxY = this.maxX;
+    this.minY = this.options.minY || this.minX;
+    this.maxY = this.options.maxY || this.maxX;
 
     this.maxZoom = 19;
     this.maxWidth = this.maxX - this.minX;
@@ -209,8 +225,8 @@ class OSMTilesTrack extends PixiTrack {
     this.yTiles = tileProxy.calculateTiles(
       this.zoomLevel,
       this._yScale,
-      this.minX,
-      this.maxX,
+      this.minY,
+      this.maxY,
       this.maxZoom,
       this.maxWidth
     );
@@ -248,6 +264,7 @@ class OSMTilesTrack extends PixiTrack {
     this.pMain.scale.y = k; // scaleY;
 
     this.refreshTilesDebounced();
+    this.draw();
   }
 
   setPosition(newPosition) {
@@ -314,7 +331,9 @@ class OSMTilesTrack extends PixiTrack {
     const tileX = this.minX + (tilePos[0] * tileWidth);
     const tileY = this.minY + (tilePos[1] * tileHeight);
 
-    return { tileX, tileY, tileWidth, tileHeight };
+    return {
+      tileX, tileY, tileWidth, tileHeight
+    };
   }
 
   setSpriteProperties(sprite, zoomLevel, tilePos) {
@@ -428,7 +447,7 @@ class OSMTilesTrack extends PixiTrack {
   getTileUrl(tileZxy) {
     const serverPrefixes = ['a', 'b', 'c'];
     const serverPrefixIndex = Math.floor(Math.random() * serverPrefixes.length);
-    const src = `http://${serverPrefixes[serverPrefixIndex]}.tile.openstreetmap.org/${tileZxy[0]}/${tileZxy[1]}/${tileZxy[2]}.png`;
+    const src = `https://${serverPrefixes[serverPrefixIndex]}.tile.openstreetmap.org/${tileZxy[0]}/${tileZxy[1]}/${tileZxy[2]}.png`;
 
     return src;
   }

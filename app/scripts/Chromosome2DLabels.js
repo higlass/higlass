@@ -9,8 +9,9 @@ import { absToChr } from './utils';
 
 
 class Chromosome2DLabels extends PixiTrack {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
-    super(scene, options);
+  constructor(context, options) {
+    super(context, options);
+    const { dataConfig, animate, pubSub } = context;
 
     this.searchField = null;
     this.chromInfo = null;
@@ -35,8 +36,9 @@ class Chromosome2DLabels extends PixiTrack {
 
         for (let j = 0; j < this.chromInfo.cumPositions.length; j++) {
           const textStr = `${this.chromInfo.cumPositions[i].chr}/${this.chromInfo.cumPositions[j].chr}`;
-          const text = new PIXI.Text(textStr,
-            { fontSize: '14px', fontFamily: 'Arial', fill: 'red' },
+          const text = new PIXI.Text(
+            textStr,
+            { fontSize: '14px', fontFamily: 'Arial', fill: 'red' }
           );
 
           text.anchor.x = 0.5;
@@ -56,7 +58,7 @@ class Chromosome2DLabels extends PixiTrack {
       }
       this.draw();
       this.animate();
-    });
+    }, pubSub);
   }
 
   draw() {

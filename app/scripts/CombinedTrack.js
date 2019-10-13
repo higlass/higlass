@@ -1,13 +1,13 @@
 import slugid from 'slugid';
 
 class CombinedTrack {
-  constructor(trackDefs, trackCreator) {
-    this.childTracks = trackDefs.map(trackCreator);
+  constructor({ tracks, createTrackObject }) {
+    this.childTracks = tracks.map(createTrackObject);
     this.createdTracks = {};
-    this.uid = slugid.nice()
+    this.uid = slugid.nice();
 
     this.childTracks.forEach((ct, i) => {
-      this.createdTracks[trackDefs[i].uid] = ct;
+      this.createdTracks[tracks[i].uid] = ct;
     });
 
     for (let i = 0; i < this.childTracks.length; i++) {
@@ -77,6 +77,7 @@ class CombinedTrack {
     this._yScale = newYScale;
 
     for (let i = 0; i < this.childTracks.length; i++) {
+      // console.log('childTracks.zoomed', this.childTracks[i].zoomed);
       this.childTracks[i].zoomed(newXScale, newYScale, k, x, y,
         xPositionOffset, yPositionOffset);
     }
@@ -147,8 +148,8 @@ class CombinedTrack {
     // console.log('COMBINED TRACK rerender...');
   }
 
-  minValue() {
-    if (arguments.length == 0) {
+  minValue(_) {
+    if (arguments.length === 0) {
       const minValues = this.childTracks
         .filter(x => x.minValue) // filter for tracks which have the minValue function
         .map(x => x.minValue()) // get the minValue for each track
@@ -161,10 +162,11 @@ class CombinedTrack {
         childTrack.minValue(_);
       }
     }
+    return undefined;
   }
 
   maxValue(_) {
-    if (arguments.length == 0) {
+    if (arguments.length === 0) {
       const maxValues = this.childTracks
         .filter(x => x.maxValue) // filter for tracks which have the minValue function
         .map(x => x.maxValue()) // get the minValue for each track
@@ -177,6 +179,7 @@ class CombinedTrack {
         childTrack.maxValue(_);
       }
     }
+    return undefined;
   }
 
   respondsToPosition(x, y) {
@@ -188,13 +191,12 @@ class CombinedTrack {
 
   stopHover() {
     for (const childTrack of this.childTracks) {
-      if (childTrack.stopHover)
-        childTrack.stopHover();
+      if (childTrack.stopHover) childTrack.stopHover();
     }
   }
 
   getMouseOverHtml(trackX, trackY) {
-    let mouseOverHtml = ''
+    let mouseOverHtml = '';
 
     for (const childTrack of this.childTracks) {
       if (childTrack.getMouseOverHtml) {
@@ -202,14 +204,13 @@ class CombinedTrack {
 
         if (trackHtml && trackHtml.length) {
           mouseOverHtml += trackHtml;
-          mouseOverHtml += "<br/>"
+          mouseOverHtml += '<br/>';
         }
-
       }
     }
 
     return mouseOverHtml;
-  };
+  }
 }
 
 export default CombinedTrack;

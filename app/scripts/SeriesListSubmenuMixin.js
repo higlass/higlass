@@ -1,6 +1,6 @@
+import React from 'react';
 import { Mixin } from './mixwith';
 
-import React from 'react';
 
 import SeriesListMenu from './SeriesListMenu';
 import { getAllTracksAndSubtracks } from './SeriesListItems';
@@ -41,8 +41,8 @@ const SeriesListSubmenuMixin = Mixin(superclass => class extends superclass {
           hostTrack={this.props.tracks[0]}
           onAddDivisor={this.props.onAddDivisor}
           onAddSeries={canBeReplaced ? this.props.onAddSeries : null}
-          onChangeTrackType={this.props.onChangeTrackType}
           onChangeTrackData={this.props.onChangeTrackData}
+          onChangeTrackType={this.props.onChangeTrackType}
           onCloseTrack={() => this.props.onCloseTrack(this.state.submenuShown.uid)}
           onConfigureTrack={this.props.onConfigureTrack}
           onDivideSeries={this.props.onDivideSeries}
@@ -53,6 +53,7 @@ const SeriesListSubmenuMixin = Mixin(superclass => class extends superclass {
           parentBbox={bbox}
           position={position}
           series={this.state.submenuShown}
+          theme={this.props.theme}
           track={selectedTrack}
           trackOrientation={this.props.trackOrientation}
           trackSourceServers={this.props.trackSourceServers}

@@ -3,8 +3,8 @@ import { axisLeft } from 'd3-axis';
 import SVGTrack from './SVGTrack';
 
 class LeftAxisTrack extends SVGTrack {
-  constructor(svgElement) {
-    super(svgElement);
+  constructor(context, options) {
+    super(context, options);
 
     this.axis = axisLeft(this._yScale);
     this.gAxis = this.gMain.append('g');

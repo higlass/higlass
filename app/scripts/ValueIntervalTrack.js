@@ -6,8 +6,8 @@ import AxisPixi from './AxisPixi';
 import { colorToHex } from './utils';
 
 class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+  constructor(context, options) {
+    super(context, options);
 
     this.axis = new AxisPixi(this);
     this.pBase.addChild(this.axis.pAxis);
@@ -69,14 +69,15 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
   minVisibleValue() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
-    if (visibleAndFetchedIds.length == 0) {
+    if (visibleAndFetchedIds.length === 0) {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    const min = Math.min.apply(null, visibleAndFetchedIds.map(x =>
-      +Math.min(...(this.fetchedTiles[x].tileData
-        .filter(y => !isNaN(y.fields[3]))
-        .map(y => +y.fields[3])))));
+    const min = Math.min.apply(null, visibleAndFetchedIds.map(
+      x => +Math.min(...(this.fetchedTiles[x].tileData
+        .filter(y => !Number.isNaN(y.fields[3]))
+        .map(y => +y.fields[3])))
+    ));
 
     return min;
   }
@@ -84,15 +85,16 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
   maxVisibleValue() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
-    if (visibleAndFetchedIds.length == 0) {
+    if (visibleAndFetchedIds.length === 0) {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
 
-    const max = Math.max.apply(null, visibleAndFetchedIds.map(x =>
-      +Math.max(...(this.fetchedTiles[x].tileData
-        .filter(y => !isNaN(y.fields[3]))
-        .map(y => +y.fields[3])))));
+    const max = Math.max.apply(null, visibleAndFetchedIds.map(
+      x => +Math.max(...(this.fetchedTiles[x].tileData
+        .filter(y => !Number.isNaN(y.fields[3]))
+        .map(y => +y.fields[3])))
+    ));
 
     return max;
   }

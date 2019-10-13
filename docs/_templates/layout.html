@@ -1,0 +1,88 @@
+{% extends "!layout.html" %}
+{% block extrahead %}
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-77756807-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-77756807-1');
+  </script>
+  {{ super () }}
+{% endblock %}
+
+{% block document %}
+  <header class="top-bar">
+    <div class="flex-c flex-jc-sb wrap top-bar-wrapper">
+      <div class="flex-c branding-launch">
+        <a href="https://higlass.io" class="flex-c flex-a-c branding">
+          <span class="icon icon-logo-two-tone">
+            <svg xmlns="http://www.w3.org/2000/svg" class="full-dim" viewBox="0 0 32 32" fill-rule="evenodd">
+              <defs><clipPath id="a"><circle cx="15" cy="15" r="11"></circle></clipPath><g id="b"><path fill-opacity=".25" d="M18 8h4v4h-4z"></path><path fill-opacity=".5" d="M13 8h4v4h-4z"></path><path fill-opacity=".7" d="M8 8h4v4H8z"></path><path fill-opacity=".125" d="M18 3h4v4h-4z"></path><path fill-opacity=".25" d="M13 3h4v4h-4z"></path><path fill-opacity=".5" d="M8 3h4v4H8zM18 23h4v4h-4z"></path><path fill-opacity=".25" d="M13 23h4v4h-4z"></path><path fill-opacity=".125" d="M8 23h4v4H8z"></path><path fill-opacity=".5" d="M18 13h4v4h-4z"></path><path fill-opacity=".85" d="M13 13h4v4h-4z"></path><path fill-opacity=".5" d="M8 13h4v4H8z"></path><path fill-opacity=".7" d="M18 18h4v4h-4z"></path><path fill-opacity=".125" d="M23 8h4v4h-4z"></path><path fill-opacity=".25" d="M23 13h4v4h-4z"></path><path fill-opacity=".5" d="M23 18h4v4h-4zM3 8h4v4H3z"></path><path fill-opacity=".25" d="M3 13h4v4H3z"></path><path fill-opacity=".125" d="M3 18h4v4H3z"></path><path fill-opacity=".5" d="M13 18h4v4h-4z"></path><path fill-opacity=".25" d="M8 18h4v4H8z"></path></g><g id="c"><path fill-opacity=".75" d="M18 8h4v4h-4z"></path><path fill-opacity=".5" d="M13 8h4v4h-4z"></path><path fill-opacity=".3" d="M8 8h4v4H8z"></path><path fill-opacity=".875" d="M18 3h4v4h-4z"></path><path fill-opacity=".75" d="M13 3h4v4h-4z"></path><path fill-opacity=".5" d="M8 3h4v4H8zM18 23h4v4h-4z"></path><path fill-opacity=".75" d="M13 23h4v4h-4z"></path><path fill-opacity=".875" d="M8 23h4v4H8z"></path><path fill-opacity=".5" d="M18 13h4v4h-4z"></path><path fill-opacity=".5" d="M13 13h4v4h-4z"></path><path fill-opacity=".5" d="M8 13h4v4H8z"></path><path fill-opacity=".3" d="M18 18h4v4h-4z"></path><path fill-opacity=".875" d="M23 8h4v4h-4z"></path><path fill-opacity=".75" d="M23 13h4v4h-4z"></path><path fill-opacity=".5" d="M23 18h4v4h-4zM3 8h4v4H3z"></path><path fill-opacity=".75" d="M3 13h4v4H3z"></path><path fill-opacity=".875" d="M3 18h4v4H3z"></path><path fill-opacity=".5" d="M13 18h4v4h-4z"></path><path fill-opacity=".75" d="M8 18h4v4H8z"></path></g></defs><path d="M23.415 27.415C21.015 29.047 18.118 30 15 30 6.72 30 0 23.28 0 15 0 6.72 6.72 0 15 0c8.28 0 15 6.72 15 15 0 3.118-.953 6.015-2.585 8.415L32 28l-4 4-4.585-4.585zM15 3c6.623 0 12 5.377 12 12s-5.377 12-12 12S3 21.623 3 15 8.377 3 15 3z"></path><g clip-path="url(#a)"><use xlink:href="#b" class="lense"></use><use xlink:href="#c" class="inception"></use></g>
+            </svg>
+          </span>
+          <span class="higlass">
+            <span class="higlass-hi">Hi</span>Glass
+          </span>
+        </a>
+        <a
+          href="https://higlass.io/app"
+          class="btn icon-only"
+          title="Launch HiGlass in Full Screen"
+        >
+          <span class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="full-dim" viewBox="0 0 16 16" fill-rule="evenodd">
+              <path d="M14.484 12.83l-3.536-3.536-1.654 1.655 3.534 3.536L11.315 16H16v-4.684M6.704 5.054L3.18 1.534 4.668 0H0v4.667l1.53-1.484 3.524 3.52M6.703 10.946l-1.65-1.65-3.545 3.546L0 11.332V16h4.667l-1.51-1.51M11.333 0l1.51 1.508-3.547 3.546 1.65 1.65 3.545-3.546L16 4.668V0" fill="currentColor"></path>
+            </svg>
+          </span>
+        </a>
+      </div>
+      <nav class="flex-c flex-jc-e flex-a-s is-toggable">
+        <ul class="flex-c flex-jc-e flex-a-s no-list-style primary-nav-list">
+          <li>
+            <a href="https://higlass.io/about">
+              About
+            </a>
+          </li>
+          <li>
+            <a href="https://blog.higlass.io">
+              Blog
+            </a>
+          </li>
+          <li>
+            <a href="https://higlass.io/examples">
+              Examples
+            </a>
+          </li>
+          <li>
+            <a href="https://higlass.io/plugins">
+              Plugins
+            </a>
+          </li>
+          <li>
+            <a href="https://docs.higlass.io" class="is-active">
+              Docs
+            </a>
+          </li>
+          <li class="separated-left flex-c">
+            <a
+              href="https://github.com/higlass"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div class="full-wh flex-c flex-a-c">
+                <span class="icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="full-dim" viewBox="0 0 16 16">
+                    <path d="M8 .198c-4.418 0-8 3.582-8 8 0 3.534 2.292 6.532 5.47 7.59.4.075.548-.173.548-.384 0-.19-.008-.82-.01-1.49-2.227.484-2.696-.943-2.696-.943-.364-.925-.888-1.17-.888-1.17-.725-.497.055-.485.055-.485.802.056 1.225.824 1.225.824.714 1.22 1.872.867 2.328.663.072-.517.28-.87.508-1.07-1.776-.2-3.644-.888-3.644-3.954 0-.874.313-1.588.824-2.148-.082-.202-.357-1.015.077-2.116 0 0 .672-.216 2.2.82.64-.177 1.323-.267 2.003-.27.68.003 1.365.093 2.004.27 1.527-1.036 2.197-.82 2.197-.82.437 1.102.164 1.916.08 2.116.514.56.823 1.274.823 2.147 0 3.072-1.872 3.748-3.652 3.947.288.248.543.734.543 1.48 0 1.07-.01 1.93-.01 2.195 0 .213.146.462.552.384C13.71 14.726 16 11.73 16 8.196c0-4.418-3.58-8-8-8v.002z" fill="currentColor"></path>
+                  </svg>
+                </span>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  {{ super () }}
+{% endblock %}

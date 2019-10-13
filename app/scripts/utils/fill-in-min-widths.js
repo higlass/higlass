@@ -30,12 +30,20 @@ const fillInMinWidths = (tracks) => {
     .forEach(horizontalTracks => horizontalTracks
       .forEach((track) => {
         const trackInfo = TRACKS_INFO_BY_TYPE[track.type];
+        const defaultOptions = (trackInfo && trackInfo.defaultOptions) || {};
+        const options = track.options ? { ...track.options, ...defaultOptions }
+          : defaultOptions;
 
-        if (
-          !('height' in track)
-          || (trackInfo && track.height < trackInfo.minHeight)
-        ) {
-          track.height = (trackInfo && trackInfo.minHeight) || MIN_HORIZONTAL_HEIGHT;
+        if (!options.minHeight && track.height < options.minHeight) {
+          track.height = options.minHeight || MIN_HORIZONTAL_HEIGHT;
+        }
+
+        if (!track.height) {
+          track.height = (
+            (trackInfo && trackInfo.defaultHeight)
+            || options.minHeight
+            || MIN_HORIZONTAL_HEIGHT
+          );
         }
       }));
 
@@ -44,12 +52,21 @@ const fillInMinWidths = (tracks) => {
     .forEach(verticalTracks => verticalTracks
       .forEach((track) => {
         const trackInfo = TRACKS_INFO_BY_TYPE[track.type];
+        const defaultOptions = (trackInfo && trackInfo.defaultOptions) || {};
 
-        if (
-          !('width' in track)
-          || (trackInfo && track.width < trackInfo.minWidth)
-        ) {
-          track.width = (trackInfo && trackInfo.minWidth) || MIN_VERTICAL_WIDTH;
+        const options = track.options ? { ...track.options, ...defaultOptions }
+          : defaultOptions;
+
+        if (!options.minWidth && track.width < options.minWidth) {
+          track.width = options.minWidth || MIN_VERTICAL_WIDTH;
+        }
+
+        if (!track.width) {
+          track.width = (
+            (trackInfo && trackInfo.defaultWidth)
+            || options.minWidth
+            || MIN_VERTICAL_WIDTH
+          );
         }
       }));
 

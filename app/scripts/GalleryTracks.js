@@ -33,7 +33,7 @@ class GalleryTracks extends React.Component {
         className="gallery-tracks"
         styleName="styles.gallery-tracks"
       >
-        {this.props.tracks.map((track, index) => (
+        {this.props.tracks && this.props.tracks.map((track, index) => (
           <div
             key={track.uid || index}
             onMouseLeave={this.mouseLeaveHandler.bind(this)}
@@ -95,8 +95,9 @@ class GalleryTracks extends React.Component {
               }}
               styleName="styles.gallery-invisible-track"
             />
-            {this.props.editable &&
-              <TrackControl
+            {this.props.editable
+              && (
+                <TrackControl
                 configMenuVisible={true}
                 imgStyleAdd={STYLES}
                 imgStyleClose={STYLES}
@@ -107,7 +108,8 @@ class GalleryTracks extends React.Component {
                 onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
                 onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
                 uid={track.uid || index}
-              />
+                />
+              )
             }
           </div>
         ))}

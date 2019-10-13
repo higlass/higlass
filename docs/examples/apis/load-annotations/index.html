@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HiGlass</title>
+  <style type="text/css">
+      .canvasjs-chart-credit {
+      display:none;
+  }
+  </style>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/hglib.css">
+  <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16.6/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+  <script src="http://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+  <p>
+    Annotation tracks (<code>2d-chromosome-annotations</code>,
+    <code>horizontal-1d-annotations</code>, and <code>vertical-1d-annotations</code>)
+    can be used to highlight regions of interest. In this example, the regions are read
+    from CSVs, and the viewconf is generated with that data.
+  </p>
+  <div
+    id="demo"
+    style="position: relative; height: 30rem;">
+  </div>
+</body>
+<script src='/hglib.js'></script>
+<script src='makeViewConf.js'></script>
+<script src='main.js'></script>
+<script>
+main();
+</script>
+</html>

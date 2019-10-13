@@ -18,7 +18,7 @@ const colorDomainToRgbaArray = (colorRange, noTansparent = false) => {
   const rgbaArray = range(fromX, -1, -1).map(d3Scale)
     .map((x) => {
       const r = rgb(x);
-      return [r.r, r.g, r.b, 255];
+      return [r.r, r.g, r.b, r.opacity * 255];
     });
 
   // add a transparent color at the end for missing values and, more

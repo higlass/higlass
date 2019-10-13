@@ -1,0 +1,99 @@
+@import './colors';
+@import './transitions';
+
+.top-right-handle,
+.bottom-right-handle {
+  border-right: black solid;
+  border-top: black solid;
+}
+
+.top-left-handle,
+.bottom-left-handle {
+  border-left: black solid;
+  border-top: black solid;
+}
+
+.top-draggable-handle,
+.bottom-draggable-handle,
+.left-draggable-handle,
+.right-draggable-handle {
+  position: absolute;
+  opacity: 0;
+  transition: transform $fast $ease,
+              opacity $fast $ease;
+}
+
+.draggable-div {
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+.top-draggable-handle-grabber,
+.bottom-draggable-handle-grabber {
+  width: 10px;
+  height: 4px;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+.top-draggable-handle-grabber {
+  margin: 4px 7px 4px 7px;
+}
+
+.bottom-draggable-handle-grabber {
+  margin: 4px 7px 4px 7px;
+}
+
+.left-draggable-handle-grabber,
+.right-draggable-handle-grabber {
+  width: 4px;
+  height: 10px;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+
+.left-draggable-handle-grabber {
+  margin: 7px 4px 7px 4px;
+}
+
+.right-draggable-handle-grabber {
+  margin: 7px 4px 7px 4px;
+}
+
+.draggable-div:hover .top-draggable-handle,
+.draggable-div:hover .bottom-draggable-handle,
+.draggable-div:hover .left-draggable-handle,
+.draggable-div:hover .right-draggable-handle {
+  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 0 3px 1px rgba(255, 255, 255, 0.75);
+  border-radius: 3px;
+}
+
+.top-draggable-handle:hover, .top-draggable-handle:active,
+.bottom-draggable-handle:hover, .bottom-draggable-handle:active,
+.left-draggable-handle:hover, .left-draggable-handle:active,
+.right-draggable-handle:hover, .right-draggable-handle:active {
+  opacity: 1 !important;
+  transform: scale(2);
+
+  .top-draggable-handle-grabber,
+  .bottom-draggable-handle-grabber,
+  .left-draggable-handle-grabber,
+  .right-draggable-handle-grabber {
+    box-shadow: 0 0 3px 1px $blue-lighter;
+    background: $blue-lighter;
+  }
+}
+
+.top-draggable-handle,
+.bottom-draggable-handle {
+  height: 12px;
+  cursor: row-resize;
+}
+
+.left-draggable-handle,
+.right-draggable-handle {
+  width: 12px;
+  cursor: col-resize;
+}

@@ -1,11 +1,10 @@
 export { default as chromInfo } from './chrom-info';
-export { default as domEvent } from './dom-event';
-export { default as pubSub } from './pub-sub';
-export { create as pubSubCreate } from './pub-sub';
+export { default as createDomEvent } from './dom-event';
+export { default as ElementResizeListener } from './element-resize-listener';
 export {
   default as tileProxy,
   requestsInFlight,
   setTileProxyAuthHeader,
+  getTileProxyAuthHeader,
   authHeader
 } from './tile-proxy';
-export { getDarkTheme, setDarkTheme } from './is-dark-theme';

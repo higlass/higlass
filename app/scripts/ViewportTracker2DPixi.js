@@ -4,8 +4,12 @@ import PixiTrack from './PixiTrack';
 
 
 export default class ViewportTracker2D extends PixiTrack {
-  constructor(scene, registerViewportChanged, removeViewportChanged) {
-    super(scene);
+  constructor(context, options) {
+    super(context, options);
+    const {
+      registerViewportChanged,
+      removeViewportChanged,
+    } = context;
 
     const uid = slugid.nice();
     this.uid = uid;
@@ -32,11 +36,6 @@ export default class ViewportTracker2D extends PixiTrack {
 
     // console.log('vpc:', this.uid);
     this.draw();
-  }
-
-  close() {
-    // remove the event handler that updates this viewport tracker
-    this.removeViewportChanged(uid);
   }
 
   draw() {

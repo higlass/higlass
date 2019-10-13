@@ -9,13 +9,19 @@ class MapboxTilesTrack extends OSMTilesTrack {
    * @param server: The server to pull tiles from.
    * @param tilesetUid: The data set to get the tiles from the server
    */
-  constructor(scene, options, animate, accessToken) {
-    // Force Mapbox and OpenStreetMaps copyright
-    options.name = `© Mapbox © OpenStreetMap${options.name ? `\n${options.name}` : ''}`;
-    super(scene, options, animate);
+  constructor(context, options) {
+    super(context, options);
 
+    // Force Mapbox and OpenStreetMaps copyright
     this.style = options.style;
-    this.accessToken = accessToken;
+
+    if (!this.options.accessToken) {
+      this.errorTextText = (
+        "No access token provided in the viewconf's track options "
+        + "('accessToken' option)."
+      );
+      this.drawError();
+    }
   }
 
   rerender(newOptions) {
@@ -29,19 +35,19 @@ class MapboxTilesTrack extends OSMTilesTrack {
     this.refreshTiles();
   }
 
+  /**
+   * Get the url used to fetch the tile data
+   */
   getTileUrl(tileZxy) {
-    /**
-         * Get the url used to fetch the tile data
-         */
-    let mapStyle = 'mapbox.streets';
+    const mapStyle = (this.options && this.options.style)
+      ? this.options.style
+      : 'streets-v10';
 
-    if (this.options && this.options.style) {
-      mapStyle = this.options.style;
-    }
+    const tileSize = (this.options && +this.options.tileSize)
+      ? +this.options.tileSize
+      : 256;
 
-    const src = `http://api.tiles.mapbox.com/v4/${mapStyle}/${tileZxy[0]}/${tileZxy[1]}/${tileZxy[2]}.png?access_token=${this.accessToken}`;
-
-    return src;
+    return `https://api.mapbox.com/styles/v1/mapbox/${mapStyle}/tiles/${tileSize}/${tileZxy[0]}/${tileZxy[1]}/${tileZxy[2]}?access_token=${this.options.accessToken}`;
   }
 }
 

@@ -1,0 +1,77 @@
+{
+  "editable": false,
+  "zoomFixed": false,
+  "views": [{
+    "initialXDomain": [1500000, 3000000],
+    "initialYDomain": [1500000, 3000000],
+    "tracks": {
+      "top": [{
+        "uid": "chroms",
+        "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+        "type": "horizontal-chromosome-labels"
+      }, {
+        "uid": "genes",
+        "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+        "server": "http://higlass.io/api/v1",
+        "type": "horizontal-gene-annotations"
+      }, {
+        "uid": "c1",
+        "type": "combined",
+        "height": 100,
+        "contents": [{
+          "server": "http://localhost:8001/api/v1",
+          "tilesetUid": "gm12878-chip-h3k27ac",
+          "uid": "max",
+          "type": "horizontal-line",
+          "height": 100,
+          "options": {
+            "aggregationMode": "max",
+            "lineStrokeColor": "red",
+            "valueScaleMin": 0,
+            "valueScaleMax": 100
+          }
+        }, {
+          "server": "http://localhost:8001/api/v1",
+          "tilesetUid": "gm12878-chip-h3k27ac",
+          "uid": "mean",
+          "type": "horizontal-line",
+          "height": 100,
+          "options": {
+            "aggregationMode": "mean",
+            "lineStrokeColor": "grey",
+            "valueScaleMin": 0,
+            "valueScaleMax": 100
+          }
+        }, {
+          "server": "http://localhost:8001/api/v1",
+          "tilesetUid": "gm12878-chip-h3k27ac",
+          "uid": "min",
+          "type": "horizontal-line",
+          "height": 100,
+          "options": {
+            "aggregationMode": "min",
+            "lineStrokeColor": "blue",
+            "valueScaleMin": 0,
+            "valueScaleMax": 100
+          }
+        }]
+      }, {
+        "server": "http://localhost:8001/api/v1",
+        "tilesetUid": "gm12878-chip-h3k27ac",
+        "uid": "std",
+        "type": "horizontal-line",
+        "height": 50,
+        "options": {
+          "aggregationMode": "std",
+          "lineStrokeColor": "orange"
+        }
+      }]
+    },
+    "layout": {
+      "w": 12,
+      "h": 12,
+      "x": 0,
+      "y": 0
+    }
+  }]
+}

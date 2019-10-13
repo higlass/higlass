@@ -1,20 +1,17 @@
-import { scaleLog, scaleLinear } from 'd3-scale';
 import { range } from 'd3-array';
-import {
-  json as d3Json,
-  text as d3Text,
-  request,
-} from 'd3-request';
 import slugid from 'slugid';
 
 import {
   workerGetTiles,
-  workerFetchTiles,
   workerSetPix,
-  tileResponseToData,
 } from '../worker';
 
-const MAX_FETCH_TILES = 20;
+import { trimTrailingSlash as tts } from '../utils';
+
+// Config
+import { TILE_FETCH_DEBOUNCE } from '../configs';
+
+const MAX_FETCH_TILES = 15;
 
 /*
 const str = document.currentScript.src
@@ -47,7 +44,8 @@ setPixPool.run(function(params, done) {
 const fetchTilesPool = new Pool(10);
 fetchTilesPool.run(function(params, done) {
   try {
-    worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds, params.authHeader, done);
+    worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds,
+    params.authHeader, done);
     // done.transfer({
     // pixData: pixData
     // }, [pixData.buffer]);
@@ -57,22 +55,15 @@ fetchTilesPool.run(function(params, done) {
 }, [workerPath]);
 */
 
-
-import pubSub from './pub-sub';
-
-import { trimTrailingSlash as tts } from '../utils';
-
-// Config
-import { TILE_FETCH_DEBOUNCE } from '../configs';
-
 const sessionId = slugid.nice();
 export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports
-export let authHeader = null;
+export let authHeader = null; // eslint-disable-line import/no-mutable-exports
 
-const debounce = (func, wait) => {
+const throttleAndDebounce = (func, interval, finalWait) => {
   let timeout;
   let bundledRequest = [];
   let requestMapper = {};
+  let blockedCalls = 0;
 
   const bundleRequests = (request) => {
     const requestId = requestMapper[request.id];
@@ -92,19 +83,32 @@ const debounce = (func, wait) => {
     requestMapper = {};
   };
 
-  const debounced = (request) => {
-    bundleRequests(request);
+  // In a normal situation we would just call `func(...args)` but since we
+  // modify the first argument and always trigger `reset()` afterwards I created
+  // this helper function to avoid code duplication. Think of this function
+  // as the actual function call that is being throttled and debounced.
+  const callFunc = (request, ...args) => {
+    func({
+      sessionId,
+      requests: bundledRequest,
+    }, ...args);
+    reset();
+  };
 
+  const debounced = (request, ...args) => {
     const later = () => {
-      func({
-        sessionId,
-        requests: bundledRequest,
-      });
-      reset();
+      // Since we throttle and debounce we should check whether there were
+      // actually multiple attempts to call this function after the most recent
+      // throttled call. If there were no more calls we don't have to call
+      // the function again.
+      if (blockedCalls > 0) {
+        callFunc(request, ...args);
+        blockedCalls = 0;
+      }
     };
 
     clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+    timeout = setTimeout(later, finalWait);
   };
 
   debounced.cancel = () => {
@@ -119,16 +123,36 @@ const debounce = (func, wait) => {
     });
   };
 
-  return debounced;
+  let wait = false;
+  const throttled = (request, ...args) => {
+    bundleRequests(request);
+
+    if (!wait) {
+      callFunc(request, ...args);
+      debounced(request, ...args);
+      wait = true;
+      blockedCalls = 0;
+      setTimeout(() => {
+        wait = false;
+      }, interval);
+    } else {
+      blockedCalls++;
+    }
+  };
+
+  return throttled;
 };
 
 export const setTileProxyAuthHeader = (newHeader) => {
-  authHeader = newHeader
-}
+  authHeader = newHeader;
+};
 
-export function fetchMultiRequestTiles(req) {
-  const sessionId = req.sessionId;
+export const getTileProxyAuthHeader = () => authHeader;
+
+// Fritz: is this function used anywhere?
+export function fetchMultiRequestTiles(req, pubSub) {
   const requests = req.requests;
+
   const fetchPromises = [];
 
   const requestsByServer = {};
@@ -158,16 +182,19 @@ export function fetchMultiRequestTiles(req) {
       const renderParams = theseTileIds.map(x => `d=${x}`).join('&');
       const outUrl = `${server}/tiles/?${renderParams}&s=${sessionId}`;
 
+      /* eslint-disable no-loop-func */
+      /* eslint-disable no-unused-vars */
       const p = new Promise(((resolve, reject) => {
         pubSub.publish('requestSent', outUrl);
-        const params = {}
+        const params = {};
 
         params.outUrl = outUrl;
         params.server = server;
         params.theseTileIds = theseTileIds;
         params.authHeader = authHeader;
 
-        workerGetTiles(params.outUrl, params.server, params.theseTileIds, params.authHeader, resolve);
+        workerGetTiles(params.outUrl, params.server, params.theseTileIds,
+          params.authHeader, resolve);
 
         /*
         fetchTilesPool.send(params)
@@ -198,7 +225,7 @@ export function fetchMultiRequestTiles(req) {
     // trigger the callback for every request
     for (const request of requests) {
       const reqDate = {};
-      const server = request.server;
+      const { server } = request;
 
       // pull together the data per request
       for (const id of request.ids) {
@@ -218,26 +245,15 @@ export function fetchMultiRequestTiles(req) {
  * @param server: A string with the server's url (e.g. "http://127.0.0.1")
  * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
  */
-export const fetchTilesDebounced = debounce(fetchMultiRequestTiles, TILE_FETCH_DEBOUNCE);
-
-/**
- * Retrieve a set of tiles from the server
- *
- * Plenty of room for optimization and caching here.
- *
- * @param server: A string with the server's url (e.g. "http://127.0.0.1")
- * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
- */
-export const fetchTiles = (tilesetServer, tilesetIds, done) =>
-  workerFetchTiles(tilesetServer, tilesetIds, this.sessionId, (results) => {
-    done(results);
-  });
+export const fetchTilesDebounced = throttleAndDebounce(
+  fetchMultiRequestTiles, TILE_FETCH_DEBOUNCE, TILE_FETCH_DEBOUNCE
+);
 
 /**
  * Calculate the zoom level from a list of available resolutions
  */
 export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
-  const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
+  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
 
   const trackWidth = scale.range()[1] - scale.range()[0];
 
@@ -269,20 +285,21 @@ export const calculateResolution = (tilesetInfo, zoomLevel) => {
   const resolution = maxWidth / ((2 ** zoomLevel) * binsPerDimension);
 
   return resolution;
-}
+};
 
 /**
  * Calculate the current zoom level.
  */
 export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   const rangeWidth = scale.range()[1] - scale.range()[0];
+
   const zoomScale = Math.max(
     (maxX - minX) / (scale.domain()[1] - scale.domain()[0]),
     1,
   );
 
   const viewResolution = 384;
-  //const viewResolution = 2048;
+  // const viewResolution = 2048;
 
   // fun fact: the number 384 is halfway between 256 and 512
   const addedZoom = Math.max(
@@ -294,10 +311,11 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   let binsPerTileCorrection = 0;
 
   if (binsPerTile) {
-    binsPerTileCorrection = Math.floor((Math.log(256) / Math.log(2) - (Math.log(binsPerTile) / Math.log(2))))
+    binsPerTileCorrection = Math.floor(((Math.log(256) / Math.log(2))
+      - (Math.log(binsPerTile) / Math.log(2))));
   }
 
-  zoomLevel = zoomLevel + binsPerTileCorrection;
+  zoomLevel += binsPerTileCorrection;
 
   return zoomLevel;
 };
@@ -310,12 +328,15 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
  * the given element.
  *
  * @param {object} tilesetInfo: The information about this tileset
- * @param {Number} maxDim: The maximum width of the dataset (only used for tilesets without resolutions)
+ * @param {Number} maxDim: The maximum width of the dataset (only used for
+ *        tilesets without resolutions)
  * @param {Number} dataStartPos: The position where the data begins
  * @param {int} zoomLevel: The current zoomLevel
- * @param {Number} position: The position (in absolute coordinates) to caculate the tile and position in tile for
+ * @param {Number} position: The position (in absolute coordinates) to caculate
+ *                 the tile and position in tile for
  */
-export const calculateTileAndPosInTile = function(tilesetInfo, maxDim, dataStartPos, zoomLevel, position) {
+export function calculateTileAndPosInTile(tilesetInfo, maxDim, dataStartPos,
+  zoomLevel, position) {
   let tileWidth = null;
   const PIXELS_PER_TILE = tilesetInfo.bins_per_dimension || 256;
 
@@ -326,7 +347,7 @@ export const calculateTileAndPosInTile = function(tilesetInfo, maxDim, dataStart
   }
 
   const tilePos = Math.floor((position - dataStartPos) / tileWidth);
-  const posInTile = Math.floor(PIXELS_PER_TILE * (position - tilePos * tileWidth) / tileWidth);
+  const posInTile = Math.floor(PIXELS_PER_TILE * (position - (tilePos * tileWidth)) / tileWidth);
 
   return [tilePos, posInTile];
 }
@@ -358,8 +379,15 @@ export const calculateTiles = (
   // be calculated according to cumulative width
 
   const tileWidth = maxDim / (2 ** zoomLevelFinal);
+  // console.log('maxDim:', maxDim);
 
   const epsilon = 0.0000001;
+
+  /*
+  console.log('minX:', minX, 'zoomLevel:', zoomLevel);
+  console.log('domain:', scale.domain(), scale.domain()[0] - minX,
+  ((scale.domain()[0] - minX) / tileWidth))
+  */
 
   return range(
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
@@ -372,10 +400,10 @@ export const calculateTiles = (
 
 export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
   if (tilesetInfo.resolutions) {
-    const sortedResolutions = tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
+    const sortedResolutions = tilesetInfo.resolutions.map(x => +x).sort((a, b) => b - a);
     return sortedResolutions[zoomLevel] * binsPerTile;
   }
-  return tilesetInfo.max_width / (2 ** zoomLevel)
+  return tilesetInfo.max_width / (2 ** zoomLevel);
 };
 
 /**
@@ -394,14 +422,18 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
   const MAX_TILES = 20;
   // console.log('PIXELS_PER_TILE:', PIXELS_PER_TILE);
 
-  if (!maxX)
-    maxX = Number.MAX_VALUE;
+  if (!maxX) {
+    maxX = Number.MAX_VALUE; // eslint-disable-line no-param-reassign
+  }
 
+  const lowerBound = Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth));
+  const upperBound = Math.ceil(Math.min(
+    maxX,
+    ((scale.domain()[1] - minX) - epsilon)
+  ) / tileWidth);
   let tileRange = range(
-    Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
-    Math.ceil(Math.min(
-      maxX,
-      ((scale.domain()[1] - minX) - epsilon)) / tileWidth),
+    lowerBound,
+    upperBound,
   );
 
   if (tileRange.length > MAX_TILES) {
@@ -422,27 +454,29 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
  * @param {func} doneCb: A callback that gets called when the data is retrieved
  * @param {func} errorCb: A callback that gets called when there is an error
  */
-export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
-  const url =
-    `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
-    pubSub.publish('requestSent', url);
-    json(url, (error, data) => {
-      pubSub.publish('requestReceived', url);
-      if (error) {
-        // console.log('error:', error);
-        // don't do anything
-        // no tileset info just means we can't do anything with this file...
-        if (errorCb) {
-          errorCb(`Error retrieving tilesetInfo from: ${server}`);
-        }  else {
-          console.warn("Error retrieving: ", url);
-        }
+
+export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
+  const url = `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
+  pubSub.publish('requestSent', url);
+  // TODO: Is this used?
+  json(url, (error, data) => { // eslint-disable-line
+    pubSub.publish('requestReceived', url);
+    if (error) {
+      // console.log('error:', error);
+      // don't do anything
+      // no tileset info just means we can't do anything with this file...
+      if (errorCb) {
+        errorCb(`Error retrieving tilesetInfo from: ${server}`);
       } else {
-        // console.log('got data', data);
-        doneCb(data);
+        console.warn('Error retrieving: ', url);
       }
-    });
+    } else {
+      // console.log('got data', data);
+      doneCb(data);
+    }
+  }, pubSub);
 };
+
 
 /**
  * Render 2D tile data. Convert the raw values to an array of
@@ -457,113 +491,167 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
  * @param valueScaleDomain: The domain of the scale (the range is always [254,0])
  * @param colorScale: a 255 x 4 rgba array used as a color scale
  * @param synchronous: Render this tile synchronously or pass it on to the
- * @param ignoreUpperRight: If this is a tile along the diagonal and there will be mirrored tiles present
- *    ignore the upper right values
+ * @param ignoreUpperRight: If this is a tile along the diagonal and there will
+ * be mirrored tiles present ignore the upper right values
  * threadpool
  */
 export const tileDataToPixData = (
-  tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished,
-synchronous=false, ignoreUpperRight) => {
-  const tileData = tile.tileData;
+  tile,
+  valueScaleType,
+  valueScaleDomain,
+  pseudocount,
+  colorScale,
+  finished,
+  ignoreUpperRight,
+  ignoreLowerLeft,
+) => {
+  const { tileData } = tile;
 
-  if  (!tileData.dense) {
+  if (!tileData.dense) {
     // if we didn't get any data from the server, don't do anything
     finished(null);
     return;
   }
 
-  if (tile.mirrored && 
-    tile.tileData.tilePos.length > 0 &&
-    tile.tileData.tilePos[0] == tile.tileData.tilePos[1]) {
+  if (
+    tile.mirrored
+    // Data is already copied over
+    && !tile.isMirrored
+    && tile.tileData.tilePos.length > 0
+    && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
+  ) {
+    // Copy the data before mutating it in case the same data is used elsewhere.
+    // During throttling/debouncing tile requests we also merge the requests so
+    // the very same tile data might be used by different tracks.
+    tile.tileData.dense = tile.tileData.dense.slice();
 
     // if a center tile is mirrored, we'll just add its transpose
     const tileWidth = Math.floor(Math.sqrt(tile.tileData.dense.length));
-    for (let i = 0; i < tileWidth; i++) {
-      for (let j = 0; j < tileWidth; j++) {
-        tile.tileData.dense[i * tileWidth + j] = tile.tileData.dense[j * tileWidth + i];
+    for (let row = 0; row < tileWidth; row++) {
+      for (let col = row + 1; col < tileWidth; col++) {
+        tile.tileData.dense[(row * tileWidth) + col] = tile.tileData.dense[(col * tileWidth) + row];
       }
     }
+    if (ignoreLowerLeft) {
+      for (let row = 0; row < tileWidth; row++) {
+        for (let col = 0; col < row; col++) {
+          tile.tileData.dense[(row * tileWidth) + col] = NaN;
+        }
+      }
+    }
+    tile.isMirrored = true;
   }
 
+  // console.log('tile', tile);
   // clone the tileData so that the original array doesn't get neutered
   // when being passed to the worker script
-  //const newTileData = tileData.dense;
+  // const newTileData = tileData.dense;
 
   // comment this and uncomment the code afterwards to enable threading
+  const pixData = workerSetPix(
+    tileData.dense.length,
+    tileData.dense,
+    valueScaleType,
+    valueScaleDomain,
+    pseudocount,
+    colorScale,
+    ignoreUpperRight,
+    ignoreLowerLeft
+  );
 
-  if (true) {
-    const pixData = workerSetPix(
-      tileData.dense.length,
-      tileData.dense,
-      valueScaleType,
-      valueScaleDomain,
-      pseudocount,
-      colorScale,
-      ignoreUpperRight
-    );
+  finished({ pixData });
 
-    finished({pixData});
-  } else {
-    const newTileData = new Float32Array(tileData.dense.length);
-    newTileData.set(tileData.dense);
-    /*
-    var params = {
-      size: newTileData.length,
-      data: newTileData,
-      valueScaleType: valueScaleType,
-      valueScaleDomain: valueScaleDomain,
-      pseudocount: pseudocount,
-      colorScale: colorScale
-    };
+  // const newTileData = new Float32Array(tileData.dense.length);
+  // newTileData.set(tileData.dense);
+  /*
+  var params = {
+    size: newTileData.length,
+    data: newTileData,
+    valueScaleType: valueScaleType,
+    valueScaleDomain: valueScaleDomain,
+    pseudocount: pseudocount,
+    colorScale: colorScale
+  };
 
-    setPixPool.send(params, [ newTileData.buffer ])
-      .promise()
-      .then(returned => {
-        finished(returned);
-      })
-      .catch(reason => {
-        finished(null);
-      });
-    ;
-    */
-  }
+  setPixPool.send(params, [ newTileData.buffer ])
+    .promise()
+    .then(returned => {
+      finished(returned);
+    })
+    .catch(reason => {
+      finished(null);
+    });
+  ;
+  */
 };
 
-function text(url, callback) {
-  /**
-   * Send a JSON request mark it so that we can tell how many are in flight
-   */
+function fetchEither(url, callback, textOrJson, pubSub) {
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
-  d3Text(url, (error, done) => {
-    callback(error, done);
-    pubSub.publish('requestReceived', url);
-    requestsInFlight -= 1;
-  });
-}
+  let mime;
+  if (textOrJson === 'text') {
+    mime = 'text/plain';
+  } else if (textOrJson === 'json') {
+    mime = 'application/json';
+  } else {
+    throw new Error(`fetch either "text" or "json", not "${textOrJson}"`);
+  }
+  const headers = { 'Content-Type': mime };
+  if (authHeader) {
+    headers.Authorization = authHeader;
+  }
+  return fetch(url, { credentials: 'same-origin', headers })
+    .then((rep) => {
+      if (!rep.ok) {
+        throw Error(rep.statusText);
+      }
 
-function json(url, callback) {
-  /**
-   * Send a JSON request mark it so that we can tell how many are in flight
-   */
-  requestsInFlight += 1;
-  pubSub.publish('requestSent', url);
-
-  const r = request(url)
-    .header('Content-Type', 'application/json')
-
-  if (authHeader)
-    r.header('Authorization', `${authHeader}`)
-
-    r.send('GET', (error, data) => {
+      return rep[textOrJson]();
+    })
+    .then((content) => {
+      callback(undefined, content);
+      return content;
+    })
+    .catch((error) => {
+      console.error(`Could not fetch ${url}`, error);
+      callback(error, undefined);
+      return error;
+    })
+    .finally(() => {
       pubSub.publish('requestReceived', url);
-      const j = data && JSON.parse(data.response);
-      callback(error, j);
       requestsInFlight -= 1;
     });
 }
 
+/**
+ * Send a text request and mark it so that we can tell how many are in flight
+ *
+ * @param url: URL to fetch
+ * @param callback: Callback to execute with content from fetch
+ */
+function text(url, callback, pubSub) {
+  return fetchEither(url, callback, 'text', pubSub);
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Send a JSON request and mark it so that we can tell how many are in flight
+ *
+ * @param url: URL to fetch
+ * @param callback: Callback to execute with content from fetch
+ */
+async function json(url, callback, pubSub) {
+  // Fritz: What is going on here? Can someone explain?
+  if (url.indexOf('hg19') >= 0) {
+    await sleep(1);
+  }
+  // console.log('url:', url);
+  return fetchEither(url, callback, 'json', pubSub);
+}
 
 const api = {
   calculateResolution,
@@ -573,7 +661,6 @@ const api = {
   calculateTileWidth,
   calculateZoomLevel,
   calculateZoomLevelFromResolutions,
-  fetchTiles,
   fetchTilesDebounced,
   json,
   text,

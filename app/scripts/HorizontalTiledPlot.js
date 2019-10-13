@@ -41,12 +41,26 @@ class HorizontalTiledPlot extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (this.rangeSelectionTriggered) {
       this.rangeSelectionTriggered = false;
+      if (
+        this.rangeSelectionTriggeredEnd
+        && this.props.rangeSelection !== nextProps.rangeSelection
+      ) {
+        this.moveBrush(
+          nextProps.rangeSelection[0]
+            ? nextProps.rangeSelection[0]
+            : null,
+          true
+        );
+      }
+      this.rangeSelectionTriggeredEnd = false;
       return this.state !== nextState;
-    } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
+    }
+    if (this.props.rangeSelection !== nextProps.rangeSelection) {
       this.moveBrush(
         nextProps.rangeSelection[0]
           ? nextProps.rangeSelection[0]
           : null,
+        nextProps.rangeSelectionEnd,
       );
       return this.state !== nextState;
     }
@@ -91,9 +105,9 @@ class HorizontalTiledPlot extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !this.sourceEvent ||
-      !this.props.onRangeSelection ||
-      rangeSelectionMoved
+      !this.sourceEvent
+      || !this.props.onRangeSelection
+      || rangeSelectionMoved
     ) return;
 
     this.rangeSelectionTriggered = true;
@@ -107,13 +121,31 @@ class HorizontalTiledPlot extends React.Component {
   }
 
   brushedEnded() {
-    if (!event.selection && this.props.is1dRangeSelection) {
+    if (!this.props.is1dRangeSelection) return;
+
+    const rangeSelectionMovedEnd = this.rangeSelectionMovedEnd;
+    this.rangeSelectionMovedEnd = false;
+
+    // Brush end event with a selection
+    if (
+      event.selection
+      && event.sourceEvent
+      && this.props.onRangeSelection
+      && !rangeSelectionMovedEnd
+    ) {
       this.rangeSelectionTriggered = true;
-      this.props.onRangeSelectionEnd();
+      this.rangeSelectionTriggeredEnd = true;
+      this.props.onRangeSelectionEnd(event.selection);
+    }
+
+    // Brush end event with no selection, i.e., the selection is reset
+    if (!event.selection) {
+      this.rangeSelectionTriggered = true;
+      this.props.onRangeSelectionReset();
     }
   }
 
-  moveBrush(rangeSelection) {
+  moveBrush(rangeSelection, animate = false) {
     if (!this.brushEl) { return; }
 
     const relRange = rangeSelection ? [
@@ -122,7 +154,12 @@ class HorizontalTiledPlot extends React.Component {
     ] : null;
 
     this.rangeSelectionMoved = true;
-    this.brushEl.call(this.brushBehavior.move, relRange);
+    this.rangeSelectionMovedEnd = true;
+    if (animate) {
+      this.brushEl.transition().call(this.brushBehavior.move, relRange);
+    } else {
+      this.brushEl.call(this.brushBehavior.move, relRange);
+    }
   }
 
   removeBrush() {
@@ -137,7 +174,7 @@ class HorizontalTiledPlot extends React.Component {
       this.brushElAddedBefore.on('.brush', null);
       this.brushElAddedBefore = undefined;
 
-      this.props.onRangeSelectionEnd();
+      this.props.onRangeSelectionReset();
     }
   }
 
@@ -150,13 +187,16 @@ class HorizontalTiledPlot extends React.Component {
       .map(track => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
 
-    const rangeSelectorClass = this.props.isRangeSelectionActive ?
-      'stylesTrack.track-range-selection-active' :
-      'stylesTrack.track-range-selection';
+    const rangeSelectorClass = this.props.isRangeSelectionActive
+      ? 'stylesTrack.track-range-selection-active'
+      : 'stylesTrack.track-range-selection';
 
     return (
-      <div styleName="styles.horizontal-tiled-plot">
-        {isBrushable &&
+      <div
+        className="horizontal-tiled-plot"
+        styleName="styles.horizontal-tiled-plot"
+      >
+        {isBrushable && (
           <svg
             ref={(el) => { this.brushEl = select(el); }}
             style={{
@@ -166,7 +206,7 @@ class HorizontalTiledPlot extends React.Component {
             styleName={rangeSelectorClass}
             xmlns="http://www.w3.org/2000/svg"
           />
-        }
+        )}
         <ListWrapper
           className={`${stylesPlot.list} ${stylesPlot.stylizedList}`}
           component={SortableList}
@@ -213,8 +253,10 @@ HorizontalTiledPlot.propTypes = {
   onConfigTrackMenuOpened: PropTypes.func,
   onRangeSelection: PropTypes.func,
   onRangeSelectionEnd: PropTypes.func,
+  onRangeSelectionReset: PropTypes.func,
   onRangeSelectionStart: PropTypes.func,
   rangeSelection: PropTypes.array,
+  rangeSelectionEnd: PropTypes.bool,
   referenceAncestor: PropTypes.func,
   resizeHandles: PropTypes.object,
   scale: PropTypes.func,

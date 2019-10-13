@@ -10,7 +10,8 @@ class ListWrapper extends React.Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       items: nextProps.items,
     });
@@ -64,7 +65,7 @@ class ListWrapper extends React.Component {
       <Component
         {...this.props}
         {...props}
-        ref={element => this.ref = element}
+        ref={(element) => { this.ref = element; }}
       />
     );
   }

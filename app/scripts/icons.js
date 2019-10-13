@@ -77,6 +77,49 @@ export const SELECT = {
   paths: ['M2 14h2v1H1v-3h1v2zm8 1H6v-1h4v1zm5 0h-3v-1h2v-2h1v3zm0-5h-1V6h1v4zM2 10H1V6h1v4zm13-6h-1V2h-2V1h3v3zM4 2H2v2H1V1h3v1zm6 0H6V1h4.03L10 2z'],
 };
 
+export const CHECK_SQUARE_O = {
+  id: 'check_square_o',
+  viewBox: '0 0 1792 1792',
+  paths: ['M1472 930v318q0 119-84.5 203.5t-203.5 84.5h-832q-119 0-203.5-84.5t-84.5-203.5v-832q0-119 84.5-203.5t203.5-84.5h832q63 0 117 25 15 7 18 23 3 17-9 29l-49 49q-10 10-23 10-3 0-9-2-23-6-45-6h-832q-66 0-113 47t-47 113v832q0 66 47 113t113 47h832q66 0 113-47t47-113v-254q0-13 9-22l64-64q10-10 23-10 6 0 12 3 20 8 20 29zm231-489l-814 814q-24 24-57 24t-57-24l-430-430q-24-24-24-57t24-57l110-110q24-24 57-24t57 24l263 263 647-647q24-24 57-24t57 24l110 110q24 24 24 57t-24 57z'],
+};
+
+export const SQUARE_O = {
+  id: 'square_o',
+  viewBox: '0 0 1792 1792',
+  paths: ['M1312 256h-832q-66 0-113 47t-47 113v832q0 66 47 113t113 47h832q66 0 113-47t47-113v-832q0-66-47-113t-113-47zm288 160v832q0 119-84.5 203.5t-203.5 84.5h-832q-119 0-203.5-84.5t-84.5-203.5v-832q0-119 84.5-203.5t203.5-84.5h832q119 0 203.5 84.5t84.5 203.5z'],
+};
+
+export const FILE_O = {
+  id: 'file_o',
+  viewBox: '0 0 1792 1792',
+  paths: ['M1596 380q28 28 48 76t20 88v1152q0 40-28 68t-68 28h-1344q-40 0-68-28t-28-68v-1600q0-40 28-68t68-28h896q40 0 88 20t76 48zm-444-244v376h376q-10-29-22-41l-313-313q-12-12-41-22zm384 1528v-1024h-416q-40 0-68-28t-28-68v-416h-768v1536h1280z'],
+};
+
+export const CHEVRON_RIGHT = {
+  id: 'chevron_right',
+  viewBox: '0 0 1792 1792',
+  paths: ['M1363 877l-742 742q-19 19-45 19t-45-19l-166-166q-19-19-19-45t19-45l531-531-531-531q-19-19-19-45t19-45l166-166q19-19 45-19t45 19l742 742q19 19 19 45t-19 45z'],
+};
+
+export const CHEVRON_DOWN = {
+  id: 'chevron_down',
+  viewBox: '0 0 1792 1792',
+  paths: ['M1683 808l-742 741q-19 19-45 19t-45-19l-742-741q-19-19-19-45.5t19-45.5l166-165q19-19 45-19t45 19l531 531 531-531q19-19 45-19t45 19l166 165q19 19 19 45.5t-19 45.5z'],
+};
+
+export const FOLDER_O = {
+  id: 'folder_o',
+  viewBox: '0 0 1792 1792',
+  paths: ['M1600 1312v-704q0-40-28-68t-68-28h-704q-40 0-68-28t-28-68v-64q0-40-28-68t-68-28h-320q-40 0-68 28t-28 68v960q0 40 28 68t68 28h1216q40 0 68-28t28-68zm128-704v704q0 92-66 158t-158 66h-1216q-92 0-158-66t-66-158v-960q0-92 66-158t158-66h320q92 0 158 66t66 158v32h672q92 0 158 66t66 158z'],
+};
+
+export const FOLDER_OPEN_O = {
+  id: 'folder_open_o',
+  viewBox: '0 0 1792 1792',
+  paths: ['M1845 931q0-35-53-35h-1088q-40 0-85.5 21.5t-71.5 52.5l-294 363q-18 24-18 40 0 35 53 35h1088q40 0 86-22t71-53l294-363q18-22 18-39zm-1141-163h768v-160q0-40-28-68t-68-28h-576q-40 0-68-28t-28-68v-64q0-40-28-68t-68-28h-320q-40 0-68 28t-28 68v853l256-315q44-53 116-87.5t140-34.5zm1269 163q0 62-46 120l-295 363q-43 53-116 87.5t-140 34.5h-1088q-92 0-158-66t-66-158v-960q0-92 66-158t158-66h320q92 0 158 66t66 158v32h544q92 0 158 66t66 158v160h192q54 0 99 24.5t67 70.5q15 32 15 68z'],
+};
+
+
 export const all = [
   COG,
   CROSS,
@@ -87,12 +130,31 @@ export const all = [
   PLUS,
   CONTENT_COPY,
   SELECT,
+  CHECK_SQUARE_O,
+  SQUARE_O,
+  FILE_O,
+  FOLDER_O,
+  FOLDER_OPEN_O,
+  CHEVRON_RIGHT,
+  CHEVRON_DOWN,
 ];
 
 const parser = new DOMParser();
 
 const svgGeoMapStr = '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="1.5"><path d="M4 2.1L.5 3.5v12l5-2 5 2 5-2v-12l-5 2-3.17-1.268M10.5 3.5v12" fill="none" stroke="currentColor"/><path d="M5.5 13.5v-7" fill="none" stroke="currentColor" stroke-width=".9969299999999999"/><path d="M5.494 0c-1.803 0-3.26 1.496-3.26 3.35 0 .427.124.97.264 1.343L5.5 11l3.003-6.306c.142-.375.263-.916.263-1.342C8.766 1.496 7.3 0 5.494 0zM5.5 4.64c-.76 0-1.375-.616-1.375-1.374 0-.76.616-1.376 1.375-1.376.76 0 1.374.616 1.374 1.376 0 .758-.614 1.375-1.374 1.375z" fill="currentColor"/></svg>';
 export const svgGeoMapIcon = parser.parseFromString(svgGeoMapStr, 'text/xml').documentElement;
+
+const horizontal1dHeatmap = `
+<svg width="20px" height="20px" viewBox="0 0 20 20">
+  <rect x="0" y="3" width="4" height="14" fill="#637993"/>
+  <rect x="4" y="3" width="2" height="14" fill="#c7d1de"/>
+  <rect x="6" y="3" width="5" height="14" fill="#3c5068"/>
+  <rect x="11" y="3" width="3" height="14" fill="#92a3ba"/>
+  <rect x="14" y="3" width="2" height="14" fill="#000000"/>
+  <rect x="16" y="3" width="4" height="14" fill="#637993"/>
+</svg>
+`;
+export const svgHorizontal1dHeatmap = parser.parseFromString(horizontal1dHeatmap, 'text/xml').documentElement;
 
 const horizontalLineStr = `
 <svg width="20px" height="20px" viewBox="0 0 135 85" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
