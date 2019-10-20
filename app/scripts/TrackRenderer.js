@@ -863,7 +863,6 @@ class TrackRenderer extends React.Component {
     } // we need a pixi stage to start rendering
     // the parent component where it lives probably
     // hasn't been mounted yet
-
     for (let i = 0; i < newTrackDefinitions.length; i++) {
       const newTrackDef = newTrackDefinitions[i];
       const newTrackObj = this.createTrackObject(newTrackDef.track);
@@ -1265,8 +1264,10 @@ class TrackRenderer extends React.Component {
 
     for (const uid in this.trackDefObjects) {
       const track = this.trackDefObjects[uid].trackObject;
+      const trackDef = this.trackDefObjects[uid].trackDef;
+      const orientation = TRACKS_INFO_BY_TYPE[trackDef.track.type].orientation;
 
-      if (this.trackDefObjects[uid].trackDef.track.position === 'whole') {
+      if (orientation === 'whole') {
         // whole tracks need different scales which go beyond the ends of
         // center track and encompass the whole view
 
