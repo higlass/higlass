@@ -5,6 +5,10 @@
 
 _[Detailed changes since v1.6.11](https://github.com/higlass/higlass/compare/v1.6.11...develop)_
 
+## v1.6.12
+
+- Fixed horizontal rule bug (from Slack)
+
 ## v1.6.11
 
 - Overlay track bug fixes

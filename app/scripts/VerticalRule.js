@@ -20,7 +20,8 @@ export const VerticalRuleMixin = Mixin(superclass => class extends superclass {
     const dashLength = 5;
     const dashGap = 3;
 
-    // console.log('this._yScale.range()', this._yScale.range());
+    // console.log('this.position', this.position);
+    // console.log('this._xScale.range()', this._xScale.range());
 
     while (pos < this.dimensions[1]) {
       graphics.moveTo(this._xScale(this.xPosition), pos);
