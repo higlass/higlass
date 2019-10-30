@@ -23,7 +23,6 @@ export const HorizontalRuleMixin = Mixin(superclass => class extends superclass 
     const dashLength = 5;
     const dashGap = 3;
 
-    // console.log('this._yScale.range()', this._yScale.range());
     while (pos < this.dimensions[0]) {
       graphics.moveTo(pos, this._yScale(this.yPosition));
       graphics.lineTo(pos + dashLength, this._yScale(this.yPosition));
