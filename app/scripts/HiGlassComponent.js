@@ -2480,6 +2480,11 @@ class HiGlassComponent extends React.Component {
     const rowHeight = this.state.rowHeight + MARGIN_HEIGHT;
 
     if (this.props.options.scrollable) {
+      // Since the scroll mode is active we have to determine the height of the
+      // layout based in the base container, i.e., topDiv, instead of
+      // `totalTrackHeight`. Normally `totalTrackHeight` and the height of the
+      // topDiv are the same but when the scroll is active `topDiv` can be
+      // smaller or larger than `totalTrackHeight`.
       view.layout.h = Math.ceil(
         this.topDiv.parentNode.getBoundingClientRect().height / rowHeight
       );
