@@ -1,3 +1,7 @@
+## v1.6.13
+
+- Properly display "Loading" while loading tileset info
+
 ## v1.6.12
 
 - Rename React lifecycle methods according to their recommendations
