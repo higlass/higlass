@@ -2486,7 +2486,10 @@ class HiGlassComponent extends React.Component {
       // topDiv are the same but when the scroll is active `topDiv` can be
       // smaller or larger than `totalTrackHeight`.
       view.layout.h = Math.ceil(
-        this.topDiv.parentNode.getBoundingClientRect().height / rowHeight
+        Math.min(
+          this.topDiv.parentNode.getBoundingClientRect().height,
+          totalTrackHeight
+        ) / rowHeight
       );
     } else if (!this.props.options.bounded) {
       view.layout.h = Math.ceil(totalTrackHeight / rowHeight);
