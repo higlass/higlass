@@ -8,9 +8,7 @@
 
 <style type="text/css">
 #container {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
+  position: relative;
   width: 600px;
   height: 400px;
   background: #eee;
@@ -31,6 +29,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
 </head>
 <body>
+  <label>Scroll the container <input id="scrollable" type="checkbox" checked="checked"></label>
   <div id="container">
     <div id="demo"></div>
   </div>
@@ -42,7 +41,7 @@ const viewConfig = {
   zoomFixed: true,
   views: [
     {
-      layout: { w: 12, h, x: 0, y: 0 * h, i: 'a', moved: false, static: false },
+      layout: { w: 12, h, x: 0, y: 0 * h },
       uid: 'a',
       initialXDomain: [0, 2547598956],
       tracks: {
@@ -118,7 +117,7 @@ const viewConfig = {
       },
     },
     {
-      layout: { w: 12, h, x: 0, y: 1 * h, i: 'b', moved: false, static: false },
+      layout: { w: 12, h, x: 0, y: 1 * h },
       uid: 'b',
       initialXDomain: [0, 2547598956],
       tracks: {
@@ -194,7 +193,7 @@ const viewConfig = {
       },
     },
     {
-      layout: { w: 12, h, x: 0, y: 2 * h, i: 'c', moved: false, static: false },
+      layout: { w: 12, h, x: 0, y: 2 * h },
       uid: 'c',
       initialXDomain: [0, 2547598956],
       tracks: {
@@ -270,7 +269,7 @@ const viewConfig = {
       },
     },
     {
-      layout: { w: 12, h, x: 0, y: 3 * h, i: 'd', moved: false, static: false },
+      layout: { w: 12, h, x: 0, y: 3 * h },
       uid: 'd',
       initialXDomain: [0, 2547598956],
       tracks: {
@@ -346,7 +345,7 @@ const viewConfig = {
       },
     },
     {
-      layout: { w: 12, h, x: 0, y: 4 * h, i: 'e', moved: false, static: false },
+      layout: { w: 12, h, x: 0, y: 4 * h },
       uid: 'e',
       initialXDomain: [0, 2547598956],
       tracks: {
@@ -422,7 +421,7 @@ const viewConfig = {
       },
     },
     {
-      layout: { w: 12, h, x: 0, y: 5 * h, i: 'f', moved: false, static: false },
+      layout: { w: 12, h, x: 0, y: 5 * h },
       uid: 'f',
       initialXDomain: [0, 2547598956],
       tracks: {
@@ -498,7 +497,7 @@ const viewConfig = {
       },
     },
     {
-      layout: { w: 12, h, x: 0, y: 6 * h, i: 'g', moved: false, static: false },
+      layout: { w: 12, h, x: 0, y: 6 * h },
       uid: 'g',
       initialXDomain: [0, 2547598956],
       tracks: {
@@ -574,7 +573,7 @@ const viewConfig = {
       },
     },
     {
-      layout: { w: 12, h, x: 0, y: 7 * h, i: 'h', moved: false, static: false },
+      layout: { w: 12, h, x: 0, y: 7 * h },
       uid: 'h',
       initialXDomain: [0, 2547598956],
       tracks: {
@@ -650,7 +649,7 @@ const viewConfig = {
       },
     },
     {
-      layout: { w: 12, h, x: 0, y: 8 * h, i: 'i', moved: false, static: false },
+      layout: { w: 12, h, x: 0, y: 8 * h },
       uid: 'i',
       initialXDomain: [0, 2547598956],
       tracks: {
@@ -726,7 +725,7 @@ const viewConfig = {
       },
     },
     {
-      layout: { w: 12, h, x: 0, y: 9 * h, i: 'j', moved: false, static: false },
+      layout: { w: 12, h, x: 0, y: 9 * h },
       uid: 'j',
       initialXDomain: [0, 2547598956],
       tracks: {
@@ -802,7 +801,7 @@ const viewConfig = {
       },
     },
     {
-      layout: { w: 12, h, x: 0, y: 10 * h, i: 'k', moved: false, static: false },
+      layout: { w: 12, h, x: 0, y: 10 * h },
       uid: 'k',
       initialXDomain: [0, 2547598956],
       tracks: {
@@ -878,7 +877,7 @@ const viewConfig = {
       },
     },
     {
-      layout: { w: 12, h, x: 0, y: 11 * h, i: 'l', moved: false, static: false },
+      layout: { w: 12, h, x: 0, y: 11 * h },
       uid: 'l',
       initialXDomain: [0, 2547598956],
       tracks: {
@@ -967,5 +966,10 @@ const hgApi = hglib.viewer(
     scrollable: true,
   },
 );
+
+document.getElementById('scrollable').addEventListener('change', () => {
+  console.log('Scrolling: ', document.getElementById('scrollable').checked);
+  hgApi.option('scrollable', document.getElementById('scrollable').checked);
+});
 </script>
 </html>
