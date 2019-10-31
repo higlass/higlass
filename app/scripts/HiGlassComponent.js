@@ -3755,9 +3755,9 @@ class HiGlassComponent extends React.Component {
 
   }
 
-  onScrollHandler(e) {
-    this.pixiStage.y = -e.target.scrollTop;
-    this.pubSub.publish('app.scroll', e.target.scrollTop);
+  onScrollHandler() {
+    this.pixiStage.y = -this.scrollContainer.scrollTop;
+    this.pubSub.publish('app.scroll', this.scrollContainer.scrollTop);
     this.animate();
   }
 
@@ -4156,7 +4156,6 @@ class HiGlassComponent extends React.Component {
         className="higlass"
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
-        onScroll={this.onScrollHandlerBound}
         style={this.props.options.scrollable ? scrollStyles : {}}
         styleName={styleNames}
       >
@@ -4170,6 +4169,9 @@ class HiGlassComponent extends React.Component {
                 styleName="styles.higlass-canvas"
               />
               <div
+                ref={(c) => { this.scrollContainer = c; }}
+                className="higlass-scroll-container"
+                onScroll={this.onScrollHandlerBound}
                 style={this.props.options.scrollable
                   ? {
                     ...scrollStyles,
@@ -4180,25 +4182,26 @@ class HiGlassComponent extends React.Component {
               >
                 <div
                   ref={(c) => { this.divDrawingSurface = c; }}
+                  className="higlass-drawing-surface"
                   styleName="styles.higlass-drawing-surface"
                 >
                   {gridLayout}
                 </div>
+                <svg
+                  ref={(c) => { this.svgElement = c; }}
+                  style={{
+                    // inline the styles so they aren't overriden by other css
+                    // on the web page
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    left: 0,
+                    top: 0,
+                    pointerEvents: 'none',
+                  }}
+                  styleName="styles.higlass-svg"
+                />
               </div>
-              <svg
-                ref={(c) => { this.svgElement = c; }}
-                style={{
-                  // inline the styles so they aren't overriden by other css
-                  // on the web page
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  left: 0,
-                  top: 0,
-                  pointerEvents: 'none',
-                }}
-                styleName="styles.higlass-svg"
-              />
             </ThemeProvider>
           </ModalProvider>
         </PubSubProvider>
