@@ -335,10 +335,12 @@ describe('API Tests', () => {
         const trackRenderer = document.querySelector('.track-renderer-events');
         trackRenderer.scrollTop = 20;
 
-        expect(trackRenderer.scrollTop).toEqual(20);
-        expect(hgc.scrollTop).toEqual(20);
-        expect(hgc.pixiStage.y).toEqual(-20);
-        done();
+        setTimeout(() => {
+          expect(trackRenderer.scrollTop).toEqual(20);
+          expect(hgc.scrollTop).toEqual(20);
+          expect(hgc.pixiStage.y).toEqual(-20);
+          done();
+        }, 0);
       });
     });
 
