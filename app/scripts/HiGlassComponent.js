@@ -1054,25 +1054,28 @@ class HiGlassComponent extends React.Component {
     const sourceTrack = getTrackByUid(this.state.views[viewUid].tracks, trackUid);
 
     if (this.valueScaleLocks[uid]) {
-      const lockGroupValues = dictValues(this.valueScaleLocks[uid]);
+      const lockGroup = this.valueScaleLocks[uid];
 
       // /let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
-      const lockedTracks = lockGroupValues
-        .filter(x => this.tiledPlots[x.view])
-        .map(x => this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track))
-        .filter(x => x);
+      const lockedTracks = Object.values(lockGroup)
+        .filter(track => this.tiledPlots[track.view])
+        .map(track => this.tiledPlots[track.view].trackRenderer.getTrackObject(track.track));
 
       const minValues = lockedTracks
         // exclude tracks that don't set min and max values
-        .filter(x => x.minRawValue && x.maxRawValue)
-        .map(x => x.minRawValue())
-        .filter(x => x);
+        .filter(track => track.minRawValue && track.maxRawValue)
+        .map(track => (lockGroup.ignoreOffScreenValues
+          ? track.minRawValue()
+          : track.minVisibleValue(true)
+        ));
 
       const maxValues = lockedTracks
         // exclude tracks that don't set min and max values
-        .filter(x => x.minRawValue && x.maxRawValue)
-        .map(x => x.maxRawValue())
-        .filter(x => x);
+        .filter(track => track.minRawValue && track.maxRawValue)
+        .map(track => (lockGroup.ignoreOffScreenValues
+          ? track.maxRawValue()
+          : track.maxVisibleValue(true)
+        ));
 
       const allMin = Math.min(...minValues);
       const allMax = Math.max(...maxValues);
