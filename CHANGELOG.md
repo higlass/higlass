@@ -1,6 +1,10 @@
 ## v1.6.13
 
+- Add support for scrollable views. Activate via the option `scrollable: true`. Once you activate scrollable views all views are automatically zoomfixed! See [http://localhost:8080/others/scrollable-container.html](others/scrollable-container.html) for an example.
+- Add `option(key, value)` to the JS API for changing options. It supports getting all options when `value` is ommited and setting `scrollable`.
 - Properly display "Loading" while loading tileset info
+
+_[Detailed changes since v1.6.12](https://github.com/higlass/higlass/compare/v1.6.12...v1.6.13)_
 
 ## v1.6.12
 
@@ -8,7 +12,7 @@
 - Add support for borders (via the `stroke`, `strokeWidth`, `strokeOpacity`, and `strokePos` options) and outlines (via the `outline`, `outlineWidth`, `outlineOpacity`, and `outlinePos` options) to overlays. See [http://localhost:8080/apis/svg.html?/viewconfs/fancy-overlays.json](http://localhost:8080/apis/svg.html?/viewconfs/fancy-overlays.json) for an example.
 - Fixed horizontal rule bug (from Slack)
 
-_[Detailed changes since v1.6.11](https://github.com/higlass/higlass/compare/v1.6.11...develop)_
+_[Detailed changes since v1.6.11](https://github.com/higlass/higlass/compare/v1.6.11...v1.6.12)_
 
 ## v1.6.11
 

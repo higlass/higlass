@@ -11,6 +11,7 @@ import {
 import {
   simpleCenterViewConfig,
   simple1And2dAnnotations,
+  stackedTopTracks,
 } from './view-configs';
 
 import emptyConf from './view-configs-more/emptyConf';
@@ -306,6 +307,64 @@ describe('API Tests', () => {
         waitForTilesLoaded(api.getComponent(), () => {
           done();
         });
+      });
+    });
+
+    it('has option getter', () => {
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false, bounded: true }
+      );
+
+      expect(api.option('editable')).toEqual(false);
+      expect(api.option('bounded')).toEqual(true);
+      expect(api.option('scrollable')).toEqual(undefined);
+    });
+
+    it('can scroll when scrollable is true', (done) => {
+      [div, api] = createElementAndApi(
+        stackedTopTracks,
+        { editable: false, scrollable: true },
+        600, 200, true
+      );
+
+      expect(api.option('scrollable')).toEqual(true);
+
+      const hgc = api.getComponent();
+
+      waitForTilesLoaded(hgc, () => {
+        const trackRenderer = document.querySelector('.track-renderer-events');
+        trackRenderer.scrollTop = 20;
+
+        setTimeout(() => {
+          expect(trackRenderer.scrollTop).toEqual(20);
+          expect(hgc.scrollTop).toEqual(20);
+          expect(hgc.pixiStage.y).toEqual(-20);
+          done();
+        }, 0);
+      });
+    });
+
+    it('cannot scroll when scrollable is false', (done) => {
+      [div, api] = createElementAndApi(
+        stackedTopTracks,
+        { editable: false, scrollable: false },
+        600, 200, true
+      );
+
+      expect(api.option('scrollable')).toEqual(false);
+
+      const hgc = api.getComponent();
+
+      waitForTilesLoaded(hgc, () => {
+        const trackRenderer = document.querySelector('.track-renderer-events');
+        trackRenderer.scrollTop = 20;
+
+        setTimeout(() => {
+          expect(trackRenderer.scrollTop).toEqual(0);
+          expect(hgc.scrollTop).toEqual(0);
+          expect(hgc.pixiStage.y).toEqual(0);
+          done();
+        }, 0);
       });
     });
 

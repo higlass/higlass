@@ -188,8 +188,16 @@ class HiGlassComponent extends React.Component {
       setTileProxyAuthHeader(props.options.authToken);
     }
 
+    this.pixiRoot = new PIXI.Container();
+    this.pixiRoot.interactive = true;
+
     this.pixiStage = new PIXI.Container();
     this.pixiStage.interactive = true;
+    this.pixiRoot.addChild(this.pixiStage);
+
+    this.pixiMask = new PIXI.Graphics();
+    this.pixiRoot.addChild(this.pixiMask);
+    this.pixiStage.mask = this.pixiMask;
 
     this.element = null;
 
@@ -251,11 +259,11 @@ class HiGlassComponent extends React.Component {
       modal: null,
     };
 
-    Object.values(views).map(view => this.adjustLayoutToTrackSizes(view));
-
     // monitor whether this element is attached to the DOM so that
     // we can determine whether to add the resizesensor
     this.attachedToDOM = false;
+
+    this.scrollTop = 0;
 
     // Set up API
     const {
@@ -296,6 +304,7 @@ class HiGlassComponent extends React.Component {
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
     this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
     this.onBlurHandlerBound = this.onBlurHandler.bind(this);
+    this.onViewScrollBound = this.onViewScroll.bind(this);
     this.openModalBound = this.openModal.bind(this);
     this.closeModalBound = this.closeModal.bind(this);
     this.handleEditViewConfigBound = this.handleEditViewConfig.bind(this);
@@ -345,6 +354,7 @@ class HiGlassComponent extends React.Component {
       this.pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
       this.pubSub.subscribe('app.zoom', this.zoomHandlerBound),
       this.pubSub.subscribe('requestReceived', this.requestReceivedHandlerBound),
+      this.pubSub.subscribe('app.viewScroll', this.onViewScrollBound),
     );
 
     if (this.props.getApi) {
@@ -416,6 +426,8 @@ class HiGlassComponent extends React.Component {
     window.addEventListener('focus', this.boundRefreshView);
 
     Object.values(this.state.views).forEach((view) => {
+      this.adjustLayoutToTrackSizes(view);
+
       if (!view.layout) {
         view.layout = this.generateViewLayout(view);
       } else {
@@ -574,7 +586,7 @@ class HiGlassComponent extends React.Component {
     // let width = this.element.clientWidth;
     // let height = this.element.clientHeight;
 
-    this.pixiRenderer.render(this.pixiStage);
+    this.pixiRenderer.render(this.pixiRoot);
   }
 
   componentDidUpdate() {
@@ -679,12 +691,17 @@ class HiGlassComponent extends React.Component {
     const width = this.element.parentNode.clientWidth;
     const height = this.element.parentNode.clientHeight;
 
+    this.pixiMask
+      .beginFill(0xFFFFFF)
+      .drawRect(0, 0, width, height)
+      .endFill();
+
     this.pixiRenderer.resize(width, height);
 
     this.pixiRenderer.view.style.width = `${width}px`;
     this.pixiRenderer.view.style.height = `${height}px`;
 
-    this.pixiRenderer.render(this.pixiStage);
+    this.pixiRenderer.render(this.pixiRoot);
   }
 
   /**
@@ -833,7 +850,7 @@ class HiGlassComponent extends React.Component {
       // component was probably unmounted
       if (!this.pixiRenderer) return;
 
-      this.pixiRenderer.render(this.pixiStage);
+      this.pixiRenderer.render(this.pixiRoot);
 
       this.isRequestingAnimationFrame = false;
     });
@@ -1709,6 +1726,7 @@ class HiGlassComponent extends React.Component {
   updateRowHeight() {
     if (
       !(this.props.options && this.props.options.bounded)
+      || (this.props.options && this.props.options.scrollable)
       || this.props.options.pixelPreciseMarginPadding
     ) {
       // not bounded so we don't need to update the row height
@@ -2461,7 +2479,16 @@ class HiGlassComponent extends React.Component {
     totalTrackHeight += MARGIN_HEIGHT;
     const rowHeight = this.state.rowHeight + MARGIN_HEIGHT;
 
-    if (!this.props.options.bounded) {
+    if (this.props.options.scrollable) {
+      // Since the scroll mode is active we have to determine the height of the
+      // layout based in the base container, i.e., topDiv, instead of
+      // `totalTrackHeight`. Normally `totalTrackHeight` and the height of the
+      // topDiv are the same but when the scroll is active `topDiv` can be
+      // smaller or larger than `totalTrackHeight`.
+      view.layout.h = Math.ceil(
+        this.topDiv.parentNode.getBoundingClientRect().height / rowHeight
+      );
+    } else if (!this.props.options.bounded) {
       view.layout.h = Math.ceil(totalTrackHeight / rowHeight);
     }
   }
@@ -3740,6 +3767,12 @@ class HiGlassComponent extends React.Component {
 
   }
 
+  onViewScroll(scrollTop) {
+    this.scrollTop = scrollTop;
+    this.pixiStage.y = -this.scrollTop;
+    this.animate();
+  }
+
   setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
     const track = getTrackObjById(this.tiledPlots, viewId, trackId);
 
@@ -3781,20 +3814,16 @@ class HiGlassComponent extends React.Component {
       this.props.zoomFixed
       || this.props.options.zoomFixed
       || this.state.viewConfig.zoomFixed
+      || this.props.options.scrollable
       || (view && view.zoomFixed)
     );
   }
 
   wheelHandler(evt) {
-    if (this.state.modal) return;
+    if (this.state.modal || this.props.options.scrollable) return;
 
     // The event forwarder wasn't written for React's SyntheticEvent
     const nativeEvent = evt.nativeEvent || evt;
-    const isZoomFixed = (
-      this.props.zoomFixed
-      || this.props.options.zoomFixed
-      || this.state.viewConfig.zoomFixed
-    );
 
     const isTargetCanvas = evt.target === this.canvasElement;
 
@@ -3804,7 +3833,7 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
-    if (isZoomFixed) {
+    if (this.isZoomFixed()) {
       // ignore events when in zoom fixed mode
       return;
     }
@@ -3846,8 +3875,6 @@ class HiGlassComponent extends React.Component {
     // the right width
     if (this.mounted) {
       this.tiledAreas = dictValues(this.state.views).map((view) => {
-        const zoomFixed = this.isZoomFixed(view);
-
         // only show the add track menu for the tiled plot it was selected for
         const addTrackPositionMenuPosition = view.uid === this.state.addTrackPositionMenuUid
           ? this.state.addTrackPositionMenuPosition
@@ -3944,6 +3971,7 @@ class HiGlassComponent extends React.Component {
               this.addDraggingChangedListener(view.uid, view.uid, listener))}
             removeDraggingChangedListener={listener => (
               this.removeDraggingChangedListener(view.uid, view.uid, listener))}
+            scrollable={this.props.options.scrollable}
             setCentersFunction={(c) => { this.setCenters[view.uid] = c; }}
             svgElement={this.state.svgElement}
             tracks={view.tracks}
@@ -3954,7 +3982,7 @@ class HiGlassComponent extends React.Component {
             // dragging={this.state.dragging}
             xDomainLimits={view.xDomainLimits}
             yDomainLimits={view.yDomainLimits}
-            zoomable={!zoomFixed}
+            zoomable={!this.isZoomFixed(view)}
             zoomLimits={view.zoomLimits}
             zoomToDataExtentOnInit={() => this.zoomToDataExtentOnInit.has(view.uid)}
           />
@@ -4175,6 +4203,7 @@ class HiGlassComponent extends React.Component {
 HiGlassComponent.defaultProps = {
   options: {},
   zoomFixed: false,
+  scrollable: false,
 };
 
 HiGlassComponent.propTypes = {
@@ -4184,6 +4213,7 @@ HiGlassComponent.propTypes = {
     PropTypes.object,
   ]).isRequired,
   zoomFixed: PropTypes.bool,
+  scrollable: PropTypes.bool,
 };
 
 export default HiGlassComponent;
