@@ -205,6 +205,8 @@ class TrackRenderer extends React.Component {
     this.boundForwardEvent = this.forwardEvent.bind(this);
     this.boundScrollEvent = this.scrollEvent.bind(this);
     this.boundForwardContextMenu = this.forwardContextMenu.bind(this);
+    this.dispatchEventBound = this.dispatchEvent.bind(this);
+    this.zoomToDataPosHandlerBound = this.zoomToDataPosHandler.bind(this);
     this.onScrollHandlerBound = this.onScrollHandler.bind(this);
   }
 
@@ -215,10 +217,13 @@ class TrackRenderer extends React.Component {
       this.props.pubSub.subscribe('scroll', this.windowScrolledBound),
     );
     this.pubSubs.push(
-      this.props.pubSub.subscribe('app.event', this.dispatchEvent.bind(this)),
+      this.props.pubSub.subscribe('app.event', this.dispatchEventBound),
     );
     this.pubSubs.push(
-      this.props.pubSub.subscribe('zoomToDataPos', this.zoomToDataPosHandler.bind(this)),
+      this.props.pubSub.subscribe('zoomToDataPos', this.zoomToDataPosHandlerBound),
+    );
+    this.pubSubs.push(
+      this.props.pubSub.subscribe('app.scroll', this.onScrollHandlerBound),
     );
   }
 
@@ -466,7 +471,7 @@ class TrackRenderer extends React.Component {
     this.pMask.beginFill();
     this.pMask.drawRect(
       this.xPositionOffset,
-      this.yPositionOffset + this.scrollTop,
+      this.yPositionOffset,
       this.currentProps.width,
       this.currentProps.height
     );
@@ -754,6 +759,7 @@ class TrackRenderer extends React.Component {
       this.yPositionOffset = (
         this.element.getBoundingClientRect().top
         - this.currentProps.canvasElement.getBoundingClientRect().top
+        + this.scrollTop
       );
       this.xPositionOffset = (
         this.element.getBoundingClientRect().left
@@ -1884,10 +1890,8 @@ class TrackRenderer extends React.Component {
     this.props.pubSub.publish('app.event', e);
   }
 
-  onScrollHandler(e) {
-    this.scrollTop = e.target.scrollTop;
-    this.setMask();
-    this.props.pubSub.publish('app.viewScroll', this.scrollTop);
+  onScrollHandler(scrollTop) {
+    this.scrollTop = scrollTop;
   }
 
   /* ------------------------------- Render ------------------------------- */
@@ -1911,11 +1915,6 @@ class TrackRenderer extends React.Component {
         <div
           ref={(c) => { this.eventTracker = c; }}
           className="track-renderer-events"
-          onScroll={this.onScrollHandlerBound}
-          style={{
-            overflowX: 'hidden',
-            overflowY: this.props.scrollable ? 'auto' : 'hidden',
-          }}
           styleName="track-renderer-events"
         >
           {this.currentProps.children}
@@ -1942,7 +1941,6 @@ TrackRenderer.defaultProps = {
   paddingLeft: 0,
   paddingTop: 0,
   positionedTracks: [],
-  scrollable: false,
   topHeight: 0,
   topHeightNoGallery: 0,
   width: 0,
@@ -1972,7 +1970,6 @@ TrackRenderer.propTypes = {
   pixiStage: PropTypes.object.isRequired,
   pluginTracks: PropTypes.object,
   positionedTracks: PropTypes.array,
-  scrollable: PropTypes.bool,
   setCentersFunction: PropTypes.func,
   svgElement: PropTypes.object.isRequired,
   theme: PropTypes.symbol.isRequired,
