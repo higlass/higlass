@@ -263,8 +263,6 @@ class HiGlassComponent extends React.Component {
     // we can determine whether to add the resizesensor
     this.attachedToDOM = false;
 
-    this.scrollTop = 0;
-
     // Set up API
     const {
       public: api, destroy: apiDestroy, publish: apiPublish
@@ -304,10 +302,10 @@ class HiGlassComponent extends React.Component {
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
     this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
     this.onBlurHandlerBound = this.onBlurHandler.bind(this);
-    this.onViewScrollBound = this.onViewScroll.bind(this);
     this.openModalBound = this.openModal.bind(this);
     this.closeModalBound = this.closeModal.bind(this);
     this.handleEditViewConfigBound = this.handleEditViewConfig.bind(this);
+    this.onScrollHandlerBound = this.onScrollHandler.bind(this);
 
     this.modal = {
       open: this.openModalBound,
@@ -354,7 +352,6 @@ class HiGlassComponent extends React.Component {
       this.pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
       this.pubSub.subscribe('app.zoom', this.zoomHandlerBound),
       this.pubSub.subscribe('requestReceived', this.requestReceivedHandlerBound),
-      this.pubSub.subscribe('app.viewScroll', this.onViewScrollBound),
     );
 
     if (this.props.getApi) {
@@ -2482,16 +2479,7 @@ class HiGlassComponent extends React.Component {
     totalTrackHeight += MARGIN_HEIGHT;
     const rowHeight = this.state.rowHeight + MARGIN_HEIGHT;
 
-    if (this.props.options.scrollable) {
-      // Since the scroll mode is active we have to determine the height of the
-      // layout based in the base container, i.e., topDiv, instead of
-      // `totalTrackHeight`. Normally `totalTrackHeight` and the height of the
-      // topDiv are the same but when the scroll is active `topDiv` can be
-      // smaller or larger than `totalTrackHeight`.
-      view.layout.h = Math.ceil(
-        this.topDiv.parentNode.getBoundingClientRect().height / rowHeight
-      );
-    } else if (!this.props.options.bounded) {
+    if (!this.props.options.bounded || this.props.options.scrollable) {
       view.layout.h = Math.ceil(totalTrackHeight / rowHeight);
     }
   }
@@ -3770,9 +3758,9 @@ class HiGlassComponent extends React.Component {
 
   }
 
-  onViewScroll(scrollTop) {
-    this.scrollTop = scrollTop;
-    this.pixiStage.y = -this.scrollTop;
+  onScrollHandler() {
+    this.pixiStage.y = -this.scrollContainer.scrollTop;
+    this.pubSub.publish('app.scroll', this.scrollContainer.scrollTop);
     this.animate();
   }
 
@@ -3974,7 +3962,6 @@ class HiGlassComponent extends React.Component {
               this.addDraggingChangedListener(view.uid, view.uid, listener))}
             removeDraggingChangedListener={listener => (
               this.removeDraggingChangedListener(view.uid, view.uid, listener))}
-            scrollable={this.props.options.scrollable}
             setCentersFunction={(c) => { this.setCenters[view.uid] = c; }}
             svgElement={this.state.svgElement}
             tracks={view.tracks}
@@ -4157,6 +4144,14 @@ class HiGlassComponent extends React.Component {
       styleNames += ' styles.higlass-dark-theme';
     }
 
+    const scrollStyles = {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+    };
+
     return (
       <div
         key={this.uid}
@@ -4164,6 +4159,7 @@ class HiGlassComponent extends React.Component {
         className="higlass"
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
+        style={this.props.options.scrollable ? scrollStyles : {}}
         styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>
@@ -4176,25 +4172,39 @@ class HiGlassComponent extends React.Component {
                 styleName="styles.higlass-canvas"
               />
               <div
-                ref={(c) => { this.divDrawingSurface = c; }}
-                styleName="styles.higlass-drawing-surface"
+                ref={(c) => { this.scrollContainer = c; }}
+                className="higlass-scroll-container"
+                onScroll={this.onScrollHandlerBound}
+                style={this.props.options.scrollable
+                  ? {
+                    ...scrollStyles,
+                    overflowX: 'hidden',
+                    overflowY: 'auto',
+                  } : {}
+                }
               >
-                {gridLayout}
+                <div
+                  ref={(c) => { this.divDrawingSurface = c; }}
+                  className="higlass-drawing-surface"
+                  styleName="styles.higlass-drawing-surface"
+                >
+                  {gridLayout}
+                </div>
+                <svg
+                  ref={(c) => { this.svgElement = c; }}
+                  style={{
+                    // inline the styles so they aren't overriden by other css
+                    // on the web page
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    left: 0,
+                    top: 0,
+                    pointerEvents: 'none',
+                  }}
+                  styleName="styles.higlass-svg"
+                />
               </div>
-              <svg
-                ref={(c) => { this.svgElement = c; }}
-                style={{
-                  // inline the styles so they aren't overriden by other css
-                  // on the web page
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  left: 0,
-                  top: 0,
-                  pointerEvents: 'none',
-                }}
-                styleName="styles.higlass-svg"
-              />
             </ThemeProvider>
           </ModalProvider>
         </PubSubProvider>
@@ -4206,7 +4216,6 @@ class HiGlassComponent extends React.Component {
 HiGlassComponent.defaultProps = {
   options: {},
   zoomFixed: false,
-  scrollable: false,
 };
 
 HiGlassComponent.propTypes = {
@@ -4216,7 +4225,6 @@ HiGlassComponent.propTypes = {
     PropTypes.object,
   ]).isRequired,
   zoomFixed: PropTypes.bool,
-  scrollable: PropTypes.bool,
 };
 
 export default HiGlassComponent;

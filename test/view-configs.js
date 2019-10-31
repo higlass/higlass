@@ -35,3 +35,4 @@ export { default as twoViewConfig } from './view-configs-more/twoViewConfig';
 export { default as valueIntervalTrackViewConf } from './view-configs-more/valueIntervalTrackViewConf';
 export { default as verticalHeatmapTrack } from './view-configs-tracks/verticalHeatmapTrack';
 export { default as stackedTopTracks } from './view-configs-more/stacked-top-tracks';
+export { default as stackedTopViews } from './view-configs-more/stacked-top-views';
