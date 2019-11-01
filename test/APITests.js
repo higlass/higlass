@@ -347,7 +347,7 @@ describe('API Tests', () => {
         setTimeout(() => {
           expect(hgc.pixiStage.y).toEqual(0);
           done();
-        }, 10);
+        }, 50);
       });
     });
 
@@ -376,7 +376,7 @@ describe('API Tests', () => {
           expect(scrollContainer.scrollTop).toEqual(20);
           expect(hgc.pixiStage.y).toEqual(-20);
           done();
-        }, 10);
+        }, 50);
       });
     });
 
@@ -408,9 +408,9 @@ describe('API Tests', () => {
               expect(scrollContainer.style.overflow).toEqual('hidden');
               expect(hgc.pixiStage.y).toEqual(-20);
               done();
-            }, 10);
+            }, 50);
           }, 250);
-        }, 10);
+        }, 50);
       });
     });
 
@@ -435,7 +435,7 @@ describe('API Tests', () => {
         setTimeout(() => {
           expect(hgc.pixiStage.y).toEqual(-20);
           done();
-        }, 10);
+        }, 50);
       });
     });
 
@@ -474,7 +474,7 @@ describe('API Tests', () => {
             expect(dx).toEqual(-10);
             done();
           }, 250);
-        }, 10);
+        }, 50);
       });
     });
 
