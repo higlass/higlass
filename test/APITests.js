@@ -314,23 +314,21 @@ describe('API Tests', () => {
 
     it('has option getter', () => {
       [div, api] = createElementAndApi(
-        simpleCenterViewConfig, { editable: false, bounded: true }
+        simpleCenterViewConfig, { editable: false, sizeMode: 'bounded' }
       );
 
       expect(api.option('editable')).toEqual(false);
-      expect(api.option('bounded')).toEqual(true);
-      expect(api.option('scrollable')).toEqual(undefined);
-      expect(api.option('scrolling')).toEqual(undefined);
+      expect(api.option('sizeMode')).toEqual('bounded');
     });
 
-    it('stretches to parent when scrollable is true but cannot scroll', (done) => {
+    it('overflow when in overflow mode but cannot scroll', (done) => {
       [div, api] = createElementAndApi(
         stackedTopTracks,
-        { editable: false, scrollable: true },
+        { editable: false, sizeMode: 'overflow' },
         600, 200, true
       );
 
-      expect(api.option('scrollable')).toEqual(true);
+      expect(api.option('sizeMode')).toEqual('overflow');
 
       const hgContainer = div.querySelector('.higlass');
       const scrollContainer = div.querySelector('.higlass-scroll-container');
@@ -353,15 +351,14 @@ describe('API Tests', () => {
       });
     });
 
-    it('can scroll when scrollable and scrolling are true', (done) => {
+    it('can scroll in scroll mode', (done) => {
       [div, api] = createElementAndApi(
         stackedTopTracks,
-        { editable: false, scrollable: true, scrolling: true },
+        { editable: false, sizeMode: 'scroll' },
         600, 200, true
       );
 
-      expect(api.option('scrollable')).toEqual(true);
-      expect(api.option('scrolling')).toEqual(true);
+      expect(api.option('sizeMode')).toEqual('scroll');
 
       const scrollContainer = div.querySelector('.higlass-scroll-container');
 
@@ -383,15 +380,14 @@ describe('API Tests', () => {
       });
     });
 
-    it('remembers scroll position when scrolling is set false', (done) => {
+    it('remembers scroll position when switching from scroll to overflow mode', (done) => {
       [div, api] = createElementAndApi(
         stackedTopTracks,
-        { editable: false, scrollable: true, scrolling: true },
+        { editable: false, sizeMode: 'scroll' },
         600, 200, true
       );
 
-      expect(api.option('scrollable')).toEqual(true);
-      expect(api.option('scrolling')).toEqual(true);
+      expect(api.option('sizeMode')).toEqual('scroll');
 
       const hgc = api.getComponent();
 
@@ -404,7 +400,7 @@ describe('API Tests', () => {
           expect(scrollContainer.style.overflowX).toEqual('hidden');
           expect(scrollContainer.style.overflowY).toEqual('auto');
 
-          api.option('scrolling', false);
+          api.option('sizeMode', 'overflow');
 
           setTimeout(() => {
             scrollContainer.scrollTop = 40;
@@ -423,15 +419,12 @@ describe('API Tests', () => {
         stackedTopViews,
         {
           editable: false,
-          scrollable: true,
-          scrolling: true,
-          bounded: true
+          sizeMode: 'scroll',
         },
         600, 200, true
       );
 
-      expect(api.option('scrollable')).toEqual(true);
-      expect(api.option('scrolling')).toEqual(true);
+      expect(api.option('sizeMode')).toEqual('scroll');
 
       const hgc = api.getComponent();
 
@@ -451,14 +444,12 @@ describe('API Tests', () => {
         stackedTopViews,
         {
           editable: false,
-          scrollable: true,
-          scrolling: true,
-          bounded: true
+          sizeMode: 'scroll'
         },
         600, 400, true
       );
 
-      expect(api.option('scrollable')).toEqual(true);
+      expect(api.option('sizeMode')).toEqual('scroll');
 
       const hgc = api.getComponent();
 
@@ -472,7 +463,7 @@ describe('API Tests', () => {
         setTimeout(() => {
           expect(hgc.pixiStage.y).toEqual(-1790);
 
-          api.option('scrolling', false);
+          api.option('sizeMode', 'overflow');
 
           setTimeout(() => {
             expect(hgc.isZoomFixed('l')).toBeFalsy();
