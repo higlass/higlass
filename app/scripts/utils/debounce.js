@@ -18,28 +18,51 @@
  * @param   {Boolean}    immediate  If `true` function is not debounced.
  * @return  {Functiomn}             Debounced function.
  */
-export const debounce = (func, wait, immediate) => {
+export const debounce = (
+  func,
+  wait,
+  immediate
+) => {
   let timeout;
 
-  const debounced = (...args) => {
+  const debounced = (
+    ...args
+  ) => {
     const later = () => {
       timeout = null;
-      if (!immediate) {
-        func(...args);
+      if (
+        !immediate
+      ) {
+        func(
+          ...args
+        );
       }
     };
 
-    const callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+    const callNow =
+      immediate &&
+      !timeout;
+    clearTimeout(
+      timeout
+    );
+    timeout = setTimeout(
+      later,
+      wait
+    );
 
-    if (callNow) {
-      func(...args);
+    if (
+      callNow
+    ) {
+      func(
+        ...args
+      );
     }
   };
 
   debounce.cancel = () => {
-    clearTimeout(timeout);
+    clearTimeout(
+      timeout
+    );
     timeout = null;
   };
 

@@ -9,19 +9,38 @@ import '../styles/ContextMenu.module.scss';
 
 const CloseTrackMenu = props => (
   <div>
-    {getSeriesItems(props.tracks, null, null, props.onCloseTrack)}
+    {getSeriesItems(
+      props.tracks,
+      null,
+      null,
+      props.onCloseTrack
+    )}
     <hr styleName="context-menu-hr" />
     <ContextMenuItem
-      onClick={() => props.onCloseTrack(props.tracks[0].uid)}
+      onClick={() =>
+        props.onCloseTrack(
+          props
+            .tracks[0]
+            .uid
+        )
+      }
     >
-      {'Close all series'}
+      {
+        'Close all series'
+      }
     </ContextMenuItem>
   </div>
 );
 
 CloseTrackMenu.propTypes = {
-  onCloseTrack: PropTypes.func.isRequired,
-  tracks: PropTypes.array.isRequired,
+  onCloseTrack:
+    PropTypes
+      .func
+      .isRequired,
+  tracks:
+    PropTypes
+      .array
+      .isRequired
 };
 
 export default CloseTrackMenu;

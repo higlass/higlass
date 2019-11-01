@@ -14,14 +14,21 @@
  * @param   {[type]}  queryStr  [description]
  * @return  {[type]}  [description]
  */
-const q = (queryStr) => {
+const q = queryStr => {
   try {
-    const queries = queryStr.split('.');
-    return (rootObj) => {
+    const queries = queryStr.split(
+      '.'
+    );
+    return rootObj => {
       let obj = rootObj;
-      queries.forEach((query) => {
-        obj = obj[query];
-      });
+      queries.forEach(
+        query => {
+          obj =
+            obj[
+              query
+            ];
+        }
+      );
       return obj;
     };
   } catch (e) {

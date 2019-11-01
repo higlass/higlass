@@ -5,20 +5,51 @@
  * returns {Element} A DOM SVG Element with all of the attributes set as to display
  * the given text.
  */
-export const pixiTextToSvg = (pixiText) => {
-  const g = document.createElement('g');
-  const t = document.createElement('text');
+export const pixiTextToSvg = pixiText => {
+  const g = document.createElement(
+    'g'
+  );
+  const t = document.createElement(
+    'text'
+  );
 
-  t.setAttribute('text-anchor', 'middle');
-  t.setAttribute('font-family', pixiText.style.fontFamily);
-  t.setAttribute('font-size', pixiText.style.fontSize);
-  g.setAttribute('transform', `scale(${pixiText.scale.x},1)`);
+  t.setAttribute(
+    'text-anchor',
+    'middle'
+  );
+  t.setAttribute(
+    'font-family',
+    pixiText
+      .style
+      .fontFamily
+  );
+  t.setAttribute(
+    'font-size',
+    pixiText
+      .style
+      .fontSize
+  );
+  g.setAttribute(
+    'transform',
+    `scale(${pixiText.scale.x},1)`
+  );
 
-  t.setAttribute('fill', pixiText.style.fill);
-  t.innerHTML = pixiText.text;
+  t.setAttribute(
+    'fill',
+    pixiText
+      .style
+      .fill
+  );
+  t.innerHTML =
+    pixiText.text;
 
-  g.appendChild(t);
-  g.setAttribute('transform', `translate(${pixiText.x},${pixiText.y})scale(${pixiText.scale.x},1)`);
+  g.appendChild(
+    t
+  );
+  g.setAttribute(
+    'transform',
+    `translate(${pixiText.x},${pixiText.y})scale(${pixiText.scale.x},1)`
+  );
 
   return g;
 };

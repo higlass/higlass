@@ -6,6 +6,16 @@ import { map } from '.';
  * @param {Object}  obj  Object to be arrayified
  * @return {Array}  Array of the object.
  */
-const objVals = obj => map(key => obj[key])(Object.keys(obj));
+const objVals = obj =>
+  map(
+    key =>
+      obj[
+        key
+      ]
+  )(
+    Object.keys(
+      obj
+    )
+  );
 
 export default objVals;

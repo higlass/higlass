@@ -10,28 +10,47 @@ class ExportLinkDialog extends React.Component {
   render() {
     return (
       <Dialog
-        okayOnly={true}
+        okayOnly={
+          true
+        }
         okayTitle="Done"
-        onOkay={this.props.onDone}
+        onOkay={
+          this
+            .props
+            .onDone
+        }
         title="Share view link"
       >
         <div styleName="export-link-dialog-wrapper">
           <input
-            ref={(element) => {
-              if (!element) return;
+            ref={element => {
+              if (
+                !element
+              )
+                return;
               this.input = element;
               element.focus();
               element.select();
             }}
-            onClick={(event) => { event.target.select(); }}
+            onClick={event => {
+              event.target.select();
+            }}
             placeholder="Generating the link..."
-            readOnly={true}
-            value={this.props.url}
+            readOnly={
+              true
+            }
+            value={
+              this
+                .props
+                .url
+            }
           />
           <Button
-            onClick={(event) => {
+            onClick={event => {
               this.input.select();
-              document.execCommand('copy');
+              document.execCommand(
+                'copy'
+              );
             }}
           >
             Copy
@@ -44,12 +63,15 @@ class ExportLinkDialog extends React.Component {
 
 ExportLinkDialog.defaultProps = {
   onDone: () => {},
-  url: ''
+  url:
+    ''
 };
 
 ExportLinkDialog.propTypes = {
-  onDone: PropTypes.func,
-  url: PropTypes.string
+  onDone:
+    PropTypes.func,
+  url:
+    PropTypes.string
 };
 
 export default ExportLinkDialog;

@@ -1,4 +1,7 @@
-import { addArrays, accessorTransposition } from '.';
+import {
+  addArrays,
+  accessorTransposition
+} from '.';
 
 /**
  * Perform a 2D query on a 1D array
@@ -16,37 +19,101 @@ import { addArrays, accessorTransposition } from '.';
  * @return  {Array}  Sub array.
  */
 const rangeQuery2d = (
-  src, xDimSrc, xDimOut, xRange, yRange, mirrored, xOff = 0, yOff = 0, outList
+  src,
+  xDimSrc,
+  xDimOut,
+  xRange,
+  yRange,
+  mirrored,
+  xOff = 0,
+  yOff = 0,
+  outList
 ) => {
-  const _xRange = mirrored ? yRange : xRange;
-  const _yRange = mirrored ? xRange : yRange;
-  const _xOff = mirrored ? yOff : xOff;
-  const _yOff = mirrored ? xOff : yOff;
+  const _xRange = mirrored
+    ? yRange
+    : xRange;
+  const _yRange = mirrored
+    ? xRange
+    : yRange;
+  const _xOff = mirrored
+    ? yOff
+    : xOff;
+  const _yOff = mirrored
+    ? xOff
+    : yOff;
 
-  const xFrom = Math.max(0, +_xRange[0] || 0);
-  const xTo = Math.max(0, +_xRange[1] || 0);
-  const yFrom = Math.max(0, +_yRange[0] || 0);
-  const yTo = Math.max(0, +_yRange[1] || 0);
+  const xFrom = Math.max(
+    0,
+    +_xRange[0] ||
+      0
+  );
+  const xTo = Math.max(
+    0,
+    +_xRange[1] ||
+      0
+  );
+  const yFrom = Math.max(
+    0,
+    +_yRange[0] ||
+      0
+  );
+  const yTo = Math.max(
+    0,
+    +_yRange[1] ||
+      0
+  );
 
   let subList = [];
 
-  if (!ArrayBuffer.isView(outList)) {
-    console.warn('Not supported yet');
+  if (
+    !ArrayBuffer.isView(
+      outList
+    )
+  ) {
+    console.warn(
+      'Not supported yet'
+    );
   }
 
   try {
-    const newList = new outList.constructor(outList.length);
-    let c = 0 + _yOff;
-    for (let i = yFrom; i < yTo; i++) {
+    const newList = new outList.constructor(
+      outList.length
+    );
+    let c =
+      0 +
+      _yOff;
+    for (
+      let i = yFrom;
+      i <
+      yTo;
+      i++
+    ) {
       newList.set(
-        src.slice((i * xDimSrc) + xFrom, (i * xDimSrc) + xTo),
-        _xOff + (c * xDimOut)
+        src.slice(
+          i *
+            xDimSrc +
+            xFrom,
+          i *
+            xDimSrc +
+            xTo
+        ),
+        _xOff +
+          c *
+            xDimOut
       );
       c += 1;
     }
     const acc = mirrored
-      ? accessorTransposition(xDimOut, xDimOut) : undefined;
-    subList = addArrays(outList, newList, acc);
+      ? accessorTransposition(
+          xDimOut,
+          xDimOut
+        )
+      : undefined;
+    subList = addArrays(
+      outList,
+      newList,
+      acc
+    );
   } catch (e) {
     // console.warn('Invalid 2D query', e);
   }

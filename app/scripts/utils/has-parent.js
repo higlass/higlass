@@ -6,14 +6,27 @@
  *   as a child.
  * @return  {Boolean}  If `true` `el` has `target` as a parent.
  */
-const hasParent = (el, target) => {
+const hasParent = (
+  el,
+  target
+) => {
   let _el = el;
 
-  while (_el && _el !== target && _el.tagName !== 'HTML') {
-    _el = _el.parentNode;
+  while (
+    _el &&
+    _el !==
+      target &&
+    _el.tagName !==
+      'HTML'
+  ) {
+    _el =
+      _el.parentNode;
   }
 
-  if (_el === target) {
+  if (
+    _el ===
+    target
+  ) {
     return true;
   }
 

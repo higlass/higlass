@@ -8,17 +8,26 @@ import SVGTrack from './SVGTrack';
 import TiledPixiTrack from './TiledPixiTrack';
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 
-export { default as ChromosomeInfo } from './ChromosomeInfo';
-export { default as HiGlassComponent } from './HiGlassComponent';
-export { default as HiGlassTrackComponent, trackViewer } from './HiGlassTrackComponent';
+export {
+  default as ChromosomeInfo
+} from './ChromosomeInfo';
+export {
+  default as HiGlassComponent
+} from './HiGlassComponent';
+export {
+  default as HiGlassTrackComponent,
+  trackViewer
+} from './HiGlassTrackComponent';
 
 export const tracks = {
   SVGTrack,
   TiledPixiTrack,
-  HorizontalGeneAnnotationsTrack,
+  HorizontalGeneAnnotationsTrack
 };
 
-export { default as schema } from '../schema.json';
+export {
+  default as schema
+} from '../schema.json';
 
 // export functions that are useful for testing
 export {
@@ -26,12 +35,16 @@ export {
   waitForTilesLoaded,
   waitForTransitionsFinished,
   mountHGComponent,
-  getTrackObjectFromHGC,
+  getTrackObjectFromHGC
 } from './utils';
 
 export const version = VERSION;
 
-const launch = (element, config, options) => {
+const launch = (
+  element,
+  config,
+  options
+) => {
   /**
    * The instance's public API will be passed into the callback
    *
@@ -49,11 +62,18 @@ const launch = (element, config, options) => {
   const ref = React.createRef();
   ReactDOM.render(
     <HiGlassComponent
-      ref={ref}
-      options={options || {}}
-      viewConfig={config}
+      ref={
+        ref
+      }
+      options={
+        options ||
+        {}
+      }
+      viewConfig={
+        config
+      }
     />,
-    element,
+    element
   );
   return ref.current;
 };
@@ -103,13 +123,21 @@ const launch = (element, config, options) => {
  *
  * @return  {Object}  Newly created HiGlass component.
  */
-export const viewer = (element, viewConfig, options) => {
+export const viewer = (
+  element,
+  viewConfig,
+  options
+) => {
   /**
    * Available options:
    *
    *  bounded: [true/false]
    *      Fit the container to the bounds of the element
    */
-  const hg = launch(element, viewConfig, options);
+  const hg = launch(
+    element,
+    viewConfig,
+    options
+  );
   return hg.api;
 };

@@ -8,40 +8,102 @@ import withModal from './hocs/with-modal';
 
 import '../styles/Dialog.module.scss';
 
-const Dialog = (props) => {
+const Dialog = props => {
   const handleCancel = () => {
     props.modal.close();
-    if (props.onCancel) props.onCancel();
+    if (
+      props.onCancel
+    )
+      props.onCancel();
   };
 
   const handleOkay = () => {
     props.modal.close();
-    if (props.onOkay) props.onOkay();
+    if (
+      props.onOkay
+    )
+      props.onOkay();
   };
 
   return (
-    <Modal closeButton={false} hide={props.hide} maxHeight={props.maxHeight}>
+    <Modal
+      closeButton={
+        false
+      }
+      hide={
+        props.hide
+      }
+      maxHeight={
+        props.maxHeight
+      }
+    >
       <header styleName="dialog-header">
-        <h3>{props.title}</h3>
-        <Button onClick={handleCancel}><Cross /></Button>
+        <h3>
+          {
+            props.title
+          }
+        </h3>
+        <Button
+          onClick={
+            handleCancel
+          }
+        >
+          <Cross />
+        </Button>
       </header>
       {props.maxHeight ? (
-        <main styleName={props.maxHeight ? 'dialog-main-max-height' : ''}>
-          {props.children}
+        <main
+          styleName={
+            props.maxHeight
+              ? 'dialog-main-max-height'
+              : ''
+          }
+        >
+          {
+            props.children
+          }
         </main>
       ) : (
-        <main>{props.children}</main>
+        <main>
+          {
+            props.children
+          }
+        </main>
       )}
-      <footer styleName={props.maxHeight ? 'dialog-footer-max-height' : 'dialog-footer'}>
+      <footer
+        styleName={
+          props.maxHeight
+            ? 'dialog-footer-max-height'
+            : 'dialog-footer'
+        }
+      >
         {props.okayOnly ? (
           <div />
         ) : (
-          <Button onClick={handleCancel} shortcut={props.cancelShortcut}>
-            {props.cancelTitle}
+          <Button
+            onClick={
+              handleCancel
+            }
+            shortcut={
+              props.cancelShortcut
+            }
+          >
+            {
+              props.cancelTitle
+            }
           </Button>
         )}
-        <Button onClick={handleOkay} shortcut={props.okayShortcut}>
-          {props.okayTitle}
+        <Button
+          onClick={
+            handleOkay
+          }
+          shortcut={
+            props.okayShortcut
+          }
+        >
+          {
+            props.okayTitle
+          }
         </Button>
       </footer>
     </Modal>
@@ -49,26 +111,52 @@ const Dialog = (props) => {
 };
 
 Dialog.defaultProps = {
-  cancelTitle: 'Cancel',
+  cancelTitle:
+    'Cancel',
   hide: false,
   maxHeight: false,
   okayOnly: false,
-  okayTitle: 'Ok',
+  okayTitle:
+    'Ok'
 };
 
 Dialog.propTypes = {
-  cancelShortcut: PropTypes.string,
-  cancelTitle: PropTypes.string,
-  children: PropTypes.func.isRequired,
-  hide: PropTypes.bool,
-  maxHeight: PropTypes.bool,
-  modal: PropTypes.object.isRequired,
-  okayShortcut: PropTypes.string,
-  okayTitle: PropTypes.string,
-  okayOnly: PropTypes.bool,
-  onCancel: PropTypes.func.isRequired,
-  onOkay: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
+  cancelShortcut:
+    PropTypes.string,
+  cancelTitle:
+    PropTypes.string,
+  children:
+    PropTypes
+      .func
+      .isRequired,
+  hide:
+    PropTypes.bool,
+  maxHeight:
+    PropTypes.bool,
+  modal:
+    PropTypes
+      .object
+      .isRequired,
+  okayShortcut:
+    PropTypes.string,
+  okayTitle:
+    PropTypes.string,
+  okayOnly:
+    PropTypes.bool,
+  onCancel:
+    PropTypes
+      .func
+      .isRequired,
+  onOkay:
+    PropTypes
+      .func
+      .isRequired,
+  title:
+    PropTypes
+      .string
+      .isRequired
 };
 
-export default withModal(Dialog);
+export default withModal(
+  Dialog
+);

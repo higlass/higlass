@@ -4,6 +4,11 @@
  * @param   {number}  b  Value B
  * @return  {number}  Sum of A + B
  */
-const sum = (a, b) => a + b;
+const sum = (
+  a,
+  b
+) =>
+  a +
+  b;
 
 export default sum;

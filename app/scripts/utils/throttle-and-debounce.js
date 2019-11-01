@@ -28,7 +28,11 @@
  * @param   {number}  finalWait - Debounce wait time in milliseconds
  * @return  {function} - Throttled and debounced function
  */
-const throttleAndDebounce = (func, interval, finalWait) => {
+const throttleAndDebounce = (
+  func,
+  interval,
+  finalWait
+) => {
   let timeout;
   let blockedCalls = 0;
 
@@ -36,41 +40,73 @@ const throttleAndDebounce = (func, interval, finalWait) => {
     timeout = null;
   };
 
-  const debounced = (...args) => {
+  const debounced = (
+    ...args
+  ) => {
     const later = () => {
       // Since we throttle and debounce we should check whether there were
       // actually multiple attempts to call this function after the most recent
       // throttled call. If there were no more calls we don't have to call
       // the function again.
-      if (blockedCalls > 0) {
-        func(...args);
+      if (
+        blockedCalls >
+        0
+      ) {
+        func(
+          ...args
+        );
         blockedCalls = 0;
       }
     };
 
-    clearTimeout(timeout);
-    timeout = setTimeout(later, finalWait);
+    clearTimeout(
+      timeout
+    );
+    timeout = setTimeout(
+      later,
+      finalWait
+    );
   };
 
   debounced.cancel = () => {
-    clearTimeout(timeout);
+    clearTimeout(
+      timeout
+    );
     reset();
   };
 
-  debounced.immediate = (...args) => {
-    func(...args);
+  debounced.immediate = (
+    ...args
+  ) => {
+    func(
+      ...args
+    );
   };
 
   let wait = false;
-  const throttled = (request, ...args) => {
-    if (!wait) {
-      func(...args);
-      debounced(...args);
+  const throttled = (
+    request,
+    ...args
+  ) => {
+    if (
+      !wait
+    ) {
+      func(
+        ...args
+      );
+      debounced(
+        ...args
+      );
 
       wait = true;
       blockedCalls = 0;
 
-      setTimeout(() => { wait = false; }, interval);
+      setTimeout(
+        () => {
+          wait = false;
+        },
+        interval
+      );
     } else {
       blockedCalls++;
     }

@@ -34,20 +34,29 @@ const showMousePosition = (
   is2d,
   isGlobal
 ) => {
-  pubSub.publish('app.animateOnMouseMove', true);
+  pubSub.publish(
+    'app.animateOnMouseMove',
+    true
+  );
 
   const color = options.mousePositionColor
-    ? hexStrToInt(options.mousePositionColor)
+    ? hexStrToInt(
+        options.mousePositionColor
+      )
     : COLOR;
 
-  const alpha = options.mousePositionAlpha || ALPHA;
+  const alpha =
+    options.mousePositionAlpha ||
+    ALPHA;
 
   // Graphics for cursor position
   const graphics = new PIXI.Graphics();
 
   // This clears the mouse position graphics, i.e., the mouse position will not
   // be visible afterwards.
-  const clearGraphics = () => { graphics.clear(); };
+  const clearGraphics = () => {
+    graphics.clear();
+  };
 
   /**
    * Draw 1D mouse location (cross) hair onto the PIXI graphics.
@@ -57,19 +66,50 @@ const showMousePosition = (
    *   horizontal.
    * @param  {Boolean}   isNoClear  If `true` do not clear the graphics.
    */
-  const drawMousePosition = (mousePos, isHorizontal, isNoClear) => {
-    if (!isNoClear) clearGraphics();
+  const drawMousePosition = (
+    mousePos,
+    isHorizontal,
+    isNoClear
+  ) => {
+    if (
+      !isNoClear
+    )
+      clearGraphics();
 
-    graphics.lineStyle(1, color, alpha);
+    graphics.lineStyle(
+      1,
+      color,
+      alpha
+    );
 
-    if (isHorizontal) {
-      const addition = is2d ? getPosition()[0] : 0;
-      graphics.moveTo(0, mousePos);
-      graphics.lineTo(getDimensions()[0] + addition, mousePos);
+    if (
+      isHorizontal
+    ) {
+      const addition = is2d
+        ? getPosition()[0]
+        : 0;
+      graphics.moveTo(
+        0,
+        mousePos
+      );
+      graphics.lineTo(
+        getDimensions()[0] +
+          addition,
+        mousePos
+      );
     } else {
-      const addition = is2d ? getPosition()[1] : 0;
-      graphics.moveTo(mousePos, 0);
-      graphics.lineTo(mousePos, getDimensions()[1] + addition);
+      const addition = is2d
+        ? getPosition()[1]
+        : 0;
+      graphics.moveTo(
+        mousePos,
+        0
+      );
+      graphics.lineTo(
+        mousePos,
+        getDimensions()[1] +
+          addition
+      );
     }
   };
 
@@ -78,46 +118,100 @@ const showMousePosition = (
    *
    * @param  {Object}  e  Event object.
    */
-  const mouseMoveHandler = (event) => {
-    if (event.noHoveredTracks) {
+  const mouseMoveHandler = event => {
+    if (
+      event.noHoveredTracks
+    ) {
       clearGraphics();
       return graphics;
     }
 
     let x;
     let y;
-    if (event.isFromVerticalTrack) {
-      x = event.dataY;
-      y = event.dataY;
+    if (
+      event.isFromVerticalTrack
+    ) {
+      x =
+        event.dataY;
+      y =
+        event.dataY;
     } else {
-      x = event.dataX;
-      y = event.isFrom2dTrack ? event.dataY : event.dataX;
+      x =
+        event.dataX;
+      y = event.isFrom2dTrack
+        ? event.dataY
+        : event.dataX;
     }
 
     // 2d or central tracks are not offset and rather rely on a mask, i.e., the
     // top left *visible* position is *not* [0,0] but given by `getPosition()`.
-    const offset = is2d ? getPosition() : [0, 0];
+    const offset = is2d
+      ? getPosition()
+      : [
+          0,
+          0
+        ];
 
     // `getIsFlipped()` is `true` when a horizontal track has been flipped by 90
     // degree, i.e., is a vertical track.
     const mousePos = getIsFlipped()
-      ? getScales()[0](y) + offset[1]
-      : getScales()[0](x) + offset[0];
+      ? getScales()[0](
+          y
+        ) +
+        offset[1]
+      : getScales()[0](
+          x
+        ) +
+        offset[0];
 
-    drawMousePosition(mousePos);
+    drawMousePosition(
+      mousePos
+    );
 
     // Also draw the second dimension
-    if (is2d) drawMousePosition(getScales()[1](y) + offset[1], true, true);
+    if (
+      is2d
+    )
+      drawMousePosition(
+        getScales()[1](
+          y
+        ) +
+          offset[1],
+        true,
+        true
+      );
 
     return graphics;
   };
 
-  pubSubs.push(pubSub.subscribe('app.mouseMove', mouseMoveHandler));
-  pubSubs.push(pubSub.subscribe('app.mouseLeave', clearGraphics));
-  pubSubs.push(pubSub.subscribe('blur', clearGraphics));
+  pubSubs.push(
+    pubSub.subscribe(
+      'app.mouseMove',
+      mouseMoveHandler
+    )
+  );
+  pubSubs.push(
+    pubSub.subscribe(
+      'app.mouseLeave',
+      clearGraphics
+    )
+  );
+  pubSubs.push(
+    pubSub.subscribe(
+      'blur',
+      clearGraphics
+    )
+  );
 
-  if (isGlobal) {
-    pubSubs.push(globalPubSub.subscribe('higlass.mouseMove', mouseMoveHandler));
+  if (
+    isGlobal
+  ) {
+    pubSubs.push(
+      globalPubSub.subscribe(
+        'higlass.mouseMove',
+        mouseMoveHandler
+      )
+    );
   }
 
   return graphics;
@@ -138,25 +232,47 @@ const showMousePosition = (
  *   the mouse position drawing.
  * @return  {Function}  Method to remove graphics showing the mouse location.
  */
-const setupShowMousePosition = (context, is2d = false, isGlobal = false) => {
-  const scene = is2d ? context.pMasked : (context.pForeground || context.pMain);
-  const getScales = () => [context.xScale(), context.yScale()];
+const setupShowMousePosition = (
+  context,
+  is2d = false,
+  isGlobal = false
+) => {
+  const scene = is2d
+    ? context.pMasked
+    : context.pForeground ||
+      context.pMain;
+  const getScales = () => [
+    context.xScale(),
+    context.yScale()
+  ];
 
   const graphics = showMousePosition(
     context.pubSub,
     context.pubSubs,
     context.options,
     getScales,
-    context.getPosition.bind(context),
-    context.getDimensions.bind(context),
-    context.getProp('flipText'),
+    context.getPosition.bind(
+      context
+    ),
+    context.getDimensions.bind(
+      context
+    ),
+    context.getProp(
+      'flipText'
+    ),
     is2d,
     isGlobal
   );
 
-  scene.addChild(graphics);
+  scene.addChild(
+    graphics
+  );
 
-  return () => { scene.removeChild(graphics); };
+  return () => {
+    scene.removeChild(
+      graphics
+    );
+  };
 };
 
 export default setupShowMousePosition;

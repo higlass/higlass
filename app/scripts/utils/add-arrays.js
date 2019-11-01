@@ -1,4 +1,5 @@
-const STD_ACC = i => i;
+const STD_ACC = i =>
+  i;
 
 /**
  * Add two 1D arrays
@@ -17,6 +18,22 @@ const STD_ACC = i => i;
  *   useful when a2 represents a transformed (e.g., transposed matrix).
  * @return  {Array}  Combination of both arrays.
  */
-const addArrays = (a1, a2, accessor = STD_ACC) => a1.map((val, i) => val + a2[accessor(i)]);
+const addArrays = (
+  a1,
+  a2,
+  accessor = STD_ACC
+) =>
+  a1.map(
+    (
+      val,
+      i
+    ) =>
+      val +
+      a2[
+        accessor(
+          i
+        )
+      ]
+  );
 
 export default addArrays;

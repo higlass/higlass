@@ -12,12 +12,20 @@ import { THEME_DARK } from './configs';
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMixin) {
-  constructor(props) {
+class ConfigTrackMenu extends mix(
+  ContextMenuContainer
+).with(
+  SeriesListSubmenuMixin
+) {
+  constructor(
+    props
+  ) {
     /**
      * A window that is opened when a user clicks on the track configuration icon.
      */
-    super(props);
+    super(
+      props
+    );
 
     this.seriesRefs = {};
     this.seriesListMenu = null;
@@ -28,67 +36,152 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
   }
 
   render() {
-    let styleNames = 'context-menu';
-    if (this.props.theme === THEME_DARK) styleNames += ' context-menu-dark';
+    let styleNames =
+      'context-menu';
+    if (
+      this
+        .props
+        .theme ===
+      THEME_DARK
+    )
+      styleNames +=
+        ' context-menu-dark';
 
     return (
       <div
-        ref={(c) => { this.div = c; }}
+        ref={c => {
+          this.div = c;
+        }}
         data-menu-type="ConfigTrackMenu"
         style={{
-          left: this.state.left,
-          top: this.state.top,
+          left: this
+            .state
+            .left,
+          top: this
+            .state
+            .top
         }}
-        styleName={styleNames}
+        styleName={
+          styleNames
+        }
       >
         {getSeriesItems(
-          this.props.tracks,
-          this.handleItemMouseEnter.bind(this),
-          this.handleMouseLeave.bind(this),
+          this
+            .props
+            .tracks,
+          this.handleItemMouseEnter.bind(
+            this
+          ),
+          this.handleMouseLeave.bind(
+            this
+          ),
           null
         )}
 
         <hr styleName="context-menu-hr" />
 
         <ContextMenuItem
-          contextMenu={this}
-          onClick={() => this.props.onLockValueScale(this.props.tracks[0].uid)}
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          contextMenu={
+            this
+          }
+          onClick={() =>
+            this.props.onLockValueScale(
+              this
+                .props
+                .tracks[0]
+                .uid
+            )
+          }
+          onMouseEnter={e =>
+            this.handleOtherMouseEnter(
+              e
+            )
+          }
         >
-          {'Lock Value Scale With'}
+          {
+            'Lock Value Scale With'
+          }
         </ContextMenuItem>
 
         <ContextMenuItem
-          contextMenu={this}
-          onClick={() => this.props.onUnlockValueScale(this.props.tracks[0].uid)}
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          contextMenu={
+            this
+          }
+          onClick={() =>
+            this.props.onUnlockValueScale(
+              this
+                .props
+                .tracks[0]
+                .uid
+            )
+          }
+          onMouseEnter={e =>
+            this.handleOtherMouseEnter(
+              e
+            )
+          }
         >
-          {'Unlock Value Scale'}
+          {
+            'Unlock Value Scale'
+          }
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
 
         <ContextMenuItem
-          contextMenu={this}
-          onClick={() => this.props.onAddSeries(this.props.tracks[0].uid)}
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          contextMenu={
+            this
+          }
+          onClick={() =>
+            this.props.onAddSeries(
+              this
+                .props
+                .tracks[0]
+                .uid
+            )
+          }
+          onMouseEnter={e =>
+            this.handleOtherMouseEnter(
+              e
+            )
+          }
         >
-          {'Add Series'}
+          {
+            'Add Series'
+          }
         </ContextMenuItem>
 
         <ContextMenuItem
-          onClick={() => this.props.onCloseTrack(this.props.tracks[0].uid)}
+          onClick={() =>
+            this.props.onCloseTrack(
+              this
+                .props
+                .tracks[0]
+                .uid
+            )
+          }
         >
-          {'Close Track'}
+          {
+            'Close Track'
+          }
         </ContextMenuItem>
 
         <ContextMenuItem
           onClick={() => {
-            this.props.onReplaceTrack(this.props.tracks[0].uid,
-              this.props.trackOrientation);
+            this.props.onReplaceTrack(
+              this
+                .props
+                .tracks[0]
+                .uid,
+              this
+                .props
+                .trackOrientation
+            );
           }}
         >
-          {'Replace Track'}
+          {
+            'Replace Track'
+          }
         </ContextMenuItem>
 
         {this.getSubmenu()}

@@ -5,6 +5,13 @@
  * @param  {Integer}  m  Divisor
  * @return  {Integer}  Remainder
  */
-const mod = (n, m) => ((n % m) + m) % m;
+const mod = (
+  n,
+  m
+) =>
+  ((n %
+    m) +
+    m) %
+  m;
 
 export default mod;

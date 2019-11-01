@@ -1,4 +1,7 @@
-import { formatPrefix, precisionPrefix } from 'd3-format';
+import {
+  formatPrefix,
+  precisionPrefix
+} from 'd3-format';
 import * as PIXI from 'pixi.js';
 import slugid from 'slugid';
 
@@ -16,10 +19,21 @@ import { colorToHex } from './utils';
  *
  * @returns {string} A formatted resolution string (e.g. "30K")
  */
-function formatResolutionText(resolution, maxResolutionSize) {
-  const pp = precisionPrefix(maxResolutionSize, resolution);
-  const f = formatPrefix(`.${pp}`, resolution);
-  const formattedResolution = f(resolution);
+function formatResolutionText(
+  resolution,
+  maxResolutionSize
+) {
+  const pp = precisionPrefix(
+    maxResolutionSize,
+    resolution
+  );
+  const f = formatPrefix(
+    `.${pp}`,
+    resolution
+  );
+  const formattedResolution = f(
+    resolution
+  );
 
   return formattedResolution;
 }
@@ -34,12 +48,37 @@ function formatResolutionText(resolution, maxResolutionSize) {
  * @returns {string} A formatted string representation of the zoom level
  *   (e.g. "30K")
  */
-function getResolutionBasedResolutionText(resolutions, zoomLevel) {
-  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
-  const resolution = sortedResolutions[zoomLevel];
-  const maxResolutionSize = sortedResolutions[sortedResolutions.length - 1];
+function getResolutionBasedResolutionText(
+  resolutions,
+  zoomLevel
+) {
+  const sortedResolutions = resolutions
+    .map(
+      x =>
+        +x
+    )
+    .sort(
+      (
+        a,
+        b
+      ) =>
+        b -
+        a
+    );
+  const resolution =
+    sortedResolutions[
+      zoomLevel
+    ];
+  const maxResolutionSize =
+    sortedResolutions[
+      sortedResolutions.length -
+        1
+    ];
 
-  return formatResolutionText(resolution, maxResolutionSize);
+  return formatResolutionText(
+    resolution,
+    maxResolutionSize
+  );
 }
 
 /**
@@ -58,23 +97,48 @@ function getResolutionBasedResolutionText(resolutions, zoomLevel) {
  *   (e.g. "30K")
  */
 function getWidthBasedResolutionText(
-  zoomLevel, maxWidth, binsPerDimension, maxZoom
+  zoomLevel,
+  maxWidth,
+  binsPerDimension,
+  maxZoom
 ) {
-  const resolution = maxWidth / ((2 ** zoomLevel) * binsPerDimension);
+  const resolution =
+    maxWidth /
+    (2 **
+      zoomLevel *
+      binsPerDimension);
 
   // we can't display a NaN resolution
-  if (!Number.isNaN(resolution)) {
+  if (
+    !Number.isNaN(
+      resolution
+    )
+  ) {
     // what is the maximum possible resolution?
     // this will determine how we format the lower resolutions
-    const maxResolutionSize = maxWidth / ((2 ** maxZoom) * binsPerDimension);
+    const maxResolutionSize =
+      maxWidth /
+      (2 **
+        maxZoom *
+        binsPerDimension);
 
-    const pp = precisionPrefix(maxResolutionSize, resolution);
-    const f = formatPrefix(`.${pp}`, resolution);
-    const formattedResolution = f(resolution);
+    const pp = precisionPrefix(
+      maxResolutionSize,
+      resolution
+    );
+    const f = formatPrefix(
+      `.${pp}`,
+      resolution
+    );
+    const formattedResolution = f(
+      resolution
+    );
 
     return formattedResolution;
   }
-  console.warn('NaN resolution, screen is probably too small.');
+  console.warn(
+    'NaN resolution, screen is probably too small.'
+  );
 
   return '';
 }
@@ -88,9 +152,17 @@ class PixiTrack extends Track {
    *          - labelText: What should be drawn in the label. If either labelPosition
    *                  or labelText are false, no label will be drawn.
    */
-  constructor(context, options) {
-    super(context, options);
-    const { scene } = context;
+  constructor(
+    context,
+    options
+  ) {
+    super(
+      context,
+      options
+    );
+    const {
+      scene
+    } = context;
 
     // the PIXI drawing areas
     // pMain will have transforms applied to it as users scroll to and fro
@@ -117,32 +189,71 @@ class PixiTrack extends Track {
     // for drawing information on mouseover events
     this.pMouseOver = new PIXI.Graphics();
 
-    this.scene.addChild(this.pBase);
+    this.scene.addChild(
+      this
+        .pBase
+    );
 
-    this.pBase.addChild(this.pMasked);
+    this.pBase.addChild(
+      this
+        .pMasked
+    );
 
-    this.pMasked.addChild(this.pBackground);
-    this.pMasked.addChild(this.pMain);
-    this.pMasked.addChild(this.pMask);
-    this.pMasked.addChild(this.pMobile);
-    this.pMasked.addChild(this.pBorder);
-    this.pMasked.addChild(this.pLabel);
-    this.pMasked.addChild(this.pForeground);
-    this.pMasked.addChild(this.pMouseOver);
-    this.pBase.addChild(this.pAxis);
+    this.pMasked.addChild(
+      this
+        .pBackground
+    );
+    this.pMasked.addChild(
+      this
+        .pMain
+    );
+    this.pMasked.addChild(
+      this
+        .pMask
+    );
+    this.pMasked.addChild(
+      this
+        .pMobile
+    );
+    this.pMasked.addChild(
+      this
+        .pBorder
+    );
+    this.pMasked.addChild(
+      this
+        .pLabel
+    );
+    this.pMasked.addChild(
+      this
+        .pForeground
+    );
+    this.pMasked.addChild(
+      this
+        .pMouseOver
+    );
+    this.pBase.addChild(
+      this
+        .pAxis
+    );
 
     this.pMasked.mask = this.pMask;
 
-    this.prevOptions = '';
+    this.prevOptions =
+      '';
 
     // pMobile will be a graphics object that is moved around
     // tracks that wish to use it will replace this.pMain with it
 
-    this.options = Object.assign(this.options, options);
+    this.options = Object.assign(
+      this
+        .options,
+      options
+    );
 
     const labelTextText = this.getName();
 
-    this.labelTextFontFamily = 'Arial';
+    this.labelTextFontFamily =
+      'Arial';
     this.labelTextFontSize = 12;
     // Used to avoid label/colormap clashes
     this.labelXOffset = 0;
@@ -151,50 +262,89 @@ class PixiTrack extends Track {
       labelTextText,
       {
         fontSize: `${this.labelTextFontSize}px`,
-        fontFamily: this.labelTextFontFamily,
-        fill: 'black'
+        fontFamily: this
+          .labelTextFontFamily,
+        fill:
+          'black'
       }
     );
-    this.pLabel.addChild(this.labelText);
+    this.pLabel.addChild(
+      this
+        .labelText
+    );
 
     this.errorText = new PIXI.Text(
       '',
-      { fontSize: '12px', fontFamily: 'Arial', fill: 'red' }
+      {
+        fontSize:
+          '12px',
+        fontFamily:
+          'Arial',
+        fill:
+          'red'
+      }
     );
     this.errorText.anchor.x = 0.5;
     this.errorText.anchor.y = 0.5;
-    this.pLabel.addChild(this.errorText);
+    this.pLabel.addChild(
+      this
+        .errorText
+    );
   }
 
   setLabelText() {
     // will be drawn in draw() anyway
   }
 
-  setPosition(newPosition) {
+  setPosition(
+    newPosition
+  ) {
     this.position = newPosition;
 
     this.drawBorder();
     this.drawLabel();
     this.drawBackground();
-    this.setMask(this.position, this.dimensions);
+    this.setMask(
+      this
+        .position,
+      this
+        .dimensions
+    );
     this.setForeground();
   }
 
-  setDimensions(newDimensions) {
-    super.setDimensions(newDimensions);
+  setDimensions(
+    newDimensions
+  ) {
+    super.setDimensions(
+      newDimensions
+    );
 
     this.drawBorder();
     this.drawLabel();
     this.drawBackground();
-    this.setMask(this.position, this.dimensions);
+    this.setMask(
+      this
+        .position,
+      this
+        .dimensions
+    );
     this.setForeground();
   }
 
-  setMask(position, dimensions) {
+  setMask(
+    position,
+    dimensions
+  ) {
     this.pMask.clear();
     this.pMask.beginFill();
 
-    this.pMask.drawRect(position[0], position[1], dimensions[0], dimensions[1]);
+    this.pMask.drawRect(
+      position[0],
+      position[1],
+      dimensions[0],
+      dimensions[1]
+    );
     this.pMask.endFill();
   }
 
@@ -210,81 +360,157 @@ class PixiTrack extends Track {
   remove() {
     // the entire PIXI stage was probably removed
     this.pBase.clear();
-    this.scene.removeChild(this.pBase);
+    this.scene.removeChild(
+      this
+        .pBase
+    );
   }
 
   /**
    * Draw a border around each track.
    */
   drawBorder() {
-    const graphics = this.pBorder;
+    const graphics = this
+      .pBorder;
 
     graphics.clear();
 
     // don't display the track label
-    if (!this.options || !this.options.trackBorderWidth) return;
+    if (
+      !this
+        .options ||
+      !this
+        .options
+        .trackBorderWidth
+    )
+      return;
 
     const stroke = colorToHex(
-      this.options.trackBorderColor ? this.options.trackBorderColor : 'white',
+      this
+        .options
+        .trackBorderColor
+        ? this
+            .options
+            .trackBorderColor
+        : 'white'
     );
 
-    graphics.lineStyle(this.options.trackBorderWidth, stroke);
+    graphics.lineStyle(
+      this
+        .options
+        .trackBorderWidth,
+      stroke
+    );
 
     graphics.drawRect(
-      this.position[0],
-      this.position[1],
-      this.dimensions[0],
-      this.dimensions[1],
+      this
+        .position[0],
+      this
+        .position[1],
+      this
+        .dimensions[0],
+      this
+        .dimensions[1]
     );
   }
 
   drawError() {
-    this.errorText.x = this.position[0] + this.dimensions[0] / 2;
-    this.errorText.y = this.position[1] + this.dimensions[1] / 2;
+    this.errorText.x =
+      this
+        .position[0] +
+      this
+        .dimensions[0] /
+        2;
+    this.errorText.y =
+      this
+        .position[1] +
+      this
+        .dimensions[1] /
+        2;
 
     this.errorText.text = this.errorTextText;
 
-    if (this.errorTextText && this.errorTextText.length) {
+    if (
+      this
+        .errorTextText &&
+      this
+        .errorTextText
+        .length
+    ) {
       // draw a red border around the track to bring attention to its
       // error
-      const graphics = this.pBorder;
+      const graphics = this
+        .pBorder;
       graphics.clear();
-      graphics.lineStyle(1, colorToHex('red'));
+      graphics.lineStyle(
+        1,
+        colorToHex(
+          'red'
+        )
+      );
 
       graphics.drawRect(
-        this.position[0],
-        this.position[1],
-        this.dimensions[0],
-        this.dimensions[1],
+        this
+          .position[0],
+        this
+          .position[1],
+        this
+          .dimensions[0],
+        this
+          .dimensions[1]
       );
     }
   }
 
   drawBackground() {
-    const graphics = this.pBackground;
+    const graphics = this
+      .pBackground;
 
     graphics.clear();
 
-    if (!this.options || !this.options.backgroundColor) {
+    if (
+      !this
+        .options ||
+      !this
+        .options
+        .backgroundColor
+    ) {
       return;
     }
 
     let opacity = 1;
-    let color = this.options.backgroundColor;
+    let color = this
+      .options
+      .backgroundColor;
 
-    if (this.options.backgroundColor === 'transparent') {
+    if (
+      this
+        .options
+        .backgroundColor ===
+      'transparent'
+    ) {
       opacity = 0;
-      color = 'white';
+      color =
+        'white';
     }
 
-    const hexColor = colorToHex(color);
-    graphics.beginFill(hexColor, opacity);
+    const hexColor = colorToHex(
+      color
+    );
+    graphics.beginFill(
+      hexColor,
+      opacity
+    );
 
     graphics.drawRect(
-      this.position[0],
-      this.position[1],
-      this.dimensions[0],
-      this.dimensions[1]
+      this
+        .position[0],
+      this
+        .position[1],
+      this
+        .dimensions[0],
+      this
+        .dimensions[1]
     );
   }
 
@@ -294,33 +520,68 @@ class PixiTrack extends Track {
    * @return {string} The color to use for the label.
    */
   getLabelColor() {
-    if (this.options.labelColor
-      && this.options.labelColor !== '[glyph-color]') {
-      return this.options.labelColor;
+    if (
+      this
+        .options
+        .labelColor &&
+      this
+        .options
+        .labelColor !==
+        '[glyph-color]'
+    ) {
+      return this
+        .options
+        .labelColor;
     }
 
-    return this.options.lineStrokeColor
-      || this.options.barFillColor
-      || 'black';
+    return (
+      this
+        .options
+        .lineStrokeColor ||
+      this
+        .options
+        .barFillColor ||
+      'black'
+    );
   }
 
   getName() {
-    return this.options.name
-      ? this.options.name
-      : this.tilesetInfo && this.tilesetInfo.name || '';
+    return this
+      .options
+      .name
+      ? this
+          .options
+          .name
+      : (this
+          .tilesetInfo &&
+          this
+            .tilesetInfo
+            .name) ||
+          '';
   }
 
   drawLabel() {
-    if (!this.labelText) return;
+    if (
+      !this
+        .labelText
+    )
+      return;
 
-    const graphics = this.pLabel;
+    const graphics = this
+      .pLabel;
 
     graphics.clear();
 
     if (
-      !this.options
-      || !this.options.labelPosition
-      || this.options.labelPosition === 'hidden'
+      !this
+        .options ||
+      !this
+        .options
+        .labelPosition ||
+      this
+        .options
+        .labelPosition ===
+        'hidden'
     ) {
       // don't display the track label
       this.labelText.opacity = 0;
@@ -328,243 +589,584 @@ class PixiTrack extends Track {
     }
 
     graphics.beginFill(
-      colorToHex(this.options.labelBackgroundColor || 'white'),
-      +this.options.labelBackgroundOpacity || 0.5
+      colorToHex(
+        this
+          .options
+          .labelBackgroundColor ||
+          'white'
+      ),
+      +this
+        .options
+        .labelBackgroundOpacity ||
+        0.5
     );
 
-    const fontColor = colorToHex(this.getLabelColor());
+    const fontColor = colorToHex(
+      this.getLabelColor()
+    );
     const labelBackgroundMargin = 2;
 
     // we can't draw a label if there's no space
-    if (this.dimensions[0] < 0) { return; }
+    if (
+      this
+        .dimensions[0] <
+      0
+    ) {
+      return;
+    }
 
-    let labelTextText = this.tilesetInfo && this.tilesetInfo.coordSystem
-      ? `${this.tilesetInfo.coordSystem} | `
-      : '';
+    let labelTextText =
+      this
+        .tilesetInfo &&
+      this
+        .tilesetInfo
+        .coordSystem
+        ? `${this.tilesetInfo.coordSystem} | `
+        : '';
 
     labelTextText += this.getName();
 
     if (
-      this.options.labelShowResolution
-      && this.tilesetInfo
-      && this.tilesetInfo.max_width
-      && this.tilesetInfo.bins_per_dimension
+      this
+        .options
+        .labelShowResolution &&
+      this
+        .tilesetInfo &&
+      this
+        .tilesetInfo
+        .max_width &&
+      this
+        .tilesetInfo
+        .bins_per_dimension
     ) {
       const formattedResolution = getWidthBasedResolutionText(
         this.calculateZoomLevel(),
-        this.tilesetInfo.max_width,
-        this.tilesetInfo.bins_per_dimension,
-        this.tilesetInfo.max_zoom
+        this
+          .tilesetInfo
+          .max_width,
+        this
+          .tilesetInfo
+          .bins_per_dimension,
+        this
+          .tilesetInfo
+          .max_zoom
       );
 
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     } else if (
-      this.options.labelShowResolution
-      && this.tilesetInfo
-      && this.tilesetInfo.resolutions
+      this
+        .options
+        .labelShowResolution &&
+      this
+        .tilesetInfo &&
+      this
+        .tilesetInfo
+        .resolutions
     ) {
       const formattedResolution = getResolutionBasedResolutionText(
-        this.tilesetInfo.resolutions,
+        this
+          .tilesetInfo
+          .resolutions,
         this.calculateZoomLevel()
       );
 
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     }
 
-    if (this.options && this.options.dataTransform) {
+    if (
+      this
+        .options &&
+      this
+        .options
+        .dataTransform
+    ) {
       let chosenTransform = null;
 
-      if (this.tilesetInfo && this.tilesetInfo.transforms) {
-        for (const transform of this.tilesetInfo.transforms) {
-          if (transform.value === this.options.dataTransform) {
+      if (
+        this
+          .tilesetInfo &&
+        this
+          .tilesetInfo
+          .transforms
+      ) {
+        for (const transform of this
+          .tilesetInfo
+          .transforms) {
+          if (
+            transform.value ===
+            this
+              .options
+              .dataTransform
+          ) {
             chosenTransform = transform;
           }
         }
       }
 
-      if (chosenTransform) {
+      if (
+        chosenTransform
+      ) {
         labelTextText += `\n[Transform: ${chosenTransform.name}]`;
-      } else if (this.options.dataTransform === 'None') {
-        labelTextText += '\n[Transform: None ]';
+      } else if (
+        this
+          .options
+          .dataTransform ===
+        'None'
+      ) {
+        labelTextText +=
+          '\n[Transform: None ]';
       } else {
-        labelTextText += '\n[Transform: Default ]';
+        labelTextText +=
+          '\n[Transform: Default ]';
       }
     }
 
     this.labelText.text = labelTextText;
     this.labelText.style = {
       fontSize: `${this.labelTextFontSize}px`,
-      fontFamily: this.labelTextFontFamily,
-      fill: fontColor,
+      fontFamily: this
+        .labelTextFontFamily,
+      fill: fontColor
     };
-    this.labelText.alpha = typeof this.options.labelTextOpacity !== 'undefined'
-      ? this.options.labelTextOpacity
-      : 1;
+    this.labelText.alpha =
+      typeof this
+        .options
+        .labelTextOpacity !==
+      'undefined'
+        ? this
+            .options
+            .labelTextOpacity
+        : 1;
 
     this.labelText.visible = true;
 
-    if (this.flipText) { this.labelText.scale.x = -1; }
+    if (
+      this
+        .flipText
+    ) {
+      this.labelText.scale.x = -1;
+    }
 
-    const labelLeftMargin = +this.options.labelLeftMargin || 0;
-    const labelRightMargin = +this.options.labelRightMargin || 0;
-    const labelTopMargin = +this.options.labelTopMargin || 0;
-    const labelBottomMargin = +this.options.labelBottomMargin || 0;
+    const labelLeftMargin =
+      +this
+        .options
+        .labelLeftMargin ||
+      0;
+    const labelRightMargin =
+      +this
+        .options
+        .labelRightMargin ||
+      0;
+    const labelTopMargin =
+      +this
+        .options
+        .labelTopMargin ||
+      0;
+    const labelBottomMargin =
+      +this
+        .options
+        .labelBottomMargin ||
+      0;
 
-    if (this.options.labelPosition === 'topLeft') {
-      this.labelText.x = this.position[0] + labelLeftMargin + this.labelXOffset;
-      this.labelText.y = this.position[1] + labelTopMargin;
+    if (
+      this
+        .options
+        .labelPosition ===
+      'topLeft'
+    ) {
+      this.labelText.x =
+        this
+          .position[0] +
+        labelLeftMargin +
+        this
+          .labelXOffset;
+      this.labelText.y =
+        this
+          .position[1] +
+        labelTopMargin;
 
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 0;
 
-      this.labelText.x += this.labelText.width / 2;
+      this.labelText.x +=
+        this
+          .labelText
+          .width /
+        2;
 
       graphics.drawRect(
-        this.position[0] + labelLeftMargin + this.labelXOffset,
-        this.position[1] + labelTopMargin,
-        this.labelText.width + labelBackgroundMargin,
-        this.labelText.height + labelBackgroundMargin
+        this
+          .position[0] +
+          labelLeftMargin +
+          this
+            .labelXOffset,
+        this
+          .position[1] +
+          labelTopMargin,
+        this
+          .labelText
+          .width +
+          labelBackgroundMargin,
+        this
+          .labelText
+          .height +
+          labelBackgroundMargin
       );
     } else if (
-      (this.options.labelPosition === 'bottomLeft' && !this.flipText)
-      || (this.options.labelPosition === 'topRight' && this.flipText)
+      (this
+        .options
+        .labelPosition ===
+        'bottomLeft' &&
+        !this
+          .flipText) ||
+      (this
+        .options
+        .labelPosition ===
+        'topRight' &&
+        this
+          .flipText)
     ) {
-      this.labelText.x = this.position[0] + (labelLeftMargin || labelTopMargin);
-      this.labelText.y = (
-        this.position[1] + this.dimensions[1] - (labelBottomMargin || labelRightMargin)
-      );
+      this.labelText.x =
+        this
+          .position[0] +
+        (labelLeftMargin ||
+          labelTopMargin);
+      this.labelText.y =
+        this
+          .position[1] +
+        this
+          .dimensions[1] -
+        (labelBottomMargin ||
+          labelRightMargin);
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 1;
 
-      this.labelText.x += (this.labelText.width / 2) + this.labelXOffset;
+      this.labelText.x +=
+        this
+          .labelText
+          .width /
+          2 +
+        this
+          .labelXOffset;
       graphics.drawRect(
-        this.position[0] + (labelLeftMargin || labelTopMargin) + this.labelXOffset,
-        (
-          this.position[1]
-          + this.dimensions[1]
-          - this.labelText.height
-          - labelBackgroundMargin
-          - (labelBottomMargin || labelRightMargin)
-        ),
-        this.labelText.width + labelBackgroundMargin,
-        this.labelText.height + labelBackgroundMargin
+        this
+          .position[0] +
+          (labelLeftMargin ||
+            labelTopMargin) +
+          this
+            .labelXOffset,
+        this
+          .position[1] +
+          this
+            .dimensions[1] -
+          this
+            .labelText
+            .height -
+          labelBackgroundMargin -
+          (labelBottomMargin ||
+            labelRightMargin),
+        this
+          .labelText
+          .width +
+          labelBackgroundMargin,
+        this
+          .labelText
+          .height +
+          labelBackgroundMargin
       );
     } else if (
-      (this.options.labelPosition === 'topRight' && !this.flipText)
-      || (this.options.labelPosition === 'bottomLeft' && this.flipText)
+      (this
+        .options
+        .labelPosition ===
+        'topRight' &&
+        !this
+          .flipText) ||
+      (this
+        .options
+        .labelPosition ===
+        'bottomLeft' &&
+        this
+          .flipText)
     ) {
-      this.labelText.x = (
-        this.position[0] + this.dimensions[0] - (labelRightMargin || labelBottomMargin)
-      );
-      this.labelText.y = this.position[1] + (labelTopMargin || labelLeftMargin);
+      this.labelText.x =
+        this
+          .position[0] +
+        this
+          .dimensions[0] -
+        (labelRightMargin ||
+          labelBottomMargin);
+      this.labelText.y =
+        this
+          .position[1] +
+        (labelTopMargin ||
+          labelLeftMargin);
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 0;
 
-      this.labelText.x -= (this.labelText.width / 2) + this.labelXOffset;
+      this.labelText.x -=
+        this
+          .labelText
+          .width /
+          2 +
+        this
+          .labelXOffset;
 
       graphics.drawRect(
-        (
-          this.position[0]
-          + this.dimensions[0]
-          - this.labelText.width
-          - labelBackgroundMargin
-          - (labelRightMargin || labelBottomMargin)
-          - this.labelXOffset
-        ),
-        this.position[1] + (labelTopMargin || labelLeftMargin),
-        this.labelText.width + labelBackgroundMargin,
-        this.labelText.height + labelBackgroundMargin
+        this
+          .position[0] +
+          this
+            .dimensions[0] -
+          this
+            .labelText
+            .width -
+          labelBackgroundMargin -
+          (labelRightMargin ||
+            labelBottomMargin) -
+          this
+            .labelXOffset,
+        this
+          .position[1] +
+          (labelTopMargin ||
+            labelLeftMargin),
+        this
+          .labelText
+          .width +
+          labelBackgroundMargin,
+        this
+          .labelText
+          .height +
+          labelBackgroundMargin
       );
-    } else if (this.options.labelPosition === 'bottomRight') {
-      this.labelText.x = this.position[0] + this.dimensions[0] - labelRightMargin;
-      this.labelText.y = this.position[1] + this.dimensions[1] - labelBottomMargin;
+    } else if (
+      this
+        .options
+        .labelPosition ===
+      'bottomRight'
+    ) {
+      this.labelText.x =
+        this
+          .position[0] +
+        this
+          .dimensions[0] -
+        labelRightMargin;
+      this.labelText.y =
+        this
+          .position[1] +
+        this
+          .dimensions[1] -
+        labelBottomMargin;
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 1;
 
       // we set the anchor to 0.5 so that we can flip the text if the track
       // is rotated but that means we have to adjust its position
-      this.labelText.x -= (this.labelText.width / 2) + this.labelXOffset;
+      this.labelText.x -=
+        this
+          .labelText
+          .width /
+          2 +
+        this
+          .labelXOffset;
 
       graphics.drawRect(
-        (
-          this.position[0]
-          + this.dimensions[0]
-          - this.labelText.width
-          - labelBackgroundMargin
-          - labelRightMargin
-          - this.labelXOffset
-        ),
-        (
-          this.position[1]
-          + this.dimensions[1]
-          - this.labelText.height
-          - labelBackgroundMargin
-          - labelBottomMargin
-        ),
-        this.labelText.width + labelBackgroundMargin,
-        this.labelText.height + labelBackgroundMargin,
+        this
+          .position[0] +
+          this
+            .dimensions[0] -
+          this
+            .labelText
+            .width -
+          labelBackgroundMargin -
+          labelRightMargin -
+          this
+            .labelXOffset,
+        this
+          .position[1] +
+          this
+            .dimensions[1] -
+          this
+            .labelText
+            .height -
+          labelBackgroundMargin -
+          labelBottomMargin,
+        this
+          .labelText
+          .width +
+          labelBackgroundMargin,
+        this
+          .labelText
+          .height +
+          labelBackgroundMargin
       );
     } else if (
-      (this.options.labelPosition === 'outerLeft' && !this.flipText)
-      || (this.options.labelPosition === 'outerTop' && this.flipText)
+      (this
+        .options
+        .labelPosition ===
+        'outerLeft' &&
+        !this
+          .flipText) ||
+      (this
+        .options
+        .labelPosition ===
+        'outerTop' &&
+        this
+          .flipText)
     ) {
       this.labelText.x = this.position[0];
-      this.labelText.y = this.position[1] + this.dimensions[1] / 2;
+      this.labelText.y =
+        this
+          .position[1] +
+        this
+          .dimensions[1] /
+          2;
 
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 0.5;
 
-      this.labelText.x -= this.labelText.width / 2 + 3;
+      this.labelText.x -=
+        this
+          .labelText
+          .width /
+          2 +
+        3;
     } else if (
-      (this.options.labelPosition === 'outerTop' && !this.flipText)
-      || (this.options.labelPosition === 'outerLeft' && this.flipText)
+      (this
+        .options
+        .labelPosition ===
+        'outerTop' &&
+        !this
+          .flipText) ||
+      (this
+        .options
+        .labelPosition ===
+        'outerLeft' &&
+        this
+          .flipText)
     ) {
-      this.labelText.x = this.position[0] + this.dimensions[0] / 2;
+      this.labelText.x =
+        this
+          .position[0] +
+        this
+          .dimensions[0] /
+          2;
       this.labelText.y = this.position[1];
 
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 0.5;
 
-      this.labelText.y -= this.labelText.height / 2 + 3;
+      this.labelText.y -=
+        this
+          .labelText
+          .height /
+          2 +
+        3;
     } else if (
-      (this.options.labelPosition === 'outerBottom' && !this.flipText)
-      || (this.options.labelPosition === 'outerRight' && this.flipText)
+      (this
+        .options
+        .labelPosition ===
+        'outerBottom' &&
+        !this
+          .flipText) ||
+      (this
+        .options
+        .labelPosition ===
+        'outerRight' &&
+        this
+          .flipText)
     ) {
-      this.labelText.x = this.position[0] + this.dimensions[0] / 2;
-      this.labelText.y = this.position[1] + this.dimensions[1];
+      this.labelText.x =
+        this
+          .position[0] +
+        this
+          .dimensions[0] /
+          2;
+      this.labelText.y =
+        this
+          .position[1] +
+        this
+          .dimensions[1];
 
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 0.5;
 
-      this.labelText.y += this.labelText.height / 2 + 3;
+      this.labelText.y +=
+        this
+          .labelText
+          .height /
+          2 +
+        3;
     } else if (
-      (this.options.labelPosition === 'outerRight' && !this.flipText)
-      || (this.options.labelPosition === 'outerBottom' && this.flipText)
+      (this
+        .options
+        .labelPosition ===
+        'outerRight' &&
+        !this
+          .flipText) ||
+      (this
+        .options
+        .labelPosition ===
+        'outerBottom' &&
+        this
+          .flipText)
     ) {
-      this.labelText.x = this.position[0] + this.dimensions[0];
-      this.labelText.y = this.position[1] + this.dimensions[1] / 2;
+      this.labelText.x =
+        this
+          .position[0] +
+        this
+          .dimensions[0];
+      this.labelText.y =
+        this
+          .position[1] +
+        this
+          .dimensions[1] /
+          2;
 
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 0.5;
 
-      this.labelText.x += this.labelText.width / 2 + 3;
+      this.labelText.x +=
+        this
+          .labelText
+          .width /
+          2 +
+        3;
     } else {
       this.labelText.visible = false;
     }
 
     if (
-      this.options.labelPosition === 'outerLeft'
-      || this.options.labelPosition === 'outerRight'
-      || this.options.labelPosition === 'outerTop'
-      || this.options.labelPosition === 'outerBottom'
+      this
+        .options
+        .labelPosition ===
+        'outerLeft' ||
+      this
+        .options
+        .labelPosition ===
+        'outerRight' ||
+      this
+        .options
+        .labelPosition ===
+        'outerTop' ||
+      this
+        .options
+        .labelPosition ===
+        'outerBottom'
     ) {
-      this.pLabel.setParent(this.pBase);
+      this.pLabel.setParent(
+        this
+          .pBase
+      );
     } else {
-      this.pLabel.setParent(this.pMasked);
+      this.pLabel.setParent(
+        this
+          .pMasked
+      );
     }
   }
 
-  rerender(options) {
+  rerender(
+    options
+  ) {
     this.options = options;
 
     this.draw();
@@ -593,107 +1195,312 @@ class PixiTrack extends Track {
    *
    */
   exportSVG() {
-    const gBase = document.createElement('g');
-    const rectBackground = document.createElement('rect');
+    const gBase = document.createElement(
+      'g'
+    );
+    const rectBackground = document.createElement(
+      'rect'
+    );
 
-    rectBackground.setAttribute('x', `${this.position[0]}`);
-    rectBackground.setAttribute('y', `${this.position[1]}`);
-    rectBackground.setAttribute('width', `${this.dimensions[0]}`);
-    rectBackground.setAttribute('height', `${this.dimensions[1]}`);
+    rectBackground.setAttribute(
+      'x',
+      `${
+        this
+          .position[0]
+      }`
+    );
+    rectBackground.setAttribute(
+      'y',
+      `${
+        this
+          .position[1]
+      }`
+    );
+    rectBackground.setAttribute(
+      'width',
+      `${
+        this
+          .dimensions[0]
+      }`
+    );
+    rectBackground.setAttribute(
+      'height',
+      `${
+        this
+          .dimensions[1]
+      }`
+    );
 
-    if (this.options && this.options.backgroundColor) {
-      rectBackground.setAttribute('fill', this.options.backgroundColor);
+    if (
+      this
+        .options &&
+      this
+        .options
+        .backgroundColor
+    ) {
+      rectBackground.setAttribute(
+        'fill',
+        this
+          .options
+          .backgroundColor
+      );
     } else {
-      rectBackground.setAttribute('fill-opacity', '0');
+      rectBackground.setAttribute(
+        'fill-opacity',
+        '0'
+      );
     }
 
-    const gClipped = document.createElement('g');
-    gClipped.setAttribute('class', 'g-clipped');
-    gBase.appendChild(gClipped);
-    gClipped.appendChild(rectBackground);
+    const gClipped = document.createElement(
+      'g'
+    );
+    gClipped.setAttribute(
+      'class',
+      'g-clipped'
+    );
+    gBase.appendChild(
+      gClipped
+    );
+    gClipped.appendChild(
+      rectBackground
+    );
 
-    const gTrack = document.createElement('g');
-    gClipped.setAttribute('class', 'g-track');
-    gClipped.appendChild(gTrack);
+    const gTrack = document.createElement(
+      'g'
+    );
+    gClipped.setAttribute(
+      'class',
+      'g-track'
+    );
+    gClipped.appendChild(
+      gTrack
+    );
 
-    const gLabels = document.createElement('g');
-    gClipped.setAttribute('class', 'g-labels');
-    gClipped.appendChild(gLabels); // labels should always appear on top of the track
+    const gLabels = document.createElement(
+      'g'
+    );
+    gClipped.setAttribute(
+      'class',
+      'g-labels'
+    );
+    gClipped.appendChild(
+      gLabels
+    ); // labels should always appear on top of the track
 
     // define the clipping area as a polygon defined by the track's
     // dimensions on the canvas
-    const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
-    gBase.appendChild(clipPath);
+    const clipPath = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'clipPath'
+    );
+    gBase.appendChild(
+      clipPath
+    );
 
-    const clipPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    clipPath.appendChild(clipPolygon);
+    const clipPolygon = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'polygon'
+    );
+    clipPath.appendChild(
+      clipPolygon
+    );
 
-
-    clipPolygon.setAttribute('points', `${this.position[0]},${this.position[1]} `
-                + `${this.position[0] + this.dimensions[0]},${this.position[1]} `
-                + `${this.position[0] + this.dimensions[0]},${this.position[1] + this.dimensions[1]} `
-                + `${this.position[0]},${this.position[1] + this.dimensions[1]} `);
+    clipPolygon.setAttribute(
+      'points',
+      `${
+        this
+          .position[0]
+      },${
+        this
+          .position[1]
+      } ` +
+        `${this
+          .position[0] +
+          this
+            .dimensions[0]},${
+          this
+            .position[1]
+        } ` +
+        `${this
+          .position[0] +
+          this
+            .dimensions[0]},${this
+          .position[1] +
+          this
+            .dimensions[1]} ` +
+        `${
+          this
+            .position[0]
+        },${this
+          .position[1] +
+          this
+            .dimensions[1]} `
+    );
 
     // the clipping area needs to be a clipPath element
     const clipPathId = slugid.nice();
-    clipPath.setAttribute('id', clipPathId);
+    clipPath.setAttribute(
+      'id',
+      clipPathId
+    );
 
-    gClipped.setAttribute('style', `clip-path:url(#${clipPathId});`);
+    gClipped.setAttribute(
+      'style',
+      `clip-path:url(#${clipPathId});`
+    );
 
-    const lineParts = this.labelText.text.split('\n');
+    const lineParts = this.labelText.text.split(
+      '\n'
+    );
     let ddy = 0;
 
     // SVG text alignment is wonky, just adjust the dy values of the tspans
     // instead
 
     const paddingBottom = 3;
-    const labelTextHeight = (this.labelTextFontSize + 2) * (lineParts.length) + paddingBottom;
+    const labelTextHeight =
+      (this
+        .labelTextFontSize +
+        2) *
+        lineParts.length +
+      paddingBottom;
 
-    if (this.labelText.anchor.y === 0.5) {
-      ddy = labelTextHeight / 2;
-    } else if (this.labelText.anchor.y === 1) {
+    if (
+      this
+        .labelText
+        .anchor
+        .y ===
+      0.5
+    ) {
+      ddy =
+        labelTextHeight /
+        2;
+    } else if (
+      this
+        .labelText
+        .anchor
+        .y ===
+      1
+    ) {
       ddy = -labelTextHeight;
     }
 
+    for (
+      let i = 0;
+      i <
+      lineParts.length;
+      i++
+    ) {
+      const text = document.createElement(
+        'text'
+      );
 
-    for (let i = 0; i < lineParts.length; i++) {
-      const text = document.createElement('text');
-
-      text.setAttribute('font-family', this.labelTextFontFamily);
-      text.setAttribute('font-size', `${this.labelTextFontSize}px`);
+      text.setAttribute(
+        'font-family',
+        this
+          .labelTextFontFamily
+      );
+      text.setAttribute(
+        'font-size',
+        `${this.labelTextFontSize}px`
+      );
 
       // break up newlines into separate tspan elements because SVG text
       // doesn't support line breaks:
       // http://stackoverflow.com/a/16701952/899470
 
-      text.innerText = lineParts[i];
-      if (this.options.labelPosition === 'topLeft'
-        || this.options.labelPosition === 'topRight') {
-        const dy = ddy + ((i + 1) * (this.labelTextFontSize + 2));
-        text.setAttribute('dy', dy);
-      } else if (
-        this.options.labelPosition === 'bottomLeft'
-        || this.options.labelPosition === 'bottomRight'
+      text.innerText =
+        lineParts[
+          i
+        ];
+      if (
+        this
+          .options
+          .labelPosition ===
+          'topLeft' ||
+        this
+          .options
+          .labelPosition ===
+          'topRight'
       ) {
-        text.setAttribute('dy', ddy + (i * (this.labelTextFontSize + 2)));
+        const dy =
+          ddy +
+          (i +
+            1) *
+            (this
+              .labelTextFontSize +
+              2);
+        text.setAttribute(
+          'dy',
+          dy
+        );
+      } else if (
+        this
+          .options
+          .labelPosition ===
+          'bottomLeft' ||
+        this
+          .options
+          .labelPosition ===
+          'bottomRight'
+      ) {
+        text.setAttribute(
+          'dy',
+          ddy +
+            i *
+              (this
+                .labelTextFontSize +
+                2)
+        );
       }
 
-      text.setAttribute('fill', this.options.labelColor);
+      text.setAttribute(
+        'fill',
+        this
+          .options
+          .labelColor
+      );
 
-      if (this.labelText.anchor.x === 0.5) {
-        text.setAttribute('text-anchor', 'middle');
-      } else if (this.labelText.anchor.x === 1) {
-        text.setAttribute('text-anchor', 'end');
+      if (
+        this
+          .labelText
+          .anchor
+          .x ===
+        0.5
+      ) {
+        text.setAttribute(
+          'text-anchor',
+          'middle'
+        );
+      } else if (
+        this
+          .labelText
+          .anchor
+          .x ===
+        1
+      ) {
+        text.setAttribute(
+          'text-anchor',
+          'end'
+        );
       }
 
-      gLabels.appendChild(text);
+      gLabels.appendChild(
+        text
+      );
     }
 
-    gLabels.setAttribute('transform', `translate(${this.labelText.x},${this.labelText.y})scale(${this.labelText.scale.x},1)`);
+    gLabels.setAttribute(
+      'transform',
+      `translate(${this.labelText.x},${this.labelText.y})scale(${this.labelText.scale.x},1)`
+    );
 
     // return the whole SVG and where the specific track should draw its
     // contents
-    return [gBase, gTrack];
+    return [
+      gBase,
+      gTrack
+    ];
   }
 }
 

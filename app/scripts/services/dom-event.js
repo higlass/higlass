@@ -1,5 +1,7 @@
 class DomEvent {
-  constructor(pubSub) {
+  constructor(
+    pubSub
+  ) {
     /**
      * Supported event handlers.
      *
@@ -22,11 +24,25 @@ class DomEvent {
    * @param {string} eventName - Name of the event.
    * @return {function} Either a custom or generic event handler.
    */
-  getEventHandler(eventName) {
-    if (this.customEventHandlers[eventName]) {
-      return this.customEventHandlers[eventName];
+  getEventHandler(
+    eventName
+  ) {
+    if (
+      this
+        .customEventHandlers[
+        eventName
+      ]
+    ) {
+      return this
+        .customEventHandlers[
+        eventName
+      ];
     }
-    return event => this.pubSub.publish(eventName, event);
+    return event =>
+      this.pubSub.publish(
+        eventName,
+        event
+      );
   }
 
   /**
@@ -35,16 +51,41 @@ class DomEvent {
    * @param {string} event - Name of the event to stop listening from.
    * @param {object} element - DOM element which we listened to.
    */
-  unregister(event, element) {
-    if (!this.registeredEls[event] && this.registeredEls[event] !== element) return;
+  unregister(
+    event,
+    element
+  ) {
+    if (
+      !this
+        .registeredEls[
+        event
+      ] &&
+      this
+        .registeredEls[
+        event
+      ] !==
+        element
+    )
+      return;
 
-    this.registeredEls[event].removeEventListener(
+    this.registeredEls[
+      event
+    ].removeEventListener(
       event,
-      this.registeredEls[event].__handler__
+      this
+        .registeredEls[
+        event
+      ]
+        .__handler__
     );
 
-    this.registeredEls[event] = undefined;
-    delete this.registeredEls[event];
+    this.registeredEls[
+      event
+    ] = undefined;
+    delete this
+      .registeredEls[
+      event
+    ];
   }
 
   /**
@@ -53,22 +94,56 @@ class DomEvent {
    * @param {string} event - Name of the event to listen to.
    * @param {object} newElement - DOM element which to listen to.
    */
-  register(event, newElement, useCapture = false) {
-    if (!newElement || this.registeredEls[event] === newElement) {
+  register(
+    event,
+    newElement,
+    useCapture = false
+  ) {
+    if (
+      !newElement ||
+      this
+        .registeredEls[
+        event
+      ] ===
+        newElement
+    ) {
       return;
     }
 
-    if (this.registeredEls[event]) {
-      this.unregister(this.registeredEls[event]);
+    if (
+      this
+        .registeredEls[
+        event
+      ]
+    ) {
+      this.unregister(
+        this
+          .registeredEls[
+          event
+        ]
+      );
     }
 
-    this.registeredEls[event] = newElement;
-    this.registeredEls[event].__handler__ = this.getEventHandler(event);
-    this.registeredEls[event].addEventListener(
-      event, this.registeredEls[event].__handler__,
+    this.registeredEls[
+      event
+    ] = newElement;
+    this.registeredEls[
+      event
+    ].__handler__ = this.getEventHandler(
+      event
+    );
+    this.registeredEls[
+      event
+    ].addEventListener(
+      event,
+      this
+        .registeredEls[
+        event
+      ]
+        .__handler__,
       {
         capture: useCapture,
-        passive: false,
+        passive: false
       }
     );
   }
@@ -79,6 +154,9 @@ class DomEvent {
  *
  * @type {object}
  */
-const domEvent = pubSub => new DomEvent(pubSub);
+const domEvent = pubSub =>
+  new DomEvent(
+    pubSub
+  );
 
 export default domEvent;

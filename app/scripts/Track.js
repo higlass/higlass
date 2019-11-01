@@ -5,8 +5,14 @@ import { fake as fakePubSub } from './hocs/with-pub-sub';
 import { isWithin } from './utils';
 
 class Track {
-  constructor({ id, pubSub, getTheme }) {
-    if (pubSub) {
+  constructor({
+    id,
+    pubSub,
+    getTheme
+  }) {
+    if (
+      pubSub
+    ) {
       this.pubSub = pubSub;
     } else {
       this.pubSub = fakePubSub;
@@ -23,12 +29,20 @@ class Track {
     this._refXScale = scaleLinear();
     this._refYScale = scaleLinear();
 
-    this.position = [0, 0];
-    this.dimensions = [1, 1];
+    this.position = [
+      0,
+      0
+    ];
+    this.dimensions = [
+      1,
+      1
+    ];
     this.options = {};
     this.pubSubs = [];
 
-    if (getTheme) {
+    if (
+      getTheme
+    ) {
       this.getTheme = getTheme;
     } else {
       this.getTheme = () => {};
@@ -36,7 +50,10 @@ class Track {
 
     this.pubSubs.push(
       this.pubSub.subscribe(
-        'app.mouseMove', this.defaultMouseMoveHandler.bind(this)
+        'app.mouseMove',
+        this.defaultMouseMoveHandler.bind(
+          this
+        )
       )
     );
   }
@@ -48,51 +65,91 @@ class Track {
    * @param {Number}  y  Y position to be tested.
    * @return {Boolean}  If `true` location is within the track.
    */
-  isWithin(x, y) {
+  isWithin(
+    x,
+    y
+  ) {
     let xx = x;
     let yy = y;
-    let left = this.position[0];
-    let top = this.position[1];
+    let left = this
+      .position[0];
+    let top = this
+      .position[1];
 
-    if (this.isLeftModified) {
+    if (
+      this
+        .isLeftModified
+    ) {
       xx = y;
       yy = x;
-      left = this.position[1];
-      top = this.position[0];
+      left = this
+        .position[1];
+      top = this
+        .position[0];
     }
 
     return isWithin(
       xx,
       yy,
       left,
-      this.dimensions[0] + left,
+      this
+        .dimensions[0] +
+        left,
       top,
-      this.dimensions[1] + top
+      this
+        .dimensions[1] +
+        top
     );
   }
 
-  getProp(prop) {
-    return () => this[prop];
+  getProp(
+    prop
+  ) {
+    return () =>
+      this[
+        prop
+      ];
   }
 
   getData() {}
 
   getDimensions() {
-    return this.dimensions;
+    return this
+      .dimensions;
   }
 
-  setDimensions(newDimensions) {
+  setDimensions(
+    newDimensions
+  ) {
     this.dimensions = newDimensions;
 
-    this._xScale.range([0, this.dimensions[0]]);
-    this._yScale.range([0, this.dimensions[1]]);
+    this._xScale.range(
+      [
+        0,
+        this
+          .dimensions[0]
+      ]
+    );
+    this._yScale.range(
+      [
+        0,
+        this
+          .dimensions[1]
+      ]
+    );
   }
 
   /**
    * Either get or set the reference xScale
    */
-  refXScale(_) {
-    if (!arguments.length) return this._refXScale;
+  refXScale(
+    _
+  ) {
+    if (
+      !arguments.length
+    )
+      return this
+        ._refXScale;
 
     this._refXScale = _;
 
@@ -102,8 +159,14 @@ class Track {
   /**
    * Either get or set the reference yScale
    */
-  refYScale(_) {
-    if (!arguments.length) return this._refYScale;
+  refYScale(
+    _
+  ) {
+    if (
+      !arguments.length
+    )
+      return this
+        ._refYScale;
 
     this._refYScale = _;
 
@@ -113,8 +176,14 @@ class Track {
   /**
    * Either get or set the xScale
    */
-  xScale(_) {
-    if (!arguments.length) return this._xScale;
+  xScale(
+    _
+  ) {
+    if (
+      !arguments.length
+    )
+      return this
+        ._xScale;
 
     this._xScale = _;
 
@@ -124,20 +193,37 @@ class Track {
   /**
    * Either get or set the yScale
    */
-  yScale(_) {
-    if (!arguments.length) { return this._yScale; }
+  yScale(
+    _
+  ) {
+    if (
+      !arguments.length
+    ) {
+      return this
+        ._yScale;
+    }
 
     this._yScale = _;
 
     return this;
   }
 
-  zoomed(newXScale, newYScale) {
-    this.xScale(newXScale);
-    this.yScale(newYScale);
+  zoomed(
+    newXScale,
+    newYScale
+  ) {
+    this.xScale(
+      newXScale
+    );
+    this.yScale(
+      newYScale
+    );
   }
 
-  refScalesChanged(refXScale, refYScale) {
+  refScalesChanged(
+    refXScale,
+    refYScale
+  ) {
     this._refXScale = refXScale;
     this._refYScale = refYScale;
   }
@@ -145,10 +231,13 @@ class Track {
   draw() {}
 
   getPosition() {
-    return this.position;
+    return this
+      .position;
   }
 
-  setPosition(newPosition) {
+  setPosition(
+    newPosition
+  ) {
     this.position = newPosition;
   }
 
@@ -160,13 +249,18 @@ class Track {
    *
    * @returns nothing
    */
-  defaultMouseMoveHandler(evt) {
-
-  }
+  defaultMouseMoveHandler(
+    evt
+  ) {}
 
   remove() {
     // Clear all pubSub subscriptions
-    this.pubSubs.forEach(subscription => this.pubSub.unsubscribe(subscription));
+    this.pubSubs.forEach(
+      subscription =>
+        this.pubSub.unsubscribe(
+          subscription
+        )
+    );
     this.pubSubs = [];
   }
 
@@ -177,17 +271,24 @@ class Track {
    * to events at this mouse position. The difference to `isWithin()` is that it
    * can be overwritten if a track is inactive for example.
    */
-  respondsToPosition(x, y) {
-    return this.isWithin(x, y);
+  respondsToPosition(
+    x,
+    y
+  ) {
+    return this.isWithin(
+      x,
+      y
+    );
   }
 
-  zoomedY(trackY, kMultiplier) {
+  zoomedY(
+    trackY,
+    kMultiplier
+  ) {}
 
-  }
-
-  movedY(dY) {
-
-  }
+  movedY(
+    dY
+  ) {}
 }
 
 export default Track;

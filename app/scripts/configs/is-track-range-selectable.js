@@ -1,7 +1,9 @@
 import { or } from '../utils';
 
-export const IS_TRACK_RANGE_SELECTABLE = (track) => {
-  switch (track.type) {
+export const IS_TRACK_RANGE_SELECTABLE = track => {
+  switch (
+    track.type
+  ) {
     case 'heatmap':
     case 'horizontal-1d-heatmap':
     case 'horizontal-bar':
@@ -24,8 +26,16 @@ export const IS_TRACK_RANGE_SELECTABLE = (track) => {
 
     case 'combined': {
       return track.contents
-        .map(t => IS_TRACK_RANGE_SELECTABLE(t))
-        .reduce(or, false);
+        .map(
+          t =>
+            IS_TRACK_RANGE_SELECTABLE(
+              t
+            )
+        )
+        .reduce(
+          or,
+          false
+        );
     }
 
     default:
