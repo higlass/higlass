@@ -7,20 +7,26 @@
 <link rel="stylesheet" href="/hglib.css">
 
 <style type="text/css">
-#container {
-  position: relative;
-  width: 600px;
-  height: 400px;
-  background: #eee;
-  overflow: hidden;
-}
-#demo {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
-}
+  body {
+    padding: 1rem;
+  }
+  label {
+    margin: 0.5rem 0;
+  }
+  #container {
+    position: relative;
+    width: 600px;
+    height: 400px;
+    background: #eee;
+    overflow: hidden;
+  }
+  #demo {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+  }
 </style>
 
 <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
@@ -29,7 +35,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
 </head>
 <body>
-  <label>Scroll the container <input id="scrollable" type="checkbox" checked="checked"></label>
+  <label><input id="scrolling" type="checkbox"> Enable Scrolling</label>
   <div id="container">
     <div id="demo"></div>
   </div>
@@ -418,17 +424,20 @@ const viewConfig = {
     locksDict: {}
   }
 };
+
 const hgApi = hglib.viewer(
   document.getElementById('demo'),
   viewConfig,
   {
-    scrollable: true
+    bounded: true,
+    scrollable: true,
+    scrolling: false,
   },
 );
 
-document.getElementById('scrollable').addEventListener('change', () => {
-  console.log('Scrolling: ', document.getElementById('scrollable').checked);
-  hgApi.option('scrollable', document.getElementById('scrollable').checked);
+document.getElementById('scrolling').addEventListener('change', () => {
+  console.log('Scrolling: ', document.getElementById('scrolling').checked);
+  hgApi.option('scrolling', document.getElementById('scrolling').checked);
 });
 </script>
 </html>
