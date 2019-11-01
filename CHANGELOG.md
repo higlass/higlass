@@ -1,3 +1,11 @@
+## v1.7.2
+
+- Add support for propper switching between scrolling and pan&zoom when `scrollable: true` by adding a new property called `scrolling`. When enabling `scrollable` HiGlass will adjust the style properties of it's root container to stretch to the full extent of its parent. When setting `scrolling: true` HiGlass will enable the appropriate CSS overflow rules. In summary, to activate scrolling set `scrollable: true` and `scrolling: true`. To temporarily switch back to pan&zoom keep `scrollable: true` but set `scrolling: false`. To fully reset HiGlass to the default pan&zoom mode set `scrollable: false` and `scrolling: false`.
+
+## v1.7.1
+
+_Same as v1.7.0. This is just due to a glitch at npmjs.org._
+
 ## v1.7.0
 
 - Add support for scrollable views. Activate via the option `scrollable: true`. Once you activate scrollable views all views are automatically zoomfixed! See [http://localhost:8080/others/scrollable-container.html](others/scrollable-container.html) for an example.
