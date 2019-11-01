@@ -85,6 +85,9 @@ import stylesGlobal from '../styles/HiGlass.scss'; // eslint-disable-line no-unu
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
 const VIEW_HEADER_HEIGHT = 20;
+const SIZE_MODE_BOUNDED = 'bounded';
+const SIZE_MODE_OVERFLOW = 'overflow';
+const SIZE_MODE_SCROLL = 'scroll';
 
 class HiGlassComponent extends React.Component {
   constructor(props) {
@@ -240,7 +243,6 @@ class HiGlassComponent extends React.Component {
 
     this.mounted = false;
     this.state = {
-      bounded: this.props.options.bounded || false,
       pluginTracks,
       currentBreakpoint: 'lg',
       width: 0,
@@ -1726,8 +1728,9 @@ class HiGlassComponent extends React.Component {
    */
   updateRowHeight() {
     if (
-      !(this.props.options && this.props.options.bounded)
-      || (this.props.options && this.props.options.scrollable)
+      !this.props.options
+      || !this.props.options.bounded
+      || this.props.options.sizeMode !== SIZE_MODE_BOUNDED
       || this.props.options.pixelPreciseMarginPadding
     ) {
       // not bounded so we don't need to update the row height
@@ -2480,7 +2483,10 @@ class HiGlassComponent extends React.Component {
     totalTrackHeight += MARGIN_HEIGHT;
     const rowHeight = this.state.rowHeight + MARGIN_HEIGHT;
 
-    if (!this.props.options.bounded || this.props.options.scrollable) {
+    if (
+      !this.props.options.bounded
+      || this.props.options.sizeMode !== SIZE_MODE_BOUNDED
+    ) {
       view.layout.h = Math.ceil(totalTrackHeight / rowHeight);
     }
   }
@@ -3762,7 +3768,7 @@ class HiGlassComponent extends React.Component {
   }
 
   onScrollHandler() {
-    if (!this.props.options.scrollable || !this.props.options.scrolling) return;
+    if (this.props.options.sizeMode !== SIZE_MODE_SCROLL) return;
     this.scrollTop = this.scrollContainer.scrollTop;
     this.pixiStage.y = -this.scrollTop;
     this.pubSub.publish('app.scroll', this.scrollTop);
@@ -3810,13 +3816,16 @@ class HiGlassComponent extends React.Component {
       this.props.zoomFixed
       || this.props.options.zoomFixed
       || this.state.viewConfig.zoomFixed
-      || (this.props.options.scrollable && this.props.options.scrolling)
+      || this.props.options.sizeMode === SIZE_MODE_SCROLL
       || (view && view.zoomFixed)
     );
   }
 
   wheelHandler(evt) {
-    if (this.state.modal || (this.props.options.scrollable && this.props.options.scrolling)) return;
+    if (
+      this.state.modal
+      || this.props.options.sizeMode === SIZE_MODE_SCROLL
+    ) return;
 
     // The event forwarder wasn't written for React's SyntheticEvent
     const nativeEvent = evt.nativeEvent || evt;
@@ -4149,13 +4158,24 @@ class HiGlassComponent extends React.Component {
       styleNames += ' styles.higlass-dark-theme';
     }
 
-    const scrollableStyles = {
+    const overflowStyles = {
       position: 'absolute',
       top: 0,
       right: 0,
       bottom: 0,
-      left: 0,
+      left: 0
     };
+
+    const containerStyles = (
+      this.props.options.sizeMode === SIZE_MODE_OVERFLOW
+      || this.props.options.sizeMode === SIZE_MODE_SCROLL
+    ) ? overflowStyles : {};
+
+    // eslint-disable-next-line no-nested-ternary
+    const scrollStyles = this.props.options.sizeMode === SIZE_MODE_OVERFLOW
+      ? { ...overflowStyles, overflow: 'hidden' }
+      : this.props.options.sizeMode === SIZE_MODE_SCROLL
+        ? { ...overflowStyles, overflowX: 'hidden', overflowY: 'auto' } : {};
 
     return (
       <div
@@ -4164,7 +4184,7 @@ class HiGlassComponent extends React.Component {
         className="higlass"
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
-        style={this.props.options.scrollable ? scrollableStyles : {}}
+        style={containerStyles}
         styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>
@@ -4180,19 +4200,7 @@ class HiGlassComponent extends React.Component {
                 ref={(c) => { this.scrollContainer = c; }}
                 className="higlass-scroll-container"
                 onScroll={this.onScrollHandlerBound}
-                // eslint-disable-next-line no-nested-ternary
-                style={this.props.options.scrollable
-                  ? this.props.options.scrolling
-                    ? {
-                      ...scrollableStyles,
-                      overflowX: 'hidden',
-                      overflowY: 'auto',
-                    } : {
-                      ...scrollableStyles,
-                      overflow: 'hidden'
-                    }
-                  : {}
-                }
+                style={scrollStyles}
               >
                 <div
                   ref={(c) => { this.divDrawingSurface = c; }}
