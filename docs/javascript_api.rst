@@ -104,7 +104,12 @@ The ``options`` parameter can have the following properties:
 - ``renderer``: if ``canvas`` HiGlass will render to the Canvas API. Otherwise
 it will use WebGL.
 
-- ``scrollable``: if ``true`` HiGlass will activate scroll mode. This **does not** automatically activate scrolling. It merely stretches the base container to its parent and hides overflowing content.
+- ``sizeMode``: the size mode determines the visible height of the HiGlass instance. There are 4 modes:
+  - ``default``: the height is given by the sum of the tracks' heights
+  - ``bounded``: tells the HiGlass component to bind the height to the parent container by dynamically adjusting the height of center tracks.
+  - ``scroll``
+  - ``overflow``: the height of the views is given by the sum of the tracks' heights but when this height is larger than ``element`` the overflowing parts will be hidden. This mode is only needed when you want to dynamically switch between scrolling and pan+zooming. Say you scrolled halfway down and then want to temporarily pan&zoom a track at that position. If you would switch back to ``bounded`` the scrollTop position would be lost because ``bounded`` demands that your entire view is bound to the parent. Instead you want can switch to ``overflow`` to keep the current scrollTop position and enable pan&zooming.
+  Note that if ``sizeMode`` is anything other than ``default``, the ``element`` must have a fixed height!
 
 - ``scrolling``: if ``true`` HiGlass will activate scrolling by setting the approriate CSS overflow rules, so you can scroll through views. This mode will also set all views to zoom fixed automatically. For this to work ``scrollable`` must be set to ``true``!
 
