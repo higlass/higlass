@@ -23,6 +23,7 @@ import simple1dHorizontalVerticalAnd2dDataTrack from './view-configs/simple-1d-h
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
+import drag from './utils/drag';
 
 function findCanvas(element) {
   if (element.tagName.toLowerCase() === 'canvas') return element;
@@ -319,9 +320,10 @@ describe('API Tests', () => {
       expect(api.option('editable')).toEqual(false);
       expect(api.option('bounded')).toEqual(true);
       expect(api.option('scrollable')).toEqual(undefined);
+      expect(api.option('scrolling')).toEqual(undefined);
     });
 
-    it('can scroll when scrollable is true', (done) => {
+    it('stretches to parent when scrollable is true but cannot scroll', (done) => {
       [div, api] = createElementAndApi(
         stackedTopTracks,
         { editable: false, scrollable: true },
@@ -330,28 +332,66 @@ describe('API Tests', () => {
 
       expect(api.option('scrollable')).toEqual(true);
 
+      const hgContainer = div.querySelector('.higlass');
+      const scrollContainer = div.querySelector('.higlass-scroll-container');
+
+      expect(hgContainer.style.position).toEqual('absolute');
+      expect(scrollContainer.style.position).toEqual('absolute');
+      expect(scrollContainer.style.overflow).toEqual('hidden');
+
       const hgc = api.getComponent();
 
       waitForTilesLoaded(hgc, () => {
-        const scrollContainer = div.querySelector('.higlass-scroll-container');
+        expect(hgc.isZoomFixed('aa')).toBeFalsy();
+
+        scrollContainer.scrollTop = 20;
+
+        setTimeout(() => {
+          expect(hgc.pixiStage.y).toEqual(0);
+          done();
+        }, 10);
+      });
+    });
+
+    it('can scroll when scrollable and scrolling are true', (done) => {
+      [div, api] = createElementAndApi(
+        stackedTopTracks,
+        { editable: false, scrollable: true, scrolling: true },
+        600, 200, true
+      );
+
+      expect(api.option('scrollable')).toEqual(true);
+      expect(api.option('scrolling')).toEqual(true);
+
+      const scrollContainer = div.querySelector('.higlass-scroll-container');
+
+      expect(scrollContainer.style.overflowX).toEqual('hidden');
+      expect(scrollContainer.style.overflowY).toEqual('auto');
+
+      const hgc = api.getComponent();
+
+      waitForTilesLoaded(hgc, () => {
+        expect(hgc.isZoomFixed('aa')).toEqual(true);
+
         scrollContainer.scrollTop = 20;
 
         setTimeout(() => {
           expect(scrollContainer.scrollTop).toEqual(20);
           expect(hgc.pixiStage.y).toEqual(-20);
           done();
-        }, 0);
+        }, 10);
       });
     });
 
-    it('cannot scroll when scrollable is false', (done) => {
+    it('remembers scroll position when scrolling is set false', (done) => {
       [div, api] = createElementAndApi(
         stackedTopTracks,
-        { editable: false, scrollable: false },
+        { editable: false, scrollable: true, scrolling: true },
         600, 200, true
       );
 
-      expect(api.option('scrollable')).toEqual(false);
+      expect(api.option('scrollable')).toEqual(true);
+      expect(api.option('scrolling')).toEqual(true);
 
       const hgc = api.getComponent();
 
@@ -360,18 +400,62 @@ describe('API Tests', () => {
         scrollContainer.scrollTop = 20;
 
         setTimeout(() => {
-          expect(scrollContainer.scrollTop).toEqual(0);
-          expect(hgc.pixiStage.y).toEqual(0);
-          done();
-        }, 0);
+          expect(hgc.pixiStage.y).toEqual(-20);
+          expect(scrollContainer.style.overflowX).toEqual('hidden');
+          expect(scrollContainer.style.overflowY).toEqual('auto');
+
+          api.option('scrolling', false);
+
+          setTimeout(() => {
+            scrollContainer.scrollTop = 40;
+            setTimeout(() => {
+              expect(scrollContainer.style.overflow).toEqual('hidden');
+              expect(hgc.pixiStage.y).toEqual(-20);
+              done();
+            }, 10);
+          }, 250);
+        }, 10);
       });
     });
 
     it('can scroll multiple views', (done) => {
       [div, api] = createElementAndApi(
         stackedTopViews,
-        { editable: false, scrollable: true, bounded: true },
+        {
+          editable: false,
+          scrollable: true,
+          scrolling: true,
+          bounded: true
+        },
         600, 200, true
+      );
+
+      expect(api.option('scrollable')).toEqual(true);
+      expect(api.option('scrolling')).toEqual(true);
+
+      const hgc = api.getComponent();
+
+      waitForTilesLoaded(hgc, () => {
+        const scrollContainer = div.querySelector('.higlass-scroll-container');
+        scrollContainer.scrollTop = 20;
+
+        setTimeout(() => {
+          expect(hgc.pixiStage.y).toEqual(-20);
+          done();
+        }, 10);
+      });
+    });
+
+    it('can pan&zoom after having scrolled', (done) => {
+      [div, api] = createElementAndApi(
+        stackedTopViews,
+        {
+          editable: false,
+          scrollable: true,
+          scrolling: true,
+          bounded: true
+        },
+        600, 400, true
       );
 
       expect(api.option('scrollable')).toEqual(true);
@@ -379,14 +463,27 @@ describe('API Tests', () => {
       const hgc = api.getComponent();
 
       waitForTilesLoaded(hgc, () => {
+        expect(hgc.isZoomFixed('l')).toEqual(true);
+
         const scrollContainer = div.querySelector('.higlass-scroll-container');
-        scrollContainer.scrollTop = 20;
+        // Scroll to the very end
+        scrollContainer.scrollTop = 1790;
 
         setTimeout(() => {
-          expect(scrollContainer.scrollTop).toEqual(20);
-          expect(hgc.pixiStage.y).toEqual(-20);
-          done();
-        }, 0);
+          expect(hgc.pixiStage.y).toEqual(-1790);
+
+          api.option('scrolling', false);
+
+          setTimeout(() => {
+            expect(hgc.isZoomFixed('l')).toBeFalsy();
+
+            // Trigger a pan event
+            const [dx] = drag(150, 300, 140, 300, 'l', hgc);
+
+            expect(dx).toEqual(-10);
+            done();
+          }, 250);
+        }, 10);
       });
     });
 
