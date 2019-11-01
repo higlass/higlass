@@ -85,6 +85,7 @@ import stylesGlobal from '../styles/HiGlass.scss'; // eslint-disable-line no-unu
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
 const VIEW_HEADER_HEIGHT = 20;
+const SIZE_MODE_DEFAULT = 'default';
 const SIZE_MODE_BOUNDED = 'bounded';
 const SIZE_MODE_OVERFLOW = 'overflow';
 const SIZE_MODE_SCROLL = 'scroll';
@@ -360,6 +361,13 @@ class HiGlassComponent extends React.Component {
     if (this.props.getApi) {
       this.props.getApi(this.api);
     }
+  }
+
+  get sizeMode() {
+    // eslint-disable-next-line no-nested-ternary
+    return typeof this.props.options.sizeMode === 'undefined'
+      ? this.props.options.bounded ? 'bounded' : SIZE_MODE_DEFAULT
+      : this.props.options.sizeMode;
   }
 
   setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally = false) {
@@ -1729,8 +1737,7 @@ class HiGlassComponent extends React.Component {
   updateRowHeight() {
     if (
       !this.props.options
-      || !this.props.options.bounded
-      || this.props.options.sizeMode !== SIZE_MODE_BOUNDED
+      || this.sizeMode !== SIZE_MODE_BOUNDED
       || this.props.options.pixelPreciseMarginPadding
     ) {
       // not bounded so we don't need to update the row height
@@ -2483,10 +2490,7 @@ class HiGlassComponent extends React.Component {
     totalTrackHeight += MARGIN_HEIGHT;
     const rowHeight = this.state.rowHeight + MARGIN_HEIGHT;
 
-    if (
-      !this.props.options.bounded
-      || this.props.options.sizeMode !== SIZE_MODE_BOUNDED
-    ) {
+    if (this.sizeMode !== SIZE_MODE_BOUNDED) {
       view.layout.h = Math.ceil(totalTrackHeight / rowHeight);
     }
   }
