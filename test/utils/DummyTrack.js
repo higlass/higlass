@@ -1,8 +1,6 @@
 const DummyTrack = function DummyTrack(HGC, ...args) {
   if (!new.target) {
-    throw new Error(
-      'Uncaught TypeError: Class constructor cannot be invoked without "new"'
-    );
+    throw new Error('Uncaught TypeError: Class constructor cannot be invoked without "new"');
   }
 
   class DummyTrackClass extends HGC.tracks.PixiTrack {

@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -9,12 +9,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 
 // Utils
-import {
-  mountHGComponent,
-  removeHGComponent,
-  getTrackObjectFromHGC
-} from '../app/scripts/utils';
-
+import { mountHGComponent, removeHGComponent, getTrackObjectFromHGC } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
 
@@ -23,15 +18,17 @@ describe('Simple HiGlassComponent', () => {
   let div = null;
 
   describe('BedLikeTrack tests', () => {
-    beforeAll((done) => {
-      ([div, hgc] = mountHGComponent(div, hgc, viewConf, done));
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
     });
 
     it('Ensures that the track was rendered', () => {
       expect(hgc.instance().state.viewConfig.editable).to.eql(true);
-      const trackObj = getTrackObjectFromHGC(hgc.instance(),
+      const trackObj = getTrackObjectFromHGC(
+        hgc.instance(),
         viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[0].uid);
+        viewConf.views[0].tracks.top[0].uid
+      );
 
       expect(Object.keys(trackObj.drawnRects).length).to.be.above(0);
     });
@@ -44,31 +41,25 @@ describe('Simple HiGlassComponent', () => {
   const viewConf = {
     editable: true,
     zoomFixed: false,
-    trackSourceServers: [
-      'http://higlass.io/api/v1'
-    ],
+    trackSourceServers: ['http://higlass.io/api/v1'],
     exportViewUrl: 'http://higlass.io/api/v1/viewconfs/',
     views: [
       {
         uid: 'aa',
-        initialXDomain: [
-          -252359004.01034582,
-          2768731225.3911114
-        ],
-        initialYDomain: [
-          -81794317.90460095,
-          2599238446.8497105
-        ],
+        initialXDomain: [-252359004.01034582, 2768731225.3911114],
+        initialYDomain: [-81794317.90460095, 2599238446.8497105],
         autocompleteSource: 'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
         genomePositionSearchBoxVisible: false,
         chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
         tracks: {
-          top: [{
-            uid: 'a',
-            type: 'bedlike',
-            tilesetUid: 'N3g_OsVITeulp6cUs2EaJA',
-            server: 'http://higlass.io/api/v1'
-          }],
+          top: [
+            {
+              uid: 'a',
+              type: 'bedlike',
+              tilesetUid: 'N3g_OsVITeulp6cUs2EaJA',
+              server: 'http://higlass.io/api/v1'
+            }
+          ],
           left: [],
           center: [],
           right: [],

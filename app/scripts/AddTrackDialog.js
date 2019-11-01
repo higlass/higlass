@@ -20,7 +20,7 @@ class AddTrackDialog extends React.Component {
     this.options = {};
 
     this.state = {
-      selectedTilesets: [{ datatype: 'none' }],
+      selectedTilesets: [{ datatype: 'none' }]
     };
 
     this.handleSubmitBound = this.handleSubmit.bind(this);
@@ -60,11 +60,7 @@ class AddTrackDialog extends React.Component {
   handleSubmit(evt) {
     if (evt) evt.preventDefault();
 
-    this.props.onTracksChosen(
-      this.state.selectedTilesets,
-      this.props.position,
-      this.props.host
-    );
+    this.props.onTracksChosen(this.state.selectedTilesets, this.props.position, this.props.host);
   }
 
   /**
@@ -79,9 +75,7 @@ class AddTrackDialog extends React.Component {
     this.selectedTilesetsChanged([tileset]);
 
     // should iterate over the selected tilesets
-    this.props.onTracksChosen(this.state.selectedTilesets,
-      this.props.position,
-      this.props.host);
+    this.props.onTracksChosen(this.state.selectedTilesets, this.props.position, this.props.host);
   }
 
   handleOptionsChanged(newOptions) {
@@ -91,12 +85,14 @@ class AddTrackDialog extends React.Component {
   handlePlotTypeSelected(newPlotType) {
     const { selectedTilesets } = this.state;
 
-    for (const tileset of selectedTilesets) { tileset.type = newPlotType; }
+    for (const tileset of selectedTilesets) {
+      tileset.type = newPlotType;
+    }
 
     this.selectedPlotType = newPlotType;
 
     this.setState({
-      selectedTilesets,
+      selectedTilesets
     });
   }
 
@@ -113,7 +109,9 @@ class AddTrackDialog extends React.Component {
 
     const firstDatatype = selectedTilesets[0].datatype;
     for (const tileset of selectedTilesets) {
-      if (tileset.datatype !== firstDatatype) { allSame = false; }
+      if (tileset.datatype !== firstDatatype) {
+        allSame = false;
+      }
     }
 
     if (allSame) {
@@ -131,8 +129,10 @@ class AddTrackDialog extends React.Component {
           datatypes = [tileset.datatype, 'chromsizes'];
         }
 
-        tileset.type = AVAILABLE_TRACK_TYPES([datatypes],
-          this.getOrientation(this.props.position))[0].type;
+        tileset.type = AVAILABLE_TRACK_TYPES(
+          [datatypes],
+          this.getOrientation(this.props.position)
+        )[0].type;
       }
     }
 
@@ -145,7 +145,9 @@ class AddTrackDialog extends React.Component {
       <div>
         <TilesetFinder
           // Only for testing purposes
-          ref={(c) => { this.tilesetFinder = c; }}
+          ref={c => {
+            this.tilesetFinder = c;
+          }}
           datatype={this.props.datatype}
           onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
           onTracksChosen={value => this.props.onTracksChosen(value, this.props.position)}
@@ -164,25 +166,25 @@ class AddTrackDialog extends React.Component {
         onOkay={this.handleSubmitBound}
         title="Add Track"
       >
-        { form }
-        {
-          !this.props.hidePlotTypeChooser && (
-            <PlotTypeChooser
-              // Only for testing purposes
-              ref={(c) => { this.plotTypeChooser = c; }}
-              datatypes={this.state.selectedTilesets.map((x) => {
-                if (x.filetype === 'cooler') {
-                  // cooler files can also supply chromsizes
-                  return [x.datatype, 'chromsizes'];
-                }
+        {form}
+        {!this.props.hidePlotTypeChooser && (
+          <PlotTypeChooser
+            // Only for testing purposes
+            ref={c => {
+              this.plotTypeChooser = c;
+            }}
+            datatypes={this.state.selectedTilesets.map(x => {
+              if (x.filetype === 'cooler') {
+                // cooler files can also supply chromsizes
+                return [x.datatype, 'chromsizes'];
+              }
 
-                return [x.datatype];
-              })}
-              onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
-              orientation={orientation}
-            />
-          )
-        }
+              return [x.datatype];
+            })}
+            onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
+            orientation={orientation}
+          />
+        )}
       </Dialog>
     );
   }
@@ -190,7 +192,7 @@ class AddTrackDialog extends React.Component {
 
 AddTrackDialog.defaultProps = {
   hidePlotTypeChooser: false,
-  position: 'top',
+  position: 'top'
 };
 
 AddTrackDialog.propTypes = {
@@ -200,7 +202,7 @@ AddTrackDialog.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onTracksChosen: PropTypes.func.isRequired,
   position: PropTypes.string,
-  trackSourceServers: PropTypes.array.isRequired,
+  trackSourceServers: PropTypes.array.isRequired
 };
 
 export default AddTrackDialog;

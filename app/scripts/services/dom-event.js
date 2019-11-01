@@ -38,10 +38,7 @@ class DomEvent {
   unregister(event, element) {
     if (!this.registeredEls[event] && this.registeredEls[event] !== element) return;
 
-    this.registeredEls[event].removeEventListener(
-      event,
-      this.registeredEls[event].__handler__
-    );
+    this.registeredEls[event].removeEventListener(event, this.registeredEls[event].__handler__);
 
     this.registeredEls[event] = undefined;
     delete this.registeredEls[event];
@@ -64,13 +61,10 @@ class DomEvent {
 
     this.registeredEls[event] = newElement;
     this.registeredEls[event].__handler__ = this.getEventHandler(event);
-    this.registeredEls[event].addEventListener(
-      event, this.registeredEls[event].__handler__,
-      {
-        capture: useCapture,
-        passive: false,
-      }
-    );
+    this.registeredEls[event].addEventListener(event, this.registeredEls[event].__handler__, {
+      capture: useCapture,
+      passive: false
+    });
   }
 }
 

@@ -69,7 +69,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
   setVisibleTiles(tilePositions) {
     this.visibleTiles = tilePositions.map(x => ({
       tileId: this.tileToLocalId(x),
-      remoteId: this.tileToRemoteId(x),
+      remoteId: this.tileToRemoteId(x)
     }));
 
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.remoteId));
@@ -78,7 +78,9 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
   calculateVisibleTiles() {
     // if we don't know anything about this dataset, no point
     // in trying to get tiles
-    if (!this.tilesetInfo) { return; }
+    if (!this.tilesetInfo) {
+      return;
+    }
 
     this.zoomLevel = this.calculateZoomLevel();
     // this.zoomLevel = 0;
@@ -140,7 +142,9 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
   drawTile(tile) {
     const graphics = tile.graphics;
 
-    if (!graphics) { return; }
+    if (!graphics) {
+      return;
+    }
 
     graphics.clear();
 
@@ -154,27 +158,23 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
       stroke,
       typeof this.options.rectangleDomainStrokeOpacity !== 'undefined'
         ? this.options.rectangleDomainStrokeOpacity
-        : 1,
+        : 1
     );
     graphics.beginFill(
       fill,
       typeof this.options.rectangleDomainFillOpacity !== 'undefined'
         ? this.options.rectangleDomainFillOpacity
-        : 0.4,
+        : 0.4
     );
 
     graphics.alpha = this.options.rectangleDomainOpacity || 0.5;
 
-    const minSquareSize = (
-      this.options.minSquareSize
-      && this.options.minSquareSize !== 'none'
-    )
-      ? +this.options.minSquareSize
-      : 0;
+    const minSquareSize =
+      this.options.minSquareSize && this.options.minSquareSize !== 'none'
+        ? +this.options.minSquareSize
+        : 0;
 
-    const minThres = this.options.rectangleMinSize
-      ? +this.options.rectangleMinSize
-      : 0;
+    const minThres = this.options.rectangleMinSize ? +this.options.rectangleMinSize : 0;
 
     const xMin = this._xScale.range()[0];
     const xMax = this._xScale.range()[1];
@@ -186,7 +186,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
     // line needs to be scaled down so that it doesn't become huge
     tile.tileData
       .filter(td => !(td.uid in this.drawnRects))
-      .forEach((td) => {
+      .forEach(td => {
         const startX = this._xScale(td.xStart);
         const endX = this._xScale(td.xEnd);
 
@@ -208,8 +208,8 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
         if (minSquareSize) {
           if (width < minSquareSize || height < minSquareSize) {
             drawnRect = {
-              x: startX - (minSquareSize / 2),
-              y: startY - (minSquareSize / 2),
+              x: startX - minSquareSize / 2,
+              y: startY - minSquareSize / 2,
               width: minSquareSize,
               height: minSquareSize
             };
@@ -223,22 +223,18 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
 
         // Only draw annotations that falls somehow within the viewport
         if (
-          (drawnRect.x > xMin && drawnRect.x < xMax)
-          || (dRxMax > xMin && dRxMax < xMax)
-          || (drawnRect.y > yMin && drawnRect.y < yMax)
-          || (dRyMax > yMin && dRyMax < yMax)
+          (drawnRect.x > xMin && drawnRect.x < xMax) ||
+          (dRxMax > xMin && dRxMax < xMax) ||
+          (drawnRect.y > yMin && drawnRect.y < yMax) ||
+          (dRyMax > yMin && dRyMax < yMax)
         ) {
           if (drawnRect.width > minThres || drawnRect.height > minThres) {
-            graphics.drawRect(
-              drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height
-            );
+            graphics.drawRect(drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height);
 
             this.publish('annotationDrawn', {
               trackUuid: this.uuid,
               annotationUuid: uid,
-              viewPos: [
-                drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height
-              ],
+              viewPos: [drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height],
               dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd],
               importance: td.importance,
               info: {
@@ -261,8 +257,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
       track = base;
     }
     const output = document.createElement('g');
-    output.setAttribute('transform',
-      `translate(${this.position[0]},${this.position[1]})`);
+    output.setAttribute('transform', `translate(${this.position[0]},${this.position[1]})`);
 
     track.appendChild(output);
 
@@ -270,10 +265,12 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
       // this tile has no data
       if (!tile.tileData || !tile.tileData.length) continue;
 
-      tile.tileData.forEach((td) => {
+      tile.tileData.forEach(td => {
         const gTile = document.createElement('g');
-        gTile.setAttribute('transform',
-          `translate(${tile.graphics.position.x},${tile.graphics.position.y})scale(${tile.graphics.scale.x},${tile.graphics.scale.y})`);
+        gTile.setAttribute(
+          'transform',
+          `translate(${tile.graphics.position.x},${tile.graphics.position.y})scale(${tile.graphics.scale.x},${tile.graphics.scale.y})`
+        );
         output.appendChild(gTile);
 
         if (td.uid in this.drawnRects) {
@@ -286,7 +283,8 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
           r.setAttribute('height', rect.height);
 
           r.setAttribute(
-            'fill', this.options.rectangleDomainFillColor ? this.options.rectangleDomainFillColor : 'grey'
+            'fill',
+            this.options.rectangleDomainFillColor ? this.options.rectangleDomainFillColor : 'grey'
           );
           r.setAttribute('opacity', 0.3);
 
@@ -310,11 +308,12 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
 
   zoomed(newXScale, newYScale) {
     if (
-      this.xScale().domain()[0] === newXScale.domain()[0]
-      && this.xScale().domain()[1] === newXScale.domain()[1]
-      && this.yScale().domain()[0] === newYScale.domain()[0]
-      && this.yScale().domain()[1] === newYScale.domain()[1]
-    ) return;
+      this.xScale().domain()[0] === newXScale.domain()[0] &&
+      this.xScale().domain()[1] === newXScale.domain()[1] &&
+      this.yScale().domain()[0] === newYScale.domain()[0] &&
+      this.yScale().domain()[1] === newYScale.domain()[1]
+    )
+      return;
 
     this.xScale(newXScale);
     this.yScale(newYScale);

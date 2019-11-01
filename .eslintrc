@@ -7,7 +7,8 @@
   "extends": [
     "eslint:recommended",
     "airbnb",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "prettier"
   ],
   "plugins": [
     "react"
@@ -99,7 +100,8 @@
     "react/prop-types": 1,
     "react/react-in-jsx-scope": 2,
     "react/self-closing-comp": 2,
-    "react/sort-comp": 0
+    "react/sort-comp": 0,
+    "switch-colon-spacing": 0, // handled by prettier
   },
   "overrides": [
     {

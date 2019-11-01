@@ -33,11 +33,13 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
 
     return (
       <div
-        ref={(c) => { this.div = c; }}
+        ref={c => {
+          this.div = c;
+        }}
         data-menu-type="ConfigTrackMenu"
         style={{
           left: this.state.left,
-          top: this.state.top,
+          top: this.state.top
         }}
         styleName={styleNames}
       >
@@ -76,16 +78,13 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
           {'Add Series'}
         </ContextMenuItem>
 
-        <ContextMenuItem
-          onClick={() => this.props.onCloseTrack(this.props.tracks[0].uid)}
-        >
+        <ContextMenuItem onClick={() => this.props.onCloseTrack(this.props.tracks[0].uid)}>
           {'Close Track'}
         </ContextMenuItem>
 
         <ContextMenuItem
           onClick={() => {
-            this.props.onReplaceTrack(this.props.tracks[0].uid,
-              this.props.trackOrientation);
+            this.props.onReplaceTrack(this.props.tracks[0].uid, this.props.trackOrientation);
           }}
         >
           {'Replace Track'}

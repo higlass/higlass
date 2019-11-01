@@ -90,7 +90,7 @@ const libraries = {
   d3Zoom,
   PIXI,
   mix,
-  slugid,
+  slugid
 };
 
 const tracks = {
@@ -127,7 +127,7 @@ const tracks = {
   Track,
   ValueIntervalTrack,
   VerticalTiled1DPixiTrack,
-  VerticalTrack,
+  VerticalTrack
 };
 
 const factories = {

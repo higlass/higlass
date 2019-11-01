@@ -11,14 +11,13 @@ class SVGTrack extends Track {
      * Create a new SVG track. It will contain a g element
      * that maintains all of its element.
      */
-    this.gMain = select(svgElement)
-      .append('g');
+    this.gMain = select(svgElement).append('g');
     this.clipUid = slugid.nice();
 
-    this.clipRect = this.gMain.append('clipPath')
+    this.clipRect = this.gMain
+      .append('clipPath')
       .attr('id', `track-bounds-${this.clipUid}`)
       .append('rect');
-
 
     this.gMain.attr('clip-path', `url(#track-bounds-${this.clipUid})`);
   }

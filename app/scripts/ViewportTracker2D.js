@@ -8,11 +8,7 @@ class ViewportTracker2D extends SVGTrack {
   constructor(context, options) {
     // create a clipped SVG Path
     super(context, options);
-    const {
-      registerViewportChanged,
-      removeViewportChanged,
-      setDomainsCallback,
-    } = context;
+    const { registerViewportChanged, removeViewportChanged, setDomainsCallback } = context;
 
     const uid = slugid.nice();
     this.uid = uid;
@@ -44,21 +40,16 @@ class ViewportTracker2D extends SVGTrack {
     */
 
     // turn off the ability to select new regions for this brush
-    this.gBrush.selectAll('.overlay')
-      .style('pointer-events', 'none');
+    this.gBrush.selectAll('.overlay').style('pointer-events', 'none');
 
     // turn off the ability to modify the aspect ratio of the brush
-    this.gBrush.selectAll('.handle--n')
-      .style('pointer-events', 'none');
+    this.gBrush.selectAll('.handle--n').style('pointer-events', 'none');
 
-    this.gBrush.selectAll('.handle--s')
-      .style('pointer-events', 'none');
+    this.gBrush.selectAll('.handle--s').style('pointer-events', 'none');
 
-    this.gBrush.selectAll('.handle--w')
-      .style('pointer-events', 'none');
+    this.gBrush.selectAll('.handle--w').style('pointer-events', 'none');
 
-    this.gBrush.selectAll('.handle--e')
-      .style('pointer-events', 'none');
+    this.gBrush.selectAll('.handle--e').style('pointer-events', 'none');
 
     registerViewportChanged(uid, this.viewportChanged.bind(this));
 
@@ -75,13 +66,13 @@ class ViewportTracker2D extends SVGTrack {
      */
     const s = event.selection;
 
-    if (!this._xScale || !this._yScale) { return; }
+    if (!this._xScale || !this._yScale) {
+      return;
+    }
 
-    const xDomain = [this._xScale.invert(s[0][0]),
-      this._xScale.invert(s[1][0])];
+    const xDomain = [this._xScale.invert(s[0][0]), this._xScale.invert(s[1][0])];
 
-    const yDomain = [this._yScale.invert(s[0][1]),
-      this._yScale.invert(s[1][1])];
+    const yDomain = [this._yScale.invert(s[0][1]), this._yScale.invert(s[1][1])];
 
     this.setDomainsCallback(xDomain, yDomain);
   }
@@ -106,7 +97,8 @@ class ViewportTracker2D extends SVGTrack {
   rerender() {
     // set the fill and stroke colors
     // console.log('rerender');
-    this.gBrush.selectAll('.selection')
+    this.gBrush
+      .selectAll('.selection')
       .attr('fill', this.options.projectionFillColor)
       .attr('stroke', this.options.projectionStrokeColor)
       .attr('fill-opacity', this.options.projectionFillOpacity)
@@ -121,9 +113,13 @@ class ViewportTracker2D extends SVGTrack {
   }
 
   draw() {
-    if (!this._xScale || !this.yScale) { return; }
+    if (!this._xScale || !this.yScale) {
+      return;
+    }
 
-    if (!this.viewportXDomain || !this.viewportYDomain) { return; }
+    if (!this.viewportXDomain || !this.viewportYDomain) {
+      return;
+    }
 
     const x0 = this._xScale(this.viewportXDomain[0]);
     const y0 = this._yScale(this.viewportYDomain[0]);

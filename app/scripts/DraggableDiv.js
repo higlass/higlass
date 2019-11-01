@@ -95,9 +95,8 @@ class DraggableDiv extends React.Component {
     newWidth = newWidth > this.minWidth ? newWidth : this.minWidth;
 
     let newLeft = this.dragStartLeft + ms[0] - this.dragStartMousePos[0];
-    newLeft = newWidth > this.minWidth
-      ? newLeft
-      : this.dragStartLeft + this.dragStartWidth - this.minWidth;
+    newLeft =
+      newWidth > this.minWidth ? newLeft : this.dragStartLeft + this.dragStartWidth - this.minWidth;
 
     this.setState({
       left: newLeft,
@@ -115,9 +114,10 @@ class DraggableDiv extends React.Component {
     newHeight = newHeight > this.minHeight ? newHeight : this.minHeight;
 
     let newTop = this.dragStartTop + ms[1] - this.dragStartMousePos[1];
-    newTop = newHeight > this.minHeight
-      ? newTop
-      : this.dragStartTop + this.dragStartHeight - this.minHeight;
+    newTop =
+      newHeight > this.minHeight
+        ? newTop
+        : this.dragStartTop + this.dragStartHeight - this.minHeight;
 
     this.setState({
       top: newTop,
@@ -152,9 +152,8 @@ class DraggableDiv extends React.Component {
     newWidth = newWidth > this.minWidth ? newWidth : this.minWidth;
 
     let newLeft = this.dragStartLeft + ms[0] - this.dragStartMousePos[0];
-    newLeft = newWidth > this.minWidth
-      ? newLeft
-      : this.dragStartLeft + this.dragStartWidth - this.minWidth;
+    newLeft =
+      newWidth > this.minWidth ? newLeft : this.dragStartLeft + this.dragStartWidth - this.minWidth;
 
     this.setState({
       left: newLeft,
@@ -184,7 +183,6 @@ class DraggableDiv extends React.Component {
     this.sizeChanged();
   }
 
-
   dragTopRightFunc() {
     const ms = mouse(this.domBody);
 
@@ -192,9 +190,10 @@ class DraggableDiv extends React.Component {
     newHeight = newHeight > this.minHeight ? newHeight : this.minHeight;
 
     let newTop = this.dragStartTop + ms[1] - this.dragStartMousePos[1];
-    newTop = newHeight > this.minHeight
-      ? newTop
-      : this.dragStartTop + this.dragStartHeight - this.minHeight;
+    newTop =
+      newHeight > this.minHeight
+        ? newTop
+        : this.dragStartTop + this.dragStartHeight - this.minHeight;
 
     let newWidth = this.dragStartWidth + (ms[0] - this.dragStartMousePos[0]);
     newWidth = newWidth > this.minWidth ? newWidth : this.minWidth;
@@ -216,17 +215,17 @@ class DraggableDiv extends React.Component {
     newWidth = newWidth > this.minWidth ? newWidth : this.minWidth;
 
     let newLeft = this.dragStartLeft + ms[0] - this.dragStartMousePos[0];
-    newLeft = newWidth > this.minWidth
-      ? newLeft
-      : this.dragStartLeft + this.dragStartWidth - this.minWidth;
+    newLeft =
+      newWidth > this.minWidth ? newLeft : this.dragStartLeft + this.dragStartWidth - this.minWidth;
 
     let newHeight = this.dragStartHeight - (ms[1] - this.dragStartMousePos[1]);
     newHeight = newHeight > this.minHeight ? newHeight : this.minHeight;
 
     let newTop = this.dragStartTop + ms[1] - this.dragStartMousePos[1];
-    newTop = newHeight > this.minHeight
-      ? newTop
-      : this.dragStartTop + this.dragStartHeight - this.minHeight;
+    newTop =
+      newHeight > this.minHeight
+        ? newTop
+        : this.dragStartTop + this.dragStartHeight - this.minHeight;
 
     this.setState({
       top: newTop,
@@ -283,41 +282,41 @@ class DraggableDiv extends React.Component {
     const resizeHeight = 24;
 
     const horizStyle = {
-      left: (this.state.width / 2) - (resizeWidth / 2),
-      width: resizeWidth,
+      left: this.state.width / 2 - resizeWidth / 2,
+      width: resizeWidth
     };
 
     const vertStyle = {
-      top: (this.state.height / 2) - (resizeHeight / 2),
-      height: resizeHeight,
+      top: this.state.height / 2 - resizeHeight / 2,
+      height: resizeHeight
     };
 
     const styles = {
       bottom: { ...horizStyle, bottom: 1 },
       top: { ...horizStyle, top: 1 },
       left: { ...vertStyle, left: 1 },
-      right: { ...vertStyle, right: 1 },
+      right: { ...vertStyle, right: 1 }
     };
 
-    const resizeHandles = [...this.props.resizeHandles]
-      .map(x => (
-        <div
-          key={x}
-          ref={(c) => { this[`${x}Handle`] = c; }}
-          style={styles[x]}
-          styleName={`${x}-draggable-handle`}
-          title="Resize track"
-        >
-          <div
-            style={{ borderColor: dragColor }}
-            styleName={`${x}-draggable-handle-grabber`}
-          />
-        </div>
-      ));
+    const resizeHandles = [...this.props.resizeHandles].map(x => (
+      <div
+        key={x}
+        ref={c => {
+          this[`${x}Handle`] = c;
+        }}
+        style={styles[x]}
+        styleName={`${x}-draggable-handle`}
+        title="Resize track"
+      >
+        <div style={{ borderColor: dragColor }} styleName={`${x}-draggable-handle-grabber`} />
+      </div>
+    ));
 
     return (
       <div
-        ref={(c) => { this.divContainer = c; }}
+        ref={c => {
+          this.divContainer = c;
+        }}
         className={this.props.className}
         style={divStyle}
         styleName="draggable-div"
@@ -340,7 +339,7 @@ DraggableDiv.propTypes = {
   trackRotated: PropTypes.func,
   uid: PropTypes.string,
   width: PropTypes.number,
-  theme: PropTypes.symbol,
+  theme: PropTypes.symbol
 };
 
 export default withTheme(DraggableDiv);

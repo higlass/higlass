@@ -30,9 +30,13 @@ export function minNonZero(data) {
   for (let i = 0; i < data.length; i++) {
     const x = data[i];
 
-    if (x < epsilon && x > -epsilon) { continue; }
+    if (x < epsilon && x > -epsilon) {
+      continue;
+    }
 
-    if (x < minNonZeroNum) { minNonZeroNum = x; }
+    if (x < minNonZeroNum) {
+      minNonZeroNum = x;
+    }
   }
 
   return minNonZeroNum;
@@ -57,9 +61,13 @@ export function maxNonZero(data) {
   for (let i = 0; i < data.length; i++) {
     const x = data[i];
 
-    if (x < epsilon && x > -epsilon) { continue; }
+    if (x < epsilon && x > -epsilon) {
+      continue;
+    }
 
-    if (x > maxNonZeroNum) { maxNonZeroNum = x; }
+    if (x > maxNonZeroNum) {
+      maxNonZeroNum = x;
+    }
   }
 
   return maxNonZeroNum;
@@ -82,14 +90,16 @@ export function workerSetPix(
   let valueScale = null;
 
   if (valueScaleType === 'log') {
-    valueScale = scaleLog().range([254, 0]).domain(valueScaleDomain);
+    valueScale = scaleLog()
+      .range([254, 0])
+      .domain(valueScaleDomain);
   } else {
     if (valueScaleType !== 'linear') {
-      console.warn(
-        'Unknown value scale type:', valueScaleType, ' Defaulting to linear'
-      );
+      console.warn('Unknown value scale type:', valueScaleType, ' Defaulting to linear');
     }
-    valueScale = scaleLinear().range([254, 0]).domain(valueScaleDomain);
+    valueScale = scaleLinear()
+      .range([254, 0])
+      .domain(valueScaleDomain);
   }
 
   const pixData = new Uint8ClampedArray(size * 4);
@@ -108,10 +118,10 @@ export function workerSetPix(
       if (
         // ignore the upper right portion of a tile because it's on the diagonal
         // and its mirror will fill in that space
-        !(ignoreUpperRight && Math.floor(i / tileWidth) < i % tileWidth)
-        && !(ignoreLowerLeft && Math.floor(i / tileWidth) > i % tileWidth)
+        !(ignoreUpperRight && Math.floor(i / tileWidth) < i % tileWidth) &&
+        !(ignoreLowerLeft && Math.floor(i / tileWidth) > i % tileWidth) &&
         // Ignore color if the value is invalid
-        && !Number.isNaN(+d)
+        !Number.isNaN(+d)
       ) {
         // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
         rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(d + pseudocount))));
@@ -156,8 +166,8 @@ function float32(h) {
 
   const fSgn = (h & 0x8000) << 16;
   switch (hExp) {
-    case 0x0000: /* 0 or subnormal */
-      hSig = (h & 0x03ff);
+    case 0x0000 /* 0 or subnormal */:
+      hSig = h & 0x03ff;
       /* Signed zero */
       if (hSig === 0) {
         return fSgn;
@@ -168,13 +178,14 @@ function float32(h) {
         hSig <<= 1;
         hExp++;
       }
-      fExp = ((127 - 15 - hExp)) << 23;
-      fSig = ((hSig & 0x03ff)) << 13;
+      fExp = (127 - 15 - hExp) << 23;
+      fSig = (hSig & 0x03ff) << 13;
       return fSgn + fExp + fSig;
-    case 0x7c00: /* inf or NaN */
+    case 0x7c00 /* inf or NaN */:
       /* All-ones exponent and a copy of the significand */
-      return fSgn + 0x7f800000 + (((h & 0x03ff)) << 13);
-    default: /* normalized */
+      return fSgn + 0x7f800000 + ((h & 0x03ff) << 13);
+    default:
+      /* normalized */
       /* Just need to adjust the exponent and shift */
       return fSgn + (((h & 0x7fff) + 0x1c000) << 13);
   }
@@ -234,7 +245,6 @@ export function tileResponseToData(data, server, theseTileIds) {
       const arrayBuffer = _base64ToArrayBuffer(data[key].dense);
       let a;
 
-
       if (data[key].dtype === 'float16') {
         // data is encoded as float16s
         /* comment out until next empty line for 32 bit arrays */
@@ -245,7 +255,6 @@ export function tileResponseToData(data, server, theseTileIds) {
         // data is encoded as float32s
         a = new Float32Array(arrayBuffer);
       }
-
 
       data[key].dense = a;
       data[key].minNonZero = minNonZero(a);
@@ -279,7 +288,7 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
     headers
   })
     .then(response => response.json())
-    .then((data) => {
+    .then(data => {
       done(tileResponseToData(data, server, theseTileIds));
       /*
       const denses = Object.values(data)

@@ -35,9 +35,7 @@ class Track {
     }
 
     this.pubSubs.push(
-      this.pubSub.subscribe(
-        'app.mouseMove', this.defaultMouseMoveHandler.bind(this)
-      )
+      this.pubSub.subscribe('app.mouseMove', this.defaultMouseMoveHandler.bind(this))
     );
   }
 
@@ -61,14 +59,7 @@ class Track {
       top = this.position[0];
     }
 
-    return isWithin(
-      xx,
-      yy,
-      left,
-      this.dimensions[0] + left,
-      top,
-      this.dimensions[1] + top
-    );
+    return isWithin(xx, yy, left, this.dimensions[0] + left, top, this.dimensions[1] + top);
   }
 
   getProp(prop) {
@@ -125,7 +116,9 @@ class Track {
    * Either get or set the yScale
    */
   yScale(_) {
-    if (!arguments.length) { return this._yScale; }
+    if (!arguments.length) {
+      return this._yScale;
+    }
 
     this._yScale = _;
 
@@ -160,9 +153,7 @@ class Track {
    *
    * @returns nothing
    */
-  defaultMouseMoveHandler(evt) {
-
-  }
+  defaultMouseMoveHandler(evt) {}
 
   remove() {
     // Clear all pubSub subscriptions
@@ -181,13 +172,9 @@ class Track {
     return this.isWithin(x, y);
   }
 
-  zoomedY(trackY, kMultiplier) {
+  zoomedY(trackY, kMultiplier) {}
 
-  }
-
-  movedY(dY) {
-
-  }
+  movedY(dY) {}
 }
 
 export default Track;

@@ -14,9 +14,7 @@ const ContextMenuItem = props => (
     styleName="context-menu-item"
     tabIndex={0}
   >
-    <span styleName="context-menu-span">
-      {props.children}
-    </span>
+    <span styleName="context-menu-span">{props.children}</span>
   </div>
 );
 

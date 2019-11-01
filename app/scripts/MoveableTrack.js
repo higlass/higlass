@@ -23,43 +23,41 @@ class MoveableTrack extends TrackArea {
   render() {
     return (
       <div
-        ref={(r) => { this.el = r; }}
+        ref={r => {
+          this.el = r;
+        }}
         className={this.props.className}
         onMouseEnter={this.handleMouseEnter.bind(this)}
-        onMouseLeave={(/* e */) => {
-          // This let to https://github.com/higlass/higlass/issues/263
-          // Therefore I disabled it.
-          // if (checkMousePosVsEl(
-          //   e.nativeEvent.clientX, e.nativeEvent.clientY, this.el
-          // )) {
-          //   return;
-          // }
-          this.handleMouseLeave();
-        }}
+        onMouseLeave={
+          (/* e */) => {
+            // This let to https://github.com/higlass/higlass/issues/263
+            // Therefore I disabled it.
+            // if (checkMousePosVsEl(
+            //   e.nativeEvent.clientX, e.nativeEvent.clientY, this.el
+            // )) {
+            //   return;
+            // }
+            this.handleMouseLeave();
+          }
+        }
         style={{
           height: this.props.height,
-          width: this.props.width,
+          width: this.props.width
         }}
       >
         <DraggableDiv
           key={this.props.uid}
           height={this.props.height}
-          resizeHandles={this.props.editable
-            ? this.props.resizeHandles : new Set()
-          }
-          sizeChanged={stuff => this.props.handleResizeTrack(
-            this.props.uid,
-            stuff.width,
-            stuff.height,
-          )
+          resizeHandles={this.props.editable ? this.props.resizeHandles : new Set()}
+          sizeChanged={stuff =>
+            this.props.handleResizeTrack(this.props.uid, stuff.width, stuff.height)
           }
           style={{ background: 'transparent' }}
           uid={this.props.uid}
           width={this.props.width}
         />
-        {this.props.editable && (
-          this.getControls(this.state.controlsVisible || this.props.item.configMenuVisible)
-        )}
+        {this.props.editable &&
+          this.getControls(this.state.controlsVisible || this.props.item.configMenuVisible)}
       </div>
     );
   }
@@ -70,7 +68,7 @@ MoveableTrack.propTypes = {
   uid: PropTypes.string,
   item: PropTypes.object,
   height: PropTypes.number,
-  width: PropTypes.number,
+  width: PropTypes.number
 };
 
 export default MoveableTrack;

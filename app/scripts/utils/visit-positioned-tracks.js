@@ -6,17 +6,11 @@ import visitTracks from './visit-tracks';
  * @param   {function}  visitor  Callback function receiving individual tracks.
  * @param   {boolean}  inclCombinedTracks  If `true` recursively visit combined tracks.
  */
-const visitPositionedTracks = (
-  positionedTracks,
-  visitor,
-  inclCombinedTracks = true
-) => {
+const visitPositionedTracks = (positionedTracks, visitor, inclCombinedTracks = true) => {
   const allTracks = [];
 
-  Object.keys(positionedTracks).forEach((position) => {
-    visitTracks(
-      positionedTracks[position], visitor, inclCombinedTracks, position
-    );
+  Object.keys(positionedTracks).forEach(position => {
+    visitTracks(positionedTracks[position], visitor, inclCombinedTracks, position);
   });
 
   return allTracks;

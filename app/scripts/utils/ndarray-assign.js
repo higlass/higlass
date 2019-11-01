@@ -18,7 +18,10 @@ const ndarrayAssign = (target, source) => {
     if (ty !== sy || tx !== sx) {
       console.warn(
         'Cannot assign source to target ndarray as the dimensions do not match',
-        ty, sy, tx, sx
+        ty,
+        sy,
+        tx,
+        sx
       );
       return;
     }

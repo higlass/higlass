@@ -22,14 +22,14 @@ export default class FixedTrack extends TrackArea {
           height: this.props.height,
           width: this.props.width,
           position: 'relative',
-          background: 'transparent',
+          background: 'transparent'
         }}
       >
         <div
           key={this.props.uid}
           style={{
             height: this.props.height,
-            width: this.props.width,
+            width: this.props.width
           }}
         />
         {controls}

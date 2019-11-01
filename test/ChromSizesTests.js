@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -9,19 +9,12 @@ import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 
 // Utils
-import {
-  mountHGComponent,
-  removeHGComponent,
-  getTrackObjectFromHGC,
-} from '../app/scripts/utils';
+import { mountHGComponent, removeHGComponent, getTrackObjectFromHGC } from '../app/scripts/utils';
 
 const viewconf = {
   editable: true,
   zoomFixed: false,
-  trackSourceServers: [
-    '/api/v1',
-    'http://higlass.io/api/v1'
-  ],
+  trackSourceServers: ['/api/v1', 'http://higlass.io/api/v1'],
   exportViewUrl: '/api/v1/viewconfs/',
   views: [
     {
@@ -60,14 +53,8 @@ const viewconf = {
         whole: [],
         gallery: []
       },
-      initialXDomain: [
-        77515298.79442959,
-        145520235.32544723
-      ],
-      initialYDomain: [
-        34065918.61085448,
-        102548641.5812001
-      ],
+      initialXDomain: [77515298.79442959, 145520235.32544723],
+      initialYDomain: [34065918.61085448, 102548641.5812001],
       layout: {
         w: 6,
         h: 12,
@@ -94,11 +81,7 @@ const viewconf = {
     },
     locksDict: {
       cikAbtE_QheykUpRuK7Qjw: {
-        CU_JcrfjS1WAtkA_B_FgJA: [
-          71863001.5,
-          66266238.499999985,
-          192920.8093959731
-        ],
+        CU_JcrfjS1WAtkA_B_FgJA: [71863001.5, 66266238.499999985, 192920.8093959731],
         uid: 'cikAbtE_QheykUpRuK7Qjw'
       }
     }
@@ -112,26 +95,10 @@ const viewconf = {
     },
     locksDict: {
       YNR09QkUTxyg3ehvn1geig: {
-        O54DSbN8QX65l_PvR84SEg: [
-          71863001.50000001,
-          66266238.499999985,
-          192920.80939597404
-        ],
-        NhBtMCycT6qeCTNnBoVGKw: [
-          71863001.5,
-          66266238.499999985,
-          192920.80939597404
-        ],
-        Kn74dL2xQa2elKAarSlKkA: [
-          71863001.50000001,
-          66266238.499999985,
-          192920.80939597404
-        ],
-        CU_JcrfjS1WAtkA_B_FgJA: [
-          71863001.5,
-          66266238.499999985,
-          192920.8093959731
-        ],
+        O54DSbN8QX65l_PvR84SEg: [71863001.50000001, 66266238.499999985, 192920.80939597404],
+        NhBtMCycT6qeCTNnBoVGKw: [71863001.5, 66266238.499999985, 192920.80939597404],
+        Kn74dL2xQa2elKAarSlKkA: [71863001.50000001, 66266238.499999985, 192920.80939597404],
+        CU_JcrfjS1WAtkA_B_FgJA: [71863001.5, 66266238.499999985, 192920.8093959731],
         uid: 'YNR09QkUTxyg3ehvn1geig'
       }
     }
@@ -162,7 +129,6 @@ const viewconf = {
   }
 };
 
-
 configure({ adapter: new Adapter() });
 
 describe('Simple HiGlassComponent', () => {
@@ -170,21 +136,15 @@ describe('Simple HiGlassComponent', () => {
   let div = null;
 
   describe('Chromosome Grid Tests', () => {
-    beforeAll((done) => {
-      ([div, hgc] = mountHGComponent(div, hgc,
-        viewconf,
-        done,
-        {
-          style: 'width:800px; height:800px; background-color: lightgreen',
-          bounded: true,
-        })
-      );
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
+        style: 'width:800px; height:800px; background-color: lightgreen',
+        bounded: true
+      });
     });
 
     it("Ensure that the viewport projection's borders are grey", () => {
-      const trackObject = getTrackObjectFromHGC(
-        hgc.instance(), 'Mw2aWH9TTcu38t5OZlCYyA'
-      );
+      const trackObject = getTrackObjectFromHGC(hgc.instance(), 'Mw2aWH9TTcu38t5OZlCYyA');
 
       expect(trackObject.options.lineStrokeColor).to.eql('grey');
     });

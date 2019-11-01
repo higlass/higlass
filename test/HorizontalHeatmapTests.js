@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -9,11 +9,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 
 // Utils
-import {
-  mountHGComponent,
-  removeHGComponent,
-  getTrackObjectFromHGC
-} from '../app/scripts/utils';
+import { mountHGComponent, removeHGComponent, getTrackObjectFromHGC } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
 
@@ -21,15 +17,11 @@ describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
-    ([div, hgc] = mountHGComponent(div, hgc,
-      zoomLimitViewConf,
-      done,
-      {
-        style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true,
-      })
-    );
+  beforeAll(done => {
+    [div, hgc] = mountHGComponent(div, hgc, zoomLimitViewConf, done, {
+      style: 'width:800px; height:400px; background-color: lightgreen',
+      bounded: true
+    });
   });
 
   it('should respect zoom limits', () => {
@@ -49,10 +41,7 @@ describe('Horizontal heatmaps', () => {
 const zoomLimitViewConf = {
   editable: true,
   zoomFixed: false,
-  trackSourceServers: [
-    '/api/v1',
-    'http://higlass.io/api/v1'
-  ],
+  trackSourceServers: ['/api/v1', 'http://higlass.io/api/v1'],
   exportViewUrl: '/api/v1/viewconfs/',
   views: [
     {
@@ -76,12 +65,7 @@ const zoomLimitViewConf = {
               labelTopMargin: 0,
               labelBottomMargin: 0,
               labelColor: 'black',
-              colorRange: [
-                'white',
-                'rgba(245,166,35,1.0)',
-                'rgba(208,2,27,1.0)',
-                'black'
-              ],
+              colorRange: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'],
               maxZoom: '1',
               trackBorderWidth: 0,
               trackBorderColor: 'black',
@@ -132,14 +116,8 @@ const zoomLimitViewConf = {
         whole: [],
         gallery: []
       },
-      initialXDomain: [
-        645722545.1231897,
-        676259976.4728326
-      ],
-      initialYDomain: [
-        661682163.429321,
-        662057184.5160711
-      ],
+      initialXDomain: [645722545.1231897, 676259976.4728326],
+      initialYDomain: [661682163.429321, 662057184.5160711],
       layout: {
         w: 12,
         h: 4,

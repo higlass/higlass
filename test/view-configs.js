@@ -10,12 +10,18 @@ export { default as fritzBug2 } from './view-configs-more/fritzBug2';
 export { default as geneAnnotationsOnly } from './view-configs-more/geneAnnotationsOnly';
 export { default as geneAnnotationsOnly1 } from './view-configs-more/geneAnnotationsOnly1';
 export { default as heatmapTrack } from './view-configs-tracks/heatmapTrack';
-export { default as horizontalAndVerticalMultivec } from './view-configs-more/horizontalAndVerticalMultivec';
-export { default as horizontalDiagonalTrackViewConf } from './view-configs-more/horizontalDiagonalTrackViewConf';
+export {
+  default as horizontalAndVerticalMultivec
+} from './view-configs-more/horizontalAndVerticalMultivec';
+export {
+  default as horizontalDiagonalTrackViewConf
+} from './view-configs-more/horizontalDiagonalTrackViewConf';
 export { default as horizontalHeatmapTrack } from './view-configs-tracks/horizontalHeatmapTrack';
 export { default as horizontalLineEnd } from './view-configs-more/horizontalLineEnd';
 export { default as invalidTrackConfig } from './view-configs-invalid/invalidTrackConfig';
-export { default as largeHorizontalHeatmapTrack } from './view-configs-tracks/largeHorizontalHeatmapTrack';
+export {
+  default as largeHorizontalHeatmapTrack
+} from './view-configs-tracks/largeHorizontalHeatmapTrack';
 export { default as noGPSB } from './view-configs-more/noGPSB';
 export { default as oneTrackConfig } from './view-configs-more/oneTrackConfig';
 export { default as oneViewConfig } from './view-configs-more/oneViewConfig';
@@ -32,7 +38,9 @@ export { default as testViewConfX2 } from './view-configs-more/testViewConfX2';
 export { default as threeViews } from './view-configs-more/threeViews';
 export { default as topAxisOnly } from './view-configs-more/topAxisOnly';
 export { default as twoViewConfig } from './view-configs-more/twoViewConfig';
-export { default as valueIntervalTrackViewConf } from './view-configs-more/valueIntervalTrackViewConf';
+export {
+  default as valueIntervalTrackViewConf
+} from './view-configs-more/valueIntervalTrackViewConf';
 export { default as verticalHeatmapTrack } from './view-configs-tracks/verticalHeatmapTrack';
 export { default as stackedTopTracks } from './view-configs-more/stacked-top-tracks';
 export { default as stackedTopViews } from './view-configs-more/stacked-top-views';

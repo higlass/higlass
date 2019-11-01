@@ -1,17 +1,12 @@
 /* eslint-env node, jasmine, mocha */
-import {
-  configure,
-} from 'enzyme';
+import { configure } from 'enzyme';
 
 import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
 // Utils
-import {
-  mountHGComponent,
-  removeHGComponent,
-} from '../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
 const baseConf = {
   views: [
@@ -26,12 +21,9 @@ const baseConf = {
                 tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
                 type: 'heatmap',
                 options: {
-                  colorRange: [
-                    'white',
-                    'black'
-                  ]
+                  colorRange: ['white', 'black']
                 }
-              },
+              }
             ]
           }
         ]
@@ -46,14 +38,13 @@ describe('SVG Export', () => {
   describe('color bars 0-1 log', () => {
     let hgc = null;
     let div = null;
-    beforeAll((done) => {
+    beforeAll(done => {
       const viewConf = JSON.parse(JSON.stringify(baseConf));
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0;
       options.scaleEndPercent = 1;
       options.heatmapValueScaling = 'log';
-      ([div, hgc] = mountHGComponent(div, hgc, viewConf,
-        done));
+      [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
     });
 
     it('scales correctly', () => {
@@ -74,14 +65,13 @@ describe('SVG Export', () => {
   describe('color bars 0.5-1 log', () => {
     let hgc = null;
     let div = null;
-    beforeAll((done) => {
+    beforeAll(done => {
       const viewConf = JSON.parse(JSON.stringify(baseConf));
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0.5;
       options.scaleEndPercent = 1;
       options.heatmapValueScaling = 'log';
-      ([div, hgc] = mountHGComponent(div, hgc, viewConf,
-        done));
+      [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
     });
 
     it('scales correctly', () => {

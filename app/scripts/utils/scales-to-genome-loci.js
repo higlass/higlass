@@ -8,10 +8,7 @@ export const scalesToGenomeLoci = (xScale, yScale, chromInfo) => {
   const y0 = yScale.domain()[0];
   const y1 = yScale.domain()[1];
 
-  return [
-    ...dataToGenomicLoci(x0, x1, chromInfo),
-    ...dataToGenomicLoci(y0, y1, chromInfo),
-  ];
+  return [...dataToGenomicLoci(x0, x1, chromInfo), ...dataToGenomicLoci(y0, y1, chromInfo)];
 };
 
 export default scalesToGenomeLoci;

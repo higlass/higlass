@@ -72,15 +72,11 @@ export { default as visitPositionedTracks } from './visit-positioned-tracks';
 export { default as visitTracks } from './visit-tracks';
 export { default as trackUtils } from './track-utils';
 
-export {
-  getTrackObjectFromHGC,
-  getTrackRenderer,
-  getTiledPlot,
-} from './get-higlass-components';
+export { getTrackObjectFromHGC, getTrackRenderer, getTiledPlot } from './get-higlass-components';
 export {
   waitForJsonComplete,
   waitForTilesLoaded,
   waitForTransitionsFinished,
   mountHGComponent,
-  removeHGComponent,
+  removeHGComponent
 } from './test-helpers';

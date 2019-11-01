@@ -9,26 +9,23 @@ export class SeriesOptions extends React.Component {
     super(props);
 
     this.state = {
-      advancedVisible: true,
+      advancedVisible: true
     };
   }
 
-  handleNormalizeTilesetChanged() {
-
-  }
+  handleNormalizeTilesetChanged() {}
 
   handleNormalizeCheckboxChanged(e) {
     this.setState({
-      normalizeChecked: e.target.checked,
+      normalizeChecked: e.target.checked
     });
   }
 
   toggleAdvancedVisible() {
     this.setState(prevState => ({
-      advancedVisible: !prevState.advancedVisible,
+      advancedVisible: !prevState.advancedVisible
     }));
   }
-
 
   render() {
     // console.log('trackType:', this.props.trackType);
@@ -39,12 +36,12 @@ export class SeriesOptions extends React.Component {
         toggleCollapse={this.toggleAdvancedVisible.bind(this)}
       >
         <Checkbox
-          ref={(c) => {
+          ref={c => {
             this.normalizeCheckbox = c;
           }}
           onChange={this.handleNormalizeCheckboxChanged.bind(this)}
         >
-                    Normalize By
+          Normalize By
         </Checkbox>
 
         <Collapse in={this.state.normalizeChecked}>
@@ -55,7 +52,6 @@ export class SeriesOptions extends React.Component {
             />
           </Panel>
         </Collapse>
-
       </CollapsePanel>
     );
   }

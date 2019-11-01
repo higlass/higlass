@@ -62,7 +62,7 @@ function AddTrackPositionMenu(props) {
 
 AddTrackPositionMenu.propTypes = {
   onTrackPositionChosen: PropTypes.func.isRequired,
-  theme: PropTypes.symbol.isRequired,
+  theme: PropTypes.symbol.isRequired
 };
 
 export default withTheme(AddTrackPositionMenu);

@@ -8,29 +8,24 @@ import { THEME_DARK } from './configs';
 // Styles
 import '../styles/TrackControl.module.scss';
 
-const getClassNames = (props) => {
-  let className = props.isVisible
-    ? 'track-control-active' : 'track-control';
+const getClassNames = props => {
+  let className = props.isVisible ? 'track-control-active' : 'track-control';
 
-  className += props.isAlignLeft
-    ? ' track-control-left' : '';
+  className += props.isAlignLeft ? ' track-control-left' : '';
 
-  className += props.isVertical
-    ? ' track-control-vertical' : '';
+  className += props.isVertical ? ' track-control-vertical' : '';
 
-  className += props.paddingRight
-    ? ' track-control-padding-right' : '';
+  className += props.paddingRight ? ' track-control-padding-right' : '';
 
   if (props.theme === THEME_DARK) className += ' track-control-dark';
 
   return className;
 };
 
-const getButtonClassNames = (props) => {
+const getButtonClassNames = props => {
   let buttonClassName = 'track-control-button';
 
-  buttonClassName += props.isVertical
-    ? ' track-control-button-vertical' : '';
+  buttonClassName += props.isVertical ? ' track-control-button-vertical' : '';
 
   return buttonClassName;
 };
@@ -41,14 +36,10 @@ let imgClose;
 let oldProps = null;
 let DragHandle = null;
 
-const TrackControl = (props) => {
+const TrackControl = props => {
   // Avoid constant recreating that button when the props didn't change.
   // Damn React could be a little smarter here...
-  if (
-    !props
-    || !oldProps
-    || Object.keys(props).some(key => oldProps[key] !== props[key])
-  ) {
+  if (!props || !oldProps || Object.keys(props).some(key => oldProps[key] !== props[key])) {
     oldProps = props;
     DragHandle = SortableHandle(() => (
       <svg
@@ -64,17 +55,15 @@ const TrackControl = (props) => {
 
   return (
     <div styleName={getClassNames(props)}>
-
-      {props.isMoveable && (<DragHandle />) }
+      {props.isMoveable && <DragHandle />}
 
       <svg
-        ref={(c) => { imgConfig = c; }}
+        ref={c => {
+          imgConfig = c;
+        }}
         className="no-zoom"
         onClick={() => {
-          props.onConfigTrackMenuOpened(
-            props.uid,
-            imgConfig.getBoundingClientRect()
-          );
+          props.onConfigTrackMenuOpened(props.uid, imgConfig.getBoundingClientRect());
         }}
         style={Object.assign({ height: '20px', width: '20px' }, props.imgStyleSettings)}
         styleName={getButtonClassNames(props)}
@@ -83,8 +72,7 @@ const TrackControl = (props) => {
         <use xlinkHref="#cog" />
       </svg>
 
-      {props.onAddSeries
-      && (
+      {props.onAddSeries && (
         <svg
           className="no-zoom"
           onClick={() => props.onAddSeries(props.uid)}
@@ -94,17 +82,15 @@ const TrackControl = (props) => {
           <title>Add series</title>
           <use xlinkHref="#plus" />
         </svg>
-      )
-      }
+      )}
 
       <svg
-        ref={(c) => { imgClose = c; }}
+        ref={c => {
+          imgClose = c;
+        }}
         className="no-zoom"
         onClick={() => {
-          props.onCloseTrackMenuOpened(
-            props.uid,
-            imgClose.getBoundingClientRect()
-          );
+          props.onCloseTrackMenuOpened(props.uid, imgClose.getBoundingClientRect());
         }}
         style={Object.assign({ height: '20px', width: '20px' }, props.imgStyleClose)}
         styleName={getButtonClassNames(props)}
@@ -130,7 +116,7 @@ TrackControl.propTypes = {
   onAddSeries: PropTypes.func,
   paddingRight: PropTypes.bool,
   theme: PropTypes.symbol.isRequired,
-  uid: PropTypes.string,
+  uid: PropTypes.string
 };
 
 export default withTheme(TrackControl);

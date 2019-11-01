@@ -23,13 +23,9 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
   }
 
   mouseMoveHandler(mousePos) {
-    this.highlighted = (
-      this.isWithin(mousePos.x, mousePos.y)
-      && (
-        this.isMouseOverHorizontalLine(mousePos)
-        || this.isMouseOverVerticalLine(mousePos)
-      )
-    );
+    this.highlighted =
+      this.isWithin(mousePos.x, mousePos.y) &&
+      (this.isMouseOverHorizontalLine(mousePos) || this.isMouseOverVerticalLine(mousePos));
 
     this.draw();
   }
@@ -61,8 +57,9 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
   }
 
   isMouseOverHorizontalLine(mousePos) {
-    return Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition))
-      < this.MOUSEOVER_RADIUS;
+    return (
+      Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) < this.MOUSEOVER_RADIUS
+    );
   }
 }
 

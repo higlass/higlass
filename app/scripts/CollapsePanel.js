@@ -16,9 +16,7 @@ const CollapsePanel = props => (
       </a>
     </ControlLabel>
     <Collapse in={!props.collapsed}>
-      <Panel>
-        {props.children}
-      </Panel>
+      <Panel>{props.children}</Panel>
     </Collapse>
   </div>
 );
@@ -28,11 +26,11 @@ CollapsePanel.propTypes = {
   collapsed: PropTypes.bool.isRequired,
   collapsedClass: PropTypes.func.isRequired,
   toggleCollapse: PropTypes.func.isRequired,
-  name: PropTypes.string,
+  name: PropTypes.string
 };
 
 CollapsePanel.defaultProps = {
-  name: 'Advanced Options',
+  name: 'Advanced Options'
 };
 
 export default CollapsePanel;

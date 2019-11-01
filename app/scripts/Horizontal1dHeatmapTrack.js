@@ -17,14 +17,11 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
   }
 
   setColorScale(colorRange) {
-    this.colorScale = colorRange
-      ? colorDomainToRgbaArray(colorRange)
-      : HEATED_OBJECT_MAP;
+    this.colorScale = colorRange ? colorDomainToRgbaArray(colorRange) : HEATED_OBJECT_MAP;
 
     // Normalize colormap upfront to save 3 divisions per data point during the
     // rendering.
-    this.colorScale = this.colorScale
-      .map(rgb => rgb.map(channel => channel / 255.0));
+    this.colorScale = this.colorScale.map(rgb => rgb.map(channel => channel / 255.0));
   }
 
   rerender(options) {
@@ -48,7 +45,7 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
-      tile.tileData.tilePos,
+      tile.tileData.tilePos
     );
 
     const tileValues = tile.tileData.dense;
@@ -65,14 +62,8 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
 
     graphics.clear();
 
-    if (
-      this.options.valueScaling === 'log'
-      && this.valueScale.domain()[1] < 0
-    ) {
-      console.warn(
-        'Negative values present when using a log scale',
-        this.valueScale.domain()
-      );
+    if (this.options.valueScaling === 'log' && this.valueScale.domain()[1] < 0) {
+      console.warn('Negative values present when using a log scale', this.valueScale.domain());
       return;
     }
 

@@ -1,14 +1,12 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 // Utils
-import {
-  mountHGComponent,
-} from '../app/scripts/utils';
+import { mountHGComponent } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
 describe('Minimal viewconfs', () => {
@@ -44,7 +42,7 @@ describe('Minimal viewconfs', () => {
     };
     let hgc = null;
     let div = null;
-    beforeAll((done) => {
+    beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
 

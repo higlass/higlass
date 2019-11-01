@@ -42,9 +42,11 @@ class AxisPixi {
 
     const color = this.track.getTheme() === THEME_DARK ? 'white' : 'black';
 
-    if (!this.track.options
-      || !this.track.options.axisLabelFormatting
-      || this.track.options.axisLabelFormatting === 'scientific') {
+    if (
+      !this.track.options ||
+      !this.track.options.axisLabelFormatting ||
+      this.track.options.axisLabelFormatting === 'scientific'
+    ) {
       this.tickFormat = format('.2');
     } else {
       this.tickFormat = x => x;
@@ -54,19 +56,15 @@ class AxisPixi {
       const tick = this.tickValues[i];
 
       while (this.axisTexts.length <= i) {
-        const newText = new PIXI.Text(
-          tick,
-          {
-            fontSize: `${this.axisTextFontSize}px`,
-            fontFamily: this.axisTextFontFamily,
-            fill: color
-          }
-        );
+        const newText = new PIXI.Text(tick, {
+          fontSize: `${this.axisTextFontSize}px`,
+          fontFamily: this.axisTextFontFamily,
+          fill: color
+        });
         this.axisTexts.push(newText);
 
         this.pAxis.addChild(newText);
       }
-
 
       this.axisTexts[i].text = this.tickFormat(tick);
       this.axisTexts[i].anchor.y = 0.5;
@@ -102,7 +100,6 @@ class AxisPixi {
     return tickValues;
   }
 
-
   drawAxisLeft(valueScale, axisHeight) {
     // Draw a left-oriented axis (ticks pointing to the right)
     this.startAxis(axisHeight);
@@ -111,10 +108,7 @@ class AxisPixi {
     const graphics = this.pAxis;
 
     if (this.track.getTheme() === THEME_DARK) {
-      graphics.lineStyle(
-        graphics.lineWidth || graphics._lineStyle.width,
-        colorToHex('#ffffff')
-      );
+      graphics.lineStyle(graphics.lineWidth || graphics._lineStyle.width, colorToHex('#ffffff'));
     }
 
     // draw the top, potentially unlabelled, ticke
@@ -129,10 +123,10 @@ class AxisPixi {
 
       // draw ticks to the left of the axis
       this.axisTexts[i].x = -(
-        TICK_MARGIN
-        + TICK_LENGTH
-        + TICK_LABEL_MARGIN
-        + (this.axisTexts[i].width / 2)
+        TICK_MARGIN +
+        TICK_LENGTH +
+        TICK_LABEL_MARGIN +
+        this.axisTexts[i].width / 2
       );
       this.axisTexts[i].y = valueScale(tick);
 
@@ -155,28 +149,21 @@ class AxisPixi {
     const graphics = this.pAxis;
 
     if (this.track.getTheme() === THEME_DARK) {
-      graphics.lineStyle(
-        graphics.lineWidth || graphics._lineStyle.width,
-        colorToHex('#ffffff')
-      );
+      graphics.lineStyle(graphics.lineWidth || graphics._lineStyle.width, colorToHex('#ffffff'));
     }
 
     // draw the top, potentially unlabelled, ticke
     graphics.moveTo(0, 0);
-    graphics.lineTo((TICK_MARGIN + TICK_LENGTH), 0);
+    graphics.lineTo(TICK_MARGIN + TICK_LENGTH, 0);
 
     graphics.moveTo(0, axisHeight);
-    graphics.lineTo((TICK_MARGIN + TICK_LENGTH), axisHeight);
+    graphics.lineTo(TICK_MARGIN + TICK_LENGTH, axisHeight);
 
     for (let i = 0; i < this.axisTexts.length; i++) {
       const tick = this.tickValues[i];
 
-      this.axisTexts[i].x = (
-        TICK_MARGIN
-        + TICK_LENGTH
-        + TICK_LABEL_MARGIN
-        + (this.axisTexts[i].width / 2)
-      );
+      this.axisTexts[i].x =
+        TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2;
       this.axisTexts[i].y = valueScale(tick);
 
       graphics.moveTo(TICK_MARGIN, valueScale(tick));
@@ -199,15 +186,17 @@ class AxisPixi {
     for (let i = this.axisTexts.length - 1; i >= 0; i--) {
       // if this tick mark is invisible, it's not going to
       // overlap with any others
-      if (!this.axisTexts[i].visible) { continue; }
+      if (!this.axisTexts[i].visible) {
+        continue;
+      }
 
       let j = i - 1;
 
       while (j >= 0) {
         // go through and hide all overlapping tick marks
         if (
-          (this.axisTexts[i].y + this.axisTexts[i].height / 2)
-          > (this.axisTexts[j].y - this.axisTexts[j].height / 2)
+          this.axisTexts[i].y + this.axisTexts[i].height / 2 >
+          this.axisTexts[j].y - this.axisTexts[j].height / 2
         ) {
           this.axisTexts[j].visible = false;
         } else {
@@ -221,7 +210,6 @@ class AxisPixi {
       }
     }
   }
-
 
   exportVerticalAxis(axisHeight) {
     const gAxis = document.createElement('g');
@@ -244,14 +232,12 @@ class AxisPixi {
     line.setAttribute('stroke', stroke);
     line.setAttribute('id', 'axis-line');
 
-    line.setAttribute('d',
-      `M0,0 L0,${axisHeight}`);
+    line.setAttribute('d', `M0,0 L0,${axisHeight}`);
 
     gAxis.appendChild(line);
 
     return gAxis;
   }
-
 
   createAxisSVGLine() {
     // factor out the styling for axis lines
@@ -319,9 +305,11 @@ class AxisPixi {
         g.appendChild(t);
       }
 
-      g.setAttribute('transform',
+      g.setAttribute(
+        'transform',
         `translate(${text.position.x},${text.position.y})
-             scale(${text.scale.x},${text.scale.y})`);
+             scale(${text.scale.x},${text.scale.y})`
+      );
     }
 
     return gAxis;
@@ -362,9 +350,11 @@ class AxisPixi {
         g.appendChild(t);
       }
 
-      g.setAttribute('transform',
+      g.setAttribute(
+        'transform',
         `translate(${text.position.x},${text.position.y})
-             scale(${text.scale.x},${text.scale.y})`);
+             scale(${text.scale.x},${text.scale.y})`
+      );
     }
 
     return gAxis;

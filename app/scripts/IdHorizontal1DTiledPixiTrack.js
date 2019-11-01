@@ -17,18 +17,20 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
 
   initTile(tile) {
     /**
-         * Create whatever is needed to draw this tile.
-         */
+     * Create whatever is needed to draw this tile.
+     */
 
     const graphics = tile.graphics;
     tile.textGraphics = new PIXI.Graphics();
     // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/')
     // + '/' + tile.mirrored,
 
-    tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`,
-      {
-        fontFamily: 'Arial', fontSize: 32, fill: 0xff1010, align: 'center'
-      });
+    tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`, {
+      fontFamily: 'Arial',
+      fontSize: 32,
+      fill: 0xff1010,
+      align: 'center'
+    });
 
     // tile.text.y = 100;
     tile.textGraphics.addChild(tile.text);
@@ -41,28 +43,26 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     this.drawTile(tile);
   }
 
-  destroyTile(tile) {
-
-  }
+  destroyTile(tile) {}
 
   drawTile(tile) {
     super.drawTile(tile);
 
-    if (!tile.graphics) { return; }
+    if (!tile.graphics) {
+      return;
+    }
 
     const graphics = tile.graphics;
 
-    const {
-      tileX, tileWidth
-    } = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
-      tile.tileData.tilePos);
+    const { tileX, tileWidth } = this.getTilePosAndDimensions(
+      tile.tileData.zoomLevel,
+      tile.tileData.tilePos
+    );
 
     // the text needs to be scaled down so that it doesn't become huge
     // when we zoom in
-    const tSX = 1 / (
-      (this._xScale(1) - this._xScale(0))
-      / (this._refXScale(1) - this._refXScale(0))
-    );
+    const tSX =
+      1 / ((this._xScale(1) - this._xScale(0)) / (this._refXScale(1) - this._refXScale(0)));
     // let tSY = 1 / (
     //   (this._yScale(1) - this._yScale(0))
     //   / (this._refYScale(1) - this._refYScale(0))
@@ -72,7 +72,6 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     // tile.text.scale.y = tSY;
 
     graphics.clear();
-
 
     // line needs to be scaled down so that it doesn't become huge
 
@@ -89,8 +88,8 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
 
     // position the graphics
     // graphics.drawRect(rectX, 0, tileScaledWidth, tileScaledHeight);
-    graphics.lineStyle(4 * tSX, 0x0000FF, 1);
-    graphics.beginFill(0xFF700B, 0.4);
+    graphics.lineStyle(4 * tSX, 0x0000ff, 1);
+    graphics.beginFill(0xff700b, 0.4);
     graphics.alpha = 0.5;
 
     graphics.moveTo(rectX, 0);
@@ -99,7 +98,7 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     graphics.moveTo(rectX + tileScaledWidth, 0);
     graphics.lineTo(rectX + tileScaledWidth, tileScaledHeight);
 
-    graphics.lineStyle(0, 0x0000FF, 1);
+    graphics.lineStyle(0, 0x0000ff, 1);
     graphics.drawRect(rectX, 0, tileScaledWidth, tileScaledHeight);
   }
 }

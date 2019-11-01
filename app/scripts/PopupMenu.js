@@ -62,7 +62,7 @@ class PopupMenu extends React.Component {
 
   render() {
     // Render a placeholder
-    return (<div />);
+    return <div />;
   }
 }
 

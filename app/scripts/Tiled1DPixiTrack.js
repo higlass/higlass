@@ -10,35 +10,31 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
   constructor(context, options) {
     super(context, options);
 
-    const {
-      onMouseMoveZoom,
-    } = context;
+    const { onMouseMoveZoom } = context;
 
     this.onMouseMoveZoom = onMouseMoveZoom;
 
     if (this.onMouseMoveZoom) {
-      this.pubSubs.push(
-        this.pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this))
-      );
+      this.pubSubs.push(this.pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this)));
     }
   }
 
   initTile(tile) {
     /**
-         * We don't need to do anything but draw the tile.
-         *
-         * Child classes that rely on transforming tiles when zooming
-         * and panning can override this function to draw all the elements
-         * that will later be transformed.
-         */
+     * We don't need to do anything but draw the tile.
+     *
+     * Child classes that rely on transforming tiles when zooming
+     * and panning can override this function to draw all the elements
+     * that will later be transformed.
+     */
     // this.drawTile(tile);
     super.initTile(tile);
   }
 
   tileToLocalId(tile) {
     /*
-         * The local tile identifier
-         */
+     * The local tile identifier
+     */
 
     // tile contains [zoomLevel, xPos]
     return `${tile.join('.')}`;
@@ -46,37 +42,36 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
   tileToRemoteId(tile) {
     /**
-         * The tile identifier used on the server
-         */
+     * The tile identifier used on the server
+     */
 
     // tile contains [zoomLevel, xPos]
     return `${tile.join('.')}`;
   }
 
-
   relevantScale() {
     /**
-         * Which scale should we use for calculating tile positions?
-         *
-         * Horizontal tracks should use the xScale and vertical tracks
-         * should use the yScale
-         *
-         * This function should be overwritten by HorizontalTiled1DPixiTrack.js
-         * and VerticalTiled1DPixiTrack.js
-         */
+     * Which scale should we use for calculating tile positions?
+     *
+     * Horizontal tracks should use the xScale and vertical tracks
+     * should use the yScale
+     *
+     * This function should be overwritten by HorizontalTiled1DPixiTrack.js
+     * and VerticalTiled1DPixiTrack.js
+     */
     return null;
   }
 
   setVisibleTiles(tilePositions) {
     /**
-         * Set which tiles are visible right now.
-         *
-         * @param tiles: A set of tiles which will be considered the currently visible
-         * tile positions.
-         */
+     * Set which tiles are visible right now.
+     *
+     * @param tiles: A set of tiles which will be considered the currently visible
+     * tile positions.
+     */
     this.visibleTiles = tilePositions.map(x => ({
       tileId: this.tileToLocalId(x),
-      remoteId: this.tileToRemoteId(x),
+      remoteId: this.tileToRemoteId(x)
     }));
 
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
@@ -85,20 +80,21 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
   calculateVisibleTiles() {
     // if we don't know anything about this dataset, no point
     // in trying to get tiles
-    if (!this.tilesetInfo) { return; }
+    if (!this.tilesetInfo) {
+      return;
+    }
 
     // calculate the zoom level given the scales and the data bounds
     this.zoomLevel = this.calculateZoomLevel();
 
     if (this.tilesetInfo.resolutions) {
-      const sortedResolutions = this.tilesetInfo.resolutions
-        .map(x => +x)
-        .sort((a, b) => b - a);
+      const sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a, b) => b - a);
 
       const xTiles = tileProxy.calculateTilesFromResolution(
         sortedResolutions[this.zoomLevel],
         this._xScale,
-        this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]
+        this.tilesetInfo.min_pos[0],
+        this.tilesetInfo.max_pos[0]
       );
 
       const tiles = xTiles.map(x => [this.zoomLevel, x]);
@@ -108,24 +104,25 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
     // x doesn't necessary mean 'x' axis, it just refers to the relevant axis
     // (x if horizontal, y if vertical)
-    const xTiles = tileProxy.calculateTiles(this.zoomLevel, this.relevantScale(),
+    const xTiles = tileProxy.calculateTiles(
+      this.zoomLevel,
+      this.relevantScale(),
       this.tilesetInfo.min_pos[0],
       this.tilesetInfo.max_pos[0],
       this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width);
+      this.tilesetInfo.max_width
+    );
 
     const tiles = xTiles.map(x => [this.zoomLevel, x]);
     this.setVisibleTiles(tiles);
   }
 
-
   getTilePosAndDimensions(zoomLevel, tilePos, binsPerTileIn) {
     /**
-         * Get the tile's position in its coordinate system.
-         */
+     * Get the tile's position in its coordinate system.
+     */
     const xTilePos = tilePos[0];
     const yTilePos = tilePos[0];
-
 
     if (this.tilesetInfo.resolutions) {
       // the default bins per tile which should
@@ -133,9 +130,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
       const binsPerTile = binsPerTileIn || BINS_PER_TILE;
 
-      const sortedResolutions = this.tilesetInfo.resolutions
-        .map(x => +x)
-        .sort((a, b) => b - a);
+      const sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a, b) => b - a);
 
       const chosenResolution = sortedResolutions[zoomLevel];
 
@@ -146,7 +141,10 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
       const tileY = chosenResolution * binsPerTile * tilePos[1];
 
       return {
-        tileX, tileY, tileWidth, tileHeight
+        tileX,
+        tileY,
+        tileWidth,
+        tileHeight
       };
     }
 
@@ -174,8 +172,6 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
   updateTile(tile) {
     // no need to redraw this tile, usually
     // unless the data scale changes or something like that
-
-
   }
 
   /**
@@ -204,11 +200,9 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
     return visibleAndFetchedIds
       .map(x => this.fetchedTiles[x])
-      .map((tile) => {
+      .map(tile => {
         if (!tile.tileData.tilePos) {
-          return aggregator === 'min'
-            ? this.minVisibleValue()
-            : this.maxVisibleValue();
+          return aggregator === 'min' ? this.minVisibleValue() : this.maxVisibleValue();
         }
 
         const { tileX, tileWidth } = this.getTilePosAndDimensions(
@@ -218,15 +212,10 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
         );
 
         const tileXScale = scaleLinear()
-          .domain([
-            0, this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension
-          ])
+          .domain([0, this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension])
           .range([tileX, tileX + tileWidth]);
 
-        const start = Math.max(
-          0,
-          Math.round(tileXScale.invert(this._xScale.invert(visible[0])))
-        );
+        const start = Math.max(0, Math.round(tileXScale.invert(this._xScale.invert(visible[0]))));
         const end = Math.min(
           tile.tileData.dense.length,
           Math.round(tileXScale.invert(this._xScale.invert(visible[1])))
@@ -250,7 +239,9 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
     const zoomLevel = this.calculateZoomLevel();
     const tileWidth = tileProxy.calculateTileWidth(
-      this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size
+      this.tilesetInfo,
+      zoomLevel,
+      this.tilesetInfo.tile_size
     );
 
     // console.log('dataPos:', this._xScale.invert(relPos));
@@ -261,9 +252,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
     if (!fetchedTile) return value;
 
-    const posInTileX = (
-      this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos))
-    );
+    const posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
 
     if (fetchedTile.tileData.dense) {
       // gene annotation tracks, for example, don't have dense

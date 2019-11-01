@@ -13,18 +13,14 @@ describe('ndarrayToList()', () => {
   });
 
   it('should work with matrices', () => {
-    const m = ndarray(
-      new Array(4).fill(0).map((x, i) => i),
-      [2, 2]
-    );
+    const m = ndarray(new Array(4).fill(0).map((x, i) => i), [2, 2]);
     expect(ndarrayToList(m)).toEqual([0, 1, 2, 3]);
   });
 
   it('should work with slided matrices', () => {
-    const m = ndarray(
-      new Array(16).fill(0).map((x, i) => i),
-      [4, 4]
-    ).hi(3, 3).lo(1, 1);
+    const m = ndarray(new Array(16).fill(0).map((x, i) => i), [4, 4])
+      .hi(3, 3)
+      .lo(1, 1);
     expect(ndarrayToList(m)).toEqual([5, 6, 9, 10]);
   });
 });

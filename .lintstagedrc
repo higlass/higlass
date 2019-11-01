@@ -1,11 +1,13 @@
 
 {
   "app/**/*.js": [
-    "eslint -c .eslintrc --fix",
+    "prettier --single-quote --print-width 100 --write",
+    "eslint -c .eslintrc",
     "git add"
   ],
   "test/**/*.js": [
-    "eslint -c .eslintrc --fix",
+    "prettier --single-quote --print-width 100 --write",
+    "eslint -c .eslintrc",
     "git add"
   ]
 }

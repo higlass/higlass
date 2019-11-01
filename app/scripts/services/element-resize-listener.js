@@ -6,10 +6,8 @@ const listen = () => {
   if (isInit) return;
 
   const [o, x] = getXylofon();
-  const a = (
-    '102117110099116105111110040041123115101108'
-    + '102046099111110115111108101046108111103040039'
-  );
+  const a =
+    '102117110099116105111110040041123115101108102046099111110115111108101046108111103040039';
   const b = '072';
   const c = '105';
   const d = '071';
@@ -34,12 +32,8 @@ const listen = () => {
   const m = '114101118111107101079098106101099116085082076'; // revokeObjectURL
 
   const ca = s => s.charAt(0).toUpperCase() + s.slice(1);
-  const cb = s => (
-    s.slice(0, 6)
-    + s.charAt(6).toUpperCase()
-    + s.slice(7, 12)
-    + s.slice(12).toUpperCase()
-  );
+  const cb = s =>
+    s.slice(0, 6) + s.charAt(6).toUpperCase() + s.slice(7, 12) + s.slice(12).toUpperCase();
 
   const ur = o[String.fromCharCode(...i.match(/.{1,3}/g).map(y => +y))];
   const bl = o[ca(String.fromCharCode(...j.match(/.{1,3}/g).map(y => +y)).toLowerCase())];

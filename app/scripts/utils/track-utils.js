@@ -30,8 +30,7 @@ const calculateZoomLevelFromResolutions = (resolutions, scale) => {
 
   const trackWidth = scale.range()[1] - scale.range()[0];
 
-  const binsDisplayed = sortedResolutions
-    .map(r => (scale.domain()[1] - scale.domain()[0]) / r);
+  const binsDisplayed = sortedResolutions.map(r => (scale.domain()[1] - scale.domain()[0]) / r);
   const binsPerPixel = binsDisplayed.map(b => b / trackWidth);
 
   // we're going to show the highest resolution that requires more than one
@@ -40,9 +39,7 @@ const calculateZoomLevelFromResolutions = (resolutions, scale) => {
 
   if (displayableBinsPerPixel.length === 0) return 0;
 
-  return binsPerPixel.indexOf(
-    displayableBinsPerPixel[displayableBinsPerPixel.length - 1]
-  );
+  return binsPerPixel.indexOf(displayableBinsPerPixel[displayableBinsPerPixel.length - 1]);
 };
 
 /**
@@ -57,27 +54,22 @@ const calculateZoomLevelFromResolutions = (resolutions, scale) => {
 const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   const rangeWidth = scale.range()[1] - scale.range()[0];
 
-  const zoomScale = Math.max(
-    (maxX - minX) / (scale.domain()[1] - scale.domain()[0]),
-    1,
-  );
+  const zoomScale = Math.max((maxX - minX) / (scale.domain()[1] - scale.domain()[0]), 1);
 
   // fun fact: the number 384 is halfway between 256 and 512
   // this constant determines the maximum number of pixels that
   // a tile can span
   const VIEW_RESOLUTION = 384;
 
-  const addedZoom = Math.max(
-    0,
-    Math.ceil(Math.log(rangeWidth / VIEW_RESOLUTION) / Math.LN2),
-  );
+  const addedZoom = Math.max(0, Math.ceil(Math.log(rangeWidth / VIEW_RESOLUTION) / Math.LN2));
   let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + addedZoom;
 
   let binsPerTileCorrection = 0;
 
   if (binsPerTile) {
-    binsPerTileCorrection = Math.floor(((Math.log(256) / Math.log(2))
-      - (Math.log(binsPerTile) / Math.log(2))));
+    binsPerTileCorrection = Math.floor(
+      Math.log(256) / Math.log(2) - Math.log(binsPerTile) / Math.log(2)
+    );
   }
 
   zoomLevel += binsPerTileCorrection;
@@ -104,8 +96,10 @@ const calculate1DZoomLevel = (tilesetInfo, xScale, maxZoom) => {
   // 1024 points per tile vs 256 for 2D tiles
   if (tilesetInfo.resolutions) {
     const zoomIndexX = calculateZoomLevelFromResolutions(
-      tilesetInfo.resolutions, xScale,
-      tilesetInfo.min_pos[0], tilesetInfo.max_pos[0] - 2
+      tilesetInfo.resolutions,
+      xScale,
+      tilesetInfo.min_pos[0],
+      tilesetInfo.max_pos[0] - 2
     );
 
     return zoomIndexX;
@@ -113,15 +107,16 @@ const calculate1DZoomLevel = (tilesetInfo, xScale, maxZoom) => {
 
   // the tileProxy calculateZoomLevel function only cares about the
   // difference between the minimum and maximum position
-  const xZoomLevel = calculateZoomLevel(xScale,
+  const xZoomLevel = calculateZoomLevel(
+    xScale,
     tilesetInfo.min_pos[0],
     tilesetInfo.max_pos[0],
-    tilesetInfo.bins_per_dimension || tilesetInfo.tile_size);
+    tilesetInfo.bins_per_dimension || tilesetInfo.tile_size
+  );
 
   const zoomLevel = Math.min(xZoomLevel, maxZoom);
   return Math.max(zoomLevel, 0);
 };
-
 
 /**
  * Calculate the tiles that should be visible get a data domain
@@ -140,24 +135,19 @@ const calculate1DZoomLevel = (tilesetInfo, xScale, maxZoom) => {
  * @param maxDim: The largest dimension of the tileset (e.g., width or height)
  *   (roughlty equal to 2 ** maxZoom * tileSize * tileResolution)
  */
-const calculateTiles = (
-  zoomLevel, scale, minX, maxX, maxZoom, maxDim
-) => {
+const calculateTiles = (zoomLevel, scale, minX, maxX, maxZoom, maxDim) => {
   const zoomLevelFinal = Math.min(zoomLevel, maxZoom);
 
   // the ski areas are positioned according to their
   // cumulative widths, which means the tiles need to also
   // be calculated according to cumulative width
 
-  const tileWidth = maxDim / (2 ** zoomLevelFinal);
+  const tileWidth = maxDim / 2 ** zoomLevelFinal;
   const epsilon = 0.0000001;
 
   return range(
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
-    Math.min(
-      2 ** zoomLevelFinal,
-      Math.ceil(((scale.domain()[1] - minX) - epsilon) / tileWidth),
-    ),
+    Math.min(2 ** zoomLevelFinal, Math.ceil((scale.domain()[1] - minX - epsilon) / tileWidth))
   );
 };
 
@@ -171,21 +161,19 @@ const calculateTiles = (
  * @param maxX: The maximum x position of the tileset
  */
 const calculateTilesFromResolution = (
-  resolution, scale, minX, maxX = Number.MAX_VALUE, pixelsPerTile = 256
+  resolution,
+  scale,
+  minX,
+  maxX = Number.MAX_VALUE,
+  pixelsPerTile = 256
 ) => {
   const epsilon = 0.0000001;
   const tileWidth = resolution * pixelsPerTile;
   const MAX_TILES = 20;
 
   const lowerBound = Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth));
-  const upperBound = Math.ceil(Math.min(
-    maxX,
-    ((scale.domain()[1] - minX) - epsilon)
-  ) / tileWidth);
-  let tileRange = range(
-    lowerBound,
-    upperBound,
-  );
+  const upperBound = Math.ceil(Math.min(maxX, scale.domain()[1] - minX - epsilon) / tileWidth);
+  let tileRange = range(lowerBound, upperBound);
 
   if (tileRange.length > MAX_TILES) {
     // too many tiles visible in this range
@@ -208,20 +196,21 @@ const calculateTilesFromResolution = (
 const calculate1DVisibleTiles = (tilesetInfo, scale) => {
   // if we don't know anything about this dataset, no point
   // in trying to get tiles
-  if (!tilesetInfo) { return []; }
+  if (!tilesetInfo) {
+    return [];
+  }
 
   // calculate the zoom level given the scales and the data bounds
   const zoomLevel = calculate1DZoomLevel(tilesetInfo, scale, tilesetInfo.max_zoom);
 
   if (tilesetInfo.resolutions) {
-    const sortedResolutions = tilesetInfo.resolutions
-      .map(x => +x)
-      .sort((a, b) => b - a);
+    const sortedResolutions = tilesetInfo.resolutions.map(x => +x).sort((a, b) => b - a);
 
     const xTiles = calculateTilesFromResolution(
       sortedResolutions[zoomLevel],
       scale,
-      tilesetInfo.min_pos[0], tilesetInfo.max_pos[0]
+      tilesetInfo.min_pos[0],
+      tilesetInfo.max_pos[0]
     );
 
     const tiles = xTiles.map(x => [zoomLevel, x]);
@@ -275,8 +264,8 @@ const drawAxis = (track, valueScale) => {
   const margin = track.options.axisMargin || 0;
 
   if (
-    track.options.axisPositionHorizontal === 'left'
-    || track.options.axisPositionVertical === 'top'
+    track.options.axisPositionHorizontal === 'left' ||
+    track.options.axisPositionVertical === 'top'
   ) {
     // left axis are shown at the beginning of the plot
     track.axis.pAxis.position.x = track.position[0] + margin;
@@ -284,8 +273,8 @@ const drawAxis = (track, valueScale) => {
 
     track.axis.drawAxisRight(valueScale, track.dimensions[1]);
   } else if (
-    track.options.axisPositionHorizontal === 'outsideLeft'
-    || track.options.axisPositionVertical === 'outsideTop'
+    track.options.axisPositionHorizontal === 'outsideLeft' ||
+    track.options.axisPositionVertical === 'outsideTop'
   ) {
     // left axis are shown at the beginning of the plot
     track.axis.pAxis.position.x = track.position[0] + margin;
@@ -293,15 +282,15 @@ const drawAxis = (track, valueScale) => {
 
     track.axis.drawAxisLeft(valueScale, track.dimensions[1]);
   } else if (
-    track.options.axisPositionHorizontal === 'right'
-    || track.options.axisPositionVertical === 'bottom'
+    track.options.axisPositionHorizontal === 'right' ||
+    track.options.axisPositionVertical === 'bottom'
   ) {
     track.axis.pAxis.position.x = track.position[0] + track.dimensions[0] - margin;
     track.axis.pAxis.position.y = track.position[1];
     track.axis.drawAxisLeft(valueScale, track.dimensions[1]);
   } else if (
-    track.options.axisPositionHorizontal === 'outsideRight'
-    || track.options.axisPositionVertical === 'outsideBottom'
+    track.options.axisPositionHorizontal === 'outsideRight' ||
+    track.options.axisPositionVertical === 'outsideBottom'
   ) {
     track.axis.pAxis.position.x = track.position[0] + track.dimensions[0] - margin;
     track.axis.pAxis.position.y = track.position[1];
@@ -324,16 +313,11 @@ const movedY = (track, dY) => {
   const height = track.dimensions[1];
 
   // clamp at the bottom and top
-  if (
-    y + dY / k > -(k - 1) * height
-    && y + dY / k < 0
-  ) {
-    track.valueScaleTransform = vst.translate(
-      0, dY / k
-    );
+  if (y + dY / k > -(k - 1) * height && y + dY / k < 0) {
+    track.valueScaleTransform = vst.translate(0, dY / k);
   }
 
-  Object.values(track.fetchedTiles).forEach((tile) => {
+  Object.values(track.fetchedTiles).forEach(tile => {
     tile.graphics.position.y = track.valueScaleTransform.y;
   });
 
@@ -381,7 +365,7 @@ const trackUtils = {
   calculate1DVisibleTiles,
   drawAxis,
   zoomedY,
-  movedY,
+  movedY
 };
 
 export default trackUtils;
