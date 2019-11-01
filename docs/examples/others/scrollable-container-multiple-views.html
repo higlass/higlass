@@ -981,15 +981,16 @@ const hgApi = hglib.viewer(
   document.getElementById('demo'),
   viewConfig,
   {
-    bounded: true,
-    scrollable: true,
-    scrolling: false,
+    sizeMode: 'overflow'
   },
 );
 
 document.getElementById('scrolling').addEventListener('change', () => {
-  console.log('Scrolling: ', document.getElementById('scrolling').checked);
-  hgApi.option('scrolling', document.getElementById('scrolling').checked);
+  console.log('Scrolling: ', document.getElementById('scrolling').checked ? 'scroll' : 'overflow');
+  hgApi.option(
+    'sizeMode',
+    document.getElementById('scrolling').checked ? 'scroll' : 'overflow'
+  );
 });
 </script>
 </html>
