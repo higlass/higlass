@@ -640,6 +640,11 @@ const createApi = function api(context, pubSub) {
             forceUpdate(self);
             break;
 
+          case 'scrolling':
+            self.props.options[key] = value;
+            forceUpdate(self);
+            break;
+
           default:
             console.warn(
               `This option "${key}" is either unknown or not settable.`

@@ -200,6 +200,7 @@ class HiGlassComponent extends React.Component {
     this.pixiStage.mask = this.pixiMask;
 
     this.element = null;
+    this.scrollTop = 0;
 
     let mouseTool = MOUSE_TOOL_MOVE;
 
@@ -3539,6 +3540,8 @@ class HiGlassComponent extends React.Component {
     const absX = e.clientX;
     const absY = e.clientY;
     const relPos = clientPoint(this.topDiv, e);
+    // We need to add the scrollTop
+    relPos[1] += this.scrollTop;
     const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
 
     const hoveredTracks = hoveredTiledPlot
@@ -3759,8 +3762,9 @@ class HiGlassComponent extends React.Component {
   }
 
   onScrollHandler() {
-    this.pixiStage.y = -this.scrollContainer.scrollTop;
-    this.pubSub.publish('app.scroll', this.scrollContainer.scrollTop);
+    this.scrollTop = this.scrollContainer.scrollTop;
+    this.pixiStage.y = -this.scrollTop;
+    this.pubSub.publish('app.scroll', this.scrollTop);
     this.animate();
   }
 
@@ -3805,13 +3809,13 @@ class HiGlassComponent extends React.Component {
       this.props.zoomFixed
       || this.props.options.zoomFixed
       || this.state.viewConfig.zoomFixed
-      || this.props.options.scrollable
+      || (this.props.options.scrollable && this.props.options.scrolling)
       || (view && view.zoomFixed)
     );
   }
 
   wheelHandler(evt) {
-    if (this.state.modal || this.props.options.scrollable) return;
+    if (this.state.modal || (this.props.options.scrollable && this.props.options.scrolling)) return;
 
     // The event forwarder wasn't written for React's SyntheticEvent
     const nativeEvent = evt.nativeEvent || evt;
@@ -4144,7 +4148,7 @@ class HiGlassComponent extends React.Component {
       styleNames += ' styles.higlass-dark-theme';
     }
 
-    const scrollStyles = {
+    const scrollableStyles = {
       position: 'absolute',
       top: 0,
       right: 0,
@@ -4159,7 +4163,7 @@ class HiGlassComponent extends React.Component {
         className="higlass"
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
-        style={this.props.options.scrollable ? scrollStyles : {}}
+        style={this.props.options.scrollable ? scrollableStyles : {}}
         styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>
@@ -4175,12 +4179,18 @@ class HiGlassComponent extends React.Component {
                 ref={(c) => { this.scrollContainer = c; }}
                 className="higlass-scroll-container"
                 onScroll={this.onScrollHandlerBound}
+                // eslint-disable-next-line no-nested-ternary
                 style={this.props.options.scrollable
-                  ? {
-                    ...scrollStyles,
-                    overflowX: 'hidden',
-                    overflowY: 'auto',
-                  } : {}
+                  ? this.props.options.scrolling
+                    ? {
+                      ...scrollableStyles,
+                      overflowX: 'hidden',
+                      overflowY: 'auto',
+                    } : {
+                      ...scrollableStyles,
+                      overflow: 'hidden'
+                    }
+                  : {}
                 }
               >
                 <div
