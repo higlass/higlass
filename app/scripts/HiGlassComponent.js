@@ -3762,6 +3762,7 @@ class HiGlassComponent extends React.Component {
   }
 
   onScrollHandler() {
+    if (!this.props.options.scrollable || !this.props.options.scrolling) return;
     this.scrollTop = this.scrollContainer.scrollTop;
     this.pixiStage.y = -this.scrollTop;
     this.pubSub.publish('app.scroll', this.scrollTop);
