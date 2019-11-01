@@ -104,8 +104,9 @@ The ``options`` parameter can have the following properties:
 - ``renderer``: if ``canvas`` HiGlass will render to the Canvas API. Otherwise
 it will use WebGL.
 
-- ``scrollable``: if ``true`` HiGlass allow you to scroll through views and set
-all views to zoom fixed.
+- ``scrollable``: if ``true`` HiGlass will activate scroll mode. This **does not** automatically activate scrolling. It merely stretches the base container to its parent and hides overflowing content.
+
+- ``scrolling``: if ``true`` HiGlass will activate scrolling by setting the approriate CSS overflow rules, so you can scroll through views. This mode will also set all views to zoom fixed automatically. For this to work ``scrollable`` must be set to ``true``!
 
 The function returns an instance of the public API of a HiGlass component.
 
