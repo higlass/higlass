@@ -1,36 +1,21 @@
 import * as PIXI from 'pixi.js';
 
 class LeftTrackModifier {
-  constructor(
-    originalTrack
-  ) {
-    this.scene =
-      originalTrack.scene;
+  constructor(originalTrack) {
+    this.scene = originalTrack.scene;
 
     this.originalTrack = originalTrack;
     this.pBase = new PIXI.Graphics();
 
-    this.scene.removeChild(
-      originalTrack.pBase
-    );
-    this.scene.addChild(
-      this
-        .pBase
-    );
+    this.scene.removeChild(originalTrack.pBase);
+    this.scene.addChild(this.pBase);
 
     this.moveToOrigin = new PIXI.Graphics();
-    this.moveToOrigin.addChild(
-      originalTrack.pBase
-    );
+    this.moveToOrigin.addChild(originalTrack.pBase);
 
-    this.pBase.addChild(
-      this
-        .moveToOrigin
-    );
+    this.pBase.addChild(this.moveToOrigin);
 
-    this.moveToOrigin.rotation =
-      Math.PI /
-      2;
+    this.moveToOrigin.rotation = Math.PI / 2;
 
     // Indicate that the track has been flipped. This is generally the same as
     // `originalTrack.flipText` but `flipText` is semantically not that clear
@@ -41,10 +26,7 @@ class LeftTrackModifier {
     originalTrack.flipText = true;
     this.svgOutput = null;
 
-    if (
-      originalTrack.gBase &&
-      originalTrack.gMain
-    ) {
+    if (originalTrack.gBase && originalTrack.gMain) {
       this.originalTrack.gBase.attr(
         'transform',
         `translate(${this.moveToOrigin.position.x},${this.moveToOrigin.position.y})
@@ -62,53 +44,31 @@ class LeftTrackModifier {
     this.originalTrack.remove();
 
     this.pBase.clear();
-    this.scene.removeChild(
-      this
-        .pBase
-    );
+    this.scene.removeChild(this.pBase);
   }
 
-  setDimensions(
-    newDimensions
-  ) {
+  setDimensions(newDimensions) {
     this.dimensions = newDimensions;
 
-    const reversedDimensions = [
-      newDimensions[1],
-      newDimensions[0]
-    ];
+    const reversedDimensions = [newDimensions[1], newDimensions[0]];
 
-    this.originalTrack.setDimensions(
-      reversedDimensions
-    );
+    this.originalTrack.setDimensions(reversedDimensions);
   }
 
-  setPosition(
-    newPosition
-  ) {
+  setPosition(newPosition) {
     this.position = newPosition;
 
-    this.originalTrack.setPosition(
-      newPosition
-    );
+    this.originalTrack.setPosition(newPosition);
 
-    this.originalTrack.pBase.position.x = -this
-      .originalTrack
-      .position[0];
-    this.originalTrack.pBase.position.y = -this
-      .originalTrack
-      .position[1];
+    this.originalTrack.pBase.position.x = -this.originalTrack.position[0];
+    this.originalTrack.pBase.position.y = -this.originalTrack.position[1];
 
     this.moveToOrigin.scale.y = -1;
     this.moveToOrigin.scale.x = 1;
     this.moveToOrigin.position.x = this.originalTrack.position[0];
     this.moveToOrigin.position.y = this.originalTrack.position[1];
 
-    if (
-      this
-        .originalTrack
-        .gMain
-    ) {
+    if (this.originalTrack.gMain) {
       this.originalTrack.gBase.attr(
         'transform',
         `translate(${this.moveToOrigin.position.x},${this.moveToOrigin.position.y})
@@ -122,18 +82,12 @@ class LeftTrackModifier {
     }
   }
 
-  refXScale(
-    _
-  ) {
+  refXScale(_) {
     /**
      * Either get or set the reference xScale
      */
-    if (
-      !arguments.length
-    ) {
-      return this
-        .originalTrack
-        ._refYScale;
+    if (!arguments.length) {
+      return this.originalTrack._refYScale;
     }
 
     this.originalTrack._refXScale = _;
@@ -141,18 +95,12 @@ class LeftTrackModifier {
     return this;
   }
 
-  refYScale(
-    _
-  ) {
+  refYScale(_) {
     /**
      * Either get or set the reference yScale
      */
-    if (
-      !arguments.length
-    ) {
-      return this
-        .originalTrack
-        ._refXScale;
+    if (!arguments.length) {
+      return this.originalTrack._refXScale;
     }
 
     this.originalTrack._refYScale = _;
@@ -160,18 +108,12 @@ class LeftTrackModifier {
     return this;
   }
 
-  xScale(
-    _
-  ) {
+  xScale(_) {
     /**
      * Either get or set the xScale
      */
-    if (
-      !arguments.length
-    ) {
-      return this
-        .originalTrack
-        ._xScale;
+    if (!arguments.length) {
+      return this.originalTrack._xScale;
     }
 
     this.originalTrack._yScale = _;
@@ -179,18 +121,12 @@ class LeftTrackModifier {
     return this;
   }
 
-  yScale(
-    _
-  ) {
+  yScale(_) {
     /**
      * Either get or set the yScale
      */
-    if (
-      !arguments.length
-    ) {
-      return this
-        .originalTrack
-        ._yScale;
+    if (!arguments.length) {
+      return this.originalTrack._yScale;
     }
 
     this.originalTrack._xScale = _;
@@ -198,85 +134,36 @@ class LeftTrackModifier {
     return this;
   }
 
-  getMouseOverHtml(
-    trackX,
-    trackY
-  ) {
-    return this.originalTrack.getMouseOverHtml(
-      trackY,
-      trackX
-    );
+  getMouseOverHtml(trackX, trackY) {
+    return this.originalTrack.getMouseOverHtml(trackY, trackX);
   }
 
   draw() {
     this.originalTrack.draw();
   }
 
-  zoomed(
-    newXScale,
-    newYScale,
-    k = 1,
-    tx = 0,
-    ty = 0,
-    xPositionOffset = 0,
-    yPositionOffset = 0
-  ) {
-    this.xScale(
-      newXScale
-    );
-    this.yScale(
-      newYScale
-    );
+  zoomed(newXScale, newYScale, k = 1, tx = 0, ty = 0, xPositionOffset = 0, yPositionOffset = 0) {
+    this.xScale(newXScale);
+    this.yScale(newYScale);
 
     this.originalTrack.refreshTiles();
 
-    if (
-      this
-        .originalTrack
-        .leftTrackZoomed
-    ) {
+    if (this.originalTrack.leftTrackZoomed) {
       // the track implements its own left-oriented zooming and scrolling
-      this.originalTrack.leftTrackZoomed(
-        newXScale,
-        newYScale,
-        k,
-        tx,
-        ty
-      );
+      this.originalTrack.leftTrackZoomed(newXScale, newYScale, k, tx, ty);
       this.originalTrack.draw();
       return;
     }
 
-    const offset =
-      this.originalTrack._xScale(
-        0
-      ) -
-      k *
-        this.originalTrack._refXScale(
-          0
-        );
-    this.originalTrack.pMobile.position.x =
-      offset +
-      this
-        .originalTrack
-        .position[0];
+    const offset = this.originalTrack._xScale(0) - k * this.originalTrack._refXScale(0);
+    this.originalTrack.pMobile.position.x = offset + this.originalTrack.position[0];
     this.originalTrack.pMobile.position.y =
-      this
-        .originalTrack
-        .position[1] +
-      this
-        .originalTrack
-        .dimensions[1];
+      this.originalTrack.position[1] + this.originalTrack.dimensions[1];
 
     this.originalTrack.pMobile.scale.x = k;
     this.originalTrack.pMobile.scale.y = k;
 
-    if (
-      this
-        .originalTrack
-        .options
-        .oneDHeatmapFlipped
-    ) {
+    if (this.originalTrack.options.oneDHeatmapFlipped) {
       this.originalTrack.pMobile.scale.y = -k;
       this.originalTrack.pMobile.position.y = this.originalTrack.position[1];
     }
@@ -284,46 +171,24 @@ class LeftTrackModifier {
     this.originalTrack.draw();
   }
 
-  zoomedY(
-    yPos,
-    kMultiplier
-  ) {
-    this.originalTrack.zoomedY(
-      yPos,
-      kMultiplier
-    );
+  zoomedY(yPos, kMultiplier) {
+    this.originalTrack.zoomedY(yPos, kMultiplier);
   }
 
-  movedY(
-    dY
-  ) {
-    this.originalTrack.movedY(
-      dY
-    );
+  movedY(dY) {
+    this.originalTrack.movedY(dY);
   }
 
-  refScalesChanged(
-    refXScale,
-    refYScale
-  ) {
-    this.originalTrack.refScalesChanged(
-      refYScale,
-      refXScale
-    );
+  refScalesChanged(refXScale, refYScale) {
+    this.originalTrack.refScalesChanged(refYScale, refXScale);
   }
 
-  rerender(
-    options
-  ) {
-    this.originalTrack.rerender(
-      options
-    );
+  rerender(options) {
+    this.originalTrack.rerender(options);
   }
 
   exportSVG() {
-    const output = document.createElement(
-      'g'
-    );
+    const output = document.createElement('g');
     output.setAttribute(
       'transform',
       `translate(${this.moveToOrigin.position.x},${this.moveToOrigin.position.y})
@@ -331,54 +196,25 @@ class LeftTrackModifier {
                              scale(${this.moveToOrigin.scale.x},${this.moveToOrigin.scale.y})`
     );
 
-    if (
-      this
-        .originalTrack
-        .exportSVG
-    ) {
-      const g = document.createElement(
-        'g'
-      );
+    if (this.originalTrack.exportSVG) {
+      const g = document.createElement('g');
       g.setAttribute(
         'transform',
         `translate(${this.originalTrack.pBase.position.x}, ${this.originalTrack.pBase.position.y})`
       );
 
-      g.appendChild(
-        this.originalTrack.exportSVG()[0]
-      );
-      output.appendChild(
-        g
-      );
+      g.appendChild(this.originalTrack.exportSVG()[0]);
+      output.appendChild(g);
     }
 
-    return [
-      output,
-      output
-    ];
+    return [output, output];
   }
 
-  respondsToPosition(
-    x,
-    y
-  ) {
+  respondsToPosition(x, y) {
     return (
-      x >=
-        this
-          .position[0] &&
-      x <=
-        this
-          .dimensions[0] +
-          this
-            .position[0] &&
-      (y >=
-        this
-          .position[1] &&
-        y <=
-          this
-            .dimensions[1] +
-            this
-              .position[1])
+      x >= this.position[0] &&
+      x <= this.dimensions[0] + this.position[0] &&
+      (y >= this.position[1] && y <= this.dimensions[1] + this.position[1])
     );
   }
 }

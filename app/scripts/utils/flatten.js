@@ -5,15 +5,6 @@ import reduce from './reduce';
  * @param   {array}  Nested array
  * @return  {array}  Flatt array
  */
-const flatten = reduce(
-  (
-    a,
-    b
-  ) =>
-    a.concat(
-      b
-    ),
-  []
-);
+const flatten = reduce((a, b) => a.concat(b), []);
 
 export default flatten;

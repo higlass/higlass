@@ -8,30 +8,11 @@
 const expandCombinedTracks = trackList => {
   let newTracks = [];
 
-  for (
-    let i = 0;
-    i <
-    trackList.length;
-    i++
-  ) {
-    if (
-      trackList[
-        i
-      ]
-        .contents
-    ) {
-      newTracks = newTracks.concat(
-        trackList[
-          i
-        ]
-          .contents
-      );
+  for (let i = 0; i < trackList.length; i++) {
+    if (trackList[i].contents) {
+      newTracks = newTracks.concat(trackList[i].contents);
     } else {
-      newTracks.push(
-        trackList[
-          i
-        ]
-      );
+      newTracks.push(trackList[i]);
     }
   }
 

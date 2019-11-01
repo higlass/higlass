@@ -8,37 +8,16 @@
  * @param  {Number}  eps  Epsilon.
  * @return  {Array}  RGB color array.
  */
-const valueToColor = (
-  valueScale,
-  colorScale,
-  pseudoCounts = 0,
-  eps = 0.000001
-) => value => {
+const valueToColor = (valueScale, colorScale, pseudoCounts = 0, eps = 0.000001) => value => {
   let rgbIdx = 255;
 
-  if (
-    value >
-    eps
-  ) {
+  if (value > eps) {
     // values less than espilon are considered NaNs and made transparent
     // (rgbIdx 255)
-    rgbIdx = Math.max(
-      0,
-      Math.min(
-        255,
-        Math.floor(
-          valueScale(
-            value +
-              pseudoCounts
-          )
-        )
-      )
-    );
+    rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(value + pseudoCounts))));
   }
 
-  return colorScale[
-    rgbIdx
-  ];
+  return colorScale[rgbIdx];
 };
 
 export default valueToColor;

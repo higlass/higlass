@@ -8,12 +8,8 @@ import withPubSub from './hocs/with-pub-sub';
 import '../styles/DragListeningDiv.module.scss';
 
 class DragListeningDiv extends React.Component {
-  constructor(
-    props
-  ) {
-    super(
-      props
-    );
+  constructor(props) {
+    super(props);
 
     this.state = {
       dragOnTop: false
@@ -22,97 +18,55 @@ class DragListeningDiv extends React.Component {
 
   render() {
     // color red if not enabled, green if a track is not top and blue otherwise
-    let background =
-      'red';
+    let background = 'red';
 
-    if (
-      this
-        .props
-        .enabled &&
-      this
-        .state
-        .dragOnTop
-    ) {
-      background =
-        'green';
-    } else if (
-      this
-        .props
-        .enabled
-    ) {
-      background =
-        'blue';
+    if (this.props.enabled && this.state.dragOnTop) {
+      background = 'green';
+    } else if (this.props.enabled) {
+      background = 'blue';
     }
 
-    const styleNames = this
-      .props
-      .enabled
-      ? 'drag-listening-div-active'
-      : '';
+    const styleNames = this.props.enabled ? 'drag-listening-div-active' : '';
 
     return (
       <div
         className="DragListeningDiv"
         onDragEnter={() => {
-          this.setState(
-            {
-              dragOnTop: true
-            }
-          );
+          this.setState({
+            dragOnTop: true
+          });
         }}
         onDragLeave={() => {
-          this.setState(
-            {
-              dragOnTop: false
-            }
-          );
+          this.setState({
+            dragOnTop: false
+          });
         }}
         onDragOver={evt => {
           evt.preventDefault();
         }}
         onDrop={() => {
-          if (
-            !this
-              .props
-              .enabled
-          )
-            return;
+          if (!this.props.enabled) return;
 
-          const evtJson = this
-            .props
-            .draggingHappening;
+          const evtJson = this.props.draggingHappening;
 
           const newTrack = {
-            type: this
-              .props
-              .defaultTrackType,
+            type: this.props.defaultTrackType,
             uid: slugid.nice(),
-            tilesetUid:
-              evtJson.tilesetUid,
-            server:
-              evtJson.server
+            tilesetUid: evtJson.tilesetUid,
+            server: evtJson.server
           };
 
-          this.props.onTrackDropped(
-            newTrack
-          );
-          this.props.pubSub.publish(
-            'trackDropped',
-            newTrack
-          );
+          this.props.onTrackDropped(newTrack);
+          this.props.pubSub.publish('trackDropped', newTrack);
         }}
         style={Object.assign(
           {
             background,
             opacity: 0.6
           },
-          this
-            .props
-            .style
+          this.props.style
         )}
-        styleName={
-          styleNames
-        }
+        styleName={styleNames}
       />
     );
   }
@@ -126,20 +80,11 @@ DragListeningDiv.defaultProps = {
 };
 
 DragListeningDiv.propTypes = {
-  enabled:
-    PropTypes.bool,
-  style:
-    PropTypes.object,
-  draggingHappening:
-    PropTypes.object,
-  onTrackDropped:
-    PropTypes.func,
-  position:
-    PropTypes
-      .string
-      .isRequired
+  enabled: PropTypes.bool,
+  style: PropTypes.object,
+  draggingHappening: PropTypes.object,
+  onTrackDropped: PropTypes.func,
+  position: PropTypes.string.isRequired
 };
 
-export default withPubSub(
-  DragListeningDiv
-);
+export default withPubSub(DragListeningDiv);

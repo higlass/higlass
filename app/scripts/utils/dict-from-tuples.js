@@ -6,14 +6,9 @@
 const dictFromTuples = tuples => {
   const dict = {};
 
-  tuples.forEach(
-    x => {
-      dict[
-        x[0]
-      ] =
-        x[1];
-    }
-  );
+  tuples.forEach(x => {
+    dict[x[0]] = x[1];
+  });
 
   return dict;
 };

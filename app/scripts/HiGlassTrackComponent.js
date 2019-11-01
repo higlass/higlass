@@ -17,52 +17,24 @@ import { viewer } from './hglib';
  * @param {trackConfig: Object} The standard HiGlass track definition type
  * @returns {Object} A {id, hgApi} object
  */
-export const trackViewer = (
-  element,
-  [
-    xMin,
-    xMax,
-    yMin,
-    yMax
-  ],
-  trackConfig
-) => {
-  if (
-    !trackConfig
-      .options
-      .colorbarPosition
-  ) {
-    trackConfig.options.colorbarPosition =
-      'hidden';
+export const trackViewer = (element, [xMin, xMax, yMin, yMax], trackConfig) => {
+  if (!trackConfig.options.colorbarPosition) {
+    trackConfig.options.colorbarPosition = 'hidden';
   }
-  if (
-    !trackConfig
-      .options
-      .labelPosition
-  ) {
-    trackConfig.options.labelPosition =
-      'hidden';
+  if (!trackConfig.options.labelPosition) {
+    trackConfig.options.labelPosition = 'hidden';
   }
-  const id =
-    'arbitary-id';
+  const id = 'arbitary-id';
   const viewConfig = {
     editable: false,
     zoomFixed: false,
     views: [
       {
         uid: id,
-        initialXDomain: [
-          xMin,
-          xMax
-        ],
-        initialYDomain: [
-          yMin,
-          yMax
-        ],
+        initialXDomain: [xMin, xMax],
+        initialYDomain: [yMin, yMax],
         tracks: {
-          center: [
-            trackConfig
-          ]
+          center: [trackConfig]
         },
         layout: {
           w: 12,
@@ -75,13 +47,9 @@ export const trackViewer = (
       }
     ]
   };
-  const hgApi = viewer(
-    element,
-    viewConfig,
-    {
-      bounded: true
-    }
-  );
+  const hgApi = viewer(element, viewConfig, {
+    bounded: true
+  });
   return {
     id,
     hgApi
@@ -94,12 +62,8 @@ export const trackViewer = (
  * so HiGlass can be used to provide background imagery for Deck.gl.
  */
 export default class HiGlassTrackComponent extends React.Component {
-  constructor(
-    props
-  ) {
-    super(
-      props
-    );
+  constructor(props) {
+    super(props);
     this.id = `id-${Math.random()}`;
   }
 
@@ -107,52 +71,17 @@ export default class HiGlassTrackComponent extends React.Component {
     this.initTrackViewer();
   }
 
-  shouldComponentUpdate(
-    nextProps
-  ) {
+  shouldComponentUpdate(nextProps) {
     // For now, never re-render the component: Just re-zoom.
-    const {
-      x,
-      y,
-      width,
-      height
-    } = nextProps;
-    this.zoomTo(
-      x,
-      y,
-      width,
-      height
-    );
+    const { x, y, width, height } = nextProps;
+    this.zoomTo(x, y, width, height);
     return false;
   }
 
   initTrackViewer() {
-    const {
-      trackConfig,
-      x,
-      y,
-      width,
-      height
-    } = this.props;
-    const element = document.getElementById(
-      this
-        .id
-    );
-    const {
-      id,
-      hgApi
-    } = trackViewer(
-      element,
-      [
-        x,
-        x +
-          width,
-        y,
-        y +
-          height
-      ],
-      trackConfig
-    );
+    const { trackConfig, x, y, width, height } = this.props;
+    const element = document.getElementById(this.id);
+    const { id, hgApi } = trackViewer(element, [x, x + width, y, y + height], trackConfig);
     this.viewUid = id;
     this.viewer = hgApi;
   }
@@ -165,36 +94,17 @@ export default class HiGlassTrackComponent extends React.Component {
    * @param  {Number}  width   Width of viewport
    * @param  {Number}  height  Height of viewport
    */
-  zoomTo(
-    x,
-    y,
-    width,
-    height
-  ) {
-    this.viewer.zoomTo(
-      this
-        .viewUid,
-      x,
-      x +
-        width,
-      y,
-      y +
-        height
-    );
+  zoomTo(x, y, width, height) {
+    this.viewer.zoomTo(this.viewUid, x, x + width, y, y + height);
   }
 
   render() {
     return (
       <div
-        id={
-          this
-            .id
-        }
+        id={this.id}
         style={{
-          height:
-            '100%',
-          width:
-            '100%'
+          height: '100%',
+          width: '100%'
         }}
       />
     );

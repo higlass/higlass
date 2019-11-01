@@ -11,10 +11,7 @@ import {
 
 import { requestsInFlight } from '../services';
 
-import {
-  getTrackObjectFromHGC,
-  getTrackRenderer
-} from './get-higlass-components';
+import { getTrackObjectFromHGC, getTrackRenderer } from './get-higlass-components';
 
 import HiGlassComponent from '../HiGlassComponent';
 
@@ -34,25 +31,14 @@ export const areTransitionsActive = hgc => {
    *  True if any of the tracks have active transtions. False otherwise.
    */
   for (const track of hgc.iterateOverTracks()) {
-    const trackRenderer = getTrackRenderer(
-      hgc,
-      track.viewId,
-      track.trackId
-    );
+    const trackRenderer = getTrackRenderer(hgc, track.viewId, track.trackId);
 
-    if (
-      trackRenderer.activeTransitions >
-      0
-    )
-      return true;
+    if (trackRenderer.activeTransitions > 0) return true;
   }
   return false;
 };
 
-export const waitForTransitionsFinished = (
-  hgc,
-  callback
-) => {
+export const waitForTransitionsFinished = (hgc, callback) => {
   /**
    * Wait until all transitions have finished before
    * calling the callback
@@ -70,20 +56,10 @@ export const waitForTransitionsFinished = (
    */
   // console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
 
-  if (
-    areTransitionsActive(
-      hgc
-    )
-  ) {
-    setTimeout(
-      () => {
-        waitForTransitionsFinished(
-          hgc,
-          callback
-        );
-      },
-      TILE_LOADING_CHECK_INTERVAL
-    );
+  if (areTransitionsActive(hgc)) {
+    setTimeout(() => {
+      waitForTransitionsFinished(hgc, callback);
+    }, TILE_LOADING_CHECK_INTERVAL);
   } else {
     // console.log('finished');
     callback();
@@ -101,17 +77,8 @@ export const waitForJsonComplete = finished => {
    *    open
    *
    */
-  if (
-    requestsInFlight >
-    0
-  ) {
-    setTimeout(
-      () =>
-        waitForJsonComplete(
-          finished
-        ),
-      TILE_LOADING_CHECK_INTERVAL
-    );
+  if (requestsInFlight > 0) {
+    setTimeout(() => waitForJsonComplete(finished), TILE_LOADING_CHECK_INTERVAL);
   } else {
     finished();
   }
@@ -131,70 +98,34 @@ export const waitForJsonComplete = finished => {
  */
 export const isWaitingOnTiles = hgc => {
   for (const track of hgc.iterateOverTracks()) {
-    let trackObj = getTrackObjectFromHGC(
-      hgc,
-      track.viewId,
-      track.trackId
-    );
+    let trackObj = getTrackObjectFromHGC(hgc, track.viewId, track.trackId);
 
-    if (
-      !track
-        .track
-        .server &&
-      !track
-        .track
-        .tilesetUid
-    ) {
+    if (!track.track.server && !track.track.tilesetUid) {
       continue;
-    } else if (
-      track
-        .track
-        .server &&
-      track
-        .track
-        .tilesetUid
-    ) {
-      if (
-        trackObj.originalTrack
-      ) {
-        trackObj =
-          trackObj.originalTrack;
+    } else if (track.track.server && track.track.tilesetUid) {
+      if (trackObj.originalTrack) {
+        trackObj = trackObj.originalTrack;
       }
 
-      if (
-        !(
-          trackObj.tilesetInfo ||
-          trackObj.chromInfo
-        )
-      ) {
+      if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
         // console.warn(
         //   `Track uuid:${trackObj.uuid} has no tileset or chromosome info`
         // );
         return true;
       }
 
-      if (
-        trackObj.fetching &&
-        trackObj
-          .fetching
-          .size
-      ) {
+      if (trackObj.fetching && trackObj.fetching.size) {
         return true;
       }
     } else {
-      throw Error(
-        '"server" and "tilesetUid" belong together'
-      );
+      throw Error('"server" and "tilesetUid" belong together');
     }
   }
 
   return false;
 };
 
-export const waitForTilesLoaded = (
-  hgc,
-  tilesLoadedCallback
-) => {
+export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
   /**
    * Wait until all of the tiles in the HiGlassComponent are loaded
    * until calling the callback
@@ -211,20 +142,10 @@ export const waitForTilesLoaded = (
    *  Nothing
    */
   // console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
-  if (
-    isWaitingOnTiles(
-      hgc
-    )
-  ) {
-    setTimeout(
-      () => {
-        waitForTilesLoaded(
-          hgc,
-          tilesLoadedCallback
-        );
-      },
-      TILE_LOADING_CHECK_INTERVAL
-    );
+  if (isWaitingOnTiles(hgc)) {
+    setTimeout(() => {
+      waitForTilesLoaded(hgc, tilesLoadedCallback);
+    }, TILE_LOADING_CHECK_INTERVAL);
   } else {
     // console.log('finished');
     tilesLoadedCallback();
@@ -239,64 +160,34 @@ export const waitForTilesLoaded = (
  *  hgc component
  * @param {function} done The callback to call when the component is fully loaded
  */
-export const mountHGComponent = (
-  prevDiv,
-  prevHgc,
-  viewConf,
-  done,
-  options
-) => {
-  if (
-    prevHgc
-  ) {
+export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
+  if (prevHgc) {
     prevHgc.unmount();
     prevHgc.detach();
   }
 
-  if (
-    prevDiv
-  ) {
-    global.document.body.removeChild(
-      prevDiv
-    );
+  if (prevDiv) {
+    global.document.body.removeChild(prevDiv);
   }
 
-  const style =
-    (options &&
-      options.style) ||
-    'width:800px; background-color: lightgreen;';
-  const bounded =
-    (options &&
-      options.bounded) ||
-    false;
+  const style = (options && options.style) || 'width:800px; background-color: lightgreen;';
+  const bounded = (options && options.bounded) || false;
 
   // console.log('check:', options && options.style)
   // console.log('style:', style, "options:", options, "style", options.style);
 
-  const div = global.document.createElement(
-    'div'
-  );
-  global.document.body.appendChild(
-    div
-  );
+  const div = global.document.createElement('div');
+  global.document.body.appendChild(div);
 
-  div.setAttribute(
-    'style',
-    style
-  );
-  div.setAttribute(
-    'id',
-    'simple-hg-component'
-  );
+  div.setAttribute('style', style);
+  div.setAttribute('id', 'simple-hg-component');
 
   const hgc = mount(
     <HiGlassComponent
       options={{
         bounded
       }}
-      viewConfig={
-        viewConf
-      }
+      viewConfig={viewConf}
     />,
     {
       attachTo: div
@@ -305,31 +196,16 @@ export const mountHGComponent = (
 
   hgc.update();
 
-  waitForJsonComplete(
-    () => {
-      waitForTilesLoaded(
-        hgc.instance(),
-        done
-      );
-    }
-  );
+  waitForJsonComplete(() => {
+    waitForTilesLoaded(hgc.instance(), done);
+  });
 
-  return [
-    div,
-    hgc
-  ];
+  return [div, hgc];
 };
 
 export const removeHGComponent = div => {
-  if (
-    !div
-  )
-    return;
+  if (!div) return;
 
-  ReactDOM.unmountComponentAtNode(
-    div
-  );
-  document.body.removeChild(
-    div
-  );
+  ReactDOM.unmountComponentAtNode(div);
+  document.body.removeChild(div);
 };

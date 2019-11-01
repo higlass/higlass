@@ -16,19 +16,12 @@
  */
 const q = queryStr => {
   try {
-    const queries = queryStr.split(
-      '.'
-    );
+    const queries = queryStr.split('.');
     return rootObj => {
       let obj = rootObj;
-      queries.forEach(
-        query => {
-          obj =
-            obj[
-              query
-            ];
-        }
-      );
+      queries.forEach(query => {
+        obj = obj[query];
+      });
       return obj;
     };
   } catch (e) {

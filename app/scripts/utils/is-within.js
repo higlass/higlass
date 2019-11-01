@@ -8,31 +8,9 @@
  * @param   {number}  maxY  The rectangle's start X coordinate.
  * @return  {boolean}  If `true` the [x,y] point is in the rectangle.
  */
-const isWithin = (
-  x,
-  y,
-  minX,
-  maxX,
-  minY,
-  maxY,
-  is1d = false
-) =>
+const isWithin = (x, y, minX, maxX, minY, maxY, is1d = false) =>
   is1d
-    ? (x >=
-        minX &&
-        x <=
-          maxX) ||
-      (y >=
-        minY &&
-        y <=
-          maxY)
-    : x >=
-        minX &&
-      x <=
-        maxX &&
-      y >=
-        minY &&
-      y <=
-        maxY;
+    ? (x >= minX && x <= maxX) || (y >= minY && y <= maxY)
+    : x >= minX && x <= maxX && y >= minY && y <= maxY;
 
 export default isWithin;

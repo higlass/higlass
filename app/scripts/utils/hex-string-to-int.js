@@ -4,13 +4,6 @@
  * @param   {string}  str  HEX string
  * @return  {integer}  HEX number
  */
-const hexStrToInt = str =>
-  parseInt(
-    str.replace(
-      /^#/,
-      ''
-    ),
-    16
-  );
+const hexStrToInt = str => parseInt(str.replace(/^#/, ''), 16);
 
 export default hexStrToInt;

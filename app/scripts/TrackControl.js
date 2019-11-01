@@ -9,39 +9,23 @@ import { THEME_DARK } from './configs';
 import '../styles/TrackControl.module.scss';
 
 const getClassNames = props => {
-  let className = props.isVisible
-    ? 'track-control-active'
-    : 'track-control';
+  let className = props.isVisible ? 'track-control-active' : 'track-control';
 
-  className += props.isAlignLeft
-    ? ' track-control-left'
-    : '';
+  className += props.isAlignLeft ? ' track-control-left' : '';
 
-  className += props.isVertical
-    ? ' track-control-vertical'
-    : '';
+  className += props.isVertical ? ' track-control-vertical' : '';
 
-  className += props.paddingRight
-    ? ' track-control-padding-right'
-    : '';
+  className += props.paddingRight ? ' track-control-padding-right' : '';
 
-  if (
-    props.theme ===
-    THEME_DARK
-  )
-    className +=
-      ' track-control-dark';
+  if (props.theme === THEME_DARK) className += ' track-control-dark';
 
   return className;
 };
 
 const getButtonClassNames = props => {
-  let buttonClassName =
-    'track-control-button';
+  let buttonClassName = 'track-control-button';
 
-  buttonClassName += props.isVertical
-    ? ' track-control-button-vertical'
-    : '';
+  buttonClassName += props.isVertical ? ' track-control-button-vertical' : '';
 
   return buttonClassName;
 };
@@ -55,58 +39,29 @@ let DragHandle = null;
 const TrackControl = props => {
   // Avoid constant recreating that button when the props didn't change.
   // Damn React could be a little smarter here...
-  if (
-    !props ||
-    !oldProps ||
-    Object.keys(
-      props
-    ).some(
-      key =>
-        oldProps[
-          key
-        ] !==
-        props[
-          key
-        ]
-    )
-  ) {
+  if (!props || !oldProps || Object.keys(props).some(key => oldProps[key] !== props[key])) {
     oldProps = props;
-    DragHandle = SortableHandle(
-      () => (
-        <svg
-          className="no-zoom"
-          style={Object.assign(
-            {
-              height:
-                '20px',
-              width:
-                '20px'
-            },
-            props.imgStyleMove
-          )}
-          styleName={getButtonClassNames(
-            props
-          )}
-        >
-          <title>
-            Move
-            track
-          </title>
-          <use xlinkHref="#move" />
-        </svg>
-      )
-    );
+    DragHandle = SortableHandle(() => (
+      <svg
+        className="no-zoom"
+        style={Object.assign(
+          {
+            height: '20px',
+            width: '20px'
+          },
+          props.imgStyleMove
+        )}
+        styleName={getButtonClassNames(props)}
+      >
+        <title>Move track</title>
+        <use xlinkHref="#move" />
+      </svg>
+    ));
   }
 
   return (
-    <div
-      styleName={getClassNames(
-        props
-      )}
-    >
-      {props.isMoveable && (
-        <DragHandle />
-      )}
+    <div styleName={getClassNames(props)}>
+      {props.isMoveable && <DragHandle />}
 
       <svg
         ref={c => {
@@ -114,56 +69,35 @@ const TrackControl = props => {
         }}
         className="no-zoom"
         onClick={() => {
-          props.onConfigTrackMenuOpened(
-            props.uid,
-            imgConfig.getBoundingClientRect()
-          );
+          props.onConfigTrackMenuOpened(props.uid, imgConfig.getBoundingClientRect());
         }}
         style={Object.assign(
           {
-            height:
-              '20px',
-            width:
-              '20px'
+            height: '20px',
+            width: '20px'
           },
           props.imgStyleSettings
         )}
-        styleName={getButtonClassNames(
-          props
-        )}
+        styleName={getButtonClassNames(props)}
       >
-        <title>
-          Configure
-          track
-        </title>
+        <title>Configure track</title>
         <use xlinkHref="#cog" />
       </svg>
 
       {props.onAddSeries && (
         <svg
           className="no-zoom"
-          onClick={() =>
-            props.onAddSeries(
-              props.uid
-            )
-          }
+          onClick={() => props.onAddSeries(props.uid)}
           style={Object.assign(
             {
-              height:
-                '20px',
-              width:
-                '20px'
+              height: '20px',
+              width: '20px'
             },
             props.imgStyleAdd
           )}
-          styleName={getButtonClassNames(
-            props
-          )}
+          styleName={getButtonClassNames(props)}
         >
-          <title>
-            Add
-            series
-          </title>
+          <title>Add series</title>
           <use xlinkHref="#plus" />
         </svg>
       )}
@@ -174,28 +108,18 @@ const TrackControl = props => {
         }}
         className="no-zoom"
         onClick={() => {
-          props.onCloseTrackMenuOpened(
-            props.uid,
-            imgClose.getBoundingClientRect()
-          );
+          props.onCloseTrackMenuOpened(props.uid, imgClose.getBoundingClientRect());
         }}
         style={Object.assign(
           {
-            height:
-              '20px',
-            width:
-              '20px'
+            height: '20px',
+            width: '20px'
           },
           props.imgStyleClose
         )}
-        styleName={getButtonClassNames(
-          props
-        )}
+        styleName={getButtonClassNames(props)}
       >
-        <title>
-          Close
-          track
-        </title>
+        <title>Close track</title>
         <use xlinkHref="#cross" />
       </svg>
     </div>
@@ -203,38 +127,20 @@ const TrackControl = props => {
 };
 
 TrackControl.propTypes = {
-  imgStyleAdd:
-    PropTypes.object,
-  imgStyleClose:
-    PropTypes.object,
-  imgStyleMove:
-    PropTypes.object,
-  imgStyleSettings:
-    PropTypes.object,
-  isAlignLeft:
-    PropTypes.bool,
-  isMoveable:
-    PropTypes.bool,
-  isVertical:
-    PropTypes.bool,
-  isVisible:
-    PropTypes.bool,
-  onConfigTrackMenuOpened:
-    PropTypes.func,
-  onCloseTrackMenuOpened:
-    PropTypes.func,
-  onAddSeries:
-    PropTypes.func,
-  paddingRight:
-    PropTypes.bool,
-  theme:
-    PropTypes
-      .symbol
-      .isRequired,
-  uid:
-    PropTypes.string
+  imgStyleAdd: PropTypes.object,
+  imgStyleClose: PropTypes.object,
+  imgStyleMove: PropTypes.object,
+  imgStyleSettings: PropTypes.object,
+  isAlignLeft: PropTypes.bool,
+  isMoveable: PropTypes.bool,
+  isVertical: PropTypes.bool,
+  isVisible: PropTypes.bool,
+  onConfigTrackMenuOpened: PropTypes.func,
+  onCloseTrackMenuOpened: PropTypes.func,
+  onAddSeries: PropTypes.func,
+  paddingRight: PropTypes.bool,
+  theme: PropTypes.symbol.isRequired,
+  uid: PropTypes.string
 };
 
-export default withTheme(
-  TrackControl
-);
+export default withTheme(TrackControl);

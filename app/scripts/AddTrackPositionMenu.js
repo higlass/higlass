@@ -6,42 +6,22 @@ import { THEME_DARK } from './configs';
 
 import '../styles/AddTrackPositionMenu.module.scss';
 
-function AddTrackPositionMenu(
-  props
-) {
-  let tableStyleNames =
-    'add-track-position-table';
-  if (
-    props.theme ===
-    THEME_DARK
-  )
-    tableStyleNames +=
-      ' add-track-position-table-dark';
+function AddTrackPositionMenu(props) {
+  let tableStyleNames = 'add-track-position-table';
+  if (props.theme === THEME_DARK) tableStyleNames += ' add-track-position-table-dark';
   return (
     <div>
-      <div styleName="add-track-position-span">
-        Add
-        Track...
-      </div>
-      <table
-        styleName={
-          tableStyleNames
-        }
-      >
+      <div styleName="add-track-position-span">Add Track...</div>
+      <table styleName={tableStyleNames}>
         <tbody>
           <tr
             style={{
-              height:
-                '30px'
+              height: '30px'
             }}
           >
             <td styleName="add-track-position-other" />
             <td
-              onClick={() =>
-                props.onTrackPositionChosen(
-                  'top'
-                )
-              }
+              onClick={() => props.onTrackPositionChosen('top')}
               styleName="add-track-position-top-center"
             >
               top
@@ -50,36 +30,23 @@ function AddTrackPositionMenu(
           </tr>
           <tr
             style={{
-              height:
-                '80px'
+              height: '80px'
             }}
           >
             <td
-              onClick={() =>
-                props.onTrackPositionChosen(
-                  'left'
-                )
-              }
+              onClick={() => props.onTrackPositionChosen('left')}
               styleName="add-track-position-middle-left"
             >
               left
             </td>
             <td
-              onClick={() =>
-                props.onTrackPositionChosen(
-                  'center'
-                )
-              }
+              onClick={() => props.onTrackPositionChosen('center')}
               styleName="add-track-position-middle-middle"
             >
               center
             </td>
             <td
-              onClick={() =>
-                props.onTrackPositionChosen(
-                  'right'
-                )
-              }
+              onClick={() => props.onTrackPositionChosen('right')}
               styleName="add-track-position-middle-right"
             >
               right
@@ -87,17 +54,12 @@ function AddTrackPositionMenu(
           </tr>
           <tr
             style={{
-              height:
-                '30px'
+              height: '30px'
             }}
           >
             <td styleName="add-track-position-other" />
             <td
-              onClick={() =>
-                props.onTrackPositionChosen(
-                  'bottom'
-                )
-              }
+              onClick={() => props.onTrackPositionChosen('bottom')}
               styleName="add-track-position-bottom-middle"
             >
               bottom
@@ -111,16 +73,8 @@ function AddTrackPositionMenu(
 }
 
 AddTrackPositionMenu.propTypes = {
-  onTrackPositionChosen:
-    PropTypes
-      .func
-      .isRequired,
-  theme:
-    PropTypes
-      .symbol
-      .isRequired
+  onTrackPositionChosen: PropTypes.func.isRequired,
+  theme: PropTypes.symbol.isRequired
 };
 
-export default withTheme(
-  AddTrackPositionMenu
-);
+export default withTheme(AddTrackPositionMenu);

@@ -6,13 +6,6 @@
  * @param   {number}  b  Value B
  * @return  {boolean}  If `true` A is greater than B.
  */
-const max = (
-  a,
-  b
-) =>
-  a >
-  b
-    ? a
-    : b;
+const max = (a, b) => (a > b ? a : b);
 
 export default max;

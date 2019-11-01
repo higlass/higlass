@@ -9,25 +9,11 @@ import '../styles/ExportLinkDialog.module.scss';
 class ExportLinkDialog extends React.Component {
   render() {
     return (
-      <Dialog
-        okayOnly={
-          true
-        }
-        okayTitle="Done"
-        onOkay={
-          this
-            .props
-            .onDone
-        }
-        title="Share view link"
-      >
+      <Dialog okayOnly={true} okayTitle="Done" onOkay={this.props.onDone} title="Share view link">
         <div styleName="export-link-dialog-wrapper">
           <input
             ref={element => {
-              if (
-                !element
-              )
-                return;
+              if (!element) return;
               this.input = element;
               element.focus();
               element.select();
@@ -36,21 +22,13 @@ class ExportLinkDialog extends React.Component {
               event.target.select();
             }}
             placeholder="Generating the link..."
-            readOnly={
-              true
-            }
-            value={
-              this
-                .props
-                .url
-            }
+            readOnly={true}
+            value={this.props.url}
           />
           <Button
             onClick={event => {
               this.input.select();
-              document.execCommand(
-                'copy'
-              );
+              document.execCommand('copy');
             }}
           >
             Copy
@@ -63,15 +41,12 @@ class ExportLinkDialog extends React.Component {
 
 ExportLinkDialog.defaultProps = {
   onDone: () => {},
-  url:
-    ''
+  url: ''
 };
 
 ExportLinkDialog.propTypes = {
-  onDone:
-    PropTypes.func,
-  url:
-    PropTypes.string
+  onDone: PropTypes.func,
+  url: PropTypes.string
 };
 
 export default ExportLinkDialog;

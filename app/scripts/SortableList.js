@@ -22,55 +22,40 @@ const SortableList = SortableContainer(
     handleResizeTrack,
     resizeHandles
   }) => {
-    const itemElements = items.map(
-      (
+    const itemElements = items.map((item, index) =>
+      React.createElement(itemReactClass, {
+        key: `sci-${item.uid}`,
+        className: itemClass,
+        controlAlignLeft: itemControlAlignLeft,
+        sortingIndex,
+        index,
+        uid: item.uid,
+        height: item.height,
+        width: item.width,
         item,
-        index
-      ) =>
-        React.createElement(
-          itemReactClass,
-          {
-            key: `sci-${item.uid}`,
-            className: itemClass,
-            controlAlignLeft: itemControlAlignLeft,
-            sortingIndex,
-            index,
-            uid:
-              item.uid,
-            height:
-              item.height,
-            width:
-              item.width,
-            item,
-            useDragHandle,
-            onCloseTrack,
-            onCloseTrackMenuOpened,
-            onConfigTrackMenuOpened,
-            onAddSeries,
-            handleConfigTrack,
-            editable,
-            handleResizeTrack,
-            resizeHandles
-          }
-        )
+        useDragHandle,
+        onCloseTrack,
+        onCloseTrackMenuOpened,
+        onConfigTrackMenuOpened,
+        onAddSeries,
+        handleConfigTrack,
+        editable,
+        handleResizeTrack,
+        resizeHandles
+      })
     );
 
     return (
       <div
-        className={
-          className
-        }
+        className={className}
         style={{
           height,
           width,
-          background:
-            'transparent'
+          background: 'transparent'
         }}
         {...sortableHandlers}
       >
-        {
-          itemElements
-        }
+        {itemElements}
       </div>
     );
   }

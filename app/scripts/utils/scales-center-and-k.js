@@ -8,33 +8,12 @@
  * @param yScale: A d3 scale.
  * @return: [domainCenter, k]
  */
-const scalesCenterAndK = (
-  xScale,
-  yScale
-) => {
-  const xCenter = xScale.invert(
-    (xScale.range()[0] +
-      xScale.range()[1]) /
-      2
-  );
-  const yCenter = yScale.invert(
-    (yScale.range()[0] +
-      yScale.range()[1]) /
-      2
-  );
-  const k =
-    xScale.invert(
-      1
-    ) -
-    xScale.invert(
-      0
-    );
+const scalesCenterAndK = (xScale, yScale) => {
+  const xCenter = xScale.invert((xScale.range()[0] + xScale.range()[1]) / 2);
+  const yCenter = yScale.invert((yScale.range()[0] + yScale.range()[1]) / 2);
+  const k = xScale.invert(1) - xScale.invert(0);
 
-  return [
-    xCenter,
-    yCenter,
-    k
-  ];
+  return [xCenter, yCenter, k];
 };
 
 export default scalesCenterAndK;

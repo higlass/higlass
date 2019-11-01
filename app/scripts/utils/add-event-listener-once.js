@@ -4,24 +4,12 @@
  * @param   {string}  eventName  Event name to listen to.
  * @param   {function}  f  Event callback function.
  */
-const addEventListenerOnce = (
-  element,
-  eventName,
-  f
-) => {
+const addEventListenerOnce = (element, eventName, f) => {
   const callback = event => {
-    f(
-      event
-    );
-    element.removeEventListener(
-      eventName,
-      callback
-    );
+    f(event);
+    element.removeEventListener(eventName, callback);
   };
-  element.addEventListener(
-    eventName,
-    callback
-  );
+  element.addEventListener(eventName, callback);
 };
 
 export default addEventListenerOnce;

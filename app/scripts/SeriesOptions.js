@@ -1,20 +1,12 @@
 import React from 'react';
-import {
-  Collapse,
-  Panel,
-  Checkbox
-} from 'react-bootstrap';
+import { Collapse, Panel, Checkbox } from 'react-bootstrap';
 
 import CollapsePanel from './CollapsePanel';
 import TilesetFinder from './TilesetFinder';
 
 export class SeriesOptions extends React.Component {
-  constructor(
-    props
-  ) {
-    super(
-      props
-    );
+  constructor(props) {
+    super(props);
 
     this.state = {
       advancedVisible: true
@@ -23,25 +15,16 @@ export class SeriesOptions extends React.Component {
 
   handleNormalizeTilesetChanged() {}
 
-  handleNormalizeCheckboxChanged(
-    e
-  ) {
-    this.setState(
-      {
-        normalizeChecked:
-          e
-            .target
-            .checked
-      }
-    );
+  handleNormalizeCheckboxChanged(e) {
+    this.setState({
+      normalizeChecked: e.target.checked
+    });
   }
 
   toggleAdvancedVisible() {
-    this.setState(
-      prevState => ({
-        advancedVisible: !prevState.advancedVisible
-      })
-    );
+    this.setState(prevState => ({
+      advancedVisible: !prevState.advancedVisible
+    }));
   }
 
   render() {
@@ -49,47 +32,23 @@ export class SeriesOptions extends React.Component {
 
     return (
       <CollapsePanel
-        collapsed={
-          this
-            .state
-            .advancedVisible
-        }
-        toggleCollapse={this.toggleAdvancedVisible.bind(
-          this
-        )}
+        collapsed={this.state.advancedVisible}
+        toggleCollapse={this.toggleAdvancedVisible.bind(this)}
       >
         <Checkbox
           ref={c => {
             this.normalizeCheckbox = c;
           }}
-          onChange={this.handleNormalizeCheckboxChanged.bind(
-            this
-          )}
+          onChange={this.handleNormalizeCheckboxChanged.bind(this)}
         >
-          Normalize
-          By
+          Normalize By
         </Checkbox>
 
-        <Collapse
-          in={
-            this
-              .state
-              .normalizeChecked
-          }
-        >
+        <Collapse in={this.state.normalizeChecked}>
           <Panel>
             <TilesetFinder
-              onTrackChosen={value =>
-                this.props.onTrackChosen(
-                  value,
-                  this
-                    .props
-                    .position
-                )
-              }
-              selectedTilesetChanged={this.handleNormalizeTilesetChanged.bind(
-                this
-              )}
+              onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
+              selectedTilesetChanged={this.handleNormalizeTilesetChanged.bind(this)}
             />
           </Panel>
         </Collapse>

@@ -1,373 +1,235 @@
-import {
-  formatPrefix,
-  precisionPrefix
-} from 'd3-format';
+import { formatPrefix, precisionPrefix } from 'd3-format';
 
 import HeatmapOptions from '../HeatmapOptions';
 
-const sizesInPx = (
-  sizes,
-  unit = '',
-  multiplier = 1
-) =>
-  sizes.reduce(
-    (
-      sizeOption,
-      size
-    ) => {
-      sizeOption[
-        size
-      ] = {
-        name: `${size *
-          multiplier}${unit}`,
-        value: size
-      };
-      return sizeOption;
-    },
-    {}
-  );
+const sizesInPx = (sizes, unit = '', multiplier = 1) =>
+  sizes.reduce((sizeOption, size) => {
+    sizeOption[size] = {
+      name: `${size * multiplier}${unit}`,
+      value: size
+    };
+    return sizeOption;
+  }, {});
 
 const YES_NO = {
   yes: {
-    name:
-      'Yes',
+    name: 'Yes',
     value: true
   },
   no: {
-    name:
-      'No',
+    name: 'No',
     value: false
   }
 };
 
 const AVAILABLE_COLORS = {
   black: {
-    name:
-      'Black',
-    value:
-      'black'
+    name: 'Black',
+    value: 'black'
   },
   blue: {
-    name:
-      'Blue',
-    value:
-      'blue'
+    name: 'Blue',
+    value: 'blue'
   },
   brown: {
-    name:
-      'Brown',
-    value:
-      'brown'
+    name: 'Brown',
+    value: 'brown'
   },
   cyan: {
-    name:
-      'Cyan',
-    value:
-      'cyan'
+    name: 'Cyan',
+    value: 'cyan'
   },
   green: {
-    name:
-      'Green',
-    value:
-      'green'
+    name: 'Green',
+    value: 'green'
   },
   grey: {
-    name:
-      'Grey',
-    value:
-      'grey'
+    name: 'Grey',
+    value: 'grey'
   },
   orange: {
-    name:
-      'Orange',
-    value:
-      'orange'
+    name: 'Orange',
+    value: 'orange'
   },
   purple: {
-    name:
-      'Purple',
-    value:
-      'purple'
+    name: 'Purple',
+    value: 'purple'
   },
   turquoise: {
-    name:
-      'Turquoise',
-    value:
-      'turquoise'
+    name: 'Turquoise',
+    value: 'turquoise'
   },
   red: {
-    name:
-      'Red',
-    value:
-      'red'
+    name: 'Red',
+    value: 'red'
   },
   white: {
-    name:
-      'White',
-    value:
-      'white'
+    name: 'White',
+    value: 'white'
   }
 };
 
 const SPECIAL_COLORS = {
   use_stroke: {
-    name:
-      'Glyph color',
-    value:
-      '[glyph-color]'
+    name: 'Glyph color',
+    value: '[glyph-color]'
   }
 };
 
-const AVAILABLE_WIDTHS = sizesInPx(
-  [
-    1,
-    2,
-    3,
-    5,
-    8,
-    13,
-    21
-  ]
-);
-const AVAILABLE_WIDTHS_AND_NONE = Object.assign(
-  AVAILABLE_WIDTHS,
-  {
-    none: {
-      name:
-        'none',
-      value:
-        'none'
-    }
+const AVAILABLE_WIDTHS = sizesInPx([1, 2, 3, 5, 8, 13, 21]);
+const AVAILABLE_WIDTHS_AND_NONE = Object.assign(AVAILABLE_WIDTHS, {
+  none: {
+    name: 'none',
+    value: 'none'
   }
-);
+});
 
-const AVAILABLE_MARGIN = sizesInPx(
-  [
-    0,
-    2,
-    4,
-    8,
-    16,
-    32,
-    64,
-    128,
-    256
-  ]
-);
+const AVAILABLE_MARGIN = sizesInPx([0, 2, 4, 8, 16, 32, 64, 128, 256]);
 
-const OPACITY_OPTIONS = sizesInPx(
-  [
-    0.0,
-    0.2,
-    0.4,
-    0.6,
-    0.8,
-    1.0
-  ],
-  '%',
-  100
-);
-const OPACITY_OPTIONS_NO_ZERO = sizesInPx(
-  [
-    0.2,
-    0.4,
-    0.6,
-    0.8,
-    1.0
-  ],
-  '%',
-  100
-);
+const OPACITY_OPTIONS = sizesInPx([0.0, 0.2, 0.4, 0.6, 0.8, 1.0], '%', 100);
+const OPACITY_OPTIONS_NO_ZERO = sizesInPx([0.2, 0.4, 0.6, 0.8, 1.0], '%', 100);
 
 // these values define the options that are visible in the track config
 // menu
 export const OPTIONS_INFO = {
   axisLabelFormatting: {
-    name:
-      'Axis Label Formatting',
+    name: 'Axis Label Formatting',
     inlineOptions: {
       normal: {
-        name:
-          'normal',
-        value:
-          'normal'
+        name: 'normal',
+        value: 'normal'
       },
       scientific: {
-        name:
-          'scientific',
-        value:
-          'scientific'
+        name: 'scientific',
+        value: 'scientific'
       }
     }
   },
   heatmapValueScaling: {
-    name:
-      'Value Scaling',
+    name: 'Value Scaling',
     inlineOptions: {
       linear: {
-        name:
-          'Linear',
-        value:
-          'linear'
+        name: 'Linear',
+        value: 'linear'
       },
       log: {
-        name:
-          'Log',
-        value:
-          'log'
+        name: 'Log',
+        value: 'log'
       }
     }
   },
   valueScaling: {
-    name:
-      'Value Scaling',
+    name: 'Value Scaling',
     inlineOptions: {
       linear: {
-        name:
-          'Linear',
-        value:
-          'linear'
+        name: 'Linear',
+        value: 'linear'
       },
       log: {
-        name:
-          'Log',
-        value:
-          'log'
+        name: 'Log',
+        value: 'log'
       }
     }
   },
   extent: {
-    name:
-      'Extent',
+    name: 'Extent',
     inlineOptions: {
       full: {
-        name:
-          'Full',
-        value:
-          'full'
+        name: 'Full',
+        value: 'full'
       },
       upperRight: {
-        name:
-          'Upper Right',
-        value:
-          'upper-right'
+        name: 'Upper Right',
+        value: 'upper-right'
       },
       lowerLeft: {
-        name:
-          'Lower Left',
-        value:
-          'lower-left'
+        name: 'Lower Left',
+        value: 'lower-left'
       }
     }
   },
   labelLeftMargin: {
-    name:
-      'Label Left Margin',
+    name: 'Label Left Margin',
     inlineOptions: AVAILABLE_MARGIN
   },
   labelRightMargin: {
-    name:
-      'Label Right Margin',
+    name: 'Label Right Margin',
     inlineOptions: AVAILABLE_MARGIN
   },
   labelTopMargin: {
-    name:
-      'Label Top Margin',
+    name: 'Label Top Margin',
     inlineOptions: AVAILABLE_MARGIN
   },
   labelBottomMargin: {
-    name:
-      'Label Bottom Margin',
+    name: 'Label Bottom Margin',
     inlineOptions: AVAILABLE_MARGIN
   },
   labelShowResolution: {
-    name:
-      'Label Show Resolution',
+    name: 'Label Show Resolution',
     inlineOptions: YES_NO
   },
   lineStrokeWidth: {
-    name:
-      'Stroke Width',
+    name: 'Stroke Width',
     inlineOptions: AVAILABLE_WIDTHS
   },
   strokeWidth: {
-    name:
-      'Stroke Width',
+    name: 'Stroke Width',
     inlineOptions: AVAILABLE_WIDTHS
   },
   trackBorderWidth: {
-    name:
-      'Track Border Width',
+    name: 'Track Border Width',
     inlineOptions: AVAILABLE_WIDTHS
   },
   sortLargestOnTop: {
-    name:
-      'Sort Largest On Top',
+    name: 'Sort Largest On Top',
     inlineOptions: YES_NO
   },
   minSquareSize: {
-    name:
-      'Minimum size',
+    name: 'Minimum size',
     inlineOptions: AVAILABLE_WIDTHS_AND_NONE
   },
   pointSize: {
-    name:
-      'Point Size',
+    name: 'Point Size',
     inlineOptions: AVAILABLE_WIDTHS
   },
   pointColor: {
-    name:
-      'Point Color',
+    name: 'Point Color',
     inlineOptions: AVAILABLE_COLORS
   },
   trackBorderColor: {
-    name:
-      'Track Border Color',
+    name: 'Track Border Color',
     inlineOptions: AVAILABLE_COLORS
   },
   backgroundColor: {
-    name:
-      'Background Color',
+    name: 'Background Color',
     inlineOptions: {
       white: {
-        name:
-          'White',
-        value:
-          'white'
+        name: 'White',
+        value: 'white'
       },
       lightGrey: {
-        name:
-          'Light Grey',
-        value:
-          '#eeeeee'
+        name: 'Light Grey',
+        value: '#eeeeee'
       },
       grey: {
-        name:
-          'Grey',
-        value:
-          '#cccccc'
+        name: 'Grey',
+        value: '#cccccc'
       },
       black: {
-        name:
-          'Black',
-        value:
-          'black'
+        name: 'Black',
+        value: 'black'
       },
       transparent: {
-        name:
-          'Transparent',
-        value:
-          'transparent'
+        name: 'Transparent',
+        value: 'transparent'
       }
     }
   },
   colorScale: {
-    name:
-      'Color Scale',
+    name: 'Color Scale',
     inlineOptions: {
       epilogos: {
-        name:
-          'Epilogos',
+        name: 'Epilogos',
         values: [
           '#FF0000',
           '#FF4500',
@@ -387,8 +249,7 @@ export const OPTIONS_INFO = {
         ]
       },
       category10: {
-        name:
-          'D3 Category10',
+        name: 'D3 Category10',
         values: [
           '#1F77B4',
           '#FF7F0E',
@@ -405,457 +266,322 @@ export const OPTIONS_INFO = {
     }
   },
   minusStrandColor: {
-    name:
-      '- Strand Color',
+    name: '- Strand Color',
     inlineOptions: AVAILABLE_COLORS
   },
   plusStrandColor: {
-    name:
-      '+ Strand Color',
+    name: '+ Strand Color',
     inlineOptions: AVAILABLE_COLORS
   },
   lineStrokeColor: {
-    name:
-      'Stroke color',
+    name: 'Stroke color',
     inlineOptions: AVAILABLE_COLORS
   },
   projectionStrokeColor: {
-    name:
-      'Stroke color',
+    name: 'Stroke color',
     inlineOptions: AVAILABLE_COLORS
   },
   projectionFillColor: {
-    name:
-      'Fill color',
+    name: 'Fill color',
     inlineOptions: AVAILABLE_COLORS
   },
   stroke: {
-    name:
-      'Stroke Color',
+    name: 'Stroke Color',
     inlineOptions: AVAILABLE_COLORS
   },
   strokeColor: {
-    name:
-      'Stroke color',
+    name: 'Stroke color',
     inlineOptions: AVAILABLE_COLORS
   },
   fill: {
-    name:
-      'Fill Color',
+    name: 'Fill Color',
     inlineOptions: AVAILABLE_COLORS
   },
   color: {
-    name:
-      'Color',
+    name: 'Color',
     inlineOptions: AVAILABLE_COLORS
   },
   fillColor: {
-    name:
-      'Fill color',
+    name: 'Fill color',
     inlineOptions: AVAILABLE_COLORS
   },
   barFillColor: {
-    name:
-      'Fill color',
+    name: 'Fill color',
     inlineOptions: AVAILABLE_COLORS
   },
   barFillColorTop: {
-    name:
-      'Top Fill color',
+    name: 'Top Fill color',
     inlineOptions: AVAILABLE_COLORS
   },
   barFillColorBottom: {
-    name:
-      'Bottom Fill color',
+    name: 'Bottom Fill color',
     inlineOptions: AVAILABLE_COLORS
   },
   barOpacity: {
-    name:
-      'Bar opacity',
+    name: 'Bar opacity',
     inlineOptions: OPACITY_OPTIONS
   },
   zeroLineVisible: {
-    name:
-      'Zero line visible',
+    name: 'Zero line visible',
     inlineOptions: YES_NO
   },
   zeroLineColor: {
-    name:
-      'Zero line color',
+    name: 'Zero line color',
     inlineOptions: AVAILABLE_COLORS
   },
   zeroLineOpacity: {
-    name:
-      'Zero line opacity',
+    name: 'Zero line opacity',
     inlineOptions: OPACITY_OPTIONS_NO_ZERO
   },
   fillOpacity: {
-    name:
-      'Fill Opacity',
+    name: 'Fill Opacity',
     inlineOptions: OPACITY_OPTIONS
   },
   strokeOpacity: {
-    name:
-      'Stroke Opacity',
+    name: 'Stroke Opacity',
     inlineOptions: OPACITY_OPTIONS
   },
   strokePos: {
-    name:
-      'Stroke Position',
+    name: 'Stroke Position',
     inlineOptions: {
       aroundInner: {
-        name:
-          'Around Inner',
-        value:
-          'around'
+        name: 'Around Inner',
+        value: 'around'
       },
       aroundCenter: {
-        name:
-          'Around Center',
+        name: 'Around Center',
         value: null
       },
       hidden: {
-        name:
-          'Hidden',
-        value:
-          'hidden'
+        name: 'Hidden',
+        value: 'hidden'
       },
       top: {
-        name:
-          'Top',
-        value:
-          'top'
+        name: 'Top',
+        value: 'top'
       },
       right: {
-        name:
-          'Right',
-        value:
-          'right'
+        name: 'Right',
+        value: 'right'
       },
       bottom: {
-        name:
-          'Bottom',
-        value:
-          'bottom'
+        name: 'Bottom',
+        value: 'bottom'
       },
       left: {
-        name:
-          'Left',
-        value:
-          'left'
+        name: 'Left',
+        value: 'left'
       }
     }
   },
   barBorder: {
-    name:
-      'Bar border',
+    name: 'Bar border',
     inlineOptions: YES_NO
   },
   scaledHeight: {
-    name:
-      'Scaled height',
+    name: 'Scaled height',
     inlineOptions: YES_NO
   },
   rectangleDomainStrokeColor: {
-    name:
-      'Stroke color',
+    name: 'Stroke color',
     inlineOptions: AVAILABLE_COLORS
   },
   rectangleDomainFillColor: {
-    name:
-      'Fill color',
+    name: 'Fill color',
     inlineOptions: AVAILABLE_COLORS
   },
   rectangleDomainOpacity: {
-    name:
-      'Opacity',
+    name: 'Opacity',
     inlineOptions: OPACITY_OPTIONS
   },
   mapboxStyle: {
-    name:
-      'Map style',
+    name: 'Map style',
     inlineOptions: {
       streets: {
-        name:
-          'streets',
-        value:
-          'mapbox.streets'
+        name: 'streets',
+        value: 'mapbox.streets'
       },
       light: {
-        name:
-          'light',
-        value:
-          'mapbox.light'
+        name: 'light',
+        value: 'mapbox.light'
       },
       dark: {
-        name:
-          'dark',
-        value:
-          'mapbox.dark'
+        name: 'dark',
+        value: 'mapbox.dark'
       },
       satellite: {
-        name:
-          'satellite',
-        value:
-          'mapbox.satellite'
+        name: 'satellite',
+        value: 'mapbox.satellite'
       },
       'streets-satellite': {
-        name:
-          'streets-satellite',
-        value:
-          'mapbox.streets-satellite'
+        name: 'streets-satellite',
+        value: 'mapbox.streets-satellite'
       },
       wheatpaste: {
-        name:
-          'wheatpaste',
-        value:
-          'mapbox.wheatpaste'
+        name: 'wheatpaste',
+        value: 'mapbox.wheatpaste'
       },
       'streets-basic': {
-        name:
-          'streets-basic',
-        value:
-          'mapbox.streets-basic'
+        name: 'streets-basic',
+        value: 'mapbox.streets-basic'
       },
       comic: {
-        name:
-          'comic',
-        value:
-          'mapbox.comic'
+        name: 'comic',
+        value: 'mapbox.comic'
       },
       outdoors: {
-        name:
-          'outdoors',
-        value:
-          'mapbox.outdoors'
+        name: 'outdoors',
+        value: 'mapbox.outdoors'
       },
       'run-bike-hike': {
-        name:
-          'run-bike-hike',
-        value:
-          'mapbox.run-bike-hike'
+        name: 'run-bike-hike',
+        value: 'mapbox.run-bike-hike'
       },
       pencil: {
-        name:
-          'pencil',
-        value:
-          'mapbox.pencil'
+        name: 'pencil',
+        value: 'mapbox.pencil'
       },
       pirates: {
-        name:
-          'pirates',
-        value:
-          'mapbox.pirates'
+        name: 'pirates',
+        value: 'mapbox.pirates'
       },
       emerald: {
-        name:
-          'emerald',
-        value:
-          'mapbox.emerald'
+        name: 'emerald',
+        value: 'mapbox.emerald'
       },
       'high-contrast': {
-        name:
-          'high-contrast',
-        value:
-          'mapbox.high-contrast'
+        name: 'high-contrast',
+        value: 'mapbox.high-contrast'
       }
     }
   },
   oneDHeatmapFlipped: {
-    name:
-      'Flip Heatmap',
+    name: 'Flip Heatmap',
     inlineOptions: {
       yes: {
-        name:
-          'Yes',
-        value:
-          'yes'
+        name: 'Yes',
+        value: 'yes'
       },
       no: {
-        name:
-          'No',
+        name: 'No',
         value: null
       }
     }
   },
   showMousePosition: {
-    name:
-      'Show Mouse Position',
+    name: 'Show Mouse Position',
     inlineOptions: YES_NO
   },
   showTooltip: {
-    name:
-      'Show Tooltip',
+    name: 'Show Tooltip',
     inlineOptions: YES_NO
   },
 
   fontSize: {
-    name:
-      'Font Size',
-    inlineOptions: sizesInPx(
-      [
-        8,
-        9,
-        10,
-        11,
-        12,
-        14,
-        16,
-        18,
-        24
-      ],
-      'px'
-    )
+    name: 'Font Size',
+    inlineOptions: sizesInPx([8, 9, 10, 11, 12, 14, 16, 18, 24], 'px')
   },
 
   colorEncoding: {
-    name:
-      'Color Encode Annotations',
+    name: 'Color Encode Annotations',
     inlineOptions: YES_NO
   },
 
   fontIsAligned: {
-    name:
-      'Left-Align Font',
+    name: 'Left-Align Font',
     inlineOptions: YES_NO
   },
 
   axisPositionHorizontal: {
-    name:
-      'Axis Position',
+    name: 'Axis Position',
     inlineOptions: {
       left: {
-        name:
-          'Left',
-        value:
-          'left'
+        name: 'Left',
+        value: 'left'
       },
       outsideLeft: {
-        name:
-          'Outside left',
-        value:
-          'outsideLeft'
+        name: 'Outside left',
+        value: 'outsideLeft'
       },
       right: {
-        name:
-          'Right',
-        value:
-          'right'
+        name: 'Right',
+        value: 'right'
       },
       outsideRight: {
-        name:
-          'Outside right',
-        value:
-          'outsideRight'
+        name: 'Outside right',
+        value: 'outsideRight'
       },
       hidden: {
-        name:
-          'Hidden',
+        name: 'Hidden',
         value: null
       }
     }
   },
 
   axisPositionVertical: {
-    name:
-      'Axis Position',
+    name: 'Axis Position',
     inlineOptions: {
       top: {
-        name:
-          'Top',
-        value:
-          'top'
+        name: 'Top',
+        value: 'top'
       },
       outsideTop: {
-        name:
-          'Outside top',
-        value:
-          'outsideTop'
+        name: 'Outside top',
+        value: 'outsideTop'
       },
       bottom: {
-        name:
-          'Bottom',
-        value:
-          'bottom'
+        name: 'Bottom',
+        value: 'bottom'
       },
       outsideBottom: {
-        name:
-          'Outside bottom',
-        value:
-          'outsideBottom'
+        name: 'Outside bottom',
+        value: 'outsideBottom'
       },
       hidden: {
-        name:
-          'Hidden',
+        name: 'Hidden',
         value: null
       }
     }
   },
 
   axisMargin: {
-    name:
-      'Axis Margin',
-    inlineOptions: sizesInPx(
-      [
-        0,
-        10,
-        20,
-        30,
-        40,
-        50,
-        100,
-        200,
-        400
-      ],
-      'px'
-    )
+    name: 'Axis Margin',
+    inlineOptions: sizesInPx([0, 10, 20, 30, 40, 50, 100, 200, 400], 'px')
   },
 
   colorbarPosition: {
-    name:
-      'Colorbar Position',
+    name: 'Colorbar Position',
     inlineOptions: {
       topLeft: {
-        name:
-          'Top Left',
-        value:
-          'topLeft'
+        name: 'Top Left',
+        value: 'topLeft'
       },
       topRight: {
-        name:
-          'Top Right',
-        value:
-          'topRight'
+        name: 'Top Right',
+        value: 'topRight'
       },
       bottomLeft: {
-        name:
-          'Bottom Left',
-        value:
-          'bottomLeft'
+        name: 'Bottom Left',
+        value: 'bottomLeft'
       },
       bottomRight: {
-        name:
-          'Bottom Right',
-        value:
-          'bottomRight'
+        name: 'Bottom Right',
+        value: 'bottomRight'
       },
       hidden: {
-        name:
-          'Hidden',
+        name: 'Hidden',
         value: null
       }
     }
   },
 
   colorbarBackgroundColor: {
-    name:
-      'Colorbar Background Color',
+    name: 'Colorbar Background Color',
     inlineOptions: AVAILABLE_COLORS
   },
 
   colorbarBackgroundOpacity: {
-    name:
-      'Colorbar Background Opacity',
+    name: 'Colorbar Background Opacity',
     inlineOptions: OPACITY_OPTIONS
   },
 
@@ -872,27 +598,21 @@ export const OPTIONS_INFO = {
   // This will default to 'inside' if it's not set when colorbarPosition
   // is set
   colorbarLabelsPosition: {
-    name:
-      'Colorbar Labels Position',
+    name: 'Colorbar Labels Position',
     inlineOptions: {
       inside: {
-        name:
-          'Inside',
-        value:
-          'inside'
+        name: 'Inside',
+        value: 'inside'
       },
       outside: {
-        name:
-          'Outside',
-        value:
-          'outside'
+        name: 'Outside',
+        value: 'outside'
       }
     }
   },
 
   labelColor: {
-    name:
-      'Label Color',
+    name: 'Label Color',
     inlineOptions: {
       ...AVAILABLE_COLORS,
       ...SPECIAL_COLORS
@@ -900,169 +620,129 @@ export const OPTIONS_INFO = {
   },
 
   labelPosition: {
-    name:
-      'Label Position',
+    name: 'Label Position',
     inlineOptions: {
       ol: {
-        name:
-          'Outer left',
-        value:
-          'outerLeft'
+        name: 'Outer left',
+        value: 'outerLeft'
       },
       or: {
-        name:
-          'Outer right',
-        value:
-          'outerRight'
+        name: 'Outer right',
+        value: 'outerRight'
       },
       ot: {
-        name:
-          'Outer top',
-        value:
-          'outerTop'
+        name: 'Outer top',
+        value: 'outerTop'
       },
       ob: {
-        name:
-          'Outer bottom',
-        value:
-          'outerBottom'
+        name: 'Outer bottom',
+        value: 'outerBottom'
       },
       tl: {
-        name:
-          'Top left',
-        value:
-          'topLeft'
+        name: 'Top left',
+        value: 'topLeft'
       },
       tr: {
-        name:
-          'Top right',
-        value:
-          'topRight'
+        name: 'Top right',
+        value: 'topRight'
       },
       bl: {
-        name:
-          'Bottom left',
-        value:
-          'bottomLeft'
+        name: 'Bottom left',
+        value: 'bottomLeft'
       },
       br: {
-        name:
-          'Bottom right',
-        value:
-          'bottomRight'
+        name: 'Bottom right',
+        value: 'bottomRight'
       },
       hidden: {
-        name:
-          'Hidden',
-        value:
-          'hidden'
+        name: 'Hidden',
+        value: 'hidden'
       }
     }
   },
 
   labelTextOpacity: {
-    name:
-      'Label Text Opacity',
+    name: 'Label Text Opacity',
     inlineOptions: OPACITY_OPTIONS
   },
 
   geneAnnotationHeight: {
-    name:
-      'Gene Annotation Height',
+    name: 'Gene Annotation Height',
     inlineOptions: {
       8: {
-        name:
-          '8px',
+        name: '8px',
         value: 8
       },
       10: {
-        name:
-          '10px',
+        name: '10px',
         value: 10
       },
       12: {
-        name:
-          '12px',
+        name: '12px',
         value: 12
       },
       16: {
-        name:
-          '16px',
+        name: '16px',
         value: 16
       }
     }
   },
 
   geneLabelPosition: {
-    name:
-      'Gene Label Position',
+    name: 'Gene Label Position',
     inlineOptions: {
       inside: {
-        name:
-          'Inside',
-        value:
-          'inside'
+        name: 'Inside',
+        value: 'inside'
       },
       outside: {
-        name:
-          'Outside',
-        value:
-          'outside'
+        name: 'Outside',
+        value: 'outside'
       }
     }
   },
 
   geneStrandSpacing: {
-    name:
-      'Gene Strand Spacing',
+    name: 'Gene Strand Spacing',
     inlineOptions: {
       2: {
-        name:
-          '2px',
+        name: '2px',
         value: 2
       },
       4: {
-        name:
-          '4px',
+        name: '4px',
         value: 4
       },
       8: {
-        name:
-          '8px',
+        name: '8px',
         value: 8
       }
     }
   },
 
   labelBackgroundColor: {
-    name:
-      'Label Background Color',
+    name: 'Label Background Color',
     inlineOptions: AVAILABLE_COLORS
   },
 
   labelBackgroundOpacity: {
-    name:
-      'Label Background Opacity',
+    name: 'Label Background Opacity',
     inlineOptions: OPACITY_OPTIONS
   },
 
   viewResolution: {
-    name:
-      'View Resolution',
+    name: 'View Resolution',
     inlineOptions: {
       high: {
-        name:
-          'High',
+        name: 'High',
         value: 384
       },
       medium: {
-        name:
-          'Medium',
+        name: 'Medium',
         value: 1024
       },
       low: {
-        name:
-          'Low',
+        name: 'Low',
         value: 2048
       }
     }
@@ -1071,12 +751,10 @@ export const OPTIONS_INFO = {
   // colormaps are mostly taken from here:
   // http://matplotlib.org/api/pyplot_summary.html?highlight=colormaps#matplotlib.pyplot.colormaps
   colorRange: {
-    name:
-      'Color map',
+    name: 'Color map',
     inlineOptions: {
       afmhot: {
-        name:
-          'afmhot',
+        name: 'afmhot',
         value: [
           'rgba(0,0,0,1.0)',
           'rgba(128,0,0,1.0)',
@@ -1086,18 +764,11 @@ export const OPTIONS_INFO = {
         ]
       },
       fall: {
-        name:
-          'fall',
-        value: [
-          'white',
-          'rgba(245,166,35,1.0)',
-          'rgba(208,2,27,1.0)',
-          'black'
-        ]
+        name: 'fall',
+        value: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black']
       },
       hot: {
-        name:
-          'hot',
+        name: 'hot',
         value: [
           'rgba(10,0,0,1.0)',
           'rgba(179,0,0,1.0)',
@@ -1107,8 +778,7 @@ export const OPTIONS_INFO = {
         ]
       },
       jet: {
-        name:
-          'jet',
+        name: 'jet',
         value: [
           'rgba(0,0,128,1.0)',
           'rgba(0,129,256,1.0)',
@@ -1119,8 +789,7 @@ export const OPTIONS_INFO = {
       },
 
       bwr: {
-        name:
-          'bwr',
+        name: 'bwr',
         value: [
           'rgba(0,0,256,1.0)',
           'rgba(128,128,256,1.0)',
@@ -1130,8 +799,7 @@ export const OPTIONS_INFO = {
         ]
       },
       cubehelix: {
-        name:
-          'cubehelix',
+        name: 'cubehelix',
         value: [
           'rgba(0,0,0,1.0)',
           'rgba(21,83,76,1.0)',
@@ -1141,8 +809,7 @@ export const OPTIONS_INFO = {
         ]
       },
       rainbow: {
-        name:
-          'rainbow',
+        name: 'rainbow',
         value: [
           'rgba(128,0,256,1.0)',
           'rgba(0,181,236,1.0)',
@@ -1153,50 +820,27 @@ export const OPTIONS_INFO = {
       },
 
       gray: {
-        name:
-          'greys',
-        value: [
-          'rgba(255,255,255,1)',
-          'rgba(0,0,0,1)'
-        ]
+        name: 'greys',
+        value: ['rgba(255,255,255,1)', 'rgba(0,0,0,1)']
       },
       red: {
-        name:
-          'White to red',
-        value: [
-          'rgba(255,255,255,1)',
-          'rgba(255,0,0,1)'
-        ]
+        name: 'White to red',
+        value: ['rgba(255,255,255,1)', 'rgba(255,0,0,1)']
       },
       green: {
-        name:
-          'White to green',
-        value: [
-          'rgba(255,255,255,1)',
-          'rgba(0,255,0,1)'
-        ]
+        name: 'White to green',
+        value: ['rgba(255,255,255,1)', 'rgba(0,255,0,1)']
       },
       blue: {
-        name:
-          'White to blue',
-        value: [
-          'rgba(255,255,255,1)',
-          'rgba(0,0,255,1)'
-        ]
+        name: 'White to blue',
+        value: ['rgba(255,255,255,1)', 'rgba(0,0,255,1)']
       },
       custard: {
-        name:
-          'custard',
-        value: [
-          '#FFFFFF',
-          '#F8E71C',
-          'rgba(245,166,35,1)',
-          'rgba(0,0,0,1)'
-        ]
+        name: 'custard',
+        value: ['#FFFFFF', '#F8E71C', 'rgba(245,166,35,1)', 'rgba(0,0,0,1)']
       },
       magma: {
-        name:
-          'magma',
+        name: 'magma',
         value: [
           'rgba(0,0,3,1)',
           'rgba(0,0,4,1)',
@@ -1457,8 +1101,7 @@ export const OPTIONS_INFO = {
         ]
       },
       viridis: {
-        name:
-          'viridis',
+        name: 'viridis',
         value: [
           'rgba(68,1,84,1)',
           'rgba(68,2,85,1)',
@@ -1719,8 +1362,7 @@ export const OPTIONS_INFO = {
         ]
       },
       custom: {
-        name:
-          'Custom...',
+        name: 'Custom...',
         componentPickers: {
           heatmap: HeatmapOptions,
           'horizontal-heatmap': HeatmapOptions
@@ -1730,62 +1372,45 @@ export const OPTIONS_INFO = {
   },
 
   align: {
-    name:
-      'Align',
+    name: 'Align',
     inlineOptions: {
       white: {
-        name:
-          'Top',
-        value:
-          'top'
+        name: 'Top',
+        value: 'top'
       },
       lightGrey: {
-        name:
-          'Bottom',
-        value:
-          'bottom'
+        name: 'Bottom',
+        value: 'bottom'
       }
     }
   },
 
   colorRangeGradient: {
-    name:
-      'Color Gradient',
+    name: 'Color Gradient',
     inlineOptions: YES_NO
   },
 
   dataTransform: {
-    name:
-      'Transforms',
+    name: 'Transforms',
     inlineOptions: {
       default: {
-        name:
-          'Default',
-        value:
-          'default'
+        name: 'Default',
+        value: 'default'
       },
       None: {
-        name:
-          'None',
-        value:
-          'None'
+        name: 'None',
+        value: 'None'
       }
     },
     generateOptions: track => {
       const inlineOptions = [];
 
-      if (
-        track.transforms
-      ) {
+      if (track.transforms) {
         for (const transform of track.transforms) {
-          inlineOptions.push(
-            {
-              name:
-                transform.name,
-              value:
-                transform.value
-            }
-          );
+          inlineOptions.push({
+            name: transform.name,
+            value: transform.value
+          });
         }
       }
 
@@ -1794,39 +1419,23 @@ export const OPTIONS_INFO = {
   },
 
   aggregationMode: {
-    name:
-      'Aggregation Mode',
+    name: 'Aggregation Mode',
     inlineOptions: {},
     generateOptions: track => {
       const inlineOptions = [];
 
-      if (
-        track.aggregationModes
-      ) {
-        Object.values(
-          track.aggregationModes
-        ).forEach(
-          ({
+      if (track.aggregationModes) {
+        Object.values(track.aggregationModes).forEach(({ name, value }) => {
+          inlineOptions.push({
             name,
             value
-          }) => {
-            inlineOptions.push(
-              {
-                name,
-                value
-              }
-            );
-          }
-        );
+          });
+        });
       } else {
-        inlineOptions.push(
-          {
-            name:
-              'Default',
-            value:
-              'default'
-          }
-        );
+        inlineOptions.push({
+          name: 'Default',
+          value: 'default'
+        });
       }
 
       return inlineOptions;
@@ -1834,90 +1443,40 @@ export const OPTIONS_INFO = {
   },
 
   maxZoom: {
-    name:
-      'Zoom limit',
+    name: 'Zoom limit',
     inlineOptions: {
       none: {
-        name:
-          'None',
+        name: 'None',
         value: null
       }
     },
     generateOptions: track => {
-      if (
-        track.maxZoom
-      ) {
+      if (track.maxZoom) {
         const inlineOptions = [];
 
-        for (
-          let i = 0;
-          i <=
-          track.maxZoom;
-          i++
-        ) {
-          const {
-            maxWidth,
-            binsPerDimension,
-            maxZoom
-          } = track;
+        for (let i = 0; i <= track.maxZoom; i++) {
+          const { maxWidth, binsPerDimension, maxZoom } = track;
 
           let maxResolutionSize = 1;
           let resolution = 1;
 
-          if (
-            track.resolutions
-          ) {
-            const sortedResolutions = track.resolutions
-              .map(
-                x =>
-                  +x
-              )
-              .sort(
-                (
-                  a,
-                  b
-                ) =>
-                  b -
-                  a
-              );
-            [
-              maxResolutionSize
-            ] = sortedResolutions;
-            resolution =
-              sortedResolutions[
-                i
-              ];
+          if (track.resolutions) {
+            const sortedResolutions = track.resolutions.map(x => +x).sort((a, b) => b - a);
+            [maxResolutionSize] = sortedResolutions;
+            resolution = sortedResolutions[i];
           } else {
-            resolution =
-              track.maxWidth /
-              (2 **
-                i *
-                track.binsPerDimension);
-            maxResolutionSize =
-              maxWidth /
-              (2 **
-                maxZoom *
-                binsPerDimension);
+            resolution = track.maxWidth / (2 ** i * track.binsPerDimension);
+            maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
           }
 
-          const pp = precisionPrefix(
-            maxResolutionSize,
-            resolution
-          );
-          const f = formatPrefix(
-            `.${pp}`,
-            resolution
-          );
-          const formattedResolution = f(
-            resolution
-          );
+          const pp = precisionPrefix(maxResolutionSize, resolution);
+          const f = formatPrefix(`.${pp}`, resolution);
+          const formattedResolution = f(resolution);
 
-          inlineOptions.push(
-            {
-              name: formattedResolution,
-              value: i.toString()
-            }
-          );
+          inlineOptions.push({
+            name: formattedResolution,
+            value: i.toString()
+          });
           //
         }
 
@@ -1928,43 +1487,24 @@ export const OPTIONS_INFO = {
   },
 
   valueColumn: {
-    name:
-      'Value column',
+    name: 'Value column',
     inlineOptions: {
       none: {
-        name:
-          'None',
+        name: 'None',
         value: null
       }
     },
     generateOptions: track => {
-      if (
-        !track.header
-      )
-        return [];
+      if (!track.header) return [];
 
-      const headerParts = track.header.split(
-        '\t'
-      );
+      const headerParts = track.header.split('\t');
       const options = [];
 
-      for (
-        let i = 0;
-        i <
-        headerParts.length;
-        i++
-      ) {
-        options.push(
-          {
-            name:
-              headerParts[
-                i
-              ],
-            value:
-              i +
-              1
-          }
-        );
+      for (let i = 0; i < headerParts.length; i++) {
+        options.push({
+          name: headerParts[i],
+          value: i + 1
+        });
       }
 
       /*

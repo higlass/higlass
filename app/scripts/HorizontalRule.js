@@ -1,7 +1,4 @@
-import {
-  mix,
-  Mixin
-} from './mixwith';
+import { mix, Mixin } from './mixwith';
 
 import PixiTrack from './PixiTrack';
 import RuleMixin from './RuleMixin';
@@ -11,30 +8,17 @@ import { colorToHex } from './utils';
 export const HorizontalRuleMixin = Mixin(
   superclass =>
     class extends superclass {
-      drawHorizontalRule(
-        graphics
-      ) {
+      drawHorizontalRule(graphics) {
         const strokeWidth = 2;
         const strokeOpacity = 1;
 
-        let stroke = colorToHex(
-          'black'
-        );
+        let stroke = colorToHex('black');
 
-        if (
-          this
-            .highlighted
-        ) {
-          stroke = colorToHex(
-            'red'
-          );
+        if (this.highlighted) {
+          stroke = colorToHex('red');
         }
 
-        graphics.lineStyle(
-          strokeWidth,
-          stroke,
-          strokeOpacity
-        );
+        graphics.lineStyle(strokeWidth, stroke, strokeOpacity);
 
         let pos = 0;
 
@@ -42,48 +26,18 @@ export const HorizontalRuleMixin = Mixin(
         const dashGap = 3;
 
         // console.log('this._yScale.range()', this._yScale.range());
-        while (
-          pos <
-          this
-            .dimensions[0]
-        ) {
-          graphics.moveTo(
-            pos,
-            this._yScale(
-              this
-                .yPosition
-            )
-          );
-          graphics.lineTo(
-            pos +
-              dashLength,
-            this._yScale(
-              this
-                .yPosition
-            )
-          );
+        while (pos < this.dimensions[0]) {
+          graphics.moveTo(pos, this._yScale(this.yPosition));
+          graphics.lineTo(pos + dashLength, this._yScale(this.yPosition));
 
-          pos +=
-            dashLength +
-            dashGap;
+          pos += dashLength + dashGap;
         }
       }
 
-      isMouseOverHorizontalLine(
-        mousePos
-      ) {
+      isMouseOverHorizontalLine(mousePos) {
         if (
-          Math.abs(
-            mousePos.y -
-              this
-                .position[1] -
-              this._yScale(
-                this
-                  .yPosition
-              )
-          ) <
-          this
-            .MOUSEOVER_RADIUS
+          Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) <
+          this.MOUSEOVER_RADIUS
         ) {
           return true;
         }
@@ -92,37 +46,15 @@ export const HorizontalRuleMixin = Mixin(
     }
 );
 
-class HorizontalRule extends mix(
-  PixiTrack
-).with(
-  RuleMixin,
-  HorizontalRuleMixin
-) {
-  constructor(
-    context,
-    options
-  ) {
-    super(
-      context,
-      options
-    );
+class HorizontalRule extends mix(PixiTrack).with(RuleMixin, HorizontalRuleMixin) {
+  constructor(context, options) {
+    super(context, options);
 
-    this.yPosition =
-      context.yPosition;
+    this.yPosition = context.yPosition;
   }
 
-  mouseMoveHandler(
-    mousePos
-  ) {
-    if (
-      this.isWithin(
-        mousePos.x,
-        mousePos.y
-      ) &&
-      this.isMouseOverHorizontalLine(
-        mousePos
-      )
-    ) {
+  mouseMoveHandler(mousePos) {
+    if (this.isWithin(mousePos.x, mousePos.y) && this.isMouseOverHorizontalLine(mousePos)) {
       this.highlighted = true;
       this.draw();
       return;
@@ -133,13 +65,10 @@ class HorizontalRule extends mix(
   }
 
   draw() {
-    const graphics = this
-      .pMain;
+    const graphics = this.pMain;
     graphics.clear();
 
-    this.drawHorizontalRule(
-      graphics
-    );
+    this.drawHorizontalRule(graphics);
     this.animate();
   }
 }

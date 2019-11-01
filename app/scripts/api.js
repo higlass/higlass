@@ -10,15 +10,9 @@ import { setTileProxyAuthHeader } from './services';
 
 import { getTrackObjectFromHGC } from './utils';
 
-import {
-  MOUSE_TOOL_MOVE,
-  MOUSE_TOOL_SELECT
-} from './configs';
+import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from './configs';
 
-const createApi = function api(
-  context,
-  pubSub
-) {
+const createApi = function api(context, pubSub) {
   const self = context;
 
   let pubSubs = [];
@@ -26,20 +20,14 @@ const createApi = function api(
   const apiPubSub = createPubSub();
 
   const destroy = () => {
-    pubSubs.forEach(
-      subscription =>
-        pubSub.unsubscribe(
-          subscription
-        )
-    );
+    pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     pubSubs = [];
   };
 
   // Internal API
   return {
     destroy,
-    publish:
-      apiPubSub.publish,
+    publish: apiPubSub.publish,
     // Public API
     public: {
       /**
@@ -58,12 +46,8 @@ const createApi = function api(
        * @param {boolean} isBroadcastMousePositionGlobally - If `true` the mouse
        *   position will be broadcasted globally.
        */
-      setBroadcastMousePositionGlobally(
-        isBroadcastMousePositionGlobally = false
-      ) {
-        self.setBroadcastMousePositionGlobally(
-          isBroadcastMousePositionGlobally
-        );
+      setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally = false) {
+        self.setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally);
       },
 
       /**
@@ -72,12 +56,8 @@ const createApi = function api(
        *   position will be shown for any track that has
        *   `options.showMousePosition = true`.
        */
-      setShowGlobalMousePosition(
-        isShowGlobalMousePosition = false
-      ) {
-        self.setShowGlobalMousePosition(
-          isShowGlobalMousePosition
-        );
+      setShowGlobalMousePosition(isShowGlobalMousePosition = false) {
+        self.setShowGlobalMousePosition(isShowGlobalMousePosition);
       },
 
       /**
@@ -88,15 +68,9 @@ const createApi = function api(
        * @param {boolean} isGlobalMousePosition - If `true` the global mouse
        *   position will be shown and broadcasted.
        */
-      setGlobalMousePosition(
-        isGlobalMousePosition = false
-      ) {
-        self.setBroadcastMousePositionGlobally(
-          isGlobalMousePosition
-        );
-        self.setShowGlobalMousePosition(
-          isGlobalMousePosition
-        );
+      setGlobalMousePosition(isGlobalMousePosition = false) {
+        self.setBroadcastMousePositionGlobally(isGlobalMousePosition);
+        self.setShowGlobalMousePosition(isGlobalMousePosition);
       },
 
       /**
@@ -105,12 +79,8 @@ const createApi = function api(
        * @param {string} newHeader The contensts of the header to be included.
        * Example: ``hgapi.setAuthHeader('JWT xyz')``
        */
-      setAuthHeader(
-        newHeader
-      ) {
-        setTileProxyAuthHeader(
-          newHeader
-        );
+      setAuthHeader(newHeader) {
+        setTileProxyAuthHeader(newHeader);
 
         // we need to re-request all the tiles
         self.reload();
@@ -136,9 +106,7 @@ const createApi = function api(
        * Reload all of the tiles
        */
       reload() {
-        console.warn(
-          'Not implemented yet!'
-        );
+        console.warn('Not implemented yet!');
       },
 
       /**
@@ -146,11 +114,7 @@ const createApi = function api(
        */
       destroy() {
         destroy();
-        ReactDOM.unmountComponentAtNode(
-          self
-            .topDiv
-            .parentNode
-        );
+        ReactDOM.unmountComponentAtNode(self.topDiv.parentNode);
       },
 
       /**
@@ -162,11 +126,9 @@ const createApi = function api(
        * hgv.setRangeSelectionToFloat(); // Allow float range selections
        */
       setRangeSelectionToInt() {
-        self.setState(
-          {
-            rangeSelectionToInt: true
-          }
-        );
+        self.setState({
+          rangeSelectionToInt: true
+        });
       },
 
       /**
@@ -178,11 +140,9 @@ const createApi = function api(
        * hgv.setRangeSelectionToFloat(); // Allow float range selections
        */
       setRangeSelectionToFloat() {
-        self.setState(
-          {
-            rangeSelectionToInt: false
-          }
-        );
+        self.setState({
+          rangeSelectionToInt: false
+        });
       },
 
       /**
@@ -199,18 +159,10 @@ const createApi = function api(
        * hgv.activateTool('select'); // Activate select tool
        * hgv.setRangeSelection1dSize(5000, 10000); // Force selections to be between 5 and 10 Kb
        */
-      setRangeSelection1dSize(
-        minSize = 0,
-        maxSize = Infinity
-      ) {
-        self.setState(
-          {
-            rangeSelection1dSize: [
-              minSize,
-              maxSize
-            ]
-          }
-        );
+      setRangeSelection1dSize(minSize = 0, maxSize = Infinity) {
+        self.setState({
+          rangeSelection1dSize: [minSize, maxSize]
+        });
       },
 
       /**
@@ -229,77 +181,45 @@ const createApi = function api(
        * @return {Promise} dataLoaded A promise that resolves when
        *   all of the data for this viewconfig is loaded
        */
-      setViewConfig(
-        newViewConfig
-      ) {
-        const validate = new Ajv().compile(
-          schema
-        );
-        const valid = validate(
-          newViewConfig
-        );
-        if (
-          validate.errors
-        ) {
-          console.warn(
-            JSON.stringify(
-              validate.errors,
-              null,
-              2
-            )
-          );
+      setViewConfig(newViewConfig) {
+        const validate = new Ajv().compile(schema);
+        const valid = validate(newViewConfig);
+        if (validate.errors) {
+          console.warn(JSON.stringify(validate.errors, null, 2));
         }
-        if (
-          !valid
-        ) {
-          console.warn(
-            'Invalid viewconf'
-          );
+        if (!valid) {
+          console.warn('Invalid viewconf');
           // throw new Error('Invalid viewconf');
         }
 
-        const viewsByUid = self.processViewConfig(
-          newViewConfig
-        );
-        const p = new Promise(
-          resolve => {
-            this.requestsInFlight = 0;
+        const viewsByUid = self.processViewConfig(newViewConfig);
+        const p = new Promise(resolve => {
+          this.requestsInFlight = 0;
 
-            pubSubs.push(
-              pubSub.subscribe(
-                'requestSent',
-                () => {
-                  this.requestsInFlight += 1;
-                }
-              )
-            );
+          pubSubs.push(
+            pubSub.subscribe('requestSent', () => {
+              this.requestsInFlight += 1;
+            })
+          );
 
-            pubSubs.push(
-              pubSub.subscribe(
-                'requestReceived',
-                () => {
-                  this.requestsInFlight -= 1;
+          pubSubs.push(
+            pubSub.subscribe('requestReceived', () => {
+              this.requestsInFlight -= 1;
 
-                  if (
-                    this
-                      .requestsInFlight ===
-                    0
-                  ) {
-                    resolve();
-                  }
-                }
-              )
-            );
+              if (this.requestsInFlight === 0) {
+                resolve();
+              }
+            })
+          );
 
-            self.setState(
-              {
-                viewConfig: newViewConfig,
-                views: viewsByUid
-              },
-              () => {}
-            );
-          }
-        );
+          self.setState(
+            {
+              viewConfig: newViewConfig,
+              views: viewsByUid
+            },
+            () => {}
+          );
+        });
 
         return p;
       },
@@ -311,29 +231,13 @@ const createApi = function api(
        */
       getViewConfig() {
         const newViewConfig = self.getViewsAsJson();
-        const validate = new Ajv().compile(
-          schema
-        );
-        const valid = validate(
-          newViewConfig
-        );
-        if (
-          validate.errors
-        ) {
-          console.warn(
-            JSON.stringify(
-              validate.errors,
-              null,
-              2
-            )
-          );
+        const validate = new Ajv().compile(schema);
+        const valid = validate(newViewConfig);
+        if (validate.errors) {
+          console.warn(JSON.stringify(validate.errors, null, 2));
         }
-        if (
-          !valid
-        ) {
-          console.warn(
-            'Invalid viewconf'
-          );
+        if (!valid) {
+          console.warn('Invalid viewconf');
           // throw new Error('Invalid viewconf');
         }
         return newViewConfig;
@@ -356,18 +260,8 @@ const createApi = function api(
        * const [minVal, maxVal] = hgv.getMinMaxValue('myView', 'myTrack');
        * @returns {Array} The minimum and maximum value
        */
-      getMinMaxValue(
-        viewId,
-        trackId,
-        ignoreOffScreenValues = false,
-        ignoreFixedScale = false
-      ) {
-        return self.getMinMaxValue(
-          viewId,
-          trackId,
-          ignoreOffScreenValues,
-          ignoreFixedScale
-        );
+      getMinMaxValue(viewId, trackId, ignoreOffScreenValues = false, ignoreFixedScale = false) {
+        return self.getMinMaxValue(viewId, trackId, ignoreOffScreenValues, ignoreFixedScale);
       },
 
       /**
@@ -387,13 +281,8 @@ const createApi = function api(
        * })
        * .catch((err) => { console.error('Something did not work. Sorry', err); })
        */
-      shareViewConfigAsLink(
-        url
-      ) {
-        return self.handleExportViewsAsLink(
-          url,
-          true
-        );
+      shareViewConfigAsLink(url) {
+        return self.handleExportViewsAsLink(url, true);
       },
 
       /**
@@ -417,36 +306,26 @@ const createApi = function api(
        *
        * window.hgApi.showAvailableTrackPositions(lineTrack);
        */
-      showAvailableTrackPositions(
-        track
-      ) {
-        self.setState(
-          {
-            draggingHappening: track
-          }
-        );
+      showAvailableTrackPositions(track) {
+        self.setState({
+          draggingHappening: track
+        });
       },
 
       /**
        * Hide the overlay showing where a track can be positioned
        */
       hideAvailableTrackPositions() {
-        self.setState(
-          {
-            draggingHappening: null
-          }
-        );
+        self.setState({
+          draggingHappening: null
+        });
       },
 
       measureSize() {
         self.measureSize();
 
-        for (const tiledPlot of dictValues(
-          self.tiledPlots
-        )) {
-          if (
-            tiledPlot
-          ) {
+        for (const tiledPlot of dictValues(self.tiledPlots)) {
+          if (tiledPlot) {
             tiledPlot.measureSize();
           }
         }
@@ -460,37 +339,25 @@ const createApi = function api(
        *                             to be called when a track is chosen.
        * @return {[type]}            [description]
        */
-      showTrackChooser(
-        callback
-      ) {
-        self.setState(
-          {
-            chooseTrackHandler: (
-              ...args
-            ) => {
-              self.setState(
-                {
-                  chooseTrackHandler: null
-                }
-              );
+      showTrackChooser(callback) {
+        self.setState({
+          chooseTrackHandler: (...args) => {
+            self.setState({
+              chooseTrackHandler: null
+            });
 
-              callback(
-                ...args
-              );
-            }
+            callback(...args);
           }
-        );
+        });
       },
 
       /**
        * Hide the track chooser.
        */
       hideTrackChooser() {
-        this.setState(
-          {
-            chooseTrackHandler: null
-          }
-        );
+        this.setState({
+          chooseTrackHandler: null
+        });
       },
       /**
        *
@@ -510,50 +377,26 @@ const createApi = function api(
        * hgv.setTrackValueScale(myView, myTrack); // Unsets the fixed scaling, i.e., enables
        * dynamic scaling again.
        */
-      setTrackValueScaleLimits(
-        viewId,
-        trackId,
-        minValue,
-        maxValue
-      ) {
-        self.setTrackValueScaleLimits(
-          viewId,
-          trackId,
-          minValue,
-          maxValue
-        );
+      setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
+        self.setTrackValueScaleLimits(viewId, trackId, minValue, maxValue);
       },
 
       /**
        * Choose a theme.
        * @deprecated since version 1.6.6. Use `setTheme()` instead.
        */
-      setDarkTheme(
-        darkTheme
-      ) {
-        console.warn(
-          '`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.'
-        );
-        const theme = darkTheme
-          ? 'dark'
-          : 'light';
-        self.setTheme(
-          theme
-        );
+      setDarkTheme(darkTheme) {
+        console.warn('`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.');
+        const theme = darkTheme ? 'dark' : 'light';
+        self.setTheme(theme);
       },
 
       /**
        * Choose a theme.
        */
-      setTheme(
-        theme
-      ) {
-        console.warn(
-          'Please note that theming is still in beta!'
-        );
-        self.setTheme(
-          theme
-        );
+      setTheme(theme) {
+        console.warn('Please note that theming is still in beta!');
+        self.setTheme(theme);
       },
 
       /**
@@ -604,22 +447,8 @@ const createApi = function api(
        *  firstViewLoc["yDomain"][1]
        * );
        */
-      zoomTo(
-        viewUid,
-        start1Abs,
-        end1Abs,
-        start2Abs,
-        end2Abs,
-        animateTime = 0
-      ) {
-        self.zoomTo(
-          viewUid,
-          start1Abs,
-          end1Abs,
-          start2Abs,
-          end2Abs,
-          animateTime
-        );
+      zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime = 0) {
+        self.zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime);
       },
 
       /**
@@ -641,12 +470,8 @@ const createApi = function api(
        *     hgv.zoomToDataExtent('viewUid');
        * });
        */
-      zoomToDataExtent(
-        viewUid
-      ) {
-        self.handleZoomToData(
-          viewUid
-        );
+      zoomToDataExtent(viewUid) {
+        self.handleZoomToData(viewUid);
       },
 
       /**
@@ -660,12 +485,8 @@ const createApi = function api(
        *
        * hgv.resetViewport(); // Resets the first view
        */
-      resetViewport(
-        viewId
-      ) {
-        self.resetViewport(
-          viewId
-        );
+      resetViewport(viewId) {
+        self.resetViewport(viewId);
       },
 
       /**
@@ -683,22 +504,14 @@ const createApi = function api(
        * hgv.activateTool('select'); // Select tool is active
        * hgv.activateTool(); // Default pan&zoom tool is active
        */
-      activateTool(
-        tool
-      ) {
-        switch (
-          tool
-        ) {
+      activateTool(tool) {
+        switch (tool) {
           case 'select':
-            self.setMouseTool(
-              MOUSE_TOOL_SELECT
-            );
+            self.setMouseTool(MOUSE_TOOL_SELECT);
             break;
 
           default:
-            self.setMouseTool(
-              MOUSE_TOOL_MOVE
-            );
+            self.setMouseTool(MOUSE_TOOL_MOVE);
             break;
         }
       },
@@ -762,41 +575,18 @@ const createApi = function api(
        *
        * const {xScale, yScale} = hgv.getLocation('viewId');
        */
-      getLocation(
-        viewId
-      ) {
+      getLocation(viewId) {
         const wurstId = viewId
-          ? self
-              .xScales[
-              viewId
-            ] &&
-            self
-              .yScales[
-              viewId
-            ] &&
-            viewId
-          : Object.values(
-              self.tiledPlots
-            )[0] &&
-            Object.values(
-              self.tiledPlots
-            )[0]
-              .props
-              .uid;
+          ? self.xScales[viewId] && self.yScales[viewId] && viewId
+          : Object.values(self.tiledPlots)[0] && Object.values(self.tiledPlots)[0].props.uid;
 
-        if (
-          !wurstId
-        ) {
+        if (!wurstId) {
           return 'Please provide a valid view UUID sweetheart 😙';
         }
 
         return {
-          xDomain: self.xScales[
-            wurstId
-          ].domain(),
-          yDomain: self.yScales[
-            wurstId
-          ].domain()
+          xDomain: self.xScales[wurstId].domain(),
+          yDomain: self.yScales[wurstId].domain()
         };
       },
 
@@ -804,30 +594,16 @@ const createApi = function api(
        * Return the track's javascript object. This is useful for subscribing to
        * data events (dataChanged)
        */
-      getTrackObject(
-        viewId,
-        trackId
-      ) {
+      getTrackObject(viewId, trackId) {
         let newViewId = viewId;
         let newTrackId = trackId;
 
-        if (
-          !trackId
-        ) {
-          newViewId = Object.values(
-            self
-              .state
-              .views
-          )[0]
-            .uid;
+        if (!trackId) {
+          newViewId = Object.values(self.state.views)[0].uid;
           newTrackId = viewId;
         }
 
-        return getTrackObjectFromHGC(
-          self,
-          newViewId,
-          newTrackId
-        );
+        return getTrackObjectFromHGC(self, newViewId, newTrackId);
       },
 
       /**
@@ -845,59 +621,32 @@ const createApi = function api(
        * hgv.off('viewConfig', viewConfigListener);
        * hgv.off('mouseMoveZoom', mmz);
        */
-      off(
-        event,
-        listenerId,
-        viewId
-      ) {
-        const callback =
-          typeof listenerId ===
-          'object'
-            ? listenerId.callback
-            : listenerId;
+      off(event, listenerId, viewId) {
+        const callback = typeof listenerId === 'object' ? listenerId.callback : listenerId;
 
-        switch (
-          event
-        ) {
+        switch (event) {
           case 'click':
-            apiPubSub.unsubscribe(
-              'click',
-              callback
-            );
+            apiPubSub.unsubscribe('click', callback);
             break;
 
           case 'cursorLocation':
-            apiPubSub.unsubscribe(
-              'cursorLocation',
-              callback
-            );
+            apiPubSub.unsubscribe('cursorLocation', callback);
             break;
 
           case 'location':
-            self.offLocationChange(
-              viewId,
-              listenerId
-            );
+            self.offLocationChange(viewId, listenerId);
             break;
 
           case 'mouseMoveZoom':
-            apiPubSub.unsubscribe(
-              'mouseMoveZoom',
-              callback
-            );
+            apiPubSub.unsubscribe('mouseMoveZoom', callback);
             break;
 
           case 'rangeSelection':
-            apiPubSub.unsubscribe(
-              'rangeSelection',
-              callback
-            );
+            apiPubSub.unsubscribe('rangeSelection', callback);
             break;
 
           case 'viewConfig':
-            self.offViewChange(
-              listenerId
-            );
+            self.offViewChange(listenerId);
             break;
 
           default:
@@ -1052,51 +801,26 @@ const createApi = function api(
        *  const mmz = event => console.log('Moved', event);
        *  hgv.on('mouseMoveZoom', mmz);
        */
-      on(
-        event,
-        callback,
-        viewId,
-        callbackId
-      ) {
-        switch (
-          event
-        ) {
+      on(event, callback, viewId, callbackId) {
+        switch (event) {
           case 'click':
-            return apiPubSub.subscribe(
-              'click',
-              callback
-            );
+            return apiPubSub.subscribe('click', callback);
 
           case 'cursorLocation':
-            return apiPubSub.subscribe(
-              'cursorLocation',
-              callback
-            );
+            return apiPubSub.subscribe('cursorLocation', callback);
 
           case 'location':
             // returns a set of scales (xScale, yScale) on every zoom event
-            return self.onLocationChange(
-              viewId,
-              callback,
-              callbackId
-            );
+            return self.onLocationChange(viewId, callback, callbackId);
 
           case 'mouseMoveZoom':
-            return apiPubSub.subscribe(
-              'mouseMoveZoom',
-              callback
-            );
+            return apiPubSub.subscribe('mouseMoveZoom', callback);
 
           case 'rangeSelection':
-            return apiPubSub.subscribe(
-              'rangeSelection',
-              callback
-            );
+            return apiPubSub.subscribe('rangeSelection', callback);
 
           case 'viewConfig':
-            return self.onViewChange(
-              callback
-            );
+            return self.onViewChange(callback);
 
           default:
             return undefined;

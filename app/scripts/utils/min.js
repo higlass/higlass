@@ -6,13 +6,6 @@
  * @param   {number}  b  Value B
  * @return  {boolean}  If `true` A is smaller than B.
  */
-const min = (
-  a,
-  b
-) =>
-  a <
-  b
-    ? a
-    : b;
+const min = (a, b) => (a < b ? a : b);
 
 export default min;

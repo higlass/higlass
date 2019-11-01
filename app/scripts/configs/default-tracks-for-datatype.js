@@ -1,77 +1,49 @@
 export const DEFAULT_TRACKS_FOR_DATATYPE = {
   arcs: {
-    top:
-      '1d-arcs',
-    bottom:
-      '1d-arcs'
+    top: '1d-arcs',
+    bottom: '1d-arcs'
   },
   chromsizes: {
-    center:
-      '2d-chromosome-grid',
-    top:
-      'horizontal-chromosome-labels',
-    left:
-      'vertical-chromosome-labels',
-    bottom:
-      'horizontal-chromosome-labels',
-    right:
-      'vertical-chromosome-labels'
+    center: '2d-chromosome-grid',
+    top: 'horizontal-chromosome-labels',
+    left: 'vertical-chromosome-labels',
+    bottom: 'horizontal-chromosome-labels',
+    right: 'vertical-chromosome-labels'
   },
   matrix: {
-    center:
-      'heatmap',
-    top:
-      'horizontal-heatmap',
-    left:
-      'vertical-heatmap',
-    right:
-      'vertical-heatmap',
-    bottom:
-      'horizontal-heatmap'
+    center: 'heatmap',
+    top: 'horizontal-heatmap',
+    left: 'vertical-heatmap',
+    right: 'vertical-heatmap',
+    bottom: 'horizontal-heatmap'
   },
   vector: {
-    top:
-      'horizontal-bar',
-    bottom:
-      'horizontal-bar',
-    left:
-      'vertical-bar',
-    right:
-      'vertical-bar'
+    top: 'horizontal-bar',
+    bottom: 'horizontal-bar',
+    left: 'vertical-bar',
+    right: 'vertical-bar'
   },
   epilogos: {
-    top:
-      'horizontal-stacked-bar',
-    bottom:
-      'horizontal-stacked-bar'
+    top: 'horizontal-stacked-bar',
+    bottom: 'horizontal-stacked-bar'
   },
   'geo-json': {
-    center:
-      'geo-json'
+    center: 'geo-json'
   },
   'gene-annotations': {
-    top:
-      'horizontal-gene-annotations',
-    bottom:
-      'horizontal-gene-annotations',
-    left:
-      'vertical-gene-annotations',
-    right:
-      'horizontal-gene-annotations'
+    top: 'horizontal-gene-annotations',
+    bottom: 'horizontal-gene-annotations',
+    left: 'vertical-gene-annotations',
+    right: 'horizontal-gene-annotations'
   },
   bedlike: {
-    top:
-      'bedlike',
-    bottom:
-      'bedlike',
-    left:
-      'vertical-bedlike',
-    right:
-      'vertical-bedlike'
+    top: 'bedlike',
+    bottom: 'bedlike',
+    left: 'vertical-bedlike',
+    right: 'vertical-bedlike'
   },
   'osm-tiles': {
-    center:
-      'osm-tiles'
+    center: 'osm-tiles'
   }
 };
 
