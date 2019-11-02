@@ -1,6 +1,10 @@
 ## v1.7.2
 
-- Add support for propper switching between scrolling and pan&zoom when `scrollable: true` by adding a new property called `scrolling`. When enabling `scrollable` HiGlass will adjust the style properties of it's root container to stretch to the full extent of its parent. When setting `scrolling: true` HiGlass will enable the appropriate CSS overflow rules. In summary, to activate scrolling set `scrollable: true` and `scrolling: true`. To temporarily switch back to pan&zoom keep `scrollable: true` but set `scrolling: false`. To fully reset HiGlass to the default pan&zoom mode set `scrollable: false` and `scrolling: false`.
+- Refactored the scroll options and `bounded` into a new property called `sizeMode`. There are now 4 different size modes, which determine the visible height of the HiGlass instance:
+  1. `default`: the height is given by the sum of the tracks' heights
+  2. `bounded`: tells the HiGlass component to bind the height to the parent container by dynamically adjusting the height of center tracks.
+  3. `scroll`: will activate scrolling by stretching HiGlass' drawing surface to the extent of parent DOM element and hiding overflowing content in the x direction and allowing to scroll when content overflows in the y direction.
+  4. `overflow`: same as `scroll` except that you can't scroll. This mode is only needed when you want to dynamically switch between scrolling and pan+zooming.
 
 ## v1.7.1
 
