@@ -110,6 +110,12 @@ it will use WebGL.
   3. ``scroll``: will activate scrolling by stretching HiGlass' drawing surface to the extent of ``element`` and hiding overflowing content in the x direction and allowing to scroll when content overflows in the y direction. This mode will also set all views to zoom fixed automatically so that you are not scrolling and zooming at the same time.
   4. ``overflow``: same as ``scroll`` except that you can't scroll. This mode is only needed when you want to dynamically switch between scrolling and pan+zooming. Say you scrolled halfway down and then want to temporarily pan&zoom a track at that position. If you would switch back to ``bounded`` the scrollTop position would be lost because ``bounded`` demands that your entire view is bound to the parent. Instead you want can switch to ``overflow`` to keep the current scrollTop position and enable pan&zooming.
 
+  Visually you can think of the four size modes as follows:
+
+  .. figure:: img/size-mode.png
+    :align: center
+    :figwidth: 640px
+
   Note that if ``sizeMode`` is anything other than ``default``, the ``element`` must have a fixed height!
 
 The function returns an instance of the public API of a HiGlass component.
