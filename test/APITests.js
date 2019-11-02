@@ -331,11 +331,13 @@ describe('API Tests', () => {
       expect(api.option('sizeMode')).toEqual('overflow');
 
       const hgContainer = div.querySelector('.higlass');
+      const hgContainerStyles = window.getComputedStyle(hgContainer);
       const scrollContainer = div.querySelector('.higlass-scroll-container');
+      const scrollContainerStyles = window.getComputedStyle(scrollContainer);
 
-      expect(hgContainer.style.position).toEqual('absolute');
-      expect(scrollContainer.style.position).toEqual('absolute');
-      expect(scrollContainer.style.overflow).toEqual('hidden');
+      expect(hgContainerStyles.getPropertyValue('position')).toEqual('absolute');
+      expect(scrollContainerStyles.getPropertyValue('position')).toEqual('absolute');
+      expect(scrollContainerStyles.getPropertyValue('overflow')).toEqual('hidden');
 
       const hgc = api.getComponent();
 
@@ -361,9 +363,10 @@ describe('API Tests', () => {
       expect(api.option('sizeMode')).toEqual('scroll');
 
       const scrollContainer = div.querySelector('.higlass-scroll-container');
+      const scrollContainerStyles = window.getComputedStyle(scrollContainer);
 
-      expect(scrollContainer.style.overflowX).toEqual('hidden');
-      expect(scrollContainer.style.overflowY).toEqual('auto');
+      expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual('hidden');
+      expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual('auto');
 
       const hgc = api.getComponent();
 
@@ -393,19 +396,21 @@ describe('API Tests', () => {
 
       waitForTilesLoaded(hgc, () => {
         const scrollContainer = div.querySelector('.higlass-scroll-container');
+        let scrollContainerStyles = window.getComputedStyle(scrollContainer);
         scrollContainer.scrollTop = 20;
 
         setTimeout(() => {
           expect(hgc.pixiStage.y).toEqual(-20);
-          expect(scrollContainer.style.overflowX).toEqual('hidden');
-          expect(scrollContainer.style.overflowY).toEqual('auto');
+          expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual('hidden');
+          expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual('auto');
 
           api.option('sizeMode', 'overflow');
+          scrollContainerStyles = window.getComputedStyle(scrollContainer);
 
           setTimeout(() => {
             scrollContainer.scrollTop = 40;
             setTimeout(() => {
-              expect(scrollContainer.style.overflow).toEqual('hidden');
+              expect(scrollContainerStyles.getPropertyValue('overflow')).toEqual('hidden');
               expect(hgc.pixiStage.y).toEqual(-20);
               done();
             }, 50);
