@@ -635,7 +635,7 @@ const createApi = function api(context, pubSub) {
         if (typeof value === 'undefined') return self.props.options[key];
 
         switch (key) {
-          case 'scrollable':
+          case 'sizeMode':
             self.props.options[key] = value;
             forceUpdate(self);
             break;

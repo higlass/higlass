@@ -1,3 +1,15 @@
+## v1.7.2
+
+- Refactored the scroll options and `bounded` into a new property called `sizeMode`. There are now 4 different size modes, which determine the visible height of the HiGlass instance:
+  1. `default`: the height is given by the sum of the tracks' heights
+  2. `bounded`: tells the HiGlass component to bind the height to the parent container by dynamically adjusting the height of center tracks.
+  3. `scroll`: will activate scrolling by stretching HiGlass' drawing surface to the extent of parent DOM element and hiding overflowing content in the x direction and allowing to scroll when content overflows in the y direction.
+  4. `overflow`: same as `scroll` except that you can't scroll. This mode is only needed when you want to dynamically switch between scrolling and pan+zooming.
+
+## v1.7.1
+
+_Same as v1.7.0. This is just due to a glitch at npmjs.org._
+
 ## v1.7.0
 
 - Add support for scrollable views. Activate via the option `scrollable: true`. Once you activate scrollable views all views are automatically zoomfixed! See [http://localhost:8080/others/scrollable-container.html](others/scrollable-container.html) for an example.

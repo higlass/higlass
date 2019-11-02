@@ -85,6 +85,10 @@ import stylesGlobal from '../styles/HiGlass.scss'; // eslint-disable-line no-unu
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
 const VIEW_HEADER_HEIGHT = 20;
+const SIZE_MODE_DEFAULT = 'default';
+const SIZE_MODE_BOUNDED = 'bounded';
+const SIZE_MODE_OVERFLOW = 'overflow';
+const SIZE_MODE_SCROLL = 'scroll';
 
 class HiGlassComponent extends React.Component {
   constructor(props) {
@@ -200,6 +204,7 @@ class HiGlassComponent extends React.Component {
     this.pixiStage.mask = this.pixiMask;
 
     this.element = null;
+    this.scrollTop = 0;
 
     let mouseTool = MOUSE_TOOL_MOVE;
 
@@ -239,7 +244,6 @@ class HiGlassComponent extends React.Component {
 
     this.mounted = false;
     this.state = {
-      bounded: this.props.options.bounded || false,
       pluginTracks,
       currentBreakpoint: 'lg',
       width: 0,
@@ -357,6 +361,13 @@ class HiGlassComponent extends React.Component {
     if (this.props.getApi) {
       this.props.getApi(this.api);
     }
+  }
+
+  get sizeMode() {
+    // eslint-disable-next-line no-nested-ternary
+    return typeof this.props.options.sizeMode === 'undefined'
+      ? this.props.options.bounded ? 'bounded' : SIZE_MODE_DEFAULT
+      : this.props.options.sizeMode;
   }
 
   setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally = false) {
@@ -1725,8 +1736,8 @@ class HiGlassComponent extends React.Component {
    */
   updateRowHeight() {
     if (
-      !(this.props.options && this.props.options.bounded)
-      || (this.props.options && this.props.options.scrollable)
+      !this.props.options
+      || this.sizeMode !== SIZE_MODE_BOUNDED
       || this.props.options.pixelPreciseMarginPadding
     ) {
       // not bounded so we don't need to update the row height
@@ -2479,7 +2490,7 @@ class HiGlassComponent extends React.Component {
     totalTrackHeight += MARGIN_HEIGHT;
     const rowHeight = this.state.rowHeight + MARGIN_HEIGHT;
 
-    if (!this.props.options.bounded || this.props.options.scrollable) {
+    if (this.sizeMode !== SIZE_MODE_BOUNDED) {
       view.layout.h = Math.ceil(totalTrackHeight / rowHeight);
     }
   }
@@ -3539,6 +3550,8 @@ class HiGlassComponent extends React.Component {
     const absX = e.clientX;
     const absY = e.clientY;
     const relPos = clientPoint(this.topDiv, e);
+    // We need to add the scrollTop
+    relPos[1] += this.scrollTop;
     const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
 
     const hoveredTracks = hoveredTiledPlot
@@ -3759,8 +3772,10 @@ class HiGlassComponent extends React.Component {
   }
 
   onScrollHandler() {
-    this.pixiStage.y = -this.scrollContainer.scrollTop;
-    this.pubSub.publish('app.scroll', this.scrollContainer.scrollTop);
+    if (this.props.options.sizeMode !== SIZE_MODE_SCROLL) return;
+    this.scrollTop = this.scrollContainer.scrollTop;
+    this.pixiStage.y = -this.scrollTop;
+    this.pubSub.publish('app.scroll', this.scrollTop);
     this.animate();
   }
 
@@ -3805,13 +3820,16 @@ class HiGlassComponent extends React.Component {
       this.props.zoomFixed
       || this.props.options.zoomFixed
       || this.state.viewConfig.zoomFixed
-      || this.props.options.scrollable
+      || this.props.options.sizeMode === SIZE_MODE_SCROLL
       || (view && view.zoomFixed)
     );
   }
 
   wheelHandler(evt) {
-    if (this.state.modal || this.props.options.scrollable) return;
+    if (
+      this.state.modal
+      || this.props.options.sizeMode === SIZE_MODE_SCROLL
+    ) return;
 
     // The event forwarder wasn't written for React's SyntheticEvent
     const nativeEvent = evt.nativeEvent || evt;
@@ -4144,13 +4162,19 @@ class HiGlassComponent extends React.Component {
       styleNames += ' styles.higlass-dark-theme';
     }
 
-    const scrollStyles = {
-      position: 'absolute',
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-    };
+    if (
+      this.props.options.sizeMode === SIZE_MODE_OVERFLOW
+      || this.props.options.sizeMode === SIZE_MODE_SCROLL
+    ) {
+      styleNames += ' styles.higlass-container-overflow';
+    }
+
+    // eslint-disable-next-line no-nested-ternary
+    const scrollStyleNames = this.props.options.sizeMode === SIZE_MODE_OVERFLOW
+      ? 'styles.higlass-scroll-container-overflow'
+      : this.props.options.sizeMode === SIZE_MODE_SCROLL
+        ? 'styles.higlass-scroll-container-scroll'
+        : '';
 
     return (
       <div
@@ -4159,7 +4183,6 @@ class HiGlassComponent extends React.Component {
         className="higlass"
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
-        style={this.props.options.scrollable ? scrollStyles : {}}
         styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>
@@ -4175,13 +4198,7 @@ class HiGlassComponent extends React.Component {
                 ref={(c) => { this.scrollContainer = c; }}
                 className="higlass-scroll-container"
                 onScroll={this.onScrollHandlerBound}
-                style={this.props.options.scrollable
-                  ? {
-                    ...scrollStyles,
-                    overflowX: 'hidden',
-                    overflowY: 'auto',
-                  } : {}
-                }
+                styleName={scrollStyleNames}
               >
                 <div
                   ref={(c) => { this.divDrawingSurface = c; }}
