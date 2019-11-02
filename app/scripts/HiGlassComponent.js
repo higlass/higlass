@@ -4162,24 +4162,19 @@ class HiGlassComponent extends React.Component {
       styleNames += ' styles.higlass-dark-theme';
     }
 
-    const overflowStyles = {
-      position: 'absolute',
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0
-    };
-
-    const containerStyles = (
+    if (
       this.props.options.sizeMode === SIZE_MODE_OVERFLOW
       || this.props.options.sizeMode === SIZE_MODE_SCROLL
-    ) ? overflowStyles : {};
+    ) {
+      styleNames += ' styles.higlass-container-overflow';
+    }
 
     // eslint-disable-next-line no-nested-ternary
-    const scrollStyles = this.props.options.sizeMode === SIZE_MODE_OVERFLOW
-      ? { ...overflowStyles, overflow: 'hidden' }
+    const scrollStyleNames = this.props.options.sizeMode === SIZE_MODE_OVERFLOW
+      ? 'styles.higlass-scroll-container-overflow'
       : this.props.options.sizeMode === SIZE_MODE_SCROLL
-        ? { ...overflowStyles, overflowX: 'hidden', overflowY: 'auto' } : {};
+        ? 'styles.higlass-scroll-container-scroll'
+        : '';
 
     return (
       <div
@@ -4188,7 +4183,6 @@ class HiGlassComponent extends React.Component {
         className="higlass"
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
-        style={containerStyles}
         styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>
@@ -4204,7 +4198,7 @@ class HiGlassComponent extends React.Component {
                 ref={(c) => { this.scrollContainer = c; }}
                 className="higlass-scroll-container"
                 onScroll={this.onScrollHandlerBound}
-                style={scrollStyles}
+                styleName={scrollStyleNames}
               >
                 <div
                   ref={(c) => { this.divDrawingSurface = c; }}
