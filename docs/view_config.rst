@@ -269,6 +269,12 @@ and ``filetype``
       "filetype": "bigwig"
     }
 
+* Note that we do not provide a compatible server "out of the box" or as part of
+the higlass-manage / higlass-docker distribution. To use this functionality,
+you have to run `higlass-server` directly and `mount the http and httpfs
+directories a filesystems in userspace
+<https://github.com/higlass/higlass-server/blob/develop/start.sh>`_.
+
 Using ``data``
 ^^^^^^^^^^^^^^
 
