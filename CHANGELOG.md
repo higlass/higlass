@@ -6,6 +6,8 @@
   3. `scroll`: will activate scrolling by stretching HiGlass' drawing surface to the extent of parent DOM element and hiding overflowing content in the x direction and allowing to scroll when content overflows in the y direction.
   4. `overflow`: same as `scroll` except that you can't scroll. This mode is only needed when you want to dynamically switch between scrolling and pan+zooming.
 
+_[Detailed changes since v1.7.0](https://github.com/higlass/higlass/compare/v1.7.0...v1.7.2)_
+
 ## v1.7.1
 
 _Same as v1.7.0. This is just due to a glitch at npmjs.org._
