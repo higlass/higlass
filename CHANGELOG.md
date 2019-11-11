@@ -1,3 +1,9 @@
+## v1.7.3
+
+- In `HorizontalLine1DPixiTrack`, make sure that `this.valueScale` is set when `getMouseOverHtml()` is called.
+
+_[Detailed changes since v1.7.2](https://github.com/higlass/higlass/compare/v1.7.2...v1.7.3)_
+
 ## v1.7.2
 
 - Refactored the scroll options and `bounded` into a new property called `sizeMode`. There are now 4 different size modes, which determine the visible height of the HiGlass instance:
