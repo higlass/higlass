@@ -101,6 +101,23 @@ The ``options`` parameter can have the following properties:
 
 - ``globalMousePosition``: if ``true`` this will turn on ``broadcastMousePositionGlobally`` and ``showGlobalMousePosition``. This is basically a convenience option to quickly broadcast and show global mouse positions.
 
+- ``renderer``: if ``canvas`` HiGlass will render to the Canvas API. Otherwise
+it will use WebGL.
+
+- ``sizeMode``: the size mode determines the visible height of the HiGlass instance. There are 4 modes:
+  1. ``default``: the height is given by the sum of the tracks' heights
+  2. ``bounded``: tells the HiGlass component to bind the height to the parent container by dynamically adjusting the height of center tracks.
+  3. ``scroll``: will activate scrolling by stretching HiGlass' drawing surface to the extent of ``element`` and hiding overflowing content in the x direction and allowing to scroll when content overflows in the y direction. This mode will also set all views to zoom fixed automatically so that you are not scrolling and zooming at the same time.
+  4. ``overflow``: same as ``scroll`` except that you can't scroll. This mode is only needed when you want to dynamically switch between scrolling and pan+zooming. Say you scrolled halfway down and then want to temporarily pan&zoom a track at that position. If you would switch back to ``bounded`` the scrollTop position would be lost because ``bounded`` demands that your entire view is bound to the parent. Instead you want can switch to ``overflow`` to keep the current scrollTop position and enable pan&zooming.
+
+  Visually you can think of the four size modes as follows:
+
+  .. figure:: img/size-mode.png
+    :align: center
+    :figwidth: 640px
+
+  Note that if ``sizeMode`` is anything other than ``default``, the ``element`` must have a fixed height!
+
 The function returns an instance of the public API of a HiGlass component.
 
 A full example of an inline HiGlass component can be found in the `HiGlass
@@ -229,4 +246,6 @@ API Functions
 .. js:autofunction:: setShowGlobalMousePosition
 
 .. js:autofunction:: setGlobalMousePosition
+
+.. js:autofunction:: option
 

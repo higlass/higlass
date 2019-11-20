@@ -6,6 +6,25 @@
   background: black;
 }
 
+.higlass-container-overflow,
+.higlass-scroll-container-overflow,
+.higlass-scroll-container-scroll {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.higlass-scroll-container-overflow {
+  overflow: hidden;
+}
+
+.higlass-scroll-container-scroll {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 .higlass-canvas {
   position: absolute;
   width: 100%;

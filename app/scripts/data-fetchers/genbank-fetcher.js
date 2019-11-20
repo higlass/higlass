@@ -127,7 +127,11 @@ class GBKDataFetcher {
   }
 
   tilesetInfo(callback) {
+    this.tilesetInfoLoading = true;
+
     return this.dataPromise.then(() => {
+      this.tilesetInfoLoading = false;
+
       const TILE_SIZE = 1024;
       let retVal = {};
       // retVal[this.trackUid] = {
@@ -148,6 +152,8 @@ class GBKDataFetcher {
       return retVal;
     })
       .catch((err) => {
+        this.tilesetInfoLoading = false;
+
         if (callback) {
           callback({
             error: `Error parsing genbank: ${err}`,

@@ -35,7 +35,11 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       hc.style.cursor = 'pointer';
     }
 
-    if (!this.tilesetInfo || !this.options.showTooltip) return '';
+    if (
+      !this.tilesetInfo
+      || !this.options.showTooltip
+      || !this.valueScale
+    ) return '';
 
     const value = this.getDataAtPos(trackX);
     let textValue = '';

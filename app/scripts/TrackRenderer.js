@@ -102,6 +102,7 @@ class TrackRenderer extends React.Component {
 
     this.yPositionOffset = 0;
     this.xPositionOffset = 0;
+    this.scrollTop = 0;
 
     this.scrollTimeout = null;
     this.activeTransitions = 0;
@@ -205,6 +206,9 @@ class TrackRenderer extends React.Component {
     this.boundForwardEvent = this.forwardEvent.bind(this);
     this.boundScrollEvent = this.scrollEvent.bind(this);
     this.boundForwardContextMenu = this.forwardContextMenu.bind(this);
+    this.dispatchEventBound = this.dispatchEvent.bind(this);
+    this.zoomToDataPosHandlerBound = this.zoomToDataPosHandler.bind(this);
+    this.onScrollHandlerBound = this.onScrollHandler.bind(this);
   }
 
   // eslint-disable-next-line camelcase
@@ -214,10 +218,13 @@ class TrackRenderer extends React.Component {
       this.props.pubSub.subscribe('scroll', this.windowScrolledBound),
     );
     this.pubSubs.push(
-      this.props.pubSub.subscribe('app.event', this.dispatchEvent.bind(this)),
+      this.props.pubSub.subscribe('app.event', this.dispatchEventBound),
     );
     this.pubSubs.push(
-      this.props.pubSub.subscribe('zoomToDataPos', this.zoomToDataPosHandler.bind(this)),
+      this.props.pubSub.subscribe('zoomToDataPos', this.zoomToDataPosHandlerBound),
+    );
+    this.pubSubs.push(
+      this.props.pubSub.subscribe('app.scroll', this.onScrollHandlerBound),
     );
   }
 
@@ -369,6 +376,14 @@ class TrackRenderer extends React.Component {
         this.removeZoom();
       } else {
         this.addZoom();
+      }
+    }
+
+    if (prevProps.zoomable !== this.props.zoomable) {
+      if (this.props.zoomable) {
+        this.addZoom();
+      } else {
+        this.removeZoom();
       }
     }
 
@@ -745,6 +760,7 @@ class TrackRenderer extends React.Component {
       this.yPositionOffset = (
         this.element.getBoundingClientRect().top
         - this.currentProps.canvasElement.getBoundingClientRect().top
+        + this.scrollTop
       );
       this.xPositionOffset = (
         this.element.getBoundingClientRect().left
@@ -1266,11 +1282,17 @@ class TrackRenderer extends React.Component {
 
     for (const uid in this.trackDefObjects) {
       const track = this.trackDefObjects[uid].trackObject;
+      const trackDef = this.trackDefObjects[uid].trackDef;
 
-      if (this.trackDefObjects[uid].trackDef.track.position === 'whole') {
+      let orientation = 'unknown';
+
+      if (TRACKS_INFO_BY_TYPE[trackDef.track.type]) {
+        orientation = TRACKS_INFO_BY_TYPE[trackDef.track.type].orientation;
+      }
+
+      if (orientation === 'whole') {
         // whole tracks need different scales which go beyond the ends of
         // center track and encompass the whole view
-
         const trackXScale = scaleLinear()
           .domain(
             [
@@ -1877,6 +1899,10 @@ class TrackRenderer extends React.Component {
     this.props.pubSub.publish('app.event', e);
   }
 
+  onScrollHandler(scrollTop) {
+    this.scrollTop = scrollTop;
+  }
+
   /* ------------------------------- Render ------------------------------- */
 
   render() {
@@ -1963,6 +1989,7 @@ TrackRenderer.propTypes = {
   xDomainLimits: PropTypes.array,
   yDomainLimits: PropTypes.array,
   valueScaleZoom: PropTypes.bool,
+  zoomable: PropTypes.bool.isRequired,
   zoomDomain: PropTypes.array,
 };
 

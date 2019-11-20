@@ -85,6 +85,10 @@ import stylesGlobal from '../styles/HiGlass.scss'; // eslint-disable-line no-unu
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
 const VIEW_HEADER_HEIGHT = 20;
+const SIZE_MODE_DEFAULT = 'default';
+const SIZE_MODE_BOUNDED = 'bounded';
+const SIZE_MODE_OVERFLOW = 'overflow';
+const SIZE_MODE_SCROLL = 'scroll';
 
 class HiGlassComponent extends React.Component {
   constructor(props) {
@@ -188,10 +192,19 @@ class HiGlassComponent extends React.Component {
       setTileProxyAuthHeader(props.options.authToken);
     }
 
+    this.pixiRoot = new PIXI.Container();
+    this.pixiRoot.interactive = true;
+
     this.pixiStage = new PIXI.Container();
     this.pixiStage.interactive = true;
+    this.pixiRoot.addChild(this.pixiStage);
+
+    this.pixiMask = new PIXI.Graphics();
+    this.pixiRoot.addChild(this.pixiMask);
+    this.pixiStage.mask = this.pixiMask;
 
     this.element = null;
+    this.scrollTop = 0;
 
     let mouseTool = MOUSE_TOOL_MOVE;
 
@@ -231,7 +244,6 @@ class HiGlassComponent extends React.Component {
 
     this.mounted = false;
     this.state = {
-      bounded: this.props.options.bounded || false,
       pluginTracks,
       currentBreakpoint: 'lg',
       width: 0,
@@ -250,8 +262,6 @@ class HiGlassComponent extends React.Component {
       rangeSelectionToInt: false,
       modal: null,
     };
-
-    Object.values(views).map(view => this.adjustLayoutToTrackSizes(view));
 
     // monitor whether this element is attached to the DOM so that
     // we can determine whether to add the resizesensor
@@ -299,6 +309,7 @@ class HiGlassComponent extends React.Component {
     this.openModalBound = this.openModal.bind(this);
     this.closeModalBound = this.closeModal.bind(this);
     this.handleEditViewConfigBound = this.handleEditViewConfig.bind(this);
+    this.onScrollHandlerBound = this.onScrollHandler.bind(this);
 
     this.modal = {
       open: this.openModalBound,
@@ -350,6 +361,13 @@ class HiGlassComponent extends React.Component {
     if (this.props.getApi) {
       this.props.getApi(this.api);
     }
+  }
+
+  get sizeMode() {
+    // eslint-disable-next-line no-nested-ternary
+    return typeof this.props.options.sizeMode === 'undefined'
+      ? this.props.options.bounded ? 'bounded' : SIZE_MODE_DEFAULT
+      : this.props.options.sizeMode;
   }
 
   setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally = false) {
@@ -416,6 +434,8 @@ class HiGlassComponent extends React.Component {
     window.addEventListener('focus', this.boundRefreshView);
 
     Object.values(this.state.views).forEach((view) => {
+      this.adjustLayoutToTrackSizes(view);
+
       if (!view.layout) {
         view.layout = this.generateViewLayout(view);
       } else {
@@ -574,7 +594,7 @@ class HiGlassComponent extends React.Component {
     // let width = this.element.clientWidth;
     // let height = this.element.clientHeight;
 
-    this.pixiRenderer.render(this.pixiStage);
+    this.pixiRenderer.render(this.pixiRoot);
   }
 
   componentDidUpdate() {
@@ -679,12 +699,17 @@ class HiGlassComponent extends React.Component {
     const width = this.element.parentNode.clientWidth;
     const height = this.element.parentNode.clientHeight;
 
+    this.pixiMask
+      .beginFill(0xFFFFFF)
+      .drawRect(0, 0, width, height)
+      .endFill();
+
     this.pixiRenderer.resize(width, height);
 
     this.pixiRenderer.view.style.width = `${width}px`;
     this.pixiRenderer.view.style.height = `${height}px`;
 
-    this.pixiRenderer.render(this.pixiStage);
+    this.pixiRenderer.render(this.pixiRoot);
   }
 
   /**
@@ -833,7 +858,7 @@ class HiGlassComponent extends React.Component {
       // component was probably unmounted
       if (!this.pixiRenderer) return;
 
-      this.pixiRenderer.render(this.pixiStage);
+      this.pixiRenderer.render(this.pixiRoot);
 
       this.isRequestingAnimationFrame = false;
     });
@@ -1037,25 +1062,28 @@ class HiGlassComponent extends React.Component {
     const sourceTrack = getTrackByUid(this.state.views[viewUid].tracks, trackUid);
 
     if (this.valueScaleLocks[uid]) {
-      const lockGroupValues = dictValues(this.valueScaleLocks[uid]);
+      const lockGroup = this.valueScaleLocks[uid];
 
       // /let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
-      const lockedTracks = lockGroupValues
-        .filter(x => this.tiledPlots[x.view])
-        .map(x => this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track))
-        .filter(x => x);
+      const lockedTracks = Object.values(lockGroup)
+        .filter(track => this.tiledPlots[track.view])
+        .map(track => this.tiledPlots[track.view].trackRenderer.getTrackObject(track.track));
 
       const minValues = lockedTracks
         // exclude tracks that don't set min and max values
-        .filter(x => x.minRawValue && x.maxRawValue)
-        .map(x => x.minRawValue())
-        .filter(x => x);
+        .filter(track => track.minRawValue && track.maxRawValue)
+        .map(track => (lockGroup.ignoreOffScreenValues
+          ? track.minRawValue()
+          : track.minVisibleValue(true)
+        ));
 
       const maxValues = lockedTracks
         // exclude tracks that don't set min and max values
-        .filter(x => x.minRawValue && x.maxRawValue)
-        .map(x => x.maxRawValue())
-        .filter(x => x);
+        .filter(track => track.minRawValue && track.maxRawValue)
+        .map(track => (lockGroup.ignoreOffScreenValues
+          ? track.maxRawValue()
+          : track.maxVisibleValue(true)
+        ));
 
       const allMin = Math.min(...minValues);
       const allMax = Math.max(...maxValues);
@@ -1708,7 +1736,8 @@ class HiGlassComponent extends React.Component {
    */
   updateRowHeight() {
     if (
-      !(this.props.options && this.props.options.bounded)
+      !this.props.options
+      || this.sizeMode !== SIZE_MODE_BOUNDED
       || this.props.options.pixelPreciseMarginPadding
     ) {
       // not bounded so we don't need to update the row height
@@ -2461,7 +2490,7 @@ class HiGlassComponent extends React.Component {
     totalTrackHeight += MARGIN_HEIGHT;
     const rowHeight = this.state.rowHeight + MARGIN_HEIGHT;
 
-    if (!this.props.options.bounded) {
+    if (this.sizeMode !== SIZE_MODE_BOUNDED) {
       view.layout.h = Math.ceil(totalTrackHeight / rowHeight);
     }
   }
@@ -3521,6 +3550,8 @@ class HiGlassComponent extends React.Component {
     const absX = e.clientX;
     const absY = e.clientY;
     const relPos = clientPoint(this.topDiv, e);
+    // We need to add the scrollTop
+    relPos[1] += this.scrollTop;
     const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
 
     const hoveredTracks = hoveredTiledPlot
@@ -3740,6 +3771,14 @@ class HiGlassComponent extends React.Component {
 
   }
 
+  onScrollHandler() {
+    if (this.props.options.sizeMode !== SIZE_MODE_SCROLL) return;
+    this.scrollTop = this.scrollContainer.scrollTop;
+    this.pixiStage.y = -this.scrollTop;
+    this.pubSub.publish('app.scroll', this.scrollTop);
+    this.animate();
+  }
+
   setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
     const track = getTrackObjById(this.tiledPlots, viewId, trackId);
 
@@ -3781,20 +3820,19 @@ class HiGlassComponent extends React.Component {
       this.props.zoomFixed
       || this.props.options.zoomFixed
       || this.state.viewConfig.zoomFixed
+      || this.props.options.sizeMode === SIZE_MODE_SCROLL
       || (view && view.zoomFixed)
     );
   }
 
   wheelHandler(evt) {
-    if (this.state.modal) return;
+    if (
+      this.state.modal
+      || this.props.options.sizeMode === SIZE_MODE_SCROLL
+    ) return;
 
     // The event forwarder wasn't written for React's SyntheticEvent
     const nativeEvent = evt.nativeEvent || evt;
-    const isZoomFixed = (
-      this.props.zoomFixed
-      || this.props.options.zoomFixed
-      || this.state.viewConfig.zoomFixed
-    );
 
     const isTargetCanvas = evt.target === this.canvasElement;
 
@@ -3804,7 +3842,7 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
-    if (isZoomFixed) {
+    if (this.isZoomFixed()) {
       // ignore events when in zoom fixed mode
       return;
     }
@@ -3846,8 +3884,6 @@ class HiGlassComponent extends React.Component {
     // the right width
     if (this.mounted) {
       this.tiledAreas = dictValues(this.state.views).map((view) => {
-        const zoomFixed = this.isZoomFixed(view);
-
         // only show the add track menu for the tiled plot it was selected for
         const addTrackPositionMenuPosition = view.uid === this.state.addTrackPositionMenuUid
           ? this.state.addTrackPositionMenuPosition
@@ -3954,7 +3990,7 @@ class HiGlassComponent extends React.Component {
             // dragging={this.state.dragging}
             xDomainLimits={view.xDomainLimits}
             yDomainLimits={view.yDomainLimits}
-            zoomable={!zoomFixed}
+            zoomable={!this.isZoomFixed(view)}
             zoomLimits={view.zoomLimits}
             zoomToDataExtentOnInit={() => this.zoomToDataExtentOnInit.has(view.uid)}
           />
@@ -4126,6 +4162,20 @@ class HiGlassComponent extends React.Component {
       styleNames += ' styles.higlass-dark-theme';
     }
 
+    if (
+      this.props.options.sizeMode === SIZE_MODE_OVERFLOW
+      || this.props.options.sizeMode === SIZE_MODE_SCROLL
+    ) {
+      styleNames += ' styles.higlass-container-overflow';
+    }
+
+    // eslint-disable-next-line no-nested-ternary
+    const scrollStyleNames = this.props.options.sizeMode === SIZE_MODE_OVERFLOW
+      ? 'styles.higlass-scroll-container-overflow'
+      : this.props.options.sizeMode === SIZE_MODE_SCROLL
+        ? 'styles.higlass-scroll-container-scroll'
+        : '';
+
     return (
       <div
         key={this.uid}
@@ -4145,25 +4195,33 @@ class HiGlassComponent extends React.Component {
                 styleName="styles.higlass-canvas"
               />
               <div
-                ref={(c) => { this.divDrawingSurface = c; }}
-                styleName="styles.higlass-drawing-surface"
+                ref={(c) => { this.scrollContainer = c; }}
+                className="higlass-scroll-container"
+                onScroll={this.onScrollHandlerBound}
+                styleName={scrollStyleNames}
               >
-                {gridLayout}
+                <div
+                  ref={(c) => { this.divDrawingSurface = c; }}
+                  className="higlass-drawing-surface"
+                  styleName="styles.higlass-drawing-surface"
+                >
+                  {gridLayout}
+                </div>
+                <svg
+                  ref={(c) => { this.svgElement = c; }}
+                  style={{
+                    // inline the styles so they aren't overriden by other css
+                    // on the web page
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    left: 0,
+                    top: 0,
+                    pointerEvents: 'none',
+                  }}
+                  styleName="styles.higlass-svg"
+                />
               </div>
-              <svg
-                ref={(c) => { this.svgElement = c; }}
-                style={{
-                  // inline the styles so they aren't overriden by other css
-                  // on the web page
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  left: 0,
-                  top: 0,
-                  pointerEvents: 'none',
-                }}
-                styleName="styles.higlass-svg"
-              />
             </ThemeProvider>
           </ModalProvider>
         </PubSubProvider>
