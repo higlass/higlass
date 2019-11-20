@@ -213,6 +213,35 @@ as 0. This makes it possible to display a track showing how many NaN values are
 present in each interval. It also makes it possible to create compound tracks
 which use that information to normalize track values.
 
+bigBed files
+------------
+`bigBed files <https://genome.ucsc.edu/goldenpath/help/bigBed.html>`_ store
+genomic data in a compressed, indexed form that allows rapid retrieval and
+visualization. BED12 bigBed files can be loaded directly into HiGlass using the
+`gene-bed12-annotation` datatype and `bigwig` filetype:
+
+.. code-block:: bash
+
+    higlass-manage ingest elements.bigBed --assembly hg38 --datatype gene-bed12-annotation --filetype bigbed
+    
+**Important:** BigBed files have to be associated with a chromosome order!!
+This means that there needs to be a chromsizes file for the
+specified assembly in the higlass database. If no ``assembly``
+is specified for the bigBed file using the `--assembly` option, HiGlass will try to 
+find one in the database that matches the chromosomes present in the bigBed file. 
+If a ``chromsizes`` tileset is found, it's ``coordSystem`` will also be used for
+the bigBed file. If none are found, the import will fail. If more than one is found,
+the import will also fail. If a `coordSystem` is specified for the bigBed, but no
+``chromsizes`` are found on the server, the import will fail.
+
+TLDR: The simplest way to import a bigBed is to have a ``chromsizes`` present e.g. 
+
+| ``higlass-manage ingest --filetype chromsizes-tsv --datatype chromsizes --assembly hg38_bb hg38.chromSizes.tsv``
+
+and then to add the bigBed with the same ``assembly``: 
+
+| ``higlass-manage ingest elements.bigBed --assembly hg38_bb --datatype gene-bed12-annotation --filetype bigbed``
+
 bigWig files
 ------------
 

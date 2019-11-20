@@ -99,6 +99,7 @@ Tracks
 - Horizontal2DDomainsTrack
 - HorizontalChromosomeLabels
 - HorizontalGeneAnnotationsTrack
+- HorizontalGeneBED12AnnotationsTrack
 - HorizontalHeatmapTrack
 - HorizontalLine1DPixiTrack
 - HorizontalMultivecTrack
