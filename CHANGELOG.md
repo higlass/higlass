@@ -2,6 +2,7 @@
 
 - Rename React lifecycle methods according to their recommendations
 - Add support for borders (via the `stroke`, `strokeWidth`, `strokeOpacity`, and `strokePos` options) and outlines (via the `outline`, `outlineWidth`, `outlineOpacity`, and `outlinePos` options) to overlays. See [http://localhost:8080/apis/svg.html?/viewconfs/fancy-overlays.json](http://localhost:8080/apis/svg.html?/viewconfs/fancy-overlays.json) for an example.
+- BED12 bigBED track renderer and `gene-bed12-annotation` datatype
 
 _[Detailed changes since v1.6.11](https://github.com/higlass/higlass/compare/v1.6.11...develop)_
 
