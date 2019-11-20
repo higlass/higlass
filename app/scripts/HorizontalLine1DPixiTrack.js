@@ -19,18 +19,29 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   stopHover() {
     this.pMouseOver.clear();
     this.animate();
+    const hc = document.getElementsByClassName('higlass')[0];
+    if (hc) {
+      hc.style.cursor = 'grab';
+    }
   }
 
   getMouseOverHtml(trackX) {
     // if we're not supposed to show the tooltip, don't show it
     // we return here so that the mark isn't drawn in the code
     // below
+
+    const hc = document.getElementsByClassName('higlass')[0];
+    if (hc) {
+      hc.style.cursor = 'pointer';
+    }
+
     if (!this.tilesetInfo || !this.options.showTooltip) return '';
 
     const value = this.getDataAtPos(trackX);
     let textValue = '';
 
-    if (value) textValue = format('.3f')(value);
+    const valueFormat = (!this.options.valueFormat) ? '.3f' : this.options.valueFormat;
+    if (value) textValue = format(valueFormat)(value);
 
     const graphics = this.pMouseOver;
     const colorHex = 0;
@@ -47,6 +58,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       markerWidth,
       markerWidth
     );
+
 
     this.animate();
 
