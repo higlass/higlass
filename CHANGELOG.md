@@ -1,3 +1,9 @@
+## Next release
+
+- Added the option to flip 2d annotations across the diagonal
+
+_[Detailed changes since v1.7.3](https://github.com/higlass/higlass/compare/v1.7.3...develop)_
+
 ## v1.7.3
 
 - In `HorizontalLine1DPixiTrack`, make sure that `this.valueScale` is set when `getMouseOverHtml()` is called.
