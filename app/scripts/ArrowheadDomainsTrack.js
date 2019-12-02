@@ -26,7 +26,7 @@ function drawAnnotation(
   const startY = flipDiagonal ? track._yScale(td.xStart) : track._yScale(td.yStart);
   const endY = flipDiagonal ? track._yScale(td.xEnd) : track._yScale(td.yEnd);
 
-  const uid = td.uid;
+  const uid = td.uid + flipDiagonal;
 
   const width = endX - startX;
   const height = endY - startY;
@@ -310,36 +310,39 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
 
     track.appendChild(output);
 
-    for (const tile of this.visibleAndFetchedTiles()) {
-      // this tile has no data
-      if (!tile.tileData || !tile.tileData.length) continue;
+    for (const flipDiagonal of [true, false]) {
+      for (const tile of this.visibleAndFetchedTiles()) {
+        // this tile has no data
+        if (!tile.tileData || !tile.tileData.length) continue;
 
-      tile.tileData.forEach((td) => {
-        const gTile = document.createElement('g');
-        gTile.setAttribute('transform',
-          `translate(${tile.graphics.position.x},${tile.graphics.position.y})scale(${tile.graphics.scale.x},${tile.graphics.scale.y})`);
-        output.appendChild(gTile);
+        tile.tileData.forEach((td) => {
+          const uid = td.uid + flipDiagonal;
+          const gTile = document.createElement('g');
+          gTile.setAttribute('transform',
+            `translate(${tile.graphics.position.x},${tile.graphics.position.y})scale(${tile.graphics.scale.x},${tile.graphics.scale.y})`);
+          output.appendChild(gTile);
 
-        if (td.uid in this.drawnRects) {
-          const rect = this.drawnRects[td.uid];
+          if (uid in this.drawnRects) {
+            const rect = this.drawnRects[uid];
 
-          const r = document.createElement('rect');
-          r.setAttribute('x', rect.x);
-          r.setAttribute('y', rect.y);
-          r.setAttribute('width', rect.width);
-          r.setAttribute('height', rect.height);
+            const r = document.createElement('rect');
+            r.setAttribute('x', rect.x);
+            r.setAttribute('y', rect.y);
+            r.setAttribute('width', rect.width);
+            r.setAttribute('height', rect.height);
 
-          r.setAttribute(
-            'fill', this.options.rectangleDomainFillColor ? this.options.rectangleDomainFillColor : 'grey'
-          );
-          r.setAttribute('opacity', 0.3);
+            r.setAttribute(
+              'fill', this.options.rectangleDomainFillColor ? this.options.rectangleDomainFillColor : 'grey'
+            );
+            r.setAttribute('opacity', 0.3);
 
-          r.style.stroke = 'black';
-          r.style.strokeWidth = '1px';
+            r.style.stroke = 'black';
+            r.style.strokeWidth = '1px';
 
-          gTile.appendChild(r);
-        }
-      });
+            gTile.appendChild(r);
+          }
+        });
+      }
     }
 
     return [base, base];

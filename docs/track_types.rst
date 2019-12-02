@@ -127,9 +127,9 @@ command.
 
 **Options**
 
-``flipDiagonal: [yes|no|mirror]``
+``flipDiagonal: [yes|no|copy]``
   If yes, flip domains across the diagonal. If no, plot as usual.
-  If mirror, plot regular and mirrored.
+  If copy, plot regular and mirrored.
 
 **Importing**
 
