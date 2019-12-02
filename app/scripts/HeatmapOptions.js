@@ -131,10 +131,14 @@ class HeatmapOptions extends React.Component {
             key={i}
             color={this.state.colors[i]}
             onChange={(c) => {
-              this.state.colors[i] = c;
-              this.handleColorsChanged(this.state.colors);
-            }
-            }
+              this.setState((prevState) => {
+                const colors = prevState.colors.slice();
+                colors[i] = c;
+                return { colors };
+              }, () => {
+                this.handleColorsChanged(this.state.colors);
+              });
+            }}
           />
         </td>
         /* eslint-enable react/no-array-index-key */

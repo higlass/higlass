@@ -1,0 +1,10 @@
+{
+  "server": "http://higlass.io/api/v1",
+  "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
+  "type": "horizontal-chromosome-labels",
+  "position": "top",
+  "name": "Chromosome Labels (hg19)",
+  "height": 30,
+  "uid": "I1QUF22JQJuJ38j9PS4iqw",
+  "options": {}
+}

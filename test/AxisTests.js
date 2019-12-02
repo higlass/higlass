@@ -71,10 +71,8 @@ describe('Simple HiGlassComponent', () => {
         .to.equal(track1.axis.pAxis.position.x);
     });
 
-    afterAll((done) => {
+    afterAll(() => {
       removeHGComponent(div);
-
-      done();
     });
   });
 });

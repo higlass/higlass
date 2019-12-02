@@ -73,11 +73,7 @@ Gene annotations display the locations of genes and their exons and introns.
 The tracks displayed on HiGlass show a transcript consisting of the union of
 all annotated exons in refseq. There are separate tracks for the different
 available species. Details on how gene annotation tracks are created is available
-in the `gene annotations section <gene_annotations.html>`_.
-
-**Demos:**
-
-- `Standard vs Customize Gene Annotation Track <examples/gene_annotations.html>`_
+in the `gene annotations section <data_preparation.html#gene-annotation-tracks>`_.
 
 Heatmap
 =======
@@ -94,6 +90,10 @@ option). Because HiGlass displays data at varying zoom levels, heatmaps are
 displayed at different resolutions depending on the current zoom level. To
 limit the resolution of the displayed data, users can set the `Zoom Limit`
 configuration option.
+
+You can limit the extent of the heatmap to the upper right and lower left
+triangle via the track context menu or by setting ``extent`` option to
+``upper-right`` or ``lower-left`` respectively.
 
 Rotated 2D Heatmap
 ==================

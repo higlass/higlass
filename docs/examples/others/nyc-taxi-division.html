@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="author" content="Fritz Lekschas">
+  <meta name="description" content="A beautiful dark theme for beautiful people. Show the 3D Genome some love!">
+  <meta name="keywords" content="HiGlass, Dark Theme, Hi-C, 3D Genome, Genome Interaction Matrix">
+  <title>HiGlass: Dark Theme</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/hglib.css">
+  <style type="text/css">
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: black !important;
+    }
+    header, label, input, button {
+      line-height: 2.5rem
+    }
+    header {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      padding: 1rem 2rem;
+      color: #666;
+      line-height: 2rem
+    }
+    label {
+      margin: 0;
+    }
+    label + label {
+      margin-left: 1rem;
+    }
+    input, button {
+      border-radius: 0.25rem;
+      border: 1px solid #222;
+    }
+    input {
+      background: black;
+    }
+    button {
+      color: #999;
+      background: #222;
+    }
+    #demo {
+      position: absolute;
+      left: 1rem;
+      top: 5rem;
+      bottom: 1rem;
+      right: 1rem;
+      overflow: hidden;
+    }
+  </style>
+  <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16.6/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+</head>
+<body>
+  <header>
+    <span>To load Mapbox provide an</span>
+    <label>
+      access Token
+      <input
+        id="access-token"
+        type="text"
+      >
+    </label>
+    <button id="load">Load</button>
+  </header>
+  <div id="demo"></div>
+</body>
+<script src='/hglib.js'></script>
+<script>
+const viewConfig = {
+  editable: true,
+  zoomFixed: false,
+  trackSourceServers: [
+    'http://flemming.mit.edu:8080/api/v1'
+  ],
+  exportViewUrl: '/api/v1/viewconfs/',
+  views: [
+    {
+      tracks: {
+        center: [
+          {
+            uid: 'c',
+            type: 'combined',
+            contents: [
+              {
+                server: 'http://flemming.mit.edu:8080/api/v1',
+                tilesetUid: 'JDnmuvCEQ56hWQzNyEwXrQ',
+                type: 'heatmap',
+                options: {
+                  backgroundColor: 'transparent',
+                  labelPosition: 'bottomRight',
+                  labelColor: '#ffffff',
+                  labelTextOpacity: 0.66,
+                  labelBackgroundColor: 'black',
+                  labelBackgroundOpacity: 0.66,
+                  colorRange: [
+                    'rgba(98, 206, 246, 0.85)',
+                    'rgba(0, 149, 229, 0.5)',
+                    'rgba(0, 0, 0, 0.01)',
+                    'rgba(217, 71, 149, 0.5)',
+                    'rgba(255, 102, 184, 0.85)',
+                  ],
+                  maxZoom: null,
+                  colorbarPosition: 'topRight',
+                  colorbarBackgroundColor: 'black',
+                  colorbarBackgroundOpacity: 0.66,
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'black',
+                  heatmapValueScaling: 'log',
+                  name: 'NYC Taxi dropoff vs pickup',
+                  scaleStartPercent: '0.00000',
+                  scaleEndPercent: '1.00000'
+                },
+                data: {
+                  type: 'divided',
+                  children: [
+                    {
+                      server: 'http://flemming.mit.edu:8080/api/v1',
+                      tilesetUid: 'JDnmuvCEQ56hWQzNyEwXrQ'
+                    },
+                    {
+                      server: 'http://flemming.mit.edu:8080/api/v1',
+                      tilesetUid: 'OT0ZD6qdQUCunNTIeq_ZJQ'
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+      },
+      initialXDomain: [
+        11784450.649959948,
+        11822597.940904947
+      ],
+      initialYDomain: [
+        15049995.142009012,
+        15078071.54814453
+      ],
+      layout: {
+        w: 12,
+        h: 12,
+        x: 0,
+        y: 0,
+      },
+      uid: 'a'
+    }
+  ],
+};
+
+const accessTokenEl = document.querySelector('#access-token');
+const loadEl = document.querySelector('#load');
+
+let accessToken = null;
+
+let hgApi;
+let xDomain = [11784450, 11822597];
+let yDomain = [15049995, 15078071];
+
+const loadHg = () => {
+  accessToken = accessTokenEl.value;
+
+  if (!accessToken) {
+    console.error('No access token specified');
+    return;
+  }
+
+  viewConfig.views[0].tracks.center[0].contents.unshift({
+    type: 'mapbox',
+    options: {
+      labelPosition: 'bottomLeft',
+      accessToken,
+      style: 'dark-v8',
+      minPos: 1,
+      maxPos: 40075016,
+      name: '© Mapbox',
+      labelColor: '#ffffff',
+      labelTextOpacity: 0.66,
+      labelBackgroundColor: 'black',
+      labelBackgroundOpacity: 0.66,
+    }
+  });
+
+  hgApi = window.hglib.viewer(
+    document.getElementById('demo'),
+    JSON.parse(JSON.stringify(viewConfig)),
+    { bounded: true, isDarkTheme: true },
+  );
+
+  hgApi.zoomTo('a', ...xDomain, ...yDomain, 0);
+
+  hgApi.on('location', ({ xDomain: newXDomain, yDomain: newYDomain }) => {
+    xDomain = [...newXDomain];
+    yDomain = [...newYDomain];
+  });
+};
+
+loadEl.addEventListener('click', () => {
+  loadHg();
+});
+
+window.hgApi = window.hglib.viewer(
+  document.getElementById('demo'),
+  viewConfig,
+  { bounded: true, isDarkTheme: true },
+);
+</script>
+</html>

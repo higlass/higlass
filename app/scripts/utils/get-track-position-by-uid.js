@@ -1,13 +1,21 @@
-import positionedTracksToAllTracks from './positioned-tracks-to-all-tracks';
+import visitPositionedTracks from './visit-positioned-tracks';
 
 /**
  * Get a track's orientation by its UID.
  */
-const getTrackPositionByUid = (allTracks, uid) => {
-  const tracks = positionedTracksToAllTracks(allTracks);
-  const thisTrack = tracks.filter(x => x.uid === uid);
+const getTrackPositionByUid = (positionedTracks, uid) => {
+  let position = null;
 
-  return thisTrack[0].position;
+  visitPositionedTracks(
+    positionedTracks,
+    (track, trackPosition) => {
+      if (track.uid === uid) {
+        position = trackPosition;
+      }
+    }
+  );
+
+  return position;
 };
 
 export default getTrackPositionByUid;

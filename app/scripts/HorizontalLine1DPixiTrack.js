@@ -25,7 +25,11 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     // if we're not supposed to show the tooltip, don't show it
     // we return here so that the mark isn't drawn in the code
     // below
-    if (!this.tilesetInfo || !this.options.showTooltip) return '';
+    if (
+      !this.tilesetInfo
+      || !this.options.showTooltip
+      || !this.valueScale
+    ) return '';
 
     const value = this.getDataAtPos(trackX);
     let textValue = '';
@@ -127,7 +131,15 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     const stroke = colorToHex(this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue');
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
-    const tileXScale = scaleLinear().domain([0, this.tilesetInfo.tile_size])
+    if (!this.tilesetInfo.tile_size && !this.tilesetInfo.bins_per_dimension) {
+      console.warn('No tileset_info.tile_size or tileset_info.bins_per_dimension',
+        this.tilesetInfo);
+    }
+
+    const tileSize = this.tilesetInfo.tile_size
+      || this.tilesetInfo.bins_per_dimension;
+
+    const tileXScale = scaleLinear().domain([0, tileSize])
       .range([tileX, tileX + tileWidth]);
 
     const strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
