@@ -63,7 +63,7 @@ Intervals can visually encode information using the following three ``options``:
 ``fillColor``
     Default color for any mode
 
-Here is an example snippet
+Here is an example snippet. Used if the other options aren't set.
 
 .. code-block:: javascript
 
