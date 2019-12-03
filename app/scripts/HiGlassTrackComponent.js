@@ -47,13 +47,7 @@ export const trackViewer = (element, [xMin, xMax, yMin, yMax], trackConfig) => {
       }
     ]
   };
-  const hgApi = viewer(element, viewConfig, {
-    bounded: true
-  });
-  return {
-    id,
-    hgApi
-  };
+
   const hgApi = viewer(element, viewConfig, { sizeMode: 'bounded' });
   return { id, hgApi };
 };
@@ -75,13 +69,17 @@ export default class HiGlassTrackComponent extends React.Component {
 
   shouldComponentUpdate(nextProps) {
     // For now, never re-render the component: Just re-zoom.
-    const { x, y, width, height } = nextProps;
+    const {
+      x, y, width, height
+    } = nextProps;
     this.zoomTo(x, y, width, height);
     return false;
   }
 
   initTrackViewer() {
-    const { trackConfig, x, y, width, height } = this.props;
+    const {
+      trackConfig, x, y, width, height
+    } = this.props;
     const element = document.getElementById(this.id);
     const { id, hgApi } = trackViewer(element, [x, x + width, y, y + height], trackConfig);
     this.viewUid = id;
