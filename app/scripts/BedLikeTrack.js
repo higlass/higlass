@@ -205,7 +205,11 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   updateTile(tile) {
     // this.destroyTile(tile);
-    this.renderTile(tile);
+    if (this.areAllVisibleTilesLoaded()) {
+      this.destroyTile(tile);
+      this.initTile(tile);
+      this.renderTile(tile);
+    }
   }
 
   /**
