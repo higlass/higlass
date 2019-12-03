@@ -1702,7 +1702,8 @@ export const TRACKS_INFO = [
     name: 'BED-like track',
     thumbnail: null,
     availableOptions: [
-      'fillColor',
+      'minusStrandColor',
+      'plusStrandColor',
       'labelPosition',
       'labelLeftMargin',
       'labelRightMargin',

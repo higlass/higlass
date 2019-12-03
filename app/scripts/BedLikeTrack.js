@@ -22,12 +22,26 @@ const MAX_TEXTS = 1000;
 const MAX_TILE_ENTRIES = 5000;
 const STAGGERED_OFFSET = 5;
 
+// the label text should have a white outline so that it's more
+// visible against a similar colored background
+const TEXT_STYLE = {
+  fontSize: '12px',
+  fontFamily: 'Arial',
+  stroke: 'white',
+  strokeThickness: 2,
+  fontWeight: 400,
+  dropShadow: true,
+  dropShadowColor: 'white',
+  dropShadowDistance: 0,
+  dropShadowBlur: 2,
+};
+
 
 class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
     super(context, options);
-    this.textFontSize = '12px';
-    this.textFontFamily = 'Arial';
+    this.textFontSize = TEXT_STYLE.fontSize;
+    this.textFontFamily = TEXT_STYLE.fontF;
 
     this.drawnRects = {};
     this.allDrawnRects = {};
@@ -60,6 +74,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
       if (!this.options || !this.options.valueColumn) {
         // no value column so we can break entries up into separate
+        // plus and minus strand segments
         const segments = tile.tileData.map((x) => {
           const chrOffset = +x.chrOffset;
 
@@ -74,7 +89,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
         plusStrandRows = segmentsToRows(segments.filter(x => x.strand === '+'));
         minusStrandRows = segmentsToRows(segments.filter(x => x.strand === '-'));
-        // console.log('rows', rows);
       } else {
         plusStrandRows = [tile.tileData.map(x => ({ value: x }))];
       }
@@ -192,7 +206,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   updateTile(tile) {
     // this.destroyTile(tile);
-    // console.log('updateTile:', tile.tileId);
     this.renderTile(tile);
   }
 
@@ -306,6 +319,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     const zoomLevel = +tile.tileId.split('.')[0];
     // console.log('startY', startY, 'endY', endY, range(maxRows), rows);
 
+    let maxValue = -100000000;
+
     const rowScale = scaleBand()
       .domain(range(maxRows))
       .range([startY, endY]);
@@ -418,18 +433,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           text.alreadyDrawn = true;
         }
 
-        text.style = {
-          fontSize: this.textFontSize,
-          fontFamily: this.textFontFamily,
-          fill,
-          // stroke: 'white',
-          // strokeThickness: 2,
-          // fontWeight: 600,
-          // dropShadow: true,
-          // dropShadowColor: 'white',
-          // dropShadowDistance: 0,
-          // dropShadowBlur: 10,
-        };
+        text.style = Object.assign(TEXT_STYLE, { fill });
+
 
         if (!(geneInfo[3] in tile.textWidths)) {
           text.updateTransform();
@@ -497,8 +502,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       // console.log('maxPlusRows', maxPlusRows);
       // console.log('maxMinusRows', maxMinusRows);
 
-      const fill = colorToHex(this.options.fillColor ? this.options.fillColor : 'blue');
-      const minusStrandFill = colorToHex('purple');
+      const fill = colorToHex(this.options.plusStrandColor || this.options.fillColor || 'blue');
+      const minusStrandFill = colorToHex(this.options.minusStrandColor || this.options.fillColor || 'purple');
 
       const MIDDLE_SPACE = 0;
       const plusHeight = maxPlusRows * this.dimensions[1]
