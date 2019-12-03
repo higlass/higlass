@@ -22,8 +22,6 @@ export const VerticalRuleMixin = Mixin(
         const dashLength = 5;
         const dashGap = 3;
 
-        // console.log('this._yScale.range()', this._yScale.range());
-
         while (pos < this.dimensions[1]) {
           graphics.moveTo(this._xScale(this.xPosition), pos);
           graphics.lineTo(this._xScale(this.xPosition), pos + dashLength);

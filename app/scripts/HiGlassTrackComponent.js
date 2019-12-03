@@ -54,6 +54,8 @@ export const trackViewer = (element, [xMin, xMax, yMin, yMax], trackConfig) => {
     id,
     hgApi
   };
+  const hgApi = viewer(element, viewConfig, { sizeMode: 'bounded' });
+  return { id, hgApi };
 };
 
 /**

@@ -1700,7 +1700,8 @@ export const TRACKS_INFO = [
     name: 'BED-like track',
     thumbnail: null,
     availableOptions: [
-      'fillColor',
+      'minusStrandColor',
+      'plusStrandColor',
       'labelPosition',
       'labelLeftMargin',
       'labelRightMargin',
@@ -1716,10 +1717,13 @@ export const TRACKS_INFO = [
       'colorEncoding',
       'colorRange',
       'colorEncodingRange',
+      'showTexts',
+      'alternating',
       'axisPositionHorizontal',
       'axisMargin'
     ],
     defaultOptions: {
+      alternating: false,
       fillColor: 'blue',
       axisPositionHorizontal: 'right',
       labelColor: 'black',
@@ -1733,9 +1737,12 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       valueColumn: null,
       colorEncoding: false,
-      colorRange: ['#000000', '#652537', '#bf5458', '#fba273', '#ffffe0'],
-      colorEncodingRange: false
-    }
+      showTexts: false,
+      colorRange: [
+        '#000000', '#652537', '#bf5458', '#fba273', '#ffffe0'
+      ],
+      colorEncodingRange: false,
+    },
   },
   {
     type: 'vertical-bedlike',
