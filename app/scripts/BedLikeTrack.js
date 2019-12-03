@@ -36,7 +36,6 @@ const TEXT_STYLE = {
   dropShadowBlur: 2,
 };
 
-
 class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
     super(context, options);
@@ -115,7 +114,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             fontFamily: this.textFontFamily,
             fill: colorToHex(fill),
             stroke: colorToHex('white'),
-            strokeThickness: 1,
+            strokeThickness: 2,
           });
           if (this.flipText) { text.scale.x = -1; }
 
@@ -317,9 +316,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   renderRows(tile, rows, maxRows, startY, endY, fill) {
     const zoomLevel = +tile.tileId.split('.')[0];
+    let maxValue = Number.MIN_SAFE_INTEGER;
     // console.log('startY', startY, 'endY', endY, range(maxRows), rows);
-
-    let maxValue = -100000000;
 
     const rowScale = scaleBand()
       .domain(range(maxRows))
@@ -434,7 +432,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         }
 
         text.style = Object.assign(TEXT_STYLE, { fill });
-
 
         if (!(geneInfo[3] in tile.textWidths)) {
           text.updateTransform();
