@@ -1,3 +1,7 @@
+** Next release
+
+- Update heatmap docs with colorRange parameter
+
 ## v1.7.3
 
 - In `HorizontalLine1DPixiTrack`, make sure that `this.valueScale` is set when `getMouseOverHtml()` is called.
