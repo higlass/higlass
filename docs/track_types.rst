@@ -95,6 +95,24 @@ You can limit the extent of the heatmap to the upper right and lower left
 triangle via the track context menu or by setting ``extent`` option to
 ``upper-right`` or ``lower-left`` respectively.
 
+Options
+--------
+
+**colorRange**: This is an array of colors used to create a segmented color
+scale for the heatmap. The contents of this array are passed in to `d3's
+scaleLinear function <https://github.com/d3/d3-scale>`_ to create the color
+scale. The domain of the color scale spans the lowest visible value to the
+highest visible value except when modified by the colorbar. Example:
+
+.. code-block:: javascript
+
+    "colorRange": [
+      "white",
+      "rgba(245,166,35,1.0)",
+      "rgba(208,2,27,1.0)",
+      "black"
+    ]
+
 Rotated 2D Heatmap
 ==================
 
