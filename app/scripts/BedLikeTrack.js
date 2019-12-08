@@ -18,14 +18,14 @@ import {
 import { HEATED_OBJECT_MAP } from './configs';
 
 const GENE_RECT_HEIGHT = 16;
-const MAX_TEXTS = 1000;
+const MAX_TEXTS = 50;
 const MAX_TILE_ENTRIES = 5000;
 const STAGGERED_OFFSET = 5;
-
+const FONT_SIZE = 14;
 // the label text should have a white outline so that it's more
 // visible against a similar colored background
 const TEXT_STYLE = {
-  fontSize: '12px',
+  fontSize: `${FONT_SIZE}px`,
   fontFamily: 'Arial',
   stroke: 'white',
   strokeThickness: 2,
@@ -39,8 +39,6 @@ const TEXT_STYLE = {
 class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
     super(context, options);
-    this.textFontSize = TEXT_STYLE.fontSize;
-    this.textFontFamily = TEXT_STYLE.fontF;
 
     this.drawnRects = {};
     this.allDrawnRects = {};
@@ -98,7 +96,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       if (this.options.showTexts) {
         tile.tileData.forEach((td, i) => {
           const geneInfo = td.fields;
-          const fill = this.options.fillColor ? this.options.fillColor : 'blue';
 
           tile.textWidths = {};
           tile.textHeights = {};
@@ -109,19 +106,13 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           }
 
           // geneInfo[3] is the gene symbol
-          const text = new PIXI.Text(geneInfo[3], {
-            fontSize: this.textFontSize,
-            fontFamily: this.textFontFamily,
-            fill: colorToHex(fill),
-            stroke: colorToHex('white'),
-            strokeThickness: 2,
-          });
+          const text = new PIXI.Text(geneInfo[3], TEXT_STYLE);
           if (this.flipText) { text.scale.x = -1; }
 
           text.anchor.x = 0.5;
           text.anchor.y = 0.5;
 
-          tile.texts[geneInfo[3]] = text; // index by geneName
+          tile.texts[td.uid] = text; // index by geneName
 
           // console.log('adding text:', text.text);
           tile.textGraphics.addChild(text);
@@ -206,8 +197,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   updateTile(tile) {
     // this.destroyTile(tile);
     if (this.areAllVisibleTilesLoaded()) {
-      this.destroyTile(tile);
-      this.initTile(tile);
+      // this.destroyTile(tile);
+      // this.initTile(tile);
       this.renderTile(tile);
     }
   }
@@ -339,7 +330,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         // rendered += 1;
         const td = rows[j][i].value;
         const geneInfo = td.fields;
-        const geneName = geneInfo[3];
 
         // the returned positions are chromosome-based and they need to
         // be converted to genome-based
@@ -348,7 +338,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         const txEnd = +geneInfo[2] + chrOffset;
         const txMiddle = (txStart + txEnd) / 2;
         let yMiddle = rowScale(j) + (rowScale.step() / 2);
-        let rectHeight = this.options.rectHeight || GENE_RECT_HEIGHT;
+        const rectHeight = this.options.annotationHeight || GENE_RECT_HEIGHT;
 
         // if the regions are scaled according to a value column their height needs to
         // be adjusted
@@ -367,7 +357,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             }
 
             yMiddle = this.valueScale(value);
-            rectHeight /= 2;
+            // rectHeight /= 2;
           }
         }
 
@@ -424,9 +414,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         // don't draw texts for the latter entries in the tile
         if (i >= MAX_TEXTS) continue;
 
-        if (!tile.texts[geneName]) continue;
+        if (!tile.texts[td.uid]) continue;
 
-        const text = tile.texts[geneName];
+        const text = tile.texts[td.uid];
 
         text.position.x = this._xScale(txMiddle);
         text.position.y = rectY + rectHeight / 2;
@@ -650,7 +640,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
           const geneInfo = td.fields;
           const geneName = geneInfo[3];
-          const text = tile.texts[geneName];
+          const text = tile.texts[td.uid];
 
           if (!text) { return; }
 
@@ -696,6 +686,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             });
         }
         */
+
+    // console.log('length:', this.allBoxes.length);
 
     // console.trace('draw', allTexts.length);
     this.hideOverlaps(this.allBoxes, this.allTexts);
@@ -768,6 +760,11 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       `translate(${this.position[0]},${this.position[1]})`);
 
     track.appendChild(output);
+    const rectOutput = document.createElement('g');
+    const textOutput = document.createElement('g');
+
+    output.appendChild(rectOutput);
+    output.appendChild(textOutput);
 
     for (const tile of this.visibleAndFetchedTiles()) {
       if (!tile.tileData.length) {
@@ -780,7 +777,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         const gTile = document.createElement('g');
         gTile.setAttribute('transform',
           `translate(${tile.rectGraphics.position.x},${tile.rectGraphics.position.y})scale(${tile.rectGraphics.scale.x},${tile.rectGraphics.scale.y})`);
-        output.appendChild(gTile);
+        rectOutput.appendChild(gTile);
 
         if (this.drawnRects[zoomLevel] && td.uid in this.drawnRects[zoomLevel]) {
           const rect = this.drawnRects[zoomLevel][td.uid][0];
@@ -791,14 +788,53 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             d += ` L ${rect[i]} ${rect[i + 1]}`;
           }
 
+          const geneInfo = td.fields;
+
+          let fill = this.options.plusStrandColor || this.options.fillColor || 'blue';
+          const minusStrandFill = this.options.minusStrandColor || this.options.fillColor || 'purple';
+
+          if (geneInfo[5] === '-') {
+            fill = minusStrandFill;
+          }
+
           r.setAttribute('d', d);
-          r.setAttribute('fill', this.options.fillColor ? this.options.fillColor : 'blue');
+          r.setAttribute('fill', fill);
           r.setAttribute('opacity', 0.3);
 
-          r.style.stroke = this.options.fillColor ? this.options.fillColor : 'blue';
+          r.style.stroke = fill;
           r.style.strokeWidth = '1px';
 
           gTile.appendChild(r);
+
+          if (tile.texts[td.uid]) {
+            const text = tile.texts[td.uid];
+
+            if (!text.visible) {
+              return;
+            }
+
+            const g = document.createElement('g');
+            const t = document.createElement('text');
+
+            textOutput.appendChild(g);
+            g.appendChild(t);
+            g.setAttribute(
+              'transform',
+              `translate(${text.x},${text.y})scale(${text.scale.x},1)`
+            );
+
+            t.setAttribute('text-anchor', 'middle');
+            t.setAttribute('font-family', TEXT_STYLE.fontFamily);
+            t.setAttribute('font-size', TEXT_STYLE.fontSize);
+            t.setAttribute('font-weight', 'bold');
+            t.setAttribute('dy', '5px');
+            t.setAttribute('fill', fill);
+            t.setAttribute('stroke', TEXT_STYLE.stroke);
+            t.setAttribute('stroke-width', '0.4');
+            t.setAttribute('text-shadow', '0px 0px 2px grey');
+
+            t.innerHTML = text.text;
+          }
         }
       });
     }

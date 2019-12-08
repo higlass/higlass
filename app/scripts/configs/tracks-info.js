@@ -1722,7 +1722,8 @@ export const TRACKS_INFO = [
       'showTexts',
       'alternating',
       'axisPositionHorizontal',
-      'axisMargin'
+      'axisMargin',
+      'annotationHeight'
     ],
     defaultOptions: {
       alternating: false,
@@ -1744,6 +1745,7 @@ export const TRACKS_INFO = [
         '#000000', '#652537', '#bf5458', '#fba273', '#ffffe0'
       ],
       colorEncodingRange: false,
+      annotationHeight: 16,
     },
   },
   {

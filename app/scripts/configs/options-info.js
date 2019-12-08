@@ -496,6 +496,18 @@ export const OPTIONS_INFO = {
     }
   },
 
+
+  annotationHeight: {
+    name: 'Annotation Height',
+    inlineOptions: {
+      8: { name: '8px', value: 8 },
+      10: { name: '10px', value: 10 },
+      12: { name: '12px', value: 12 },
+      16: { name: '16px', value: 16 },
+      20: { name: '20px', value: 20 }
+    }
+  },
+
   geneLabelPosition: {
     name: 'Gene Label Position',
     inlineOptions: {
