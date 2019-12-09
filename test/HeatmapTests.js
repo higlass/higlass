@@ -164,7 +164,7 @@ const viewconf = {
   editable: true,
   trackSourceServers: [
     '/api/v1',
-    'http://higlass.io/api/v1'
+    'https://higlass.io/api/v1'
   ],
   exportViewUrl: '/api/v1/viewconfs',
   views: [
@@ -185,7 +185,7 @@ const viewconf = {
                 type: 'heatmap',
                 uid: 'tt',
                 tilesetUid: 'Bu6Djvt9T_mgZPHLig3NfQ',
-                server: 'http://resgen.io/api/v1',
+                server: 'https://resgen.io/api/v1',
                 options: {
                   backgroundColor: '#eeeeee',
                   labelPosition: 'bottomRight',
