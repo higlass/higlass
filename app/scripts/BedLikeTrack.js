@@ -443,12 +443,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     let maxPlusRows = 1;
     let maxMinusRows = 1;
 
-    for (const tile1 of this.visibleAndFetchedTiles()) {
-      if (!tile1.initialized) return;
-      if (!tile1.plusStrandRows && !tile1.minusStrandRows) continue;
+    for (const otherTile of this.visibleAndFetchedTiles()) {
+      if (!otherTile.initialized) return;
+      if (!otherTile.plusStrandRows && !otherTile.minusStrandRows) continue;
 
-      maxPlusRows = Math.max(tile1.plusStrandRows.length, maxPlusRows);
-      maxMinusRows = Math.max(tile1.minusStrandRows.length, maxMinusRows);
+      maxPlusRows = Math.max(otherTile.plusStrandRows.length, maxPlusRows);
+      maxMinusRows = Math.max(otherTile.minusStrandRows.length, maxMinusRows);
     }
 
     // store the scale at while the tile was drawn at so that
