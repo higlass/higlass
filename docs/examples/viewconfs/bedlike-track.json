@@ -54,33 +54,13 @@
                      "name":"CTCF motifs (hg19)"
                   }
                }
-            ],
-            "left":[
-
-            ],
-            "center":[
-
-            ],
-            "right":[
-
-            ],
-            "bottom":[
-
-            ],
-            "whole":[
-
-            ],
-            "gallery":[
-
             ]
          },
          "layout":{
             "w":12,
             "h":3,
             "x":0,
-            "y":0,
-            "moved":false,
-            "static":false
+            "y":0
          },
          "genomePositionSearchBox":{
             "autocompleteServer":"http://higlass.io/api/v1",
@@ -90,29 +70,5 @@
             "autocompleteId":"OHJakQICQD6gTD7skx4EWA"
          }
       }
-   ],
-   "zoomLocks":{
-      "locksByViewUid":{
-
-      },
-      "locksDict":{
-
-      }
-   },
-   "locationLocks":{
-      "locksByViewUid":{
-
-      },
-      "locksDict":{
-
-      }
-   },
-   "valueScaleLocks":{
-      "locksByViewUid":{
-
-      },
-      "locksDict":{
-
-      }
-   }
+   ]
 }
