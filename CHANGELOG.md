@@ -1,4 +1,4 @@
-** Unreleased
+**Unreleased**
 
 - Update BedLikeTrack to display strand-specific entries
 ## v1.7.3
