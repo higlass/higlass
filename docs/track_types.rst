@@ -102,7 +102,9 @@ Options
 scale for the heatmap. The contents of this array are passed in to `d3's
 scaleLinear function <https://github.com/d3/d3-scale>`_ to create the color
 scale. The domain of the color scale spans the lowest visible value to the
-highest visible value except when modified by the colorbar. Example:
+highest visible value except when modified by the colorbar. Acceptable color
+values are ones that can be used with CSS (see, for example, `Color Names
+<https://htmlcolorcodes.com/color-names/>`_ ). Example:
 
 .. code-block:: javascript
 
