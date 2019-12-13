@@ -1,8 +1,6 @@
 **Unreleased**
 
 - Update BedLikeTrack to display strand-specific entries
-- Update dependencies to support Node.js 12 and 13
-
 ## v1.7.3
 
 - In `HorizontalLine1DPixiTrack`, make sure that `this.valueScale` is set when `getMouseOverHtml()` is called.
