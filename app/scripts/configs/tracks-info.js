@@ -1703,6 +1703,8 @@ export const TRACKS_INFO = [
     thumbnail: null,
     availableOptions: [
       'fillColor',
+      'minusStrandColor',
+      'plusStrandColor',
       'labelPosition',
       'labelLeftMargin',
       'labelRightMargin',
@@ -1718,10 +1720,14 @@ export const TRACKS_INFO = [
       'colorEncoding',
       'colorRange',
       'colorEncodingRange',
+      'showTexts',
+      'alternating',
       'axisPositionHorizontal',
-      'axisMargin'
+      'axisMargin',
+      'annotationHeight'
     ],
     defaultOptions: {
+      alternating: false,
       fillColor: 'blue',
       axisPositionHorizontal: 'right',
       labelColor: 'black',
@@ -1735,10 +1741,12 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       valueColumn: null,
       colorEncoding: false,
+      showTexts: false,
       colorRange: [
         '#000000', '#652537', '#bf5458', '#fba273', '#ffffe0'
       ],
       colorEncodingRange: false,
+      annotationHeight: 16,
     },
   },
   {

@@ -32,6 +32,15 @@ render tracks with a `bedlike` datatype. This usually comes from the `beddb`
 filetype. Regular bed-like files can be converted to beddb using the instructions
 in the `data preparation section <data_preparation.html#bed-files>`__.
 
+This track has two modes: stranded and unstranded (value-based). In stranded
+mode, which is activated when the underlying data has information about which
+strand entries are on, items on the + and - strand are drawn above each other.
+Overlapping items are further stacked.
+
+In unstranded (value-based) mode, items can be be ordered vertically or
+colored based on the values of a column (chosen in the config -> "Value
+column" section).
+
 **Color Encoding:**
 
 Intervals can visually encode information using the following three ``options``:
@@ -45,7 +54,16 @@ Intervals can visually encode information using the following three ``options``:
 ``colorEncodingRange: array``
     A tuple defining the minimum and maximum range value for color encoding.
 
-Here is an example snippet
+``plusStrandColor``
+    For stranded mode, the color of the plus strand entries
+
+``minusStrandColor``
+    For stranded mode, the color of the minus strand entries
+
+``fillColor``
+    Default color for any mode
+
+Here is an example snippet. Used if the other options aren't set.
 
 .. code-block:: javascript
 

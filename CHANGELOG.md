@@ -1,6 +1,7 @@
-** Next release
+** Next release **
 
 - Update heatmap docs with colorRange parameter
+- Update BedLikeTrack to display strand-specific entries
 
 ## v1.7.3
 
