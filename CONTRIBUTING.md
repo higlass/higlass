@@ -34,6 +34,6 @@ _Note, continuous integration will fail if your code is not compatible with our 
 
 - **Python coding style**: We follow the [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide and the [numpydoc](https://numpydoc.readthedocs.io/en/latest/format.html) convention for [docstrings](https://www.python.org/dev/peps/pep-0257/).
 
-- **Changelog**: PRs should contain an update to the CHANGELOG.md describing what they change. Exceptions to this convention are acceptable when the changes are strictly developer facing, such as updates to dependencies.
+- **Changelog**: PRs should contain an update to the CHANGELOG.md describing the user-facing changes. Exceptions to this convention are acceptable when the changes are strictly developer facing, such as updates to dependencies.
 
 - **Documentation**:  We use the [Sphinx](http://www.sphinx-doc.org/en/master/) documentation generator, which uses [reStructuredText](http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html) as its markup language. We also use Sphinx extensions to support Markdown, API reference generation from docstrings, and rendering of Jupyter Notebooks.
