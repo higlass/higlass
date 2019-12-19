@@ -335,8 +335,7 @@ Download data from UCSC and NCBI
 .. code-block:: bash 
 
     # Download NCBI genbank data
-    # gene2refseq : 
-    DATADIR=/tmp/bla/
+    DATADIR=~/data
     mkdir DATADIR/genbank
     wget -N -P $DATADIR ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz
     wget -N -P $DATADIR ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_info.gz
@@ -437,11 +436,12 @@ Create a gene annotation track file
 .. code-block:: bash
 
     clodius aggregate bedfile \
-        --max-per-tile 20 --importance-column 5 \
-        --assembly ${ASSEMBLY} \
-        --output-file ~/data/tiled-data/gene-annotations-${ASSEMBLY}.db \
+        --max-per-tile 20 \
+        --importance-column 5 \
+        --assembly $ASSEMBLY \
+        --output-file $DATADIR/$ASSEMBLY/gene-annotations-${ASSEMBLY}.db \
         --delimiter $'\t' \
-        ~/data/genbank-data/${ASSEMBLY}/geneAnnotationsExonUnions.bed 
+        $DATADIR/$ASSEMBLY/geneAnnotationsExonUnions.bed 
 
 
 Importing into HiGlass
@@ -457,6 +457,7 @@ Importing into HiGlass
         -F 'coordSystem=${ASSEMBLY}' \
         -F 'coordSystem2=${ASSEMBLY}'  \
         http://higlass.io:80/api/v1/tilesets/
+
 
 Chromosomes
 ^^^^^^^^^^^
