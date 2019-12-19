@@ -438,7 +438,7 @@ Create a gene annotation track file
     clodius aggregate bedfile \
         --max-per-tile 20 \
         --importance-column 5 \
-        --assembly $ASSEMBLY \
+        --chromsizes-filename assembly.chromSizes \
         --output-file $DATADIR/$ASSEMBLY/gene-annotations-${ASSEMBLY}.db \
         --delimiter $'\t' \
         $DATADIR/$ASSEMBLY/geneAnnotationsExonUnions.bed 
