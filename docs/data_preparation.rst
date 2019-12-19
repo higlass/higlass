@@ -444,35 +444,6 @@ Create a gene annotation track file
         $DATADIR/$ASSEMBLY/geneAnnotationsExonUnions.bed 
 
 
-Importing into HiGlass
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. code-block:: bash
-
-    curl -u `cat ~/.higlass-server-login`    \
-        -F "datafile=@/Users/peter/data/tiled-data/gene-annotations-${ASSEMBLY}.db"    \
-        -F "name=Gene Annotations (${ASSEMBLY})"   \ 
-        -F 'filetype=beddb'  \
-        -F 'datatype=gene-annotation'  \
-        -F 'coordSystem=${ASSEMBLY}' \
-        -F 'coordSystem2=${ASSEMBLY}'  \
-        http://higlass.io:80/api/v1/tilesets/
-
-
-Chromosomes
-^^^^^^^^^^^
-
-.. code-block:: bash
-
-    curl -u `cat ~/.higlass-server-login`    \
-        -F "datafile=@/Users/peter/tmp/chromSizes_hg38.tsv"    \
-        -F "name=Chromosomes (hg38)"   \ 
-        -F 'filetype=chromsizes-tsv'  \
-        -F 'datatype=chromsizes'  \
-        -F "coordSystem=${ASSEMBLY}" \
-        -F "coordSystem2=${ASSEMBLY}"  \
-        http://higlass.io:80/api/v1/tilesets/
-
 Hitile files
 ------------
 
