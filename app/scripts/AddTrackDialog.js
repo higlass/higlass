@@ -8,6 +8,11 @@ import PlotTypeChooser from './PlotTypeChooser';
 // Configs
 import { AVAILABLE_TRACK_TYPES } from './configs';
 
+// Utils
+import {
+  getDefaultTrackForDatatype,
+} from './utils';
+
 // Styles
 import '../styles/AddTrackDialog.module.scss';
 
@@ -126,13 +131,20 @@ class AddTrackDialog extends React.Component {
       // to each tileset
       for (const tileset of selectedTilesets) {
         let datatypes = [tileset.datatype];
+        const orientation = this.getOrientation(this.props.position);
 
         if (tileset.filetype === 'cooler') {
           datatypes = [tileset.datatype, 'chromsizes'];
         }
 
-        tileset.type = AVAILABLE_TRACK_TYPES([datatypes],
-          this.getOrientation(this.props.position))[0].type;
+        const availableTrackTypes = AVAILABLE_TRACK_TYPES([datatypes], orientation);
+        const defaultTrackType = getDefaultTrackForDatatype(
+          datatypes[0],
+          this.props.position,
+          availableTrackTypes
+        );
+
+        tileset.type = defaultTrackType.type;
       }
     }
 
@@ -180,6 +192,7 @@ class AddTrackDialog extends React.Component {
               })}
               onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
               orientation={orientation}
+              position={this.props.position}
             />
           )
         }
