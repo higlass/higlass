@@ -20,8 +20,6 @@ class AddTrackDialog extends React.Component {
   constructor(props) {
     super(props);
 
-    this.multiSelect = null;
-
     this.options = {};
 
     this.state = {
@@ -32,6 +30,8 @@ class AddTrackDialog extends React.Component {
 
     this.handleTilesetPickerDoubleClickBound = this.handleTilesetPickerDoubleClick.bind(this);
     this.selectedTilesetsChangedBound = this.selectedTilesetsChanged.bind(this);
+
+    this.allTracksSameDatatype = true; // Do all selected tracks have the same datatype
   }
 
   /**
@@ -106,7 +106,6 @@ class AddTrackDialog extends React.Component {
   }
 
   selectedTilesetsChanged(selectedTilesetsIn) {
-    let allSame = true;
     let selectedTilesets = null;
 
     if (selectedTilesetsIn.length === 0) {
@@ -116,12 +115,13 @@ class AddTrackDialog extends React.Component {
       selectedTilesets = selectedTilesetsIn;
     }
 
+    this.allTracksSameDatatype = true;
     const firstDatatype = selectedTilesets[0].datatype;
     for (const tileset of selectedTilesets) {
-      if (tileset.datatype !== firstDatatype) { allSame = false; }
+      if (tileset.datatype !== firstDatatype) { this.allTracksSameDatatype = false; }
     }
 
-    if (allSame) {
+    if (this.allTracksSameDatatype) {
       // only one datatype is present in the set of selected tilesets
       for (const tileset of selectedTilesets) {
         tileset.type = this.selectedPlotType;
@@ -182,6 +182,7 @@ class AddTrackDialog extends React.Component {
             <PlotTypeChooser
               // Only for testing purposes
               ref={(c) => { this.plotTypeChooser = c; }}
+              allTracksSameDatatype={this.allTracksSameDatatype}
               datatypes={this.state.selectedTilesets.map((x) => {
                 if (x.filetype === 'cooler') {
                   // cooler files can also supply chromsizes

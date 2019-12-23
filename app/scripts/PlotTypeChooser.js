@@ -35,6 +35,8 @@ class PlotTypeChooser extends React.Component {
 
     if (!this.AVAILABLE_TRACK_TYPES) { return; }
 
+    if (!newProps.allTracksSameDatatype) { return; }
+
     if (this.AVAILABLE_TRACK_TYPES.length > 0) {
       if (!this.AVAILABLE_TRACK_TYPES.includes(this.state.selectedPlotType)) {
         const defaultTrackType = getDefaultTrackForDatatype(
@@ -113,7 +115,7 @@ class PlotTypeChooser extends React.Component {
 
     return (
       <div>
-        { AVAILABLE_TRACK_TYPES_LIST.length > 0
+        { (AVAILABLE_TRACK_TYPES_LIST.length > 0 && this.props.allTracksSameDatatype)
           && (
             <div
               className="plot-type-container"
