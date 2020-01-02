@@ -300,7 +300,6 @@ class TiledPlot extends React.Component {
       this.props.modal.open(
         <AddTrackDialog
           datatype={TRACKS_INFO_BY_TYPE[series.type].datatype[0]}
-          hidePlotTypeChooser={true}
           host={this.state.addTrackHost}
           onCancel={() => {
             this.setState({ addDivisorDialog: null });

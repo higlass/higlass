@@ -178,7 +178,7 @@ class AddTrackDialog extends React.Component {
       >
         { form }
         {
-          !this.props.hidePlotTypeChooser && (
+          (
             <PlotTypeChooser
               // Only for testing purposes
               ref={(c) => { this.plotTypeChooser = c; }}
@@ -203,13 +203,11 @@ class AddTrackDialog extends React.Component {
 }
 
 AddTrackDialog.defaultProps = {
-  hidePlotTypeChooser: false,
   position: 'top',
 };
 
 AddTrackDialog.propTypes = {
   datatype: PropTypes.string.isRequired,
-  hidePlotTypeChooser: PropTypes.bool,
   host: PropTypes.string.isRequired,
   onCancel: PropTypes.func.isRequired,
   onTracksChosen: PropTypes.func.isRequired,
