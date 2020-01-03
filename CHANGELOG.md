@@ -2,6 +2,8 @@
 
 - Update heatmap docs with colorRange parameter
 - Update BedLikeTrack to display strand-specific entries
+- Updated default plot types when adding tracks
+- When adding multiple tracks at once that have different datatype, each track is added with its default plot type. The plot type chooser is hidden.
 
 ## v1.7.3
 

@@ -85,7 +85,7 @@ Gene Annotations
     :align: right
 
 track-type: ``horizontal-gene-annotations``
-datatype: ``gene-annotations``
+datatype: ``gene-annotation``
 
 Gene annotations display the locations of genes and their exons and introns.
 The tracks displayed on HiGlass show a transcript consisting of the union of
