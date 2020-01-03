@@ -62,7 +62,7 @@ export const OPTIONS_INFO = {
     }
   },
   flipDiagonal: {
-    name: 'Mirror Across Diagonal',
+    name: 'Flip Across Diagonal',
     inlineOptions: {
       none: { name: 'No', value: 'none' },
       yes: { name: 'Yes', value: 'yes' },
