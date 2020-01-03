@@ -148,7 +148,7 @@ describe('Add track(s)', () => {
     ptc = hgc.instance().modalRef.plotTypeChooser;
 
     // Make sure the plotTypeChooser is not shown since there are different datatypes
-    expect(hgc.find('.plot-type-container').length).to.eql(0);
+    expect(hgc.find('.plot-type-item').length).to.eql(0);
   });
 
   it('should add the selected tracks', () => {

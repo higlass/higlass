@@ -18,16 +18,18 @@ const getDefaultTrackForDatatype = (datatype, position, availableTracks) => {
 
   if (availableTracks.length === 1) { return availableTracks[0]; }
 
-  let usedTrackType = availableTracks[0];
+  let usedTrack = availableTracks[0];
   const defaultTrackType = DEFAULT_TRACKS_FOR_DATATYPE[datatype] !== undefined
     ? DEFAULT_TRACKS_FOR_DATATYPE[datatype][position]
     : undefined;
 
   if (defaultTrackType !== undefined) {
-    usedTrackType = availableTracks.find(tt => tt.type === defaultTrackType) || usedTrackType;
+    // If we found a default track type for this datatype,
+    // get the definition of this track from the list of available tracks.
+    usedTrack = availableTracks.find(tt => tt.type === defaultTrackType) || usedTrack;
   }
 
-  return usedTrackType;
+  return usedTrack;
 };
 
 export default getDefaultTrackForDatatype;

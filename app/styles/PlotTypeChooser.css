@@ -11,6 +11,14 @@
     max-height: 15vh;
 }
 
+.plot-type-container-empty {
+  margin: 5px;
+  padding: 3px 8px;
+  border: 1px solid #aaaaaa;
+  background-color: #e8e8e8;
+  border-radius: 5px;
+}
+
 .plot-type-item {
   cursor: pointer;
 }

@@ -124,6 +124,16 @@ class PlotTypeChooser extends React.Component {
             </div>
           )
         }
+        { (!this.props.allTracksSameDatatype)
+          && (
+            <div
+              className="plot-type-container-empty"
+            >
+              Datasets with multiple datatypes chosen.
+              They will be added with their default track types.
+            </div>
+          )
+        }
       </div>
     );
   }
