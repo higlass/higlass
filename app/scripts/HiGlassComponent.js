@@ -715,7 +715,7 @@ class HiGlassComponent extends React.Component {
   /**
    * Add default track options. These can come from two places:
    *
-   * 1. The track definitions (options/tracks-info.js)
+   * 1. The track definitions (configs/tracks-info.js)
    * 2. The default options passed into the component
    *
    * Of these, #2 takes precendence over #1.

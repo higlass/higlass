@@ -11,6 +11,21 @@
     max-height: 15vh;
 }
 
+.plot-type-container-empty {
+  margin: 5px;
+  padding: 3px 8px;
+  border: 1px solid #aaaaaa;
+  background-color: #e8e8e8;
+  border-radius: 5px;
+}
+
+.plot-type-item {
+  cursor: pointer;
+}
+  .plot-type-item:not(.plot-type-selected):hover {
+    background-color: rgba(51, 51, 204, 0.1);
+  }
+
 .track-thumbnail {
   width: 30px;
   height: 20px;

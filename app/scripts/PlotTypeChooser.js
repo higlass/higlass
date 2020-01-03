@@ -7,6 +7,11 @@ import {
   AVAILABLE_TRACK_TYPES,
 } from './configs';
 
+// Utils
+import {
+  getDefaultTrackForDatatype,
+} from './utils';
+
 // Styles
 import '../styles/PlotTypeChooser.css';
 
@@ -30,14 +35,22 @@ class PlotTypeChooser extends React.Component {
 
     if (!this.AVAILABLE_TRACK_TYPES) { return; }
 
+    if (!newProps.allTracksSameDatatype) { return; }
+
     if (this.AVAILABLE_TRACK_TYPES.length > 0) {
       if (!this.AVAILABLE_TRACK_TYPES.includes(this.state.selectedPlotType)) {
-        this.handlePlotTypeSelected(this.AVAILABLE_TRACK_TYPES[0]);
+        const defaultTrackType = getDefaultTrackForDatatype(
+          newProps.datatypes[0][0],
+          this.props.position,
+          this.AVAILABLE_TRACK_TYPES
+        );
+        this.handlePlotTypeSelected(defaultTrackType);
       }
     } else {
       // no available track types
       // this could be because the datatype is unknown
       // or because there's multiple different datatypes
+      // that don't have common track types
     }
   }
 
@@ -62,7 +75,9 @@ class PlotTypeChooser extends React.Component {
         .sort((a, b) => a.type < b.type)
         .map((x) => {
           const thumbnail = trackTypeToInfo[x.type].thumbnail;
-          const plotTypeClass = this.state.selectedPlotType.type === x.type ? 'plot-type-selected' : 'unselected';
+          const plotTypeClass = this.state.selectedPlotType.type === x.type
+            ? 'plot-type-item plot-type-selected'
+            : 'plot-type-item';
           const imgTag = trackTypeToInfo[x.type].thumbnail
             ? (
               <div
@@ -71,7 +86,7 @@ class PlotTypeChooser extends React.Component {
               />
             )
             : (
-              <div style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle' }}>
+              <div className="track-thumbnail">
                 <svg height={20} width={30} />
               </div>
             );
@@ -100,12 +115,22 @@ class PlotTypeChooser extends React.Component {
 
     return (
       <div>
-        { AVAILABLE_TRACK_TYPES_LIST.length > 0
+        { (AVAILABLE_TRACK_TYPES_LIST.length > 0 && this.props.allTracksSameDatatype)
           && (
             <div
               className="plot-type-container"
             >
               { AVAILABLE_TRACK_TYPES_LIST }
+            </div>
+          )
+        }
+        { (!this.props.allTracksSameDatatype)
+          && (
+            <div
+              className="plot-type-container-empty"
+            >
+              Datasets with multiple datatypes chosen.
+              They will be added with their default track types.
             </div>
           )
         }

@@ -164,7 +164,7 @@ const viewconf = {
   editable: true,
   trackSourceServers: [
     '/api/v1',
-    'http://higlass.io/api/v1'
+    'https://higlass.io/api/v1'
   ],
   exportViewUrl: '/api/v1/viewconfs',
   views: [

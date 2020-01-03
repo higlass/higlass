@@ -32,6 +32,15 @@ render tracks with a `bedlike` datatype. This usually comes from the `beddb`
 filetype. Regular bed-like files can be converted to beddb using the instructions
 in the `data preparation section <data_preparation.html#bed-files>`__.
 
+This track has two modes: stranded and unstranded (value-based). In stranded
+mode, which is activated when the underlying data has information about which
+strand entries are on, items on the + and - strand are drawn above each other.
+Overlapping items are further stacked.
+
+In unstranded (value-based) mode, items can be be ordered vertically or
+colored based on the values of a column (chosen in the config -> "Value
+column" section).
+
 **Color Encoding:**
 
 Intervals can visually encode information using the following three ``options``:
@@ -45,7 +54,16 @@ Intervals can visually encode information using the following three ``options``:
 ``colorEncodingRange: array``
     A tuple defining the minimum and maximum range value for color encoding.
 
-Here is an example snippet
+``plusStrandColor``
+    For stranded mode, the color of the plus strand entries
+
+``minusStrandColor``
+    For stranded mode, the color of the minus strand entries
+
+``fillColor``
+    Default color for any mode
+
+Here is an example snippet. Used if the other options aren't set.
 
 .. code-block:: javascript
 
@@ -67,7 +85,7 @@ Gene Annotations
     :align: right
 
 track-type: ``horizontal-gene-annotations``
-datatype: ``gene-annotations``
+datatype: ``gene-annotation``
 
 Gene annotations display the locations of genes and their exons and introns.
 The tracks displayed on HiGlass show a transcript consisting of the union of
@@ -94,6 +112,26 @@ configuration option.
 You can limit the extent of the heatmap to the upper right and lower left
 triangle via the track context menu or by setting ``extent`` option to
 ``upper-right`` or ``lower-left`` respectively.
+
+Options
+--------
+
+**colorRange**: This is an array of colors used to create a segmented color
+scale for the heatmap. The contents of this array are passed in to `d3's
+scaleLinear function <https://github.com/d3/d3-scale>`_ to create the color
+scale. The domain of the color scale spans the lowest visible value to the
+highest visible value except when modified by the colorbar. Acceptable color
+values are ones that can be used with CSS (see, for example, `Color Names
+<https://htmlcolorcodes.com/color-names/>`_ ). Example:
+
+.. code-block:: javascript
+
+    "colorRange": [
+      "white",
+      "rgba(245,166,35,1.0)",
+      "rgba(208,2,27,1.0)",
+      "black"
+    ]
 
 Rotated 2D Heatmap
 ==================
