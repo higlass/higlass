@@ -36,6 +36,69 @@ describe('Simple HiGlassComponent', () => {
       expect(Object.keys(trackObj.drawnRects).length).to.be.above(0);
     });
 
+    it('Checks that + and - strand entries are at different heights', () => {
+      const trackObj = getTrackObjectFromHGC(hgc.instance(),
+        viewConf.views[0].uid,
+        viewConf.views[0].tracks.top[0].uid);
+
+      const rectHeights = new Set();
+      for (const tileId in trackObj.drawnRects) {
+        for (const uid in trackObj.drawnRects[tileId]) {
+          const rect = trackObj.drawnRects[tileId][uid];
+
+          rectHeights.add(rect[0][3]);
+        }
+      }
+
+      expect(rectHeights.size).to.eql(2);
+    });
+
+
+    it('Exports to SVG', () => {
+      const svgText = hgc.instance().createSVGString();
+
+      const textIx = svgText.indexOf('text');
+      const greenIx = svgText.indexOf('green');
+
+      expect(textIx).to.be.above(0);
+      expect(greenIx).to.be.below(0);
+    });
+
+    it('Checks minusStrandColor', (done) => {
+      hgc.instance().state.views.aa.tracks.top[0].options.minusStrandColor = 'green';
+
+      hgc.setState(hgc.instance().state);
+      hgc.update();
+
+      const svgText = hgc.instance().createSVGString();
+      const greenIx = svgText.indexOf('green');
+
+      expect(greenIx).to.be.above(0);
+      done();
+    });
+
+    it('Checks segment polygons', (done) => {
+      hgc.instance().state.views.aa.tracks.top[0].options.annotationStyle = 'segment';
+
+      hgc.setState(hgc.instance().state);
+      hgc.update();
+
+      const trackObj = getTrackObjectFromHGC(hgc.instance(),
+        viewConf.views[0].uid,
+        viewConf.views[0].tracks.top[0].uid);
+
+      for (const tileId in trackObj.drawnRects) {
+        for (const uid in trackObj.drawnRects[tileId]) {
+          const rect = trackObj.drawnRects[tileId][uid];
+
+          // the segment polygons have 12 vertices
+          expect(rect[0].length).to.eql(24);
+        }
+      }
+
+      done();
+    });
+
     afterAll(() => {
       removeHGComponent(div);
     });
@@ -52,23 +115,52 @@ describe('Simple HiGlassComponent', () => {
       {
         uid: 'aa',
         initialXDomain: [
-          -252359004.01034582,
-          2768731225.3911114
+          1585110207.2930722,
+          1586490384.5429244
         ],
         initialYDomain: [
-          -81794317.90460095,
-          2599238446.8497105
+          1187975248.2421436,
+          1187975248.2421436
         ],
         autocompleteSource: 'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
         genomePositionSearchBoxVisible: false,
         chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
         tracks: {
-          top: [{
-            uid: 'a',
-            type: 'bedlike',
-            tilesetUid: 'N3g_OsVITeulp6cUs2EaJA',
-            server: 'http://higlass.io/api/v1'
-          }],
+          top: [
+            {
+              uid: 'a',
+              type: 'bedlike',
+              tilesetUid: 'N3g_OsVITeulp6cUs2EaJA',
+              server: 'http://higlass.io/api/v1',
+              height: 80,
+              options: {
+                alternating: false,
+                fillColor: 'blue',
+                axisPositionHorizontal: 'right',
+                labelColor: 'black',
+                labelPosition: 'hidden',
+                labelLeftMargin: 0,
+                labelRightMargin: 0,
+                labelTopMargin: 0,
+                labelBottomMargin: 0,
+                minHeight: 20,
+                trackBorderWidth: 0,
+                trackBorderColor: 'black',
+                valueColumn: null,
+                colorEncoding: false,
+                showTexts: true,
+                colorRange: [
+                  '#000000',
+                  '#652537',
+                  '#bf5458',
+                  '#fba273',
+                  '#ffffe0'
+                ],
+                colorEncodingRange: false,
+                name: 'CTCF motifs (hg19)'
+              }
+            }
+          ],
           left: [],
           center: [],
           right: [],
@@ -78,10 +170,9 @@ describe('Simple HiGlassComponent', () => {
         },
         layout: {
           w: 12,
-          h: 12,
+          h: 3,
           x: 0,
           y: 0,
-          i: 'aa',
           moved: false,
           static: false
         },

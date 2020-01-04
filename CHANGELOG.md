@@ -1,6 +1,11 @@
-** Unreleased
+** Next release **
 
+- Update heatmap docs with colorRange parameter
 - Update BedLikeTrack to display strand-specific entries
+- Added 'segment' style to the BedLikeTrack
+- Updated default plot types when adding tracks
+- When adding multiple tracks at once that have different datatype, each track is added with its default plot type. The plot type chooser is hidden.
+
 ## v1.7.3
 
 - In `HorizontalLine1DPixiTrack`, make sure that `this.valueScale` is set when `getMouseOverHtml()` is called.

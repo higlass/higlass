@@ -123,6 +123,32 @@ describe('Add track(s)', () => {
     // console.warn('ptc.AVAILABLE_TRACK_TYPES', ptc.AVAILABLE_TRACK_TYPES);
     // should just have the horizontal-heatmap track type
     expect(ptc.AVAILABLE_TRACK_TYPES.length).to.eql(3);
+
+    tilesetFinder.handleSelectedOptions([
+      // hg19 gene track
+      'http://higlass.io/api/v1/OHJakQICQD6gTD7skx4EWA'
+    ]);
+
+    hgc.update();
+
+    ptc = hgc.instance().modalRef.plotTypeChooser;
+
+    // check that the selected plot type defaults to 'horizontal-gene-annotations'
+    expect(ptc.state.selectedPlotType.type).to.eql('horizontal-gene-annotations');
+
+    tilesetFinder.handleSelectedOptions([
+      // hg19 gene track
+      'http://higlass.io/api/v1/OHJakQICQD6gTD7skx4EWA',
+      // GM12878-E116-H3K27me3.fc.signal track
+      'http://higlass.io/api/v1/PdAaSdibTLK34hCw7ubqKA'
+    ]);
+
+    hgc.update();
+
+    ptc = hgc.instance().modalRef.plotTypeChooser;
+
+    // Make sure the plotTypeChooser is not shown since there are different datatypes
+    expect(hgc.find('.plot-type-item').length).to.eql(0);
   });
 
   it('should add the selected tracks', () => {

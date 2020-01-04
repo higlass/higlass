@@ -2,14 +2,13 @@ import { formatPrefix, precisionPrefix } from 'd3-format';
 
 import HeatmapOptions from '../HeatmapOptions';
 
-const sizesInPx = (sizes, unit = '', multiplier = 1) =>
-  sizes.reduce((sizeOption, size) => {
-    sizeOption[size] = {
-      name: `${size * multiplier}${unit}`,
-      value: size
-    };
-    return sizeOption;
-  }, {});
+const sizesInPx = (sizes, unit = '', multiplier = 1) => sizes.reduce((sizeOption, size) => {
+  sizeOption[size] = {
+    name: `${size * multiplier}${unit}`,
+    value: size
+  };
+  return sizeOption;
+}, {});
 
 const YES_NO = {
   yes: {
@@ -693,6 +692,27 @@ export const OPTIONS_INFO = {
         name: '16px',
         value: 16
       }
+    }
+  },
+
+
+  annotationHeight: {
+    name: 'Annotation Height',
+    inlineOptions: {
+      5: { name: '5px', value: 5 },
+      8: { name: '8px', value: 8 },
+      10: { name: '10px', value: 10 },
+      12: { name: '12px', value: 12 },
+      16: { name: '16px', value: 16 },
+      20: { name: '20px', value: 20 }
+    }
+  },
+
+  annotationStyle: {
+    name: 'Annotation Style',
+    inlineOptions: {
+      box: { name: 'Box', value: 'box' },
+      segment: { name: 'Segment', value: 'segment' },
     }
   },
 
@@ -1410,7 +1430,7 @@ export const OPTIONS_INFO = {
         value: 'None'
       }
     },
-    generateOptions: track => {
+    generateOptions: (track) => {
       const inlineOptions = [];
 
       if (track.transforms) {
@@ -1429,7 +1449,7 @@ export const OPTIONS_INFO = {
   aggregationMode: {
     name: 'Aggregation Mode',
     inlineOptions: {},
-    generateOptions: track => {
+    generateOptions: (track) => {
       const inlineOptions = [];
 
       if (track.aggregationModes) {
@@ -1458,7 +1478,7 @@ export const OPTIONS_INFO = {
         value: null
       }
     },
-    generateOptions: track => {
+    generateOptions: (track) => {
       if (track.maxZoom) {
         const inlineOptions = [];
 
@@ -1502,7 +1522,7 @@ export const OPTIONS_INFO = {
         value: null
       }
     },
-    generateOptions: track => {
+    generateOptions: (track) => {
       if (!track.header) return [];
 
       const headerParts = track.header.split('\t');
