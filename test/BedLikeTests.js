@@ -77,6 +77,28 @@ describe('Simple HiGlassComponent', () => {
       done();
     });
 
+    it('Checks segment polygons', (done) => {
+      hgc.instance().state.views.aa.tracks.top[0].options.annotationStyle = 'segment';
+
+      hgc.setState(hgc.instance().state);
+      hgc.update();
+
+      const trackObj = getTrackObjectFromHGC(hgc.instance(),
+        viewConf.views[0].uid,
+        viewConf.views[0].tracks.top[0].uid);
+
+      for (const tileId in trackObj.drawnRects) {
+        for (const uid in trackObj.drawnRects[tileId]) {
+          const rect = trackObj.drawnRects[tileId][uid];
+
+          // the segment polygons have 12 vertices
+          expect(rect[0].length).to.eql(24);
+        }
+      }
+
+      done();
+    });
+
     afterAll(() => {
       removeHGComponent(div);
     });
