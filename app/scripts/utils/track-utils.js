@@ -376,12 +376,65 @@ const zoomedY = (yPos, kMultiplier, transform, height) => {
   return zoomIdentity.translate(0, t1).scale(k1);
 };
 
+getTilePosAndDimensions(zoomLevel, tilePos, binsPerTileIn, tilesetInfo) {
+  /**
+       * Get the tile's position in its coordinate system.
+       */
+  const xTilePos = tilePos[0];
+  const yTilePos = tilePos[1];
+
+
+  if (tilesetInfo.resolutions) {
+    // the default bins per tile which should
+    // not be used because the right value should be in the tileset info
+
+    const binsPerTile = binsPerTileIn || BINS_PER_TILE;
+
+    const sortedResolutions = tilesetInfo.resolutions
+      .map(x => +x)
+      .sort((a, b) => b - a);
+
+    const chosenResolution = sortedResolutions[zoomLevel];
+
+    const tileWidth = chosenResolution * binsPerTile;
+    const tileHeight = tileWidth;
+
+    const tileX = chosenResolution * binsPerTile * tilePos[0];
+    const tileY = chosenResolution * binsPerTile * tilePos[1];
+
+    return {
+      tileX, tileY, tileWidth, tileHeight
+    };
+  }
+
+  // max_width should be substitutable with 2 ** tilesetInfo.max_zoom
+  const totalWidth = tilesetInfo.max_width;
+  const totalHeight = tilesetInfo.max_width;
+
+  const minX = tilesetInfo.min_pos[0];
+  const minY = tilesetInfo.min_pos[1];
+
+  const tileWidth = totalWidth / 2 ** zoomLevel;
+  const tileHeight = totalHeight / 2 ** zoomLevel;
+
+  const tileX = minX + xTilePos * tileWidth;
+  const tileY = minY + yTilePos * tileHeight;
+
+  return {
+    tileX,
+    tileY,
+    tileWidth,
+    tileHeight
+  };
+}
+
 const trackUtils = {
   calculate1DZoomLevel,
   calculate1DVisibleTiles,
   drawAxis,
   zoomedY,
   movedY,
+  getTilePosAndDimensions,
 };
 
 export default trackUtils;

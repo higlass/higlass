@@ -4,7 +4,7 @@ import { zoomIdentity } from 'd3-zoom';
 import * as PIXI from 'pixi.js';
 
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
-
+import { trackUtils } from './utils';
 // Utils
 import { colorDomainToRgbaArray, colorToHex, gradient } from './utils';
 
@@ -82,10 +82,11 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     // Reset svg data to avoid overplotting
     tile.svgData = undefined;
 
-    const { tileX, tileWidth } = this.getTilePosAndDimensions(
+    const { tileX, tileWidth } = trackUtils.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
       tile.tileData.tilePos,
-      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size
+      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size,
+      this.tilesetInfo,
     );
     const tileValues = tile.tileData.dense;
 

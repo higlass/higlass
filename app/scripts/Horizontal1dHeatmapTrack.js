@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 
-import { colorDomainToRgbaArray } from './utils';
+import { colorDomainToRgbaArray, trackUtils } from './utils';
 
 import { HEATED_OBJECT_MAP } from './configs';
 
@@ -46,9 +46,11 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
 
     const graphics = tile.graphics;
 
-    const { tileX, tileWidth } = this.getTilePosAndDimensions(
+    const { tileX, tileWidth } = trackUtils.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
       tile.tileData.tilePos,
+      undefined,
+      this.tilesetInfo,
     );
 
     const tileValues = tile.tileData.dense;

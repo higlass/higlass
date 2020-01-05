@@ -8,6 +8,7 @@ import slugid from 'slugid';
 
 import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
 import AxisPixi from './AxisPixi';
+import { trackUtils } from './utils';
 
 // Services
 import { tileProxy } from './services';
@@ -232,7 +233,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   getAbsTileDim(zoomLevel, tilePos, mirrored) {
     const {
       tileX, tileY, tileWidth, tileHeight
-    } = this.getTilePosAndDimensions(zoomLevel, tilePos);
+    } = trackUtils.getTilePosAndDimensions(
+      zoomLevel, tilePos, this.binsPerTile(),
+      this.tilesetInfo
+    );
 
     const dim = {};
 
@@ -919,8 +923,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       // if it's mirrored then we have to switch the position indeces
       const {
         tileX, tileY, tileWidth, tileHeight
-      } = this.getTilePosAndDimensions(
-        tile.tileData.zoomLevel, tilePos, this.binsPerTile()
+      } = trackUtils.getTilePosAndDimensions(
+        tile.tileData.zoomLevel, tilePos, this.binsPerTile(), this.tilsetInfo,
       );
 
       // calculate the tile's position in bins
@@ -1380,55 +1384,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       return `${positionText}<b>Value:</b> N/A`;
     }
     return `${positionText}<b>Value:</b> ${format('.3f')(data)}`;
-  }
-
-  /**
-   * Get the tile's position in its coordinate system.
-   *
-   * @description
-   * Normally the absolute coordinate system are the genome basepair positions
-   */
-  getTilePosAndDimensions(zoomLevel, tilePos, binsPerTileIn) {
-    /**
-         * Get the tile's position in its coordinate system.
-         */
-    const binsPerTile = binsPerTileIn || this.binsPerTile();
-
-    if (this.tilesetInfo.resolutions) {
-      const sortedResolutions = this.tilesetInfo.resolutions
-        .map(x => +x)
-        .sort((a, b) => b - a);
-
-      const chosenResolution = sortedResolutions[zoomLevel];
-
-      const tileWidth = chosenResolution * binsPerTile;
-      const tileHeight = tileWidth;
-
-      const tileX = chosenResolution * binsPerTile * tilePos[0];
-      const tileY = chosenResolution * binsPerTile * tilePos[1];
-
-      return {
-        tileX, tileY, tileWidth, tileHeight
-      };
-    }
-
-    const xTilePos = tilePos[0];
-    const yTilePos = tilePos[1];
-
-    const minX = this.tilesetInfo.min_pos[0];
-
-    const minY = this.options.reverseYAxis
-      ? -this.tilesetInfo.max_pos[1] : this.tilesetInfo.min_pos[1];
-
-    const tileWidth = this.tilesetInfo.max_width / (2 ** zoomLevel);
-    const tileHeight = this.tilesetInfo.max_width / (2 ** zoomLevel);
-
-    const tileX = minX + (xTilePos * tileWidth);
-    const tileY = minY + (yTilePos * tileHeight);
-
-    return {
-      tileX, tileY, tileWidth, tileHeight
-    };
   }
 
   calculateZoomLevel() {
