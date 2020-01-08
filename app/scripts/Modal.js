@@ -39,7 +39,7 @@ const Modal = (props) => {
             style={{
               gridTemplateRows: getRowHeight(props)
             }}
-            styleName={`modal-content ${props.fullHeight ? 'modal-content-full-height' : ''} ${props.maxHeight ? 'modal-content-max-height' : ''}`}
+            styleName={`modal-content ${props.fullHeight ? 'modal-content-full-height' : ''} ${Number.isFinite(props.maxHeight) ? 'modal-content-max-height' : ''}`}
           >
             {props.children}
           </div>

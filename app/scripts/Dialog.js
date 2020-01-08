@@ -30,7 +30,7 @@ const Dialog = (props) => {
         <h3>{props.title}</h3>
         <Button onClick={handleCancel}><Cross /></Button>
       </header>
-      <main styleName={`${props.fullHeight ? 'dialog-main-full-height' : ''} ${Number.isFinite(props.maxHeight) ? 'dialog-main-max-height' : ''}`}>
+      <main styleName={`dialog-main ${props.fullHeight ? 'dialog-main-full-height' : ''} ${Number.isFinite(props.maxHeight) ? 'dialog-main-max-height' : ''}`}>
         {props.children}
       </main>
       <footer styleName={`dialog-footer ${Number.isFinite(props.maxHeight) ? 'dialog-footer-max-height' : ''}`}>

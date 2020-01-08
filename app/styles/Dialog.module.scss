@@ -32,6 +32,10 @@
   position: relative;
 }
 
+.dialog-main {
+  margin: (-1*$base)+px;
+}
+
 .dialog-main-max-height {
   position: absolute;
   z-index: 1;
@@ -39,7 +43,7 @@
   right: 0;
   bottom: (5*$base)+px;
   left: 0;
-  padding: $base+px;
+  margin: 0;
   overflow: auto;
 }
 
