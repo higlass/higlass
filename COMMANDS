@@ -1,1 +1,3 @@
 git push higlass-docs-main `git subtree split --prefix docs master`:master --force
+
+npm run build-amd-dev; aws s3 cp dist/hglib-amd.js s3://pkerp/public/hglib-amd-dev.js

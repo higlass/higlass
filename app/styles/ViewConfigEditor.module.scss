@@ -1,9 +1,10 @@
 @import './colors';
+@import './sizes';
 @import './transitions';
 
 .view-config-editor-header {
-  margin: -1rem -1rem 0 -1rem;
-  padding: 1rem;
+  margin: (-1*$base)+px (-1*$base)+px 0 (-1*$base)+px;
+  padding: $base+px;
   display: flex;
   justify-content: space-between;
   background: $gray-lightest;
@@ -11,6 +12,7 @@
   button {
     display: flex;
     align-items: center;
+    font-size: (1.4*$base)+px;
     background: $gray-lightest;
 
     &:hover {
@@ -24,12 +26,12 @@
 
 .view-config-editor {
   position: absolute;
-  top: 4rem;
-  right: -1rem;
-  bottom: -1rem;
-  left: -1rem;
-  margin: 0;
+  top: (5*$base)+px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 1px 0 0 0;
   padding: 0;
   overflow: auto;
-  font-size: 1.25rem;
+  font-size: (1.25*$base)+px;
 }

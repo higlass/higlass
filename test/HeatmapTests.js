@@ -12,7 +12,8 @@ import { expect } from 'chai';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC
+  getTrackObjectFromHGC,
+  waitForTilesLoaded
 } from '../app/scripts/utils';
 
 import {
@@ -21,7 +22,7 @@ import {
 
 configure({ adapter: new Adapter() });
 
-describe('Testing', () => {
+describe('Heatmaps', () => {
   describe('Export heatmap data', () => {
     let hgc = null;
     let div = null;
@@ -38,10 +39,14 @@ describe('Testing', () => {
     });
 
     it('once', () => {
-      const tp = getTrackObjectFromHGC(hgc.instance(), 'NagBzk-AQZuoY0bqG-Yy0Q', 'PdEzdgsxRymGelD5xfKlNA');
+      const tp = getTrackObjectFromHGC(
+        hgc.instance(), 'NagBzk-AQZuoY0bqG-Yy0Q', 'PdEzdgsxRymGelD5xfKlNA'
+      );
       let data = tp.getVisibleRectangleData(262, 298, 1, 1);
 
-      data = tp.getVisibleRectangleData(0, 0, tp.dimensions[0], tp.dimensions[1]);
+      data = tp.getVisibleRectangleData(
+        0, 0, tp.dimensions[0], tp.dimensions[1]
+      );
 
       expect(data.shape[0]).to.eql(756);
       expect(data.shape[1]).to.eql(234);
@@ -54,7 +59,7 @@ describe('Testing', () => {
     });
   });
 
-  describe('Heatmaps', () => {
+  describe('Visualization', () => {
     let hgc = null;
     let div = null;
 
@@ -83,6 +88,75 @@ describe('Testing', () => {
       removeHGComponent(div);
     });
   });
+
+  describe('Triangular-split heatmaps', () => {
+    let hgc = null;
+    let div = null;
+
+    beforeAll((done) => {
+      [div, hgc] = mountHGComponent(div, hgc, baseConf, done);
+    });
+
+    it('should adjust options when new heatmap is added', () => {
+      hgc.instance().handleTrackAdded('v', heatmapTrack, 'center');
+      hgc.update();
+
+      const views = JSON.parse(JSON.stringify(hgc.instance().state.views.v));
+      const options0 = views.tracks.center[0].contents[0].options;
+      const options1 = views.tracks.center[0].contents[1].options;
+
+      expect(views.tracks.center[0].contents.length).to.eql(2);
+      expect(options1.backgroundColor).to.eql('transparent');
+      expect(options1.showTooltip).to.eql(options0.showTooltip);
+      expect(options1.showMousePosition).to.eql(options0.showMousePosition);
+      expect(options1.mousePositionColor).to.eql(options0.mousePositionColor);
+    });
+
+    it('should adjust position of name and colorbar when extent is triangular', () => {
+      const views = JSON.parse(JSON.stringify(hgc.instance().state.views));
+      const center = views.v.tracks.center[0];
+
+      const newOptions0 = Object.assign(
+        {}, center.contents[0].options, { extent: 'lower-left' }
+      );
+
+      const newOptions1 = Object.assign(
+        {}, center.contents[1].options, { extent: 'upper-right' }
+      );
+
+      hgc.instance().handleTrackOptionsChanged('v', 'heatmap0', newOptions0);
+      hgc.instance().handleTrackOptionsChanged('v', 'heatmap1', newOptions1);
+      hgc.update();
+
+      const newViews = JSON.parse(JSON.stringify(hgc.instance().state.views.v));
+      const options0 = newViews.tracks.center[0].contents[0].options;
+      const options1 = newViews.tracks.center[0].contents[1].options;
+
+      expect(options0.labelPosition).to.eql('bottomLeft');
+      expect(options0.colorbarPosition).to.eql('bottomLeft');
+      expect(options1.labelPosition).to.eql('topRight');
+      expect(options1.colorbarPosition).to.eql('topRight');
+    });
+
+    it('tiles on the diagonal should be independent', (done) => {
+      const trackObj0 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap0');
+      const trackObj1 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap1');
+
+      waitForTilesLoaded(hgc.instance(), () => {
+        expect(trackObj0.fetchedTiles['2.1.1.false'].tileData)
+          .to.not.eql(trackObj1.fetchedTiles['2.1.1.true'].tileData);
+
+        expect(trackObj0.fetchedTiles['2.1.1.false'].tileData.dense)
+          .to.not.eql(trackObj1.fetchedTiles['2.1.1.true'].tileData.dense);
+
+        done();
+      });
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+  });
 });
 
 // enter either a viewconf link or a viewconf object
@@ -90,19 +164,13 @@ const viewconf = {
   editable: true,
   trackSourceServers: [
     '/api/v1',
-    'http://higlass.io/api/v1'
+    'https://higlass.io/api/v1'
   ],
   exportViewUrl: '/api/v1/viewconfs',
   views: [
     {
-      initialXDomain: [
-        -2504745106.5753083,
-        1991124761.6042666
-      ],
-      initialYDomain: [
-        -1445835354.3018048,
-        2471358194.211092
-      ],
+      initialXDomain: [-2504745106, 1991124761],
+      initialYDomain: [-1445835354, 2471358194],
       tracks: {
         top: [{
           type: 'top-axis'
@@ -117,7 +185,7 @@ const viewconf = {
                 type: 'heatmap',
                 uid: 'tt',
                 tilesetUid: 'Bu6Djvt9T_mgZPHLig3NfQ',
-                server: 'http://resgen.io/api/v1',
+                server: 'https://resgen.io/api/v1',
                 options: {
                   backgroundColor: '#eeeeee',
                   labelPosition: 'bottomRight',
@@ -157,12 +225,9 @@ const viewconf = {
                   512,
                   64,
                   8
-                ],
-                position: 'center'
+                ]
               }
-            ],
-            position: 'center',
-            options: {}
+            ]
           }
         ],
         bottom: [],
@@ -174,24 +239,48 @@ const viewconf = {
         w: 12,
         h: 6,
         x: 0,
-        y: 0,
-        i: 'KlNmjr0BQgWGhSZB0MNIEg',
-        moved: false,
-        static: false
+        y: 0
       },
       uid: 'vv'
     }
-  ],
-  zoomLocks: {
-    locksByViewUid: {},
-    locksDict: {}
-  },
-  locationLocks: {
-    locksByViewUid: {},
-    locksDict: {}
-  },
-  valueScaleLocks: {
-    locksByViewUid: {},
-    locksDict: {}
-  }
+  ]
+};
+
+const baseConf = {
+  views: [
+    {
+      uid: 'v',
+      tracks: {
+        center: [
+          {
+            type: 'combined',
+            contents: [
+              {
+                server: '//higlass.io/api/v1',
+                tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
+                type: 'heatmap',
+                uid: 'heatmap0',
+                height: 400,
+                options: {
+                  colorRange: ['white', 'black'],
+                  showMousePosition: true,
+                  mousePositionColor: 'yellow',
+                  showTooltip: true
+                }
+              },
+            ]
+          }
+        ]
+      }
+    }
+  ]
+};
+
+const heatmapTrack = {
+  server: '//higlass.io/api/v1',
+  tilesetUid: 'B2LevKBtRNiCMX372rRPLQ',
+  type: 'heatmap',
+  uid: 'heatmap1',
+  height: 400,
+  options: { colorRange: ['white', 'black'] }
 };

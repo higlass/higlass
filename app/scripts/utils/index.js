@@ -20,6 +20,7 @@ export { default as flatten } from './flatten';
 export { default as forEach } from './for-each';
 export { default as forwardEvent } from './forward-event';
 export { default as genomeLociToPixels } from './genome-loci-to-pixels';
+export { default as getDefaultTrackForDatatype } from './get-default-track-for-datatype';
 export { default as getElementDim } from './get-element-dim';
 export { default as getTrackByUid } from './get-track-by-uid';
 export { default as getTrackObjById } from './get-track-obj-by-id';
@@ -46,7 +47,6 @@ export { default as numericifyVersion } from './numericify-version';
 export { default as objVals } from './obj-vals';
 export { default as or } from './or';
 export { default as pixiTextToSvg } from './pixi-text-to-svg';
-export { default as positionedTracksToAllTracks } from './positioned-tracks-to-all-tracks';
 export { default as q } from './q';
 export { default as reduce } from './reduce';
 export { default as rangeQuery2d } from './range-query-2d';
@@ -69,6 +69,10 @@ export { default as trimTrailingSlash } from './trim-trailing-slash';
 export { default as valueToColor } from './value-to-color';
 export { default as expandCombinedTracks } from './expand-combined-tracks';
 export { default as segmentsToRows } from './segments-to-rows';
+export { default as visitPositionedTracks } from './visit-positioned-tracks';
+export { default as visitTracks } from './visit-tracks';
+export { default as trackUtils } from './track-utils';
+
 export {
   getTrackObjectFromHGC,
   getTrackRenderer,

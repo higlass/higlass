@@ -269,6 +269,27 @@ and ``filetype``
       "filetype": "bigwig"
     }
 
+Using ``data``
+^^^^^^^^^^^^^^
+
+In addition to using ``tilesetUid`` or ``fileUrl`` to specify a data source, the ``data`` section can be used to configure other data sources or to create data sources consisting of multiple tilesets, such as one matrix divided by another.
+
+Genbank files
+"""""""""""""
+
+A Genbank file data source will load a complete genbank file from a remote URL and serve that as a ``gene-annotations`` datatype. See the `horizontal-gene-annotations section <track_types.html#gene-annotations>`_ for an example of a track type that can be used with Genbank files.
+
+.. code-block:: javascript
+
+  {
+    "data": {
+      "type": "genbank",
+      "url": "https://pkerp.s3.amazonaws.com/public/GCA_000010365.1_ASM1036v1_genomic.gbff.gz"
+    }
+  }
+
+**Note** The Genbank data sources is limited in its detail. It currently only displays genes and the names of genes. More extensive support for gene annotations (e.g. exons) should be added in the `higlass/app/scripts/data-fetchers/genbank-fetcher.js` file.
+
 Track options
 --------------
 
@@ -282,6 +303,8 @@ Some of the more important ones are:
 - ``labelLeftMargin``, ``labelRightMargin``, ``labelTopMargin``, and ``labelBottomMargin``: add a margin to the track label. The effect is identical to CSS margin, i.e., ``labelLeftMargin === 10`` will push the label 10px to the right if ``labelPosition === 'left'``.
 
 - ``axisMargin``: sets a margin to the very end of the plot. For example, if ``axisPositionHorizontal === 'left'`` and ``axisMargin === 10`` then the axis will be drawn 10px from the left side of the track.
+
+- ``minHeight`` and ``minWidth``: useful for tracks which are generated programmatically or otherwise edited, which have a height or width smaller than default values that may otherwise constrain rendering.
 
 Overlay Tracks
 ==============
@@ -302,6 +325,23 @@ the start and end of each section that should be overlaid. The tuples can be eit
 coordinates are the same, 4-tuple indicates that horizontal and vertical start and
 end coordinates are different: [start, end] vs [x-start, x-end, y-start, y-end].
 
+**Options:**
+
+- ``extent`` [array] (default ``[]``)
+- ``minWidth`` [number] (default ``0``)
+- ``fill`` [string] (default ``blue``)
+- ``fillOpacity`` [number] (default ``0.3``)
+- ``stroke`` [string] (default ``blue``)
+- ``strokeOpacity`` [number] (default ``1``)
+- ``strokeWidth`` [number] (default ``0``)
+- ``strokePos`` [string, array] (default ``undefined``, which will drawn the stroke around the entire extent)
+- ``outline`` [string] (default ``white``)
+- ``outlineOpacity`` [number] (default ``1``)
+- ``outlineWidth`` [number] (default ``0``)
+- ``outlinePos`` [string, array] (default ``undefined``, which will drawn the stroke around the entire extent)
+
+**Example:**
+
 .. code-block:: javascript
 
     {
@@ -317,7 +357,17 @@ end coordinates are different: [start, end] vs [x-start, x-end, y-start, y-end].
                   [1000000000, 1100000000],
                   [1200000000, 1300000000, 1400000, 1500000]
                 ],
-                "fillColor": "blue"
+                minWidth: 3,
+                fill: "blue",
+                fillOpacity: 0.3,
+                stroke: "yellow",
+                strokeOpacity: 0.6,
+                strokeWidth: 2,
+                strokePos: ["left", "right"],
+                outline: "cyan"
+                outlineOpacity: 0.1337,
+                outlineWidth: 1337,
+                outlinePos: "top"
               }
             },
             {

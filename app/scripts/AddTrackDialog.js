@@ -12,6 +12,11 @@ import withModal from './hocs/with-modal';
 // Configs
 import { AVAILABLE_TRACK_TYPES } from './configs';
 
+// Utils
+import {
+  getDefaultTrackForDatatype,
+} from './utils';
+
 // Styles
 import styles from '../styles/AddTrackDialog.module.scss';
 
@@ -19,13 +24,12 @@ class AddTrackDialog extends React.Component {
   constructor(props) {
     super(props);
 
-    this.multiSelect = null;
-
     this.options = {};
 
     this.state = {
       selectedTilesets: [],
       activeTab: this.getActiveTab(),
+      allTracksSameDatatype: true, // Do all selected tracks have the same datatype
     };
 
     this.handleNextBound = this.handleNext.bind(this);
@@ -180,7 +184,6 @@ class AddTrackDialog extends React.Component {
   }
 
   selectedTilesetsChanged(selectedTilesetsIn) {
-    let allSame = true;
     let selectedTilesets = null;
 
     if (selectedTilesetsIn.length === 0) {
@@ -190,12 +193,14 @@ class AddTrackDialog extends React.Component {
 
     selectedTilesets = selectedTilesetsIn;
 
+    let allTracksSameDatatype = true;
+
     const firstDatatype = selectedTilesets[0].datatype;
     for (const tileset of selectedTilesets) {
-      if (tileset.datatype !== firstDatatype) { allSame = false; }
+      if (tileset.datatype !== firstDatatype) { allTracksSameDatatype = false; }
     }
 
-    if (allSame) {
+    if (allTracksSameDatatype) {
       // only one datatype is present in the set of selected tilesets
       for (const tileset of selectedTilesets) {
         tileset.type = this.selectedPlotType || tileset.type;
@@ -205,17 +210,24 @@ class AddTrackDialog extends React.Component {
       // to each tileset
       for (const tileset of selectedTilesets) {
         let datatypes = [tileset.datatype];
+        const orientation = this.getOrientation(this.props.position);
 
         if (tileset.filetype === 'cooler') {
           datatypes = [tileset.datatype, 'chromsizes'];
         }
 
-        tileset.type = AVAILABLE_TRACK_TYPES([datatypes],
-          this.getOrientation(this.props.position))[0].type;
+        const availableTrackTypes = AVAILABLE_TRACK_TYPES([datatypes], orientation);
+        const defaultTrackType = getDefaultTrackForDatatype(
+          datatypes[0],
+          this.props.position,
+          availableTrackTypes
+        );
+
+        tileset.type = defaultTrackType.type;
       }
     }
 
-    this.setState({ selectedTilesets });
+    this.setState({ selectedTilesets, allTracksSameDatatype });
 
     return selectedTilesets;
   }
@@ -240,7 +252,7 @@ class AddTrackDialog extends React.Component {
 
     return (
       <Dialog
-        maxHeight={46.75}
+        maxHeight={true}
         okayTitle="Submit"
         onCancel={this.props.onCancel}
         onOkay={this.handleSubmitBound}
@@ -404,65 +416,17 @@ class AddTrackDialog extends React.Component {
                 <PlotTypeChooser
                   // Only for testing purposes
                   ref={(c) => { this.plotTypeChooser = c; }}
+                  allTracksSameDatatype={this.state.allTracksSameDatatype}
                   datatypes={this.datatypes()}
                   onPlotTypeSelected={this.handlePlotTypeSelectedBound}
                   orientation={orientation}
                   plotType={this.selectedPlotType}
+                  position={this.props.position}
                 />
               )}
             </div>
           </div>
         )}
-        {
-          // <div
-          //   styleName={
-          //     this.state.activeTab === 'configurations'
-          //       ? 'add-track-dialog-toggable-open'
-          //       : 'add-track-dialog-toggable'
-          //   }
-          // >
-          //   <div
-          //     styleName={
-          //       this.state.activeTab === 'configurations'
-          //         ? 'add-track-dialog-toggler-active'
-          //         : 'add-track-dialog-toggler'
-          //     }
-          //   >
-          //     <button
-          //       disabled={
-          //         this.state.selectedTilesets.length === 0 || !this.selectedPlotType
-          //       }
-          //       onClick={this.open('configurations')}
-          //       type="button"
-          //     >
-          //       <span>Configure track</span>
-          //       <span className=styles.addTrackDialogTogglerTriangle} />
-          //     </button>
-          //   </div>
-          //   <div
-          //     className={
-          //       this.state.activeTab === 'configurations'
-          //         ? styles.addTrackDialogToggableContentOpen
-          //         : styles.addTrackDialogToggableContent
-          //     }
-          //   >
-          //     {this.state.activeTab === 'configurations' && (
-          //       <p>Nice!</p>
-          //     )}
-          //   </div>
-          //   <div
-          //     className={
-          //       this.state.activeTab === 'done'
-          //         ? styles.addTrackDialogToggableContentOpen
-          //         : styles.addTrackDialogToggableContent
-          //     }
-          //   >
-          //     {this.state.activeTab === 'done' && (
-          //       <Button>Add Track</Button>
-          //     )}
-          //   </div>
-          // </div>
-        }
         {this.state.activeTab === 'done' && (
           <Button
             className={styles.addTrackDialogSubmit}
@@ -478,13 +442,11 @@ class AddTrackDialog extends React.Component {
 }
 
 AddTrackDialog.defaultProps = {
-  hidePlotTypeChooser: false,
   position: 'top',
 };
 
 AddTrackDialog.propTypes = {
   datatype: PropTypes.string.isRequired,
-  hidePlotTypeChooser: PropTypes.bool,
   host: PropTypes.string.isRequired,
   modal: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,

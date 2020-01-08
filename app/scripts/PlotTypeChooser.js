@@ -8,6 +8,11 @@ import {
   AVAILABLE_TRACK_TYPES,
 } from './configs';
 
+// Utils
+import {
+  getDefaultTrackForDatatype,
+} from './utils';
+
 // Styles
 import '../styles/PlotTypeChooser.module.scss';
 
@@ -32,6 +37,31 @@ class PlotTypeChooser extends React.Component {
     });
 
     this.state = { selectedPlotType };
+  }
+
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(newProps) {
+    this.availableTrackTypes = AVAILABLE_TRACK_TYPES(newProps.datatypes, this.props.orientation);
+
+    if (!this.availableTrackTypes) { return; }
+
+    if (!newProps.allTracksSameDatatype) { return; }
+
+    if (this.availableTrackTypes.length > 0) {
+      if (!this.availableTrackTypes.includes(this.state.selectedPlotType)) {
+        const defaultTrackType = getDefaultTrackForDatatype(
+          newProps.datatypes[0][0],
+          this.props.position,
+          this.availableTrackTypes
+        );
+        this.handlePlotTypeSelected(defaultTrackType);
+      }
+    } else {
+      // no available track types
+      // this could be because the datatype is unknown
+      // or because there's multiple different datatypes
+      // that don't have common track types
+    }
   }
 
   handlePlotTypeSelected(key) {
@@ -66,7 +96,6 @@ class PlotTypeChooser extends React.Component {
           )
             ? 'plot-type-selected'
             : 'plot-type';
-
           return (
             <li
               key={x.type}
@@ -95,11 +124,25 @@ class PlotTypeChooser extends React.Component {
 
     return (
       <div>
-        {availableTrackTypesList.length > 0 && (
-          <ul styleName="plot-type-choser">
-            { availableTrackTypesList }
-          </ul>
-        )}
+        { (availableTrackTypesList.length > 0 && this.props.allTracksSameDatatype)
+          && (
+            <div
+              className="plot-type-container"
+            >
+              { availableTrackTypesList }
+            </div>
+          )
+        }
+        { (!this.props.allTracksSameDatatype)
+          && (
+            <div
+              className="plot-type-container-empty"
+            >
+              Datasets with multiple datatypes chosen.
+              They will be added with their default track types.
+            </div>
+          )
+        }
       </div>
     );
   }

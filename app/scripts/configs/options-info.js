@@ -75,6 +75,14 @@ export const OPTIONS_INFO = {
       log: { name: 'Log', value: 'log' },
     },
   },
+  extent: {
+    name: 'Extent',
+    inlineOptions: {
+      full: { name: 'Full', value: 'full' },
+      upperRight: { name: 'Upper Right', value: 'upper-right' },
+      lowerLeft: { name: 'Lower Left', value: 'lower-left' },
+    }
+  },
   labelLeftMargin: {
     name: 'Label Left Margin',
     inlineOptions: AVAILABLE_MARGIN
@@ -91,6 +99,10 @@ export const OPTIONS_INFO = {
     name: 'Label Bottom Margin',
     inlineOptions: AVAILABLE_MARGIN
   },
+  labelShowResolution: {
+    name: 'Label Show Resolution',
+    inlineOptions: YES_NO,
+  },
   lineStrokeWidth: {
     name: 'Stroke Width',
     inlineOptions: AVAILABLE_WIDTHS,
@@ -105,6 +117,14 @@ export const OPTIONS_INFO = {
   },
   sortLargestOnTop: {
     name: 'Sort Largest On Top',
+    inlineOptions: YES_NO
+  },
+  showTexts: {
+    name: 'Show texts',
+    inlineOptions: YES_NO
+  },
+  staggered: {
+    name: 'Staggered',
     inlineOptions: YES_NO
   },
   minSquareSize: {
@@ -473,6 +493,18 @@ export const OPTIONS_INFO = {
       10: { name: '10px', value: 10 },
       12: { name: '12px', value: 12 },
       16: { name: '16px', value: 16 },
+    }
+  },
+
+
+  annotationHeight: {
+    name: 'Annotation Height',
+    inlineOptions: {
+      8: { name: '8px', value: 8 },
+      10: { name: '10px', value: 10 },
+      12: { name: '12px', value: 12 },
+      16: { name: '16px', value: 16 },
+      20: { name: '20px', value: 20 }
     }
   },
 

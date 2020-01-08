@@ -67,7 +67,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     // create texts
     tile.texts = {};
 
-    // console.log('tile:', tile.tileId, tile.tileData);
     tile.rectGraphics = new PIXI.Graphics();
     tile.textBgGraphics = new PIXI.Graphics();
     tile.textGraphics = new PIXI.Graphics();
@@ -242,7 +241,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         let yMiddle = this.dimensions[1] / 2;
         const geneId = this.geneId(geneInfo);
 
-        // console.log('geneInfo:', geneInfo);
         if (geneInfo[5] === '+') {
           // genes on the + strand drawn above and in a user-specified color or the
           // default blue
@@ -478,7 +476,11 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         tile.rectGraphics.position.x = -posOffset * tileK;
 
         tile.textBgGraphics.clear();
-        tile.textBgGraphics.beginFill(WHITE_HEX);
+        tile.textBgGraphics.beginFill(
+          typeof this.options.labelBackgroundColor !== 'undefined'
+            ? colorToHex(this.options.labelBackgroundColor)
+            : WHITE_HEX
+        );
 
         // move the texts
         const parentInFetched = this.parentInFetched(tile);
@@ -494,8 +496,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           const geneId = this.geneId(geneInfo);
 
           const text = tile.texts[geneId];
-
-          // console.log('visible geneName:', geneName);
 
           if (!text) return;
 
@@ -530,9 +530,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             // dimensions are measured for the first tile and not for the second
             const textWidth = text.getBounds().width;
             const textHeight = text.getBounds().height;
-
-            // console.log('textWidth:', textWidth);
-            // console.log('textHeight:', textHeight);
 
             tile.textHeights[geneId] = textHeight;
             tile.textWidths[geneId] = textWidth;

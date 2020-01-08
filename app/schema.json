@@ -6,7 +6,18 @@
   "additionalProperties": false,
   "required": [],
   "properties": {
-    "editable": { "type": "boolean" },
+    "editable": {
+      "type": "boolean",
+      "default": true
+    },
+    "viewEditable": {
+      "type": "boolean",
+      "default": true
+    },
+    "tracksEditable": {
+      "type": "boolean",
+      "default": true
+    },
     "zoomFixed": { "type": "boolean" },
     "exportViewUrl": { "type": "string" },
     "trackSourceServers": {
@@ -21,7 +32,8 @@
       "type": "array",
       "items": { "$ref": "#/definitions/view" },
       "minLength": 1
-    }
+    },
+    "chromInfoPath": { "type": "string" }
   },
   "definitions": {
 
@@ -39,7 +51,7 @@
       "genericLocks": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["locksByViewUid", "locksDict"],
+        "required": [],
         "properties": {
           "locksByViewUid": { "$ref": "#/definitions/locks/locksByViewUid" },
           "locksDict": {
@@ -82,10 +94,11 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "uid": { "$ref": "#/definitions/locks/slug" }
+                  "uid": { "$ref": "#/definitions/locks/slug" },
+                  "ignoreOffScreenValues": { "type": "boolean" }
                 },
                 "patternProperties": {
-                  "^(?!uid).": {
+                  "^(?!(uid|ignoreOffScreenValues)).": {
                     "type": "object",
                     "additionalProperties": false,
                     "required": ["view", "track"],
@@ -107,30 +120,63 @@
       "additionalProperties": false,
       "required": ["tracks", "layout"],
       "properties": {
-        "uid": { "type": "string" },
+        "autocompleteSource": { "type": "string" },
+        "chromInfoPath": { "type": "string" },
+        "genomePositionSearchBox": { "$ref": "#/definitions/viewProperties/genomePositionSearchBox" },
+        "genomePositionSearchBoxVisible": { "type": "boolean" },
         "initialXDomain": { "$ref": "#/definitions/viewProperties/domain" },
         "initialYDomain": { "$ref": "#/definitions/viewProperties/domain" },
-        "autocompleteSource": { "type": "string" },
-        "genomePositionSearchBoxVisible": { "type": "boolean" },
-        "genomePositionSearchBox": { "$ref": "#/definitions/viewProperties/genomePositionSearchBox" },
-        "chromInfoPath": { "type": "string" },
-        "tracks": { "$ref": "#/definitions/viewProperties/tracks_object" },
         "layout": { "$ref": "#/definitions/viewProperties/layout" },
-        "overlays": { "type": "array", "items": { "$ref": "#/definitions/viewProperties/overlay" } }
+        "overlays": { "type": "array", "items": { "$ref": "#/definitions/viewProperties/overlay" } },
+        "selectionView": { "type": "boolean" },
+        "tracks": { "$ref": "#/definitions/viewProperties/tracks_object" },
+        "uid": { "type": "string" },
+        "zoomFixed": { "type": "boolean" }
       }
     },
 
     "viewProperties": {
       "genomePositionSearchBox": {
         "type": "object",
-        "additionalProperties": false,
-        "required": ["chromInfoServer", "chromInfoId", "visible"],
+        "title": "The Genome Position Search Box Schema",
+        "required": [
+          "chromInfoServer",
+          "chromInfoId"
+        ],
         "properties": {
-          "autocompleteServer": { "type": "string" },
-          "autocompleteId": { "type": "string" },
-          "chromInfoServer": { "type": "string" },
-          "chromInfoId": { "type": "string" },
-          "visible": { "type": "boolean" }
+          "autocompleteServer": {
+            "type": "string",
+            "title": "The Autocomplete Server URL",
+            "default": "",
+            "examples": ["//higlass.io/api/v1"],
+            "pattern": "^(.*)$"
+          },
+          "autocompleteId": {
+            "type": "string",
+            "title": "The Autocomplete ID",
+            "default": "",
+            "examples": ["OHJakQICQD6gTD7skx4EWA"],
+            "pattern": "^(.*)$"
+          },
+          "chromInfoServer": {
+            "type": "string",
+            "title": "The Chrominfo Server URL",
+            "default": "",
+            "examples": ["//higlass.io/api/v1"],
+            "pattern": "^(.*)$"
+          },
+          "chromInfoId": {
+            "type": "string",
+            "title": "The Chromosome Info ID",
+            "default": "",
+            "examples": ["hg19"],
+            "pattern": "^(.*)$"
+          },
+          "visible": {
+            "type": "boolean",
+            "title": "The Visible Schema",
+            "default": false
+          }
         }
       },
 
@@ -138,26 +184,55 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "uid": { "type": "string" },
-          "type": { "type": "string" },
+          "chromInfoPath": { "type": "string" },
           "includes": { "type": "array" },
-          "options": { "type": "object" },
-          "chromInfoPath": { "type": "string" }
+          "options": {
+            "type": "object",
+            "properties": {
+              "extent": { "type": "array" },
+              "minWidth": { "type": "number" },
+              "fill": { "type": "string" },
+              "fillOpacity": { "type": "number" },
+              "stroke": { "type": "string" },
+              "strokeOpacity": { "type": "number" },
+              "strokeWidth": { "type": "number" },
+              "strokePos": { "type": ["string", "array"] },
+              "outline": { "type": "string" },
+              "outlineOpacity": { "type": "number" },
+              "outlineWidth": { "type": "number" },
+              "outlinePos": { "type": ["string", "array"] }
+            }
+          },
+          "type": { "type": "string" },
+          "uid": { "type": "string" }
         }
       },
 
       "layout": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["w", "h", "x", "y", "moved", "static"],
+        "required": ["w", "h", "x", "y"],
         "properties": {
-          "w": { "type": "number" },
-          "h": { "type": "number" },
-          "x": { "type": "number" },
-          "y": { "type": "number" },
-          "i": { "type": "string" },
-          "moved": { "type": "boolean" },
-          "static": { "type": "boolean" }
+          "x": {
+            "type": "integer",
+            "title": "The X Position",
+            "default": 0
+          },
+          "y": {
+            "type": "integer",
+            "title": "The Y Position",
+            "default": 0
+          },
+          "w": {
+            "type": "integer",
+            "title": "Width",
+            "default": 12
+          },
+          "h": {
+            "type": "integer",
+            "title": "Height",
+            "default": 12
+          }
         }
       },
 
@@ -198,6 +273,7 @@
       "heatmap_track": {
         "type": "object",
         "additionalProperties": false,
+        "required": [],
         "properties": {
           "uid": { "type": "string" },
           "type": { "const": "heatmap" },
@@ -209,28 +285,32 @@
               "children": { "type": "array" }
             }
           },
+          "height": { "type": "number" },
+          "local": { "type": "boolean" },
+          "maxWidth": { "type": "number" },
+          "name": { "type": "string" },
+          "options": { "type": "object" },
+          "orientation": { "type": "string" },
+          "position": { "type": "string" },
           "server": { "type": "string" },
           "tilesetUid": { "type": "string" },
-          "position": { "type": "string" },
-          "options": { "type": "object" },
-          "name": { "type": "string" },
           "transforms": { "type": "array" },
-          "width": { "type": "number" },
-          "height": { "type": "number" }
+          "width": { "type": "number" }
         }
       },
 
       "combined_track": {
         "type": "object",
         "additionalProperties": false,
+        "required": ["contents"],
         "properties": {
-          "uid": { "type": "string" },
-          "type": { "const": "combined" },
-          "position": { "type": "string" },
-          "options": { },
-          "width": { "type": "number" },
+          "contents": { "$ref": "#/definitions/viewProperties/tracks_array" },
           "height": { "type": "number" },
-          "contents": { "$ref": "#/definitions/viewProperties/tracks_array" }
+          "options": { },
+          "position": { "type": "string" },
+          "type": { "const": "combined" },
+          "uid": { "type": "string" },
+          "width": { "type": "number" }
         }
       },
 
@@ -240,6 +320,14 @@
         "properties": {
           "server": { "type": "string" },
           "tilesetUid": { "type": "string" },
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": { "type": "string" },
+              "url": { "type": "string"}
+            }
+          },
           "uid": { "type": "string" },
           "type": {
             "enum": [
@@ -252,6 +340,7 @@
               "arrowhead-domains",
               "bedlike",
               "cross-rule",
+              "dummy",
               "horizontal-1d-annotations",
               "horizontal-1d-heatmap",
               "horizontal-1d-tiles",
@@ -300,21 +389,29 @@
               "viewport-projection-vertical"
             ]
           },
-          "local": { "type": "boolean" },
-          "orientation": { "type": "string" },
-          "thumbnail": { },
-          "height": { "type": "number" },
-          "position": { "type": "string" },
-          "name": { "type": "string" },
-          "options": { "type": "object" },
-          "header": { "type": "string" },
-          "width": { "type": "number" },
+          "binsPerDimension": { "type": "number" },
           "chromInfoPath": { "type": "string" },
           "created": { "type": "string" },
-          "project": { },
-          "project_name": { "type": "string" },
+          "defaultOptions": { "type": "object", "additionalProperties": false },
           "description": { "type": "string" },
+          "filetype": { "type": "string" },
+          "fromViewUid": { "type": "string" },
+          "header": { "type": "string" },
+          "height": { "type": "number" },
+          "local": { "type": "boolean" },
+          "maxWidth": { "type": "number" },
+          "name": { "type": "string" },
+          "options": { "type": "object" },
+          "orientation": { "type": "string" },
+          "position": { "type": "string" },
+          "project": { "type": "null" },
+          "project_name": { "type": "string" },
+          "thumbnail": { "oneOf": [
+            { "type": "object", "additionalProperties": false },
+            { "type": "null" }
+          ] },
           "transforms": { "type": "array" },
+          "width": { "type": "number" },
           "x": { "type": "number" },
           "y": { "type": "number" }
         }

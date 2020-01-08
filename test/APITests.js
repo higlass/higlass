@@ -9,10 +9,13 @@ import {
 } from '../app/scripts/utils';
 
 import {
-  emptyConf,
   simpleCenterViewConfig,
   simple1And2dAnnotations,
+  stackedTopTracks,
+  stackedTopViews,
 } from './view-configs';
+
+import emptyConf from './view-configs-more/emptyConf';
 
 import simpleHeatmapViewConf from './view-configs/simple-heatmap';
 import adjustViewSpacingConf from './view-configs/adjust-view-spacing';
@@ -20,6 +23,7 @@ import simple1dHorizontalVerticalAnd2dDataTrack from './view-configs/simple-1d-h
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
+import drag from './utils/drag';
 
 function findCanvas(element) {
   if (element.tagName.toLowerCase() === 'canvas') return element;
@@ -40,6 +44,59 @@ describe('API Tests', () => {
   let api = null;
 
   describe('Options tests', () => {
+    it('adjust view spacing', () => {
+      const options = {
+        pixelPreciseMarginPadding: true,
+        containingPaddingX: 0,
+        containingPaddingY: 0,
+        viewMarginTop: 32,
+        viewMarginBottom: 6,
+        viewMarginLeft: 32,
+        viewMarginRight: 6,
+        viewPaddingTop: 32,
+        viewPaddingBottom: 6,
+        viewPaddingLeft: 32,
+        viewPaddingRight: 6,
+      };
+
+      [div, api] = createElementAndApi(adjustViewSpacingConf, options);
+
+      const tiledPlotEl = div.querySelector('.tiled-plot-div');
+      const trackRendererEl = div.querySelector('.track-renderer-div');
+      const topTrackEl = div.querySelector('.top-track-container');
+
+      // We need to get the parent of tiledPlotDiv because margin is apparently
+      // not included in the BBox width and height.
+      const tiledPlotBBox = tiledPlotEl.parentNode.getBoundingClientRect();
+      const trackRendererBBox = trackRendererEl.getBoundingClientRect();
+      const topTrackBBox = topTrackEl.getBoundingClientRect();
+
+      const totalViewHeight = adjustViewSpacingConf.views[0].tracks.top
+        .reduce((height, track) => height + track.height, 0);
+
+      expect(topTrackBBox.height).toEqual(totalViewHeight);
+      expect(trackRendererBBox.height).toEqual(
+        totalViewHeight + options.viewPaddingTop + options.viewPaddingBottom
+      );
+      expect(tiledPlotBBox.height).toEqual(
+        totalViewHeight
+        + options.viewPaddingTop
+        + options.viewPaddingBottom
+        + options.viewMarginTop
+        + options.viewMarginBottom
+      );
+      expect(trackRendererBBox.width).toEqual(
+        topTrackBBox.width + options.viewPaddingLeft + options.viewPaddingRight
+      );
+      expect(tiledPlotBBox.width).toEqual(
+        topTrackBBox.width
+        + options.viewPaddingLeft
+        + options.viewPaddingRight
+        + options.viewMarginLeft
+        + options.viewMarginRight
+      );
+    });
+
     it('shows linear-labels as available track', () => {
       [div, api] = createElementAndApi(simpleCenterViewConfig);
 
@@ -255,63 +312,181 @@ describe('API Tests', () => {
       });
     });
 
+    it('has option getter', () => {
+      [div, api] = createElementAndApi(
+        simpleCenterViewConfig, { editable: false, sizeMode: 'bounded' }
+      );
+
+      expect(api.option('editable')).toEqual(false);
+      expect(api.option('sizeMode')).toEqual('bounded');
+    });
+
+    it('overflow when in overflow mode but cannot scroll', (done) => {
+      [div, api] = createElementAndApi(
+        stackedTopTracks,
+        { editable: false, sizeMode: 'overflow' },
+        600, 200, true
+      );
+
+      expect(api.option('sizeMode')).toEqual('overflow');
+
+      const hgContainer = div.querySelector('.higlass');
+      const hgContainerStyles = window.getComputedStyle(hgContainer);
+      const scrollContainer = div.querySelector('.higlass-scroll-container');
+      const scrollContainerStyles = window.getComputedStyle(scrollContainer);
+
+      expect(hgContainerStyles.getPropertyValue('position')).toEqual('absolute');
+      expect(scrollContainerStyles.getPropertyValue('position')).toEqual('absolute');
+      expect(scrollContainerStyles.getPropertyValue('overflow')).toEqual('hidden');
+
+      const hgc = api.getComponent();
+
+      waitForTilesLoaded(hgc, () => {
+        expect(hgc.isZoomFixed('aa')).toBeFalsy();
+
+        scrollContainer.scrollTop = 20;
+
+        setTimeout(() => {
+          expect(hgc.pixiStage.y).toEqual(0);
+          done();
+        }, 50);
+      });
+    });
+
+    it('can scroll in scroll mode', (done) => {
+      [div, api] = createElementAndApi(
+        stackedTopTracks,
+        { editable: false, sizeMode: 'scroll' },
+        600, 200, true
+      );
+
+      expect(api.option('sizeMode')).toEqual('scroll');
+
+      const scrollContainer = div.querySelector('.higlass-scroll-container');
+      const scrollContainerStyles = window.getComputedStyle(scrollContainer);
+
+      expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual('hidden');
+      expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual('auto');
+
+      const hgc = api.getComponent();
+
+      waitForTilesLoaded(hgc, () => {
+        expect(hgc.isZoomFixed('aa')).toEqual(true);
+
+        scrollContainer.scrollTop = 20;
+
+        setTimeout(() => {
+          expect(scrollContainer.scrollTop).toEqual(20);
+          expect(hgc.pixiStage.y).toEqual(-20);
+          done();
+        }, 50);
+      });
+    });
+
+    it('remembers scroll position when switching from scroll to overflow mode', (done) => {
+      [div, api] = createElementAndApi(
+        stackedTopTracks,
+        { editable: false, sizeMode: 'scroll' },
+        600, 200, true
+      );
+
+      expect(api.option('sizeMode')).toEqual('scroll');
+
+      const hgc = api.getComponent();
+
+      waitForTilesLoaded(hgc, () => {
+        const scrollContainer = div.querySelector('.higlass-scroll-container');
+        let scrollContainerStyles = window.getComputedStyle(scrollContainer);
+        scrollContainer.scrollTop = 20;
+
+        setTimeout(() => {
+          expect(hgc.pixiStage.y).toEqual(-20);
+          expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual('hidden');
+          expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual('auto');
+
+          api.option('sizeMode', 'overflow');
+          scrollContainerStyles = window.getComputedStyle(scrollContainer);
+
+          setTimeout(() => {
+            scrollContainer.scrollTop = 40;
+            setTimeout(() => {
+              expect(scrollContainerStyles.getPropertyValue('overflow')).toEqual('hidden');
+              expect(hgc.pixiStage.y).toEqual(-20);
+              done();
+            }, 50);
+          }, 250);
+        }, 50);
+      });
+    });
+
+    it('can scroll multiple views', (done) => {
+      [div, api] = createElementAndApi(
+        stackedTopViews,
+        {
+          editable: false,
+          sizeMode: 'scroll',
+        },
+        600, 200, true
+      );
+
+      expect(api.option('sizeMode')).toEqual('scroll');
+
+      const hgc = api.getComponent();
+
+      waitForTilesLoaded(hgc, () => {
+        const scrollContainer = div.querySelector('.higlass-scroll-container');
+        scrollContainer.scrollTop = 20;
+
+        setTimeout(() => {
+          expect(hgc.pixiStage.y).toEqual(-20);
+          done();
+        }, 50);
+      });
+    });
+
+    it('can pan&zoom after having scrolled', (done) => {
+      [div, api] = createElementAndApi(
+        stackedTopViews,
+        {
+          editable: false,
+          sizeMode: 'scroll'
+        },
+        600, 400, true
+      );
+
+      expect(api.option('sizeMode')).toEqual('scroll');
+
+      const hgc = api.getComponent();
+
+      waitForTilesLoaded(hgc, () => {
+        expect(hgc.isZoomFixed('l')).toEqual(true);
+
+        const scrollContainer = div.querySelector('.higlass-scroll-container');
+        // Scroll to the very end
+        scrollContainer.scrollTop = 1790;
+
+        setTimeout(() => {
+          expect(hgc.pixiStage.y).toEqual(-1790);
+
+          api.option('sizeMode', 'overflow');
+
+          setTimeout(() => {
+            expect(hgc.isZoomFixed('l')).toBeFalsy();
+
+            // Trigger a pan event
+            const [dx] = drag(150, 300, 140, 300, 'l', hgc);
+
+            expect(dx).toEqual(-10);
+            done();
+          }, 250);
+        }, 50);
+      });
+    });
+
     it('has version', () => {
       [div, api] = createElementAndApi(emptyConf, { editable: false });
 
       expect(api.version).toEqual(VERSION);
-    });
-
-    it('adjust view spacing', () => {
-      const options = {
-        pixelPreciseMarginPadding: true,
-        containingPaddingX: 0,
-        containingPaddingY: 0,
-        viewMarginTop: 32,
-        viewMarginBottom: 6,
-        viewMarginLeft: 32,
-        viewMarginRight: 6,
-        viewPaddingTop: 32,
-        viewPaddingBottom: 6,
-        viewPaddingLeft: 32,
-        viewPaddingRight: 6,
-      };
-
-      [div, api] = createElementAndApi(adjustViewSpacingConf, options);
-
-      const tiledPlotEl = div.querySelector('.tiled-plot-div');
-      const trackRendererEl = div.querySelector('.track-renderer-div');
-      const topTrackEl = div.querySelector('.top-track-container');
-
-      // We need to get the parent of tiledPlotDiv because margin is apparently
-      // not included in the BBox width and height.
-      const tiledPlotBBox = tiledPlotEl.parentNode.getBoundingClientRect();
-      const trackRendererBBox = trackRendererEl.getBoundingClientRect();
-      const topTrackBBox = topTrackEl.getBoundingClientRect();
-
-      const totalViewHeight = adjustViewSpacingConf.views[0].tracks.top
-        .reduce((height, track) => height + track.height, 0);
-
-      expect(topTrackBBox.height).toEqual(totalViewHeight);
-      expect(trackRendererBBox.height).toEqual(
-        totalViewHeight + options.viewPaddingTop + options.viewPaddingBottom
-      );
-      expect(tiledPlotBBox.height).toEqual(
-        totalViewHeight
-        + options.viewPaddingTop
-        + options.viewPaddingBottom
-        + options.viewMarginTop
-        + options.viewMarginBottom
-      );
-      expect(trackRendererBBox.width).toEqual(
-        topTrackBBox.width + options.viewPaddingLeft + options.viewPaddingRight
-      );
-      expect(tiledPlotBBox.width).toEqual(
-        topTrackBBox.width
-        + options.viewPaddingLeft
-        + options.viewPaddingRight
-        + options.viewMarginLeft
-        + options.viewMarginRight
-      );
     });
 
     it('mousemove and zoom events work for 1D and 2D tracks', (done) => {

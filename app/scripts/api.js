@@ -5,7 +5,6 @@ import Ajv from 'ajv';
 import schema from '../schema.json';
 
 import {
-  setDarkTheme,
   setTileProxyAuthHeader,
 } from './services';
 
@@ -17,6 +16,11 @@ import {
   MOUSE_TOOL_MOVE,
   MOUSE_TOOL_SELECT,
 } from './configs';
+
+
+const forceUpdate = (self) => {
+  self.setState(self.state);
+};
 
 
 const createApi = function api(context, pubSub) {
@@ -302,9 +306,11 @@ const createApi = function api(context, pubSub) {
 
       /**
        * Show overlays where this track can be positioned. This
-       * function will take a track definition and display red
-       * or green overlays highlighting where the track can be
-       * placed on the view.
+       * function will take a track definition and display red,
+       * blue or green overlays highlighting where the track can
+       * be placed on the view. Blue indicates that a track can
+       * be placed in that region, red that it can't and green that
+       * the mouse is currently over the given region.
        *
        * @param {obj} track { server, tilesetUid, datatype }
        *
@@ -335,6 +341,34 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
+       * Show the track chooser which highlights tracks
+       * when the mouse is over them.
+       *
+       * @param  {Function} callback (toViewUid, toTrackUid) =>: A function
+       *                             to be called when a track is chosen.
+       * @return {[type]}            [description]
+       */
+      showTrackChooser(callback) {
+        self.setState({
+          chooseTrackHandler: (...args) => {
+            self.setState({
+              chooseTrackHandler: null,
+            });
+
+            callback(...args);
+          },
+        });
+      },
+
+      /**
+       * Hide the track chooser.
+       */
+      hideTrackChooser() {
+        this.setState({
+          chooseTrackHandler: null,
+        });
+      },
+      /**
        *
        * When comparing different 1D tracks it can be desirable to fix their y or value
        * scale
@@ -358,10 +392,22 @@ const createApi = function api(context, pubSub) {
 
       /**
        * Choose a theme.
+       * @deprecated since version 1.6.6. Use `setTheme()` instead.
        */
       setDarkTheme(darkTheme) {
-        console.warn('Please note that the dark mode is still in beta');
-        setDarkTheme(!!darkTheme);
+        console.warn(
+          '`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.'
+        );
+        const theme = darkTheme ? 'dark' : 'light';
+        self.setTheme(theme);
+      },
+
+      /**
+       * Choose a theme.
+       */
+      setTheme(theme) {
+        console.warn('Please note that theming is still in beta!');
+        self.setTheme(theme);
       },
 
       /**
@@ -576,6 +622,31 @@ const createApi = function api(context, pubSub) {
         }
 
         return getTrackObjectFromHGC(self, newViewId, newTrackId);
+      },
+
+      /**
+       * Set or get an option.
+       * @param   {string}  key  The name of the option you want get or set
+       * @param   {*}  value  If not `undefined`, `key` will be set to `value`
+       * @return  {[type]}  When `value` is `undefined` the current value of
+       *   `key` will be returned.
+       */
+      option(key, value) {
+        if (typeof value === 'undefined') return self.props.options[key];
+
+        switch (key) {
+          case 'sizeMode':
+            self.props.options[key] = value;
+            forceUpdate(self);
+            break;
+
+          default:
+            console.warn(
+              `This option "${key}" is either unknown or not settable.`
+            );
+        }
+
+        return undefined;
       },
 
       /**

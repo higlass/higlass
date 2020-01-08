@@ -17,7 +17,6 @@
         3061006380.438374
       ],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "genomePositionSearchBoxVisible": false,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
@@ -353,10 +352,7 @@
         "w": 12,
         "h": 12,
         "x": 0,
-        "y": 0,
-        "i": "aa",
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "genomePositionSearchBox": {
         "autocompleteServer": "http://higlass.io/api/v1",

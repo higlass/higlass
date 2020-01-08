@@ -1,10 +1,17 @@
 import { scaleLinear } from 'd3-scale';
+import { fake as fakePubSub } from './hocs/with-pub-sub';
 
 // Services
 import { isWithin } from './utils';
 
 class Track {
-  constructor({ id, pubSub }) {
+  constructor({ id, pubSub, getTheme }) {
+    if (pubSub) {
+      this.pubSub = pubSub;
+    } else {
+      this.pubSub = fakePubSub;
+    }
+
     this.id = id;
     this._xScale = scaleLinear();
     this._yScale = scaleLinear();
@@ -19,8 +26,13 @@ class Track {
     this.position = [0, 0];
     this.dimensions = [1, 1];
     this.options = {};
-    this.pubSub = pubSub;
     this.pubSubs = [];
+
+    if (getTheme) {
+      this.getTheme = getTheme;
+    } else {
+      this.getTheme = () => {};
+    }
 
     this.pubSubs.push(
       this.pubSub.subscribe(
@@ -167,6 +179,14 @@ class Track {
    */
   respondsToPosition(x, y) {
     return this.isWithin(x, y);
+  }
+
+  zoomedY(trackY, kMultiplier) {
+
+  }
+
+  movedY(dY) {
+
   }
 }
 

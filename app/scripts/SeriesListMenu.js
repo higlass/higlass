@@ -4,11 +4,10 @@ import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
 import NestedContextMenu from './NestedContextMenu';
 
-import { getDarkTheme } from './services';
-
 // Configs
 import {
   OPTIONS_INFO,
+  THEME_DARK,
   TRACKS_INFO,
   TRACKS_INFO_BY_TYPE,
 } from './configs';
@@ -106,6 +105,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
         orientation={this.state.orientation}
         parentBbox={bbox}
         position={position}
+        theme={this.props.theme}
       />
     );
   }
@@ -176,6 +176,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
         orientation={this.state.orientation}
         parentBbox={bbox}
         position={position}
+        theme={this.props.theme}
       />
     );
   }
@@ -292,7 +293,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
       ) : null;
 
     let styleNames = 'context-menu';
-    if (getDarkTheme()) styleNames += ' context-menu-dark';
+    if (this.props.theme === THEME_DARK) styleNames += ' context-menu-dark';
 
     return (
       <div

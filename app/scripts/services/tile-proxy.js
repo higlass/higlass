@@ -2,7 +2,6 @@ import { range } from 'd3-array';
 import slugid from 'slugid';
 
 import {
-  workerFetchTiles, // eslint-disable-line import/named
   workerGetTiles,
   workerSetPix,
 } from '../worker';
@@ -248,20 +247,6 @@ export function fetchMultiRequestTiles(req, pubSub) {
  */
 export const fetchTilesDebounced = throttleAndDebounce(
   fetchMultiRequestTiles, TILE_FETCH_DEBOUNCE, TILE_FETCH_DEBOUNCE
-);
-
-/**
- * Retrieve a set of tiles from the server
- *
- * Plenty of room for optimization and caching here.
- *
- * @param server: A string with the server's url (e.g. "http://127.0.0.1")
- * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
- */
-export const fetchTiles = (tilesetServer, tilesetIds, done) => workerFetchTiles(
-  tilesetServer, tilesetIds, this.sessionId, (results) => {
-    done(results);
-  }
 );
 
 /**
@@ -511,10 +496,16 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
  * threadpool
  */
 export const tileDataToPixData = (
-  tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished, ignoreUpperRight
+  tile,
+  valueScaleType,
+  valueScaleDomain,
+  pseudocount,
+  colorScale,
+  finished,
+  ignoreUpperRight,
+  ignoreLowerLeft,
 ) => {
   const { tileData } = tile;
-
 
   if (!tileData.dense) {
     // if we didn't get any data from the server, don't do anything
@@ -522,16 +513,33 @@ export const tileDataToPixData = (
     return;
   }
 
-  if (tile.mirrored
+  if (
+    tile.mirrored
+    // Data is already copied over
+    && !tile.isMirrored
     && tile.tileData.tilePos.length > 0
-    && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]) {
+    && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
+  ) {
+    // Copy the data before mutating it in case the same data is used elsewhere.
+    // During throttling/debouncing tile requests we also merge the requests so
+    // the very same tile data might be used by different tracks.
+    tile.tileData.dense = tile.tileData.dense.slice();
+
     // if a center tile is mirrored, we'll just add its transpose
     const tileWidth = Math.floor(Math.sqrt(tile.tileData.dense.length));
-    for (let i = 0; i < tileWidth; i++) {
-      for (let j = 0; j < tileWidth; j++) {
-        tile.tileData.dense[(i * tileWidth) + j] = tile.tileData.dense[(j * tileWidth) + i];
+    for (let row = 0; row < tileWidth; row++) {
+      for (let col = row + 1; col < tileWidth; col++) {
+        tile.tileData.dense[(row * tileWidth) + col] = tile.tileData.dense[(col * tileWidth) + row];
       }
     }
+    if (ignoreLowerLeft) {
+      for (let row = 0; row < tileWidth; row++) {
+        for (let col = 0; col < row; col++) {
+          tile.tileData.dense[(row * tileWidth) + col] = NaN;
+        }
+      }
+    }
+    tile.isMirrored = true;
   }
 
   // console.log('tile', tile);
@@ -540,7 +548,6 @@ export const tileDataToPixData = (
   // const newTileData = tileData.dense;
 
   // comment this and uncomment the code afterwards to enable threading
-
   const pixData = workerSetPix(
     tileData.dense.length,
     tileData.dense,
@@ -548,7 +555,8 @@ export const tileDataToPixData = (
     valueScaleDomain,
     pseudocount,
     colorScale,
-    ignoreUpperRight
+    ignoreUpperRight,
+    ignoreLowerLeft
   );
 
   finished({ pixData });
@@ -606,7 +614,7 @@ function fetchEither(url, callback, textOrJson, pubSub) {
       return content;
     })
     .catch((error) => {
-      console.error(error);
+      console.error(`Could not fetch ${url}`, error);
       callback(error, undefined);
       return error;
     })
@@ -653,7 +661,6 @@ const api = {
   calculateTileWidth,
   calculateZoomLevel,
   calculateZoomLevelFromResolutions,
-  fetchTiles,
   fetchTilesDebounced,
   json,
   text,
