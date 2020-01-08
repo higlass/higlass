@@ -77,6 +77,18 @@ Here is an example snippet. Used if the other options aren't set.
     ...
   }
 
+**Other Options***
+
+.. image:: img/box-style.png
+    :align: right
+
+.. image:: img/segment-style.png
+    :align: right
+
+- **annotationStyle**: [box|segment]
+
+Two different ways of displaying annotations. Box style as pictured on the right top and segment style as shown on the right bottom. Box style is the default.
+
 
 Gene Annotations
 ================
