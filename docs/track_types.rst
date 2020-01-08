@@ -175,6 +175,14 @@ bedpe`` command. See the `data preparation section
 <data_preparation.html#bedpe-like-files>`__ for an example of the aggregation
 command.
 
+**Options**
+
+``flipDiagonal: [yes|no|copy]``
+  If yes, flip domains across the diagonal. If no, plot as usual.
+  If copy, plot regular and mirrored.
+
+**Importing**
+
 .. code-block:: bash
 
     higlass-manage ingest --filetype bed2ddb --datatype 2d-rectangle-domains annotations.bed2ddb

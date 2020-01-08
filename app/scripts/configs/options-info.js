@@ -61,6 +61,14 @@ export const OPTIONS_INFO = {
       },
     }
   },
+  flipDiagonal: {
+    name: 'Flip Across Diagonal',
+    inlineOptions: {
+      none: { name: 'No', value: 'none' },
+      yes: { name: 'Yes', value: 'yes' },
+      copy: { name: 'Copy', value: 'copy' }
+    }
+  },
   heatmapValueScaling: {
     name: 'Value Scaling',
     inlineOptions: {

@@ -1318,6 +1318,7 @@ export const TRACKS_INFO = [
     name: '2D Rectangle Domains',
     thumbnail: svgArrowheadDomainsIcon,
     availableOptions: [
+      'flipDiagonal',
       'labelPosition',
       'labelLeftMargin',
       'labelRightMargin',
@@ -1334,6 +1335,7 @@ export const TRACKS_INFO = [
       'minSquareSize'
     ],
     defaultOptions: {
+      flipDiagonal: 'none',
       labelColor: 'black',
       labelPosition: 'hidden',
       labelLeftMargin: 0,

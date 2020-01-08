@@ -1,10 +1,13 @@
-** Next release **
+## Next release
 
+- Added the option to flip 2d annotations across the diagonal
 - Update heatmap docs with colorRange parameter
 - Update BedLikeTrack to display strand-specific entries
 - Added 'segment' style to the BedLikeTrack
 - Updated default plot types when adding tracks
 - When adding multiple tracks at once that have different datatype, each track is added with its default plot type. The plot type chooser is hidden.
+
+_[Detailed changes since v1.7.3](https://github.com/higlass/higlass/compare/v1.7.3...develop)_
 
 ## v1.7.3
 
