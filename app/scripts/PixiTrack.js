@@ -329,7 +329,9 @@ class PixiTrack extends Track {
 
     graphics.beginFill(
       colorToHex(this.options.labelBackgroundColor || 'white'),
-      +this.options.labelBackgroundOpacity || 0.5
+      +this.options.labelBackgroundOpacity >= 0
+        ? +this.options.labelBackgroundOpacity
+        : 0.5
     );
 
     const fontColor = colorToHex(this.getLabelColor());
