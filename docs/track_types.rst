@@ -231,7 +231,7 @@ Options
     }
   }
 
-- **valueScaleMin/valueScaleMax**: Absolute values limiting the value to y-position scale.
+- **valueScaleMin/valueScaleMax**: Absolute values limiting the the value scale, which is used to determine y-position (in 1D tracks) or color (heatmap) tracks.
 
 .. _bar-track:
 
