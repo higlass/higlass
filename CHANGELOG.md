@@ -7,6 +7,7 @@
 - Updated default plot types when adding tracks
 - When adding multiple tracks at once that have different datatype, each track is added with its default plot type. The plot type chooser is hidden.
 - In `HorizontalLine1DPixiTrack`, make sure that `this.valueScale` is set when `getMouseOverHtml()` is called.
+- VerticalRule, HorizontalRule, and CrossRule tracks included in SVG and PNG exports.
 
 _[Detailed changes since v1.7.2](https://github.com/higlass/higlass/compare/v1.7.2...v1.7.3)_
 
