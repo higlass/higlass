@@ -6,6 +6,7 @@ Troubleshooting
 
 Empty Page
 ==========
+
 HiGlass showing as an empty page in Firefox on Linux
 ----------------------------------------------------
 
