@@ -53,6 +53,41 @@ export default class VerticalRule extends mix(PixiTrack).with(RuleMixin, Vertica
     this.animate();
   }
 
+  exportSVG() {
+    let track = null;
+    let base = null;
+
+    if (super.exportSVG) {
+      [base, track] = super.exportSVG();
+    } else {
+      base = document.createElement('g');
+      track = base;
+    }
+    const output = document.createElement('g');
+    output.setAttribute('transform',
+      `translate(${this.position[0]},${this.position[1]})`);
+
+    track.appendChild(output);
+
+    let stroke = 'black';
+    if (this.highlighted) {
+      stroke = 'red';
+    }
+
+    const line = document.createElement('line');
+    line.setAttribute('stroke', stroke);
+    line.setAttribute('stroke-width', '2');
+    line.setAttribute('stroke-dasharray', '5 3');
+    line.setAttribute('x1', this._xScale(this.xPosition));
+    line.setAttribute('y1', 0);
+    line.setAttribute('x2', this._xScale(this.xPosition));
+    line.setAttribute('y2', this.dimensions[1]);
+
+    output.appendChild(line);
+
+    return [base, track];
+  }
+
   mouseMoveHandler(mousePos) {
     this.highlighted = (
       this.isWithin(mousePos.x, mousePos.y)
