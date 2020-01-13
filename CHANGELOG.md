@@ -1,6 +1,6 @@
-## Next release
+## v1.8.0
 
-- Added the option to flip 2d annotations across the diagonal
+- Added the option to flip 2D annotations across the diagonal
 - Update heatmap docs with colorRange parameter
 - Update BedLikeTrack to display strand-specific entries
 - Added 'segment' style to the BedLikeTrack
@@ -9,7 +9,7 @@
 - In `HorizontalLine1DPixiTrack`, make sure that `this.valueScale` is set when `getMouseOverHtml()` is called.
 - VerticalRule, HorizontalRule, and CrossRule tracks included in SVG and PNG exports.
 
-_[Detailed changes since v1.7.2](https://github.com/higlass/higlass/compare/v1.7.2...v1.7.3)_
+_[Detailed changes since v1.7.2](https://github.com/higlass/higlass/compare/v1.7.2...v1.8.0)_
 
 ## v1.7.2
 
