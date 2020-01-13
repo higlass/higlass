@@ -8,6 +8,82 @@ import { tileProxy } from './services';
 // Utils
 import { colorToHex } from './utils';
 
+function drawAnnotation(
+  track,
+  graphics,
+  td,
+  minSquareSize,
+  xMin,
+  xMax,
+  yMin,
+  yMax,
+  minThres,
+  flipDiagonal
+) {
+  const startX = flipDiagonal ? track._xScale(td.yStart) : track._xScale(td.xStart);
+  const endX = flipDiagonal ? track._xScale(td.yEnd) : track._xScale(td.xEnd);
+
+  const startY = flipDiagonal ? track._yScale(td.xStart) : track._yScale(td.yStart);
+  const endY = flipDiagonal ? track._yScale(td.xEnd) : track._yScale(td.yEnd);
+
+  const uid = td.uid + flipDiagonal;
+
+  const width = endX - startX;
+  const height = endY - startY;
+
+  let drawnRect = {
+    x: startX,
+    y: startY,
+    width,
+    height
+  };
+
+  if (minSquareSize) {
+    if (width < minSquareSize || height < minSquareSize) {
+      drawnRect = {
+        x: startX - minSquareSize / 2,
+        y: startY - minSquareSize / 2,
+        width: minSquareSize,
+        height: minSquareSize
+      };
+    }
+  }
+
+  track.drawnRects[uid] = drawnRect;
+
+  const dRxMax = drawnRect.x + drawnRect.width;
+  const dRyMax = drawnRect.y + drawnRect.height;
+
+  // Only draw annotations that falls somehow within the viewport
+  if (
+    (drawnRect.x > xMin && drawnRect.x < xMax)
+    || (dRxMax > xMin && dRxMax < xMax)
+    || (drawnRect.y > yMin && drawnRect.y < yMax)
+    || (dRyMax > yMin && dRyMax < yMax)
+  ) {
+    if (drawnRect.width > minThres || drawnRect.height > minThres) {
+      // console.log('x', drawnRect.x, 'y', drawnRect.y, 'xMin:', xMin, 'xMax', xMax);
+      graphics.drawRect(
+        drawnRect.x,
+        drawnRect.y,
+        drawnRect.width,
+        drawnRect.height
+      );
+
+      track.publish('annotationDrawn', {
+        trackUuid: track.uuid,
+        annotationUuid: uid,
+        viewPos: [drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height],
+        dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd],
+        importance: td.importance,
+        info: {
+          patternType: track.options.patternType
+        }
+      });
+    }
+  }
+}
+
 class ArrowheadDomainsTrack extends TiledPixiTrack {
   constructor(...args) {
     super(...args);
@@ -169,10 +245,9 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
 
     graphics.alpha = this.options.rectangleDomainOpacity || 0.5;
 
-    const minSquareSize =
-      this.options.minSquareSize && this.options.minSquareSize !== 'none'
-        ? +this.options.minSquareSize
-        : 0;
+    const minSquareSize = this.options.minSquareSize && this.options.minSquareSize !== 'none'
+      ? +this.options.minSquareSize
+      : 0;
 
     const minThres = this.options.rectangleMinSize ? +this.options.rectangleMinSize : 0;
 
@@ -186,62 +261,34 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
     // line needs to be scaled down so that it doesn't become huge
     tile.tileData
       .filter(td => !(td.uid in this.drawnRects))
-      .forEach(td => {
-        const startX = this._xScale(td.xStart);
-        const endX = this._xScale(td.xEnd);
+      .forEach((td) => {
+        drawAnnotation(
+          this,
+          graphics,
+          td,
+          minSquareSize,
+          xMin,
+          xMax,
+          yMin,
+          yMax,
+          minThres,
+          this.options.flipDiagonal === 'yes'
+        );
 
-        const startY = this._yScale(td.yStart);
-        const endY = this._yScale(td.yEnd);
-
-        const uid = td.uid;
-
-        const width = endX - startX;
-        const height = endY - startY;
-
-        let drawnRect = {
-          x: startX,
-          y: startY,
-          width,
-          height
-        };
-
-        if (minSquareSize) {
-          if (width < minSquareSize || height < minSquareSize) {
-            drawnRect = {
-              x: startX - minSquareSize / 2,
-              y: startY - minSquareSize / 2,
-              width: minSquareSize,
-              height: minSquareSize
-            };
-          }
-        }
-
-        this.drawnRects[uid] = drawnRect;
-
-        const dRxMax = drawnRect.x + drawnRect.width;
-        const dRyMax = drawnRect.y + drawnRect.height;
-
-        // Only draw annotations that falls somehow within the viewport
-        if (
-          (drawnRect.x > xMin && drawnRect.x < xMax) ||
-          (dRxMax > xMin && dRxMax < xMax) ||
-          (drawnRect.y > yMin && drawnRect.y < yMax) ||
-          (dRyMax > yMin && dRyMax < yMax)
-        ) {
-          if (drawnRect.width > minThres || drawnRect.height > minThres) {
-            graphics.drawRect(drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height);
-
-            this.publish('annotationDrawn', {
-              trackUuid: this.uuid,
-              annotationUuid: uid,
-              viewPos: [drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height],
-              dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd],
-              importance: td.importance,
-              info: {
-                patternType: this.options.patternType
-              }
-            });
-          }
+        if (this.options.flipDiagonal
+            && this.options.flipDiagonal === 'copy') {
+          drawAnnotation(
+            this,
+            graphics,
+            td,
+            minSquareSize,
+            xMin,
+            xMax,
+            yMin,
+            yMax,
+            minThres,
+            true
+          );
         }
       });
   }
@@ -261,39 +308,39 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
 
     track.appendChild(output);
 
-    for (const tile of this.visibleAndFetchedTiles()) {
-      // this tile has no data
-      if (!tile.tileData || !tile.tileData.length) continue;
+    for (const flipDiagonal of [true, false]) {
+      for (const tile of this.visibleAndFetchedTiles()) {
+        // this tile has no data
+        if (!tile.tileData || !tile.tileData.length) continue;
 
-      tile.tileData.forEach(td => {
-        const gTile = document.createElement('g');
-        gTile.setAttribute(
-          'transform',
-          `translate(${tile.graphics.position.x},${tile.graphics.position.y})scale(${tile.graphics.scale.x},${tile.graphics.scale.y})`
-        );
-        output.appendChild(gTile);
+        tile.tileData.forEach((td) => {
+          const uid = td.uid + flipDiagonal;
+          const gTile = document.createElement('g');
+          gTile.setAttribute('transform',
+            `translate(${tile.graphics.position.x},${tile.graphics.position.y})scale(${tile.graphics.scale.x},${tile.graphics.scale.y})`);
+          output.appendChild(gTile);
 
-        if (td.uid in this.drawnRects) {
-          const rect = this.drawnRects[td.uid];
+          if (uid in this.drawnRects) {
+            const rect = this.drawnRects[uid];
 
-          const r = document.createElement('rect');
-          r.setAttribute('x', rect.x);
-          r.setAttribute('y', rect.y);
-          r.setAttribute('width', rect.width);
-          r.setAttribute('height', rect.height);
+            const r = document.createElement('rect');
+            r.setAttribute('x', rect.x);
+            r.setAttribute('y', rect.y);
+            r.setAttribute('width', rect.width);
+            r.setAttribute('height', rect.height);
 
-          r.setAttribute(
-            'fill',
-            this.options.rectangleDomainFillColor ? this.options.rectangleDomainFillColor : 'grey'
-          );
-          r.setAttribute('opacity', 0.3);
+            r.setAttribute(
+              'fill', this.options.rectangleDomainFillColor ? this.options.rectangleDomainFillColor : 'grey'
+            );
+            r.setAttribute('opacity', 0.3);
 
-          r.style.stroke = 'black';
-          r.style.strokeWidth = '1px';
+            r.style.stroke = 'black';
+            r.style.strokeWidth = '1px';
 
-          gTile.appendChild(r);
-        }
-      });
+            gTile.appendChild(r);
+          }
+        });
+      }
     }
 
     return [base, base];
@@ -308,12 +355,11 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
 
   zoomed(newXScale, newYScale) {
     if (
-      this.xScale().domain()[0] === newXScale.domain()[0] &&
-      this.xScale().domain()[1] === newXScale.domain()[1] &&
-      this.yScale().domain()[0] === newYScale.domain()[0] &&
-      this.yScale().domain()[1] === newYScale.domain()[1]
-    )
-      return;
+      this.xScale().domain()[0] === newXScale.domain()[0]
+      && this.xScale().domain()[1] === newXScale.domain()[1]
+      && this.yScale().domain()[0] === newYScale.domain()[0]
+      && this.yScale().domain()[1] === newYScale.domain()[1]
+    ) return;
 
     this.xScale(newXScale);
     this.yScale(newYScale);

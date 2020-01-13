@@ -45,22 +45,22 @@ column" section).
 
 Intervals can visually encode information using the following three ``options``:
 
-``colorEncoding: bool [default false]``
+- **colorEncoding**: bool [default false]
     If ``true`` the interval value is used for color encoding.
 
-``colorRange: array``
+- **colorRange: array**
     A list of HEX colors that make up the continuous color map.
 
-``colorEncodingRange: array``
+- **colorEncodingRange**: array
     A tuple defining the minimum and maximum range value for color encoding.
 
-``plusStrandColor``
+- **plusStrandColor**
     For stranded mode, the color of the plus strand entries
 
-``minusStrandColor``
+- **minusStrandColor**
     For stranded mode, the color of the minus strand entries
 
-``fillColor``
+- **fillColor**
     Default color for any mode
 
 Here is an example snippet. Used if the other options aren't set.
@@ -128,7 +128,7 @@ triangle via the track context menu or by setting ``extent`` option to
 Options
 --------
 
-**colorRange**: This is an array of colors used to create a segmented color
+- **colorRange**: This is an array of colors used to create a segmented color
 scale for the heatmap. The contents of this array are passed in to `d3's
 scaleLinear function <https://github.com/d3/d3-scale>`_ to create the color
 scale. The domain of the color scale spans the lowest visible value to the
@@ -144,6 +144,9 @@ values are ones that can be used with CSS (see, for example, `Color Names
       "rgba(208,2,27,1.0)",
       "black"
     ]
+
+- **valueScaleMin/valueScaleMax**: Absolute values limiting the value to color scale. The scale can be further adjusted within
+this range using the colorbar.
 
 Rotated 2D Heatmap
 ==================
@@ -174,6 +177,14 @@ commonly aggregated using clodius based on some importance using the ``clodius
 bedpe`` command. See the `data preparation section
 <data_preparation.html#bedpe-like-files>`__ for an example of the aggregation
 command.
+
+**Options**
+
+``flipDiagonal: [yes|no|copy]``
+  If yes, flip domains across the diagonal. If no, plot as usual.
+  If copy, plot regular and mirrored.
+
+**Importing**
 
 .. code-block:: bash
 
@@ -215,9 +226,9 @@ plot. For such data, the :ref:`bar track <bar-track>` or :ref:`point track
 Options
 --------
 
-**axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
-**lineStrokeColor**: - A valid color (e.g. ``black``) or to track the color of the line use ``[glyph-color]``.
-**constIndicators**: Array of constant value indicators - A constant value indicator display a line for a constant value, e.g., a minimum or maximum value. This property is also available on other 1D tracks like ``Bar`` and ``Point`` tracks. See the following for an example:
+- **axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
+- **lineStrokeColor**: - A valid color (e.g. ``black``) or to track the color of the line use ``[glyph-color]``.
+- **constIndicators**: Array of constant value indicators - A constant value indicator display a line for a constant value, e.g., a minimum or maximum value. This property is also available on other 1D tracks like ``Bar`` and ``Point`` tracks. See the following for an example:
 
 .. code-block:: javascript
 
@@ -240,6 +251,7 @@ Options
     }
   }
 
+- **valueScaleMin/valueScaleMax**: Absolute values limiting the the value scale, which is used to determine y-position (in 1D tracks) or color (heatmap) tracks.
 
 .. _bar-track:
 
@@ -260,6 +272,8 @@ Options
 - **axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
 
 - **barFillColor**: A valid color (e.g. ``black``) or to track the color of the bars use ``[glyph-color]``.
+
+- **valueScaleMin/valueScaleMax**: Absolute values limiting the value to y-position scale.
 
 - **zeroLineVisible**: If ``true`` draws a demarcation line at the bottom of a bar track, i.e., at the zero value.
 
@@ -289,7 +303,8 @@ to draw something.
 Options
 --------
 
-**axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
+- **axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
+- **valueScaleMin/valueScaleMax**: Absolute values limiting the value to y-position scale.
 
 .. _1d-heatmap:
 
@@ -328,6 +343,12 @@ with this track.
 
   `Full example <1d-heatmap-track.html>`_.
   `Genome browser-like view from HiGlass.io <1d-heatmap-track-2.html>`_.
+
+Options
+-------
+
+- **valueScaleMin/valueScaleMax**: Absolute values limiting the value to color scale. The scale can be further adjusted within
+this range using the colorbar.
 
 .. _chromosome-labels:
 
