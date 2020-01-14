@@ -1,6 +1,7 @@
 ## Next
 
 - Prettified JS code
+- Added buttons to the add track position pop-up for selecting upper-right and lower-left extents with the center position.
 
 _[Detailed changes since v1.8.0](https://github.com/higlass/higlass/compare/v1.8.0...develop)_
 
