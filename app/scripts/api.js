@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import createPubSub from 'pub-sub-es';
 import Ajv from 'ajv';
 
-import schema from '../schema.json';
+import schema from '../schema';
 
 import {
   setTileProxyAuthHeader,
