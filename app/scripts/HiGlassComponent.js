@@ -1771,7 +1771,7 @@ class HiGlassComponent extends React.Component {
       };
 
       this.addCallbacks(toView, newTrack);
-      this.handleTrackAdded(toView, newTrack, position, hostTrack);
+      this.handleTrackAdded(toView, newTrack, position, null, hostTrack);
     }
     this.setState({
       chooseTrackHandler: null
@@ -1846,9 +1846,10 @@ class HiGlassComponent extends React.Component {
    *
    * We just need to close the menu here.
    */
-  handleTrackPositionChosen(viewUid, position) {
+  handleTrackPositionChosen(viewUid, position, extent) {
     this.setState({
       addTrackPosition: position,
+      addTrackExtent: extent,
       addTrackPositionView: viewUid
     });
   }
@@ -2350,7 +2351,8 @@ class HiGlassComponent extends React.Component {
     if (this.state.addTrackPosition) {
       // we've already added the track, remove the add track dialog
       this.setState({
-        addTrackPosition: null
+        addTrackPosition: null,
+        addTrackExtent: null
       });
     }
   }
@@ -2363,11 +2365,11 @@ class HiGlassComponent extends React.Component {
    * @param position: The position the track is being added to
    * @param host: If this track is being added to another track
    */
-  handleTracksAdded(viewId, newTracks, position, host) {
+  handleTracksAdded(viewId, newTracks, position, extent, host) {
     this.storeTrackSizes(viewId);
 
     for (const newTrack of newTracks) {
-      this.handleTrackAdded(viewId, newTrack, position, host);
+      this.handleTrackAdded(viewId, newTrack, position, extent, host);
     }
   }
 
@@ -2433,7 +2435,7 @@ class HiGlassComponent extends React.Component {
    * @returns {Object}: A trackConfig (\{ uid: "", width: x \})
    *  describing this track
    */
-  handleTrackAdded(viewId, newTrack, position, host = null) {
+  handleTrackAdded(viewId, newTrack, position, extent = null, host = null) {
     this.addDefaultTrackOptions(newTrack);
 
     // make sure the new track has a uid
@@ -2449,7 +2451,8 @@ class HiGlassComponent extends React.Component {
     if (this.state.addTrackPosition) {
       // we've already added the track, remove the add track dialog
       this.setState({
-        addTrackPosition: null
+        addTrackPosition: null,
+        addTrackExtent: null
       });
     }
 
@@ -2460,6 +2463,9 @@ class HiGlassComponent extends React.Component {
     }
 
     newTrack.position = position;
+    if (extent) {
+      newTrack.options.extent = extent;
+    }
     const trackInfo = this.getTrackInfo(newTrack.type);
 
     newTrack.width =
@@ -3389,7 +3395,7 @@ class HiGlassComponent extends React.Component {
           if (
             otherTrack.type === 'heatmap' &&
             otherTrack.uid !== track.uid &&
-            otherTrack.options.extent !== 'lower-left'
+            otherTrack.options.extent === 'full'
           ) {
             // Automatically change the extent of the other track to
             // `lower-left``
@@ -3416,7 +3422,7 @@ class HiGlassComponent extends React.Component {
             if (
               otherTrack.type === 'heatmap' &&
               otherTrack.uid !== track.uid &&
-              otherTrack.options.extent !== 'upper-right'
+              otherTrack.options.extent === 'full'
             ) {
               // Automatically change the extent of the other track to
               // `upper-right``
@@ -4158,6 +4164,11 @@ class HiGlassComponent extends React.Component {
               this.tiledPlots[view.uid] = c;
             }}
             // Custom props
+            addTrackExtent={
+              this.state.addTrackPositionView === view.uid
+                ? this.state.addTrackExtent
+                : null
+            }
             addTrackPosition={
               this.state.addTrackPositionView === view.uid
                 ? this.state.addTrackPosition
@@ -4205,8 +4216,14 @@ class HiGlassComponent extends React.Component {
               this.handleTrackOptionsChanged(view.uid, trackId, options)
             }
             onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
-            onTracksAdded={(newTracks, position, host) =>
-              this.handleTracksAdded(view.uid, newTracks, position, host)
+            onTracksAdded={(newTracks, position, extent, host) =>
+              this.handleTracksAdded(
+                view.uid,
+                newTracks,
+                position,
+                extent,
+                host
+              )
             }
             onUnlockValueScale={uid =>
               this.handleUnlockValueScale(view.uid, uid)
@@ -4345,8 +4362,8 @@ class HiGlassComponent extends React.Component {
               onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(
                 this
               )}
-              onTrackPositionChosen={position =>
-                this.handleTrackPositionChosen(view.uid, position)
+              onTrackPositionChosen={(position, extent) =>
+                this.handleTrackPositionChosen(view.uid, position, extent)
               }
               onUnlockLocation={uid =>
                 this.handleUnlock(uid, this.locationLocks)

@@ -67,6 +67,7 @@ class AddTrackDialog extends React.Component {
     this.props.onTracksChosen(
       this.state.selectedTilesets,
       this.props.position,
+      this.props.extent,
       this.props.host
     );
   }
@@ -86,6 +87,7 @@ class AddTrackDialog extends React.Component {
     this.props.onTracksChosen(
       this.state.selectedTilesets,
       this.props.position,
+      this.props.extent,
       this.props.host
     );
   }
@@ -171,7 +173,11 @@ class AddTrackDialog extends React.Component {
           datatype={this.props.datatype}
           onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
           onTracksChosen={value =>
-            this.props.onTracksChosen(value, this.props.position)
+            this.props.onTracksChosen(
+              value,
+              this.props.position,
+              this.props.extent
+            )
           }
           orientation={orientation}
           selectedTilesetChanged={this.selectedTilesetsChanged.bind(this)}
@@ -220,6 +226,7 @@ AddTrackDialog.defaultProps = {
 
 AddTrackDialog.propTypes = {
   datatype: PropTypes.string.isRequired,
+  extent: PropTypes.string,
   host: PropTypes.string.isRequired,
   onCancel: PropTypes.func.isRequired,
   onTracksChosen: PropTypes.func.isRequired,

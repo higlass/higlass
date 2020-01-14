@@ -103,6 +103,7 @@ class TiledPlot extends React.Component {
 
       tracks,
       init: false,
+      addTrackExtent: null,
       addTrackPosition: null,
       mouseOverOverlayUid: null,
       // trackOptions: null
@@ -283,6 +284,7 @@ class TiledPlot extends React.Component {
     if (this.state.addTrackPosition || this.props.addTrackPosition) {
       this.props.modal.open(
         <AddTrackDialog
+          extent={this.state.addTrackExtent || this.props.addTrackExtent}
           host={this.state.addTrackHost}
           onCancel={this.handleNoTrackAddedBound}
           onTracksChosen={this.handleTracksAddedBound}
@@ -530,6 +532,7 @@ class TiledPlot extends React.Component {
     this.props.onNoTrackAdded();
 
     this.setState({
+      addTrackExtent: null,
       addTrackPosition: null,
       addTrackHost: null
     });
@@ -601,8 +604,9 @@ class TiledPlot extends React.Component {
     this.handleAddTrack(orientation);
   }
 
-  handleAddTrack(position) {
+  handleAddTrack(position, extent) {
     this.setState({
+      addTrackExtent: extent,
       addTrackPosition: position,
       addTrackHost: null
     });
@@ -674,7 +678,7 @@ class TiledPlot extends React.Component {
     this.props.onChangeTrackData(uid, newData);
   }
 
-  handleTracksAdded(newTracks, position, host) {
+  handleTracksAdded(newTracks, position, extent, host) {
     /**
      * Arguments
      * ---------
@@ -695,6 +699,7 @@ class TiledPlot extends React.Component {
      *      (such as the uid) added.
      */
 
+
     if (this.trackToReplace) {
       this.handleCloseTrack(this.trackToReplace);
       this.trackToReplace = null;
@@ -702,9 +707,10 @@ class TiledPlot extends React.Component {
 
     // if host is defined, then we're adding a new series
     // further down the chain a combined track will be created
-    this.props.onTracksAdded(newTracks, position, host);
+    this.props.onTracksAdded(newTracks, position, extent, host);
 
     this.setState({
+      addTrackExtent: null,
       addTrackPosition: null,
       addTrackHost: null
     });
@@ -1343,6 +1349,7 @@ class TiledPlot extends React.Component {
       overlays: props.overlays,
       viewOptions: props.viewOptions,
       uid: props.uid,
+      addTrackExtent: props.addTrackExtent,
       addTrackPosition: props.addTrackPosition,
       editable: props.editable,
       marginTop: props.marginTop,
@@ -1564,8 +1571,13 @@ class TiledPlot extends React.Component {
             // Can only add one new track at a time
             // because "whole" tracks are always drawn on top of each other,
             // the notion of Series is unnecessary and so 'host' is null
+<<<<<<< HEAD
             onAddTrack={newTrack => {
               this.props.onTracksAdded([newTrack], newTrack.position, null);
+=======
+            onAddTrack={(newTrack) => {
+              this.props.onTracksAdded([newTrack], newTrack.position, null, null);
+>>>>>>> Buttons for upper-right and lower-left additions to center track
               this.handleCloseContextMenu();
             }}
             onChangeTrackData={this.handleChangeTrackDataBound}
@@ -2339,6 +2351,7 @@ TiledPlot.defaultProps = {
 };
 
 TiledPlot.propTypes = {
+  addTrackExtent: PropTypes.string,
   addTrackPosition: PropTypes.string,
   canvasElement: PropTypes.object,
   chooseTrackHandler: PropTypes.func,
