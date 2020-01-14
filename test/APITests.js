@@ -5,14 +5,14 @@ import { select } from 'd3-selection';
 import {
   some,
   waitForTransitionsFinished,
-  waitForTilesLoaded,
+  waitForTilesLoaded
 } from '../app/scripts/utils';
 
 import {
   simpleCenterViewConfig,
   simple1And2dAnnotations,
   stackedTopTracks,
-  stackedTopViews,
+  stackedTopViews
 } from './view-configs';
 
 import emptyConf from './view-configs-more/emptyConf';
@@ -56,7 +56,7 @@ describe('API Tests', () => {
         viewPaddingTop: 32,
         viewPaddingBottom: 6,
         viewPaddingLeft: 32,
-        viewPaddingRight: 6,
+        viewPaddingRight: 6
       };
 
       [div, api] = createElementAndApi(adjustViewSpacingConf, options);
@@ -71,8 +71,10 @@ describe('API Tests', () => {
       const trackRendererBBox = trackRendererEl.getBoundingClientRect();
       const topTrackBBox = topTrackEl.getBoundingClientRect();
 
-      const totalViewHeight = adjustViewSpacingConf.views[0].tracks.top
-        .reduce((height, track) => height + track.height, 0);
+      const totalViewHeight = adjustViewSpacingConf.views[0].tracks.top.reduce(
+        (height, track) => height + track.height,
+        0
+      );
 
       expect(topTrackBBox.height).toEqual(totalViewHeight);
       expect(trackRendererBBox.height).toEqual(
@@ -80,47 +82,43 @@ describe('API Tests', () => {
       );
       expect(tiledPlotBBox.height).toEqual(
         totalViewHeight
-        + options.viewPaddingTop
-        + options.viewPaddingBottom
-        + options.viewMarginTop
-        + options.viewMarginBottom
+          + options.viewPaddingTop
+          + options.viewPaddingBottom
+          + options.viewMarginTop
+          + options.viewMarginBottom
       );
       expect(trackRendererBBox.width).toEqual(
         topTrackBBox.width + options.viewPaddingLeft + options.viewPaddingRight
       );
       expect(tiledPlotBBox.width).toEqual(
         topTrackBBox.width
-        + options.viewPaddingLeft
-        + options.viewPaddingRight
-        + options.viewMarginLeft
-        + options.viewMarginRight
+          + options.viewPaddingLeft
+          + options.viewPaddingRight
+          + options.viewMarginLeft
+          + options.viewMarginRight
       );
     });
 
     it('shows linear-labels as available track', () => {
       [div, api] = createElementAndApi(simpleCenterViewConfig);
 
-      api.showAvailableTrackPositions(
-        {
-          server: 'http://higlass.io/api/v1',
-          tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
-          datatype: 'yyyyy',
-          defaultTracks: ['xxxxx'],
-        }
-      );
+      api.showAvailableTrackPositions({
+        server: 'http://higlass.io/api/v1',
+        tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+        datatype: 'yyyyy',
+        defaultTracks: ['xxxxx']
+      });
 
       // we don't know what type of track 'xxxx' is and what
       // datatype 'yyyy' is so let's not show any overlays
       selection = select(div).selectAll('.DragListeningDiv');
       expect(selection.size()).toEqual(0);
 
-      api.showAvailableTrackPositions(
-        {
-          server: 'http://higlass.io/api/v1',
-          tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
-          datatype: 'linear-labels',
-        }
-      );
+      api.showAvailableTrackPositions({
+        server: 'http://higlass.io/api/v1',
+        tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+        datatype: 'linear-labels'
+      });
 
       // before providing default tracks, higlass shouldn't know
       // which tracks are compatible with this datatype and shouldn't
@@ -128,28 +126,25 @@ describe('API Tests', () => {
       let selection = select(div).selectAll('.DragListeningDiv');
       expect(selection.size()).toEqual(0);
 
-      api.showAvailableTrackPositions(
-        {
-          server: 'http://higlass.io/api/v1',
-          tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
-          datatype: 'linear-labels',
-          defaultTracks: ['heatmap', 'horizontal-heatmap'],
-        }
-      );
+      api.showAvailableTrackPositions({
+        server: 'http://higlass.io/api/v1',
+        tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+        datatype: 'linear-labels',
+        defaultTracks: ['heatmap', 'horizontal-heatmap']
+      });
 
       selection = select(div).selectAll('.DragListeningDiv');
       expect(selection.size()).toEqual(5);
     });
 
     it('creates a track with default options', () => {
-      [div, api] = createElementAndApi(simpleCenterViewConfig,
-        {
-          defaultTrackOptions: {
-            all: {
-              showTooltip: true,
-            }
+      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+        defaultTrackOptions: {
+          all: {
+            showTooltip: true
           }
-        });
+        }
+      });
 
       const newTrack = {
         filetype: 'hitile',
@@ -158,7 +153,7 @@ describe('API Tests', () => {
         coordSystem: 'mm9',
         server: 'http://higlass.io/api/v1',
         tilesetUid: 'DLtSFl7jRI6m4eqbU7sCQg',
-        type: 'horizontal-line',
+        type: 'horizontal-line'
       };
 
       const component = api.getComponent();
@@ -181,7 +176,7 @@ describe('API Tests', () => {
         coordSystem: 'mm9',
         server: 'http://higlass.io/api/v1',
         tilesetUid: 'DLtSFl7jRI6m4eqbU7sCQg',
-        type: 'horizontal-line',
+        type: 'horizontal-line'
       };
 
       const component = api.getComponent();
@@ -203,12 +198,18 @@ describe('API Tests', () => {
     });
 
     it('zooms to negative domain', (done) => {
-      [div, api] = createElementAndApi(
-        simpleCenterViewConfig, { editable: false }
-      );
+      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+        editable: false
+      });
 
-      api.zoomTo('a', 6.069441699652629, 6.082905691828387,
-        -23.27906532393644, -23.274695776773807, 100);
+      api.zoomTo(
+        'a',
+        6.069441699652629,
+        6.082905691828387,
+        -23.27906532393644,
+        -23.274695776773807,
+        100
+      );
 
       waitForTransitionsFinished(api.getComponent(), () => {
         expect(api.getComponent().yScales.a.domain()[0]).toBeLessThan(0);
@@ -217,9 +218,9 @@ describe('API Tests', () => {
     });
 
     it('zooms to just x and y', (done) => {
-      [div, api] = createElementAndApi(
-        simpleCenterViewConfig, { editable: false }
-      );
+      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+        editable: false
+      });
 
       api.zoomTo('a', 6.069441699652629, 6.082905691828387, null, null, 100);
 
@@ -238,9 +239,9 @@ describe('API Tests', () => {
     });
 
     it('reset viewport after zoom', (done) => {
-      [div, api] = createElementAndApi(
-        simpleHeatmapViewConf, { editable: false }
-      );
+      [div, api] = createElementAndApi(simpleHeatmapViewConf, {
+        editable: false
+      });
 
       const hgc = api.getComponent();
 
@@ -257,8 +258,12 @@ describe('API Tests', () => {
 
           api.resetViewport('a');
 
-          expect(Math.round(hgc.xScales.a.domain()[0])).toEqual(initialXDomain[0]);
-          expect(Math.round(hgc.xScales.a.domain()[1])).toEqual(initialXDomain[1]);
+          expect(Math.round(hgc.xScales.a.domain()[0])).toEqual(
+            initialXDomain[0]
+          );
+          expect(Math.round(hgc.xScales.a.domain()[1])).toEqual(
+            initialXDomain[1]
+          );
 
           done();
         });
@@ -268,19 +273,23 @@ describe('API Tests', () => {
     it('zoom to a nonexistent view', () => {
       // complete me, should throw an error rather than complaining
       // "Cannot read property 'copy' of undefined thrown"
-      [div, api] = createElementAndApi(
-        simpleCenterViewConfig, { editable: false }
-      );
+      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+        editable: false
+      });
 
-      expect(() => api.zoomTo('nonexistent', 6.069441699652629, 6.082905691828387,
-        -23.274695776773807, -23.27906532393644))
-        .toThrowError('Invalid viewUid. Current uuids: a');
+      expect(() => api.zoomTo(
+        'nonexistent',
+        6.069441699652629,
+        6.082905691828387,
+        -23.274695776773807,
+        -23.27906532393644
+      )).toThrowError('Invalid viewUid. Current uuids: a');
     });
 
     it('creates a non editable component', () => {
-      [div, api] = createElementAndApi(
-        simpleCenterViewConfig, { editable: false }
-      );
+      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+        editable: false
+      });
 
       const component = api.getComponent();
 
@@ -288,20 +297,23 @@ describe('API Tests', () => {
     });
 
     it('retrieves a track', () => {
-      [div, api] = createElementAndApi(
-        simpleCenterViewConfig, { editable: false }
-      );
+      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+        editable: false
+      });
 
       const viewconf = api.getViewConfig();
-      const trackObj = api.getTrackObject(viewconf.views[0].tracks.center[0].uid);
+      const trackObj = api.getTrackObject(
+        viewconf.views[0].tracks.center[0].uid
+      );
 
       expect(trackObj).toBeDefined();
     });
 
     it('zooms to a negative location', (done) => {
-      [div, api] = createElementAndApi(
-        simpleCenterViewConfig, { editable: false, bounded: true }
-      );
+      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+        editable: false,
+        bounded: true
+      });
 
       api.zoomTo('a', -10000000, 10000000);
 
@@ -313,9 +325,10 @@ describe('API Tests', () => {
     });
 
     it('has option getter', () => {
-      [div, api] = createElementAndApi(
-        simpleCenterViewConfig, { editable: false, sizeMode: 'bounded' }
-      );
+      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+        editable: false,
+        sizeMode: 'bounded'
+      });
 
       expect(api.option('editable')).toEqual(false);
       expect(api.option('sizeMode')).toEqual('bounded');
@@ -325,7 +338,9 @@ describe('API Tests', () => {
       [div, api] = createElementAndApi(
         stackedTopTracks,
         { editable: false, sizeMode: 'overflow' },
-        600, 200, true
+        600,
+        200,
+        true
       );
 
       expect(api.option('sizeMode')).toEqual('overflow');
@@ -335,9 +350,15 @@ describe('API Tests', () => {
       const scrollContainer = div.querySelector('.higlass-scroll-container');
       const scrollContainerStyles = window.getComputedStyle(scrollContainer);
 
-      expect(hgContainerStyles.getPropertyValue('position')).toEqual('absolute');
-      expect(scrollContainerStyles.getPropertyValue('position')).toEqual('absolute');
-      expect(scrollContainerStyles.getPropertyValue('overflow')).toEqual('hidden');
+      expect(hgContainerStyles.getPropertyValue('position')).toEqual(
+        'absolute'
+      );
+      expect(scrollContainerStyles.getPropertyValue('position')).toEqual(
+        'absolute'
+      );
+      expect(scrollContainerStyles.getPropertyValue('overflow')).toEqual(
+        'hidden'
+      );
 
       const hgc = api.getComponent();
 
@@ -357,7 +378,9 @@ describe('API Tests', () => {
       [div, api] = createElementAndApi(
         stackedTopTracks,
         { editable: false, sizeMode: 'scroll' },
-        600, 200, true
+        600,
+        200,
+        true
       );
 
       expect(api.option('sizeMode')).toEqual('scroll');
@@ -365,8 +388,12 @@ describe('API Tests', () => {
       const scrollContainer = div.querySelector('.higlass-scroll-container');
       const scrollContainerStyles = window.getComputedStyle(scrollContainer);
 
-      expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual('hidden');
-      expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual('auto');
+      expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual(
+        'hidden'
+      );
+      expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual(
+        'auto'
+      );
 
       const hgc = api.getComponent();
 
@@ -387,7 +414,9 @@ describe('API Tests', () => {
       [div, api] = createElementAndApi(
         stackedTopTracks,
         { editable: false, sizeMode: 'scroll' },
-        600, 200, true
+        600,
+        200,
+        true
       );
 
       expect(api.option('sizeMode')).toEqual('scroll');
@@ -401,8 +430,12 @@ describe('API Tests', () => {
 
         setTimeout(() => {
           expect(hgc.pixiStage.y).toEqual(-20);
-          expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual('hidden');
-          expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual('auto');
+          expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual(
+            'hidden'
+          );
+          expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual(
+            'auto'
+          );
 
           api.option('sizeMode', 'overflow');
           scrollContainerStyles = window.getComputedStyle(scrollContainer);
@@ -410,7 +443,9 @@ describe('API Tests', () => {
           setTimeout(() => {
             scrollContainer.scrollTop = 40;
             setTimeout(() => {
-              expect(scrollContainerStyles.getPropertyValue('overflow')).toEqual('hidden');
+              expect(
+                scrollContainerStyles.getPropertyValue('overflow')
+              ).toEqual('hidden');
               expect(hgc.pixiStage.y).toEqual(-20);
               done();
             }, 50);
@@ -424,9 +459,11 @@ describe('API Tests', () => {
         stackedTopViews,
         {
           editable: false,
-          sizeMode: 'scroll',
+          sizeMode: 'scroll'
         },
-        600, 200, true
+        600,
+        200,
+        true
       );
 
       expect(api.option('sizeMode')).toEqual('scroll');
@@ -451,7 +488,9 @@ describe('API Tests', () => {
           editable: false,
           sizeMode: 'scroll'
         },
-        600, 400, true
+        600,
+        400,
+        true
       );
 
       expect(api.option('sizeMode')).toEqual('scroll');
@@ -510,7 +549,9 @@ describe('API Tests', () => {
 
       const moved = {};
 
-      api.on('mouseMoveZoom', (event) => { moved[event.trackId] = true; });
+      api.on('mouseMoveZoom', (event) => {
+        moved[event.trackId] = true;
+      });
 
       waitForTilesLoaded(api.getComponent(), () => {
         const tiledPlotDiv = div.querySelector('.tiled-plot-div');
@@ -586,9 +627,10 @@ describe('API Tests', () => {
     });
 
     it('APIs are independent', () => {
-      [div, api] = createElementAndApi(
-        simpleCenterViewConfig, { editable: false, bounded: true }
-      );
+      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+        editable: false,
+        bounded: true
+      });
 
       /* Turning this test off because it periodically
        * and inexplicablye fails
@@ -690,15 +732,18 @@ describe('API Tests', () => {
     // some shared state that influences each other. I am giving up for now but
     // we need to look into this again.
     it('listens to click events', (done) => {
-      [div, api] = createElementAndApi(
-        simple1And2dAnnotations, { editable: false, bounded: true }
-      );
+      [div, api] = createElementAndApi(simple1And2dAnnotations, {
+        editable: false,
+        bounded: true
+      });
 
       const canvas = findCanvas(div);
 
       let clicked = 0;
 
-      api.on('click', () => { clicked++; });
+      api.on('click', () => {
+        clicked++;
+      });
 
       const createPointerEvent = (type, x, y) => new PointerEvent(type, {
         view: window,
