@@ -80,8 +80,8 @@ class ViewHeader extends React.Component {
    *
    * We just need to close the menu here.
    */
-  handleTrackPositionChosen(position) {
-    this.props.onTrackPositionChosen(position);
+  handleTrackPositionChosen(position, extent) {
+    this.props.onTrackPositionChosen(position, extent);
 
     this.setState({
       addTrackPositionMenuUid: null,
