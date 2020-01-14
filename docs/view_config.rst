@@ -306,6 +306,10 @@ Some of the more important ones are:
 
 - ``minHeight`` and ``minWidth``: useful for tracks which are generated programmatically or otherwise edited, which have a height or width smaller than default values that may otherwise constrain rendering.
 
+- ``labelShowResolution``: determines whether resolution information (for example, the text ``[Current data resolution: 4.096M]``) is included in the track label
+
+- ``labelShowAssembly``: determines whether genome assembly information (for example, the prefix ``hg19 | ``) is included in the track label
+
 Overlay Tracks
 ==============
 
