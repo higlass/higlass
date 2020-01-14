@@ -1,7 +1,7 @@
 dist: trusty
 language: node_js
 node_js:
-- '10'
+- '12'
 addons:
   apt:
     packages:
@@ -18,7 +18,7 @@ before_script:
     - sh -e /etc/init.d/xvfb start
     - npm install --quiet -g gulp
     - npm install -g jsdoc
-    - npm clean-install
+    - yarn install
 script:
     - ./travis_build_test.sh
 before_deploy:
