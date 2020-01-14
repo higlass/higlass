@@ -21,7 +21,7 @@ export const tracks = {
   HorizontalGeneAnnotationsTrack
 };
 
-export { default as schema } from "../schema.json";
+export { default as schema } from "../schema";
 
 // export functions that are useful for testing
 export {
