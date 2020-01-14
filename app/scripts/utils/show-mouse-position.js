@@ -1,7 +1,7 @@
-import * as PIXI from 'pixi.js';
-import { globalPubSub } from 'pub-sub-es';
+import * as PIXI from "pixi.js";
+import { globalPubSub } from "pub-sub-es";
 
-import { hexStrToInt } from '.';
+import { hexStrToInt } from ".";
 
 const COLOR = 0xaaaaaa;
 const ALPHA = 1.0;
@@ -34,7 +34,7 @@ const showMousePosition = (
   is2d,
   isGlobal
 ) => {
-  pubSub.publish('app.animateOnMouseMove', true);
+  pubSub.publish("app.animateOnMouseMove", true);
 
   const color = options.mousePositionColor
     ? hexStrToInt(options.mousePositionColor)
@@ -47,7 +47,9 @@ const showMousePosition = (
 
   // This clears the mouse position graphics, i.e., the mouse position will not
   // be visible afterwards.
-  const clearGraphics = () => { graphics.clear(); };
+  const clearGraphics = () => {
+    graphics.clear();
+  };
 
   /**
    * Draw 1D mouse location (cross) hair onto the PIXI graphics.
@@ -78,7 +80,7 @@ const showMousePosition = (
    *
    * @param  {Object}  e  Event object.
    */
-  const mouseMoveHandler = (event) => {
+  const mouseMoveHandler = event => {
     if (event.noHoveredTracks) {
       clearGraphics();
       return graphics;
@@ -112,12 +114,12 @@ const showMousePosition = (
     return graphics;
   };
 
-  pubSubs.push(pubSub.subscribe('app.mouseMove', mouseMoveHandler));
-  pubSubs.push(pubSub.subscribe('app.mouseLeave', clearGraphics));
-  pubSubs.push(pubSub.subscribe('blur', clearGraphics));
+  pubSubs.push(pubSub.subscribe("app.mouseMove", mouseMoveHandler));
+  pubSubs.push(pubSub.subscribe("app.mouseLeave", clearGraphics));
+  pubSubs.push(pubSub.subscribe("blur", clearGraphics));
 
   if (isGlobal) {
-    pubSubs.push(globalPubSub.subscribe('higlass.mouseMove', mouseMoveHandler));
+    pubSubs.push(globalPubSub.subscribe("higlass.mouseMove", mouseMoveHandler));
   }
 
   return graphics;
@@ -139,7 +141,7 @@ const showMousePosition = (
  * @return  {Function}  Method to remove graphics showing the mouse location.
  */
 const setupShowMousePosition = (context, is2d = false, isGlobal = false) => {
-  const scene = is2d ? context.pMasked : (context.pForeground || context.pMain);
+  const scene = is2d ? context.pMasked : context.pForeground || context.pMain;
   const getScales = () => [context.xScale(), context.yScale()];
 
   const graphics = showMousePosition(
@@ -149,14 +151,16 @@ const setupShowMousePosition = (context, is2d = false, isGlobal = false) => {
     getScales,
     context.getPosition.bind(context),
     context.getDimensions.bind(context),
-    context.getProp('flipText'),
+    context.getProp("flipText"),
     is2d,
     isGlobal
   );
 
   scene.addChild(graphics);
 
-  return () => { scene.removeChild(graphics); };
+  return () => {
+    scene.removeChild(graphics);
+  };
 };
 
 export default setupShowMousePosition;

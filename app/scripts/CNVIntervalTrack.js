@@ -1,8 +1,8 @@
-import { scaleBand } from 'd3-scale';
-import { range } from 'd3-array';
-import { segmentsToRows } from './utils';
+import { scaleBand } from "d3-scale";
+import { range } from "d3-array";
+import { segmentsToRows } from "./utils";
 
-import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
+import HorizontalTiled1DPixiTrack from "./HorizontalTiled1DPixiTrack";
 
 class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
@@ -18,18 +18,17 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
     return item[item.length - 2];
   }
 
-  segmentOverlap(segment1, segment2) {
-
-  }
-
+  segmentOverlap(segment1, segment2) {}
 
   drawAll(allTileData) {
     this.pMain.clear();
     const seen = new Set();
 
     const segments = allTileData
-      .map((x) => {
-        if (seen.has(this.uid(x))) { return null; }
+      .map(x => {
+        if (seen.has(this.uid(x))) {
+          return null;
+        }
         seen.add(this.uid(x));
         // console.log('length:', +x[2] - +x[1], 'id', tile.tileId)
         return {
@@ -41,7 +40,6 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
       })
       .filter(x => x); // filter out null values
 
-
     const rows = segmentsToRows(segments);
     this.rows = rows;
 
@@ -51,9 +49,13 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
   draw() {
     const rows = this.rows;
 
-    if (!rows) { return; }
+    if (!rows) {
+      return;
+    }
 
-    const valueScale = scaleBand().range([0, this.dimensions[1]]).padding(0.1)
+    const valueScale = scaleBand()
+      .range([0, this.dimensions[1]])
+      .padding(0.1)
       .domain(range(0, this.maxRows())); // draw one away from the center
     // .domain(range(0, 10));  // draw one away from the center
 
@@ -61,8 +63,8 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
 
     graphics.clear();
 
-    graphics.lineStyle(1, 0x0000FF, 0);
-    graphics.beginFill(0xFF700B, 0.8);
+    graphics.lineStyle(1, 0x0000ff, 0);
+    graphics.beginFill(0xff700b, 0.8);
 
     for (let i = 0; i < rows.length; i++) {
       for (let j = 0; j < rows[i].length; j++) {
@@ -85,16 +87,15 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
   allTilesLoaded() {
     const visibleAndFetchedIds = this.visibleAndFetchedIds();
 
-    const tileDatas = visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.discrete);
+    const tileDatas = visibleAndFetchedIds.map(
+      x => this.fetchedTiles[x].tileData.discrete
+    );
     const allTileData = [].concat(...tileDatas);
 
     this.drawAll(allTileData);
   }
 
-
-  initTile(tile) {
-
-  }
+  initTile(tile) {}
 
   maxRows() {
     return this.rows.length;
@@ -105,16 +106,16 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
   }
 
   destroyTile(tile) {
-    tile.tileData.discrete.forEach((x) => {
+    tile.tileData.discrete.forEach(x => {
       const uid = x[x.length - 2];
 
-      if (this.seen.has(uid)) { this.seen.delete(uid); }
+      if (this.seen.has(uid)) {
+        this.seen.delete(uid);
+      }
     });
   }
 
-  drawTile(tile) {
-
-  }
+  drawTile(tile) {}
 }
 
 export default CNVIntervalTrack;

@@ -1,24 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import HiGlassComponent from './HiGlassComponent';
+import React from "react";
+import ReactDOM from "react-dom";
+import HiGlassComponent from "./HiGlassComponent";
 
 // these exports can be used to create new tracks in outside
 // environments (e.g. Observable)
-import SVGTrack from './SVGTrack';
-import TiledPixiTrack from './TiledPixiTrack';
-import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
+import SVGTrack from "./SVGTrack";
+import TiledPixiTrack from "./TiledPixiTrack";
+import HorizontalGeneAnnotationsTrack from "./HorizontalGeneAnnotationsTrack";
 
-export { default as ChromosomeInfo } from './ChromosomeInfo';
-export { default as HiGlassComponent } from './HiGlassComponent';
-export { default as HiGlassTrackComponent, trackViewer } from './HiGlassTrackComponent';
+export { default as ChromosomeInfo } from "./ChromosomeInfo";
+export { default as HiGlassComponent } from "./HiGlassComponent";
+export {
+  default as HiGlassTrackComponent,
+  trackViewer
+} from "./HiGlassTrackComponent";
 
 export const tracks = {
   SVGTrack,
   TiledPixiTrack,
-  HorizontalGeneAnnotationsTrack,
+  HorizontalGeneAnnotationsTrack
 };
 
-export { default as schema } from '../schema.json';
+export { default as schema } from "../schema.json";
 
 // export functions that are useful for testing
 export {
@@ -26,8 +29,8 @@ export {
   waitForTilesLoaded,
   waitForTransitionsFinished,
   mountHGComponent,
-  getTrackObjectFromHGC,
-} from './utils';
+  getTrackObjectFromHGC
+} from "./utils";
 
 export const version = VERSION;
 
@@ -48,12 +51,8 @@ const launch = (element, config, options) => {
    */
   const ref = React.createRef();
   ReactDOM.render(
-    <HiGlassComponent
-      ref={ref}
-      options={options || {}}
-      viewConfig={config}
-    />,
-    element,
+    <HiGlassComponent ref={ref} options={options || {}} viewConfig={config} />,
+    element
   );
   return ref.current;
 };

@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import Button from './Button';
-import Dialog from './Dialog';
+import Button from "./Button";
+import Dialog from "./Dialog";
 
-import '../styles/ExportLinkDialog.module.scss';
+import "../styles/ExportLinkDialog.module.scss";
 
 class ExportLinkDialog extends React.Component {
   render() {
@@ -17,21 +17,23 @@ class ExportLinkDialog extends React.Component {
       >
         <div styleName="export-link-dialog-wrapper">
           <input
-            ref={(element) => {
+            ref={element => {
               if (!element) return;
               this.input = element;
               element.focus();
               element.select();
             }}
-            onClick={(event) => { event.target.select(); }}
+            onClick={event => {
+              event.target.select();
+            }}
             placeholder="Generating the link..."
             readOnly={true}
             value={this.props.url}
           />
           <Button
-            onClick={(event) => {
+            onClick={event => {
               this.input.select();
-              document.execCommand('copy');
+              document.execCommand("copy");
             }}
           >
             Copy
@@ -44,7 +46,7 @@ class ExportLinkDialog extends React.Component {
 
 ExportLinkDialog.defaultProps = {
   onDone: () => {},
-  url: ''
+  url: ""
 };
 
 ExportLinkDialog.propTypes = {

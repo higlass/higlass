@@ -1,16 +1,16 @@
-import IntervalTree from './interval-tree';
+import IntervalTree from "./interval-tree";
 
 function segmentsToRows(segments) {
   /**
-       * Partition a list of segments into an array of
-       * rows containing the segments.
-       *
-       * @param segments: An array of segments (e.g. [{from: 10, to: 20}, {from: 18, to: 30}])
-       * @return: An array of arrays of segments, representing
-       *          non-overlapping rows of segments
-       */
+   * Partition a list of segments into an array of
+   * rows containing the segments.
+   *
+   * @param segments: An array of segments (e.g. [{from: 10, to: 20}, {from: 18, to: 30}])
+   * @return: An array of arrays of segments, representing
+   *          non-overlapping rows of segments
+   */
   // sort by the length of each segment
-  segments.sort((a, b) => (b.to - b.from) - (a.to - a.from));
+  segments.sort((a, b) => b.to - b.from - (a.to - a.from));
 
   const rows = [[]];
   const rowIts = [new IntervalTree()];

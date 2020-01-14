@@ -1,4 +1,4 @@
-import { chromInfoBisector } from '.';
+import { chromInfoBisector } from ".";
 
 const absToChr = (absPosition, chromInfo) => {
   if (!chromInfo || !chromInfo.cumPositions || !chromInfo.cumPositions.length) {
@@ -12,7 +12,7 @@ const absToChr = (absPosition, chromInfo) => {
   insertPoint -= insertPoint > 0 && 1;
 
   let chrPosition = Math.floor(
-    absPosition - chromInfo.cumPositions[insertPoint].pos,
+    absPosition - chromInfo.cumPositions[insertPoint].pos
   );
   let offset = 0;
 
@@ -23,8 +23,8 @@ const absToChr = (absPosition, chromInfo) => {
   }
 
   if (
-    insertPoint === chromInfo.cumPositions.length - 1
-    && chrPosition > lastLength
+    insertPoint === chromInfo.cumPositions.length - 1 &&
+    chrPosition > lastLength
   ) {
     // beyond the last chromosome
     offset = chrPosition - lastLength;
@@ -35,7 +35,7 @@ const absToChr = (absPosition, chromInfo) => {
     chromInfo.cumPositions[insertPoint].chr,
     chrPosition,
     offset,
-    insertPoint,
+    insertPoint
   ];
 };
 

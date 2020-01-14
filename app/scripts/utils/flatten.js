@@ -1,4 +1,4 @@
-import reduce from './reduce';
+import reduce from "./reduce";
 
 /**
  * Function for flattening a nested array. It returns a curried reducer.

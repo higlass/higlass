@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { SortableHandle } from 'react-sortable-hoc';
+import PropTypes from "prop-types";
+import React from "react";
+import ReactDOM from "react-dom";
+import { SortableHandle } from "react-sortable-hoc";
 
 class TrackArea extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      controlsVisible: false,
+      controlsVisible: false
     };
   }
 
@@ -18,19 +18,19 @@ class TrackArea extends React.Component {
 
   handleMouseEnter() {
     this.setState({
-      controlsVisible: true,
+      controlsVisible: true
     });
   }
 
   handleMouseLeave() {
     this.setState({
-      controlsVisible: false,
+      controlsVisible: false
     });
   }
 
   handleMouseMove() {
     this.setState({
-      controlsVisible: true,
+      controlsVisible: true
     });
   }
 
@@ -56,21 +56,23 @@ class TrackArea extends React.Component {
     return (
       <div
         style={{
-          position: 'absolute',
-          backgroundColor: 'rgba(255,255,255,0.7)',
-          right: '3px',
-          top: '3px',
-          pointerEvents: 'none',
-          paddingLeft: '5px',
-          paddingRight: '5px',
-          borderRadius: '5px',
-          border: '1px solid #dddddd',
+          position: "absolute",
+          backgroundColor: "rgba(255,255,255,0.7)",
+          right: "3px",
+          top: "3px",
+          pointerEvents: "none",
+          paddingLeft: "5px",
+          paddingRight: "5px",
+          borderRadius: "5px",
+          border: "1px solid #dddddd"
         }}
       >
         <Handle />
 
         <svg
-          ref={(c) => { this.imgConfig = c; }}
+          ref={c => {
+            this.imgConfig = c;
+          }}
           className="no-zoom"
           height="10px"
           onClick={() => {
@@ -85,7 +87,9 @@ class TrackArea extends React.Component {
         </svg>
 
         <svg
-          ref={(c) => { this.imgAdd = c; }}
+          ref={c => {
+            this.imgAdd = c;
+          }}
           className="no-zoom"
           height="10px"
           onClick={() => this.props.onAddSeries(this.props.uid)}
@@ -96,7 +100,9 @@ class TrackArea extends React.Component {
         </svg>
 
         <svg
-          ref={(c) => { this.imgClose = c; }}
+          ref={c => {
+            this.imgClose = c;
+          }}
           className="no-zoom"
           height="10px"
           onClick={() => {
@@ -119,7 +125,7 @@ TrackArea.propTypes = {
   onConfigTrackMenuOpened: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onAddSeries: PropTypes.func,
-  uid: PropTypes.string,
+  uid: PropTypes.string
 };
 
 export default TrackArea;

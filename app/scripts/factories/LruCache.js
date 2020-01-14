@@ -101,7 +101,7 @@ function get(key, returnEntry) {
   // As <key> was found in the cache, register it as being requested recently
   if (entry === this.tail) {
     // Already the most recenlty used entry, so no need to update the list
-    return (returnEntry ? entry : entry.value);
+    return returnEntry ? entry : entry.value;
   }
   // HEAD--------------TAIL
   //   <.older   .newer>
@@ -117,7 +117,7 @@ function get(key, returnEntry) {
   if (this.tail) this.tail.newer = entry; // E. <-- D
   this.tail = entry;
 
-  return (returnEntry ? entry : entry.value);
+  return returnEntry ? entry : entry.value;
 }
 
 // ----------------------------------------------------------------------------
@@ -212,7 +212,7 @@ function forEach(fun, context, desc) {
   if (context === true) {
     desc = true;
     context = undefined;
-  } else if (typeof context !== 'object') {
+  } else if (typeof context !== "object") {
     context = this;
   }
   /* eslint-enable */
@@ -244,12 +244,12 @@ function toJSON() {
 
 /** Returns a String representation */
 function toString() {
-  let s = '';
+  let s = "";
   let entry = this.head;
   while (entry) {
     s += `${String(entry.key)}:${entry.value}`;
     entry = entry.newer;
-    if (entry) s += ' < ';
+    if (entry) s += " < ";
   }
   return s;
 }

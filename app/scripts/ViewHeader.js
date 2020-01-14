@@ -1,24 +1,24 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import PopupMenu from './PopupMenu';
-import ContextMenuContainer from './ContextMenuContainer';
-import ConfigViewMenu from './ConfigViewMenu';
-import AddTrackPositionMenu from './AddTrackPositionMenu';
+import PopupMenu from "./PopupMenu";
+import ContextMenuContainer from "./ContextMenuContainer";
+import ConfigViewMenu from "./ConfigViewMenu";
+import AddTrackPositionMenu from "./AddTrackPositionMenu";
 
 // HOCS
-import withTheme from './hocs/with-theme';
+import withTheme from "./hocs/with-theme";
 
 // Configs
 import {
   MOUSE_TOOL_SELECT,
   THEME_DARK,
   VIEW_HEADER_MED_WIDTH_SEARCH_BAR,
-  VIEW_HEADER_MIN_WIDTH_SEARCH_BAR,
-} from './configs';
+  VIEW_HEADER_MIN_WIDTH_SEARCH_BAR
+} from "./configs";
 
 // Styles
-import '../styles/ViewHeader.module.scss';
+import "../styles/ViewHeader.module.scss";
 
 class ViewHeader extends React.Component {
   constructor(props) {
@@ -33,10 +33,12 @@ class ViewHeader extends React.Component {
       configMenuUid: null,
       configMenuPosition: null,
       isFocused: false,
-      width: -1,
+      width: -1
     };
 
-    this.handleTrackPositionChosenBound = this.handleTrackPositionChosen.bind(this);
+    this.handleTrackPositionChosenBound = this.handleTrackPositionChosen.bind(
+      this
+    );
   }
 
   componentDidMount() {
@@ -56,7 +58,7 @@ class ViewHeader extends React.Component {
   handleConfigMenuOpened(uid) {
     this.setState({
       configMenuUid: uid,
-      configMenuPosition: this.configImg.getBoundingClientRect(),
+      configMenuPosition: this.configImg.getBoundingClientRect()
     });
   }
 
@@ -67,7 +69,7 @@ class ViewHeader extends React.Component {
   handleAddTrackPositionMenuOpened(uid) {
     this.setState({
       addTrackPositionMenuUid: uid,
-      addTrackPositionMenuPosition: this.plusImg.getBoundingClientRect(),
+      addTrackPositionMenuPosition: this.plusImg.getBoundingClientRect()
     });
   }
 
@@ -82,7 +84,7 @@ class ViewHeader extends React.Component {
 
     this.setState({
       addTrackPositionMenuUid: null,
-      addTrackPositionMenuPosition: null,
+      addTrackPositionMenuPosition: null
     });
   }
 
@@ -93,14 +95,12 @@ class ViewHeader extends React.Component {
     if (this.state.addTrackPositionMenuPosition) {
       addTrackPositionMenu = (
         <PopupMenu
-          onMenuClosed={
-            () => {
-              this.setState({
-                addTrackPositionMenuUid: null,
-                addTrackPositionMenuPosition: null,
-              });
-            }
-          }
+          onMenuClosed={() => {
+            this.setState({
+              addTrackPositionMenuUid: null,
+              addTrackPositionMenuPosition: null
+            });
+          }}
         >
           <ContextMenuContainer
             orientation="left"
@@ -117,9 +117,7 @@ class ViewHeader extends React.Component {
 
     if (this.state.configMenuUid) {
       configMenu = (
-        <PopupMenu
-          onMenuClosed={() => this.setState({ configMenuUid: null })}
-        >
+        <PopupMenu onMenuClosed={() => this.setState({ configMenuUid: null })}>
           <ConfigViewMenu
             onClearView={() => {
               this.setState({ configMenuUid: null }); // hide the menu
@@ -157,7 +155,7 @@ class ViewHeader extends React.Component {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onLockZoomAndLocation(this.state.configMenuUid);
             }}
-            onOptionsChanged={(newOptions) => {
+            onOptionsChanged={newOptions => {
               this.props.onViewOptionsChanged(newOptions);
               this.setState({ configMenuUid: null }); // hide the menu
             }}
@@ -211,26 +209,31 @@ class ViewHeader extends React.Component {
 
     const GenomePositionSearchBox = this.props.getGenomePositionSearchBox(
       this.state.isFocused,
-      (focus) => {
+      focus => {
         this.setState({
-          isFocused: focus,
+          isFocused: focus
         });
-      },
+      }
     );
 
     let className = this.state.isFocused
-      ? 'multitrack-header-focus' : 'multitrack-header';
+      ? "multitrack-header-focus"
+      : "multitrack-header";
 
-    const classNameIcon = this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR
-      ? 'multitrack-header-icon-squeazed' : 'multitrack-header-icon';
+    const classNameIcon =
+      this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR
+        ? "multitrack-header-icon-squeazed"
+        : "multitrack-header-icon";
 
     if (this.props.theme === THEME_DARK) {
-      className += ' multitrack-header-dark';
+      className += " multitrack-header-dark";
     }
 
     return (
       <div
-        ref={(c) => { this.el = c; }}
+        ref={c => {
+          this.el = c;
+        }}
         styleName={className}
       >
         <div styleName="multitrack-header-left">
@@ -250,28 +253,23 @@ class ViewHeader extends React.Component {
             <div />
             <div />
           </div>
-          {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR
-            && (
-              <div styleName="multitrack-header-search">
-                {
-                  this.props.isGenomePositionSearchBoxVisible
-                  && GenomePositionSearchBox
-                }
-              </div>
-            )
-          }
+          {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR && (
+            <div styleName="multitrack-header-search">
+              {this.props.isGenomePositionSearchBoxVisible &&
+                GenomePositionSearchBox}
+            </div>
+          )}
         </div>
         <nav styleName="multitrack-header-nav-list">
-          <svg
-            onClick={this.props.onAddView}
-            styleName={classNameIcon}
-          >
+          <svg onClick={this.props.onAddView} styleName={classNameIcon}>
             <title>Add new view (clone this view)</title>
             <use xlinkHref="#copy" />
           </svg>
 
           <svg
-            ref={(c) => { this.configImg = c; }}
+            ref={c => {
+              this.configImg = c;
+            }}
             onClick={() => this.handleConfigMenuOpened(this.props.viewUid)}
             styleName={classNameIcon}
           >
@@ -280,18 +278,19 @@ class ViewHeader extends React.Component {
           </svg>
 
           <svg
-            ref={(c) => { this.plusImg = c; }}
-            onClick={() => this.handleAddTrackPositionMenuOpened(this.props.viewUid)}
+            ref={c => {
+              this.plusImg = c;
+            }}
+            onClick={() =>
+              this.handleAddTrackPositionMenuOpened(this.props.viewUid)
+            }
             styleName={classNameIcon}
           >
             <title>Add Track</title>
             <use xlinkHref="#plus" />
           </svg>
 
-          <svg
-            onClick={this.props.onCloseView}
-            styleName={classNameIcon}
-          >
+          <svg onClick={this.props.onCloseView} styleName={classNameIcon}>
             <title>Close View</title>
             <use xlinkHref="#cross" />
           </svg>
@@ -305,7 +304,7 @@ class ViewHeader extends React.Component {
 }
 
 ViewHeader.defaultProps = {
-  isGenomePositionSearchBoxVisible: false,
+  isGenomePositionSearchBoxVisible: false
 };
 
 ViewHeader.propTypes = {
@@ -335,7 +334,7 @@ ViewHeader.propTypes = {
   onYankZoomAndLocation: PropTypes.func.isRequired,
   onZoomToData: PropTypes.func.isRequired,
   theme: PropTypes.symbol.isRequired,
-  viewUid: PropTypes.string.isRequired,
+  viewUid: PropTypes.string.isRequired
 };
 
 export default withTheme(ViewHeader);

@@ -4,22 +4,22 @@
 import {
   getTrackObjectFromHGC,
   waitForTilesLoaded
-} from '../app/scripts/utils';
+} from "../app/scripts/utils";
 
-import createElementAndApi from './utils/create-element-and-api';
-import removeDiv from './utils/remove-div';
+import createElementAndApi from "./utils/create-element-and-api";
+import removeDiv from "./utils/remove-div";
 
-import horizontal1dLineTrackWithConstViewConf from './view-configs/horizontal-1d-line-track-with-const';
-import { horizontalLineEnd } from './view-configs';
+import horizontal1dLineTrackWithConstViewConf from "./view-configs/horizontal-1d-line-track-with-const";
+import { horizontalLineEnd } from "./view-configs";
 
-describe('Simple HiGlassComponent', () => {
+describe("Simple HiGlassComponent", () => {
   let hgc = null;
   let api = null;
   let div = null;
   let viewConf;
 
-  describe('Horizontal1DLineTrack with const indicator', () => {
-    it('check that the const indicators were rendered', (done) => {
+  describe("Horizontal1DLineTrack with const indicator", () => {
+    it("check that the const indicators were rendered", done => {
       viewConf = horizontal1dLineTrackWithConstViewConf;
 
       [div, api] = createElementAndApi(viewConf, { bound: true });
@@ -46,8 +46,8 @@ describe('Simple HiGlassComponent', () => {
     });
   });
 
-  describe('Horizontal1DLineTrack with const indicator', () => {
-    it('check that the const indicators were rendered', (done) => {
+  describe("Horizontal1DLineTrack with const indicator", () => {
+    it("check that the const indicators were rendered", done => {
       viewConf = horizontalLineEnd;
 
       [div, api] = createElementAndApi(viewConf, { bound: true });
@@ -75,8 +75,7 @@ describe('Simple HiGlassComponent', () => {
         expect(trackObj.getDataAtPos(366)).toEqual(undefined);
 
         // gene annotations don't currently have a mouseover function
-        expect(trackObjGeneAnnotations.getDataAtPos(10))
-          .toEqual(null);
+        expect(trackObjGeneAnnotations.getDataAtPos(10)).toEqual(null);
         done();
       });
     });

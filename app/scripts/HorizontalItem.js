@@ -1,7 +1,7 @@
-import React from 'react';
-import { SortableElement } from 'react-sortable-hoc';
+import React from "react";
+import { SortableElement } from "react-sortable-hoc";
 
-import HorizontalTrack from './HorizontalTrack';
+import HorizontalTrack from "./HorizontalTrack";
 
 const HorizontalItem = SortableElement(props => (
   <HorizontalTrack

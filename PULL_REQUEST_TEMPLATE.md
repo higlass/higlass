@@ -16,4 +16,5 @@ Fixes #___
 - [ ] Example(s) added or updated
 - [ ] Update schema.json if there are changes to the viewconf JSON structure format
 - [ ] Screenshot for visual changes (e.g. new tracks or UI changes)
+- [ ] Run prettier (`prettier "app/**/*.js" "test/**/*.js" --write`)
 - [ ] Updated CHANGELOG.md

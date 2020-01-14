@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import '../styles/Button.module.scss';
+import "../styles/Button.module.scss";
 
 const Button = React.forwardRef((props, ref) => (
   <button
@@ -24,8 +24,8 @@ const Button = React.forwardRef((props, ref) => (
 
 Button.defaultProps = {
   onClick: () => {},
-  styleName: '',
-  type: 'button',
+  styleName: "",
+  type: "button"
 };
 
 Button.propTypes = {
@@ -37,7 +37,7 @@ Button.propTypes = {
   onMouseOut: PropTypes.func,
   onMouseUp: PropTypes.func,
   shortcut: PropTypes.string,
-  type: PropTypes.string,
+  type: PropTypes.string
 };
 
 export default Button;

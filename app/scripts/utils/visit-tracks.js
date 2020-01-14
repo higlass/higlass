@@ -6,16 +6,20 @@
  * @param   {function}  position  Can be used to limit the tracks to be visit to a certain position.
  */
 const visitTracks = (
-  tracks, visitor, inclCombinedTracks = true, position = null
-) => tracks.forEach((track) => {
-  if (track.type === 'combined') {
-    if (inclCombinedTracks) {
-      visitTracks(track.contents, visitor, inclCombinedTracks, position);
+  tracks,
+  visitor,
+  inclCombinedTracks = true,
+  position = null
+) =>
+  tracks.forEach(track => {
+    if (track.type === "combined") {
+      if (inclCombinedTracks) {
+        visitTracks(track.contents, visitor, inclCombinedTracks, position);
+        visitor(track, position);
+      }
+    } else {
       visitor(track, position);
     }
-  } else {
-    visitor(track, position);
-  }
-});
+  });
 
 export default visitTracks;

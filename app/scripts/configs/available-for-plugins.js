@@ -3,75 +3,75 @@
  */
 
 // Libraries
-import * as PIXI from 'pixi.js';
+import * as PIXI from "pixi.js";
 
-import * as d3Array from 'd3-array';
-import * as d3Axis from 'd3-axis';
-import * as d3Brush from 'd3-brush';
-import * as d3Color from 'd3-color';
-import * as d3Drag from 'd3-drag';
-import * as d3Dsv from 'd3-dsv';
-import * as d3Format from 'd3-format';
-import * as d3Geo from 'd3-geo';
-import * as d3Queue from 'd3-queue';
-import * as d3Request from 'd3-request';
-import * as d3Scale from 'd3-scale';
-import * as d3Selection from 'd3-selection';
-import * as d3Transition from 'd3-transition';
-import * as d3Zoom from 'd3-zoom';
+import * as d3Array from "d3-array";
+import * as d3Axis from "d3-axis";
+import * as d3Brush from "d3-brush";
+import * as d3Color from "d3-color";
+import * as d3Drag from "d3-drag";
+import * as d3Dsv from "d3-dsv";
+import * as d3Format from "d3-format";
+import * as d3Geo from "d3-geo";
+import * as d3Queue from "d3-queue";
+import * as d3Request from "d3-request";
+import * as d3Scale from "d3-scale";
+import * as d3Selection from "d3-selection";
+import * as d3Transition from "d3-transition";
+import * as d3Zoom from "d3-zoom";
 
-import slugid from 'slugid';
-import { mix } from '../mixwith';
+import slugid from "slugid";
+import { mix } from "../mixwith";
 
 // Tracks
-import Annotations2dTrack from '../Annotations2dTrack';
-import ArrowheadDomainsTrack from '../ArrowheadDomainsTrack';
-import BarTrack from '../BarTrack';
-import BedLikeTrack from '../BedLikeTrack';
-import CNVIntervalTrack from '../CNVIntervalTrack';
-import CombinedTrack from '../CombinedTrack';
-import DivergentBarTrack from '../DivergentBarTrack';
-import HeatmapTiledPixiTrack from '../HeatmapTiledPixiTrack';
-import Horizontal2DDomainsTrack from '../Horizontal2DDomainsTrack';
-import HorizontalChromosomeLabels from '../HorizontalChromosomeLabels';
-import HorizontalGeneAnnotationsTrack from '../HorizontalGeneAnnotationsTrack';
-import HorizontalHeatmapTrack from '../HorizontalHeatmapTrack';
-import HorizontalLine1DPixiTrack from '../HorizontalLine1DPixiTrack';
-import HorizontalMultivecTrack from '../HorizontalMultivecTrack';
-import HorizontalPoint1DPixiTrack from '../HorizontalPoint1DPixiTrack';
-import HorizontalTiledPlot from '../HorizontalTiledPlot';
-import HorizontalTrack from '../HorizontalTrack';
-import Id2DTiledPixiTrack from '../Id2DTiledPixiTrack';
-import IdHorizontal1DTiledPixiTrack from '../IdHorizontal1DTiledPixiTrack';
-import IdVertical1DTiledPixiTrack from '../IdVertical1DTiledPixiTrack';
-import LeftAxisTrack from '../LeftAxisTrack';
-import MapboxTilesTrack from '../MapboxTilesTrack';
-import MoveableTrack from '../MoveableTrack';
-import OSMTilesTrack from '../OSMTilesTrack';
-import PixiTrack from '../PixiTrack';
-import SVGTrack from '../SVGTrack';
-import SquareMarkersTrack from '../SquareMarkersTrack';
-import Tiled1DPixiTrack from '../Tiled1DPixiTrack';
-import TiledPixiTrack from '../TiledPixiTrack';
-import TopAxisTrack from '../TopAxisTrack';
-import Track from '../Track';
-import ValueIntervalTrack from '../ValueIntervalTrack';
-import VerticalTiled1DPixiTrack from '../VerticalTiled1DPixiTrack';
-import VerticalTrack from '../VerticalTrack';
+import Annotations2dTrack from "../Annotations2dTrack";
+import ArrowheadDomainsTrack from "../ArrowheadDomainsTrack";
+import BarTrack from "../BarTrack";
+import BedLikeTrack from "../BedLikeTrack";
+import CNVIntervalTrack from "../CNVIntervalTrack";
+import CombinedTrack from "../CombinedTrack";
+import DivergentBarTrack from "../DivergentBarTrack";
+import HeatmapTiledPixiTrack from "../HeatmapTiledPixiTrack";
+import Horizontal2DDomainsTrack from "../Horizontal2DDomainsTrack";
+import HorizontalChromosomeLabels from "../HorizontalChromosomeLabels";
+import HorizontalGeneAnnotationsTrack from "../HorizontalGeneAnnotationsTrack";
+import HorizontalHeatmapTrack from "../HorizontalHeatmapTrack";
+import HorizontalLine1DPixiTrack from "../HorizontalLine1DPixiTrack";
+import HorizontalMultivecTrack from "../HorizontalMultivecTrack";
+import HorizontalPoint1DPixiTrack from "../HorizontalPoint1DPixiTrack";
+import HorizontalTiledPlot from "../HorizontalTiledPlot";
+import HorizontalTrack from "../HorizontalTrack";
+import Id2DTiledPixiTrack from "../Id2DTiledPixiTrack";
+import IdHorizontal1DTiledPixiTrack from "../IdHorizontal1DTiledPixiTrack";
+import IdVertical1DTiledPixiTrack from "../IdVertical1DTiledPixiTrack";
+import LeftAxisTrack from "../LeftAxisTrack";
+import MapboxTilesTrack from "../MapboxTilesTrack";
+import MoveableTrack from "../MoveableTrack";
+import OSMTilesTrack from "../OSMTilesTrack";
+import PixiTrack from "../PixiTrack";
+import SVGTrack from "../SVGTrack";
+import SquareMarkersTrack from "../SquareMarkersTrack";
+import Tiled1DPixiTrack from "../Tiled1DPixiTrack";
+import TiledPixiTrack from "../TiledPixiTrack";
+import TopAxisTrack from "../TopAxisTrack";
+import Track from "../Track";
+import ValueIntervalTrack from "../ValueIntervalTrack";
+import VerticalTiled1DPixiTrack from "../VerticalTiled1DPixiTrack";
+import VerticalTrack from "../VerticalTrack";
 
 // Factories
-import ContextMenuItem from '../ContextMenuItem';
-import DataFetcher from '../DataFetcher';
-import LruCache from '../factories';
+import ContextMenuItem from "../ContextMenuItem";
+import DataFetcher from "../DataFetcher";
+import LruCache from "../factories";
 
 // Services
-import * as services from '../services';
+import * as services from "../services";
 
 // Utils
-import * as utils from '../utils';
+import * as utils from "../utils";
 
 // Configs
-import * as configs from '.';
+import * as configs from ".";
 
 const libraries = {
   d3Array,
@@ -90,7 +90,7 @@ const libraries = {
   d3Zoom,
   PIXI,
   mix,
-  slugid,
+  slugid
 };
 
 const tracks = {
@@ -127,7 +127,7 @@ const tracks = {
   Track,
   ValueIntervalTrack,
   VerticalTiled1DPixiTrack,
-  VerticalTrack,
+  VerticalTrack
 };
 
 const factories = {

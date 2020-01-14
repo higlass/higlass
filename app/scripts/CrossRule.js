@@ -1,9 +1,9 @@
-import { colorToHex } from './utils';
-import { mix } from './mixwith';
+import { colorToHex } from "./utils";
+import { mix } from "./mixwith";
 
-import PixiTrack from './PixiTrack';
-import RuleMixin from './RuleMixin';
-import { VerticalRuleMixin } from './VerticalRule';
+import PixiTrack from "./PixiTrack";
+import RuleMixin from "./RuleMixin";
+import { VerticalRuleMixin } from "./VerticalRule";
 
 class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
   constructor(context, options) {
@@ -28,22 +28,19 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
   }
 
   mouseMoveHandler(mousePos) {
-    this.highlighted = (
-      this.isWithin(mousePos.x, mousePos.y)
-      && (
-        this.isMouseOverHorizontalLine(mousePos)
-        || this.isMouseOverVerticalLine(mousePos)
-      )
-    );
+    this.highlighted =
+      this.isWithin(mousePos.x, mousePos.y) &&
+      (this.isMouseOverHorizontalLine(mousePos) ||
+        this.isMouseOverVerticalLine(mousePos));
 
     this.draw();
   }
 
   drawHorizontalRule(graphics) {
-    let stroke = colorToHex('black');
+    let stroke = colorToHex("black");
 
     if (this.highlighted) {
-      stroke = colorToHex('red');
+      stroke = colorToHex("red");
     }
 
     graphics.lineStyle(this.strokeWidth, stroke, this.strokeOpacity);
@@ -61,8 +58,10 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
   }
 
   isMouseOverHorizontalLine(mousePos) {
-    return Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition))
-      < this.MOUSEOVER_RADIUS;
+    return (
+      Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) <
+      this.MOUSEOVER_RADIUS
+    );
   }
 
   /**
@@ -80,38 +79,46 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
     } else {
-      base = document.createElement('g');
+      base = document.createElement("g");
       track = base;
     }
-    const output = document.createElement('g');
-    output.setAttribute('class', 'cross-rule');
-    output.setAttribute('transform',
-      `translate(${this.position[0]},${this.position[1]})`);
+    const output = document.createElement("g");
+    output.setAttribute("class", "cross-rule");
+    output.setAttribute(
+      "transform",
+      `translate(${this.position[0]},${this.position[1]})`
+    );
 
     track.appendChild(output);
 
-    let stroke = 'black';
+    let stroke = "black";
     if (this.highlighted) {
-      stroke = 'red';
+      stroke = "red";
     }
 
-    const verticalLine = document.createElement('line');
-    verticalLine.setAttribute('stroke', stroke);
-    verticalLine.setAttribute('stroke-width', this.strokeWidth);
-    verticalLine.setAttribute('stroke-dasharray', `${this.dashLength} ${this.dashGap}`);
-    verticalLine.setAttribute('x1', this._xScale(this.xPosition));
-    verticalLine.setAttribute('y1', 0);
-    verticalLine.setAttribute('x2', this._xScale(this.xPosition));
-    verticalLine.setAttribute('y2', this.dimensions[1]);
+    const verticalLine = document.createElement("line");
+    verticalLine.setAttribute("stroke", stroke);
+    verticalLine.setAttribute("stroke-width", this.strokeWidth);
+    verticalLine.setAttribute(
+      "stroke-dasharray",
+      `${this.dashLength} ${this.dashGap}`
+    );
+    verticalLine.setAttribute("x1", this._xScale(this.xPosition));
+    verticalLine.setAttribute("y1", 0);
+    verticalLine.setAttribute("x2", this._xScale(this.xPosition));
+    verticalLine.setAttribute("y2", this.dimensions[1]);
 
-    const horizontalLine = document.createElement('line');
-    horizontalLine.setAttribute('stroke', stroke);
-    horizontalLine.setAttribute('stroke-width', this.strokeWidth);
-    horizontalLine.setAttribute('stroke-dasharray', `${this.dashLength} ${this.dashGap}`);
-    horizontalLine.setAttribute('x1', 0);
-    horizontalLine.setAttribute('y1', this._yScale(this.yPosition));
-    horizontalLine.setAttribute('x2', this.dimensions[0]);
-    horizontalLine.setAttribute('y2', this._yScale(this.yPosition));
+    const horizontalLine = document.createElement("line");
+    horizontalLine.setAttribute("stroke", stroke);
+    horizontalLine.setAttribute("stroke-width", this.strokeWidth);
+    horizontalLine.setAttribute(
+      "stroke-dasharray",
+      `${this.dashLength} ${this.dashGap}`
+    );
+    horizontalLine.setAttribute("x1", 0);
+    horizontalLine.setAttribute("y1", this._yScale(this.yPosition));
+    horizontalLine.setAttribute("x2", this.dimensions[0]);
+    horizontalLine.setAttribute("y2", this._yScale(this.yPosition));
 
     output.appendChild(verticalLine);
     output.appendChild(horizontalLine);

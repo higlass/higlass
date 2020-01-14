@@ -1,4 +1,4 @@
-import cloneEvent from './clone-event';
+import cloneEvent from "./clone-event";
 
 /**
  * Forward an event by cloning and dispatching it.

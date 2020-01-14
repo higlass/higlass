@@ -1,4 +1,4 @@
-import OSMTilesTrack from './OSMTilesTrack';
+import OSMTilesTrack from "./OSMTilesTrack";
 
 /**
  * A track that must pull remote tiles
@@ -15,19 +15,19 @@ class RasterTilesTrack extends OSMTilesTrack {
     this.style = options.style;
 
     if (!this.options.tileSource) {
-      this.errorTextText = 'No tile source string provided in the options. It should be in the form of http://a.com/{z}/{x}/{y}';
+      this.errorTextText =
+        "No tile source string provided in the options. It should be in the form of http://a.com/{z}/{x}/{y}";
       this.drawError();
     }
   }
 
-
   getTileUrl(tileZxy) {
     /**
-         * Get the url used to fetch the tile data
-         */
-    let newUrl = this.options.tileSource.replace('{z}', tileZxy[0]);
-    newUrl = newUrl.replace('{x}', tileZxy[1]);
-    newUrl = newUrl.replace('{y}', tileZxy[2]);
+     * Get the url used to fetch the tile data
+     */
+    let newUrl = this.options.tileSource.replace("{z}", tileZxy[0]);
+    newUrl = newUrl.replace("{x}", tileZxy[1]);
+    newUrl = newUrl.replace("{y}", tileZxy[2]);
 
     return newUrl;
   }

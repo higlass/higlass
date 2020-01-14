@@ -1,4 +1,4 @@
-import PixiTrack from './PixiTrack';
+import PixiTrack from "./PixiTrack";
 
 class UnknownPixiTrack extends PixiTrack {
   constructor(context, options) {

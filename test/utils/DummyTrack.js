@@ -16,13 +16,13 @@ const DummyTrack = function DummyTrack(HGC, ...args) {
 };
 
 DummyTrack.config = {
-  type: 'dummy',
+  type: "dummy",
   availableOptions: [],
   defaultOptions: {}
 };
 
 const trackDef = {
-  name: 'DummyTrack',
+  name: "DummyTrack",
   track: DummyTrack,
   config: DummyTrack.config
 };

@@ -1,25 +1,26 @@
 // In this project, these methods are only used in tests,
 // but plugin tracks also make use of them... so not really extraneous.
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 
-import { // eslint-disable-line import/no-extraneous-dependencies
+import {
+  // eslint-disable-line import/no-extraneous-dependencies
   mount
-} from 'enzyme';
+} from "enzyme";
 
-import { requestsInFlight } from '../services';
+import { requestsInFlight } from "../services";
 
 import {
   getTrackObjectFromHGC,
-  getTrackRenderer,
-} from './get-higlass-components';
+  getTrackRenderer
+} from "./get-higlass-components";
 
-import HiGlassComponent from '../HiGlassComponent';
+import HiGlassComponent from "../HiGlassComponent";
 
 const TILE_LOADING_CHECK_INTERVAL = 100;
 
-export const areTransitionsActive = (hgc) => {
+export const areTransitionsActive = hgc => {
   /**
    * Check if there are any active transitions that we
    * need to wait on
@@ -33,9 +34,7 @@ export const areTransitionsActive = (hgc) => {
    *  True if any of the tracks have active transtions. False otherwise.
    */
   for (const track of hgc.iterateOverTracks()) {
-    const trackRenderer = getTrackRenderer(hgc,
-      track.viewId,
-      track.trackId);
+    const trackRenderer = getTrackRenderer(hgc, track.viewId, track.trackId);
 
     if (trackRenderer.activeTransitions > 0) return true;
   }
@@ -70,7 +69,7 @@ export const waitForTransitionsFinished = (hgc, callback) => {
   }
 };
 
-export const waitForJsonComplete = (finished) => {
+export const waitForJsonComplete = finished => {
   /*
    * Wait until all open JSON requests are finished
    *
@@ -82,8 +81,10 @@ export const waitForJsonComplete = (finished) => {
    *
    */
   if (requestsInFlight > 0) {
-    setTimeout(() => waitForJsonComplete(finished),
-      TILE_LOADING_CHECK_INTERVAL);
+    setTimeout(
+      () => waitForJsonComplete(finished),
+      TILE_LOADING_CHECK_INTERVAL
+    );
   } else {
     finished();
   }
@@ -101,14 +102,16 @@ export const waitForJsonComplete = (finished) => {
  * -------
  *  True if any of the tracks are waiting for tiles, false otherwise.
  */
-export const isWaitingOnTiles = (hgc) => {
+export const isWaitingOnTiles = hgc => {
   for (const track of hgc.iterateOverTracks()) {
     let trackObj = getTrackObjectFromHGC(hgc, track.viewId, track.trackId);
 
     if (!track.track.server && !track.track.tilesetUid) {
       continue;
     } else if (track.track.server && track.track.tilesetUid) {
-      if (trackObj.originalTrack) { trackObj = trackObj.originalTrack; }
+      if (trackObj.originalTrack) {
+        trackObj = trackObj.originalTrack;
+      }
 
       if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
         // console.warn(
@@ -130,20 +133,20 @@ export const isWaitingOnTiles = (hgc) => {
 
 export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
   /**
-     * Wait until all of the tiles in the HiGlassComponent are loaded
-     * until calling the callback
-     *
-     * Arguments
-     * ---------
-     *  hgc: Enzyme wrapper for a HiGlassComponent
-     *      The componentthat we're waiting on
-     *  tilesLoadedCallback: function
-     *      The callback to call whenever all of the tiles
-     *      have been loaded.
-     * Returns
-     * -------
-     *  Nothing
-     */
+   * Wait until all of the tiles in the HiGlassComponent are loaded
+   * until calling the callback
+   *
+   * Arguments
+   * ---------
+   *  hgc: Enzyme wrapper for a HiGlassComponent
+   *      The componentthat we're waiting on
+   *  tilesLoadedCallback: function
+   *      The callback to call whenever all of the tiles
+   *      have been loaded.
+   * Returns
+   * -------
+   *  Nothing
+   */
   // console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
   if (isWaitingOnTiles(hgc)) {
     setTimeout(() => {
@@ -173,22 +176,25 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
     global.document.body.removeChild(prevDiv);
   }
 
-  const style = (options && options.style) || 'width:800px; background-color: lightgreen;';
+  const style =
+    (options && options.style) || "width:800px; background-color: lightgreen;";
   const bounded = (options && options.bounded) || false;
 
   // console.log('check:', options && options.style)
   // console.log('style:', style, "options:", options, "style", options.style);
 
-  const div = global.document.createElement('div');
+  const div = global.document.createElement("div");
   global.document.body.appendChild(div);
 
-  div.setAttribute('style', style);
-  div.setAttribute('id', 'simple-hg-component');
+  div.setAttribute("style", style);
+  div.setAttribute("id", "simple-hg-component");
 
-  const hgc = mount(<HiGlassComponent
-    options={{ bounded }}
-    viewConfig={viewConf}
-  />, { attachTo: div });
+  const hgc = mount(
+    <HiGlassComponent options={{ bounded }} viewConfig={viewConf} />,
+    {
+      attachTo: div
+    }
+  );
 
   hgc.update();
 
@@ -199,7 +205,7 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
   return [div, hgc];
 };
 
-export const removeHGComponent = (div) => {
+export const removeHGComponent = div => {
   if (!div) return;
 
   ReactDOM.unmountComponentAtNode(div);

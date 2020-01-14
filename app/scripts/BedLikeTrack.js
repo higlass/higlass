@@ -1,21 +1,25 @@
-import boxIntersect from 'box-intersect';
-import { median, range } from 'd3-array';
-import { scaleBand, scaleLinear } from 'd3-scale';
-import * as PIXI from 'pixi.js';
-import classifyPoint from 'robust-point-in-polygon';
+import boxIntersect from "box-intersect";
+import { median, range } from "d3-array";
+import { scaleBand, scaleLinear } from "d3-scale";
+import * as PIXI from "pixi.js";
+import classifyPoint from "robust-point-in-polygon";
 
-import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
+import HorizontalTiled1DPixiTrack from "./HorizontalTiled1DPixiTrack";
 
 // Services
-import { tileProxy } from './services';
+import { tileProxy } from "./services";
 
 // Utils
 import {
-  colorDomainToRgbaArray, colorToHex, rgbToHex, segmentsToRows, valueToColor
-} from './utils';
+  colorDomainToRgbaArray,
+  colorToHex,
+  rgbToHex,
+  segmentsToRows,
+  valueToColor
+} from "./utils";
 
 // Configs
-import { HEATED_OBJECT_MAP } from './configs';
+import { HEATED_OBJECT_MAP } from "./configs";
 
 const GENE_RECT_HEIGHT = 16;
 const MAX_TEXTS = 50;
@@ -26,14 +30,14 @@ const FONT_SIZE = 14;
 // visible against a similar colored background
 const TEXT_STYLE = {
   fontSize: `${FONT_SIZE}px`,
-  fontFamily: 'Arial',
-  stroke: 'white',
+  fontFamily: "Arial",
+  stroke: "white",
   strokeThickness: 2,
   fontWeight: 400,
   dropShadow: true,
-  dropShadowColor: 'white',
+  dropShadowColor: "white",
   dropShadowDistance: 0,
-  dropShadowBlur: 2,
+  dropShadowBlur: 2
 };
 
 class BedLikeTrack extends HorizontalTiled1DPixiTrack {
@@ -72,7 +76,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       if (!this.options || !this.options.valueColumn) {
         // no value column so we can break entries up into separate
         // plus and minus strand segments
-        const segments = tile.tileData.map((x) => {
+        const segments = tile.tileData.map(x => {
           const chrOffset = +x.chrOffset;
 
           return {
@@ -80,12 +84,14 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             to: +x.fields[2] + chrOffset,
             value: x,
             text: x.fields[3],
-            strand: x.fields.length >= 6 && x.fields[5] === '-' ? '-' : '+',
+            strand: x.fields.length >= 6 && x.fields[5] === "-" ? "-" : "+"
           };
         });
 
-        plusStrandRows = segmentsToRows(segments.filter(x => x.strand === '+'));
-        minusStrandRows = segmentsToRows(segments.filter(x => x.strand === '-'));
+        plusStrandRows = segmentsToRows(segments.filter(x => x.strand === "+"));
+        minusStrandRows = segmentsToRows(
+          segments.filter(x => x.strand === "-")
+        );
       } else {
         plusStrandRows = [tile.tileData.map(x => ({ value: x }))];
       }
@@ -107,7 +113,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
           // geneInfo[3] is the gene symbol
           const text = new PIXI.Text(geneInfo[3], TEXT_STYLE);
-          if (this.flipText) { text.scale.x = -1; }
+          if (this.flipText) {
+            text.scale.x = -1;
+          }
 
           text.anchor.x = 0.5;
           text.anchor.y = 0.5;
@@ -132,7 +140,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
    * can be drawn again.
    */
   removeTileRects(tile) {
-    const zoomLevel = +tile.tileId.split('.')[0];
+    const zoomLevel = +tile.tileId.split(".")[0];
     tile.rectGraphics.clear();
     tile.rendered = false;
 
@@ -211,7 +219,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   allVisibleRects() {
     const allRects = {};
 
-    Object.values(this.fetchedTiles).forEach((x) => {
+    Object.values(this.fetchedTiles).forEach(x => {
       if (!x.plusStrandRows) return;
 
       for (const row of x.plusStrandRows[0]) {
@@ -221,8 +229,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       }
     });
 
-    const sortedRows = Object.values(allRects)
-      .sort((a, b) => a.from - b.from);
+    const sortedRows = Object.values(allRects).sort((a, b) => a.from - b.from);
 
     let startPos = 0;
     let startStaggered = 0;
@@ -236,13 +243,14 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       }
     }
 
-
     for (let i = startPos; i < sortedRows.length; i++) {
-      sortedRows[i].staggeredStartPosition = (startStaggered + i - startPos) % 2;
+      sortedRows[i].staggeredStartPosition =
+        (startStaggered + i - startPos) % 2;
     }
 
     for (let i = startPos; i >= 0 && sortedRows.length; i--) {
-      sortedRows[i].staggeredStartPosition = (startStaggered + startPos - i) % 2;
+      sortedRows[i].staggeredStartPosition =
+        (startStaggered + startPos - i) % 2;
     }
 
     // sortedRows.forEach((x, i) => {
@@ -255,23 +263,35 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   drawSegmentStyle(tile, xStartPos, xEndPos, rectY, rectHeight, strand) {
-    const hw = 0.1;  // half width of the line
+    const hw = 0.1; // half width of the line
 
     const centerY = rectY + rectHeight / 2;
 
     const poly = [
-      xStartPos, rectY,  // upper left
-      xStartPos + 2 * hw, rectY,  // upper right
-      xStartPos + 2 * hw, centerY - hw,
-      xEndPos - 2 * hw, centerY - hw,
-      xEndPos - 2 * hw, rectY,
-      xEndPos, rectY,
-      xEndPos, rectY + rectHeight,
-      xEndPos - 2 * hw, rectY + rectHeight,
-      xEndPos - 2 * hw, centerY + hw,
-      xStartPos + 2 * hw, centerY + hw,
-      xStartPos + 2 * hw, rectY + rectHeight,
-      xStartPos, rectY + rectHeight,
+      xStartPos,
+      rectY, // upper left
+      xStartPos + 2 * hw,
+      rectY, // upper right
+      xStartPos + 2 * hw,
+      centerY - hw,
+      xEndPos - 2 * hw,
+      centerY - hw,
+      xEndPos - 2 * hw,
+      rectY,
+      xEndPos,
+      rectY,
+      xEndPos,
+      rectY + rectHeight,
+      xEndPos - 2 * hw,
+      rectY + rectHeight,
+      xEndPos - 2 * hw,
+      centerY + hw,
+      xStartPos + 2 * hw,
+      centerY + hw,
+      xStartPos + 2 * hw,
+      rectY + rectHeight,
+      xStartPos,
+      rectY + rectHeight
     ];
 
     tile.rectGraphics.drawPolygon(poly);
@@ -281,55 +301,81 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   drawPoly(tile, xStartPos, xEndPos, rectY, rectHeight, strand) {
     let drawnPoly = null;
 
-    if (this.options.annotationStyle === 'segment') {
+    if (this.options.annotationStyle === "segment") {
       return this.drawSegmentStyle(
-        tile, xStartPos, xEndPos, rectY, rectHeight, strand
+        tile,
+        xStartPos,
+        xEndPos,
+        rectY,
+        rectHeight,
+        strand
       );
     }
 
     if (
-      (strand === '+' || strand === '-')
-      && (xEndPos - xStartPos < GENE_RECT_HEIGHT / 2)
-    ) { // only draw if it's not too wide
+      (strand === "+" || strand === "-") &&
+      xEndPos - xStartPos < GENE_RECT_HEIGHT / 2
+    ) {
+      // only draw if it's not too wide
       drawnPoly = [
-        xStartPos, rectY, // top
-        xStartPos + (rectHeight / 2), rectY + (rectHeight / 2), // right point
-        xStartPos, rectY + rectHeight // bottom
+        xStartPos,
+        rectY, // top
+        xStartPos + rectHeight / 2,
+        rectY + rectHeight / 2, // right point
+        xStartPos,
+        rectY + rectHeight // bottom
       ];
 
-      if (strand === '+') {
+      if (strand === "+") {
         tile.rectGraphics.drawPolygon(drawnPoly);
       } else {
         drawnPoly = [
-          xEndPos, rectY, // top
-          xEndPos - (rectHeight / 2), rectY + (rectHeight / 2), // left point
-          xEndPos, rectY + rectHeight // bottom
+          xEndPos,
+          rectY, // top
+          xEndPos - rectHeight / 2,
+          rectY + rectHeight / 2, // left point
+          xEndPos,
+          rectY + rectHeight // bottom
         ];
         tile.rectGraphics.drawPolygon(drawnPoly);
       }
     } else {
-      if (strand === '+') {
+      if (strand === "+") {
         drawnPoly = [
-          xStartPos, rectY, // left top
-          xEndPos - (rectHeight / 2), rectY, // right top
-          xEndPos, rectY + (rectHeight / 2),
-          xEndPos - (rectHeight / 2), rectY + rectHeight, // right bottom
-          xStartPos, rectY + rectHeight // left bottom
+          xStartPos,
+          rectY, // left top
+          xEndPos - rectHeight / 2,
+          rectY, // right top
+          xEndPos,
+          rectY + rectHeight / 2,
+          xEndPos - rectHeight / 2,
+          rectY + rectHeight, // right bottom
+          xStartPos,
+          rectY + rectHeight // left bottom
         ];
-      } else if (strand === '-') {
+      } else if (strand === "-") {
         drawnPoly = [
-          xStartPos + (rectHeight / 2), rectY, // left top
-          xEndPos, rectY, // right top
-          xEndPos, rectY + rectHeight, // right bottom
-          xStartPos + (rectHeight / 2), rectY + rectHeight, // left bottom
-          xStartPos, rectY + rectHeight / 2
+          xStartPos + rectHeight / 2,
+          rectY, // left top
+          xEndPos,
+          rectY, // right top
+          xEndPos,
+          rectY + rectHeight, // right bottom
+          xStartPos + rectHeight / 2,
+          rectY + rectHeight, // left bottom
+          xStartPos,
+          rectY + rectHeight / 2
         ];
       } else {
         drawnPoly = [
-          xStartPos, rectY, // left top
-          xEndPos, rectY, // right top
-          xEndPos, rectY + rectHeight, // right bottom
-          xStartPos, rectY + rectHeight, // left bottom
+          xStartPos,
+          rectY, // left top
+          xEndPos,
+          rectY, // right top
+          xEndPos,
+          rectY + rectHeight, // right bottom
+          xStartPos,
+          rectY + rectHeight // left bottom
         ];
       }
 
@@ -340,7 +386,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   renderRows(tile, rows, maxRows, startY, endY, fill) {
-    const zoomLevel = +tile.tileId.split('.')[0];
+    const zoomLevel = +tile.tileId.split(".")[0];
     let maxValue = Number.MIN_SAFE_INTEGER;
     // console.log('startY', startY, 'endY', endY, range(maxRows), rows);
 
@@ -367,7 +413,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         const txStart = +geneInfo[1] + chrOffset;
         const txEnd = +geneInfo[2] + chrOffset;
         const txMiddle = (txStart + txEnd) / 2;
-        let yMiddle = rowScale(j) + (rowScale.step() / 2);
+        let yMiddle = rowScale(j) + rowScale.step() / 2;
         const rectHeight = this.options.annotationHeight || GENE_RECT_HEIGHT;
 
         // if the regions are scaled according to a value column their height needs to
@@ -376,7 +422,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           if (this.options.colorEncoding) {
             const rgb = valueToColor(
               this.valueColorScale,
-              this.colorScale,
+              this.colorScale
             )(+geneInfo[+this.options.valueColumn - 1]);
             fill = colorToHex(rgbToHex(...rgb));
           } else {
@@ -401,7 +447,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         // let width= height;
 
         // const rectX = this._xScale(txMiddle) - (rectHeight / 2);
-        let rectY = yMiddle - (rectHeight / 2);
+        let rectY = yMiddle - rectHeight / 2;
         const xStartPos = this._xScale(txStart);
         const xEndPos = this._xScale(txEnd);
 
@@ -417,20 +463,30 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
         let alreadyDrawn = true;
         // don't draw anything that has already been drawn
-        if (!(zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel])) {
+        if (
+          !(
+            zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel]
+          )
+        ) {
           alreadyDrawn = false;
 
           if (!this.drawnRects[zoomLevel]) this.drawnRects[zoomLevel] = {};
 
-          const drawnPoly = this.drawPoly(tile, xStartPos, xEndPos,
-            rectY, rectHeight, geneInfo[5]);
+          const drawnPoly = this.drawPoly(
+            tile,
+            xStartPos,
+            xEndPos,
+            rectY,
+            rectHeight,
+            geneInfo[5]
+          );
 
           this.drawnRects[zoomLevel][td.uid] = [
             drawnPoly,
             {
               start: txStart,
               end: txEnd,
-              value: td,
+              value: td
             },
             tile.tileId
           ];
@@ -507,13 +563,15 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         : this.maxVisibleValue();
 
       if (this.options.colorEncoding) {
-        this.valueColorScale = scaleLinear().domain([min, max]).range([0, 255]);
+        this.valueColorScale = scaleLinear()
+          .domain([min, max])
+          .range([0, 255]);
       } else {
-        ([this.valueScale] = this.makeValueScale(
+        [this.valueScale] = this.makeValueScale(
           min,
           this.calculateMedianVisibleValue(),
           max
-        ));
+        );
       }
     }
 
@@ -523,26 +581,45 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       // console.log('maxPlusRows', maxPlusRows);
       // console.log('maxMinusRows', maxMinusRows);
 
-      const fill = colorToHex(this.options.plusStrandColor || this.options.fillColor || 'blue');
-      const minusStrandFill = colorToHex(this.options.minusStrandColor || this.options.fillColor || 'purple');
+      const fill = colorToHex(
+        this.options.plusStrandColor || this.options.fillColor || "blue"
+      );
+      const minusStrandFill = colorToHex(
+        this.options.minusStrandColor || this.options.fillColor || "purple"
+      );
 
       const MIDDLE_SPACE = 0;
-      const plusHeight = maxPlusRows * this.dimensions[1]
-        / (maxPlusRows + maxMinusRows) - MIDDLE_SPACE / 2;
+      const plusHeight =
+        (maxPlusRows * this.dimensions[1]) / (maxPlusRows + maxMinusRows) -
+        MIDDLE_SPACE / 2;
 
-      this.renderRows(tile, tile.plusStrandRows, maxPlusRows,
-        0, plusHeight, fill);
-      this.renderRows(tile, tile.minusStrandRows, maxMinusRows,
-        plusHeight + MIDDLE_SPACE / 2, this.dimensions[1], minusStrandFill);
+      this.renderRows(
+        tile,
+        tile.plusStrandRows,
+        maxPlusRows,
+        0,
+        plusHeight,
+        fill
+      );
+      this.renderRows(
+        tile,
+        tile.minusStrandRows,
+        maxMinusRows,
+        plusHeight + MIDDLE_SPACE / 2,
+        this.dimensions[1],
+        minusStrandFill
+      );
     }
   }
 
   calculateZoomLevel() {
     // offset by 2 because 1D tiles are more dense than 2D tiles
     // 1024 points per tile vs 256 for 2D tiles
-    const xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+    const xZoomLevel = tileProxy.calculateZoomLevel(
+      this._xScale,
       this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0]);
+      this.tilesetInfo.max_pos[0]
+    );
 
     let zoomLevel = Math.min(xZoomLevel, this.maxZoom);
     zoomLevel = Math.max(zoomLevel, 0);
@@ -562,18 +639,22 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       visibleAndFetchedIds
         .map(x => this.fetchedTiles[x])
         .filter(x => x.tileData && x.tileData.length)
-        .map(x => Math.min.apply(
-          null,
-          x.tileData
-            .sort((a, b) => b.importance - a.importance)
-            .slice(0, MAX_TILE_ENTRIES)
-            .map(y => +y.fields[+this.options.valueColumn - 1])
-            .filter(y => !Number.isNaN(y))
-        ))
+        .map(x =>
+          Math.min.apply(
+            null,
+            x.tileData
+              .sort((a, b) => b.importance - a.importance)
+              .slice(0, MAX_TILE_ENTRIES)
+              .map(y => +y.fields[+this.options.valueColumn - 1])
+              .filter(y => !Number.isNaN(y))
+          )
+        )
     );
 
     // if there's no data, use null
-    if (min === Number.MAX_SAFE_INTEGER) { min = null; }
+    if (min === Number.MAX_SAFE_INTEGER) {
+      min = null;
+    }
 
     return min;
   }
@@ -590,18 +671,22 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       visibleAndFetchedIds
         .map(x => this.fetchedTiles[x])
         .filter(x => x.tileData && x.tileData.length)
-        .map(x => Math.max.apply(
-          null,
-          x.tileData
-            .sort((a, b) => b.importance - a.importance)
-            .slice(0, MAX_TILE_ENTRIES)
-            .map(y => +y.fields[+this.options.valueColumn - 1])
-            .filter(y => !Number.isNaN(y))
-        ))
+        .map(x =>
+          Math.max.apply(
+            null,
+            x.tileData
+              .sort((a, b) => b.importance - a.importance)
+              .slice(0, MAX_TILE_ENTRIES)
+              .map(y => +y.fields[+this.options.valueColumn - 1])
+              .filter(y => !Number.isNaN(y))
+          )
+        )
     );
 
     // if there's no data, use null
-    if (max === Number.MIN_SAFE_INTEGER) { max = null; }
+    if (max === Number.MIN_SAFE_INTEGER) {
+      max = null;
+    }
 
     return max;
   }
@@ -617,13 +702,19 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    const values = [].concat(...visibleAndFetchedIds
-      .map(x => this.fetchedTiles[x])
-      .filter(x => x.tileData && x.tileData.length)
-      .map(x => x.tileData
-        .sort((a, b) => b.importance - a.importance)
-        .slice(0, MAX_TILE_ENTRIES)
-        .map(y => +y.fields[+this.options.valueColumn - 1]))).filter(x => x > 0);
+    const values = []
+      .concat(
+        ...visibleAndFetchedIds
+          .map(x => this.fetchedTiles[x])
+          .filter(x => x.tileData && x.tileData.length)
+          .map(x =>
+            x.tileData
+              .sort((a, b) => b.importance - a.importance)
+              .slice(0, MAX_TILE_ENTRIES)
+              .map(y => +y.fields[+this.options.valueColumn - 1])
+          )
+      )
+      .filter(x => x > 0);
 
     this.medianVisibleValue = median(values);
   }
@@ -647,8 +738,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
       // scale the rectangles
       //
-      const tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0])
-        / (this._xScale.domain()[1] - this._xScale.domain()[0]);
+      const tileK =
+        (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
+        (this._xScale.domain()[1] - this._xScale.domain()[0]);
       const newRange = this._xScale.domain().map(tile.drawnAtScale);
 
       const posOffset = newRange[0];
@@ -659,10 +751,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
       const parentInFetched = this.parentInFetched(tile);
 
-      if (!tile.initialized) { continue; }
+      if (!tile.initialized) {
+        continue;
+      }
 
       if (tile.tileData && tile.tileData.length) {
-        tile.tileData.forEach((td) => {
+        tile.tileData.forEach(td => {
           if (!tile.texts) {
             // tile probably hasn't been initialized yet
             return;
@@ -672,7 +766,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           const geneName = geneInfo[3];
           const text = tile.texts[td.uid];
 
-          if (!text) { return; }
+          if (!text) {
+            return;
+          }
 
           const chrOffset = +td.chrOffset;
           const txStart = +geneInfo[1] + chrOffset;
@@ -688,10 +784,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             // text.visible = false;
 
             const TEXT_MARGIN = 3;
-            this.allBoxes.push([text.position.x - TEXT_MARGIN,
+            this.allBoxes.push([
+              text.position.x - TEXT_MARGIN,
               text.position.y - tile.textHeights[geneInfo[3]] / 2,
               text.position.x + tile.textWidths[geneInfo[3]] + TEXT_MARGIN,
-              text.position.y + tile.textHeights[geneInfo[3]] / 2]);
+              text.position.y + tile.textHeights[geneInfo[3]] / 2
+            ]);
             this.allTexts.push({
               importance: td.importance,
               text,
@@ -782,16 +880,18 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
     } else {
-      base = document.createElement('g');
+      base = document.createElement("g");
       track = base;
     }
-    const output = document.createElement('g');
-    output.setAttribute('transform',
-      `translate(${this.position[0]},${this.position[1]})`);
+    const output = document.createElement("g");
+    output.setAttribute(
+      "transform",
+      `translate(${this.position[0]},${this.position[1]})`
+    );
 
     track.appendChild(output);
-    const rectOutput = document.createElement('g');
-    const textOutput = document.createElement('g');
+    const rectOutput = document.createElement("g");
+    const textOutput = document.createElement("g");
 
     output.appendChild(rectOutput);
     output.appendChild(textOutput);
@@ -801,17 +901,22 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         continue;
       }
 
-      tile.tileData.forEach((td) => {
-        const zoomLevel = +tile.tileId.split('.')[0];
+      tile.tileData.forEach(td => {
+        const zoomLevel = +tile.tileId.split(".")[0];
 
-        const gTile = document.createElement('g');
-        gTile.setAttribute('transform',
-          `translate(${tile.rectGraphics.position.x},${tile.rectGraphics.position.y})scale(${tile.rectGraphics.scale.x},${tile.rectGraphics.scale.y})`);
+        const gTile = document.createElement("g");
+        gTile.setAttribute(
+          "transform",
+          `translate(${tile.rectGraphics.position.x},${tile.rectGraphics.position.y})scale(${tile.rectGraphics.scale.x},${tile.rectGraphics.scale.y})`
+        );
         rectOutput.appendChild(gTile);
 
-        if (this.drawnRects[zoomLevel] && td.uid in this.drawnRects[zoomLevel]) {
+        if (
+          this.drawnRects[zoomLevel] &&
+          td.uid in this.drawnRects[zoomLevel]
+        ) {
           const rect = this.drawnRects[zoomLevel][td.uid][0];
-          const r = document.createElement('path');
+          const r = document.createElement("path");
           let d = `M ${rect[0]} ${rect[1]}`;
 
           for (let i = 2; i < rect.length; i += 2) {
@@ -820,19 +925,21 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
           const geneInfo = td.fields;
 
-          let fill = this.options.plusStrandColor || this.options.fillColor || 'blue';
-          const minusStrandFill = this.options.minusStrandColor || this.options.fillColor || 'purple';
+          let fill =
+            this.options.plusStrandColor || this.options.fillColor || "blue";
+          const minusStrandFill =
+            this.options.minusStrandColor || this.options.fillColor || "purple";
 
-          if (geneInfo[5] === '-') {
+          if (geneInfo[5] === "-") {
             fill = minusStrandFill;
           }
 
-          r.setAttribute('d', d);
-          r.setAttribute('fill', fill);
-          r.setAttribute('opacity', 0.3);
+          r.setAttribute("d", d);
+          r.setAttribute("fill", fill);
+          r.setAttribute("opacity", 0.3);
 
           r.style.stroke = fill;
-          r.style.strokeWidth = '1px';
+          r.style.strokeWidth = "1px";
 
           gTile.appendChild(r);
 
@@ -843,25 +950,25 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
               return;
             }
 
-            const g = document.createElement('g');
-            const t = document.createElement('text');
+            const g = document.createElement("g");
+            const t = document.createElement("text");
 
             textOutput.appendChild(g);
             g.appendChild(t);
             g.setAttribute(
-              'transform',
+              "transform",
               `translate(${text.x},${text.y})scale(${text.scale.x},1)`
             );
 
-            t.setAttribute('text-anchor', 'middle');
-            t.setAttribute('font-family', TEXT_STYLE.fontFamily);
-            t.setAttribute('font-size', TEXT_STYLE.fontSize);
-            t.setAttribute('font-weight', 'bold');
-            t.setAttribute('dy', '5px');
-            t.setAttribute('fill', fill);
-            t.setAttribute('stroke', TEXT_STYLE.stroke);
-            t.setAttribute('stroke-width', '0.4');
-            t.setAttribute('text-shadow', '0px 0px 2px grey');
+            t.setAttribute("text-anchor", "middle");
+            t.setAttribute("font-family", TEXT_STYLE.fontFamily);
+            t.setAttribute("font-size", TEXT_STYLE.fontSize);
+            t.setAttribute("font-weight", "bold");
+            t.setAttribute("dy", "5px");
+            t.setAttribute("fill", fill);
+            t.setAttribute("stroke", TEXT_STYLE.stroke);
+            t.setAttribute("stroke-width", "0.4");
+            t.setAttribute("text-shadow", "0px 0px 2px grey");
 
             t.innerHTML = text.text;
           }
@@ -874,7 +981,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   getMouseOverHtml(trackX, trackY) {
     if (!this.tilesetInfo) {
-      return '';
+      return "";
     }
 
     const zoomLevel = this.calculateZoomLevel();
@@ -906,12 +1013,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         if (pc === -1) {
           const parts = visibleRects[i][1].value.fields;
 
-          return parts.join(' ');
+          return parts.join(" ");
         }
       }
     }
 
-    return '';
+    return "";
   }
 }
 

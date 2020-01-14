@@ -1,4 +1,4 @@
-import cwise from 'cwise';
+import cwise from "cwise";
 
 const ndarrayAssign = (target, source) => {
   const numSource = +source;
@@ -6,8 +6,8 @@ const ndarrayAssign = (target, source) => {
 
   if (isScalar) {
     cwise({
-      args: ['array', 'scalar'],
-      body: 'function assigns(a, s) { a = s; }'
+      args: ["array", "scalar"],
+      body: "function assigns(a, s) { a = s; }"
     })(target, numSource);
   } else {
     const ty = target.shape[0];
@@ -17,15 +17,18 @@ const ndarrayAssign = (target, source) => {
 
     if (ty !== sy || tx !== sx) {
       console.warn(
-        'Cannot assign source to target ndarray as the dimensions do not match',
-        ty, sy, tx, sx
+        "Cannot assign source to target ndarray as the dimensions do not match",
+        ty,
+        sy,
+        tx,
+        sx
       );
       return;
     }
 
     cwise({
-      args: ['array', 'array'],
-      body: 'function assign(a, b) { a = b; }'
+      args: ["array", "array"],
+      body: "function assign(a, b) { a = b; }"
     })(target, source);
   }
 };

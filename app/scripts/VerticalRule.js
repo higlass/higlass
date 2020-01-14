@@ -1,41 +1,49 @@
-import { mix, Mixin } from './mixwith';
+import { mix, Mixin } from "./mixwith";
 
-import PixiTrack from './PixiTrack';
-import RuleMixin from './RuleMixin';
+import PixiTrack from "./PixiTrack";
+import RuleMixin from "./RuleMixin";
 
-import { colorToHex } from './utils';
+import { colorToHex } from "./utils";
 
-export const VerticalRuleMixin = Mixin(superclass => class extends superclass {
-  drawVerticalRule(graphics) {
-    let stroke = colorToHex('black');
+export const VerticalRuleMixin = Mixin(
+  superclass =>
+    class extends superclass {
+      drawVerticalRule(graphics) {
+        let stroke = colorToHex("black");
 
-    if (this.highlighted) {
-      stroke = colorToHex('red');
+        if (this.highlighted) {
+          stroke = colorToHex("red");
+        }
+
+        graphics.lineStyle(this.strokeWidth, stroke, this.strokeOpacity);
+
+        let pos = 0;
+
+        // console.log('this.position', this.position);
+        // console.log('this._xScale.range()', this._xScale.range());
+
+        while (pos < this.dimensions[1]) {
+          graphics.moveTo(this._xScale(this.xPosition), pos);
+          graphics.lineTo(this._xScale(this.xPosition), pos + this.dashLength);
+
+          pos += this.dashLength + this.dashGap;
+        }
+      }
+
+      isMouseOverVerticalLine(mousePos) {
+        return (
+          Math.abs(
+            mousePos.x - this.position[0] - this._xScale(this.xPosition)
+          ) < this.MOUSEOVER_RADIUS
+        );
+      }
     }
+);
 
-    graphics.lineStyle(this.strokeWidth, stroke, this.strokeOpacity);
-
-    let pos = 0;
-
-    // console.log('this.position', this.position);
-    // console.log('this._xScale.range()', this._xScale.range());
-
-    while (pos < this.dimensions[1]) {
-      graphics.moveTo(this._xScale(this.xPosition), pos);
-      graphics.lineTo(this._xScale(this.xPosition), pos + this.dashLength);
-
-      pos += this.dashLength + this.dashGap;
-    }
-  }
-
-  isMouseOverVerticalLine(mousePos) {
-    return Math.abs(
-      mousePos.x - this.position[0] - this._xScale(this.xPosition)
-    ) < this.MOUSEOVER_RADIUS;
-  }
-});
-
-export default class VerticalRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
+export default class VerticalRule extends mix(PixiTrack).with(
+  RuleMixin,
+  VerticalRuleMixin
+) {
   constructor(context, options) {
     super(context, options);
 
@@ -70,29 +78,31 @@ export default class VerticalRule extends mix(PixiTrack).with(RuleMixin, Vertica
     if (super.exportSVG) {
       [base, track] = super.exportSVG();
     } else {
-      base = document.createElement('g');
+      base = document.createElement("g");
       track = base;
     }
-    const output = document.createElement('g');
-    output.setAttribute('class', 'vertical-rule');
-    output.setAttribute('transform',
-      `translate(${this.position[0]},${this.position[1]})`);
+    const output = document.createElement("g");
+    output.setAttribute("class", "vertical-rule");
+    output.setAttribute(
+      "transform",
+      `translate(${this.position[0]},${this.position[1]})`
+    );
 
     track.appendChild(output);
 
-    let stroke = 'black';
+    let stroke = "black";
     if (this.highlighted) {
-      stroke = 'red';
+      stroke = "red";
     }
 
-    const line = document.createElement('line');
-    line.setAttribute('stroke', stroke);
-    line.setAttribute('stroke-width', this.strokeWidth);
-    line.setAttribute('stroke-dasharray', `${this.dashLength} ${this.dashGap}`);
-    line.setAttribute('x1', this._xScale(this.xPosition));
-    line.setAttribute('y1', 0);
-    line.setAttribute('x2', this._xScale(this.xPosition));
-    line.setAttribute('y2', this.dimensions[1]);
+    const line = document.createElement("line");
+    line.setAttribute("stroke", stroke);
+    line.setAttribute("stroke-width", this.strokeWidth);
+    line.setAttribute("stroke-dasharray", `${this.dashLength} ${this.dashGap}`);
+    line.setAttribute("x1", this._xScale(this.xPosition));
+    line.setAttribute("y1", 0);
+    line.setAttribute("x2", this._xScale(this.xPosition));
+    line.setAttribute("y2", this.dimensions[1]);
 
     output.appendChild(line);
 
@@ -100,10 +110,9 @@ export default class VerticalRule extends mix(PixiTrack).with(RuleMixin, Vertica
   }
 
   mouseMoveHandler(mousePos) {
-    this.highlighted = (
-      this.isWithin(mousePos.x, mousePos.y)
-      && this.isMouseOverVerticalLine(mousePos)
-    );
+    this.highlighted =
+      this.isWithin(mousePos.x, mousePos.y) &&
+      this.isMouseOverVerticalLine(mousePos);
 
     this.draw();
   }

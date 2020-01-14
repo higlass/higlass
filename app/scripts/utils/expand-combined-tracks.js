@@ -5,7 +5,7 @@
  * @param {list} tracks: A list of tracks some of which might be combined
  * @returns {list} tracks: A list of tracks without combined
  */
-const expandCombinedTracks = (trackList) => {
+const expandCombinedTracks = trackList => {
   let newTracks = [];
 
   for (let i = 0; i < trackList.length; i++) {

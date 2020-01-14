@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import ReactDOM from 'react-dom';
+import PropTypes from "prop-types";
+import React from "react";
+import ReactDOM from "react-dom";
 
-import intoTheVoid from './utils';
+import intoTheVoid from "./utils";
 
 class PopupMenu extends React.Component {
   constructor(props) {
@@ -14,16 +14,20 @@ class PopupMenu extends React.Component {
   }
 
   componentDidMount() {
-    this.popup = document.createElement('div');
+    this.popup = document.createElement("div");
     document.body.appendChild(this.popup);
 
     this.popup.style.zIndex = 99;
-    this.popup.style.position = 'absolute';
-    this.popup.className = 'hg-popup';
+    this.popup.style.position = "absolute";
+    this.popup.className = "hg-popup";
 
-    document.addEventListener('click', this.clickHandlerBound, true);
-    document.addEventListener('contextmenu', this.contextMenuHandlerBound, true);
-    window.addEventListener('resize', this.resizeHandlerBound, true);
+    document.addEventListener("click", this.clickHandlerBound, true);
+    document.addEventListener(
+      "contextmenu",
+      this.contextMenuHandlerBound,
+      true
+    );
+    window.addEventListener("resize", this.resizeHandlerBound, true);
 
     this._renderLayer();
   }
@@ -33,9 +37,13 @@ class PopupMenu extends React.Component {
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.clickHandlerBound, true);
-    document.removeEventListener('contextmenu', this.contextMenuHandlerBound, true);
-    window.removeEventListener('resize', this.resizeHandlerBound, true);
+    document.removeEventListener("click", this.clickHandlerBound, true);
+    document.removeEventListener(
+      "contextmenu",
+      this.contextMenuHandlerBound,
+      true
+    );
+    window.removeEventListener("resize", this.resizeHandlerBound, true);
     ReactDOM.unmountComponentAtNode(this.popup);
     document.body.removeChild(this.popup);
   }
@@ -62,7 +70,7 @@ class PopupMenu extends React.Component {
 
   render() {
     // Render a placeholder
-    return (<div />);
+    return <div />;
   }
 }
 

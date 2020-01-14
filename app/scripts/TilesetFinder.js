@@ -1,16 +1,14 @@
-import React from 'react';
-import slugid from 'slugid';
-import CheckboxTree from 'react-checkbox-tree';
+import React from "react";
+import slugid from "slugid";
+import CheckboxTree from "react-checkbox-tree";
 
+import { tileProxy } from "./services";
+import "../styles/TilesetFinder.css";
 
-import { tileProxy } from './services';
-import '../styles/TilesetFinder.css';
-
-
-import withPubSub from './hocs/with-pub-sub';
+import withPubSub from "./hocs/with-pub-sub";
 
 // Configs
-import { TRACKS_INFO } from './configs';
+import { TRACKS_INFO } from "./configs";
 
 class TilesetFinder extends React.Component {
   constructor(props) {
@@ -19,41 +17,48 @@ class TilesetFinder extends React.Component {
     // this.localTracks = TRACKS_INFO.filter
 
     // local tracks are ones that don't have a filetype associated with them
-    this.localTracks = TRACKS_INFO
-      .filter(x => x.local && !x.hidden)
-      .map((x) => {
-        const y = Object.assign({}, x);
-        y.datatype = x.datatype[0];
-        return y;
-      });
+    this.localTracks = TRACKS_INFO.filter(x => x.local && !x.hidden).map(x => {
+      const y = Object.assign({}, x);
+      y.datatype = x.datatype[0];
+      return y;
+    });
 
     this.augmentedTracksInfo = TRACKS_INFO;
     if (window.higlassTracksByType) {
-      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
-        this.augmentedTracksInfo.push(window.higlassTracksByType[pluginTrackType].config);
+      Object.keys(window.higlassTracksByType).forEach(pluginTrackType => {
+        this.augmentedTracksInfo.push(
+          window.higlassTracksByType[pluginTrackType].config
+        );
       });
     }
 
     if (props.datatype) {
-      this.localTracks = this.localTracks.filter(x => x.datatype[0] === props.datatype);
+      this.localTracks = this.localTracks.filter(
+        x => x.datatype[0] === props.datatype
+      );
     } else {
-      this.localTracks = this.localTracks.filter(x => x.orientation === this.props.orientation);
+      this.localTracks = this.localTracks.filter(
+        x => x.orientation === this.props.orientation
+      );
     }
 
+    this.localTracks.forEach(x => {
+      x.uuid = slugid.nice();
+    });
 
-    this.localTracks.forEach((x) => { x.uuid = slugid.nice(); });
-
-    const newOptions = this.prepareNewEntries('', this.localTracks, {});
+    const newOptions = this.prepareNewEntries("", this.localTracks, {});
     const availableTilesetKeys = Object.keys(newOptions);
-    const selectedUuid = availableTilesetKeys.length ? [availableTilesetKeys[0]] : null;
+    const selectedUuid = availableTilesetKeys.length
+      ? [availableTilesetKeys[0]]
+      : null;
     this.mounted = false;
 
     this.state = {
       selectedUuid,
       options: newOptions,
-      filter: '',
+      filter: "",
       checked: [],
-      expanded: [],
+      expanded: []
     };
 
     this.requestTilesetLists();
@@ -75,25 +80,25 @@ class TilesetFinder extends React.Component {
 
   prepareNewEntries(sourceServer, newEntries, existingOptions) {
     /**
-         * Add meta data to new tileset entries before adding
-         * them to the list of available options.
-         */
+     * Add meta data to new tileset entries before adding
+     * them to the list of available options.
+     */
     const newOptions = existingOptions;
 
-    const entries = newEntries.map((ne) => {
+    const entries = newEntries.map(ne => {
       const ane = Object.assign({}, ne, {
         server: sourceServer,
         tilesetUid: ne.uuid,
         serverUidKey: this.serverUidKey(sourceServer, ne.uuid),
         datatype: ne.datatype,
         name: ne.name,
-        uid: slugid.nice(),
+        uid: slugid.nice()
       });
 
       return ane;
     });
 
-    entries.forEach((ne) => {
+    entries.forEach(ne => {
       newOptions[ne.serverUidKey] = ne;
     });
 
@@ -102,11 +107,10 @@ class TilesetFinder extends React.Component {
 
   serverUidKey(server, uid) {
     /**
-         * Create a key for a server and uid
-         */
+     * Create a key for a server and uid
+     */
     return `${server}/${uid}`;
   }
-
 
   requestTilesetLists() {
     let datatypesQuery = null;
@@ -114,33 +118,43 @@ class TilesetFinder extends React.Component {
     if (this.props.datatype) {
       datatypesQuery = `dt=${this.props.datatype}`;
     } else {
-      const datatypes = new Set([].concat(...this.augmentedTracksInfo
-        .filter(x => x.datatype)
-        .filter(x => x.orientation === this.props.orientation)
-        .map(x => x.datatype)));
+      const datatypes = new Set(
+        [].concat(
+          ...this.augmentedTracksInfo
+            .filter(x => x.datatype)
+            .filter(x => x.orientation === this.props.orientation)
+            .map(x => x.datatype)
+        )
+      );
 
-      datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
+      datatypesQuery = [...datatypes].map(x => `dt=${x}`).join("&");
     }
 
     if (!this.props.trackSourceServers) {
-      console.warn('No track source servers specified in the viewconf');
+      console.warn("No track source servers specified in the viewconf");
       return;
     }
 
-    this.props.trackSourceServers.forEach((sourceServer) => {
-      tileProxy.json(`${sourceServer}/tilesets/?limit=10000&${datatypesQuery}`,
+    this.props.trackSourceServers.forEach(sourceServer => {
+      tileProxy.json(
+        `${sourceServer}/tilesets/?limit=10000&${datatypesQuery}`,
         (error, data) => {
           if (error) {
-            console.error('ERROR:', error);
+            console.error("ERROR:", error);
           } else {
-            const newOptions = this.prepareNewEntries(sourceServer,
-              data.results, this.state.options);
+            const newOptions = this.prepareNewEntries(
+              sourceServer,
+              data.results,
+              this.state.options
+            );
             const availableTilesetKeys = Object.keys(newOptions);
             let { selectedUuid } = this.state;
 
             // if there isn't a selected tileset, select the first received one
             if (!selectedUuid) {
-              selectedUuid = availableTilesetKeys.length ? [availableTilesetKeys[0]] : null;
+              selectedUuid = availableTilesetKeys.length
+                ? [availableTilesetKeys[0]]
+                : null;
               const selectedTileset = this.state.options[selectedUuid[0]];
               this.props.selectedTilesetChanged([selectedTileset]);
             }
@@ -148,11 +162,13 @@ class TilesetFinder extends React.Component {
             if (this.mounted) {
               this.setState({
                 selectedUuid,
-                options: newOptions,
+                options: newOptions
               });
             }
           }
-        }, this.props.pubSub);
+        },
+        this.props.pubSub
+      );
     });
   }
 
@@ -215,10 +231,10 @@ class TilesetFinder extends React.Component {
    */
   partitionByGroup(datasetsDict, filter) {
     const itemsByGroup = {
-      '': {
-        name: '',
-        value: '',
-        children: [],
+      "": {
+        name: "",
+        value: "",
+        children: []
       }
     };
 
@@ -229,47 +245,43 @@ class TilesetFinder extends React.Component {
         continue;
       }
 
-      if ('project_name' in item) {
+      if ("project_name" in item) {
         const group = item.project_name;
 
         if (!(group in itemsByGroup)) {
           itemsByGroup[group] = {
             value: group,
             label: group,
-            children: [],
+            children: []
           };
         }
 
         itemsByGroup[group].children.push({
           label: item.name,
-          value: uuid,
+          value: uuid
         });
       } else {
-        itemsByGroup[''].children.push({
+        itemsByGroup[""].children.push({
           label: item.name,
-          value: uuid,
+          value: uuid
         });
       }
     }
 
-    const allItems = itemsByGroup[''].children;
+    const allItems = itemsByGroup[""].children;
     // coollapse the group lists into one list of objects
     for (const group of Object.keys(itemsByGroup)) {
-      if (group !== '') {
-        itemsByGroup[group].children.sort(
-          (a, b) => a.label.toLowerCase().localeCompare(
-            b.label.toLowerCase(), 'en'
-          )
+      if (group !== "") {
+        itemsByGroup[group].children.sort((a, b) =>
+          a.label.toLowerCase().localeCompare(b.label.toLowerCase(), "en")
         );
 
         allItems.push(itemsByGroup[group]);
       }
     }
 
-    allItems.sort(
-      (a, b) => a.label.toLowerCase().localeCompare(
-        b.label.toLowerCase(), 'en'
-      )
+    allItems.sort((a, b) =>
+      a.label.toLowerCase().localeCompare(b.label.toLowerCase(), "en")
     );
 
     return allItems;
@@ -300,7 +312,7 @@ class TilesetFinder extends React.Component {
       height: 15,
       top: 2,
       right: 2,
-      position: 'relative',
+      position: "relative"
     };
 
     const halfSvgStyle = JSON.parse(JSON.stringify(svgStyle));
@@ -308,18 +320,16 @@ class TilesetFinder extends React.Component {
 
     const form = (
       <form
-        onSubmit={(evt) => { evt.preventDefault(); }}
+        onSubmit={evt => {
+          evt.preventDefault();
+        }}
       >
-        <div
-          className="tileset-finder-search-bar"
-        >
-          <span
-            className="tileset-finder-label"
-          >
-            Select tileset:
-          </span>
+        <div className="tileset-finder-search-bar">
+          <span className="tileset-finder-label">Select tileset:</span>
           <input
-            ref={(c) => { this.searchBox = c; }}
+            ref={c => {
+              this.searchBox = c;
+            }}
             className="tileset-finder-search-box"
             onChange={this.handleSearchChange.bind(this)}
             placeholder="Search Term"
@@ -331,31 +341,59 @@ class TilesetFinder extends React.Component {
           styleName="tileset-finder-checkbox-tree"
         >
           <CheckboxTree
-              checked={this.state.checked}
-              expanded={this.state.expanded}
-              icons={{
-                uncheck: <svg style={svgStyle}><use xlinkHref="#square_o" /></svg>,
-                check: <svg style={svgStyle}><use xlinkHref="#check_square_o" /></svg>,
-                halfcheck: <svg style={halfSvgStyle}><use xlinkHref="#check_square_o" /></svg>,
-                leaf: <svg style={svgStyle}><use xlinkHref="#file_o" /></svg>,
-                expandClose: <svg style={svgStyle}><use xlinkHref="#chevron_right" /></svg>,
-                expandOpen: <svg style={svgStyle}><use xlinkHref="#chevron_down" /></svg>,
-                parentClose: <svg style={svgStyle}><use xlinkHref="#folder_o" /></svg>,
-                parentOpen: <svg style={svgStyle}><use xlinkHref="#folder_open_o" /></svg>,
-              }}
-              nodes={nestedItems}
-              onCheck={this.handleChecked.bind(this)}
-              onExpand={this.handleExpanded.bind(this)}
+            checked={this.state.checked}
+            expanded={this.state.expanded}
+            icons={{
+              uncheck: (
+                <svg style={svgStyle}>
+                  <use xlinkHref="#square_o" />
+                </svg>
+              ),
+              check: (
+                <svg style={svgStyle}>
+                  <use xlinkHref="#check_square_o" />
+                </svg>
+              ),
+              halfcheck: (
+                <svg style={halfSvgStyle}>
+                  <use xlinkHref="#check_square_o" />
+                </svg>
+              ),
+              leaf: (
+                <svg style={svgStyle}>
+                  <use xlinkHref="#file_o" />
+                </svg>
+              ),
+              expandClose: (
+                <svg style={svgStyle}>
+                  <use xlinkHref="#chevron_right" />
+                </svg>
+              ),
+              expandOpen: (
+                <svg style={svgStyle}>
+                  <use xlinkHref="#chevron_down" />
+                </svg>
+              ),
+              parentClose: (
+                <svg style={svgStyle}>
+                  <use xlinkHref="#folder_o" />
+                </svg>
+              ),
+              parentOpen: (
+                <svg style={svgStyle}>
+                  <use xlinkHref="#folder_open_o" />
+                </svg>
+              )
+            }}
+            nodes={nestedItems}
+            onCheck={this.handleChecked.bind(this)}
+            onExpand={this.handleExpanded.bind(this)}
           />
         </div>
       </form>
     );
 
-    return (
-      <div>
-        {form}
-      </div>
-    );
+    return <div>{form}</div>;
   }
 }
 

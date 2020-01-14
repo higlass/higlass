@@ -1,5 +1,5 @@
-import { initTile, drawTile } from './Id2DTiledPixiTrack';
-import OSMTilesTrack from './OSMTilesTrack';
+import { initTile, drawTile } from "./Id2DTiledPixiTrack";
+import OSMTilesTrack from "./OSMTilesTrack";
 
 class OSMTileIdsTrack extends OSMTilesTrack {
   initTile(tile) {
@@ -21,13 +21,13 @@ class OSMTileIdsTrack extends OSMTilesTrack {
 
   fetchNewTiles(toFetch) {
     // no real fetching involved... we just need to display the data
-    toFetch.forEach((x) => {
+    toFetch.forEach(x => {
       const key = x.remoteId;
-      const keyParts = key.split('.');
+      const keyParts = key.split(".");
 
       const data = {
         zoomLevel: keyParts[0],
-        tilePos: keyParts.slice(1, keyParts.length).map(keyPart => +keyPart),
+        tilePos: keyParts.slice(1, keyParts.length).map(keyPart => +keyPart)
       };
 
       this.fetchedTiles[x.tileId] = x;
@@ -35,7 +35,9 @@ class OSMTileIdsTrack extends OSMTilesTrack {
 
       // since we're not actually fetching remote data, we can easily
       // remove these tiles from the fetching list
-      if (this.fetching.has(x.remoteId)) { this.fetching.delete(x.remoteId); }
+      if (this.fetching.has(x.remoteId)) {
+        this.fetching.delete(x.remoteId);
+      }
     });
 
     this.synchronizeTilesAndGraphics();

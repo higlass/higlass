@@ -1,33 +1,32 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import { brushX } from 'd3-brush';
-import { select, event } from 'd3-selection';
-import slugid from 'slugid';
+import PropTypes from "prop-types";
+import React from "react";
+import { brushX } from "d3-brush";
+import { select, event } from "d3-selection";
+import slugid from "slugid";
 
-import ListWrapper from './ListWrapper';
-import HorizontalItem from './HorizontalItem';
-import SortableList from './SortableList';
+import ListWrapper from "./ListWrapper";
+import HorizontalItem from "./HorizontalItem";
+import SortableList from "./SortableList";
 
 // Utils
-import { or, resetD3BrushStyle, sum } from './utils';
+import { or, resetD3BrushStyle, sum } from "./utils";
 
 // Configs
-import { IS_TRACK_RANGE_SELECTABLE } from './configs';
+import { IS_TRACK_RANGE_SELECTABLE } from "./configs";
 
 // Styles
-import styles from '../styles/HorizontalTiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesPlot from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
-
+import styles from "../styles/HorizontalTiledPlot.module.scss"; // eslint-disable-line no-unused-vars
+import stylesPlot from "../styles/TiledPlot.module.scss"; // eslint-disable-line no-unused-vars
+import stylesTrack from "../styles/Track.module.scss"; // eslint-disable-line no-unused-vars
 
 class HorizontalTiledPlot extends React.Component {
   constructor(props) {
     super(props);
 
     this.brushBehavior = brushX(true)
-      .on('start', this.brushStarted.bind(this))
-      .on('brush', this.brushed.bind(this))
-      .on('end', this.brushedEnded.bind(this));
+      .on("start", this.brushStarted.bind(this))
+      .on("brush", this.brushed.bind(this))
+      .on("end", this.brushedEnded.bind(this));
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */
@@ -42,13 +41,11 @@ class HorizontalTiledPlot extends React.Component {
     if (this.rangeSelectionTriggered) {
       this.rangeSelectionTriggered = false;
       if (
-        this.rangeSelectionTriggeredEnd
-        && this.props.rangeSelection !== nextProps.rangeSelection
+        this.rangeSelectionTriggeredEnd &&
+        this.props.rangeSelection !== nextProps.rangeSelection
       ) {
         this.moveBrush(
-          nextProps.rangeSelection[0]
-            ? nextProps.rangeSelection[0]
-            : null,
+          nextProps.rangeSelection[0] ? nextProps.rangeSelection[0] : null,
           true
         );
       }
@@ -57,10 +54,8 @@ class HorizontalTiledPlot extends React.Component {
     }
     if (this.props.rangeSelection !== nextProps.rangeSelection) {
       this.moveBrush(
-        nextProps.rangeSelection[0]
-          ? nextProps.rangeSelection[0]
-          : null,
-        nextProps.rangeSelectionEnd,
+        nextProps.rangeSelection[0] ? nextProps.rangeSelection[0] : null,
+        nextProps.rangeSelectionEnd
       );
       return this.state !== nextState;
     }
@@ -84,18 +79,21 @@ class HorizontalTiledPlot extends React.Component {
   /* ---------------------------- Custom Methods ---------------------------- */
 
   addBrush() {
-    if (!this.brushEl || this.brushElAddedBefore === this.brushEl) { return; }
+    if (!this.brushEl || this.brushElAddedBefore === this.brushEl) {
+      return;
+    }
 
     if (this.brushElAddedBefore) {
       // Remove event listener on old element to avoid memory leaks
-      this.brushElAddedBefore.on('.brush', null);
+      this.brushElAddedBefore.on(".brush", null);
     }
 
     this.brushEl.call(this.brushBehavior);
     this.brushElAddedBefore = this.brushEl;
 
     resetD3BrushStyle(
-      this.brushEl, stylesTrack['track-range-selection-group-brush-selection']
+      this.brushEl,
+      stylesTrack["track-range-selection-group-brush-selection"]
     );
   }
 
@@ -105,10 +103,11 @@ class HorizontalTiledPlot extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !this.sourceEvent
-      || !this.props.onRangeSelection
-      || rangeSelectionMoved
-    ) return;
+      !this.sourceEvent ||
+      !this.props.onRangeSelection ||
+      rangeSelectionMoved
+    )
+      return;
 
     this.rangeSelectionTriggered = true;
     this.props.onRangeSelection(event.selection);
@@ -128,10 +127,10 @@ class HorizontalTiledPlot extends React.Component {
 
     // Brush end event with a selection
     if (
-      event.selection
-      && event.sourceEvent
-      && this.props.onRangeSelection
-      && !rangeSelectionMovedEnd
+      event.selection &&
+      event.sourceEvent &&
+      this.props.onRangeSelection &&
+      !rangeSelectionMovedEnd
     ) {
       this.rangeSelectionTriggered = true;
       this.rangeSelectionTriggeredEnd = true;
@@ -146,12 +145,16 @@ class HorizontalTiledPlot extends React.Component {
   }
 
   moveBrush(rangeSelection, animate = false) {
-    if (!this.brushEl) { return; }
+    if (!this.brushEl) {
+      return;
+    }
 
-    const relRange = rangeSelection ? [
-      this.props.scale(rangeSelection[0]),
-      this.props.scale(rangeSelection[1]),
-    ] : null;
+    const relRange = rangeSelection
+      ? [
+          this.props.scale(rangeSelection[0]),
+          this.props.scale(rangeSelection[1])
+        ]
+      : null;
 
     this.rangeSelectionMoved = true;
     this.rangeSelectionMovedEnd = true;
@@ -165,13 +168,10 @@ class HorizontalTiledPlot extends React.Component {
   removeBrush() {
     if (this.brushElAddedBefore) {
       // Reset brush selection
-      this.brushElAddedBefore.call(
-        this.brushBehavior.move,
-        null,
-      );
+      this.brushElAddedBefore.call(this.brushBehavior.move, null);
 
       // Remove brush behavior
-      this.brushElAddedBefore.on('.brush', null);
+      this.brushElAddedBefore.on(".brush", null);
       this.brushElAddedBefore = undefined;
 
       this.props.onRangeSelectionReset();
@@ -188,8 +188,8 @@ class HorizontalTiledPlot extends React.Component {
       .reduce(or, false);
 
     const rangeSelectorClass = this.props.isRangeSelectionActive
-      ? 'stylesTrack.track-range-selection-active'
-      : 'stylesTrack.track-range-selection';
+      ? "stylesTrack.track-range-selection-active"
+      : "stylesTrack.track-range-selection";
 
     return (
       <div
@@ -198,10 +198,12 @@ class HorizontalTiledPlot extends React.Component {
       >
         {isBrushable && (
           <svg
-            ref={(el) => { this.brushEl = select(el); }}
+            ref={el => {
+              this.brushEl = select(el);
+            }}
             style={{
               height,
-              width: this.props.width,
+              width: this.props.width
             }}
             styleName={rangeSelectorClass}
             xmlns="http://www.w3.org/2000/svg"
@@ -222,7 +224,7 @@ class HorizontalTiledPlot extends React.Component {
             uid: d.uid || slugid.nice(),
             width: this.props.width,
             height: d.height,
-            value: d.value,
+            value: d.value
           }))}
           onAddSeries={this.props.onAddSeries}
           onCloseTrack={this.props.onCloseTrack}
@@ -261,7 +263,7 @@ HorizontalTiledPlot.propTypes = {
   resizeHandles: PropTypes.object,
   scale: PropTypes.func,
   tracks: PropTypes.array,
-  width: PropTypes.number,
+  width: PropTypes.number
 };
 
 export default HorizontalTiledPlot;

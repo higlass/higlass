@@ -1,8 +1,8 @@
-import GBKDataFetcher from './genbank-fetcher';
-import DataFetcher from '../DataFetcher';
+import GBKDataFetcher from "./genbank-fetcher";
+import DataFetcher from "../DataFetcher";
 
 const getDataFetcher = (dataConfig, pubSub) => {
-  if (dataConfig.type === 'genbank') {
+  if (dataConfig.type === "genbank") {
     return new GBKDataFetcher(dataConfig, pubSub);
   }
 

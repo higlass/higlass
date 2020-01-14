@@ -4,10 +4,10 @@
  * @param   {string}  className  New class name to be set.
  */
 const resetD3BrushStyle = (el, className) => {
-  el.select('.selection')
-    .attr('fill', null)
-    .attr('fill-opacity', null)
-    .attr('stroke', null)
+  el.select(".selection")
+    .attr("fill", null)
+    .attr("fill-opacity", null)
+    .attr("stroke", null)
     .classed(className, true);
 };
 

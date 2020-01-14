@@ -1,8 +1,8 @@
-import { scaleLinear } from 'd3-scale';
-import { fake as fakePubSub } from './hocs/with-pub-sub';
+import { scaleLinear } from "d3-scale";
+import { fake as fakePubSub } from "./hocs/with-pub-sub";
 
 // Services
-import { isWithin } from './utils';
+import { isWithin } from "./utils";
 
 class Track {
   constructor({ id, pubSub, getTheme }) {
@@ -36,7 +36,8 @@ class Track {
 
     this.pubSubs.push(
       this.pubSub.subscribe(
-        'app.mouseMove', this.defaultMouseMoveHandler.bind(this)
+        "app.mouseMove",
+        this.defaultMouseMoveHandler.bind(this)
       )
     );
   }
@@ -125,7 +126,9 @@ class Track {
    * Either get or set the yScale
    */
   yScale(_) {
-    if (!arguments.length) { return this._yScale; }
+    if (!arguments.length) {
+      return this._yScale;
+    }
 
     this._yScale = _;
 
@@ -160,9 +163,7 @@ class Track {
    *
    * @returns nothing
    */
-  defaultMouseMoveHandler(evt) {
-
-  }
+  defaultMouseMoveHandler(evt) {}
 
   remove() {
     // Clear all pubSub subscriptions
@@ -181,13 +182,9 @@ class Track {
     return this.isWithin(x, y);
   }
 
-  zoomedY(trackY, kMultiplier) {
+  zoomedY(trackY, kMultiplier) {}
 
-  }
-
-  movedY(dY) {
-
-  }
+  movedY(dY) {}
 }
 
 export default Track;

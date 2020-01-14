@@ -1,17 +1,20 @@
-import React from 'react';
-import TrackArea from './TrackArea';
+import React from "react";
+import TrackArea from "./TrackArea";
 
 export default class FixedTrack extends TrackArea {
   render() {
     let controls = null;
 
-    if (this.props.editable && (this.state.controlsVisible || this.props.item.configMenuOpen)) {
+    if (
+      this.props.editable &&
+      (this.state.controlsVisible || this.props.item.configMenuOpen)
+    ) {
       controls = this.getControls();
     }
 
-    let classNames = 'track';
+    let classNames = "track";
 
-    classNames += this.props.className ? ` ${this.props.className}` : '';
+    classNames += this.props.className ? ` ${this.props.className}` : "";
 
     return (
       <div
@@ -21,15 +24,15 @@ export default class FixedTrack extends TrackArea {
         style={{
           height: this.props.height,
           width: this.props.width,
-          position: 'relative',
-          background: 'transparent',
+          position: "relative",
+          background: "transparent"
         }}
       >
         <div
           key={this.props.uid}
           style={{
             height: this.props.height,
-            width: this.props.width,
+            width: this.props.width
           }}
         />
         {controls}

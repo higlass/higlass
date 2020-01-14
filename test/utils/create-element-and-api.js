@@ -1,9 +1,13 @@
-import { viewer } from '../../app/scripts/hglib';
+import { viewer } from "../../app/scripts/hglib";
 
-import createDiv from './create-div';
+import createDiv from "./create-div";
 
 export default function createElementAndAPI(
-  viewConfig, options, width, height, scrollable = false
+  viewConfig,
+  options,
+  width,
+  height,
+  scrollable = false
 ) {
   const div = createDiv();
 
@@ -11,8 +15,10 @@ export default function createElementAndAPI(
   const divHeight = height || 400;
 
   div.setAttribute(
-    'style',
-    `width:${divWidth}px; height: ${divHeight}px; background-color: lightgreen; overflow: ${scrollable ? 'hidden' : 'auto'}`
+    "style",
+    `width:${divWidth}px; height: ${divHeight}px; background-color: lightgreen; overflow: ${
+      scrollable ? "hidden" : "auto"
+    }`
   );
 
   const api = viewer(div, viewConfig, options);

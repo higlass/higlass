@@ -1,34 +1,33 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
 
-import { brushY } from 'd3-brush';
-import { select, event } from 'd3-selection';
-import slugid from 'slugid';
+import { brushY } from "d3-brush";
+import { select, event } from "d3-selection";
+import slugid from "slugid";
 
-import ListWrapper from './ListWrapper';
-import VerticalItem from './VerticalItem';
-import SortableList from './SortableList';
+import ListWrapper from "./ListWrapper";
+import VerticalItem from "./VerticalItem";
+import SortableList from "./SortableList";
 
 // Utils
-import { or, resetD3BrushStyle, sum } from './utils';
+import { or, resetD3BrushStyle, sum } from "./utils";
 
 // Configs
-import { IS_TRACK_RANGE_SELECTABLE } from './configs';
+import { IS_TRACK_RANGE_SELECTABLE } from "./configs";
 
 // Styles
-import styles from '../styles/VerticalTiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesPlot from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
-
+import styles from "../styles/VerticalTiledPlot.module.scss"; // eslint-disable-line no-unused-vars
+import stylesPlot from "../styles/TiledPlot.module.scss"; // eslint-disable-line no-unused-vars
+import stylesTrack from "../styles/Track.module.scss"; // eslint-disable-line no-unused-vars
 
 class VerticalTiledPlot extends React.Component {
   constructor(props) {
     super(props);
 
     this.brushBehavior = brushY(true)
-      .on('start', this.brushStarted.bind(this))
-      .on('brush', this.brushed.bind(this))
-      .on('end', this.brushedEnded.bind(this));
+      .on("start", this.brushStarted.bind(this))
+      .on("brush", this.brushed.bind(this))
+      .on("end", this.brushedEnded.bind(this));
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */
@@ -43,26 +42,25 @@ class VerticalTiledPlot extends React.Component {
     if (this.rangeSelectionTriggered) {
       this.rangeSelectionTriggered = false;
       if (
-        this.rangeSelectionTriggeredEnd
-        && this.props.rangeSelection !== nextProps.rangeSelection
+        this.rangeSelectionTriggeredEnd &&
+        this.props.rangeSelection !== nextProps.rangeSelection
       ) {
         this.moveBrush(
-          nextProps.rangeSelection[0]
-            ? nextProps.rangeSelection[0]
-            : null,
+          nextProps.rangeSelection[0] ? nextProps.rangeSelection[0] : null,
           true
         );
       }
       this.rangeSelectionTriggeredEnd = false;
       return this.state !== nextState;
-    } if (this.props.rangeSelection !== nextProps.rangeSelection) {
+    }
+    if (this.props.rangeSelection !== nextProps.rangeSelection) {
       const accessor = this.props.is1dRangeSelection ? 0 : 1;
 
       this.moveBrush(
         nextProps.rangeSelection[accessor]
           ? nextProps.rangeSelection[accessor]
           : null,
-        nextProps.rangeSelectionEnd,
+        nextProps.rangeSelectionEnd
       );
       return this.state !== nextState;
     }
@@ -86,18 +84,21 @@ class VerticalTiledPlot extends React.Component {
   /* ---------------------------- Custom Methods ---------------------------- */
 
   addBrush() {
-    if (!this.brushEl || this.brushElAddedBefore === this.brushEl) { return; }
+    if (!this.brushEl || this.brushElAddedBefore === this.brushEl) {
+      return;
+    }
 
     if (this.brushElAddedBefore) {
       // Remove event listener on old element to avoid memory leaks
-      this.brushElAddedBefore.on('.brush', null);
+      this.brushElAddedBefore.on(".brush", null);
     }
 
     this.brushEl.call(this.brushBehavior);
     this.brushElAddedBefore = this.brushEl;
 
     resetD3BrushStyle(
-      this.brushEl, stylesTrack['track-range-selection-group-brush-selection']
+      this.brushEl,
+      stylesTrack["track-range-selection-group-brush-selection"]
     );
   }
 
@@ -107,10 +108,11 @@ class VerticalTiledPlot extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !this.sourceEvent
-      || !this.props.onRangeSelection
-      || rangeSelectionMoved
-    ) return;
+      !this.sourceEvent ||
+      !this.props.onRangeSelection ||
+      rangeSelectionMoved
+    )
+      return;
 
     this.rangeSelectionTriggered = true;
     this.props.onRangeSelection(event.selection);
@@ -130,10 +132,10 @@ class VerticalTiledPlot extends React.Component {
 
     // Brush end event with a selection
     if (
-      event.selection
-      && event.sourceEvent
-      && this.props.onRangeSelection
-      && !rangeSelectionMovedEnd
+      event.selection &&
+      event.sourceEvent &&
+      this.props.onRangeSelection &&
+      !rangeSelectionMovedEnd
     ) {
       this.rangeSelectionTriggered = true;
       this.rangeSelectionTriggeredEnd = true;
@@ -147,12 +149,16 @@ class VerticalTiledPlot extends React.Component {
   }
 
   moveBrush(rangeSelection, animate = false) {
-    if (!this.brushEl) { return; }
+    if (!this.brushEl) {
+      return;
+    }
 
-    const relRange = rangeSelection ? [
-      this.props.scale(rangeSelection[0]),
-      this.props.scale(rangeSelection[1]),
-    ] : null;
+    const relRange = rangeSelection
+      ? [
+          this.props.scale(rangeSelection[0]),
+          this.props.scale(rangeSelection[1])
+        ]
+      : null;
 
     this.rangeSelectionMoved = true;
     this.rangeSelectionMovedEnd = true;
@@ -166,13 +172,10 @@ class VerticalTiledPlot extends React.Component {
   removeBrush() {
     if (this.brushElAddedBefore) {
       // Reset brush selection
-      this.brushElAddedBefore.call(
-        this.brushBehavior.move,
-        null,
-      );
+      this.brushElAddedBefore.call(this.brushBehavior.move, null);
 
       // Remove brush behavior
-      this.brushElAddedBefore.on('.brush', null);
+      this.brushElAddedBefore.on(".brush", null);
       this.brushElAddedBefore = undefined;
 
       this.props.onRangeSelectionReset();
@@ -189,24 +192,24 @@ class VerticalTiledPlot extends React.Component {
       .reduce(or, false);
 
     const rangeSelectorClass = this.props.isRangeSelectionActive
-      ? 'stylesTrack.track-range-selection-active'
-      : 'stylesTrack.track-range-selection';
+      ? "stylesTrack.track-range-selection-active"
+      : "stylesTrack.track-range-selection";
 
     return (
       <div styleName="styles.vertical-tiled-plot">
-        {isBrushable
-          && (
-            <svg
-              ref={(el) => { this.brushEl = select(el); }}
-              style={{
-                height: this.props.height,
-                width,
-              }}
-              styleName={rangeSelectorClass}
-              xmlns="http://www.w3.org/2000/svg"
-            />
-          )
-        }
+        {isBrushable && (
+          <svg
+            ref={el => {
+              this.brushEl = select(el);
+            }}
+            style={{
+              height: this.props.height,
+              width
+            }}
+            styleName={rangeSelectorClass}
+            xmlns="http://www.w3.org/2000/svg"
+          />
+        )}
         <ListWrapper
           axis="x"
           className={`${stylesPlot.list} ${stylesPlot.stylizedList} ${stylesPlot.horizontalList}`}
@@ -224,7 +227,7 @@ class VerticalTiledPlot extends React.Component {
             uid: d.uid || slugid.nice(),
             height: this.props.height,
             width: d.width,
-            value: d.value,
+            value: d.value
           }))}
           onAddSeries={this.props.onAddSeries}
           onCloseTrack={this.props.onCloseTrack}
@@ -264,7 +267,7 @@ VerticalTiledPlot.propTypes = {
   resizeHandles: PropTypes.object,
   scale: PropTypes.func,
   tracks: PropTypes.array,
-  tracksControlAlignLeft: PropTypes.bool,
+  tracksControlAlignLeft: PropTypes.bool
 };
 
 export default VerticalTiledPlot;

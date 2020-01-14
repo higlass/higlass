@@ -6,9 +6,10 @@
 const getTrackByUid = (tracks, uid) => {
   let found = null;
 
-  const checkTrack = (track) => {
+  const checkTrack = track => {
     if (track.uid === uid) found = track;
-    if (track.type.substr(0, 8) === 'combined') track.contents.forEach(checkTrack);
+    if (track.type.substr(0, 8) === "combined")
+      track.contents.forEach(checkTrack);
     return null;
   };
 

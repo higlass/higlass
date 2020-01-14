@@ -6,19 +6,19 @@
  * @return  {object}  The converted canvas object
  */
 const base64ToCanvas = (base64, width, height) => {
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
 
   return new Promise((resolve, reject) => {
     const img = new window.Image();
     img.onload = () => {
       canvas.width = width || img.width;
       canvas.height = height || img.height;
-      canvas.getContext('2d').drawImage(img, 0, 0);
+      canvas.getContext("2d").drawImage(img, 0, 0);
       resolve(canvas);
     };
 
     img.onerror = () => {
-      reject(new Error('Could not convert base64 to canvas'));
+      reject(new Error("Could not convert base64 to canvas"));
     };
 
     img.src = `data:image/png;base64,${base64}`;

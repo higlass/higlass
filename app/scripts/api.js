@@ -1,27 +1,18 @@
-import ReactDOM from 'react-dom';
-import createPubSub from 'pub-sub-es';
-import Ajv from 'ajv';
+import ReactDOM from "react-dom";
+import createPubSub from "pub-sub-es";
+import Ajv from "ajv";
 
-import schema from '../schema.json';
+import schema from "../schema.json";
 
-import {
-  setTileProxyAuthHeader,
-} from './services';
+import { setTileProxyAuthHeader } from "./services";
 
-import {
-  getTrackObjectFromHGC
-} from './utils';
+import { getTrackObjectFromHGC } from "./utils";
 
-import {
-  MOUSE_TOOL_MOVE,
-  MOUSE_TOOL_SELECT,
-} from './configs';
+import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from "./configs";
 
-
-const forceUpdate = (self) => {
+const forceUpdate = self => {
   self.setState(self.state);
 };
-
 
 const createApi = function api(context, pubSub) {
   const self = context;
@@ -72,9 +63,7 @@ const createApi = function api(context, pubSub) {
        *   `options.showMousePosition = true`.
        */
       setShowGlobalMousePosition(isShowGlobalMousePosition = false) {
-        self.setShowGlobalMousePosition(
-          isShowGlobalMousePosition
-        );
+        self.setShowGlobalMousePosition(isShowGlobalMousePosition);
       },
 
       /**
@@ -123,7 +112,7 @@ const createApi = function api(context, pubSub) {
        * Reload all of the tiles
        */
       reload() {
-        console.warn('Not implemented yet!');
+        console.warn("Not implemented yet!");
       },
 
       /**
@@ -145,7 +134,6 @@ const createApi = function api(context, pubSub) {
       setRangeSelectionToInt() {
         self.setState({ rangeSelectionToInt: true });
       },
-
 
       /**
        * Force float range selections.
@@ -202,32 +190,37 @@ const createApi = function api(context, pubSub) {
           console.warn(JSON.stringify(validate.errors, null, 2));
         }
         if (!valid) {
-          console.warn('Invalid viewconf');
+          console.warn("Invalid viewconf");
           // throw new Error('Invalid viewconf');
         }
 
         const viewsByUid = self.processViewConfig(newViewConfig);
-        const p = new Promise((resolve) => {
+        const p = new Promise(resolve => {
           this.requestsInFlight = 0;
 
-          pubSubs.push(pubSub.subscribe('requestSent', () => {
-            this.requestsInFlight += 1;
-          }));
+          pubSubs.push(
+            pubSub.subscribe("requestSent", () => {
+              this.requestsInFlight += 1;
+            })
+          );
 
-          pubSubs.push(pubSub.subscribe('requestReceived', () => {
-            this.requestsInFlight -= 1;
+          pubSubs.push(
+            pubSub.subscribe("requestReceived", () => {
+              this.requestsInFlight -= 1;
 
-            if (this.requestsInFlight === 0) {
-              resolve();
-            }
-          }));
+              if (this.requestsInFlight === 0) {
+                resolve();
+              }
+            })
+          );
 
-          self.setState({
-            viewConfig: newViewConfig,
-            views: viewsByUid,
-          }, () => {
-
-          });
+          self.setState(
+            {
+              viewConfig: newViewConfig,
+              views: viewsByUid
+            },
+            () => {}
+          );
         });
 
         return p;
@@ -246,7 +239,7 @@ const createApi = function api(context, pubSub) {
           console.warn(JSON.stringify(validate.errors, null, 2));
         }
         if (!valid) {
-          console.warn('Invalid viewconf');
+          console.warn("Invalid viewconf");
           // throw new Error('Invalid viewconf');
         }
         return newViewConfig;
@@ -327,7 +320,7 @@ const createApi = function api(context, pubSub) {
        */
       showAvailableTrackPositions(track) {
         self.setState({
-          draggingHappening: track,
+          draggingHappening: track
         });
       },
 
@@ -336,7 +329,7 @@ const createApi = function api(context, pubSub) {
        */
       hideAvailableTrackPositions() {
         self.setState({
-          draggingHappening: null,
+          draggingHappening: null
         });
       },
 
@@ -352,11 +345,11 @@ const createApi = function api(context, pubSub) {
         self.setState({
           chooseTrackHandler: (...args) => {
             self.setState({
-              chooseTrackHandler: null,
+              chooseTrackHandler: null
             });
 
             callback(...args);
-          },
+          }
         });
       },
 
@@ -365,7 +358,7 @@ const createApi = function api(context, pubSub) {
        */
       hideTrackChooser() {
         this.setState({
-          chooseTrackHandler: null,
+          chooseTrackHandler: null
         });
       },
       /**
@@ -398,7 +391,7 @@ const createApi = function api(context, pubSub) {
         console.warn(
           '`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.'
         );
-        const theme = darkTheme ? 'dark' : 'light';
+        const theme = darkTheme ? "dark" : "light";
         self.setTheme(theme);
       },
 
@@ -406,7 +399,7 @@ const createApi = function api(context, pubSub) {
        * Choose a theme.
        */
       setTheme(theme) {
-        console.warn('Please note that theming is still in beta!');
+        console.warn("Please note that theming is still in beta!");
         self.setTheme(theme);
       },
 
@@ -458,15 +451,15 @@ const createApi = function api(context, pubSub) {
        *  firstViewLoc["yDomain"][1]
        * );
        */
-      zoomTo(
-        viewUid,
-        start1Abs,
-        end1Abs,
-        start2Abs,
-        end2Abs,
-        animateTime = 0,
-      ) {
-        self.zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime);
+      zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime = 0) {
+        self.zoomTo(
+          viewUid,
+          start1Abs,
+          end1Abs,
+          start2Abs,
+          end2Abs,
+          animateTime
+        );
       },
 
       /**
@@ -524,7 +517,7 @@ const createApi = function api(context, pubSub) {
        */
       activateTool(tool) {
         switch (tool) {
-          case 'select':
+          case "select":
             self.setMouseTool(MOUSE_TOOL_SELECT);
             break;
 
@@ -596,10 +589,11 @@ const createApi = function api(context, pubSub) {
       getLocation(viewId) {
         const wurstId = viewId
           ? self.xScales[viewId] && self.yScales[viewId] && viewId
-          : Object.values(self.tiledPlots)[0] && Object.values(self.tiledPlots)[0].props.uid;
+          : Object.values(self.tiledPlots)[0] &&
+            Object.values(self.tiledPlots)[0].props.uid;
 
         if (!wurstId) {
-          return 'Please provide a valid view UUID sweetheart 😙';
+          return "Please provide a valid view UUID sweetheart 😙";
         }
 
         return {
@@ -632,10 +626,10 @@ const createApi = function api(context, pubSub) {
        *   `key` will be returned.
        */
       option(key, value) {
-        if (typeof value === 'undefined') return self.props.options[key];
+        if (typeof value === "undefined") return self.props.options[key];
 
         switch (key) {
-          case 'sizeMode':
+          case "sizeMode":
             self.props.options[key] = value;
             forceUpdate(self);
             break;
@@ -665,32 +659,31 @@ const createApi = function api(context, pubSub) {
        * hgv.off('mouseMoveZoom', mmz);
        */
       off(event, listenerId, viewId) {
-        const callback = typeof listenerId === 'object'
-          ? listenerId.callback
-          : listenerId;
+        const callback =
+          typeof listenerId === "object" ? listenerId.callback : listenerId;
 
         switch (event) {
-          case 'click':
-            apiPubSub.unsubscribe('click', callback);
+          case "click":
+            apiPubSub.unsubscribe("click", callback);
             break;
 
-          case 'cursorLocation':
-            apiPubSub.unsubscribe('cursorLocation', callback);
+          case "cursorLocation":
+            apiPubSub.unsubscribe("cursorLocation", callback);
             break;
 
-          case 'location':
+          case "location":
             self.offLocationChange(viewId, listenerId);
             break;
 
-          case 'mouseMoveZoom':
-            apiPubSub.unsubscribe('mouseMoveZoom', callback);
+          case "mouseMoveZoom":
+            apiPubSub.unsubscribe("mouseMoveZoom", callback);
             break;
 
-          case 'rangeSelection':
-            apiPubSub.unsubscribe('rangeSelection', callback);
+          case "rangeSelection":
+            apiPubSub.unsubscribe("rangeSelection", callback);
             break;
 
-          case 'viewConfig':
+          case "viewConfig":
             self.offViewChange(listenerId);
             break;
 
@@ -848,23 +841,23 @@ const createApi = function api(context, pubSub) {
        */
       on(event, callback, viewId, callbackId) {
         switch (event) {
-          case 'click':
-            return apiPubSub.subscribe('click', callback);
+          case "click":
+            return apiPubSub.subscribe("click", callback);
 
-          case 'cursorLocation':
-            return apiPubSub.subscribe('cursorLocation', callback);
+          case "cursorLocation":
+            return apiPubSub.subscribe("cursorLocation", callback);
 
-          case 'location':
+          case "location":
             // returns a set of scales (xScale, yScale) on every zoom event
             return self.onLocationChange(viewId, callback, callbackId);
 
-          case 'mouseMoveZoom':
-            return apiPubSub.subscribe('mouseMoveZoom', callback);
+          case "mouseMoveZoom":
+            return apiPubSub.subscribe("mouseMoveZoom", callback);
 
-          case 'rangeSelection':
-            return apiPubSub.subscribe('rangeSelection', callback);
+          case "rangeSelection":
+            return apiPubSub.subscribe("rangeSelection", callback);
 
-          case 'viewConfig':
+          case "viewConfig":
             return self.onViewChange(callback);
 
           default:

@@ -7,10 +7,12 @@
   "extends": [
     "eslint:recommended",
     "airbnb",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:prettier/recommended"
   ],
   "plugins": [
-    "react"
+    "react",
+    "prettier",
   ],
   "settings": {
     "react": {
@@ -62,6 +64,7 @@
     "no-underscore-dangle": 0,
     "no-unused-vars": [2, { "args": "none" }],
     "prefer-destructuring": 0,
+    "prettier/prettier": "error",
     "react/destructuring-assignment": 0,
     "react/display-name": 0,
     "react/forbid-prop-types": 0,

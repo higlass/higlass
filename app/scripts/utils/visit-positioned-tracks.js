@@ -1,4 +1,4 @@
-import visitTracks from './visit-tracks';
+import visitTracks from "./visit-tracks";
 
 /**
  * Track visitor for positioned tracks, i.e., tracks with a position.
@@ -13,9 +13,12 @@ const visitPositionedTracks = (
 ) => {
   const allTracks = [];
 
-  Object.keys(positionedTracks).forEach((position) => {
+  Object.keys(positionedTracks).forEach(position => {
     visitTracks(
-      positionedTracks[position], visitor, inclCombinedTracks, position
+      positionedTracks[position],
+      visitor,
+      inclCombinedTracks,
+      position
     );
   });
 

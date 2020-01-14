@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import '../styles/Cross.module.scss';
+import "../styles/Cross.module.scss";
 
 const Cross = () => <div styleName="cross" />;
 

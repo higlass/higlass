@@ -5,7 +5,7 @@
  * @param   {function}  f  Event callback function.
  */
 const addEventListenerOnce = (element, eventName, f) => {
-  const callback = (event) => {
+  const callback = event => {
     f(event);
     element.removeEventListener(eventName, callback);
   };

@@ -1,13 +1,13 @@
-import { axisLeft } from 'd3-axis';
+import { axisLeft } from "d3-axis";
 
-import SVGTrack from './SVGTrack';
+import SVGTrack from "./SVGTrack";
 
 class LeftAxisTrack extends SVGTrack {
   constructor(context, options) {
     super(context, options);
 
     this.axis = axisLeft(this._yScale);
-    this.gAxis = this.gMain.append('g');
+    this.gAxis = this.gMain.append("g");
 
     // to make sure that the isWaitingOnTiles functions
     // return immediately
@@ -19,9 +19,8 @@ class LeftAxisTrack extends SVGTrack {
 
     // match the spacing of the TopAxisTrack ticks
     this.axis.ticks(Math.ceil(this.dimensions[1] / 150));
-    this.gAxis.attr('transform', `translate(${newDimensions[0]},0)`);
+    this.gAxis.attr("transform", `translate(${newDimensions[0]},0)`);
   }
-
 
   draw() {
     this.axis.scale(this._yScale);

@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import toVoid from '../utils/to-void';
+import toVoid from "../utils/to-void";
 
 const fake = {
   __fake__: true,
@@ -12,11 +12,12 @@ const fake = {
 const { Provider, Consumer } = React.createContext(fake);
 
 // Higher order component
-const withPubSub = Component => React.forwardRef((props, ref) => (
-  <Consumer>
-    {pubSub => <Component ref={ref} {...props} pubSub={pubSub} />}
-  </Consumer>
-));
+const withPubSub = Component =>
+  React.forwardRef((props, ref) => (
+    <Consumer>
+      {pubSub => <Component ref={ref} {...props} pubSub={pubSub} />}
+    </Consumer>
+  ));
 
 export default withPubSub;
 
