@@ -254,8 +254,38 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return allRects;
   }
 
+  drawSegmentStyle(tile, xStartPos, xEndPos, rectY, rectHeight, strand) {
+    const hw = 0.1;  // half width of the line
+
+    const centerY = rectY + rectHeight / 2;
+
+    const poly = [
+      xStartPos, rectY,  // upper left
+      xStartPos + 2 * hw, rectY,  // upper right
+      xStartPos + 2 * hw, centerY - hw,
+      xEndPos - 2 * hw, centerY - hw,
+      xEndPos - 2 * hw, rectY,
+      xEndPos, rectY,
+      xEndPos, rectY + rectHeight,
+      xEndPos - 2 * hw, rectY + rectHeight,
+      xEndPos - 2 * hw, centerY + hw,
+      xStartPos + 2 * hw, centerY + hw,
+      xStartPos + 2 * hw, rectY + rectHeight,
+      xStartPos, rectY + rectHeight,
+    ];
+
+    tile.rectGraphics.drawPolygon(poly);
+    return poly;
+  }
+
   drawPoly(tile, xStartPos, xEndPos, rectY, rectHeight, strand) {
     let drawnPoly = null;
+
+    if (this.options.annotationStyle === 'segment') {
+      return this.drawSegmentStyle(
+        tile, xStartPos, xEndPos, rectY, rectHeight, strand
+      );
+    }
 
     if (
       (strand === '+' || strand === '-')

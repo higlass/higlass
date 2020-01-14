@@ -1318,6 +1318,7 @@ export const TRACKS_INFO = [
     name: '2D Rectangle Domains',
     thumbnail: svgArrowheadDomainsIcon,
     availableOptions: [
+      'flipDiagonal',
       'labelPosition',
       'labelLeftMargin',
       'labelRightMargin',
@@ -1334,6 +1335,7 @@ export const TRACKS_INFO = [
       'minSquareSize'
     ],
     defaultOptions: {
+      flipDiagonal: 'none',
       labelColor: 'black',
       labelPosition: 'hidden',
       labelLeftMargin: 0,
@@ -1702,15 +1704,18 @@ export const TRACKS_INFO = [
     name: 'BED-like track',
     thumbnail: null,
     availableOptions: [
+      'alternating',
+      'annotationHeight',
+      'annotationStyle',
       'fillColor',
       'minusStrandColor',
       'plusStrandColor',
-      'labelPosition',
-      'labelLeftMargin',
-      'labelRightMargin',
-      'labelTopMargin',
       'labelBottomMargin',
       'labelColor',
+      'labelLeftMargin',
+      'labelPosition',
+      'labelRightMargin',
+      'labelTopMargin',
       'labelTextOpacity',
       'labelBackgroundOpacity',
       'minHeight',
@@ -1721,13 +1726,12 @@ export const TRACKS_INFO = [
       'colorRange',
       'colorEncodingRange',
       'showTexts',
-      'alternating',
       'axisPositionHorizontal',
       'axisMargin',
-      'annotationHeight'
     ],
     defaultOptions: {
       alternating: false,
+      annotationStyle: 'box',
       fillColor: 'blue',
       axisPositionHorizontal: 'right',
       labelColor: 'black',

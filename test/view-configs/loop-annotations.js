@@ -29,7 +29,7 @@ const viewconf = {
                 name: 'HiCCUPS Loops',
                 server: '//higlass.io/api/v1',
                 tilesetUid: 'HunfK2D3R9iBdIq-YNYjiw',
-                uid: 'JjTGou1rQE6xzqdueISeTA',
+                uid: 't1',
                 type: '2d-rectangle-domains',
                 options: {
                   labelColor: 'black',

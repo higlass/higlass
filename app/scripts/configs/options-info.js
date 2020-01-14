@@ -61,6 +61,14 @@ export const OPTIONS_INFO = {
       },
     }
   },
+  flipDiagonal: {
+    name: 'Flip Across Diagonal',
+    inlineOptions: {
+      none: { name: 'No', value: 'none' },
+      yes: { name: 'Yes', value: 'yes' },
+      copy: { name: 'Copy', value: 'copy' }
+    }
+  },
   heatmapValueScaling: {
     name: 'Value Scaling',
     inlineOptions: {
@@ -500,11 +508,20 @@ export const OPTIONS_INFO = {
   annotationHeight: {
     name: 'Annotation Height',
     inlineOptions: {
+      5: { name: '5px', value: 5 },
       8: { name: '8px', value: 8 },
       10: { name: '10px', value: 10 },
       12: { name: '12px', value: 12 },
       16: { name: '16px', value: 16 },
       20: { name: '20px', value: 20 }
+    }
+  },
+
+  annotationStyle: {
+    name: 'Annotation Style',
+    inlineOptions: {
+      box: { name: 'Box', value: 'box' },
+      segment: { name: 'Segment', value: 'segment' },
     }
   },
 

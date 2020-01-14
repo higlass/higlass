@@ -659,7 +659,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.pColorbarArea.clear();
     this.pColorbarArea.beginFill(
       colorToHex(this.options.colorbarBackgroundColor || 'white'),
-      +this.options.colorbarBackgroundOpacity || 0.6
+      +this.options.colorbarBackgroundOpacity >= 0 ? +this.options.colorbarBackgroundOpacity : 0.6
     );
     this.pColorbarArea.drawRect(0, 0, COLORBAR_AREA_WIDTH, colorbarAreaHeight);
 
