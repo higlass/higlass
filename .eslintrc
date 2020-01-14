@@ -43,8 +43,7 @@
     //   - eslint-disable just your line
     //   - or turn it off globally; we might be too picky.
     // If it's a warning (1), we'd like to turn it either fully on or fully off, eventually.
-
-    "import/extensions": "never",
+    "import/extensions": [2, "never"],
     "jsx-a11y/anchor-is-valid": 0,
     "jsx-a11y/click-events-have-key-events": 0,
     "jsx-a11y/no-noninteractive-element-interactions": 0,
