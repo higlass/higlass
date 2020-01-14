@@ -101,7 +101,7 @@ function get(key, returnEntry) {
   // As <key> was found in the cache, register it as being requested recently
   if (entry === this.tail) {
     // Already the most recenlty used entry, so no need to update the list
-    return (returnEntry ? entry : entry.value);
+    return returnEntry ? entry : entry.value;
   }
   // HEAD--------------TAIL
   //   <.older   .newer>
@@ -117,7 +117,7 @@ function get(key, returnEntry) {
   if (this.tail) this.tail.newer = entry; // E. <-- D
   this.tail = entry;
 
-  return (returnEntry ? entry : entry.value);
+  return returnEntry ? entry : entry.value;
 }
 
 // ----------------------------------------------------------------------------

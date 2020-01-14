@@ -1,4 +1,3 @@
-
 import { TRACKS_INFO } from '.';
 
 export const POSITIONS_BY_DATATYPE = TRACKS_INFO.reduce(
