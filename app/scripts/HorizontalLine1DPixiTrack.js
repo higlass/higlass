@@ -199,6 +199,17 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     this.refreshTiles();
 
     this.draw();
+
+    const newMinmaxVisibleValues = this.getMinMaxVisibleValues();
+
+    if (
+      (this.minVisibleValue !== newMinmaxVisibleValues[0])
+      || (this.maxVisibleValue !== newMinmaxVisibleValues[1])
+    ) {
+      // console.log('area changed');
+      // console.log(this.minVisibleValue, newMinmaxVisibleValues[0]);
+      this.scheduleRerenderEvent();
+    }
   }
 
   superSVG() {

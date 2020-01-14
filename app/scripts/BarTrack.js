@@ -91,11 +91,10 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     if (tileValues.length === 0) return;
 
-    // equal to the smallest non-zero value
     const [valueScale, pseudocount] = this.makeValueScale(
-      this.minVisibleValue(),
+      this.getAggregatedVisibleValue('min'),
       this.medianVisibleValue,
-      this.maxValue(),
+      this.getAggregatedVisibleValue('max'),
       0
     );
 

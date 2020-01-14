@@ -28,7 +28,7 @@ class DivergentBarTrack extends BarTrack {
     if (this.options.valueScaling === 'log') {
       let offsetValue = this.medianVisibleValue;
 
-      if (!this.medianVisibleValue) { offsetValue = this.minVisibleValue(); }
+      if (!this.medianVisibleValue) { offsetValue = this.minVisibleValueInTiles(); }
 
       this.valueScale = scaleLog()
         // .base(Math.E)

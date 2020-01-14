@@ -471,10 +471,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
       const min = this.options.colorEncodingRange
         ? +this.options.colorEncodingRange[0]
-        : this.minVisibleValue();
+        : this.minVisibleValueInTiles();
       const max = this.options.colorEncodingRange
         ? +this.options.colorEncodingRange[1]
-        : this.maxVisibleValue();
+        : this.maxVisibleValueInTiles();
 
       if (this.options.colorEncoding) {
         this.valueColorScale = scaleLinear().domain([min, max]).range([0, 255]);
@@ -520,7 +520,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return zoomLevel;
   }
 
-  minVisibleValue() {
+  minVisibleValueInTiles() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
@@ -548,7 +548,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return min;
   }
 
-  maxVisibleValue() {
+  maxVisibleValueInTiles() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {

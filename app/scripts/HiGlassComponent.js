@@ -1074,7 +1074,7 @@ class HiGlassComponent extends React.Component {
         .filter(track => track.minRawValue && track.maxRawValue)
         .map(track => (lockGroup.ignoreOffScreenValues
           ? track.minRawValue()
-          : track.minVisibleValue(true)
+          : track.minVisibleValueInTiles(true)
         ));
 
       const maxValues = lockedTracks
@@ -1082,7 +1082,7 @@ class HiGlassComponent extends React.Component {
         .filter(track => track.minRawValue && track.maxRawValue)
         .map(track => (lockGroup.ignoreOffScreenValues
           ? track.maxRawValue()
-          : track.maxVisibleValue(true)
+          : track.maxVisibleValueInTiles(true)
         ));
 
       const allMin = Math.min(...minValues);
@@ -3642,7 +3642,7 @@ class HiGlassComponent extends React.Component {
       return undefined;
     }
 
-    if (!track.minVisibleValue || !track.maxVisibleValue) {
+    if (!track.minVisibleValueInTiles || !track.maxVisibleValueInTiles) {
       console.warn(
         `Track ${trackId} doesn't support the retrieval of min or max values.`
       );
@@ -3657,8 +3657,8 @@ class HiGlassComponent extends React.Component {
     }
 
     return [
-      track.minVisibleValue(ignoreFixedScale),
-      track.maxVisibleValue(ignoreFixedScale)
+      track.minVisibleValueInTiles(ignoreFixedScale),
+      track.maxVisibleValueInTiles(ignoreFixedScale)
     ];
   }
 

@@ -4,6 +4,9 @@ import TiledPixiTrack from './TiledPixiTrack';
 
 import { tileProxy } from './services';
 
+import backgroundTaskScheduler from './utils/background-task-scheduler';
+
+
 const BINS_PER_TILE = 1024;
 
 class Tiled1DPixiTrack extends TiledPixiTrack {
@@ -21,6 +24,10 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
         this.pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this))
       );
     }
+
+    this.minVisibleValue = -Infinity;
+    this.maxVisibleValue = Infinity;
+    // this.scheduledReRenderEventHandle = undefined;
   }
 
   initTile(tile) {
@@ -178,11 +185,134 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
   }
 
+  scheduleRerenderEvent() {
+    // requestIdleCallback is not yet supported by all browsers
+    if ('requestIdleCallback' in window) {
+      backgroundTaskScheduler.enqueueTask(this.handleRerender.bind(this), null);
+    } else {
+      // fall back to tile based panning
+    }
+  }
+
+  handleRerender() {
+    this.rerender(this.options, true);
+  }
+
+
+  // scheduleRerenderEvent() {
+
+  //   // requestIdleCallback is not yet supported by all browsers
+  //   if ('requestIdleCallback' in window) {
+  //     // Only schedule the rIC if one has not already been set.
+  //     if (this.scheduledReRenderEventHandle !== undefined){
+  //       window.cancelIdleCallback(this.scheduledReRenderEventHandle);
+  //     }
+  //     console.log(this.scheduledReRenderEventHandle);
+  //     // Wait at most 400ms before processing events.
+  //     this.scheduledReRenderEventHandle =
+  //       window.requestIdleCallback(this.handleRenderer.bind(this), { timeout: 200 });
+  //     console.log(this.scheduledReRenderEventHandle);
+
+  //   } else {
+  //     // fall back to tile based panning
+  //   }
+  // }
+
+  // handleRenderer(deadline){
+
+  //   this.isRendererIdleCallbackScheduled = false;
+
+  //   if (typeof deadline === 'undefined'){
+  //     deadline = { timeRemaining: function () { return Number.MAX_VALUE } };
+  //   }
+
+  //   // Go for as long as there is time remaining.
+  //   if (deadline.timeRemaining() > 0 || deadline.didTimeout) {
+  //     console.log("fire");
+  //     this.rerender(this.options, true);
+  //   }
+  // }
+
+
+  updateMinMaxVisibleValues(min = null, max = null) {
+    if (min === null || max === null) {
+      const minmax = this.getMinMaxVisibleValues();
+      this.minVisibleValue = minmax[0];
+      this.maxVisibleValue = minmax[1];
+    } else {
+      this.minVisibleValue = min;
+      this.maxVisibleValue = max;
+    }
+  }
+
+
+  /**
+   * Return the minimal and maximal visible values.
+   *
+   * @description
+   *   The difference to `minVisibleValueInTiles` and `maxVisibleValueInTiles`
+   *   is that the truly visible min or max value is returned instead of the
+   *   min or max value of the tile. The latter is not necessarily visible.
+   *
+   * @return {array} The minimum and maximum  as array [min, max].
+   */
+  getMinMaxVisibleValues() {
+    let visibleAndFetchedIds = this.visibleAndFetchedIds();
+
+    if (visibleAndFetchedIds.length === 0) {
+      visibleAndFetchedIds = Object.keys(this.fetchedTiles);
+    }
+
+    const visible = this._xScale.range();
+
+    const relevantData = visibleAndFetchedIds
+      .map(x => this.fetchedTiles[x])
+      .map((tile) => {
+        if (!tile.tileData.tilePos) {
+          return [this.minVisibleValueInTiles(), this.maxVisibleValueInTiles()];
+        }
+
+        const { tileX, tileWidth } = this.getTilePosAndDimensions(
+          tile.tileData.zoomLevel,
+          tile.tileData.tilePos,
+          this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size
+        );
+
+        const tileXScale = scaleLinear()
+          .domain([
+            0, this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension
+          ])
+          .range([tileX, tileX + tileWidth]);
+
+        const start = Math.max(
+          0,
+          Math.round(tileXScale.invert(this._xScale.invert(visible[0])))
+        );
+        const end = Math.min(
+          tile.tileData.dense.length,
+          Math.round(tileXScale.invert(this._xScale.invert(visible[1])))
+        );
+
+        return tile.tileData.dense.slice(start, end).filter(x => !Number.isNaN(x));
+        // return tile.tileData.dense.slice(start, end);
+      });
+
+    const min = relevantData.reduce(
+      (smallest, current) => Math.min(smallest, ...current), Infinity
+    );
+    const max = relevantData.reduce(
+      (largest, current) => Math.max(largest, ...current), -Infinity
+    );
+
+    return [min, max];
+  }
+
+
   /**
    * Return an aggregated visible value. For example, the minimum or maximum.
    *
    * @description
-   *   The difference to `minVisibleValue`
+   *   The difference to `minVisibleValueInTiles`
    *   is that the truly visible min or max value is returned instead of the
    *   min or max value of the tile. The latter is not necessarily visible.
    *
@@ -207,8 +337,8 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
       .map((tile) => {
         if (!tile.tileData.tilePos) {
           return aggregator === 'min'
-            ? this.minVisibleValue()
-            : this.maxVisibleValue();
+            ? this.minVisibleValueInTiles()
+            : this.maxVisibleValueInTiles();
         }
 
         const { tileX, tileWidth } = this.getTilePosAndDimensions(
@@ -232,7 +362,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
           Math.round(tileXScale.invert(this._xScale.invert(visible[1])))
         );
 
-        return tile.tileData.dense.slice(start, end);
+        return tile.tileData.dense.slice(start, end).filter(x => !Number.isNaN(x));
       })
       .reduce((smallest, current) => aggregate(smallest, ...current), limit);
   }
