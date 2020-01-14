@@ -5,7 +5,8 @@ export default function dictKeys(dictionary) {
   const keys = [];
 
   for (const key in dictionary) {
-    if (dictionary.hasOwnProperty(key)) { // eslint-disable-line no-prototype-builtins
+    if (dictionary.hasOwnProperty(key)) {
+      // eslint-disable-line no-prototype-builtins
       keys.push(key);
     }
   }

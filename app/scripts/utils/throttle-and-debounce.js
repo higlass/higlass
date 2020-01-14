@@ -70,7 +70,9 @@ const throttleAndDebounce = (func, interval, finalWait) => {
       wait = true;
       blockedCalls = 0;
 
-      setTimeout(() => { wait = false; }, interval);
+      setTimeout(() => {
+        wait = false;
+      }, interval);
     } else {
       blockedCalls++;
     }

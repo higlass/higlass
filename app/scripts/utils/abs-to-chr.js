@@ -12,7 +12,7 @@ const absToChr = (absPosition, chromInfo) => {
   insertPoint -= insertPoint > 0 && 1;
 
   let chrPosition = Math.floor(
-    absPosition - chromInfo.cumPositions[insertPoint].pos,
+    absPosition - chromInfo.cumPositions[insertPoint].pos
   );
   let offset = 0;
 
@@ -35,7 +35,7 @@ const absToChr = (absPosition, chromInfo) => {
     chromInfo.cumPositions[insertPoint].chr,
     chrPosition,
     offset,
-    insertPoint,
+    insertPoint
   ];
 };
 
