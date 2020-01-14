@@ -126,3 +126,11 @@ Unlinking
 
 Both zoom and location locks can be removed using the view menu.
 
+Add track position menu
+---------
+
+.. image:: img/add_track_position.png
+    :align: right
+
+When adding a track via the top header bar, the track position must be selected before tileset(s) are selected.
+The lower-left and upper-right corners of the center position button can be used to set the track options `extent: "lower-left"` and `extent: "upper-right"`, respectively. Otherwise, the `extent` option will be set to the default `"full"`.
