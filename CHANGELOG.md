@@ -1,5 +1,9 @@
 # Release notes #
 
+## Next release
+
+- Added release notes to docs.
+
 ## v1.8.0
 
 - Added the option to flip 2D annotations across the diagonal
