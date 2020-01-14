@@ -11,9 +11,7 @@ const CloseTrackMenu = props => (
   <div>
     {getSeriesItems(props.tracks, null, null, props.onCloseTrack)}
     <hr styleName="context-menu-hr" />
-    <ContextMenuItem
-      onClick={() => props.onCloseTrack(props.tracks[0].uid)}
-    >
+    <ContextMenuItem onClick={() => props.onCloseTrack(props.tracks[0].uid)}>
       {'Close all series'}
     </ContextMenuItem>
   </div>
@@ -21,7 +19,7 @@ const CloseTrackMenu = props => (
 
 CloseTrackMenu.propTypes = {
   onCloseTrack: PropTypes.func.isRequired,
-  tracks: PropTypes.array.isRequired,
+  tracks: PropTypes.array.isRequired
 };
 
 export default CloseTrackMenu;

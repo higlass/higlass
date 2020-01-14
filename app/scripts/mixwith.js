@@ -19,14 +19,14 @@ const _wrappedMixin = '__mixwith_wrappedMixin';
  */
 
 /**
-* Unwraps the function `wrapper` to return the original function wrapped by
-* one or more calls to `wrap`. Returns `wrapper` if it's not a wrapped
-* function.
-*
-* @function
-* @param {MixinFunction} wrapper A wrapped mixin produced by {@link wrap}
-* @return {MixinFunction} The originally wrapped mixin
-*/
+ * Unwraps the function `wrapper` to return the original function wrapped by
+ * one or more calls to `wrap`. Returns `wrapper` if it's not a wrapped
+ * function.
+ *
+ * @function
+ * @param {MixinFunction} wrapper A wrapped mixin produced by {@link wrap}
+ * @return {MixinFunction} The originally wrapped mixin
+ */
 export const unwrap = wrapper => wrapper[_wrappedMixin] || wrapper;
 
 /**
@@ -72,9 +72,9 @@ export const apply = (superclass, mixin) => {
  * @return {boolean} whether `proto` is a prototype created by the application of
  * `mixin` to a superclass
  */
-export const isApplicationOf = (proto, mixin) => (
-  proto.hasOwnProperty(_appliedMixin) && proto[_appliedMixin] === unwrap(mixin)
-);
+export const isApplicationOf = (proto, mixin) =>
+  proto.hasOwnProperty(_appliedMixin) && proto[_appliedMixin] === unwrap(mixin);
+
 /**
  * Returns `true` iff `o` has an application of `mixin` on its prototype
  * chain.
@@ -133,26 +133,27 @@ const _cachedApplications = '__mixwith_cachedApplications';
  * @param {MixinFunction} mixin The mixin to wrap with caching behavior
  * @return {MixinFunction} a new mixin function
  */
-export const Cached = mixin => wrap(mixin, (superclass) => {
-  // Get or create a symbol used to look up a previous application of mixin
-  // to the class. This symbol is unique per mixin definition, so a class will have N
-  // applicationRefs if it has had N mixins applied to it. A mixin will have
-  // exactly one _cachedApplicationRef used to store its applications.
+export const Cached = mixin =>
+  wrap(mixin, superclass => {
+    // Get or create a symbol used to look up a previous application of mixin
+    // to the class. This symbol is unique per mixin definition, so a class will have N
+    // applicationRefs if it has had N mixins applied to it. A mixin will have
+    // exactly one _cachedApplicationRef used to store its applications.
 
-  let cachedApplications = superclass[_cachedApplications];
-  if (!cachedApplications) {
-    superclass[_cachedApplications] = new Map();
-    cachedApplications = superclass[_cachedApplications];
-  }
+    let cachedApplications = superclass[_cachedApplications];
+    if (!cachedApplications) {
+      superclass[_cachedApplications] = new Map();
+      cachedApplications = superclass[_cachedApplications];
+    }
 
-  let application = cachedApplications.get(mixin);
-  if (!application) {
-    application = mixin(superclass);
-    cachedApplications.set(mixin, application);
-  }
+    let application = cachedApplications.get(mixin);
+    if (!application) {
+      application = mixin(superclass);
+      cachedApplications.set(mixin, application);
+    }
 
-  return application;
-});
+    return application;
+  });
 
 /**
  * Decorates `mixin` so that it only applies if it's not already on the
@@ -162,9 +163,10 @@ export const Cached = mixin => wrap(mixin, (superclass) => {
  * @param {MixinFunction} mixin The mixin to wrap with deduplication behavior
  * @return {MixinFunction} a new mixin function
  */
-export const DeDupe = mixin => wrap(mixin, superclass => ((hasMixin(superclass.prototype, mixin))
-  ? superclass
-  : mixin(superclass)));
+export const DeDupe = mixin =>
+  wrap(mixin, superclass =>
+    hasMixin(superclass.prototype, mixin) ? superclass : mixin(superclass)
+  );
 
 /**
  * Adds [Symbol.hasInstance] (ES2015 custom instanceof support) to `mixin`.
@@ -173,12 +175,12 @@ export const DeDupe = mixin => wrap(mixin, superclass => ((hasMixin(superclass.p
  * @param {MixinFunction} mixin The mixin to add [Symbol.hasInstance] to
  * @return {MixinFunction} the given mixin function
  */
-export const HasInstance = (mixin) => {
+export const HasInstance = mixin => {
   if (Symbol && Symbol.hasInstance && !mixin[Symbol.hasInstance]) {
     Object.defineProperty(mixin, Symbol.hasInstance, {
       value(o) {
         return hasMixin(o, mixin);
-      },
+      }
     });
   }
   return mixin;

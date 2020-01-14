@@ -12,7 +12,7 @@ class DragListeningDiv extends React.Component {
     super(props);
 
     this.state = {
-      dragOnTop: false,
+      dragOnTop: false
     };
   }
 
@@ -31,9 +31,15 @@ class DragListeningDiv extends React.Component {
     return (
       <div
         className="DragListeningDiv"
-        onDragEnter={() => { this.setState({ dragOnTop: true }); }}
-        onDragLeave={() => { this.setState({ dragOnTop: false }); }}
-        onDragOver={(evt) => { evt.preventDefault(); }}
+        onDragEnter={() => {
+          this.setState({ dragOnTop: true });
+        }}
+        onDragLeave={() => {
+          this.setState({ dragOnTop: false });
+        }}
+        onDragOver={evt => {
+          evt.preventDefault();
+        }}
         onDrop={() => {
           if (!this.props.enabled) return;
 
@@ -43,16 +49,19 @@ class DragListeningDiv extends React.Component {
             type: this.props.defaultTrackType,
             uid: slugid.nice(),
             tilesetUid: evtJson.tilesetUid,
-            server: evtJson.server,
+            server: evtJson.server
           };
 
           this.props.onTrackDropped(newTrack);
           this.props.pubSub.publish('trackDropped', newTrack);
         }}
-        style={Object.assign({
-          background,
-          opacity: 0.6,
-        }, this.props.style)}
+        style={Object.assign(
+          {
+            background,
+            opacity: 0.6
+          },
+          this.props.style
+        )}
         styleName={styleNames}
       />
     );
@@ -63,15 +72,17 @@ DragListeningDiv.defaultProps = {
   enabled: false,
   style: {},
   draggingHappening: {},
-  onTrackDropped: () => {},
+  onTrackDropped: () => {}
 };
 
 DragListeningDiv.propTypes = {
   enabled: PropTypes.bool,
   style: PropTypes.object,
+  defaultTrackType: PropTypes.object,
   draggingHappening: PropTypes.object,
   onTrackDropped: PropTypes.func,
   position: PropTypes.string.isRequired,
+  pubSub: PropTypes.object.isRequired
 };
 
 export default withPubSub(DragListeningDiv);
