@@ -344,7 +344,7 @@ class PixiTrack extends Track {
     }
 
     let labelTextText =
-      this.tilesetInfo && this.tilesetInfo.coordSystem
+      this.options.labelShowAssembly && this.tilesetInfo && this.tilesetInfo.coordSystem
         ? `${this.tilesetInfo.coordSystem} | `
         : '';
 

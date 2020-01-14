@@ -1,6 +1,7 @@
 ## Next
 
 - Prettified JS code
+- Added `labelShowAssembly` as an option to allow hiding the `hg19 | ` text
 
 _[Detailed changes since v1.8.0](https://github.com/higlass/higlass/compare/v1.8.0...develop)_
 
