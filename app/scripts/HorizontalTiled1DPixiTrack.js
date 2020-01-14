@@ -51,7 +51,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
       this.hideMousePosition = undefined;
     }
 
-    this.updateMinMaxVisibleValues();
+    // this.updateMinMaxVisibleValues();
   }
 
   calculateZoomLevel() {

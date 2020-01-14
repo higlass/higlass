@@ -105,6 +105,13 @@ class TiledPixiTrack extends PixiTrack {
 
     this.maxZoom = 0;
     this.medianVisibleValue = null;
+    // Keep track of the minimal and maximal values in the current visible area
+    this.minimalVisibleValue = null;
+    this.maximalVisibleValue = null;
+
+    // If the browser supports requestIdleCallback we use continuous
+    // instead of tile based scaling
+    this.continuousScaling = ('requestIdleCallback' in window);
 
     this.valueScaleMin = null;
     this.fixedValueScaleMin = null;
@@ -477,8 +484,8 @@ class TiledPixiTrack extends PixiTrack {
   initTile(/* tile */) {
     // create the tile
     // should be overwritten by child classes
-    this.scale.minRawValue = this.minVisibleValueInTiles();
-    this.scale.maxRawValue = this.maxVisibleValueInTiles();
+    this.scale.minRawValue = this.minVisibleValue();
+    this.scale.maxRawValue = this.maxVisibleValue();
 
     this.scale.minValue = this.scale.minRawValue;
     this.scale.maxValue = this.scale.maxRawValue;
@@ -735,11 +742,13 @@ class TiledPixiTrack extends PixiTrack {
   }
 
   allVisibleValues() {
+    // Get values in currently visible tiles
     return [].concat(...this.visibleAndFetchedIds()
       .map(x => Array.from(this.fetchedTiles[x].tileData.dense)));
   }
 
-  minVisibleValueInTiles(ignoreFixedScale = false) {
+  minVisibleValue(ignoreFixedScale = false) {
+    // Get minimum in currently visible tiles
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
@@ -760,7 +769,8 @@ class TiledPixiTrack extends PixiTrack {
       : min;
   }
 
-  maxVisibleValueInTiles(ignoreFixedScale = false) {
+  maxVisibleValue(ignoreFixedScale = false) {
+    // Get maximum in currently visible tiles
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {

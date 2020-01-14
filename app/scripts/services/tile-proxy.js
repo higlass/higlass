@@ -484,9 +484,9 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
  *
  * @param finished: A callback to let the caller know that the worker thread
  *   has converted tileData to pixData
- * @param minVisibleValueInTiles: The minimum visible value (used for setting the color
+ * @param minVisibleValue: The minimum visible value (used for setting the color
  *   scale)
- * @param maxVisibleValueInTiles: The maximum visible value
+ * @param maxVisibleValue: The maximum visible value
  * @param valueScaleType: Either 'log' or 'linear'
  * @param valueScaleDomain: The domain of the scale (the range is always [254,0])
  * @param colorScale: a 255 x 4 rgba array used as a color scale

@@ -91,12 +91,22 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     if (tileValues.length === 0) return;
 
+    // console.time();
+    // for (let i = 0; i < 10000; i++) {
+    //   this.minVisibleValue()
+    // }
+    // console.timeEnd();
+    const min = this.minVisibleValue();
+    const max = this.maxVisibleValue();
+
     const [valueScale, pseudocount] = this.makeValueScale(
-      this.getAggregatedVisibleValue('min'),
+      min,
       this.medianVisibleValue,
-      this.getAggregatedVisibleValue('max'),
+      max,
       0
     );
+
+    this.updateMinMaxVisibleValues(min, max);
 
     // Important when when using `options.valueScaleMin` or
     // `options.valueScaleMax` such that the y position later on doesn't become

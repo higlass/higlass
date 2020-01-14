@@ -5,12 +5,23 @@ class BackgroundTaskScheduler {
   }
 
 
-  enqueueTask(taskHandler, taskData) {
-    this.taskList.push({
-      handler: taskHandler,
-      data: taskData
-    });
+  enqueueTask(taskHandler, taskData, trackId = null) {
+    if (trackId === null) {
+      this.taskList.push({
+        handler: taskHandler,
+        data: taskData
+      });
+    } else {
+      // If a trackId is given we delete all previous tasks in the taskList of the same track
+      // We only want to rerender the latest version of a track
+      this.taskList = this.taskList.filter(task => task.trackId !== trackId);
 
+      this.taskList.push({
+        handler: taskHandler,
+        data: taskData,
+        trackId
+      });
+    }
 
     if (!this.taskHandle) {
       this.taskHandle = requestIdleCallback(this.runTaskQueue.bind(this), { timeout: 500 });

@@ -113,12 +113,15 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     if (tileValues.length === 0) { return; }
 
-    // FIXME
+    const min = this.minVisibleValue();
+    const max = this.maxVisibleValue();
+
     const [vs, offsetValue] = this.makeValueScale(
-      this.minValue(),
+      min,
       this.medianVisibleValue,
-      this.maxValue()
+      max
     );
+    this.updateMinMaxVisibleValues(min, max);
     this.valueScale = vs;
 
     graphics.clear();
@@ -193,6 +196,9 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   }
 
   zoomed(newXScale, newYScale) {
+    // const currentMinVisibleValue = this.minVisibleValue();
+    // const currentMaxVisibleValue = this.maxVisibleValue();
+
     this.xScale(newXScale);
     this.yScale(newYScale);
 
@@ -200,14 +206,16 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     this.draw();
 
-    const newMinmaxVisibleValues = this.getMinMaxVisibleValues();
+    // console.log(currentMaxVisibleValue, newMaxVisibleValue);
+    // const newMinmaxVisibleValues = this.getMinMaxVisibleValues();
 
     if (
-      (this.minVisibleValue !== newMinmaxVisibleValues[0])
-      || (this.maxVisibleValue !== newMinmaxVisibleValues[1])
+      this.continuousScaling
+      && ((Math.abs(this.minimalVisibleValue - this.minVisibleValue()) > 1e-6)
+      || (Math.abs(this.maximalVisibleValue - this.maxVisibleValue()) > 1e-6))
     ) {
-      // console.log('area changed');
-      // console.log(this.minVisibleValue, newMinmaxVisibleValues[0]);
+      // console.log('area changed ', this.uuid);
+      // console.log(currentMinVisibleValue, newMinVisibleValue);
       this.scheduleRerenderEvent();
     }
   }

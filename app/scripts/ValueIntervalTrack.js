@@ -16,8 +16,8 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
   initTile(tile) {
     // create the tile
     // should be overwritten by child classes
-    this.scale.minRawValue = this.minVisibleValueInTiles();
-    this.scale.maxRawValue = this.maxVisibleValueInTiles();
+    this.scale.minRawValue = this.minVisibleValue();
+    this.scale.maxRawValue = this.maxVisibleValue();
 
     this.scale.minValue = this.scale.minRawValue;
     this.scale.maxValue = this.scale.maxRawValue;
@@ -66,7 +66,7 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
     });
   }
 
-  minVisibleValueInTiles() {
+  minVisibleValue() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
@@ -82,7 +82,7 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
     return min;
   }
 
-  maxVisibleValueInTiles() {
+  maxVisibleValue() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
