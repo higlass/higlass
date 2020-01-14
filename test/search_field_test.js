@@ -4,7 +4,6 @@ import SearchField from '../app/scripts/SearchField';
 
 import chromInfoHg19 from './chrom_info';
 
-
 describe('A search field', () => {
   // 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt'
 
@@ -45,7 +44,9 @@ describe('A search field', () => {
 
     expect(range1).to.eql([1000000, 2000000]);
 
-    [range1, range2] = searchField.searchPosition('chr1:2000000-chr1:3000000 & chr1:1000000-chr1:2000000');
+    [range1, range2] = searchField.searchPosition(
+      'chr1:2000000-chr1:3000000 & chr1:1000000-chr1:2000000'
+    );
 
     expect(range1).to.eql([2000000, 3000000]);
     expect(range2).to.eql([1000000, 2000000]);

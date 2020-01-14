@@ -13,9 +13,9 @@ describe('PNG Export', () => {
       );
     });
 
-    it('Exports to PNG', (done) => {
+    it('Exports to PNG', done => {
       const blobPromise = api.getComponent().createPNGBlobPromise();
-      blobPromise.then((blob) => {
+      blobPromise.then(blob => {
         const reader = new FileReader();
         reader.addEventListener('loadend', () => {
           const array = new Uint8Array(reader.result.slice(1, 4));
