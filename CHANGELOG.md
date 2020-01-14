@@ -1,3 +1,5 @@
+- Added `labelShowAssembly` as an option to allow hiding the `hg19 | ` text
+
 ## v1.8.0
 
 - Added the option to flip 2D annotations across the diagonal

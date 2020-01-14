@@ -111,6 +111,10 @@ export const OPTIONS_INFO = {
     name: 'Label Show Resolution',
     inlineOptions: YES_NO,
   },
+  labelShowAssembly: {
+    name: 'Label Show Assembly',
+    inlineOptions: YES_NO,
+  },
   lineStrokeWidth: {
     name: 'Stroke Width',
     inlineOptions: AVAILABLE_WIDTHS,

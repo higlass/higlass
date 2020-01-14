@@ -340,7 +340,9 @@ class PixiTrack extends Track {
     // we can't draw a label if there's no space
     if (this.dimensions[0] < 0) { return; }
 
-    let labelTextText = this.tilesetInfo && this.tilesetInfo.coordSystem
+    let labelTextText = (this.options.labelShowAssembly
+          && this.tilesetInfo
+          && this.tilesetInfo.coordSystem)
       ? `${this.tilesetInfo.coordSystem} | `
       : '';
 
