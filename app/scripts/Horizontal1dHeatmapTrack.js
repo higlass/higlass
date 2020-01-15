@@ -55,11 +55,15 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
 
     if (tileValues.length === 0) return;
 
+    const min = this.minVisibleValue();
+    const max = this.maxVisibleValue();
+
     const [valueScale, pseudocount] = this.makeValueScale(
-      this.minValue(),
+      min,
       this.medianVisibleValue,
-      this.maxValue()
+      max
     );
+    this.updateMinMaxVisibleValues(min, max);
     valueScale.range([254, 0]).clamp(true);
     this.valueScale = valueScale;
 

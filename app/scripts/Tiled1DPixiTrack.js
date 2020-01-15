@@ -194,41 +194,6 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
   }
 
 
-  // scheduleRerenderEvent() {
-
-  //   // requestIdleCallback is not yet supported by all browsers
-  //   if ('requestIdleCallback' in window) {
-  //     // Only schedule the rIC if one has not already been set.
-  //     if (this.scheduledReRenderEventHandle !== undefined){
-  //       window.cancelIdleCallback(this.scheduledReRenderEventHandle);
-  //     }
-  //     console.log(this.scheduledReRenderEventHandle);
-  //     // Wait at most 400ms before processing events.
-  //     this.scheduledReRenderEventHandle =
-  //       window.requestIdleCallback(this.handleRenderer.bind(this), { timeout: 200 });
-  //     console.log(this.scheduledReRenderEventHandle);
-
-  //   } else {
-  //     // fall back to tile based panning
-  //   }
-  // }
-
-  // handleRenderer(deadline){
-
-  //   this.isRendererIdleCallbackScheduled = false;
-
-  //   if (typeof deadline === 'undefined'){
-  //     deadline = { timeRemaining: function () { return Number.MAX_VALUE } };
-  //   }
-
-  //   // Go for as long as there is time remaining.
-  //   if (deadline.timeRemaining() > 0 || deadline.didTimeout) {
-  //     console.log("fire");
-  //     this.rerender(this.options, true);
-  //   }
-  // }
-
-
   updateMinMaxVisibleValues(min = null, max = null) {
     if (min === null || max === null) {
       this.minimalVisibleValue = this.minVisibleValue();

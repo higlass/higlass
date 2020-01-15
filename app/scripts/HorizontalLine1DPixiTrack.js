@@ -206,9 +206,6 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     this.draw();
 
-    // console.log(currentMaxVisibleValue, newMaxVisibleValue);
-    // const newMinmaxVisibleValues = this.getMinMaxVisibleValues();
-
     if (
       this.continuousScaling
       && ((Math.abs(this.minimalVisibleValue - this.minVisibleValue()) > 1e-6)

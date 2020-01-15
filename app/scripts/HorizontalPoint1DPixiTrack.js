@@ -40,22 +40,27 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     this.valueScale = null;
 
     // console.log('valueScaling:', this.options.valueScaling);
+    const min = this.minVisibleValue();
+    const max = this.maxVisibleValue();
+
     if (this.options.valueScaling === 'log') {
       let offsetValue = this.medianVisibleValue;
 
-      if (!this.medianVisibleValue) { offsetValue = this.minVisibleValue(); }
+      if (!this.medianVisibleValue) { offsetValue = min; }
 
       this.valueScale = scaleLog()
         // .base(Math.E)
-        .domain([offsetValue, this.maxValue() + offsetValue])
+        .domain([offsetValue, max + offsetValue])
         .range([this.dimensions[1], 0]);
       pseudocount = offsetValue;
     } else {
       // linear scale
       this.valueScale = scaleLinear()
-        .domain([this.minValue(), this.maxValue()])
+        .domain([min, max])
         .range([this.dimensions[1], 0]);
     }
+
+    this.updateMinMaxVisibleValues(min, max);
 
     graphics.clear();
 
