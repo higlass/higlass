@@ -1,8 +1,11 @@
-# Release notes #
+# Release notes
 
-## Next release
+## Next
 
+- Prettified JS code
 - Added release notes to docs.
+
+_[Detailed changes since v1.8.0](https://github.com/higlass/higlass/compare/v1.8.0...develop)_
 
 ## v1.8.0
 

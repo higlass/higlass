@@ -24,7 +24,6 @@ class TopAxisTrack extends SVGTrack {
     this.gAxis.attr('transform', `translate(0,${newDimensions[1]})`);
   }
 
-
   draw() {
     this.axis.scale(this._xScale);
 

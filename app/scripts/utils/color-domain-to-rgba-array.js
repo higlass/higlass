@@ -11,11 +11,14 @@ const colorDomainToRgbaArray = (colorRange, noTansparent = false) => {
   // we should always have at least two values in the color range
   const domain = colorRange.map((x, i) => i * (255 / (colorRange.length - 1)));
 
-  const d3Scale = scaleLinear().domain(domain).range(colorRange);
+  const d3Scale = scaleLinear()
+    .domain(domain)
+    .range(colorRange);
 
   const fromX = noTansparent ? 255 : 254;
 
-  const rgbaArray = range(fromX, -1, -1).map(d3Scale)
+  const rgbaArray = range(fromX, -1, -1)
+    .map(d3Scale)
     .map((x) => {
       const r = rgb(x);
       return [r.r, r.g, r.b, r.opacity * 255];

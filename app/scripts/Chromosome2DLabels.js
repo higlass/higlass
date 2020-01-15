@@ -7,7 +7,6 @@ import SearchField from './SearchField';
 
 import { absToChr } from './utils';
 
-
 class Chromosome2DLabels extends PixiTrack {
   constructor(context, options) {
     super(context, options);
@@ -22,51 +21,60 @@ class Chromosome2DLabels extends PixiTrack {
 
     const chromSizesPath = `${server}/chrom-sizes/?id=${uid}`;
 
-    ChromosomeInfo(chromSizesPath, (newChromInfo) => {
-      this.chromInfo = newChromInfo;
-      //
+    ChromosomeInfo(
+      chromSizesPath,
+      newChromInfo => {
+        this.chromInfo = newChromInfo;
+        //
 
-      this.searchField = new SearchField(this.chromInfo);
-      this.draw();
+        this.searchField = new SearchField(this.chromInfo);
+        this.draw();
 
-      this.texts = [];
+        this.texts = [];
 
-      for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
-        const thisTexts = [];
+        for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
+          const thisTexts = [];
 
-        for (let j = 0; j < this.chromInfo.cumPositions.length; j++) {
-          const textStr = `${this.chromInfo.cumPositions[i].chr}/${this.chromInfo.cumPositions[j].chr}`;
-          const text = new PIXI.Text(
-            textStr,
-            { fontSize: '14px', fontFamily: 'Arial', fill: 'red' }
-          );
+          for (let j = 0; j < this.chromInfo.cumPositions.length; j++) {
+            const textStr = `${this.chromInfo.cumPositions[i].chr}/${this.chromInfo.cumPositions[j].chr}`;
+            const text = new PIXI.Text(textStr, {
+              fontSize: '14px',
+              fontFamily: 'Arial',
+              fill: 'red'
+            });
 
-          text.anchor.x = 0.5;
-          text.anchor.y = 0.5;
-          text.visible = false;
+            text.anchor.x = 0.5;
+            text.anchor.y = 0.5;
+            text.visible = false;
 
-          // give each string a random hash so that some get hidden
-          // when there's overlaps
-          text.hashValue = Math.random();
+            // give each string a random hash so that some get hidden
+            // when there's overlaps
+            text.hashValue = Math.random();
 
-          thisTexts.push(text);
+            thisTexts.push(text);
 
-          this.pMain.addChild(text);
+            this.pMain.addChild(text);
+          }
+
+          this.texts.push(thisTexts);
         }
-
-        this.texts.push(thisTexts);
-      }
-      this.draw();
-      this.animate();
-    }, pubSub);
+        this.draw();
+        this.animate();
+      },
+      pubSub
+    );
   }
 
   draw() {
     const allTexts = [];
 
-    if (!this.texts) { return; }
+    if (!this.texts) {
+      return;
+    }
 
-    if (!this.searchField) { return; }
+    if (!this.searchField) {
+      return;
+    }
 
     const x1 = absToChr(this._xScale.domain()[0], this.chromInfo);
     const x2 = absToChr(this._xScale.domain()[1], this.chromInfo);
@@ -85,8 +93,8 @@ class Chromosome2DLabels extends PixiTrack {
         const xCumPos = this.chromInfo.cumPositions[i];
         const yCumPos = this.chromInfo.cumPositions[j];
 
-        const midX = xCumPos.pos + (this.chromInfo.chromLengths[xCumPos.chr] / 2);
-        const midY = yCumPos.pos + (this.chromInfo.chromLengths[yCumPos.chr] / 2);
+        const midX = xCumPos.pos + this.chromInfo.chromLengths[xCumPos.chr] / 2;
+        const midY = yCumPos.pos + this.chromInfo.chromLengths[yCumPos.chr] / 2;
 
         const viewportMidX = this._xScale(midX);
         const viewportMidY = this._yScale(midY);
@@ -104,17 +112,17 @@ class Chromosome2DLabels extends PixiTrack {
 
         // make sure the chrosome label fits in the x range
         if (viewportMidX + bwh > this.dimensions[0]) {
-          text.x -= (viewportMidX + bwh) - this.dimensions[0];
+          text.x -= viewportMidX + bwh - this.dimensions[0];
         } else if (viewportMidX - bwh < 0) {
           //
-          text.x -= (viewportMidX - bwh);
+          text.x -= viewportMidX - bwh;
         }
 
         // make sure the chro
         if (viewportMidY + bhh > this.dimensions[1]) {
-          text.y -= (viewportMidY + bhh) - this.dimensions[1];
+          text.y -= viewportMidY + bhh - this.dimensions[1];
         } else if (viewportMidY - bhh < 0) {
-          text.y -= (viewportMidY - bhh);
+          text.y -= viewportMidY - bhh;
         }
 
         text.visible = true;
@@ -134,7 +142,7 @@ class Chromosome2DLabels extends PixiTrack {
   hideOverlaps(allTexts) {
     let allBoxes = []; // store the bounding boxes of the text objects so we can
     // calculate overlaps
-    allBoxes = allTexts.map((val) => {
+    allBoxes = allTexts.map(val => {
       const text = val.text;
       text.updateTransform();
       const b = text.getBounds();

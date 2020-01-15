@@ -22,7 +22,6 @@ class LeftAxisTrack extends SVGTrack {
     this.gAxis.attr('transform', `translate(${newDimensions[0]},0)`);
   }
 
-
   draw() {
     this.axis.scale(this._yScale);
     this.gAxis.call(this.axis);

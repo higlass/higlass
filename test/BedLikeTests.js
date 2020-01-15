@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -15,7 +15,6 @@ import {
   getTrackObjectFromHGC
 } from '../app/scripts/utils';
 
-
 configure({ adapter: new Adapter() });
 
 describe('Simple HiGlassComponent', () => {
@@ -23,23 +22,27 @@ describe('Simple HiGlassComponent', () => {
   let div = null;
 
   describe('BedLikeTrack tests', () => {
-    beforeAll((done) => {
-      ([div, hgc] = mountHGComponent(div, hgc, viewConf, done));
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
     });
 
     it('Ensures that the track was rendered', () => {
       expect(hgc.instance().state.viewConfig.editable).to.eql(true);
-      const trackObj = getTrackObjectFromHGC(hgc.instance(),
+      const trackObj = getTrackObjectFromHGC(
+        hgc.instance(),
         viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[0].uid);
+        viewConf.views[0].tracks.top[0].uid
+      );
 
       expect(Object.keys(trackObj.drawnRects).length).to.be.above(0);
     });
 
     it('Checks that + and - strand entries are at different heights', () => {
-      const trackObj = getTrackObjectFromHGC(hgc.instance(),
+      const trackObj = getTrackObjectFromHGC(
+        hgc.instance(),
         viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[0].uid);
+        viewConf.views[0].tracks.top[0].uid
+      );
 
       const rectHeights = new Set();
       for (const tileId in trackObj.drawnRects) {
@@ -53,7 +56,6 @@ describe('Simple HiGlassComponent', () => {
       expect(rectHeights.size).to.eql(2);
     });
 
-
     it('Exports to SVG', () => {
       const svgText = hgc.instance().createSVGString();
 
@@ -64,8 +66,9 @@ describe('Simple HiGlassComponent', () => {
       expect(greenIx).to.be.below(0);
     });
 
-    it('Checks minusStrandColor', (done) => {
-      hgc.instance().state.views.aa.tracks.top[0].options.minusStrandColor = 'green';
+    it('Checks minusStrandColor', done => {
+      hgc.instance().state.views.aa.tracks.top[0].options.minusStrandColor =
+        'green';
 
       hgc.setState(hgc.instance().state);
       hgc.update();
@@ -77,15 +80,18 @@ describe('Simple HiGlassComponent', () => {
       done();
     });
 
-    it('Checks segment polygons', (done) => {
-      hgc.instance().state.views.aa.tracks.top[0].options.annotationStyle = 'segment';
+    it('Checks segment polygons', done => {
+      hgc.instance().state.views.aa.tracks.top[0].options.annotationStyle =
+        'segment';
 
       hgc.setState(hgc.instance().state);
       hgc.update();
 
-      const trackObj = getTrackObjectFromHGC(hgc.instance(),
+      const trackObj = getTrackObjectFromHGC(
+        hgc.instance(),
         viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[0].uid);
+        viewConf.views[0].tracks.top[0].uid
+      );
 
       for (const tileId in trackObj.drawnRects) {
         for (const uid in trackObj.drawnRects[tileId]) {
@@ -107,22 +113,15 @@ describe('Simple HiGlassComponent', () => {
   const viewConf = {
     editable: true,
     zoomFixed: false,
-    trackSourceServers: [
-      'http://higlass.io/api/v1'
-    ],
+    trackSourceServers: ['http://higlass.io/api/v1'],
     exportViewUrl: 'http://higlass.io/api/v1/viewconfs/',
     views: [
       {
         uid: 'aa',
-        initialXDomain: [
-          1585110207.2930722,
-          1586490384.5429244
-        ],
-        initialYDomain: [
-          1187975248.2421436,
-          1187975248.2421436
-        ],
-        autocompleteSource: 'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
+        initialXDomain: [1585110207.2930722, 1586490384.5429244],
+        initialYDomain: [1187975248.2421436, 1187975248.2421436],
+        autocompleteSource:
+          'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
         genomePositionSearchBoxVisible: false,
         chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
         tracks: {

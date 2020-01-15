@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -13,7 +13,7 @@ import {
   getTrackByUid,
   getTrackObjectFromHGC,
   mountHGComponent,
-  removeHGComponent,
+  removeHGComponent
 } from '../app/scripts/utils';
 
 import viewconf from './view-configs/loop-annotations';
@@ -24,15 +24,11 @@ describe('2D Rectangular Domains', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
-    ([div, hgc] = mountHGComponent(div, hgc,
-      viewconf,
-      done,
-      {
-        style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true,
-      })
-    );
+  beforeAll(done => {
+    [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
+      style: 'width:800px; height:400px; background-color: lightgreen',
+      bounded: true
+    });
   });
 
   it('export rectangles in the same color that they are in the view', () => {
@@ -45,13 +41,12 @@ describe('2D Rectangular Domains', () => {
     const track = getTrackByUid(views.aa.tracks, 't1');
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 't1');
 
-
     const xVal1 = trackObj.drawnRects['CVV-O3_TTw-Jda38HzJPtgfalse'];
 
     track.options.flipDiagonal = 'yes';
 
     hgc.setState({
-      views,
+      views
     });
 
     const xVal2 = trackObj.drawnRects['CVV-O3_TTw-Jda38HzJPtgtrue'];
@@ -64,7 +59,7 @@ describe('2D Rectangular Domains', () => {
     track.options.flipDiagonal = 'copy';
 
     hgc.setState({
-      views,
+      views
     });
 
     expect(Object.keys(trackObj.drawnRects).length).to.eql(6);

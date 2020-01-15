@@ -65,10 +65,11 @@ class DomEvent {
     this.registeredEls[event] = newElement;
     this.registeredEls[event].__handler__ = this.getEventHandler(event);
     this.registeredEls[event].addEventListener(
-      event, this.registeredEls[event].__handler__,
+      event,
+      this.registeredEls[event].__handler__,
       {
         capture: useCapture,
-        passive: false,
+        passive: false
       }
     );
   }

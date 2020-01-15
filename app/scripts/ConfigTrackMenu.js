@@ -12,7 +12,9 @@ import { THEME_DARK } from './configs';
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMixin) {
+class ConfigTrackMenu extends mix(ContextMenuContainer).with(
+  SeriesListSubmenuMixin
+) {
   constructor(props) {
     /**
      * A window that is opened when a user clicks on the track configuration icon.
@@ -33,11 +35,13 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
 
     return (
       <div
-        ref={(c) => { this.div = c; }}
+        ref={c => {
+          this.div = c;
+        }}
         data-menu-type="ConfigTrackMenu"
         style={{
           left: this.state.left,
-          top: this.state.top,
+          top: this.state.top
         }}
         styleName={styleNames}
       >
@@ -60,7 +64,9 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
 
         <ContextMenuItem
           contextMenu={this}
-          onClick={() => this.props.onUnlockValueScale(this.props.tracks[0].uid)}
+          onClick={() =>
+            this.props.onUnlockValueScale(this.props.tracks[0].uid)
+          }
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
         >
           {'Unlock Value Scale'}
@@ -84,8 +90,10 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
 
         <ContextMenuItem
           onClick={() => {
-            this.props.onReplaceTrack(this.props.tracks[0].uid,
-              this.props.trackOrientation);
+            this.props.onReplaceTrack(
+              this.props.tracks[0].uid,
+              this.props.trackOrientation
+            );
           }}
         >
           {'Replace Track'}

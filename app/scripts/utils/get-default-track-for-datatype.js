@@ -1,8 +1,5 @@
-
 // Configs
-import {
-  DEFAULT_TRACKS_FOR_DATATYPE,
-} from '../configs';
+import { DEFAULT_TRACKS_FOR_DATATYPE } from '../configs';
 
 /**
  * Gets the default track as defined in utils/default-tracks-for-datatype.js
@@ -14,9 +11,13 @@ import {
  * @return {object}  an element of availableTracks or undefined
  */
 const getDefaultTrackForDatatype = (datatype, position, availableTracks) => {
-  if (availableTracks.length === 0) { return undefined; }
+  if (availableTracks.length === 0) {
+    return undefined;
+  }
 
-  if (availableTracks.length === 1) { return availableTracks[0]; }
+  if (availableTracks.length === 1) {
+    return availableTracks[0];
+  }
 
   let usedTrack = availableTracks[0];
   const defaultTrackType = DEFAULT_TRACKS_FOR_DATATYPE[datatype] !== undefined
