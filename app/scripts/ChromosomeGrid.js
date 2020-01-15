@@ -30,31 +30,35 @@ class ChromosomeGrid extends PixiTrack {
       chromSizesPath = `${dataConfig.server}/chrom-sizes/?id=${dataConfig.tilesetUid}`;
     }
 
-    ChromosomeInfo(chromSizesPath, (newChromInfo) => {
-      this.chromInfo = newChromInfo;
+    ChromosomeInfo(
+      chromSizesPath,
+      newChromInfo => {
+        this.chromInfo = newChromInfo;
 
-      this.searchField = new SearchField(this.chromInfo);
+        this.searchField = new SearchField(this.chromInfo);
 
-      this.texts = [];
-      this.lineGraphics = new PIXI.Graphics();
-      this.lineGraphics1dH = new PIXI.Graphics();
-      this.lineGraphics1dV = new PIXI.Graphics();
-      this.lineGraphics2d = new PIXI.Graphics();
-      this.mask1dH = new PIXI.Graphics();
-      this.mask1dV = new PIXI.Graphics();
-      this.mask2d = new PIXI.Graphics();
+        this.texts = [];
+        this.lineGraphics = new PIXI.Graphics();
+        this.lineGraphics1dH = new PIXI.Graphics();
+        this.lineGraphics1dV = new PIXI.Graphics();
+        this.lineGraphics2d = new PIXI.Graphics();
+        this.mask1dH = new PIXI.Graphics();
+        this.mask1dV = new PIXI.Graphics();
+        this.mask2d = new PIXI.Graphics();
 
-      this.lineGraphics.addChild(this.lineGraphics1dH);
-      this.lineGraphics1dH.addChild(this.mask1dH);
-      this.lineGraphics.addChild(this.lineGraphics1dV);
-      this.lineGraphics1dV.addChild(this.mask1dV);
-      this.lineGraphics.addChild(this.lineGraphics2d);
-      this.lineGraphics2d.addChild(this.mask2d);
-      this.pMain.addChild(this.lineGraphics);
+        this.lineGraphics.addChild(this.lineGraphics1dH);
+        this.lineGraphics1dH.addChild(this.mask1dH);
+        this.lineGraphics.addChild(this.lineGraphics1dV);
+        this.lineGraphics1dV.addChild(this.mask1dV);
+        this.lineGraphics.addChild(this.lineGraphics2d);
+        this.lineGraphics2d.addChild(this.mask2d);
+        this.pMain.addChild(this.lineGraphics);
 
-      this.draw();
-      this.animate();
-    }, pubSub);
+        this.draw();
+        this.animate();
+      },
+      pubSub
+    );
   }
 
   drawLines(orientation = this.orientation, left = 0, top = 0) {
@@ -73,9 +77,7 @@ class ChromosomeGrid extends PixiTrack {
     }
 
     const strokeColor = colorToHex(
-      this.options.lineStrokeColor
-        ? this.options.lineStrokeColor
-        : 'blue'
+      this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue'
     );
 
     const strokeWidth = this.options.lineStrokeWidth
@@ -115,9 +117,13 @@ class ChromosomeGrid extends PixiTrack {
   }
 
   draw() {
-    if (!this.texts) { return; }
+    if (!this.texts) {
+      return;
+    }
 
-    if (!this.searchField) { return; }
+    if (!this.searchField) {
+      return;
+    }
 
     this.lineGraphics.clear();
 
@@ -128,14 +134,18 @@ class ChromosomeGrid extends PixiTrack {
       this.mask1dH.clear();
       this.mask1dV.clear();
       this.mask2d.clear();
-      this.mask1dH.beginFill(0xFFFFFF);
-      this.mask1dV.beginFill(0xFFFFFF);
-      this.mask2d.beginFill(0xFF0000);
+      this.mask1dH.beginFill(0xffffff);
+      this.mask1dV.beginFill(0xffffff);
+      this.mask2d.beginFill(0xff0000);
 
       for (let i = 0; i < this.options.orientationsAndPositions.length; i++) {
-        const orientation = this.options.orientationsAndPositions[i].orientation;
+        const orientation = this.options.orientationsAndPositions[i]
+          .orientation;
         const {
-          left, top, width, height
+          left,
+          top,
+          width,
+          height
         } = this.options.orientationsAndPositions[i].position;
 
         if (orientation === '1d-horizontal') {
@@ -164,7 +174,7 @@ class ChromosomeGrid extends PixiTrack {
   setPosition(newPosition) {
     super.setPosition(newPosition);
 
-    ([this.pMain.position.x, this.pMain.position.y] = this.position);
+    [this.pMain.position.x, this.pMain.position.y] = this.position;
   }
 
   zoomed(newXScale, newYScale) {
@@ -191,16 +201,24 @@ class ChromosomeGrid extends PixiTrack {
 
   drawLinesSvg(output, orientation, width, height, left = 0, top = 0) {
     const strokeColor = this.options.lineStrokeColor
-      ? this.options.lineStrokeColor : 'blue';
+      ? this.options.lineStrokeColor
+      : 'blue';
     const strokeWidth = this.options.lineStrokeWidth;
 
     // First horizontal line
     if (orientation === '2d' || orientation === '1d-vertical') {
       const y = this._yScale(0);
       if (y > 0 && y < top + height) {
-        output.appendChild(this.createSvgLine(
-          left, width + left, y + top, y + top, strokeColor, strokeWidth
-        ));
+        output.appendChild(
+          this.createSvgLine(
+            left,
+            width + left,
+            y + top,
+            y + top,
+            strokeColor,
+            strokeWidth
+          )
+        );
       }
     }
 
@@ -208,9 +226,16 @@ class ChromosomeGrid extends PixiTrack {
     if (orientation === '2d' || orientation === '1d-horizontal') {
       const x = this._xScale(0);
       if (x > 0 && x < left + width) {
-        output.appendChild(this.createSvgLine(
-          x + left, x + left, top, height + top, strokeColor, strokeWidth
-        ));
+        output.appendChild(
+          this.createSvgLine(
+            x + left,
+            x + left,
+            top,
+            height + top,
+            strokeColor,
+            strokeWidth
+          )
+        );
       }
     }
 
@@ -221,18 +246,32 @@ class ChromosomeGrid extends PixiTrack {
       if (orientation === '2d' || orientation === '1d-vertical') {
         const y = this._yScale(chrEnd);
         if (y > 0 && y < top + height) {
-          output.appendChild(this.createSvgLine(
-            left, width + left, y + top, y + top, strokeColor, strokeWidth
-          ));
+          output.appendChild(
+            this.createSvgLine(
+              left,
+              width + left,
+              y + top,
+              y + top,
+              strokeColor,
+              strokeWidth
+            )
+          );
         }
       }
 
       if (orientation === '2d' || orientation === '1d-horizontal') {
         const x = this._xScale(chrEnd);
         if (x > 0 && x < left + width) {
-          output.appendChild(this.createSvgLine(
-            x + left, x + left, top, height + top, strokeColor, strokeWidth
-          ));
+          output.appendChild(
+            this.createSvgLine(
+              x + left,
+              x + left,
+              top,
+              height + top,
+              strokeColor,
+              strokeWidth
+            )
+          );
         }
       }
     }
@@ -259,15 +298,19 @@ class ChromosomeGrid extends PixiTrack {
     );
 
     if (!this.chromInfo) {
-    // we haven't received the chromosome info yet
+      // we haven't received the chromosome info yet
       return [base, track];
     }
 
     if (this.isOverlay) {
       for (let i = 0; i < this.options.orientationsAndPositions.length; i++) {
-        const orientation = this.options.orientationsAndPositions[i].orientation;
+        const orientation = this.options.orientationsAndPositions[i]
+          .orientation;
         const {
-          left, top, width, height
+          left,
+          top,
+          width,
+          height
         } = this.options.orientationsAndPositions[i].position;
         this.drawLinesSvg(output, orientation, width, height, left, top);
       }

@@ -28,7 +28,7 @@ function collapse(segments, scale) {
 
   // continue on to the next segments
   for (let i = 1; i < segments.length; i++) {
-    if (segments[i].start < currEnd + MAX_DIST_BETWEEN * 1 / scale) {
+    if (segments[i].start < currEnd + (MAX_DIST_BETWEEN * 1) / scale) {
       // this segment is within merging distance -- merge it
       currEnd = Math.max(currEnd, segments[i].end);
     } else {
@@ -37,7 +37,7 @@ function collapse(segments, scale) {
       collapsed.push({
         type: 'filler',
         start: currStart,
-        end: currEnd,
+        end: currEnd
       });
 
       // start a new collapsed segment
@@ -50,7 +50,7 @@ function collapse(segments, scale) {
   collapsed.push({
     start: currStart,
     end: currEnd,
-    type: 'filler',
+    type: 'filler'
   });
 
   return collapsed;
@@ -84,7 +84,7 @@ function gbToHgGene(gb) {
       strand: gb.strand,
       fields: [],
       type: 'filler',
-      uid,
+      uid
     };
   }
 
@@ -96,7 +96,20 @@ function gbToHgGene(gb) {
     importance: gb.end - gb.start,
     uid,
     fields: [
-      'chrom', gb.start, gb.end, gb.name, importance, strand, '', '', gb.type, gb.name, gb.start.toString(), gb.end.toString(), gb.start.toString(), gb.end.toString()
+      'chrom',
+      gb.start,
+      gb.end,
+      gb.name,
+      importance,
+      strand,
+      '',
+      '',
+      gb.type,
+      gb.name,
+      gb.start.toString(),
+      gb.end.toString(),
+      gb.start.toString(),
+      gb.end.toString()
     ]
   };
 }
@@ -112,51 +125,56 @@ class GBKDataFetcher {
 
     this.dataPromise = fetch(dataConfig.url, {
       headers: {
-        'Content-Encoding': gzipped ? 'gzip' : 'text/plain',
+        'Content-Encoding': gzipped ? 'gzip' : 'text/plain'
       },
       mode: 'cors'
     })
       .then(response => (gzipped ? response.arrayBuffer() : response.text()))
       .then((buffer) => {
-        const gffText = gzipped ? pako.inflate(buffer, { to: 'string' }) : buffer;
+        const gffText = gzipped
+          ? pako.inflate(buffer, { to: 'string' })
+          : buffer;
         this.gbJson = genbankParser(gffText);
-        this.cdss = shuffle(this.gbJson[0]
-          .features.filter(f => f.type === 'CDS')
-          .sort((a, b) => a.start - b.start));
+        this.cdss = shuffle(
+          this.gbJson[0].features
+            .filter(f => f.type === 'CDS')
+            .sort((a, b) => a.start - b.start)
+        );
       });
   }
 
   tilesetInfo(callback) {
     this.tilesetInfoLoading = true;
 
-    return this.dataPromise.then(() => {
-      this.tilesetInfoLoading = false;
+    return this.dataPromise
+      .then(() => {
+        this.tilesetInfoLoading = false;
 
-      const TILE_SIZE = 1024;
-      let retVal = {};
-      // retVal[this.trackUid] = {
-      retVal = {
-        tile_size: TILE_SIZE,
-        max_zoom: Math.ceil(
-          Math.log(this.gbJson[0].size / TILE_SIZE) / Math.log(2)
-        ),
-        max_width: this.gbJson[0].size,
-        min_pos: [0],
-        max_pos: [this.gbJson[0].size],
-      };
+        const TILE_SIZE = 1024;
+        let retVal = {};
+        // retVal[this.trackUid] = {
+        retVal = {
+          tile_size: TILE_SIZE,
+          max_zoom: Math.ceil(
+            Math.log(this.gbJson[0].size / TILE_SIZE) / Math.log(2)
+          ),
+          max_width: this.gbJson[0].size,
+          min_pos: [0],
+          max_pos: [this.gbJson[0].size]
+        };
 
-      if (callback) {
-        callback(retVal);
-      }
+        if (callback) {
+          callback(retVal);
+        }
 
-      return retVal;
-    })
+        return retVal;
+      })
       .catch((err) => {
         this.tilesetInfoLoading = false;
 
         if (callback) {
           callback({
-            error: `Error parsing genbank: ${err}`,
+            error: `Error parsing genbank: ${err}`
           });
         }
       });
@@ -197,20 +215,30 @@ class GBKDataFetcher {
 
   tile(z, x) {
     return this.tilesetInfo().then((tsInfo) => {
-      const tileWidth = +tsInfo.max_width / 2 ** (+z);
+      const tileWidth = +tsInfo.max_width / 2 ** +z;
 
       // get the bounds of the tile
       const minX = tsInfo.min_pos[0] + x * tileWidth;
       const maxX = tsInfo.min_pos[0] + (x + 1) * tileWidth;
 
       const filtered = this.cdss.filter(v => v.end > minX && v.start < maxX);
-      const scaleFactor = 1024 / (2 ** (tsInfo.max_zoom - z));
+      const scaleFactor = 1024 / 2 ** (tsInfo.max_zoom - z);
 
-      const collapsedPlus = collapse(filtered.filter(v => v.strand === 1), scaleFactor);
-      const collapsedMinus = collapse(filtered.filter(v => v.strand !== 1), scaleFactor);
+      const collapsedPlus = collapse(
+        filtered.filter(v => v.strand === 1),
+        scaleFactor
+      );
+      const collapsedMinus = collapse(
+        filtered.filter(v => v.strand !== 1),
+        scaleFactor
+      );
 
-      collapsedPlus.forEach((v) => { v.strand = '+'; });
-      collapsedMinus.forEach((v) => { v.strand = '-'; });
+      collapsedPlus.forEach((v) => {
+        v.strand = '+';
+      });
+      collapsedMinus.forEach((v) => {
+        v.strand = '-';
+      });
 
       let values = [];
       const TILE_CAPACITY = 20;

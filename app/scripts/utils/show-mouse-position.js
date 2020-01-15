@@ -47,7 +47,9 @@ const showMousePosition = (
 
   // This clears the mouse position graphics, i.e., the mouse position will not
   // be visible afterwards.
-  const clearGraphics = () => { graphics.clear(); };
+  const clearGraphics = () => {
+    graphics.clear();
+  };
 
   /**
    * Draw 1D mouse location (cross) hair onto the PIXI graphics.
@@ -139,7 +141,7 @@ const showMousePosition = (
  * @return  {Function}  Method to remove graphics showing the mouse location.
  */
 const setupShowMousePosition = (context, is2d = false, isGlobal = false) => {
-  const scene = is2d ? context.pMasked : (context.pForeground || context.pMain);
+  const scene = is2d ? context.pMasked : context.pForeground || context.pMain;
   const getScales = () => [context.xScale(), context.yScale()];
 
   const graphics = showMousePosition(
@@ -156,7 +158,9 @@ const setupShowMousePosition = (context, is2d = false, isGlobal = false) => {
 
   scene.addChild(graphics);
 
-  return () => { scene.removeChild(graphics); };
+  return () => {
+    scene.removeChild(graphics);
+  };
 };
 
 export default setupShowMousePosition;

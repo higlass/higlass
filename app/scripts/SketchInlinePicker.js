@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { rgb as d3rgb } from 'd3-color';
 import React from 'react';
 import reactCSS from 'reactcss';
@@ -15,13 +16,15 @@ class SketchInlinePicker extends React.Component {
         r: startColor.r,
         g: startColor.g,
         b: startColor.b,
-        a: startColor.opacity,
-      },
+        a: startColor.opacity
+      }
     };
   }
 
   handleClick() {
-    this.setState(prevState => ({ displayColorPicker: !prevState.displayColorPicker }));
+    this.setState(prevState => ({
+      displayColorPicker: !prevState.displayColorPicker
+    }));
   }
 
   handleClose() {
@@ -43,7 +46,7 @@ class SketchInlinePicker extends React.Component {
           width: '36px',
           height: '14px',
           borderRadius: '2px',
-          background: `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b}, ${this.state.color.a})`,
+          background: `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b}, ${this.state.color.a})`
         },
         swatch: {
           padding: '5px',
@@ -51,20 +54,20 @@ class SketchInlinePicker extends React.Component {
           borderRadius: '1px',
           boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
           display: 'inline-block',
-          cursor: 'pointer',
+          cursor: 'pointer'
         },
         popover: {
           position: 'absolute',
-          zIndex: '2',
+          zIndex: '2'
         },
         cover: {
           position: 'fixed',
           top: '0px',
           right: '0px',
           bottom: '0px',
-          left: '0px',
-        },
-      },
+          left: '0px'
+        }
+      }
     });
 
     return (
@@ -72,15 +75,23 @@ class SketchInlinePicker extends React.Component {
         <div onClick={this.handleClick.bind(this)} style={styles.swatch}>
           <div style={styles.color} />
         </div>
-        { this.state.displayColorPicker ? (
+        {this.state.displayColorPicker ? (
           <div style={styles.popover}>
             <div onClick={this.handleClose.bind(this)} style={styles.cover} />
-            <SketchPicker color={this.state.color} onChange={this.handleChange.bind(this)} />
+            <SketchPicker
+              color={this.state.color}
+              onChange={this.handleChange.bind(this)}
+            />
           </div>
-        ) : null }
+        ) : null}
       </div>
     );
   }
 }
+
+SketchInlinePicker.propTypes = {
+  color: PropTypes.string,
+  onChange: PropTypes.func
+};
 
 export default SketchInlinePicker;

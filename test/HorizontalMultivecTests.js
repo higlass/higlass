@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -10,7 +10,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
+  getTrackObjectFromHGC
 } from '../app/scripts/utils';
 
 // View configs
@@ -19,7 +19,7 @@ import horizontalMultivecWithSmallerDimensions from './view-configs-more/horizon
 // Constants
 import {
   MIN_HORIZONTAL_HEIGHT,
-  MIN_VERTICAL_WIDTH,
+  MIN_VERTICAL_WIDTH
 } from '../app/scripts/configs';
 
 configure({ adapter: new Adapter() });
@@ -28,35 +28,38 @@ describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
-    ([div, hgc] = mountHGComponent(div, hgc,
-      viewConf1,
-      done,
-      {
-        style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true,
-      })
-    );
+  beforeAll(done => {
+    [div, hgc] = mountHGComponent(div, hgc, viewConf1, done, {
+      style: 'width:800px; height:400px; background-color: lightgreen',
+      bounded: true
+    });
   });
 
   // it('not have errors in the loaded viewconf', (done) => {
   //   done();
   // });
 
-  it('Test horizontal multivec with track containing smaller-than-default width and height', (done) => {
-    ([div, hgc] = mountHGComponent(div, hgc,
+  it('Test horizontal multivec with track containing smaller-than-default width and height', done => {
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
       horizontalMultivecWithSmallerDimensions,
       () => {
-        const track = getTrackObjectFromHGC(hgc.instance(), 'viewConf2_uid', 'K_0GxgCvQfCHM56neOnHKg'); // uuid of horizontal-multivec
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'viewConf2_uid',
+          'K_0GxgCvQfCHM56neOnHKg'
+        ); // uuid of horizontal-multivec
         const width = track.dimensions[0];
         const height = track.dimensions[1];
-        if (height === MIN_HORIZONTAL_HEIGHT || width === MIN_VERTICAL_WIDTH) return;
+        if (height === MIN_HORIZONTAL_HEIGHT || width === MIN_VERTICAL_WIDTH)
+          return;
         done();
       },
       {
         style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true,
-      })
+        bounded: true
+      }
     );
   });
 
@@ -79,15 +82,9 @@ const viewConf1 = {
         static: false
       },
       uid: 'aa',
-      initialYDomain: [
-        2936293269.9661727,
-        3260543052.0694017
-      ],
+      initialYDomain: [2936293269.9661727, 3260543052.0694017],
       autocompleteSource: '/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
-      initialXDomain: [
-        -1109178825.081832,
-        3692212179.1390653
-      ],
+      initialXDomain: [-1109178825.081832, 3692212179.1390653],
       tracks: {
         left: [],
         top: [
@@ -263,9 +260,7 @@ const viewConf1 = {
     locksByViewUid: {},
     locksDict: {}
   },
-  trackSourceServers: [
-    'http://higlass.io/api/v1'
-  ],
+  trackSourceServers: ['http://higlass.io/api/v1'],
   locationLocks: {
     locksByViewUid: {
       aa: 'PkNgAl3mSIqttnSsCewngw',
@@ -273,11 +268,7 @@ const viewConf1 = {
     },
     locksDict: {
       PkNgAl3mSIqttnSsCewngw: {
-        aa: [
-          1550000000,
-          1550000000,
-          3380588.876772046
-        ],
+        aa: [1550000000, 1550000000, 3380588.876772046],
         ewZvJwlDSei_dbpIAkGMlg: [
           1550000000.0000002,
           1549999999.9999993,

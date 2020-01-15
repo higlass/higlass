@@ -8,7 +8,8 @@ import '../styles/AddTrackPositionMenu.module.scss';
 
 function AddTrackPositionMenu(props) {
   let tableStyleNames = 'add-track-position-table';
-  if (props.theme === THEME_DARK) tableStyleNames += ' add-track-position-table-dark';
+  if (props.theme === THEME_DARK)
+    tableStyleNames += ' add-track-position-table-dark';
   return (
     <div>
       <div styleName="add-track-position-span">Add Track...</div>
@@ -62,7 +63,7 @@ function AddTrackPositionMenu(props) {
 
 AddTrackPositionMenu.propTypes = {
   onTrackPositionChosen: PropTypes.func.isRequired,
-  theme: PropTypes.symbol.isRequired,
+  theme: PropTypes.symbol.isRequired
 };
 
 export default withTheme(AddTrackPositionMenu);

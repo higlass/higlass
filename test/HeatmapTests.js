@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -16,9 +16,7 @@ import {
   waitForTilesLoaded
 } from '../app/scripts/utils';
 
-import {
-  exportDataConfig
-} from './view-configs';
+import { exportDataConfig } from './view-configs';
 
 configure({ adapter: new Adapter() });
 
@@ -27,25 +25,26 @@ describe('Heatmaps', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll((done) => {
-      ([div, hgc] = mountHGComponent(div, hgc,
-        exportDataConfig,
-        done,
-        {
-          style: 'width:600px;height:1200px;background-color: lightgreen',
-          bounded: true,
-        })
-      );
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, exportDataConfig, done, {
+        style: 'width:600px;height:1200px;background-color: lightgreen',
+        bounded: true
+      });
     });
 
     it('once', () => {
       const tp = getTrackObjectFromHGC(
-        hgc.instance(), 'NagBzk-AQZuoY0bqG-Yy0Q', 'PdEzdgsxRymGelD5xfKlNA'
+        hgc.instance(),
+        'NagBzk-AQZuoY0bqG-Yy0Q',
+        'PdEzdgsxRymGelD5xfKlNA'
       );
       let data = tp.getVisibleRectangleData(262, 298, 1, 1);
 
       data = tp.getVisibleRectangleData(
-        0, 0, tp.dimensions[0], tp.dimensions[1]
+        0,
+        0,
+        tp.dimensions[0],
+        tp.dimensions[1]
       );
 
       expect(data.shape[0]).to.eql(756);
@@ -63,15 +62,11 @@ describe('Heatmaps', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll((done) => {
-      ([div, hgc] = mountHGComponent(div, hgc,
-        viewconf,
-        done,
-        {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        })
-      );
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      });
     });
 
     it('should respect zoom limits', () => {
@@ -93,7 +88,7 @@ describe('Heatmaps', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll((done) => {
+    beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, baseConf, done);
     });
 
@@ -116,13 +111,13 @@ describe('Heatmaps', () => {
       const views = JSON.parse(JSON.stringify(hgc.instance().state.views));
       const center = views.v.tracks.center[0];
 
-      const newOptions0 = Object.assign(
-        {}, center.contents[0].options, { extent: 'lower-left' }
-      );
+      const newOptions0 = Object.assign({}, center.contents[0].options, {
+        extent: 'lower-left'
+      });
 
-      const newOptions1 = Object.assign(
-        {}, center.contents[1].options, { extent: 'upper-right' }
-      );
+      const newOptions1 = Object.assign({}, center.contents[1].options, {
+        extent: 'upper-right'
+      });
 
       hgc.instance().handleTrackOptionsChanged('v', 'heatmap0', newOptions0);
       hgc.instance().handleTrackOptionsChanged('v', 'heatmap1', newOptions1);
@@ -138,16 +133,18 @@ describe('Heatmaps', () => {
       expect(options1.colorbarPosition).to.eql('topRight');
     });
 
-    it('tiles on the diagonal should be independent', (done) => {
+    it('tiles on the diagonal should be independent', done => {
       const trackObj0 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap0');
       const trackObj1 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap1');
 
       waitForTilesLoaded(hgc.instance(), () => {
-        expect(trackObj0.fetchedTiles['2.1.1.false'].tileData)
-          .to.not.eql(trackObj1.fetchedTiles['2.1.1.true'].tileData);
+        expect(trackObj0.fetchedTiles['2.1.1.false'].tileData).to.not.eql(
+          trackObj1.fetchedTiles['2.1.1.true'].tileData
+        );
 
-        expect(trackObj0.fetchedTiles['2.1.1.false'].tileData.dense)
-          .to.not.eql(trackObj1.fetchedTiles['2.1.1.true'].tileData.dense);
+        expect(trackObj0.fetchedTiles['2.1.1.false'].tileData.dense).to.not.eql(
+          trackObj1.fetchedTiles['2.1.1.true'].tileData.dense
+        );
 
         done();
       });
@@ -162,19 +159,18 @@ describe('Heatmaps', () => {
 // enter either a viewconf link or a viewconf object
 const viewconf = {
   editable: true,
-  trackSourceServers: [
-    '/api/v1',
-    'https://higlass.io/api/v1'
-  ],
+  trackSourceServers: ['/api/v1', 'https://higlass.io/api/v1'],
   exportViewUrl: '/api/v1/viewconfs',
   views: [
     {
       initialXDomain: [-2504745106, 1991124761],
       initialYDomain: [-1445835354, 2471358194],
       tracks: {
-        top: [{
-          type: 'top-axis'
-        }],
+        top: [
+          {
+            type: 'top-axis'
+          }
+        ],
         left: [],
         center: [
           {
@@ -214,18 +210,7 @@ const viewconf = {
                 width: 100,
                 height: 100,
                 name: 'blah_all.h5',
-                resolutions: [
-                  1,
-                  128,
-                  16,
-                  2,
-                  256,
-                  32,
-                  4,
-                  512,
-                  64,
-                  8
-                ]
+                resolutions: [1, 128, 16, 2, 256, 32, 4, 512, 64, 8]
               }
             ]
           }
@@ -267,7 +252,7 @@ const baseConf = {
                   mousePositionColor: 'yellow',
                   showTooltip: true
                 }
-              },
+              }
             ]
           }
         ]

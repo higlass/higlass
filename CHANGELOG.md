@@ -1,3 +1,9 @@
+## Next
+
+- Prettified JS code
+
+_[Detailed changes since v1.8.0](https://github.com/higlass/higlass/compare/v1.8.0...develop)_
+
 ## v1.8.0
 
 - Added the option to flip 2D annotations across the diagonal

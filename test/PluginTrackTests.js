@@ -24,8 +24,7 @@ describe('Overlay Track:', () => {
 
       const trackUid = viewConf.views[0].tracks.top[0].uid;
 
-      const trackRenderer = hgc.tiledPlots[viewConf.views[0].uid]
-        .trackRenderer;
+      const trackRenderer = hgc.tiledPlots[viewConf.views[0].uid].trackRenderer;
       const dummyTrack = trackRenderer.trackDefObjects[trackUid].trackObject;
 
       expect(trackRenderer.props.positionedTracks.length).toEqual(1);
