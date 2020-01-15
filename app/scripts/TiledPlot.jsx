@@ -1191,7 +1191,6 @@ export class TiledPlot extends React.Component {
      *      (such as the uid) added.
      */
 
-
     if (this.trackToReplace) {
       this.handleCloseTrack(this.trackToReplace);
       this.trackToReplace = null;
@@ -2067,8 +2066,13 @@ export class TiledPlot extends React.Component {
             // Can only add one new track at a time
             // because "whole" tracks are always drawn on top of each other,
             // the notion of Series is unnecessary and so 'host' is null
-            onAddTrack={newTrack => {
-              this.props.onTracksAdded([newTrack], newTrack.position, null, null);
+            onAddTrack={(newTrack) => {
+              this.props.onTracksAdded(
+                [newTrack],
+                newTrack.position,
+                null,
+                null,
+              );
               this.handleCloseContextMenu();
             }}
             onChangeTrackData={this.handleChangeTrackDataBound}

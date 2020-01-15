@@ -68,7 +68,7 @@ export class AddTrackDialog extends React.Component {
       this.state.selectedTilesets,
       this.props.position,
       this.props.extent,
-      this.props.host
+      this.props.host,
     );
   }
 
@@ -88,7 +88,7 @@ export class AddTrackDialog extends React.Component {
       this.state.selectedTilesets,
       this.props.position,
       this.props.extent,
-      this.props.host
+      this.props.host,
     );
   }
 
@@ -173,11 +173,11 @@ export class AddTrackDialog extends React.Component {
           }}
           datatype={this.props.datatype}
           onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
-          onTracksChosen={value =>
+          onTracksChosen={(value) =>
             this.props.onTracksChosen(
               value,
               this.props.position,
-              this.props.extent
+              this.props.extent,
             )
           }
           orientation={orientation}
