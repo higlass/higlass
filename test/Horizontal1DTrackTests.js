@@ -19,7 +19,7 @@ describe('Simple HiGlassComponent', () => {
   let viewConf;
 
   describe('Horizontal1DLineTrack with const indicator', () => {
-    it('check that the const indicators were rendered', (done) => {
+    it('check that the const indicators were rendered', done => {
       viewConf = horizontal1dLineTrackWithConstViewConf;
 
       [div, api] = createElementAndApi(viewConf, { bound: true });
@@ -47,7 +47,7 @@ describe('Simple HiGlassComponent', () => {
   });
 
   describe('Horizontal1DLineTrack with const indicator', () => {
-    it('check that the const indicators were rendered', (done) => {
+    it('check that the const indicators were rendered', done => {
       viewConf = horizontalLineEnd;
 
       [div, api] = createElementAndApi(viewConf, { bound: true });
@@ -75,8 +75,7 @@ describe('Simple HiGlassComponent', () => {
         expect(trackObj.getDataAtPos(366)).toEqual(undefined);
 
         // gene annotations don't currently have a mouseover function
-        expect(trackObjGeneAnnotations.getDataAtPos(10))
-          .toEqual(null);
+        expect(trackObjGeneAnnotations.getDataAtPos(10)).toEqual(null);
         done();
       });
     });

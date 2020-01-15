@@ -18,7 +18,7 @@ class ViewConfigEditor extends React.Component {
 
     this.state = {
       code: props.viewConfig,
-      hide: false,
+      hide: false
     };
 
     this.handleChangeBound = this.handleChange.bind(this);
@@ -31,10 +31,10 @@ class ViewConfigEditor extends React.Component {
     this.pubSubs = [];
 
     this.pubSubs.push(
-      this.props.pubSub.subscribe('keydown', this.handleKeyDownBound),
+      this.props.pubSub.subscribe('keydown', this.handleKeyDownBound)
     );
     this.pubSubs.push(
-      this.props.pubSub.subscribe('keyup', this.handleKeyUpBound),
+      this.props.pubSub.subscribe('keyup', this.handleKeyUpBound)
     );
   }
 
@@ -48,8 +48,9 @@ class ViewConfigEditor extends React.Component {
   }
 
   componentWillUnmount() {
-    this.pubSubs
-      .forEach(subscription => this.props.pubSub.unsubscribe(subscription));
+    this.pubSubs.forEach(subscription =>
+      this.props.pubSub.unsubscribe(subscription)
+    );
     this.pubSubs = [];
   }
 
@@ -116,18 +117,24 @@ class ViewConfigEditor extends React.Component {
             Hide While Mousedown
           </Button>
           <Button
-            onClick={() => { this.props.onChange(this.state.code); }}
+            onClick={() => {
+              this.props.onChange(this.state.code);
+            }}
             shortcut="⌘+S"
           >
             Save
           </Button>
         </header>
         <div
-          ref={(c) => { this.editorWrap = c; }}
+          ref={c => {
+            this.editorWrap = c;
+          }}
           styleName="view-config-editor"
         >
           <Editor
-            ref={(c) => { this.editor = c; }}
+            ref={c => {
+              this.editor = c;
+            }}
             highlight={code => highlight(code, languages.json)}
             onValueChange={this.handleChangeBound}
             padding={10}

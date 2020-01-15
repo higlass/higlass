@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -19,18 +19,17 @@ import {
 
 import viewConf from './view-configs/bar';
 
-
 configure({ adapter: new Adapter() });
 
 describe('BarTrack tests', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
-    ([div, hgc] = mountHGComponent(div, hgc, viewConf, done));
+  beforeAll(done => {
+    [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
   });
 
-  it('Ensures that the track was rendered', (done) => {
+  it('Ensures that the track was rendered', done => {
     expect(hgc.instance().state.viewConfig.editable).to.eql(true);
 
     const trackConf = viewConf.views[0].tracks.top[0];
@@ -42,11 +41,13 @@ describe('BarTrack tests', () => {
     );
 
     waitForTilesLoaded(hgc.instance(), () => {
-      expect(trackObj.zeroLine.fill.color)
-        .to.eql(colorToHex(trackConf.options.zeroLineColor));
+      expect(trackObj.zeroLine.fill.color).to.eql(
+        colorToHex(trackConf.options.zeroLineColor)
+      );
 
-      expect(trackObj.zeroLine.fill.alpha)
-        .to.eql(trackConf.options.zeroLineOpacity);
+      expect(trackObj.zeroLine.fill.alpha).to.eql(
+        trackConf.options.zeroLineOpacity
+      );
 
       expect(
         Object.values(trackObj.fetchedTiles).every(tile => tile.svgData)

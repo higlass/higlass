@@ -1,7 +1,5 @@
 const getTrackObjById = (tiledPlots, viewId, trackId) => {
-  const tiledPlot = viewId
-    ? tiledPlots[viewId]
-    : Object.values(tiledPlots)[0];
+  const tiledPlot = viewId ? tiledPlots[viewId] : Object.values(tiledPlots)[0];
 
   if (!tiledPlot) {
     if (!viewId) console.warn('No views available.');
