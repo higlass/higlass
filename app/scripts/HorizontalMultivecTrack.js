@@ -265,12 +265,4 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     return output;
   }
-
-  removeColorbar() {
-
-  }
-
-  drawColorbar() {
-
-  }
 }
