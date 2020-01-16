@@ -1,7 +1,7 @@
 ## Next
 
 - Prettified JS code
-- Added colorbar options `colorbarPosition` and `colorbarBackgroundColor` for `horizontal-multivec` track, enabling the colorbar slider for that track type.
+- Enabled the colorbar slider by adding the options `colorbarPosition` and `colorbarBackgroundColor` for the `horizontal-multivec`
 
 _[Detailed changes since v1.8.0](https://github.com/higlass/higlass/compare/v1.8.0...develop)_
 
