@@ -671,17 +671,24 @@ class HiGlassComponent extends React.Component {
       );
       this.theme = isDarkTheme ? 'dark' : 'light';
     } else {
+      const prefersDark =
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches;
       switch (newTheme) {
         case 'dark':
           this.theme = THEME_DARK;
           break;
         case 'light':
-        case undefined:
           this.theme = THEME_LIGHT;
           break;
+        case undefined:
+          this.theme = prefersDark ? THEME_DARK : THEME_LIGHT;
+          break;
         default:
-          console.warn(`Unknown theme "${newTheme}". Using light theme.`);
-          this.theme = THEME_LIGHT;
+          this.theme = prefersDark ? THEME_DARK : THEME_LIGHT;
+          console.warn(
+            `Unknown theme "${newTheme}". Using ${this.theme.toString()} theme.`
+          );
           break;
       }
     }
