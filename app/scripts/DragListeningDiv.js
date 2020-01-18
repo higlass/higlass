@@ -41,7 +41,7 @@ class DragListeningDiv extends React.Component {
             dragOnTop: false
           });
         }}
-        onDragOver={evt => {
+        onDragOver={(evt) => {
           evt.preventDefault();
         }}
         onDrop={() => {
@@ -58,6 +58,16 @@ class DragListeningDiv extends React.Component {
 
           this.props.onTrackDropped(newTrack);
           this.props.pubSub.publish('trackDropped', newTrack);
+        }}
+        onMouseEnter={() => {
+          this.setState({
+            dragOnTop: true
+          });
+        }}
+        onMouseLeave={() => {
+          this.setState({
+            dragOnTop: false
+          });
         }}
         style={Object.assign(
           {

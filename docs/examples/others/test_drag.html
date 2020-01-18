@@ -34,7 +34,9 @@
 
     <div style="display: flex">
         <div style="draggable: true; border: 1px solid black" ondragstart="randomDragStart(event)"><img src="../images/thumbnails/heatmap-thumbnail.png"/></div>
-        <div style="draggable: true; border: 1px solid black" ondragstart="heatmapDragStart(event)"><img src="../images/thumbnails/heatmap-thumbnail.png"/></div>
+        <div style="draggable: true; border: 1px solid black" ondragstart="heatmapDragStart(event)"
+         onclick="heatmapDragStart(event)"
+        ><img src="../images/thumbnails/heatmap-thumbnail.png"/></div>
         <div style="draggable: true; border: 1px solid black" ondragstart="lineDragStart(event)"><img src="../images/thumbnails/horizontal-line-thumbnail.png"/></div>
         <div style="draggable: true; border: 1px solid black" ondragstart="multivecDragStart(event)"><img src="../images/thumbnails/horizontal-multivec-thumbnail.png"/></div>
     </div>
