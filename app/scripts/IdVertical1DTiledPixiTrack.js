@@ -20,12 +20,15 @@ class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {
     // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/')
     // + '/' + tile.mirrored,
 
-    tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`, {
-      fontFamily: 'Arial',
-      fontSize: 32,
-      fill: 0xff1010,
-      align: 'center'
-    });
+    tile.text = new PIXI.Text(
+      `${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`,
+      {
+        fontFamily: 'Arial',
+        fontSize: 32,
+        fill: 0xff1010,
+        align: 'center'
+      }
+    );
 
     // tile.text.y = 100;
     tile.textGraphics.addChild(tile.text);
@@ -63,7 +66,9 @@ class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {
     //   / (this._refXScale(1) - this._refXScale(0))
     // );
     const tSY =
-      1 / ((this._yScale(1) - this._yScale(0)) / (this._refYScale(1) - this._refYScale(0)));
+      1 /
+      ((this._yScale(1) - this._yScale(0)) /
+        (this._refYScale(1) - this._refYScale(0)));
 
     // tile.text.scale.x = tSX;
     tile.text.scale.x = tSY;
@@ -79,14 +84,21 @@ class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {
     // line needs to be scaled down so that it doesn't become huge
 
     const tileScaledWidth = this.dimensions[0];
-    const tileScaledHeight = this._refYScale(tileY + tileHeight) - this._refYScale(tileY);
+    const tileScaledHeight =
+      this._refYScale(tileY + tileHeight) - this._refYScale(tileY);
 
     // add tileScaledHeight / 2 and tileScaledWidth / 2 to center the text on the tile
     tile.textGraphics.position.x = tileScaledWidth / 2;
-    tile.textGraphics.position.y = this._refYScale(tileY) + tileScaledHeight / 2;
+    tile.textGraphics.position.y =
+      this._refYScale(tileY) + tileScaledHeight / 2;
 
     // position the graphics
-    graphics.drawRect(0, this._refYScale(tileY), tileScaledWidth, tileScaledHeight);
+    graphics.drawRect(
+      0,
+      this._refYScale(tileY),
+      tileScaledWidth,
+      tileScaledHeight
+    );
   }
 
   fetchNewTiles(toFetch) {

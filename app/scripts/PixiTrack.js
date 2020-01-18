@@ -57,7 +57,12 @@ function getResolutionBasedResolutionText(resolutions, zoomLevel) {
  * @returns {string} A formatted string representation of the zoom level
  *   (e.g. "30K")
  */
-function getWidthBasedResolutionText(zoomLevel, maxWidth, binsPerDimension, maxZoom) {
+function getWidthBasedResolutionText(
+  zoomLevel,
+  maxWidth,
+  binsPerDimension,
+  maxZoom
+) {
   const resolution = maxWidth / (2 ** zoomLevel * binsPerDimension);
 
   // we can't display a NaN resolution
@@ -226,7 +231,12 @@ class PixiTrack extends Track {
 
     graphics.lineStyle(this.options.trackBorderWidth, stroke);
 
-    graphics.drawRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1]);
+    graphics.drawRect(
+      this.position[0],
+      this.position[1],
+      this.dimensions[0],
+      this.dimensions[1]
+    );
   }
 
   drawError() {
@@ -242,7 +252,12 @@ class PixiTrack extends Track {
       graphics.clear();
       graphics.lineStyle(1, colorToHex('red'));
 
-      graphics.drawRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1]);
+      graphics.drawRect(
+        this.position[0],
+        this.position[1],
+        this.dimensions[0],
+        this.dimensions[1]
+      );
     }
   }
 
@@ -266,7 +281,12 @@ class PixiTrack extends Track {
     const hexColor = colorToHex(color);
     graphics.beginFill(hexColor, opacity);
 
-    graphics.drawRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1]);
+    graphics.drawRect(
+      this.position[0],
+      this.position[1],
+      this.dimensions[0],
+      this.dimensions[1]
+    );
   }
 
   /**
@@ -275,7 +295,10 @@ class PixiTrack extends Track {
    * @return {string} The color to use for the label.
    */
   getLabelColor() {
-    if (this.options.labelColor && this.options.labelColor !== '[glyph-color]') {
+    if (
+      this.options.labelColor &&
+      this.options.labelColor !== '[glyph-color]'
+    ) {
       return this.options.labelColor;
     }
 
@@ -295,7 +318,11 @@ class PixiTrack extends Track {
 
     graphics.clear();
 
-    if (!this.options || !this.options.labelPosition || this.options.labelPosition === 'hidden') {
+    if (
+      !this.options ||
+      !this.options.labelPosition ||
+      this.options.labelPosition === 'hidden'
+    ) {
       // don't display the track label
       this.labelText.opacity = 0;
       return;
@@ -316,15 +343,18 @@ class PixiTrack extends Track {
       return;
     }
 
-    let labelTextText = this.tilesetInfo && this.tilesetInfo.coordSystem ? `${this.tilesetInfo.coordSystem} | ` : '';
+    let labelTextText =
+      this.tilesetInfo && this.tilesetInfo.coordSystem
+        ? `${this.tilesetInfo.coordSystem} | `
+        : '';
 
     labelTextText += this.getName();
 
     if (
-      this.options.labelShowResolution
-      && this.tilesetInfo
-      && this.tilesetInfo.max_width
-      && this.tilesetInfo.bins_per_dimension
+      this.options.labelShowResolution &&
+      this.tilesetInfo &&
+      this.tilesetInfo.max_width &&
+      this.tilesetInfo.bins_per_dimension
     ) {
       const formattedResolution = getWidthBasedResolutionText(
         this.calculateZoomLevel(),
@@ -335,9 +365,9 @@ class PixiTrack extends Track {
 
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     } else if (
-      this.options.labelShowResolution
-      && this.tilesetInfo
-      && this.tilesetInfo.resolutions
+      this.options.labelShowResolution &&
+      this.tilesetInfo &&
+      this.tilesetInfo.resolutions
     ) {
       const formattedResolution = getResolutionBasedResolutionText(
         this.tilesetInfo.resolutions,
@@ -373,7 +403,10 @@ class PixiTrack extends Track {
       fontFamily: this.labelTextFontFamily,
       fill: fontColor
     };
-    this.labelText.alpha = typeof this.options.labelTextOpacity !== 'undefined' ? this.options.labelTextOpacity : 1;
+    this.labelText.alpha =
+      typeof this.options.labelTextOpacity !== 'undefined'
+        ? this.options.labelTextOpacity
+        : 1;
 
     this.labelText.visible = true;
 
@@ -402,30 +435,38 @@ class PixiTrack extends Track {
         this.labelText.height + labelBackgroundMargin
       );
     } else if (
-      (this.options.labelPosition === 'bottomLeft' && !this.flipText)
-      || (this.options.labelPosition === 'topRight' && this.flipText)
+      (this.options.labelPosition === 'bottomLeft' && !this.flipText) ||
+      (this.options.labelPosition === 'topRight' && this.flipText)
     ) {
       this.labelText.x = this.position[0] + (labelLeftMargin || labelTopMargin);
-      this.labelText.y = this.position[1] + this.dimensions[1] - (labelBottomMargin || labelRightMargin);
+      this.labelText.y =
+        this.position[1] +
+        this.dimensions[1] -
+        (labelBottomMargin || labelRightMargin);
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 1;
 
       this.labelText.x += this.labelText.width / 2 + this.labelXOffset;
       graphics.drawRect(
-        this.position[0] + (labelLeftMargin || labelTopMargin) + this.labelXOffset,
-        this.position[1]
-          + this.dimensions[1]
-          - this.labelText.height
-          - labelBackgroundMargin
-          - (labelBottomMargin || labelRightMargin),
+        this.position[0] +
+          (labelLeftMargin || labelTopMargin) +
+          this.labelXOffset,
+        this.position[1] +
+          this.dimensions[1] -
+          this.labelText.height -
+          labelBackgroundMargin -
+          (labelBottomMargin || labelRightMargin),
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin
       );
     } else if (
-      (this.options.labelPosition === 'topRight' && !this.flipText)
-      || (this.options.labelPosition === 'bottomLeft' && this.flipText)
+      (this.options.labelPosition === 'topRight' && !this.flipText) ||
+      (this.options.labelPosition === 'bottomLeft' && this.flipText)
     ) {
-      this.labelText.x = this.position[0] + this.dimensions[0] - (labelRightMargin || labelBottomMargin);
+      this.labelText.x =
+        this.position[0] +
+        this.dimensions[0] -
+        (labelRightMargin || labelBottomMargin);
       this.labelText.y = this.position[1] + (labelTopMargin || labelLeftMargin);
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 0;
@@ -433,19 +474,21 @@ class PixiTrack extends Track {
       this.labelText.x -= this.labelText.width / 2 + this.labelXOffset;
 
       graphics.drawRect(
-        this.position[0]
-          + this.dimensions[0]
-          - this.labelText.width
-          - labelBackgroundMargin
-          - (labelRightMargin || labelBottomMargin)
-          - this.labelXOffset,
+        this.position[0] +
+          this.dimensions[0] -
+          this.labelText.width -
+          labelBackgroundMargin -
+          (labelRightMargin || labelBottomMargin) -
+          this.labelXOffset,
         this.position[1] + (labelTopMargin || labelLeftMargin),
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin
       );
     } else if (this.options.labelPosition === 'bottomRight') {
-      this.labelText.x = this.position[0] + this.dimensions[0] - labelRightMargin;
-      this.labelText.y = this.position[1] + this.dimensions[1] - labelBottomMargin;
+      this.labelText.x =
+        this.position[0] + this.dimensions[0] - labelRightMargin;
+      this.labelText.y =
+        this.position[1] + this.dimensions[1] - labelBottomMargin;
       this.labelText.anchor.x = 0.5;
       this.labelText.anchor.y = 1;
 
@@ -454,23 +497,23 @@ class PixiTrack extends Track {
       this.labelText.x -= this.labelText.width / 2 + this.labelXOffset;
 
       graphics.drawRect(
-        this.position[0]
-          + this.dimensions[0]
-          - this.labelText.width
-          - labelBackgroundMargin
-          - labelRightMargin
-          - this.labelXOffset,
-        this.position[1]
-          + this.dimensions[1]
-          - this.labelText.height
-          - labelBackgroundMargin
-          - labelBottomMargin,
+        this.position[0] +
+          this.dimensions[0] -
+          this.labelText.width -
+          labelBackgroundMargin -
+          labelRightMargin -
+          this.labelXOffset,
+        this.position[1] +
+          this.dimensions[1] -
+          this.labelText.height -
+          labelBackgroundMargin -
+          labelBottomMargin,
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin
       );
     } else if (
-      (this.options.labelPosition === 'outerLeft' && !this.flipText)
-      || (this.options.labelPosition === 'outerTop' && this.flipText)
+      (this.options.labelPosition === 'outerLeft' && !this.flipText) ||
+      (this.options.labelPosition === 'outerTop' && this.flipText)
     ) {
       this.labelText.x = this.position[0];
       this.labelText.y = this.position[1] + this.dimensions[1] / 2;
@@ -480,8 +523,8 @@ class PixiTrack extends Track {
 
       this.labelText.x -= this.labelText.width / 2 + 3;
     } else if (
-      (this.options.labelPosition === 'outerTop' && !this.flipText)
-      || (this.options.labelPosition === 'outerLeft' && this.flipText)
+      (this.options.labelPosition === 'outerTop' && !this.flipText) ||
+      (this.options.labelPosition === 'outerLeft' && this.flipText)
     ) {
       this.labelText.x = this.position[0] + this.dimensions[0] / 2;
       this.labelText.y = this.position[1];
@@ -491,8 +534,8 @@ class PixiTrack extends Track {
 
       this.labelText.y -= this.labelText.height / 2 + 3;
     } else if (
-      (this.options.labelPosition === 'outerBottom' && !this.flipText)
-      || (this.options.labelPosition === 'outerRight' && this.flipText)
+      (this.options.labelPosition === 'outerBottom' && !this.flipText) ||
+      (this.options.labelPosition === 'outerRight' && this.flipText)
     ) {
       this.labelText.x = this.position[0] + this.dimensions[0] / 2;
       this.labelText.y = this.position[1] + this.dimensions[1];
@@ -502,8 +545,8 @@ class PixiTrack extends Track {
 
       this.labelText.y += this.labelText.height / 2 + 3;
     } else if (
-      (this.options.labelPosition === 'outerRight' && !this.flipText)
-      || (this.options.labelPosition === 'outerBottom' && this.flipText)
+      (this.options.labelPosition === 'outerRight' && !this.flipText) ||
+      (this.options.labelPosition === 'outerBottom' && this.flipText)
     ) {
       this.labelText.x = this.position[0] + this.dimensions[0];
       this.labelText.y = this.position[1] + this.dimensions[1] / 2;
@@ -517,10 +560,10 @@ class PixiTrack extends Track {
     }
 
     if (
-      this.options.labelPosition === 'outerLeft'
-      || this.options.labelPosition === 'outerRight'
-      || this.options.labelPosition === 'outerTop'
-      || this.options.labelPosition === 'outerBottom'
+      this.options.labelPosition === 'outerLeft' ||
+      this.options.labelPosition === 'outerRight' ||
+      this.options.labelPosition === 'outerTop' ||
+      this.options.labelPosition === 'outerBottom'
     ) {
       this.pLabel.setParent(this.pBase);
     } else {
@@ -586,18 +629,25 @@ class PixiTrack extends Track {
 
     // define the clipping area as a polygon defined by the track's
     // dimensions on the canvas
-    const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+    const clipPath = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'clipPath'
+    );
     gBase.appendChild(clipPath);
 
-    const clipPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    const clipPolygon = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'polygon'
+    );
     clipPath.appendChild(clipPolygon);
 
     clipPolygon.setAttribute(
       'points',
-      `${this.position[0]},${this.position[1]} `
-        + `${this.position[0] + this.dimensions[0]},${this.position[1]} `
-        + `${this.position[0] + this.dimensions[0]},${this.position[1] + this.dimensions[1]} `
-        + `${this.position[0]},${this.position[1] + this.dimensions[1]} `
+      `${this.position[0]},${this.position[1]} ` +
+        `${this.position[0] + this.dimensions[0]},${this.position[1]} ` +
+        `${this.position[0] + this.dimensions[0]},${this.position[1] +
+          this.dimensions[1]} ` +
+        `${this.position[0]},${this.position[1] + this.dimensions[1]} `
     );
 
     // the clipping area needs to be a clipPath element
@@ -613,7 +663,8 @@ class PixiTrack extends Track {
     // instead
 
     const paddingBottom = 3;
-    const labelTextHeight = (this.labelTextFontSize + 2) * lineParts.length + paddingBottom;
+    const labelTextHeight =
+      (this.labelTextFontSize + 2) * lineParts.length + paddingBottom;
 
     if (this.labelText.anchor.y === 0.5) {
       ddy = labelTextHeight / 2;
@@ -632,12 +683,15 @@ class PixiTrack extends Track {
       // http://stackoverflow.com/a/16701952/899470
 
       text.innerText = lineParts[i];
-      if (this.options.labelPosition === 'topLeft' || this.options.labelPosition === 'topRight') {
+      if (
+        this.options.labelPosition === 'topLeft' ||
+        this.options.labelPosition === 'topRight'
+      ) {
         const dy = ddy + (i + 1) * (this.labelTextFontSize + 2);
         text.setAttribute('dy', dy);
       } else if (
-        this.options.labelPosition === 'bottomLeft'
-        || this.options.labelPosition === 'bottomRight'
+        this.options.labelPosition === 'bottomLeft' ||
+        this.options.labelPosition === 'bottomRight'
       ) {
         text.setAttribute('dy', ddy + i * (this.labelTextFontSize + 2));
       }

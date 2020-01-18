@@ -47,8 +47,12 @@ export class SeriesOptions extends React.Component {
         <Collapse in={this.state.normalizeChecked}>
           <Panel>
             <TilesetFinder
-              onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
-              selectedTilesetChanged={this.handleNormalizeTilesetChanged.bind(this)}
+              onTrackChosen={value =>
+                this.props.onTrackChosen(value, this.props.position)
+              }
+              selectedTilesetChanged={this.handleNormalizeTilesetChanged.bind(
+                this
+              )}
             />
           </Panel>
         </Collapse>

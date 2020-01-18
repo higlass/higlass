@@ -59,12 +59,20 @@ class DivergentBarTrack extends BarTrack {
     graphics.clear();
     this.drawAxis(this.valueScale);
 
-    if (this.options.valueScaling === 'log' && this.valueScale.domain()[1] < 0) {
-      console.warn('Negative values present when using a log scale', this.valueScale.domain());
+    if (
+      this.options.valueScaling === 'log' &&
+      this.valueScale.domain()[1] < 0
+    ) {
+      console.warn(
+        'Negative values present when using a log scale',
+        this.valueScale.domain()
+      );
       return;
     }
 
-    const stroke = colorToHex(this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue');
+    const stroke = colorToHex(
+      this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue'
+    );
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
     const tileXScale = scaleLinear()
@@ -76,8 +84,12 @@ class DivergentBarTrack extends BarTrack {
     const strokeWidth = 0;
     graphics.lineStyle(strokeWidth, stroke, 1);
 
-    const topColor = this.options.barFillColorTop ? this.options.barFillColorTop : 'green';
-    const bottomColor = this.options.barFillColorBottom ? this.options.barFillColorBottom : 'red';
+    const topColor = this.options.barFillColorTop
+      ? this.options.barFillColorTop
+      : 'green';
+    const bottomColor = this.options.barFillColorBottom
+      ? this.options.barFillColorBottom
+      : 'red';
 
     // PIXI wants hex colors whereas d3 wants regular colors
     const topColorHex = colorToHex(topColor);
@@ -106,7 +118,14 @@ class DivergentBarTrack extends BarTrack {
 
       if (yPos > baseline) {
         graphics.beginFill(bottomColorHex, opacity);
-        this.addSVGInfo(tile, xPos, baseline, width, yPos - baseline, bottomColor);
+        this.addSVGInfo(
+          tile,
+          xPos,
+          baseline,
+          width,
+          yPos - baseline,
+          bottomColor
+        );
       } else {
         graphics.beginFill(topColorHex, opacity);
         this.addSVGInfo(tile, xPos, yPos, width, baseline - yPos, topColor);
@@ -118,7 +137,12 @@ class DivergentBarTrack extends BarTrack {
       // this data is in the last tile and extends beyond the length
       // of the coordinate system
 
-      graphics.drawRect(xPos, tile.svgData.barYValues[i], width, tile.svgData.barHeights[i]);
+      graphics.drawRect(
+        xPos,
+        tile.svgData.barYValues[i],
+        width,
+        tile.svgData.barHeights[i]
+      );
     }
   }
 }

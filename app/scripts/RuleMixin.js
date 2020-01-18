@@ -14,7 +14,12 @@ const RuleMixin = Mixin(
 
         this.pubSub = context.pubSub;
 
-        this.pubSubs.push(this.pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this)));
+        this.pubSubs.push(
+          this.pubSub.subscribe(
+            'app.mouseMove',
+            this.mouseMoveHandler.bind(this)
+          )
+        );
       }
 
       setPosition(newPosition) {

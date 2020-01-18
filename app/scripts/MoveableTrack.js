@@ -48,9 +48,15 @@ class MoveableTrack extends TrackArea {
         <DraggableDiv
           key={this.props.uid}
           height={this.props.height}
-          resizeHandles={this.props.editable ? this.props.resizeHandles : new Set()}
+          resizeHandles={
+            this.props.editable ? this.props.resizeHandles : new Set()
+          }
           sizeChanged={stuff =>
-            this.props.handleResizeTrack(this.props.uid, stuff.width, stuff.height)
+            this.props.handleResizeTrack(
+              this.props.uid,
+              stuff.width,
+              stuff.height
+            )
           }
           style={{
             background: 'transparent'
@@ -59,7 +65,9 @@ class MoveableTrack extends TrackArea {
           width={this.props.width}
         />
         {this.props.editable &&
-          this.getControls(this.state.controlsVisible || this.props.item.configMenuVisible)}
+          this.getControls(
+            this.state.controlsVisible || this.props.item.configMenuVisible
+          )}
       </div>
     );
   }

@@ -25,22 +25,34 @@ class Annotations1dTrack extends PixiTrack {
 
   draw() {
     const globalMinRectWidth =
-      typeof this.options.minRectWidth !== 'undefined' ? this.options.minRectWidth : 10;
+      typeof this.options.minRectWidth !== 'undefined'
+        ? this.options.minRectWidth
+        : 10;
 
     const globalFill =
-      typeof this.options.fill !== 'undefined' ? color(this.options.fill) : this.defaultColor;
+      typeof this.options.fill !== 'undefined'
+        ? color(this.options.fill)
+        : this.defaultColor;
 
     const globalFillOpacity =
-      typeof this.options.fillOpacity !== 'undefined' ? +this.options.fillOpacity : 0.2;
+      typeof this.options.fillOpacity !== 'undefined'
+        ? +this.options.fillOpacity
+        : 0.2;
 
     const globalStroke =
-      typeof this.options.stroke !== 'undefined' ? color(this.options.stroke) : this.defaultColor;
+      typeof this.options.stroke !== 'undefined'
+        ? color(this.options.stroke)
+        : this.defaultColor;
 
     const globalStrokeWidth =
-      typeof this.options.strokeWidth !== 'undefined' ? +this.options.strokeWidth : 1;
+      typeof this.options.strokeWidth !== 'undefined'
+        ? +this.options.strokeWidth
+        : 1;
 
     const globalStrokeOpacity =
-      typeof this.options.strokeOpacity !== 'undefined' ? +this.options.strokeOpacity : 0;
+      typeof this.options.strokeOpacity !== 'undefined'
+        ? +this.options.strokeOpacity
+        : 0;
 
     let strokePos;
     if (this.options.strokePos && this.options.strokePos.length) {
@@ -81,14 +93,26 @@ class Annotations1dTrack extends PixiTrack {
         stroke = fill;
       }
 
-      const fillHex = PIXI.utils.rgb2hex([fill.r / 255.0, fill.g / 255.0, fill.b / 255.0]);
-      const strokeHex = PIXI.utils.rgb2hex([stroke.r / 255.0, stroke.g / 255.0, stroke.b / 255.0]);
+      const fillHex = PIXI.utils.rgb2hex([
+        fill.r / 255.0,
+        fill.g / 255.0,
+        fill.b / 255.0
+      ]);
+      const strokeHex = PIXI.utils.rgb2hex([
+        stroke.r / 255.0,
+        stroke.g / 255.0,
+        stroke.b / 255.0
+      ]);
 
       if (strokePos) {
         graphics.lineStyle(1, strokeHex, 0);
         graphics.beginFill(strokeHex, +region[5] || globalStrokeOpacity);
       } else {
-        graphics.lineStyle(globalStrokeWidth, strokeHex, +region[5] || globalStrokeOpacity);
+        graphics.lineStyle(
+          globalStrokeWidth,
+          strokeHex,
+          +region[5] || globalStrokeOpacity
+        );
         graphics.beginFill(fillHex, +region[4] || globalFillOpacity);
       }
 
@@ -99,7 +123,8 @@ class Annotations1dTrack extends PixiTrack {
 
       let width = end - start;
 
-      const minRectWidth = typeof region[6] !== 'undefined' ? region[6] : globalMinRectWidth;
+      const minRectWidth =
+        typeof region[6] !== 'undefined' ? region[6] : globalMinRectWidth;
 
       if (width < minRectWidth) {
         // this region is too small to draw so center it on the location
@@ -123,9 +148,19 @@ class Annotations1dTrack extends PixiTrack {
 
           if (pos === 'right' || pos === 'around') {
             if (this.isVertical) {
-              graphics.drawRect(0, start, this.dimensions[0], globalStrokeWidth);
+              graphics.drawRect(
+                0,
+                start,
+                this.dimensions[0],
+                globalStrokeWidth
+              );
             } else {
-              graphics.drawRect(start, 0, globalStrokeWidth, this.dimensions[1]);
+              graphics.drawRect(
+                start,
+                0,
+                globalStrokeWidth,
+                this.dimensions[1]
+              );
             }
           }
 
@@ -166,7 +201,11 @@ class Annotations1dTrack extends PixiTrack {
           }
         });
       } else {
-        graphics.lineStyle(globalStrokeWidth, strokeHex, +region[5] || globalStrokeOpacity);
+        graphics.lineStyle(
+          globalStrokeWidth,
+          strokeHex,
+          +region[5] || globalStrokeOpacity
+        );
       }
 
       // Make annotation clickable
@@ -177,10 +216,20 @@ class Annotations1dTrack extends PixiTrack {
       graphics.beginFill(fillHex, +region[4] || globalFillOpacity);
       if (this.isVertical) {
         graphics.drawRect(0, start, this.dimensions[0], width);
-        this.rects[id].graphics.hitArea = new PIXI.Rectangle(0, start, this.dimensions[0], width);
+        this.rects[id].graphics.hitArea = new PIXI.Rectangle(
+          0,
+          start,
+          this.dimensions[0],
+          width
+        );
       } else {
         graphics.drawRect(start, 0, width, this.dimensions[1]);
-        this.rects[id].graphics.hitArea = new PIXI.Rectangle(start, 0, width, this.dimensions[1]);
+        this.rects[id].graphics.hitArea = new PIXI.Rectangle(
+          start,
+          0,
+          width,
+          this.dimensions[1]
+        );
       }
 
       this.rects[id].graphics.mousedown = () => {
@@ -188,7 +237,10 @@ class Annotations1dTrack extends PixiTrack {
       };
 
       this.rects[id].graphics.mouseup = event => {
-        if (performance.now() - this.rects[id].mouseDownTime < MAX_CLICK_DELAY) {
+        if (
+          performance.now() - this.rects[id].mouseDownTime <
+          MAX_CLICK_DELAY
+        ) {
           this.pubSub.publish('app.click', {
             type: 'annotation',
             event,

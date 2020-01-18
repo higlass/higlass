@@ -16,7 +16,9 @@ const Button = React.forwardRef((props, ref) => (
     type="button"
   >
     {props.children}
-    {props.shortcut && <span styleName="button-shortcut">{props.shortcut}</span>}
+    {props.shortcut && (
+      <span styleName="button-shortcut">{props.shortcut}</span>
+    )}
   </button>
 ));
 

@@ -11,7 +11,9 @@ const absToChr = (absPosition, chromInfo) => {
 
   insertPoint -= insertPoint > 0 && 1;
 
-  let chrPosition = Math.floor(absPosition - chromInfo.cumPositions[insertPoint].pos);
+  let chrPosition = Math.floor(
+    absPosition - chromInfo.cumPositions[insertPoint].pos
+  );
   let offset = 0;
 
   if (chrPosition < 0) {
@@ -20,13 +22,21 @@ const absToChr = (absPosition, chromInfo) => {
     chrPosition = 1;
   }
 
-  if (insertPoint === chromInfo.cumPositions.length - 1 && chrPosition > lastLength) {
+  if (
+    insertPoint === chromInfo.cumPositions.length - 1 &&
+    chrPosition > lastLength
+  ) {
     // beyond the last chromosome
     offset = chrPosition - lastLength;
     chrPosition = lastLength;
   }
 
-  return [chromInfo.cumPositions[insertPoint].chr, chrPosition, offset, insertPoint];
+  return [
+    chromInfo.cumPositions[insertPoint].chr,
+    chrPosition,
+    offset,
+    insertPoint
+  ];
 };
 
 export default absToChr;

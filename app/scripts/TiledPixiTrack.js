@@ -28,7 +28,13 @@ import { ZOOM_DEBOUNCE } from './configs';
  * @returns {array} An array of [string, scale] containin the scale type
  *  and a scale with an appropriately set domain and range
  */
-export function getValueScale(scalingType, minValue, pseudocountIn, maxValue, defaultScaling) {
+export function getValueScale(
+  scalingType,
+  minValue,
+  pseudocountIn,
+  maxValue,
+  defaultScaling
+) {
   const scalingTypeToUse = scalingType || defaultScaling;
 
   // purposely set to not equal pseudocountIn for now
@@ -75,7 +81,13 @@ class TiledPixiTrack extends PixiTrack {
    */
   constructor(context, options) {
     super(context, options);
-    const { pubSub, dataConfig, handleTilesetInfoReceived, animate, onValueScaleChanged } = context;
+    const {
+      pubSub,
+      dataConfig,
+      handleTilesetInfoReceived,
+      animate,
+      onValueScaleChanged
+    } = context;
 
     // keep track of which render we're on so that we save ourselves
     // rerendering all rendering in the same version will have the same
@@ -154,7 +166,11 @@ class TiledPixiTrack extends PixiTrack {
 
       if ('error' in this.tilesetInfo) {
         // no tileset info for this track
-        console.warn('Error retrieving tilesetInfo:', dataConfig, this.tilesetInfo.error);
+        console.warn(
+          'Error retrieving tilesetInfo:',
+          dataConfig,
+          this.tilesetInfo.error
+        );
 
         // Fritz: Not sure why it's reset
         // this.trackNotFoundText = '';
@@ -207,14 +223,18 @@ class TiledPixiTrack extends PixiTrack {
 
   checkValueScaleLimits() {
     this.valueScaleMin =
-      typeof this.options.valueScaleMin !== 'undefined' ? +this.options.valueScaleMin : null;
+      typeof this.options.valueScaleMin !== 'undefined'
+        ? +this.options.valueScaleMin
+        : null;
 
     if (this.fixedValueScaleMin !== null) {
       this.valueScaleMin = this.fixedValueScaleMin;
     }
 
     this.valueScaleMax =
-      typeof this.options.valueScaleMax !== 'undefined' ? +this.options.valueScaleMax : null;
+      typeof this.options.valueScaleMax !== 'undefined'
+        ? +this.options.valueScaleMax
+        : null;
 
     if (this.fixedValueScaleMax !== null) {
       this.valueScaleMax = this.fixedValueScaleMax;
@@ -280,7 +300,9 @@ class TiledPixiTrack extends PixiTrack {
    * Return the set of ids of all tiles which are both visible and fetched.
    */
   visibleAndFetchedIds() {
-    return Object.keys(this.fetchedTiles).filter(x => this.visibleTileIds.has(x));
+    return Object.keys(this.fetchedTiles).filter(x =>
+      this.visibleTileIds.has(x)
+    );
   }
 
   visibleAndFetchedTiles() {
@@ -311,7 +333,9 @@ class TiledPixiTrack extends PixiTrack {
     //
     // calculate which tiles are obsolete and remove them
     // fetchedTileID are remote ids
-    const toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
+    const toRemove = [...fetchedTileIDs].filter(
+      x => !this.visibleTileIds.has(x)
+    );
 
     this.removeTiles(toRemove);
   }
@@ -373,7 +397,11 @@ class TiledPixiTrack extends PixiTrack {
    */
   removeTiles(toRemoveIds) {
     // if there's nothing to remove, don't bother doing anything
-    if (!toRemoveIds.length || !this.areAllVisibleTilesLoaded() || this.renderingTiles.size) {
+    if (
+      !toRemoveIds.length ||
+      !this.areAllVisibleTilesLoaded() ||
+      this.renderingTiles.size
+    ) {
       return;
     }
 
@@ -449,7 +477,9 @@ class TiledPixiTrack extends PixiTrack {
       this.scale.minValue = _;
       return this;
     }
-    return this.valueScaleMin !== null ? this.valueScaleMin : this.scale.minValue;
+    return this.valueScaleMin !== null
+      ? this.valueScaleMin
+      : this.scale.minValue;
   }
 
   maxValue(_) {
@@ -457,7 +487,9 @@ class TiledPixiTrack extends PixiTrack {
       this.scale.maxValue = _;
       return this;
     }
-    return this.valueScaleMax !== null ? this.valueScaleMax : this.scale.maxValue;
+    return this.valueScaleMax !== null
+      ? this.valueScaleMax
+      : this.scale.maxValue;
   }
 
   minRawValue() {
@@ -571,7 +603,10 @@ class TiledPixiTrack extends PixiTrack {
     if (toFetch.length > 0) {
       const toFetchList = [...new Set(toFetch.map(x => x.remoteId))];
 
-      this.dataFetcher.fetchTilesDebounced(this.receivedTiles.bind(this), toFetchList);
+      this.dataFetcher.fetchTilesDebounced(
+        this.receivedTiles.bind(this),
+        toFetchList
+      );
     }
   }
 
@@ -611,7 +646,11 @@ class TiledPixiTrack extends PixiTrack {
         }
 
         if (this.fetchedTiles[tileId].tileData.error) {
-          console.warn('Error in loaded tile', tileId, this.fetchedTiles[tileId].tileData);
+          console.warn(
+            'Error in loaded tile',
+            tileId,
+            this.fetchedTiles[tileId].tileData
+          );
         }
       }
     }
@@ -642,7 +681,8 @@ class TiledPixiTrack extends PixiTrack {
     if (this.valueScale) {
       if (
         !this.prevValueScale ||
-        JSON.stringify(this.valueScale.domain()) !== JSON.stringify(this.prevValueScale.domain())
+        JSON.stringify(this.valueScale.domain()) !==
+          JSON.stringify(this.prevValueScale.domain())
       ) {
         this.prevValueScale = this.valueScale.copy();
 
@@ -735,7 +775,9 @@ class TiledPixiTrack extends PixiTrack {
 
   allVisibleValues() {
     return [].concat(
-      ...this.visibleAndFetchedIds().map(x => Array.from(this.fetchedTiles[x].tileData.dense))
+      ...this.visibleAndFetchedIds().map(x =>
+        Array.from(this.fetchedTiles[x].tileData.dense)
+      )
     );
   }
 
@@ -746,7 +788,9 @@ class TiledPixiTrack extends PixiTrack {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    let min = Math.min(...visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.minNonZero));
+    let min = Math.min(
+      ...visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.minNonZero)
+    );
 
     // if there's no data, use null
     if (min === Number.MAX_SAFE_INTEGER) {
@@ -765,7 +809,9 @@ class TiledPixiTrack extends PixiTrack {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    let max = Math.max(...visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.maxNonZero));
+    let max = Math.max(
+      ...visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.maxNonZero)
+    );
 
     // if there's no data, use null
     if (max === Number.MIN_SAFE_INTEGER) {

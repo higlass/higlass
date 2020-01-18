@@ -116,12 +116,18 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     // viewHeight * sqrt(2)
     // on each side
     expandedXScale.domain([
-      this._xScale.invert(this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)),
-      this._xScale.invert(this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2))
+      this._xScale.invert(
+        this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)
+      ),
+      this._xScale.invert(
+        this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2)
+      )
     ]);
 
     if (this.tilesetInfo.resolutions) {
-      const sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a, b) => b - a);
+      const sortedResolutions = this.tilesetInfo.resolutions
+        .map(x => +x)
+        .sort((a, b) => b - a);
 
       this.xTiles = tileProxy.calculateTilesFromResolution(
         sortedResolutions[this.zoomLevel],
@@ -171,7 +177,10 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         // the length between the bottom of the track and the bottom corner of the tile
         // draw it out to understand better!
         const tileBottomPosition =
-          ((j - i - 2) * (this._xScale(tileWidth) - this._xScale(0)) * Math.sqrt(2)) / 2;
+          ((j - i - 2) *
+            (this._xScale(tileWidth) - this._xScale(0)) *
+            Math.sqrt(2)) /
+          2;
 
         if (tileBottomPosition > this.dimensions[1]) {
           // this tile won't be visible so we don't need to fetch it
@@ -180,7 +189,9 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
 
         const newTile = [zoomLevel, rows[i], cols[j]];
         newTile.mirrored = false;
-        newTile.dataTransform = this.options.dataTransform ? this.options.dataTransform : 'default';
+        newTile.dataTransform = this.options.dataTransform
+          ? this.options.dataTransform
+          : 'default';
 
         tiles.push(newTile);
       }
@@ -209,10 +220,12 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   }
 
   setSpriteProperties(sprite, zoomLevel, tilePos, mirrored) {
-    const { tileX, tileY, tileWidth, tileHeight } = this.getTilePosAndDimensions(
-      zoomLevel,
-      tilePos
-    );
+    const {
+      tileX,
+      tileY,
+      tileWidth,
+      tileHeight
+    } = this.getTilePosAndDimensions(zoomLevel, tilePos);
 
     const tileEndX = tileX + tileWidth;
     const tileEndY = tileY + tileHeight;
@@ -257,7 +270,8 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
           (this.valueScale.domain()[1] - this.valueScale.domain()[0]) *
             this.options.scaleStartPercent,
         this.valueScale.domain()[0] +
-          (this.valueScale.domain()[1] - this.valueScale.domain()[0]) * this.options.scaleEndPercent
+          (this.valueScale.domain()[1] - this.valueScale.domain()[0]) *
+            this.options.scaleEndPercent
       ]);
     }
 
@@ -271,7 +285,8 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       if (tile.renderInfo.scaleType === scaleType) {
         if (
           tile.renderInfo.scaleDomain &&
-          tile.renderInfo.scaleDomain[0] === this.limitedValueScale.domain()[0] &&
+          tile.renderInfo.scaleDomain[0] ===
+            this.limitedValueScale.domain()[0] &&
           tile.renderInfo.scaleDomain[1] === this.limitedValueScale.domain()[1]
         ) {
           toUpdate = false;
@@ -336,7 +351,9 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         this.refreshTiles();
         */
       },
-      this.mirrorTiles && !tile.mirrored && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
+      this.mirrorTiles &&
+        !tile.mirrored &&
+        tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
     );
   }
 
@@ -419,7 +436,11 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       );
 
       const image = document.createElement('image');
-      image.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', tile.canvas.toDataURL());
+      image.setAttributeNS(
+        'http://www.w3.org/1999/xlink',
+        'xlink:href',
+        tile.canvas.toDataURL()
+      );
       image.setAttribute('width', 256);
       image.setAttribute('height', 256);
 

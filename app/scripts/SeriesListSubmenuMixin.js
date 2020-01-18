@@ -28,11 +28,14 @@ const SeriesListSubmenuMixin = Mixin(
           }
 
           const series = getAllTracksAndSubtracks(this.props.tracks);
-          const selectedTrack = series.filter(t => t.uid === this.state.submenuShown.uid)[0];
+          const selectedTrack = series.filter(
+            t => t.uid === this.state.submenuShown.uid
+          )[0];
 
           // for now we can't replace 'whole' tracks because they're
           // just the horizontal and vertical rule tracks
-          const canBeReplaced = selectedTrack && !(selectedTrack.position === 'whole');
+          const canBeReplaced =
+            selectedTrack && !(selectedTrack.position === 'whole');
 
           return (
             <SeriesListMenu
@@ -46,7 +49,9 @@ const SeriesListSubmenuMixin = Mixin(
               onAddSeries={canBeReplaced ? this.props.onAddSeries : null}
               onChangeTrackData={this.props.onChangeTrackData}
               onChangeTrackType={this.props.onChangeTrackType}
-              onCloseTrack={() => this.props.onCloseTrack(this.state.submenuShown.uid)}
+              onCloseTrack={() =>
+                this.props.onCloseTrack(this.state.submenuShown.uid)
+              }
               onConfigureTrack={this.props.onConfigureTrack}
               onDivideSeries={this.props.onDivideSeries}
               onExportData={this.props.onExportData}

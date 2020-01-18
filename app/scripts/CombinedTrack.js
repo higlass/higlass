@@ -44,7 +44,9 @@ class CombinedTrack {
 
     // remove the ones that were previously, but no longer, present
     const knownTracks = new Set(Object.keys(this.createdTracks));
-    const exitTracks = new Set([...knownTracks].filter(x => !currentTracks.has(x)));
+    const exitTracks = new Set(
+      [...knownTracks].filter(x => !currentTracks.has(x))
+    );
     [...exitTracks].forEach(trackUid => {
       this.createdTracks[trackUid].remove();
       delete this.createdTracks[trackUid];
@@ -79,7 +81,15 @@ class CombinedTrack {
 
     for (let i = 0; i < this.childTracks.length; i++) {
       // console.log('childTracks.zoomed', this.childTracks[i].zoomed);
-      this.childTracks[i].zoomed(newXScale, newYScale, k, x, y, xPositionOffset, yPositionOffset);
+      this.childTracks[i].zoomed(
+        newXScale,
+        newYScale,
+        k,
+        x,
+        y,
+        xPositionOffset,
+        yPositionOffset
+      );
     }
   }
 

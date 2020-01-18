@@ -11,7 +11,10 @@ import {
 
 import { requestsInFlight } from '../services';
 
-import { getTrackObjectFromHGC, getTrackRenderer } from './get-higlass-components';
+import {
+  getTrackObjectFromHGC,
+  getTrackRenderer
+} from './get-higlass-components';
 
 import HiGlassComponent from '../HiGlassComponent';
 
@@ -78,7 +81,10 @@ export const waitForJsonComplete = finished => {
    *
    */
   if (requestsInFlight > 0) {
-    setTimeout(() => waitForJsonComplete(finished), TILE_LOADING_CHECK_INTERVAL);
+    setTimeout(
+      () => waitForJsonComplete(finished),
+      TILE_LOADING_CHECK_INTERVAL
+    );
   } else {
     finished();
   }
@@ -170,7 +176,8 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
     global.document.body.removeChild(prevDiv);
   }
 
-  const style = (options && options.style) || 'width:800px; background-color: lightgreen;';
+  const style =
+    (options && options.style) || 'width:800px; background-color: lightgreen;';
   const bounded = (options && options.bounded) || false;
 
   // console.log('check:', options && options.style)

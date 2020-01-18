@@ -27,11 +27,8 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     // if we're not supposed to show the tooltip, don't show it
     // we return here so that the mark isn't drawn in the code
     // below
-    if (
-      !this.tilesetInfo
-      || !this.options.showTooltip
-      || !this.valueScale
-    ) return '';
+    if (!this.tilesetInfo || !this.options.showTooltip || !this.valueScale)
+      return '';
 
     const value = this.getDataAtPos(trackX);
     let textValue = '';
@@ -47,7 +44,12 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     graphics.lineStyle(1, colorHex, 1);
     const markerWidth = 4;
 
-    graphics.drawRect(trackX - markerWidth / 2, yPos - markerWidth / 2, markerWidth, markerWidth);
+    graphics.drawRect(
+      trackX - markerWidth / 2,
+      yPos - markerWidth / 2,
+      markerWidth,
+      markerWidth
+    );
 
     this.animate();
 
@@ -124,12 +126,20 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     graphics.clear();
 
-    if (this.options.valueScaling === 'log' && this.valueScale.domain()[1] < 0) {
-      console.warn('Negative values present when using a log scale', this.valueScale.domain());
+    if (
+      this.options.valueScaling === 'log' &&
+      this.valueScale.domain()[1] < 0
+    ) {
+      console.warn(
+        'Negative values present when using a log scale',
+        this.valueScale.domain()
+      );
       return;
     }
 
-    const stroke = colorToHex(this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue');
+    const stroke = colorToHex(
+      this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue'
+    );
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
     if (!this.tilesetInfo.tile_size && !this.tilesetInfo.bins_per_dimension) {
@@ -139,13 +149,16 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       );
     }
 
-    const tileSize = this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension;
+    const tileSize =
+      this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension;
 
     const tileXScale = scaleLinear()
       .domain([0, tileSize])
       .range([tileX, tileX + tileWidth]);
 
-    const strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
+    const strokeWidth = this.options.lineStrokeWidth
+      ? this.options.lineStrokeWidth
+      : 1;
     graphics.lineStyle(strokeWidth, stroke, 1);
 
     tile.segments = [];
@@ -155,7 +168,10 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       const xPos = this._xScale(tileXScale(i));
       const yPos = this.valueScale(tileValues[i] + offsetValue);
 
-      if ((this.options.valueScaling === 'log' && tileValues[i] === 0) || Number.isNaN(yPos)) {
+      if (
+        (this.options.valueScaling === 'log' && tileValues[i] === 0) ||
+        Number.isNaN(yPos)
+      ) {
         if (currentSegment.length > 1) {
           tile.segments.push(currentSegment);
         }
@@ -234,9 +250,14 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     const output = document.createElement('g');
 
     track.appendChild(output);
-    output.setAttribute('transform', `translate(${this.position[0]},${this.position[1]})`);
+    output.setAttribute(
+      'transform',
+      `translate(${this.position[0]},${this.position[1]})`
+    );
 
-    const stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
+    const stroke = this.options.lineStrokeColor
+      ? this.options.lineStrokeColor
+      : 'blue';
 
     this.visibleAndFetchedTiles().forEach(tile => {
       const g = document.createElement('path');
@@ -273,13 +294,19 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       this.options.axisPositionVertical === 'top'
     ) {
       // left axis are shown at the beginning of the plot
-      const gDrawnAxis = this.axis.exportAxisLeftSVG(this.valueScale, this.dimensions[1]);
+      const gDrawnAxis = this.axis.exportAxisLeftSVG(
+        this.valueScale,
+        this.dimensions[1]
+      );
       gAxis.appendChild(gDrawnAxis);
     } else if (
       this.options.axisPositionHorizontal === 'right' ||
       this.options.axisPositionVertical === 'bottom'
     ) {
-      const gDrawnAxis = this.axis.exportAxisRightSVG(this.valueScale, this.dimensions[1]);
+      const gDrawnAxis = this.axis.exportAxisRightSVG(
+        this.valueScale,
+        this.dimensions[1]
+      );
       gAxis.appendChild(gDrawnAxis);
     }
 
@@ -287,7 +314,10 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   }
 
   tileToLocalId(tile) {
-    if (this.options.aggregationMode && this.options.aggregationMode !== 'mean') {
+    if (
+      this.options.aggregationMode &&
+      this.options.aggregationMode !== 'mean'
+    ) {
       return `${tile.join('.')}.${this.options.aggregationMode}`;
     }
     return `${tile.join('.')}`;

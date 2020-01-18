@@ -180,7 +180,12 @@ class SquareMarkersTrack extends TiledPixiTrack {
         height = MIN_HEIGHT;
       }
 
-      graphics.drawRect(centerX - width / 2, centerY - height / 2, width, height);
+      graphics.drawRect(
+        centerX - width / 2,
+        centerY - height / 2,
+        width,
+        height
+      );
     }
   }
 

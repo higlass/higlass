@@ -30,8 +30,12 @@ class ViewConfigEditor extends React.Component {
 
     this.pubSubs = [];
 
-    this.pubSubs.push(this.props.pubSub.subscribe('keydown', this.handleKeyDownBound));
-    this.pubSubs.push(this.props.pubSub.subscribe('keyup', this.handleKeyUpBound));
+    this.pubSubs.push(
+      this.props.pubSub.subscribe('keydown', this.handleKeyDownBound)
+    );
+    this.pubSubs.push(
+      this.props.pubSub.subscribe('keyup', this.handleKeyUpBound)
+    );
   }
 
   async componentDidMount() {
@@ -44,7 +48,9 @@ class ViewConfigEditor extends React.Component {
   }
 
   componentWillUnmount() {
-    this.pubSubs.forEach(subscription => this.props.pubSub.unsubscribe(subscription));
+    this.pubSubs.forEach(subscription =>
+      this.props.pubSub.unsubscribe(subscription)
+    );
     this.pubSubs = [];
   }
 

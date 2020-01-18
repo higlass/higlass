@@ -41,17 +41,25 @@ export const getAllTracksAndSubtracks = tracks => {
  *
  * @returns {array} A list of ReactComponents for the generated ContextMenuItems
  */
-export const getSeriesItems = (tracks, onItemMouseEnter, onItemMouseLeave, onItemClick) => {
+export const getSeriesItems = (
+  tracks,
+  onItemMouseEnter,
+  onItemMouseLeave,
+  onItemClick
+) => {
   if (!tracks) return null;
 
   if (window.higlassTracksByType) {
     Object.keys(window.higlassTracksByType).forEach(pluginTrackType => {
-      TRACKS_INFO_BY_TYPE[pluginTrackType] = window.higlassTracksByType[pluginTrackType].config;
+      TRACKS_INFO_BY_TYPE[pluginTrackType] =
+        window.higlassTracksByType[pluginTrackType].config;
     });
   }
 
   return getAllTracksAndSubtracks(tracks).map(x => {
-    const thumbnail = TRACKS_INFO_BY_TYPE[x.type] ? TRACKS_INFO_BY_TYPE[x.type].thumbnail : null;
+    const thumbnail = TRACKS_INFO_BY_TYPE[x.type]
+      ? TRACKS_INFO_BY_TYPE[x.type].thumbnail
+      : null;
 
     const imgTag = thumbnail ? (
       <div

@@ -81,7 +81,10 @@ class SketchInlinePicker extends React.Component {
         {this.state.displayColorPicker ? (
           <div style={styles.popover}>
             <div onClick={this.handleClose.bind(this)} style={styles.cover} />
-            <SketchPicker color={this.state.color} onChange={this.handleChange.bind(this)} />
+            <SketchPicker
+              color={this.state.color}
+              onChange={this.handleChange.bind(this)}
+            />
           </div>
         ) : null}
       </div>

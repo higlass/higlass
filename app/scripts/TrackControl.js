@@ -39,7 +39,11 @@ let DragHandle = null;
 const TrackControl = props => {
   // Avoid constant recreating that button when the props didn't change.
   // Damn React could be a little smarter here...
-  if (!props || !oldProps || Object.keys(props).some(key => oldProps[key] !== props[key])) {
+  if (
+    !props ||
+    !oldProps ||
+    Object.keys(props).some(key => oldProps[key] !== props[key])
+  ) {
     oldProps = props;
     DragHandle = SortableHandle(() => (
       <svg
@@ -69,7 +73,10 @@ const TrackControl = props => {
         }}
         className="no-zoom"
         onClick={() => {
-          props.onConfigTrackMenuOpened(props.uid, imgConfig.getBoundingClientRect());
+          props.onConfigTrackMenuOpened(
+            props.uid,
+            imgConfig.getBoundingClientRect()
+          );
         }}
         style={Object.assign(
           {
@@ -108,7 +115,10 @@ const TrackControl = props => {
         }}
         className="no-zoom"
         onClick={() => {
-          props.onCloseTrackMenuOpened(props.uid, imgClose.getBoundingClientRect());
+          props.onCloseTrackMenuOpened(
+            props.uid,
+            imgClose.getBoundingClientRect()
+          );
         }}
         style={Object.assign(
           {

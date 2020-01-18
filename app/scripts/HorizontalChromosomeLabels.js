@@ -6,7 +6,13 @@ import PixiTrack from './PixiTrack';
 import ChromosomeInfo from './ChromosomeInfo';
 import SearchField from './SearchField';
 
-import { absToChr, colorToHex, pixiTextToSvg, showMousePosition, svgLine } from './utils';
+import {
+  absToChr,
+  colorToHex,
+  pixiTextToSvg,
+  showMousePosition,
+  svgLine
+} from './utils';
 
 import { THEME_DARK } from './configs';
 
@@ -18,7 +24,12 @@ const TICK_COLOR = 0x777777;
 class HorizontalChromosomeLabels extends PixiTrack {
   constructor(context, options) {
     super(context, options);
-    const { dataConfig, animate, chromInfoPath, isShowGlobalMousePosition } = context;
+    const {
+      dataConfig,
+      animate,
+      chromInfoPath,
+      isShowGlobalMousePosition
+    } = context;
 
     this.searchField = null;
     this.chromInfo = null;
@@ -36,9 +47,12 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.textFontSize = 12;
     this.textFontFamily = 'Arial';
     this.textFontColor = '#808080';
-    this.textStrokeColor = this.getTheme() === THEME_DARK ? '#000000' : '#ffffff';
+    this.textStrokeColor =
+      this.getTheme() === THEME_DARK ? '#000000' : '#ffffff';
     this.pixiTextConfig = {
-      fontSize: +this.options.fontSize ? `${+this.options.fontSize}px` : `${this.textFontSize}px`,
+      fontSize: +this.options.fontSize
+        ? `${+this.options.fontSize}px`
+        : `${this.textFontSize}px`,
       fontFamily: this.textFontFamily,
       fill: this.options.color || this.textFontColor,
       lineJoin: 'round',
@@ -50,14 +64,20 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.tickWidth = TICK_WIDTH;
     this.tickHeight = TICK_HEIGHT;
     this.tickTextSeparation = TICK_TEXT_SEPARATION;
-    this.tickColor = this.options.tickColor ? colorToHex(this.options.tickColor) : TICK_COLOR;
+    this.tickColor = this.options.tickColor
+      ? colorToHex(this.options.tickColor)
+      : TICK_COLOR;
 
     this.animate = animate;
 
     this.pubSubs = [];
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d, this.isShowGlobalMousePosition());
+      this.hideMousePosition = showMousePosition(
+        this,
+        this.is2d,
+        this.isShowGlobalMousePosition()
+      );
     }
 
     let chromSizesPath = chromInfoPath;
@@ -120,17 +140,24 @@ class HorizontalChromosomeLabels extends PixiTrack {
       ? `${+this.options.fontSize}px`
       : this.pixiTextConfig.fontSize;
     this.pixiTextConfig.fill = this.options.color || this.pixiTextConfig.fill;
-    this.pixiTextConfig.stroke = this.options.stroke || this.pixiTextConfig.stroke;
+    this.pixiTextConfig.stroke =
+      this.options.stroke || this.pixiTextConfig.stroke;
     this.stroke = colorToHex(this.pixiTextConfig.stroke);
 
-    this.tickColor = this.options.tickColor ? colorToHex(this.options.tickColor) : TICK_COLOR;
+    this.tickColor = this.options.tickColor
+      ? colorToHex(this.options.tickColor)
+      : TICK_COLOR;
 
     this.initChromLabels();
 
     super.rerender(options, force);
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d, this.isShowGlobalMousePosition());
+      this.hideMousePosition = showMousePosition(
+        this,
+        this.is2d,
+        this.isShowGlobalMousePosition()
+      );
     }
 
     if (!this.options.showMousePosition && this.hideMousePosition) {
@@ -151,7 +178,10 @@ class HorizontalChromosomeLabels extends PixiTrack {
     const chromLen = +this.chromInfo.chromLengths[cumPos.chr];
 
     const vpLeft = Math.max(this._xScale(cumPos.pos), 0);
-    const vpRight = Math.min(this._xScale(cumPos.pos + chromLen), this.dimensions[0]);
+    const vpRight = Math.min(
+      this._xScale(cumPos.pos + chromLen),
+      this.dimensions[0]
+    );
 
     const numTicks = (vpRight - vpLeft) / this.tickWidth;
 
@@ -178,7 +208,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     const xPadding = this.options.fontIsLeftAligned ? flipTextSign * 4 : 0;
 
-    const yPadding = this.options.fontIsLeftAligned ? 0 : tickHeight + this.tickTextSeparation;
+    const yPadding = this.options.fontIsLeftAligned
+      ? 0
+      : tickHeight + this.tickTextSeparation;
 
     while (tickTexts.length <= ticks.length) {
       const newText = new PIXI.Text('', this.pixiTextConfig);
@@ -200,7 +232,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
       tickTexts[i].y = this.dimensions[1] - yPadding;
 
       tickTexts[i].text =
-        ticks[i] === 0 ? `${cumPos.chr}: 1` : `${cumPos.chr}: ${tickFormat(ticks[i])}`;
+        ticks[i] === 0
+          ? `${cumPos.chr}: 1`
+          : `${cumPos.chr}: ${tickFormat(ticks[i])}`;
 
       const x = this._xScale(cumPos.pos + ticks[i]);
 
@@ -272,7 +306,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.gTicks[this.chromInfo.cumPositions[i].chr].visible = false;
     }
 
-    const yPadding = this.options.fontIsLeftAligned ? 0 : this.tickHeight + this.tickTextSeparation;
+    const yPadding = this.options.fontIsLeftAligned
+      ? 0
+      : this.tickHeight + this.tickTextSeparation;
 
     // hide all the chromosome labels in preparation for drawing
     // new ones
@@ -369,7 +405,10 @@ class HorizontalChromosomeLabels extends PixiTrack {
     const output = document.createElement('g');
     track.appendChild(output);
 
-    output.setAttribute('transform', `translate(${this.position[0]},${this.position[1]})`);
+    output.setAttribute(
+      'transform',
+      `translate(${this.position[0]},${this.position[1]})`
+    );
 
     this.allTexts
       .filter(text => text.text.visible)

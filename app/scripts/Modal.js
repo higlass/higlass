@@ -16,7 +16,11 @@ const Modal = props => {
   return (
     <div styleName={`modal-background ${props.hide ? 'modal-hide' : ''}`}>
       <div styleName="modal-wrap">
-        <div styleName={`modal-window ${props.maxHeight ? 'modal-window-max-height' : ''}`}>
+        <div
+          styleName={`modal-window ${
+            props.maxHeight ? 'modal-window-max-height' : ''
+          }`}
+        >
           {props.closeButton && (
             <Button onClick={handleClose}>
               <Cross />

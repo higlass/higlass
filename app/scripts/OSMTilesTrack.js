@@ -41,13 +41,15 @@ class OSMTilesTrack extends PixiTrack {
     this.tileGraphics = {};
 
     this.minX =
-      typeof this.options.minPos !== 'undefined' && !Number.isNaN(+this.options.minPos)
+      typeof this.options.minPos !== 'undefined' &&
+      !Number.isNaN(+this.options.minPos)
         ? +this.options.minPos
         : -180;
     this.maxX = +this.options.maxPos || 180;
 
     this.maxX =
-      typeof this.options.maxPos !== 'undefined' && !Number.isNaN(+this.options.maxPos)
+      typeof this.options.maxPos !== 'undefined' &&
+      !Number.isNaN(+this.options.maxPos)
         ? +this.options.maxPos
         : 180;
 
@@ -61,14 +63,19 @@ class OSMTilesTrack extends PixiTrack {
     this.animate = animate;
 
     this.uuid = slugid.nice();
-    this.refreshTilesDebounced = debounce(this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
+    this.refreshTilesDebounced = debounce(
+      this.refreshTiles.bind(this),
+      ZOOM_DEBOUNCE
+    );
   }
 
   /**
    * Return the set of ids of all tiles which are both visible and fetched.
    */
   visibleAndFetchedIds() {
-    return Object.keys(this.fetchedTiles).filter(x => this.visibleTileIds.has(x));
+    return Object.keys(this.fetchedTiles).filter(x =>
+      this.visibleTileIds.has(x)
+    );
   }
 
   visibleAndFetchedTiles() {
@@ -115,7 +122,9 @@ class OSMTilesTrack extends PixiTrack {
 
     // calculate which tiles are obsolete and remove them
     // fetchedTileID are remote ids
-    const toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
+    const toRemove = [...fetchedTileIDs].filter(
+      x => !this.visibleTileIds.has(x)
+    );
 
     this.removeTiles(toRemove);
     this.fetchNewTiles(toFetch);
@@ -177,8 +186,16 @@ class OSMTilesTrack extends PixiTrack {
   }
 
   calculateZoomLevel() {
-    const xZoomLevel = tileProxy.calculateZoomLevel(this._xScale, this.minX, this.maxX);
-    const yZoomLevel = tileProxy.calculateZoomLevel(this._xScale, this.minY, this.maxY);
+    const xZoomLevel = tileProxy.calculateZoomLevel(
+      this._xScale,
+      this.minX,
+      this.maxX
+    );
+    const yZoomLevel = tileProxy.calculateZoomLevel(
+      this._xScale,
+      this.minY,
+      this.maxY
+    );
 
     let zoomLevel = Math.min(Math.max(xZoomLevel, yZoomLevel), this.maxZoom);
 
@@ -332,10 +349,12 @@ class OSMTilesTrack extends PixiTrack {
   }
 
   setSpriteProperties(sprite, zoomLevel, tilePos) {
-    const { tileX, tileY, tileWidth, tileHeight } = this.getTilePosAndDimensions(
-      zoomLevel,
-      tilePos
-    );
+    const {
+      tileX,
+      tileY,
+      tileWidth,
+      tileHeight
+    } = this.getTilePosAndDimensions(zoomLevel, tilePos);
 
     sprite.x = this._refXScale(tileX);
     sprite.y = this._refYScale(tileY);
@@ -357,7 +376,11 @@ class OSMTilesTrack extends PixiTrack {
 
     tile.sprite = sprite;
 
-    this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos);
+    this.setSpriteProperties(
+      tile.sprite,
+      tile.tileData.zoomLevel,
+      tile.tileData.tilePos
+    );
 
     graphics.removeChildren();
     graphics.addChild(tile.sprite);
@@ -438,9 +461,9 @@ class OSMTilesTrack extends PixiTrack {
   getTileUrl(tileZxy) {
     const serverPrefixes = ['a', 'b', 'c'];
     const serverPrefixIndex = Math.floor(Math.random() * serverPrefixes.length);
-    const src = `https://${serverPrefixes[serverPrefixIndex]}.tile.openstreetmap.org/${
-      tileZxy[0]
-    }/${tileZxy[1]}/${tileZxy[2]}.png`;
+    const src = `https://${
+      serverPrefixes[serverPrefixIndex]
+    }.tile.openstreetmap.org/${tileZxy[0]}/${tileZxy[1]}/${tileZxy[2]}.png`;
 
     return src;
   }
@@ -489,7 +512,8 @@ class OSMTilesTrack extends PixiTrack {
           this.fetchedTiles[tileId] = this.visibleTiles[i];
         }
 
-        this.fetchedTiles[tileId].tileData = loadedTiles[this.visibleTiles[i].remoteId];
+        this.fetchedTiles[tileId].tileData =
+          loadedTiles[this.visibleTiles[i].remoteId];
       }
     }
 
@@ -531,7 +555,11 @@ class OSMTilesTrack extends PixiTrack {
       const tile = this.fetchedTiles[uid];
 
       if (tile.sprite) {
-        this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos);
+        this.setSpriteProperties(
+          tile.sprite,
+          tile.tileData.zoomLevel,
+          tile.tileData.tilePos
+        );
       } else {
         // console.log('skipping...', tile.tileId);
       }

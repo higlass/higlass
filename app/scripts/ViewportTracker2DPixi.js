@@ -47,8 +47,12 @@ export default class ViewportTracker2D extends PixiTrack {
 
     const x = this._xScale(this.viewportXDomain[0]);
     const y = this._yScale(this.viewportYDomain[0]);
-    const width = this._xScale(this.viewportXDomain[1]) - this._xScale(this.viewportXDomain[0]);
-    const height = this._yScale(this.viewportYDomain[1]) - this._yScale(this.viewportYDomain[0]);
+    const width =
+      this._xScale(this.viewportXDomain[1]) -
+      this._xScale(this.viewportXDomain[0]);
+    const height =
+      this._yScale(this.viewportYDomain[1]) -
+      this._yScale(this.viewportYDomain[0]);
 
     // console.log('drawing viewport:', x, y, width, height);
 

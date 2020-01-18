@@ -39,7 +39,9 @@ class HeatmapOptions extends React.Component {
    */
   handleAddColor() {
     this.setState(prevState => ({
-      colors: prevState.colors.concat(prevState.colors[prevState.colors.length - 1])
+      colors: prevState.colors.concat(
+        prevState.colors[prevState.colors.length - 1]
+      )
     }));
   }
 
@@ -67,8 +69,12 @@ class HeatmapOptions extends React.Component {
       views: [
         {
           uid: `hmo-${this.props.track.uid}`,
-          initialXDomain: this.props.xScale ? this.props.xScale.domain() : [0, 1],
-          initialYDomain: this.props.yScale ? this.props.yScale.domain() : [0, 1],
+          initialXDomain: this.props.xScale
+            ? this.props.xScale.domain()
+            : [0, 1],
+          initialYDomain: this.props.yScale
+            ? this.props.yScale.domain()
+            : [0, 1],
           tracks: {
             center: [centerTrack]
           },

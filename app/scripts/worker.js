@@ -95,7 +95,11 @@ export function workerSetPix(
       .domain(valueScaleDomain);
   } else {
     if (valueScaleType !== 'linear') {
-      console.warn('Unknown value scale type:', valueScaleType, ' Defaulting to linear');
+      console.warn(
+        'Unknown value scale type:',
+        valueScaleType,
+        ' Defaulting to linear'
+      );
     }
     valueScale = scaleLinear()
       .range([254, 0])
@@ -124,11 +128,18 @@ export function workerSetPix(
         !Number.isNaN(+d)
       ) {
         // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
-        rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(d + pseudocount))));
+        rgbIdx = Math.max(
+          0,
+          Math.min(254, Math.floor(valueScale(d + pseudocount)))
+        );
       }
       // let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
       if (rgbIdx < 0 || rgbIdx > 255) {
-        console.warn('out of bounds rgbIdx:', rgbIdx, ' (should be 0 <= rgbIdx <= 255)');
+        console.warn(
+          'out of bounds rgbIdx:',
+          rgbIdx,
+          ' (should be 0 <= rgbIdx <= 255)'
+        );
       }
       const rgb = colorScale[rgbIdx];
 

@@ -7,7 +7,11 @@ import SVGTrack from './SVGTrack';
 class ViewportTrackerVertical extends SVGTrack {
   constructor(context, options) {
     super(context, options);
-    const { registerViewportChanged, removeViewportChanged, setDomainsCallback } = context;
+    const {
+      registerViewportChanged,
+      removeViewportChanged,
+      setDomainsCallback
+    } = context;
 
     const uid = slugid.nice();
     this.uid = uid;
@@ -61,7 +65,10 @@ class ViewportTrackerVertical extends SVGTrack {
 
     const xDomain = this.viewportXDomain;
 
-    const yDomain = [this._yScale.invert(s[0][1]), this._yScale.invert(s[1][1])];
+    const yDomain = [
+      this._yScale.invert(s[0][1]),
+      this._yScale.invert(s[1][1])
+    ];
 
     // console.log('xDomain:', xDomain);
     // console.log('yDomain:', yDomain);

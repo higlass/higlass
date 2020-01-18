@@ -22,7 +22,11 @@ class PopupMenu extends React.Component {
     this.popup.className = 'hg-popup';
 
     document.addEventListener('click', this.clickHandlerBound, true);
-    document.addEventListener('contextmenu', this.contextMenuHandlerBound, true);
+    document.addEventListener(
+      'contextmenu',
+      this.contextMenuHandlerBound,
+      true
+    );
     window.addEventListener('resize', this.resizeHandlerBound, true);
 
     this._renderLayer();
@@ -34,7 +38,11 @@ class PopupMenu extends React.Component {
 
   componentWillUnmount() {
     document.removeEventListener('click', this.clickHandlerBound, true);
-    document.removeEventListener('contextmenu', this.contextMenuHandlerBound, true);
+    document.removeEventListener(
+      'contextmenu',
+      this.contextMenuHandlerBound,
+      true
+    );
     window.removeEventListener('resize', this.resizeHandlerBound, true);
     ReactDOM.unmountComponentAtNode(this.popup);
     document.body.removeChild(this.popup);

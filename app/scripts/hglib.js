@@ -10,7 +10,10 @@ import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 
 export { default as ChromosomeInfo } from './ChromosomeInfo';
 export { default as HiGlassComponent } from './HiGlassComponent';
-export { default as HiGlassTrackComponent, trackViewer } from './HiGlassTrackComponent';
+export {
+  default as HiGlassTrackComponent,
+  trackViewer
+} from './HiGlassTrackComponent';
 
 export const tracks = {
   SVGTrack,

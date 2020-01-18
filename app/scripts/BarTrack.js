@@ -34,7 +34,9 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     // Normalize colormap upfront to save 3 divisions per data point during the
     // rendering.
-    this.colorScale = this.colorScale.map(rgb => rgb.map(channel => channel / 255.0));
+    this.colorScale = this.colorScale.map(rgb =>
+      rgb.map(channel => channel / 255.0)
+    );
   }
 
   setColorGradient(colorGradient) {
@@ -121,8 +123,14 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     this.drawAxis(this.valueScale);
 
-    if (this.options.valueScaling === 'log' && this.valueScale.domain()[1] < 0) {
-      console.warn('Negative values present when using a log scale', this.valueScale.domain());
+    if (
+      this.options.valueScaling === 'log' &&
+      this.valueScale.domain()[1] < 0
+    ) {
+      console.warn(
+        'Negative values present when using a log scale',
+        this.valueScale.domain()
+      );
       return;
     }
 
@@ -131,7 +139,10 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
     const tileXScale = scaleLinear()
-      .domain([0, this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension])
+      .domain([
+        0,
+        this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension
+      ])
       .range([tileX, tileX + tileWidth]);
 
     const strokeWidth = 0;
@@ -169,7 +180,9 @@ class BarTrack extends HorizontalLine1DPixiTrack {
         this.dimensions[1] // fromX, fromY, toX, toY
       );
 
-      barSprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+      barSprite = new PIXI.Sprite(
+        PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
+      );
 
       barSprite.x = this._xScale(tileX);
       barSprite.width = this._xScale(tileX + tileWidth) - barSprite.x;
@@ -248,8 +261,14 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     zeroLine.setAttribute('height', 1);
     zeroLine.setAttribute('width', this.dimensions[0]);
 
-    zeroLine.setAttribute('fill', this.options.zeroLineColor || this.options.barFillColor);
-    zeroLine.setAttribute('fill-opacity', this.options.zeroLineOpacity || this.options.barOpacity);
+    zeroLine.setAttribute(
+      'fill',
+      this.options.zeroLineColor || this.options.barFillColor
+    );
+    zeroLine.setAttribute(
+      'fill-opacity',
+      this.options.zeroLineOpacity || this.options.barOpacity
+    );
 
     output.appendChild(zeroLine);
   }
@@ -277,7 +296,9 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     else this.zeroLine.clear();
 
     Object.values(this.fetchedTiles).forEach(tile => {
-      const [graphicsXScale, graphicsXPos] = this.getXScaleAndOffset(tile.drawnAtScale);
+      const [graphicsXScale, graphicsXPos] = this.getXScaleAndOffset(
+        tile.drawnAtScale
+      );
 
       tile.graphics.scale.x = graphicsXScale;
       tile.graphics.position.x = graphicsXPos;
@@ -395,7 +416,10 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     const output = document.createElement('g');
 
     track.appendChild(output);
-    output.setAttribute('transform', `translate(${this.position[0]},${this.position[1]})`);
+    output.setAttribute(
+      'transform',
+      `translate(${this.position[0]},${this.position[1]})`
+    );
 
     if (this.options.zeroLine) this.drawZeroLineSvg(output);
 
@@ -440,13 +464,19 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       this.options.axisPositionVertical === 'top'
     ) {
       // left axis are shown at the beginning of the plot
-      const gDrawnAxis = this.axis.exportAxisLeftSVG(this.valueScale, this.dimensions[1]);
+      const gDrawnAxis = this.axis.exportAxisLeftSVG(
+        this.valueScale,
+        this.dimensions[1]
+      );
       gAxis.appendChild(gDrawnAxis);
     } else if (
       this.options.axisPositionHorizontal === 'right' ||
       this.options.axisPositionVertical === 'bottom'
     ) {
-      const gDrawnAxis = this.axis.exportAxisRightSVG(this.valueScale, this.dimensions[1]);
+      const gDrawnAxis = this.axis.exportAxisRightSVG(
+        this.valueScale,
+        this.dimensions[1]
+      );
       gAxis.appendChild(gDrawnAxis);
     }
 

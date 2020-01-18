@@ -12,7 +12,10 @@
  *   ...
  *   }
  */
-const positionedTracksToAllTracks = (positionedTracks, includeCombinedContents = true) => {
+const positionedTracksToAllTracks = (
+  positionedTracks,
+  includeCombinedContents = true
+) => {
   const tracks = positionedTracks;
   const allTracks = [];
 

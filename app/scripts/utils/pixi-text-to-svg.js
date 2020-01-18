@@ -18,7 +18,10 @@ export const pixiTextToSvg = pixiText => {
   t.innerHTML = pixiText.text;
 
   g.appendChild(t);
-  g.setAttribute('transform', `translate(${pixiText.x},${pixiText.y})scale(${pixiText.scale.x},1)`);
+  g.setAttribute(
+    'transform',
+    `translate(${pixiText.x},${pixiText.y})scale(${pixiText.scale.x},1)`
+  );
 
   return g;
 };

@@ -33,10 +33,12 @@ class VerticalTiled1DPixiTrack extends Tiled1DPixiTrack {
 
     // we only scale along 1 dimension
     const scaleX = 1;
-    const scaleY = (newYScale(1) - newYScale(0)) / (this._refYScale(1) - this._refYScale(0));
+    const scaleY =
+      (newYScale(1) - newYScale(0)) / (this._refYScale(1) - this._refYScale(0));
 
     const translateX = this.position[0];
-    const translateY = newYScale(0) + this.position[1] - this._refYScale(1) * scaleY;
+    const translateY =
+      newYScale(0) + this.position[1] - this._refYScale(1) * scaleY;
 
     this.pMain.position.x = translateX;
     this.pMain.position.y = translateY;

@@ -96,8 +96,12 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
     // viewHeight * sqrt(2)
     // on each side
     expandedXScale.domain([
-      this._xScale.invert(this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)),
-      this._xScale.invert(this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2))
+      this._xScale.invert(
+        this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)
+      ),
+      this._xScale.invert(
+        this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2)
+      )
     ]);
 
     this.xTiles = tileProxy.calculateTiles(
@@ -134,7 +138,10 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
         // the length between the bottom of the track and the bottom corner of the tile
         // draw it out to understand better!
         const tileBottomPosition =
-          ((j - i - 2) * (this._xScale(tileWidth) - this._xScale(0)) * Math.sqrt(2)) / 2;
+          ((j - i - 2) *
+            (this._xScale(tileWidth) - this._xScale(0)) *
+            Math.sqrt(2)) /
+          2;
 
         if (tileBottomPosition > this.dimensions[1]) {
           // this tile won't be visible so we don't need to fetch it
@@ -183,10 +190,14 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
     graphics.clear();
 
     const stroke = colorToHex(
-      this.options.rectangleDomainStrokeColor ? this.options.rectangleDomainStrokeColor : 'black'
+      this.options.rectangleDomainStrokeColor
+        ? this.options.rectangleDomainStrokeColor
+        : 'black'
     );
     const fill = colorToHex(
-      this.options.rectangleDomainFillColor ? this.options.rectangleDomainFillColor : 'grey'
+      this.options.rectangleDomainFillColor
+        ? this.options.rectangleDomainFillColor
+        : 'grey'
     );
 
     graphics.lineStyle(1 / this.pMain.scale.x, stroke, 1);

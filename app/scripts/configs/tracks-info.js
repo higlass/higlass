@@ -1059,7 +1059,11 @@ export const TRACKS_INFO = [
     orientation: '1d-vertical',
     name: 'Viewport Projection',
     thumbnail: 'viewport-projection-center.png',
-    availableOptions: ['projectionFillColor', 'projectionStrokeColor', 'strokeWidth'],
+    availableOptions: [
+      'projectionFillColor',
+      'projectionStrokeColor',
+      'strokeWidth'
+    ],
     defaultOptions: {
       projectionFillColor: '#777',
       projectionStrokeColor: '#777',
@@ -1076,7 +1080,11 @@ export const TRACKS_INFO = [
     orientation: '1d-horizontal',
     name: 'Viewport Projection',
     thumbnail: 'viewport-projection-center.png',
-    availableOptions: ['projectionFillColor', 'projectionStrokeColor', 'strokeWidth'],
+    availableOptions: [
+      'projectionFillColor',
+      'projectionStrokeColor',
+      'strokeWidth'
+    ],
     defaultOptions: {
       projectionFillColor: '#777',
       projectionStrokeColor: '#777',
@@ -1093,7 +1101,11 @@ export const TRACKS_INFO = [
     orientation: '2d',
     name: 'Viewport Projection',
     thumbnail: 'viewport-projection-center.png',
-    availableOptions: ['projectionFillColor', 'projectionStrokeColor', 'strokeWidth'],
+    availableOptions: [
+      'projectionFillColor',
+      'projectionStrokeColor',
+      'strokeWidth'
+    ],
     defaultOptions: {
       projectionFillColor: '#777',
       projectionStrokeColor: '#777',
@@ -1395,7 +1407,13 @@ export const TRACKS_INFO = [
     orientation: '1d-vertical',
     name: 'Vertical 1D Annotations',
     thumbnail: null,
-    availableOptions: ['fill', 'fillOpacity', 'stroke', 'strokeOpacity', 'regions'],
+    availableOptions: [
+      'fill',
+      'fillOpacity',
+      'stroke',
+      'strokeOpacity',
+      'regions'
+    ],
     defaultOptions: {
       fill: 'red',
       fillOpacity: '0.2',
@@ -1498,7 +1516,11 @@ export const TRACKS_INFO = [
     name: 'Chromosome Grid',
     chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
     thumbnail: null,
-    availableOptions: ['lineStrokeWidth', 'lineStrokeColor', 'showMousePosition'],
+    availableOptions: [
+      'lineStrokeWidth',
+      'lineStrokeColor',
+      'showMousePosition'
+    ],
     defaultOptions: {
       lineStrokeWidth: 1,
       lineStrokeColor: 'grey',
@@ -1513,7 +1535,11 @@ export const TRACKS_INFO = [
     name: 'Chromosome Grid',
     chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
     thumbnail: null,
-    availableOptions: ['lineStrokeWidth', 'lineStrokeColor', 'showMousePosition'],
+    availableOptions: [
+      'lineStrokeWidth',
+      'lineStrokeColor',
+      'showMousePosition'
+    ],
     defaultOptions: {
       lineStrokeWidth: 1,
       lineStrokeColor: 'grey',
@@ -1725,7 +1751,7 @@ export const TRACKS_INFO = [
       'colorEncodingRange',
       'showTexts',
       'axisPositionHorizontal',
-      'axisMargin',
+      'axisMargin'
     ],
     defaultOptions: {
       alternating: false,
@@ -1744,12 +1770,10 @@ export const TRACKS_INFO = [
       valueColumn: null,
       colorEncoding: false,
       showTexts: false,
-      colorRange: [
-        '#000000', '#652537', '#bf5458', '#fba273', '#ffffe0'
-      ],
+      colorRange: ['#000000', '#652537', '#bf5458', '#fba273', '#ffffe0'],
       colorEncodingRange: false,
-      annotationHeight: 16,
-    },
+      annotationHeight: 16
+    }
   },
   {
     type: 'vertical-bedlike',

@@ -38,7 +38,9 @@ class Annotations2dTrack extends TiledPixiTrack {
   /* --------------------------- Getter / Setter ---------------------------- */
 
   get minX() {
-    return this.tilesetInfo && this.tilesetInfo.min_pos ? this.tilesetInfo.min_pos[0] : 0;
+    return this.tilesetInfo && this.tilesetInfo.min_pos
+      ? this.tilesetInfo.min_pos[0]
+      : 0;
   }
 
   get maxX() {
@@ -109,8 +111,16 @@ class Annotations2dTrack extends TiledPixiTrack {
   }
 
   calculateZoomLevel() {
-    const xZoomLevel = tileProxy.calculateZoomLevel(this._xScale, this.minX, this.maxX);
-    const yZoomLevel = tileProxy.calculateZoomLevel(this._yScale, this.minY, this.maxY);
+    const xZoomLevel = tileProxy.calculateZoomLevel(
+      this._xScale,
+      this.minX,
+      this.maxX
+    );
+    const yZoomLevel = tileProxy.calculateZoomLevel(
+      this._yScale,
+      this.minY,
+      this.maxY
+    );
 
     return min(max(xZoomLevel, yZoomLevel), this.maxZoom);
   }
@@ -202,7 +212,15 @@ class Annotations2dTrack extends TiledPixiTrack {
         }
 
         this.drawAnnotation(
-          this.prepAnnotation(graphics, td.uid, startX, startY, endX - startX, endY - startY, td),
+          this.prepAnnotation(
+            graphics,
+            td.uid,
+            startX,
+            startY,
+            endX - startX,
+            endY - startY,
+            td
+          ),
           silent
         );
       });
@@ -233,7 +251,10 @@ class Annotations2dTrack extends TiledPixiTrack {
     };
   }
 
-  drawAnnotation({ graphics, id, uid, annotation, dataPos, importance, info }, silent) {
+  drawAnnotation(
+    { graphics, id, uid, annotation, dataPos, importance, info },
+    silent
+  ) {
     if (this.options.minSquareSize) {
       if (
         annotation.width < this.options.minSquareSize ||
@@ -248,7 +269,12 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     this.drawnAnnotations[uid] = annotation;
 
-    const viewPos = [annotation.x, annotation.y, annotation.width, annotation.height];
+    const viewPos = [
+      annotation.x,
+      annotation.y,
+      annotation.width,
+      annotation.height
+    ];
 
     let rectGfx = this.drawnAnnoGfx[uid];
     if (!rectGfx) {
@@ -286,7 +312,8 @@ class Annotations2dTrack extends TiledPixiTrack {
     rectGfx.mouseout = () => this.blur(rectGfx, viewPos, uid);
 
     rectGfx.mousedown = () => this.mouseDown();
-    rectGfx.mouseup = event => this.mouseUp(rectGfx, viewPos, uid, event, payload);
+    rectGfx.mouseup = event =>
+      this.mouseUp(rectGfx, viewPos, uid, event, payload);
 
     if (!silent) {
       this.publish('annotationDrawn', {
@@ -433,7 +460,10 @@ class Annotations2dTrack extends TiledPixiTrack {
     }
 
     const output = document.createElement('g');
-    output.setAttribute('transform', `translate(${this.position[0]},${this.position[1]})`);
+    output.setAttribute(
+      'transform',
+      `translate(${this.position[0]},${this.position[1]})`
+    );
 
     track.appendChild(output);
 
@@ -492,7 +522,10 @@ class Annotations2dTrack extends TiledPixiTrack {
     color = this.options.rectangleDomainFillColor,
     alpha = this.options.rectangleDomainFillOpacity
   ) {
-    graphics.beginFill(colorToHex(color || 'grey'), typeof alpha !== 'undefined' ? alpha : 0.4);
+    graphics.beginFill(
+      colorToHex(color || 'grey'),
+      typeof alpha !== 'undefined' ? alpha : 0.4
+    );
   }
 
   setPosition(newPosition) {

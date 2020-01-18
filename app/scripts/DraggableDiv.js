@@ -102,7 +102,9 @@ class DraggableDiv extends React.Component {
 
     let newLeft = this.dragStartLeft + ms[0] - this.dragStartMousePos[0];
     newLeft =
-      newWidth > this.minWidth ? newLeft : this.dragStartLeft + this.dragStartWidth - this.minWidth;
+      newWidth > this.minWidth
+        ? newLeft
+        : this.dragStartLeft + this.dragStartWidth - this.minWidth;
 
     this.setState({
       left: newLeft,
@@ -159,7 +161,9 @@ class DraggableDiv extends React.Component {
 
     let newLeft = this.dragStartLeft + ms[0] - this.dragStartMousePos[0];
     newLeft =
-      newWidth > this.minWidth ? newLeft : this.dragStartLeft + this.dragStartWidth - this.minWidth;
+      newWidth > this.minWidth
+        ? newLeft
+        : this.dragStartLeft + this.dragStartWidth - this.minWidth;
 
     this.setState({
       left: newLeft,
@@ -222,7 +226,9 @@ class DraggableDiv extends React.Component {
 
     let newLeft = this.dragStartLeft + ms[0] - this.dragStartMousePos[0];
     newLeft =
-      newWidth > this.minWidth ? newLeft : this.dragStartLeft + this.dragStartWidth - this.minWidth;
+      newWidth > this.minWidth
+        ? newLeft
+        : this.dragStartLeft + this.dragStartWidth - this.minWidth;
 
     let newHeight = this.dragStartHeight - (ms[1] - this.dragStartMousePos[1]);
     newHeight = newHeight > this.minHeight ? newHeight : this.minHeight;

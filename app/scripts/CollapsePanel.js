@@ -7,7 +7,9 @@ const CollapsePanel = props => (
   <div>
     <ControlLabel>
       <a
-        className={`collapse-toggle-icon ${props.collapsedClass(props.collapsed)}`}
+        className={`collapse-toggle-icon ${props.collapsedClass(
+          props.collapsed
+        )}`}
         onClick={() => props.toggleCollapse()}
         role="button"
         tabIndex={0}

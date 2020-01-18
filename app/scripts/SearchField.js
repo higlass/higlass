@@ -29,28 +29,28 @@ class SearchField {
     if (x1[0] !== x2[0]) {
       // different chromosomes
 
-      positionString = `${x1[0]}:${stringFormat(Math.floor(x1[1]))}-${x2[0]}:${stringFormat(
-        Math.ceil(x2[1])
-      )}`;
+      positionString = `${x1[0]}:${stringFormat(Math.floor(x1[1]))}-${
+        x2[0]
+      }:${stringFormat(Math.ceil(x2[1]))}`;
     } else {
       // same chromosome
 
-      positionString = `${x1[0]}:${stringFormat(Math.floor(x1[1]))}-${stringFormat(
-        Math.ceil(x2[1])
-      )}`;
+      positionString = `${x1[0]}:${stringFormat(
+        Math.floor(x1[1])
+      )}-${stringFormat(Math.ceil(x2[1]))}`;
     }
 
     if (twoD) {
       if (y1[0] !== y2[0]) {
         // different chromosomes
-        positionString += ` & ${y1[0]}:${stringFormat(Math.floor(y1[1]))}-${y2[0]}:${stringFormat(
-          Math.ceil(y2[1])
-        )}`;
+        positionString += ` & ${y1[0]}:${stringFormat(Math.floor(y1[1]))}-${
+          y2[0]
+        }:${stringFormat(Math.ceil(y2[1]))}`;
       } else {
         // same chromosome
-        positionString += ` & ${y1[0]}:${stringFormat(Math.floor(y1[1]))}-${stringFormat(
-          Math.ceil(y2[1])
-        )}`;
+        positionString += ` & ${y1[0]}:${stringFormat(
+          Math.floor(y1[1])
+        )}-${stringFormat(Math.ceil(y2[1]))}`;
       }
     }
 
@@ -171,7 +171,8 @@ class SearchField {
 
       // return the wider of the two ranges
       // e.g. searching for chr1-chr2 vs chr2-chr1
-      if (tempRange2[1] - tempRange2[0] > tempRange1[1] - tempRange1[0]) return tempRange2;
+      if (tempRange2[1] - tempRange2[0] > tempRange1[1] - tempRange1[0])
+        return tempRange2;
       return tempRange1;
     }
     // only a locus specified and no range
@@ -182,7 +183,10 @@ class SearchField {
 
       // if somebody has entered an entire chromosome, we return
       // it's length as the range
-      range = [chromPosition, chromPosition + +this.chromInfo.chromLengths[parts[0]]];
+      range = [
+        chromPosition,
+        chromPosition + +this.chromInfo.chromLengths[parts[0]]
+      ];
     } else {
       // e.g. ("chr1:540340")
       // eslint-disable-next-line no-unused-vars

@@ -9,9 +9,7 @@ import PlotTypeChooser from './PlotTypeChooser';
 import { AVAILABLE_TRACK_TYPES } from './configs';
 
 // Utils
-import {
-  getDefaultTrackForDatatype,
-} from './utils';
+import { getDefaultTrackForDatatype } from './utils';
 
 // Styles
 import '../styles/AddTrackDialog.module.scss';
@@ -24,12 +22,14 @@ class AddTrackDialog extends React.Component {
 
     this.state = {
       selectedTilesets: [{ datatype: 'none' }],
-      allTracksSameDatatype: true, // Do all selected tracks have the same datatype
+      allTracksSameDatatype: true // Do all selected tracks have the same datatype
     };
 
     this.handleSubmitBound = this.handleSubmit.bind(this);
 
-    this.handleTilesetPickerDoubleClickBound = this.handleTilesetPickerDoubleClick.bind(this);
+    this.handleTilesetPickerDoubleClickBound = this.handleTilesetPickerDoubleClick.bind(
+      this
+    );
     this.selectedTilesetsChangedBound = this.selectedTilesetsChanged.bind(this);
   }
 
@@ -64,7 +64,11 @@ class AddTrackDialog extends React.Component {
   handleSubmit(evt) {
     if (evt) evt.preventDefault();
 
-    this.props.onTracksChosen(this.state.selectedTilesets, this.props.position, this.props.host);
+    this.props.onTracksChosen(
+      this.state.selectedTilesets,
+      this.props.position,
+      this.props.host
+    );
   }
 
   /**
@@ -79,7 +83,11 @@ class AddTrackDialog extends React.Component {
     this.selectedTilesetsChanged([tileset]);
 
     // should iterate over the selected tilesets
-    this.props.onTracksChosen(this.state.selectedTilesets, this.props.position, this.props.host);
+    this.props.onTracksChosen(
+      this.state.selectedTilesets,
+      this.props.position,
+      this.props.host
+    );
   }
 
   handleOptionsChanged(newOptions) {
@@ -117,7 +125,9 @@ class AddTrackDialog extends React.Component {
     let allTracksSameDatatype = true;
     const firstDatatype = selectedTilesets[0].datatype;
     for (const tileset of selectedTilesets) {
-      if (tileset.datatype !== firstDatatype) { allTracksSameDatatype = false; }
+      if (tileset.datatype !== firstDatatype) {
+        allTracksSameDatatype = false;
+      }
     }
 
     if (allTracksSameDatatype) {
@@ -136,7 +146,10 @@ class AddTrackDialog extends React.Component {
           datatypes = [tileset.datatype, 'chromsizes'];
         }
 
-        const availableTrackTypes = AVAILABLE_TRACK_TYPES([datatypes], orientation);
+        const availableTrackTypes = AVAILABLE_TRACK_TYPES(
+          [datatypes],
+          orientation
+        );
         const defaultTrackType = getDefaultTrackForDatatype(
           datatypes[0],
           this.props.position,
@@ -156,12 +169,14 @@ class AddTrackDialog extends React.Component {
       <div>
         <TilesetFinder
           // Only for testing purposes
-          ref={(c) => {
+          ref={c => {
             this.tilesetFinder = c;
           }}
           datatype={this.props.datatype}
           onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
-          onTracksChosen={value => this.props.onTracksChosen(value, this.props.position)}
+          onTracksChosen={value =>
+            this.props.onTracksChosen(value, this.props.position)
+          }
           orientation={orientation}
           selectedTilesetChanged={this.selectedTilesetsChanged.bind(this)}
           trackSourceServers={this.props.trackSourceServers}
@@ -177,26 +192,26 @@ class AddTrackDialog extends React.Component {
         onOkay={this.handleSubmitBound}
         title="Add Track"
       >
-        { form }
+        {form}
         {
-          (
-            <PlotTypeChooser
-              // Only for testing purposes
-              ref={(c) => { this.plotTypeChooser = c; }}
-              allTracksSameDatatype={this.state.allTracksSameDatatype}
-              datatypes={this.state.selectedTilesets.map((x) => {
-                if (x.filetype === 'cooler') {
-                  // cooler files can also supply chromsizes
-                  return [x.datatype, 'chromsizes'];
-                }
+          <PlotTypeChooser
+            // Only for testing purposes
+            ref={c => {
+              this.plotTypeChooser = c;
+            }}
+            allTracksSameDatatype={this.state.allTracksSameDatatype}
+            datatypes={this.state.selectedTilesets.map(x => {
+              if (x.filetype === 'cooler') {
+                // cooler files can also supply chromsizes
+                return [x.datatype, 'chromsizes'];
+              }
 
-                return [x.datatype];
-              })}
-              onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
-              orientation={orientation}
-              position={this.props.position}
-            />
-          )
+              return [x.datatype];
+            })}
+            onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
+            orientation={orientation}
+            position={this.props.position}
+          />
         }
       </Dialog>
     );
@@ -204,7 +219,7 @@ class AddTrackDialog extends React.Component {
 }
 
 AddTrackDialog.defaultProps = {
-  position: 'top',
+  position: 'top'
 };
 
 AddTrackDialog.propTypes = {

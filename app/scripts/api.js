@@ -12,10 +12,9 @@ import { getTrackObjectFromHGC } from './utils';
 
 import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from './configs';
 
-const forceUpdate = (self) => {
+const forceUpdate = self => {
   self.setState(self.state);
 };
-
 
 const createApi = function api(context, pubSub) {
   const self = context;
@@ -51,8 +50,12 @@ const createApi = function api(context, pubSub) {
        * @param {boolean} isBroadcastMousePositionGlobally - If `true` the mouse
        *   position will be broadcasted globally.
        */
-      setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally = false) {
-        self.setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally);
+      setBroadcastMousePositionGlobally(
+        isBroadcastMousePositionGlobally = false
+      ) {
+        self.setBroadcastMousePositionGlobally(
+          isBroadcastMousePositionGlobally
+        );
       },
 
       /**
@@ -265,8 +268,18 @@ const createApi = function api(context, pubSub) {
        * const [minVal, maxVal] = hgv.getMinMaxValue('myView', 'myTrack');
        * @returns {Array} The minimum and maximum value
        */
-      getMinMaxValue(viewId, trackId, ignoreOffScreenValues = false, ignoreFixedScale = false) {
-        return self.getMinMaxValue(viewId, trackId, ignoreOffScreenValues, ignoreFixedScale);
+      getMinMaxValue(
+        viewId,
+        trackId,
+        ignoreOffScreenValues = false,
+        ignoreFixedScale = false
+      ) {
+        return self.getMinMaxValue(
+          viewId,
+          trackId,
+          ignoreOffScreenValues,
+          ignoreFixedScale
+        );
       },
 
       /**
@@ -391,7 +404,9 @@ const createApi = function api(context, pubSub) {
        * @deprecated since version 1.6.6. Use `setTheme()` instead.
        */
       setDarkTheme(darkTheme) {
-        console.warn('`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.');
+        console.warn(
+          '`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.'
+        );
         const theme = darkTheme ? 'dark' : 'light';
         self.setTheme(theme);
       },
@@ -453,7 +468,14 @@ const createApi = function api(context, pubSub) {
        * );
        */
       zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime = 0) {
-        self.zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime);
+        self.zoomTo(
+          viewUid,
+          start1Abs,
+          end1Abs,
+          start2Abs,
+          end2Abs,
+          animateTime
+        );
       },
 
       /**
@@ -583,7 +605,8 @@ const createApi = function api(context, pubSub) {
       getLocation(viewId) {
         const wurstId = viewId
           ? self.xScales[viewId] && self.yScales[viewId] && viewId
-          : Object.values(self.tiledPlots)[0] && Object.values(self.tiledPlots)[0].props.uid;
+          : Object.values(self.tiledPlots)[0] &&
+            Object.values(self.tiledPlots)[0].props.uid;
 
         if (!wurstId) {
           return 'Please provide a valid view UUID sweetheart 😙';
@@ -652,7 +675,8 @@ const createApi = function api(context, pubSub) {
        * hgv.off('mouseMoveZoom', mmz);
        */
       off(event, listenerId, viewId) {
-        const callback = typeof listenerId === 'object' ? listenerId.callback : listenerId;
+        const callback =
+          typeof listenerId === 'object' ? listenerId.callback : listenerId;
 
         switch (event) {
           case 'click':

@@ -87,7 +87,9 @@ class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
   allTilesLoaded() {
     const visibleAndFetchedIds = this.visibleAndFetchedIds();
 
-    const tileDatas = visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.discrete);
+    const tileDatas = visibleAndFetchedIds.map(
+      x => this.fetchedTiles[x].tileData.discrete
+    );
     const allTileData = [].concat(...tileDatas);
 
     this.drawAll(allTileData);

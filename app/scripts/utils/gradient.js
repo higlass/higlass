@@ -1,4 +1,12 @@
-const gradient = (steps, width = 1, height = 100, fromX = 0, fromY = 0, toX = 0, toY = 100) => {
+const gradient = (
+  steps,
+  width = 1,
+  height = 100,
+  fromX = 0,
+  fromY = 0,
+  toX = 0,
+  toY = 100
+) => {
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;

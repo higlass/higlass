@@ -44,7 +44,10 @@ class HorizontalTiledPlot extends React.Component {
         this.rangeSelectionTriggeredEnd &&
         this.props.rangeSelection !== nextProps.rangeSelection
       ) {
-        this.moveBrush(nextProps.rangeSelection[0] ? nextProps.rangeSelection[0] : null, true);
+        this.moveBrush(
+          nextProps.rangeSelection[0] ? nextProps.rangeSelection[0] : null,
+          true
+        );
       }
       this.rangeSelectionTriggeredEnd = false;
       return this.state !== nextState;
@@ -88,7 +91,10 @@ class HorizontalTiledPlot extends React.Component {
     this.brushEl.call(this.brushBehavior);
     this.brushElAddedBefore = this.brushEl;
 
-    resetD3BrushStyle(this.brushEl, stylesTrack['track-range-selection-group-brush-selection']);
+    resetD3BrushStyle(
+      this.brushEl,
+      stylesTrack['track-range-selection-group-brush-selection']
+    );
   }
 
   brushed() {
@@ -96,7 +102,12 @@ class HorizontalTiledPlot extends React.Component {
     const rangeSelectionMoved = this.rangeSelectionMoved;
     this.rangeSelectionMoved = false;
 
-    if (!this.sourceEvent || !this.props.onRangeSelection || rangeSelectionMoved) return;
+    if (
+      !this.sourceEvent ||
+      !this.props.onRangeSelection ||
+      rangeSelectionMoved
+    )
+      return;
 
     this.rangeSelectionTriggered = true;
     this.props.onRangeSelection(event.selection);
@@ -139,7 +150,10 @@ class HorizontalTiledPlot extends React.Component {
     }
 
     const relRange = rangeSelection
-      ? [this.props.scale(rangeSelection[0]), this.props.scale(rangeSelection[1])]
+      ? [
+          this.props.scale(rangeSelection[0]),
+          this.props.scale(rangeSelection[1])
+        ]
       : null;
 
     this.rangeSelectionMoved = true;
@@ -178,7 +192,10 @@ class HorizontalTiledPlot extends React.Component {
       : 'stylesTrack.track-range-selection';
 
     return (
-      <div className="horizontal-tiled-plot" styleName="styles.horizontal-tiled-plot">
+      <div
+        className="horizontal-tiled-plot"
+        styleName="styles.horizontal-tiled-plot"
+      >
         {isBrushable && (
           <svg
             ref={el => {

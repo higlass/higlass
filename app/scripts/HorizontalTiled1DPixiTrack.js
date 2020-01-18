@@ -24,7 +24,11 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     this.pubSubs = [];
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d, this.isShowGlobalMousePosition());
+      this.hideMousePosition = showMousePosition(
+        this,
+        this.is2d,
+        this.isShowGlobalMousePosition()
+      );
     }
   }
 
@@ -39,7 +43,11 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     this.options = options;
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d, this.isShowGlobalMousePosition());
+      this.hideMousePosition = showMousePosition(
+        this,
+        this.is2d,
+        this.isShowGlobalMousePosition()
+      );
     }
 
     if (!this.options.showMousePosition && this.hideMousePosition) {
@@ -100,17 +108,26 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
 
   drawAxis(valueScale) {
     // either no axis position is specified
-    if (!this.options.axisPositionVertical && !this.options.axisPositionHorizontal) {
+    if (
+      !this.options.axisPositionVertical &&
+      !this.options.axisPositionHorizontal
+    ) {
       this.axis.clearAxis();
       return;
     }
 
-    if (this.options.axisPositionVertical && this.options.axisPositionVertical === 'hidden') {
+    if (
+      this.options.axisPositionVertical &&
+      this.options.axisPositionVertical === 'hidden'
+    ) {
       this.axis.clearAxis();
       return;
     }
 
-    if (this.options.axisPositionHorizontal && this.options.axisPositionHorizontal === 'hidden') {
+    if (
+      this.options.axisPositionHorizontal &&
+      this.options.axisPositionHorizontal === 'hidden'
+    ) {
       this.axis.clearAxis();
       return;
     }
@@ -139,21 +156,27 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
       this.options.axisPositionHorizontal === 'right' ||
       this.options.axisPositionVertical === 'bottom'
     ) {
-      this.axis.pAxis.position.x = this.position[0] + this.dimensions[0] - margin;
+      this.axis.pAxis.position.x =
+        this.position[0] + this.dimensions[0] - margin;
       this.axis.pAxis.position.y = this.position[1];
       this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
     } else if (
       this.options.axisPositionHorizontal === 'outsideRight' ||
       this.options.axisPositionVertical === 'outsideBottom'
     ) {
-      this.axis.pAxis.position.x = this.position[0] + this.dimensions[0] - margin;
+      this.axis.pAxis.position.x =
+        this.position[0] + this.dimensions[0] - margin;
       this.axis.pAxis.position.y = this.position[1];
       this.axis.drawAxisRight(valueScale, this.dimensions[1]);
     }
   }
 
   mouseMoveZoomHandler(absX = this.mouseX, absY = this.mouseY) {
-    if (typeof absX === 'undefined' || !this.areAllVisibleTilesLoaded() || !this.tilesetInfo)
+    if (
+      typeof absX === 'undefined' ||
+      !this.areAllVisibleTilesLoaded() ||
+      !this.tilesetInfo
+    )
       return;
 
     let dataPosX = 0;
@@ -334,14 +357,20 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
 
             switch (labelPosition) {
               case 'rightBottom':
-                labelEl.setAttribute('x', this.position[0] + this.dimensions[0] - 6);
+                labelEl.setAttribute(
+                  'x',
+                  this.position[0] + this.dimensions[0] - 6
+                );
                 labelEl.setAttribute('y', y + labelSize + 2);
                 labelEl.setAttribute('text-anchor', 'end');
                 break;
 
               case 'right':
               case 'rightTop':
-                labelEl.setAttribute('x', this.position[0] + this.dimensions[0] - 6);
+                labelEl.setAttribute(
+                  'x',
+                  this.position[0] + this.dimensions[0] - 6
+                );
                 labelEl.setAttribute('y', y - 2);
                 labelEl.setAttribute('text-anchor', 'end');
                 break;

@@ -5,7 +5,12 @@ import ContextMenuItem from './ContextMenuItem';
 import NestedContextMenu from './NestedContextMenu';
 
 // Configs
-import { OPTIONS_INFO, THEME_DARK, TRACKS_INFO, TRACKS_INFO_BY_TYPE } from './configs';
+import {
+  OPTIONS_INFO,
+  THEME_DARK,
+  TRACKS_INFO,
+  TRACKS_INFO_BY_TYPE
+} from './configs';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
@@ -14,7 +19,10 @@ export default class SeriesListMenu extends ContextMenuContainer {
   getConfigureSeriesMenu(position, bbox, track) {
     const menuItems = {};
 
-    if (!TRACKS_INFO_BY_TYPE[track.type] || !TRACKS_INFO_BY_TYPE[track.type].availableOptions) {
+    if (
+      !TRACKS_INFO_BY_TYPE[track.type] ||
+      !TRACKS_INFO_BY_TYPE[track.type].availableOptions
+    ) {
       return null;
     }
 
@@ -27,7 +35,9 @@ export default class SeriesListMenu extends ContextMenuContainer {
         // can we dynamically generate some options?
         // should be used if the options depend on tileset info or other current state
         if (OPTIONS_INFO[optionType].generateOptions) {
-          const generatedOptions = OPTIONS_INFO[optionType].generateOptions(track);
+          const generatedOptions = OPTIONS_INFO[optionType].generateOptions(
+            track
+          );
 
           if (!menuItems[optionType].children) {
             menuItems[optionType].children = {};
@@ -44,14 +54,18 @@ export default class SeriesListMenu extends ContextMenuContainer {
               }
             };
 
-            menuItems[optionType].children[generatedOption.value] = optionSelectorSettings;
+            menuItems[optionType].children[
+              generatedOption.value
+            ] = optionSelectorSettings;
           }
         }
 
         if (OPTIONS_INFO[optionType].inlineOptions) {
           // we can simply select this option from the menu
-          for (const inlineOptionKey in OPTIONS_INFO[optionType].inlineOptions) {
-            const inlineOption = OPTIONS_INFO[optionType].inlineOptions[inlineOptionKey];
+          for (const inlineOptionKey in OPTIONS_INFO[optionType]
+            .inlineOptions) {
+            const inlineOption =
+              OPTIONS_INFO[optionType].inlineOptions[inlineOptionKey];
 
             // check if there's already available options (e.g.
             // "Top right") for this option type (e.g. "Label
@@ -68,9 +82,15 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
             // is there a custom component available for picking this
             // option type value (e.g. 'custom' color scale)
-            if (inlineOption.componentPickers && inlineOption.componentPickers[track.type]) {
+            if (
+              inlineOption.componentPickers &&
+              inlineOption.componentPickers[track.type]
+            ) {
               optionSelectorSettings.handler = () => {
-                this.props.onConfigureTrack(track, inlineOption.componentPickers[track.type]);
+                this.props.onConfigureTrack(
+                  track,
+                  inlineOption.componentPickers[track.type]
+                );
                 this.props.closeMenu();
               };
             } else {
@@ -83,7 +103,9 @@ export default class SeriesListMenu extends ContextMenuContainer {
               };
             }
 
-            menuItems[optionType].children[inlineOptionKey] = optionSelectorSettings;
+            menuItems[optionType].children[
+              inlineOptionKey
+            ] = optionSelectorSettings;
           }
         } else if (
           OPTIONS_INFO[optionType].componentPickers &&
@@ -134,7 +156,8 @@ export default class SeriesListMenu extends ContextMenuContainer {
     if (window.higlassTracksByType) {
       // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
       Object.keys(window.higlassTracksByType).forEach(pluginTrackType => {
-        TRACKS_INFO_BY_TYPE[pluginTrackType] = window.higlassTracksByType[pluginTrackType].config;
+        TRACKS_INFO_BY_TYPE[pluginTrackType] =
+          window.higlassTracksByType[pluginTrackType].config;
       });
     }
 
@@ -226,7 +249,9 @@ export default class SeriesListMenu extends ContextMenuContainer {
       // this track is already being divided
       return (
         <ContextMenuItem
-          onClick={() => this.props.onChangeTrackData(this.props.series.uid, newData)}
+          onClick={() =>
+            this.props.onChangeTrackData(this.props.series.uid, newData)
+          }
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
           styleName="context-menu-item"
         >
@@ -257,7 +282,12 @@ export default class SeriesListMenu extends ContextMenuContainer {
     ) {
       exportDataMenuItem = (
         <ContextMenuItem
-          onClick={() => this.props.onExportData(this.props.hostTrack.uid, this.props.track.uid)}
+          onClick={() =>
+            this.props.onExportData(
+              this.props.hostTrack.uid,
+              this.props.track.uid
+            )
+          }
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
           styleName="context-menu-item"
         >

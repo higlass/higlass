@@ -2,13 +2,14 @@ import { formatPrefix, precisionPrefix } from 'd3-format';
 
 import HeatmapOptions from '../HeatmapOptions';
 
-const sizesInPx = (sizes, unit = '', multiplier = 1) => sizes.reduce((sizeOption, size) => {
-  sizeOption[size] = {
-    name: `${size * multiplier}${unit}`,
-    value: size
-  };
-  return sizeOption;
-}, {});
+const sizesInPx = (sizes, unit = '', multiplier = 1) =>
+  sizes.reduce((sizeOption, size) => {
+    sizeOption[size] = {
+      name: `${size * multiplier}${unit}`,
+      value: size
+    };
+    return sizeOption;
+  }, {});
 
 const YES_NO = {
   yes: {
@@ -703,7 +704,6 @@ export const OPTIONS_INFO = {
     }
   },
 
-
   annotationHeight: {
     name: 'Annotation Height',
     inlineOptions: {
@@ -720,7 +720,7 @@ export const OPTIONS_INFO = {
     name: 'Annotation Style',
     inlineOptions: {
       box: { name: 'Box', value: 'box' },
-      segment: { name: 'Segment', value: 'segment' },
+      segment: { name: 'Segment', value: 'segment' }
     }
   },
 
@@ -1438,7 +1438,7 @@ export const OPTIONS_INFO = {
         value: 'None'
       }
     },
-    generateOptions: (track) => {
+    generateOptions: track => {
       const inlineOptions = [];
 
       if (track.transforms) {
@@ -1457,7 +1457,7 @@ export const OPTIONS_INFO = {
   aggregationMode: {
     name: 'Aggregation Mode',
     inlineOptions: {},
-    generateOptions: (track) => {
+    generateOptions: track => {
       const inlineOptions = [];
 
       if (track.aggregationModes) {
@@ -1486,7 +1486,7 @@ export const OPTIONS_INFO = {
         value: null
       }
     },
-    generateOptions: (track) => {
+    generateOptions: track => {
       if (track.maxZoom) {
         const inlineOptions = [];
 
@@ -1497,7 +1497,9 @@ export const OPTIONS_INFO = {
           let resolution = 1;
 
           if (track.resolutions) {
-            const sortedResolutions = track.resolutions.map(x => +x).sort((a, b) => b - a);
+            const sortedResolutions = track.resolutions
+              .map(x => +x)
+              .sort((a, b) => b - a);
             [maxResolutionSize] = sortedResolutions;
             resolution = sortedResolutions[i];
           } else {
@@ -1530,7 +1532,7 @@ export const OPTIONS_INFO = {
         value: null
       }
     },
-    generateOptions: (track) => {
+    generateOptions: track => {
       if (!track.header) return [];
 
       const headerParts = track.header.split('\t');

@@ -28,11 +28,17 @@ const Dialog = props => {
         </Button>
       </header>
       {props.maxHeight ? (
-        <main styleName={props.maxHeight ? 'dialog-main-max-height' : ''}>{props.children}</main>
+        <main styleName={props.maxHeight ? 'dialog-main-max-height' : ''}>
+          {props.children}
+        </main>
       ) : (
         <main>{props.children}</main>
       )}
-      <footer styleName={props.maxHeight ? 'dialog-footer-max-height' : 'dialog-footer'}>
+      <footer
+        styleName={
+          props.maxHeight ? 'dialog-footer-max-height' : 'dialog-footer'
+        }
+      >
         {props.okayOnly ? (
           <div />
         ) : (

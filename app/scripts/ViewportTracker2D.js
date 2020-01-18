@@ -8,7 +8,11 @@ class ViewportTracker2D extends SVGTrack {
   constructor(context, options) {
     // create a clipped SVG Path
     super(context, options);
-    const { registerViewportChanged, removeViewportChanged, setDomainsCallback } = context;
+    const {
+      registerViewportChanged,
+      removeViewportChanged,
+      setDomainsCallback
+    } = context;
 
     const uid = slugid.nice();
     this.uid = uid;
@@ -70,9 +74,15 @@ class ViewportTracker2D extends SVGTrack {
       return;
     }
 
-    const xDomain = [this._xScale.invert(s[0][0]), this._xScale.invert(s[1][0])];
+    const xDomain = [
+      this._xScale.invert(s[0][0]),
+      this._xScale.invert(s[1][0])
+    ];
 
-    const yDomain = [this._yScale.invert(s[0][1]), this._yScale.invert(s[1][1])];
+    const yDomain = [
+      this._yScale.invert(s[0][1]),
+      this._yScale.invert(s[1][1])
+    ];
 
     this.setDomainsCallback(xDomain, yDomain);
   }

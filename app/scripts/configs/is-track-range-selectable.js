@@ -23,7 +23,9 @@ export const IS_TRACK_RANGE_SELECTABLE = track => {
       return true;
 
     case 'combined': {
-      return track.contents.map(t => IS_TRACK_RANGE_SELECTABLE(t)).reduce(or, false);
+      return track.contents
+        .map(t => IS_TRACK_RANGE_SELECTABLE(t))
+        .reduce(or, false);
     }
 
     default:

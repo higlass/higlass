@@ -180,7 +180,9 @@ class Autocomplete extends React.Component {
     let items = this.props.items;
 
     if (this.props.shouldItemRender) {
-      items = items.filter(item => this.props.shouldItemRender(item, this.props.value));
+      items = items.filter(item =>
+        this.props.shouldItemRender(item, this.props.value)
+      );
     }
 
     if (this.props.sortItems) {
@@ -199,7 +201,8 @@ class Autocomplete extends React.Component {
     if (items.length === 0) {
       return;
     }
-    const matchedItem = highlightedIndex !== null ? items[highlightedIndex] : items[0];
+    const matchedItem =
+      highlightedIndex !== null ? items[highlightedIndex] : items[0];
     const itemValue = this.props.getItemValue(matchedItem);
     const itemValueDoesMatch =
       itemValue.toLowerCase().indexOf(this.props.value.toLowerCase()) === 0;
@@ -250,9 +253,13 @@ class Autocomplete extends React.Component {
 
   renderMenu() {
     const items = this.getFilteredItems().map((item, index) => {
-      const element = this.props.renderItem(item, this.state.highlightedIndex === index, {
-        cursor: 'default'
-      });
+      const element = this.props.renderItem(
+        item,
+        this.state.highlightedIndex === index,
+        {
+          cursor: 'default'
+        }
+      );
       return React.cloneElement(element, {
         onMouseDown: () => this.setIgnoreBlur(true),
         // Ignore blur to prevent menu from de-rendering before we can process click
@@ -305,7 +312,10 @@ class Autocomplete extends React.Component {
   }
 
   isInputFocused() {
-    return this.inputEl.ownerDocument && this.inputEl === this.inputEl.ownerDocument.activeElement;
+    return (
+      this.inputEl.ownerDocument &&
+      this.inputEl === this.inputEl.ownerDocument.activeElement
+    );
   }
 
   handleInputClick() {
@@ -315,7 +325,9 @@ class Autocomplete extends React.Component {
         isOpen: true
       });
     } else if (this.state.highlightedIndex !== null && !this._ignoreClick) {
-      this.selectItemFromMouse(this.getFilteredItems()[this.state.highlightedIndex]);
+      this.selectItemFromMouse(
+        this.getFilteredItems()[this.state.highlightedIndex]
+      );
     }
     this._ignoreClick = false;
   }
@@ -379,7 +391,8 @@ class Autocomplete extends React.Component {
           role="combobox"
           value={this.props.value}
         />
-        {('open' in this.props ? this.props.open : this.state.isOpen) && this.renderMenu()}
+        {('open' in this.props ? this.props.open : this.state.isOpen) &&
+          this.renderMenu()}
         {this.props.debug && (
           <pre
             style={{

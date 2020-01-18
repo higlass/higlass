@@ -68,12 +68,20 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
 
     this.drawAxis(this.valueScale);
 
-    if (this.options.valueScaling === 'log' && this.valueScale.domain()[1] < 0) {
-      console.warn('Negative values present when using a log scale', this.valueScale.domain());
+    if (
+      this.options.valueScaling === 'log' &&
+      this.valueScale.domain()[1] < 0
+    ) {
+      console.warn(
+        'Negative values present when using a log scale',
+        this.valueScale.domain()
+      );
       return;
     }
 
-    const stroke = colorToHex(this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue');
+    const stroke = colorToHex(
+      this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue'
+    );
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
     const tileXScale = scaleLinear()
@@ -86,7 +94,9 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     graphics.lineStyle(strokeWidth, stroke, 1);
 
     const squareSide = this.options.pointSize ? this.options.pointSize : 3;
-    const pointColor = colorToHex(this.options.pointColor ? this.options.pointColor : 'red');
+    const pointColor = colorToHex(
+      this.options.pointColor ? this.options.pointColor : 'red'
+    );
 
     graphics.beginFill(pointColor, 1);
 
@@ -160,7 +170,10 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     const output = document.createElement('g');
 
     track.appendChild(output);
-    output.setAttribute('transform', `translate(${this.position[0]},${this.position[1]})`);
+    output.setAttribute(
+      'transform',
+      `translate(${this.position[0]},${this.position[1]})`
+    );
 
     for (const tile of this.visibleAndFetchedTiles()) {
       for (let i = 0; i < tile.barXValues.length; i++) {
@@ -198,13 +211,19 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
       this.options.axisPositionVertical === 'top'
     ) {
       // left axis are shown at the beginning of the plot
-      const gDrawnAxis = this.axis.exportAxisLeftSVG(this.valueScale, this.dimensions[1]);
+      const gDrawnAxis = this.axis.exportAxisLeftSVG(
+        this.valueScale,
+        this.dimensions[1]
+      );
       gAxis.appendChild(gDrawnAxis);
     } else if (
       this.options.axisPositionHorizontal === 'right' ||
       this.options.axisPositionVertical === 'bottom'
     ) {
-      const gDrawnAxis = this.axis.exportAxisRightSVG(this.valueScale, this.dimensions[1]);
+      const gDrawnAxis = this.axis.exportAxisRightSVG(
+        this.valueScale,
+        this.dimensions[1]
+      );
       gAxis.appendChild(gDrawnAxis);
     }
 

@@ -6,7 +6,9 @@ export { default as base64ToCanvas } from './base64-to-canvas';
 export { default as chromInfoBisector } from './chrom-info-bisector';
 export { default as chrToAbs } from './chr-to-abs';
 export { default as cloneEvent } from './clone-event';
-export { default as colorDomainToRgbaArray } from './color-domain-to-rgba-array';
+export {
+  default as colorDomainToRgbaArray
+} from './color-domain-to-rgba-array';
 export { default as colorToHex } from './color-to-hex';
 export { default as dataToGenomicLoci } from './data-to-genomic-loci';
 export { default as debounce } from './debounce';
@@ -20,7 +22,9 @@ export { default as flatten } from './flatten';
 export { default as forEach } from './for-each';
 export { default as forwardEvent } from './forward-event';
 export { default as genomeLociToPixels } from './genome-loci-to-pixels';
-export { default as getDefaultTrackForDatatype } from './get-default-track-for-datatype';
+export {
+  default as getDefaultTrackForDatatype
+} from './get-default-track-for-datatype';
 export { default as getElementDim } from './get-element-dim';
 export { default as getTrackByUid } from './get-track-by-uid';
 export { default as getTrackObjById } from './get-track-obj-by-id';
@@ -72,9 +76,15 @@ export { default as segmentsToRows } from './segments-to-rows';
 export { default as visitPositionedTracks } from './visit-positioned-tracks';
 export { default as visitTracks } from './visit-tracks';
 export { default as trackUtils } from './track-utils';
-export { default as positionedTracksToAllTracks } from './positioned-tracks-to-all-tracks';
+export {
+  default as positionedTracksToAllTracks
+} from './positioned-tracks-to-all-tracks';
 
-export { getTrackObjectFromHGC, getTrackRenderer, getTiledPlot } from './get-higlass-components';
+export {
+  getTrackObjectFromHGC,
+  getTrackRenderer,
+  getTiledPlot
+} from './get-higlass-components';
 export {
   waitForJsonComplete,
   waitForTilesLoaded,

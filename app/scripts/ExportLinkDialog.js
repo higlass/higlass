@@ -9,7 +9,12 @@ import '../styles/ExportLinkDialog.module.scss';
 class ExportLinkDialog extends React.Component {
   render() {
     return (
-      <Dialog okayOnly={true} okayTitle="Done" onOkay={this.props.onDone} title="Share view link">
+      <Dialog
+        okayOnly={true}
+        okayTitle="Done"
+        onOkay={this.props.onDone}
+        title="Share view link"
+      >
         <div styleName="export-link-dialog-wrapper">
           <input
             ref={element => {

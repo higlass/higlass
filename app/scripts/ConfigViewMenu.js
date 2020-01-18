@@ -32,8 +32,10 @@ class ConfigViewMenu extends ContextMenuContainer {
 
         if (OPTIONS_INFO[optionType].inlineOptions) {
           // we can simply select this option from the menu
-          for (const inlineOptionKey in OPTIONS_INFO[optionType].inlineOptions) {
-            const inlineOption = OPTIONS_INFO[optionType].inlineOptions[inlineOptionKey];
+          for (const inlineOptionKey in OPTIONS_INFO[optionType]
+            .inlineOptions) {
+            const inlineOption =
+              OPTIONS_INFO[optionType].inlineOptions[inlineOptionKey];
 
             // check if there's already available options (e.g.
             // "Top right") for this option type (e.g. "Label
@@ -55,7 +57,9 @@ class ConfigViewMenu extends ContextMenuContainer {
               this.props.onOptionsChanged(newOptions);
             };
 
-            menuItems[optionType].children[inlineOptionKey] = optionSelectorSettings;
+            menuItems[optionType].children[
+              inlineOptionKey
+            ] = optionSelectorSettings;
           }
         }
       }
@@ -150,7 +154,9 @@ class ConfigViewMenu extends ContextMenuContainer {
           {'Zoom to data extent'}
         </ContextMenuItem>
 
-        <ContextMenuItem onClick={e => this.props.onClearView(e)}>{'Clear View'}</ContextMenuItem>
+        <ContextMenuItem onClick={e => this.props.onClearView(e)}>
+          {'Clear View'}
+        </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
 
@@ -168,7 +174,9 @@ class ConfigViewMenu extends ContextMenuContainer {
 
         <hr styleName="context-menu-hr" />
 
-        <ContextMenuItem onClick={this.props.onLockZoom}>{'Lock zoom with'}</ContextMenuItem>
+        <ContextMenuItem onClick={this.props.onLockZoom}>
+          {'Lock zoom with'}
+        </ContextMenuItem>
 
         <ContextMenuItem onClick={this.props.onLockLocation}>
           {'Lock location with'}
@@ -186,7 +194,9 @@ class ConfigViewMenu extends ContextMenuContainer {
 
         <hr styleName="context-menu-hr" />
 
-        <ContextMenuItem onClick={e => this.props.onUnlockZoom(e)}>{'Unlock zoom'}</ContextMenuItem>
+        <ContextMenuItem onClick={e => this.props.onUnlockZoom(e)}>
+          {'Unlock zoom'}
+        </ContextMenuItem>
 
         <ContextMenuItem onClick={e => this.props.onUnlockLocation(e)}>
           {'Unlock location'}

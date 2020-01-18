@@ -34,8 +34,12 @@ class Chromosome2DAnnotations extends PixiTrack {
       return;
     }
 
-    const minRectWidth = this.options.minRectWidth ? this.options.minRectWidth : 10;
-    const minRectHeight = this.options.minRectWidth ? this.options.minRectHeight : 10;
+    const minRectWidth = this.options.minRectWidth
+      ? this.options.minRectWidth
+      : 10;
+    const minRectHeight = this.options.minRectWidth
+      ? this.options.minRectHeight
+      : 10;
 
     super.draw();
     const graphics = this.pMain;
@@ -84,17 +88,27 @@ class Chromosome2DAnnotations extends PixiTrack {
       graphics.beginFill(colorFillHex, colorFill.opacity);
 
       // console.log('region:', region);
-      let startX = this._xScale(this.chromInfo.chrPositions[region[0]].pos + +region[1]);
-      const endX = this._xScale(this.chromInfo.chrPositions[region[0]].pos + +region[2]);
+      let startX = this._xScale(
+        this.chromInfo.chrPositions[region[0]].pos + +region[1]
+      );
+      const endX = this._xScale(
+        this.chromInfo.chrPositions[region[0]].pos + +region[2]
+      );
 
-      let startY = this._yScale(this.chromInfo.chrPositions[region[3]].pos + +region[4]);
-      const endY = this._yScale(this.chromInfo.chrPositions[region[3]].pos + +region[5]);
+      let startY = this._yScale(
+        this.chromInfo.chrPositions[region[3]].pos + +region[4]
+      );
+      const endY = this._yScale(
+        this.chromInfo.chrPositions[region[3]].pos + +region[5]
+      );
 
       let width = endX - startX;
       let height = endY - startY;
 
-      const _minRectWidth = typeof region[8] !== 'undefined' ? region[8] : minRectWidth;
-      const _minRectHeight = typeof region[9] !== 'undefined' ? region[9] : minRectHeight;
+      const _minRectWidth =
+        typeof region[8] !== 'undefined' ? region[8] : minRectWidth;
+      const _minRectHeight =
+        typeof region[9] !== 'undefined' ? region[9] : minRectHeight;
 
       if (width < _minRectWidth) {
         // this region is too small to draw so center it on the location
@@ -114,14 +128,22 @@ class Chromosome2DAnnotations extends PixiTrack {
       this.rects[id].graphics.clear();
       this.rects[id].graphics.interactive = true;
       this.rects[id].graphics.buttonMode = true;
-      this.rects[id].graphics.hitArea = new PIXI.Rectangle(startX, startY, width, height);
+      this.rects[id].graphics.hitArea = new PIXI.Rectangle(
+        startX,
+        startY,
+        width,
+        height
+      );
 
       this.rects[id].graphics.mousedown = () => {
         this.rects[id].mouseDownTime = performance.now();
       };
 
       this.rects[id].graphics.mouseup = event => {
-        if (performance.now() - this.rects[id].mouseDownTime < MAX_CLICK_DELAY) {
+        if (
+          performance.now() - this.rects[id].mouseDownTime <
+          MAX_CLICK_DELAY
+        ) {
           this.pubSub.publish('app.click', {
             type: 'annotation',
             event,

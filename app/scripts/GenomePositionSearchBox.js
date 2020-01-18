@@ -2,7 +2,12 @@ import { queue } from 'd3-queue';
 import { select, event } from 'd3-selection';
 import React from 'react';
 import slugid from 'slugid';
-import { FormGroup, Glyphicon, DropdownButton, MenuItem } from 'react-bootstrap';
+import {
+  FormGroup,
+  Glyphicon,
+  DropdownButton,
+  MenuItem
+} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
 import { ZOOM_TRANSITION_DURATION } from './configs';
@@ -112,7 +117,10 @@ class GenomePositionSearchBox extends React.Component {
   componentDidMount() {
     this.mounted = true;
     // we want to catch keypresses so we can get that enter
-    select(this.autocompleteMenu.inputEl).on('keypress', this.autocompleteKeyPress.bind(this));
+    select(this.autocompleteMenu.inputEl).on(
+      'keypress',
+      this.autocompleteKeyPress.bind(this)
+    );
 
     //this.findAvailableAutocompleteSources();
     //this.findAvailableChromSizes();
@@ -157,12 +165,15 @@ class GenomePositionSearchBox extends React.Component {
       autocompleteServer: chromInfoServer
     });
 
-    ChromosomeInfo(`${chromInfoServer}/chrom-sizes/?id=${chromInfoId}`, newChromInfo => {
-      this.chromInfo = newChromInfo;
-      this.searchField = new SearchField(this.chromInfo);
+    ChromosomeInfo(
+      `${chromInfoServer}/chrom-sizes/?id=${chromInfoId}`,
+      newChromInfo => {
+        this.chromInfo = newChromInfo;
+        this.searchField = new SearchField(this.chromInfo);
 
-      this.setPositionText();
-    });
+        this.setPositionText();
+      }
+    );
   }
 
   scalesChanged(xScale, yScale) {
@@ -224,7 +235,9 @@ class GenomePositionSearchBox extends React.Component {
 
         // elongate the span of the gene so that it doesn't take up the entire
         // view
-        const extension = Math.floor((genePosition.txEnd - genePosition.txStart) / 4);
+        const extension = Math.floor(
+          (genePosition.txEnd - genePosition.txStart) / 4
+        );
 
         if (dashParts.length == 1) {
           // no range, just a position
@@ -233,11 +246,13 @@ class GenomePositionSearchBox extends React.Component {
         } else if (j == 0) {
           // first part of a range
 
-          dashParts[j] = `${genePosition.chr}:${genePosition.txStart - extension}`;
+          dashParts[j] = `${genePosition.chr}:${genePosition.txStart -
+            extension}`;
         } else {
           // last part of a range
 
-          dashParts[j] = `${genePosition.chr}:${genePosition.txEnd + extension}`;
+          dashParts[j] = `${genePosition.chr}:${genePosition.txEnd +
+            extension}`;
         }
 
         spaceParts[i] = dashParts.join('-');
@@ -305,7 +320,9 @@ class GenomePositionSearchBox extends React.Component {
       const searchFieldValue = this.positionText; // ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
 
       if (this.searchField != null) {
-        let [range1, range2] = this.searchField.searchPosition(searchFieldValue);
+        let [range1, range2] = this.searchField.searchPosition(
+          searchFieldValue
+        );
 
         if (
           (range1 && (isNaN(range1[0]) || isNaN(range1[1]))) ||
@@ -501,10 +518,15 @@ class GenomePositionSearchBox extends React.Component {
       ? 'styles.genome-position-search-bar-icon-focus'
       : 'styles.genome-position-search-bar-icon';
 
-    if (this.props.theme === THEME_DARK) className += ' styles.genome-position-search-dark';
+    if (this.props.theme === THEME_DARK)
+      className += ' styles.genome-position-search-dark';
 
     return (
-      <FormGroup bsSize="small" styleName={className} ref={c => (this.gpsbForm = c)}>
+      <FormGroup
+        bsSize="small"
+        styleName={className}
+        ref={c => (this.gpsbForm = c)}
+      >
         <Autocomplete
           getItemValue={item => item.geneName}
           inputProps={{
@@ -527,7 +549,9 @@ class GenomePositionSearchBox extends React.Component {
             <div
               id={item.refseqid}
               key={item.refseqid}
-              style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
+              style={
+                isHighlighted ? this.styles.highlightedItem : this.styles.item
+              }
             >
               {item.geneName}
             </div>
@@ -539,7 +563,10 @@ class GenomePositionSearchBox extends React.Component {
           }}
         />
 
-        <button onClick={this.buttonClick.bind(this)} styleName={classNameButton}>
+        <button
+          onClick={this.buttonClick.bind(this)}
+          styleName={classNameButton}
+        >
           <Glyphicon glyph="search" />
         </button>
       </FormGroup>

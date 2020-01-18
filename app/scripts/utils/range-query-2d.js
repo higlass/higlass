@@ -46,7 +46,10 @@ const rangeQuery2d = (
     const newList = new outList.constructor(outList.length);
     let c = 0 + _yOff;
     for (let i = yFrom; i < yTo; i++) {
-      newList.set(src.slice(i * xDimSrc + xFrom, i * xDimSrc + xTo), _xOff + c * xDimOut);
+      newList.set(
+        src.slice(i * xDimSrc + xFrom, i * xDimSrc + xTo),
+        _xOff + c * xDimOut
+      );
       c += 1;
     }
     const acc = mirrored ? accessorTransposition(xDimOut, xDimOut) : undefined;

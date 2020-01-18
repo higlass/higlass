@@ -69,19 +69,19 @@ export default class HiGlassTrackComponent extends React.Component {
 
   shouldComponentUpdate(nextProps) {
     // For now, never re-render the component: Just re-zoom.
-    const {
-      x, y, width, height
-    } = nextProps;
+    const { x, y, width, height } = nextProps;
     this.zoomTo(x, y, width, height);
     return false;
   }
 
   initTrackViewer() {
-    const {
-      trackConfig, x, y, width, height
-    } = this.props;
+    const { trackConfig, x, y, width, height } = this.props;
     const element = document.getElementById(this.id);
-    const { id, hgApi } = trackViewer(element, [x, x + width, y, y + height], trackConfig);
+    const { id, hgApi } = trackViewer(
+      element,
+      [x, x + width, y, y + height],
+      trackConfig
+    );
     this.viewUid = id;
     this.viewer = hgApi;
   }

@@ -80,11 +80,16 @@ class CenterTrack extends React.Component {
         this.rangeSelectionTriggeredY = false;
         this.rangeSelectionTriggeredYEnd = false;
       } else {
-        this.moveBrushXY([dim1, nextProps.rangeSelection[1]], nextProps.rangeSelectionEnd);
+        this.moveBrushXY(
+          [dim1, nextProps.rangeSelection[1]],
+          nextProps.rangeSelectionEnd
+        );
       }
 
       const isUnset =
-        this.props.is1dRangeSelection && !nextProps.is1dRangeSelection && dim1 === null;
+        this.props.is1dRangeSelection &&
+        !nextProps.is1dRangeSelection &&
+        dim1 === null;
 
       return this.state !== nextState || isUnset;
     }
@@ -130,8 +135,14 @@ class CenterTrack extends React.Component {
     this.brushElX.call(this.brushBehaviorX);
     this.brushElY.call(this.brushBehaviorY);
 
-    resetD3BrushStyle(this.brushElX, stylesTrack['track-range-selection-group-brush-selection']);
-    resetD3BrushStyle(this.brushElY, stylesTrack['track-range-selection-group-brush-selection']);
+    resetD3BrushStyle(
+      this.brushElX,
+      stylesTrack['track-range-selection-group-brush-selection']
+    );
+    resetD3BrushStyle(
+      this.brushElY,
+      stylesTrack['track-range-selection-group-brush-selection']
+    );
 
     this.brushElXOld = this.brushElX;
     this.brushElYOld = this.brushElY;
@@ -153,7 +164,10 @@ class CenterTrack extends React.Component {
     this.brushElXYOld = this.brushElXY;
     this.brushIs2dBound = true;
 
-    resetD3BrushStyle(this.brushElXY, stylesTrack['track-range-selection-group-brush-selection']);
+    resetD3BrushStyle(
+      this.brushElXY,
+      stylesTrack['track-range-selection-group-brush-selection']
+    );
   }
 
   brushedX() {
@@ -288,7 +302,10 @@ class CenterTrack extends React.Component {
     }
 
     const relRangeX = rangeSelection
-      ? [this.props.scaleX(rangeSelection[0]), this.props.scaleX(rangeSelection[1])]
+      ? [
+          this.props.scaleX(rangeSelection[0]),
+          this.props.scaleX(rangeSelection[1])
+        ]
       : null;
 
     this.rangeSelectionMoved = true;
@@ -312,7 +329,10 @@ class CenterTrack extends React.Component {
     }
 
     const relRangeY = rangeSelection
-      ? [this.props.scaleY(rangeSelection[0]), this.props.scaleY(rangeSelection[1])]
+      ? [
+          this.props.scaleY(rangeSelection[0]),
+          this.props.scaleY(rangeSelection[1])
+        ]
       : null;
 
     this.rangeSelectionMoved = true;
@@ -331,8 +351,14 @@ class CenterTrack extends React.Component {
     }
 
     const relRange = [
-      [this.props.scaleX(rangeSelection[0][0]), this.props.scaleY(rangeSelection[1][0])],
-      [this.props.scaleX(rangeSelection[0][1]), this.props.scaleY(rangeSelection[1][1])]
+      [
+        this.props.scaleX(rangeSelection[0][0]),
+        this.props.scaleY(rangeSelection[1][0])
+      ],
+      [
+        this.props.scaleX(rangeSelection[0][1]),
+        this.props.scaleY(rangeSelection[1][1])
+      ]
     ];
 
     this.rangeSelectionMoved = true;
@@ -431,7 +457,9 @@ class CenterTrack extends React.Component {
 
     let rangeSelectorClass = 'stylesTrack.track-range-selection';
     if (this.props.isRangeSelectionActive) {
-      rangeSelectorClass += this.props.is1dRangeSelection ? '-active-secondary' : '-active-primary';
+      rangeSelectorClass += this.props.is1dRangeSelection
+        ? '-active-secondary'
+        : '-active-primary';
     }
 
     const rangeSelectorGroup1dClass = !this.props.is1dRangeSelection
@@ -491,7 +519,10 @@ class CenterTrack extends React.Component {
             imgStyleMove={STYLES}
             imgStyleSettings={STYLES}
             isMoveable={false}
-            isVisible={this.state.isVisible || this.props.uid === this.props.configTrackMenuId}
+            isVisible={
+              this.state.isVisible ||
+              this.props.uid === this.props.configTrackMenuId
+            }
             onAddSeries={this.props.onAddSeries}
             onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
             onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}

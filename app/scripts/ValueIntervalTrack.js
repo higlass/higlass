@@ -63,7 +63,12 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
       const midY = this.valueScale(value);
       const midX = (endPos + startPos) / 2;
 
-      graphics.drawRect(midX - width / 2, midY - RECT_HEIGHT / 2, width, RECT_HEIGHT);
+      graphics.drawRect(
+        midX - width / 2,
+        midY - RECT_HEIGHT / 2,
+        width,
+        RECT_HEIGHT
+      );
     });
   }
 

@@ -36,7 +36,9 @@ class ViewHeader extends React.Component {
       width: -1
     };
 
-    this.handleTrackPositionChosenBound = this.handleTrackPositionChosen.bind(this);
+    this.handleTrackPositionChosenBound = this.handleTrackPositionChosen.bind(
+      this
+    );
   }
 
   componentDidMount() {
@@ -110,7 +112,9 @@ class ViewHeader extends React.Component {
             position={this.state.addTrackPositionMenuPosition}
             theme={this.props.theme}
           >
-            <AddTrackPositionMenu onTrackPositionChosen={this.handleTrackPositionChosenBound} />
+            <AddTrackPositionMenu
+              onTrackPositionChosen={this.handleTrackPositionChosenBound}
+            />
           </ContextMenuContainer>
         </PopupMenu>
       );
@@ -263,7 +267,9 @@ class ViewHeader extends React.Component {
       }
     );
 
-    let className = this.state.isFocused ? 'multitrack-header-focus' : 'multitrack-header';
+    let className = this.state.isFocused
+      ? 'multitrack-header-focus'
+      : 'multitrack-header';
 
     const classNameIcon =
       this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR
@@ -283,17 +289,25 @@ class ViewHeader extends React.Component {
       >
         <div styleName="multitrack-header-left">
           {this.props.mouseTool === MOUSE_TOOL_SELECT && (
-            <svg styleName={`mouse-tool-selection ${classNameIcon}`} title="Selection tool active">
+            <svg
+              styleName={`mouse-tool-selection ${classNameIcon}`}
+              title="Selection tool active"
+            >
               <use xlinkHref="#select" />
             </svg>
           )}
-          <div styleName="multitrack-header-grabber" title="Drag to move the view">
+          <div
+            styleName="multitrack-header-grabber"
+            title="Drag to move the view"
+          >
             <div />
             <div />
             <div />
           </div>
           {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR && (
-            <div styleName="multitrack-header-search">{GenomePositionSearchBox}</div>
+            <div styleName="multitrack-header-search">
+              {GenomePositionSearchBox}
+            </div>
           )}
         </div>
         <nav styleName="multitrack-header-nav-list">
@@ -317,7 +331,9 @@ class ViewHeader extends React.Component {
             ref={c => {
               this.plusImg = c;
             }}
-            onClick={() => this.handleAddTrackPositionMenuOpened(this.props.viewUid)}
+            onClick={() =>
+              this.handleAddTrackPositionMenuOpened(this.props.viewUid)
+            }
             styleName={classNameIcon}
           >
             <title>Add Track</title>

@@ -51,14 +51,16 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     this.fontSize = +this.options.fontSize || FONT_SIZE;
     this.geneLabelPos = this.options.geneLabelPosition || GENE_LABEL_POS;
-    this.geneRectHeight = +this.options.geneAnnotationHeight || GENE_RECT_HEIGHT;
+    this.geneRectHeight =
+      +this.options.geneAnnotationHeight || GENE_RECT_HEIGHT;
 
     // Don't ask me why but rectangles and triangles seem to be drawn 2px larger
     // than they should be
     this.geneRectHeight -= 2;
 
     this.geneTriangleHeight = 0.6 * this.geneRectHeight || TRIANGLE_HEIGHT;
-    this.geneStrandSpacing = +this.options.geneStrandSpacing || GENE_STRAND_SPACING;
+    this.geneStrandSpacing =
+      +this.options.geneStrandSpacing || GENE_STRAND_SPACING;
     this.geneStrandHSpacing = this.geneStrandSpacing / 2;
     this.geneRectHHeight = this.geneRectHeight / 2;
   }
@@ -138,18 +140,20 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           // the annotation visualization will be gone but the other tiles might still
           // contain its data.
           if (this.drawnGenes[zoomLevel][gene]) {
-            const reRender = Object.keys(this.drawnGenes[zoomLevel][gene].otherTileIds).some(
-              tileId => {
-                if (tileIds[tileId]) {
-                  this.drawnGenes[zoomLevel][gene].otherTileIds[tileId] = undefined;
-                  delete this.drawnGenes[zoomLevel][gene].otherTileIds[tileId];
-                  this.drawnGenes[zoomLevel][gene].tileId = tileId;
-                  this.renderTile(tileIds[tileId]);
-                  return true;
-                }
-                return false;
+            const reRender = Object.keys(
+              this.drawnGenes[zoomLevel][gene].otherTileIds
+            ).some(tileId => {
+              if (tileIds[tileId]) {
+                this.drawnGenes[zoomLevel][gene].otherTileIds[
+                  tileId
+                ] = undefined;
+                delete this.drawnGenes[zoomLevel][gene].otherTileIds[tileId];
+                this.drawnGenes[zoomLevel][gene].tileId = tileId;
+                this.renderTile(tileIds[tileId]);
+                return true;
               }
-            );
+              return false;
+            });
             if (!reRender) this.drawnGenes[zoomLevel][gene] = undefined;
           }
         });
@@ -168,7 +172,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     this.fontSize = +this.options.fontSize || FONT_SIZE;
     this.geneLabelPos = this.options.geneLabelPosition || GENE_LABEL_POS;
-    this.geneRectHeight = +this.options.geneAnnotationHeight || GENE_RECT_HEIGHT;
+    this.geneRectHeight =
+      +this.options.geneAnnotationHeight || GENE_RECT_HEIGHT;
     this.geneTriangleHeight = 0.6 * this.geneRectHeight || TRIANGLE_HEIGHT;
     this.geneStrandHSpacing = this.geneStrandSpacing / 2;
     this.geneRectHHeight = this.geneRectHeight / 2;
@@ -356,7 +361,16 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     return zoomLevel;
   }
 
-  drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle, strand) {
+  drawExons(
+    graphics,
+    txStart,
+    txEnd,
+    exonStarts,
+    exonEnds,
+    chrOffset,
+    yMiddle,
+    strand
+  ) {
     const exonOffsetStarts = exonStarts.split(',').map(x => +x + chrOffset);
     const exonOffsetEnds = exonEnds.split(',').map(x => +x + chrOffset);
 
@@ -370,8 +384,14 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     const yPos =
       strand === '+'
-        ? this.halfRectHHeight - this.geneStrandHSpacing - this.geneRectHHeight - lineHHeight
-        : this.halfRectHHeight + this.geneStrandHSpacing + this.geneRectHHeight - lineHHeight;
+        ? this.halfRectHHeight -
+          this.geneStrandHSpacing -
+          this.geneRectHHeight -
+          lineHHeight
+        : this.halfRectHHeight +
+          this.geneStrandHSpacing +
+          this.geneRectHHeight -
+          lineHHeight;
 
     const yExonPos = yPos - this.geneRectHHeight + lineHHeight;
 
@@ -435,7 +455,10 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       const exonEnd = exonOffsetEnds[j];
 
       const xStart = this._xScale(exonStart);
-      const localWidth = Math.max(1, this._xScale(exonEnd) - this._xScale(exonStart));
+      const localWidth = Math.max(
+        1,
+        this._xScale(exonEnd) - this._xScale(exonStart)
+      );
       const height = exonHeight;
 
       const localPoly = [
@@ -544,7 +567,10 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             // default red
             textYMiddle +=
               this.geneLabelPos === 'inside'
-                ? this.fontSize + this.geneStrandSpacing / 2 + fontRectPadding + 1
+                ? this.fontSize +
+                  this.geneStrandSpacing / 2 +
+                  fontRectPadding +
+                  1
                 : 1.5 * this.fontSize + this.geneRectHeight + 2;
           }
 
@@ -611,7 +637,12 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         const [minX, minY, maxX, maxY] = allBoxes[i];
         const width = maxX - minX;
         const height = maxY - minY;
-        allTiles[i].drawRect(minX - width / 2, minY - height / 2, width, height);
+        allTiles[i].drawRect(
+          minX - width / 2,
+          minY - height / 2,
+          width,
+          height
+        );
       }
     });
   }
@@ -663,7 +694,10 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       track = base;
     }
     const output = document.createElement('g');
-    output.setAttribute('transform', `translate(${this.position[0]},${this.position[1]})`);
+    output.setAttribute(
+      'transform',
+      `translate(${this.position[0]},${this.position[1]})`
+    );
 
     track.appendChild(output);
 

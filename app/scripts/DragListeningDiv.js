@@ -16,6 +16,22 @@ class DragListeningDiv extends React.Component {
     };
   }
 
+  handleDrop() {
+    if (!this.props.enabled) return;
+
+    const evtJson = this.props.draggingHappening;
+
+    const newTrack = {
+      type: this.props.defaultTrackType,
+      uid: slugid.nice(),
+      tilesetUid: evtJson.tilesetUid,
+      server: evtJson.server
+    };
+
+    this.props.onTrackDropped(newTrack);
+    this.props.pubSub.publish('trackDropped', newTrack);
+  }
+
   render() {
     // color red if not enabled, green if a track is not top and blue otherwise
     let background = 'red';
@@ -41,24 +57,11 @@ class DragListeningDiv extends React.Component {
             dragOnTop: false
           });
         }}
-        onDragOver={(evt) => {
+        onDragOver={evt => {
           evt.preventDefault();
         }}
-        onDrop={() => {
-          if (!this.props.enabled) return;
-
-          const evtJson = this.props.draggingHappening;
-
-          const newTrack = {
-            type: this.props.defaultTrackType,
-            uid: slugid.nice(),
-            tilesetUid: evtJson.tilesetUid,
-            server: evtJson.server
-          };
-
-          this.props.onTrackDropped(newTrack);
-          this.props.pubSub.publish('trackDropped', newTrack);
-        }}
+        onClick={this.handleDrop.bind(this)}
+        onDrop={this.handleDrop.bind(this)}
         onMouseEnter={() => {
           this.setState({
             dragOnTop: true

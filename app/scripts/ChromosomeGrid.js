@@ -80,7 +80,9 @@ class ChromosomeGrid extends PixiTrack {
       this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue'
     );
 
-    const strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
+    const strokeWidth = this.options.lineStrokeWidth
+      ? this.options.lineStrokeWidth
+      : 1;
 
     graphics.lineStyle(strokeWidth, strokeColor, 1.0);
 
@@ -137,8 +139,14 @@ class ChromosomeGrid extends PixiTrack {
       this.mask2d.beginFill(0xff0000);
 
       for (let i = 0; i < this.options.orientationsAndPositions.length; i++) {
-        const orientation = this.options.orientationsAndPositions[i].orientation;
-        const { left, top, width, height } = this.options.orientationsAndPositions[i].position;
+        const orientation = this.options.orientationsAndPositions[i]
+          .orientation;
+        const {
+          left,
+          top,
+          width,
+          height
+        } = this.options.orientationsAndPositions[i].position;
 
         if (orientation === '1d-horizontal') {
           this.mask1dH.drawRect(left, top, width, height);
@@ -192,7 +200,9 @@ class ChromosomeGrid extends PixiTrack {
   }
 
   drawLinesSvg(output, orientation, width, height, left = 0, top = 0) {
-    const strokeColor = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
+    const strokeColor = this.options.lineStrokeColor
+      ? this.options.lineStrokeColor
+      : 'blue';
     const strokeWidth = this.options.lineStrokeWidth;
 
     // First horizontal line
@@ -200,7 +210,14 @@ class ChromosomeGrid extends PixiTrack {
       const y = this._yScale(0);
       if (y > 0 && y < top + height) {
         output.appendChild(
-          this.createSvgLine(left, width + left, y + top, y + top, strokeColor, strokeWidth)
+          this.createSvgLine(
+            left,
+            width + left,
+            y + top,
+            y + top,
+            strokeColor,
+            strokeWidth
+          )
         );
       }
     }
@@ -210,7 +227,14 @@ class ChromosomeGrid extends PixiTrack {
       const x = this._xScale(0);
       if (x > 0 && x < left + width) {
         output.appendChild(
-          this.createSvgLine(x + left, x + left, top, height + top, strokeColor, strokeWidth)
+          this.createSvgLine(
+            x + left,
+            x + left,
+            top,
+            height + top,
+            strokeColor,
+            strokeWidth
+          )
         );
       }
     }
@@ -223,7 +247,14 @@ class ChromosomeGrid extends PixiTrack {
         const y = this._yScale(chrEnd);
         if (y > 0 && y < top + height) {
           output.appendChild(
-            this.createSvgLine(left, width + left, y + top, y + top, strokeColor, strokeWidth)
+            this.createSvgLine(
+              left,
+              width + left,
+              y + top,
+              y + top,
+              strokeColor,
+              strokeWidth
+            )
           );
         }
       }
@@ -232,7 +263,14 @@ class ChromosomeGrid extends PixiTrack {
         const x = this._xScale(chrEnd);
         if (x > 0 && x < left + width) {
           output.appendChild(
-            this.createSvgLine(x + left, x + left, top, height + top, strokeColor, strokeWidth)
+            this.createSvgLine(
+              x + left,
+              x + left,
+              top,
+              height + top,
+              strokeColor,
+              strokeWidth
+            )
           );
         }
       }
@@ -254,7 +292,10 @@ class ChromosomeGrid extends PixiTrack {
 
     base.setAttribute('id', 'ChromosomeGrid');
 
-    output.setAttribute('transform', `translate(${this.position[0]},${this.position[1]})`);
+    output.setAttribute(
+      'transform',
+      `translate(${this.position[0]},${this.position[1]})`
+    );
 
     if (!this.chromInfo) {
       // we haven't received the chromosome info yet
@@ -263,8 +304,14 @@ class ChromosomeGrid extends PixiTrack {
 
     if (this.isOverlay) {
       for (let i = 0; i < this.options.orientationsAndPositions.length; i++) {
-        const orientation = this.options.orientationsAndPositions[i].orientation;
-        const { left, top, width, height } = this.options.orientationsAndPositions[i].position;
+        const orientation = this.options.orientationsAndPositions[i]
+          .orientation;
+        const {
+          left,
+          top,
+          width,
+          height
+        } = this.options.orientationsAndPositions[i].position;
         this.drawLinesSvg(output, orientation, width, height, left, top);
       }
     } else {

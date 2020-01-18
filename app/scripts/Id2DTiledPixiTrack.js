@@ -19,8 +19,14 @@ export function drawTile(tile) {
   // when we zoom in
   tile.drawnAtScale = this._xScale.copy();
 
-  const tSX = 1 / ((this._xScale(1) - this._xScale(0)) / (this._refXScale(1) - this._refXScale(0)));
-  const tSY = 1 / ((this._yScale(1) - this._yScale(0)) / (this._refYScale(1) - this._refYScale(0)));
+  const tSX =
+    1 /
+    ((this._xScale(1) - this._xScale(0)) /
+      (this._refXScale(1) - this._refXScale(0)));
+  const tSY =
+    1 /
+    ((this._yScale(1) - this._yScale(0)) /
+      (this._refYScale(1) - this._refYScale(0)));
 
   tile.text.scale.x = tSX;
   tile.text.scale.y = tSY;
@@ -42,12 +48,15 @@ export function drawTile(tile) {
   // fun tile positioning when it's mirrored, except this is just a rectangle
   // that doesn't need to be rotated so it's easy
   if (tile.mirrored) {
-    const tileScaledWidth = this._refXScale(tileY + tileWidth) - this._refXScale(tileY);
-    const tileScaledHeight = this._refYScale(tileX + tileWidth) - this._refYScale(tileX);
+    const tileScaledWidth =
+      this._refXScale(tileY + tileWidth) - this._refXScale(tileY);
+    const tileScaledHeight =
+      this._refYScale(tileX + tileWidth) - this._refYScale(tileX);
 
     // add tileScaledHeight / 2 and tileScaledWidth / 2 to center the text on the tile
     tile.textGraphics.position.x = this._refXScale(tileY) + tileScaledWidth / 2;
-    tile.textGraphics.position.y = this._refYScale(tileX) + tileScaledHeight / 2;
+    tile.textGraphics.position.y =
+      this._refYScale(tileX) + tileScaledHeight / 2;
 
     graphics.drawRect(
       this._refXScale(tileY),
@@ -56,12 +65,15 @@ export function drawTile(tile) {
       tileScaledHeight
     );
   } else {
-    const tileScaledWidth = this._refXScale(tileX + tileWidth) - this._refXScale(tileX);
-    const tileScaledHeight = this._refYScale(tileY + tileWidth) - this._refYScale(tileY);
+    const tileScaledWidth =
+      this._refXScale(tileX + tileWidth) - this._refXScale(tileX);
+    const tileScaledHeight =
+      this._refYScale(tileY + tileWidth) - this._refYScale(tileY);
 
     // add tileScaledHeight / 2 and tileScaledWidth / 2 to center the text on the tile
     tile.textGraphics.position.x = this._refXScale(tileX) + tileScaledWidth / 2;
-    tile.textGraphics.position.y = this._refYScale(tileY) + tileScaledHeight / 2;
+    tile.textGraphics.position.y =
+      this._refYScale(tileY) + tileScaledHeight / 2;
 
     graphics.drawRect(
       this._refXScale(tileX),
@@ -81,9 +93,10 @@ export function initTile(tile) {
   if (tile.mirrored) {
     // mirrored tiles have their x and y coordinates reversed
     tile.text = new PIXI.Text(
-      `${tile.tileData.zoomLevel}/${[tile.tileData.tilePos[1], tile.tileData.tilePos[0]].join(
-        '/'
-      )}`,
+      `${tile.tileData.zoomLevel}/${[
+        tile.tileData.tilePos[1],
+        tile.tileData.tilePos[0]
+      ].join('/')}`,
       {
         fontFamily: 'Arial',
         fontSize: 24,
@@ -92,12 +105,15 @@ export function initTile(tile) {
       }
     );
   } else {
-    tile.text = new PIXI.Text(`${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`, {
-      fontFamily: 'Arial',
-      fontSize: 24,
-      fill: 0xff1010,
-      align: 'center'
-    });
+    tile.text = new PIXI.Text(
+      `${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`,
+      {
+        fontFamily: 'Arial',
+        fontSize: 24,
+        fill: 0xff1010,
+        align: 'center'
+      }
+    );
   }
 
   // tile.text.y = 100;

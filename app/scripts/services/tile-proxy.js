@@ -66,7 +66,9 @@ const throttleAndDebounce = (func, interval, finalWait) => {
     const requestId = requestMapper[request.id];
 
     if (requestId && bundledRequest[requestId]) {
-      bundledRequest[requestId].ids = bundledRequest[requestId].ids.concat(request.ids);
+      bundledRequest[requestId].ids = bundledRequest[requestId].ids.concat(
+        request.ids
+      );
     } else {
       requestMapper[request.id] = bundledRequest.length;
       bundledRequest.push(request);
@@ -176,7 +178,10 @@ export function fetchMultiRequestTiles(req, pubSub) {
     // if we request too many tiles, then the URL can get too long and fail
     // so we'll break up the requests into smaller subsets
     for (let i = 0; i < ids.length; i += MAX_FETCH_TILES) {
-      const theseTileIds = ids.slice(i, i + Math.min(ids.length - i, MAX_FETCH_TILES));
+      const theseTileIds = ids.slice(
+        i,
+        i + Math.min(ids.length - i, MAX_FETCH_TILES)
+      );
 
       const renderParams = theseTileIds.map(x => `d=${x}`).join('&');
       const outUrl = `${server}/tiles/?${renderParams}&s=${sessionId}`;
@@ -263,7 +268,9 @@ export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
 
   const trackWidth = scale.range()[1] - scale.range()[0];
 
-  const binsDisplayed = sortedResolutions.map(r => (scale.domain()[1] - scale.domain()[0]) / r);
+  const binsDisplayed = sortedResolutions.map(
+    r => (scale.domain()[1] - scale.domain()[0]) / r
+  );
   const binsPerPixel = binsDisplayed.map(b => b / trackWidth);
 
   // we're going to show the highest resolution that requires more than one
@@ -272,12 +279,16 @@ export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
 
   if (displayableBinsPerPixel.length === 0) return 0;
 
-  return binsPerPixel.indexOf(displayableBinsPerPixel[displayableBinsPerPixel.length - 1]);
+  return binsPerPixel.indexOf(
+    displayableBinsPerPixel[displayableBinsPerPixel.length - 1]
+  );
 };
 
 export const calculateResolution = (tilesetInfo, zoomLevel) => {
   if (tilesetInfo.resolutions) {
-    const sortedResolutions = tilesetInfo.resolutions.map(x => +x).sort((a, b) => b - a);
+    const sortedResolutions = tilesetInfo.resolutions
+      .map(x => +x)
+      .sort((a, b) => b - a);
     const resolution = sortedResolutions[zoomLevel];
 
     return resolution;
@@ -296,13 +307,19 @@ export const calculateResolution = (tilesetInfo, zoomLevel) => {
 export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   const rangeWidth = scale.range()[1] - scale.range()[0];
 
-  const zoomScale = Math.max((maxX - minX) / (scale.domain()[1] - scale.domain()[0]), 1);
+  const zoomScale = Math.max(
+    (maxX - minX) / (scale.domain()[1] - scale.domain()[0]),
+    1
+  );
 
   const viewResolution = 384;
   // const viewResolution = 2048;
 
   // fun fact: the number 384 is halfway between 256 and 512
-  const addedZoom = Math.max(0, Math.ceil(Math.log(rangeWidth / viewResolution) / Math.LN2));
+  const addedZoom = Math.max(
+    0,
+    Math.ceil(Math.log(rangeWidth / viewResolution) / Math.LN2)
+  );
   let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + addedZoom;
 
   let binsPerTileCorrection = 0;
@@ -333,7 +350,13 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
  * @param {Number} position: The position (in absolute coordinates) to caculate
  *                 the tile and position in tile for
  */
-export function calculateTileAndPosInTile(tilesetInfo, maxDim, dataStartPos, zoomLevel, position) {
+export function calculateTileAndPosInTile(
+  tilesetInfo,
+  maxDim,
+  dataStartPos,
+  zoomLevel,
+  position
+) {
   let tileWidth = null;
   const PIXELS_PER_TILE = tilesetInfo.bins_per_dimension || 256;
 
@@ -344,7 +367,9 @@ export function calculateTileAndPosInTile(tilesetInfo, maxDim, dataStartPos, zoo
   }
 
   const tilePos = Math.floor((position - dataStartPos) / tileWidth);
-  const posInTile = Math.floor((PIXELS_PER_TILE * (position - tilePos * tileWidth)) / tileWidth);
+  const posInTile = Math.floor(
+    (PIXELS_PER_TILE * (position - tilePos * tileWidth)) / tileWidth
+  );
 
   return [tilePos, posInTile];
 }
@@ -366,7 +391,14 @@ export function calculateTileAndPosInTile(tilesetInfo, maxDim, dataStartPos, zoo
  * @param maxDim: The largest dimension of the tileset (e.g., width or height)
  *   (roughlty equal to 2 ** maxZoom * tileSize * tileResolution)
  */
-export const calculateTiles = (zoomLevel, scale, minX, maxX, maxZoom, maxDim) => {
+export const calculateTiles = (
+  zoomLevel,
+  scale,
+  minX,
+  maxX,
+  maxZoom,
+  maxDim
+) => {
   const zoomLevelFinal = Math.min(zoomLevel, maxZoom);
 
   // the ski areas are positioned according to their
@@ -386,13 +418,18 @@ export const calculateTiles = (zoomLevel, scale, minX, maxX, maxZoom, maxDim) =>
 
   return range(
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
-    Math.min(2 ** zoomLevelFinal, Math.ceil((scale.domain()[1] - minX - epsilon) / tileWidth))
+    Math.min(
+      2 ** zoomLevelFinal,
+      Math.ceil((scale.domain()[1] - minX - epsilon) / tileWidth)
+    )
   );
 };
 
 export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
   if (tilesetInfo.resolutions) {
-    const sortedResolutions = tilesetInfo.resolutions.map(x => +x).sort((a, b) => b - a);
+    const sortedResolutions = tilesetInfo.resolutions
+      .map(x => +x)
+      .sort((a, b) => b - a);
     return sortedResolutions[zoomLevel] * binsPerTile;
   }
   return tilesetInfo.max_width / 2 ** zoomLevel;
@@ -407,7 +444,13 @@ export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
  * @param minX: The minimum x position of the tileset
  * @param maxX: The maximum x position of the tileset
  */
-export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixelsPerTile) => {
+export const calculateTilesFromResolution = (
+  resolution,
+  scale,
+  minX,
+  maxX,
+  pixelsPerTile
+) => {
   const epsilon = 0.0000001;
   const PIXELS_PER_TILE = pixelsPerTile || 256;
   const tileWidth = resolution * PIXELS_PER_TILE;
@@ -418,13 +461,20 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
     maxX = Number.MAX_VALUE; // eslint-disable-line no-param-reassign
   }
 
-  const lowerBound = Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth));
-  const upperBound = Math.ceil(Math.min(maxX, scale.domain()[1] - minX - epsilon) / tileWidth);
+  const lowerBound = Math.max(
+    0,
+    Math.floor((scale.domain()[0] - minX) / tileWidth)
+  );
+  const upperBound = Math.ceil(
+    Math.min(maxX, scale.domain()[1] - minX - epsilon) / tileWidth
+  );
   let tileRange = range(lowerBound, upperBound);
 
   if (tileRange.length > MAX_TILES) {
     // too many tiles visible in this range
-    console.warn(`Too many visible tiles: ${tileRange.length} truncating to ${MAX_TILES}`);
+    console.warn(
+      `Too many visible tiles: ${tileRange.length} truncating to ${MAX_TILES}`
+    );
     tileRange = tileRange.slice(0, MAX_TILES);
   }
   // console.log('tileRange:', tileRange);
@@ -519,7 +569,8 @@ export const tileDataToPixData = (
     const tileWidth = Math.floor(Math.sqrt(tile.tileData.dense.length));
     for (let row = 0; row < tileWidth; row++) {
       for (let col = row + 1; col < tileWidth; col++) {
-        tile.tileData.dense[row * tileWidth + col] = tile.tileData.dense[col * tileWidth + row];
+        tile.tileData.dense[row * tileWidth + col] =
+          tile.tileData.dense[col * tileWidth + row];
       }
     }
     if (ignoreLowerLeft) {

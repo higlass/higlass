@@ -26,14 +26,20 @@ class TilesetFinder extends React.Component {
     this.augmentedTracksInfo = TRACKS_INFO;
     if (window.higlassTracksByType) {
       Object.keys(window.higlassTracksByType).forEach(pluginTrackType => {
-        this.augmentedTracksInfo.push(window.higlassTracksByType[pluginTrackType].config);
+        this.augmentedTracksInfo.push(
+          window.higlassTracksByType[pluginTrackType].config
+        );
       });
     }
 
     if (props.datatype) {
-      this.localTracks = this.localTracks.filter(x => x.datatype[0] === props.datatype);
+      this.localTracks = this.localTracks.filter(
+        x => x.datatype[0] === props.datatype
+      );
     } else {
-      this.localTracks = this.localTracks.filter(x => x.orientation === this.props.orientation);
+      this.localTracks = this.localTracks.filter(
+        x => x.orientation === this.props.orientation
+      );
     }
 
     this.localTracks.forEach(x => {
@@ -42,7 +48,9 @@ class TilesetFinder extends React.Component {
 
     const newOptions = this.prepareNewEntries('', this.localTracks, {});
     const availableTilesetKeys = Object.keys(newOptions);
-    const selectedUuid = availableTilesetKeys.length ? [availableTilesetKeys[0]] : null;
+    const selectedUuid = availableTilesetKeys.length
+      ? [availableTilesetKeys[0]]
+      : null;
     this.mounted = false;
 
     this.state = {
@@ -144,7 +152,9 @@ class TilesetFinder extends React.Component {
 
             // if there isn't a selected tileset, select the first received one
             if (!selectedUuid) {
-              selectedUuid = availableTilesetKeys.length ? [availableTilesetKeys[0]] : null;
+              selectedUuid = availableTilesetKeys.length
+                ? [availableTilesetKeys[0]]
+                : null;
               const selectedTileset = this.state.options[selectedUuid[0]];
               this.props.selectedTilesetChanged([selectedTileset]);
             }
@@ -274,7 +284,9 @@ class TilesetFinder extends React.Component {
       }
     }
 
-    allItems.sort((a, b) => a.label.toLowerCase().localeCompare(b.label.toLowerCase(), 'en'));
+    allItems.sort((a, b) =>
+      a.label.toLowerCase().localeCompare(b.label.toLowerCase(), 'en')
+    );
 
     return allItems;
   }
@@ -299,7 +311,10 @@ class TilesetFinder extends React.Component {
       optionsList.push(this.state.options[key]);
     }
 
-    const nestedItems = this.partitionByGroup(this.state.options, this.state.filter);
+    const nestedItems = this.partitionByGroup(
+      this.state.options,
+      this.state.filter
+    );
     const svgStyle = {
       width: 15,
       height: 15,
@@ -329,7 +344,10 @@ class TilesetFinder extends React.Component {
             type="text"
           />
         </div>
-        <div className="tileset-finder-checkbox-tree" styleName="tileset-finder-checkbox-tree">
+        <div
+          className="tileset-finder-checkbox-tree"
+          styleName="tileset-finder-checkbox-tree"
+        >
           <CheckboxTree
             checked={this.state.checked}
             expanded={this.state.expanded}

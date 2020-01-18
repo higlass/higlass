@@ -14,7 +14,9 @@ import { THEME_DARK } from './configs';
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMixin) {
+class ViewContextMenu extends mix(ContextMenuContainer).with(
+  SeriesListSubmenuMixin
+) {
   render() {
     const seriesItems = getSeriesItems(
       this.props.tracks,

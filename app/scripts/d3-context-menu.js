@@ -68,7 +68,13 @@ function contextMenu(menu, optsIn) {
   });
 
   // this gets executed when a contextmenu event occurs
-  return function onContextMenu(data, index, pMouseUp = false, clickAwayFunc, useMouse = false) {
+  return function onContextMenu(
+    data,
+    index,
+    pMouseUp = false,
+    clickAwayFunc,
+    useMouse = false
+  ) {
     const elm = this;
     let mousePos = null;
     const currentThis = this;
@@ -119,7 +125,9 @@ function contextMenu(menu, optsIn) {
           return '<hr>';
         }
         if (!d.title) {
-          console.error('No title attribute set. Check the spelling of your options.');
+          console.error(
+            'No title attribute set. Check the spelling of your options.'
+          );
         }
         return typeof d.title === 'string' ? d.title : d.title(data);
       })
@@ -149,7 +157,10 @@ function contextMenu(menu, optsIn) {
 
           if (typeof d.children === 'undefined') {
             // no children, so hide any open child menus
-            select(`.d3-context-menu-${openChildMenuUid}`).style('display', 'none');
+            select(`.d3-context-menu-${openChildMenuUid}`).style(
+              'display',
+              'none'
+            );
 
             openChildMenuUid = null;
             return;
@@ -162,7 +173,10 @@ function contextMenu(menu, optsIn) {
           // need to open a different child menu
 
           // close the already open one
-          select(`.d3-context-menu-${openChildMenuUid}`).style('display', 'none');
+          select(`.d3-context-menu-${openChildMenuUid}`).style(
+            'display',
+            'none'
+          );
 
           openChildMenuUid = null;
         }
@@ -195,7 +209,12 @@ function contextMenu(menu, optsIn) {
             });
           }
 
-          d.childUid = childrenContextMenu.apply(this, [data, i, true, function() {}]);
+          d.childUid = childrenContextMenu.apply(this, [
+            data,
+            i,
+            true,
+            function() {}
+          ]);
           openChildMenuUid = d.childUid;
         }
 
@@ -225,7 +244,10 @@ function contextMenu(menu, optsIn) {
       }
     }
 
-    const contextMenuSelection = select(`.d3-context-menu-${uid}`).style('display', 'block');
+    const contextMenuSelection = select(`.d3-context-menu-${uid}`).style(
+      'display',
+      'block'
+    );
 
     if (initialPos === null) {
       select(`.d3-context-menu-${uid}`)
@@ -240,7 +262,10 @@ function contextMenu(menu, optsIn) {
     // check if the menu disappears off the side of the window
     const boundingRect = contextMenuSelection.node().getBoundingClientRect();
 
-    if (boundingRect.left + boundingRect.width > window.innerWidth || orientation === 'left') {
+    if (
+      boundingRect.left + boundingRect.width > window.innerWidth ||
+      orientation === 'left'
+    ) {
       orientation = 'left';
 
       // menu goes of the end of the window, position it the other way

@@ -58,7 +58,10 @@ class ContextMenuContainer extends React.Component {
   }
 
   handleItemMouseEnter(evt, series) {
-    this.handleItemMouseEnterWithRect(evt.currentTarget.getBoundingClientRect(), series);
+    this.handleItemMouseEnterWithRect(
+      evt.currentTarget.getBoundingClientRect(),
+      series
+    );
   }
 
   handleMouseLeave() {}
@@ -126,7 +129,10 @@ class ContextMenuContainer extends React.Component {
       let leftPosition = parentBbox.left - bbox.width;
 
       if (leftPosition < 0) {
-        if (parentBbox.left + parentBbox.width + bbox.width > window.innerWidth) {
+        if (
+          parentBbox.left + parentBbox.width + bbox.width >
+          window.innerWidth
+        ) {
           leftPosition = 0; // goes off the side either way
         } else {
           // switch to the right

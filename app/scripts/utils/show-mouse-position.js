@@ -36,7 +36,9 @@ const showMousePosition = (
 ) => {
   pubSub.publish('app.animateOnMouseMove', true);
 
-  const color = options.mousePositionColor ? hexStrToInt(options.mousePositionColor) : COLOR;
+  const color = options.mousePositionColor
+    ? hexStrToInt(options.mousePositionColor)
+    : COLOR;
 
   const alpha = options.mousePositionAlpha || ALPHA;
 
@@ -100,7 +102,9 @@ const showMousePosition = (
 
     // `getIsFlipped()` is `true` when a horizontal track has been flipped by 90
     // degree, i.e., is a vertical track.
-    const mousePos = getIsFlipped() ? getScales()[0](y) + offset[1] : getScales()[0](x) + offset[0];
+    const mousePos = getIsFlipped()
+      ? getScales()[0](y) + offset[1]
+      : getScales()[0](x) + offset[0];
 
     drawMousePosition(mousePos);
 

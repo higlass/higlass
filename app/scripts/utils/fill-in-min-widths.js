@@ -1,5 +1,9 @@
 // Configs
-import { MIN_HORIZONTAL_HEIGHT, MIN_VERTICAL_WIDTH, TRACKS_INFO_BY_TYPE } from '../configs';
+import {
+  MIN_HORIZONTAL_HEIGHT,
+  MIN_VERTICAL_WIDTH,
+  TRACKS_INFO_BY_TYPE
+} from '../configs';
 
 /**
  * If tracks don't have specified dimensions, add in the known
@@ -40,7 +44,9 @@ const fillInMinWidths = tracks => {
 
         if (!track.height) {
           track.height =
-            (trackInfo && trackInfo.defaultHeight) || options.minHeight || MIN_HORIZONTAL_HEIGHT;
+            (trackInfo && trackInfo.defaultHeight) ||
+            options.minHeight ||
+            MIN_HORIZONTAL_HEIGHT;
         }
       })
     );
@@ -65,7 +71,9 @@ const fillInMinWidths = tracks => {
 
         if (!track.width) {
           track.width =
-            (trackInfo && trackInfo.defaultWidth) || options.minWidth || MIN_VERTICAL_WIDTH;
+            (trackInfo && trackInfo.defaultWidth) ||
+            options.minWidth ||
+            MIN_VERTICAL_WIDTH;
         }
       })
     );

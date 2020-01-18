@@ -108,7 +108,10 @@ class AxisPixi {
     const graphics = this.pAxis;
 
     if (this.track.getTheme() === THEME_DARK) {
-      graphics.lineStyle(graphics.lineWidth || graphics._lineStyle.width, colorToHex('#ffffff'));
+      graphics.lineStyle(
+        graphics.lineWidth || graphics._lineStyle.width,
+        colorToHex('#ffffff')
+      );
     }
 
     // draw the top, potentially unlabelled, ticke
@@ -149,7 +152,10 @@ class AxisPixi {
     const graphics = this.pAxis;
 
     if (this.track.getTheme() === THEME_DARK) {
-      graphics.lineStyle(graphics.lineWidth || graphics._lineStyle.width, colorToHex('#ffffff'));
+      graphics.lineStyle(
+        graphics.lineWidth || graphics._lineStyle.width,
+        colorToHex('#ffffff')
+      );
     }
 
     // draw the top, potentially unlabelled, ticke
@@ -163,7 +169,10 @@ class AxisPixi {
       const tick = this.tickValues[i];
 
       this.axisTexts[i].x =
-        TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2;
+        TICK_MARGIN +
+        TICK_LENGTH +
+        TICK_LABEL_MARGIN +
+        this.axisTexts[i].width / 2;
       this.axisTexts[i].y = valueScale(tick);
 
       graphics.moveTo(TICK_MARGIN, valueScale(tick));
@@ -295,7 +304,9 @@ class AxisPixi {
 
       tickLine.setAttribute(
         'd',
-        `M${+TICK_MARGIN},${valueScale(tick)} L${+(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`
+        `M${+TICK_MARGIN},${valueScale(tick)} L${+(
+          TICK_MARGIN + TICK_LENGTH
+        )},${valueScale(tick)}`
       );
 
       const g = document.createElement('g');
@@ -339,7 +350,9 @@ class AxisPixi {
 
       tickLine.setAttribute(
         'd',
-        `M${-TICK_MARGIN},${valueScale(tick)} L${-(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`
+        `M${-TICK_MARGIN},${valueScale(tick)} L${-(
+          TICK_MARGIN + TICK_LENGTH
+        )},${valueScale(tick)}`
       );
 
       const g = document.createElement('g');
