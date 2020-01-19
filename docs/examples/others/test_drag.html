@@ -33,7 +33,9 @@
     </div>
 
     <div style="display: flex">
-        <div style="draggable: true; border: 1px solid black" ondragstart="randomDragStart(event)"><img src="../images/thumbnails/heatmap-thumbnail.png"/></div>
+        <div style="draggable: true; border: 1px solid black" ondragstart="timedHover(event)"
+         onClick="showTrackChooser(event)"
+        ><img src="../images/thumbnails/heatmap-thumbnail.png"/></div>
         <div style="draggable: true; border: 1px solid black" ondragstart="heatmapDragStart(event)"
          onclick="heatmapDragStart(event)"
         ><img src="../images/thumbnails/heatmap-thumbnail.png"/></div>
@@ -48,7 +50,17 @@
 
 console.log('window.higlassTracks', window.higlassTracks);
 
-function randomDragStart(ev) {
+function showTrackChooser() {
+  console.log('showing track chooser');
+
+   window.hgApi.showTrackChooser(
+     (viewUid, trackUid) => {
+       console.log('viewUid:', viewUid, trackUid);
+       }
+   );
+}
+
+function timedHover(ev) {
     var track = {
         "tilesetUid": "RZqUYTMLSsmNjnnpi_v6VA",
         "server": "http://localhost:8000/api/v1",
@@ -310,6 +322,9 @@ function heatmapDragStart(ev) {
     }
 
     changeOverlay();
+    setTimeout(() => {
+      showTrackChooser()
+    }, 500)
 
     // setTimeout(function () {
     //   // Go to PTEN

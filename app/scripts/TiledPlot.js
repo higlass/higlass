@@ -1651,9 +1651,9 @@ class TiledPlot extends React.Component {
 
     const hasVerticalComponent =
       'center' in defaultTracks ||
-      (presentTracks.has('left') ||
-        presentTracks.has('right') ||
-        presentTracks.has('center'));
+      presentTracks.has('left') ||
+      presentTracks.has('right') ||
+      presentTracks.has('center');
 
     const topDisplayed = 'top' in defaultTracks;
     const bottomDisplayed = 'bottom' in defaultTracks && hasVerticalComponent;
@@ -2219,18 +2219,19 @@ class TiledPlot extends React.Component {
       overlays = positionedTracks
         .filter(pTrack => pTrack.track.position !== 'whole')
         .map(pTrack => {
-          let background = 'transparent';
-          let border = 'none';
+          let className = 'tiled-plot-track-overlay-animate';
+
+          if (this.state.mouseOverOverlayUid) {
+            className = 'tiled-plot-track-overlay-plain';
+          }
 
           if (this.state.mouseOverOverlayUid === pTrack.track.uid) {
-            background = 'yellow';
-            border = '1px solid black';
+            className = 'tiled-plot-track-overlay-selected';
           }
 
           return (
             <div
               key={pTrack.track.uid}
-              className="tiled-plot-track-overlay"
               // we want to remove the mouseOverOverlayUid so that next time we try
               // to choose an overlay track, the previously selected one isn't
               // automatically highlighted
@@ -2255,11 +2256,9 @@ class TiledPlot extends React.Component {
                 top: pTrack.top,
                 width: pTrack.width,
                 height: pTrack.height,
-                background,
-                opacity: 0.4,
-                border,
                 zIndex: 1
               }}
+              styleName={`styles.${className}`}
             />
           );
         });
