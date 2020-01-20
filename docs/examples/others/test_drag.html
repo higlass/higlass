@@ -167,16 +167,15 @@ function heatmapDragStart(ev) {
     {
       "uid": "a",
       "initialXDomain": [
-        1502439972.6753309,
-        1517324845.500473
+        1506280079.6422007,
+        1513484738.5336034
       ],
       "initialYDomain": [
-        1504602643.1146064,
-        1515225230.3978314
+        1504195387.3721187,
+        1515632486.140319
       ],
       "tracks": {
-        "top": [
-        ],
+        "top": [],
         "left": [],
         "center": [
           {
@@ -214,7 +213,9 @@ function heatmapDragStart(ev) {
                   "scaleEndPercent": "1.00000",
                   "labelShowResolution": true,
                   "colorbarBackgroundColor": "#ffffff",
-                  "extent": "full"
+                  "extent": "full",
+                  "minWidth": 100,
+                  "minHeight": 100
                 },
                 "width": 674,
                 "height": 542,
@@ -270,9 +271,124 @@ function heatmapDragStart(ev) {
         "gallery": []
       },
       "layout": {
-        "w": 12,
+        "w": 6,
         "h": 6,
         "x": 0,
+        "y": 0,
+        "moved": false,
+        "static": false
+      }
+    },
+    {
+      "uid": "UX9Tgrz_QeiDDGbGKQVlgw",
+      "initialXDomain": [
+        1506280079.6422007,
+        1513484738.5336034
+      ],
+      "initialYDomain": [
+        1504195387.3721187,
+        1515632486.140319
+      ],
+      "tracks": {
+        "top": [],
+        "left": [],
+        "center": [
+          {
+            "uid": "KD3HH8QCTnWD96Xq7Y1Rrg",
+            "type": "combined",
+            "contents": [
+              {
+                "type": "heatmap",
+                "uid": "GW6HZwSmR5y-8Cbz22iK_A",
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "server": "http://higlass.io/api/v1",
+                "options": {
+                  "backgroundColor": "#eeeeee",
+                  "labelPosition": "bottomRight",
+                  "labelLeftMargin": 0,
+                  "labelRightMargin": 0,
+                  "labelTopMargin": 0,
+                  "labelBottomMargin": 0,
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "showMousePosition": false,
+                  "mousePositionColor": "#999999",
+                  "showTooltip": false,
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000",
+                  "labelShowResolution": true,
+                  "colorbarBackgroundColor": "#ffffff",
+                  "extent": "full",
+                  "minWidth": 100,
+                  "minHeight": 100
+                },
+                "width": 674,
+                "height": 542,
+                "transforms": [
+                  {
+                    "name": "ICE",
+                    "value": "weight"
+                  }
+                ]
+              }
+            ],
+            "width": 674,
+            "height": 542,
+            "options": {}
+          }
+        ],
+        "bottom": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "P1l8t23ZSk-akHgOM4I9dQ",
+            "uid": "YFqytm3RTc6SMn2Jmi_ntA",
+            "type": "horizontal-1d-heatmap",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "axisPositionHorizontal": "right",
+              "colorRange": [
+                "white",
+                "rgba(245,166,35,1.0)",
+                "rgba(208,2,27,1.0)",
+                "black"
+              ],
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "mousePositionColor": "#000000",
+              "showTooltip": false,
+              "name": "wgEncodeLicrHistoneLiverH3k04me1UE14halfC57bl6StdSig.hitile"
+            },
+            "width": 674,
+            "height": 61
+          }
+        ],
+        "right": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 6,
+        "h": 6,
+        "x": 6,
         "y": 0,
         "moved": false,
         "static": false
@@ -323,7 +439,8 @@ function heatmapDragStart(ev) {
 
     changeOverlay();
     setTimeout(() => {
-      showTrackChooser()
+      // showTrackChooser()
+      heatmapDragStart();
     }, 500)
 
     // setTimeout(function () {

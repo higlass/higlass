@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
 
 // Components
+import sync from 'css-animation-sync';
 import ContextMenuItem from './ContextMenuItem';
 import CenterTrack from './CenterTrack';
 import DragListeningDiv from './DragListeningDiv';
@@ -25,6 +26,7 @@ import ViewContextMenu from './ViewContextMenu';
 import withPubSub from './hocs/with-pub-sub';
 import withModal from './hocs/with-modal';
 import withTheme from './hocs/with-theme';
+
 
 // Utils
 import {
@@ -87,6 +89,8 @@ class TiledPlot extends React.Component {
     this.trackRenderer = null;
 
     this.configTrackMenu = null;
+
+    sync(styles['border-pulsate']);
 
     /*
     let trackOptions = this.props.editable ?
@@ -509,6 +513,7 @@ class TiledPlot extends React.Component {
     this.setState({
       mouseOverOverlayUid: uid
     });
+    this.props.setOverTrackChooser(true);
   }
 
   handleOverlayMouseLeave(uid) {
@@ -517,6 +522,7 @@ class TiledPlot extends React.Component {
         mouseOverOverlayUid: null
       });
     }
+    this.props.setOverTrackChooser(false);
   }
 
   handleTrackPositionChosen(pTrack) {
@@ -1686,7 +1692,6 @@ class TiledPlot extends React.Component {
           enabled={topAllowed}
           onTrackDropped={track => this.handleTracksAdded([track], 'top')}
           style={{
-            border: '1px solid black',
             flexGrow: 1
           }}
         />
@@ -1709,10 +1714,6 @@ class TiledPlot extends React.Component {
           draggingHappening={this.props.draggingHappening}
           enabled={bottomAllowed}
           onTrackDropped={track => this.handleTracksAdded([track], 'bottom')}
-          style={{
-            border: '1px solid black',
-            flexGrow: 1
-          }}
         />
         {topDisplayed && (centerDisplayed || leftDisplayed)
           ? topRightDiv
@@ -1726,10 +1727,6 @@ class TiledPlot extends React.Component {
         draggingHappening={this.props.draggingHappening}
         enabled={leftAllowed}
         onTrackDropped={track => this.handleTracksAdded([track], 'left')}
-        style={{
-          border: '1px solid black',
-          flexGrow: 1
-        }}
       />
     );
 
@@ -1740,10 +1737,6 @@ class TiledPlot extends React.Component {
         enabled={centerAllowed}
         onTrackDropped={track => this.handleTracksAdded([track], 'center')}
         position="center"
-        style={{
-          border: '1px solid black',
-          flexGrow: 1
-        }}
       />
     );
 
@@ -2221,7 +2214,7 @@ class TiledPlot extends React.Component {
         .map(pTrack => {
           let className = 'tiled-plot-track-overlay-animate';
 
-          if (this.state.mouseOverOverlayUid) {
+          if (this.state.mouseOverOverlayUid || this.props.overTrackChooser) {
             className = 'tiled-plot-track-overlay-plain';
           }
 

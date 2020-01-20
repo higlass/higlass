@@ -2,14 +2,17 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import slugid from 'slugid';
 
+import sync from 'css-animation-sync';
 import withPubSub from './hocs/with-pub-sub';
 
 // Styles
-import '../styles/DragListeningDiv.module.scss';
+import styles from '../styles/DragListeningDiv.module.scss';
 
 class DragListeningDiv extends React.Component {
   constructor(props) {
     super(props);
+
+    sync(styles['border-pulsate']);
 
     this.state = {
       dragOnTop: false
@@ -34,19 +37,18 @@ class DragListeningDiv extends React.Component {
 
   render() {
     // color red if not enabled, green if a track is not top and blue otherwise
-    let background = 'red';
+    let styleNames = '';
 
     if (this.props.enabled && this.state.dragOnTop) {
-      background = 'green';
+      styleNames = 'drag-listening-div-active';
     } else if (this.props.enabled) {
-      background = 'blue';
+      styleNames = 'drag-listening-div-inactive';
     }
-
-    const styleNames = this.props.enabled ? 'drag-listening-div-active' : '';
 
     return (
       <div
         className="DragListeningDiv"
+        onClick={this.handleDrop.bind(this)}
         onDragEnter={() => {
           this.setState({
             dragOnTop: true
@@ -60,7 +62,6 @@ class DragListeningDiv extends React.Component {
         onDragOver={evt => {
           evt.preventDefault();
         }}
-        onClick={this.handleDrop.bind(this)}
         onDrop={this.handleDrop.bind(this)}
         onMouseEnter={() => {
           this.setState({
@@ -72,14 +73,8 @@ class DragListeningDiv extends React.Component {
             dragOnTop: false
           });
         }}
-        style={Object.assign(
-          {
-            background,
-            opacity: 0.6
-          },
-          this.props.style
-        )}
-        styleName={styleNames}
+        style={this.props.style}
+        styleName={`${styleNames} drag-listening-div`}
       />
     );
   }

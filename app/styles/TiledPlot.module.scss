@@ -68,27 +68,21 @@ path.domain {
   stroke-width: 0px;
 }
 
-@-webkit-keyframes boder-pulsate {
-  0% {
-    border-color: rgba(0, 255, 255, 1);
-  }
-  50% {
-    border-color: rgba(0, 255, 255, 0);
-  }
-  100% {
-    border-color: rgba(0, 255, 255, 1);
-  }
-}
-
 @keyframes border-pulsate {
   0% {
-    border-color: rgba(0, 255, 255, 1);
+    border-color: rgba(155, 155, 0, 0);
+    border-width: 0px;
+    background: rgba(255, 255, 0, 0);
   }
   50% {
-    border-color: rgba(0, 255, 255, 0);
+    border-color: rgba(0, 0, 0, 0.6);
+    background: rgba(255, 255, 0, 0.3);
+    border-width: 1px;
   }
   100% {
-    border-color: rgba(0, 255, 255, 1);
+    border-color: rgba(155, 155, 0, 0);
+    background: rgba(255, 255, 0, 0);
+    border-width: 0px;
   }
 }
 
@@ -99,13 +93,13 @@ path.domain {
 
 .tiled-plot-track-overlay-animate {
   background: transparent;
-  border: 10px solid red;
+  border: 10px solid transparent;
   z-index: 1;
   animation: border-pulsate 2s infinite;
 }
 
 .tiled-plot-track-overlay-selected {
-  border: 1px solid black;
+  border: 5px solid black;
   background: yellow;
   opacity: 0.4;
   z-index: 1;

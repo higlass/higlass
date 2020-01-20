@@ -268,6 +268,7 @@ class HiGlassComponent extends React.Component {
 
       mouseOverOverlayUid: null,
       mouseTool,
+      overTrackChooser: null,
       isDarkTheme: false,
       rangeSelection1dSize: [0, Infinity],
       rangeSelectionToInt: false,
@@ -4248,6 +4249,7 @@ class HiGlassComponent extends React.Component {
             }
             onValueScaleChanged={uid => this.syncValueScales(view.uid, uid)}
             overlays={view.overlays}
+            overTrackChooser={this.state.overTrackChooser}
             paddingBottom={this.viewPaddingBottom}
             paddingLeft={this.viewPaddingLeft}
             paddingRight={this.viewPaddingRight}
@@ -4266,6 +4268,9 @@ class HiGlassComponent extends React.Component {
             setCentersFunction={c => {
               this.setCenters[view.uid] = c;
             }}
+            setOverTrackChooser={val =>
+              this.setState({ overTrackChooser: val })
+            }
             svgElement={this.state.svgElement}
             tracks={view.tracks}
             trackSourceServers={this.state.viewConfig.trackSourceServers}

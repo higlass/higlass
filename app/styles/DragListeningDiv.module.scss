@@ -1,4 +1,29 @@
+@keyframes appear {
+  0% {
+    opacity: 0;
+    /* transform: rotateX(90deg); */
+  }
+  100% {
+    opacity: 0.6;
+    /* transform: rotateX(0deg); */
+  }
+}
+
 .drag-listening-div-active {
   z-index: 10;
+  background: green;
   box-shadow: inset 0 0 3px 0 red;
+  flex-grow: 1;
+}
+
+.drag-listening-div-inactive {
+  z-index: 10;
+  background: blue;
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  flex-grow: 1;
+}
+
+.drag-listening-div {
+  opacity: 0.6;
+  animation: appear 1s;
 }
