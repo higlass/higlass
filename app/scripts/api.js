@@ -2,13 +2,13 @@ import ReactDOM from 'react-dom';
 import createPubSub from 'pub-sub-es';
 import Ajv from 'ajv';
 
-import { dictValues } from './utils';
+import { dictValues , getTrackObjectFromHGC } from './utils';
 
 import schema from '../schema.json';
 
 import { setTileProxyAuthHeader } from './services';
 
-import { getTrackObjectFromHGC } from './utils';
+
 
 import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from './configs';
 
@@ -373,7 +373,7 @@ const createApi = function api(context, pubSub) {
        * Hide the track chooser.
        */
       hideTrackChooser() {
-        this.setState({
+        self.setState({
           chooseTrackHandler: null
         });
       },

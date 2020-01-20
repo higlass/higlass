@@ -68,21 +68,14 @@ path.domain {
   stroke-width: 0px;
 }
 
-@keyframes border-pulsate {
+@keyframes appear {
   0% {
-    border-color: rgba(155, 155, 0, 0);
-    border-width: 0px;
-    background: rgba(255, 255, 0, 0);
-  }
-  50% {
-    border-color: rgba(0, 0, 0, 0.6);
-    background: rgba(255, 255, 0, 0.3);
-    border-width: 1px;
+    opacity: 0;
+    /* transform: rotateX(90deg); */
   }
   100% {
-    border-color: rgba(155, 155, 0, 0);
-    background: rgba(255, 255, 0, 0);
-    border-width: 0px;
+    opacity: 0.3;
+    /* transform: rotateX(0deg); */
   }
 }
 
@@ -92,10 +85,11 @@ path.domain {
 }
 
 .tiled-plot-track-overlay-animate {
-  background: transparent;
-  border: 10px solid transparent;
+  background: yellow;
+  opacity: 0.3;
+  outline: 2px solid rgba(255, 0, 0, 0.8);
   z-index: 1;
-  animation: border-pulsate 2s infinite;
+  animation: appear 1s;
 }
 
 .tiled-plot-track-overlay-selected {

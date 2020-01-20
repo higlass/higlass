@@ -2,17 +2,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import slugid from 'slugid';
 
-import sync from 'css-animation-sync';
 import withPubSub from './hocs/with-pub-sub';
 
 // Styles
-import styles from '../styles/DragListeningDiv.module.scss';
+import '../styles/DragListeningDiv.module.scss';
 
 class DragListeningDiv extends React.Component {
   constructor(props) {
     super(props);
-
-    sync(styles['border-pulsate']);
 
     this.state = {
       dragOnTop: false

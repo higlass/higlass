@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
 
 // Components
-import sync from 'css-animation-sync';
 import ContextMenuItem from './ContextMenuItem';
 import CenterTrack from './CenterTrack';
 import DragListeningDiv from './DragListeningDiv';
@@ -26,7 +25,6 @@ import ViewContextMenu from './ViewContextMenu';
 import withPubSub from './hocs/with-pub-sub';
 import withModal from './hocs/with-modal';
 import withTheme from './hocs/with-theme';
-
 
 // Utils
 import {
@@ -89,9 +87,6 @@ class TiledPlot extends React.Component {
     this.trackRenderer = null;
 
     this.configTrackMenu = null;
-
-    sync(styles['border-pulsate']);
-
     /*
     let trackOptions = this.props.editable ?
         {'track': this.props.tracks.center[0].contents[0],
