@@ -3551,6 +3551,7 @@ class HiGlassComponent extends React.Component {
       // if there's no y domain specified just use the x domain instead
       // effectively centers the view on the diagonal
       if (!v.initialYDomain) {
+        // TODO(Mark): look into whether this can change for horizontal-multivec
         v.initialYDomain = [v.initialXDomain[0], v.initialXDomain[1]];
       } else {
         v.initialXDomain[0] = +v.initialXDomain[0];

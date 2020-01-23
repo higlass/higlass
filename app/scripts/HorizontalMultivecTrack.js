@@ -275,34 +275,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
    * @returns {Object} Tile with filtered / reordered rows.
    */
   filterTile(tile) {
-    if (!tile.tileData.denseOrig) {
-      tile.tileData.denseOrig = tile.tileData.dense.slice();
-    }
-    const tileWidth = tile.tileData.shape[1];
-
-    const selectedRows = this.options.selectRows;
-    const newNumRows = selectedRows.length;
-
-    const newArray = new Float32Array(newNumRows * tileWidth);
-
-    // console.log(this.options.selectRows);
-    // console.log(tile);
-
-    // console.log(this._yScale.domain());
-
-    for (let row = 0; row < newNumRows; row++) {
-      const rowIndex = selectedRows[row];
-      if (!selectedRows.includes(row)) {
-        for (let col = 0; col < tileWidth; col++) {
-          newArray[row * tileWidth + col] =
-            tile.tileData.denseOrig[rowIndex * tileWidth + col];
-        }
-      }
-    }
-
-    tile.tileData.dense = newArray;
-    tile.tileData.shape[0] = newNumRows;
-
+    tile.selectedRows = this.options.selectRows;
     return tile;
   }
 
