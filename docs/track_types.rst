@@ -371,7 +371,7 @@ selectable from the "Add Track Dialog".
 Options
 -------
 
-- **tickPositions**: [even|ends] Space tick marks evenly across.
+- **tickPositions**: [even|ends] Space tick marks evenly across the track or only show them at the start and end.
 - **tickFormat**: [plain|si] The format for the ticks. If set to plain, ticks are formatted as regular numbers with commas delimiting blocks of zeros (e.g. 1,100,000). If set to SI, then SI prefixes along with precision limiting is used (e.g. 1.1M). If not specified, the default is *plain* for ``tickPosition == 'even'`` and *si* for ``tickPosition == 'ends'``
 
 **Demos:**
