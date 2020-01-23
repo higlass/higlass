@@ -591,7 +591,8 @@ export const TRACKS_INFO = [
       'trackBorderWidth',
       'trackBorderColor',
       'trackType',
-      'heatmapValueScaling'
+      'heatmapValueScaling',
+      'selectRows'
     ],
     defaultOptions: {
       labelPosition: 'topLeft',
@@ -606,7 +607,8 @@ export const TRACKS_INFO = [
       valueScaling: 'linear',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
-      heatmapValueScaling: 'log'
+      heatmapValueScaling: 'log',
+      selectRows: null
     }
   },
   {

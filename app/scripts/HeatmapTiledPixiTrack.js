@@ -327,6 +327,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
 
+    // CONSOLEMARK
+
     this.visibleAndFetchedTiles().forEach(tile => this.renderTile(tile));
 
     // hopefully draw isn't rerendering all the tiles
@@ -1121,7 +1123,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.renderingTiles.add(tile.tileId);
 
     if (this.tilesetInfo.tile_size) {
-      if (tile.tileData.dense.length < this.tilesetInfo.tile_size) {
+      /* if (tile.tileData.dense.length < this.tilesetInfo.tile_size) {
         // we haven't gotten a full tile from the server so we want to pad
         // it with nan values
         const newArray = new Float32Array(this.tilesetInfo.tile_size);
@@ -1130,8 +1132,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         newArray.set(tile.tileData.dense);
 
         tile.tileData.dense = newArray;
-      }
+      } */
     }
+
+    // CONSOLEMARK
 
     tileProxy.tileDataToPixData(
       tile,
