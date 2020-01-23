@@ -1,5 +1,6 @@
 import boxIntersect from 'box-intersect';
 import { scaleLinear } from 'd3-scale';
+import { format } from 'd3-format';
 import * as PIXI from 'pixi.js';
 
 import PixiTrack from './PixiTrack';
@@ -60,6 +61,18 @@ class HorizontalChromosomeLabels extends PixiTrack {
       strokeThickness: 2
     };
     this.stroke = colorToHex(this.pixiTextConfig.stroke);
+
+    // text objects to use if the tick style is "bounds", meaning
+    // we only draw two ticks on the left and the right of the screen
+    this.gBoundTicks = new PIXI.Graphics();
+
+    this.leftBoundTick = new PIXI.Text('', this.pixiTextConfig);
+    this.rightBoundTick = new PIXI.Text('', this.pixiTextConfig);
+
+    this.gBoundTicks.addChild(this.leftBoundTick);
+    this.gBoundTicks.addChild(this.rightBoundTick);
+
+    this.pMain.addChild(this.gBoundTicks);
 
     this.tickWidth = TICK_WIDTH;
     this.tickHeight = TICK_HEIGHT;
@@ -164,6 +177,61 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.hideMousePosition();
       this.hideMousePosition = undefined;
     }
+  }
+
+  drawBoundsTicks(x1, x2) {
+    this.pTicks.clear();
+
+    const graphics = this.gBoundTicks;
+    graphics.clear();
+    graphics.lineStyle(1, 0);
+
+    // left tick
+    // line is offset by one because it's right on the edge of the
+    // visible region and we want to get the full width
+    graphics.moveTo(1, this.dimensions[1]);
+    graphics.lineTo(1, this.dimensions[1] - this.tickHeight);
+
+    // right tick
+    graphics.moveTo(this.dimensions[0] - 1, this.dimensions[1]);
+    graphics.lineTo(
+      this.dimensions[0] - 1,
+      this.dimensions[1] - this.tickHeight
+    );
+    const formatFunc = format('.3s');
+
+    this.leftBoundTick.x = 0;
+    this.leftBoundTick.y =
+      this.dimensions[1] - this.tickHeight - this.tickTextSeparation;
+    this.leftBoundTick.text = `${x1[0]}: ${formatFunc(x1[1])}`;
+    this.leftBoundTick.anchor.y = 1;
+
+    this.rightBoundTick.x = this.dimensions[0];
+    this.rightBoundTick.text = `${x2[0]}: ${formatFunc(x2[1])}`;
+    this.rightBoundTick.y =
+      this.dimensions[1] - this.tickHeight - this.tickTextSeparation;
+    this.rightBoundTick.anchor.y = 1;
+
+    this.rightBoundTick.anchor.x = 1;
+
+    // line is offset by one because it's right on the edge of the
+    // visible region and we want to get the full width
+    this.leftBoundTick.tickLine = [
+      1,
+      this.dimensions[1],
+      1,
+      this.dimensions[1] - this.tickHeight
+    ];
+    this.rightBoundTick.tickLine = [
+      this.dimensions[0] - 1,
+      this.dimensions[1],
+      this.dimensions[0] - 1,
+      this.dimensions[1] - this.tickHeight
+    ];
+
+    this.tickTexts = {};
+    this.tickTexts.all = [this.leftBoundTick, this.rightBoundTick];
+    // this.rightBoundTick
   }
 
   drawTicks(cumPos) {
@@ -300,6 +368,18 @@ class HorizontalChromosomeLabels extends PixiTrack {
       console.warn('Empty chromInfo:', this.dataConfig, this.chromInfo);
       return;
     }
+
+    if (this.options.tickPositions === 'ends') {
+      this.gBoundTicks.visible = true;
+
+      this.drawBoundsTicks(x1, x2);
+
+      this.pTicks.visible = false;
+      return;
+    }
+    this.gBoundTicks.visible = false;
+
+    this.pTicks.visible = true;
 
     for (let i = 0; i < this.texts.length; i++) {
       this.texts[i].visible = false;
