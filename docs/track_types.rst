@@ -368,6 +368,12 @@ chromosome files. The file can be ingested by the higlass server like any other
 tileset. As long as the `datatype` is set to `chromsizes` this track should be
 selectable from the "Add Track Dialog".
 
+Options
+-------
+
+- **tickPositions**: [even|ends] Space tick marks evenly across.
+- **tickFormat**: [plain|si] The format for the ticks. If set to plain, ticks are formatted as regular numbers with commas delimiting blocks of zeros (e.g. 1,100,000). If set to SI, then SI prefixes along with precision limiting is used (e.g. 1.1M). If not specified, the default is *plain* for ``tickPosition == 'even'`` and *si* for ``tickPosition == 'ends'``
+
 **Demos:**
 
 - `demonstrate adjustability <examples/chromosome-labels.html>`_.

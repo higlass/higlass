@@ -401,6 +401,20 @@ export const OPTIONS_INFO = {
     }
   },
 
+  tickFormat: {
+    name: 'Tick Format',
+    inlineOptions: {
+      plain: {
+        name: 'Plain',
+        value: 'plain'
+      },
+      si: {
+        name: 'SI',
+        value: 'si'
+      }
+    }
+  },
+
   colorEncoding: {
     name: 'Color Encode Annotations',
     inlineOptions: YES_NO

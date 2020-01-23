@@ -1,6 +1,6 @@
 import boxIntersect from 'box-intersect';
 import { scaleLinear } from 'd3-scale';
-import { format } from 'd3-format';
+import { format, precisionPrefix, formatPrefix } from 'd3-format';
 import * as PIXI from 'pixi.js';
 
 import PixiTrack from './PixiTrack';
@@ -179,6 +179,30 @@ class HorizontalChromosomeLabels extends PixiTrack {
     }
   }
 
+  formatTick(pos) {
+    const domain = this._xScale.domain();
+
+    const viewWidth = domain[1] - domain[0];
+
+    const p = precisionPrefix(pos, viewWidth);
+
+    const fPlain = format(',');
+    const fPrecision = formatPrefix(`,.${p}`, viewWidth);
+    let f = fPlain;
+
+    if (this.options.tickFormat === 'si') {
+      f = fPrecision;
+    } else if (this.options.tickFormat === 'plain') {
+      f = fPlain;
+    } else if (this.options.tickPositions === 'ends') {
+      // if no format is specified but tickPositions are at 'ends'
+      // then use precision format
+      f = fPrecision;
+    }
+
+    return f(pos);
+  }
+
   drawBoundsTicks(x1, x2) {
     this.pTicks.clear();
 
@@ -198,16 +222,17 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.dimensions[0] - 1,
       this.dimensions[1] - this.tickHeight
     );
-    const formatFunc = format('.3s');
 
+    // we want to control the precision of the tick labels
+    // so that we don't end up with labels like 15.123131M
     this.leftBoundTick.x = 0;
     this.leftBoundTick.y =
       this.dimensions[1] - this.tickHeight - this.tickTextSeparation;
-    this.leftBoundTick.text = `${x1[0]}: ${formatFunc(x1[1])}`;
+    this.leftBoundTick.text = `${x1[0]}: ${this.formatTick(x1[1])}`;
     this.leftBoundTick.anchor.y = 1;
 
     this.rightBoundTick.x = this.dimensions[0];
-    this.rightBoundTick.text = `${x2[0]}: ${formatFunc(x2[1])}`;
+    this.rightBoundTick.text = `${x2[0]}: ${this.formatTick(x2[1])}`;
     this.rightBoundTick.y =
       this.dimensions[1] - this.tickHeight - this.tickTextSeparation;
     this.rightBoundTick.anchor.y = 1;
@@ -263,7 +288,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     // calculate a certain number of ticks
     const ticks = xScale.ticks(numTicks);
-    const tickFormat = xScale.tickFormat(numTicks);
+    // const tickFormat = xScale.tickFormat(numTicks);
 
     // not sure why we're separating these out by chromosome, but ok
     const tickTexts = this.tickTexts[cumPos.chr];
@@ -302,7 +327,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       tickTexts[i].text =
         ticks[i] === 0
           ? `${cumPos.chr}: 1`
-          : `${cumPos.chr}: ${tickFormat(ticks[i])}`;
+          : `${cumPos.chr}: ${this.formatTick(ticks[i])}`;
 
       const x = this._xScale(cumPos.pos + ticks[i]);
 
@@ -377,6 +402,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.pTicks.visible = false;
       return;
     }
+
     this.gBoundTicks.visible = false;
 
     this.pTicks.visible = true;
@@ -393,8 +419,10 @@ class HorizontalChromosomeLabels extends PixiTrack {
     // hide all the chromosome labels in preparation for drawing
     // new ones
     Object.keys(this.chromInfo.chrPositions).forEach(chrom => {
-      for (let j = 0; j < this.tickTexts[chrom].length; j++) {
-        this.tickTexts[chrom][j].visible = false;
+      if (this.tickTexts[chrom]) {
+        for (let j = 0; j < this.tickTexts[chrom].length; j++) {
+          this.tickTexts[chrom][j].visible = false;
+        }
       }
     });
 

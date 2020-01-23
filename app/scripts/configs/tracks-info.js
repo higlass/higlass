@@ -1586,7 +1586,8 @@ export const TRACKS_INFO = [
       'fontIsLeftAligned',
       'showMousePosition',
       'mousePositionColor',
-      'tickPositions'
+      'tickPositions',
+      'tickFormat'
     ],
     defaultOptions: {
       color: '#808080',
