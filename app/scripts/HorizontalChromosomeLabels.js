@@ -288,7 +288,6 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     // calculate a certain number of ticks
     const ticks = xScale.ticks(numTicks);
-    // const tickFormat = xScale.tickFormat(numTicks);
 
     // not sure why we're separating these out by chromosome, but ok
     const tickTexts = this.tickTexts[cumPos.chr];
@@ -404,7 +403,6 @@ class HorizontalChromosomeLabels extends PixiTrack {
     }
 
     this.gBoundTicks.visible = false;
-
     this.pTicks.visible = true;
 
     for (let i = 0; i < this.texts.length; i++) {
