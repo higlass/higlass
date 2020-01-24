@@ -4,6 +4,7 @@
 
 - Prettified JS code
 - Added release notes to docs.
+- Added support for selecting and filtering rows of the `horizontal-multivec` track via the `selectRows` option.
 
 _[Detailed changes since v1.8.0](https://github.com/higlass/higlass/compare/v1.8.0...develop)_
 
