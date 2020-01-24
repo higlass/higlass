@@ -289,7 +289,6 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     // CLear graphics *and* ticktexts otherwise the two are out of sync!
     graphics.clear();
-    this.tickTexts[cumPos.chr] = [];
 
     const chromLen = +this.chromInfo.chromLengths[cumPos.chr];
 
@@ -327,10 +326,18 @@ class HorizontalChromosomeLabels extends PixiTrack {
       ? 0
       : tickHeight + this.tickTextSeparation;
 
-    while (tickTexts.length <= ticks.length) {
+    // these two loops reuse existing text objects so that
+    // we're not constantly recreating texts that already
+    // exist
+    while (tickTexts.length < ticks.length) {
       const newText = new PIXI.Text('', this.pixiTextConfig);
       tickTexts.push(newText);
       this.gTicks[cumPos.chr].addChild(newText);
+    }
+
+    while (tickTexts.length > ticks.length) {
+      const text = tickTexts.pop();
+      this.gTicks[cumPos.chr].removeChild(text);
     }
 
     let i = 0;
