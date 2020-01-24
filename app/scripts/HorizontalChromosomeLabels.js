@@ -64,15 +64,6 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     // text objects to use if the tick style is "bounds", meaning
     // we only draw two ticks on the left and the right of the screen
-    this.gBoundTicks = new PIXI.Graphics();
-
-    this.leftBoundTick = new PIXI.Text('', this.pixiTextConfig);
-    this.rightBoundTick = new PIXI.Text('', this.pixiTextConfig);
-
-    this.gBoundTicks.addChild(this.leftBoundTick);
-    this.gBoundTicks.addChild(this.rightBoundTick);
-
-    this.pMain.addChild(this.gBoundTicks);
 
     this.tickWidth = TICK_WIDTH;
     this.tickHeight = TICK_HEIGHT;
@@ -120,11 +111,28 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.pTicks = null;
     }
 
+    if (!this.gBoundTicks) {
+      this.gBoundTicks = new PIXI.Graphics();
+
+      this.leftBoundTick = new PIXI.Text('', this.pixiTextConfig);
+      this.rightBoundTick = new PIXI.Text('', this.pixiTextConfig);
+
+      this.gBoundTicks.addChild(this.leftBoundTick);
+      this.gBoundTicks.addChild(this.rightBoundTick);
+
+      this.pMain.addChild(this.gBoundTicks);
+    }
+
     this.texts = [];
   }
 
   initChromLabels() {
     if (!this.chromInfo) return;
+
+    if (this.gBoundTicks) {
+      this.pMain.removeChild(this.gBoundTicks);
+      this.gBoundTicks = null;
+    }
 
     if (!this.pTicks) {
       this.pTicks = new PIXI.Graphics();
@@ -409,6 +417,8 @@ class HorizontalChromosomeLabels extends PixiTrack {
     }
 
     if (this.options.tickPositions === 'ends') {
+      if (!this.gBoundTicks) return;
+
       this.gBoundTicks.visible = true;
 
       this.drawBoundsTicks(x1, x2);
@@ -421,9 +431,6 @@ class HorizontalChromosomeLabels extends PixiTrack {
       // and initChromLabels hasn't been called yet
       return;
     }
-
-    this.gBoundTicks.visible = false;
-    this.pTicks.visible = true;
 
     for (let i = 0; i < this.texts.length; i++) {
       this.texts[i].visible = false;
