@@ -57,7 +57,7 @@ add a line to `karma.conf.js` to include it in the tests.
 
       beforeAll((done) => {
         ([div, hgc] = mountHGComponent(div, hgc,
-          zoomLimitViewConf,
+          viewconf,
           done,
           {
             style: 'width:800px; height:400px; background-color: lightgreen',
@@ -79,7 +79,7 @@ add a line to `karma.conf.js` to include it in the tests.
     });
 
     // enter either a viewconf link or a viewconf object
-    const zoomLimitViewConf = {
+    const viewconf = {
       "editable": true,
       "zoomFixed": false,
       "trackSourceServers": [

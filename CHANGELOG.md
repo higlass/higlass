@@ -3,6 +3,7 @@
 ## Next
 
 - Prettified JS code
+- Added `tickFormat` and `tickPosition` options to the chromosome labels track
 - Enabled the colorbar slider by adding the options `colorbarPosition` and `colorbarBackgroundColor` for the `horizontal-multivec`
 - Added release notes to docs.
 
