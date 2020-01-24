@@ -19,10 +19,9 @@ import viewconf from './view-configs/label-margin';
 configure({ adapter: new Adapter() });
 
 describe('Simple HiGlassComponent', () => {
-  let hgc = null;
-  let div = null;
-
   describe('Axis texts', () => {
+    let hgc = null;
+    let div = null;
     beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
@@ -82,6 +81,32 @@ describe('Simple HiGlassComponent', () => {
           track4.dimensions[1] -
           track4.options.labelBottomMargin
       );
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+  });
+
+  describe('Label text options', () => {
+    let hgc = null;
+    let div = null;
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      });
+    });
+
+    it('Checks for assembly text', () => {
+      const hg = hgc.instance();
+      const track5 = getTrackObjectFromHGC(hg, 'aa', 'bar5');
+      const track6 = getTrackObjectFromHGC(hg, 'aa', 'bar6');
+
+      // eslint-disable-next-line no-unused-expressions
+      expect(track5.labelText.text.startsWith('hg19 | ')).to.be.true;
+      // eslint-disable-next-line no-unused-expressions
+      expect(track6.labelText.text.startsWith('hg19 | ')).to.be.false;
     });
 
     afterAll(() => {
