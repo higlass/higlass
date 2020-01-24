@@ -82,7 +82,7 @@ export function workerSetPix(
   colorScale,
   ignoreUpperRight = false,
   ignoreLowerLeft = false,
-  shape,
+  shape = null,
   selectedRows = null
 ) {
   /**
