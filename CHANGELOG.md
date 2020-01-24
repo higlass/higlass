@@ -4,6 +4,7 @@
 
 - Prettified JS code
 - Added `tickFormat` and `tickPosition` options to the chromosome labels track
+- Enabled the colorbar slider by adding the options `colorbarPosition` and `colorbarBackgroundColor` for the `horizontal-multivec`
 - Added release notes to docs.
 
 _[Detailed changes since v1.8.0](https://github.com/higlass/higlass/compare/v1.8.0...develop)_
