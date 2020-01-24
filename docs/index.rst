@@ -184,3 +184,10 @@ crucial are listed below.
     view_config
     developer
     troubleshooting
+
+.. toctree::
+    :hidden:
+    :glob:
+    :titlesonly:
+    
+    releasenotes
