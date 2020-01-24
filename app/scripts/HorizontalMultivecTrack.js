@@ -270,22 +270,13 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   }
 
   /**
-   * Filter and/or reorder the rows of a tile.
-   * @param {Object} tile Tile data to be rendered.
-   * @returns {Object} Tile with filtered / reordered rows.
-   */
-  filterTile(tile) {
-    tile.selectedRows = this.options.selectRows;
-    return tile;
-  }
-
-  /**
    * Render / draw a tile.
+   * Also set the variable tile.selectedRows.
    *
    * @param {Object}  tile  Tile data to be rendered.
    */
   renderTile(tile) {
-    const filteredTile = this.filterTile(tile);
-    super.renderTile(filteredTile);
+    tile.selectedRows = this.options.selectRows;
+    super.renderTile(tile);
   }
 }

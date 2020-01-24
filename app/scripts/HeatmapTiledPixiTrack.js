@@ -327,8 +327,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
 
-    // CONSOLEMARK
-
     this.visibleAndFetchedTiles().forEach(tile => this.renderTile(tile));
 
     // hopefully draw isn't rerendering all the tiles
@@ -1134,8 +1132,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         tile.tileData.dense = newArray;
       }
     }
-
-    // CONSOLEMARK
 
     tileProxy.tileDataToPixData(
       tile,
