@@ -201,7 +201,10 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     // the position of the tile containing the query position
     const tilePos = this._xScale.invert(trackX) / tileWidth;
-    const numRows = this.tilesetInfo.shape ? this.tilesetInfo.shape[1] : 1;
+    let numRows = this.tilesetInfo.shape ? this.tilesetInfo.shape[1] : 1;
+    if (this.options.selectRows) {
+      numRows = this.options.selectRows.length;
+    }
 
     // the position of query within the tile
     let posInTileX =
@@ -242,7 +245,14 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     // add information about the row
     if (this.tilesetInfo.row_infos) {
       value += '<br/>';
-      value += this.tilesetInfo.row_infos[Math.floor(posInTileY)];
+      if (this.options.selectRows) {
+        const selectedRowIndex = this.options.selectRows[
+          Math.floor(posInTileY)
+        ];
+        value += this.tilesetInfo.row_infos[selectedRowIndex];
+      } else {
+        value += this.tilesetInfo.row_infos[Math.floor(posInTileY)];
+      }
     }
 
     return `${value}`;
