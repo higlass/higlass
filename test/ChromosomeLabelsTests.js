@@ -33,7 +33,7 @@ describe('Horizontal heatmaps', () => {
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'v1', 't1');
 
-    expect(trackObj.tickTexts.all).to.eql(2);
+    expect(trackObj.tickTexts.all.length).to.eql(2);
   });
 
   it('should have more than two ticks for other positions', () => {
@@ -43,7 +43,7 @@ describe('Horizontal heatmaps', () => {
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'v1', 't1');
 
-    expect(trackObj.tickTexts.all).to.eql(1);
+    expect(trackObj.tickTexts.all.length).to.eql(1);
   });
 
   afterAll(() => {
