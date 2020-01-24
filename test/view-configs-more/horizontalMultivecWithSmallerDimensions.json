@@ -1,20 +1,11 @@
 {
   "editable": true,
-  "trackSourceServers": [
-    "/api/v1",
-    "https://higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["/api/v1", "https://higlass.io/api/v1"],
   "exportViewUrl": "/api/v1/viewconfs",
   "views": [
     {
-      "initialXDomain": [
-        1348415434.4553869,
-        1574566466.6212506
-      ],
-      "initialYDomain": [
-        507300305.20950717,
-        631829142.4426439
-      ],
+      "initialXDomain": [1348415434.4553869, 1574566466.6212506],
+      "initialYDomain": [507300305.20950717, 631829142.4426439],
       "tracks": {
         "top": [
           {
@@ -80,7 +71,8 @@
               "labelRightMargin": 0,
               "labelTopMargin": 0,
               "labelBottomMargin": 0,
-              "labelShowResolution": true
+              "labelShowResolution": true,
+              "colorbarPosition": "topLeft"
             },
             "width": 33,
             "height": 50

@@ -604,7 +604,9 @@ export const TRACKS_INFO = [
       'trackBorderWidth',
       'trackBorderColor',
       'trackType',
-      'heatmapValueScaling'
+      'heatmapValueScaling',
+      'colorbarBackgroundColor',
+      'colorbarPosition'
     ],
     defaultOptions: {
       labelPosition: 'topLeft',
@@ -620,7 +622,14 @@ export const TRACKS_INFO = [
       valueScaling: 'linear',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
-      heatmapValueScaling: 'log'
+      heatmapValueScaling: 'log',
+      colorbarBackgroundColor: '#ffffff',
+      colorbarPosition: 'topRight'
+    },
+    defaultOptionsByTheme: {
+      [THEME_DARK]: {
+        colorbarBackgroundColor: '#000000'
+      }
     }
   },
   {
