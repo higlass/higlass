@@ -106,8 +106,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
         this.searchField = new SearchField(this.chromInfo);
 
-        this.initChromLabels();
-
+        this.rerender(this.options, true);
         this.draw();
         this.animate();
       },
@@ -115,8 +114,22 @@ class HorizontalChromosomeLabels extends PixiTrack {
     );
   }
 
+  initBoundsTicks() {
+    if (this.pTicks) {
+      this.pMain.removeChild(this.pTicks);
+      this.pTicks = null;
+    }
+
+    this.texts = [];
+  }
+
   initChromLabels() {
     if (!this.chromInfo) return;
+
+    if (!this.pTicks) {
+      this.pTicks = new PIXI.Graphics();
+      this.pMain.addChild(this.pTicks);
+    }
 
     this.texts = [];
     this.pTicks.removeChildren();
@@ -161,7 +174,11 @@ class HorizontalChromosomeLabels extends PixiTrack {
       ? colorToHex(this.options.tickColor)
       : TICK_COLOR;
 
-    this.initChromLabels();
+    if (this.options.tickPositions === 'ends') {
+      this.initBoundsTicks();
+    } else {
+      this.initChromLabels();
+    }
 
     super.rerender(options, force);
 
@@ -204,8 +221,6 @@ class HorizontalChromosomeLabels extends PixiTrack {
   }
 
   drawBoundsTicks(x1, x2) {
-    this.pTicks.clear();
-
     const graphics = this.gBoundTicks;
     graphics.clear();
     graphics.lineStyle(1, 0);
@@ -398,7 +413,12 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
       this.drawBoundsTicks(x1, x2);
 
-      this.pTicks.visible = false;
+      return;
+    }
+
+    if (!this.pTicks) {
+      // options.tickPositiosn was probably just changed to 'even'
+      // and initChromLabels hasn't been called yet
       return;
     }
 
