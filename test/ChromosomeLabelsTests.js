@@ -33,6 +33,7 @@ describe('Horizontal heatmaps', () => {
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'v1', 't1');
 
+    expect(trackObj.tickTexts).not.to.have.property('chr17');
     expect(trackObj.tickTexts.all.length).to.eql(2);
   });
 
@@ -43,7 +44,7 @@ describe('Horizontal heatmaps', () => {
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'v1', 't1');
 
-    expect(trackObj.tickTexts.all.length).to.eql(1);
+    expect(trackObj.tickTexts).to.have.property('chr17');
   });
 
   afterAll(() => {
