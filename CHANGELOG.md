@@ -3,6 +3,7 @@
 ## Next
 
 - Prettified JS code
+- Added `labelShowAssembly` as an option to allow hiding the assembly in track options `hg19 | ` text
 - Added `tickFormat` and `tickPosition` options to the chromosome labels track
 - Enabled the colorbar slider by adding the options `colorbarPosition` and `colorbarBackgroundColor` for the `horizontal-multivec`
 - Added release notes to docs.
