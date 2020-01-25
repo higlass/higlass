@@ -1,5 +1,6 @@
 import boxIntersect from 'box-intersect';
 import { scaleLinear } from 'd3-scale';
+import { format, precisionPrefix, formatPrefix } from 'd3-format';
 import * as PIXI from 'pixi.js';
 
 import PixiTrack from './PixiTrack';
@@ -61,6 +62,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
     };
     this.stroke = colorToHex(this.pixiTextConfig.stroke);
 
+    // text objects to use if the tick style is "bounds", meaning
+    // we only draw two ticks on the left and the right of the screen
+
     this.tickWidth = TICK_WIDTH;
     this.tickHeight = TICK_HEIGHT;
     this.tickTextSeparation = TICK_TEXT_SEPARATION;
@@ -93,8 +97,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
         this.searchField = new SearchField(this.chromInfo);
 
-        this.initChromLabels();
-
+        this.rerender(this.options, true);
         this.draw();
         this.animate();
       },
@@ -102,8 +105,39 @@ class HorizontalChromosomeLabels extends PixiTrack {
     );
   }
 
+  initBoundsTicks() {
+    if (this.pTicks) {
+      this.pMain.removeChild(this.pTicks);
+      this.pTicks = null;
+    }
+
+    if (!this.gBoundTicks) {
+      this.gBoundTicks = new PIXI.Graphics();
+
+      this.leftBoundTick = new PIXI.Text('', this.pixiTextConfig);
+      this.rightBoundTick = new PIXI.Text('', this.pixiTextConfig);
+
+      this.gBoundTicks.addChild(this.leftBoundTick);
+      this.gBoundTicks.addChild(this.rightBoundTick);
+
+      this.pMain.addChild(this.gBoundTicks);
+    }
+
+    this.texts = [];
+  }
+
   initChromLabels() {
     if (!this.chromInfo) return;
+
+    if (this.gBoundTicks) {
+      this.pMain.removeChild(this.gBoundTicks);
+      this.gBoundTicks = null;
+    }
+
+    if (!this.pTicks) {
+      this.pTicks = new PIXI.Graphics();
+      this.pMain.addChild(this.pTicks);
+    }
 
     this.texts = [];
     this.pTicks.removeChildren();
@@ -148,7 +182,11 @@ class HorizontalChromosomeLabels extends PixiTrack {
       ? colorToHex(this.options.tickColor)
       : TICK_COLOR;
 
-    this.initChromLabels();
+    if (this.options.tickPositions === 'ends') {
+      this.initBoundsTicks();
+    } else {
+      this.initChromLabels();
+    }
 
     super.rerender(options, force);
 
@@ -166,6 +204,84 @@ class HorizontalChromosomeLabels extends PixiTrack {
     }
   }
 
+  formatTick(pos) {
+    const domain = this._xScale.domain();
+
+    const viewWidth = domain[1] - domain[0];
+
+    const p = precisionPrefix(pos, viewWidth);
+
+    const fPlain = format(',');
+    const fPrecision = formatPrefix(`,.${p}`, viewWidth);
+    let f = fPlain;
+
+    if (this.options.tickFormat === 'si') {
+      f = fPrecision;
+    } else if (this.options.tickFormat === 'plain') {
+      f = fPlain;
+    } else if (this.options.tickPositions === 'ends') {
+      // if no format is specified but tickPositions are at 'ends'
+      // then use precision format
+      f = fPrecision;
+    }
+
+    return f(pos);
+  }
+
+  drawBoundsTicks(x1, x2) {
+    const graphics = this.gBoundTicks;
+    graphics.clear();
+    graphics.lineStyle(1, 0);
+
+    // left tick
+    // line is offset by one because it's right on the edge of the
+    // visible region and we want to get the full width
+    graphics.moveTo(1, this.dimensions[1]);
+    graphics.lineTo(1, this.dimensions[1] - this.tickHeight);
+
+    // right tick
+    graphics.moveTo(this.dimensions[0] - 1, this.dimensions[1]);
+    graphics.lineTo(
+      this.dimensions[0] - 1,
+      this.dimensions[1] - this.tickHeight
+    );
+
+    // we want to control the precision of the tick labels
+    // so that we don't end up with labels like 15.123131M
+    this.leftBoundTick.x = 0;
+    this.leftBoundTick.y =
+      this.dimensions[1] - this.tickHeight - this.tickTextSeparation;
+    this.leftBoundTick.text = `${x1[0]}: ${this.formatTick(x1[1])}`;
+    this.leftBoundTick.anchor.y = 1;
+
+    this.rightBoundTick.x = this.dimensions[0];
+    this.rightBoundTick.text = `${x2[0]}: ${this.formatTick(x2[1])}`;
+    this.rightBoundTick.y =
+      this.dimensions[1] - this.tickHeight - this.tickTextSeparation;
+    this.rightBoundTick.anchor.y = 1;
+
+    this.rightBoundTick.anchor.x = 1;
+
+    // line is offset by one because it's right on the edge of the
+    // visible region and we want to get the full width
+    this.leftBoundTick.tickLine = [
+      1,
+      this.dimensions[1],
+      1,
+      this.dimensions[1] - this.tickHeight
+    ];
+    this.rightBoundTick.tickLine = [
+      this.dimensions[0] - 1,
+      this.dimensions[1],
+      this.dimensions[0] - 1,
+      this.dimensions[1] - this.tickHeight
+    ];
+
+    this.tickTexts = {};
+    this.tickTexts.all = [this.leftBoundTick, this.rightBoundTick];
+    // this.rightBoundTick
+  }
+
   drawTicks(cumPos) {
     const graphics = this.gTicks[cumPos.chr];
 
@@ -173,7 +289,6 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     // CLear graphics *and* ticktexts otherwise the two are out of sync!
     graphics.clear();
-    this.tickTexts[cumPos.chr] = [];
 
     const chromLen = +this.chromInfo.chromLengths[cumPos.chr];
 
@@ -195,7 +310,6 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     // calculate a certain number of ticks
     const ticks = xScale.ticks(numTicks);
-    const tickFormat = xScale.tickFormat(numTicks);
 
     // not sure why we're separating these out by chromosome, but ok
     const tickTexts = this.tickTexts[cumPos.chr];
@@ -212,10 +326,18 @@ class HorizontalChromosomeLabels extends PixiTrack {
       ? 0
       : tickHeight + this.tickTextSeparation;
 
-    while (tickTexts.length <= ticks.length) {
+    // these two loops reuse existing text objects so that
+    // we're not constantly recreating texts that already
+    // exist
+    while (tickTexts.length < ticks.length) {
       const newText = new PIXI.Text('', this.pixiTextConfig);
       tickTexts.push(newText);
       this.gTicks[cumPos.chr].addChild(newText);
+    }
+
+    while (tickTexts.length > ticks.length) {
+      const text = tickTexts.pop();
+      this.gTicks[cumPos.chr].removeChild(text);
     }
 
     let i = 0;
@@ -234,7 +356,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       tickTexts[i].text =
         ticks[i] === 0
           ? `${cumPos.chr}: 1`
-          : `${cumPos.chr}: ${tickFormat(ticks[i])}`;
+          : `${cumPos.chr}: ${this.formatTick(ticks[i])}`;
 
       const x = this._xScale(cumPos.pos + ticks[i]);
 
@@ -301,6 +423,22 @@ class HorizontalChromosomeLabels extends PixiTrack {
       return;
     }
 
+    if (this.options.tickPositions === 'ends') {
+      if (!this.gBoundTicks) return;
+
+      this.gBoundTicks.visible = true;
+
+      this.drawBoundsTicks(x1, x2);
+
+      return;
+    }
+
+    if (!this.pTicks) {
+      // options.tickPositiosn was probably just changed to 'even'
+      // and initChromLabels hasn't been called yet
+      return;
+    }
+
     for (let i = 0; i < this.texts.length; i++) {
       this.texts[i].visible = false;
       this.gTicks[this.chromInfo.cumPositions[i].chr].visible = false;
@@ -313,8 +451,10 @@ class HorizontalChromosomeLabels extends PixiTrack {
     // hide all the chromosome labels in preparation for drawing
     // new ones
     Object.keys(this.chromInfo.chrPositions).forEach(chrom => {
-      for (let j = 0; j < this.tickTexts[chrom].length; j++) {
-        this.tickTexts[chrom][j].visible = false;
+      if (this.tickTexts[chrom]) {
+        for (let j = 0; j < this.tickTexts[chrom].length; j++) {
+          this.tickTexts[chrom][j].visible = false;
+        }
       }
     });
 
