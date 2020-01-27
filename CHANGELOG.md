@@ -1,12 +1,12 @@
 # Release notes
 
-## v1.8.2
+## v1.8.2 (January 26th, 2019)
 
 - Fixed horizontal track not rendering properly in vertical position bug
 
 _[Detailed changes since v1.8.1](https://github.com/higlass/higlass/compare/v1.8.1...v1.8.2)_
 
-## v1.8.1
+## v1.8.1 (January 25th, 2019)
 
 - Prettified JS code
 - Added `labelShowAssembly` as an option to allow hiding the assembly in track label (e.g. `hg19 |` text)
@@ -1205,7 +1205,3 @@ _[Detailed changes since v1.4.2](https://github.com/higlass/higlass/compare/v1.4
 - New chromosome 2D grid (for hg19)
 - New chromosome 1D axis (for hg19)
 - New chromosome horizontal axis (for hg19)
-
-* larger change
-
-- minor change
