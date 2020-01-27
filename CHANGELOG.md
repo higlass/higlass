@@ -1,9 +1,13 @@
 # Release notes
 
-## Next
+## Next release
+
+- Fixed horizontal track not rendering properly in vertical position bug
+
+## v1.8.1
 
 - Prettified JS code
-- Added `labelShowAssembly` as an option to allow hiding the assembly in track options `hg19 | ` text
+- Added `labelShowAssembly` as an option to allow hiding the assembly in track label (e.g. `hg19 | ` text)
 - Added `tickFormat` and `tickPosition` options to the chromosome labels track
 - Enabled the colorbar slider by adding the options `colorbarPosition` and `colorbarBackgroundColor` for the `horizontal-multivec`
 - Added release notes to docs.
