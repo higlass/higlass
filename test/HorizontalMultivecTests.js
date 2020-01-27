@@ -6,6 +6,9 @@ import {
 
 import Adapter from 'enzyme-adapter-react-16';
 
+import { select } from 'd3-selection';
+import ReactDOM from 'react-dom';
+
 // Utils
 import {
   mountHGComponent,
@@ -64,6 +67,45 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
+  it('has a colorbar', () => {
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'viewConf2_uid',
+      'K_0GxgCvQfCHM56neOnHKg'
+    ); // uuid of horizontal-multivec
+    expect(track.pColorbarArea.x).toBeLessThan(track.dimensions[0] / 2);
+
+    const selection = select(div).selectAll('.selection');
+
+    // we expect one colorbar selector brush to be present
+    expect(selection.size()).toEqual(1);
+  });
+
+  it('hides the colorbar', () => {
+    const { views } = hgc.instance().state;
+
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'viewConf2_uid',
+      'K_0GxgCvQfCHM56neOnHKg'
+    ); // uuid of horizontal-multivec
+    track.options.colorbarPosition = 'hidden';
+
+    hgc.instance().setState({ views });
+
+    // eslint-disable-next-line react/no-find-dom-node
+    const selection = select(ReactDOM.findDOMNode(hgc.instance())).selectAll(
+      '.selection'
+    );
+
+    // we expect the colorbar selector brush to be hidden,
+    // and therefore not present
+    expect(selection.size()).toEqual(0);
+
+    track.options.colorbarPosition = 'topLeft';
+    hgc.instance().setState({ views });
+  });
+  
   it('Test horizontal multivec with filtered rows', done => {
     [div, hgc] = mountHGComponent(
       div,

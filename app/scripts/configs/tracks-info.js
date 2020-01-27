@@ -154,6 +154,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -180,12 +181,9 @@ export const TRACKS_INFO = [
       labelTopMargin: 0,
       labelBottomMargin: 0,
       labelShowResolution: true,
-      colorRange: [
-        // corresponding to the fall colormap
-        'white',
-        'rgba(245,166,35,1.0)',
-        'rgba(208,2,27,1.0)',
-        'black'
+      labelShowAssembly: true,
+      colorRange: [ // corresponding to the fall colormap
+        'white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'
       ],
       colorbarBackgroundColor: '#ffffff',
       maxZoom: null,
@@ -232,6 +230,7 @@ export const TRACKS_INFO = [
       labelTopMargin: 0,
       labelBottomMargin: 0,
       labelShowResolution: true,
+      labelShowAssembly: true,
       labelColor: 'black',
       colorRange: [
         // corresponding to the fall colormap
@@ -254,6 +253,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -282,6 +282,7 @@ export const TRACKS_INFO = [
       labelTopMargin: 0,
       labelBottomMargin: 0,
       labelShowResolution: true,
+      labelShowAssembly: true,
       labelColor: 'black',
       minWidth: 50,
       minHeight: 100,
@@ -304,6 +305,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -332,6 +334,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundColor',
@@ -362,6 +365,7 @@ export const TRACKS_INFO = [
       labelBottomMargin: 0,
       labelBackgroundColor: 'white',
       labelShowResolution: false,
+      labelShowAssembly: true,
       axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       lineStrokeColor: 'blue',
@@ -397,6 +401,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -420,6 +425,7 @@ export const TRACKS_INFO = [
       labelTopMargin: 0,
       labelBottomMargin: 0,
       labelShowResolution: false,
+      labelShowAssembly: true,
       axisPositionHorizontal: 'right',
       colorRange: [
         // corresponding to the fall colormap
@@ -450,6 +456,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -473,6 +480,7 @@ export const TRACKS_INFO = [
       labelTopMargin: 0,
       labelBottomMargin: 0,
       labelShowResolution: false,
+      labelShowAssembly: true,
       axisPositionHorizontal: 'right',
       colorRange: [
         // corresponding to the fall colormap
@@ -504,6 +512,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'valueScaling',
       'labelTextOpacity',
@@ -521,6 +530,7 @@ export const TRACKS_INFO = [
       labelTopMargin: 0,
       labelBottomMargin: 0,
       labelShowResolution: false,
+      labelShowAssembly: true,
       labelColor: 'black',
       labelTextOpacity: 0.4,
       valueScaling: 'linear',
@@ -542,6 +552,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'minWidth',
       'valueScaling',
@@ -560,6 +571,7 @@ export const TRACKS_INFO = [
       labelTopMargin: 0,
       labelBottomMargin: 0,
       labelShowResolution: false,
+      labelShowAssembly: true,
       labelColor: 'black',
       labelTextOpacity: 0.4,
       minWidth: 100,
@@ -582,6 +594,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'minHeight',
       'valueScaling',
@@ -592,7 +605,9 @@ export const TRACKS_INFO = [
       'trackBorderColor',
       'trackType',
       'heatmapValueScaling',
-      'selectRows'
+      'selectRows',
+      'colorbarBackgroundColor',
+      'colorbarPosition'
     ],
     defaultOptions: {
       labelPosition: 'topLeft',
@@ -601,6 +616,7 @@ export const TRACKS_INFO = [
       labelTopMargin: 0,
       labelBottomMargin: 0,
       labelShowResolution: true,
+      labelShowAssembly: true,
       labelColor: 'black',
       labelTextOpacity: 0.4,
       minHeight: 100,
@@ -608,7 +624,14 @@ export const TRACKS_INFO = [
       trackBorderWidth: 0,
       trackBorderColor: 'black',
       heatmapValueScaling: 'log',
-      selectRows: null
+      selectRows: null,
+      colorbarBackgroundColor: '#ffffff',
+      colorbarPosition: 'topRight'
+    },
+    defaultOptionsByTheme: {
+      [THEME_DARK]: {
+        colorbarBackgroundColor: '#000000'
+      }
     }
   },
   {
@@ -624,6 +647,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'minWidth',
       'valueScaling',
@@ -644,6 +668,7 @@ export const TRACKS_INFO = [
       labelColor: 'black',
       labelTextOpacity: 0.4,
       labelShowResolution: true,
+      labelShowAssembly: true,
       minWidth: 100,
       valueScaling: 'linear',
       trackBorderWidth: 0,
@@ -664,6 +689,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -690,6 +716,7 @@ export const TRACKS_INFO = [
       labelTopMargin: 0,
       labelBottomMargin: 0,
       labelShowResolution: false,
+      labelShowAssembly: true,
       axisLabelFormatting: 'scientific',
       axisPositionVertical: 'top',
       lineStrokeWidth: 1,
@@ -723,6 +750,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -743,6 +771,7 @@ export const TRACKS_INFO = [
       labelTopMargin: 0,
       labelBottomMargin: 0,
       labelShowResolution: false,
+      labelShowAssembly: true,
       axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       pointColor: 'red',
@@ -765,6 +794,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -786,6 +816,7 @@ export const TRACKS_INFO = [
       labelTopMargin: 0,
       labelBottomMargin: 0,
       labelShowResolution: false,
+      labelShowAssembly: true,
       axisPositionHorizontal: 'right',
       axisLabelFormatting: 'scientific',
       barFillColorBottom: 'red',
@@ -810,6 +841,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -841,6 +873,7 @@ export const TRACKS_INFO = [
       labelTopMargin: 0,
       labelBottomMargin: 0,
       labelShowResolution: false,
+      labelShowAssembly: true,
       axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       barFillColor: 'darkgreen',
@@ -864,6 +897,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -894,6 +928,7 @@ export const TRACKS_INFO = [
       labelTopMargin: 0,
       labelBottomMargin: 0,
       labelShowResolution: false,
+      labelShowAssembly: true,
       axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       barFillColor: 'darkgreen',
@@ -916,6 +951,7 @@ export const TRACKS_INFO = [
       'labelTopMargin',
       'labelBottomMargin',
       'labelShowResolution',
+      'labelShowAssembly',
       'labelColor',
       'labelTextOpacity',
       'labelBackgroundOpacity',
@@ -936,6 +972,7 @@ export const TRACKS_INFO = [
       labelTopMargin: 0,
       labelBottomMargin: 0,
       labelShowResolution: false,
+      labelShowAssembly: true,
       axisLabelFormatting: 'scientific',
       axisPositionHorizontal: 'right',
       lineStrokeColor: 'red',
@@ -1587,7 +1624,9 @@ export const TRACKS_INFO = [
       'fontSize',
       'fontIsLeftAligned',
       'showMousePosition',
-      'mousePositionColor'
+      'mousePositionColor',
+      'tickPositions',
+      'tickFormat'
     ],
     defaultOptions: {
       color: '#808080',

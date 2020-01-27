@@ -368,6 +368,12 @@ chromosome files. The file can be ingested by the higlass server like any other
 tileset. As long as the `datatype` is set to `chromsizes` this track should be
 selectable from the "Add Track Dialog".
 
+Options
+-------
+
+- **tickPositions**: [even|ends] Space tick marks evenly across the track or only show them at the start and end.
+- **tickFormat**: [plain|si] The format for the ticks. If set to plain, ticks are formatted as regular numbers with commas delimiting blocks of zeros (e.g. 1,100,000). If set to SI, then SI prefixes along with precision limiting is used (e.g. 1.1M). If not specified, the default is *plain* for ``tickPosition == 'even'`` and *si* for ``tickPosition == 'ends'``
+
 **Demos:**
 
 - `demonstrate adjustability <examples/chromosome-labels.html>`_.
@@ -477,4 +483,70 @@ parameter of the ``options``.
       strokeWidth: 2,
       strokeOpacity: 0.6,
     }
+  }
+
+Horizontal Multivec
+===================
+
+.. image:: img/horizontal-multivec.png
+    :align: right
+  
+track-type: ``horizontal-multivec``
+datatype: multivec
+
+Horizontal multivec tracks show multiple values at every
+location in the data by using a set of rows.
+
+Options
+--------
+
+- **colorbarPosition**: ['hidden', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'] - The position of the colorbar element.
+- **colorbarBackgroundColor**: The background color for the colorbar element.
+
+**Example:**
+
+.. code-block:: javascript
+
+  {
+    type: 'horizontal-multivec',
+    uid: 'K_0GxgCvQfCHM56neOnHKg',
+    tilesetUid: 'abohuD-sTbiyAPqh2y5OpA',
+    server: 'https://resgen.io/api/v1',
+    options: {
+      labelPosition: 'topLeft',
+      labelColor: 'black',
+      labelTextOpacity: 0.4,
+      valueScaling: 'linear',
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+      heatmapValueScaling: 'log',
+      name: 'my_file_genome_wide_20180228.multires.mv5',
+      labelLeftMargin: 0,
+      labelRightMargin: 0,
+      labelTopMargin: 0,
+      labelBottomMargin: 0,
+      labelShowResolution: true,
+      minHeight: 100,
+      colorbarPosition: 'topRight',
+      colorbarBackgroundColor: '#ffffff'
+    },
+    width: 1500,
+    height: 700,
+    resolutions: [
+      16384000,
+      8192000,
+      4096000,
+      2048000,
+      1024000,
+      512000,
+      256000,
+      128000,
+      64000,
+      32000,
+      16000,
+      8000,
+      4000,
+      2000,
+      1000
+    ]
   }
