@@ -12,12 +12,13 @@ import { expect } from 'chai';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC
+  getTrackObjectFromHGC,
+  getTrackRenderer
 } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
 
-describe('Horizontal heatmaps', () => {
+describe('Horizontal chromosome labels', () => {
   let hgc = null;
   let div = null;
 
@@ -32,6 +33,11 @@ describe('Horizontal heatmaps', () => {
     // add your tests here
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'v1', 't1');
+    const trackRenderer = getTrackRenderer(hgc.instance(), 'v1');
+
+    expect(trackRenderer.trackDefObjects.t1.trackDef.track).to.have.property(
+      'position'
+    );
 
     expect(trackObj.tickTexts).not.to.have.property('chr17');
     expect(trackObj.tickTexts.all.length).to.eql(2);
@@ -43,7 +49,6 @@ describe('Horizontal heatmaps', () => {
     hgc.update();
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'v1', 't1');
-
     expect(trackObj.tickTexts).to.have.property('chr17');
   });
 
