@@ -211,6 +211,11 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
     const posInTileY = (trackY / this.dimensions[1]) * numRows;
 
+    let selectedRowIndex = Math.floor(posInTileY);
+    if (this.options.selectRows) {
+      selectedRowIndex = this.options.selectRows[Math.floor(posInTileY)];
+    }
+
     const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
     const fetchedTile = this.fetchedTiles[tileId];
 
@@ -232,11 +237,10 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       if (this.tilesetInfo.shape) {
         // accomodate data from vector sources
         index =
-          this.tilesetInfo.shape[0] * Math.floor(posInTileY) +
-          Math.floor(posInTileX);
+          this.tilesetInfo.shape[0] * selectedRowIndex + Math.floor(posInTileX);
       } else {
         index =
-          fetchedTile.tileData.dense.length * Math.floor(posInTileY) +
+          fetchedTile.tileData.dense.length * selectedRowIndex +
           Math.floor(posInTileX);
       }
       value = format('.3f')(fetchedTile.tileData.dense[index]);
@@ -245,14 +249,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     // add information about the row
     if (this.tilesetInfo.row_infos) {
       value += '<br/>';
-      if (this.options.selectRows) {
-        const selectedRowIndex = this.options.selectRows[
-          Math.floor(posInTileY)
-        ];
-        value += this.tilesetInfo.row_infos[selectedRowIndex];
-      } else {
-        value += this.tilesetInfo.row_infos[Math.floor(posInTileY)];
-      }
+      value += this.tilesetInfo.row_infos[selectedRowIndex];
     }
 
     return `${value}`;
