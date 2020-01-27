@@ -105,7 +105,7 @@ describe('Horizontal heatmaps', () => {
     track.options.colorbarPosition = 'topLeft';
     hgc.instance().setState({ views });
   });
-  
+
   it('Test horizontal multivec with filtered rows', done => {
     [div, hgc] = mountHGComponent(
       div,
@@ -124,8 +124,8 @@ describe('Horizontal heatmaps', () => {
         expect(trackTiles[1].canvas.width).toEqual(256);
         expect(trackTiles[1].canvas.height).toEqual(10);
 
-        const tooltipValue = track.getVisibleData(10, 100);
-        expect(tooltipValue.startsWith('0.278')).toBe(true);
+        const tooltipValue = track.getVisibleData(100, 100);
+        expect(tooltipValue.startsWith('0.676')).toBe(true);
         done();
       },
       {

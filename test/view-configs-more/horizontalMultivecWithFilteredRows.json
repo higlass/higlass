@@ -7,98 +7,7 @@
       "initialXDomain": [226539220.00098854, 226571200.89990866],
       "initialYDomain": [2671187034.245663, 2671205960.761557],
       "tracks": {
-        "top": [
-          {
-            "type": "horizontal-chromosome-labels",
-            "uid": "GzHGPlijS2eASBqslzVcxA",
-            "tilesetUid": "ZpZ8c5JJRUS1J7ZkofcUrg",
-            "server": "https://resgen.io/api/v1",
-            "options": {
-              "showMousePosition": false,
-              "mousePositionColor": "#999999",
-              "color": "#808080",
-              "stroke": "#ffffff",
-              "fontSize": 12,
-              "fontIsLeftAligned": false
-            },
-            "width": 1202,
-            "height": 30
-          },
-          {
-            "type": "horizontal-gene-annotations",
-            "uid": "R6ZZ5LnEQ4ODCWZoE38maw",
-            "tilesetUid": "M9A9klpwTci5Vf4bHZ864g",
-            "server": "https://resgen.io/api/v1",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "hidden",
-              "plusStrandColor": "blue",
-              "minusStrandColor": "red",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "showMousePosition": false,
-              "name": "gene-annotations-hg38_3d2Hebg.db",
-              "mousePositionColor": "#999999",
-              "fontSize": 10,
-              "labelBackgroundColor": "#ffffff",
-              "labelLeftMargin": 0,
-              "labelRightMargin": 0,
-              "labelTopMargin": 0,
-              "labelBottomMargin": 0,
-              "minHeight": 24,
-              "geneAnnotationHeight": 12,
-              "geneLabelPosition": "outside",
-              "geneStrandSpacing": 4
-            },
-            "width": 1202,
-            "height": 70
-          },
-          {
-            "type": "horizontal-bar",
-            "uid": "bmcNxj_MSEar_3nYVMnPnQ",
-            "tilesetUid": "a-iBpdh3Q_uO2FLCWKpOOw",
-            "server": "https://resgen.io/api/v1",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "topLeft",
-              "axisPositionHorizontal": "right",
-              "barFillColor": "darkgreen",
-              "valueScaling": "linear",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "labelTextOpacity": 0.4,
-              "barOpacity": 1,
-              "name": "conservation (hg38.phastCons100way.bw)",
-              "align": "bottom",
-              "labelLeftMargin": 0,
-              "labelRightMargin": 0,
-              "labelTopMargin": 0,
-              "labelBottomMargin": 0,
-              "labelShowResolution": false,
-              "axisLabelFormatting": "scientific"
-            },
-            "width": 1202,
-            "height": 49,
-            "aggregationModes": {
-              "mean": {
-                "name": "Mean",
-                "value": "mean"
-              },
-              "min": {
-                "name": "Min",
-                "value": "min"
-              },
-              "max": {
-                "name": "Max",
-                "value": "max"
-              },
-              "std": {
-                "name": "Standard Deviation",
-                "value": "std"
-              }
-            }
-          }
-        ],
+        "top": [],
         "left": [],
         "center": [
           {
@@ -124,24 +33,7 @@
               "selectRows": [1, 25, 30, 40, 50, 60, 70, 100, 128, 200]
             },
             "width": 1202,
-            "height": 687,
-            "resolutions": [
-              16384000,
-              8192000,
-              4096000,
-              2048000,
-              1024000,
-              512000,
-              256000,
-              128000,
-              64000,
-              32000,
-              16000,
-              8000,
-              4000,
-              2000,
-              1000
-            ]
+            "height": 687
           }
         ],
         "bottom": [],
