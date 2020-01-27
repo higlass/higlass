@@ -1,5 +1,9 @@
 # Release notes
 
+## Next release
+
+- Fixed horizontal track not rendering properly in vertical position bug
+
 ## v1.8.1
 
 - Prettified JS code
