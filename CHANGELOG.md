@@ -4,6 +4,8 @@
 
 - Fixed horizontal track not rendering properly in vertical position bug
 
+_[Detailed changes since v1.8.1](https://github.com/higlass/higlass/compare/v1.8.1...v1.8.2)_
+
 ## v1.8.1
 
 - Prettified JS code
@@ -12,7 +14,7 @@
 - Enabled the colorbar slider by adding the options `colorbarPosition` and `colorbarBackgroundColor` for the `horizontal-multivec`
 - Added release notes to docs.
 
-_[Detailed changes since v1.8.0](https://github.com/higlass/higlass/compare/v1.8.0...develop)_
+_[Detailed changes since v1.8.0](https://github.com/higlass/higlass/compare/v1.8.0...v1.8.1)_
 
 ## v1.8.0
 
