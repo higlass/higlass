@@ -120,10 +120,10 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     const min = this.minimalVisibleValue !== null
       ? this.minimalVisibleValue
-      : this.minValue();
+      : this.minVisibleValueInTiles();
     const max = this.maximalVisibleValue !== null
       ? this.maximalVisibleValue
-      : this.maxValue();
+      : this.maxVisibleValueInTiles();
 
     const [vs, offsetValue] = this.makeValueScale(
       min,

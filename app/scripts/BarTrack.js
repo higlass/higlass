@@ -93,10 +93,10 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     const min = this.minimalVisibleValue !== null
       ? this.minimalVisibleValue
-      : this.minValue();
+      : this.minVisibleValueInTiles();
     const max = this.maximalVisibleValue !== null
       ? this.maximalVisibleValue
-      : this.maxValue();
+      : this.maxVisibleValueInTiles();
 
     const [valueScale, pseudocount] = this.makeValueScale(
       min,

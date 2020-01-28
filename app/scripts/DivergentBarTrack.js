@@ -25,10 +25,10 @@ class DivergentBarTrack extends BarTrack {
 
     const min = this.minimalVisibleValue !== null
       ? this.minimalVisibleValue
-      : this.minValue();
+      : this.minVisibleValueInTiles();
     const max = this.maximalVisibleValue !== null
       ? this.maximalVisibleValue
-      : this.maxValue();
+      : this.maxVisibleValueInTiles();
 
     // console.log('valueScaling:', this.options.valueScaling);
     if (this.options.valueScaling === 'log') {
