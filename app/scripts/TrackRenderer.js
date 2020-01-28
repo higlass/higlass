@@ -1258,6 +1258,7 @@ class TrackRenderer extends React.Component {
     // We are calling zoomed() one more time to update the scales when zooming ends.
     // This is neccessary for accurate intra tile panning and zooming
     this.zoomed();
+
     this.props.pubSub.publish('app.zoomEnd');
   }
 

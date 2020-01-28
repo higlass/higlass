@@ -336,7 +336,7 @@ class TilesetFinder extends React.Component {
               icons={{
                 uncheck: <svg style={svgStyle}><use xlinkHref="#square_o" /></svg>,
                 check: <svg style={svgStyle}><use xlinkHref="#check_square_o" /></svg>,
-                halfcheck: <svg style={halfSvgStyle}><use xlinkHref="#check_square_o" /></svg>,
+                halfCheck: <svg style={halfSvgStyle}><use xlinkHref="#check_square_o" /></svg>,
                 leaf: <svg style={svgStyle}><use xlinkHref="#file_o" /></svg>,
                 expandClose: <svg style={svgStyle}><use xlinkHref="#chevron_right" /></svg>,
                 expandOpen: <svg style={svgStyle}><use xlinkHref="#chevron_down" /></svg>,

@@ -23,8 +23,12 @@ class DivergentBarTrack extends BarTrack {
     // equal to the smallest non-zero value
     this.valueScale = null;
 
-    const min = this.minVisibleValue();
-    const max = this.maxVisibleValue();
+    const min = this.minimalVisibleValue !== null
+      ? this.minimalVisibleValue
+      : this.minValue();
+    const max = this.maximalVisibleValue !== null
+      ? this.maximalVisibleValue
+      : this.maxValue();
 
     // console.log('valueScaling:', this.options.valueScaling);
     if (this.options.valueScaling === 'log') {
@@ -44,7 +48,6 @@ class DivergentBarTrack extends BarTrack {
         .range([this.dimensions[1], 0]);
     }
 
-    this.updateMinMaxVisibleValues(min, max);
     /*
     tile.scale = {
       minValue: this.valueScale.domain()[0],

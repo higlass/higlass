@@ -9,6 +9,7 @@ import PixiTrack from './PixiTrack';
 
 // Utils
 import { throttleAndDebounce } from './utils';
+import backgroundTaskScheduler from './utils/background-task-scheduler';
 
 // Configs
 import { ZOOM_DEBOUNCE } from './configs';
@@ -109,9 +110,11 @@ class TiledPixiTrack extends PixiTrack {
     this.minimalVisibleValue = null;
     this.maximalVisibleValue = null;
 
+    this.backgroundTaskScheduler = backgroundTaskScheduler;
+
     // If the browser supports requestIdleCallback we use continuous
     // instead of tile based scaling
-    this.continuousScaling = ('requestIdleCallback' in window) && false;
+    this.continuousScaling = ('requestIdleCallback' in window);
 
     this.valueScaleMin = null;
     this.fixedValueScaleMin = null;

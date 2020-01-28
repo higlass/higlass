@@ -4,7 +4,6 @@ class BackgroundTaskScheduler {
     this.taskHandle = null;
   }
 
-
   enqueueTask(taskHandler, taskData, trackId = null) {
     if (trackId === null) {
       this.taskList.push({
@@ -24,12 +23,11 @@ class BackgroundTaskScheduler {
     }
 
     if (!this.taskHandle) {
-      this.taskHandle = requestIdleCallback(this.runTaskQueue.bind(this), { timeout: 500 });
+      this.taskHandle = requestIdleCallback(this.runTaskQueue.bind(this), { timeout: 300 });
     }
   }
 
   runTaskQueue(deadline) {
-    // console.log(this);
     while ((deadline.timeRemaining() > 0 || deadline.didTimeout) && this.taskList.length) {
       const task = this.taskList.shift();
 
@@ -41,7 +39,7 @@ class BackgroundTaskScheduler {
     }
 
     if (this.taskList.length) {
-      this.taskHandle = requestIdleCallback(this.runTaskQueue.bind(this), { timeout: 500 });
+      this.taskHandle = requestIdleCallback(this.runTaskQueue.bind(this), { timeout: 300 });
     } else {
       this.taskHandle = 0;
     }

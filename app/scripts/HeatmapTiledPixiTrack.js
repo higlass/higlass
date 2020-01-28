@@ -222,6 +222,14 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     });
   }
 
+  scheduleRerender() {
+    this.backgroundTaskScheduler.enqueueTask(this.handleRerender.bind(this), null, this.uuid);
+  }
+
+  handleRerender() {
+    this.rerender(this.options, true);
+  }
+
   /**
    * Get absolute (i.e., display) tile dimension and position.
    *
@@ -253,23 +261,59 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   updateValueScale() {
+    let minValue = this.scale.minValue;
+
+    if (typeof this.options.valueScaleMin !== 'undefined') {
+      minValue = this.valueScaleMin;
+    } else if (this.scale.minValue !== undefined && this.continuousScaling) {
+      // if this.scale.minValue is undefined there is no dense data
+      minValue = this.minimalVisibleValue !== null
+        ? this.minimalVisibleValue
+        : minValue;
+    }
+
+    let maxValue = this.scale.maxValue;
+
+    if (typeof this.options.valueScaleMax !== 'undefined') {
+      maxValue = this.valueScaleMax;
+    } else if (this.scale.maxValue !== undefined && this.continuousScaling) {
+      // if this.scale.maxValue is undefined there is no dense data
+      maxValue = this.maximalVisibleValue !== null
+        ? this.maximalVisibleValue
+        : maxValue;
+    }
+
+    // There might be only one value in the visible area. We extend the
+    // valuescale artificially, so that point is still displayed
+    if (minValue !== null
+        && maxValue !== null
+        && Math.abs(minValue - maxValue) < 1e-6) {
+      // don't go to or below 0 in case there is a log scale
+      minValue = Math.max(1e-6, minValue - 1e-3);
+      maxValue += 1e-3;
+    }
+
     const [scaleType, valueScale] = getValueScale(
       (this.options && this.options.heatmapValueScaling) || 'log',
-      (
-        typeof this.options.valueScaleMin === 'undefined'
-          ? this.scale.minValue
-          : this.valueScaleMin
-      ),
+      minValue,
       this.medianVisibleValue,
-      (
-        typeof this.options.valueScaleMax === 'undefined'
-          ? this.scale.maxValue
-          : this.valueScaleMax
-      ),
+      maxValue,
       'log'
     );
 
     this.valueScale = valueScale;
+
+    if (
+      this.continuousScaling
+      && this.minimalVisibleValue === null
+      && this.maximalVisibleValue === null
+      && !Number.isNaN(this.valueScale.domain()[0])
+      && !Number.isNaN(this.valueScale.domain()[1])
+    ) {
+      this.minimalVisibleValue = this.valueScale.domain()[0];
+      this.maximalVisibleValue = this.valueScale.domain()[1];
+    }
+
     this.limitedValueScale = this.valueScale.copy();
 
     if (
@@ -987,6 +1031,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       return;
     }
 
+    if (this.continuousScaling) {
+      // when new tiles are loaded, recompute the visible extrema
+      // so that there is no visible refresh of the colorbar
+      this.minimalVisibleValue = this.minVisibleValue();// this.scale.minValue;
+      this.maximalVisibleValue = this.maxVisibleValue();// this.scale.maxValue;
+    }
+
     this.renderTile(tile);
   }
 
@@ -1187,6 +1238,109 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     return [base, base];
   }
 
+  getIndicesOfVisibleData(tile) {
+    const visibleX = this._xScale.range();
+    const visibleY = this._yScale.range();
+
+    const tilePos = tile.mirrored
+      ? [tile.tileData.tilePos[1], tile.tileData.tilePos[0]]
+      : tile.tileData.tilePos;
+
+    const {
+      tileX, tileY, tileWidth, tileHeight
+    } = this.getTilePosAndDimensions(
+      tile.tileData.zoomLevel, tilePos, this.binsPerTile()
+    );
+
+    const tileXScale = scaleLinear()
+      .domain([
+        0, this.binsPerTile()
+      ])
+      .range([tileX, tileX + tileWidth]);
+
+    const startX = Math.max(
+      0,
+      Math.round(tileXScale.invert(this._xScale.invert(visibleX[0])))
+    );
+
+    const endX = Math.min(
+      this.binsPerTile(),
+      Math.round(tileXScale.invert(this._xScale.invert(visibleX[1])))
+    );
+
+    const tileYScale = scaleLinear()
+      .domain([
+        0, this.binsPerTile()
+      ])
+      .range([tileY, tileY + tileHeight]);
+
+    const startY = Math.max(
+      0,
+      Math.round(tileYScale.invert(this._yScale.invert(visibleY[0])))
+    );
+
+    const endY = Math.min(
+      this.binsPerTile(),
+      Math.round(tileYScale.invert(this._yScale.invert(visibleY[1])))
+    );
+
+    return [startY, startX, endY, endX];
+  }
+
+  minVisibleValue(ignoreFixedScale = false) {
+    if (!this.continuousScaling) {
+      return super.minVisibleValue(ignoreFixedScale);
+    }
+
+    const minimumsPerTile = this.visibleAndFetchedTiles().map((tile) => {
+      if (tile.tileData.denseDataExtrema === undefined) { return null; }
+
+      const ind = this.getIndicesOfVisibleData(tile);
+      return tile.tileData.denseDataExtrema.getMinNonZeroInSubset(ind);
+    });
+
+    if (minimumsPerTile.length === 0 && this.valueScaleMax === null) { return null; }
+
+    const min = Math.min(...minimumsPerTile);
+
+    // If there is no data or no deseDataExtrema, go to parent method
+    if (min === Number.MAX_SAFE_INTEGER) {
+      return super.minVisibleValue(ignoreFixedScale);
+    }
+
+
+    return this.valueScaleMin !== null
+      ? this.valueScaleMin
+      : min;
+  }
+
+  maxVisibleValue(ignoreFixedScale = false) {
+    if (!this.continuousScaling) {
+      return super.maxVisibleValue(ignoreFixedScale);
+    }
+
+    const maximumsPerTile = this.visibleAndFetchedTiles().map((tile) => {
+      if (tile.tileData.denseDataExtrema === undefined) { return null; }
+
+      const ind = this.getIndicesOfVisibleData(tile);
+
+      return tile.tileData.denseDataExtrema.getMaxNonZeroInSubset(ind);
+    });
+
+    if (maximumsPerTile.length === 0 && this.valueScaleMax === null) { return null; }
+
+    const max = Math.max(...maximumsPerTile);
+
+    // If there is no data  or no deseDataExtrema, return null
+    if (max === Number.MIN_SAFE_INTEGER) {
+      return super.maxVisibleValue(ignoreFixedScale);
+    }
+
+    return this.valueScaleMax !== null
+      ? this.valueScaleMax
+      : max;
+  }
+
   zoomed(newXScale, newYScale, k, tx, ty) {
     super.zoomed(newXScale, newYScale);
 
@@ -1195,6 +1349,31 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     this.pMain.scale.x = k; // scaleX;
     this.pMain.scale.y = k; // scaleY;
+
+    if (
+      this.continuousScaling
+      && this.minimalVisibleValue !== null
+      && this.maximalVisibleValue !== null
+      && this.valueScaleMin === null
+      && this.valueScaleMax === null
+    ) {
+      const newMin = this.minVisibleValue();
+      const newMax = this.maxVisibleValue();
+
+      if (
+        newMin !== null // can happen if tiles haven't loaded
+        && newMax !== null
+        && (
+          (Math.abs(this.minimalVisibleValue - newMin) > 1e-6)
+          || (Math.abs(this.maximalVisibleValue - newMax) > 1e-6)
+        )
+      ) {
+        this.minimalVisibleValue = newMin;
+        this.maximalVisibleValue = newMax;
+
+        this.scheduleRerender();
+      }
+    }
 
     this.mouseMoveZoomHandler();
   }

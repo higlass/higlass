@@ -39,9 +39,12 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     // equal to the smallest non-zero value
     this.valueScale = null;
 
-    // console.log('valueScaling:', this.options.valueScaling);
-    const min = this.minVisibleValue();
-    const max = this.maxVisibleValue();
+    const min = this.minimalVisibleValue !== null
+      ? this.minimalVisibleValue
+      : this.minValue();
+    const max = this.maximalVisibleValue !== null
+      ? this.maximalVisibleValue
+      : this.maxValue();
 
     if (this.options.valueScaling === 'log') {
       let offsetValue = this.medianVisibleValue;
@@ -59,8 +62,6 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
         .domain([min, max])
         .range([this.dimensions[1], 0]);
     }
-
-    this.updateMinMaxVisibleValues(min, max);
 
     graphics.clear();
 

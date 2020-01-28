@@ -29,6 +29,9 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     // this.colorScale = HEATED_OBJECT_MAP;
     this.colorScale = HEATED_OBJECT_MAP;
 
+    // We switch off continuous scaling for now
+    this.continuousScaling = false;
+
     if (options && options.colorRange) {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
@@ -224,8 +227,13 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
    *              and tile.graphics
    */
   renderTile(tile) {
-    const [scaleType, valueScale] = getValueScale(this.options.heatmapValueScaling,
-      this.scale.minValue, this.medianVisibleValue, this.scale.maxValue, 'log');
+    const [scaleType, valueScale] = getValueScale(
+      this.options.heatmapValueScaling,
+      this.scale.minValue,
+      this.medianVisibleValue,
+      this.scale.maxValue,
+      'log'
+    );
 
     this.valueScale = valueScale;
     let pseudocount = 0;

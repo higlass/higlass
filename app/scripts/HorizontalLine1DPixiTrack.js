@@ -71,6 +71,11 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     tile.xValues = new Array(tile.tileData.dense.length);
     tile.yValues = new Array(tile.tileData.dense.length);
 
+    if (this.continuousScaling) {
+      this.minimalVisibleValue = this.minVisibleValue();
+      this.maximalVisibleValue = this.maxVisibleValue();
+    }
+
     this.drawTile(tile);
   }
 
@@ -113,15 +118,19 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     if (tileValues.length === 0) { return; }
 
-    const min = this.minVisibleValue();
-    const max = this.maxVisibleValue();
+    const min = this.minimalVisibleValue !== null
+      ? this.minimalVisibleValue
+      : this.minValue();
+    const max = this.maximalVisibleValue !== null
+      ? this.maximalVisibleValue
+      : this.maxValue();
 
     const [vs, offsetValue] = this.makeValueScale(
       min,
       this.medianVisibleValue,
       max
     );
-    this.updateMinMaxVisibleValues(min, max);
+
     this.valueScale = vs;
 
     graphics.clear();
@@ -196,9 +205,6 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   }
 
   zoomed(newXScale, newYScale) {
-    // const currentMinVisibleValue = this.minVisibleValue();
-    // const currentMaxVisibleValue = this.maxVisibleValue();
-
     this.xScale(newXScale);
     this.yScale(newYScale);
 
@@ -208,12 +214,27 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     if (
       this.continuousScaling
-      && ((Math.abs(this.minimalVisibleValue - this.minVisibleValue()) > 1e-6)
-      || (Math.abs(this.maximalVisibleValue - this.maxVisibleValue()) > 1e-6))
+      && this.minimalVisibleValue !== null
+      && this.maximalVisibleValue !== null
+      && this.valueScaleMin === null
+      && this.valueScaleMax === null
     ) {
-      // console.log('area changed ', this.uuid);
-      // console.log(currentMinVisibleValue, newMinVisibleValue);
-      this.scheduleRerenderEvent();
+      const newMin = this.minVisibleValue();
+      const newMax = this.maxVisibleValue();
+
+      if (
+        newMin !== null
+        && newMax !== null
+        && (
+          (Math.abs(this.minimalVisibleValue - newMin) > 1e-6)
+          || (Math.abs(this.maximalVisibleValue - newMax) > 1e-6)
+        )
+      ) {
+        this.minimalVisibleValue = newMin;
+        this.maximalVisibleValue = newMax;
+
+        this.scheduleRerender();
+      }
     }
   }
 

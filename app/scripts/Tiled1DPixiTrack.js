@@ -4,8 +4,6 @@ import TiledPixiTrack from './TiledPixiTrack';
 
 import { tileProxy } from './services';
 
-import backgroundTaskScheduler from './utils/background-task-scheduler';
-
 
 const BINS_PER_TILE = 1024;
 
@@ -177,83 +175,41 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
   updateTile(tile) {
     // no need to redraw this tile, usually
     // unless the data scale changes or something like that
-
-
   }
 
-  scheduleRerenderEvent() {
-    if (this.continuousScaling) {
-      backgroundTaskScheduler.enqueueTask(this.handleRerender.bind(this), null, this.uuid);
-    } else {
-      // fall back to tile based panning
-    }
+  scheduleRerender() {
+    this.backgroundTaskScheduler.enqueueTask(this.handleRerender.bind(this), null, this.uuid);
   }
 
   handleRerender() {
-    this.rerender(this.options, true);
+    this.rerender(this.options, false);
   }
 
-
-  updateMinMaxVisibleValues(min = null, max = null) {
-    if (min === null || max === null) {
-      this.minimalVisibleValue = this.minVisibleValue();
-      this.maximalVisibleValue = this.maxVisibleValue();
-    } else {
-      this.minimalVisibleValue = min;
-      this.maximalVisibleValue = max;
-    }
-  }
-
-
-  allVisibleValues() {
-    if (!this.continuousScaling) {
-      return super.allVisibleValues();
-    }
-
-    // Get values that are currently visible in the view
-    let visibleAndFetchedIds = this.visibleAndFetchedIds();
-
-    if (visibleAndFetchedIds.length === 0) {
-      visibleAndFetchedIds = Object.keys(this.fetchedTiles);
-    }
-
+  getIndicesOfVisibleData(tile) {
     const visible = this._xScale.range();
 
-    const relevantData = visibleAndFetchedIds
-      .map(x => this.fetchedTiles[x])
-      .map((tile) => {
-        const { tileX, tileWidth } = this.getTilePosAndDimensions(
-          tile.tileData.zoomLevel,
-          tile.tileData.tilePos,
-          this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size
-        );
+    const { tileX, tileWidth } = this.getTilePosAndDimensions(
+      tile.tileData.zoomLevel,
+      tile.tileData.tilePos,
+      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size
+    );
 
-        const tileXScale = scaleLinear()
-          .domain([
-            0, this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension
-          ])
-          .range([tileX, tileX + tileWidth]);
+    const tileXScale = scaleLinear()
+      .domain([
+        0, this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension
+      ])
+      .range([tileX, tileX + tileWidth]);
 
-        const start = Math.max(
-          0,
-          Math.round(tileXScale.invert(this._xScale.invert(visible[0])))
-        );
-        const end = Math.min(
-          tile.tileData.dense.length,
-          Math.round(tileXScale.invert(this._xScale.invert(visible[1])))
-        );
+    const start = Math.max(
+      0,
+      Math.round(tileXScale.invert(this._xScale.invert(visible[0])))
+    );
+    const end = Math.min(
+      tile.tileData.dense.length,
+      Math.round(tileXScale.invert(this._xScale.invert(visible[1])))
+    );
 
-        return tile.tileData.dense.slice(start, end);
-      });
-
-    // The loop is faster than more elegant solutions
-    // let flattenedData = [];
-    // for (let i = 0; i < relevantData.length; i++) {
-    //   let current = relevantData[i];
-    //   for (let j = 0; j < current.length; j++)
-    //   flattenedData.push(current[j]);
-    // }
-    return relevantData;
+    return [start, end];
   }
 
   minVisibleValue(ignoreFixedScale = false) {
@@ -261,13 +217,21 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
       return super.minVisibleValue(ignoreFixedScale);
     }
 
+    let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
-    const visibleData = this.allVisibleValues();
+    if (visibleAndFetchedIds.length === 0) {
+      visibleAndFetchedIds = Object.keys(this.fetchedTiles);
+    }
 
-    // We compute the minimal nonzero value (as in the parent method)
-    const min = visibleData.reduce(
-      (smallest, current) => Math.min(smallest, ...(current.filter(x => Math.abs(x) > 1e-6))), Infinity // eslint-disable-line
-    );
+    const minimumsPerTile = visibleAndFetchedIds
+      .map(x => this.fetchedTiles[x])
+      .map((tile) => {
+        const ind = this.getIndicesOfVisibleData(tile);
+        return tile.tileData.denseDataExtrema.getMinNonZeroInSubset(ind);
+      });
+
+    const min = Math.min(...minimumsPerTile);
+
 
     if (ignoreFixedScale) return min;
 
@@ -281,79 +245,26 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
       return super.maxVisibleValue(ignoreFixedScale);
     }
 
-    // We compute the minimal nonzero value (as in the parent method)
-    const visibleData = this.allVisibleValues();
-    const max = visibleData.reduce(
-      (largest, current) => Math.max(largest, ...(current.filter(x => Math.abs(x) > 1e-6))), -Infinity // eslint-disable-line
-    );
-
-    if (ignoreFixedScale) return max;
-
-    return this.valueScaleMax !== null
-      ? this.valueScaleMax
-      : max;
-  }
-
-
-  /**
-   * Return the minimal and maximal visible values.
-   *
-   * @description
-   *   The difference to `minVisibleValue` and `maxVisibleValue`
-   *   is that the truly visible min or max value is returned instead of the
-   *   min or max value of the tile. The latter is not necessarily visible.
-   *
-   * @return {array} The minimum and maximum  as array [min, max].
-   */
-  getMinMaxVisibleValues() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    const visible = this._xScale.range();
-
-    const relevantData = visibleAndFetchedIds
+    const maximumsPerTile = visibleAndFetchedIds
       .map(x => this.fetchedTiles[x])
       .map((tile) => {
-        if (!tile.tileData.tilePos) {
-          return [this.minVisibleValue(), this.maxVisibleValue()];
-        }
-
-        const { tileX, tileWidth } = this.getTilePosAndDimensions(
-          tile.tileData.zoomLevel,
-          tile.tileData.tilePos,
-          this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size
-        );
-
-        const tileXScale = scaleLinear()
-          .domain([
-            0, this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension
-          ])
-          .range([tileX, tileX + tileWidth]);
-
-        const start = Math.max(
-          0,
-          Math.round(tileXScale.invert(this._xScale.invert(visible[0])))
-        );
-        const end = Math.min(
-          tile.tileData.dense.length,
-          Math.round(tileXScale.invert(this._xScale.invert(visible[1])))
-        );
-
-        return tile.tileData.dense.slice(start, end).filter(x => !Number.isNaN(x));
-        // return tile.tileData.dense.slice(start, end);
+        const ind = this.getIndicesOfVisibleData(tile);
+        return tile.tileData.denseDataExtrema.getMaxNonZeroInSubset(ind);
       });
 
-    const min = relevantData.reduce(
-      (smallest, current) => Math.min(smallest, ...current), Infinity
-    );
-    const max = relevantData.reduce(
-      (largest, current) => Math.max(largest, ...current), -Infinity
-    );
+    const max = Math.max(...maximumsPerTile);
 
-    return [min, max];
+    if (ignoreFixedScale) return max;
+
+    return this.valueScaleMax !== null
+      ? this.valueScaleMax
+      : max;
   }
 
 
@@ -411,7 +322,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
           Math.round(tileXScale.invert(this._xScale.invert(visible[1])))
         );
 
-        return tile.tileData.dense.slice(start, end).filter(x => !Number.isNaN(x));
+        return tile.tileData.dense.slice(start, end);
       })
       .reduce((smallest, current) => aggregate(smallest, ...current), limit);
   }

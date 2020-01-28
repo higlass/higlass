@@ -153,6 +153,33 @@ class LeftTrackModifier {
     }
 
     this.originalTrack.draw();
+    // console.log(this.originalTrack);
+
+    if (
+      this.originalTrack.continuousScaling
+      // Check if this track has numerical data
+      && this.originalTrack.minimalVisibleValue !== null
+      && this.originalTrack.maximalVisibleValue !== null
+      && this.originalTrack.valueScaleMin === null
+      && this.originalTrack.valueScaleMax === null
+    ) {
+      const newMin = this.originalTrack.minVisibleValue();
+      const newMax = this.originalTrack.maxVisibleValue();
+
+      if (
+        newMin !== null
+        && newMax !== null
+        && (
+          (Math.abs(this.originalTrack.minimalVisibleValue - newMin) > 1e-6)
+          || (Math.abs(this.originalTrack.maximalVisibleValue - newMax) > 1e-6)
+        )
+      ) {
+        this.originalTrack.minimalVisibleValue = newMin;
+        this.originalTrack.maximalVisibleValue = newMax;
+
+        this.originalTrack.scheduleRerender();
+      }
+    }
   }
 
   zoomedY(yPos, kMultiplier) {
