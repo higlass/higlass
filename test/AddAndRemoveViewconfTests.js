@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -8,18 +8,12 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
-import {
-  simpleCenterViewConfig,
-} from './view-configs';
+import { simpleCenterViewConfig } from './view-configs';
 
 // Utils
-import {
-  removeHGComponent,
-} from '../app/scripts/utils';
+import { removeHGComponent } from '../app/scripts/utils';
 
-import {
-  viewer
-} from '../app/scripts/hglib';
+import { viewer } from '../app/scripts/hglib';
 
 configure({ adapter: new Adapter() });
 

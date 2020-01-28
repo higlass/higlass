@@ -2,13 +2,9 @@ import slugid from 'slugid';
 import { scaleLinear } from 'd3-scale';
 import { trimTrailingSlash as tts, dictValues } from './utils';
 
-
 // Services
 import { tileProxy } from './services';
-import {
-  minNonZero,
-  maxNonZero,
-} from './worker';
+import { minNonZero, maxNonZero } from './worker';
 
 export default class DataFetcher {
   constructor(dataConfig, pubSub) {
@@ -28,8 +24,9 @@ export default class DataFetcher {
 
     if (this.dataConfig.children) {
       // convert each child into an object
-      this.dataConfig.children = dataConfig.children
-        .map(c => new DataFetcher(c, pubSub));
+      this.dataConfig.children = dataConfig.children.map(
+        c => new DataFetcher(c, pubSub)
+      );
     }
   }
 
@@ -47,36 +44,37 @@ export default class DataFetcher {
 
     const payload = {
       fileurl: fileUrl,
-      filetype: fileType,
+      filetype: fileType
     };
 
     return fetch(serverUrl, {
       method: 'POST',
       body: JSON.stringify(payload),
       headers: {
-        'Content-Type': 'application/json; charset=utf-8',
+        'Content-Type': 'application/json; charset=utf-8'
       }
     });
   }
 
-
   tilesetInfo(finished) {
     // if this track has a fileUrl, server and filetype
     // then we need to register those with the server
-    if (this.dataConfig.server
-      && this.dataConfig.fileUrl
-      && this.dataConfig.filetype) {
+    if (
+      this.dataConfig.server &&
+      this.dataConfig.fileUrl &&
+      this.dataConfig.filetype
+    ) {
       return this.registerFileUrl(
         this.dataConfig.server,
         this.dataConfig.fileUrl,
         this.dataConfig.filetype
       )
         .then(data => data.json())
-        .then((data) => {
+        .then(data => {
           this.dataConfig.tilesetUid = data.uid;
           this.tilesetInfoAfterRegister(finished);
         })
-        .catch((rejected) => {
+        .catch(rejected => {
           console.error('Error registering url', rejected);
         });
     }
@@ -102,13 +100,13 @@ export default class DataFetcher {
   tilesetInfoAfterRegister(finished /* , errorCb */) {
     // console.log('dataConfig', this.dataConfig);
 
-
     if (!this.dataConfig.children) {
       // this data source has no children so we just need to retrieve one tileset
       // info
       if (!this.dataConfig.server || !this.dataConfig.tilesetUid) {
         console.warn(
-          'No dataConfig children, server or tilesetUid:', this.dataConfig
+          'No dataConfig children, server or tilesetUid:',
+          this.dataConfig
         );
         finished(null);
       } else {
@@ -116,15 +114,16 @@ export default class DataFetcher {
         tileProxy.trackInfo(
           this.dataConfig.server,
           this.dataConfig.tilesetUid,
-          (tilesetInfo) => {
+          tilesetInfo => {
             // tileset infos are indxed by by tilesetUids, we can just resolve
             // that here before passing it back to the track
-            this.dataConfig.tilesetInfo = tilesetInfo[this.dataConfig.tilesetUid];
+            this.dataConfig.tilesetInfo =
+              tilesetInfo[this.dataConfig.tilesetUid];
             finished(tilesetInfo[this.dataConfig.tilesetUid]);
           },
-          (error) => {
+          error => {
             finished({
-              error,
+              error
             });
           },
           this.pubSub
@@ -133,12 +132,14 @@ export default class DataFetcher {
     } else {
       // this data source has children, so we need to wait to get
       // all of their tileset infos in order to return them to the track
-      const promises = this.dataConfig.children
-        .map(x => new Promise((resolve) => {
-          x.tilesetInfo(resolve);
-        }));
+      const promises = this.dataConfig.children.map(
+        x =>
+          new Promise(resolve => {
+            x.tilesetInfo(resolve);
+          })
+      );
 
-      Promise.all(promises).then((values) => {
+      Promise.all(promises).then(values => {
         // this is where we should check if all the children's tileset
         // infos match
         finished(values[0]);
@@ -190,14 +191,20 @@ export default class DataFetcher {
       this.fetchHorizontalSection(receivedTiles, tileIds, true);
     } else if (!this.dataConfig.children) {
       // no children, just return the fetched tiles as is
-      const promise = new Promise(resolve => tileProxy.fetchTilesDebounced({
-        id: slugid.nice(),
-        server: this.dataConfig.server,
-        done: resolve,
-        ids: tileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
-      }, this.pubSub, true));
+      const promise = new Promise(resolve =>
+        tileProxy.fetchTilesDebounced(
+          {
+            id: slugid.nice(),
+            server: this.dataConfig.server,
+            done: resolve,
+            ids: tileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`)
+          },
+          this.pubSub,
+          true
+        )
+      );
 
-      promise.then((returnedTiles) => {
+      promise.then(returnedTiles => {
         const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
         const newTiles = {};
 
@@ -213,13 +220,18 @@ export default class DataFetcher {
     } else {
       // multiple child tracks, need to wait for all of them to
       // fetch their data before returning to the parent
-      const promises = this.dataConfig.children
-        .map(x => new Promise((resolve) => {
-          x.fetchTilesDebounced(resolve, tileIds);
-        }, this.pubSub, true));
+      const promises = this.dataConfig.children.map(
+        x =>
+          new Promise(
+            resolve => {
+              x.fetchTilesDebounced(resolve, tileIds);
+            },
+            this.pubSub,
+            true
+          )
+      );
 
-
-      Promise.all(promises).then((returnedTiles) => {
+      Promise.all(promises).then(returnedTiles => {
         // if we're trying to divide two datasets,
         if (this.dataConfig.type === 'divided') {
           const newTiles = this.makeDivided(returnedTiles, tileIds);
@@ -285,10 +297,13 @@ export default class DataFetcher {
    *  two element array e.g. [256,256].
    * @param {int} sliceIndex: The index across which to take the slice
    * @returns {array} an array corresponding to a slice of this matrix
-  */
+   */
   extractDataSlice(inputData, arrayShape, sliceIndex, axis) {
     if (!axis) {
-      return inputData.slice(arrayShape[1] * sliceIndex, arrayShape[1] * (sliceIndex + 1));
+      return inputData.slice(
+        arrayShape[1] * sliceIndex,
+        arrayShape[1] * (sliceIndex + 1)
+      );
     }
 
     const returnArray = new Array(arrayShape[1]);
@@ -314,14 +329,19 @@ export default class DataFetcher {
       // this is a dummy scale that we'll use to fetch tile positions
       // along the y-axis of the 2D dataset (we already have the x positions
       // from the track that is querying this data)
-      const scale = scaleLinear()
-        .domain([this.dataConfig.slicePos, this.dataConfig.slicePos]);
+      const scale = scaleLinear().domain([
+        this.dataConfig.slicePos,
+        this.dataConfig.slicePos
+      ]);
 
       // there's two different ways of calculating tile positions
       // this needs to be consolidated into one function eventually
       let yTiles = [];
 
-      if (this.dataConfig.tilesetInfo && this.dataConfig.tilesetInfo.resolutions) {
+      if (
+        this.dataConfig.tilesetInfo &&
+        this.dataConfig.tilesetInfo.resolutions
+      ) {
         const sortedResolutions = this.dataConfig.tilesetInfo.resolutions
           .map(x => +x)
           .sort((a, b) => b - a);
@@ -333,12 +353,14 @@ export default class DataFetcher {
           this.dataConfig.tilesetInfo.max_pos[vertical ? 1 : 0]
         );
       } else {
-        yTiles = tileProxy.calculateTiles(zoomLevel,
+        yTiles = tileProxy.calculateTiles(
+          zoomLevel,
           scale,
           this.dataConfig.tilesetInfo.min_pos[vertical ? 1 : 0],
           this.dataConfig.tilesetInfo.max_pos[vertical ? 1 : 0],
           this.dataConfig.tilesetInfo.max_zoom,
-          this.dataConfig.tilesetInfo.max_width);
+          this.dataConfig.tilesetInfo.max_width
+        );
       }
       const sortedPosition = [xTilePos, yTiles[0]].sort((a, b) => a - b);
 
@@ -355,13 +377,19 @@ export default class DataFetcher {
     }
 
     // actually fetch the new tileIds
-    const promise = new Promise(resolve => tileProxy.fetchTilesDebounced({
-      id: slugid.nice(),
-      server: this.dataConfig.server,
-      done: resolve,
-      ids: newTileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
-    }, this.pubSub, true));
-    promise.then((returnedTiles) => {
+    const promise = new Promise(resolve =>
+      tileProxy.fetchTilesDebounced(
+        {
+          id: slugid.nice(),
+          server: this.dataConfig.server,
+          done: resolve,
+          ids: newTileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`)
+        },
+        this.pubSub,
+        true
+      )
+    );
+    promise.then(returnedTiles => {
       // we've received some new tiles, but they're 2D
       // we need to extract the row corresponding to the data we need
 
@@ -391,14 +419,24 @@ export default class DataFetcher {
         if (xTilePos === yTilePos) {
           // this is tile along the diagonal that we have to mirror
           dataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex);
-          const mirroredDataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex, 1);
+          const mirroredDataSlice = this.extractDataSlice(
+            tile.dense,
+            [256, 256],
+            sliceIndex,
+            1
+          );
           for (let j = 0; j < dataSlice.length; j++) {
             dataSlice[j] += mirroredDataSlice[j];
           }
         } else if (mirrored[i]) {
           // this tile is in the upper right triangle but the data is only available for
           // the lower left so we have to mirror it
-          dataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex, 1);
+          dataSlice = this.extractDataSlice(
+            tile.dense,
+            [256, 256],
+            sliceIndex,
+            1
+          );
         } else {
           dataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex);
         }
@@ -414,7 +452,7 @@ export default class DataFetcher {
           tilePos: mirrored[i] ? [yTilePos] : [xTilePos],
           tilePositionId: tileIds[i],
           tilesetUid,
-          zoomLevel: tile.zoomLevel,
+          zoomLevel: tile.zoomLevel
         };
 
         newTiles[tileIds[i]] = newTile;
@@ -446,13 +484,17 @@ export default class DataFetcher {
       let newTile = {
         zoomLevel,
         tilePos,
-        tilePositionId: tileIds[i],
+        tilePositionId: tileIds[i]
       };
 
-      if (returnedTiles[0][tileIds[i]].dense
-        && returnedTiles[1][tileIds[i]].dense) {
-        const newData = this.divideData(returnedTiles[0][tileIds[i]].dense,
-          returnedTiles[1][tileIds[i]].dense);
+      if (
+        returnedTiles[0][tileIds[i]].dense &&
+        returnedTiles[1][tileIds[i]].dense
+      ) {
+        const newData = this.divideData(
+          returnedTiles[0][tileIds[i]].dense,
+          returnedTiles[1][tileIds[i]].dense
+        );
 
         newTile = {
           dense: newData,
@@ -460,7 +502,7 @@ export default class DataFetcher {
           maxNonZero: maxNonZero(newData),
           zoomLevel,
           tilePos,
-          tilePositionId: tileIds[i],
+          tilePositionId: tileIds[i]
         };
       }
 

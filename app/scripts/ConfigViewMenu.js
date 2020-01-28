@@ -8,17 +8,14 @@ import NestedContextMenu from './NestedContextMenu';
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-import {
-  OPTIONS_INFO,
-  THEME_DARK,
-} from './configs';
+import { OPTIONS_INFO, THEME_DARK } from './configs';
 
 class ConfigViewMenu extends ContextMenuContainer {
   constructor(props) {
     super(props);
 
     this.state = {
-      submenuShown: false,
+      submenuShown: false
     };
   }
 
@@ -33,17 +30,21 @@ class ConfigViewMenu extends ContextMenuContainer {
 
         if (OPTIONS_INFO[optionType].inlineOptions) {
           // we can simply select this option from the menu
-          for (const inlineOptionKey in OPTIONS_INFO[optionType].inlineOptions) {
-            const inlineOption = OPTIONS_INFO[optionType].inlineOptions[inlineOptionKey];
+          for (const inlineOptionKey in OPTIONS_INFO[optionType]
+            .inlineOptions) {
+            const inlineOption =
+              OPTIONS_INFO[optionType].inlineOptions[inlineOptionKey];
 
             // check if there's already available options (e.g.
             // "Top right") for this option type (e.g. "Label
             // position")
-            if (!menuItems[optionType].children) { menuItems[optionType].children = {}; }
+            if (!menuItems[optionType].children) {
+              menuItems[optionType].children = {};
+            }
 
             const optionSelectorSettings = {
               name: inlineOption.name,
-              value: inlineOption.value,
+              value: inlineOption.value
               // missing handler to be filled in below
             };
 
@@ -54,7 +55,9 @@ class ConfigViewMenu extends ContextMenuContainer {
               this.props.onOptionsChanged(newOptions);
             };
 
-            menuItems[optionType].children[inlineOptionKey] = optionSelectorSettings;
+            menuItems[optionType].children[
+              inlineOptionKey
+            ] = optionSelectorSettings;
           }
         }
       }
@@ -79,27 +82,26 @@ class ConfigViewMenu extends ContextMenuContainer {
       // necessary so that we can position the submenu next to the initiating
       // element
       const bbox = this.state.submenuSourceBbox;
-      const position = this.state.orientation === 'left' ? (
-        {
-          left: this.state.left,
-          top: bbox.top,
-        }
-      ) : (
-        {
-          left: this.state.left + bbox.width + 7,
-          top: bbox.top,
-        }
-      );
+      const position =
+        this.state.orientation === 'left'
+          ? {
+              left: this.state.left,
+              top: bbox.top
+            }
+          : {
+              left: this.state.left + bbox.width + 7,
+              top: bbox.top
+            };
 
       const subMenuData = this.state.submenuShown;
       if (subMenuData.option === 'options') {
         return this.getConfigureViewMenu(position, bbox);
       }
 
-      return (<div />);
+      return <div />;
     }
 
-    return (<div />);
+    return <div />;
   }
 
   render() {
@@ -108,17 +110,17 @@ class ConfigViewMenu extends ContextMenuContainer {
 
     return (
       <div
-        ref={(c) => { this.div = c; }}
+        ref={c => {
+          this.div = c;
+        }}
         data-menu-type="ConfigViewMenu"
         style={{
           left: this.state.left,
-          top: this.state.top,
+          top: this.state.top
         }}
         styleName={styleNames}
       >
-        <ContextMenuItem
-          onClick={e => this.props.onTogglePositionSearchBox(e)}
-        >
+        <ContextMenuItem onClick={e => this.props.onTogglePositionSearchBox(e)}>
           {'Toggle position search box'}
         </ContextMenuItem>
 
@@ -146,92 +148,66 @@ class ConfigViewMenu extends ContextMenuContainer {
 
         <hr styleName="context-menu-hr" />
 
-        <ContextMenuItem
-          onClick={e => this.props.onZoomToData(e)}
-        >
-        {'Zoom to data extent'}
+        <ContextMenuItem onClick={e => this.props.onZoomToData(e)}>
+          {'Zoom to data extent'}
         </ContextMenuItem>
 
-        <ContextMenuItem
-          onClick={e => this.props.onClearView(e)}
-        >
-        {'Clear View'}
+        <ContextMenuItem onClick={e => this.props.onClearView(e)}>
+          {'Clear View'}
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
 
-        <ContextMenuItem
-          onClick={e => this.props.onYankZoom(e)}
-        >
+        <ContextMenuItem onClick={e => this.props.onYankZoom(e)}>
           {'Take zoom from'}
         </ContextMenuItem>
 
-        <ContextMenuItem
-          onClick={e => this.props.onYankLocation(e)}
-        >
+        <ContextMenuItem onClick={e => this.props.onYankLocation(e)}>
           {'Take location from'}
         </ContextMenuItem>
 
-        <ContextMenuItem
-          onClick={e => this.props.onYankZoomAndLocation(e)}
-        >
+        <ContextMenuItem onClick={e => this.props.onYankZoomAndLocation(e)}>
           {'Take zoom and location from'}
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
 
-        <ContextMenuItem
-          onClick={this.props.onLockZoom}
-        >
+        <ContextMenuItem onClick={this.props.onLockZoom}>
           {'Lock zoom with'}
         </ContextMenuItem>
 
-        <ContextMenuItem
-          onClick={this.props.onLockLocation}
-        >
+        <ContextMenuItem onClick={this.props.onLockLocation}>
           {'Lock location with'}
         </ContextMenuItem>
 
-        <ContextMenuItem
-          onClick={this.props.onLockZoomAndLocation}
-        >
+        <ContextMenuItem onClick={this.props.onLockZoomAndLocation}>
           {'Lock zoom and location with'}
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
 
-        <ContextMenuItem
-          onClick={this.props.onTakeAndLockZoomAndLocation}
-        >
+        <ContextMenuItem onClick={this.props.onTakeAndLockZoomAndLocation}>
           {'Take and lock zoom and location with'}
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
 
-        <ContextMenuItem
-          onClick={e => this.props.onUnlockZoom(e)}
-        >
+        <ContextMenuItem onClick={e => this.props.onUnlockZoom(e)}>
           {'Unlock zoom'}
         </ContextMenuItem>
 
-        <ContextMenuItem
-          onClick={e => this.props.onUnlockLocation(e)}
-        >
+        <ContextMenuItem onClick={e => this.props.onUnlockLocation(e)}>
           {'Unlock location'}
         </ContextMenuItem>
 
-        <ContextMenuItem
-          onClick={e => this.props.onUnlockZoomAndLocation(e)}
-        >
+        <ContextMenuItem onClick={e => this.props.onUnlockZoomAndLocation(e)}>
           {'Unlock zoom and location'}
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
 
-        <ContextMenuItem
-          onClick={e => this.props.onProjectViewport(e)}
-        >
-        {'Show this viewport on'}
+        <ContextMenuItem onClick={e => this.props.onProjectViewport(e)}>
+          {'Show this viewport on'}
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
@@ -242,32 +218,23 @@ class ConfigViewMenu extends ContextMenuContainer {
 
         <hr styleName="context-menu-hr" />
 
-        <ContextMenuItem
-          onClick={() => this.props.onExportSVG()}
-        >
-        {'Export views as SVG'}
+        <ContextMenuItem onClick={() => this.props.onExportSVG()}>
+          {'Export views as SVG'}
         </ContextMenuItem>
 
-        <ContextMenuItem
-          onClick={() => this.props.onExportPNG()}
-        >
-        {'Export views as PNG'}
+        <ContextMenuItem onClick={() => this.props.onExportPNG()}>
+          {'Export views as PNG'}
         </ContextMenuItem>
 
-        <ContextMenuItem
-          onClick={() => this.props.onExportViewAsJSON()}
-        >
-        {'Export views as JSON'}
+        <ContextMenuItem onClick={() => this.props.onExportViewAsJSON()}>
+          {'Export views as JSON'}
         </ContextMenuItem>
 
-        <ContextMenuItem
-          onClick={() => this.props.onExportViewAsLink()}
-        >
-        {'Export views as Link'}
+        <ContextMenuItem onClick={() => this.props.onExportViewAsLink()}>
+          {'Export views as Link'}
         </ContextMenuItem>
 
         {this.getSubmenu()}
-
       </div>
     );
   }
@@ -292,7 +259,7 @@ ConfigViewMenu.propTypes = {
   onYankZoom: PropTypes.func,
   onYankZoomAndLocation: PropTypes.func,
   onZoomToData: PropTypes.func,
-  theme: PropTypes.symbol,
+  theme: PropTypes.symbol
 };
 
 export default ConfigViewMenu;

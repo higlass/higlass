@@ -23,8 +23,9 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
 
     // Normalize colormap upfront to save 3 divisions per data point during the
     // rendering.
-    this.colorScale = this.colorScale
-      .map(rgb => rgb.map(channel => channel / 255.0));
+    this.colorScale = this.colorScale.map(rgb =>
+      rgb.map(channel => channel / 255.0)
+    );
   }
 
   rerender(options) {
@@ -42,25 +43,27 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
   }
 
   drawTile(tile) {
-    if (!tile.graphics || (!tile.tileData || !tile.tileData.dense)) return;
+    if (!tile.graphics || !tile.tileData || !tile.tileData.dense) return;
 
     const graphics = tile.graphics;
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
-      tile.tileData.tilePos,
+      tile.tileData.tilePos
     );
 
     const tileValues = tile.tileData.dense;
 
     if (tileValues.length === 0) return;
 
-    const min = this.minimalVisibleValue !== null
-      ? this.minimalVisibleValue
-      : this.minVisibleValueInTiles();
-    const max = this.maximalVisibleValue !== null
-      ? this.maximalVisibleValue
-      : this.maxVisibleValueInTiles();
+    const min =
+      this.minimalVisibleValue !== null
+        ? this.minimalVisibleValue
+        : this.minVisibleValueInTiles();
+    const max =
+      this.maximalVisibleValue !== null
+        ? this.maximalVisibleValue
+        : this.maxVisibleValueInTiles();
 
     const [valueScale, pseudocount] = this.makeValueScale(
       min,
@@ -74,8 +77,8 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
     graphics.clear();
 
     if (
-      this.options.valueScaling === 'log'
-      && this.valueScale.domain()[1] < 0
+      this.options.valueScaling === 'log' &&
+      this.valueScale.domain()[1] < 0
     ) {
       console.warn(
         'Negative values present when using a log scale',

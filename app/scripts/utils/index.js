@@ -76,12 +76,12 @@ export { default as trackUtils } from './track-utils';
 export {
   getTrackObjectFromHGC,
   getTrackRenderer,
-  getTiledPlot,
+  getTiledPlot
 } from './get-higlass-components';
 export {
   waitForJsonComplete,
   waitForTilesLoaded,
   waitForTransitionsFinished,
   mountHGComponent,
-  removeHGComponent,
+  removeHGComponent
 } from './test-helpers';

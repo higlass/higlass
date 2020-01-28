@@ -32,9 +32,13 @@ export function minNonZero(data) {
   for (let i = 0; i < data.length; i++) {
     const x = data[i];
 
-    if (x < epsilon && x > -epsilon) { continue; }
+    if (x < epsilon && x > -epsilon) {
+      continue;
+    }
 
-    if (x < minNonZeroNum) { minNonZeroNum = x; }
+    if (x < minNonZeroNum) {
+      minNonZeroNum = x;
+    }
   }
 
   return minNonZeroNum;
@@ -59,9 +63,13 @@ export function maxNonZero(data) {
   for (let i = 0; i < data.length; i++) {
     const x = data[i];
 
-    if (x < epsilon && x > -epsilon) { continue; }
+    if (x < epsilon && x > -epsilon) {
+      continue;
+    }
 
-    if (x > maxNonZeroNum) { maxNonZeroNum = x; }
+    if (x > maxNonZeroNum) {
+      maxNonZeroNum = x;
+    }
   }
 
   return maxNonZeroNum;
@@ -84,14 +92,20 @@ export function workerSetPix(
   let valueScale = null;
 
   if (valueScaleType === 'log') {
-    valueScale = scaleLog().range([254, 0]).domain(valueScaleDomain);
+    valueScale = scaleLog()
+      .range([254, 0])
+      .domain(valueScaleDomain);
   } else {
     if (valueScaleType !== 'linear') {
       console.warn(
-        'Unknown value scale type:', valueScaleType, ' Defaulting to linear'
+        'Unknown value scale type:',
+        valueScaleType,
+        ' Defaulting to linear'
       );
     }
-    valueScale = scaleLinear().range([254, 0]).domain(valueScaleDomain);
+    valueScale = scaleLinear()
+      .range([254, 0])
+      .domain(valueScaleDomain);
   }
 
   const pixData = new Uint8ClampedArray(size * 4);
@@ -110,17 +124,24 @@ export function workerSetPix(
       if (
         // ignore the upper right portion of a tile because it's on the diagonal
         // and its mirror will fill in that space
-        !(ignoreUpperRight && Math.floor(i / tileWidth) < i % tileWidth)
-        && !(ignoreLowerLeft && Math.floor(i / tileWidth) > i % tileWidth)
+        !(ignoreUpperRight && Math.floor(i / tileWidth) < i % tileWidth) &&
+        !(ignoreLowerLeft && Math.floor(i / tileWidth) > i % tileWidth) &&
         // Ignore color if the value is invalid
-        && !Number.isNaN(+d)
+        !Number.isNaN(+d)
       ) {
         // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
-        rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(d + pseudocount))));
+        rgbIdx = Math.max(
+          0,
+          Math.min(254, Math.floor(valueScale(d + pseudocount)))
+        );
       }
       // let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
       if (rgbIdx < 0 || rgbIdx > 255) {
-        console.warn('out of bounds rgbIdx:', rgbIdx, ' (should be 0 <= rgbIdx <= 255)');
+        console.warn(
+          'out of bounds rgbIdx:',
+          rgbIdx,
+          ' (should be 0 <= rgbIdx <= 255)'
+        );
       }
       const rgb = colorScale[rgbIdx];
 
@@ -158,8 +179,9 @@ function float32(h) {
 
   const fSgn = (h & 0x8000) << 16;
   switch (hExp) {
-    case 0x0000: /* 0 or subnormal */
-      hSig = (h & 0x03ff);
+    /* 0 or subnormal */
+    case 0x0000:
+      hSig = h & 0x03ff;
       /* Signed zero */
       if (hSig === 0) {
         return fSgn;
@@ -170,13 +192,17 @@ function float32(h) {
         hSig <<= 1;
         hExp++;
       }
-      fExp = ((127 - 15 - hExp)) << 23;
-      fSig = ((hSig & 0x03ff)) << 13;
+      fExp = (127 - 15 - hExp) << 23;
+      fSig = (hSig & 0x03ff) << 13;
       return fSgn + fExp + fSig;
-    case 0x7c00: /* inf or NaN */
+
+    /* inf or NaN */
+    case 0x7c00:
       /* All-ones exponent and a copy of the significand */
-      return fSgn + 0x7f800000 + (((h & 0x03ff)) << 13);
-    default: /* normalized */
+      return fSgn + 0x7f800000 + ((h & 0x03ff) << 13);
+
+    default:
+      /* normalized */
       /* Just need to adjust the exponent and shift */
       return fSgn + (((h & 0x7fff) + 0x1c000) << 13);
   }
@@ -236,7 +262,6 @@ export function tileResponseToData(data, server, theseTileIds) {
       const arrayBuffer = _base64ToArrayBuffer(data[key].dense);
       let a;
 
-
       if (data[key].dtype === 'float16') {
         // data is encoded as float16s
         /* comment out until next empty line for 32 bit arrays */
@@ -248,9 +273,10 @@ export function tileResponseToData(data, server, theseTileIds) {
         a = new Float32Array(arrayBuffer);
       }
 
-      const dde = data[key].tilePos.length === 2
-        ? new DenseDataExtrema2D(a)
-        : new DenseDataExtrema1D(a);
+      const dde =
+        data[key].tilePos.length === 2
+          ? new DenseDataExtrema2D(a)
+          : new DenseDataExtrema1D(a);
 
       data[key].dense = a;
       data[key].denseDataExtrema = dde;
@@ -285,7 +311,7 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
     headers
   })
     .then(response => response.json())
-    .then((data) => {
+    .then(data => {
       done(tileResponseToData(data, server, theseTileIds));
       /*
       const denses = Object.values(data)

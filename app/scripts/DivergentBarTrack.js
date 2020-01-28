@@ -8,33 +8,43 @@ import { colorToHex } from './utils';
 class DivergentBarTrack extends BarTrack {
   renderTile(tile) {
     // super.drawTile(tile);
-    if (!tile.graphics) { return; }
+    if (!tile.graphics) {
+      return;
+    }
 
     const graphics = tile.graphics;
 
-    const { tileX, tileWidth } = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
+    const { tileX, tileWidth } = this.getTilePosAndDimensions(
+      tile.tileData.zoomLevel,
       tile.tileData.tilePos,
-      this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension);
+      this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension
+    );
     const tileValues = tile.tileData.dense;
 
-    if (tileValues.length === 0) { return; }
+    if (tileValues.length === 0) {
+      return;
+    }
 
     let pseudocount = 0; // if we use a log scale, then we'll set a pseudocount
     // equal to the smallest non-zero value
     this.valueScale = null;
 
-    const min = this.minimalVisibleValue !== null
-      ? this.minimalVisibleValue
-      : this.minVisibleValueInTiles();
-    const max = this.maximalVisibleValue !== null
-      ? this.maximalVisibleValue
-      : this.maxVisibleValueInTiles();
+    const min =
+      this.minimalVisibleValue !== null
+        ? this.minimalVisibleValue
+        : this.minVisibleValueInTiles();
+    const max =
+      this.maximalVisibleValue !== null
+        ? this.maximalVisibleValue
+        : this.maxVisibleValueInTiles();
 
     // console.log('valueScaling:', this.options.valueScaling);
     if (this.options.valueScaling === 'log') {
       let offsetValue = this.medianVisibleValue;
 
-      if (!this.medianVisibleValue) { offsetValue = min; }
+      if (!this.medianVisibleValue) {
+        offsetValue = min;
+      }
 
       this.valueScale = scaleLog()
         // .base(Math.E)
@@ -58,15 +68,24 @@ class DivergentBarTrack extends BarTrack {
     graphics.clear();
     this.drawAxis(this.valueScale);
 
-    if (this.options.valueScaling === 'log' && this.valueScale.domain()[1] < 0) {
-      console.warn('Negative values present when using a log scale', this.valueScale.domain());
+    if (
+      this.options.valueScaling === 'log' &&
+      this.valueScale.domain()[1] < 0
+    ) {
+      console.warn(
+        'Negative values present when using a log scale',
+        this.valueScale.domain()
+      );
       return;
     }
 
-    const stroke = colorToHex(this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue');
+    const stroke = colorToHex(
+      this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue'
+    );
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
-    const tileXScale = scaleLinear().domain([0, this.tilesetInfo.tile_size])
+    const tileXScale = scaleLinear()
+      .domain([0, this.tilesetInfo.tile_size])
       .range([tileX, tileX + tileWidth]);
 
     // let strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
@@ -74,8 +93,12 @@ class DivergentBarTrack extends BarTrack {
     const strokeWidth = 0;
     graphics.lineStyle(strokeWidth, stroke, 1);
 
-    const topColor = this.options.barFillColorTop ? this.options.barFillColorTop : 'green';
-    const bottomColor = this.options.barFillColorBottom ? this.options.barFillColorBottom : 'red';
+    const topColor = this.options.barFillColorTop
+      ? this.options.barFillColorTop
+      : 'green';
+    const bottomColor = this.options.barFillColorBottom
+      ? this.options.barFillColorBottom
+      : 'red';
 
     // PIXI wants hex colors whereas d3 wants regular colors
     const topColorHex = colorToHex(topColor);
@@ -104,21 +127,31 @@ class DivergentBarTrack extends BarTrack {
 
       if (yPos > baseline) {
         graphics.beginFill(bottomColorHex, opacity);
-        this.addSVGInfo(tile, xPos, baseline, width, yPos - baseline, bottomColor);
+        this.addSVGInfo(
+          tile,
+          xPos,
+          baseline,
+          width,
+          yPos - baseline,
+          bottomColor
+        );
       } else {
         graphics.beginFill(topColorHex, opacity);
         this.addSVGInfo(tile, xPos, yPos, width, baseline - yPos, topColor);
       }
 
-      if (tileXScale(i) > this.tilesetInfo.max_pos[0]) { break; }
+      if (tileXScale(i) > this.tilesetInfo.max_pos[0]) {
+        break;
+      }
       // this data is in the last tile and extends beyond the length
       // of the coordinate system
 
-
-      graphics.drawRect(xPos,
+      graphics.drawRect(
+        xPos,
         tile.svgData.barYValues[i],
         width,
-        tile.svgData.barHeights[i]);
+        tile.svgData.barHeights[i]
+      );
     }
   }
 }

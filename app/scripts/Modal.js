@@ -7,7 +7,7 @@ import withModal from './hocs/with-modal';
 
 import '../styles/Modal.module.scss';
 
-const Modal = (props) => {
+const Modal = props => {
   const handleClose = () => {
     props.modal.close();
     if (props.onClose) props.onClose();
@@ -16,13 +16,17 @@ const Modal = (props) => {
   return (
     <div styleName={`modal-background ${props.hide ? 'modal-hide' : ''}`}>
       <div styleName="modal-wrap">
-        <div styleName={`modal-window ${props.maxHeight ? 'modal-window-max-height' : ''}`}>
+        <div
+          styleName={`modal-window ${
+            props.maxHeight ? 'modal-window-max-height' : ''
+          }`}
+        >
           {props.closeButton && (
-            <Button onClick={handleClose}><Cross /></Button>
+            <Button onClick={handleClose}>
+              <Cross />
+            </Button>
           )}
-          <div styleName="modal-content">
-            {props.children}
-          </div>
+          <div styleName="modal-content">{props.children}</div>
         </div>
       </div>
     </div>
@@ -32,7 +36,7 @@ const Modal = (props) => {
 Modal.defaultProps = {
   closeButton: true,
   hide: false,
-  maxHeight: false,
+  maxHeight: false
 };
 
 Modal.propTypes = {

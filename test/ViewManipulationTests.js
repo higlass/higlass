@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -12,12 +12,10 @@ import { expect } from 'chai';
 import {
   mountHGComponent,
   removeHGComponent,
-  waitForTilesLoaded,
+  waitForTilesLoaded
 } from '../app/scripts/utils';
 
-import {
-  emptyConf
-} from './view-configs';
+import { emptyConf } from './view-configs';
 
 configure({ adapter: new Adapter() });
 
@@ -26,21 +24,17 @@ describe('Simple HiGlassComponent', () => {
   let div = null;
 
   describe('Viewconf change tests', () => {
-    beforeAll((done) => {
-      ([div, hgc] = mountHGComponent(div, hgc,
-        valueScaleLocksConf,
-        done,
-        {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        })
-      );
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, valueScaleLocksConf, done, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      });
     });
 
     it('ensures that valueScaleLocks are removed when the viewconf changes', () => {
       const newViews = hgc.instance().processViewConfig(emptyConf);
       hgc.setState({
-        views: newViews,
+        views: newViews
       });
 
       expect(Object.keys(hgc.instance().valueScaleLocks).length).to.eql(0);
@@ -52,21 +46,23 @@ describe('Simple HiGlassComponent', () => {
   });
 
   describe('Viewport projection tests', () => {
-    beforeAll((done) => {
-      ([div, hgc] = mountHGComponent(div, hgc,
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(
+        div,
+        hgc,
         'http://higlass.io/api/v1/viewconfs/?d=KaeBVQQpTaqT0kfhE32boQ',
         done,
         {
           style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        })
+          bounded: true
+        }
       );
     });
 
-    it("Ensure that the viewport projection's borders are black", (done) => {
-      hgc.instance().handleAddView(
-        Object.values(hgc.instance().state.views)[0]
-      );
+    it("Ensure that the viewport projection's borders are black", done => {
+      hgc
+        .instance()
+        .handleAddView(Object.values(hgc.instance().state.views)[0]);
 
       waitForTilesLoaded(hgc.instance(), () => {
         const views = Object.values(hgc.instance().state.views);
@@ -87,10 +83,7 @@ describe('Simple HiGlassComponent', () => {
 
 const valueScaleLocksConf = {
   editable: true,
-  trackSourceServers: [
-    '/api/v1',
-    'http://higlass.io/api/v1'
-  ],
+  trackSourceServers: ['/api/v1', 'http://higlass.io/api/v1'],
   exportViewUrl: '/api/v1/viewconfs',
   views: [
     {
@@ -185,14 +178,8 @@ const valueScaleLocksConf = {
         gallery: []
       },
       uid: 'Pqm9bvPORbCO-CsWqj9NWA',
-      initialXDomain: [
-        756110896.9831955,
-        2300280223.2089314
-      ],
-      initialYDomain: [
-        1284286290.3753738,
-        1729007056.3283863
-      ],
+      initialXDomain: [756110896.9831955, 2300280223.2089314],
+      initialYDomain: [1284286290.3753738, 1729007056.3283863],
       layout: {
         w: 6,
         h: 4,
@@ -295,14 +282,8 @@ const valueScaleLocksConf = {
         gallery: []
       },
       uid: 'QuBlHOXDTbKqIqDk9X4FIA',
-      initialXDomain: [
-        756110896.9831983,
-        2300280223.2089286
-      ],
-      initialYDomain: [
-        1284286290.375375,
-        1729007056.3283854
-      ],
+      initialXDomain: [756110896.9831983, 2300280223.2089286],
+      initialYDomain: [1284286290.375375, 1729007056.3283854],
       layout: {
         w: 6,
         h: 4,
@@ -321,11 +302,7 @@ const valueScaleLocksConf = {
     },
     locksDict: {
       'K6tRxnTUTMmZ-DLC0RlVIw': {
-        QuBlHOXDTbKqIqDk9X4FIA: [
-          1544134916.5,
-          1544134916.5,
-          4010740.040259719
-        ],
+        QuBlHOXDTbKqIqDk9X4FIA: [1544134916.5, 1544134916.5, 4010740.040259719],
         'Pqm9bvPORbCO-CsWqj9NWA': [
           1544134916.5,
           1544134916.5,
@@ -342,11 +319,7 @@ const valueScaleLocksConf = {
     },
     locksDict: {
       Dss0P1dCQKCQdzsatsOY7A: {
-        QuBlHOXDTbKqIqDk9X4FIA: [
-          1544134916.5,
-          1544134916.5,
-          4010740.040259719
-        ],
+        QuBlHOXDTbKqIqDk9X4FIA: [1544134916.5, 1544134916.5, 4010740.040259719],
         'Pqm9bvPORbCO-CsWqj9NWA': [
           1544134916.5,
           1544134916.5,
