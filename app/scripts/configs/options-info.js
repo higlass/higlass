@@ -109,7 +109,7 @@ export const OPTIONS_INFO = {
   },
   labelShowAssembly: {
     name: 'Label Show Assembly',
-    inlineOptions: YES_NO,
+    inlineOptions: YES_NO
   },
   lineStrokeWidth: {
     name: 'Stroke Width',

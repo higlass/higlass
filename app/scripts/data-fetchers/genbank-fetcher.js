@@ -130,7 +130,7 @@ class GBKDataFetcher {
       mode: 'cors'
     })
       .then(response => (gzipped ? response.arrayBuffer() : response.text()))
-      .then((buffer) => {
+      .then(buffer => {
         const gffText = gzipped
           ? pako.inflate(buffer, { to: 'string' })
           : buffer;
@@ -169,7 +169,7 @@ class GBKDataFetcher {
 
         return retVal;
       })
-      .catch((err) => {
+      .catch(err => {
         this.tilesetInfoLoading = false;
 
         if (callback) {
@@ -200,7 +200,7 @@ class GBKDataFetcher {
       tilePromises.push(this.tile(z, x));
     }
 
-    Promise.all(tilePromises).then((values) => {
+    Promise.all(tilePromises).then(values => {
       for (let i = 0; i < values.length; i++) {
         const validTileId = validTileIds[i];
         tiles[validTileId] = values[i];
@@ -214,7 +214,7 @@ class GBKDataFetcher {
   }
 
   tile(z, x) {
-    return this.tilesetInfo().then((tsInfo) => {
+    return this.tilesetInfo().then(tsInfo => {
       const tileWidth = +tsInfo.max_width / 2 ** +z;
 
       // get the bounds of the tile
@@ -233,10 +233,10 @@ class GBKDataFetcher {
         scaleFactor
       );
 
-      collapsedPlus.forEach((v) => {
+      collapsedPlus.forEach(v => {
         v.strand = '+';
       });
-      collapsedMinus.forEach((v) => {
+      collapsedMinus.forEach(v => {
         v.strand = '-';
       });
 

@@ -273,24 +273,24 @@ const drawAxis = (track, valueScale) => {
   }
   // either no axis position is specified
   if (
-    !track.options.axisPositionVertical
-    && !track.options.axisPositionHorizontal
+    !track.options.axisPositionVertical &&
+    !track.options.axisPositionHorizontal
   ) {
     track.axis.clearAxis();
     return;
   }
 
   if (
-    track.options.axisPositionVertical
-    && track.options.axisPositionVertical === 'hidden'
+    track.options.axisPositionVertical &&
+    track.options.axisPositionVertical === 'hidden'
   ) {
     track.axis.clearAxis();
     return;
   }
 
   if (
-    track.options.axisPositionHorizontal
-    && track.options.axisPositionHorizontal === 'hidden'
+    track.options.axisPositionHorizontal &&
+    track.options.axisPositionHorizontal === 'hidden'
   ) {
     track.axis.clearAxis();
     return;
@@ -299,8 +299,8 @@ const drawAxis = (track, valueScale) => {
   const margin = track.options.axisMargin || 0;
 
   if (
-    track.options.axisPositionHorizontal === 'left'
-    || track.options.axisPositionVertical === 'top'
+    track.options.axisPositionHorizontal === 'left' ||
+    track.options.axisPositionVertical === 'top'
   ) {
     // left axis are shown at the beginning of the plot
     track.axis.pAxis.position.x = track.position[0] + margin;
@@ -308,8 +308,8 @@ const drawAxis = (track, valueScale) => {
 
     track.axis.drawAxisRight(valueScale, track.dimensions[1]);
   } else if (
-    track.options.axisPositionHorizontal === 'outsideLeft'
-    || track.options.axisPositionVertical === 'outsideTop'
+    track.options.axisPositionHorizontal === 'outsideLeft' ||
+    track.options.axisPositionVertical === 'outsideTop'
   ) {
     // left axis are shown at the beginning of the plot
     track.axis.pAxis.position.x = track.position[0] + margin;
@@ -317,17 +317,19 @@ const drawAxis = (track, valueScale) => {
 
     track.axis.drawAxisLeft(valueScale, track.dimensions[1]);
   } else if (
-    track.options.axisPositionHorizontal === 'right'
-    || track.options.axisPositionVertical === 'bottom'
+    track.options.axisPositionHorizontal === 'right' ||
+    track.options.axisPositionVertical === 'bottom'
   ) {
-    track.axis.pAxis.position.x = track.position[0] + track.dimensions[0] - margin;
+    track.axis.pAxis.position.x =
+      track.position[0] + track.dimensions[0] - margin;
     track.axis.pAxis.position.y = track.position[1];
     track.axis.drawAxisLeft(valueScale, track.dimensions[1]);
   } else if (
-    track.options.axisPositionHorizontal === 'outsideRight'
-    || track.options.axisPositionVertical === 'outsideBottom'
+    track.options.axisPositionHorizontal === 'outsideRight' ||
+    track.options.axisPositionVertical === 'outsideBottom'
   ) {
-    track.axis.pAxis.position.x = track.position[0] + track.dimensions[0] - margin;
+    track.axis.pAxis.position.x =
+      track.position[0] + track.dimensions[0] - margin;
     track.axis.pAxis.position.y = track.position[1];
     track.axis.drawAxisRight(valueScale, track.dimensions[1]);
   }
@@ -352,7 +354,7 @@ const movedY = (track, dY) => {
     track.valueScaleTransform = vst.translate(0, dY / k);
   }
 
-  Object.values(track.fetchedTiles).forEach((tile) => {
+  Object.values(track.fetchedTiles).forEach(tile => {
     tile.graphics.position.y = track.valueScaleTransform.y;
   });
 

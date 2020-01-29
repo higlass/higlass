@@ -93,7 +93,7 @@ function contains(point, node) {
   }
   let result = false;
   let temp;
-  ['left', 'right'].forEach((key) => {
+  ['left', 'right'].forEach(key => {
     temp = node[key];
     if (temp) {
       if (temp.max > point) {
@@ -119,10 +119,10 @@ IntervalTree.prototype.contains = function _contains(point) {
 
 function intersects(a, b) {
   return (
-    (a[0] < b[0] && a[1] > b[0])
-    || (a[0] < b[1] && a[1] > b[1])
-    || (b[0] < a[0] && b[1] > a[0])
-    || (b[0] < a[1] && b[1] > a[1])
+    (a[0] < b[0] && a[1] > b[0]) ||
+    (a[0] < b[1] && a[1] > b[1]) ||
+    (b[0] < a[0] && b[1] > a[0]) ||
+    (b[0] < a[1] && b[1] > a[1])
   );
 }
 
@@ -135,7 +135,7 @@ function intersectsHelper(interval, node) {
   }
   let result = false;
   let temp;
-  ['left', 'right'].forEach((side) => {
+  ['left', 'right'].forEach(side => {
     temp = node[side];
     if (temp && temp.max >= interval[0]) {
       result = result || intersectsHelper(interval, temp);
