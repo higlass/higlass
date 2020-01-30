@@ -336,7 +336,7 @@ Download data from UCSC and NCBI
 
     # Download NCBI genbank data
     DATADIR=~/data
-    mkdir DATADIR/genbank
+    mkdir $DATADIR/genbank
     wget -N -P $DATADIR ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz
     wget -N -P $DATADIR ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_info.gz
     wget -N -P $DATADIR ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2pubmed.gz
