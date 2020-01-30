@@ -353,7 +353,7 @@ Download data from UCSC and NCBI
     # Sort
     # Optional: filter out unplaced and unlocalized scaffolds (which have a "_" in the chrom name)
     zcat $DATADIR/$ASSEMBLY/refGene.txt.gz \
-        | awk -F $'\t' '{if (!($3 ~ /_/)) print;}' $DATADIR/$ASSEMBLY/refGene_sorted \
+        | awk -F $'\t' '{if (!($3 ~ /_/)) print;}' \
         | sort -k 2 \
         > $DATADIR/$ASSEMBLY/refGene_sorted
 
