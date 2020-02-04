@@ -100,8 +100,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.brushing = false;
     this.prevOptions = '';
 
-    this.continuousScaling = true;
-
     /*
     chromInfoService
       .get(`${dataConfig.server}/chrom-sizes/?id=${dataConfig.tilesetUid}`)
@@ -1086,16 +1084,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       return;
     }
 
-    // if (this.continuousScaling) {
-    //   // when new tiles are loaded, recompute the visible extrema
-    //   // so that there is no visible refresh of the colorbar
-    //   //this.minimalVisibleValue = this.minVisibleValue();
-    //   //this.maximalVisibleValue = this.maxVisibleValue();
-    //   this.minValue(this.minVisibleValue());
-    //   this.maxValue(this.maxVisibleValue());
-    //   //console.log(this.minValue(), this.minValue());
-    // }
-
     this.renderTile(tile);
   }
 
@@ -1410,8 +1398,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
   zoomed(newXScale, newYScale, k, tx, ty) {
     super.zoomed(newXScale, newYScale);
-
-    // console.log('vscl',this.isValueScaleLocked());
 
     this.pMain.position.x = tx; // translateX;
     this.pMain.position.y = ty; // translateY;

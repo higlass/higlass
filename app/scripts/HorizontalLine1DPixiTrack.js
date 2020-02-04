@@ -14,7 +14,6 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       context.onValueScaleChanged();
     };
     super(newContext, options);
-    // this.continuousScaling = false;
   }
 
   stopHover() {

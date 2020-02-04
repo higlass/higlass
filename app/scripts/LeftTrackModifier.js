@@ -180,8 +180,6 @@ class LeftTrackModifier {
 
     this.originalTrack.draw();
 
-    // let isValueScaleLocked = this.originalTrack.isValueScaleLocked();
-    // console.log("isValueScaleLocked2",isValueScaleLocked);
     const isValueScaleLocked = this.originalTrack.isValueScaleLocked();
 
     if (

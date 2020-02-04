@@ -61,7 +61,6 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
       this.medianVisibleValue,
       this.maxValue()
     );
-
     valueScale.range([254, 0]).clamp(true);
     this.valueScale = valueScale;
 

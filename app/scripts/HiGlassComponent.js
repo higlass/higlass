@@ -1101,6 +1101,9 @@ class HiGlassComponent extends React.Component {
 
   /**
    * Checks if a given track is the first one in a lock group.
+   * @param   {string}  viewUid  The id of the view containing the track
+   * @param   {string}  trackUid   The id of the track
+   * @return  {bool}  Checks if the track is the first one in the lock group.
    */
   isTrackFirstInLockGroup(viewUid, trackUid) {
     const uid = this.combineViewAndTrackUid(viewUid, trackUid);
@@ -1116,7 +1119,7 @@ class HiGlassComponent extends React.Component {
 
     const keys = Object.values(this.valueScaleLocks[uid])
       .filter(track => track.view)
-      .map(track => `${track.view }.${ track.track}`);
+      .map(track => `${track.view}.${track.track}`);
 
     if (keys[0] !== undefined && keys[0] === uid) {
       return true;
