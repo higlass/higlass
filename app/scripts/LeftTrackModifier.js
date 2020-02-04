@@ -179,15 +179,19 @@ class LeftTrackModifier {
     }
 
     this.originalTrack.draw();
-    // console.log(this.originalTrack);
+
+    // let isValueScaleLocked = this.originalTrack.isValueScaleLocked();
+    // console.log("isValueScaleLocked2",isValueScaleLocked);
+    const isValueScaleLocked = this.originalTrack.isValueScaleLocked();
 
     if (
       this.originalTrack.continuousScaling &&
       // Check if this track has numerical data
-      this.originalTrack.minimalVisibleValue !== null &&
-      this.originalTrack.maximalVisibleValue !== null &&
+      this.originalTrack.minValue() !== undefined &&
+      this.originalTrack.maxValue() !== undefined &&
       this.originalTrack.valueScaleMin === null &&
-      this.originalTrack.valueScaleMax === null
+      this.originalTrack.valueScaleMax === null &&
+      !isValueScaleLocked
     ) {
       const newMin = this.originalTrack.minVisibleValue();
       const newMax = this.originalTrack.maxVisibleValue();
@@ -195,14 +199,27 @@ class LeftTrackModifier {
       if (
         newMin !== null &&
         newMax !== null &&
-        (Math.abs(this.originalTrack.minimalVisibleValue - newMin) > 1e-6 ||
-          Math.abs(this.originalTrack.maximalVisibleValue - newMax) > 1e-6)
+        (Math.abs(this.originalTrack.minValue() - newMin) > 1e-6 ||
+          Math.abs(this.originalTrack.maxValue() - newMax) > 1e-6)
       ) {
-        this.originalTrack.minimalVisibleValue = newMin;
-        this.originalTrack.maximalVisibleValue = newMax;
+        this.originalTrack.minValue(newMin);
+        this.originalTrack.maxValue(newMax);
 
         this.originalTrack.scheduleRerender();
       }
+    }
+
+    if (
+      this.originalTrack.continuousScaling &&
+      isValueScaleLocked &&
+      this.originalTrack.isTrackFirstInLockGroup() &&
+      this.originalTrack.minValue() !== undefined &&
+      this.originalTrack.maxValue() !== undefined
+    ) {
+      // onValueScaleChanged rerenders every track in the lock group
+      // isTrackFirstInLockGroup makes sure that is it only run once
+      // per lock group
+      this.originalTrack.onValueScaleChanged();
     }
   }
 

@@ -115,9 +115,6 @@ class TiledPixiTrack extends PixiTrack {
 
     this.maxZoom = 0;
     this.medianVisibleValue = null;
-    // Keep track of the minimal and maximal values in the current visible area
-    this.minimalVisibleValue = null;
-    this.maximalVisibleValue = null;
 
     this.backgroundTaskScheduler = backgroundTaskScheduler;
 
@@ -517,8 +514,12 @@ class TiledPixiTrack extends PixiTrack {
   initTile(/* tile */) {
     // create the tile
     // should be overwritten by child classes
-    this.scale.minRawValue = this.minVisibleValue();
-    this.scale.maxRawValue = this.maxVisibleValue();
+    this.scale.minRawValue = this.continuousScaling
+      ? this.minVisibleValue()
+      : this.minVisibleValueInTiles();
+    this.scale.maxRawValue = this.continuousScaling
+      ? this.maxVisibleValue()
+      : this.maxVisibleValueInTiles();
 
     this.scale.minValue = this.scale.minRawValue;
     this.scale.maxValue = this.scale.maxRawValue;

@@ -26,8 +26,6 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
       return;
     }
 
-    // console.log('renderTile:');
-
     const graphics = tile.graphics;
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
@@ -44,31 +42,22 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     // equal to the smallest non-zero value
     this.valueScale = null;
 
-    const min =
-      this.minimalVisibleValue !== null
-        ? this.minimalVisibleValue
-        : this.minVisibleValueInTiles();
-    const max =
-      this.maximalVisibleValue !== null
-        ? this.maximalVisibleValue
-        : this.maxVisibleValueInTiles();
-
     if (this.options.valueScaling === 'log') {
       let offsetValue = this.medianVisibleValue;
 
       if (!this.medianVisibleValue) {
-        offsetValue = min;
+        offsetValue = this.minValue();
       }
 
       this.valueScale = scaleLog()
         // .base(Math.E)
-        .domain([offsetValue, max + offsetValue])
+        .domain([offsetValue, this.maxValue() + offsetValue])
         .range([this.dimensions[1], 0]);
       pseudocount = offsetValue;
     } else {
       // linear scale
       this.valueScale = scaleLinear()
-        .domain([min, max])
+        .domain([this.minValue(), this.maxValue()])
         .range([this.dimensions[1], 0]);
     }
 

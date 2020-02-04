@@ -2106,11 +2106,14 @@ class TiledPlot extends React.Component {
           disableTrackMenu={this.props.disableTrackMenu}
           dragging={this.props.dragging}
           galleryDim={this.galleryDim}
+          getLockGroupExtrema={this.props.getLockGroupExtrema}
           height={this.state.height}
           initialXDomain={this.props.initialXDomain}
           initialYDomain={this.props.initialYDomain}
           isRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT}
           isShowGlobalMousePosition={this.props.isShowGlobalMousePosition}
+          isTrackFirstInLockGroup={this.props.isTrackFirstInLockGroup}
+          isValueScaleLocked={this.props.isValueScaleLocked}
           leftWidth={this.leftWidth}
           leftWidthNoGallery={this.leftWidthNoGallery}
           metaTracks={this.props.metaTracks}
@@ -2355,9 +2358,12 @@ TiledPlot.propTypes = {
   dragging: PropTypes.bool,
   draggingHappening: PropTypes.bool,
   editable: PropTypes.bool,
+  getLockGroupExtrema: PropTypes.func,
   initialXDomain: PropTypes.array,
   initialYDomain: PropTypes.array,
   isShowGlobalMousePosition: PropTypes.bool,
+  isTrackFirstInLockGroup: PropTypes.func,
+  isValueScaleLocked: PropTypes.func,
   marginBottom: PropTypes.number.isRequired,
   marginLeft: PropTypes.number.isRequired,
   marginRight: PropTypes.number.isRequired,

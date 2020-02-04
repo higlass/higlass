@@ -59,7 +59,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       svgElement,
       onTrackOptionsChanged,
       onMouseMoveZoom,
-      isShowGlobalMousePosition
+      isShowGlobalMousePosition,
+      isValueScaleLocked
     } = context;
 
     this.pubSub = pubSub;
@@ -70,6 +71,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     this.onTrackOptionsChanged = onTrackOptionsChanged;
     this.isShowGlobalMousePosition = isShowGlobalMousePosition;
+
+    this.isValueScaleLocked = isValueScaleLocked;
 
     // Graphics for drawing the colorbar
     this.pColorbarArea = new PIXI.Graphics();
@@ -96,6 +99,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     this.brushing = false;
     this.prevOptions = '';
+
+    this.continuousScaling = true;
 
     /*
     chromInfoService
@@ -281,30 +286,15 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   updateValueScale() {
-    let minValue = this.scale.minValue;
-
-    if (typeof this.options.valueScaleMin !== 'undefined') {
-      minValue = this.valueScaleMin;
-    } else if (this.scale.minValue !== undefined && this.continuousScaling) {
-      // if this.scale.minValue is undefined there is no dense data
-      minValue =
-        this.minimalVisibleValue !== null ? this.minimalVisibleValue : minValue;
-    }
-
-    let maxValue = this.scale.maxValue;
-
-    if (typeof this.options.valueScaleMax !== 'undefined') {
-      maxValue = this.valueScaleMax;
-    } else if (this.scale.maxValue !== undefined && this.continuousScaling) {
-      // if this.scale.maxValue is undefined there is no dense data
-      maxValue =
-        this.maximalVisibleValue !== null ? this.maximalVisibleValue : maxValue;
-    }
+    let minValue = this.minValue();
+    let maxValue = this.maxValue();
 
     // There might be only one value in the visible area. We extend the
     // valuescale artificially, so that point is still displayed
     if (
+      minValue !== undefined &&
       minValue !== null &&
+      maxValue !== undefined &&
       maxValue !== null &&
       Math.abs(minValue - maxValue) < 1e-6
     ) {
@@ -322,17 +312,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     );
 
     this.valueScale = valueScale;
-
-    if (
-      this.continuousScaling &&
-      this.minimalVisibleValue === null &&
-      this.maximalVisibleValue === null &&
-      !Number.isNaN(this.valueScale.domain()[0]) &&
-      !Number.isNaN(this.valueScale.domain()[1])
-    ) {
-      this.minimalVisibleValue = this.valueScale.domain()[0];
-      this.maximalVisibleValue = this.valueScale.domain()[1];
-    }
 
     this.limitedValueScale = this.valueScale.copy();
 
@@ -1107,12 +1086,15 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       return;
     }
 
-    if (this.continuousScaling) {
-      // when new tiles are loaded, recompute the visible extrema
-      // so that there is no visible refresh of the colorbar
-      this.minimalVisibleValue = this.minVisibleValue(); // this.scale.minValue;
-      this.maximalVisibleValue = this.maxVisibleValue(); // this.scale.maxValue;
-    }
+    // if (this.continuousScaling) {
+    //   // when new tiles are loaded, recompute the visible extrema
+    //   // so that there is no visible refresh of the colorbar
+    //   //this.minimalVisibleValue = this.minVisibleValue();
+    //   //this.maximalVisibleValue = this.maxVisibleValue();
+    //   this.minValue(this.minVisibleValue());
+    //   this.maxValue(this.maxVisibleValue());
+    //   //console.log(this.minValue(), this.minValue());
+    // }
 
     this.renderTile(tile);
   }
@@ -1151,6 +1133,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     } else {
       // not rendered using the current scale, so we need to rerender
       this.renderTile(tile);
+      this.drawColorbar();
     }
   }
 
@@ -1373,10 +1356,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   minVisibleValue(ignoreFixedScale = false) {
-    if (!this.continuousScaling) {
-      return super.minVisibleValue(ignoreFixedScale);
-    }
-
     const minimumsPerTile = this.visibleAndFetchedTiles().map(tile => {
       if (tile.tileData.denseDataExtrema === undefined) {
         return null;
@@ -1392,19 +1371,17 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     const min = Math.min(...minimumsPerTile);
 
-    // If there is no data or no deseDataExtrema, go to parent method
+    // If there is no data or no denseDataExtrema, go to parent method
     if (min === Number.MAX_SAFE_INTEGER) {
       return super.minVisibleValue(ignoreFixedScale);
     }
+
+    if (ignoreFixedScale) return min;
 
     return this.valueScaleMin !== null ? this.valueScaleMin : min;
   }
 
   maxVisibleValue(ignoreFixedScale = false) {
-    if (!this.continuousScaling) {
-      return super.maxVisibleValue(ignoreFixedScale);
-    }
-
     const maximumsPerTile = this.visibleAndFetchedTiles().map(tile => {
       if (tile.tileData.denseDataExtrema === undefined) {
         return null;
@@ -1421,10 +1398,12 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     const max = Math.max(...maximumsPerTile);
 
-    // If there is no data  or no deseDataExtrema, return null
+    // If there is no data  or no deseDataExtrema, go to parent method
     if (max === Number.MIN_SAFE_INTEGER) {
       return super.maxVisibleValue(ignoreFixedScale);
     }
+
+    if (ignoreFixedScale) return max;
 
     return this.valueScaleMax !== null ? this.valueScaleMax : max;
   }
@@ -1432,18 +1411,23 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   zoomed(newXScale, newYScale, k, tx, ty) {
     super.zoomed(newXScale, newYScale);
 
+    // console.log('vscl',this.isValueScaleLocked());
+
     this.pMain.position.x = tx; // translateX;
     this.pMain.position.y = ty; // translateY;
 
     this.pMain.scale.x = k; // scaleX;
     this.pMain.scale.y = k; // scaleY;
 
+    const isValueScaleLocked = this.isValueScaleLocked();
+
     if (
       this.continuousScaling &&
-      this.minimalVisibleValue !== null &&
-      this.maximalVisibleValue !== null &&
+      this.minValue() !== undefined &&
+      this.maxValue() !== undefined &&
       this.valueScaleMin === null &&
-      this.valueScaleMax === null
+      this.valueScaleMax === null &&
+      !isValueScaleLocked
     ) {
       const newMin = this.minVisibleValue();
       const newMax = this.maxVisibleValue();
@@ -1451,14 +1435,23 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       if (
         newMin !== null && // can happen if tiles haven't loaded
         newMax !== null &&
-        (Math.abs(this.minimalVisibleValue - newMin) > 1e-6 ||
-          Math.abs(this.maximalVisibleValue - newMax) > 1e-6)
+        (Math.abs(this.minValue() - newMin) > 1e-6 ||
+          Math.abs(this.maxValue() - newMax) > 1e-6)
       ) {
-        this.minimalVisibleValue = newMin;
-        this.maximalVisibleValue = newMax;
+        this.minValue(newMin);
+        this.maxValue(newMax);
 
         this.scheduleRerender();
       }
+    }
+
+    if (
+      this.continuousScaling &&
+      isValueScaleLocked &&
+      this.minValue() !== undefined &&
+      this.maxValue() !== undefined
+    ) {
+      this.onValueScaleChanged();
     }
 
     this.mouseMoveZoomHandler();

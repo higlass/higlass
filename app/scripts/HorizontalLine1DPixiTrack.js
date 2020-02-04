@@ -14,6 +14,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       context.onValueScaleChanged();
     };
     super(newContext, options);
+    // this.continuousScaling = false;
   }
 
   stopHover() {
@@ -68,9 +69,15 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     tile.xValues = new Array(tile.tileData.dense.length);
     tile.yValues = new Array(tile.tileData.dense.length);
 
-    if (this.continuousScaling) {
-      this.minimalVisibleValue = this.minVisibleValue();
-      this.maximalVisibleValue = this.maxVisibleValue();
+    if (this.isValueScaleLocked()) {
+      // If valueScales are locked get min and max values of the locked group
+      // for initialization. This prevents a flickering that is caused by
+      // rendering the track multiple times with possibly different valueScales
+      const glge = this.getLockGroupExtrema();
+      if (glge !== null) {
+        this.minValue(glge[0]);
+        this.maxValue(glge[1]);
+      }
     }
 
     this.drawTile(tile);
@@ -119,19 +126,10 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       return;
     }
 
-    const min =
-      this.minimalVisibleValue !== null
-        ? this.minimalVisibleValue
-        : this.minVisibleValueInTiles();
-    const max =
-      this.maximalVisibleValue !== null
-        ? this.maximalVisibleValue
-        : this.maxVisibleValueInTiles();
-
     const [vs, offsetValue] = this.makeValueScale(
-      min,
+      this.minValue(),
       this.medianVisibleValue,
-      max
+      this.maxValue()
     );
 
     this.valueScale = vs;
@@ -231,12 +229,15 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     this.draw();
 
+    const isValueScaleLocked = this.isValueScaleLocked();
+
     if (
       this.continuousScaling &&
-      this.minimalVisibleValue !== null &&
-      this.maximalVisibleValue !== null &&
+      this.minValue() !== undefined &&
+      this.maxValue() !== undefined &&
       this.valueScaleMin === null &&
-      this.valueScaleMax === null
+      this.valueScaleMax === null &&
+      !isValueScaleLocked
     ) {
       const newMin = this.minVisibleValue();
       const newMax = this.maxVisibleValue();
@@ -244,14 +245,27 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       if (
         newMin !== null &&
         newMax !== null &&
-        (Math.abs(this.minimalVisibleValue - newMin) > 1e-6 ||
-          Math.abs(this.maximalVisibleValue - newMax) > 1e-6)
+        (Math.abs(this.minValue() - newMin) > 1e-6 ||
+          Math.abs(this.maxValue() - newMax) > 1e-6)
       ) {
-        this.minimalVisibleValue = newMin;
-        this.maximalVisibleValue = newMax;
+        this.minValue(newMin);
+        this.maxValue(newMax);
 
         this.scheduleRerender();
       }
+    }
+
+    if (
+      this.continuousScaling &&
+      isValueScaleLocked &&
+      this.isTrackFirstInLockGroup() &&
+      this.minValue() !== undefined &&
+      this.maxValue() !== undefined
+    ) {
+      // onValueScaleChanged rerenders every track in the lock group
+      // isTrackFirstInLockGroup makes sure that is it only run once
+      // per lock group
+      this.onValueScaleChanged();
     }
   }
 

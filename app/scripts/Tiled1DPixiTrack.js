@@ -10,9 +10,17 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
   constructor(context, options) {
     super(context, options);
 
-    const { onMouseMoveZoom } = context;
+    const {
+      onMouseMoveZoom,
+      isTrackFirstInLockGroup,
+      isValueScaleLocked,
+      getLockGroupExtrema
+    } = context;
 
     this.onMouseMoveZoom = onMouseMoveZoom;
+    this.isTrackFirstInLockGroup = isTrackFirstInLockGroup;
+    this.isValueScaleLocked = isValueScaleLocked;
+    this.getLockGroupExtrema = getLockGroupExtrema;
 
     if (this.onMouseMoveZoom) {
       this.pubSubs.push(
@@ -220,11 +228,10 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     return [start, end];
   }
 
+  /**
+   * Returns the minimum in the visible area (not visible tiles)
+   */
   minVisibleValue(ignoreFixedScale = false) {
-    if (!this.continuousScaling) {
-      return super.minVisibleValue(ignoreFixedScale);
-    }
-
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
@@ -245,11 +252,10 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     return this.valueScaleMin !== null ? this.valueScaleMin : min;
   }
 
+  /**
+   * Returns the maximum in the visible area (not visible tiles)
+   */
   maxVisibleValue(ignoreFixedScale = false) {
-    if (!this.continuousScaling) {
-      return super.maxVisibleValue(ignoreFixedScale);
-    }
-
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
@@ -274,9 +280,11 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
    * Return an aggregated visible value. For example, the minimum or maximum.
    *
    * @description
-   *   The difference to `minVisibleValue`
+   *   The difference to `minVisibleValueInTiles`
    *   is that the truly visible min or max value is returned instead of the
    *   min or max value of the tile. The latter is not necessarily visible.
+   *
+   *   For 'min' and 'max' this is identical to minVisibleValue and maxVisibleValue
    *
    * @param  {string} aggregator Aggregation method. Currently supports `min`
    *   and `max` only.
