@@ -182,8 +182,12 @@ export const TRACKS_INFO = [
       labelBottomMargin: 0,
       labelShowResolution: true,
       labelShowAssembly: true,
-      colorRange: [ // corresponding to the fall colormap
-        'white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'
+      colorRange: [
+        // corresponding to the fall colormap
+        'white',
+        'rgba(245,166,35,1.0)',
+        'rgba(208,2,27,1.0)',
+        'black'
       ],
       colorbarBackgroundColor: '#ffffff',
       maxZoom: null,
@@ -1846,6 +1850,15 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       valueColumn: null
     }
+  },
+  {
+    type: 'empty',
+    datatype: [],
+    orientation: '1d-horizontal',
+    name: 'Empty track',
+    thumbnail: null,
+    availableOptions: [],
+    defaultOptions: {}
   }
 ];
 
