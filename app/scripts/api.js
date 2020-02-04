@@ -2,13 +2,11 @@ import ReactDOM from 'react-dom';
 import createPubSub from 'pub-sub-es';
 import Ajv from 'ajv';
 
-import { dictValues , getTrackObjectFromHGC } from './utils';
+import { dictValues, getTrackObjectFromHGC } from './utils';
 
 import schema from '../schema.json';
 
 import { setTileProxyAuthHeader } from './services';
-
-
 
 import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from './configs';
 
