@@ -60,6 +60,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       onTrackOptionsChanged,
       onMouseMoveZoom,
       isShowGlobalMousePosition,
+      isTrackFirstInValueScaleLockGroup,
       isValueScaleLocked
     } = context;
 
@@ -73,6 +74,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.isShowGlobalMousePosition = isShowGlobalMousePosition;
 
     this.isValueScaleLocked = isValueScaleLocked;
+    this.isTrackFirstInValueScaleLockGroup = isTrackFirstInValueScaleLockGroup;
 
     // Graphics for drawing the colorbar
     this.pColorbarArea = new PIXI.Graphics();
@@ -510,7 +512,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     if (!event.selection) {
       return;
     }
-
     const newOptions = this.newBrushOptions(event.selection);
 
     const strOptions = JSON.stringify(newOptions);
@@ -534,7 +535,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.rerender(newOptions, true);
 
     this.onTrackOptionsChanged(newOptions);
-    this.onValueScaleChanged();
+
+    if (this.isValueScaleLocked() && this.isTrackFirstInValueScaleLockGroup()) {
+      this.onValueScaleChanged();
+    }
   }
 
   brushEnd() {
@@ -1397,6 +1401,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   zoomed(newXScale, newYScale, k, tx, ty) {
+    if (this.brushing) {
+      return;
+    }
+
     super.zoomed(newXScale, newYScale);
 
     this.pMain.position.x = tx; // translateX;
@@ -1435,8 +1443,12 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.continuousScaling &&
       isValueScaleLocked &&
       this.minValue() !== undefined &&
-      this.maxValue() !== undefined
+      this.maxValue() !== undefined &&
+      this.isTrackFirstInValueScaleLockGroup()
     ) {
+      // onValueScaleChanged rerenders every track in the lock group
+      // isTrackFirstInValueScaleLockGroup makes sure that is it only run once
+      // per lock group
       this.onValueScaleChanged();
     }
 

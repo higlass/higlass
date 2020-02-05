@@ -257,12 +257,12 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     if (
       this.continuousScaling &&
       isValueScaleLocked &&
-      this.isTrackFirstInLockGroup() &&
+      this.isTrackFirstInValueScaleLockGroup() &&
       this.minValue() !== undefined &&
       this.maxValue() !== undefined
     ) {
       // onValueScaleChanged rerenders every track in the lock group
-      // isTrackFirstInLockGroup makes sure that is it only run once
+      // isTrackFirstInValueScaleLockGroup makes sure that is it only run once
       // per lock group
       this.onValueScaleChanged();
     }

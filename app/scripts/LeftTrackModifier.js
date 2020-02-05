@@ -180,7 +180,9 @@ class LeftTrackModifier {
 
     this.originalTrack.draw();
 
-    const isValueScaleLocked = this.originalTrack.isValueScaleLocked();
+    const isValueScaleLocked = this.originalTrack.isValueScaleLocked
+      ? this.originalTrack.isValueScaleLocked()
+      : false;
 
     if (
       this.originalTrack.continuousScaling &&
@@ -209,13 +211,13 @@ class LeftTrackModifier {
 
     if (
       this.originalTrack.continuousScaling &&
-      isValueScaleLocked &&
-      this.originalTrack.isTrackFirstInLockGroup() &&
       this.originalTrack.minValue() !== undefined &&
-      this.originalTrack.maxValue() !== undefined
+      this.originalTrack.maxValue() !== undefined &&
+      isValueScaleLocked &&
+      this.originalTrack.isTrackFirstInValueScaleLockGroup()
     ) {
       // onValueScaleChanged rerenders every track in the lock group
-      // isTrackFirstInLockGroup makes sure that is it only run once
+      // isTrackFirstInValueScaleLockGroup makes sure that is it only run once
       // per lock group
       this.originalTrack.onValueScaleChanged();
     }

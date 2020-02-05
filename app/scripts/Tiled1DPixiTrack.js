@@ -12,13 +12,13 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
     const {
       onMouseMoveZoom,
-      isTrackFirstInLockGroup,
+      isTrackFirstInValueScaleLockGroup,
       isValueScaleLocked,
       getLockGroupExtrema
     } = context;
 
     this.onMouseMoveZoom = onMouseMoveZoom;
-    this.isTrackFirstInLockGroup = isTrackFirstInLockGroup;
+    this.isTrackFirstInValueScaleLockGroup = isTrackFirstInValueScaleLockGroup;
     this.isValueScaleLocked = isValueScaleLocked;
     this.getLockGroupExtrema = getLockGroupExtrema;
 

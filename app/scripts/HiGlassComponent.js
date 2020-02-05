@@ -1100,12 +1100,12 @@ class HiGlassComponent extends React.Component {
   }
 
   /**
-   * Checks if a given track is the first one in a lock group.
+   * Checks if a given track is the first one in a value scale lock group.
    * @param   {string}  viewUid  The id of the view containing the track
    * @param   {string}  trackUid   The id of the track
    * @return  {bool}  Checks if the track is the first one in the lock group.
    */
-  isTrackFirstInLockGroup(viewUid, trackUid) {
+  isTrackFirstInValueScaleLockGroup(viewUid, trackUid) {
     const uid = this.combineViewAndTrackUid(viewUid, trackUid);
 
     // the view must have been deleted
@@ -1118,7 +1118,18 @@ class HiGlassComponent extends React.Component {
     }
 
     const keys = Object.values(this.valueScaleLocks[uid])
-      .filter(track => track.view)
+      .filter(track => this.tiledPlots[track.view])
+      .filter(track => {
+        let curTrack = this.tiledPlots[track.view].trackRenderer.getTrackObject(
+          track.track
+        );
+        // if the track is a LeftTrackModifier we want the originalTrack
+        curTrack =
+          curTrack.originalTrack === undefined
+            ? curTrack
+            : curTrack.originalTrack;
+        return curTrack.minRawValue && curTrack.maxRawValue;
+      })
       .map(track => `${track.view}.${track.track}`);
 
     if (keys[0] !== undefined && keys[0] === uid) {
@@ -1260,18 +1271,33 @@ class HiGlassComponent extends React.Component {
           continue;
         }
 
+        const hasScaleChanged =
+          Math.abs(
+            lockedTrack.minValue() - lockedTrack.valueScale.domain()[0]
+          ) > 1e-6 ||
+          Math.abs(
+            lockedTrack.maxValue() - lockedTrack.valueScale.domain()[1]
+          ) > 1e-6;
+
+        const hasBrushMoved =
+          sourceTrack.options &&
+          typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
+          typeof sourceTrack.options.scaleEndPercent !== 'undefined' &&
+          (Math.abs(
+            lockedTrack.options.scaleStartPercent -
+              sourceTrack.options.scaleStartPercent
+          ) > 1e-6 ||
+            Math.abs(
+              lockedTrack.options.scaleEndPercent -
+                sourceTrack.options.scaleEndPercent
+            ) > 1e-6);
+
         // If we do view based scaling we want to minimize the number of rerenders
         // Check if it is necessary to rerender
         if (
           lockedTrack.continuousScaling &&
-          !(
-            Math.abs(
-              lockedTrack.minValue() - lockedTrack.valueScale.domain()[0]
-            ) > 1e-6 ||
-            Math.abs(
-              lockedTrack.maxValue() - lockedTrack.valueScale.domain()[1]
-            ) > 1e-6
-          )
+          !hasScaleChanged &&
+          !hasBrushMoved
         ) {
           continue;
         }
@@ -1284,11 +1310,7 @@ class HiGlassComponent extends React.Component {
         // stay synced
         lockedTrack.prevValueScale = lockedTrack.valueScale.copy();
 
-        if (
-          sourceTrack.options &&
-          typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
-          typeof sourceTrack.options.scaleEndPercent !== 'undefined'
-        ) {
+        if (hasBrushMoved) {
           lockedTrack.options.scaleStartPercent =
             sourceTrack.options.scaleStartPercent;
           lockedTrack.options.scaleEndPercent =
@@ -4300,8 +4322,8 @@ class HiGlassComponent extends React.Component {
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
             isShowGlobalMousePosition={this.isShowGlobalMousePosition}
-            isTrackFirstInLockGroup={uid =>
-              this.isTrackFirstInLockGroup(view.uid, uid)
+            isTrackFirstInValueScaleLockGroup={uid =>
+              this.isTrackFirstInValueScaleLockGroup(view.uid, uid)
             }
             isValueScaleLocked={uid => this.isValueScaleLocked(view.uid, uid)}
             marginBottom={this.viewMarginBottom}
