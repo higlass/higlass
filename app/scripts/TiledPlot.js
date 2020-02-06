@@ -2112,9 +2112,6 @@ class TiledPlot extends React.Component {
           initialYDomain={this.props.initialYDomain}
           isRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT}
           isShowGlobalMousePosition={this.props.isShowGlobalMousePosition}
-          isTrackFirstInValueScaleLockGroup={
-            this.props.isTrackFirstInValueScaleLockGroup
-          }
           isValueScaleLocked={this.props.isValueScaleLocked}
           leftWidth={this.leftWidth}
           leftWidthNoGallery={this.leftWidthNoGallery}
@@ -2364,7 +2361,6 @@ TiledPlot.propTypes = {
   initialXDomain: PropTypes.array,
   initialYDomain: PropTypes.array,
   isShowGlobalMousePosition: PropTypes.bool,
-  isTrackFirstInValueScaleLockGroup: PropTypes.func,
   isValueScaleLocked: PropTypes.func,
   marginBottom: PropTypes.number.isRequired,
   marginLeft: PropTypes.number.isRequired,

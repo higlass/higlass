@@ -1100,46 +1100,6 @@ class HiGlassComponent extends React.Component {
   }
 
   /**
-   * Checks if a given track is the first one in a value scale lock group.
-   * @param   {string}  viewUid  The id of the view containing the track
-   * @param   {string}  trackUid   The id of the track
-   * @return  {bool}  Checks if the track is the first one in the lock group.
-   */
-  isTrackFirstInValueScaleLockGroup(viewUid, trackUid) {
-    const uid = this.combineViewAndTrackUid(viewUid, trackUid);
-
-    // the view must have been deleted
-    if (!this.state.views[viewUid]) {
-      return false;
-    }
-
-    if (!this.valueScaleLocks[uid]) {
-      return null;
-    }
-
-    const keys = Object.values(this.valueScaleLocks[uid])
-      .filter(track => this.tiledPlots[track.view])
-      .filter(track => {
-        let curTrack = this.tiledPlots[track.view].trackRenderer.getTrackObject(
-          track.track
-        );
-        // if the track is a LeftTrackModifier we want the originalTrack
-        curTrack =
-          curTrack.originalTrack === undefined
-            ? curTrack
-            : curTrack.originalTrack;
-        return curTrack.minRawValue && curTrack.maxRawValue;
-      })
-      .map(track => `${track.view}.${track.track}`);
-
-    if (keys[0] !== undefined && keys[0] === uid) {
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
    * Computed the minimal and maximal values of all tracks that are in the same
    * lockGroup as a given track
    * @param   {string}  viewUid  The id of the view containing the track
@@ -1281,6 +1241,7 @@ class HiGlassComponent extends React.Component {
 
         const hasBrushMoved =
           sourceTrack.options &&
+          lockedTrack.options &&
           typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
           typeof sourceTrack.options.scaleEndPercent !== 'undefined' &&
           (Math.abs(
@@ -4322,9 +4283,6 @@ class HiGlassComponent extends React.Component {
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
             isShowGlobalMousePosition={this.isShowGlobalMousePosition}
-            isTrackFirstInValueScaleLockGroup={uid =>
-              this.isTrackFirstInValueScaleLockGroup(view.uid, uid)
-            }
             isValueScaleLocked={uid => this.isValueScaleLocked(view.uid, uid)}
             marginBottom={this.viewMarginBottom}
             marginLeft={this.viewMarginLeft}

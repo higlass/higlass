@@ -1485,9 +1485,6 @@ class TrackRenderer extends React.Component {
         this.currentProps.onNewTilesLoaded(track.uid);
       },
       svgElement: this.svgElement,
-      isTrackFirstInValueScaleLockGroup: () => {
-        return this.currentProps.isTrackFirstInValueScaleLockGroup(track.uid);
-      },
       isValueScaleLocked: () => {
         return this.currentProps.isValueScaleLocked(track.uid);
       },

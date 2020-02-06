@@ -213,12 +213,8 @@ class LeftTrackModifier {
       this.originalTrack.continuousScaling &&
       this.originalTrack.minValue() !== undefined &&
       this.originalTrack.maxValue() !== undefined &&
-      isValueScaleLocked &&
-      this.originalTrack.isTrackFirstInValueScaleLockGroup()
+      isValueScaleLocked
     ) {
-      // onValueScaleChanged rerenders every track in the lock group
-      // isTrackFirstInValueScaleLockGroup makes sure that is it only run once
-      // per lock group
       this.originalTrack.onValueScaleChanged();
     }
   }

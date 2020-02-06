@@ -60,7 +60,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       onTrackOptionsChanged,
       onMouseMoveZoom,
       isShowGlobalMousePosition,
-      isTrackFirstInValueScaleLockGroup,
       isValueScaleLocked
     } = context;
 
@@ -74,7 +73,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.isShowGlobalMousePosition = isShowGlobalMousePosition;
 
     this.isValueScaleLocked = isValueScaleLocked;
-    this.isTrackFirstInValueScaleLockGroup = isTrackFirstInValueScaleLockGroup;
 
     // Graphics for drawing the colorbar
     this.pColorbarArea = new PIXI.Graphics();
@@ -102,6 +100,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.brushing = false;
     this.prevOptions = '';
 
+    this.numZooms = 0; // Counts how many time zoomed() has been called
     /*
     chromInfoService
       .get(`${dataConfig.server}/chrom-sizes/?id=${dataConfig.tilesetUid}`)
@@ -536,7 +535,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     this.onTrackOptionsChanged(newOptions);
 
-    if (this.isValueScaleLocked() && this.isTrackFirstInValueScaleLockGroup()) {
+    if (this.isValueScaleLocked()) {
       this.onValueScaleChanged();
     }
   }
@@ -1419,39 +1418,36 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.continuousScaling &&
       this.minValue() !== undefined &&
       this.maxValue() !== undefined &&
-      this.valueScaleMin === null &&
-      this.valueScaleMax === null &&
-      !isValueScaleLocked
+      // slows down the rate of rerenders
+      this.numZooms % 3 === 0
     ) {
-      const newMin = this.minVisibleValue();
-      const newMax = this.maxVisibleValue();
-
       if (
-        newMin !== null && // can happen if tiles haven't loaded
-        newMax !== null &&
-        (Math.abs(this.minValue() - newMin) > 1e-6 ||
-          Math.abs(this.maxValue() - newMax) > 1e-6)
+        this.valueScaleMin === null &&
+        this.valueScaleMax === null &&
+        !isValueScaleLocked
       ) {
-        this.minValue(newMin);
-        this.maxValue(newMax);
+        const newMin = this.minVisibleValue();
+        const newMax = this.maxVisibleValue();
 
-        this.scheduleRerender();
+        if (
+          newMin !== null && // can happen if tiles haven't loaded
+          newMax !== null &&
+          (Math.abs(this.minValue() - newMin) > 1e-6 ||
+            Math.abs(this.maxValue() - newMax) > 1e-6)
+        ) {
+          this.minValue(newMin);
+          this.maxValue(newMax);
+
+          this.scheduleRerender();
+        }
+      }
+
+      if (isValueScaleLocked) {
+        this.onValueScaleChanged();
       }
     }
 
-    if (
-      this.continuousScaling &&
-      isValueScaleLocked &&
-      this.minValue() !== undefined &&
-      this.maxValue() !== undefined &&
-      this.isTrackFirstInValueScaleLockGroup()
-    ) {
-      // onValueScaleChanged rerenders every track in the lock group
-      // isTrackFirstInValueScaleLockGroup makes sure that is it only run once
-      // per lock group
-      this.onValueScaleChanged();
-    }
-
+    this.numZooms++;
     this.mouseMoveZoomHandler();
   }
 
