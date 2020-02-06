@@ -2,6 +2,7 @@
 
 ## v1.8.2
 
+- Added the axis label format option 'automatic', which is the new default
 - Fixed horizontal track not rendering properly in vertical position bug
 
 _[Detailed changes since v1.8.1](https://github.com/higlass/higlass/compare/v1.8.1...v1.8.2)_

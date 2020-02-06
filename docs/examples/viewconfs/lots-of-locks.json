@@ -1,17 +1,12 @@
 {
   "editable": true,
   "zoomFixed": false,
-  "trackSourceServers": [
-    "//higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["//higlass.io/api/v1"],
   "exportViewUrl": "/api/v1/viewconfs",
   "views": [
     {
       "uid": "aa",
-      "initialXDomain": [
-        1070191768.782828,
-        2122651326.5795393
-      ],
+      "initialXDomain": [1070191768.782828, 2122651326.5795393],
       "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBox": {
         "autocompleteServer": "//higlass.io/api/v1",
@@ -40,7 +35,7 @@
               "labelRightMargin": 0,
               "labelTopMargin": 0,
               "labelBottomMargin": 0,
-              "axisLabelFormatting": "scientific",
+              "axisLabelFormatting": "automatic",
               "axisPositionHorizontal": "right",
               "lineStrokeColor": "blue",
               "lineStrokeWidth": 1,
@@ -71,17 +66,11 @@
         "x": 0,
         "y": 0
       },
-      "initialYDomain": [
-        1044573613.4267673,
-        2042237251.697258
-      ]
+      "initialYDomain": [1044573613.4267673, 2042237251.697258]
     },
     {
       "uid": "G1Ew_OyNT7eGfKZG9_PkaA",
-      "initialXDomain": [
-        1070191768.7828333,
-        2122651326.579533
-      ],
+      "initialXDomain": [1070191768.7828333, 2122651326.579533],
       "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBox": {
         "autocompleteServer": "//higlass.io/api/v1",
@@ -110,7 +99,7 @@
               "labelRightMargin": 0,
               "labelTopMargin": 0,
               "labelBottomMargin": 0,
-              "axisLabelFormatting": "scientific",
+              "axisLabelFormatting": "automatic",
               "axisPositionHorizontal": "right",
               "lineStrokeColor": "blue",
               "lineStrokeWidth": 1,
@@ -141,10 +130,7 @@
         "x": 6,
         "y": 0
       },
-      "initialYDomain": [
-        1044573613.4267726,
-        2042237251.697253
-      ]
+      "initialYDomain": [1044573613.4267726, 2042237251.697253]
     }
   ],
   "zoomLocks": {
@@ -159,11 +145,7 @@
           1550000000,
           2520325.203252077
         ],
-        "aa": [
-          1550000000,
-          1550000000,
-          2520325.203252077
-        ],
+        "aa": [1550000000, 1550000000, 2520325.203252077],
         "uid": "btj7TwACR7uqAQZ-wGUyyQ"
       }
     }
@@ -180,11 +162,7 @@
           1550000000,
           2520325.203252077
         ],
-        "aa": [
-          1550000000,
-          1550000000,
-          2520325.203252077
-        ],
+        "aa": [1550000000, 1550000000, 2520325.203252077],
         "uid": "eE70wfR6T_OCWC4S4rH5Yg"
       }
     }

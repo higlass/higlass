@@ -226,7 +226,7 @@ plot. For such data, the :ref:`bar track <bar-track>` or :ref:`point track
 Options
 --------
 
-- **axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
+- **axisLabelFormatting**: ['normal', 'scientific', 'automatic'] - Display the vertical axis labels as regular numbers, using scientific notation, or both (whichever is more suitable).
 - **lineStrokeColor**: - A valid color (e.g. ``black``) or to track the color of the line use ``[glyph-color]``.
 - **constIndicators**: Array of constant value indicators - A constant value indicator display a line for a constant value, e.g., a minimum or maximum value. This property is also available on other 1D tracks like ``Bar`` and ``Point`` tracks. See the following for an example:
 
@@ -269,7 +269,7 @@ Bar tracks display 1D vector data as bars.
 Options
 --------
 
-- **axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
+- **axisLabelFormatting**: ['normal', 'scientific', 'automatic'] - Display the vertical axis labels as regular numbers, using scientific notation, or both (whichever is more suitable).
 
 - **barFillColor**: A valid color (e.g. ``black``) or to track the color of the bars use ``[glyph-color]``.
 
@@ -303,7 +303,7 @@ to draw something.
 Options
 --------
 
-- **axisLabelFormatting**: ['normal', 'scientific'] - Display the vertical axis labels as regular numbers or using scientific notation.
+- **axisLabelFormatting**: ['normal', 'scientific', 'automatic'] - Display the vertical axis labels as regular numbers, using scientific notation, or both (whichever is more suitable).
 - **valueScaleMin/valueScaleMax**: Absolute values limiting the value to y-position scale.
 
 .. _1d-heatmap:

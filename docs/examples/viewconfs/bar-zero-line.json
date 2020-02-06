@@ -70,7 +70,7 @@
               "lineStrokeWidth": 2,
               "lineStrokeColor": "turquoise",
               "axisPositionHorizontal": "right",
-              "axisLabelFormatting": "scientific",
+              "axisLabelFormatting": "automatic",
               "labelColor": "black",
               "labelTextOpacity": 1
             }
@@ -178,7 +178,5 @@
   ],
   "editable": true,
   "exportViewUrl": "/api/v1/viewconfs",
-  "trackSourceServers": [
-    "//higlass.io/api/v1"
-  ]
+  "trackSourceServers": ["//higlass.io/api/v1"]
 }

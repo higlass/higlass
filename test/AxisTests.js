@@ -56,8 +56,25 @@ describe('Simple HiGlassComponent', () => {
 
       const texts1 = track1.axis.axisTexts.map(x => x.text);
 
-      // make sure we don't find any scientific notation;
+      // make sure we find scientific notation;
       for (const text of texts1) {
+        expect(text.indexOf('e')).to.be.above(0);
+      }
+
+      hgc
+        .instance()
+        .handleTrackOptionsChanged(
+          'Cs0jaHTuQXuibqx36Ew1xg',
+          'frcXuRouRpa_XSm5awtt3Q',
+          { axisLabelFormatting: 'automatic' }
+        );
+
+      hgc.update();
+
+      const texts2 = track1.axis.axisTexts.map(x => x.text);
+
+      // make sure we find scientific notation in this case;
+      for (const text of texts2) {
         expect(text.indexOf('e')).to.be.above(0);
       }
     });

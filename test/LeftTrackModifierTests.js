@@ -83,7 +83,7 @@ const zoomLimitViewConf = {
               labelRightMargin: 0,
               labelTopMargin: 0,
               labelBottomMargin: 0,
-              axisLabelFormatting: 'scientific',
+              axisLabelFormatting: 'automatic',
               axisPositionHorizontal: 'right',
               barFillColor: 'darkgreen',
               valueScaling: 'linear',

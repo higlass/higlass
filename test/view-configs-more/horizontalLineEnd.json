@@ -1,10 +1,7 @@
 {
   "editable": true,
   "zoomFixed": false,
-  "trackSourceServers": [
-    "/api/v1",
-    "http://higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["/api/v1", "http://higlass.io/api/v1"],
   "exportViewUrl": "/api/v1/viewconfs/",
   "views": [
     {
@@ -36,7 +33,7 @@
             "options": {
               "labelColor": "black",
               "labelPosition": "topLeft",
-              "axisLabelFormatting": "scientific",
+              "axisLabelFormatting": "automatic",
               "axisPositionHorizontal": "right",
               "lineStrokeColor": "blue",
               "lineStrokeWidth": 1,
@@ -113,14 +110,8 @@
         "whole": [],
         "gallery": []
       },
-      "initialXDomain": [
-        2315931901.9099894,
-        3761936264.711727
-      ],
-      "initialYDomain": [
-        949343383.5863687,
-        931585435.2712595
-      ],
+      "initialXDomain": [2315931901.9099894, 3761936264.711727],
+      "initialYDomain": [949343383.5863687, 931585435.2712595],
       "layout": {
         "w": 12,
         "h": 3,

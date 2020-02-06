@@ -186,7 +186,7 @@ const viewConf1 = {
               labelRightMargin: 0,
               labelTopMargin: 0,
               labelBottomMargin: 0,
-              axisLabelFormatting: 'scientific',
+              axisLabelFormatting: 'automatic',
               heatmapValueScaling: 'log'
             },
             name: 'GM12878-E116-H3K27ac.fc.signal'
