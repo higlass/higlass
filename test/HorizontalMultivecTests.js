@@ -135,6 +135,35 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
+  it('Test horizontal multivec without filtered rows', done => {
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithSmallerDimensions,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'viewConf2_uid',
+          'K_0GxgCvQfCHM56neOnHKg'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toEqual(3);
+        expect(trackTiles[0].canvas.width).toEqual(256);
+        expect(trackTiles[0].canvas.height).toEqual(228);
+        expect(trackTiles[1].canvas.width).toEqual(256);
+        expect(trackTiles[1].canvas.height).toEqual(228);
+
+        const tooltipValue = track.getVisibleData(40, 40);
+        expect(tooltipValue).toEqual('647.000');
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      }
+    );
+  });
+
   afterAll(() => {
     removeHGComponent(div);
   });
