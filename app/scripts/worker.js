@@ -73,6 +73,26 @@ export function maxNonZero(data) {
   return maxNonZeroNum;
 }
 
+/**
+ * This function takes in tile data and other rendering parameters,
+ * and generates an array of pixel data that can be passed to a canvas
+ * (and subsequently passed to a PIXI sprite).
+ * @param {number} size The length of the `data` parameter. Often set to a tile's
+ * `tile.tileData.dense.length` value.
+ * @param {array} data The tile data array.
+ * @param {string} valueScaleType 'log' or 'linear'.
+ * @param {array} valueScaleDomain
+ * @param {number} pseudocount The pseudocount is generally the minimum non-zero value and is
+ * used so that our log scaling doesn't lead to NaN values.
+ * @param {array} colorScale
+ * @param {boolean} ignoreUpperRight
+ * @param {boolean} ignoreLowerLeft
+ * @param {array} shape Array `[numRows, numCols]`, used when iterating over a subset of rows,
+ * when one needs to know the width of each column.
+ * @param {number[]} selectedRows Array of row indices, for ordering and filtering rows.
+ * Used by the HorizontalMultivecTrack.
+ * @returns {Uint8ClampedArray} A flattened array of pixel values.
+ */
 export function workerSetPix(
   size,
   data,
@@ -85,10 +105,6 @@ export function workerSetPix(
   shape = null,
   selectedRows = null
 ) {
-  /**
-   * The pseudocount is generally the minimum non-zero value and is
-   * used so that our log scaling doesn't lead to NaN values.
-   */
   let valueScale = null;
 
   if (valueScaleType === 'log') {
@@ -110,6 +126,8 @@ export function workerSetPix(
 
   let filteredSize = size;
   if (shape && selectedRows) {
+    // If using the `selectedRows` parameter, then the size of the `pixData` array
+    // will likely be different than `size` (the total size of the tile data array).
     filteredSize = selectedRows.length * shape[1];
   }
 
@@ -117,6 +135,12 @@ export function workerSetPix(
   const pixData = new Uint8ClampedArray(filteredSize * 4);
   let rgbIdx;
 
+  /**
+   * Set the ith element of the pixData array, using value d.
+   * (well not really, since i is scaled to make space for each rgb value).
+   * @param i Index of the element.
+   * @param d The value to be transformed and then inserted.
+   */
   const setPixData = (i, d) => {
     // Transparent
     rgbIdx = 255;
@@ -153,7 +177,8 @@ export function workerSetPix(
 
   let d;
   try {
-    if (filteredSize !== size) {
+    if (shape && selectedRows) {
+      // We need to set the pixels in the order specified by the `selectedRows` parameter.
       for (
         let selectedRowI = 0;
         selectedRowI < selectedRows.length;
@@ -168,6 +193,8 @@ export function workerSetPix(
         }
       }
     } else {
+      // The `selectedRows` array has not been passed, so we want to use all of the tile data values,
+      // in their default ordering.
       for (let i = 0; i < data.length; i++) {
         d = data[i];
         setPixData(i, d);

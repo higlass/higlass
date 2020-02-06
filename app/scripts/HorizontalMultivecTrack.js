@@ -275,15 +275,4 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     return output;
   }
-
-  /**
-   * Render / draw a tile.
-   * Also set the variable tile.selectedRows.
-   *
-   * @param {Object}  tile  Tile data to be rendered.
-   */
-  renderTile(tile) {
-    tile.selectedRows = this.options.selectRows;
-    super.renderTile(tile);
-  }
 }

@@ -62,7 +62,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   let requestMapper = {};
   let blockedCalls = 0;
 
-  const bundleRequests = (request) => {
+  const bundleRequests = request => {
     const requestId = requestMapper[request.id];
 
     if (requestId && bundledRequest[requestId]) {
@@ -144,7 +144,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   return throttled;
 };
 
-export const setTileProxyAuthHeader = (newHeader) => {
+export const setTileProxyAuthHeader = newHeader => {
   authHeader = newHeader;
 };
 
@@ -219,7 +219,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
     }
   }
 
-  Promise.all(fetchPromises).then((datas) => {
+  Promise.all(fetchPromises).then(datas => {
     const tiles = {};
 
     // merge back all the tile requests
@@ -497,6 +497,9 @@ export const calculateTilesFromResolution = (
  * @param synchronous: Render this tile synchronously or pass it on to the
  * @param ignoreUpperRight: If this is a tile along the diagonal and there will
  * be mirrored tiles present ignore the upper right values
+ * @param ignoreLowerLeft: If this is a tile along the diagonal and there will be
+ * mirrored tiles present ignore the lower left values
+ * @param {number[]} selectedRows: Array of row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
  * threadpool
  */
 export const tileDataToPixData = (
@@ -507,7 +510,8 @@ export const tileDataToPixData = (
   colorScale,
   finished,
   ignoreUpperRight,
-  ignoreLowerLeft
+  ignoreLowerLeft,
+  selectedRows
 ) => {
   const { tileData } = tile;
 
@@ -518,11 +522,11 @@ export const tileDataToPixData = (
   }
 
   if (
-    tile.mirrored
+    tile.mirrored &&
     // Data is already copied over
-    && !tile.isMirrored
-    && tile.tileData.tilePos.length > 0
-    && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
+    !tile.isMirrored &&
+    tile.tileData.tilePos.length > 0 &&
+    tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
   ) {
     // Copy the data before mutating it in case the same data is used elsewhere.
     // During throttling/debouncing tile requests we also merge the requests so
@@ -563,7 +567,7 @@ export const tileDataToPixData = (
     ignoreUpperRight,
     ignoreLowerLeft,
     tile.tileData.shape,
-    tile.selectedRows
+    selectedRows
   );
 
   finished({ pixData });
@@ -609,18 +613,18 @@ function fetchEither(url, callback, textOrJson, pubSub) {
     headers.Authorization = authHeader;
   }
   return fetch(url, { credentials: 'same-origin', headers })
-    .then((rep) => {
+    .then(rep => {
       if (!rep.ok) {
         throw Error(rep.statusText);
       }
 
       return rep[textOrJson]();
     })
-    .then((content) => {
+    .then(content => {
       callback(undefined, content);
       return content;
     })
-    .catch((error) => {
+    .catch(error => {
       console.error(`Could not fetch ${url}`, error);
       callback(error, undefined);
       return error;
