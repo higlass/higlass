@@ -502,6 +502,7 @@ Options
 
 - **colorbarPosition**: ['hidden', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'] - The position of the colorbar element.
 - **colorbarBackgroundColor**: The background color for the colorbar element.
+- **zeroValueColor**: The color to use for zero data values. By default, white or black depending on the theme.
 
 **Example:**
 

@@ -3,6 +3,7 @@
 ## v1.8.2
 
 - Fixed horizontal track not rendering properly in vertical position bug
+- Added `zeroValueColor` as an option for the `horizontal-multivec` track, to specify the color mapping for zero data values.
 
 _[Detailed changes since v1.8.1](https://github.com/higlass/higlass/compare/v1.8.1...v1.8.2)_
 
