@@ -1,0 +1,73 @@
+/* eslint-env node, jasmine */
+import {
+  configure
+  // render,
+} from 'enzyme';
+
+import Adapter from 'enzyme-adapter-react-16';
+
+import { expect } from 'chai';
+
+// Utils
+import {
+  mountHGComponent,
+  removeHGComponent,
+  getTrackObjectFromHGC
+} from '../app/scripts/utils';
+
+configure({ adapter: new Adapter() });
+
+describe('Empty Tracks', () => {
+  let hgc = null;
+  let div = null;
+
+  beforeAll(done => {
+    [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
+      style: 'width:800px; height:400px; background-color: lightgreen',
+      bounded: true
+    });
+  });
+
+  it('should respect zoom limits', () => {
+    // add your tests here
+
+    const trackObj1 = getTrackObjectFromHGC(hgc.instance(), 'vv', 't1');
+    expect(trackObj1.dimensions[0]).to.eql(73);
+
+    const trackObj2 = getTrackObjectFromHGC(hgc.instance(), 'vv', 't2');
+    expect(trackObj2.dimensions[1]).to.eql(42);
+  });
+
+  afterAll(() => {
+    removeHGComponent(div);
+  });
+});
+
+// enter either a viewconf link or a viewconf object
+const viewconf = {
+  editable: true,
+  zoomFixed: false,
+  trackSourceServers: ['/api/v1', 'http://higlass.io/api/v1'],
+  exportViewUrl: '/api/v1/viewconfs/',
+  views: [
+    {
+      uid: 'vv',
+      tracks: {
+        left: [
+          {
+            uid: 't1',
+            type: 'empty',
+            width: 73
+          }
+        ],
+        top: [
+          {
+            uid: 't2',
+            type: 'emtpy',
+            height: 42
+          }
+        ]
+      }
+    }
+  ]
+};
