@@ -80,82 +80,36 @@
               "labelShowAssembly": true
             },
             "width": 568,
-            "height": 42,
-            "aggregationModes": {
-              "mean": {
-                "name": "Mean",
-                "value": "mean"
-              },
-              "min": {
-                "name": "Min",
-                "value": "min"
-              },
-              "max": {
-                "name": "Max",
-                "value": "max"
-              },
-              "std": {
-                "name": "Standard Deviation",
-                "value": "std"
-              }
-            }
+            "height": 42
           },
           {
-            "type": "horizontal-stacked-bar",
+            "type": "horizontal-multivec",
             "uid": "dEHMyN28RFSG1f-cPS6V2w",
             "tilesetUid": "HMSJyvLCSgGmrDJctdIz3w",
             "server": "https://resgen.io/api/v1",
             "options": {
-              "labelPosition": "topLeft",
+              "labelPosition": "hidden",
               "labelColor": "black",
               "labelTextOpacity": 0.4,
-              "valueScaling": "exponential",
+              "valueScaling": "linear",
               "trackBorderWidth": 0,
               "trackBorderColor": "black",
-              "backgroundColor": "white",
-              "barBorder": false,
-              "scaledHeight": false,
-              "sortLargestOnTop": true,
-              "colorScale": [
-                "#FF0000",
-                "#FF4500",
-                "#32CD32",
-                "#008000",
-                "#006400",
-                "#C2E105",
-                "#FFFF00",
-                "#66CDAA",
-                "#8A91D0",
-                "#CD5C5C",
-                "#E9967A",
-                "#BDB76B",
-                "#808080",
-                "#C0C0C0",
-                "#FFFFFF"
-              ],
-              "name": "all.KL.bed.hg38.multires.mv5"
+              "heatmapValueScaling": "log",
+              "name": "my_file_genome_wide.multires.mv5",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": true,
+              "minHeight": 100,
+              "labelShowAssembly": true,
+              "colorbarBackgroundColor": "#ffffff",
+              "colorbarPosition": "topRight",
+              "scaleStartPercent": "0.00000",
+              "scaleEndPercent": "1.00000"
             },
             "width": 1308,
-            "height": 116,
-            "resolutions": [
-              13107200,
-              6553600,
-              3276800,
-              1638400,
-              819200,
-              409600,
-              204800,
-              102400,
-              51200,
-              25600,
-              12800,
-              6400,
-              3200,
-              1600,
-              800,
-              400,
-              200
-            ]
+            "height": 116
           }
         ],
         "left": [],
@@ -188,24 +142,7 @@
               "zeroValueColor": "blue"
             },
             "width": 1607,
-            "height": 382,
-            "resolutions": [
-              16384000,
-              8192000,
-              4096000,
-              2048000,
-              1024000,
-              512000,
-              256000,
-              128000,
-              64000,
-              32000,
-              16000,
-              8000,
-              4000,
-              2000,
-              1000
-            ]
+            "height": 382
           }
         ],
         "bottom": [],
@@ -217,9 +154,7 @@
         "w": 10,
         "h": 2,
         "x": 0,
-        "y": 0,
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "uid": "view-0"
     }
