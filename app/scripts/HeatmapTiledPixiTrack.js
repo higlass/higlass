@@ -3,6 +3,7 @@ import { brushY } from 'd3-brush';
 import { format } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
 import { select, event } from 'd3-selection';
+import { color as d3color } from 'd3-color';
 import * as PIXI from 'pixi.js';
 import slugid from 'slugid';
 
@@ -1181,7 +1182,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         !tile.mirrored &&
         tile.tileData.tilePos[0] === tile.tileData.tilePos[1],
       this.options.extent === 'upper-right' &&
-        tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
+        tile.tileData.tilePos[0] === tile.tileData.tilePos[1],
+      this.options.zeroValueColor
+        ? d3color(this.options.zeroValueColor)
+        : undefined
     );
   }
 

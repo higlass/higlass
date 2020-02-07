@@ -81,7 +81,8 @@ export function workerSetPix(
   pseudocount,
   colorScale,
   ignoreUpperRight = false,
-  ignoreLowerLeft = false
+  ignoreLowerLeft = false,
+  zeroValueColor
 ) {
   /**
    * The pseudocount is generally the minimum non-zero value and is
@@ -108,9 +109,20 @@ export function workerSetPix(
 
   const pixData = new Uint8ClampedArray(size * 4);
 
+  let rgb;
   let rgbIdx = 0;
   let d;
   const tileWidth = Math.sqrt(size);
+
+  let zeroValueColorArray;
+  if (zeroValueColor) {
+    zeroValueColorArray = [
+      zeroValueColor.r,
+      zeroValueColor.g,
+      zeroValueColor.b,
+      255
+    ];
+  }
 
   try {
     for (let i = 0; i < data.length; i++) {
@@ -141,7 +153,11 @@ export function workerSetPix(
           ' (should be 0 <= rgbIdx <= 255)'
         );
       }
-      const rgb = colorScale[rgbIdx];
+      if (zeroValueColor && !Number.isNaN(+d) && +d === 0.0) {
+        rgb = zeroValueColorArray;
+      } else {
+        rgb = colorScale[rgbIdx];
+      }
 
       pixData[i * 4] = rgb[0];
       pixData[i * 4 + 1] = rgb[1];
