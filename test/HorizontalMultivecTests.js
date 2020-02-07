@@ -18,6 +18,7 @@ import {
 
 // View configs
 import horizontalMultivecWithSmallerDimensions from './view-configs-more/horizontalMultivecWithSmallerDimensions';
+import horizontalMultivecWithZeroValueColorOption from './view-configs-more/horizontalMultivecWithZeroValueColorOption';
 
 // Constants
 import {
@@ -103,6 +104,74 @@ describe('Horizontal heatmaps', () => {
 
     track.options.colorbarPosition = 'topLeft';
     hgc.instance().setState({ views });
+  });
+
+  it('Test horizontal multivec with zero value color option', done => {
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithZeroValueColorOption,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'view-0',
+          'horizontal-multivec-track-0'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toEqual(1);
+
+        const zeroCellCoords = [79, 343];
+        const tooltipValue = track.getVisibleData(
+          zeroCellCoords[0],
+          zeroCellCoords[1]
+        );
+        // The data at this coordinate should correspond to this particular zero value.
+        expect(tooltipValue).toEqual(
+          '0.000<br/>Homo sapiens	CHIP-SEQ ANALYSIS OF H3K27AC IN' +
+            ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
+            'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
+            'l	Brain	Active Motif, 39133, 31610003	H3K27ac	hm	No' +
+            'rmal'
+        );
+
+        const canvas = trackTiles[0].canvas;
+        const ctx = canvas.getContext('2d');
+
+        expect(canvas.width).toEqual(256);
+        expect(canvas.height).toEqual(228);
+        expect(track.dimensions[0]).toEqual(805);
+        expect(track.dimensions[1]).toEqual(690);
+
+        // Need to scale from screen coordinates to dataset coordinates.
+        const scaledCoord = [
+          Math.ceil((zeroCellCoords[0] / track.dimensions[0]) * canvas.width),
+          Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height)
+        ];
+        // Obtain the color at this pixel on the canvas.
+        const pixel = ctx.getImageData(
+          scaledCoord[0],
+          scaledCoord[1],
+          canvas.width,
+          canvas.height
+        ).data;
+
+        // Pixel should be blue.
+        expect(
+          horizontalMultivecWithZeroValueColorOption.views[0].tracks.center[0]
+            .options.zeroValueColor
+        ).toEqual('blue');
+        expect(pixel[0]).toEqual(0);
+        expect(pixel[1]).toEqual(0);
+        expect(pixel[2]).toEqual(255);
+        expect(pixel[3]).toEqual(255);
+
+        done();
+      },
+      {
+        style: 'width:1000px; height:1000px; background-color: lightgreen',
+        bounded: true
+      }
+    );
   });
 
   afterAll(() => {
