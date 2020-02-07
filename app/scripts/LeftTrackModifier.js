@@ -154,7 +154,10 @@ class LeftTrackModifier {
     this.xScale(newXScale);
     this.yScale(newYScale);
 
-    this.originalTrack.refreshTiles();
+    if (this.originalTrack.refreshTiles) {
+      // some tracks don't have refreshTiles (e.g. PIXITrack)
+      this.originalTrack.refreshTiles();
+    }
 
     if (this.originalTrack.leftTrackZoomed) {
       // the track implements its own left-oriented zooming and scrolling
