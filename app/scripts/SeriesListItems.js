@@ -63,9 +63,8 @@ export const getSeriesItems = (
 
     const imgTag = thumbnail ? (
       <div
-        dangerouslySetInnerHTML={{
-          __html: thumbnail.outerHTML
-        }}
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
         styleName="context-menu-icon"
       />
     ) : (

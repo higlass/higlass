@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 // Configs
@@ -90,6 +91,7 @@ class PlotTypeChooser extends React.Component {
         const imgTag = trackTypeToInfo[x.type].thumbnail ? (
           <div
             className="track-thumbnail"
+            // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
           />
         ) : (
@@ -102,25 +104,13 @@ class PlotTypeChooser extends React.Component {
             key={x.type}
             className={plotTypeClass}
             onClick={e => {
-              this.setState({
-                selectedPlotType: x
-              });
+              this.setState({ selectedPlotType: x });
               this.props.onPlotTypeSelected(x.type);
             }}
-            style={{
-              listStyle: 'none',
-              paddingLeft: 5,
-              paddingBottom: 0
-            }}
+            style={{ listStyle: 'none', paddingLeft: 5, paddingBottom: 0 }}
           >
             {imgTag}
-            <span
-              style={{
-                verticalAlign: 'middle'
-              }}
-            >
-              {x.type}
-            </span>
+            <span style={{ verticalAlign: 'middle' }}>{x.type}</span>
           </li>
         );
       });
@@ -144,5 +134,13 @@ class PlotTypeChooser extends React.Component {
     );
   }
 }
+
+PlotTypeChooser.propTypes = {
+  allTracksSameDatatype: PropTypes.bool,
+  datatypes: PropTypes.array,
+  orientation: PropTypes.string,
+  onPlotTypeSelected: PropTypes.func,
+  position: PropTypes.string
+};
 
 export default PlotTypeChooser;

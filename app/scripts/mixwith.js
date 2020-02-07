@@ -74,6 +74,7 @@ export const apply = (superclass, mixin) => {
  */
 export const isApplicationOf = (proto, mixin) =>
   proto.hasOwnProperty(_appliedMixin) && proto[_appliedMixin] === unwrap(mixin);
+
 /**
  * Returns `true` iff `o` has an application of `mixin` on its prototype
  * chain.

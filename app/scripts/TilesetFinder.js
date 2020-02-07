@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import slugid from 'slugid';
 import CheckboxTree from 'react-checkbox-tree';
 
@@ -404,5 +405,14 @@ class TilesetFinder extends React.Component {
     return <div>{form}</div>;
   }
 }
+
+TilesetFinder.propTypes = {
+  datatype: PropTypes.string,
+  orientation: PropTypes.string,
+  onDoubleClick: PropTypes.func,
+  pubSub: PropTypes.object.isRequired,
+  selectedTilesetChanged: PropTypes.func,
+  trackSourceServers: PropTypes.array
+};
 
 export default withPubSub(TilesetFinder);

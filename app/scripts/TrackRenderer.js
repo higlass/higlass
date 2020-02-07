@@ -216,12 +216,6 @@ class TrackRenderer extends React.Component {
       this.props.pubSub.subscribe('scroll', this.windowScrolledBound)
     );
     this.pubSubs.push(
-      this.props.pubSub.subscribe('app.event', this.dispatchEvent.bind(this))
-    );
-    this.pubSubs.push(
-      this.props.pubSub.subscribe('scroll', this.windowScrolledBound)
-    );
-    this.pubSubs.push(
       this.props.pubSub.subscribe('app.event', this.dispatchEventBound)
     );
     this.pubSubs.push(
@@ -1428,10 +1422,7 @@ class TrackRenderer extends React.Component {
         console.warn(`Unknown meta track of type: ${track.type}`);
         return new UnknownPixiTrack(
           this.pStage,
-          {
-            name: 'Unknown Track Type',
-            type: track.type
-          },
+          { name: 'Unknown Track Type', type: track.type },
           () => this.currentProps.onNewTilesLoaded(track.uid)
         );
       }
@@ -2031,11 +2022,13 @@ TrackRenderer.propTypes = {
   paddingTop: PropTypes.number,
   metaTracks: PropTypes.array,
   onMouseMoveZoom: PropTypes.func,
+  onNewTilesLoaded: PropTypes.func.isRequired,
   onScalesChanged: PropTypes.func.isRequired,
   pixiRenderer: PropTypes.object.isRequired,
   pixiStage: PropTypes.object.isRequired,
   pluginTracks: PropTypes.object,
   positionedTracks: PropTypes.array,
+  pubSub: PropTypes.object.isRequired,
   setCentersFunction: PropTypes.func,
   svgElement: PropTypes.object.isRequired,
   theme: PropTypes.symbol.isRequired,

@@ -304,22 +304,10 @@ class DraggableDiv extends React.Component {
     };
 
     const styles = {
-      bottom: {
-        ...horizStyle,
-        bottom: 1
-      },
-      top: {
-        ...horizStyle,
-        top: 1
-      },
-      left: {
-        ...vertStyle,
-        left: 1
-      },
-      right: {
-        ...vertStyle,
-        right: 1
-      }
+      bottom: { ...horizStyle, bottom: 1 },
+      top: { ...horizStyle, top: 1 },
+      left: { ...vertStyle, left: 1 },
+      right: { ...vertStyle, right: 1 }
     };
 
     const resizeHandles = [...this.props.resizeHandles].map(x => (
@@ -333,9 +321,7 @@ class DraggableDiv extends React.Component {
         title="Resize track"
       >
         <div
-          style={{
-            borderColor: dragColor
-          }}
+          style={{ borderColor: dragColor }}
           styleName={`${x}-draggable-handle-grabber`}
         />
       </div>

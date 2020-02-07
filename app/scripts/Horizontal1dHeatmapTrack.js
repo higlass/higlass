@@ -43,7 +43,7 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
   }
 
   drawTile(tile) {
-    if (!tile.graphics || (!tile.tileData || !tile.tileData.dense)) return;
+    if (!tile.graphics || !tile.tileData || !tile.tileData.dense) return;
 
     const graphics = tile.graphics;
 

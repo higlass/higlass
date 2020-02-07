@@ -483,42 +483,6 @@ export const calculateTilesFromResolution = (
 };
 
 /**
- * Request a tilesetInfo for a track
- *
- * @param {string} server: The server where the data resides
- * @param {string} tilesetUid: The identifier for the dataset
- * @param {func} doneCb: A callback that gets called when the data is retrieved
- * @param {func} errorCb: A callback that gets called when there is an error
- */
-
-export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
-  const url = `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
-  pubSub.publish('requestSent', url);
-  // TODO: Is this used?
-  json(
-    url,
-    (error, data) => {
-      // eslint-disable-line
-      pubSub.publish('requestReceived', url);
-      if (error) {
-        // console.log('error:', error);
-        // don't do anything
-        // no tileset info just means we can't do anything with this file...
-        if (errorCb) {
-          errorCb(`Error retrieving tilesetInfo from: ${server}`);
-        } else {
-          console.warn('Error retrieving: ', url);
-        }
-      } else {
-        // console.log('got data', data);
-        doneCb(data);
-      }
-    },
-    pubSub
-  );
-};
-
-/**
  * Render 2D tile data. Convert the raw values to an array of
  * color values
  *
@@ -648,10 +612,7 @@ function fetchEither(url, callback, textOrJson, pubSub) {
   if (authHeader) {
     headers.Authorization = authHeader;
   }
-  return fetch(url, {
-    credentials: 'same-origin',
-    headers
-  })
+  return fetch(url, { credentials: 'same-origin', headers })
     .then(rep => {
       if (!rep.ok) {
         throw Error(rep.statusText);
@@ -704,6 +665,41 @@ async function json(url, callback, pubSub) {
   // console.log('url:', url);
   return fetchEither(url, callback, 'json', pubSub);
 }
+
+/**
+ * Request a tilesetInfo for a track
+ *
+ * @param {string} server: The server where the data resides
+ * @param {string} tilesetUid: The identifier for the dataset
+ * @param {func} doneCb: A callback that gets called when the data is retrieved
+ * @param {func} errorCb: A callback that gets called when there is an error
+ */
+export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
+  const url = `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
+  pubSub.publish('requestSent', url);
+  // TODO: Is this used?
+  json(
+    url,
+    (error, data) => {
+      // eslint-disable-line
+      pubSub.publish('requestReceived', url);
+      if (error) {
+        // console.log('error:', error);
+        // don't do anything
+        // no tileset info just means we can't do anything with this file...
+        if (errorCb) {
+          errorCb(`Error retrieving tilesetInfo from: ${server}`);
+        } else {
+          console.warn('Error retrieving: ', url);
+        }
+      } else {
+        // console.log('got data', data);
+        doneCb(data);
+      }
+    },
+    pubSub
+  );
+};
 
 const api = {
   calculateResolution,

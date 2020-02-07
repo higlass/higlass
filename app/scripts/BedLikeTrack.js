@@ -420,9 +420,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         // be adjusted
         if (this.options && this.options.valueColumn) {
           if (this.options.colorEncoding) {
-            const rgb = valueToColor(this.valueColorScale, this.colorScale)(
-              +geneInfo[+this.options.valueColumn - 1]
-            );
+            const rgb = valueToColor(
+              this.valueColorScale,
+              this.colorScale
+            )(+geneInfo[+this.options.valueColumn - 1]);
             fill = colorToHex(rgbToHex(...rgb));
           } else {
             // These intervals come with some y-value that we want to plot

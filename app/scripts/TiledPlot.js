@@ -754,10 +754,7 @@ class TiledPlot extends React.Component {
   handleConfigureTrack(track, configComponent) {
     this.setState({
       configTrackMenuId: null,
-      trackOptions: {
-        track,
-        configComponent
-      }
+      trackOptions: { track, configComponent }
     });
 
     this.closeMenus();
@@ -805,10 +802,15 @@ class TiledPlot extends React.Component {
     TRACK_LOCATIONS.forEach(location => {
       if (tracks[location]) {
         tracks[location].forEach(track => {
-          tracksAndLocations.push({
-            track,
-            location
-          });
+          if (track.contents) {
+            track.contents.forEach(content => {
+              content.position = location;
+            });
+          }
+          // track.position is used in TrackRenderer to determine
+          // whether to use LeftTrackModifier
+          track.position = location;
+          tracksAndLocations.push({ track, location });
         });
       }
     });
@@ -1687,6 +1689,7 @@ class TiledPlot extends React.Component {
           enabled={topAllowed}
           onTrackDropped={track => this.handleTracksAdded([track], 'top')}
           style={{
+            border: '1px solid black',
             flexGrow: 1
           }}
         />
@@ -1709,6 +1712,10 @@ class TiledPlot extends React.Component {
           draggingHappening={this.props.draggingHappening}
           enabled={bottomAllowed}
           onTrackDropped={track => this.handleTracksAdded([track], 'bottom')}
+          style={{
+            border: '1px solid black',
+            flexGrow: 1
+          }}
         />
         {topDisplayed && (centerDisplayed || leftDisplayed)
           ? topRightDiv
@@ -1722,6 +1729,10 @@ class TiledPlot extends React.Component {
         draggingHappening={this.props.draggingHappening}
         enabled={leftAllowed}
         onTrackDropped={track => this.handleTracksAdded([track], 'left')}
+        style={{
+          border: '1px solid black',
+          flexGrow: 1
+        }}
       />
     );
 
@@ -1732,6 +1743,10 @@ class TiledPlot extends React.Component {
         enabled={centerAllowed}
         onTrackDropped={track => this.handleTracksAdded([track], 'center')}
         position="center"
+        style={{
+          border: '1px solid black',
+          flexGrow: 1
+        }}
       />
     );
 
@@ -2344,6 +2359,7 @@ TiledPlot.propTypes = {
   chromInfoPath: PropTypes.string,
   disableTrackMenu: PropTypes.bool,
   dragging: PropTypes.bool,
+  draggingHappening: PropTypes.bool,
   editable: PropTypes.bool,
   initialXDomain: PropTypes.array,
   initialYDomain: PropTypes.array,
@@ -2360,6 +2376,8 @@ TiledPlot.propTypes = {
   modal: PropTypes.object,
   mouseTool: PropTypes.string,
   onCloseTrack: PropTypes.func,
+  onChangeTrackData: PropTypes.func,
+  onChangeTrackType: PropTypes.func,
   onDataDomainChanged: PropTypes.func,
   onLockValueScale: PropTypes.func,
   onMouseMoveZoom: PropTypes.func,
@@ -2372,10 +2390,12 @@ TiledPlot.propTypes = {
   onTracksAdded: PropTypes.func,
   onUnlockValueScale: PropTypes.func,
   onValueScaleChanged: PropTypes.func,
+  overlays: PropTypes.array,
   openModal: PropTypes.func,
   pixiRenderer: PropTypes.object,
   pixiStage: PropTypes.object,
   pluginTracks: PropTypes.object,
+  pubSub: PropTypes.object.isRequired,
   rangeSelection1dSize: PropTypes.array,
   rangeSelectionToInt: PropTypes.bool,
   registerDraggingChangedListener: PropTypes.func,
@@ -2387,7 +2407,10 @@ TiledPlot.propTypes = {
   trackSourceServers: PropTypes.array,
   uid: PropTypes.string,
   viewOptions: PropTypes.object,
+  xDomainLimits: PropTypes.array,
+  yDomainLimits: PropTypes.array,
   zoomable: PropTypes.bool,
+  zoomLimits: PropTypes.array,
   zoomToDataExtentOnInit: PropTypes.func
 };
 

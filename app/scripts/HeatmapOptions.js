@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
@@ -75,9 +76,7 @@ class HeatmapOptions extends React.Component {
           initialYDomain: this.props.yScale
             ? this.props.yScale.domain()
             : [0, 1],
-          tracks: {
-            center: [centerTrack]
-          },
+          tracks: { center: [centerTrack] },
           layout: {
             x: 0,
             y: 0,
@@ -142,9 +141,7 @@ class HeatmapOptions extends React.Component {
                 prevState => {
                   const colors = prevState.colors.slice();
                   colors[i] = c;
-                  return {
-                    colors
-                  };
+                  return { colors };
                 },
                 () => {
                   this.handleColorsChanged(this.state.colors);
@@ -196,7 +193,7 @@ class HeatmapOptions extends React.Component {
             <thead />
             <tbody>
               <tr>
-                <td className="td-track-options">{'Colors'}</td>
+                <td className="td-track-options">Colors</td>
               </tr>
               <tr>
                 <td className="td-track-options">
@@ -211,7 +208,7 @@ class HeatmapOptions extends React.Component {
                 </td>
               </tr>
               <tr>
-                <td className="td-track-options">{'Preview'}</td>
+                <td className="td-track-options">Preview</td>
               </tr>
               <tr>
                 <td className="td-track-options" rowSpan="2">
@@ -241,5 +238,14 @@ class HeatmapOptions extends React.Component {
     );
   }
 }
+
+HeatmapOptions.propTypes = {
+  handleCancel: PropTypes.func,
+  onCancel: PropTypes.func,
+  onSubmit: PropTypes.func,
+  track: PropTypes.object,
+  xScale: PropTypes.object,
+  yScale: PropTypes.object
+};
 
 export default HeatmapOptions;

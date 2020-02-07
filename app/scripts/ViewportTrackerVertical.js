@@ -120,7 +120,10 @@ class ViewportTrackerVertical extends SVGTrack {
     const x1 = this.dimensions[0];
     const y1 = this._yScale(this.viewportYDomain[1]);
 
-    const dest = [[x0, y0], [x1, y1]];
+    const dest = [
+      [x0, y0],
+      [x1, y1]
+    ];
 
     // console.log('dest:', dest[0], dest[1]);
 

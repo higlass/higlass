@@ -27,7 +27,10 @@ class ViewportTracker2D extends SVGTrack {
     const maxHalf = Number.MAX_VALUE / 2;
 
     this.brush = brush(true)
-      .extent([[-maxHalf, -maxHalf], [maxHalf, maxHalf]])
+      .extent([
+        [-maxHalf, -maxHalf],
+        [maxHalf, maxHalf]
+      ])
       .on('brush', this.brushed.bind(this));
 
     this.gBrush = this.gMain
@@ -137,7 +140,10 @@ class ViewportTracker2D extends SVGTrack {
     const x1 = this._xScale(this.viewportXDomain[1]);
     const y1 = this._yScale(this.viewportYDomain[1]);
 
-    const dest = [[x0, y0], [x1, y1]];
+    const dest = [
+      [x0, y0],
+      [x1, y1]
+    ];
 
     // user hasn't actively brushed so we don't want to emit a
     // 'brushed' event

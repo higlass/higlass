@@ -255,7 +255,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
           styleName="context-menu-item"
         >
-          <span styleName="context-menu-span">{'Remove divisor'}</span>
+          <span styleName="context-menu-span">Remove divisor</span>
         </ContextMenuItem>
       );
     }
@@ -266,7 +266,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
         onMouseEnter={e => this.handleOtherMouseEnter(e)}
         styleName="context-menu-item"
       >
-        <span styleName="context-menu-span">{'Divide by'}</span>
+        <span styleName="context-menu-span">Divide by</span>
       </ContextMenuItem>
     );
   }
@@ -291,7 +291,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
           styleName="context-menu-item"
         >
-          <span styleName="context-menu-span">{'Export Data'}</span>
+          <span styleName="context-menu-span">Export Data</span>
         </ContextMenuItem>
       );
     }
@@ -307,7 +307,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
         onMouseEnter={e => this.handleOtherMouseEnter(e)}
         styleName="context-menu-item"
       >
-        <span styleName="context-menu-span">{'Replace Series'}</span>
+        <span styleName="context-menu-span">Replace Series</span>
       </ContextMenuItem>
     ) : null;
 
@@ -371,7 +371,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
           styleName="context-menu-item"
         >
-          <span styleName="context-menu-span">{'Close Series'}</span>
+          <span styleName="context-menu-span">Close Series</span>
         </ContextMenuItem>
 
         {replaceSeriesItem}

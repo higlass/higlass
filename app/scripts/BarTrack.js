@@ -49,14 +49,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
         ? colorGradient
             .slice()
             .reverse()
-            .map((color, i) => ({
-              from: i / N,
-              color
-            }))
-        : colorGradient.map((color, i) => ({
-            from: i / N,
-            color
-          }));
+            .map((color, i) => ({ from: i / N, color }))
+        : colorGradient.map((color, i) => ({ from: i / N, color }));
   }
 
   /**

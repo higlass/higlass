@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Collapse, Panel, Checkbox } from 'react-bootstrap';
 
@@ -60,5 +61,10 @@ export class SeriesOptions extends React.Component {
     );
   }
 }
+
+SeriesOptions.propTypes = {
+  onTrackChosen: PropTypes.func,
+  position: PropTypes.string
+};
 
 export default SeriesOptions;

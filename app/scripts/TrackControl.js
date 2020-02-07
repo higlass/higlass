@@ -49,10 +49,7 @@ const TrackControl = props => {
       <svg
         className="no-zoom"
         style={Object.assign(
-          {
-            height: '20px',
-            width: '20px'
-          },
+          { height: '20px', width: '20px' },
           props.imgStyleMove
         )}
         styleName={getButtonClassNames(props)}
@@ -79,10 +76,7 @@ const TrackControl = props => {
           );
         }}
         style={Object.assign(
-          {
-            height: '20px',
-            width: '20px'
-          },
+          { height: '20px', width: '20px' },
           props.imgStyleSettings
         )}
         styleName={getButtonClassNames(props)}
@@ -96,10 +90,7 @@ const TrackControl = props => {
           className="no-zoom"
           onClick={() => props.onAddSeries(props.uid)}
           style={Object.assign(
-            {
-              height: '20px',
-              width: '20px'
-            },
+            { height: '20px', width: '20px' },
             props.imgStyleAdd
           )}
           styleName={getButtonClassNames(props)}
@@ -121,10 +112,7 @@ const TrackControl = props => {
           );
         }}
         style={Object.assign(
-          {
-            height: '20px',
-            width: '20px'
-          },
+          { height: '20px', width: '20px' },
           props.imgStyleClose
         )}
         styleName={getButtonClassNames(props)}

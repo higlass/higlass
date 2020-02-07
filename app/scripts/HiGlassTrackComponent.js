@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { viewer } from './hglib';
@@ -99,14 +100,14 @@ export default class HiGlassTrackComponent extends React.Component {
   }
 
   render() {
-    return (
-      <div
-        id={this.id}
-        style={{
-          height: '100%',
-          width: '100%'
-        }}
-      />
-    );
+    return <div id={this.id} style={{ height: '100%', width: '100%' }} />;
   }
 }
+
+HiGlassTrackComponent.propTypes = {
+  trackConfig: PropTypes.object,
+  width: PropTypes.number,
+  height: PropTypes.number,
+  x: PropTypes.number,
+  y: PropTypes.number
+};

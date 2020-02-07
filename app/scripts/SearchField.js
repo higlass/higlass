@@ -214,16 +214,25 @@ class SearchField {
     const parts = offsetText.split(':');
 
     if (parts.length === 0) {
-      return [[0, 0], [0, 0]];
+      return [
+        [0, 0],
+        [0, 0]
+      ];
     }
 
     if (parts.length === 1) {
       const sparts = parts[0].split(',');
-      return [[+sparts[0], +sparts[1]], [0, 0]];
+      return [
+        [+sparts[0], +sparts[1]],
+        [0, 0]
+      ];
     }
     const sparts0 = parts[0].split(',');
     const sparts1 = parts[1].split(',');
-    return [[+sparts0[0], +sparts0[1]], [+sparts1[0], +sparts1[1]]];
+    return [
+      [+sparts0[0], +sparts0[1]],
+      [+sparts1[0], +sparts1[1]]
+    ];
   }
 
   searchPosition(text) {
@@ -237,7 +246,10 @@ class SearchField {
 
     // the offset is the distance before the first chromosome
     // or the distance after the last chromosome of the given
-    let offset = [[0, 0], [0, 0]];
+    let offset = [
+      [0, 0],
+      [0, 0]
+    ];
     if (offsetRe) {
       text = text.replace(offsetRe[0], '');
 

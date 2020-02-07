@@ -47,14 +47,10 @@ class DragListeningDiv extends React.Component {
         className="DragListeningDiv"
         onClick={this.handleDrop.bind(this)}
         onDragEnter={() => {
-          this.setState({
-            dragOnTop: true
-          });
+          this.setState({ dragOnTop: true });
         }}
         onDragLeave={() => {
-          this.setState({
-            dragOnTop: false
-          });
+          this.setState({ dragOnTop: false });
         }}
         onDragOver={evt => {
           evt.preventDefault();
@@ -87,6 +83,7 @@ DragListeningDiv.defaultProps = {
 DragListeningDiv.propTypes = {
   enabled: PropTypes.bool,
   style: PropTypes.object,
+  defaultTrackType: PropTypes.object,
   draggingHappening: PropTypes.object,
   onTrackDropped: PropTypes.func,
   position: PropTypes.string.isRequired

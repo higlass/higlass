@@ -132,9 +132,7 @@ class GBKDataFetcher {
       .then(response => (gzipped ? response.arrayBuffer() : response.text()))
       .then(buffer => {
         const gffText = gzipped
-          ? pako.inflate(buffer, {
-              to: 'string'
-            })
+          ? pako.inflate(buffer, { to: 'string' })
           : buffer;
         this.gbJson = genbankParser(gffText);
         this.cdss = shuffle(

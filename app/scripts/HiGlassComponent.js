@@ -504,6 +504,7 @@ class HiGlassComponent extends React.Component {
 
     // keep track of the width and height of this element, because it
     // needs to be reflected in the size of our drawing surface
+    // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       svgElement: this.svgElement,
       canvasElement: this.canvasElement
@@ -1771,7 +1772,7 @@ class HiGlassComponent extends React.Component {
     let newTrackUid = null;
 
     if (fromView === toView) {
-      alert('A view can not show its own viewport.');
+      console.warn('A view can not show its own viewport.');
     } else {
       const hostTrack = getTrackByUid(this.state.views[toView].tracks, toTrack);
       const position = getTrackPositionByUid(
@@ -4340,7 +4341,6 @@ class HiGlassComponent extends React.Component {
             twoD={true}
           />
         );
-
         const multiTrackHeader =
           this.isEditable() &&
           !this.isViewHeaderDisabled() &&
@@ -4512,13 +4512,12 @@ class HiGlassComponent extends React.Component {
       styleNames += ' styles.higlass-container-overflow';
     }
 
-    // eslint-disable-next-line no-nested-ternary
-    const scrollStyleNames =
-      this.props.options.sizeMode === SIZE_MODE_OVERFLOW
-        ? 'styles.higlass-scroll-container-overflow'
-        : this.props.options.sizeMode === SIZE_MODE_SCROLL
-        ? 'styles.higlass-scroll-container-scroll'
-        : '';
+    let scrollStyleNames = '';
+    if (this.props.options.sizeMode === SIZE_MODE_OVERFLOW) {
+      scrollStyleNames = 'styles.higlass-scroll-container-overflow';
+    } else if (this.props.options.sizeMode === SIZE_MODE_SCROLL) {
+      scrollStyleNames = 'styles.higlass-scroll-container-scroll';
+    }
 
     return (
       <div
@@ -4590,6 +4589,7 @@ HiGlassComponent.defaultProps = {
 };
 
 HiGlassComponent.propTypes = {
+  getApi: PropTypes.func,
   options: PropTypes.object,
   viewConfig: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
     .isRequired,

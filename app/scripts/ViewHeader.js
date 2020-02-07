@@ -42,9 +42,8 @@ class ViewHeader extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({
-      width: this.el.clientWidth
-    });
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({ width: this.el.clientWidth });
   }
 
   checkWidth() {
@@ -122,13 +121,7 @@ class ViewHeader extends React.Component {
 
     if (this.state.configMenuUid) {
       configMenu = (
-        <PopupMenu
-          onMenuClosed={() =>
-            this.setState({
-              configMenuUid: null
-            })
-          }
-        >
+        <PopupMenu onMenuClosed={() => this.setState({ configMenuUid: null })}>
           <ConfigViewMenu
             onClearView={() => {
               this.setState({
@@ -379,6 +372,7 @@ ViewHeader.propTypes = {
   onUnlockLocation: PropTypes.func.isRequired,
   onUnlockZoom: PropTypes.func.isRequired,
   onUnlockZoomAndLocation: PropTypes.func.isRequired,
+  onViewOptionsChanged: PropTypes.func.isRequired,
   onYankLocation: PropTypes.func.isRequired,
   onYankZoom: PropTypes.func.isRequired,
   onYankZoomAndLocation: PropTypes.func.isRequired,

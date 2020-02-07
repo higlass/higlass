@@ -213,7 +213,7 @@ function contextMenu(menu, optsIn) {
             data,
             i,
             true,
-            function() {}
+            function intoTheVoid() {}
           ]);
           openChildMenuUid = d.childUid;
         }

@@ -4,84 +4,36 @@ import HeatmapOptions from '../HeatmapOptions';
 
 const sizesInPx = (sizes, unit = '', multiplier = 1) =>
   sizes.reduce((sizeOption, size) => {
-    sizeOption[size] = {
-      name: `${size * multiplier}${unit}`,
-      value: size
-    };
+    sizeOption[size] = { name: `${size * multiplier}${unit}`, value: size };
     return sizeOption;
   }, {});
 
 const YES_NO = {
-  yes: {
-    name: 'Yes',
-    value: true
-  },
-  no: {
-    name: 'No',
-    value: false
-  }
+  yes: { name: 'Yes', value: true },
+  no: { name: 'No', value: false }
 };
 
 const AVAILABLE_COLORS = {
-  black: {
-    name: 'Black',
-    value: 'black'
-  },
-  blue: {
-    name: 'Blue',
-    value: 'blue'
-  },
-  brown: {
-    name: 'Brown',
-    value: 'brown'
-  },
-  cyan: {
-    name: 'Cyan',
-    value: 'cyan'
-  },
-  green: {
-    name: 'Green',
-    value: 'green'
-  },
-  grey: {
-    name: 'Grey',
-    value: 'grey'
-  },
-  orange: {
-    name: 'Orange',
-    value: 'orange'
-  },
-  purple: {
-    name: 'Purple',
-    value: 'purple'
-  },
-  turquoise: {
-    name: 'Turquoise',
-    value: 'turquoise'
-  },
-  red: {
-    name: 'Red',
-    value: 'red'
-  },
-  white: {
-    name: 'White',
-    value: 'white'
-  }
+  black: { name: 'Black', value: 'black' },
+  blue: { name: 'Blue', value: 'blue' },
+  brown: { name: 'Brown', value: 'brown' },
+  cyan: { name: 'Cyan', value: 'cyan' },
+  green: { name: 'Green', value: 'green' },
+  grey: { name: 'Grey', value: 'grey' },
+  orange: { name: 'Orange', value: 'orange' },
+  purple: { name: 'Purple', value: 'purple' },
+  turquoise: { name: 'Turquoise', value: 'turquoise' },
+  red: { name: 'Red', value: 'red' },
+  white: { name: 'White', value: 'white' }
 };
 
 const SPECIAL_COLORS = {
-  use_stroke: {
-    name: 'Glyph color',
-    value: '[glyph-color]'
-  }
+  use_stroke: { name: 'Glyph color', value: '[glyph-color]' }
 };
 
 const AVAILABLE_WIDTHS = sizesInPx([1, 2, 3, 5, 8, 13, 21]);
 const AVAILABLE_WIDTHS_AND_NONE = Object.assign(AVAILABLE_WIDTHS, {
-  none: {
-    name: 'none',
-    value: 'none'
-  }
+  none: { name: 'none', value: 'none' }
 });
 
 const AVAILABLE_MARGIN = sizesInPx([0, 2, 4, 8, 16, 32, 64, 128, 256]);
@@ -116,44 +68,23 @@ export const OPTIONS_INFO = {
   heatmapValueScaling: {
     name: 'Value Scaling',
     inlineOptions: {
-      linear: {
-        name: 'Linear',
-        value: 'linear'
-      },
-      log: {
-        name: 'Log',
-        value: 'log'
-      }
+      linear: { name: 'Linear', value: 'linear' },
+      log: { name: 'Log', value: 'log' }
     }
   },
   valueScaling: {
     name: 'Value Scaling',
     inlineOptions: {
-      linear: {
-        name: 'Linear',
-        value: 'linear'
-      },
-      log: {
-        name: 'Log',
-        value: 'log'
-      }
+      linear: { name: 'Linear', value: 'linear' },
+      log: { name: 'Log', value: 'log' }
     }
   },
   extent: {
     name: 'Extent',
     inlineOptions: {
-      full: {
-        name: 'Full',
-        value: 'full'
-      },
-      upperRight: {
-        name: 'Upper Right',
-        value: 'upper-right'
-      },
-      lowerLeft: {
-        name: 'Lower Left',
-        value: 'lower-left'
-      }
+      full: { name: 'Full', value: 'full' },
+      upperRight: { name: 'Upper Right', value: 'upper-right' },
+      lowerLeft: { name: 'Lower Left', value: 'lower-left' }
     }
   },
   labelLeftMargin: {
@@ -174,6 +105,10 @@ export const OPTIONS_INFO = {
   },
   labelShowResolution: {
     name: 'Label Show Resolution',
+    inlineOptions: YES_NO
+  },
+  labelShowAssembly: {
+    name: 'Label Show Assembly',
     inlineOptions: YES_NO
   },
   lineStrokeWidth: {
@@ -219,26 +154,11 @@ export const OPTIONS_INFO = {
   backgroundColor: {
     name: 'Background Color',
     inlineOptions: {
-      white: {
-        name: 'White',
-        value: 'white'
-      },
-      lightGrey: {
-        name: 'Light Grey',
-        value: '#eeeeee'
-      },
-      grey: {
-        name: 'Grey',
-        value: '#cccccc'
-      },
-      black: {
-        name: 'Black',
-        value: 'black'
-      },
-      transparent: {
-        name: 'Transparent',
-        value: 'transparent'
-      }
+      white: { name: 'White', value: 'white' },
+      lightGrey: { name: 'Light Grey', value: '#eeeeee' },
+      grey: { name: 'Grey', value: '#cccccc' },
+      black: { name: 'Black', value: 'black' },
+      transparent: { name: 'Transparent', value: 'transparent' }
     }
   },
   colorScale: {
@@ -360,34 +280,13 @@ export const OPTIONS_INFO = {
   strokePos: {
     name: 'Stroke Position',
     inlineOptions: {
-      aroundInner: {
-        name: 'Around Inner',
-        value: 'around'
-      },
-      aroundCenter: {
-        name: 'Around Center',
-        value: null
-      },
-      hidden: {
-        name: 'Hidden',
-        value: 'hidden'
-      },
-      top: {
-        name: 'Top',
-        value: 'top'
-      },
-      right: {
-        name: 'Right',
-        value: 'right'
-      },
-      bottom: {
-        name: 'Bottom',
-        value: 'bottom'
-      },
-      left: {
-        name: 'Left',
-        value: 'left'
-      }
+      aroundInner: { name: 'Around Inner', value: 'around' },
+      aroundCenter: { name: 'Around Center', value: null },
+      hidden: { name: 'Hidden', value: 'hidden' },
+      top: { name: 'Top', value: 'top' },
+      right: { name: 'Right', value: 'right' },
+      bottom: { name: 'Bottom', value: 'bottom' },
+      left: { name: 'Left', value: 'left' }
     }
   },
   barBorder: {
@@ -474,14 +373,8 @@ export const OPTIONS_INFO = {
   oneDHeatmapFlipped: {
     name: 'Flip Heatmap',
     inlineOptions: {
-      yes: {
-        name: 'Yes',
-        value: 'yes'
-      },
-      no: {
-        name: 'No',
-        value: null
-      }
+      yes: { name: 'Yes', value: 'yes' },
+      no: { name: 'No', value: null }
     }
   },
   showMousePosition: {
@@ -498,6 +391,34 @@ export const OPTIONS_INFO = {
     inlineOptions: sizesInPx([8, 9, 10, 11, 12, 14, 16, 18, 24], 'px')
   },
 
+  tickPositions: {
+    name: 'Tick Positions',
+    inlineOptions: {
+      even: {
+        name: 'Even',
+        value: 'even'
+      },
+      ends: {
+        name: 'Ends',
+        value: 'ends'
+      }
+    }
+  },
+
+  tickFormat: {
+    name: 'Tick Format',
+    inlineOptions: {
+      plain: {
+        name: 'Plain',
+        value: 'plain'
+      },
+      si: {
+        name: 'SI',
+        value: 'si'
+      }
+    }
+  },
+
   colorEncoding: {
     name: 'Color Encode Annotations',
     inlineOptions: YES_NO
@@ -511,52 +432,22 @@ export const OPTIONS_INFO = {
   axisPositionHorizontal: {
     name: 'Axis Position',
     inlineOptions: {
-      left: {
-        name: 'Left',
-        value: 'left'
-      },
-      outsideLeft: {
-        name: 'Outside left',
-        value: 'outsideLeft'
-      },
-      right: {
-        name: 'Right',
-        value: 'right'
-      },
-      outsideRight: {
-        name: 'Outside right',
-        value: 'outsideRight'
-      },
-      hidden: {
-        name: 'Hidden',
-        value: null
-      }
+      left: { name: 'Left', value: 'left' },
+      outsideLeft: { name: 'Outside left', value: 'outsideLeft' },
+      right: { name: 'Right', value: 'right' },
+      outsideRight: { name: 'Outside right', value: 'outsideRight' },
+      hidden: { name: 'Hidden', value: null }
     }
   },
 
   axisPositionVertical: {
     name: 'Axis Position',
     inlineOptions: {
-      top: {
-        name: 'Top',
-        value: 'top'
-      },
-      outsideTop: {
-        name: 'Outside top',
-        value: 'outsideTop'
-      },
-      bottom: {
-        name: 'Bottom',
-        value: 'bottom'
-      },
-      outsideBottom: {
-        name: 'Outside bottom',
-        value: 'outsideBottom'
-      },
-      hidden: {
-        name: 'Hidden',
-        value: null
-      }
+      top: { name: 'Top', value: 'top' },
+      outsideTop: { name: 'Outside top', value: 'outsideTop' },
+      bottom: { name: 'Bottom', value: 'bottom' },
+      outsideBottom: { name: 'Outside bottom', value: 'outsideBottom' },
+      hidden: { name: 'Hidden', value: null }
     }
   },
 
@@ -568,26 +459,11 @@ export const OPTIONS_INFO = {
   colorbarPosition: {
     name: 'Colorbar Position',
     inlineOptions: {
-      topLeft: {
-        name: 'Top Left',
-        value: 'topLeft'
-      },
-      topRight: {
-        name: 'Top Right',
-        value: 'topRight'
-      },
-      bottomLeft: {
-        name: 'Bottom Left',
-        value: 'bottomLeft'
-      },
-      bottomRight: {
-        name: 'Bottom Right',
-        value: 'bottomRight'
-      },
-      hidden: {
-        name: 'Hidden',
-        value: null
-      }
+      topLeft: { name: 'Top Left', value: 'topLeft' },
+      topRight: { name: 'Top Right', value: 'topRight' },
+      bottomLeft: { name: 'Bottom Left', value: 'bottomLeft' },
+      bottomRight: { name: 'Bottom Right', value: 'bottomRight' },
+      hidden: { name: 'Hidden', value: null }
     }
   },
 
@@ -616,64 +492,28 @@ export const OPTIONS_INFO = {
   colorbarLabelsPosition: {
     name: 'Colorbar Labels Position',
     inlineOptions: {
-      inside: {
-        name: 'Inside',
-        value: 'inside'
-      },
-      outside: {
-        name: 'Outside',
-        value: 'outside'
-      }
+      inside: { name: 'Inside', value: 'inside' },
+      outside: { name: 'Outside', value: 'outside' }
     }
   },
 
   labelColor: {
     name: 'Label Color',
-    inlineOptions: {
-      ...AVAILABLE_COLORS,
-      ...SPECIAL_COLORS
-    }
+    inlineOptions: { ...AVAILABLE_COLORS, ...SPECIAL_COLORS }
   },
 
   labelPosition: {
     name: 'Label Position',
     inlineOptions: {
-      ol: {
-        name: 'Outer left',
-        value: 'outerLeft'
-      },
-      or: {
-        name: 'Outer right',
-        value: 'outerRight'
-      },
-      ot: {
-        name: 'Outer top',
-        value: 'outerTop'
-      },
-      ob: {
-        name: 'Outer bottom',
-        value: 'outerBottom'
-      },
-      tl: {
-        name: 'Top left',
-        value: 'topLeft'
-      },
-      tr: {
-        name: 'Top right',
-        value: 'topRight'
-      },
-      bl: {
-        name: 'Bottom left',
-        value: 'bottomLeft'
-      },
-      br: {
-        name: 'Bottom right',
-        value: 'bottomRight'
-      },
-      hidden: {
-        name: 'Hidden',
-        value: 'hidden'
-      }
+      ol: { name: 'Outer left', value: 'outerLeft' },
+      or: { name: 'Outer right', value: 'outerRight' },
+      ot: { name: 'Outer top', value: 'outerTop' },
+      ob: { name: 'Outer bottom', value: 'outerBottom' },
+      tl: { name: 'Top left', value: 'topLeft' },
+      tr: { name: 'Top right', value: 'topRight' },
+      bl: { name: 'Bottom left', value: 'bottomLeft' },
+      br: { name: 'Bottom right', value: 'bottomRight' },
+      hidden: { name: 'Hidden', value: 'hidden' }
     }
   },
 
@@ -685,22 +525,10 @@ export const OPTIONS_INFO = {
   geneAnnotationHeight: {
     name: 'Gene Annotation Height',
     inlineOptions: {
-      8: {
-        name: '8px',
-        value: 8
-      },
-      10: {
-        name: '10px',
-        value: 10
-      },
-      12: {
-        name: '12px',
-        value: 12
-      },
-      16: {
-        name: '16px',
-        value: 16
-      }
+      8: { name: '8px', value: 8 },
+      10: { name: '10px', value: 10 },
+      12: { name: '12px', value: 12 },
+      16: { name: '16px', value: 16 }
     }
   },
 
@@ -727,32 +555,17 @@ export const OPTIONS_INFO = {
   geneLabelPosition: {
     name: 'Gene Label Position',
     inlineOptions: {
-      inside: {
-        name: 'Inside',
-        value: 'inside'
-      },
-      outside: {
-        name: 'Outside',
-        value: 'outside'
-      }
+      inside: { name: 'Inside', value: 'inside' },
+      outside: { name: 'Outside', value: 'outside' }
     }
   },
 
   geneStrandSpacing: {
     name: 'Gene Strand Spacing',
     inlineOptions: {
-      2: {
-        name: '2px',
-        value: 2
-      },
-      4: {
-        name: '4px',
-        value: 4
-      },
-      8: {
-        name: '8px',
-        value: 8
-      }
+      2: { name: '2px', value: 2 },
+      4: { name: '4px', value: 4 },
+      8: { name: '8px', value: 8 }
     }
   },
 
@@ -769,18 +582,9 @@ export const OPTIONS_INFO = {
   viewResolution: {
     name: 'View Resolution',
     inlineOptions: {
-      high: {
-        name: 'High',
-        value: 384
-      },
-      medium: {
-        name: 'Medium',
-        value: 1024
-      },
-      low: {
-        name: 'Low',
-        value: 2048
-      }
+      high: { name: 'High', value: 384 },
+      medium: { name: 'Medium', value: 1024 },
+      low: { name: 'Low', value: 2048 }
     }
   },
 
@@ -1410,14 +1214,8 @@ export const OPTIONS_INFO = {
   align: {
     name: 'Align',
     inlineOptions: {
-      white: {
-        name: 'Top',
-        value: 'top'
-      },
-      lightGrey: {
-        name: 'Bottom',
-        value: 'bottom'
-      }
+      white: { name: 'Top', value: 'top' },
+      lightGrey: { name: 'Bottom', value: 'bottom' }
     }
   },
 
@@ -1429,14 +1227,8 @@ export const OPTIONS_INFO = {
   dataTransform: {
     name: 'Transforms',
     inlineOptions: {
-      default: {
-        name: 'Default',
-        value: 'default'
-      },
-      None: {
-        name: 'None',
-        value: 'None'
-      }
+      default: { name: 'Default', value: 'default' },
+      None: { name: 'None', value: 'None' }
     },
     generateOptions: track => {
       const inlineOptions = [];
@@ -1481,10 +1273,7 @@ export const OPTIONS_INFO = {
   maxZoom: {
     name: 'Zoom limit',
     inlineOptions: {
-      none: {
-        name: 'None',
-        value: null
-      }
+      none: { name: 'None', value: null }
     },
     generateOptions: track => {
       if (track.maxZoom) {
@@ -1527,10 +1316,7 @@ export const OPTIONS_INFO = {
   valueColumn: {
     name: 'Value column',
     inlineOptions: {
-      none: {
-        name: 'None',
-        value: null
-      }
+      none: { name: 'None', value: null }
     },
     generateOptions: track => {
       if (!track.header) return [];

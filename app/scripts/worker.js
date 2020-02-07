@@ -177,7 +177,8 @@ function float32(h) {
 
   const fSgn = (h & 0x8000) << 16;
   switch (hExp) {
-    case 0x0000 /* 0 or subnormal */:
+    /* 0 or subnormal */
+    case 0x0000:
       hSig = h & 0x03ff;
       /* Signed zero */
       if (hSig === 0) {
@@ -192,9 +193,12 @@ function float32(h) {
       fExp = (127 - 15 - hExp) << 23;
       fSig = (hSig & 0x03ff) << 13;
       return fSgn + fExp + fSig;
-    case 0x7c00 /* inf or NaN */:
+
+    /* inf or NaN */
+    case 0x7c00:
       /* All-ones exponent and a copy of the significand */
       return fSgn + 0x7f800000 + ((h & 0x03ff) << 13);
+
     default:
       /* normalized */
       /* Just need to adjust the exponent and shift */

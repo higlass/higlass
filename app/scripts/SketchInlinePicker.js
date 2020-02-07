@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { rgb as d3rgb } from 'd3-color';
 import React from 'react';
 import reactCSS from 'reactcss';
@@ -91,5 +92,10 @@ class SketchInlinePicker extends React.Component {
     );
   }
 }
+
+SketchInlinePicker.propTypes = {
+  color: PropTypes.string,
+  onChange: PropTypes.func
+};
 
 export default SketchInlinePicker;

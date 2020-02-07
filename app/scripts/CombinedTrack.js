@@ -196,7 +196,8 @@ class CombinedTrack {
     return (
       x >= this.position[0] &&
       x <= this.dimensions[0] + this.position[0] &&
-      (y >= this.position[1] && y <= this.dimensions[1] + this.position[1])
+      y >= this.position[1] &&
+      y <= this.dimensions[1] + this.position[1]
     );
   }
 

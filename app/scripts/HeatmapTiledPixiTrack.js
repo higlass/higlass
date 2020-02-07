@@ -561,16 +561,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     if (!this.valueScale) {
       return;
     }
-    // TODO:
-    // Behavior of prefered alternative is significantly different;
-    // Not sure which we really want.
-    // isNaN(undefined) === true
-    // Number.isNaN(undefined) === false
+
     if (
-      isNaN(this.valueScale.domain()[0]) || // eslint-disable-line no-restricted-globals
-      isNaN(this.valueScale.domain()[1])
+      Number.isNaN(+this.valueScale.domain()[0]) ||
+      Number.isNaN(+this.valueScale.domain()[1])
     ) {
-      // eslint-disable-line no-restricted-globals
       return;
     }
 
@@ -742,14 +737,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
       this.northHandle = this.gColorscaleBrush
         .selectAll('.handle--custom')
-        .data([
-          {
-            type: 'n'
-          },
-          {
-            type: 's'
-          }
-        ])
+        .data([{ type: 'n' }, { type: 's' }])
         .enter()
         .append('rect')
         .classed('handle--custom', true)
@@ -778,9 +766,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
       this.pColorbar.beginFill(
         colorToHex(
-          `rgb(${this.colorScale[rgbIdx][0]},${this.colorScale[rgbIdx][1]},${
-            this.colorScale[rgbIdx][2]
-          })`
+          `rgb(${this.colorScale[rgbIdx][0]},${this.colorScale[rgbIdx][1]},${this.colorScale[rgbIdx][2]})`
         )
       );
 

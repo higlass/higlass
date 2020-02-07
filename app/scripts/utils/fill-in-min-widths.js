@@ -32,10 +32,7 @@ const fillInMinWidths = tracks => {
         const trackInfo = TRACKS_INFO_BY_TYPE[track.type];
         const defaultOptions = (trackInfo && trackInfo.defaultOptions) || {};
         const options = track.options
-          ? {
-              ...track.options,
-              ...defaultOptions
-            }
+          ? { ...track.options, ...defaultOptions }
           : defaultOptions;
 
         if (!options.minHeight && track.height < options.minHeight) {
@@ -59,10 +56,7 @@ const fillInMinWidths = tracks => {
         const defaultOptions = (trackInfo && trackInfo.defaultOptions) || {};
 
         const options = track.options
-          ? {
-              ...track.options,
-              ...defaultOptions
-            }
+          ? { ...track.options, ...defaultOptions }
           : defaultOptions;
 
         if (!options.minWidth && track.width < options.minWidth) {

@@ -1,7 +1,7 @@
 const webpackConfig = require('./webpack.config.js');
 require('babel-polyfill'); // eslint-disable-line import/no-extraneous-dependencies
 
-module.exports = (config) => {
+module.exports = config => {
   config.set({
     /** * maximum number of tries a browser will attempt in the case
      * of a disconnection */
@@ -22,60 +22,64 @@ module.exports = (config) => {
       'node_modules/font-awesome/css/font-awesome.css',
       'build/hglib.css',
       {
-        pattern: 'docs/examples/viewconfs/*.json', watched: true, served: true, included: false
+        pattern: 'docs/examples/viewconfs/*.json',
+        watched: true,
+        served: true,
+        included: false
       },
-      // 'test/APITests.js',
-      // 'test/OverlayTrackTests.js',
-      // 'test/PngExportTest.js',
-      // 'test/ViewConfigEditorTests.js',
-      // 'test/ViewManipulationTests.js',
-      // 'test/ViewportProjectionTests.js',
-      // 'test/ZoomTests.js',
-      // 'test/GenbankFetcherTests.js',
-      // 'test/SchemaTests.js',
-      // 'test/2DRectangleDomainsTests.js',
-      // 'test/AddAndRemoveViewconfTests.js',
-      // 'test/AddTrackTests.js',
-      // 'test/GenomePositionSearchBoxTest.js',
-      // 'test/AxisTests.js',
-      // 'test/AxisTests.js', // Passes when run in isolation, but fails as part of suite.
-      // 'test/BarTrackTests.js',
-      // 'test/ChromSizesTests.js',
-      // 'test/HeatmapTests.js',
-      // 'test/HiGlassComponentCreationTests.js',
-      // 'test/HiGlassComponentTest.js',
-      // 'test/Horizontal1DTrackTests.js',
-      // 'test/HorizontalHeatmapTests.js',
-      // 'test/HorizontalMultivecTests.js',
-      // 'test/LeftTrackModifierTests.js',
-      // 'test/MinimalViewconfTest.js',
-      // 'test/OSMTests.js',
-      // 'test/PluginTrackTests.js',
-      // 'test/RuleTests.js',
-      // 'test/SVGExportTest.js',
-      // 'test/TiledPixiTrackTests.js',
-      // 'test/TrackLabelsTest.jsx',
-      // 'test/UtilsTests.js',
-      // 'test/ndarray-assign.spec.js',
-      // 'test/ndarray-flatten.spec.js',
-      // 'test/ndarray-to-list.spec.js',
-      // 'test/search_field_test.js',
-      // 'test/tile-proxy.js',
+      'test/APITests.js',
+      'test/ChromosomeLabelsTests.js',
+      'test/OverlayTrackTests.js',
+      'test/PngExportTest.js',
+      'test/ViewConfigEditorTests.js',
+      'test/ViewManipulationTests.js',
+      'test/ViewportProjectionTests.js',
+      'test/ZoomTests.js',
+      'test/GenbankFetcherTests.js',
+      'test/SchemaTests.js',
+      'test/2DRectangleDomainsTests.js',
+      'test/AddAndRemoveViewconfTests.js',
+      'test/AddTrackTests.js',
+      'test/GenomePositionSearchBoxTest.js',
+      'test/AxisTests.js',
+      'test/AxisTests.js', // Passes when run in isolation, but fails as part of suite.
+      'test/BarTrackTests.js',
+      'test/ChromSizesTests.js',
+      'test/HeatmapTests.js',
+      'test/HiGlassComponentCreationTests.js',
+      'test/HiGlassComponentTest.js',
+      'test/Horizontal1DTrackTests.js',
+      'test/HorizontalHeatmapTests.js',
+      'test/HorizontalMultivecTests.js',
+      'test/LeftTrackModifierTests.js',
+      'test/MinimalViewconfTest.js',
+      'test/OSMTests.js',
+      'test/PluginTrackTests.js',
+      'test/RuleTests.js',
+      'test/SVGExportTest.js',
+      'test/TiledPixiTrackTests.js',
+      'test/TrackLabelsTest.jsx',
+      'test/UtilsTests.js',
+      'test/ndarray-assign.spec.js',
+      'test/ndarray-flatten.spec.js',
+      'test/ndarray-to-list.spec.js',
+      'test/search_field_test.js',
+      'test/tile-proxy.js',
       'test/BedLikeTests.js',
-      // 'test/LabelTests.js',
+      'test/LabelTests.js'
     ],
 
     preprocessors: {
       // add webpack as preprocessor
       'app/scripts/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
-      'test/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
+      'test/**/*.+(js|jsx)': ['webpack', 'sourcemap']
     },
 
     // webpackConfig(env, argv)
     webpack: webpackConfig({}, {}),
 
     webpackServer: {
-      noInfo: true, // please don't spam the console when running in karma!
+      noInfo: true // please don't spam the console when running in karma!
     },
 
     plugins: [
@@ -89,8 +93,8 @@ module.exports = (config) => {
 
     babelPreprocessor: {
       options: {
-        presets: ['airbnb'],
-      },
+        presets: ['airbnb']
+      }
     },
     reporters: ['verbose'],
     port: 9876,
@@ -102,13 +106,17 @@ module.exports = (config) => {
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',
-        flags: ['--no-sandbox'],
+        flags: ['--no-sandbox']
       },
       HeadlessChrome: {
         base: 'ChromeHeadless',
-        flags: ['--disable-translate', '--disable-extensions', '--remote-debugging-port=9223']
-      },
-    },
+        flags: [
+          '--disable-translate',
+          '--disable-extensions',
+          '--remote-debugging-port=9223'
+        ]
+      }
+    }
   });
 
   if (process.env.TRAVIS) {

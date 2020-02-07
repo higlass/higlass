@@ -119,9 +119,7 @@ class Autocomplete extends React.Component {
       // if `highlightedIndex` points to an existing item
       this.state.highlightedIndex >= nextProps.items.length
     ) {
-      this.setState({
-        highlightedIndex: null
-      });
+      this.setState({ highlightedIndex: null });
     }
   }
 
@@ -143,7 +141,9 @@ class Autocomplete extends React.Component {
 
   maybeScrollItemIntoView() {
     if (this.state.isOpen === true && this.state.highlightedIndex !== null) {
+      // eslint-disable-next-line react/no-string-refs
       const itemNode = this.refs[`item-${this.state.highlightedIndex}`];
+      // eslint-disable-next-line react/no-string-refs
       const menuNode = this.refs.menu;
       if (itemNode) {
         scrollIntoView(findDOMNode(itemNode), findDOMNode(menuNode), {
@@ -207,9 +207,7 @@ class Autocomplete extends React.Component {
     const itemValueDoesMatch =
       itemValue.toLowerCase().indexOf(this.props.value.toLowerCase()) === 0;
     if (itemValueDoesMatch && highlightedIndex === null) {
-      this.setState({
-        highlightedIndex: 0
-      });
+      this.setState({ highlightedIndex: 0 });
     }
   }
 
@@ -256,9 +254,7 @@ class Autocomplete extends React.Component {
       const element = this.props.renderItem(
         item,
         this.state.highlightedIndex === index,
-        {
-          cursor: 'default'
-        }
+        { cursor: 'default' }
       );
       return React.cloneElement(element, {
         onMouseDown: () => this.setIgnoreBlur(true),
@@ -354,12 +350,7 @@ class Autocomplete extends React.Component {
 
     const { inputProps } = this.props;
     return (
-      <div
-        style={{
-          ...this.props.wrapperStyle
-        }}
-        {...this.props.wrapperProps}
-      >
+      <div style={{ ...this.props.wrapperStyle }} {...this.props.wrapperProps}>
         <input
           {...inputProps}
           ref={el => {
@@ -423,14 +414,7 @@ Autocomplete.defaultProps = {
   renderMenu(items, value, style) {
     return (
       /* eslint-disable react/no-this-in-sfc */
-      <div
-        style={{
-          ...style,
-          ...this.menuStyle
-        }}
-      >
-        {items}
-      </div>
+      <div style={{ ...style, ...this.menuStyle }}>{items}</div>
       /* eslint-enable react/no-this-in-sfc */
     );
   },
