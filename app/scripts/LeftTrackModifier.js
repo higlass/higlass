@@ -155,7 +155,7 @@ class LeftTrackModifier {
     this.yScale(newYScale);
 
     if (this.originalTrack.refreshTiles) {
-      // some tracks don't have refreshTiles (e.g. PIXITrack)
+      // some tracks don't have refreshTiles (e.g. PixiTrack)
       this.originalTrack.refreshTiles();
     }
 
