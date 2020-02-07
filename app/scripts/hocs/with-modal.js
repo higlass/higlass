@@ -8,11 +8,12 @@ const { Provider, Consumer } = React.createContext({
 });
 
 // Higher order component
-const withModal = Component => React.forwardRef((props, ref) => (
+const withModal = Component =>
+  React.forwardRef((props, ref) => (
     <Consumer>
       {modal => <Component ref={ref} {...props} modal={modal} />}
     </Consumer>
-));
+  ));
 
 export default withModal;
 

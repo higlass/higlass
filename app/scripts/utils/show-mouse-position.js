@@ -80,7 +80,7 @@ const showMousePosition = (
    *
    * @param  {Object}  e  Event object.
    */
-  const mouseMoveHandler = (event) => {
+  const mouseMoveHandler = event => {
     if (event.noHoveredTracks) {
       clearGraphics();
       return graphics;

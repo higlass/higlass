@@ -2,10 +2,11 @@ import { formatPrefix, precisionPrefix } from 'd3-format';
 
 import HeatmapOptions from '../HeatmapOptions';
 
-const sizesInPx = (sizes, unit = '', multiplier = 1) => sizes.reduce((sizeOption, size) => {
-  sizeOption[size] = { name: `${size * multiplier}${unit}`, value: size };
-  return sizeOption;
-}, {});
+const sizesInPx = (sizes, unit = '', multiplier = 1) =>
+  sizes.reduce((sizeOption, size) => {
+    sizeOption[size] = { name: `${size * multiplier}${unit}`, value: size };
+    return sizeOption;
+  }, {});
 
 const YES_NO = {
   yes: { name: 'Yes', value: true },
@@ -104,6 +105,10 @@ export const OPTIONS_INFO = {
   },
   labelShowResolution: {
     name: 'Label Show Resolution',
+    inlineOptions: YES_NO
+  },
+  labelShowAssembly: {
+    name: 'Label Show Assembly',
     inlineOptions: YES_NO
   },
   lineStrokeWidth: {
@@ -384,6 +389,34 @@ export const OPTIONS_INFO = {
   fontSize: {
     name: 'Font Size',
     inlineOptions: sizesInPx([8, 9, 10, 11, 12, 14, 16, 18, 24], 'px')
+  },
+
+  tickPositions: {
+    name: 'Tick Positions',
+    inlineOptions: {
+      even: {
+        name: 'Even',
+        value: 'even'
+      },
+      ends: {
+        name: 'Ends',
+        value: 'ends'
+      }
+    }
+  },
+
+  tickFormat: {
+    name: 'Tick Format',
+    inlineOptions: {
+      plain: {
+        name: 'Plain',
+        value: 'plain'
+      },
+      si: {
+        name: 'SI',
+        value: 'si'
+      }
+    }
   },
 
   colorEncoding: {
@@ -1197,7 +1230,7 @@ export const OPTIONS_INFO = {
       default: { name: 'Default', value: 'default' },
       None: { name: 'None', value: 'None' }
     },
-    generateOptions: (track) => {
+    generateOptions: track => {
       const inlineOptions = [];
 
       if (track.transforms) {
@@ -1216,7 +1249,7 @@ export const OPTIONS_INFO = {
   aggregationMode: {
     name: 'Aggregation Mode',
     inlineOptions: {},
-    generateOptions: (track) => {
+    generateOptions: track => {
       const inlineOptions = [];
 
       if (track.aggregationModes) {
@@ -1236,7 +1269,7 @@ export const OPTIONS_INFO = {
     inlineOptions: {
       none: { name: 'None', value: null }
     },
-    generateOptions: (track) => {
+    generateOptions: track => {
       if (track.maxZoom) {
         const inlineOptions = [];
 
@@ -1279,7 +1312,7 @@ export const OPTIONS_INFO = {
     inlineOptions: {
       none: { name: 'None', value: null }
     },
-    generateOptions: (track) => {
+    generateOptions: track => {
       if (!track.header) return [];
 
       const headerParts = track.header.split('\t');

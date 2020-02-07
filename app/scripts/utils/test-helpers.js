@@ -30,7 +30,7 @@ const TILE_LOADING_CHECK_INTERVAL = 100;
  * -------
  *  True if any of the tracks have active transtions. False otherwise.
  */
-export const areTransitionsActive = (hgc) => {
+export const areTransitionsActive = hgc => {
   for (const track of hgc.iterateOverTracks()) {
     const trackRenderer = getTrackRenderer(hgc, track.viewId, track.trackId);
 
@@ -74,7 +74,7 @@ export const waitForTransitionsFinished = (hgc, callback) => {
  *    open
  *
  */
-export const waitForJsonComplete = (finished) => {
+export const waitForJsonComplete = finished => {
   if (requestsInFlight > 0) {
     setTimeout(
       () => waitForJsonComplete(finished),
@@ -97,7 +97,7 @@ export const waitForJsonComplete = (finished) => {
  * -------
  *  True if any of the tracks are waiting for tiles, false otherwise.
  */
-export const isWaitingOnTiles = (hgc) => {
+export const isWaitingOnTiles = hgc => {
   for (const track of hgc.iterateOverTracks()) {
     let trackObj = getTrackObjectFromHGC(hgc, track.viewId, track.trackId);
 
@@ -171,7 +171,8 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
     global.document.body.removeChild(prevDiv);
   }
 
-  const style = (options && options.style) || 'width:800px; background-color: lightgreen;';
+  const style =
+    (options && options.style) || 'width:800px; background-color: lightgreen;';
   const bounded = (options && options.bounded) || false;
 
   // console.log('check:', options && options.style)
@@ -197,7 +198,7 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
   return [div, hgc];
 };
 
-export const removeHGComponent = (div) => {
+export const removeHGComponent = div => {
   if (!div) return;
 
   ReactDOM.unmountComponentAtNode(div);

@@ -36,7 +36,8 @@ class DomEvent {
    * @param {object} element - DOM element which we listened to.
    */
   unregister(event, element) {
-    if (!this.registeredEls[event] && this.registeredEls[event] !== element) return;
+    if (!this.registeredEls[event] && this.registeredEls[event] !== element)
+      return;
 
     this.registeredEls[event].removeEventListener(
       event,

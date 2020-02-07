@@ -10,15 +10,16 @@ const visitTracks = (
   visitor,
   inclCombinedTracks = true,
   position = null
-) => tracks.forEach((track) => {
-  if (track.type === 'combined') {
-    if (inclCombinedTracks) {
-      visitTracks(track.contents, visitor, inclCombinedTracks, position);
+) =>
+  tracks.forEach(track => {
+    if (track.type === 'combined') {
+      if (inclCombinedTracks) {
+        visitTracks(track.contents, visitor, inclCombinedTracks, position);
+        visitor(track, position);
+      }
+    } else {
       visitor(track, position);
     }
-  } else {
-    visitor(track, position);
-  }
-});
+  });
 
 export default visitTracks;

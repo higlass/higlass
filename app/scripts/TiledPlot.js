@@ -795,6 +795,14 @@ class TiledPlot extends React.Component {
     TRACK_LOCATIONS.forEach(location => {
       if (tracks[location]) {
         tracks[location].forEach(track => {
+          if (track.contents) {
+            track.contents.forEach(content => {
+              content.position = location;
+            });
+          }
+          // track.position is used in TrackRenderer to determine
+          // whether to use LeftTrackModifier
+          track.position = location;
           tracksAndLocations.push({ track, location });
         });
       }

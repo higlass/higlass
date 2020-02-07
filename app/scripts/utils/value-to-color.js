@@ -13,7 +13,7 @@ const valueToColor = (
   colorScale,
   pseudoCounts = 0,
   eps = 0.000001
-) => (value) => {
+) => value => {
   let rgbIdx = 255;
 
   if (value > eps) {

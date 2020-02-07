@@ -1,6 +1,6 @@
 import cwise from 'cwise';
 
-const ndarrayToList = (arr) => {
+const ndarrayToList = arr => {
   const size = arr.shape.reduce((s, x) => s * x, 1);
   const list = new Array(size);
 
