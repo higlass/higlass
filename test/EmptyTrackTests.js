@@ -63,7 +63,7 @@ const viewconf = {
         top: [
           {
             uid: 't2',
-            type: 'emtpy',
+            type: 'empty',
             height: 42
           }
         ]
