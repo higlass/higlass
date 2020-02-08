@@ -28,6 +28,7 @@ module.exports = config => {
         included: false
       },
       'test/APITests.js',
+      'test/EmptyTrackTests.js',
       'test/ChromosomeLabelsTests.js',
       'test/OverlayTrackTests.js',
       'test/PngExportTest.js',
