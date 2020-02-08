@@ -13,7 +13,7 @@ const getTrackObjById = (tiledPlots, viewId, trackId) => {
     Object.values(tiledPlot.trackRenderer.trackDefObjects)
       .map(trackDef => trackDef.trackObject)
       .filter(trackObj => trackObj.childTracks)
-      .forEach((combinedTrack) => {
+      .forEach(combinedTrack => {
         if (combinedTrack.createdTracks[trackId]) {
           track = combinedTrack.createdTracks[trackId];
         }

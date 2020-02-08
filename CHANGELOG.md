@@ -1,5 +1,11 @@
 # Release notes
 
+## Next release
+
+- Added "empty" track
+
+_[Detailed changes since v1.8.2](https://github.com/higlass/higlass/compare/v1.8.2...develop)_
+
 ## v1.8.2
 
 - Fixed horizontal track not rendering properly in vertical position bug

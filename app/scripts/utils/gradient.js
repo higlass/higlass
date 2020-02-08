@@ -14,7 +14,7 @@ const gradient = (
   const ctx = canvas.getContext('2d');
   const grd = ctx.createLinearGradient(fromX, fromY, toX, toY);
 
-  steps.forEach((step) => {
+  steps.forEach(step => {
     grd.addColorStop(step.from, step.color);
   });
 

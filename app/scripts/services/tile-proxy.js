@@ -62,7 +62,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   let requestMapper = {};
   let blockedCalls = 0;
 
-  const bundleRequests = (request) => {
+  const bundleRequests = request => {
     const requestId = requestMapper[request.id];
 
     if (requestId && bundledRequest[requestId]) {
@@ -144,7 +144,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   return throttled;
 };
 
-export const setTileProxyAuthHeader = (newHeader) => {
+export const setTileProxyAuthHeader = newHeader => {
   authHeader = newHeader;
 };
 
@@ -219,7 +219,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
     }
   }
 
-  Promise.all(fetchPromises).then((datas) => {
+  Promise.all(fetchPromises).then(datas => {
     const tiles = {};
 
     // merge back all the tile requests
@@ -518,11 +518,11 @@ export const tileDataToPixData = (
   }
 
   if (
-    tile.mirrored
+    tile.mirrored &&
     // Data is already copied over
-    && !tile.isMirrored
-    && tile.tileData.tilePos.length > 0
-    && tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
+    !tile.isMirrored &&
+    tile.tileData.tilePos.length > 0 &&
+    tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
   ) {
     // Copy the data before mutating it in case the same data is used elsewhere.
     // During throttling/debouncing tile requests we also merge the requests so
@@ -533,7 +533,8 @@ export const tileDataToPixData = (
     const tileWidth = Math.floor(Math.sqrt(tile.tileData.dense.length));
     for (let row = 0; row < tileWidth; row++) {
       for (let col = row + 1; col < tileWidth; col++) {
-        tile.tileData.dense[row * tileWidth + col] = tile.tileData.dense[col * tileWidth + row];
+        tile.tileData.dense[row * tileWidth + col] =
+          tile.tileData.dense[col * tileWidth + row];
       }
     }
     if (ignoreLowerLeft) {
@@ -606,18 +607,18 @@ function fetchEither(url, callback, textOrJson, pubSub) {
     headers.Authorization = authHeader;
   }
   return fetch(url, { credentials: 'same-origin', headers })
-    .then((rep) => {
+    .then(rep => {
       if (!rep.ok) {
         throw Error(rep.statusText);
       }
 
       return rep[textOrJson]();
     })
-    .then((content) => {
+    .then(content => {
       callback(undefined, content);
       return content;
     })
-    .catch((error) => {
+    .catch(error => {
       console.error(`Could not fetch ${url}`, error);
       callback(error, undefined);
       return error;

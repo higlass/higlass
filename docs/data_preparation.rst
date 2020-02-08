@@ -336,7 +336,7 @@ Download data from UCSC and NCBI
 
     # Download NCBI genbank data
     DATADIR=~/data
-    mkdir DATADIR/genbank
+    mkdir $DATADIR/genbank
     wget -N -P $DATADIR ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz
     wget -N -P $DATADIR ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_info.gz
     wget -N -P $DATADIR ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2pubmed.gz
@@ -353,7 +353,7 @@ Download data from UCSC and NCBI
     # Sort
     # Optional: filter out unplaced and unlocalized scaffolds (which have a "_" in the chrom name)
     zcat $DATADIR/$ASSEMBLY/refGene.txt.gz \
-        | awk -F $'\t' '{if (!($3 ~ /_/)) print;}' $DATADIR/$ASSEMBLY/refGene_sorted \
+        | awk -F $'\t' '{if (!($3 ~ /_/)) print;}' \
         | sort -k 2 \
         > $DATADIR/$ASSEMBLY/refGene_sorted
 
@@ -418,8 +418,8 @@ Get full model and citation count for each gene
     # 10: geneDesc (activin A receptor type II-like 1)
     # 11: cdsStart (52306258)
     # 12: cdsEnd (52314677)
-    # 14: exonStarts (52301201,52306253,52306882,52307342,52307757,52308222,52309008,52309819,52312768,52314542,)
-    # 15: exonEnds (52301479,52306319,52307134,52307554,52307857,52308369,52309284,52310017,52312899,52317145,)
+    # 13: exonStarts (52301201,52306253,52306882,52307342,52307757,52308222,52309008,52309819,52312768,52314542,)
+    # 14: exonEnds (52301479,52306319,52307134,52307554,52307857,52308369,52309284,52310017,52312899,52317145,)
     join -t $'\t' \
         $DATADIR/$ASSEMBLY/gene_subinfo_citation_count \
         $DATADIR/$ASSEMBLY/geneid_refGene_count \

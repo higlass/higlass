@@ -13,7 +13,7 @@
  *  int
  *    The total height of the top, center and bottom tracks
  */
-const totalTrackPixelHeight = (view) => {
+const totalTrackPixelHeight = view => {
   // no tracks means no height
   if (!view.tracks) return 0;
 
