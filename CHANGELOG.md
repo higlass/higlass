@@ -1,10 +1,10 @@
 # Release notes
 
-## Next release
+## v1.8.3
 
 - Added "empty" track
 
-_[Detailed changes since v1.8.2](https://github.com/higlass/higlass/compare/v1.8.2...develop)_
+_[Detailed changes since v1.8.2](https://github.com/higlass/higlass/compare/v1.8.2...v1.8.3)_
 
 ## v1.8.2
 
