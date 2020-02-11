@@ -355,7 +355,7 @@ class TilesetFinder extends React.Component {
                   <use xlinkHref="#check_square_o" />
                 </svg>
               ),
-              halfCheck: (
+              halfcheck: (
                 <svg style={halfSvgStyle}>
                   <use xlinkHref="#check_square_o" />
                 </svg>
