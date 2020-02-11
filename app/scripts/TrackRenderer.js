@@ -382,15 +382,14 @@ class TrackRenderer extends React.Component {
 
   componentDidUpdate(prevProps) {
     // If the initial domain changed, a new view config
-    // probably has loaded. Reset the zoom in this case.
+    // probably has loaded. Reset the element's zoomTransform in this case.
     if (
       this.props.initialXDomain[0] !== prevProps.initialXDomain[0] ||
       this.props.initialXDomain[1] !== prevProps.initialXDomain[1] ||
       this.props.initialYDomain[0] !== prevProps.initialYDomain[0] ||
       this.props.initialYDomain[1] !== prevProps.initialYDomain[1]
     ) {
-      this.removeZoom();
-      this.addZoom();
+      this.element.__zoom = zoomIdentity;
     }
 
     if (prevProps.isRangeSelection !== this.props.isRangeSelection) {
