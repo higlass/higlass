@@ -1,5 +1,11 @@
 # Release notes
 
+## v1.8.3
+
+- Added "empty" track
+
+_[Detailed changes since v1.8.2](https://github.com/higlass/higlass/compare/v1.8.2...v1.8.3)_
+
 ## v1.8.2
 
 - Fixed horizontal track not rendering properly in vertical position bug
@@ -1205,7 +1211,3 @@ _[Detailed changes since v1.4.2](https://github.com/higlass/higlass/compare/v1.4
 - New chromosome 2D grid (for hg19)
 - New chromosome 1D axis (for hg19)
 - New chromosome horizontal axis (for hg19)
-
-* larger change
-
-- minor change

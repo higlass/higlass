@@ -1447,6 +1447,7 @@ class HiGlassComponent extends React.Component {
           this.yScales[key]
         );
 
+        console.log('lockGroup:', lockGroup, 'uid:', uid);
         const rk = value[2] / lockGroup[uid][2];
 
         // let newCenterX = centerX + dx;
@@ -2884,6 +2885,36 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  validateLocks(locks) {
+    // locks are organized like this:
+    // { v1: { v1: [0,0,0], v2: [1,1,1]}}
+    // v1 marks the name of a lock group and also
+    // corresponds to a view uid (a view cannot belong)
+    // to more than one lock group. The numbers are the
+    // zoom, xOffset, yOffset values that were present when
+    // the view was created
+
+    const toRemove = [];
+
+    for (const viewUid of dictKeys(locks)) {
+      if (!locks[viewUid][viewUid]) {
+        // we need to have the starting location of the
+        // lock's namesake view
+        toRemove.push(viewUid);
+      }
+    }
+
+    for (const viewUid of toRemove) {
+      if (locks[viewUid]) {
+        console.warn(
+          `View ${viewUid} not present in lockGroup: ${locks}. Removing...`
+        );
+        this.handleUnlock(viewUid, locks);
+        delete locks[viewUid];
+      }
+    }
+  }
+
   deserializeLocationLocks(viewConfig) {
     this.locationLocks = {};
 
@@ -2895,6 +2926,8 @@ class HiGlassComponent extends React.Component {
           ];
       }
     }
+
+    this.validateLocks(this.locationLocks);
   }
 
   deserializeZoomLocks(viewConfig) {
@@ -2909,6 +2942,8 @@ class HiGlassComponent extends React.Component {
           ];
       }
     }
+
+    this.validateLocks(this.zoomLocks);
   }
 
   deserializeValueScaleLocks(viewConfig) {
