@@ -1181,7 +1181,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         !tile.mirrored &&
         tile.tileData.tilePos[0] === tile.tileData.tilePos[1],
       this.options.extent === 'upper-right' &&
-        tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
+        tile.tileData.tilePos[0] === tile.tileData.tilePos[1],
+      this.options.selectRows
     );
   }
 

@@ -13,7 +13,10 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   tileDataToCanvas(pixData) {
     const canvas = document.createElement('canvas');
 
-    if (this.tilesetInfo.shape) {
+    if (this.options.selectRows && this.tilesetInfo.shape) {
+      canvas.width = this.tilesetInfo.shape[0];
+      canvas.height = this.options.selectRows.length;
+    } else if (this.tilesetInfo.shape) {
       canvas.width = this.tilesetInfo.shape[0];
       canvas.height = this.tilesetInfo.shape[1];
     } else {
@@ -198,12 +201,20 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     // the position of the tile containing the query position
     const tilePos = this._xScale.invert(trackX) / tileWidth;
-    const numRows = this.tilesetInfo.shape ? this.tilesetInfo.shape[1] : 1;
+    let numRows = this.tilesetInfo.shape ? this.tilesetInfo.shape[1] : 1;
+    if (this.options.selectRows) {
+      numRows = this.options.selectRows.length;
+    }
 
     // the position of query within the tile
     let posInTileX =
       this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
     const posInTileY = (trackY / this.dimensions[1]) * numRows;
+
+    let selectedRowIndex = Math.floor(posInTileY);
+    if (this.options.selectRows) {
+      selectedRowIndex = this.options.selectRows[Math.floor(posInTileY)];
+    }
 
     const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
     const fetchedTile = this.fetchedTiles[tileId];
@@ -226,11 +237,10 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       if (this.tilesetInfo.shape) {
         // accomodate data from vector sources
         index =
-          this.tilesetInfo.shape[0] * Math.floor(posInTileY) +
-          Math.floor(posInTileX);
+          this.tilesetInfo.shape[0] * selectedRowIndex + Math.floor(posInTileX);
       } else {
         index =
-          fetchedTile.tileData.dense.length * Math.floor(posInTileY) +
+          fetchedTile.tileData.dense.length * selectedRowIndex +
           Math.floor(posInTileX);
       }
       value = format('.3f')(fetchedTile.tileData.dense[index]);
@@ -239,7 +249,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     // add information about the row
     if (this.tilesetInfo.row_infos) {
       value += '<br/>';
-      value += this.tilesetInfo.row_infos[Math.floor(posInTileY)];
+      value += this.tilesetInfo.row_infos[selectedRowIndex];
     }
 
     return `${value}`;
