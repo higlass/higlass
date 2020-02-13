@@ -2877,9 +2877,7 @@ class HiGlassComponent extends React.Component {
 
     for (const viewUid of toRemove) {
       if (locks[viewUid]) {
-        console.warn(
-          `View ${viewUid} not present in lockGroup: ${locks}. Removing...`
-        );
+        console.warn(`View ${viewUid} not present in lock group. Removing...`);
         this.handleUnlock(viewUid, locks);
         delete locks[viewUid];
       }

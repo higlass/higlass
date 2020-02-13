@@ -24,6 +24,11 @@ describe('Horizontal heatmaps', () => {
     });
   });
 
+  it('should have no location locks', () => {
+    expect(hgc.instance().locationLocks).to.have.property('v1');
+    expect(hgc.instance().locationLocks).not.to.have.property('v2');
+  });
+
   it('should export as SVG', () => {
     // add your tests here
 
