@@ -19,6 +19,7 @@ _[Detailed changes since v1.8.1](https://github.com/higlass/higlass/compare/v1.8
 - Added `tickFormat` and `tickPosition` options to the chromosome labels track
 - Enabled the colorbar slider by adding the options `colorbarPosition` and `colorbarBackgroundColor` for the `horizontal-multivec`
 - Added release notes to docs.
+- Added support for selecting and filtering rows of the `horizontal-multivec` track via the `selectRows` option.
 
 _[Detailed changes since v1.8.0](https://github.com/higlass/higlass/compare/v1.8.0...v1.8.1)_
 
