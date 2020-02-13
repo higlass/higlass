@@ -2868,7 +2868,7 @@ class HiGlassComponent extends React.Component {
     const toRemove = [];
 
     for (const viewUid of dictKeys(locks)) {
-      if (!locks[viewUid][viewUid]) {
+      if (!locks[viewUid] || !locks[viewUid][viewUid]) {
         // we need to have the starting location of the
         // lock's namesake view
         toRemove.push(viewUid);
