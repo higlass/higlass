@@ -57,7 +57,7 @@ module.exports = config => {
       'test/OSMTests.js',
       'test/PluginTrackTests.js',
       'test/RuleTests.js',
-      'test/LockTests.js'
+      'test/LockTests.js',
       'test/SVGExportTest.js',
       'test/TiledPixiTrackTests.js',
       'test/TrackLabelsTest.jsx',
