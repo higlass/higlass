@@ -1422,7 +1422,6 @@ class HiGlassComponent extends React.Component {
           this.yScales[key]
         );
 
-        console.log('lockGroup:', lockGroup, 'uid:', uid);
         const rk = value[2] / lockGroup[uid][2];
 
         // let newCenterX = centerX + dx;
