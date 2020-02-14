@@ -855,11 +855,17 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
           Math.floor(this.limitedValueScale(this.valueScale.invert(i)))
         )
       );
+
       const color = this.colorScale[limitedIndex];
-      rectColor.setAttribute(
-        'style',
-        `fill: rgb(${color[0]}, ${color[1]}, ${color[2]})`
-      );
+      if (color) {
+        rectColor.setAttribute(
+          'style',
+          `fill: rgb(${color[0]}, ${color[1]}, ${color[2]})`
+        );
+      } else {
+        // when no tiles are loaded, color will be undefined and we don't want to crash
+        rectColor.setAttribute('style', `fill: rgb(255,255,255,0)`);
+      }
     }
 
     const gAxisHolder = document.createElement('g');
