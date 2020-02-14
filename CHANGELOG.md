@@ -1,12 +1,12 @@
 # Release notes
 
-## Next release
+## v1.8.4
 
 - Corrupted lock bug fix
 - Export to SVG with no loaded tiles bug fix
 - `selectRows` option for Horizontal Multivec Tracks
 
-_[Detailed changes since v1.8.3](https://github.com/higlass/higlass/compare/v1.8.3...develop)_
+_[Detailed changes since v1.8.3](https://github.com/higlass/higlass/compare/v1.8.3...v1.8.4)_
 
 ## v1.8.3
 
