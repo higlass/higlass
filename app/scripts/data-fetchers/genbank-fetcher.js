@@ -124,12 +124,13 @@ class GBKDataFetcher {
     this.errorTxt = '';
 
     this.dataPromise = fetch(dataConfig.url, {
-      headers: {
-        'Content-Encoding': gzipped ? 'gzip' : 'text/plain'
-      },
-      mode: 'cors'
+      mode: 'cors',
+      redirect: 'follow',
+      method: 'GET'
     })
-      .then(response => (gzipped ? response.arrayBuffer() : response.text()))
+      .then(response => {
+        return gzipped ? response.arrayBuffer() : response.text();
+      })
       .then(buffer => {
         const gffText = gzipped
           ? pako.inflate(buffer, { to: 'string' })
