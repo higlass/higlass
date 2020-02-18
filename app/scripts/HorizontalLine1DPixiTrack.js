@@ -241,11 +241,13 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       const newMin = this.minVisibleValue();
       const newMax = this.maxVisibleValue();
 
+      const epsilon = 1e-6;
+
       if (
         newMin !== null &&
         newMax !== null &&
-        (Math.abs(this.minValue() - newMin) > 1e-6 ||
-          Math.abs(this.maxValue() - newMax) > 1e-6)
+        (Math.abs(this.minValue() - newMin) > epsilon ||
+          Math.abs(this.maxValue() - newMax) > epsilon)
       ) {
         this.minValue(newMin);
         this.maxValue(newMax);

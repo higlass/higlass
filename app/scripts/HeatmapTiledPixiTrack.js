@@ -26,6 +26,8 @@ import {
 
 import { HEATED_OBJECT_MAP } from './configs';
 
+import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from './configs/dense-data-extrema-config';
+
 const COLORBAR_MAX_HEIGHT = 200;
 const COLORBAR_WIDTH = 10;
 const COLORBAR_LABELS_WIDTH = 40;
@@ -100,7 +102,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.brushing = false;
     this.prevOptions = '';
 
-    this.numZooms = 0; // Counts how many time zoomed() has been called
+    // Contains information about which part of the upper left tile is visible
+    this.prevIndUpperLeftTile = '';
+
     /*
     chromInfoService
       .get(`${dataConfig.server}/chrom-sizes/?id=${dataConfig.tilesetUid}`)
@@ -290,16 +294,18 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     // There might be only one value in the visible area. We extend the
     // valuescale artificially, so that point is still displayed
+    const epsilon = 1e-6;
     if (
       minValue !== undefined &&
       minValue !== null &&
       maxValue !== undefined &&
       maxValue !== null &&
-      Math.abs(minValue - maxValue) < 1e-6
+      Math.abs(minValue - maxValue) < epsilon
     ) {
       // don't go to or below 0 in case there is a log scale
-      minValue = Math.max(1e-6, minValue - 1e-3);
-      maxValue += 1e-3;
+      const offset = 1e-3;
+      minValue = Math.max(epsilon, minValue - offset);
+      maxValue += offset;
     }
 
     const [scaleType, valueScale] = getValueScale(
@@ -1080,6 +1086,16 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         this.binsPerTile(),
         this.binsPerTile()
       ]);
+
+      // Recompute DenseDataExtrema for diagonal tiles which have been mirrored
+      if (
+        this.continuousScaling &&
+        tile.tileData.tilePos[0] === tile.tileData.tilePos[1] &&
+        tile.mirrored
+      ) {
+        tile.tileData.denseDataExtrema.mirrorPrecomputedExtrema();
+        super.initTile(tile);
+      }
     }
 
     // no data present
@@ -1296,7 +1312,51 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     return [base, base];
   }
 
-  getIndicesOfVisibleData(tile) {
+  // This function gets the indices of the visible part of the upper left tile.
+  // The indices are 'rounded' to the grid used by the DenseDataExrema module.
+  // It is used to determine if we should check for a new value scale in
+  // the case of continuous scaling
+  getVisiblePartOfUppLeftTile() {
+    const tilePositions = this.visibleAndFetchedTiles().map(tile => {
+      const tilePos = tile.mirrored
+        ? [tile.tileData.tilePos[1], tile.tileData.tilePos[0]]
+        : tile.tileData.tilePos;
+      return [tilePos[0], tilePos[1], tile.tileId];
+    });
+
+    if (tilePositions.length === 0) return null;
+
+    let minTilePosition = tilePositions[0];
+
+    for (let i = 0; i < tilePositions.length; i++) {
+      const curPos = tilePositions[i];
+      if (curPos[0] < minTilePosition[0] || curPos[1] < minTilePosition[1]) {
+        minTilePosition = curPos;
+      }
+    }
+
+    const numSubsets = Math.min(
+      NUM_PRECOMP_SUBSETS_PER_2D_TTILE,
+      this.binsPerTile()
+    );
+    const subsetSize = this.binsPerTile() / numSubsets;
+
+    const upperLeftTile = this.visibleAndFetchedTiles().filter(
+      tile => tile.tileId === minTilePosition[2]
+    )[0];
+
+    const upperLeftTileInd = this.getIndicesOfVisibleDataInTile(upperLeftTile);
+
+    const startX = upperLeftTileInd[0];
+    const startY = upperLeftTileInd[1];
+    // round to nearest grid point as used in the DenseDataExtrema Module
+    const startXadjusted = startX - (startX % subsetSize);
+    const startYadjusted = startY - (startY % subsetSize);
+
+    return [upperLeftTile.tileId, startXadjusted, startYadjusted];
+  }
+
+  getIndicesOfVisibleDataInTile(tile) {
     const visibleX = this._xScale.range();
     const visibleY = this._yScale.range();
 
@@ -1321,7 +1381,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     const startX = Math.max(
       0,
-      Math.round(tileXScale.invert(this._xScale.invert(visibleX[0])))
+      Math.round(tileXScale.invert(this._xScale.invert(visibleX[0]))) - 1
     );
 
     const endX = Math.min(
@@ -1335,7 +1395,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     const startY = Math.max(
       0,
-      Math.round(tileYScale.invert(this._yScale.invert(visibleY[0])))
+      Math.round(tileYScale.invert(this._yScale.invert(visibleY[0]))) - 1
     );
 
     const endY = Math.min(
@@ -1343,7 +1403,12 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       Math.round(tileYScale.invert(this._yScale.invert(visibleY[1])))
     );
 
-    return [startY, startX, endY, endX];
+    const result =
+      tile.mirrored && tilePos[0] !== tilePos[1]
+        ? [startY, startX, endY, endX]
+        : [startX, startY, endX, endY];
+
+    return result;
   }
 
   minVisibleValue(ignoreFixedScale = false) {
@@ -1351,8 +1416,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       if (tile.tileData.denseDataExtrema === undefined) {
         return null;
       }
-
-      const ind = this.getIndicesOfVisibleData(tile);
+      const ind = this.getIndicesOfVisibleDataInTile(tile);
       return tile.tileData.denseDataExtrema.getMinNonZeroInSubset(ind);
     });
 
@@ -1378,7 +1442,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         return null;
       }
 
-      const ind = this.getIndicesOfVisibleData(tile);
+      const ind = this.getIndicesOfVisibleDataInTile(tile);
 
       return tile.tileData.denseDataExtrema.getMaxNonZeroInSubset(ind);
     });
@@ -1417,29 +1481,38 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     if (
       this.continuousScaling &&
       this.minValue() !== undefined &&
-      this.maxValue() !== undefined &&
-      // slows down the rate of rerenders
-      this.numZooms % 3 === 0
+      this.maxValue() !== undefined
     ) {
+      // Get the indices of the visible part of the upper left tile.
+      // Helps to determine if we zoomed far enough to justify a min/max computation
+      const indUpperLeftTile = JSON.stringify(
+        this.getVisiblePartOfUppLeftTile()
+      );
+
       if (
         this.valueScaleMin === null &&
         this.valueScaleMax === null &&
-        !isValueScaleLocked
+        !isValueScaleLocked &&
+        // syncs the recomputation with the grid used in the DenseDataExtrema module
+        indUpperLeftTile !== this.prevIndUpperLeftTile
       ) {
         const newMin = this.minVisibleValue();
         const newMax = this.maxVisibleValue();
 
+        const epsilon = 1e-6;
+
         if (
           newMin !== null && // can happen if tiles haven't loaded
           newMax !== null &&
-          (Math.abs(this.minValue() - newMin) > 1e-6 ||
-            Math.abs(this.maxValue() - newMax) > 1e-6)
+          (Math.abs(this.minValue() - newMin) > epsilon ||
+            Math.abs(this.maxValue() - newMax) > epsilon)
         ) {
           this.minValue(newMin);
           this.maxValue(newMax);
 
           this.scheduleRerender();
         }
+        this.prevIndUpperLeftTile = indUpperLeftTile;
       }
 
       if (isValueScaleLocked) {
@@ -1447,7 +1520,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       }
     }
 
-    this.numZooms++;
     this.mouseMoveZoomHandler();
   }
 

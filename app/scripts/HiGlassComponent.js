@@ -1215,6 +1215,8 @@ class HiGlassComponent extends React.Component {
       const allMin = lockGroupExtrema[0];
       const allMax = lockGroupExtrema[1];
 
+      const epsilon = 1e-6;
+
       for (const lockedTrack of lockedTracks) {
         // set the newly calculated minimum and maximum values
         // using d3 style setters
@@ -1234,10 +1236,10 @@ class HiGlassComponent extends React.Component {
         const hasScaleChanged =
           Math.abs(
             lockedTrack.minValue() - lockedTrack.valueScale.domain()[0]
-          ) > 1e-6 ||
+          ) > epsilon ||
           Math.abs(
             lockedTrack.maxValue() - lockedTrack.valueScale.domain()[1]
-          ) > 1e-6;
+          ) > epsilon;
 
         const hasBrushMoved =
           sourceTrack.options &&
@@ -1247,11 +1249,11 @@ class HiGlassComponent extends React.Component {
           (Math.abs(
             lockedTrack.options.scaleStartPercent -
               sourceTrack.options.scaleStartPercent
-          ) > 1e-6 ||
+          ) > epsilon ||
             Math.abs(
               lockedTrack.options.scaleEndPercent -
                 sourceTrack.options.scaleEndPercent
-            ) > 1e-6);
+            ) > epsilon);
 
         // If we do view based scaling we want to minimize the number of rerenders
         // Check if it is necessary to rerender

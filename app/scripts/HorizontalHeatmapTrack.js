@@ -406,6 +406,10 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     }
   }
 
+  leftTrackDraw() {
+    this.draw();
+  }
+
   exportSVG() {
     let track = null;
     let base = null;

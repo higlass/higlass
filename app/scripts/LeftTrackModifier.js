@@ -154,9 +154,8 @@ class LeftTrackModifier {
     this.xScale(newXScale);
     this.yScale(newYScale);
 
-    this.originalTrack.refreshTiles();
-
     if (this.originalTrack.leftTrackZoomed) {
+      this.originalTrack.refreshTiles();
       // the track implements its own left-oriented zooming and scrolling
       this.originalTrack.leftTrackZoomed(newXScale, newYScale, k, tx, ty);
       this.originalTrack.draw();
@@ -178,45 +177,15 @@ class LeftTrackModifier {
       this.originalTrack.pMobile.position.y = this.originalTrack.position[1];
     }
 
-    this.originalTrack.draw();
-
-    const isValueScaleLocked = this.originalTrack.isValueScaleLocked
-      ? this.originalTrack.isValueScaleLocked()
-      : false;
-
-    if (
-      this.originalTrack.continuousScaling &&
-      // Check if this track has numerical data
-      this.originalTrack.minValue() !== undefined &&
-      this.originalTrack.maxValue() !== undefined &&
-      this.originalTrack.valueScaleMin === null &&
-      this.originalTrack.valueScaleMax === null &&
-      !isValueScaleLocked
-    ) {
-      const newMin = this.originalTrack.minVisibleValue();
-      const newMax = this.originalTrack.maxVisibleValue();
-
-      if (
-        newMin !== null &&
-        newMax !== null &&
-        (Math.abs(this.originalTrack.minValue() - newMin) > 1e-6 ||
-          Math.abs(this.originalTrack.maxValue() - newMax) > 1e-6)
-      ) {
-        this.originalTrack.minValue(newMin);
-        this.originalTrack.maxValue(newMax);
-
-        this.originalTrack.scheduleRerender();
-      }
+    if (this.originalTrack.leftTrackDraw) {
+      // if the track implements leftTrackDraw we just redraw the track and
+      // won't call the track's zoomed method
+      this.originalTrack.refreshTiles();
+      this.originalTrack.leftTrackDraw();
+      return;
     }
 
-    if (
-      this.originalTrack.continuousScaling &&
-      this.originalTrack.minValue() !== undefined &&
-      this.originalTrack.maxValue() !== undefined &&
-      isValueScaleLocked
-    ) {
-      this.originalTrack.onValueScaleChanged();
-    }
+    this.originalTrack.zoomed(this.xScale(), this.yScale());
   }
 
   zoomedY(yPos, kMultiplier) {

@@ -1,6 +1,6 @@
-
-
 import ndarray from 'ndarray';
+
+import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from '../configs/dense-data-extrema-config';
 
 class DenseDataExtrema2D {
   /**
@@ -17,18 +17,20 @@ class DenseDataExtrema2D {
     this.tileSize = Math.sqrt(data.length);
 
     if (!Number.isSafeInteger(this.tileSize)) {
-      console.error('The DenseDataExtrema2D module only works for data of quadratic length.');
+      console.error(
+        'The DenseDataExtrema2D module only works for data of quadratic length.'
+      );
     }
 
     // if this.numSubsets == this.tilesize the extrema are computed exactly (expensive).
-    this.numSubsets = Math.min(8, this.tileSize);
+    this.numSubsets = Math.min(NUM_PRECOMP_SUBSETS_PER_2D_TTILE, this.tileSize);
     this.subsetSize = this.tileSize / this.numSubsets;
 
     // Convert data to 2d array
-    const dataMatrix = ndarray(
-      Array.from(data),
-      [this.tileSize, this.tileSize]
-    );
+    const dataMatrix = ndarray(Array.from(data), [
+      this.tileSize,
+      this.tileSize
+    ]);
 
     this.subsetMinimums = this.computeSubsetNonZeroMinimums(dataMatrix);
     this.subsetMaximums = this.computeSubsetNonZeroMaximums(dataMatrix);
@@ -38,25 +40,28 @@ class DenseDataExtrema2D {
 
   /**
    * Computes an approximation of the non-zero minimum in a subset
-   * @param   {array}  indexBounds  [rowStart, colStart, rowEnd, colEnd]
+   * @param   {array}  indexBounds  [startX, startY, endX, endY]
    * @return  {number}  non-zero minium of the subset
    */
   getMinNonZeroInSubset(indexBounds) {
-    const rowStart = indexBounds[0];
-    const colStart = indexBounds[1];
-    const rowEnd = indexBounds[2];
-    const colEnd = indexBounds[3];
+    const startX = indexBounds[0];
+    const startY = indexBounds[1];
+    const endX = indexBounds[2];
+    const endY = indexBounds[3];
 
     // transform indices to the corresponding entries in the
     // precomputed minimum matrix
-    const rowOffsetStart = Math.floor(rowStart / this.subsetSize);
-    const colOffsetStart = Math.floor(colStart / this.subsetSize);
-    const height = Math.ceil((rowEnd + 1) / this.subsetSize) - rowOffsetStart;
-    const width = Math.ceil((colEnd + 1) / this.subsetSize) - colOffsetStart;
-
+    const rowOffsetStart = Math.floor(startY / this.subsetSize);
+    const colOffsetStart = Math.floor(startX / this.subsetSize);
+    const height = Math.ceil((endY + 1) / this.subsetSize) - rowOffsetStart;
+    const width = Math.ceil((endX + 1) / this.subsetSize) - colOffsetStart;
 
     const min = this.getMinNonZeroInNdarraySubset(
-      this.subsetMinimums, rowOffsetStart, colOffsetStart, width, height
+      this.subsetMinimums,
+      rowOffsetStart,
+      colOffsetStart,
+      width,
+      height
     );
 
     return min;
@@ -64,24 +69,28 @@ class DenseDataExtrema2D {
 
   /**
    * Computes an approximation of the non-zero maximum in a subset
-   * @param   {array}  indexBounds  [rowStart, colStart, rowEnd, colEnd]
+   * @param   {array}  indexBounds  [startX, startY, endX, endY]
    * @return  {number}  non-zero maxium of the subset
    */
   getMaxNonZeroInSubset(indexBounds) {
-    const rowStart = indexBounds[0];
-    const colStart = indexBounds[1];
-    const rowEnd = indexBounds[2];
-    const colEnd = indexBounds[3];
+    const startX = indexBounds[0];
+    const startY = indexBounds[1];
+    const endX = indexBounds[2];
+    const endY = indexBounds[3];
 
     // transform indices to the corresponding entries in the
     // precomputed maximum matrix
-    const rowOffsetStart = Math.floor(rowStart / this.subsetSize);
-    const colOffsetStart = Math.floor(colStart / this.subsetSize);
-    const height = Math.ceil((rowEnd + 1) / this.subsetSize) - rowOffsetStart;
-    const width = Math.ceil((colEnd + 1) / this.subsetSize) - colOffsetStart;
+    const rowOffsetStart = Math.floor(startY / this.subsetSize);
+    const colOffsetStart = Math.floor(startX / this.subsetSize);
+    const height = Math.ceil((endY + 1) / this.subsetSize) - rowOffsetStart;
+    const width = Math.ceil((endX + 1) / this.subsetSize) - colOffsetStart;
 
     const max = this.getMaxNonZeroInNdarraySubset(
-      this.subsetMaximums, rowOffsetStart, colOffsetStart, width, height
+      this.subsetMaximums,
+      rowOffsetStart,
+      colOffsetStart,
+      width,
+      height
     );
 
     return max;
@@ -100,9 +109,13 @@ class DenseDataExtrema2D {
     for (let i = 0; i < this.numSubsets; i++) {
       for (let j = 0; j < this.numSubsets; j++) {
         const curMin = this.getMinNonZeroInNdarraySubset(
-          dataMatrix, i * this.subsetSize, j * this.subsetSize, this.subsetSize, this.subsetSize
+          dataMatrix,
+          i * this.subsetSize,
+          j * this.subsetSize,
+          this.subsetSize,
+          this.subsetSize
         );
-        minimums.set(j, i, curMin);
+        minimums.set(i, j, curMin);
       }
     }
     return minimums;
@@ -121,9 +134,13 @@ class DenseDataExtrema2D {
     for (let i = 0; i < this.numSubsets; i++) {
       for (let j = 0; j < this.numSubsets; j++) {
         const curMax = this.getMaxNonZeroInNdarraySubset(
-          dataMatrix, i * this.subsetSize, j * this.subsetSize, this.subsetSize, this.subsetSize
+          dataMatrix,
+          i * this.subsetSize,
+          j * this.subsetSize,
+          this.subsetSize,
+          this.subsetSize
         );
-        maximums.set(j, i, curMax);
+        maximums.set(i, j, curMax);
       }
     }
     return maximums;
@@ -144,8 +161,12 @@ class DenseDataExtrema2D {
     for (let k = 0; k < width; k++) {
       for (let l = 0; l < height; l++) {
         const x = arr.get(rowOffset + l, colOffset + k);
-        if (x < this.epsilon && x > -this.epsilon) { continue; }
-        if (x < curMin) { curMin = x; }
+        if (x < this.epsilon && x > -this.epsilon) {
+          continue;
+        }
+        if (x < curMin) {
+          curMin = x;
+        }
       }
     }
 
@@ -167,12 +188,25 @@ class DenseDataExtrema2D {
     for (let k = 0; k < width; k++) {
       for (let l = 0; l < height; l++) {
         const x = arr.get(rowOffset + l, colOffset + k);
-        if (x < this.epsilon && x > -this.epsilon) { continue; }
-        if (x > curMax) { curMax = x; }
+        if (x < this.epsilon && x > -this.epsilon) {
+          continue;
+        }
+        if (x > curMax) {
+          curMax = x;
+        }
       }
     }
 
     return curMax;
+  }
+
+  mirrorPrecomputedExtrema() {
+    for (let row = 1; row < this.numSubsets; row++) {
+      for (let col = 0; col < row; col++) {
+        this.subsetMinimums.set(col, row, this.subsetMinimums.get(row, col));
+        this.subsetMaximums.set(col, row, this.subsetMaximums.get(row, col));
+      }
+    }
   }
 
   /**
@@ -181,7 +215,11 @@ class DenseDataExtrema2D {
    */
   getMinNonZeroInTile() {
     return this.getMinNonZeroInNdarraySubset(
-      this.subsetMinimums, 0, 0, this.numSubsets, this.numSubsets
+      this.subsetMinimums,
+      0,
+      0,
+      this.numSubsets,
+      this.numSubsets
     );
   }
 
@@ -191,7 +229,11 @@ class DenseDataExtrema2D {
    */
   getMaxNonZeroInTile() {
     return this.getMaxNonZeroInNdarraySubset(
-      this.subsetMaximums, 0, 0, this.numSubsets, this.numSubsets
+      this.subsetMaximums,
+      0,
+      0,
+      this.numSubsets,
+      this.numSubsets
     );
   }
 }
