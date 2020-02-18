@@ -128,9 +128,7 @@ class GBKDataFetcher {
       redirect: 'follow',
       method: 'GET'
     })
-      .then(response => {
-        return gzipped ? response.arrayBuffer() : response.text();
-      })
+      .then(response => (gzipped ? response.arrayBuffer() : response.text()))
       .then(buffer => {
         const gffText = gzipped
           ? pako.inflate(buffer, { to: 'string' })
