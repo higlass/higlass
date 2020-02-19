@@ -1,5 +1,9 @@
 # Release notes
 
+## Next release
+
+- Remove Content-Type headers when fetching genbank files
+
 ## v1.8.4
 
 - Corrupted lock bug fix
