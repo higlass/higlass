@@ -2,7 +2,9 @@
 
 ## v1.8.5
 
-- Genbank fetcher fixed by removing Content-Type header
+- Remove Content-Type headers when fetching genbank files
+
+_[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.4...v1.8.5)_
 
 ## v1.8.4
 
