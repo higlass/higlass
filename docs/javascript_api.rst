@@ -72,7 +72,7 @@ internally and made available to convert absolute range selection into
 chromosome range selections. ``version`` is a string of the current version of
 HiGlass.
 
-In order to get the expected look and feel, we also import the HiGlass css files.
+In order to get the expected look and feel, we also import the HiGlass CSS files. (Make sure your bundler knows how to handle CSS imports! E.g., if you're using webpack you may need to include the [css-loader]( https://webpack.js.org/loaders/css-loader/).)
 
 Creating an inline HiGlass component
 ------------------------------------
@@ -251,4 +251,3 @@ API Functions
 .. js:autofunction:: setGlobalMousePosition
 
 .. js:autofunction:: option
-
