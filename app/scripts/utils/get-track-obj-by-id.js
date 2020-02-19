@@ -1,7 +1,5 @@
 const getTrackObjById = (tiledPlots, viewId, trackId) => {
-  const tiledPlot = viewId
-    ? tiledPlots[viewId]
-    : Object.values(tiledPlots)[0];
+  const tiledPlot = viewId ? tiledPlots[viewId] : Object.values(tiledPlots)[0];
 
   if (!tiledPlot) {
     if (!viewId) console.warn('No views available.');
@@ -15,7 +13,7 @@ const getTrackObjById = (tiledPlots, viewId, trackId) => {
     Object.values(tiledPlot.trackRenderer.trackDefObjects)
       .map(trackDef => trackDef.trackObject)
       .filter(trackObj => trackObj.childTracks)
-      .forEach((combinedTrack) => {
+      .forEach(combinedTrack => {
         if (combinedTrack.createdTracks[trackId]) {
           track = combinedTrack.createdTracks[trackId];
         }

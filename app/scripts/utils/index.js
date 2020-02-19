@@ -20,6 +20,7 @@ export { default as flatten } from './flatten';
 export { default as forEach } from './for-each';
 export { default as forwardEvent } from './forward-event';
 export { default as genomeLociToPixels } from './genome-loci-to-pixels';
+export { default as getDefaultTrackForDatatype } from './get-default-track-for-datatype';
 export { default as getElementDim } from './get-element-dim';
 export { default as getTrackByUid } from './get-track-by-uid';
 export { default as getTrackObjById } from './get-track-obj-by-id';
@@ -75,12 +76,12 @@ export { default as trackUtils } from './track-utils';
 export {
   getTrackObjectFromHGC,
   getTrackRenderer,
-  getTiledPlot,
+  getTiledPlot
 } from './get-higlass-components';
 export {
   waitForJsonComplete,
   waitForTilesLoaded,
   waitForTransitionsFinished,
   mountHGComponent,
-  removeHGComponent,
+  removeHGComponent
 } from './test-helpers';

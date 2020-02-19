@@ -1,16 +1,30 @@
 /* eslint-env node, jasmine */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
 import Adapter from 'enzyme-adapter-react-16';
 
+import { select } from 'd3-selection';
+import ReactDOM from 'react-dom';
+
 // Utils
 import {
   mountHGComponent,
   removeHGComponent,
+  getTrackObjectFromHGC
 } from '../app/scripts/utils';
+
+// View configs
+import horizontalMultivecWithSmallerDimensions from './view-configs-more/horizontalMultivecWithSmallerDimensions';
+import horizontalMultivecWithFilteredRows from './view-configs-more/horizontalMultivecWithFilteredRows';
+
+// Constants
+import {
+  MIN_HORIZONTAL_HEIGHT,
+  MIN_VERTICAL_WIDTH
+} from '../app/scripts/configs';
 
 configure({ adapter: new Adapter() });
 
@@ -18,20 +32,137 @@ describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
-    ([div, hgc] = mountHGComponent(div, hgc,
-      viewConf1,
-      done,
-      {
-        style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true,
-      })
-    );
+  beforeAll(done => {
+    [div, hgc] = mountHGComponent(div, hgc, viewConf1, done, {
+      style: 'width:800px; height:400px; background-color: lightgreen',
+      bounded: true
+    });
   });
 
   // it('not have errors in the loaded viewconf', (done) => {
   //   done();
   // });
+
+  it('Test horizontal multivec with track containing smaller-than-default width and height', done => {
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithSmallerDimensions,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'viewConf2_uid',
+          'K_0GxgCvQfCHM56neOnHKg'
+        ); // uuid of horizontal-multivec
+        const width = track.dimensions[0];
+        const height = track.dimensions[1];
+        if (height === MIN_HORIZONTAL_HEIGHT || width === MIN_VERTICAL_WIDTH)
+          return;
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      }
+    );
+  });
+
+  it('has a colorbar', () => {
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'viewConf2_uid',
+      'K_0GxgCvQfCHM56neOnHKg'
+    ); // uuid of horizontal-multivec
+    expect(track.pColorbarArea.x).toBeLessThan(track.dimensions[0] / 2);
+
+    const selection = select(div).selectAll('.selection');
+
+    // we expect one colorbar selector brush to be present
+    expect(selection.size()).toEqual(1);
+  });
+
+  it('hides the colorbar', () => {
+    const { views } = hgc.instance().state;
+
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'viewConf2_uid',
+      'K_0GxgCvQfCHM56neOnHKg'
+    ); // uuid of horizontal-multivec
+    track.options.colorbarPosition = 'hidden';
+
+    hgc.instance().setState({ views });
+
+    // eslint-disable-next-line react/no-find-dom-node
+    const selection = select(ReactDOM.findDOMNode(hgc.instance())).selectAll(
+      '.selection'
+    );
+
+    // we expect the colorbar selector brush to be hidden,
+    // and therefore not present
+    expect(selection.size()).toEqual(0);
+
+    track.options.colorbarPosition = 'topLeft';
+    hgc.instance().setState({ views });
+  });
+
+  it('Test horizontal multivec with filtered rows', done => {
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithFilteredRows,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'UiHlCoxRQ-aITBDi5j8b_w',
+          'YafcbvKDQvWoWRT1WrygPA'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toEqual(2);
+        expect(trackTiles[0].canvas.width).toEqual(256);
+        expect(trackTiles[0].canvas.height).toEqual(10);
+        expect(trackTiles[1].canvas.width).toEqual(256);
+        expect(trackTiles[1].canvas.height).toEqual(10);
+
+        const tooltipValue = track.getVisibleData(100, 100);
+        expect(tooltipValue.startsWith('0.676')).toBe(true);
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      }
+    );
+  });
+
+  it('Test horizontal multivec without filtered rows', done => {
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithSmallerDimensions,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'viewConf2_uid',
+          'K_0GxgCvQfCHM56neOnHKg'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toEqual(3);
+        expect(trackTiles[0].canvas.width).toEqual(256);
+        expect(trackTiles[0].canvas.height).toEqual(228);
+        expect(trackTiles[1].canvas.width).toEqual(256);
+        expect(trackTiles[1].canvas.height).toEqual(228);
+
+        const tooltipValue = track.getVisibleData(40, 40);
+        expect(tooltipValue).toEqual('647.000');
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      }
+    );
+  });
 
   afterAll(() => {
     removeHGComponent(div);
@@ -52,15 +183,9 @@ const viewConf1 = {
         static: false
       },
       uid: 'aa',
-      initialYDomain: [
-        2936293269.9661727,
-        3260543052.0694017
-      ],
+      initialYDomain: [2936293269.9661727, 3260543052.0694017],
       autocompleteSource: '/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
-      initialXDomain: [
-        -1109178825.081832,
-        3692212179.1390653
-      ],
+      initialXDomain: [-1109178825.081832, 3692212179.1390653],
       tracks: {
         left: [],
         top: [
@@ -236,9 +361,7 @@ const viewConf1 = {
     locksByViewUid: {},
     locksDict: {}
   },
-  trackSourceServers: [
-    'http://higlass.io/api/v1'
-  ],
+  trackSourceServers: ['http://higlass.io/api/v1'],
   locationLocks: {
     locksByViewUid: {
       aa: 'PkNgAl3mSIqttnSsCewngw',
@@ -246,11 +369,7 @@ const viewConf1 = {
     },
     locksDict: {
       PkNgAl3mSIqttnSsCewngw: {
-        aa: [
-          1550000000,
-          1550000000,
-          3380588.876772046
-        ],
+        aa: [1550000000, 1550000000, 3380588.876772046],
         ewZvJwlDSei_dbpIAkGMlg: [
           1550000000.0000002,
           1549999999.9999993,

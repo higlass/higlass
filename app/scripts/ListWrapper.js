@@ -6,13 +6,15 @@ class ListWrapper extends React.Component {
   constructor({ items }) {
     super();
     this.state = {
-      items, isSorting: false,
+      items,
+      isSorting: false
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
-      items: nextProps.items,
+      items: nextProps.items
     });
   }
 
@@ -39,7 +41,7 @@ class ListWrapper extends React.Component {
 
     this.setState({
       items: arrayMove(items, oldIndex, newIndex),
-      isSorting: false,
+      isSorting: false
     });
 
     if (onSortEnd) {
@@ -57,14 +59,16 @@ class ListWrapper extends React.Component {
       items,
       onSortEnd: this.onSortEnd.bind(this),
       onSortStart: this.onSortStart.bind(this),
-      onSortMove: this.onSortMove.bind(this),
+      onSortMove: this.onSortMove.bind(this)
     };
 
     return (
       <Component
         {...this.props}
         {...props}
-        ref={(element) => { this.ref = element; }}
+        ref={element => {
+          this.ref = element;
+        }}
       />
     );
   }
@@ -92,14 +96,14 @@ ListWrapper.propTypes = {
   referenceAncestor: PropTypes.string,
   resizeHandles: PropTypes.object,
   useDragHandle: PropTypes.bool,
-  width: PropTypes.number,
+  width: PropTypes.number
 };
 
 ListWrapper.defaultProps = {
   className: 'list stylizedList',
   itemClass: 'item stylizedItem',
   width: 400,
-  height: 600,
+  height: 600
 };
 
 export default ListWrapper;

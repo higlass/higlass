@@ -1,7 +1,7 @@
 const webpackConfig = require('./webpack.config.js');
 require('babel-polyfill'); // eslint-disable-line import/no-extraneous-dependencies
 
-module.exports = (config) => {
+module.exports = config => {
   config.set({
     /** * maximum number of tries a browser will attempt in the case
      * of a disconnection */
@@ -22,10 +22,14 @@ module.exports = (config) => {
       'node_modules/font-awesome/css/font-awesome.css',
       'build/hglib.css',
       {
-        pattern: 'docs/examples/viewconfs/*.json', watched: true, served: true, included: false
+        pattern: 'docs/examples/viewconfs/*.json',
+        watched: true,
+        served: true,
+        included: false
       },
-      // 'test/**/*.+(js|jsx)',
       'test/APITests.js',
+      'test/EmptyTrackTests.js',
+      'test/ChromosomeLabelsTests.js',
       'test/OverlayTrackTests.js',
       'test/PngExportTest.js',
       'test/ViewConfigEditorTests.js',
@@ -53,6 +57,7 @@ module.exports = (config) => {
       'test/OSMTests.js',
       'test/PluginTrackTests.js',
       'test/RuleTests.js',
+      'test/LockTests.js',
       'test/SVGExportTest.js',
       'test/TiledPixiTrackTests.js',
       'test/TrackLabelsTest.jsx',
@@ -63,20 +68,20 @@ module.exports = (config) => {
       'test/search_field_test.js',
       'test/tile-proxy.js',
       'test/BedLikeTests.js',
-      'test/LabelTests.js',
+      'test/LabelTests.js'
     ],
 
     preprocessors: {
       // add webpack as preprocessor
       'app/scripts/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
-      'test/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
+      'test/**/*.+(js|jsx)': ['webpack', 'sourcemap']
     },
 
     // webpackConfig(env, argv)
     webpack: webpackConfig({}, {}),
 
     webpackServer: {
-      noInfo: true, // please don't spam the console when running in karma!
+      noInfo: true // please don't spam the console when running in karma!
     },
 
     plugins: [
@@ -90,22 +95,30 @@ module.exports = (config) => {
 
     babelPreprocessor: {
       options: {
-        presets: ['airbnb'],
-      },
+        presets: ['airbnb']
+      }
     },
     reporters: ['verbose'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_DEBUG,
     autoWatch: true,
-    browsers: ['Chrome'],
+    browsers: ['Chrome', 'HeadlessChrome'],
     singleRun: false,
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',
-        flags: ['--no-sandbox'],
+        flags: ['--no-sandbox']
       },
-    },
+      HeadlessChrome: {
+        base: 'ChromeHeadless',
+        flags: [
+          '--disable-translate',
+          '--disable-extensions',
+          '--remote-debugging-port=9223'
+        ]
+      }
+    }
   });
 
   if (process.env.TRAVIS) {

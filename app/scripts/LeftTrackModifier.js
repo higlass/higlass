@@ -27,12 +27,16 @@ class LeftTrackModifier {
     this.svgOutput = null;
 
     if (originalTrack.gBase && originalTrack.gMain) {
-      this.originalTrack.gBase.attr('transform',
+      this.originalTrack.gBase.attr(
+        'transform',
         `translate(${this.moveToOrigin.position.x},${this.moveToOrigin.position.y})
                              rotate(90)
-                             scale(${this.moveToOrigin.scale.x},${this.moveToOrigin.scale.y})`);
-      this.originalTrack.gMain.attr('transform',
-        `translate(${this.originalTrack.pBase.position.x},${this.originalTrack.pBase.position.y})`);
+                             scale(${this.moveToOrigin.scale.x},${this.moveToOrigin.scale.y})`
+      );
+      this.originalTrack.gMain.attr(
+        'transform',
+        `translate(${this.originalTrack.pBase.position.x},${this.originalTrack.pBase.position.y})`
+      );
     }
   }
 
@@ -65,20 +69,26 @@ class LeftTrackModifier {
     this.moveToOrigin.position.y = this.originalTrack.position[1];
 
     if (this.originalTrack.gMain) {
-      this.originalTrack.gBase.attr('transform',
+      this.originalTrack.gBase.attr(
+        'transform',
         `translate(${this.moveToOrigin.position.x},${this.moveToOrigin.position.y})
                                  rotate(90)
-                                 scale(${this.moveToOrigin.scale.x},${this.moveToOrigin.scale.y})`);
-      this.originalTrack.gMain.attr('transform',
-        `translate(${this.originalTrack.pBase.position.x},${this.originalTrack.pBase.position.y})`);
+                                 scale(${this.moveToOrigin.scale.x},${this.moveToOrigin.scale.y})`
+      );
+      this.originalTrack.gMain.attr(
+        'transform',
+        `translate(${this.originalTrack.pBase.position.x},${this.originalTrack.pBase.position.y})`
+      );
     }
   }
 
   refXScale(_) {
     /**
-         * Either get or set the reference xScale
-         */
-    if (!arguments.length) { return this.originalTrack._refYScale; }
+     * Either get or set the reference xScale
+     */
+    if (!arguments.length) {
+      return this.originalTrack._refYScale;
+    }
 
     this.originalTrack._refXScale = _;
 
@@ -87,9 +97,11 @@ class LeftTrackModifier {
 
   refYScale(_) {
     /**
-         * Either get or set the reference yScale
-         */
-    if (!arguments.length) { return this.originalTrack._refXScale; }
+     * Either get or set the reference yScale
+     */
+    if (!arguments.length) {
+      return this.originalTrack._refXScale;
+    }
 
     this.originalTrack._refYScale = _;
 
@@ -98,9 +110,11 @@ class LeftTrackModifier {
 
   xScale(_) {
     /**
-         * Either get or set the xScale
-         */
-    if (!arguments.length) { return this.originalTrack._xScale; }
+     * Either get or set the xScale
+     */
+    if (!arguments.length) {
+      return this.originalTrack._xScale;
+    }
 
     this.originalTrack._yScale = _;
 
@@ -109,9 +123,11 @@ class LeftTrackModifier {
 
   yScale(_) {
     /**
-         * Either get or set the yScale
-         */
-    if (!arguments.length) { return this.originalTrack._yScale; }
+     * Either get or set the yScale
+     */
+    if (!arguments.length) {
+      return this.originalTrack._yScale;
+    }
 
     this.originalTrack._xScale = _;
 
@@ -126,11 +142,22 @@ class LeftTrackModifier {
     this.originalTrack.draw();
   }
 
-  zoomed(newXScale, newYScale, k = 1, tx = 0, ty = 0, xPositionOffset = 0, yPositionOffset = 0) {
+  zoomed(
+    newXScale,
+    newYScale,
+    k = 1,
+    tx = 0,
+    ty = 0,
+    xPositionOffset = 0,
+    yPositionOffset = 0
+  ) {
     this.xScale(newXScale);
     this.yScale(newYScale);
 
-    this.originalTrack.refreshTiles();
+    if (this.originalTrack.refreshTiles) {
+      // some tracks don't have refreshTiles (e.g. PixiTrack)
+      this.originalTrack.refreshTiles();
+    }
 
     if (this.originalTrack.leftTrackZoomed) {
       // the track implements its own left-oriented zooming and scrolling
@@ -139,10 +166,12 @@ class LeftTrackModifier {
       return;
     }
 
-    const offset = this.originalTrack._xScale(0) - k * this.originalTrack._refXScale(0);
-    this.originalTrack.pMobile.position.x = offset + this.originalTrack.position[0];
-    this.originalTrack.pMobile.position.y = this.originalTrack.position[1]
-      + this.originalTrack.dimensions[1];
+    const offset =
+      this.originalTrack._xScale(0) - k * this.originalTrack._refXScale(0);
+    this.originalTrack.pMobile.position.x =
+      offset + this.originalTrack.position[0];
+    this.originalTrack.pMobile.position.y =
+      this.originalTrack.position[1] + this.originalTrack.dimensions[1];
 
     this.originalTrack.pMobile.scale.x = k;
     this.originalTrack.pMobile.scale.y = k;
@@ -173,15 +202,19 @@ class LeftTrackModifier {
 
   exportSVG() {
     const output = document.createElement('g');
-    output.setAttribute('transform',
+    output.setAttribute(
+      'transform',
       `translate(${this.moveToOrigin.position.x},${this.moveToOrigin.position.y})
                              rotate(90)
-                             scale(${this.moveToOrigin.scale.x},${this.moveToOrigin.scale.y})`);
+                             scale(${this.moveToOrigin.scale.x},${this.moveToOrigin.scale.y})`
+    );
 
     if (this.originalTrack.exportSVG) {
       const g = document.createElement('g');
-      g.setAttribute('transform',
-        `translate(${this.originalTrack.pBase.position.x}, ${this.originalTrack.pBase.position.y})`);
+      g.setAttribute(
+        'transform',
+        `translate(${this.originalTrack.pBase.position.x}, ${this.originalTrack.pBase.position.y})`
+      );
 
       g.appendChild(this.originalTrack.exportSVG()[0]);
       output.appendChild(g);
@@ -190,11 +223,12 @@ class LeftTrackModifier {
     return [output, output];
   }
 
-
   respondsToPosition(x, y) {
     return (
-      (x >= this.position[0] && x <= this.dimensions[0] + this.position[0])
-      && (y >= this.position[1] && y <= this.dimensions[1] + this.position[1])
+      x >= this.position[0] &&
+      x <= this.dimensions[0] + this.position[0] &&
+      y >= this.position[1] &&
+      y <= this.dimensions[1] + this.position[1]
     );
   }
 }

@@ -7,7 +7,6 @@ import { THEME_DARK } from './configs';
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-
 // the size of the track controls
 // taken from ../styles/TrackControl.module.css
 const TRACK_CONTROL_HEIGHT = 20;
@@ -35,7 +34,8 @@ class ContextMenuContainer extends React.Component {
     this.updateOrientation();
   }
 
-  componentWillReceiveProps(newProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(newProps) {
     this.adjusted = false;
 
     this.setState({
@@ -53,13 +53,14 @@ class ContextMenuContainer extends React.Component {
   handleItemMouseEnterWithRect(clientRect, series) {
     this.setState({
       submenuShown: series,
-      submenuSourceBbox: clientRect,
+      submenuSourceBbox: clientRect
     });
   }
 
   handleItemMouseEnter(evt, series) {
     this.handleItemMouseEnterWithRect(
-      evt.currentTarget.getBoundingClientRect(), series
+      evt.currentTarget.getBoundingClientRect(),
+      series
     );
   }
 
@@ -102,11 +103,11 @@ class ContextMenuContainer extends React.Component {
     const parentBbox = this.props.parentBbox
       ? this.props.parentBbox
       : {
-        top: this.props.position.top,
-        left: this.props.position.left,
-        width: 0,
-        height: 0
-      };
+          top: this.props.position.top,
+          left: this.props.position.left,
+          width: 0,
+          height: 0
+        };
 
     let orientation = this.state.orientation;
 
@@ -120,7 +121,7 @@ class ContextMenuContainer extends React.Component {
       } else {
         // align along the bottom
         topPosition = parentBbox.top - bbox.height + TRACK_CONTROL_HEIGHT;
-        topPosition -= (topPosition + bbox.height) - window.innerHeight;
+        topPosition -= topPosition + bbox.height - window.innerHeight;
       }
     }
 
@@ -128,7 +129,10 @@ class ContextMenuContainer extends React.Component {
       let leftPosition = parentBbox.left - bbox.width;
 
       if (leftPosition < 0) {
-        if (parentBbox.left + parentBbox.width + bbox.width > window.innerWidth) {
+        if (
+          parentBbox.left + parentBbox.width + bbox.width >
+          window.innerWidth
+        ) {
           leftPosition = 0; // goes off the side either way
         } else {
           // switch to the right
@@ -146,7 +150,7 @@ class ContextMenuContainer extends React.Component {
     } else {
       let leftPosition = parentBbox.left + parentBbox.width;
 
-      if ((parentBbox.left + parentBbox.width + bbox.width) > window.innerWidth) {
+      if (parentBbox.left + parentBbox.width + bbox.width > window.innerWidth) {
         if (parentBbox.left - bbox.width < 0) {
           // goes off both sides
           leftPosition = 0;
@@ -170,10 +174,11 @@ class ContextMenuContainer extends React.Component {
   render() {
     const stylePosition = this.state.left
       ? {
-        left: this.state.left
-      } : {
-        right: this.state.right
-      };
+          left: this.state.left
+        }
+      : {
+          right: this.state.right
+        };
 
     const otherStyle = {
       top: this.state.top
@@ -187,7 +192,9 @@ class ContextMenuContainer extends React.Component {
 
     return (
       <div
-        ref={(c) => { this.div = c; }}
+        ref={c => {
+          this.div = c;
+        }}
         className="context-menu-item"
         style={wholeStyle}
         styleName={stylenames}
@@ -203,7 +210,7 @@ ContextMenuContainer.propTypes = {
   orientation: PropTypes.string,
   parentBbox: PropTypes.object,
   position: PropTypes.object,
-  theme: PropTypes.symbol.isRequired,
+  theme: PropTypes.symbol.isRequired
 };
 
 export default ContextMenuContainer;

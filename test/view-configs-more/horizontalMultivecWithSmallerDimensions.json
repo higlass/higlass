@@ -1,0 +1,109 @@
+{
+  "editable": true,
+  "trackSourceServers": ["/api/v1", "https://higlass.io/api/v1"],
+  "exportViewUrl": "/api/v1/viewconfs",
+  "views": [
+    {
+      "initialXDomain": [1348415434.4553869, 1574566466.6212506],
+      "initialYDomain": [507300305.20950717, 631829142.4426439],
+      "tracks": {
+        "top": [
+          {
+            "type": "horizontal-gene-annotations",
+            "uid": "VpV5Aqo0RfuIWRan6uG5xg",
+            "tilesetUid": "M9A9klpwTci5Vf4bHZ864g",
+            "server": "https://resgen.io/api/v1",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "name": "Gene Annotations (hg38)",
+              "fontSize": 11,
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "geneAnnotationHeight": 10,
+              "geneLabelPosition": "outside",
+              "geneStrandSpacing": 4,
+              "labelBackgroundColor": "#ffffff"
+            },
+            "width": 20,
+            "height": 55
+          },
+          {
+            "type": "horizontal-chromosome-labels",
+            "uid": "JiAvihMvSwWZ64SMPl01xA",
+            "tilesetUid": "ZpZ8c5JJRUS1J7ZkofcUrg",
+            "server": "https://resgen.io/api/v1",
+            "options": {
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "color": "#777777",
+              "stroke": "#FFFFFF",
+              "fontSize": 12,
+              "fontIsAligned": false,
+              "fontIsLeftAligned": false
+            },
+            "width": 536,
+            "height": 35
+          },
+          {
+            "type": "horizontal-multivec",
+            "uid": "K_0GxgCvQfCHM56neOnHKg",
+            "tilesetUid": "abohuD-sTbiyAPqh2y5OpA",
+            "server": "https://resgen.io/api/v1",
+            "options": {
+              "labelPosition": "topLeft",
+              "labelColor": "black",
+              "labelTextOpacity": 0.4,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "heatmapValueScaling": "log",
+              "name": "my_file_genome_wide_20180228.multires.mv5",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": true,
+              "colorbarPosition": "topLeft"
+            },
+            "width": 33,
+            "height": 50
+          }
+        ],
+        "left": [],
+        "center": [],
+        "bottom": [],
+        "right": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 6,
+        "x": 0,
+        "y": 0
+      },
+      "uid": "viewConf2_uid"
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

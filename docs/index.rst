@@ -183,3 +183,11 @@ crucial are listed below.
     higlass_docker
     view_config
     developer
+    troubleshooting
+
+.. toctree::
+    :hidden:
+    :glob:
+    :titlesonly:
+    
+    releasenotes

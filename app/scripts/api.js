@@ -4,19 +4,15 @@ import Ajv from 'ajv';
 
 import schema from '../schema.json';
 
-import {
-  setTileProxyAuthHeader,
-} from './services';
+import { setTileProxyAuthHeader } from './services';
 
-import {
-  getTrackObjectFromHGC
-} from './utils';
+import { getTrackObjectFromHGC } from './utils';
 
-import {
-  MOUSE_TOOL_MOVE,
-  MOUSE_TOOL_SELECT,
-} from './configs';
+import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from './configs';
 
+const forceUpdate = self => {
+  self.setState(self.state);
+};
 
 const createApi = function api(context, pubSub) {
   const self = context;
@@ -67,9 +63,7 @@ const createApi = function api(context, pubSub) {
        *   `options.showMousePosition = true`.
        */
       setShowGlobalMousePosition(isShowGlobalMousePosition = false) {
-        self.setShowGlobalMousePosition(
-          isShowGlobalMousePosition
-        );
+        self.setShowGlobalMousePosition(isShowGlobalMousePosition);
       },
 
       /**
@@ -141,7 +135,6 @@ const createApi = function api(context, pubSub) {
         self.setState({ rangeSelectionToInt: true });
       },
 
-
       /**
        * Force float range selections.
        *
@@ -202,27 +195,32 @@ const createApi = function api(context, pubSub) {
         }
 
         const viewsByUid = self.processViewConfig(newViewConfig);
-        const p = new Promise((resolve) => {
+        const p = new Promise(resolve => {
           this.requestsInFlight = 0;
 
-          pubSubs.push(pubSub.subscribe('requestSent', () => {
-            this.requestsInFlight += 1;
-          }));
+          pubSubs.push(
+            pubSub.subscribe('requestSent', () => {
+              this.requestsInFlight += 1;
+            })
+          );
 
-          pubSubs.push(pubSub.subscribe('requestReceived', () => {
-            this.requestsInFlight -= 1;
+          pubSubs.push(
+            pubSub.subscribe('requestReceived', () => {
+              this.requestsInFlight -= 1;
 
-            if (this.requestsInFlight === 0) {
-              resolve();
-            }
-          }));
+              if (this.requestsInFlight === 0) {
+                resolve();
+              }
+            })
+          );
 
-          self.setState({
-            viewConfig: newViewConfig,
-            views: viewsByUid,
-          }, () => {
-
-          });
+          self.setState(
+            {
+              viewConfig: newViewConfig,
+              views: viewsByUid
+            },
+            () => {}
+          );
         });
 
         return p;
@@ -322,7 +320,7 @@ const createApi = function api(context, pubSub) {
        */
       showAvailableTrackPositions(track) {
         self.setState({
-          draggingHappening: track,
+          draggingHappening: track
         });
       },
 
@@ -331,7 +329,7 @@ const createApi = function api(context, pubSub) {
        */
       hideAvailableTrackPositions() {
         self.setState({
-          draggingHappening: null,
+          draggingHappening: null
         });
       },
 
@@ -347,11 +345,11 @@ const createApi = function api(context, pubSub) {
         self.setState({
           chooseTrackHandler: (...args) => {
             self.setState({
-              chooseTrackHandler: null,
+              chooseTrackHandler: null
             });
 
             callback(...args);
-          },
+          }
         });
       },
 
@@ -360,7 +358,7 @@ const createApi = function api(context, pubSub) {
        */
       hideTrackChooser() {
         this.setState({
-          chooseTrackHandler: null,
+          chooseTrackHandler: null
         });
       },
       /**
@@ -453,15 +451,15 @@ const createApi = function api(context, pubSub) {
        *  firstViewLoc["yDomain"][1]
        * );
        */
-      zoomTo(
-        viewUid,
-        start1Abs,
-        end1Abs,
-        start2Abs,
-        end2Abs,
-        animateTime = 0,
-      ) {
-        self.zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime);
+      zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime = 0) {
+        self.zoomTo(
+          viewUid,
+          start1Abs,
+          end1Abs,
+          start2Abs,
+          end2Abs,
+          animateTime
+        );
       },
 
       /**
@@ -591,7 +589,8 @@ const createApi = function api(context, pubSub) {
       getLocation(viewId) {
         const wurstId = viewId
           ? self.xScales[viewId] && self.yScales[viewId] && viewId
-          : Object.values(self.tiledPlots)[0] && Object.values(self.tiledPlots)[0].props.uid;
+          : Object.values(self.tiledPlots)[0] &&
+            Object.values(self.tiledPlots)[0].props.uid;
 
         if (!wurstId) {
           return 'Please provide a valid view UUID sweetheart 😙';
@@ -620,6 +619,31 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
+       * Set or get an option.
+       * @param   {string}  key  The name of the option you want get or set
+       * @param   {*}  value  If not `undefined`, `key` will be set to `value`
+       * @return  {[type]}  When `value` is `undefined` the current value of
+       *   `key` will be returned.
+       */
+      option(key, value) {
+        if (typeof value === 'undefined') return self.props.options[key];
+
+        switch (key) {
+          case 'sizeMode':
+            self.props.options[key] = value;
+            forceUpdate(self);
+            break;
+
+          default:
+            console.warn(
+              `This option "${key}" is either unknown or not settable.`
+            );
+        }
+
+        return undefined;
+      },
+
+      /**
        * Cancel a subscription.
        *
        * @param {string} event One of the available events
@@ -635,9 +659,8 @@ const createApi = function api(context, pubSub) {
        * hgv.off('mouseMoveZoom', mmz);
        */
       off(event, listenerId, viewId) {
-        const callback = typeof listenerId === 'object'
-          ? listenerId.callback
-          : listenerId;
+        const callback =
+          typeof listenerId === 'object' ? listenerId.callback : listenerId;
 
         switch (event) {
           case 'click':

@@ -36,7 +36,6 @@
     "chromInfoPath": { "type": "string" }
   },
   "definitions": {
-
     "locks": {
       "slug": { "type": "string" },
 
@@ -94,10 +93,11 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "uid": { "$ref": "#/definitions/locks/slug" }
+                  "uid": { "$ref": "#/definitions/locks/slug" },
+                  "ignoreOffScreenValues": { "type": "boolean" }
                 },
                 "patternProperties": {
-                  "^(?!uid).": {
+                  "^(?!(uid|ignoreOffScreenValues)).": {
                     "type": "object",
                     "additionalProperties": false,
                     "required": ["view", "track"],
@@ -121,12 +121,17 @@
       "properties": {
         "autocompleteSource": { "type": "string" },
         "chromInfoPath": { "type": "string" },
-        "genomePositionSearchBox": { "$ref": "#/definitions/viewProperties/genomePositionSearchBox" },
+        "genomePositionSearchBox": {
+          "$ref": "#/definitions/viewProperties/genomePositionSearchBox"
+        },
         "genomePositionSearchBoxVisible": { "type": "boolean" },
         "initialXDomain": { "$ref": "#/definitions/viewProperties/domain" },
         "initialYDomain": { "$ref": "#/definitions/viewProperties/domain" },
         "layout": { "$ref": "#/definitions/viewProperties/layout" },
-        "overlays": { "type": "array", "items": { "$ref": "#/definitions/viewProperties/overlay" } },
+        "overlays": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/viewProperties/overlay" }
+        },
         "selectionView": { "type": "boolean" },
         "tracks": { "$ref": "#/definitions/viewProperties/tracks_object" },
         "uid": { "type": "string" },
@@ -138,10 +143,7 @@
       "genomePositionSearchBox": {
         "type": "object",
         "title": "The Genome Position Search Box Schema",
-        "required": [
-          "chromInfoServer",
-          "chromInfoId"
-        ],
+        "required": ["chromInfoServer", "chromInfoId"],
         "properties": {
           "autocompleteServer": {
             "type": "string",
@@ -185,7 +187,23 @@
         "properties": {
           "chromInfoPath": { "type": "string" },
           "includes": { "type": "array" },
-          "options": { "type": "object" },
+          "options": {
+            "type": "object",
+            "properties": {
+              "extent": { "type": "array" },
+              "minWidth": { "type": "number" },
+              "fill": { "type": "string" },
+              "fillOpacity": { "type": "number" },
+              "stroke": { "type": "string" },
+              "strokeOpacity": { "type": "number" },
+              "strokeWidth": { "type": "number" },
+              "strokePos": { "type": ["string", "array"] },
+              "outline": { "type": "string" },
+              "outlineOpacity": { "type": "number" },
+              "outlineWidth": { "type": "number" },
+              "outlinePos": { "type": ["string", "array"] }
+            }
+          },
           "type": { "type": "string" },
           "uid": { "type": "string" }
         }
@@ -271,8 +289,6 @@
           "height": { "type": "number" },
           "local": { "type": "boolean" },
           "maxWidth": { "type": "number" },
-          "minHeight": { "type": "number" },
-          "minWidth": { "type": "number" },
           "name": { "type": "string" },
           "options": { "type": "object" },
           "orientation": { "type": "string" },
@@ -291,7 +307,7 @@
         "properties": {
           "contents": { "$ref": "#/definitions/viewProperties/tracks_array" },
           "height": { "type": "number" },
-          "options": { },
+          "options": {},
           "position": { "type": "string" },
           "type": { "const": "combined" },
           "uid": { "type": "string" },
@@ -310,7 +326,7 @@
             "additionalProperties": false,
             "properties": {
               "type": { "type": "string" },
-              "url": { "type": "string"}
+              "url": { "type": "string" }
             }
           },
           "uid": { "type": "string" },
@@ -385,18 +401,18 @@
           "height": { "type": "number" },
           "local": { "type": "boolean" },
           "maxWidth": { "type": "number" },
-          "minWidth": { "type": "number" },
-          "minHeight": { "type": "number" },
           "name": { "type": "string" },
           "options": { "type": "object" },
           "orientation": { "type": "string" },
           "position": { "type": "string" },
           "project": { "type": "null" },
           "project_name": { "type": "string" },
-          "thumbnail": { "oneOf": [
-            { "type": "object", "additionalProperties": false },
-            { "type": "null" }
-          ] },
+          "thumbnail": {
+            "oneOf": [
+              { "type": "object", "additionalProperties": false },
+              { "type": "null" }
+            ]
+          },
           "transforms": { "type": "array" },
           "width": { "type": "number" },
           "x": { "type": "number" },
