@@ -1,5 +1,9 @@
 # Release notes
 
+## v1.8.5
+
+- Genbank fetcher fixed by removing Content-Type header
+
 ## v1.8.4
 
 - Corrupted lock bug fix
