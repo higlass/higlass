@@ -308,6 +308,67 @@ function renderGeneSymbols(
   });
 }
 
+function renderPromoters(
+  track,
+  tile,
+  graphics,
+  xScale,
+  genes,
+  color,
+  alpha,
+  centerY,
+  height
+) {
+  const topY = centerY - height / 2;
+  tile.rectGraphics.beginFill(color, alpha);
+  // tile.rectGraphics.lineStyle(1, color, 0.2);
+
+  genes.forEach(gene => {
+    const xStart = track._xScale(gene.xStart);
+    const xEnd = track._xScale(gene.xEnd);
+
+    const ARROW_HEIGHT = 4;
+    const ARROW_WIDTH = 6;
+    const STEM_WIDTH = 2;
+
+    let poly = [];
+    poly = [
+      // bottom
+      xStart - STEM_WIDTH / 2,
+      centerY,
+      // upper left
+      xStart - STEM_WIDTH / 2,
+      topY - STEM_WIDTH / 2,
+
+      // upper right
+      xEnd - ARROW_WIDTH,
+      topY - STEM_WIDTH / 2,
+
+      // top tip of arrow
+      xEnd - ARROW_WIDTH,
+      topY - ARROW_HEIGHT,
+
+      // right end of arrow
+      xEnd,
+      topY,
+
+      // bottom tip of arrow
+      xEnd - ARROW_WIDTH,
+      topY + ARROW_HEIGHT,
+
+      xEnd,
+      topY + STEM_WIDTH / 2,
+
+      xStart + STEM_WIDTH / 2,
+      topY + STEM_WIDTH / 2
+    ];
+
+    // console.log('poly:', poly);
+    tile.rectGraphics.drawPolygon(poly);
+    tile.allRects.push([poly, gene.strand]);
+  });
+}
+
 function renderGeneExons(
   track,
   tile,
@@ -589,13 +650,26 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       td => td.type === 'filler' && td.strand === '-'
     );
 
+    const plusPromoters = tile.tileData.filter(
+      td => td.type === 'promoter' && td.strand === '+'
+    );
+    const minusPromoters = tile.tileData.filter(
+      td => td.type === 'promoter' && td.strand === '-'
+    );
+
     // console.log('plusFillerRects', plusFillerRects, tile.tileData);
 
     const plusGenes = tile.tileData.filter(
-      td => td.type !== 'filler' && (td.strand === '+' || td.fields[5] === '+')
+      td =>
+        td.type !== 'filler' &&
+        td.type !== 'promoter' &&
+        (td.strand === '+' || td.fields[5] === '+')
     );
     const minusGenes = tile.tileData.filter(
-      td => td.type !== 'filler' && (td.strand === '-' || td.fields[5] === '-')
+      td =>
+        td.type !== 'filler' &&
+        td.type !== 'promoter' &&
+        (td.strand === '-' || td.fields[5] === '-')
     );
 
     const yMiddle = this.dimensions[1] / 2;
@@ -649,6 +723,18 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       fill['-'],
       GENE_ALPHA,
       minusStrandCenterY,
+      this.geneRectHeight
+    );
+
+    renderPromoters(
+      this,
+      tile,
+      tile.rectGraphics,
+      this._xScale,
+      plusPromoters,
+      'black',
+      GENE_ALPHA,
+      plusStrandCenterY,
       this.geneRectHeight
     );
 

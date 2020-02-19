@@ -95,6 +95,7 @@ function gbToHgGene(gb) {
     chrOffset: 0,
     importance: gb.end - gb.start,
     uid,
+    type: gb.type,
     fields: [
       'chrom',
       gb.start,
