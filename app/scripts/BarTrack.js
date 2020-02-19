@@ -58,12 +58,6 @@ class BarTrack extends HorizontalLine1DPixiTrack {
    */
   initTile(tile) {
     super.initTile(tile);
-    this.renderTile(tile);
-  }
-
-  drawTile() {
-    // empty function so that the superclass's drawTile
-    // doesn't do anything
   }
 
   updateTile(tile) {
@@ -78,8 +72,12 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     }
   }
 
-  renderTile(tile) {
+  drawTile(tile) {
     if (!tile.graphics) return;
+
+    if (!tile.tileData || !tile.tileData.dense) {
+      return;
+    }
 
     const { graphics } = tile;
 

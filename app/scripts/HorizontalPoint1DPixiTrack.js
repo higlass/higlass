@@ -7,22 +7,20 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
    * Create whatever is needed to draw this tile.
    */
   initTile(tile) {
-    super.initTile(tile);
-
     tile.barXValues = new Array(tile.tileData.dense.length);
     tile.barYValues = new Array(tile.tileData.dense.length);
     tile.barWidths = new Array(tile.tileData.dense.length);
     tile.barHeights = new Array(tile.tileData.dense.length);
 
-    this.renderTile(tile);
+    super.initTile(tile);
   }
 
-  drawTile() {}
-
-  renderTile(tile) {
-    super.drawTile(tile);
-
+  drawTile(tile) {
     if (!tile.graphics) {
+      return;
+    }
+
+    if (!tile.tileData || !tile.tileData.dense) {
       return;
     }
 
