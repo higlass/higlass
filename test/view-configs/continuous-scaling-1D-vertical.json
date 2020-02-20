@@ -74,25 +74,7 @@
               "name": "Ballinger et al. 2019 - MCF7 BLISS 50Kb"
             },
             "width": 113,
-            "height": 524,
-            "aggregationModes": {
-              "mean": {
-                "name": "Mean",
-                "value": "mean"
-              },
-              "min": {
-                "name": "Min",
-                "value": "min"
-              },
-              "max": {
-                "name": "Max",
-                "value": "max"
-              },
-              "std": {
-                "name": "Standard Deviation",
-                "value": "std"
-              }
-            }
+            "height": 524
           },
           {
             "server": "//higlass.io/api/v1",
@@ -120,25 +102,7 @@
               "name": "Ballinger et al. 2019 - NHEK BLESS 50Kb"
             },
             "width": 110,
-            "height": 524,
-            "aggregationModes": {
-              "mean": {
-                "name": "Mean",
-                "value": "mean"
-              },
-              "min": {
-                "name": "Min",
-                "value": "min"
-              },
-              "max": {
-                "name": "Max",
-                "value": "max"
-              },
-              "std": {
-                "name": "Standard Deviation",
-                "value": "std"
-              }
-            }
+            "height": 524
           }
         ],
         "bottom": [],
@@ -149,9 +113,7 @@
         "w": 12,
         "h": 12,
         "x": 0,
-        "y": 0,
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "initialYDomain": [1453001491.4946086, 1456806494.2018793]
     }

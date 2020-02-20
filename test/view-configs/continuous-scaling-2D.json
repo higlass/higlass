@@ -95,9 +95,7 @@
         "w": 12,
         "h": 12,
         "x": 0,
-        "y": 0,
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "initialYDomain": [0, 250000]
     }

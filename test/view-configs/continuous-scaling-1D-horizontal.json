@@ -135,25 +135,7 @@
               "name": "Ballinger et al. 2019 - NHEK DSBCapture 50Kb"
             },
             "width": 761,
-            "height": 84,
-            "aggregationModes": {
-              "mean": {
-                "name": "Mean",
-                "value": "mean"
-              },
-              "min": {
-                "name": "Min",
-                "value": "min"
-              },
-              "max": {
-                "name": "Max",
-                "value": "max"
-              },
-              "std": {
-                "name": "Standard Deviation",
-                "value": "std"
-              }
-            }
+            "height": 84
           },
           {
             "server": "http://higlass.io/api/v1",
@@ -181,25 +163,7 @@
               "name": "Ballinger et al. 2019 - NHEK BLESS 50Kb"
             },
             "width": 761,
-            "height": 74,
-            "aggregationModes": {
-              "mean": {
-                "name": "Mean",
-                "value": "mean"
-              },
-              "min": {
-                "name": "Min",
-                "value": "min"
-              },
-              "max": {
-                "name": "Max",
-                "value": "max"
-              },
-              "std": {
-                "name": "Standard Deviation",
-                "value": "std"
-              }
-            }
+            "height": 74
           },
           {
             "server": "http://higlass.io/api/v1",
@@ -227,25 +191,7 @@
               "name": "Ballinger et al. 2019 - MCF7 BLISS 50Kb"
             },
             "width": 761,
-            "height": 66,
-            "aggregationModes": {
-              "mean": {
-                "name": "Mean",
-                "value": "mean"
-              },
-              "min": {
-                "name": "Min",
-                "value": "min"
-              },
-              "max": {
-                "name": "Max",
-                "value": "max"
-              },
-              "std": {
-                "name": "Standard Deviation",
-                "value": "std"
-              }
-            }
+            "height": 66
           },
           {
             "server": "http://higlass.io/api/v1",
