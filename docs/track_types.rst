@@ -89,6 +89,12 @@ Here is an example snippet. Used if the other options aren't set.
 
 Two different ways of displaying annotations. Box style as pictured on the right top and segment style as shown on the right bottom. Box style is the default.
 
+Empty
+=====
+
+track-type: ``empty``
+
+The empty track can be used to create blank space between other tracks. It can be placed in either the left, right, top or bottom positions.
 
 Gene Annotations
 ================
@@ -490,7 +496,7 @@ Horizontal Multivec
 
 .. image:: img/horizontal-multivec.png
     :align: right
-  
+
 track-type: ``horizontal-multivec``
 datatype: multivec
 

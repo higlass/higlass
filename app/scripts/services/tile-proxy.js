@@ -494,11 +494,13 @@ export const calculateTilesFromResolution = (
  * @param valueScaleType: Either 'log' or 'linear'
  * @param valueScaleDomain: The domain of the scale (the range is always [254,0])
  * @param colorScale: a 255 x 4 rgba array used as a color scale
- * @param synchronous: Render this tile synchronously or pass it on to the
+ * @param synchronous: Render this tile synchronously or pass it on to the threadpool.
  * @param ignoreUpperRight: If this is a tile along the diagonal and there will
  * be mirrored tiles present ignore the upper right values
- * @param {string} zeroValueColor
- * threadpool
+ * @param ignoreLowerLeft: If this is a tile along the diagonal and there will be
+ * mirrored tiles present ignore the lower left values
+ * @param {number[]} selectedRows: Array of row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
+ * @param {object} zeroValueColor The color to use for rendering zero data values.
  */
 export const tileDataToPixData = (
   tile,
@@ -509,6 +511,7 @@ export const tileDataToPixData = (
   finished,
   ignoreUpperRight,
   ignoreLowerLeft,
+  selectedRows,
   zeroValueColor
 ) => {
   const { tileData } = tile;
@@ -564,6 +567,8 @@ export const tileDataToPixData = (
     colorScale,
     ignoreUpperRight,
     ignoreLowerLeft,
+    tile.tileData.shape,
+    selectedRows,
     zeroValueColor
   );
 

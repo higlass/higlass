@@ -609,6 +609,7 @@ export const TRACKS_INFO = [
       'trackBorderColor',
       'trackType',
       'heatmapValueScaling',
+      'selectRows',
       'colorbarBackgroundColor',
       'colorbarPosition',
       'zeroValueColor'
@@ -628,6 +629,7 @@ export const TRACKS_INFO = [
       trackBorderWidth: 0,
       trackBorderColor: 'black',
       heatmapValueScaling: 'log',
+      selectRows: null,
       colorbarBackgroundColor: '#ffffff',
       colorbarPosition: 'topRight',
       zeroValueColor: 'white'
@@ -1853,6 +1855,15 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       valueColumn: null
     }
+  },
+  {
+    type: 'empty',
+    datatype: [],
+    orientation: '1d-horizontal',
+    name: 'Empty track',
+    thumbnail: null,
+    availableOptions: [],
+    defaultOptions: {}
   }
 ];
 

@@ -19,6 +19,7 @@ import {
 // View configs
 import horizontalMultivecWithSmallerDimensions from './view-configs-more/horizontalMultivecWithSmallerDimensions';
 import horizontalMultivecWithZeroValueColorOption from './view-configs-more/horizontalMultivecWithZeroValueColorOption';
+import horizontalMultivecWithFilteredRows from './view-configs-more/horizontalMultivecWithFilteredRows';
 
 // Constants
 import {
@@ -168,7 +169,64 @@ describe('Horizontal heatmaps', () => {
         done();
       },
       {
-        style: 'width:1000px; height:1000px; background-color: lightgreen',
+        style: 'width:1000px; height:1000px; background-color: lightgreen'
+      }
+    );
+  });
+
+  it('Test horizontal multivec with filtered rows', done => {
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithFilteredRows,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'UiHlCoxRQ-aITBDi5j8b_w',
+          'YafcbvKDQvWoWRT1WrygPA'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toEqual(2);
+        expect(trackTiles[0].canvas.width).toEqual(256);
+        expect(trackTiles[0].canvas.height).toEqual(10);
+        expect(trackTiles[1].canvas.width).toEqual(256);
+        expect(trackTiles[1].canvas.height).toEqual(10);
+
+        const tooltipValue = track.getVisibleData(100, 100);
+        expect(tooltipValue.startsWith('0.676')).toBe(true);
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      }
+    );
+  });
+
+  it('Test horizontal multivec without filtered rows', done => {
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithSmallerDimensions,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'viewConf2_uid',
+          'K_0GxgCvQfCHM56neOnHKg'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toEqual(3);
+        expect(trackTiles[0].canvas.width).toEqual(256);
+        expect(trackTiles[0].canvas.height).toEqual(228);
+        expect(trackTiles[1].canvas.width).toEqual(256);
+        expect(trackTiles[1].canvas.height).toEqual(228);
+
+        const tooltipValue = track.getVisibleData(40, 40);
+        expect(tooltipValue).toEqual('647.000');
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true
       }
     );
