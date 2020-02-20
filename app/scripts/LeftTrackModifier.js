@@ -155,7 +155,10 @@ class LeftTrackModifier {
     this.yScale(newYScale);
 
     if (this.originalTrack.leftTrackZoomed) {
-      this.originalTrack.refreshTiles();
+      if (this.originalTrack.refreshTiles) {
+        // some tracks don't have refreshTiles (e.g. PixiTrack)
+        this.originalTrack.refreshTiles();
+      }
       // the track implements its own left-oriented zooming and scrolling
       this.originalTrack.leftTrackZoomed(newXScale, newYScale, k, tx, ty);
       this.originalTrack.draw();
@@ -180,7 +183,9 @@ class LeftTrackModifier {
     if (this.originalTrack.leftTrackDraw) {
       // if the track implements leftTrackDraw we just redraw the track and
       // won't call the track's zoomed method
-      this.originalTrack.refreshTiles();
+      if (this.originalTrack.refreshTiles) {
+        this.originalTrack.refreshTiles();
+      }
       this.originalTrack.leftTrackDraw();
       return;
     }
