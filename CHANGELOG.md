@@ -3,6 +3,7 @@
 ## Next release
 
 - Remove Content-Type headers when fetching genbank files
+- Added the fields `xRange` and `yRange` the object returned by the JavaScript API `.getLocation()` method. 
 
 ## v1.8.4
 
