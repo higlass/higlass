@@ -3,6 +3,8 @@
 ## Next release
 
 - Remove Content-Type headers when fetching genbank files
+- Enabled view-based scaling
+- Left and right tracks can now be value scale locked
 
 ## v1.8.4
 
