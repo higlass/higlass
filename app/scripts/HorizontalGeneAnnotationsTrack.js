@@ -335,7 +335,7 @@ function renderPromoters(
     poly = [
       // bottom
       xStart - STEM_WIDTH / 2,
-      centerY,
+      centerY + height / 2,
       // upper left
       xStart - STEM_WIDTH / 2,
       topY - STEM_WIDTH / 2,
@@ -356,11 +356,17 @@ function renderPromoters(
       xEnd - ARROW_WIDTH,
       topY + ARROW_HEIGHT,
 
-      xEnd,
+      // bottom right end of arrow stem
+      xEnd - ARROW_WIDTH,
       topY + STEM_WIDTH / 2,
 
+      // left bottom end of horizontal arrow stem
       xStart + STEM_WIDTH / 2,
-      topY + STEM_WIDTH / 2
+      topY + STEM_WIDTH / 2,
+
+      // right bottom end of vertical arrow stem
+      xStart + STEM_WIDTH / 2,
+      centerY + height / 2
     ];
 
     // console.log('poly:', poly);
@@ -653,9 +659,9 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const plusPromoters = tile.tileData.filter(
       td => td.type === 'promoter' && td.strand === '+'
     );
-    const minusPromoters = tile.tileData.filter(
-      td => td.type === 'promoter' && td.strand === '-'
-    );
+    // const minusPromoters = tile.tileData.filter(
+    //   td => td.type === 'promoter' && td.strand === '-'
+    // );
 
     // console.log('plusFillerRects', plusFillerRects, tile.tileData);
 
