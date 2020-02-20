@@ -29,7 +29,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     // this.colorScale = HEATED_OBJECT_MAP;
     this.colorScale = HEATED_OBJECT_MAP;
 
-    // We switch off continuous scaling for now
+    // Continuous scaling is currently not supported
     this.continuousScaling = false;
 
     if (options && options.colorRange) {

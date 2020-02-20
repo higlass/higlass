@@ -9,7 +9,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     super(context, options);
     this.pMain = this.pMobile;
 
-    // We switch off continuous scaling for now
+    // Continuous scaling is currently not supported
     this.continuousScaling = false;
   }
 

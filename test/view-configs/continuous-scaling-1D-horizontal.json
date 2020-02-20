@@ -1,0 +1,367 @@
+{
+  "zoomFixed": false,
+  "views": [
+    {
+      "layout": {
+        "w": 12,
+        "h": 7,
+        "x": 0,
+        "y": 0
+      },
+      "uid": "aa",
+      "initialYDomain": [2519596677.627104, 2520001097.444068],
+      "initialXDomain": [2547394550.8552465, 2548007041.7374597],
+      "tracks": {
+        "left": [],
+        "top": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "WEAuzo5DQy6lEYw4kmgnDA",
+            "uid": "E4PFzQBoQ-GWV1I0VxCuFQ",
+            "type": "horizontal-point",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "labelShowAssembly": true,
+              "axisLabelFormatting": "scientific",
+              "axisPositionHorizontal": "right",
+              "pointColor": "red",
+              "pointSize": 3,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "name": "E017-H3K27me3.fc.signal"
+            },
+            "width": 761,
+            "height": 54
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "HkCGbGBiRGa4ljBJmC-I0w",
+            "uid": "TD7Xy6SKQ8yUySgRBP1d_A",
+            "type": "horizontal-1d-heatmap",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "labelShowAssembly": true,
+              "axisPositionHorizontal": "right",
+              "colorRange": [
+                "white",
+                "rgba(245,166,35,1.0)",
+                "rgba(208,2,27,1.0)",
+                "black"
+              ],
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "mousePositionColor": "#000000",
+              "showTooltip": false,
+              "name": "wgEncodeLicrHistoneLiverInputMAdult8wksC57bl6StdSig.hitile"
+            },
+            "width": 761,
+            "height": 42
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "e_XfQdqURNu0ZJZ5cJy85Q",
+            "uid": "QdCojjmoRaCEMJelOyEvKQ",
+            "type": "horizontal-line",
+            "options": {
+              "align": "bottom",
+              "labelColor": "[glyph-color]",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "labelShowAssembly": true,
+              "axisLabelFormatting": "scientific",
+              "axisPositionHorizontal": "right",
+              "barFillColor": "darkgreen",
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "barOpacity": 1,
+              "name": "Busslinger et al. 2017 H3K4ac9 ChIP (Ctcf(fl/fl), 4h Adeno-Cre and 10d resting, GSE76303_16822+18872)",
+              "labelBackgroundColor": "white",
+              "lineStrokeColor": "blue",
+              "lineStrokeWidth": 1,
+              "showMousePosition": false,
+              "minHeight": 20,
+              "mousePositionColor": "#000000",
+              "showTooltip": false
+            },
+            "width": 761,
+            "height": 86
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "S61ggUe5SYCFGcH-TbqB9g",
+            "uid": "ceswED8uTYyoSgMPnf6zbQ",
+            "type": "horizontal-bar",
+            "options": {
+              "align": "bottom",
+              "labelColor": "[glyph-color]",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "labelShowAssembly": true,
+              "axisLabelFormatting": "scientific",
+              "axisPositionHorizontal": "right",
+              "barFillColor": "darkgreen",
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "barOpacity": 1,
+              "name": "Ballinger et al. 2019 - NHEK DSBCapture 50Kb"
+            },
+            "width": 761,
+            "height": 84,
+            "aggregationModes": {
+              "mean": {
+                "name": "Mean",
+                "value": "mean"
+              },
+              "min": {
+                "name": "Min",
+                "value": "min"
+              },
+              "max": {
+                "name": "Max",
+                "value": "max"
+              },
+              "std": {
+                "name": "Standard Deviation",
+                "value": "std"
+              }
+            }
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "B_Gv5ms9QpqzWQVEwK4PDg",
+            "uid": "NKENL4gSQHSgYR6V9_jTww",
+            "type": "horizontal-bar",
+            "options": {
+              "align": "bottom",
+              "labelColor": "[glyph-color]",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "labelShowAssembly": true,
+              "axisLabelFormatting": "scientific",
+              "axisPositionHorizontal": "right",
+              "barFillColor": "darkgreen",
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "barOpacity": 1,
+              "name": "Ballinger et al. 2019 - NHEK BLESS 50Kb"
+            },
+            "width": 761,
+            "height": 74,
+            "aggregationModes": {
+              "mean": {
+                "name": "Mean",
+                "value": "mean"
+              },
+              "min": {
+                "name": "Min",
+                "value": "min"
+              },
+              "max": {
+                "name": "Max",
+                "value": "max"
+              },
+              "std": {
+                "name": "Standard Deviation",
+                "value": "std"
+              }
+            }
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "E36VpigUTAaHI-_pm1hGsA",
+            "uid": "GKXzntojTNS-LBdG4BSrpA",
+            "type": "horizontal-bar",
+            "options": {
+              "align": "bottom",
+              "labelColor": "[glyph-color]",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "labelShowAssembly": true,
+              "axisLabelFormatting": "scientific",
+              "axisPositionHorizontal": "right",
+              "barFillColor": "red",
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "barOpacity": 1,
+              "name": "Ballinger et al. 2019 - MCF7 BLISS 50Kb"
+            },
+            "width": 761,
+            "height": 66,
+            "aggregationModes": {
+              "mean": {
+                "name": "Mean",
+                "value": "mean"
+              },
+              "min": {
+                "name": "Min",
+                "value": "min"
+              },
+              "max": {
+                "name": "Max",
+                "value": "max"
+              },
+              "std": {
+                "name": "Standard Deviation",
+                "value": "std"
+              }
+            }
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "T4oXCYjlQX2p_cMDfhZ6fQ",
+            "uid": "aRWJsZRjQq295fdqj_Fy6Q",
+            "type": "horizontal-line",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelBackgroundColor": "white",
+              "labelShowResolution": false,
+              "labelShowAssembly": true,
+              "axisLabelFormatting": "scientific",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "red",
+              "lineStrokeWidth": 1,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "minHeight": 20,
+              "mousePositionColor": "#000000",
+              "showTooltip": false,
+              "name": "Bonev et al. 2017 - GSE96107_CN_H3K36me3"
+            },
+            "width": 761,
+            "height": 75
+          }
+        ],
+        "right": [],
+        "center": [
+          {
+            "uid": "center",
+            "type": "combined",
+            "contents": [],
+            "options": {},
+            "width": 761,
+            "height": 751
+          }
+        ],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "genomePositionSearchBox": {
+        "visible": true,
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
+      }
+    }
+  ],
+  "editable": true,
+  "viewEditable": true,
+  "tracksEditable": true,
+  "exportViewUrl": "/api/v1/viewconfs",
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "trackSourceServers": ["http://higlass.io/api/v1"],
+  "locationLocks": {
+    "locksByViewUid": {
+      "aa": "PkNgAl3mSIqttnSsCewngw",
+      "ewZvJwlDSei_dbpIAkGMlg": "PkNgAl3mSIqttnSsCewngw"
+    },
+    "locksDict": {
+      "PkNgAl3mSIqttnSsCewngw": {
+        "aa": [1550000000, 1550000000, 3380588.876772046],
+        "ewZvJwlDSei_dbpIAkGMlg": [
+          1550000000.0000002,
+          1549999999.9999993,
+          3380588.876772046
+        ],
+        "uid": "PkNgAl3mSIqttnSsCewngw"
+      }
+    }
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {
+      "aa.ceswED8uTYyoSgMPnf6zbQ": "XZ2wUgf9Rnqtf3G6RM2dPA",
+      "aa.NKENL4gSQHSgYR6V9_jTww": "XZ2wUgf9Rnqtf3G6RM2dPA",
+      "aa.aRWJsZRjQq295fdqj_Fy6Q": "Dev1zJblTfO1cmPlpcn0dw",
+      "aa.GKXzntojTNS-LBdG4BSrpA": "Dev1zJblTfO1cmPlpcn0dw"
+    },
+    "locksDict": {
+      "XZ2wUgf9Rnqtf3G6RM2dPA": {
+        "aa.ceswED8uTYyoSgMPnf6zbQ": {
+          "view": "aa",
+          "track": "ceswED8uTYyoSgMPnf6zbQ"
+        },
+        "aa.NKENL4gSQHSgYR6V9_jTww": {
+          "view": "aa",
+          "track": "NKENL4gSQHSgYR6V9_jTww"
+        },
+        "uid": "XZ2wUgf9Rnqtf3G6RM2dPA",
+        "ignoreOffScreenValues": true
+      },
+      "Dev1zJblTfO1cmPlpcn0dw": {
+        "aa.aRWJsZRjQq295fdqj_Fy6Q": {
+          "view": "aa",
+          "track": "aRWJsZRjQq295fdqj_Fy6Q"
+        },
+        "aa.GKXzntojTNS-LBdG4BSrpA": {
+          "view": "aa",
+          "track": "GKXzntojTNS-LBdG4BSrpA"
+        },
+        "uid": "Dev1zJblTfO1cmPlpcn0dw"
+      }
+    }
+  }
+}

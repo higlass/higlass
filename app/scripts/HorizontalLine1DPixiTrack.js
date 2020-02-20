@@ -135,6 +135,8 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     graphics.clear();
 
+    this.drawAxis(this.valueScale);
+
     if (
       this.options.valueScaling === 'log' &&
       this.valueScale.domain()[1] < 0
