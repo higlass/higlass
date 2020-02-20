@@ -488,7 +488,7 @@ function stretchRects(track) {
         (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
         (track._xScale.domain()[1] - track._xScale.domain()[0]);
 
-      if (tileK > 3) {
+      if (tileK > 2) {
         // too stretched out, needs to be re-rendered
         track.renderTile(tile);
       } else {

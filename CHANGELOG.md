@@ -2,8 +2,6 @@
 
 ## Next release
 
-<<<<<<< HEAD
-
 - Support for gene annotation "filler" regions
 
 # _[Detailed changes since v1.6.10](https://github.com/higlass/higlass/compare/v1.6.9...v1.6.10)_
@@ -92,8 +90,6 @@ _[Detailed changes since v1.6.11](https://github.com/higlass/higlass/compare/v1.
 - Allow viewconf JSON to override minimum track height or width defaults, when a track specifies a `minHeight` or `minWidth` parameter
 
 _[Detailed changes since v1.6.10](https://github.com/higlass/higlass/compare/v1.6.10...v1.6.11)_
-
-> > > > > > > pkerpedjiev/remove-genbank-content-type
 
 ## v1.6.10
 
