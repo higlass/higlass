@@ -7,6 +7,7 @@ import { select, event, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import slugid from 'slugid';
 
+import PixiTrack from './PixiTrack';
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
 import IdHorizontal1DTiledPixiTrack from './IdHorizontal1DTiledPixiTrack';
@@ -1747,6 +1748,8 @@ class TrackRenderer extends React.Component {
 
       case 'simple-svg':
         return new SVGTrack(context, options);
+      case 'empty':
+        return new PixiTrack(context, options);
 
       default: {
         // Check if a plugin track is available

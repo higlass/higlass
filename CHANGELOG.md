@@ -1,5 +1,23 @@
 # Release notes
 
+## Next release
+
+- Remove Content-Type headers when fetching genbank files
+
+## v1.8.4
+
+- Corrupted lock bug fix
+- Export to SVG with no loaded tiles bug fix
+- `selectRows` option for Horizontal Multivec Tracks
+
+_[Detailed changes since v1.8.3](https://github.com/higlass/higlass/compare/v1.8.3...v1.8.4)_
+
+## v1.8.3
+
+- Added "empty" track
+
+_[Detailed changes since v1.8.2](https://github.com/higlass/higlass/compare/v1.8.2...v1.8.3)_
+
 ## v1.8.2
 
 - Fixed horizontal track not rendering properly in vertical position bug
@@ -13,6 +31,7 @@ _[Detailed changes since v1.8.1](https://github.com/higlass/higlass/compare/v1.8
 - Added `tickFormat` and `tickPosition` options to the chromosome labels track
 - Enabled the colorbar slider by adding the options `colorbarPosition` and `colorbarBackgroundColor` for the `horizontal-multivec`
 - Added release notes to docs.
+- Added support for selecting and filtering rows of the `horizontal-multivec` track via the `selectRows` option.
 
 _[Detailed changes since v1.8.0](https://github.com/higlass/higlass/compare/v1.8.0...v1.8.1)_
 
@@ -1205,7 +1224,3 @@ _[Detailed changes since v1.4.2](https://github.com/higlass/higlass/compare/v1.4
 - New chromosome 2D grid (for hg19)
 - New chromosome 1D axis (for hg19)
 - New chromosome horizontal axis (for hg19)
-
-* larger change
-
-- minor change
