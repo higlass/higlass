@@ -782,6 +782,33 @@ describe('API Tests', () => {
       });
     });
 
+    it('has location getter', done => {
+      [div, api] = createElementAndApi(simpleHeatmapViewConf, {
+        editable: false
+      });
+
+      const hgc = api.getComponent();
+
+      waitForTilesLoaded(hgc, () => {
+        const newXDomain = [1000000000, 2000000000];
+        api.zoomTo('a', ...newXDomain, null, null, 100);
+
+        waitForTransitionsFinished(hgc, () => {
+          const location = api.getLocation();
+          expect(Math.round(location.xDomain[0])).toEqual(1000000000);
+          expect(Math.round(location.xDomain[1])).toEqual(2000000000);
+          expect(Math.round(location.yDomain[0])).toEqual(1406779661);
+          expect(Math.round(location.yDomain[1])).toEqual(1593220339);
+          expect(Math.round(location.xRange[0])).toEqual(0);
+          expect(Math.round(location.xRange[1])).toEqual(590);
+          expect(Math.round(location.yRange[0])).toEqual(0);
+          expect(Math.round(location.yRange[1])).toEqual(110);
+
+          done();
+        });
+      });
+    });
+
     afterEach(() => {
       api.destroy();
       removeDiv(div);

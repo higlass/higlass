@@ -1,0 +1,65 @@
+{
+  "editable": true,
+  "trackSourceServers": ["/api/v1", "https://higlass.io/api/v1"],
+  "exportViewUrl": "/api/v1/viewconfs",
+  "views": [
+    {
+      "initialXDomain": [226539220.00098854, 226571200.89990866],
+      "initialYDomain": [2671187034.245663, 2671205960.761557],
+      "tracks": {
+        "top": [],
+        "left": [],
+        "center": [
+          {
+            "type": "horizontal-multivec",
+            "uid": "YafcbvKDQvWoWRT1WrygPA",
+            "tilesetUid": "UvVPeLHuRDiYA3qwFlm7xQ",
+            "server": "https://resgen.io/api/v1",
+            "options": {
+              "labelPosition": "hidden",
+              "labelColor": "black",
+              "labelTextOpacity": 0.4,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "heatmapValueScaling": "log",
+              "name": "my_file_genome_wide.multires.mv5",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": true,
+              "minHeight": 100,
+              "selectRows": [1, 25, 30, 40, 50, 60, 70, 100, 128, 200]
+            },
+            "width": 1202,
+            "height": 687
+          }
+        ],
+        "bottom": [],
+        "right": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 10,
+        "h": 2,
+        "x": 0,
+        "y": 0
+      },
+      "uid": "UiHlCoxRQ-aITBDi5j8b_w"
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}
