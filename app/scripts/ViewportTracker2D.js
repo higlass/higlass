@@ -170,25 +170,23 @@ class ViewportTracker2D extends SVGTrack {
   }
 
   setPosition(newPosition) {
-    const [newX, newY] = newPosition;
-    super.setPosition([
-      newX + this.options.projectionMarginLeft,
-      newY + this.options.projectionMarginTop
-    ]);
+    super.setPosition(newPosition);
 
     this.draw();
   }
 
   setDimensions(newDimensions) {
-    const [newWidth, newHeight] = newDimensions;
-    super.setDimensions([
-      newWidth -
-        this.options.projectionMarginLeft -
-        this.options.projectionMarginRight,
-      newHeight -
-        this.options.projectionMarginTop -
-        this.options.projectionMarginBottom
+    super.setDimensions(newDimensions);
+
+    const xRange = this._xScale.range();
+    const yRange = this._yScale.range();
+    const xDiff = xRange[1] - xRange[0];
+    const yDiff = yRange[1] - yRange[0];
+    this.brush.extent([
+      [xRange[0] - xDiff, yRange[0] - yDiff],
+      [xRange[1] + xDiff, yRange[1] + yDiff]
     ]);
+    this.gBrush.call(this.brush);
 
     this.draw();
   }

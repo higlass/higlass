@@ -141,20 +141,22 @@ class ViewportTrackerVertical extends SVGTrack {
   }
 
   setPosition(newPosition) {
-    const [newX, newY] = newPosition;
-    super.setPosition([newX + this.options.projectionMarginLeft, newY]);
+    super.setPosition(newPosition);
 
     this.draw();
   }
 
   setDimensions(newDimensions) {
-    const [newWidth, newHeight] = newDimensions;
-    super.setDimensions([
-      newWidth -
-        this.options.projectionMarginLeft -
-        this.options.projectionMarginRight,
-      newHeight
+    super.setDimensions(newDimensions);
+
+    const xRange = this._xScale.range();
+    const yRange = this._yScale.range();
+    const yDiff = yRange[1] - yRange[0];
+    this.brush.extent([
+      [xRange[0] + this.options.projectionMarginLeft, yRange[0] - yDiff],
+      [xRange[1] - this.options.projectionMarginRight, yRange[1] + yDiff]
     ]);
+    this.gBrush.call(this.brush);
 
     this.draw();
   }
