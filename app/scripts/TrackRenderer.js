@@ -1491,8 +1491,7 @@ class TrackRenderer extends React.Component {
       onMouseMoveZoom: this.props.onMouseMoveZoom,
       chromInfoPath: track.chromInfoPath,
       isShowGlobalMousePosition: () => this.props.isShowGlobalMousePosition,
-      getTheme: () => this.props.theme,
-      initialXDomain: track.initialXDomain
+      getTheme: () => this.props.theme
     };
 
     // for horizontal and vertical rules
@@ -1502,6 +1501,16 @@ class TrackRenderer extends React.Component {
 
     if (track.x) {
       context.xPosition = track.x;
+    }
+
+    // for viewport-projection-horizontal and viewport-projection-center
+    if (track.initialXDomain) {
+      context.initialXDomain = track.initialXDomain;
+    }
+
+    // for viewport-projection-vertical and viewport-projection-center
+    if (track.initialYDomain) {
+      context.initialYDomain = track.initialYDomain;
     }
 
     const options = track.options;

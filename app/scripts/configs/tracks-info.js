@@ -1101,6 +1101,8 @@ export const TRACKS_INFO = [
     availableOptions: [
       'projectionFillColor',
       'projectionStrokeColor',
+      'projectionMarginLeft',
+      'projectionMarginRight',
       'strokeWidth'
     ],
     defaultOptions: {
@@ -1108,6 +1110,8 @@ export const TRACKS_INFO = [
       projectionStrokeColor: '#777',
       projectionFillOpacity: 0.3,
       projectionStrokeOpacity: 0.7,
+      projectionMarginLeft: 0,
+      projectionMarginRight: 0,
       strokeWidth: 1
     }
   },
@@ -1147,6 +1151,10 @@ export const TRACKS_INFO = [
     availableOptions: [
       'projectionFillColor',
       'projectionStrokeColor',
+      'projectionMarginTop',
+      'projectionMarginLeft',
+      'projectionMarginRight',
+      'projectionMarginBottom',
       'strokeWidth'
     ],
     defaultOptions: {
@@ -1154,6 +1162,10 @@ export const TRACKS_INFO = [
       projectionStrokeColor: '#777',
       projectionFillOpacity: 0.3,
       projectionStrokeOpacity: 0.7,
+      projectionMarginTop: 0,
+      projectionMarginLeft: 0,
+      projectionMarginRight: 0,
+      projectionMarginBottom: 0,
       strokeWidth: 1
     }
   },

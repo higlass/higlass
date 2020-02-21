@@ -2814,11 +2814,23 @@ class HiGlassComponent extends React.Component {
             if (view.uid === viewUid) {
               for (const tracks of Object.values(view.tracks)) {
                 for (const otherTrack of tracks) {
-                  if (
-                    otherTrack.uid === track.uid &&
-                    track.type === 'viewport-projection-horizontal'
-                  ) {
-                    track.initialXDomain = xDomain;
+                  if (otherTrack.uid === track.uid) {
+                    switch (track.type) {
+                      case 'viewport-projection-horizontal':
+                        track.initialXDomain = xDomain;
+                        break;
+                      case 'viewport-projection-vertical':
+                        track.initialYDomain = yDomain;
+                        break;
+                      case 'viewport-projection-center':
+                        track.initialXDomain = xDomain;
+                        track.initialYDomain = yDomain;
+                        break;
+                      default:
+                        console.warn(
+                          'Unexpected track type in setDomainsCallback'
+                        );
+                    }
                   }
                 }
               }

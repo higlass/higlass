@@ -259,7 +259,7 @@
             { "$ref": "#/definitions/tracks/combined_track" },
             { "$ref": "#/definitions/tracks/heatmap_track" },
             {
-              "$ref": "#/definitions/tracks/independent_viewport_projection_horizontal_track"
+              "$ref": "#/definitions/tracks/independent_viewport_projection_track"
             }
           ]
         }
@@ -422,13 +422,17 @@
           "y": { "type": "number" }
         }
       },
-      "independent_viewport_projection_horizontal_track": {
+      "independent_viewport_projection_track": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "uid": { "type": "string" },
           "type": {
-            "enum": ["viewport-projection-horizontal"]
+            "enum": [
+              "viewport-projection-horizontal",
+              "viewport-projection-vertical",
+              "viewport-projection-center"
+            ]
           },
           "chromInfoPath": { "type": "string" },
           "created": { "type": "string" },
@@ -438,6 +442,7 @@
           "header": { "type": "string" },
           "height": { "type": "number" },
           "initialXDomain": { "$ref": "#/definitions/viewProperties/domain" },
+          "initialYDomain": { "$ref": "#/definitions/viewProperties/domain" },
           "local": { "type": "boolean" },
           "maxWidth": { "type": "number" },
           "name": { "type": "string" },

@@ -18,20 +18,16 @@ class ViewportTracker2D extends SVGTrack {
     this.uid = uid;
     this.options = options;
 
+    // Is there actually a linked _from_ view? Or is this projection "independent"?
+    this.hasFromView = !context.initialXDomain || !context.initialYDomain;
+
     this.removeViewportChanged = removeViewportChanged;
     this.setDomainsCallback = setDomainsCallback;
 
-    this.viewportXDomain = null;
-    this.viewportYDomain = null;
+    this.viewportXDomain = this.hasFromView ? null : context.initialXDomain;
+    this.viewportYDomain = this.hasFromView ? null : context.initialYDomain;
 
-    const maxHalf = Number.MAX_VALUE / 2;
-
-    this.brush = brush(true)
-      .extent([
-        [-maxHalf, -maxHalf],
-        [maxHalf, maxHalf]
-      ])
-      .on('brush', this.brushed.bind(this));
+    this.brush = brush().on('brush', this.brushed.bind(this));
 
     this.gBrush = this.gMain
       .append('g')
@@ -86,6 +82,11 @@ class ViewportTracker2D extends SVGTrack {
       this._yScale.invert(s[0][1]),
       this._yScale.invert(s[1][1])
     ];
+
+    if (!this.hasFromView) {
+      this.viewportXDomain = xDomain;
+      this.viewportYDomain = yDomain;
+    }
 
     this.setDomainsCallback(xDomain, yDomain);
   }
@@ -169,7 +170,25 @@ class ViewportTracker2D extends SVGTrack {
   }
 
   setPosition(newPosition) {
-    super.setPosition(newPosition);
+    const [newX, newY] = newPosition;
+    super.setPosition([
+      newX + this.options.projectionMarginLeft,
+      newY + this.options.projectionMarginTop
+    ]);
+
+    this.draw();
+  }
+
+  setDimensions(newDimensions) {
+    const [newWidth, newHeight] = newDimensions;
+    super.setDimensions([
+      newWidth -
+        this.options.projectionMarginLeft -
+        this.options.projectionMarginRight,
+      newHeight -
+        this.options.projectionMarginTop -
+        this.options.projectionMarginBottom
+    ]);
 
     this.draw();
   }

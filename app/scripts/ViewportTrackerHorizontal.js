@@ -19,7 +19,7 @@ class ViewportTrackerHorizontal extends SVGTrack {
     this.options = options;
 
     // Is there actually a linked _from_ view? Or is this projection "independent"?
-    this.hasFromView = context.initialXDomain === undefined;
+    this.hasFromView = !context.initialXDomain;
 
     this.removeViewportChanged = removeViewportChanged;
     this.setDomainsCallback = setDomainsCallback;
