@@ -383,6 +383,7 @@ class TrackRenderer extends React.Component {
   componentDidUpdate(prevProps) {
     // If the initial domain changed, a new view config
     // probably has loaded. Reset the element's zoomTransform in this case.
+    // In D3, an element’s transform is stored internally as element.__zoom
     if (
       this.props.initialXDomain[0] !== prevProps.initialXDomain[0] ||
       this.props.initialXDomain[1] !== prevProps.initialXDomain[1] ||
@@ -585,7 +586,8 @@ class TrackRenderer extends React.Component {
     this.yDomainLimits = yDomainLimits;
     this.zoomLimits = zoomLimits;
 
-    // Reset the zoomTransform, if the initial domain changed
+    // Reset the local record of the zoom transform to avoid
+    // pan & zoom jumps when saving the viewconfig
     this.zoomTransform = zoomIdentity;
     this.prevZoomTransform = zoomIdentity;
 
