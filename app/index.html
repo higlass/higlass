@@ -22,7 +22,7 @@
       <div style="margin: auto; width: 100%;">
       <div id="demo"></div>
   </div>
-  
+
   <script
     crossorigin
     src="https://unpkg.com/react@16/umd/react.development.js"
@@ -167,55 +167,34 @@ const viewConfig = {
         ],
         center: [
           {
-            uid: 'c1',
-            type: 'combined',
-            height: 200,
-            contents: [
-              {
-                server: 'http://higlass.io/api/v1',
-                tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
-                type: 'heatmap',
-                position: 'center',
-                options: {
-                  colorRange: [
-                    '#FFFFFF',
-                    '#F8E71C',
-                    '#F5A623',
-                    '#D0021B'
-                  ],
-                  colorbarPosition: 'topRight',
-                  colorbarLabelsPosition: 'outside',
-                  maxZoom: null,
-                  labelPosition: 'bottomLeft',
-                  name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb'
-                },
-                uid: 'heatmap1',
-                name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
-                maxWidth: 4194304000,
-                binsPerDimension: 256,
-                maxZoom: 14
-              },
-              {
-                type: '2d-chromosome-grid',
-                datatype: [
-                  'chromosome-2d-grid'
-                ],
-                local: true,
-                orientation: '2d',
-                name: 'Chromosome Grid (hg19)',
-                chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-                thumbnail: null,
-                uuid: 'TIlwFtqxTX-ndtM7Y9k1bw',
-                server: '',
-                tilesetUid: 'TIlwFtqxTX-ndtM7Y9k1bw',
-                serverUidKey: '/TIlwFtqxTX-ndtM7Y9k1bw',
-                uid: 'LUVqXXu2QYiO8XURIwyUyA',
-                options: {}
-              }
-
-            ],
-            position: 'center',
-            options: {}
+            type: 'horizontal-multivec',
+            uid: 'cistrome-track-1',
+            tilesetUid: 'UvVPeLHuRDiYA3qwFlm7xQ',
+            server: 'https://resgen.io/api/v1',
+            options: {
+              labelPosition: 'hidden',
+              labelColor: 'black',
+              labelTextOpacity: 0.4,
+              valueScaling: 'linear',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              heatmapValueScaling: 'log',
+              name: 'my_file_genome_wide.multires.mv5',
+              labelLeftMargin: 0,
+              labelRightMargin: 0,
+              labelTopMargin: 0,
+              labelBottomMargin: 0,
+              labelShowResolution: true,
+              minHeight: 100,
+              colorbarPosition: 'bottomLeft',
+              labelShowAssembly: true,
+              selectRows: null,
+              colorbarBackgroundColor: '#ffffff',
+              scaleStartPercent: '0.00000',
+              scaleEndPercent: '1.00000'
+            },
+            width: 1607,
+            height: 482
           }
         ],
         right: [
