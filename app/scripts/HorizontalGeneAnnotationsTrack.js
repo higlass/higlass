@@ -129,11 +129,11 @@ function externalInitTile(track, tile, options) {
 }
 
 function renderRects(
+  rects,
   track,
   tile,
   graphics,
   xScale,
-  rects,
   color,
   alpha,
   centerY,
@@ -264,11 +264,11 @@ function drawExons(
 }
 
 function renderGeneSymbols(
+  genes,
   track,
   tile,
   graphics,
   xScale,
-  genes,
   color,
   alpha,
   centerY,
@@ -309,11 +309,11 @@ function renderGeneSymbols(
 }
 
 function renderPromoters(
+  genes,
   track,
   tile,
   graphics,
   xScale,
-  genes,
   color,
   alpha,
   centerY,
@@ -375,12 +375,41 @@ function renderPromoters(
   });
 }
 
-function renderGeneExons(
+function renderOperators(
+  genes,
   track,
   tile,
   graphics,
   xScale,
+  color,
+  alpha,
+  centerY,
+  height
+) {
+  const topY = centerY - height / 2;
+  tile.rectGraphics.beginFill(color, 0);
+  // tile.rectGraphics.lineStyle(1, color, 0.2);
+
+  genes.forEach(gene => {
+    const xStart = track._xScale(gene.xStart);
+    const xEnd = track._xScale(gene.xEnd);
+
+    const LINE_WIDTH = 2;
+
+    tile.rectGraphics.lineStyle(LINE_WIDTH, color, alpha);
+    tile.rectGraphics.moveTo(xStart, topY);
+    tile.rectGraphics.lineTo(xStart, centerY + height / 2);
+    tile.rectGraphics.lineTo(xEnd, centerY + height / 2);
+    tile.rectGraphics.lineTo(xEnd, topY);
+  });
+}
+
+function renderGeneExons(
   genes,
+  track,
+  tile,
+  graphics,
+  xScale,
   color,
   alpha,
   centerY,
@@ -410,11 +439,11 @@ function renderGeneExons(
 }
 
 function renderGenes(
+  genes,
   track,
   tile,
   graphics,
   xScale,
-  genes,
   color,
   alpha,
   centerY,
@@ -437,22 +466,22 @@ function renderGenes(
   );
 
   renderGeneSymbols(
+    smallGenes,
     track,
     tile,
     graphics,
     xScale,
-    smallGenes,
     color,
     alpha,
     centerY,
     height
   );
   renderGeneExons(
+    largeGenes,
     track,
     tile,
     graphics,
     xScale,
-    largeGenes,
     color,
     alpha,
     centerY,
@@ -488,7 +517,7 @@ function stretchRects(track) {
         (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
         (track._xScale.domain()[1] - track._xScale.domain()[0]);
 
-      if (tileK > 2) {
+      if (tileK > 2 || tileK < 0.5) {
         // too stretched out, needs to be re-rendered
         track.renderTile(tile);
       } else {
@@ -659,6 +688,10 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const plusPromoters = tile.tileData.filter(
       td => td.type === 'promoter' && td.strand === '+'
     );
+    const plusOperators = tile.tileData.filter(
+      td => td.type === 'operator' && td.strand === '+'
+    );
+
     // const minusPromoters = tile.tileData.filter(
     //   td => td.type === 'promoter' && td.strand === '-'
     // );
@@ -669,6 +702,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       td =>
         td.type !== 'filler' &&
         td.type !== 'promoter' &&
+        td.type !== 'operator' &&
         (td.strand === '+' || td.fields[5] === '+')
     );
     const minusGenes = tile.tileData.filter(
@@ -686,63 +720,41 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const minusStrandCenterY =
       yMiddle + this.fillerHeight / 2 + this.geneStrandSpacing / 2;
 
-    renderRects(
+    const plusRenderContext = [
       this,
       tile,
       tile.rectGraphics,
       this._xScale,
-      plusFillerRects,
       fill['+'],
       FILLER_RECT_ALPHA,
       plusStrandCenterY,
       this.fillerHeight
-    );
-    renderRects(
+    ];
+    const minusRenderContext = [
       this,
       tile,
       tile.rectGraphics,
       this._xScale,
-      minusFillerRects,
       fill['-'],
       FILLER_RECT_ALPHA,
       minusStrandCenterY,
       this.fillerHeight
-    );
+    ];
 
-    renderGenes(
-      this,
-      tile,
-      tile.rectGraphics,
-      this._xScale,
-      plusGenes,
-      fill['+'],
-      GENE_ALPHA,
-      plusStrandCenterY,
-      this.geneRectHeight
-    );
-    renderGenes(
-      this,
-      tile,
-      tile.rectGraphics,
-      this._xScale,
-      minusGenes,
-      fill['-'],
-      GENE_ALPHA,
-      minusStrandCenterY,
-      this.geneRectHeight
-    );
+    renderRects(plusFillerRects, ...plusRenderContext);
+    renderRects(minusFillerRects, ...minusRenderContext);
 
-    renderPromoters(
-      this,
-      tile,
-      tile.rectGraphics,
-      this._xScale,
-      plusPromoters,
-      'black',
-      GENE_ALPHA,
-      plusStrandCenterY,
-      this.geneRectHeight
-    );
+    plusRenderContext[5] = GENE_ALPHA;
+    minusRenderContext[5] = GENE_ALPHA;
+
+    renderGenes(plusGenes, ...plusRenderContext);
+    renderGenes(minusGenes, ...minusRenderContext);
+
+    plusRenderContext[4] = 'black';
+    minusRenderContext[4] = 'black';
+
+    renderPromoters(plusPromoters, ...plusRenderContext);
+    renderOperators(plusOperators, ...plusRenderContext);
 
     renderMask(this, tile);
   }
