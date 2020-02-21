@@ -158,7 +158,6 @@ function renderRects(
       topY
     ];
 
-    // console.log('poly:', poly);
     tile.rectGraphics.drawPolygon(poly);
     tile.allRects.push([poly, td.strand]);
   });
@@ -302,7 +301,6 @@ function renderGeneSymbols(
       ];
     }
 
-    // console.log('poly:', poly);
     tile.rectGraphics.drawPolygon(poly);
     tile.allRects.push([poly, gene.strand]);
   });
@@ -369,7 +367,6 @@ function renderPromoters(
       centerY + height / 2
     ];
 
-    // console.log('poly:', poly);
     tile.rectGraphics.drawPolygon(poly);
     tile.allRects.push([poly, gene.strand]);
   });
@@ -696,8 +693,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     //   td => td.type === 'promoter' && td.strand === '-'
     // );
 
-    // console.log('plusFillerRects', plusFillerRects, tile.tileData);
-
     const plusGenes = tile.tileData.filter(
       td =>
         td.type !== 'filler' &&
@@ -757,6 +752,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     renderOperators(plusOperators, ...plusRenderContext);
 
     renderMask(this, tile);
+
+    stretchRects(this);
   }
 
   calculateZoomLevel() {
