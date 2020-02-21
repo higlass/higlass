@@ -12,6 +12,7 @@ import { topAxisOnly } from './view-configs';
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 import viewConfig from './view-configs/viewport-projection';
+import viewConfigWithoutFromViewUids from './view-configs-more/viewportProjectionsWithoutFromViewUids';
 
 describe('Simple HiGlassComponent', () => {
   let api;
@@ -127,6 +128,82 @@ describe('Simple HiGlassComponent', () => {
       removeDiv(div0);
       api0 = undefined;
       div0 = undefined;
+    });
+  });
+
+  describe('Viewport projection without linked views tests', () => {
+    beforeEach(() => {
+      [div, api] = createElementAndApi(viewConfigWithoutFromViewUids);
+    });
+
+    it('Ensure that the viewport projection horizontal is rendered', done => {
+      waitForTilesLoaded(api.getComponent(), () => {
+        const trackObj = getTrackObjectFromHGC(
+          api.getComponent(),
+          'viewport-projection-test-view',
+          'viewport-projection-test-track-h',
+          true
+        );
+
+        const viewportRect = trackObj.gMain.select('rect.selection');
+
+        expect(Math.round(viewportRect.attr('x'))).toEqual(213);
+        expect(Math.round(viewportRect.attr('y'))).toEqual(30);
+        expect(Math.round(viewportRect.attr('width'))).toEqual(59);
+        expect(Math.round(viewportRect.attr('height'))).toEqual(578);
+        expect(viewportRect.style('fill')).toEqual('rgb(255, 0, 0)');
+
+        done();
+      });
+    });
+
+    it('Ensure that the viewport projection vertical is rendered', done => {
+      waitForTilesLoaded(api.getComponent(), () => {
+        const trackObj = getTrackObjectFromHGC(
+          api.getComponent(),
+          'viewport-projection-test-view',
+          'viewport-projection-test-track-v',
+          true
+        );
+
+        const viewportRect = trackObj.gMain.select('rect.selection');
+
+        expect(Math.round(viewportRect.attr('x'))).toEqual(30);
+        expect(Math.round(viewportRect.attr('y'))).toEqual(238);
+        expect(Math.round(viewportRect.attr('width'))).toEqual(505);
+        expect(Math.round(viewportRect.attr('height'))).toEqual(18);
+        expect(viewportRect.style('fill')).toEqual('rgb(0, 255, 0)');
+
+        done();
+      });
+    });
+
+    it('Ensure that the viewport projection center is rendered', done => {
+      waitForTilesLoaded(api.getComponent(), () => {
+        const trackObj = getTrackObjectFromHGC(
+          api.getComponent(),
+          'viewport-projection-test-view',
+          'viewport-projection-test-track-c',
+          true
+        );
+
+        const viewportRect = trackObj.gMain.select('rect.selection');
+
+        expect(Math.round(viewportRect.attr('x'))).toEqual(213);
+        expect(Math.round(viewportRect.attr('y'))).toEqual(238);
+        expect(Math.round(viewportRect.attr('width'))).toEqual(59);
+        expect(Math.round(viewportRect.attr('height'))).toEqual(18);
+        expect(viewportRect.style('fill')).toEqual('rgb(0, 0, 255)');
+
+        done();
+      });
+    });
+
+    afterEach(() => {
+      api.destroy();
+      removeDiv(div);
+      api = undefined;
+      div = undefined;
     });
   });
 });

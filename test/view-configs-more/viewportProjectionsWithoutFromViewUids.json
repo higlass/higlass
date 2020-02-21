@@ -155,45 +155,46 @@
         "right": [],
         "whole": [
           {
-            "uid": "cistrome-track-col-projection-95",
+            "uid": "viewport-projection-test-track-h",
             "type": "viewport-projection-horizontal",
             "fromViewUid": null,
             "initialXDomain": [225681609.97037065, 226375261.90599522],
             "options": {
-              "projectionFillColor": "red",
+              "projectionFillColor": "#F00",
               "projectionStrokeColor": "#777",
               "projectionFillOpacity": 0.3,
               "projectionStrokeOpacity": 0.7,
               "projectionMarginTop": 30,
+              "projectionMarginBottom": 20,
               "strokeWidth": 1
             }
           },
           {
-            "uid": "cistrome-track-col-projection-96",
+            "uid": "viewport-projection-test-track-v",
             "type": "viewport-projection-vertical",
             "fromViewUid": null,
             "initialYDomain": [2670753544.4239845, 2670969299.860656],
             "options": {
-              "projectionFillColor": "green",
+              "projectionFillColor": "#0F0",
               "projectionStrokeColor": "#777",
               "projectionFillOpacity": 0.3,
               "projectionStrokeOpacity": 0.7,
               "projectionMarginLeft": 30,
+              "projectionMarginRight": 20,
               "strokeWidth": 1
             }
           },
           {
-            "uid": "cistrome-track-col-projection-97",
+            "uid": "viewport-projection-test-track-c",
             "type": "viewport-projection-center",
             "fromViewUid": null,
-            "initialXDomain": [227475261.90599522, 227575261.90599522],
-            "initialYDomain": [2671969299.860656, 2672069299.860656],
+            "initialXDomain": [225681609.97037065, 226375261.90599522],
+            "initialYDomain": [2670753544.4239845, 2670969299.860656],
             "options": {
-              "projectionFillColor": "blue",
+              "projectionFillColor": "#00F",
               "projectionStrokeColor": "#777",
               "projectionFillOpacity": 0.3,
               "projectionStrokeOpacity": 0.7,
-              "projectionMarginLeft": 30,
               "strokeWidth": 1
             }
           }
@@ -206,7 +207,7 @@
         "x": 0,
         "y": 0
       },
-      "uid": "cistrome-view-1-with-col-projection"
+      "uid": "viewport-projection-test-view"
     }
   ],
   "zoomLocks": {
