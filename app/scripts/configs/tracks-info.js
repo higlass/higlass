@@ -1122,6 +1122,8 @@ export const TRACKS_INFO = [
     availableOptions: [
       'projectionFillColor',
       'projectionStrokeColor',
+      'projectionMarginTop',
+      'projectionMarginBottom',
       'strokeWidth'
     ],
     defaultOptions: {
@@ -1129,6 +1131,8 @@ export const TRACKS_INFO = [
       projectionStrokeColor: '#777',
       projectionFillOpacity: 0.3,
       projectionStrokeOpacity: 0.7,
+      projectionMarginTop: 0,
+      projectionMarginBottom: 0,
       strokeWidth: 1
     }
   },

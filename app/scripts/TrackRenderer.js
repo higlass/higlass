@@ -1491,7 +1491,8 @@ class TrackRenderer extends React.Component {
       onMouseMoveZoom: this.props.onMouseMoveZoom,
       chromInfoPath: track.chromInfoPath,
       isShowGlobalMousePosition: () => this.props.isShowGlobalMousePosition,
-      getTheme: () => this.props.theme
+      getTheme: () => this.props.theme,
+      initialXDomain: track.initialXDomain
     };
 
     // for horizontal and vertical rules
