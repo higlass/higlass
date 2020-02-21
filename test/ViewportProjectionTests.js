@@ -199,6 +199,42 @@ describe('Simple HiGlassComponent', () => {
       });
     });
 
+    it('Publishes an updated view config when the domain of the viewport projection horizontal changes', done => {
+      waitForTilesLoaded(api.getComponent(), () => {
+        const trackObj = getTrackObjectFromHGC(
+          api.getComponent(),
+          'viewport-projection-test-view',
+          'viewport-projection-test-track-h',
+          true
+        );
+
+        const oldViewConfig = api.getViewConfig();
+        expect(
+          Math.round(oldViewConfig.views[0].tracks.whole[0].initialXDomain[0])
+        ).toEqual(225681610);
+        expect(
+          Math.round(oldViewConfig.views[0].tracks.whole[0].initialXDomain[1])
+        ).toEqual(226375262);
+
+        api.on('viewConfig', newViewConfigString => {
+          const newViewConfig = JSON.parse(newViewConfigString);
+          expect(
+            Math.round(newViewConfig.views[0].tracks.whole[0].initialXDomain[0])
+          ).toEqual(225681615);
+          expect(
+            Math.round(newViewConfig.views[0].tracks.whole[0].initialXDomain[1])
+          ).toEqual(226375265);
+
+          done();
+        });
+
+        const x0 = trackObj._xScale(225681615);
+        const x1 = trackObj._xScale(226375265);
+        const dest = [x0, x1];
+        trackObj.brush.move(trackObj.gBrush, dest);
+      });
+    });
+
     afterEach(() => {
       api.destroy();
       removeDiv(div);
