@@ -1,295 +1,228 @@
 <!DOCTYPE html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>HiGlass</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
-  <link rel="stylesheet" href="styles/page.css">
-  <link rel="stylesheet" href="hglib.css">
-  <style type="text/css">
-    #demo {
-      position: absolute;
-      left: 1rem;
-      top: 1rem;
-      bottom: 1rem;
-      right: 1rem;
-      overflow: hidden;
-    }
-  </style>
-</head>
-<body>
-  <div style="height: 50px" />
-      <div style="margin: auto; width: 100%;">
-      <div id="demo"></div>
-  </div>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>HiGlass</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="hglib.css" />
 
-  <script
-    crossorigin
-    src="https://unpkg.com/react@16/umd/react.development.js"
-  ></script>
-  <script
-    crossorigin
-    src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
-  ></script>
-  <script
-    crossorigin
-    src="https://unpkg.com/pixi.js-legacy@5/dist/pixi-legacy.js"
-  ></script>
-  <script
-    crossorigin
-    src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"
-  ></script>
-  <script
-    crossorigin
-    src="https://unpkg.com/lodash@4.17.15/lodash.min.js"
-  ></script>
-  <script src="hglib.js"></script>
-  <script>
-
-const viewConfig = {
-  editable: true,
-  zoomFixed: false,
-  trackSourceServers: [
-    'http://higlass.io/api/v1'
-  ],
-  exportViewUrl: 'http://higlass.io/api/v1/viewconfs/',
-  views: [
-    {
-      uid: 'aa',
-      initialXDomain: [1000000000, 3000000000],
-      initialYDomain: [1000000000, 3000000000],
-      autocompleteSource: 'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
-      genomePositionSearchBox: {
-        autocompleteId: 'OHJakQICQD6gTD7skx4EWA',
-        autocompleteServer: 'http://higlass.io/api/v1',
-        chromInfoId: 'hg19',
-        chromInfoServer: 'http://higlass.io/api/v1',
-        visible: true
-      },
-      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-      tracks: {
-        top: [
-          {
-            uuid: 'OHJakQICQD6gTD7skx4EWA',
-            filetype: 'beddb',
-            datatype: 'gene-annotation',
-            private: false,
-            name: 'Gene Annotations (hg19)',
-            coordSystem: 'hg19',
-            coordSystem2: '',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            serverUidKey: 'http://higlass.io/api/v1/OHJakQICQD6gTD7skx4EWA',
-            uid: 'BEEMEjU7QCa2krDO9C0yOQ',
-            type: 'horizontal-gene-annotations',
-            options: {
-              labelPosition: 'outerTop',
-              name: 'Gene Annotations (hg19)'
-            },
-            width: 20,
-            height: 60,
-            maxWidth: 4294967296,
-            maxZoom: 22
-          },
-          {
-            filetype: 'hitile',
-            datatype: 'vector',
-            private: false,
-            name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
-            coordSystem: 'hg19',
-            coordSystem2: '',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
-            serverUidKey: 'http://higlass.io/api/v1/F2vbUeqhS86XkxuO1j2rPA',
-            type: 'horizontal-line',
-            options: {
-              labelColor: 'red',
-              labelPosition: 'outerLeft',
-              axisPositionHorizontal: 'right',
-              lineStrokeColor: 'blue',
-              name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
-              valueScaling: 'log'
-            },
-            width: 20,
-            height: 20,
-            maxWidth: 4294967296,
-            maxZoom: 22
-          },
-          {
-            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            type: 'horizontal-chromosome-labels',
-            position: 'top',
-            name: 'Chromosome Labels (hg19)',
-            height: 30,
-            uid: 'I1QUF22JQJuJ38j9PS4iqw',
-            options: {}
-          }
-        ],
-        left: [
-          {
-            name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
-            type: 'vertical-line',
-            options: {
-              labelColor: 'red',
-              labelPosition: 'outerLeft',
-              axisPositionHorizontal: 'right',
-              lineStrokeColor: 'blue',
-              name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
-              valueScaling: 'log'
-            }
-          },
-          {
-            type: 'vertical-gene-annotations',
-            width: 60,
-            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            server: 'http://higlass.io/api/v1',
-            position: 'left',
-            name: 'Gene Annotations (hg19)',
-            options: {
-              labelPosition: 'bottomRight',
-              name: 'Gene Annotations (hg19)'
-            },
-            uid: 'OgnAEKSHRaG-gR1RqPOuBQ',
-            maxWidth: 4294967296,
-            maxZoom: 22
-          },
-          {
-            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            type: 'vertical-chromosome-labels',
-            position: 'left',
-            name: 'Chromosome Labels (hg19)',
-            width: 30,
-            uid: 'a-mFiHnBQ8uuI6UG3USWVA',
-            options: {}
-          }
-        ],
-        center: [
-          {
-            type: 'horizontal-multivec',
-            uid: 'cistrome-track-1',
-            tilesetUid: 'UvVPeLHuRDiYA3qwFlm7xQ',
-            server: 'https://resgen.io/api/v1',
-            options: {
-              labelPosition: 'hidden',
-              labelColor: 'black',
-              labelTextOpacity: 0.4,
-              valueScaling: 'linear',
-              trackBorderWidth: 0,
-              trackBorderColor: 'black',
-              heatmapValueScaling: 'log',
-              name: 'my_file_genome_wide.multires.mv5',
-              labelLeftMargin: 0,
-              labelRightMargin: 0,
-              labelTopMargin: 0,
-              labelBottomMargin: 0,
-              labelShowResolution: true,
-              minHeight: 100,
-              colorbarPosition: 'bottomLeft',
-              labelShowAssembly: true,
-              selectRows: null,
-              colorbarBackgroundColor: '#ffffff',
-              scaleStartPercent: '0.00000',
-              scaleEndPercent: '1.00000'
-            },
-            width: 1607,
-            height: 482
-          }
-        ],
-        right: [
-          {
-            type: 'vertical-gene-annotations',
-            width: 60,
-            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            server: 'http://higlass.io/api/v1',
-            name: 'Gene Annotations (hg19)',
-            options: {
-              labelPosition: 'outerBottom',
-              name: 'Gene Annotations (hg19)'
-            },
-            maxWidth: 4294967296,
-            maxZoom: 22
-          },
-          {
-            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            type: 'vertical-chromosome-labels',
-            name: 'Chromosome Labels (hg19)',
-            width: 30,
-            options: {
-              labelPosition: 'outerBottom',
-              name: 'Chromosome labels'
-            }
-          }
-        ],
-        bottom: [
-          {
-            filetype: 'hitile',
-            datatype: 'vector',
-            private: false,
-            name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
-            coordSystem: 'hg19',
-            coordSystem2: '',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
-            serverUidKey: 'http://higlass.io/api/v1/F2vbUeqhS86XkxuO1j2rPA',
-            type: 'horizontal-line',
-            options: {
-              labelPosition: 'outerLeft',
-              axisPositionHorizontal: 'right',
-              lineStrokeColor: 'blue',
-              name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
-              valueScaling: 'log'
-            },
-            width: 20,
-            height: 50,
-            maxWidth: 4294967296,
-            maxZoom: 22
-          },
-        ]
-      },
-      layout: {
-        w: 12,
-        h: 12,
-        x: 0,
-        y: 0,
-        i: 'aa',
-        moved: false,
-        static: false
+    <style type="text/css">
+      #demo {
+        position: absolute;
+        left: 1rem;
+        top: 1rem;
+        bottom: 1rem;
+        right: 1rem;
+        overflow: hidden;
       }
-    }
-  ],
-  zoomLocks: {
-    locksByViewUid: {},
-    locksDict: {}
-  },
-  locationLocks: {
-    locksByViewUid: {},
-    locksDict: {}
-  }
-};
+    </style>
+  </head>
+  <body>
+    <button id="my-button">Select Random Rows</button>
+    <div id="demo"></div>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@16/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/pixi.js-legacy@5/dist/pixi-legacy.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/lodash@4.17.15/lodash.min.js"
+    ></script>
+    <script src="hglib.js"></script>
+    <script>
+      const viewConfig = {
+        editable: true,
+        zoomFixed: false,
+        trackSourceServers: ['https://higlass.io/api/v1'],
+        exportViewUrl: '/api/v1/viewconfs',
+        views: [
+          {
+            initialXDomain: [223681609.97037065, 229375261.90599522],
+            initialYDomain: [2669701992.9406533, 2671501798.3511796],
+            tracks: {
+              top: [
+                {
+                  type: 'horizontal-chromosome-labels',
+                  uid: 'GzHGPlijS2eASBqslzVcxA',
+                  tilesetUid: 'ZpZ8c5JJRUS1J7ZkofcUrg',
+                  server: 'https://resgen.io/api/v1',
+                  options: {
+                    showMousePosition: false,
+                    mousePositionColor: '#999999',
+                    color: '#808080',
+                    stroke: '#ffffff',
+                    fontSize: 12,
+                    fontIsLeftAligned: false
+                  },
+                  width: 1027,
+                  height: 30
+                },
+                {
+                  type: 'horizontal-gene-annotations',
+                  uid: 'R6ZZ5LnEQ4ODCWZoE38maw',
+                  tilesetUid: 'M9A9klpwTci5Vf4bHZ864g',
+                  server: 'https://resgen.io/api/v1',
+                  options: {
+                    labelColor: 'black',
+                    labelPosition: 'hidden',
+                    plusStrandColor: 'blue',
+                    minusStrandColor: 'red',
+                    trackBorderWidth: 0,
+                    trackBorderColor: 'black',
+                    showMousePosition: false,
+                    name: 'gene-annotations-hg38_3d2Hebg.db',
+                    mousePositionColor: '#999999',
+                    fontSize: 10,
+                    labelBackgroundColor: '#ffffff',
+                    labelLeftMargin: 0,
+                    labelRightMargin: 0,
+                    labelTopMargin: 0,
+                    labelBottomMargin: 0,
+                    minHeight: 24,
+                    geneAnnotationHeight: 12,
+                    geneLabelPosition: 'outside',
+                    geneStrandSpacing: 4
+                  },
+                  width: 568,
+                  height: 70
+                },
+                {
+                  type: 'horizontal-bar',
+                  uid: 'bmcNxj_MSEar_3nYVMnPnQ',
+                  tilesetUid: 'a-iBpdh3Q_uO2FLCWKpOOw',
+                  server: 'https://resgen.io/api/v1',
+                  options: {
+                    labelColor: 'black',
+                    labelPosition: 'topLeft',
+                    axisPositionHorizontal: 'right',
+                    barFillColor: 'darkgreen',
+                    valueScaling: 'linear',
+                    trackBorderWidth: 0,
+                    trackBorderColor: 'black',
+                    labelTextOpacity: 0.4,
+                    barOpacity: 1,
+                    name: 'conservation (hg38.phastCons100way.bw)',
+                    align: 'bottom',
+                    labelLeftMargin: 0,
+                    labelRightMargin: 0,
+                    labelTopMargin: 0,
+                    labelBottomMargin: 0,
+                    labelShowResolution: false,
+                    axisLabelFormatting: 'scientific',
+                    labelShowAssembly: true
+                  },
+                  width: 568,
+                  height: 42
+                }
+              ],
+              left: [],
+              center: [
+                {
+                  type: 'horizontal-multivec',
+                  uid: 'cistrome-track-1',
+                  tilesetUid: 'UvVPeLHuRDiYA3qwFlm7xQ',
+                  server: 'https://resgen.io/api/v1',
+                  options: {
+                    labelPosition: 'hidden',
+                    labelColor: 'black',
+                    labelTextOpacity: 0.4,
+                    valueScaling: 'linear',
+                    trackBorderWidth: 0,
+                    trackBorderColor: 'black',
+                    heatmapValueScaling: 'log',
+                    name: 'my_file_genome_wide.multires.mv5',
+                    labelLeftMargin: 0,
+                    labelRightMargin: 0,
+                    labelTopMargin: 0,
+                    labelBottomMargin: 0,
+                    labelShowResolution: true,
+                    minHeight: 100,
+                    colorbarPosition: 'bottomLeft',
+                    labelShowAssembly: true,
+                    selectRows: null,
+                    colorbarBackgroundColor: '#ffffff',
+                    scaleStartPercent: '0.00000',
+                    scaleEndPercent: '1.00000'
+                  },
+                  width: 1607,
+                  height: 482
+                }
+              ],
+              bottom: [],
+              right: [],
+              whole: [],
+              gallery: []
+            },
+            layout: {
+              w: 12,
+              h: 71,
+              x: 0,
+              y: 0
+            },
+            uid: 'cistrome-view-1-with-col-projection'
+          }
+        ],
+        zoomLocks: {
+          locksByViewUid: {},
+          locksDict: {}
+        },
+        locationLocks: {
+          locksByViewUid: {},
+          locksDict: {}
+        },
+        valueScaleLocks: {
+          locksByViewUid: {},
+          locksDict: {}
+        }
+      };
 
-const hgApi = hglib.viewer(document.getElementById('demo'), viewConfig, {
+      const hgApi = hglib.viewer(document.getElementById('demo'), viewConfig, {
         bounded: true
       });
 
-setTimeout(() => {
-  hgApi.activateTool('select');
-}, 2000);
+      hgApi.on('viewConfig', () => {
+        console.log('View Config changed');
+      });
 
-const rangeSelectionHander = (rangeSelection) => {
-  console.log(
-    'Selected the following range:',
-    rangeSelection.dataRange,
-    rangeSelection.genomicRange,
-  );
-};
-hgApi.on('rangeSelection', rangeSelectionHander);
-
-setTimeout(() => {
-  hgApi.off('rangeSelection', rangeSelectionHander);
-}, 10000);
-
-</script>
-</body>
+      document.getElementById('my-button').addEventListener('click', () => {
+        const getProjectionTrackDef = () => {
+          const i = Math.round(Math.random() * 100);
+          return {
+            uid: `cistrome-track-col-projection-${i}`,
+            type: 'viewport-projection-horizontal',
+            fromViewUid: null,
+            initialXDomain: [225681609.97037065, 227375261.90599522],
+            options: {
+              projectionFillColor: '#777',
+              projectionStrokeColor: '#777',
+              projectionFillOpacity: 0.3,
+              projectionStrokeOpacity: 0.7,
+              strokeWidth: 1,
+              projectionMarginTop: 30,
+              projectionMarginBottom: 0
+            }
+          };
+        };
+        const newViewConfig = _.cloneDeep(hgApi.getViewConfig());
+        newViewConfig.views[0].tracks.whole.push(getProjectionTrackDef());
+        hgApi.setViewConfig(newViewConfig);
+      });
+    </script>
+  </body>
 </html>

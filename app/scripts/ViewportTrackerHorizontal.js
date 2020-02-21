@@ -22,7 +22,7 @@ class ViewportTrackerHorizontal extends SVGTrack {
     this.hasFromView = context.initialXDomain === undefined;
 
     this.removeViewportChanged = removeViewportChanged;
-    this.setDomainsCallback = this.hasFromView ? setDomainsCallback : () => {};
+    this.setDomainsCallback = setDomainsCallback;
 
     this.viewportXDomain = this.hasFromView ? null : context.initialXDomain;
     this.viewportYDomain = this.hasFromView ? null : [0, 0];
@@ -68,12 +68,13 @@ class ViewportTrackerHorizontal extends SVGTrack {
       return;
     }
 
-    const xDomain = [
-      this._xScale.invert(s[0][0]),
-      this._xScale.invert(s[1][0])
-    ];
+    const xDomain = [this._xScale.invert(s[0]), this._xScale.invert(s[1])];
 
     const yDomain = this.viewportYDomain;
+
+    if (!this.hasFromView) {
+      this.viewportXDomain = xDomain;
+    }
 
     // console.log('xDomain:', xDomain);
     // console.log('yDomain:', yDomain);
@@ -141,7 +142,20 @@ class ViewportTrackerHorizontal extends SVGTrack {
   }
 
   setPosition(newPosition) {
-    super.setPosition(newPosition);
+    const [newX, newY] = newPosition;
+    super.setPosition([newX, newY + this.options.projectionMarginTop]);
+
+    this.draw();
+  }
+
+  setDimensions(newDimensions) {
+    const [newWidth, newHeight] = newDimensions;
+    super.setDimensions([
+      newWidth,
+      newHeight -
+        this.options.projectionMarginTop -
+        this.options.projectionMarginBottom
+    ]);
 
     this.draw();
   }

@@ -2804,6 +2804,31 @@ class HiGlassComponent extends React.Component {
       track.removeViewportChanged = trackId =>
         this.removeScalesChangedListener(fromView, trackId);
       track.setDomainsCallback = (xDomain, yDomain) => {
+        if (!fromView) {
+          // If there is no `fromView`, then there must be an `initialXDomain` instead.
+          // Update the viewconfig to reflect the new `initialXDomain` array
+          // on the `viewport-projection-horizontal` track.
+          const { viewConfig } = this.state;
+          const newViewConfig = JSON.parse(JSON.stringify(viewConfig));
+          for (const view of viewConfig.views) {
+            if (view.uid === viewUid) {
+              for (const tracks of Object.values(view.tracks)) {
+                for (const otherTrack of tracks) {
+                  if (
+                    otherTrack.uid === track.uid &&
+                    track.type === 'viewport-projection-horizontal'
+                  ) {
+                    track.initialXDomain = xDomain;
+                  }
+                }
+              }
+            }
+          }
+          const newViews = this.processViewConfig(newViewConfig);
+          this.setState({ views: newViews, viewConfig: newViewConfig });
+          // Return early, since the remaining code uses the `fromView` variable.
+          return;
+        }
         const tXScale = scaleLinear()
           .domain(xDomain)
           .range(this.xScales[fromView].range());
