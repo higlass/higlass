@@ -22,6 +22,7 @@ const EXON_LINE_HEIGHT = 2;
 const MAX_GENE_ENTRIES = 50;
 const MAX_FILLER_ENTRIES = 5000;
 const FILLER_HEIGHT = 14;
+const LINE_WIDTH = 2;
 
 const trackUtils = {
   getTilePosAndDimensions: (tilesetInfo, tileId) => {
@@ -318,57 +319,64 @@ function renderPromoters(
   height
 ) {
   const topY = centerY - height / 2;
-  tile.rectGraphics.beginFill(color, alpha);
   // tile.rectGraphics.lineStyle(1, color, 0.2);
+  tile.rectGraphics.lineStyle(LINE_WIDTH, color, alpha);
 
   genes.forEach(gene => {
-    const xStart = track._xScale(gene.xStart);
-    const xEnd = track._xScale(gene.xEnd);
+    let xStart = track._xScale(gene.xStart);
+    let xEnd = track._xScale(gene.xEnd);
 
     const ARROW_HEIGHT = 4;
     const ARROW_WIDTH = 6;
-    const STEM_WIDTH = 2;
 
-    let poly = [];
-    poly = [
-      // bottom
-      xStart - STEM_WIDTH / 2,
-      centerY + height / 2,
-      // upper left
-      xStart - STEM_WIDTH / 2,
-      topY - STEM_WIDTH / 2,
+    const arrowWidth = Math.min(ARROW_WIDTH, xEnd - xStart);
+    let arrowPoly = null;
 
-      // upper right
-      xEnd - ARROW_WIDTH,
-      topY - STEM_WIDTH / 2,
+    if (gene.strand === '-') {
+      [xStart, xEnd] = [xEnd, xStart];
+      arrowPoly = [
+        // top tip of arrow
+        xEnd + arrowWidth,
+        topY + ARROW_HEIGHT,
 
-      // top tip of arrow
-      xEnd - ARROW_WIDTH,
-      topY - ARROW_HEIGHT,
+        // right end of arrow
+        xEnd,
+        topY,
 
-      // right end of arrow
-      xEnd,
-      topY,
+        // bottom tip of arrow
+        xEnd + arrowWidth,
+        topY - ARROW_HEIGHT
+      ];
+    } else {
+      arrowPoly = [
+        // top tip of arrow
+        xEnd - arrowWidth,
+        topY - ARROW_HEIGHT,
 
-      // bottom tip of arrow
-      xEnd - ARROW_WIDTH,
-      topY + ARROW_HEIGHT,
+        // right end of arrow
+        xEnd,
+        topY,
 
-      // bottom right end of arrow stem
-      xEnd - ARROW_WIDTH,
-      topY + STEM_WIDTH / 2,
+        // bottom tip of arrow
+        xEnd - arrowWidth,
+        topY + ARROW_HEIGHT
+      ];
+    }
 
-      // left bottom end of horizontal arrow stem
-      xStart + STEM_WIDTH / 2,
-      topY + STEM_WIDTH / 2,
+    tile.rectGraphics.beginFill(color, alpha);
+    tile.rectGraphics.drawPolygon(arrowPoly);
+    tile.rectGraphics.beginFill(color, 0);
 
-      // right bottom end of vertical arrow stem
-      xStart + STEM_WIDTH / 2,
-      centerY + height / 2
-    ];
+    tile.rectGraphics.moveTo(xStart, centerY + height / 2);
+    tile.rectGraphics.lineTo(xStart, topY);
 
-    tile.rectGraphics.drawPolygon(poly);
-    tile.allRects.push([poly, gene.strand]);
+    if (gene.strand === '-') {
+      tile.rectGraphics.lineTo(xEnd + arrowWidth, topY);
+    } else {
+      tile.rectGraphics.lineTo(xEnd - arrowWidth, topY);
+    }
+
+    tile.allRects.push([arrowPoly, gene.strand]);
   });
 }
 
@@ -390,8 +398,6 @@ function renderOperators(
   genes.forEach(gene => {
     const xStart = track._xScale(gene.xStart);
     const xEnd = track._xScale(gene.xEnd);
-
-    const LINE_WIDTH = 2;
 
     tile.rectGraphics.lineStyle(LINE_WIDTH, color, alpha);
     tile.rectGraphics.moveTo(xStart, topY);
@@ -685,6 +691,10 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const plusPromoters = tile.tileData.filter(
       td => td.type === 'promoter' && td.strand === '+'
     );
+    const minusPromoters = tile.tileData.filter(
+      td => td.type === 'promoter' && td.strand === '-'
+    );
+
     const plusOperators = tile.tileData.filter(
       td => td.type === 'operator' && td.strand === '+'
     );
@@ -749,6 +759,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     minusRenderContext[4] = 'black';
 
     renderPromoters(plusPromoters, ...plusRenderContext);
+    renderPromoters(minusPromoters, ...minusRenderContext);
+
     renderOperators(plusOperators, ...plusRenderContext);
 
     renderMask(this, tile);
@@ -856,23 +868,23 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           if (!parentInFetched) {
             text.visible = true;
 
-            const TEXT_MARGIN = 3;
+            const TEXT_MARGIN = 2;
 
             if (this.flipText) {
               // when flipText is set, that means that the track is being displayed
               // vertically so we need to use the stored text height rather than width
               this.allBoxes.push([
-                text.position.x,
+                text.position.x - tile.textHeights[geneId] / 2 - TEXT_MARGIN,
                 textYMiddle - fontSizeHalf - 1,
-                text.position.x + tile.textHeights[geneId] + TEXT_MARGIN,
+                text.position.x + tile.textHeights[geneId] / 2 + TEXT_MARGIN,
                 textYMiddle + fontSizeHalf - 1,
                 geneName
               ]);
             } else {
               this.allBoxes.push([
-                text.position.x,
+                text.position.x - tile.textWidths[geneId] / 2 - TEXT_MARGIN,
                 textYMiddle - fontSizeHalf - 1,
-                text.position.x + tile.textWidths[geneId] + TEXT_MARGIN,
+                text.position.x + tile.textWidths[geneId] / 2 + TEXT_MARGIN,
                 textYMiddle + fontSizeHalf - 1,
                 geneName
               ]);
