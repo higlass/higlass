@@ -659,6 +659,7 @@ const createApi = function api(context, pubSub) {
        * hgv.off('rangeSelection', rangeListener);
        * hgv.off('viewConfig', viewConfigListener);
        * hgv.off('mouseMoveZoom', mmz);
+       * hgv.off('createSVG');
        */
       off(event, listenerId, viewId) {
         const callback =
@@ -815,6 +816,9 @@ const createApi = function api(context, pubSub) {
        *    // If `true` `center`, `xRange`, and `yRange` are given in genomic positions
        *    isGenomicCoords
        *  }
+       *
+       * ``createSVG:`` Set a callback to obtain the current exported SVG DOM node,
+       *                and potentially return a manipulated SVG DOM node.
        *
        * @param {string} event One of the events described below
        *
