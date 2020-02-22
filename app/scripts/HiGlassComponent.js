@@ -1290,16 +1290,23 @@ class HiGlassComponent extends React.Component {
         }
       }
     }
-    return svg;
-  }
-
-  createSVGString() {
-    const svg = this.createSVG();
 
     // FF is fussier than Chrome, and requires dimensions on the SVG,
     // if it is to be used as an image src.
     svg.setAttribute('width', this.canvasElement.style.width);
     svg.setAttribute('height', this.canvasElement.style.height);
+
+    if (this.postCreateSVGCallback) {
+      // Allow the callback function to modify the exported SVG string
+      // before it is finalized and returned.
+      const modifiedSvg = this.postCreateSVGCallback(svg);
+      return modifiedSvg;
+    }
+    return svg;
+  }
+
+  createSVGString() {
+    const svg = this.createSVG();
 
     let svgString = vkbeautify.xml(
       new window.XMLSerializer().serializeToString(svg)
@@ -1331,6 +1338,14 @@ class HiGlassComponent extends React.Component {
       'export.svg',
       new Blob([this.createSVGString()], { type: 'image/svg+xml' })
     );
+  }
+
+  offPostCreateSVG() {
+    this.postCreateSVGCallback = null;
+  }
+
+  onPostCreateSVG(callback) {
+    this.postCreateSVGCallback = callback;
   }
 
   createPNGBlobPromise() {

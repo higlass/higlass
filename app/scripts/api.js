@@ -689,6 +689,10 @@ const createApi = function api(context, pubSub) {
             self.offViewChange(listenerId);
             break;
 
+          case 'createSVG':
+            self.offPostCreateSVG();
+            break;
+
           default:
             // nothing
             break;
@@ -861,6 +865,9 @@ const createApi = function api(context, pubSub) {
 
           case 'viewConfig':
             return self.onViewChange(callback);
+
+          case 'createSVG':
+            return self.onPostCreateSVG(callback);
 
           default:
             return undefined;
