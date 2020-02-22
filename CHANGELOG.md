@@ -5,6 +5,9 @@
 - Remove Content-Type headers when fetching genbank files
 - Enabled view-based scaling
 - Left and right tracks can now be value scale locked
+- Added the fields `xRange` and `yRange` the object returned by the JavaScript API `.getLocation()` method. 
+
+_[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.3...develop)_
 
 ## v1.8.4
 
