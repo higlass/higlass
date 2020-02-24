@@ -95,6 +95,7 @@ class HiGlassComponent extends React.Component {
   constructor(props) {
     super(props);
 
+    console.log('ResGlass mod');
     // Check React version
     if (numericifyVersion(React.version) < 15.6) {
       console.warn(
@@ -2896,7 +2897,7 @@ class HiGlassComponent extends React.Component {
     const toRemove = [];
 
     for (const viewUid of dictKeys(locks)) {
-      if (!locks[viewUid][viewUid]) {
+      if (!locks[viewUid] || !locks[viewUid][viewUid]) {
         // we need to have the starting location of the
         // lock's namesake view
         toRemove.push(viewUid);
@@ -2905,9 +2906,7 @@ class HiGlassComponent extends React.Component {
 
     for (const viewUid of toRemove) {
       if (locks[viewUid]) {
-        console.warn(
-          `View ${viewUid} not present in lockGroup: ${locks}. Removing...`
-        );
+        console.warn(`View ${viewUid} not present in lock group. Removing...`);
         this.handleUnlock(viewUid, locks);
         delete locks[viewUid];
       }

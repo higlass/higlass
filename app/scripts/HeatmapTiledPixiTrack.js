@@ -868,7 +868,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
           `fill: rgb(${color[0]}, ${color[1]}, ${color[2]})`
         );
       } else {
-        // color hasn't been assigned so make this transparent
+        // when no tiles are loaded, color will be undefined and we don't want to crash
         rectColor.setAttribute('style', `fill: rgb(255,255,255,0)`);
       }
     }
@@ -1192,7 +1192,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         !tile.mirrored &&
         tile.tileData.tilePos[0] === tile.tileData.tilePos[1],
       this.options.extent === 'upper-right' &&
-        tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
+        tile.tileData.tilePos[0] === tile.tileData.tilePos[1],
+      this.options.selectRows
     );
   }
 

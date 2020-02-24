@@ -497,6 +497,9 @@ export const calculateTilesFromResolution = (
  * @param synchronous: Render this tile synchronously or pass it on to the
  * @param ignoreUpperRight: If this is a tile along the diagonal and there will
  * be mirrored tiles present ignore the upper right values
+ * @param ignoreLowerLeft: If this is a tile along the diagonal and there will be
+ * mirrored tiles present ignore the lower left values
+ * @param {number[]} selectedRows: Array of row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
  * threadpool
  */
 export const tileDataToPixData = (
@@ -507,7 +510,8 @@ export const tileDataToPixData = (
   colorScale,
   finished,
   ignoreUpperRight,
-  ignoreLowerLeft
+  ignoreLowerLeft,
+  selectedRows
 ) => {
   const { tileData } = tile;
 
@@ -561,7 +565,9 @@ export const tileDataToPixData = (
     pseudocount,
     colorScale,
     ignoreUpperRight,
-    ignoreLowerLeft
+    ignoreLowerLeft,
+    tile.tileData.shape,
+    selectedRows
   );
 
   finished({

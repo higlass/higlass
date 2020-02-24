@@ -613,6 +613,7 @@ export const TRACKS_INFO = [
       'trackBorderColor',
       'trackType',
       'heatmapValueScaling',
+      'selectRows',
       'colorbarBackgroundColor',
       'colorbarPosition'
     ],
@@ -631,6 +632,7 @@ export const TRACKS_INFO = [
       trackBorderWidth: 0,
       trackBorderColor: 'black',
       heatmapValueScaling: 'log',
+      selectRows: null,
       colorbarBackgroundColor: '#ffffff',
       colorbarPosition: 'topRight'
     },
