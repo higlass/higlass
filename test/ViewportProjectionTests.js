@@ -145,13 +145,13 @@ describe('Simple HiGlassComponent', () => {
           true
         );
 
+        trackObj.rerender();
+
         const viewportRect = trackObj.gMain.select('rect.selection');
 
-        expect(Math.round(viewportRect.attr('x'))).toEqual(213);
         expect(Math.round(viewportRect.attr('y'))).toEqual(30);
         expect(Math.round(viewportRect.attr('width'))).toEqual(59);
-        expect(Math.round(viewportRect.attr('height'))).toEqual(578);
-        expect(viewportRect.style('fill')).toEqual('rgb(255, 0, 0)');
+        expect(viewportRect.attr('fill')).toEqual('#F00');
 
         done();
       });
@@ -166,13 +166,13 @@ describe('Simple HiGlassComponent', () => {
           true
         );
 
+        trackObj.rerender();
+
         const viewportRect = trackObj.gMain.select('rect.selection');
 
         expect(Math.round(viewportRect.attr('x'))).toEqual(30);
-        expect(Math.round(viewportRect.attr('y'))).toEqual(238);
-        expect(Math.round(viewportRect.attr('width'))).toEqual(505);
         expect(Math.round(viewportRect.attr('height'))).toEqual(18);
-        expect(viewportRect.style('fill')).toEqual('rgb(0, 255, 0)');
+        expect(viewportRect.attr('fill')).toEqual('#0F0');
 
         done();
       });
@@ -187,13 +187,13 @@ describe('Simple HiGlassComponent', () => {
           true
         );
 
+        trackObj.rerender();
+
         const viewportRect = trackObj.gMain.select('rect.selection');
 
-        expect(Math.round(viewportRect.attr('x'))).toEqual(213);
-        expect(Math.round(viewportRect.attr('y'))).toEqual(238);
         expect(Math.round(viewportRect.attr('width'))).toEqual(59);
         expect(Math.round(viewportRect.attr('height'))).toEqual(18);
-        expect(viewportRect.style('fill')).toEqual('rgb(0, 0, 255)');
+        expect(viewportRect.attr('fill')).toEqual('#00F');
 
         done();
       });
@@ -228,10 +228,9 @@ describe('Simple HiGlassComponent', () => {
           done();
         });
 
-        const x0 = trackObj._xScale(225681615);
-        const x1 = trackObj._xScale(226375265);
-        const dest = [x0, x1];
-        trackObj.brush.move(trackObj.gBrush, dest);
+        const xDomain = [225681615, 226375265];
+        const yDomain = trackObj.viewportYDomain;
+        trackObj.setDomainsCallback(xDomain, yDomain);
       });
     });
 

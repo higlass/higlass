@@ -2810,21 +2810,29 @@ class HiGlassComponent extends React.Component {
           // on the `viewport-projection-horizontal` track.
           const { viewConfig } = this.state;
           const newViewConfig = JSON.parse(JSON.stringify(viewConfig));
-          for (const view of viewConfig.views) {
+          for (const [viewI, view] of viewConfig.views.entries()) {
             if (view.uid === viewUid) {
-              for (const tracks of Object.values(view.tracks)) {
-                for (const otherTrack of tracks) {
+              for (const [tracksPos, tracks] of Object.entries(view.tracks)) {
+                for (const [otherTrackI, otherTrack] of tracks.entries()) {
                   if (otherTrack.uid === track.uid) {
                     switch (track.type) {
                       case 'viewport-projection-horizontal':
-                        track.initialXDomain = xDomain;
+                        newViewConfig.views[viewI].tracks[tracksPos][
+                          otherTrackI
+                        ].initialXDomain = xDomain;
                         break;
                       case 'viewport-projection-vertical':
-                        track.initialYDomain = yDomain;
+                        newViewConfig.views[viewI].tracks[tracksPos][
+                          otherTrackI
+                        ].initialYDomain = yDomain;
                         break;
                       case 'viewport-projection-center':
-                        track.initialXDomain = xDomain;
-                        track.initialYDomain = yDomain;
+                        newViewConfig.views[viewI].tracks[tracksPos][
+                          otherTrackI
+                        ].initialXDomain = xDomain;
+                        newViewConfig.views[viewI].tracks[tracksPos][
+                          otherTrackI
+                        ].initialYDomain = yDomain;
                         break;
                       default:
                         console.warn(
@@ -2836,6 +2844,7 @@ class HiGlassComponent extends React.Component {
               }
             }
           }
+
           const newViews = this.processViewConfig(newViewConfig);
           this.setState({ views: newViews, viewConfig: newViewConfig });
           // Return early, since the remaining code uses the `fromView` variable.

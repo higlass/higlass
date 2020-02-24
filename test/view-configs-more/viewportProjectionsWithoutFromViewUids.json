@@ -53,52 +53,6 @@
             },
             "width": 568,
             "height": 70
-          },
-          {
-            "type": "horizontal-bar",
-            "uid": "bmcNxj_MSEar_3nYVMnPnQ",
-            "tilesetUid": "a-iBpdh3Q_uO2FLCWKpOOw",
-            "server": "https://resgen.io/api/v1",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "topLeft",
-              "axisPositionHorizontal": "right",
-              "barFillColor": "darkgreen",
-              "valueScaling": "linear",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "labelTextOpacity": 0.4,
-              "barOpacity": 1,
-              "name": "conservation (hg38.phastCons100way.bw)",
-              "align": "bottom",
-              "labelLeftMargin": 0,
-              "labelRightMargin": 0,
-              "labelTopMargin": 0,
-              "labelBottomMargin": 0,
-              "labelShowResolution": false,
-              "axisLabelFormatting": "scientific",
-              "labelShowAssembly": true
-            },
-            "width": 568,
-            "height": 42,
-            "aggregationModes": {
-              "mean": {
-                "name": "Mean",
-                "value": "mean"
-              },
-              "min": {
-                "name": "Min",
-                "value": "min"
-              },
-              "max": {
-                "name": "Max",
-                "value": "max"
-              },
-              "std": {
-                "name": "Standard Deviation",
-                "value": "std"
-              }
-            }
           }
         ],
         "left": [],
