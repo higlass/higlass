@@ -632,12 +632,11 @@ export const TRACKS_INFO = [
       selectRows: null,
       colorbarBackgroundColor: '#ffffff',
       colorbarPosition: 'topRight',
-      zeroValueColor: 'white'
+      zeroValueColor: null
     },
     defaultOptionsByTheme: {
       [THEME_DARK]: {
-        colorbarBackgroundColor: '#000000',
-        zeroValueColor: 'black'
+        colorbarBackgroundColor: '#000000'
       }
     }
   },

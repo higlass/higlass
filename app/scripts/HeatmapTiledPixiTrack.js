@@ -3,17 +3,10 @@ import { brushY } from 'd3-brush';
 import { format } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
 import { select, event } from 'd3-selection';
-import { color as d3color } from 'd3-color';
 import * as PIXI from 'pixi.js';
 import slugid from 'slugid';
-
-import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
-import AxisPixi from './AxisPixi';
-
-// Services
-import { tileProxy } from './services';
-
 import {
+  colorToRgba,
   absToChr,
   colorDomainToRgbaArray,
   colorToHex,
@@ -24,6 +17,12 @@ import {
   showMousePosition,
   valueToColor
 } from './utils';
+
+import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
+import AxisPixi from './AxisPixi';
+
+// Services
+import { tileProxy } from './services';
 
 import { HEATED_OBJECT_MAP } from './configs';
 
@@ -1190,9 +1189,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.options.extent === 'upper-right' &&
         tile.tileData.tilePos[0] === tile.tileData.tilePos[1],
       this.options.selectRows,
-      this.options.zeroValueColor &&
-        this.options.zeroValueColor !== 'transparent'
-        ? d3color(this.options.zeroValueColor)
+      this.options.zeroValueColor
+        ? colorToRgba(this.options.zeroValueColor)
         : undefined
     );
   }

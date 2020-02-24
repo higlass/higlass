@@ -139,7 +139,7 @@
               "colorbarPosition": "topRight",
               "scaleStartPercent": "0.00000",
               "scaleEndPercent": "1.00000",
-              "zeroValueColor": "blue"
+              "zeroValueColor": null
             },
             "width": 1607,
             "height": 382

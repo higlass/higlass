@@ -105,7 +105,7 @@ export function workerSetPix(
   ignoreLowerLeft = false,
   shape = null,
   selectedRows = null,
-  zeroValueColor
+  zeroValueColor = null
 ) {
   let valueScale = null;
 
@@ -131,16 +131,6 @@ export function workerSetPix(
     // If using the `selectedRows` parameter, then the size of the `pixData` array
     // will likely be different than `size` (the total size of the tile data array).
     filteredSize = selectedRows.length * shape[1];
-  }
-
-  let zeroValueColorArray;
-  if (zeroValueColor) {
-    zeroValueColorArray = [
-      zeroValueColor.r,
-      zeroValueColor.g,
-      zeroValueColor.b,
-      255
-    ];
   }
 
   let rgb;
@@ -182,7 +172,7 @@ export function workerSetPix(
     }
 
     if (zeroValueColor && !Number.isNaN(+d) && +d === 0.0) {
-      rgb = zeroValueColorArray;
+      rgb = zeroValueColor;
     } else {
       rgb = colorScale[rgbIdx];
     }
