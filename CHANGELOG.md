@@ -3,6 +3,8 @@
 ## Next release
 
 - Remove Content-Type headers when fetching genbank files
+- Added the fields `xRange` and `yRange` the object returned by the JavaScript API `.getLocation()` method.
+- Fixed blurry exported heatmap SVG graphics issue using the `image-rendering` CSS property.
 
 ## v1.8.4
 
