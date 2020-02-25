@@ -1521,13 +1521,13 @@ class TrackRenderer extends React.Component {
     }
 
     // for viewport-projection-horizontal and viewport-projection-center
-    if (track.initialXDomain) {
-      context.initialXDomain = track.initialXDomain;
+    if (track.projectionXDomain) {
+      context.projectionXDomain = track.projectionXDomain;
     }
 
     // for viewport-projection-vertical and viewport-projection-center
-    if (track.initialYDomain) {
-      context.initialYDomain = track.initialYDomain;
+    if (track.projectionYDomain) {
+      context.projectionYDomain = track.projectionYDomain;
     }
 
     const options = track.options;

@@ -19,13 +19,13 @@ class ViewportTracker2D extends SVGTrack {
     this.options = options;
 
     // Is there actually a linked _from_ view? Or is this projection "independent"?
-    this.hasFromView = !context.initialXDomain || !context.initialYDomain;
+    this.hasFromView = !context.projectionXDomain || !context.projectionYDomain;
 
     this.removeViewportChanged = removeViewportChanged;
     this.setDomainsCallback = setDomainsCallback;
 
-    this.viewportXDomain = this.hasFromView ? null : context.initialXDomain;
-    this.viewportYDomain = this.hasFromView ? null : context.initialYDomain;
+    this.viewportXDomain = this.hasFromView ? null : context.projectionXDomain;
+    this.viewportYDomain = this.hasFromView ? null : context.projectionYDomain;
 
     this.brush = brush().on('brush', this.brushed.bind(this));
 

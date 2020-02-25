@@ -210,19 +210,27 @@ describe('Simple HiGlassComponent', () => {
 
         const oldViewConfig = api.getViewConfig();
         expect(
-          Math.round(oldViewConfig.views[0].tracks.whole[0].initialXDomain[0])
+          Math.round(
+            oldViewConfig.views[0].tracks.whole[0].projectionXDomain[0]
+          )
         ).toEqual(225681610);
         expect(
-          Math.round(oldViewConfig.views[0].tracks.whole[0].initialXDomain[1])
+          Math.round(
+            oldViewConfig.views[0].tracks.whole[0].projectionXDomain[1]
+          )
         ).toEqual(226375262);
 
         api.on('viewConfig', newViewConfigString => {
           const newViewConfig = JSON.parse(newViewConfigString);
           expect(
-            Math.round(newViewConfig.views[0].tracks.whole[0].initialXDomain[0])
+            Math.round(
+              newViewConfig.views[0].tracks.whole[0].projectionXDomain[0]
+            )
           ).toEqual(225681615);
           expect(
-            Math.round(newViewConfig.views[0].tracks.whole[0].initialXDomain[1])
+            Math.round(
+              newViewConfig.views[0].tracks.whole[0].projectionXDomain[1]
+            )
           ).toEqual(226375265);
 
           done();

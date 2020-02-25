@@ -441,8 +441,12 @@
           "fromViewUid": { "type": "null" },
           "header": { "type": "string" },
           "height": { "type": "number" },
-          "initialXDomain": { "$ref": "#/definitions/viewProperties/domain" },
-          "initialYDomain": { "$ref": "#/definitions/viewProperties/domain" },
+          "projectionXDomain": {
+            "$ref": "#/definitions/viewProperties/domain"
+          },
+          "projectionYDomain": {
+            "$ref": "#/definitions/viewProperties/domain"
+          },
           "local": { "type": "boolean" },
           "maxWidth": { "type": "number" },
           "name": { "type": "string" },

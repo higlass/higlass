@@ -551,9 +551,9 @@ which is optionally linked to the domain of another view.
 Properties
 --------
 
-- **fromViewUid**: The ``uid`` of the linked view, from which this track will obtain its domain. If null, then the ``initialXDomain`` and/or ``initialYDomain`` properties must be used instead.
-- **initialXDomain**: ``[x0, x1]`` The x domain coordinates that define the selected interval. Only used if ``fromViewUid`` is null.
-- **initialYDomain**: ``[y0, y1]`` The y domain coordinates that define the selected interval. Only used if ``fromViewUid`` is null.
+- **fromViewUid**: The ``uid`` of the linked view, from which this track will obtain its domain. If null, then the ``projectionXDomain`` and/or ``projectionYDomain`` properties must be used instead.
+- **projectionXDomain**: ``[x0, x1]`` The x domain coordinates that define the selected interval. Only used if ``fromViewUid`` is null.
+- **projectionYDomain**: ``[y0, y1]`` The y domain coordinates that define the selected interval. Only used if ``fromViewUid`` is null.
 
 Options
 --------
@@ -577,7 +577,7 @@ Options
     "type": "viewport-projection-horizontal",
     "uid": "my-track-id",
     "fromViewUid": null,
-    "initialXDomain": [225681609.97037065, 226375261.90599522],
+    "projectionXDomain": [225681609.97037065, 226375261.90599522],
     "options": {
       "projectionFillColor": "#F00",
       "projectionStrokeColor": "#777",

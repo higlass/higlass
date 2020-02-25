@@ -2805,11 +2805,11 @@ class HiGlassComponent extends React.Component {
         this.removeScalesChangedListener(fromView, trackId);
       track.setDomainsCallback = (xDomain, yDomain) => {
         if (!fromView) {
-          // If there is no `fromView`, then there must be an `initialXDomain` instead.
-          // Update the viewconfig to reflect the new `initialXDomain` array
+          // If there is no `fromView`, then there must be a `projectionXDomain` instead.
+          // Update the viewconfig to reflect the new `projectionXDomain` array
           // on the `viewport-projection-horizontal` track.
           const { viewConfig } = this.state;
-          const newViewConfig = JSON.parse(JSON.stringify(viewConfig));
+          const newViewConfig = viewConfig;
           for (const [viewI, view] of viewConfig.views.entries()) {
             if (view.uid === viewUid) {
               for (const [tracksPos, tracks] of Object.entries(view.tracks)) {
@@ -2819,20 +2819,20 @@ class HiGlassComponent extends React.Component {
                       case 'viewport-projection-horizontal':
                         newViewConfig.views[viewI].tracks[tracksPos][
                           otherTrackI
-                        ].initialXDomain = xDomain;
+                        ].projectionXDomain = xDomain;
                         break;
                       case 'viewport-projection-vertical':
                         newViewConfig.views[viewI].tracks[tracksPos][
                           otherTrackI
-                        ].initialYDomain = yDomain;
+                        ].projectionYDomain = yDomain;
                         break;
                       case 'viewport-projection-center':
                         newViewConfig.views[viewI].tracks[tracksPos][
                           otherTrackI
-                        ].initialXDomain = xDomain;
+                        ].projectionXDomain = xDomain;
                         newViewConfig.views[viewI].tracks[tracksPos][
                           otherTrackI
-                        ].initialYDomain = yDomain;
+                        ].projectionYDomain = yDomain;
                         break;
                       default:
                         console.warn(
