@@ -770,10 +770,10 @@ const createApi = function api(context, pubSub) {
        *  [["chr1", 249200621, "chr2", 50000], ["chr3", 197972430, "chr4", 50000]]
        *
        * ``viewConfig:`` Returns the current view config (as a string).
-       *  This event is published upon events including:
+       *  This event is published upon interactions including:
        *  - Saving in the view config editor modal.
-       *  - User panning and zooming interactions with views, which update view object ``initialXDomain`` and ``initialYDomain`` values.
-       *  - User brushing interactions with ``viewport-projection-`` tracks containing null ``fromViewUid`` fields, which update track object ``projectionXDomain`` and ``projectionYDomain`` values.
+       *  - Panning and zooming in views, which update view object ``initialXDomain`` and ``initialYDomain`` values.
+       *  - Brushing in ``viewport-projection-`` tracks containing null ``fromViewUid`` fields, which update track object ``projectionXDomain`` and ``projectionYDomain`` values.
        *
        * ``mouseMoveZoom:`` Returns the location and data at the mouse cursor's
        * screen location.
