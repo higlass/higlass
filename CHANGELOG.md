@@ -4,7 +4,8 @@
 
 - Remove Content-Type headers when fetching genbank files
 - Added the fields `xRange` and `yRange` the object returned by the JavaScript API `.getLocation()` method.
-- Added the attributes `initialXDomain` and `initialYDomain` to the `viewport-projection-horizontal` and `viewport-projection-vertical`, respectively, and both to the `viewport-projection-center`, to support the case in which the `fromViewUid` attribute is undefined.
+- Fixed blurry exported heatmap SVG graphics issue using the `image-rendering` CSS property.
+- Added the attributes `projectionXDomain` and `projectionYDomain` to the `viewport-projection-horizontal` and `viewport-projection-vertical`, respectively, and both to the `viewport-projection-center`, to support the case in which the `fromViewUid` attribute is undefined.
 
 ## v1.8.4
 
