@@ -47,6 +47,10 @@ export const OPTIONS_INFO = {
   axisLabelFormatting: {
     name: 'Axis Label Formatting',
     inlineOptions: {
+      automatic: {
+        name: 'automatic',
+        value: 'automatic'
+      },
       normal: {
         name: 'normal',
         value: 'normal'

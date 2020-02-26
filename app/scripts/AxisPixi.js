@@ -45,9 +45,11 @@ class AxisPixi {
     if (
       !this.track.options ||
       !this.track.options.axisLabelFormatting ||
-      this.track.options.axisLabelFormatting === 'scientific'
+      this.track.options.axisLabelFormatting === 'automatic'
     ) {
       this.tickFormat = format('.2');
+    } else if (this.track.options.axisLabelFormatting === 'scientific') {
+      this.tickFormat = format('.1e');
     } else {
       this.tickFormat = x => x;
     }
