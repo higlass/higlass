@@ -101,8 +101,6 @@
               "projectionStrokeColor": "#777",
               "projectionFillOpacity": 0.3,
               "projectionStrokeOpacity": 0.7,
-              "projectionMarginTop": 30,
-              "projectionMarginBottom": 20,
               "strokeWidth": 1
             }
           },
@@ -116,8 +114,6 @@
               "projectionStrokeColor": "#777",
               "projectionFillOpacity": 0.3,
               "projectionStrokeOpacity": 0.7,
-              "projectionMarginLeft": 30,
-              "projectionMarginRight": 20,
               "strokeWidth": 1
             }
           },

@@ -562,10 +562,6 @@ Options
 - **projectionStrokeColor**: The stroke color for the brush selection rect element.
 - **projectionFillOpacity**: The opacity for the fill of the brush selection rect element.
 - **projectionStrokeOpacity**: The opacity for the stroke of the brush selection rect element.
-- **projectionMarginTop**: The top margin for the selection rect in pixels. By default, zero.
-- **projectionMarginBottom**: The bottom margin for the selection rect in pixels. By default, zero.
-- **projectionMarginLeft**: The left margin for the selection rect in pixels. By default, zero.
-- **projectionMarginRight**: The right margin for the selection rect in pixels. By default, zero.
 - **strokeWidth**: The stroke width for the brush selection rect element.
 
 
@@ -583,8 +579,6 @@ Options
       "projectionStrokeColor": "#777",
       "projectionFillOpacity": 0.3,
       "projectionStrokeOpacity": 0.7,
-      "projectionMarginTop": 30,
-      "projectionMarginBottom": 20,
       "strokeWidth": 1
     }
   }

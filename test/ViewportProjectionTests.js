@@ -149,7 +149,7 @@ describe('Simple HiGlassComponent', () => {
 
         const viewportRect = trackObj.gMain.select('rect.selection');
 
-        expect(Math.round(viewportRect.attr('y'))).toEqual(30);
+        expect(Math.round(viewportRect.attr('y'))).toEqual(0);
         expect(Math.round(viewportRect.attr('width'))).toEqual(59);
         expect(viewportRect.attr('fill')).toEqual('#F00');
 
@@ -170,7 +170,7 @@ describe('Simple HiGlassComponent', () => {
 
         const viewportRect = trackObj.gMain.select('rect.selection');
 
-        expect(Math.round(viewportRect.attr('x'))).toEqual(30);
+        expect(Math.round(viewportRect.attr('x'))).toEqual(0);
         expect(Math.round(viewportRect.attr('height'))).toEqual(18);
         expect(viewportRect.attr('fill')).toEqual('#0F0');
 

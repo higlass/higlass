@@ -153,8 +153,8 @@ class ViewportTrackerVertical extends SVGTrack {
     const yRange = this._yScale.range();
     const yDiff = yRange[1] - yRange[0];
     this.brush.extent([
-      [xRange[0] + this.options.projectionMarginLeft, yRange[0] - yDiff],
-      [xRange[1] - this.options.projectionMarginRight, yRange[1] + yDiff]
+      [xRange[0], yRange[0] - yDiff],
+      [xRange[1], yRange[1] + yDiff]
     ]);
     this.gBrush.call(this.brush);
 

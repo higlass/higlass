@@ -155,8 +155,8 @@ class ViewportTrackerHorizontal extends SVGTrack {
     const xDiff = xRange[1] - xRange[0];
 
     this.brush.extent([
-      [xRange[0] - xDiff, yRange[0] + this.options.projectionMarginTop],
-      [xRange[1] + xDiff, yRange[1] - this.options.projectionMarginBottom]
+      [xRange[0] - xDiff, yRange[0]],
+      [xRange[1] + xDiff, yRange[1]]
     ]);
     this.gBrush.call(this.brush);
 
