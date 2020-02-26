@@ -3,10 +3,9 @@
 ## Next release
 
 - Support for gene annotation "filler" regions
-
-# _[Detailed changes since v1.6.10](https://github.com/higlass/higlass/compare/v1.6.9...v1.6.10)_
-
 - Remove Content-Type headers when fetching genbank files
+- Added the fields `xRange` and `yRange` the object returned by the JavaScript API `.getLocation()` method.
+- Fixed blurry exported heatmap SVG graphics issue using the `image-rendering` CSS property.
 
 ## v1.8.4
 
