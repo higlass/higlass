@@ -153,7 +153,7 @@ values are ones that can be used with CSS (see, for example, `Color Names
 
 - **valueScaleMin/valueScaleMax**: Absolute values limiting the value to color scale. The scale can be further adjusted within
 this range using the colorbar.
-- **zeroValueColor**: The color to use for zero data values. By default, null, which uses the current color scale.
+- **zeroValueColor**: The color to use for zero data values. By default, null, which uses the current color scale. (``NaN`` values are not assigned any color)
 
 Rotated 2D Heatmap
 ==================
