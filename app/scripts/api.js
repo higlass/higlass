@@ -594,11 +594,11 @@ const createApi = function api(context, pubSub) {
        * Get the current location for a view.
        *
        * @param {string} [viewId=null] The id of the view to get the location for
-       * @returns {obj} A an object containing two Arrays representing the domains of
-       *  the x andy scales of the view.
+       * @returns {obj} A an object containing four arrays representing the domains and ranges of
+       *  the x and y scales of the view.
        * @example
        *
-       * const {xScale, yScale} = hgv.getLocation('viewId');
+       * const {xDomain, yDomain, xRange, yRange} = hgv.getLocation('viewId');
        */
       getLocation(viewId) {
         const wurstId = viewId
@@ -612,7 +612,9 @@ const createApi = function api(context, pubSub) {
 
         return {
           xDomain: self.xScales[wurstId].domain(),
-          yDomain: self.yScales[wurstId].domain()
+          yDomain: self.yScales[wurstId].domain(),
+          xRange: self.xScales[wurstId].range(),
+          yRange: self.yScales[wurstId].range()
         };
       },
 
