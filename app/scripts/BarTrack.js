@@ -58,12 +58,6 @@ class BarTrack extends HorizontalLine1DPixiTrack {
    */
   initTile(tile) {
     super.initTile(tile);
-    this.renderTile(tile);
-  }
-
-  drawTile() {
-    // empty function so that the superclass's drawTile
-    // doesn't do anything
   }
 
   updateTile(tile) {
@@ -78,8 +72,12 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     }
   }
 
-  renderTile(tile) {
+  drawTile(tile) {
     if (!tile.graphics) return;
+
+    if (!tile.tileData || !tile.tileData.dense) {
+      return;
+    }
 
     const { graphics } = tile;
 
@@ -95,9 +93,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     if (tileValues.length === 0) return;
 
-    // equal to the smallest non-zero value
     const [valueScale, pseudocount] = this.makeValueScale(
-      this.minVisibleValue(),
+      this.minValue(),
       this.medianVisibleValue,
       this.maxValue(),
       0

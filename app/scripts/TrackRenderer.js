@@ -1289,6 +1289,7 @@ class TrackRenderer extends React.Component {
       this.valueScaleZooming = false;
       this.element.__zoom = this.zoomStartTransform;
     }
+
     this.props.pubSub.publish('app.zoomEnd');
   }
 
@@ -1494,11 +1495,17 @@ class TrackRenderer extends React.Component {
       scene: this.pStage,
       dataConfig,
       dataFetcher,
+      getLockGroupExtrema: () => {
+        return this.currentProps.getLockGroupExtrema(track.uid);
+      },
       handleTilesetInfoReceived,
       animate: () => {
         this.currentProps.onNewTilesLoaded(track.uid);
       },
       svgElement: this.svgElement,
+      isValueScaleLocked: () => {
+        return this.currentProps.isValueScaleLocked(track.uid);
+      },
       onValueScaleChanged: () => {
         this.currentProps.onValueScaleChanged(track.uid);
       },
