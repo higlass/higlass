@@ -136,7 +136,9 @@ class GBKDataFetcher {
           : buffer;
         this.gbJson = genbankParser(gffText);
         this.cdss = shuffle(
-          this.gbJson[0].features.sort((a, b) => a.start - b.start)
+          this.gbJson[0].features
+            .filter(f => f.type !== 'source')
+            .sort((a, b) => a.start - b.start)
         );
       });
   }

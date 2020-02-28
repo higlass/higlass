@@ -1,5 +1,6 @@
 import boxIntersect from 'box-intersect';
 import * as PIXI from 'pixi.js';
+import classifyPoint from 'robust-point-in-polygon';
 
 // Components
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
@@ -23,6 +24,18 @@ const MAX_GENE_ENTRIES = 50;
 const MAX_FILLER_ENTRIES = 5000;
 const FILLER_HEIGHT = 14;
 const LINE_WIDTH = 2;
+
+const geneClickFunc = (event, track, payload) => {
+  // fill rectangles are just indicators and are not meant to be
+  // clicked on
+  if (payload.type === 'filler') return;
+
+  track.pubSub.publish('app.click', {
+    type: 'gene-annotation',
+    event,
+    payload
+  });
+};
 
 const trackUtils = {
   getTilePosAndDimensions: (tilesetInfo, tileId) => {
@@ -61,10 +74,6 @@ function externalInitTile(track, tile, options) {
     maxFillerEntries,
     maxTexts
   } = options;
-
-  const getGeneId = geneInfo =>
-    `${geneInfo[0]}_${geneInfo[1]}_${geneInfo[2]}_${geneInfo[3]}`;
-
   // create texts
   tile.texts = {};
 
@@ -96,7 +105,7 @@ function externalInitTile(track, tile, options) {
   tile.tileData.forEach((td, i) => {
     const geneInfo = td.fields;
     const geneName = geneInfo[3];
-    const geneId = getGeneId(geneInfo);
+    const geneId = track.geneId(geneInfo, td.type);
 
     let fill = plusStrandColor || 'blue';
 
@@ -133,7 +142,7 @@ function renderRects(
   rects,
   track,
   tile,
-  graphics,
+  someGraphics, // unused in this function
   xScale,
   color,
   alpha,
@@ -142,10 +151,15 @@ function renderRects(
 ) {
   const topY = centerY - height / 2;
   const FILLER_PADDING = 0;
-  tile.rectGraphics.beginFill(color, 0.1);
-  tile.rectGraphics.lineStyle(0, color);
 
   rects.forEach(td => {
+    const graphics = new PIXI.Graphics();
+
+    tile.rectGraphics.addChild(graphics);
+
+    graphics.beginFill(color, 0.1);
+    graphics.lineStyle(0, color);
+
     const poly = [
       xScale(td.xStart) - FILLER_PADDING,
       topY,
@@ -159,8 +173,12 @@ function renderRects(
       topY
     ];
 
-    tile.rectGraphics.drawPolygon(poly);
-    tile.allRects.push([poly, td.strand]);
+    graphics.interactive = true;
+    graphics.buttonMode = true;
+
+    graphics.mouseup = event => geneClickFunc(event, track, td);
+    graphics.drawPolygon(poly);
+    tile.allRects.push([poly, td.strand, td]);
   });
 }
 
@@ -303,7 +321,7 @@ function renderGeneSymbols(
     }
 
     tile.rectGraphics.drawPolygon(poly);
-    tile.allRects.push([poly, gene.strand]);
+    tile.allRects.push([poly, gene.strand, gene]);
   });
 }
 
@@ -311,7 +329,7 @@ function renderPromoters(
   genes,
   track,
   tile,
-  graphics,
+  oldGraphics,
   xScale,
   color,
   alpha,
@@ -320,9 +338,15 @@ function renderPromoters(
 ) {
   const topY = centerY - height / 2;
   // tile.rectGraphics.lineStyle(1, color, 0.2);
-  tile.rectGraphics.lineStyle(LINE_WIDTH, color, alpha);
 
   genes.forEach(gene => {
+    const graphics = new PIXI.Graphics();
+    graphics.lineStyle(LINE_WIDTH, color, alpha);
+    tile.rectGraphics.addChild(graphics);
+    graphics.interactive = true;
+    graphics.buttonMode = true;
+    graphics.mouseup = evt => geneClickFunc(evt, track, gene);
+
     let xStart = track._xScale(gene.xStart);
     let xEnd = track._xScale(gene.xEnd);
 
@@ -363,20 +387,28 @@ function renderPromoters(
       ];
     }
 
-    tile.rectGraphics.beginFill(color, alpha);
-    tile.rectGraphics.drawPolygon(arrowPoly);
-    tile.rectGraphics.beginFill(color, 0);
+    graphics.beginFill(color, alpha);
+    graphics.drawPolygon(arrowPoly);
+    graphics.beginFill(color, 0);
 
-    tile.rectGraphics.moveTo(xStart, centerY + height / 2);
-    tile.rectGraphics.lineTo(xStart, topY);
+    graphics.moveTo(xStart, centerY + height / 2);
+    graphics.lineTo(xStart, topY);
 
     if (gene.strand === '-') {
-      tile.rectGraphics.lineTo(xEnd + arrowWidth, topY);
+      graphics.lineTo(xEnd + arrowWidth, topY);
     } else {
-      tile.rectGraphics.lineTo(xEnd - arrowWidth, topY);
+      graphics.lineTo(xEnd - arrowWidth, topY);
     }
 
-    tile.allRects.push([arrowPoly, gene.strand]);
+    tile.allRects.push([arrowPoly, gene.strand, gene]);
+    // push a rectangle that's used for mouseover but won't be
+    // drawn
+    tile.allRects.push([
+      [xStart, topY, xEnd, topY, xEnd, topY + height, xStart, topY + height],
+      gene.strand,
+      gene,
+      true
+    ]);
   });
 }
 
@@ -411,7 +443,7 @@ function renderGeneExons(
   genes,
   track,
   tile,
-  graphics,
+  rectGraphics,
   xScale,
   color,
   alpha,
@@ -424,10 +456,18 @@ function renderGeneExons(
 
     const exonStarts = geneInfo[12];
     const exonEnds = geneInfo[13];
+    const graphics = new PIXI.Graphics();
+    tile.rectGraphics.addChild(graphics);
+
+    graphics.beginFill(color, alpha);
+    graphics.interactive = true;
+    graphics.buttonMode = true;
+    graphics.mouseup = evt => geneClickFunc(evt, track, gene);
+
     tile.allRects = tile.allRects.concat(
       drawExons(
         track,
-        tile.rectGraphics,
+        graphics,
         gene.xStart,
         gene.xEnd,
         exonStarts,
@@ -436,7 +476,7 @@ function renderGeneExons(
         centerY,
         height,
         gene.strand
-      ).map(x => [x, gene.strand])
+      ).map(x => [x, gene.strand, gene])
     );
   });
 }
@@ -660,8 +700,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
   drawTile() {}
 
-  geneId(geneInfo) {
-    return `${geneInfo[0]}_${geneInfo[1]}_${geneInfo[2]}_${geneInfo[3]}`;
+  geneId(geneInfo, type) {
+    return `${type}_${geneInfo[0]}_${geneInfo[1]}_${geneInfo[2]}_${geneInfo[3]}`;
   }
 
   renderTile(tile) {
@@ -671,6 +711,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     // store the scale at while the tile was drawn at so that
     // we only resize it when redrawing
     tile.drawnAtScale = this._xScale.copy();
+    tile.rectGraphics.removeChildren();
     tile.rectGraphics.clear();
     tile.textBgGraphics.clear();
 
@@ -818,7 +859,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
           const geneInfo = td.fields;
           const geneName = geneInfo[3];
-          const geneId = this.geneId(geneInfo);
+          const geneId = this.geneId(geneInfo, td.type);
 
           const text = tile.texts[geneId];
 
@@ -960,6 +1001,89 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.draw();
   }
 
+  getMouseOverHtml(trackX, trackY) {
+    if (!this.tilesetInfo) {
+      return '';
+    }
+
+    const point = [trackX, trackY];
+
+    for (const tile of this.visibleAndFetchedTiles()) {
+      for (let i = 0; i < tile.allRects.length; i++) {
+        // console.log('tile.allRects:', tile.allRects);
+        // copy the visible rects array
+        if (tile.allRects[i][2].type === 'filler') {
+          continue;
+        }
+        const rect = tile.allRects[i][0].slice(0);
+        // console.log('rect:', rect);
+
+        const newArr = [];
+        while (rect.length) {
+          const newPoint = rect.splice(0, 2);
+          newPoint[0] =
+            newPoint[0] * tile.rectGraphics.scale.x +
+            tile.rectGraphics.position.x;
+          newPoint[1] =
+            newPoint[1] * tile.rectGraphics.scale.y +
+            tile.rectGraphics.position.y;
+
+          newArr.push(newPoint);
+        }
+
+        const pc = classifyPoint(newArr, point);
+
+        if (pc === -1) {
+          // console.log('ar:', tile.allRects[i]);
+          const gene = tile.allRects[i][2];
+
+          return `
+            <div>
+              <p><b>${gene.fields[3]}</b></p>
+              <p>${gene.fields[0]}:${gene.fields[1]}-${gene.fields[2]}</p>
+            </div>
+          `;
+        }
+      }
+    }
+
+    return '';
+    // const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo,
+    //   zoomLevel, this.tilesetInfo.tile_size);
+
+    // // the position of the tile containing the query position
+    // const tilePos = this._xScale.invert(trackX) / tileWidth;
+    // console.log('tilePos', tilePos);
+
+    // const posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
+
+    // const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
+    // const fetchedTile = this.fetchedTiles[tileId];
+
+    // const dataX = this._xScale.invert(trackX);
+
+    // if (this.drawnRects[zoomLevel]) {
+    //   const visibleRects = Object.values(this.drawnRects[zoomLevel]);
+
+    //   for (let i = 0; i < visibleRects.length; i++) {
+    //     const point = [trackX, trackY];
+    //     const rect = visibleRects[i][0].slice(0);
+    //     const newArr = [];
+    //     while (rect.length) newArr.push(rect.splice(0, 2));
+
+    //     const pc = classifyPoint(newArr, point);
+
+    //     if (pc === -1) {
+    //       const parts = visibleRects[i][1].value.fields;
+
+    //       return parts.join(' ');
+    //     }
+    //   }
+    // }
+
+    // return '';
+  }
+
   exportSVG() {
     let track = null;
     let base = null;
@@ -991,6 +1115,11 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         );
 
         tile.allRects.forEach(rect => {
+          if (!rect[3]) {
+            // this is a mouseover polygon that's not meant
+            // to be rendered
+            return;
+          }
           const r = document.createElement('path');
 
           const poly = rect[0];
