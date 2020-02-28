@@ -285,6 +285,10 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
 
     this.draw();
   }
+
+  leftTrackDraw() {
+    this.draw();
+  }
 }
 
 export default Horizontal2DDomainsTrack;

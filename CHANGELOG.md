@@ -5,7 +5,11 @@
 - Remove Content-Type headers when fetching genbank files
 - Added the fields `xRange` and `yRange` the object returned by the JavaScript API `.getLocation()` method.
 - Fixed blurry exported heatmap SVG graphics issue using the `image-rendering` CSS property.
+- Enabled view-based scaling
+- Left and right tracks can now be value scale locked
 - Added `zeroValueColor` as an option for the `horizontal-multivec` track, to specify the color mapping for zero data values.
+
+_[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.3...develop)_
 
 ## v1.8.4
 

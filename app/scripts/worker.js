@@ -1,4 +1,6 @@
 import { scaleLog, scaleLinear } from 'd3-scale';
+import DenseDataExtrema1D from './utils/DenseDataExtrema1D';
+import DenseDataExtrema2D from './utils/DenseDataExtrema2D';
 
 /*
 function countTransform(count) {
@@ -331,20 +333,26 @@ export function tileResponseToData(data, server, theseTileIds) {
         a = new Float32Array(arrayBuffer);
       }
 
+      const dde =
+        data[key].tilePos.length === 2
+          ? new DenseDataExtrema2D(a)
+          : new DenseDataExtrema1D(a);
+
       data[key].dense = a;
-      data[key].minNonZero = minNonZero(a);
-      data[key].maxNonZero = maxNonZero(a);
+      data[key].denseDataExtrema = dde;
+      data[key].minNonZero = dde.minNonZeroInTile;
+      data[key].maxNonZero = dde.maxNonZeroInTile;
 
       /*
-                      if (data[key]['minNonZero'] === Number.MAX_SAFE_INTEGER &&
-                          data[key]['maxNonZero'] === Number.MIN_SAFE_INTEGER) {
-                          // if there's no values except 0,
-                          // then do use it as the min value
+      if (data[key]['minNonZero'] === Number.MAX_SAFE_INTEGER &&
+          data[key]['maxNonZero'] === Number.MIN_SAFE_INTEGER) {
+          // if there's no values except 0,
+          // then do use it as the min value
 
-                          data[key]['minNonZero'] = 0;
-                          data[key]['maxNonZero'] = 1;
-                      }
-                      */
+          data[key]['minNonZero'] = 0;
+          data[key]['maxNonZero'] = 1;
+      }
+      */
     }
   }
 
