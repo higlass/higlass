@@ -36,7 +36,6 @@
     "chromInfoPath": { "type": "string" }
   },
   "definitions": {
-
     "locks": {
       "slug": { "type": "string" },
 
@@ -122,12 +121,17 @@
       "properties": {
         "autocompleteSource": { "type": "string" },
         "chromInfoPath": { "type": "string" },
-        "genomePositionSearchBox": { "$ref": "#/definitions/viewProperties/genomePositionSearchBox" },
+        "genomePositionSearchBox": {
+          "$ref": "#/definitions/viewProperties/genomePositionSearchBox"
+        },
         "genomePositionSearchBoxVisible": { "type": "boolean" },
         "initialXDomain": { "$ref": "#/definitions/viewProperties/domain" },
         "initialYDomain": { "$ref": "#/definitions/viewProperties/domain" },
         "layout": { "$ref": "#/definitions/viewProperties/layout" },
-        "overlays": { "type": "array", "items": { "$ref": "#/definitions/viewProperties/overlay" } },
+        "overlays": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/viewProperties/overlay" }
+        },
         "selectionView": { "type": "boolean" },
         "tracks": { "$ref": "#/definitions/viewProperties/tracks_object" },
         "uid": { "type": "string" },
@@ -139,10 +143,7 @@
       "genomePositionSearchBox": {
         "type": "object",
         "title": "The Genome Position Search Box Schema",
-        "required": [
-          "chromInfoServer",
-          "chromInfoId"
-        ],
+        "required": ["chromInfoServer", "chromInfoId"],
         "properties": {
           "autocompleteServer": {
             "type": "string",
@@ -306,7 +307,7 @@
         "properties": {
           "contents": { "$ref": "#/definitions/viewProperties/tracks_array" },
           "height": { "type": "number" },
-          "options": { },
+          "options": {},
           "position": { "type": "string" },
           "type": { "const": "combined" },
           "uid": { "type": "string" },
@@ -325,7 +326,7 @@
             "additionalProperties": false,
             "properties": {
               "type": { "type": "string" },
-              "url": { "type": "string"}
+              "url": { "type": "string" }
             }
           },
           "uid": { "type": "string" },
@@ -395,6 +396,7 @@
           "defaultOptions": { "type": "object", "additionalProperties": false },
           "description": { "type": "string" },
           "filetype": { "type": "string" },
+          "indexUrl": { "type": "string" },
           "fromViewUid": { "type": "string" },
           "header": { "type": "string" },
           "height": { "type": "number" },
@@ -406,10 +408,12 @@
           "position": { "type": "string" },
           "project": { "type": "null" },
           "project_name": { "type": "string" },
-          "thumbnail": { "oneOf": [
-            { "type": "object", "additionalProperties": false },
-            { "type": "null" }
-          ] },
+          "thumbnail": {
+            "oneOf": [
+              { "type": "object", "additionalProperties": false },
+              { "type": "null" }
+            ]
+          },
           "transforms": { "type": "array" },
           "width": { "type": "number" },
           "x": { "type": "number" },

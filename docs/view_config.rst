@@ -266,8 +266,15 @@ and ``filetype``
       "type": "vector",
       "server": "http://my-higlass.io/api/v1",
       "fileUrl": "http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig",
-      "filetype": "bigwig"
+      "filetype": "bigwig",
+      "indexUrl": "http://example.com/info.json"
     }
+
+* Note that we do not provide a compatible server "out of the box" or as part of
+the higlass-manage / higlass-docker distribution. To use this functionality,
+you have to run ``higlass-server`` directly and `mount the http and httpfs
+directories a filesystems in userspace
+<https://github.com/higlass/higlass-server/blob/develop/start.sh>`_.
 
 Using ``data``
 ^^^^^^^^^^^^^^

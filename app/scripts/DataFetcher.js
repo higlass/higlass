@@ -39,12 +39,14 @@ export default class DataFetcher {
    * @param {string} fileUrl The location of the data file (e.g. 'encode.org/my.file.bigwig')
    * @param {string} filetype The type of file being served (e.g. 'bigwig')
    */
-  async registerFileUrl(server, fileUrl, fileType) {
+  async registerFileUrl({ server, fileUrl, filetype, coordSystem, indexUrl }) {
     const serverUrl = `${tts(server)}/register_url/`;
 
     const payload = {
       fileurl: fileUrl,
-      filetype: fileType
+      indexurl: indexUrl,
+      filetype,
+      coordSystem
     };
 
     return fetch(serverUrl, {
@@ -64,11 +66,7 @@ export default class DataFetcher {
       this.dataConfig.fileUrl &&
       this.dataConfig.filetype
     ) {
-      return this.registerFileUrl(
-        this.dataConfig.server,
-        this.dataConfig.fileUrl,
-        this.dataConfig.filetype
-      )
+      return this.registerFileUrl(this.dataConfig)
         .then(data => data.json())
         .then(data => {
           this.dataConfig.tilesetUid = data.uid;
