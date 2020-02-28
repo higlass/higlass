@@ -7,26 +7,22 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
    * Create whatever is needed to draw this tile.
    */
   initTile(tile) {
-    super.initTile(tile);
-
     tile.barXValues = new Array(tile.tileData.dense.length);
     tile.barYValues = new Array(tile.tileData.dense.length);
     tile.barWidths = new Array(tile.tileData.dense.length);
     tile.barHeights = new Array(tile.tileData.dense.length);
 
-    this.renderTile(tile);
+    super.initTile(tile);
   }
 
-  drawTile() {}
-
-  renderTile(tile) {
-    super.drawTile(tile);
-
+  drawTile(tile) {
     if (!tile.graphics) {
       return;
     }
 
-    // console.log('renderTile:');
+    if (!tile.tileData || !tile.tileData.dense) {
+      return;
+    }
 
     const graphics = tile.graphics;
 
@@ -44,12 +40,11 @@ class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     // equal to the smallest non-zero value
     this.valueScale = null;
 
-    // console.log('valueScaling:', this.options.valueScaling);
     if (this.options.valueScaling === 'log') {
       let offsetValue = this.medianVisibleValue;
 
       if (!this.medianVisibleValue) {
-        offsetValue = this.minVisibleValue();
+        offsetValue = this.minValue();
       }
 
       this.valueScale = scaleLog()

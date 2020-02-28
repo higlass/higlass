@@ -68,7 +68,8 @@ module.exports = config => {
       'test/search_field_test.js',
       'test/tile-proxy.js',
       'test/BedLikeTests.js',
-      'test/LabelTests.js'
+      'test/LabelTests.js',
+      'test/DenseDataExtremaTests.js'
     ],
 
     preprocessors: {

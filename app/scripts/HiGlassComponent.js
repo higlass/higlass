@@ -1083,6 +1083,92 @@ class HiGlassComponent extends React.Component {
   }
 
   /**
+   * Checks if a track's value scale is locked with another track
+   */
+  isValueScaleLocked(viewUid, trackUid) {
+    const uid = this.combineViewAndTrackUid(viewUid, trackUid);
+
+    // the view must have been deleted
+    if (!this.state.views[viewUid]) {
+      return false;
+    }
+
+    if (this.valueScaleLocks[uid]) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Computed the minimal and maximal values of all tracks that are in the same
+   * lockGroup as a given track
+   * @param   {string}  viewUid  The id of the view containing the track
+   * @param   {string}  trackUid   The id of the track
+   * @return  {array}  Tuple [min,max] containing the overall extrema - or null.
+   */
+  getLockGroupExtrema(viewUid, trackUid) {
+    const uid = this.combineViewAndTrackUid(viewUid, trackUid);
+
+    // the view must have been deleted
+    if (!this.state.views[viewUid]) {
+      return null;
+    }
+
+    if (!this.valueScaleLocks[uid]) {
+      return null;
+    }
+
+    const lockGroup = this.valueScaleLocks[uid];
+
+    const lockedTracks = Object.values(lockGroup)
+      .filter(track => this.tiledPlots[track.view])
+      .map(track =>
+        this.tiledPlots[track.view].trackRenderer.getTrackObject(track.track)
+      )
+      // if the track is a LeftTrackModifier we want the originalTrack
+      .map(track =>
+        track.originalTrack === undefined ? track : track.originalTrack
+      );
+
+    const minValues = lockedTracks
+      // exclude tracks that don't set min and max values
+      .filter(track => track.minRawValue && track.maxRawValue)
+      .map(track =>
+        lockGroup.ignoreOffScreenValues
+          ? track.minVisibleValue(true)
+          : track.minVisibleValueInTiles(true)
+      );
+
+    const maxValues = lockedTracks
+      // exclude tracks that don't set min and max values
+      .filter(track => track.minRawValue && track.maxRawValue)
+      .map(track =>
+        lockGroup.ignoreOffScreenValues
+          ? track.maxVisibleValue(true)
+          : track.maxVisibleValueInTiles(true)
+      );
+
+    if (
+      minValues.length === 0 ||
+      minValues.filter(x => x === null || x === Infinity).length > 0
+    ) {
+      return null; // Data hasn't loaded completely
+    }
+
+    if (
+      maxValues.length === 0 ||
+      maxValues.filter(x => x === null || x === -Infinity).length > 0
+    ) {
+      return null; // Data hasn't loaded completely
+    }
+
+    const allMin = Math.min(...minValues);
+    const allMax = Math.max(...maxValues);
+
+    return [allMin, allMax];
+  }
+
+  /**
    * Syncing the values of locked scales
    *
    * Arguments
@@ -1110,33 +1196,26 @@ class HiGlassComponent extends React.Component {
     if (this.valueScaleLocks[uid]) {
       const lockGroup = this.valueScaleLocks[uid];
 
-      // /let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
       const lockedTracks = Object.values(lockGroup)
         .filter(track => this.tiledPlots[track.view])
         .map(track =>
           this.tiledPlots[track.view].trackRenderer.getTrackObject(track.track)
-        );
-
-      const minValues = lockedTracks
-        // exclude tracks that don't set min and max values
-        .filter(track => track.minRawValue && track.maxRawValue)
+        )
+        // if the track is a LeftTrackModifier we want the originalTrack
         .map(track =>
-          lockGroup.ignoreOffScreenValues
-            ? track.minRawValue()
-            : track.minVisibleValue(true)
+          track.originalTrack === undefined ? track : track.originalTrack
         );
 
-      const maxValues = lockedTracks
-        // exclude tracks that don't set min and max values
-        .filter(track => track.minRawValue && track.maxRawValue)
-        .map(track =>
-          lockGroup.ignoreOffScreenValues
-            ? track.maxRawValue()
-            : track.maxVisibleValue(true)
-        );
+      const lockGroupExtrema = this.getLockGroupExtrema(viewUid, trackUid);
 
-      const allMin = Math.min(...minValues);
-      const allMax = Math.max(...maxValues);
+      if (lockGroupExtrema === null) {
+        return; // Data hasn't loaded completely
+      }
+
+      const allMin = lockGroupExtrema[0];
+      const allMax = lockGroupExtrema[1];
+
+      const epsilon = 1e-6;
 
       for (const lockedTrack of lockedTracks) {
         // set the newly calculated minimum and maximum values
@@ -1154,6 +1233,38 @@ class HiGlassComponent extends React.Component {
           continue;
         }
 
+        const hasScaleChanged =
+          Math.abs(
+            lockedTrack.minValue() - lockedTrack.valueScale.domain()[0]
+          ) > epsilon ||
+          Math.abs(
+            lockedTrack.maxValue() - lockedTrack.valueScale.domain()[1]
+          ) > epsilon;
+
+        const hasBrushMoved =
+          sourceTrack.options &&
+          lockedTrack.options &&
+          typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
+          typeof sourceTrack.options.scaleEndPercent !== 'undefined' &&
+          (Math.abs(
+            lockedTrack.options.scaleStartPercent -
+              sourceTrack.options.scaleStartPercent
+          ) > epsilon ||
+            Math.abs(
+              lockedTrack.options.scaleEndPercent -
+                sourceTrack.options.scaleEndPercent
+            ) > epsilon);
+
+        // If we do view based scaling we want to minimize the number of rerenders
+        // Check if it is necessary to rerender
+        if (
+          lockedTrack.continuousScaling &&
+          !hasScaleChanged &&
+          !hasBrushMoved
+        ) {
+          continue;
+        }
+
         lockedTrack.valueScale.domain([allMin, allMax]);
 
         // In TiledPixiTrack, we check if valueScale has changed before
@@ -1162,11 +1273,7 @@ class HiGlassComponent extends React.Component {
         // stay synced
         lockedTrack.prevValueScale = lockedTrack.valueScale.copy();
 
-        if (
-          sourceTrack.options &&
-          typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
-          typeof sourceTrack.options.scaleEndPercent !== 'undefined'
-        ) {
+        if (hasBrushMoved) {
           lockedTrack.options.scaleStartPercent =
             sourceTrack.options.scaleStartPercent;
           lockedTrack.options.scaleEndPercent =
@@ -3914,7 +4021,7 @@ class HiGlassComponent extends React.Component {
       return undefined;
     }
 
-    if (!track.minVisibleValue || !track.maxVisibleValue) {
+    if (!track.minVisibleValueInTiles || !track.maxVisibleValueInTiles) {
       console.warn(
         `Track ${trackId} doesn't support the retrieval of min or max values.`
       );
@@ -3929,8 +4036,8 @@ class HiGlassComponent extends React.Component {
     }
 
     return [
-      track.minVisibleValue(ignoreFixedScale),
-      track.maxVisibleValue(ignoreFixedScale)
+      track.minVisibleValueInTiles(ignoreFixedScale),
+      track.maxVisibleValueInTiles(ignoreFixedScale)
     ];
   }
 
@@ -4206,9 +4313,11 @@ class HiGlassComponent extends React.Component {
             disableTrackMenu={this.isTrackMenuDisabled()}
             draggingHappening={this.state.draggingHappening}
             editable={this.isEditable()}
+            getLockGroupExtrema={uid => this.getLockGroupExtrema(view.uid, uid)}
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
             isShowGlobalMousePosition={this.isShowGlobalMousePosition}
+            isValueScaleLocked={uid => this.isValueScaleLocked(view.uid, uid)}
             marginBottom={this.viewMarginBottom}
             marginLeft={this.viewMarginLeft}
             marginRight={this.viewMarginRight}

@@ -29,6 +29,9 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     // this.colorScale = HEATED_OBJECT_MAP;
     this.colorScale = HEATED_OBJECT_MAP;
 
+    // Continuous scaling is currently not supported
+    this.continuousScaling = false;
+
     if (options && options.colorRange) {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
@@ -401,6 +404,10 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       this.pMain.scale.y = -k;
       this.pMain.position.y = this.position[1];
     }
+  }
+
+  leftTrackDraw() {
+    this.draw();
   }
 
   exportSVG() {
