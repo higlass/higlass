@@ -421,7 +421,11 @@ export const OPTIONS_INFO = {
 
   colorEncoding: {
     name: 'Color Encode Annotations',
-    inlineOptions: YES_NO
+    inlineOptions: {
+      no: { name: 'No', value: false },
+      values: { name: 'Values', value: 'values' },
+      itemRgb: { name: 'itemRgb', value: 'itemRgb' }
+    }
   },
 
   fontIsAligned: {

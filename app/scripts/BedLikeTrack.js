@@ -419,7 +419,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         // if the regions are scaled according to a value column their height needs to
         // be adjusted
         if (this.options && this.options.valueColumn) {
-          if (this.options.colorEncoding) {
+          if (this.options.colorEncoding === 'values') {
             const rgb = valueToColor(
               this.valueColorScale,
               this.colorScale
@@ -434,6 +434,20 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
             yMiddle = this.valueScale(value);
             // rectHeight /= 2;
+          }
+        }
+
+        if (
+          this.options &&
+          this.options.colorEncoding === 'itemRgb' &&
+          td.fields[8]
+        ) {
+          const parts = td.fields[8].split(',');
+
+          if (parts.length === 3) {
+            const color = `rgb(${td.fields[8]})`;
+
+            fill = colorToHex(color);
           }
         }
 
