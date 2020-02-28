@@ -1307,7 +1307,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         tile.canvas.toDataURL()
       );
       image.setAttribute('width', 256);
-      image.setAttribute('height', 256);
+      image.setAttribute('height', tile.canvas.height);
+      image.setAttribute('style', 'image-rendering: pixelated');
 
       g.appendChild(image);
       output.appendChild(g);

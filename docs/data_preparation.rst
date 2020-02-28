@@ -33,7 +33,7 @@ This file can be aggregated like so:
         --chromsizes-filename hg19.chrom.sizes \
         short.bed
 
-If the bed file has tab-separated values, that can be specified using the `--delimiter $'\t'` option.
+If the bed file has tab-separated values, that can be specified using the ``--delimiter $'\t'`` option.
 
 And then imported into higlass after copying to the docker temp directory (``cp short.bed.multires ~/hg-tmp/``):
 
