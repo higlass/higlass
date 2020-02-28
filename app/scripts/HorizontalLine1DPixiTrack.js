@@ -235,36 +235,34 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     if (
       this.continuousScaling &&
       this.minValue() !== undefined &&
-      this.maxValue() !== undefined &&
-      this.valueScaleMin === null &&
-      this.valueScaleMax === null &&
-      !isValueScaleLocked
-    ) {
-      const newMin = this.minVisibleValue();
-      const newMax = this.maxVisibleValue();
-
-      const epsilon = 1e-6;
-
-      if (
-        newMin !== null &&
-        newMax !== null &&
-        (Math.abs(this.minValue() - newMin) > epsilon ||
-          Math.abs(this.maxValue() - newMax) > epsilon)
-      ) {
-        this.minValue(newMin);
-        this.maxValue(newMax);
-
-        this.scheduleRerender();
-      }
-    }
-
-    if (
-      this.continuousScaling &&
-      isValueScaleLocked &&
-      this.minValue() !== undefined &&
       this.maxValue() !== undefined
     ) {
-      this.onValueScaleChanged();
+      if (
+        this.valueScaleMin === null &&
+        this.valueScaleMax === null &&
+        !isValueScaleLocked
+      ) {
+        const newMin = this.minVisibleValue();
+        const newMax = this.maxVisibleValue();
+
+        const epsilon = 1e-6;
+
+        if (
+          newMin !== null &&
+          newMax !== null &&
+          (Math.abs(this.minValue() - newMin) > epsilon ||
+            Math.abs(this.maxValue() - newMax) > epsilon)
+        ) {
+          this.minValue(newMin);
+          this.maxValue(newMax);
+
+          this.scheduleRerender();
+        }
+      }
+
+      if (isValueScaleLocked) {
+        this.onValueScaleChanged();
+      }
     }
   }
 

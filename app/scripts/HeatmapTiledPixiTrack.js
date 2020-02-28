@@ -1431,7 +1431,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       return null;
     }
 
-    const min = Math.min(...minimumsPerTile);
+    const min = Math.min.apply(null, minimumsPerTile);
 
     // If there is no data or no denseDataExtrema, go to parent method
     if (min === Number.MAX_SAFE_INTEGER) {
@@ -1458,7 +1458,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       return null;
     }
 
-    const max = Math.max(...maximumsPerTile);
+    const max = Math.max.apply(null, maximumsPerTile);
 
     // If there is no data  or no deseDataExtrema, go to parent method
     if (max === Number.MIN_SAFE_INTEGER) {
