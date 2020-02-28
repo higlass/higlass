@@ -1157,7 +1157,7 @@ export const TRACKS_INFO = [
     type: 'horizontal-gene-annotations',
     datatype: ['gene-annotation'],
     local: false,
-    defaultHeight: 55,
+    defaultHeight: 90,
     orientation: '1d-horizontal',
     name: 'Gene Annotations',
     thumbnail: svgGeneAnnotationsIcon,
@@ -1199,7 +1199,7 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       showMousePosition: false,
       mousePositionColor: '#000000',
-      geneAnnotationHeight: 12,
+      geneAnnotationHeight: 16,
       geneLabelPosition: 'outside',
       geneStrandSpacing: 4
     },

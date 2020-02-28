@@ -14,16 +14,15 @@ import { colorToHex } from './utils';
 const FONT_SIZE = 11;
 const FONT_FAMILY = 'Arial';
 const GENE_LABEL_POS = 'outside';
-const GENE_RECT_HEIGHT = 10;
+const GENE_RECT_HEIGHT = 16;
 const GENE_STRAND_SPACING = 4;
-const TRIANGLE_HEIGHT = 6;
 const MAX_TEXTS = 20;
 const WHITE_HEX = colorToHex('#ffffff');
 const EXON_LINE_HEIGHT = 2;
+const EXON_HEIGHT = (2 * GENE_RECT_HEIGHT) / 3;
+const GENE_MINI_TRIANGLE_HEIGHT = (2 * EXON_HEIGHT) / 3;
 const MAX_GENE_ENTRIES = 50;
 const MAX_FILLER_ENTRIES = 5000;
-const FILLER_HEIGHT = 14;
-const LINE_WIDTH = 2;
 
 const geneClickFunc = (event, track, payload) => {
   // fill rectangles are just indicators and are not meant to be
@@ -222,28 +221,31 @@ function drawExons(
   // Draw the middle line
   polys.push(poly);
 
+  const triangleInterval = 2 * height;
+
+  // the first triangle will be drawn in renderGeneSymbols
   for (
-    let j = Math.max(track.position[0], xStartPos);
+    let j = Math.max(track.position[0], xStartPos) + triangleInterval;
     j < Math.min(track.position[0] + track.dimensions[0], xStartPos + width);
-    j += 2 * height
+    j += triangleInterval
   ) {
     if (strand === '+') {
       poly = [
         j,
-        yMiddle - height / 2,
-        j + height / 2,
+        yMiddle - GENE_MINI_TRIANGLE_HEIGHT / 2,
+        j + GENE_MINI_TRIANGLE_HEIGHT / 2,
         yMiddle,
         j,
-        yMiddle + height / 2
+        yMiddle + GENE_MINI_TRIANGLE_HEIGHT / 2
       ];
     } else {
       poly = [
         j,
-        yMiddle - height / 2,
-        j - height / 2,
+        yMiddle - GENE_MINI_TRIANGLE_HEIGHT / 2,
+        j - GENE_MINI_TRIANGLE_HEIGHT / 2,
         yMiddle,
         j,
-        yMiddle + height / 2
+        yMiddle + GENE_MINI_TRIANGLE_HEIGHT / 2
       ];
     }
 
@@ -285,7 +287,7 @@ function renderGeneSymbols(
   genes,
   track,
   tile,
-  graphics,
+  oldGraphics,
   xScale,
   color,
   alpha,
@@ -293,20 +295,28 @@ function renderGeneSymbols(
   height
 ) {
   const topY = centerY - height / 2;
-  tile.rectGraphics.beginFill(color, alpha);
   // tile.rectGraphics.lineStyle(1, color, 0.2);
 
   genes.forEach(gene => {
     const xStart = track._xScale(gene.xStart);
+    const xEnd = track._xScale(gene.xEnd);
+
+    const graphics = new PIXI.Graphics();
+    tile.rectGraphics.addChild(graphics);
+
+    graphics.beginFill(color, alpha);
+    graphics.interactive = true;
+    graphics.buttonMode = true;
+    graphics.mouseup = evt => geneClickFunc(evt, track, gene);
 
     let poly = [];
-    if (gene.strand === '+') {
+    if (gene.strand === '+' || gene.fields[5] === '+') {
       poly = [
-        xStart,
+        xEnd,
         topY,
-        xStart + track.geneRectHeight / 2,
+        xEnd + track.geneRectHeight / 2,
         topY + track.geneRectHeight / 2,
-        xStart,
+        xEnd,
         topY + track.geneRectHeight
       ];
     } else {
@@ -320,122 +330,8 @@ function renderGeneSymbols(
       ];
     }
 
-    tile.rectGraphics.drawPolygon(poly);
+    graphics.drawPolygon(poly);
     tile.allRects.push([poly, gene.strand, gene]);
-  });
-}
-
-function renderPromoters(
-  genes,
-  track,
-  tile,
-  oldGraphics,
-  xScale,
-  color,
-  alpha,
-  centerY,
-  height
-) {
-  const topY = centerY - height / 2;
-  // tile.rectGraphics.lineStyle(1, color, 0.2);
-
-  genes.forEach(gene => {
-    const graphics = new PIXI.Graphics();
-    graphics.lineStyle(LINE_WIDTH, color, alpha);
-    tile.rectGraphics.addChild(graphics);
-    graphics.interactive = true;
-    graphics.buttonMode = true;
-    graphics.mouseup = evt => geneClickFunc(evt, track, gene);
-
-    let xStart = track._xScale(gene.xStart);
-    let xEnd = track._xScale(gene.xEnd);
-
-    const ARROW_HEIGHT = 4;
-    const ARROW_WIDTH = 6;
-
-    const arrowWidth = Math.min(ARROW_WIDTH, xEnd - xStart);
-    let arrowPoly = null;
-
-    if (gene.strand === '-') {
-      [xStart, xEnd] = [xEnd, xStart];
-      arrowPoly = [
-        // top tip of arrow
-        xEnd + arrowWidth,
-        topY + ARROW_HEIGHT,
-
-        // right end of arrow
-        xEnd,
-        topY,
-
-        // bottom tip of arrow
-        xEnd + arrowWidth,
-        topY - ARROW_HEIGHT
-      ];
-    } else {
-      arrowPoly = [
-        // top tip of arrow
-        xEnd - arrowWidth,
-        topY - ARROW_HEIGHT,
-
-        // right end of arrow
-        xEnd,
-        topY,
-
-        // bottom tip of arrow
-        xEnd - arrowWidth,
-        topY + ARROW_HEIGHT
-      ];
-    }
-
-    graphics.beginFill(color, alpha);
-    graphics.drawPolygon(arrowPoly);
-    graphics.beginFill(color, 0);
-
-    graphics.moveTo(xStart, centerY + height / 2);
-    graphics.lineTo(xStart, topY);
-
-    if (gene.strand === '-') {
-      graphics.lineTo(xEnd + arrowWidth, topY);
-    } else {
-      graphics.lineTo(xEnd - arrowWidth, topY);
-    }
-
-    tile.allRects.push([arrowPoly, gene.strand, gene]);
-    // push a rectangle that's used for mouseover but won't be
-    // drawn
-    tile.allRects.push([
-      [xStart, topY, xEnd, topY, xEnd, topY + height, xStart, topY + height],
-      gene.strand,
-      gene,
-      true
-    ]);
-  });
-}
-
-function renderOperators(
-  genes,
-  track,
-  tile,
-  graphics,
-  xScale,
-  color,
-  alpha,
-  centerY,
-  height
-) {
-  const topY = centerY - height / 2;
-  tile.rectGraphics.beginFill(color, 0);
-  // tile.rectGraphics.lineStyle(1, color, 0.2);
-
-  genes.forEach(gene => {
-    const xStart = track._xScale(gene.xStart);
-    const xEnd = track._xScale(gene.xEnd);
-
-    tile.rectGraphics.lineStyle(LINE_WIDTH, color, alpha);
-    tile.rectGraphics.moveTo(xStart, topY);
-    tile.rectGraphics.lineTo(xStart, centerY + height / 2);
-    tile.rectGraphics.lineTo(xEnd, centerY + height / 2);
-    tile.rectGraphics.lineTo(xEnd, topY);
   });
 }
 
@@ -475,7 +371,7 @@ function renderGeneExons(
         chrOffset, // not used for now because we have just one chromosome
         centerY,
         height,
-        gene.strand
+        gene.strand || gene.fields[5]
       ).map(x => [x, gene.strand, gene])
     );
   });
@@ -492,24 +388,8 @@ function renderGenes(
   centerY,
   height
 ) {
-  const MIN_SIZE_FOR_EXONS = 10;
-
-  // partition the set of genes into those we need to draw
-  // exons for (i.e. those whose rendered size is > MIN_SIZE_FOR_EXONS)
-  // and those that we can just draw a small symbol for
-  // (i.e. those whose rendered size is < MIN_SIZE_FOR_EXONS)
-  const smallGenes = genes.filter(
-    gene =>
-      track._xScale(gene.xEnd) - track._xScale(gene.xStart) < MIN_SIZE_FOR_EXONS
-  );
-  const largeGenes = genes.filter(
-    gene =>
-      track._xScale(gene.xEnd) - track._xScale(gene.xStart) >=
-      MIN_SIZE_FOR_EXONS
-  );
-
   renderGeneSymbols(
-    smallGenes,
+    genes,
     track,
     tile,
     graphics,
@@ -520,7 +400,7 @@ function renderGenes(
     height
   );
   renderGeneExons(
-    largeGenes,
+    genes,
     track,
     tile,
     graphics,
@@ -528,7 +408,7 @@ function renderGenes(
     color,
     alpha,
     centerY,
-    height
+    EXON_HEIGHT
   );
 }
 
@@ -608,12 +488,11 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.geneLabelPos = this.options.geneLabelPosition || GENE_LABEL_POS;
     this.geneRectHeight =
       +this.options.geneAnnotationHeight || GENE_RECT_HEIGHT;
-    this.fillerHeight = +this.fillerHeight || FILLER_HEIGHT;
+    this.fillerHeight = +this.options.geneAnnotationHeight || GENE_RECT_HEIGHT;
     // Don't ask me why but rectangles and triangles seem to be drawn 2px larger
     // than they should be
     this.geneRectHeight -= 2;
 
-    this.geneTriangleHeight = 0.6 * this.geneRectHeight || TRIANGLE_HEIGHT;
     this.geneStrandSpacing =
       +this.options.geneStrandSpacing || GENE_STRAND_SPACING;
     this.geneStrandHSpacing = this.geneStrandSpacing / 2;
@@ -687,7 +566,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.geneLabelPos = this.options.geneLabelPosition || GENE_LABEL_POS;
     this.geneRectHeight =
       +this.options.geneAnnotationHeight || GENE_RECT_HEIGHT;
-    this.geneTriangleHeight = 0.6 * this.geneRectHeight || TRIANGLE_HEIGHT;
     this.geneStrandHSpacing = this.geneStrandSpacing / 2;
     this.geneRectHHeight = this.geneRectHeight / 2;
 
@@ -729,33 +607,11 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       td => td.type === 'filler' && td.strand === '-'
     );
 
-    const plusPromoters = tile.tileData.filter(
-      td => td.type === 'promoter' && td.strand === '+'
-    );
-    const minusPromoters = tile.tileData.filter(
-      td => td.type === 'promoter' && td.strand === '-'
-    );
-
-    const plusOperators = tile.tileData.filter(
-      td => td.type === 'operator' && td.strand === '+'
-    );
-
-    // const minusPromoters = tile.tileData.filter(
-    //   td => td.type === 'promoter' && td.strand === '-'
-    // );
-
     const plusGenes = tile.tileData.filter(
-      td =>
-        td.type !== 'filler' &&
-        td.type !== 'promoter' &&
-        td.type !== 'operator' &&
-        (td.strand === '+' || td.fields[5] === '+')
+      td => td.type !== 'filler' && (td.strand === '+' || td.fields[5] === '+')
     );
     const minusGenes = tile.tileData.filter(
-      td =>
-        td.type !== 'filler' &&
-        td.type !== 'promoter' &&
-        (td.strand === '-' || td.fields[5] === '-')
+      td => td.type !== 'filler' && (td.strand === '-' || td.fields[5] === '-')
     );
 
     const yMiddle = this.dimensions[1] / 2;
@@ -795,14 +651,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     renderGenes(plusGenes, ...plusRenderContext);
     renderGenes(minusGenes, ...minusRenderContext);
-
-    plusRenderContext[4] = 'black';
-    minusRenderContext[4] = 'black';
-
-    renderPromoters(plusPromoters, ...plusRenderContext);
-    renderPromoters(minusPromoters, ...minusRenderContext);
-
-    renderOperators(plusOperators, ...plusRenderContext);
 
     renderMask(this, tile);
 
@@ -1048,40 +896,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     }
 
     return '';
-    // const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo,
-    //   zoomLevel, this.tilesetInfo.tile_size);
-
-    // // the position of the tile containing the query position
-    // const tilePos = this._xScale.invert(trackX) / tileWidth;
-    // console.log('tilePos', tilePos);
-
-    // const posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
-
-    // const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
-    // const fetchedTile = this.fetchedTiles[tileId];
-
-    // const dataX = this._xScale.invert(trackX);
-
-    // if (this.drawnRects[zoomLevel]) {
-    //   const visibleRects = Object.values(this.drawnRects[zoomLevel]);
-
-    //   for (let i = 0; i < visibleRects.length; i++) {
-    //     const point = [trackX, trackY];
-    //     const rect = visibleRects[i][0].slice(0);
-    //     const newArr = [];
-    //     while (rect.length) newArr.push(rect.splice(0, 2));
-
-    //     const pc = classifyPoint(newArr, point);
-
-    //     if (pc === -1) {
-    //       const parts = visibleRects[i][1].value.fields;
-
-    //       return parts.join(' ');
-    //     }
-    //   }
-    // }
-
-    // return '';
   }
 
   exportSVG() {
@@ -1115,11 +929,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         );
 
         tile.allRects.forEach(rect => {
-          if (!rect[3]) {
-            // this is a mouseover polygon that's not meant
-            // to be rendered
-            return;
-          }
           const r = document.createElement('path');
 
           const poly = rect[0];
