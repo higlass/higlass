@@ -9,6 +9,7 @@ import PixiTrack from './PixiTrack';
 
 // Utils
 import { throttleAndDebounce } from './utils';
+import backgroundTaskScheduler from './utils/background-task-scheduler';
 
 // Configs
 import { ZOOM_DEBOUNCE } from './configs';
@@ -114,6 +115,12 @@ class TiledPixiTrack extends PixiTrack {
 
     this.maxZoom = 0;
     this.medianVisibleValue = null;
+
+    this.backgroundTaskScheduler = backgroundTaskScheduler;
+
+    // If the browser supports requestIdleCallback we use continuous
+    // instead of tile based scaling
+    this.continuousScaling = 'requestIdleCallback' in window;
 
     this.valueScaleMin = null;
     this.fixedValueScaleMin = null;
@@ -507,8 +514,12 @@ class TiledPixiTrack extends PixiTrack {
   initTile(/* tile */) {
     // create the tile
     // should be overwritten by child classes
-    this.scale.minRawValue = this.minVisibleValue();
-    this.scale.maxRawValue = this.maxVisibleValue();
+    this.scale.minRawValue = this.continuousScaling
+      ? this.minVisibleValue()
+      : this.minVisibleValueInTiles();
+    this.scale.maxRawValue = this.continuousScaling
+      ? this.maxVisibleValue()
+      : this.maxVisibleValueInTiles();
 
     this.scale.minValue = this.scale.minRawValue;
     this.scale.maxValue = this.scale.maxRawValue;
@@ -777,7 +788,14 @@ class TiledPixiTrack extends PixiTrack {
     );
   }
 
+  // Should be overwriten by child clases to get the true minimal
+  // visible value in the currently viewed area
   minVisibleValue(ignoreFixedScale = false) {
+    return this.minVisibleValueInTiles(ignoreFixedScale);
+  }
+
+  minVisibleValueInTiles(ignoreFixedScale = false) {
+    // Get minimum in currently visible tiles
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
@@ -798,7 +816,14 @@ class TiledPixiTrack extends PixiTrack {
     return this.valueScaleMin !== null ? this.valueScaleMin : min;
   }
 
+  // Should be overwriten by child clases to get the true maximal
+  // visible value in the currently viewed area
   maxVisibleValue(ignoreFixedScale = false) {
+    return this.maxVisibleValueInTiles(ignoreFixedScale);
+  }
+
+  maxVisibleValueInTiles(ignoreFixedScale = false) {
+    // Get maximum in currently visible tiles
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {

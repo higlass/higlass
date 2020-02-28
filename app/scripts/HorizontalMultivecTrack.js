@@ -8,6 +8,9 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   constructor(context, options) {
     super(context, options);
     this.pMain = this.pMobile;
+
+    // Continuous scaling is currently not supported
+    this.continuousScaling = false;
   }
 
   tileDataToCanvas(pixData) {
