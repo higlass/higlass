@@ -185,6 +185,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   rerender(options, force) {
     super.rerender(options, force);
 
+    // this will get instantiated if a value column is specified
+    this.valueScale = null;
     this.drawnRects = {};
 
     if (this.options.colorEncoding) {
@@ -422,7 +424,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           if (this.options.colorEncoding === 'values') {
             const rgb = valueToColor(
               this.valueColorScale,
-              this.colorScale
+              this.colorScale,
+              0, //pseudocounts
+              -Number.MIN_VALUE
             )(+geneInfo[+this.options.valueColumn - 1]);
             fill = colorToHex(rgbToHex(...rgb));
           } else {
@@ -576,10 +580,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         ? +this.options.colorEncodingRange[1]
         : this.maxVisibleValue();
 
-      if (this.options.colorEncoding) {
+      if (this.options.colorEncoding === 'values') {
         this.valueColorScale = scaleLinear()
           .domain([min, max])
-          .range([0, 255]);
+          .range([0, 254]);
       } else {
         [this.valueScale] = this.makeValueScale(
           min,

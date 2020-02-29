@@ -1813,7 +1813,7 @@ export const TRACKS_INFO = [
       trackBorderWidth: 0,
       trackBorderColor: 'black',
       valueColumn: null,
-      colorEncoding: 'bedRgb',
+      colorEncoding: 'itemRgb',
       showTexts: false,
       colorRange: ['#000000', '#652537', '#bf5458', '#fba273', '#ffffe0'],
       colorEncodingRange: false,
