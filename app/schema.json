@@ -437,9 +437,7 @@
           "chromInfoPath": { "type": "string" },
           "created": { "type": "string" },
           "defaultOptions": { "type": "object", "additionalProperties": false },
-          "description": { "type": "string" },
           "fromViewUid": { "type": "null" },
-          "header": { "type": "string" },
           "height": { "type": "number" },
           "projectionXDomain": {
             "$ref": "#/definitions/viewProperties/domain"
@@ -447,20 +445,9 @@
           "projectionYDomain": {
             "$ref": "#/definitions/viewProperties/domain"
           },
-          "local": { "type": "boolean" },
-          "maxWidth": { "type": "number" },
           "name": { "type": "string" },
           "options": { "type": "object" },
-          "orientation": { "type": "string" },
           "position": { "type": "string" },
-          "project": { "type": "null" },
-          "project_name": { "type": "string" },
-          "thumbnail": {
-            "oneOf": [
-              { "type": "object", "additionalProperties": false },
-              { "type": "null" }
-            ]
-          },
           "transforms": { "type": "array" },
           "width": { "type": "number" },
           "x": { "type": "number" },
