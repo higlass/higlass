@@ -118,6 +118,8 @@ class HiGlassComponent extends React.Component {
     // keep track of the xScales of each Track Renderer
     this.xScales = {};
     this.yScales = {};
+    this.projectionXDomains = {};
+    this.projectionYDomains = {};
     this.topDiv = null;
     this.zoomToDataExtentOnInit = new Set();
 
@@ -2915,45 +2917,25 @@ class HiGlassComponent extends React.Component {
           // If there is no `fromView`, then there must be a `projectionXDomain` instead.
           // Update the viewconfig to reflect the new `projectionXDomain` array
           // on the `viewport-projection-horizontal` track.
-          const { viewConfig } = this.state;
-          const newViewConfig = viewConfig;
-          for (const [viewI, view] of viewConfig.views.entries()) {
-            if (view.uid === viewUid) {
-              for (const [tracksPos, tracks] of Object.entries(view.tracks)) {
-                for (const [otherTrackI, otherTrack] of tracks.entries()) {
-                  if (otherTrack.uid === track.uid) {
-                    switch (track.type) {
-                      case 'viewport-projection-horizontal':
-                        newViewConfig.views[viewI].tracks[tracksPos][
-                          otherTrackI
-                        ].projectionXDomain = xDomain;
-                        break;
-                      case 'viewport-projection-vertical':
-                        newViewConfig.views[viewI].tracks[tracksPos][
-                          otherTrackI
-                        ].projectionYDomain = yDomain;
-                        break;
-                      case 'viewport-projection-center':
-                        newViewConfig.views[viewI].tracks[tracksPos][
-                          otherTrackI
-                        ].projectionXDomain = xDomain;
-                        newViewConfig.views[viewI].tracks[tracksPos][
-                          otherTrackI
-                        ].projectionYDomain = yDomain;
-                        break;
-                      default:
-                        console.warn(
-                          'Unexpected track type in setDomainsCallback'
-                        );
-                    }
-                  }
-                }
-              }
-            }
+          if (!this.projectionXDomains[viewUid]) {
+            this.projectionXDomains[viewUid] = {};
           }
-
-          const newViews = this.processViewConfig(newViewConfig);
-          this.setState({ views: newViews, viewConfig: newViewConfig });
+          if (!this.projectionYDomains[viewUid]) {
+            this.projectionYDomains[viewUid] = {};
+          }
+          if (
+            track.type === 'viewport-projection-horizontal' ||
+            track.type === 'viewport-projection-center'
+          ) {
+            this.projectionXDomains[viewUid][track.uid] = xDomain;
+          }
+          if (
+            track.type === 'viewport-projection-vertical' ||
+            track.type === 'viewport-projection-center'
+          ) {
+            this.projectionYDomains[viewUid][track.uid] = yDomain;
+          }
+          this.triggerViewChangeDb();
           // Return early, since the remaining code uses the `fromView` variable.
           return;
         }
@@ -3132,6 +3114,23 @@ class HiGlassComponent extends React.Component {
 
             track.server = newUrl;
           }
+        }
+
+        if (
+          (track.type === 'viewport-projection-center' ||
+            track.type === 'viewport-projection-horizontal') &&
+          this.projectionXDomains[k.uid] &&
+          this.projectionXDomains[k.uid][track.uid]
+        ) {
+          track.projectionXDomain = this.projectionXDomains[k.uid][track.uid];
+        }
+        if (
+          (track.type === 'viewport-projection-center' ||
+            track.type === 'viewport-projection-vertical') &&
+          this.projectionYDomains[k.uid] &&
+          this.projectionYDomains[k.uid][track.uid]
+        ) {
+          track.projectionYDomain = this.projectionYDomains[k.uid][track.uid];
         }
 
         delete track.name;
