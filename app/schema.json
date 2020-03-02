@@ -434,9 +434,6 @@
               "viewport-projection-center"
             ]
           },
-          "chromInfoPath": { "type": "string" },
-          "created": { "type": "string" },
-          "defaultOptions": { "type": "object", "additionalProperties": false },
           "fromViewUid": { "type": "null" },
           "height": { "type": "number" },
           "projectionXDomain": {
@@ -445,9 +442,7 @@
           "projectionYDomain": {
             "$ref": "#/definitions/viewProperties/domain"
           },
-          "name": { "type": "string" },
           "options": { "type": "object" },
-          "position": { "type": "string" },
           "transforms": { "type": "array" },
           "width": { "type": "number" },
           "x": { "type": "number" },
