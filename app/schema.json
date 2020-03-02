@@ -435,7 +435,6 @@
             ]
           },
           "fromViewUid": { "type": "null" },
-          "height": { "type": "number" },
           "projectionXDomain": {
             "$ref": "#/definitions/viewProperties/domain"
           },
