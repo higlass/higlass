@@ -2939,7 +2939,6 @@ class HiGlassComponent extends React.Component {
           // Return early, since the remaining code uses the `fromView` variable.
           return;
         }
-        // There is a "from" view attached, so update the scales of that view.
         const tXScale = scaleLinear()
           .domain(xDomain)
           .range(this.xScales[fromView].range());
@@ -3123,6 +3122,8 @@ class HiGlassComponent extends React.Component {
           this.projectionXDomains[k.uid] &&
           this.projectionXDomains[k.uid][track.uid]
         ) {
+          // There is no "from" view attached to this projection track,
+          // so the `projectionXDomain` field must be used.
           track.projectionXDomain = this.projectionXDomains[k.uid][track.uid];
         }
         if (
@@ -3131,6 +3132,8 @@ class HiGlassComponent extends React.Component {
           this.projectionYDomains[k.uid] &&
           this.projectionYDomains[k.uid][track.uid]
         ) {
+          // There is no "from" view attached to this projection track,
+          // so the `projectionYDomain` field must be used.
           track.projectionYDomain = this.projectionYDomains[k.uid][track.uid];
         }
 
