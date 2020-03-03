@@ -118,6 +118,8 @@ class HiGlassComponent extends React.Component {
     // keep track of the xScales of each Track Renderer
     this.xScales = {};
     this.yScales = {};
+    this.projectionXDomains = {};
+    this.projectionYDomains = {};
     this.topDiv = null;
     this.zoomToDataExtentOnInit = new Set();
 
@@ -2926,6 +2928,32 @@ class HiGlassComponent extends React.Component {
       track.removeViewportChanged = trackId =>
         this.removeScalesChangedListener(fromView, trackId);
       track.setDomainsCallback = (xDomain, yDomain) => {
+        if (!fromView) {
+          // If there is no `fromView`, then there must be a `projectionXDomain` instead.
+          // Update the viewconfig to reflect the new `projectionXDomain` array
+          // on the `viewport-projection-horizontal` track.
+          if (!this.projectionXDomains[viewUid]) {
+            this.projectionXDomains[viewUid] = {};
+          }
+          if (!this.projectionYDomains[viewUid]) {
+            this.projectionYDomains[viewUid] = {};
+          }
+          if (
+            track.type === 'viewport-projection-horizontal' ||
+            track.type === 'viewport-projection-center'
+          ) {
+            this.projectionXDomains[viewUid][track.uid] = xDomain;
+          }
+          if (
+            track.type === 'viewport-projection-vertical' ||
+            track.type === 'viewport-projection-center'
+          ) {
+            this.projectionYDomains[viewUid][track.uid] = yDomain;
+          }
+          this.triggerViewChangeDb();
+          // Return early, since the remaining code uses the `fromView` variable.
+          return;
+        }
         const tXScale = scaleLinear()
           .domain(xDomain)
           .range(this.xScales[fromView].range());
@@ -3101,6 +3129,27 @@ class HiGlassComponent extends React.Component {
 
             track.server = newUrl;
           }
+        }
+
+        if (
+          (track.type === 'viewport-projection-center' ||
+            track.type === 'viewport-projection-horizontal') &&
+          this.projectionXDomains[k.uid] &&
+          this.projectionXDomains[k.uid][track.uid]
+        ) {
+          // There is no "from" view attached to this projection track,
+          // so the `projectionXDomain` field must be used.
+          track.projectionXDomain = this.projectionXDomains[k.uid][track.uid];
+        }
+        if (
+          (track.type === 'viewport-projection-center' ||
+            track.type === 'viewport-projection-vertical') &&
+          this.projectionYDomains[k.uid] &&
+          this.projectionYDomains[k.uid][track.uid]
+        ) {
+          // There is no "from" view attached to this projection track,
+          // so the `projectionYDomain` field must be used.
+          track.projectionYDomain = this.projectionYDomains[k.uid][track.uid];
         }
 
         delete track.name;

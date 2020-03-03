@@ -1,6 +1,6 @@
 import { or } from '../utils';
 
-export const IS_TRACK_RANGE_SELECTABLE = (track) => {
+export const IS_TRACK_RANGE_SELECTABLE = track => {
   switch (track.type) {
     case 'heatmap':
     case 'horizontal-1d-heatmap':
@@ -20,6 +20,7 @@ export const IS_TRACK_RANGE_SELECTABLE = (track) => {
     case 'vertical-heatmap':
     case 'osm-tiles':
     case 'mapbox-tiles':
+    case 'horizontal-multivec':
       return true;
 
     case 'combined': {

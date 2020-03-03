@@ -36,7 +36,6 @@
     "chromInfoPath": { "type": "string" }
   },
   "definitions": {
-
     "locks": {
       "slug": { "type": "string" },
 
@@ -122,12 +121,17 @@
       "properties": {
         "autocompleteSource": { "type": "string" },
         "chromInfoPath": { "type": "string" },
-        "genomePositionSearchBox": { "$ref": "#/definitions/viewProperties/genomePositionSearchBox" },
+        "genomePositionSearchBox": {
+          "$ref": "#/definitions/viewProperties/genomePositionSearchBox"
+        },
         "genomePositionSearchBoxVisible": { "type": "boolean" },
         "initialXDomain": { "$ref": "#/definitions/viewProperties/domain" },
         "initialYDomain": { "$ref": "#/definitions/viewProperties/domain" },
         "layout": { "$ref": "#/definitions/viewProperties/layout" },
-        "overlays": { "type": "array", "items": { "$ref": "#/definitions/viewProperties/overlay" } },
+        "overlays": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/viewProperties/overlay" }
+        },
         "selectionView": { "type": "boolean" },
         "tracks": { "$ref": "#/definitions/viewProperties/tracks_object" },
         "uid": { "type": "string" },
@@ -139,10 +143,7 @@
       "genomePositionSearchBox": {
         "type": "object",
         "title": "The Genome Position Search Box Schema",
-        "required": [
-          "chromInfoServer",
-          "chromInfoId"
-        ],
+        "required": ["chromInfoServer", "chromInfoId"],
         "properties": {
           "autocompleteServer": {
             "type": "string",
@@ -256,7 +257,10 @@
           "oneOf": [
             { "$ref": "#/definitions/tracks/enum_track" },
             { "$ref": "#/definitions/tracks/combined_track" },
-            { "$ref": "#/definitions/tracks/heatmap_track" }
+            { "$ref": "#/definitions/tracks/heatmap_track" },
+            {
+              "$ref": "#/definitions/tracks/independent_viewport_projection_track"
+            }
           ]
         }
       },
@@ -306,7 +310,7 @@
         "properties": {
           "contents": { "$ref": "#/definitions/viewProperties/tracks_array" },
           "height": { "type": "number" },
-          "options": { },
+          "options": {},
           "position": { "type": "string" },
           "type": { "const": "combined" },
           "uid": { "type": "string" },
@@ -325,7 +329,7 @@
             "additionalProperties": false,
             "properties": {
               "type": { "type": "string" },
-              "url": { "type": "string"}
+              "url": { "type": "string" }
             }
           },
           "uid": { "type": "string" },
@@ -406,10 +410,38 @@
           "position": { "type": "string" },
           "project": { "type": "null" },
           "project_name": { "type": "string" },
-          "thumbnail": { "oneOf": [
-            { "type": "object", "additionalProperties": false },
-            { "type": "null" }
-          ] },
+          "thumbnail": {
+            "oneOf": [
+              { "type": "object", "additionalProperties": false },
+              { "type": "null" }
+            ]
+          },
+          "transforms": { "type": "array" },
+          "width": { "type": "number" },
+          "x": { "type": "number" },
+          "y": { "type": "number" }
+        }
+      },
+      "independent_viewport_projection_track": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "uid": { "type": "string" },
+          "type": {
+            "enum": [
+              "viewport-projection-horizontal",
+              "viewport-projection-vertical",
+              "viewport-projection-center"
+            ]
+          },
+          "fromViewUid": { "type": "null" },
+          "projectionXDomain": {
+            "$ref": "#/definitions/viewProperties/domain"
+          },
+          "projectionYDomain": {
+            "$ref": "#/definitions/viewProperties/domain"
+          },
+          "options": { "type": "object" },
           "transforms": { "type": "array" },
           "width": { "type": "number" },
           "x": { "type": "number" },

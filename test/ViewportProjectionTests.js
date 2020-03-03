@@ -12,6 +12,7 @@ import { topAxisOnly } from './view-configs';
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 import viewConfig from './view-configs/viewport-projection';
+import viewConfigWithoutFromViewUids from './view-configs-more/viewportProjectionsWithoutFromViewUids';
 
 describe('Simple HiGlassComponent', () => {
   let api;
@@ -127,6 +128,125 @@ describe('Simple HiGlassComponent', () => {
       removeDiv(div0);
       api0 = undefined;
       div0 = undefined;
+    });
+  });
+
+  describe('Viewport projection without linked views tests', () => {
+    beforeEach(() => {
+      [div, api] = createElementAndApi(viewConfigWithoutFromViewUids);
+    });
+
+    it('Ensure that the viewport projection horizontal is rendered', done => {
+      waitForTilesLoaded(api.getComponent(), () => {
+        const trackObj = getTrackObjectFromHGC(
+          api.getComponent(),
+          'viewport-projection-test-view',
+          'viewport-projection-test-track-h',
+          true
+        );
+
+        trackObj.rerender();
+
+        const viewportRect = trackObj.gMain.select('rect.selection');
+
+        expect(Math.round(viewportRect.attr('y'))).toEqual(0);
+        expect(Math.round(viewportRect.attr('width'))).toEqual(59);
+        expect(viewportRect.attr('fill')).toEqual('#F00');
+
+        done();
+      });
+    });
+
+    it('Ensure that the viewport projection vertical is rendered', done => {
+      waitForTilesLoaded(api.getComponent(), () => {
+        const trackObj = getTrackObjectFromHGC(
+          api.getComponent(),
+          'viewport-projection-test-view',
+          'viewport-projection-test-track-v',
+          true
+        );
+
+        trackObj.rerender();
+
+        const viewportRect = trackObj.gMain.select('rect.selection');
+
+        expect(Math.round(viewportRect.attr('x'))).toEqual(0);
+        expect(Math.round(viewportRect.attr('height'))).toEqual(18);
+        expect(viewportRect.attr('fill')).toEqual('#0F0');
+
+        done();
+      });
+    });
+
+    it('Ensure that the viewport projection center is rendered', done => {
+      waitForTilesLoaded(api.getComponent(), () => {
+        const trackObj = getTrackObjectFromHGC(
+          api.getComponent(),
+          'viewport-projection-test-view',
+          'viewport-projection-test-track-c',
+          true
+        );
+
+        trackObj.rerender();
+
+        const viewportRect = trackObj.gMain.select('rect.selection');
+
+        expect(Math.round(viewportRect.attr('width'))).toEqual(59);
+        expect(Math.round(viewportRect.attr('height'))).toEqual(18);
+        expect(viewportRect.attr('fill')).toEqual('#00F');
+
+        done();
+      });
+    });
+
+    it('Publishes an updated view config when the domain of the viewport projection horizontal changes', done => {
+      waitForTilesLoaded(api.getComponent(), () => {
+        const trackObj = getTrackObjectFromHGC(
+          api.getComponent(),
+          'viewport-projection-test-view',
+          'viewport-projection-test-track-h',
+          true
+        );
+
+        const oldViewConfig = api.getViewConfig();
+        expect(
+          Math.round(
+            oldViewConfig.views[0].tracks.whole[0].projectionXDomain[0]
+          )
+        ).toEqual(225681610);
+        expect(
+          Math.round(
+            oldViewConfig.views[0].tracks.whole[0].projectionXDomain[1]
+          )
+        ).toEqual(226375262);
+
+        api.on('viewConfig', newViewConfigString => {
+          const newViewConfig = JSON.parse(newViewConfigString);
+          expect(
+            Math.round(
+              newViewConfig.views[0].tracks.whole[0].projectionXDomain[0]
+            )
+          ).toEqual(225681615);
+          expect(
+            Math.round(
+              newViewConfig.views[0].tracks.whole[0].projectionXDomain[1]
+            )
+          ).toEqual(226375265);
+
+          done();
+        });
+
+        const xDomain = [225681615, 226375265];
+        const yDomain = trackObj.viewportYDomain;
+        trackObj.setDomainsCallback(xDomain, yDomain);
+      });
+    });
+
+    afterEach(() => {
+      api.destroy();
+      removeDiv(div);
+      api = undefined;
+      div = undefined;
     });
   });
 });
