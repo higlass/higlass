@@ -36,6 +36,45 @@ const geneClickFunc = (event, track, payload) => {
   });
 };
 
+/**
+ * Fillers are annotations indicating that the region they cover
+ * contains hidden [gene] annotations. If a filler overlaps a gene
+ * then it's not necessary because we already see the gene.
+ *
+ * This function goes through a set of genes and fillers and flags
+ * the fillers that are completely contained within a gene so that
+ * we don't display them.
+ *
+ * @param  {array} genes   A list of gene annotations
+ * @param  {array} fillers A list of filler annotations
+ */
+const flagOverlappingFillers = (genes, fillers) => {
+  const regions = genes.concat(fillers);
+  const boxes = regions.map(x => [x.xStart, 1, x.xEnd, 1]);
+  boxIntersect(boxes, (i, j) => {
+    let filler = null;
+    let gene = null;
+
+    if (regions[i].type === 'filler') {
+      filler = regions[i];
+    } else {
+      gene = regions[i];
+    }
+
+    if (regions[j].type === 'filler') {
+      if (filler) return; // two fillers, don't care if they overlap
+      filler = regions[j];
+    } else {
+      if (!filler) return;
+      gene = regions[j];
+    }
+
+    if (filler.xStart >= gene.xStart && filler.xEnd <= gene.xEnd) {
+      filler.hide = true;
+    }
+  });
+};
+
 const trackUtils = {
   getTilePosAndDimensions: (tilesetInfo, tileId) => {
     /**
@@ -205,6 +244,8 @@ function drawExons(
   const yMiddle = centerY;
 
   const polys = [];
+
+  // draw the middle line
   let poly = [
     xStartPos,
     yMiddle - EXON_LINE_HEIGHT / 2,
@@ -215,12 +256,10 @@ function drawExons(
     xStartPos,
     yMiddle + EXON_LINE_HEIGHT / 2
   ];
-
   graphics.drawPolygon(poly);
-
-  // Draw the middle line
   polys.push(poly);
 
+  // draw the little triangle
   const triangleInterval = 2 * height;
 
   // the first triangle will be drawn in renderGeneSymbols
@@ -253,6 +292,7 @@ function drawExons(
     graphics.drawPolygon(poly);
   }
 
+  // draw the actual exons
   for (let j = 0; j < exonOffsetStarts.length; j++) {
     const exonStart = exonOffsetStarts[j];
     const exonEnd = exonOffsetEnds[j];
@@ -263,18 +303,42 @@ function drawExons(
       track._xScale(exonEnd) - track._xScale(exonStart)
     );
 
-    const localPoly = [
-      xStart,
-      topY,
-      xStart + localWidth,
-      topY,
-      xStart + localWidth,
-      topY + height,
-      xStart,
-      topY + height,
-      xStart,
-      topY
-    ];
+    // we're not going to draw rectangles over the arrowhead
+    // at the start of the gene
+    let minX = xStartPos;
+    let maxX = xEndPos;
+    const pointerWidth = track.geneRectHeight / 2;
+    let localPoly = null;
+
+    if (strand === '+') {
+      maxX = xEndPos - pointerWidth;
+      localPoly = [
+        Math.min(xStart, maxX),
+        topY,
+        Math.min(xStart + localWidth, maxX),
+        topY,
+        Math.min(xStart + localWidth, maxX),
+        topY + height,
+        Math.min(xStart, maxX),
+        topY + height,
+        Math.min(xStart, maxX),
+        topY
+      ];
+    } else {
+      minX = xStartPos + pointerWidth;
+      localPoly = [
+        Math.max(xStart, minX),
+        topY,
+        Math.max(xStart + localWidth, minX),
+        topY,
+        Math.max(xStart + localWidth, minX),
+        topY + height,
+        Math.max(xStart, minX),
+        topY + height,
+        Math.max(xStart, minX),
+        topY
+      ];
+    }
 
     polys.push(localPoly);
     graphics.drawPolygon(localPoly);
@@ -309,23 +373,31 @@ function renderGeneSymbols(
     graphics.buttonMode = true;
     graphics.mouseup = evt => geneClickFunc(evt, track, gene);
 
+    const pointerWidth = track.geneRectHeight / 2;
+
     let poly = [];
     if (gene.strand === '+' || gene.fields[5] === '+') {
+      const pointerStart = Math.max(xStart, xEnd - pointerWidth);
+      const pointerEnd = pointerStart + pointerWidth;
+
       poly = [
-        xEnd,
+        pointerStart,
         topY,
-        xEnd + track.geneRectHeight / 2,
+        pointerEnd,
         topY + track.geneRectHeight / 2,
-        xEnd,
+        pointerStart,
         topY + track.geneRectHeight
       ];
     } else {
+      const pointerStart = Math.min(xEnd, xStart + pointerWidth);
+      const pointerEnd = pointerStart - pointerWidth;
+
       poly = [
-        xStart,
+        pointerStart,
         topY,
-        xStart - track.geneRectHeight / 2,
+        pointerEnd,
         topY + track.geneRectHeight / 2,
-        xStart,
+        pointerStart,
         topY + track.geneRectHeight
       ];
     }
@@ -600,10 +672,10 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     fill['+'] = colorToHex(this.options.plusStrandColor || 'blue');
     fill['-'] = colorToHex(this.options.minusStrandColor || 'red');
 
-    const plusFillerRects = tile.tileData.filter(
+    let plusFillerRects = tile.tileData.filter(
       td => td.type === 'filler' && td.strand === '+'
     );
-    const minusFillerRects = tile.tileData.filter(
+    let minusFillerRects = tile.tileData.filter(
       td => td.type === 'filler' && td.strand === '-'
     );
 
@@ -613,6 +685,13 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const minusGenes = tile.tileData.filter(
       td => td.type !== 'filler' && (td.strand === '-' || td.fields[5] === '-')
     );
+
+    flagOverlappingFillers(plusGenes, plusFillerRects);
+    flagOverlappingFillers(minusGenes, minusFillerRects);
+
+    // remove the fillers that are contained within a gene
+    plusFillerRects = plusFillerRects.filter(x => !x.hide);
+    minusFillerRects = minusFillerRects.filter(x => !x.hide);
 
     const yMiddle = this.dimensions[1] / 2;
 
@@ -888,7 +967,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           return `
             <div>
               <p><b>${gene.fields[3]}</b></p>
-              <p>${gene.fields[0]}:${gene.fields[1]}-${gene.fields[2]}</p>
+              <p>${gene.fields[0]}:${gene.fields[1]}-${gene.fields[2]} Strand: ${gene.strand}</p>
             </div>
           `;
         }
