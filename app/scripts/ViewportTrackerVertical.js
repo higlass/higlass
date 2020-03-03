@@ -1,4 +1,4 @@
-import { brush } from 'd3-brush';
+import { brushY } from 'd3-brush';
 import { event } from 'd3-selection';
 import slugid from 'slugid';
 
@@ -17,13 +17,17 @@ class ViewportTrackerVertical extends SVGTrack {
     this.uid = uid;
     this.options = options;
 
+    // Is there actually a linked _from_ view? Or is this projection "independent"?
+    this.hasFromView = !context.projectionYDomain;
+
     this.removeViewportChanged = removeViewportChanged;
     this.setDomainsCallback = setDomainsCallback;
 
-    this.viewportXDomain = null;
-    this.viewportYDomain = null;
+    this.viewportXDomain = this.hasFromView ? null : [0, 0];
+    this.viewportYDomain = this.hasFromView ? null : context.projectionYDomain;
 
-    this.brush = brush(true).on('brush', this.brushed.bind(this));
+    this.brush = brushY().on('brush', this.brushed.bind(this));
+
     this.gBrush = this.gMain
       .append('g')
       .attr('id', `brush-${this.uid}`)
@@ -65,10 +69,11 @@ class ViewportTrackerVertical extends SVGTrack {
 
     const xDomain = this.viewportXDomain;
 
-    const yDomain = [
-      this._yScale.invert(s[0][1]),
-      this._yScale.invert(s[1][1])
-    ];
+    const yDomain = [this._yScale.invert(s[0]), this._yScale.invert(s[1])];
+
+    if (!this.hasFromView) {
+      this.viewportYDomain = yDomain;
+    }
 
     // console.log('xDomain:', xDomain);
     // console.log('yDomain:', yDomain);
@@ -114,16 +119,10 @@ class ViewportTrackerVertical extends SVGTrack {
       return;
     }
 
-    const x0 = 0;
     const y0 = this._yScale(this.viewportYDomain[0]);
-
-    const x1 = this.dimensions[0];
     const y1 = this._yScale(this.viewportYDomain[1]);
 
-    const dest = [
-      [x0, y0],
-      [x1, y1]
-    ];
+    const dest = [y0, y1];
 
     // console.log('dest:', dest[0], dest[1]);
 
@@ -143,6 +142,21 @@ class ViewportTrackerVertical extends SVGTrack {
 
   setPosition(newPosition) {
     super.setPosition(newPosition);
+
+    this.draw();
+  }
+
+  setDimensions(newDimensions) {
+    super.setDimensions(newDimensions);
+
+    const xRange = this._xScale.range();
+    const yRange = this._yScale.range();
+    const yDiff = yRange[1] - yRange[0];
+    this.brush.extent([
+      [xRange[0], yRange[0] - yDiff],
+      [xRange[1], yRange[1] + yDiff]
+    ]);
+    this.gBrush.call(this.brush);
 
     this.draw();
   }

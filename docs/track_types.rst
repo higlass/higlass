@@ -539,22 +539,48 @@ Options
       colorbarBackgroundColor: '#ffffff'
     },
     width: 1500,
-    height: 700,
-    resolutions: [
-      16384000,
-      8192000,
-      4096000,
-      2048000,
-      1024000,
-      512000,
-      256000,
-      128000,
-      64000,
-      32000,
-      16000,
-      8000,
-      4000,
-      2000,
-      1000
-    ]
+    height: 700
+  }
+
+Viewport Projection
+===================
+
+track-type: ``viewport-projection-horizontal``, ``viewport-projection-vertical``, ``viewport-projection-center``
+
+Viewport projection tracks allow brushing interactions for an interval or area,
+which is optionally linked to the domain of another view.
+
+Properties
+--------
+
+- **fromViewUid**: The ``uid`` of the linked view, from which this track will obtain its domain. If null, then the ``projectionXDomain`` and/or ``projectionYDomain`` properties must be used instead.
+- **projectionXDomain**: ``[x0, x1]`` The x domain coordinates that define the selected interval. Only used if ``fromViewUid`` is null.
+- **projectionYDomain**: ``[y0, y1]`` The y domain coordinates that define the selected interval. Only used if ``fromViewUid`` is null.
+
+Options
+--------
+
+- **projectionFillColor**: The fill color for the brush selection rect element.
+- **projectionStrokeColor**: The stroke color for the brush selection rect element.
+- **projectionFillOpacity**: The opacity for the fill of the brush selection rect element.
+- **projectionStrokeOpacity**: The opacity for the stroke of the brush selection rect element.
+- **strokeWidth**: The stroke width for the brush selection rect element.
+
+
+**Example:**
+
+.. code-block:: javascript
+
+  {
+    "type": "viewport-projection-horizontal",
+    "uid": "my-track-id",
+    "fromViewUid": null,
+    "projectionXDomain": [225681609.97037065, 226375261.90599522],
+    "options": {
+      "projectionFillColor": "#F00",
+      "projectionStrokeColor": "#777",
+      "projectionFillOpacity": 0.3,
+      "projectionStrokeOpacity": 0.7,
+      "strokeWidth": 1
+    }
   }
