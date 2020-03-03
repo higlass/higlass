@@ -4390,6 +4390,7 @@ class HiGlassComponent extends React.Component {
             }
             onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
             onRangeSelection={this.rangeSelectionHandler.bind(this)}
+            onResizeTrack={this.triggerViewChangeDb}
             onScalesChanged={(x, y) => this.handleScalesChanged(view.uid, x, y)}
             onTrackOptionsChanged={(trackId, options) =>
               this.handleTrackOptionsChanged(view.uid, trackId, options)
