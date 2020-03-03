@@ -1,0 +1,158 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": ["https://higlass.io/api/v1"],
+  "exportViewUrl": "/api/v1/viewconfs",
+  "views": [
+    {
+      "initialXDomain": [223077003.05207053, 229801164.20477718],
+      "initialYDomain": [2669618950.0587435, 2672003894.225897],
+      "tracks": {
+        "top": [
+          {
+            "type": "horizontal-chromosome-labels",
+            "uid": "GzHGPlijS2eASBqslzVcxA",
+            "tilesetUid": "ZpZ8c5JJRUS1J7ZkofcUrg",
+            "server": "https://resgen.io/api/v1",
+            "options": {
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "color": "#808080",
+              "stroke": "#ffffff",
+              "fontSize": 12,
+              "fontIsLeftAligned": false
+            },
+            "width": 1027,
+            "height": 30
+          },
+          {
+            "type": "horizontal-gene-annotations",
+            "uid": "R6ZZ5LnEQ4ODCWZoE38maw",
+            "tilesetUid": "M9A9klpwTci5Vf4bHZ864g",
+            "server": "https://resgen.io/api/v1",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "showMousePosition": false,
+              "name": "gene-annotations-hg38_3d2Hebg.db",
+              "mousePositionColor": "#999999",
+              "fontSize": 10,
+              "labelBackgroundColor": "#ffffff",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "minHeight": 24,
+              "geneAnnotationHeight": 12,
+              "geneLabelPosition": "outside",
+              "geneStrandSpacing": 4
+            },
+            "width": 568,
+            "height": 70
+          }
+        ],
+        "left": [],
+        "center": [
+          {
+            "type": "horizontal-multivec",
+            "uid": "cistrome-track-1",
+            "tilesetUid": "UvVPeLHuRDiYA3qwFlm7xQ",
+            "server": "https://resgen.io/api/v1",
+            "options": {
+              "labelPosition": "hidden",
+              "labelColor": "black",
+              "labelTextOpacity": 0.4,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "heatmapValueScaling": "log",
+              "name": "my_file_genome_wide.multires.mv5",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": true,
+              "minHeight": 100,
+              "colorbarPosition": "bottomLeft",
+              "labelShowAssembly": true,
+              "selectRows": null,
+              "colorbarBackgroundColor": "#ffffff",
+              "scaleStartPercent": "0.00000",
+              "scaleEndPercent": "1.00000"
+            },
+            "width": 1607,
+            "height": 482
+          }
+        ],
+        "bottom": [],
+        "right": [],
+        "whole": [
+          {
+            "uid": "viewport-projection-test-track-h",
+            "type": "viewport-projection-horizontal",
+            "fromViewUid": null,
+            "projectionXDomain": [225681609.97037065, 226375261.90599522],
+            "options": {
+              "projectionFillColor": "#F00",
+              "projectionStrokeColor": "#777",
+              "projectionFillOpacity": 0.3,
+              "projectionStrokeOpacity": 0.7,
+              "strokeWidth": 1
+            }
+          },
+          {
+            "uid": "viewport-projection-test-track-v",
+            "type": "viewport-projection-vertical",
+            "fromViewUid": null,
+            "projectionYDomain": [2670753544.4239845, 2670969299.860656],
+            "options": {
+              "projectionFillColor": "#0F0",
+              "projectionStrokeColor": "#777",
+              "projectionFillOpacity": 0.3,
+              "projectionStrokeOpacity": 0.7,
+              "strokeWidth": 1
+            }
+          },
+          {
+            "uid": "viewport-projection-test-track-c",
+            "type": "viewport-projection-center",
+            "fromViewUid": null,
+            "projectionXDomain": [225681609.97037065, 226375261.90599522],
+            "projectionYDomain": [2670753544.4239845, 2670969299.860656],
+            "options": {
+              "projectionFillColor": "#00F",
+              "projectionStrokeColor": "#777",
+              "projectionFillOpacity": 0.3,
+              "projectionStrokeOpacity": 0.7,
+              "strokeWidth": 1
+            }
+          }
+        ],
+        "gallery": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 71,
+        "x": 0,
+        "y": 0
+      },
+      "uid": "viewport-projection-test-view"
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

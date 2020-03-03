@@ -18,20 +18,16 @@ class ViewportTracker2D extends SVGTrack {
     this.uid = uid;
     this.options = options;
 
+    // Is there actually a linked _from_ view? Or is this projection "independent"?
+    this.hasFromView = !context.projectionXDomain || !context.projectionYDomain;
+
     this.removeViewportChanged = removeViewportChanged;
     this.setDomainsCallback = setDomainsCallback;
 
-    this.viewportXDomain = null;
-    this.viewportYDomain = null;
+    this.viewportXDomain = this.hasFromView ? null : context.projectionXDomain;
+    this.viewportYDomain = this.hasFromView ? null : context.projectionYDomain;
 
-    const maxHalf = Number.MAX_VALUE / 2;
-
-    this.brush = brush(true)
-      .extent([
-        [-maxHalf, -maxHalf],
-        [maxHalf, maxHalf]
-      ])
-      .on('brush', this.brushed.bind(this));
+    this.brush = brush().on('brush', this.brushed.bind(this));
 
     this.gBrush = this.gMain
       .append('g')
@@ -86,6 +82,11 @@ class ViewportTracker2D extends SVGTrack {
       this._yScale.invert(s[0][1]),
       this._yScale.invert(s[1][1])
     ];
+
+    if (!this.hasFromView) {
+      this.viewportXDomain = xDomain;
+      this.viewportYDomain = yDomain;
+    }
 
     this.setDomainsCallback(xDomain, yDomain);
   }
@@ -170,6 +171,22 @@ class ViewportTracker2D extends SVGTrack {
 
   setPosition(newPosition) {
     super.setPosition(newPosition);
+
+    this.draw();
+  }
+
+  setDimensions(newDimensions) {
+    super.setDimensions(newDimensions);
+
+    const xRange = this._xScale.range();
+    const yRange = this._yScale.range();
+    const xDiff = xRange[1] - xRange[0];
+    const yDiff = yRange[1] - yRange[0];
+    this.brush.extent([
+      [xRange[0] - xDiff, yRange[0] - yDiff],
+      [xRange[1] + xDiff, yRange[1] + yDiff]
+    ]);
+    this.gBrush.call(this.brush);
 
     this.draw();
   }
