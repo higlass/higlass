@@ -483,7 +483,7 @@ function renderGenes(
     color,
     alpha,
     centerY,
-    EXON_HEIGHT
+    height
   );
 }
 
@@ -563,7 +563,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.geneLabelPos = this.options.geneLabelPosition || GENE_LABEL_POS;
     this.geneRectHeight =
       +this.options.geneAnnotationHeight || GENE_RECT_HEIGHT;
-    this.fillerHeight = +this.options.geneAnnotationHeight || GENE_RECT_HEIGHT;
     // Don't ask me why but rectangles and triangles seem to be drawn 2px larger
     // than they should be
     this.geneRectHeight -= 2;
@@ -704,9 +703,9 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     // const fillerGeneSpacing = (this.options.fillerHeight - this.geneRectHeight) / 2;
     const plusStrandCenterY =
-      yMiddle - this.fillerHeight / 2 - this.geneStrandSpacing / 2;
+      yMiddle - this.geneRectHeight / 2 - this.geneStrandSpacing / 2;
     const minusStrandCenterY =
-      yMiddle + this.fillerHeight / 2 + this.geneStrandSpacing / 2;
+      yMiddle + this.geneRectHeight / 2 + this.geneStrandSpacing / 2;
 
     const plusRenderContext = [
       this,
@@ -716,7 +715,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       fill['+'],
       FILLER_RECT_ALPHA,
       plusStrandCenterY,
-      this.fillerHeight
+      this.geneRectHeight
     ];
     const minusRenderContext = [
       this,
@@ -726,7 +725,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       fill['-'],
       FILLER_RECT_ALPHA,
       minusStrandCenterY,
-      this.fillerHeight
+      this.geneRectHeight
     ];
 
     renderRects(plusFillerRects, ...plusRenderContext);
@@ -777,7 +776,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.allBoxes = [];
     const allTiles = [];
 
-    this.geneAreaHeight = Math.max(this.geneRectHeight, this.fillerHeight);
+    this.geneAreaHeight = this.geneRectHeight;
     const fontSizeHalf = this.fontSize / 2;
 
     stretchRects(this);

@@ -18,6 +18,8 @@ import {
   getTrackObjectFromHGC
 } from '../app/scripts/utils';
 
+import removeDiv from './utils/remove-div';
+
 configure({ adapter: new Adapter() });
 
 const createPointerEvent = (type, coords) => {
@@ -69,7 +71,7 @@ describe('Gene Annotations Tracks', () => {
     });
   });
 
-  it('changes the color of the minus strand', () => {
+  it('changes the color of the minus strand', done => {
     const viewUid = 'aa';
     const trackUid = 'genes1';
 
@@ -86,11 +88,49 @@ describe('Gene Annotations Tracks', () => {
       // const trackConfig = getTrackByUid;
       hgc.handleTrackOptionsChanged('aa', 'genes1', options);
       expect(trackObj.allTexts[0].text.style.fill).to.eql('#000000');
+
+      done();
     });
+  });
+
+  it('changes the height of the gene annotations', done => {
+    const viewUid = 'aa';
+    const trackUid = 'genes1';
+
+    const trackObj = getTrackObjectFromHGC(hgc, viewUid, trackUid);
+    waitForTilesLoaded(hgc, () => {
+      const tile = trackObj.fetchedTiles['16.27677'];
+
+      // benchmark for the initial height this is half of the arrowhead
+      // so it should be half the default height of 16
+      expect(tile.allRects[0][0][3] - tile.allRects[0][0][1]).to.eql(8);
+
+      const trackConf = getTrackConfFromHGC(hgc, viewUid, trackUid);
+      const options = trackConf.options;
+
+      options.geneAnnotationHeight = 32;
+
+      // benchmark for the height after changing the options
+      hgc.handleTrackOptionsChanged('aa', 'genes1', options);
+      expect(tile.allRects[0][0][3] - tile.allRects[0][0][1]).to.eql(16);
+
+      done();
+    });
+  });
+
+  it('exports to SVG', () => {
+    const svgStr = hgc.createSVGString();
+
+    expect(svgStr.indexOf('path')).to.be.above(0);
+    expect(svgStr.indexOf('text')).to.be.above(0);
   });
 
   afterAll(() => {
     // hgc.instance().handleTrackOptionsChanged('v', 'heatmap0', newOptions0);
     // removeHGComponent(div);
+    api.destroy();
+    removeDiv(div);
+    api = undefined;
+    div = undefined;
   });
 });
