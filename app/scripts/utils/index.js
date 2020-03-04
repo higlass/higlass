@@ -8,6 +8,7 @@ export { default as chrToAbs } from './chr-to-abs';
 export { default as cloneEvent } from './clone-event';
 export { default as colorDomainToRgbaArray } from './color-domain-to-rgba-array';
 export { default as colorToHex } from './color-to-hex';
+export { default as colorToRgba } from './color-to-rgba';
 export { default as dataToGenomicLoci } from './data-to-genomic-loci';
 export { default as debounce } from './debounce';
 export { default as dictFromTuples } from './dict-from-tuples';
