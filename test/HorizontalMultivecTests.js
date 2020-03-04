@@ -192,7 +192,6 @@ const viewConf1 = {
           {
             uid: 'genes',
             tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            position: 'top',
             server: 'http://higlass.io/api/v1',
             type: 'horizontal-gene-annotations',
             height: 48,
@@ -215,8 +214,6 @@ const viewConf1 = {
               labelTopMargin: 0,
               labelBottomMargin: 0
             },
-            name: 'Gene Annotations (hg19)',
-            header: '',
             width: 793
           },
           {
@@ -224,7 +221,6 @@ const viewConf1 = {
             tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
             height: 20,
             width: 793,
-            position: 'top',
             server: 'http://higlass.io/api/v1',
             type: 'horizontal-vector-heatmap',
             options: {
@@ -251,11 +247,6 @@ const viewConf1 = {
             name: 'GM12878-E116-H3K27ac.fc.signal'
           },
           {
-            name: 'Epilogos (hg19)',
-            created: '2018-07-07T23:40:51.460644Z',
-            project: null,
-            project_name: '',
-            description: '',
             server: '//higlass.io/api/v1',
             tilesetUid: 'ClhFclOOQMWKSebXaXItoA',
             uid: 'E11eXWkwRb22aKBbj_45_A',
@@ -295,34 +286,13 @@ const viewConf1 = {
               heatmapValueScaling: 'log'
             },
             width: 770,
-            height: 153,
-            resolutions: [
-              13107200,
-              6553600,
-              3276800,
-              1638400,
-              819200,
-              409600,
-              204800,
-              102400,
-              51200,
-              25600,
-              12800,
-              6400,
-              3200,
-              1600,
-              800,
-              400,
-              200
-            ],
-            position: 'top'
+            height: 153
           },
           {
             uid: 'chroms',
             height: 35,
             width: 793,
             chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            position: 'top',
             type: 'horizontal-chromosome-labels',
             options: {
               color: '#777777',
