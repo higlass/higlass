@@ -23,6 +23,8 @@ const EXON_HEIGHT = (2 * GENE_RECT_HEIGHT) / 3;
 const GENE_MINI_TRIANGLE_HEIGHT = (2 * EXON_HEIGHT) / 3;
 const MAX_GENE_ENTRIES = 50;
 const MAX_FILLER_ENTRIES = 5000;
+const DEFAULT_PLUS_STRAND_COLOR = 'blue';
+const DEFAULT_MINUS_STRAND_COLOR = 'red';
 
 const geneClickFunc = (event, track, payload) => {
   // fill rectangles are just indicators and are not meant to be
@@ -146,10 +148,10 @@ function externalInitTile(track, tile, options) {
     const geneId = track.geneId(geneInfo, td.type);
     const strand = td.strand || geneInfo[5];
 
-    let fill = plusStrandColor || 'blue';
+    let fill = plusStrandColor || DEFAULT_PLUS_STRAND_COLOR;
 
     if (strand === '-') {
-      fill = minusStrandColor || 'red';
+      fill = minusStrandColor || DEFAULT_MINUS_STRAND_COLOR;
     }
     tile.textWidths = {};
     tile.textHeights = {};
@@ -670,8 +672,12 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const FILLER_RECT_ALPHA = 0.3;
     const GENE_ALPHA = 0.3;
 
-    fill['+'] = colorToHex(this.options.plusStrandColor || 'blue');
-    fill['-'] = colorToHex(this.options.minusStrandColor || 'red');
+    fill['+'] = colorToHex(
+      this.options.plusStrandColor || DEFAULT_PLUS_STRAND_COLOR
+    );
+    fill['-'] = colorToHex(
+      this.options.minusStrandColor || DEFAULT_MINUS_STRAND_COLOR
+    );
 
     let plusFillerRects = tile.tileData.filter(
       td => td.type === 'filler' && td.strand === '+'
@@ -742,8 +748,8 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         FONT_FAMILY,
         fill: colorToHex(
           text.strand === '-'
-            ? this.options.minusStrandColor || 'red'
-            : this.options.plusStrandColor || 'blue'
+            ? this.options.minusStrandColor || DEFAULT_MINUS_STRAND_COLOR
+            : this.options.plusStrandColor || DEFAULT_PLUS_STRAND_COLOR
         )
       };
     }
