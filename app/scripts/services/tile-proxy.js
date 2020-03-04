@@ -500,7 +500,7 @@ export const calculateTilesFromResolution = (
  * @param ignoreLowerLeft: If this is a tile along the diagonal and there will be
  * mirrored tiles present ignore the lower left values
  * @param {number[]} selectedRows: Array of row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
- * @param {object} zeroValueColor The color to use for rendering zero data values.
+ * @param {array} zeroValueColor The color to use for rendering zero data values, [r, g, b, a].
  */
 export const tileDataToPixData = (
   tile,

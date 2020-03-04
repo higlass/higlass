@@ -93,7 +93,7 @@ export function maxNonZero(data) {
  * when one needs to know the width of each column.
  * @param {number[]} selectedRows Array of row indices, for ordering and filtering rows.
  * Used by the HorizontalMultivecTrack.
- * @param {object} zeroValueColor The color to use for rendering zero data values.
+ * @param {array} zeroValueColor The color to use for rendering zero data values, [r, g, b, a].
  * @returns {Uint8ClampedArray} A flattened array of pixel values.
  */
 export function workerSetPix(
