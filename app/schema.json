@@ -257,7 +257,10 @@
           "oneOf": [
             { "$ref": "#/definitions/tracks/enum_track" },
             { "$ref": "#/definitions/tracks/combined_track" },
-            { "$ref": "#/definitions/tracks/heatmap_track" }
+            { "$ref": "#/definitions/tracks/heatmap_track" },
+            {
+              "$ref": "#/definitions/tracks/independent_viewport_projection_track"
+            }
           ]
         }
       },
@@ -390,29 +393,34 @@
               "viewport-projection-vertical"
             ]
           },
-          "binsPerDimension": { "type": "number" },
-          "chromInfoPath": { "type": "string" },
-          "created": { "type": "string" },
-          "defaultOptions": { "type": "object", "additionalProperties": false },
-          "description": { "type": "string" },
-          "filetype": { "type": "string" },
           "fromViewUid": { "type": "string" },
-          "header": { "type": "string" },
           "height": { "type": "number" },
-          "local": { "type": "boolean" },
-          "maxWidth": { "type": "number" },
-          "name": { "type": "string" },
           "options": { "type": "object" },
-          "orientation": { "type": "string" },
-          "position": { "type": "string" },
-          "project": { "type": "null" },
-          "project_name": { "type": "string" },
-          "thumbnail": {
-            "oneOf": [
-              { "type": "object", "additionalProperties": false },
-              { "type": "null" }
+          "width": { "type": "number" },
+          "x": { "type": "number" },
+          "y": { "type": "number" }
+        }
+      },
+      "independent_viewport_projection_track": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "uid": { "type": "string" },
+          "type": {
+            "enum": [
+              "viewport-projection-horizontal",
+              "viewport-projection-vertical",
+              "viewport-projection-center"
             ]
           },
+          "fromViewUid": { "type": "null" },
+          "projectionXDomain": {
+            "$ref": "#/definitions/viewProperties/domain"
+          },
+          "projectionYDomain": {
+            "$ref": "#/definitions/viewProperties/domain"
+          },
+          "options": { "type": "object" },
           "transforms": { "type": "array" },
           "width": { "type": "number" },
           "x": { "type": "number" },

@@ -385,6 +385,10 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
 
     this.draw();
   }
+
+  leftTrackDraw() {
+    this.draw();
+  }
 }
 
 export default ArrowheadDomainsTrack;

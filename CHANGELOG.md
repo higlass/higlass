@@ -6,6 +6,11 @@
 - Remove Content-Type headers when fetching genbank files
 - Added the fields `xRange` and `yRange` the object returned by the JavaScript API `.getLocation()` method.
 - Fixed blurry exported heatmap SVG graphics issue using the `image-rendering` CSS property.
+- Enabled view-based scaling
+- Left and right tracks can now be value scale locked
+- Added the attributes `projectionXDomain` and `projectionYDomain` to the `viewport-projection-horizontal` and `viewport-projection-vertical`, respectively, and both to the `viewport-projection-center`, to support the case in which the `fromViewUid` attribute is undefined.
+
+_[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.3...develop)_
 
 ## v1.8.4
 
