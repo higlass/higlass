@@ -1332,6 +1332,10 @@ export const OPTIONS_INFO = {
 
       return options;
     }
+  },
+  zeroValueColor: {
+    name: 'Zero Value Color',
+    inlineOptions: AVAILABLE_COLORS
   }
 };
 

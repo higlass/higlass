@@ -93,6 +93,7 @@ export function maxNonZero(data) {
  * when one needs to know the width of each column.
  * @param {number[]} selectedRows Array of row indices, for ordering and filtering rows.
  * Used by the HorizontalMultivecTrack.
+ * @param {array} zeroValueColor The color to use for rendering zero data values, [r, g, b, a].
  * @returns {Uint8ClampedArray} A flattened array of pixel values.
  */
 export function workerSetPix(
@@ -105,7 +106,8 @@ export function workerSetPix(
   ignoreUpperRight = false,
   ignoreLowerLeft = false,
   shape = null,
-  selectedRows = null
+  selectedRows = null,
+  zeroValueColor = null
 ) {
   let valueScale = null;
 
@@ -133,9 +135,10 @@ export function workerSetPix(
     filteredSize = selectedRows.length * shape[1];
   }
 
+  let rgb;
+  let rgbIdx = 0;
   const tileWidth = Math.sqrt(size);
   const pixData = new Uint8ClampedArray(filteredSize * 4);
-  let rgbIdx;
 
   /**
    * Set the ith element of the pixData array, using value d.
@@ -169,7 +172,12 @@ export function workerSetPix(
         ' (should be 0 <= rgbIdx <= 255)'
       );
     }
-    const rgb = colorScale[rgbIdx];
+
+    if (zeroValueColor && !Number.isNaN(+d) && +d === 0.0) {
+      rgb = zeroValueColor;
+    } else {
+      rgb = colorScale[rgbIdx];
+    }
 
     pixData[i * 4] = rgb[0];
     pixData[i * 4 + 1] = rgb[1];

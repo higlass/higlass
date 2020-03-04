@@ -171,7 +171,8 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'mousePositionColor',
       'showTooltip',
-      'extent'
+      'extent',
+      'zeroValueColor'
     ],
     defaultOptions: {
       backgroundColor: '#eeeeee',
@@ -200,7 +201,8 @@ export const TRACKS_INFO = [
       showMousePosition: false,
       mousePositionColor: '#000000',
       showTooltip: false,
-      extent: 'full'
+      extent: 'full',
+      zeroValueColor: null
     },
     defaultOptionsByTheme: {
       [THEME_DARK]: {
@@ -611,7 +613,8 @@ export const TRACKS_INFO = [
       'heatmapValueScaling',
       'selectRows',
       'colorbarBackgroundColor',
-      'colorbarPosition'
+      'colorbarPosition',
+      'zeroValueColor'
     ],
     defaultOptions: {
       labelPosition: 'topLeft',
@@ -630,7 +633,8 @@ export const TRACKS_INFO = [
       heatmapValueScaling: 'log',
       selectRows: null,
       colorbarBackgroundColor: '#ffffff',
-      colorbarPosition: 'topRight'
+      colorbarPosition: 'topRight',
+      zeroValueColor: null
     },
     defaultOptionsByTheme: {
       [THEME_DARK]: {
