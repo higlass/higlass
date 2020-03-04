@@ -79,10 +79,12 @@ describe('Genome position search box tests', () => {
       if (hgc) {
         hgc.unmount();
         hgc.detach();
+        hgc = null;
       }
 
       if (div) {
         global.document.body.removeChild(div);
+        div = null;
       }
     });
   });
@@ -314,10 +316,12 @@ describe('Genome position search box tests', () => {
       if (hgc) {
         hgc.unmount();
         hgc.detach();
+        hgc = null;
       }
 
       if (div) {
         global.document.body.removeChild(div);
+        div = null;
       }
     });
   });
