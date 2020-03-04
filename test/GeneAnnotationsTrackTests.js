@@ -12,7 +12,11 @@ import { geneAnnotationsOnly } from './view-configs';
 import createElementAndApi from './utils/create-element-and-api';
 
 // Utils
-import { waitForTilesLoaded } from '../app/scripts/utils';
+import {
+  waitForTilesLoaded,
+  getTrackConfFromHGC,
+  getTrackObjectFromHGC
+} from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
 
@@ -33,12 +37,14 @@ const createPointerEvent = (type, coords) => {
 describe('Gene Annotations Tracks', () => {
   let div = null;
   let api = null;
+  let hgc = null;
 
   beforeAll(() => {
     [div, api] = createElementAndApi(geneAnnotationsOnly);
+    hgc = api.getComponent();
   });
 
-  it('click on a gene', () => {
+  it('clicks on a gene', () => {
     let clicked = 0;
 
     api.on('click', data => {
@@ -49,10 +55,10 @@ describe('Gene Annotations Tracks', () => {
     waitForTilesLoaded(api.getComponent(), () => {
       const canvasElem = div.querySelector('canvas');
       const loc = {
-        clientX: 283.164,
-        clientY: 114.683,
-        screenX: 411.164,
-        screenY: 216.683
+        clientX: 237,
+        clientY: 117,
+        screenX: 278,
+        screenY: 231
       };
 
       canvasElem.dispatchEvent(createPointerEvent('pointerdown', loc));
@@ -63,7 +69,28 @@ describe('Gene Annotations Tracks', () => {
     });
   });
 
+  it('changes the color of the minus strand', () => {
+    const viewUid = 'aa';
+    const trackUid = 'genes1';
+
+    const trackObj = getTrackObjectFromHGC(hgc, viewUid, trackUid);
+    waitForTilesLoaded(hgc, () => {
+      // make sure the gene is red
+      expect(trackObj.allTexts[0].text.style.fill).to.eql('#ff0000');
+
+      const trackConf = getTrackConfFromHGC(hgc, viewUid, trackUid);
+      const options = trackConf.options;
+
+      // set minus strand genes to black
+      options.minusStrandColor = 'black';
+      // const trackConfig = getTrackByUid;
+      hgc.handleTrackOptionsChanged('aa', 'genes1', options);
+      expect(trackObj.allTexts[0].text.style.fill).to.eql('#000000');
+    });
+  });
+
   afterAll(() => {
+    // hgc.instance().handleTrackOptionsChanged('v', 'heatmap0', newOptions0);
     // removeHGComponent(div);
   });
 });

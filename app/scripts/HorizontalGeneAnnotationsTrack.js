@@ -144,10 +144,11 @@ function externalInitTile(track, tile, options) {
     const geneInfo = td.fields;
     const geneName = geneInfo[3];
     const geneId = track.geneId(geneInfo, td.type);
+    const strand = td.strand || geneInfo[5];
 
     let fill = plusStrandColor || 'blue';
 
-    if (geneInfo[5] === '-') {
+    if (strand === '-') {
       fill = minusStrandColor || 'red';
     }
     tile.textWidths = {};
@@ -169,7 +170,7 @@ function externalInitTile(track, tile, options) {
     text.anchor.y = 1;
 
     tile.texts[geneId] = text; // index by geneName
-
+    tile.texts[geneId].strand = strand;
     tile.textGraphics.addChild(text);
   });
 
@@ -734,6 +735,18 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     renderMask(this, tile);
 
     stretchRects(this);
+
+    for (const text of Object.values(tile.texts)) {
+      text.style = {
+        fontSize: `${this.fontSize}px`,
+        FONT_FAMILY,
+        fill: colorToHex(
+          text.strand === '-'
+            ? this.options.minusStrandColor || 'red'
+            : this.options.plusStrandColor || 'blue'
+        )
+      };
+    }
   }
 
   calculateZoomLevel() {
