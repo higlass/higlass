@@ -494,7 +494,7 @@ export const calculateTilesFromResolution = (
  * @param valueScaleType: Either 'log' or 'linear'
  * @param valueScaleDomain: The domain of the scale (the range is always [254,0])
  * @param colorScale: a 255 x 4 rgba array used as a color scale
- * @param synchronous: Render this tile synchronously or pass it on to the threadpool.
+ * @param synchronous: Render this tile synchronously or pass it on to the threadpool (which doesn't exist yet).
  * @param ignoreUpperRight: If this is a tile along the diagonal and there will
  * be mirrored tiles present ignore the upper right values
  * @param ignoreLowerLeft: If this is a tile along the diagonal and there will be
