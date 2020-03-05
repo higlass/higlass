@@ -67,6 +67,17 @@ class SearchField {
     return positionString;
   }
 
+  convertNumerNotation(numStr) {
+    // Convert "150M" to "150000000"
+    let newNumStr = numStr;
+    if (newNumStr.includes('M', newNumStr.length - 1)) {
+      newNumStr = newNumStr.replace('M', '000000');
+    } else if (newNumStr.includes('K', newNumStr.length - 1)) {
+      newNumStr = newNumStr.replace('K', '000');
+    }
+    return newNumStr;
+  }
+
   parsePosition(positionText, prevChr = null) {
     // Parse chr:position strings...
     // i.e. chr1:1000
@@ -77,7 +88,7 @@ class SearchField {
 
     if (positionParts.length > 1) {
       chr = positionParts[0];
-      pos = +positionParts[1].replace(/,/g, ''); // chromosome specified
+      pos = +this.convertNumerNotation(positionParts[1].replace(/,/g, '')); // chromosome specified
     } else if (positionParts[0] in this.chromInfo.chrPositions) {
       // is this an entire chromosome
       chr = positionParts[0];
@@ -90,7 +101,7 @@ class SearchField {
       }
     } else {
       // no it's just a position without a chromosome
-      pos = +positionParts[0].replace(/,/g, ''); // no chromosome specified
+      pos = +this.convertNumerNotation(positionParts[0].replace(/,/g, '')); // no chromosome specified
       chr = null;
 
       if (prevChr) chr = prevChr;
