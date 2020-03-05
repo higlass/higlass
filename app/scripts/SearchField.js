@@ -68,7 +68,8 @@ class SearchField {
   }
 
   convertNumerNotation(numStr) {
-    // Convert "150M" to "150000000"
+    // Convert K or M notations
+    // e.g. "150M" to "150000000"
     let newNumStr = numStr;
     if (newNumStr.includes('M', newNumStr.length - 1)) {
       newNumStr = newNumStr.replace('M', '000000');
