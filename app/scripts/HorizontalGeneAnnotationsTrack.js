@@ -9,8 +9,9 @@ import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 import { tileProxy } from './services';
 
 // Utils
-import { colorToHex } from './utils';
+import { colorToHex, trackUtils } from './utils';
 
+// these are default values that are overwritten by the track's options
 const FONT_SIZE = 11;
 const FONT_FAMILY = 'Arial';
 const GENE_LABEL_POS = 'outside';
@@ -26,6 +27,9 @@ const MAX_FILLER_ENTRIES = 5000;
 const DEFAULT_PLUS_STRAND_COLOR = 'blue';
 const DEFAULT_MINUS_STRAND_COLOR = 'red';
 
+/**
+ * Event handler for when gene annotations are clicked on.
+ */
 const geneClickFunc = (event, track, payload) => {
   // fill rectangles are just indicators and are not meant to be
   // clicked on
@@ -77,32 +81,15 @@ const flagOverlappingFillers = (genes, fillers) => {
   });
 };
 
-const trackUtils = {
-  getTilePosAndDimensions: (tilesetInfo, tileId) => {
-    /**
-     * Get the tile's position in its coordinate system.
-     *
-     * See Tiled1DPIXITrack.js
-     */
-    const zoomLevel = +tileId.split('.')[0];
-    const xTilePos = +tileId.split('.')[1];
-
-    // max_width should be substitutable with 2 ** tilesetInfo.max_zoom
-    const totalWidth = tilesetInfo.max_width;
-
-    const minX = tilesetInfo.min_pos[0];
-
-    const tileWidth = totalWidth / 2 ** zoomLevel;
-
-    const tileX = minX + xTilePos * tileWidth;
-
-    return {
-      tileX,
-      tileWidth
-    };
-  }
-};
-
+/**
+ * Initialize a tile. Pulled out from the track so that it
+ * can be modified without having to modify the track
+ * object (e.g. in an Observable notebooke)
+ *
+ * @param  {HorizontalGeneAnnotationsTrack} track   The track object
+ * @param  {Object} tile    The tile to render
+ * @param  {Object} options The track's options
+ */
 function externalInitTile(track, tile, options) {
   const {
     flipText,
@@ -179,6 +166,7 @@ function externalInitTile(track, tile, options) {
   tile.initialized = true;
 }
 
+/** Draw generic rectangles... currently used for filler annotations */
 function renderRects(
   rects,
   track,
@@ -223,6 +211,7 @@ function renderRects(
   });
 }
 
+/** Draw the exons within a gene */
 function drawExons(
   track,
   graphics,
@@ -262,10 +251,10 @@ function drawExons(
   graphics.drawPolygon(poly);
   polys.push(poly);
 
-  // draw the little triangle
+  // the distance between the mini-triangles
   const triangleInterval = 2 * height;
 
-  // the first triangle will be drawn in renderGeneSymbols
+  // the first triangle (arrowhead) will be drawn in renderGeneSymbols
   for (
     let j = Math.max(track.position[0], xStartPos) + triangleInterval;
     j < Math.min(track.position[0] + track.dimensions[0], xStartPos + width);
@@ -350,6 +339,7 @@ function drawExons(
   return polys;
 }
 
+/** Draw the arrowheads at the ends of genes */
 function renderGeneSymbols(
   genes,
   track,
@@ -362,7 +352,6 @@ function renderGeneSymbols(
   height
 ) {
   const topY = centerY - height / 2;
-  // tile.rectGraphics.lineStyle(1, color, 0.2);
 
   genes.forEach(gene => {
     const xStart = track._xScale(gene.xStart);
@@ -487,6 +476,9 @@ function renderGenes(
   );
 }
 
+/** Create a preventing this track from drawing outside of its
+ * visible area
+ */
 function renderMask(track, tile) {
   const { tileX, tileWidth } = trackUtils.getTilePosAndDimensions(
     track.tilesetInfo,
@@ -505,6 +497,10 @@ function renderMask(track, tile) {
   tile.rectMaskGraphics.drawRect(x, y, width, height);
 }
 
+/** When zooming, we want to do fast scaling rather than re-rendering
+ * but if we do this too much, shapes (particularly arroheads) get
+ * distorted. This function keeps track of how stretched the track is
+ * and redraws it if it becomes too distorted (tileK < 0.5 or tileK > 2) */
 function stretchRects(track) {
   Object.values(track.fetchedTiles)
     // tile hasn't been drawn properly because we likely got some
@@ -537,18 +533,9 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
    *
    * Arguments:
    * ----------
-   *  scene: PIXI.js scene (or graphics)
-   *      Where to draw everything.
-   *  dataConfig: object
-   *      Holds the server and tileset UID
-   *  handleTilesetInfoReceived: function
-   *      A callback to let the caller know that we've received the
-   *      tileset information for this track.
-   *  options: {}
-   *      An object containing all of the options that describe how this track should
-   *      be rendered
-   *  animate: callback
-   *      Function to be called when something in this track changes.
+   * context: Object related to the environment of this track
+   *   (e.g. renderer object, pubSubs)
+   * options: Options from the viewconf
    */
   constructor(context, options) {
     super(context, options);
@@ -563,6 +550,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.geneLabelPos = this.options.geneLabelPosition || GENE_LABEL_POS;
     this.geneRectHeight =
       +this.options.geneAnnotationHeight || GENE_RECT_HEIGHT;
+
     // Don't ask me why but rectangles and triangles seem to be drawn 2px larger
     // than they should be
     this.geneRectHeight -= 2;
