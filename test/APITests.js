@@ -809,6 +809,27 @@ describe('API Tests', () => {
       });
     });
 
+    it('triggers on viewConfig events from track resize interactions', done => {
+      [div, api] = createElementAndApi(
+        simple1dHorizontalVerticalAnd2dDataTrack
+      );
+      const hgc = api.getComponent();
+      waitForTilesLoaded(hgc, () => {
+        const topTrackHeight = api.getViewConfig().views[0].tracks.top[0]
+          .height;
+        expect(topTrackHeight).toEqual(60);
+
+        hgc.tiledPlots.a.handleResizeTrack('h-line', 500, 100);
+
+        api.on('viewConfig', newViewConfigString => {
+          const newViewConfig = JSON.parse(newViewConfigString);
+          const newTopTrackHeight = newViewConfig.views[0].tracks.top[0].height;
+          expect(newTopTrackHeight).toEqual(100);
+          done();
+        });
+      });
+    });
+
     afterEach(() => {
       api.destroy();
       removeDiv(div);
