@@ -544,8 +544,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.animate = animate;
     this.options = options;
 
-    this.drawnGenes = {};
-
     this.fontSize = +this.options.fontSize || FONT_SIZE;
     this.geneLabelPos = this.options.geneLabelPosition || GENE_LABEL_POS;
     this.geneRectHeight =
@@ -576,42 +574,13 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.renderTile(tile);
   }
 
+  /** cleanup */
   destroyTile(tile) {
-    const zoomLevel = +tile.tileId.split('.')[0];
-    const tiles = this.visibleAndFetchedTiles();
-    const tileIds = {};
-    tiles.forEach(t => {
-      tileIds[t.tileId] = t;
-    });
-
-    if (tile.tileData && tile.tileData.filter && this.drawnGenes[zoomLevel]) {
-      tile.tileData
-        .filter(td => this.drawnGenes[zoomLevel][td.fields[3]])
-        .forEach(td => {
-          const gene = td.fields[3];
-          // We might need to rerender because we're about to remove a tile, which can
-          // contain gene annotations stretching multiple tiles. By removing this tile
-          // the annotation visualization will be gone but the other tiles might still
-          // contain its data.
-          if (this.drawnGenes[zoomLevel][gene]) {
-            const reRender = Object.keys(
-              this.drawnGenes[zoomLevel][gene].otherTileIds
-            ).some(tileId => {
-              if (tileIds[tileId]) {
-                this.drawnGenes[zoomLevel][gene].otherTileIds[
-                  tileId
-                ] = undefined;
-                delete this.drawnGenes[zoomLevel][gene].otherTileIds[tileId];
-                this.drawnGenes[zoomLevel][gene].tileId = tileId;
-                this.renderTile(tileIds[tileId]);
-                return true;
-              }
-              return false;
-            });
-            if (!reRender) this.drawnGenes[zoomLevel][gene] = undefined;
-          }
-        });
-    }
+    tile.rectGraphics.destroy();
+    tile.rectMaskGraphics.destroy();
+    tile.textGraphics.destroy();
+    tile.textBgGraphics.destroy();
+    tile.graphics.destroy();
   }
 
   /*
