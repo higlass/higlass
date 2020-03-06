@@ -49,7 +49,7 @@ module.exports = config => {
       'test/HorizontalMultivecTests.js',
       'test/LabelTests.js',
       'test/LeftTrackModifierTests.js',
-      'test/LocalTileFetcherTests.js'
+      'test/LocalTileFetcherTests.js',
       'test/LockTests.js',
       'test/MinimalViewconfTest.js',
       'test/ndarray-assign.spec.js',
