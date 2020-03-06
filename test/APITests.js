@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import { globalPubSub } from 'pub-sub-es';
-import { select } from 'd3-selection';
+import { select, create } from 'd3-selection';
 
 import {
   some,
@@ -809,6 +809,27 @@ describe('API Tests', () => {
       });
     });
 
+    it('triggers on viewConfig events from track resize interactions', done => {
+      [div, api] = createElementAndApi(
+        simple1dHorizontalVerticalAnd2dDataTrack
+      );
+      const hgc = api.getComponent();
+      waitForTilesLoaded(hgc, () => {
+        const topTrackHeight = api.getViewConfig().views[0].tracks.top[0]
+          .height;
+        expect(topTrackHeight).toEqual(60);
+
+        hgc.tiledPlots.a.handleResizeTrack('h-line', 500, 100);
+
+        api.on('viewConfig', newViewConfigString => {
+          const newViewConfig = JSON.parse(newViewConfigString);
+          const newTopTrackHeight = newViewConfig.views[0].tracks.top[0].height;
+          expect(newTopTrackHeight).toEqual(100);
+          done();
+        });
+      });
+    });
+
     afterEach(() => {
       api.destroy();
       removeDiv(div);
@@ -837,5 +858,67 @@ describe('API Tests', () => {
     //   // check to make sure that the two components have different
     //   // auth headers
     // });
+  });
+
+  describe('Export SVG API tests', () => {
+    it('listens to create SVG events', done => {
+      [div, api] = createElementAndApi(simple1And2dAnnotations, {
+        editable: false,
+        bounded: true
+      });
+
+      api.on('createSVG', svg => {
+        expect(svg.children.length).toEqual(2);
+        done();
+        return svg;
+      });
+
+      waitForTilesLoaded(api.getComponent(), () => {
+        api.exportAsSvg();
+      });
+    });
+
+    it('listens to create SVG events and enables manipulation of the SVG', done => {
+      [div, api] = createElementAndApi(simple1And2dAnnotations, {
+        editable: false,
+        bounded: true
+      });
+
+      api.on('createSVG', svg => {
+        const svgSelection = select(svg);
+
+        const g = create('svg:g');
+        g.append('circle')
+          .attr('cx', 10)
+          .attr('cy', 10)
+          .attr('r', 5)
+          .attr('fill', 'blue');
+        // Replace the contents of the exported SVG with the blue circle.
+        svgSelection.html(g.node().innerHTML);
+        return svgSelection.node();
+      });
+
+      waitForTilesLoaded(api.getComponent(), () => {
+        const svgStr = api.exportAsSvg();
+
+        const domparser = new DOMParser();
+        const doc = domparser.parseFromString(svgStr, 'image/svg+xml');
+
+        expect(doc.children.length).toEqual(1);
+        expect(doc.children[0].nodeName.toLowerCase()).toEqual('svg');
+        expect(doc.children[0].children.length).toEqual(1);
+        expect(doc.children[0].children[0].nodeName.toLowerCase()).toEqual(
+          'circle'
+        );
+        done();
+      });
+    });
+
+    afterEach(() => {
+      api.destroy();
+      removeDiv(div);
+      api = undefined;
+      div = undefined;
+    });
   });
 });
