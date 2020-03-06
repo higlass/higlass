@@ -626,6 +626,8 @@ class TiledPlot extends React.Component {
       tracks,
       forceUpdate: Math.random()
     });
+
+    this.props.onResizeTrack();
   }
 
   closeMenus() {
@@ -2388,6 +2390,7 @@ TiledPlot.propTypes = {
   onTracksAdded: PropTypes.func,
   onUnlockValueScale: PropTypes.func,
   onValueScaleChanged: PropTypes.func,
+  onResizeTrack: PropTypes.func,
   overlays: PropTypes.array,
   openModal: PropTypes.func,
   pixiRenderer: PropTypes.object,

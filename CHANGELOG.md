@@ -10,6 +10,7 @@
 - Added the attributes `projectionXDomain` and `projectionYDomain` to the `viewport-projection-horizontal` and `viewport-projection-vertical`, respectively, and both to the `viewport-projection-center`, to support the case in which the `fromViewUid` attribute is undefined.
 - Added the `.on('createSVG')` listener to the JS API, with the corresponding `.off('createSVG')`, for manipulating exported SVGs before they are returned.
 - Added `zeroValueColor` as an option for the `horizontal-multivec` track, to specify the color mapping for zero data values.
+- Track resizing events now trigger the `.on('viewConfig')` JS API callback.
 - Allowed K and M notations when entering genomic coordinates in searchbox (e.g., "chr1:150M-155M").
 
 _[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.3...develop)_
