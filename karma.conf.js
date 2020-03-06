@@ -10,7 +10,7 @@ module.exports = config => {
      * disconnecting from it (in ms). */
     browserNoActivityTimeout: 50000,
     basePath: '',
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'server-side'],
 
     files: [
       'node_modules/babel-polyfill/dist/polyfill.js',
@@ -88,6 +88,7 @@ module.exports = config => {
     plugins: [
       'karma-webpack',
       'karma-jasmine',
+      'karma-server-side',
       'karma-sourcemap-loader',
       'karma-chrome-launcher',
       'karma-phantomjs2-launcher',

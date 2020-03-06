@@ -8,6 +8,8 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 // Utils
 import {
   colorToHex,
@@ -24,8 +26,12 @@ configure({ adapter: new Adapter() });
 describe('BarTrack tests', () => {
   let hgc = null;
   let div = null;
+  const fetchMockHelper = new FetchMockHelper('BarTrackTest');
 
-  beforeAll(done => {
+  beforeAll(async done => {
+    // We need to make sure fetch-mock is active before mounting HG and executing tests,
+    // otherwise some fetch calls might not be caught by it.
+    await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
   });
 
@@ -57,6 +63,7 @@ describe('BarTrack tests', () => {
   });
 
   afterAll(() => {
+    fetchMockHelper.resetFetchMock();
     removeHGComponent(div);
   });
 });
