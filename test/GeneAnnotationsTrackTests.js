@@ -67,7 +67,6 @@ describe('Gene Annotations Tracks', () => {
       canvasElem.dispatchEvent(createPointerEvent('pointerup', loc));
 
       expect(clicked).to.eql(1);
-      // add your tests here
     });
   });
 
@@ -85,7 +84,6 @@ describe('Gene Annotations Tracks', () => {
 
       // set minus strand genes to black
       options.minusStrandColor = 'black';
-      // const trackConfig = getTrackByUid;
       hgc.handleTrackOptionsChanged('aa', 'genes1', options);
       expect(trackObj.allTexts[0].text.style.fill).to.eql('#000000');
 
@@ -126,8 +124,6 @@ describe('Gene Annotations Tracks', () => {
   });
 
   afterAll(() => {
-    // hgc.instance().handleTrackOptionsChanged('v', 'heatmap0', newOptions0);
-    // removeHGComponent(div);
     api.destroy();
     removeDiv(div);
     api = undefined;

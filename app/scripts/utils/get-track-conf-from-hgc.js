@@ -28,9 +28,7 @@ const getTrackConfFromHGC = (hgc, viewUid, trackUid) => {
     .reduce((a, b) => a.concat(b), [])
     .forEach(checkTrack);
 
-  if (found) return found;
-
-  return null;
+  return found;
 };
 
 export default getTrackConfFromHGC;
