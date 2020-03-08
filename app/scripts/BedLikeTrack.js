@@ -999,11 +999,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     // const dataX = this._xScale.invert(trackX);
 
+    const point = [trackX, trackY];
+
     if (this.drawnRects[zoomLevel]) {
       const visibleRects = Object.values(this.drawnRects[zoomLevel]);
 
       for (let i = 0; i < visibleRects.length; i++) {
-        const point = [trackX, trackY];
         const rect = visibleRects[i][0].slice(0);
         const newArr = [];
         while (rect.length) newArr.push(rect.splice(0, 2));

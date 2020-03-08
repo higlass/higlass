@@ -1,21 +1,13 @@
 {
   "editable": true,
   "zoomFixed": false,
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["http://higlass.io/api/v1"],
   "exportViewUrl": "http://localhost:8000/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
-      "initialXDomain": [
-        -128227010.6076158,
-        3227095876.810823
-      ],
-      "initialYDomain": [
-        -679063376.6830564,
-        3737688490.1136293
-      ],
+      "initialXDomain": [-128227010.6076158, 3227095876.810823],
+      "initialYDomain": [-679063376.6830564, 3737688490.1136293],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": false,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
@@ -36,8 +28,6 @@
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "vertical-chromosome-labels",
-            "position": "left",
-            "name": "Chromosome Labels (hg19)",
             "width": 30,
             "uid": "a-mFiHnBQ8uuI6UG3USWVA",
             "options": {},
@@ -65,14 +55,8 @@
                   ]
                 },
                 "type": "heatmap",
-                "position": "center",
                 "options": {
-                  "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "#F5A623",
-                    "#D0021B"
-                  ],
+                  "colorRange": ["#FFFFFF", "#F8E71C", "#F5A623", "#D0021B"],
                   "colorbarPosition": "topRight",
                   "colorbarLabelsPosition": "outside",
                   "maxZoom": null,
@@ -85,29 +69,18 @@
                   "scaleEndPercent": "1.00000"
                 },
                 "uid": "heatmap1",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
                 "width": 667,
                 "height": 828
               },
               {
                 "type": "2d-chromosome-grid",
-                "local": true,
-                "orientation": "2d",
                 "name": "Chromosome Grid (hg19)",
                 "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-                "thumbnail": null,
                 "uid": "LUVqXXu2QYiO8XURIwyUyA",
                 "options": {
                   "lineStrokeWidth": 1,
                   "lineStrokeColor": "grey"
                 },
-                "position": "center",
                 "width": 667,
                 "height": 828
               }

@@ -2,6 +2,9 @@
 
 ## Next release
 
+- Support for gene annotation "filler" regions
+- Clickable gene annotations
+- Slightly updated gene annotation style with arrowheads at the ends
 - Remove Content-Type headers when fetching genbank files
 - Added the fields `xRange` and `yRange` the object returned by the JavaScript API `.getLocation()` method.
 - Fixed blurry exported heatmap SVG graphics issue using the `image-rendering` CSS property.

@@ -1,25 +1,16 @@
 {
   "editable": true,
   "zoomFixed": false,
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"],
+  "trackSourceServers": ["http://higlass.io/api/v1"],
   "views": [
     {
       "uid": "a",
-      "initialXDomain": [
-        1480820463.833503,
-        2550144059.1286707
-      ],
-      "initialYDomain": [
-        1569819845.1080737,
-        2433776657.2008576
-      ],
+      "initialXDomain": [1480820463.833503, 2550144059.1286707],
+      "initialYDomain": [1569819845.1080737, 2433776657.2008576],
       "tracks": {
         "top": [
           {
             "type": "top-axis",
-            "local": true,
-            "name": "Top Axis",
             "uid": "d8focpO5TKKd2TB8QONd9w",
             "options": {},
             "width": 20,
@@ -29,8 +20,6 @@
         "left": [
           {
             "type": "left-axis",
-            "local": true,
-            "name": "Left Axis",
             "uid": "RhdSji35SgOOJyqcy81zcg",
             "options": {},
             "width": 100,
@@ -44,12 +33,7 @@
             "type": "heatmap",
             "position": "center",
             "options": {
-              "colorRange": [
-                "#FFFFFF",
-                "#F8E71C",
-                "#F5A623",
-                "#D0021B"
-              ],
+              "colorRange": ["#FFFFFF", "#F8E71C", "#F5A623", "#D0021B"],
               "colorbarPosition": "topRight",
               "colorbarLabelsPosition": "outside",
               "maxZoom": null,
@@ -62,12 +46,6 @@
               "scaleEndPercent": "1.00000"
             },
             "uid": "heatmap1",
-            "transforms": [
-              {
-                "name": "ICE",
-                "value": "weight"
-              }
-            ],
             "width": 670,
             "height": 400
           }

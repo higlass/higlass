@@ -1,16 +1,11 @@
 {
   "editable": true,
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["http://higlass.io/api/v1"],
   "exportViewUrl": "http://localhost:8000/api/v1/viewconfs",
   "views": [
     {
       "uid": "a",
-      "initialXDomain": [
-        480652506.7430513,
-        1436917478.5448952
-      ],
+      "initialXDomain": [480652506.7430513, 1436917478.5448952],
       "tracks": {
         "top": [],
         "left": [],
@@ -47,17 +42,9 @@
                   "scaleEndPercent": "1.00000"
                 },
                 "width": 1052,
-                "height": 1060,
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
-                "position": "center"
+                "height": 1060
               }
             ],
-            "position": "center",
             "width": 1052,
             "height": 1060,
             "options": {}
@@ -74,10 +61,7 @@
         "x": 0,
         "y": 0
       },
-      "initialYDomain": [
-        -542724630.897934,
-        3449246960.478492
-      ],
+      "initialYDomain": [-542724630.897934, 3449246960.478492],
       "genomePositionSearchBox": {
         "autocompleteServer": "http://higlass.io/api/v1",
         "chromInfoServer": "http://higlass.io/api/v1",
@@ -88,10 +72,7 @@
     },
     {
       "uid": "NagBzk-AQZuoY0bqG-Yy0Q",
-      "initialXDomain": [
-        480652506.7429197,
-        1436917478.5450268
-      ],
+      "initialXDomain": [480652506.7429197, 1436917478.5450268],
       "tracks": {
         "top": [],
         "left": [],
@@ -101,7 +82,6 @@
             "type": "combined",
             "contents": [
               {
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
                 "server": "http://higlass.io/api/v1",
                 "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
                 "uid": "PdEzdgsxRymGelD5xfKlNA",
@@ -128,17 +108,9 @@
                   "scaleEndPercent": "1.00000"
                 },
                 "width": 1052,
-                "height": 1060,
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
-                "position": "center"
+                "height": 1060
               }
             ],
-            "position": "center",
             "width": 1052,
             "height": 1060,
             "options": {}
@@ -155,10 +127,7 @@
         "x": 6,
         "y": 0
       },
-      "initialYDomain": [
-        -542724630.8984827,
-        3449246960.4790406
-      ],
+      "initialYDomain": [-542724630.8984827, 3449246960.4790406],
       "genomePositionSearchBox": {
         "autocompleteServer": "http://higlass.io/api/v1",
         "chromInfoServer": "http://higlass.io/api/v1",
@@ -180,11 +149,7 @@
           2685902060.244133,
           436164.72082710266
         ],
-        "a": [
-          921740661.5004478,
-          2685902060.244133,
-          436164.72082698345
-        ],
+        "a": [921740661.5004478, 2685902060.244133, 436164.72082698345],
         "uid": "WpVjxSObQpi656X3gAqkpA"
       }
     }
@@ -201,11 +166,7 @@
           2685902060.244133,
           436164.72082710266
         ],
-        "a": [
-          921740661.5004478,
-          2685902060.244133,
-          436164.72082698345
-        ],
+        "a": [921740661.5004478, 2685902060.244133, 436164.72082698345],
         "uid": "H4m1eXywQH2ZUOKwqdKl1g"
       }
     }

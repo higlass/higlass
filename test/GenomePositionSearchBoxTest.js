@@ -74,6 +74,19 @@ describe('Genome position search box tests', () => {
         });
       });
     });
+
+    it('Cleans up', () => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+        hgc = null;
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+        div = null;
+      }
+    });
   });
 
   describe('Starting with no genome position search box', () => {
@@ -297,6 +310,19 @@ describe('Genome position search box tests', () => {
 
     it("checks that the div hasn't grown too much", () => {
       expect(div.clientHeight).toBeLessThan(500);
+    });
+
+    it('Cleans up', () => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+        hgc = null;
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+        div = null;
+      }
     });
   });
 });

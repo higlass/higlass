@@ -111,6 +111,27 @@ all annotated exons in refseq. There are separate tracks for the different
 available species. Details on how gene annotation tracks are created is available
 in the `gene annotations section <data_preparation.html#gene-annotation-tracks>`_.
 
+
+Event Handlers
+--------------
+
+- **click**: Called when a gene annotaion is clicked on. The parameter to the callback is a single object whose format is described below. Genome coordinates are offsets from position 0 as if the chromosomes were laid out end-to-end.
+
+.. code-block:: javascript
+
+  {
+    type: "gene-annotation",
+    event: [PIXI.js event object],
+    payload: {
+      xStart: [int: genome coordinate ],
+      xStart: [int: genome coordinate ],
+      offset: [int: start of this annotations chromosome (genome coordinate)],
+      uid: [string: unique identifier for this annotation],
+      fields: [array: genePred formatted array of values],
+      ... other fields
+    }
+  }
+
 Heatmap
 =======
 
