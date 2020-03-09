@@ -499,8 +499,10 @@ export const calculateTilesFromResolution = (
  * be mirrored tiles present ignore the upper right values
  * @param ignoreLowerLeft: If this is a tile along the diagonal and there will be
  * mirrored tiles present ignore the lower left values
+ * @param {array} zeroValueColor: The color to use for rendering zero data values, [r, g, b, a].
  * @param {number[]} selectedRows: Array of row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
- * @param {array} zeroValueColor The color to use for rendering zero data values, [r, g, b, a].
+ * @param {string} selectedRowsAggregationMode: String that determines the aggregation function to use if selected rows is a
+ * 2D array ("mean", "sum", etc).
  */
 export const tileDataToPixData = (
   tile,
@@ -511,8 +513,9 @@ export const tileDataToPixData = (
   finished,
   ignoreUpperRight,
   ignoreLowerLeft,
+  zeroValueColor,
   selectedRows,
-  zeroValueColor
+  selectedRowsAggregationMode
 ) => {
   const { tileData } = tile;
 
@@ -568,8 +571,9 @@ export const tileDataToPixData = (
     ignoreUpperRight,
     ignoreLowerLeft,
     tile.tileData.shape,
+    zeroValueColor,
     selectedRows,
-    zeroValueColor
+    selectedRowsAggregationMode
   );
 
   finished({ pixData });

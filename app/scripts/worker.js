@@ -91,9 +91,10 @@ export function maxNonZero(data) {
  * @param {boolean} ignoreLowerLeft
  * @param {array} shape Array `[numRows, numCols]`, used when iterating over a subset of rows,
  * when one needs to know the width of each column.
+ * @param {array} zeroValueColor The color to use for rendering zero data values, [r, g, b, a].
  * @param {number[]} selectedRows Array of row indices, for ordering and filtering rows.
  * Used by the HorizontalMultivecTrack.
- * @param {array} zeroValueColor The color to use for rendering zero data values, [r, g, b, a].
+ * @param {string} selectedRowsAggregationMode String that specifies the aggregation function to use ("mean", "sum", etc).
  * @returns {Uint8ClampedArray} A flattened array of pixel values.
  */
 export function workerSetPix(
@@ -106,8 +107,9 @@ export function workerSetPix(
   ignoreUpperRight = false,
   ignoreLowerLeft = false,
   shape = null,
+  zeroValueColor = null,
   selectedRows = null,
-  zeroValueColor = null
+  selectedRowsAggregationMode = null
 ) {
   let valueScale = null;
 
@@ -189,17 +191,28 @@ export function workerSetPix(
   try {
     if (shape && selectedRows) {
       // We need to set the pixels in the order specified by the `selectedRows` parameter.
-      for (
-        let selectedRowI = 0;
-        selectedRowI < selectedRows.length;
-        selectedRowI++
-      ) {
-        for (let colI = 0; colI < shape[1]; colI++) {
-          d = data[selectedRows[selectedRowI] * shape[1] + colI];
-          setPixData(
-            selectedRowI * shape[1] + colI, // pixData index
-            d // data point
-          );
+      if (selectedRows.length >= 1 && Array.isArray(selectedRows[0])) {
+        // selectRows is a 2-dimensional array, so there is an aggregation step required.
+        console.log(selectedRowsAggregationMode);
+        for (
+          let selectedRowGroupI = 0;
+          selectedRowGroupI < selectedRows.length;
+          selectedRowGroupI++
+        ) {}
+      } else {
+        // selectRows is a 1-dimensional array, so there is no aggregation step required.
+        for (
+          let selectedRowI = 0;
+          selectedRowI < selectedRows.length;
+          selectedRowI++
+        ) {
+          for (let colI = 0; colI < shape[1]; colI++) {
+            d = data[selectedRows[selectedRowI] * shape[1] + colI];
+            setPixData(
+              selectedRowI * shape[1] + colI, // pixData index
+              d // data point
+            );
+          }
         }
       }
     } else {

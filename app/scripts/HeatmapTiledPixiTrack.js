@@ -1237,10 +1237,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         tile.tileData.tilePos[0] === tile.tileData.tilePos[1],
       this.options.extent === 'upper-right' &&
         tile.tileData.tilePos[0] === tile.tileData.tilePos[1],
-      this.options.selectRows,
       this.options.zeroValueColor
         ? colorToRgba(this.options.zeroValueColor)
-        : undefined
+        : undefined,
+      this.options.selectRows,
+      this.options.selectRowsAggregationMode
     );
   }
 
