@@ -18,7 +18,15 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     if (this.options.selectRows && this.tilesetInfo.shape) {
       canvas.width = this.tilesetInfo.shape[0];
-      canvas.height = this.options.selectRows.length;
+      canvas.height = this.options.selectRows.reduce(
+        (a, h) =>
+          a +
+          (Array.isArray(h) &&
+          this.options.selectRowsAggregationWithRelativeHeight
+            ? h.length
+            : 1),
+        0
+      );
     } else if (this.tilesetInfo.shape) {
       canvas.width = this.tilesetInfo.shape[0];
       canvas.height = this.tilesetInfo.shape[1];
@@ -206,6 +214,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const tilePos = this._xScale.invert(trackX) / tileWidth;
     let numRows = this.tilesetInfo.shape ? this.tilesetInfo.shape[1] : 1;
     if (this.options.selectRows) {
+      // TODO: figure out tooltip implementation for 2d selectRows (the aggregation case).
       numRows = this.options.selectRows.length;
     }
 

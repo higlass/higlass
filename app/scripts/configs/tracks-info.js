@@ -613,6 +613,7 @@ export const TRACKS_INFO = [
       'heatmapValueScaling',
       'selectRows',
       'selectRowsAggregationMode',
+      'selectRowsAggregationWithRelativeHeight',
       'colorbarBackgroundColor',
       'colorbarPosition',
       'zeroValueColor'
@@ -634,6 +635,7 @@ export const TRACKS_INFO = [
       heatmapValueScaling: 'log',
       selectRows: null,
       selectRowsAggregationMode: 'mean',
+      selectRowsAggregationWithRelativeHeight: true,
       colorbarBackgroundColor: '#ffffff',
       colorbarPosition: 'topRight',
       zeroValueColor: null

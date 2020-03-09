@@ -503,6 +503,7 @@ export const calculateTilesFromResolution = (
  * @param {number[]} selectedRows: Array of row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
  * @param {string} selectedRowsAggregationMode: String that determines the aggregation function to use if selected rows is a
  * 2D array ("mean", "sum", etc).
+ * @param {boolean} selectedRowsAggregationWithRelativeHeight: If true, the height for each aggregation group should be relative to the length of the group.
  */
 export const tileDataToPixData = (
   tile,
@@ -515,7 +516,8 @@ export const tileDataToPixData = (
   ignoreLowerLeft,
   zeroValueColor,
   selectedRows,
-  selectedRowsAggregationMode
+  selectedRowsAggregationMode,
+  selectedRowsAggregationWithRelativeHeight
 ) => {
   const { tileData } = tile;
 
@@ -573,7 +575,8 @@ export const tileDataToPixData = (
     tile.tileData.shape,
     zeroValueColor,
     selectedRows,
-    selectedRowsAggregationMode
+    selectedRowsAggregationMode,
+    selectedRowsAggregationWithRelativeHeight
   );
 
   finished({ pixData });

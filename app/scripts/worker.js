@@ -95,6 +95,7 @@ export function maxNonZero(data) {
  * @param {number[]} selectedRows Array of row indices, for ordering and filtering rows.
  * Used by the HorizontalMultivecTrack.
  * @param {string} selectedRowsAggregationMode String that specifies the aggregation function to use ("mean", "sum", etc).
+ * @param {boolean} selectedRowsAggregationWithRelativeHeight Boolean that determines whether the height of row groups should be relative to the size of the group.
  * @returns {Uint8ClampedArray} A flattened array of pixel values.
  */
 export function workerSetPix(
@@ -109,7 +110,8 @@ export function workerSetPix(
   shape = null,
   zeroValueColor = null,
   selectedRows = null,
-  selectedRowsAggregationMode = null
+  selectedRowsAggregationMode = null,
+  selectedRowsAggregationWithRelativeHeight = null
 ) {
   let valueScale = null;
 
@@ -134,7 +136,15 @@ export function workerSetPix(
   if (shape && selectedRows) {
     // If using the `selectedRows` parameter, then the size of the `pixData` array
     // will likely be different than `size` (the total size of the tile data array).
-    filteredSize = selectedRows.length * shape[1];
+    filteredSize =
+      selectedRows.reduce(
+        (a, h) =>
+          a +
+          (Array.isArray(h) && selectedRowsAggregationWithRelativeHeight
+            ? h.length
+            : 1),
+        0
+      ) * shape[1];
   }
 
   let rgb;
@@ -187,34 +197,74 @@ export function workerSetPix(
     pixData[i * 4 + 3] = rgb[3];
   };
 
+  // TODO: where should these functions go?
+  const aggMean = (colI, rowIs) => {
+    let r = 0;
+    for (const rowI of rowIs) {
+      r += data[rowI * shape[1] + colI];
+    }
+    return r / rowIs.length;
+  };
+
   let d;
   try {
     if (shape && selectedRows) {
       // We need to set the pixels in the order specified by the `selectedRows` parameter.
-      if (selectedRows.length >= 1 && Array.isArray(selectedRows[0])) {
-        // selectRows is a 2-dimensional array, so there is an aggregation step required.
-        console.log(selectedRowsAggregationMode);
+      let pixRowI;
+      let colI; let selectedRowI; let selectedRowGroupItemI;
+      for (colI = 0; colI < shape[1]; colI++) {
+        // For this column, aggregate along the row axis.
+        pixRowI = 0;
         for (
-          let selectedRowGroupI = 0;
-          selectedRowGroupI < selectedRows.length;
-          selectedRowGroupI++
-        ) {}
-      } else {
-        // selectRows is a 1-dimensional array, so there is no aggregation step required.
-        for (
-          let selectedRowI = 0;
+          selectedRowI = 0;
           selectedRowI < selectedRows.length;
           selectedRowI++
         ) {
-          for (let colI = 0; colI < shape[1]; colI++) {
+          if (Array.isArray(selectedRows[selectedRowI])) {
+            // TODO: figure out if the switch statement is ok for this aggregation mode implementation.
+            switch (selectedRowsAggregationMode) {
+              case 'mean':
+                d = aggMean(colI, selectedRows[selectedRowI]); // TODO: implement the other modes
+                break;
+              case 'sum':
+                break;
+              case 'variance':
+                break;
+              case 'stddev':
+                break;
+              default:
+                console.warn(
+                  'Encountered an unsupported selectedRowsAggregationMode option.'
+                );
+            }
+          } else {
             d = data[selectedRows[selectedRowI] * shape[1] + colI];
+          }
+
+          if (
+            selectedRowsAggregationWithRelativeHeight &&
+            Array.isArray(selectedRows[selectedRowI])
+          ) {
+            for (
+              selectedRowGroupItemI = 0;
+              selectedRowGroupItemI < selectedRows[selectedRowI].length;
+              selectedRowGroupItemI++
+            ) {
+              setPixData(
+                pixRowI * shape[1] + colI, // pixData index
+                d // data point
+              );
+              pixRowI++;
+            }
+          } else {
             setPixData(
-              selectedRowI * shape[1] + colI, // pixData index
+              pixRowI * shape[1] + colI, // pixData index
               d // data point
             );
+            pixRowI++;
           }
-        }
-      }
+        } // end row group for
+      } // end col for
     } else {
       // The `selectedRows` array has not been passed, so we want to use all of the tile data values,
       // in their default ordering.
