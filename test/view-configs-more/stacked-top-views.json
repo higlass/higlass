@@ -53,7 +53,6 @@
             "uid": "line1",
             "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
             "height": 64,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -134,7 +133,6 @@
           {
             "uid": "genes",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "height": 64,
@@ -153,14 +151,12 @@
               "geneAnnotationHeight": 12,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4
-            },
-            "name": "Gene Annotations (hg19)"
+            }
           },
           {
             "uid": "chroms",
             "height": 20,
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -170,14 +166,12 @@
               "showMousePosition": true,
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000"
-            },
-            "name": "Chromosome Labels (hg19)"
+            }
           },
           {
             "uid": "line2",
             "tilesetUid": "PdAaSdibTLK34hCw7ubqKA",
             "height": 64,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -195,8 +189,7 @@
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000",
               "showTooltip": false
-            },
-            "name": "GM12878-E116-H3K27me3.fc.signal"
+            }
           }
         ]
       }
@@ -215,7 +208,6 @@
           {
             "uid": "genes",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "height": 64,
@@ -234,14 +226,12 @@
               "geneAnnotationHeight": 12,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4
-            },
-            "name": "Gene Annotations (hg19)"
+            }
           },
           {
             "uid": "chroms",
             "height": 20,
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -251,14 +241,12 @@
               "showMousePosition": true,
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000"
-            },
-            "name": "Chromosome Labels (hg19)"
+            }
           },
           {
             "uid": "line3",
             "tilesetUid": "e0DYtZBSTqiMLHoaimsSpg",
             "height": 48,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -276,8 +264,7 @@
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000",
               "showTooltip": false
-            },
-            "name": "GM12878-E116-H3K4me1.fc.signal"
+            }
           }
         ]
       }
@@ -296,7 +283,6 @@
           {
             "uid": "genes",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "height": 64,
@@ -315,14 +301,12 @@
               "geneAnnotationHeight": 12,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4
-            },
-            "name": "Gene Annotations (hg19)"
+            }
           },
           {
             "uid": "chroms",
             "height": 20,
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -332,14 +316,12 @@
               "showMousePosition": true,
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000"
-            },
-            "name": "Chromosome Labels (hg19)"
+            }
           },
           {
             "uid": "line4",
             "tilesetUid": "cE0nGyd0Q_yVYSyBUe89Ww",
             "height": 64,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -357,8 +339,7 @@
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000",
               "showTooltip": false
-            },
-            "name": "GM12878-E116-H3K4me3.fc.signal"
+            }
           }
         ]
       }
@@ -377,7 +358,6 @@
           {
             "uid": "genes",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "height": 64,
@@ -396,14 +376,12 @@
               "geneAnnotationHeight": 12,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4
-            },
-            "name": "Gene Annotations (hg19)"
+            }
           },
           {
             "uid": "chroms",
             "height": 20,
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -413,14 +391,12 @@
               "showMousePosition": true,
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000"
-            },
-            "name": "Chromosome Labels (hg19)"
+            }
           },
           {
             "uid": "line5",
             "tilesetUid": "cE0nGyd0Q_yVYSyBUe89Ww",
             "height": 64,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -438,8 +414,7 @@
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000",
               "showTooltip": false
-            },
-            "name": "GM12878-E116-H3K4me3.fc.signal"
+            }
           }
         ]
       }
@@ -458,7 +433,6 @@
           {
             "uid": "genes",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "height": 64,
@@ -477,14 +451,12 @@
               "geneAnnotationHeight": 12,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4
-            },
-            "name": "Gene Annotations (hg19)"
+            }
           },
           {
             "uid": "chroms",
             "height": 20,
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -494,14 +466,12 @@
               "showMousePosition": true,
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000"
-            },
-            "name": "Chromosome Labels (hg19)"
+            }
           },
           {
             "uid": "line6",
             "tilesetUid": "cE0nGyd0Q_yVYSyBUe89Ww",
             "height": 64,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -519,8 +489,7 @@
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000",
               "showTooltip": false
-            },
-            "name": "GM12878-E116-H3K4me3.fc.signal"
+            }
           }
         ]
       }
@@ -539,7 +508,6 @@
           {
             "uid": "genes",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "height": 64,
@@ -558,14 +526,12 @@
               "geneAnnotationHeight": 12,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4
-            },
-            "name": "Gene Annotations (hg19)"
+            }
           },
           {
             "uid": "chroms",
             "height": 20,
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -575,14 +541,12 @@
               "showMousePosition": true,
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000"
-            },
-            "name": "Chromosome Labels (hg19)"
+            }
           },
           {
             "uid": "line7",
             "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
             "height": 64,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -600,8 +564,7 @@
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000",
               "showTooltip": false
-            },
-            "name": "GM12878-E116-H3K27ac.fc.signal"
+            }
           }
         ]
       }
@@ -620,7 +583,6 @@
           {
             "uid": "genes",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "height": 64,
@@ -639,14 +601,12 @@
               "geneAnnotationHeight": 12,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4
-            },
-            "name": "Gene Annotations (hg19)"
+            }
           },
           {
             "uid": "chroms",
             "height": 20,
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -656,14 +616,12 @@
               "showMousePosition": true,
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000"
-            },
-            "name": "Chromosome Labels (hg19)"
+            }
           },
           {
             "uid": "line8",
             "tilesetUid": "PdAaSdibTLK34hCw7ubqKA",
             "height": 64,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -681,8 +639,7 @@
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000",
               "showTooltip": false
-            },
-            "name": "GM12878-E116-H3K27me3.fc.signal"
+            }
           }
         ]
       }
@@ -701,7 +658,6 @@
           {
             "uid": "genes",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "height": 64,
@@ -720,14 +676,12 @@
               "geneAnnotationHeight": 12,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4
-            },
-            "name": "Gene Annotations (hg19)"
+            }
           },
           {
             "uid": "chroms",
             "height": 20,
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -737,14 +691,12 @@
               "showMousePosition": true,
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000"
-            },
-            "name": "Chromosome Labels (hg19)"
+            }
           },
           {
             "uid": "line9",
             "tilesetUid": "e0DYtZBSTqiMLHoaimsSpg",
             "height": 48,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -762,8 +714,7 @@
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000",
               "showTooltip": false
-            },
-            "name": "GM12878-E116-H3K4me1.fc.signal"
+            }
           }
         ]
       }
@@ -782,7 +733,6 @@
           {
             "uid": "genes",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "height": 64,
@@ -801,14 +751,12 @@
               "geneAnnotationHeight": 12,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4
-            },
-            "name": "Gene Annotations (hg19)"
+            }
           },
           {
             "uid": "chroms",
             "height": 20,
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -818,14 +766,12 @@
               "showMousePosition": true,
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000"
-            },
-            "name": "Chromosome Labels (hg19)"
+            }
           },
           {
             "uid": "line10",
             "tilesetUid": "cE0nGyd0Q_yVYSyBUe89Ww",
             "height": 64,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -843,8 +789,7 @@
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000",
               "showTooltip": false
-            },
-            "name": "GM12878-E116-H3K4me3.fc.signal"
+            }
           }
         ]
       }
@@ -863,7 +808,6 @@
           {
             "uid": "genes",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "height": 64,
@@ -882,14 +826,12 @@
               "geneAnnotationHeight": 12,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4
-            },
-            "name": "Gene Annotations (hg19)"
+            }
           },
           {
             "uid": "chroms",
             "height": 20,
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -899,14 +841,12 @@
               "showMousePosition": true,
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000"
-            },
-            "name": "Chromosome Labels (hg19)"
+            }
           },
           {
             "uid": "line11",
             "tilesetUid": "cE0nGyd0Q_yVYSyBUe89Ww",
             "height": 64,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -924,8 +864,7 @@
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000",
               "showTooltip": false
-            },
-            "name": "GM12878-E116-H3K4me3.fc.signal"
+            }
           }
         ]
       }
@@ -944,7 +883,6 @@
           {
             "uid": "genes",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "height": 64,
@@ -963,14 +901,12 @@
               "geneAnnotationHeight": 12,
               "geneLabelPosition": "outside",
               "geneStrandSpacing": 4
-            },
-            "name": "Gene Annotations (hg19)"
+            }
           },
           {
             "uid": "chroms",
             "height": 20,
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -980,14 +916,12 @@
               "showMousePosition": true,
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000"
-            },
-            "name": "Chromosome Labels (hg19)"
+            }
           },
           {
             "uid": "line12",
             "tilesetUid": "cE0nGyd0Q_yVYSyBUe89Ww",
             "height": 64,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -1005,8 +939,7 @@
               "showGlobalMousePosition": true,
               "mousePositionColor": "#000000",
               "showTooltip": false
-            },
-            "name": "GM12878-E116-H3K4me3.fc.signal"
+            }
           }
         ]
       }

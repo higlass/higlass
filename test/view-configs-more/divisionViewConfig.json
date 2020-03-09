@@ -16,8 +16,6 @@
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
-            "position": "top",
-            "name": "Chromosome Labels (hg19)",
             "height": 30,
             "uid": "I1QUF22JQJuJ38j9PS4iqw",
             "options": {},
@@ -74,7 +72,6 @@
               },
               {
                 "type": "2d-chromosome-grid",
-                "name": "Chromosome Grid (hg19)",
                 "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
                 "uid": "LUVqXXu2QYiO8XURIwyUyA",
                 "options": {
@@ -85,7 +82,6 @@
                 "height": 828
               }
             ],
-            "position": "center",
             "options": {},
             "width": 667
           }
