@@ -208,9 +208,7 @@ const viewconf = {
                   scaleEndPercent: '1.00000'
                 },
                 width: 100,
-                height: 100,
-                name: 'blah_all.h5',
-                resolutions: [1, 128, 16, 2, 256, 32, 4, 512, 64, 8]
+                height: 100
               }
             ]
           }

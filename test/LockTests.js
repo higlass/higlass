@@ -103,12 +103,6 @@ const viewconf = {
                   scaleEndPercent: '1.00000'
                 },
                 uid: 'GjuZed1ySGW1IzZZqFB9BA',
-                transforms: [
-                  {
-                    name: 'ICE',
-                    value: 'weight'
-                  }
-                ],
                 width: 1321,
                 height: 608
               }

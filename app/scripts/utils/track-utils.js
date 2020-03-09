@@ -397,12 +397,37 @@ const zoomedY = (yPos, kMultiplier, transform, height) => {
   return zoomIdentity.translate(0, t1).scale(k1);
 };
 
+/**
+ * Get the tile's position in its coordinate system.
+ *
+ * See Tiled1DPIXITrack.js
+ */
+const getTilePosAndDimensions = (tilesetInfo, tileId) => {
+  const zoomLevel = +tileId.split('.')[0];
+  const xTilePos = +tileId.split('.')[1];
+
+  // max_width should be substitutable with 2 ** tilesetInfo.max_zoom
+  const totalWidth = tilesetInfo.max_width;
+
+  const minX = tilesetInfo.min_pos[0];
+
+  const tileWidth = totalWidth / 2 ** zoomLevel;
+
+  const tileX = minX + xTilePos * tileWidth;
+
+  return {
+    tileX,
+    tileWidth
+  };
+};
+
 const trackUtils = {
-  calculate1DZoomLevel,
   calculate1DVisibleTiles,
+  calculate1DZoomLevel,
   drawAxis,
-  zoomedY,
-  movedY
+  movedY,
+  getTilePosAndDimensions,
+  zoomedY
 };
 
 export default trackUtils;
