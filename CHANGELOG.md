@@ -1,6 +1,6 @@
 # Release notes
 
-## v1.8.5
+## v1.9.0
 
 - Support for gene annotation "filler" regions
 - Clickable gene annotations
@@ -16,9 +16,7 @@
 - Track resizing events now trigger the `.on('viewConfig')` JS API callback.
 - Specify raw tiles locally in the viewconf
 
-_[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.3...develop)_
-
-_[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.4...v1.8.5)_
+_[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.4...v1.9.0)_
 
 ## v1.8.4
 
