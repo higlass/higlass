@@ -296,58 +296,79 @@ Raw tile values
 We can bypass the file format and specify raw tile values using a ``local-tiles`` data fetcher. This data fetcher has to specify ``type: "local-tiles"`` and provide the ``tilesetInfo`` and ``tiles`` values. In the example below the value ``OHJakQICQD6gTD7skx4EWA`` is the equivalent of the tilesetUid used in a regular remote tile fetcher. It's not actually used by the local tile fetcher here but it is expected to make it easy to copy and paste actual network tile requests. Because the value is not used, any string can be passed in.
 
 .. code-block:: javascript
-            data: {
-              type: 'local-tiles',
-              tilesetInfo: {
-                OHJakQICQD6gTD7skx4EWA: {
-                  zoom_step: 1,
-                  max_length: 3137161264,
-                  assembly: 'hg19',
-                  chrom_names:
-                    'chr1\tchr2\tchr3\tchr4\tchr5\tchr6\tchr7\tchr8\tchr9\tchr10\tchr11\tchr12\tchr13\tchr14\tchr15\tchr16\tchr17\tchr18\tchr19\tchr20\tchr21\tchr22\tchrX\tchrY\tchrM',
-                  chrom_sizes:
-                    '249250621\t243199373\t198022430\t191154276\t180915260\t171115067\t159138663\t146364022\t141213431\t135534747\t135006516\t133851895\t115169878\t107349540\t102531392\t90354753\t81195210\t78077248\t59128983\t63025520\t48129895\t51304566\t155270560\t59373566\t16571',
-                  tile_size: 1024.0,
-                  max_zoom: 22,
-                  max_width: 4294967296.0,
-                  min_pos: [1],
-                  max_pos: [3137161264],
-                  header: '',
-                  name: 'Gene Annotations (hg19)',
-                  datatype: 'gene-annotation',
-                  coordSystem: 'hg19',
-                  coordSystem2: ''
-                }
-              },
-              tiles: {
-                'OHJakQICQD6gTD7skx4EWA.16.20101': [
-                  {
-                    xStart: 1317244685,
-                    xEnd: 1317481244,
-                    chrOffset: 1233657027,
-                    importance: 111.0,
-                    uid: 'WepfdWoIS9qSTmH9r9QUuQ',
-                    fields: [
-                      'chr7',
-                      '83587658',
-                      '83824217',
-                      'SEMA3A',
-                      '111',
-                      '-',
-                      'union_10371',
-                      '10371',
-                      'protein-coding',
-                      'semaphorin 3A',
-                      '83590686',
-                      '83823902',
-                      '83587658,83592520,83606447,83610636,83614751,83631270,83634654,83636668,83640337,83640498,83643524,83675639,83689780,83739785,83758438,83764109,83823790',
-                      '83591142,83592663,83606512,83610794,83614793,83631362,83634874,83636813,83640407,83640613,83643667,83675759,83689874,83739905,83758501,83764267,83824217'
-                    ]
-                  }
-                ]
-              }
-            },
 
+  data: {
+    type: 'local-tiles',
+    tilesetInfo: {
+      OHJakQICQD6gTD7skx4EWA: {
+        zoom_step: 1,
+        max_length: 3137161264,
+        assembly: 'hg19',
+        chrom_names:
+          'chr1\tchr2\tchr3\tchr4\tchr5\tchr6\tchr7\tchr8\tchr9\tchr10\tchr11\tchr12\tchr13\tchr14\tchr15\tchr16\tchr17\tchr18\tchr19\tchr20\tchr21\tchr22\tchrX\tchrY\tchrM',
+        chrom_sizes:
+          '249250621\t243199373\t198022430\t191154276\t180915260\t171115067\t159138663\t146364022\t141213431\t135534747\t135006516\t133851895\t115169878\t107349540\t102531392\t90354753\t81195210\t78077248\t59128983\t63025520\t48129895\t51304566\t155270560\t59373566\t16571',
+        tile_size: 1024.0,
+        max_zoom: 22,
+        max_width: 4294967296.0,
+        min_pos: [1],
+        max_pos: [3137161264],
+        header: '',
+        name: 'Gene Annotations (hg19)',
+        datatype: 'gene-annotation',
+        coordSystem: 'hg19',
+        coordSystem2: ''
+      }
+    },
+    tiles: {
+      'OHJakQICQD6gTD7skx4EWA.16.20101': [
+        {
+          xStart: 1317244685,
+          xEnd: 1317481244,
+          chrOffset: 1233657027,
+          importance: 111.0,
+          uid: 'WepfdWoIS9qSTmH9r9QUuQ',
+          fields: [
+            'chr7',
+            '83587658',
+            '83824217',
+            'SEMA3A',
+            '111',
+            '-',
+            'union_10371',
+            '10371',
+            'protein-coding',
+            'semaphorin 3A',
+            '83590686',
+            '83823902',
+            '83587658,83592520,83606447,83610636,83614751,83631270,83634654,83636668,83640337,83640498,83643524,83675639,83689780,83739785,83758438,83764109,83823790',
+            '83591142,83592663,83606512,83610794,83614793,83631362,83634874,83636813,83640407,83640613,83643667,83675759,83689874,83739905,83758501,83764267,83824217'
+          ]
+        }
+      ]
+    }
+  },
+
+Divided Tracks
+""""""""""""""
+
+The ``data`` section a track's definition can be used to sepcify that the track should display the ratio of two datasets:
+
+.. code-block:: javascript
+
+  "data": {
+    "type": "divided",
+    "children": [
+      {
+        "server": "//higlass.io/api/v1",
+        "tilesetUid": "H7e9Cj97SziKnltNM9pWNw"
+      },
+      {
+        "server": "//higlass.io/api/v1",
+        "tilesetUid": "Ay0kiiScSoOYKcSGKH4jjQ"
+      }
+    ]
+  }
 
 Track options
 --------------
