@@ -526,10 +526,6 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.draw();
   }
 
-  refreshTiles() {
-    // dummy function that is called by LeftTrackModifier
-  }
-
   exportSVG() {
     let track = null;
     let base = null;

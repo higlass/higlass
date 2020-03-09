@@ -533,53 +533,6 @@ describe('Simple HiGlassComponent', () => {
     });
   });
 
-  describe('Gene Annotations Display', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={geneAnnotationsOnly}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Check to make sure that the rectangles are initially small', done => {
-      let track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'genes1');
-
-      const { views } = hgc.instance().state;
-      track = getTrackByUid(views.aa.tracks, 'genes1');
-
-      // console.log('setting views');
-      track.options.labelPosition = 'topLeft';
-
-      hgc.setState({
-        views
-      });
-      // console.log('track', track);
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-  });
-
   describe('2D Rectangle Annotations', () => {
     it('Cleans up previously created instances and mounts a new component', done => {
       if (hgc) {

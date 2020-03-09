@@ -68,6 +68,17 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     tile.xValues = new Array(tile.tileData.dense.length);
     tile.yValues = new Array(tile.tileData.dense.length);
 
+    if (this.isValueScaleLocked()) {
+      // If valueScales are locked get min and max values of the locked group
+      // for initialization. This prevents a flickering that is caused by
+      // rendering the track multiple times with possibly different valueScales
+      const glge = this.getLockGroupExtrema();
+      if (glge !== null) {
+        this.minValue(glge[0]);
+        this.maxValue(glge[1]);
+      }
+    }
+
     this.drawTile(tile);
   }
 
@@ -114,15 +125,17 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       return;
     }
 
-    // FIXME
     const [vs, offsetValue] = this.makeValueScale(
       this.minValue(),
       this.medianVisibleValue,
       this.maxValue()
     );
+
     this.valueScale = vs;
 
     graphics.clear();
+
+    this.drawAxis(this.valueScale);
 
     if (
       this.options.valueScaling === 'log' &&
@@ -216,6 +229,41 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     this.refreshTiles();
 
     this.draw();
+
+    const isValueScaleLocked = this.isValueScaleLocked();
+
+    if (
+      this.continuousScaling &&
+      this.minValue() !== undefined &&
+      this.maxValue() !== undefined
+    ) {
+      if (
+        this.valueScaleMin === null &&
+        this.valueScaleMax === null &&
+        !isValueScaleLocked
+      ) {
+        const newMin = this.minVisibleValue();
+        const newMax = this.maxVisibleValue();
+
+        const epsilon = 1e-6;
+
+        if (
+          newMin !== null &&
+          newMax !== null &&
+          (Math.abs(this.minValue() - newMin) > epsilon ||
+            Math.abs(this.maxValue() - newMax) > epsilon)
+        ) {
+          this.minValue(newMin);
+          this.maxValue(newMax);
+
+          this.scheduleRerender();
+        }
+      }
+
+      if (isValueScaleLocked) {
+        this.onValueScaleChanged();
+      }
+    }
   }
 
   superSVG() {

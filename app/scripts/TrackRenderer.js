@@ -381,6 +381,18 @@ class TrackRenderer extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    // If the initial domain changed, a new view config
+    // probably has loaded. Reset the element's zoomTransform in this case.
+    // In D3, an element’s transform is stored internally as element.__zoom
+    if (
+      this.props.initialXDomain[0] !== prevProps.initialXDomain[0] ||
+      this.props.initialXDomain[1] !== prevProps.initialXDomain[1] ||
+      this.props.initialYDomain[0] !== prevProps.initialYDomain[0] ||
+      this.props.initialYDomain[1] !== prevProps.initialYDomain[1]
+    ) {
+      this.element.__zoom = zoomIdentity;
+    }
+
     if (prevProps.isRangeSelection !== this.props.isRangeSelection) {
       if (this.props.isRangeSelection) {
         this.removeZoom();
@@ -573,6 +585,11 @@ class TrackRenderer extends React.Component {
     this.xDomainLimits = xDomainLimits;
     this.yDomainLimits = yDomainLimits;
     this.zoomLimits = zoomLimits;
+
+    // Reset the local record of the zoom transform to avoid
+    // pan & zoom jumps when saving the viewconfig
+    this.zoomTransform = zoomIdentity;
+    this.prevZoomTransform = zoomIdentity;
 
     this.cumCenterYOffset = 0;
     this.cumCenterXOffset = 0;
@@ -1272,6 +1289,7 @@ class TrackRenderer extends React.Component {
       this.valueScaleZooming = false;
       this.element.__zoom = this.zoomStartTransform;
     }
+
     this.props.pubSub.publish('app.zoomEnd');
   }
 
@@ -1477,11 +1495,17 @@ class TrackRenderer extends React.Component {
       scene: this.pStage,
       dataConfig,
       dataFetcher,
+      getLockGroupExtrema: () => {
+        return this.currentProps.getLockGroupExtrema(track.uid);
+      },
       handleTilesetInfoReceived,
       animate: () => {
         this.currentProps.onNewTilesLoaded(track.uid);
       },
       svgElement: this.svgElement,
+      isValueScaleLocked: () => {
+        return this.currentProps.isValueScaleLocked(track.uid);
+      },
       onValueScaleChanged: () => {
         this.currentProps.onValueScaleChanged(track.uid);
       },
@@ -1501,6 +1525,16 @@ class TrackRenderer extends React.Component {
 
     if (track.x) {
       context.xPosition = track.x;
+    }
+
+    // for viewport-projection-horizontal and viewport-projection-center
+    if (track.projectionXDomain) {
+      context.projectionXDomain = track.projectionXDomain;
+    }
+
+    // for viewport-projection-vertical and viewport-projection-center
+    if (track.projectionYDomain) {
+      context.projectionYDomain = track.projectionYDomain;
     }
 
     const options = track.options;

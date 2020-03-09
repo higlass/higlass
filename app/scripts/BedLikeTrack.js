@@ -557,10 +557,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
       const min = this.options.colorEncodingRange
         ? +this.options.colorEncodingRange[0]
-        : this.minVisibleValue();
+        : this.minVisibleValueInTiles();
       const max = this.options.colorEncodingRange
         ? +this.options.colorEncodingRange[1]
-        : this.maxVisibleValue();
+        : this.maxVisibleValueInTiles();
 
       if (this.options.colorEncoding) {
         this.valueColorScale = scaleLinear()
@@ -627,7 +627,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return zoomLevel;
   }
 
-  minVisibleValue() {
+  minVisibleValueInTiles() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
@@ -659,7 +659,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return min;
   }
 
-  maxVisibleValue() {
+  maxVisibleValueInTiles() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
@@ -999,11 +999,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     // const dataX = this._xScale.invert(trackX);
 
+    const point = [trackX, trackY];
+
     if (this.drawnRects[zoomLevel]) {
       const visibleRects = Object.values(this.drawnRects[zoomLevel]);
 
       for (let i = 0; i < visibleRects.length; i++) {
-        const point = [trackX, trackY];
         const rect = visibleRects[i][0].slice(0);
         const newArr = [];
         while (rect.length) newArr.push(rect.splice(0, 2));

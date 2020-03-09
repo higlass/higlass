@@ -580,11 +580,11 @@ const createApi = function api(context, pubSub) {
        * Get the current location for a view.
        *
        * @param {string} [viewId=null] The id of the view to get the location for
-       * @returns {obj} A an object containing two Arrays representing the domains of
-       *  the x andy scales of the view.
+       * @returns {obj} A an object containing four arrays representing the domains and ranges of
+       *  the x and y scales of the view.
        * @example
        *
-       * const {xScale, yScale} = hgv.getLocation('viewId');
+       * const {xDomain, yDomain, xRange, yRange} = hgv.getLocation('viewId');
        */
       getLocation(viewId) {
         const wurstId = viewId
@@ -598,7 +598,9 @@ const createApi = function api(context, pubSub) {
 
         return {
           xDomain: self.xScales[wurstId].domain(),
-          yDomain: self.yScales[wurstId].domain()
+          yDomain: self.yScales[wurstId].domain(),
+          xRange: self.xScales[wurstId].range(),
+          yRange: self.yScales[wurstId].range()
         };
       },
 
@@ -657,6 +659,7 @@ const createApi = function api(context, pubSub) {
        * hgv.off('rangeSelection', rangeListener);
        * hgv.off('viewConfig', viewConfigListener);
        * hgv.off('mouseMoveZoom', mmz);
+       * hgv.off('createSVG');
        */
       off(event, listenerId, viewId) {
         const callback =
@@ -685,6 +688,10 @@ const createApi = function api(context, pubSub) {
 
           case 'viewConfig':
             self.offViewChange(listenerId);
+            break;
+
+          case 'createSVG':
+            self.offPostCreateSVG();
             break;
 
           default:
@@ -767,7 +774,11 @@ const createApi = function api(context, pubSub) {
        *  // 2D or BEDPE-like array
        *  [["chr1", 249200621, "chr2", 50000], ["chr3", 197972430, "chr4", 50000]]
        *
-       * ``viewConfig:`` Returns the current view config.
+       * ``viewConfig:`` Returns the current view config (as a string).
+       *  This event is published upon interactions including:
+       *  - Saving in the view config editor modal.
+       *  - Panning and zooming in views, which update view object ``initialXDomain`` and ``initialYDomain`` values.
+       *  - Brushing in ``viewport-projection-`` tracks containing null ``fromViewUid`` fields, which update track object ``projectionXDomain`` and ``projectionYDomain`` values.
        *
        * ``mouseMoveZoom:`` Returns the location and data at the mouse cursor's
        * screen location.
@@ -810,6 +821,9 @@ const createApi = function api(context, pubSub) {
        *    isGenomicCoords
        *  }
        *
+       * ``createSVG:`` Set a callback to obtain the current exported SVG DOM node,
+       *                and potentially return a manipulated SVG DOM node.
+       *
        * @param {string} event One of the events described below
        *
        * @param {function} callback A callback to be called when the event occurs
@@ -818,7 +832,7 @@ const createApi = function api(context, pubSub) {
        *
        * @example
        *
-       *  let locationListenerId;
+       * let locationListenerId;
        * hgv.on(
        *   'location',
        *   location => console.log('Here we are:', location),
@@ -836,8 +850,18 @@ const createApi = function api(context, pubSub) {
        *   range => console.log('Selected', range)
        * );
        *
-       *  const mmz = event => console.log('Moved', event);
-       *  hgv.on('mouseMoveZoom', mmz);
+       * const mmz = event => console.log('Moved', event);
+       * hgv.on('mouseMoveZoom', mmz);
+       *
+       * hgv.on('createSVG', (svg) => {
+       *    const circle = document.createElement('circle');
+       *    circle.setAttribute('cx', 100);
+       *    circle.setAttribute('cy', 100);
+       *    circle.setAttribute('r', 50);
+       *    circle.setAttribute('fill', 'green');
+       *    svg.appendChild(circle);
+       *    return svg;
+       * });
        */
       on(event, callback, viewId, callbackId) {
         switch (event) {
@@ -859,6 +883,9 @@ const createApi = function api(context, pubSub) {
 
           case 'viewConfig':
             return self.onViewChange(callback);
+
+          case 'createSVG':
+            return self.onPostCreateSVG(callback);
 
           default:
             return undefined;

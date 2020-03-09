@@ -2,7 +2,21 @@
 
 ## v1.8.5
 
+- Support for gene annotation "filler" regions
+- Clickable gene annotations
+- Slightly updated gene annotation style with arrowheads at the ends
 - Remove Content-Type headers when fetching genbank files
+- Added the fields `xRange` and `yRange` the object returned by the JavaScript API `.getLocation()` method.
+- Fixed blurry exported heatmap SVG graphics issue using the `image-rendering` CSS property.
+- Enabled view-based scaling
+- Left and right tracks can now be value scale locked
+- Added the attributes `projectionXDomain` and `projectionYDomain` to the `viewport-projection-horizontal` and `viewport-projection-vertical`, respectively, and both to the `viewport-projection-center`, to support the case in which the `fromViewUid` attribute is undefined.
+- Added the `.on('createSVG')` listener to the JS API, with the corresponding `.off('createSVG')`, for manipulating exported SVGs before they are returned.
+- Added `zeroValueColor` as an option for the `horizontal-multivec` track, to specify the color mapping for zero data values.
+- Track resizing events now trigger the `.on('viewConfig')` JS API callback.
+- Specify raw tiles locally in the viewconf
+
+_[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.3...develop)_
 
 _[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.4...v1.8.5)_
 

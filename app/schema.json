@@ -36,6 +36,15 @@
     "chromInfoPath": { "type": "string" }
   },
   "definitions": {
+    "data": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "tilesetInfo": { "type": "object" },
+        "children": { "type": "array" },
+        "tiles": { "type": "object" }
+      }
+    },
 
     "locks": {
       "slug": { "type": "string" },
@@ -122,12 +131,17 @@
       "properties": {
         "autocompleteSource": { "type": "string" },
         "chromInfoPath": { "type": "string" },
-        "genomePositionSearchBox": { "$ref": "#/definitions/viewProperties/genomePositionSearchBox" },
+        "genomePositionSearchBox": {
+          "$ref": "#/definitions/viewProperties/genomePositionSearchBox"
+        },
         "genomePositionSearchBoxVisible": { "type": "boolean" },
         "initialXDomain": { "$ref": "#/definitions/viewProperties/domain" },
         "initialYDomain": { "$ref": "#/definitions/viewProperties/domain" },
         "layout": { "$ref": "#/definitions/viewProperties/layout" },
-        "overlays": { "type": "array", "items": { "$ref": "#/definitions/viewProperties/overlay" } },
+        "overlays": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/viewProperties/overlay" }
+        },
         "selectionView": { "type": "boolean" },
         "tracks": { "$ref": "#/definitions/viewProperties/tracks_object" },
         "uid": { "type": "string" },
@@ -139,10 +153,7 @@
       "genomePositionSearchBox": {
         "type": "object",
         "title": "The Genome Position Search Box Schema",
-        "required": [
-          "chromInfoServer",
-          "chromInfoId"
-        ],
+        "required": ["chromInfoServer", "chromInfoId"],
         "properties": {
           "autocompleteServer": {
             "type": "string",
@@ -256,7 +267,10 @@
           "oneOf": [
             { "$ref": "#/definitions/tracks/enum_track" },
             { "$ref": "#/definitions/tracks/combined_track" },
-            { "$ref": "#/definitions/tracks/heatmap_track" }
+            { "$ref": "#/definitions/tracks/heatmap_track" },
+            {
+              "$ref": "#/definitions/tracks/independent_viewport_projection_track"
+            }
           ]
         }
       },
@@ -277,24 +291,12 @@
         "properties": {
           "uid": { "type": "string" },
           "type": { "const": "heatmap" },
-          "data": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "type": { "type": "string" },
-              "children": { "type": "array" }
-            }
-          },
+          "data": { "$ref": "#/definitions/data" },
           "height": { "type": "number" },
-          "local": { "type": "boolean" },
-          "maxWidth": { "type": "number" },
-          "name": { "type": "string" },
           "options": { "type": "object" },
-          "orientation": { "type": "string" },
           "position": { "type": "string" },
           "server": { "type": "string" },
           "tilesetUid": { "type": "string" },
-          "transforms": { "type": "array" },
           "width": { "type": "number" }
         }
       },
@@ -306,7 +308,7 @@
         "properties": {
           "contents": { "$ref": "#/definitions/viewProperties/tracks_array" },
           "height": { "type": "number" },
-          "options": { },
+          "options": {},
           "position": { "type": "string" },
           "type": { "const": "combined" },
           "uid": { "type": "string" },
@@ -317,17 +319,11 @@
       "enum_track": {
         "type": "object",
         "additionalProperties": false,
+        "required": ["type"],
         "properties": {
           "server": { "type": "string" },
           "tilesetUid": { "type": "string" },
-          "data": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "type": { "type": "string" },
-              "url": { "type": "string"}
-            }
-          },
+          "data": { "$ref": "#/definitions/data" },
           "uid": { "type": "string" },
           "type": {
             "enum": [
@@ -389,27 +385,35 @@
               "viewport-projection-vertical"
             ]
           },
-          "binsPerDimension": { "type": "number" },
           "chromInfoPath": { "type": "string" },
-          "created": { "type": "string" },
-          "defaultOptions": { "type": "object", "additionalProperties": false },
-          "description": { "type": "string" },
-          "filetype": { "type": "string" },
           "fromViewUid": { "type": "string" },
-          "header": { "type": "string" },
           "height": { "type": "number" },
-          "local": { "type": "boolean" },
-          "maxWidth": { "type": "number" },
-          "name": { "type": "string" },
           "options": { "type": "object" },
-          "orientation": { "type": "string" },
-          "position": { "type": "string" },
-          "project": { "type": "null" },
-          "project_name": { "type": "string" },
-          "thumbnail": { "oneOf": [
-            { "type": "object", "additionalProperties": false },
-            { "type": "null" }
-          ] },
+          "width": { "type": "number" },
+          "x": { "type": "number" },
+          "y": { "type": "number" }
+        }
+      },
+      "independent_viewport_projection_track": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "uid": { "type": "string" },
+          "type": {
+            "enum": [
+              "viewport-projection-horizontal",
+              "viewport-projection-vertical",
+              "viewport-projection-center"
+            ]
+          },
+          "fromViewUid": { "type": "null" },
+          "projectionXDomain": {
+            "$ref": "#/definitions/viewProperties/domain"
+          },
+          "projectionYDomain": {
+            "$ref": "#/definitions/viewProperties/domain"
+          },
+          "options": { "type": "object" },
           "transforms": { "type": "array" },
           "width": { "type": "number" },
           "x": { "type": "number" },

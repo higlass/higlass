@@ -1,0 +1,174 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": ["https://higlass.io/api/v1"],
+  "exportViewUrl": "/api/v1/viewconfs",
+  "views": [
+    {
+      "initialXDomain": [226510645.8585801, 226556952.22291353],
+      "initialYDomain": [2671174516.5836706, 2671211733.1801906],
+      "tracks": {
+        "top": [
+          {
+            "type": "horizontal-chromosome-labels",
+            "uid": "GzHGPlijS2eASBqslzVcxA",
+            "tilesetUid": "ZpZ8c5JJRUS1J7ZkofcUrg",
+            "server": "https://resgen.io/api/v1",
+            "options": {
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "color": "#808080",
+              "stroke": "#ffffff",
+              "fontSize": 12,
+              "fontIsLeftAligned": false
+            },
+            "width": 1027,
+            "height": 30
+          },
+          {
+            "type": "horizontal-gene-annotations",
+            "uid": "R6ZZ5LnEQ4ODCWZoE38maw",
+            "tilesetUid": "M9A9klpwTci5Vf4bHZ864g",
+            "server": "https://resgen.io/api/v1",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "showMousePosition": false,
+              "name": "gene-annotations-hg38_3d2Hebg.db",
+              "mousePositionColor": "#999999",
+              "fontSize": 10,
+              "labelBackgroundColor": "#ffffff",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "minHeight": 24,
+              "geneAnnotationHeight": 12,
+              "geneLabelPosition": "outside",
+              "geneStrandSpacing": 4
+            },
+            "width": 568,
+            "height": 70
+          },
+          {
+            "type": "horizontal-bar",
+            "uid": "bmcNxj_MSEar_3nYVMnPnQ",
+            "tilesetUid": "a-iBpdh3Q_uO2FLCWKpOOw",
+            "server": "https://resgen.io/api/v1",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "axisPositionHorizontal": "right",
+              "barFillColor": "darkgreen",
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "barOpacity": 1,
+              "name": "conservation (hg38.phastCons100way.bw)",
+              "align": "bottom",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "axisLabelFormatting": "scientific",
+              "labelShowAssembly": true
+            },
+            "width": 568,
+            "height": 42
+          },
+          {
+            "type": "horizontal-multivec",
+            "uid": "dEHMyN28RFSG1f-cPS6V2w",
+            "tilesetUid": "HMSJyvLCSgGmrDJctdIz3w",
+            "server": "https://resgen.io/api/v1",
+            "options": {
+              "labelPosition": "hidden",
+              "labelColor": "black",
+              "labelTextOpacity": 0.4,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "heatmapValueScaling": "log",
+              "name": "my_file_genome_wide.multires.mv5",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": true,
+              "minHeight": 100,
+              "labelShowAssembly": true,
+              "colorbarBackgroundColor": "#ffffff",
+              "colorbarPosition": "topRight",
+              "scaleStartPercent": "0.00000",
+              "scaleEndPercent": "1.00000"
+            },
+            "width": 1308,
+            "height": 116
+          }
+        ],
+        "left": [],
+        "center": [
+          {
+            "type": "horizontal-multivec",
+            "uid": "horizontal-multivec-track-0",
+            "tilesetUid": "UvVPeLHuRDiYA3qwFlm7xQ",
+            "server": "https://resgen.io/api/v1",
+            "options": {
+              "labelPosition": "hidden",
+              "labelColor": "black",
+              "labelTextOpacity": 0.4,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "heatmapValueScaling": "log",
+              "name": "my_file_genome_wide.multires.mv5",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": true,
+              "minHeight": 100,
+              "labelShowAssembly": true,
+              "colorbarBackgroundColor": "#ffffff",
+              "colorbarPosition": "topRight",
+              "scaleStartPercent": "0.00000",
+              "scaleEndPercent": "1.00000",
+              "zeroValueColor": null
+            },
+            "width": 1607,
+            "height": 382
+          }
+        ],
+        "bottom": [],
+        "right": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 10,
+        "h": 2,
+        "x": 0,
+        "y": 0
+      },
+      "uid": "view-0"
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

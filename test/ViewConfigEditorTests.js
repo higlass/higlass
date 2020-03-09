@@ -4,6 +4,9 @@ import Adapter from 'enzyme-adapter-react-16';
 import {
   mountHGComponent,
   removeHGComponent,
+  waitForTransitionsFinished,
+  waitForTilesLoaded,
+  getTrackObjectFromHGC,
   waitForJsonComplete
 } from '../app/scripts/utils';
 import viewConf from './view-configs/simple-heatmap-gene-annotations';
@@ -107,6 +110,48 @@ describe('View Config Editor', () => {
     expect(
       hgc.instance().state.viewConfig.views[0].tracks.top[0].height
     ).toEqual(30);
+  });
+
+  it('zoom somewhere', done => {
+    hgc
+      .instance()
+      .zoomTo('a', 1000000000, 2000000000, 1000000000, 2000000000, 1000);
+
+    waitForTransitionsFinished(hgc.instance(), () => {
+      waitForTilesLoaded(hgc.instance(), () => {
+        done();
+      });
+    });
+  });
+
+  it('open editor again, do nothing and save', done => {
+    hgc.instance().handleEditViewConfigBound();
+    hgc.update();
+
+    expect(hgc.instance().modalRef).toBeTruthy();
+
+    waitForJsonComplete(done);
+
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Enter', metaKey: true })
+    );
+    hgc.update();
+
+    // Modal should be closed
+    expect(hgc.instance().modalRef).toBeFalsy();
+  });
+
+  it('Heatmap track should not have moved', () => {
+    const initialXDomain = hgc.instance().state.viewConfig.views[0]
+      .initialXDomain;
+    const trackObject = getTrackObjectFromHGC(hgc.instance(), 'heatmap');
+
+    expect(
+      Math.round(trackObject._xScale.domain()[0] - initialXDomain[0])
+    ).toEqual(0);
+    expect(
+      Math.round(trackObject._xScale.domain()[1] - initialXDomain[1])
+    ).toEqual(0);
   });
 
   afterAll(() => {
