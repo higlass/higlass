@@ -540,7 +540,21 @@ export const OPTIONS_INFO = {
       10: { name: '10px', value: 10 },
       12: { name: '12px', value: 12 },
       16: { name: '16px', value: 16 },
-      20: { name: '20px', value: 20 }
+      20: { name: '20px', value: 20 },
+      scaled: { name: 'scaled', value: 'scaled' }
+    }
+  },
+
+  maxAnnotationHeight: {
+    name: 'Max Annotation Height',
+    inlineOptions: {
+      5: { name: '5px', value: 5 },
+      8: { name: '8px', value: 8 },
+      10: { name: '10px', value: 10 },
+      12: { name: '12px', value: 12 },
+      16: { name: '16px', value: 16 },
+      20: { name: '20px', value: 20 },
+      none: { name: 'none', value: 'none' }
     }
   },
 

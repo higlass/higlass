@@ -384,7 +384,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     const rowScale = scaleBand()
       .domain(range(maxRows))
-      .range([startY, endY]);
+      .range([startY, endY])
+      .paddingInner(0.3);
 
     this.allVisibleRects();
     let allRects = null;
@@ -406,8 +407,22 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         const txEnd = +geneInfo[2] + chrOffset;
         const txMiddle = (txStart + txEnd) / 2;
         let yMiddle = rowScale(j) + rowScale.step() / 2;
-        const rectHeight = this.options.annotationHeight || GENE_RECT_HEIGHT;
 
+        let rectHeight = this.options.annotationHeight || GENE_RECT_HEIGHT;
+
+        if (rectHeight === 'scaled') {
+          rectHeight = rowScale.bandwidth();
+
+          if (
+            this.options.maxAnnotationHeight &&
+            this.options.maxAnnotationHeight !== 'none'
+          ) {
+            rectHeight = Math.min(
+              rectHeight,
+              +this.options.maxAnnotationHeight
+            );
+          }
+        }
         // if the regions are scaled according to a value column their height needs to
         // be adjusted
         if (this.options && this.options.valueColumn) {
