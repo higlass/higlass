@@ -1,4 +1,6 @@
 import { scaleLog, scaleLinear } from 'd3-scale';
+import getAggregationFunction from './utils/get-aggregation-function';
+import selectedItemsToSize from './utils/selected-items-to-size';
 import DenseDataExtrema1D from './utils/DenseDataExtrema1D';
 import DenseDataExtrema2D from './utils/DenseDataExtrema2D';
 
@@ -136,14 +138,11 @@ export function workerSetPix(
   if (shape && selectedRows) {
     // If using the `selectedRows` parameter, then the size of the `pixData` array
     // will likely be different than `size` (the total size of the tile data array).
+    // The potential for aggregation groups in `selectedRows` also must be taken into account.
     filteredSize =
-      selectedRows.reduce(
-        (a, h) =>
-          a +
-          (Array.isArray(h) && selectedRowsAggregationWithRelativeHeight
-            ? h.length
-            : 1),
-        0
+      selectedItemsToSize(
+        selectedRows,
+        selectedRowsAggregationWithRelativeHeight
       ) * shape[1];
   }
 
@@ -197,21 +196,18 @@ export function workerSetPix(
     pixData[i * 4 + 3] = rgb[3];
   };
 
-  // TODO: where should these functions go?
-  const aggMean = (colI, rowIs) => {
-    let r = 0;
-    for (const rowI of rowIs) {
-      r += data[rowI * shape[1] + colI];
-    }
-    return r / rowIs.length;
-  };
+  const aggFunc = getAggregationFunction(selectedRowsAggregationMode);
+  const aggFromDataFunc = (colI, rowIs) =>
+    aggFunc(rowIs.map(rowI => data[rowI * shape[1] + colI]));
 
   let d;
   try {
     if (shape && selectedRows) {
       // We need to set the pixels in the order specified by the `selectedRows` parameter.
       let pixRowI;
-      let colI; let selectedRowI; let selectedRowGroupItemI;
+      let colI;
+      let selectedRowI;
+      let selectedRowGroupItemI;
       for (colI = 0; colI < shape[1]; colI++) {
         // For this column, aggregate along the row axis.
         pixRowI = 0;
@@ -220,23 +216,9 @@ export function workerSetPix(
           selectedRowI < selectedRows.length;
           selectedRowI++
         ) {
-          if (Array.isArray(selectedRows[selectedRowI])) {
-            // TODO: figure out if the switch statement is ok for this aggregation mode implementation.
-            switch (selectedRowsAggregationMode) {
-              case 'mean':
-                d = aggMean(colI, selectedRows[selectedRowI]); // TODO: implement the other modes
-                break;
-              case 'sum':
-                break;
-              case 'variance':
-                break;
-              case 'stddev':
-                break;
-              default:
-                console.warn(
-                  'Encountered an unsupported selectedRowsAggregationMode option.'
-                );
-            }
+          if (Array.isArray(selectedRows[selectedRowI]) && aggFunc) {
+            // An aggregation step must be performed for this data point.
+            d = aggFromDataFunc(colI, selectedRows[selectedRowI]);
           } else {
             d = data[selectedRows[selectedRowI] * shape[1] + colI];
           }
@@ -245,6 +227,7 @@ export function workerSetPix(
             selectedRowsAggregationWithRelativeHeight &&
             Array.isArray(selectedRows[selectedRowI])
           ) {
+            // Set a pixel for multiple rows, proportionate to the size of the row aggregation group.
             for (
               selectedRowGroupItemI = 0;
               selectedRowGroupItemI < selectedRows[selectedRowI].length;
@@ -257,6 +240,7 @@ export function workerSetPix(
               pixRowI++;
             }
           } else {
+            // Set a single pixel, either representing a single row or an entire row group, if the vertical height for each group should be uniform (i.e. should not depend on group size).
             setPixData(
               pixRowI * shape[1] + colI, // pixData index
               d // data point

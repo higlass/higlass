@@ -3,6 +3,7 @@ import { format } from 'd3-format';
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
 import { tileProxy } from './services';
+import selectedItemsToSize from './utils/selected-items-to-size';
 
 export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   constructor(context, options) {
@@ -18,14 +19,9 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     if (this.options.selectRows && this.tilesetInfo.shape) {
       canvas.width = this.tilesetInfo.shape[0];
-      canvas.height = this.options.selectRows.reduce(
-        (a, h) =>
-          a +
-          (Array.isArray(h) &&
-          this.options.selectRowsAggregationWithRelativeHeight
-            ? h.length
-            : 1),
-        0
+      canvas.height = selectedItemsToSize(
+        this.options.selectRows,
+        this.options.selectRowsAggregationWithRelativeHeight
       );
     } else if (this.tilesetInfo.shape) {
       canvas.width = this.tilesetInfo.shape[0];
