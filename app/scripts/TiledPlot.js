@@ -458,6 +458,7 @@ class TiledPlot extends React.Component {
     // Do nothing if HiGlass initialized already
     if (
       (this.state.init && !this.reset) ||
+      !this.trackRenderer ||
       !this.props.zoomToDataExtentOnInit()
     )
       return;
@@ -2100,6 +2101,11 @@ class TiledPlot extends React.Component {
           // Reserved props
           ref={c => {
             this.trackRenderer = c;
+
+            // if tracks use "local-tiles" as a data source then
+            // we may have received a tileset info synchronously
+            // and need to check for it.
+            this.checkAllTilesetInfoReceived();
           }}
           // Custom props
           canvasElement={this.canvasElement}
