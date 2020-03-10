@@ -189,7 +189,6 @@
                 "server": "//higlass.io/api/v1",
                 "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
                 "type": "heatmap",
-                "position": "center",
                 "options": {
                   "maxZoom": null,
                   "labelPosition": "bottomRight",
@@ -212,18 +211,10 @@
                   "scaleEndPercent": "1.00000"
                 },
                 "uid": "GjuZed1ySGW1IzZZqFB9BA",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
                 "width": 1675,
                 "height": 872
               }
             ],
-            "position": "center",
             "options": {},
             "width": 1675
           }

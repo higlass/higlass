@@ -9,15 +9,9 @@
         "y": 0
       },
       "uid": "aa",
-      "initialYDomain": [
-        2541582834.764707,
-        2541616852.418678
-      ],
+      "initialYDomain": [2541582834.764707, 2541616852.418678],
       "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "initialXDomain": [
-        2539901418.9267535,
-        2541204913.576626
-      ],
+      "initialXDomain": [2539901418.9267535, 2541204913.576626],
       "tracks": {
         "left": [],
         "top": [
@@ -26,7 +20,6 @@
             "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
             "height": 20,
             "width": 843,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -36,15 +29,13 @@
               "labelPosition": "topLeft",
               "labelColor": "black",
               "axisPositionHorizontal": "right"
-            },
-            "name": "GM12878-E116-H3K27ac.fc.signal"
+            }
           },
           {
             "uid": "line2",
             "tilesetUid": "e0DYtZBSTqiMLHoaimsSpg",
             "height": 20,
             "width": 843,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -54,18 +45,15 @@
               "labelPosition": "topLeft",
               "labelColor": "black",
               "axisPositionHorizontal": "right"
-            },
-            "name": "GM12878-E116-H3K4me1.fc.signal"
+            }
           },
           {
             "uid": "X4e_1DKiQHmyghDa6lLMVA",
             "height": 30,
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
-            "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {},
-            "name": "Chromosome Labels (hg19)",
             "width": 843
           },
           {
@@ -73,7 +61,6 @@
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
             "height": 60,
             "width": 843,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "options": {
@@ -82,15 +69,13 @@
               "name": "Gene Annotations (hg19)",
               "labelPosition": "hidden",
               "minusStrandColor": "red"
-            },
-            "name": "Gene Annotations (hg19)"
+            }
           },
           {
             "uid": "Fbd3ugOZR_qnmogyxBtAcQ",
             "tilesetUid": "cE0nGyd0Q_yVYSyBUe89Ww",
             "height": 20,
             "width": 843,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -100,15 +85,13 @@
               "labelPosition": "topLeft",
               "labelColor": "black",
               "axisPositionHorizontal": "right"
-            },
-            "name": "GM12878-E116-H3K4me3.fc.signal"
+            }
           },
           {
             "uid": "aTpD5OitQmmB9ljbx_zjBw",
             "tilesetUid": "PdAaSdibTLK34hCw7ubqKA",
             "height": 20,
             "width": 843,
-            "position": "top",
             "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
@@ -118,8 +101,7 @@
               "labelPosition": "topLeft",
               "labelColor": "black",
               "axisPositionHorizontal": "right"
-            },
-            "name": "GM12878-E116-H3K27me3.fc.signal"
+            }
           }
         ],
         "right": [],
@@ -136,9 +118,7 @@
     "locksByViewUid": {},
     "locksDict": {}
   },
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["http://higlass.io/api/v1"],
   "locationLocks": {
     "locksByViewUid": {
       "aa": "AWt52E50Q9eHc02T2HsRWg",
@@ -146,11 +126,7 @@
     },
     "locksDict": {
       "AWt52E50Q9eHc02T2HsRWg": {
-        "aa": [
-          1550000000,
-          1550000000,
-          3380588.876772046
-        ],
+        "aa": [1550000000, 1550000000, 3380588.876772046],
         "ewZvJwlDSei_dbpIAkGMlg": [
           1550000000.0000002,
           1549999999.9999993,

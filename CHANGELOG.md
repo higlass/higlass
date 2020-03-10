@@ -1,6 +1,6 @@
 # Release notes
 
-## Next release
+## v1.9.0
 
 - Support for gene annotation "filler" regions
 - Clickable gene annotations
@@ -14,8 +14,9 @@
 - Added the `.on('createSVG')` listener to the JS API, with the corresponding `.off('createSVG')`, for manipulating exported SVGs before they are returned.
 - Added `zeroValueColor` as an option for the `horizontal-multivec` track, to specify the color mapping for zero data values.
 - Track resizing events now trigger the `.on('viewConfig')` JS API callback.
+- Specify raw tiles locally in the viewconf
 
-_[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.3...develop)_
+_[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.4...v1.9.0)_
 
 ## v1.8.4
 
