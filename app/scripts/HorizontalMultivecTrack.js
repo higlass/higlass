@@ -4,6 +4,8 @@ import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
 import { tileProxy } from './services';
 import selectedItemsToSize from './utils/selected-items-to-size';
+import selectedItemsToCumWeights from './utils/selected-items-to-cum-weights';
+import getAggregationFunction from './utils/get-aggregation-function';
 
 export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   constructor(context, options) {
@@ -12,6 +14,11 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     // Continuous scaling is currently not supported
     this.continuousScaling = false;
+
+    this.selectRowsCumWeights = selectedItemsToCumWeights(
+      this.options.selectRows,
+      this.options.selectRowsAggregationWithRelativeHeight
+    ); // TODO: do this whenever this.options.selectRows changes
   }
 
   tileDataToCanvas(pixData) {
@@ -210,18 +217,36 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const tilePos = this._xScale.invert(trackX) / tileWidth;
     let numRows = this.tilesetInfo.shape ? this.tilesetInfo.shape[1] : 1;
     if (this.options.selectRows) {
-      // TODO: figure out tooltip implementation for 2d selectRows (the aggregation case).
-      numRows = this.options.selectRows.length;
+      numRows = selectedItemsToSize(
+        this.options.selectRows,
+        this.options.selectRowsAggregationWithRelativeHeight
+      );
     }
 
     // the position of query within the tile
     let posInTileX =
       this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
-    const posInTileY = (trackY / this.dimensions[1]) * numRows;
+    const posInTileYNormalized = trackY / this.dimensions[1];
+    const posInTileY = posInTileYNormalized * numRows;
 
     let selectedRowIndex = Math.floor(posInTileY);
     if (this.options.selectRows) {
-      selectedRowIndex = this.options.selectRows[Math.floor(posInTileY)];
+      // The `posInTileY` may not directly correspond to data indices if rows are filtered/reordered,
+      // the `selectRows` array must be checked to convert the y-position to a data index/indices first.
+      if (!this.options.selectRowsAggregationWithRelativeHeight) {
+        // Each subarray represents one unit of height, so using `posInTileY` to select it will work.
+        selectedRowIndex = this.options.selectRows[Math.floor(posInTileY)];
+      } else {
+        // Height must take into account the size of sub-arrays, so use the cumulative weight array.
+        selectedRowIndex = this.options.selectRows[
+          this.selectRowsCumWeights.findIndex(
+            (weight, i) =>
+              posInTileYNormalized <= weight &&
+              (i === this.selectRowsCumWeights.length - 1 ||
+                this.selectRowsCumWeights[i + 1] >= posInTileYNormalized)
+          )
+        ];
+      }
     }
 
     const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
@@ -243,19 +268,39 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       */
       let index = null;
       if (this.tilesetInfo.shape) {
-        // accomodate data from vector sources
-        index =
-          this.tilesetInfo.shape[0] * selectedRowIndex + Math.floor(posInTileX);
+        // Accomodate data from vector sources
+        if (Array.isArray(selectedRowIndex)) {
+          // Need to aggregate, so `index` will actually be an array.
+          index = selectedRowIndex.map(
+            rowI => this.tilesetInfo.shape[0] * rowI + Math.floor(posInTileX)
+          );
+        } else {
+          // No need to aggregate, `index` will contain a single item.
+          index =
+            this.tilesetInfo.shape[0] * selectedRowIndex +
+            Math.floor(posInTileX);
+        }
       } else {
         index =
           fetchedTile.tileData.dense.length * selectedRowIndex +
           Math.floor(posInTileX);
       }
-      value = format('.3f')(fetchedTile.tileData.dense[index]);
+      if (Array.isArray(index)) {
+        // Need to aggregate to compute `value`.
+        const aggFunc = getAggregationFunction(
+          this.options.selectRowsAggregationMode
+        );
+        const values = index.map(i => fetchedTile.tileData.dense[i]);
+        value = format('.3f')(aggFunc(values));
+        value += '<br/>';
+        value += `${index.length}-item ${this.options.selectRowsAggregationMode}`;
+      } else {
+        value = format('.3f')(fetchedTile.tileData.dense[index]);
+      }
     }
 
     // add information about the row
-    if (this.tilesetInfo.row_infos) {
+    if (this.tilesetInfo.row_infos && !Array.isArray(selectedRowIndex)) {
       value += '<br/>';
       value += this.tilesetInfo.row_infos[selectedRowIndex];
     }
