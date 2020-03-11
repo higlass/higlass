@@ -12,7 +12,6 @@ import { tileProxy } from './services';
 import {
   colorDomainToRgbaArray,
   colorToHex,
-  rgbToHex,
   segmentsToRows,
   trackUtils,
   valueToColor
@@ -487,7 +486,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             this.colorValueScale,
             this.colorScale
           )(+geneInfo[+this.options.colorEncoding - 1]);
-          fill = colorToHex(rgbToHex(...rgb));
+          fill = `rgba(${rgb.join(',')})`;
         }
 
         if (this.valueScale) {
@@ -503,8 +502,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         // yMiddle -= 8;
 
         const opacity = this.options.fillOpacity || 0.3;
-        tile.rectGraphics.lineStyle(1, fill, opacity);
-        tile.rectGraphics.beginFill(fill, opacity);
+        tile.rectGraphics.lineStyle(1, colorToHex(fill), opacity);
+        tile.rectGraphics.beginFill(colorToHex(fill), opacity);
         // let height = valueScale(Math.log(+geneInfo[4]));
         // let width= height;
 
@@ -549,7 +548,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             {
               start: txStart,
               end: txEnd,
-              value: td
+              value: td,
+              fill
             },
             tile.tileId
           ];
@@ -628,12 +628,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // let rendered = 0;
 
     if (tile.tileData && tile.tileData.length) {
-      const fill = colorToHex(
-        this.options.plusStrandColor || this.options.fillColor || 'blue'
-      );
-      const minusStrandFill = colorToHex(
-        this.options.minusStrandColor || this.options.fillColor || 'purple'
-      );
+      const fill =
+        this.options.plusStrandColor || this.options.fillColor || 'blue';
+      const minusStrandFill =
+        this.options.minusStrandColor || this.options.fillColor || 'purple';
 
       const MIDDLE_SPACE = 0;
       const plusHeight =
@@ -1027,16 +1025,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             d += ` L ${rect[i]} ${rect[i + 1]}`;
           }
 
-          const geneInfo = td.fields;
-
-          let fill =
-            this.options.plusStrandColor || this.options.fillColor || 'blue';
-          const minusStrandFill =
-            this.options.minusStrandColor || this.options.fillColor || 'purple';
-
-          if (geneInfo[5] === '-') {
-            fill = minusStrandFill;
-          }
+          const fill = this.drawnRects[zoomLevel][td.uid][1].fill;
 
           r.setAttribute('d', d);
           r.setAttribute('fill', fill);
