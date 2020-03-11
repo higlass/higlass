@@ -1,25 +1,30 @@
 /* eslint-env node, jasmine */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
 import Adapter from 'enzyme-adapter-react-16';
 
+import { select } from 'd3-selection';
+import ReactDOM from 'react-dom';
+
 // Utils
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
+  getTrackObjectFromHGC
 } from '../app/scripts/utils';
 
 // View configs
 import horizontalMultivecWithSmallerDimensions from './view-configs-more/horizontalMultivecWithSmallerDimensions';
+import horizontalMultivecWithZeroValueColorOption from './view-configs-more/horizontalMultivecWithZeroValueColorOption';
+import horizontalMultivecWithFilteredRows from './view-configs-more/horizontalMultivecWithFilteredRows';
 
 // Constants
 import {
   MIN_HORIZONTAL_HEIGHT,
-  MIN_VERTICAL_WIDTH,
+  MIN_VERTICAL_WIDTH
 } from '../app/scripts/configs';
 
 configure({ adapter: new Adapter() });
@@ -28,35 +33,327 @@ describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
-    ([div, hgc] = mountHGComponent(div, hgc,
-      viewConf1,
-      done,
-      {
-        style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true,
-      })
-    );
+  beforeAll(done => {
+    [div, hgc] = mountHGComponent(div, hgc, viewConf1, done, {
+      style: 'width:800px; height:400px; background-color: lightgreen',
+      bounded: true
+    });
   });
 
   // it('not have errors in the loaded viewconf', (done) => {
   //   done();
   // });
 
-  it('Test horizontal multivec with track containing smaller-than-default width and height', (done) => {
-    ([div, hgc] = mountHGComponent(div, hgc,
+  it('Test horizontal multivec with track containing smaller-than-default width and height', done => {
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
       horizontalMultivecWithSmallerDimensions,
       () => {
-        const track = getTrackObjectFromHGC(hgc.instance(), 'viewConf2_uid', 'K_0GxgCvQfCHM56neOnHKg'); // uuid of horizontal-multivec
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'viewConf2_uid',
+          'K_0GxgCvQfCHM56neOnHKg'
+        ); // uuid of horizontal-multivec
         const width = track.dimensions[0];
         const height = track.dimensions[1];
-        if (height === MIN_HORIZONTAL_HEIGHT || width === MIN_VERTICAL_WIDTH) return;
+        if (height === MIN_HORIZONTAL_HEIGHT || width === MIN_VERTICAL_WIDTH)
+          return;
         done();
       },
       {
         style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true,
-      })
+        bounded: true
+      }
+    );
+  });
+
+  it('has a colorbar', () => {
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'viewConf2_uid',
+      'K_0GxgCvQfCHM56neOnHKg'
+    ); // uuid of horizontal-multivec
+    expect(track.pColorbarArea.x).toBeLessThan(track.dimensions[0] / 2);
+
+    const selection = select(div).selectAll('.selection');
+
+    // we expect one colorbar selector brush to be present
+    expect(selection.size()).toEqual(1);
+  });
+
+  it('hides the colorbar', () => {
+    const { views } = hgc.instance().state;
+
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'viewConf2_uid',
+      'K_0GxgCvQfCHM56neOnHKg'
+    ); // uuid of horizontal-multivec
+    track.options.colorbarPosition = 'hidden';
+
+    hgc.instance().setState({ views });
+
+    // eslint-disable-next-line react/no-find-dom-node
+    const selection = select(ReactDOM.findDOMNode(hgc.instance())).selectAll(
+      '.selection'
+    );
+
+    // we expect the colorbar selector brush to be hidden,
+    // and therefore not present
+    expect(selection.size()).toEqual(0);
+
+    track.options.colorbarPosition = 'topLeft';
+    hgc.instance().setState({ views });
+  });
+
+  it('Test horizontal multivec with null zero value color option', done => {
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithZeroValueColorOption,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'view-0',
+          'horizontal-multivec-track-0'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toEqual(1);
+
+        const zeroCellCoords = [79, 184];
+        const tooltipValue = track.getVisibleData(
+          zeroCellCoords[0],
+          zeroCellCoords[1]
+        );
+        // The data at this coordinate should correspond to this particular zero value.
+        expect(tooltipValue).toEqual(
+          '0.000<br/>Homo sapiens	CHIP-SEQ ANALYSIS OF H3K27AC IN' +
+            ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
+            'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
+            'l	Brain	Active Motif, 39133, 31610003	H3K27ac	hm	No' +
+            'rmal'
+        );
+
+        const canvas = trackTiles[0].canvas;
+        const ctx = canvas.getContext('2d');
+
+        expect(canvas.width).toEqual(256);
+        expect(canvas.height).toEqual(228);
+        expect(track.dimensions[0]).toEqual(805);
+        expect(track.dimensions[1]).toEqual(370);
+
+        // Need to scale from screen coordinates to dataset coordinates.
+        const scaledCoord = [
+          Math.ceil((zeroCellCoords[0] / track.dimensions[0]) * canvas.width),
+          Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height)
+        ];
+        // Obtain the color at this pixel on the canvas.
+        const pixel = ctx.getImageData(
+          scaledCoord[0],
+          scaledCoord[1],
+          canvas.width,
+          canvas.height
+        ).data;
+
+        // Pixel should be slightly yellow.
+        expect(pixel[0]).toEqual(255); // r
+        expect(pixel[1]).toEqual(255); // g
+        expect(pixel[2]).toEqual(247); // b // 247, for the faint yellow color.
+        expect(pixel[3]).toEqual(255); // a
+
+        done();
+      },
+      {
+        style: 'width:1000px; height:1000px; background-color: lightgreen'
+      }
+    );
+  });
+
+  it('Test horizontal multivec with blue zero value color option', done => {
+    horizontalMultivecWithZeroValueColorOption.views[0].tracks.center[0].options.zeroValueColor =
+      'blue';
+
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithZeroValueColorOption,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'view-0',
+          'horizontal-multivec-track-0'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toEqual(1);
+
+        const zeroCellCoords = [79, 184];
+        const tooltipValue = track.getVisibleData(
+          zeroCellCoords[0],
+          zeroCellCoords[1]
+        );
+        // The data at this coordinate should correspond to this particular zero value.
+        expect(tooltipValue).toEqual(
+          '0.000<br/>Homo sapiens	CHIP-SEQ ANALYSIS OF H3K27AC IN' +
+            ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
+            'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
+            'l	Brain	Active Motif, 39133, 31610003	H3K27ac	hm	No' +
+            'rmal'
+        );
+
+        const canvas = trackTiles[0].canvas;
+        const ctx = canvas.getContext('2d');
+
+        expect(canvas.width).toEqual(256);
+        expect(canvas.height).toEqual(228);
+        expect(track.dimensions[0]).toEqual(805);
+        expect(track.dimensions[1]).toEqual(370);
+
+        // Need to scale from screen coordinates to dataset coordinates.
+        const scaledCoord = [
+          Math.ceil((zeroCellCoords[0] / track.dimensions[0]) * canvas.width),
+          Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height)
+        ];
+        // Obtain the color at this pixel on the canvas.
+        const pixel = ctx.getImageData(
+          scaledCoord[0],
+          scaledCoord[1],
+          canvas.width,
+          canvas.height
+        ).data;
+
+        // Pixel should be blue.
+        expect(pixel[0]).toEqual(0); // r
+        expect(pixel[1]).toEqual(0); // g
+        expect(pixel[2]).toEqual(255); // b
+        expect(pixel[3]).toEqual(255); // a
+
+        done();
+      },
+      {
+        style: 'width:1000px; height:1000px; background-color: lightgreen'
+      }
+    );
+  });
+
+  it('Test horizontal multivec with transparent zero value color option', done => {
+    horizontalMultivecWithZeroValueColorOption.views[0].tracks.center[0].options.zeroValueColor =
+      'transparent';
+
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithZeroValueColorOption,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'view-0',
+          'horizontal-multivec-track-0'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toEqual(1);
+
+        const zeroCellCoords = [79, 184];
+        const tooltipValue = track.getVisibleData(
+          zeroCellCoords[0],
+          zeroCellCoords[1]
+        );
+        // The data at this coordinate should correspond to this particular zero value.
+        expect(tooltipValue).toEqual(
+          '0.000<br/>Homo sapiens	CHIP-SEQ ANALYSIS OF H3K27AC IN' +
+            ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
+            'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
+            'l	Brain	Active Motif, 39133, 31610003	H3K27ac	hm	No' +
+            'rmal'
+        );
+
+        const canvas = trackTiles[0].canvas;
+        const ctx = canvas.getContext('2d');
+
+        expect(canvas.width).toEqual(256);
+        expect(canvas.height).toEqual(228);
+        expect(track.dimensions[0]).toEqual(805);
+        expect(track.dimensions[1]).toEqual(370);
+
+        // Need to scale from screen coordinates to dataset coordinates.
+        const scaledCoord = [
+          Math.ceil((zeroCellCoords[0] / track.dimensions[0]) * canvas.width),
+          Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height)
+        ];
+        // Obtain the color at this pixel on the canvas.
+        const pixel = ctx.getImageData(
+          scaledCoord[0],
+          scaledCoord[1],
+          canvas.width,
+          canvas.height
+        ).data;
+
+        // Pixel should be transparent.
+        expect(pixel[3]).toEqual(0); // transparent
+
+        done();
+      },
+      {
+        style: 'width:1000px; height:1000px; background-color: green'
+      }
+    );
+  });
+
+  it('Test horizontal multivec with filtered rows', done => {
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithFilteredRows,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'UiHlCoxRQ-aITBDi5j8b_w',
+          'YafcbvKDQvWoWRT1WrygPA'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toEqual(2);
+        expect(trackTiles[0].canvas.width).toEqual(256);
+        expect(trackTiles[0].canvas.height).toEqual(10);
+        expect(trackTiles[1].canvas.width).toEqual(256);
+        expect(trackTiles[1].canvas.height).toEqual(10);
+
+        const tooltipValue = track.getVisibleData(100, 100);
+        expect(tooltipValue.startsWith('0.676')).toBe(true);
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      }
+    );
+  });
+
+  it('Test horizontal multivec without filtered rows', done => {
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithSmallerDimensions,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'viewConf2_uid',
+          'K_0GxgCvQfCHM56neOnHKg'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toEqual(3);
+        expect(trackTiles[0].canvas.width).toEqual(256);
+        expect(trackTiles[0].canvas.height).toEqual(228);
+        expect(trackTiles[1].canvas.width).toEqual(256);
+        expect(trackTiles[1].canvas.height).toEqual(228);
+
+        const tooltipValue = track.getVisibleData(40, 40);
+        expect(tooltipValue).toEqual('647.000');
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      }
     );
   });
 
@@ -79,22 +376,15 @@ const viewConf1 = {
         static: false
       },
       uid: 'aa',
-      initialYDomain: [
-        2936293269.9661727,
-        3260543052.0694017
-      ],
+      initialYDomain: [2936293269.9661727, 3260543052.0694017],
       autocompleteSource: '/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
-      initialXDomain: [
-        -1109178825.081832,
-        3692212179.1390653
-      ],
+      initialXDomain: [-1109178825.081832, 3692212179.1390653],
       tracks: {
         left: [],
         top: [
           {
             uid: 'genes',
             tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            position: 'top',
             server: 'http://higlass.io/api/v1',
             type: 'horizontal-gene-annotations',
             height: 48,
@@ -117,8 +407,6 @@ const viewConf1 = {
               labelTopMargin: 0,
               labelBottomMargin: 0
             },
-            name: 'Gene Annotations (hg19)',
-            header: '',
             width: 793
           },
           {
@@ -126,7 +414,6 @@ const viewConf1 = {
             tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
             height: 20,
             width: 793,
-            position: 'top',
             server: 'http://higlass.io/api/v1',
             type: 'horizontal-vector-heatmap',
             options: {
@@ -153,11 +440,6 @@ const viewConf1 = {
             name: 'GM12878-E116-H3K27ac.fc.signal'
           },
           {
-            name: 'Epilogos (hg19)',
-            created: '2018-07-07T23:40:51.460644Z',
-            project: null,
-            project_name: '',
-            description: '',
             server: '//higlass.io/api/v1',
             tilesetUid: 'ClhFclOOQMWKSebXaXItoA',
             uid: 'E11eXWkwRb22aKBbj_45_A',
@@ -197,34 +479,13 @@ const viewConf1 = {
               heatmapValueScaling: 'log'
             },
             width: 770,
-            height: 153,
-            resolutions: [
-              13107200,
-              6553600,
-              3276800,
-              1638400,
-              819200,
-              409600,
-              204800,
-              102400,
-              51200,
-              25600,
-              12800,
-              6400,
-              3200,
-              1600,
-              800,
-              400,
-              200
-            ],
-            position: 'top'
+            height: 153
           },
           {
             uid: 'chroms',
             height: 35,
             width: 793,
             chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            position: 'top',
             type: 'horizontal-chromosome-labels',
             options: {
               color: '#777777',
@@ -263,9 +524,7 @@ const viewConf1 = {
     locksByViewUid: {},
     locksDict: {}
   },
-  trackSourceServers: [
-    'http://higlass.io/api/v1'
-  ],
+  trackSourceServers: ['http://higlass.io/api/v1'],
   locationLocks: {
     locksByViewUid: {
       aa: 'PkNgAl3mSIqttnSsCewngw',
@@ -273,11 +532,7 @@ const viewConf1 = {
     },
     locksDict: {
       PkNgAl3mSIqttnSsCewngw: {
-        aa: [
-          1550000000,
-          1550000000,
-          3380588.876772046
-        ],
+        aa: [1550000000, 1550000000, 3380588.876772046],
         ewZvJwlDSei_dbpIAkGMlg: [
           1550000000.0000002,
           1549999999.9999993,

@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -23,22 +23,19 @@ describe('Simple HiGlassComponent', () => {
   let div = null;
 
   describe('Axis texts', () => {
-    beforeAll((done) => {
-      [div, hgc] = mountHGComponent(
-        div,
-        hgc,
-        viewconf,
-        done,
-        {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        }
-      );
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      });
     });
 
     it('Checks the axis texts', () => {
-      const track1 = getTrackObjectFromHGC(hgc.instance(),
-        'Cs0jaHTuQXuibqx36Ew1xg', 'frcXuRouRpa_XSm5awtt3Q');
+      const track1 = getTrackObjectFromHGC(
+        hgc.instance(),
+        'Cs0jaHTuQXuibqx36Ew1xg',
+        'frcXuRouRpa_XSm5awtt3Q'
+      );
 
       const texts = track1.axis.axisTexts.map(x => x.text);
 
@@ -47,28 +44,39 @@ describe('Simple HiGlassComponent', () => {
         expect(text.indexOf('e')).to.be.below(0);
       }
 
-      hgc.instance().handleTrackOptionsChanged('Cs0jaHTuQXuibqx36Ew1xg',
-        'frcXuRouRpa_XSm5awtt3Q',
-        { axisLabelFormatting: 'scientific' });
+      hgc
+        .instance()
+        .handleTrackOptionsChanged(
+          'Cs0jaHTuQXuibqx36Ew1xg',
+          'frcXuRouRpa_XSm5awtt3Q',
+          { axisLabelFormatting: 'scientific' }
+        );
 
       hgc.update();
 
       const texts1 = track1.axis.axisTexts.map(x => x.text);
 
-      // make sure we don't find any scientific notation;
+      // make sure we find scientific notation;
+      // Note that 'scientific' is not always scientific notation. It rather
+      // corresponds to 'automatic'. Numbers with a short string representation
+      // might not be converted.
       for (const text of texts1) {
         expect(text.indexOf('e')).to.be.above(0);
       }
     });
 
     it('Checks the axis margin', () => {
-      const track1 = getTrackObjectFromHGC(hgc.instance(),
-        'Cs0jaHTuQXuibqx36Ew1xg', 'frcXuRouRpa_XSm5awtt3Q');
+      const track1 = getTrackObjectFromHGC(
+        hgc.instance(),
+        'Cs0jaHTuQXuibqx36Ew1xg',
+        'frcXuRouRpa_XSm5awtt3Q'
+      );
 
       const axisMargin = 10;
 
-      expect(track1.position[0] + track1.dimensions[0] - axisMargin)
-        .to.equal(track1.axis.pAxis.position.x);
+      expect(track1.position[0] + track1.dimensions[0] - axisMargin).to.equal(
+        track1.axis.pAxis.position.x
+      );
     });
 
     afterAll(() => {

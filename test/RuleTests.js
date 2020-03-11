@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
@@ -8,8 +8,8 @@ import { expect } from 'chai';
 // Utils
 import {
   mountHGComponent,
-  // removeHGComponent,
-  getTrackObjectFromHGC,
+  removeHGComponent,
+  getTrackObjectFromHGC
 } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
@@ -22,9 +22,7 @@ describe('Minimal viewconfs', () => {
           initialXDomain: [0, 200],
           initialYDomain: [0, 200],
           tracks: {
-            left: [
-              { type: 'left-axis', width: 20 }
-            ],
+            left: [{ type: 'left-axis', width: 20 }],
             whole: [
               {
                 uid: 'a',
@@ -35,7 +33,7 @@ describe('Minimal viewconfs', () => {
               {
                 uid: 'b',
                 type: 'vertical-rule',
-                x: 110,
+                x: 110
               }
             ]
           }
@@ -44,7 +42,7 @@ describe('Minimal viewconfs', () => {
     };
     let hgc = null;
     let div = null;
-    beforeAll((done) => {
+    beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
 
@@ -63,12 +61,15 @@ describe('Minimal viewconfs', () => {
       const obj1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'b');
       const obj1Width = obj1._xScale.range()[1];
 
-
-      hgc.instance().handleTrackAdded('aa', {
-        uid: 'c',
-        type: 'vertical-rule',
-        x: 120
-      }, 'whole');
+      hgc.instance().handleTrackAdded(
+        'aa',
+        {
+          uid: 'c',
+          type: 'vertical-rule',
+          x: 120
+        },
+        'whole'
+      );
 
       hgc.setState(hgc.instance().state);
       hgc.update();
@@ -84,7 +85,7 @@ describe('Minimal viewconfs', () => {
     });
 
     afterAll(() => {
-      // removeHGComponent(div);
+      removeHGComponent(div);
     });
   });
 });

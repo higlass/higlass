@@ -4,24 +4,15 @@ import Ajv from 'ajv';
 
 import schema from '../schema.json';
 
-import {
-  setTileProxyAuthHeader,
-} from './services';
+import { setTileProxyAuthHeader } from './services';
 
-import {
-  getTrackObjectFromHGC
-} from './utils';
+import { getTrackObjectFromHGC } from './utils';
 
-import {
-  MOUSE_TOOL_MOVE,
-  MOUSE_TOOL_SELECT,
-} from './configs';
+import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from './configs';
 
-
-const forceUpdate = (self) => {
+const forceUpdate = self => {
   self.setState(self.state);
 };
-
 
 const createApi = function api(context, pubSub) {
   const self = context;
@@ -72,9 +63,7 @@ const createApi = function api(context, pubSub) {
        *   `options.showMousePosition = true`.
        */
       setShowGlobalMousePosition(isShowGlobalMousePosition = false) {
-        self.setShowGlobalMousePosition(
-          isShowGlobalMousePosition
-        );
+        self.setShowGlobalMousePosition(isShowGlobalMousePosition);
       },
 
       /**
@@ -146,7 +135,6 @@ const createApi = function api(context, pubSub) {
         self.setState({ rangeSelectionToInt: true });
       },
 
-
       /**
        * Force float range selections.
        *
@@ -207,27 +195,32 @@ const createApi = function api(context, pubSub) {
         }
 
         const viewsByUid = self.processViewConfig(newViewConfig);
-        const p = new Promise((resolve) => {
+        const p = new Promise(resolve => {
           this.requestsInFlight = 0;
 
-          pubSubs.push(pubSub.subscribe('requestSent', () => {
-            this.requestsInFlight += 1;
-          }));
+          pubSubs.push(
+            pubSub.subscribe('requestSent', () => {
+              this.requestsInFlight += 1;
+            })
+          );
 
-          pubSubs.push(pubSub.subscribe('requestReceived', () => {
-            this.requestsInFlight -= 1;
+          pubSubs.push(
+            pubSub.subscribe('requestReceived', () => {
+              this.requestsInFlight -= 1;
 
-            if (this.requestsInFlight === 0) {
-              resolve();
-            }
-          }));
+              if (this.requestsInFlight === 0) {
+                resolve();
+              }
+            })
+          );
 
-          self.setState({
-            viewConfig: newViewConfig,
-            views: viewsByUid,
-          }, () => {
-
-          });
+          self.setState(
+            {
+              viewConfig: newViewConfig,
+              views: viewsByUid
+            },
+            () => {}
+          );
         });
 
         return p;
@@ -327,7 +320,7 @@ const createApi = function api(context, pubSub) {
        */
       showAvailableTrackPositions(track) {
         self.setState({
-          draggingHappening: track,
+          draggingHappening: track
         });
       },
 
@@ -336,7 +329,7 @@ const createApi = function api(context, pubSub) {
        */
       hideAvailableTrackPositions() {
         self.setState({
-          draggingHappening: null,
+          draggingHappening: null
         });
       },
 
@@ -352,11 +345,11 @@ const createApi = function api(context, pubSub) {
         self.setState({
           chooseTrackHandler: (...args) => {
             self.setState({
-              chooseTrackHandler: null,
+              chooseTrackHandler: null
             });
 
             callback(...args);
-          },
+          }
         });
       },
 
@@ -365,7 +358,7 @@ const createApi = function api(context, pubSub) {
        */
       hideTrackChooser() {
         this.setState({
-          chooseTrackHandler: null,
+          chooseTrackHandler: null
         });
       },
       /**
@@ -458,15 +451,15 @@ const createApi = function api(context, pubSub) {
        *  firstViewLoc["yDomain"][1]
        * );
        */
-      zoomTo(
-        viewUid,
-        start1Abs,
-        end1Abs,
-        start2Abs,
-        end2Abs,
-        animateTime = 0,
-      ) {
-        self.zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime);
+      zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime = 0) {
+        self.zoomTo(
+          viewUid,
+          start1Abs,
+          end1Abs,
+          start2Abs,
+          end2Abs,
+          animateTime
+        );
       },
 
       /**
@@ -587,16 +580,17 @@ const createApi = function api(context, pubSub) {
        * Get the current location for a view.
        *
        * @param {string} [viewId=null] The id of the view to get the location for
-       * @returns {obj} A an object containing two Arrays representing the domains of
-       *  the x andy scales of the view.
+       * @returns {obj} A an object containing four arrays representing the domains and ranges of
+       *  the x and y scales of the view.
        * @example
        *
-       * const {xScale, yScale} = hgv.getLocation('viewId');
+       * const {xDomain, yDomain, xRange, yRange} = hgv.getLocation('viewId');
        */
       getLocation(viewId) {
         const wurstId = viewId
           ? self.xScales[viewId] && self.yScales[viewId] && viewId
-          : Object.values(self.tiledPlots)[0] && Object.values(self.tiledPlots)[0].props.uid;
+          : Object.values(self.tiledPlots)[0] &&
+            Object.values(self.tiledPlots)[0].props.uid;
 
         if (!wurstId) {
           return 'Please provide a valid view UUID sweetheart 😙';
@@ -604,7 +598,9 @@ const createApi = function api(context, pubSub) {
 
         return {
           xDomain: self.xScales[wurstId].domain(),
-          yDomain: self.yScales[wurstId].domain()
+          yDomain: self.yScales[wurstId].domain(),
+          xRange: self.xScales[wurstId].range(),
+          yRange: self.yScales[wurstId].range()
         };
       },
 
@@ -663,11 +659,11 @@ const createApi = function api(context, pubSub) {
        * hgv.off('rangeSelection', rangeListener);
        * hgv.off('viewConfig', viewConfigListener);
        * hgv.off('mouseMoveZoom', mmz);
+       * hgv.off('createSVG');
        */
       off(event, listenerId, viewId) {
-        const callback = typeof listenerId === 'object'
-          ? listenerId.callback
-          : listenerId;
+        const callback =
+          typeof listenerId === 'object' ? listenerId.callback : listenerId;
 
         switch (event) {
           case 'click':
@@ -692,6 +688,10 @@ const createApi = function api(context, pubSub) {
 
           case 'viewConfig':
             self.offViewChange(listenerId);
+            break;
+
+          case 'createSVG':
+            self.offPostCreateSVG();
             break;
 
           default:
@@ -774,7 +774,11 @@ const createApi = function api(context, pubSub) {
        *  // 2D or BEDPE-like array
        *  [["chr1", 249200621, "chr2", 50000], ["chr3", 197972430, "chr4", 50000]]
        *
-       * ``viewConfig:`` Returns the current view config.
+       * ``viewConfig:`` Returns the current view config (as a string).
+       *  This event is published upon interactions including:
+       *  - Saving in the view config editor modal.
+       *  - Panning and zooming in views, which update view object ``initialXDomain`` and ``initialYDomain`` values.
+       *  - Brushing in ``viewport-projection-`` tracks containing null ``fromViewUid`` fields, which update track object ``projectionXDomain`` and ``projectionYDomain`` values.
        *
        * ``mouseMoveZoom:`` Returns the location and data at the mouse cursor's
        * screen location.
@@ -817,6 +821,9 @@ const createApi = function api(context, pubSub) {
        *    isGenomicCoords
        *  }
        *
+       * ``createSVG:`` Set a callback to obtain the current exported SVG DOM node,
+       *                and potentially return a manipulated SVG DOM node.
+       *
        * @param {string} event One of the events described below
        *
        * @param {function} callback A callback to be called when the event occurs
@@ -825,7 +832,7 @@ const createApi = function api(context, pubSub) {
        *
        * @example
        *
-       *  let locationListenerId;
+       * let locationListenerId;
        * hgv.on(
        *   'location',
        *   location => console.log('Here we are:', location),
@@ -843,8 +850,18 @@ const createApi = function api(context, pubSub) {
        *   range => console.log('Selected', range)
        * );
        *
-       *  const mmz = event => console.log('Moved', event);
-       *  hgv.on('mouseMoveZoom', mmz);
+       * const mmz = event => console.log('Moved', event);
+       * hgv.on('mouseMoveZoom', mmz);
+       *
+       * hgv.on('createSVG', (svg) => {
+       *    const circle = document.createElement('circle');
+       *    circle.setAttribute('cx', 100);
+       *    circle.setAttribute('cy', 100);
+       *    circle.setAttribute('r', 50);
+       *    circle.setAttribute('fill', 'green');
+       *    svg.appendChild(circle);
+       *    return svg;
+       * });
        */
       on(event, callback, viewId, callbackId) {
         switch (event) {
@@ -866,6 +883,9 @@ const createApi = function api(context, pubSub) {
 
           case 'viewConfig':
             return self.onViewChange(callback);
+
+          case 'createSVG':
+            return self.onPostCreateSVG(callback);
 
           default:
             return undefined;

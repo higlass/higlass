@@ -1,27 +1,18 @@
 {
   "editable": true,
-  "trackSourceServers": [
-    "/api/v1",
-    "http://higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["/api/v1", "https://higlass.io/api/v1"],
   "exportViewUrl": "/api/v1/viewconfs",
   "views": [
     {
-      "initialXDomain": [
-        1348415434.4553869,
-        1574566466.6212506
-      ],
-      "initialYDomain": [
-        507300305.20950717,
-        631829142.4426439
-      ],
+      "initialXDomain": [1348415434.4553869, 1574566466.6212506],
+      "initialYDomain": [507300305.20950717, 631829142.4426439],
       "tracks": {
         "top": [
           {
             "type": "horizontal-gene-annotations",
             "uid": "VpV5Aqo0RfuIWRan6uG5xg",
             "tilesetUid": "M9A9klpwTci5Vf4bHZ864g",
-            "server": "http://resgen.io/api/v1",
+            "server": "https://resgen.io/api/v1",
             "options": {
               "labelColor": "black",
               "labelPosition": "hidden",
@@ -49,7 +40,7 @@
             "type": "horizontal-chromosome-labels",
             "uid": "JiAvihMvSwWZ64SMPl01xA",
             "tilesetUid": "ZpZ8c5JJRUS1J7ZkofcUrg",
-            "server": "http://resgen.io/api/v1",
+            "server": "https://resgen.io/api/v1",
             "options": {
               "showMousePosition": false,
               "mousePositionColor": "#999999",
@@ -66,7 +57,7 @@
             "type": "horizontal-multivec",
             "uid": "K_0GxgCvQfCHM56neOnHKg",
             "tilesetUid": "abohuD-sTbiyAPqh2y5OpA",
-            "server": "http://resgen.io/api/v1",
+            "server": "https://resgen.io/api/v1",
             "options": {
               "labelPosition": "topLeft",
               "labelColor": "black",
@@ -80,7 +71,8 @@
               "labelRightMargin": 0,
               "labelTopMargin": 0,
               "labelBottomMargin": 0,
-              "labelShowResolution": true
+              "labelShowResolution": true,
+              "colorbarPosition": "topLeft"
             },
             "width": 33,
             "height": 50

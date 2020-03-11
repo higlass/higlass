@@ -35,7 +35,13 @@ export const VIEW_HEADER_MED_WIDTH_SEARCH_BAR = 400;
 export const VIEW_HEADER_MIN_WIDTH_SEARCH_BAR = 300;
 
 export const TRACK_LOCATIONS = [
-  'top', 'left', 'right', 'bottom', 'center', 'whole', 'gallery'
+  'top',
+  'left',
+  'right',
+  'bottom',
+  'center',
+  'whole',
+  'gallery'
 ];
 
 export const MIN_HORIZONTAL_HEIGHT = 20;
@@ -45,7 +51,6 @@ export const MIN_VERTICAL_WIDTH = 20;
 /* --------------------------------- Themes -------------------------------- */
 
 export { THEME_LIGHT, THEME_DARK, THEME_DEFAULT } from './themes';
-
 
 /* --------------------------------- Complex -------------------------------- */
 

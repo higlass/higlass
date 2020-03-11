@@ -1,4 +1,6 @@
 import { scaleLog, scaleLinear } from 'd3-scale';
+import DenseDataExtrema1D from './utils/DenseDataExtrema1D';
+import DenseDataExtrema2D from './utils/DenseDataExtrema2D';
 
 /*
 function countTransform(count) {
@@ -30,9 +32,13 @@ export function minNonZero(data) {
   for (let i = 0; i < data.length; i++) {
     const x = data[i];
 
-    if (x < epsilon && x > -epsilon) { continue; }
+    if (x < epsilon && x > -epsilon) {
+      continue;
+    }
 
-    if (x < minNonZeroNum) { minNonZeroNum = x; }
+    if (x < minNonZeroNum) {
+      minNonZeroNum = x;
+    }
   }
 
   return minNonZeroNum;
@@ -57,14 +63,39 @@ export function maxNonZero(data) {
   for (let i = 0; i < data.length; i++) {
     const x = data[i];
 
-    if (x < epsilon && x > -epsilon) { continue; }
+    if (x < epsilon && x > -epsilon) {
+      continue;
+    }
 
-    if (x > maxNonZeroNum) { maxNonZeroNum = x; }
+    if (x > maxNonZeroNum) {
+      maxNonZeroNum = x;
+    }
   }
 
   return maxNonZeroNum;
 }
 
+/**
+ * This function takes in tile data and other rendering parameters,
+ * and generates an array of pixel data that can be passed to a canvas
+ * (and subsequently passed to a PIXI sprite).
+ * @param {number} size The length of the `data` parameter. Often set to a tile's
+ * `tile.tileData.dense.length` value.
+ * @param {array} data The tile data array.
+ * @param {string} valueScaleType 'log' or 'linear'.
+ * @param {array} valueScaleDomain
+ * @param {number} pseudocount The pseudocount is generally the minimum non-zero value and is
+ * used so that our log scaling doesn't lead to NaN values.
+ * @param {array} colorScale
+ * @param {boolean} ignoreUpperRight
+ * @param {boolean} ignoreLowerLeft
+ * @param {array} shape Array `[numRows, numCols]`, used when iterating over a subset of rows,
+ * when one needs to know the width of each column.
+ * @param {number[]} selectedRows Array of row indices, for ordering and filtering rows.
+ * Used by the HorizontalMultivecTrack.
+ * @param {array} zeroValueColor The color to use for rendering zero data values, [r, g, b, a].
+ * @returns {Uint8ClampedArray} A flattened array of pixel values.
+ */
 export function workerSetPix(
   size,
   data,
@@ -73,59 +104,111 @@ export function workerSetPix(
   pseudocount,
   colorScale,
   ignoreUpperRight = false,
-  ignoreLowerLeft = false
+  ignoreLowerLeft = false,
+  shape = null,
+  selectedRows = null,
+  zeroValueColor = null
 ) {
-  /**
-   * The pseudocount is generally the minimum non-zero value and is
-   * used so that our log scaling doesn't lead to NaN values.
-   */
   let valueScale = null;
 
   if (valueScaleType === 'log') {
-    valueScale = scaleLog().range([254, 0]).domain(valueScaleDomain);
+    valueScale = scaleLog()
+      .range([254, 0])
+      .domain(valueScaleDomain);
   } else {
     if (valueScaleType !== 'linear') {
       console.warn(
-        'Unknown value scale type:', valueScaleType, ' Defaulting to linear'
+        'Unknown value scale type:',
+        valueScaleType,
+        ' Defaulting to linear'
       );
     }
-    valueScale = scaleLinear().range([254, 0]).domain(valueScaleDomain);
+    valueScale = scaleLinear()
+      .range([254, 0])
+      .domain(valueScaleDomain);
   }
 
-  const pixData = new Uint8ClampedArray(size * 4);
+  let filteredSize = size;
+  if (shape && selectedRows) {
+    // If using the `selectedRows` parameter, then the size of the `pixData` array
+    // will likely be different than `size` (the total size of the tile data array).
+    filteredSize = selectedRows.length * shape[1];
+  }
 
+  let rgb;
   let rgbIdx = 0;
-  let d;
   const tileWidth = Math.sqrt(size);
+  const pixData = new Uint8ClampedArray(filteredSize * 4);
 
+  /**
+   * Set the ith element of the pixData array, using value d.
+   * (well not really, since i is scaled to make space for each rgb value).
+   * @param i Index of the element.
+   * @param d The value to be transformed and then inserted.
+   */
+  const setPixData = (i, d) => {
+    // Transparent
+    rgbIdx = 255;
+
+    if (
+      // ignore the upper right portion of a tile because it's on the diagonal
+      // and its mirror will fill in that space
+      !(ignoreUpperRight && Math.floor(i / tileWidth) < i % tileWidth) &&
+      !(ignoreLowerLeft && Math.floor(i / tileWidth) > i % tileWidth) &&
+      // Ignore color if the value is invalid
+      !Number.isNaN(+d)
+    ) {
+      // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
+      rgbIdx = Math.max(
+        0,
+        Math.min(254, Math.floor(valueScale(d + pseudocount)))
+      );
+    }
+    // let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
+    if (rgbIdx < 0 || rgbIdx > 255) {
+      console.warn(
+        'out of bounds rgbIdx:',
+        rgbIdx,
+        ' (should be 0 <= rgbIdx <= 255)'
+      );
+    }
+
+    if (zeroValueColor && !Number.isNaN(+d) && +d === 0.0) {
+      rgb = zeroValueColor;
+    } else {
+      rgb = colorScale[rgbIdx];
+    }
+
+    pixData[i * 4] = rgb[0];
+    pixData[i * 4 + 1] = rgb[1];
+    pixData[i * 4 + 2] = rgb[2];
+    pixData[i * 4 + 3] = rgb[3];
+  };
+
+  let d;
   try {
-    for (let i = 0; i < data.length; i++) {
-      d = data[i];
-
-      // Transparent
-      rgbIdx = 255;
-
-      if (
-        // ignore the upper right portion of a tile because it's on the diagonal
-        // and its mirror will fill in that space
-        !(ignoreUpperRight && Math.floor(i / tileWidth) < i % tileWidth)
-        && !(ignoreLowerLeft && Math.floor(i / tileWidth) > i % tileWidth)
-        // Ignore color if the value is invalid
-        && !Number.isNaN(+d)
+    if (shape && selectedRows) {
+      // We need to set the pixels in the order specified by the `selectedRows` parameter.
+      for (
+        let selectedRowI = 0;
+        selectedRowI < selectedRows.length;
+        selectedRowI++
       ) {
-        // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
-        rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(d + pseudocount))));
+        for (let colI = 0; colI < shape[1]; colI++) {
+          d = data[selectedRows[selectedRowI] * shape[1] + colI];
+          setPixData(
+            selectedRowI * shape[1] + colI, // pixData index
+            d // data point
+          );
+        }
       }
-      // let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
-      if (rgbIdx < 0 || rgbIdx > 255) {
-        console.warn('out of bounds rgbIdx:', rgbIdx, ' (should be 0 <= rgbIdx <= 255)');
+    } else {
+      // The `selectedRows` array has not been passed, so we want to use all of the tile data values,
+      // in their default ordering.
+      for (let i = 0; i < data.length; i++) {
+        d = data[i];
+        setPixData(i, d);
       }
-      const rgb = colorScale[rgbIdx];
-
-      pixData[i * 4] = rgb[0];
-      pixData[i * 4 + 1] = rgb[1];
-      pixData[i * 4 + 2] = rgb[2];
-      pixData[i * 4 + 3] = rgb[3];
     }
   } catch (err) {
     console.warn('Odd datapoint');
@@ -156,8 +239,9 @@ function float32(h) {
 
   const fSgn = (h & 0x8000) << 16;
   switch (hExp) {
-    case 0x0000: /* 0 or subnormal */
-      hSig = (h & 0x03ff);
+    /* 0 or subnormal */
+    case 0x0000:
+      hSig = h & 0x03ff;
       /* Signed zero */
       if (hSig === 0) {
         return fSgn;
@@ -168,13 +252,17 @@ function float32(h) {
         hSig <<= 1;
         hExp++;
       }
-      fExp = ((127 - 15 - hExp)) << 23;
-      fSig = ((hSig & 0x03ff)) << 13;
+      fExp = (127 - 15 - hExp) << 23;
+      fSig = (hSig & 0x03ff) << 13;
       return fSgn + fExp + fSig;
-    case 0x7c00: /* inf or NaN */
+
+    /* inf or NaN */
+    case 0x7c00:
       /* All-ones exponent and a copy of the significand */
-      return fSgn + 0x7f800000 + (((h & 0x03ff)) << 13);
-    default: /* normalized */
+      return fSgn + 0x7f800000 + ((h & 0x03ff) << 13);
+
+    default:
+      /* normalized */
       /* Just need to adjust the exponent and shift */
       return fSgn + (((h & 0x7fff) + 0x1c000) << 13);
   }
@@ -234,7 +322,6 @@ export function tileResponseToData(data, server, theseTileIds) {
       const arrayBuffer = _base64ToArrayBuffer(data[key].dense);
       let a;
 
-
       if (data[key].dtype === 'float16') {
         // data is encoded as float16s
         /* comment out until next empty line for 32 bit arrays */
@@ -246,21 +333,26 @@ export function tileResponseToData(data, server, theseTileIds) {
         a = new Float32Array(arrayBuffer);
       }
 
+      const dde =
+        data[key].tilePos.length === 2
+          ? new DenseDataExtrema2D(a)
+          : new DenseDataExtrema1D(a);
 
       data[key].dense = a;
-      data[key].minNonZero = minNonZero(a);
-      data[key].maxNonZero = maxNonZero(a);
+      data[key].denseDataExtrema = dde;
+      data[key].minNonZero = dde.minNonZeroInTile;
+      data[key].maxNonZero = dde.maxNonZeroInTile;
 
       /*
-                      if (data[key]['minNonZero'] === Number.MAX_SAFE_INTEGER &&
-                          data[key]['maxNonZero'] === Number.MIN_SAFE_INTEGER) {
-                          // if there's no values except 0,
-                          // then do use it as the min value
+      if (data[key]['minNonZero'] === Number.MAX_SAFE_INTEGER &&
+          data[key]['maxNonZero'] === Number.MIN_SAFE_INTEGER) {
+          // if there's no values except 0,
+          // then do use it as the min value
 
-                          data[key]['minNonZero'] = 0;
-                          data[key]['maxNonZero'] = 1;
-                      }
-                      */
+          data[key]['minNonZero'] = 0;
+          data[key]['maxNonZero'] = 1;
+      }
+      */
     }
   }
 
@@ -279,7 +371,7 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
     headers
   })
     .then(response => response.json())
-    .then((data) => {
+    .then(data => {
       done(tileResponseToData(data, server, theseTileIds));
       /*
       const denses = Object.values(data)

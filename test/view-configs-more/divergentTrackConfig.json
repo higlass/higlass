@@ -9,21 +9,13 @@
         "y": 0
       },
       "uid": "aa",
-      "initialYDomain": [
-        398147254.7335776,
-        464208495.9452947
-      ],
+      "initialYDomain": [398147254.7335776, 464208495.9452947],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "initialXDomain": [
-        315288478.9357108,
-        445731438.27749157
-      ],
+      "initialXDomain": [315288478.9357108, 445731438.27749157],
       "tracks": {
         "left": [],
         "top": [
           {
-            "name": "Schwarzer et al (2017) TAM Eigenvectors 20K",
-            "created": "2017-08-01T18:26:26.907896Z",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "ZsjN4ZkJSu6PASiw_kVIrw",
             "uid": "t1",
@@ -42,7 +34,6 @@
               "barFillColor": "darkgreen",
               "barOpacity": 1
             },
-            "position": "top",
             "width": 844,
             "height": 73
           },
@@ -53,8 +44,6 @@
             "width": 844,
             "contents": [
               {
-                "name": "Schwarzer et al (2017) TAM Eigenvectors 20K",
-                "created": "2017-08-01T18:26:26.907896Z",
                 "server": "http://higlass.io/api/v1",
                 "tilesetUid": "ZsjN4ZkJSu6PASiw_kVIrw",
                 "uid": "T49eQBUaTuuk_B_eiISbbA",
@@ -73,12 +62,10 @@
                   "barFillColor": "darkgreen",
                   "barOpacity": 1
                 },
-                "position": "top",
                 "width": 844,
                 "height": 73
               }
             ],
-            "position": "top",
             "options": {}
           }
         ],
@@ -120,9 +107,7 @@
       }
     }
   },
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["http://higlass.io/api/v1"],
   "locationLocks": {
     "locksByViewUid": {
       "aa": "K9lRZ74jRaeiifJ_O_s5fw",
@@ -137,11 +122,7 @@
     },
     "locksDict": {
       "K9lRZ74jRaeiifJ_O_s5fw": {
-        "aa": [
-          1974905964.0722282,
-          1957723677.6934438,
-          406590.3164639473
-        ],
+        "aa": [1974905964.0722282, 1957723677.6934438, 406590.3164639473],
         "KrP5zcaVSxqCj6mEI8WA2A": [
           1974905964.0722282,
           1957723677.693444,

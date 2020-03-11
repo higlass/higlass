@@ -48,3 +48,20 @@ To use the admin interface for managing the available datasets, a superuser need
   docker exec -it higlass-container higlass-server/manage.py createsuperuser
 
 Once a username and password are created, the admin interface can be accessed at ``http://localhost:8989/admin``.
+
+Networking configuration
+************************
+
+When setting up higlass-docker locally or remotely, docker creates virtual netowrking interafces that utilize real IP-addresses and modify host's routing table. Default pools of IP-addresses used by docker may create local networking interferences (e.g. with Wi-Fi routers, VPN-servers, etc).
+One could avoid such interferences by configuring pool of IP-addresses that are utilized by docker ``/etc/docker/daemon.json``, e.g.:
+
+.. code-block:: json
+
+   {
+       "default-address-pools":
+        [
+          {"base":"172.40.0.1/16","size":24}
+        ]
+   }
+   
+See relevant `discussion <https://forums.docker.com/t/custom-ip-range-for-new-networks/60839>`_ on docker-forums for further details.

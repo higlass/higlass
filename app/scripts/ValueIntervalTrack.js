@@ -16,8 +16,8 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
   initTile(tile) {
     // create the tile
     // should be overwritten by child classes
-    this.scale.minRawValue = this.minVisibleValue();
-    this.scale.maxRawValue = this.maxVisibleValue();
+    this.scale.minRawValue = this.minVisibleValueInTiles();
+    this.scale.maxRawValue = this.minVisibleValueInTiles();
 
     this.scale.minValue = this.scale.minRawValue;
     this.scale.maxValue = this.scale.maxRawValue;
@@ -26,7 +26,9 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
   }
 
   drawTile(tile) {
-    if (!tile.graphics) { return; }
+    if (!tile.graphics) {
+      return;
+    }
 
     const graphics = tile.graphics;
     const RECT_HEIGHT = 6;
@@ -45,11 +47,10 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
 
     this.drawAxis(this.valueScale);
 
-    tile.tileData.forEach((td) => {
+    tile.tileData.forEach(td => {
       const fields = td.fields;
 
       const chrOffset = +td.chrOffset;
-
 
       const genomeStart = +fields[1] + chrOffset;
       const genomeEnd = +fields[2] + chrOffset;
@@ -62,39 +63,55 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
       const midY = this.valueScale(value);
       const midX = (endPos + startPos) / 2;
 
-      graphics.drawRect(midX - width / 2, midY - RECT_HEIGHT / 2, width, RECT_HEIGHT);
+      graphics.drawRect(
+        midX - width / 2,
+        midY - RECT_HEIGHT / 2,
+        width,
+        RECT_HEIGHT
+      );
     });
   }
 
-  minVisibleValue() {
+  minVisibleValueInTiles() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    const min = Math.min.apply(null, visibleAndFetchedIds.map(
-      x => +Math.min(...(this.fetchedTiles[x].tileData
-        .filter(y => !Number.isNaN(y.fields[3]))
-        .map(y => +y.fields[3])))
-    ));
+    const min = Math.min.apply(
+      null,
+      visibleAndFetchedIds.map(
+        x =>
+          +Math.min(
+            ...this.fetchedTiles[x].tileData
+              .filter(y => !Number.isNaN(y.fields[3]))
+              .map(y => +y.fields[3])
+          )
+      )
+    );
 
     return min;
   }
 
-  maxVisibleValue() {
+  maxVisibleValueInTiles() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-
-    const max = Math.max.apply(null, visibleAndFetchedIds.map(
-      x => +Math.max(...(this.fetchedTiles[x].tileData
-        .filter(y => !Number.isNaN(y.fields[3]))
-        .map(y => +y.fields[3])))
-    ));
+    const max = Math.max.apply(
+      null,
+      visibleAndFetchedIds.map(
+        x =>
+          +Math.max(
+            ...this.fetchedTiles[x].tileData
+              .filter(y => !Number.isNaN(y.fields[3]))
+              .map(y => +y.fields[3])
+          )
+      )
+    );
 
     return max;
   }

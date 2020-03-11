@@ -1,7 +1,7 @@
 import dataToGenomicLoci from './data-to-genomic-loci';
 
 export const scalesToGenomeLoci = (xScale, yScale, chromInfo) => {
-  if (chromInfo === null || (!xScale || !yScale)) return undefined;
+  if (chromInfo === null || !xScale || !yScale) return undefined;
 
   const x0 = xScale.domain()[0];
   const x1 = xScale.domain()[1];
@@ -10,7 +10,7 @@ export const scalesToGenomeLoci = (xScale, yScale, chromInfo) => {
 
   return [
     ...dataToGenomicLoci(x0, x1, chromInfo),
-    ...dataToGenomicLoci(y0, y1, chromInfo),
+    ...dataToGenomicLoci(y0, y1, chromInfo)
   ];
 };
 

@@ -1,9 +1,7 @@
 /* eslint-env node, jasmine */
 
 // Utils
-import {
-  getTrackRenderer,
-} from '../app/scripts/utils';
+import { getTrackRenderer } from '../app/scripts/utils';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
@@ -20,31 +18,25 @@ describe('Zoom tests', () => {
   const doMouseMove = (startX, startY, valueScaleZooming) => {
     // simulate a zoom drag event by doing a
     // mousedown, mousemove and mouseup
-    const evtDown = new MouseEvent('mousedown',
-      {
-        clientX: startX,
-        clientY: startY,
-        view: window,
-      });
+    const evtDown = new MouseEvent('mousedown', {
+      clientX: startX,
+      clientY: startY,
+      view: window
+    });
 
-    const evtMove = new MouseEvent('mousemove',
-      {
-        clientX: startX + 2,
-        clientY: startY + 2,
-        view: window,
-      });
+    const evtMove = new MouseEvent('mousemove', {
+      clientX: startX + 2,
+      clientY: startY + 2,
+      view: window
+    });
 
-    const evtUp = new MouseEvent('mouseup',
-      {
-        clientX: startX + 2,
-        clientY: startY + 2,
-        view: window,
-      });
+    const evtUp = new MouseEvent('mouseup', {
+      clientX: startX + 2,
+      clientY: startY + 2,
+      view: window
+    });
 
-    const trackRenderer = getTrackRenderer(
-      api.getComponent(),
-      'aa',
-    );
+    const trackRenderer = getTrackRenderer(api.getComponent(), 'aa');
     trackRenderer.valueScaleZooming = valueScaleZooming;
 
     spyOn(trackRenderer, 'valueScaleMove');
@@ -62,7 +54,7 @@ describe('Zoom tests', () => {
     return [dx, dy, trackRenderer];
   };
 
-  it('Dispatches a mousewheel event on the horizontal track', (done) => {
+  it('Dispatches a mousewheel event on the horizontal track', done => {
     // eslint-disable-next-line no-unused-vars
     const [dx, dy, _] = doMouseMove(345, 221);
 
@@ -72,7 +64,7 @@ describe('Zoom tests', () => {
     done();
   });
 
-  it('Dispatches a mousewheel event on the horizontal track while vauleScaleZooming', (done) => {
+  it('Dispatches a mousewheel event on the horizontal track while vauleScaleZooming', done => {
     const [dx, dy, trackRenderer] = doMouseMove(345, 221, true);
 
     expect(dy).toEqual(0);
@@ -82,7 +74,7 @@ describe('Zoom tests', () => {
     done();
   });
 
-  it('Dispatches a mousewheel event on the center', (done) => {
+  it('Dispatches a mousewheel event on the center', done => {
     // eslint-disable-next-line no-unused-vars
     const [dx, dy, _] = doMouseMove(348, 315);
 
@@ -92,7 +84,7 @@ describe('Zoom tests', () => {
     done();
   });
 
-  it('Dispatches a mousewheel event on the left track', (done) => {
+  it('Dispatches a mousewheel event on the left track', done => {
     // eslint-disable-next-line no-unused-vars
     const [dx, dy, _] = doMouseMove(56, 315);
 
