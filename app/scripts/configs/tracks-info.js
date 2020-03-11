@@ -714,7 +714,8 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'showTooltip',
       'mousePositionColor',
-      'aggregationMode'
+      'aggregationMode',
+      'valueFormat'
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -735,7 +736,8 @@ export const TRACKS_INFO = [
       labelTextOpacity: 0.4,
       showMousePosition: false,
       showTooltip: false,
-      mousePositionColor: '#000000'
+      mousePositionColor: '#000000',
+      valueFormat: '.3f'
     },
     defaultOptionsByTheme: {
       [THEME_DARK]: {
@@ -769,7 +771,10 @@ export const TRACKS_INFO = [
       'pointSize',
       'valueScaling',
       'trackBorderWidth',
-      'trackBorderColor'
+      'trackBorderColor',
+      'showTooltip',
+      'aggregationMode',
+      'valueFormat'
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -787,7 +792,10 @@ export const TRACKS_INFO = [
       valueScaling: 'linear',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
-      labelTextOpacity: 0.4
+      labelTextOpacity: 0.4,
+      showTooltip: false,
+      aggregationMethod: 'mean',
+      valueFormat: '.3f'
     }
   },
   {
@@ -1218,6 +1226,68 @@ export const TRACKS_INFO = [
     }
   },
   {
+    type: 'horizontal-gene-bed12-annotations',
+    datatype: ['gene-bed12-annotation'],
+    local: false,
+    defaultHeight: 55,
+    orientation: '1d-horizontal',
+    name: 'Gene Annotations (BED12)',
+    thumbnail: svgGeneAnnotationsIcon,
+    availableOptions: [
+      'labelPosition',
+      'labelLeftMargin',
+      'labelRightMargin',
+      'labelTopMargin',
+      'labelBottomMargin',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundColor',
+      'labelBackgroundOpacity',
+      'minHeight',
+      'plusStrandColor',
+      'minusStrandColor',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'showMousePosition',
+      'mousePositionColor',
+      'fontSize',
+      'geneAnnotationHeight',
+      'geneLabelPosition',
+      'geneStrandSpacing',
+      'isBarPlotLike',
+      'itemRGBMap'
+    ],
+    defaultOptions: {
+      fontSize: 10,
+      labelColor: 'black',
+      labelBackgroundColor: '#ffffff',
+      labelPosition: 'hidden',
+      labelLeftMargin: 0,
+      labelRightMargin: 0,
+      labelTopMargin: 0,
+      labelBottomMargin: 0,
+      minHeight: 24,
+      plusStrandColor: 'blue',
+      minusStrandColor: 'red',
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+      showMousePosition: false,
+      mousePositionColor: '#000000',
+      geneAnnotationHeight: 12,
+      geneLabelPosition: 'outside',
+      geneStrandSpacing: 4
+    },
+    defaultOptionsByTheme: {
+      [THEME_DARK]: {
+        labelColor: '#ffffff',
+        labelBackgroundColor: '#000000',
+        trackBorderColor: '#ffffff',
+        mousePositionColor: '#ffffff',
+        plusStrandColor: '#40a0ff'
+      }
+    }
+  },
+  {
     type: 'vertical-gene-annotations',
     datatype: ['gene-annotation'],
     local: false,
@@ -1275,7 +1345,64 @@ export const TRACKS_INFO = [
       }
     }
   },
-
+  {
+    type: 'vertical-gene-bed12-annotations',
+    datatype: ['gene-bed12-annotation'],
+    local: false,
+    defaultWidth: 55,
+    orientation: '1d-vertical',
+    name: 'Gene Annotations (BED12)',
+    thumbnail: svgVerticalGeneAnnotationsIcon,
+    availableOptions: [
+      'labelPosition',
+      'labelLeftMargin',
+      'labelRightMargin',
+      'labelTopMargin',
+      'labelBottomMargin',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'minWidth',
+      'plusStrandColor',
+      'minusStrandColor',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'showMousePosition',
+      'mousePositionColor',
+      'fontSize',
+      'geneAnnoHeight',
+      'geneLabelPosition',
+      'geneStrandSpacing'
+    ],
+    defaultOptions: {
+      fontSize: 10,
+      labelColor: 'black',
+      labelPosition: 'hidden',
+      labelLeftMargin: 0,
+      labelRightMargin: 0,
+      labelTopMargin: 0,
+      labelBottomMargin: 0,
+      minWidth: 24,
+      plusStrandColor: 'blue',
+      minusStrandColor: 'red',
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+      showMousePosition: false,
+      mousePositionColor: '#000000',
+      geneAnnoHeight: 12,
+      geneLabelPosition: 'outside',
+      geneStrandSpacing: 4
+    },
+    defaultOptionsByTheme: {
+      [THEME_DARK]: {
+        labelColor: '#ffffff',
+        labelBackgroundColor: '#000000',
+        trackBorderColor: '#ffffff',
+        mousePositionColor: '#ffffff',
+        plusStrandColor: '#40a0ff'
+      }
+    }
+  },
   {
     type: 'arrowhead-domains',
     datatype: ['arrowhead-domains'],

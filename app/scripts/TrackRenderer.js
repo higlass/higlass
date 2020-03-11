@@ -29,6 +29,7 @@ import CNVIntervalTrack from './CNVIntervalTrack';
 import LeftTrackModifier from './LeftTrackModifier';
 import Track from './Track';
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
+import HorizontalGeneBED12AnnotationsTrack from './HorizontalGeneBED12AnnotationsTrack';
 import ArrowheadDomainsTrack from './ArrowheadDomainsTrack';
 import Annotations2dTrack from './Annotations2dTrack';
 import Annotations1dTrack from './Annotations1dTrack';
@@ -1655,9 +1656,17 @@ class TrackRenderer extends React.Component {
       case 'horizontal-gene-annotations':
         return new HorizontalGeneAnnotationsTrack(context, options);
 
+      case 'horizontal-gene-bed12-annotations':
+        return new HorizontalGeneBED12AnnotationsTrack(context, options);
+
       case 'vertical-gene-annotations':
         return new LeftTrackModifier(
           new HorizontalGeneAnnotationsTrack(context, options)
+        );
+
+      case 'vertical-gene-bed12-annotations':
+        return new LeftTrackModifier(
+          new HorizontalGeneBED12AnnotationsTrack(context, options)
         );
 
       case '2d-rectangle-domains':
