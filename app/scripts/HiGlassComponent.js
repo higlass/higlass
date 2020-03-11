@@ -416,6 +416,10 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  setWheelCallbackKeydownCondition(keyCode) {
+    this.wheelCallbackKeydownCondition = keyCode;
+  }
+
   zoomStartHandler() {
     this.hideHoverMenu();
     this.zooming = true;
@@ -826,6 +830,13 @@ class HiGlassComponent extends React.Component {
         mouseTool: MOUSE_TOOL_SELECT
       });
     }
+
+    if (
+      this.wheelCallbackKeydownCondition &&
+      event.keyCode === this.wheelCallbackKeydownCondition
+    ) {
+      this.shouldPublishWheelEvent = true;
+    }
   }
 
   keyUpHandler(event) {
@@ -833,6 +844,13 @@ class HiGlassComponent extends React.Component {
       this.setState({
         mouseTool: MOUSE_TOOL_MOVE
       });
+    }
+
+    if (
+      this.wheelCallbackKeydownCondition &&
+      event.keyCode === this.wheelCallbackKeydownCondition
+    ) {
+      this.shouldPublishWheelEvent = false;
     }
   }
 
@@ -4288,6 +4306,56 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
+    const absX = nativeEvent.clientX;
+    const absY = nativeEvent.clientY;
+    const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
+
+    // Find the tracks at the wheel position
+    if (
+      this.hasWheelCallback &&
+      (!this.wheelCallbackKeydownCondition ||
+        (this.wheelCallbackKeydownCondition && this.shouldPublishWheelEvent))
+    ) {
+      const relPos = clientPoint(this.topDiv, nativeEvent);
+      // We need to add the scrollTop
+      relPos[1] += this.scrollTop;
+      const hoveredTracks = hoveredTiledPlot
+        ? hoveredTiledPlot
+            .listTracksAtPosition(relPos[0], relPos[1], true)
+            .map(track => track.originalTrack || track)
+        : [];
+      const hoveredTrack = hoveredTracks.find(
+        track => !track.isAugmentationTrack
+      );
+
+      const relTrackPos = hoveredTrack
+        ? [
+            relPos[0] - hoveredTrack.position[0],
+            relPos[1] - hoveredTrack.position[1]
+          ]
+        : relPos;
+
+      const evtToPublish = {
+        x: relPos[0],
+        y: relPos[1],
+        relTrackX:
+          hoveredTrack && hoveredTrack.flipText
+            ? relTrackPos[1]
+            : relTrackPos[0],
+        relTrackY:
+          hoveredTrack && hoveredTrack.flipText
+            ? relTrackPos[0]
+            : relTrackPos[1],
+        track: hoveredTrack,
+        origEvt: nativeEvent,
+        sourceUid: this.uid,
+        hoveredTracks,
+        noHoveredTracks: hoveredTracks.length === 0
+      };
+
+      this.apiPublish('wheel', evtToPublish);
+    }
+
     if (nativeEvent.forwarded || isTargetCanvas) {
       evt.stopPropagation();
       evt.preventDefault();
@@ -4299,11 +4367,6 @@ class HiGlassComponent extends React.Component {
 
     // forward the wheel event back to the TrackRenderer that it should go to
     // this is so that we can zoom when there's a viewport projection present
-    const hoveredTiledPlot = this.getTiledPlotAtPosition(
-      nativeEvent.clientX,
-      nativeEvent.clientY
-    );
-
     if (hoveredTiledPlot) {
       const { trackRenderer } = hoveredTiledPlot;
       nativeEvent.forwarded = true;
