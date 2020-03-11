@@ -298,6 +298,11 @@ class HiGlassComponent extends React.Component {
     this.prevMouseHoverTrack = null;
     this.zooming = false;
 
+    // Wheel event condition variables
+    this.wheelCallbackKeydownCondition = null;
+    this.shouldPublishWheelEvent = false;
+    this.hasWheelCallback = false;
+
     // Bound functions
     this.appClickHandlerBound = this.appClickHandler.bind(this);
     this.keyDownHandlerBound = this.keyDownHandler.bind(this);
