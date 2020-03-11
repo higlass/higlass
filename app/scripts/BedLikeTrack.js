@@ -102,17 +102,22 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       if (this.options.showTexts) {
         tile.tileData.forEach((td, i) => {
           const geneInfo = td.fields;
-
+          if (!td.importance) {
+            td.importance = Math.random();
+          }
           tile.textWidths = {};
           tile.textHeights = {};
 
           // don't draw texts for the latter entries in the tile
-          if (i >= MAX_TEXTS) {
+          if (i >= (+this.options.maxTexts || MAX_TEXTS)) {
             return;
           }
 
           // geneInfo[3] is the gene symbol
-          const text = new PIXI.Text(geneInfo[3], TEXT_STYLE);
+          const text = new PIXI.Text(geneInfo[3], {
+            ...TEXT_STYLE,
+            fontSize: +this.options.fontSize || TEXT_STYLE.fontSize
+          });
           if (this.flipText) {
             text.scale.x = -1;
           }
@@ -506,7 +511,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         if (!tile.texts) return;
 
         // don't draw texts for the latter entries in the tile
-        if (i >= MAX_TEXTS) continue;
+        if (i >= (+this.options.maxTexts || MAX_TEXTS)) continue;
 
         if (!tile.texts[td.uid]) continue;
 
@@ -519,7 +524,11 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           text.alreadyDrawn = true;
         }
 
-        text.style = Object.assign(TEXT_STYLE, { fill });
+        text.style = {
+          ...TEXT_STYLE,
+          fill,
+          fontSize: +this.options.fontSize || TEXT_STYLE.fontSize
+        };
 
         if (!(geneInfo[3] in tile.textWidths)) {
           text.updateTransform();
@@ -527,7 +536,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           const textHeight = text.getBounds().height;
 
           tile.textWidths[geneInfo[3]] = textWidth;
-          tile.textHeights[geneInfo[3]] = textHeight;
+          tile.textHeights[geneInfo[3]] = textHeight - 5;
         }
       }
     }
@@ -777,10 +786,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
           if (!parentInFetched && !text.alreadyDrawn) {
             text.visible = true;
-
             // TODO, change the line below to true if texts are desired in the future
             // text.visible = false;
-
             const TEXT_MARGIN = 3;
             this.allBoxes.push([
               text.position.x - TEXT_MARGIN,
@@ -835,8 +842,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         */
     boxIntersect(allBoxes, (i, j) => {
       if (allTexts[i].importance > allTexts[j].importance) {
-        allTexts[j].text.visible = false;
-      } else {
+        if (allTexts[i].text.visible) {
+          // console.log('hiding:', i);
+          allTexts[j].text.visible = false;
+        }
+      } else if (allTexts[j].text.visible) {
+        // console.log('hiding j', j);
         allTexts[i].text.visible = false;
       }
     });
@@ -860,6 +871,68 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     this.draw();
     */
+  }
+
+  movedY(dY) {
+    // // see the reasoning behind why the code in
+    // // zoomedY is commented out.
+    // Object.values(this.fetchedTiles).forEach((tile) => {
+    //   const vst = this.valueScaleTransform;
+    //   const { y, k } = vst;
+    //   const height = this.dimensions[1];
+    //   // clamp at the bottom and top
+    //   if (
+    //     y + dY / k > -(k - 1) * height
+    //     && y + dY / k < 0
+    //   ) {
+    //     this.valueScaleTransform = vst.translate(
+    //       0, dY / k
+    //     );
+    //   }
+    //   tile.graphics.position.y = this.valueScaleTransform.y;
+    // });
+    // this.animate();
+  }
+
+  zoomedY(yPos, kMultiplier) {
+    // console.log('yPos:', yPos, 'kMultiplier', kMultiplier);
+    // // this is commented out to serve as an example
+    // // of how valueScale zooming works
+    // // dont' want to support it just yet though
+    // const k0 = this.valueScaleTransform.k;
+    // const t0 = this.valueScaleTransform.y;
+    // const dp = (yPos - t0) / k0;
+    // const k1 = Math.max(k0 / kMultiplier, 1.0);
+    // let t1 = k0 * dp + t0 - k1 * dp;
+    // const height = this.dimensions[1];
+    // // clamp at the bottom
+    // t1 = Math.max(t1, -(k1 - 1) * height);
+    // // clamp at the top
+    // t1 = Math.min(t1, 0);
+    // // right now, the point at position 162 is at position 0
+    // // 0 = 1 * 162 - 162
+    // //
+    // // we want that when k = 2, that point is still at position
+    // // 0 = 2 * 162 - t1
+    // //  ypos = k0 * dp + t0
+    // //  dp = (ypos - t0) / k0
+    // //  nypos = k1 * dp + t1
+    // //  k1 * dp + t1 = k0 * dp + t0
+    // //  t1 = k0 * dp +t0 - k1 * dp
+    // // we're only interested in scaling along one axis so we
+    // // leave the translation of the other axis blank
+    // this.valueScaleTransform = zoomIdentity.translate(0, t1).scale(k1);
+    // this.zoomedValueScale = this.valueScaleTransform.rescaleY(
+    //   this.valueScale.clamp(false)
+    // );
+    // // this.pMain.scale.y = k1;
+    // // this.pMain.position.y = t1;
+    // Object.values(this.fetchedTiles).forEach((tile) => {
+    //   tile.graphics.scale.y = k1;
+    //   tile.graphics.position.y = t1;
+    //   this.drawAxis(this.zoomedValueScale);
+    // });
+    // this.animate();
   }
 
   zoomed(newXScale, newYScale) {
@@ -960,7 +1033,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
             t.setAttribute('text-anchor', 'middle');
             t.setAttribute('font-family', TEXT_STYLE.fontFamily);
-            t.setAttribute('font-size', TEXT_STYLE.fontSize);
+            t.setAttribute(
+              'font-size',
+              +this.options.fontSize || TEXT_STYLE.fontSize
+            );
             t.setAttribute('font-weight', 'bold');
             t.setAttribute('dy', '5px');
             t.setAttribute('fill', fill);

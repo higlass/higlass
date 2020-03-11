@@ -2,6 +2,22 @@ import { formatPrefix, precisionPrefix } from 'd3-format';
 
 import HeatmapOptions from '../HeatmapOptions';
 
+const valueColumnOptions = track => {
+  if (!track.header) return [];
+
+  const headerParts = track.header.split('\t');
+  const options = [];
+
+  for (let i = 0; i < headerParts.length; i++) {
+    options.push({
+      name: headerParts[i],
+      value: i + 1
+    });
+  }
+
+  return options;
+};
+
 const sizesInPx = (sizes, unit = '', multiplier = 1) =>
   sizes.reduce((sizeOption, size) => {
     sizeOption[size] = { name: `${size * multiplier}${unit}`, value: size };
@@ -421,7 +437,10 @@ export const OPTIONS_INFO = {
 
   colorEncoding: {
     name: 'Color Encode Annotations',
-    inlineOptions: YES_NO
+    inlineOptions: {
+      none: { name: 'None', value: null }
+    },
+    generateOptions: valueColumnOptions
   },
 
   fontIsAligned: {
@@ -1326,26 +1345,7 @@ export const OPTIONS_INFO = {
     inlineOptions: {
       none: { name: 'None', value: null }
     },
-    generateOptions: track => {
-      if (!track.header) return [];
-
-      const headerParts = track.header.split('\t');
-      const options = [];
-
-      for (let i = 0; i < headerParts.length; i++) {
-        options.push({
-          name: headerParts[i],
-          value: i + 1
-        });
-      }
-
-      /*
-      console.log('headerParts:', headerParts);
-      console.log('options:', options);
-      */
-
-      return options;
-    }
+    generateOptions: valueColumnOptions
   },
   zeroValueColor: {
     name: 'Zero Value Color',
