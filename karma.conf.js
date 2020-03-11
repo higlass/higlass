@@ -33,13 +33,13 @@ module.exports = config => {
       // 'test/AddTrackTests.js',
       // 'test/APITests.js',
       // 'test/BarTrackTests.js',
-      'test/BedLikeTests.js'
+      // 'test/BedLikeTests.js'
       // 'test/ChromosomeLabelsTests.js',
       // 'test/ChromSizesTests.js',
       // 'test/DenseDataExtrema.js',
       // 'test/EmptyTrackTests.js',
       // 'test/GenbankFetcherTests.js',
-      // 'test/GeneAnnotationsTrackTests.js',
+      'test/GeneAnnotationsTrackTests.js'
       // 'test/GenomePositionSearchBoxTest.js',
       // 'test/HeatmapTests.js',
       // 'test/HiGlassComponentCreationTests.js',
