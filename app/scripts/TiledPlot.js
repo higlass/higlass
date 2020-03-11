@@ -1032,16 +1032,18 @@ class TiledPlot extends React.Component {
                     this.props.tracks,
                     trackUuid
                   );
-                  const trackPos = getTrackPositionByUid(
-                    this.props.tracks,
-                    includedTrack.uid
-                  );
+
                   if (!includedTrack) {
                     console.warn(
                       `OverlayTrack included uid (${trackUuid}) not found in the track list`
                     );
                     return null;
                   }
+
+                  const trackPos = getTrackPositionByUid(
+                    this.props.tracks,
+                    includedTrack.uid
+                  );
 
                   let orientation;
                   if (trackPos === 'top' || trackPos === 'bottom') {
