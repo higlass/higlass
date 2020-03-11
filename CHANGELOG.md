@@ -1,5 +1,7 @@
 # Release notes
 
+- BED12 bigBED track renderer and `gene-bed12-annotation` datatype
+
 ## v1.9.0
 
 - Support for gene annotation "filler" regions
