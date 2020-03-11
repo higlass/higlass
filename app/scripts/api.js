@@ -18,6 +18,11 @@ import {
 } from './configs';
 
 
+const forceUpdate = (self) => {
+  self.setState(self.state);
+};
+
+
 const createApi = function api(context, pubSub) {
   const self = context;
 
@@ -617,6 +622,31 @@ const createApi = function api(context, pubSub) {
         }
 
         return getTrackObjectFromHGC(self, newViewId, newTrackId);
+      },
+
+      /**
+       * Set or get an option.
+       * @param   {string}  key  The name of the option you want get or set
+       * @param   {*}  value  If not `undefined`, `key` will be set to `value`
+       * @return  {[type]}  When `value` is `undefined` the current value of
+       *   `key` will be returned.
+       */
+      option(key, value) {
+        if (typeof value === 'undefined') return self.props.options[key];
+
+        switch (key) {
+          case 'sizeMode':
+            self.props.options[key] = value;
+            forceUpdate(self);
+            break;
+
+          default:
+            console.warn(
+              `This option "${key}" is either unknown or not settable.`
+            );
+        }
+
+        return undefined;
       },
 
       /**

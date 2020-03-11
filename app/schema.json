@@ -94,10 +94,11 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "uid": { "$ref": "#/definitions/locks/slug" }
+                  "uid": { "$ref": "#/definitions/locks/slug" },
+                  "ignoreOffScreenValues": { "type": "boolean" }
                 },
                 "patternProperties": {
-                  "^(?!uid).": {
+                  "^(?!(uid|ignoreOffScreenValues)).": {
                     "type": "object",
                     "additionalProperties": false,
                     "required": ["view", "track"],
