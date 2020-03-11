@@ -19,12 +19,14 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   rerender(options, force) {
     super.rerender(options, force);
 
-    // The weights for selectRows groups must be computed
-    // any time options.selectRows changes.
-    this.selectRowsCumWeights = selectedItemsToCumWeights(
-      this.options.selectRows,
-      this.options.selectRowsAggregationWithRelativeHeight
-    );
+    if (this.options.selectRows) {
+      // The weights for selectRows groups must be computed
+      // any time options.selectRows changes.
+      this.selectRowsCumWeights = selectedItemsToCumWeights(
+        this.options.selectRows,
+        this.options.selectRowsAggregationWithRelativeHeight
+      );
+    }
   }
 
   tileDataToCanvas(pixData) {

@@ -196,14 +196,17 @@ export function workerSetPix(
     pixData[i * 4 + 3] = rgb[3];
   };
 
-  const aggFunc = getAggregationFunction(selectedRowsAggregationMode);
-  const aggFromDataFunc = (colI, rowIs) =>
-    aggFunc(rowIs.map(rowI => data[rowI * shape[1] + colI]));
-
   let d;
   try {
     if (shape && selectedRows) {
       // We need to set the pixels in the order specified by the `selectedRows` parameter.
+      let aggFunc;
+      let aggFromDataFunc;
+      if (selectedRowsAggregationMode) {
+        aggFunc = getAggregationFunction(selectedRowsAggregationMode);
+        aggFromDataFunc = (colI, rowIs) =>
+          aggFunc(rowIs.map(rowI => data[rowI * shape[1] + colI]));
+      }
       let pixRowI;
       let colI;
       let selectedRowI;
