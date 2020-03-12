@@ -836,22 +836,21 @@ describe('API Tests', () => {
       );
       const hgc = api.getComponent();
       waitForTilesLoaded(hgc, () => {
-        api.on('wheel', e => {
-          expect(e.origEvt.clientX).toEqual(30);
-          expect(e.origEvt.clientY).toEqual(40);
-          done();
-        });
+        api.on(
+          'wheel',
+          e => {
+            expect(e.origEvt.clientX).toEqual(30);
+            expect(e.origEvt.clientY).toEqual(40);
+            done();
+          },
+          { keydownCondition: ['y', 'Y'] }
+        );
 
-        const key = 'y';
-        const keyCode = 89;
-        api.setWheelCallbackKeydownCondition(keyCode);
         const keydownEvent = new KeyboardEvent('keydown', {
-          key,
-          keyCode
+          key: 'y'
         });
         const keyupEvent = new KeyboardEvent('keyup', {
-          key,
-          keyCode
+          key: 'y'
         });
         const canvas = findCanvas(div);
         // The wheel event that we expect to be emitted before keydown,
