@@ -3,6 +3,8 @@ import { expect } from 'chai';
 
 // Utils
 import { visitPositionedTracks } from '../app/scripts/utils';
+import selectedItemsToSize from '../app/scripts/utils/selected-items-to-size';
+import selectedItemsToCumWeights from '../app/scripts/utils/selected-items-to-cum-weights';
 
 import { oneViewConfig } from './view-configs';
 
@@ -22,5 +24,36 @@ describe('Utils tests', () => {
 
     expect(found).to.eql(true);
     expect(visited).to.eql(5);
+  });
+
+  it('should compute size based on an array of selected item indices', () => {
+    const selectRows = [1, [2, 3, 4], [5], 6, 7];
+
+    let size;
+    size = selectedItemsToSize(selectRows, true);
+    expect(size).to.eql(7);
+
+    size = selectedItemsToSize(selectRows, false);
+    expect(size).to.eql(5);
+  });
+
+  it('should compute cumulative item size weights based on an array of selected item indices', () => {
+    const selectRows = [1, [2, 3, 4], [5], 6, 7];
+
+    let weights;
+    const delta = 0.01;
+    weights = selectedItemsToCumWeights(selectRows, true);
+    expect(weights[0]).to.be.closeTo(0.143, delta);
+    expect(weights[1]).to.be.closeTo(0.571, delta);
+    expect(weights[2]).to.be.closeTo(0.714, delta);
+    expect(weights[3]).to.be.closeTo(0.857, delta);
+    expect(weights[4]).to.be.closeTo(1, delta);
+
+    weights = selectedItemsToCumWeights(selectRows, false);
+    expect(weights[0]).to.be.closeTo(0.2, delta);
+    expect(weights[1]).to.be.closeTo(0.4, delta);
+    expect(weights[2]).to.be.closeTo(0.6, delta);
+    expect(weights[3]).to.be.closeTo(0.8, delta);
+    expect(weights[4]).to.be.closeTo(1, delta);
   });
 });
