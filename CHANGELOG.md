@@ -1,5 +1,15 @@
 # Release notes
 
+## Next release
+
+- Used stretchRects to ensure that there are no rendering artifacts when zooming in too far
+- Added scaled as a potential value to the annotationHeight option
+- Added the maxAnnotationHeight option to limit the size of annotations when using the scaled option for annotationHeight
+- Added the fontSize option for bedlike tracks
+- colorAnnotations are independent of valueScale
+
+_[Detailed changes since v1.9.0](https://github.com/higlass/higlass/compare/v1.9.0...develop)_
+
 ## v1.9.0
 
 - Support for gene annotation "filler" regions
