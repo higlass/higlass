@@ -21,10 +21,10 @@ import {
 import { HEATED_OBJECT_MAP } from './configs';
 
 const GENE_RECT_HEIGHT = 16;
-const MAX_TEXTS = 500;
+const MAX_TEXTS = 50;
 const MAX_TILE_ENTRIES = 5000;
 const STAGGERED_OFFSET = 5;
-const FONT_SIZE = 10;
+const FONT_SIZE = 14;
 // the label text should have a white outline so that it's more
 // visible against a similar colored background
 const TEXT_STYLE = {
@@ -46,6 +46,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.allDrawnRects = {};
   }
 
+  /** Factor out some initialization code for the track so */
   initialize() {
     if (this.initialized) return;
 
@@ -110,6 +111,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       if (this.options.showTexts) {
         tile.tileData.forEach((td, i) => {
           const geneInfo = td.fields;
+
+          // A random importance helps with selective hiding
+          // of overlapping texts
           if (!td.importance) {
             td.importance = Math.random();
           }
@@ -585,8 +589,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           const textWidth = text.getBounds().width;
           const textHeight = text.getBounds().height;
 
+          // the text size adjustment compensates for the extra
+          // size that the show gives it
+          const TEXT_SIZE_ADJUSTMENT = 5;
+
           tile.textWidths[geneInfo[3]] = textWidth;
-          tile.textHeights[geneInfo[3]] = textHeight - 5;
+          tile.textHeights[geneInfo[3]] = textHeight - TEXT_SIZE_ADJUSTMENT;
         }
       }
     }
@@ -902,68 +910,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     this.draw();
     */
-  }
-
-  movedY(dY) {
-    // // see the reasoning behind why the code in
-    // // zoomedY is commented out.
-    // Object.values(this.fetchedTiles).forEach((tile) => {
-    //   const vst = this.valueScaleTransform;
-    //   const { y, k } = vst;
-    //   const height = this.dimensions[1];
-    //   // clamp at the bottom and top
-    //   if (
-    //     y + dY / k > -(k - 1) * height
-    //     && y + dY / k < 0
-    //   ) {
-    //     this.valueScaleTransform = vst.translate(
-    //       0, dY / k
-    //     );
-    //   }
-    //   tile.graphics.position.y = this.valueScaleTransform.y;
-    // });
-    // this.animate();
-  }
-
-  zoomedY(yPos, kMultiplier) {
-    // console.log('yPos:', yPos, 'kMultiplier', kMultiplier);
-    // // this is commented out to serve as an example
-    // // of how valueScale zooming works
-    // // dont' want to support it just yet though
-    // const k0 = this.valueScaleTransform.k;
-    // const t0 = this.valueScaleTransform.y;
-    // const dp = (yPos - t0) / k0;
-    // const k1 = Math.max(k0 / kMultiplier, 1.0);
-    // let t1 = k0 * dp + t0 - k1 * dp;
-    // const height = this.dimensions[1];
-    // // clamp at the bottom
-    // t1 = Math.max(t1, -(k1 - 1) * height);
-    // // clamp at the top
-    // t1 = Math.min(t1, 0);
-    // // right now, the point at position 162 is at position 0
-    // // 0 = 1 * 162 - 162
-    // //
-    // // we want that when k = 2, that point is still at position
-    // // 0 = 2 * 162 - t1
-    // //  ypos = k0 * dp + t0
-    // //  dp = (ypos - t0) / k0
-    // //  nypos = k1 * dp + t1
-    // //  k1 * dp + t1 = k0 * dp + t0
-    // //  t1 = k0 * dp +t0 - k1 * dp
-    // // we're only interested in scaling along one axis so we
-    // // leave the translation of the other axis blank
-    // this.valueScaleTransform = zoomIdentity.translate(0, t1).scale(k1);
-    // this.zoomedValueScale = this.valueScaleTransform.rescaleY(
-    //   this.valueScale.clamp(false)
-    // );
-    // // this.pMain.scale.y = k1;
-    // // this.pMain.position.y = t1;
-    // Object.values(this.fetchedTiles).forEach((tile) => {
-    //   tile.graphics.scale.y = k1;
-    //   tile.graphics.position.y = t1;
-    //   this.drawAxis(this.zoomedValueScale);
-    // });
-    // this.animate();
   }
 
   zoomed(newXScale, newYScale) {
