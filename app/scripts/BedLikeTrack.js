@@ -46,7 +46,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.allDrawnRects = {};
   }
 
-  /** Factor out some initialization code for the track so */
+  /** Factor out some initialization code for the track. This is
+   necessary because we can now load tiles synchronously and so
+   we have to check if the track is initialized in renderTiles
+   and not in the constructor */
   initialize() {
     if (this.initialized) return;
 
@@ -120,7 +123,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           tile.textWidths = {};
           tile.textHeights = {};
 
-          // don't draw texts for the latter entries in the tile
+          // don't draw too many texts so they don't bog down the frame rate
           if (i >= (+this.options.maxTexts || MAX_TEXTS)) {
             return;
           }
@@ -389,6 +392,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return drawnPoly;
   }
 
+  /** The value scale is used to arrange annotations vertically
+      based on a value */
   setValueScale() {
     this.valueScale = null;
 
@@ -414,6 +419,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
   }
 
+  /** The color value scale is used to make some value to a coloring */
   setColorValueScale() {
     this.colorValueScale = null;
 
@@ -502,16 +508,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           yMiddle = this.valueScale(value);
         }
 
-        // for when there's text
-        // yMiddle -= 8;
-
         const opacity = this.options.fillOpacity || 0.3;
         tile.rectGraphics.lineStyle(1, colorToHex(fill), opacity);
         tile.rectGraphics.beginFill(colorToHex(fill), opacity);
-        // let height = valueScale(Math.log(+geneInfo[4]));
-        // let width= height;
 
-        // const rectX = this._xScale(txMiddle) - (rectHeight / 2);
         let rectY = yMiddle - rectHeight / 2;
         const xStartPos = this._xScale(txStart);
         const xEndPos = this._xScale(txEnd);
@@ -564,7 +564,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         // tile probably hasn't been initialized yet
         if (!tile.texts) return;
 
-        // don't draw texts for the latter entries in the tile
+        // don't draw too many texts so they don't bog down the frame rate
         if (i >= (+this.options.maxTexts || MAX_TEXTS)) continue;
 
         if (!tile.texts[td.uid]) continue;
@@ -847,38 +847,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       }
     }
 
-    /*
-        for (let fetchedTileId in this.fetchedTiles) {
-            let ft = this.fetchedTiles[fetchedTileId];
-
-            ft.tileData.forEach(td => {
-                let geneInfo = td.fields;
-                if (+geneInfo[4] > maxValue)
-                    maxValue = geneInfo[4];
-            });
-        }
-        */
-
-    // console.log('length:', this.allBoxes.length);
-
-    // console.trace('draw', allTexts.length);
     this.hideOverlaps(this.allBoxes, this.allTexts);
   }
 
   hideOverlaps(allBoxes, allTexts) {
-    // store the bounding boxes of the text objects so we can
-    // calculate overlaps
+    // Calculate overlaps from the bounding boxes of the texts
 
-    /*
-        let allBoxes = allTexts.map(val => {
-            let text = val.text;
-            text.updateTransform();
-            let b = text.getBounds();
-            let box = [b.x, b.y, b.x + b.width, b.y + b.height];
-
-            return box;
-        });
-        */
     boxIntersect(allBoxes, (i, j) => {
       if (allTexts[i].importance > allTexts[j].importance) {
         if (allTexts[i].text.visible) {
