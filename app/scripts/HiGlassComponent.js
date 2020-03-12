@@ -299,9 +299,9 @@ class HiGlassComponent extends React.Component {
     this.zooming = false;
 
     // Wheel event condition variables
-    this.wheelCallbackKeydownCondition = null;
-    this.shouldPublishWheelEvent = false;
     this.hasWheelCallback = false;
+    this.wheelCallbackOptions = null;
+    this.shouldPublishWheelEvent = false;
 
     // Bound functions
     this.appClickHandlerBound = this.appClickHandler.bind(this);
@@ -419,10 +419,6 @@ class HiGlassComponent extends React.Component {
 
       this.globalMousePositionListener = undefined;
     }
-  }
-
-  setWheelCallbackKeydownCondition(keyCode) {
-    this.wheelCallbackKeydownCondition = keyCode;
   }
 
   zoomStartHandler() {
@@ -829,6 +825,26 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  /**
+   * Does a KeyboardEvent satisfy the `keydownCondition` from the current set of wheel callback options?
+   * @param {string} eventKey The `.key` value of a KeyboardEvent object.
+   * @returns {boolean} Whether this key event is relevant for updating the shouldPublishWheelEvent variable.
+   */
+  isKeyDownWheelConditionSatisfied(eventKey) {
+    if (
+      this.hasWheelCallback &&
+      this.wheelCallbackOptions &&
+      this.wheelCallbackOptions.keydownCondition &&
+      ((Array.isArray(this.wheelCallbackOptions.keydownCondition) &&
+        this.wheelCallbackOptions.keydownCondition.includes(eventKey)) ||
+        (!Array.isArray(this.wheelCallbackOptions.keydownCondition) &&
+          eventKey === this.wheelCallbackOptions.keydownCondition))
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   keyDownHandler(event) {
     if (this.props.options.rangeSelectionOnAlt && event.key === 'Alt') {
       this.setState({
@@ -836,11 +852,12 @@ class HiGlassComponent extends React.Component {
       });
     }
 
-    if (
-      this.wheelCallbackKeydownCondition &&
-      event.keyCode === this.wheelCallbackKeydownCondition
-    ) {
+    if (this.isKeyDownWheelConditionSatisfied(event.key)) {
       this.shouldPublishWheelEvent = true;
+    } else if (event.key === 'Esc') {
+      // The keyup event may not be observed in all cases (e.g. user changed windows mid-keypress)
+      // so we should allow the escape key to also escape the wheel condition.
+      this.shouldPublishWheelEvent = false;
     }
   }
 
@@ -851,10 +868,7 @@ class HiGlassComponent extends React.Component {
       });
     }
 
-    if (
-      this.wheelCallbackKeydownCondition &&
-      event.keyCode === this.wheelCallbackKeydownCondition
-    ) {
+    if (this.isKeyDownWheelConditionSatisfied(event.key)) {
       this.shouldPublishWheelEvent = false;
     }
   }
@@ -4318,8 +4332,8 @@ class HiGlassComponent extends React.Component {
     // Find the tracks at the wheel position
     if (
       this.hasWheelCallback &&
-      (!this.wheelCallbackKeydownCondition ||
-        (this.wheelCallbackKeydownCondition && this.shouldPublishWheelEvent))
+      (!this.wheelCallbackOptions ||
+        (this.wheelCallbackOptions && this.shouldPublishWheelEvent))
     ) {
       const relPos = clientPoint(this.topDiv, nativeEvent);
       // We need to add the scrollTop

@@ -93,14 +93,6 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
-       * Set a key that must be down in order for the .on('wheel') event to be published.
-       * @param {number} keyCode - The keyCode. If null or undefined, the condition will be removed.
-       */
-      setWheelCallbackKeydownCondition(keyCode) {
-        self.setWheelCallbackKeydownCondition(keyCode);
-      },
-
-      /**
        * Get the currently set auth header
        */
       getAuthHeader() {
@@ -693,6 +685,7 @@ const createApi = function api(context, pubSub) {
 
           case 'wheel':
             self.hasWheelCallback = false;
+            self.wheelCallbackOptions = null;
             apiPubSub.unsubscribe('wheel', callback);
             break;
 
@@ -868,7 +861,7 @@ const createApi = function api(context, pubSub) {
        * hgv.on('mouseMoveZoom', mmz);
        *
        * const wheelListener = event => console.log('Wheel', event);
-       * hgv.on('wheel', wheelListener);
+       * hgv.on('wheel', wheelListener, { keydownCondition: ["y", "Y"] });
        *
        * hgv.on('createSVG', (svg) => {
        *    const circle = document.createElement('circle');
@@ -897,6 +890,8 @@ const createApi = function api(context, pubSub) {
 
           case 'wheel':
             self.hasWheelCallback = true;
+            // Use the third argument for the callback options.
+            self.wheelCallbackOptions = viewId;
             return apiPubSub.subscribe('wheel', callback);
 
           case 'rangeSelection':
