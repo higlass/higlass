@@ -77,7 +77,7 @@ describe('Gene Annotations Tracks', () => {
     const trackObj = getTrackObjectFromHGC(hgc, viewUid, trackUid);
     waitForTilesLoaded(hgc, () => {
       // make sure the gene is red
-      expect(trackObj.allTexts[0].text.style.fill).to.equal('#ff0000');
+      expect(trackObj.allTexts[0].text.style.fill).to.eql('#ff0000');
 
       const trackConf = getTrackConfFromHGC(hgc, viewUid, trackUid);
       const options = trackConf.options;
@@ -85,7 +85,7 @@ describe('Gene Annotations Tracks', () => {
       // set minus strand genes to black
       options.minusStrandColor = 'black';
       hgc.handleTrackOptionsChanged('aa', 'genes1', options);
-      expect(trackObj.allTexts[0].text.style.fill).to.equal('#000000');
+      expect(trackObj.allTexts[0].text.style.fill).to.eql('#000000');
 
       done();
     });
