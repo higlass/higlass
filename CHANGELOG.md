@@ -2,8 +2,7 @@
 
 ## v1.9.1
 
-- Added the JS API `.on('wheel', callback)` option for subscribing to mouse wheel events.
-- Added the JS API `.setWheelCallbackKeydownCondition(keyCode)` function for setting a keydown condition, to prevent wheel events from being emitted unless the specified key has been pressed down.
+- Added the JS API `.on('wheel', callback, callbackOptions)` option for subscribing to mouse wheel events.
 
 _[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.9.0...develop)_
 
