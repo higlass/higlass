@@ -1,7 +1,16 @@
 # Release notes
 
-## Next release
+## v1.9.1
 
+- Added support for aggregation of `horizontal-multivec` rows by passing arrays of row indices to the `selectRows` option. With this addition also comes the track options `selectRowsAggregationMode` (for specifying an aggregation function, "mean", "sum", "variance", "deviation") and `selectRowsAggregationWithRelativeHeight` (boolean) to determine whether rows representing groups of indices have 1-unit heights or `group.length`-unit heights.
+
+_[Detailed changes since v1.9.0](https://github.com/higlass/higlass/compare/v1.9.0...develop)_
+
+## v1.9.0
+
+- Support for gene annotation "filler" regions
+- Clickable gene annotations
+- Slightly updated gene annotation style with arrowheads at the ends
 - Remove Content-Type headers when fetching genbank files
 - Added the fields `xRange` and `yRange` the object returned by the JavaScript API `.getLocation()` method.
 - Fixed blurry exported heatmap SVG graphics issue using the `image-rendering` CSS property.
@@ -11,8 +20,9 @@
 - Added the `.on('createSVG')` listener to the JS API, with the corresponding `.off('createSVG')`, for manipulating exported SVGs before they are returned.
 - Added `zeroValueColor` as an option for the `horizontal-multivec` track, to specify the color mapping for zero data values.
 - Track resizing events now trigger the `.on('viewConfig')` JS API callback.
+- Specify raw tiles locally in the viewconf
 
-_[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.3...develop)_
+_[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.4...v1.9.0)_
 
 ## v1.8.4
 

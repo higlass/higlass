@@ -111,6 +111,27 @@ all annotated exons in refseq. There are separate tracks for the different
 available species. Details on how gene annotation tracks are created is available
 in the `gene annotations section <data_preparation.html#gene-annotation-tracks>`_.
 
+
+Event Handlers
+--------------
+
+- **click**: Called when a gene annotaion is clicked on. The parameter to the callback is a single object whose format is described below. Genome coordinates are offsets from position 0 as if the chromosomes were laid out end-to-end.
+
+.. code-block:: javascript
+
+  {
+    type: "gene-annotation",
+    event: [PIXI.js event object],
+    payload: {
+      xStart: [int: genome coordinate ],
+      xStart: [int: genome coordinate ],
+      offset: [int: start of this annotations chromosome (genome coordinate)],
+      uid: [string: unique identifier for this annotation],
+      fields: [array: genePred formatted array of values],
+      ... other fields
+    }
+  }
+
 Heatmap
 =======
 
@@ -510,6 +531,9 @@ Options
 - **colorbarPosition**: ['hidden', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'] - The position of the colorbar element.
 - **colorbarBackgroundColor**: The background color for the colorbar element.
 - **zeroValueColor**: The color to use for zero data values. By default, null, which uses the current color scale.
+- **selectRows**: Array of row indices (of the original multivec dataset) to include in the visualization. This enables filtering, sorting, and aggregation. By default, null, to show all rows and use the default ordering.
+- **selectRowsAggregationMode**: If the ``selectRows`` array contains subarrays, these will be treated as aggregation groups. This option can be used to define the aggregation function to use ("mean", "sum", "variance", "deviation"). By default, "mean".
+- **selectRowsAggregationWithRelativeHeight**: If the ``selectRows`` array contains subarrays, this option will determine whether the visual heights for the aggregated row groups will be scaled by the group size or always a single unit. By default, true.
 
 **Example:**
 

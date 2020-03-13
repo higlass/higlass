@@ -612,6 +612,8 @@ export const TRACKS_INFO = [
       'trackType',
       'heatmapValueScaling',
       'selectRows',
+      'selectRowsAggregationMode',
+      'selectRowsAggregationWithRelativeHeight',
       'colorbarBackgroundColor',
       'colorbarPosition',
       'zeroValueColor'
@@ -632,6 +634,8 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       heatmapValueScaling: 'log',
       selectRows: null,
+      selectRowsAggregationMode: 'mean',
+      selectRowsAggregationWithRelativeHeight: true,
       colorbarBackgroundColor: '#ffffff',
       colorbarPosition: 'topRight',
       zeroValueColor: null
@@ -1161,7 +1165,7 @@ export const TRACKS_INFO = [
     type: 'horizontal-gene-annotations',
     datatype: ['gene-annotation'],
     local: false,
-    defaultHeight: 55,
+    defaultHeight: 90,
     orientation: '1d-horizontal',
     name: 'Gene Annotations',
     thumbnail: svgGeneAnnotationsIcon,
@@ -1203,7 +1207,7 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       showMousePosition: false,
       mousePositionColor: '#000000',
-      geneAnnotationHeight: 12,
+      geneAnnotationHeight: 16,
       geneLabelPosition: 'outside',
       geneStrandSpacing: 4
     },
@@ -1221,7 +1225,7 @@ export const TRACKS_INFO = [
     type: 'vertical-gene-annotations',
     datatype: ['gene-annotation'],
     local: false,
-    defaultWidth: 55,
+    defaultWidth: 90,
     orientation: '1d-vertical',
     name: 'Gene Annotations',
     thumbnail: svgVerticalGeneAnnotationsIcon,
@@ -1242,7 +1246,7 @@ export const TRACKS_INFO = [
       'showMousePosition',
       'mousePositionColor',
       'fontSize',
-      'geneAnnoHeight',
+      'geneAnnotationHeight',
       'geneLabelPosition',
       'geneStrandSpacing'
     ],
@@ -1261,7 +1265,7 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       showMousePosition: false,
       mousePositionColor: '#000000',
-      geneAnnoHeight: 12,
+      geneAnnotationHeight: 16,
       geneLabelPosition: 'outside',
       geneStrandSpacing: 4
     },
