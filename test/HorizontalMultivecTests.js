@@ -20,6 +20,7 @@ import {
 import horizontalMultivecWithSmallerDimensions from './view-configs-more/horizontalMultivecWithSmallerDimensions';
 import horizontalMultivecWithZeroValueColorOption from './view-configs-more/horizontalMultivecWithZeroValueColorOption';
 import horizontalMultivecWithFilteredRows from './view-configs-more/horizontalMultivecWithFilteredRows';
+import horizontalMultivecWithAggregation from './view-configs-more/horizontalMultivecWithAggregation';
 
 // Constants
 import {
@@ -348,6 +349,104 @@ describe('Horizontal heatmaps', () => {
 
         const tooltipValue = track.getVisibleData(40, 40);
         expect(tooltipValue).toEqual('647.000');
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      }
+    );
+  });
+
+  it('Test horizontal multivec with aggregation of rows', done => {
+    horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationWithRelativeHeight = true;
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithAggregation,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'aggregation-view',
+          'aggregation-track'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toBeGreaterThanOrEqual(1);
+        expect(trackTiles[0].canvas.width).toEqual(256);
+        expect(trackTiles[0].canvas.height).toEqual(5);
+
+        const trackHeight = track.dimensions[1];
+        const itemHeight = trackHeight / 5;
+
+        let tooltipValue;
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 0 + 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('6.118');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 3 - 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('6.118');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 3 + 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.829');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 4 - 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.829');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 4 + 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.174');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 5 - 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.174');
+
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      }
+    );
+  });
+
+  it('Test horizontal multivec with aggregation of rows and static row height', done => {
+    horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationWithRelativeHeight = false;
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithAggregation,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'aggregation-view',
+          'aggregation-track'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toBeGreaterThanOrEqual(1);
+        expect(trackTiles[0].canvas.width).toEqual(256);
+        expect(trackTiles[0].canvas.height).toEqual(3);
+
+        const trackHeight = track.dimensions[1];
+        const itemHeight = trackHeight / 3;
+
+        let tooltipValue;
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 0 + 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('6.118');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 1 - 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('6.118');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 1 + 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.829');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 2 - 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.829');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 2 + 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.174');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 3 - 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.174');
+
         done();
       },
       {
