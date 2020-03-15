@@ -46,7 +46,7 @@ describe('Gene Annotations Tracks', () => {
     hgc = api.getComponent();
   });
 
-  it('clicks on a gene', () => {
+  it('clicks on a gene', done => {
     let clicked = 0;
 
     api.on('click', data => {
@@ -66,7 +66,10 @@ describe('Gene Annotations Tracks', () => {
       canvasElem.dispatchEvent(createPointerEvent('pointerdown', loc));
       canvasElem.dispatchEvent(createPointerEvent('pointerup', loc));
 
+      // console.log('clicked:', clicked);
       expect(clicked).to.eql(1);
+
+      done();
     });
   });
 
