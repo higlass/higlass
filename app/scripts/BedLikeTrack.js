@@ -417,11 +417,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   setColorValueScale() {
     this.colorValueScale = null;
 
-    if (
-      this.options &&
-      this.options.colorEncoding &&
-      this.options.colorEncoding !== 'none'
-    ) {
+    if (this.options && this.options.colorEncoding) {
       const min = this.options.colorEncodingRange
         ? +this.options.colorEncodingRange[0]
         : this.minVisibleValueInTiles(+this.options.colorEncoding);
@@ -472,10 +468,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         if (rectHeight === 'scaled') {
           rectHeight = rowScale.bandwidth();
 
-          if (
-            this.options.maxAnnotationHeight &&
-            this.options.maxAnnotationHeight !== 'none'
-          ) {
+          if (this.options.maxAnnotationHeight) {
             rectHeight = Math.min(
               rectHeight,
               +this.options.maxAnnotationHeight
@@ -777,9 +770,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   draw() {
     super.draw();
 
-    // graphics.clear();
-
-    // const maxValue = 0;
     this.allTexts = [];
     this.allBoxes = [];
 
@@ -847,21 +837,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       }
     }
 
-    /*
-        for (let fetchedTileId in this.fetchedTiles) {
-            let ft = this.fetchedTiles[fetchedTileId];
-
-            ft.tileData.forEach(td => {
-                let geneInfo = td.fields;
-                if (+geneInfo[4] > maxValue)
-                    maxValue = geneInfo[4];
-            });
-        }
-        */
-
-    // console.log('length:', this.allBoxes.length);
-
-    // console.trace('draw', allTexts.length);
     this.hideOverlaps(this.allBoxes, this.allTexts);
   }
 
@@ -869,24 +844,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // store the bounding boxes of the text objects so we can
     // calculate overlaps
 
-    /*
-        let allBoxes = allTexts.map(val => {
-            let text = val.text;
-            text.updateTransform();
-            let b = text.getBounds();
-            let box = [b.x, b.y, b.x + b.width, b.y + b.height];
-
-            return box;
-        });
-        */
     boxIntersect(allBoxes, (i, j) => {
       if (allTexts[i].importance > allTexts[j].importance) {
         if (allTexts[i].text.visible) {
-          // console.log('hiding:', i);
           allTexts[j].text.visible = false;
         }
       } else if (allTexts[j].text.visible) {
-        // console.log('hiding j', j);
         allTexts[i].text.visible = false;
       }
     });
@@ -900,16 +863,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   setDimensions(newDimensions) {
     super.setDimensions(newDimensions);
-
-    /*
-    // redraw the contents
-    for (const tile of this.visibleAndFetchedTiles()) {
-      // this.destroyTile(tile);
-      this.renderTile(tile);
-    }
-
-    this.draw();
-    */
   }
 
   zoomed(newXScale, newYScale) {
@@ -1027,19 +980,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
 
     const zoomLevel = this.calculateZoomLevel();
-    // const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo,
-    //   zoomLevel, this.tilesetInfo.tile_size);
-
-    // // the position of the tile containing the query position
-    // const tilePos = this._xScale.invert(trackX) / tileWidth;
-    // console.log('tilePos', tilePos);
-
-    // const posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
-
-    // const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
-    // const fetchedTile = this.fetchedTiles[tileId];
-
-    // const dataX = this._xScale.invert(trackX);
 
     const point = [trackX, trackY];
 

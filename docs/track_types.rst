@@ -45,7 +45,7 @@ column" section).
 
 Intervals can visually encode information using the following three ``options``:
 
-- **colorEncoding**: int or "none"
+- **colorEncoding**: int or null
     If set to a bed column number (1-based), use the values in that column to color the annotations. (default: "none")
 
 - **colorRange**: array of color values
@@ -63,7 +63,7 @@ Intervals can visually encode information using the following three ``options``:
 - **fontSize:**
     The font size for annotation labels (default 10)
 
-- **maxAnnotationHeight:** int or 'none'
+- **maxAnnotationHeight:** int or null
     The maximum annotation height when using 'scaled' annotation heights. Useful to avoid huge annotations. (default 'none')
 
 - **maxTexts**

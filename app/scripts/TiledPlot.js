@@ -484,13 +484,6 @@ class TiledPlot extends React.Component {
           typeof tilesetInfo !== 'undefined' && tilesetInfo !== true
       );
 
-    // Reduce the list of tracks to a dictionary of track ids. This is useful
-    // to speedup the subsequent filtering
-    // const trackUids = allTracksWithTilesetInfos.reduce((a, b) => {
-    //   a[b.id] = true;
-    //   return a;
-    // }, {});
-
     // Only count tracks that are suppose to get a tileset
     const loadedTilesetInfos = Object.values(this.tracksByUidInit).filter(
       x => x
