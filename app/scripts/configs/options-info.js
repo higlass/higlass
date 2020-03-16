@@ -2,6 +2,22 @@ import { formatPrefix, precisionPrefix } from 'd3-format';
 
 import HeatmapOptions from '../HeatmapOptions';
 
+const valueColumnOptions = track => {
+  if (!track.header) return [];
+
+  const headerParts = track.header.split('\t');
+  const options = [];
+
+  for (let i = 0; i < headerParts.length; i++) {
+    options.push({
+      name: headerParts[i],
+      value: i + 1
+    });
+  }
+
+  return options;
+};
+
 const sizesInPx = (sizes, unit = '', multiplier = 1) =>
   sizes.reduce((sizeOption, size) => {
     sizeOption[size] = { name: `${size * multiplier}${unit}`, value: size };
@@ -421,7 +437,10 @@ export const OPTIONS_INFO = {
 
   colorEncoding: {
     name: 'Color Encode Annotations',
-    inlineOptions: YES_NO
+    inlineOptions: {
+      none: { name: 'None', value: null }
+    },
+    generateOptions: valueColumnOptions
   },
 
   fontIsAligned: {
@@ -540,7 +559,21 @@ export const OPTIONS_INFO = {
       10: { name: '10px', value: 10 },
       12: { name: '12px', value: 12 },
       16: { name: '16px', value: 16 },
-      20: { name: '20px', value: 20 }
+      20: { name: '20px', value: 20 },
+      scaled: { name: 'scaled', value: 'scaled' }
+    }
+  },
+
+  maxAnnotationHeight: {
+    name: 'Max Annotation Height',
+    inlineOptions: {
+      5: { name: '5px', value: 5 },
+      8: { name: '8px', value: 8 },
+      10: { name: '10px', value: 10 },
+      12: { name: '12px', value: 12 },
+      16: { name: '16px', value: 16 },
+      20: { name: '20px', value: 20 },
+      none: { name: 'none', value: null }
     }
   },
 
@@ -1312,26 +1345,7 @@ export const OPTIONS_INFO = {
     inlineOptions: {
       none: { name: 'None', value: null }
     },
-    generateOptions: track => {
-      if (!track.header) return [];
-
-      const headerParts = track.header.split('\t');
-      const options = [];
-
-      for (let i = 0; i < headerParts.length; i++) {
-        options.push({
-          name: headerParts[i],
-          value: i + 1
-        });
-      }
-
-      /*
-      console.log('headerParts:', headerParts);
-      console.log('options:', options);
-      */
-
-      return options;
-    }
+    generateOptions: valueColumnOptions
   },
   zeroValueColor: {
     name: 'Zero Value Color',

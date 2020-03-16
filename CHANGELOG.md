@@ -1,10 +1,16 @@
 # Release notes
 
-## v1.9.1
+## Next release
 
-- Added the JS API `.on('wheel', callback, callbackOptions)` option for subscribing to mouse wheel events.
+- Used stretchRects to ensure that there are no rendering artifacts when zooming in too far
+- Added scaled as a potential value to the annotationHeight option
+- Added the maxAnnotationHeight option to limit the size of annotations when using the scaled option for annotationHeight
+- Added the fontSize option for bedlike tracks
+- colorAnnotations are independent of valueScale
+- Added support for aggregation of `horizontal-multivec` rows by passing arrays of row indices to the `selectRows` option. With this addition also comes the track options `selectRowsAggregationMode` (for specifying an aggregation function, "mean", "sum", "variance", "deviation") and `selectRowsAggregationWithRelativeHeight` (boolean) to determine whether rows representing groups of indices have 1-unit heights or `group.length`-unit heights.
+- Added the JS API `.on('wheel', callback)` option for subscribing to mouse wheel events.
 
-_[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.9.0...develop)_
+_[Detailed changes since v1.9.0](https://github.com/higlass/higlass/compare/v1.9.0...develop)_
 
 ## v1.9.0
 
