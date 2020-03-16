@@ -75,6 +75,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     tile.texts = {};
     tile.vertY = 0;
     tile.vertK = 1;
+    tile.prevY = 0;
+    tile.prevK = 1;
 
     tile.rectGraphics = new PIXI.Graphics();
     tile.textGraphics = new PIXI.Graphics();
@@ -530,6 +532,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           }
         }
 
+        // rectY = rectY * tile.prevK;
+        // rectHeight = rectHeight * tile.prevK;
+
         let alreadyDrawn = true;
 
         // don't draw anything that has already been drawn
@@ -546,8 +551,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             tile,
             xStartPos,
             xEndPos,
-            rectY,
-            rectHeight,
+            rectY * tile.prevK,
+            rectHeight * tile.prevK,
             geneInfo[5]
           );
 
@@ -827,7 +832,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           const txMiddle = (txStart + txEnd) / 2;
 
           text.position.x = this._xScale(txMiddle);
-          text.position.y = text.nominalY * tile.vertK + tile.vertY;
+          text.position.y =
+            text.nominalY * (tile.vertK * tile.prevK) + tile.vertY;
 
           if (!parentInFetched && !text.alreadyDrawn) {
             text.visible = true;
@@ -1024,7 +1030,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     const k0 = this.valueScaleTransform.k;
     const t0 = this.valueScaleTransform.y;
     const dp = (yPos - t0) / k0;
-    const k1 = Math.max(k0 / kMultiplier, 1.0);
+    let k1 = Math.max(k0 / kMultiplier, 1.0);
     let t1 = k0 * dp + t0 - k1 * dp;
     const height = this.dimensions[1];
     // clamp at the bottom
@@ -1050,13 +1056,24 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // this.pMain.scale.y = k1;
     // this.pMain.position.y = t1;
     Object.values(this.fetchedTiles).forEach(tile => {
+      k1 /= tile.prevK;
+
+      if (k1 > 1.5 || k1 < 1 / 1.5) {
+        // this is to make sure that annotations aren't getting
+        // too stretched vertically
+        tile.prevK *= k1;
+        tile.prevY = k1 * tile.prevY + t1;
+
+        k1 = 1;
+
+        this.renderTile(tile);
+      }
+
       tile.vertK = k1;
       tile.vertY = t1;
 
       tile.rectGraphics.scale.y = k1;
       tile.rectGraphics.position.y = t1;
-
-      // this.drawAxis(this.zoomedValueScale);
     });
 
     this.draw();
