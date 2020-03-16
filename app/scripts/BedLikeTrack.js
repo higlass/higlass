@@ -532,9 +532,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           }
         }
 
-        // rectY = rectY * tile.prevK;
-        // rectHeight = rectHeight * tile.prevK;
-
         let alreadyDrawn = true;
 
         // don't draw anything that has already been drawn
@@ -628,9 +625,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     if (tile.rendered) {
       this.removeTileRects(tile);
-      // return;
-      // tile.rectGraphics.clear();
-      //      return;
     }
 
     tile.drawnAtScale = this._xScale.copy();
@@ -643,8 +637,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // configure coloring of annotations if
     // this.options.colorEncoding is set
     this.setColorValueScale();
-
-    // let rendered = 0;
 
     if (tile.tileData && tile.tileData.length) {
       const fill =
@@ -788,9 +780,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   draw() {
     super.draw();
 
-    // graphics.clear();
-
-    // const maxValue = 0;
     this.allTexts = [];
     this.allBoxes = [];
 
@@ -869,11 +858,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     boxIntersect(allBoxes, (i, j) => {
       if (allTexts[i].importance > allTexts[j].importance) {
         if (allTexts[i].text.visible) {
-          // console.log('hiding:', i);
           allTexts[j].text.visible = false;
         }
       } else if (allTexts[j].text.visible) {
-        // console.log('hiding j', j);
         allTexts[i].text.visible = false;
       }
     });
@@ -887,16 +874,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   setDimensions(newDimensions) {
     super.setDimensions(newDimensions);
-
-    /*
-    // redraw the contents
-    for (const tile of this.visibleAndFetchedTiles()) {
-      // this.destroyTile(tile);
-      this.renderTile(tile);
-    }
-
-    this.draw();
-    */
   }
 
   zoomed(newXScale, newYScale) {
@@ -1068,20 +1045,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
 
     const zoomLevel = this.calculateZoomLevel();
-    // const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo,
-    //   zoomLevel, this.tilesetInfo.tile_size);
-
-    // // the position of the tile containing the query position
-    // const tilePos = this._xScale.invert(trackX) / tileWidth;
-    // console.log('tilePos', tilePos);
-
-    // const posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
-
-    // const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
-    // const fetchedTile = this.fetchedTiles[tileId];
-
-    // const dataX = this._xScale.invert(trackX);
-
     const point = [trackX, trackY];
 
     if (this.drawnRects[zoomLevel]) {

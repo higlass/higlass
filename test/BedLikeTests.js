@@ -10,6 +10,7 @@ import { expect } from 'chai';
 
 // Utils
 import {
+  waitForTilesLoaded,
   mountHGComponent,
   removeHGComponent,
   getTrackObjectFromHGC
@@ -17,11 +18,36 @@ import {
 
 configure({ adapter: new Adapter() });
 
-describe('Simple HiGlassComponent', () => {
+describe('BedLikeTrack |', () => {
   let hgc = null;
   let div = null;
 
-  describe('BedLikeTrack tests', () => {
+  describe('vertical scaling', () => {
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, viewConf1, done);
+    });
+
+    it('Zooms vertically', () => {
+      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'a');
+
+      // because we're loading tiles synchronously, they'll be loaded
+      // before the higlass component finishes measuring its size
+      // so we need to block the rerender call to see the effect
+      // of our zoomedY function
+      trackObj.rerender = () => {};
+
+      waitForTilesLoaded(hgc.instance(), () => {
+        trackObj.zoomedY(100, 0.8);
+        expect(trackObj.fetchedTiles['0.0'].rectGraphics.scale.y).to.eql(1.25);
+      });
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+  });
+
+  describe('Normal tests', () => {
     beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
     });
@@ -517,3 +543,198 @@ describe('Simple HiGlassComponent', () => {
     }
   };
 });
+
+const viewConf1 = {
+  editable: true,
+  zoomFixed: false,
+  trackSourceServers: [],
+  views: [
+    {
+      uid: 'aa',
+      tracks: {
+        top: [
+          {
+            uid: 'dnQAEksiRnC2bBOKcL9JxQ',
+            type: 'top-axis',
+            height: 20,
+            options: {}
+          },
+          {
+            type: 'bedlike',
+            data: {
+              type: 'local-tiles',
+              tilesetInfo: {
+                'x.0.0': {
+                  max_width: 31960,
+                  max_zoom: 0,
+                  min_pos: [0],
+                  max_pos: [31960],
+                  header: 'contig\tstart\tend\tname\tscore'
+                }
+              },
+              tiles: {
+                'x.0.0': [
+                  {
+                    uid: 'd49f9a05-b39e-4a85-aae5-e0141793da1f',
+                    xStart: 17271,
+                    xEnd: 17667,
+                    chrOffset: 0,
+                    fields: ['chr', 17271, 17667, 'annotation 1', '39.7'],
+                    importance: 0.9744638120748439
+                  },
+                  {
+                    uid: '684910d4-cd37-48da-bc23-5862bc6ef5ce',
+                    xStart: 17364,
+                    xEnd: 17664,
+                    chrOffset: 0,
+                    fields: ['chr', 17364, 17664, 'annotation 2', '59.1'],
+                    importance: 0.8423332345173808
+                  },
+                  {
+                    uid: 'e1b1cdb4-68e9-4902-bd2c-3a26bdeedffe',
+                    xStart: 17364,
+                    xEnd: 17658,
+                    chrOffset: 0,
+                    fields: ['chr', 17364, 17658, 'annotation 3', '27.9'],
+                    importance: 0.1704252983722232
+                  },
+                  {
+                    uid: '25825d76-a44e-462b-b58a-c35606871982',
+                    xStart: 17295,
+                    xEnd: 17811,
+                    chrOffset: 0,
+                    fields: ['chr', 17295, 17811, 'annotation 4', '25.6'],
+                    importance: 0.4054893980746901
+                  },
+                  {
+                    uid: '74b86f58-797e-4316-b455-c88cf8e94e5c',
+                    xStart: 17361,
+                    xEnd: 17652,
+                    chrOffset: 0,
+                    fields: ['chr', 17361, 17652, 'annotation 5', '57.2'],
+                    importance: 0.08369855257430192
+                  },
+                  {
+                    uid: '84e5efca-ff53-4368-b61e-59d28de23124',
+                    xStart: 17355,
+                    xEnd: 17673,
+                    chrOffset: 0,
+                    fields: ['chr', 17355, 17673, 'annotation 6', '43.7'],
+                    importance: 0.4723622846939204
+                  },
+                  {
+                    uid: '3fc063d9-4688-4226-9512-a980b650d0c1',
+                    xStart: 17346,
+                    xEnd: 17664,
+                    chrOffset: 0,
+                    fields: ['chr', 17346, 17664, 'annotation 7', '14.2'],
+                    importance: 0.16589513792465693
+                  },
+                  {
+                    uid: '3fdd9178-ba4e-4ff1-99ad-85480e3d4821',
+                    xStart: 17310,
+                    xEnd: 17664,
+                    chrOffset: 0,
+                    fields: ['chr', 17310, 17664, 'annotation 8', '14.2'],
+                    importance: 0.469265480855537
+                  },
+                  {
+                    uid: 'eb2b731e-e767-4e35-b4d0-fce396bb0244',
+                    xStart: 17343,
+                    xEnd: 17664,
+                    chrOffset: 0,
+                    fields: ['chr', 17343, 17664, 'annotation 9', '34.7'],
+                    importance: 0.5706965626465064
+                  }
+                ]
+              }
+            },
+            height: 297,
+            options: {
+              annotationHeight: 'scaled',
+              fontSize: 8,
+              name: 'PFAM Domains',
+              labelPosition: 'bottomRight',
+              labelColor: 'grey',
+              alternating: false,
+              annotationStyle: 'box',
+              fillColor: 'blue',
+              axisPositionHorizontal: 'right',
+              labelLeftMargin: 0,
+              labelRightMargin: 0,
+              labelTopMargin: 0,
+              labelBottomMargin: 0,
+              minHeight: 20,
+              maxAnnotationHeight: 10,
+              maxTexts: 1000,
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              valueColumn: null,
+              showTexts: true,
+              colorRange: [
+                '#000000',
+                '#652537',
+                '#bf5458',
+                '#fba273',
+                '#ffffe0'
+              ],
+              colorEncodingRange: false,
+              colorEncoding: false
+            },
+            uid: 'a',
+            width: 470
+          }
+        ],
+        center: [],
+        left: [],
+        right: [],
+        bottom: [],
+        whole: [],
+        gallery: []
+      },
+      layout: {
+        w: 12,
+        h: 11,
+        x: 0,
+        y: 0,
+        moved: false,
+        static: false
+      },
+      overlays: [
+        {
+          uid: 'G_Hmq9SGTSiNlsPALm5q7w',
+          includes: ['dnQAEksiRnC2bBOKcL9JxQ', 'buz51Tn0T_-ZN4mbtGV4VQ'],
+          options: {
+            extent: [[18579, 20027]],
+            orientationsAndPositions: [
+              {
+                orientation: '1d-horizontal',
+                position: {
+                  left: 0,
+                  top: 0,
+                  width: 470,
+                  height: 20
+                }
+              }
+            ]
+          },
+          fillColor: 'blue'
+        }
+      ],
+      initialXDomain: [16675.657112593486, 18105.83589286811],
+      initialYDomain: [-9116.921165661633, -8900.872881832913]
+    }
+  ],
+  zoomLocks: {
+    locksByViewUid: {},
+    locksDict: {}
+  },
+  locationLocks: {
+    locksByViewUid: {},
+    locksDict: {}
+  },
+  valueScaleLocks: {
+    locksByViewUid: {},
+    locksDict: {}
+  }
+};
