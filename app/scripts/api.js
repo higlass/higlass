@@ -684,8 +684,7 @@ const createApi = function api(context, pubSub) {
             break;
 
           case 'wheel':
-            self.hasWheelCallback = false;
-            self.wheelCallbackOptions = null;
+            self.numWheelCallbacks -= 1;
             apiPubSub.unsubscribe('wheel', callback);
             break;
 
@@ -861,7 +860,7 @@ const createApi = function api(context, pubSub) {
        * hgv.on('mouseMoveZoom', mmz);
        *
        * const wheelListener = event => console.log('Wheel', event);
-       * hgv.on('wheel', wheelListener, { keydownCondition: ["y", "Y"] });
+       * hgv.on('wheel', wheelListener);
        *
        * hgv.on('createSVG', (svg) => {
        *    const circle = document.createElement('circle');
@@ -889,9 +888,7 @@ const createApi = function api(context, pubSub) {
             return apiPubSub.subscribe('mouseMoveZoom', callback);
 
           case 'wheel':
-            self.hasWheelCallback = true;
-            // Use the third argument for the callback options.
-            self.wheelCallbackOptions = viewId;
+            self.numWheelCallbacks += 1;
             return apiPubSub.subscribe('wheel', callback);
 
           case 'rangeSelection':

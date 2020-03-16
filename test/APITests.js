@@ -830,42 +830,21 @@ describe('API Tests', () => {
       });
     });
 
-    it('triggers on wheel events with a key down condition', done => {
+    it('triggers on wheel events', done => {
       [div, api] = createElementAndApi(
         simple1dHorizontalVerticalAnd2dDataTrack
       );
       const hgc = api.getComponent();
       waitForTilesLoaded(hgc, () => {
-        api.on(
-          'wheel',
-          e => {
-            expect(e.origEvt.clientX).toEqual(30);
-            expect(e.origEvt.clientY).toEqual(40);
-            done();
-          },
-          { keydownCondition: ['y', 'Y'] }
-        );
+        api.on('wheel', e => {
+          expect(e.origEvt.clientX).toEqual(30);
+          expect(e.origEvt.clientY).toEqual(40);
+          done();
+        });
 
-        const keydownEvent = new KeyboardEvent('keydown', {
-          key: 'y'
-        });
-        const keyupEvent = new KeyboardEvent('keyup', {
-          key: 'y'
-        });
         const canvas = findCanvas(div);
-        // The wheel event that we expect to be emitted before keydown,
-        // and therefore not passed to the callback.
-        const wheelEventBad = {
-          clientX: 10,
-          clientY: 20,
-          forwarded: true,
-          target: canvas,
-          nativeEvent: undefined,
-          stopPropagation: () => {},
-          preventDefault: () => {}
-        };
-        // The wheel event that we expect to be emitted after keydown.
-        const wheelEventGood = {
+        // The wheel event that we expect to catch.
+        const wheelEvent = {
           clientX: 30,
           clientY: 40,
           forwarded: true,
@@ -875,10 +854,7 @@ describe('API Tests', () => {
           preventDefault: () => {}
         };
         // Simulate the wheel and keyboard events.
-        hgc.wheelHandler(wheelEventBad);
-        hgc.keyDownHandler(keydownEvent);
-        hgc.wheelHandler(wheelEventGood);
-        hgc.keyUpHandler(keyupEvent);
+        hgc.wheelHandler(wheelEvent);
       });
     });
 
