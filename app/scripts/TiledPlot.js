@@ -458,9 +458,11 @@ class TiledPlot extends React.Component {
     // Do nothing if HiGlass initialized already
     if (
       (this.state.init && !this.reset) ||
+      !this.trackRenderer ||
       !this.props.zoomToDataExtentOnInit()
-    )
+    ) {
       return;
+    }
 
     // Get the total number of track that are expecting a tilesetInfo
     const allTracksWithTilesetInfos = Object.keys(
@@ -482,16 +484,9 @@ class TiledPlot extends React.Component {
           typeof tilesetInfo !== 'undefined' && tilesetInfo !== true
       );
 
-    // Reduce the list of tracks to a dictionary of track ids. This is useful
-    // to speedup the subsequent filtering
-    const trackUids = allTracksWithTilesetInfos.reduce((a, b) => {
-      a[b.id] = true;
-      return a;
-    }, {});
-
-    // Only could tracks that are suppose to get a tileset
-    const loadedTilesetInfos = Object.keys(this.tracksByUidInit).filter(
-      trackUid => trackUids[trackUid]
+    // Only count tracks that are suppose to get a tileset
+    const loadedTilesetInfos = Object.values(this.tracksByUidInit).filter(
+      x => x
     ).length;
 
     if (allTracksWithTilesetInfos.length === loadedTilesetInfos) {
@@ -626,6 +621,8 @@ class TiledPlot extends React.Component {
       tracks,
       forceUpdate: Math.random()
     });
+
+    this.props.onResizeTrack();
   }
 
   closeMenus() {
@@ -1029,16 +1026,18 @@ class TiledPlot extends React.Component {
                     this.props.tracks,
                     trackUuid
                   );
-                  const trackPos = getTrackPositionByUid(
-                    this.props.tracks,
-                    includedTrack.uid
-                  );
+
                   if (!includedTrack) {
                     console.warn(
                       `OverlayTrack included uid (${trackUuid}) not found in the track list`
                     );
                     return null;
                   }
+
+                  const trackPos = getTrackPositionByUid(
+                    this.props.tracks,
+                    includedTrack.uid
+                  );
 
                   let orientation;
                   if (trackPos === 'top' || trackPos === 'bottom') {
@@ -2098,6 +2097,11 @@ class TiledPlot extends React.Component {
           // Reserved props
           ref={c => {
             this.trackRenderer = c;
+
+            // if tracks use "local-tiles" as a data source then
+            // we may have received a tileset info synchronously
+            // and need to check for it.
+            this.checkAllTilesetInfoReceived();
           }}
           // Custom props
           canvasElement={this.canvasElement}
@@ -2388,6 +2392,7 @@ TiledPlot.propTypes = {
   onTracksAdded: PropTypes.func,
   onUnlockValueScale: PropTypes.func,
   onValueScaleChanged: PropTypes.func,
+  onResizeTrack: PropTypes.func,
   overlays: PropTypes.array,
   openModal: PropTypes.func,
   pixiRenderer: PropTypes.object,

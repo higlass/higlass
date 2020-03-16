@@ -533,53 +533,6 @@ describe('Simple HiGlassComponent', () => {
     });
   });
 
-  describe('Gene Annotations Display', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={geneAnnotationsOnly}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Check to make sure that the rectangles are initially small', done => {
-      let track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'genes1');
-
-      const { views } = hgc.instance().state;
-      track = getTrackByUid(views.aa.tracks, 'genes1');
-
-      // console.log('setting views');
-      track.options.labelPosition = 'topLeft';
-
-      hgc.setState({
-        views
-      });
-      // console.log('track', track);
-
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-  });
-
   describe('2D Rectangle Annotations', () => {
     it('Cleans up previously created instances and mounts a new component', done => {
       if (hgc) {
@@ -1325,18 +1278,18 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Changes the value scale', done => {
-      hgc
-        .instance()
-        .tiledPlots.aa.trackRenderer.setCenter(
-          179943234.8692136,
-          180201760.5768778,
-          2887.21283197403,
-          true
-        );
+    // it('Changes the value scale', done => {
+    //   hgc
+    //     .instance()
+    //     .tiledPlots.aa.trackRenderer.setCenter(
+    //       179943234.8692136,
+    //       179901760.5768778,
+    //       2887.21283197403,
+    //       true
+    //     );
 
-      waitForTilesLoaded(hgc.instance(), done);
-    });
+    //   waitForTilesLoaded(hgc.instance(), done);
+    // });
 
     it('ensures that the new track domains are equal', () => {
       const track1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');

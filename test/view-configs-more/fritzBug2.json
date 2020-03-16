@@ -1,22 +1,14 @@
 {
   "editable": false,
-  "trackSourceServers": [
-    "/api/v1"
-  ],
+  "trackSourceServers": ["/api/v1"],
   "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
   "chromInfoPath": "https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19&type=json&cum=1",
   "views": [
     {
       "uid": "a_",
       "zoomFixed": true,
-      "initialXDomain": [
-        2829728720,
-        2881033286
-      ],
-      "initialYDomain": [
-        2829728720,
-        2881033286
-      ],
+      "initialXDomain": [2829728720, 2881033286],
+      "initialYDomain": [2829728720, 2881033286],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": false,
       "chromInfoPath": "https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
@@ -28,7 +20,6 @@
             "height": 60,
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
             "server": "http://higlass.io/api/v1",
-            "name": "Gene Annotations",
             "options": {
               "name": "Gene Annotations (hg19)",
               "minusStrandColor": "#999",
@@ -39,7 +30,6 @@
             "uid": "c",
             "chromInfoPath": "https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
             "type": "horizontal-chromosome-labels",
-            "name": "Chromosome Labels (hg19)",
             "height": 30
           }
         ],
@@ -48,7 +38,6 @@
             "uid": "d",
             "chromInfoPath": "https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
             "type": "vertical-chromosome-labels",
-            "name": "Chromosome Labels (hg19)",
             "width": 30
           }
         ],
@@ -64,14 +53,8 @@
                 "tilesetUid": "rao-gm12878-1kbmr",
                 "type": "heatmap",
                 "options": {
-                  "colorRange": [
-                    "#fff",
-                    "#bbb",
-                    "#777",
-                    "#222"
-                  ],
+                  "colorRange": ["#fff", "#bbb", "#777", "#222"],
                   "maxZoom": null,
-                  "name": "",
                   "orgName": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
                 }
               }
@@ -1726,16 +1709,11 @@
             "options": {
               "projectionFillColor": "rgba(232, 230, 255, 1)",
               "projectionStrokeColor": "rgba(99, 87, 255, 1)"
-            },
-            "name": "Viewport Projection"
+            }
           }
         ],
-        "right": [
-
-        ],
-        "bottom": [
-
-        ]
+        "right": [],
+        "bottom": []
       },
       "layout": {
         "w": 12,
@@ -1747,14 +1725,8 @@
     {
       "uid": "__a_",
       "zoomFixed": false,
-      "initialXDomain": [
-        2829728720,
-        2881033286
-      ],
-      "initialYDomain": [
-        2829728720,
-        2881033286
-      ],
+      "initialXDomain": [2829728720, 2881033286],
+      "initialYDomain": [2829728720, 2881033286],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
@@ -1766,7 +1738,6 @@
             "height": 60,
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
             "server": "http://higlass.io/api/v1",
-            "name": "Gene Annotations",
             "options": {
               "name": "Gene Annotations (hg19)",
               "minusStrandColor": "#999",
@@ -1777,7 +1748,6 @@
             "uid": "_c",
             "chromInfoPath": "https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
             "type": "horizontal-chromosome-labels",
-            "name": "Chromosome Labels (hg19)",
             "height": 30
           }
         ],
@@ -1786,7 +1756,6 @@
             "uid": "_d",
             "chromInfoPath": "https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
             "type": "vertical-chromosome-labels",
-            "name": "Chromosome Labels (hg19)",
             "width": 30
           }
         ],
@@ -1802,12 +1771,7 @@
                 "tilesetUid": "rao-gm12878-1kbmr",
                 "type": "heatmap",
                 "options": {
-                  "colorRange": [
-                    "#fff",
-                    "#bbb",
-                    "#777",
-                    "#222"
-                  ],
+                  "colorRange": ["#fff", "#bbb", "#777", "#222"],
                   "maxZoom": null,
                   "name": "",
                   "orgName": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
@@ -3458,12 +3422,8 @@
             }
           }
         ],
-        "right": [
-
-        ],
-        "bottom": [
-
-        ]
+        "right": [],
+        "bottom": []
       },
       "layout": {
         "w": 12,
@@ -3480,11 +3440,7 @@
     },
     "locksDict": {
       "lockWurst": {
-        "__a_": [
-          1,
-          1,
-          1
-        ]
+        "__a_": [1, 1, 1]
       }
     }
   },
@@ -3494,11 +3450,7 @@
     },
     "locksDict": {
       "lockWurst": {
-        "__a_": [
-          1,
-          1,
-          1
-        ]
+        "__a_": [1, 1, 1]
       }
     }
   }

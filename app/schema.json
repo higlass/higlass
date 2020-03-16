@@ -36,6 +36,16 @@
     "chromInfoPath": { "type": "string" }
   },
   "definitions": {
+    "data": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "tilesetInfo": { "type": "object" },
+        "children": { "type": "array" },
+        "tiles": { "type": "object" }
+      }
+    },
+
     "locks": {
       "slug": { "type": "string" },
 
@@ -281,24 +291,12 @@
         "properties": {
           "uid": { "type": "string" },
           "type": { "const": "heatmap" },
-          "data": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "type": { "type": "string" },
-              "children": { "type": "array" }
-            }
-          },
+          "data": { "$ref": "#/definitions/data" },
           "height": { "type": "number" },
-          "local": { "type": "boolean" },
-          "maxWidth": { "type": "number" },
-          "name": { "type": "string" },
           "options": { "type": "object" },
-          "orientation": { "type": "string" },
           "position": { "type": "string" },
           "server": { "type": "string" },
           "tilesetUid": { "type": "string" },
-          "transforms": { "type": "array" },
           "width": { "type": "number" }
         }
       },
@@ -321,17 +319,11 @@
       "enum_track": {
         "type": "object",
         "additionalProperties": false,
+        "required": ["type"],
         "properties": {
           "server": { "type": "string" },
           "tilesetUid": { "type": "string" },
-          "data": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "type": { "type": "string" },
-              "url": { "type": "string" }
-            }
-          },
+          "data": { "$ref": "#/definitions/data" },
           "uid": { "type": "string" },
           "type": {
             "enum": [
@@ -393,30 +385,10 @@
               "viewport-projection-vertical"
             ]
           },
-          "binsPerDimension": { "type": "number" },
           "chromInfoPath": { "type": "string" },
-          "created": { "type": "string" },
-          "defaultOptions": { "type": "object", "additionalProperties": false },
-          "description": { "type": "string" },
-          "filetype": { "type": "string" },
           "fromViewUid": { "type": "string" },
-          "header": { "type": "string" },
           "height": { "type": "number" },
-          "local": { "type": "boolean" },
-          "maxWidth": { "type": "number" },
-          "name": { "type": "string" },
           "options": { "type": "object" },
-          "orientation": { "type": "string" },
-          "position": { "type": "string" },
-          "project": { "type": "null" },
-          "project_name": { "type": "string" },
-          "thumbnail": {
-            "oneOf": [
-              { "type": "object", "additionalProperties": false },
-              { "type": "null" }
-            ]
-          },
-          "transforms": { "type": "array" },
           "width": { "type": "number" },
           "x": { "type": "number" },
           "y": { "type": "number" }

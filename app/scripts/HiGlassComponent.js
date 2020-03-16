@@ -3170,6 +3170,8 @@ class HiGlassComponent extends React.Component {
         delete track.datafile;
         delete track.filetype;
         delete track.binsPerDimension;
+        delete track.resolutions;
+        delete track.aggregationModes;
       });
 
       newView.uid = k.uid;
@@ -4405,6 +4407,7 @@ class HiGlassComponent extends React.Component {
             }
             onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
             onRangeSelection={this.rangeSelectionHandler.bind(this)}
+            onResizeTrack={this.triggerViewChangeDb}
             onScalesChanged={(x, y) => this.handleScalesChanged(view.uid, x, y)}
             onTrackOptionsChanged={(trackId, options) =>
               this.handleTrackOptionsChanged(view.uid, trackId, options)
