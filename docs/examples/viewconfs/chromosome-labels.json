@@ -1,34 +1,24 @@
 {
   "editable": true,
   "zoomFixed": false,
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["http://higlass.io/api/v1"],
   "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
-      "initialXDomain": [
-        7595655.0000270605,
-        2507738795.9999733
-      ],
-      "initialYDomain": [
-        -545671929.4383738,
-        3061006380.438374
-      ],
+      "initialXDomain": [7595655.0000270605, 2507738795.9999733],
+      "initialYDomain": [-545671929.4383738, 3061006380.438374],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
           {
-            "name": "Gene Annotations (hg19)",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
             "uid": "genes",
             "type": "horizontal-gene-annotations",
             "options": {
               "labelPosition": "hidden",
-              "name": "Gene Annotations (hg19)",
               "labelColor": "#999999",
               "plusStrandColor": "#999999",
               "minusStrandColor": "#999999",
@@ -42,8 +32,6 @@
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
-            "position": "top",
-            "name": "Chromosome Labels (hg19)",
             "height": 10,
             "uid": "chroms1",
             "options": {
@@ -57,8 +45,6 @@
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
-            "position": "top",
-            "name": "Chromosome Labels (hg19)",
             "height": 14,
             "uid": "chroms2",
             "options": {
@@ -73,8 +59,6 @@
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
-            "position": "top",
-            "name": "Chromosome Labels (hg19)",
             "uid": "chroms3",
             "height": 24,
             "options": {
@@ -86,7 +70,6 @@
         ],
         "left": [
           {
-            "name": "Gene Annotations (hg19)",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
             "uid": "genes2",
@@ -107,8 +90,6 @@
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "vertical-chromosome-labels",
-            "position": "top",
-            "name": "Chromosome Labels (hg19)",
             "width": 10,
             "uid": "chroms4",
             "options": {
@@ -122,8 +103,6 @@
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "vertical-chromosome-labels",
-            "position": "top",
-            "name": "Chromosome Labels (hg19)",
             "width": 14,
             "uid": "chroms5",
             "options": {
@@ -138,8 +117,6 @@
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "vertical-chromosome-labels",
-            "position": "top",
-            "name": "Chromosome Labels (hg19)",
             "uid": "chroms6",
             "width": 24,
             "options": {

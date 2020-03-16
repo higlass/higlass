@@ -20,6 +20,7 @@ import {
 import horizontalMultivecWithSmallerDimensions from './view-configs-more/horizontalMultivecWithSmallerDimensions';
 import horizontalMultivecWithZeroValueColorOption from './view-configs-more/horizontalMultivecWithZeroValueColorOption';
 import horizontalMultivecWithFilteredRows from './view-configs-more/horizontalMultivecWithFilteredRows';
+import horizontalMultivecWithAggregation from './view-configs-more/horizontalMultivecWithAggregation';
 
 // Constants
 import {
@@ -357,6 +358,104 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
+  it('Test horizontal multivec with aggregation of rows', done => {
+    horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationWithRelativeHeight = true;
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithAggregation,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'aggregation-view',
+          'aggregation-track'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toBeGreaterThanOrEqual(1);
+        expect(trackTiles[0].canvas.width).toEqual(256);
+        expect(trackTiles[0].canvas.height).toEqual(5);
+
+        const trackHeight = track.dimensions[1];
+        const itemHeight = trackHeight / 5;
+
+        let tooltipValue;
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 0 + 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('6.118');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 3 - 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('6.118');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 3 + 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.829');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 4 - 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.829');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 4 + 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.174');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 5 - 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.174');
+
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      }
+    );
+  });
+
+  it('Test horizontal multivec with aggregation of rows and static row height', done => {
+    horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationWithRelativeHeight = false;
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithAggregation,
+      () => {
+        const track = getTrackObjectFromHGC(
+          hgc.instance(),
+          'aggregation-view',
+          'aggregation-track'
+        ); // uuid of horizontal-multivec
+        const trackTiles = track.visibleAndFetchedTiles();
+        expect(trackTiles.length).toBeGreaterThanOrEqual(1);
+        expect(trackTiles[0].canvas.width).toEqual(256);
+        expect(trackTiles[0].canvas.height).toEqual(3);
+
+        const trackHeight = track.dimensions[1];
+        const itemHeight = trackHeight / 3;
+
+        let tooltipValue;
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 0 + 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('6.118');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 1 - 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('6.118');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 1 + 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.829');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 2 - 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.829');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 2 + 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.174');
+
+        tooltipValue = track.getVisibleData(40, itemHeight * 3 - 1);
+        expect(tooltipValue.substring(0, 5)).toEqual('0.174');
+
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      }
+    );
+  });
+
   afterAll(() => {
     removeHGComponent(div);
   });
@@ -385,7 +484,6 @@ const viewConf1 = {
           {
             uid: 'genes',
             tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            position: 'top',
             server: 'http://higlass.io/api/v1',
             type: 'horizontal-gene-annotations',
             height: 48,
@@ -408,8 +506,6 @@ const viewConf1 = {
               labelTopMargin: 0,
               labelBottomMargin: 0
             },
-            name: 'Gene Annotations (hg19)',
-            header: '',
             width: 793
           },
           {
@@ -417,7 +513,6 @@ const viewConf1 = {
             tilesetUid: 'PjIJKXGbSNCalUZO21e_HQ',
             height: 20,
             width: 793,
-            position: 'top',
             server: 'http://higlass.io/api/v1',
             type: 'horizontal-vector-heatmap',
             options: {
@@ -444,11 +539,6 @@ const viewConf1 = {
             name: 'GM12878-E116-H3K27ac.fc.signal'
           },
           {
-            name: 'Epilogos (hg19)',
-            created: '2018-07-07T23:40:51.460644Z',
-            project: null,
-            project_name: '',
-            description: '',
             server: '//higlass.io/api/v1',
             tilesetUid: 'ClhFclOOQMWKSebXaXItoA',
             uid: 'E11eXWkwRb22aKBbj_45_A',
@@ -488,34 +578,13 @@ const viewConf1 = {
               heatmapValueScaling: 'log'
             },
             width: 770,
-            height: 153,
-            resolutions: [
-              13107200,
-              6553600,
-              3276800,
-              1638400,
-              819200,
-              409600,
-              204800,
-              102400,
-              51200,
-              25600,
-              12800,
-              6400,
-              3200,
-              1600,
-              800,
-              400,
-              200
-            ],
-            position: 'top'
+            height: 153
           },
           {
             uid: 'chroms',
             height: 35,
             width: 793,
             chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            position: 'top',
             type: 'horizontal-chromosome-labels',
             options: {
               color: '#777777',
