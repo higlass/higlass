@@ -8,6 +8,8 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 // Utils
 import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
@@ -16,8 +18,10 @@ configure({ adapter: new Adapter() });
 describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
+  const fetchMockHelper = new FetchMockHelper('', 'LockTest');
 
-  beforeAll(done => {
+  beforeAll(async done => {
+    await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true
@@ -36,7 +40,8 @@ describe('Horizontal heatmaps', () => {
     expect(svg.length).to.be.above(1);
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
     removeHGComponent(div);
   });
 });
@@ -51,13 +56,13 @@ const viewconf = {
       initialXDomain: [731363996.8279142, 2368636003.1720853],
       autocompleteSource: '/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
       genomePositionSearchBox: {
-        autocompleteServer: '//higlass.io/api/v1',
+        autocompleteServer: 'http://higlass.io/api/v1',
         autocompleteId: 'OHJakQICQD6gTD7skx4EWA',
-        chromInfoServer: '//higlass.io/api/v1',
+        chromInfoServer: 'http://higlass.io/api/v1',
         chromInfoId: 'hg19',
         visible: true
       },
-      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+      chromInfoPath: 'http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
       tracks: {
         top: [],
         left: [],
@@ -68,7 +73,7 @@ const viewconf = {
             height: 608,
             contents: [
               {
-                server: '//higlass.io/api/v1',
+                server: 'http://higlass.io/api/v1',
                 tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
                 type: 'heatmap',
                 options: {
@@ -139,7 +144,7 @@ const viewconf = {
             height: 608,
             contents: [
               {
-                server: '//higlass.io/api/v1',
+                server: 'http://higlass.io/api/v1',
                 tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
                 type: 'heatmap',
                 uid: 'GjuZed1ySGW1IzZZqFB9BA',

@@ -9,6 +9,8 @@
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 import overlayAnnotations1d2dViewConf from './view-configs/overlay-annotations-1d-2d';
 import overlayChromGridViewConf from './view-configs/overlay-chrom-grid';
 
@@ -17,6 +19,11 @@ describe('Overlay Track:', () => {
   let api = null;
   let div = null;
   let viewConf;
+  const fetchMockHelper = new FetchMockHelper('', 'OverlayTrackTest');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
 
   describe('Annotation overlays:', () => {
     it('Should render', () => {
@@ -83,7 +90,7 @@ describe('Overlay Track:', () => {
       expect(overlayTrackObj.constructor.name).toEqual('ChromosomeGrid');
 
       hgc.pubSub.subscribe('requestReceived', url => {
-        if (url === '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv') {
+        if (url === 'http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv') {
           expect(!!overlayTrackObj.lineGraphics).toBe(true);
           expect(!!overlayTrackObj.lineGraphics1dH).toBe(true);
           expect(!!overlayTrackObj.lineGraphics1dV).toBe(true);
@@ -100,5 +107,9 @@ describe('Overlay Track:', () => {
       api = undefined;
       div = undefined;
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

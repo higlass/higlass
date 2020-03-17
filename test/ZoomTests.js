@@ -6,10 +6,17 @@ import { getTrackRenderer } from '../app/scripts/utils';
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 import viewConfig from './view-configs/two-bars-and-a-heatmap';
+import FetchMockHelper from './utils/FetchMockHelper';
 
 describe('Zoom tests', () => {
   let api;
   let div;
+
+  const fetchMockHelper = new FetchMockHelper(viewConfig, 'ZoomTests');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
 
   beforeEach(() => {
     [div, api] = createElementAndApi(viewConfig);
@@ -99,5 +106,9 @@ describe('Zoom tests', () => {
     removeDiv(div);
     api = undefined;
     div = undefined;
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

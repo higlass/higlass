@@ -8,6 +8,8 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 // Utils
 import { removeHGComponent } from '../app/scripts/utils';
 
@@ -32,6 +34,12 @@ function createElementAndAPI(viewConfig, options) {
 }
 
 describe('Simple HiGlassComponent', () => {
+  const fetchMockHelper = new FetchMockHelper('', 'OSMTests');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
+
   describe('Options tests', () => {
     it('creates an editable component', () => {
       const track = osmConf.views[0].tracks.center[0];
@@ -74,5 +82,9 @@ describe('Simple HiGlassComponent', () => {
     //   // auth headers
 
     // });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

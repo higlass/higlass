@@ -1,6 +1,7 @@
 /* eslint-env node, jasmine */
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import FetchMockHelper from './utils/FetchMockHelper';
 import {
   mountHGComponent,
   removeHGComponent,
@@ -16,8 +17,13 @@ configure({ adapter: new Adapter() });
 describe('View Config Editor', () => {
   let hgc = null;
   let div = null;
+  const fetchMockHelper = new FetchMockHelper(
+    viewConf,
+    'ViewConfigEditorTests'
+  );
 
-  beforeAll(done => {
+  beforeAll(async done => {
+    await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, viewConf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true
@@ -154,7 +160,8 @@ describe('View Config Editor', () => {
     ).toEqual(0);
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
     removeHGComponent(div);
   });
 });

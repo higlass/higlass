@@ -3,7 +3,7 @@
   "local": true,
   "orientation": "2d",
   "name": "Chromosome Grid (hg19)",
-  "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+  "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
   "thumbnail": null,
   "uid": "LUVqXXu2QYiO8XURIwyUyA",
   "options": {

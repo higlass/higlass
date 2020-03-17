@@ -7,6 +7,8 @@ import {
 import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
+import FetchMockHelper from './utils/FetchMockHelper';
+import viewportProjConf from './view-configs/viewport-projection-2';
 
 // Utils
 import {
@@ -22,6 +24,11 @@ configure({ adapter: new Adapter() });
 describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
+  const fetchMockHelper = new FetchMockHelper('', 'ViewManipulationTest');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
 
   describe('Viewconf change tests', () => {
     beforeAll(done => {
@@ -47,16 +54,10 @@ describe('Simple HiGlassComponent', () => {
 
   describe('Viewport projection tests', () => {
     beforeAll(done => {
-      [div, hgc] = mountHGComponent(
-        div,
-        hgc,
-        'http://higlass.io/api/v1/viewconfs/?d=KaeBVQQpTaqT0kfhE32boQ',
-        done,
-        {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true
-        }
-      );
+      [div, hgc] = mountHGComponent(div, hgc, viewportProjConf, done, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      });
     });
 
     it("Ensure that the viewport projection's borders are black", done => {
@@ -78,6 +79,10 @@ describe('Simple HiGlassComponent', () => {
     afterAll(() => {
       removeHGComponent(div);
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });
 

@@ -14,9 +14,7 @@
             "type": "horizontal-1d-annotations",
             "height": 100,
             "options": {
-              "regions": [
-                [1000000, 2000000]
-              ]
+              "regions": [[1000000, 2000000]]
             }
           }
         ],
@@ -35,15 +33,20 @@
               {
                 "type": "2d-chromosome-annotations",
                 "uid": "2d-chromosome-annotations",
-                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+                "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
                 "options": {
                   "minRectWidth": 6,
                   "minRectHeight": 6,
                   "regions": [
                     [
-                      "chr1", 1000000, 2000000,
-                      "chr1", 1000000, 2000000,
-                      "rgba(255, 0, 0, 0.33)", "rgba(255, 0, 0, 0.66)"
+                      "chr1",
+                      1000000,
+                      2000000,
+                      "chr1",
+                      1000000,
+                      2000000,
+                      "rgba(255, 0, 0, 0.33)",
+                      "rgba(255, 0, 0, 0.66)"
                     ]
                   ]
                 }

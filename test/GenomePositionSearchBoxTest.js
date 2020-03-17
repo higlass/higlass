@@ -7,6 +7,8 @@ import React from 'react';
 
 import HiGlassComponent from '../app/scripts/HiGlassComponent';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 import {
   waitForJsonComplete,
   waitForTilesLoaded,
@@ -20,8 +22,16 @@ configure({ adapter: new Adapter() });
 describe('Genome position search box tests', () => {
   let hgc = null;
   let div = null;
+  const fetchMockHelper = new FetchMockHelper(
+    geneAnnotationsOnly1,
+    'GenomePositionSearchBox'
+  );
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
 
   describe('Base genome position search box test', () => {
     it('Cleans up previously created instances and mounts a new component', done => {
@@ -324,5 +334,9 @@ describe('Genome position search box tests', () => {
         div = null;
       }
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

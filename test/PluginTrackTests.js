@@ -3,6 +3,7 @@
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 import { register } from './utils/DummyTrack';
+import FetchMockHelper from './utils/FetchMockHelper';
 
 import dummyTrackViewConf from './view-configs/dummy-track';
 
@@ -13,6 +14,14 @@ describe('Overlay Track:', () => {
   let api = null;
   let div = null;
   let viewConf;
+  const fetchMockHelper = new FetchMockHelper(
+    dummyTrackViewConf,
+    'PluginTrackTest'
+  );
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
 
   describe('Annotation overlays:', () => {
     it('Should render', () => {
@@ -40,5 +49,9 @@ describe('Overlay Track:', () => {
       api = undefined;
       div = undefined;
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

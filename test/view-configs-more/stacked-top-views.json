@@ -37,7 +37,7 @@
           {
             "uid": "chroms",
             "height": 20,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -80,7 +80,7 @@
             "height": 200,
             "contents": [
               {
-                "server": "//higlass.io/api/v1",
+                "server": "http://higlass.io/api/v1",
                 "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
                 "type": "heatmap",
                 "options": {
@@ -156,7 +156,7 @@
           {
             "uid": "chroms",
             "height": 20,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -231,7 +231,7 @@
           {
             "uid": "chroms",
             "height": 20,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -306,7 +306,7 @@
           {
             "uid": "chroms",
             "height": 20,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -381,7 +381,7 @@
           {
             "uid": "chroms",
             "height": 20,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -456,7 +456,7 @@
           {
             "uid": "chroms",
             "height": 20,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -531,7 +531,7 @@
           {
             "uid": "chroms",
             "height": 20,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -606,7 +606,7 @@
           {
             "uid": "chroms",
             "height": 20,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -681,7 +681,7 @@
           {
             "uid": "chroms",
             "height": 20,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -756,7 +756,7 @@
           {
             "uid": "chroms",
             "height": 20,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -831,7 +831,7 @@
           {
             "uid": "chroms",
             "height": 20,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -906,7 +906,7 @@
           {
             "uid": "chroms",
             "height": 20,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",

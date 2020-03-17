@@ -108,7 +108,7 @@
         "center": [],
         "bottom": []
       },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "genomePositionSearchBoxVisible": true
     }
   ],

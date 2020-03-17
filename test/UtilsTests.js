@@ -1,5 +1,6 @@
 /* eslint-env node, jasmine */
 import { expect } from 'chai';
+import FetchMockHelper from './utils/FetchMockHelper';
 
 // Utils
 import { visitPositionedTracks } from '../app/scripts/utils';
@@ -9,6 +10,12 @@ import selectedItemsToCumWeights from '../app/scripts/utils/selected-items-to-cu
 import { oneViewConfig } from './view-configs';
 
 describe('Utils tests', () => {
+  const fetchMockHelper = new FetchMockHelper(oneViewConfig, 'UtilsTest');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
+
   it('visitTrack should visit every track', () => {
     // add your tests here
     let found = false;
@@ -55,5 +62,9 @@ describe('Utils tests', () => {
     expect(weights[2]).to.be.closeTo(0.6, delta);
     expect(weights[3]).to.be.closeTo(0.8, delta);
     expect(weights[4]).to.be.closeTo(1, delta);
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

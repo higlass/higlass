@@ -2,7 +2,7 @@
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "//higlass.io/api/v1",
+    "http://higlass.io/api/v1",
     "https://resgen.io/api/v1/gt/paper-data"
   ],
   "exportViewUrl": "/api/v1/viewconfs",
@@ -12,13 +12,13 @@
       "initialXDomain": [1317287678.041166, 1317418424.0815825],
       "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBox": {
-        "autocompleteServer": "//higlass.io/api/v1",
+        "autocompleteServer": "http://higlass.io/api/v1",
         "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
-        "chromInfoServer": "//higlass.io/api/v1",
+        "chromInfoServer": "http://higlass.io/api/v1",
         "chromInfoId": "hg19",
         "visible": true
       },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
           {

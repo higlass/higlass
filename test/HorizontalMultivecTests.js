@@ -9,6 +9,8 @@ import Adapter from 'enzyme-adapter-react-16';
 import { select } from 'd3-selection';
 import ReactDOM from 'react-dom';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 // Utils
 import {
   mountHGComponent,
@@ -33,8 +35,10 @@ configure({ adapter: new Adapter() });
 describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
+  const fetchMockHelper = new FetchMockHelper('', 'HorizontalMultivecTest');
 
-  beforeAll(done => {
+  beforeAll(async done => {
+    await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, viewConf1, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true
@@ -456,7 +460,8 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
     removeHGComponent(div);
   });
 });
@@ -539,7 +544,7 @@ const viewConf1 = {
             name: 'GM12878-E116-H3K27ac.fc.signal'
           },
           {
-            server: '//higlass.io/api/v1',
+            server: 'http://higlass.io/api/v1',
             tilesetUid: 'ClhFclOOQMWKSebXaXItoA',
             uid: 'E11eXWkwRb22aKBbj_45_A',
             type: 'horizontal-vector-heatmap',
@@ -584,7 +589,8 @@ const viewConf1 = {
             uid: 'chroms',
             height: 35,
             width: 793,
-            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+            chromInfoPath:
+              'http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
             type: 'horizontal-chromosome-labels',
             options: {
               color: '#777777',
@@ -604,7 +610,7 @@ const viewConf1 = {
         whole: [],
         gallery: []
       },
-      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+      chromInfoPath: 'http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
       genomePositionSearchBoxVisible: false,
       genomePositionSearchBox: {
         visible: true,

@@ -9,6 +9,8 @@ import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 import { oneViewConfig } from './view-configs';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 // Utils
 import {
   mountHGComponent,
@@ -22,8 +24,10 @@ configure({ adapter: new Adapter() });
 describe('Add track(s)', () => {
   let hgc = null;
   let div = null;
+  const fetchMockHelper = new FetchMockHelper(oneViewConfig, 'AddTrackTests');
 
-  beforeAll(done => {
+  beforeAll(async done => {
+    await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, oneViewConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true
@@ -292,7 +296,8 @@ describe('Add track(s)', () => {
     });
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
     removeHGComponent(div);
   });
 });

@@ -1,0 +1,127 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": ["http://higlass.io/api/v1"],
+  "exportViewUrl": "/api/v1/viewconfs",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [591962189.026447, 2506518075.0087056],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteId": "P0PLbQMwTYGy-5uPIQid7A",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg38",
+        "visible": true
+      },
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [],
+        "left": [],
+        "center": [
+          {
+            "uid": "OwnjXvIgQlGyPGSPr-LY_Q",
+            "type": "combined",
+            "contents": [
+              {
+                "name": "Dekker Lab HFFc6 DpnII",
+                "created": "2018-04-24T14:27:13.612205Z",
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "D_8CofpyQoCqDqeA-A6A4g",
+                "uid": "aVC0KF3bSxaq_dnAF9rllA",
+                "type": "heatmap",
+                "options": {
+                  "backgroundColor": "#eeeeee",
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "showMousePosition": false,
+                  "mousePositionColor": "#999999",
+                  "showTooltip": false,
+                  "name": "Dekker Lab HFFc6 DpnII",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "transforms": [
+                  {
+                    "name": "KR",
+                    "value": "KR"
+                  },
+                  {
+                    "name": "ICE",
+                    "value": "weight"
+                  },
+                  {
+                    "name": "VC",
+                    "value": "VC"
+                  },
+                  {
+                    "name": "VC_SQRT",
+                    "value": "VC_SQRT"
+                  }
+                ],
+                "resolutions": [
+                  1000,
+                  2000,
+                  5000,
+                  10000,
+                  25000,
+                  50000,
+                  100000,
+                  250000,
+                  500000,
+                  1000000,
+                  2500000,
+                  5000000,
+                  10000000
+                ],
+                "position": "center"
+              }
+            ],
+            "position": "center",
+            "options": {},
+            "width": 1711,
+            "height": 932
+          }
+        ],
+        "right": [],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      },
+      "initialYDomain": [998229099.8562446, 2041108168.0826998],
+      "genomePositionSearchBoxVisible": false
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

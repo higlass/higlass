@@ -8,6 +8,8 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 // Utils
 import {
   mountHGComponent,
@@ -21,6 +23,12 @@ import { exportDataConfig } from './view-configs';
 configure({ adapter: new Adapter() });
 
 describe('Heatmaps', () => {
+  const fetchMockHelper = new FetchMockHelper('', 'HeatmapTest');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
+
   describe('Export heatmap data', () => {
     let hgc = null;
     let div = null;
@@ -154,6 +162,10 @@ describe('Heatmaps', () => {
       removeHGComponent(div);
     });
   });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
+  });
 });
 
 // enter either a viewconf link or a viewconf object
@@ -239,7 +251,7 @@ const baseConf = {
             type: 'combined',
             contents: [
               {
-                server: '//higlass.io/api/v1',
+                server: 'http://higlass.io/api/v1',
                 tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
                 type: 'heatmap',
                 uid: 'heatmap0',
@@ -260,7 +272,7 @@ const baseConf = {
 };
 
 const heatmapTrack = {
-  server: '//higlass.io/api/v1',
+  server: 'http://higlass.io/api/v1',
   tilesetUid: 'B2LevKBtRNiCMX372rRPLQ',
   type: 'heatmap',
   uid: 'heatmap1',

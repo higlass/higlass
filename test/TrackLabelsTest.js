@@ -5,11 +5,18 @@ import {
 } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
+import FetchMockHelper from './utils/FetchMockHelper';
 // Utils
 import { mountHGComponent } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
-describe('Minimal viewconfs', () => {
+describe('Track labels', () => {
+  const fetchMockHelper = new FetchMockHelper('', 'TrackLabelsTest');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
+
   describe('Minimal with CrossRule', () => {
     const viewconf = {
       editable: true,
@@ -25,7 +32,7 @@ describe('Minimal viewconfs', () => {
                 project: null,
                 project_name: '',
                 description: '',
-                server: '//higlass.io/api/v1',
+                server: 'http://higlass.io/api/v1',
                 tilesetUid: 'Hj6L9JuNRnC1004qQqV_LQ',
                 uid: 'a',
                 type: 'horizontal-bar',
@@ -56,5 +63,9 @@ describe('Minimal viewconfs', () => {
     afterAll(() => {
       // removeHGComponent(div);
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

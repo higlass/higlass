@@ -8,6 +8,8 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 // Utils
 import {
   mountHGComponent,
@@ -20,8 +22,10 @@ configure({ adapter: new Adapter() });
 describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
+  const fetchMockHelper = new FetchMockHelper('', 'HorizontalHeatmapTest');
 
-  beforeAll(done => {
+  beforeAll(async done => {
+    await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, zoomLimitViewConf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true
@@ -36,7 +40,8 @@ describe('Horizontal heatmaps', () => {
     expect(trackObj.calculateZoomLevel()).to.eql(1);
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
     removeHGComponent(div);
   });
 });

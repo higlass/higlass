@@ -3,7 +3,9 @@ import fetchMock from 'fetch-mock';
 const serverForFM = require('karma-server-side');
 
 class FetchMockHelper {
-  constructor(testName) {
+  constructor(viewConf, testName) {
+    this.checkViewConf(viewConf);
+
     fetchMock.config.fallbackToNetwork = false;
     fetchMock.config.warnOnFallback = false;
 
@@ -11,7 +13,8 @@ class FetchMockHelper {
 
     this.server = serverForFM;
 
-    this.mockedData = [];
+    this.mockedData = {};
+    this.writeToFile = false;
   }
 
   async getMockedData() {
@@ -26,7 +29,7 @@ class FetchMockHelper {
         if (fs.pathExistsSync(path)) {
           return fs.readJsonSync(path);
         }
-        return [];
+        return {};
       } catch (error) {
         return error;
       }
@@ -40,7 +43,13 @@ class FetchMockHelper {
     fetchMock.config.fallbackToNetwork = 'always';
 
     const response = await fetch(url, headers);
-    const data = response.json();
+    let data;
+
+    if (headers.headers['Content-Type'] === 'text/plain') {
+      data = response.text();
+    } else {
+      data = response.json();
+    }
 
     // Switch fetch-mock on again
     fetchMock.config.fallbackToNetwork = false;
@@ -54,73 +63,113 @@ class FetchMockHelper {
     // Since we are not using the actual mocking functionality of fetch-mock,
     // catch will intercept every call of the global fetch method
     fetchMock.catch(async (url, headers) => {
-      const cleanUrl = this.removeSessionIdFromUrl(url);
+      const [requestIds, isTileData] = this.getRequestIds(url);
+      let data = {};
 
-      let data;
-      // Check if we already have mocked data
-      if (this.mockedData.filter(item => item.url === cleanUrl).length > 0) {
-        data = this.mockedData.filter(mr => mr.url === cleanUrl)[0].data;
-        console.log(`Data for ${url} loaded from local file.`); // eslint-disable-line
+      // Check if all the requested data is already mocked
+      let isAllDataMocked = true;
+      requestIds.forEach(id => {
+        if (this.mockedData[id] === undefined) {
+          isAllDataMocked = false;
+        }
+      });
+
+      if (isAllDataMocked) {
+        requestIds.forEach(id => {
+          if (isTileData) {
+            data[id] = this.mockedData[id];
+          } else {
+            data = this.mockedData[id];
+          }
+        });
       } else {
+        this.writeToFile = true;
         // If there is no mocked data, load from server (specified in viewConf)
-        data = await this.getOriginalFetchResponse(url, headers);
-        this.addToStoredMockedData(cleanUrl, data);
-        /* eslint-disable */
-        console.log(
-          `Data for ${url} loaded from server and has been stored to file.`
+        console.warn(
+          `Not all requests have been mocked. Loading ${url} from server.`
         );
-        /* eslint-enable */
+        data = await this.getOriginalFetchResponse(url, headers);
+        this.addToMockedData(data, isTileData ? null : url, requestIds);
       }
       return data;
     });
   }
 
-  addToStoredMockedData(cleanUrl, newResponse) {
-    const mockedResponseObj = {
-      url: cleanUrl,
-      data: newResponse
-    };
-
-    // If the URL already exists, update new data otherwise add it.
-    if (
-      this.mockedData.filter(mr => mr.url === mockedResponseObj.url).length > 0
-    ) {
-      this.mockedData.filter(
-        mr => mr.url === mockedResponseObj.url
-      )[0] = mockedResponseObj;
+  addToMockedData(response, customId, requestIds) {
+    if (customId === null) {
+      // console.warn(ids);
+      for (const id of requestIds) {
+        // const id = rid.split('/')[1];
+        this.mockedData[id] = response[id] === undefined ? {} : response[id];
+      }
     } else {
-      this.mockedData.push(mockedResponseObj);
+      this.mockedData[customId] = response;
+    }
+  }
+
+  async storeMockedDataToFile() {
+    if (!this.writeToFile) {
+      return;
     }
 
-    const mockedResponsesJSON = JSON.stringify(this.mockedData);
+    const mockedResponsesJSON = JSON.stringify(this.mockedData, null, 1);
 
-    this.server
-      .run(this.testName, mockedResponsesJSON, function(testName, data) {
+    const response = await this.server.run(
+      this.testName,
+      mockedResponsesJSON,
+      function(testName, data) {
         try {
-          const fs = serverRequire('fs-extra'); // eslint-disable-line
-          const path = `./test/mocked-responses/${testName}.json`;
-          fs.writeFileSync(path, data);
+          // If the test is run by Travis, don't write the file
+          if (!process.env.TRAVIS) {
+            const fs = serverRequire('fs-extra'); // eslint-disable-line
+            const path = `./test/mocked-responses/${testName}.json`;
+            fs.writeFileSync(path, data);
+          }
         } catch (error) {
           return error;
         }
         return null;
-      })
-      .then(function(error) {
-        if (error !== null) {
-          console.error('Could not store mocked responses', error);
-        }
-      });
+      }
+    );
+
+    if (response !== null) {
+      console.error('Could not store mocked responses', response);
+    }
   }
 
-  resetFetchMock() {
+  async storeDataAndResetFetchMock() {
+    await this.storeMockedDataToFile();
     fetchMock.reset();
   }
 
-  removeSessionIdFromUrl(url) {
+  getRequestIds(url) {
     const urlParts = url.split('?');
-    const params = new URLSearchParams(urlParts[1]);
-    params.delete('s');
-    return `${urlParts[0]}?${params.toString()}`;
+
+    const isTileData =
+      url.includes('/tileset_info/') || url.includes('/tiles/');
+    const tileIds = [];
+
+    if (isTileData) {
+      const params = new URLSearchParams(urlParts[1]);
+
+      for (const p of params) {
+        if (p[0] === 'd') {
+          tileIds.push(p[1]);
+        }
+      }
+    } else {
+      tileIds.push(url);
+    }
+
+    return [tileIds, isTileData];
+  }
+
+  checkViewConf(viewConf) {
+    if (JSON.stringify(viewConf).includes('"//')) {
+      console.warn(
+        'Please use full URLs in your view config. // is not supported and might lead to errors.'
+      );
+    }
   }
 }
 

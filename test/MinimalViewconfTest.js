@@ -5,11 +5,18 @@ import {
 } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
+import FetchMockHelper from './utils/FetchMockHelper';
 // Utils
 import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
 describe('Minimal viewconfs', () => {
+  const fetchMockHelper = new FetchMockHelper('', 'MinimalViewConfTest');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
+
   describe('Crazy minimal', () => {
     const viewconf = {};
     let hgc = null;
@@ -70,16 +77,24 @@ describe('Minimal viewconfs', () => {
         }
       ]
     };
+
     let hgc = null;
     let div = null;
+
     beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
+
     it('can load and unload', () => {
       expect(true).to.equal(true);
     });
+
     afterAll(() => {
       removeHGComponent(div);
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

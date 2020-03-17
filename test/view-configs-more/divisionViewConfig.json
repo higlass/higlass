@@ -10,11 +10,11 @@
       "initialYDomain": [-679063376.6830564, 3737688490.1136293],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": false,
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
           {
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "height": 30,
             "uid": "I1QUF22JQJuJ38j9PS4iqw",
@@ -24,7 +24,7 @@
         ],
         "left": [
           {
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "vertical-chromosome-labels",
             "width": 30,
             "uid": "a-mFiHnBQ8uuI6UG3USWVA",
@@ -72,7 +72,7 @@
               },
               {
                 "type": "2d-chromosome-grid",
-                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+                "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
                 "uid": "LUVqXXu2QYiO8XURIwyUyA",
                 "options": {
                   "lineStrokeWidth": 1,

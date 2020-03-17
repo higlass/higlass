@@ -7,8 +7,9 @@ import {
   waitForTransitionsFinished
 } from '../app/scripts/utils';
 
-import { topAxisOnly } from './view-configs';
+import FetchMockHelper from './utils/FetchMockHelper';
 
+import { topAxisOnly } from './view-configs';
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 import viewConfig from './view-configs/viewport-projection';
@@ -20,6 +21,12 @@ describe('Simple HiGlassComponent', () => {
 
   let div0;
   let api0;
+
+  const fetchMockHelper = new FetchMockHelper('', 'ViewportProjectionTest');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
 
   describe('Viewport projection tests', () => {
     beforeEach(() => {
@@ -248,5 +255,9 @@ describe('Simple HiGlassComponent', () => {
       api = undefined;
       div = undefined;
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

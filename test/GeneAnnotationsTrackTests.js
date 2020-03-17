@@ -11,6 +11,8 @@ import { geneAnnotationsOnly } from './view-configs';
 
 import createElementAndApi from './utils/create-element-and-api';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 // Utils
 import {
   waitForTilesLoaded,
@@ -40,8 +42,13 @@ describe('Gene Annotations Tracks', () => {
   let div = null;
   let api = null;
   let hgc = null;
+  const fetchMockHelper = new FetchMockHelper(
+    geneAnnotationsOnly,
+    'GeneAnnotationsTrackTest'
+  );
 
-  beforeAll(() => {
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
     [div, api] = createElementAndApi(geneAnnotationsOnly);
     hgc = api.getComponent();
   });
@@ -123,7 +130,8 @@ describe('Gene Annotations Tracks', () => {
     expect(svgStr.indexOf('text')).to.be.above(0);
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
     api.destroy();
     removeDiv(div);
     api = undefined;

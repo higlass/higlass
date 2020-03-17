@@ -5,6 +5,7 @@ import {
 } from 'enzyme';
 
 import Adapter from 'enzyme-adapter-react-16';
+import FetchMockHelper from './utils/FetchMockHelper';
 
 // Utils
 import {
@@ -22,6 +23,15 @@ configure({ adapter: new Adapter() });
 describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
+
+  const fetchMockHelper = new FetchMockHelper(
+    simpleCenterViewConfig,
+    'TiledPixiTrackTests'
+  );
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
 
   describe('Tiled Pixi Track Tests', () => {
     beforeAll(done => {
@@ -53,5 +63,9 @@ describe('Simple HiGlassComponent', () => {
     afterAll(() => {
       removeHGComponent(div);
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

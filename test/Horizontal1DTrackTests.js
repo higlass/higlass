@@ -6,6 +6,8 @@ import {
   waitForTilesLoaded
 } from '../app/scripts/utils';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 
@@ -17,6 +19,14 @@ describe('Simple HiGlassComponent', () => {
   let api = null;
   let div = null;
   let viewConf;
+  const fetchMockHelper = new FetchMockHelper(
+    horizontal1dLineTrackWithConstViewConf,
+    'Horizontal1DTrackTest'
+  );
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
 
   describe('Horizontal1DLineTrack with const indicator', () => {
     it('check that the const indicators were rendered', done => {
@@ -86,5 +96,9 @@ describe('Simple HiGlassComponent', () => {
       api = undefined;
       div = undefined;
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

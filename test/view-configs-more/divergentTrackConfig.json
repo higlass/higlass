@@ -73,7 +73,7 @@
         "center": [],
         "bottom": []
       },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
       "genomePositionSearchBoxVisible": true,
       "genomePositionSearchBox": {
         "autocompleteServer": "http://higlass.io/api/v1",

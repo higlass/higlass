@@ -12,7 +12,7 @@
       "initialXDomain": [0, 3000000000],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [],
         "left": [],
@@ -46,7 +46,7 @@
               },
               {
                 "type": "2d-chromosome-grid",
-                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+                "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
                 "uid": "LUVqXXu2QYiO8XURIwyUyA",
                 "options": {
                   "lineStrokeWidth": 1,

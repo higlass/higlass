@@ -40,7 +40,7 @@
           {
             "uid": "chroms",
             "height": 20,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "options": {
               "color": "#777777",
@@ -335,7 +335,7 @@
         "whole": [],
         "gallery": []
       },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "genomePositionSearchBoxVisible": false
     }
   ],

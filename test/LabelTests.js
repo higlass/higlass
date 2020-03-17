@@ -7,6 +7,7 @@ import {
 import { expect } from 'chai';
 
 import Adapter from 'enzyme-adapter-react-16';
+import FetchMockHelper from './utils/FetchMockHelper';
 
 import {
   mountHGComponent,
@@ -19,6 +20,12 @@ import viewconf from './view-configs/label-margin';
 configure({ adapter: new Adapter() });
 
 describe('Simple HiGlassComponent', () => {
+  const fetchMockHelper = new FetchMockHelper(viewconf, 'LabelTest');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
+
   describe('Axis texts', () => {
     let hgc = null;
     let div = null;
@@ -112,5 +119,9 @@ describe('Simple HiGlassComponent', () => {
     afterAll(() => {
       removeHGComponent(div);
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

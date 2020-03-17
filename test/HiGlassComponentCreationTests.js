@@ -8,6 +8,10 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
+import viewConf from './view-configs/default';
+
 // Utils
 import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
@@ -16,22 +20,23 @@ configure({ adapter: new Adapter() });
 describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
+  const fetchMockHelper = new FetchMockHelper(
+    viewConf,
+    'HiGlassComponentCreationTest'
+  );
 
   describe('API tests', () => {
-    beforeAll(done => {
-      [div, hgc] = mountHGComponent(
-        div,
-        hgc,
-        'http://higlass.io/api/v1/viewconfs/?d=default',
-        done
-      );
+    beforeAll(async done => {
+      await fetchMockHelper.activateFetchMock();
+      [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
     });
 
     it('Ensures that the viewconf state is editable', () => {
       expect(hgc.instance().state.viewConfig.editable).to.eql(true);
     });
 
-    afterAll(() => {
+    afterAll(async () => {
+      await fetchMockHelper.storeDataAndResetFetchMock();
       removeHGComponent(div);
     });
   });

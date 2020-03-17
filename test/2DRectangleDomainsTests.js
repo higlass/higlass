@@ -8,6 +8,8 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 // Utils
 import {
   getTrackByUid,
@@ -23,8 +25,13 @@ configure({ adapter: new Adapter() });
 describe('2D Rectangular Domains', () => {
   let hgc = null;
   let div = null;
+  const fetchMockHelper = new FetchMockHelper(
+    viewconf,
+    '2DRectangleDomainsTests'
+  );
 
-  beforeAll(done => {
+  beforeAll(async done => {
+    await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true
@@ -65,7 +72,8 @@ describe('2D Rectangular Domains', () => {
     expect(Object.keys(trackObj.drawnRects).length).to.eql(6);
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
     removeHGComponent(div);
   });
 });

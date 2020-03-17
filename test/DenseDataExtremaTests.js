@@ -8,6 +8,8 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 // Utils
 import {
   mountHGComponent,
@@ -83,8 +85,13 @@ describe('Continuous scaling tests', () => {
   describe('Precise scaling of horizontal 1D tracks', () => {
     let hgc = null;
     let div = null;
+    const fetchMockHelper = new FetchMockHelper(
+      viewConf1DHorizontal,
+      'DenseDataExtrema1DH'
+    );
 
-    beforeAll(done => {
+    beforeAll(async done => {
+      await fetchMockHelper.activateFetchMock();
       [div, hgc] = mountHGComponent(div, hgc, viewConf1DHorizontal, done);
     });
 
@@ -213,7 +220,8 @@ describe('Continuous scaling tests', () => {
       expect(vs[1]).to.be.eql(91032);
     });
 
-    afterAll(() => {
+    afterAll(async () => {
+      await fetchMockHelper.storeDataAndResetFetchMock();
       removeHGComponent(div);
     });
   });
@@ -221,8 +229,13 @@ describe('Continuous scaling tests', () => {
   describe('Precise scaling of vertical 1D tracks', () => {
     let hgc = null;
     let div = null;
+    const fetchMockHelper = new FetchMockHelper(
+      viewConf1DVertical,
+      'DenseDataExtrema1DV'
+    );
 
-    beforeAll(done => {
+    beforeAll(async done => {
+      await fetchMockHelper.activateFetchMock();
       [div, hgc] = mountHGComponent(div, hgc, viewConf1DVertical, done);
     });
 
@@ -262,7 +275,8 @@ describe('Continuous scaling tests', () => {
       expect(vs2[1]).to.be.eql(1.5029296875);
     });
 
-    afterAll(() => {
+    afterAll(async () => {
+      await fetchMockHelper.storeDataAndResetFetchMock();
       removeHGComponent(div);
     });
   });
@@ -270,8 +284,13 @@ describe('Continuous scaling tests', () => {
   describe('Correct scaling of 2D tracks', () => {
     let hgc = null;
     let div = null;
+    const fetchMockHelper = new FetchMockHelper(
+      viewConf2D,
+      'DenseDataExtrema2D'
+    );
 
-    beforeAll(done => {
+    beforeAll(async done => {
+      await fetchMockHelper.activateFetchMock();
       [div, hgc] = mountHGComponent(div, hgc, viewConf2D, done, {
         style: 'width:600px; height:600px; background-color: lightgreen',
         bounded: true
@@ -318,7 +337,8 @@ describe('Continuous scaling tests', () => {
       });
     });
 
-    afterAll(() => {
+    afterAll(async () => {
+      await fetchMockHelper.storeDataAndResetFetchMock();
       removeHGComponent(div);
     });
   });

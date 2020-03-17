@@ -14,7 +14,7 @@
             "type": "horizontal-gene-annotations"
           },
           {
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "uid": "chroms-top"
           }
@@ -27,7 +27,7 @@
             "type": "vertical-gene-annotations"
           },
           {
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "vertical-chromosome-labels",
             "uid": "chroms-left"
           }

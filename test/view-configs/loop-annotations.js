@@ -1,7 +1,7 @@
 const viewconf = {
   editable: true,
   zoomFixed: false,
-  trackSourceServers: ['//higlass.io/api/v1'],
+  trackSourceServers: ['http://higlass.io/api/v1'],
   exportViewUrl: '/api/v1/viewconfs',
   views: [
     {
@@ -9,13 +9,13 @@ const viewconf = {
       initialXDomain: [1331614027.3846939, 1332167296.1945133],
       autocompleteSource: '/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
       genomePositionSearchBox: {
-        autocompleteServer: '//higlass.io/api/v1',
+        autocompleteServer: 'http://higlass.io/api/v1',
         autocompleteId: 'OHJakQICQD6gTD7skx4EWA',
-        chromInfoServer: '//higlass.io/api/v1',
+        chromInfoServer: 'http://higlass.io/api/v1',
         chromInfoId: 'hg19',
         visible: true
       },
-      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+      chromInfoPath: 'http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
       tracks: {
         top: [],
         left: [],
@@ -27,7 +27,7 @@ const viewconf = {
             contents: [
               {
                 name: 'HiCCUPS Loops',
-                server: '//higlass.io/api/v1',
+                server: 'http://higlass.io/api/v1',
                 tilesetUid: 'HunfK2D3R9iBdIq-YNYjiw',
                 uid: 't1',
                 type: '2d-rectangle-domains',

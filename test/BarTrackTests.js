@@ -26,7 +26,7 @@ configure({ adapter: new Adapter() });
 describe('BarTrack tests', () => {
   let hgc = null;
   let div = null;
-  const fetchMockHelper = new FetchMockHelper('BarTrackTest');
+  const fetchMockHelper = new FetchMockHelper(viewConf, 'BarTrackTest');
 
   beforeAll(async done => {
     // We need to make sure fetch-mock is active before mounting HG and executing tests,
@@ -62,8 +62,8 @@ describe('BarTrack tests', () => {
     });
   });
 
-  afterAll(() => {
-    fetchMockHelper.resetFetchMock();
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
     removeHGComponent(div);
   });
 });

@@ -5,6 +5,8 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 // Utils
 import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
@@ -17,7 +19,7 @@ const baseConf = {
             type: 'combined',
             contents: [
               {
-                server: '//higlass.io/api/v1',
+                server: 'http://higlass.io/api/v1',
                 tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
                 type: 'heatmap',
                 options: {
@@ -35,6 +37,12 @@ const baseConf = {
 configure({ adapter: new Adapter() });
 
 describe('SVG Export', () => {
+  const fetchMockHelper = new FetchMockHelper('', 'SvgExportTest');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
+
   describe('color bars 0-1 log', () => {
     let hgc = null;
     let div = null;
@@ -110,7 +118,7 @@ describe('SVG Export', () => {
                 type: 'combined',
                 contents: [
                   {
-                    server: '//higlass.io/api/v1',
+                    server: 'http://higlass.io/api/v1',
                     tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
                     type: 'heatmap',
                     options: {
@@ -197,5 +205,9 @@ describe('SVG Export', () => {
     afterAll(() => {
       removeHGComponent(div);
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

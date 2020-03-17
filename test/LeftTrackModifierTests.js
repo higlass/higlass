@@ -8,6 +8,8 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 // Utils
 import {
   mountHGComponent,
@@ -20,8 +22,10 @@ configure({ adapter: new Adapter() });
 describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
+  const fetchMockHelper = new FetchMockHelper('', 'LeftTrackModifierTests');
 
-  beforeAll(done => {
+  beforeAll(async done => {
+    await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, zoomLimitViewConf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true
@@ -38,7 +42,8 @@ describe('Horizontal heatmaps', () => {
     expect(trackObj.originalTrack.id).to.eql('tt');
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
     removeHGComponent(div);
   });
 });
@@ -47,7 +52,7 @@ describe('Horizontal heatmaps', () => {
 const zoomLimitViewConf = {
   editable: true,
   zoomFixed: false,
-  trackSourceServers: ['//higlass.io/api/v1'],
+  trackSourceServers: ['http://higlass.io/api/v1'],
   exportViewUrl: '/api/v1/viewconfs',
   views: [
     {
@@ -55,13 +60,13 @@ const zoomLimitViewConf = {
       initialXDomain: [2.9802322387695312e-8, 3099999999.9999995],
       autocompleteSource: '/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
       genomePositionSearchBox: {
-        autocompleteServer: '//higlass.io/api/v1',
+        autocompleteServer: 'http://higlass.io/api/v1',
         autocompleteId: 'OHJakQICQD6gTD7skx4EWA',
-        chromInfoServer: '//higlass.io/api/v1',
+        chromInfoServer: 'http://higlass.io/api/v1',
         chromInfoId: 'hg19',
         visible: true
       },
-      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+      chromInfoPath: 'http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
       tracks: {
         top: [],
         left: [
@@ -71,7 +76,7 @@ const zoomLimitViewConf = {
             project: "b'FZKFLh4bQ42x53NJokWJEg'",
             project_name: 'Bonev et al. 2017',
             description: '',
-            server: '//higlass.io/api/v1',
+            server: 'http://higlass.io/api/v1',
             tilesetUid: 'aVKtyKdXRS-pexA2DVdQ1Q',
             uid: 'tt',
             type: 'horizontal-bar',

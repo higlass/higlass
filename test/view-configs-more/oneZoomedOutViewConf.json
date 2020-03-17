@@ -9,7 +9,7 @@
       "initialXDomain": [1334468431.4636846, 2088815290.9593406],
       "initialYDomain": [1620859687.0934794, 1978456641.24886],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
           {

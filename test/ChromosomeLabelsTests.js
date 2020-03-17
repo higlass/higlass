@@ -8,6 +8,10 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
+import viewconf from './view-configs/chromosomeLabel';
+
 // Utils
 import {
   mountHGComponent,
@@ -21,8 +25,13 @@ configure({ adapter: new Adapter() });
 describe('Horizontal chromosome labels', () => {
   let hgc = null;
   let div = null;
+  const fetchMockHelper = new FetchMockHelper(
+    viewconf,
+    'ChromosomeLabelsTests'
+  );
 
-  beforeAll(done => {
+  beforeAll(async done => {
+    await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true
@@ -52,65 +61,8 @@ describe('Horizontal chromosome labels', () => {
     expect(trackObj.tickTexts).to.have.property('chr17');
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
     removeHGComponent(div);
   });
 });
-
-// enter either a viewconf link or a viewconf object
-const viewconf = {
-  zoomFixed: false,
-  views: [
-    {
-      layout: {
-        w: 6,
-        h: 2,
-        x: 0,
-        y: 0
-      },
-      uid: 'v1',
-      initialYDomain: [2541211477.406149, 2541211477.406149],
-      initialXDomain: [2530833240.1518626, 2548865408.153668],
-      tracks: {
-        left: [],
-        top: [
-          {
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'N12wVGG9SPiTkk03yUayUw',
-            uid: 't1',
-            type: 'horizontal-chromosome-labels',
-            options: {
-              color: '#808080',
-              stroke: '#ffffff',
-              fontSize: 12,
-              fontIsLeftAligned: false,
-              showMousePosition: true,
-              mousePositionColor: '#000000',
-              tickPositions: 'ends'
-            },
-            width: 20,
-            height: 30
-          }
-        ],
-        right: [],
-        center: [],
-        bottom: [],
-        whole: [],
-        gallery: []
-      },
-      chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-      genomePositionSearchBox: {
-        visible: true,
-        chromInfoServer: 'http://higlass.io/api/v1',
-        chromInfoId: 'hg19',
-        autocompleteServer: 'http://higlass.io/api/v1',
-        autocompleteId: 'OHJakQICQD6gTD7skx4EWA'
-      }
-    }
-  ],
-  editable: true,
-  viewEditable: true,
-  tracksEditable: true,
-  exportViewUrl: '/api/v1/viewconfs',
-  trackSourceServers: ['http://higlass.io/api/v1']
-};

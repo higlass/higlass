@@ -15,6 +15,8 @@ import {
   stackedTopViews
 } from './view-configs';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 import emptyConf from './view-configs-more/emptyConf';
 
 import simpleHeatmapViewConf from './view-configs/simple-heatmap';
@@ -42,6 +44,11 @@ function findCanvas(element) {
 describe('API Tests', () => {
   let div = null;
   let api = null;
+  const fetchMockHelper = new FetchMockHelper('', 'APITests');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
 
   describe('Options tests', () => {
     it('adjust view spacing', () => {
@@ -920,5 +927,9 @@ describe('API Tests', () => {
       api = undefined;
       div = undefined;
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

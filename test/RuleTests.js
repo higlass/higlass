@@ -5,6 +5,7 @@ import {
 } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
+import FetchMockHelper from './utils/FetchMockHelper';
 // Utils
 import {
   mountHGComponent,
@@ -14,6 +15,12 @@ import {
 
 configure({ adapter: new Adapter() });
 describe('Minimal viewconfs', () => {
+  const fetchMockHelper = new FetchMockHelper('', 'RuleTest');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
+
   describe('Minimal with CrossRule', () => {
     const viewconf = {
       views: [
@@ -87,5 +94,9 @@ describe('Minimal viewconfs', () => {
     afterAll(() => {
       removeHGComponent(div);
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

@@ -16,6 +16,8 @@ import slugid from 'slugid';
 import HiGlassComponent from '../app/scripts/HiGlassComponent';
 import HeatmapOptions from '../app/scripts/HeatmapOptions';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 // Utils
 import {
   scalesCenterAndK,
@@ -64,8 +66,13 @@ configure({ adapter: new Adapter() });
 describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
+  const fetchMockHelper = new FetchMockHelper('', 'HiGlassComponentTest');
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
 
   describe('Track positioning', () => {
     it('Cleans up previously created instances and mounts a new component', done => {
@@ -2765,5 +2772,9 @@ describe('Simple HiGlassComponent', () => {
         global.document.body.removeChild(div);
       }
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });
