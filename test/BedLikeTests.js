@@ -44,6 +44,8 @@ describe('BedLikeTrack |', () => {
 
     afterAll(() => {
       removeHGComponent(div);
+      div = null;
+      hgc = null;
     });
   });
 
