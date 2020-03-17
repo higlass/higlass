@@ -60,7 +60,6 @@ module.exports = config => {
       'test/PluginTrackTests.js',
       'test/PngExportTest.js',
       'test/RuleTests.js',
-      //'test/SchemaTests.js',
       'test/search_field_test.js',
       'test/SVGExportTest.js',
       'test/tile-proxy.js',

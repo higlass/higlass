@@ -25,8 +25,6 @@
             "type": "combined",
             "contents": [
               {
-                "name": "Dekker Lab HFFc6 DpnII",
-                "created": "2018-04-24T14:27:13.612205Z",
                 "server": "http://higlass.io/api/v1",
                 "tilesetUid": "D_8CofpyQoCqDqeA-A6A4g",
                 "uid": "aVC0KF3bSxaq_dnAF9rllA",
@@ -52,39 +50,6 @@
                   "scaleStartPercent": "0.00000",
                   "scaleEndPercent": "1.00000"
                 },
-                "transforms": [
-                  {
-                    "name": "KR",
-                    "value": "KR"
-                  },
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  },
-                  {
-                    "name": "VC",
-                    "value": "VC"
-                  },
-                  {
-                    "name": "VC_SQRT",
-                    "value": "VC_SQRT"
-                  }
-                ],
-                "resolutions": [
-                  1000,
-                  2000,
-                  5000,
-                  10000,
-                  25000,
-                  50000,
-                  100000,
-                  250000,
-                  500000,
-                  1000000,
-                  2500000,
-                  5000000,
-                  10000000
-                ],
                 "position": "center"
               }
             ],
@@ -103,10 +68,7 @@
         "w": 12,
         "h": 12,
         "x": 0,
-        "y": 0,
-        "i": "aa",
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "initialYDomain": [998229099.8562446, 2041108168.0826998],
       "genomePositionSearchBoxVisible": false

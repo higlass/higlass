@@ -52,13 +52,6 @@
                   "scaleEndPercent": "1.00000"
                 },
                 "uid": "GjuZed1ySGW1IzZZqFB9BA",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
                 "width": 1675,
                 "height": 872
               },
@@ -72,9 +65,7 @@
                   "projectionFillOpacity": 0.3,
                   "projectionStrokeOpacity": 0.7,
                   "strokeWidth": 1
-                },
-                "name": "Viewport Projection",
-                "position": "center"
+                }
               }
             ],
             "position": "center",
@@ -91,10 +82,7 @@
         "w": 12,
         "h": 12,
         "x": 0,
-        "y": 0,
-        "i": "aa",
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "initialYDomain": [1276863408.5778158, 1474332874.4920979]
     },
@@ -146,13 +134,6 @@
                   "scaleEndPercent": "1.00000"
                 },
                 "uid": "GjuZed1ySGW1IzZZqFB9BA",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
                 "width": 1675,
                 "height": 872
               },
@@ -166,9 +147,7 @@
                   "projectionFillOpacity": 0.3,
                   "projectionStrokeOpacity": 0.7,
                   "strokeWidth": 1
-                },
-                "name": "Viewport Projection",
-                "position": "center"
+                }
               }
             ],
             "position": "center",
@@ -185,10 +164,7 @@
         "w": 12,
         "h": 12,
         "x": 0,
-        "y": 12,
-        "i": "Te_co5VgTBWXO-bzJrE_Ww",
-        "moved": false,
-        "static": false
+        "y": 12
       },
       "initialYDomain": [1343567228.0907576, 1359671780.3263152]
     },
@@ -240,13 +216,6 @@
                   "scaleEndPercent": "1.00000"
                 },
                 "uid": "GjuZed1ySGW1IzZZqFB9BA",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
                 "width": 1675,
                 "height": 872
               }
@@ -265,10 +234,7 @@
         "w": 12,
         "h": 12,
         "x": 0,
-        "y": 24,
-        "i": "P3Bw-b8DRAiM0RkuQs8yxw",
-        "moved": false,
-        "static": false
+        "y": 24
       },
       "initialYDomain": [1349573297.8631985, 1350901646.1464818]
     }

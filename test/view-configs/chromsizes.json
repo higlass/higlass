@@ -14,8 +14,6 @@
             "type": "combined",
             "contents": [
               {
-                "name": "Chromosome Grid",
-                "created": "2018-09-19T14:10:50.358616Z",
                 "server": "http://higlass.io/api/v1",
                 "tilesetUid": "f2FZsbCBTbyIx7A-xiRq5Q",
                 "uid": "Mw2aWH9TTcu38t5OZlCYyA",
@@ -25,8 +23,7 @@
                   "lineStrokeColor": "grey"
                 },
                 "width": 819,
-                "height": 860,
-                "position": "center"
+                "height": 860
               }
             ],
             "position": "center",
@@ -46,10 +43,7 @@
         "w": 6,
         "h": 12,
         "x": 0,
-        "y": 0,
-        "i": "CU_JcrfjS1WAtkA_B_FgJA",
-        "moved": false,
-        "static": false
+        "y": 0
       },
       "uid": "CU_JcrfjS1WAtkA_B_FgJA",
       "genomePositionSearchBoxVisible": false,
