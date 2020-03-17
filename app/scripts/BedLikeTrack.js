@@ -45,7 +45,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     super(context, options);
 
     this.valueScaleTransform = zoomIdentity;
-    this.allDrawnRects = {};
   }
 
   /** Factor out some initialization code for the track. This is
@@ -425,15 +424,11 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
   }
 
-  /** The color value scale is used to make some value to a coloring */
+  /** The color value scale is used to map some value to a coloring */
   setColorValueScale() {
     this.colorValueScale = null;
 
-    if (
-      this.options &&
-      this.options.colorEncoding &&
-      this.options.colorEncoding !== 'none'
-    ) {
+    if (this.options && this.options.colorEncoding) {
       const min = this.options.colorEncodingRange
         ? +this.options.colorEncodingRange[0]
         : this.minVisibleValueInTiles(+this.options.colorEncoding);
@@ -484,10 +479,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         if (rectHeight === 'scaled') {
           rectHeight = rowScale.bandwidth();
 
-          if (
-            this.options.maxAnnotationHeight &&
-            this.options.maxAnnotationHeight !== 'none'
-          ) {
+          if (this.options.maxAnnotationHeight) {
             rectHeight = Math.min(
               rectHeight,
               +this.options.maxAnnotationHeight

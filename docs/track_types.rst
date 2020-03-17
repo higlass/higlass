@@ -45,7 +45,7 @@ column" section).
 
 Intervals can visually encode information using the following three ``options``:
 
-- **colorEncoding**: int or "none"
+- **colorEncoding**: int or null
     If set to a bed column number (1-based), use the values in that column to color the annotations. (default: "none")
 
 - **colorRange**: array of color values
@@ -63,7 +63,7 @@ Intervals can visually encode information using the following three ``options``:
 - **fontSize:**
     The font size for annotation labels (default 10)
 
-- **maxAnnotationHeight:** int or 'none'
+- **maxAnnotationHeight:** int or null
     The maximum annotation height when using 'scaled' annotation heights. Useful to avoid huge annotations. (default 'none')
 
 - **maxTexts**
@@ -549,6 +549,9 @@ Options
 - **colorbarPosition**: ['hidden', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'] - The position of the colorbar element.
 - **colorbarBackgroundColor**: The background color for the colorbar element.
 - **zeroValueColor**: The color to use for zero data values. By default, null, which uses the current color scale.
+- **selectRows**: Array of row indices (of the original multivec dataset) to include in the visualization. This enables filtering, sorting, and aggregation. By default, null, to show all rows and use the default ordering.
+- **selectRowsAggregationMode**: If the ``selectRows`` array contains subarrays, these will be treated as aggregation groups. This option can be used to define the aggregation function to use ("mean", "sum", "variance", "deviation"). By default, "mean".
+- **selectRowsAggregationWithRelativeHeight**: If the ``selectRows`` array contains subarrays, this option will determine whether the visual heights for the aggregated row groups will be scaled by the group size or always a single unit. By default, true.
 
 **Example:**
 
