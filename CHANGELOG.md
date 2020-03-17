@@ -7,6 +7,7 @@
 - Added the maxAnnotationHeight option to limit the size of annotations when using the scaled option for annotationHeight
 - Added the fontSize option for bedlike tracks
 - colorAnnotations are independent of valueScale
+- Vertical zooming on BedLike annotations
 
 _[Detailed changes since v1.9.0](https://github.com/higlass/higlass/compare/v1.9.0...develop)_
 
