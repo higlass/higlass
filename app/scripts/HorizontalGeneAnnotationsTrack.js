@@ -497,36 +497,6 @@ function renderMask(track, tile) {
   tile.rectMaskGraphics.drawRect(x, y, width, height);
 }
 
-/** When zooming, we want to do fast scaling rather than re-rendering
- * but if we do this too much, shapes (particularly arroheads) get
- * distorted. This function keeps track of how stretched the track is
- * and redraws it if it becomes too distorted (tileK < 0.5 or tileK > 2) */
-function stretchRects(track) {
-  Object.values(track.fetchedTiles)
-    // tile hasn't been drawn properly because we likely got some
-    // bogus data from the server
-    .forEach(tile => {
-      if (!tile.drawnAtScale) return;
-      const tileK =
-        (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
-        (track._xScale.domain()[1] - track._xScale.domain()[0]);
-
-      if (tileK > 2 || tileK < 0.5) {
-        // too stretched out, needs to be re-rendered
-        track.renderTile(tile);
-      } else {
-        // can be stretched a little bit, just need to set the scale
-        const newRange = track._xScale.domain().map(tile.drawnAtScale);
-        const posOffset = newRange[0];
-
-        tile.rectGraphics.scale.x = tileK;
-        tile.rectGraphics.position.x = -posOffset * tileK;
-        tile.rectMaskGraphics.scale.x = tileK;
-        tile.rectMaskGraphics.position.x = -posOffset * tileK;
-      }
-    });
-}
-
 class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
   /**
    * Create a new track for Gene Annotations
@@ -696,7 +666,10 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     renderMask(this, tile);
 
-    stretchRects(this);
+    trackUtils.stretchRects(this, [
+      x => x.rectGraphics,
+      x => x.rectMaskGraphics
+    ]);
 
     for (const text of Object.values(tile.texts)) {
       text.style = {
@@ -736,7 +709,10 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.geneAreaHeight = this.geneRectHeight;
     const fontSizeHalf = this.fontSize / 2;
 
-    stretchRects(this);
+    trackUtils.stretchRects(this, [
+      x => x.rectGraphics,
+      x => x.rectMaskGraphics
+    ]);
 
     Object.values(this.fetchedTiles)
       // tile hasn't been drawn properly because we likely got some

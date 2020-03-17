@@ -1285,18 +1285,18 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Changes the value scale', done => {
-      hgc
-        .instance()
-        .tiledPlots.aa.trackRenderer.setCenter(
-          179943234.8692136,
-          180201760.5768778,
-          2887.21283197403,
-          true
-        );
+    // it('Changes the value scale', done => {
+    //   hgc
+    //     .instance()
+    //     .tiledPlots.aa.trackRenderer.setCenter(
+    //       179943234.8692136,
+    //       179901760.5768778,
+    //       2887.21283197403,
+    //       true
+    //     );
 
-      waitForTilesLoaded(hgc.instance(), done);
-    });
+    //   waitForTilesLoaded(hgc.instance(), done);
+    // });
 
     it('ensures that the new track domains are equal', () => {
       const track1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');

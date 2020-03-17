@@ -45,23 +45,41 @@ column" section).
 
 Intervals can visually encode information using the following three ``options``:
 
-- **colorEncoding**: bool [default false]
-    If ``true`` the interval value is used for color encoding.
+- **colorEncoding**: int or null
+    If set to a bed column number (1-based), use the values in that column to color the annotations. (default: "none")
 
-- **colorRange: array**
-    A list of HEX colors that make up the continuous color map.
+- **colorRange**: array of color values
+    A list of colors that make up the continuous color map. Defaults to the same colormap used by the heatmap track.
 
-- **colorEncodingRange**: array
-    A tuple defining the minimum and maximum range value for color encoding.
+- **colorEncodingRange**: [Number, Number]
+    A tuple defining the minimum and maximum range value for color encoding. Defaults to the min and max values.
 
-- **plusStrandColor**
-    For stranded mode, the color of the plus strand entries
+- **fillColor:**
+    Fill color if annotations aren't stranded (default "blue")
+
+- **fillOpacity:**
+    The opacity of the annotations.
+
+- **fontSize:**
+    The font size for annotation labels (default 10)
+
+- **maxAnnotationHeight:** int or null
+    The maximum annotation height when using 'scaled' annotation heights. Useful to avoid huge annotations. (default 'none')
+
+- **maxTexts**
+    Limit the maximum number of texts that can be shown (default: 50)
 
 - **minusStrandColor**
-    For stranded mode, the color of the minus strand entries
+    For stranded mode, the color of the minus strand entries. Ignored if ``colorEncoding`` is set. (default "purple")
 
-- **fillColor**
-    Default color for any mode
+- **plusStrandColor**
+    For stranded mode, the color of the plus strand entries. Ignored if ``colorEncoding`` is set. (default "blue")
+
+- **showTexts**: 'yes' or 'no'
+    Show annotation labels? (default: no)
+
+- **valueColumn**: int or 'none'
+    Use one of the bed columns to scale the annotations along the y axis. (default 'none')
 
 Here is an example snippet. Used if the other options aren't set.
 

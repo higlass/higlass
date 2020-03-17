@@ -146,6 +146,7 @@ describe('Heatmaps', () => {
       const trackObj1 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap1');
 
       waitForTilesLoaded(hgc.instance(), () => {
+        // hgc.instance().api.zoomToDataExtent('v');
         expect(trackObj0.fetchedTiles['2.1.1.false'].tileData).to.not.eql(
           trackObj1.fetchedTiles['2.1.1.true'].tileData
         );
