@@ -239,7 +239,7 @@ describe('BedLikeTest', () => {
         autocompleteSource:
           'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
         genomePositionSearchBoxVisible: false,
-        chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+        chromInfoPath: 'http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
         tracks: {
           top: [
             {
