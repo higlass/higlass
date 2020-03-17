@@ -977,9 +977,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return [base, base];
   }
 
+  /** Move event for the y-axis */
   movedY(dY) {
-    // see the reasoning behind why the code in
-    // zoomedY is commented out.
     Object.values(this.fetchedTiles).forEach(tile => {
       const vst = this.valueScaleTransform;
       const { y, k } = vst;
@@ -994,6 +993,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.animate();
   }
 
+  /** Zoomed along the y-axis */
   zoomedY(yPos, kMultiplier) {
     const newTransform = trackUtils.zoomedY(
       yPos,
