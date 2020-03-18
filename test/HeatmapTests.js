@@ -25,6 +25,8 @@ configure({ adapter: new Adapter() });
 describe('Heatmaps', () => {
   const fetchMockHelper = new FetchMockHelper('', 'HeatmapTest');
 
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
   beforeAll(async () => {
     await fetchMockHelper.activateFetchMock();
   });

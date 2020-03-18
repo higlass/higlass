@@ -24,6 +24,8 @@ configure({ adapter: new Adapter() });
 describe('BedLikeTest', () => {
   const fetchMockHelper = new FetchMockHelper('', 'BedLikeTests');
 
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
   beforeAll(async () => {
     await fetchMockHelper.activateFetchMock();
   });

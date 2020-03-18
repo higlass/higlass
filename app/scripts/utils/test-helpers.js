@@ -16,7 +16,7 @@ import {
 
 import HiGlassComponent from '../HiGlassComponent';
 
-const TILE_LOADING_CHECK_INTERVAL = 100;
+const TILE_LOADING_CHECK_INTERVAL = 500;
 
 /**
  * Check if there are any active transitions that we
