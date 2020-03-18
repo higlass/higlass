@@ -22,7 +22,7 @@
             "height": 200,
             "contents": [
               {
-                "server": "//higlass.io/api/v1",
+                "server": "http://higlass.io/api/v1",
                 "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
                 "type": "heatmap",
                 "uid": "heatmap",
@@ -46,12 +46,10 @@
         "whole": [],
         "gallery": []
       },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv"
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv"
     }
   ],
   "editable": true,
   "exportViewUrl": "/api/v1/viewconfs",
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ]
+  "trackSourceServers": ["http://higlass.io/api/v1"]
 }

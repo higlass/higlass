@@ -142,10 +142,17 @@ describe('Heatmaps', () => {
     });
 
     it('tiles on the diagonal should be independent', done => {
-      const trackObj0 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap0');
-      const trackObj1 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap1');
-
       waitForTilesLoaded(hgc.instance(), () => {
+        const trackObj0 = getTrackObjectFromHGC(
+          hgc.instance(),
+          'v',
+          'heatmap0'
+        );
+        const trackObj1 = getTrackObjectFromHGC(
+          hgc.instance(),
+          'v',
+          'heatmap1'
+        );
         // hgc.instance().api.zoomToDataExtent('v');
         expect(trackObj0.fetchedTiles['2.1.1.false'].tileData).to.not.eql(
           trackObj1.fetchedTiles['2.1.1.true'].tileData

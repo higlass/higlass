@@ -17,7 +17,7 @@
         "top": [
           {
             "width": 462,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
             "height": 30,
             "type": "horizontal-chromosome-labels",
             "options": {},
@@ -136,7 +136,7 @@
         "left": [
           {
             "width": 30,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
             "height": 30,
             "type": "vertical-chromosome-labels",
             "options": {},
@@ -144,7 +144,7 @@
           }
         ]
       },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
       "genomePositionSearchBoxVisible": false
     },
     {
@@ -163,7 +163,7 @@
         "top": [
           {
             "width": 472,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
             "height": 30,
             "type": "horizontal-chromosome-labels",
             "options": {},
@@ -248,7 +248,7 @@
         "left": [
           {
             "width": 30,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
             "height": 30,
             "type": "vertical-chromosome-labels",
             "options": {},
@@ -288,7 +288,7 @@
           }
         ]
       },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
       "genomePositionSearchBoxVisible": false
     },
     {
@@ -322,7 +322,7 @@
           },
           {
             "width": 615,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
             "height": 30,
             "type": "horizontal-chromosome-labels",
             "options": {},
@@ -372,7 +372,7 @@
         "left": [
           {
             "width": 30,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
             "height": 30,
             "type": "vertical-chromosome-labels",
             "options": {},
@@ -380,7 +380,7 @@
           }
         ]
       },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
       "genomePositionSearchBoxVisible": false
     },
     {
@@ -414,7 +414,7 @@
           },
           {
             "width": 615,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
             "height": 30,
             "type": "horizontal-chromosome-labels",
             "options": {},
@@ -464,7 +464,7 @@
         "left": [
           {
             "width": 76,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+            "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
             "height": 324,
             "type": "vertical-chromosome-labels",
             "options": {},
@@ -472,7 +472,7 @@
           }
         ]
       },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
       "genomePositionSearchBoxVisible": false
     }
   ],
