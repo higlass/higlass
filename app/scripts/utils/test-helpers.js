@@ -16,7 +16,7 @@ import {
 
 import HiGlassComponent from '../HiGlassComponent';
 
-const TILE_LOADING_CHECK_INTERVAL = 500;
+const TILE_LOADING_CHECK_INTERVAL = 100;
 
 /**
  * Check if there are any active transitions that we
@@ -116,6 +116,13 @@ export const isWaitingOnTiles = hgc => {
       }
 
       if (trackObj.fetching && trackObj.fetching.size) {
+        return true;
+      }
+
+      if (
+        trackObj.fetchedTiles &&
+        Object.keys(trackObj.fetchedTiles).length === 0
+      ) {
         return true;
       }
     } else {
