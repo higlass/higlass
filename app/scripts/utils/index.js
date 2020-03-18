@@ -10,6 +10,7 @@ export {
   default as colorDomainToRgbaArray
 } from './color-domain-to-rgba-array';
 export { default as colorToHex } from './color-to-hex';
+export { default as colorToRgba } from './color-to-rgba';
 export { default as dataToGenomicLoci } from './data-to-genomic-loci';
 export { default as debounce } from './debounce';
 export { default as dictFromTuples } from './dict-from-tuples';
@@ -27,6 +28,7 @@ export {
 } from './get-default-track-for-datatype';
 export { default as getElementDim } from './get-element-dim';
 export { default as getTrackByUid } from './get-track-by-uid';
+export { default as getTrackConfFromHGC } from './get-track-conf-from-hgc';
 export { default as getTrackObjById } from './get-track-obj-by-id';
 export { default as getTrackPositionByUid } from './get-track-position-by-uid';
 export { default as getXylofon } from './get-xylofon';

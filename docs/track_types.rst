@@ -45,23 +45,41 @@ column" section).
 
 Intervals can visually encode information using the following three ``options``:
 
-- **colorEncoding**: bool [default false]
-    If ``true`` the interval value is used for color encoding.
+- **colorEncoding**: int or null
+    If set to a bed column number (1-based), use the values in that column to color the annotations. (default: "none")
 
-- **colorRange: array**
-    A list of HEX colors that make up the continuous color map.
+- **colorRange**: array of color values
+    A list of colors that make up the continuous color map. Defaults to the same colormap used by the heatmap track.
 
-- **colorEncodingRange**: array
-    A tuple defining the minimum and maximum range value for color encoding.
+- **colorEncodingRange**: [Number, Number]
+    A tuple defining the minimum and maximum range value for color encoding. Defaults to the min and max values.
 
-- **plusStrandColor**
-    For stranded mode, the color of the plus strand entries
+- **fillColor:**
+    Fill color if annotations aren't stranded (default "blue")
+
+- **fillOpacity:**
+    The opacity of the annotations.
+
+- **fontSize:**
+    The font size for annotation labels (default 10)
+
+- **maxAnnotationHeight:** int or null
+    The maximum annotation height when using 'scaled' annotation heights. Useful to avoid huge annotations. (default 'none')
+
+- **maxTexts**
+    Limit the maximum number of texts that can be shown (default: 50)
 
 - **minusStrandColor**
-    For stranded mode, the color of the minus strand entries
+    For stranded mode, the color of the minus strand entries. Ignored if ``colorEncoding`` is set. (default "purple")
 
-- **fillColor**
-    Default color for any mode
+- **plusStrandColor**
+    For stranded mode, the color of the plus strand entries. Ignored if ``colorEncoding`` is set. (default "blue")
+
+- **showTexts**: 'yes' or 'no'
+    Show annotation labels? (default: no)
+
+- **valueColumn**: int or 'none'
+    Use one of the bed columns to scale the annotations along the y axis. (default 'none')
 
 Here is an example snippet. Used if the other options aren't set.
 
@@ -111,6 +129,27 @@ all annotated exons in refseq. There are separate tracks for the different
 available species. Details on how gene annotation tracks are created is available
 in the `gene annotations section <data_preparation.html#gene-annotation-tracks>`_.
 
+
+Event Handlers
+--------------
+
+- **click**: Called when a gene annotaion is clicked on. The parameter to the callback is a single object whose format is described below. Genome coordinates are offsets from position 0 as if the chromosomes were laid out end-to-end.
+
+.. code-block:: javascript
+
+  {
+    type: "gene-annotation",
+    event: [PIXI.js event object],
+    payload: {
+      xStart: [int: genome coordinate ],
+      xStart: [int: genome coordinate ],
+      offset: [int: start of this annotations chromosome (genome coordinate)],
+      uid: [string: unique identifier for this annotation],
+      fields: [array: genePred formatted array of values],
+      ... other fields
+    }
+  }
+
 Heatmap
 =======
 
@@ -153,6 +192,7 @@ values are ones that can be used with CSS (see, for example, `Color Names
 
 - **valueScaleMin/valueScaleMax**: Absolute values limiting the value to color scale. The scale can be further adjusted within
 this range using the colorbar.
+- **zeroValueColor**: The color to use for zero data values. By default, null, which uses the current color scale. (``NaN`` values are not assigned any color)
 
 Rotated 2D Heatmap
 ==================
@@ -508,6 +548,10 @@ Options
 
 - **colorbarPosition**: ['hidden', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'] - The position of the colorbar element.
 - **colorbarBackgroundColor**: The background color for the colorbar element.
+- **zeroValueColor**: The color to use for zero data values. By default, null, which uses the current color scale.
+- **selectRows**: Array of row indices (of the original multivec dataset) to include in the visualization. This enables filtering, sorting, and aggregation. By default, null, to show all rows and use the default ordering.
+- **selectRowsAggregationMode**: If the ``selectRows`` array contains subarrays, these will be treated as aggregation groups. This option can be used to define the aggregation function to use ("mean", "sum", "variance", "deviation"). By default, "mean".
+- **selectRowsAggregationWithRelativeHeight**: If the ``selectRows`` array contains subarrays, this option will determine whether the visual heights for the aggregated row groups will be scaled by the group size or always a single unit. By default, true.
 
 **Example:**
 
@@ -537,22 +581,48 @@ Options
       colorbarBackgroundColor: '#ffffff'
     },
     width: 1500,
-    height: 700,
-    resolutions: [
-      16384000,
-      8192000,
-      4096000,
-      2048000,
-      1024000,
-      512000,
-      256000,
-      128000,
-      64000,
-      32000,
-      16000,
-      8000,
-      4000,
-      2000,
-      1000
-    ]
+    height: 700
+  }
+
+Viewport Projection
+===================
+
+track-type: ``viewport-projection-horizontal``, ``viewport-projection-vertical``, ``viewport-projection-center``
+
+Viewport projection tracks allow brushing interactions for an interval or area,
+which is optionally linked to the domain of another view.
+
+Properties
+--------
+
+- **fromViewUid**: The ``uid`` of the linked view, from which this track will obtain its domain. If null, then the ``projectionXDomain`` and/or ``projectionYDomain`` properties must be used instead.
+- **projectionXDomain**: ``[x0, x1]`` The x domain coordinates that define the selected interval. Only used if ``fromViewUid`` is null.
+- **projectionYDomain**: ``[y0, y1]`` The y domain coordinates that define the selected interval. Only used if ``fromViewUid`` is null.
+
+Options
+--------
+
+- **projectionFillColor**: The fill color for the brush selection rect element.
+- **projectionStrokeColor**: The stroke color for the brush selection rect element.
+- **projectionFillOpacity**: The opacity for the fill of the brush selection rect element.
+- **projectionStrokeOpacity**: The opacity for the stroke of the brush selection rect element.
+- **strokeWidth**: The stroke width for the brush selection rect element.
+
+
+**Example:**
+
+.. code-block:: javascript
+
+  {
+    "type": "viewport-projection-horizontal",
+    "uid": "my-track-id",
+    "fromViewUid": null,
+    "projectionXDomain": [225681609.97037065, 226375261.90599522],
+    "options": {
+      "projectionFillColor": "#F00",
+      "projectionStrokeColor": "#777",
+      "projectionFillOpacity": 0.3,
+      "projectionStrokeOpacity": 0.7,
+      "strokeWidth": 1
+    }
   }

@@ -72,7 +72,6 @@
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
-            "position": "top",
             "height": 24,
             "uid": "chroms"
           }

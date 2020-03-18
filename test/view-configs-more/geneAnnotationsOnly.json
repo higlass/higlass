@@ -1,10 +1,7 @@
 {
   "editable": true,
   "zoomFixed": false,
-  "trackSourceServers": [
-    "/api/v1",
-    "http://higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["/api/v1", "http://higlass.io/api/v1"],
   "exportViewUrl": "/api/v1/viewconfs/",
   "views": [
     {
@@ -17,8 +14,6 @@
             "width": 1173,
             "contents": [
               {
-                "name": "ChromosomeAxis",
-                "created": "2017-07-17T14:16:45.346835Z",
                 "server": "http://higlass.io/api/v1",
                 "tilesetUid": "NyITQvZsS_mOFNlz5C2LJg",
                 "uid": "YbYGI4JMSv-gkTPzL01pXQ",
@@ -32,8 +27,7 @@
                   "fontIsAligned": false
                 },
                 "width": 1173,
-                "height": 30,
-                "position": "top"
+                "height": 30
               },
               {
                 "uid": "MfwUm8OwSreXJqo31kralg",
@@ -46,13 +40,10 @@
                   "projectionStrokeOpacity": 0.7,
                   "strokeWidth": 1
                 },
-                "name": "ViewportProjection",
-                "position": "top",
                 "width": 1173,
                 "height": 30
               }
             ],
-            "position": "top",
             "options": {}
           },
           {
@@ -62,8 +53,6 @@
             "width": 1173,
             "contents": [
               {
-                "name": "Gene Annotations (hg38)",
-                "created": "2017-07-14T15:27:46.989053Z",
                 "server": "http://higlass.io/api/v1",
                 "tilesetUid": "P0PLbQMwTYGy-5uPIQid7A",
                 "uid": "genes1",
@@ -80,9 +69,7 @@
                   "name": "GeneAnnotations(hg38)"
                 },
                 "width": 1173,
-                "height": 55,
-                "header": "1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14",
-                "position": "top"
+                "height": 55
               },
               {
                 "uid": "EhOdm65ATsuoyA2PP_CWXw",
@@ -95,13 +82,10 @@
                   "projectionStrokeOpacity": 0.7,
                   "strokeWidth": 1
                 },
-                "name": "ViewportProjection",
-                "position": "top",
                 "width": 1173,
                 "height": 55
               }
             ],
-            "position": "top",
             "options": {}
           }
         ],
@@ -112,14 +96,8 @@
         "whole": [],
         "gallery": []
       },
-      "initialXDomain": [
-        1813877344.9998484,
-        1813954614.937772
-      ],
-      "initialYDomain": [
-        1813915981.414309,
-        1813960512.0861218
-      ],
+      "initialXDomain": [1813877344.9998484, 1813954614.937772],
+      "initialYDomain": [1813915981.414309, 1813960512.0861218],
       "layout": {
         "w": 12,
         "h": 12,

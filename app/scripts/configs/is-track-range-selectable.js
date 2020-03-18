@@ -20,6 +20,7 @@ export const IS_TRACK_RANGE_SELECTABLE = track => {
     case 'vertical-heatmap':
     case 'osm-tiles':
     case 'mapbox-tiles':
+    case 'horizontal-multivec':
       return true;
 
     case 'combined': {

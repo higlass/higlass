@@ -94,11 +94,6 @@ const valueScaleLocksConf = {
             type: 'combined',
             contents: [
               {
-                name: 'Dekker Lab HFFc6 DpnII',
-                created: '2018-04-24T14:27:13.612205Z',
-                project: "b'cL3CA5-MRTWdTmagn0Y_PA'",
-                project_name: '4DN',
-                description: '',
                 server: 'http://higlass.io/api/v1',
                 tilesetUid: 'D_8CofpyQoCqDqeA-A6A4g',
                 uid: 'M2cJVMQBQ_aoJm1iarEi4g',
@@ -129,44 +124,9 @@ const valueScaleLocksConf = {
                   scaleEndPercent: '1.00000'
                 },
                 width: 100,
-                height: 100,
-                transforms: [
-                  {
-                    name: 'KR',
-                    value: 'KR'
-                  },
-                  {
-                    name: 'VC',
-                    value: 'VC'
-                  },
-                  {
-                    name: 'VC_SQRT',
-                    value: 'VC_SQRT'
-                  },
-                  {
-                    name: 'ICE',
-                    value: 'weight'
-                  }
-                ],
-                resolutions: [
-                  1000,
-                  2000,
-                  5000,
-                  10000,
-                  25000,
-                  50000,
-                  100000,
-                  250000,
-                  500000,
-                  1000000,
-                  2500000,
-                  5000000,
-                  10000000
-                ],
-                position: 'center'
+                height: 100
               }
             ],
-            position: 'center',
             options: {}
           }
         ],
@@ -198,11 +158,6 @@ const valueScaleLocksConf = {
             type: 'combined',
             contents: [
               {
-                name: 'Dekker Lab HFFc6 DpnII',
-                created: '2018-04-24T14:27:13.612205Z',
-                project: "b'cL3CA5-MRTWdTmagn0Y_PA'",
-                project_name: '4DN',
-                description: '',
                 server: 'http://higlass.io/api/v1',
                 tilesetUid: 'D_8CofpyQoCqDqeA-A6A4g',
                 uid: 'M2cJVMQBQ_aoJm1iarEi4g',
@@ -233,44 +188,9 @@ const valueScaleLocksConf = {
                   scaleEndPercent: '1.00000'
                 },
                 width: 100,
-                height: 100,
-                transforms: [
-                  {
-                    name: 'KR',
-                    value: 'KR'
-                  },
-                  {
-                    name: 'VC',
-                    value: 'VC'
-                  },
-                  {
-                    name: 'VC_SQRT',
-                    value: 'VC_SQRT'
-                  },
-                  {
-                    name: 'ICE',
-                    value: 'weight'
-                  }
-                ],
-                resolutions: [
-                  1000,
-                  2000,
-                  5000,
-                  10000,
-                  25000,
-                  50000,
-                  100000,
-                  250000,
-                  500000,
-                  1000000,
-                  2500000,
-                  5000000,
-                  10000000
-                ],
-                position: 'center'
+                height: 100
               }
             ],
-            position: 'center',
             options: {}
           }
         ],

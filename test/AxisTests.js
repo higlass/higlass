@@ -56,7 +56,10 @@ describe('Simple HiGlassComponent', () => {
 
       const texts1 = track1.axis.axisTexts.map(x => x.text);
 
-      // make sure we don't find any scientific notation;
+      // make sure we find scientific notation;
+      // Note that 'scientific' is not always scientific notation. It rather
+      // corresponds to 'automatic'. Numbers with a short string representation
+      // might not be converted.
       for (const text of texts1) {
         expect(text.indexOf('e')).to.be.above(0);
       }

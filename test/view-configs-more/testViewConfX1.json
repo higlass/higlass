@@ -9,20 +9,13 @@
         "y": 0
       },
       "uid": "aa",
-      "initialYDomain": [
-        1096121668.3853111,
-        1134280885.3796637
-      ],
+      "initialYDomain": [1096121668.3853111, 1134280885.3796637],
       "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "initialXDomain": [
-        1118855399.4455326,
-        1892081638.541622
-      ],
+      "initialXDomain": [1118855399.4455326, 1892081638.541622],
       "tracks": {
         "bottom": [],
         "top": [
           {
-            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
             "type": "horizontal-line",
@@ -35,11 +28,9 @@
             },
             "width": 20,
             "height": 20,
-            "position": "top",
             "uid": "hline1"
           },
           {
-            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
             "type": "horizontal-bar",
@@ -52,7 +43,6 @@
             },
             "width": 20,
             "height": 20,
-            "position": "top",
             "uid": "hbar1"
           },
           {
@@ -60,7 +50,6 @@
             "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
             "server": "http://higlass.io/api/v1",
             "width": 1007,
-            "position": "top",
             "height": 130,
             "type": "horizontal-heatmap",
             "options": {
@@ -74,13 +63,11 @@
                 "black"
               ],
               "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
-            },
-            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+            }
           }
         ],
         "left": [
           {
-            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
             "type": "vertical-bar",
@@ -92,7 +79,6 @@
             },
             "width": 20,
             "height": 20,
-            "position": "top",
             "uid": "vbar1"
           },
           {
@@ -100,7 +86,6 @@
             "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
             "server": "http://higlass.io/api/v1",
             "width": 130,
-            "position": "top",
             "height": 230,
             "type": "vertical-heatmap",
             "options": {
@@ -114,8 +99,7 @@
                 "black"
               ],
               "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
-            },
-            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+            }
           }
         ],
         "right": [],
@@ -126,7 +110,6 @@
             "height": 1088,
             "contents": [
               {
-                "name": "Dixon et al. (2015) H1_TB HindIII (allreps) 1kb",
                 "server": "http://higlass.io/api/v1",
                 "tilesetUid": "B2LevKBtRNiCMX372rRPLQ",
                 "uid": "heatmap3",
@@ -141,15 +124,12 @@
                   ],
                   "maxZoom": null,
                   "colorbarLabelsPosition": "outside",
-                  "colorbarPosition": "topLeft",
-                  "name": "New tileset"
+                  "colorbarPosition": "topLeft"
                 },
                 "width": 20,
-                "height": 20,
-                "position": "center"
+                "height": 20
               }
             ],
-            "position": "center",
             "options": {},
             "width": 961
           }
@@ -165,9 +145,7 @@
     "locksByViewUid": {},
     "locksDict": {}
   },
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["http://higlass.io/api/v1"],
   "locationLocks": {
     "locksByViewUid": {
       "aa": "OVICp__mSY28et2KqFyBFg",
@@ -175,11 +153,7 @@
     },
     "locksDict": {
       "OVICp__mSY28et2KqFyBFg": {
-        "aa": [
-          1550000000,
-          1550000000,
-          3380588.876772046
-        ],
+        "aa": [1550000000, 1550000000, 3380588.876772046],
         "ewZvJwlDSei_dbpIAkGMlg": [
           1550000000.0000002,
           1549999999.9999993,

@@ -10,9 +10,15 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
   constructor(context, options) {
     super(context, options);
 
-    const { onMouseMoveZoom } = context;
+    const {
+      onMouseMoveZoom,
+      isValueScaleLocked,
+      getLockGroupExtrema
+    } = context;
 
     this.onMouseMoveZoom = onMouseMoveZoom;
+    this.isValueScaleLocked = isValueScaleLocked;
+    this.getLockGroupExtrema = getLockGroupExtrema;
 
     if (this.onMouseMoveZoom) {
       this.pubSubs.push(
@@ -183,13 +189,103 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     // unless the data scale changes or something like that
   }
 
+  scheduleRerender() {
+    this.backgroundTaskScheduler.enqueueTask(
+      this.handleRerender.bind(this),
+      null,
+      this.uuid
+    );
+  }
+
+  handleRerender() {
+    this.rerender(this.options, false);
+  }
+
+  getIndicesOfVisibleDataInTile(tile) {
+    const visible = this._xScale.range();
+
+    const { tileX, tileWidth } = this.getTilePosAndDimensions(
+      tile.tileData.zoomLevel,
+      tile.tileData.tilePos,
+      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size
+    );
+
+    const tileXScale = scaleLinear()
+      .domain([
+        0,
+        this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension
+      ])
+      .range([tileX, tileX + tileWidth]);
+
+    const start = Math.max(
+      0,
+      Math.round(tileXScale.invert(this._xScale.invert(visible[0])))
+    );
+    const end = Math.min(
+      tile.tileData.dense.length,
+      Math.round(tileXScale.invert(this._xScale.invert(visible[1])))
+    );
+
+    return [start, end];
+  }
+
+  /**
+   * Returns the minimum in the visible area (not visible tiles)
+   */
+  minVisibleValue(ignoreFixedScale = false) {
+    let visibleAndFetchedIds = this.visibleAndFetchedIds();
+
+    if (visibleAndFetchedIds.length === 0) {
+      visibleAndFetchedIds = Object.keys(this.fetchedTiles);
+    }
+
+    const minimumsPerTile = visibleAndFetchedIds
+      .map(x => this.fetchedTiles[x])
+      .map(tile => {
+        const ind = this.getIndicesOfVisibleDataInTile(tile);
+        return tile.tileData.denseDataExtrema.getMinNonZeroInSubset(ind);
+      });
+
+    const min = Math.min(...minimumsPerTile);
+
+    if (ignoreFixedScale) return min;
+
+    return this.valueScaleMin !== null ? this.valueScaleMin : min;
+  }
+
+  /**
+   * Returns the maximum in the visible area (not visible tiles)
+   */
+  maxVisibleValue(ignoreFixedScale = false) {
+    let visibleAndFetchedIds = this.visibleAndFetchedIds();
+
+    if (visibleAndFetchedIds.length === 0) {
+      visibleAndFetchedIds = Object.keys(this.fetchedTiles);
+    }
+
+    const maximumsPerTile = visibleAndFetchedIds
+      .map(x => this.fetchedTiles[x])
+      .map(tile => {
+        const ind = this.getIndicesOfVisibleDataInTile(tile);
+        return tile.tileData.denseDataExtrema.getMaxNonZeroInSubset(ind);
+      });
+
+    const max = Math.max(...maximumsPerTile);
+
+    if (ignoreFixedScale) return max;
+
+    return this.valueScaleMax !== null ? this.valueScaleMax : max;
+  }
+
   /**
    * Return an aggregated visible value. For example, the minimum or maximum.
    *
    * @description
-   *   The difference to `minVisibleValue`
+   *   The difference to `minVisibleValueInTiles`
    *   is that the truly visible min or max value is returned instead of the
    *   min or max value of the tile. The latter is not necessarily visible.
+   *
+   *   For 'min' and 'max' this is identical to minVisibleValue and maxVisibleValue
    *
    * @param  {string} aggregator Aggregation method. Currently supports `min`
    *   and `max` only.

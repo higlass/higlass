@@ -52,11 +52,6 @@ const zoomLimitViewConf = {
       tracks: {
         top: [
           {
-            name: 'Dekker Lab HFFc6 DpnII',
-            created: '2018-04-24T14:27:13.612205Z',
-            project: null,
-            project_name: '',
-            description: '',
             server: 'http://higlass.io/api/v1',
             tilesetUid: 'D_8CofpyQoCqDqeA-A6A4g',
             uid: 'tt',
@@ -81,41 +76,7 @@ const zoomLimitViewConf = {
               name: 'Dekker Lab HFFc6 DpnII'
             },
             width: 570,
-            height: 101,
-            transforms: [
-              {
-                name: 'VC_SQRT',
-                value: 'VC_SQRT'
-              },
-              {
-                name: 'KR',
-                value: 'KR'
-              },
-              {
-                name: 'ICE',
-                value: 'weight'
-              },
-              {
-                name: 'VC',
-                value: 'VC'
-              }
-            ],
-            resolutions: [
-              1000,
-              2000,
-              5000,
-              10000,
-              25000,
-              50000,
-              100000,
-              250000,
-              500000,
-              1000000,
-              2500000,
-              5000000,
-              10000000
-            ],
-            position: 'top'
+            height: 101
           }
         ],
         left: [],
