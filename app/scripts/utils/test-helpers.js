@@ -118,13 +118,6 @@ export const isWaitingOnTiles = hgc => {
       if (trackObj.fetching && trackObj.fetching.size) {
         return true;
       }
-
-      if (
-        trackObj.fetchedTiles &&
-        Object.keys(trackObj.fetchedTiles).length === 0
-      ) {
-        return true;
-      }
     } else {
       throw Error('"server" and "tilesetUid" belong together');
     }

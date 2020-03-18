@@ -20,7 +20,7 @@ import { simpleCenterViewConfig } from './view-configs';
 
 configure({ adapter: new Adapter() });
 
-describe('Simple HiGlassComponent', () => {
+describe('TiledPixiTrackTest', () => {
   let hgc = null;
   let div = null;
 

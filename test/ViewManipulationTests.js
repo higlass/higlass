@@ -21,7 +21,7 @@ import { emptyConf } from './view-configs';
 
 configure({ adapter: new Adapter() });
 
-describe('Simple HiGlassComponent', () => {
+describe('ViewManipulationTest', () => {
   let hgc = null;
   let div = null;
   const fetchMockHelper = new FetchMockHelper('', 'ViewManipulationTest');

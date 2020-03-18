@@ -20,7 +20,7 @@ import viewconf from './view-configs/axis';
 
 configure({ adapter: new Adapter() });
 
-describe('Simple HiGlassComponent', () => {
+describe('AxisTests', () => {
   let hgc = null;
   let div = null;
   const fetchMockHelper = new FetchMockHelper(viewconf, 'AxisTests');

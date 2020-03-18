@@ -17,7 +17,7 @@ import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
 
-describe('Simple HiGlassComponent', () => {
+describe('HiGlassComponentCreationTest', () => {
   let hgc = null;
   let div = null;
   const fetchMockHelper = new FetchMockHelper(

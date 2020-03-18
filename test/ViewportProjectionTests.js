@@ -15,7 +15,7 @@ import removeDiv from './utils/remove-div';
 import viewConfig from './view-configs/viewport-projection';
 import viewConfigWithoutFromViewUids from './view-configs-more/viewportProjectionsWithoutFromViewUids';
 
-describe('Simple HiGlassComponent', () => {
+describe('ViewportProjectonTests', () => {
   let api;
   let div;
 

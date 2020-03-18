@@ -33,7 +33,7 @@ function createElementAndAPI(viewConfig, options) {
   return [div, api];
 }
 
-describe('Simple HiGlassComponent', () => {
+describe('OSMTest', () => {
   const fetchMockHelper = new FetchMockHelper('', 'OSMTests');
 
   beforeAll(async () => {

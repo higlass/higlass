@@ -63,7 +63,7 @@ import {
 
 configure({ adapter: new Adapter() });
 
-describe('Simple HiGlassComponent', () => {
+describe('HiGlassComponentTest', () => {
   let hgc = null;
   let div = null;
   const fetchMockHelper = new FetchMockHelper('', 'HiGlassComponentTest');

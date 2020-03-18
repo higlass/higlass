@@ -14,7 +14,7 @@ import removeDiv from './utils/remove-div';
 import horizontal1dLineTrackWithConstViewConf from './view-configs/horizontal-1d-line-track-with-const';
 import { horizontalLineEnd } from './view-configs';
 
-describe('Simple HiGlassComponent', () => {
+describe('Horizontal1DTrackTest', () => {
   let hgc = null;
   let api = null;
   let div = null;

@@ -17,7 +17,7 @@ import { viewer } from '../app/scripts/hglib';
 
 configure({ adapter: new Adapter() });
 
-describe('Simple HiGlassComponent', () => {
+describe('AddAndRemoveViewconfTest', () => {
   let div = null;
   let api = null;
 

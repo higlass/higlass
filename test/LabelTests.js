@@ -19,7 +19,7 @@ import viewconf from './view-configs/label-margin';
 
 configure({ adapter: new Adapter() });
 
-describe('Simple HiGlassComponent', () => {
+describe('LabelTest', () => {
   const fetchMockHelper = new FetchMockHelper(viewconf, 'LabelTest');
 
   beforeAll(async () => {
