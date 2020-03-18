@@ -22,11 +22,12 @@ function segmentsToRows(segments) {
     for (let j = 0; j < rows.length; j++) {
       const it = rowIts[j]; // an interval tree
 
-      const occluded = it.intersects([segments[i].from, segments[i].to]);
+      const toCheck = [+segments[i].from, +segments[i].to];
+      const occluded = it.intersects(toCheck);
 
       if (!occluded) {
         // no intersections on this row, place this segment here
-        it.add([segments[i].from, segments[i].to]);
+        it.add(toCheck);
         rows[j].push(segments[i]);
         placed = true;
         break;

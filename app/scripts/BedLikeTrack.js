@@ -54,6 +54,11 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   initialize() {
     if (this.initialized) return;
 
+    this.prevK = 1;
+    this.prevY = 0;
+    this.vertK = 1;
+    this.vertY = 0;
+
     if (!this.drawnRects) {
       this.drawnRects = {};
     }
@@ -72,10 +77,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   initTile(tile) {
     // create texts
     tile.texts = {};
-    tile.vertY = 0;
-    tile.vertK = 1;
-    tile.prevY = 0;
-    tile.prevK = 1;
 
     tile.rectGraphics = new PIXI.Graphics();
     tile.textGraphics = new PIXI.Graphics();
@@ -540,8 +541,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             tile,
             xStartPos,
             xEndPos,
-            rectY * tile.prevK,
-            rectHeight * tile.prevK,
+            rectY * this.prevK,
+            rectHeight * this.prevK,
             geneInfo[5]
           );
 
@@ -603,6 +604,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   renderTile(tile) {
     let maxPlusRows = 1;
     let maxMinusRows = 1;
+
+    const visibleAndFetchedTiles = this.visibleAndFetchedTiles();
+
+    if (!visibleAndFetchedTiles.length) return;
 
     for (const otherTile of this.visibleAndFetchedTiles()) {
       if (!otherTile.initialized) return;
@@ -815,7 +820,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
           text.position.x = this._xScale(txMiddle);
           text.position.y =
-            text.nominalY * (tile.vertK * tile.prevK) + tile.vertY;
+            text.nominalY * (this.vertK * this.prevK) + this.vertY;
 
           if (!parentInFetched && !text.alreadyDrawn) {
             text.visible = true;
@@ -988,7 +993,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         this.valueScaleTransform = vst.translate(0, dY / k);
       }
       tile.rectGraphics.position.y = this.valueScaleTransform.y;
-      tile.vertY = this.valueScaleTransform.y;
+      this.vertY = this.valueScaleTransform.y;
     });
     this.animate();
   }
@@ -1006,22 +1011,25 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     let k1 = newTransform.k;
     const t1 = newTransform.y;
 
+    let toStretch = false;
+    k1 /= this.prevK;
+
+    if (k1 > 1.5 || k1 < 1 / 1.5) {
+      // this is to make sure that annotations aren't getting
+      // too stretched vertically
+      this.prevK *= k1;
+      this.prevY = k1 * this.prevY + t1;
+
+      k1 = 1;
+
+      toStretch = true;
+    }
+
+    this.vertK = k1;
+    this.vertY = t1;
+
     Object.values(this.fetchedTiles).forEach(tile => {
-      k1 /= tile.prevK;
-
-      if (k1 > 1.5 || k1 < 1 / 1.5) {
-        // this is to make sure that annotations aren't getting
-        // too stretched vertically
-        tile.prevK *= k1;
-        tile.prevY = k1 * tile.prevY + t1;
-
-        k1 = 1;
-
-        this.renderTile(tile);
-      }
-
-      tile.vertK = k1;
-      tile.vertY = t1;
+      if (toStretch) this.renderTile(tile);
 
       tile.rectGraphics.scale.y = k1;
       tile.rectGraphics.position.y = t1;
