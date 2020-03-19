@@ -149,7 +149,9 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
     }, TILE_LOADING_CHECK_INTERVAL);
   } else {
     // console.log('finished');
-    tilesLoadedCallback();
+    setTimeout(() => {
+      tilesLoadedCallback();
+    }, 1000);
   }
 };
 
