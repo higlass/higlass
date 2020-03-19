@@ -25,9 +25,12 @@ describe('AxisTests', () => {
   let div = null;
   const fetchMockHelper = new FetchMockHelper(viewconf, 'AxisTests');
 
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
+
   describe('Axis texts', () => {
-    beforeAll(async done => {
-      await fetchMockHelper.activateFetchMock();
+    beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true
@@ -83,9 +86,12 @@ describe('AxisTests', () => {
       );
     });
 
-    afterAll(async () => {
-      await fetchMockHelper.storeDataAndResetFetchMock();
+    afterAll(() => {
       removeHGComponent(div);
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

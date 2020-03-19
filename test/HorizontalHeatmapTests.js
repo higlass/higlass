@@ -20,29 +20,38 @@ import {
 configure({ adapter: new Adapter() });
 
 describe('Horizontal heatmaps', () => {
-  let hgc = null;
-  let div = null;
   const fetchMockHelper = new FetchMockHelper('', 'HorizontalHeatmapTest');
 
-  beforeAll(async done => {
+  beforeAll(async () => {
     await fetchMockHelper.activateFetchMock();
-    [div, hgc] = mountHGComponent(div, hgc, zoomLimitViewConf, done, {
-      style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true
-    });
   });
 
-  it('should respect zoom limits', () => {
-    // make sure that the correct zoom level is returned when a zoom
-    // limit is set
+  describe('Horizontal heatmaps', () => {
+    let hgc = null;
+    let div = null;
 
-    const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
-    expect(trackObj.calculateZoomLevel()).to.eql(1);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, zoomLimitViewConf, done, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      });
+    });
+
+    it('should respect zoom limits', () => {
+      // make sure that the correct zoom level is returned when a zoom
+      // limit is set
+
+      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
+      expect(trackObj.calculateZoomLevel()).to.eql(1);
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   afterAll(async () => {
     await fetchMockHelper.storeDataAndResetFetchMock();
-    removeHGComponent(div);
   });
 });
 

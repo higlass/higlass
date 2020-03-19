@@ -25,9 +25,12 @@ describe('HiGlassComponentCreationTest', () => {
     'HiGlassComponentCreationTest'
   );
 
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
+
   describe('API tests', () => {
-    beforeAll(async done => {
-      await fetchMockHelper.activateFetchMock();
+    beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
     });
 
@@ -35,9 +38,12 @@ describe('HiGlassComponentCreationTest', () => {
       expect(hgc.instance().state.viewConfig.editable).to.eql(true);
     });
 
-    afterAll(async () => {
-      await fetchMockHelper.storeDataAndResetFetchMock();
+    afterAll(() => {
       removeHGComponent(div);
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

@@ -15,34 +15,43 @@ import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
 
-describe('Horizontal heatmaps', () => {
-  let hgc = null;
-  let div = null;
+describe('Lock tests', () => {
   const fetchMockHelper = new FetchMockHelper('', 'LockTest');
 
-  beforeAll(async done => {
+  beforeAll(async () => {
     await fetchMockHelper.activateFetchMock();
-    [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
-      style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true
+  });
+
+  describe('Lock tests', () => {
+    let hgc = null;
+    let div = null;
+
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      });
     });
-  });
 
-  it('should have no location locks', () => {
-    expect(hgc.instance().locationLocks).to.have.property('v1');
-    expect(hgc.instance().locationLocks).not.to.have.property('v2');
-  });
+    it('should have no location locks', () => {
+      expect(hgc.instance().locationLocks).to.have.property('v1');
+      expect(hgc.instance().locationLocks).not.to.have.property('v2');
+    });
 
-  it('should export as SVG', () => {
-    // add your tests here
+    it('should export as SVG', () => {
+      // add your tests here
 
-    const svg = hgc.instance().createSVGString();
-    expect(svg.length).to.be.above(1);
+      const svg = hgc.instance().createSVGString();
+      expect(svg.length).to.be.above(1);
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   afterAll(async () => {
     await fetchMockHelper.storeDataAndResetFetchMock();
-    removeHGComponent(div);
   });
 });
 

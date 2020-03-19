@@ -107,7 +107,6 @@ module.exports = config => {
     autoWatch: true,
     browsers: ['Chrome', 'HeadlessChrome'],
     singleRun: false,
-    concurrency: 2,
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',

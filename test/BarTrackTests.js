@@ -24,46 +24,53 @@ import viewConf from './view-configs/bar';
 configure({ adapter: new Adapter() });
 
 describe('BarTrack tests', () => {
-  let hgc = null;
-  let div = null;
   const fetchMockHelper = new FetchMockHelper(viewConf, 'BarTrackTest');
 
-  beforeAll(async done => {
-    // We need to make sure fetch-mock is active before mounting HG and executing tests,
-    // otherwise some fetch calls might not be caught by it.
+  beforeAll(async () => {
     await fetchMockHelper.activateFetchMock();
-    [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
   });
 
-  it('Ensures that the track was rendered', done => {
-    expect(hgc.instance().state.viewConfig.editable).to.eql(true);
+  describe('BarTrack tests', () => {
+    let hgc = null;
+    let div = null;
 
-    const trackConf = viewConf.views[0].tracks.top[0];
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
+    });
 
-    const trackObj = getTrackObjectFromHGC(
-      hgc.instance(),
-      viewConf.views[0].uid,
-      trackConf.uid
-    );
+    it('Ensures that the track was rendered', done => {
+      expect(hgc.instance().state.viewConfig.editable).to.eql(true);
 
-    waitForTilesLoaded(hgc.instance(), () => {
-      expect(trackObj.zeroLine.fill.color).to.eql(
-        colorToHex(trackConf.options.zeroLineColor)
+      const trackConf = viewConf.views[0].tracks.top[0];
+
+      const trackObj = getTrackObjectFromHGC(
+        hgc.instance(),
+        viewConf.views[0].uid,
+        trackConf.uid
       );
 
-      expect(trackObj.zeroLine.fill.alpha).to.eql(
-        trackConf.options.zeroLineOpacity
-      );
+      waitForTilesLoaded(hgc.instance(), () => {
+        expect(trackObj.zeroLine.fill.color).to.eql(
+          colorToHex(trackConf.options.zeroLineColor)
+        );
 
-      expect(
-        Object.values(trackObj.fetchedTiles).every(tile => tile.svgData)
-      ).to.eql(true);
-      done();
+        expect(trackObj.zeroLine.fill.alpha).to.eql(
+          trackConf.options.zeroLineOpacity
+        );
+
+        expect(
+          Object.values(trackObj.fetchedTiles).every(tile => tile.svgData)
+        ).to.eql(true);
+        done();
+      });
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
     });
   });
 
   afterAll(async () => {
     await fetchMockHelper.storeDataAndResetFetchMock();
-    removeHGComponent(div);
   });
 });

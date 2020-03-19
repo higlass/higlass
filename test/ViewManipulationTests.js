@@ -22,8 +22,6 @@ import { emptyConf } from './view-configs';
 configure({ adapter: new Adapter() });
 
 describe('ViewManipulationTest', () => {
-  let hgc = null;
-  let div = null;
   const fetchMockHelper = new FetchMockHelper('', 'ViewManipulationTest');
 
   beforeAll(async () => {
@@ -31,6 +29,9 @@ describe('ViewManipulationTest', () => {
   });
 
   describe('Viewconf change tests', () => {
+    let hgc = null;
+    let div = null;
+
     beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, valueScaleLocksConf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
@@ -47,12 +48,15 @@ describe('ViewManipulationTest', () => {
       expect(Object.keys(hgc.instance().valueScaleLocks).length).to.eql(0);
     });
 
-    // afterAll(() => {
-    //   // removeHGComponent(div);
-    // });
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Viewport projection tests', () => {
+    let hgc = null;
+    let div = null;
+
     beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewportProjConf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',

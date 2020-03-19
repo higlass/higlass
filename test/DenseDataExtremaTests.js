@@ -31,6 +31,12 @@ import { matToy, matRealistic } from './testdata/matrix-data';
 configure({ adapter: new Adapter() });
 
 describe('Continuous scaling tests', () => {
+  const fetchMockHelper = new FetchMockHelper('', 'DenseDataExtrema');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
+
   describe('DenseDataExtrema module', () => {
     it('should get precise extrema of toy vectors', () => {
       const dde = new DenseDataExtrema1D(vecToy);
@@ -85,13 +91,8 @@ describe('Continuous scaling tests', () => {
   describe('Precise scaling of horizontal 1D tracks', () => {
     let hgc = null;
     let div = null;
-    const fetchMockHelper = new FetchMockHelper(
-      viewConf1DHorizontal,
-      'DenseDataExtrema1DH'
-    );
 
-    beforeAll(async done => {
-      await fetchMockHelper.activateFetchMock();
+    beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf1DHorizontal, done);
     });
 
@@ -220,8 +221,7 @@ describe('Continuous scaling tests', () => {
       expect(vs[1]).to.be.eql(91032);
     });
 
-    afterAll(async () => {
-      await fetchMockHelper.storeDataAndResetFetchMock();
+    afterAll(() => {
       removeHGComponent(div);
     });
   });
@@ -229,13 +229,8 @@ describe('Continuous scaling tests', () => {
   describe('Precise scaling of vertical 1D tracks', () => {
     let hgc = null;
     let div = null;
-    const fetchMockHelper = new FetchMockHelper(
-      viewConf1DVertical,
-      'DenseDataExtrema1DV'
-    );
 
-    beforeAll(async done => {
-      await fetchMockHelper.activateFetchMock();
+    beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf1DVertical, done);
     });
 
@@ -275,8 +270,7 @@ describe('Continuous scaling tests', () => {
       expect(vs2[1]).to.be.eql(1.5029296875);
     });
 
-    afterAll(async () => {
-      await fetchMockHelper.storeDataAndResetFetchMock();
+    afterAll(() => {
       removeHGComponent(div);
     });
   });
@@ -284,13 +278,8 @@ describe('Continuous scaling tests', () => {
   describe('Correct scaling of 2D tracks', () => {
     let hgc = null;
     let div = null;
-    const fetchMockHelper = new FetchMockHelper(
-      viewConf2D,
-      'DenseDataExtrema2D'
-    );
 
-    beforeAll(async done => {
-      await fetchMockHelper.activateFetchMock();
+    beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf2D, done, {
         style: 'width:600px; height:600px; background-color: lightgreen',
         bounded: true
@@ -337,9 +326,12 @@ describe('Continuous scaling tests', () => {
       });
     });
 
-    afterAll(async () => {
-      await fetchMockHelper.storeDataAndResetFetchMock();
+    afterAll(() => {
       removeHGComponent(div);
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

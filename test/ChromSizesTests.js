@@ -26,9 +26,12 @@ describe('ChromSizesTest', () => {
   let div = null;
   const fetchMockHelper = new FetchMockHelper(viewconf, 'ChromSizesTests');
 
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
+
   describe('Chromosome Grid Tests', () => {
-    beforeAll(async done => {
-      await fetchMockHelper.activateFetchMock();
+    beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
         style: 'width:800px; height:800px; background-color: lightgreen',
         bounded: true
@@ -44,9 +47,12 @@ describe('ChromSizesTest', () => {
       expect(trackObject.options.lineStrokeColor).to.eql('grey');
     });
 
-    afterAll(async () => {
-      await fetchMockHelper.storeDataAndResetFetchMock();
+    afterAll(() => {
       removeHGComponent(div);
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

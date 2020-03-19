@@ -10,6 +10,7 @@ import FetchMockHelper from './utils/FetchMockHelper';
 import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
+
 describe('Minimal viewconfs', () => {
   const fetchMockHelper = new FetchMockHelper('', 'MinimalViewConfTest');
 

@@ -19,32 +19,41 @@ import {
 
 configure({ adapter: new Adapter() });
 
-describe('Horizontal heatmaps', () => {
-  let hgc = null;
-  let div = null;
+describe('LeftTrackModifierTests', () => {
   const fetchMockHelper = new FetchMockHelper('', 'LeftTrackModifierTests');
 
-  beforeAll(async done => {
+  beforeAll(async () => {
     await fetchMockHelper.activateFetchMock();
-    [div, hgc] = mountHGComponent(div, hgc, zoomLimitViewConf, done, {
-      style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true
-    });
   });
 
-  it('should respect zoom limits', () => {
-    // add your tests here
+  describe('LeftTrackModifierTests', () => {
+    let hgc = null;
+    let div = null;
 
-    const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, zoomLimitViewConf, done, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      });
+    });
 
-    // trackObj is a LeftTrackModifier that contains the
-    // original track
-    expect(trackObj.originalTrack.id).to.eql('tt');
+    it('should respect zoom limits', () => {
+      // add your tests here
+
+      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
+
+      // trackObj is a LeftTrackModifier that contains the
+      // original track
+      expect(trackObj.originalTrack.id).to.eql('tt');
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   afterAll(async () => {
     await fetchMockHelper.storeDataAndResetFetchMock();
-    removeHGComponent(div);
   });
 });
 

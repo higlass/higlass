@@ -149,9 +149,7 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
     }, TILE_LOADING_CHECK_INTERVAL);
   } else {
     // console.log('finished');
-    setTimeout(() => {
-      tilesLoadedCallback();
-    }, 1000);
+    tilesLoadedCallback();
   }
 };
 
@@ -193,8 +191,17 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
 
   hgc.update();
 
+  // Waiting for tiles to be loaded does not always mean
+  // that the compoment is mounted (especially if we load the tiles
+  // from the filesystem, which is quick). Wait 1s to make sure
+  // we are really done
+  const doneWithDelay = () =>
+    setTimeout(() => {
+      done();
+    }, 1000);
+
   waitForJsonComplete(() => {
-    waitForTilesLoaded(hgc.instance(), done);
+    waitForTilesLoaded(hgc.instance(), doneWithDelay);
   });
 
   return [div, hgc];
