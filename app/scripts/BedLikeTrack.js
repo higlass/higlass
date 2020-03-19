@@ -55,7 +55,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     if (this.initialized) return;
 
     this.prevK = 1;
-    this.prevY = 0;
     this.vertK = 1;
     this.vertY = 0;
 
@@ -1018,7 +1017,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       // this is to make sure that annotations aren't getting
       // too stretched vertically
       this.prevK *= k1;
-      this.prevY = k1 * this.prevY + t1;
 
       k1 = 1;
 
