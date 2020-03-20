@@ -53,7 +53,7 @@ describe('ViewManipulationTest', () => {
     });
   });
 
-  describe('Viewport projection tests', () => {
+  describe('Add view test', () => {
     let hgc = null;
     let div = null;
 
@@ -64,7 +64,7 @@ describe('ViewManipulationTest', () => {
       });
     });
 
-    it("Ensure that the viewport projection's borders are black", done => {
+    it('Make sure the width of the view has been halved', done => {
       hgc
         .instance()
         .handleAddView(Object.values(hgc.instance().state.views)[0]);
