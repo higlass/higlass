@@ -16,12 +16,6 @@ import viewConfig from './view-configs/viewport-projection';
 import viewConfigWithoutFromViewUids from './view-configs-more/viewportProjectionsWithoutFromViewUids';
 
 describe('ViewportProjectonTests', () => {
-  let api;
-  let div;
-
-  let div0;
-  let api0;
-
   const fetchMockHelper = new FetchMockHelper('', 'ViewportProjectionTest');
 
   beforeAll(async () => {
@@ -29,7 +23,13 @@ describe('ViewportProjectonTests', () => {
   });
 
   describe('Viewport projection tests', () => {
-    beforeEach(() => {
+    let api = null;
+    let div = null;
+
+    let div0 = null;
+    let api0 = null;
+
+    beforeAll(() => {
       [div0, api0] = createElementAndApi(topAxisOnly, {}, 600, 100);
       [div, api] = createElementAndApi(viewConfig);
     });
@@ -53,6 +53,31 @@ describe('ViewportProjectonTests', () => {
           done();
         }, 0);
       });
+    });
+
+    afterAll(() => {
+      api.destroy();
+      removeDiv(div);
+      api = undefined;
+      div = undefined;
+
+      api0.destroy();
+      removeDiv(div0);
+      api0 = undefined;
+      div0 = undefined;
+    });
+  });
+
+  describe('Viewport projection tests', () => {
+    let api = null;
+    let div = null;
+
+    let div0 = null;
+    let api0 = null;
+
+    beforeAll(() => {
+      [div0, api0] = createElementAndApi(topAxisOnly, {}, 600, 100);
+      [div, api] = createElementAndApi(viewConfig);
     });
 
     it('Dispatches an empty mousewheel event on the viewport projection', done => {
@@ -90,6 +115,31 @@ describe('ViewportProjectonTests', () => {
       });
     });
 
+    afterAll(() => {
+      api.destroy();
+      removeDiv(div);
+      api = undefined;
+      div = undefined;
+
+      api0.destroy();
+      removeDiv(div0);
+      api0 = undefined;
+      div0 = undefined;
+    });
+  });
+
+  describe('Viewport projection tests', () => {
+    let api = null;
+    let div = null;
+
+    let div0 = null;
+    let api0 = null;
+
+    beforeAll(() => {
+      [div0, api0] = createElementAndApi(topAxisOnly, {}, 600, 100);
+      [div, api] = createElementAndApi(viewConfig);
+    });
+
     it('Dispatches a mousewheel event on the viewport projection and makes sure it zooms', done => {
       const evt = new WheelEvent('wheel', {
         deltaX: 0,
@@ -125,7 +175,7 @@ describe('ViewportProjectonTests', () => {
       });
     });
 
-    afterEach(() => {
+    afterAll(() => {
       api.destroy();
       removeDiv(div);
       api = undefined;
@@ -139,7 +189,10 @@ describe('ViewportProjectonTests', () => {
   });
 
   describe('Viewport projection without linked views tests', () => {
-    beforeEach(() => {
+    let api = null;
+    let div = null;
+
+    beforeAll(() => {
       [div, api] = createElementAndApi(viewConfigWithoutFromViewUids);
     });
 
@@ -164,6 +217,22 @@ describe('ViewportProjectonTests', () => {
       });
     });
 
+    afterAll(() => {
+      api.destroy();
+      removeDiv(div);
+      api = undefined;
+      div = undefined;
+    });
+  });
+
+  describe('Viewport projection without linked views tests', () => {
+    let api = null;
+    let div = null;
+
+    beforeAll(() => {
+      [div, api] = createElementAndApi(viewConfigWithoutFromViewUids);
+    });
+
     it('Ensure that the viewport projection vertical is rendered', done => {
       waitForTilesLoaded(api.getComponent(), () => {
         const trackObj = getTrackObjectFromHGC(
@@ -185,6 +254,22 @@ describe('ViewportProjectonTests', () => {
       });
     });
 
+    afterAll(() => {
+      api.destroy();
+      removeDiv(div);
+      api = undefined;
+      div = undefined;
+    });
+  });
+
+  describe('Viewport projection without linked views tests', () => {
+    let api = null;
+    let div = null;
+
+    beforeAll(() => {
+      [div, api] = createElementAndApi(viewConfigWithoutFromViewUids);
+    });
+
     it('Ensure that the viewport projection center is rendered', done => {
       waitForTilesLoaded(api.getComponent(), () => {
         const trackObj = getTrackObjectFromHGC(
@@ -204,6 +289,22 @@ describe('ViewportProjectonTests', () => {
 
         done();
       });
+    });
+
+    afterAll(() => {
+      api.destroy();
+      removeDiv(div);
+      api = undefined;
+      div = undefined;
+    });
+  });
+
+  describe('Viewport projection without linked views tests', () => {
+    let api = null;
+    let div = null;
+
+    beforeAll(() => {
+      [div, api] = createElementAndApi(viewConfigWithoutFromViewUids);
     });
 
     it('Publishes an updated view config when the domain of the viewport projection horizontal changes', done => {
@@ -249,7 +350,7 @@ describe('ViewportProjectonTests', () => {
       });
     });
 
-    afterEach(() => {
+    afterAll(() => {
       api.destroy();
       removeDiv(div);
       api = undefined;
