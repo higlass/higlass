@@ -9,7 +9,6 @@ import {
 
 import FetchMockHelper from './utils/FetchMockHelper';
 
-import { topAxisOnly } from './view-configs';
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 import viewConfig from './view-configs/viewport-projection';
@@ -26,11 +25,7 @@ describe('ViewportProjectonTests', () => {
     let api = null;
     let div = null;
 
-    let div0 = null;
-    let api0 = null;
-
     beforeAll(() => {
-      [div0, api0] = createElementAndApi(topAxisOnly, {}, 600, 100);
       [div, api] = createElementAndApi(viewConfig);
     });
 
@@ -60,11 +55,6 @@ describe('ViewportProjectonTests', () => {
       removeDiv(div);
       api = undefined;
       div = undefined;
-
-      api0.destroy();
-      removeDiv(div0);
-      api0 = undefined;
-      div0 = undefined;
     });
   });
 
@@ -72,11 +62,7 @@ describe('ViewportProjectonTests', () => {
     let api = null;
     let div = null;
 
-    let div0 = null;
-    let api0 = null;
-
     beforeAll(() => {
-      [div0, api0] = createElementAndApi(topAxisOnly, {}, 600, 100);
       [div, api] = createElementAndApi(viewConfig);
     });
 
@@ -95,17 +81,17 @@ describe('ViewportProjectonTests', () => {
         cancelable: true
       });
 
-      waitForTilesLoaded(api.getComponent(), () => {
-        const trackObj = getTrackObjectFromHGC(
-          api.getComponent(),
-          'aa',
-          'GWbBXmaFQTO8tia0-wljaA'
-        );
-        const ixd1 = api.getComponent().xScales.aa.domain();
+      const trackObj = getTrackObjectFromHGC(
+        api.getComponent(),
+        'aa',
+        'GWbBXmaFQTO8tia0-wljaA'
+      );
+      const ixd1 = api.getComponent().xScales.aa.domain();
 
-        trackObj.gMain.node().dispatchEvent(evt);
+      trackObj.gMain.node().dispatchEvent(evt);
 
-        waitForTransitionsFinished(api.getComponent(), () => {
+      waitForTransitionsFinished(api.getComponent(), () => {
+        waitForTilesLoaded(api.getComponent(), () => {
           const ixd2 = api.getComponent().xScales.aa.domain();
           // shouldn't have zoomed because deltaY = 0
           expect(ixd1[0]).toEqual(ixd2[0]);
@@ -114,31 +100,6 @@ describe('ViewportProjectonTests', () => {
           done();
         });
       });
-    });
-
-    afterAll(() => {
-      api.destroy();
-      removeDiv(div);
-      api = undefined;
-      div = undefined;
-
-      api0.destroy();
-      removeDiv(div0);
-      api0 = undefined;
-      div0 = undefined;
-    });
-  });
-
-  describe('Viewport projection tests', () => {
-    let api = null;
-    let div = null;
-
-    let div0 = null;
-    let api0 = null;
-
-    beforeAll(() => {
-      [div0, api0] = createElementAndApi(topAxisOnly, {}, 600, 100);
-      [div, api] = createElementAndApi(viewConfig);
     });
 
     it('Dispatches a mousewheel event on the viewport projection and makes sure it zooms', done => {
@@ -156,17 +117,17 @@ describe('ViewportProjectonTests', () => {
         cancelable: true
       });
 
-      waitForTilesLoaded(api.getComponent(), () => {
-        const trackObj = getTrackObjectFromHGC(
-          api.getComponent(),
-          'aa',
-          'GWbBXmaFQTO8tia0-wljaA'
-        );
-        const ixd1 = api.getComponent().xScales.aa.domain();
+      const trackObj = getTrackObjectFromHGC(
+        api.getComponent(),
+        'aa',
+        'GWbBXmaFQTO8tia0-wljaA'
+      );
+      const ixd1 = api.getComponent().xScales.aa.domain();
 
-        trackObj.gMain.node().dispatchEvent(evt);
+      trackObj.gMain.node().dispatchEvent(evt);
 
-        waitForTransitionsFinished(api.getComponent(), () => {
+      waitForTransitionsFinished(api.getComponent(), () => {
+        waitForTilesLoaded(api.getComponent(), () => {
           const ixd2 = api.getComponent().xScales.aa.domain();
 
           // should have zoomed because deltaY != 0
@@ -183,11 +144,6 @@ describe('ViewportProjectonTests', () => {
       removeDiv(div);
       api = undefined;
       div = undefined;
-
-      api0.destroy();
-      removeDiv(div0);
-      api0 = undefined;
-      div0 = undefined;
     });
   });
 

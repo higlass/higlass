@@ -1,17 +1,15 @@
 import fetchMock from 'fetch-mock';
 
-const serverForFM = require('karma-server-side');
-
 class FetchMockHelper {
   constructor(viewConf, testName) {
     this.checkViewConf(viewConf);
+
+    this.server = require('karma-server-side'); // eslint-disable-line
 
     fetchMock.config.fallbackToNetwork = false;
     fetchMock.config.warnOnFallback = false;
 
     this.testName = testName;
-
-    this.server = serverForFM;
 
     this.mockedData = {};
     this.writeToFile = false;
