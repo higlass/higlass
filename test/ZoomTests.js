@@ -19,8 +19,12 @@ describe('Zoom tests', () => {
     let api;
     let div;
 
-    beforeEach(() => {
+    beforeEach(done => {
       [div, api] = createElementAndApi(viewConfig);
+
+      setTimeout(() => {
+        done();
+      }, 1000);
     });
 
     const doMouseMove = (startX, startY, valueScaleZooming) => {
