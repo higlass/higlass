@@ -95,23 +95,24 @@ describe('ViewportProjectonTests', () => {
         cancelable: true
       });
 
-      const trackObj = getTrackObjectFromHGC(
-        api.getComponent(),
-        'aa',
-        'GWbBXmaFQTO8tia0-wljaA'
-      );
-      const ixd1 = api.getComponent().xScales.aa.domain();
+      waitForTilesLoaded(api.getComponent(), () => {
+        const trackObj = getTrackObjectFromHGC(
+          api.getComponent(),
+          'aa',
+          'GWbBXmaFQTO8tia0-wljaA'
+        );
+        const ixd1 = api.getComponent().xScales.aa.domain();
 
-      trackObj.gMain.node().dispatchEvent(evt);
+        trackObj.gMain.node().dispatchEvent(evt);
 
-      waitForTransitionsFinished(api.getComponent(), () => {
-        const ixd2 = api.getComponent().xScales.aa.domain();
+        waitForTransitionsFinished(api.getComponent(), () => {
+          const ixd2 = api.getComponent().xScales.aa.domain();
+          // shouldn't have zoomed because deltaY = 0
+          expect(ixd1[0]).toEqual(ixd2[0]);
+          expect(ixd1[1]).toEqual(ixd2[1]);
 
-        // shouldn't have zoomed because deltaY = 0
-        expect(ixd1[0]).toEqual(ixd2[0]);
-        expect(ixd1[1]).toEqual(ixd2[1]);
-
-        done();
+          done();
+        });
       });
     });
 
@@ -155,23 +156,25 @@ describe('ViewportProjectonTests', () => {
         cancelable: true
       });
 
-      const trackObj = getTrackObjectFromHGC(
-        api.getComponent(),
-        'aa',
-        'GWbBXmaFQTO8tia0-wljaA'
-      );
-      const ixd1 = api.getComponent().xScales.aa.domain();
+      waitForTilesLoaded(api.getComponent(), () => {
+        const trackObj = getTrackObjectFromHGC(
+          api.getComponent(),
+          'aa',
+          'GWbBXmaFQTO8tia0-wljaA'
+        );
+        const ixd1 = api.getComponent().xScales.aa.domain();
 
-      trackObj.gMain.node().dispatchEvent(evt);
+        trackObj.gMain.node().dispatchEvent(evt);
 
-      waitForTransitionsFinished(api.getComponent(), () => {
-        const ixd2 = api.getComponent().xScales.aa.domain();
+        waitForTransitionsFinished(api.getComponent(), () => {
+          const ixd2 = api.getComponent().xScales.aa.domain();
 
-        // shouldn't have zoomed because deltaY = 0
-        expect(ixd1[0]).not.toEqual(ixd2[0]);
-        expect(ixd1[1]).not.toEqual(ixd2[1]);
+          // should have zoomed because deltaY != 0
+          expect(ixd1[0]).not.toEqual(ixd2[0]);
+          expect(ixd1[1]).not.toEqual(ixd2[1]);
 
-        done();
+          done();
+        });
       });
     });
 
