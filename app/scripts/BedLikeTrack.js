@@ -599,12 +599,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   renderTile(tile) {
-    let maxPlusRows = 1;
-    let maxMinusRows = 1;
+    let maxPlusRows = tile.plusStrandRows ? tile.plusStrandRows.length : 1;
+    let maxMinusRows = tile.minusStrandRows ? tile.minusStrandRows.length : 1;
 
-    const visibleAndFetchedTiles = this.visibleAndFetchedTiles();
+    // const visibleAndFetchedTiles = this.visibleAndFetchedTiles();
 
-    if (!visibleAndFetchedTiles.length) return;
+    // if (!visibleAndFetchedTiles.length) return;
 
     for (const otherTile of this.visibleAndFetchedTiles()) {
       if (!otherTile.initialized) return;
