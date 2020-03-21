@@ -54,9 +54,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   initialize() {
     if (this.initialized) return;
 
-    this.prevK = 1;
-    this.vertK = 1;
-    this.vertY = 0;
+    [this.prevK, this.vertK, this.vertY] = [1, 1, 0];
 
     if (!this.drawnRects) {
       this.drawnRects = {};
@@ -781,6 +779,13 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     for (const fetchedTileId in this.fetchedTiles) {
       const tile = this.fetchedTiles[fetchedTileId];
+
+      // these values control vertical scaling and they
+      // need to be set in the draw method otherwise when
+      // the window is resized, the zoomedY method won't
+      // be called
+      tile.rectGraphics.scale.y = this.vertK;
+      tile.rectGraphics.position.y = this.vertY;
 
       // hasn't been rendered yet
       if (!tile.drawnAtScale) {
