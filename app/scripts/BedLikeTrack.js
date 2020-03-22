@@ -3,6 +3,7 @@ import { median, range } from 'd3-array';
 import { scaleBand, scaleLinear } from 'd3-scale';
 import * as PIXI from 'pixi.js';
 import classifyPoint from 'robust-point-in-polygon';
+import { zoomIdentity } from 'd3-zoom';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
@@ -43,12 +44,17 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
     super(context, options);
 
-    this.allDrawnRects = {};
+    this.valueScaleTransform = zoomIdentity;
   }
 
-  /** Factor out some initialization code for the track so */
+  /** Factor out some initialization code for the track. This is
+   necessary because we can now load tiles synchronously and so
+   we have to check if the track is initialized in renderTiles
+   and not in the constructor */
   initialize() {
     if (this.initialized) return;
+
+    [this.prevK, this.vertK, this.vertY] = [1, 1, 0];
 
     if (!this.drawnRects) {
       this.drawnRects = {};
@@ -120,7 +126,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           tile.textWidths = {};
           tile.textHeights = {};
 
-          // don't draw texts for the latter entries in the tile
+          // don't draw too many texts so they don't bog down the frame rate
           if (i >= (+this.options.maxTexts || MAX_TEXTS)) {
             return;
           }
@@ -389,6 +395,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return drawnPoly;
   }
 
+  /** The value scale is used to arrange annotations vertically
+      based on a value */
   setValueScale() {
     this.valueScale = null;
 
@@ -414,6 +422,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
   }
 
+  /** The color value scale is used to map some value to a coloring */
   setColorValueScale() {
     this.colorValueScale = null;
 
@@ -495,16 +504,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           yMiddle = this.valueScale(value);
         }
 
-        // for when there's text
-        // yMiddle -= 8;
-
         const opacity = this.options.fillOpacity || 0.3;
         tile.rectGraphics.lineStyle(1, colorToHex(fill), opacity);
         tile.rectGraphics.beginFill(colorToHex(fill), opacity);
-        // let height = valueScale(Math.log(+geneInfo[4]));
-        // let width= height;
 
-        // const rectX = this._xScale(txMiddle) - (rectHeight / 2);
         let rectY = yMiddle - rectHeight / 2;
         const xStartPos = this._xScale(txStart);
         const xEndPos = this._xScale(txEnd);
@@ -535,8 +538,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             tile,
             xStartPos,
             xEndPos,
-            rectY,
-            rectHeight,
+            rectY * this.prevK,
+            rectHeight * this.prevK,
             geneInfo[5]
           );
 
@@ -546,6 +549,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
               start: txStart,
               end: txEnd,
               value: td,
+              tile,
               fill
             },
             tile.tileId
@@ -557,7 +561,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         // tile probably hasn't been initialized yet
         if (!tile.texts) return;
 
-        // don't draw texts for the latter entries in the tile
+        // don't draw too many texts so they don't bog down the frame rate
         if (i >= (+this.options.maxTexts || MAX_TEXTS)) continue;
 
         if (!tile.texts[td.uid]) continue;
@@ -566,6 +570,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
         text.position.x = this._xScale(txMiddle);
         text.position.y = rectY + rectHeight / 2;
+        text.nominalY = rectY + rectHeight / 2;
 
         if (alreadyDrawn) {
           text.alreadyDrawn = true;
@@ -594,8 +599,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   renderTile(tile) {
-    let maxPlusRows = 1;
-    let maxMinusRows = 1;
+    let maxPlusRows = tile.plusStrandRows ? tile.plusStrandRows.length : 1;
+    let maxMinusRows = tile.minusStrandRows ? tile.minusStrandRows.length : 1;
+
+    // const visibleAndFetchedTiles = this.visibleAndFetchedTiles();
+
+    // if (!visibleAndFetchedTiles.length) return;
 
     for (const otherTile of this.visibleAndFetchedTiles()) {
       if (!otherTile.initialized) return;
@@ -610,9 +619,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     if (tile.rendered) {
       this.removeTileRects(tile);
-      // return;
-      // tile.rectGraphics.clear();
-      //      return;
     }
 
     tile.drawnAtScale = this._xScale.copy();
@@ -625,8 +631,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // configure coloring of annotations if
     // this.options.colorEncoding is set
     this.setColorValueScale();
-
-    // let rendered = 0;
 
     if (tile.tileData && tile.tileData.length) {
       const fill =
@@ -776,6 +780,13 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     for (const fetchedTileId in this.fetchedTiles) {
       const tile = this.fetchedTiles[fetchedTileId];
 
+      // these values control vertical scaling and they
+      // need to be set in the draw method otherwise when
+      // the window is resized, the zoomedY method won't
+      // be called
+      tile.rectGraphics.scale.y = this.vertK;
+      tile.rectGraphics.position.y = this.vertY;
+
       // hasn't been rendered yet
       if (!tile.drawnAtScale) {
         return;
@@ -812,6 +823,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           const txMiddle = (txStart + txEnd) / 2;
 
           text.position.x = this._xScale(txMiddle);
+          text.position.y =
+            text.nominalY * (this.vertK * this.prevK) + this.vertY;
 
           if (!parentInFetched && !text.alreadyDrawn) {
             text.visible = true;
@@ -841,8 +854,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   hideOverlaps(allBoxes, allTexts) {
-    // store the bounding boxes of the text objects so we can
-    // calculate overlaps
+    // Calculate overlaps from the bounding boxes of the texts
 
     boxIntersect(allBoxes, (i, j) => {
       if (allTexts[i].importance > allTexts[j].importance) {
@@ -974,13 +986,68 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return [base, base];
   }
 
+  /** Move event for the y-axis */
+  movedY(dY) {
+    Object.values(this.fetchedTiles).forEach(tile => {
+      const vst = this.valueScaleTransform;
+      const { y, k } = vst;
+      const height = this.dimensions[1];
+      // clamp at the bottom and top
+      if (y + dY / k > -(k - 1) * height && y + dY / k < 0) {
+        this.valueScaleTransform = vst.translate(0, dY / k);
+      }
+      tile.rectGraphics.position.y = this.valueScaleTransform.y;
+      this.vertY = this.valueScaleTransform.y;
+    });
+    this.animate();
+  }
+
+  /** Zoomed along the y-axis */
+  zoomedY(yPos, kMultiplier) {
+    const newTransform = trackUtils.zoomedY(
+      yPos,
+      kMultiplier,
+      this.valueScaleTransform,
+      this.dimensions[1]
+    );
+    this.valueScaleTransform = newTransform;
+
+    let k1 = newTransform.k;
+    const t1 = newTransform.y;
+
+    let toStretch = false;
+    k1 /= this.prevK;
+
+    if (k1 > 1.5 || k1 < 1 / 1.5) {
+      // this is to make sure that annotations aren't getting
+      // too stretched vertically
+      this.prevK *= k1;
+
+      k1 = 1;
+
+      toStretch = true;
+    }
+
+    this.vertK = k1;
+    this.vertY = t1;
+
+    Object.values(this.fetchedTiles).forEach(tile => {
+      if (toStretch) this.renderTile(tile);
+
+      tile.rectGraphics.scale.y = k1;
+      tile.rectGraphics.position.y = t1;
+    });
+
+    this.draw();
+    this.animate();
+  }
+
   getMouseOverHtml(trackX, trackY) {
     if (!this.tilesetInfo) {
       return '';
     }
 
     const zoomLevel = this.calculateZoomLevel();
-
     const point = [trackX, trackY];
 
     if (this.drawnRects[zoomLevel]) {
@@ -988,8 +1055,20 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
       for (let i = 0; i < visibleRects.length; i++) {
         const rect = visibleRects[i][0].slice(0);
+
+        // graphics have been scaled so we need to scale the points themselves
+        const tileKx = visibleRects[i][1].tile.rectGraphics.scale.x;
+        const tilePx = visibleRects[i][1].tile.rectGraphics.position.x;
+
+        const tileKy = visibleRects[i][1].tile.rectGraphics.scale.y;
+        const tilePy = visibleRects[i][1].tile.rectGraphics.position.y;
+
         const newArr = [];
-        while (rect.length) newArr.push(rect.splice(0, 2));
+
+        while (rect.length) {
+          const [x, y] = rect.splice(0, 2);
+          newArr.push([x * tileKx + tilePx, y * tileKy + tilePy]);
+        }
 
         const pc = classifyPoint(newArr, point);
 

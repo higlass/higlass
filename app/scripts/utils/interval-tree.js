@@ -119,6 +119,11 @@ IntervalTree.prototype.contains = function _contains(point) {
 
 function intersects(a, b) {
   return (
+    // The first case checks for completely overlapping
+    // intervals. Necessary because we usually consider
+    // the ends to be open ended and that misses completely
+    // overlapping intervals
+    (a[0] === b[0] && a[1] === b[1]) ||
     (a[0] < b[0] && a[1] > b[0]) ||
     (a[0] < b[1] && a[1] > b[1]) ||
     (b[0] < a[0] && b[1] > a[0]) ||

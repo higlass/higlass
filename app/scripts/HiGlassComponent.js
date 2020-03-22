@@ -352,6 +352,10 @@ class HiGlassComponent extends React.Component {
     this.domEvent.register('mouseup', window, true);
     this.domEvent.register('click', window, true);
     this.domEvent.register('mousemove', window);
+    this.domEvent.register('touchmove', window);
+    this.domEvent.register('touchstart', window);
+    this.domEvent.register('touchend', window);
+    this.domEvent.register('touchcancel', window);
     this.domEvent.register('blur', window);
 
     this.pubSubs.push(
@@ -653,6 +657,10 @@ class HiGlassComponent extends React.Component {
     this.domEvent.unregister('mouseup', window);
     this.domEvent.unregister('click', window);
     this.domEvent.unregister('mousemove', window);
+    this.domEvent.unregister('touchmove', window);
+    this.domEvent.unregister('touchstart', window);
+    this.domEvent.unregister('touchend', window);
+    this.domEvent.unregister('touchcancel', window);
 
     this.pubSubs.forEach(subscription => this.pubSub.unsubscribe(subscription));
 

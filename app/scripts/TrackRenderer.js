@@ -1164,7 +1164,7 @@ class TrackRenderer extends React.Component {
       // if somebody is holding down the shift key and is zooming over
       // a 1d track, try to apply value scale zooming
       if (event.shiftKey || this.valueScaleZooming) {
-        if (event.sourceEvent.deltaY) {
+        if (event.sourceEvent.deltaY !== undefined) {
           this.valueScaleZoom(trackOrientation);
           return;
         }
@@ -1888,6 +1888,7 @@ class TrackRenderer extends React.Component {
 
     this.eventTracker.addEventListener('touchstart', this.boundForwardEvent);
     this.eventTracker.addEventListener('touchend', this.boundForwardEvent);
+    this.eventTracker.addEventListener('touchmove', this.boundForwardEvent);
     this.eventTracker.addEventListener('touchcancel', this.boundForwardEvent);
 
     this.eventTracker.addEventListener('pointerover', this.boundForwardEvent);
