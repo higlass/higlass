@@ -1,6 +1,6 @@
 # Release notes
 
-## Next release
+## v1.9.1
 
 - Used stretchRects to ensure that there are no rendering artifacts when zooming in too far
 - Added scaled as a potential value to the annotationHeight option
@@ -10,7 +10,7 @@
 - Vertical zooming on BedLike annotations
 - Added support for aggregation of `horizontal-multivec` rows by passing arrays of row indices to the `selectRows` option. With this addition also comes the track options `selectRowsAggregationMode` (for specifying an aggregation function, "mean", "sum", "variance", "deviation") and `selectRowsAggregationWithRelativeHeight` (boolean) to determine whether rows representing groups of indices have 1-unit heights or `group.length`-unit heights.
 
-_[Detailed changes since v1.9.0](https://github.com/higlass/higlass/compare/v1.9.0...develop)_
+_[Detailed changes since v1.9.0](https://github.com/higlass/higlass/compare/v1.9.0...v1.9.1)_
 
 ## v1.9.0
 
