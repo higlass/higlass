@@ -111,7 +111,7 @@ class SearchField {
     const totalZerosToAdd = numZerosToAdd - decPointPosFromEnd;
     if (totalZerosToAdd < 0) {
       // The value is smaller than 1 (e.g. "0.00005K")
-      return '0';
+      return numStr;
     }
 
     // Finally, add zeros at the end.

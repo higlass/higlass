@@ -110,10 +110,12 @@ describe('A search field', () => {
     number2 = searchField.convertNumberNotation('0.050M');
     expect(number1 === number2).to.eql(true);
 
+    // Invalid value
     number1 = searchField.convertNumberNotation('0.x0.05M');
     expect(number1).to.eql('0.x0.05M');
 
+    // Value that is less than 1
     number1 = searchField.convertNumberNotation('0.00001K');
-    expect(number1).to.eql('0');
+    expect(number1).to.eql('0.00001K');
   });
 });
