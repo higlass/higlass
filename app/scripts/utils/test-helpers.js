@@ -193,7 +193,7 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
 
   // Waiting for tiles to be loaded does not always mean
   // that the compoment is mounted (especially if we load the tiles
-  // from the filesystem, which is quick). Wait 1s to make sure
+  // from the filesystem, which is quick). Wait 1000ms to make sure
   // we are really done
   const doneWithDelay = () =>
     setTimeout(() => {

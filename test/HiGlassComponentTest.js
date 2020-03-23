@@ -1,7 +1,7 @@
 /* eslint-env node, jasmine */
 import {
   configure,
-  mount,
+  // mount,
   // render,
   ReactWrapper
 } from 'enzyme';
@@ -9,11 +9,9 @@ import {
 import Adapter from 'enzyme-adapter-react-16';
 
 import { select } from 'd3-selection';
-import React from 'react';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 
-import HiGlassComponent from '../app/scripts/HiGlassComponent';
 import HeatmapOptions from '../app/scripts/HeatmapOptions';
 
 import FetchMockHelper from './utils/FetchMockHelper';
@@ -25,6 +23,8 @@ import {
   getTrackByUid,
   getTrackObjectFromHGC,
   getTiledPlot,
+  mountHGComponent,
+  removeHGComponent,
   waitForJsonComplete,
   waitForTilesLoaded,
   waitForTransitionsFinished
@@ -64,8 +64,6 @@ import {
 configure({ adapter: new Adapter() });
 
 describe('HiGlassComponentTest', () => {
-  let hgc = null;
-  let div = null;
   const fetchMockHelper = new FetchMockHelper('', 'HiGlassComponentTest');
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
@@ -75,31 +73,16 @@ describe('HiGlassComponentTest', () => {
   });
 
   describe('Track positioning', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={horizontalDiagonalTrackViewConf}
-        />,
-        { attachTo: div }
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(
+        div,
+        hgc,
+        horizontalDiagonalTrackViewConf,
+        done
       );
-
-      waitForTilesLoaded(hgc.instance(), done);
     });
 
     it('should add and resize a vertical heatmp', done => {
@@ -333,38 +316,18 @@ describe('HiGlassComponentTest', () => {
 
       waitForTilesLoaded(hgc.instance(), done);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Invalid track type tests', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={invalidTrackConfig}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-
-      // visual check that the heatmap track config menu is moved
-      // to the left
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, invalidTrackConfig, done);
     });
 
     it('Opens the track type menu', () => {
@@ -443,33 +406,18 @@ describe('HiGlassComponentTest', () => {
         .instance()
         .tiledPlots.aa.handleCloseTrackMenuOpened(uid, clickPosition);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('API tests', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent options={{ bounded: false }} viewConfig={osmConf} />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-      // done();
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, osmConf, done);
     });
 
     it('Switches to the osm tles track', () => {
@@ -485,35 +433,18 @@ describe('HiGlassComponentTest', () => {
         views
       });
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('API tests', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={geneAnnotationsOnly}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, geneAnnotationsOnly, done);
     });
 
     it('Zooms to a location', done => {
@@ -538,35 +469,18 @@ describe('HiGlassComponentTest', () => {
         done();
       });
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('2D Rectangle Annotations', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={rectangleDomains}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, rectangleDomains, done);
     });
 
     it('Check to make sure that the rectangles are initially small', done => {
@@ -622,35 +536,18 @@ describe('HiGlassComponentTest', () => {
     it('Exports to SVG', () => {
       hgc.instance().createSVG();
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
-  describe('Export SVG properly', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+  describe('Export SVG properly - 1', () => {
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={testViewConfX1}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, testViewConfX1, done);
     });
 
     it('Exports to SVG', () => {
@@ -661,32 +558,17 @@ describe('HiGlassComponentTest', () => {
       // hgc.instance().handleExportSVG();
     });
 
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+  });
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
+  describe('Export SVG properly - 2', () => {
+    let hgc = null;
+    let div = null;
 
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={project1D}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, project1D, done);
     });
 
     // it('Exports to SVG', (done) => {
@@ -722,32 +604,17 @@ describe('HiGlassComponentTest', () => {
       // hgc.instance().createSVG();
     });
 
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+  });
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
+  describe('Export SVG properly - 3', () => {
+    let hgc = null;
+    let div = null;
 
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={project1D}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, project1D, done);
     });
 
     it('Exports to SVG', () => {
@@ -767,38 +634,18 @@ describe('HiGlassComponentTest', () => {
 
       // hgc.instance().handleExportSVG();
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Track type menu tests', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={oneTrackConfig}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-
-      // visual check that the heatmap track config menu is moved
-      // to the left
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, oneTrackConfig, done);
     });
 
     it('Opens the track type menu', () => {
@@ -874,35 +721,22 @@ describe('HiGlassComponentTest', () => {
         'horizontal-bar'
       );
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   // wait a bit of time for the data to be loaded from the server
   describe('Double view', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'height:800px; width:800px');
-      div.setAttribute('id', 'single-view');
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: true }}
-          viewConfig={twoViewConfig}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
+        style: 'height:800px; width:800px',
+        bounded: true
+      });
     });
 
     it('has a colorbar', () => {
@@ -1102,38 +936,18 @@ describe('HiGlassComponentTest', () => {
 
       waitForTilesLoaded(hgc.instance(), done);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Track types', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={annotationsTilesView}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-
-      // visual check that the heatmap track config menu is moved
-      // to the left
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, annotationsTilesView, done);
     });
 
     it('Ensures that only the gene-annotations and 1d-tiles tracks are listed', () => {
@@ -1198,33 +1012,21 @@ describe('HiGlassComponentTest', () => {
       ).toBeDefined();
       expect(trackTypeItems.props.menuItems['horizontal-line']).toBeUndefined();
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Value scale locking', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'height:800px; width:800px');
-      div.setAttribute('id', 'single-view');
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: true }}
-          viewConfig={twoViewConfig}
-        />,
-        { attachTo: div }
-      );
-
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
+        style: 'height:800px; width:800px',
+        bounded: true
+      });
     });
 
     it('locks the scales and recenters the page', done => {
@@ -1479,36 +1281,22 @@ describe('HiGlassComponentTest', () => {
     it('Locks the scales again (after waiting for the previous tiles to load)', () => {
       hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'heatmap3');
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
-  //
   // wait a bit of time for the data to be loaded from the server
   describe('Two linked views', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'height:800px; width:800px');
-      div.setAttribute('id', 'single-view');
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: true }}
-          viewConfig={JSON.parse(JSON.stringify(twoViewConfig))}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
+        style: 'height:800px; width:800px',
+        bounded: true
+      });
     });
 
     it('zoom to the data extent', done => {
@@ -1527,73 +1315,47 @@ describe('HiGlassComponentTest', () => {
         hgc.instance().xScales.view2.domain()[1]
       );
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Horizontal and vertical multivec', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute(
-        'style',
-        'width:600px;height:600px;background-color: lightgreen'
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(
+        div,
+        hgc,
+        horizontalAndVerticalMultivec,
+        done,
+        {
+          style: 'width:600px;height:600px;background-color: lightgreen',
+          bounded: true
+        }
       );
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: true }}
-          viewConfig={horizontalAndVerticalMultivec}
-        />,
-        { attachTo: div }
-      );
-
-      waitForTilesLoaded(hgc.instance(), done);
     });
 
-    // it('renders with no errors', (done) => {
-    //   done();
-    // });
+    it('renders with no errors', done => {
+      done();
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Track Resizing', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute(
-        'style',
-        'width:600px;height:600px;background-color: lightgreen'
-      );
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: true }}
-          viewConfig={oneTrackConfig}
-        />,
-        { attachTo: div }
-      );
-
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, oneTrackConfig, done, {
+        style: 'width:600px;height:600px;background-color: lightgreen',
+        bounded: true
+      });
     });
 
     it('Resizes one track ', done => {
@@ -1612,34 +1374,18 @@ describe('HiGlassComponentTest', () => {
 
       waitForTilesLoaded(hgc.instance(), done);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Track addition and removal', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={testViewConfX2}
-        />,
-        { attachTo: div }
-      );
-
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, testViewConfX2, done);
     });
 
     it('should load the initial config', () => {
@@ -1685,25 +1431,17 @@ describe('HiGlassComponentTest', () => {
     it('should do something else', done => {
       waitForTilesLoaded(hgc.instance(), done);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('1D viewport projection', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
+    beforeAll(done => {
       const newViewConf = JSON.parse(JSON.stringify(project1D));
 
       const center1 = JSON.parse(JSON.stringify(heatmapTrack));
@@ -1717,15 +1455,7 @@ describe('HiGlassComponentTest', () => {
       newViewConf.views[0].layout.h = 10;
       newViewConf.views[1].layout.h = 10;
 
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={newViewConf}
-        />,
-        { attachTo: div }
-      );
-
-      waitForTilesLoaded(hgc.instance(), done);
+      [div, hgc] = mountHGComponent(div, hgc, newViewConf, done);
     });
 
     it('Should lock the location without throwing an error', done => {
@@ -1786,34 +1516,18 @@ describe('HiGlassComponentTest', () => {
 
       waitForTilesLoaded(hgc.instance(), done);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Add overlay tracks', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={oneZoomedOutViewConf}
-        />,
-        { attachTo: div }
-      );
-
-      waitForJsonComplete(done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, oneZoomedOutViewConf, done);
     });
 
     it('Add the grid', done => {
@@ -1836,50 +1550,21 @@ describe('HiGlassComponentTest', () => {
 
       waitForJsonComplete(done);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Color scale limiting', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'height:800px; width:800px');
-      div.setAttribute('id', 'single-view');
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: true }}
-          viewConfig={twoViewConfig}
-        />,
-        { attachTo: div }
-      );
-
-      /*
-            for (let viewId of hgc.instance().iterateOverViews()) {
-                let tp = getTiledPlot(hgc, viewId);
-      //let tpWrapper = new ReactWrapper(getTiledPlot(hgc, viewId), true);
-                console.log('measured size');
-                tp.measureSize();
-                hgc.update();
-                tp.trackRenderer.syncTrackObjects(tp.positionedTracks());
-                console.log('positionedTracks', tp.positionedTracks());
-                tp.trackRenderer.applyZoomTransform(false);
-  //tpWrapper.setState(tp.state);
-            }
-            */
-
-      // hgc.update();
-
-      // console.log('starting wait');
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
+        style: 'height:800px; width:800px',
+        bounded: true
+      });
     });
 
     it('Changes the position of the brush to the top right', () => {
@@ -1948,33 +1633,21 @@ describe('HiGlassComponentTest', () => {
         heatmap2Track.options.scaleEndPercent
       );
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Colormap tests', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'height:800px; width:800px');
-      div.setAttribute('id', 'single-view');
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: true }}
-          viewConfig={twoViewConfig}
-        />,
-        { attachTo: div }
-      );
-
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
+        style: 'height:800px; width:800px',
+        bounded: true
+      });
     });
 
     it('Ensures that the custom color map loads properly', done => {
@@ -1989,71 +1662,46 @@ describe('HiGlassComponentTest', () => {
 
       waitForTilesLoaded(hgc.instance(), done);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Divergent tracks', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'height:800px; width:800px');
-      div.setAttribute('id', 'single-view');
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: true }}
-          viewConfig={divergentTrackConfig}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, divergentTrackConfig, done, {
+        style: 'height:800px; width:800px',
+        bounded: true
+      });
     });
 
-    // it('Exports the views as SVG', (done) => {
-    //   // hgc.instance().handleExportSVG();
-    //
-    //   done();
-    // });
+    it('Exports the views as SVG', done => {
+      // hgc.instance().handleExportSVG();
+
+      done();
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('View positioning', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, simpleCenterViewConfig, done, {
+        style: 'height:300px;width:300px;background-color: lightgreen',
+        bounded: true
+      });
+    });
 
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute(
-        'style',
-        'height:300px;width:300px;background-color: lightgreen'
-      );
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: true }}
-          viewConfig={simpleCenterViewConfig}
-        />,
-        { attachTo: div }
-      );
-
+    it('Changes view correctly', done => {
       const view = simpleCenterViewConfig.views[0];
       const midY = (view.initialYDomain[0] + view.initialYDomain[1]) / 2;
 
@@ -2066,9 +1714,6 @@ describe('HiGlassComponentTest', () => {
       });
       hgc.update();
       waitForTilesLoaded(hgc.instance(), done);
-
-      // visual check that the heatmap track config menu is moved
-      // to the left
     });
 
     it('Gets and sets the viewconfig', () => {
@@ -2079,38 +1724,18 @@ describe('HiGlassComponentTest', () => {
         viewsByUid: newViews
       });
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('The API', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={simpleCenterViewConfig}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-
-      // visual check that the heatmap track config menu is moved
-      // to the left
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, simpleCenterViewConfig, done);
     });
 
     it('Sets a new viewconfig', done => {
@@ -2131,33 +1756,21 @@ describe('HiGlassComponentTest', () => {
 
       expect(badFn).toThrow();
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Colormap tests', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'height:800px; width:800px');
-      div.setAttribute('id', 'single-view');
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: true }}
-          viewConfig={twoViewConfig}
-        />,
-        { attachTo: div }
-      );
-
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
+        style: 'height:800px; width:800px',
+        bounded: true
+      });
     });
 
     it('Ensures that the custom color map loads properly', done => {
@@ -2172,33 +1785,21 @@ describe('HiGlassComponentTest', () => {
 
       waitForTilesLoaded(hgc.instance(), done);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Close view tests', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'height:800px; width:800px');
-      div.setAttribute('id', 'single-view');
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: true }}
-          viewConfig={twoViewConfig}
-        />,
-        { attachTo: div }
-      );
-
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
+        style: 'height:800px; width:800px',
+        bounded: true
+      });
     });
 
     it('Ensures that when a view is closed, the PIXI graphics are removed', done => {
@@ -2213,37 +1814,18 @@ describe('HiGlassComponentTest', () => {
 
       waitForTilesLoaded(hgc.instance(), done);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Three views and linking', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute(
-        'style',
-        'height:400px; width:800px;background-color: lightgreen'
-      );
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: true }}
-          viewConfig={threeViews}
-        />,
-        { attachTo: div }
-      );
-
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, threeViews, done);
     });
 
     it('Links two views and moves to the side', done => {
@@ -2307,34 +1889,18 @@ describe('HiGlassComponentTest', () => {
 
       waitForTilesLoaded(hgc.instance(), done);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Single view', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={oneViewConfig}
-        />,
-        { attachTo: div }
-      );
-
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, oneViewConfig, done);
     });
 
     it('should load the initial config', done => {
@@ -2483,33 +2049,21 @@ describe('HiGlassComponentTest', () => {
 
       waitForTilesLoaded(hgc.instance(), done);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Value interval track tests', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'height:800px; width:800px');
-      div.setAttribute('id', 'single-view');
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: true }}
-          viewConfig={twoViewConfig}
-        />,
-        { attachTo: div }
-      );
-
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
+        style: 'height:800px; width:800px',
+        bounded: true
+      });
     });
 
     it("doesn't export maxWidth or filetype", () => {
@@ -2520,32 +2074,18 @@ describe('HiGlassComponentTest', () => {
       expect(viewString.indexOf('filetype')).toBeLessThan(0);
       expect(viewString.indexOf('binsPerDimension')).toBeLessThan(0);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Starting with an existing genome position search box', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent options={{ bounded: false }} viewConfig={onlyGPSB} />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, onlyGPSB, done);
     });
 
     it('Makes the search box invisible', done => {
@@ -2620,28 +2160,17 @@ describe('HiGlassComponentTest', () => {
 
       waitForJsonComplete(done);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Window resizing', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute(
-        'style',
-        'width:300px; height: 400px; background-color: lightgreen'
-      );
-      div.setAttribute('id', 'simple-hg-component');
-
+    beforeAll(done => {
       const newViewConf = JSON.parse(JSON.stringify(project1D));
 
       const center1 = JSON.parse(JSON.stringify(heatmapTrack));
@@ -2653,15 +2182,10 @@ describe('HiGlassComponentTest', () => {
       newViewConf.views[0].layout.h = 10;
       newViewConf.views[1].layout.h = 10;
 
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: true }}
-          viewConfig={newViewConf}
-        />,
-        { attachTo: div }
-      );
-
-      waitForTilesLoaded(hgc.instance(), done);
+      [div, hgc] = mountHGComponent(div, hgc, newViewConf, done, {
+        style: 'width:300px; height: 400px; background-color: lightgreen',
+        bounded: true
+      });
     });
 
     it('Sends a resize event to fit the current view into the window', done => {
@@ -2689,88 +2213,41 @@ describe('HiGlassComponentTest', () => {
 
       waitForTilesLoaded(hgc.instance(), done);
     });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
   });
 
   describe('Check for menu clashing in the center track ', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, simpleCenterViewConfig, done);
+    });
 
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
+    // Test missing?
 
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={simpleCenterViewConfig}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-
-      // visual check that the heatmap track config menu is moved
-      // to the left
+    afterAll(() => {
+      removeHGComponent(div);
     });
   });
 
   describe('Division track', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
+    let hgc = null;
+    let div = null;
 
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={divisionViewConfig}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-
-      // visual check that the heatmap track config menu is moved
-      // to the left
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, divisionViewConfig, done);
     });
 
     it('clones itself', () => {
       hgc.instance().handleAddView(hgc.instance().state.views.aa);
     });
-  });
 
-  describe('Cleanup', () => {
-    it('Cleans up previously created instances and mounts a new component', () => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
+    afterAll(() => {
+      removeHGComponent(div);
     });
   });
 

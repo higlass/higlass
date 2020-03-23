@@ -457,9 +457,9 @@ describe('API Tests', () => {
               ).toEqual('hidden');
               expect(hgc.pixiStage.y).toEqual(-20);
               done();
-            }, 50);
+            }, 150);
           }, 250);
-        }, 50);
+        }, 150);
       });
     });
 
