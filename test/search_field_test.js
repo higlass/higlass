@@ -84,4 +84,36 @@ describe('A search field', () => {
     expect(range1).to.eql([2000000, 3000000]);
     expect(range2).to.eql([1000000, 2000000]);
   });
+
+  it('should convert K and M notations in numbers', () => {
+    let number1 = null;
+    let number2 = null;
+
+    number1 = searchField.convertNumberNotation('150000000');
+    expect(number1).to.eql('150000000');
+
+    number1 = searchField.convertNumberNotation('150M');
+    expect(number1).to.eql('150000000');
+
+    number1 = searchField.convertNumberNotation('1.5M');
+    expect(number1).to.eql('1500000');
+
+    number2 = searchField.convertNumberNotation('1.50M');
+    expect(number1 === number2).to.eql(true);
+
+    number1 = searchField.convertNumberNotation('0.05M');
+    expect(number1).to.eql('50000');
+
+    number2 = searchField.convertNumberNotation('00.05M');
+    expect(number1 === number2).to.eql(true);
+
+    number2 = searchField.convertNumberNotation('0.050M');
+    expect(number1 === number2).to.eql(true);
+
+    number1 = searchField.convertNumberNotation('0.x0.05M');
+    expect(number1).to.eql('0.x0.05M');
+
+    number1 = searchField.convertNumberNotation('0.00001K');
+    expect(number1).to.eql('0');
+  });
 });
