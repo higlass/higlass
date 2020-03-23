@@ -614,11 +614,16 @@ describe('HiGlassComponentTest', () => {
     let div = null;
 
     beforeAll(done => {
+      console.warn(div);
+      console.warn(hgc);
       [div, hgc] = mountHGComponent(div, hgc, project1D, done);
+      console.warn('Mounting');
     });
 
     it('Exports to SVG', () => {
+      console.warn('createSVG');
       const svg = hgc.instance().createSVG();
+      console.warn('serializeToString', svg);
       const svgText = new XMLSerializer().serializeToString(svg);
 
       // check to make sure that the horizontal labels shifted down
