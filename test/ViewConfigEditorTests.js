@@ -14,7 +14,7 @@ import viewConf from './view-configs/simple-heatmap-gene-annotations';
 
 configure({ adapter: new Adapter() });
 
-describe('View Config Editor', () => {
+describe('View Config Editor Test', () => {
   const fetchMockHelper = new FetchMockHelper(
     viewConf,
     'ViewConfigEditorTests'

@@ -6,14 +6,6 @@
       "tracks": {
         "top": [
           {
-            "type": "top-axis",
-            "options": {},
-            "server": "http://localhost:8111/api/v1",
-            "height": 20,
-            "uid": "P2SAGA2XR-uwEhwto227sQ",
-            "width": 470
-          },
-          {
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "Nn8aA4qbTnmaa-oGGbuE-A",
             "uid": "tt",
@@ -89,7 +81,7 @@
             ],
             "options": {},
             "width": 470,
-            "height": 124
+            "height": 144
           }
         ],
         "left": [
@@ -143,19 +135,11 @@
         "x": 0,
         "y": 0
       },
-      "initialXDomain": [
-        3520359.40804778,
-        3593266.0078421957
-      ],
-      "initialYDomain": [
-        3519553.443225772,
-        3573333.8960611327
-      ]
+      "initialXDomain": [3520359.40804778, 3593266.0078421957],
+      "initialYDomain": [3519553.443225772, 3573333.8960611327]
     }
   ],
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["http://higlass.io/api/v1"],
   "locationLocks": {
     "locksByViewUid": {},
     "locksDict": {}

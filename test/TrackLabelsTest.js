@@ -7,7 +7,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 import FetchMockHelper from './utils/FetchMockHelper';
 // Utils
-import { mountHGComponent } from '../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
 describe('Track labels', () => {
@@ -61,7 +61,7 @@ describe('Track labels', () => {
     });
 
     afterAll(() => {
-      // removeHGComponent(div);
+      removeHGComponent(div);
     });
   });
 

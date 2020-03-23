@@ -15,80 +15,66 @@ describe('Zoom tests', () => {
     await fetchMockHelper.activateFetchMock();
   });
 
-  describe('Zoom tests', () => {
-    let api;
-    let div;
-
-    beforeEach(done => {
-      [div, api] = createElementAndApi(viewConfig);
-
-      setTimeout(() => {
-        done();
-      }, 1000);
+  const doMouseMove = (api, startX, startY, valueScaleZooming) => {
+    // simulate a zoom drag event by doing a
+    // mousedown, mousemove and mouseup
+    const evtDown = new MouseEvent('mousedown', {
+      clientX: startX,
+      clientY: startY,
+      view: window
     });
 
-    const doMouseMove = (startX, startY, valueScaleZooming) => {
-      // simulate a zoom drag event by doing a
-      // mousedown, mousemove and mouseup
-      const evtDown = new MouseEvent('mousedown', {
-        clientX: startX,
-        clientY: startY,
-        view: window
-      });
+    const evtMove = new MouseEvent('mousemove', {
+      clientX: startX + 2,
+      clientY: startY + 2,
+      view: window
+    });
 
-      const evtMove = new MouseEvent('mousemove', {
-        clientX: startX + 2,
-        clientY: startY + 2,
-        view: window
-      });
+    const evtUp = new MouseEvent('mouseup', {
+      clientX: startX + 2,
+      clientY: startY + 2,
+      view: window
+    });
 
-      const evtUp = new MouseEvent('mouseup', {
-        clientX: startX + 2,
-        clientY: startY + 2,
-        view: window
-      });
+    const trackRenderer = getTrackRenderer(api.getComponent(), 'aa');
+    trackRenderer.valueScaleZooming = valueScaleZooming;
 
-      const trackRenderer = getTrackRenderer(api.getComponent(), 'aa');
-      trackRenderer.valueScaleZooming = valueScaleZooming;
+    spyOn(trackRenderer, 'valueScaleMove');
+    const prevTransform = trackRenderer.zoomTransform;
 
-      spyOn(trackRenderer, 'valueScaleMove');
-      const prevTransform = trackRenderer.zoomTransform;
+    trackRenderer.element.dispatchEvent(evtDown);
+    trackRenderer.element.dispatchEvent(evtMove);
+    trackRenderer.element.dispatchEvent(evtUp);
 
-      trackRenderer.element.dispatchEvent(evtDown);
-      trackRenderer.element.dispatchEvent(evtMove);
-      trackRenderer.element.dispatchEvent(evtUp);
+    const newTransform = trackRenderer.zoomTransform;
 
-      const newTransform = trackRenderer.zoomTransform;
+    const dx = newTransform.x - prevTransform.x;
+    const dy = newTransform.y - prevTransform.y;
 
-      const dx = newTransform.x - prevTransform.x;
-      const dy = newTransform.y - prevTransform.y;
+    return [dx, dy, trackRenderer];
+  };
 
-      return [dx, dy, trackRenderer];
-    };
+  describe('Zoom tests', () => {
+    let api = null;
+    let div = null;
+
+    beforeAll(() => {
+      [div, api] = createElementAndApi(viewConfig);
+    });
 
     it('Dispatches a mousewheel event on the horizontal track', done => {
       // eslint-disable-next-line no-unused-vars
-      const [dx, dy, _] = doMouseMove(345, 221);
+      const [dx, dy, _] = doMouseMove(api, 345, 121);
 
       expect(dy).toEqual(0);
       expect(dx).toEqual(2);
 
-      done();
-    });
-
-    it('Dispatches a mousewheel event on the horizontal track while vauleScaleZooming', done => {
-      const [dx, dy, trackRenderer] = doMouseMove(345, 221, true);
-
-      expect(dy).toEqual(0);
-      expect(dx).toEqual(2);
-
-      expect(trackRenderer.valueScaleMove).toHaveBeenCalled();
       done();
     });
 
     it('Dispatches a mousewheel event on the center', done => {
       // eslint-disable-next-line no-unused-vars
-      const [dx, dy, _] = doMouseMove(348, 315);
+      const [dx, dy, _] = doMouseMove(api, 345, 350);
 
       expect(dy).toEqual(2);
       expect(dx).toEqual(2);
@@ -98,7 +84,7 @@ describe('Zoom tests', () => {
 
     it('Dispatches a mousewheel event on the left track', done => {
       // eslint-disable-next-line no-unused-vars
-      const [dx, dy, _] = doMouseMove(56, 315);
+      const [dx, dy, _] = doMouseMove(api, 56, 250);
 
       expect(dy).toEqual(2);
       expect(dx).toEqual(0);
@@ -106,7 +92,33 @@ describe('Zoom tests', () => {
       done();
     });
 
-    afterEach(() => {
+    afterAll(() => {
+      api.destroy();
+      removeDiv(div);
+      api = undefined;
+      div = undefined;
+    });
+  });
+
+  describe('Zoom tests with vauleScaleZooming', () => {
+    let api = null;
+    let div = null;
+
+    beforeAll(() => {
+      [div, api] = createElementAndApi(viewConfig);
+    });
+
+    it('Dispatches a mousewheel event on the horizontal track while vauleScaleZooming', done => {
+      const [dx, dy, trackRenderer] = doMouseMove(api, 345, 121, true);
+
+      expect(dy).toEqual(0);
+      expect(dx).toEqual(2);
+
+      expect(trackRenderer.valueScaleMove).toHaveBeenCalled();
+      done();
+    });
+
+    afterAll(() => {
       api.destroy();
       removeDiv(div);
       api = undefined;
