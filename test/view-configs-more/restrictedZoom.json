@@ -183,7 +183,7 @@
         "autocompleteServer": "http://higlass.io/api/v1",
         "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
       },
-      "zoomLimits": [3000000, "Infinity"]
+      "zoomLimits": [3000000, 3000000000]
     }
   ],
   "editable": true,
