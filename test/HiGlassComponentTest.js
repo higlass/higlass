@@ -565,7 +565,7 @@ describe('Simple HiGlassComponent', () => {
 
     it('Has the corrent limits', done => {
       const zoomLimits = hgc.instance().tiledPlots.aa.props.zoomLimits;
-      expect(zoomLimits[0]).toEqual(0);
+      expect(zoomLimits[0]).toEqual(0.002);
       expect(zoomLimits[1]).toEqual(2);
       done();
     });
