@@ -167,6 +167,32 @@ assigned values of ``[0,1]]``.
         ]
     }
 
+zoomLimits
+^^^^^^^^^^
+
+The field contains limits that controll the extend to which zooming is possible within a view. In the example below, zooming in is not possible beyond 200bp. Zooming out is unrestricted. If the field is not present in the viewconf, it defaults to ``[0,Infinity]]``, i.e. unrestricted zooming.
+
+.. code-block:: javascript
+
+    {
+        views: [
+            {
+                  "uid": "AhI0wMP6ScybnFp6BmLuPQ",
+                  "initialXDomain": [
+                    973907089.1176914,
+                    1196247735.9596405
+                  ],
+                  "initialYDomain": [
+                    -12281154450.083118,
+                    -12145323104.213125
+                  ],
+                  "zoomLimits": [
+                    200,
+                    Infinity
+                  ],
+        ]
+    }
+
 trackSourceServers
 ^^^^^^^^^^^^^^^^^^
 

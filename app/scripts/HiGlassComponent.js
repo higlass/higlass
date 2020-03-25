@@ -2328,6 +2328,31 @@ class HiGlassComponent extends React.Component {
     };
   }
 
+  calculateZoomLimits(view, initialXDomain) {
+    const limits = [0, Infinity];
+
+    if ('zoomLimits' in view) {
+      const diffX = initialXDomain[1] - initialXDomain[0];
+      const viewConfLimit = view.zoomLimits;
+      if (viewConfLimit[0] !== null && viewConfLimit[0] > 0) {
+        const upperLimit = diffX / viewConfLimit[0];
+        limits[1] = Math.max(upperLimit, 1);
+        if (upperLimit < 1) {
+          console.warn(`Invalid zoom limits. Lower limit set to ${diffX}`);
+        }
+      }
+
+      if (viewConfLimit[1] !== null && viewConfLimit[1] > viewConfLimit[0]) {
+        const lowerLimit = diffX / viewConfLimit[1];
+        limits[0] = Math.min(lowerLimit, 1);
+        if (lowerLimit > 1) {
+          console.warn(`Invalid zoom limits. Upper limit set to ${diffX}`);
+        }
+      }
+    }
+    return limits;
+  }
+
   generateViewLayout(view) {
     let layout = null;
 
@@ -4457,7 +4482,7 @@ class HiGlassComponent extends React.Component {
             xDomainLimits={view.xDomainLimits}
             yDomainLimits={view.yDomainLimits}
             zoomable={!this.isZoomFixed(view)}
-            zoomLimits={view.zoomLimits}
+            zoomLimits={this.calculateZoomLimits(view, view.initialXDomain)}
             zoomToDataExtentOnInit={() =>
               this.zoomToDataExtentOnInit.has(view.uid)
             }
