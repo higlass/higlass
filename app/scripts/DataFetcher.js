@@ -2,6 +2,9 @@ import slugid from 'slugid';
 import { scaleLinear } from 'd3-scale';
 import { trimTrailingSlash as tts, dictValues } from './utils';
 
+import DenseDataExtrema1D from './utils/DenseDataExtrema1D';
+import DenseDataExtrema2D from './utils/DenseDataExtrema2D';
+
 // Services
 import { tileProxy } from './services';
 import { minNonZero, maxNonZero } from './worker';
@@ -496,8 +499,14 @@ export default class DataFetcher {
           returnedTiles[1][tileIds[i]].dense
         );
 
+        const dde =
+          tilePos.length === 2
+            ? new DenseDataExtrema2D(newData)
+            : new DenseDataExtrema1D(newData);
+
         newTile = {
           dense: newData,
+          denseDataExtrema: dde,
           minNonZero: minNonZero(newData),
           maxNonZero: maxNonZero(newData),
           zoomLevel,

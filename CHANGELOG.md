@@ -1,5 +1,11 @@
 # Release notes
 
+## Next release
+
+- Fixed divided tracks bug by adding denseDataExtrema
+
+_[Detailed changes since v1.9.1](https://github.com/higlass/higlass/compare/v1.9.1...develop)_
+
 ## v1.9.1
 
 - Used stretchRects to ensure that there are no rendering artifacts when zooming in too far
