@@ -431,6 +431,16 @@ function stretchRects(track, graphicsAccessors) {
     // bogus data from the server
     .forEach(tile => {
       if (!tile.drawnAtScale) return;
+
+      const dasRange = tile.drawnAtScale.range();
+      const tRange = track._xScale.range();
+
+      // check to make sure the track extent hasn't changed
+      if (dasRange[0] !== tRange[0] || dasRange[1] !== tRange[1]) {
+        track.renderTile(tile);
+        return;
+      }
+
       const tileK =
         (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
         (track._xScale.domain()[1] - track._xScale.domain()[0]);

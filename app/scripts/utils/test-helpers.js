@@ -101,9 +101,16 @@ export const isWaitingOnTiles = hgc => {
   for (const track of hgc.iterateOverTracks()) {
     let trackObj = getTrackObjectFromHGC(hgc, track.viewId, track.trackId);
 
-    if (!track.track.server && !track.track.tilesetUid) {
+    if (
+      !track.track.server &&
+      !track.track.tilesetUid &&
+      !(track.track.data && track.track.data.type === 'divided')
+    ) {
       continue;
-    } else if (track.track.server && track.track.tilesetUid) {
+    } else if (
+      (track.track.data && track.track.data.type === 'divided') ||
+      (track.track.server && track.track.tilesetUid)
+    ) {
       if (trackObj.originalTrack) {
         trackObj = trackObj.originalTrack;
       }

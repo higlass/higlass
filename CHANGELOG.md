@@ -2,6 +2,12 @@
 
 ## Next release
 
+- Fixed divided tracks bug by adding denseDataExtrema
+
+_[Detailed changes since v1.9.1](https://github.com/higlass/higlass/compare/v1.9.1...develop)_
+
+## v1.9.1
+
 - Used stretchRects to ensure that there are no rendering artifacts when zooming in too far
 - Added scaled as a potential value to the annotationHeight option
 - Added the maxAnnotationHeight option to limit the size of annotations when using the scaled option for annotationHeight
@@ -10,7 +16,7 @@
 - Vertical zooming on BedLike annotations
 - Added support for aggregation of `horizontal-multivec` rows by passing arrays of row indices to the `selectRows` option. With this addition also comes the track options `selectRowsAggregationMode` (for specifying an aggregation function, "mean", "sum", "variance", "deviation") and `selectRowsAggregationWithRelativeHeight` (boolean) to determine whether rows representing groups of indices have 1-unit heights or `group.length`-unit heights.
 
-_[Detailed changes since v1.9.0](https://github.com/higlass/higlass/compare/v1.9.0...develop)_
+_[Detailed changes since v1.9.0](https://github.com/higlass/higlass/compare/v1.9.0...v1.9.1)_
 
 ## v1.9.0
 
@@ -26,6 +32,7 @@ _[Detailed changes since v1.9.0](https://github.com/higlass/higlass/compare/v1.9
 - Added the `.on('createSVG')` listener to the JS API, with the corresponding `.off('createSVG')`, for manipulating exported SVGs before they are returned.
 - Added `zeroValueColor` as an option for the `horizontal-multivec` track, to specify the color mapping for zero data values.
 - Track resizing events now trigger the `.on('viewConfig')` JS API callback.
+- Allowed K and M notations when entering genomic coordinates in searchbox (e.g., "chr1:150M-155M").
 - Specify raw tiles locally in the viewconf
 
 _[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.4...v1.9.0)_

@@ -67,6 +67,59 @@ class SearchField {
     return positionString;
   }
 
+  convertNumberNotation(numStr) {
+    // Convert K or M notations
+    // e.g. "1.5M" to "1500000"
+    // or "0.05M" to "50000"
+    // or even "00.05M" or "00.050M" to "50000"
+    let newNumStr = numStr;
+
+    if (
+      !newNumStr.includes('M', newNumStr.length - 1) &&
+      !newNumStr.includes('K', newNumStr.length - 1)
+    ) {
+      // Nothing to convert
+      return newNumStr;
+    }
+
+    let numZerosToAdd = 0;
+    let decPointPosFromEnd = 0;
+
+    // Handle 'M' or 'N' notations
+    if (newNumStr.includes('M', newNumStr.length - 1)) {
+      numZerosToAdd = 6;
+      newNumStr = newNumStr.replace('M', '');
+    } else {
+      numZerosToAdd = 3;
+      newNumStr = newNumStr.replace('K', '');
+    }
+
+    if (Number.isNaN(+newNumStr)) {
+      // Without 'K' or 'M' notation, the string should be converted to a valid number.
+      return numStr;
+    }
+
+    // Drop the needless characters for the simplicity (e.g., "00.5" to "0.5" or "1,000" to "1000").
+    newNumStr = (+newNumStr).toString();
+
+    // Handle a decimal point
+    if (newNumStr.includes('.')) {
+      decPointPosFromEnd = newNumStr.length - 1 - newNumStr.indexOf('.');
+      newNumStr = (+newNumStr.replace('.', '')).toString();
+    }
+
+    const totalZerosToAdd = numZerosToAdd - decPointPosFromEnd;
+    if (totalZerosToAdd < 0) {
+      // The value is smaller than 1 (e.g. "0.00005K")
+      return numStr;
+    }
+
+    // Finally, add zeros at the end.
+    newNumStr += '0'.repeat(totalZerosToAdd);
+
+    return newNumStr;
+  }
+
   parsePosition(positionText, prevChr = null) {
     // Parse chr:position strings...
     // i.e. chr1:1000
@@ -77,7 +130,7 @@ class SearchField {
 
     if (positionParts.length > 1) {
       chr = positionParts[0];
-      pos = +positionParts[1].replace(/,/g, ''); // chromosome specified
+      pos = +this.convertNumberNotation(positionParts[1].replace(/,/g, '')); // chromosome specified
     } else if (positionParts[0] in this.chromInfo.chrPositions) {
       // is this an entire chromosome
       chr = positionParts[0];
@@ -90,7 +143,7 @@ class SearchField {
       }
     } else {
       // no it's just a position without a chromosome
-      pos = +positionParts[0].replace(/,/g, ''); // no chromosome specified
+      pos = +this.convertNumberNotation(positionParts[0].replace(/,/g, '')); // no chromosome specified
       chr = null;
 
       if (prevChr) chr = prevChr;

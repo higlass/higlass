@@ -29,8 +29,9 @@ moment can be displayed using either a :ref:`chromosome labels tracks
 The genome position search box, in addition to displaying the current location,
 can be used to move the current view to a different location in the genome.
 Genomic locations can be entered in a format similar to the one used by the
-UCSC genome browser (e.g. ``chr1:10,100,000-20,200,000``). One can also search
-for gene names within the selected assembly.
+UCSC genome browser (e.g. ``chr1:10,000,000-20,000,000``). ``K`` or ``M`` notations
+can be used in the number (e.g. ``chr1:10M-20M``) instead of entering a lot of zeros. One can also 
+search for gene names within the selected assembly.
 
 The genome position search box can be enabled from the view menu.
 
