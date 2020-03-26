@@ -118,6 +118,8 @@ class HiGlassComponent extends React.Component {
     // keep track of the xScales of each Track Renderer
     this.xScales = {};
     this.yScales = {};
+    this.projectionXDomains = {};
+    this.projectionYDomains = {};
     this.topDiv = null;
     this.zoomToDataExtentOnInit = new Set();
 
@@ -1397,16 +1399,23 @@ class HiGlassComponent extends React.Component {
         }
       }
     }
-    return svg;
-  }
-
-  createSVGString() {
-    const svg = this.createSVG();
 
     // FF is fussier than Chrome, and requires dimensions on the SVG,
     // if it is to be used as an image src.
     svg.setAttribute('width', this.canvasElement.style.width);
     svg.setAttribute('height', this.canvasElement.style.height);
+
+    if (this.postCreateSVGCallback) {
+      // Allow the callback function to modify the exported SVG string
+      // before it is finalized and returned.
+      const modifiedSvg = this.postCreateSVGCallback(svg);
+      return modifiedSvg;
+    }
+    return svg;
+  }
+
+  createSVGString() {
+    const svg = this.createSVG();
 
     let svgString = vkbeautify.xml(
       new window.XMLSerializer().serializeToString(svg)
@@ -1438,6 +1447,14 @@ class HiGlassComponent extends React.Component {
       'export.svg',
       new Blob([this.createSVGString()], { type: 'image/svg+xml' })
     );
+  }
+
+  offPostCreateSVG() {
+    this.postCreateSVGCallback = null;
+  }
+
+  onPostCreateSVG(callback) {
+    this.postCreateSVGCallback = callback;
   }
 
   createPNGBlobPromise() {
@@ -2911,6 +2928,32 @@ class HiGlassComponent extends React.Component {
       track.removeViewportChanged = trackId =>
         this.removeScalesChangedListener(fromView, trackId);
       track.setDomainsCallback = (xDomain, yDomain) => {
+        if (!fromView) {
+          // If there is no `fromView`, then there must be a `projectionXDomain` instead.
+          // Update the viewconfig to reflect the new `projectionXDomain` array
+          // on the `viewport-projection-horizontal` track.
+          if (!this.projectionXDomains[viewUid]) {
+            this.projectionXDomains[viewUid] = {};
+          }
+          if (!this.projectionYDomains[viewUid]) {
+            this.projectionYDomains[viewUid] = {};
+          }
+          if (
+            track.type === 'viewport-projection-horizontal' ||
+            track.type === 'viewport-projection-center'
+          ) {
+            this.projectionXDomains[viewUid][track.uid] = xDomain;
+          }
+          if (
+            track.type === 'viewport-projection-vertical' ||
+            track.type === 'viewport-projection-center'
+          ) {
+            this.projectionYDomains[viewUid][track.uid] = yDomain;
+          }
+          this.triggerViewChangeDb();
+          // Return early, since the remaining code uses the `fromView` variable.
+          return;
+        }
         const tXScale = scaleLinear()
           .domain(xDomain)
           .range(this.xScales[fromView].range());
@@ -3088,6 +3131,27 @@ class HiGlassComponent extends React.Component {
           }
         }
 
+        if (
+          (track.type === 'viewport-projection-center' ||
+            track.type === 'viewport-projection-horizontal') &&
+          this.projectionXDomains[k.uid] &&
+          this.projectionXDomains[k.uid][track.uid]
+        ) {
+          // There is no "from" view attached to this projection track,
+          // so the `projectionXDomain` field must be used.
+          track.projectionXDomain = this.projectionXDomains[k.uid][track.uid];
+        }
+        if (
+          (track.type === 'viewport-projection-center' ||
+            track.type === 'viewport-projection-vertical') &&
+          this.projectionYDomains[k.uid] &&
+          this.projectionYDomains[k.uid][track.uid]
+        ) {
+          // There is no "from" view attached to this projection track,
+          // so the `projectionYDomain` field must be used.
+          track.projectionYDomain = this.projectionYDomains[k.uid][track.uid];
+        }
+
         delete track.name;
         delete track.position;
         delete track.header;
@@ -3104,8 +3168,9 @@ class HiGlassComponent extends React.Component {
         delete track.datatype;
         delete track.maxWidth;
         delete track.datafile;
-        delete track.filetype;
         delete track.binsPerDimension;
+        delete track.resolutions;
+        delete track.aggregationModes;
       });
 
       newView.uid = k.uid;
@@ -4341,6 +4406,7 @@ class HiGlassComponent extends React.Component {
             }
             onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
             onRangeSelection={this.rangeSelectionHandler.bind(this)}
+            onResizeTrack={this.triggerViewChangeDb}
             onScalesChanged={(x, y) => this.handleScalesChanged(view.uid, x, y)}
             onTrackOptionsChanged={(trackId, options) =>
               this.handleTrackOptionsChanged(view.uid, trackId, options)

@@ -397,12 +397,68 @@ const zoomedY = (yPos, kMultiplier, transform, height) => {
   return zoomIdentity.translate(0, t1).scale(k1);
 };
 
+/**
+ * Get the tile's position in its coordinate system.
+ *
+ * See Tiled1DPIXITrack.js
+ */
+const getTilePosAndDimensions = (tilesetInfo, tileId) => {
+  const zoomLevel = +tileId.split('.')[0];
+  const xTilePos = +tileId.split('.')[1];
+
+  // max_width should be substitutable with 2 ** tilesetInfo.max_zoom
+  const totalWidth = tilesetInfo.max_width;
+
+  const minX = tilesetInfo.min_pos[0];
+
+  const tileWidth = totalWidth / 2 ** zoomLevel;
+
+  const tileX = minX + xTilePos * tileWidth;
+
+  return {
+    tileX,
+    tileWidth
+  };
+};
+
+/** When zooming, we want to do fast scaling rather than re-rendering
+ * but if we do this too much, shapes (particularly arrowheads) get
+ * distorted. This function keeps track of how stretched the track is
+ * and redraws it if it becomes too distorted (tileK < 0.5 or tileK > 2) */
+function stretchRects(track, graphicsAccessors) {
+  Object.values(track.fetchedTiles)
+    // tile hasn't been drawn properly because we likely got some
+    // bogus data from the server
+    .forEach(tile => {
+      if (!tile.drawnAtScale) return;
+      const tileK =
+        (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
+        (track._xScale.domain()[1] - track._xScale.domain()[0]);
+
+      if (tileK > 2 || tileK < 0.5) {
+        // too stretched out, needs to be re-rendered
+        track.renderTile(tile);
+      } else {
+        // can be stretched a little bit, just need to set the scale
+        const newRange = track._xScale.domain().map(tile.drawnAtScale);
+        const posOffset = newRange[0];
+
+        for (const graphicsAccessor of graphicsAccessors) {
+          graphicsAccessor(tile).scale.x = tileK;
+          graphicsAccessor(tile).x = -posOffset * tileK;
+        }
+      }
+    });
+}
+
 const trackUtils = {
-  calculate1DZoomLevel,
   calculate1DVisibleTiles,
+  calculate1DZoomLevel,
   drawAxis,
-  zoomedY,
-  movedY
+  movedY,
+  getTilePosAndDimensions,
+  stretchRects,
+  zoomedY
 };
 
 export default trackUtils;

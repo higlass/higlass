@@ -8,13 +8,12 @@ import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 // Services
 import { tileProxy } from './services';
-
 // Utils
 import {
   colorDomainToRgbaArray,
   colorToHex,
-  rgbToHex,
   segmentsToRows,
+  trackUtils,
   valueToColor
 } from './utils';
 
@@ -44,16 +43,26 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
     super(context, options);
 
-    this.drawnRects = {};
     this.allDrawnRects = {};
+  }
 
-    if (this.options.colorEncoding) {
+  /** Factor out some initialization code for the track so */
+  initialize() {
+    if (this.initialized) return;
+
+    if (!this.drawnRects) {
+      this.drawnRects = {};
+    }
+
+    if (!this.colorScale) {
       if (this.options.colorRange) {
         this.colorScale = colorDomainToRgbaArray(this.options.colorRange);
       } else {
         this.colorScale = HEATED_OBJECT_MAP;
       }
     }
+
+    this.initialized = true;
   }
 
   initTile(tile) {
@@ -103,16 +112,24 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         tile.tileData.forEach((td, i) => {
           const geneInfo = td.fields;
 
+          // A random importance helps with selective hiding
+          // of overlapping texts
+          if (!td.importance) {
+            td.importance = Math.random();
+          }
           tile.textWidths = {};
           tile.textHeights = {};
 
           // don't draw texts for the latter entries in the tile
-          if (i >= MAX_TEXTS) {
+          if (i >= (+this.options.maxTexts || MAX_TEXTS)) {
             return;
           }
 
           // geneInfo[3] is the gene symbol
-          const text = new PIXI.Text(geneInfo[3], TEXT_STYLE);
+          const text = new PIXI.Text(geneInfo[3], {
+            ...TEXT_STYLE,
+            fontSize: +this.options.fontSize || TEXT_STYLE.fontSize
+          });
           if (this.flipText) {
             text.scale.x = -1;
           }
@@ -122,17 +139,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
           tile.texts[td.uid] = text; // index by geneName
 
-          // console.log('adding text:', text.text);
           tile.textGraphics.addChild(text);
         });
       }
     }
 
     tile.initialized = true;
-
-    // console.log('init');
-    // this.renderTile(tile);
-    // this.draw();
   }
 
   /**
@@ -187,12 +199,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     this.drawnRects = {};
 
-    if (this.options.colorEncoding) {
-      if (this.options.colorRange) {
-        this.colorScale = colorDomainToRgbaArray(this.options.colorRange);
-      } else {
-        this.colorScale = HEATED_OBJECT_MAP;
-      }
+    if (this.options.colorRange) {
+      this.colorScale = colorDomainToRgbaArray(this.options.colorRange);
+    } else {
+      this.colorScale = HEATED_OBJECT_MAP;
     }
 
     for (const tile of this.visibleAndFetchedTiles()) {
@@ -253,12 +263,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         (startStaggered + startPos - i) % 2;
     }
 
-    // sortedRows.forEach((x, i) => {
-    //   allRects[x.value.uid].staggeredStartPosition = i % 2;
-    // });
-    // console.log('sortedRows:', sortedRows);
-
-    // console.log('visibleAndFetchedIds', this.visibleAndFetchedIds());
     return allRects;
   }
 
@@ -385,14 +389,58 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return drawnPoly;
   }
 
+  setValueScale() {
+    this.valueScale = null;
+
+    if (this.options && this.options.valueColumn) {
+      /**
+       * These intervals come with some y-value that we want to plot
+       */
+
+      const min = this.options.colorEncodingRange
+        ? +this.options.colorEncodingRange[0]
+        : this.minVisibleValueInTiles(+this.options.valueColumn);
+      const max = this.options.colorEncodingRange
+        ? +this.options.colorEncodingRange[1]
+        : this.maxVisibleValueInTiles(+this.options.valueColumn);
+
+      if (this.options.valueColumn) {
+        [this.valueScale] = this.makeValueScale(
+          min,
+          this.calculateMedianVisibleValue(+this.options.valueColumn),
+          max
+        );
+      }
+    }
+  }
+
+  setColorValueScale() {
+    this.colorValueScale = null;
+
+    if (this.options && this.options.colorEncoding) {
+      const min = this.options.colorEncodingRange
+        ? +this.options.colorEncodingRange[0]
+        : this.minVisibleValueInTiles(+this.options.colorEncoding);
+      const max = this.options.colorEncodingRange
+        ? +this.options.colorEncodingRange[1]
+        : this.maxVisibleValueInTiles(+this.options.colorEncoding);
+
+      this.colorValueScale = scaleLinear()
+        .domain([min, max])
+        .range([0, 255]);
+    }
+  }
+
   renderRows(tile, rows, maxRows, startY, endY, fill) {
     const zoomLevel = +tile.tileId.split('.')[0];
     let maxValue = Number.MIN_SAFE_INTEGER;
-    // console.log('startY', startY, 'endY', endY, range(maxRows), rows);
+
+    this.initialize();
 
     const rowScale = scaleBand()
       .domain(range(maxRows))
-      .range([startY, endY]);
+      .range([startY, endY])
+      .paddingInner(0.3);
 
     this.allVisibleRects();
     let allRects = null;
@@ -414,35 +462,45 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         const txEnd = +geneInfo[2] + chrOffset;
         const txMiddle = (txStart + txEnd) / 2;
         let yMiddle = rowScale(j) + rowScale.step() / 2;
-        const rectHeight = this.options.annotationHeight || GENE_RECT_HEIGHT;
+
+        let rectHeight = this.options.annotationHeight || GENE_RECT_HEIGHT;
+
+        if (rectHeight === 'scaled') {
+          rectHeight = rowScale.bandwidth();
+
+          if (this.options.maxAnnotationHeight) {
+            rectHeight = Math.min(
+              rectHeight,
+              +this.options.maxAnnotationHeight
+            );
+          }
+        }
 
         // if the regions are scaled according to a value column their height needs to
         // be adjusted
-        if (this.options && this.options.valueColumn) {
-          if (this.options.colorEncoding) {
-            const rgb = valueToColor(
-              this.valueColorScale,
-              this.colorScale
-            )(+geneInfo[+this.options.valueColumn - 1]);
-            fill = colorToHex(rgbToHex(...rgb));
-          } else {
-            // These intervals come with some y-value that we want to plot
-            const value = +geneInfo[+this.options.valueColumn - 1];
-            if (value > maxValue) {
-              maxValue = value;
-            }
+        if (this.colorValueScale) {
+          const rgb = valueToColor(
+            this.colorValueScale,
+            this.colorScale
+          )(+geneInfo[+this.options.colorEncoding - 1]);
+          fill = `rgba(${rgb.join(',')})`;
+        }
 
-            yMiddle = this.valueScale(value);
-            // rectHeight /= 2;
+        if (this.valueScale) {
+          const value = +geneInfo[+this.options.valueColumn - 1];
+          if (value > maxValue) {
+            maxValue = value;
           }
+
+          yMiddle = this.valueScale(value);
         }
 
         // for when there's text
         // yMiddle -= 8;
 
         const opacity = this.options.fillOpacity || 0.3;
-        tile.rectGraphics.lineStyle(1, fill, opacity);
-        tile.rectGraphics.beginFill(fill, opacity);
+        tile.rectGraphics.lineStyle(1, colorToHex(fill), opacity);
+        tile.rectGraphics.beginFill(colorToHex(fill), opacity);
         // let height = valueScale(Math.log(+geneInfo[4]));
         // let width= height;
 
@@ -462,6 +520,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         }
 
         let alreadyDrawn = true;
+
         // don't draw anything that has already been drawn
         if (
           !(
@@ -486,19 +545,20 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             {
               start: txStart,
               end: txEnd,
-              value: td
+              value: td,
+              fill
             },
             tile.tileId
           ];
         }
 
         if (!this.options.showTexts) continue;
-        // console.log('geneName:', geneName);
+
         // tile probably hasn't been initialized yet
         if (!tile.texts) return;
 
         // don't draw texts for the latter entries in the tile
-        if (i >= MAX_TEXTS) continue;
+        if (i >= (+this.options.maxTexts || MAX_TEXTS)) continue;
 
         if (!tile.texts[td.uid]) continue;
 
@@ -511,15 +571,23 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           text.alreadyDrawn = true;
         }
 
-        text.style = Object.assign(TEXT_STYLE, { fill });
+        text.style = {
+          ...TEXT_STYLE,
+          fill,
+          fontSize: +this.options.fontSize || TEXT_STYLE.fontSize
+        };
 
         if (!(geneInfo[3] in tile.textWidths)) {
           text.updateTransform();
           const textWidth = text.getBounds().width;
           const textHeight = text.getBounds().height;
 
+          // the text size adjustment compensates for the extra
+          // size that the show gives it
+          const TEXT_SIZE_ADJUSTMENT = 5;
+
           tile.textWidths[geneInfo[3]] = textWidth;
-          tile.textHeights[geneInfo[3]] = textHeight;
+          tile.textHeights[geneInfo[3]] = textHeight - TEXT_SIZE_ADJUSTMENT;
         }
       }
     }
@@ -550,43 +618,21 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     tile.drawnAtScale = this._xScale.copy();
     tile.rendered = true;
 
-    if (this.options && this.options.valueColumn) {
-      /**
-       * These intervals come with some y-value that we want to plot
-       */
+    // configure vertical positioning of annotations if
+    // this.options.valueColumn is set
+    this.setValueScale();
 
-      const min = this.options.colorEncodingRange
-        ? +this.options.colorEncodingRange[0]
-        : this.minVisibleValueInTiles();
-      const max = this.options.colorEncodingRange
-        ? +this.options.colorEncodingRange[1]
-        : this.maxVisibleValueInTiles();
-
-      if (this.options.colorEncoding) {
-        this.valueColorScale = scaleLinear()
-          .domain([min, max])
-          .range([0, 255]);
-      } else {
-        [this.valueScale] = this.makeValueScale(
-          min,
-          this.calculateMedianVisibleValue(),
-          max
-        );
-      }
-    }
+    // configure coloring of annotations if
+    // this.options.colorEncoding is set
+    this.setColorValueScale();
 
     // let rendered = 0;
 
     if (tile.tileData && tile.tileData.length) {
-      // console.log('maxPlusRows', maxPlusRows);
-      // console.log('maxMinusRows', maxMinusRows);
-
-      const fill = colorToHex(
-        this.options.plusStrandColor || this.options.fillColor || 'blue'
-      );
-      const minusStrandFill = colorToHex(
-        this.options.minusStrandColor || this.options.fillColor || 'purple'
-      );
+      const fill =
+        this.options.plusStrandColor || this.options.fillColor || 'blue';
+      const minusStrandFill =
+        this.options.minusStrandColor || this.options.fillColor || 'purple';
 
       const MIDDLE_SPACE = 0;
       const plusHeight =
@@ -610,6 +656,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         minusStrandFill
       );
     }
+
+    trackUtils.stretchRects(this, [x => x.rectGraphics]);
   }
 
   calculateZoomLevel() {
@@ -627,7 +675,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return zoomLevel;
   }
 
-  minVisibleValueInTiles() {
+  minVisibleValueInTiles(valueColumn) {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
@@ -645,7 +693,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             x.tileData
               .sort((a, b) => b.importance - a.importance)
               .slice(0, MAX_TILE_ENTRIES)
-              .map(y => +y.fields[+this.options.valueColumn - 1])
+              .map(y => +y.fields[valueColumn - 1])
               .filter(y => !Number.isNaN(y))
           )
         )
@@ -659,7 +707,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return min;
   }
 
-  maxVisibleValueInTiles() {
+  maxVisibleValueInTiles(valueColumn) {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
     if (visibleAndFetchedIds.length === 0) {
@@ -677,7 +725,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             x.tileData
               .sort((a, b) => b.importance - a.importance)
               .slice(0, MAX_TILE_ENTRIES)
-              .map(y => +y.fields[+this.options.valueColumn - 1])
+              .map(y => +y.fields[valueColumn - 1])
               .filter(y => !Number.isNaN(y))
           )
         )
@@ -691,7 +739,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     return max;
   }
 
-  calculateMedianVisibleValue() {
+  calculateMedianVisibleValue(valueColumn) {
     if (this.areAllVisibleTilesLoaded()) {
       this.allTilesLoaded();
     }
@@ -711,7 +759,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             x.tileData
               .sort((a, b) => b.importance - a.importance)
               .slice(0, MAX_TILE_ENTRIES)
-              .map(y => +y.fields[+this.options.valueColumn - 1])
+              .map(y => +y.fields[valueColumn - 1])
           )
       )
       .filter(x => x > 0);
@@ -722,9 +770,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   draw() {
     super.draw();
 
-    // graphics.clear();
-
-    // const maxValue = 0;
     this.allTexts = [];
     this.allBoxes = [];
 
@@ -736,16 +781,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         return;
       }
 
-      // scale the rectangles
-      //
-      const tileK =
-        (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) /
-        (this._xScale.domain()[1] - this._xScale.domain()[0]);
-      const newRange = this._xScale.domain().map(tile.drawnAtScale);
-
-      const posOffset = newRange[0];
-      tile.rectGraphics.scale.x = tileK;
-      tile.rectGraphics.position.x = -posOffset * tileK;
+      trackUtils.stretchRects(this, [x => x.rectGraphics]);
 
       // move the texts
 
@@ -779,10 +815,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
           if (!parentInFetched && !text.alreadyDrawn) {
             text.visible = true;
-
             // TODO, change the line below to true if texts are desired in the future
             // text.visible = false;
-
             const TEXT_MARGIN = 3;
             this.allBoxes.push([
               text.position.x - TEXT_MARGIN,
@@ -803,21 +837,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       }
     }
 
-    /*
-        for (let fetchedTileId in this.fetchedTiles) {
-            let ft = this.fetchedTiles[fetchedTileId];
-
-            ft.tileData.forEach(td => {
-                let geneInfo = td.fields;
-                if (+geneInfo[4] > maxValue)
-                    maxValue = geneInfo[4];
-            });
-        }
-        */
-
-    // console.log('length:', this.allBoxes.length);
-
-    // console.trace('draw', allTexts.length);
     this.hideOverlaps(this.allBoxes, this.allTexts);
   }
 
@@ -825,20 +844,12 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // store the bounding boxes of the text objects so we can
     // calculate overlaps
 
-    /*
-        let allBoxes = allTexts.map(val => {
-            let text = val.text;
-            text.updateTransform();
-            let b = text.getBounds();
-            let box = [b.x, b.y, b.x + b.width, b.y + b.height];
-
-            return box;
-        });
-        */
     boxIntersect(allBoxes, (i, j) => {
       if (allTexts[i].importance > allTexts[j].importance) {
-        allTexts[j].text.visible = false;
-      } else {
+        if (allTexts[i].text.visible) {
+          allTexts[j].text.visible = false;
+        }
+      } else if (allTexts[j].text.visible) {
         allTexts[i].text.visible = false;
       }
     });
@@ -852,16 +863,6 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   setDimensions(newDimensions) {
     super.setDimensions(newDimensions);
-
-    /*
-    // redraw the contents
-    for (const tile of this.visibleAndFetchedTiles()) {
-      // this.destroyTile(tile);
-      this.renderTile(tile);
-    }
-
-    this.draw();
-    */
   }
 
   zoomed(newXScale, newYScale) {
@@ -923,16 +924,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             d += ` L ${rect[i]} ${rect[i + 1]}`;
           }
 
-          const geneInfo = td.fields;
-
-          let fill =
-            this.options.plusStrandColor || this.options.fillColor || 'blue';
-          const minusStrandFill =
-            this.options.minusStrandColor || this.options.fillColor || 'purple';
-
-          if (geneInfo[5] === '-') {
-            fill = minusStrandFill;
-          }
+          const fill = this.drawnRects[zoomLevel][td.uid][1].fill;
 
           r.setAttribute('d', d);
           r.setAttribute('fill', fill);
@@ -962,7 +954,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
             t.setAttribute('text-anchor', 'middle');
             t.setAttribute('font-family', TEXT_STYLE.fontFamily);
-            t.setAttribute('font-size', TEXT_STYLE.fontSize);
+            t.setAttribute(
+              'font-size',
+              +this.options.fontSize || TEXT_STYLE.fontSize
+            );
             t.setAttribute('font-weight', 'bold');
             t.setAttribute('dy', '5px');
             t.setAttribute('fill', fill);
@@ -985,25 +980,13 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
 
     const zoomLevel = this.calculateZoomLevel();
-    // const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo,
-    //   zoomLevel, this.tilesetInfo.tile_size);
 
-    // // the position of the tile containing the query position
-    // const tilePos = this._xScale.invert(trackX) / tileWidth;
-    // console.log('tilePos', tilePos);
-
-    // const posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
-
-    // const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
-    // const fetchedTile = this.fetchedTiles[tileId];
-
-    // const dataX = this._xScale.invert(trackX);
+    const point = [trackX, trackY];
 
     if (this.drawnRects[zoomLevel]) {
       const visibleRects = Object.values(this.drawnRects[zoomLevel]);
 
       for (let i = 0; i < visibleRects.length; i++) {
-        const point = [trackX, trackY];
         const rect = visibleRects[i][0].slice(0);
         const newArr = [];
         while (rect.length) newArr.push(rect.splice(0, 2));

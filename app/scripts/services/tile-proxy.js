@@ -494,13 +494,16 @@ export const calculateTilesFromResolution = (
  * @param valueScaleType: Either 'log' or 'linear'
  * @param valueScaleDomain: The domain of the scale (the range is always [254,0])
  * @param colorScale: a 255 x 4 rgba array used as a color scale
- * @param synchronous: Render this tile synchronously or pass it on to the
+ * @param synchronous: Render this tile synchronously or pass it on to the threadpool (which doesn't exist yet).
  * @param ignoreUpperRight: If this is a tile along the diagonal and there will
  * be mirrored tiles present ignore the upper right values
  * @param ignoreLowerLeft: If this is a tile along the diagonal and there will be
  * mirrored tiles present ignore the lower left values
+ * @param {array} zeroValueColor: The color to use for rendering zero data values, [r, g, b, a].
  * @param {number[]} selectedRows: Array of row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
- * threadpool
+ * @param {string} selectedRowsAggregationMode: String that determines the aggregation function to use if selected rows is a
+ * 2D array ("mean", "sum", etc).
+ * @param {boolean} selectedRowsAggregationWithRelativeHeight: If true, the height for each aggregation group should be relative to the length of the group.
  */
 export const tileDataToPixData = (
   tile,
@@ -511,7 +514,10 @@ export const tileDataToPixData = (
   finished,
   ignoreUpperRight,
   ignoreLowerLeft,
-  selectedRows
+  zeroValueColor,
+  selectedRows,
+  selectedRowsAggregationMode,
+  selectedRowsAggregationWithRelativeHeight
 ) => {
   const { tileData } = tile;
 
@@ -567,7 +573,10 @@ export const tileDataToPixData = (
     ignoreUpperRight,
     ignoreLowerLeft,
     tile.tileData.shape,
-    selectedRows
+    zeroValueColor,
+    selectedRows,
+    selectedRowsAggregationMode,
+    selectedRowsAggregationWithRelativeHeight
   );
 
   finished({ pixData });

@@ -9,14 +9,8 @@
   "views": [
     {
       "uid": "aa",
-      "initialXDomain": [
-        782035593.0218927,
-        3161702482.099383
-      ],
-      "initialYDomain": [
-        1142928773.5006099,
-        2963035748.0921783
-      ],
+      "initialXDomain": [782035593.0218927, 3161702482.099383],
+      "initialYDomain": [1142928773.5006099, 2963035748.0921783],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
@@ -26,8 +20,6 @@
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
             "type": "horizontal-chromosome-labels",
-            "position": "top",
-            "name": "Chromosome Labels (hg19)",
             "height": 57,
             "uid": "hcl",
             "options": {},

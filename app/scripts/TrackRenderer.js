@@ -1480,7 +1480,7 @@ class TrackRenderer extends React.Component {
       dataConfig.fileUrl = track.fileUrl;
 
       if (!track.filetype) {
-        console.warn('fileUrl present without fileType:', track);
+        console.warn('fileUrl present without filetype:', track);
       } else {
         dataConfig.filetype = track.filetype;
       }
@@ -1533,6 +1533,16 @@ class TrackRenderer extends React.Component {
 
     if (track.x) {
       context.xPosition = track.x;
+    }
+
+    // for viewport-projection-horizontal and viewport-projection-center
+    if (track.projectionXDomain) {
+      context.projectionXDomain = track.projectionXDomain;
+    }
+
+    // for viewport-projection-vertical and viewport-projection-center
+    if (track.projectionYDomain) {
+      context.projectionYDomain = track.projectionYDomain;
     }
 
     const options = track.options;

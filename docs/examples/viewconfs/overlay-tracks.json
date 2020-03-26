@@ -1,21 +1,13 @@
 {
   "editable": true,
   "zoomFixed": false,
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["http://higlass.io/api/v1"],
   "exportViewUrl": "http://localhost:8000/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
-      "initialXDomain": [
-        -237704035.38095224,
-        2626451655.666667
-      ],
-      "initialYDomain": [
-        -292727329.2758031,
-        3067303944.990089
-      ],
+      "initialXDomain": [-237704035.38095224, 2626451655.666667],
+      "initialYDomain": [-292727329.2758031, 3067303944.990089],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
@@ -128,12 +120,7 @@
                 },
                 "type": "heatmap",
                 "options": {
-                  "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "#F5A623",
-                    "#D0021B"
-                  ],
+                  "colorRange": ["#FFFFFF", "#F8E71C", "#F5A623", "#D0021B"],
                   "colorbarPosition": "topRight",
                   "colorbarLabelsPosition": "outside",
                   "maxZoom": null,
@@ -154,12 +141,6 @@
                   "labelBottomMargin": 0
                 },
                 "uid": "heatmap",
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
                 "width": 484,
                 "height": 235
               },
@@ -262,16 +243,8 @@
           ],
           "options": {
             "extent": [
-              [
-                1000000000,
-                1100000000
-              ],
-              [
-                1200000000,
-                1300000000,
-                1400000000,
-                1500000000
-              ]
+              [1000000000, 1100000000],
+              [1200000000, 1300000000, 1400000000, 1500000000]
             ],
             "orientationsAndPositions": [
               {

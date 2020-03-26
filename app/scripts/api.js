@@ -659,6 +659,7 @@ const createApi = function api(context, pubSub) {
        * hgv.off('rangeSelection', rangeListener);
        * hgv.off('viewConfig', viewConfigListener);
        * hgv.off('mouseMoveZoom', mmz);
+       * hgv.off('createSVG');
        */
       off(event, listenerId, viewId) {
         const callback =
@@ -687,6 +688,10 @@ const createApi = function api(context, pubSub) {
 
           case 'viewConfig':
             self.offViewChange(listenerId);
+            break;
+
+          case 'createSVG':
+            self.offPostCreateSVG();
             break;
 
           default:
@@ -769,7 +774,11 @@ const createApi = function api(context, pubSub) {
        *  // 2D or BEDPE-like array
        *  [["chr1", 249200621, "chr2", 50000], ["chr3", 197972430, "chr4", 50000]]
        *
-       * ``viewConfig:`` Returns the current view config.
+       * ``viewConfig:`` Returns the current view config (as a string).
+       *  This event is published upon interactions including:
+       *  - Saving in the view config editor modal.
+       *  - Panning and zooming in views, which update view object ``initialXDomain`` and ``initialYDomain`` values.
+       *  - Brushing in ``viewport-projection-`` tracks containing null ``fromViewUid`` fields, which update track object ``projectionXDomain`` and ``projectionYDomain`` values.
        *
        * ``mouseMoveZoom:`` Returns the location and data at the mouse cursor's
        * screen location.
@@ -812,6 +821,9 @@ const createApi = function api(context, pubSub) {
        *    isGenomicCoords
        *  }
        *
+       * ``createSVG:`` Set a callback to obtain the current exported SVG DOM node,
+       *                and potentially return a manipulated SVG DOM node.
+       *
        * @param {string} event One of the events described below
        *
        * @param {function} callback A callback to be called when the event occurs
@@ -820,7 +832,7 @@ const createApi = function api(context, pubSub) {
        *
        * @example
        *
-       *  let locationListenerId;
+       * let locationListenerId;
        * hgv.on(
        *   'location',
        *   location => console.log('Here we are:', location),
@@ -838,8 +850,18 @@ const createApi = function api(context, pubSub) {
        *   range => console.log('Selected', range)
        * );
        *
-       *  const mmz = event => console.log('Moved', event);
-       *  hgv.on('mouseMoveZoom', mmz);
+       * const mmz = event => console.log('Moved', event);
+       * hgv.on('mouseMoveZoom', mmz);
+       *
+       * hgv.on('createSVG', (svg) => {
+       *    const circle = document.createElement('circle');
+       *    circle.setAttribute('cx', 100);
+       *    circle.setAttribute('cy', 100);
+       *    circle.setAttribute('r', 50);
+       *    circle.setAttribute('fill', 'green');
+       *    svg.appendChild(circle);
+       *    return svg;
+       * });
        */
       on(event, callback, viewId, callbackId) {
         switch (event) {
@@ -861,6 +883,9 @@ const createApi = function api(context, pubSub) {
 
           case 'viewConfig':
             return self.onViewChange(callback);
+
+          case 'createSVG':
+            return self.onPostCreateSVG(callback);
 
           default:
             return undefined;

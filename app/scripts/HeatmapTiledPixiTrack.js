@@ -5,14 +5,8 @@ import { scaleLinear } from 'd3-scale';
 import { select, event } from 'd3-selection';
 import * as PIXI from 'pixi.js';
 import slugid from 'slugid';
-
-import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
-import AxisPixi from './AxisPixi';
-
-// Services
-import { tileProxy } from './services';
-
 import {
+  colorToRgba,
   absToChr,
   colorDomainToRgbaArray,
   colorToHex,
@@ -23,6 +17,12 @@ import {
   showMousePosition,
   valueToColor
 } from './utils';
+
+import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
+import AxisPixi from './AxisPixi';
+
+// Services
+import { tileProxy } from './services';
 
 import { HEATED_OBJECT_MAP } from './configs';
 
@@ -1237,7 +1237,12 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         tile.tileData.tilePos[0] === tile.tileData.tilePos[1],
       this.options.extent === 'upper-right' &&
         tile.tileData.tilePos[0] === tile.tileData.tilePos[1],
-      this.options.selectRows
+      this.options.zeroValueColor
+        ? colorToRgba(this.options.zeroValueColor)
+        : undefined,
+      this.options.selectRows,
+      this.options.selectRowsAggregationMode,
+      this.options.selectRowsAggregationWithRelativeHeight
     );
   }
 

@@ -95,6 +95,7 @@ function gbToHgGene(gb) {
     chrOffset: 0,
     importance: gb.end - gb.start,
     uid,
+    type: gb.type,
     fields: [
       'chrom',
       gb.start,
@@ -136,7 +137,7 @@ class GBKDataFetcher {
         this.gbJson = genbankParser(gffText);
         this.cdss = shuffle(
           this.gbJson[0].features
-            .filter(f => f.type === 'CDS')
+            .filter(f => f.type !== 'source')
             .sort((a, b) => a.start - b.start)
         );
       });
