@@ -30,6 +30,9 @@ const createApi = function api(context, pubSub) {
   return {
     destroy,
     publish: apiPubSub.publish,
+    // Stack: mapping of callback names to arrays of callbacks, useful
+    // to determine how many callbacks exist for a particular event.
+    stack: apiPubSub.stack,
     // Public API
     public: {
       /**
@@ -684,7 +687,6 @@ const createApi = function api(context, pubSub) {
             break;
 
           case 'wheel':
-            self.numWheelCallbacks -= 1;
             apiPubSub.unsubscribe('wheel', callback);
             break;
 
@@ -888,7 +890,6 @@ const createApi = function api(context, pubSub) {
             return apiPubSub.subscribe('mouseMoveZoom', callback);
 
           case 'wheel':
-            self.numWheelCallbacks += 1;
             return apiPubSub.subscribe('wheel', callback);
 
           case 'rangeSelection':

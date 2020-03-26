@@ -280,13 +280,16 @@ class HiGlassComponent extends React.Component {
     this.attachedToDOM = false;
 
     // Set up API
-    const { public: api, destroy: apiDestroy, publish: apiPublish } = createApi(
-      this,
-      this.pubSub
-    );
+    const {
+      public: api,
+      destroy: apiDestroy,
+      publish: apiPublish,
+      stack: apiStack
+    } = createApi(this, this.pubSub);
     this.api = api;
     this.apiDestroy = apiDestroy;
     this.apiPublish = apiPublish;
+    this.apiStack = apiStack;
 
     this.viewChangeListener = [];
 
@@ -297,9 +300,6 @@ class HiGlassComponent extends React.Component {
 
     this.prevMouseHoverTrack = null;
     this.zooming = false;
-
-    // Wheel event condition variables
-    this.numWheelCallbacks = 0;
 
     // Bound functions
     this.appClickHandlerBound = this.appClickHandler.bind(this);
@@ -4296,7 +4296,7 @@ class HiGlassComponent extends React.Component {
     const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
 
     // Find the tracks at the wheel position
-    if (this.numWheelCallbacks > 0) {
+    if (this.apiStack.wheel && this.apiStack.wheel.length > 0) {
       const relPos = clientPoint(this.topDiv, nativeEvent);
       // We need to add the scrollTop
       relPos[1] += this.scrollTop;
