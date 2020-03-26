@@ -15,6 +15,7 @@ _[Detailed changes since v1.9.1](https://github.com/higlass/higlass/compare/v1.9
 - colorAnnotations are independent of valueScale
 - Vertical zooming on BedLike annotations
 - Added support for aggregation of `horizontal-multivec` rows by passing arrays of row indices to the `selectRows` option. With this addition also comes the track options `selectRowsAggregationMode` (for specifying an aggregation function, "mean", "sum", "variance", "deviation") and `selectRowsAggregationWithRelativeHeight` (boolean) to determine whether rows representing groups of indices have 1-unit heights or `group.length`-unit heights.
+- Added the JS API `.on('wheel', callback)` option for subscribing to mouse wheel events.
 
 _[Detailed changes since v1.9.0](https://github.com/higlass/higlass/compare/v1.9.0...v1.9.1)_
 
