@@ -1470,12 +1470,12 @@ class TrackRenderer extends React.Component {
     // be blank and we can go on our merry way
     let dataConfig = track.data;
     const chromosomeLabels = this.currentProps.positionedTracks.filter(
-      x => x.track.type == 'horizontal-chromosome-labels'
+      x => x.track.type === 'horizontal-chromosome-labels'
     )[0];
 
     const chromOrderSource =
       chromosomeLabels &&
-      chromosomeLabels.track.server == track.server &&
+      chromosomeLabels.track.server === track.server &&
       chromosomeLabels.track.tilesetUid;
 
     if (!dataConfig) {
