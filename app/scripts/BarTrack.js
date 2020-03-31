@@ -13,6 +13,15 @@ const HEX_WHITE = colorToHex('#FFFFFF');
 class BarTrack extends HorizontalLine1DPixiTrack {
   constructor(...args) {
     super(...args);
+    this.initializeBarTrack();
+  }
+
+  /** Factor out some initialization code for the track. This is
+  necessary because we can now load tiles synchronously and so
+  we have to check if the track is initialized in initTiles
+  and not in the constructor */
+  initializeBarTrack() {
+    if (this.barTrackInitialized) return;
 
     this.zeroLine = new PIXI.Graphics();
     this.pMain.addChild(this.zeroLine);
@@ -25,6 +34,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
         this.setColorScale(this.options.colorRange);
       }
     }
+
+    this.barTrackInitialized = true;
   }
 
   setColorScale(colorRange) {
@@ -57,6 +68,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
    * Create whatever is needed to draw this tile.
    */
   initTile(tile) {
+    this.initializeBarTrack();
     super.initTile(tile);
   }
 
@@ -279,6 +291,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   draw() {
+    this.initializeBarTrack();
     // we don't want to call HorizontalLine1DPixiTrack's draw function
     // but rather its parent's
     super.draw();

@@ -6,15 +6,16 @@ import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 import { colorToHex } from './utils';
 
 class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
-  constructor(context, options) {
-    // Fritz: this smells very hacky!
-    const newContext = { ...context };
-    newContext.onValueScaleChanged = () => {
-      this.drawAxis(this.valueScale);
-      context.onValueScaleChanged();
-    };
-    super(newContext, options);
-  }
+  // constructor(context, options) {
+  //   // Fritz: this smells very hacky!
+  //   // const newContext = { ...context };
+  //   // newContext.onValueScaleChanged = () => {
+  //   //   this.drawAxis(this.valueScale);
+  //   //   context.onValueScaleChanged();
+  //   // };
+  //   // super(newContext, options);
+  //   super(context, options);
+  // }
 
   stopHover() {
     this.pMouseOver.clear();

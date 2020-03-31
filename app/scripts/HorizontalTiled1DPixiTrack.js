@@ -11,12 +11,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     super(context, options);
     const { animate, isShowGlobalMousePosition } = context;
 
-    this.constIndicator = new PIXI.Graphics();
-    this.pMain.addChild(this.constIndicator);
-
-    this.axis = new AxisPixi(this);
-    this.pBase.addChild(this.axis.pAxis);
-
+    this.initializeHorizontalTiled1DPixiTrack();
     this.animate = animate;
     this.options = options;
     this.isShowGlobalMousePosition = isShowGlobalMousePosition;
@@ -30,6 +25,22 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
         this.isShowGlobalMousePosition()
       );
     }
+  }
+
+  /** Factor out some initialization code for the track. This is
+  necessary because we can now load tiles synchronously and so
+  we have to check if the track is initialized in initTiles
+  and not in the constructor */
+  initializeHorizontalTiled1DPixiTrack() {
+    if (this.horizontalTiled1DPixiTrackInitialized) return;
+
+    this.constIndicator = new PIXI.Graphics();
+    this.pMain.addChild(this.constIndicator);
+
+    this.axis = new AxisPixi(this);
+    this.pBase.addChild(this.axis.pAxis);
+
+    this.horizontalTiled1DPixiTrackInitialized = true;
   }
 
   rerender(options, force) {
@@ -107,6 +118,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
   }
 
   drawAxis(valueScale) {
+    this.initializeHorizontalTiled1DPixiTrack();
     // either no axis position is specified
     if (
       !this.options.axisPositionVertical &&

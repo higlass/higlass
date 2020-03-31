@@ -87,7 +87,9 @@ class TiledPixiTrack extends PixiTrack {
       dataConfig,
       handleTilesetInfoReceived,
       animate,
-      onValueScaleChanged
+      onValueScaleChanged,
+      isValueScaleLocked,
+      getLockGroupExtrema
     } = context;
 
     // keep track of which render we're on so that we save ourselves
@@ -126,6 +128,9 @@ class TiledPixiTrack extends PixiTrack {
     this.fixedValueScaleMin = null;
     this.valueScaleMax = null;
     this.fixedValueScaleMax = null;
+
+    this.isValueScaleLocked = isValueScaleLocked;
+    this.getLockGroupExtrema = getLockGroupExtrema;
 
     this.listeners = {};
 
