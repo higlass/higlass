@@ -2342,7 +2342,7 @@ class HiGlassComponent extends React.Component {
         }
       }
 
-      if (viewConfLimit[1] > viewConfLimit[0]) {
+      if (viewConfLimit.length > 1 && viewConfLimit[1] > viewConfLimit[0]) {
         const lowerLimit = diffX / viewConfLimit[1];
         limits[0] = Math.min(lowerLimit, 1);
         if (lowerLimit > 1) {

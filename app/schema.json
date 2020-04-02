@@ -148,7 +148,7 @@
         "zoomFixed": { "type": "boolean" },
         "zoomLimits": {
           "type": "array",
-          "minLength": 2,
+          "minLength": 1,
           "maxLength": 2,
           "items": {
             "type": "number"
