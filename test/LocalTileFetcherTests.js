@@ -17,7 +17,7 @@ import {
 
 configure({ adapter: new Adapter() });
 
-describe('Horizontal heatmaps', () => {
+describe('Local Tile Fetcher', () => {
   let hgc = null;
   let div = null;
 
@@ -28,11 +28,21 @@ describe('Horizontal heatmaps', () => {
     });
   });
 
-  it('should respect zoom limits', () => {
+  it('should get the gene annotation track', () => {
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
 
     expect(trackObj.allTexts.length).to.be.above(0);
     expect(trackObj.allTexts[0].caption).to.eql('SEMA3A');
+  });
+
+  it('should get the bar track', () => {
+    const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'ss');
+
+    expect(
+      Object.values(trackObj.fetchedTiles).every(tile => tile.svgData)
+    ).to.eql(true);
+
+    expect(trackObj.zeroLine.fill.alpha).to.eql(1);
   });
 
   afterAll(() => {

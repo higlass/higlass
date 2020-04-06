@@ -25,6 +25,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
         this.setColorScale(this.options.colorRange);
       }
     }
+
+    this.initialized = true;
   }
 
   setColorScale(colorRange) {
@@ -57,6 +59,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
    * Create whatever is needed to draw this tile.
    */
   initTile(tile) {
+    if (!this.initialized) return;
     super.initTile(tile);
   }
 
@@ -70,6 +73,11 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       // not rendered using the current scale, so we need to rerender
       this.renderTile(tile);
     }
+  }
+
+  renderTile(tile) {
+    if (!this.initialized) return;
+    super.renderTile(tile);
   }
 
   drawTile(tile) {
@@ -279,6 +287,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   draw() {
+    if (!this.initialized) return;
+
     // we don't want to call HorizontalLine1DPixiTrack's draw function
     // but rather its parent's
     super.draw();

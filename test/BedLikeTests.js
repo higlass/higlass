@@ -227,13 +227,15 @@ describe('BedLikeTrack |', () => {
         tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0];
 
       trackRenderer.zoomToDataPos(
-        1585600000,
-        1585800000,
-        1585600000,
-        1585800000,
+        1585200000,
+        1586400000,
+        1187975248,
+        1187975248,
         0
       );
-
+      // We have to rerender the tile due to synchronous tile loading.
+      // tile.drawnAtScale is not up to date otherwise.
+      trackObj.renderTile(tile);
       const newScaleWidth =
         tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0];
 
@@ -254,7 +256,7 @@ describe('BedLikeTrack |', () => {
       {
         uid: 'aa',
         initialXDomain: [1585110207.2930722, 1586490384.5429244],
-        initialYDomain: [1187975248.2421436, 1187975248.2421436],
+        initialYDomain: [1187975248, 1187975248],
         autocompleteSource:
           'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
         genomePositionSearchBoxVisible: false,
