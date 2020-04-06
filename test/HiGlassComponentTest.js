@@ -2054,12 +2054,10 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Check that there are green an red rects', done => {
+    it('Check that there are green and red rects', done => {
       const svg = hgc.instance().createSVG();
       const svgText = new XMLSerializer().serializeToString(svg);
 
-      // console.log(svgText);
-      // check that there are green an red rectangles
       expect(
         svgText.indexOf('fill="green" stroke="green" x="11.24963759567723"')
       ).toBeGreaterThan(0);
