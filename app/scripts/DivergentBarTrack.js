@@ -6,6 +6,10 @@ import BarTrack from './BarTrack';
 import { colorToHex } from './utils';
 
 class DivergentBarTrack extends BarTrack {
+  drawTile(tile) {
+    this.renderTile(tile);
+  }
+
   renderTile(tile) {
     // super.drawTile(tile);
     if (!tile.graphics) {
