@@ -2054,11 +2054,19 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    // it('Exports the views as SVG', (done) => {
-    //   // hgc.instance().handleExportSVG();
-    //
-    //   done();
-    // });
+    it('Check that there are green and red rects', done => {
+      const svg = hgc.instance().createSVG();
+      const svgText = new XMLSerializer().serializeToString(svg);
+
+      expect(
+        svgText.indexOf('fill="green" stroke="green" x="11.24963759567723"')
+      ).toBeGreaterThan(0);
+      expect(
+        svgText.indexOf('fill="red" stroke="red" x="29.818754489548308"')
+      ).toBeGreaterThan(0);
+
+      done();
+    });
   });
 
   describe('View positioning', () => {

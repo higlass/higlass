@@ -3,6 +3,7 @@
 ## Next release
 
 - Fixed divided tracks bug by adding denseDataExtrema
+- Fixed divergent bar track
 
 _[Detailed changes since v1.9.1](https://github.com/higlass/higlass/compare/v1.9.1...develop)_
 
