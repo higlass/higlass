@@ -22,6 +22,61 @@ describe('BedLikeTrack |', () => {
   let hgc = null;
   let div = null;
 
+  describe('Options', () => {
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, viewConf1, done);
+    });
+
+    it('Changes text color independent of fill', () => {
+      let svg = hgc.instance().createSVGString();
+
+      // make sure the first time we export there's no black texts
+      let textIx = svg.indexOf('text');
+      expect(textIx).to.be.above(0);
+      let otherIx = svg.indexOf('fill="0"');
+      expect(otherIx).to.be.below(0);
+
+      hgc.instance().state.views.aa.tracks.top[1].options.textColor = 'black';
+      hgc.setState(hgc.instance().state);
+      hgc.update();
+
+      svg = hgc.instance().createSVGString();
+
+      // we should still have textx and they should be black
+      textIx = svg.indexOf('text');
+      expect(textIx).to.be.above(0);
+      otherIx = svg.indexOf('fill="0"');
+      expect(otherIx).to.be.above(0);
+    });
+
+    it('Changes font size independent of fill', () => {
+      let svg = hgc.instance().createSVGString();
+      // make sure the first time we export there's no black texts
+      let textIx = svg.indexOf('text');
+      expect(textIx).to.be.above(0);
+      let changedIx = svg.indexOf('font-size="20"');
+      expect(changedIx).to.be.below(0);
+
+      hgc.instance().state.views.aa.tracks.top[1].options.fontSize = 20;
+      hgc.setState(hgc.instance().state);
+      hgc.update();
+
+      svg = hgc.instance().createSVGString();
+
+      // we should still have textx and they should be black
+      textIx = svg.indexOf('text');
+      expect(textIx).to.be.above(0);
+      changedIx = svg.indexOf('font-size="20"');
+      expect(changedIx).to.be.above(0);
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+      div = null;
+      hgc = null;
+    });
+  });
+
   describe('vertical scaling', () => {
     beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf1, done);

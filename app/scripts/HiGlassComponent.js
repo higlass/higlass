@@ -266,7 +266,7 @@ class HiGlassComponent extends React.Component {
       views,
       viewConfig,
       addTrackPositionMenuPosition: null,
-
+      typedEditable: undefined,
       mouseOverOverlayUid: null,
       mouseTool,
       isDarkTheme: false,
@@ -326,6 +326,10 @@ class HiGlassComponent extends React.Component {
     this.closeModalBound = this.closeModal.bind(this);
     this.handleEditViewConfigBound = this.handleEditViewConfig.bind(this);
     this.onScrollHandlerBound = this.onScrollHandler.bind(this);
+
+    // for typed shortcuts (e.g. e-d-i-t) to toggle editable
+    this.typedText = '';
+    this.typedTextTimeout = null;
 
     this.modal = {
       open: this.openModalBound,
@@ -831,7 +835,37 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  toggleTypedEditable() {
+    this.setState({
+      typedEditable: !this.isEditable()
+    });
+  }
+
+  /** Handle typed commands (e.g. e-d-i-t) */
+  typedTextHandler(event) {
+    this.typedText = this.typedText.concat(event.key);
+
+    if (this.typedText.endsWith('hgedit')) {
+      this.toggleTypedEditable();
+      this.typedText = '';
+    }
+
+    // 1.5 seconds to type the next letter
+    const TYPED_TEXT_TIMEOUT = 1500;
+    if (this.typedTextTimeout) {
+      clearTimeout(this.typedTextTimeout);
+    }
+
+    // set a timeout for new typed text
+    this.typedTextTimeout = setTimeout(() => {
+      this.typedText = '';
+    }, TYPED_TEXT_TIMEOUT);
+  }
+
   keyDownHandler(event) {
+    // handle typed commands (e.g. e-d-i-t)
+    this.typedTextHandler(event);
+
     if (this.props.options.rangeSelectionOnAlt && event.key === 'Alt') {
       this.setState({
         mouseTool: MOUSE_TOOL_SELECT
@@ -984,6 +1018,12 @@ class HiGlassComponent extends React.Component {
    * visible?
    */
   isEditable() {
+    if (this.state.typedEditable !== undefined) {
+      // somebody typed "edit" so we need to follow the directive of
+      // this cheat code over all other preferences
+      return this.state.typedEditable;
+    }
+
     if (!this.props.options || !('editable' in this.props.options)) {
       return this.state.viewConfig.editable;
     }

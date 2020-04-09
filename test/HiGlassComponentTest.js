@@ -67,6 +67,58 @@ describe('Simple HiGlassComponent', () => {
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
+  describe('Cheat codes', () => {
+    it('Cleans up previously created instances and mounts a new component', done => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(
+        <HiGlassComponent
+          options={{ bounded: false }}
+          viewConfig={divisionViewConfig}
+        />,
+        { attachTo: div }
+      );
+
+      hgc.update();
+      waitForTilesLoaded(hgc.instance(), () => {
+        const svgText = hgc.instance().createSVGString();
+
+        expect(svgText.indexOf('image')).toBeGreaterThan(0);
+        done();
+      });
+
+      // visual check that the heatmap track config menu is moved
+      // to the left
+    });
+
+    it('Makes the track editable', () => {
+      expect(hgc.instance().isEditable()).toBe(true);
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'h' }));
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'g' }));
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'e' }));
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'd' }));
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'i' }));
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 't' }));
+      hgc.update();
+      // console.log('keyevent', keyEvent);
+      //
+      expect(hgc.instance().isEditable()).toBe(false);
+    });
+  });
+
   describe('Division track', () => {
     it('Cleans up previously created instances and mounts a new component', done => {
       if (hgc) {
