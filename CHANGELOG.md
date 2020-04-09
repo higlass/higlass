@@ -5,7 +5,8 @@
 - Fixed divided tracks bug by adding denseDataExtrema
 - Fixed divergent bar track
 - Made the bar track compatible with the local tile fetcher
-- Added textColor and fillOpacity options to BedLikeTrack
+- Added textColor, fontSize and fillOpacity options to BedLikeTrack
+- Added cheat code for making the component editable (i.e. with headers)
 
 _[Detailed changes since v1.9.1](https://github.com/higlass/higlass/compare/v1.9.1...develop)_
 
