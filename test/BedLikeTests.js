@@ -36,7 +36,7 @@ describe('BedLikeTrack |', () => {
       let otherIx = svg.indexOf('fill="0"');
       expect(otherIx).to.be.below(0);
 
-      hgc.instance().state.views.aa.tracks.top[1].options.textColor = 'black';
+      hgc.instance().state.views.aa.tracks.top[1].options.fontColor = 'black';
       hgc.setState(hgc.instance().state);
       hgc.update();
 

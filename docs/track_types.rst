@@ -60,6 +60,9 @@ Intervals can visually encode information using the following three ``options``:
 - **fillOpacity:**
     The opacity of the annotations.
 
+- **fontColor:**
+    The color of the label text's font
+
 - **fontSize:**
     The font size for annotation labels (default 10)
 

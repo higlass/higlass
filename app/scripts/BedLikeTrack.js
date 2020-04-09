@@ -576,14 +576,14 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           text.alreadyDrawn = true;
         }
 
-        const textColor =
-          this.options.textColor !== undefined
-            ? colorToHex(this.options.textColor)
+        const fontColor =
+          this.options.fontColor !== undefined
+            ? colorToHex(this.options.fontColor)
             : fill;
 
         text.style = {
           ...TEXT_STYLE,
-          fill: textColor,
+          fill: fontColor,
           fontSize: +this.options.fontSize || TEXT_STYLE.fontSize
         };
 
@@ -942,9 +942,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           }
 
           const fill = this.drawnRects[zoomLevel][td.uid][1].fill;
-          const textColor =
-            this.options.textColor !== undefined
-              ? colorToHex(this.options.textColor)
+          const fontColor =
+            this.options.fontColor !== undefined
+              ? colorToHex(this.options.fontColor)
               : fill;
 
           r.setAttribute('d', d);
@@ -981,7 +981,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             );
             t.setAttribute('font-weight', 'bold');
             t.setAttribute('dy', '5px');
-            t.setAttribute('fill', textColor);
+            t.setAttribute('fill', fontColor);
             t.setAttribute('stroke', TEXT_STYLE.stroke);
             t.setAttribute('stroke-width', '0.4');
             t.setAttribute('text-shadow', '0px 0px 2px grey');
