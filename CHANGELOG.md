@@ -7,6 +7,7 @@
 - Made the bar track compatible with the local tile fetcher
 - Added fontColor, fontSize and fillOpacity options to BedLikeTrack
 - Added cheat code for making the component editable (i.e. with headers)
+- Fixed track names in config menu
 
 _[Detailed changes since v1.9.1](https://github.com/higlass/higlass/compare/v1.9.1...develop)_
 
