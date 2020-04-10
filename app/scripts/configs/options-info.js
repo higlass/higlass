@@ -253,10 +253,6 @@ export const OPTIONS_INFO = {
     name: 'Color',
     inlineOptions: AVAILABLE_COLORS
   },
-  textColor: {
-    name: 'Text Color',
-    inlineOptions: AVAILABLE_COLORS
-  },
   fontColor: {
     name: 'Font color',
     inlineOptions: AVAILABLE_COLORS
