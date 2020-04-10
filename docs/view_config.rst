@@ -54,6 +54,46 @@ The editor support a couple of keyboard shortcuts to make editing fast:
 - ``CMD (or CTRL) + Enter`` to save, apply, and finalize changes and close the modal
 - Hold ``ALT`` for 1 second to temporarily hide the modal. The modal will reappear as soon as you release ``ALT``.
 
+For example, here is a useful recipe for **fixing the value scale limits** when displaying a Hi-C map using a linear color scale. First, locate the description of the heatmap track you want to edit and find the options dictionary.
+
+.. code-block:: json
+
+  {
+  ...
+  "type": "heatmap",
+  "options": {
+      "name": "My Hi-C map",
+      ...
+      "heatmapValueScaling": "log",
+      "showMousePosition": false,
+      ...
+  },
+  ...
+  }
+
+
+Then set ``heatmapValueScaling`` to ``"linear"`` if not set already and add two additional entries: ``valueScaleMin`` and ``valueScaleMax``.
+
+.. code-block:: json
+
+  {
+  ...
+  "type": "heatmap",
+  "options": {
+      "name": "My Hi-C map",
+      ...
+      "heatmapValueScaling": "linear",
+      "valueScaleMin": 0.0,
+      "valueScaleMax": 0.02,
+      "showMousePosition": false,
+      ...
+  },
+  ...
+  }
+
+Finally, save to apply the changes.
+
+
 Viewconf Structure
 ==================
 
