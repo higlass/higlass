@@ -258,7 +258,7 @@ export const OPTIONS_INFO = {
     inlineOptions: AVAILABLE_COLORS
   },
   fontColor: {
-    name: 'Fill color',
+    name: 'Font color',
     inlineOptions: AVAILABLE_COLORS
   },
   fillColor: {
