@@ -1,4 +1,5 @@
-import * as PIXI from 'pixi.js';
+// Configs
+import { GLOBALS } from './configs';
 
 import VerticalTiled1DPixiTrack from './VerticalTiled1DPixiTrack';
 
@@ -16,11 +17,9 @@ class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {
      */
 
     const graphics = tile.graphics;
-    tile.textGraphics = new PIXI.Graphics();
-    // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/')
-    // + '/' + tile.mirrored,
+    tile.textGraphics = new GLOBALS.PIXI.Graphics();
 
-    tile.text = new PIXI.Text(
+    tile.text = new GLOBALS.PIXI.Text(
       `${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`,
       {
         fontFamily: 'Arial',

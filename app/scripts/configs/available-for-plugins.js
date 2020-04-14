@@ -3,8 +3,6 @@
  */
 
 // Libraries
-import * as PIXI from 'pixi.js';
-
 import * as d3Array from 'd3-array';
 import * as d3Axis from 'd3-axis';
 import * as d3Brush from 'd3-brush';
@@ -88,7 +86,7 @@ const libraries = {
   d3Selection,
   d3Transition,
   d3Zoom,
-  PIXI,
+  PIXI: configs.GLOBALS.PIXI,
   mix,
   slugid
 };

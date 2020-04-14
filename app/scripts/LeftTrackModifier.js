@@ -1,16 +1,17 @@
-import * as PIXI from 'pixi.js';
+// Configs
+import { GLOBALS } from './configs';
 
 class LeftTrackModifier {
   constructor(originalTrack) {
     this.scene = originalTrack.scene;
 
     this.originalTrack = originalTrack;
-    this.pBase = new PIXI.Graphics();
+    this.pBase = new GLOBALS.PIXI.Graphics();
 
     this.scene.removeChild(originalTrack.pBase);
     this.scene.addChild(this.pBase);
 
-    this.moveToOrigin = new PIXI.Graphics();
+    this.moveToOrigin = new GLOBALS.PIXI.Graphics();
     this.moveToOrigin.addChild(originalTrack.pBase);
 
     this.pBase.addChild(this.moveToOrigin);

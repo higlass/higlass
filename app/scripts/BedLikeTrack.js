@@ -1,7 +1,6 @@
 import boxIntersect from 'box-intersect';
 import { median, range } from 'd3-array';
 import { scaleBand, scaleLinear } from 'd3-scale';
-import * as PIXI from 'pixi.js';
 import classifyPoint from 'robust-point-in-polygon';
 import { zoomIdentity } from 'd3-zoom';
 
@@ -19,7 +18,7 @@ import {
 } from './utils';
 
 // Configs
-import { HEATED_OBJECT_MAP } from './configs';
+import { GLOBALS, HEATED_OBJECT_MAP } from './configs';
 
 const GENE_RECT_HEIGHT = 16;
 const MAX_TEXTS = 50;
@@ -75,8 +74,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // create texts
     tile.texts = {};
 
-    tile.rectGraphics = new PIXI.Graphics();
-    tile.textGraphics = new PIXI.Graphics();
+    tile.rectGraphics = new GLOBALS.PIXI.Graphics();
+    tile.textGraphics = new GLOBALS.PIXI.Graphics();
 
     tile.graphics.addChild(tile.rectGraphics);
     tile.graphics.addChild(tile.textGraphics);
@@ -132,7 +131,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           }
 
           // geneInfo[3] is the gene symbol
-          const text = new PIXI.Text(geneInfo[3], {
+          const text = new GLOBALS.PIXI.Text(geneInfo[3], {
             ...TEXT_STYLE,
             fontSize: +this.options.fontSize || TEXT_STYLE.fontSize
           });

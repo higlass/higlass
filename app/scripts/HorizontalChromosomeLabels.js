@@ -1,7 +1,6 @@
 import boxIntersect from 'box-intersect';
 import { scaleLinear } from 'd3-scale';
 import { format, precisionPrefix, formatPrefix } from 'd3-format';
-import * as PIXI from 'pixi.js';
 
 import PixiTrack from './PixiTrack';
 import ChromosomeInfo from './ChromosomeInfo';
@@ -15,7 +14,7 @@ import {
   svgLine
 } from './utils';
 
-import { THEME_DARK } from './configs';
+import { GLOBALS, THEME_DARK } from './configs';
 
 const TICK_WIDTH = 200;
 const TICK_HEIGHT = 6;
@@ -36,7 +35,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.chromInfo = null;
     this.dataConfig = dataConfig;
 
-    this.pTicks = new PIXI.Graphics();
+    this.pTicks = new GLOBALS.PIXI.Graphics();
     this.pMain.addChild(this.pTicks);
 
     this.gTicks = {};
@@ -112,10 +111,10 @@ class HorizontalChromosomeLabels extends PixiTrack {
     }
 
     if (!this.gBoundTicks) {
-      this.gBoundTicks = new PIXI.Graphics();
+      this.gBoundTicks = new GLOBALS.PIXI.Graphics();
 
-      this.leftBoundTick = new PIXI.Text('', this.pixiTextConfig);
-      this.rightBoundTick = new PIXI.Text('', this.pixiTextConfig);
+      this.leftBoundTick = new GLOBALS.PIXI.Text('', this.pixiTextConfig);
+      this.rightBoundTick = new GLOBALS.PIXI.Text('', this.pixiTextConfig);
 
       this.gBoundTicks.addChild(this.leftBoundTick);
       this.gBoundTicks.addChild(this.rightBoundTick);
@@ -135,7 +134,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
     }
 
     if (!this.pTicks) {
-      this.pTicks = new PIXI.Graphics();
+      this.pTicks = new GLOBALS.PIXI.Graphics();
       this.pMain.addChild(this.pTicks);
     }
 
@@ -144,12 +143,12 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
       const chromName = this.chromInfo.cumPositions[i].chr;
-      this.gTicks[chromName] = new PIXI.Graphics();
+      this.gTicks[chromName] = new GLOBALS.PIXI.Graphics();
 
       // create the array that will store tick TEXT objects
       if (!this.tickTexts[chromName]) this.tickTexts[chromName] = [];
 
-      const text = new PIXI.Text(chromName, this.pixiTextConfig);
+      const text = new GLOBALS.PIXI.Text(chromName, this.pixiTextConfig);
 
       // give each string a random hash so that some get hidden
       // when there's overlaps
@@ -330,7 +329,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
     // we're not constantly recreating texts that already
     // exist
     while (tickTexts.length < ticks.length) {
-      const newText = new PIXI.Text('', this.pixiTextConfig);
+      const newText = new GLOBALS.PIXI.Text('', this.pixiTextConfig);
       tickTexts.push(newText);
       this.gTicks[cumPos.chr].addChild(newText);
     }

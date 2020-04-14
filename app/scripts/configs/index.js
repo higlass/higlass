@@ -64,3 +64,4 @@ export { default as TRACKS_INFO } from './tracks-info';
 export { default as TRACKS_INFO_BY_TYPE } from './tracks-info-by-type';
 export { default as POSITIONS_BY_DATATYPE } from './positions-by-datatype';
 export { default as DEFAULT_TRACKS_FOR_DATATYPE } from './default-tracks-for-datatype';
+export { default as GLOBALS } from './globals';

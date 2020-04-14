@@ -1,7 +1,6 @@
 import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
-import * as PIXI from 'pixi.js';
 import { parseChromsizesRows } from './ChromosomeInfo';
 
 import DataFetcher from './DataFetcher';
@@ -12,7 +11,7 @@ import { throttleAndDebounce } from './utils';
 import backgroundTaskScheduler from './utils/background-task-scheduler';
 
 // Configs
-import { ZOOM_DEBOUNCE } from './configs';
+import { GLOBALS, ZOOM_DEBOUNCE } from './configs';
 
 /**
  * Get a valueScale for a heatmap.
@@ -150,7 +149,7 @@ class TiledPixiTrack extends PixiTrack {
     // this needs to be above the tilesetInfo() call because if that
     // executes first, the call to draw() will complain that this text
     // doesn't exist
-    this.trackNotFoundText = new PIXI.Text('', {
+    this.trackNotFoundText = new GLOBALS.PIXI.Text('', {
       fontSize: '12px',
       fontFamily: 'Arial',
       fill: 'black'
@@ -542,7 +541,7 @@ class TiledPixiTrack extends PixiTrack {
       if (!(fetchedTileIDs[i] in this.tileGraphics)) {
         // console.trace('adding:', fetchedTileIDs[i]);
 
-        const newGraphics = new PIXI.Graphics();
+        const newGraphics = new GLOBALS.PIXI.Graphics();
         this.pMain.addChild(newGraphics);
 
         this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;

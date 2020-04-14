@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as PIXI from 'pixi.js';
 
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, event, clientPoint } from 'd3-selection';
@@ -76,6 +75,7 @@ import {
 // Configs
 import {
   AVAILABLE_FOR_PLUGINS,
+  GLOBALS,
   THEME_DARK,
   TRACKS_INFO_BY_TYPE
 } from './configs';
@@ -235,10 +235,10 @@ class TrackRenderer extends React.Component {
     this.elementSelection = select(this.element);
     this.svgTrackAreaSelection = select(this.svgTrackArea);
 
-    this.pStage = new PIXI.Graphics();
-    this.pMask = new PIXI.Graphics();
-    this.pOutline = new PIXI.Graphics();
-    this.pBackground = new PIXI.Graphics();
+    this.pStage = new GLOBALS.PIXI.Graphics();
+    this.pMask = new GLOBALS.PIXI.Graphics();
+    this.pOutline = new GLOBALS.PIXI.Graphics();
+    this.pBackground = new GLOBALS.PIXI.Graphics();
 
     this.pStage.addChild(this.pMask);
     this.pStage.addChild(this.pOutline);

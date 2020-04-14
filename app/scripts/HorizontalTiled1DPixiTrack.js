@@ -1,17 +1,18 @@
-import * as PIXI from 'pixi.js';
-
 import Tiled1DPixiTrack from './Tiled1DPixiTrack';
 import AxisPixi from './AxisPixi';
 
 import { tileProxy } from './services';
 import { colorToHex, showMousePosition } from './utils';
 
+// Configs
+import { GLOBALS } from './configs';
+
 class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
   constructor(context, options) {
     super(context, options);
     const { animate, isShowGlobalMousePosition } = context;
 
-    this.constIndicator = new PIXI.Graphics();
+    this.constIndicator = new GLOBALS.PIXI.Graphics();
     this.pMain.addChild(this.constIndicator);
 
     this.axis = new AxisPixi(this);
@@ -81,9 +82,6 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
 
     let zoomLevel = Math.min(xZoomLevel, this.maxZoom);
     zoomLevel = Math.max(zoomLevel, 0);
-    // console.log('xScale', this._xScale.domain(), this.maxZoom);
-    // console.log('zoomLevel:', zoomLevel, this.tilesetInfo.min_pos[0],
-    //   this.tilesetInfo.max_pos[0]);
 
     return zoomLevel;
   }
@@ -248,7 +246,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
         let widthOffset = 0;
 
         if (label) {
-          const labelG = new PIXI.Text(label, {
+          const labelG = new GLOBALS.PIXI.Text(label, {
             fontFamily: 'Arial',
             fontSize: labelSize,
             fill: labelColorHex

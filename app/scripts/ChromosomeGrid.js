@@ -1,10 +1,11 @@
-import * as PIXI from 'pixi.js';
-
 import PixiTrack from './PixiTrack';
 import ChromosomeInfo from './ChromosomeInfo';
 import SearchField from './SearchField';
 
 import { colorToHex } from './utils';
+
+// Configs
+import { GLOBALS } from './configs';
 
 class ChromosomeGrid extends PixiTrack {
   constructor(context, options) {
@@ -38,13 +39,13 @@ class ChromosomeGrid extends PixiTrack {
         this.searchField = new SearchField(this.chromInfo);
 
         this.texts = [];
-        this.lineGraphics = new PIXI.Graphics();
-        this.lineGraphics1dH = new PIXI.Graphics();
-        this.lineGraphics1dV = new PIXI.Graphics();
-        this.lineGraphics2d = new PIXI.Graphics();
-        this.mask1dH = new PIXI.Graphics();
-        this.mask1dV = new PIXI.Graphics();
-        this.mask2d = new PIXI.Graphics();
+        this.lineGraphics = new GLOBALS.PIXI.Graphics();
+        this.lineGraphics1dH = new GLOBALS.PIXI.Graphics();
+        this.lineGraphics1dV = new GLOBALS.PIXI.Graphics();
+        this.lineGraphics2d = new GLOBALS.PIXI.Graphics();
+        this.mask1dH = new GLOBALS.PIXI.Graphics();
+        this.mask1dV = new GLOBALS.PIXI.Graphics();
+        this.mask2d = new GLOBALS.PIXI.Graphics();
 
         this.lineGraphics.addChild(this.lineGraphics1dH);
         this.lineGraphics1dH.addChild(this.mask1dH);

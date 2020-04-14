@@ -1,6 +1,8 @@
 import boxIntersect from 'box-intersect';
-import * as PIXI from 'pixi.js';
 import classifyPoint from 'robust-point-in-polygon';
+
+// Configs
+import { GLOBALS } from './configs';
 
 // Components
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
@@ -104,10 +106,10 @@ function externalInitTile(track, tile, options) {
   // create texts
   tile.texts = {};
 
-  tile.rectGraphics = new PIXI.Graphics();
-  tile.textBgGraphics = new PIXI.Graphics();
-  tile.textGraphics = new PIXI.Graphics();
-  tile.rectMaskGraphics = new PIXI.Graphics();
+  tile.rectGraphics = new GLOBALS.PIXI.Graphics();
+  tile.textBgGraphics = new GLOBALS.PIXI.Graphics();
+  tile.textGraphics = new GLOBALS.PIXI.Graphics();
+  tile.rectMaskGraphics = new GLOBALS.PIXI.Graphics();
 
   tile.graphics.addChild(tile.rectGraphics);
   tile.graphics.addChild(tile.textBgGraphics);
@@ -146,7 +148,7 @@ function externalInitTile(track, tile, options) {
     // don't draw texts for the latter entries in the tile
     if (i >= maxTexts) return;
 
-    const text = new PIXI.Text(geneName, {
+    const text = new GLOBALS.PIXI.Text(geneName, {
       fontSize: `${fontSize}px`,
       fontFamily,
       fill: colorToHex(fill)
@@ -182,7 +184,7 @@ function renderRects(
   const FILLER_PADDING = 0;
 
   rects.forEach(td => {
-    const graphics = new PIXI.Graphics();
+    const graphics = new GLOBALS.PIXI.Graphics();
 
     tile.rectGraphics.addChild(graphics);
 
@@ -357,7 +359,7 @@ function renderGeneSymbols(
     const xStart = track._xScale(gene.xStart);
     const xEnd = track._xScale(gene.xEnd);
 
-    const graphics = new PIXI.Graphics();
+    const graphics = new GLOBALS.PIXI.Graphics();
     tile.rectGraphics.addChild(graphics);
 
     graphics.beginFill(color, alpha);
@@ -416,7 +418,7 @@ function renderGeneExons(
 
     const exonStarts = geneInfo[12];
     const exonEnds = geneInfo[13];
-    const graphics = new PIXI.Graphics();
+    const graphics = new GLOBALS.PIXI.Graphics();
     tile.rectGraphics.addChild(graphics);
 
     graphics.beginFill(color, alpha);

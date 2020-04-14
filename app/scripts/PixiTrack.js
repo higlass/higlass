@@ -1,10 +1,12 @@
 import { formatPrefix, precisionPrefix } from 'd3-format';
-import * as PIXI from 'pixi.js';
 import slugid from 'slugid';
 
 import Track from './Track';
 
 import { colorToHex } from './utils';
+
+// Configs
+import { GLOBALS } from './configs';
 
 /**
  * Format a resolution relative to the highest possible resolution.
@@ -103,22 +105,22 @@ class PixiTrack extends Track {
     // updates can be batched (e.g. zoomed and options changed)
     this.delayDrawing = false;
 
-    this.pBase = new PIXI.Graphics();
+    this.pBase = new GLOBALS.PIXI.Graphics();
 
-    this.pMasked = new PIXI.Graphics();
-    this.pMask = new PIXI.Graphics();
-    this.pMain = new PIXI.Graphics();
+    this.pMasked = new GLOBALS.PIXI.Graphics();
+    this.pMask = new GLOBALS.PIXI.Graphics();
+    this.pMain = new GLOBALS.PIXI.Graphics();
 
     // for drawing the track label (often its name)
-    this.pBorder = new PIXI.Graphics();
-    this.pBackground = new PIXI.Graphics();
-    this.pForeground = new PIXI.Graphics();
-    this.pLabel = new PIXI.Graphics();
-    this.pMobile = new PIXI.Graphics();
-    this.pAxis = new PIXI.Graphics();
+    this.pBorder = new GLOBALS.PIXI.Graphics();
+    this.pBackground = new GLOBALS.PIXI.Graphics();
+    this.pForeground = new GLOBALS.PIXI.Graphics();
+    this.pLabel = new GLOBALS.PIXI.Graphics();
+    this.pMobile = new GLOBALS.PIXI.Graphics();
+    this.pAxis = new GLOBALS.PIXI.Graphics();
 
     // for drawing information on mouseover events
-    this.pMouseOver = new PIXI.Graphics();
+    this.pMouseOver = new GLOBALS.PIXI.Graphics();
 
     this.scene.addChild(this.pBase);
 
@@ -150,14 +152,14 @@ class PixiTrack extends Track {
     // Used to avoid label/colormap clashes
     this.labelXOffset = 0;
 
-    this.labelText = new PIXI.Text(labelTextText, {
+    this.labelText = new GLOBALS.PIXI.Text(labelTextText, {
       fontSize: `${this.labelTextFontSize}px`,
       fontFamily: this.labelTextFontFamily,
       fill: 'black'
     });
     this.pLabel.addChild(this.labelText);
 
-    this.errorText = new PIXI.Text('', {
+    this.errorText = new GLOBALS.PIXI.Text('', {
       fontSize: '12px',
       fontFamily: 'Arial',
       fill: 'red'

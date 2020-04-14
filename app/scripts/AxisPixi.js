@@ -1,8 +1,7 @@
 import { format } from 'd3-format';
-import * as PIXI from 'pixi.js';
 
 // Configs
-import { THEME_DARK } from './configs';
+import { GLOBALS, THEME_DARK } from './configs';
 
 import { colorToHex } from './utils';
 
@@ -13,7 +12,7 @@ const TICK_LABEL_MARGIN = 4;
 
 class AxisPixi {
   constructor(track) {
-    this.pAxis = new PIXI.Graphics();
+    this.pAxis = new GLOBALS.PIXI.Graphics();
     this.track = track;
 
     this.axisTexts = [];
@@ -56,7 +55,7 @@ class AxisPixi {
       const tick = this.tickValues[i];
 
       while (this.axisTexts.length <= i) {
-        const newText = new PIXI.Text(tick, {
+        const newText = new GLOBALS.PIXI.Text(tick, {
           fontSize: `${this.axisTextFontSize}px`,
           fontFamily: this.axisTextFontFamily,
           fill: color
