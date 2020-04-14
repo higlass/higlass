@@ -21,6 +21,12 @@ import * as d3Zoom from 'd3-zoom';
 import slugid from 'slugid';
 import { mix } from '../mixwith';
 
+// Configs
+import * as configs from '.';
+
+// Utils
+import * as utils from '../utils';
+
 // Tracks
 import Annotations2dTrack from '../Annotations2dTrack';
 import ArrowheadDomainsTrack from '../ArrowheadDomainsTrack';
@@ -64,12 +70,6 @@ import LruCache from '../factories';
 
 // Services
 import * as services from '../services';
-
-// Utils
-import * as utils from '../utils';
-
-// Configs
-import * as configs from '.';
 
 const libraries = {
   d3Array,
