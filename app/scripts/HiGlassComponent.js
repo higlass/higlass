@@ -1138,6 +1138,8 @@ class HiGlassComponent extends React.Component {
       .map(track =>
         this.tiledPlots[track.view].trackRenderer.getTrackObject(track.track)
       )
+      // filter out stale locks with non-existant tracks
+      .filter(track => track)
       // if the track is a LeftTrackModifier we want the originalTrack
       .map(track =>
         track.originalTrack === undefined ? track : track.originalTrack
@@ -1214,6 +1216,8 @@ class HiGlassComponent extends React.Component {
         .map(track =>
           this.tiledPlots[track.view].trackRenderer.getTrackObject(track.track)
         )
+        // filter out locks with non-existant tracks
+        .filter(track => track)
         // if the track is a LeftTrackModifier we want the originalTrack
         .map(track =>
           track.originalTrack === undefined ? track : track.originalTrack
