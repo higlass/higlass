@@ -6,6 +6,10 @@ import BarTrack from './BarTrack';
 import { colorToHex } from './utils';
 
 class DivergentBarTrack extends BarTrack {
+  drawTile(tile) {
+    this.renderTile(tile);
+  }
+
   renderTile(tile) {
     // super.drawTile(tile);
     if (!tile.graphics) {
@@ -34,7 +38,7 @@ class DivergentBarTrack extends BarTrack {
       let offsetValue = this.medianVisibleValue;
 
       if (!this.medianVisibleValue) {
-        offsetValue = this.minVisibleValue();
+        offsetValue = this.minValue();
       }
 
       this.valueScale = scaleLog()

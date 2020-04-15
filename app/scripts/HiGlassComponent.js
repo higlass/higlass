@@ -118,6 +118,8 @@ class HiGlassComponent extends React.Component {
     // keep track of the xScales of each Track Renderer
     this.xScales = {};
     this.yScales = {};
+    this.projectionXDomains = {};
+    this.projectionYDomains = {};
     this.topDiv = null;
     this.zoomToDataExtentOnInit = new Set();
 
@@ -278,13 +280,16 @@ class HiGlassComponent extends React.Component {
     this.attachedToDOM = false;
 
     // Set up API
-    const { public: api, destroy: apiDestroy, publish: apiPublish } = createApi(
-      this,
-      this.pubSub
-    );
+    const {
+      public: api,
+      destroy: apiDestroy,
+      publish: apiPublish,
+      stack: apiStack
+    } = createApi(this, this.pubSub);
     this.api = api;
     this.apiDestroy = apiDestroy;
     this.apiPublish = apiPublish;
+    this.apiStack = apiStack;
 
     this.viewChangeListener = [];
 
@@ -350,6 +355,10 @@ class HiGlassComponent extends React.Component {
     this.domEvent.register('mouseup', window, true);
     this.domEvent.register('click', window, true);
     this.domEvent.register('mousemove', window);
+    this.domEvent.register('touchmove', window);
+    this.domEvent.register('touchstart', window);
+    this.domEvent.register('touchend', window);
+    this.domEvent.register('touchcancel', window);
     this.domEvent.register('blur', window);
 
     this.pubSubs.push(
@@ -651,6 +660,10 @@ class HiGlassComponent extends React.Component {
     this.domEvent.unregister('mouseup', window);
     this.domEvent.unregister('click', window);
     this.domEvent.unregister('mousemove', window);
+    this.domEvent.unregister('touchmove', window);
+    this.domEvent.unregister('touchstart', window);
+    this.domEvent.unregister('touchend', window);
+    this.domEvent.unregister('touchcancel', window);
 
     this.pubSubs.forEach(subscription => this.pubSub.unsubscribe(subscription));
 
@@ -1083,6 +1096,92 @@ class HiGlassComponent extends React.Component {
   }
 
   /**
+   * Checks if a track's value scale is locked with another track
+   */
+  isValueScaleLocked(viewUid, trackUid) {
+    const uid = this.combineViewAndTrackUid(viewUid, trackUid);
+
+    // the view must have been deleted
+    if (!this.state.views[viewUid]) {
+      return false;
+    }
+
+    if (this.valueScaleLocks[uid]) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Computed the minimal and maximal values of all tracks that are in the same
+   * lockGroup as a given track
+   * @param   {string}  viewUid  The id of the view containing the track
+   * @param   {string}  trackUid   The id of the track
+   * @return  {array}  Tuple [min,max] containing the overall extrema - or null.
+   */
+  getLockGroupExtrema(viewUid, trackUid) {
+    const uid = this.combineViewAndTrackUid(viewUid, trackUid);
+
+    // the view must have been deleted
+    if (!this.state.views[viewUid]) {
+      return null;
+    }
+
+    if (!this.valueScaleLocks[uid]) {
+      return null;
+    }
+
+    const lockGroup = this.valueScaleLocks[uid];
+
+    const lockedTracks = Object.values(lockGroup)
+      .filter(track => this.tiledPlots[track.view])
+      .map(track =>
+        this.tiledPlots[track.view].trackRenderer.getTrackObject(track.track)
+      )
+      // if the track is a LeftTrackModifier we want the originalTrack
+      .map(track =>
+        track.originalTrack === undefined ? track : track.originalTrack
+      );
+
+    const minValues = lockedTracks
+      // exclude tracks that don't set min and max values
+      .filter(track => track.minRawValue && track.maxRawValue)
+      .map(track =>
+        lockGroup.ignoreOffScreenValues
+          ? track.minVisibleValue(true)
+          : track.minVisibleValueInTiles(true)
+      );
+
+    const maxValues = lockedTracks
+      // exclude tracks that don't set min and max values
+      .filter(track => track.minRawValue && track.maxRawValue)
+      .map(track =>
+        lockGroup.ignoreOffScreenValues
+          ? track.maxVisibleValue(true)
+          : track.maxVisibleValueInTiles(true)
+      );
+
+    if (
+      minValues.length === 0 ||
+      minValues.filter(x => x === null || x === Infinity).length > 0
+    ) {
+      return null; // Data hasn't loaded completely
+    }
+
+    if (
+      maxValues.length === 0 ||
+      maxValues.filter(x => x === null || x === -Infinity).length > 0
+    ) {
+      return null; // Data hasn't loaded completely
+    }
+
+    const allMin = Math.min(...minValues);
+    const allMax = Math.max(...maxValues);
+
+    return [allMin, allMax];
+  }
+
+  /**
    * Syncing the values of locked scales
    *
    * Arguments
@@ -1110,33 +1209,26 @@ class HiGlassComponent extends React.Component {
     if (this.valueScaleLocks[uid]) {
       const lockGroup = this.valueScaleLocks[uid];
 
-      // /let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
       const lockedTracks = Object.values(lockGroup)
         .filter(track => this.tiledPlots[track.view])
         .map(track =>
           this.tiledPlots[track.view].trackRenderer.getTrackObject(track.track)
-        );
-
-      const minValues = lockedTracks
-        // exclude tracks that don't set min and max values
-        .filter(track => track.minRawValue && track.maxRawValue)
+        )
+        // if the track is a LeftTrackModifier we want the originalTrack
         .map(track =>
-          lockGroup.ignoreOffScreenValues
-            ? track.minRawValue()
-            : track.minVisibleValue(true)
+          track.originalTrack === undefined ? track : track.originalTrack
         );
 
-      const maxValues = lockedTracks
-        // exclude tracks that don't set min and max values
-        .filter(track => track.minRawValue && track.maxRawValue)
-        .map(track =>
-          lockGroup.ignoreOffScreenValues
-            ? track.maxRawValue()
-            : track.maxVisibleValue(true)
-        );
+      const lockGroupExtrema = this.getLockGroupExtrema(viewUid, trackUid);
 
-      const allMin = Math.min(...minValues);
-      const allMax = Math.max(...maxValues);
+      if (lockGroupExtrema === null) {
+        return; // Data hasn't loaded completely
+      }
+
+      const allMin = lockGroupExtrema[0];
+      const allMax = lockGroupExtrema[1];
+
+      const epsilon = 1e-6;
 
       for (const lockedTrack of lockedTracks) {
         // set the newly calculated minimum and maximum values
@@ -1154,6 +1246,38 @@ class HiGlassComponent extends React.Component {
           continue;
         }
 
+        const hasScaleChanged =
+          Math.abs(
+            lockedTrack.minValue() - lockedTrack.valueScale.domain()[0]
+          ) > epsilon ||
+          Math.abs(
+            lockedTrack.maxValue() - lockedTrack.valueScale.domain()[1]
+          ) > epsilon;
+
+        const hasBrushMoved =
+          sourceTrack.options &&
+          lockedTrack.options &&
+          typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
+          typeof sourceTrack.options.scaleEndPercent !== 'undefined' &&
+          (Math.abs(
+            lockedTrack.options.scaleStartPercent -
+              sourceTrack.options.scaleStartPercent
+          ) > epsilon ||
+            Math.abs(
+              lockedTrack.options.scaleEndPercent -
+                sourceTrack.options.scaleEndPercent
+            ) > epsilon);
+
+        // If we do view based scaling we want to minimize the number of rerenders
+        // Check if it is necessary to rerender
+        if (
+          lockedTrack.continuousScaling &&
+          !hasScaleChanged &&
+          !hasBrushMoved
+        ) {
+          continue;
+        }
+
         lockedTrack.valueScale.domain([allMin, allMax]);
 
         // In TiledPixiTrack, we check if valueScale has changed before
@@ -1162,11 +1286,7 @@ class HiGlassComponent extends React.Component {
         // stay synced
         lockedTrack.prevValueScale = lockedTrack.valueScale.copy();
 
-        if (
-          sourceTrack.options &&
-          typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
-          typeof sourceTrack.options.scaleEndPercent !== 'undefined'
-        ) {
+        if (hasBrushMoved) {
           lockedTrack.options.scaleStartPercent =
             sourceTrack.options.scaleStartPercent;
           lockedTrack.options.scaleEndPercent =
@@ -1290,16 +1410,23 @@ class HiGlassComponent extends React.Component {
         }
       }
     }
-    return svg;
-  }
-
-  createSVGString() {
-    const svg = this.createSVG();
 
     // FF is fussier than Chrome, and requires dimensions on the SVG,
     // if it is to be used as an image src.
     svg.setAttribute('width', this.canvasElement.style.width);
     svg.setAttribute('height', this.canvasElement.style.height);
+
+    if (this.postCreateSVGCallback) {
+      // Allow the callback function to modify the exported SVG string
+      // before it is finalized and returned.
+      const modifiedSvg = this.postCreateSVGCallback(svg);
+      return modifiedSvg;
+    }
+    return svg;
+  }
+
+  createSVGString() {
+    const svg = this.createSVG();
 
     let svgString = vkbeautify.xml(
       new window.XMLSerializer().serializeToString(svg)
@@ -1331,6 +1458,14 @@ class HiGlassComponent extends React.Component {
       'export.svg',
       new Blob([this.createSVGString()], { type: 'image/svg+xml' })
     );
+  }
+
+  offPostCreateSVG() {
+    this.postCreateSVGCallback = null;
+  }
+
+  onPostCreateSVG(callback) {
+    this.postCreateSVGCallback = callback;
   }
 
   createPNGBlobPromise() {
@@ -2837,6 +2972,32 @@ class HiGlassComponent extends React.Component {
       track.removeViewportChanged = trackId =>
         this.removeScalesChangedListener(fromView, trackId);
       track.setDomainsCallback = (xDomain, yDomain) => {
+        if (!fromView) {
+          // If there is no `fromView`, then there must be a `projectionXDomain` instead.
+          // Update the viewconfig to reflect the new `projectionXDomain` array
+          // on the `viewport-projection-horizontal` track.
+          if (!this.projectionXDomains[viewUid]) {
+            this.projectionXDomains[viewUid] = {};
+          }
+          if (!this.projectionYDomains[viewUid]) {
+            this.projectionYDomains[viewUid] = {};
+          }
+          if (
+            track.type === 'viewport-projection-horizontal' ||
+            track.type === 'viewport-projection-center'
+          ) {
+            this.projectionXDomains[viewUid][track.uid] = xDomain;
+          }
+          if (
+            track.type === 'viewport-projection-vertical' ||
+            track.type === 'viewport-projection-center'
+          ) {
+            this.projectionYDomains[viewUid][track.uid] = yDomain;
+          }
+          this.triggerViewChangeDb();
+          // Return early, since the remaining code uses the `fromView` variable.
+          return;
+        }
         const tXScale = scaleLinear()
           .domain(xDomain)
           .range(this.xScales[fromView].range());
@@ -3014,6 +3175,27 @@ class HiGlassComponent extends React.Component {
           }
         }
 
+        if (
+          (track.type === 'viewport-projection-center' ||
+            track.type === 'viewport-projection-horizontal') &&
+          this.projectionXDomains[k.uid] &&
+          this.projectionXDomains[k.uid][track.uid]
+        ) {
+          // There is no "from" view attached to this projection track,
+          // so the `projectionXDomain` field must be used.
+          track.projectionXDomain = this.projectionXDomains[k.uid][track.uid];
+        }
+        if (
+          (track.type === 'viewport-projection-center' ||
+            track.type === 'viewport-projection-vertical') &&
+          this.projectionYDomains[k.uid] &&
+          this.projectionYDomains[k.uid][track.uid]
+        ) {
+          // There is no "from" view attached to this projection track,
+          // so the `projectionYDomain` field must be used.
+          track.projectionYDomain = this.projectionYDomains[k.uid][track.uid];
+        }
+
         delete track.name;
         delete track.position;
         delete track.header;
@@ -3032,6 +3214,8 @@ class HiGlassComponent extends React.Component {
         delete track.datafile;
         delete track.filetype;
         delete track.binsPerDimension;
+        delete track.resolutions;
+        delete track.aggregationModes;
       });
 
       newView.uid = k.uid;
@@ -3947,7 +4131,7 @@ class HiGlassComponent extends React.Component {
       return undefined;
     }
 
-    if (!track.minVisibleValue || !track.maxVisibleValue) {
+    if (!track.minVisibleValueInTiles || !track.maxVisibleValueInTiles) {
       console.warn(
         `Track ${trackId} doesn't support the retrieval of min or max values.`
       );
@@ -3962,8 +4146,8 @@ class HiGlassComponent extends React.Component {
     }
 
     return [
-      track.minVisibleValue(ignoreFixedScale),
-      track.maxVisibleValue(ignoreFixedScale)
+      track.minVisibleValueInTiles(ignoreFixedScale),
+      track.maxVisibleValueInTiles(ignoreFixedScale)
     ];
   }
 
@@ -4148,6 +4332,52 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
+    const absX = nativeEvent.clientX;
+    const absY = nativeEvent.clientY;
+    const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
+
+    // Find the tracks at the wheel position
+    if (this.apiStack.wheel && this.apiStack.wheel.length > 0) {
+      const relPos = clientPoint(this.topDiv, nativeEvent);
+      // We need to add the scrollTop
+      relPos[1] += this.scrollTop;
+      const hoveredTracks = hoveredTiledPlot
+        ? hoveredTiledPlot
+            .listTracksAtPosition(relPos[0], relPos[1], true)
+            .map(track => track.originalTrack || track)
+        : [];
+      const hoveredTrack = hoveredTracks.find(
+        track => !track.isAugmentationTrack
+      );
+
+      const relTrackPos = hoveredTrack
+        ? [
+            relPos[0] - hoveredTrack.position[0],
+            relPos[1] - hoveredTrack.position[1]
+          ]
+        : relPos;
+
+      const evtToPublish = {
+        x: relPos[0],
+        y: relPos[1],
+        relTrackX:
+          hoveredTrack && hoveredTrack.flipText
+            ? relTrackPos[1]
+            : relTrackPos[0],
+        relTrackY:
+          hoveredTrack && hoveredTrack.flipText
+            ? relTrackPos[0]
+            : relTrackPos[1],
+        track: hoveredTrack,
+        origEvt: nativeEvent,
+        sourceUid: this.uid,
+        hoveredTracks,
+        noHoveredTracks: hoveredTracks.length === 0
+      };
+
+      this.apiPublish('wheel', evtToPublish);
+    }
+
     if (nativeEvent.forwarded || isTargetCanvas) {
       evt.stopPropagation();
       evt.preventDefault();
@@ -4159,11 +4389,6 @@ class HiGlassComponent extends React.Component {
 
     // forward the wheel event back to the TrackRenderer that it should go to
     // this is so that we can zoom when there's a viewport projection present
-    const hoveredTiledPlot = this.getTiledPlotAtPosition(
-      nativeEvent.clientX,
-      nativeEvent.clientY
-    );
-
     if (hoveredTiledPlot) {
       const { trackRenderer } = hoveredTiledPlot;
       nativeEvent.forwarded = true;
@@ -4239,9 +4464,11 @@ class HiGlassComponent extends React.Component {
             disableTrackMenu={this.isTrackMenuDisabled()}
             draggingHappening={this.state.draggingHappening}
             editable={this.isEditable()}
+            getLockGroupExtrema={uid => this.getLockGroupExtrema(view.uid, uid)}
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
             isShowGlobalMousePosition={this.isShowGlobalMousePosition}
+            isValueScaleLocked={uid => this.isValueScaleLocked(view.uid, uid)}
             marginBottom={this.viewMarginBottom}
             marginLeft={this.viewMarginLeft}
             marginRight={this.viewMarginRight}
@@ -4265,6 +4492,7 @@ class HiGlassComponent extends React.Component {
             }
             onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
             onRangeSelection={this.rangeSelectionHandler.bind(this)}
+            onResizeTrack={this.triggerViewChangeDb}
             onScalesChanged={(x, y) => this.handleScalesChanged(view.uid, x, y)}
             onTrackOptionsChanged={(trackId, options) =>
               this.handleTrackOptionsChanged(view.uid, trackId, options)

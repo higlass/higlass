@@ -25,6 +25,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
         this.setColorScale(this.options.colorRange);
       }
     }
+
+    this.initialized = true;
   }
 
   setColorScale(colorRange) {
@@ -57,13 +59,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
    * Create whatever is needed to draw this tile.
    */
   initTile(tile) {
+    if (!this.initialized) return;
     super.initTile(tile);
-    this.renderTile(tile);
-  }
-
-  drawTile() {
-    // empty function so that the superclass's drawTile
-    // doesn't do anything
   }
 
   updateTile(tile) {
@@ -79,7 +76,16 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   renderTile(tile) {
+    if (!this.initialized) return;
+    super.renderTile(tile);
+  }
+
+  drawTile(tile) {
     if (!tile.graphics) return;
+
+    if (!tile.tileData || !tile.tileData.dense) {
+      return;
+    }
 
     const { graphics } = tile;
 
@@ -95,9 +101,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     if (tileValues.length === 0) return;
 
-    // equal to the smallest non-zero value
     const [valueScale, pseudocount] = this.makeValueScale(
-      this.minVisibleValue(),
+      this.minValue(),
       this.medianVisibleValue,
       this.maxValue(),
       0
@@ -282,6 +287,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   draw() {
+    if (!this.initialized) return;
+
     // we don't want to call HorizontalLine1DPixiTrack's draw function
     // but rather its parent's
     super.draw();

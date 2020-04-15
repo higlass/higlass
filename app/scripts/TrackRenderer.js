@@ -1164,7 +1164,7 @@ class TrackRenderer extends React.Component {
       // if somebody is holding down the shift key and is zooming over
       // a 1d track, try to apply value scale zooming
       if (event.shiftKey || this.valueScaleZooming) {
-        if (event.sourceEvent.deltaY) {
+        if (event.sourceEvent.deltaY !== undefined) {
           this.valueScaleZoom(trackOrientation);
           return;
         }
@@ -1289,6 +1289,7 @@ class TrackRenderer extends React.Component {
       this.valueScaleZooming = false;
       this.element.__zoom = this.zoomStartTransform;
     }
+
     this.props.pubSub.publish('app.zoomEnd');
   }
 
@@ -1494,11 +1495,17 @@ class TrackRenderer extends React.Component {
       scene: this.pStage,
       dataConfig,
       dataFetcher,
+      getLockGroupExtrema: () => {
+        return this.currentProps.getLockGroupExtrema(track.uid);
+      },
       handleTilesetInfoReceived,
       animate: () => {
         this.currentProps.onNewTilesLoaded(track.uid);
       },
       svgElement: this.svgElement,
+      isValueScaleLocked: () => {
+        return this.currentProps.isValueScaleLocked(track.uid);
+      },
       onValueScaleChanged: () => {
         this.currentProps.onValueScaleChanged(track.uid);
       },
@@ -1518,6 +1525,16 @@ class TrackRenderer extends React.Component {
 
     if (track.x) {
       context.xPosition = track.x;
+    }
+
+    // for viewport-projection-horizontal and viewport-projection-center
+    if (track.projectionXDomain) {
+      context.projectionXDomain = track.projectionXDomain;
+    }
+
+    // for viewport-projection-vertical and viewport-projection-center
+    if (track.projectionYDomain) {
+      context.projectionYDomain = track.projectionYDomain;
     }
 
     const options = track.options;
@@ -1871,6 +1888,7 @@ class TrackRenderer extends React.Component {
 
     this.eventTracker.addEventListener('touchstart', this.boundForwardEvent);
     this.eventTracker.addEventListener('touchend', this.boundForwardEvent);
+    this.eventTracker.addEventListener('touchmove', this.boundForwardEvent);
     this.eventTracker.addEventListener('touchcancel', this.boundForwardEvent);
 
     this.eventTracker.addEventListener('pointerover', this.boundForwardEvent);

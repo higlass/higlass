@@ -67,6 +67,48 @@ describe('Simple HiGlassComponent', () => {
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
+  describe('Division track', () => {
+    it('Cleans up previously created instances and mounts a new component', done => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(
+        <HiGlassComponent
+          options={{ bounded: false }}
+          viewConfig={divisionViewConfig}
+        />,
+        { attachTo: div }
+      );
+
+      hgc.update();
+      waitForTilesLoaded(hgc.instance(), () => {
+        const svgText = hgc.instance().createSVGString();
+
+        expect(svgText.indexOf('image')).toBeGreaterThan(0);
+        done();
+      });
+
+      // visual check that the heatmap track config menu is moved
+      // to the left
+    });
+
+    it('clones itself', () => {
+      hgc.instance().handleAddView(hgc.instance().state.views.aa);
+    });
+  });
+
   describe('Track positioning', () => {
     it('Cleans up previously created instances and mounts a new component', done => {
       if (hgc) {
@@ -530,53 +572,6 @@ describe('Simple HiGlassComponent', () => {
       waitForTransitionsFinished(hgc.instance(), () => {
         done();
       });
-    });
-  });
-
-  describe('Gene Annotations Display', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={geneAnnotationsOnly}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-    });
-
-    it('Check to make sure that the rectangles are initially small', done => {
-      let track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'genes1');
-
-      const { views } = hgc.instance().state;
-      track = getTrackByUid(views.aa.tracks, 'genes1');
-
-      // console.log('setting views');
-      track.options.labelPosition = 'topLeft';
-
-      hgc.setState({
-        views
-      });
-      // console.log('track', track);
-
-      waitForTilesLoaded(hgc.instance(), done);
     });
   });
 
@@ -1325,18 +1320,18 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Changes the value scale', done => {
-      hgc
-        .instance()
-        .tiledPlots.aa.trackRenderer.setCenter(
-          179943234.8692136,
-          180201760.5768778,
-          2887.21283197403,
-          true
-        );
+    // it('Changes the value scale', done => {
+    //   hgc
+    //     .instance()
+    //     .tiledPlots.aa.trackRenderer.setCenter(
+    //       179943234.8692136,
+    //       179901760.5768778,
+    //       2887.21283197403,
+    //       true
+    //     );
 
-      waitForTilesLoaded(hgc.instance(), done);
-    });
+    //   waitForTilesLoaded(hgc.instance(), done);
+    // });
 
     it('ensures that the new track domains are equal', () => {
       const track1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
@@ -2059,11 +2054,19 @@ describe('Simple HiGlassComponent', () => {
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    // it('Exports the views as SVG', (done) => {
-    //   // hgc.instance().handleExportSVG();
-    //
-    //   done();
-    // });
+    it('Check that there are green and red rects', done => {
+      const svg = hgc.instance().createSVG();
+      const svgText = new XMLSerializer().serializeToString(svg);
+
+      expect(
+        svgText.indexOf('fill="green" stroke="green" x="11.24963759567723"')
+      ).toBeGreaterThan(0);
+      expect(
+        svgText.indexOf('fill="red" stroke="red" x="29.818754489548308"')
+      ).toBeGreaterThan(0);
+
+      done();
+    });
   });
 
   describe('View positioning', () => {
@@ -2761,43 +2764,6 @@ describe('Simple HiGlassComponent', () => {
 
       // visual check that the heatmap track config menu is moved
       // to the left
-    });
-  });
-
-  describe('Division track', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(
-        <HiGlassComponent
-          options={{ bounded: false }}
-          viewConfig={divisionViewConfig}
-        />,
-        { attachTo: div }
-      );
-
-      hgc.update();
-      waitForTilesLoaded(hgc.instance(), done);
-
-      // visual check that the heatmap track config menu is moved
-      // to the left
-    });
-
-    it('clones itself', () => {
-      hgc.instance().handleAddView(hgc.instance().state.views.aa);
     });
   });
 
