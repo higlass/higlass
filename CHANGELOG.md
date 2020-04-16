@@ -8,6 +8,8 @@
 - Added fontColor, fontSize and fillOpacity options to BedLikeTrack
 - Added cheat code for making the component editable (i.e. with headers)
 - Fixed track names in config menu
+- Keep locks on track type change
+- Fix crashing higlass on non-existent value scale lock member
 
 _[Detailed changes since v1.9.1](https://github.com/higlass/higlass/compare/v1.9.1...develop)_
 
