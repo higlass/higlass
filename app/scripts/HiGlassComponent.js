@@ -848,6 +848,10 @@ class HiGlassComponent extends React.Component {
 
   /** Handle typed commands (e.g. e-d-i-t) */
   typedTextHandler(event) {
+    if (!this.props.options.cheatCodesEnabled) {
+      return;
+    }
+
     this.typedText = this.typedText.concat(event.key);
 
     if (this.typedText.endsWith('hgedit')) {
@@ -856,7 +860,7 @@ class HiGlassComponent extends React.Component {
     }
 
     // 1.5 seconds to type the next letter
-    const TYPED_TEXT_TIMEOUT = 1500;
+    const TYPED_TEXT_TIMEOUT = 750;
     if (this.typedTextTimeout) {
       clearTimeout(this.typedTextTimeout);
     }
