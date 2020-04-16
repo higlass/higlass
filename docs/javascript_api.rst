@@ -104,8 +104,21 @@ The ``options`` parameter can have the following properties:
 
 - ``globalMousePosition``: if ``true`` this will turn on ``broadcastMousePositionGlobally`` and ``showGlobalMousePosition``. This is basically a convenience option to quickly broadcast and show global mouse positions.
 
+- ``PIXI``: Use a different PIXI library. Useful if trying to use a canvas renderer. Example:
+
+.. code-block::
+
+  import * as PIXI from "pixi.js-legacy"
+
+  <HiGlassComponent
+    options={
+      renderer: 'canvas',
+      PIXI
+    }
+  />
+
 - ``renderer``: if ``canvas`` HiGlass will render to the Canvas API. Otherwise
-it will use WebGL.
+it will use WebGL. Need to pass in a legacy PIXI import as well. See the ``PIXI`` parameter above.
 
 - ``sizeMode``: the size mode determines the visible height of the HiGlass instance. There are 4 modes:
   1. ``default``: the height is given by the sum of the tracks' heights

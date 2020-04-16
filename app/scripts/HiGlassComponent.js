@@ -1187,6 +1187,8 @@ class HiGlassComponent extends React.Component {
       .map(track =>
         this.tiledPlots[track.view].trackRenderer.getTrackObject(track.track)
       )
+      // filter out stale locks with non-existant tracks
+      .filter(track => track)
       // if the track is a LeftTrackModifier we want the originalTrack
       .map(track =>
         track.originalTrack === undefined ? track : track.originalTrack
@@ -1263,6 +1265,8 @@ class HiGlassComponent extends React.Component {
         .map(track =>
           this.tiledPlots[track.view].trackRenderer.getTrackObject(track.track)
         )
+        // filter out locks with non-existant tracks
+        .filter(track => track)
         // if the track is a LeftTrackModifier we want the originalTrack
         .map(track =>
           track.originalTrack === undefined ? track : track.originalTrack
@@ -2572,9 +2576,12 @@ class HiGlassComponent extends React.Component {
     const trackConfig = getTrackByUid(view.tracks, trackUid);
 
     // this track needs a new uid so that it will be rerendered
+    const oldUid = trackConfig.uid;
     trackConfig.uid = slugid.nice();
     trackConfig.type = newType;
+    const newUid = trackConfig.uid;
 
+    this.updateTrackLocks(viewUid, oldUid, newUid);
     this.setState(prevState => ({
       views: prevState.views
     }));
@@ -2881,6 +2888,36 @@ class HiGlassComponent extends React.Component {
     }
 
     return uid;
+  }
+
+  /**
+   * Update all locks involving this track to use a new track uid.
+   *
+   * @param  {string} viewUid The view's uid
+   * @param  {string} oldTrackUid The track's old uid
+   * @param  {string} newTrackUid The track's new uid
+   */
+  updateTrackLocks(viewUid, oldTrackUid, newTrackUid) {
+    // update location locks
+    // update zoom locks
+    // update value scale locks
+    const oldLockGroupUid = this.combineViewAndTrackUid(viewUid, oldTrackUid);
+    const newLockGroupUid = this.combineViewAndTrackUid(viewUid, newTrackUid);
+
+    if (this.valueScaleLocks[oldLockGroupUid]) {
+      const lockGroup = this.valueScaleLocks[oldLockGroupUid];
+      this.valueScaleLocks[newLockGroupUid] = lockGroup;
+      delete this.valueScaleLocks[oldLockGroupUid];
+    }
+
+    for (const lockGroupUid in this.valueScaleLocks) {
+      if (this.valueScaleLocks[lockGroupUid][oldLockGroupUid]) {
+        const oldEntry = this.valueScaleLocks[lockGroupUid][oldLockGroupUid];
+        this.valueScaleLocks[lockGroupUid][newLockGroupUid] = oldEntry;
+        oldEntry.track = newTrackUid;
+        delete this.valueScaleLocks[lockGroupUid][oldLockGroupUid];
+      }
+    }
   }
 
   handleUnlockValueScale(viewUid, trackUid) {
