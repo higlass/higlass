@@ -1,11 +1,9 @@
 import { scaleLinear } from 'd3-scale';
-import * as PIXI from 'pixi.js';
-
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 
 import { colorDomainToRgbaArray } from './utils';
 
-import { HEATED_OBJECT_MAP } from './configs';
+import { GLOBALS, HEATED_OBJECT_MAP } from './configs';
 
 class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
   constructor(context, options) {
@@ -102,7 +100,7 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
       tile.yValues[i] = rgbIdx;
 
       const rgb = this.colorScale[rgbIdx];
-      const hex = PIXI.utils.rgb2hex(rgb);
+      const hex = GLOBALS.PIXI.utils.rgb2hex(rgb);
 
       graphics.beginFill(hex, this.opacity);
 

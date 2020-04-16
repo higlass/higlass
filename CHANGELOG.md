@@ -5,6 +5,9 @@
 - Fixed divided tracks bug by adding denseDataExtrema
 - Fixed divergent bar track
 - Made the bar track compatible with the local tile fetcher
+- Added fontColor, fontSize and fillOpacity options to BedLikeTrack
+- Added cheat code for making the component editable (i.e. with headers)
+- Fixed track names in config menu
 - Keep locks on track type change
 - Fix crashing higlass on non-existent value scale lock member
 

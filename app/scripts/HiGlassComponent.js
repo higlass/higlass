@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { select, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import slugid from 'slugid';
+import * as PIXI from 'pixi.js';
 import ReactDOM from 'react-dom';
 import ReactGridLayout from 'react-grid-layout';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
-import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
 import parse from 'url-parse';
 import createPubSub, { globalPubSub } from 'pub-sub-es';
@@ -66,6 +66,7 @@ import {
   DEFAULT_CONTAINER_PADDING_Y,
   DEFAULT_VIEW_MARGIN,
   DEFAULT_VIEW_PADDING,
+  GLOBALS,
   MOUSE_TOOL_MOVE,
   MOUSE_TOOL_SELECT,
   LOCATION_LISTENER_PREFIX,
@@ -151,6 +152,10 @@ class HiGlassComponent extends React.Component {
     this.plusImg = {};
     this.configImg = {};
 
+    // allow a different PIXI to be passed in case the
+    // caller wants to use a different version
+    GLOBALS.PIXI = (props.options && props.options.PIXI) || PIXI;
+
     this.viewMarginTop =
       +props.options.viewMarginTop >= 0
         ? +props.options.viewMarginTop
@@ -205,14 +210,14 @@ class HiGlassComponent extends React.Component {
       setTileProxyAuthHeader(props.options.authToken);
     }
 
-    this.pixiRoot = new PIXI.Container();
+    this.pixiRoot = new GLOBALS.PIXI.Container();
     this.pixiRoot.interactive = true;
 
-    this.pixiStage = new PIXI.Container();
+    this.pixiStage = new GLOBALS.PIXI.Container();
     this.pixiStage.interactive = true;
     this.pixiRoot.addChild(this.pixiStage);
 
-    this.pixiMask = new PIXI.Graphics();
+    this.pixiMask = new GLOBALS.PIXI.Graphics();
     this.pixiRoot.addChild(this.pixiMask);
     this.pixiStage.mask = this.pixiMask;
 
@@ -266,7 +271,7 @@ class HiGlassComponent extends React.Component {
       views,
       viewConfig,
       addTrackPositionMenuPosition: null,
-
+      typedEditable: undefined,
       mouseOverOverlayUid: null,
       mouseTool,
       isDarkTheme: false,
@@ -326,6 +331,10 @@ class HiGlassComponent extends React.Component {
     this.closeModalBound = this.closeModal.bind(this);
     this.handleEditViewConfigBound = this.handleEditViewConfig.bind(this);
     this.onScrollHandlerBound = this.onScrollHandler.bind(this);
+
+    // for typed shortcuts (e.g. e-d-i-t) to toggle editable
+    this.typedText = '';
+    this.typedTextTimeout = null;
 
     this.modal = {
       open: this.openModalBound,
@@ -485,9 +494,9 @@ class HiGlassComponent extends React.Component {
           'Deprecation warning: please update Pixi.js to version 5!'
         );
         if (this.props.options.renderer === 'canvas') {
-          this.pixiRenderer = new PIXI.CanvasRenderer(rendererOptions);
+          this.pixiRenderer = new GLOBALS.PIXI.CanvasRenderer(rendererOptions);
         } else {
-          this.pixiRenderer = new PIXI.WebGLRenderer(rendererOptions);
+          this.pixiRenderer = new GLOBALS.PIXI.WebGLRenderer(rendererOptions);
         }
         break;
 
@@ -499,9 +508,9 @@ class HiGlassComponent extends React.Component {
       // eslint-disable-next-line
       case '5':
         if (this.props.options.renderer === 'canvas') {
-          this.pixiRenderer = new PIXI.CanvasRenderer(rendererOptions);
+          this.pixiRenderer = new GLOBALS.PIXI.CanvasRenderer(rendererOptions);
         } else {
-          this.pixiRenderer = new PIXI.Renderer(rendererOptions);
+          this.pixiRenderer = new GLOBALS.PIXI.Renderer(rendererOptions);
         }
         break;
     }
@@ -831,7 +840,41 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  toggleTypedEditable() {
+    this.setState({
+      typedEditable: !this.isEditable()
+    });
+  }
+
+  /** Handle typed commands (e.g. e-d-i-t) */
+  typedTextHandler(event) {
+    if (!this.props.options.cheatCodesEnabled) {
+      return;
+    }
+
+    this.typedText = this.typedText.concat(event.key);
+
+    if (this.typedText.endsWith('hgedit')) {
+      this.toggleTypedEditable();
+      this.typedText = '';
+    }
+
+    // 1.5 seconds to type the next letter
+    const TYPED_TEXT_TIMEOUT = 750;
+    if (this.typedTextTimeout) {
+      clearTimeout(this.typedTextTimeout);
+    }
+
+    // set a timeout for new typed text
+    this.typedTextTimeout = setTimeout(() => {
+      this.typedText = '';
+    }, TYPED_TEXT_TIMEOUT);
+  }
+
   keyDownHandler(event) {
+    // handle typed commands (e.g. e-d-i-t)
+    this.typedTextHandler(event);
+
     if (this.props.options.rangeSelectionOnAlt && event.key === 'Alt') {
       this.setState({
         mouseTool: MOUSE_TOOL_SELECT
@@ -984,6 +1027,12 @@ class HiGlassComponent extends React.Component {
    * visible?
    */
   isEditable() {
+    if (this.state.typedEditable !== undefined) {
+      // somebody typed "edit" so we need to follow the directive of
+      // this cheat code over all other preferences
+      return this.state.typedEditable;
+    }
+
     if (!this.props.options || !('editable' in this.props.options)) {
       return this.state.viewConfig.editable;
     }

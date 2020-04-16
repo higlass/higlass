@@ -1,7 +1,9 @@
-import * as PIXI from 'pixi.js';
 import { globalPubSub } from 'pub-sub-es';
 
 import { hexStrToInt } from '.';
+
+// Configs
+import { GLOBALS } from '../configs';
 
 const COLOR = 0xaaaaaa;
 const ALPHA = 1.0;
@@ -43,7 +45,7 @@ const showMousePosition = (
   const alpha = options.mousePositionAlpha || ALPHA;
 
   // Graphics for cursor position
-  const graphics = new PIXI.Graphics();
+  const graphics = new GLOBALS.PIXI.Graphics();
 
   // This clears the mouse position graphics, i.e., the mouse position will not
   // be visible afterwards.

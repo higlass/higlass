@@ -1,6 +1,14 @@
 Developer
 *********
 
+Cheat Codes
+===========
+
+Cheat codes are meant to expose functionality that shouldn't otherwise be available. They can be activated by passing `cheatCodesEnabled` as an option to the HiGlassComponent and
+then typing a string when a higlass window is visible.
+
+- "hgedit": Toggle the header and make the higlass component editable.
+
 Testing
 =======
 

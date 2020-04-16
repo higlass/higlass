@@ -1,7 +1,6 @@
 import boxIntersect from 'box-intersect';
 import { median, range } from 'd3-array';
 import { scaleBand, scaleLinear } from 'd3-scale';
-import * as PIXI from 'pixi.js';
 import classifyPoint from 'robust-point-in-polygon';
 import { zoomIdentity } from 'd3-zoom';
 
@@ -19,7 +18,7 @@ import {
 } from './utils';
 
 // Configs
-import { HEATED_OBJECT_MAP } from './configs';
+import { GLOBALS, HEATED_OBJECT_MAP } from './configs';
 
 const GENE_RECT_HEIGHT = 16;
 const MAX_TEXTS = 50;
@@ -75,8 +74,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // create texts
     tile.texts = {};
 
-    tile.rectGraphics = new PIXI.Graphics();
-    tile.textGraphics = new PIXI.Graphics();
+    tile.rectGraphics = new GLOBALS.PIXI.Graphics();
+    tile.textGraphics = new GLOBALS.PIXI.Graphics();
 
     tile.graphics.addChild(tile.rectGraphics);
     tile.graphics.addChild(tile.textGraphics);
@@ -132,7 +131,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           }
 
           // geneInfo[3] is the gene symbol
-          const text = new PIXI.Text(geneInfo[3], {
+          const text = new GLOBALS.PIXI.Text(geneInfo[3], {
             ...TEXT_STYLE,
             fontSize: +this.options.fontSize || TEXT_STYLE.fontSize
           });
@@ -576,9 +575,14 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           text.alreadyDrawn = true;
         }
 
+        const fontColor =
+          this.options.fontColor !== undefined
+            ? colorToHex(this.options.fontColor)
+            : fill;
+
         text.style = {
           ...TEXT_STYLE,
-          fill,
+          fill: fontColor,
           fontSize: +this.options.fontSize || TEXT_STYLE.fontSize
         };
 
@@ -937,6 +941,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           }
 
           const fill = this.drawnRects[zoomLevel][td.uid][1].fill;
+          const fontColor =
+            this.options.fontColor !== undefined
+              ? colorToHex(this.options.fontColor)
+              : fill;
 
           r.setAttribute('d', d);
           r.setAttribute('fill', fill);
@@ -972,7 +980,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             );
             t.setAttribute('font-weight', 'bold');
             t.setAttribute('dy', '5px');
-            t.setAttribute('fill', fill);
+            t.setAttribute('fill', fontColor);
             t.setAttribute('stroke', TEXT_STYLE.stroke);
             t.setAttribute('stroke-width', '0.4');
             t.setAttribute('text-shadow', '0px 0px 2px grey');
