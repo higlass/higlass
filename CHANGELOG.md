@@ -5,6 +5,8 @@
 - Fixed divided tracks bug by adding denseDataExtrema
 - Fixed divergent bar track
 - Made the bar track compatible with the local tile fetcher
+- Keep locks on track type change
+- Fix crashing higlass on non-existent value scale lock member
 
 _[Detailed changes since v1.9.1](https://github.com/higlass/higlass/compare/v1.9.1...develop)_
 
