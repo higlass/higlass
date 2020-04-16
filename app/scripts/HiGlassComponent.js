@@ -848,6 +848,7 @@ class HiGlassComponent extends React.Component {
 
   /** Handle typed commands (e.g. e-d-i-t) */
   typedTextHandler(event) {
+    if (document.hasFocus()) return;
     this.typedText = this.typedText.concat(event.key);
 
     if (this.typedText.endsWith('hgedit')) {
