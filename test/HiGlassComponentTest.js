@@ -86,7 +86,7 @@ describe('Simple HiGlassComponent', () => {
 
       hgc = mount(
         <HiGlassComponent
-          options={{ bounded: false, cheatCodesEnbaled: true }}
+          options={{ bounded: false, cheatCodesEnabled: true }}
           viewConfig={divisionViewConfig}
         />,
         { attachTo: div }
