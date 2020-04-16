@@ -1,6 +1,6 @@
 # Release notes
 
-## Next release
+## v1.9.2
 
 - Fixed divided tracks bug by adding denseDataExtrema
 - Fixed divergent bar track
@@ -11,7 +11,7 @@
 - Keep locks on track type change
 - Fix crashing higlass on non-existent value scale lock member
 
-_[Detailed changes since v1.9.1](https://github.com/higlass/higlass/compare/v1.9.1...develop)_
+_[Detailed changes since v1.9.1](https://github.com/higlass/higlass/compare/v1.9.1...v1.9.2)_
 
 ## v1.9.1
 
