@@ -2578,6 +2578,11 @@ describe('Simple HiGlassComponent', () => {
 
       waitForTilesLoaded(hgc.instance(), done);
     });
+
+    it('should have a bottom track of height 0', () => {
+      const height = hgc.instance().state.views.aa.tracks.bottom[0].height;
+      expect(height).toEqual(0);
+    });
   });
 
   describe('Value interval track tests', () => {
