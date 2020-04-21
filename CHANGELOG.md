@@ -1,5 +1,7 @@
 # Release notes
 
+- Consolidated track options of horizontal and vertical tracks
+
 ## v1.9.2
 
 - Fixed divided tracks bug by adding denseDataExtrema
