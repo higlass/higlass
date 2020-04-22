@@ -2511,6 +2511,11 @@ class HiGlassComponent extends React.Component {
 
     if (hostTrack.type === 'combined') {
       hostTrack.contents.push(newTrack);
+
+      if (newTrack.type === 'heatmap') {
+        // For stacked heatmaps we will adjust some options automatically for convenience
+        this.compatibilityfyStackedHeatmaps(newTrack, hostTrack);
+      }
     } else {
       const newHost = {
         type: 'combined',
