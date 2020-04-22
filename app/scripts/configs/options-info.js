@@ -442,7 +442,8 @@ export const OPTIONS_INFO = {
   colorEncoding: {
     name: 'Color Encode Annotations',
     inlineOptions: {
-      none: { name: 'None', value: null }
+      none: { name: 'None', value: null },
+      itemRgb: { name: 'itemRgb', value: 'itemRgb' }
     },
     generateOptions: valueColumnOptions
   },
