@@ -3643,49 +3643,31 @@ class HiGlassComponent extends React.Component {
 
     if (!track) return;
 
-    track.options = Object.assign(
-      track.options,
-      this.adjustNewTrackOptions(track, newOptions)
-    );
+    track.options = Object.assign(track.options, newOptions);
 
     if (this.mounted) {
       this.setState(prevState => ({
         views: prevState.views
       }));
-      this.adjustOtherTrackOptions(track, newOptions, view.tracks, viewUid);
+      this.adjustSplitHeatmapTrackOptions(
+        track,
+        newOptions,
+        view.tracks,
+        viewUid
+      );
     }
   }
 
   /**
-   * For convenience we adjust some options based on other options.
-   * @param   {object}  track  Track whose options have changed
-   * @param   {object}  newOptions  New track options
-   * @return  {object}  Adjusted new track options
-   */
-  adjustNewTrackOptions(track, newOptions) {
-    if (track.type === 'heatmap') {
-      if (newOptions.extent === 'upper-right') {
-        newOptions.labelPosition = 'topRight';
-        newOptions.colorbarPosition = 'topRight';
-      }
-      if (newOptions.extent === 'lower-left') {
-        newOptions.labelPosition = 'bottomLeft';
-        newOptions.colorbarPosition = 'bottomLeft';
-      }
-    }
-
-    return newOptions;
-  }
-
-  /**
-   * For convenience we adjust some options of other tracks based on newly
-   * updated options.
+   * For convenience we adjust some options of split heatmap tracks when they are newly added.
+   * This function has no effect when we get split heatmap tracks that are already correctly configured
+   * (i.e. correctly set "lower-extend"/"upper-extend" options)
    * @param   {object}  track  Track whose options have changed
    * @param   {object}  options  New track options
    * @param   {list}  allTracks  All tracks
    * @param   {string}  viewUid  Related view UID
    */
-  adjustOtherTrackOptions(track, options, allTracks, viewUid) {
+  adjustSplitHeatmapTrackOptions(track, options, allTracks, viewUid) {
     if (track.type === 'heatmap') {
       if (
         options.extent === 'upper-right' &&
@@ -3701,12 +3683,28 @@ class HiGlassComponent extends React.Component {
             // Automatically change the extent of the other track to
             // `lower-left``
             const otherNewOptions = Object.assign({}, otherTrack.options, {
-              extent: 'lower-left'
+              extent: 'lower-left',
+              labelPosition: 'bottomLeft',
+              colorbarPosition: 'bottomLeft'
             });
+
+            // Automatically set positions of label and colorbar of the current track
+            // to the opposite corner. We don't want overlapping labels.
+            const originalNewOptions = Object.assign({}, options, {
+              labelPosition: 'topRight',
+              colorbarPosition: 'topRight'
+            });
+
             this.handleTrackOptionsChanged(
               viewUid,
               otherTrack.uid,
               otherNewOptions
+            );
+
+            this.handleTrackOptionsChanged(
+              viewUid,
+              track.uid,
+              originalNewOptions
             );
             return true;
           }
@@ -3728,12 +3726,28 @@ class HiGlassComponent extends React.Component {
               // Automatically change the extent of the other track to
               // `upper-right``
               const otherNewOptions = Object.assign({}, otherTrack.options, {
-                extent: 'upper-right'
+                extent: 'upper-right',
+                labelPosition: 'topRight',
+                colorbarPosition: 'topRight'
               });
+
+              // Automatically set positions of label and colorbar of the current track
+              // to the opposite corner. We don't want overlapping labels.
+              const originalNewOptions = Object.assign({}, options, {
+                labelPosition: 'bottomLeft',
+                colorbarPosition: 'bottomLeft'
+              });
+
               this.handleTrackOptionsChanged(
                 viewUid,
                 otherTrack.uid,
                 otherNewOptions
+              );
+
+              this.handleTrackOptionsChanged(
+                viewUid,
+                track.uid,
+                originalNewOptions
               );
               return true;
             }

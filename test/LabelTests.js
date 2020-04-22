@@ -15,10 +15,11 @@ import {
 } from '../app/scripts/utils';
 
 import viewconf from './view-configs/label-margin';
+import viewconfSplitHeatmaps from './view-configs/label-split-heatmaps';
 
 configure({ adapter: new Adapter() });
 
-describe('Simple HiGlassComponent', () => {
+describe('Label test', () => {
   describe('Axis texts', () => {
     let hgc = null;
     let div = null;
@@ -107,6 +108,31 @@ describe('Simple HiGlassComponent', () => {
       expect(track5.labelText.text.startsWith('hg19 | ')).to.be.true;
       // eslint-disable-next-line no-unused-expressions
       expect(track6.labelText.text.startsWith('hg19 | ')).to.be.false;
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+  });
+
+  describe('Heatmap label tests', () => {
+    let hgc = null;
+    let div = null;
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, viewconfSplitHeatmaps, done, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      });
+    });
+
+    it('Makes sure that hiding the label works', () => {
+      hgc.instance().state.views.aa.tracks.center[0].contents[0].options.labelPosition =
+        'hidden';
+      hgc.setState(hgc.instance().state);
+
+      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 't1');
+
+      expect(trackObj.labelText.alpha).to.be.eql(0);
     });
 
     afterAll(() => {
