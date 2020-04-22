@@ -1,5 +1,11 @@
 # Release notes
 
+## Next release
+
+- Use itemRgb field in bed files as the default coloring for bedlike tracks
+
+_[Detailed changes since v1.9.2](https://github.com/higlass/higlass/compare/v1.9.2...develop)_
+
 ## v1.9.2
 
 - Fixed divided tracks bug by adding denseDataExtrema
