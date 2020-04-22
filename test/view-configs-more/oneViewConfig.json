@@ -88,7 +88,36 @@
           }
         ],
         "right": [],
-        "bottom": []
+        "bottom": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "E36VpigUTAaHI-_pm1hGsA",
+            "uid": "WTZUPcoeRUG977hjurAWow",
+            "type": "horizontal-bar",
+            "options": {
+              "align": "bottom",
+              "labelColor": "[glyph-color]",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "labelShowAssembly": true,
+              "axisLabelFormatting": "scientific",
+              "axisPositionHorizontal": "right",
+              "barFillColor": "darkgreen",
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "barOpacity": 1,
+              "name": "Ballinger et al. 2019 - MCF7 BLISS 50Kb"
+            },
+            "width": 20,
+            "height": 0
+          }
+        ]
       },
       "layout": {
         "w": 5,

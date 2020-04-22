@@ -1,6 +1,9 @@
 # Release notes
 
 - Consolidated track options of horizontal and vertical tracks
+- Set background of new heatmap tracks in a combined track to `transparent` when added via the track context menu.
+- Fixed bug where heatmap labels could not be hidden.
+- The position of labels and colorbars for split heatmaps can now be changed.
 
 ## v1.9.2
 

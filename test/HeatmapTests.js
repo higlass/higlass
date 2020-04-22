@@ -111,16 +111,11 @@ describe('Heatmaps', () => {
       const views = JSON.parse(JSON.stringify(hgc.instance().state.views));
       const center = views.v.tracks.center[0];
 
-      const newOptions0 = Object.assign({}, center.contents[0].options, {
+      const newOptions = Object.assign({}, center.contents[0].options, {
         extent: 'lower-left'
       });
 
-      const newOptions1 = Object.assign({}, center.contents[1].options, {
-        extent: 'upper-right'
-      });
-
-      hgc.instance().handleTrackOptionsChanged('v', 'heatmap0', newOptions0);
-      hgc.instance().handleTrackOptionsChanged('v', 'heatmap1', newOptions1);
+      hgc.instance().handleTrackOptionsChanged('v', 'heatmap0', newOptions);
       hgc.update();
 
       const newViews = JSON.parse(JSON.stringify(hgc.instance().state.views.v));
