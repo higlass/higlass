@@ -1,5 +1,7 @@
 # Release notes
 
+- Set background of new heatmap tracks in a combined track to `transparent` when added via the track context menu
+
 ## v1.9.2
 
 - Fixed divided tracks bug by adding denseDataExtrema
