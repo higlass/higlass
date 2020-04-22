@@ -1,5 +1,8 @@
 # Release notes
 
+- Fixed bug where heatmap lables could not be hidden
+- The position of labels and colorbars for split heatmaps can now be changed.
+
 ## v1.9.2
 
 - Fixed divided tracks bug by adding denseDataExtrema
