@@ -1,6 +1,6 @@
 # Release notes
 
-## Next release
+## v1.9.3
 
 - Consolidated track options of horizontal and vertical tracks
 - Set background of new heatmap tracks in a combined track to `transparent` when added via the track context menu.
@@ -8,7 +8,7 @@
 - The position of labels and colorbars for split heatmaps can now be changed.
 - Use itemRgb field in bed files as the default coloring for bedlike tracks
 
-_[Detailed changes since v1.9.2](https://github.com/higlass/higlass/compare/v1.9.2...develop)_
+_[Detailed changes since v1.9.2](https://github.com/higlass/higlass/compare/v1.9.2...v.1.9.3)_
 
 ## v1.9.2
 
