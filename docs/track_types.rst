@@ -45,8 +45,9 @@ column" section).
 
 Intervals can visually encode information using the following three ``options``:
 
-- **colorEncoding**: int or null
-    If set to a bed column number (1-based), use the values in that column to color the annotations. (default: "none")
+- **colorEncoding**: int, null or "itemRgb"
+    If set to a bed column number (1-based), use the values in that column to color the annotations. If set to `itemRgb`,
+    then check if the underlying BED file has a 9th column and use the r,g,b value there to color the annotations. (default: "itemRgb")
 
 - **colorRange**: array of color values
     A list of colors that make up the continuous color map. Defaults to the same colormap used by the heatmap track.
@@ -81,8 +82,8 @@ Intervals can visually encode information using the following three ``options``:
 - **showTexts**: 'yes' or 'no'
     Show annotation labels? (default: no)
 
-- **valueColumn**: int or 'none'
-    Use one of the bed columns to scale the annotations along the y axis. (default 'none')
+- **valueColumn**: int or null
+    Use one of the bed columns (1-based) to scale the annotations along the y axis. (default `null`)
 
 Here is an example snippet. Used if the other options aren't set.
 
