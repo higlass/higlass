@@ -326,7 +326,7 @@ class PixiTrack extends Track {
       this.options.labelPosition === 'hidden'
     ) {
       // don't display the track label
-      this.labelText.opacity = 0;
+      this.labelText.alpha = 0;
       return;
     }
 

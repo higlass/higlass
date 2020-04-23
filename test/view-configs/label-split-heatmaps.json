@@ -1,0 +1,155 @@
+{
+  "zoomFixed": false,
+  "views": [
+    {
+      "layout": {
+        "w": 12,
+        "h": 7,
+        "x": 0,
+        "y": 0
+      },
+      "uid": "aa",
+      "initialYDomain": [2523938059.4057345, 2558484895.406563],
+      "initialXDomain": [2520960005.7587643, 2558627201.1403127],
+      "tracks": {
+        "left": [],
+        "top": [],
+        "right": [],
+        "center": [
+          {
+            "uid": "center",
+            "type": "combined",
+            "contents": [
+              {
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "dVBREuC2SvO01uXYMUh2aQ",
+                "type": "heatmap",
+                "uid": "t1",
+                "options": {
+                  "backgroundColor": "#eeeeee",
+                  "labelPosition": "bottomLeft",
+                  "labelTextOpacity": 0.4,
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarPosition": "bottomLeft",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "showMousePosition": true,
+                  "mousePositionColor": "#000000",
+                  "showTooltip": true,
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000",
+                  "showMousePositionGlobally": true,
+                  "labelLeftMargin": 0,
+                  "labelRightMargin": 0,
+                  "labelTopMargin": 0,
+                  "labelBottomMargin": 0,
+                  "labelShowResolution": true,
+                  "labelShowAssembly": true,
+                  "colorbarBackgroundColor": "#ffffff",
+                  "minWidth": 100,
+                  "minHeight": 100,
+                  "extent": "lower-left",
+                  "zeroValueColor": null,
+                  "name": "[hicnorm] Rao et al. (2014) GM12878 MboI Primary"
+                },
+                "width": 676,
+                "height": 718
+              },
+              {
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "A3CXORsOSkyl0nzWNkXK3A",
+                "uid": "t2",
+                "type": "heatmap",
+                "options": {
+                  "backgroundColor": "transparent",
+                  "labelPosition": "topRight",
+                  "labelLeftMargin": 0,
+                  "labelRightMargin": 0,
+                  "labelTopMargin": 0,
+                  "labelBottomMargin": 0,
+                  "labelShowResolution": true,
+                  "labelShowAssembly": true,
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "colorbarBackgroundColor": "#ffffff",
+                  "maxZoom": null,
+                  "minWidth": 100,
+                  "minHeight": 100,
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "showMousePosition": true,
+                  "mousePositionColor": "#000000",
+                  "showTooltip": true,
+                  "extent": "upper-right",
+                  "zeroValueColor": null,
+                  "name": "LD correlation - 1000 Genomes Phase 3 (hg19)",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "width": 100,
+                "height": 100
+              }
+            ],
+            "options": {},
+            "width": 676,
+            "height": 718
+          }
+        ],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "genomePositionSearchBox": {
+        "visible": true,
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
+      }
+    }
+  ],
+  "editable": true,
+  "viewEditable": true,
+  "tracksEditable": true,
+  "exportViewUrl": "/api/v1/viewconfs",
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "trackSourceServers": ["http://higlass.io/api/v1"],
+  "locationLocks": {
+    "locksByViewUid": {
+      "aa": "PkNgAl3mSIqttnSsCewngw",
+      "ewZvJwlDSei_dbpIAkGMlg": "PkNgAl3mSIqttnSsCewngw"
+    },
+    "locksDict": {
+      "PkNgAl3mSIqttnSsCewngw": {
+        "aa": [1550000000, 1550000000, 3380588.876772046],
+        "ewZvJwlDSei_dbpIAkGMlg": [
+          1550000000.0000002,
+          1549999999.9999993,
+          3380588.876772046
+        ],
+        "uid": "PkNgAl3mSIqttnSsCewngw"
+      }
+    }
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

@@ -23,7 +23,7 @@ describe('Utils tests', () => {
     });
 
     expect(found).to.eql(true);
-    expect(visited).to.eql(5);
+    expect(visited).to.eql(6);
   });
 
   it('should compute size based on an array of selected item indices', () => {
