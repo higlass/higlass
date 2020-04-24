@@ -1,6 +1,9 @@
 # Release notes
 
-- Fix: Add missing initializer value to `utils.reduce`
+## Next release
+
+- Add missing initializer value to `utils.reduce`
+- Added `trackUid` and `viewUid` as properties in the object published to wheel event callback functions.
 
 ## v1.13.5
 
