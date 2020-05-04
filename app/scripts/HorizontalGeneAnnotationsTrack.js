@@ -17,7 +17,7 @@ import { colorToHex, trackUtils } from './utils';
 const FONT_SIZE = 11;
 const FONT_FAMILY = 'Arial';
 const GENE_LABEL_POS = 'outside';
-const GENE_RECT_HEIGHT = 16;
+const GENE_RECT_HEIGHT = 10;
 const GENE_STRAND_SPACING = 4;
 const MAX_TEXTS = 20;
 const WHITE_HEX = colorToHex('#ffffff');
@@ -835,6 +835,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         const [minX, minY, maxX, maxY] = allBoxes[i];
         const width = maxX - minX;
         const height = maxY - minY;
+
         allTiles[i].drawRect(
           minX - width / 2,
           minY - height / 2,
