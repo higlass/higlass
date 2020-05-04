@@ -1,5 +1,10 @@
 # Release notes
 
+## Next release
+
+- Changed the style for the mouse over dialog to have a maximum width of 50 and to break words so that it doesn't go off the screen if there's a very long mouseover text.
+- Lower the default annotation height in the Gene Annotations track
+
 ## v1.9.3
 
 - Consolidated track options of horizontal and vertical tracks
