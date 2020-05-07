@@ -44,6 +44,7 @@
     "react-dom": "^16.6.3"
   },
   "dependencies": {
+    "@gmod/gff": "^1.1.2",
     "ajv": "^6.10.0",
     "box-intersect": "^1.0.1",
     "css-element-queries": "github:marcj/css-element-queries",
@@ -66,6 +67,7 @@
     "enzyme-adapter-react-16": "^1.2.0",
     "eventemitter3": "^2.0.2",
     "genbank-parser": "^1.0.0",
+    "jsonpath": "^1.0.2",
     "ndarray": "^1.0.18",
     "pako": "^1.0.10",
     "path": "^0.12.7",

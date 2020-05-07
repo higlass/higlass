@@ -1,7 +1,6 @@
 import slugid from 'slugid';
 import pako from 'pako';
-import genbankParser from 'genbank-parser';
-import jp from 'jsonpath';
+import gff from '@gmod/gff';
 
 /**
  * Take a list of genes, which can be any list with elements containing
@@ -71,9 +70,7 @@ function shuffle(a) {
   return a;
 }
 
-function gbToHgGene(gb, namePath) {
-  console.log('namePath:', namePath);
-
+function gbToHgGene(gb) {
   const importance = gb.end - gb.start;
   const strand = gb.strand === 1 ? '+' : '-';
   const uid = slugid.nice();
@@ -103,7 +100,7 @@ function gbToHgGene(gb, namePath) {
       'chrom',
       gb.start,
       gb.end,
-      namePath ? jp.query(gb, namePath) : gb.name,
+      gb.name,
       importance,
       strand,
       '',
@@ -118,7 +115,7 @@ function gbToHgGene(gb, namePath) {
   };
 }
 
-class GBKDataFetcher {
+class GFFDataFetcher {
   constructor(dataConfig) {
     this.dataConfig = dataConfig;
     this.trackUid = slugid.nice();
@@ -127,10 +124,7 @@ class GBKDataFetcher {
     const gzipped = extension === '.gz';
     this.errorTxt = '';
 
-    if (!this.dataConfig.options) {
-      this.dataConfig.options = {};
-    }
-    console.log('dataConfig:', this.dataConfig);
+    console.log('getting:');
 
     this.dataPromise = fetch(dataConfig.url, {
       mode: 'cors',
@@ -142,14 +136,9 @@ class GBKDataFetcher {
         const gffText = gzipped
           ? pako.inflate(buffer, { to: 'string' })
           : buffer;
-        this.gbJson = genbankParser(gffText);
-        console.log('this.gbJson:', this.gbJson);
+        this.gffObj = gff.parseStringSync(gffText);
 
-        this.cdss = shuffle(
-          this.gbJson[0].features
-            .filter(f => f.type !== 'source')
-            .sort((a, b) => a.start - b.start)
-        );
+        console.log('this.gffObj:', this.gffObj);
       });
   }
 
@@ -181,6 +170,7 @@ class GBKDataFetcher {
       })
       .catch(err => {
         this.tilesetInfoLoading = false;
+        console.log('err:', err);
 
         if (callback) {
           callback({
@@ -264,9 +254,9 @@ class GBKDataFetcher {
       values = [...values, ...collapsedPlus, ...collapsedMinus];
       // values = values.concat(collapsedPlus).concat(collapsedMinus);
       // we're not going to take into account importance
-      return values.map(v => gbToHgGene(v, this.dataConfig.options.namePath));
+      return values.map(v => gbToHgGene(v));
     });
   }
 }
 
-export default GBKDataFetcher;
+export default GFFDataFetcher;
