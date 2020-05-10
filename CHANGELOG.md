@@ -7,6 +7,7 @@
 - Fixed bug where heatmap labels could not be hidden.
 - The position of labels and colorbars for split heatmaps can now be changed.
 - Use itemRgb field in bed files as the default coloring for bedlike tracks
+- Add a view for showing schema log messages when JSON codes are edited in a config view.
 
 _[Detailed changes since v1.9.2](https://github.com/higlass/higlass/compare/v1.9.2...v.1.9.3)_
 
