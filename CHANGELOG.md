@@ -8,6 +8,7 @@
 - The position of labels and colorbars for split heatmaps can now be changed.
 - Use itemRgb field in bed files as the default coloring for bedlike tracks
 - Add a view for showing schema log messages when JSON codes are edited in a config view.
+- Fixed bug where the track config menu improperly positioned when clicked twice.
 
 _[Detailed changes since v1.9.2](https://github.com/higlass/higlass/compare/v1.9.2...v.1.9.3)_
 
