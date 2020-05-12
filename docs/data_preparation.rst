@@ -650,8 +650,7 @@ This can be aggregated to multivec format:
         --row-infos-filename row_infos.txt \
         --num-rows 7 \
         --format states
-        --row_infos-filename rows_info.txt
-        
+
 A rows_info.txt file is required in the parameter ``--row-infos-filename`` for this type of data. This file contains the name of the states in the bedfile. e.g. rows_infos.txt::
 
      Quies
