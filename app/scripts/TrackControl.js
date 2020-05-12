@@ -30,9 +30,6 @@ const getButtonClassNames = props => {
   return buttonClassName;
 };
 
-let imgConfig;
-let imgClose;
-
 let oldProps = null;
 let DragHandle = null;
 
@@ -59,6 +56,9 @@ const TrackControl = props => {
       </svg>
     ));
   }
+
+  let imgConfig;
+  let imgClose;
 
   return (
     <div styleName={getClassNames(props)}>
