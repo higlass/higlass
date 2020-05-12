@@ -146,7 +146,7 @@ class ViewConfigEditor extends React.Component {
 
   render() {
     const logMessages = this.state.logMsgs.map((d, i) => {
-      const key = `${i}-${d.type}`;
+      const key = `${i}-${d.msg}`;
       return (
         <tr key={key}>
           <td styleName={`title ${d.type}`}>{`[${i}] ${d.type}`}</td>
