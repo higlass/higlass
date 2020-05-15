@@ -210,7 +210,7 @@ assigned values of ``[0,1]]``.
 zoomLimits
 ^^^^^^^^^^
 
-The field contains limits that controll the extend to which zooming is possible within a view. In the example below, zooming in is not possible beyond 200bp. If the array contains only one value, zooming out is unrestricted. If the field is not present in the viewconf, it defaults to unrestricted zooming.
+The field contains limits that controll the extend to which zooming is possible within a view. In the example below, zooming in is not possible beyond 200bp. If one of the items in the array is `null`, zooming is unrestricted in the corresponding direction. If the field is not present in the viewconf, it defaults to unrestricted zooming.
 
 .. code-block:: javascript
 
