@@ -21,6 +21,10 @@ To run the tests use:
 To only run specific test suites, open ``karma.conf.js`` and
 select which tests to run.
 
+All http requests can be automatically mocked and their responses stored in ``test/mocked-responses``. This makes it possible to use a local higlass server when adding new tests. New tests that use data which has not been already stored, should be run a few times locally in order to mock all occuring http requests.
+
+Please note: When adding new viewConfigs that make use of mocked responses, make sure that links do not start with ``//`` but with ``http(s)://``. The mocking library ``fetch-mock`` that we are using, does not support links without protocol. In order get started with mocked responses, follow the setup of ``FetchMockHelper`` as in ``DenseDataExtremaTests``.
+
 JSON Schema
 -----------
 There are unit tests that validate all the viewconfs that have been

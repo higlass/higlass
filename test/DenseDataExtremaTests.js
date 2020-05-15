@@ -8,6 +8,8 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 // Utils
 import {
   mountHGComponent,
@@ -29,6 +31,12 @@ import { matToy, matRealistic } from './testdata/matrix-data';
 configure({ adapter: new Adapter() });
 
 describe('Continuous scaling tests', () => {
+  const fetchMockHelper = new FetchMockHelper('', 'DenseDataExtrema');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
+
   describe('DenseDataExtrema module', () => {
     it('should get precise extrema of toy vectors', () => {
       const dde = new DenseDataExtrema1D(vecToy);
@@ -321,5 +329,9 @@ describe('Continuous scaling tests', () => {
     afterAll(() => {
       removeHGComponent(div);
     });
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

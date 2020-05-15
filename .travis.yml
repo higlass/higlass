@@ -15,6 +15,7 @@ install:
 before_script:
   - export CHROME_BIN=chromium-browser
   - export DISPLAY=:99.0
+  - export NODE_OPTIONS=--max_old_space_size=4096
   - sh -e /etc/init.d/xvfb start
   - npm install --quiet -g gulp
   - npm install -g jsdoc

@@ -241,7 +241,7 @@
         "whole": [],
         "gallery": []
       },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "genomePositionSearchBox": {
         "visible": true,
         "chromInfoServer": "http://higlass.io/api/v1",
