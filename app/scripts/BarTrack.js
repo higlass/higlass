@@ -1,9 +1,10 @@
 import { scaleLinear } from 'd3-scale';
 import { zoomIdentity } from 'd3-zoom';
 
-import * as PIXI from 'pixi.js';
-
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
+
+// Configs
+import { GLOBALS } from './configs';
 
 // Utils
 import { colorDomainToRgbaArray, colorToHex, gradient } from './utils';
@@ -14,7 +15,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   constructor(...args) {
     super(...args);
 
-    this.zeroLine = new PIXI.Graphics();
+    this.zeroLine = new GLOBALS.PIXI.Graphics();
     this.pMain.addChild(this.zeroLine);
     this.valueScaleTransform = zoomIdentity;
 
@@ -25,6 +26,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
         this.setColorScale(this.options.colorRange);
       }
     }
+
+    this.initialized = true;
   }
 
   setColorScale(colorRange) {
@@ -57,6 +60,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
    * Create whatever is needed to draw this tile.
    */
   initTile(tile) {
+    if (!this.initialized) return;
     super.initTile(tile);
   }
 
@@ -70,6 +74,11 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       // not rendered using the current scale, so we need to rerender
       this.renderTile(tile);
     }
+  }
+
+  renderTile(tile) {
+    if (!this.initialized) return;
+    super.renderTile(tile);
   }
 
   drawTile(tile) {
@@ -158,7 +167,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     let barMask;
     let barSprite;
     if (this.colorGradientColors) {
-      barMask = new PIXI.Graphics();
+      barMask = new GLOBALS.PIXI.Graphics();
       barMask.beginFill(HEX_WHITE, 1);
 
       const canvas = gradient(
@@ -171,8 +180,11 @@ class BarTrack extends HorizontalLine1DPixiTrack {
         this.dimensions[1] // fromX, fromY, toX, toY
       );
 
-      barSprite = new PIXI.Sprite(
-        PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
+      barSprite = new GLOBALS.PIXI.Sprite(
+        GLOBALS.PIXI.Texture.fromCanvas(
+          canvas,
+          GLOBALS.PIXI.SCALE_MODES.NEAREST
+        )
       );
 
       barSprite.x = this._xScale(tileX);
@@ -197,7 +209,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
       if (this.colorScale && !this.options.colorRangeGradient) {
         const rgbIdx = Math.round(colorScale(tileValues[i] + pseudocount));
         const rgb = this.colorScale[rgbIdx];
-        const hex = PIXI.utils.rgb2hex(rgb);
+        const hex = GLOBALS.PIXI.utils.rgb2hex(rgb);
         graphics.beginFill(hex, opacity);
       }
 
@@ -279,6 +291,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   draw() {
+    if (!this.initialized) return;
+
     // we don't want to call HorizontalLine1DPixiTrack's draw function
     // but rather its parent's
     super.draw();

@@ -1,4 +1,3 @@
-import * as PIXI from 'pixi.js';
 import { getValueScale } from './TiledPixiTrack';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
@@ -10,7 +9,7 @@ import { tileProxy } from './services';
 import { colorDomainToRgbaArray } from './utils';
 
 // Configs
-import { HEATED_OBJECT_MAP } from './configs';
+import { GLOBALS, HEATED_OBJECT_MAP } from './configs';
 
 class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   /**
@@ -319,13 +318,16 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
           const canvas = this.tileDataToCanvas(pixData.pixData);
 
           const texture =
-            PIXI.VERSION[0] === '4'
-              ? PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
-              : PIXI.Texture.from(canvas, {
-                  scaleMode: PIXI.SCALE_MODES.NEAREST
+            GLOBALS.PIXI.VERSION[0] === '4'
+              ? GLOBALS.PIXI.Texture.fromCanvas(
+                  canvas,
+                  GLOBALS.PIXI.SCALE_MODES.NEAREST
+                )
+              : GLOBALS.PIXI.Texture.from(canvas, {
+                  scaleMode: GLOBALS.PIXI.SCALE_MODES.NEAREST
                 });
 
-          tile.sprite = new PIXI.Sprite(texture);
+          tile.sprite = new GLOBALS.PIXI.Sprite(texture);
           tile.canvas = canvas;
 
           this.setSpriteProperties(

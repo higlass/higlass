@@ -1,8 +1,10 @@
 import { color } from 'd3-color';
-import * as PIXI from 'pixi.js';
 
 import PixiTrack from './PixiTrack';
 import ChromosomeInfo from './ChromosomeInfo';
+
+// Configs
+import { GLOBALS } from './configs';
 
 // Maximum delay in ms between mousedown and mouseup that is registered as a
 // click. Note we need to use mousedown and mouseup as PIXI doesn't recognize
@@ -58,7 +60,7 @@ class Chromosome2DAnnotations extends PixiTrack {
       const id = region.slice(0, 6).join('-');
 
       if (!this.rects[id]) {
-        this.rects[id] = { graphics: new PIXI.Graphics() };
+        this.rects[id] = { graphics: new GLOBALS.PIXI.Graphics() };
         graphics.addChild(this.rects[id].graphics);
       }
 
@@ -71,12 +73,12 @@ class Chromosome2DAnnotations extends PixiTrack {
         colorLine = colorFill;
       }
 
-      const colorFillHex = PIXI.utils.rgb2hex([
+      const colorFillHex = GLOBALS.PIXI.utils.rgb2hex([
         colorFill.r / 255.0,
         colorFill.g / 255.0,
         colorFill.b / 255.0
       ]);
-      const colorLineHex = PIXI.utils.rgb2hex([
+      const colorLineHex = GLOBALS.PIXI.utils.rgb2hex([
         colorLine.r / 255.0,
         colorLine.g / 255.0,
         colorLine.b / 255.0
@@ -126,7 +128,7 @@ class Chromosome2DAnnotations extends PixiTrack {
       this.rects[id].graphics.clear();
       this.rects[id].graphics.interactive = true;
       this.rects[id].graphics.buttonMode = true;
-      this.rects[id].graphics.hitArea = new PIXI.Rectangle(
+      this.rects[id].graphics.hitArea = new GLOBALS.PIXI.Rectangle(
         startX,
         startY,
         width,

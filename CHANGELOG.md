@@ -1,5 +1,29 @@
 # Release notes
 
+## v1.9.3
+
+- Consolidated track options of horizontal and vertical tracks
+- Set background of new heatmap tracks in a combined track to `transparent` when added via the track context menu.
+- Fixed bug where heatmap labels could not be hidden.
+- The position of labels and colorbars for split heatmaps can now be changed.
+- Use itemRgb field in bed files as the default coloring for bedlike tracks
+- Fixed bug where the track config menu improperly positioned when clicked twice.
+
+_[Detailed changes since v1.9.2](https://github.com/higlass/higlass/compare/v1.9.2...v.1.9.3)_
+
+## v1.9.2
+
+- Fixed divided tracks bug by adding denseDataExtrema
+- Fixed divergent bar track
+- Made the bar track compatible with the local tile fetcher
+- Added fontColor, fontSize and fillOpacity options to BedLikeTrack
+- Added cheat code for making the component editable (i.e. with headers)
+- Fixed track names in config menu
+- Keep locks on track type change
+- Fix crashing higlass on non-existent value scale lock member
+
+_[Detailed changes since v1.9.1](https://github.com/higlass/higlass/compare/v1.9.1...v1.9.2)_
+
 ## v1.9.1
 
 - Used stretchRects to ensure that there are no rendering artifacts when zooming in too far
@@ -9,6 +33,7 @@
 - colorAnnotations are independent of valueScale
 - Vertical zooming on BedLike annotations
 - Added support for aggregation of `horizontal-multivec` rows by passing arrays of row indices to the `selectRows` option. With this addition also comes the track options `selectRowsAggregationMode` (for specifying an aggregation function, "mean", "sum", "variance", "deviation") and `selectRowsAggregationWithRelativeHeight` (boolean) to determine whether rows representing groups of indices have 1-unit heights or `group.length`-unit heights.
+- Added the JS API `.on('wheel', callback)` option for subscribing to mouse wheel events.
 
 _[Detailed changes since v1.9.0](https://github.com/higlass/higlass/compare/v1.9.0...v1.9.1)_
 

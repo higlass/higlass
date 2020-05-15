@@ -1,7 +1,6 @@
 import boxIntersect from 'box-intersect';
 import { median, range } from 'd3-array';
 import { scaleBand, scaleLinear } from 'd3-scale';
-import * as PIXI from 'pixi.js';
 import classifyPoint from 'robust-point-in-polygon';
 import { zoomIdentity } from 'd3-zoom';
 
@@ -19,7 +18,7 @@ import {
 } from './utils';
 
 // Configs
-import { HEATED_OBJECT_MAP } from './configs';
+import { GLOBALS, HEATED_OBJECT_MAP } from './configs';
 
 const GENE_RECT_HEIGHT = 16;
 const MAX_TEXTS = 50;
@@ -75,8 +74,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // create texts
     tile.texts = {};
 
-    tile.rectGraphics = new PIXI.Graphics();
-    tile.textGraphics = new PIXI.Graphics();
+    tile.rectGraphics = new GLOBALS.PIXI.Graphics();
+    tile.textGraphics = new GLOBALS.PIXI.Graphics();
 
     tile.graphics.addChild(tile.rectGraphics);
     tile.graphics.addChild(tile.textGraphics);
@@ -132,7 +131,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           }
 
           // geneInfo[3] is the gene symbol
-          const text = new PIXI.Text(geneInfo[3], {
+          const text = new GLOBALS.PIXI.Text(geneInfo[3], {
             ...TEXT_STYLE,
             fontSize: +this.options.fontSize || TEXT_STYLE.fontSize
           });
@@ -203,6 +202,8 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   rerender(options, force) {
     super.rerender(options, force);
 
+    // this will get instantiated if a value column is specified
+    this.valueScale = null;
     this.drawnRects = {};
 
     if (this.options.colorRange) {
@@ -485,12 +486,24 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           }
         }
 
-        // if the regions are scaled according to a value column their height needs to
-        // be adjusted
-        if (this.colorValueScale) {
+        if (
+          this.options &&
+          this.options.colorEncoding === 'itemRgb' &&
+          td.fields[8]
+        ) {
+          const parts = td.fields[8].split(',');
+
+          if (parts.length === 3) {
+            const color = `rgb(${td.fields[8]})`;
+
+            fill = color;
+          }
+        } else if (this.colorValueScale) {
           const rgb = valueToColor(
             this.colorValueScale,
-            this.colorScale
+            this.colorScale,
+            0, // pseudocounts
+            -Number.MIN_VALUE
           )(+geneInfo[+this.options.colorEncoding - 1]);
           fill = `rgba(${rgb.join(',')})`;
         }
@@ -576,9 +589,14 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           text.alreadyDrawn = true;
         }
 
+        const fontColor =
+          this.options.fontColor !== undefined
+            ? colorToHex(this.options.fontColor)
+            : fill;
+
         text.style = {
           ...TEXT_STYLE,
-          fill,
+          fill: fontColor,
           fontSize: +this.options.fontSize || TEXT_STYLE.fontSize
         };
 
@@ -937,6 +955,10 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           }
 
           const fill = this.drawnRects[zoomLevel][td.uid][1].fill;
+          const fontColor =
+            this.options.fontColor !== undefined
+              ? colorToHex(this.options.fontColor)
+              : fill;
 
           r.setAttribute('d', d);
           r.setAttribute('fill', fill);
@@ -972,7 +994,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             );
             t.setAttribute('font-weight', 'bold');
             t.setAttribute('dy', '5px');
-            t.setAttribute('fill', fill);
+            t.setAttribute('fill', fontColor);
             t.setAttribute('stroke', TEXT_STYLE.stroke);
             t.setAttribute('stroke-width', '0.4');
             t.setAttribute('text-shadow', '0px 0px 2px grey');

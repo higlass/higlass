@@ -253,6 +253,10 @@ export const OPTIONS_INFO = {
     name: 'Color',
     inlineOptions: AVAILABLE_COLORS
   },
+  fontColor: {
+    name: 'Font color',
+    inlineOptions: AVAILABLE_COLORS
+  },
   fillColor: {
     name: 'Fill color',
     inlineOptions: AVAILABLE_COLORS
@@ -438,7 +442,8 @@ export const OPTIONS_INFO = {
   colorEncoding: {
     name: 'Color Encode Annotations',
     inlineOptions: {
-      none: { name: 'None', value: null }
+      none: { name: 'None', value: null },
+      itemRgb: { name: 'itemRgb', value: 'itemRgb' }
     },
     generateOptions: valueColumnOptions
   },

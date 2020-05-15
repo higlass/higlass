@@ -1,5 +1,7 @@
-import * as PIXI from 'pixi.js';
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
+
+// Configs
+import { GLOBALS } from './configs';
 
 export function drawTile(tile) {
   if (!tile.graphics) {
@@ -86,13 +88,11 @@ export function drawTile(tile) {
 
 export function initTile(tile) {
   const graphics = tile.graphics;
-  tile.textGraphics = new PIXI.Graphics();
-  // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/')
-  // + '/' + tile.mirrored,
+  tile.textGraphics = new GLOBALS.PIXI.Graphics();
 
   if (tile.mirrored) {
     // mirrored tiles have their x and y coordinates reversed
-    tile.text = new PIXI.Text(
+    tile.text = new GLOBALS.PIXI.Text(
       `${tile.tileData.zoomLevel}/${[
         tile.tileData.tilePos[1],
         tile.tileData.tilePos[0]
@@ -105,7 +105,7 @@ export function initTile(tile) {
       }
     );
   } else {
-    tile.text = new PIXI.Text(
+    tile.text = new GLOBALS.PIXI.Text(
       `${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`,
       {
         fontFamily: 'Arial',

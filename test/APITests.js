@@ -830,6 +830,34 @@ describe('API Tests', () => {
       });
     });
 
+    it('triggers on wheel events', done => {
+      [div, api] = createElementAndApi(
+        simple1dHorizontalVerticalAnd2dDataTrack
+      );
+      const hgc = api.getComponent();
+      waitForTilesLoaded(hgc, () => {
+        api.on('wheel', e => {
+          expect(e.origEvt.clientX).toEqual(30);
+          expect(e.origEvt.clientY).toEqual(40);
+          done();
+        });
+
+        const canvas = findCanvas(div);
+        // The wheel event that we expect to catch.
+        const wheelEvent = {
+          clientX: 30,
+          clientY: 40,
+          forwarded: true,
+          target: canvas,
+          nativeEvent: undefined,
+          stopPropagation: () => {},
+          preventDefault: () => {}
+        };
+        // Simulate the wheel and keyboard events.
+        hgc.wheelHandler(wheelEvent);
+      });
+    });
+
     afterEach(() => {
       api.destroy();
       removeDiv(div);

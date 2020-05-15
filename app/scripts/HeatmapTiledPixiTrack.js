@@ -3,7 +3,6 @@ import { brushY } from 'd3-brush';
 import { format } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
 import { select, event } from 'd3-selection';
-import * as PIXI from 'pixi.js';
 import slugid from 'slugid';
 import {
   colorToRgba,
@@ -24,7 +23,7 @@ import AxisPixi from './AxisPixi';
 // Services
 import { tileProxy } from './services';
 
-import { HEATED_OBJECT_MAP } from './configs';
+import { GLOBALS, HEATED_OBJECT_MAP } from './configs';
 
 import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from './configs/dense-data-extrema-config';
 
@@ -77,10 +76,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.isValueScaleLocked = isValueScaleLocked;
 
     // Graphics for drawing the colorbar
-    this.pColorbarArea = new PIXI.Graphics();
+    this.pColorbarArea = new GLOBALS.PIXI.Graphics();
     this.pMasked.addChild(this.pColorbarArea);
 
-    this.pColorbar = new PIXI.Graphics();
+    this.pColorbar = new GLOBALS.PIXI.Graphics();
     this.pColorbarArea.addChild(this.pColorbar);
 
     this.axis = new AxisPixi(this);
@@ -1208,13 +1207,16 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
           }
 
           const texture =
-            PIXI.VERSION[0] === '4'
-              ? PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
-              : PIXI.Texture.from(canvas, {
-                  scaleMode: PIXI.SCALE_MODES.NEAREST
+            GLOBALS.PIXI.VERSION[0] === '4'
+              ? GLOBALS.PIXI.Texture.fromCanvas(
+                  canvas,
+                  GLOBALS.PIXI.SCALE_MODES.NEAREST
+                )
+              : GLOBALS.PIXI.Texture.from(canvas, {
+                  scaleMode: GLOBALS.PIXI.SCALE_MODES.NEAREST
                 });
 
-          const sprite = new PIXI.Sprite(texture);
+          const sprite = new GLOBALS.PIXI.Sprite(texture);
 
           tile.sprite = sprite;
           tile.texture = texture;

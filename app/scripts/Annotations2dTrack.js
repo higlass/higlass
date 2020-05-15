@@ -1,7 +1,9 @@
-import * as PIXI from 'pixi.js';
 import createPubSub from 'pub-sub-es';
 
 import TiledPixiTrack from './TiledPixiTrack';
+
+// Configs
+import { GLOBALS } from './configs';
 
 // Services
 import { tileProxy } from './services';
@@ -278,7 +280,7 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     let rectGfx = this.drawnAnnoGfx[uid];
     if (!rectGfx) {
-      rectGfx = new PIXI.Graphics();
+      rectGfx = new GLOBALS.PIXI.Graphics();
       this.drawnAnnoGfx[uid] = rectGfx;
     }
 

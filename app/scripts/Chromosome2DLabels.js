@@ -1,11 +1,13 @@
 import boxIntersect from 'box-intersect';
-import * as PIXI from 'pixi.js';
 
 import PixiTrack from './PixiTrack';
 import ChromosomeInfo from './ChromosomeInfo';
 import SearchField from './SearchField';
 
 import { absToChr } from './utils';
+
+// Configs
+import { GLOBALS } from './configs';
 
 class Chromosome2DLabels extends PixiTrack {
   constructor(context, options) {
@@ -37,7 +39,7 @@ class Chromosome2DLabels extends PixiTrack {
 
           for (let j = 0; j < this.chromInfo.cumPositions.length; j++) {
             const textStr = `${this.chromInfo.cumPositions[i].chr}/${this.chromInfo.cumPositions[j].chr}`;
-            const text = new PIXI.Text(textStr, {
+            const text = new GLOBALS.PIXI.Text(textStr, {
               fontSize: '14px',
               fontFamily: 'Arial',
               fill: 'red'

@@ -1,5 +1,4 @@
 import slugid from 'slugid';
-import * as PIXI from 'pixi.js';
 
 import PixiTrack from './PixiTrack';
 
@@ -10,7 +9,7 @@ import { tileProxy } from './services';
 import { debounce } from './utils';
 
 // Configs
-import { ZOOM_DEBOUNCE } from './configs';
+import { GLOBALS, ZOOM_DEBOUNCE } from './configs';
 
 class OSMTilesTrack extends PixiTrack {
   /**
@@ -369,8 +368,10 @@ class OSMTilesTrack extends PixiTrack {
   initTile(tile) {
     // create the tile
     // should be overwritten by child classes
-    const texture = new PIXI.Texture(new PIXI.BaseTexture(tile.tileData.img));
-    const sprite = new PIXI.Sprite(texture);
+    const texture = new GLOBALS.PIXI.Texture(
+      new GLOBALS.PIXI.BaseTexture(tile.tileData.img)
+    );
+    const sprite = new GLOBALS.PIXI.Sprite(texture);
 
     const graphics = tile.graphics;
 
@@ -402,7 +403,7 @@ class OSMTilesTrack extends PixiTrack {
 
     for (let i = 0; i < fetchedTileIDs.length; i++) {
       if (!(fetchedTileIDs[i] in this.tileGraphics)) {
-        const newGraphics = new PIXI.Graphics();
+        const newGraphics = new GLOBALS.PIXI.Graphics();
         this.pMain.addChild(newGraphics);
 
         this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;

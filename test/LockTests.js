@@ -36,6 +36,22 @@ describe('Horizontal heatmaps', () => {
     expect(svg.length).to.be.above(1);
   });
 
+  it('should change the viewconf', () => {
+    const { views } = hgc.instance().state;
+
+    const trackUid = views.v1.tracks.top[0].uid;
+    views.v1.tracks.top[0].type = 'horizontal-bar';
+
+    hgc.setState({
+      views
+    });
+
+    const trackObj = hgc
+      .instance()
+      .tiledPlots.v1.trackRenderer.getTrackObject(trackUid);
+    expect(trackObj).not.to.eql(null);
+  });
+
   afterAll(() => {
     removeHGComponent(div);
   });
@@ -59,7 +75,66 @@ const viewconf = {
       },
       chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
       tracks: {
-        top: [],
+        top: [
+          {
+            server: '//higlass.io/api/v1',
+            tilesetUid: 'eQkOGi28QFyWzT-s3Axg6g',
+            uid: 'LZ6suiMHR6yFnGKY4Ie_YA',
+            type: 'horizontal-divergent-bar',
+            options: {
+              align: 'bottom',
+              labelColor: '[glyph-color]',
+              labelPosition: 'topLeft',
+              labelLeftMargin: 0,
+              labelRightMargin: 0,
+              labelTopMargin: 0,
+              labelBottomMargin: 0,
+              labelShowResolution: false,
+              labelShowAssembly: true,
+              axisLabelFormatting: 'scientific',
+              axisPositionHorizontal: 'right',
+              barFillColor: 'darkgreen',
+              valueScaling: 'linear',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              barOpacity: 1,
+              name: 'Schwarzer et al (2017) WT Eigenvectors 20K',
+              barFillColorBottom: 'red',
+              barFillColorTop: 'green'
+            },
+            width: 20,
+            height: 20
+          },
+          {
+            server: '//higlass.io/api/v1',
+            tilesetUid: 'TvzFzi-LQle0nt3OlODEdA',
+            uid: 'ccUaq_JTQjSJejoatNtXoA',
+            type: 'horizontal-bar',
+            options: {
+              align: 'bottom',
+              labelColor: '[glyph-color]',
+              labelPosition: 'topLeft',
+              labelLeftMargin: 0,
+              labelRightMargin: 0,
+              labelTopMargin: 0,
+              labelBottomMargin: 0,
+              labelShowResolution: false,
+              labelShowAssembly: true,
+              axisLabelFormatting: 'scientific',
+              axisPositionHorizontal: 'right',
+              barFillColor: 'darkgreen',
+              valueScaling: 'linear',
+              trackBorderWidth: 0,
+              trackBorderColor: 'black',
+              labelTextOpacity: 0.4,
+              barOpacity: 1,
+              name: 'Schwarzer et al (2017) NIPBL Eigenvectors 20K'
+            },
+            width: 1890,
+            height: 20
+          }
+        ],
         left: [],
         center: [
           {
@@ -188,7 +263,22 @@ const viewconf = {
     }
   },
   valueScaleLocks: {
-    locksByViewUid: {},
-    locksDict: {}
+    locksByViewUid: {
+      'v1.ccUaq_JTQjSJejoatNtXoA': 'Qx-F3xOESVW3ZKX7UFneFQ',
+      'v1.TL18hD7kSomz_Ne_dJe0Zw': 'Qx-F3xOESVW3ZKX7UFneFQ'
+    },
+    locksDict: {
+      'Qx-F3xOESVW3ZKX7UFneFQ': {
+        'v1.ccUaq_JTQjSJejoatNtXoA': {
+          view: 'v1',
+          track: 'ccUaq_JTQjSJejoatNtXoA'
+        },
+        'v1.TL18hD7kSomz_Ne_dJe0Zw': {
+          view: 'v1',
+          track: 'TL18hD7kSomz_Ne_dJe0Zw'
+        },
+        uid: 'Qx-F3xOESVW3ZKX7UFneFQ'
+      }
+    }
   }
 };

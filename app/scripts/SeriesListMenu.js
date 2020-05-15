@@ -326,7 +326,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
         styleName={styleNames}
       >
         <ContextMenuItem
-          onClick={this.props.onConfigureTrack}
+          onClick={() => {}}
           onMouseEnter={e =>
             this.handleItemMouseEnter(e, {
               option: 'configure-series',

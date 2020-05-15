@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { select, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import slugid from 'slugid';
+import * as PIXI from 'pixi.js';
 import ReactDOM from 'react-dom';
 import ReactGridLayout from 'react-grid-layout';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
-import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
 import parse from 'url-parse';
 import createPubSub, { globalPubSub } from 'pub-sub-es';
@@ -66,6 +66,7 @@ import {
   DEFAULT_CONTAINER_PADDING_Y,
   DEFAULT_VIEW_MARGIN,
   DEFAULT_VIEW_PADDING,
+  GLOBALS,
   MOUSE_TOOL_MOVE,
   MOUSE_TOOL_SELECT,
   LOCATION_LISTENER_PREFIX,
@@ -151,6 +152,10 @@ class HiGlassComponent extends React.Component {
     this.plusImg = {};
     this.configImg = {};
 
+    // allow a different PIXI to be passed in case the
+    // caller wants to use a different version
+    GLOBALS.PIXI = (props.options && props.options.PIXI) || PIXI;
+
     this.viewMarginTop =
       +props.options.viewMarginTop >= 0
         ? +props.options.viewMarginTop
@@ -205,14 +210,14 @@ class HiGlassComponent extends React.Component {
       setTileProxyAuthHeader(props.options.authToken);
     }
 
-    this.pixiRoot = new PIXI.Container();
+    this.pixiRoot = new GLOBALS.PIXI.Container();
     this.pixiRoot.interactive = true;
 
-    this.pixiStage = new PIXI.Container();
+    this.pixiStage = new GLOBALS.PIXI.Container();
     this.pixiStage.interactive = true;
     this.pixiRoot.addChild(this.pixiStage);
 
-    this.pixiMask = new PIXI.Graphics();
+    this.pixiMask = new GLOBALS.PIXI.Graphics();
     this.pixiRoot.addChild(this.pixiMask);
     this.pixiStage.mask = this.pixiMask;
 
@@ -266,7 +271,7 @@ class HiGlassComponent extends React.Component {
       views,
       viewConfig,
       addTrackPositionMenuPosition: null,
-
+      typedEditable: undefined,
       mouseOverOverlayUid: null,
       mouseTool,
       isDarkTheme: false,
@@ -280,13 +285,16 @@ class HiGlassComponent extends React.Component {
     this.attachedToDOM = false;
 
     // Set up API
-    const { public: api, destroy: apiDestroy, publish: apiPublish } = createApi(
-      this,
-      this.pubSub
-    );
+    const {
+      public: api,
+      destroy: apiDestroy,
+      publish: apiPublish,
+      stack: apiStack
+    } = createApi(this, this.pubSub);
     this.api = api;
     this.apiDestroy = apiDestroy;
     this.apiPublish = apiPublish;
+    this.apiStack = apiStack;
 
     this.viewChangeListener = [];
 
@@ -323,6 +331,10 @@ class HiGlassComponent extends React.Component {
     this.closeModalBound = this.closeModal.bind(this);
     this.handleEditViewConfigBound = this.handleEditViewConfig.bind(this);
     this.onScrollHandlerBound = this.onScrollHandler.bind(this);
+
+    // for typed shortcuts (e.g. e-d-i-t) to toggle editable
+    this.typedText = '';
+    this.typedTextTimeout = null;
 
     this.modal = {
       open: this.openModalBound,
@@ -482,9 +494,9 @@ class HiGlassComponent extends React.Component {
           'Deprecation warning: please update Pixi.js to version 5!'
         );
         if (this.props.options.renderer === 'canvas') {
-          this.pixiRenderer = new PIXI.CanvasRenderer(rendererOptions);
+          this.pixiRenderer = new GLOBALS.PIXI.CanvasRenderer(rendererOptions);
         } else {
-          this.pixiRenderer = new PIXI.WebGLRenderer(rendererOptions);
+          this.pixiRenderer = new GLOBALS.PIXI.WebGLRenderer(rendererOptions);
         }
         break;
 
@@ -496,9 +508,9 @@ class HiGlassComponent extends React.Component {
       // eslint-disable-next-line
       case '5':
         if (this.props.options.renderer === 'canvas') {
-          this.pixiRenderer = new PIXI.CanvasRenderer(rendererOptions);
+          this.pixiRenderer = new GLOBALS.PIXI.CanvasRenderer(rendererOptions);
         } else {
-          this.pixiRenderer = new PIXI.Renderer(rendererOptions);
+          this.pixiRenderer = new GLOBALS.PIXI.Renderer(rendererOptions);
         }
         break;
     }
@@ -828,7 +840,41 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  toggleTypedEditable() {
+    this.setState({
+      typedEditable: !this.isEditable()
+    });
+  }
+
+  /** Handle typed commands (e.g. e-d-i-t) */
+  typedTextHandler(event) {
+    if (!this.props.options.cheatCodesEnabled) {
+      return;
+    }
+
+    this.typedText = this.typedText.concat(event.key);
+
+    if (this.typedText.endsWith('hgedit')) {
+      this.toggleTypedEditable();
+      this.typedText = '';
+    }
+
+    // 1.5 seconds to type the next letter
+    const TYPED_TEXT_TIMEOUT = 750;
+    if (this.typedTextTimeout) {
+      clearTimeout(this.typedTextTimeout);
+    }
+
+    // set a timeout for new typed text
+    this.typedTextTimeout = setTimeout(() => {
+      this.typedText = '';
+    }, TYPED_TEXT_TIMEOUT);
+  }
+
   keyDownHandler(event) {
+    // handle typed commands (e.g. e-d-i-t)
+    this.typedTextHandler(event);
+
     if (this.props.options.rangeSelectionOnAlt && event.key === 'Alt') {
       this.setState({
         mouseTool: MOUSE_TOOL_SELECT
@@ -981,6 +1027,12 @@ class HiGlassComponent extends React.Component {
    * visible?
    */
   isEditable() {
+    if (this.state.typedEditable !== undefined) {
+      // somebody typed "edit" so we need to follow the directive of
+      // this cheat code over all other preferences
+      return this.state.typedEditable;
+    }
+
     if (!this.props.options || !('editable' in this.props.options)) {
       return this.state.viewConfig.editable;
     }
@@ -1135,6 +1187,8 @@ class HiGlassComponent extends React.Component {
       .map(track =>
         this.tiledPlots[track.view].trackRenderer.getTrackObject(track.track)
       )
+      // filter out stale locks with non-existant tracks
+      .filter(track => track)
       // if the track is a LeftTrackModifier we want the originalTrack
       .map(track =>
         track.originalTrack === undefined ? track : track.originalTrack
@@ -1211,6 +1265,8 @@ class HiGlassComponent extends React.Component {
         .map(track =>
           this.tiledPlots[track.view].trackRenderer.getTrackObject(track.track)
         )
+        // filter out locks with non-existant tracks
+        .filter(track => track)
         // if the track is a LeftTrackModifier we want the originalTrack
         .map(track =>
           track.originalTrack === undefined ? track : track.originalTrack
@@ -2480,6 +2536,11 @@ class HiGlassComponent extends React.Component {
 
     if (hostTrack.type === 'combined') {
       hostTrack.contents.push(newTrack);
+
+      if (newTrack.type === 'heatmap') {
+        // For stacked heatmaps we will adjust some options automatically for convenience
+        this.compatibilityfyStackedHeatmaps(newTrack, hostTrack);
+      }
     } else {
       const newHost = {
         type: 'combined',
@@ -2545,9 +2606,12 @@ class HiGlassComponent extends React.Component {
     const trackConfig = getTrackByUid(view.tracks, trackUid);
 
     // this track needs a new uid so that it will be rerendered
+    const oldUid = trackConfig.uid;
     trackConfig.uid = slugid.nice();
     trackConfig.type = newType;
+    const newUid = trackConfig.uid;
 
+    this.updateTrackLocks(viewUid, oldUid, newUid);
     this.setState(prevState => ({
       views: prevState.views
     }));
@@ -2854,6 +2918,36 @@ class HiGlassComponent extends React.Component {
     }
 
     return uid;
+  }
+
+  /**
+   * Update all locks involving this track to use a new track uid.
+   *
+   * @param  {string} viewUid The view's uid
+   * @param  {string} oldTrackUid The track's old uid
+   * @param  {string} newTrackUid The track's new uid
+   */
+  updateTrackLocks(viewUid, oldTrackUid, newTrackUid) {
+    // update location locks
+    // update zoom locks
+    // update value scale locks
+    const oldLockGroupUid = this.combineViewAndTrackUid(viewUid, oldTrackUid);
+    const newLockGroupUid = this.combineViewAndTrackUid(viewUid, newTrackUid);
+
+    if (this.valueScaleLocks[oldLockGroupUid]) {
+      const lockGroup = this.valueScaleLocks[oldLockGroupUid];
+      this.valueScaleLocks[newLockGroupUid] = lockGroup;
+      delete this.valueScaleLocks[oldLockGroupUid];
+    }
+
+    for (const lockGroupUid in this.valueScaleLocks) {
+      if (this.valueScaleLocks[lockGroupUid][oldLockGroupUid]) {
+        const oldEntry = this.valueScaleLocks[lockGroupUid][oldLockGroupUid];
+        this.valueScaleLocks[lockGroupUid][newLockGroupUid] = oldEntry;
+        oldEntry.track = newTrackUid;
+        delete this.valueScaleLocks[lockGroupUid][oldLockGroupUid];
+      }
+    }
   }
 
   handleUnlockValueScale(viewUid, trackUid) {
@@ -3574,49 +3668,31 @@ class HiGlassComponent extends React.Component {
 
     if (!track) return;
 
-    track.options = Object.assign(
-      track.options,
-      this.adjustNewTrackOptions(track, newOptions)
-    );
+    track.options = Object.assign(track.options, newOptions);
 
     if (this.mounted) {
       this.setState(prevState => ({
         views: prevState.views
       }));
-      this.adjustOtherTrackOptions(track, newOptions, view.tracks, viewUid);
+      this.adjustSplitHeatmapTrackOptions(
+        track,
+        newOptions,
+        view.tracks,
+        viewUid
+      );
     }
   }
 
   /**
-   * For convenience we adjust some options based on other options.
-   * @param   {object}  track  Track whose options have changed
-   * @param   {object}  newOptions  New track options
-   * @return  {object}  Adjusted new track options
-   */
-  adjustNewTrackOptions(track, newOptions) {
-    if (track.type === 'heatmap') {
-      if (newOptions.extent === 'upper-right') {
-        newOptions.labelPosition = 'topRight';
-        newOptions.colorbarPosition = 'topRight';
-      }
-      if (newOptions.extent === 'lower-left') {
-        newOptions.labelPosition = 'bottomLeft';
-        newOptions.colorbarPosition = 'bottomLeft';
-      }
-    }
-
-    return newOptions;
-  }
-
-  /**
-   * For convenience we adjust some options of other tracks based on newly
-   * updated options.
+   * For convenience we adjust some options of split heatmap tracks when they are newly added.
+   * This function has no effect when we get split heatmap tracks that are already correctly configured
+   * (i.e. correctly set "lower-extend"/"upper-extend" options)
    * @param   {object}  track  Track whose options have changed
    * @param   {object}  options  New track options
    * @param   {list}  allTracks  All tracks
    * @param   {string}  viewUid  Related view UID
    */
-  adjustOtherTrackOptions(track, options, allTracks, viewUid) {
+  adjustSplitHeatmapTrackOptions(track, options, allTracks, viewUid) {
     if (track.type === 'heatmap') {
       if (
         options.extent === 'upper-right' &&
@@ -3632,12 +3708,28 @@ class HiGlassComponent extends React.Component {
             // Automatically change the extent of the other track to
             // `lower-left``
             const otherNewOptions = Object.assign({}, otherTrack.options, {
-              extent: 'lower-left'
+              extent: 'lower-left',
+              labelPosition: 'bottomLeft',
+              colorbarPosition: 'bottomLeft'
             });
+
+            // Automatically set positions of label and colorbar of the current track
+            // to the opposite corner. We don't want overlapping labels.
+            const originalNewOptions = Object.assign({}, options, {
+              labelPosition: 'topRight',
+              colorbarPosition: 'topRight'
+            });
+
             this.handleTrackOptionsChanged(
               viewUid,
               otherTrack.uid,
               otherNewOptions
+            );
+
+            this.handleTrackOptionsChanged(
+              viewUid,
+              track.uid,
+              originalNewOptions
             );
             return true;
           }
@@ -3659,12 +3751,28 @@ class HiGlassComponent extends React.Component {
               // Automatically change the extent of the other track to
               // `upper-right``
               const otherNewOptions = Object.assign({}, otherTrack.options, {
-                extent: 'upper-right'
+                extent: 'upper-right',
+                labelPosition: 'topRight',
+                colorbarPosition: 'topRight'
               });
+
+              // Automatically set positions of label and colorbar of the current track
+              // to the opposite corner. We don't want overlapping labels.
+              const originalNewOptions = Object.assign({}, options, {
+                labelPosition: 'bottomLeft',
+                colorbarPosition: 'bottomLeft'
+              });
+
               this.handleTrackOptionsChanged(
                 viewUid,
                 otherTrack.uid,
                 otherNewOptions
+              );
+
+              this.handleTrackOptionsChanged(
+                viewUid,
+                track.uid,
+                originalNewOptions
               );
               return true;
             }
@@ -4321,6 +4429,52 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
+    const absX = nativeEvent.clientX;
+    const absY = nativeEvent.clientY;
+    const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
+
+    // Find the tracks at the wheel position
+    if (this.apiStack.wheel && this.apiStack.wheel.length > 0) {
+      const relPos = clientPoint(this.topDiv, nativeEvent);
+      // We need to add the scrollTop
+      relPos[1] += this.scrollTop;
+      const hoveredTracks = hoveredTiledPlot
+        ? hoveredTiledPlot
+            .listTracksAtPosition(relPos[0], relPos[1], true)
+            .map(track => track.originalTrack || track)
+        : [];
+      const hoveredTrack = hoveredTracks.find(
+        track => !track.isAugmentationTrack
+      );
+
+      const relTrackPos = hoveredTrack
+        ? [
+            relPos[0] - hoveredTrack.position[0],
+            relPos[1] - hoveredTrack.position[1]
+          ]
+        : relPos;
+
+      const evtToPublish = {
+        x: relPos[0],
+        y: relPos[1],
+        relTrackX:
+          hoveredTrack && hoveredTrack.flipText
+            ? relTrackPos[1]
+            : relTrackPos[0],
+        relTrackY:
+          hoveredTrack && hoveredTrack.flipText
+            ? relTrackPos[0]
+            : relTrackPos[1],
+        track: hoveredTrack,
+        origEvt: nativeEvent,
+        sourceUid: this.uid,
+        hoveredTracks,
+        noHoveredTracks: hoveredTracks.length === 0
+      };
+
+      this.apiPublish('wheel', evtToPublish);
+    }
+
     if (nativeEvent.forwarded || isTargetCanvas) {
       evt.stopPropagation();
       evt.preventDefault();
@@ -4332,11 +4486,6 @@ class HiGlassComponent extends React.Component {
 
     // forward the wheel event back to the TrackRenderer that it should go to
     // this is so that we can zoom when there's a viewport projection present
-    const hoveredTiledPlot = this.getTiledPlotAtPosition(
-      nativeEvent.clientX,
-      nativeEvent.clientY
-    );
-
     if (hoveredTiledPlot) {
       const { trackRenderer } = hoveredTiledPlot;
       nativeEvent.forwarded = true;
