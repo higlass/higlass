@@ -19,6 +19,20 @@ export default class SeriesListMenu extends ContextMenuContainer {
   getConfigureSeriesMenu(position, bbox, track) {
     const menuItems = {};
 
+    // plugin tracks can offer their own options
+    // if they clash with the default higlass options
+    // they will override them
+    const pluginOptionsInfo =
+      window.higlassTracksByType &&
+      window.higlassTracksByType[track.type] &&
+      window.higlassTracksByType[track.type].config.optionsInfo;
+
+    if (pluginOptionsInfo) {
+      for (const key of Object.keys(pluginOptionsInfo)) {
+        OPTIONS_INFO[key] = pluginOptionsInfo[key];
+      }
+    }
+
     if (
       !TRACKS_INFO_BY_TYPE[track.type] ||
       !TRACKS_INFO_BY_TYPE[track.type].availableOptions
