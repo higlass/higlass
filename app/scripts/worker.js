@@ -365,7 +365,13 @@ export function tileResponseToData(data, server, theseTileIds) {
     data[key].server = server;
     data[key].tileId = key;
     data[key].zoomLevel = +keyParts[1];
-    data[key].tilePos = keyParts.slice(2, keyParts.length).map(x => +x);
+
+    // slice from position 2 to exclude tileId and zoomLevel
+    // filter by NaN to exclude metadata portions of the tile request
+    data[key].tilePos = keyParts
+      .slice(2, keyParts.length)
+      .map(x => +x)
+      .filter(x => !Number.isNaN(x));
     data[key].tilesetUid = keyParts[0];
 
     if ('dense' in data[key]) {
@@ -392,7 +398,6 @@ export function tileResponseToData(data, server, theseTileIds) {
       data[key].denseDataExtrema = dde;
       data[key].minNonZero = dde.minNonZeroInTile;
       data[key].maxNonZero = dde.maxNonZeroInTile;
-
       /*
       if (data[key]['minNonZero'] === Number.MAX_SAFE_INTEGER &&
           data[key]['maxNonZero'] === Number.MIN_SAFE_INTEGER) {
