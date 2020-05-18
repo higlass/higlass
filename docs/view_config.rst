@@ -207,6 +207,32 @@ assigned values of ``[0,1]]``.
         ]
     }
 
+zoomLimits
+^^^^^^^^^^
+
+The field contains limits that controll the extend to which zooming is possible within a view. In the example below, zooming in is not possible beyond 200bp. If one of the items in the array is `null`, zooming is unrestricted in the corresponding direction. If the field is not present in the viewconf, it defaults to unrestricted zooming.
+
+.. code-block:: javascript
+
+    {
+        views: [
+            {
+                  "uid": "AhI0wMP6ScybnFp6BmLuPQ",
+                  "initialXDomain": [
+                    973907089.1176914,
+                    1196247735.9596405
+                  ],
+                  "initialYDomain": [
+                    -12281154450.083118,
+                    -12145323104.213125
+                  ],
+                  "zoomLimits": [
+                    200,
+                    3400000000
+                  ],
+        ]
+    }
+
 trackSourceServers
 ^^^^^^^^^^^^^^^^^^
 
