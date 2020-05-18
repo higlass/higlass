@@ -31,7 +31,9 @@ import { matToy, matRealistic } from './testdata/matrix-data';
 configure({ adapter: new Adapter() });
 
 describe('Continuous scaling tests', () => {
-  const fetchMockHelper = new FetchMockHelper('', 'DenseDataExtrema');
+  // We can pass in the view conf as first argument to perform some
+  // basic compatibility checks. Since we have two view confs here, we skip this.
+  const fetchMockHelper = new FetchMockHelper(null, 'DenseDataExtrema');
 
   beforeAll(async () => {
     await fetchMockHelper.activateFetchMock();
@@ -93,7 +95,9 @@ describe('Continuous scaling tests', () => {
     let div = null;
 
     beforeAll(done => {
-      [div, hgc] = mountHGComponent(div, hgc, viewConf1DHorizontal, done);
+      [div, hgc] = mountHGComponent(div, hgc, viewConf1DHorizontal, done, {
+        extendedDelay: 1000 // additional delay in ms
+      });
     });
 
     it('Ensures HorizontalPoint1DPixiTrack has correct scale', () => {
@@ -231,7 +235,9 @@ describe('Continuous scaling tests', () => {
     let div = null;
 
     beforeAll(done => {
-      [div, hgc] = mountHGComponent(div, hgc, viewConf1DVertical, done);
+      [div, hgc] = mountHGComponent(div, hgc, viewConf1DVertical, done, {
+        extendedDelay: 1000 // additional delay in ms
+      });
     });
 
     it('Ensures leftmodified HorizontalPoint1DPixiTrack has correct scale', () => {
@@ -282,7 +288,8 @@ describe('Continuous scaling tests', () => {
     beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf2D, done, {
         style: 'width:600px; height:600px; background-color: lightgreen',
-        bounded: true
+        bounded: true,
+        extendedDelay: 1000
       });
     });
 

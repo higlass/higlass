@@ -198,17 +198,21 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
 
   hgc.update();
 
-  // Waiting for tiles to be loaded does not always mean
-  // that the compoment is mounted (especially if we load the tiles
-  // from the filesystem, which is quick). Wait 1000ms to make sure
-  // we are really done
-  const doneWithDelay = () =>
-    setTimeout(() => {
-      done();
-    }, 1000);
-
   waitForJsonComplete(() => {
-    waitForTilesLoaded(hgc.instance(), doneWithDelay);
+    if (options && options.extendedDelay) {
+      // Waiting for tiles to be loaded does not always mean
+      // that the compoment is mounted (especially if we load the tiles
+      // from the filesystem, which is quick). Wait 1000ms to make sure
+      // we are really done
+      const doneWithDelay = () =>
+        setTimeout(() => {
+          done();
+        }, 1000);
+
+      waitForTilesLoaded(hgc.instance(), doneWithDelay);
+    } else {
+      waitForTilesLoaded(hgc.instance(), done);
+    }
   });
 
   return [div, hgc];

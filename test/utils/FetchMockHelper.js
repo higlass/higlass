@@ -163,7 +163,7 @@ class FetchMockHelper {
   }
 
   checkViewConf(viewConf) {
-    if (JSON.stringify(viewConf).includes('"//')) {
+    if (viewConf !== null && JSON.stringify(viewConf).includes('"//')) {
       console.warn(
         'Please use full URLs in your view config. // is not supported and might lead to errors.'
       );
