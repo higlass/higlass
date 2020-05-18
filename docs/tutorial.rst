@@ -137,7 +137,7 @@ To manipulate the data available on the local instance it is necessary to create
 
 .. code-block:: bash
 
-    higlass-manage createsuperuser
+    higlass-manage create superuser
 
 This user can then be used to log in to http://localhost:8989/admin, or wherever the HiGlass instance
 is currently running.
