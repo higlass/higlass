@@ -25,6 +25,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
     const pluginOptionsInfo =
       window.higlassTracksByType &&
       window.higlassTracksByType[track.type] &&
+      window.higlassTracksByType[track.type].config &&
       window.higlassTracksByType[track.type].config.optionsInfo;
 
     if (pluginOptionsInfo) {
