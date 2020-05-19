@@ -72,8 +72,6 @@ function shuffle(a) {
 }
 
 function gbToHgGene(gb, namePath) {
-  console.log('namePath:', namePath);
-
   const importance = gb.end - gb.start;
   const strand = gb.strand === 1 ? '+' : '-';
   const uid = slugid.nice();

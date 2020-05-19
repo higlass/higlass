@@ -137,8 +137,7 @@ class GFFDataFetcher {
           ? pako.inflate(buffer, { to: 'string' })
           : buffer;
         this.gffObj = gff.parseStringSync(gffText);
-
-        console.log('this.gffObj:', this.gffObj);
+        this.regions = this.gffObj.filter(x => x[0].type === 'region');
       });
   }
 
@@ -151,15 +150,16 @@ class GFFDataFetcher {
 
         const TILE_SIZE = 1024;
         let retVal = {};
+
+        const totalLength = this.regions.reduce((a, b) => a + b[0].end, 0);
+
         // retVal[this.trackUid] = {
         retVal = {
           tile_size: TILE_SIZE,
-          max_zoom: Math.ceil(
-            Math.log(this.gbJson[0].size / TILE_SIZE) / Math.log(2)
-          ),
-          max_width: this.gbJson[0].size,
+          max_zoom: Math.ceil(Math.log(totalLength / TILE_SIZE) / Math.log(2)),
+          max_width: totalLength,
           min_pos: [0],
-          max_pos: [this.gbJson[0].size]
+          max_pos: [totalLength]
         };
 
         if (callback) {
@@ -170,7 +170,6 @@ class GFFDataFetcher {
       })
       .catch(err => {
         this.tilesetInfoLoading = false;
-        console.log('err:', err);
 
         if (callback) {
           callback({
