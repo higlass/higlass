@@ -320,6 +320,9 @@ class HiGlassComponent extends React.Component {
     this.zoomEndHandlerBound = this.zoomEndHandler.bind(this);
     this.zoomHandlerBound = this.zoomHandler.bind(this);
     this.trackDroppedHandlerBound = this.trackDroppedHandler.bind(this);
+    this.trackDimensionsModifiedHandlerBound = this.trackDimensionsModifiedHandler.bind(
+      this
+    );
     this.animateBound = this.animate.bind(this);
     this.animateOnGlobalEventBound = this.animateOnGlobalEvent.bind(this);
     this.requestReceivedHandlerBound = this.requestReceivedHandler.bind(this);
@@ -384,6 +387,10 @@ class HiGlassComponent extends React.Component {
         this.animateOnMouseMoveHandlerBound
       ),
       this.pubSub.subscribe('trackDropped', this.trackDroppedHandlerBound),
+      this.pubSub.subscribe(
+        'trackDimensionsModified',
+        this.trackDimensionsModifiedHandlerBound
+      ),
       this.pubSub.subscribe('app.zoomStart', this.zoomStartHandlerBound),
       this.pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
       this.pubSub.subscribe('app.zoom', this.zoomHandlerBound),
@@ -4412,6 +4419,40 @@ class HiGlassComponent extends React.Component {
       this.props.options.sizeMode === SIZE_MODE_SCROLL ||
       (view && view.zoomFixed)
     );
+  }
+
+  /**
+   * Handle trackDimensionsModified events/
+   * settings.trackId = id of the track
+   * settings.height = new height of the track or undefined if current height should remain
+   * settings.width = new width of the track or undefined if current width should remain
+   * settings.resizeParentDiv = bool, if true the Higlass container is reseized as well
+   */
+  trackDimensionsModifiedHandler(settings) {
+    for (const view of Object.values(this.state.views)) {
+      const track = getTrackByUid(view.tracks, settings.trackId);
+
+      if (!track) continue;
+
+      const oldTrackheight = track.height;
+
+      if (settings.height !== undefined) {
+        track.height = settings.height;
+      }
+
+      if (settings.width !== undefined) {
+        track.width = settings.width;
+      }
+
+      if (settings.resizeParentDiv) {
+        this.element.style.height =
+          `${this.element.clientHeight + track.height - oldTrackheight }px`;
+      }
+    }
+
+    this.setState(prevState => ({
+      views: prevState.views
+    }));
   }
 
   wheelHandler(evt) {
