@@ -200,7 +200,9 @@ export default class DataFetcher {
             id: slugid.nice(),
             server: this.dataConfig.server,
             done: resolve,
-            ids: tileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`)
+            ids: tileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
+            selectRows: this.dataConfig.selectRows,
+            selectRowsAggregationMode: this.dataConfig.selectRowsAggregationMode
           },
           this.pubSub,
           true

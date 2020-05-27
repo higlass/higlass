@@ -1244,7 +1244,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         : undefined,
       this.options.selectRows,
       this.options.selectRowsAggregationMode,
-      this.options.selectRowsAggregationWithRelativeHeight
+      this.options.selectRowsAggregationWithRelativeHeight,
+      this.options.selectRowsAggregationMethod
     );
   }
 

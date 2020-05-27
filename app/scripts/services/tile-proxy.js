@@ -157,15 +157,25 @@ export function fetchMultiRequestTiles(req, pubSub) {
   const fetchPromises = [];
 
   const requestsByServer = {};
+  const requestBodyByServer = {};
 
   // We're converting the array of IDs into an object in order to filter out duplicated requests.
   // In case different instances request the same data it won't be loaded twice.
   for (const request of requests) {
     if (!requestsByServer[request.server]) {
       requestsByServer[request.server] = {};
+      requestBodyByServer[request.server] = {};
     }
     for (const id of request.ids) {
       requestsByServer[request.server][id] = true;
+
+      const tilesetUuid = id.split('.')[0];
+      if (request.selectRows) {
+        requestBodyByServer[request.server][tilesetUuid] = {
+          agg_groups: request.selectRows,
+          agg_func: request.selectRowsAggregationMode
+        };
+      }
     }
   }
 
@@ -174,6 +184,8 @@ export function fetchMultiRequestTiles(req, pubSub) {
   for (const server of servers) {
     const ids = Object.keys(requestsByServer[server]);
     // console.log('ids:', ids);
+
+    const requestBody = requestBodyByServer[server];
 
     // if we request too many tiles, then the URL can get too long and fail
     // so we'll break up the requests into smaller subsets
@@ -202,7 +214,8 @@ export function fetchMultiRequestTiles(req, pubSub) {
           params.server,
           params.theseTileIds,
           params.authHeader,
-          resolve
+          resolve,
+          requestBody
         );
 
         /*
@@ -517,7 +530,8 @@ export const tileDataToPixData = (
   zeroValueColor,
   selectedRows,
   selectedRowsAggregationMode,
-  selectedRowsAggregationWithRelativeHeight
+  selectedRowsAggregationWithRelativeHeight,
+  selectedRowsAggregationMethod
 ) => {
   const { tileData } = tile;
 
@@ -576,7 +590,8 @@ export const tileDataToPixData = (
     zeroValueColor,
     selectedRows,
     selectedRowsAggregationMode,
-    selectedRowsAggregationWithRelativeHeight
+    selectedRowsAggregationWithRelativeHeight,
+    selectedRowsAggregationMethod
   );
 
   finished({ pixData });

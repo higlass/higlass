@@ -113,7 +113,8 @@ export function workerSetPix(
   zeroValueColor = null,
   selectedRows = null,
   selectedRowsAggregationMode = null,
-  selectedRowsAggregationWithRelativeHeight = null
+  selectedRowsAggregationWithRelativeHeight = null,
+  selectedRowsAggregationMethod = null
 ) {
   let valueScale = null;
 
@@ -219,7 +220,13 @@ export function workerSetPix(
           selectedRowI < selectedRows.length;
           selectedRowI++
         ) {
-          if (Array.isArray(selectedRows[selectedRowI]) && aggFunc) {
+          if (
+            Array.isArray(selectedRows[selectedRowI]) &&
+            aggFunc &&
+            selectedRowsAggregationMethod === 'server'
+          ) {
+            d = data[selectedRowI * shape[1] + colI];
+          } else if (Array.isArray(selectedRows[selectedRowI]) && aggFunc) {
             // An aggregation step must be performed for this data point.
             d = aggFromDataFunc(colI, selectedRows[selectedRowI]);
           } else {
@@ -409,7 +416,14 @@ export function tileResponseToData(data, server, theseTileIds) {
   return data;
 }
 
-export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
+export function workerGetTiles(
+  outUrl,
+  server,
+  theseTileIds,
+  authHeader,
+  done,
+  requestBody
+) {
   const headers = {
     'content-type': 'application/json'
   };
@@ -418,7 +432,13 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
 
   fetch(outUrl, {
     credentials: 'same-origin',
-    headers
+    headers,
+    ...(requestBody && Object.keys(requestBody).length > 0
+      ? {
+          method: 'POST',
+          body: JSON.stringify(requestBody)
+        }
+      : {})
   })
     .then(response => response.json())
     .then(data => {

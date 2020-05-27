@@ -1486,6 +1486,16 @@ class TrackRenderer extends React.Component {
       }
     }
 
+    if (
+      track.options &&
+      track.options.selectRows &&
+      track.options.selectRowsAggregationMethod === 'server'
+    ) {
+      dataConfig.selectRows = track.options.selectRows;
+      dataConfig.selectRowsAggregationMode =
+        track.options.selectRowsAggregationMode;
+    }
+
     const dataFetcher = getDataFetcher(dataConfig, this.props.pubSub);
 
     // To simplify the context creation via ES6 object shortcuts.

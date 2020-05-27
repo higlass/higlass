@@ -616,6 +616,7 @@ export const TRACKS_INFO = [
       'selectRows',
       'selectRowsAggregationMode',
       'selectRowsAggregationWithRelativeHeight',
+      'selectRowsAggregationMethod',
       'colorbarBackgroundColor',
       'colorbarPosition',
       'zeroValueColor'
@@ -638,6 +639,7 @@ export const TRACKS_INFO = [
       selectRows: null,
       selectRowsAggregationMode: 'mean',
       selectRowsAggregationWithRelativeHeight: true,
+      selectRowsAggregationMethod: 'client',
       colorbarBackgroundColor: '#ffffff',
       colorbarPosition: 'topRight',
       zeroValueColor: null
