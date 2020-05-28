@@ -149,7 +149,7 @@ export function workerSetPix(
 
   let rgb;
   let rgbIdx = 0;
-  const tileWidth = Math.sqrt(size);
+  const tileWidth = shape ? shape[1] : Math.sqrt(size);
   const pixData = new Uint8ClampedArray(filteredSize * 4);
 
   /**

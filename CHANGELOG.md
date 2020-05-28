@@ -3,6 +3,7 @@
 - Zooming can now be restricted by specifying `zoomLimits` in the viewconf.
 - Fixed bug where the track config menu improperly positioned when clicked twice.
 - Update the heatmap option interface to allow seeing the preview when a color picker is opened.
+- Added the `selectRowsAggregationMethod` option for the `horizontal-multivec` track to enable server-side aggregation if set to `"server"` rather than the default `"client"`.
 
 ## v1.9.3
 

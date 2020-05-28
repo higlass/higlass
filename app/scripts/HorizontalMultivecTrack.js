@@ -238,23 +238,20 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const posInTileY = posInTileYNormalized * numRows;
 
     let selectedRowIndex = Math.floor(posInTileY);
+    let selectedRowItem;
     if (this.options.selectRows) {
       // The `posInTileY` may not directly correspond to data indices if rows are filtered/reordered,
       // the `selectRows` array must be checked to convert the y-position to a data index/indices first.
-      if (!this.options.selectRowsAggregationWithRelativeHeight) {
-        // Each subarray represents one unit of height, so using `posInTileY` to select it will work.
-        selectedRowIndex = this.options.selectRows[Math.floor(posInTileY)];
-      } else {
+      if (this.options.selectRowsAggregationWithRelativeHeight) {
         // Height must take into account the size of sub-arrays, so use the cumulative weight array.
-        selectedRowIndex = this.options.selectRows[
-          this.selectRowsCumWeights.findIndex(
-            (weight, i) =>
-              posInTileYNormalized <= weight &&
-              (i === this.selectRowsCumWeights.length - 1 ||
-                this.selectRowsCumWeights[i + 1] >= posInTileYNormalized)
-          )
-        ];
+        selectedRowIndex = this.selectRowsCumWeights.findIndex(
+          (weight, i) =>
+            posInTileYNormalized <= weight &&
+            (i === this.selectRowsCumWeights.length - 1 ||
+              this.selectRowsCumWeights[i + 1] >= posInTileYNormalized)
+        );
       }
+      selectedRowItem = this.options.selectRows[selectedRowIndex];
     }
 
     const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
@@ -277,9 +274,12 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       let index = null;
       if (this.tilesetInfo.shape) {
         // Accomodate data from vector sources
-        if (Array.isArray(selectedRowIndex)) {
+        if (
+          Array.isArray(selectedRowItem) &&
+          this.options.selectRowsAggregationMethod === 'client'
+        ) {
           // Need to aggregate, so `index` will actually be an array.
-          index = selectedRowIndex.map(
+          index = selectedRowItem.map(
             rowI => this.tilesetInfo.shape[0] * rowI + Math.floor(posInTileX)
           );
         } else {
