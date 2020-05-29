@@ -66,6 +66,7 @@
     "enzyme-adapter-react-16": "^1.2.0",
     "eventemitter3": "^2.0.2",
     "genbank-parser": "^1.0.0",
+    "lodash": "^4.17.15",
     "ndarray": "^1.0.18",
     "pako": "^1.0.10",
     "path": "^0.12.7",

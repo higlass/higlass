@@ -1,5 +1,6 @@
 import { range } from 'd3-array';
 import slugid from 'slugid';
+import some from 'lodash/some';
 
 import { workerGetTiles, workerSetPix } from '../worker';
 
@@ -170,7 +171,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
       requestsByServer[request.server][id] = true;
 
       const tilesetUuid = id.split('.')[0];
-      if (request.selectRows) {
+      if (request.selectRows && some(request.selectRows, Array.isArray)) {
         requestBodyByServer[request.server][tilesetUuid] = {
           agg_groups: request.selectRows,
           agg_func: request.selectRowsAggregationMode
