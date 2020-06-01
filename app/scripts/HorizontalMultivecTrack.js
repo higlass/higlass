@@ -282,6 +282,13 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
           index = selectedRowItem.map(
             rowI => this.tilesetInfo.shape[0] * rowI + Math.floor(posInTileX)
           );
+        } else if (
+          selectedRowItem &&
+          this.options.selectRowsAggregationMethod === 'client'
+        ) {
+          index =
+            this.tilesetInfo.shape[0] * selectedRowItem +
+            Math.floor(posInTileX);
         } else {
           // No need to aggregate, `index` will contain a single item.
           index =
