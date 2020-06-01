@@ -1,6 +1,5 @@
 import { range } from 'd3-array';
 import slugid from 'slugid';
-import some from 'lodash/some';
 
 import { workerGetTiles, workerSetPix } from '../worker';
 
@@ -165,17 +164,27 @@ export function fetchMultiRequestTiles(req, pubSub) {
   for (const request of requests) {
     if (!requestsByServer[request.server]) {
       requestsByServer[request.server] = {};
-      requestBodyByServer[request.server] = {};
+      requestBodyByServer[request.server] = [];
     }
     for (const id of request.ids) {
       requestsByServer[request.server][id] = true;
 
-      const tilesetUuid = id.split('.')[0];
-      if (request.selectRows && some(request.selectRows, Array.isArray)) {
-        requestBodyByServer[request.server][tilesetUuid] = {
-          agg_groups: request.selectRows,
-          agg_func: request.selectRowsAggregationMode
-        };
+      if (request.options) {
+        const firstSepIndex = id.indexOf('.');
+        const tilesetUuid = id.substring(0, firstSepIndex);
+        const tileId = id.substring(firstSepIndex + 1);
+        const tilesetObject = requestBodyByServer[request.server].find(
+          t => t.tilesetUid === tilesetUuid
+        );
+        if (tilesetObject) {
+          tilesetObject.tileIds.push(tileId);
+        } else {
+          requestBodyByServer[request.server].push({
+            tilesetUid: tilesetUuid,
+            tileIds: [tileId],
+            options: request.options
+          });
+        }
       }
     }
   }

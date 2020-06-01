@@ -5,6 +5,7 @@ import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, event, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import slugid from 'slugid';
+import some from 'lodash/some';
 
 import PixiTrack from './PixiTrack';
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
@@ -1489,11 +1490,13 @@ class TrackRenderer extends React.Component {
     if (
       track.options &&
       track.options.selectRows &&
-      track.options.selectRowsAggregationMethod === 'server'
+      track.options.selectRowsAggregationMethod === 'server' &&
+      some(track.options.selectRows, Array.isArray)
     ) {
-      dataConfig.selectRows = track.options.selectRows;
-      dataConfig.selectRowsAggregationMode =
-        track.options.selectRowsAggregationMode;
+      dataConfig.options = {
+        aggGroups: track.options.selectRows,
+        aggFunc: track.options.selectRowsAggregationMode
+      };
     }
 
     const dataFetcher = getDataFetcher(dataConfig, this.props.pubSub);
