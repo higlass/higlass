@@ -1813,6 +1813,7 @@ export const TRACKS_INFO = [
       'colorEncoding',
       'colorRange',
       'colorEncodingRange',
+      'separatePlusMinusStrands',
       'showTexts',
       'axisPositionHorizontal',
       'axisMargin'
@@ -1839,6 +1840,7 @@ export const TRACKS_INFO = [
       showTexts: false,
       colorRange: ['#000000', '#652537', '#bf5458', '#fba273', '#ffffe0'],
       colorEncodingRange: false,
+      separatePlusMinusStrands: true,
       annotationHeight: 16
     }
   },
