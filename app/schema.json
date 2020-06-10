@@ -145,7 +145,12 @@
         "selectionView": { "type": "boolean" },
         "tracks": { "$ref": "#/definitions/viewProperties/tracks_object" },
         "uid": { "type": "string" },
-        "zoomFixed": { "type": "boolean" }
+        "zoomFixed": { "type": "boolean" },
+        "zoomLimits": {
+          "type": "array",
+          "minLength": 2,
+          "maxLength": 2
+        }
       }
     },
 
