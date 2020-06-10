@@ -1,5 +1,6 @@
 # Release notes
 
+- Added the `resolveImmediately` parameter to the setViewConfig API call.
 - Zooming can now be restricted by specifying `zoomLimits` in the viewconf.
 - Fixed bug where the track config menu improperly positioned when clicked twice.
 - Update the heatmap option interface to allow seeing the preview when a color picker is opened.
