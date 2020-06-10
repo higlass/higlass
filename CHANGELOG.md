@@ -1,5 +1,7 @@
 # Release notes
 
+## v1.9.4
+
 - Added the `resolveImmediately` parameter to the setViewConfig API call.
 - Zooming can now be restricted by specifying `zoomLimits` in the viewconf.
 - Fixed bug where the track config menu improperly positioned when clicked twice.
@@ -7,6 +9,8 @@
 - Display an error message on tiles with errors in them
 - Don't try to assign a color value scale if the colorEncoding is set to itemRgb. itemRgb means that the color is present directly in the annotation
 - Add an option to separate the + / - strand annotations in the bedlike track
+
+_[Detailed changes since v1.9.3](https://github.com/higlass/higlass/compare/v1.9.3...v.1.9.4)_
 
 ## v1.9.3
 
