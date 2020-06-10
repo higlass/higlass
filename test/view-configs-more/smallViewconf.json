@@ -178,9 +178,7 @@
             "w":12,
             "h":3,
             "x":0,
-            "y":0,
-            "moved":false,
-            "static":false
+            "y":0
          },
          "initialYDomain":[
             439112551.9023944,
