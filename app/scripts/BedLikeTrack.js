@@ -427,7 +427,11 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   setColorValueScale() {
     this.colorValueScale = null;
 
-    if (this.options && this.options.colorEncoding) {
+    if (
+      this.options &&
+      this.options.colorEncoding &&
+      this.options.colorEncoding !== 'itemRgb'
+    ) {
       const min = this.options.colorEncodingRange
         ? +this.options.colorEncodingRange[0]
         : this.minVisibleValueInTiles(+this.options.colorEncoding);
@@ -657,9 +661,15 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         this.options.minusStrandColor || this.options.fillColor || 'purple';
 
       const MIDDLE_SPACE = 0;
-      const plusHeight =
-        (maxPlusRows * this.dimensions[1]) / (maxPlusRows + maxMinusRows) -
-        MIDDLE_SPACE / 2;
+      let plusHeight = 0;
+
+      if (this.options.separatePlusMinusStrands) {
+        plusHeight =
+          (maxPlusRows * this.dimensions[1]) / (maxPlusRows + maxMinusRows) -
+          MIDDLE_SPACE / 2;
+      } else {
+        plusHeight = this.dimensions[1];
+      }
 
       this.renderRows(
         tile,
@@ -673,7 +683,9 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         tile,
         tile.minusStrandRows,
         maxMinusRows,
-        plusHeight + MIDDLE_SPACE / 2,
+        this.options.separatePlusMinusStrands
+          ? plusHeight + MIDDLE_SPACE / 2
+          : 0,
         this.dimensions[1],
         minusStrandFill
       );
