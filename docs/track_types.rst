@@ -80,7 +80,7 @@ Intervals can visually encode information using the following three ``options``:
     For stranded mode, the color of the plus strand entries. Ignored if ``colorEncoding`` is set. (default "blue")
 
 - **separatePlusMinusStrands**
-    Draw + and - strand annotations at different y values if true. Draw them at the same vertical position if false. (default: true)
+    Draw + and - strand annotations at different y values if true. Draw them at the same vertical position if false. (default: true). This option only takes effect if the `valueColumn` is set to null. Otherwise annotations are placed along the y-axis according to the values in their valueColumn.
 
 - **showTexts**: 'yes' or 'no'
     Show annotation labels? (default: no)
