@@ -1,5 +1,9 @@
 # Release notes
 
+## Unreleased
+
+- Removed styles for naked td tag
+
 ## v1.9.4
 
 - Added the `resolveImmediately` parameter to the setViewConfig API call.
