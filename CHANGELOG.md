@@ -1,6 +1,6 @@
 # Release notes
 
-## Unreleased
+## v1.9.5
 
 - Removed styles for naked td tag
 
