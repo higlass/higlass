@@ -3890,7 +3890,6 @@ class HiGlassComponent extends React.Component {
       }
 
       if (!v.initialXDomain) {
-        console.warn('No initialXDomain provided in the view config.');
         v.initialXDomain = [0, 100];
 
         this.zoomToDataExtentOnInit.add(v.uid);

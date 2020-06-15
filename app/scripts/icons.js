@@ -190,11 +190,6 @@ export const svgHorizontalLineIcon = parser.parseFromString(
   horizontalLineStr,
   'text/xml'
 ).documentElement;
-export const svgVerticalLineIcon = select(
-  parser.parseFromString(horizontalLineStr, 'text/xml').documentElement
-)
-  .style('transform', 'rotate(90deg)')
-  .node();
 
 const tiles2DIconStr = `
 <svg width="20px" height="20px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -317,11 +312,6 @@ export const svgGeneAnnotationsIcon = parser.parseFromString(
   geneAnnotations,
   'text/xml'
 ).documentElement;
-export const svgVerticalGeneAnnotationsIcon = select(
-  parser.parseFromString(geneAnnotations, 'text/xml').documentElement
-)
-  .style('transform', 'rotate(90deg)')
-  .node();
 
 const tiles1DIconStr = `
 <svg width="20px" height="20px" viewBox="0 0 180 90" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">

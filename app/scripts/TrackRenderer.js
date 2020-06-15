@@ -1549,6 +1549,8 @@ class TrackRenderer extends React.Component {
       case 'heatmap':
         return new HeatmapTiledPixiTrack(context, options);
 
+      case 'multivec':
+      case 'vector-heatmap':
       case 'horizontal-multivec':
       case 'horizontal-vector-heatmap':
         return new HorizontalMultivecTrack(context, options);
@@ -1559,22 +1561,23 @@ class TrackRenderer extends React.Component {
           new HorizontalMultivecTrack(context, options)
         );
 
+      case '1d-heatmap':
       case 'horizontal-1d-heatmap':
         return new Horizontal1dHeatmapTrack(context, options);
-
-      case 'horizontal-line':
-        return new HorizontalLine1DPixiTrack(context, options);
-
-      case 'vertical-line':
-        return new LeftTrackModifier(
-          new HorizontalLine1DPixiTrack(context, options)
-        );
-
       case 'vertical-1d-heatmap':
         return new LeftTrackModifier(
           new Horizontal1dHeatmapTrack(context, options)
         );
 
+      case 'line':
+      case 'horizontal-line':
+        return new HorizontalLine1DPixiTrack(context, options);
+      case 'vertical-line':
+        return new LeftTrackModifier(
+          new HorizontalLine1DPixiTrack(context, options)
+        );
+
+      case 'point':
       case 'horizontal-point':
         return new HorizontalPoint1DPixiTrack(context, options);
 
@@ -1583,13 +1586,15 @@ class TrackRenderer extends React.Component {
           new HorizontalPoint1DPixiTrack(context, options)
         );
 
+      case 'bar':
       case 'horizontal-bar':
         return new BarTrack(context, options);
 
       case 'vertical-bar':
         return new LeftTrackModifier(new BarTrack(context, options));
 
-      case 'horizontal-divergent-bar':
+      case 'horizontal-divergent-bar': // legacy name
+      case 'divergent-bar':
         return new DivergentBarTrack(context, options);
 
       case 'vertical-divergent-bar':
@@ -1604,6 +1609,7 @@ class TrackRenderer extends React.Component {
       case '2d-tiles':
         return new Id2DTiledPixiTrack(context, options);
 
+      case 'stacked-interval':
       case 'top-stacked-interval':
         return new CNVIntervalTrack(context, options);
 
@@ -1652,6 +1658,7 @@ class TrackRenderer extends React.Component {
         }
         return new Track(context, options);
 
+      case 'gene-annotations':
       case 'horizontal-gene-annotations':
         return new HorizontalGeneAnnotationsTrack(context, options);
 
@@ -1675,13 +1682,14 @@ class TrackRenderer extends React.Component {
       case '2d-annotations':
         return new Annotations2dTrack(context, options);
 
+      case 'linear-2d-rectangle-domains':
+      case 'horizontal-2d-rectangle-domains':
+        return new Horizontal2DDomainsTrack(context, options);
+
       case 'vertical-2d-rectangle-domains':
         return new LeftTrackModifier(
           new Horizontal2DDomainsTrack(context, options)
         );
-
-      case 'horizontal-2d-rectangle-domains':
-        return new Horizontal2DDomainsTrack(context, options);
 
       case 'square-markers':
         return new SquareMarkersTrack(context, options);
@@ -1705,6 +1713,7 @@ class TrackRenderer extends React.Component {
       case '2d-chromosome-grid':
         return new ChromosomeGrid(context, options);
 
+      case 'chromosome-labels':
       case 'horizontal-chromosome-labels':
         // chromInfoPath is passed in for backwards compatibility
         // it can be used to provide custom chromosome sizes
@@ -1718,6 +1727,7 @@ class TrackRenderer extends React.Component {
         );
 
       case 'horizontal-heatmap':
+      case 'linear-heatmap':
         return new HorizontalHeatmapTrack(context, options);
 
       case 'vertical-heatmap':
@@ -1728,6 +1738,7 @@ class TrackRenderer extends React.Component {
       case '2d-chromosome-annotations':
         return new Chromosome2DAnnotations(context, options);
 
+      case '1d-value-interval':
       case 'horizontal-1d-value-interval':
         return new ValueIntervalTrack(context, options);
 
@@ -1751,6 +1762,9 @@ class TrackRenderer extends React.Component {
       case 'bedlike':
         return new BedLikeTrack(context, options);
 
+      case 'vertical-bedlike':
+        return new LeftTrackModifier(new BedLikeTrack(context, options));
+
       case 'overlay-track':
         return new OverlayTrack(context, options);
 
@@ -1769,9 +1783,6 @@ class TrackRenderer extends React.Component {
         context.x = track.x;
         context.y = track.y;
         return new CrossRule(context, options);
-
-      case 'vertical-bedlike':
-        return new LeftTrackModifier(new BedLikeTrack(context, options));
 
       case 'simple-svg':
         return new SVGTrack(context, options);
