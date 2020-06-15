@@ -67,10 +67,12 @@ describe('Gene Annotations Tracks', () => {
         canvasElem.dispatchEvent(createPointerEvent('pointerdown', loc));
         canvasElem.dispatchEvent(createPointerEvent('pointerup', loc));
 
-        // console.log('clicked:', clicked);
-        expect(clicked).to.eql(1);
+        // use a small timeout to make sure the event queue is cleared
+        setTimeout(() => {
+          expect(clicked).to.eql(1);
 
-        done();
+          done();
+        }, 1);
       });
     } catch (e) {
       console.warn(e);
