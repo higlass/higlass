@@ -147,7 +147,7 @@
     "lint-staged": "^8.1.1",
     "main-bower-files": "^2.13.1",
     "mini-css-extract-plugin": "^0.4.4",
-    "mversion": "^1.10.1",
+    "mversion": "^2.0.0",
     "node-sass": "^4.13.0",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "pixi.js": "^5.0.3",
