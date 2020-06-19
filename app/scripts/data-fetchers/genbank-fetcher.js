@@ -149,9 +149,9 @@ class GBKDataFetcher {
             : buffer;
           [this.gbJson, this.cdss] = gbToJsonAndFeatures(gffText);
         });
-    } else if (dataConfig.raw) {
+    } else if (dataConfig.text) {
       this.dataPromise = new Promise((resolve, reject) => {
-        [this.gbJson, this.cdss] = gbToJsonAndFeatures(dataConfig.raw);
+        [this.gbJson, this.cdss] = gbToJsonAndFeatures(dataConfig.text);
         resolve();
       });
     }
