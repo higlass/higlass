@@ -139,6 +139,10 @@ export const OPTIONS_INFO = {
     name: 'Track Border Width',
     inlineOptions: AVAILABLE_WIDTHS
   },
+  separatePlusMinusStrands: {
+    name: 'Separate +/- strands',
+    inlineOptions: YES_NO
+  },
   sortLargestOnTop: {
     name: 'Sort Largest On Top',
     inlineOptions: YES_NO

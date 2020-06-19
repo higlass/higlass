@@ -180,10 +180,9 @@ class TiledPixiTrack extends PixiTrack {
 
         // Fritz: Not sure why it's reset
         // this.trackNotFoundText = '';
-        this.errorTextText = this.tilesetInfo.error;
         this.tilesetInfo = null;
-        this.draw();
-        this.animate();
+
+        this.setError(this.tilesetInfo.error);
         return;
       }
 
@@ -215,6 +214,12 @@ class TiledPixiTrack extends PixiTrack {
       this.drawLabel(); // draw the label so that the current resolution is displayed
       this.animate();
     });
+  }
+
+  setError(error) {
+    this.errorTextText = error;
+    this.draw();
+    this.animate();
   }
 
   setFixedValueScaleMin(value) {
@@ -564,7 +569,9 @@ class TiledPixiTrack extends PixiTrack {
     const fetchedTileIDs = Object.keys(this.fetchedTiles);
 
     for (let i = 0; i < fetchedTileIDs.length; i++) {
-      this.updateTile(this.fetchedTiles[fetchedTileIDs[i]]);
+      const tile = this.fetchedTiles[fetchedTileIDs[i]];
+
+      this.updateTile(tile);
     }
   }
 
@@ -740,11 +747,25 @@ class TiledPixiTrack extends PixiTrack {
         uuid: this.uuid
       });
     }
+    const errors = Object.values(this.fetchedTiles)
+      .map(
+        x =>
+          x.tileData && x.tileData.error && `${x.tileId}: ${x.tileData.error}`
+      )
+      .filter(x => x);
+
+    if (errors.length) {
+      this.errorTextText = errors.join('\n');
+    } else {
+      this.errorTextText = '';
+    }
+
     super.draw();
 
-    Object.keys(this.fetchedTiles).forEach(tilesetUid =>
-      this.drawTile(this.fetchedTiles[tilesetUid])
-    );
+    Object.keys(this.fetchedTiles).forEach(tilesetUid => {
+      this.drawTile(this.fetchedTiles[tilesetUid]);
+    });
+    // console.log('errors:', errors);
 
     if (this.pubSub) {
       this.pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
