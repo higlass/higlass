@@ -56,7 +56,8 @@ import {
   verticalHeatmapTrack,
   chromosomeGridTrack,
   testViewConfX1,
-  testViewConfX2
+  testViewConfX2,
+  restrictedZoom
 } from './view-configs';
 
 configure({ adapter: new Adapter() });
@@ -622,6 +623,70 @@ describe('Simple HiGlassComponent', () => {
       hgc.instance().zoomTo('aa', 165061, 945306);
 
       waitForTransitionsFinished(hgc.instance(), () => {
+        done();
+      });
+    });
+  });
+
+  describe('Zoom restriction tests', () => {
+    it('Cleans up previously created instances and mounts a new component', done => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(
+        <HiGlassComponent
+          options={{ bounded: false }}
+          viewConfig={restrictedZoom}
+        />,
+        { attachTo: div }
+      );
+
+      hgc.update();
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('Has the corrent limits', done => {
+      const zoomLimits = hgc.instance().tiledPlots.aa.props.zoomLimits;
+      expect(zoomLimits[0]).toEqual(0.002);
+      expect(zoomLimits[1]).toEqual(2);
+      done();
+    });
+
+    it('Zooms in and respects zoom limit', done => {
+      // Create a wheel event that zooms in beying the zoom limit
+      const evt = new WheelEvent('wheel', {
+        deltaX: 0,
+        deltaY: -500,
+        deltaZ: 0,
+        deltaMode: 0,
+        clientX: 262,
+        clientY: 572,
+        screenX: 284,
+        screenY: 696,
+        view: window,
+        bubbles: true,
+        cancelable: true
+      });
+
+      hgc.instance().tiledPlots.aa.trackRenderer.element.dispatchEvent(evt);
+
+      waitForTransitionsFinished(hgc.instance(), () => {
+        // Make sure, it does not zoom too far
+        const k = hgc.instance().tiledPlots.aa.trackRenderer.zoomTransform.k;
+        expect(k).toEqual(2);
+
         done();
       });
     });
