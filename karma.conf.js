@@ -65,7 +65,7 @@ module.exports = config => {
       'test/SVGExportTest.js',
       'test/tile-proxy.js',
       'test/TiledPixiTrackTests.js',
-      'test/TrackLabelsTest.jsx',
+      'test/TrackLabelsTest.js',
       'test/UtilsTests.js',
       'test/ViewConfigEditorTests.js',
       'test/ViewManipulationTests.js',
