@@ -1553,52 +1553,34 @@ class TrackRenderer extends React.Component {
       case 'vector-heatmap':
       case 'horizontal-multivec':
       case 'horizontal-vector-heatmap':
-        return new HorizontalMultivecTrack(context, options);
-
       case 'vertical-multivec':
       case 'vertical-vector-heatmap':
-        return new LeftTrackModifier(
-          new HorizontalMultivecTrack(context, options)
-        );
+        return new HorizontalMultivecTrack(context, options);
 
       case '1d-heatmap':
       case 'horizontal-1d-heatmap':
-        return new Horizontal1dHeatmapTrack(context, options);
       case 'vertical-1d-heatmap':
-        return new LeftTrackModifier(
-          new Horizontal1dHeatmapTrack(context, options)
-        );
+        return new Horizontal1dHeatmapTrack(context, options);
 
       case 'line':
       case 'horizontal-line':
-        return new HorizontalLine1DPixiTrack(context, options);
       case 'vertical-line':
-        return new LeftTrackModifier(
-          new HorizontalLine1DPixiTrack(context, options)
-        );
+        return new HorizontalLine1DPixiTrack(context, options);
 
       case 'point':
       case 'horizontal-point':
-        return new HorizontalPoint1DPixiTrack(context, options);
-
       case 'vertical-point':
-        return new LeftTrackModifier(
-          new HorizontalPoint1DPixiTrack(context, options)
-        );
+        return new HorizontalPoint1DPixiTrack(context, options);
 
       case 'bar':
       case 'horizontal-bar':
-        return new BarTrack(context, options);
-
       case 'vertical-bar':
-        return new LeftTrackModifier(new BarTrack(context, options));
+        return new BarTrack(context, options);
 
       case 'horizontal-divergent-bar': // legacy name
       case 'divergent-bar':
-        return new DivergentBarTrack(context, options);
-
       case 'vertical-divergent-bar':
-        return new LeftTrackModifier(new DivergentBarTrack(context, options));
+        return new DivergentBarTrack(context, options);
 
       case 'horizontal-1d-tiles':
         return new IdHorizontal1DTiledPixiTrack(context, options);
@@ -1611,10 +1593,8 @@ class TrackRenderer extends React.Component {
 
       case 'stacked-interval':
       case 'top-stacked-interval':
-        return new CNVIntervalTrack(context, options);
-
       case 'left-stacked-interval':
-        return new LeftTrackModifier(new CNVIntervalTrack(context, options));
+        return new CNVIntervalTrack(context, options);
 
       case 'viewport-projection-center':
         // TODO: Fix this so that these functions are defined somewhere else
@@ -1660,12 +1640,8 @@ class TrackRenderer extends React.Component {
 
       case 'gene-annotations':
       case 'horizontal-gene-annotations':
-        return new HorizontalGeneAnnotationsTrack(context, options);
-
       case 'vertical-gene-annotations':
-        return new LeftTrackModifier(
-          new HorizontalGeneAnnotationsTrack(context, options)
-        );
+        return new HorizontalGeneAnnotationsTrack(context, options);
 
       case '2d-rectangle-domains':
       case 'arrowhead-domains':
@@ -1684,12 +1660,8 @@ class TrackRenderer extends React.Component {
 
       case 'linear-2d-rectangle-domains':
       case 'horizontal-2d-rectangle-domains':
-        return new Horizontal2DDomainsTrack(context, options);
-
       case 'vertical-2d-rectangle-domains':
-        return new LeftTrackModifier(
-          new Horizontal2DDomainsTrack(context, options)
-        );
+        return new Horizontal2DDomainsTrack(context, options);
 
       case 'square-markers':
         return new SquareMarkersTrack(context, options);
@@ -1715,35 +1687,23 @@ class TrackRenderer extends React.Component {
 
       case 'chromosome-labels':
       case 'horizontal-chromosome-labels':
+      case 'vertical-chromosome-labels':
         // chromInfoPath is passed in for backwards compatibility
         // it can be used to provide custom chromosome sizes
         return new HorizontalChromosomeLabels(context, options);
 
-      case 'vertical-chromosome-labels':
-        // chromInfoPath is passed in for backwards compatibility
-        // it can be used to provide custom chromosome sizes
-        return new LeftTrackModifier(
-          new HorizontalChromosomeLabels(context, options)
-        );
-
       case 'horizontal-heatmap':
       case 'linear-heatmap':
-        return new HorizontalHeatmapTrack(context, options);
-
       case 'vertical-heatmap':
-        return new LeftTrackModifier(
-          new HorizontalHeatmapTrack(context, options)
-        );
+        return new HorizontalHeatmapTrack(context, options);
 
       case '2d-chromosome-annotations':
         return new Chromosome2DAnnotations(context, options);
 
       case '1d-value-interval':
       case 'horizontal-1d-value-interval':
-        return new ValueIntervalTrack(context, options);
-
       case 'vertical-1d-value-interval':
-        return new LeftTrackModifier(new ValueIntervalTrack(context, options));
+        return new ValueIntervalTrack(context, options);
 
       case 'osm':
       case 'osm-tiles':
@@ -1760,10 +1720,8 @@ class TrackRenderer extends React.Component {
         return new RasterTilesTrack(context, options);
 
       case 'bedlike':
-        return new BedLikeTrack(context, options);
-
       case 'vertical-bedlike':
-        return new LeftTrackModifier(new BedLikeTrack(context, options));
+        return new BedLikeTrack(context, options);
 
       case 'overlay-track':
         return new OverlayTrack(context, options);
