@@ -1,5 +1,9 @@
 # Release notes
 
+## Upcoming
+
+- Load matrices with "None" data transform without crashing
+
 ## v1.9.5
 
 - Removed styles for naked td tag
