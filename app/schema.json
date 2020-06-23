@@ -351,7 +351,7 @@
               "horizontal-1d-value-interval",
               "linear-2d-rectangle-domains",
               "horizontal-2d-rectangle-domains",
-              "bar"
+              "bar",
               "horizontal-bar",
               "horizontal-chromosome-grid",
               "chromosome-labels",
