@@ -1582,8 +1582,8 @@ class TrackRenderer extends React.Component {
       case 'vertical-bar':
         return new BarTrack(context, options);
 
-      case 'horizontal-divergent-bar': // legacy name
       case 'divergent-bar':
+      case 'horizontal-divergent-bar': // legacy name
       case 'vertical-divergent-bar':
         return new DivergentBarTrack(context, options);
 
@@ -1697,8 +1697,8 @@ class TrackRenderer extends React.Component {
         // it can be used to provide custom chromosome sizes
         return new HorizontalChromosomeLabels(context, options);
 
-      case 'horizontal-heatmap':
       case 'linear-heatmap':
+      case 'horizontal-heatmap':
       case 'vertical-heatmap':
         return new HorizontalHeatmapTrack(context, options);
 
