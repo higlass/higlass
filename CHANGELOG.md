@@ -1,5 +1,9 @@
 # Release notes
 
+## Unreleased
+
+- Remove horizontal-_ and vertical-_ prefixes from track names
+
 ## v1.9.5
 
 - Removed styles for naked td tag
