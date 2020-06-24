@@ -7,6 +7,7 @@
 ## v1.9.5
 
 - Removed styles for naked td tag
+- Reader for text genbank data (i.e. not pulled from a url)
 
 ## v1.9.4
 

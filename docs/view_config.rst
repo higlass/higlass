@@ -343,7 +343,7 @@ In addition to using ``tilesetUid`` or ``fileUrl`` to specify a data source, the
 Genbank files
 """""""""""""
 
-A Genbank file data source will load a complete genbank file from a remote URL and serve that as a ``gene-annotations`` datatype. See the `horizontal-gene-annotations section <track_types.html#gene-annotations>`_ for an example of a track type that can be used with Genbank files.
+A Genbank file data source will load a complete genbank file from a either text or remote URL and serve that as a ``gene-annotations`` datatype. See the `horizontal-gene-annotations section <track_types.html#gene-annotations>`_ for an example of a track type that can be used with Genbank files.
 
 .. code-block:: javascript
 
@@ -353,6 +353,18 @@ A Genbank file data source will load a complete genbank file from a remote URL a
       "url": "https://pkerp.s3.amazonaws.com/public/GCA_000010365.1_ASM1036v1_genomic.gbff.gz"
     }
   }
+
+The specify the Genbank as text, replace the ``url`` field with ``text``:
+
+.. code-block:: javascript
+
+  {
+    "data": {
+      "type": "genbank",
+      "text": "LOCUS       AP009180              159662 bp    DNA..."
+    }
+  }
+
 
 **Note** The Genbank data sources is limited in its detail. It currently only displays genes and the names of genes. More extensive support for gene annotations (e.g. exons) should be added in the `higlass/app/scripts/data-fetchers/genbank-fetcher.js` file.
 
