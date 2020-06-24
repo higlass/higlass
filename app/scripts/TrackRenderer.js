@@ -1556,35 +1556,35 @@ class TrackRenderer extends React.Component {
 
       case 'multivec':
       case 'vector-heatmap':
-      case 'horizontal-multivec':
-      case 'horizontal-vector-heatmap':
-      case 'vertical-multivec':
-      case 'vertical-vector-heatmap':
+      case 'horizontal-multivec': // legacy, included for backwards compatiblity
+      case 'horizontal-vector-heatmap': // legacy, included for backwards compatiblity
+      case 'vertical-multivec': // legacy, included for backwards compatiblity
+      case 'vertical-vector-heatmap': // legacy, included for backwards compatiblity
         return new HorizontalMultivecTrack(context, options);
 
       case '1d-heatmap':
-      case 'horizontal-1d-heatmap':
-      case 'vertical-1d-heatmap':
+      case 'horizontal-1d-heatmap': // legacy, included for backwards compatiblity
+      case 'vertical-1d-heatmap': // legacy, included for backwards compatiblity
         return new Horizontal1dHeatmapTrack(context, options);
 
       case 'line':
-      case 'horizontal-line':
-      case 'vertical-line':
+      case 'horizontal-line': // legacy, included for backwards compatiblity
+      case 'vertical-line': // legacy, included for backwards compatiblity
         return new HorizontalLine1DPixiTrack(context, options);
 
       case 'point':
-      case 'horizontal-point':
-      case 'vertical-point':
+      case 'horizontal-point': // legacy, included for backwards compatiblity
+      case 'vertical-point': // legacy, included for backwards compatiblity
         return new HorizontalPoint1DPixiTrack(context, options);
 
       case 'bar':
-      case 'horizontal-bar':
-      case 'vertical-bar':
+      case 'horizontal-bar': // legacy, included for backwards compatiblity
+      case 'vertical-bar': // legacy, included for backwards compatiblity
         return new BarTrack(context, options);
 
       case 'divergent-bar':
-      case 'horizontal-divergent-bar': // legacy name
-      case 'vertical-divergent-bar':
+      case 'horizontal-divergent-bar': // legacy, included for backwards compatiblity
+      case 'vertical-divergent-bar': // legacy, included for backwards compatiblity
         return new DivergentBarTrack(context, options);
 
       case 'horizontal-1d-tiles':
@@ -1597,8 +1597,8 @@ class TrackRenderer extends React.Component {
         return new Id2DTiledPixiTrack(context, options);
 
       case 'stacked-interval':
-      case 'top-stacked-interval':
-      case 'left-stacked-interval':
+      case 'top-stacked-interval': // legacy, included for backwards compatiblity
+      case 'left-stacked-interval': // legacy, included for backwards compatiblity
         return new CNVIntervalTrack(context, options);
 
       case 'viewport-projection-center':
@@ -1644,8 +1644,8 @@ class TrackRenderer extends React.Component {
         return new Track(context, options);
 
       case 'gene-annotations':
-      case 'horizontal-gene-annotations':
-      case 'vertical-gene-annotations':
+      case 'horizontal-gene-annotations': // legacy, included for backwards compatiblity
+      case 'vertical-gene-annotations': // legacy, included for backwards compatiblity
         return new HorizontalGeneAnnotationsTrack(context, options);
 
       case '2d-rectangle-domains':
@@ -1664,8 +1664,8 @@ class TrackRenderer extends React.Component {
         return new Annotations2dTrack(context, options);
 
       case 'linear-2d-rectangle-domains':
-      case 'horizontal-2d-rectangle-domains':
-      case 'vertical-2d-rectangle-domains':
+      case 'horizontal-2d-rectangle-domains': // legacy, included for backwards compatiblity
+      case 'vertical-2d-rectangle-domains': // legacy, included for backwards compatiblity
         return new Horizontal2DDomainsTrack(context, options);
 
       case 'square-markers':
@@ -1691,23 +1691,23 @@ class TrackRenderer extends React.Component {
         return new ChromosomeGrid(context, options);
 
       case 'chromosome-labels':
-      case 'horizontal-chromosome-labels':
-      case 'vertical-chromosome-labels':
+      case 'horizontal-chromosome-labels': // legacy, included for backwards compatiblity
+      case 'vertical-chromosome-labels': // legacy, included for backwards compatiblity
         // chromInfoPath is passed in for backwards compatibility
         // it can be used to provide custom chromosome sizes
         return new HorizontalChromosomeLabels(context, options);
 
       case 'linear-heatmap':
-      case 'horizontal-heatmap':
-      case 'vertical-heatmap':
+      case 'horizontal-heatmap': // legacy, included for backwards compatiblity
+      case 'vertical-heatmap': // legacy, included for backwards compatiblity
         return new HorizontalHeatmapTrack(context, options);
 
       case '2d-chromosome-annotations':
         return new Chromosome2DAnnotations(context, options);
 
       case '1d-value-interval':
-      case 'horizontal-1d-value-interval':
-      case 'vertical-1d-value-interval':
+      case 'horizontal-1d-value-interval': // legacy, included for backwards compatiblity
+      case 'vertical-1d-value-interval': // legacy, included for backwards compatiblity
         return new ValueIntervalTrack(context, options);
 
       case 'osm':
@@ -1725,7 +1725,7 @@ class TrackRenderer extends React.Component {
         return new RasterTilesTrack(context, options);
 
       case 'bedlike':
-      case 'vertical-bedlike':
+      case 'vertical-bedlike': // legacy, included for backwards compatiblity
         return new BedLikeTrack(context, options);
 
       case 'overlay-track':
