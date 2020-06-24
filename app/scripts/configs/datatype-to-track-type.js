@@ -4,16 +4,16 @@ export const DATATYPE_TO_TRACK_TYPE = orientation => {
   const localDatatypeToTrackType = {};
 
   // can a track be placed in a given orientation
-  const orientationMatches = x => {
+  const orientationMatches = trackInfo => {
     // if the track's orientation matches the given orientation, then yes
-    if (x.orientation === orientation) {
+    if (trackInfo.orientation === orientation) {
       return true;
     }
 
     if (
       orientation === '1d-vertical' &&
-      x.orientation === '1d-horizontal' &&
-      x.rotatable
+      trackInfo.orientation === '1d-horizontal' &&
+      trackInfo.rotatable
     ) {
       // we can place 1d-horizontal tracks in a vertical position if they are rotatable
       return true;
