@@ -507,40 +507,40 @@ end coordinates are different: [start, end] vs [x-start, x-end, y-start, y-end].
 .. code-block:: javascript
 
     {
-      "views": [
+      views: [
         {
-          "overlays": [
+          overlays: [
             {
-              "uid": "overlay-annotation",
-              "includes": ["track1", "track2", "track3"],
+              uid: 'overlay-annotation',
+              includes: ['track1Uid', 'track2Uid', 'track3Uid'],
               // Default definitions for annotations
-              "options": {
-                "extent": [
+              options: {
+                extent: [
                   [1000000000, 1100000000],
                   [1200000000, 1300000000, 1400000, 1500000]
                 ],
                 minWidth: 3,
-                fill: "blue",
+                fill: 'blue',
                 fillOpacity: 0.3,
-                stroke: "yellow",
+                stroke: 'yellow',
                 strokeOpacity: 0.6,
                 strokeWidth: 2,
-                strokePos: ["left", "right"],
-                outline: "cyan"
+                strokePos: ['left', 'right'],
+                outline: 'cyan',
                 outlineOpacity: 0.1337,
-                outlineWidth: 1337,
-                outlinePos: "top"
+                outlineWidth: 1.337,
+                outlinePos: 'top'
               }
             },
             {
-              "uid": "overlay-chromosome-grid",
-              "includes": ["track1", "track2", "track3"],
-              "type": "chromosome-grid",
+              uid: 'overlay-chromosome-grid',
+              includes: ['track1', 'track2', 'track3'],
+              type: 'chromosome-grid',
               // Same definitions as the chromosome-grid track
-              "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-              "options": {
-                "lineStrokeWidth": 1,
-                "lineStrokeColor": "grey"
+              chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+              options: {
+                lineStrokeWidth: 1,
+                lineStrokeColor: 'grey'
               }
             }
           ]
