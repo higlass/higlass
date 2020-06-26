@@ -176,6 +176,8 @@ const createApi = function api(context, pubSub) {
        *
        * @param {obj} newViewConfig A JSON object that defines
        *    the state of the HiGlassComponent
+       * @param {boolean} resolveImmediately If true, the returned promise resolves immediately
+       *    even if not all data has loaded. This should be set to true, if the new viewconf does not request new data. Default: false.
        * @example
        *
        * const p = hgv.setViewConfig(newViewConfig);
@@ -184,9 +186,10 @@ const createApi = function api(context, pubSub) {
        * });
        *
        * @return {Promise} dataLoaded A promise that resolves when
-       *   all of the data for this viewconfig is loaded
+       *   all of the data for this viewconfig is loaded. If `resolveImmediately` is set to true,
+       * the promise resolves without waiting for the data to be loaded.
        */
-      setViewConfig(newViewConfig) {
+      setViewConfig(newViewConfig, resolveImmediately = false) {
         const validate = new Ajv().compile(schema);
         const valid = validate(newViewConfig);
         if (validate.errors) {
@@ -222,7 +225,11 @@ const createApi = function api(context, pubSub) {
               viewConfig: newViewConfig,
               views: viewsByUid
             },
-            () => {}
+            () => {
+              if (resolveImmediately) {
+                resolve();
+              }
+            }
           );
         });
 

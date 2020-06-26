@@ -16,11 +16,52 @@ import {
   getTrackObjectFromHGC
 } from '../app/scripts/utils';
 
+import { smallViewconf } from './view-configs';
+
 configure({ adapter: new Adapter() });
 
 describe('BedLikeTrack |', () => {
   let hgc = null;
   let div = null;
+
+  describe('inline annotations', () => {
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, smallViewconf, done);
+    });
+
+    it('checks that the rectangles are strand separated or not', done => {
+      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'a');
+
+      const ys = new Set();
+
+      for (const drawnRect of Object.values(trackObj.drawnRects[16])) {
+        ys.add(drawnRect[0][1]);
+      }
+
+      // make sure that annotations are at different y positions
+      expect(ys.size).to.eql(2);
+
+      ys.clear();
+      hgc.instance().state.views.aa.tracks.top[0].options.separatePlusMinusStrands = false;
+      hgc.setState(hgc.instance().state);
+      hgc.update();
+
+      for (const drawnRect of Object.values(trackObj.drawnRects[16])) {
+        ys.add(drawnRect[0][1]);
+      }
+
+      // make sure that annotations are at the same y position
+      expect(ys.size).to.eql(1);
+
+      done();
+    });
+
+    afterAll(() => {
+      // removeHGComponent(div);
+      // div = null;
+      // hgc = null;
+    });
+  });
 
   describe('Options', () => {
     beforeAll(done => {
