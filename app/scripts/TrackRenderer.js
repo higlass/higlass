@@ -1158,7 +1158,7 @@ class TrackRenderer extends React.Component {
           trackOrientation = TRACKS_INFO_BY_TYPE[trackDef.type].orientation;
         }
 
-        if (trackAtZoomStart.originalTrack) {
+        if (trackAtZoomStart instanceof LeftTrackModifier) {
           // this is a LeftTrackModifier track so it's vertical
           trackOrientation = '1d-vertical';
         }
