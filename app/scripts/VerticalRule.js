@@ -92,9 +92,8 @@ export default class VerticalRule extends mix(PixiTrack).with(
 
     track.appendChild(output);
 
-    const stroke = colorToHex(
-      this.options.color ? this.options.color : 'black',
-    );
+    const stroke = this.options.color ? this.options.color : 'black';
+
     const line = document.createElement('line');
     line.setAttribute('stroke', stroke);
     line.setAttribute('stroke-width', this.strokeWidth);
