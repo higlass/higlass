@@ -150,6 +150,27 @@ pointer to a chromSizes file and an autocomplete source which will provide
 suggestions for gene names. The autocomplete source should point to a `gene-
 annotations` file.
 
+.. code-block:: javascript
+
+      "genomePositionSearchBox": {
+        "autocompleteServer": "//higlass.io/api/v1",
+        "autocompleteId": "QDutvmyiSrec5nX4pA5WGQ",
+        "chromInfoServer": "//higlass.io/api/v1",
+        "chromInfoId": "mm10",
+        "visible": true
+      },
+
+This will pull the chromosome sizes and autocomplete annotations
+for a higlass server. One can also tell the genome position search box to use chromosome files from an absolute location. This option would most often be used with the `hideAvailableAssemblies` option:
+
+.. code-block:: javascript
+
+      "genomePositionSearchBox": {
+        "chromInfoPath": 'https://s3.amazonaws.com/pkerp/public/gpsb/small.chrom.sizes',
+        "hideAvailableAssemblies": true,
+        "visible": true
+      },
+
 
 Views
 =====
