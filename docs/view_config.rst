@@ -161,7 +161,7 @@ annotations` file.
       },
 
 This will pull the chromosome sizes and autocomplete annotations
-for a higlass server. One can also tell the genome position search box to use chromosome files from an absolute location. This option would most often be used with the `hideAvailableAssemblies` option:
+for a higlass server. One can also tell the genome position search box to use chromosome files from an absolute location. This option would most often be used with the `hideAvailableAssemblies` option to hide the dropdown of available assemblies:
 
 .. code-block:: javascript
 
