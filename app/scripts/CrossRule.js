@@ -37,7 +37,7 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
   }
 
   drawHorizontalRule(graphics) {
-    let stroke = colorToHex('black');
+    let stroke = colorToHex(this.options.color ? this.options.color : 'black');
 
     if (this.highlighted) {
       stroke = colorToHex('red');
@@ -86,22 +86,21 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
     output.setAttribute('class', 'cross-rule');
     output.setAttribute(
       'transform',
-      `translate(${this.position[0]},${this.position[1]})`
+      `translate(${this.position[0]},${this.position[1]})`,
     );
 
     track.appendChild(output);
 
-    let stroke = 'black';
-    if (this.highlighted) {
-      stroke = 'red';
-    }
+    const stroke = colorToHex(
+      this.options.color ? this.options.color : 'black',
+    );
 
     const verticalLine = document.createElement('line');
     verticalLine.setAttribute('stroke', stroke);
     verticalLine.setAttribute('stroke-width', this.strokeWidth);
     verticalLine.setAttribute(
       'stroke-dasharray',
-      `${this.dashLength} ${this.dashGap}`
+      `${this.dashLength} ${this.dashGap}`,
     );
     verticalLine.setAttribute('x1', this._xScale(this.xPosition));
     verticalLine.setAttribute('y1', 0);
@@ -113,7 +112,7 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
     horizontalLine.setAttribute('stroke-width', this.strokeWidth);
     horizontalLine.setAttribute(
       'stroke-dasharray',
-      `${this.dashLength} ${this.dashGap}`
+      `${this.dashLength} ${this.dashGap}`,
     );
     horizontalLine.setAttribute('x1', 0);
     horizontalLine.setAttribute('y1', this._yScale(this.yPosition));
