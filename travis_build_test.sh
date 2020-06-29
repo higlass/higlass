@@ -26,5 +26,5 @@ npm run compile
 end compile
 
 start karma
-xvfb-maybe ./node_modules/karma/bin/karma start karma.conf.js --single-run
+./node_modules/karma/bin/karma start karma.conf.js --single-run
 end karma
