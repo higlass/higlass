@@ -182,6 +182,7 @@ crucial are listed below.
     higlass_server
     higlass_docker
     view_config
+    plugin_track
     developer
     troubleshooting
 
@@ -189,5 +190,5 @@ crucial are listed below.
     :hidden:
     :glob:
     :titlesonly:
-    
+
     releasenotes
