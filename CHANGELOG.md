@@ -1,7 +1,8 @@
 # Release notes
 
-## Upcoming
+## Unreleased
 
+- Remove horizontal-_ and vertical-_ prefixes from track names
 - Load matrices with "None" data transform without crashing
 
 ## v1.9.5

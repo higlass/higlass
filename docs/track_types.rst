@@ -127,7 +127,7 @@ Gene Annotations
 .. image:: img/gene-annotations-track-thumb.png
     :align: right
 
-track-type: ``horizontal-gene-annotations``
+track-type: ``gene-annotations``
 datatype: ``gene-annotation``
 
 Gene annotations display the locations of genes and their exons and introns.
@@ -207,7 +207,7 @@ Rotated 2D Heatmap
 .. image:: img/horizontal-heatmap-thumb.png
     :align: right
 
-track-type: ``horizontal-heatmap``
+track-type: ``linear-heatmap``
 datatype: ``matrix``
 
 Rotated 2D heatmaps are regular 2D heatmaps sliced across the diagonal and rotated 45
@@ -245,13 +245,13 @@ command.
 
 .. _horizontal-2d-rectangle-domain:
 
-Horizontal 2D Rectangle Domain
-==============================
+Linear 2D Rectangle Domain
+==========================
 
 .. image:: img/horizontal-2d-rectangle-domains-thumb.png
     :align: right
 
-track-type: ``horizontal-2d-rectangle-domains``
+track-type: ``linear-2d-rectangle-domains``
 datatype: ``2d-rectangle-domains``
 
 Horizontal rectangle domains show a 45 degree rotation of rectangular domains
@@ -268,7 +268,7 @@ Line
 .. image:: img/line-track-thumb.png
     :align: right
 
-track-type: ``horizontal-line``
+track-type: ``line``
 datatype: ``vector``
 
 Line tracks display 1D vector data. Because each line segment requires two
@@ -286,7 +286,7 @@ Options
 .. code-block:: javascript
 
   {
-    type: 'horizontal-line',
+    type: 'line',
     ...
     options: {
       constIndicators: [
@@ -314,7 +314,7 @@ Bar
 .. image:: img/bar-track-thumb.png
     :align: right
 
-track-type: ``horizontal-bar``
+track-type: ``bar``
 datatype: ``vector``
 
 Bar tracks display 1D vector data as bars.
@@ -346,7 +346,7 @@ Point
 .. image:: img/point-track-thumb.png
     :align: right
 
-track-type: ``horizontal-point``
+track-type: ``point``
 datatype: ``vector``
 
 Point tracks display 1D vector data. Unlike :ref:`line tracks <line-track>`,
@@ -367,7 +367,7 @@ Options
 .. image:: img/1d-heatmap-track.png
     :align: right
 
-track-type: ``horizontal-1d-heatmap`` and ``vertical-1d-heatmap``
+track-type: ``1d-heatmap``
 datatype: ``vector``
 
 1D heatmap tracks display 1D vector data. Unlike the other 1D tracks,
@@ -384,7 +384,7 @@ with this track.
     server: 'http://higlass.io/api/v1',
     tilesetUid: 'e0DYtZBSTqiMLHoaimsSpg',
     uid: '1d-heatmap',
-    type: 'horizontal-1d-heatmap',
+    type: '1d-heatmap',
     options: {
       labelPosition: 'hidden',
       colorRange: ['#FFFFFF', '#ccc6ff', '#4f3de5', '#120489', '#000000'],
@@ -411,7 +411,7 @@ Chromosome Labels
 .. image:: img/chromosome-labels-thumb.png
     :align: right
 
-track-type: ``horizontal-chromosome-labes``
+track-type: ``chromosome-labes``
 datatype: ``chromsizes`` or ``cooler``
 filetypes: ``chromsizes-tsv``
 
@@ -456,7 +456,7 @@ Horizontal Chromosome Grid
 .. image:: img/horizontal-chromosome-labels-thumb.png
     :align: right
 
-track-type: ``horizontal-chromosome-lables``
+track-type: ``chromosome-lables``
 datatype: ``chromsizes`` or ``cooler``
 filetypes: ``chromsizes-tsv``
 
@@ -469,7 +469,7 @@ Stacked Bars
 .. image:: img/horizontal-stacked-bar-scaled-thumb.png
     :align: right
 
-track-type: ``horizontal-stacked-bar``
+track-type: ``stacked-bar``
 datatype: ``multivec``
 
 Stacked bar tracks display multivec data. They show multiple values at every
@@ -510,7 +510,7 @@ number of bar graphs.
 .. image:: img/1d-annotations.png
     :align: right
 
-track-type: ``horizontal-1d-annotations`` and ``vertical-1d-annotations``
+track-type: ``1d-annotations`` and ``1d-annotations``
 datatype: none
 
 Displays absolute positioned 1D annotations on horizontal and vertical 1D tracks
@@ -524,7 +524,7 @@ parameter of the ``options``.
 
   {
     uid: 'selection-a',
-    type: 'horizontal-1d-annotations',
+    type: '1d-annotations',
     options: {
       regions: [
         [230000000, 561000000],
@@ -538,16 +538,16 @@ parameter of the ``options``.
     }
   }
 
-Horizontal Multivec
-===================
+Multivec
+========
 
 .. image:: img/horizontal-multivec.png
     :align: right
 
-track-type: ``horizontal-multivec``
+track-type: ``multivec``
 datatype: multivec
 
-Horizontal multivec tracks show multiple values at every
+Multivec tracks show multiple values at every
 location in the data by using a set of rows.
 
 Options
@@ -565,7 +565,7 @@ Options
 .. code-block:: javascript
 
   {
-    type: 'horizontal-multivec',
+    type: 'multivec',
     uid: 'K_0GxgCvQfCHM56neOnHKg',
     tilesetUid: 'abohuD-sTbiyAPqh2y5OpA',
     server: 'https://resgen.io/api/v1',
