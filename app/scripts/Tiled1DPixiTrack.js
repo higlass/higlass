@@ -201,6 +201,8 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
   getIndicesOfVisibleDataInTile(tile) {
     const visible = this._xScale.range();
 
+    if (!this.tilesetInfo) return [null, null];
+
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
       tile.tileData.tilePos,
