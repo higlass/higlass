@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Plugin tracks can provide their own config menu options
 - Remove horizontal-_ and vertical-_ prefixes from track names
 - Load matrices with "None" data transform without crashing
 - Add a view for showing schema log messages when JSON codes are edited in a config view.
