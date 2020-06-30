@@ -10,7 +10,7 @@ export const VerticalRuleMixin = Mixin(
     class extends superclass {
       drawVerticalRule(graphics) {
         let stroke = colorToHex(
-          this.options.color ? this.options.color : 'black',
+          this.options.color || 'black',
         );
 
         if (this.highlighted) {
