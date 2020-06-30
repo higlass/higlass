@@ -91,7 +91,7 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
 
     track.appendChild(output);
 
-    const stroke = this.options.color ? this.options.color : 'black';
+    const stroke = this.options.color || 'black';
 
     const verticalLine = document.createElement('line');
     verticalLine.setAttribute('stroke', stroke);
