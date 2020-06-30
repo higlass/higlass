@@ -113,7 +113,7 @@ export function workerSetPix(
   zeroValueColor = null,
   selectedRows = null,
   selectedRowsAggregationMode = null,
-  selectedRowsAggregationWithRelativeHeight = null
+  selectedRowsAggregationWithRelativeHeight = null,
 ) {
   let valueScale = null;
 
@@ -126,7 +126,7 @@ export function workerSetPix(
       console.warn(
         'Unknown value scale type:',
         valueScaleType,
-        ' Defaulting to linear'
+        ' Defaulting to linear',
       );
     }
     valueScale = scaleLinear()
@@ -142,7 +142,7 @@ export function workerSetPix(
     filteredSize =
       selectedItemsToSize(
         selectedRows,
-        selectedRowsAggregationWithRelativeHeight
+        selectedRowsAggregationWithRelativeHeight,
       ) * shape[1];
   }
 
@@ -172,7 +172,7 @@ export function workerSetPix(
       // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
       rgbIdx = Math.max(
         0,
-        Math.min(254, Math.floor(valueScale(d + pseudocount)))
+        Math.min(254, Math.floor(valueScale(d + pseudocount))),
       );
     }
     // let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
@@ -180,7 +180,7 @@ export function workerSetPix(
       console.warn(
         'out of bounds rgbIdx:',
         rgbIdx,
-        ' (should be 0 <= rgbIdx <= 255)'
+        ' (should be 0 <= rgbIdx <= 255)',
       );
     }
 
@@ -238,7 +238,7 @@ export function workerSetPix(
             ) {
               setPixData(
                 pixRowI * shape[1] + colI, // pixData index
-                d // data point
+                d, // data point
               );
               pixRowI++;
             }
@@ -246,7 +246,7 @@ export function workerSetPix(
             // Set a single pixel, either representing a single row or an entire row group, if the vertical height for each group should be uniform (i.e. should not depend on group size).
             setPixData(
               pixRowI * shape[1] + colI, // pixData index
-              d // data point
+              d, // data point
             );
             pixRowI++;
           }
@@ -416,14 +416,14 @@ export function tileResponseToData(data, server, theseTileIds) {
 
 export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
   const headers = {
-    'content-type': 'application/json'
+    'content-type': 'application/json',
   };
 
   if (authHeader) headers.Authorization = authHeader;
 
   fetch(outUrl, {
     credentials: 'same-origin',
-    headers
+    headers,
   })
     .then(response => response.json())
     .then(data => {

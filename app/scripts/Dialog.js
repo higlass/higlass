@@ -59,7 +59,7 @@ Dialog.defaultProps = {
   hide: false,
   maxHeight: false,
   okayOnly: false,
-  okayTitle: 'Ok'
+  okayTitle: 'Ok',
 };
 
 Dialog.propTypes = {
@@ -74,7 +74,7 @@ Dialog.propTypes = {
   okayOnly: PropTypes.bool,
   onCancel: PropTypes.func.isRequired,
   onOkay: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
 };
 
 export default withModal(Dialog);

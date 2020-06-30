@@ -27,7 +27,7 @@ class AxisPixi {
     graphics.lineStyle(
       1,
       this.track.getTheme() === THEME_DARK ? colorToHex('#ffffff') : 0x000000,
-      1
+      1,
     );
 
     // draw the axis line
@@ -58,7 +58,7 @@ class AxisPixi {
         const newText = new GLOBALS.PIXI.Text(tick, {
           fontSize: `${this.axisTextFontSize}px`,
           fontFamily: this.axisTextFontFamily,
-          fill: color
+          fill: color,
         });
         this.axisTexts.push(newText);
 
@@ -109,7 +109,7 @@ class AxisPixi {
     if (this.track.getTheme() === THEME_DARK) {
       graphics.lineStyle(
         graphics.lineWidth || graphics._lineStyle.width,
-        colorToHex('#ffffff')
+        colorToHex('#ffffff'),
       );
     }
 
@@ -153,7 +153,7 @@ class AxisPixi {
     if (this.track.getTheme() === THEME_DARK) {
       graphics.lineStyle(
         graphics.lineWidth || graphics._lineStyle.width,
-        colorToHex('#ffffff')
+        colorToHex('#ffffff'),
       );
     }
 
@@ -290,7 +290,7 @@ class AxisPixi {
     gAxis.appendChild(bottomTickLine);
     bottomTickLine.setAttribute(
       'd',
-      `M0,${axisHeight} L${+(TICK_MARGIN + TICK_LENGTH)},${axisHeight}`
+      `M0,${axisHeight} L${+(TICK_MARGIN + TICK_LENGTH)},${axisHeight}`,
     );
 
     for (let i = 0; i < this.axisTexts.length; i++) {
@@ -305,7 +305,7 @@ class AxisPixi {
         'd',
         `M${+TICK_MARGIN},${valueScale(tick)} L${+(
           TICK_MARGIN + TICK_LENGTH
-        )},${valueScale(tick)}`
+        )},${valueScale(tick)}`,
       );
 
       const g = document.createElement('g');
@@ -318,7 +318,7 @@ class AxisPixi {
       g.setAttribute(
         'transform',
         `translate(${text.position.x},${text.position.y})
-             scale(${text.scale.x},${text.scale.y})`
+             scale(${text.scale.x},${text.scale.y})`,
       );
     }
 
@@ -336,7 +336,7 @@ class AxisPixi {
     gAxis.appendChild(bottomTickLine);
     bottomTickLine.setAttribute(
       'd',
-      `M0,${axisHeight} L${-(TICK_MARGIN + TICK_LENGTH)},${axisHeight}`
+      `M0,${axisHeight} L${-(TICK_MARGIN + TICK_LENGTH)},${axisHeight}`,
     );
 
     for (let i = 0; i < this.axisTexts.length; i++) {
@@ -351,7 +351,7 @@ class AxisPixi {
         'd',
         `M${-TICK_MARGIN},${valueScale(tick)} L${-(
           TICK_MARGIN + TICK_LENGTH
-        )},${valueScale(tick)}`
+        )},${valueScale(tick)}`,
       );
 
       const g = document.createElement('g');
@@ -365,7 +365,7 @@ class AxisPixi {
       g.setAttribute(
         'transform',
         `translate(${text.position.x},${text.position.y})
-             scale(${text.scale.x},${text.scale.y})`
+             scale(${text.scale.x},${text.scale.y})`,
       );
     }
 
