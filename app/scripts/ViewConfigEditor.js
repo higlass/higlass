@@ -22,7 +22,7 @@ class ViewConfigEditor extends React.Component {
       code: props.viewConfig,
       hide: false,
       showLog: false,
-      logMsgs: this.getLogMsgs(props.viewConfig)
+      logMsgs: this.getLogMsgs(props.viewConfig),
     };
 
     this.handleChangeBound = this.handleChange.bind(this);
@@ -36,10 +36,10 @@ class ViewConfigEditor extends React.Component {
     this.pubSubs = [];
 
     this.pubSubs.push(
-      this.props.pubSub.subscribe('keydown', this.handleKeyDownBound)
+      this.props.pubSub.subscribe('keydown', this.handleKeyDownBound),
     );
     this.pubSubs.push(
-      this.props.pubSub.subscribe('keyup', this.handleKeyUpBound)
+      this.props.pubSub.subscribe('keyup', this.handleKeyUpBound),
     );
   }
 
@@ -54,7 +54,7 @@ class ViewConfigEditor extends React.Component {
 
   componentWillUnmount() {
     this.pubSubs.forEach(subscription =>
-      this.props.pubSub.unsubscribe(subscription)
+      this.props.pubSub.unsubscribe(subscription),
     );
     this.pubSubs = [];
   }
@@ -202,14 +202,14 @@ class ViewConfigEditor extends React.Component {
             padding={10}
             style={{
               fontFamily: '"Fira code", "Fira Mono", monospace',
-              fontSize: 'inherit'
+              fontSize: 'inherit',
             }}
             value={this.state.code}
           />
         </div>
         <div
           style={{
-            height: this.state.showLog ? '50%' : '30px'
+            height: this.state.showLog ? '50%' : '30px',
           }}
           styleName="view-config-log"
         >
@@ -223,7 +223,7 @@ class ViewConfigEditor extends React.Component {
           </div>
           <div
             style={{
-              padding: this.state.showLog ? '10px' : 0
+              padding: this.state.showLog ? '10px' : 0,
             }}
             styleName="view-config-log-msg"
           >
@@ -243,7 +243,7 @@ ViewConfigEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   pubSub: PropTypes.object.isRequired,
-  viewConfig: PropTypes.object.isRequired
+  viewConfig: PropTypes.object.isRequired,
 };
 
 export default withPubSub(withModal(ViewConfigEditor));

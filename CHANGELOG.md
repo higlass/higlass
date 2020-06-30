@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Ability to load genome position search box chromosome sizes from an arbitrary location
 - Plugin tracks can provide their own config menu options
 - Remove horizontal-_ and vertical-_ prefixes from track names
 - Load matrices with "None" data transform without crashing
@@ -11,6 +12,8 @@
 
 - Removed styles for naked td tag
 - Reader for text genbank data (i.e. not pulled from a url)
+
+_[Detailed changes since v1.9.4](https://github.com/higlass/higlass/compare/v1.9.4...v.1.9.5)_
 
 ## v1.9.4
 
