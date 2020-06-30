@@ -10,7 +10,7 @@ export const HorizontalRuleMixin = Mixin(
     class extends superclass {
       drawHorizontalRule(graphics) {
         let stroke = colorToHex(
-          this.options.color ? this.options.color : 'black',
+          this.options.color || 'black',
         );
 
         if (this.highlighted) {
