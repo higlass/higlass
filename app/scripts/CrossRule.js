@@ -37,7 +37,7 @@ class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
   }
 
   drawHorizontalRule(graphics) {
-    let stroke = colorToHex(this.options.color ? this.options.color : 'black');
+    let stroke = colorToHex(this.options.color || 'black');
 
     if (this.highlighted) {
       stroke = colorToHex('red');
