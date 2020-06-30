@@ -25,7 +25,7 @@ const Button = React.forwardRef((props, ref) => (
 Button.defaultProps = {
   onClick: () => {},
   styleName: '',
-  type: 'button'
+  type: 'button',
 };
 
 Button.propTypes = {
@@ -37,7 +37,7 @@ Button.propTypes = {
   onMouseOut: PropTypes.func,
   onMouseUp: PropTypes.func,
   shortcut: PropTypes.string,
-  type: PropTypes.string
+  type: PropTypes.string,
 };
 
 export default Button;

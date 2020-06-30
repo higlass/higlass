@@ -18,7 +18,7 @@ export function parseChromsizesRows(data) {
     const newValue = {
       id: i,
       chr: data[i][0],
-      pos: totalLength - length
+      pos: totalLength - length,
     };
 
     cumValues.push(newValue);
@@ -30,7 +30,7 @@ export function parseChromsizesRows(data) {
     cumPositions: cumValues,
     chrPositions,
     totalLength,
-    chromLengths
+    chromLengths,
   };
 }
 
@@ -59,7 +59,7 @@ function ChromosomeInfo(filepath, success, pubSub = fakePubSub) {
           if (success) success(ret);
         }
       },
-      pubSub
+      pubSub,
     )
     .then(() => ret);
 }

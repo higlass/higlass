@@ -18,7 +18,7 @@ function drawAnnotation(
   yMin,
   yMax,
   minThres,
-  flipDiagonal
+  flipDiagonal,
 ) {
   const startX = flipDiagonal
     ? track._xScale(td.yStart)
@@ -39,7 +39,7 @@ function drawAnnotation(
     x: startX,
     y: startY,
     width,
-    height
+    height,
   };
 
   if (minSquareSize) {
@@ -48,7 +48,7 @@ function drawAnnotation(
         x: startX - minSquareSize / 2,
         y: startY - minSquareSize / 2,
         width: minSquareSize,
-        height: minSquareSize
+        height: minSquareSize,
       };
     }
   }
@@ -71,7 +71,7 @@ function drawAnnotation(
         drawnRect.x,
         drawnRect.y,
         drawnRect.width,
-        drawnRect.height
+        drawnRect.height,
       );
 
       track.publish('annotationDrawn', {
@@ -81,8 +81,8 @@ function drawAnnotation(
         dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd],
         importance: td.importance,
         info: {
-          patternType: track.options.patternType
-        }
+          patternType: track.options.patternType,
+        },
       });
     }
   }
@@ -126,12 +126,12 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
     const xZoomLevel = tileProxy.calculateZoomLevel(
       this._xScale,
       this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0]
+      this.tilesetInfo.max_pos[0],
     );
     const yZoomLevel = tileProxy.calculateZoomLevel(
       this._xScale,
       this.tilesetInfo.min_pos[1],
-      this.tilesetInfo.max_pos[1]
+      this.tilesetInfo.max_pos[1],
     );
 
     let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
@@ -149,7 +149,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
   setVisibleTiles(tilePositions) {
     this.visibleTiles = tilePositions.map(x => ({
       tileId: this.tileToLocalId(x),
-      remoteId: this.tileToRemoteId(x)
+      remoteId: this.tileToRemoteId(x),
     }));
 
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.remoteId));
@@ -171,7 +171,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
       this.tilesetInfo.min_pos[0],
       this.tilesetInfo.max_pos[0],
       this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width
+      this.tilesetInfo.max_width,
     );
 
     this.yTiles = tileProxy.calculateTiles(
@@ -180,7 +180,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
       this.tilesetInfo.min_pos[1],
       this.tilesetInfo.max_pos[1],
       this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width
+      this.tilesetInfo.max_width,
     );
 
     const rows = this.xTiles;
@@ -229,7 +229,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
     graphics.clear();
 
     const stroke = colorToHex(
-      this.options.rectangleDomainStrokeColor || 'black'
+      this.options.rectangleDomainStrokeColor || 'black',
     );
     const fill = colorToHex(this.options.rectangleDomainFillColor || 'grey');
 
@@ -240,13 +240,13 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
       stroke,
       typeof this.options.rectangleDomainStrokeOpacity !== 'undefined'
         ? this.options.rectangleDomainStrokeOpacity
-        : 1
+        : 1,
     );
     graphics.beginFill(
       fill,
       typeof this.options.rectangleDomainFillOpacity !== 'undefined'
         ? this.options.rectangleDomainFillOpacity
-        : 0.4
+        : 0.4,
     );
 
     graphics.alpha = this.options.rectangleDomainOpacity || 0.5;
@@ -281,7 +281,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
           yMin,
           yMax,
           minThres,
-          this.options.flipDiagonal === 'yes'
+          this.options.flipDiagonal === 'yes',
         );
 
         if (this.options.flipDiagonal && this.options.flipDiagonal === 'copy') {
@@ -295,7 +295,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
             yMin,
             yMax,
             minThres,
-            true
+            true,
           );
         }
       });
@@ -314,7 +314,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
     const output = document.createElement('g');
     output.setAttribute(
       'transform',
-      `translate(${this.position[0]},${this.position[1]})`
+      `translate(${this.position[0]},${this.position[1]})`,
     );
 
     track.appendChild(output);
@@ -329,7 +329,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
           const gTile = document.createElement('g');
           gTile.setAttribute(
             'transform',
-            `translate(${tile.graphics.position.x},${tile.graphics.position.y})scale(${tile.graphics.scale.x},${tile.graphics.scale.y})`
+            `translate(${tile.graphics.position.x},${tile.graphics.position.y})scale(${tile.graphics.scale.x},${tile.graphics.scale.y})`,
           );
           output.appendChild(gTile);
 
@@ -346,7 +346,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
               'fill',
               this.options.rectangleDomainFillColor
                 ? this.options.rectangleDomainFillColor
-                : 'grey'
+                : 'grey',
             );
             r.setAttribute('opacity', 0.3);
 

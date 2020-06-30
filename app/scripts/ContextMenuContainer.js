@@ -24,7 +24,7 @@ class ContextMenuContainer extends React.Component {
       orientation: this.props.orientation ? this.props.orientation : 'right',
       left: this.props.position.left,
       top: this.props.position.top,
-      submenuShown: null
+      submenuShown: null,
     };
   }
 
@@ -40,7 +40,7 @@ class ContextMenuContainer extends React.Component {
 
     this.setState({
       left: newProps.position.left,
-      top: newProps.position.top
+      top: newProps.position.top,
     });
   }
 
@@ -53,14 +53,14 @@ class ContextMenuContainer extends React.Component {
   handleItemMouseEnterWithRect(clientRect, series) {
     this.setState({
       submenuShown: series,
-      submenuSourceBbox: clientRect
+      submenuSourceBbox: clientRect,
     });
   }
 
   handleItemMouseEnter(evt, series) {
     this.handleItemMouseEnterWithRect(
       evt.currentTarget.getBoundingClientRect(),
-      series
+      series,
     );
   }
 
@@ -68,7 +68,7 @@ class ContextMenuContainer extends React.Component {
 
   handleOtherMouseEnter() {
     this.setState({
-      submenuShown: null
+      submenuShown: null,
     });
   }
 
@@ -106,7 +106,7 @@ class ContextMenuContainer extends React.Component {
           top: this.props.position.top,
           left: this.props.position.left,
           width: 0,
-          height: 0
+          height: 0,
         };
 
     let orientation = this.state.orientation;
@@ -145,7 +145,7 @@ class ContextMenuContainer extends React.Component {
       this.setState({
         left: leftPosition,
         top: topPosition,
-        orientation
+        orientation,
       });
     } else {
       let leftPosition = parentBbox.left + parentBbox.width;
@@ -164,7 +164,7 @@ class ContextMenuContainer extends React.Component {
       this.setState({
         left: leftPosition,
         top: topPosition,
-        orientation
+        orientation,
       });
     }
   }
@@ -174,14 +174,14 @@ class ContextMenuContainer extends React.Component {
   render() {
     const stylePosition = this.state.left
       ? {
-          left: this.state.left
+          left: this.state.left,
         }
       : {
-          right: this.state.right
+          right: this.state.right,
         };
 
     const otherStyle = {
-      top: this.state.top
+      top: this.state.top,
     };
 
     const wholeStyle = Object.assign(stylePosition, otherStyle);
@@ -210,7 +210,7 @@ ContextMenuContainer.propTypes = {
   orientation: PropTypes.string,
   parentBbox: PropTypes.object,
   position: PropTypes.object,
-  theme: PropTypes.symbol.isRequired
+  theme: PropTypes.symbol.isRequired,
 };
 
 export default ContextMenuContainer;
