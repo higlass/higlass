@@ -30,19 +30,19 @@ export const HorizontalRuleMixin = Mixin(
       isMouseOverHorizontalLine(mousePos) {
         if (
           Math.abs(
-            mousePos.y - this.position[1] - this._yScale(this.yPosition)
+            mousePos.y - this.position[1] - this._yScale(this.yPosition),
           ) < this.MOUSEOVER_RADIUS
         ) {
           return true;
         }
         return false;
       }
-    }
+    },
 );
 
 class HorizontalRule extends mix(PixiTrack).with(
   RuleMixin,
-  HorizontalRuleMixin
+  HorizontalRuleMixin,
 ) {
   constructor(context, options) {
     super(context, options);
@@ -99,7 +99,7 @@ class HorizontalRule extends mix(PixiTrack).with(
     output.setAttribute('class', 'horizontal-rule');
     output.setAttribute(
       'transform',
-      `translate(${this.position[0]},${this.position[1]})`
+      `translate(${this.position[0]},${this.position[1]})`,
     );
 
     track.appendChild(output);

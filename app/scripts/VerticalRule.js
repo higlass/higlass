@@ -33,16 +33,16 @@ export const VerticalRuleMixin = Mixin(
       isMouseOverVerticalLine(mousePos) {
         return (
           Math.abs(
-            mousePos.x - this.position[0] - this._xScale(this.xPosition)
+            mousePos.x - this.position[0] - this._xScale(this.xPosition),
           ) < this.MOUSEOVER_RADIUS
         );
       }
-    }
+    },
 );
 
 export default class VerticalRule extends mix(PixiTrack).with(
   RuleMixin,
-  VerticalRuleMixin
+  VerticalRuleMixin,
 ) {
   constructor(context, options) {
     super(context, options);
@@ -85,7 +85,7 @@ export default class VerticalRule extends mix(PixiTrack).with(
     output.setAttribute('class', 'vertical-rule');
     output.setAttribute(
       'transform',
-      `translate(${this.position[0]},${this.position[1]})`
+      `translate(${this.position[0]},${this.position[1]})`,
     );
 
     track.appendChild(output);

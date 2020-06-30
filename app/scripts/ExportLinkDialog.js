@@ -46,12 +46,12 @@ class ExportLinkDialog extends React.Component {
 
 ExportLinkDialog.defaultProps = {
   onDone: () => {},
-  url: ''
+  url: '',
 };
 
 ExportLinkDialog.propTypes = {
   onDone: PropTypes.func,
-  url: PropTypes.string
+  url: PropTypes.string,
 };
 
 export default ExportLinkDialog;

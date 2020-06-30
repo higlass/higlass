@@ -45,7 +45,7 @@ export const getSeriesItems = (
   tracks,
   onItemMouseEnter,
   onItemMouseLeave,
-  onItemClick
+  onItemClick,
 ) => {
   if (!tracks) return null;
 

@@ -10,7 +10,7 @@ class ViewportTrackerVertical extends SVGTrack {
     const {
       registerViewportChanged,
       removeViewportChanged,
-      setDomainsCallback
+      setDomainsCallback,
     } = context;
 
     const uid = slugid.nice();
@@ -154,7 +154,7 @@ class ViewportTrackerVertical extends SVGTrack {
     const yDiff = yRange[1] - yRange[0];
     this.brush.extent([
       [xRange[0], yRange[0] - yDiff],
-      [xRange[1], yRange[1] + yDiff]
+      [xRange[1], yRange[1] + yDiff],
     ]);
     this.gBrush.call(this.brush);
 

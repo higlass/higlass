@@ -10,7 +10,7 @@ export class SeriesOptions extends React.Component {
     super(props);
 
     this.state = {
-      advancedVisible: true
+      advancedVisible: true,
     };
   }
 
@@ -18,13 +18,13 @@ export class SeriesOptions extends React.Component {
 
   handleNormalizeCheckboxChanged(e) {
     this.setState({
-      normalizeChecked: e.target.checked
+      normalizeChecked: e.target.checked,
     });
   }
 
   toggleAdvancedVisible() {
     this.setState(prevState => ({
-      advancedVisible: !prevState.advancedVisible
+      advancedVisible: !prevState.advancedVisible,
     }));
   }
 
@@ -52,7 +52,7 @@ export class SeriesOptions extends React.Component {
                 this.props.onTrackChosen(value, this.props.position)
               }
               selectedTilesetChanged={this.handleNormalizeTilesetChanged.bind(
-                this
+                this,
               )}
             />
           </Panel>
@@ -64,7 +64,7 @@ export class SeriesOptions extends React.Component {
 
 SeriesOptions.propTypes = {
   onTrackChosen: PropTypes.func,
-  position: PropTypes.string
+  position: PropTypes.string,
 };
 
 export default SeriesOptions;

@@ -5,7 +5,7 @@ import {
   FormGroup,
   Glyphicon,
   DropdownButton,
-  MenuItem
+  MenuItem,
 } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
@@ -71,25 +71,25 @@ class GenomePositionSearchBox extends React.Component {
       autocompleteServer: this.props.autocompleteServer,
       autocompleteId: this.props.autocompleteId,
       availableAssemblies: [],
-      selectedAssembly: null
+      selectedAssembly: null,
     };
 
     this.styles = {
       item: {
         padding: '2px 6px',
-        cursor: 'default'
+        cursor: 'default',
       },
 
       highlightedItem: {
         color: 'white',
         background: 'hsl(200, 50%, 50%)',
         padding: '2px 6px',
-        cursor: 'default'
+        cursor: 'default',
       },
 
       menu: {
-        border: 'solid 1px #ccc'
-      }
+        border: 'solid 1px #ccc',
+      },
     };
 
     this.availableAutocompletes = {};
@@ -98,8 +98,8 @@ class GenomePositionSearchBox extends React.Component {
       this.availableAutocompletes[this.props.chromInfoId] = new Set([
         {
           server: this.props.autocompleteServer,
-          acId: this.props.autocompleteId
-        }
+          acId: this.props.autocompleteId,
+        },
       ]);
     }
 
@@ -121,7 +121,7 @@ class GenomePositionSearchBox extends React.Component {
     // we want to catch keypresses so we can get that enter
     select(this.autocompleteMenu.inputEl).on(
       'keypress',
-      this.autocompleteKeyPress.bind(this)
+      this.autocompleteKeyPress.bind(this),
     );
 
     this.findAvailableAutocompleteSources();
@@ -139,7 +139,7 @@ class GenomePositionSearchBox extends React.Component {
     this.positionText = value;
     this.setState({
       value,
-      loading: true
+      loading: true,
     });
 
     this.changedPart = null;
@@ -181,7 +181,7 @@ class GenomePositionSearchBox extends React.Component {
     if (this.changedPart !== null) {
       // if something has changed in the input text
       this.setState({
-        loading: true
+        loading: true,
       });
       // send out a request for the autcomplete suggestions
       let url = `${this.state.autocompleteServer}/suggest/`;
@@ -194,7 +194,7 @@ class GenomePositionSearchBox extends React.Component {
           if (error) {
             this.setState({
               loading: false,
-              genes: []
+              genes: [],
             });
           } else if (this.changedPart > 0 && !changedAtStartOfWord) {
             // send out another request for genes with dashes in them
@@ -212,23 +212,23 @@ class GenomePositionSearchBox extends React.Component {
                 if (error1) {
                   this.setState({
                     loading: false,
-                    genes: data
+                    genes: data,
                   });
                 } else {
                   this.setState({
                     loading: false,
-                    genes: data1.concat(data)
+                    genes: data1.concat(data),
                   });
                 }
               },
-              this.props.pubSub
+              this.props.pubSub,
             );
           } else {
             // we've received a list of autocomplete suggestions
             this.setState({ loading: false, genes: data });
           }
         },
-        this.props.pubSub
+        this.props.pubSub,
       );
     }
   }
@@ -241,7 +241,7 @@ class GenomePositionSearchBox extends React.Component {
     if (this.gpsbForm) {
       // only set the state if this comonent is mounted
       this.setState({
-        availableAssemblies: [...commonKeys]
+        availableAssemblies: [...commonKeys],
       });
     }
   }
@@ -256,11 +256,11 @@ class GenomePositionSearchBox extends React.Component {
 
     // use the first available server that we have on record for this chromInfoId
     const serverAndChromInfoToUse = [
-      ...this.availableChromSizes[assemblyName]
+      ...this.availableChromSizes[assemblyName],
     ][0];
 
     this.setState({
-      autocompleteServer: serverAndChromInfoToUse.server
+      autocompleteServer: serverAndChromInfoToUse.server,
     });
 
     const { server } = serverAndChromInfoToUse;
@@ -273,7 +273,7 @@ class GenomePositionSearchBox extends React.Component {
 
       if (this.gpsbForm) {
         this.setState({
-          autocompleteId: newAcId
+          autocompleteId: newAcId,
         });
       }
     } else {
@@ -281,14 +281,14 @@ class GenomePositionSearchBox extends React.Component {
 
       if (this.gpsbForm) {
         this.setState({
-          autocompleteId: null
+          autocompleteId: null,
         });
       }
     }
 
     this.fetchChromInfo(
       serverAndChromInfoToUse.uuid,
-      serverAndChromInfoToUse.server
+      serverAndChromInfoToUse.server,
     );
   }
 
@@ -303,7 +303,7 @@ class GenomePositionSearchBox extends React.Component {
     const positionString = this.searchField.scalesToPositionText(
       this.xScale,
       this.yScale,
-      this.props.twoD
+      this.props.twoD,
     );
 
     // ReactDOM.findDOMNode( this.refs.searchFieldText).value = positionString;
@@ -351,7 +351,7 @@ class GenomePositionSearchBox extends React.Component {
 
               this.availableChromSizes[x.coordSystem].add({
                 server: sourceServer,
-                uuid: x.uuid
+                uuid: x.uuid,
               });
               this.setAvailableAssemblies();
             });
@@ -369,12 +369,12 @@ class GenomePositionSearchBox extends React.Component {
                 this.props.chromInfoId in this.availableChromSizes
                   ? [...this.availableChromSizes[this.props.chromInfoId]][0]
                       .server
-                  : this.props.chromInfoServer
+                  : this.props.chromInfoServer,
               );
             }
           }
         },
-        this.props.pubSub
+        this.props.pubSub,
       );
     });
   }
@@ -400,7 +400,7 @@ class GenomePositionSearchBox extends React.Component {
 
               this.availableAutocompletes[x.coordSystem].add({
                 server: sourceServer,
-                acId: x.uuid
+                acId: x.uuid,
               });
               this.setAvailableAssemblies();
             });
@@ -413,15 +413,15 @@ class GenomePositionSearchBox extends React.Component {
                 if (this.availableAutocompletes[this.props.chromInfoId]) {
                   this.setState({
                     autocompleteId: [
-                      ...this.availableAutocompletes[this.props.chromInfoId]
-                    ][0].acId
+                      ...this.availableAutocompletes[this.props.chromInfoId],
+                    ][0].acId,
                   });
                 }
               }
             }
           }
         },
-        this.props.pubSub
+        this.props.pubSub,
       );
     });
   }
@@ -450,11 +450,11 @@ class GenomePositionSearchBox extends React.Component {
             if (this.gpsbForm) {
               // only set the state if this component is mounted
               this.setState({
-                selectedAssembly: tilesetInfo[chromInfoId].coordSystem
+                selectedAssembly: tilesetInfo[chromInfoId].coordSystem,
               });
             }
           },
-          this.props.pubSub
+          this.props.pubSub,
         );
 
         this.chromInfo = newChromInfo;
@@ -462,7 +462,7 @@ class GenomePositionSearchBox extends React.Component {
 
         this.setPositionText();
       },
-      this.props.pubSub
+      this.props.pubSub,
     );
   }
 
@@ -502,7 +502,7 @@ class GenomePositionSearchBox extends React.Component {
           if (genePositions[dashChunk.toLowerCase()]) {
             const genePosition = genePositions[dashChunk.toLowerCase()];
             const extension = Math.floor(
-              (genePosition.txEnd - genePosition.txStart) / 4
+              (genePosition.txEnd - genePosition.txStart) / 4,
             );
 
             if (j === 0 && k < dashParts.length) {
@@ -541,7 +541,7 @@ class GenomePositionSearchBox extends React.Component {
 
     this.positionText = newValue;
     this.setState({
-      value: newValue
+      value: newValue,
     });
   }
 
@@ -695,11 +695,11 @@ class GenomePositionSearchBox extends React.Component {
 
     this.menuPosition = {
       left: box.left,
-      top: box.top + box.height
+      top: box.top + box.height,
     };
 
     this.setState({
-      menuOpened: isOpen
+      menuOpened: isOpen,
     });
   }
 
@@ -709,7 +709,7 @@ class GenomePositionSearchBox extends React.Component {
         <div
           style={{
             left: this.menuPosition.left,
-            top: this.menuPosition.top
+            top: this.menuPosition.top,
           }}
           styleName="styles.genome-position-search-bar-suggestions"
         >
@@ -723,13 +723,13 @@ class GenomePositionSearchBox extends React.Component {
     this.setSelectedAssembly(evt);
 
     this.setState({
-      selectedAssembly: evt
+      selectedAssembly: evt,
     });
   }
 
   focusHandler(isFocused) {
     this.setState({
-      isFocused
+      isFocused,
     });
   }
 
@@ -783,14 +783,14 @@ class GenomePositionSearchBox extends React.Component {
           inputProps={{
             className: styles['genome-position-search-bar'],
             title:
-              'Current location: enter a symbol or location to change the position of the current view'
+              'Current location: enter a symbol or location to change the position of the current view',
           }}
           items={this.state.genes}
           menuStyle={{
             position: 'absolute',
             left: this.menuPosition.left,
             top: this.menuPosition.top,
-            border: '1px solid black'
+            border: '1px solid black',
           }}
           onChange={this.onAutocompleteChange.bind(this)}
           onFocus={this.focusHandler.bind(this)}
@@ -839,7 +839,7 @@ GenomePositionSearchBox.propTypes = {
   setCenters: PropTypes.func,
   theme: PropTypes.symbol.isRequired,
   trackSourceServers: PropTypes.array,
-  twoD: PropTypes.bool
+  twoD: PropTypes.bool,
 };
 
 export default withPubSub(withTheme(GenomePositionSearchBox));

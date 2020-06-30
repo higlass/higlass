@@ -20,6 +20,6 @@ export default function createSymbolIcon(el, id, paths, viewBox) {
     symbol
       .append('path')
       .attr('d', d)
-      .attr('fill', 'currentColor')
+      .attr('fill', 'currentColor'),
   );
 }
