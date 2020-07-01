@@ -704,6 +704,8 @@ class GenomePositionSearchBox extends React.Component {
 
     this.positionText = parts.join(' ');
     this.setState({ value: parts.join(' '), genes: [] });
+
+    this.props.onGeneSearch(objct);
   }
 
   handleMenuVisibilityChange(isOpen, inputEl) {
@@ -854,6 +856,7 @@ GenomePositionSearchBox.propTypes = {
   isFocused: PropTypes.bool,
   pubSub: PropTypes.func,
   onFocus: PropTypes.func,
+  onGeneSearch: PropTypes.func,
   onSelectedAssemblyChanged: PropTypes.func,
   registerViewportChangedListener: PropTypes.func,
   removeViewportChangedListener: PropTypes.func,

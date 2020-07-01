@@ -671,6 +671,7 @@ const createApi = function api(context, pubSub) {
        * hgv.off('mouseMoveZoom', mmz);
        * hgv.off('wheel', wheelListener);
        * hgv.off('createSVG');
+       * hgv.off('geneSearch', geneSearchListener);
        */
       off(event, listenerId, viewId) {
         const callback =
@@ -707,6 +708,10 @@ const createApi = function api(context, pubSub) {
 
           case 'createSVG':
             self.offPostCreateSVG();
+            break;
+
+          case 'geneSearch':
+            apiPubSub.unsubscribe('geneSearch', callback);
             break;
 
           default:
@@ -880,6 +885,9 @@ const createApi = function api(context, pubSub) {
        *    svg.appendChild(circle);
        *    return svg;
        * });
+       *
+       * const geneSearchListener = event => console.log('Gene Searched', event);
+       * hgv.on('Gene Searched', geneSearchListener);
        */
       on(event, callback, viewId, callbackId) {
         switch (event) {
@@ -907,6 +915,9 @@ const createApi = function api(context, pubSub) {
 
           case 'createSVG':
             return self.onPostCreateSVG(callback);
+
+          case 'geneSearch':
+            return apiPubSub.subscribe('geneSearch', callback);
 
           default:
             return undefined;
