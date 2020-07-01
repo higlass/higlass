@@ -447,6 +447,7 @@ export default class DataFetcher {
         const newTile = {
           min_value: Math.min.apply(null, dataSlice),
           max_value: Math.max.apply(null, dataSlice),
+          denseDataExtrema: new DenseDataExtrema1D(dataSlice),
           minNonZero: minNonZero(dataSlice),
           maxNonZero: maxNonZero(dataSlice),
           dense: dataSlice,
