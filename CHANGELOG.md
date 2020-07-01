@@ -1,6 +1,6 @@
 # Release notes
 
-## Next release
+## v1.10.0
 
 - Fixed horizontal and vertical cross sections
 - Changed the style for the mouse over dialog to have a maximum width of 50 and to break words so that it doesn't go off the screen if there's a very long mouseover text.
@@ -11,6 +11,8 @@
 - Remove horizontal-_ and vertical-_ prefixes from track names
 - Load matrices with "None" data transform without crashing
 - Add a view for showing schema log messages when JSON codes are edited in a config view.
+
+_[Detailed changes since v1.9.5](https://github.com/higlass/higlass/compare/v1.9.5...v1.10.0)_
 
 ## v1.9.5
 
