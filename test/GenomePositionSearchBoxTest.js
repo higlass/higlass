@@ -59,6 +59,7 @@ describe('Genome position search box tests', () => {
       removeDiv(div);
       api = undefined;
       div = undefined;
+      hgc = null;
     });
   });
 
