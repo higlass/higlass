@@ -47,7 +47,7 @@ class VerticalTiledPlot extends React.Component {
       ) {
         this.moveBrush(
           nextProps.rangeSelection[0] ? nextProps.rangeSelection[0] : null,
-          true
+          true,
         );
       }
       this.rangeSelectionTriggeredEnd = false;
@@ -60,7 +60,7 @@ class VerticalTiledPlot extends React.Component {
         nextProps.rangeSelection[accessor]
           ? nextProps.rangeSelection[accessor]
           : null,
-        nextProps.rangeSelectionEnd
+        nextProps.rangeSelectionEnd,
       );
       return this.state !== nextState;
     }
@@ -98,7 +98,7 @@ class VerticalTiledPlot extends React.Component {
 
     resetD3BrushStyle(
       this.brushEl,
-      stylesTrack['track-range-selection-group-brush-selection']
+      stylesTrack['track-range-selection-group-brush-selection'],
     );
   }
 
@@ -156,7 +156,7 @@ class VerticalTiledPlot extends React.Component {
     const relRange = rangeSelection
       ? [
           this.props.scale(rangeSelection[0]),
-          this.props.scale(rangeSelection[1])
+          this.props.scale(rangeSelection[1]),
         ]
       : null;
 
@@ -204,7 +204,7 @@ class VerticalTiledPlot extends React.Component {
             }}
             style={{
               height: this.props.height,
-              width
+              width,
             }}
             styleName={rangeSelectorClass}
             xmlns="http://www.w3.org/2000/svg"
@@ -227,7 +227,7 @@ class VerticalTiledPlot extends React.Component {
             uid: d.uid || slugid.nice(),
             height: this.props.height,
             width: d.width,
-            value: d.value
+            value: d.value,
           }))}
           onAddSeries={this.props.onAddSeries}
           onCloseTrack={this.props.onCloseTrack}
@@ -267,7 +267,7 @@ VerticalTiledPlot.propTypes = {
   resizeHandles: PropTypes.object,
   scale: PropTypes.func,
   tracks: PropTypes.array,
-  tracksControlAlignLeft: PropTypes.bool
+  tracksControlAlignLeft: PropTypes.bool,
 };
 
 export default VerticalTiledPlot;

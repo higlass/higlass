@@ -42,7 +42,7 @@ class MoveableTrack extends TrackArea {
         }
         style={{
           height: this.props.height,
-          width: this.props.width
+          width: this.props.width,
         }}
       >
         <DraggableDiv
@@ -55,7 +55,7 @@ class MoveableTrack extends TrackArea {
             this.props.handleResizeTrack(
               this.props.uid,
               stuff.width,
-              stuff.height
+              stuff.height,
             )
           }
           style={{ background: 'transparent' }}
@@ -64,7 +64,7 @@ class MoveableTrack extends TrackArea {
         />
         {this.props.editable &&
           this.getControls(
-            this.state.controlsVisible || this.props.item.configMenuVisible
+            this.state.controlsVisible || this.props.item.configMenuVisible,
           )}
       </div>
     );
@@ -76,7 +76,7 @@ MoveableTrack.propTypes = {
   uid: PropTypes.string,
   item: PropTypes.object,
   height: PropTypes.number,
-  width: PropTypes.number
+  width: PropTypes.number,
 };
 
 export default MoveableTrack;

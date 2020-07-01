@@ -115,32 +115,46 @@ function gbToHgGene(gb) {
   };
 }
 
+/** Convert genbank text to a JSON representation and extract features * */
+const gbToJsonAndFeatures = gbText => {
+  const gbJson = genbankParser(gbText);
+  const features = shuffle(
+    gbJson[0].features
+      .filter(f => f.type !== 'source')
+      .sort((a, b) => a.start - b.start)
+  );
+
+  return [gbJson, features];
+};
+
 class GBKDataFetcher {
   constructor(dataConfig) {
     this.dataConfig = dataConfig;
     this.trackUid = slugid.nice();
 
-    const extension = dataConfig.url.slice(dataConfig.url.length - 3);
-    const gzipped = extension === '.gz';
-    this.errorTxt = '';
+    if (dataConfig.url) {
+      const extension = dataConfig.url.slice(dataConfig.url.length - 3);
+      const gzipped = extension === '.gz';
+      this.errorTxt = '';
 
-    this.dataPromise = fetch(dataConfig.url, {
-      mode: 'cors',
-      redirect: 'follow',
-      method: 'GET'
-    })
-      .then(response => (gzipped ? response.arrayBuffer() : response.text()))
-      .then(buffer => {
-        const gffText = gzipped
-          ? pako.inflate(buffer, { to: 'string' })
-          : buffer;
-        this.gbJson = genbankParser(gffText);
-        this.cdss = shuffle(
-          this.gbJson[0].features
-            .filter(f => f.type !== 'source')
-            .sort((a, b) => a.start - b.start)
-        );
+      this.dataPromise = fetch(dataConfig.url, {
+        mode: 'cors',
+        redirect: 'follow',
+        method: 'GET'
+      })
+        .then(response => (gzipped ? response.arrayBuffer() : response.text()))
+        .then(buffer => {
+          const gffText = gzipped
+            ? pako.inflate(buffer, { to: 'string' })
+            : buffer;
+          [this.gbJson, this.cdss] = gbToJsonAndFeatures(gffText);
+        });
+    } else if (dataConfig.text) {
+      this.dataPromise = new Promise((resolve, reject) => {
+        [this.gbJson, this.cdss] = gbToJsonAndFeatures(dataConfig.text);
+        resolve();
       });
+    }
   }
 
   tilesetInfo(callback) {

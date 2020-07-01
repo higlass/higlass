@@ -12,7 +12,7 @@ class DragListeningDiv extends React.Component {
     super(props);
 
     this.state = {
-      dragOnTop: false
+      dragOnTop: false,
     };
   }
 
@@ -49,7 +49,7 @@ class DragListeningDiv extends React.Component {
             type: this.props.defaultTrackType,
             uid: slugid.nice(),
             tilesetUid: evtJson.tilesetUid,
-            server: evtJson.server
+            server: evtJson.server,
           };
 
           this.props.onTrackDropped(newTrack);
@@ -58,9 +58,9 @@ class DragListeningDiv extends React.Component {
         style={Object.assign(
           {
             background,
-            opacity: 0.6
+            opacity: 0.6,
           },
-          this.props.style
+          this.props.style,
         )}
         styleName={styleNames}
       />
@@ -72,7 +72,7 @@ DragListeningDiv.defaultProps = {
   enabled: false,
   style: {},
   draggingHappening: {},
-  onTrackDropped: () => {}
+  onTrackDropped: () => {},
 };
 
 DragListeningDiv.propTypes = {
@@ -82,7 +82,7 @@ DragListeningDiv.propTypes = {
   draggingHappening: PropTypes.object,
   onTrackDropped: PropTypes.func,
   position: PropTypes.string.isRequired,
-  pubSub: PropTypes.object.isRequired
+  pubSub: PropTypes.object.isRequired,
 };
 
 export default withPubSub(DragListeningDiv);

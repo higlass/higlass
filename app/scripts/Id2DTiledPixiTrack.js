@@ -12,7 +12,7 @@ export function drawTile(tile) {
   const graphics = tile.graphics;
   const { tileX, tileY, tileWidth } = this.getTilePosAndDimensions(
     tile.tileData.zoomLevel,
-    tile.tileData.tilePos
+    tile.tileData.tilePos,
   );
 
   // console.log('tileX:', tileX, 'tileY:', tileY, 'tileWidth:', tileWidth);
@@ -64,7 +64,7 @@ export function drawTile(tile) {
       this._refXScale(tileY),
       this._refYScale(tileX),
       tileScaledWidth,
-      tileScaledHeight
+      tileScaledHeight,
     );
   } else {
     const tileScaledWidth =
@@ -81,7 +81,7 @@ export function drawTile(tile) {
       this._refXScale(tileX),
       this._refYScale(tileY),
       tileScaledWidth,
-      tileScaledHeight
+      tileScaledHeight,
     );
   }
 }
@@ -95,14 +95,14 @@ export function initTile(tile) {
     tile.text = new GLOBALS.PIXI.Text(
       `${tile.tileData.zoomLevel}/${[
         tile.tileData.tilePos[1],
-        tile.tileData.tilePos[0]
+        tile.tileData.tilePos[0],
       ].join('/')}`,
       {
         fontFamily: 'Arial',
         fontSize: 24,
         fill: 0xff1010,
-        align: 'center'
-      }
+        align: 'center',
+      },
     );
   } else {
     tile.text = new GLOBALS.PIXI.Text(
@@ -111,8 +111,8 @@ export function initTile(tile) {
         fontFamily: 'Arial',
         fontSize: 24,
         fill: 0xff1010,
-        align: 'center'
-      }
+        align: 'center',
+      },
     );
   }
 
@@ -156,7 +156,7 @@ class Id2DTiledPixiTrack extends HeatmapTiledPixiTrack {
 
       const data = {
         zoomLevel: keyParts[0],
-        tilePos: keyParts.slice(1, keyParts.length).map(keyPart => +keyPart)
+        tilePos: keyParts.slice(1, keyParts.length).map(keyPart => +keyPart),
       };
 
       this.fetchedTiles[x.tileId] = x;

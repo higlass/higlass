@@ -12,7 +12,7 @@ const drawRectWithPositionedBorder = (
   fill,
   stroke,
   outline,
-  isVertical = false
+  isVertical = false,
 ) => {
   let finalXPos = xPos;
   let finalYPos = yPos;
@@ -37,7 +37,7 @@ const drawRectWithPositionedBorder = (
           xPos - outlineWidth,
           yPos - outlineHeight,
           width + outlineWidth * 2,
-          outlineHeight
+          outlineHeight,
         );
       } else if (
         (pos === 'bottom' && !isVertical) ||
@@ -47,7 +47,7 @@ const drawRectWithPositionedBorder = (
           xPos - outlineWidth,
           yPos + height,
           width + outlineWidth * 2,
-          outlineHeight
+          outlineHeight,
         );
       } else if (
         (pos === 'left' && !isVertical) ||
@@ -57,7 +57,7 @@ const drawRectWithPositionedBorder = (
           xPos - outlineWidth,
           yPos - outlineHeight,
           outlineWidth,
-          height + outlineHeight * 2
+          height + outlineHeight * 2,
         );
       } else if (
         (pos === 'right' && !isVertical) ||
@@ -67,7 +67,7 @@ const drawRectWithPositionedBorder = (
           xPos + width,
           yPos - outlineHeight,
           outlineWidth,
-          height + outlineHeight * 2
+          height + outlineHeight * 2,
         );
       }
     });
@@ -78,7 +78,7 @@ const drawRectWithPositionedBorder = (
       xPos - outlineWidth,
       yPos - outlineHeight,
       width + outlineWidth * 2,
-      height + outlineHeight * 2
+      height + outlineHeight * 2,
     );
   }
 
@@ -105,7 +105,7 @@ const drawRectWithPositionedBorder = (
           xPos,
           yPos + height - strokeHeight,
           width,
-          strokeHeight
+          strokeHeight,
         );
         finalHeight -= strokeHeight;
       } else if (
@@ -123,7 +123,7 @@ const drawRectWithPositionedBorder = (
           xPos + width - strokeWidth,
           yPos,
           strokeWidth,
-          height
+          height,
         );
         finalWidth -= strokeWidth;
       }
@@ -151,7 +151,7 @@ class OverlayTrack extends PixiTrack {
     minWidth = 0,
     fill,
     stroke,
-    outline
+    outline,
   ) {
     if (!extent || extent.length < 2) return;
 
@@ -175,7 +175,7 @@ class OverlayTrack extends PixiTrack {
       height,
       fill,
       stroke,
-      outline
+      outline,
     );
   }
 
@@ -186,7 +186,7 @@ class OverlayTrack extends PixiTrack {
     minHeight = 0,
     fill,
     stroke,
-    outline
+    outline,
   ) {
     if (!extent || extent.length < 2) return;
 
@@ -243,7 +243,7 @@ class OverlayTrack extends PixiTrack {
       fill,
       stroke,
       outline,
-      true
+      true,
     );
   }
 
@@ -255,7 +255,7 @@ class OverlayTrack extends PixiTrack {
       color: colorToHex(this.options.fill || this.options.fillColor || 'blue'),
       opacity: Number.isNaN(+this.options.fillOpacity)
         ? 0.3
-        : +this.options.fillOpacity
+        : +this.options.fillOpacity,
     };
     const stroke = {
       color: colorToHex(this.options.stroke || 'blue'),
@@ -264,7 +264,7 @@ class OverlayTrack extends PixiTrack {
       positions:
         !this.options.strokePos || Array.isArray(this.options.strokePos)
           ? this.options.strokePos
-          : [this.options.strokePos]
+          : [this.options.strokePos],
     };
     const outline = {
       color: colorToHex(this.options.outline || 'white'),
@@ -273,14 +273,14 @@ class OverlayTrack extends PixiTrack {
       positions:
         !this.options.outlinePos || Array.isArray(this.options.outlinePos)
           ? this.options.outlinePos
-          : [this.options.outlinePos]
+          : [this.options.outlinePos],
     };
 
     graphics.clear();
     graphics.lineStyle(
       stroke.width,
       stroke,
-      +!stroke.positions * stroke.opacity
+      +!stroke.positions * stroke.opacity,
     );
     graphics.beginFill(fill.color, fill.opacity);
 
@@ -298,8 +298,8 @@ class OverlayTrack extends PixiTrack {
               minWidth,
               fill,
               stroke,
-              outline
-            )
+              outline,
+            ),
           );
         }
 
@@ -312,8 +312,8 @@ class OverlayTrack extends PixiTrack {
               minHeight,
               fill,
               stroke,
-              outline
-            )
+              outline,
+            ),
           );
         }
       });

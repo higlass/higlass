@@ -113,7 +113,7 @@ export function workerSetPix(
   zeroValueColor = null,
   selectedRows = null,
   selectedRowsAggregationMode = null,
-  selectedRowsAggregationWithRelativeHeight = null
+  selectedRowsAggregationWithRelativeHeight = null,
 ) {
   let valueScale = null;
 
@@ -126,7 +126,7 @@ export function workerSetPix(
       console.warn(
         'Unknown value scale type:',
         valueScaleType,
-        ' Defaulting to linear'
+        ' Defaulting to linear',
       );
     }
     valueScale = scaleLinear()
@@ -142,7 +142,7 @@ export function workerSetPix(
     filteredSize =
       selectedItemsToSize(
         selectedRows,
-        selectedRowsAggregationWithRelativeHeight
+        selectedRowsAggregationWithRelativeHeight,
       ) * shape[1];
   }
 
@@ -172,7 +172,7 @@ export function workerSetPix(
       // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
       rgbIdx = Math.max(
         0,
-        Math.min(254, Math.floor(valueScale(d + pseudocount)))
+        Math.min(254, Math.floor(valueScale(d + pseudocount))),
       );
     }
     // let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
@@ -180,7 +180,7 @@ export function workerSetPix(
       console.warn(
         'out of bounds rgbIdx:',
         rgbIdx,
-        ' (should be 0 <= rgbIdx <= 255)'
+        ' (should be 0 <= rgbIdx <= 255)',
       );
     }
 
@@ -238,7 +238,7 @@ export function workerSetPix(
             ) {
               setPixData(
                 pixRowI * shape[1] + colI, // pixData index
-                d // data point
+                d, // data point
               );
               pixRowI++;
             }
@@ -246,7 +246,7 @@ export function workerSetPix(
             // Set a single pixel, either representing a single row or an entire row group, if the vertical height for each group should be uniform (i.e. should not depend on group size).
             setPixData(
               pixRowI * shape[1] + colI, // pixData index
-              d // data point
+              d, // data point
             );
             pixRowI++;
           }
@@ -365,7 +365,13 @@ export function tileResponseToData(data, server, theseTileIds) {
     data[key].server = server;
     data[key].tileId = key;
     data[key].zoomLevel = +keyParts[1];
-    data[key].tilePos = keyParts.slice(2, keyParts.length).map(x => +x);
+
+    // slice from position 2 to exclude tileId and zoomLevel
+    // filter by NaN to exclude metadata portions of the tile request
+    data[key].tilePos = keyParts
+      .slice(2, keyParts.length)
+      .map(x => +x)
+      .filter(x => !Number.isNaN(x));
     data[key].tilesetUid = keyParts[0];
 
     if ('dense' in data[key]) {
@@ -392,7 +398,6 @@ export function tileResponseToData(data, server, theseTileIds) {
       data[key].denseDataExtrema = dde;
       data[key].minNonZero = dde.minNonZeroInTile;
       data[key].maxNonZero = dde.maxNonZeroInTile;
-
       /*
       if (data[key]['minNonZero'] === Number.MAX_SAFE_INTEGER &&
           data[key]['maxNonZero'] === Number.MIN_SAFE_INTEGER) {
@@ -411,14 +416,14 @@ export function tileResponseToData(data, server, theseTileIds) {
 
 export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
   const headers = {
-    'content-type': 'application/json'
+    'content-type': 'application/json',
   };
 
   if (authHeader) headers.Authorization = authHeader;
 
   fetch(outUrl, {
     credentials: 'same-origin',
-    headers
+    headers,
   })
     .then(response => response.json())
     .then(data => {

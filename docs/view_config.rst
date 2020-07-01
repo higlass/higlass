@@ -150,6 +150,27 @@ pointer to a chromSizes file and an autocomplete source which will provide
 suggestions for gene names. The autocomplete source should point to a `gene-
 annotations` file.
 
+.. code-block:: javascript
+
+      "genomePositionSearchBox": {
+        "autocompleteServer": "//higlass.io/api/v1",
+        "autocompleteId": "QDutvmyiSrec5nX4pA5WGQ",
+        "chromInfoServer": "//higlass.io/api/v1",
+        "chromInfoId": "mm10",
+        "visible": true
+      },
+
+This will pull the chromosome sizes and autocomplete annotations
+for a higlass server. One can also tell the genome position search box to use chromosome files from an absolute location. This option would most often be used with the `hideAvailableAssemblies` option to hide the dropdown of available assemblies:
+
+.. code-block:: javascript
+
+      "genomePositionSearchBox": {
+        "chromInfoPath": 'https://s3.amazonaws.com/pkerp/public/gpsb/small.chrom.sizes',
+        "hideAvailableAssemblies": true,
+        "visible": true
+      },
+
 
 Views
 =====
@@ -204,6 +225,32 @@ assigned values of ``[0,1]]``.
                     "chromInfoId": "hg19",
                     "visible": true
                 }
+        ]
+    }
+
+zoomLimits
+^^^^^^^^^^
+
+The field contains limits that controll the extend to which zooming is possible within a view. In the example below, zooming in is not possible beyond 200bp. If one of the items in the array is `null`, zooming is unrestricted in the corresponding direction. If the field is not present in the viewconf, it defaults to unrestricted zooming.
+
+.. code-block:: javascript
+
+    {
+        views: [
+            {
+                  "uid": "AhI0wMP6ScybnFp6BmLuPQ",
+                  "initialXDomain": [
+                    973907089.1176914,
+                    1196247735.9596405
+                  ],
+                  "initialYDomain": [
+                    -12281154450.083118,
+                    -12145323104.213125
+                  ],
+                  "zoomLimits": [
+                    200,
+                    3400000000
+                  ],
         ]
     }
 
@@ -317,7 +364,7 @@ In addition to using ``tilesetUid`` or ``fileUrl`` to specify a data source, the
 Genbank files
 """""""""""""
 
-A Genbank file data source will load a complete genbank file from a remote URL and serve that as a ``gene-annotations`` datatype. See the `horizontal-gene-annotations section <track_types.html#gene-annotations>`_ for an example of a track type that can be used with Genbank files.
+A Genbank file data source will load a complete genbank file from a either text or remote URL and serve that as a ``gene-annotations`` datatype. See the `horizontal-gene-annotations section <track_types.html#gene-annotations>`_ for an example of a track type that can be used with Genbank files.
 
 .. code-block:: javascript
 
@@ -327,6 +374,18 @@ A Genbank file data source will load a complete genbank file from a remote URL a
       "url": "https://pkerp.s3.amazonaws.com/public/GCA_000010365.1_ASM1036v1_genomic.gbff.gz"
     }
   }
+
+The specify the Genbank as text, replace the ``url`` field with ``text``:
+
+.. code-block:: javascript
+
+  {
+    "data": {
+      "type": "genbank",
+      "text": "LOCUS       AP009180              159662 bp    DNA..."
+    }
+  }
+
 
 **Note** The Genbank data sources is limited in its detail. It currently only displays genes and the names of genes. More extensive support for gene annotations (e.g. exons) should be added in the `higlass/app/scripts/data-fetchers/genbank-fetcher.js` file.
 
@@ -469,40 +528,40 @@ end coordinates are different: [start, end] vs [x-start, x-end, y-start, y-end].
 .. code-block:: javascript
 
     {
-      "views": [
+      views: [
         {
-          "overlays": [
+          overlays: [
             {
-              "uid": "overlay-annotation",
-              "includes": ["track1", "track2", "track3"],
+              uid: 'overlay-annotation',
+              includes: ['track1Uid', 'track2Uid', 'track3Uid'],
               // Default definitions for annotations
-              "options": {
-                "extent": [
+              options: {
+                extent: [
                   [1000000000, 1100000000],
                   [1200000000, 1300000000, 1400000, 1500000]
                 ],
                 minWidth: 3,
-                fill: "blue",
+                fill: 'blue',
                 fillOpacity: 0.3,
-                stroke: "yellow",
+                stroke: 'yellow',
                 strokeOpacity: 0.6,
                 strokeWidth: 2,
-                strokePos: ["left", "right"],
-                outline: "cyan"
+                strokePos: ['left', 'right'],
+                outline: 'cyan',
                 outlineOpacity: 0.1337,
-                outlineWidth: 1337,
-                outlinePos: "top"
+                outlineWidth: 1.337,
+                outlinePos: 'top'
               }
             },
             {
-              "uid": "overlay-chromosome-grid",
-              "includes": ["track1", "track2", "track3"],
-              "type": "chromosome-grid",
+              uid: 'overlay-chromosome-grid',
+              includes: ['track1', 'track2', 'track3'],
+              type: 'chromosome-grid',
               // Same definitions as the chromosome-grid track
-              "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-              "options": {
-                "lineStrokeWidth": 1,
-                "lineStrokeColor": "grey"
+              chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+              options: {
+                lineStrokeWidth: 1,
+                lineStrokeColor: 'grey'
               }
             }
           ]

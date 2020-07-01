@@ -45,7 +45,7 @@ class CombinedTrack {
     // remove the ones that were previously, but no longer, present
     const knownTracks = new Set(Object.keys(this.createdTracks));
     const exitTracks = new Set(
-      [...knownTracks].filter(x => !currentTracks.has(x))
+      [...knownTracks].filter(x => !currentTracks.has(x)),
     );
     [...exitTracks].forEach(trackUid => {
       this.createdTracks[trackUid].remove();
@@ -88,7 +88,7 @@ class CombinedTrack {
         x,
         y,
         xPositionOffset,
-        yPositionOffset
+        yPositionOffset,
       );
     }
   }

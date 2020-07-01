@@ -15,7 +15,7 @@ export default class ConfigureSeriesMenu extends ContextMenuContainer {
         onMouseLeave={this.props.handleMouseLeave}
         style={{
           left: this.state.left,
-          top: this.state.top
+          top: this.state.top,
         }}
         styleName="context-menu"
       />

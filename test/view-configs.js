@@ -36,3 +36,5 @@ export { default as valueIntervalTrackViewConf } from './view-configs-more/value
 export { default as verticalHeatmapTrack } from './view-configs-tracks/verticalHeatmapTrack';
 export { default as stackedTopTracks } from './view-configs-more/stacked-top-tracks';
 export { default as stackedTopViews } from './view-configs-more/stacked-top-views';
+export { default as restrictedZoom } from './view-configs-more/restrictedZoom';
+export { default as smallViewconf } from './view-configs-more/smallViewconf';

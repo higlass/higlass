@@ -1,12 +1,12 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 // Utils
-import { mountHGComponent } from '../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
 describe('Minimal viewconfs', () => {
@@ -30,16 +30,16 @@ describe('Minimal viewconfs', () => {
                 uid: 'a',
                 type: 'horizontal-bar',
                 options: {
-                  barFillColor: 'red'
+                  barFillColor: 'red',
                 },
                 width: 1109,
                 height: 106,
-                position: 'top'
-              }
-            ]
-          }
-        }
-      ]
+                position: 'top',
+              },
+            ],
+          },
+        },
+      ],
     };
     let hgc = null;
     let div = null;
@@ -54,7 +54,7 @@ describe('Minimal viewconfs', () => {
     });
 
     afterAll(() => {
-      // removeHGComponent(div);
+      removeHGComponent(div);
     });
   });
 });

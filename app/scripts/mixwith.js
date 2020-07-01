@@ -165,7 +165,7 @@ export const Cached = mixin =>
  */
 export const DeDupe = mixin =>
   wrap(mixin, superclass =>
-    hasMixin(superclass.prototype, mixin) ? superclass : mixin(superclass)
+    hasMixin(superclass.prototype, mixin) ? superclass : mixin(superclass),
   );
 
 /**
@@ -180,7 +180,7 @@ export const HasInstance = mixin => {
     Object.defineProperty(mixin, Symbol.hasInstance, {
       value(o) {
         return hasMixin(o, mixin);
-      }
+      },
     });
   }
   return mixin;

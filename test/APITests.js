@@ -858,6 +858,28 @@ describe('API Tests', () => {
       });
     });
 
+    it('can modify and set the viewconf', done => {
+      [div, api] = createElementAndApi(simpleHeatmapViewConf, {
+        editable: true
+      });
+
+      const hgc = api.getComponent();
+
+      waitForTilesLoaded(hgc, () => {
+        const newConfig = JSON.parse(JSON.stringify(simpleCenterViewConfig));
+        newConfig.views[0].tracks.center[0].options.name = 'Modified name';
+
+        // Ckeck that the promise resolves
+        api.setViewConfig(newConfig, true).then(() => {
+          const retrievedViewConf = api.getViewConfig();
+          const newName =
+            retrievedViewConf.views[0].tracks.center[0].options.name;
+          expect(newName).toEqual('Modified name');
+          done();
+        });
+      });
+    });
+
     afterEach(() => {
       api.destroy();
       removeDiv(div);
