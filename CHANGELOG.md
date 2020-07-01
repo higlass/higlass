@@ -1,8 +1,10 @@
 # Release notes
 
-## Unreleased
+## Next release
 
 - Fixed horizontal and vertical cross sections
+- Changed the style for the mouse over dialog to have a maximum width of 50 and to break words so that it doesn't go off the screen if there's a very long mouseover text.
+- Lower the default annotation height in the Gene Annotations track
 - Colors for rules
 - Ability to load genome position search box chromosome sizes from an arbitrary location
 - Plugin tracks can provide their own config menu options
