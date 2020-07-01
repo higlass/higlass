@@ -1,5 +1,8 @@
 # Release notes
 
+## Unreleased
+- Added the JS API `.on('geneSearch', callback)` option for subscribing to gene search events.
+
 ## v1.10.0
 
 - Fixed horizontal and vertical cross sections
