@@ -887,7 +887,7 @@ const createApi = function api(context, pubSub) {
        * });
        *
        * const geneSearchListener = event => console.log('Gene Searched', event);
-       * hgv.on('Gene Searched', geneSearchListener);
+       * hgv.on('geneSearch', geneSearchListener);
        */
       on(event, callback, viewId, callbackId) {
         switch (event) {

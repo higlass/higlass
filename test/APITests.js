@@ -990,7 +990,7 @@ describe('API Tests', () => {
         score: 1516,
         geneName: 'MYC',
       };
-      // Simulate the wheel and keyboard events.
+      // Simulate the gene search events.
       hgc.geneSearchHandler(geneSearchEvent);
     });
   });
