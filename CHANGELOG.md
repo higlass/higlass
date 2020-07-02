@@ -1,5 +1,9 @@
 # Release notes
 
+## Next release
+
+- Remove text/plain encoding from tile proxy text fetcher
+
 ## v1.10.0
 
 - Fixed horizontal and vertical cross sections
