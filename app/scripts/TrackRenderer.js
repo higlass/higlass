@@ -1484,10 +1484,10 @@ class TrackRenderer extends React.Component {
     if (track.fileUrl) {
       dataConfig.fileUrl = track.fileUrl;
 
-      if (!track.filetype) {
-        console.warn('fileUrl present without filetype:', track);
+      if (!track.fileType) {
+        console.warn('fileUrl present without fileType:', track);
       } else {
-        dataConfig.filetype = track.filetype;
+        dataConfig.fileType = track.fileType;
       }
     }
 

@@ -330,7 +330,7 @@
           "tilesetUid": { "type": "string" },
           "data": { "$ref": "#/definitions/data" },
           "uid": { "type": "string" },
-          "filetype": { "type": "string" },
+          "fileType": { "type": "string" },
           "fileUrl": { "type": "string" },
           "indexUrl": { "type": "string" },
           "type": {

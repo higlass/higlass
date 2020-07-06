@@ -40,7 +40,7 @@ export default class DataFetcher {
    *
    * @param {string} server The server api location (e.g. 'localhost:8000/api/v1')
    * @param {string} fileUrl The location of the data file (e.g. 'encode.org/my.file.bigwig')
-   * @param {string} filetype The type of file being served (e.g. 'bigwig')
+   * @param {string} fileType The type of file being served (e.g. 'bigwig')
    */
   async registerFileUrl({ server, fileUrl, fileType, coordSystem, indexUrl }) {
     const serverUrl = `${tts(server)}/register_url/`;
@@ -49,7 +49,7 @@ export default class DataFetcher {
       fileurl: fileUrl,
       indexurl: indexUrl,
       filetype: fileType,
-      coordSystem
+      coordSystem,
     };
 
     return fetch(serverUrl, {

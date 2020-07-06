@@ -345,7 +345,7 @@ The second method of obtaining data is from a http-accessible url. We still
 need a compatible server to load data from the url and convert it to tiles,
 but we don't need to explicitly register the data with the server. This can be
 done automatically by the client as long as it has the ``fileUrl``, ``server``
-and ``filetype``
+and ``fileType``
 
 .. code-block:: javascript
 
@@ -353,7 +353,7 @@ and ``filetype``
       "type": "vector",
       "server": "http://my-higlass.io/api/v1",
       "fileUrl": "http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig",
-      "filetype": "bigwig",
+      "fileType": "bigwig",
       "indexUrl": "http://example.com/info.json"
     }
 
