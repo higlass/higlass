@@ -3,6 +3,7 @@
 ## Next release
 
 - Remove text/plain encoding from tile proxy text fetcher
+- Improved support for the `fileUrl` option with bug fixes for the complementary `coordSystem`, `indexUrl`, and `fileType` track config properties.
 
 ## v1.10.0
 
