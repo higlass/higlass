@@ -1,5 +1,7 @@
-import * as PIXI from 'pixi.js';
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
+
+// Configs
+import { GLOBALS } from './configs';
 
 class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(context, options) {
@@ -21,18 +23,16 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
      */
 
     const graphics = tile.graphics;
-    tile.textGraphics = new PIXI.Graphics();
-    // tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/')
-    // + '/' + tile.mirrored,
+    tile.textGraphics = new GLOBALS.PIXI.Graphics();
 
-    tile.text = new PIXI.Text(
+    tile.text = new GLOBALS.PIXI.Text(
       `${tile.tileData.zoomLevel}/${tile.tileData.tilePos.join('/')}`,
       {
         fontFamily: 'Arial',
         fontSize: 32,
         fill: 0xff1010,
-        align: 'center'
-      }
+        align: 'center',
+      },
     );
 
     // tile.text.y = 100;
@@ -59,7 +59,7 @@ class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
-      tile.tileData.tilePos
+      tile.tileData.tilePos,
     );
 
     // the text needs to be scaled down so that it doesn't become huge

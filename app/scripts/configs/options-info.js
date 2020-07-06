@@ -139,6 +139,10 @@ export const OPTIONS_INFO = {
     name: 'Track Border Width',
     inlineOptions: AVAILABLE_WIDTHS
   },
+  separatePlusMinusStrands: {
+    name: 'Separate +/- strands',
+    inlineOptions: YES_NO
+  },
   sortLargestOnTop: {
     name: 'Sort Largest On Top',
     inlineOptions: YES_NO
@@ -251,6 +255,10 @@ export const OPTIONS_INFO = {
   },
   color: {
     name: 'Color',
+    inlineOptions: AVAILABLE_COLORS
+  },
+  fontColor: {
+    name: 'Font color',
     inlineOptions: AVAILABLE_COLORS
   },
   fillColor: {
@@ -438,7 +446,8 @@ export const OPTIONS_INFO = {
   colorEncoding: {
     name: 'Color Encode Annotations',
     inlineOptions: {
-      none: { name: 'None', value: null }
+      none: { name: 'None', value: null },
+      itemRgb: { name: 'itemRgb', value: 'itemRgb' }
     },
     generateOptions: valueColumnOptions
   },

@@ -27,7 +27,7 @@ class OSMTileIdsTrack extends OSMTilesTrack {
 
       const data = {
         zoomLevel: keyParts[0],
-        tilePos: keyParts.slice(1, keyParts.length).map(keyPart => +keyPart)
+        tilePos: keyParts.slice(1, keyParts.length).map(keyPart => +keyPart),
       };
 
       this.fetchedTiles[x.tileId] = x;

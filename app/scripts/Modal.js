@@ -36,7 +36,7 @@ const Modal = props => {
 Modal.defaultProps = {
   closeButton: true,
   hide: false,
-  maxHeight: false
+  maxHeight: false,
 };
 
 Modal.propTypes = {
@@ -45,7 +45,7 @@ Modal.propTypes = {
   hide: PropTypes.bool,
   maxHeight: PropTypes.bool,
   modal: PropTypes.object.isRequired,
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
 };
 
 export default withModal(Modal);

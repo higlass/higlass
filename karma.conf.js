@@ -25,7 +25,7 @@ module.exports = config => {
         pattern: 'docs/examples/viewconfs/*.json',
         watched: true,
         served: true,
-        included: false
+        included: false,
       },
       'test/AxisTests.js',
       'test/2DRectangleDomainsTests.js',
@@ -36,7 +36,7 @@ module.exports = config => {
       'test/BedLikeTests.js',
       'test/ChromosomeLabelsTests.js',
       'test/ChromSizesTests.js',
-      'test/DenseDataExtrema.js',
+      'test/DenseDataExtremaTests.js',
       'test/EmptyTrackTests.js',
       'test/GenbankFetcherTests.js',
       'test/GeneAnnotationsTrackTests.js',
@@ -65,25 +65,25 @@ module.exports = config => {
       'test/SVGExportTest.js',
       'test/tile-proxy.js',
       'test/TiledPixiTrackTests.js',
-      'test/TrackLabelsTest.jsx',
+      'test/TrackLabelsTest.js',
       'test/UtilsTests.js',
       'test/ViewConfigEditorTests.js',
       'test/ViewManipulationTests.js',
       'test/ViewportProjectionTests.js',
-      'test/ZoomTests.js'
+      'test/ZoomTests.js',
     ],
 
     preprocessors: {
       // add webpack as preprocessor
       'app/scripts/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
-      'test/**/*.+(js|jsx)': ['webpack', 'sourcemap']
+      'test/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
     },
 
     // webpackConfig(env, argv)
     webpack: webpackConfig({}, {}),
 
     webpackServer: {
-      noInfo: true // please don't spam the console when running in karma!
+      noInfo: true, // please don't spam the console when running in karma!
     },
 
     plugins: [
@@ -92,13 +92,13 @@ module.exports = config => {
       'karma-sourcemap-loader',
       'karma-chrome-launcher',
       'karma-phantomjs2-launcher',
-      'karma-verbose-reporter'
+      'karma-verbose-reporter',
     ],
 
     babelPreprocessor: {
       options: {
-        presets: ['airbnb']
-      }
+        presets: ['airbnb'],
+      },
     },
     reporters: ['verbose'],
     port: 9876,
@@ -110,17 +110,17 @@ module.exports = config => {
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',
-        flags: ['--no-sandbox']
+        flags: ['--no-sandbox'],
       },
       HeadlessChrome: {
         base: 'ChromeHeadless',
         flags: [
           '--disable-translate',
           '--disable-extensions',
-          '--remote-debugging-port=9223'
-        ]
-      }
-    }
+          '--remote-debugging-port=9223',
+        ],
+      },
+    },
   });
 
   if (process.env.TRAVIS) {

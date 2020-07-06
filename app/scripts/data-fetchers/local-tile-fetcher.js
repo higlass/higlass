@@ -1,26 +1,10 @@
+import { tileResponseToData } from '../worker';
+
 class LocalTileDataFetcher {
   constructor(dataConfig) {
     this.dataConfig = dataConfig;
 
-    this.removeTilesetUids();
-  }
-
-  /** We expect there to be a tilesetUid in the provided tilesetInfo
-   * and tiles data. We need to strip it out because it's irrelevant.
-   *
-   * The reason we expect it to be included is to make it easier for users
-   * to paste in request responses for debugging.
-   */
-  removeTilesetUids() {
     this.tilesetInfoData = Object.values(this.dataConfig.tilesetInfo)[0];
-    this.tilesData = {};
-
-    for (const key of Object.keys(this.dataConfig.tiles)) {
-      const keyParts = key.split('.');
-      const newKey = keyParts.slice(1).join('.');
-
-      this.tilesData[newKey] = this.dataConfig.tiles[key];
-    }
   }
 
   tilesetInfo(callback) {
@@ -29,13 +13,28 @@ class LocalTileDataFetcher {
     callback(this.tilesetInfoData);
   }
 
+  /** We expect there to be a tilesetUid in the provided tilesetInfo
+   * and tiles data since tileResponseToData needs it
+   *
+   * It is also easier for users to paste in request responses for debugging.
+   */
   fetchTilesDebounced(receivedTiles, tileIds) {
-    const ret = {};
+    this.tilesData = {};
 
-    for (const tileId of tileIds) {
-      ret[tileId] = this.tilesData[tileId];
+    for (const key of Object.keys(this.dataConfig.tiles)) {
+      const keyParts = key.split('.');
+      const newKey = `localtile.${keyParts.slice(1).join('.')}`;
+      this.tilesData[newKey] = this.dataConfig.tiles[key];
     }
 
+    const ret = {};
+
+    const newTileIds = tileIds.map(x => `localtile.${x}`);
+    tileResponseToData(this.tilesData, '', newTileIds);
+
+    for (const tileId of tileIds) {
+      ret[tileId] = this.tilesData[`localtile.${tileId}`];
+    }
     receivedTiles(ret);
   }
 

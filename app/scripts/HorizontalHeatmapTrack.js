@@ -1,4 +1,3 @@
-import * as PIXI from 'pixi.js';
 import { getValueScale } from './TiledPixiTrack';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
@@ -10,7 +9,7 @@ import { tileProxy } from './services';
 import { colorDomainToRgbaArray } from './utils';
 
 // Configs
-import { HEATED_OBJECT_MAP } from './configs';
+import { GLOBALS, HEATED_OBJECT_MAP } from './configs';
 
 class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   /**
@@ -51,7 +50,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       this.yScale(),
       this.pMain.scale.x,
       this.pMain.position.x,
-      this.pMain.position.y
+      this.pMain.position.y,
     );
   }
 
@@ -63,14 +62,14 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         this.tilesetInfo.resolutions,
         this._xScale,
         this.tilesetInfo.min_pos[0],
-        this.tilesetInfo.max_pos[0]
+        this.tilesetInfo.max_pos[0],
       );
 
       const zoomIndexY = tileProxy.calculateZoomLevelFromResolutions(
         this.tilesetInfo.resolutions,
         this._xScale,
         this.tilesetInfo.min_pos[1],
-        this.tilesetInfo.max_pos[1]
+        this.tilesetInfo.max_pos[1],
       );
 
       zoomLevel = Math.min(zoomIndexX, zoomIndexY);
@@ -78,13 +77,13 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       const xZoomLevel = tileProxy.calculateZoomLevel(
         this._xScale,
         this.tilesetInfo.min_pos[0],
-        this.tilesetInfo.max_pos[0]
+        this.tilesetInfo.max_pos[0],
       );
 
       const yZoomLevel = tileProxy.calculateZoomLevel(
         this._xScale,
         this.tilesetInfo.min_pos[1],
-        this.tilesetInfo.max_pos[1]
+        this.tilesetInfo.max_pos[1],
       );
 
       zoomLevel = Math.max(xZoomLevel, yZoomLevel);
@@ -120,11 +119,11 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     // on each side
     expandedXScale.domain([
       this._xScale.invert(
-        this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)
+        this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2),
       ),
       this._xScale.invert(
-        this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2)
-      )
+        this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2),
+      ),
     ]);
 
     if (this.tilesetInfo.resolutions) {
@@ -136,13 +135,13 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         sortedResolutions[this.zoomLevel],
         expandedXScale,
         this.tilesetInfo.min_pos[0],
-        this.tilesetInfo.max_pos[0]
+        this.tilesetInfo.max_pos[0],
       );
       this.yTiles = tileProxy.calculateTilesFromResolution(
         sortedResolutions[this.zoomLevel],
         expandedXScale,
         this.tilesetInfo.min_pos[0],
-        this.tilesetInfo.max_pos[0]
+        this.tilesetInfo.max_pos[0],
       );
     } else {
       this.xTiles = tileProxy.calculateTiles(
@@ -151,7 +150,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         this.tilesetInfo.min_pos[0],
         this.tilesetInfo.max_pos[0],
         this.tilesetInfo.max_zoom,
-        this.tilesetInfo.max_width
+        this.tilesetInfo.max_width,
       );
 
       this.yTiles = tileProxy.calculateTiles(
@@ -160,7 +159,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         this.tilesetInfo.min_pos[0],
         this.tilesetInfo.max_pos[0],
         this.tilesetInfo.max_zoom,
-        this.tilesetInfo.max_width
+        this.tilesetInfo.max_width,
       );
     }
 
@@ -227,7 +226,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       tileX,
       tileY,
       tileWidth,
-      tileHeight
+      tileHeight,
     } = this.getTilePosAndDimensions(zoomLevel, tilePos);
 
     const tileEndX = tileX + tileWidth;
@@ -253,7 +252,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       this.scale.minValue,
       this.medianVisibleValue,
       this.scale.maxValue,
-      'log'
+      'log',
     );
 
     this.valueScale = valueScale;
@@ -274,7 +273,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
             this.options.scaleStartPercent,
         this.valueScale.domain()[0] +
           (this.valueScale.domain()[1] - this.valueScale.domain()[0]) *
-            this.options.scaleEndPercent
+            this.options.scaleEndPercent,
       ]);
     }
 
@@ -319,20 +318,23 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
           const canvas = this.tileDataToCanvas(pixData.pixData);
 
           const texture =
-            PIXI.VERSION[0] === '4'
-              ? PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
-              : PIXI.Texture.from(canvas, {
-                  scaleMode: PIXI.SCALE_MODES.NEAREST
+            GLOBALS.PIXI.VERSION[0] === '4'
+              ? GLOBALS.PIXI.Texture.fromCanvas(
+                  canvas,
+                  GLOBALS.PIXI.SCALE_MODES.NEAREST,
+                )
+              : GLOBALS.PIXI.Texture.from(canvas, {
+                  scaleMode: GLOBALS.PIXI.SCALE_MODES.NEAREST,
                 });
 
-          tile.sprite = new PIXI.Sprite(texture);
+          tile.sprite = new GLOBALS.PIXI.Sprite(texture);
           tile.canvas = canvas;
 
           this.setSpriteProperties(
             tile.sprite,
             tile.tileData.zoomLevel,
             tile.tileData.tilePos,
-            tile.mirrored
+            tile.mirrored,
           );
 
           graphics.pivot.x = this._refXScale(0);
@@ -356,7 +358,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       },
       this.mirrorTiles &&
         !tile.mirrored &&
-        tile.tileData.tilePos[0] === tile.tileData.tilePos[1]
+        tile.tileData.tilePos[0] === tile.tileData.tilePos[1],
     );
   }
 
@@ -371,7 +373,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
           tile.sprite,
           tile.tileData.zoomLevel,
           tile.tileData.tilePos,
-          tile.mirrored
+          tile.mirrored,
         );
 
         const graphics = tile.graphics;
@@ -421,7 +423,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
 
     output.setAttribute(
       'transform',
-      `translate(${this.pMain.position.x},${this.pMain.position.y}) scale(${this.pMain.scale.x},${this.pMain.scale.y})`
+      `translate(${this.pMain.position.x},${this.pMain.position.y}) scale(${this.pMain.scale.x},${this.pMain.scale.y})`,
     );
 
     for (const tile of this.visibleAndFetchedTiles()) {
@@ -439,14 +441,14 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       const g = document.createElement('g');
       g.setAttribute(
         'transform',
-        `translate(${tile.sprite.x},${tile.sprite.y}) rotate(${rotation}) scale(${tile.sprite.scale.x},${tile.sprite.scale.y})`
+        `translate(${tile.sprite.x},${tile.sprite.y}) rotate(${rotation}) scale(${tile.sprite.scale.x},${tile.sprite.scale.y})`,
       );
 
       const image = document.createElement('image');
       image.setAttributeNS(
         'http://www.w3.org/1999/xlink',
         'xlink:href',
-        tile.canvas.toDataURL()
+        tile.canvas.toDataURL(),
       );
       image.setAttribute('width', 256);
       image.setAttribute('height', 256);

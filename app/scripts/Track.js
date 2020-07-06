@@ -37,8 +37,8 @@ class Track {
     this.pubSubs.push(
       this.pubSub.subscribe(
         'app.mouseMove',
-        this.defaultMouseMoveHandler.bind(this)
-      )
+        this.defaultMouseMoveHandler.bind(this),
+      ),
     );
   }
 
@@ -68,7 +68,7 @@ class Track {
       left,
       this.dimensions[0] + left,
       top,
-      this.dimensions[1] + top
+      this.dimensions[1] + top,
     );
   }
 

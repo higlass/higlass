@@ -21,6 +21,31 @@ import { exportDataConfig } from './view-configs';
 configure({ adapter: new Adapter() });
 
 describe('Heatmaps', () => {
+  describe('Visualization', () => {
+    let hgc = null;
+    let div = null;
+
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, noDataTransform, done, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      });
+    });
+
+    it('should respect zoom limits', () => {
+      // add your tests here
+
+      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap0');
+      const rectData = trackObj.getVisibleRectangleData(547, 18, 1, 1);
+
+      expect(Number.isNaN(rectData.data[0])).to.eql(false);
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+  });
+
   describe('Export heatmap data', () => {
     let hgc = null;
     let div = null;
@@ -111,16 +136,11 @@ describe('Heatmaps', () => {
       const views = JSON.parse(JSON.stringify(hgc.instance().state.views));
       const center = views.v.tracks.center[0];
 
-      const newOptions0 = Object.assign({}, center.contents[0].options, {
+      const newOptions = Object.assign({}, center.contents[0].options, {
         extent: 'lower-left'
       });
 
-      const newOptions1 = Object.assign({}, center.contents[1].options, {
-        extent: 'upper-right'
-      });
-
-      hgc.instance().handleTrackOptionsChanged('v', 'heatmap0', newOptions0);
-      hgc.instance().handleTrackOptionsChanged('v', 'heatmap1', newOptions1);
+      hgc.instance().handleTrackOptionsChanged('v', 'heatmap0', newOptions);
       hgc.update();
 
       const newViews = JSON.parse(JSON.stringify(hgc.instance().state.views.v));
@@ -259,6 +279,12 @@ const baseConf = {
     }
   ]
 };
+
+const noDataTransform = JSON.parse(JSON.stringify(baseConf));
+noDataTransform.views[0].tracks.center[0].contents[0].tilesetUid =
+  'ZrEuRvzURI6EFw8j0-5GCA';
+noDataTransform.views[0].tracks.center[0].contents[0].options.noDataTransform =
+  'None';
 
 const heatmapTrack = {
   server: '//higlass.io/api/v1',

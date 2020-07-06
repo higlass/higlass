@@ -35,7 +35,7 @@ export const trackViewer = (element, [xMin, xMax, yMin, yMax], trackConfig) => {
         initialXDomain: [xMin, xMax],
         initialYDomain: [yMin, yMax],
         tracks: {
-          center: [trackConfig]
+          center: [trackConfig],
         },
         layout: {
           w: 12,
@@ -43,10 +43,10 @@ export const trackViewer = (element, [xMin, xMax, yMin, yMax], trackConfig) => {
           x: 0,
           y: 0,
           moved: false,
-          static: false
-        }
-      }
-    ]
+          static: false,
+        },
+      },
+    ],
   };
   const hgApi = viewer(element, viewConfig, { sizeMode: 'bounded' });
   return { id, hgApi };
@@ -80,7 +80,7 @@ export default class HiGlassTrackComponent extends React.Component {
     const { id, hgApi } = trackViewer(
       element,
       [x, x + width, y, y + height],
-      trackConfig
+      trackConfig,
     );
     this.viewUid = id;
     this.viewer = hgApi;
@@ -108,5 +108,5 @@ HiGlassTrackComponent.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   x: PropTypes.number,
-  y: PropTypes.number
+  y: PropTypes.number,
 };

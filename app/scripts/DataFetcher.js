@@ -2,6 +2,9 @@ import slugid from 'slugid';
 import { scaleLinear } from 'd3-scale';
 import { trimTrailingSlash as tts, dictValues } from './utils';
 
+import DenseDataExtrema1D from './utils/DenseDataExtrema1D';
+import DenseDataExtrema2D from './utils/DenseDataExtrema2D';
+
 // Services
 import { tileProxy } from './services';
 import { minNonZero, maxNonZero } from './worker';
@@ -25,7 +28,7 @@ export default class DataFetcher {
     if (this.dataConfig.children) {
       // convert each child into an object
       this.dataConfig.children = dataConfig.children.map(
-        c => new DataFetcher(c, pubSub)
+        c => new DataFetcher(c, pubSub),
       );
     }
   }
@@ -39,13 +42,13 @@ export default class DataFetcher {
    * @param {string} fileUrl The location of the data file (e.g. 'encode.org/my.file.bigwig')
    * @param {string} filetype The type of file being served (e.g. 'bigwig')
    */
-  async registerFileUrl({ server, fileUrl, filetype, coordSystem, indexUrl }) {
+  async registerFileUrl({ server, fileUrl, fileType, coordSystem, indexUrl }) {
     const serverUrl = `${tts(server)}/register_url/`;
 
     const payload = {
       fileurl: fileUrl,
       indexurl: indexUrl,
-      filetype,
+      filetype: fileType,
       coordSystem
     };
 
@@ -53,8 +56,8 @@ export default class DataFetcher {
       method: 'POST',
       body: JSON.stringify(payload),
       headers: {
-        'Content-Type': 'application/json; charset=utf-8'
-      }
+        'Content-Type': 'application/json; charset=utf-8',
+      },
     });
   }
 
@@ -64,7 +67,7 @@ export default class DataFetcher {
     if (
       this.dataConfig.server &&
       this.dataConfig.fileUrl &&
-      this.dataConfig.filetype
+      this.dataConfig.fileType
     ) {
       return this.registerFileUrl(this.dataConfig)
         .then(data => data.json())
@@ -104,7 +107,7 @@ export default class DataFetcher {
       if (!this.dataConfig.server || !this.dataConfig.tilesetUid) {
         console.warn(
           'No dataConfig children, server or tilesetUid:',
-          this.dataConfig
+          this.dataConfig,
         );
         finished(null);
       } else {
@@ -121,10 +124,10 @@ export default class DataFetcher {
           },
           error => {
             finished({
-              error
+              error,
             });
           },
-          this.pubSub
+          this.pubSub,
         );
       }
     } else {
@@ -134,7 +137,7 @@ export default class DataFetcher {
         x =>
           new Promise(resolve => {
             x.tilesetInfo(resolve);
-          })
+          }),
       );
 
       Promise.all(promises).then(values => {
@@ -195,11 +198,11 @@ export default class DataFetcher {
             id: slugid.nice(),
             server: this.dataConfig.server,
             done: resolve,
-            ids: tileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`)
+            ids: tileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
           },
           this.pubSub,
-          true
-        )
+          true,
+        ),
       );
 
       promise.then(returnedTiles => {
@@ -225,8 +228,8 @@ export default class DataFetcher {
               x.fetchTilesDebounced(resolve, tileIds);
             },
             this.pubSub,
-            true
-          )
+            true,
+          ),
       );
 
       Promise.all(promises).then(returnedTiles => {
@@ -239,7 +242,7 @@ export default class DataFetcher {
           // assume we're just returning raw tiles
           console.warn(
             'Unimplemented dataConfig type. Returning first data source.',
-            this.dataConfig
+            this.dataConfig,
           );
 
           receivedTiles(returnedTiles[0]);
@@ -300,7 +303,7 @@ export default class DataFetcher {
     if (!axis) {
       return inputData.slice(
         arrayShape[1] * sliceIndex,
-        arrayShape[1] * (sliceIndex + 1)
+        arrayShape[1] * (sliceIndex + 1),
       );
     }
 
@@ -329,7 +332,7 @@ export default class DataFetcher {
       // from the track that is querying this data)
       const scale = scaleLinear().domain([
         this.dataConfig.slicePos,
-        this.dataConfig.slicePos
+        this.dataConfig.slicePos,
       ]);
 
       // there's two different ways of calculating tile positions
@@ -348,7 +351,7 @@ export default class DataFetcher {
           sortedResolutions[zoomLevel],
           scale,
           this.dataConfig.tilesetInfo.min_pos[vertical ? 1 : 0],
-          this.dataConfig.tilesetInfo.max_pos[vertical ? 1 : 0]
+          this.dataConfig.tilesetInfo.max_pos[vertical ? 1 : 0],
         );
       } else {
         yTiles = tileProxy.calculateTiles(
@@ -357,7 +360,7 @@ export default class DataFetcher {
           this.dataConfig.tilesetInfo.min_pos[vertical ? 1 : 0],
           this.dataConfig.tilesetInfo.max_pos[vertical ? 1 : 0],
           this.dataConfig.tilesetInfo.max_zoom,
-          this.dataConfig.tilesetInfo.max_width
+          this.dataConfig.tilesetInfo.max_width,
         );
       }
       const sortedPosition = [xTilePos, yTiles[0]].sort((a, b) => a - b);
@@ -381,11 +384,11 @@ export default class DataFetcher {
           id: slugid.nice(),
           server: this.dataConfig.server,
           done: resolve,
-          ids: newTileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`)
+          ids: newTileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
         },
         this.pubSub,
-        true
-      )
+        true,
+      ),
     );
     promise.then(returnedTiles => {
       // we've received some new tiles, but they're 2D
@@ -406,7 +409,7 @@ export default class DataFetcher {
           this.dataConfig.tilesetInfo.max_width,
           this.dataConfig.tilesetInfo.min_pos[1],
           zoomLevel,
-          +this.dataConfig.slicePos
+          +this.dataConfig.slicePos,
         )[1];
 
         const fullTileId = this.fullTileId(tilesetUid, newTileIds[i]);
@@ -421,7 +424,7 @@ export default class DataFetcher {
             tile.dense,
             [256, 256],
             sliceIndex,
-            1
+            1,
           );
           for (let j = 0; j < dataSlice.length; j++) {
             dataSlice[j] += mirroredDataSlice[j];
@@ -433,7 +436,7 @@ export default class DataFetcher {
             tile.dense,
             [256, 256],
             sliceIndex,
-            1
+            1,
           );
         } else {
           dataSlice = this.extractDataSlice(tile.dense, [256, 256], sliceIndex);
@@ -442,6 +445,7 @@ export default class DataFetcher {
         const newTile = {
           min_value: Math.min.apply(null, dataSlice),
           max_value: Math.max.apply(null, dataSlice),
+          denseDataExtrema: new DenseDataExtrema1D(dataSlice),
           minNonZero: minNonZero(dataSlice),
           maxNonZero: maxNonZero(dataSlice),
           dense: dataSlice,
@@ -450,7 +454,7 @@ export default class DataFetcher {
           tilePos: mirrored[i] ? [yTilePos] : [xTilePos],
           tilePositionId: tileIds[i],
           tilesetUid,
-          zoomLevel: tile.zoomLevel
+          zoomLevel: tile.zoomLevel,
         };
 
         newTiles[tileIds[i]] = newTile;
@@ -464,7 +468,7 @@ export default class DataFetcher {
     if (returnedTiles.length < 2) {
       console.warn(
         'Only one tileset specified for a divided datafetcher:',
-        this.dataConfig
+        this.dataConfig,
       );
     }
 
@@ -482,7 +486,7 @@ export default class DataFetcher {
       let newTile = {
         zoomLevel,
         tilePos,
-        tilePositionId: tileIds[i]
+        tilePositionId: tileIds[i],
       };
 
       if (
@@ -491,16 +495,22 @@ export default class DataFetcher {
       ) {
         const newData = this.divideData(
           returnedTiles[0][tileIds[i]].dense,
-          returnedTiles[1][tileIds[i]].dense
+          returnedTiles[1][tileIds[i]].dense,
         );
+
+        const dde =
+          tilePos.length === 2
+            ? new DenseDataExtrema2D(newData)
+            : new DenseDataExtrema1D(newData);
 
         newTile = {
           dense: newData,
+          denseDataExtrema: dde,
           minNonZero: minNonZero(newData),
           maxNonZero: maxNonZero(newData),
           zoomLevel,
           tilePos,
-          tilePositionId: tileIds[i]
+          tilePositionId: tileIds[i],
         };
       }
 

@@ -1,11 +1,9 @@
 import { scaleLinear } from 'd3-scale';
-import * as PIXI from 'pixi.js';
-
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 
 import { colorDomainToRgbaArray } from './utils';
 
-import { HEATED_OBJECT_MAP } from './configs';
+import { GLOBALS, HEATED_OBJECT_MAP } from './configs';
 
 class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
   constructor(context, options) {
@@ -24,7 +22,7 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
     // Normalize colormap upfront to save 3 divisions per data point during the
     // rendering.
     this.colorScale = this.colorScale.map(rgb =>
-      rgb.map(channel => channel / 255.0)
+      rgb.map(channel => channel / 255.0),
     );
   }
 
@@ -49,7 +47,7 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
-      tile.tileData.tilePos
+      tile.tileData.tilePos,
     );
 
     const tileValues = tile.tileData.dense;
@@ -59,7 +57,7 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
     const [valueScale, pseudocount] = this.makeValueScale(
       this.minValue(),
       this.medianVisibleValue,
-      this.maxValue()
+      this.maxValue(),
     );
     valueScale.range([254, 0]).clamp(true);
     this.valueScale = valueScale;
@@ -72,7 +70,7 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
     ) {
       console.warn(
         'Negative values present when using a log scale',
-        this.valueScale.domain()
+        this.valueScale.domain(),
       );
       return;
     }
@@ -102,7 +100,7 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
       tile.yValues[i] = rgbIdx;
 
       const rgb = this.colorScale[rgbIdx];
-      const hex = PIXI.utils.rgb2hex(rgb);
+      const hex = GLOBALS.PIXI.utils.rgb2hex(rgb);
 
       graphics.beginFill(hex, this.opacity);
 

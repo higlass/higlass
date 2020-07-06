@@ -122,7 +122,7 @@ describe('Add track(s)', () => {
     ptc = hgc.instance().modalRef.plotTypeChooser;
 
     // console.warn('ptc.AVAILABLE_TRACK_TYPES', ptc.AVAILABLE_TRACK_TYPES);
-    // should just have the horizontal-heatmap track type
+    // should just have the linear-heatmap track type
     expect(ptc.AVAILABLE_TRACK_TYPES.length).to.eql(3);
 
     tilesetFinder.handleSelectedOptions([
@@ -134,10 +134,8 @@ describe('Add track(s)', () => {
 
     ptc = hgc.instance().modalRef.plotTypeChooser;
 
-    // check that the selected plot type defaults to 'horizontal-gene-annotations'
-    expect(ptc.state.selectedPlotType.type).to.eql(
-      'horizontal-gene-annotations'
-    );
+    // check that the selected plot type defaults to 'gene-annotations'
+    expect(ptc.state.selectedPlotType.type).to.eql('gene-annotations');
 
     tilesetFinder.handleSelectedOptions([
       // hg19 gene track
@@ -186,7 +184,7 @@ describe('Add track(s)', () => {
 
     const { plotTypeChooser } = hgc.instance().modalRef;
 
-    plotTypeChooser.selectedPlotType = 'horizontal-gene-annotations';
+    plotTypeChooser.selectedPlotType = 'gene-annotations';
 
     hgc.instance().modalRef.handleSubmit();
     hgc.update();
@@ -277,7 +275,7 @@ describe('Add track(s)', () => {
 
     const { plotTypeChooser } = hgc.instance().modalRef;
 
-    plotTypeChooser.selectedPlotType = 'horizontal-gene-annotations';
+    plotTypeChooser.selectedPlotType = 'gene-annotations';
 
     hgc.instance().modalRef.handleSubmit();
     hgc.update();

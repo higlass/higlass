@@ -21,19 +21,19 @@ describe('Zoom tests', () => {
     const evtDown = new MouseEvent('mousedown', {
       clientX: startX,
       clientY: startY,
-      view: window
+      view: window,
     });
 
     const evtMove = new MouseEvent('mousemove', {
       clientX: startX + 2,
       clientY: startY + 2,
-      view: window
+      view: window,
     });
 
     const evtUp = new MouseEvent('mouseup', {
       clientX: startX + 2,
       clientY: startY + 2,
-      view: window
+      view: window,
     });
 
     const trackRenderer = getTrackRenderer(api.getComponent(), 'aa');

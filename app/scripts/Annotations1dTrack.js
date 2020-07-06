@@ -1,6 +1,4 @@
 import { color } from 'd3-color';
-import * as PIXI from 'pixi.js';
-
 import PixiTrack from './PixiTrack';
 
 // Maximum delay in ms between mousedown and mouseup that is registered as a
@@ -8,7 +6,7 @@ import PixiTrack from './PixiTrack';
 // click events with out current setup. Since most UIs treat long clicks as
 // either something special or a cancelation we follow best practices and
 // implement a threshold on the delay as well.
-import { MAX_CLICK_DELAY } from './configs';
+import { GLOBALS, MAX_CLICK_DELAY } from './configs';
 
 class Annotations1dTrack extends PixiTrack {
   constructor(context, options, isVertical) {
@@ -78,7 +76,7 @@ class Annotations1dTrack extends PixiTrack {
       const id = `${region[0]}-${region[1]}`;
 
       if (!this.rects[id]) {
-        this.rects[id] = { graphics: new PIXI.Graphics() };
+        this.rects[id] = { graphics: new GLOBALS.PIXI.Graphics() };
         graphics.addChild(this.rects[id].graphics);
       }
 
@@ -91,15 +89,15 @@ class Annotations1dTrack extends PixiTrack {
         stroke = fill;
       }
 
-      const fillHex = PIXI.utils.rgb2hex([
+      const fillHex = GLOBALS.PIXI.utils.rgb2hex([
         fill.r / 255.0,
         fill.g / 255.0,
-        fill.b / 255.0
+        fill.b / 255.0,
       ]);
-      const strokeHex = PIXI.utils.rgb2hex([
+      const strokeHex = GLOBALS.PIXI.utils.rgb2hex([
         stroke.r / 255.0,
         stroke.g / 255.0,
-        stroke.b / 255.0
+        stroke.b / 255.0,
       ]);
 
       if (strokePos) {
@@ -109,7 +107,7 @@ class Annotations1dTrack extends PixiTrack {
         graphics.lineStyle(
           globalStrokeWidth,
           strokeHex,
-          +region[5] || globalStrokeOpacity
+          +region[5] || globalStrokeOpacity,
         );
         graphics.beginFill(fillHex, +region[4] || globalFillOpacity);
       }
@@ -150,14 +148,14 @@ class Annotations1dTrack extends PixiTrack {
                 0,
                 start,
                 this.dimensions[0],
-                globalStrokeWidth
+                globalStrokeWidth,
               );
             } else {
               graphics.drawRect(
                 start,
                 0,
                 globalStrokeWidth,
-                this.dimensions[1]
+                this.dimensions[1],
               );
             }
           }
@@ -168,14 +166,14 @@ class Annotations1dTrack extends PixiTrack {
                 this.dimensions[0] - globalStrokeWidth,
                 start,
                 globalStrokeWidth,
-                width
+                width,
               );
             } else {
               graphics.drawRect(
                 start,
                 this.dimensions[1] - globalStrokeWidth,
                 width,
-                globalStrokeWidth
+                globalStrokeWidth,
               );
             }
           }
@@ -186,14 +184,14 @@ class Annotations1dTrack extends PixiTrack {
                 0,
                 start + width - globalStrokeWidth,
                 this.dimensions[0],
-                globalStrokeWidth
+                globalStrokeWidth,
               );
             } else {
               graphics.drawRect(
                 start + width - globalStrokeWidth,
                 0,
                 globalStrokeWidth,
-                this.dimensions[1]
+                this.dimensions[1],
               );
             }
           }
@@ -202,7 +200,7 @@ class Annotations1dTrack extends PixiTrack {
         graphics.lineStyle(
           globalStrokeWidth,
           strokeHex,
-          +region[5] || globalStrokeOpacity
+          +region[5] || globalStrokeOpacity,
         );
       }
 
@@ -214,19 +212,19 @@ class Annotations1dTrack extends PixiTrack {
       graphics.beginFill(fillHex, +region[4] || globalFillOpacity);
       if (this.isVertical) {
         graphics.drawRect(0, start, this.dimensions[0], width);
-        this.rects[id].graphics.hitArea = new PIXI.Rectangle(
+        this.rects[id].graphics.hitArea = new GLOBALS.PIXI.Rectangle(
           0,
           start,
           this.dimensions[0],
-          width
+          width,
         );
       } else {
         graphics.drawRect(start, 0, width, this.dimensions[1]);
-        this.rects[id].graphics.hitArea = new PIXI.Rectangle(
+        this.rects[id].graphics.hitArea = new GLOBALS.PIXI.Rectangle(
           start,
           0,
           width,
-          this.dimensions[1]
+          this.dimensions[1],
         );
       }
 
@@ -242,7 +240,7 @@ class Annotations1dTrack extends PixiTrack {
           this.pubSub.publish('app.click', {
             type: 'annotation',
             event,
-            payload: region
+            payload: region,
           });
         }
       };

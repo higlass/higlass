@@ -1,10 +1,11 @@
-import * as PIXI from 'pixi.js';
-
 import PixiTrack from './PixiTrack';
 import ChromosomeInfo from './ChromosomeInfo';
 import SearchField from './SearchField';
 
 import { colorToHex } from './utils';
+
+// Configs
+import { GLOBALS } from './configs';
 
 class ChromosomeGrid extends PixiTrack {
   constructor(context, options) {
@@ -15,7 +16,7 @@ class ChromosomeGrid extends PixiTrack {
       animate,
       pubSub,
       orientation = '2d',
-      isOverlay = false
+      isOverlay = false,
     } = context;
 
     this.searchField = null;
@@ -38,13 +39,13 @@ class ChromosomeGrid extends PixiTrack {
         this.searchField = new SearchField(this.chromInfo);
 
         this.texts = [];
-        this.lineGraphics = new PIXI.Graphics();
-        this.lineGraphics1dH = new PIXI.Graphics();
-        this.lineGraphics1dV = new PIXI.Graphics();
-        this.lineGraphics2d = new PIXI.Graphics();
-        this.mask1dH = new PIXI.Graphics();
-        this.mask1dV = new PIXI.Graphics();
-        this.mask2d = new PIXI.Graphics();
+        this.lineGraphics = new GLOBALS.PIXI.Graphics();
+        this.lineGraphics1dH = new GLOBALS.PIXI.Graphics();
+        this.lineGraphics1dV = new GLOBALS.PIXI.Graphics();
+        this.lineGraphics2d = new GLOBALS.PIXI.Graphics();
+        this.mask1dH = new GLOBALS.PIXI.Graphics();
+        this.mask1dV = new GLOBALS.PIXI.Graphics();
+        this.mask2d = new GLOBALS.PIXI.Graphics();
 
         this.lineGraphics.addChild(this.lineGraphics1dH);
         this.lineGraphics1dH.addChild(this.mask1dH);
@@ -57,7 +58,7 @@ class ChromosomeGrid extends PixiTrack {
         this.draw();
         this.animate();
       },
-      pubSub
+      pubSub,
     );
   }
 
@@ -77,7 +78,7 @@ class ChromosomeGrid extends PixiTrack {
     }
 
     const strokeColor = colorToHex(
-      this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue'
+      this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue',
     );
 
     const strokeWidth = this.options.lineStrokeWidth
@@ -145,7 +146,7 @@ class ChromosomeGrid extends PixiTrack {
           left,
           top,
           width,
-          height
+          height,
         } = this.options.orientationsAndPositions[i].position;
 
         if (orientation === '1d-horizontal') {
@@ -216,8 +217,8 @@ class ChromosomeGrid extends PixiTrack {
             y + top,
             y + top,
             strokeColor,
-            strokeWidth
-          )
+            strokeWidth,
+          ),
         );
       }
     }
@@ -233,8 +234,8 @@ class ChromosomeGrid extends PixiTrack {
             top,
             height + top,
             strokeColor,
-            strokeWidth
-          )
+            strokeWidth,
+          ),
         );
       }
     }
@@ -253,8 +254,8 @@ class ChromosomeGrid extends PixiTrack {
               y + top,
               y + top,
               strokeColor,
-              strokeWidth
-            )
+              strokeWidth,
+            ),
           );
         }
       }
@@ -269,8 +270,8 @@ class ChromosomeGrid extends PixiTrack {
               top,
               height + top,
               strokeColor,
-              strokeWidth
-            )
+              strokeWidth,
+            ),
           );
         }
       }
@@ -294,7 +295,7 @@ class ChromosomeGrid extends PixiTrack {
 
     output.setAttribute(
       'transform',
-      `translate(${this.position[0]},${this.position[1]})`
+      `translate(${this.position[0]},${this.position[1]})`,
     );
 
     if (!this.chromInfo) {
@@ -310,7 +311,7 @@ class ChromosomeGrid extends PixiTrack {
           left,
           top,
           width,
-          height
+          height,
         } = this.options.orientationsAndPositions[i].position;
         this.drawLinesSvg(output, orientation, width, height, left, top);
       }

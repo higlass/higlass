@@ -830,6 +830,56 @@ describe('API Tests', () => {
       });
     });
 
+    it('triggers on wheel events', done => {
+      [div, api] = createElementAndApi(
+        simple1dHorizontalVerticalAnd2dDataTrack
+      );
+      const hgc = api.getComponent();
+      waitForTilesLoaded(hgc, () => {
+        api.on('wheel', e => {
+          expect(e.origEvt.clientX).toEqual(30);
+          expect(e.origEvt.clientY).toEqual(40);
+          done();
+        });
+
+        const canvas = findCanvas(div);
+        // The wheel event that we expect to catch.
+        const wheelEvent = {
+          clientX: 30,
+          clientY: 40,
+          forwarded: true,
+          target: canvas,
+          nativeEvent: undefined,
+          stopPropagation: () => {},
+          preventDefault: () => {}
+        };
+        // Simulate the wheel and keyboard events.
+        hgc.wheelHandler(wheelEvent);
+      });
+    });
+
+    it('can modify and set the viewconf', done => {
+      [div, api] = createElementAndApi(simpleHeatmapViewConf, {
+        editable: true
+      });
+
+      const hgc = api.getComponent();
+
+      waitForTilesLoaded(hgc, () => {
+        const newConfig = JSON.parse(JSON.stringify(simpleCenterViewConfig));
+        newConfig.views[0].tracks.center[0].options.name = 'Modified name';
+
+        // Ckeck that the promise resolves
+        api.setViewConfig(newConfig, true).then(() => {
+          const retrievedViewConf = api.getViewConfig();
+          const newName =
+            retrievedViewConf.views[0].tracks.center[0].options.name;
+          expect(newName).toEqual('Modified name');
+          done();
+        });
+      });
+    });
+
     afterEach(() => {
       api.destroy();
       removeDiv(div);
