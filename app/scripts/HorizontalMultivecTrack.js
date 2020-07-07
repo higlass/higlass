@@ -248,7 +248,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
           (weight, i) =>
             posInTileYNormalized <= weight &&
             (i === this.selectRowsCumWeights.length - 1 ||
-              this.selectRowsCumWeights[i + 1] >= posInTileYNormalized)
+              this.selectRowsCumWeights[i + 1] >= posInTileYNormalized),
         );
       }
       selectedRowItem = this.options.selectRows[selectedRowIndex];
@@ -279,7 +279,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
           this.options.selectRowsAggregationMethod === 'client'
         ) {
           // Need to aggregate, so `index` will actually be an array.
-          index = selectedRowIndex.map(
+          index = selectedRowItem.map(
             rowI => this.tilesetInfo.shape[0] * rowI + Math.floor(posInTileX),
           );
         } else if (
@@ -311,13 +311,24 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         value += `${index.length}-item ${this.options.selectRowsAggregationMode}`;
       } else {
         value = format('.3f')(fetchedTile.tileData.dense[index]);
+        if (Array.isArray(selectedRowItem)) {
+          value += '<br/>';
+          value += `${selectedRowItem.length}-item ${this.options.selectRowsAggregationMode}`;
+        }
       }
     }
 
     // add information about the row
-    if (this.tilesetInfo.row_infos && !Array.isArray(selectedRowIndex)) {
+    if (this.tilesetInfo.row_infos && !Array.isArray(selectedRowItem)) {
       value += '<br/>';
-      value += this.tilesetInfo.row_infos[selectedRowIndex];
+      const rowInfo = this.tilesetInfo.row_infos[selectedRowItem];
+      if (typeof rowInfo === 'object') {
+        // The simplest thing to do here is conform to the tab-separated values convention.
+        value += Object.values(rowInfo).join('\t');
+      } else {
+        // Probably a tab-separated string since not an object.
+        value += rowInfo;
+      }
     }
 
     return `${value}`;
