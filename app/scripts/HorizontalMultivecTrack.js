@@ -1,6 +1,7 @@
 import { format } from 'd3-format';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
+import DataFetcher from './DataFetcher';
 
 import { tileProxy } from './services';
 import selectedItemsToSize from './utils/selected-items-to-size';
@@ -14,6 +15,25 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     // Continuous scaling is currently not supported
     this.continuousScaling = false;
+
+    if (
+      options &&
+      options.selectRows &&
+      options.selectRowsAggregationMethod === 'server'
+    ) {
+      // Override the dataFetcher object with a new dataConfig,
+      // containing the .options property.
+      // This would otherwise be set in the call to super()
+      // in the TiledPixiTrack ancestor constructor.
+      const newDataConfig = {
+        ...context.dataConfig,
+        options: {
+          aggGroups: options.selectRows,
+          aggFunc: options.selectRowsAggregationMode,
+        },
+      };
+      this.dataFetcher = new DataFetcher(newDataConfig, context.pubSub);
+    }
   }
 
   rerender(options, force) {

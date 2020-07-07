@@ -220,11 +220,7 @@ export function workerSetPix(
           selectedRowI < selectedRows.length;
           selectedRowI++
         ) {
-          if (
-            Array.isArray(selectedRows[selectedRowI]) &&
-            aggFunc &&
-            selectedRowsAggregationMethod === 'server'
-          ) {
+          if (aggFunc && selectedRowsAggregationMethod === 'server') {
             d = data[selectedRowI * shape[1] + colI];
           } else if (Array.isArray(selectedRows[selectedRowI]) && aggFunc) {
             // An aggregation step must be performed for this data point.
@@ -427,7 +423,7 @@ export function workerGetTiles(
   theseTileIds,
   authHeader,
   done,
-  requestBody
+  requestBody,
 ) {
   const headers = {
     'content-type': 'application/json',
@@ -441,7 +437,7 @@ export function workerGetTiles(
     ...(requestBody && Object.keys(requestBody).length > 0
       ? {
           method: 'POST',
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify(requestBody),
         }
       : {}),
   })
