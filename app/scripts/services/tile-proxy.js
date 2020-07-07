@@ -67,7 +67,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
 
     if (requestId && bundledRequest[requestId]) {
       bundledRequest[requestId].ids = bundledRequest[requestId].ids.concat(
-        request.ids
+        request.ids,
       );
     } else {
       requestMapper[request.id] = bundledRequest.length;
@@ -89,9 +89,9 @@ const throttleAndDebounce = (func, interval, finalWait) => {
     func(
       {
         sessionId,
-        requests: bundledRequest
+        requests: bundledRequest,
       },
-      ...args
+      ...args,
     );
     reset();
   };
@@ -120,7 +120,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   debounced.immediate = () => {
     func({
       sessionId,
-      requests: bundledRequest
+      requests: bundledRequest,
     });
   };
 
@@ -202,7 +202,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
     for (let i = 0; i < ids.length; i += MAX_FETCH_TILES) {
       const theseTileIds = ids.slice(
         i,
-        i + Math.min(ids.length - i, MAX_FETCH_TILES)
+        i + Math.min(ids.length - i, MAX_FETCH_TILES),
       );
 
       const renderParams = theseTileIds.map(x => `d=${x}`).join('&');
@@ -225,7 +225,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
           params.theseTileIds,
           params.authHeader,
           resolve,
-          requestBody
+          requestBody,
         );
 
         /*
@@ -280,7 +280,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
 export const fetchTilesDebounced = throttleAndDebounce(
   fetchMultiRequestTiles,
   TILE_FETCH_DEBOUNCE,
-  TILE_FETCH_DEBOUNCE
+  TILE_FETCH_DEBOUNCE,
 );
 
 /**
@@ -292,7 +292,7 @@ export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
   const trackWidth = scale.range()[1] - scale.range()[0];
 
   const binsDisplayed = sortedResolutions.map(
-    r => (scale.domain()[1] - scale.domain()[0]) / r
+    r => (scale.domain()[1] - scale.domain()[0]) / r,
   );
   const binsPerPixel = binsDisplayed.map(b => b / trackWidth);
 
@@ -303,7 +303,7 @@ export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
   if (displayableBinsPerPixel.length === 0) return 0;
 
   return binsPerPixel.indexOf(
-    displayableBinsPerPixel[displayableBinsPerPixel.length - 1]
+    displayableBinsPerPixel[displayableBinsPerPixel.length - 1],
   );
 };
 
@@ -332,7 +332,7 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
 
   const zoomScale = Math.max(
     (maxX - minX) / (scale.domain()[1] - scale.domain()[0]),
-    1
+    1,
   );
 
   const viewResolution = 384;
@@ -341,7 +341,7 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   // fun fact: the number 384 is halfway between 256 and 512
   const addedZoom = Math.max(
     0,
-    Math.ceil(Math.log(rangeWidth / viewResolution) / Math.LN2)
+    Math.ceil(Math.log(rangeWidth / viewResolution) / Math.LN2),
   );
   let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + addedZoom;
 
@@ -349,7 +349,7 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
 
   if (binsPerTile) {
     binsPerTileCorrection = Math.floor(
-      Math.log(256) / Math.log(2) - Math.log(binsPerTile) / Math.log(2)
+      Math.log(256) / Math.log(2) - Math.log(binsPerTile) / Math.log(2),
     );
   }
 
@@ -378,7 +378,7 @@ export function calculateTileAndPosInTile(
   maxDim,
   dataStartPos,
   zoomLevel,
-  position
+  position,
 ) {
   let tileWidth = null;
   const PIXELS_PER_TILE = tilesetInfo.bins_per_dimension || 256;
@@ -391,7 +391,7 @@ export function calculateTileAndPosInTile(
 
   const tilePos = Math.floor((position - dataStartPos) / tileWidth);
   const posInTile = Math.floor(
-    (PIXELS_PER_TILE * (position - tilePos * tileWidth)) / tileWidth
+    (PIXELS_PER_TILE * (position - tilePos * tileWidth)) / tileWidth,
   );
 
   return [tilePos, posInTile];
@@ -420,7 +420,7 @@ export const calculateTiles = (
   minX,
   maxX,
   maxZoom,
-  maxDim
+  maxDim,
 ) => {
   const zoomLevelFinal = Math.min(zoomLevel, maxZoom);
 
@@ -443,8 +443,8 @@ export const calculateTiles = (
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
     Math.min(
       2 ** zoomLevelFinal,
-      Math.ceil((scale.domain()[1] - minX - epsilon) / tileWidth)
-    )
+      Math.ceil((scale.domain()[1] - minX - epsilon) / tileWidth),
+    ),
   );
 };
 
@@ -472,7 +472,7 @@ export const calculateTilesFromResolution = (
   scale,
   minX,
   maxX,
-  pixelsPerTile
+  pixelsPerTile,
 ) => {
   const epsilon = 0.0000001;
   const PIXELS_PER_TILE = pixelsPerTile || 256;
@@ -486,17 +486,17 @@ export const calculateTilesFromResolution = (
 
   const lowerBound = Math.max(
     0,
-    Math.floor((scale.domain()[0] - minX) / tileWidth)
+    Math.floor((scale.domain()[0] - minX) / tileWidth),
   );
   const upperBound = Math.ceil(
-    Math.min(maxX, scale.domain()[1] - minX - epsilon) / tileWidth
+    Math.min(maxX, scale.domain()[1] - minX - epsilon) / tileWidth,
   );
   let tileRange = range(lowerBound, upperBound);
 
   if (tileRange.length > MAX_TILES) {
     // too many tiles visible in this range
     console.warn(
-      `Too many visible tiles: ${tileRange.length} truncating to ${MAX_TILES}`
+      `Too many visible tiles: ${tileRange.length} truncating to ${MAX_TILES}`,
     );
     tileRange = tileRange.slice(0, MAX_TILES);
   }
@@ -541,7 +541,7 @@ export const tileDataToPixData = (
   selectedRows,
   selectedRowsAggregationMode,
   selectedRowsAggregationWithRelativeHeight,
-  selectedRowsAggregationMethod
+  selectedRowsAggregationMethod,
 ) => {
   const { tileData } = tile;
 
@@ -601,7 +601,7 @@ export const tileDataToPixData = (
     selectedRows,
     selectedRowsAggregationMode,
     selectedRowsAggregationWithRelativeHeight,
-    selectedRowsAggregationMethod
+    selectedRowsAggregationMethod,
   );
 
   finished({ pixData });
@@ -634,15 +634,19 @@ function fetchEither(url, callback, textOrJson, pubSub) {
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
-  let mime;
+  let mime = null;
   if (textOrJson === 'text') {
-    mime = 'text/plain';
+    mime = null;
   } else if (textOrJson === 'json') {
     mime = 'application/json';
   } else {
     throw new Error(`fetch either "text" or "json", not "${textOrJson}"`);
   }
-  const headers = { 'Content-Type': mime };
+  const headers = {};
+
+  if (mime) {
+    headers['Content-Type'] = mime;
+  }
   if (authHeader) {
     headers.Authorization = authHeader;
   }
@@ -729,7 +733,7 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
         doneCb(data);
       }
     },
-    pubSub
+    pubSub,
   );
 };
 
@@ -745,7 +749,7 @@ const api = {
   json,
   text,
   tileDataToPixData,
-  trackInfo
+  trackInfo,
 };
 
 export default api;

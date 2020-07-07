@@ -53,8 +53,16 @@ other track. In the follow you can see a bare minimum example of this structure.
       type: 'my-track',
       orientation: '1d-horizontal',
       thumbnail: new DOMParser().parseFromString(icon, 'text/xml').documentElement,
-      availableOptions: [ ... ]
-      defaultOptions: { ... }
+      availableOptions: [ myNewOption ],
+      defaultOptions: {
+        myNewOption: 'default-value'
+      },
+      optionsInfo: {
+        myNewOption: {
+          name: "My track specific option",
+          value: "option-value"
+        }
+      }
     };
 
     // It's important that you register your plugin track with HiGlass otherwise

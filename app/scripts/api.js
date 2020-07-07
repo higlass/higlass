@@ -52,10 +52,10 @@ const createApi = function api(context, pubSub) {
        *   position will be broadcasted globally.
        */
       setBroadcastMousePositionGlobally(
-        isBroadcastMousePositionGlobally = false
+        isBroadcastMousePositionGlobally = false,
       ) {
         self.setBroadcastMousePositionGlobally(
-          isBroadcastMousePositionGlobally
+          isBroadcastMousePositionGlobally,
         );
       },
 
@@ -166,7 +166,7 @@ const createApi = function api(context, pubSub) {
        */
       setRangeSelection1dSize(minSize = 0, maxSize = Infinity) {
         self.setState({
-          rangeSelection1dSize: [minSize, maxSize]
+          rangeSelection1dSize: [minSize, maxSize],
         });
       },
 
@@ -176,6 +176,8 @@ const createApi = function api(context, pubSub) {
        *
        * @param {obj} newViewConfig A JSON object that defines
        *    the state of the HiGlassComponent
+       * @param {boolean} resolveImmediately If true, the returned promise resolves immediately
+       *    even if not all data has loaded. This should be set to true, if the new viewconf does not request new data. Default: false.
        * @example
        *
        * const p = hgv.setViewConfig(newViewConfig);
@@ -184,9 +186,10 @@ const createApi = function api(context, pubSub) {
        * });
        *
        * @return {Promise} dataLoaded A promise that resolves when
-       *   all of the data for this viewconfig is loaded
+       *   all of the data for this viewconfig is loaded. If `resolveImmediately` is set to true,
+       * the promise resolves without waiting for the data to be loaded.
        */
-      setViewConfig(newViewConfig) {
+      setViewConfig(newViewConfig, resolveImmediately = false) {
         const validate = new Ajv().compile(schema);
         const valid = validate(newViewConfig);
         if (validate.errors) {
@@ -204,7 +207,7 @@ const createApi = function api(context, pubSub) {
           pubSubs.push(
             pubSub.subscribe('requestSent', () => {
               this.requestsInFlight += 1;
-            })
+            }),
           );
 
           pubSubs.push(
@@ -214,15 +217,19 @@ const createApi = function api(context, pubSub) {
               if (this.requestsInFlight === 0) {
                 resolve();
               }
-            })
+            }),
           );
 
           self.setState(
             {
               viewConfig: newViewConfig,
-              views: viewsByUid
+              views: viewsByUid,
             },
-            () => {}
+            () => {
+              if (resolveImmediately) {
+                resolve();
+              }
+            },
           );
         });
 
@@ -269,13 +276,13 @@ const createApi = function api(context, pubSub) {
         viewId,
         trackId,
         ignoreOffScreenValues = false,
-        ignoreFixedScale = false
+        ignoreFixedScale = false,
       ) {
         return self.getMinMaxValue(
           viewId,
           trackId,
           ignoreOffScreenValues,
-          ignoreFixedScale
+          ignoreFixedScale,
         );
       },
 
@@ -323,7 +330,7 @@ const createApi = function api(context, pubSub) {
        */
       showAvailableTrackPositions(track) {
         self.setState({
-          draggingHappening: track
+          draggingHappening: track,
         });
       },
 
@@ -332,7 +339,7 @@ const createApi = function api(context, pubSub) {
        */
       hideAvailableTrackPositions() {
         self.setState({
-          draggingHappening: null
+          draggingHappening: null,
         });
       },
 
@@ -348,11 +355,11 @@ const createApi = function api(context, pubSub) {
         self.setState({
           chooseTrackHandler: (...args) => {
             self.setState({
-              chooseTrackHandler: null
+              chooseTrackHandler: null,
             });
 
             callback(...args);
-          }
+          },
         });
       },
 
@@ -361,7 +368,7 @@ const createApi = function api(context, pubSub) {
        */
       hideTrackChooser() {
         this.setState({
-          chooseTrackHandler: null
+          chooseTrackHandler: null,
         });
       },
       /**
@@ -392,7 +399,7 @@ const createApi = function api(context, pubSub) {
        */
       setDarkTheme(darkTheme) {
         console.warn(
-          '`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.'
+          '`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.',
         );
         const theme = darkTheme ? 'dark' : 'light';
         self.setTheme(theme);
@@ -461,7 +468,7 @@ const createApi = function api(context, pubSub) {
           end1Abs,
           start2Abs,
           end2Abs,
-          animateTime
+          animateTime,
         );
       },
 
@@ -603,7 +610,7 @@ const createApi = function api(context, pubSub) {
           xDomain: self.xScales[wurstId].domain(),
           yDomain: self.yScales[wurstId].domain(),
           xRange: self.xScales[wurstId].range(),
-          yRange: self.yScales[wurstId].range()
+          yRange: self.yScales[wurstId].range(),
         };
       },
 
@@ -641,7 +648,7 @@ const createApi = function api(context, pubSub) {
 
           default:
             console.warn(
-              `This option "${key}" is either unknown or not settable.`
+              `This option "${key}" is either unknown or not settable.`,
             );
         }
 
@@ -904,8 +911,8 @@ const createApi = function api(context, pubSub) {
           default:
             return undefined;
         }
-      }
-    }
+      },
+    },
   };
 };
 

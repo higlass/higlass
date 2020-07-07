@@ -24,7 +24,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       // any time options.selectRows changes.
       this.selectRowsCumWeights = selectedItemsToCumWeights(
         this.options.selectRows,
-        this.options.selectRowsAggregationWithRelativeHeight
+        this.options.selectRowsAggregationWithRelativeHeight,
       );
     }
   }
@@ -36,7 +36,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       canvas.width = this.tilesetInfo.shape[0];
       canvas.height = selectedItemsToSize(
         this.options.selectRows,
-        this.options.selectRowsAggregationWithRelativeHeight
+        this.options.selectRowsAggregationWithRelativeHeight,
       );
     } else if (this.tilesetInfo.shape) {
       canvas.width = this.tilesetInfo.shape[0];
@@ -63,7 +63,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       zoomLevel,
       tilePos,
-      this.tilesetInfo.tile_size
+      this.tilesetInfo.tile_size,
     );
 
     const tileEndX = tileX + tileWidth;
@@ -117,7 +117,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         this._xScale,
         this.tilesetInfo.min_pos[0],
         null,
-        this.tilesetInfo.tile_size
+        this.tilesetInfo.tile_size,
       );
     } else {
       this.xTiles = tileProxy.calculateTiles(
@@ -126,7 +126,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         this.tilesetInfo.min_pos[0],
         this.tilesetInfo.max_pos[0],
         this.tilesetInfo.max_zoom,
-        this.tilesetInfo.max_width
+        this.tilesetInfo.max_width,
       );
     }
 
@@ -146,13 +146,13 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
         this.tilesetInfo.resolutions,
         this._xScale,
-        minX
+        minX,
       );
     } else {
       zoomIndexX = tileProxy.calculateZoomLevel(
         this._xScale,
         this.tilesetInfo.min_pos[0],
-        this.tilesetInfo.max_pos[0]
+        this.tilesetInfo.max_pos[0],
       );
     }
 
@@ -196,7 +196,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const tileWidth = tileProxy.calculateTileWidth(
       this.tilesetInfo,
       zoomLevel,
-      this.tilesetInfo.tile_size
+      this.tilesetInfo.tile_size,
     );
 
     // the position of the tile containing the query position
@@ -218,7 +218,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const tileWidth = tileProxy.calculateTileWidth(
       this.tilesetInfo,
       zoomLevel,
-      this.tilesetInfo.tile_size
+      this.tilesetInfo.tile_size,
     );
 
     // the position of the tile containing the query position
@@ -227,7 +227,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     if (this.options.selectRows) {
       numRows = selectedItemsToSize(
         this.options.selectRows,
-        this.options.selectRowsAggregationWithRelativeHeight
+        this.options.selectRowsAggregationWithRelativeHeight,
       );
     }
 
@@ -279,8 +279,8 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
           this.options.selectRowsAggregationMethod === 'client'
         ) {
           // Need to aggregate, so `index` will actually be an array.
-          index = selectedRowItem.map(
-            rowI => this.tilesetInfo.shape[0] * rowI + Math.floor(posInTileX)
+          index = selectedRowIndex.map(
+            rowI => this.tilesetInfo.shape[0] * rowI + Math.floor(posInTileX),
           );
         } else if (
           selectedRowItem &&
@@ -303,7 +303,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       if (Array.isArray(index)) {
         // Need to aggregate to compute `value`.
         const aggFunc = getAggregationFunction(
-          this.options.selectRowsAggregationMode
+          this.options.selectRowsAggregationMode,
         );
         const values = index.map(i => fetchedTile.tileData.dense[i]);
         value = format('.3f')(aggFunc(values));

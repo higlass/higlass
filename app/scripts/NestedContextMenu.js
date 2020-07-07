@@ -19,11 +19,11 @@ class NestedContextMenu extends ContextMenuContainer {
         this.state.orientation === 'left'
           ? {
               left: this.state.left,
-              top: bbox.top
+              top: bbox.top,
             }
           : {
               left: this.state.left + bbox.width + 7,
-              top: bbox.top
+              top: bbox.top,
             };
 
       const menuItem = this.state.submenuShown;
@@ -67,7 +67,7 @@ class NestedContextMenu extends ContextMenuContainer {
               <use xlinkHref="#play" />
             </svg>
           )}
-        </ContextMenuItem>
+        </ContextMenuItem>,
       );
     }
 
@@ -81,7 +81,7 @@ class NestedContextMenu extends ContextMenuContainer {
         }}
         style={{
           left: this.state.left,
-          top: this.state.top
+          top: this.state.top,
         }}
         styleName={styleNames}
       >

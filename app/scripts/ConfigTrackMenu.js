@@ -13,7 +13,7 @@ import { THEME_DARK } from './configs';
 import '../styles/ContextMenu.module.scss';
 
 class ConfigTrackMenu extends mix(ContextMenuContainer).with(
-  SeriesListSubmenuMixin
+  SeriesListSubmenuMixin,
 ) {
   constructor(props) {
     /**
@@ -41,7 +41,7 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(
         data-menu-type="ConfigTrackMenu"
         style={{
           left: this.state.left,
-          top: this.state.top
+          top: this.state.top,
         }}
         styleName={styleNames}
       >
@@ -49,7 +49,7 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(
           this.props.tracks,
           this.handleItemMouseEnter.bind(this),
           this.handleMouseLeave.bind(this),
-          null
+          null,
         )}
 
         <hr styleName="context-menu-hr" />
@@ -92,7 +92,7 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(
           onClick={() => {
             this.props.onReplaceTrack(
               this.props.tracks[0].uid,
-              this.props.trackOrientation
+              this.props.trackOrientation,
             );
           }}
         >

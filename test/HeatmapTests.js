@@ -21,6 +21,31 @@ import { exportDataConfig } from './view-configs';
 configure({ adapter: new Adapter() });
 
 describe('Heatmaps', () => {
+  describe('Visualization', () => {
+    let hgc = null;
+    let div = null;
+
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, noDataTransform, done, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true
+      });
+    });
+
+    it('should respect zoom limits', () => {
+      // add your tests here
+
+      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap0');
+      const rectData = trackObj.getVisibleRectangleData(547, 18, 1, 1);
+
+      expect(Number.isNaN(rectData.data[0])).to.eql(false);
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+  });
+
   describe('Export heatmap data', () => {
     let hgc = null;
     let div = null;
@@ -254,6 +279,12 @@ const baseConf = {
     }
   ]
 };
+
+const noDataTransform = JSON.parse(JSON.stringify(baseConf));
+noDataTransform.views[0].tracks.center[0].contents[0].tilesetUid =
+  'ZrEuRvzURI6EFw8j0-5GCA';
+noDataTransform.views[0].tracks.center[0].contents[0].options.noDataTransform =
+  'None';
 
 const heatmapTrack = {
   server: '//higlass.io/api/v1',

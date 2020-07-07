@@ -67,7 +67,7 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
         midX - width / 2,
         midY - RECT_HEIGHT / 2,
         width,
-        RECT_HEIGHT
+        RECT_HEIGHT,
       );
     });
   }
@@ -86,9 +86,9 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
           +Math.min(
             ...this.fetchedTiles[x].tileData
               .filter(y => !Number.isNaN(y.fields[3]))
-              .map(y => +y.fields[3])
-          )
-      )
+              .map(y => +y.fields[3]),
+          ),
+      ),
     );
 
     return min;
@@ -108,9 +108,9 @@ class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
           +Math.max(
             ...this.fetchedTiles[x].tileData
               .filter(y => !Number.isNaN(y.fields[3]))
-              .map(y => +y.fields[3])
-          )
-      )
+              .map(y => +y.fields[3]),
+          ),
+      ),
     );
 
     return max;
