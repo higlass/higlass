@@ -339,9 +339,14 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     }
 
     // add information about the row
-    if (this.tilesetInfo.row_infos && !Array.isArray(selectedRowItem)) {
+    if (this.tilesetInfo.row_infos) {
       value += '<br/>';
-      const rowInfo = this.tilesetInfo.row_infos[selectedRowItem];
+      let rowInfo = '';
+      if (this.options.selectRows && !Array.isArray(selectedRowItem)) {
+        rowInfo = this.tilesetInfo.row_infos[selectedRowItem];
+      } else if (selectedRowIndex) {
+        rowInfo = this.tilesetInfo.row_infos[selectedRowIndex];
+      }
       if (typeof rowInfo === 'object') {
         // The simplest thing to do here is conform to the tab-separated values convention.
         value += Object.values(rowInfo).join('\t');
