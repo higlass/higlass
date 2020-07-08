@@ -1,12 +1,14 @@
 # Release notes
 
-## Next release
+## v1.10.1
 
 - Remove view config validation from `hgApi.getViewConfig()` and `hgApi.setViewConfig()` and instead move it into a new method called `hgApi.validateViewConfig(viewConfig, { verbose: false } = {})`
 
 ## v1.10.0
 
 - Remove text/plain encoding from tile proxy text fetcher
+
+_[Detailed changes since v1.10.0](https://github.com/higlass/higlass/compare/v1.10.0...v1.10.1)_
 
 ## v1.10.0
 
