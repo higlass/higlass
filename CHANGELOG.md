@@ -2,6 +2,10 @@
 
 ## Next release
 
+- Remove view config validation from `hgApi.getViewConfig()` and `hgApi.setViewConfig()` and instead move it into a new method called `hgApi.validateViewConfig(viewConfig, { verbose: false } = {})`
+
+## v1.10.0
+
 - Remove text/plain encoding from tile proxy text fetcher
 
 ## v1.10.0
