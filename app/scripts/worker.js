@@ -77,7 +77,20 @@ export function maxNonZero(data) {
   return maxNonZeroNum;
 }
 
-function workerSetPixForSelectedRows(
+/**
+ * This function helps to fill in pixData by calling setPixData()
+ * when selectedRowsOptions have been passed to workerSetPix().
+ * @param {array} data The tile data array.
+ * @param {array} shape Array `[numRows, numCols]`, used when iterating over a subset of rows,
+ * when one needs to know the width of each column.
+ * @param {function} setPixData The setPixData function created by workerSetPix().
+ * @param {number[]} selectedRows Array of row indices, for ordering and filtering rows.
+ * Used by the HorizontalMultivecTrack.
+ * @param {string} selectedRowsAggregationMode String that specifies the aggregation function to use ("mean", "sum", etc).
+ * @param {boolean} selectedRowsAggregationWithRelativeHeight Boolean that determines whether the height of row groups should be relative to the size of the group.
+ * @param {string} selectedRowsAggregationMethod Where will the aggregation be performed? Possible values: "client", "server".
+ */
+function setPixDataForSelectedRows(
   data,
   shape,
   setPixData,
@@ -157,10 +170,7 @@ function workerSetPixForSelectedRows(
  * @param {array} shape Array `[numRows, numCols]`, used when iterating over a subset of rows,
  * when one needs to know the width of each column.
  * @param {array} zeroValueColor The color to use for rendering zero data values, [r, g, b, a].
- * @param {number[]} selectedRows Array of row indices, for ordering and filtering rows.
- * Used by the HorizontalMultivecTrack.
- * @param {string} selectedRowsAggregationMode String that specifies the aggregation function to use ("mean", "sum", etc).
- * @param {boolean} selectedRowsAggregationWithRelativeHeight Boolean that determines whether the height of row groups should be relative to the size of the group.
+ * @param {object} selectedRowsOptions Rendering options when using a `selectRows` track option.
  * @returns {Uint8ClampedArray} A flattened array of pixel values.
  */
 export function workerSetPix(
@@ -269,9 +279,9 @@ export function workerSetPix(
   try {
     if (selectedRows) {
       // We need to set the pixels in the order specified by the `selectedRows` parameter.
-      // Call the workerSetPixForSelectedRows helper function,
+      // Call the setPixDataForSelectedRows helper function,
       // which will loop over the data for us and call setPixData().
-      workerSetPixForSelectedRows(
+      setPixDataForSelectedRows(
         data,
         shape,
         setPixData,
