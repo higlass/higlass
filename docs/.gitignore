@@ -9,4 +9,3 @@ notebooks/.ipynb_checkpoints/
 .DS_Store
 .idea/
 .envrc
-node_modules/
