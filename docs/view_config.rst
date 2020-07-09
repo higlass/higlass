@@ -353,8 +353,7 @@ and ``fileType``
       "type": "vector",
       "server": "http://my-higlass.io/api/v1",
       "fileUrl": "http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig",
-      "fileType": "bigwig",
-      "indexUrl": "http://example.com/info.json"
+      "fileType": "bigwig"
     }
 
 * Note that we do not provide a compatible server "out of the box" or as part of

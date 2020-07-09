@@ -1495,10 +1495,6 @@ class TrackRenderer extends React.Component {
       dataConfig.coordSystem = track.coordSystem;
     }
 
-    if (track.indexUrl) {
-      dataConfig.indexUrl = track.indexUrl;
-    }
-
     const dataFetcher = getDataFetcher(dataConfig, this.props.pubSub);
 
     // To simplify the context creation via ES6 object shortcuts.

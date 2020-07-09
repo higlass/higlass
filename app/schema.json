@@ -332,7 +332,6 @@
           "uid": { "type": "string" },
           "fileType": { "type": "string" },
           "fileUrl": { "type": "string" },
-          "indexUrl": { "type": "string" },
           "type": {
             "enum": [
               "multivec",
