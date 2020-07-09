@@ -109,21 +109,21 @@ To modify a tileset name, specify the tileset `uuid` in the URL, use the `PATCH`
 
   curl --user ${username}:${password} --request PATCH --header "Content-Type: application/json" --data '{"name":"new_name_of_tileset"}' http://localhost:8000/api/v1/tilesets/${uuid}/
 
-To retrieve a particular tile, in this case tile `1` at zoom level `6` for the tileset named by the `${uuid}` variable:
+To retrieve a particular tile, in this case tile `1` at zoom level `6` for the tileset named by the ``${uuid}`` variable:
 
 .. code-block:: bash
 
   curl localhost:8000/api/v1/tiles?d=${uuid}.6.1
 
-To retrieve many tiles at once, in this case tiles `0`, `1`, and `2` at zoom level `6` for the tileset `${uuid}`:
+To retrieve many tiles at once, in this case tiles `0`, `1`, and `2` at zoom level `6` for the tileset ``${uuid}``:
 
 .. code-block:: bash
 
   curl localhost:8000/api/v1/tiles?d=${uuid}.6.0&d=${uuid}.6.1&d=${uuid}.6.2
 
-To retrieve multivec tiles with pre-aggregated rows, a `POST` request can be made to the `/api/v1/tiles` endpoint, with the following request body,
-where `my_uuid` is the `tilesetUid` for a multivec tileset.
-The request body will be validated against the JSON schema in the `higlass-server` repository [here](https://github.com/higlass/higlass-server/blob/develop/tilesets/json_schemas.py).
+To retrieve multivec tiles with pre-aggregated rows, a `POST` request can be made to the ``/api/v1/tiles`` endpoint, with the following request body,
+where ``my_uuid`` is the `tilesetUid` for a multivec tileset.
+The request body will be validated against the JSON schema in the ``higlass-server`` repository `here <https://github.com/higlass/higlass-server/blob/develop/tilesets/json_schemas.py>`_.
 
 .. code-block:: json
 
@@ -141,12 +141,12 @@ The request body will be validated against the JSON schema in the `higlass-serve
     }
   ]
 
-The `options.aggGroups` option takes a 1- or 2- dimensional array of integers, where each integer represents an index of a row in the multivec file.
-The `options.aggFunc` option takes one of the following string values: `mean`, `median`, `std` (standard deviation), `var` (variance), `max`, `min`.
-The aggregation function is evaluated for each sub-array (group of rows) if `options.aggGroups` is a 2-dimensional array, along axis 0.
+The ``options.aggGroups`` option takes a 1- or 2- dimensional array of integers, where each integer represents an index of a row in the multivec file.
+The ``options.aggFunc`` option takes one of the following string values: ``mean``, ``median``, ``std`` (standard deviation), ``var`` (variance), ``max``, ``min``.
+The aggregation function is evaluated for each sub-array (group of rows) if ``options.aggGroups`` is a 2-dimensional array (along axis 0).
 
-The response of the above `POST` request to `/api/v1/tiles` will have the following format.
-The `0` entry of the `shape` property is `2` for both of these aggregated tiles, since `options.aggGroups` contained two groups.
+The response of the above `POST` request to ``/api/v1/tiles`` will have the following format.
+The zeroth entry of the ``shape`` property is `2` for both of these aggregated tiles, since ``options.aggGroups`` contained two groups.
 
 .. code-block:: json
 
