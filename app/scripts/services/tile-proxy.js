@@ -174,7 +174,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
         const tilesetUuid = id.substring(0, firstSepIndex);
         const tileId = id.substring(firstSepIndex + 1);
         const tilesetObject = requestBodyByServer[request.server].find(
-          t => t.tilesetUid === tilesetUuid
+          t => t.tilesetUid === tilesetUuid,
         );
         if (tilesetObject) {
           tilesetObject.tileIds.push(tileId);
@@ -182,7 +182,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
           requestBodyByServer[request.server].push({
             tilesetUid: tilesetUuid,
             tileIds: [tileId],
-            options: request.options
+            options: request.options,
           });
         }
       }
@@ -538,10 +538,7 @@ export const tileDataToPixData = (
   ignoreUpperRight,
   ignoreLowerLeft,
   zeroValueColor,
-  selectedRows,
-  selectedRowsAggregationMode,
-  selectedRowsAggregationWithRelativeHeight,
-  selectedRowsAggregationMethod,
+  selectedRowsOptions,
 ) => {
   const { tileData } = tile;
 
@@ -598,10 +595,7 @@ export const tileDataToPixData = (
     ignoreLowerLeft,
     tile.tileData.shape,
     zeroValueColor,
-    selectedRows,
-    selectedRowsAggregationMode,
-    selectedRowsAggregationWithRelativeHeight,
-    selectedRowsAggregationMethod,
+    selectedRowsOptions,
   );
 
   finished({ pixData });

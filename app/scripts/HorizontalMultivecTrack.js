@@ -34,6 +34,17 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       };
       this.dataFetcher = new DataFetcher(newDataConfig, context.pubSub);
     }
+
+    // Put the selectedRows options into an object,
+    // which can be passed to tileProxy.tileDataToPixData
+    // in the HeatmapTiledPixiTrack ancestor.
+    this.selectedRowsOptions = {
+      selectedRows: this.options.selectRows,
+      selectedRowsAggregationMode: this.options.selectRowsAggregationMode,
+      selectedRowsAggregationWithRelativeHeight: this.options
+        .selectRowsAggregationWithRelativeHeight,
+      selectedRowsAggregationMethod: this.options.selectRowsAggregationMethod,
+    };
   }
 
   rerender(options, force) {
