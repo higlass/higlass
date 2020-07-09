@@ -109,6 +109,61 @@ To modify a tileset name, specify the tileset `uuid` in the URL, use the `PATCH`
 
   curl --user ${username}:${password} --request PATCH --header "Content-Type: application/json" --data '{"name":"new_name_of_tileset"}' http://localhost:8000/api/v1/tilesets/${uuid}/
 
+To retrieve a particular tile, in this case tile `1` at zoom level `6` for the tileset named by the `${uuid}` variable:
+
+.. code-block:: bash
+
+  curl localhost:8000/api/v1/tiles?d=${uuid}.6.1
+
+To retrieve many tiles at once, in this case tiles `0`, `1`, and `2` at zoom level `6` for the tileset `${uuid}`:
+
+.. code-block:: bash
+
+  curl localhost:8000/api/v1/tiles?d=${uuid}.6.0&d=${uuid}.6.1&d=${uuid}.6.2
+
+To retrieve multivec tiles with pre-aggregated rows, a `POST` request can be made to the `/api/v1/tiles` endpoint, with the following request body,
+where `my_uuid` is the `tilesetUid` for a multivec tileset.
+
+.. code-block:: json
+
+  [
+    {
+      "tilesetUid": "my_uuid",
+      "tileIds": ["6.0", "6.1"],
+      "options": {
+        "aggFunc": "mean",
+        "aggGroups": [
+          [1, 2, 3],
+          [0, 4, 9, 11]
+        ]
+      }
+    }
+  ]
+
+The response of the above `POST` request to `/api/v1/tiles` will have the following format:
+
+.. code-block:: json
+
+  {
+    "my_uuid.6.0": {
+      "dense": "9GNDVOl...",
+      "dtype": "float16",
+      "shape": [
+        2,
+        256
+      ]
+    },
+    "my_uuid.6.1": {
+      "dense": "mnGScTN...",
+      "dtype": "float16",
+      "shape": [
+        2,
+        256
+      ]
+    }
+  }
+
+
 Uploading data (POST)
 ^^^^^^^^^^^^^^^^^^^^^
 
