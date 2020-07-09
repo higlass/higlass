@@ -123,6 +123,7 @@ To retrieve many tiles at once, in this case tiles `0`, `1`, and `2` at zoom lev
 
 To retrieve multivec tiles with pre-aggregated rows, a `POST` request can be made to the `/api/v1/tiles` endpoint, with the following request body,
 where `my_uuid` is the `tilesetUid` for a multivec tileset.
+The request body will be validated against the JSON schema in the `higlass-server` repository [here](https://github.com/higlass/higlass-server/blob/develop/tilesets/json_schemas.py).
 
 .. code-block:: json
 
@@ -140,7 +141,12 @@ where `my_uuid` is the `tilesetUid` for a multivec tileset.
     }
   ]
 
-The response of the above `POST` request to `/api/v1/tiles` will have the following format:
+The `options.aggGroups` option takes a 1- or 2- dimensional array of integers, where each integer represents an index of a row in the multivec file.
+The `options.aggFunc` option takes one of the following string values: `mean`, `median`, `std` (standard deviation), `var` (variance), `max`, `min`.
+The aggregation function is evaluated for each sub-array (group of rows) if `options.aggGroups` is a 2-dimensional array, along axis 0.
+
+The response of the above `POST` request to `/api/v1/tiles` will have the following format.
+The `0` entry of the `shape` property is `2` for both of these aggregated tiles, since `options.aggGroups` contained two groups.
 
 .. code-block:: json
 
