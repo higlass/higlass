@@ -3,6 +3,7 @@
 ## v1.10.1
 
 - Remove text/plain encoding from tile proxy text fetcher
+- Added the `selectRowsAggregationMethod` option for the `horizontal-multivec` track to enable server-side aggregation if set to `"server"` rather than the default `"client"`.
 
 _[Detailed changes since v1.10.0](https://github.com/higlass/higlass/compare/v1.10.0...v1.10.1)_
 
