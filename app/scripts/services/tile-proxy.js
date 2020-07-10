@@ -157,15 +157,35 @@ export function fetchMultiRequestTiles(req, pubSub) {
   const fetchPromises = [];
 
   const requestsByServer = {};
+  const requestBodyByServer = {};
 
   // We're converting the array of IDs into an object in order to filter out duplicated requests.
   // In case different instances request the same data it won't be loaded twice.
   for (const request of requests) {
     if (!requestsByServer[request.server]) {
       requestsByServer[request.server] = {};
+      requestBodyByServer[request.server] = [];
     }
     for (const id of request.ids) {
       requestsByServer[request.server][id] = true;
+
+      if (request.options) {
+        const firstSepIndex = id.indexOf('.');
+        const tilesetUuid = id.substring(0, firstSepIndex);
+        const tileId = id.substring(firstSepIndex + 1);
+        const tilesetObject = requestBodyByServer[request.server].find(
+          t => t.tilesetUid === tilesetUuid,
+        );
+        if (tilesetObject) {
+          tilesetObject.tileIds.push(tileId);
+        } else {
+          requestBodyByServer[request.server].push({
+            tilesetUid: tilesetUuid,
+            tileIds: [tileId],
+            options: request.options,
+          });
+        }
+      }
     }
   }
 
@@ -174,6 +194,8 @@ export function fetchMultiRequestTiles(req, pubSub) {
   for (const server of servers) {
     const ids = Object.keys(requestsByServer[server]);
     // console.log('ids:', ids);
+
+    const requestBody = requestBodyByServer[server];
 
     // if we request too many tiles, then the URL can get too long and fail
     // so we'll break up the requests into smaller subsets
@@ -203,6 +225,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
           params.theseTileIds,
           params.authHeader,
           resolve,
+          requestBody,
         );
 
         /*
@@ -500,10 +523,7 @@ export const calculateTilesFromResolution = (
  * @param ignoreLowerLeft: If this is a tile along the diagonal and there will be
  * mirrored tiles present ignore the lower left values
  * @param {array} zeroValueColor: The color to use for rendering zero data values, [r, g, b, a].
- * @param {number[]} selectedRows: Array of row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
- * @param {string} selectedRowsAggregationMode: String that determines the aggregation function to use if selected rows is a
- * 2D array ("mean", "sum", etc).
- * @param {boolean} selectedRowsAggregationWithRelativeHeight: If true, the height for each aggregation group should be relative to the length of the group.
+ * @param {object} selectedRowsOptions Rendering options when using a `selectRows` track option.
  */
 export const tileDataToPixData = (
   tile,
@@ -515,9 +535,7 @@ export const tileDataToPixData = (
   ignoreUpperRight,
   ignoreLowerLeft,
   zeroValueColor,
-  selectedRows,
-  selectedRowsAggregationMode,
-  selectedRowsAggregationWithRelativeHeight,
+  selectedRowsOptions,
 ) => {
   const { tileData } = tile;
 
@@ -574,9 +592,7 @@ export const tileDataToPixData = (
     ignoreLowerLeft,
     tile.tileData.shape,
     zeroValueColor,
-    selectedRows,
-    selectedRowsAggregationMode,
-    selectedRowsAggregationWithRelativeHeight,
+    selectedRowsOptions,
   );
 
   finished({ pixData });
