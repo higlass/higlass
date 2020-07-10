@@ -3,8 +3,8 @@
 ## v1.10.1
 
 - Remove text/plain encoding from tile proxy text fetcher
-- Improved support for the `fileUrl` option with bug fixes for the complementary `coordSystem` and `fileType` track config properties.
 - Added the `selectRowsAggregationMethod` option for the `horizontal-multivec` track to enable server-side aggregation if set to `"server"` rather than the default `"client"`.
+- In the view config, moved the `fileUrl` track property under the `data` property: `data: { url, server, filetype }`.
 
 _[Detailed changes since v1.10.0](https://github.com/higlass/higlass/compare/v1.10.0...v1.10.1)_
 

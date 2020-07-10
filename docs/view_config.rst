@@ -338,34 +338,11 @@ entries:
       "tilesetUid": "default",
     }
 
-Using ``fileUrl``
-^^^^^^^^^^^^^^^^^
-
-The second method of obtaining data is from a http-accessible url. We still
-need a compatible server to load data from the url and convert it to tiles,
-but we don't need to explicitly register the data with the server. This can be
-done automatically by the client as long as it has the ``fileUrl``, ``server``
-and ``fileType``
-
-.. code-block:: javascript
-
-    {
-      "type": "vector",
-      "server": "http://my-higlass.io/api/v1",
-      "fileUrl": "http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig",
-      "fileType": "bigwig"
-    }
-
-* Note that we do not provide a compatible server "out of the box" or as part of
-the higlass-manage / higlass-docker distribution. To use this functionality,
-you have to run ``higlass-server`` directly and `mount the http and httpfs
-directories a filesystems in userspace
-<https://github.com/higlass/higlass-server/blob/develop/start.sh>`_.
-
 Using ``data``
 ^^^^^^^^^^^^^^
 
-In addition to using ``tilesetUid`` or ``fileUrl`` to specify a data source, the ``data`` section can be used to configure other data sources or to create data sources consisting of multiple tilesets, such as one matrix divided by another.
+In addition to using ``tilesetUid`` to specify a data source, the ``data`` section can be used to configure other data sources or to create data sources consisting of multiple tilesets, such as one matrix divided by another.
+
 
 Genbank files
 """""""""""""
@@ -394,6 +371,28 @@ The specify the Genbank as text, replace the ``url`` field with ``text``:
 
 
 **Note** The Genbank data sources is limited in its detail. It currently only displays genes and the names of genes. More extensive support for gene annotations (e.g. exons) should be added in the `higlass/app/scripts/data-fetchers/genbank-fetcher.js` file.
+
+
+Other files
+""""""""""""""""
+
+The second method of obtaining data is from a http-accessible url. We still
+need a compatible server to load data from the url and convert it to tiles,
+but we don't need to explicitly register the data with the server. This can be
+done automatically by the client as long as it has an object with the ``url``, ``server``
+and ``filetype`` properties in the ``data`` property of the track config.
+
+.. code-block:: javascript
+
+    {
+      "type": "vector",
+      "server": "http://my-higlass.io/api/v1",
+      "url": "http://hgdownload.cse.ucsc.edu/goldenpath/hg19/encodeDCC/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdSig.bigWig",
+      "filetype": "bigwig"
+    }
+
+**Note** We do not provide a compatible server "out of the box" or as part of the higlass-manage / higlass-docker distribution. To use this functionality, you have to run ``higlass-server`` directly and `mount the http and httpfs directories a filesystems in userspace <https://github.com/higlass/higlass-server/blob/develop/start.sh>`_.
+
 
 Raw tile values
 """""""""""""""

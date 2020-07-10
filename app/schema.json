@@ -39,6 +39,9 @@
     "data": {
       "type": "object",
       "properties": {
+        "url": { "type": "string" },
+        "server": { "type": "string" },
+        "filetype": { "type": "string" },
         "type": { "type": "string" },
         "tilesetInfo": { "type": "object" },
         "children": { "type": "array" },
@@ -330,8 +333,6 @@
           "tilesetUid": { "type": "string" },
           "data": { "$ref": "#/definitions/data" },
           "uid": { "type": "string" },
-          "fileType": { "type": "string" },
-          "fileUrl": { "type": "string" },
           "type": {
             "enum": [
               "multivec",

@@ -1481,16 +1481,6 @@ class TrackRenderer extends React.Component {
       };
     }
 
-    if (track.fileUrl) {
-      dataConfig.fileUrl = track.fileUrl;
-
-      if (!track.fileType) {
-        console.warn('fileUrl present without fileType:', track);
-      } else {
-        dataConfig.fileType = track.fileType;
-      }
-    }
-
     if (track.coordSystem) {
       dataConfig.coordSystem = track.coordSystem;
     }
