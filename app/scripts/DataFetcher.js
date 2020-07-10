@@ -199,6 +199,7 @@ export default class DataFetcher {
             server: this.dataConfig.server,
             done: resolve,
             ids: tileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
+            options: this.dataConfig.options,
           },
           this.pubSub,
           true,
