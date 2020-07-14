@@ -39,6 +39,9 @@
     "data": {
       "type": "object",
       "properties": {
+        "url": { "type": "string" },
+        "server": { "type": "string" },
+        "filetype": { "type": "string" },
         "type": { "type": "string" },
         "tilesetInfo": { "type": "object" },
         "children": { "type": "array" },
