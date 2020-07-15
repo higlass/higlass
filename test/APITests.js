@@ -977,7 +977,7 @@ describe('API Tests', () => {
     const hgc = api.getComponent();
     waitForTilesLoaded(hgc, () => {
       api.on('geneSearch', e => {
-        expect(e.geneName).toEqual('MYC');
+        expect(e.geneSymbol).toEqual('MYC');
         expect(e.centerX).toEqual(1521546687);
         done();
       });
