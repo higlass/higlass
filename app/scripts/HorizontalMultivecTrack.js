@@ -1,6 +1,7 @@
 import { format } from 'd3-format';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
+import DataFetcher from './DataFetcher';
 
 import { tileProxy } from './services';
 import selectedItemsToSize from './utils/selected-items-to-size';
@@ -14,6 +15,36 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     // Continuous scaling is currently not supported
     this.continuousScaling = false;
+
+    if (
+      options &&
+      options.selectRows &&
+      options.selectRowsAggregationMethod === 'server'
+    ) {
+      // Override the dataFetcher object with a new dataConfig,
+      // containing the .options property.
+      // This would otherwise be set in the call to super()
+      // in the TiledPixiTrack ancestor constructor.
+      const newDataConfig = {
+        ...context.dataConfig,
+        options: {
+          aggGroups: options.selectRows,
+          aggFunc: options.selectRowsAggregationMode,
+        },
+      };
+      this.dataFetcher = new DataFetcher(newDataConfig, context.pubSub);
+    }
+
+    // Put the selectedRows options into an object,
+    // which can be passed to tileProxy.tileDataToPixData
+    // in the HeatmapTiledPixiTrack ancestor.
+    this.selectedRowsOptions = {
+      selectedRows: this.options.selectRows,
+      selectedRowsAggregationMode: this.options.selectRowsAggregationMode,
+      selectedRowsAggregationWithRelativeHeight: this.options
+        .selectRowsAggregationWithRelativeHeight,
+      selectedRowsAggregationMethod: this.options.selectRowsAggregationMethod,
+    };
   }
 
   rerender(options, force) {
@@ -238,23 +269,20 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const posInTileY = posInTileYNormalized * numRows;
 
     let selectedRowIndex = Math.floor(posInTileY);
+    let selectedRowItem;
     if (this.options.selectRows) {
       // The `posInTileY` may not directly correspond to data indices if rows are filtered/reordered,
       // the `selectRows` array must be checked to convert the y-position to a data index/indices first.
-      if (!this.options.selectRowsAggregationWithRelativeHeight) {
-        // Each subarray represents one unit of height, so using `posInTileY` to select it will work.
-        selectedRowIndex = this.options.selectRows[Math.floor(posInTileY)];
-      } else {
+      if (this.options.selectRowsAggregationWithRelativeHeight) {
         // Height must take into account the size of sub-arrays, so use the cumulative weight array.
-        selectedRowIndex = this.options.selectRows[
-          this.selectRowsCumWeights.findIndex(
-            (weight, i) =>
-              posInTileYNormalized <= weight &&
-              (i === this.selectRowsCumWeights.length - 1 ||
-                this.selectRowsCumWeights[i + 1] >= posInTileYNormalized),
-          )
-        ];
+        selectedRowIndex = this.selectRowsCumWeights.findIndex(
+          (weight, i) =>
+            posInTileYNormalized <= weight &&
+            (i === this.selectRowsCumWeights.length - 1 ||
+              this.selectRowsCumWeights[i + 1] >= posInTileYNormalized),
+        );
       }
+      selectedRowItem = this.options.selectRows[selectedRowIndex];
     }
 
     const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
@@ -277,11 +305,21 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       let index = null;
       if (this.tilesetInfo.shape) {
         // Accomodate data from vector sources
-        if (Array.isArray(selectedRowIndex)) {
+        if (
+          Array.isArray(selectedRowItem) &&
+          this.options.selectRowsAggregationMethod === 'client'
+        ) {
           // Need to aggregate, so `index` will actually be an array.
-          index = selectedRowIndex.map(
+          index = selectedRowItem.map(
             rowI => this.tilesetInfo.shape[0] * rowI + Math.floor(posInTileX),
           );
+        } else if (
+          selectedRowItem &&
+          this.options.selectRowsAggregationMethod === 'client'
+        ) {
+          index =
+            this.tilesetInfo.shape[0] * selectedRowItem +
+            Math.floor(posInTileX);
         } else {
           // No need to aggregate, `index` will contain a single item.
           index =
@@ -304,13 +342,29 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         value += `${index.length}-item ${this.options.selectRowsAggregationMode}`;
       } else {
         value = format('.3f')(fetchedTile.tileData.dense[index]);
+        if (Array.isArray(selectedRowItem)) {
+          value += '<br/>';
+          value += `${selectedRowItem.length}-item ${this.options.selectRowsAggregationMode}`;
+        }
       }
     }
 
     // add information about the row
-    if (this.tilesetInfo.row_infos && !Array.isArray(selectedRowIndex)) {
+    if (this.tilesetInfo.row_infos) {
       value += '<br/>';
-      value += this.tilesetInfo.row_infos[selectedRowIndex];
+      let rowInfo = '';
+      if (this.options.selectRows && !Array.isArray(selectedRowItem)) {
+        rowInfo = this.tilesetInfo.row_infos[selectedRowItem];
+      } else if (selectedRowIndex) {
+        rowInfo = this.tilesetInfo.row_infos[selectedRowIndex];
+      }
+      if (typeof rowInfo === 'object') {
+        // The simplest thing to do here is conform to the tab-separated values convention.
+        value += Object.values(rowInfo).join('\t');
+      } else {
+        // Probably a tab-separated string since not an object.
+        value += rowInfo;
+      }
     }
 
     return `${value}`;

@@ -78,6 +78,82 @@ export function maxNonZero(data) {
 }
 
 /**
+ * This function helps to fill in pixData by calling setPixData()
+ * when selectedRowsOptions have been passed to workerSetPix().
+ * @param {array} data The tile data array.
+ * @param {array} shape Array `[numRows, numCols]`, used when iterating over a subset of rows,
+ * when one needs to know the width of each column.
+ * @param {function} setPixData The setPixData function created by workerSetPix().
+ * @param {number[]} selectedRows Array of row indices, for ordering and filtering rows.
+ * Used by the HorizontalMultivecTrack.
+ * @param {string} selectedRowsAggregationMode String that specifies the aggregation function to use ("mean", "sum", etc).
+ * @param {boolean} selectedRowsAggregationWithRelativeHeight Boolean that determines whether the height of row groups should be relative to the size of the group.
+ * @param {string} selectedRowsAggregationMethod Where will the aggregation be performed? Possible values: "client", "server".
+ */
+function setPixDataForSelectedRows(
+  data,
+  shape,
+  setPixData,
+  selectedRows,
+  selectedRowsAggregationMode,
+  selectedRowsAggregationWithRelativeHeight,
+  selectedRowsAggregationMethod,
+) {
+  // We need to set the pixels in the order specified by the `selectedRows` parameter.
+  let aggFunc;
+  let aggFromDataFunc;
+  if (selectedRowsAggregationMode) {
+    aggFunc = getAggregationFunction(selectedRowsAggregationMode);
+    aggFromDataFunc = (colI, rowIs) =>
+      aggFunc(rowIs.map(rowI => data[rowI * shape[1] + colI]));
+  }
+  let d;
+  let pixRowI;
+  let colI;
+  let selectedRowI;
+  let selectedRowGroupItemI;
+  for (colI = 0; colI < shape[1]; colI++) {
+    // For this column, aggregate along the row axis.
+    pixRowI = 0;
+    for (selectedRowI = 0; selectedRowI < selectedRows.length; selectedRowI++) {
+      if (aggFunc && selectedRowsAggregationMethod === 'server') {
+        d = data[selectedRowI * shape[1] + colI];
+      } else if (Array.isArray(selectedRows[selectedRowI]) && aggFunc) {
+        // An aggregation step must be performed for this data point.
+        d = aggFromDataFunc(colI, selectedRows[selectedRowI]);
+      } else {
+        d = data[selectedRows[selectedRowI] * shape[1] + colI];
+      }
+
+      if (
+        selectedRowsAggregationWithRelativeHeight &&
+        Array.isArray(selectedRows[selectedRowI])
+      ) {
+        // Set a pixel for multiple rows, proportionate to the size of the row aggregation group.
+        for (
+          selectedRowGroupItemI = 0;
+          selectedRowGroupItemI < selectedRows[selectedRowI].length;
+          selectedRowGroupItemI++
+        ) {
+          setPixData(
+            pixRowI * shape[1] + colI, // pixData index
+            d, // data point
+          );
+          pixRowI++;
+        }
+      } else {
+        // Set a single pixel, either representing a single row or an entire row group, if the vertical height for each group should be uniform (i.e. should not depend on group size).
+        setPixData(
+          pixRowI * shape[1] + colI, // pixData index
+          d, // data point
+        );
+        pixRowI++;
+      }
+    } // end row group for
+  } // end col for
+}
+
+/**
  * This function takes in tile data and other rendering parameters,
  * and generates an array of pixel data that can be passed to a canvas
  * (and subsequently passed to a PIXI sprite).
@@ -94,10 +170,7 @@ export function maxNonZero(data) {
  * @param {array} shape Array `[numRows, numCols]`, used when iterating over a subset of rows,
  * when one needs to know the width of each column.
  * @param {array} zeroValueColor The color to use for rendering zero data values, [r, g, b, a].
- * @param {number[]} selectedRows Array of row indices, for ordering and filtering rows.
- * Used by the HorizontalMultivecTrack.
- * @param {string} selectedRowsAggregationMode String that specifies the aggregation function to use ("mean", "sum", etc).
- * @param {boolean} selectedRowsAggregationWithRelativeHeight Boolean that determines whether the height of row groups should be relative to the size of the group.
+ * @param {object} selectedRowsOptions Rendering options when using a `selectRows` track option.
  * @returns {Uint8ClampedArray} A flattened array of pixel values.
  */
 export function workerSetPix(
@@ -111,9 +184,7 @@ export function workerSetPix(
   ignoreLowerLeft = false,
   shape = null,
   zeroValueColor = null,
-  selectedRows = null,
-  selectedRowsAggregationMode = null,
-  selectedRowsAggregationWithRelativeHeight = null,
+  selectedRowsOptions = null,
 ) {
   let valueScale = null;
 
@@ -134,8 +205,16 @@ export function workerSetPix(
       .domain(valueScaleDomain);
   }
 
+  // De-structure the selectedRowsOptions object.
+  const {
+    selectedRows = null,
+    selectedRowsAggregationMode = null,
+    selectedRowsAggregationWithRelativeHeight = null,
+    selectedRowsAggregationMethod = null,
+  } = selectedRowsOptions || {};
+
   let filteredSize = size;
-  if (shape && selectedRows) {
+  if (selectedRows) {
     // If using the `selectedRows` parameter, then the size of the `pixData` array
     // will likely be different than `size` (the total size of the tile data array).
     // The potential for aggregation groups in `selectedRows` also must be taken into account.
@@ -148,7 +227,7 @@ export function workerSetPix(
 
   let rgb;
   let rgbIdx = 0;
-  const tileWidth = Math.sqrt(size);
+  const tileWidth = shape ? shape[1] : Math.sqrt(size);
   const pixData = new Uint8ClampedArray(filteredSize * 4);
 
   /**
@@ -198,60 +277,19 @@ export function workerSetPix(
 
   let d;
   try {
-    if (shape && selectedRows) {
+    if (selectedRows) {
       // We need to set the pixels in the order specified by the `selectedRows` parameter.
-      let aggFunc;
-      let aggFromDataFunc;
-      if (selectedRowsAggregationMode) {
-        aggFunc = getAggregationFunction(selectedRowsAggregationMode);
-        aggFromDataFunc = (colI, rowIs) =>
-          aggFunc(rowIs.map(rowI => data[rowI * shape[1] + colI]));
-      }
-      let pixRowI;
-      let colI;
-      let selectedRowI;
-      let selectedRowGroupItemI;
-      for (colI = 0; colI < shape[1]; colI++) {
-        // For this column, aggregate along the row axis.
-        pixRowI = 0;
-        for (
-          selectedRowI = 0;
-          selectedRowI < selectedRows.length;
-          selectedRowI++
-        ) {
-          if (Array.isArray(selectedRows[selectedRowI]) && aggFunc) {
-            // An aggregation step must be performed for this data point.
-            d = aggFromDataFunc(colI, selectedRows[selectedRowI]);
-          } else {
-            d = data[selectedRows[selectedRowI] * shape[1] + colI];
-          }
-
-          if (
-            selectedRowsAggregationWithRelativeHeight &&
-            Array.isArray(selectedRows[selectedRowI])
-          ) {
-            // Set a pixel for multiple rows, proportionate to the size of the row aggregation group.
-            for (
-              selectedRowGroupItemI = 0;
-              selectedRowGroupItemI < selectedRows[selectedRowI].length;
-              selectedRowGroupItemI++
-            ) {
-              setPixData(
-                pixRowI * shape[1] + colI, // pixData index
-                d, // data point
-              );
-              pixRowI++;
-            }
-          } else {
-            // Set a single pixel, either representing a single row or an entire row group, if the vertical height for each group should be uniform (i.e. should not depend on group size).
-            setPixData(
-              pixRowI * shape[1] + colI, // pixData index
-              d, // data point
-            );
-            pixRowI++;
-          }
-        } // end row group for
-      } // end col for
+      // Call the setPixDataForSelectedRows helper function,
+      // which will loop over the data for us and call setPixData().
+      setPixDataForSelectedRows(
+        data,
+        shape,
+        setPixData,
+        selectedRows,
+        selectedRowsAggregationMode,
+        selectedRowsAggregationWithRelativeHeight,
+        selectedRowsAggregationMethod,
+      );
     } else {
       // The `selectedRows` array has not been passed, so we want to use all of the tile data values,
       // in their default ordering.
@@ -414,7 +452,14 @@ export function tileResponseToData(data, server, theseTileIds) {
   return data;
 }
 
-export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
+export function workerGetTiles(
+  outUrl,
+  server,
+  theseTileIds,
+  authHeader,
+  done,
+  requestBody,
+) {
   const headers = {
     'content-type': 'application/json',
   };
@@ -424,6 +469,12 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
   fetch(outUrl, {
     credentials: 'same-origin',
     headers,
+    ...(requestBody && Object.keys(requestBody).length > 0
+      ? {
+          method: 'POST',
+          body: JSON.stringify(requestBody),
+        }
+      : {}),
   })
     .then(response => response.json())
     .then(data => {

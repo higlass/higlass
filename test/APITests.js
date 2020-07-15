@@ -39,6 +39,8 @@ function findCanvas(element) {
   return canvas;
 }
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
 describe('API Tests', () => {
   let div = null;
   let api = null;
