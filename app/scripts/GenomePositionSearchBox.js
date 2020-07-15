@@ -496,7 +496,9 @@ class GenomePositionSearchBox extends React.Component {
     // iterate over all non-position oriented words and try
     // to replace them with the positions loaded from the suggestions
     // database
-    const spaceParts = this.positionText.split(' ');
+    const origSearchText = this.positionText;
+    const spaceParts = origSearchText.split(' ');
+    let foundGeneSymbol = false;
 
     for (let i = 0; i < spaceParts.length; i++) {
       const dashParts = spaceParts[i].split('-');
@@ -534,6 +536,7 @@ class GenomePositionSearchBox extends React.Component {
                 extension}`;
               // it's the last part of a range
             }
+            foundGeneSymbol = true; // we found a gene symbol
             break;
           } else if (k === j + 1) {
             if (spacePart.length) {
@@ -559,6 +562,8 @@ class GenomePositionSearchBox extends React.Component {
     this.setState({
       value: newValue,
     });
+    // return the original keyword a user searched if we found a gene symbol from it
+    return foundGeneSymbol ? origSearchText : null;
   }
 
   replaceGenesWithPositions(finished) {
@@ -598,9 +603,11 @@ class GenomePositionSearchBox extends React.Component {
             }
           }
 
-          this.replaceGenesWithLoadedPositions(genePositions);
+          const geneSymbol = this.replaceGenesWithLoadedPositions(
+            genePositions,
+          );
 
-          finished();
+          finished(geneSymbol);
         }
       })
       .catch(error => console.error(error));
@@ -609,7 +616,7 @@ class GenomePositionSearchBox extends React.Component {
   buttonClick() {
     this.setState({ genes: [] }); // no menu should be open
 
-    this.replaceGenesWithPositions(() => {
+    this.replaceGenesWithPositions(geneSymbol => {
       const searchFieldValue = this.positionText;
 
       if (this.searchField !== null) {
@@ -637,6 +644,15 @@ class GenomePositionSearchBox extends React.Component {
         const newYScale = this.yScale.copy().domain(range2);
 
         const [centerX, centerY, k] = scalesCenterAndK(newXScale, newYScale);
+
+        if (geneSymbol) {
+          this.props.onGeneSearch({
+            geneSymbol,
+            range: range1,
+            centerX,
+            centerY,
+          });
+        }
 
         this.props.setCenters(centerX, centerY, k, ZOOM_TRANSITION_DURATION);
       }
@@ -704,8 +720,6 @@ class GenomePositionSearchBox extends React.Component {
 
     this.positionText = parts.join(' ');
     this.setState({ value: parts.join(' '), genes: [] });
-
-    this.props.onGeneSearch(objct);
   }
 
   handleMenuVisibilityChange(isOpen, inputEl) {

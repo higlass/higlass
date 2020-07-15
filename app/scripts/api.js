@@ -886,7 +886,11 @@ const createApi = function api(context, pubSub) {
        *    return svg;
        * });
        *
-       * const geneSearchListener = event => console.log('Gene Searched', event);
+       * const geneSearchListener = event => {
+       *    console.log('Gene searched', event.geneSymbol);
+       *    console.log('Range of the gene', event.range);
+       *    console.log('Center of the gene', event.centerX);
+       * }
        * hgv.on('geneSearch', geneSearchListener);
        */
       on(event, callback, viewId, callbackId) {

@@ -978,17 +978,16 @@ describe('API Tests', () => {
     waitForTilesLoaded(hgc, () => {
       api.on('geneSearch', e => {
         expect(e.geneName).toEqual('MYC');
-        expect(e.chr).toEqual('chr8');
+        expect(e.centerX).toEqual(1521546687);
         done();
       });
 
       // The gene search event that we expect to catch.
       const geneSearchEvent = {
-        chr: 'chr8',
-        txStart: 128748314,
-        txEnd: 128753680,
-        score: 1516,
-        geneName: 'MYC',
+        geneSymbol: 'MYC',
+        range: [1521542663, 1521550711],
+        centerX: 1521546687,
+        centerY: 1521546687,
       };
       // Simulate the gene search events.
       hgc.geneSearchHandler(geneSearchEvent);
