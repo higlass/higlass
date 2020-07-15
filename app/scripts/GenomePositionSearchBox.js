@@ -562,7 +562,7 @@ class GenomePositionSearchBox extends React.Component {
     this.setState({
       value: newValue,
     });
-    // return the original keyword a user searched if we found a gene symbol from it
+    // return the original keyword that a user searched if we found a gene symbol from it
     return foundGeneSymbol ? origSearchText : null;
   }
 
@@ -646,6 +646,7 @@ class GenomePositionSearchBox extends React.Component {
         const [centerX, centerY, k] = scalesCenterAndK(newXScale, newYScale);
 
         if (geneSymbol) {
+          // call the callback function of the `onGeneSearch` api if a user searched for a gene symbol
           this.props.onGeneSearch({
             geneSymbol,
             range: range1,
