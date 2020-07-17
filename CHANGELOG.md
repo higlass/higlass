@@ -1,10 +1,12 @@
 # Release notes
 
-## v1.10.1
+## v1.10.2
 
 - Remove view config validation from `hgApi.getViewConfig()` and `hgApi.setViewConfig()` and instead move it into a new method called `hgApi.validateViewConfig(viewConfig, { verbose: false } = {})`
 
-## v1.10.0
+_[Detailed changes since v1.10.1](https://github.com/higlass/higlass/compare/v1.10.1...v1.10.2)_
+
+## v1.10.1
 
 - Remove text/plain encoding from tile proxy text fetcher
 - Added the `selectRowsAggregationMethod` option for the `horizontal-multivec` track to enable server-side aggregation if set to `"server"` rather than the default `"client"`.
