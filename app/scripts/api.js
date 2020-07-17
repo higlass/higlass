@@ -190,16 +190,6 @@ const createApi = function api(context, pubSub) {
        * the promise resolves without waiting for the data to be loaded.
        */
       setViewConfig(newViewConfig, resolveImmediately = false) {
-        const validate = new Ajv().compile(schema);
-        const valid = validate(newViewConfig);
-        if (validate.errors) {
-          console.warn(JSON.stringify(validate.errors, null, 2));
-        }
-        if (!valid) {
-          console.warn('Invalid viewconf');
-          // throw new Error('Invalid viewconf');
-        }
-
         const viewsByUid = self.processViewConfig(newViewConfig);
         const p = new Promise(resolve => {
           this.requestsInFlight = 0;
@@ -242,18 +232,23 @@ const createApi = function api(context, pubSub) {
        * @returns (Object) A JSON object describing the visible views
        */
       getViewConfig() {
-        const newViewConfig = self.getViewsAsJson();
+        return self.getViewsAsJson();
+      },
+
+      /**
+       * Validate a viewconf.
+       *
+       * @returns (Boolean) A JSON object describing the visible views
+       */
+      validateViewConfig(viewConfig, { verbose = false } = {}) {
         const validate = new Ajv().compile(schema);
-        const valid = validate(newViewConfig);
-        if (validate.errors) {
+        const valid = validate(viewConfig);
+        if (verbose && validate.errors) {
           console.warn(JSON.stringify(validate.errors, null, 2));
         }
-        if (!valid) {
-          console.warn('Invalid viewconf');
-          // throw new Error('Invalid viewconf');
-        }
-        return newViewConfig;
+        return valid;
       },
+
       /**
        * Get the minimum and maximum visible values for a given track.
        *
