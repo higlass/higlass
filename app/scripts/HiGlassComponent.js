@@ -4426,7 +4426,6 @@ class HiGlassComponent extends React.Component {
    * settings.trackId = id of the track
    * settings.height = new height of the track or undefined if current height should remain
    * settings.width = new width of the track or undefined if current width should remain
-   * settings.resizeParentDiv = bool, if true the Higlass container is reseized as well
    */
   trackDimensionsModifiedHandler(settings) {
     for (const view of Object.values(this.state.views)) {
@@ -4434,19 +4433,12 @@ class HiGlassComponent extends React.Component {
 
       if (!track) continue;
 
-      const oldTrackheight = track.height;
-
       if (settings.height !== undefined) {
         track.height = settings.height;
       }
 
       if (settings.width !== undefined) {
         track.width = settings.width;
-      }
-
-      if (settings.resizeParentDiv) {
-        this.element.style.height =
-          `${this.element.clientHeight + track.height - oldTrackheight }px`;
       }
     }
 
