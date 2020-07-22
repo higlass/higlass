@@ -321,7 +321,7 @@ class HiGlassComponent extends React.Component {
     this.zoomHandlerBound = this.zoomHandler.bind(this);
     this.trackDroppedHandlerBound = this.trackDroppedHandler.bind(this);
     this.trackDimensionsModifiedHandlerBound = this.trackDimensionsModifiedHandler.bind(
-      this
+      this,
     );
     this.animateBound = this.animate.bind(this);
     this.animateOnGlobalEventBound = this.animateOnGlobalEvent.bind(this);
@@ -389,7 +389,7 @@ class HiGlassComponent extends React.Component {
       this.pubSub.subscribe('trackDropped', this.trackDroppedHandlerBound),
       this.pubSub.subscribe(
         'trackDimensionsModified',
-        this.trackDimensionsModifiedHandlerBound
+        this.trackDimensionsModifiedHandlerBound,
       ),
       this.pubSub.subscribe('app.zoomStart', this.zoomStartHandlerBound),
       this.pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
@@ -4423,7 +4423,7 @@ class HiGlassComponent extends React.Component {
   }
 
   /**
-   * Handle trackDimensionsModified events/
+   * Handle trackDimensionsModified events
    * settings.trackId = id of the track
    * settings.height = new height of the track or undefined if current height should remain
    * settings.width = new width of the track or undefined if current width should remain
@@ -4441,10 +4441,11 @@ class HiGlassComponent extends React.Component {
       if (settings.width !== undefined) {
         track.width = settings.width;
       }
+      this.adjustLayoutToTrackSizes(view);
     }
 
     this.setState(prevState => ({
-      views: prevState.views
+      views: prevState.views,
     }));
   }
 
