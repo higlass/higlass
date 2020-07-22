@@ -15,7 +15,7 @@ class ConfigViewMenu extends ContextMenuContainer {
     super(props);
 
     this.state = {
-      submenuShown: false
+      submenuShown: false,
     };
   }
 
@@ -44,7 +44,7 @@ class ConfigViewMenu extends ContextMenuContainer {
 
             const optionSelectorSettings = {
               name: inlineOption.name,
-              value: inlineOption.value
+              value: inlineOption.value,
               // missing handler to be filled in below
             };
 
@@ -86,11 +86,11 @@ class ConfigViewMenu extends ContextMenuContainer {
         this.state.orientation === 'left'
           ? {
               left: this.state.left,
-              top: bbox.top
+              top: bbox.top,
             }
           : {
               left: this.state.left + bbox.width + 7,
-              top: bbox.top
+              top: bbox.top,
             };
 
       const subMenuData = this.state.submenuShown;
@@ -116,7 +116,7 @@ class ConfigViewMenu extends ContextMenuContainer {
         data-menu-type="ConfigViewMenu"
         style={{
           left: this.state.left,
-          top: this.state.top
+          top: this.state.top,
         }}
         styleName={styleNames}
       >
@@ -259,7 +259,7 @@ ConfigViewMenu.propTypes = {
   onYankZoom: PropTypes.func,
   onYankZoomAndLocation: PropTypes.func,
   onZoomToData: PropTypes.func,
-  theme: PropTypes.symbol
+  theme: PropTypes.symbol,
 };
 
 export default ConfigViewMenu;

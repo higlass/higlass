@@ -20,7 +20,7 @@ const SortableList = SortableContainer(
     editable,
     itemReactClass,
     handleResizeTrack,
-    resizeHandles
+    resizeHandles,
   }) => {
     const itemElements = items.map((item, index) =>
       React.createElement(itemReactClass, {
@@ -41,8 +41,8 @@ const SortableList = SortableContainer(
         handleConfigTrack,
         editable,
         handleResizeTrack,
-        resizeHandles
-      })
+        resizeHandles,
+      }),
     );
 
     return (
@@ -51,14 +51,14 @@ const SortableList = SortableContainer(
         style={{
           height,
           width,
-          background: 'transparent'
+          background: 'transparent',
         }}
         {...sortableHandlers}
       >
         {itemElements}
       </div>
     );
-  }
+  },
 );
 
 export default SortableList;

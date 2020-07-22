@@ -45,7 +45,7 @@ export const getSeriesItems = (
   tracks,
   onItemMouseEnter,
   onItemMouseLeave,
-  onItemClick
+  onItemClick,
 ) => {
   if (!tracks) return null;
 
@@ -91,7 +91,7 @@ export const getSeriesItems = (
         <span styleName="context-menu-span">
           {x.options && x.options.name && x.options.name.length
             ? x.options.name
-            : x.uid}
+            : x.type}
           {onItemMouseEnter && onItemMouseLeave ? (
             <svg styleName="play-icon">
               <use xlinkHref="#play" />

@@ -13,7 +13,7 @@ class HeatmapOptions extends React.Component {
     // props should include the definition of the heatmap data series
 
     this.state = {
-      colors: props.track.options.colorRange.slice()
+      colors: props.track.options.colorRange.slice(),
     };
   }
 
@@ -23,7 +23,7 @@ class HeatmapOptions extends React.Component {
                                                        {colorRange: newColors}));
         */
     this.setState({
-      colors: newColors
+      colors: newColors,
     });
   }
 
@@ -41,8 +41,8 @@ class HeatmapOptions extends React.Component {
   handleAddColor() {
     this.setState(prevState => ({
       colors: prevState.colors.concat(
-        prevState.colors[prevState.colors.length - 1]
-      )
+        prevState.colors[prevState.colors.length - 1],
+      ),
     }));
   }
 
@@ -51,7 +51,9 @@ class HeatmapOptions extends React.Component {
    */
   handleRemoveColor(i) {
     this.setState(prevState => ({
-      colors: prevState.colors.slice(0, i).concat(prevState.colors.slice(i + 1))
+      colors: prevState.colors
+        .slice(0, i)
+        .concat(prevState.colors.slice(i + 1)),
     }));
   }
 
@@ -60,8 +62,8 @@ class HeatmapOptions extends React.Component {
 
     const centerTrack = Object.assign(track, {
       options: {
-        colorRange: this.state.colors
-      }
+        colorRange: this.state.colors,
+      },
     });
 
     const mvConfig = {
@@ -82,10 +84,10 @@ class HeatmapOptions extends React.Component {
             y: 0,
             h: 12,
             w: 12,
-            i: `hmo-${this.props.track.id}`
-          }
-        }
-      ]
+            i: `hmo-${this.props.track.id}`,
+          },
+        },
+      ],
     };
 
     const colorFields = this.state.colors
@@ -104,7 +106,7 @@ class HeatmapOptions extends React.Component {
                 width: 14,
                 height: 14,
                 borderRadius: 2,
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
               <svg
@@ -115,7 +117,7 @@ class HeatmapOptions extends React.Component {
                   right: 2,
                   opacity: 0.5,
                   width: 10,
-                  height: 10
+                  height: 10,
                 }}
               >
                 <use xlinkHref="#cross" />
@@ -132,7 +134,7 @@ class HeatmapOptions extends React.Component {
               borderRadius: '1px',
               boxShadow: '0 0 0 1px #E5E5E5',
               position: 'relative',
-              outline: 'none'
+              outline: 'none',
             }}
           >
             {removeButton}
@@ -148,7 +150,7 @@ class HeatmapOptions extends React.Component {
                   },
                   () => {
                     this.handleColorsChanged(this.state.colors);
-                  }
+                  },
                 );
               }}
             />
@@ -170,14 +172,14 @@ class HeatmapOptions extends React.Component {
             background: '#fff',
             borderRadius: '1px',
             boxShadow: '0 0 0 1px #E5E5E5',
-            cursor: 'pointer'
+            cursor: 'pointer',
           }}
         >
           <div
             style={{
               textAlign: 'center',
               width: '32px',
-              height: '14px'
+              height: '14px',
             }}
           >
             <svg
@@ -185,7 +187,7 @@ class HeatmapOptions extends React.Component {
               style={{
                 opacity: 0.5,
                 margin: 'auto',
-                display: 'block'
+                display: 'block',
               }}
               width="10px"
             >
@@ -250,7 +252,7 @@ HeatmapOptions.propTypes = {
   onSubmit: PropTypes.func,
   track: PropTypes.object,
   xScale: PropTypes.object,
-  yScale: PropTypes.object
+  yScale: PropTypes.object,
 };
 
 export default HeatmapOptions;

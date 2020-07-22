@@ -47,7 +47,7 @@ const TrackControl = props => {
         className="no-zoom"
         style={Object.assign(
           { height: '20px', width: '20px' },
-          props.imgStyleMove
+          props.imgStyleMove,
         )}
         styleName={getButtonClassNames(props)}
       >
@@ -72,12 +72,12 @@ const TrackControl = props => {
         onClick={() => {
           props.onConfigTrackMenuOpened(
             props.uid,
-            imgConfig.getBoundingClientRect()
+            imgConfig.getBoundingClientRect(),
           );
         }}
         style={Object.assign(
           { height: '20px', width: '20px' },
-          props.imgStyleSettings
+          props.imgStyleSettings,
         )}
         styleName={getButtonClassNames(props)}
       >
@@ -91,7 +91,7 @@ const TrackControl = props => {
           onClick={() => props.onAddSeries(props.uid)}
           style={Object.assign(
             { height: '20px', width: '20px' },
-            props.imgStyleAdd
+            props.imgStyleAdd,
           )}
           styleName={getButtonClassNames(props)}
         >
@@ -108,12 +108,12 @@ const TrackControl = props => {
         onClick={() => {
           props.onCloseTrackMenuOpened(
             props.uid,
-            imgClose.getBoundingClientRect()
+            imgClose.getBoundingClientRect(),
           );
         }}
         style={Object.assign(
           { height: '20px', width: '20px' },
-          props.imgStyleClose
+          props.imgStyleClose,
         )}
         styleName={getButtonClassNames(props)}
       >
@@ -138,7 +138,7 @@ TrackControl.propTypes = {
   onAddSeries: PropTypes.func,
   paddingRight: PropTypes.bool,
   theme: PropTypes.symbol.isRequired,
-  uid: PropTypes.string
+  uid: PropTypes.string,
 };
 
 export default withTheme(TrackControl);

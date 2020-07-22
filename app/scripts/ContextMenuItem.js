@@ -22,14 +22,14 @@ const ContextMenuItem = props => (
 
 ContextMenuItem.defaultProps = {
   onMouseEnter: () => undefined,
-  onMouseLeave: () => undefined
+  onMouseLeave: () => undefined,
 };
 
 ContextMenuItem.propTypes = {
   children: PropTypes.node.isRequired,
   onClick: PropTypes.func.isRequired,
   onMouseEnter: PropTypes.func,
-  onMouseLeave: PropTypes.func
+  onMouseLeave: PropTypes.func,
 };
 
 export default ContextMenuItem;

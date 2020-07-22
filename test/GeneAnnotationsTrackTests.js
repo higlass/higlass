@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 
@@ -15,7 +15,7 @@ import createElementAndApi from './utils/create-element-and-api';
 import {
   waitForTilesLoaded,
   getTrackConfFromHGC,
-  getTrackObjectFromHGC
+  getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
 import removeDiv from './utils/remove-div';
@@ -30,7 +30,7 @@ const createPointerEvent = (type, coords) => {
     // WARNING: The following property is absolutely crucial to have the
     // event being picked up by PIXI. Do not remove under any circumstances!
     pointerType: 'mouse',
-    ...coords
+    ...coords,
   };
 
   return new PointerEvent(type, params);
@@ -61,16 +61,18 @@ describe('Gene Annotations Tracks', () => {
           clientX: 237,
           clientY: 117,
           screenX: 278,
-          screenY: 231
+          screenY: 231,
         };
 
         canvasElem.dispatchEvent(createPointerEvent('pointerdown', loc));
         canvasElem.dispatchEvent(createPointerEvent('pointerup', loc));
 
-        // console.log('clicked:', clicked);
-        expect(clicked).to.eql(1);
+        // use a small timeout to make sure the event queue is cleared
+        setTimeout(() => {
+          expect(clicked).to.eql(1);
 
-        done();
+          done();
+        }, 1);
       });
     } catch (e) {
       console.warn(e);

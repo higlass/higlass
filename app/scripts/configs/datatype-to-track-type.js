@@ -3,7 +3,26 @@ import { TRACKS_INFO } from '.';
 export const DATATYPE_TO_TRACK_TYPE = orientation => {
   const localDatatypeToTrackType = {};
 
-  TRACKS_INFO.filter(x => x.orientation === orientation).forEach(ti => {
+  // can a track be placed in a given orientation
+  const orientationMatches = trackInfo => {
+    // if the track's orientation matches the given orientation, then yes
+    if (trackInfo.orientation === orientation) {
+      return true;
+    }
+
+    if (
+      orientation === '1d-vertical' &&
+      trackInfo.orientation === '1d-horizontal' &&
+      trackInfo.rotatable
+    ) {
+      // we can place 1d-horizontal tracks in a vertical position if they are rotatable
+      return true;
+    }
+
+    return false;
+  };
+
+  TRACKS_INFO.filter(orientationMatches).forEach(ti => {
     let datatypes = ti.datatype;
 
     if (!Array.isArray(ti.datatype)) {
