@@ -3,6 +3,12 @@
 ## Unreleased
 - Added the JS API `.on('geneSearch', callback)` option for subscribing to gene search events.
 
+## v1.10.2
+
+- Remove view config validation from `hgApi.getViewConfig()` and `hgApi.setViewConfig()` and instead move it into a new method called `hgApi.validateViewConfig(viewConfig, { verbose: false } = {})`
+
+_[Detailed changes since v1.10.1](https://github.com/higlass/higlass/compare/v1.10.1...v1.10.2)_
+
 ## v1.10.1
 
 - Remove text/plain encoding from tile proxy text fetcher

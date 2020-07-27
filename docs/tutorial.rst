@@ -139,5 +139,9 @@ To manipulate the data available on the local instance it is necessary to create
 
     higlass-manage create superuser
 
-This user can then be used to log in to http://localhost:8989/admin, or wherever the HiGlass instance
-is currently running.
+This user can then be used to log in to http://localhost:8989/admin/, or wherever the HiGlass instance
+is currently running. 
+
+.. warning::
+    Make sure to include the trailing slash ``/`` after ``admin``. Otherwise, your browser will drop the port number and attempt to connect to the wrong endpoint.
+    
