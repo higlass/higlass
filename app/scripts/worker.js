@@ -214,7 +214,7 @@ export function workerSetPix(
   } = selectedRowsOptions || {};
 
   let filteredSize = size;
-  if (selectedRows) {
+  if (shape && selectedRows) {
     // If using the `selectedRows` parameter, then the size of the `pixData` array
     // will likely be different than `size` (the total size of the tile data array).
     // The potential for aggregation groups in `selectedRows` also must be taken into account.
