@@ -1,4 +1,5 @@
 import { format } from 'd3-format';
+import equal from 'fast-deep-equal';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import DataFetcher from './DataFetcher';
@@ -20,31 +21,38 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   }
 
   updateDataFetcher(options) {
-    const { pubSub, dataFetcher: prevDataFetcher } = this;
     if (
       options &&
       options.selectRows &&
       options.selectRowsAggregationMethod === 'server'
     ) {
-      // Override the dataFetcher object with a new dataConfig,
-      // containing the .options property.
-      // This would otherwise be set in the call to super()
-      // in the TiledPixiTrack ancestor constructor.
-      const newDataConfig = {
-        ...prevDataFetcher.dataConfig,
-        options: {
-          aggGroups: options.selectRows,
-          aggFunc: options.selectRowsAggregationMode,
-        },
+      const { pubSub, dataFetcher: prevDataFetcher } = this;
+      const prevDataConfigOptions = prevDataFetcher.dataConfig.options;
+      const nextDataConfigOptions = {
+        aggGroups: options.selectRows,
+        aggFunc: options.selectRowsAggregationMode,
       };
-      this.dataFetcher = new DataFetcher(newDataConfig, pubSub);
+      if (!equal(prevDataConfigOptions, nextDataConfigOptions)) {
+        // Override the dataFetcher object with a new dataConfig,
+        // containing the .options property.
+        // This would otherwise be set in the call to super()
+        // in the TiledPixiTrack ancestor constructor.
+        const newDataConfig = {
+          ...prevDataFetcher.dataConfig,
+          options: nextDataConfigOptions,
+        };
+        this.dataFetcher = new DataFetcher(newDataConfig, pubSub);
 
-      // Only fetch new tiles if the tileset has been registered
-      // and has a tilesetUid (for example, due to file url-based tracks).
-      if (this.dataFetcher.dataConfig.tilesetUid) {
-        this.fetchNewTiles(
-          Object.keys(this.fetchedTiles).map(x => ({ tileId: x, remoteId: x })),
-        );
+        // Only fetch new tiles if the tileset has been registered
+        // and has a tilesetUid (for example, due to file url-based tracks).
+        if (this.dataFetcher.dataConfig.tilesetUid) {
+          this.fetchNewTiles(
+            Object.keys(this.fetchedTiles).map(x => ({
+              tileId: x,
+              remoteId: x,
+            })),
+          );
+        }
       }
     }
   }
