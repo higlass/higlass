@@ -1242,7 +1242,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.options.zeroValueColor
         ? colorToRgba(this.options.zeroValueColor)
         : undefined,
-      this.selectedRowsOptions || null,
+      {
+        selectedRows: this.options.selectRows,
+        selectedRowsAggregationMode: this.options.selectRowsAggregationMode,
+        selectedRowsAggregationWithRelativeHeight: this.options
+          .selectRowsAggregationWithRelativeHeight,
+        selectedRowsAggregationMethod: this.options.selectRowsAggregationMethod,
+      },
     );
   }
 
