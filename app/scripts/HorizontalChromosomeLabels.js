@@ -11,7 +11,7 @@ import {
   colorToHex,
   pixiTextToSvg,
   showMousePosition,
-  svgLine
+  svgLine,
 } from './utils';
 
 import { GLOBALS, THEME_DARK } from './configs';
@@ -28,7 +28,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       dataConfig,
       animate,
       chromInfoPath,
-      isShowGlobalMousePosition
+      isShowGlobalMousePosition,
     } = context;
 
     this.searchField = null;
@@ -57,7 +57,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       fill: this.options.color || this.textFontColor,
       lineJoin: 'round',
       stroke: this.options.stroke || this.textStrokeColor,
-      strokeThickness: 2
+      strokeThickness: 2,
     };
     this.stroke = colorToHex(this.pixiTextConfig.stroke);
 
@@ -79,7 +79,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.hideMousePosition = showMousePosition(
         this,
         this.is2d,
-        this.isShowGlobalMousePosition()
+        this.isShowGlobalMousePosition(),
       );
     }
 
@@ -100,7 +100,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
         this.draw();
         this.animate();
       },
-      this.pubSub
+      this.pubSub,
     );
   }
 
@@ -193,7 +193,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.hideMousePosition = showMousePosition(
         this,
         this.is2d,
-        this.isShowGlobalMousePosition()
+        this.isShowGlobalMousePosition(),
       );
     }
 
@@ -242,7 +242,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
     graphics.moveTo(this.dimensions[0] - 1, this.dimensions[1]);
     graphics.lineTo(
       this.dimensions[0] - 1,
-      this.dimensions[1] - this.tickHeight
+      this.dimensions[1] - this.tickHeight,
     );
 
     // we want to control the precision of the tick labels
@@ -267,13 +267,13 @@ class HorizontalChromosomeLabels extends PixiTrack {
       1,
       this.dimensions[1],
       1,
-      this.dimensions[1] - this.tickHeight
+      this.dimensions[1] - this.tickHeight,
     ];
     this.rightBoundTick.tickLine = [
       this.dimensions[0] - 1,
       this.dimensions[1],
       this.dimensions[0] - 1,
-      this.dimensions[1] - this.tickHeight
+      this.dimensions[1] - this.tickHeight,
     ];
 
     this.tickTexts = {};
@@ -294,7 +294,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
     const vpLeft = Math.max(this._xScale(cumPos.pos), 0);
     const vpRight = Math.min(
       this._xScale(cumPos.pos + chromLen),
-      this.dimensions[0]
+      this.dimensions[0],
     );
 
     const numTicks = (vpRight - vpLeft) / this.tickWidth;
@@ -303,7 +303,10 @@ class HorizontalChromosomeLabels extends PixiTrack {
     const xScale = scaleLinear()
       .domain([
         Math.max(1, this._xScale.invert(0) - cumPos.pos),
-        Math.min(chromLen, this._xScale.invert(this.dimensions[0]) - cumPos.pos)
+        Math.min(
+          chromLen,
+          this._xScale.invert(this.dimensions[0]) - cumPos.pos,
+        ),
       ])
       .range(vpLeft, vpRight);
 
@@ -365,7 +368,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
         x - 1,
         this.dimensions[1],
         x - 1,
-        this.dimensions[1] - tickHeight - 1
+        this.dimensions[1] - tickHeight - 1,
       ];
 
       // Draw outline
@@ -375,11 +378,11 @@ class HorizontalChromosomeLabels extends PixiTrack {
       if (this.options.fontIsLeftAligned) {
         graphics.lineTo(
           x + 2 * flipTextSign + 1 * flipTextSign,
-          this.dimensions[1] - tickHeight - 1
+          this.dimensions[1] - tickHeight - 1,
         );
         graphics.lineTo(
           x + 2 * flipTextSign + 1 * flipTextSign,
-          this.dimensions[1] - tickHeight + 1
+          this.dimensions[1] - tickHeight + 1,
         );
         graphics.lineTo(x + 1, this.dimensions[1] - tickHeight + 1);
       } else {
@@ -484,7 +487,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.allTexts.push({
         importance: text.hashValue,
         text,
-        caption: null
+        caption: null,
       });
     }
 
@@ -542,7 +545,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     output.setAttribute(
       'transform',
-      `translate(${this.position[0]},${this.position[1]})`
+      `translate(${this.position[0]},${this.position[1]})`,
     );
 
     this.allTexts
@@ -564,7 +567,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
             text.x,
             this.dimensions[1] - this.tickHeight,
             1,
-            this.tickColor
+            this.tickColor,
           );
 
           const line = document.createElement('line');

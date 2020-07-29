@@ -16,14 +16,14 @@ class SketchInlinePicker extends React.Component {
         r: startColor.r,
         g: startColor.g,
         b: startColor.b,
-        a: startColor.opacity
-      }
+        a: startColor.opacity,
+      },
     };
   }
 
   handleClick() {
     this.setState(prevState => ({
-      displayColorPicker: !prevState.displayColorPicker
+      displayColorPicker: !prevState.displayColorPicker,
     }));
   }
 
@@ -43,31 +43,29 @@ class SketchInlinePicker extends React.Component {
     const styles = reactCSS({
       default: {
         color: {
-          width: '36px',
+          width: '32px',
           height: '14px',
           borderRadius: '2px',
-          background: `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b}, ${this.state.color.a})`
+          background: `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b}, ${this.state.color.a})`,
         },
         swatch: {
           padding: '5px',
           background: '#fff',
+          cursor: 'pointer',
           borderRadius: '1px',
-          boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
-          display: 'inline-block',
-          cursor: 'pointer'
         },
         popover: {
           position: 'absolute',
-          zIndex: '2'
+          zIndex: '2',
         },
         cover: {
           position: 'fixed',
           top: '0px',
           right: '0px',
           bottom: '0px',
-          left: '0px'
-        }
-      }
+          left: '0px',
+        },
+      },
     });
 
     return (
@@ -91,7 +89,7 @@ class SketchInlinePicker extends React.Component {
 
 SketchInlinePicker.propTypes = {
   color: PropTypes.string,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
 };
 
 export default SketchInlinePicker;

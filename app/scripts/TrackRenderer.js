@@ -69,7 +69,7 @@ import {
   dictItems,
   forwardEvent,
   scalesCenterAndK,
-  trimTrailingSlash
+  trimTrailingSlash,
 } from './utils';
 
 // Configs
@@ -77,7 +77,7 @@ import {
   AVAILABLE_FOR_PLUGINS,
   GLOBALS,
   THEME_DARK,
-  TRACKS_INFO_BY_TYPE
+  TRACKS_INFO_BY_TYPE,
 } from './configs';
 
 // Styles
@@ -175,7 +175,7 @@ class TrackRenderer extends React.Component {
       this.currentProps.initialYDomain,
       this.currentProps.xDomainLimits,
       this.currentProps.yDomainLimits,
-      this.currentProps.zoomLimits
+      this.currentProps.zoomLimits,
     );
 
     this.setUpScales();
@@ -214,19 +214,19 @@ class TrackRenderer extends React.Component {
   UNSAFE_componentWillMount() {
     this.pubSubs = [];
     this.pubSubs.push(
-      this.props.pubSub.subscribe('scroll', this.windowScrolledBound)
+      this.props.pubSub.subscribe('scroll', this.windowScrolledBound),
     );
     this.pubSubs.push(
-      this.props.pubSub.subscribe('app.event', this.dispatchEventBound)
+      this.props.pubSub.subscribe('app.event', this.dispatchEventBound),
     );
     this.pubSubs.push(
       this.props.pubSub.subscribe(
         'zoomToDataPos',
-        this.zoomToDataPosHandlerBound
-      )
+        this.zoomToDataPosHandlerBound,
+      ),
     );
     this.pubSubs.push(
-      this.props.pubSub.subscribe('app.scroll', this.onScrollHandlerBound)
+      this.props.pubSub.subscribe('app.scroll', this.onScrollHandlerBound),
     );
   }
 
@@ -261,7 +261,7 @@ class TrackRenderer extends React.Component {
 
     this.currentProps.setCentersFunction(this.setCenter.bind(this));
     this.currentProps.registerDraggingChangedListener(
-      this.draggingChanged.bind(this)
+      this.draggingChanged.bind(this),
     );
 
     this.draggingChanged(true);
@@ -270,7 +270,7 @@ class TrackRenderer extends React.Component {
     // Init zoom and scale extent
     const transExt = [
       [this.xScale(this.xDomainLimits[0]), this.yScale(this.yDomainLimits[0])],
-      [this.xScale(this.xDomainLimits[1]), this.yScale(this.yDomainLimits[1])]
+      [this.xScale(this.xDomainLimits[1]), this.yScale(this.yDomainLimits[1])],
     ];
 
     const svgBBox = this.svgElement.getBoundingClientRect();
@@ -279,8 +279,8 @@ class TrackRenderer extends React.Component {
       [Math.max(transExt[0][0], 0), Math.max(transExt[0][1], 0)],
       [
         Math.min(transExt[1][0], svgBBox.width),
-        Math.min(transExt[1][1], svgBBox.height)
-      ]
+        Math.min(transExt[1][1], svgBBox.height),
+      ],
     ];
 
     this.zoomBehavior
@@ -320,19 +320,19 @@ class TrackRenderer extends React.Component {
       nextProps.initialYDomain,
       nextProps.xDomainLimits,
       nextProps.yDomainLimits,
-      nextProps.zoomLimits
+      nextProps.zoomLimits,
     );
 
     this.setUpScales(
       nextProps.width !== this.props.width ||
-        nextProps.height !== this.props.height
+        nextProps.height !== this.props.height,
     );
 
     this.svgElement = nextProps.svgElement;
 
     const transExt = [
       [this.xScale(this.xDomainLimits[0]), this.yScale(this.yDomainLimits[0])],
-      [this.xScale(this.xDomainLimits[1]), this.yScale(this.yDomainLimits[1])]
+      [this.xScale(this.xDomainLimits[1]), this.yScale(this.yDomainLimits[1])],
     ];
 
     const svgBBox = this.svgElement.getBoundingClientRect();
@@ -341,8 +341,8 @@ class TrackRenderer extends React.Component {
       [Math.max(transExt[0][0], 0), Math.max(transExt[0][1], 0)],
       [
         Math.min(transExt[1][0], svgBBox.width),
-        Math.min(transExt[1][1], svgBBox.height)
-      ]
+        Math.min(transExt[1][1], svgBBox.height),
+      ],
     ];
 
     this.zoomBehavior
@@ -427,7 +427,7 @@ class TrackRenderer extends React.Component {
     this.pStage.destroy(true);
 
     this.pubSubs.forEach(subscription =>
-      this.props.pubSub.unsubscribe(subscription)
+      this.props.pubSub.unsubscribe(subscription),
     );
     this.pubSubs = [];
 
@@ -496,7 +496,7 @@ class TrackRenderer extends React.Component {
       this.xPositionOffset,
       this.yPositionOffset,
       this.currentProps.width,
-      this.currentProps.height
+      this.currentProps.height,
     );
     this.pMask.endFill();
 
@@ -515,7 +515,7 @@ class TrackRenderer extends React.Component {
     const bgColor = colorToHex(
       (this.currentProps.viewOptions &&
         this.currentProps.viewOptions.backgroundColor) ||
-        defBgColor
+        defBgColor,
     );
 
     this.pBackground.clear();
@@ -524,7 +524,7 @@ class TrackRenderer extends React.Component {
       this.xPositionOffset,
       this.yPositionOffset,
       this.currentProps.width,
-      this.currentProps.height
+      this.currentProps.height,
     );
     this.pBackground.endFill();
   }
@@ -546,7 +546,7 @@ class TrackRenderer extends React.Component {
     initialYDomain = [0, 1],
     xDomainLimits = [-Infinity, Infinity],
     yDomainLimits = [-Infinity, Infinity],
-    zoomLimits = [0, Infinity]
+    zoomLimits = [0, Infinity],
   ) {
     // Make sure the initial domain is within the limits first
     zoomLimits[0] = zoomLimits[0] === null ? 0 : zoomLimits[0];
@@ -599,7 +599,7 @@ class TrackRenderer extends React.Component {
         this.currentProps.paddingLeft + this.currentProps.leftWidth,
         this.currentProps.paddingLeft +
           this.currentProps.leftWidth +
-          this.currentProps.centerWidth
+          this.currentProps.centerWidth,
       ])
       .range([initialXDomain[0], initialXDomain[1]]);
 
@@ -612,7 +612,7 @@ class TrackRenderer extends React.Component {
         this.currentProps.paddingTop +
           this.currentProps.topHeight +
           this.currentProps.centerHeight / 2 +
-          this.currentProps.centerWidth / 2
+          this.currentProps.centerWidth / 2,
       ])
       .range([initialYDomain[0], initialYDomain[1]]);
 
@@ -638,7 +638,7 @@ class TrackRenderer extends React.Component {
       leftWidth: props.leftWidth,
       topHeight: props.topHeight,
       dragging: props.dragging,
-      viewOptions: props.viewOptions
+      viewOptions: props.viewOptions,
     });
   }
 
@@ -686,11 +686,11 @@ class TrackRenderer extends React.Component {
     // the domain of the visible (not drawable area)
     const visibleXDomain = [
       this.drawableToDomainX(0) - this.cumCenterXOffset,
-      this.drawableToDomainX(this.currentProps.width) - this.cumCenterXOffset
+      this.drawableToDomainX(this.currentProps.width) - this.cumCenterXOffset,
     ];
     const visibleYDomain = [
       this.drawableToDomainY(0) - this.cumCenterYOffset,
-      this.drawableToDomainY(this.currentProps.height) - this.cumCenterYOffset
+      this.drawableToDomainY(this.currentProps.height) - this.cumCenterYOffset,
     ];
 
     // [drawableToDomain(0), drawableToDomain(1)]: the domain of the visible area
@@ -805,17 +805,17 @@ class TrackRenderer extends React.Component {
 
     // Add new meta tracks
     this.addMetaTracks(
-      trackDefinitions.filter(def => !this.metaTracks[def.uid])
+      trackDefinitions.filter(def => !this.metaTracks[def.uid]),
     );
 
     // Update existing meta tracks
     this.updateMetaTracks(
-      trackDefinitions.filter(def => this.metaTracks[def.uid])
+      trackDefinitions.filter(def => this.metaTracks[def.uid]),
     );
 
     // Remove old meta tracks
     this.removeMetaTracks(
-      knownMetaTrackIds.filter(def => !newMetaTracks.has(def))
+      knownMetaTrackIds.filter(def => !newMetaTracks.has(def)),
     );
   }
 
@@ -850,29 +850,29 @@ class TrackRenderer extends React.Component {
 
     // track definitions we don't have objects for
     const enterTrackDefs = new Set(
-      [...receivedTracks].filter(x => !knownTracks.has(x))
+      [...receivedTracks].filter(x => !knownTracks.has(x)),
     );
 
     // track objects for which there is no definition
     // (i.e. they no longer need to exist)
     const exitTracks = new Set(
-      [...knownTracks].filter(x => !receivedTracks.has(x))
+      [...knownTracks].filter(x => !receivedTracks.has(x)),
     );
 
     // we already have these tracks, but need to change their dimensions
     const updateTrackDefs = new Set(
-      [...receivedTracks].filter(x => knownTracks.has(x))
+      [...receivedTracks].filter(x => knownTracks.has(x)),
     );
 
     // update existing tracks
     this.updateExistingTrackDefs(
-      [...updateTrackDefs].map(x => receivedTracksDict[x])
+      [...updateTrackDefs].map(x => receivedTracksDict[x]),
     );
 
     // add new tracks and update them (setting dimensions and positions)
     this.addNewTracks([...enterTrackDefs].map(x => receivedTracksDict[x]));
     this.updateExistingTrackDefs(
-      [...enterTrackDefs].map(x => receivedTracksDict[x])
+      [...enterTrackDefs].map(x => receivedTracksDict[x]),
     );
 
     this.removeTracks([...exitTracks]);
@@ -889,7 +889,7 @@ class TrackRenderer extends React.Component {
       .forEach(metaTrackDef => {
         this.metaTracks[metaTrackDef.uid] = {
           trackDef: metaTrackDef,
-          trackObject: this.createMetaTrack(metaTrackDef)
+          trackObject: this.createMetaTrack(metaTrackDef),
         };
       });
   }
@@ -916,7 +916,7 @@ class TrackRenderer extends React.Component {
 
       this.trackDefObjects[newTrackDef.track.uid] = {
         trackDef: newTrackDef,
-        trackObject: newTrackObj
+        trackObject: newTrackObj,
       };
 
       const zoomedXScale = this.zoomTransform.rescaleX(this.xScale);
@@ -946,7 +946,7 @@ class TrackRenderer extends React.Component {
         this.trackDefObjects[newTrackDefs[i].track.uid].trackObject
           .updateContents(
             newTrackDefs[i].track.contents,
-            this.createTrackObject.bind(this)
+            this.createTrackObject.bind(this),
           )
           .refScalesChanged(this.xScale, this.yScale);
       }
@@ -972,7 +972,7 @@ class TrackRenderer extends React.Component {
 
       const newPosition = [
         this.xPositionOffset + trackDef.left,
-        this.yPositionOffset + trackDef.top
+        this.yPositionOffset + trackDef.top,
       ];
       const newDimensions = [trackDef.width, trackDef.height];
 
@@ -1041,7 +1041,7 @@ class TrackRenderer extends React.Component {
     notify = false,
     animateTime = 0,
     xScale = this.xScale,
-    yScale = this.yScale
+    yScale = this.yScale,
   ) {
     const refK = this.xScale.invert(1) - this.xScale.invert(0);
 
@@ -1088,7 +1088,7 @@ class TrackRenderer extends React.Component {
       selection
         .call(
           this.zoomBehavior.transform,
-          zoomIdentity.translate(translateX, translateY).scale(k)
+          zoomIdentity.translate(translateX, translateY).scale(k),
         )
         .on('end', () => {
           setZoom();
@@ -1156,6 +1156,11 @@ class TrackRenderer extends React.Component {
         if (TRACKS_INFO_BY_TYPE[trackDef.type]) {
           // some track types (like overlay-track don't have a track info)
           trackOrientation = TRACKS_INFO_BY_TYPE[trackDef.type].orientation;
+        }
+
+        if (trackAtZoomStart instanceof LeftTrackModifier) {
+          // this is a LeftTrackModifier track so it's vertical
+          trackOrientation = '1d-vertical';
         }
       }
     }
@@ -1266,7 +1271,7 @@ class TrackRenderer extends React.Component {
     if (event.sourceEvent) {
       this.zoomStartPos = clientPoint(
         this.props.canvasElement,
-        event.sourceEvent
+        event.sourceEvent,
       );
 
       if (event.sourceEvent.shiftKey) {
@@ -1305,16 +1310,16 @@ class TrackRenderer extends React.Component {
     const newXScale = scaleLinear()
       .domain(
         [paddingleft, paddingleft + props.centerWidth].map(
-          this.zoomedXScale.invert
-        )
+          this.zoomedXScale.invert,
+        ),
       )
       .range([0, props.centerWidth]);
 
     const newYScale = scaleLinear()
       .domain(
         [paddingTop, paddingTop + props.centerHeight].map(
-          this.zoomedYScale.invert
-        )
+          this.zoomedYScale.invert,
+        ),
       )
       .range([0, props.centerHeight]);
 
@@ -1334,16 +1339,16 @@ class TrackRenderer extends React.Component {
         const trackXScale = scaleLinear()
           .domain(
             [props.paddingLeft, props.width - props.paddingLeft].map(
-              this.zoomedXScale.invert
-            )
+              this.zoomedXScale.invert,
+            ),
           )
           .range([0, props.width - 2 * props.paddingLeft]);
 
         const trackYScale = scaleLinear()
           .domain(
             [props.paddingTop, props.height - props.paddingTop].map(
-              this.zoomedYScale.invert
-            )
+              this.zoomedYScale.invert,
+            ),
           )
           .range([0, props.height - 2 * props.paddingTop]);
 
@@ -1362,8 +1367,8 @@ class TrackRenderer extends React.Component {
               props.paddingLeft +
                 props.leftWidth +
                 props.centerWidth +
-                props.galleryDim
-            ].map(this.zoomedXScale.invert)
+                props.galleryDim,
+            ].map(this.zoomedXScale.invert),
           )
           .range([0, props.centerWidth + 2 * props.galleryDim]);
 
@@ -1374,15 +1379,15 @@ class TrackRenderer extends React.Component {
               props.paddingTop +
                 props.topHeight +
                 props.centerHeight +
-                props.galleryDim
-            ].map(this.zoomedYScale.invert)
+                props.galleryDim,
+            ].map(this.zoomedYScale.invert),
           )
           .range([0, props.centerHeight - 2 * props.galleryDim]);
 
         track.zoomed(
           trackXScale.copy(),
           trackYScale.copy(),
-          this.zoomTransform.k
+          this.zoomTransform.k,
         );
         continue;
       }
@@ -1394,7 +1399,7 @@ class TrackRenderer extends React.Component {
         this.zoomTransform.x + this.xPositionOffset,
         this.zoomTransform.y + this.yPositionOffset,
         props.paddingLeft + props.leftWidth,
-        props.paddingTop + props.topHeight
+        props.paddingTop + props.topHeight,
       );
     }
 
@@ -1420,20 +1425,20 @@ class TrackRenderer extends React.Component {
             onNewTilesLoaded: () => {
               this.currentProps.onNewTilesLoaded(track.uid);
             },
-            definition: track
+            definition: track,
           };
           try {
             return new pluginTrack.track( // eslint-disable-line new-cap
               AVAILABLE_FOR_PLUGINS,
               context,
-              track.options
+              track.options,
             );
           } catch (e) {
             console.error(
               'Plugin meta track',
               track.type,
               'failed to instantiate.',
-              e
+              e,
             );
           }
         }
@@ -1442,7 +1447,7 @@ class TrackRenderer extends React.Component {
         return new UnknownPixiTrack(
           this.pStage,
           { name: 'Unknown Track Type', type: track.type },
-          () => this.currentProps.onNewTilesLoaded(track.uid)
+          () => this.currentProps.onNewTilesLoaded(track.uid),
         );
       }
     }
@@ -1472,18 +1477,12 @@ class TrackRenderer extends React.Component {
     if (!dataConfig) {
       dataConfig = {
         server: trimTrailingSlash(track.server),
-        tilesetUid: track.tilesetUid
+        tilesetUid: track.tilesetUid,
       };
     }
 
-    if (track.fileUrl) {
-      dataConfig.fileUrl = track.fileUrl;
-
-      if (!track.filetype) {
-        console.warn('fileUrl present without fileType:', track);
-      } else {
-        dataConfig.filetype = track.filetype;
-      }
+    if (track.coordSystem) {
+      dataConfig.coordSystem = track.coordSystem;
     }
 
     const dataFetcher = getDataFetcher(dataConfig, this.props.pubSub);
@@ -1515,7 +1514,7 @@ class TrackRenderer extends React.Component {
       onMouseMoveZoom: this.props.onMouseMoveZoom,
       chromInfoPath: track.chromInfoPath,
       isShowGlobalMousePosition: () => this.props.isShowGlobalMousePosition,
-      getTheme: () => this.props.theme
+      getTheme: () => this.props.theme,
     };
 
     // for horizontal and vertical rules
@@ -1549,51 +1548,38 @@ class TrackRenderer extends React.Component {
       case 'heatmap':
         return new HeatmapTiledPixiTrack(context, options);
 
-      case 'horizontal-multivec':
-      case 'horizontal-vector-heatmap':
+      case 'multivec':
+      case 'vector-heatmap':
+      case 'horizontal-multivec': // legacy, included for backwards compatiblity
+      case 'horizontal-vector-heatmap': // legacy, included for backwards compatiblity
+      case 'vertical-multivec': // legacy, included for backwards compatiblity
+      case 'vertical-vector-heatmap': // legacy, included for backwards compatiblity
         return new HorizontalMultivecTrack(context, options);
 
-      case 'vertical-multivec':
-      case 'vertical-vector-heatmap':
-        return new LeftTrackModifier(
-          new HorizontalMultivecTrack(context, options)
-        );
-
-      case 'horizontal-1d-heatmap':
+      case '1d-heatmap':
+      case 'horizontal-1d-heatmap': // legacy, included for backwards compatiblity
+      case 'vertical-1d-heatmap': // legacy, included for backwards compatiblity
         return new Horizontal1dHeatmapTrack(context, options);
 
-      case 'horizontal-line':
+      case 'line':
+      case 'horizontal-line': // legacy, included for backwards compatiblity
+      case 'vertical-line': // legacy, included for backwards compatiblity
         return new HorizontalLine1DPixiTrack(context, options);
 
-      case 'vertical-line':
-        return new LeftTrackModifier(
-          new HorizontalLine1DPixiTrack(context, options)
-        );
-
-      case 'vertical-1d-heatmap':
-        return new LeftTrackModifier(
-          new Horizontal1dHeatmapTrack(context, options)
-        );
-
-      case 'horizontal-point':
+      case 'point':
+      case 'horizontal-point': // legacy, included for backwards compatiblity
+      case 'vertical-point': // legacy, included for backwards compatiblity
         return new HorizontalPoint1DPixiTrack(context, options);
 
-      case 'vertical-point':
-        return new LeftTrackModifier(
-          new HorizontalPoint1DPixiTrack(context, options)
-        );
-
-      case 'horizontal-bar':
+      case 'bar':
+      case 'horizontal-bar': // legacy, included for backwards compatiblity
+      case 'vertical-bar': // legacy, included for backwards compatiblity
         return new BarTrack(context, options);
 
-      case 'vertical-bar':
-        return new LeftTrackModifier(new BarTrack(context, options));
-
-      case 'horizontal-divergent-bar':
+      case 'divergent-bar':
+      case 'horizontal-divergent-bar': // legacy, included for backwards compatiblity
+      case 'vertical-divergent-bar': // legacy, included for backwards compatiblity
         return new DivergentBarTrack(context, options);
-
-      case 'vertical-divergent-bar':
-        return new LeftTrackModifier(new DivergentBarTrack(context, options));
 
       case 'horizontal-1d-tiles':
         return new IdHorizontal1DTiledPixiTrack(context, options);
@@ -1604,11 +1590,10 @@ class TrackRenderer extends React.Component {
       case '2d-tiles':
         return new Id2DTiledPixiTrack(context, options);
 
-      case 'top-stacked-interval':
+      case 'stacked-interval':
+      case 'top-stacked-interval': // legacy, included for backwards compatiblity
+      case 'left-stacked-interval': // legacy, included for backwards compatiblity
         return new CNVIntervalTrack(context, options);
-
-      case 'left-stacked-interval':
-        return new LeftTrackModifier(new CNVIntervalTrack(context, options));
 
       case 'viewport-projection-center':
         // TODO: Fix this so that these functions are defined somewhere else
@@ -1652,13 +1637,10 @@ class TrackRenderer extends React.Component {
         }
         return new Track(context, options);
 
-      case 'horizontal-gene-annotations':
+      case 'gene-annotations':
+      case 'horizontal-gene-annotations': // legacy, included for backwards compatiblity
+      case 'vertical-gene-annotations': // legacy, included for backwards compatiblity
         return new HorizontalGeneAnnotationsTrack(context, options);
-
-      case 'vertical-gene-annotations':
-        return new LeftTrackModifier(
-          new HorizontalGeneAnnotationsTrack(context, options)
-        );
 
       case '2d-rectangle-domains':
       case 'arrowhead-domains':
@@ -1675,12 +1657,9 @@ class TrackRenderer extends React.Component {
       case '2d-annotations':
         return new Annotations2dTrack(context, options);
 
-      case 'vertical-2d-rectangle-domains':
-        return new LeftTrackModifier(
-          new Horizontal2DDomainsTrack(context, options)
-        );
-
-      case 'horizontal-2d-rectangle-domains':
+      case 'linear-2d-rectangle-domains':
+      case 'horizontal-2d-rectangle-domains': // legacy, included for backwards compatiblity
+      case 'vertical-2d-rectangle-domains': // legacy, included for backwards compatiblity
         return new Horizontal2DDomainsTrack(context, options);
 
       case 'square-markers':
@@ -1705,34 +1684,25 @@ class TrackRenderer extends React.Component {
       case '2d-chromosome-grid':
         return new ChromosomeGrid(context, options);
 
-      case 'horizontal-chromosome-labels':
+      case 'chromosome-labels':
+      case 'horizontal-chromosome-labels': // legacy, included for backwards compatiblity
+      case 'vertical-chromosome-labels': // legacy, included for backwards compatiblity
         // chromInfoPath is passed in for backwards compatibility
         // it can be used to provide custom chromosome sizes
         return new HorizontalChromosomeLabels(context, options);
 
-      case 'vertical-chromosome-labels':
-        // chromInfoPath is passed in for backwards compatibility
-        // it can be used to provide custom chromosome sizes
-        return new LeftTrackModifier(
-          new HorizontalChromosomeLabels(context, options)
-        );
-
-      case 'horizontal-heatmap':
+      case 'linear-heatmap':
+      case 'horizontal-heatmap': // legacy, included for backwards compatiblity
+      case 'vertical-heatmap': // legacy, included for backwards compatiblity
         return new HorizontalHeatmapTrack(context, options);
-
-      case 'vertical-heatmap':
-        return new LeftTrackModifier(
-          new HorizontalHeatmapTrack(context, options)
-        );
 
       case '2d-chromosome-annotations':
         return new Chromosome2DAnnotations(context, options);
 
-      case 'horizontal-1d-value-interval':
+      case '1d-value-interval':
+      case 'horizontal-1d-value-interval': // legacy, included for backwards compatiblity
+      case 'vertical-1d-value-interval': // legacy, included for backwards compatiblity
         return new ValueIntervalTrack(context, options);
-
-      case 'vertical-1d-value-interval':
-        return new LeftTrackModifier(new ValueIntervalTrack(context, options));
 
       case 'osm':
       case 'osm-tiles':
@@ -1749,6 +1719,7 @@ class TrackRenderer extends React.Component {
         return new RasterTilesTrack(context, options);
 
       case 'bedlike':
+      case 'vertical-bedlike': // legacy, included for backwards compatiblity
         return new BedLikeTrack(context, options);
 
       case 'overlay-track':
@@ -1770,9 +1741,6 @@ class TrackRenderer extends React.Component {
         context.y = track.y;
         return new CrossRule(context, options);
 
-      case 'vertical-bedlike':
-        return new LeftTrackModifier(new BedLikeTrack(context, options));
-
       case 'simple-svg':
         return new SVGTrack(context, options);
       case 'empty':
@@ -1790,14 +1758,14 @@ class TrackRenderer extends React.Component {
             return new pluginTrack.track( // eslint-disable-line new-cap
               AVAILABLE_FOR_PLUGINS,
               context,
-              options
+              options,
             );
           } catch (e) {
             console.error(
               'Plugin track',
               track.type,
               'failed to instantiate.',
-              e
+              e,
             );
           }
         }
@@ -1806,7 +1774,7 @@ class TrackRenderer extends React.Component {
 
         return new UnknownPixiTrack(context, {
           name: 'Unknown Track Type',
-          type: track.type
+          type: track.type,
         });
       }
     }
@@ -1828,11 +1796,11 @@ class TrackRenderer extends React.Component {
     dataYStart,
     dataYEnd,
     animateTime = 3000,
-    projector = null
+    projector = null,
   ) {
     const [centerX, centerY, k] = scalesCenterAndK(
       this.xScale.copy().domain([dataXStart, dataXEnd]),
-      this.yScale.copy().domain([dataYStart, dataYEnd])
+      this.yScale.copy().domain([dataYStart, dataYEnd]),
     );
 
     const projectedScales = projector
@@ -1846,7 +1814,7 @@ class TrackRenderer extends React.Component {
       false,
       animateTime,
       projectedScales[0],
-      projectedScales[1]
+      projectedScales[1],
     );
   }
 
@@ -1872,7 +1840,7 @@ class TrackRenderer extends React.Component {
     this.eventTracker.addEventListener('click', this.boundForwardEvent);
     this.eventTracker.addEventListener(
       'contextmenu',
-      this.boundForwardContextMenu
+      this.boundForwardContextMenu,
     );
     this.eventTracker.addEventListener('dblclick', this.boundForwardEvent);
     this.eventTracker.addEventListener('wheel', this.boundForwardEvent);
@@ -1908,14 +1876,14 @@ class TrackRenderer extends React.Component {
     this.eventTracker.removeEventListener('click', this.boundForwardEvent);
     this.eventTracker.removeEventListener(
       'contextmenu',
-      this.boundForwardContextMenu
+      this.boundForwardContextMenu,
     );
     this.eventTracker.removeEventListener('dblclick', this.boundForwardEvent);
     this.eventTracker.removeEventListener('wheel', this.boundForwardEvent);
     this.eventTracker.removeEventListener('dragstart', this.boundForwardEvent);
     this.eventTracker.removeEventListener(
       'selectstart',
-      this.boundForwardEvent
+      this.boundForwardEvent,
     );
 
     this.eventTracker.removeEventListener('mouseover', this.boundForwardEvent);
@@ -1929,30 +1897,30 @@ class TrackRenderer extends React.Component {
     this.eventTracker.removeEventListener('touchend', this.boundForwardEvent);
     this.eventTracker.removeEventListener(
       'touchcancel',
-      this.boundForwardEvent
+      this.boundForwardEvent,
     );
 
     this.eventTracker.removeEventListener(
       'pointerover',
-      this.boundForwardEvent
+      this.boundForwardEvent,
     );
     this.eventTracker.removeEventListener(
       'pointerenter',
-      this.boundForwardEvent
+      this.boundForwardEvent,
     );
     this.eventTracker.removeEventListener(
       'pointerdown',
-      this.boundForwardEvent
+      this.boundForwardEvent,
     );
     this.eventTracker.removeEventListener('pointerup', this.boundForwardEvent);
     this.eventTracker.removeEventListener(
       'pointercancel',
-      this.boundForwardEvent
+      this.boundForwardEvent,
     );
     this.eventTracker.removeEventListener('pointerout', this.boundForwardEvent);
     this.eventTracker.removeEventListener(
       'pointerleave',
-      this.boundForwardEvent
+      this.boundForwardEvent,
     );
 
     window.removeEventListener('scroll', this.boundScrollEvent);
@@ -1983,7 +1951,7 @@ class TrackRenderer extends React.Component {
         className="track-renderer-div"
         style={{
           height: this.currentProps.height,
-          width: this.currentProps.width
+          width: this.currentProps.width,
         }}
         styleName="track-renderer"
       >
@@ -2028,7 +1996,7 @@ TrackRenderer.defaultProps = {
   topHeight: 0,
   topHeightNoGallery: 0,
   width: 0,
-  metaTracks: []
+  metaTracks: [],
 };
 
 TrackRenderer.propTypes = {
@@ -2067,7 +2035,7 @@ TrackRenderer.propTypes = {
   yDomainLimits: PropTypes.array,
   valueScaleZoom: PropTypes.bool,
   zoomable: PropTypes.bool.isRequired,
-  zoomDomain: PropTypes.array
+  zoomDomain: PropTypes.array,
 };
 
 export default withPubSub(withTheme(TrackRenderer));

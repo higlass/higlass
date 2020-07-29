@@ -11,12 +11,33 @@ import { requestsInFlight } from '../services';
 
 import {
   getTrackObjectFromHGC,
-  getTrackRenderer
+  getTrackRenderer,
 } from './get-higlass-components';
 
 import HiGlassComponent from '../HiGlassComponent';
 
 const TILE_LOADING_CHECK_INTERVAL = 100;
+
+/**
+ * Change the options of a track in higlass
+ * @param  hgc      enzyme wrapper for a HiGlassComponent
+ * @param  viewUid  The view uid
+ * @param  trackUid The track uid
+ * @param  options  An object of new options (e.g. { color: 'black'})
+ * @return          nothing
+ */
+export const changeOptions = (hgc, viewUid, trackUid, options) => {
+  for (const { viewId, trackId, track } of hgc.instance().iterateOverTracks()) {
+    if (viewId === viewUid && trackId === trackUid) {
+      track.options = {
+        ...track.options,
+        ...options,
+      };
+    }
+  }
+
+  hgc.setState(hgc.instance().state);
+};
 
 /**
  * Check if there are any active transitions that we
@@ -78,7 +99,7 @@ export const waitForJsonComplete = finished => {
   if (requestsInFlight > 0) {
     setTimeout(
       () => waitForJsonComplete(finished),
-      TILE_LOADING_CHECK_INTERVAL
+      TILE_LOADING_CHECK_INTERVAL,
     );
   } else {
     finished();
@@ -193,7 +214,7 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
 
   const hgc = mount(
     <HiGlassComponent options={{ bounded }} viewConfig={viewConf} />,
-    { attachTo: div }
+    { attachTo: div },
   );
 
   hgc.update();

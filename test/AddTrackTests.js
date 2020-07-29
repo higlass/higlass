@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 
@@ -14,7 +14,7 @@ import {
   mountHGComponent,
   removeHGComponent,
   waitForTilesLoaded,
-  waitForJsonComplete
+  waitForJsonComplete,
 } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
@@ -26,7 +26,7 @@ describe('Add track(s)', () => {
   beforeAll(done => {
     [div, hgc] = mountHGComponent(div, hgc, oneViewConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true
+      bounded: true,
     });
   });
 
@@ -41,7 +41,7 @@ describe('Add track(s)', () => {
     // make sure the input field is equal to the document's active element
     // e.g. that it has focus
     expect(document.activeElement.className).to.be.eql(
-      'tileset-finder-search-box'
+      'tileset-finder-search-box',
     );
 
     waitForJsonComplete(done);
@@ -50,14 +50,14 @@ describe('Add track(s)', () => {
   it('should select one plot type and double click', done => {
     const { tilesetFinder } = hgc.instance().modalRef;
     tilesetFinder.handleSelectedOptions([
-      'http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ'
+      'http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ',
     ]);
     hgc.update();
 
     tilesetFinder.props.onDoubleClick(
       tilesetFinder.state.options[
         'http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ'
-      ]
+      ],
     );
 
     waitForJsonComplete(done);
@@ -69,7 +69,7 @@ describe('Add track(s)', () => {
     tiledPlot.handleAddTrack('top');
     hgc.update();
     expect(document.activeElement.className).to.be.eql(
-      'tileset-finder-search-box'
+      'tileset-finder-search-box',
     );
     waitForJsonComplete(done);
   });
@@ -79,7 +79,7 @@ describe('Add track(s)', () => {
 
     tilesetFinder.handleSelectedOptions([
       'http://higlass.io/api/v1/TO3D5uHjSt6pyDPEpc1hpA',
-      'http://higlass.io/api/v1/Nn8aA4qbTnmaa-oGGbuE-A'
+      'http://higlass.io/api/v1/Nn8aA4qbTnmaa-oGGbuE-A',
     ]);
 
     hgc.update();
@@ -103,7 +103,7 @@ describe('Add track(s)', () => {
 
     tilesetFinder.handleSelectedOptions([
       'http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ',
-      'http://higlass.io/api/v1/GUm5aBiLRCyz2PsBea7Yzg'
+      'http://higlass.io/api/v1/GUm5aBiLRCyz2PsBea7Yzg',
     ]);
 
     hgc.update();
@@ -114,7 +114,7 @@ describe('Add track(s)', () => {
 
     tilesetFinder.handleSelectedOptions([
       'http://higlass.io/api/v1/NNlxhMSCSnCaukAtdoKNXw',
-      'http://higlass.io/api/v1/GGKJ59R-RsKtwgIgFohOhA'
+      'http://higlass.io/api/v1/GGKJ59R-RsKtwgIgFohOhA',
     ]);
 
     hgc.update();
@@ -122,28 +122,26 @@ describe('Add track(s)', () => {
     ptc = hgc.instance().modalRef.plotTypeChooser;
 
     // console.warn('ptc.AVAILABLE_TRACK_TYPES', ptc.AVAILABLE_TRACK_TYPES);
-    // should just have the horizontal-heatmap track type
+    // should just have the linear-heatmap track type
     expect(ptc.AVAILABLE_TRACK_TYPES.length).to.eql(3);
 
     tilesetFinder.handleSelectedOptions([
       // hg19 gene track
-      'http://higlass.io/api/v1/OHJakQICQD6gTD7skx4EWA'
+      'http://higlass.io/api/v1/OHJakQICQD6gTD7skx4EWA',
     ]);
 
     hgc.update();
 
     ptc = hgc.instance().modalRef.plotTypeChooser;
 
-    // check that the selected plot type defaults to 'horizontal-gene-annotations'
-    expect(ptc.state.selectedPlotType.type).to.eql(
-      'horizontal-gene-annotations'
-    );
+    // check that the selected plot type defaults to 'gene-annotations'
+    expect(ptc.state.selectedPlotType.type).to.eql('gene-annotations');
 
     tilesetFinder.handleSelectedOptions([
       // hg19 gene track
       'http://higlass.io/api/v1/OHJakQICQD6gTD7skx4EWA',
       // GM12878-E116-H3K27me3.fc.signal track
-      'http://higlass.io/api/v1/PdAaSdibTLK34hCw7ubqKA'
+      'http://higlass.io/api/v1/PdAaSdibTLK34hCw7ubqKA',
     ]);
 
     hgc.update();
@@ -181,28 +179,28 @@ describe('Add track(s)', () => {
 
     tilesetFinder.handleSelectedOptions([
       // DM6 gene track
-      'http://higlass.io/api/v1/B2skqtzdSLyWYPTYM8t8lQ'
+      'http://higlass.io/api/v1/B2skqtzdSLyWYPTYM8t8lQ',
     ]);
 
     const { plotTypeChooser } = hgc.instance().modalRef;
 
-    plotTypeChooser.selectedPlotType = 'horizontal-gene-annotations';
+    plotTypeChooser.selectedPlotType = 'gene-annotations';
 
     hgc.instance().modalRef.handleSubmit();
     hgc.update();
 
     waitForTilesLoaded(hgc.instance(), () => {
       const { tilesetInfo } = Object.values(
-        hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects
+        hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects,
       )[0].trackObject;
 
       const viewConf = JSON.parse(hgc.instance().getViewsAsString());
 
       expect(viewConf.views[0].initialXDomain[0]).to.eql(
-        tilesetInfo.min_pos[0]
+        tilesetInfo.min_pos[0],
       );
       expect(viewConf.views[0].initialXDomain[1]).to.eql(
-        tilesetInfo.max_pos[0]
+        tilesetInfo.max_pos[0],
       );
 
       done();
@@ -227,7 +225,7 @@ describe('Add track(s)', () => {
 
     tilesetFinder.handleSelectedOptions([
       // hg19 gm12878 heatmap
-      'http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ'
+      'http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ',
     ]);
 
     const { plotTypeChooser } = hgc.instance().modalRef;
@@ -239,16 +237,16 @@ describe('Add track(s)', () => {
 
     waitForTilesLoaded(hgc.instance(), () => {
       const { tilesetInfo } = Object.values(
-        hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects
+        hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects,
       )[0].trackObject.childTracks[0];
 
       const viewConf = JSON.parse(hgc.instance().getViewsAsString());
 
       expect(viewConf.views[0].initialXDomain[0]).to.eql(
-        tilesetInfo.min_pos[0]
+        tilesetInfo.min_pos[0],
       );
       expect(viewConf.views[0].initialXDomain[1]).to.eql(
-        tilesetInfo.max_pos[0]
+        tilesetInfo.max_pos[0],
       );
 
       done();
@@ -262,7 +260,7 @@ describe('Add track(s)', () => {
     hgc.update();
 
     const newXDomain = [
-      ...JSON.parse(hgc.instance().getViewsAsString()).views[0].initialXDomain
+      ...JSON.parse(hgc.instance().getViewsAsString()).views[0].initialXDomain,
     ];
 
     hgc.instance().tiledPlots.aa.handleAddTrack('top');
@@ -272,12 +270,12 @@ describe('Add track(s)', () => {
 
     tilesetFinder.handleSelectedOptions([
       // hg19 gene track
-      'http://higlass.io/api/v1/OHJakQICQD6gTD7skx4EWA'
+      'http://higlass.io/api/v1/OHJakQICQD6gTD7skx4EWA',
     ]);
 
     const { plotTypeChooser } = hgc.instance().modalRef;
 
-    plotTypeChooser.selectedPlotType = 'horizontal-gene-annotations';
+    plotTypeChooser.selectedPlotType = 'gene-annotations';
 
     hgc.instance().modalRef.handleSubmit();
     hgc.update();

@@ -1,0 +1,179 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "//higlass.io/api/v1",
+    "https://resgen.io/api/v1/gt/paper-data"
+  ],
+  "exportViewUrl": "/api/v1/viewconfs",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [1805849928.8371878, 1806018635.7314198],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "//higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "//higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "visible": true
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "uid": "a",
+            "type": "bedlike",
+            "data": {
+              "type": "local-tiles",
+              "tilesetInfo": {
+                "EkPGY0iFQx6Nq6vdF8CpWA": {
+                  "zoom_step": 1,
+                  "max_length": 3088286402,
+                  "assembly": "hg19",
+                  "chrom_names": "chr1\tchr2\tchr3\tchr4\tchr5\tchr6\tchr7\tchr8\tchr9\tchr10\tchr11\tchr12\tchr13\tchr14\tchr15\tchr16\tchr17\tchr18\tchr19\tchr20\tchr21\tchr22\tchrX\tchrY\tchrM",
+                  "chrom_sizes": "248956422\t242193529\t198295559\t190214555\t181538259\t170805979\t159345973\t145138636\t138394717\t133797422\t135086622\t133275309\t114364328\t107043718\t101991189\t90338345\t83257441\t80373285\t58617616\t64444167\t46709983\t50818468\t156040895\t57227415\t16569",
+                  "tile_size": 1024,
+                  "max_zoom": 22,
+                  "max_width": 4294967296,
+                  "min_pos": [1],
+                  "max_pos": [3088286402],
+                  "header": "1\t2\t3\t4\t5\t6",
+                  "name": "CTCF motifs (hg38)",
+                  "datatype": "bedlike",
+                  "coordSystem": "hg38",
+                  "coordSystem2": ""
+                }
+              },
+              "tiles": {
+                "EkPGY0iFQx6Nq6vdF8CpWA.16.27556": [
+                  {
+                    "xStart": 1805934195,
+                    "xEnd": 1805934213,
+                    "chrOffset": 1674883629,
+                    "importance": 0.23296021794933408,
+                    "uid": "UyNO4B12TVuUxzjh_GeJ1w",
+                    "fields": [
+                      "chr10",
+                      "131050566",
+                      "131050584",
+                      "CTCF_known1",
+                      ".",
+                      "-"
+                    ]
+                  },
+                  {
+                    "xStart": 1805965390,
+                    "xEnd": 1805965408,
+                    "chrOffset": 1674883629,
+                    "importance": 0.167947885045992,
+                    "uid": "OvlwPLZhTkiKlKTLia4j-g",
+                    "fields": [
+                      "chr10",
+                      "131081761",
+                      "131081779",
+                      "CTCF_known1",
+                      ".",
+                      "+"
+                    ]
+                  }
+                ],
+                "EkPGY0iFQx6Nq6vdF8CpWA.16.27557": [
+                  {
+                    "xStart": 1806018133,
+                    "xEnd": 1806018151,
+                    "chrOffset": 1674883629,
+                    "importance": 0.49380036276724726,
+                    "uid": "SOgfZFNXQf2Vn9TPBzwryw",
+                    "fields": [
+                      "chr10",
+                      "131134504",
+                      "131134522",
+                      "CTCF_known1",
+                      ".",
+                      "+"
+                    ]
+                  },
+                  {
+                    "xStart": 1806025782,
+                    "xEnd": 1806025800,
+                    "chrOffset": 1674883629,
+                    "importance": 0.6831105282379983,
+                    "uid": "A85EIPKrSZSFygYhKAzpdA",
+                    "fields": [
+                      "chr10",
+                      "131142153",
+                      "131142171",
+                      "CTCF_known1",
+                      ".",
+                      "+"
+                    ]
+                  }
+                ]
+              }
+            },
+            "options": {
+              "alternating": false,
+              "annotationStyle": "box",
+              "fillColor": "blue",
+              "fillOpacity": 0.3,
+              "fontSize": "10",
+              "axisPositionHorizontal": "right",
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "minHeight": 20,
+              "maxAnnotationHeight": null,
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "valueColumn": null,
+              "colorEncoding": "itemRgb",
+              "showTexts": false,
+              "colorRange": [
+                "#000000",
+                "#652537",
+                "#bf5458",
+                "#fba273",
+                "#ffffe0"
+              ],
+              "colorEncodingRange": false,
+              "annotationHeight": 16,
+              "name": "CTCF motifs (hg38)",
+              "separatePlusMinusStrands": true
+            },
+            "width": 904,
+            "height": 43
+          }
+        ],
+        "left": [],
+        "center": [],
+        "right": [],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 3,
+        "x": 0,
+        "y": 0
+      },
+      "initialYDomain": [439112551.9023944, 439115573.71291625]
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

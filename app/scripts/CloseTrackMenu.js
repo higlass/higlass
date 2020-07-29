@@ -19,7 +19,7 @@ const CloseTrackMenu = props => (
 
 CloseTrackMenu.propTypes = {
   onCloseTrack: PropTypes.func.isRequired,
-  tracks: PropTypes.array.isRequired
+  tracks: PropTypes.array.isRequired,
 };
 
 export default CloseTrackMenu;

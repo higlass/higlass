@@ -9,7 +9,7 @@ import stylesPlot from '../styles/TiledPlot.module.scss'; // eslint-disable-line
 import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
 
 const STYLES = {
-  pointerEvents: 'all'
+  pointerEvents: 'all',
 };
 
 class GalleryTracks extends React.Component {
@@ -39,7 +39,7 @@ class GalleryTracks extends React.Component {
                 top: track.height * index,
                 right: track.height * index,
                 bottom: track.height * index,
-                left: track.height * index
+                left: track.height * index,
               }}
               styleName="styles.gallery-track"
             >
@@ -49,7 +49,7 @@ class GalleryTracks extends React.Component {
                   top: 0,
                   right: 0,
                   left: 0,
-                  height: track.height
+                  height: track.height,
                 }}
                 styleName="styles.gallery-sub-track"
               />
@@ -59,7 +59,7 @@ class GalleryTracks extends React.Component {
                   top: 0,
                   right: 0,
                   bottom: 0,
-                  width: track.height
+                  width: track.height,
                 }}
                 styleName="styles.gallery-sub-track"
               />
@@ -69,7 +69,7 @@ class GalleryTracks extends React.Component {
                   right: 0,
                   bottom: 0,
                   left: 0,
-                  height: track.height
+                  height: track.height,
                 }}
                 styleName="styles.gallery-sub-track"
               />
@@ -79,7 +79,7 @@ class GalleryTracks extends React.Component {
                   top: 0,
                   bottom: 0,
                   left: 0,
-                  width: track.height
+                  width: track.height,
                 }}
                 styleName="styles.gallery-sub-track"
               />
@@ -89,7 +89,7 @@ class GalleryTracks extends React.Component {
                   top: track.height,
                   right: track.height,
                   bottom: track.height,
-                  left: track.height
+                  left: track.height,
                 }}
                 styleName="styles.gallery-invisible-track"
               />
@@ -118,7 +118,7 @@ GalleryTracks.propTypes = {
   editable: PropTypes.bool.isRequired,
   onCloseTrackMenuOpened: PropTypes.func.isRequired,
   onConfigTrackMenuOpened: PropTypes.func.isRequired,
-  tracks: PropTypes.array.isRequired
+  tracks: PropTypes.array.isRequired,
 };
 
 export default GalleryTracks;

@@ -25,7 +25,7 @@ class PopupMenu extends React.Component {
     document.addEventListener(
       'contextmenu',
       this.contextMenuHandlerBound,
-      true
+      true,
     );
     window.addEventListener('resize', this.resizeHandlerBound, true);
 
@@ -41,7 +41,7 @@ class PopupMenu extends React.Component {
     document.removeEventListener(
       'contextmenu',
       this.contextMenuHandlerBound,
-      true
+      true,
     );
     window.removeEventListener('resize', this.resizeHandlerBound, true);
     ReactDOM.unmountComponentAtNode(this.popup);
@@ -75,12 +75,12 @@ class PopupMenu extends React.Component {
 }
 
 PopupMenu.defaultProps = {
-  onMenuClosed: intoTheVoid
+  onMenuClosed: intoTheVoid,
 };
 
 PopupMenu.propTypes = {
   children: PropTypes.node.isRequired,
-  onMenuClosed: PropTypes.func
+  onMenuClosed: PropTypes.func,
 };
 
 export default PopupMenu;

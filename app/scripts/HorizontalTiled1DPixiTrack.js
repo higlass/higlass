@@ -28,7 +28,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
       this.hideMousePosition = showMousePosition(
         this,
         this.is2d,
-        this.isShowGlobalMousePosition()
+        this.isShowGlobalMousePosition(),
       );
     }
   }
@@ -47,7 +47,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
       this.hideMousePosition = showMousePosition(
         this,
         this.is2d,
-        this.isShowGlobalMousePosition()
+        this.isShowGlobalMousePosition(),
       );
     }
 
@@ -65,7 +65,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
         this.tilesetInfo.resolutions,
         this._xScale,
         this.tilesetInfo.min_pos[0],
-        this.tilesetInfo.max_pos[0] - 2
+        this.tilesetInfo.max_pos[0] - 2,
       );
 
       return zoomIndexX;
@@ -77,7 +77,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
       this._xScale,
       this.tilesetInfo.min_pos[0],
       this.tilesetInfo.max_pos[0],
-      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size
+      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size,
     );
 
     let zoomLevel = Math.min(xZoomLevel, this.maxZoom);
@@ -207,7 +207,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
       relY,
       dataX,
       dataY,
-      orientation
+      orientation,
     });
   }
 
@@ -234,7 +234,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
         labelOpacity = 1.0,
         labelPosition = 'leftTop',
         labelSize = 12,
-        value = 0
+        value = 0,
       } = {}) => {
         const colorHex = colorToHex(color);
         const labelColorHex = colorToHex(labelColor);
@@ -249,7 +249,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
           const labelG = new GLOBALS.PIXI.Text(label, {
             fontFamily: 'Arial',
             fontSize: labelSize,
-            fill: labelColorHex
+            fill: labelColorHex,
           });
           labelG.alpha = labelOpacity;
 
@@ -306,9 +306,9 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
           this.position[0] + xOffset,
           y,
           this.dimensions[0] - widthOffset,
-          1
+          1,
         );
-      }
+      },
     );
   }
 
@@ -338,7 +338,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
           labelOpacity = 1.0,
           labelPosition = 'leftTop',
           labelSize = 12,
-          value = 0
+          value = 0,
         } = {}) => {
           const y = this.valueScale(value);
 
@@ -350,14 +350,14 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
             labelEl.setAttribute('y', y);
             labelEl.setAttribute(
               'style',
-              `font-family: 'Arial'; font-size: ${labelSize}px; fill: ${labelColor}; fill-opacity: ${labelOpacity};`
+              `font-family: 'Arial'; font-size: ${labelSize}px; fill: ${labelColor}; fill-opacity: ${labelOpacity};`,
             );
 
             switch (labelPosition) {
               case 'rightBottom':
                 labelEl.setAttribute(
                   'x',
-                  this.position[0] + this.dimensions[0] - 6
+                  this.position[0] + this.dimensions[0] - 6,
                 );
                 labelEl.setAttribute('y', y + labelSize + 2);
                 labelEl.setAttribute('text-anchor', 'end');
@@ -367,7 +367,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
               case 'rightTop':
                 labelEl.setAttribute(
                   'x',
-                  this.position[0] + this.dimensions[0] - 6
+                  this.position[0] + this.dimensions[0] - 6,
                 );
                 labelEl.setAttribute('y', y - 2);
                 labelEl.setAttribute('text-anchor', 'end');
@@ -398,7 +398,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
           line.setAttribute('stroke-opacity', opacity);
 
           output.appendChild(line);
-        }
+        },
       );
     }
 

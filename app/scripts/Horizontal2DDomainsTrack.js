@@ -38,12 +38,12 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
     const xZoomLevel = tileProxy.calculateZoomLevel(
       this._xScale,
       this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0]
+      this.tilesetInfo.max_pos[0],
     );
     const yZoomLevel = tileProxy.calculateZoomLevel(
       this._xScale,
       this.tilesetInfo.min_pos[1],
-      this.tilesetInfo.max_pos[1]
+      this.tilesetInfo.max_pos[1],
     );
 
     let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
@@ -69,7 +69,7 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
      */
     this.visibleTiles = tilePositions.map(x => ({
       tileId: this.tileToLocalId(x),
-      remoteId: this.tileToRemoteId(x)
+      remoteId: this.tileToRemoteId(x),
     }));
 
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
@@ -97,11 +97,11 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
     // on each side
     expandedXScale.domain([
       this._xScale.invert(
-        this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)
+        this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2),
       ),
       this._xScale.invert(
-        this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2)
-      )
+        this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2),
+      ),
     ]);
 
     this.xTiles = tileProxy.calculateTiles(
@@ -110,7 +110,7 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
       this.tilesetInfo.min_pos[0],
       this.tilesetInfo.max_pos[0],
       this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width
+      this.tilesetInfo.max_width,
     );
 
     this.yTiles = tileProxy.calculateTiles(
@@ -119,7 +119,7 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
       this.tilesetInfo.min_pos[0],
       this.tilesetInfo.max_pos[0],
       this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width
+      this.tilesetInfo.max_width,
     );
 
     const rows = this.xTiles;
@@ -192,12 +192,12 @@ class Horizontal2DDomainsTrack extends TiledPixiTrack {
     const stroke = colorToHex(
       this.options.rectangleDomainStrokeColor
         ? this.options.rectangleDomainStrokeColor
-        : 'black'
+        : 'black',
     );
     const fill = colorToHex(
       this.options.rectangleDomainFillColor
         ? this.options.rectangleDomainFillColor
-        : 'grey'
+        : 'grey',
     );
 
     graphics.lineStyle(1 / this.pMain.scale.x, stroke, 1);

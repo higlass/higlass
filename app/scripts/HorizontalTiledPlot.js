@@ -46,7 +46,7 @@ class HorizontalTiledPlot extends React.Component {
       ) {
         this.moveBrush(
           nextProps.rangeSelection[0] ? nextProps.rangeSelection[0] : null,
-          true
+          true,
         );
       }
       this.rangeSelectionTriggeredEnd = false;
@@ -55,7 +55,7 @@ class HorizontalTiledPlot extends React.Component {
     if (this.props.rangeSelection !== nextProps.rangeSelection) {
       this.moveBrush(
         nextProps.rangeSelection[0] ? nextProps.rangeSelection[0] : null,
-        nextProps.rangeSelectionEnd
+        nextProps.rangeSelectionEnd,
       );
       return this.state !== nextState;
     }
@@ -93,7 +93,7 @@ class HorizontalTiledPlot extends React.Component {
 
     resetD3BrushStyle(
       this.brushEl,
-      stylesTrack['track-range-selection-group-brush-selection']
+      stylesTrack['track-range-selection-group-brush-selection'],
     );
   }
 
@@ -152,7 +152,7 @@ class HorizontalTiledPlot extends React.Component {
     const relRange = rangeSelection
       ? [
           this.props.scale(rangeSelection[0]),
-          this.props.scale(rangeSelection[1])
+          this.props.scale(rangeSelection[1]),
         ]
       : null;
 
@@ -203,7 +203,7 @@ class HorizontalTiledPlot extends React.Component {
             }}
             style={{
               height,
-              width: this.props.width
+              width: this.props.width,
             }}
             styleName={rangeSelectorClass}
             xmlns="http://www.w3.org/2000/svg"
@@ -224,7 +224,7 @@ class HorizontalTiledPlot extends React.Component {
             uid: d.uid || slugid.nice(),
             width: this.props.width,
             height: d.height,
-            value: d.value
+            value: d.value,
           }))}
           onAddSeries={this.props.onAddSeries}
           onCloseTrack={this.props.onCloseTrack}
@@ -263,7 +263,7 @@ HorizontalTiledPlot.propTypes = {
   resizeHandles: PropTypes.object,
   scale: PropTypes.func,
   tracks: PropTypes.array,
-  width: PropTypes.number
+  width: PropTypes.number,
 };
 
 export default HorizontalTiledPlot;

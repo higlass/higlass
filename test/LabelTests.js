@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 
@@ -11,21 +11,22 @@ import Adapter from 'enzyme-adapter-react-16';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC
+  getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
 import viewconf from './view-configs/label-margin';
+import viewconfSplitHeatmaps from './view-configs/label-split-heatmaps';
 
 configure({ adapter: new Adapter() });
 
-describe('Simple HiGlassComponent', () => {
+describe('Label test', () => {
   describe('Axis texts', () => {
     let hgc = null;
     let div = null;
     beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true
+        bounded: true,
       });
     });
 
@@ -40,10 +41,10 @@ describe('Simple HiGlassComponent', () => {
       expect(track1.labelText.x).to.equal(
         track1.position[0] +
           track1.options.labelLeftMargin +
-          track1.labelText.width / 2
+          track1.labelText.width / 2,
       );
       expect(track1.labelText.y).to.equal(
-        track1.position[1] + track1.options.labelTopMargin
+        track1.position[1] + track1.options.labelTopMargin,
       );
 
       // pos: topRight margin: 10 10 0 0
@@ -51,22 +52,22 @@ describe('Simple HiGlassComponent', () => {
         track2.position[0] +
           track2.dimensions[0] -
           track2.options.labelRightMargin -
-          track2.labelText.width / 2
+          track2.labelText.width / 2,
       );
       expect(track2.labelText.y).to.equal(
-        track2.position[1] + track2.options.labelTopMargin
+        track2.position[1] + track2.options.labelTopMargin,
       );
 
       // pos: bottomLeft margin: 0 0 10 10
       expect(track3.labelText.x).to.equal(
         track3.position[0] +
           track3.options.labelLeftMargin +
-          track3.labelText.width / 2
+          track3.labelText.width / 2,
       );
       expect(track3.labelText.y).to.equal(
         track3.position[1] +
           track3.dimensions[1] -
-          track3.options.labelBottomMargin
+          track3.options.labelBottomMargin,
       );
 
       // pos: bottomRight margin: 0 10 10 0
@@ -74,12 +75,12 @@ describe('Simple HiGlassComponent', () => {
         track4.position[0] +
           track4.dimensions[0] -
           track4.options.labelRightMargin -
-          track2.labelText.width / 2
+          track2.labelText.width / 2,
       );
       expect(track4.labelText.y).to.equal(
         track4.position[1] +
           track4.dimensions[1] -
-          track4.options.labelBottomMargin
+          track4.options.labelBottomMargin,
       );
     });
 
@@ -94,7 +95,7 @@ describe('Simple HiGlassComponent', () => {
     beforeAll(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true
+        bounded: true,
       });
     });
 
@@ -107,6 +108,31 @@ describe('Simple HiGlassComponent', () => {
       expect(track5.labelText.text.startsWith('hg19 | ')).to.be.true;
       // eslint-disable-next-line no-unused-expressions
       expect(track6.labelText.text.startsWith('hg19 | ')).to.be.false;
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+  });
+
+  describe('Heatmap label tests', () => {
+    let hgc = null;
+    let div = null;
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, viewconfSplitHeatmaps, done, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      });
+    });
+
+    it('Makes sure that hiding the label works', () => {
+      hgc.instance().state.views.aa.tracks.center[0].contents[0].options.labelPosition =
+        'hidden';
+      hgc.setState(hgc.instance().state);
+
+      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 't1');
+
+      expect(trackObj.labelText.alpha).to.be.eql(0);
     });
 
     afterAll(() => {

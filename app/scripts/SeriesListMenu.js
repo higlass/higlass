@@ -9,7 +9,7 @@ import {
   OPTIONS_INFO,
   THEME_DARK,
   TRACKS_INFO,
-  TRACKS_INFO_BY_TYPE
+  TRACKS_INFO_BY_TYPE,
 } from './configs';
 
 // Styles
@@ -18,6 +18,21 @@ import '../styles/ContextMenu.module.scss';
 export default class SeriesListMenu extends ContextMenuContainer {
   getConfigureSeriesMenu(position, bbox, track) {
     const menuItems = {};
+
+    // plugin tracks can offer their own options
+    // if they clash with the default higlass options
+    // they will override them
+    const pluginOptionsInfo =
+      window.higlassTracksByType &&
+      window.higlassTracksByType[track.type] &&
+      window.higlassTracksByType[track.type].config &&
+      window.higlassTracksByType[track.type].config.optionsInfo;
+
+    if (pluginOptionsInfo) {
+      for (const key of Object.keys(pluginOptionsInfo)) {
+        OPTIONS_INFO[key] = pluginOptionsInfo[key];
+      }
+    }
 
     if (
       !TRACKS_INFO_BY_TYPE[track.type] ||
@@ -34,7 +49,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
         // should be used if the options depend on tileset info or other current state
         if (OPTIONS_INFO[optionType].generateOptions) {
           const generatedOptions = OPTIONS_INFO[optionType].generateOptions(
-            track
+            track,
           );
 
           if (!menuItems[optionType].children) {
@@ -49,7 +64,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
                 track.options[optionType] = generatedOption.value;
                 this.props.onTrackOptionsChanged(track.uid, track.options);
                 this.props.closeMenu();
-              }
+              },
             };
 
             menuItems[optionType].children[
@@ -74,7 +89,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
             const optionSelectorSettings = {
               name: inlineOption.name,
-              value: inlineOption.value
+              value: inlineOption.value,
               // missing handler to be filled in below
             };
 
@@ -87,7 +102,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
               optionSelectorSettings.handler = () => {
                 this.props.onConfigureTrack(
                   track,
-                  inlineOption.componentPickers[track.type]
+                  inlineOption.componentPickers[track.type],
                 );
                 this.props.closeMenu();
               };
@@ -113,7 +128,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
           menuItems[optionType].handler = () => {
             this.props.onConfigureTrack(
               track,
-              OPTIONS_INFO[optionType].componentPickers[track.type]
+              OPTIONS_INFO[optionType].componentPickers[track.type],
             );
             this.props.closeMenu();
           };
@@ -187,7 +202,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
         name: availableTrackTypes[i],
         handler: () => {
           this.props.onChangeTrackType(track.uid, availableTrackTypes[i]);
-        }
+        },
       };
     }
 
@@ -214,11 +229,11 @@ export default class SeriesListMenu extends ContextMenuContainer {
         this.state.orientation === 'left'
           ? {
               left: this.state.left,
-              top: bbox.top
+              top: bbox.top,
             }
           : {
               left: this.state.left + bbox.width + 7,
-              top: bbox.top
+              top: bbox.top,
             };
 
       // When a submenu is requested, the onMouseEnter handler of the
@@ -241,7 +256,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
     if (this.props.series.data && this.props.series.data.type === 'divided') {
       const newData = {
         tilesetUid: this.props.series.data.children[0].tilesetUid,
-        server: this.props.series.data.children[0].server
+        server: this.props.series.data.children[0].server,
       };
 
       // this track is already being divided
@@ -283,7 +298,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
           onClick={() =>
             this.props.onExportData(
               this.props.hostTrack.uid,
-              this.props.track.uid
+              this.props.track.uid,
             )
           }
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
@@ -321,16 +336,16 @@ export default class SeriesListMenu extends ContextMenuContainer {
         onMouseLeave={this.props.handleMouseLeave}
         style={{
           left: this.state.left,
-          top: this.state.top
+          top: this.state.top,
         }}
         styleName={styleNames}
       >
         <ContextMenuItem
-          onClick={this.props.onConfigureTrack}
+          onClick={() => {}}
           onMouseEnter={e =>
             this.handleItemMouseEnter(e, {
               option: 'configure-series',
-              value: this.props.track
+              value: this.props.track,
             })
           }
           onMouseLeave={e => this.handleMouseLeave(e)}
@@ -346,7 +361,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
           onMouseEnter={e =>
             this.handleItemMouseEnter(e, {
               option: 'track-type',
-              value: this.props.track
+              value: this.props.track,
             })
           }
           onMouseLeave={e => this.handleMouseLeave(e)}

@@ -27,7 +27,7 @@ class Chromosome2DAnnotations extends PixiTrack {
         this.chromInfo = newChromInfo;
         this.draw();
       },
-      this.pubSub
+      this.pubSub,
     );
   }
 
@@ -76,12 +76,12 @@ class Chromosome2DAnnotations extends PixiTrack {
       const colorFillHex = GLOBALS.PIXI.utils.rgb2hex([
         colorFill.r / 255.0,
         colorFill.g / 255.0,
-        colorFill.b / 255.0
+        colorFill.b / 255.0,
       ]);
       const colorLineHex = GLOBALS.PIXI.utils.rgb2hex([
         colorLine.r / 255.0,
         colorLine.g / 255.0,
-        colorLine.b / 255.0
+        colorLine.b / 255.0,
       ]);
 
       graphics.lineStyle(1, colorLineHex, colorLine.opacity);
@@ -89,17 +89,17 @@ class Chromosome2DAnnotations extends PixiTrack {
 
       // console.log('region:', region);
       let startX = this._xScale(
-        this.chromInfo.chrPositions[region[0]].pos + +region[1]
+        this.chromInfo.chrPositions[region[0]].pos + +region[1],
       );
       const endX = this._xScale(
-        this.chromInfo.chrPositions[region[0]].pos + +region[2]
+        this.chromInfo.chrPositions[region[0]].pos + +region[2],
       );
 
       let startY = this._yScale(
-        this.chromInfo.chrPositions[region[3]].pos + +region[4]
+        this.chromInfo.chrPositions[region[3]].pos + +region[4],
       );
       const endY = this._yScale(
-        this.chromInfo.chrPositions[region[3]].pos + +region[5]
+        this.chromInfo.chrPositions[region[3]].pos + +region[5],
       );
 
       let width = endX - startX;
@@ -132,7 +132,7 @@ class Chromosome2DAnnotations extends PixiTrack {
         startX,
         startY,
         width,
-        height
+        height,
       );
 
       this.rects[id].graphics.mousedown = () => {
@@ -147,7 +147,7 @@ class Chromosome2DAnnotations extends PixiTrack {
           this.pubSub.publish('app.click', {
             type: 'annotation',
             event,
-            payload: region
+            payload: region,
           });
         }
       };
