@@ -1,5 +1,4 @@
 import { format } from 'd3-format';
-import equal from 'fast-deep-equal';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import DataFetcher from './DataFetcher';
@@ -32,7 +31,10 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         aggGroups: options.selectRows,
         aggFunc: options.selectRowsAggregationMode,
       };
-      if (!equal(prevDataConfigOptions, nextDataConfigOptions)) {
+      if (
+        JSON.stringify(prevDataConfigOptions) !==
+        JSON.stringify(nextDataConfigOptions)
+      ) {
         // Override the dataFetcher object with a new dataConfig,
         // containing the .options property.
         // This would otherwise be set in the call to super()
