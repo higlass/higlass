@@ -222,7 +222,7 @@ export default class DataFetcher {
 
         receivedTiles(newTiles);
       });
-    } else if (this.dataConfig.tilesetUid) {
+    } else {
       // multiple child tracks, need to wait for all of them to
       // fetch their data before returning to the parent
       const promises = this.dataConfig.children.map(
@@ -252,8 +252,6 @@ export default class DataFetcher {
           receivedTiles(returnedTiles[0]);
         }
       });
-    } else {
-      console.warn('tilesetUid is undefined', this.dataConfig);
     }
   }
 
