@@ -163,8 +163,14 @@ class TiledPixiTrack extends PixiTrack {
       ZOOM_DEBOUNCE,
     );
 
-    this.dataFetcher.tilesetInfo(tilesetInfo => {
+    this.dataFetcher.tilesetInfo((tilesetInfo, tilesetUid) => {
       this.tilesetInfo = tilesetInfo;
+      // If the dataConfig contained a fileUrl, then
+      // we need to update the tilesetUid based
+      // on the registration of the fileUrl.
+      if (!this.dataFetcher.dataConfig.tilesetUid) {
+        this.dataFetcher.dataConfig.tilesetUid = tilesetUid;
+      }
 
       if (this.tilesetInfo.chromsizes) {
         this.chromInfo = parseChromsizesRows(this.tilesetInfo.chromsizes);

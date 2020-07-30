@@ -16,46 +16,59 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     // Continuous scaling is currently not supported
     this.continuousScaling = false;
 
+    this.updateDataFetcher(options);
+  }
+
+  updateDataFetcher(options) {
     if (
       options &&
       options.selectRows &&
       options.selectRowsAggregationMethod === 'server'
     ) {
-      // Override the dataFetcher object with a new dataConfig,
-      // containing the .options property.
-      // This would otherwise be set in the call to super()
-      // in the TiledPixiTrack ancestor constructor.
-      const newDataConfig = {
-        ...context.dataConfig,
-        options: {
-          aggGroups: options.selectRows,
-          aggFunc: options.selectRowsAggregationMode,
-        },
+      const { pubSub, dataFetcher: prevDataFetcher } = this;
+      const prevDataConfigOptions = prevDataFetcher.dataConfig.options;
+      const nextDataConfigOptions = {
+        aggGroups: options.selectRows,
+        aggFunc: options.selectRowsAggregationMode,
       };
-      this.dataFetcher = new DataFetcher(newDataConfig, context.pubSub);
-    }
+      if (
+        JSON.stringify(prevDataConfigOptions) !==
+        JSON.stringify(nextDataConfigOptions)
+      ) {
+        // Override the dataFetcher object with a new dataConfig,
+        // containing the .options property.
+        // This would otherwise be set in the call to super()
+        // in the TiledPixiTrack ancestor constructor.
+        const newDataConfig = {
+          ...prevDataFetcher.dataConfig,
+          options: nextDataConfigOptions,
+        };
+        this.dataFetcher = new DataFetcher(newDataConfig, pubSub);
 
-    // Put the selectedRows options into an object,
-    // which can be passed to tileProxy.tileDataToPixData
-    // in the HeatmapTiledPixiTrack ancestor.
-    this.selectedRowsOptions = {
-      selectedRows: this.options.selectRows,
-      selectedRowsAggregationMode: this.options.selectRowsAggregationMode,
-      selectedRowsAggregationWithRelativeHeight: this.options
-        .selectRowsAggregationWithRelativeHeight,
-      selectedRowsAggregationMethod: this.options.selectRowsAggregationMethod,
-    };
+        // Only fetch new tiles if the tileset has been registered
+        // and has a tilesetUid (for example, due to file url-based tracks).
+        if (this.dataFetcher.dataConfig.tilesetUid) {
+          this.fetchNewTiles(
+            Object.keys(this.fetchedTiles).map(x => ({
+              tileId: x,
+              remoteId: x,
+            })),
+          );
+        }
+      }
+    }
   }
 
   rerender(options, force) {
+    this.updateDataFetcher(options);
     super.rerender(options, force);
 
-    if (this.options.selectRows) {
+    if (options.selectRows) {
       // The weights for selectRows groups must be computed
       // any time options.selectRows changes.
       this.selectRowsCumWeights = selectedItemsToCumWeights(
-        this.options.selectRows,
-        this.options.selectRowsAggregationWithRelativeHeight,
+        options.selectRows,
+        options.selectRowsAggregationWithRelativeHeight,
       );
     }
   }
@@ -82,9 +95,11 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     ctx.fillStyle = 'transparent';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    if (pixData.length) {
+    if (pixData.length === 4 * canvas.width * canvas.height) {
       const pix = new ImageData(pixData, canvas.width, canvas.height);
       ctx.putImageData(pix, 0, 0);
+    } else {
+      console.warn('HorizontalMultivecTrack: pixData has an incorrect length.');
     }
 
     return canvas;
