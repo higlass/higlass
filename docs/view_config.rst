@@ -372,6 +372,11 @@ The specify the Genbank as text, replace the ``url`` field with ``text``:
 
 **Note** The Genbank data sources is limited in its detail. It currently only displays genes and the names of genes. More extensive support for gene annotations (e.g. exons) should be added in the `higlass/app/scripts/data-fetchers/genbank-fetcher.js` file.
 
+GFF files
+"""""""""
+
+A GFF file loader is used just like the Genbank loader above. Just
+substitute ``"type": "genbank"`` for ``"type": "gff"``.
 
 Other files
 """"""""""""""""

@@ -132,6 +132,10 @@ function externalInitTile(track, tile, options) {
   tile.tileData = geneEntries.concat(fillerEntries);
 
   tile.tileData.forEach((td, i) => {
+    if (td.type === 'filler') {
+      return;
+    }
+
     const geneInfo = td.fields;
     const geneName = geneInfo[3];
     const geneId = track.geneId(geneInfo, td.type);
@@ -736,6 +740,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         tile.tileData.forEach(td => {
           // tile probably hasn't been initialized yet
           if (!tile.texts) return;
+          if (td.type === 'filler') return;
 
           const geneInfo = td.fields;
           const geneName = geneInfo[3];
@@ -891,13 +896,11 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     for (const tile of this.visibleAndFetchedTiles()) {
       for (let i = 0; i < tile.allRects.length; i++) {
-        // console.log('tile.allRects:', tile.allRects);
         // copy the visible rects array
         if (tile.allRects[i][2].type === 'filler') {
           continue;
         }
         const rect = tile.allRects[i][0].slice(0);
-        // console.log('rect:', rect);
 
         const newArr = [];
         while (rect.length) {
@@ -915,7 +918,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         const pc = classifyPoint(newArr, point);
 
         if (pc === -1) {
-          // console.log('ar:', tile.allRects[i]);
           const gene = tile.allRects[i][2];
 
           return `

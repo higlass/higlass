@@ -27,6 +27,8 @@ export function parseChromsizesRows(data) {
   }
 
   return {
+    chrToAbs: ([chrName, chrPos]) =>
+      chrToAbs(chrName, chrPos, { chrPositions }),
     cumPositions: cumValues,
     chrPositions,
     totalLength,
