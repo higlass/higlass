@@ -191,7 +191,9 @@ describe('Simple HiGlassComponent', () => {
 
     it('resizes the track', () => {
       const trackId = 'G0zF1N_5QHmgD4MMduoYFQ';
+      const viewId = 'aa';
       const settings = {
+        viewId,
         trackId,
         height: 100,
       };

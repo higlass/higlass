@@ -4424,25 +4424,28 @@ class HiGlassComponent extends React.Component {
 
   /**
    * Handle trackDimensionsModified events
+   * settings.viewId = id of the view
    * settings.trackId = id of the track
    * settings.height = new height of the track or undefined if current height should remain
    * settings.width = new width of the track or undefined if current width should remain
    */
   trackDimensionsModifiedHandler(settings) {
-    for (const view of Object.values(this.state.views)) {
-      const track = getTrackByUid(view.tracks, settings.trackId);
+    const view = this.state.views[settings.viewId];
 
-      if (!track) continue;
+    if (!view) return;
 
-      if (settings.height !== undefined) {
-        track.height = settings.height;
-      }
+    const track = getTrackByUid(view.tracks, settings.trackId);
 
-      if (settings.width !== undefined) {
-        track.width = settings.width;
-      }
-      this.adjustLayoutToTrackSizes(view);
+    if (!track) return;
+
+    if (settings.height !== undefined) {
+      track.height = settings.height;
     }
+
+    if (settings.width !== undefined) {
+      track.width = settings.width;
+    }
+    this.adjustLayoutToTrackSizes(view);
 
     this.setState(prevState => ({
       views: prevState.views,
