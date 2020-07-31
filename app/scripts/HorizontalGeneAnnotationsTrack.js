@@ -744,6 +744,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
           const geneInfo = td.fields;
           const geneName = geneInfo[3];
+
           const geneId = this.geneId(geneInfo, td.type);
 
           const text = tile.texts[geneId];

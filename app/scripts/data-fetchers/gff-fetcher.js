@@ -19,14 +19,13 @@ function gffObjToChromsizes(gffObj) {
 
 function gffToHgGene(gb, namePath, chromSizes) {
   const importance = gb.end - gb.start;
-  const strand = gb.strand === 1 ? '+' : '-';
   const uid = slugid.nice();
 
   return {
     xStart: chromSizes.chrToAbs([gb.seq_id, gb.start]),
     xEnd: chromSizes.chrToAbs([gb.seq_id, gb.end]),
-    strand,
-    chrOffset: 0,
+    strand: gb.strand,
+    chrOffset: chromSizes.chrPositions[gb.seq_id].pos,
     importance: gb.end - gb.start,
     uid,
     type: gb.type,
@@ -36,15 +35,15 @@ function gffToHgGene(gb, namePath, chromSizes) {
       gb.end,
       namePath ? jp.query(gb, namePath) : gb.attributes.annotationName[0],
       importance,
-      strand,
+      gb.strand,
       '',
       '',
       gb.type,
       gb.name,
-      chromSizes.chrToAbs([gb.seq_id, gb.start]).toString(),
-      chromSizes.chrToAbs([gb.seq_id, gb.end]).toString(),
-      chromSizes.chrToAbs([gb.seq_id, gb.start]).toString(),
-      chromSizes.chrToAbs([gb.seq_id, gb.end]).toString(),
+      gb.start.toString(),
+      gb.end.toString(),
+      gb.start.toString(),
+      gb.end.toString(),
     ],
   };
 }
@@ -143,6 +142,7 @@ class GFFDataFetcher {
 
           // store all the GFF file annotations
           this.gffObj = gff.parseStringSync(gffText);
+
           this.genes = this.gffObj
             .filter(x => x[0].type === 'gene')
             .map(x => x[0]);
@@ -258,11 +258,11 @@ class GFFDataFetcher {
       );
 
       const collapsedPlus = collapse(
-        filtered.filter(v => v.strand === 1),
+        filtered.filter(v => v.strand === '+'),
         scaleFactor,
       );
       const collapsedMinus = collapse(
-        filtered.filter(v => v.strand !== 1),
+        filtered.filter(v => v.strand !== '+'),
         scaleFactor,
       );
 
