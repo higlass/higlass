@@ -162,6 +162,48 @@ describe('Simple HiGlassComponent', () => {
     });
   });
 
+  describe('Track dimension modification test', () => {
+    it('Cleans up previously created instances and mounts a new component', done => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(
+        <HiGlassComponent
+          options={{ bounded: false }}
+          viewConfig={geneAnnotationsOnly}
+        />,
+        { attachTo: div },
+      );
+      waitForTilesLoaded(hgc.instance(), done);
+    });
+
+    it('resizes the track', () => {
+      const trackId = 'G0zF1N_5QHmgD4MMduoYFQ';
+      const viewId = 'aa';
+      const settings = {
+        viewId,
+        trackId,
+        height: 100,
+      };
+      hgc.instance().trackDimensionsModifiedHandler(settings);
+
+      const track = getTrackObjectFromHGC(hgc.instance(), 'aa', trackId);
+      expect(track.dimensions[1]).toEqual(100);
+    });
+  });
+
   describe('Track positioning', () => {
     it('Cleans up previously created instances and mounts a new component', done => {
       if (hgc) {

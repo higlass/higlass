@@ -114,6 +114,7 @@ class TrackRenderer extends React.Component {
     this.zoomEndedBound = this.zoomEnded.bind(this);
 
     this.uid = slugid.nice();
+    this.viewUid = this.props.uid;
 
     this.availableForPlugins = AVAILABLE_FOR_PLUGINS;
     this.availableForPlugins.services.pubSub = this.props.pubSub;
@@ -1490,6 +1491,7 @@ class TrackRenderer extends React.Component {
     // To simplify the context creation via ES6 object shortcuts.
     const context = {
       id: track.uid,
+      viewUid: this.viewUid,
       pubSub: this.props.pubSub,
       scene: this.pStage,
       dataConfig,
