@@ -143,18 +143,7 @@ class GFFDataFetcher {
           // store all the GFF file annotations
           this.gffObj = gff.parseStringSync(gffText);
 
-          this.genes = this.gffObj
-            .filter(x => x[0].type === 'gene')
-            .map(x => x[0]);
-
-          this.chromSizes = gffObjToChromsizes(this.gffObj);
-          this.hgGenes = this.genes.map(x =>
-            gffToHgGene(
-              x,
-              this.dataConfig.options && this.dataConfig.options.namePath,
-              this.chromSizes,
-            ),
-          );
+          this.createGenesAndChroms();
         })
         .catch(err => {
           console.error('err:', err);
@@ -162,14 +151,23 @@ class GFFDataFetcher {
     } else if (dataConfig.text) {
       this.dataPromise = new Promise((resolve, reject) => {
         this.gffObj = gff.parseStringSync(dataConfig.text);
-        this.regions = this.gffObj.filter(x => x.source === 'annotation');
-        this.genes = this.gffObj
-          .filter(x => x[0].type === 'gene')
-          .map(x => x[0]);
-        this.chromSizes = gffObjToChromsizes(this.gffObj);
+        this.createGenesAndChroms();
         resolve();
       });
     }
+  }
+
+  createGenesAndChroms() {
+    this.genes = this.gffObj.filter(x => x[0].type === 'gene').map(x => x[0]);
+
+    this.chromSizes = gffObjToChromsizes(this.gffObj);
+    this.hgGenes = this.genes.map(x =>
+      gffToHgGene(
+        x,
+        this.dataConfig.options && this.dataConfig.options.namePath,
+        this.chromSizes,
+      ),
+    );
   }
 
   tilesetInfo(callback) {
