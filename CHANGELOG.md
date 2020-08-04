@@ -1,5 +1,9 @@
 # Release notes
 
+## Next release
+
+- Added a data fetcher for GFF files
+
 ## v1.10.2
 
 - Remove view config validation from `hgApi.getViewConfig()` and `hgApi.setViewConfig()` and instead move it into a new method called `hgApi.validateViewConfig(viewConfig, { verbose: false } = {})`
