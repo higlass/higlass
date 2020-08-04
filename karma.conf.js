@@ -39,6 +39,7 @@ module.exports = config => {
       'test/DenseDataExtremaTests.js',
       'test/EmptyTrackTests.js',
       'test/GenbankFetcherTests.js',
+      'test/GFFFetcherTests.js',
       'test/GeneAnnotationsTrackTests.js',
       'test/GenomePositionSearchBoxTest.js',
       'test/HeatmapTests.js',

@@ -6,9 +6,7 @@ import jp from 'jsonpath';
 import { parseChromsizesRows } from '../ChromosomeInfo';
 
 function gffObjToChromsizes(gffObj) {
-  const annotations = gffObj
-    .filter(x => x[0].source === 'annotation')
-    .map(x => x[0]);
+  const annotations = gffObj.filter(x => x[0].type === 'region').map(x => x[0]);
 
   const chromSizes = parseChromsizesRows(
     annotations.map(x => [x.seq_id, x.end]),
@@ -17,9 +15,18 @@ function gffObjToChromsizes(gffObj) {
   return chromSizes;
 }
 
-function gffToHgGene(gb, namePath, chromSizes) {
+function gffToHgGene(gb, namePaths, chromSizes) {
   const importance = gb.end - gb.start;
   const uid = slugid.nice();
+
+  let queryName = null;
+
+  if (namePaths) {
+    for (const namePath of namePaths) {
+      queryName = jp.query(gb.attributes, namePath)[0];
+      if (queryName) break;
+    }
+  }
 
   return {
     xStart: chromSizes.chrToAbs([gb.seq_id, gb.start]),
@@ -33,7 +40,7 @@ function gffToHgGene(gb, namePath, chromSizes) {
       gb.seq_id,
       gb.start,
       gb.end,
-      namePath ? jp.query(gb, namePath) : gb.attributes.annotationName[0],
+      (queryName && queryName[0]) || '',
       importance,
       gb.strand,
       '',
@@ -124,11 +131,12 @@ class GFFDataFetcher {
     this.dataConfig = dataConfig;
     this.trackUid = slugid.nice();
 
-    const extension = dataConfig.url.slice(dataConfig.url.length - 3);
-    const gzipped = extension === '.gz';
     this.errorTxt = '';
 
     if (dataConfig.url) {
+      const extension = dataConfig.url.slice(dataConfig.url.length - 3);
+      const gzipped = extension === '.gz';
+
       this.dataPromise = fetch(dataConfig.url, {
         mode: 'cors',
         redirect: 'follow',
@@ -139,7 +147,6 @@ class GFFDataFetcher {
           const gffText = gzipped
             ? pako.inflate(buffer, { to: 'string' })
             : buffer;
-
           // store all the GFF file annotations
           this.gffObj = gff.parseStringSync(gffText);
 
@@ -151,9 +158,14 @@ class GFFDataFetcher {
     } else if (dataConfig.text) {
       this.dataPromise = new Promise((resolve, reject) => {
         this.gffObj = gff.parseStringSync(dataConfig.text);
+
         this.createGenesAndChroms();
         resolve();
       });
+    } else {
+      console.error(
+        'Please enter a "URL" or a "text" field to the data config',
+      );
     }
   }
 
@@ -164,7 +176,7 @@ class GFFDataFetcher {
     this.hgGenes = this.genes.map(x =>
       gffToHgGene(
         x,
-        this.dataConfig.options && this.dataConfig.options.namePath,
+        this.dataConfig.options && this.dataConfig.options.namePaths,
         this.chromSizes,
       ),
     );
@@ -200,9 +212,11 @@ class GFFDataFetcher {
       .catch(err => {
         this.tilesetInfoLoading = false;
 
+        console.error(err);
+
         if (callback) {
           callback({
-            error: `Error parsing genbank: ${err}`,
+            error: `Error parsing gff: ${err}`,
           });
         }
       });

@@ -347,6 +347,8 @@ In addition to using ``tilesetUid`` to specify a data source, the ``data`` secti
 Genbank files
 """""""""""""
 
+**Experimental**: Not fully featured, use with caution.
+
 A Genbank file data source will load a complete genbank file from a either text or remote URL and serve that as a ``gene-annotations`` datatype. See the `horizontal-gene-annotations section <track_types.html#gene-annotations>`_ for an example of a track type that can be used with Genbank files.
 
 .. code-block:: javascript
@@ -375,8 +377,29 @@ The specify the Genbank as text, replace the ``url`` field with ``text``:
 GFF files
 """""""""
 
+**Experimental**: Not fully featured, use with caution.
+
 A GFF file loader is used just like the Genbank loader above. Just
-substitute ``"type": "genbank"`` for ``"type": "gff"``.
+substitute ``"type": "genbank"`` for ``"type": "gff"``. It also takes
+as additional options:
+
+-  ``namePaths`` - The attributes where the name of the genes are stored.
+These attributes are visited sequentially until one with a value is found. In
+the example below, if the "gene" attribute is present, then it will be used.
+Otherwise the "product" attribute is used. If none are found, no gene name
+will be displayed.
+
+.. code-block:: javascript
+
+  {
+    "data": {
+      "type":  "gff",
+      "url":  "http://my.gff.url"
+      "options": {
+        "namePaths":  ["gene", "product"]
+      }
+    }
+  }
 
 Other files
 """"""""""""""""
