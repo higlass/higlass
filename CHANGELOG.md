@@ -5,6 +5,7 @@
 - Tracks can now modify their own dimensions by publishing `trackDimensionsModified`.
 - Fixed a bug preventing usage of `data.url` and HorizontalMultivecTrack server-side aggregation simultaneously.
 - Fixed a bug preventing an updated value of `track.options.selectRows` from triggering a HorizontalMultivecTrack track update when using server-side aggregation (`track.options.selectRowsAggregationMethod === 'server'`).
+- Simplify plugin track registry
 
 _[Detailed changes since v1.10.2](https://github.com/higlass/higlass/compare/v1.10.2...develop)_
 
