@@ -2689,6 +2689,7 @@ class HiGlassComponent extends React.Component {
     }
 
     newTrack.position = position;
+
     const trackInfo = this.getTrackInfo(newTrack.type);
 
     newTrack.width =

@@ -797,6 +797,8 @@ export const TRACKS_INFO = [
     datatype: ['gene-annotation'],
     local: false,
     defaultHeight: 90,
+    defaultWidth: 90,
+    rotatable: true,
     orientation: '1d-horizontal',
     name: 'Gene Annotations',
     thumbnail: svgGeneAnnotationsIcon,
