@@ -1,4 +1,4 @@
-const DummyDataFetcher = function DummyTrack(HGC, ...args) {
+const DummyDataFetcher = function DummyDataFetcher(HGC, ...args) {
   if (!new.target) {
     throw new Error(
       'Uncaught TypeError: Class constructor cannot be invoked without "new"',
