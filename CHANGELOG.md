@@ -1,5 +1,9 @@
 # Release notes
 
+## Next release
+
+- Make gene annotations rotatable so that they can be added on the left
+
 ## v1.10.2
 
 - Remove view config validation from `hgApi.getViewConfig()` and `hgApi.setViewConfig()` and instead move it into a new method called `hgApi.validateViewConfig(viewConfig, { verbose: false } = {})`
