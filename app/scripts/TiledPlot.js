@@ -2130,6 +2130,7 @@ class TiledPlot extends React.Component {
           paddingTop={this.props.paddingTop}
           pixiRenderer={this.props.pixiRenderer}
           pixiStage={this.props.pixiStage}
+          pluginDataFetchers={this.props.pluginDataFetchers}
           pluginTracks={this.props.pluginTracks}
           positionedTracks={positionedTracks}
           registerDraggingChangedListener={
@@ -2347,6 +2348,7 @@ class TiledPlot extends React.Component {
 
 TiledPlot.defaultProps = {
   isShowGlobalMousePosition: false,
+  pluginDataFetchers: {},
   pluginTracks: {},
   metaTracks: [],
   zoomable: true,
@@ -2397,6 +2399,7 @@ TiledPlot.propTypes = {
   openModal: PropTypes.func,
   pixiRenderer: PropTypes.object,
   pixiStage: PropTypes.object,
+  pluginDataFetchers: PropTypes.object,
   pluginTracks: PropTypes.object,
   pubSub: PropTypes.object.isRequired,
   rangeSelection1dSize: PropTypes.array,

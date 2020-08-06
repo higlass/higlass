@@ -1,7 +1,6 @@
 import { format } from 'd3-format';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
-import DataFetcher from './DataFetcher';
 
 import { tileProxy } from './services';
 import selectedItemsToSize from './utils/selected-items-to-size';
@@ -43,7 +42,10 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
           ...prevDataFetcher.dataConfig,
           options: nextDataConfigOptions,
         };
-        this.dataFetcher = new DataFetcher(newDataConfig, pubSub);
+        this.dataFetcher = new prevDataFetcher.constructor(
+          newDataConfig,
+          pubSub,
+        );
 
         // Only fetch new tiles if the tileset has been registered
         // and has a tilesetUid (for example, due to file url-based tracks).

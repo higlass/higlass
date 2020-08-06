@@ -57,6 +57,7 @@ module.exports = config => {
       'test/ndarray-to-list.spec.js',
       'test/OSMTests.js',
       'test/OverlayTrackTests.js',
+      'test/PluginDataFetcherTests.js',
       'test/PluginTrackTests.js',
       'test/PngExportTest.js',
       'test/RuleTests.js',

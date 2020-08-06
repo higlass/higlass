@@ -1486,7 +1486,11 @@ class TrackRenderer extends React.Component {
       dataConfig.coordSystem = track.coordSystem;
     }
 
-    const dataFetcher = getDataFetcher(dataConfig, this.props.pubSub);
+    const dataFetcher = getDataFetcher(
+      dataConfig,
+      this.props.pubSub,
+      this.props.pluginDataFetchers,
+    );
 
     // To simplify the context creation via ES6 object shortcuts.
     const context = {
@@ -1979,6 +1983,7 @@ class TrackRenderer extends React.Component {
 }
 
 TrackRenderer.defaultProps = {
+  pluginDataFetchers: {},
   pluginTracks: {},
   canvasElement: null,
   centerHeight: 0,
@@ -2023,6 +2028,7 @@ TrackRenderer.propTypes = {
   onScalesChanged: PropTypes.func.isRequired,
   pixiRenderer: PropTypes.object.isRequired,
   pixiStage: PropTypes.object.isRequired,
+  pluginDataFetchers: PropTypes.object,
   pluginTracks: PropTypes.object,
   positionedTracks: PropTypes.array,
   pubSub: PropTypes.object.isRequired,

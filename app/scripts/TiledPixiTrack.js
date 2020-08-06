@@ -1,13 +1,12 @@
 import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
-import { parseChromsizesRows } from './ChromosomeInfo';
 
 import DataFetcher from './DataFetcher';
 import PixiTrack from './PixiTrack';
 
 // Utils
-import { throttleAndDebounce } from './utils';
+import { throttleAndDebounce, parseChromsizesRows } from './utils';
 import backgroundTaskScheduler from './utils/background-task-scheduler';
 
 // Configs
