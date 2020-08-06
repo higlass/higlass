@@ -120,6 +120,7 @@ Utils
 - forEach
 - forwardEvent
 - genomeLociToPixels
+- genomicRangeToChromosomeChunks
 - getElementDim
 - getTrackByUid
 - getTrackObjById
@@ -147,6 +148,7 @@ Utils
 - numericifyVersion
 - objVals
 - or
+- parseChromsizesRows
 - pixiTextToSvg
 - positionedTracksToAllTracks
 - q
