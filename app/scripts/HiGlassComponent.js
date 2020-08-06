@@ -248,6 +248,12 @@ class HiGlassComponent extends React.Component {
       if (window.higlassTracks) {
         Object.values(window.higlassTracks).forEach(trackDef => {
           pluginTracks[trackDef.config.type] = trackDef;
+
+          if (trackDef.config.aliases) {
+            for (const alias of trackDef.config.aliases) {
+              pluginTracks[alias] = trackDef;
+            }
+          }
         });
       }
     } catch (e) {
@@ -2156,8 +2162,8 @@ class HiGlassComponent extends React.Component {
       return TRACKS_INFO_BY_TYPE[trackType];
     }
 
-    if (window.higlassTracksByType && window.higlassTracksByType[trackType]) {
-      return window.higlassTracksByType[trackType].config;
+    if (this.state.pluginTracks && this.state.pluginTracks[trackType]) {
+      return this.state.pluginTracks[trackType].config;
     }
 
     console.warn(
