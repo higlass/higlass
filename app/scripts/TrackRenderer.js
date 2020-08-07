@@ -114,6 +114,7 @@ class TrackRenderer extends React.Component {
     this.zoomEndedBound = this.zoomEnded.bind(this);
 
     this.uid = slugid.nice();
+    this.viewUid = this.props.uid;
 
     this.availableForPlugins = AVAILABLE_FOR_PLUGINS;
     this.availableForPlugins.services.pubSub = this.props.pubSub;
@@ -1485,11 +1486,16 @@ class TrackRenderer extends React.Component {
       dataConfig.coordSystem = track.coordSystem;
     }
 
-    const dataFetcher = getDataFetcher(dataConfig, this.props.pubSub);
+    const dataFetcher = getDataFetcher(
+      dataConfig,
+      this.props.pubSub,
+      this.props.pluginDataFetchers,
+    );
 
     // To simplify the context creation via ES6 object shortcuts.
     const context = {
       id: track.uid,
+      viewUid: this.viewUid,
       pubSub: this.props.pubSub,
       scene: this.pStage,
       dataConfig,
@@ -1977,6 +1983,7 @@ class TrackRenderer extends React.Component {
 }
 
 TrackRenderer.defaultProps = {
+  pluginDataFetchers: {},
   pluginTracks: {},
   canvasElement: null,
   centerHeight: 0,
@@ -2021,6 +2028,7 @@ TrackRenderer.propTypes = {
   onScalesChanged: PropTypes.func.isRequired,
   pixiRenderer: PropTypes.object.isRequired,
   pixiStage: PropTypes.object.isRequired,
+  pluginDataFetchers: PropTypes.object,
   pluginTracks: PropTypes.object,
   positionedTracks: PropTypes.array,
   pubSub: PropTypes.object.isRequired,

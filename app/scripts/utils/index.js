@@ -21,6 +21,7 @@ export { default as flatten } from './flatten';
 export { default as forEach } from './for-each';
 export { default as forwardEvent } from './forward-event';
 export { default as genomeLociToPixels } from './genome-loci-to-pixels';
+export { default as genomicRangeToChromosomeChunks } from './genomic-range-to-chromosome-chunks';
 export { default as getDefaultTrackForDatatype } from './get-default-track-for-datatype';
 export { default as getElementDim } from './get-element-dim';
 export { default as getTrackByUid } from './get-track-by-uid';
@@ -40,7 +41,9 @@ export { default as loadChromInfos } from './load-chrom-infos';
 export { default as lngToX } from './lng-to-x';
 export { default as map } from './map';
 export { default as max } from './max';
+export { default as maxNonZero } from './max-non-zero';
 export { default as min } from './min';
+export { default as minNonZero } from './min-non-zero';
 export { default as mod } from './mod';
 export { default as ndarrayAssign } from './ndarray-assign';
 export { default as ndarrayFlatten } from './ndarray-flatten';
@@ -48,6 +51,7 @@ export { default as ndarrayToList } from './ndarray-to-list';
 export { default as numericifyVersion } from './numericify-version';
 export { default as objVals } from './obj-vals';
 export { default as or } from './or';
+export { default as parseChromsizesRows } from './parse-chromsizes-rows';
 export { default as pixiTextToSvg } from './pixi-text-to-svg';
 export { default as q } from './q';
 export { default as reduce } from './reduce';
@@ -74,6 +78,8 @@ export { default as segmentsToRows } from './segments-to-rows';
 export { default as visitPositionedTracks } from './visit-positioned-tracks';
 export { default as visitTracks } from './visit-tracks';
 export { default as trackUtils } from './track-utils';
+export { default as DenseDataExtrema1D } from './DenseDataExtrema1D';
+export { default as DenseDataExtrema2D } from './DenseDataExtrema2D';
 
 export {
   getTrackObjectFromHGC,

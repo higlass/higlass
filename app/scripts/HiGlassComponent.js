@@ -245,22 +245,31 @@ class HiGlassComponent extends React.Component {
 
     const pluginTracks = {};
     try {
-      if (window.higlassTracks) {
-        Object.values(window.higlassTracks).forEach(trackDef => {
-          pluginTracks[trackDef.config.type] = trackDef;
-        });
+      if (window.higlassTracksByType) {
+        Object.entries(window.higlassTracksByType).forEach(
+          ([trackType, trackDef]) => {
+            pluginTracks[trackType] = trackDef;
+          },
+        );
       }
     } catch (e) {
-      console.warn(
-        'Broken config of a plugin track',
-        this.props.options.tracks,
+      console.warn('Broken config of a plugin track');
+    }
+
+    if (this.props.options.pluginDataFetchers) {
+      window.higlassDataFetchersByType = Object.assign(
+        window.higlassDataFetchersByType || {},
+        this.props.options.pluginDataFetchers,
       );
     }
+
+    const pluginDataFetchers = window.higlassDataFetchersByType;
 
     const rowHeight = this.props.options.pixelPreciseMarginPadding ? 1 : 30;
 
     this.mounted = false;
     this.state = {
+      pluginDataFetchers,
       pluginTracks,
       currentBreakpoint: 'lg',
       width: 0,
@@ -320,6 +329,9 @@ class HiGlassComponent extends React.Component {
     this.zoomEndHandlerBound = this.zoomEndHandler.bind(this);
     this.zoomHandlerBound = this.zoomHandler.bind(this);
     this.trackDroppedHandlerBound = this.trackDroppedHandler.bind(this);
+    this.trackDimensionsModifiedHandlerBound = this.trackDimensionsModifiedHandler.bind(
+      this,
+    );
     this.animateBound = this.animate.bind(this);
     this.animateOnGlobalEventBound = this.animateOnGlobalEvent.bind(this);
     this.requestReceivedHandlerBound = this.requestReceivedHandler.bind(this);
@@ -384,6 +396,10 @@ class HiGlassComponent extends React.Component {
         this.animateOnMouseMoveHandlerBound,
       ),
       this.pubSub.subscribe('trackDropped', this.trackDroppedHandlerBound),
+      this.pubSub.subscribe(
+        'trackDimensionsModified',
+        this.trackDimensionsModifiedHandlerBound,
+      ),
       this.pubSub.subscribe('app.zoomStart', this.zoomStartHandlerBound),
       this.pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
       this.pubSub.subscribe('app.zoom', this.zoomHandlerBound),
@@ -2156,8 +2172,8 @@ class HiGlassComponent extends React.Component {
       return TRACKS_INFO_BY_TYPE[trackType];
     }
 
-    if (window.higlassTracksByType && window.higlassTracksByType[trackType]) {
-      return window.higlassTracksByType[trackType].config;
+    if (this.state.pluginTracks && this.state.pluginTracks[trackType]) {
+      return this.state.pluginTracks[trackType].config;
     }
 
     console.warn(
@@ -2689,6 +2705,7 @@ class HiGlassComponent extends React.Component {
     }
 
     newTrack.position = position;
+
     const trackInfo = this.getTrackInfo(newTrack.type);
 
     newTrack.width =
@@ -4422,6 +4439,36 @@ class HiGlassComponent extends React.Component {
     );
   }
 
+  /**
+   * Handle trackDimensionsModified events
+   * settings.viewId = id of the view
+   * settings.trackId = id of the track
+   * settings.height = new height of the track or undefined if current height should remain
+   * settings.width = new width of the track or undefined if current width should remain
+   */
+  trackDimensionsModifiedHandler(settings) {
+    const view = this.state.views[settings.viewId];
+
+    if (!view) return;
+
+    const track = getTrackByUid(view.tracks, settings.trackId);
+
+    if (!track) return;
+
+    if (settings.height !== undefined) {
+      track.height = settings.height;
+    }
+
+    if (settings.width !== undefined) {
+      track.width = settings.width;
+    }
+    this.adjustLayoutToTrackSizes(view);
+
+    this.setState(prevState => ({
+      views: prevState.views,
+    }));
+  }
+
   wheelHandler(evt) {
     if (this.state.modal || this.props.options.sizeMode === SIZE_MODE_SCROLL)
       return;
@@ -4622,6 +4669,7 @@ class HiGlassComponent extends React.Component {
             paddingTop={this.viewPaddingTop}
             pixiRenderer={this.pixiRenderer}
             pixiStage={this.pixiStage}
+            pluginDataFetchers={this.state.pluginDataFetchers}
             pluginTracks={this.state.pluginTracks}
             rangeSelection1dSize={this.state.rangeSelection1dSize}
             rangeSelectionToInt={this.state.rangeSelectionToInt}

@@ -2,9 +2,13 @@
 
 ## Next
 
+- Make gene annotations rotatable so that they can be added on the left
+- Tracks can now modify their own dimensions by publishing `trackDimensionsModified`.
 - Fixed a bug preventing usage of `data.url` and HorizontalMultivecTrack server-side aggregation simultaneously.
 - Fixed a bug preventing an updated value of `track.options.selectRows` from triggering a HorizontalMultivecTrack track update when using server-side aggregation (`track.options.selectRowsAggregationMethod === 'server'`).
 - Added the JS API `.on('geneSearch', callback)` option for subscribing to gene search events.
+- Simplify plugin track registry
+- Implemented plugin data fetchers.
 
 _[Detailed changes since v1.10.2](https://github.com/higlass/higlass/compare/v1.10.2...develop)_
 

@@ -8,7 +8,7 @@ module.exports = config => {
     browserDisconnectTolerance: 2,
     /** * How long will Karma wait for a message from a browser before
      * disconnecting from it (in ms). */
-    browserNoActivityTimeout: 50000,
+    browserNoActivityTimeout: 90000,
     basePath: '',
     frameworks: ['jasmine'],
 
@@ -57,6 +57,7 @@ module.exports = config => {
       'test/ndarray-to-list.spec.js',
       'test/OSMTests.js',
       'test/OverlayTrackTests.js',
+      'test/PluginDataFetcherTests.js',
       'test/PluginTrackTests.js',
       'test/PngExportTest.js',
       'test/RuleTests.js',
