@@ -2172,8 +2172,8 @@ class HiGlassComponent extends React.Component {
       return TRACKS_INFO_BY_TYPE[trackType];
     }
 
-    if (this.state.pluginTracks && this.state.pluginTracks[trackType]) {
-      return this.state.pluginTracks[trackType].config;
+    if (window.higlassTracksByType && window.higlassTracksByType[trackType]) {
+      return window.higlassTracksByType[trackType].config;
     }
 
     console.warn(
