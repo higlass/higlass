@@ -1,13 +1,12 @@
 import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
-import { parseChromsizesRows } from './ChromosomeInfo';
 
 import DataFetcher from './DataFetcher';
 import PixiTrack from './PixiTrack';
 
 // Utils
-import { throttleAndDebounce } from './utils';
+import { throttleAndDebounce, parseChromsizesRows } from './utils';
 import backgroundTaskScheduler from './utils/background-task-scheduler';
 
 // Configs
@@ -163,8 +162,14 @@ class TiledPixiTrack extends PixiTrack {
       ZOOM_DEBOUNCE,
     );
 
-    this.dataFetcher.tilesetInfo(tilesetInfo => {
+    this.dataFetcher.tilesetInfo((tilesetInfo, tilesetUid) => {
       this.tilesetInfo = tilesetInfo;
+      // If the dataConfig contained a fileUrl, then
+      // we need to update the tilesetUid based
+      // on the registration of the fileUrl.
+      if (!this.dataFetcher.dataConfig.tilesetUid) {
+        this.dataFetcher.dataConfig.tilesetUid = tilesetUid;
+      }
 
       if (this.tilesetInfo.chromsizes) {
         this.chromInfo = parseChromsizesRows(this.tilesetInfo.chromsizes);

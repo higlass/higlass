@@ -1,13 +1,17 @@
 import slugid from 'slugid';
 import { scaleLinear } from 'd3-scale';
-import { trimTrailingSlash as tts, dictValues } from './utils';
+import {
+  trimTrailingSlash as tts,
+  dictValues,
+  minNonZero,
+  maxNonZero,
+} from './utils';
 
 import DenseDataExtrema1D from './utils/DenseDataExtrema1D';
 import DenseDataExtrema2D from './utils/DenseDataExtrema2D';
 
 // Services
 import { tileProxy } from './services';
-import { minNonZero, maxNonZero } from './worker';
 
 export default class DataFetcher {
   constructor(dataConfig, pubSub) {
@@ -120,7 +124,10 @@ export default class DataFetcher {
             // that here before passing it back to the track
             this.dataConfig.tilesetInfo =
               tilesetInfo[this.dataConfig.tilesetUid];
-            finished(tilesetInfo[this.dataConfig.tilesetUid]);
+            finished(
+              tilesetInfo[this.dataConfig.tilesetUid],
+              this.dataConfig.tilesetUid,
+            );
           },
           error => {
             finished({
@@ -190,7 +197,7 @@ export default class DataFetcher {
       this.fetchHorizontalSection(receivedTiles, tileIds);
     } else if (this.dataConfig.type === 'vertical-section') {
       this.fetchHorizontalSection(receivedTiles, tileIds, true);
-    } else if (!this.dataConfig.children) {
+    } else if (!this.dataConfig.children && this.dataConfig.tilesetUid) {
       // no children, just return the fetched tiles as is
       const promise = new Promise(resolve =>
         tileProxy.fetchTilesDebounced(

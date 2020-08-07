@@ -183,6 +183,8 @@ crucial are listed below.
     higlass_docker
     view_config
     plugin_track
+    plugin_datafetcher
+    available_to_plugins
     developer
     troubleshooting
 

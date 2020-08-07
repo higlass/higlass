@@ -13,69 +13,6 @@ function countTransform(count) {
     return Math.log(count+0.0001);
 }
 */
-const epsilon = 0.0000001;
-
-export function minNonZero(data) {
-  /**
-   * Calculate the minimum non-zero value in the data
-   *
-   * Parameters
-   * ----------
-   *  data: Float32Array
-   *    An array of values
-   *
-   * Returns
-   * -------
-   *  minNonZero: float
-   *    The minimum non-zero value in the array
-   */
-  let minNonZeroNum = Number.MAX_SAFE_INTEGER;
-
-  for (let i = 0; i < data.length; i++) {
-    const x = data[i];
-
-    if (x < epsilon && x > -epsilon) {
-      continue;
-    }
-
-    if (x < minNonZeroNum) {
-      minNonZeroNum = x;
-    }
-  }
-
-  return minNonZeroNum;
-}
-
-export function maxNonZero(data) {
-  /**
-   * Calculate the minimum non-zero value in the data
-   *
-   * Parameters
-   * ----------
-   *  data: Float32Array
-   *    An array of values
-   *
-   * Returns
-   * -------
-   *  minNonZero: float
-   *    The minimum non-zero value in the array
-   */
-  let maxNonZeroNum = Number.MIN_SAFE_INTEGER;
-
-  for (let i = 0; i < data.length; i++) {
-    const x = data[i];
-
-    if (x < epsilon && x > -epsilon) {
-      continue;
-    }
-
-    if (x > maxNonZeroNum) {
-      maxNonZeroNum = x;
-    }
-  }
-
-  return maxNonZeroNum;
-}
 
 /**
  * This function helps to fill in pixData by calling setPixData()
@@ -214,7 +151,7 @@ export function workerSetPix(
   } = selectedRowsOptions || {};
 
   let filteredSize = size;
-  if (selectedRows) {
+  if (shape && selectedRows) {
     // If using the `selectedRows` parameter, then the size of the `pixData` array
     // will likely be different than `size` (the total size of the tile data array).
     // The potential for aggregation groups in `selectedRows` also must be taken into account.
