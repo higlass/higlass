@@ -4370,6 +4370,13 @@ class HiGlassComponent extends React.Component {
   }
 
   /**
+   * Handle gene search events.
+   */
+  geneSearchHandler(data) {
+    this.apiPublish('geneSearch', data);
+  }
+
+  /**
    * Handle mousedown events/
    */
   mouseDownHandler(evt) {}
@@ -4717,6 +4724,7 @@ class HiGlassComponent extends React.Component {
               // the chromInfoId is either specified in the viewconfig or guessed based on
               // the visible tracks (see createGenomePositionSearchBoxEntry)
               onFocus={onFocus}
+              onGeneSearch={this.geneSearchHandler.bind(this)}
               onSelectedAssemblyChanged={(x, y, server) =>
                 this.handleSelectedAssemblyChanged(view.uid, x, y, server)
               }
