@@ -2172,8 +2172,8 @@ class HiGlassComponent extends React.Component {
       return TRACKS_INFO_BY_TYPE[trackType];
     }
 
-    if (window.higlassTracksByType && window.higlassTracksByType[trackType]) {
-      return window.higlassTracksByType[trackType].config;
+    if (this.state.pluginTracks && this.state.pluginTracks[trackType]) {
+      return this.state.pluginTracks[trackType].config;
     }
 
     console.warn(
@@ -2705,6 +2705,7 @@ class HiGlassComponent extends React.Component {
     }
 
     newTrack.position = position;
+
     const trackInfo = this.getTrackInfo(newTrack.type);
 
     newTrack.width =
