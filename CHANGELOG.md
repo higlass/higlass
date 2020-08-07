@@ -9,6 +9,7 @@
 - Added the JS API `.on('geneSearch', callback)` option for subscribing to gene search events.
 - Simplify plugin track registry
 - Implemented plugin data fetchers.
+- Fixed a bug in which `HiGlassComponent.getTrackInfo` was trying to access `this.state` prior to it being initialized.
 
 _[Detailed changes since v1.10.2](https://github.com/higlass/higlass/compare/v1.10.2...develop)_
 
