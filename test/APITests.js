@@ -976,25 +976,35 @@ describe('API Tests', () => {
     });
   });
 
-  it('triggers on gene search events', done => {
-    [div, api] = createElementAndApi(simple1dHorizontalVerticalAnd2dDataTrack);
-    const hgc = api.getComponent();
-    waitForTilesLoaded(hgc, () => {
-      api.on('geneSearch', e => {
-        expect(e.geneSymbol).toEqual('MYC');
-        expect(e.centerX).toEqual(1521546687);
-        done();
-      });
+  describe('Gene search events', () => {
+    it('triggers on gene search events', done => {
+      [div, api] = createElementAndApi(
+        simple1dHorizontalVerticalAnd2dDataTrack,
+      );
+      const hgc = api.getComponent();
+      waitForTilesLoaded(hgc, () => {
+        api.on('geneSearch', e => {
+          expect(e.geneSymbol).toEqual('MYC');
+          expect(e.centerX).toEqual(1521546687);
+          done();
+        });
 
-      // The gene search event that we expect to catch.
-      const geneSearchEvent = {
-        geneSymbol: 'MYC',
-        range: [1521542663, 1521550711],
-        centerX: 1521546687,
-        centerY: 1521546687,
-      };
-      // Simulate the gene search events.
-      hgc.geneSearchHandler(geneSearchEvent);
+        // The gene search event that we expect to catch.
+        const geneSearchEvent = {
+          geneSymbol: 'MYC',
+          range: [1521542663, 1521550711],
+          centerX: 1521546687,
+          centerY: 1521546687,
+        };
+        // Simulate the gene search events.
+        hgc.geneSearchHandler(geneSearchEvent);
+      });
+    });
+    afterEach(() => {
+      api.destroy();
+      removeDiv(div);
+      api = undefined;
+      div = undefined;
     });
   });
 });

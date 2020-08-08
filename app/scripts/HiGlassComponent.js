@@ -268,9 +268,10 @@ class HiGlassComponent extends React.Component {
     const rowHeight = this.props.options.pixelPreciseMarginPadding ? 1 : 30;
 
     this.mounted = false;
+    this.pluginTracks = pluginTracks;
+    this.pluginDataFetchers = pluginDataFetchers;
+
     this.state = {
-      pluginDataFetchers,
-      pluginTracks,
       currentBreakpoint: 'lg',
       width: 0,
       height: 0,
@@ -2172,8 +2173,8 @@ class HiGlassComponent extends React.Component {
       return TRACKS_INFO_BY_TYPE[trackType];
     }
 
-    if (this.state.pluginTracks && this.state.pluginTracks[trackType]) {
-      return this.state.pluginTracks[trackType].config;
+    if (this.pluginTracks && this.pluginTracks[trackType]) {
+      return this.pluginTracks[trackType].config;
     }
 
     console.warn(
@@ -4669,8 +4670,8 @@ class HiGlassComponent extends React.Component {
             paddingTop={this.viewPaddingTop}
             pixiRenderer={this.pixiRenderer}
             pixiStage={this.pixiStage}
-            pluginDataFetchers={this.state.pluginDataFetchers}
-            pluginTracks={this.state.pluginTracks}
+            pluginDataFetchers={this.pluginDataFetchers}
+            pluginTracks={this.pluginTracks}
             rangeSelection1dSize={this.state.rangeSelection1dSize}
             rangeSelectionToInt={this.state.rangeSelectionToInt}
             registerDraggingChangedListener={listener =>
