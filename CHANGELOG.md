@@ -1,6 +1,6 @@
 # Release notes
 
-## Next
+## v1.11.0
 
 - Make gene annotations rotatable so that they can be added on the left
 - Tracks can now modify their own dimensions by publishing `trackDimensionsModified`.
@@ -10,7 +10,7 @@
 - Simplify plugin track registry
 - Implemented plugin data fetchers.
 
-_[Detailed changes since v1.10.2](https://github.com/higlass/higlass/compare/v1.10.2...develop)_
+_[Detailed changes since v1.10.2](https://github.com/higlass/higlass/compare/v1.10.2...v1.11.0)_
 
 ## v1.10.2
 
