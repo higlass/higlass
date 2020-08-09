@@ -2,6 +2,12 @@
 
 ## Next
 
+- Added `ChromosomeInfo` and `SearchField` classes to `AVAILABLE_TO_PLUGINS`.
+
+_[Detailed changes since v1.10.2](https://github.com/higlass/higlass/compare/v1.11.0...develop)_
+
+## v1.11.0
+
 - Make gene annotations rotatable so that they can be added on the left
 - Tracks can now modify their own dimensions by publishing `trackDimensionsModified`.
 - Fixed a bug preventing usage of `data.url` and HorizontalMultivecTrack server-side aggregation simultaneously.
@@ -9,9 +15,8 @@
 - Added the JS API `.on('geneSearch', callback)` option for subscribing to gene search events.
 - Simplify plugin track registry
 - Implemented plugin data fetchers.
-- Added `ChromosomeInfo` and `SearchField` classes to `AVAILABLE_TO_PLUGINS`.
 
-_[Detailed changes since v1.10.2](https://github.com/higlass/higlass/compare/v1.10.2...develop)_
+_[Detailed changes since v1.10.2](https://github.com/higlass/higlass/compare/v1.10.2...v1.11.0)_
 
 ## v1.10.2
 
