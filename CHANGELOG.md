@@ -1,5 +1,11 @@
 # Release notes
 
+## v1.11.1
+
+- Fix multivec SVG export
+
+_[Detailed changes since v1.10.2](https://github.com/higlass/higlass/compare/v1.11.0...v1.11.1)_
+
 ## v1.11.0
 
 - Make gene annotations rotatable so that they can be added on the left
