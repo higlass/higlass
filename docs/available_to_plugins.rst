@@ -205,6 +205,14 @@ Configs
 - POSITIONS_BY_DATATYPE
 - DEFAULT_TRACKS_FOR_DATATYPE
 
+Chromosomes
+-------
+
+**Prefix:** ``chromosomes`` (e.g., ``HGC.chromosomes.ChromosomeInfo``)
+
+- ChromosomeInfo
+- SearchField
+
 Other
 -----
 
