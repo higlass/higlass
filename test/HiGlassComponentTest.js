@@ -62,11 +62,11 @@ import {
 
 configure({ adapter: new Adapter() });
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
 describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
-
-  jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
   describe('Cheat codes', () => {
     it('Cleans up previously created instances and mounts a new component', done => {
