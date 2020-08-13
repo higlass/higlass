@@ -1,5 +1,7 @@
 # Release notes
 
+- Fix registration of plugin tracks
+
 ## v1.11.1
 
 - Fix multivec SVG export
