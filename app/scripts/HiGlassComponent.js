@@ -2177,6 +2177,10 @@ class HiGlassComponent extends React.Component {
       return this.pluginTracks[trackType].config;
     }
 
+    if (window.higlassTracksByType && window.higlassTracksByType[trackType]) {
+      return window.higlassTracksByType[trackType].config;
+    }
+
     console.warn(
       'Track type not found:',
       trackType,
