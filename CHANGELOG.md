@@ -1,6 +1,7 @@
 # Release notes
 
 - Fix registration of plugin tracks
+- Don't try to render names of filler annotations
 
 ## v1.11.1
 
