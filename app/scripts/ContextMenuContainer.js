@@ -192,7 +192,7 @@ class ContextMenuContainer extends React.Component {
 
     return (
       <div
-        ref={c => {
+        ref={(c) => {
           this.div = c;
         }}
         className="context-menu-item"

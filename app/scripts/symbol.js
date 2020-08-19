@@ -11,15 +11,9 @@
  * @param   {String}  viewBox  View box string.
  */
 export default function createSymbolIcon(el, id, paths, viewBox) {
-  const symbol = el
-    .append('symbol')
-    .attr('id', id)
-    .attr('viewBox', viewBox);
+  const symbol = el.append('symbol').attr('id', id).attr('viewBox', viewBox);
 
-  paths.forEach(d =>
-    symbol
-      .append('path')
-      .attr('d', d)
-      .attr('fill', 'currentColor'),
+  paths.forEach((d) =>
+    symbol.append('path').attr('d', d).attr('fill', 'currentColor'),
   );
 }

@@ -128,7 +128,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
 
     if (this.tilesetInfo.resolutions) {
       const sortedResolutions = this.tilesetInfo.resolutions
-        .map(x => +x)
+        .map((x) => +x)
         .sort((a, b) => b - a);
 
       this.xTiles = tileProxy.calculateTilesFromResolution(
@@ -309,7 +309,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       this.limitedValueScale.domain(),
       pseudocount, // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
-      pixData => {
+      (pixData) => {
         // the tileData has been converted to pixData by the worker script and needs to be loaded
         // as a sprite
         if (pixData) {

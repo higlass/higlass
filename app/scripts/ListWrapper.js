@@ -66,7 +66,7 @@ class ListWrapper extends React.Component {
       <Component
         {...this.props}
         {...props}
-        ref={element => {
+        ref={(element) => {
           this.ref = element;
         }}
       />

@@ -130,7 +130,7 @@ class GenomePositionSearchBox extends React.Component {
     if (this.props.chromInfoPath) {
       this.searchPosition = true;
 
-      ChromosomeInfo(this.props.chromInfoPath, chromInfo => {
+      ChromosomeInfo(this.props.chromInfoPath, (chromInfo) => {
         if (!chromInfo) {
           this.searchPosition = null;
           return;
@@ -353,14 +353,14 @@ class GenomePositionSearchBox extends React.Component {
       return;
     }
 
-    this.props.trackSourceServers.forEach(sourceServer => {
+    this.props.trackSourceServers.forEach((sourceServer) => {
       tileProxy.json(
         `${sourceServer}/available-chrom-sizes/`,
         (error, data) => {
           if (error) {
             console.error(error);
           } else {
-            data.results.forEach(x => {
+            data.results.forEach((x) => {
               if (!(x.coordSystem in this.availableChromSizes)) {
                 this.availableChromSizes[x.coordSystem] = new Set();
               }
@@ -402,14 +402,14 @@ class GenomePositionSearchBox extends React.Component {
       return;
     }
 
-    this.props.trackSourceServers.forEach(sourceServer => {
+    this.props.trackSourceServers.forEach((sourceServer) => {
       tileProxy.json(
         `${sourceServer}/tilesets/?limit=100&dt=gene-annotation`,
         (error, data) => {
           if (error) {
             console.error(error);
           } else {
-            data.results.forEach(x => {
+            data.results.forEach((x) => {
               if (!(x.coordSystem in this.availableAutocompletes)) {
                 this.availableAutocompletes[x.coordSystem] = new Set();
               }
@@ -451,7 +451,7 @@ class GenomePositionSearchBox extends React.Component {
   fetchChromInfo(chromInfoId, server) {
     ChromosomeInfo(
       `${server}/chrom-sizes/?id=${chromInfoId}`,
-      newChromInfo => {
+      (newChromInfo) => {
         if (!newChromInfo) {
           return;
         }
@@ -525,15 +525,18 @@ class GenomePositionSearchBox extends React.Component {
 
             if (j === 0 && k < dashParts.length) {
               // there's more parts so this is the first part
-              spacePart = `${genePosition.chr}:${genePosition.txStart -
-                extension}`;
+              spacePart = `${genePosition.chr}:${
+                genePosition.txStart - extension
+              }`;
             } else if (j === 0 && k === dashParts.length) {
               // there's only one part so this is a position
-              spacePart = `${genePosition.chr}:${genePosition.txStart -
-                extension}-${genePosition.txEnd + extension}`;
+              spacePart = `${genePosition.chr}:${
+                genePosition.txStart - extension
+              }-${genePosition.txEnd + extension}`;
             } else {
-              spacePart += `- ${genePosition.chr}:${genePosition.txEnd +
-                extension}`;
+              spacePart += `- ${genePosition.chr}:${
+                genePosition.txEnd + extension
+              }`;
               // it's the last part of a range
             }
             foundGeneSymbol = true; // we found a gene symbol
@@ -588,7 +591,7 @@ class GenomePositionSearchBox extends React.Component {
     }
 
     Promise.all(requests)
-      .then(files => {
+      .then((files) => {
         if (files) {
           const genePositions = {};
 
@@ -610,13 +613,13 @@ class GenomePositionSearchBox extends React.Component {
           finished(geneSymbol);
         }
       })
-      .catch(error => console.error(error));
+      .catch((error) => console.error(error));
   }
 
   buttonClick() {
     this.setState({ genes: [] }); // no menu should be open
 
-    this.replaceGenesWithPositions(geneSymbol => {
+    this.replaceGenesWithPositions((geneSymbol) => {
       const searchFieldValue = this.positionText;
 
       if (this.searchField !== null) {
@@ -767,7 +770,7 @@ class GenomePositionSearchBox extends React.Component {
   }
 
   render() {
-    const assemblyMenuItems = this.state.availableAssemblies.map(x => (
+    const assemblyMenuItems = this.state.availableAssemblies.map((x) => (
       <MenuItem key={x} eventKey={x}>
         {x}
       </MenuItem>
@@ -787,7 +790,7 @@ class GenomePositionSearchBox extends React.Component {
 
     return (
       <FormGroup
-        ref={c => {
+        ref={(c) => {
           this.gpsbForm = c;
         }}
         bsSize="small"
@@ -795,7 +798,7 @@ class GenomePositionSearchBox extends React.Component {
       >
         {!this.props.hideAvailableAssemblies && (
           <DropdownButton
-            ref={c => {
+            ref={(c) => {
               this.assemblyPickButton = c;
             }}
             bsSize="small"
@@ -813,10 +816,10 @@ class GenomePositionSearchBox extends React.Component {
         )}
 
         <Autocomplete
-          ref={c => {
+          ref={(c) => {
             this.autocompleteMenu = c;
           }}
-          getItemValue={item => item.geneName}
+          getItemValue={(item) => item.geneName}
           inputProps={{
             className: styles['genome-position-search-bar'],
             title:

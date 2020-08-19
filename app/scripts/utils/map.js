@@ -8,6 +8,6 @@
  * @param {Function}  f  Mapping function.
  * @return {Array}  Mapped array.
  */
-const map = f => x => Array.prototype.map.call(x, f);
+const map = (f) => (x) => Array.prototype.map.call(x, f);
 
 export default map;

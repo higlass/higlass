@@ -1,7 +1,7 @@
 import { Mixin } from './mixwith';
 
 const RuleMixin = Mixin(
-  superclass =>
+  (superclass) =>
     class extends superclass {
       constructor(context, options) {
         super(context, options);

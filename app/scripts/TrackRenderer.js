@@ -197,7 +197,7 @@ class TrackRenderer extends React.Component {
     // we look up the orientation of a track
     if (window.higlassTracksByType) {
       // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
-      Object.keys(window.higlassTracksByType).forEach(pluginTrackType => {
+      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
         TRACKS_INFO_BY_TYPE[pluginTrackType] =
           window.higlassTracksByType[pluginTrackType].config;
       });
@@ -427,7 +427,7 @@ class TrackRenderer extends React.Component {
     this.pMask.destroy(true);
     this.pStage.destroy(true);
 
-    this.pubSubs.forEach(subscription =>
+    this.pubSubs.forEach((subscription) =>
       this.props.pubSub.unsubscribe(subscription),
     );
     this.pubSubs = [];
@@ -802,21 +802,21 @@ class TrackRenderer extends React.Component {
 
   syncMetaTracks(trackDefinitions) {
     const knownMetaTrackIds = Object.keys(this.metaTracks);
-    const newMetaTracks = new Set(trackDefinitions.map(def => def.uid));
+    const newMetaTracks = new Set(trackDefinitions.map((def) => def.uid));
 
     // Add new meta tracks
     this.addMetaTracks(
-      trackDefinitions.filter(def => !this.metaTracks[def.uid]),
+      trackDefinitions.filter((def) => !this.metaTracks[def.uid]),
     );
 
     // Update existing meta tracks
     this.updateMetaTracks(
-      trackDefinitions.filter(def => this.metaTracks[def.uid]),
+      trackDefinitions.filter((def) => this.metaTracks[def.uid]),
     );
 
     // Remove old meta tracks
     this.removeMetaTracks(
-      knownMetaTrackIds.filter(def => !newMetaTracks.has(def)),
+      knownMetaTrackIds.filter((def) => !newMetaTracks.has(def)),
     );
   }
 
@@ -851,29 +851,29 @@ class TrackRenderer extends React.Component {
 
     // track definitions we don't have objects for
     const enterTrackDefs = new Set(
-      [...receivedTracks].filter(x => !knownTracks.has(x)),
+      [...receivedTracks].filter((x) => !knownTracks.has(x)),
     );
 
     // track objects for which there is no definition
     // (i.e. they no longer need to exist)
     const exitTracks = new Set(
-      [...knownTracks].filter(x => !receivedTracks.has(x)),
+      [...knownTracks].filter((x) => !receivedTracks.has(x)),
     );
 
     // we already have these tracks, but need to change their dimensions
     const updateTrackDefs = new Set(
-      [...receivedTracks].filter(x => knownTracks.has(x)),
+      [...receivedTracks].filter((x) => knownTracks.has(x)),
     );
 
     // update existing tracks
     this.updateExistingTrackDefs(
-      [...updateTrackDefs].map(x => receivedTracksDict[x]),
+      [...updateTrackDefs].map((x) => receivedTracksDict[x]),
     );
 
     // add new tracks and update them (setting dimensions and positions)
-    this.addNewTracks([...enterTrackDefs].map(x => receivedTracksDict[x]));
+    this.addNewTracks([...enterTrackDefs].map((x) => receivedTracksDict[x]));
     this.updateExistingTrackDefs(
-      [...enterTrackDefs].map(x => receivedTracksDict[x]),
+      [...enterTrackDefs].map((x) => receivedTracksDict[x]),
     );
 
     this.removeTracks([...exitTracks]);
@@ -886,8 +886,8 @@ class TrackRenderer extends React.Component {
    */
   addMetaTracks(metaTrackDefs) {
     metaTrackDefs
-      .filter(metaTrackDef => !this.metaTracks[metaTrackDef.uid])
-      .forEach(metaTrackDef => {
+      .filter((metaTrackDef) => !this.metaTracks[metaTrackDef.uid])
+      .forEach((metaTrackDef) => {
         this.metaTracks[metaTrackDef.uid] = {
           trackDef: metaTrackDef,
           trackObject: this.createMetaTrack(metaTrackDef),
@@ -1008,7 +1008,7 @@ class TrackRenderer extends React.Component {
   }
 
   removeMetaTracks(trackIds) {
-    trackIds.forEach(id => {
+    trackIds.forEach((id) => {
       this.metaTracks[id].trackObject.remove();
       this.metaTracks[id] = undefined;
       delete this.metaTracks[id];
@@ -1465,7 +1465,7 @@ class TrackRenderer extends React.Component {
   }
 
   createLocationAgnosticTrackObject(track) {
-    const handleTilesetInfoReceived = x => {
+    const handleTilesetInfoReceived = (x) => {
       this.currentProps.onTilesetInfoReceived(track.uid, x);
     };
 
@@ -1514,7 +1514,7 @@ class TrackRenderer extends React.Component {
       onValueScaleChanged: () => {
         this.currentProps.onValueScaleChanged(track.uid);
       },
-      onTrackOptionsChanged: newOptions => {
+      onTrackOptionsChanged: (newOptions) => {
         this.currentProps.onTrackOptionsChanged(track.uid, newOptions);
       },
       onMouseMoveZoom: this.props.onMouseMoveZoom,
@@ -1951,7 +1951,7 @@ class TrackRenderer extends React.Component {
   render() {
     return (
       <div
-        ref={c => {
+        ref={(c) => {
           this.baseEl = c;
         }}
         className="track-renderer-div"
@@ -1962,14 +1962,14 @@ class TrackRenderer extends React.Component {
         styleName="track-renderer"
       >
         <div
-          ref={c => {
+          ref={(c) => {
             this.element = c;
           }}
           className="track-renderer-element"
           styleName="track-renderer-element"
         />
         <div
-          ref={c => {
+          ref={(c) => {
             this.eventTracker = c;
           }}
           className="track-renderer-events"

@@ -16,7 +16,7 @@ export const POSITIONS_BY_DATATYPE = TRACKS_INFO.reduce(
 
     return {};
   },
-  {}
+  {},
 );
 
 export default POSITIONS_BY_DATATYPE;

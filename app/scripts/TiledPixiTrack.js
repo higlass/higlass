@@ -54,12 +54,7 @@ export function getValueScale(
     // console.warn('Negative values present in data. Defaulting to linear scale: ', minValue);
   }
 
-  return [
-    'linear',
-    scaleLinear()
-      .range([254, 0])
-      .domain([minValue, maxValue]),
-  ];
+  return ['linear', scaleLinear().range([254, 0]).domain([minValue, maxValue])];
 }
 
 class TiledPixiTrack extends PixiTrack {
@@ -316,13 +311,13 @@ class TiledPixiTrack extends PixiTrack {
    * Return the set of ids of all tiles which are both visible and fetched.
    */
   visibleAndFetchedIds() {
-    return Object.keys(this.fetchedTiles).filter(x =>
+    return Object.keys(this.fetchedTiles).filter((x) =>
       this.visibleTileIds.has(x),
     );
   }
 
   visibleAndFetchedTiles() {
-    return this.visibleAndFetchedIds().map(x => this.fetchedTiles[x]);
+    return this.visibleAndFetchedIds().map((x) => this.fetchedTiles[x]);
   }
 
   /**
@@ -332,13 +327,13 @@ class TiledPixiTrack extends PixiTrack {
    * tile positions.
    */
   setVisibleTiles(tilePositions) {
-    this.visibleTiles = tilePositions.map(x => ({
+    this.visibleTiles = tilePositions.map((x) => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
       mirrored: x.mirrored,
     }));
 
-    this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
+    this.visibleTileIds = new Set(this.visibleTiles.map((x) => x.tileId));
   }
 
   removeOldTiles() {
@@ -350,7 +345,7 @@ class TiledPixiTrack extends PixiTrack {
     // calculate which tiles are obsolete and remove them
     // fetchedTileID are remote ids
     const toRemove = [...fetchedTileIDs].filter(
-      x => !this.visibleTileIds.has(x),
+      (x) => !this.visibleTileIds.has(x),
     );
 
     this.removeTiles(toRemove);
@@ -369,7 +364,7 @@ class TiledPixiTrack extends PixiTrack {
     // fetch the tiles that should be visible but haven't been fetched
     // and aren't in the process of being fetched
     const toFetch = [...this.visibleTiles].filter(
-      x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId),
+      (x) => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId),
     );
 
     for (let i = 0; i < toFetch.length; i++) {
@@ -387,7 +382,7 @@ class TiledPixiTrack extends PixiTrack {
 
     while (zl > 0) {
       zl -= 1;
-      pos = pos.map(x => Math.floor(x / 2));
+      pos = pos.map((x) => Math.floor(x / 2));
 
       const parentId = `${uid}.${zl}.${pos.join('.')}`;
       if (parentId in this.fetchedTiles) {
@@ -400,7 +395,7 @@ class TiledPixiTrack extends PixiTrack {
 
   parentTileId(tile) {
     const parentZoomLevel = tile.tileData.zoomLevel - 1;
-    const parentPos = tile.tileData.tilePos.map(x => Math.floor(x / 2));
+    const parentPos = tile.tileData.tilePos.map((x) => Math.floor(x / 2));
     const parentUid = tile.tileData.tilesetUid;
 
     return `${parentUid}.${parentZoomLevel}.${parentPos.join('.')}`;
@@ -421,7 +416,7 @@ class TiledPixiTrack extends PixiTrack {
       return;
     }
 
-    toRemoveIds.forEach(x => {
+    toRemoveIds.forEach((x) => {
       const tileIdStr = x;
       this.destroyTile(this.fetchedTiles[tileIdStr]);
 
@@ -594,7 +589,7 @@ class TiledPixiTrack extends PixiTrack {
 
     if (this.listeners.dataChanged) {
       for (const callback of this.listeners.dataChanged) {
-        callback(this.visibleAndFetchedTiles().map(x => x.tileData));
+        callback(this.visibleAndFetchedTiles().map((x) => x.tileData));
       }
     }
   }
@@ -623,7 +618,7 @@ class TiledPixiTrack extends PixiTrack {
 
   fetchNewTiles(toFetch) {
     if (toFetch.length > 0) {
-      const toFetchList = [...new Set(toFetch.map(x => x.remoteId))];
+      const toFetchList = [...new Set(toFetch.map((x) => x.remoteId))];
 
       this.dataFetcher.fetchTilesDebounced(
         this.receivedTiles.bind(this),
@@ -657,8 +652,8 @@ class TiledPixiTrack extends PixiTrack {
           this.fetchedTiles[tileId].tileData = [...tileData];
           // Fritz: this is sooo hacky... we should really not use object arrays
           Object.keys(tileData)
-            .filter(key => Number.isNaN(+key))
-            .forEach(key => {
+            .filter((key) => Number.isNaN(+key))
+            .forEach((key) => {
               this.fetchedTiles[tileId].tileData[key] = tileData[key];
             });
         } else {
@@ -754,10 +749,10 @@ class TiledPixiTrack extends PixiTrack {
     }
     const errors = Object.values(this.fetchedTiles)
       .map(
-        x =>
+        (x) =>
           x.tileData && x.tileData.error && `${x.tileId}: ${x.tileData.error}`,
       )
-      .filter(x => x);
+      .filter((x) => x);
 
     if (errors.length) {
       this.errorTextText = errors.join('\n');
@@ -767,7 +762,7 @@ class TiledPixiTrack extends PixiTrack {
 
     super.draw();
 
-    Object.keys(this.fetchedTiles).forEach(tilesetUid => {
+    Object.keys(this.fetchedTiles).forEach((tilesetUid) => {
       this.drawTile(this.fetchedTiles[tilesetUid]);
     });
     // console.log('errors:', errors);
@@ -796,10 +791,10 @@ class TiledPixiTrack extends PixiTrack {
     const values = []
       .concat(
         ...visibleAndFetchedIds
-          .filter(x => this.fetchedTiles[x].tileData.dense)
-          .map(x => Array.from(this.fetchedTiles[x].tileData.dense)),
+          .filter((x) => this.fetchedTiles[x].tileData.dense)
+          .map((x) => Array.from(this.fetchedTiles[x].tileData.dense)),
       )
-      .filter(x => x > 0);
+      .filter((x) => x > 0);
 
     this.medianVisibleValue = median(values);
     return this.medianVisibleValue;
@@ -807,7 +802,7 @@ class TiledPixiTrack extends PixiTrack {
 
   allVisibleValues() {
     return [].concat(
-      ...this.visibleAndFetchedIds().map(x =>
+      ...this.visibleAndFetchedIds().map((x) =>
         Array.from(this.fetchedTiles[x].tileData.dense),
       ),
     );
@@ -829,7 +824,7 @@ class TiledPixiTrack extends PixiTrack {
 
     let min = Math.min(
       ...visibleAndFetchedIds.map(
-        x => this.fetchedTiles[x].tileData.minNonZero,
+        (x) => this.fetchedTiles[x].tileData.minNonZero,
       ),
     );
 
@@ -859,7 +854,7 @@ class TiledPixiTrack extends PixiTrack {
 
     let max = Math.max(
       ...visibleAndFetchedIds.map(
-        x => this.fetchedTiles[x].tileData.maxNonZero,
+        (x) => this.fetchedTiles[x].tileData.maxNonZero,
       ),
     );
 
@@ -936,7 +931,7 @@ class TiledPixiTrack extends PixiTrack {
       const quantScale = scaleQuantile()
         .domain(this.allVisibleValues())
         .range(range(start, end, (end - start) / 256));
-      quantScale.ticks = n => ticks(start, end, n);
+      quantScale.ticks = (n) => ticks(start, end, n);
 
       return [quantScale, 0];
     } else if (this.options.valueScaling === 'setquantile') {
@@ -946,7 +941,7 @@ class TiledPixiTrack extends PixiTrack {
       const quantScale = scaleQuantile()
         .domain([...s])
         .range(range(start, end, (end - start) / 256));
-      quantScale.ticks = n => ticks(start, end, n);
+      quantScale.ticks = (n) => ticks(start, end, n);
 
       return [quantScale, 0];
     } else {

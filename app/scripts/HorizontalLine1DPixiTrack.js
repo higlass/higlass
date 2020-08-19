@@ -79,7 +79,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     super.draw();
 
-    this.visibleAndFetchedTiles().forEach(tile => {
+    this.visibleAndFetchedTiles().forEach((tile) => {
       this.renderTile(tile);
     });
   }
@@ -295,7 +295,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       ? this.options.lineStrokeColor
       : 'blue';
 
-    this.visibleAndFetchedTiles().forEach(tile => {
+    this.visibleAndFetchedTiles().forEach((tile) => {
       const g = document.createElement('path');
       g.setAttribute('fill', 'transparent');
       g.setAttribute('stroke', stroke);

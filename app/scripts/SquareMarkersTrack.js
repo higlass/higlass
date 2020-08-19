@@ -57,12 +57,12 @@ class SquareMarkersTrack extends TiledPixiTrack {
      * @param tiles: A set of tiles which will be considered the currently visible
      * tile positions.
      */
-    this.visibleTiles = tilePositions.map(x => ({
+    this.visibleTiles = tilePositions.map((x) => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
     }));
 
-    this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
+    this.visibleTileIds = new Set(this.visibleTiles.map((x) => x.tileId));
   }
 
   calculateVisibleTiles(mirrorTiles = true) {

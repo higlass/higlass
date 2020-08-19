@@ -3,7 +3,7 @@ import { SortableElement } from 'react-sortable-hoc';
 
 import HorizontalTrack from './HorizontalTrack';
 
-const HorizontalItem = SortableElement(props => (
+const HorizontalItem = SortableElement((props) => (
   <HorizontalTrack
     className={props.className}
     editable={props.editable}

@@ -8,7 +8,7 @@ import withModal from './hocs/with-modal';
 
 import '../styles/Dialog.module.scss';
 
-const Dialog = props => {
+const Dialog = (props) => {
   const handleCancel = () => {
     props.modal.close();
     if (props.onCancel) props.onCancel();

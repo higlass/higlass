@@ -31,7 +31,7 @@ const drawRectWithPositionedBorder = (
     graphics.lineStyle(1, 0x000000, 0);
     graphics.beginFill(outline.color, outline.opacity);
 
-    outline.positions.forEach(pos => {
+    outline.positions.forEach((pos) => {
       if ((pos === 'top' && !isVertical) || (pos === 'left' && isVertical)) {
         graphics.drawRect(
           xPos - outlineWidth,
@@ -92,7 +92,7 @@ const drawRectWithPositionedBorder = (
     const strokeWidth = stroke.width * 2 > width ? width / 2 : stroke.width;
     const strokeHeight = stroke.width * 2 > height ? height / 2 : stroke.width;
 
-    stroke.positions.forEach(pos => {
+    stroke.positions.forEach((pos) => {
       if ((pos === 'top' && !isVertical) || (pos === 'left' && isVertical)) {
         graphics.drawRect(xPos, yPos, width, strokeHeight);
         finalYPos += strokeHeight;
@@ -288,9 +288,9 @@ class OverlayTrack extends PixiTrack {
     const minHeight = Math.max(0, +this.options.minHeight || 0);
 
     if (Array.isArray(this.options.extent)) {
-      this.options.orientationsAndPositions.forEach(op => {
+      this.options.orientationsAndPositions.forEach((op) => {
         if (op.orientation === '1d-horizontal' || op.orientation === '2d') {
-          this.options.extent.forEach(extent =>
+          this.options.extent.forEach((extent) =>
             this.drawHorizontalOverlay(
               graphics,
               op.position,
@@ -304,7 +304,7 @@ class OverlayTrack extends PixiTrack {
         }
 
         if (op.orientation === '1d-vertical' || op.orientation === '2d') {
-          this.options.extent.forEach(extent =>
+          this.options.extent.forEach((extent) =>
             this.drawVerticalOverlay(
               graphics,
               op.position,

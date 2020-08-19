@@ -6,12 +6,10 @@ import RuleMixin from './RuleMixin';
 import { colorToHex } from './utils';
 
 export const HorizontalRuleMixin = Mixin(
-  superclass =>
+  (superclass) =>
     class extends superclass {
       drawHorizontalRule(graphics) {
-        let stroke = colorToHex(
-          this.options.color || 'black',
-        );
+        let stroke = colorToHex(this.options.color || 'black');
 
         if (this.highlighted) {
           stroke = colorToHex('red');

@@ -25,7 +25,7 @@ class Chromosome2DLabels extends PixiTrack {
 
     ChromosomeInfo(
       chromSizesPath,
-      newChromInfo => {
+      (newChromInfo) => {
         this.chromInfo = newChromInfo;
         //
 
@@ -144,7 +144,7 @@ class Chromosome2DLabels extends PixiTrack {
   hideOverlaps(allTexts) {
     let allBoxes = []; // store the bounding boxes of the text objects so we can
     // calculate overlaps
-    allBoxes = allTexts.map(val => {
+    allBoxes = allTexts.map((val) => {
       const text = val.text;
       text.updateTransform();
       const b = text.getBounds();

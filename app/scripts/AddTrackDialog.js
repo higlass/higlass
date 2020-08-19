@@ -166,12 +166,12 @@ class AddTrackDialog extends React.Component {
       <div>
         <TilesetFinder
           // Only for testing purposes
-          ref={c => {
+          ref={(c) => {
             this.tilesetFinder = c;
           }}
           datatype={this.props.datatype}
           onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
-          onTracksChosen={value =>
+          onTracksChosen={(value) =>
             this.props.onTracksChosen(value, this.props.position)
           }
           orientation={orientation}
@@ -193,11 +193,11 @@ class AddTrackDialog extends React.Component {
         {
           <PlotTypeChooser
             // Only for testing purposes
-            ref={c => {
+            ref={(c) => {
               this.plotTypeChooser = c;
             }}
             allTracksSameDatatype={this.state.allTracksSameDatatype}
-            datatypes={this.state.selectedTilesets.map(x => {
+            datatypes={this.state.selectedTilesets.map((x) => {
               if (x.filetype === 'cooler') {
                 // cooler files can also supply chromsizes
                 return [x.datatype, 'chromsizes'];

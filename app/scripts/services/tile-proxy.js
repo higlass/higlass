@@ -62,7 +62,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   let requestMapper = {};
   let blockedCalls = 0;
 
-  const bundleRequests = request => {
+  const bundleRequests = (request) => {
     const requestId = requestMapper[request.id];
 
     if (requestId && bundledRequest[requestId]) {
@@ -144,7 +144,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   return throttled;
 };
 
-export const setTileProxyAuthHeader = newHeader => {
+export const setTileProxyAuthHeader = (newHeader) => {
   authHeader = newHeader;
 };
 
@@ -174,7 +174,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
         const tilesetUuid = id.substring(0, firstSepIndex);
         const tileId = id.substring(firstSepIndex + 1);
         const tilesetObject = requestBodyByServer[request.server].find(
-          t => t.tilesetUid === tilesetUuid,
+          (t) => t.tilesetUid === tilesetUuid,
         );
         if (tilesetObject) {
           tilesetObject.tileIds.push(tileId);
@@ -205,7 +205,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
         i + Math.min(ids.length - i, MAX_FETCH_TILES),
       );
 
-      const renderParams = theseTileIds.map(x => `d=${x}`).join('&');
+      const renderParams = theseTileIds.map((x) => `d=${x}`).join('&');
       const outUrl = `${server}/tiles/?${renderParams}&s=${sessionId}`;
 
       /* eslint-disable no-loop-func */
@@ -242,7 +242,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
     }
   }
 
-  Promise.all(fetchPromises).then(datas => {
+  Promise.all(fetchPromises).then((datas) => {
     const tiles = {};
 
     // merge back all the tile requests
@@ -287,18 +287,18 @@ export const fetchTilesDebounced = throttleAndDebounce(
  * Calculate the zoom level from a list of available resolutions
  */
 export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
-  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
+  const sortedResolutions = resolutions.map((x) => +x).sort((a, b) => b - a);
 
   const trackWidth = scale.range()[1] - scale.range()[0];
 
   const binsDisplayed = sortedResolutions.map(
-    r => (scale.domain()[1] - scale.domain()[0]) / r,
+    (r) => (scale.domain()[1] - scale.domain()[0]) / r,
   );
-  const binsPerPixel = binsDisplayed.map(b => b / trackWidth);
+  const binsPerPixel = binsDisplayed.map((b) => b / trackWidth);
 
   // we're going to show the highest resolution that requires more than one
   // pixel per bin
-  const displayableBinsPerPixel = binsPerPixel.filter(b => b < 1);
+  const displayableBinsPerPixel = binsPerPixel.filter((b) => b < 1);
 
   if (displayableBinsPerPixel.length === 0) return 0;
 
@@ -310,7 +310,7 @@ export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
 export const calculateResolution = (tilesetInfo, zoomLevel) => {
   if (tilesetInfo.resolutions) {
     const sortedResolutions = tilesetInfo.resolutions
-      .map(x => +x)
+      .map((x) => +x)
       .sort((a, b) => b - a);
     const resolution = sortedResolutions[zoomLevel];
 
@@ -451,7 +451,7 @@ export const calculateTiles = (
 export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
   if (tilesetInfo.resolutions) {
     const sortedResolutions = tilesetInfo.resolutions
-      .map(x => +x)
+      .map((x) => +x)
       .sort((a, b) => b - a);
     return sortedResolutions[zoomLevel] * binsPerTile;
   }
@@ -642,18 +642,18 @@ function fetchEither(url, callback, textOrJson, pubSub) {
     headers.Authorization = authHeader;
   }
   return fetch(url, { credentials: 'same-origin', headers })
-    .then(rep => {
+    .then((rep) => {
       if (!rep.ok) {
         throw Error(rep.statusText);
       }
 
       return rep[textOrJson]();
     })
-    .then(content => {
+    .then((content) => {
       callback(undefined, content);
       return content;
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(`Could not fetch ${url}`, error);
       callback(error, undefined);
       return error;
@@ -675,7 +675,7 @@ function text(url, callback, pubSub) {
 }
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**

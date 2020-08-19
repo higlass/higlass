@@ -51,7 +51,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         // and has a tilesetUid (for example, due to file url-based tracks).
         if (this.dataFetcher.dataConfig.tilesetUid) {
           this.fetchNewTiles(
-            Object.keys(this.fetchedTiles).map(x => ({
+            Object.keys(this.fetchedTiles).map((x) => ({
               tileId: x,
               remoteId: x,
             })),
@@ -157,7 +157,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     if (this.tilesetInfo.resolutions) {
       const sortedResolutions = this.tilesetInfo.resolutions
-        .map(x => +x)
+        .map((x) => +x)
         .sort((a, b) => b - a);
 
       this.xTiles = tileProxy.calculateTilesFromResolution(
@@ -178,7 +178,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       );
     }
 
-    const tiles = this.xTiles.map(x => [this.zoomLevel, x]);
+    const tiles = this.xTiles.map((x) => [this.zoomLevel, x]);
 
     this.setVisibleTiles(tiles);
   }
@@ -328,7 +328,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         ) {
           // Need to aggregate, so `index` will actually be an array.
           index = selectedRowItem.map(
-            rowI => this.tilesetInfo.shape[0] * rowI + Math.floor(posInTileX),
+            (rowI) => this.tilesetInfo.shape[0] * rowI + Math.floor(posInTileX),
           );
         } else if (
           selectedRowItem &&
@@ -353,7 +353,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         const aggFunc = getAggregationFunction(
           this.options.selectRowsAggregationMode,
         );
-        const values = index.map(i => fetchedTile.tileData.dense[i]);
+        const values = index.map((i) => fetchedTile.tileData.dense[i]);
         value = format('.3f')(aggFunc(values));
         value += '<br/>';
         value += `${index.length}-item ${this.options.selectRowsAggregationMode}`;

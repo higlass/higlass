@@ -37,8 +37,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     // Normalize colormap upfront to save 3 divisions per data point during the
     // rendering.
-    this.colorScale = this.colorScale.map(rgb =>
-      rgb.map(channel => channel / 255.0),
+    this.colorScale = this.colorScale.map((rgb) =>
+      rgb.map((channel) => channel / 255.0),
     );
   }
 
@@ -300,7 +300,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     if (this.options.zeroLineVisible) this.drawZeroLine();
     else this.zeroLine.clear();
 
-    Object.values(this.fetchedTiles).forEach(tile => {
+    Object.values(this.fetchedTiles).forEach((tile) => {
       const [graphicsXScale, graphicsXPos] = this.getXScaleAndOffset(
         tile.drawnAtScale,
       );
@@ -429,8 +429,8 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     if (this.options.zeroLine) this.drawZeroLineSvg(output);
 
     this.visibleAndFetchedTiles()
-      .filter(tile => tile.svgData && tile.svgData.barXValues)
-      .forEach(tile => {
+      .filter((tile) => tile.svgData && tile.svgData.barXValues)
+      .forEach((tile) => {
         // const [xScale, xPos] = this.getXScaleAndOffset(tile.drawnAtScale);
         const data = tile.svgData;
 

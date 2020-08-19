@@ -6,16 +6,16 @@ const fake = {
   __fake__: true,
   publish: toVoid,
   subscribe: toVoid,
-  unsubscribe: toVoid
+  unsubscribe: toVoid,
 };
 
 const { Provider, Consumer } = React.createContext(fake);
 
 // Higher order component
-const withPubSub = Component =>
+const withPubSub = (Component) =>
   React.forwardRef((props, ref) => (
     <Consumer>
-      {pubSub => <Component ref={ref} {...props} pubSub={pubSub} />}
+      {(pubSub) => <Component ref={ref} {...props} pubSub={pubSub} />}
     </Consumer>
   ));
 

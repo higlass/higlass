@@ -156,7 +156,7 @@ class ViewHeader extends React.Component {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onLockZoomAndLocation(this.state.configMenuUid);
             }}
-            onOptionsChanged={newOptions => {
+            onOptionsChanged={(newOptions) => {
               this.props.onViewOptionsChanged(newOptions);
               this.setState({ configMenuUid: null }); // hide the menu
             }}
@@ -210,7 +210,7 @@ class ViewHeader extends React.Component {
 
     const GenomePositionSearchBox = this.props.getGenomePositionSearchBox(
       this.state.isFocused,
-      focus => {
+      (focus) => {
         this.setState({
           isFocused: focus,
         });
@@ -232,7 +232,7 @@ class ViewHeader extends React.Component {
 
     return (
       <div
-        ref={c => {
+        ref={(c) => {
           this.el = c;
         }}
         styleName={className}
@@ -268,7 +268,7 @@ class ViewHeader extends React.Component {
           </svg>
 
           <svg
-            ref={c => {
+            ref={(c) => {
               this.configImg = c;
             }}
             onClick={() => this.handleConfigMenuOpened(this.props.viewUid)}
@@ -279,7 +279,7 @@ class ViewHeader extends React.Component {
           </svg>
 
           <svg
-            ref={c => {
+            ref={(c) => {
               this.plusImg = c;
             }}
             onClick={() =>

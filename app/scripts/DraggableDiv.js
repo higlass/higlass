@@ -304,10 +304,10 @@ class DraggableDiv extends React.Component {
       right: { ...vertStyle, right: 1 },
     };
 
-    const resizeHandles = [...this.props.resizeHandles].map(x => (
+    const resizeHandles = [...this.props.resizeHandles].map((x) => (
       <div
         key={x}
-        ref={c => {
+        ref={(c) => {
           this[`${x}Handle`] = c;
         }}
         style={styles[x]}
@@ -323,7 +323,7 @@ class DraggableDiv extends React.Component {
 
     return (
       <div
-        ref={c => {
+        ref={(c) => {
           this.divContainer = c;
         }}
         className={this.props.className}
