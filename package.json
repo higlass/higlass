@@ -154,7 +154,7 @@
     "postcss-flexbugs-fixes": "^4.1.0",
     "postcss-loader": "^3.0.0",
     "postcss-scss": "^2.0.0",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.0",
     "pretty-quick": "^2.0.1",
     "react-test-renderer": "^16.5.0",
     "sass-loader": "^6.0.6",
