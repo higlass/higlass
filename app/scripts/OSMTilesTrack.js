@@ -72,13 +72,13 @@ class OSMTilesTrack extends PixiTrack {
    * Return the set of ids of all tiles which are both visible and fetched.
    */
   visibleAndFetchedIds() {
-    return Object.keys(this.fetchedTiles).filter(x =>
+    return Object.keys(this.fetchedTiles).filter((x) =>
       this.visibleTileIds.has(x),
     );
   }
 
   visibleAndFetchedTiles() {
-    return this.visibleAndFetchedIds().map(x => this.fetchedTiles[x]);
+    return this.visibleAndFetchedIds().map((x) => this.fetchedTiles[x]);
   }
 
   /**
@@ -88,13 +88,13 @@ class OSMTilesTrack extends PixiTrack {
    * tile positions.
    */
   setVisibleTiles(tilePositions) {
-    this.visibleTiles = tilePositions.map(x => ({
+    this.visibleTiles = tilePositions.map((x) => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
       mirrored: x.mirrored,
     }));
 
-    this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
+    this.visibleTileIds = new Set(this.visibleTiles.map((x) => x.tileId));
   }
 
   removeAllTiles() {
@@ -112,7 +112,7 @@ class OSMTilesTrack extends PixiTrack {
     // fetch the tiles that should be visible but haven't been fetched
     // and aren't in the process of being fetched
     const toFetch = [...this.visibleTiles].filter(
-      x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId),
+      (x) => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId),
     );
 
     for (let i = 0; i < toFetch.length; i++) {
@@ -122,7 +122,7 @@ class OSMTilesTrack extends PixiTrack {
     // calculate which tiles are obsolete and remove them
     // fetchedTileID are remote ids
     const toRemove = [...fetchedTileIDs].filter(
-      x => !this.visibleTileIds.has(x),
+      (x) => !this.visibleTileIds.has(x),
     );
 
     this.removeTiles(toRemove);
@@ -144,7 +144,7 @@ class OSMTilesTrack extends PixiTrack {
       return;
     }
 
-    toRemoveIds.forEach(x => {
+    toRemoveIds.forEach((x) => {
       const tileIdStr = x;
       this.destroyTile(this.fetchedTiles[tileIdStr]);
 
@@ -469,7 +469,7 @@ class OSMTilesTrack extends PixiTrack {
 
   fetchNewTiles(toFetch) {
     if (toFetch.length > 0) {
-      const toFetchList = [...new Set(toFetch.map(x => x.remoteId))];
+      const toFetchList = [...new Set(toFetch.map((x) => x.remoteId))];
 
       for (const tileId of toFetchList) {
         const parts = tileId.split('.');

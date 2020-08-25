@@ -7,7 +7,7 @@ import { fake as fakePubSub } from './hocs/with-pub-sub';
 function ChromosomeInfo(filepath, success, pubSub = fakePubSub) {
   const ret = {};
 
-  ret.absToChr = absPos => (ret.chrPositions ? absToChr(absPos, ret) : null);
+  ret.absToChr = (absPos) => (ret.chrPositions ? absToChr(absPos, ret) : null);
 
   ret.chrToAbs = ([chrName, chrPos] = []) =>
     ret.chrPositions ? chrToAbs(chrName, chrPos, ret) : null;
@@ -23,7 +23,7 @@ function ChromosomeInfo(filepath, success, pubSub = fakePubSub) {
           const data = tsvParseRows(chrInfoText);
           const chromInfo = parseChromsizesRows(data);
 
-          Object.keys(chromInfo).forEach(key => {
+          Object.keys(chromInfo).forEach((key) => {
             ret[key] = chromInfo[key];
           });
           if (success) success(ret);

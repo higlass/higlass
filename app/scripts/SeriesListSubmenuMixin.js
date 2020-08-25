@@ -5,7 +5,7 @@ import SeriesListMenu from './SeriesListMenu';
 import { getAllTracksAndSubtracks } from './SeriesListItems';
 
 const SeriesListSubmenuMixin = Mixin(
-  superclass =>
+  (superclass) =>
     class extends superclass {
       getSubmenu() {
         if (this.state.submenuShown) {
@@ -29,7 +29,7 @@ const SeriesListSubmenuMixin = Mixin(
 
           const series = getAllTracksAndSubtracks(this.props.tracks);
           const selectedTrack = series.filter(
-            t => t.uid === this.state.submenuShown.uid,
+            (t) => t.uid === this.state.submenuShown.uid,
           )[0];
 
           // for now we can't replace 'whole' tracks because they're
@@ -40,7 +40,7 @@ const SeriesListSubmenuMixin = Mixin(
           return (
             <SeriesListMenu
               key={`series-list-menu-${selectedTrack.uid}`}
-              ref={c => {
+              ref={(c) => {
                 this.seriesListMenu = c;
               }}
               closeMenu={this.props.closeMenu}

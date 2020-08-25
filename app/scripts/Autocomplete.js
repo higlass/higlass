@@ -180,7 +180,7 @@ class Autocomplete extends React.Component {
     let items = this.props.items;
 
     if (this.props.shouldItemRender) {
-      items = items.filter(item =>
+      items = items.filter((item) =>
         this.props.shouldItemRender(item, this.props.value),
       );
     }
@@ -322,7 +322,7 @@ class Autocomplete extends React.Component {
 
   composeEventHandlers(internal, external) {
     return external
-      ? e => {
+      ? (e) => {
           internal(e);
           external(e);
         }
@@ -345,7 +345,7 @@ class Autocomplete extends React.Component {
       <div style={{ ...this.props.wrapperStyle }} {...this.props.wrapperProps}>
         <input
           {...inputProps}
-          ref={el => {
+          ref={(el) => {
             this.inputEl = el;
           }}
           aria-autocomplete="list"

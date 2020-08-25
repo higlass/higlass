@@ -37,7 +37,7 @@ function formatResolutionText(resolution, maxResolutionSize) {
  *   (e.g. "30K")
  */
 function getResolutionBasedResolutionText(resolutions, zoomLevel) {
-  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
+  const sortedResolutions = resolutions.map((x) => +x).sort((a, b) => b - a);
   const resolution = sortedResolutions[zoomLevel];
   const maxResolutionSize = sortedResolutions[sortedResolutions.length - 1];
 
@@ -649,8 +649,9 @@ class PixiTrack extends Track {
       'points',
       `${this.position[0]},${this.position[1]} ` +
         `${this.position[0] + this.dimensions[0]},${this.position[1]} ` +
-        `${this.position[0] + this.dimensions[0]},${this.position[1] +
-          this.dimensions[1]} ` +
+        `${this.position[0] + this.dimensions[0]},${
+          this.position[1] + this.dimensions[1]
+        } ` +
         `${this.position[0]},${this.position[1] + this.dimensions[1]} `,
     );
 

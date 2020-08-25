@@ -70,7 +70,7 @@ class TrackArea extends React.Component {
         <Handle />
 
         <svg
-          ref={c => {
+          ref={(c) => {
             this.imgConfig = c;
           }}
           className="no-zoom"
@@ -87,7 +87,7 @@ class TrackArea extends React.Component {
         </svg>
 
         <svg
-          ref={c => {
+          ref={(c) => {
             this.imgAdd = c;
           }}
           className="no-zoom"
@@ -100,7 +100,7 @@ class TrackArea extends React.Component {
         </svg>
 
         <svg
-          ref={c => {
+          ref={(c) => {
             this.imgClose = c;
           }}
           className="no-zoom"

@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Collapse, ControlLabel, Panel } from 'react-bootstrap';
 
-const CollapsePanel = props => (
+const CollapsePanel = (props) => (
   <div>
     <ControlLabel>
       <a

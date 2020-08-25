@@ -12,7 +12,7 @@ import '../styles/ContextMenu.module.scss';
  *
  * @param {array} tracks: A list of tracks to go through
  */
-export const getAllTracksAndSubtracks = tracks => {
+export const getAllTracksAndSubtracks = (tracks) => {
   let series = [];
 
   // check if this is a combined track (has contents)
@@ -50,13 +50,13 @@ export const getSeriesItems = (
   if (!tracks) return null;
 
   if (window.higlassTracksByType) {
-    Object.keys(window.higlassTracksByType).forEach(pluginTrackType => {
+    Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
       TRACKS_INFO_BY_TYPE[pluginTrackType] =
         window.higlassTracksByType[pluginTrackType].config;
     });
   }
 
-  return getAllTracksAndSubtracks(tracks).map(x => {
+  return getAllTracksAndSubtracks(tracks).map((x) => {
     const thumbnail = TRACKS_INFO_BY_TYPE[x.type]
       ? TRACKS_INFO_BY_TYPE[x.type].thumbnail
       : null;
@@ -79,10 +79,10 @@ export const getSeriesItems = (
         onClick={() => {
           if (onItemClick) onItemClick(x.uid);
         }}
-        onMouseEnter={e => {
+        onMouseEnter={(e) => {
           if (onItemMouseEnter) onItemMouseEnter(e, x);
         }}
-        onMouseLeave={e => {
+        onMouseLeave={(e) => {
           if (onItemMouseLeave) onItemMouseLeave(e);
         }}
         styleName="context-menu-item"

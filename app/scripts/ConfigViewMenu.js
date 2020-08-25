@@ -110,7 +110,7 @@ class ConfigViewMenu extends ContextMenuContainer {
 
     return (
       <div
-        ref={c => {
+        ref={(c) => {
           this.div = c;
         }}
         data-menu-type="ConfigViewMenu"
@@ -120,7 +120,9 @@ class ConfigViewMenu extends ContextMenuContainer {
         }}
         styleName={styleNames}
       >
-        <ContextMenuItem onClick={e => this.props.onTogglePositionSearchBox(e)}>
+        <ContextMenuItem
+          onClick={(e) => this.props.onTogglePositionSearchBox(e)}
+        >
           {'Toggle position search box'}
         </ContextMenuItem>
 
@@ -148,25 +150,25 @@ class ConfigViewMenu extends ContextMenuContainer {
 
         <hr styleName="context-menu-hr" />
 
-        <ContextMenuItem onClick={e => this.props.onZoomToData(e)}>
+        <ContextMenuItem onClick={(e) => this.props.onZoomToData(e)}>
           {'Zoom to data extent'}
         </ContextMenuItem>
 
-        <ContextMenuItem onClick={e => this.props.onClearView(e)}>
+        <ContextMenuItem onClick={(e) => this.props.onClearView(e)}>
           {'Clear View'}
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
 
-        <ContextMenuItem onClick={e => this.props.onYankZoom(e)}>
+        <ContextMenuItem onClick={(e) => this.props.onYankZoom(e)}>
           {'Take zoom from'}
         </ContextMenuItem>
 
-        <ContextMenuItem onClick={e => this.props.onYankLocation(e)}>
+        <ContextMenuItem onClick={(e) => this.props.onYankLocation(e)}>
           {'Take location from'}
         </ContextMenuItem>
 
-        <ContextMenuItem onClick={e => this.props.onYankZoomAndLocation(e)}>
+        <ContextMenuItem onClick={(e) => this.props.onYankZoomAndLocation(e)}>
           {'Take zoom and location from'}
         </ContextMenuItem>
 
@@ -192,27 +194,27 @@ class ConfigViewMenu extends ContextMenuContainer {
 
         <hr styleName="context-menu-hr" />
 
-        <ContextMenuItem onClick={e => this.props.onUnlockZoom(e)}>
+        <ContextMenuItem onClick={(e) => this.props.onUnlockZoom(e)}>
           {'Unlock zoom'}
         </ContextMenuItem>
 
-        <ContextMenuItem onClick={e => this.props.onUnlockLocation(e)}>
+        <ContextMenuItem onClick={(e) => this.props.onUnlockLocation(e)}>
           {'Unlock location'}
         </ContextMenuItem>
 
-        <ContextMenuItem onClick={e => this.props.onUnlockZoomAndLocation(e)}>
+        <ContextMenuItem onClick={(e) => this.props.onUnlockZoomAndLocation(e)}>
           {'Unlock zoom and location'}
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
 
-        <ContextMenuItem onClick={e => this.props.onProjectViewport(e)}>
+        <ContextMenuItem onClick={(e) => this.props.onProjectViewport(e)}>
           {'Show this viewport on'}
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
 
-        <ContextMenuItem onClick={e => this.props.onEditViewConfig(e)}>
+        <ContextMenuItem onClick={(e) => this.props.onEditViewConfig(e)}>
           Edit view config
         </ContextMenuItem>
 

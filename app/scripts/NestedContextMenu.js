@@ -56,7 +56,7 @@ class NestedContextMenu extends ContextMenuContainer {
           onClick={menuItem.handler ? menuItem.handler : () => null}
           onMouseEnter={
             menuItem.children
-              ? e => this.handleItemMouseEnter(e, menuItem)
+              ? (e) => this.handleItemMouseEnter(e, menuItem)
               : this.handleOtherMouseEnter.bind(this)
           }
           onMouseLeave={this.handleMouseLeave}
@@ -76,7 +76,7 @@ class NestedContextMenu extends ContextMenuContainer {
 
     return (
       <div
-        ref={c => {
+        ref={(c) => {
           this.div = c;
         }}
         style={{

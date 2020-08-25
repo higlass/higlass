@@ -23,7 +23,7 @@ class MoveableTrack extends TrackArea {
   render() {
     return (
       <div
-        ref={r => {
+        ref={(r) => {
           this.el = r;
         }}
         className={this.props.className}
@@ -51,7 +51,7 @@ class MoveableTrack extends TrackArea {
           resizeHandles={
             this.props.editable ? this.props.resizeHandles : new Set()
           }
-          sizeChanged={stuff =>
+          sizeChanged={(stuff) =>
             this.props.handleResizeTrack(
               this.props.uid,
               stuff.width,

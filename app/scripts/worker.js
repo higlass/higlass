@@ -42,7 +42,7 @@ function setPixDataForSelectedRows(
   if (selectedRowsAggregationMode) {
     aggFunc = getAggregationFunction(selectedRowsAggregationMode);
     aggFromDataFunc = (colI, rowIs) =>
-      aggFunc(rowIs.map(rowI => data[rowI * shape[1] + colI]));
+      aggFunc(rowIs.map((rowI) => data[rowI * shape[1] + colI]));
   }
   let d;
   let pixRowI;
@@ -126,9 +126,7 @@ export function workerSetPix(
   let valueScale = null;
 
   if (valueScaleType === 'log') {
-    valueScale = scaleLog()
-      .range([254, 0])
-      .domain(valueScaleDomain);
+    valueScale = scaleLog().range([254, 0]).domain(valueScaleDomain);
   } else {
     if (valueScaleType !== 'linear') {
       console.warn(
@@ -137,9 +135,7 @@ export function workerSetPix(
         ' Defaulting to linear',
       );
     }
-    valueScale = scaleLinear()
-      .range([254, 0])
-      .domain(valueScaleDomain);
+    valueScale = scaleLinear().range([254, 0]).domain(valueScaleDomain);
   }
 
   // De-structure the selectedRowsOptions object.
@@ -345,8 +341,8 @@ export function tileResponseToData(data, server, theseTileIds) {
     // filter by NaN to exclude metadata portions of the tile request
     data[key].tilePos = keyParts
       .slice(2, keyParts.length)
-      .map(x => +x)
-      .filter(x => !Number.isNaN(x));
+      .map((x) => +x)
+      .filter((x) => !Number.isNaN(x));
     data[key].tilesetUid = keyParts[0];
 
     if ('dense' in data[key]) {
@@ -413,8 +409,8 @@ export function workerGetTiles(
         }
       : {}),
   })
-    .then(response => response.json())
-    .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       done(tileResponseToData(data, server, theseTileIds));
       /*
       const denses = Object.values(data)
@@ -425,5 +421,5 @@ export function workerGetTiles(
 
       // done.transfer(data, denses);
     })
-    .catch(err => console.warn('err:', err));
+    .catch((err) => console.warn('err:', err));
 }

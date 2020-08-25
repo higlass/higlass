@@ -9,7 +9,7 @@ export default class ConfigureSeriesMenu extends ContextMenuContainer {
   render() {
     return (
       <div
-        ref={c => {
+        ref={(c) => {
           this.div = c;
         }}
         onMouseLeave={this.props.handleMouseLeave}

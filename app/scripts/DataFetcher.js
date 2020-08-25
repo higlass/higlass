@@ -32,7 +32,7 @@ export default class DataFetcher {
     if (this.dataConfig.children) {
       // convert each child into an object
       this.dataConfig.children = dataConfig.children.map(
-        c => new DataFetcher(c, pubSub),
+        (c) => new DataFetcher(c, pubSub),
       );
     }
   }
@@ -74,12 +74,12 @@ export default class DataFetcher {
       this.dataConfig.filetype
     ) {
       return this.registerFileUrl(this.dataConfig)
-        .then(data => data.json())
-        .then(data => {
+        .then((data) => data.json())
+        .then((data) => {
           this.dataConfig.tilesetUid = data.uid;
           this.tilesetInfoAfterRegister(finished);
         })
-        .catch(rejected => {
+        .catch((rejected) => {
           console.error('Error registering url', rejected);
         });
     }
@@ -119,7 +119,7 @@ export default class DataFetcher {
         tileProxy.trackInfo(
           this.dataConfig.server,
           this.dataConfig.tilesetUid,
-          tilesetInfo => {
+          (tilesetInfo) => {
             // tileset infos are indxed by by tilesetUids, we can just resolve
             // that here before passing it back to the track
             this.dataConfig.tilesetInfo =
@@ -129,7 +129,7 @@ export default class DataFetcher {
               this.dataConfig.tilesetUid,
             );
           },
-          error => {
+          (error) => {
             finished({
               error,
             });
@@ -141,13 +141,13 @@ export default class DataFetcher {
       // this data source has children, so we need to wait to get
       // all of their tileset infos in order to return them to the track
       const promises = this.dataConfig.children.map(
-        x =>
-          new Promise(resolve => {
+        (x) =>
+          new Promise((resolve) => {
             x.tilesetInfo(resolve);
           }),
       );
 
-      Promise.all(promises).then(values => {
+      Promise.all(promises).then((values) => {
         // this is where we should check if all the children's tileset
         // infos match
         finished(values[0]);
@@ -199,13 +199,13 @@ export default class DataFetcher {
       this.fetchHorizontalSection(receivedTiles, tileIds, true);
     } else if (!this.dataConfig.children && this.dataConfig.tilesetUid) {
       // no children, just return the fetched tiles as is
-      const promise = new Promise(resolve =>
+      const promise = new Promise((resolve) =>
         tileProxy.fetchTilesDebounced(
           {
             id: slugid.nice(),
             server: this.dataConfig.server,
             done: resolve,
-            ids: tileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
+            ids: tileIds.map((x) => `${this.dataConfig.tilesetUid}.${x}`),
             options: this.dataConfig.options,
           },
           this.pubSub,
@@ -213,7 +213,7 @@ export default class DataFetcher {
         ),
       );
 
-      promise.then(returnedTiles => {
+      promise.then((returnedTiles) => {
         const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
         const newTiles = {};
 
@@ -230,9 +230,9 @@ export default class DataFetcher {
       // multiple child tracks, need to wait for all of them to
       // fetch their data before returning to the parent
       const promises = this.dataConfig.children.map(
-        x =>
+        (x) =>
           new Promise(
-            resolve => {
+            (resolve) => {
               x.fetchTilesDebounced(resolve, tileIds);
             },
             this.pubSub,
@@ -240,7 +240,7 @@ export default class DataFetcher {
           ),
       );
 
-      Promise.all(promises).then(returnedTiles => {
+      Promise.all(promises).then((returnedTiles) => {
         // if we're trying to divide two datasets,
         if (this.dataConfig.type === 'divided') {
           const newTiles = this.makeDivided(returnedTiles, tileIds);
@@ -352,7 +352,7 @@ export default class DataFetcher {
         this.dataConfig.tilesetInfo.resolutions
       ) {
         const sortedResolutions = this.dataConfig.tilesetInfo.resolutions
-          .map(x => +x)
+          .map((x) => +x)
           .sort((a, b) => b - a);
 
         yTiles = tileProxy.calculateTilesFromResolution(
@@ -386,19 +386,19 @@ export default class DataFetcher {
     }
 
     // actually fetch the new tileIds
-    const promise = new Promise(resolve =>
+    const promise = new Promise((resolve) =>
       tileProxy.fetchTilesDebounced(
         {
           id: slugid.nice(),
           server: this.dataConfig.server,
           done: resolve,
-          ids: newTileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
+          ids: newTileIds.map((x) => `${this.dataConfig.tilesetUid}.${x}`),
         },
         this.pubSub,
         true,
       ),
     );
-    promise.then(returnedTiles => {
+    promise.then((returnedTiles) => {
       // we've received some new tiles, but they're 2D
       // we need to extract the row corresponding to the data we need
 

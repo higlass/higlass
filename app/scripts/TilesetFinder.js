@@ -18,15 +18,17 @@ class TilesetFinder extends React.Component {
     // this.localTracks = TRACKS_INFO.filter
 
     // local tracks are ones that don't have a filetype associated with them
-    this.localTracks = TRACKS_INFO.filter(x => x.local && !x.hidden).map(x => {
-      const y = Object.assign({}, x);
-      y.datatype = x.datatype[0];
-      return y;
-    });
+    this.localTracks = TRACKS_INFO.filter((x) => x.local && !x.hidden).map(
+      (x) => {
+        const y = Object.assign({}, x);
+        y.datatype = x.datatype[0];
+        return y;
+      },
+    );
 
     this.augmentedTracksInfo = TRACKS_INFO;
     if (window.higlassTracksByType) {
-      Object.keys(window.higlassTracksByType).forEach(pluginTrackType => {
+      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
         this.augmentedTracksInfo.push(
           window.higlassTracksByType[pluginTrackType].config,
         );
@@ -35,15 +37,15 @@ class TilesetFinder extends React.Component {
 
     if (props.datatype) {
       this.localTracks = this.localTracks.filter(
-        x => x.datatype[0] === props.datatype,
+        (x) => x.datatype[0] === props.datatype,
       );
     } else {
       this.localTracks = this.localTracks.filter(
-        x => x.orientation === this.props.orientation,
+        (x) => x.orientation === this.props.orientation,
       );
     }
 
-    this.localTracks.forEach(x => {
+    this.localTracks.forEach((x) => {
       x.uuid = slugid.nice();
     });
 
@@ -86,7 +88,7 @@ class TilesetFinder extends React.Component {
      */
     const newOptions = existingOptions;
 
-    const entries = newEntries.map(ne => {
+    const entries = newEntries.map((ne) => {
       const ane = Object.assign({}, ne, {
         server: sourceServer,
         tilesetUid: ne.uuid,
@@ -99,7 +101,7 @@ class TilesetFinder extends React.Component {
       return ane;
     });
 
-    entries.forEach(ne => {
+    entries.forEach((ne) => {
       newOptions[ne.serverUidKey] = ne;
     });
 
@@ -122,19 +124,19 @@ class TilesetFinder extends React.Component {
       const datatypes = new Set(
         [].concat(
           ...this.augmentedTracksInfo
-            .filter(x => x.datatype)
-            .filter(x => {
+            .filter((x) => x.datatype)
+            .filter((x) => {
               return (
                 x.orientation === this.props.orientation ||
                 (this.props.orientation === '1d-vertical' &&
                   x.orientation === '1d-horizontal')
               );
             })
-            .map(x => x.datatype),
+            .map((x) => x.datatype),
         ),
       );
 
-      datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
+      datatypesQuery = [...datatypes].map((x) => `dt=${x}`).join('&');
     }
 
     if (!this.props.trackSourceServers) {
@@ -142,7 +144,7 @@ class TilesetFinder extends React.Component {
       return;
     }
 
-    this.props.trackSourceServers.forEach(sourceServer => {
+    this.props.trackSourceServers.forEach((sourceServer) => {
       tileProxy.json(
         `${sourceServer}/tilesets/?limit=10000&${datatypesQuery}`,
         (error, data) => {
@@ -327,14 +329,14 @@ class TilesetFinder extends React.Component {
 
     const form = (
       <form
-        onSubmit={evt => {
+        onSubmit={(evt) => {
           evt.preventDefault();
         }}
       >
         <div className="tileset-finder-search-bar">
           <span className="tileset-finder-label">Select tileset:</span>
           <input
-            ref={c => {
+            ref={(c) => {
               this.searchBox = c;
             }}
             className="tileset-finder-search-box"

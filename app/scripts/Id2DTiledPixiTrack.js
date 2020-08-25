@@ -150,13 +150,13 @@ class Id2DTiledPixiTrack extends HeatmapTiledPixiTrack {
 
   fetchNewTiles(toFetch) {
     // no real fetching involved... we just need to display the data
-    toFetch.forEach(x => {
+    toFetch.forEach((x) => {
       const key = x.remoteId;
       const keyParts = key.split('.');
 
       const data = {
         zoomLevel: keyParts[0],
-        tilePos: keyParts.slice(1, keyParts.length).map(keyPart => +keyPart),
+        tilePos: keyParts.slice(1, keyParts.length).map((keyPart) => +keyPart),
       };
 
       this.fetchedTiles[x.tileId] = x;

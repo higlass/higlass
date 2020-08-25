@@ -29,7 +29,7 @@ const getDefaultTrackForDatatype = (datatype, position, availableTracks) => {
     // If we found a default track type for this datatype,
     // get the definition of this track from the list of available tracks.
     usedTrack =
-      availableTracks.find(tt => tt.type === defaultTrackType) || usedTrack;
+      availableTracks.find((tt) => tt.type === defaultTrackType) || usedTrack;
   }
 
   return usedTrack;

@@ -147,12 +147,12 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
    * tile positions.
    */
   setVisibleTiles(tilePositions) {
-    this.visibleTiles = tilePositions.map(x => ({
+    this.visibleTiles = tilePositions.map((x) => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
     }));
 
-    this.visibleTileIds = new Set(this.visibleTiles.map(x => x.remoteId));
+    this.visibleTileIds = new Set(this.visibleTiles.map((x) => x.remoteId));
   }
 
   calculateVisibleTiles() {
@@ -269,8 +269,8 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
 
     // line needs to be scaled down so that it doesn't become huge
     tile.tileData
-      .filter(td => !(td.uid in this.drawnRects))
-      .forEach(td => {
+      .filter((td) => !(td.uid in this.drawnRects))
+      .forEach((td) => {
         drawAnnotation(
           this,
           graphics,
@@ -324,7 +324,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
         // this tile has no data
         if (!tile.tileData || !tile.tileData.length) continue;
 
-        tile.tileData.forEach(td => {
+        tile.tileData.forEach((td) => {
           const uid = td.uid + flipDiagonal;
           const gTile = document.createElement('g');
           gTile.setAttribute(

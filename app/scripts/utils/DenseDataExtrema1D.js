@@ -20,7 +20,7 @@ class DenseDataExtrema1D {
     // most cases
     this.numSubsets = Math.min(
       NUM_PRECOMP_SUBSETS_PER_1D_TTILE,
-      this.paddedTileSize
+      this.paddedTileSize,
     );
     this.subsetSize = this.paddedTileSize / this.numSubsets;
 
@@ -57,21 +57,21 @@ class DenseDataExtrema1D {
     if (start < firstSubsetIndex * this.subsetSize) {
       curMin = Math.min(
         curMin,
-        this.minNonZero(this.data, start, firstSubsetIndex * this.subsetSize)
+        this.minNonZero(this.data, start, firstSubsetIndex * this.subsetSize),
       );
     }
 
     // Use the precomputed values
     curMin = Math.min(
       curMin,
-      this.minNonZero(this.subsetMinimums, firstSubsetIndex, lastSubsetIndex)
+      this.minNonZero(this.subsetMinimums, firstSubsetIndex, lastSubsetIndex),
     );
 
     // Compute from original data if the end is not covered by precomputations
     if (end > lastSubsetIndex * this.subsetSize) {
       curMin = Math.min(
         curMin,
-        this.minNonZero(this.data, lastSubsetIndex * this.subsetSize, end)
+        this.minNonZero(this.data, lastSubsetIndex * this.subsetSize, end),
       );
     }
 
@@ -105,21 +105,21 @@ class DenseDataExtrema1D {
     if (start < firstSubsetIndex * this.subsetSize) {
       curMax = Math.max(
         curMax,
-        this.maxNonZero(this.data, start, firstSubsetIndex * this.subsetSize)
+        this.maxNonZero(this.data, start, firstSubsetIndex * this.subsetSize),
       );
     }
 
     // Use the precomputed values
     curMax = Math.max(
       curMax,
-      this.maxNonZero(this.subsetMaximums, firstSubsetIndex, lastSubsetIndex)
+      this.maxNonZero(this.subsetMaximums, firstSubsetIndex, lastSubsetIndex),
     );
 
     // Compute from original data if the end is not covered by precomputations
     if (end > lastSubsetIndex * this.subsetSize) {
       curMax = Math.max(
         curMax,
-        this.maxNonZero(this.data, lastSubsetIndex * this.subsetSize, end)
+        this.maxNonZero(this.data, lastSubsetIndex * this.subsetSize, end),
       );
     }
 

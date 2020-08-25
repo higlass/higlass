@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 
 const GLOBALS = {
-  PIXI
+  PIXI,
 };
 
 export default GLOBALS;

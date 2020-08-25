@@ -21,8 +21,8 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
 
     // Normalize colormap upfront to save 3 divisions per data point during the
     // rendering.
-    this.colorScale = this.colorScale.map(rgb =>
-      rgb.map(channel => channel / 255.0),
+    this.colorScale = this.colorScale.map((rgb) =>
+      rgb.map((channel) => channel / 255.0),
     );
   }
 

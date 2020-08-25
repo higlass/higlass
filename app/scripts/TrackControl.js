@@ -8,7 +8,7 @@ import { THEME_DARK } from './configs';
 // Styles
 import '../styles/TrackControl.module.scss';
 
-const getClassNames = props => {
+const getClassNames = (props) => {
   let className = props.isVisible ? 'track-control-active' : 'track-control';
 
   className += props.isAlignLeft ? ' track-control-left' : '';
@@ -22,7 +22,7 @@ const getClassNames = props => {
   return className;
 };
 
-const getButtonClassNames = props => {
+const getButtonClassNames = (props) => {
   let buttonClassName = 'track-control-button';
 
   buttonClassName += props.isVertical ? ' track-control-button-vertical' : '';
@@ -33,13 +33,13 @@ const getButtonClassNames = props => {
 let oldProps = null;
 let DragHandle = null;
 
-const TrackControl = props => {
+const TrackControl = (props) => {
   // Avoid constant recreating that button when the props didn't change.
   // Damn React could be a little smarter here...
   if (
     !props ||
     !oldProps ||
-    Object.keys(props).some(key => oldProps[key] !== props[key])
+    Object.keys(props).some((key) => oldProps[key] !== props[key])
   ) {
     oldProps = props;
     DragHandle = SortableHandle(() => (
@@ -65,7 +65,7 @@ const TrackControl = props => {
       {props.isMoveable && <DragHandle />}
 
       <svg
-        ref={c => {
+        ref={(c) => {
           imgConfig = c;
         }}
         className="no-zoom"
@@ -101,7 +101,7 @@ const TrackControl = props => {
       )}
 
       <svg
-        ref={c => {
+        ref={(c) => {
           imgClose = c;
         }}
         className="no-zoom"

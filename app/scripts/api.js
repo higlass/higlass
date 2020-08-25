@@ -10,7 +10,7 @@ import { getTrackObjectFromHGC } from './utils';
 
 import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from './configs';
 
-const forceUpdate = self => {
+const forceUpdate = (self) => {
   self.setState(self.state);
 };
 
@@ -22,7 +22,7 @@ const createApi = function api(context, pubSub) {
   const apiPubSub = createPubSub();
 
   const destroy = () => {
-    pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
+    pubSubs.forEach((subscription) => pubSub.unsubscribe(subscription));
     pubSubs = [];
   };
 
@@ -191,7 +191,7 @@ const createApi = function api(context, pubSub) {
        */
       setViewConfig(newViewConfig, resolveImmediately = false) {
         const viewsByUid = self.processViewConfig(newViewConfig);
-        const p = new Promise(resolve => {
+        const p = new Promise((resolve) => {
           this.requestsInFlight = 0;
 
           pubSubs.push(

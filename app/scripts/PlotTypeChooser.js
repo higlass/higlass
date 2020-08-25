@@ -75,14 +75,14 @@ class PlotTypeChooser extends React.Component {
     let AVAILABLE_TRACK_TYPES_LIST = 'No plot types available for track';
     const trackTypeToInfo = {};
 
-    TRACKS_INFO.forEach(ti => {
+    TRACKS_INFO.forEach((ti) => {
       trackTypeToInfo[ti.type] = ti;
     });
 
     if (this.AVAILABLE_TRACK_TYPES) {
       AVAILABLE_TRACK_TYPES_LIST = this.AVAILABLE_TRACK_TYPES.sort(
         (a, b) => a.type < b.type,
-      ).map(x => {
+      ).map((x) => {
         const thumbnail = trackTypeToInfo[x.type].thumbnail;
         const plotTypeClass =
           this.state.selectedPlotType.type === x.type
@@ -103,7 +103,7 @@ class PlotTypeChooser extends React.Component {
           <li
             key={x.type}
             className={plotTypeClass}
-            onClick={e => {
+            onClick={(e) => {
               this.setState({ selectedPlotType: x });
               this.props.onPlotTypeSelected(x.type);
             }}

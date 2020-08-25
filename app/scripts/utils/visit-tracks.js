@@ -9,9 +9,9 @@ const visitTracks = (
   tracks,
   visitor,
   inclCombinedTracks = true,
-  position = null
+  position = null,
 ) =>
-  tracks.forEach(track => {
+  tracks.forEach((track) => {
     if (track.type === 'combined') {
       if (inclCombinedTracks) {
         visitTracks(track.contents, visitor, inclCombinedTracks, position);

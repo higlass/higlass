@@ -5,7 +5,7 @@
  * returns {Element} A DOM SVG Element with all of the attributes set as to display
  * the given text.
  */
-export const pixiTextToSvg = pixiText => {
+export const pixiTextToSvg = (pixiText) => {
   const g = document.createElement('g');
   const t = document.createElement('text');
 
@@ -27,7 +27,7 @@ export const pixiTextToSvg = pixiText => {
   g.appendChild(t);
   g.setAttribute(
     'transform',
-    `translate(${pixiText.x},${pixiText.y})scale(${pixiText.scale.x},1)`
+    `translate(${pixiText.x},${pixiText.y})scale(${pixiText.scale.x},1)`,
   );
 
   return g;

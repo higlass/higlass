@@ -37,7 +37,7 @@ class DragListeningDiv extends React.Component {
         onDragLeave={() => {
           this.setState({ dragOnTop: false });
         }}
-        onDragOver={evt => {
+        onDragOver={(evt) => {
           evt.preventDefault();
         }}
         onDrop={() => {

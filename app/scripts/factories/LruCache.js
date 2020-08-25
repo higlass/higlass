@@ -265,7 +265,7 @@ Object.assign(LruCache.prototype, {
   removeAll,
   forEach,
   toJSON,
-  toString
+  toString,
 });
 
 export default LruCache;
