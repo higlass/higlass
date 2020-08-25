@@ -5,12 +5,7 @@ import ContextMenuItem from './ContextMenuItem';
 import NestedContextMenu from './NestedContextMenu';
 
 // Configs
-import {
-  OPTIONS_INFO,
-  THEME_DARK,
-  TRACKS_INFO,
-  TRACKS_INFO_BY_TYPE,
-} from './configs';
+import { OPTIONS_INFO, THEME_DARK, TRACKS_INFO_BY_TYPE } from './configs';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
@@ -187,13 +182,12 @@ export default class SeriesListMenu extends ContextMenuContainer {
     }
 
     // see which other tracks can display a similar datatype
-    const availableTrackTypes = TRACKS_INFO.filter(x => x.datatype)
+    const availableTrackTypes = Object.values(TRACKS_INFO_BY_TYPE)
+      .filter(x => x.datatype)
       .filter(x => x.orientation)
       .filter(x => x.datatype.includes(datatype))
       .filter(x => x.orientation === orientation)
       .map(x => x.type);
-
-    // console.log('availableTrackTypes:', availableTrackTypes);
 
     const menuItems = {};
     for (let i = 0; i < availableTrackTypes.length; i++) {
