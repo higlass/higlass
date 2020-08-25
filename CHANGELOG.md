@@ -1,5 +1,12 @@
 # Release notes
 
+## v1.11.2
+
+- Fix registration of plugin tracks
+- Don't try to render names of filler annotations
+
+_[Detailed changes since v1.11.1](https://github.com/higlass/higlass/compare/v1.11.1...v1.11.2)_
+
 ## v1.11.1
 
 - Fix multivec SVG export
