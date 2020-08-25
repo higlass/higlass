@@ -167,7 +167,9 @@ class Track {
 
   remove() {
     // Clear all pubSub subscriptions
-    this.pubSubs.forEach(subscription => this.pubSub.unsubscribe(subscription));
+    this.pubSubs.forEach((subscription) =>
+      this.pubSub.unsubscribe(subscription),
+    );
     this.pubSubs = [];
   }
 

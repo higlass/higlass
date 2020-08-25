@@ -23,7 +23,7 @@ class Chromosome2DAnnotations extends PixiTrack {
 
     ChromosomeInfo(
       chromInfoPath,
-      newChromInfo => {
+      (newChromInfo) => {
         this.chromInfo = newChromInfo;
         this.draw();
       },
@@ -56,7 +56,7 @@ class Chromosome2DAnnotations extends PixiTrack {
     // Regions have to follow the following form:
     // chrom1, start1, end1, chrom2, start2, end2, color-fill, color-line, min-width, min-height
     // If `color-line` is not given, `color-fill` is used
-    this.options.regions.forEach(region => {
+    this.options.regions.forEach((region) => {
       const id = region.slice(0, 6).join('-');
 
       if (!this.rects[id]) {
@@ -139,7 +139,7 @@ class Chromosome2DAnnotations extends PixiTrack {
         this.rects[id].mouseDownTime = performance.now();
       };
 
-      this.rects[id].graphics.mouseup = event => {
+      this.rects[id].graphics.mouseup = (event) => {
         if (
           performance.now() - this.rects[id].mouseDownTime <
           MAX_CLICK_DELAY

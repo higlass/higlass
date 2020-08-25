@@ -25,9 +25,9 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
     );
 
     const customItemsWrapped = this.props.customItems
-      ? React.Children.map(this.props.customItems, child =>
+      ? React.Children.map(this.props.customItems, (child) =>
           React.cloneElement(child, {
-            onMouseEnter: e => {
+            onMouseEnter: (e) => {
               this.handleOtherMouseEnter(e);
             },
           }),
@@ -39,7 +39,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
 
     return (
       <div
-        ref={c => {
+        ref={(c) => {
           this.div = c;
         }}
         data-menu-type="ViewContextMenu"
@@ -65,7 +65,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
               position: 'whole',
             })
           }
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
           {'Add Horizontal Rule'}
         </ContextMenuItem>
@@ -78,7 +78,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
               position: 'whole',
             })
           }
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
           {'Add Vertical Rule'}
         </ContextMenuItem>
@@ -92,7 +92,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
               position: 'whole',
             })
           }
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
           {'Add Cross Rule'}
         </ContextMenuItem>
@@ -102,7 +102,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
         {this.hasMatrixTrack(this.props.tracks) && (
           <ContextMenuItem
             onClick={this.handleAddHorizontalSection.bind(this)}
-            onMouseEnter={e => this.handleOtherMouseEnter(e)}
+            onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
           >
             {'Add Horizontal Cross Section'}
           </ContextMenuItem>
@@ -110,7 +110,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
         {this.hasMatrixTrack(this.props.tracks) && (
           <ContextMenuItem
             onClick={this.handleAddVerticalSection.bind(this)}
-            onMouseEnter={e => this.handleOtherMouseEnter(e)}
+            onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
           >
             {'Add Vertical Cross Section'}
           </ContextMenuItem>
@@ -124,12 +124,14 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
 
   hasMatrixTrack(tracks) {
     const trackList = expandCombinedTracks(this.props.tracks);
-    return trackList.filter(track => track.type === 'heatmap').length > 0;
+    return trackList.filter((track) => track.type === 'heatmap').length > 0;
   }
 
   handleAddHorizontalSection() {
     const trackList = expandCombinedTracks(this.props.tracks);
-    const matrixTrack = trackList.filter(track => track.type === 'heatmap')[0];
+    const matrixTrack = trackList.filter(
+      (track) => track.type === 'heatmap',
+    )[0];
 
     this.props.onAddTrack({
       type: 'horizontal-rule',
@@ -154,7 +156,9 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
 
   handleAddVerticalSection() {
     const trackList = expandCombinedTracks(this.props.tracks);
-    const matrixTrack = trackList.filter(track => track.type === 'heatmap')[0];
+    const matrixTrack = trackList.filter(
+      (track) => track.type === 'heatmap',
+    )[0];
 
     this.props.onAddTrack({
       type: 'vertical-rule',

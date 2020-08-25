@@ -432,15 +432,15 @@ class CenterTrack extends React.Component {
 
   render() {
     const isBrushable = this.props.tracks
-      .map(track => IS_TRACK_RANGE_SELECTABLE(track))
+      .map((track) => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
 
     // Althought the tracks property is an array and could contain more than one
     // track, in practice there is only one combined track.
-    const menuClash = this.props.tracks.some(track => {
+    const menuClash = this.props.tracks.some((track) => {
       if (track.contents) {
         // if this is a combined track, iterate over children
-        return track.contents.some(subTrack => {
+        return track.contents.some((subTrack) => {
           if (subTrack.type === 'heatmap') {
             return subTrack.options.colorbarPosition === 'topRight';
           }
@@ -491,19 +491,19 @@ class CenterTrack extends React.Component {
             xmlns="http://www.w3.org/2000/svg"
           >
             <g
-              ref={el => {
+              ref={(el) => {
                 this.brushElX = select(el);
               }}
               styleName={rangeSelectorGroup1dClass}
             />
             <g
-              ref={el => {
+              ref={(el) => {
                 this.brushElY = select(el);
               }}
               styleName={rangeSelectorGroup1dClass}
             />
             <g
-              ref={el => {
+              ref={(el) => {
                 this.brushElXY = select(el);
               }}
               styleName={rangeSelectorGroup2dClass}
@@ -541,8 +541,8 @@ CenterTrack.defaultProps = {
   is1dRangeSelection: false,
   rangeSelectionEnd: PropTypes.bool,
   isRangeSelectionActive: false,
-  scaleX: x => x,
-  scaleY: x => x,
+  scaleX: (x) => x,
+  scaleY: (x) => x,
 };
 
 CenterTrack.propTypes = {

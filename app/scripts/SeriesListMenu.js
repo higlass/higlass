@@ -163,7 +163,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
     // if we've loaded external track types, list them here
     if (window.higlassTracksByType) {
       // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
-      Object.keys(window.higlassTracksByType).forEach(pluginTrackType => {
+      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
         TRACKS_INFO_BY_TYPE[pluginTrackType] =
           window.higlassTracksByType[pluginTrackType].config;
       });
@@ -259,7 +259,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
           onClick={() =>
             this.props.onChangeTrackData(this.props.series.uid, newData)
           }
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
           styleName="context-menu-item"
         >
           <span styleName="context-menu-span">Remove divisor</span>
@@ -270,7 +270,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
     return (
       <ContextMenuItem
         onClick={() => this.props.onAddDivisor(this.props.series)}
-        onMouseEnter={e => this.handleOtherMouseEnter(e)}
+        onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         styleName="context-menu-item"
       >
         <span styleName="context-menu-span">Divide by</span>
@@ -295,7 +295,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
               this.props.track.uid,
             )
           }
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
           styleName="context-menu-item"
         >
           <span styleName="context-menu-span">Export Data</span>
@@ -311,7 +311,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
           this.props.onCloseTrack(this.props.series.uid);
           this.props.onAddSeries(this.props.hostTrack.uid);
         }}
-        onMouseEnter={e => this.handleOtherMouseEnter(e)}
+        onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         styleName="context-menu-item"
       >
         <span styleName="context-menu-span">Replace Series</span>
@@ -323,7 +323,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
     return (
       <div
-        ref={c => {
+        ref={(c) => {
           this.div = c;
         }}
         data-menu-type="SeriesListMenu"
@@ -336,13 +336,13 @@ export default class SeriesListMenu extends ContextMenuContainer {
       >
         <ContextMenuItem
           onClick={() => {}}
-          onMouseEnter={e =>
+          onMouseEnter={(e) =>
             this.handleItemMouseEnter(e, {
               option: 'configure-series',
               value: this.props.track,
             })
           }
-          onMouseLeave={e => this.handleMouseLeave(e)}
+          onMouseLeave={(e) => this.handleMouseLeave(e)}
         >
           {'Configure Series'}
           <svg styleName="play-icon">
@@ -352,13 +352,13 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
         <ContextMenuItem
           onClick={() => {}}
-          onMouseEnter={e =>
+          onMouseEnter={(e) =>
             this.handleItemMouseEnter(e, {
               option: 'track-type',
               value: this.props.track,
             })
           }
-          onMouseLeave={e => this.handleMouseLeave(e)}
+          onMouseLeave={(e) => this.handleMouseLeave(e)}
           styleName="context-menu-item"
         >
           <span styleName="context-menu-span">
@@ -375,7 +375,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
 
         <ContextMenuItem
           onClick={this.props.onCloseTrack}
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
           styleName="context-menu-item"
         >
           <span styleName="context-menu-span">Close Series</span>

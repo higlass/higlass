@@ -7,7 +7,7 @@ import { mean, sum, variance, deviation } from 'd3-array';
  * the mean function will be used, and a console warning will be thrown.
  * @returns {function} The function of interest as determined by the string,
  */
-const getAggregationFunction = name => {
+const getAggregationFunction = (name) => {
   let aggFunc;
   const lowerCaseName = name ? name.toLowerCase() : name;
   switch (lowerCaseName) {
@@ -26,7 +26,7 @@ const getAggregationFunction = name => {
     default:
       aggFunc = mean;
       console.warn(
-        'Encountered an unsupported selectedRowsAggregationMode option.'
+        'Encountered an unsupported selectedRowsAggregationMode option.',
       );
   }
   return aggFunc;

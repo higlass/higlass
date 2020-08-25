@@ -48,7 +48,7 @@ class AxisPixi {
     ) {
       this.tickFormat = format('.2');
     } else {
-      this.tickFormat = x => x;
+      this.tickFormat = (x) => x;
     }
 
     while (i < this.tickValues.length) {

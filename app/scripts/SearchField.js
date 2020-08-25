@@ -5,7 +5,7 @@ import { absToChr } from './utils';
 class SearchField {
   constructor(chromInfo) {
     this.chromInfo = chromInfo;
-    this.chromInfoBisector = bisector(d => d.pos).left;
+    this.chromInfoBisector = bisector((d) => d.pos).left;
   }
 
   scalesToPositionText(xScale, yScale, twoD = false) {
@@ -192,7 +192,7 @@ class SearchField {
     // shitty ass regex to deal with negative positions
     // (which aren't even valid genomic coordinates)
     let parts = term.split('-'); // split on a
-    parts = parts.filter(d => d.length > 0);
+    parts = parts.filter((d) => d.length > 0);
 
     let range = null;
 

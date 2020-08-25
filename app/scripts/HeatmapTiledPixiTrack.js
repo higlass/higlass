@@ -216,9 +216,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     ];
 
     if (this.chromInfo) {
-      center = center.map(pos => absToChr(pos, this.chromInfo).slice(0, 2));
-      xRange = xRange.map(pos => absToChr(pos, this.chromInfo).slice(0, 2));
-      yRange = yRange.map(pos => absToChr(pos, this.chromInfo).slice(0, 2));
+      center = center.map((pos) => absToChr(pos, this.chromInfo).slice(0, 2));
+      xRange = xRange.map((pos) => absToChr(pos, this.chromInfo).slice(0, 2));
+      yRange = yRange.map((pos) => absToChr(pos, this.chromInfo).slice(0, 2));
     }
 
     this.onMouseMoveZoom({
@@ -362,7 +362,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
 
-    this.visibleAndFetchedTiles().forEach(tile => this.renderTile(tile));
+    this.visibleAndFetchedTiles().forEach((tile) => this.renderTile(tile));
 
     // hopefully draw isn't rerendering all the tiles
     // this.drawColorbar();
@@ -522,7 +522,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     this.gColorscaleBrush
       .selectAll('.handle--custom')
-      .attr('y', d =>
+      .attr('y', (d) =>
         d.type === 'n'
           ? event.selection[0]
           : event.selection[1] - BRUSH_HEIGHT / 2,
@@ -653,10 +653,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
       this.gColorscaleBrush.attr(
         'transform',
-        `translate(${this.pColorbarArea.x + BRUSH_MARGIN},${this.pColorbarArea
-          .y +
-          this.pColorbar.y -
-          1})`,
+        `translate(${this.pColorbarArea.x + BRUSH_MARGIN},${
+          this.pColorbarArea.y + this.pColorbar.y - 1
+        })`,
       );
     }
 
@@ -676,10 +675,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
       this.gColorscaleBrush.attr(
         'transform',
-        `translate(${this.pColorbarArea.x +
-          this.pColorbar.x +
-          COLORBAR_WIDTH +
-          2},${this.pColorbarArea.y + this.pColorbar.y - 1})`,
+        `translate(${
+          this.pColorbarArea.x + this.pColorbar.x + COLORBAR_WIDTH + 2
+        },${this.pColorbarArea.y + this.pColorbar.y - 1})`,
       );
     }
 
@@ -698,10 +696,12 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
       this.gColorscaleBrush.attr(
         'transform',
-        `translate(${this.pColorbarArea.x +
+        `translate(${
+          this.pColorbarArea.x +
           this.pColorbar.x +
           COLORBAR_WIDTH +
-          BRUSH_COLORBAR_GAP},${this.pColorbarArea.y + this.pColorbar.y - 1})`,
+          BRUSH_COLORBAR_GAP
+        },${this.pColorbarArea.y + this.pColorbar.y - 1})`,
       );
     }
 
@@ -720,9 +720,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
       this.gColorscaleBrush.attr(
         'transform',
-        `translate(${this.pColorbarArea.x + 2},${this.pColorbarArea.y +
-          this.pColorbar.y -
-          1})`,
+        `translate(${this.pColorbarArea.x + 2},${
+          this.pColorbarArea.y + this.pColorbar.y - 1
+        })`,
       );
     }
 
@@ -1011,7 +1011,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     ]);
 
     // iterate through all the visible tiles
-    this.visibleAndFetchedTiles().forEach(tile => {
+    this.visibleAndFetchedTiles().forEach((tile) => {
       const tilePos = tile.mirrored
         ? [tile.tileData.tilePos[1], tile.tileData.tilePos[0]]
         : tile.tileData.tilePos;
@@ -1193,7 +1193,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.limitedValueScale.domain(),
       pseudocount, // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
-      pixData => {
+      (pixData) => {
         // the tileData has been converted to pixData by the worker script and
         // needs to be loaded as a sprite
         if (pixData) {
@@ -1266,8 +1266,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     super.refScalesChanged(refXScale, refYScale);
 
     objVals(this.fetchedTiles)
-      .filter(tile => tile.sprite)
-      .forEach(tile =>
+      .filter((tile) => tile.sprite)
+      .forEach((tile) =>
         this.setSpriteProperties(
           tile.sprite,
           tile.tileData.zoomLevel,
@@ -1336,7 +1336,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   // It is used to determine if we should check for a new value scale in
   // the case of continuous scaling
   getVisiblePartOfUppLeftTile() {
-    const tilePositions = this.visibleAndFetchedTiles().map(tile => {
+    const tilePositions = this.visibleAndFetchedTiles().map((tile) => {
       const tilePos = tile.mirrored
         ? [tile.tileData.tilePos[1], tile.tileData.tilePos[0]]
         : tile.tileData.tilePos;
@@ -1361,7 +1361,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const subsetSize = this.binsPerTile() / numSubsets;
 
     const upperLeftTile = this.visibleAndFetchedTiles().filter(
-      tile => tile.tileId === minTilePosition[2],
+      (tile) => tile.tileId === minTilePosition[2],
     )[0];
 
     const upperLeftTileInd = this.getIndicesOfVisibleDataInTile(upperLeftTile);
@@ -1431,7 +1431,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   minVisibleValue(ignoreFixedScale = false) {
-    const minimumsPerTile = this.visibleAndFetchedTiles().map(tile => {
+    const minimumsPerTile = this.visibleAndFetchedTiles().map((tile) => {
       if (tile.tileData.denseDataExtrema === undefined) {
         return null;
       }
@@ -1456,7 +1456,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   maxVisibleValue(ignoreFixedScale = false) {
-    const maximumsPerTile = this.visibleAndFetchedTiles().map(tile => {
+    const maximumsPerTile = this.visibleAndFetchedTiles().map((tile) => {
       if (tile.tileData.denseDataExtrema === undefined) {
         return null;
       }
@@ -1623,7 +1623,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // this.zoomLevel = 0;
     if (this.tilesetInfo.resolutions) {
       const sortedResolutions = this.tilesetInfo.resolutions
-        .map(x => +x)
+        .map((x) => +x)
         .sort((a, b) => b - a);
 
       this.xTiles = tileProxy.calculateTilesFromResolution(
@@ -1709,7 +1709,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       const atcX = absToChr(dataX, this.chromInfo);
       const atcY = absToChr(dataY, this.chromInfo);
 
-      const f = n => format(`.${formatResolution}s`)(n);
+      const f = (n) => format(`.${formatResolution}s`)(n);
 
       positionText += `${atcX[0]}:${f(atcX[1])} & ${atcY[0]}:${f(atcY[1])}`;
       positionText += '<br/>';
@@ -1752,7 +1752,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     if (this.tilesetInfo.resolutions) {
       const sortedResolutions = this.tilesetInfo.resolutions
-        .map(x => +x)
+        .map((x) => +x)
         .sort((a, b) => b - a);
 
       const chosenResolution = sortedResolutions[zoomLevel];

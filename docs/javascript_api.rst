@@ -257,6 +257,8 @@ API Functions
 
 .. js:autofunction:: public.on
 
+.. js:autofunction:: public.off
+
 .. js:autofunction:: setBroadcastMousePositionGlobally
 
 .. js:autofunction:: setShowGlobalMousePosition

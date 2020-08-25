@@ -11,6 +11,6 @@
  * @return  {Function}   Acessor function converting the orignal 1D index into
  *   the transposed index
  */
-const accessorTransposition = (x, y) => i => (i % x) * y + Math.floor(i / x);
+const accessorTransposition = (x, y) => (i) => (i % x) * y + Math.floor(i / x);
 
 export default accessorTransposition;

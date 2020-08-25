@@ -104,7 +104,7 @@ function contextMenu(menu, optsIn) {
       .data(typeof menu === 'function' ? menu(data) : menu)
       .enter()
       .append('li')
-      .attr('class', d => {
+      .attr('class', (d) => {
         let ret = '';
         if (d.divider) {
           ret += ' is-divider';
@@ -120,7 +120,7 @@ function contextMenu(menu, optsIn) {
         }
         return ret;
       })
-      .html(d => {
+      .html((d) => {
         if (d.divider) {
           return '<hr>';
         }
@@ -131,7 +131,7 @@ function contextMenu(menu, optsIn) {
         }
         return typeof d.title === 'string' ? d.title : d.title(data);
       })
-      .on('click', d => {
+      .on('click', (d) => {
         if (d.disabled) return; // do nothing if disabled
         if (!d.action) return; // headers have no "action"
         d.action(elm, data, index, mousePos);

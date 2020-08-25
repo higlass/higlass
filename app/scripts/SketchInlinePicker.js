@@ -22,7 +22,7 @@ class SketchInlinePicker extends React.Component {
   }
 
   handleClick() {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       displayColorPicker: !prevState.displayColorPicker,
     }));
   }

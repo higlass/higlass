@@ -12,8 +12,8 @@ const valueToColor = (
   valueScale,
   colorScale,
   pseudoCounts = 0,
-  eps = 0.000001
-) => value => {
+  eps = 0.000001,
+) => (value) => {
   let rgbIdx = 255;
 
   if (value > eps) {
@@ -21,7 +21,7 @@ const valueToColor = (
     // (rgbIdx 255)
     rgbIdx = Math.max(
       0,
-      Math.min(255, Math.floor(valueScale(value + pseudoCounts)))
+      Math.min(255, Math.floor(valueScale(value + pseudoCounts))),
     );
   }
 

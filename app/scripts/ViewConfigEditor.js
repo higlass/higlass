@@ -53,7 +53,7 @@ class ViewConfigEditor extends React.Component {
   }
 
   componentWillUnmount() {
-    this.pubSubs.forEach(subscription =>
+    this.pubSubs.forEach((subscription) =>
       this.props.pubSub.unsubscribe(subscription),
     );
     this.pubSubs = [];
@@ -110,7 +110,7 @@ class ViewConfigEditor extends React.Component {
     }
     if (validate.errors) {
       console.warn(JSON.stringify(validate.errors, null, 2));
-      validate.errors.forEach(e => {
+      validate.errors.forEach((e) => {
         logMsgs.push({ type: 'Warning', msg: JSON.stringify(e, null, 2) });
       });
     }
@@ -188,16 +188,16 @@ class ViewConfigEditor extends React.Component {
           </Button>
         </header>
         <div
-          ref={c => {
+          ref={(c) => {
             this.editorWrap = c;
           }}
           styleName="view-config-editor"
         >
           <Editor
-            ref={c => {
+            ref={(c) => {
               this.editor = c;
             }}
-            highlight={code => highlight(code, languages.json)}
+            highlight={(code) => highlight(code, languages.json)}
             onValueChange={this.handleChangeBound}
             padding={10}
             style={{
@@ -218,7 +218,7 @@ class ViewConfigEditor extends React.Component {
             styleName="view-config-log-header"
           >
             {`Log Messages (${
-              this.state.logMsgs.filter(d => d.type !== 'Success').length
+              this.state.logMsgs.filter((d) => d.type !== 'Success').length
             })`}
           </div>
           <div

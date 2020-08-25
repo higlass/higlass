@@ -35,7 +35,7 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(
 
     return (
       <div
-        ref={c => {
+        ref={(c) => {
           this.div = c;
         }}
         data-menu-type="ConfigTrackMenu"
@@ -57,7 +57,7 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(
         <ContextMenuItem
           contextMenu={this}
           onClick={() => this.props.onLockValueScale(this.props.tracks[0].uid)}
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
           {'Lock Value Scale With'}
         </ContextMenuItem>
@@ -67,7 +67,7 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(
           onClick={() =>
             this.props.onUnlockValueScale(this.props.tracks[0].uid)
           }
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
           {'Unlock Value Scale'}
         </ContextMenuItem>
@@ -77,7 +77,7 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(
         <ContextMenuItem
           contextMenu={this}
           onClick={() => this.props.onAddSeries(this.props.tracks[0].uid)}
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
           {'Add Series'}
         </ContextMenuItem>

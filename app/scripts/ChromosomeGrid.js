@@ -33,7 +33,7 @@ class ChromosomeGrid extends PixiTrack {
 
     ChromosomeInfo(
       chromSizesPath,
-      newChromInfo => {
+      (newChromInfo) => {
         this.chromInfo = newChromInfo;
 
         this.searchField = new SearchField(this.chromInfo);

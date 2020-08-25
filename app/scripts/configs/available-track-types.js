@@ -22,7 +22,7 @@ import { DATATYPE_TO_TRACK_TYPE } from '.';
 export const AVAILABLE_TRACK_TYPES = (datatypes, orientation) => {
   const datatypesToTrackTypes = DATATYPE_TO_TRACK_TYPE(orientation);
   let availableTrackTypes = new Set(
-    Object.values(datatypesToTrackTypes).flatMap(x => x)
+    Object.values(datatypesToTrackTypes).flatMap((x) => x),
   );
 
   for (const datatype of datatypes) {
@@ -31,8 +31,8 @@ export const AVAILABLE_TRACK_TYPES = (datatypes, orientation) => {
 
     availableTrackTypes = new Set(
       [...availableTrackTypes].filter(
-        x => x.datatype.filter(y => dataTypeSet.has(y)).length > 0
-      )
+        (x) => x.datatype.filter((y) => dataTypeSet.has(y)).length > 0,
+      ),
     );
   }
 

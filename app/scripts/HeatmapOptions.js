@@ -39,7 +39,7 @@ class HeatmapOptions extends React.Component {
    * Add a color to the end
    */
   handleAddColor() {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       colors: prevState.colors.concat(
         prevState.colors[prevState.colors.length - 1],
       ),
@@ -50,7 +50,7 @@ class HeatmapOptions extends React.Component {
    * Remove one of the colors from the color map
    */
   handleRemoveColor(i) {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       colors: prevState.colors
         .slice(0, i)
         .concat(prevState.colors.slice(i + 1)),
@@ -141,9 +141,9 @@ class HeatmapOptions extends React.Component {
             <SketchInlinePicker
               key={i}
               color={this.state.colors[i]}
-              onChange={c => {
+              onChange={(c) => {
                 this.setState(
-                  prevState => {
+                  (prevState) => {
                     const colors = prevState.colors.slice();
                     colors[i] = c;
                     return { colors };

@@ -7,7 +7,7 @@ const ndarrayAssign = (target, source) => {
   if (isScalar) {
     cwise({
       args: ['array', 'scalar'],
-      body: 'function assigns(a, s) { a = s; }'
+      body: 'function assigns(a, s) { a = s; }',
     })(target, numSource);
   } else {
     const ty = target.shape[0];
@@ -21,14 +21,14 @@ const ndarrayAssign = (target, source) => {
         ty,
         sy,
         tx,
-        sx
+        sx,
       );
       return;
     }
 
     cwise({
       args: ['array', 'array'],
-      body: 'function assign(a, b) { a = b; }'
+      body: 'function assign(a, b) { a = b; }',
     })(target, source);
   }
 };

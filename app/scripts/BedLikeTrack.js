@@ -90,7 +90,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       if (!this.options || !this.options.valueColumn) {
         // no value column so we can break entries up into separate
         // plus and minus strand segments
-        const segments = tile.tileData.map(x => {
+        const segments = tile.tileData.map((x) => {
           const chrOffset = +x.chrOffset;
 
           return {
@@ -102,12 +102,14 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           };
         });
 
-        plusStrandRows = segmentsToRows(segments.filter(x => x.strand === '+'));
+        plusStrandRows = segmentsToRows(
+          segments.filter((x) => x.strand === '+'),
+        );
         minusStrandRows = segmentsToRows(
-          segments.filter(x => x.strand === '-'),
+          segments.filter((x) => x.strand === '-'),
         );
       } else {
-        plusStrandRows = [tile.tileData.map(x => ({ value: x }))];
+        plusStrandRows = [tile.tileData.map((x) => ({ value: x }))];
       }
 
       tile.plusStrandRows = plusStrandRows;
@@ -236,7 +238,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   allVisibleRects() {
     const allRects = {};
 
-    Object.values(this.fetchedTiles).forEach(x => {
+    Object.values(this.fetchedTiles).forEach((x) => {
       if (!x.plusStrandRows) return;
 
       for (const row of x.plusStrandRows[0]) {
@@ -439,9 +441,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         ? +this.options.colorEncodingRange[1]
         : this.maxVisibleValueInTiles(+this.options.colorEncoding);
 
-      this.colorValueScale = scaleLinear()
-        .domain([min, max])
-        .range([0, 255]);
+      this.colorValueScale = scaleLinear().domain([min, max]).range([0, 255]);
     }
   }
 
@@ -691,7 +691,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       );
     }
 
-    trackUtils.stretchRects(this, [x => x.rectGraphics]);
+    trackUtils.stretchRects(this, [(x) => x.rectGraphics]);
   }
 
   calculateZoomLevel() {
@@ -719,16 +719,16 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     let min = Math.min.apply(
       null,
       visibleAndFetchedIds
-        .map(x => this.fetchedTiles[x])
-        .filter(x => x.tileData && x.tileData.length)
-        .map(x =>
+        .map((x) => this.fetchedTiles[x])
+        .filter((x) => x.tileData && x.tileData.length)
+        .map((x) =>
           Math.min.apply(
             null,
             x.tileData
               .sort((a, b) => b.importance - a.importance)
               .slice(0, MAX_TILE_ENTRIES)
-              .map(y => +y.fields[valueColumn - 1])
-              .filter(y => !Number.isNaN(y)),
+              .map((y) => +y.fields[valueColumn - 1])
+              .filter((y) => !Number.isNaN(y)),
           ),
         ),
     );
@@ -751,16 +751,16 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     let max = Math.max.apply(
       null,
       visibleAndFetchedIds
-        .map(x => this.fetchedTiles[x])
-        .filter(x => x.tileData && x.tileData.length)
-        .map(x =>
+        .map((x) => this.fetchedTiles[x])
+        .filter((x) => x.tileData && x.tileData.length)
+        .map((x) =>
           Math.max.apply(
             null,
             x.tileData
               .sort((a, b) => b.importance - a.importance)
               .slice(0, MAX_TILE_ENTRIES)
-              .map(y => +y.fields[valueColumn - 1])
-              .filter(y => !Number.isNaN(y)),
+              .map((y) => +y.fields[valueColumn - 1])
+              .filter((y) => !Number.isNaN(y)),
           ),
         ),
     );
@@ -787,16 +787,16 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     const values = []
       .concat(
         ...visibleAndFetchedIds
-          .map(x => this.fetchedTiles[x])
-          .filter(x => x.tileData && x.tileData.length)
-          .map(x =>
+          .map((x) => this.fetchedTiles[x])
+          .filter((x) => x.tileData && x.tileData.length)
+          .map((x) =>
             x.tileData
               .sort((a, b) => b.importance - a.importance)
               .slice(0, MAX_TILE_ENTRIES)
-              .map(y => +y.fields[valueColumn - 1]),
+              .map((y) => +y.fields[valueColumn - 1]),
           ),
       )
-      .filter(x => x > 0);
+      .filter((x) => x > 0);
 
     this.medianVisibleValue = median(values);
   }
@@ -822,7 +822,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         return;
       }
 
-      trackUtils.stretchRects(this, [x => x.rectGraphics]);
+      trackUtils.stretchRects(this, [(x) => x.rectGraphics]);
 
       // move the texts
 
@@ -833,7 +833,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       }
 
       if (tile.tileData && tile.tileData.length) {
-        tile.tileData.forEach(td => {
+        tile.tileData.forEach((td) => {
           if (!tile.texts) {
             // tile probably hasn't been initialized yet
             return;
@@ -944,7 +944,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         continue;
       }
 
-      tile.tileData.forEach(td => {
+      tile.tileData.forEach((td) => {
         const zoomLevel = +tile.tileId.split('.')[0];
 
         const gTile = document.createElement('g');
@@ -1022,7 +1022,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   /** Move event for the y-axis */
   movedY(dY) {
-    Object.values(this.fetchedTiles).forEach(tile => {
+    Object.values(this.fetchedTiles).forEach((tile) => {
       const vst = this.valueScaleTransform;
       const { y, k } = vst;
       const height = this.dimensions[1];
@@ -1065,7 +1065,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.vertK = k1;
     this.vertY = t1;
 
-    Object.values(this.fetchedTiles).forEach(tile => {
+    Object.values(this.fetchedTiles).forEach((tile) => {
       if (toStretch) this.renderTile(tile);
 
       tile.rectGraphics.scale.y = k1;

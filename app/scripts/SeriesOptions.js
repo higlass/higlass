@@ -23,7 +23,7 @@ export class SeriesOptions extends React.Component {
   }
 
   toggleAdvancedVisible() {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       advancedVisible: !prevState.advancedVisible,
     }));
   }
@@ -37,7 +37,7 @@ export class SeriesOptions extends React.Component {
         toggleCollapse={this.toggleAdvancedVisible.bind(this)}
       >
         <Checkbox
-          ref={c => {
+          ref={(c) => {
             this.normalizeCheckbox = c;
           }}
           onChange={this.handleNormalizeCheckboxChanged.bind(this)}
@@ -48,7 +48,7 @@ export class SeriesOptions extends React.Component {
         <Collapse in={this.state.normalizeChecked}>
           <Panel>
             <TilesetFinder
-              onTrackChosen={value =>
+              onTrackChosen={(value) =>
                 this.props.onTrackChosen(value, this.props.position)
               }
               selectedTilesetChanged={this.handleNormalizeTilesetChanged.bind(

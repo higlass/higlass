@@ -1,4 +1,4 @@
-export const invGudermannian = y => Math.log(Math.tan((y + Math.PI / 2) / 2));
+export const invGudermannian = (y) => Math.log(Math.tan((y + Math.PI / 2) / 2));
 
 /**
  * Translate latitude to Y in the Mercator projection

@@ -181,10 +181,10 @@ class HorizontalTiledPlot extends React.Component {
   /* ------------------------------ Rendering ------------------------------- */
 
   render() {
-    const height = this.props.tracks.map(x => x.height).reduce(sum, 0);
+    const height = this.props.tracks.map((x) => x.height).reduce(sum, 0);
 
     const isBrushable = this.props.tracks
-      .map(track => IS_TRACK_RANGE_SELECTABLE(track))
+      .map((track) => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
 
     const rangeSelectorClass = this.props.isRangeSelectionActive
@@ -198,7 +198,7 @@ class HorizontalTiledPlot extends React.Component {
       >
         {isBrushable && (
           <svg
-            ref={el => {
+            ref={(el) => {
               this.brushEl = select(el);
             }}
             style={{
@@ -219,7 +219,7 @@ class HorizontalTiledPlot extends React.Component {
           helperClass={stylesPlot.stylizedHelper}
           itemClass={stylesPlot.stylizedItem}
           itemReactClass={HorizontalItem}
-          items={this.props.tracks.map(d => ({
+          items={this.props.tracks.map((d) => ({
             configMenuVisible: d.uid === this.props.configTrackMenuId,
             uid: d.uid || slugid.nice(),
             width: this.props.width,

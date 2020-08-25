@@ -72,7 +72,7 @@ class Annotations1dTrack extends PixiTrack {
     // Regions have to follow the following form:
     // start, end, fill, stroke, fillOpacity, strokeOpcaity, min-size
     // If `color-line` is not given, `color-fill` is used
-    this.options.regions.forEach(region => {
+    this.options.regions.forEach((region) => {
       const id = `${region[0]}-${region[1]}`;
 
       if (!this.rects[id]) {
@@ -133,7 +133,7 @@ class Annotations1dTrack extends PixiTrack {
         graphics.lineStyle(1, strokeHex, 0);
         graphics.beginFill(strokeHex, +region[5] || globalStrokeOpacity);
 
-        strokePos.forEach(pos => {
+        strokePos.forEach((pos) => {
           if (pos === 'top' || pos === 'around') {
             if (this.isVertical) {
               graphics.drawRect(0, start, globalStrokeWidth, width);
@@ -232,7 +232,7 @@ class Annotations1dTrack extends PixiTrack {
         this.rects[id].mouseDownTime = performance.now();
       };
 
-      this.rects[id].graphics.mouseup = event => {
+      this.rects[id].graphics.mouseup = (event) => {
         if (
           performance.now() - this.rects[id].mouseDownTime <
           MAX_CLICK_DELAY
@@ -249,8 +249,8 @@ class Annotations1dTrack extends PixiTrack {
     // Remove outdated rects, i.e., rects whose time stamp is not the current
     // time stamp stored above.
     Object.values(this.rects)
-      .filter(rect => rect.timeStamp !== timeStamp)
-      .forEach(rect => graphics.removeChild(rect.graphics));
+      .filter((rect) => rect.timeStamp !== timeStamp)
+      .forEach((rect) => graphics.removeChild(rect.graphics));
   }
 
   setPosition(newPosition) {

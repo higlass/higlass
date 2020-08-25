@@ -80,12 +80,12 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
      * @param tiles: A set of tiles which will be considered the currently visible
      * tile positions.
      */
-    this.visibleTiles = tilePositions.map(x => ({
+    this.visibleTiles = tilePositions.map((x) => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
     }));
 
-    this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
+    this.visibleTileIds = new Set(this.visibleTiles.map((x) => x.tileId));
   }
 
   calculateVisibleTiles() {
@@ -100,7 +100,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
     if (this.tilesetInfo.resolutions) {
       const sortedResolutions = this.tilesetInfo.resolutions
-        .map(x => +x)
+        .map((x) => +x)
         .sort((a, b) => b - a);
 
       const xTiles = tileProxy.calculateTilesFromResolution(
@@ -110,7 +110,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
         this.tilesetInfo.max_pos[0],
       );
 
-      const tiles = xTiles.map(x => [this.zoomLevel, x]);
+      const tiles = xTiles.map((x) => [this.zoomLevel, x]);
       this.setVisibleTiles(tiles);
       return;
     }
@@ -126,7 +126,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
       this.tilesetInfo.max_width,
     );
 
-    const tiles = xTiles.map(x => [this.zoomLevel, x]);
+    const tiles = xTiles.map((x) => [this.zoomLevel, x]);
     this.setVisibleTiles(tiles);
   }
 
@@ -144,7 +144,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
       const binsPerTile = binsPerTileIn || BINS_PER_TILE;
 
       const sortedResolutions = this.tilesetInfo.resolutions
-        .map(x => +x)
+        .map((x) => +x)
         .sort((a, b) => b - a);
 
       const chosenResolution = sortedResolutions[zoomLevel];
@@ -242,8 +242,8 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     }
 
     const minimumsPerTile = visibleAndFetchedIds
-      .map(x => this.fetchedTiles[x])
-      .map(tile => {
+      .map((x) => this.fetchedTiles[x])
+      .map((tile) => {
         const ind = this.getIndicesOfVisibleDataInTile(tile);
         return tile.tileData.denseDataExtrema.getMinNonZeroInSubset(ind);
       });
@@ -266,8 +266,8 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     }
 
     const maximumsPerTile = visibleAndFetchedIds
-      .map(x => this.fetchedTiles[x])
-      .map(tile => {
+      .map((x) => this.fetchedTiles[x])
+      .map((tile) => {
         const ind = this.getIndicesOfVisibleDataInTile(tile);
         return tile.tileData.denseDataExtrema.getMaxNonZeroInSubset(ind);
       });
@@ -306,8 +306,8 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
     const visible = this._xScale.range();
 
     return visibleAndFetchedIds
-      .map(x => this.fetchedTiles[x])
-      .map(tile => {
+      .map((x) => this.fetchedTiles[x])
+      .map((tile) => {
         if (!tile.tileData.tilePos) {
           return aggregator === 'min'
             ? this.minVisibleValue()

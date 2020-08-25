@@ -2,7 +2,7 @@
 import {
   MIN_HORIZONTAL_HEIGHT,
   MIN_VERTICAL_WIDTH,
-  TRACKS_INFO_BY_TYPE
+  TRACKS_INFO_BY_TYPE,
 } from '../configs';
 
 /**
@@ -11,7 +11,7 @@ import {
  *
  * Operates on the tracks stored for this TiledPlot.
  */
-const fillInMinWidths = tracks => {
+const fillInMinWidths = (tracks) => {
   const horizontalLocations = ['top', 'bottom', 'gallery'];
   const verticalLocations = ['left', 'right', 'gallery'];
 
@@ -26,9 +26,9 @@ const fillInMinWidths = tracks => {
   tracks.gallery = tracks.gallery || [];
 
   horizontalLocations
-    .map(horizontalLocation => tracks[horizontalLocation])
-    .forEach(horizontalTracks =>
-      horizontalTracks.forEach(track => {
+    .map((horizontalLocation) => tracks[horizontalLocation])
+    .forEach((horizontalTracks) =>
+      horizontalTracks.forEach((track) => {
         const trackInfo = TRACKS_INFO_BY_TYPE[track.type];
         const defaultOptions = (trackInfo && trackInfo.defaultOptions) || {};
         const options = track.options
@@ -43,13 +43,13 @@ const fillInMinWidths = tracks => {
           track.height =
             (trackInfo && trackInfo.defaultHeight) || MIN_HORIZONTAL_HEIGHT;
         }
-      })
+      }),
     );
 
   verticalLocations
-    .map(verticalLocation => tracks[verticalLocation])
-    .forEach(verticalTracks =>
-      verticalTracks.forEach(track => {
+    .map((verticalLocation) => tracks[verticalLocation])
+    .forEach((verticalTracks) =>
+      verticalTracks.forEach((track) => {
         const trackInfo = TRACKS_INFO_BY_TYPE[track.type];
         const defaultOptions = (trackInfo && trackInfo.defaultOptions) || {};
 
@@ -65,7 +65,7 @@ const fillInMinWidths = tracks => {
           track.width =
             (trackInfo && trackInfo.defaultWidth) || MIN_VERTICAL_WIDTH;
         }
-      })
+      }),
     );
 
   return tracks;

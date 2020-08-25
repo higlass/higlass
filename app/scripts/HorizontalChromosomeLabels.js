@@ -91,7 +91,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     ChromosomeInfo(
       chromSizesPath,
-      newChromInfo => {
+      (newChromInfo) => {
         this.chromInfo = newChromInfo;
 
         this.searchField = new SearchField(this.chromInfo);
@@ -452,7 +452,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     // hide all the chromosome labels in preparation for drawing
     // new ones
-    Object.keys(this.chromInfo.chrPositions).forEach(chrom => {
+    Object.keys(this.chromInfo.chrPositions).forEach((chrom) => {
       if (this.tickTexts[chrom]) {
         for (let j = 0; j < this.tickTexts[chrom].length; j++) {
           this.tickTexts[chrom][j].visible = false;
@@ -549,16 +549,16 @@ class HorizontalChromosomeLabels extends PixiTrack {
     );
 
     this.allTexts
-      .filter(text => text.text.visible)
-      .forEach(text => {
+      .filter((text) => text.text.visible)
+      .forEach((text) => {
         const g = pixiTextToSvg(text.text);
         output.appendChild(g);
       });
 
-    Object.values(this.tickTexts).forEach(texts => {
+    Object.values(this.tickTexts).forEach((texts) => {
       texts
-        .filter(x => x.visible)
-        .forEach(text => {
+        .filter((x) => x.visible)
+        .forEach((text) => {
           let g = pixiTextToSvg(text);
           output.appendChild(g);
           g = svgLine(

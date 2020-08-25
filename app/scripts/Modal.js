@@ -7,7 +7,7 @@ import withModal from './hocs/with-modal';
 
 import '../styles/Modal.module.scss';
 
-const Modal = props => {
+const Modal = (props) => {
   const handleClose = () => {
     props.modal.close();
     if (props.onClose) props.onClose();
