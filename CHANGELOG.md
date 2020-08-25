@@ -1,5 +1,9 @@
 # Release notes
 
+## Next
+
+- Show a more comprehensive list of track types in the track config menu
+
 ## v1.11.2
 
 - Fix registration of plugin tracks
