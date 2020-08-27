@@ -1,4 +1,5 @@
 /* eslint-env node, jasmine */
+
 import {
   configure,
   mount,
