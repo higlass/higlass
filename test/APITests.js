@@ -524,7 +524,7 @@ describe('API Tests', () => {
             expect(dx).toEqual(-10);
             done();
           }, 250);
-        }, 50);
+        }, 150);
       });
     });
 
