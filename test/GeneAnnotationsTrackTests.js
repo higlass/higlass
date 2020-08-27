@@ -1,5 +1,4 @@
 /* eslint-env node, jasmine */
-
 import {
   configure,
   // render,

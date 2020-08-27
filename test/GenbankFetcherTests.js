@@ -1,5 +1,4 @@
 /* eslint-env node, jasmine */
-
 import { expect } from 'chai';
 import GBKDataFetcher from '../app/scripts/data-fetchers/genbank-fetcher';
 

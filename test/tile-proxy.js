@@ -1,5 +1,4 @@
 /* eslint-env node, jasmine */
-
 /* eslint-disable import/no-named-as-default-member */
 import { expect } from 'chai';
 
