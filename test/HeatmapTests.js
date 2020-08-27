@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 
@@ -13,7 +13,7 @@ import {
   mountHGComponent,
   removeHGComponent,
   getTrackObjectFromHGC,
-  waitForTilesLoaded
+  waitForTilesLoaded,
 } from '../app/scripts/utils';
 
 import { exportDataConfig } from './view-configs';
@@ -21,14 +21,39 @@ import { exportDataConfig } from './view-configs';
 configure({ adapter: new Adapter() });
 
 describe('Heatmaps', () => {
+  describe('Visualization', () => {
+    let hgc = null;
+    let div = null;
+
+    beforeAll((done) => {
+      [div, hgc] = mountHGComponent(div, hgc, noDataTransform, done, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      });
+    });
+
+    it('should respect zoom limits', () => {
+      // add your tests here
+
+      const trackObj = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap0');
+      const rectData = trackObj.getVisibleRectangleData(547, 18, 1, 1);
+
+      expect(Number.isNaN(rectData.data[0])).to.eql(false);
+    });
+
+    afterAll(() => {
+      removeHGComponent(div);
+    });
+  });
+
   describe('Export heatmap data', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(div, hgc, exportDataConfig, done, {
         style: 'width:600px;height:1200px;background-color: lightgreen',
-        bounded: true
+        bounded: true,
       });
     });
 
@@ -36,7 +61,7 @@ describe('Heatmaps', () => {
       const tp = getTrackObjectFromHGC(
         hgc.instance(),
         'NagBzk-AQZuoY0bqG-Yy0Q',
-        'PdEzdgsxRymGelD5xfKlNA'
+        'PdEzdgsxRymGelD5xfKlNA',
       );
       let data = tp.getVisibleRectangleData(262, 298, 1, 1);
 
@@ -44,7 +69,7 @@ describe('Heatmaps', () => {
         0,
         0,
         tp.dimensions[0],
-        tp.dimensions[1]
+        tp.dimensions[1],
       );
 
       expect(data.shape[0]).to.eql(756);
@@ -62,10 +87,10 @@ describe('Heatmaps', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true
+        bounded: true,
       });
     });
 
@@ -88,7 +113,7 @@ describe('Heatmaps', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(div, hgc, baseConf, done);
     });
 
@@ -112,7 +137,7 @@ describe('Heatmaps', () => {
       const center = views.v.tracks.center[0];
 
       const newOptions = Object.assign({}, center.contents[0].options, {
-        extent: 'lower-left'
+        extent: 'lower-left',
       });
 
       hgc.instance().handleTrackOptionsChanged('v', 'heatmap0', newOptions);
@@ -128,18 +153,18 @@ describe('Heatmaps', () => {
       expect(options1.colorbarPosition).to.eql('topRight');
     });
 
-    it('tiles on the diagonal should be independent', done => {
+    it('tiles on the diagonal should be independent', (done) => {
       const trackObj0 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap0');
       const trackObj1 = getTrackObjectFromHGC(hgc.instance(), 'v', 'heatmap1');
 
       waitForTilesLoaded(hgc.instance(), () => {
         // hgc.instance().api.zoomToDataExtent('v');
         expect(trackObj0.fetchedTiles['2.1.1.false'].tileData).to.not.eql(
-          trackObj1.fetchedTiles['2.1.1.true'].tileData
+          trackObj1.fetchedTiles['2.1.1.true'].tileData,
         );
 
         expect(trackObj0.fetchedTiles['2.1.1.false'].tileData.dense).to.not.eql(
-          trackObj1.fetchedTiles['2.1.1.true'].tileData.dense
+          trackObj1.fetchedTiles['2.1.1.true'].tileData.dense,
         );
 
         done();
@@ -164,8 +189,8 @@ const viewconf = {
       tracks: {
         top: [
           {
-            type: 'top-axis'
-          }
+            type: 'top-axis',
+          },
         ],
         left: [],
         center: [
@@ -189,7 +214,7 @@ const viewconf = {
                     'white',
                     'rgba(245,166,35,1.0)',
                     'rgba(208,2,27,1.0)',
-                    'black'
+                    'black',
                   ],
                   maxZoom: null,
                   colorbarPosition: 'topRight',
@@ -201,28 +226,28 @@ const viewconf = {
                   showTooltip: false,
                   name: 'blah_all.h5',
                   scaleStartPercent: '0.00000',
-                  scaleEndPercent: '1.00000'
+                  scaleEndPercent: '1.00000',
                 },
                 width: 100,
-                height: 100
-              }
-            ]
-          }
+                height: 100,
+              },
+            ],
+          },
         ],
         bottom: [],
         right: [],
         whole: [],
-        gallery: []
+        gallery: [],
       },
       layout: {
         w: 12,
         h: 6,
         x: 0,
-        y: 0
+        y: 0,
       },
-      uid: 'vv'
-    }
-  ]
+      uid: 'vv',
+    },
+  ],
 };
 
 const baseConf = {
@@ -244,16 +269,22 @@ const baseConf = {
                   colorRange: ['white', 'black'],
                   showMousePosition: true,
                   mousePositionColor: 'yellow',
-                  showTooltip: true
-                }
-              }
-            ]
-          }
-        ]
-      }
-    }
-  ]
+                  showTooltip: true,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
 };
+
+const noDataTransform = JSON.parse(JSON.stringify(baseConf));
+noDataTransform.views[0].tracks.center[0].contents[0].tilesetUid =
+  'ZrEuRvzURI6EFw8j0-5GCA';
+noDataTransform.views[0].tracks.center[0].contents[0].options.noDataTransform =
+  'None';
 
 const heatmapTrack = {
   server: '//higlass.io/api/v1',
@@ -261,5 +292,5 @@ const heatmapTrack = {
   type: 'heatmap',
   uid: 'heatmap1',
   height: 400,
-  options: { colorRange: ['white', 'black'] }
+  options: { colorRange: ['white', 'black'] },
 };

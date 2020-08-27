@@ -14,7 +14,7 @@ import {
   MOUSE_TOOL_SELECT,
   THEME_DARK,
   VIEW_HEADER_MED_WIDTH_SEARCH_BAR,
-  VIEW_HEADER_MIN_WIDTH_SEARCH_BAR
+  VIEW_HEADER_MIN_WIDTH_SEARCH_BAR,
 } from './configs';
 
 // Styles
@@ -33,11 +33,11 @@ class ViewHeader extends React.Component {
       configMenuUid: null,
       configMenuPosition: null,
       isFocused: false,
-      width: -1
+      width: -1,
     };
 
     this.handleTrackPositionChosenBound = this.handleTrackPositionChosen.bind(
-      this
+      this,
     );
   }
 
@@ -59,7 +59,7 @@ class ViewHeader extends React.Component {
   handleConfigMenuOpened(uid) {
     this.setState({
       configMenuUid: uid,
-      configMenuPosition: this.configImg.getBoundingClientRect()
+      configMenuPosition: this.configImg.getBoundingClientRect(),
     });
   }
 
@@ -70,7 +70,7 @@ class ViewHeader extends React.Component {
   handleAddTrackPositionMenuOpened(uid) {
     this.setState({
       addTrackPositionMenuUid: uid,
-      addTrackPositionMenuPosition: this.plusImg.getBoundingClientRect()
+      addTrackPositionMenuPosition: this.plusImg.getBoundingClientRect(),
     });
   }
 
@@ -85,7 +85,7 @@ class ViewHeader extends React.Component {
 
     this.setState({
       addTrackPositionMenuUid: null,
-      addTrackPositionMenuPosition: null
+      addTrackPositionMenuPosition: null,
     });
   }
 
@@ -99,7 +99,7 @@ class ViewHeader extends React.Component {
           onMenuClosed={() => {
             this.setState({
               addTrackPositionMenuUid: null,
-              addTrackPositionMenuPosition: null
+              addTrackPositionMenuPosition: null,
             });
           }}
         >
@@ -156,7 +156,7 @@ class ViewHeader extends React.Component {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onLockZoomAndLocation(this.state.configMenuUid);
             }}
-            onOptionsChanged={newOptions => {
+            onOptionsChanged={(newOptions) => {
               this.props.onViewOptionsChanged(newOptions);
               this.setState({ configMenuUid: null }); // hide the menu
             }}
@@ -210,11 +210,11 @@ class ViewHeader extends React.Component {
 
     const GenomePositionSearchBox = this.props.getGenomePositionSearchBox(
       this.state.isFocused,
-      focus => {
+      (focus) => {
         this.setState({
-          isFocused: focus
+          isFocused: focus,
         });
-      }
+      },
     );
 
     let className = this.state.isFocused
@@ -232,7 +232,7 @@ class ViewHeader extends React.Component {
 
     return (
       <div
-        ref={c => {
+        ref={(c) => {
           this.el = c;
         }}
         styleName={className}
@@ -268,7 +268,7 @@ class ViewHeader extends React.Component {
           </svg>
 
           <svg
-            ref={c => {
+            ref={(c) => {
               this.configImg = c;
             }}
             onClick={() => this.handleConfigMenuOpened(this.props.viewUid)}
@@ -279,7 +279,7 @@ class ViewHeader extends React.Component {
           </svg>
 
           <svg
-            ref={c => {
+            ref={(c) => {
               this.plusImg = c;
             }}
             onClick={() =>
@@ -305,7 +305,7 @@ class ViewHeader extends React.Component {
 }
 
 ViewHeader.defaultProps = {
-  isGenomePositionSearchBoxVisible: false
+  isGenomePositionSearchBoxVisible: false,
 };
 
 ViewHeader.propTypes = {
@@ -336,7 +336,7 @@ ViewHeader.propTypes = {
   onYankZoomAndLocation: PropTypes.func.isRequired,
   onZoomToData: PropTypes.func.isRequired,
   theme: PropTypes.symbol.isRequired,
-  viewUid: PropTypes.string.isRequired
+  viewUid: PropTypes.string.isRequired,
 };
 
 export default withTheme(ViewHeader);

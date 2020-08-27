@@ -41,7 +41,7 @@ export const TRACK_LOCATIONS = [
   'bottom',
   'center',
   'whole',
-  'gallery'
+  'gallery',
 ];
 
 export const MIN_HORIZONTAL_HEIGHT = 20;

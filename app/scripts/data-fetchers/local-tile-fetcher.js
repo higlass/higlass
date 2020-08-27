@@ -29,7 +29,7 @@ class LocalTileDataFetcher {
 
     const ret = {};
 
-    const newTileIds = tileIds.map(x => `localtile.${x}`);
+    const newTileIds = tileIds.map((x) => `localtile.${x}`);
     tileResponseToData(this.tilesData, '', newTileIds);
 
     for (const tileId of tileIds) {

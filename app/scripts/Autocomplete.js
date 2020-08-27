@@ -14,7 +14,7 @@ class Autocomplete extends React.Component {
       menuTop: 0,
       menuLeft: 0,
       menuWidth: 0,
-      isOpen: false
+      isOpen: false,
     };
 
     this.keyDownHandlers = {
@@ -30,7 +30,7 @@ class Autocomplete extends React.Component {
         this._performAutoCompleteOnKeyUp = true;
         this.setState({
           highlightedIndex: index,
-          isOpen: true
+          isOpen: true,
         });
       },
 
@@ -46,7 +46,7 @@ class Autocomplete extends React.Component {
         this._performAutoCompleteOnKeyUp = true;
         this.setState({
           highlightedIndex: index,
-          isOpen: true
+          isOpen: true,
         });
       },
 
@@ -58,11 +58,11 @@ class Autocomplete extends React.Component {
           // -> close the menu, highlight whatever's in input
           this.setState(
             {
-              isOpen: false
+              isOpen: false,
             },
             () => {
               this.inputEl.select();
-            }
+            },
           );
         } else {
           // text entered + menu item has been highlighted + enter is hit
@@ -73,13 +73,13 @@ class Autocomplete extends React.Component {
           this.setState(
             {
               isOpen: false,
-              highlightedIndex: null
+              highlightedIndex: null,
             },
             () => {
               // this.refs.input.focus() // TODO: file issue
               this.inputEl.setSelectionRange(value.length, value.length);
               this.props.onSelect(value, item);
-            }
+            },
           );
         }
       },
@@ -87,16 +87,16 @@ class Autocomplete extends React.Component {
       Escape() {
         this.setState({
           highlightedIndex: null,
-          isOpen: false
+          isOpen: false,
         });
-      }
+      },
     };
   }
 
   getInitialState() {
     return {
       isOpen: false,
-      highlightedIndex: null
+      highlightedIndex: null,
     };
   }
 
@@ -147,7 +147,7 @@ class Autocomplete extends React.Component {
       const menuNode = this.refs.menu;
       if (itemNode) {
         scrollIntoView(findDOMNode(itemNode), findDOMNode(menuNode), {
-          onlyScrollIfNeeded: true
+          onlyScrollIfNeeded: true,
         });
       }
     }
@@ -159,7 +159,7 @@ class Autocomplete extends React.Component {
     } else {
       this.setState({
         highlightedIndex: null,
-        isOpen: true
+        isOpen: true,
       });
     }
   }
@@ -180,8 +180,8 @@ class Autocomplete extends React.Component {
     let items = this.props.items;
 
     if (this.props.shouldItemRender) {
-      items = items.filter(item =>
-        this.props.shouldItemRender(item, this.props.value)
+      items = items.filter((item) =>
+        this.props.shouldItemRender(item, this.props.value),
       );
     }
 
@@ -221,7 +221,7 @@ class Autocomplete extends React.Component {
     this.setState({
       menuTop: rect.bottom + marginBottom,
       menuLeft: rect.left + marginLeft,
-      menuWidth: rect.width + marginLeft + marginRight
+      menuWidth: rect.width + marginLeft + marginRight,
     });
   }
 
@@ -234,12 +234,12 @@ class Autocomplete extends React.Component {
     this.setState(
       {
         isOpen: false,
-        highlightedIndex: null
+        highlightedIndex: null,
       },
       () => {
         this.props.onSelect(value, item);
         this.inputEl.focus();
-      }
+      },
     );
   }
 
@@ -252,20 +252,20 @@ class Autocomplete extends React.Component {
       const element = this.props.renderItem(
         item,
         this.state.highlightedIndex === index,
-        { cursor: 'default' }
+        { cursor: 'default' },
       );
       return React.cloneElement(element, {
         onMouseDown: () => this.setIgnoreBlur(true),
         // Ignore blur to prevent menu from de-rendering before we can process click
         onMouseEnter: () => this.highlightItemFromMouse(index),
         onClick: () => this.selectItemFromMouse(item),
-        ref: `item-${index}`
+        ref: `item-${index}`,
       });
     });
     const style = {
       left: this.state.menuLeft,
       top: this.state.menuTop,
-      minWidth: this.state.menuWidth
+      minWidth: this.state.menuWidth,
     };
     if (!items.length) return null;
     const menu = this.props.renderMenu(items, this.props.value, style);
@@ -281,7 +281,7 @@ class Autocomplete extends React.Component {
     }
     this.setState({
       isOpen: false,
-      highlightedIndex: null
+      highlightedIndex: null,
     });
   }
 
@@ -314,7 +314,7 @@ class Autocomplete extends React.Component {
       this.setState({ isOpen: true });
     } else if (this.state.highlightedIndex !== null && !this._ignoreClick) {
       this.selectItemFromMouse(
-        this.getFilteredItems()[this.state.highlightedIndex]
+        this.getFilteredItems()[this.state.highlightedIndex],
       );
     }
     this._ignoreClick = false;
@@ -322,7 +322,7 @@ class Autocomplete extends React.Component {
 
   composeEventHandlers(internal, external) {
     return external
-      ? e => {
+      ? (e) => {
           internal(e);
           external(e);
         }
@@ -336,7 +336,7 @@ class Autocomplete extends React.Component {
       // you don't like it, you love it
       _debugStates.push({
         id: _debugStates.length,
-        state: this.state
+        state: this.state,
       });
     }
 
@@ -345,31 +345,31 @@ class Autocomplete extends React.Component {
       <div style={{ ...this.props.wrapperStyle }} {...this.props.wrapperProps}>
         <input
           {...inputProps}
-          ref={el => {
+          ref={(el) => {
             this.inputEl = el;
           }}
           aria-autocomplete="list"
           autoComplete="off"
           onBlur={this.composeEventHandlers(
             this.handleInputBlur.bind(this),
-            inputProps.onBlur && inputProps.onBlur.bind(this)
+            inputProps.onBlur && inputProps.onBlur.bind(this),
           )}
           onChange={this.handleChange.bind(this)}
           onClick={this.composeEventHandlers(
             this.handleInputClick.bind(this),
-            inputProps.onClick && inputProps.onClick.bind(this)
+            inputProps.onClick && inputProps.onClick.bind(this),
           )}
           onFocus={this.composeEventHandlers(
             this.handleInputFocus.bind(this),
-            inputProps.onFocus && inputProps.onFocus.bind(this)
+            inputProps.onFocus && inputProps.onFocus.bind(this),
           )}
           onKeyDown={this.composeEventHandlers(
             this.handleKeyDown.bind(this),
-            inputProps.onKeyDown && inputProps.onKeyDown.bind(this)
+            inputProps.onKeyDown && inputProps.onKeyDown.bind(this),
           )}
           onKeyUp={this.composeEventHandlers(
             this.handleKeyUp.bind(this),
-            inputProps.onKeyUp && inputProps.onKeyUp.bind(this)
+            inputProps.onKeyUp && inputProps.onKeyUp.bind(this),
           )}
           role="combobox"
           value={this.props.value}
@@ -381,7 +381,7 @@ class Autocomplete extends React.Component {
             {JSON.stringify(
               _debugStates.slice(_debugStates.length - 5, _debugStates.length),
               null,
-              2
+              2,
             )}
           </pre>
         )}
@@ -394,7 +394,7 @@ Autocomplete.defaultProps = {
   value: '',
   wrapperProps: {},
   wrapperStyle: {
-    display: 'inline-block'
+    display: 'inline-block',
   },
   inputProps: {},
   onChange() {},
@@ -417,10 +417,10 @@ Autocomplete.defaultProps = {
     fontSize: '90%',
     position: 'fixed',
     overflow: 'auto',
-    maxHeight: '50%' // TODO: don't cheat, let it flow to the bottom
+    maxHeight: '50%', // TODO: don't cheat, let it flow to the bottom
   },
   autoHighlight: true,
-  onMenuVisibilityChange() {}
+  onMenuVisibilityChange() {},
 };
 
 Autocomplete.propTypes = {
@@ -441,7 +441,7 @@ Autocomplete.propTypes = {
   sortItems: PropTypes.func,
   value: PropTypes.any,
   wrapperProps: PropTypes.object,
-  wrapperStyle: PropTypes.object
+  wrapperStyle: PropTypes.object,
 };
 
 export default Autocomplete;

@@ -16,7 +16,7 @@ class ChromosomeGrid extends PixiTrack {
       animate,
       pubSub,
       orientation = '2d',
-      isOverlay = false
+      isOverlay = false,
     } = context;
 
     this.searchField = null;
@@ -33,7 +33,7 @@ class ChromosomeGrid extends PixiTrack {
 
     ChromosomeInfo(
       chromSizesPath,
-      newChromInfo => {
+      (newChromInfo) => {
         this.chromInfo = newChromInfo;
 
         this.searchField = new SearchField(this.chromInfo);
@@ -58,7 +58,7 @@ class ChromosomeGrid extends PixiTrack {
         this.draw();
         this.animate();
       },
-      pubSub
+      pubSub,
     );
   }
 
@@ -78,7 +78,7 @@ class ChromosomeGrid extends PixiTrack {
     }
 
     const strokeColor = colorToHex(
-      this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue'
+      this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue',
     );
 
     const strokeWidth = this.options.lineStrokeWidth
@@ -146,7 +146,7 @@ class ChromosomeGrid extends PixiTrack {
           left,
           top,
           width,
-          height
+          height,
         } = this.options.orientationsAndPositions[i].position;
 
         if (orientation === '1d-horizontal') {
@@ -217,8 +217,8 @@ class ChromosomeGrid extends PixiTrack {
             y + top,
             y + top,
             strokeColor,
-            strokeWidth
-          )
+            strokeWidth,
+          ),
         );
       }
     }
@@ -234,8 +234,8 @@ class ChromosomeGrid extends PixiTrack {
             top,
             height + top,
             strokeColor,
-            strokeWidth
-          )
+            strokeWidth,
+          ),
         );
       }
     }
@@ -254,8 +254,8 @@ class ChromosomeGrid extends PixiTrack {
               y + top,
               y + top,
               strokeColor,
-              strokeWidth
-            )
+              strokeWidth,
+            ),
           );
         }
       }
@@ -270,8 +270,8 @@ class ChromosomeGrid extends PixiTrack {
               top,
               height + top,
               strokeColor,
-              strokeWidth
-            )
+              strokeWidth,
+            ),
           );
         }
       }
@@ -295,7 +295,7 @@ class ChromosomeGrid extends PixiTrack {
 
     output.setAttribute(
       'transform',
-      `translate(${this.position[0]},${this.position[1]})`
+      `translate(${this.position[0]},${this.position[1]})`,
     );
 
     if (!this.chromInfo) {
@@ -311,7 +311,7 @@ class ChromosomeGrid extends PixiTrack {
           left,
           top,
           width,
-          height
+          height,
         } = this.options.orientationsAndPositions[i].position;
         this.drawLinesSvg(output, orientation, width, height, left, top);
       }

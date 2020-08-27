@@ -25,7 +25,7 @@ class Chromosome2DLabels extends PixiTrack {
 
     ChromosomeInfo(
       chromSizesPath,
-      newChromInfo => {
+      (newChromInfo) => {
         this.chromInfo = newChromInfo;
         //
 
@@ -42,7 +42,7 @@ class Chromosome2DLabels extends PixiTrack {
             const text = new GLOBALS.PIXI.Text(textStr, {
               fontSize: '14px',
               fontFamily: 'Arial',
-              fill: 'red'
+              fill: 'red',
             });
 
             text.anchor.x = 0.5;
@@ -63,7 +63,7 @@ class Chromosome2DLabels extends PixiTrack {
         this.draw();
         this.animate();
       },
-      pubSub
+      pubSub,
     );
   }
 
@@ -132,7 +132,7 @@ class Chromosome2DLabels extends PixiTrack {
         allTexts.push({
           importance: this.texts[i][j].hashValue,
           text: this.texts[i][j],
-          caption: null
+          caption: null,
         });
       }
     }
@@ -144,7 +144,7 @@ class Chromosome2DLabels extends PixiTrack {
   hideOverlaps(allTexts) {
     let allBoxes = []; // store the bounding boxes of the text objects so we can
     // calculate overlaps
-    allBoxes = allTexts.map(val => {
+    allBoxes = allTexts.map((val) => {
       const text = val.text;
       text.updateTransform();
       const b = text.getBounds();

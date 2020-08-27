@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 
@@ -13,7 +13,7 @@ import ReactDOM from 'react-dom';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC
+  getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
 // View configs
@@ -25,7 +25,7 @@ import horizontalMultivecWithAggregation from './view-configs-more/horizontalMul
 // Constants
 import {
   MIN_HORIZONTAL_HEIGHT,
-  MIN_VERTICAL_WIDTH
+  MIN_VERTICAL_WIDTH,
 } from '../app/scripts/configs';
 
 configure({ adapter: new Adapter() });
@@ -34,10 +34,10 @@ describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(done => {
+  beforeAll((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewConf1, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true
+      bounded: true,
     });
   });
 
@@ -45,7 +45,7 @@ describe('Horizontal heatmaps', () => {
   //   done();
   // });
 
-  it('Test horizontal multivec with track containing smaller-than-default width and height', done => {
+  it('Test horizontal multivec with track containing smaller-than-default width and height', (done) => {
     [div, hgc] = mountHGComponent(
       div,
       hgc,
@@ -54,7 +54,7 @@ describe('Horizontal heatmaps', () => {
         const track = getTrackObjectFromHGC(
           hgc.instance(),
           'viewConf2_uid',
-          'K_0GxgCvQfCHM56neOnHKg'
+          'K_0GxgCvQfCHM56neOnHKg',
         ); // uuid of horizontal-multivec
         const width = track.dimensions[0];
         const height = track.dimensions[1];
@@ -64,8 +64,8 @@ describe('Horizontal heatmaps', () => {
       },
       {
         style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true
-      }
+        bounded: true,
+      },
     );
   });
 
@@ -73,7 +73,7 @@ describe('Horizontal heatmaps', () => {
     const track = getTrackObjectFromHGC(
       hgc.instance(),
       'viewConf2_uid',
-      'K_0GxgCvQfCHM56neOnHKg'
+      'K_0GxgCvQfCHM56neOnHKg',
     ); // uuid of horizontal-multivec
     expect(track.pColorbarArea.x).toBeLessThan(track.dimensions[0] / 2);
 
@@ -89,7 +89,7 @@ describe('Horizontal heatmaps', () => {
     const track = getTrackObjectFromHGC(
       hgc.instance(),
       'viewConf2_uid',
-      'K_0GxgCvQfCHM56neOnHKg'
+      'K_0GxgCvQfCHM56neOnHKg',
     ); // uuid of horizontal-multivec
     track.options.colorbarPosition = 'hidden';
 
@@ -97,7 +97,7 @@ describe('Horizontal heatmaps', () => {
 
     // eslint-disable-next-line react/no-find-dom-node
     const selection = select(ReactDOM.findDOMNode(hgc.instance())).selectAll(
-      '.selection'
+      '.selection',
     );
 
     // we expect the colorbar selector brush to be hidden,
@@ -108,7 +108,7 @@ describe('Horizontal heatmaps', () => {
     hgc.instance().setState({ views });
   });
 
-  it('Test horizontal multivec with null zero value color option', done => {
+  it('Test horizontal multivec with null zero value color option', (done) => {
     [div, hgc] = mountHGComponent(
       div,
       hgc,
@@ -117,7 +117,7 @@ describe('Horizontal heatmaps', () => {
         const track = getTrackObjectFromHGC(
           hgc.instance(),
           'view-0',
-          'horizontal-multivec-track-0'
+          'horizontal-multivec-track-0',
         ); // uuid of horizontal-multivec
         const trackTiles = track.visibleAndFetchedTiles();
         expect(trackTiles.length).toEqual(1);
@@ -125,7 +125,7 @@ describe('Horizontal heatmaps', () => {
         const zeroCellCoords = [79, 184];
         const tooltipValue = track.getVisibleData(
           zeroCellCoords[0],
-          zeroCellCoords[1]
+          zeroCellCoords[1],
         );
         // The data at this coordinate should correspond to this particular zero value.
         expect(tooltipValue).toEqual(
@@ -133,7 +133,7 @@ describe('Horizontal heatmaps', () => {
             ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
             'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
             'l	Brain	Active Motif, 39133, 31610003	H3K27ac	hm	No' +
-            'rmal'
+            'rmal',
         );
 
         const canvas = trackTiles[0].canvas;
@@ -147,14 +147,14 @@ describe('Horizontal heatmaps', () => {
         // Need to scale from screen coordinates to dataset coordinates.
         const scaledCoord = [
           Math.ceil((zeroCellCoords[0] / track.dimensions[0]) * canvas.width),
-          Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height)
+          Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height),
         ];
         // Obtain the color at this pixel on the canvas.
         const pixel = ctx.getImageData(
           scaledCoord[0],
           scaledCoord[1],
           canvas.width,
-          canvas.height
+          canvas.height,
         ).data;
 
         // Pixel should be slightly yellow.
@@ -166,12 +166,12 @@ describe('Horizontal heatmaps', () => {
         done();
       },
       {
-        style: 'width:1000px; height:1000px; background-color: lightgreen'
-      }
+        style: 'width:1000px; height:1000px; background-color: lightgreen',
+      },
     );
   });
 
-  it('Test horizontal multivec with blue zero value color option', done => {
+  it('Test horizontal multivec with blue zero value color option', (done) => {
     horizontalMultivecWithZeroValueColorOption.views[0].tracks.center[0].options.zeroValueColor =
       'blue';
 
@@ -183,7 +183,7 @@ describe('Horizontal heatmaps', () => {
         const track = getTrackObjectFromHGC(
           hgc.instance(),
           'view-0',
-          'horizontal-multivec-track-0'
+          'horizontal-multivec-track-0',
         ); // uuid of horizontal-multivec
         const trackTiles = track.visibleAndFetchedTiles();
         expect(trackTiles.length).toEqual(1);
@@ -191,7 +191,7 @@ describe('Horizontal heatmaps', () => {
         const zeroCellCoords = [79, 184];
         const tooltipValue = track.getVisibleData(
           zeroCellCoords[0],
-          zeroCellCoords[1]
+          zeroCellCoords[1],
         );
         // The data at this coordinate should correspond to this particular zero value.
         expect(tooltipValue).toEqual(
@@ -199,7 +199,7 @@ describe('Horizontal heatmaps', () => {
             ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
             'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
             'l	Brain	Active Motif, 39133, 31610003	H3K27ac	hm	No' +
-            'rmal'
+            'rmal',
         );
 
         const canvas = trackTiles[0].canvas;
@@ -213,14 +213,14 @@ describe('Horizontal heatmaps', () => {
         // Need to scale from screen coordinates to dataset coordinates.
         const scaledCoord = [
           Math.ceil((zeroCellCoords[0] / track.dimensions[0]) * canvas.width),
-          Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height)
+          Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height),
         ];
         // Obtain the color at this pixel on the canvas.
         const pixel = ctx.getImageData(
           scaledCoord[0],
           scaledCoord[1],
           canvas.width,
-          canvas.height
+          canvas.height,
         ).data;
 
         // Pixel should be blue.
@@ -232,12 +232,12 @@ describe('Horizontal heatmaps', () => {
         done();
       },
       {
-        style: 'width:1000px; height:1000px; background-color: lightgreen'
-      }
+        style: 'width:1000px; height:1000px; background-color: lightgreen',
+      },
     );
   });
 
-  it('Test horizontal multivec with transparent zero value color option', done => {
+  it('Test horizontal multivec with transparent zero value color option', (done) => {
     horizontalMultivecWithZeroValueColorOption.views[0].tracks.center[0].options.zeroValueColor =
       'transparent';
 
@@ -249,7 +249,7 @@ describe('Horizontal heatmaps', () => {
         const track = getTrackObjectFromHGC(
           hgc.instance(),
           'view-0',
-          'horizontal-multivec-track-0'
+          'horizontal-multivec-track-0',
         ); // uuid of horizontal-multivec
         const trackTiles = track.visibleAndFetchedTiles();
         expect(trackTiles.length).toEqual(1);
@@ -257,7 +257,7 @@ describe('Horizontal heatmaps', () => {
         const zeroCellCoords = [79, 184];
         const tooltipValue = track.getVisibleData(
           zeroCellCoords[0],
-          zeroCellCoords[1]
+          zeroCellCoords[1],
         );
         // The data at this coordinate should correspond to this particular zero value.
         expect(tooltipValue).toEqual(
@@ -265,7 +265,7 @@ describe('Horizontal heatmaps', () => {
             ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
             'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
             'l	Brain	Active Motif, 39133, 31610003	H3K27ac	hm	No' +
-            'rmal'
+            'rmal',
         );
 
         const canvas = trackTiles[0].canvas;
@@ -279,14 +279,14 @@ describe('Horizontal heatmaps', () => {
         // Need to scale from screen coordinates to dataset coordinates.
         const scaledCoord = [
           Math.ceil((zeroCellCoords[0] / track.dimensions[0]) * canvas.width),
-          Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height)
+          Math.floor((zeroCellCoords[1] / track.dimensions[1]) * canvas.height),
         ];
         // Obtain the color at this pixel on the canvas.
         const pixel = ctx.getImageData(
           scaledCoord[0],
           scaledCoord[1],
           canvas.width,
-          canvas.height
+          canvas.height,
         ).data;
 
         // Pixel should be transparent.
@@ -295,12 +295,12 @@ describe('Horizontal heatmaps', () => {
         done();
       },
       {
-        style: 'width:1000px; height:1000px; background-color: green'
-      }
+        style: 'width:1000px; height:1000px; background-color: green',
+      },
     );
   });
 
-  it('Test horizontal multivec with filtered rows', done => {
+  it('Test horizontal multivec with filtered rows', (done) => {
     [div, hgc] = mountHGComponent(
       div,
       hgc,
@@ -309,7 +309,7 @@ describe('Horizontal heatmaps', () => {
         const track = getTrackObjectFromHGC(
           hgc.instance(),
           'UiHlCoxRQ-aITBDi5j8b_w',
-          'YafcbvKDQvWoWRT1WrygPA'
+          'YafcbvKDQvWoWRT1WrygPA',
         ); // uuid of horizontal-multivec
         const trackTiles = track.visibleAndFetchedTiles();
         expect(trackTiles.length).toEqual(2);
@@ -324,12 +324,12 @@ describe('Horizontal heatmaps', () => {
       },
       {
         style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true
-      }
+        bounded: true,
+      },
     );
   });
 
-  it('Test horizontal multivec without filtered rows', done => {
+  it('Test horizontal multivec without filtered rows', (done) => {
     [div, hgc] = mountHGComponent(
       div,
       hgc,
@@ -338,7 +338,7 @@ describe('Horizontal heatmaps', () => {
         const track = getTrackObjectFromHGC(
           hgc.instance(),
           'viewConf2_uid',
-          'K_0GxgCvQfCHM56neOnHKg'
+          'K_0GxgCvQfCHM56neOnHKg',
         ); // uuid of horizontal-multivec
         const trackTiles = track.visibleAndFetchedTiles();
         expect(trackTiles.length).toEqual(3);
@@ -353,12 +353,12 @@ describe('Horizontal heatmaps', () => {
       },
       {
         style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true
-      }
+        bounded: true,
+      },
     );
   });
 
-  it('Test horizontal multivec with aggregation of rows', done => {
+  it('Test horizontal multivec with aggregation of rows', (done) => {
     horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationWithRelativeHeight = true;
     [div, hgc] = mountHGComponent(
       div,
@@ -368,7 +368,7 @@ describe('Horizontal heatmaps', () => {
         const track = getTrackObjectFromHGC(
           hgc.instance(),
           'aggregation-view',
-          'aggregation-track'
+          'aggregation-track',
         ); // uuid of horizontal-multivec
         const trackTiles = track.visibleAndFetchedTiles();
         expect(trackTiles.length).toBeGreaterThanOrEqual(1);
@@ -402,12 +402,12 @@ describe('Horizontal heatmaps', () => {
       },
       {
         style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true
-      }
+        bounded: true,
+      },
     );
   });
 
-  it('Test horizontal multivec with aggregation of rows and static row height', done => {
+  it('Test horizontal multivec with aggregation of rows and static row height', (done) => {
     horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationWithRelativeHeight = false;
     [div, hgc] = mountHGComponent(
       div,
@@ -417,7 +417,7 @@ describe('Horizontal heatmaps', () => {
         const track = getTrackObjectFromHGC(
           hgc.instance(),
           'aggregation-view',
-          'aggregation-track'
+          'aggregation-track',
         ); // uuid of horizontal-multivec
         const trackTiles = track.visibleAndFetchedTiles();
         expect(trackTiles.length).toBeGreaterThanOrEqual(1);
@@ -451,8 +451,80 @@ describe('Horizontal heatmaps', () => {
       },
       {
         style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true
-      }
+        bounded: true,
+      },
+    );
+  });
+
+  it('handles dynamic selectRows values by updating the dataFetcher and fetching new tiles', (done) => {
+    horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRows = [
+      1,
+      2,
+      3,
+    ];
+    horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationWithRelativeHeight = false;
+    horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationMethod =
+      'client';
+    [div, hgc] = mountHGComponent(
+      div,
+      hgc,
+      horizontalMultivecWithAggregation,
+      () => {
+        const clientAggTrack = getTrackObjectFromHGC(
+          hgc.instance(),
+          'aggregation-view',
+          'aggregation-track',
+        );
+
+        // When aggregation method === client, do not expect options in the dataConfig.
+        const clientAggDataConfig = clientAggTrack.dataFetcher.dataConfig;
+        expect(clientAggDataConfig.options).toBeUndefined();
+
+        // When aggregation method === server, expect options.aggGroups in the dataConfig.
+        const serverAggViewConf1 = horizontalMultivecWithAggregation;
+        serverAggViewConf1.views[0].tracks.center[0].options.selectRowsAggregationMethod =
+          'server';
+        const serverAggViews1 = hgc
+          .instance()
+          .processViewConfig(serverAggViewConf1);
+        hgc.setState({
+          views: serverAggViews1,
+        });
+        const serverAggTrack1 = getTrackObjectFromHGC(
+          hgc.instance(),
+          'aggregation-view',
+          'aggregation-track',
+        );
+        const serverAggDataConfig1 = serverAggTrack1.dataFetcher.dataConfig;
+        expect(serverAggDataConfig1.options.aggGroups).toEqual([1, 2, 3]);
+
+        // When selectRows changes, check that options.aggGroups in the dataConfig also changes.
+        const serverAggViewConf2 = horizontalMultivecWithAggregation;
+        serverAggViewConf2.views[0].tracks.center[0].options.selectRows = [
+          4,
+          5,
+          6,
+        ];
+        const serverAggViews2 = hgc
+          .instance()
+          .processViewConfig(serverAggViewConf2);
+        hgc.setState({
+          views: serverAggViews2,
+        });
+        const serverAggTrack2 = getTrackObjectFromHGC(
+          hgc.instance(),
+          'aggregation-view',
+          'aggregation-track',
+        );
+        const serverAggDataConfig2 = serverAggTrack2.dataFetcher.dataConfig;
+        expect(serverAggDataConfig2.options.aggGroups).toEqual([4, 5, 6]);
+
+        done();
+      },
+      {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      },
     );
   });
 
@@ -472,7 +544,7 @@ const viewConf1 = {
         y: 0,
         i: 'aa',
         moved: false,
-        static: false
+        static: false,
       },
       uid: 'aa',
       initialYDomain: [2936293269.9661727, 3260543052.0694017],
@@ -504,9 +576,9 @@ const viewConf1 = {
               labelLeftMargin: 0,
               labelRightMargin: 0,
               labelTopMargin: 0,
-              labelBottomMargin: 0
+              labelBottomMargin: 0,
             },
-            width: 793
+            width: 793,
           },
           {
             uid: 'R_trrhWOQG2UcXvAutdl7Q',
@@ -534,9 +606,9 @@ const viewConf1 = {
               labelTopMargin: 0,
               labelBottomMargin: 0,
               axisLabelFormatting: 'scientific',
-              heatmapValueScaling: 'log'
+              heatmapValueScaling: 'log',
             },
-            name: 'GM12878-E116-H3K27ac.fc.signal'
+            name: 'GM12878-E116-H3K27ac.fc.signal',
           },
           {
             server: '//higlass.io/api/v1',
@@ -568,17 +640,17 @@ const viewConf1 = {
                 '#BDB76B',
                 '#808080',
                 '#C0C0C0',
-                '#FFFFFF'
+                '#FFFFFF',
               ],
               name: 'Epilogos (hg19)',
               labelLeftMargin: 0,
               labelRightMargin: 0,
               labelTopMargin: 0,
               labelBottomMargin: 0,
-              heatmapValueScaling: 'log'
+              heatmapValueScaling: 'log',
             },
             width: 770,
-            height: 153
+            height: 153,
           },
           {
             uid: 'chroms',
@@ -593,16 +665,16 @@ const viewConf1 = {
               fontIsLeftAligned: true,
               showMousePosition: true,
               mousePositionColor: '#000000',
-              fontIsAligned: false
+              fontIsAligned: false,
             },
-            name: 'Chromosome Labels (hg19)'
-          }
+            name: 'Chromosome Labels (hg19)',
+          },
         ],
         right: [],
         center: [],
         bottom: [],
         whole: [],
-        gallery: []
+        gallery: [],
       },
       chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
       genomePositionSearchBoxVisible: false,
@@ -611,9 +683,9 @@ const viewConf1 = {
         chromInfoServer: 'http://higlass.io/api/v1',
         chromInfoId: 'hg19',
         autocompleteServer: 'http://higlass.io/api/v1',
-        autocompleteId: 'OHJakQICQD6gTD7skx4EWA'
-      }
-    }
+        autocompleteId: 'OHJakQICQD6gTD7skx4EWA',
+      },
+    },
   ],
   editable: true,
   viewEditable: true,
@@ -621,13 +693,13 @@ const viewConf1 = {
   exportViewUrl: '/api/v1/viewconfs',
   zoomLocks: {
     locksByViewUid: {},
-    locksDict: {}
+    locksDict: {},
   },
   trackSourceServers: ['http://higlass.io/api/v1'],
   locationLocks: {
     locksByViewUid: {
       aa: 'PkNgAl3mSIqttnSsCewngw',
-      ewZvJwlDSei_dbpIAkGMlg: 'PkNgAl3mSIqttnSsCewngw'
+      ewZvJwlDSei_dbpIAkGMlg: 'PkNgAl3mSIqttnSsCewngw',
     },
     locksDict: {
       PkNgAl3mSIqttnSsCewngw: {
@@ -635,14 +707,14 @@ const viewConf1 = {
         ewZvJwlDSei_dbpIAkGMlg: [
           1550000000.0000002,
           1549999999.9999993,
-          3380588.876772046
+          3380588.876772046,
         ],
-        uid: 'PkNgAl3mSIqttnSsCewngw'
-      }
-    }
+        uid: 'PkNgAl3mSIqttnSsCewngw',
+      },
+    },
   },
   valueScaleLocks: {
     locksByViewUid: {},
-    locksDict: {}
-  }
+    locksDict: {},
+  },
 };

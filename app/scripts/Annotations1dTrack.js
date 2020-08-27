@@ -72,7 +72,7 @@ class Annotations1dTrack extends PixiTrack {
     // Regions have to follow the following form:
     // start, end, fill, stroke, fillOpacity, strokeOpcaity, min-size
     // If `color-line` is not given, `color-fill` is used
-    this.options.regions.forEach(region => {
+    this.options.regions.forEach((region) => {
       const id = `${region[0]}-${region[1]}`;
 
       if (!this.rects[id]) {
@@ -92,12 +92,12 @@ class Annotations1dTrack extends PixiTrack {
       const fillHex = GLOBALS.PIXI.utils.rgb2hex([
         fill.r / 255.0,
         fill.g / 255.0,
-        fill.b / 255.0
+        fill.b / 255.0,
       ]);
       const strokeHex = GLOBALS.PIXI.utils.rgb2hex([
         stroke.r / 255.0,
         stroke.g / 255.0,
-        stroke.b / 255.0
+        stroke.b / 255.0,
       ]);
 
       if (strokePos) {
@@ -107,7 +107,7 @@ class Annotations1dTrack extends PixiTrack {
         graphics.lineStyle(
           globalStrokeWidth,
           strokeHex,
-          +region[5] || globalStrokeOpacity
+          +region[5] || globalStrokeOpacity,
         );
         graphics.beginFill(fillHex, +region[4] || globalFillOpacity);
       }
@@ -133,7 +133,7 @@ class Annotations1dTrack extends PixiTrack {
         graphics.lineStyle(1, strokeHex, 0);
         graphics.beginFill(strokeHex, +region[5] || globalStrokeOpacity);
 
-        strokePos.forEach(pos => {
+        strokePos.forEach((pos) => {
           if (pos === 'top' || pos === 'around') {
             if (this.isVertical) {
               graphics.drawRect(0, start, globalStrokeWidth, width);
@@ -148,14 +148,14 @@ class Annotations1dTrack extends PixiTrack {
                 0,
                 start,
                 this.dimensions[0],
-                globalStrokeWidth
+                globalStrokeWidth,
               );
             } else {
               graphics.drawRect(
                 start,
                 0,
                 globalStrokeWidth,
-                this.dimensions[1]
+                this.dimensions[1],
               );
             }
           }
@@ -166,14 +166,14 @@ class Annotations1dTrack extends PixiTrack {
                 this.dimensions[0] - globalStrokeWidth,
                 start,
                 globalStrokeWidth,
-                width
+                width,
               );
             } else {
               graphics.drawRect(
                 start,
                 this.dimensions[1] - globalStrokeWidth,
                 width,
-                globalStrokeWidth
+                globalStrokeWidth,
               );
             }
           }
@@ -184,14 +184,14 @@ class Annotations1dTrack extends PixiTrack {
                 0,
                 start + width - globalStrokeWidth,
                 this.dimensions[0],
-                globalStrokeWidth
+                globalStrokeWidth,
               );
             } else {
               graphics.drawRect(
                 start + width - globalStrokeWidth,
                 0,
                 globalStrokeWidth,
-                this.dimensions[1]
+                this.dimensions[1],
               );
             }
           }
@@ -200,7 +200,7 @@ class Annotations1dTrack extends PixiTrack {
         graphics.lineStyle(
           globalStrokeWidth,
           strokeHex,
-          +region[5] || globalStrokeOpacity
+          +region[5] || globalStrokeOpacity,
         );
       }
 
@@ -216,7 +216,7 @@ class Annotations1dTrack extends PixiTrack {
           0,
           start,
           this.dimensions[0],
-          width
+          width,
         );
       } else {
         graphics.drawRect(start, 0, width, this.dimensions[1]);
@@ -224,7 +224,7 @@ class Annotations1dTrack extends PixiTrack {
           start,
           0,
           width,
-          this.dimensions[1]
+          this.dimensions[1],
         );
       }
 
@@ -232,7 +232,7 @@ class Annotations1dTrack extends PixiTrack {
         this.rects[id].mouseDownTime = performance.now();
       };
 
-      this.rects[id].graphics.mouseup = event => {
+      this.rects[id].graphics.mouseup = (event) => {
         if (
           performance.now() - this.rects[id].mouseDownTime <
           MAX_CLICK_DELAY
@@ -240,7 +240,7 @@ class Annotations1dTrack extends PixiTrack {
           this.pubSub.publish('app.click', {
             type: 'annotation',
             event,
-            payload: region
+            payload: region,
           });
         }
       };
@@ -249,8 +249,8 @@ class Annotations1dTrack extends PixiTrack {
     // Remove outdated rects, i.e., rects whose time stamp is not the current
     // time stamp stored above.
     Object.values(this.rects)
-      .filter(rect => rect.timeStamp !== timeStamp)
-      .forEach(rect => graphics.removeChild(rect.graphics));
+      .filter((rect) => rect.timeStamp !== timeStamp)
+      .forEach((rect) => graphics.removeChild(rect.graphics));
   }
 
   setPosition(newPosition) {

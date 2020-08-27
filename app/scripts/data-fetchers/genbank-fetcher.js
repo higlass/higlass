@@ -37,7 +37,7 @@ function collapse(segments, scale) {
       collapsed.push({
         type: 'filler',
         start: currStart,
-        end: currEnd
+        end: currEnd,
       });
 
       // start a new collapsed segment
@@ -50,7 +50,7 @@ function collapse(segments, scale) {
   collapsed.push({
     start: currStart,
     end: currEnd,
-    type: 'filler'
+    type: 'filler',
   });
 
   return collapsed;
@@ -84,7 +84,7 @@ function gbToHgGene(gb) {
       strand: gb.strand,
       fields: [],
       type: 'filler',
-      uid
+      uid,
     };
   }
 
@@ -110,37 +110,53 @@ function gbToHgGene(gb) {
       gb.start.toString(),
       gb.end.toString(),
       gb.start.toString(),
-      gb.end.toString()
-    ]
+      gb.end.toString(),
+    ],
   };
 }
+
+/** Convert genbank text to a JSON representation and extract features * */
+const gbToJsonAndFeatures = (gbText) => {
+  const gbJson = genbankParser(gbText);
+  const features = shuffle(
+    gbJson[0].features
+      .filter((f) => f.type !== 'source')
+      .sort((a, b) => a.start - b.start),
+  );
+
+  return [gbJson, features];
+};
 
 class GBKDataFetcher {
   constructor(dataConfig) {
     this.dataConfig = dataConfig;
     this.trackUid = slugid.nice();
 
-    const extension = dataConfig.url.slice(dataConfig.url.length - 3);
-    const gzipped = extension === '.gz';
-    this.errorTxt = '';
+    if (dataConfig.url) {
+      const extension = dataConfig.url.slice(dataConfig.url.length - 3);
+      const gzipped = extension === '.gz';
+      this.errorTxt = '';
 
-    this.dataPromise = fetch(dataConfig.url, {
-      mode: 'cors',
-      redirect: 'follow',
-      method: 'GET'
-    })
-      .then(response => (gzipped ? response.arrayBuffer() : response.text()))
-      .then(buffer => {
-        const gffText = gzipped
-          ? pako.inflate(buffer, { to: 'string' })
-          : buffer;
-        this.gbJson = genbankParser(gffText);
-        this.cdss = shuffle(
-          this.gbJson[0].features
-            .filter(f => f.type !== 'source')
-            .sort((a, b) => a.start - b.start)
-        );
+      this.dataPromise = fetch(dataConfig.url, {
+        mode: 'cors',
+        redirect: 'follow',
+        method: 'GET',
+      })
+        .then((response) =>
+          gzipped ? response.arrayBuffer() : response.text(),
+        )
+        .then((buffer) => {
+          const gffText = gzipped
+            ? pako.inflate(buffer, { to: 'string' })
+            : buffer;
+          [this.gbJson, this.cdss] = gbToJsonAndFeatures(gffText);
+        });
+    } else if (dataConfig.text) {
+      this.dataPromise = new Promise((resolve, reject) => {
+        [this.gbJson, this.cdss] = gbToJsonAndFeatures(dataConfig.text);
+        resolve();
       });
+    }
   }
 
   tilesetInfo(callback) {
@@ -156,11 +172,11 @@ class GBKDataFetcher {
         retVal = {
           tile_size: TILE_SIZE,
           max_zoom: Math.ceil(
-            Math.log(this.gbJson[0].size / TILE_SIZE) / Math.log(2)
+            Math.log(this.gbJson[0].size / TILE_SIZE) / Math.log(2),
           ),
           max_width: this.gbJson[0].size,
           min_pos: [0],
-          max_pos: [this.gbJson[0].size]
+          max_pos: [this.gbJson[0].size],
         };
 
         if (callback) {
@@ -169,12 +185,12 @@ class GBKDataFetcher {
 
         return retVal;
       })
-      .catch(err => {
+      .catch((err) => {
         this.tilesetInfoLoading = false;
 
         if (callback) {
           callback({
-            error: `Error parsing genbank: ${err}`
+            error: `Error parsing genbank: ${err}`,
           });
         }
       });
@@ -200,7 +216,7 @@ class GBKDataFetcher {
       tilePromises.push(this.tile(z, x));
     }
 
-    Promise.all(tilePromises).then(values => {
+    Promise.all(tilePromises).then((values) => {
       for (let i = 0; i < values.length; i++) {
         const validTileId = validTileIds[i];
         tiles[validTileId] = values[i];
@@ -214,29 +230,29 @@ class GBKDataFetcher {
   }
 
   tile(z, x) {
-    return this.tilesetInfo().then(tsInfo => {
+    return this.tilesetInfo().then((tsInfo) => {
       const tileWidth = +tsInfo.max_width / 2 ** +z;
 
       // get the bounds of the tile
       const minX = tsInfo.min_pos[0] + x * tileWidth;
       const maxX = tsInfo.min_pos[0] + (x + 1) * tileWidth;
 
-      const filtered = this.cdss.filter(v => v.end > minX && v.start < maxX);
+      const filtered = this.cdss.filter((v) => v.end > minX && v.start < maxX);
       const scaleFactor = 1024 / 2 ** (tsInfo.max_zoom - z);
 
       const collapsedPlus = collapse(
-        filtered.filter(v => v.strand === 1),
-        scaleFactor
+        filtered.filter((v) => v.strand === 1),
+        scaleFactor,
       );
       const collapsedMinus = collapse(
-        filtered.filter(v => v.strand !== 1),
-        scaleFactor
+        filtered.filter((v) => v.strand !== 1),
+        scaleFactor,
       );
 
-      collapsedPlus.forEach(v => {
+      collapsedPlus.forEach((v) => {
         v.strand = '+';
       });
-      collapsedMinus.forEach(v => {
+      collapsedMinus.forEach((v) => {
         v.strand = '-';
       });
 
@@ -254,7 +270,7 @@ class GBKDataFetcher {
       values = [...values, ...collapsedPlus, ...collapsedMinus];
       // values = values.concat(collapsedPlus).concat(collapsedMinus);
       // we're not going to take into account importance
-      return values.map(v => gbToHgGene(v));
+      return values.map((v) => gbToHgGene(v));
     });
   }
 }

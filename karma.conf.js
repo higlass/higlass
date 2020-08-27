@@ -1,14 +1,14 @@
 const webpackConfig = require('./webpack.config.js');
 require('babel-polyfill'); // eslint-disable-line import/no-extraneous-dependencies
 
-module.exports = config => {
+module.exports = (config) => {
   config.set({
     /** * maximum number of tries a browser will attempt in the case
      * of a disconnection */
     browserDisconnectTolerance: 2,
     /** * How long will Karma wait for a message from a browser before
      * disconnecting from it (in ms). */
-    browserNoActivityTimeout: 50000,
+    browserNoActivityTimeout: 90000,
     basePath: '',
     frameworks: ['jasmine', 'server-side'],
 
@@ -25,7 +25,7 @@ module.exports = config => {
         pattern: 'docs/examples/viewconfs/*.json',
         watched: true,
         served: true,
-        included: false
+        included: false,
       },
       'test/AxisTests.js',
       'test/2DRectangleDomainsTests.js',
@@ -57,6 +57,7 @@ module.exports = config => {
       'test/ndarray-to-list.spec.js',
       'test/OSMTests.js',
       'test/OverlayTrackTests.js',
+      'test/PluginDataFetcherTests.js',
       'test/PluginTrackTests.js',
       'test/PngExportTest.js',
       'test/RuleTests.js',
@@ -65,25 +66,25 @@ module.exports = config => {
       'test/SVGExportTest.js',
       'test/tile-proxy.js',
       'test/TiledPixiTrackTests.js',
-      'test/TrackLabelsTest.jsx',
+      'test/TrackLabelsTest.js',
       'test/UtilsTests.js',
       'test/ViewConfigEditorTests.js',
       'test/ViewManipulationTests.js',
       'test/ViewportProjectionTests.js',
-      'test/ZoomTests.js'
+      'test/ZoomTests.js',
     ],
 
     preprocessors: {
       // add webpack as preprocessor
       'app/scripts/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
-      'test/**/*.+(js|jsx)': ['webpack', 'sourcemap']
+      'test/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
     },
 
     // webpackConfig(env, argv)
     webpack: webpackConfig({}, {}),
 
     webpackServer: {
-      noInfo: true // please don't spam the console when running in karma!
+      noInfo: true, // please don't spam the console when running in karma!
     },
 
     plugins: [
@@ -93,13 +94,13 @@ module.exports = config => {
       'karma-sourcemap-loader',
       'karma-chrome-launcher',
       'karma-phantomjs2-launcher',
-      'karma-verbose-reporter'
+      'karma-verbose-reporter',
     ],
 
     babelPreprocessor: {
       options: {
-        presets: ['airbnb']
-      }
+        presets: ['airbnb'],
+      },
     },
     reporters: ['verbose'],
     port: 9876,
@@ -111,17 +112,17 @@ module.exports = config => {
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',
-        flags: ['--no-sandbox']
+        flags: ['--no-sandbox'],
       },
       HeadlessChrome: {
         base: 'ChromeHeadless',
         flags: [
           '--disable-translate',
           '--disable-extensions',
-          '--remote-debugging-port=9223'
-        ]
-      }
-    }
+          '--remote-debugging-port=9223',
+        ],
+      },
+    },
   });
 
   if (process.env.TRAVIS) {

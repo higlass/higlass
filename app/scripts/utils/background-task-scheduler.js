@@ -9,23 +9,23 @@ class BackgroundTaskScheduler {
     if (trackId === null) {
       this.taskList.push({
         handler: taskHandler,
-        data: taskData
+        data: taskData,
       });
     } else {
       // If a trackId is given we delete all previous tasks in the taskList of the same track
       // We only want to rerender the latest version of a track
-      this.taskList = this.taskList.filter(task => task.trackId !== trackId);
+      this.taskList = this.taskList.filter((task) => task.trackId !== trackId);
 
       this.taskList.push({
         handler: taskHandler,
         data: taskData,
-        trackId
+        trackId,
       });
     }
 
     if (!this.taskHandle) {
       this.taskHandle = requestIdleCallback(this.runTaskQueue.bind(this), {
-        timeout: this.requestIdleCallbackTimeout
+        timeout: this.requestIdleCallbackTimeout,
       });
     }
   }
@@ -46,7 +46,7 @@ class BackgroundTaskScheduler {
 
     if (this.taskList.length) {
       this.taskHandle = requestIdleCallback(this.runTaskQueue.bind(this), {
-        timeout: this.requestIdleCallbackTimeout
+        timeout: this.requestIdleCallbackTimeout,
       });
     } else {
       this.taskHandle = 0;

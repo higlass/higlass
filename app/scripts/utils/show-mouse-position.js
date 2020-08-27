@@ -34,7 +34,7 @@ const showMousePosition = (
   getDimensions,
   getIsFlipped,
   is2d,
-  isGlobal
+  isGlobal,
 ) => {
   pubSub.publish('app.animateOnMouseMove', true);
 
@@ -82,7 +82,7 @@ const showMousePosition = (
    *
    * @param  {Object}  e  Event object.
    */
-  const mouseMoveHandler = event => {
+  const mouseMoveHandler = (event) => {
     if (event.noHoveredTracks) {
       clearGraphics();
       return graphics;
@@ -155,7 +155,7 @@ const setupShowMousePosition = (context, is2d = false, isGlobal = false) => {
     context.getDimensions.bind(context),
     context.getProp('flipText'),
     is2d,
-    isGlobal
+    isGlobal,
   );
 
   scene.addChild(graphics);

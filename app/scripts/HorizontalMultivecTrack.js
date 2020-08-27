@@ -14,17 +14,63 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     // Continuous scaling is currently not supported
     this.continuousScaling = false;
+
+    this.updateDataFetcher(options);
+  }
+
+  updateDataFetcher(options) {
+    if (
+      options &&
+      options.selectRows &&
+      options.selectRowsAggregationMethod === 'server'
+    ) {
+      const { pubSub, dataFetcher: prevDataFetcher } = this;
+      const prevDataConfigOptions = prevDataFetcher.dataConfig.options;
+      const nextDataConfigOptions = {
+        aggGroups: options.selectRows,
+        aggFunc: options.selectRowsAggregationMode,
+      };
+      if (
+        JSON.stringify(prevDataConfigOptions) !==
+        JSON.stringify(nextDataConfigOptions)
+      ) {
+        // Override the dataFetcher object with a new dataConfig,
+        // containing the .options property.
+        // This would otherwise be set in the call to super()
+        // in the TiledPixiTrack ancestor constructor.
+        const newDataConfig = {
+          ...prevDataFetcher.dataConfig,
+          options: nextDataConfigOptions,
+        };
+        this.dataFetcher = new prevDataFetcher.constructor(
+          newDataConfig,
+          pubSub,
+        );
+
+        // Only fetch new tiles if the tileset has been registered
+        // and has a tilesetUid (for example, due to file url-based tracks).
+        if (this.dataFetcher.dataConfig.tilesetUid) {
+          this.fetchNewTiles(
+            Object.keys(this.fetchedTiles).map((x) => ({
+              tileId: x,
+              remoteId: x,
+            })),
+          );
+        }
+      }
+    }
   }
 
   rerender(options, force) {
+    this.updateDataFetcher(options);
     super.rerender(options, force);
 
-    if (this.options.selectRows) {
+    if (options.selectRows) {
       // The weights for selectRows groups must be computed
       // any time options.selectRows changes.
       this.selectRowsCumWeights = selectedItemsToCumWeights(
-        this.options.selectRows,
-        this.options.selectRowsAggregationWithRelativeHeight
+        options.selectRows,
+        options.selectRowsAggregationWithRelativeHeight,
       );
     }
   }
@@ -36,7 +82,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       canvas.width = this.tilesetInfo.shape[0];
       canvas.height = selectedItemsToSize(
         this.options.selectRows,
-        this.options.selectRowsAggregationWithRelativeHeight
+        this.options.selectRowsAggregationWithRelativeHeight,
       );
     } else if (this.tilesetInfo.shape) {
       canvas.width = this.tilesetInfo.shape[0];
@@ -51,9 +97,11 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     ctx.fillStyle = 'transparent';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    if (pixData.length) {
+    if (pixData.length === 4 * canvas.width * canvas.height) {
       const pix = new ImageData(pixData, canvas.width, canvas.height);
       ctx.putImageData(pix, 0, 0);
+    } else {
+      console.warn('HorizontalMultivecTrack: pixData has an incorrect length.');
     }
 
     return canvas;
@@ -63,7 +111,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       zoomLevel,
       tilePos,
-      this.tilesetInfo.tile_size
+      this.tilesetInfo.tile_size,
     );
 
     const tileEndX = tileX + tileWidth;
@@ -109,7 +157,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     if (this.tilesetInfo.resolutions) {
       const sortedResolutions = this.tilesetInfo.resolutions
-        .map(x => +x)
+        .map((x) => +x)
         .sort((a, b) => b - a);
 
       this.xTiles = tileProxy.calculateTilesFromResolution(
@@ -117,7 +165,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         this._xScale,
         this.tilesetInfo.min_pos[0],
         null,
-        this.tilesetInfo.tile_size
+        this.tilesetInfo.tile_size,
       );
     } else {
       this.xTiles = tileProxy.calculateTiles(
@@ -126,11 +174,11 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         this.tilesetInfo.min_pos[0],
         this.tilesetInfo.max_pos[0],
         this.tilesetInfo.max_zoom,
-        this.tilesetInfo.max_width
+        this.tilesetInfo.max_width,
       );
     }
 
-    const tiles = this.xTiles.map(x => [this.zoomLevel, x]);
+    const tiles = this.xTiles.map((x) => [this.zoomLevel, x]);
 
     this.setVisibleTiles(tiles);
   }
@@ -146,13 +194,13 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
         this.tilesetInfo.resolutions,
         this._xScale,
-        minX
+        minX,
       );
     } else {
       zoomIndexX = tileProxy.calculateZoomLevel(
         this._xScale,
         this.tilesetInfo.min_pos[0],
-        this.tilesetInfo.max_pos[0]
+        this.tilesetInfo.max_pos[0],
       );
     }
 
@@ -196,7 +244,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const tileWidth = tileProxy.calculateTileWidth(
       this.tilesetInfo,
       zoomLevel,
-      this.tilesetInfo.tile_size
+      this.tilesetInfo.tile_size,
     );
 
     // the position of the tile containing the query position
@@ -218,7 +266,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const tileWidth = tileProxy.calculateTileWidth(
       this.tilesetInfo,
       zoomLevel,
-      this.tilesetInfo.tile_size
+      this.tilesetInfo.tile_size,
     );
 
     // the position of the tile containing the query position
@@ -227,7 +275,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     if (this.options.selectRows) {
       numRows = selectedItemsToSize(
         this.options.selectRows,
-        this.options.selectRowsAggregationWithRelativeHeight
+        this.options.selectRowsAggregationWithRelativeHeight,
       );
     }
 
@@ -238,23 +286,20 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const posInTileY = posInTileYNormalized * numRows;
 
     let selectedRowIndex = Math.floor(posInTileY);
+    let selectedRowItem;
     if (this.options.selectRows) {
       // The `posInTileY` may not directly correspond to data indices if rows are filtered/reordered,
       // the `selectRows` array must be checked to convert the y-position to a data index/indices first.
-      if (!this.options.selectRowsAggregationWithRelativeHeight) {
-        // Each subarray represents one unit of height, so using `posInTileY` to select it will work.
-        selectedRowIndex = this.options.selectRows[Math.floor(posInTileY)];
-      } else {
+      if (this.options.selectRowsAggregationWithRelativeHeight) {
         // Height must take into account the size of sub-arrays, so use the cumulative weight array.
-        selectedRowIndex = this.options.selectRows[
-          this.selectRowsCumWeights.findIndex(
-            (weight, i) =>
-              posInTileYNormalized <= weight &&
-              (i === this.selectRowsCumWeights.length - 1 ||
-                this.selectRowsCumWeights[i + 1] >= posInTileYNormalized)
-          )
-        ];
+        selectedRowIndex = this.selectRowsCumWeights.findIndex(
+          (weight, i) =>
+            posInTileYNormalized <= weight &&
+            (i === this.selectRowsCumWeights.length - 1 ||
+              this.selectRowsCumWeights[i + 1] >= posInTileYNormalized),
+        );
       }
+      selectedRowItem = this.options.selectRows[selectedRowIndex];
     }
 
     const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
@@ -277,11 +322,21 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       let index = null;
       if (this.tilesetInfo.shape) {
         // Accomodate data from vector sources
-        if (Array.isArray(selectedRowIndex)) {
+        if (
+          Array.isArray(selectedRowItem) &&
+          this.options.selectRowsAggregationMethod === 'client'
+        ) {
           // Need to aggregate, so `index` will actually be an array.
-          index = selectedRowIndex.map(
-            rowI => this.tilesetInfo.shape[0] * rowI + Math.floor(posInTileX)
+          index = selectedRowItem.map(
+            (rowI) => this.tilesetInfo.shape[0] * rowI + Math.floor(posInTileX),
           );
+        } else if (
+          selectedRowItem &&
+          this.options.selectRowsAggregationMethod === 'client'
+        ) {
+          index =
+            this.tilesetInfo.shape[0] * selectedRowItem +
+            Math.floor(posInTileX);
         } else {
           // No need to aggregate, `index` will contain a single item.
           index =
@@ -296,21 +351,37 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       if (Array.isArray(index)) {
         // Need to aggregate to compute `value`.
         const aggFunc = getAggregationFunction(
-          this.options.selectRowsAggregationMode
+          this.options.selectRowsAggregationMode,
         );
-        const values = index.map(i => fetchedTile.tileData.dense[i]);
+        const values = index.map((i) => fetchedTile.tileData.dense[i]);
         value = format('.3f')(aggFunc(values));
         value += '<br/>';
         value += `${index.length}-item ${this.options.selectRowsAggregationMode}`;
       } else {
         value = format('.3f')(fetchedTile.tileData.dense[index]);
+        if (Array.isArray(selectedRowItem)) {
+          value += '<br/>';
+          value += `${selectedRowItem.length}-item ${this.options.selectRowsAggregationMode}`;
+        }
       }
     }
 
     // add information about the row
-    if (this.tilesetInfo.row_infos && !Array.isArray(selectedRowIndex)) {
+    if (this.tilesetInfo.row_infos) {
       value += '<br/>';
-      value += this.tilesetInfo.row_infos[selectedRowIndex];
+      let rowInfo = '';
+      if (this.options.selectRows && !Array.isArray(selectedRowItem)) {
+        rowInfo = this.tilesetInfo.row_infos[selectedRowItem];
+      } else if (selectedRowIndex) {
+        rowInfo = this.tilesetInfo.row_infos[selectedRowIndex];
+      }
+      if (typeof rowInfo === 'object') {
+        // The simplest thing to do here is conform to the tab-separated values convention.
+        value += Object.values(rowInfo).join('\t');
+      } else {
+        // Probably a tab-separated string since not an object.
+        value += rowInfo;
+      }
     }
 
     return `${value}`;

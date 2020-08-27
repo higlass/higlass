@@ -5,7 +5,7 @@ import { absToChr } from './utils';
 class SearchField {
   constructor(chromInfo) {
     this.chromInfo = chromInfo;
-    this.chromInfoBisector = bisector(d => d.pos).left;
+    this.chromInfoBisector = bisector((d) => d.pos).left;
   }
 
   scalesToPositionText(xScale, yScale, twoD = false) {
@@ -36,7 +36,7 @@ class SearchField {
       // same chromosome
 
       positionString = `${x1[0]}:${stringFormat(
-        Math.floor(x1[1])
+        Math.floor(x1[1]),
       )}-${stringFormat(Math.ceil(x2[1]))}`;
     }
 
@@ -49,7 +49,7 @@ class SearchField {
       } else {
         // same chromosome
         positionString += ` & ${y1[0]}:${stringFormat(
-          Math.floor(y1[1])
+          Math.floor(y1[1]),
         )}-${stringFormat(Math.ceil(y2[1]))}`;
       }
     }
@@ -192,7 +192,7 @@ class SearchField {
     // shitty ass regex to deal with negative positions
     // (which aren't even valid genomic coordinates)
     let parts = term.split('-'); // split on a
-    parts = parts.filter(d => d.length > 0);
+    parts = parts.filter((d) => d.length > 0);
 
     let range = null;
 
@@ -238,7 +238,7 @@ class SearchField {
       // it's length as the range
       range = [
         chromPosition,
-        chromPosition + +this.chromInfo.chromLengths[parts[0]]
+        chromPosition + +this.chromInfo.chromLengths[parts[0]],
       ];
     } else {
       // e.g. ("chr1:540340")
@@ -269,7 +269,7 @@ class SearchField {
     if (parts.length === 0) {
       return [
         [0, 0],
-        [0, 0]
+        [0, 0],
       ];
     }
 
@@ -277,14 +277,14 @@ class SearchField {
       const sparts = parts[0].split(',');
       return [
         [+sparts[0], +sparts[1]],
-        [0, 0]
+        [0, 0],
       ];
     }
     const sparts0 = parts[0].split(',');
     const sparts1 = parts[1].split(',');
     return [
       [+sparts0[0], +sparts0[1]],
-      [+sparts1[0], +sparts1[1]]
+      [+sparts1[0], +sparts1[1]],
     ];
   }
 
@@ -301,7 +301,7 @@ class SearchField {
     // or the distance after the last chromosome of the given
     let offset = [
       [0, 0],
-      [0, 0]
+      [0, 0],
     ];
     if (offsetRe) {
       text = text.replace(offsetRe[0], '');

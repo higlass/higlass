@@ -73,7 +73,7 @@ function contextMenu(menu, optsIn) {
     index,
     pMouseUp = false,
     clickAwayFunc,
-    useMouse = false
+    useMouse = false,
   ) {
     const elm = this;
     let mousePos = null;
@@ -104,7 +104,7 @@ function contextMenu(menu, optsIn) {
       .data(typeof menu === 'function' ? menu(data) : menu)
       .enter()
       .append('li')
-      .attr('class', d => {
+      .attr('class', (d) => {
         let ret = '';
         if (d.divider) {
           ret += ' is-divider';
@@ -120,18 +120,18 @@ function contextMenu(menu, optsIn) {
         }
         return ret;
       })
-      .html(d => {
+      .html((d) => {
         if (d.divider) {
           return '<hr>';
         }
         if (!d.title) {
           console.error(
-            'No title attribute set. Check the spelling of your options.'
+            'No title attribute set. Check the spelling of your options.',
           );
         }
         return typeof d.title === 'string' ? d.title : d.title(data);
       })
-      .on('click', d => {
+      .on('click', (d) => {
         if (d.disabled) return; // do nothing if disabled
         if (!d.action) return; // headers have no "action"
         d.action(elm, data, index, mousePos);
@@ -159,7 +159,7 @@ function contextMenu(menu, optsIn) {
             // no children, so hide any open child menus
             select(`.d3-context-menu-${openChildMenuUid}`).style(
               'display',
-              'none'
+              'none',
             );
 
             openChildMenuUid = null;
@@ -175,7 +175,7 @@ function contextMenu(menu, optsIn) {
           // close the already open one
           select(`.d3-context-menu-${openChildMenuUid}`).style(
             'display',
-            'none'
+            'none',
           );
 
           openChildMenuUid = null;
@@ -191,21 +191,21 @@ function contextMenu(menu, optsIn) {
               rootElement: currentThis,
               pos: [
                 boundingRect.left + window.pageXOffset,
-                boundingRect.top - 2 + window.pageYOffset
+                boundingRect.top - 2 + window.pageYOffset,
               ],
-              orientation: 'left'
+              orientation: 'left',
             });
           } else {
             childrenContextMenu = contextMenu(d.children, {
               pos: [
                 boundingRect.left + boundingRect.width + window.pageXOffset,
-                boundingRect.top - 2 + window.pageYOffset
+                boundingRect.top - 2 + window.pageYOffset,
               ],
               rootElement: currentThis,
               parentStart: [
                 boundingRect.left + window.pageXOffset,
-                boundingRect.top - 2 + window.pageYOffset
-              ]
+                boundingRect.top - 2 + window.pageYOffset,
+              ],
             });
           }
 
@@ -213,7 +213,7 @@ function contextMenu(menu, optsIn) {
             data,
             i,
             true,
-            function intoTheVoid() {}
+            function intoTheVoid() {},
           ]);
           openChildMenuUid = d.childUid;
         }
@@ -246,7 +246,7 @@ function contextMenu(menu, optsIn) {
 
     const contextMenuSelection = select(`.d3-context-menu-${uid}`).style(
       'display',
-      'block'
+      'block',
     );
 
     if (initialPos === null) {

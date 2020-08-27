@@ -9,16 +9,16 @@ import visitTracks from './visit-tracks';
 const visitPositionedTracks = (
   positionedTracks,
   visitor,
-  inclCombinedTracks = true
+  inclCombinedTracks = true,
 ) => {
   const allTracks = [];
 
-  Object.keys(positionedTracks).forEach(position => {
+  Object.keys(positionedTracks).forEach((position) => {
     visitTracks(
       positionedTracks[position],
       visitor,
       inclCombinedTracks,
-      position
+      position,
     );
   });
 

@@ -18,7 +18,7 @@ class DenseDataExtrema2D {
 
     if (!Number.isSafeInteger(this.tileSize)) {
       console.error(
-        'The DenseDataExtrema2D module only works for data of quadratic length.'
+        'The DenseDataExtrema2D module only works for data of quadratic length.',
       );
     }
 
@@ -29,7 +29,7 @@ class DenseDataExtrema2D {
     // Convert data to 2d array
     const dataMatrix = ndarray(Array.from(data), [
       this.tileSize,
-      this.tileSize
+      this.tileSize,
     ]);
 
     this.subsetMinimums = this.computeSubsetNonZeroMinimums(dataMatrix);
@@ -61,7 +61,7 @@ class DenseDataExtrema2D {
       rowOffsetStart,
       colOffsetStart,
       width,
-      height
+      height,
     );
 
     return min;
@@ -90,7 +90,7 @@ class DenseDataExtrema2D {
       rowOffsetStart,
       colOffsetStart,
       width,
-      height
+      height,
     );
 
     return max;
@@ -113,7 +113,7 @@ class DenseDataExtrema2D {
           i * this.subsetSize,
           j * this.subsetSize,
           this.subsetSize,
-          this.subsetSize
+          this.subsetSize,
         );
         minimums.set(i, j, curMin);
       }
@@ -138,7 +138,7 @@ class DenseDataExtrema2D {
           i * this.subsetSize,
           j * this.subsetSize,
           this.subsetSize,
-          this.subsetSize
+          this.subsetSize,
         );
         maximums.set(i, j, curMax);
       }
@@ -219,7 +219,7 @@ class DenseDataExtrema2D {
       0,
       0,
       this.numSubsets,
-      this.numSubsets
+      this.numSubsets,
     );
   }
 
@@ -233,7 +233,7 @@ class DenseDataExtrema2D {
       0,
       0,
       this.numSubsets,
-      this.numSubsets
+      this.numSubsets,
     );
   }
 }

@@ -62,12 +62,12 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   let requestMapper = {};
   let blockedCalls = 0;
 
-  const bundleRequests = request => {
+  const bundleRequests = (request) => {
     const requestId = requestMapper[request.id];
 
     if (requestId && bundledRequest[requestId]) {
       bundledRequest[requestId].ids = bundledRequest[requestId].ids.concat(
-        request.ids
+        request.ids,
       );
     } else {
       requestMapper[request.id] = bundledRequest.length;
@@ -89,9 +89,9 @@ const throttleAndDebounce = (func, interval, finalWait) => {
     func(
       {
         sessionId,
-        requests: bundledRequest
+        requests: bundledRequest,
       },
-      ...args
+      ...args,
     );
     reset();
   };
@@ -120,7 +120,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   debounced.immediate = () => {
     func({
       sessionId,
-      requests: bundledRequest
+      requests: bundledRequest,
     });
   };
 
@@ -144,7 +144,7 @@ const throttleAndDebounce = (func, interval, finalWait) => {
   return throttled;
 };
 
-export const setTileProxyAuthHeader = newHeader => {
+export const setTileProxyAuthHeader = (newHeader) => {
   authHeader = newHeader;
 };
 
@@ -157,15 +157,35 @@ export function fetchMultiRequestTiles(req, pubSub) {
   const fetchPromises = [];
 
   const requestsByServer = {};
+  const requestBodyByServer = {};
 
   // We're converting the array of IDs into an object in order to filter out duplicated requests.
   // In case different instances request the same data it won't be loaded twice.
   for (const request of requests) {
     if (!requestsByServer[request.server]) {
       requestsByServer[request.server] = {};
+      requestBodyByServer[request.server] = [];
     }
     for (const id of request.ids) {
       requestsByServer[request.server][id] = true;
+
+      if (request.options) {
+        const firstSepIndex = id.indexOf('.');
+        const tilesetUuid = id.substring(0, firstSepIndex);
+        const tileId = id.substring(firstSepIndex + 1);
+        const tilesetObject = requestBodyByServer[request.server].find(
+          (t) => t.tilesetUid === tilesetUuid,
+        );
+        if (tilesetObject) {
+          tilesetObject.tileIds.push(tileId);
+        } else {
+          requestBodyByServer[request.server].push({
+            tilesetUid: tilesetUuid,
+            tileIds: [tileId],
+            options: request.options,
+          });
+        }
+      }
     }
   }
 
@@ -175,15 +195,17 @@ export function fetchMultiRequestTiles(req, pubSub) {
     const ids = Object.keys(requestsByServer[server]);
     // console.log('ids:', ids);
 
+    const requestBody = requestBodyByServer[server];
+
     // if we request too many tiles, then the URL can get too long and fail
     // so we'll break up the requests into smaller subsets
     for (let i = 0; i < ids.length; i += MAX_FETCH_TILES) {
       const theseTileIds = ids.slice(
         i,
-        i + Math.min(ids.length - i, MAX_FETCH_TILES)
+        i + Math.min(ids.length - i, MAX_FETCH_TILES),
       );
 
-      const renderParams = theseTileIds.map(x => `d=${x}`).join('&');
+      const renderParams = theseTileIds.map((x) => `d=${x}`).join('&');
       const outUrl = `${server}/tiles/?${renderParams}&s=${sessionId}`;
 
       /* eslint-disable no-loop-func */
@@ -202,7 +224,8 @@ export function fetchMultiRequestTiles(req, pubSub) {
           params.server,
           params.theseTileIds,
           params.authHeader,
-          resolve
+          resolve,
+          requestBody,
         );
 
         /*
@@ -219,7 +242,7 @@ export function fetchMultiRequestTiles(req, pubSub) {
     }
   }
 
-  Promise.all(fetchPromises).then(datas => {
+  Promise.all(fetchPromises).then((datas) => {
     const tiles = {};
 
     // merge back all the tile requests
@@ -257,37 +280,37 @@ export function fetchMultiRequestTiles(req, pubSub) {
 export const fetchTilesDebounced = throttleAndDebounce(
   fetchMultiRequestTiles,
   TILE_FETCH_DEBOUNCE,
-  TILE_FETCH_DEBOUNCE
+  TILE_FETCH_DEBOUNCE,
 );
 
 /**
  * Calculate the zoom level from a list of available resolutions
  */
 export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
-  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
+  const sortedResolutions = resolutions.map((x) => +x).sort((a, b) => b - a);
 
   const trackWidth = scale.range()[1] - scale.range()[0];
 
   const binsDisplayed = sortedResolutions.map(
-    r => (scale.domain()[1] - scale.domain()[0]) / r
+    (r) => (scale.domain()[1] - scale.domain()[0]) / r,
   );
-  const binsPerPixel = binsDisplayed.map(b => b / trackWidth);
+  const binsPerPixel = binsDisplayed.map((b) => b / trackWidth);
 
   // we're going to show the highest resolution that requires more than one
   // pixel per bin
-  const displayableBinsPerPixel = binsPerPixel.filter(b => b < 1);
+  const displayableBinsPerPixel = binsPerPixel.filter((b) => b < 1);
 
   if (displayableBinsPerPixel.length === 0) return 0;
 
   return binsPerPixel.indexOf(
-    displayableBinsPerPixel[displayableBinsPerPixel.length - 1]
+    displayableBinsPerPixel[displayableBinsPerPixel.length - 1],
   );
 };
 
 export const calculateResolution = (tilesetInfo, zoomLevel) => {
   if (tilesetInfo.resolutions) {
     const sortedResolutions = tilesetInfo.resolutions
-      .map(x => +x)
+      .map((x) => +x)
       .sort((a, b) => b - a);
     const resolution = sortedResolutions[zoomLevel];
 
@@ -309,7 +332,7 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
 
   const zoomScale = Math.max(
     (maxX - minX) / (scale.domain()[1] - scale.domain()[0]),
-    1
+    1,
   );
 
   const viewResolution = 384;
@@ -318,7 +341,7 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   // fun fact: the number 384 is halfway between 256 and 512
   const addedZoom = Math.max(
     0,
-    Math.ceil(Math.log(rangeWidth / viewResolution) / Math.LN2)
+    Math.ceil(Math.log(rangeWidth / viewResolution) / Math.LN2),
   );
   let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + addedZoom;
 
@@ -326,7 +349,7 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
 
   if (binsPerTile) {
     binsPerTileCorrection = Math.floor(
-      Math.log(256) / Math.log(2) - Math.log(binsPerTile) / Math.log(2)
+      Math.log(256) / Math.log(2) - Math.log(binsPerTile) / Math.log(2),
     );
   }
 
@@ -355,7 +378,7 @@ export function calculateTileAndPosInTile(
   maxDim,
   dataStartPos,
   zoomLevel,
-  position
+  position,
 ) {
   let tileWidth = null;
   const PIXELS_PER_TILE = tilesetInfo.bins_per_dimension || 256;
@@ -368,7 +391,7 @@ export function calculateTileAndPosInTile(
 
   const tilePos = Math.floor((position - dataStartPos) / tileWidth);
   const posInTile = Math.floor(
-    (PIXELS_PER_TILE * (position - tilePos * tileWidth)) / tileWidth
+    (PIXELS_PER_TILE * (position - tilePos * tileWidth)) / tileWidth,
   );
 
   return [tilePos, posInTile];
@@ -397,7 +420,7 @@ export const calculateTiles = (
   minX,
   maxX,
   maxZoom,
-  maxDim
+  maxDim,
 ) => {
   const zoomLevelFinal = Math.min(zoomLevel, maxZoom);
 
@@ -420,15 +443,15 @@ export const calculateTiles = (
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
     Math.min(
       2 ** zoomLevelFinal,
-      Math.ceil((scale.domain()[1] - minX - epsilon) / tileWidth)
-    )
+      Math.ceil((scale.domain()[1] - minX - epsilon) / tileWidth),
+    ),
   );
 };
 
 export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
   if (tilesetInfo.resolutions) {
     const sortedResolutions = tilesetInfo.resolutions
-      .map(x => +x)
+      .map((x) => +x)
       .sort((a, b) => b - a);
     return sortedResolutions[zoomLevel] * binsPerTile;
   }
@@ -449,7 +472,7 @@ export const calculateTilesFromResolution = (
   scale,
   minX,
   maxX,
-  pixelsPerTile
+  pixelsPerTile,
 ) => {
   const epsilon = 0.0000001;
   const PIXELS_PER_TILE = pixelsPerTile || 256;
@@ -463,17 +486,17 @@ export const calculateTilesFromResolution = (
 
   const lowerBound = Math.max(
     0,
-    Math.floor((scale.domain()[0] - minX) / tileWidth)
+    Math.floor((scale.domain()[0] - minX) / tileWidth),
   );
   const upperBound = Math.ceil(
-    Math.min(maxX, scale.domain()[1] - minX - epsilon) / tileWidth
+    Math.min(maxX, scale.domain()[1] - minX - epsilon) / tileWidth,
   );
   let tileRange = range(lowerBound, upperBound);
 
   if (tileRange.length > MAX_TILES) {
     // too many tiles visible in this range
     console.warn(
-      `Too many visible tiles: ${tileRange.length} truncating to ${MAX_TILES}`
+      `Too many visible tiles: ${tileRange.length} truncating to ${MAX_TILES}`,
     );
     tileRange = tileRange.slice(0, MAX_TILES);
   }
@@ -500,10 +523,7 @@ export const calculateTilesFromResolution = (
  * @param ignoreLowerLeft: If this is a tile along the diagonal and there will be
  * mirrored tiles present ignore the lower left values
  * @param {array} zeroValueColor: The color to use for rendering zero data values, [r, g, b, a].
- * @param {number[]} selectedRows: Array of row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
- * @param {string} selectedRowsAggregationMode: String that determines the aggregation function to use if selected rows is a
- * 2D array ("mean", "sum", etc).
- * @param {boolean} selectedRowsAggregationWithRelativeHeight: If true, the height for each aggregation group should be relative to the length of the group.
+ * @param {object} selectedRowsOptions Rendering options when using a `selectRows` track option.
  */
 export const tileDataToPixData = (
   tile,
@@ -515,9 +535,7 @@ export const tileDataToPixData = (
   ignoreUpperRight,
   ignoreLowerLeft,
   zeroValueColor,
-  selectedRows,
-  selectedRowsAggregationMode,
-  selectedRowsAggregationWithRelativeHeight
+  selectedRowsOptions,
 ) => {
   const { tileData } = tile;
 
@@ -574,9 +592,7 @@ export const tileDataToPixData = (
     ignoreLowerLeft,
     tile.tileData.shape,
     zeroValueColor,
-    selectedRows,
-    selectedRowsAggregationMode,
-    selectedRowsAggregationWithRelativeHeight
+    selectedRowsOptions,
   );
 
   finished({ pixData });
@@ -609,31 +625,35 @@ function fetchEither(url, callback, textOrJson, pubSub) {
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
-  let mime;
+  let mime = null;
   if (textOrJson === 'text') {
-    mime = 'text/plain';
+    mime = null;
   } else if (textOrJson === 'json') {
     mime = 'application/json';
   } else {
     throw new Error(`fetch either "text" or "json", not "${textOrJson}"`);
   }
-  const headers = { 'Content-Type': mime };
+  const headers = {};
+
+  if (mime) {
+    headers['Content-Type'] = mime;
+  }
   if (authHeader) {
     headers.Authorization = authHeader;
   }
   return fetch(url, { credentials: 'same-origin', headers })
-    .then(rep => {
+    .then((rep) => {
       if (!rep.ok) {
         throw Error(rep.statusText);
       }
 
       return rep[textOrJson]();
     })
-    .then(content => {
+    .then((content) => {
       callback(undefined, content);
       return content;
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(`Could not fetch ${url}`, error);
       callback(error, undefined);
       return error;
@@ -655,7 +675,7 @@ function text(url, callback, pubSub) {
 }
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -704,7 +724,7 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb, pubSub) => {
         doneCb(data);
       }
     },
-    pubSub
+    pubSub,
   );
 };
 
@@ -720,7 +740,7 @@ const api = {
   json,
   text,
   tileDataToPixData,
-  trackInfo
+  trackInfo,
 };
 
 export default api;

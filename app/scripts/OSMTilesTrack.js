@@ -64,7 +64,7 @@ class OSMTilesTrack extends PixiTrack {
     this.uuid = slugid.nice();
     this.refreshTilesDebounced = debounce(
       this.refreshTiles.bind(this),
-      ZOOM_DEBOUNCE
+      ZOOM_DEBOUNCE,
     );
   }
 
@@ -72,13 +72,13 @@ class OSMTilesTrack extends PixiTrack {
    * Return the set of ids of all tiles which are both visible and fetched.
    */
   visibleAndFetchedIds() {
-    return Object.keys(this.fetchedTiles).filter(x =>
-      this.visibleTileIds.has(x)
+    return Object.keys(this.fetchedTiles).filter((x) =>
+      this.visibleTileIds.has(x),
     );
   }
 
   visibleAndFetchedTiles() {
-    return this.visibleAndFetchedIds().map(x => this.fetchedTiles[x]);
+    return this.visibleAndFetchedIds().map((x) => this.fetchedTiles[x]);
   }
 
   /**
@@ -88,13 +88,13 @@ class OSMTilesTrack extends PixiTrack {
    * tile positions.
    */
   setVisibleTiles(tilePositions) {
-    this.visibleTiles = tilePositions.map(x => ({
+    this.visibleTiles = tilePositions.map((x) => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
-      mirrored: x.mirrored
+      mirrored: x.mirrored,
     }));
 
-    this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
+    this.visibleTileIds = new Set(this.visibleTiles.map((x) => x.tileId));
   }
 
   removeAllTiles() {
@@ -112,7 +112,7 @@ class OSMTilesTrack extends PixiTrack {
     // fetch the tiles that should be visible but haven't been fetched
     // and aren't in the process of being fetched
     const toFetch = [...this.visibleTiles].filter(
-      x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId)
+      (x) => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId),
     );
 
     for (let i = 0; i < toFetch.length; i++) {
@@ -122,7 +122,7 @@ class OSMTilesTrack extends PixiTrack {
     // calculate which tiles are obsolete and remove them
     // fetchedTileID are remote ids
     const toRemove = [...fetchedTileIDs].filter(
-      x => !this.visibleTileIds.has(x)
+      (x) => !this.visibleTileIds.has(x),
     );
 
     this.removeTiles(toRemove);
@@ -144,7 +144,7 @@ class OSMTilesTrack extends PixiTrack {
       return;
     }
 
-    toRemoveIds.forEach(x => {
+    toRemoveIds.forEach((x) => {
       const tileIdStr = x;
       this.destroyTile(this.fetchedTiles[tileIdStr]);
 
@@ -188,12 +188,12 @@ class OSMTilesTrack extends PixiTrack {
     const xZoomLevel = tileProxy.calculateZoomLevel(
       this._xScale,
       this.minX,
-      this.maxX
+      this.maxX,
     );
     const yZoomLevel = tileProxy.calculateZoomLevel(
       this._xScale,
       this.minY,
-      this.maxY
+      this.maxY,
     );
 
     let zoomLevel = Math.min(Math.max(xZoomLevel, yZoomLevel), this.maxZoom);
@@ -221,7 +221,7 @@ class OSMTilesTrack extends PixiTrack {
       this.minX,
       this.maxX,
       this.maxZoom,
-      this.maxWidth
+      this.maxWidth,
     );
 
     this.yTiles = tileProxy.calculateTiles(
@@ -230,7 +230,7 @@ class OSMTilesTrack extends PixiTrack {
       this.minY,
       this.maxY,
       this.maxZoom,
-      this.maxWidth
+      this.maxWidth,
     );
 
     const rows = this.xTiles;
@@ -343,7 +343,7 @@ class OSMTilesTrack extends PixiTrack {
       tileX,
       tileY,
       tileWidth,
-      tileHeight
+      tileHeight,
     };
   }
 
@@ -352,7 +352,7 @@ class OSMTilesTrack extends PixiTrack {
       tileX,
       tileY,
       tileWidth,
-      tileHeight
+      tileHeight,
     } = this.getTilePosAndDimensions(zoomLevel, tilePos);
 
     sprite.x = this._refXScale(tileX);
@@ -369,7 +369,7 @@ class OSMTilesTrack extends PixiTrack {
     // create the tile
     // should be overwritten by child classes
     const texture = new GLOBALS.PIXI.Texture(
-      new GLOBALS.PIXI.BaseTexture(tile.tileData.img)
+      new GLOBALS.PIXI.BaseTexture(tile.tileData.img),
     );
     const sprite = new GLOBALS.PIXI.Sprite(texture);
 
@@ -380,7 +380,7 @@ class OSMTilesTrack extends PixiTrack {
     this.setSpriteProperties(
       tile.sprite,
       tile.tileData.zoomLevel,
-      tile.tileData.tilePos
+      tile.tileData.tilePos,
     );
 
     graphics.removeChildren();
@@ -469,7 +469,7 @@ class OSMTilesTrack extends PixiTrack {
 
   fetchNewTiles(toFetch) {
     if (toFetch.length > 0) {
-      const toFetchList = [...new Set(toFetch.map(x => x.remoteId))];
+      const toFetchList = [...new Set(toFetch.map((x) => x.remoteId))];
 
       for (const tileId of toFetchList) {
         const parts = tileId.split('.');
@@ -486,7 +486,7 @@ class OSMTilesTrack extends PixiTrack {
             img,
             zoomLevel: +parts[0],
             tilePos: [+parts[1], +parts[2]],
-            tileSrc: src
+            tileSrc: src,
           };
 
           this.receivedTiles(loadedTiles);
@@ -557,7 +557,7 @@ class OSMTilesTrack extends PixiTrack {
         this.setSpriteProperties(
           tile.sprite,
           tile.tileData.zoomLevel,
-          tile.tileData.tilePos
+          tile.tileData.tilePos,
         );
       } else {
         // console.log('skipping...', tile.tileId);

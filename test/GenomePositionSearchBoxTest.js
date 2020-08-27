@@ -10,8 +10,11 @@ import HiGlassComponent from '../app/scripts/HiGlassComponent';
 import {
   waitForJsonComplete,
   waitForTilesLoaded,
-  waitForTransitionsFinished
+  waitForTransitionsFinished,
 } from '../app/scripts/utils';
+
+import createElementAndApi from './utils/create-element-and-api';
+import removeDiv from './utils/remove-div';
 
 import { geneAnnotationsOnly1, noGPSB } from './view-configs';
 
@@ -23,8 +26,45 @@ describe('Genome position search box tests', () => {
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
+  describe('Default chromsizes', () => {
+    let api = null;
+
+    it('are loaded and displayed', (done) => {
+      const viewconf = JSON.parse(JSON.stringify(geneAnnotationsOnly1));
+      viewconf.views[0].genomePositionSearchBox = {
+        chromInfoPath:
+          'https://s3.amazonaws.com/pkerp/public/gpsb/small.chrom.sizes',
+        hideAvailableAssemblies: true,
+        visible: true,
+      };
+      viewconf.trackSourceServers = [];
+
+      [div, api] = createElementAndApi(viewconf, {});
+      hgc = api.getComponent();
+
+      waitForJsonComplete(() => {
+        const positionText = hgc.genomePositionSearchBoxes.aa.positionText;
+
+        expect(hgc.genomePositionSearchBoxes.aa.assemblyPickButton).toEqual(
+          undefined,
+        );
+
+        expect(positionText.indexOf('bar')).toBeGreaterThan(-1);
+        done();
+      });
+    });
+
+    afterEach(() => {
+      api.destroy();
+      removeDiv(div);
+      api = undefined;
+      div = undefined;
+      hgc = null;
+    });
+  });
+
   describe('Base genome position search box test', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
         hgc.unmount();
         hgc.detach();
@@ -45,14 +85,14 @@ describe('Genome position search box tests', () => {
           options={{ bounded: false }}
           viewConfig={geneAnnotationsOnly1}
         />,
-        { attachTo: div }
+        { attachTo: div },
       );
 
       hgc.update();
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Searches for cdkn2b-as1', done => {
+    it('Searches for cdkn2b-as1', (done) => {
       const firstDomain = hgc.instance().xScales.aa.domain();
 
       hgc
@@ -90,7 +130,7 @@ describe('Genome position search box tests', () => {
   });
 
   describe('Starting with no genome position search box', () => {
-    it('Cleans up previously created instances and mounts a new component', done => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
         hgc.unmount();
         hgc.detach();
@@ -108,14 +148,14 @@ describe('Genome position search box tests', () => {
 
       hgc = mount(
         <HiGlassComponent options={{ bounded: false }} viewConfig={noGPSB} />,
-        { attachTo: div }
+        { attachTo: div },
       );
 
       hgc.update();
       waitForTilesLoaded(hgc.instance(), done);
     });
 
-    it('Makes the search box visible', done => {
+    it('Makes the search box visible', (done) => {
       // TODO: This may create state which is necessary for the following tests.
       // In which case, it should be a `before` or `before_each` and not `it`.
       // let assemblyPickButton =
@@ -132,18 +172,18 @@ describe('Genome position search box tests', () => {
     it('Makes sure that the search box points to mm9', () => {
       hgc.update();
       expect(
-        hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly
+        hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly,
       ).toEqual('mm9');
     });
 
-    it('Switch the selected genome to dm3', done => {
+    it('Switch the selected genome to dm3', (done) => {
       hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('dm3');
       hgc.update();
 
       waitForJsonComplete(done);
     });
 
-    it('Searches for the w gene', done => {
+    it('Searches for the w gene', (done) => {
       // this gene previously did nothing when searching for it
       hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'w');
 
@@ -152,18 +192,18 @@ describe('Genome position search box tests', () => {
 
     it('Makes sure that no genes are loaded', () => {
       expect(
-        hgc.instance().genomePositionSearchBoxes.aa.state.genes.length
+        hgc.instance().genomePositionSearchBoxes.aa.state.genes.length,
       ).toEqual(0);
     });
 
-    it('Switch the selected genome to mm9', done => {
+    it('Switch the selected genome to mm9', (done) => {
       hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('mm9');
       hgc.update();
 
       waitForJsonComplete(done);
     });
 
-    it('Searches for the Clock gene', done => {
+    it('Searches for the Clock gene', (done) => {
       // this gene previously did nothing when searching for it
       hgc
         .instance()
@@ -172,7 +212,7 @@ describe('Genome position search box tests', () => {
       waitForJsonComplete(done);
     });
 
-    it('Clicks the search positions', done => {
+    it('Clicks the search positions', (done) => {
       hgc.instance().genomePositionSearchBoxes.aa.buttonClick();
 
       waitForJsonComplete(() => {
@@ -189,33 +229,33 @@ describe('Genome position search box tests', () => {
       expect(zoomTransform.x - 2224932).toBeLessThan(1);
     });
 
-    it('Checks that autocomplete fetches some genes', done => {
+    it('Checks that autocomplete fetches some genes', (done) => {
       hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'T');
       hgc.update();
 
       waitForJsonComplete(done);
     });
 
-    it('Checks the selected genes', done => {
+    it('Checks the selected genes', (done) => {
       // don't use the human autocomplete id
       expect(
-        hgc.instance().genomePositionSearchBoxes.aa.state.autocompleteId
+        hgc.instance().genomePositionSearchBoxes.aa.state.autocompleteId,
       ).not.toEqual('OHJakQICQD6gTD7skx4EWA');
       expect(
-        hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName
+        hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName,
       ).toEqual('Gt(ROSA)26Sor');
 
       waitForJsonComplete(done);
     });
 
-    it('Switch the selected genome to hg19', done => {
+    it('Switch the selected genome to hg19', (done) => {
       hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('hg19');
       hgc.update();
 
       waitForJsonComplete(done);
     });
 
-    it('Sets the text to TP53', done => {
+    it('Sets the text to TP53', (done) => {
       hgc
         .instance()
         .genomePositionSearchBoxes.aa.onAutocompleteChange({}, 'TP53');
@@ -224,7 +264,7 @@ describe('Genome position search box tests', () => {
       waitForJsonComplete(done);
     });
 
-    it('Clicks on the search button', done => {
+    it('Clicks on the search button', (done) => {
       hgc.instance().genomePositionSearchBoxes.aa.buttonClick();
 
       waitForJsonComplete(() => {
@@ -241,10 +281,10 @@ describe('Genome position search box tests', () => {
       expect(zoomTransform.x + 7656469).toBeLessThan(1);
     });
 
-    it('Ensures that the autocomplete has changed', done => {
+    it('Ensures that the autocomplete has changed', (done) => {
       hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, '');
       expect(
-        hgc.instance().genomePositionSearchBoxes.aa.state.autocompleteId
+        hgc.instance().genomePositionSearchBoxes.aa.state.autocompleteId,
       ).toEqual('OHJakQICQD6gTD7skx4EWA');
 
       waitForJsonComplete(done);
@@ -252,18 +292,18 @@ describe('Genome position search box tests', () => {
 
     it('Ensure that newly loaded genes are from hg19', () => {
       expect(
-        hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName
+        hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName,
       ).toEqual('TP53');
     });
 
-    it('Switches back to mm9', done => {
+    it('Switches back to mm9', (done) => {
       hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('mm9');
       hgc.update();
 
       waitForJsonComplete(done);
     });
 
-    it('Mock type something', done => {
+    it('Mock type something', (done) => {
       hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, '');
 
       waitForJsonComplete(done);
@@ -271,20 +311,20 @@ describe('Genome position search box tests', () => {
 
     it('Make sure it has mouse genes', () => {
       expect(
-        hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName
+        hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName,
       ).toEqual('Gt(ROSA)26Sor');
     });
 
-    it('Switches back to hg19', done => {
+    it('Switches back to hg19', (done) => {
       hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('hg19');
       hgc.update();
 
       waitForJsonComplete(done);
     });
 
-    it('Makes the search box invisible', done => {
+    it('Makes the search box invisible', (done) => {
       expect(
-        hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly
+        hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly,
       ).toEqual('hg19');
       hgc.instance().handleTogglePositionSearchBox('aa');
       hgc.update();
@@ -295,7 +335,7 @@ describe('Genome position search box tests', () => {
       waitForJsonComplete(done);
     });
 
-    it('Makes the search box visible again', done => {
+    it('Makes the search box visible again', (done) => {
       hgc.instance().handleTogglePositionSearchBox('aa');
       hgc.update();
 
@@ -304,7 +344,7 @@ describe('Genome position search box tests', () => {
 
     it('Ensures that selected assembly is hg19', () => {
       expect(
-        hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly
+        hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly,
       ).toEqual('hg19');
     });
 

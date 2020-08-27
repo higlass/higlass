@@ -10,7 +10,7 @@ import { getTrackObjectFromHGC } from './utils';
 
 import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from './configs';
 
-const forceUpdate = self => {
+const forceUpdate = (self) => {
   self.setState(self.state);
 };
 
@@ -22,7 +22,7 @@ const createApi = function api(context, pubSub) {
   const apiPubSub = createPubSub();
 
   const destroy = () => {
-    pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
+    pubSubs.forEach((subscription) => pubSub.unsubscribe(subscription));
     pubSubs = [];
   };
 
@@ -52,10 +52,10 @@ const createApi = function api(context, pubSub) {
        *   position will be broadcasted globally.
        */
       setBroadcastMousePositionGlobally(
-        isBroadcastMousePositionGlobally = false
+        isBroadcastMousePositionGlobally = false,
       ) {
         self.setBroadcastMousePositionGlobally(
-          isBroadcastMousePositionGlobally
+          isBroadcastMousePositionGlobally,
         );
       },
 
@@ -166,7 +166,7 @@ const createApi = function api(context, pubSub) {
        */
       setRangeSelection1dSize(minSize = 0, maxSize = Infinity) {
         self.setState({
-          rangeSelection1dSize: [minSize, maxSize]
+          rangeSelection1dSize: [minSize, maxSize],
         });
       },
 
@@ -176,6 +176,8 @@ const createApi = function api(context, pubSub) {
        *
        * @param {obj} newViewConfig A JSON object that defines
        *    the state of the HiGlassComponent
+       * @param {boolean} resolveImmediately If true, the returned promise resolves immediately
+       *    even if not all data has loaded. This should be set to true, if the new viewconf does not request new data. Default: false.
        * @example
        *
        * const p = hgv.setViewConfig(newViewConfig);
@@ -184,27 +186,18 @@ const createApi = function api(context, pubSub) {
        * });
        *
        * @return {Promise} dataLoaded A promise that resolves when
-       *   all of the data for this viewconfig is loaded
+       *   all of the data for this viewconfig is loaded. If `resolveImmediately` is set to true,
+       * the promise resolves without waiting for the data to be loaded.
        */
-      setViewConfig(newViewConfig) {
-        const validate = new Ajv().compile(schema);
-        const valid = validate(newViewConfig);
-        if (validate.errors) {
-          console.warn(JSON.stringify(validate.errors, null, 2));
-        }
-        if (!valid) {
-          console.warn('Invalid viewconf');
-          // throw new Error('Invalid viewconf');
-        }
-
+      setViewConfig(newViewConfig, resolveImmediately = false) {
         const viewsByUid = self.processViewConfig(newViewConfig);
-        const p = new Promise(resolve => {
+        const p = new Promise((resolve) => {
           this.requestsInFlight = 0;
 
           pubSubs.push(
             pubSub.subscribe('requestSent', () => {
               this.requestsInFlight += 1;
-            })
+            }),
           );
 
           pubSubs.push(
@@ -214,15 +207,19 @@ const createApi = function api(context, pubSub) {
               if (this.requestsInFlight === 0) {
                 resolve();
               }
-            })
+            }),
           );
 
           self.setState(
             {
               viewConfig: newViewConfig,
-              views: viewsByUid
+              views: viewsByUid,
             },
-            () => {}
+            () => {
+              if (resolveImmediately) {
+                resolve();
+              }
+            },
           );
         });
 
@@ -235,18 +232,23 @@ const createApi = function api(context, pubSub) {
        * @returns (Object) A JSON object describing the visible views
        */
       getViewConfig() {
-        const newViewConfig = self.getViewsAsJson();
+        return self.getViewsAsJson();
+      },
+
+      /**
+       * Validate a viewconf.
+       *
+       * @returns (Boolean) A JSON object describing the visible views
+       */
+      validateViewConfig(viewConfig, { verbose = false } = {}) {
         const validate = new Ajv().compile(schema);
-        const valid = validate(newViewConfig);
-        if (validate.errors) {
+        const valid = validate(viewConfig);
+        if (verbose && validate.errors) {
           console.warn(JSON.stringify(validate.errors, null, 2));
         }
-        if (!valid) {
-          console.warn('Invalid viewconf');
-          // throw new Error('Invalid viewconf');
-        }
-        return newViewConfig;
+        return valid;
       },
+
       /**
        * Get the minimum and maximum visible values for a given track.
        *
@@ -269,13 +271,13 @@ const createApi = function api(context, pubSub) {
         viewId,
         trackId,
         ignoreOffScreenValues = false,
-        ignoreFixedScale = false
+        ignoreFixedScale = false,
       ) {
         return self.getMinMaxValue(
           viewId,
           trackId,
           ignoreOffScreenValues,
-          ignoreFixedScale
+          ignoreFixedScale,
         );
       },
 
@@ -323,7 +325,7 @@ const createApi = function api(context, pubSub) {
        */
       showAvailableTrackPositions(track) {
         self.setState({
-          draggingHappening: track
+          draggingHappening: track,
         });
       },
 
@@ -332,7 +334,7 @@ const createApi = function api(context, pubSub) {
        */
       hideAvailableTrackPositions() {
         self.setState({
-          draggingHappening: null
+          draggingHappening: null,
         });
       },
 
@@ -348,11 +350,11 @@ const createApi = function api(context, pubSub) {
         self.setState({
           chooseTrackHandler: (...args) => {
             self.setState({
-              chooseTrackHandler: null
+              chooseTrackHandler: null,
             });
 
             callback(...args);
-          }
+          },
         });
       },
 
@@ -361,7 +363,7 @@ const createApi = function api(context, pubSub) {
        */
       hideTrackChooser() {
         this.setState({
-          chooseTrackHandler: null
+          chooseTrackHandler: null,
         });
       },
       /**
@@ -392,7 +394,7 @@ const createApi = function api(context, pubSub) {
        */
       setDarkTheme(darkTheme) {
         console.warn(
-          '`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.'
+          '`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.',
         );
         const theme = darkTheme ? 'dark' : 'light';
         self.setTheme(theme);
@@ -461,7 +463,7 @@ const createApi = function api(context, pubSub) {
           end1Abs,
           start2Abs,
           end2Abs,
-          animateTime
+          animateTime,
         );
       },
 
@@ -603,7 +605,7 @@ const createApi = function api(context, pubSub) {
           xDomain: self.xScales[wurstId].domain(),
           yDomain: self.yScales[wurstId].domain(),
           xRange: self.xScales[wurstId].range(),
-          yRange: self.yScales[wurstId].range()
+          yRange: self.yScales[wurstId].range(),
         };
       },
 
@@ -641,7 +643,7 @@ const createApi = function api(context, pubSub) {
 
           default:
             console.warn(
-              `This option "${key}" is either unknown or not settable.`
+              `This option "${key}" is either unknown or not settable.`,
             );
         }
 
@@ -664,6 +666,7 @@ const createApi = function api(context, pubSub) {
        * hgv.off('mouseMoveZoom', mmz);
        * hgv.off('wheel', wheelListener);
        * hgv.off('createSVG');
+       * hgv.off('geneSearch', geneSearchListener);
        */
       off(event, listenerId, viewId) {
         const callback =
@@ -700,6 +703,10 @@ const createApi = function api(context, pubSub) {
 
           case 'createSVG':
             self.offPostCreateSVG();
+            break;
+
+          case 'geneSearch':
+            apiPubSub.unsubscribe('geneSearch', callback);
             break;
 
           default:
@@ -873,6 +880,13 @@ const createApi = function api(context, pubSub) {
        *    svg.appendChild(circle);
        *    return svg;
        * });
+       *
+       * const geneSearchListener = event => {
+       *    console.log('Gene searched', event.geneSymbol);
+       *    console.log('Range of the gene', event.range);
+       *    console.log('Center of the gene', event.centerX);
+       * }
+       * hgv.on('geneSearch', geneSearchListener);
        */
       on(event, callback, viewId, callbackId) {
         switch (event) {
@@ -901,11 +915,14 @@ const createApi = function api(context, pubSub) {
           case 'createSVG':
             return self.onPostCreateSVG(callback);
 
+          case 'geneSearch':
+            return apiPubSub.subscribe('geneSearch', callback);
+
           default:
             return undefined;
         }
-      }
-    }
+      },
+    },
   };
 };
 

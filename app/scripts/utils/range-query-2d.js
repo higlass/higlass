@@ -24,7 +24,7 @@ const rangeQuery2d = (
   mirrored,
   xOff = 0,
   yOff = 0,
-  outList
+  outList,
 ) => {
   const _xRange = mirrored ? yRange : xRange;
   const _yRange = mirrored ? xRange : yRange;
@@ -48,7 +48,7 @@ const rangeQuery2d = (
     for (let i = yFrom; i < yTo; i++) {
       newList.set(
         src.slice(i * xDimSrc + xFrom, i * xDimSrc + xTo),
-        _xOff + c * xDimOut
+        _xOff + c * xDimOut,
       );
       c += 1;
     }

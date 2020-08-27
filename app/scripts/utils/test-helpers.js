@@ -11,12 +11,33 @@ import { requestsInFlight } from '../services';
 
 import {
   getTrackObjectFromHGC,
-  getTrackRenderer
+  getTrackRenderer,
 } from './get-higlass-components';
 
 import HiGlassComponent from '../HiGlassComponent';
 
 const TILE_LOADING_CHECK_INTERVAL = 100;
+
+/**
+ * Change the options of a track in higlass
+ * @param  hgc      enzyme wrapper for a HiGlassComponent
+ * @param  viewUid  The view uid
+ * @param  trackUid The track uid
+ * @param  options  An object of new options (e.g. { color: 'black'})
+ * @return          nothing
+ */
+export const changeOptions = (hgc, viewUid, trackUid, options) => {
+  for (const { viewId, trackId, track } of hgc.instance().iterateOverTracks()) {
+    if (viewId === viewUid && trackId === trackUid) {
+      track.options = {
+        ...track.options,
+        ...options,
+      };
+    }
+  }
+
+  hgc.setState(hgc.instance().state);
+};
 
 /**
  * Check if there are any active transitions that we
@@ -30,7 +51,7 @@ const TILE_LOADING_CHECK_INTERVAL = 100;
  * -------
  *  True if any of the tracks have active transtions. False otherwise.
  */
-export const areTransitionsActive = hgc => {
+export const areTransitionsActive = (hgc) => {
   for (const track of hgc.iterateOverTracks()) {
     const trackRenderer = getTrackRenderer(hgc, track.viewId, track.trackId);
 
@@ -74,11 +95,11 @@ export const waitForTransitionsFinished = (hgc, callback) => {
  *    open
  *
  */
-export const waitForJsonComplete = finished => {
+export const waitForJsonComplete = (finished) => {
   if (requestsInFlight > 0) {
     setTimeout(
       () => waitForJsonComplete(finished),
-      TILE_LOADING_CHECK_INTERVAL
+      TILE_LOADING_CHECK_INTERVAL,
     );
   } else {
     finished();
@@ -97,7 +118,7 @@ export const waitForJsonComplete = finished => {
  * -------
  *  True if any of the tracks are waiting for tiles, false otherwise.
  */
-export const isWaitingOnTiles = hgc => {
+export const isWaitingOnTiles = (hgc) => {
   for (const track of hgc.iterateOverTracks()) {
     let trackObj = getTrackObjectFromHGC(hgc, track.viewId, track.trackId);
 
@@ -193,7 +214,7 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
 
   const hgc = mount(
     <HiGlassComponent options={{ bounded }} viewConfig={viewConf} />,
-    { attachTo: div }
+    { attachTo: div },
   );
 
   hgc.update();
@@ -218,7 +239,7 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
   return [div, hgc];
 };
 
-export const removeHGComponent = div => {
+export const removeHGComponent = (div) => {
   if (!div) return;
 
   ReactDOM.unmountComponentAtNode(div);

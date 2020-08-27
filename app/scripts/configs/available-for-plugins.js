@@ -71,6 +71,10 @@ import LruCache from '../factories';
 // Services
 import * as services from '../services';
 
+// Chromosomes
+import ChromosomeInfo from '../ChromosomeInfo';
+import SearchField from '../SearchField';
+
 const libraries = {
   d3Array,
   d3Axis,
@@ -88,7 +92,7 @@ const libraries = {
   d3Zoom,
   PIXI: configs.GLOBALS.PIXI,
   mix,
-  slugid
+  slugid,
 };
 
 const tracks = {
@@ -125,16 +129,22 @@ const tracks = {
   Track,
   ValueIntervalTrack,
   VerticalTiled1DPixiTrack,
-  VerticalTrack
+  VerticalTrack,
 };
 
 const factories = {
   ContextMenuItem,
   DataFetcher,
-  LruCache
+  LruCache,
+};
+
+const chromosomes = {
+  ChromosomeInfo,
+  SearchField,
 };
 
 export default {
+  chromosomes,
   libraries,
   tracks,
   factories,
@@ -142,5 +152,5 @@ export default {
   utils,
   configs,
   // Defined globally by webpack.
-  VERSION
+  VERSION,
 };

@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
@@ -9,7 +9,8 @@ import { expect } from 'chai';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC
+  getTrackObjectFromHGC,
+  changeOptions,
 } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
@@ -28,21 +29,21 @@ describe('Minimal viewconfs', () => {
                 uid: 'a',
                 type: 'cross-rule',
                 x: 100,
-                y: 100
+                y: 100,
               },
               {
                 uid: 'b',
                 type: 'vertical-rule',
-                x: 110
-              }
-            ]
-          }
-        }
-      ]
+                x: 110,
+              },
+            ],
+          },
+        },
+      ],
     };
     let hgc = null;
     let div = null;
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
 
@@ -57,6 +58,13 @@ describe('Minimal viewconfs', () => {
       expect(obj.yPosition).to.eql(100);
     });
 
+    it('changes color', () => {
+      changeOptions(hgc, 'aa', 'a', { color: 'blue' });
+
+      const svg = hgc.instance().createSVGString();
+      expect(svg.indexOf('blue')).to.be.above(-1);
+    });
+
     it('has the same range if a new track is added', () => {
       const obj1 = getTrackObjectFromHGC(hgc.instance(), 'aa', 'b');
       const obj1Width = obj1._xScale.range()[1];
@@ -66,9 +74,9 @@ describe('Minimal viewconfs', () => {
         {
           uid: 'c',
           type: 'vertical-rule',
-          x: 120
+          x: 120,
         },
-        'whole'
+        'whole',
       );
 
       hgc.setState(hgc.instance().state);

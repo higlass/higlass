@@ -18,32 +18,34 @@ class TilesetFinder extends React.Component {
     // this.localTracks = TRACKS_INFO.filter
 
     // local tracks are ones that don't have a filetype associated with them
-    this.localTracks = TRACKS_INFO.filter(x => x.local && !x.hidden).map(x => {
-      const y = Object.assign({}, x);
-      y.datatype = x.datatype[0];
-      return y;
-    });
+    this.localTracks = TRACKS_INFO.filter((x) => x.local && !x.hidden).map(
+      (x) => {
+        const y = Object.assign({}, x);
+        y.datatype = x.datatype[0];
+        return y;
+      },
+    );
 
     this.augmentedTracksInfo = TRACKS_INFO;
     if (window.higlassTracksByType) {
-      Object.keys(window.higlassTracksByType).forEach(pluginTrackType => {
+      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
         this.augmentedTracksInfo.push(
-          window.higlassTracksByType[pluginTrackType].config
+          window.higlassTracksByType[pluginTrackType].config,
         );
       });
     }
 
     if (props.datatype) {
       this.localTracks = this.localTracks.filter(
-        x => x.datatype[0] === props.datatype
+        (x) => x.datatype[0] === props.datatype,
       );
     } else {
       this.localTracks = this.localTracks.filter(
-        x => x.orientation === this.props.orientation
+        (x) => x.orientation === this.props.orientation,
       );
     }
 
-    this.localTracks.forEach(x => {
+    this.localTracks.forEach((x) => {
       x.uuid = slugid.nice();
     });
 
@@ -59,7 +61,7 @@ class TilesetFinder extends React.Component {
       options: newOptions,
       filter: '',
       checked: [],
-      expanded: []
+      expanded: [],
     };
 
     this.requestTilesetLists();
@@ -86,20 +88,20 @@ class TilesetFinder extends React.Component {
      */
     const newOptions = existingOptions;
 
-    const entries = newEntries.map(ne => {
+    const entries = newEntries.map((ne) => {
       const ane = Object.assign({}, ne, {
         server: sourceServer,
         tilesetUid: ne.uuid,
         serverUidKey: this.serverUidKey(sourceServer, ne.uuid),
         datatype: ne.datatype,
         name: ne.name,
-        uid: slugid.nice()
+        uid: slugid.nice(),
       });
 
       return ane;
     });
 
-    entries.forEach(ne => {
+    entries.forEach((ne) => {
       newOptions[ne.serverUidKey] = ne;
     });
 
@@ -122,13 +124,19 @@ class TilesetFinder extends React.Component {
       const datatypes = new Set(
         [].concat(
           ...this.augmentedTracksInfo
-            .filter(x => x.datatype)
-            .filter(x => x.orientation === this.props.orientation)
-            .map(x => x.datatype)
-        )
+            .filter((x) => x.datatype)
+            .filter((x) => {
+              return (
+                x.orientation === this.props.orientation ||
+                (this.props.orientation === '1d-vertical' &&
+                  x.orientation === '1d-horizontal')
+              );
+            })
+            .map((x) => x.datatype),
+        ),
       );
 
-      datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
+      datatypesQuery = [...datatypes].map((x) => `dt=${x}`).join('&');
     }
 
     if (!this.props.trackSourceServers) {
@@ -136,7 +144,7 @@ class TilesetFinder extends React.Component {
       return;
     }
 
-    this.props.trackSourceServers.forEach(sourceServer => {
+    this.props.trackSourceServers.forEach((sourceServer) => {
       tileProxy.json(
         `${sourceServer}/tilesets/?limit=10000&${datatypesQuery}`,
         (error, data) => {
@@ -146,7 +154,7 @@ class TilesetFinder extends React.Component {
             const newOptions = this.prepareNewEntries(
               sourceServer,
               data.results,
-              this.state.options
+              this.state.options,
             );
             const availableTilesetKeys = Object.keys(newOptions);
             let { selectedUuid } = this.state;
@@ -163,12 +171,12 @@ class TilesetFinder extends React.Component {
             if (this.mounted) {
               this.setState({
                 selectedUuid,
-                options: newOptions
+                options: newOptions,
               });
             }
           }
         },
-        this.props.pubSub
+        this.props.pubSub,
       );
     });
   }
@@ -235,8 +243,8 @@ class TilesetFinder extends React.Component {
       '': {
         name: '',
         value: '',
-        children: []
-      }
+        children: [],
+      },
     };
 
     for (const uuid of Object.keys(datasetsDict)) {
@@ -253,18 +261,18 @@ class TilesetFinder extends React.Component {
           itemsByGroup[group] = {
             value: group,
             label: group,
-            children: []
+            children: [],
           };
         }
 
         itemsByGroup[group].children.push({
           label: item.name,
-          value: uuid
+          value: uuid,
         });
       } else {
         itemsByGroup[''].children.push({
           label: item.name,
-          value: uuid
+          value: uuid,
         });
       }
     }
@@ -274,7 +282,7 @@ class TilesetFinder extends React.Component {
     for (const group of Object.keys(itemsByGroup)) {
       if (group !== '') {
         itemsByGroup[group].children.sort((a, b) =>
-          a.label.toLowerCase().localeCompare(b.label.toLowerCase(), 'en')
+          a.label.toLowerCase().localeCompare(b.label.toLowerCase(), 'en'),
         );
 
         allItems.push(itemsByGroup[group]);
@@ -282,7 +290,7 @@ class TilesetFinder extends React.Component {
     }
 
     allItems.sort((a, b) =>
-      a.label.toLowerCase().localeCompare(b.label.toLowerCase(), 'en')
+      a.label.toLowerCase().localeCompare(b.label.toLowerCase(), 'en'),
     );
 
     return allItems;
@@ -306,14 +314,14 @@ class TilesetFinder extends React.Component {
 
     const nestedItems = this.partitionByGroup(
       this.state.options,
-      this.state.filter
+      this.state.filter,
     );
     const svgStyle = {
       width: 15,
       height: 15,
       top: 2,
       right: 2,
-      position: 'relative'
+      position: 'relative',
     };
 
     const halfSvgStyle = JSON.parse(JSON.stringify(svgStyle));
@@ -321,14 +329,14 @@ class TilesetFinder extends React.Component {
 
     const form = (
       <form
-        onSubmit={evt => {
+        onSubmit={(evt) => {
           evt.preventDefault();
         }}
       >
         <div className="tileset-finder-search-bar">
           <span className="tileset-finder-label">Select tileset:</span>
           <input
-            ref={c => {
+            ref={(c) => {
               this.searchBox = c;
             }}
             className="tileset-finder-search-box"
@@ -384,7 +392,7 @@ class TilesetFinder extends React.Component {
                 <svg style={svgStyle}>
                   <use xlinkHref="#folder_open_o" />
                 </svg>
-              )
+              ),
             }}
             nodes={nestedItems}
             onCheck={this.handleChecked.bind(this)}
@@ -404,7 +412,7 @@ TilesetFinder.propTypes = {
   onDoubleClick: PropTypes.func,
   pubSub: PropTypes.object.isRequired,
   selectedTilesetChanged: PropTypes.func,
-  trackSourceServers: PropTypes.array
+  trackSourceServers: PropTypes.array,
 };
 
 export default withPubSub(TilesetFinder);

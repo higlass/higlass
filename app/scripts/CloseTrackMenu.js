@@ -7,7 +7,7 @@ import { getSeriesItems } from './SeriesListItems';
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-const CloseTrackMenu = props => (
+const CloseTrackMenu = (props) => (
   <div>
     {getSeriesItems(props.tracks, null, null, props.onCloseTrack)}
     <hr styleName="context-menu-hr" />
@@ -19,7 +19,7 @@ const CloseTrackMenu = props => (
 
 CloseTrackMenu.propTypes = {
   onCloseTrack: PropTypes.func.isRequired,
-  tracks: PropTypes.array.isRequired
+  tracks: PropTypes.array.isRequired,
 };
 
 export default CloseTrackMenu;

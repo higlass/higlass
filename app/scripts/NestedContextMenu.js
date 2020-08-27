@@ -19,11 +19,11 @@ class NestedContextMenu extends ContextMenuContainer {
         this.state.orientation === 'left'
           ? {
               left: this.state.left,
-              top: bbox.top
+              top: bbox.top,
             }
           : {
               left: this.state.left + bbox.width + 7,
-              top: bbox.top
+              top: bbox.top,
             };
 
       const menuItem = this.state.submenuShown;
@@ -56,7 +56,7 @@ class NestedContextMenu extends ContextMenuContainer {
           onClick={menuItem.handler ? menuItem.handler : () => null}
           onMouseEnter={
             menuItem.children
-              ? e => this.handleItemMouseEnter(e, menuItem)
+              ? (e) => this.handleItemMouseEnter(e, menuItem)
               : this.handleOtherMouseEnter.bind(this)
           }
           onMouseLeave={this.handleMouseLeave}
@@ -67,7 +67,7 @@ class NestedContextMenu extends ContextMenuContainer {
               <use xlinkHref="#play" />
             </svg>
           )}
-        </ContextMenuItem>
+        </ContextMenuItem>,
       );
     }
 
@@ -76,12 +76,12 @@ class NestedContextMenu extends ContextMenuContainer {
 
     return (
       <div
-        ref={c => {
+        ref={(c) => {
           this.div = c;
         }}
         style={{
           left: this.state.left,
-          top: this.state.top
+          top: this.state.top,
         }}
         styleName={styleNames}
       >

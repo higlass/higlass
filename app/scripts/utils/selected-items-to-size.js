@@ -11,7 +11,7 @@
 const selectedItemsToSize = (selectedItems, withRelativeSize) => {
   return selectedItems.reduce(
     (a, h) => a + (Array.isArray(h) && withRelativeSize ? h.length : 1),
-    0
+    0,
   );
 };
 

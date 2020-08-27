@@ -6,5 +6,5 @@ export {
   requestsInFlight,
   setTileProxyAuthHeader,
   getTileProxyAuthHeader,
-  authHeader
+  authHeader,
 } from './tile-proxy';

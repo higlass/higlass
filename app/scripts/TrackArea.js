@@ -8,7 +8,7 @@ class TrackArea extends React.Component {
     super(props);
 
     this.state = {
-      controlsVisible: false
+      controlsVisible: false,
     };
   }
 
@@ -18,19 +18,19 @@ class TrackArea extends React.Component {
 
   handleMouseEnter() {
     this.setState({
-      controlsVisible: true
+      controlsVisible: true,
     });
   }
 
   handleMouseLeave() {
     this.setState({
-      controlsVisible: false
+      controlsVisible: false,
     });
   }
 
   handleMouseMove() {
     this.setState({
-      controlsVisible: true
+      controlsVisible: true,
     });
   }
 
@@ -64,13 +64,13 @@ class TrackArea extends React.Component {
           paddingLeft: '5px',
           paddingRight: '5px',
           borderRadius: '5px',
-          border: '1px solid #dddddd'
+          border: '1px solid #dddddd',
         }}
       >
         <Handle />
 
         <svg
-          ref={c => {
+          ref={(c) => {
             this.imgConfig = c;
           }}
           className="no-zoom"
@@ -87,7 +87,7 @@ class TrackArea extends React.Component {
         </svg>
 
         <svg
-          ref={c => {
+          ref={(c) => {
             this.imgAdd = c;
           }}
           className="no-zoom"
@@ -100,7 +100,7 @@ class TrackArea extends React.Component {
         </svg>
 
         <svg
-          ref={c => {
+          ref={(c) => {
             this.imgClose = c;
           }}
           className="no-zoom"
@@ -125,7 +125,7 @@ TrackArea.propTypes = {
   onConfigTrackMenuOpened: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onAddSeries: PropTypes.func,
-  uid: PropTypes.string
+  uid: PropTypes.string,
 };
 
 export default TrackArea;

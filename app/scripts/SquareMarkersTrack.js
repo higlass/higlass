@@ -36,12 +36,12 @@ class SquareMarkersTrack extends TiledPixiTrack {
     const xZoomLevel = tileProxy.calculateZoomLevel(
       this._xScale,
       this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0]
+      this.tilesetInfo.max_pos[0],
     );
     const yZoomLevel = tileProxy.calculateZoomLevel(
       this._xScale,
       this.tilesetInfo.min_pos[1],
-      this.tilesetInfo.max_pos[1]
+      this.tilesetInfo.max_pos[1],
     );
 
     let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
@@ -57,12 +57,12 @@ class SquareMarkersTrack extends TiledPixiTrack {
      * @param tiles: A set of tiles which will be considered the currently visible
      * tile positions.
      */
-    this.visibleTiles = tilePositions.map(x => ({
+    this.visibleTiles = tilePositions.map((x) => ({
       tileId: this.tileToLocalId(x),
-      remoteId: this.tileToRemoteId(x)
+      remoteId: this.tileToRemoteId(x),
     }));
 
-    this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
+    this.visibleTileIds = new Set(this.visibleTiles.map((x) => x.tileId));
   }
 
   calculateVisibleTiles(mirrorTiles = true) {
@@ -81,7 +81,7 @@ class SquareMarkersTrack extends TiledPixiTrack {
       this.tilesetInfo.min_pos[0],
       this.tilesetInfo.max_pos[0],
       this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width
+      this.tilesetInfo.max_width,
     );
 
     this.yTiles = tileProxy.calculateTiles(
@@ -90,7 +90,7 @@ class SquareMarkersTrack extends TiledPixiTrack {
       this.tilesetInfo.min_pos[1],
       this.tilesetInfo.max_pos[1],
       this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width
+      this.tilesetInfo.max_width,
     );
 
     const rows = this.xTiles;
@@ -184,7 +184,7 @@ class SquareMarkersTrack extends TiledPixiTrack {
         centerX - width / 2,
         centerY - height / 2,
         width,
-        height
+        height,
       );
     }
   }

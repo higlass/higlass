@@ -21,19 +21,19 @@ describe('Zoom tests', () => {
     const evtDown = new MouseEvent('mousedown', {
       clientX: startX,
       clientY: startY,
-      view: window
+      view: window,
     });
 
     const evtMove = new MouseEvent('mousemove', {
       clientX: startX + 2,
       clientY: startY + 2,
-      view: window
+      view: window,
     });
 
     const evtUp = new MouseEvent('mouseup', {
       clientX: startX + 2,
       clientY: startY + 2,
-      view: window
+      view: window,
     });
 
     const trackRenderer = getTrackRenderer(api.getComponent(), 'aa');
@@ -54,7 +54,7 @@ describe('Zoom tests', () => {
     return [dx, dy, trackRenderer];
   };
 
-  it('Dispatches a mousewheel event on the horizontal track', done => {
+  it('Dispatches a mousewheel event on the horizontal track', (done) => {
     // eslint-disable-next-line no-unused-vars
     const [dx, dy, _] = doMouseMove(345, 221);
 
@@ -64,7 +64,7 @@ describe('Zoom tests', () => {
     done();
   });
 
-  it('Dispatches a mousewheel event on the horizontal track while vauleScaleZooming', done => {
+  it('Dispatches a mousewheel event on the horizontal track while vauleScaleZooming', (done) => {
     const [dx, dy, trackRenderer] = doMouseMove(345, 221, true);
 
     expect(dy).toEqual(0);
@@ -74,7 +74,7 @@ describe('Zoom tests', () => {
     done();
   });
 
-  it('Dispatches a mousewheel event on the center', done => {
+  it('Dispatches a mousewheel event on the center', (done) => {
     // eslint-disable-next-line no-unused-vars
     const [dx, dy, _] = doMouseMove(348, 315);
 
@@ -84,7 +84,7 @@ describe('Zoom tests', () => {
     done();
   });
 
-  it('Dispatches a mousewheel event on the left track', done => {
+  it('Dispatches a mousewheel event on the left track', (done) => {
     // eslint-disable-next-line no-unused-vars
     const [dx, dy, _] = doMouseMove(56, 315);
 

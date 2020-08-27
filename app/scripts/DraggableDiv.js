@@ -47,7 +47,7 @@ class DraggableDiv extends React.Component {
       width: this.props.width,
       height: this.props.height,
       top: this.props.top,
-      left: this.props.left
+      left: this.props.left,
     };
 
     this.domBody = select('body').node();
@@ -102,7 +102,7 @@ class DraggableDiv extends React.Component {
 
     this.setState({
       left: newLeft,
-      width: newWidth
+      width: newWidth,
     });
 
     event.sourceEvent.stopPropagation();
@@ -123,7 +123,7 @@ class DraggableDiv extends React.Component {
 
     this.setState({
       top: newTop,
-      height: newHeight
+      height: newHeight,
     });
 
     event.sourceEvent.stopPropagation();
@@ -137,7 +137,7 @@ class DraggableDiv extends React.Component {
     newWidth = newWidth > this.minWidth ? newWidth : this.minWidth;
 
     this.setState({
-      width: newWidth
+      width: newWidth,
     });
 
     event.sourceEvent.stopPropagation();
@@ -162,7 +162,7 @@ class DraggableDiv extends React.Component {
     this.setState({
       left: newLeft,
       width: newWidth,
-      height: newHeight
+      height: newHeight,
     });
 
     event.sourceEvent.stopPropagation();
@@ -180,7 +180,7 @@ class DraggableDiv extends React.Component {
 
     this.setState({
       width: newWidth,
-      height: newHeight
+      height: newHeight,
     });
 
     event.sourceEvent.stopPropagation();
@@ -205,7 +205,7 @@ class DraggableDiv extends React.Component {
     this.setState({
       top: newTop,
       width: newWidth,
-      height: newHeight
+      height: newHeight,
     });
 
     event.sourceEvent.stopPropagation();
@@ -237,7 +237,7 @@ class DraggableDiv extends React.Component {
       top: newTop,
       left: newLeft,
       width: newWidth,
-      height: newHeight
+      height: newHeight,
     });
 
     event.sourceEvent.stopPropagation();
@@ -281,7 +281,7 @@ class DraggableDiv extends React.Component {
       left: this.state.left,
       width: this.state.width,
       height: this.state.height,
-      opacity: this.props.opacity
+      opacity: this.props.opacity,
     };
 
     const resizeWidth = 24;
@@ -289,25 +289,25 @@ class DraggableDiv extends React.Component {
 
     const horizStyle = {
       left: this.state.width / 2 - resizeWidth / 2,
-      width: resizeWidth
+      width: resizeWidth,
     };
 
     const vertStyle = {
       top: this.state.height / 2 - resizeHeight / 2,
-      height: resizeHeight
+      height: resizeHeight,
     };
 
     const styles = {
       bottom: { ...horizStyle, bottom: 1 },
       top: { ...horizStyle, top: 1 },
       left: { ...vertStyle, left: 1 },
-      right: { ...vertStyle, right: 1 }
+      right: { ...vertStyle, right: 1 },
     };
 
-    const resizeHandles = [...this.props.resizeHandles].map(x => (
+    const resizeHandles = [...this.props.resizeHandles].map((x) => (
       <div
         key={x}
-        ref={c => {
+        ref={(c) => {
           this[`${x}Handle`] = c;
         }}
         style={styles[x]}
@@ -323,7 +323,7 @@ class DraggableDiv extends React.Component {
 
     return (
       <div
-        ref={c => {
+        ref={(c) => {
           this.divContainer = c;
         }}
         className={this.props.className}
@@ -348,7 +348,7 @@ DraggableDiv.propTypes = {
   trackRotated: PropTypes.func,
   uid: PropTypes.string,
   width: PropTypes.number,
-  theme: PropTypes.symbol
+  theme: PropTypes.symbol,
 };
 
 export default withTheme(DraggableDiv);

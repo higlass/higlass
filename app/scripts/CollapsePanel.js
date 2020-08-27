@@ -3,12 +3,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Collapse, ControlLabel, Panel } from 'react-bootstrap';
 
-const CollapsePanel = props => (
+const CollapsePanel = (props) => (
   <div>
     <ControlLabel>
       <a
         className={`collapse-toggle-icon ${props.collapsedClass(
-          props.collapsed
+          props.collapsed,
         )}`}
         onClick={() => props.toggleCollapse()}
         role="button"
@@ -28,11 +28,11 @@ CollapsePanel.propTypes = {
   collapsed: PropTypes.bool.isRequired,
   collapsedClass: PropTypes.func.isRequired,
   toggleCollapse: PropTypes.func.isRequired,
-  name: PropTypes.string
+  name: PropTypes.string,
 };
 
 CollapsePanel.defaultProps = {
-  name: 'Advanced Options'
+  name: 'Advanced Options',
 };
 
 export default CollapsePanel;

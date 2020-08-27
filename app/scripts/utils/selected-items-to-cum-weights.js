@@ -3,7 +3,7 @@ import selectedItemsToSize from './selected-items-to-size';
 function cumsum(values) {
   let sum = 0;
   const result = [];
-  values.forEach(v => {
+  values.forEach((v) => {
     sum += +v || 0;
     result.push(sum);
   });
@@ -23,8 +23,9 @@ const selectedItemsToCumWeights = (selectedItems, withRelativeSize) => {
   const totalLength = selectedItemsToSize(selectedItems, withRelativeSize);
   return cumsum(
     selectedItems.map(
-      d => (Array.isArray(d) && withRelativeSize ? d.length : 1) / totalLength
-    )
+      (d) =>
+        (Array.isArray(d) && withRelativeSize ? d.length : 1) / totalLength,
+    ),
   );
 };
 

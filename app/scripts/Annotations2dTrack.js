@@ -66,7 +66,7 @@ class Annotations2dTrack extends TiledPixiTrack {
       this.tilesetInfo.max_pos &&
       Math.max(
         this.tilesetInfo.max_pos[0] - this.tilesetInfo.min_pos[0],
-        this.tilesetInfo.max_pos[1] - this.tilesetInfo.min_pos[1]
+        this.tilesetInfo.max_pos[1] - this.tilesetInfo.min_pos[1],
       );
 
     if (maxSize) return maxSize;
@@ -116,12 +116,12 @@ class Annotations2dTrack extends TiledPixiTrack {
     const xZoomLevel = tileProxy.calculateZoomLevel(
       this._xScale,
       this.minX,
-      this.maxX
+      this.maxX,
     );
     const yZoomLevel = tileProxy.calculateZoomLevel(
       this._yScale,
       this.minY,
-      this.maxY
+      this.maxY,
     );
 
     return min(max(xZoomLevel, yZoomLevel), this.maxZoom);
@@ -134,12 +134,12 @@ class Annotations2dTrack extends TiledPixiTrack {
    * tile positions.
    */
   setVisibleTiles(tilePositions) {
-    this.visibleTiles = tilePositions.map(x => ({
+    this.visibleTiles = tilePositions.map((x) => ({
       tileId: this.tileToLocalId(x),
-      remoteId: this.tileToRemoteId(x)
+      remoteId: this.tileToRemoteId(x),
     }));
 
-    this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
+    this.visibleTileIds = new Set(this.visibleTiles.map((x) => x.tileId));
   }
 
   calculateVisibleTiles() {
@@ -155,7 +155,7 @@ class Annotations2dTrack extends TiledPixiTrack {
       this.minX,
       this.maxX,
       this.tilesetInfo.max_zoom,
-      this.maxSize
+      this.maxSize,
     );
 
     this.yTiles = tileProxy.calculateTiles(
@@ -164,7 +164,7 @@ class Annotations2dTrack extends TiledPixiTrack {
       this.minY,
       this.maxY,
       this.tilesetInfo.max_zoom,
-      this.maxSize
+      this.maxSize,
     );
 
     const zoomLevel = this.zoomLevel;
@@ -204,8 +204,8 @@ class Annotations2dTrack extends TiledPixiTrack {
     if (!tile.tileData.length) return;
 
     tile.tileData
-      .filter(td => !(td.uid in this.drawnAnnotations) || force)
-      .forEach(td => {
+      .filter((td) => !(td.uid in this.drawnAnnotations) || force)
+      .forEach((td) => {
         const [startX, startY] = this.projection([td.xStart, td.yStart]);
         const [endX, endY] = this.projection([td.xEnd, td.yEnd]);
 
@@ -221,9 +221,9 @@ class Annotations2dTrack extends TiledPixiTrack {
             startY,
             endX - startX,
             endY - startY,
-            td
+            td,
           ),
-          silent
+          silent,
         );
       });
   }
@@ -245,17 +245,17 @@ class Annotations2dTrack extends TiledPixiTrack {
         x: startX,
         y: startY,
         width,
-        height
+        height,
       },
       dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd],
       importance: td.importance,
-      info
+      info,
     };
   }
 
   drawAnnotation(
     { graphics, id, uid, annotation, dataPos, importance, info },
-    silent
+    silent,
   ) {
     if (this.options.minSquareSize) {
       if (
@@ -275,7 +275,7 @@ class Annotations2dTrack extends TiledPixiTrack {
       annotation.x,
       annotation.y,
       annotation.width,
-      annotation.height
+      annotation.height,
     ];
 
     let rectGfx = this.drawnAnnoGfx[uid];
@@ -306,15 +306,15 @@ class Annotations2dTrack extends TiledPixiTrack {
         // To have the same format as `dataPos`, i.e.:
         // a quadruple of [x0, y0, x1, y1]
         annotation.x + annotation.width,
-        annotation.y + annotation.height
-      ]
+        annotation.y + annotation.height,
+      ],
     };
 
     rectGfx.mouseover = () => this.hover(rectGfx, viewPos, uid);
     rectGfx.mouseout = () => this.blur(rectGfx, viewPos, uid);
 
     rectGfx.mousedown = () => this.mouseDown();
-    rectGfx.mouseup = event =>
+    rectGfx.mouseup = (event) =>
       this.mouseUp(rectGfx, viewPos, uid, event, payload);
 
     if (!silent) {
@@ -325,7 +325,7 @@ class Annotations2dTrack extends TiledPixiTrack {
         viewPos,
         dataPos,
         importance,
-        info
+        info,
       });
     }
   }
@@ -359,7 +359,7 @@ class Annotations2dTrack extends TiledPixiTrack {
         graphics,
         this.options.trackBorderBgColor,
         this.options.trackBorderBgWidth,
-        this.options.trackBorderBgAlpha
+        this.options.trackBorderBgAlpha,
       );
       this.setFill(graphics, fill, 0);
       graphics.drawRect(...viewPos);
@@ -371,7 +371,7 @@ class Annotations2dTrack extends TiledPixiTrack {
   }
 
   context(graphics, viewPos, uid) {
-    return proc => proc(graphics, viewPos, uid);
+    return (proc) => proc(graphics, viewPos, uid);
   }
 
   click(graphics, viewPos, uid, event, payload) {
@@ -379,7 +379,7 @@ class Annotations2dTrack extends TiledPixiTrack {
     this.pubSub.publish('app.click', {
       type: 'annotation',
       event,
-      payload
+      payload,
     });
   }
 
@@ -461,20 +461,20 @@ class Annotations2dTrack extends TiledPixiTrack {
     const output = document.createElement('g');
     output.setAttribute(
       'transform',
-      `translate(${this.position[0]},${this.position[1]})`
+      `translate(${this.position[0]},${this.position[1]})`,
     );
 
     track.appendChild(output);
 
     this.visibleAndFetchedTiles()
-      .filter(tile => tile.tileData && tile.tileData.length)
-      .map(tile => ({ graphics: tile.graphics, td: tile.tileData }))
+      .filter((tile) => tile.tileData && tile.tileData.length)
+      .map((tile) => ({ graphics: tile.graphics, td: tile.tileData }))
       .forEach(({ td, graphics }) => {
         const gTile = document.createElement('g');
 
         gTile.setAttribute(
           'transform',
-          `translate(${graphics.position.x},${graphics.position.y})scale(${graphics.scale.x},${graphics.scale.y})`
+          `translate(${graphics.position.x},${graphics.position.y})scale(${graphics.scale.x},${graphics.scale.y})`,
         );
         output.appendChild(gTile);
 
@@ -504,23 +504,23 @@ class Annotations2dTrack extends TiledPixiTrack {
     graphics,
     color = this.options.rectangleDomainStrokeColor,
     width = this.options.rectangleDomainStrokeWidth,
-    alpha = this.options.rectangleDomainStrokeOpacity
+    alpha = this.options.rectangleDomainStrokeOpacity,
   ) {
     graphics.lineStyle(
       typeof width !== 'undefined' ? width : 1,
       colorToHex(color || 'black'),
-      typeof alpha !== 'undefined' ? alpha : 1
+      typeof alpha !== 'undefined' ? alpha : 1,
     );
   }
 
   setFill(
     graphics,
     color = this.options.rectangleDomainFillColor,
-    alpha = this.options.rectangleDomainFillOpacity
+    alpha = this.options.rectangleDomainFillOpacity,
   ) {
     graphics.beginFill(
       colorToHex(color || 'grey'),
-      typeof alpha !== 'undefined' ? alpha : 0.4
+      typeof alpha !== 'undefined' ? alpha : 0.4,
     );
   }
 
