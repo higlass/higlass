@@ -8,10 +8,12 @@ import {
 
 import Adapter from 'enzyme-adapter-react-16';
 
+
 import { select } from 'd3-selection';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
+import FetchMockHelper from './utils/FetchMockHelper';
 
 import HiGlassComponent from '../app/scripts/HiGlassComponent';
 import HeatmapOptions from '../app/scripts/HeatmapOptions';
@@ -67,6 +69,16 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
+
+  const fetchMockHelper = new FetchMockHelper(null, 'HiGlassComponentTest');
+
+  beforeAll(async () => {
+    await fetchMockHelper.activateFetchMock();
+  });
+
+  afterAll(async () => {
+    await fetchMockHelper.storeDataAndResetFetchMock();
+  });
 
   describe('Cheat codes', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {

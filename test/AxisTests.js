@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 
@@ -8,10 +8,12 @@ import { expect } from 'chai';
 
 import Adapter from 'enzyme-adapter-react-16';
 
+import FetchMockHelper from './utils/FetchMockHelper';
+
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC
+  getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
 import viewconf from './view-configs/axis';
@@ -22,11 +24,14 @@ describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
 
+  const fetchMockHelper = new FetchMockHelper(null, 'AxisTests');
+
   describe('Axis texts', () => {
-    beforeAll(done => {
+    beforeAll(async (done) => {
+      await fetchMockHelper.activateFetchMock();
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true
+        bounded: true,
       });
     });
 
@@ -34,10 +39,10 @@ describe('Simple HiGlassComponent', () => {
       const track1 = getTrackObjectFromHGC(
         hgc.instance(),
         'Cs0jaHTuQXuibqx36Ew1xg',
-        'frcXuRouRpa_XSm5awtt3Q'
+        'frcXuRouRpa_XSm5awtt3Q',
       );
 
-      const texts = track1.axis.axisTexts.map(x => x.text);
+      const texts = track1.axis.axisTexts.map((x) => x.text);
 
       // make sure we don't find any scientific notation;
       for (const text of texts) {
@@ -49,12 +54,12 @@ describe('Simple HiGlassComponent', () => {
         .handleTrackOptionsChanged(
           'Cs0jaHTuQXuibqx36Ew1xg',
           'frcXuRouRpa_XSm5awtt3Q',
-          { axisLabelFormatting: 'scientific' }
+          { axisLabelFormatting: 'scientific' },
         );
 
       hgc.update();
 
-      const texts1 = track1.axis.axisTexts.map(x => x.text);
+      const texts1 = track1.axis.axisTexts.map((x) => x.text);
 
       // make sure we find scientific notation;
       // Note that 'scientific' is not always scientific notation. It rather
@@ -69,18 +74,19 @@ describe('Simple HiGlassComponent', () => {
       const track1 = getTrackObjectFromHGC(
         hgc.instance(),
         'Cs0jaHTuQXuibqx36Ew1xg',
-        'frcXuRouRpa_XSm5awtt3Q'
+        'frcXuRouRpa_XSm5awtt3Q',
       );
 
       const axisMargin = 10;
 
       expect(track1.position[0] + track1.dimensions[0] - axisMargin).to.equal(
-        track1.axis.pAxis.position.x
+        track1.axis.pAxis.position.x,
       );
     });
 
-    afterAll(() => {
+    afterAll(async () => {
       removeHGComponent(div);
+      await fetchMockHelper.storeDataAndResetFetchMock();
     });
   });
 });
