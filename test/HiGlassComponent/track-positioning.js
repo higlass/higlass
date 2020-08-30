@@ -21,6 +21,7 @@ import {
   heatmapTrack,
 } from '../view-configs';
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
