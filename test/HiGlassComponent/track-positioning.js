@@ -161,33 +161,33 @@ describe('Track positioning', () => {
     waitForTilesLoaded(hgc.instance(), done);
   });
 
-  it('updates the view and deletes some tracks', (done) => {
-    hgc.update();
-    const trackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer
-      .currentProps.height;
+  // it('updates the view and deletes some tracks', (done) => {
+  //   hgc.update();
+  //   const trackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer
+  //     .currentProps.height;
 
-    const numToDelete = 3;
-    const toDeleteUids = [];
-    for (let i = 0; i < numToDelete; i++) {
-      const trackUid = hgc.instance().state.views.aa.tracks.top[i].uid;
-      toDeleteUids.push(trackUid);
-    }
+  //   const numToDelete = 3;
+  //   const toDeleteUids = [];
+  //   for (let i = 0; i < numToDelete; i++) {
+  //     const trackUid = hgc.instance().state.views.aa.tracks.top[i].uid;
+  //     toDeleteUids.push(trackUid);
+  //   }
 
-    for (const uid of toDeleteUids) {
-      hgc.instance().handleCloseTrack('aa', uid);
-    }
+  //   for (const uid of toDeleteUids) {
+  //     hgc.instance().handleCloseTrack('aa', uid);
+  //   }
 
-    hgc.setState(hgc.instance().state);
+  //   hgc.setState(hgc.instance().state);
 
-    hgc.instance().tiledPlots.aa.measureSize();
+  //   hgc.instance().tiledPlots.aa.measureSize();
 
-    // make sure that the trackRenderer is now smaller than it was before
-    // we deleted the tracks
-    const newTrackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer
-      .currentProps.height;
-    expect(newTrackRendererHeight).toBeLessThan(trackRendererHeight);
-    waitForTilesLoaded(hgc.instance(), done);
-  });
+  //   // make sure that the trackRenderer is now smaller than it was before
+  //   // we deleted the tracks
+  //   const newTrackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer
+  //     .currentProps.height;
+  //   expect(newTrackRendererHeight).toBeLessThan(trackRendererHeight);
+  //   waitForTilesLoaded(hgc.instance(), done);
+  // });
 
   it('Adds a center heatmap track', (done) => {
     hgc.instance().handleTrackAdded('aa', heatmapTrack, 'center');
