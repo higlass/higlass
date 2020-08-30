@@ -162,7 +162,7 @@ describe('Track positioning', () => {
   });
 
   it('updates the view and deletes some tracks', (done) => {
-    // hgc.update();
+    hgc.update();
     const trackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer
       .currentProps.height;
 
