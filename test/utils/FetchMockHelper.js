@@ -16,8 +16,8 @@ class FetchMockHelper {
   }
 
   async getMockedData() {
-    const mockedResponses = await this.server.run(this.testName, function(
-      testName
+    const mockedResponses = await this.server.run(this.testName, function (
+      testName,
     ) {
       try {
         const fs = serverRequire('fs-extra'); // eslint-disable-line
@@ -43,15 +43,14 @@ class FetchMockHelper {
     const response = await fetch(url, headers);
     let data;
 
-    if (headers.headers['Content-Type'] === 'text/plain') {
-      data = response.text();
-    } else {
+    if (headers.headers['Content-Type'] === 'application/json') {
       data = response.json();
+    } else {
+      data = response.text();
     }
 
     // Switch fetch-mock on again
     fetchMock.config.fallbackToNetwork = false;
-
     return data;
   }
 
@@ -66,14 +65,14 @@ class FetchMockHelper {
 
       // Check if all the requested data is already mocked
       let isAllDataMocked = true;
-      requestIds.forEach(id => {
+      requestIds.forEach((id) => {
         if (this.mockedData[id] === undefined) {
           isAllDataMocked = false;
         }
       });
 
       if (isAllDataMocked) {
-        requestIds.forEach(id => {
+        requestIds.forEach((id) => {
           if (isTileData) {
             data[id] = this.mockedData[id];
           } else {
@@ -84,7 +83,7 @@ class FetchMockHelper {
         this.writeToFile = true;
         // If there is no mocked data, load from server (specified in viewConf)
         console.warn(
-          `Not all requests have been mocked. Loading ${url} from server.`
+          `Not all requests have been mocked. Loading ${url} from server.`,
         );
         data = await this.getOriginalFetchResponse(url, headers);
         this.addToMockedData(data, isTileData ? null : url, requestIds);
@@ -115,7 +114,7 @@ class FetchMockHelper {
     const response = await this.server.run(
       this.testName,
       mockedResponsesJSON,
-      function(testName, data) {
+      function (testName, data) {
         try {
           // If the test is run by Travis, don't write the file
           if (!process.env.TRAVIS) {
@@ -127,7 +126,7 @@ class FetchMockHelper {
           return error;
         }
         return null;
-      }
+      },
     );
 
     if (response !== null) {
@@ -165,7 +164,7 @@ class FetchMockHelper {
   checkViewConf(viewConf) {
     if (viewConf !== null && JSON.stringify(viewConf).includes('"//')) {
       console.warn(
-        'Please use full URLs in your view config. // is not supported and might lead to errors.'
+        'Please use full URLs in your view config. // is not supported and might lead to errors.',
       );
     }
   }
