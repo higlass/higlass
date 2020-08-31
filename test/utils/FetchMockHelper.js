@@ -43,7 +43,10 @@ class FetchMockHelper {
     const response = await fetch(url, headers);
     let data;
 
-    if (headers.headers['Content-Type'] === 'application/json') {
+    if (
+      headers.headers['Content-Type'] === 'application/json' ||
+      headers.headers['content-type'] === 'application/json'
+    ) {
       data = response.json();
     } else {
       data = response.text();
@@ -94,10 +97,11 @@ class FetchMockHelper {
 
   addToMockedData(response, customId, requestIds) {
     if (customId === null) {
-      // console.warn(ids);
       for (const id of requestIds) {
         // const id = rid.split('/')[1];
-        this.mockedData[id] = response[id] === undefined ? {} : response[id];
+        if (response[id] !== undefined) {
+          this.mockedData[id] = response[id];
+        }
       }
     } else {
       this.mockedData[customId] = response;
