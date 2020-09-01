@@ -237,7 +237,10 @@ vector datatype and bigwig filetype:
 
 **Important:** BigWig files have to be associated with a chromosome order!!
 This means that there needs to be a chromsizes file for the
-specified assembly in the higlass database. If no ``assembly``
+specified assembly in the **local** higlass database. This means that the
+chromsizes should have been ingested locally. Chromsizes available on remote
+servers (e.g. higlass.io) can not be associated with local bigWig files even 
+though they may be visible within the browser. If no ``assembly``
 is specified for the bigWig file using the `--assembly` option, HiGlass will try to
 find one in the database that matches the chromosomes present in the bigWig file.
 If a ``chromsizes`` tileset is found, it's ``coordSystem`` will also be used for
