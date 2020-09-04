@@ -21,18 +21,18 @@ import {
   heatmapTrack,
 } from '../view-configs';
 
+import FetchMockHelper from '../utils/FetchMockHelper';
+
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 configure({ adapter: new Adapter() });
-
-// import FetchMockHelper from '../utils/FetchMockHelper';
 
 describe('Track positioning', () => {
   let hgc = null;
   let div = null;
-  // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
+  const fetchMockHelper = new FetchMockHelper(null, 'track-positioning');
 
   beforeAll(async (done) => {
-    // await fetchMockHelper.activateFetchMock();
+    await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(
       div,
       hgc,
@@ -49,7 +49,7 @@ describe('Track positioning', () => {
 
   afterAll(async () => {
     removeHGComponent(div);
-    // await fetchMockHelper.storeDataAndResetFetchMock();
+    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 
   it('should add and resize a vertical heatmp', (done) => {
