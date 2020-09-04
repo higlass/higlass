@@ -2,7 +2,12 @@ import { configure } from 'enzyme';
 
 import Adapter from 'enzyme-adapter-react-16';
 
-import { mountHGComponent, removeHGComponent } from '../../app/scripts/utils';
+import {
+  mountHGComponent,
+  removeHGComponent,
+  waitForTilesLoaded,
+  getTrackObjectFromHGC,
+} from '../../app/scripts/utils';
 
 import { twoViewConfig } from '../view-configs';
 
