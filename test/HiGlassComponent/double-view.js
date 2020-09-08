@@ -224,12 +224,12 @@ describe('Double view', () => {
 
     waitForTilesLoaded(hgc.instance(), done);
   });
-  it('checks to make sure the colorbar is gone', (done) => {
-    //
-    const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
+  // it('checks to make sure the colorbar is gone', (done) => {
+  //   //
+  //   const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
 
-    expect(track.pColorbarArea.visible).toEqual(false);
+  //   expect(track.pColorbarArea.visible).toEqual(false);
 
-    waitForTilesLoaded(hgc.instance(), done);
-  });
+  //   waitForTilesLoaded(hgc.instance(), done);
+  // });
 });
