@@ -3,6 +3,7 @@
 ## Next
 
 - Show a more comprehensive list of track types in the track config menu
+- Fix gene annotation mouseover
 
 ## v1.11.2
 

@@ -925,8 +925,9 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
           return `
             <div>
-              <p><b>${gene.fields[3]}</b></p>
-              <p>${gene.fields[0]}:${gene.fields[1]}-${gene.fields[2]} Strand: ${gene.strand}</p>
+              <b>${gene.fields[3]}</b><br>
+              <b>Position:</b> ${gene.fields[0]}:${gene.fields[1]}-${gene.fields[2]}<br>
+              <b>Strand:</b> ${gene.fields[5]}
             </div>
           `;
         }
