@@ -3,6 +3,7 @@
 ## Next
 
 - Show a more comprehensive list of track types in the track config menu
+- Break up HiGlassComponentTests
 
 ## v1.11.2
 
