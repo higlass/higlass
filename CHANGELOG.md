@@ -4,6 +4,8 @@
 
 - Show a more comprehensive list of track types in the track config menu
 - Break up HiGlassComponentTests
+- Show only integar ticks in `HorizontalChromosomeLabels` tracks because it is misleading to have decimal values in genomic coordinates.
+- Add a `reverseOrientation` option in `HorizontalChromosomeLabels` tracks to allow aligning tick labels and lines on the top or left.
 
 ## v1.11.2
 

@@ -1187,6 +1187,7 @@ export const TRACKS_INFO = [
       'mousePositionColor',
       'tickPositions',
       'tickFormat',
+      'reverseOrientation',
     ],
     defaultOptions: {
       color: '#808080',
@@ -1195,6 +1196,7 @@ export const TRACKS_INFO = [
       fontIsLeftAligned: false,
       showMousePosition: false,
       mousePositionColor: '#000000',
+      reverseOrientation: false,
     },
     defaultOptionsByTheme: {
       [THEME_DARK]: {

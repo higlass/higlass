@@ -372,7 +372,10 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       let rowInfo = '';
       if (this.options.selectRows && !Array.isArray(selectedRowItem)) {
         rowInfo = this.tilesetInfo.row_infos[selectedRowItem];
-      } else if (selectedRowIndex) {
+      } else if (
+        selectedRowIndex >= 0 &&
+        selectedRowIndex < this.tilesetInfo.row_infos.length
+      ) {
         rowInfo = this.tilesetInfo.row_infos[selectedRowIndex];
       }
       if (typeof rowInfo === 'object') {
@@ -402,8 +405,31 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     const tilePos = this.getTilePosAtPosition(trackX, trackY);
 
-    let output = `Data value: ${this.getVisibleData(trackX, trackY)}</br>`;
-    output += `Zoom level: ${tilePos[0]} tile position: ${tilePos[1]}`;
+    let output = '';
+
+    if (
+      this.options &&
+      this.options.heatmapValueScaling &&
+      this.options.heatmapValueScaling === 'categorical' &&
+      this.options.colorRange
+    ) {
+      const visibleData = this.getVisibleData(trackX, trackY);
+      const elements = visibleData.split('<br/>');
+      const color = this.options.colorRange[parseInt(elements[0], 10) - 1];
+      const label = elements[1];
+      if (
+        Number.isNaN(color) ||
+        color === 'NaN' ||
+        typeof color === 'undefined' ||
+        color === 'undefined'
+      )
+        return '';
+      output = `<svg width="10" height="10" style="position:relative;bottom:1px"><rect width="10" height="10" rx="2" ry="2"
+                 style="fill:${color};stroke:black;stroke-width:2;"></svg> ${label}`;
+    } else {
+      output += `Data value: ${this.getVisibleData(trackX, trackY)}</br>`;
+      output += `Zoom level: ${tilePos[0]} tile position: ${tilePos[1]}`;
+    }
 
     return output;
   }
