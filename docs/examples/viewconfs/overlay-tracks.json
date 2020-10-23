@@ -245,53 +245,6 @@
             "extent": [
               [1000000000, 1100000000],
               [1200000000, 1300000000, 1400000000, 1500000000]
-            ],
-            "orientationsAndPositions": [
-              {
-                "orientation": "1d-horizontal",
-                "position": {
-                  "left": 95,
-                  "top": 60,
-                  "width": 1057,
-                  "height": 35
-                }
-              },
-              {
-                "orientation": "1d-vertical",
-                "position": {
-                  "left": 60,
-                  "top": 95,
-                  "width": 35,
-                  "height": 1240
-                }
-              },
-              {
-                "orientation": "1d-horizontal",
-                "position": {
-                  "left": 95,
-                  "top": 5,
-                  "width": 1057,
-                  "height": 55
-                }
-              },
-              {
-                "orientation": "1d-vertical",
-                "position": {
-                  "left": 5,
-                  "top": 95,
-                  "width": 55,
-                  "height": 1240
-                }
-              },
-              {
-                "orientation": "2d",
-                "position": {
-                  "left": 95,
-                  "top": 95,
-                  "width": 1057,
-                  "height": 1240
-                }
-              }
             ]
           }
         }
