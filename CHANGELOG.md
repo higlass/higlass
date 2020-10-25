@@ -2,11 +2,17 @@
 
 ## Next
 
+_[Detailed changes since v1.11.2](https://github.com/higlass/higlass/compare/v1.11.3...develop)_
+
+## v1.11.3
+
 - Show a more comprehensive list of track types in the track config menu
 - Show only integar ticks in `HorizontalChromosomeLabels` tracks because it is misleading to have decimal values in genomic coordinates.
 - Add a `reverseOrientation` option in `HorizontalChromosomeLabels` tracks to allow aligning tick labels and lines on the top or left.
 - Make overlays SVG exportable
 - Fix a bug that led to the app crash when `selectRows` is set to an empty array `[]`
+
+_[Detailed changes since v1.11.2](https://github.com/higlass/higlass/compare/v1.11.2...v1.11.3)_
 
 ## v1.11.2
 
@@ -18,14 +24,9 @@ _[Detailed changes since v1.11.1](https://github.com/higlass/higlass/compare/v1.
 ## v1.11.1
 
 - Fix multivec SVG export
-
-_[Detailed changes since v1.10.2](https://github.com/higlass/higlass/compare/v1.11.0...v1.11.1)_
-
-## v1.11.0
-
 - Added `ChromosomeInfo` and `SearchField` classes to `AVAILABLE_TO_PLUGINS`.
 
-_[Detailed changes since v1.10.2](https://github.com/higlass/higlass/compare/v1.11.0...develop)_
+_[Detailed changes since v1.11.0](https://github.com/higlass/higlass/compare/v1.11.0...v1.11.1)_
 
 ## v1.11.0
 
