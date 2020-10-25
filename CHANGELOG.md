@@ -6,6 +6,7 @@
 - Show only integar ticks in `HorizontalChromosomeLabels` tracks because it is misleading to have decimal values in genomic coordinates.
 - Add a `reverseOrientation` option in `HorizontalChromosomeLabels` tracks to allow aligning tick labels and lines on the top or left.
 - Make overlays SVG exportable
+- Fix a bug that led to the app crash when `selectRows` is set to an empty array `[]`
 
 ## v1.11.2
 

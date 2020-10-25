@@ -97,7 +97,10 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     ctx.fillStyle = 'transparent';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    if (pixData.length === 4 * canvas.width * canvas.height) {
+    if (
+      pixData.length !== 0 &&
+      pixData.length === 4 * canvas.width * canvas.height
+    ) {
       const pix = new ImageData(pixData, canvas.width, canvas.height);
       ctx.putImageData(pix, 0, 0);
     } else {
