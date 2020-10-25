@@ -11,8 +11,8 @@ import {
 import {
   simpleCenterViewConfig,
   simple1And2dAnnotations,
-  stackedTopTracks,
-  stackedTopViews,
+  // stackedTopTracks,
+  // stackedTopViews,
 } from './view-configs';
 
 import emptyConf from './view-configs-more/emptyConf';
@@ -23,7 +23,7 @@ import simple1dHorizontalVerticalAnd2dDataTrack from './view-configs/simple-1d-h
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
-import drag from './utils/drag';
+// import drag from './utils/drag';
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -340,193 +340,193 @@ describe('API Tests', () => {
       expect(api.option('sizeMode')).toEqual('bounded');
     });
 
-    it('overflow when in overflow mode but cannot scroll', (done) => {
-      [div, api] = createElementAndApi(
-        stackedTopTracks,
-        { editable: false, sizeMode: 'overflow' },
-        600,
-        200,
-        true,
-      );
+    // it('overflow when in overflow mode but cannot scroll', (done) => {
+    //   [div, api] = createElementAndApi(
+    //     stackedTopTracks,
+    //     { editable: false, sizeMode: 'overflow' },
+    //     600,
+    //     200,
+    //     true,
+    //   );
 
-      expect(api.option('sizeMode')).toEqual('overflow');
+    //   expect(api.option('sizeMode')).toEqual('overflow');
 
-      const hgContainer = div.querySelector('.higlass');
-      const hgContainerStyles = window.getComputedStyle(hgContainer);
-      const scrollContainer = div.querySelector('.higlass-scroll-container');
-      const scrollContainerStyles = window.getComputedStyle(scrollContainer);
+    //   const hgContainer = div.querySelector('.higlass');
+    //   const hgContainerStyles = window.getComputedStyle(hgContainer);
+    //   const scrollContainer = div.querySelector('.higlass-scroll-container');
+    //   const scrollContainerStyles = window.getComputedStyle(scrollContainer);
 
-      expect(hgContainerStyles.getPropertyValue('position')).toEqual(
-        'absolute',
-      );
-      expect(scrollContainerStyles.getPropertyValue('position')).toEqual(
-        'absolute',
-      );
-      expect(scrollContainerStyles.getPropertyValue('overflow')).toEqual(
-        'hidden',
-      );
+    //   expect(hgContainerStyles.getPropertyValue('position')).toEqual(
+    //     'absolute',
+    //   );
+    //   expect(scrollContainerStyles.getPropertyValue('position')).toEqual(
+    //     'absolute',
+    //   );
+    //   expect(scrollContainerStyles.getPropertyValue('overflow')).toEqual(
+    //     'hidden',
+    //   );
 
-      const hgc = api.getComponent();
+    //   const hgc = api.getComponent();
 
-      waitForTilesLoaded(hgc, () => {
-        expect(hgc.isZoomFixed('aa')).toBeFalsy();
+    //   waitForTilesLoaded(hgc, () => {
+    //     expect(hgc.isZoomFixed('aa')).toBeFalsy();
 
-        scrollContainer.scrollTop = 20;
+    //     scrollContainer.scrollTop = 20;
 
-        setTimeout(() => {
-          expect(hgc.pixiStage.y).toEqual(0);
-          done();
-        }, 50);
-      });
-    });
+    //     setTimeout(() => {
+    //       expect(hgc.pixiStage.y).toEqual(0);
+    //       done();
+    //     }, 50);
+    //   });
+    // });
 
-    it('can scroll in scroll mode', (done) => {
-      [div, api] = createElementAndApi(
-        stackedTopTracks,
-        { editable: false, sizeMode: 'scroll' },
-        600,
-        200,
-        true,
-      );
+    // it('can scroll in scroll mode', (done) => {
+    //   [div, api] = createElementAndApi(
+    //     stackedTopTracks,
+    //     { editable: false, sizeMode: 'scroll' },
+    //     600,
+    //     200,
+    //     true,
+    //   );
 
-      expect(api.option('sizeMode')).toEqual('scroll');
+    //   expect(api.option('sizeMode')).toEqual('scroll');
 
-      const scrollContainer = div.querySelector('.higlass-scroll-container');
-      const scrollContainerStyles = window.getComputedStyle(scrollContainer);
+    //   const scrollContainer = div.querySelector('.higlass-scroll-container');
+    //   const scrollContainerStyles = window.getComputedStyle(scrollContainer);
 
-      expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual(
-        'hidden',
-      );
-      expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual(
-        'auto',
-      );
+    //   expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual(
+    //     'hidden',
+    //   );
+    //   expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual(
+    //     'auto',
+    //   );
 
-      const hgc = api.getComponent();
+    //   const hgc = api.getComponent();
 
-      waitForTilesLoaded(hgc, () => {
-        expect(hgc.isZoomFixed('aa')).toEqual(true);
+    //   waitForTilesLoaded(hgc, () => {
+    //     expect(hgc.isZoomFixed('aa')).toEqual(true);
 
-        scrollContainer.scrollTop = 20;
+    //     scrollContainer.scrollTop = 20;
 
-        setTimeout(() => {
-          expect(scrollContainer.scrollTop).toEqual(20);
-          expect(hgc.pixiStage.y).toEqual(-20);
-          done();
-        }, 50);
-      });
-    });
+    //     setTimeout(() => {
+    //       expect(scrollContainer.scrollTop).toEqual(20);
+    //       expect(hgc.pixiStage.y).toEqual(-20);
+    //       done();
+    //     }, 50);
+    //   });
+    // });
 
-    it('remembers scroll position when switching from scroll to overflow mode', (done) => {
-      [div, api] = createElementAndApi(
-        stackedTopTracks,
-        { editable: false, sizeMode: 'scroll' },
-        600,
-        200,
-        true,
-      );
+    // it('remembers scroll position when switching from scroll to overflow mode', (done) => {
+    //   [div, api] = createElementAndApi(
+    //     stackedTopTracks,
+    //     { editable: false, sizeMode: 'scroll' },
+    //     600,
+    //     200,
+    //     true,
+    //   );
 
-      expect(api.option('sizeMode')).toEqual('scroll');
+    //   expect(api.option('sizeMode')).toEqual('scroll');
 
-      const hgc = api.getComponent();
+    //   const hgc = api.getComponent();
 
-      waitForTilesLoaded(hgc, () => {
-        const scrollContainer = div.querySelector('.higlass-scroll-container');
-        let scrollContainerStyles = window.getComputedStyle(scrollContainer);
-        scrollContainer.scrollTop = 20;
+    //   waitForTilesLoaded(hgc, () => {
+    //     const scrollContainer = div.querySelector('.higlass-scroll-container');
+    //     let scrollContainerStyles = window.getComputedStyle(scrollContainer);
+    //     scrollContainer.scrollTop = 20;
 
-        setTimeout(() => {
-          expect(hgc.pixiStage.y).toEqual(-20);
-          expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual(
-            'hidden',
-          );
-          expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual(
-            'auto',
-          );
+    //     setTimeout(() => {
+    //       expect(hgc.pixiStage.y).toEqual(-20);
+    //       expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual(
+    //         'hidden',
+    //       );
+    //       expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual(
+    //         'auto',
+    //       );
 
-          api.option('sizeMode', 'overflow');
-          scrollContainerStyles = window.getComputedStyle(scrollContainer);
+    //       api.option('sizeMode', 'overflow');
+    //       scrollContainerStyles = window.getComputedStyle(scrollContainer);
 
-          setTimeout(() => {
-            scrollContainer.scrollTop = 40;
-            setTimeout(() => {
-              expect(
-                scrollContainerStyles.getPropertyValue('overflow'),
-              ).toEqual('hidden');
-              expect(hgc.pixiStage.y).toEqual(-20);
-              done();
-            }, 50);
-          }, 250);
-        }, 50);
-      });
-    });
+    //       setTimeout(() => {
+    //         scrollContainer.scrollTop = 40;
+    //         setTimeout(() => {
+    //           expect(
+    //             scrollContainerStyles.getPropertyValue('overflow'),
+    //           ).toEqual('hidden');
+    //           expect(hgc.pixiStage.y).toEqual(-20);
+    //           done();
+    //         }, 50);
+    //       }, 250);
+    //     }, 50);
+    //   });
+    // });
 
-    it('can scroll multiple views', (done) => {
-      [div, api] = createElementAndApi(
-        stackedTopViews,
-        {
-          editable: false,
-          sizeMode: 'scroll',
-        },
-        600,
-        200,
-        true,
-      );
+    // it('can scroll multiple views', (done) => {
+    //   [div, api] = createElementAndApi(
+    //     stackedTopViews,
+    //     {
+    //       editable: false,
+    //       sizeMode: 'scroll',
+    //     },
+    //     600,
+    //     200,
+    //     true,
+    //   );
 
-      expect(api.option('sizeMode')).toEqual('scroll');
+    //   expect(api.option('sizeMode')).toEqual('scroll');
 
-      const hgc = api.getComponent();
+    //   const hgc = api.getComponent();
 
-      waitForTilesLoaded(hgc, () => {
-        const scrollContainer = div.querySelector('.higlass-scroll-container');
-        scrollContainer.scrollTop = 20;
+    //   waitForTilesLoaded(hgc, () => {
+    //     const scrollContainer = div.querySelector('.higlass-scroll-container');
+    //     scrollContainer.scrollTop = 20;
 
-        setTimeout(() => {
-          expect(hgc.pixiStage.y).toEqual(-20);
-          done();
-        }, 50);
-      });
-    });
+    //     setTimeout(() => {
+    //       expect(hgc.pixiStage.y).toEqual(-20);
+    //       done();
+    //     }, 50);
+    //   });
+    // });
 
-    it('can pan&zoom after having scrolled', (done) => {
-      [div, api] = createElementAndApi(
-        stackedTopViews,
-        {
-          editable: false,
-          sizeMode: 'scroll',
-        },
-        600,
-        400,
-        true,
-      );
+    // it('can pan&zoom after having scrolled', (done) => {
+    //   [div, api] = createElementAndApi(
+    //     stackedTopViews,
+    //     {
+    //       editable: false,
+    //       sizeMode: 'scroll',
+    //     },
+    //     600,
+    //     400,
+    //     true,
+    //   );
 
-      expect(api.option('sizeMode')).toEqual('scroll');
+    //   expect(api.option('sizeMode')).toEqual('scroll');
 
-      const hgc = api.getComponent();
+    //   const hgc = api.getComponent();
 
-      waitForTilesLoaded(hgc, () => {
-        expect(hgc.isZoomFixed('l')).toEqual(true);
+    //   waitForTilesLoaded(hgc, () => {
+    //     expect(hgc.isZoomFixed('l')).toEqual(true);
 
-        const scrollContainer = div.querySelector('.higlass-scroll-container');
-        // Scroll to the very end
-        scrollContainer.scrollTop = 1790;
+    //     const scrollContainer = div.querySelector('.higlass-scroll-container');
+    //     // Scroll to the very end
+    //     scrollContainer.scrollTop = 1790;
 
-        setTimeout(() => {
-          expect(hgc.pixiStage.y).toEqual(-1790);
+    //     setTimeout(() => {
+    //       expect(hgc.pixiStage.y).toEqual(-1790);
 
-          api.option('sizeMode', 'overflow');
+    //       api.option('sizeMode', 'overflow');
 
-          setTimeout(() => {
-            expect(hgc.isZoomFixed('l')).toBeFalsy();
+    //       setTimeout(() => {
+    //         expect(hgc.isZoomFixed('l')).toBeFalsy();
 
-            // Trigger a pan event
-            const [dx] = drag(150, 300, 140, 300, 'l', hgc);
+    //         // Trigger a pan event
+    //         const [dx] = drag(150, 300, 140, 300, 'l', hgc);
 
-            expect(dx).toEqual(-10);
-            done();
-          }, 250);
-        }, 150);
-      });
-    });
+    //         expect(dx).toEqual(-10);
+    //         done();
+    //       }, 250);
+    //     }, 150);
+    //   });
+    // });
 
     it('has version', () => {
       [div, api] = createElementAndApi(emptyConf, { editable: false });
