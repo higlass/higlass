@@ -11,6 +11,7 @@ export { default as colorToHex } from './color-to-hex';
 export { default as colorToRgba } from './color-to-rgba';
 export { default as dataToGenomicLoci } from './data-to-genomic-loci';
 export { default as debounce } from './debounce';
+export { default as decToHexStr } from './dec-to-hex-str';
 export { default as dictFromTuples } from './dict-from-tuples';
 export { default as dictItems } from './dict-items';
 export { default as dictKeys } from './dict-keys';
