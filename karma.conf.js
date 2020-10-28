@@ -69,7 +69,7 @@ module.exports = (config) => {
       'test/UtilsTests.js',
       'test/ViewConfigEditorTests.js',
       'test/ViewManipulationTests.js',
-      'test/ViewportProjectionTests.js',
+      // 'test/ViewportProjectionTests.js',
       'test/ZoomTests.js',
     ],
 
