@@ -105,9 +105,10 @@
   },
   "overrides": [
     {
-      "files": ["test/**/*.js"],
+      "files": ["test/**/*.js", "test/**/**/*.js" ],
       "rules": {
-        "no-use-before-define": 0 // So viewconfs can be below the body of the test.
+        "no-use-before-define": 0, // So viewconfs can be below the body of the test.
+	"no-undef": 0
       }
     }
   ]

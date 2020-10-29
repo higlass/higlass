@@ -25,11 +25,11 @@ describe('BarTrack tests', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(done => {
+  beforeAll((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
   });
 
-  it('Ensures that the track was rendered', done => {
+  it('Ensures that the track was rendered', (done) => {
     expect(hgc.instance().state.viewConfig.editable).to.eql(true);
 
     const trackConf = viewConf.views[0].tracks.top[0];
@@ -50,13 +50,13 @@ describe('BarTrack tests', () => {
       );
 
       expect(
-        Object.values(trackObj.fetchedTiles).every(tile => tile.svgData),
+        Object.values(trackObj.fetchedTiles).every((tile) => tile.svgData),
       ).to.eql(true);
       done();
     });
   });
 
-  it('Ensures that the cross section bar track was rendered', done => {
+  it('Ensures that the cross section bar track was rendered', (done) => {
     const trackConf = viewConf.views[0].tracks.left[0];
 
     const trackObj = getTrackObjectFromHGC(
@@ -68,7 +68,7 @@ describe('BarTrack tests', () => {
     waitForTilesLoaded(hgc.instance(), () => {
       expect(
         Object.values(trackObj.originalTrack.fetchedTiles).every(
-          tile => tile.svgData,
+          (tile) => tile.svgData,
         ),
       ).to.eql(true);
       done();

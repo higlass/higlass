@@ -15,7 +15,7 @@ describe('tileProxy.json()', () => {
     expect(typeof tileProxy.json).to.eql('function');
   });
 
-  it('handles json callback', done => {
+  it('handles json callback', (done) => {
     tileProxy.json(
       'http://higlass.io/api/v1/available-chrom-sizes/',
       (status, jsonResponse) => {
@@ -37,7 +37,7 @@ describe('tile-proxy text', () => {
   instead of failing out immediately, and the ultimate test failure
   is an uninformative timeout. Perhaps get rid of our catch?
   */
-  it('handles text callback', done => {
+  it('handles text callback', (done) => {
     tileProxy.text(
       'http://higlass.io/api/v1/available-chrom-sizes/',
       (status, textResponse) => {
@@ -49,7 +49,7 @@ describe('tile-proxy text', () => {
     );
   });
 
-  it('handles tileDataToPixData callback with client-side multivec aggregation', done => {
+  it('handles tileDataToPixData callback with client-side multivec aggregation', (done) => {
     // Set up the function parameters.
     const selectedRowsOptions = {
       selectedRows: [0, [1, 2, 3], [4, 5]],
@@ -89,7 +89,7 @@ describe('tile-proxy text', () => {
     );
   });
 
-  it('handles tileDataToPixData callback with server-side multivec aggregation', done => {
+  it('handles tileDataToPixData callback with server-side multivec aggregation', (done) => {
     // Set up the function parameters.
     const selectedRowsOptions = {
       selectedRows: [0, [1, 2, 3], [4, 5]],

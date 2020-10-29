@@ -1,20 +1,20 @@
 {
   "editable": true,
   "zoomFixed": false,
-  "trackSourceServers": ["http://higlass.io/api/v1"],
+  "trackSourceServers": ["https://higlass.io/api/v1"],
   "exportViewUrl": "http://localhost:8000/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
       "initialXDomain": [-128227010.6076158, 3227095876.810823],
       "initialYDomain": [-679063376.6830564, 3737688490.1136293],
-      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "autocompleteSource": "https://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": false,
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "chromInfoPath": "https://resgen.io/api/v1/chrom-sizes/?id=ADfY_RtsQR6oKOMyrq6qhw",
       "tracks": {
         "top": [
           {
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "https://resgen.io/api/v1/chrom-sizes/?id=ADfY_RtsQR6oKOMyrq6qhw",
             "type": "horizontal-chromosome-labels",
             "height": 30,
             "uid": "I1QUF22JQJuJ38j9PS4iqw",
@@ -24,7 +24,7 @@
         ],
         "left": [
           {
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "chromInfoPath": "https://resgen.io/api/v1/chrom-sizes/?id=ADfY_RtsQR6oKOMyrq6qhw",
             "type": "vertical-chromosome-labels",
             "width": 30,
             "uid": "a-mFiHnBQ8uuI6UG3USWVA",
@@ -72,7 +72,7 @@
               },
               {
                 "type": "2d-chromosome-grid",
-                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+                "chromInfoPath": "https://resgen.io/api/v1/chrom-sizes/?id=ADfY_RtsQR6oKOMyrq6qhw",
                 "uid": "LUVqXXu2QYiO8XURIwyUyA",
                 "options": {
                   "lineStrokeWidth": 1,

@@ -13,7 +13,7 @@
       "initialYDomain": [1142928773.5006099, 2963035748.0921783],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
           {

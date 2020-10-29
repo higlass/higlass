@@ -1,4 +1,5 @@
 /* eslint-env node, jasmine, mocha */
+
 import {
   configure,
   // render,
@@ -43,7 +44,7 @@ describe('Minimal viewconfs', () => {
     };
     let hgc = null;
     let div = null;
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
 

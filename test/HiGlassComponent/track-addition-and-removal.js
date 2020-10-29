@@ -1,0 +1,81 @@
+import { configure } from 'enzyme';
+
+import Adapter from 'enzyme-adapter-react-16';
+
+import {
+  mountHGComponent,
+  removeHGComponent,
+  waitForTilesLoaded,
+  getTrackObjectFromHGC,
+} from '../../app/scripts/utils';
+
+import { testViewConfX2 } from '../view-configs';
+
+configure({ adapter: new Adapter() });
+
+// import FetchMockHelper from '../utils/FetchMockHelper';
+
+describe('Track addition and removal', () => {
+  let hgc = null;
+  let div = null;
+  // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
+
+  beforeAll(async (done) => {
+    // await fetchMockHelper.activateFetchMock();
+    [div, hgc] = mountHGComponent(div, hgc, testViewConfX2, done, {
+      style: 'width:800px; height:400px; background-color: lightgreen',
+      bounded: false,
+    });
+    // visual check that the heatmap track config menu is moved
+    // to the left
+  });
+
+  afterAll(async () => {
+    removeHGComponent(div);
+    // await fetchMockHelper.storeDataAndResetFetchMock();
+  });
+
+  it('should load the initial config', () => {
+    // this was to test an example from the higlass-website demo page
+    // where the issue was that the genome position search box was being
+    // styled with a margin-bottom of 10px, fixed by setting the style of
+    // genome-position-search to specify margin-bottom app/styles/GenomePositionSearchBox.css
+    expect(hgc.instance().state.views.aa.layout.h).toEqual(6);
+  });
+
+  it('should change the opacity of the first text label to 20%', (done) => {
+    const newOptions = JSON.parse(
+      JSON.stringify(testViewConfX2.views[0].tracks.top[0].options),
+    );
+    newOptions.labelTextOpacity = 0.2;
+
+    hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
+    hgc.setState(hgc.instance().state);
+
+    expect(
+      getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').labelText.alpha,
+    ).toBeLessThan(0.21);
+
+    waitForTilesLoaded(hgc.instance(), done);
+  });
+
+  it('should change the stroke width of the second line to 5', (done) => {
+    const newOptions = JSON.parse(
+      JSON.stringify(testViewConfX2.views[0].tracks.top[1].options),
+    );
+    newOptions.lineStrokeWidth = 5;
+
+    hgc.instance().handleTrackOptionsChanged('aa', 'line2', newOptions);
+    hgc.setState(hgc.instance().state);
+
+    expect(
+      getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').labelText.alpha,
+    ).toBeLessThan(0.21);
+
+    waitForTilesLoaded(hgc.instance(), done);
+  });
+
+  it('should do something else', (done) => {
+    waitForTilesLoaded(hgc.instance(), done);
+  });
+});

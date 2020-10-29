@@ -79,7 +79,7 @@ describe('Gene Annotations Tracks', () => {
   //   }
   // });
 
-  it('changes the color of the minus strand', done => {
+  it('changes the color of the minus strand', (done) => {
     const viewUid = 'aa';
     const trackUid = 'genes1';
 
@@ -100,7 +100,7 @@ describe('Gene Annotations Tracks', () => {
     });
   });
 
-  it('changes the height of the gene annotations', done => {
+  it('changes the height of the gene annotations', (done) => {
     const viewUid = 'aa';
     const trackUid = 'genes1';
 

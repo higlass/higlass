@@ -1,7 +1,7 @@
 const webpackConfig = require('./webpack.config.js');
 require('babel-polyfill'); // eslint-disable-line import/no-extraneous-dependencies
 
-module.exports = config => {
+module.exports = (config) => {
   config.set({
     /** * maximum number of tries a browser will attempt in the case
      * of a disconnection */
@@ -10,7 +10,7 @@ module.exports = config => {
      * disconnecting from it (in ms). */
     browserNoActivityTimeout: 90000,
     basePath: '',
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'server-side'],
 
     files: [
       'node_modules/babel-polyfill/dist/polyfill.js',
@@ -43,7 +43,7 @@ module.exports = config => {
       'test/GenomePositionSearchBoxTest.js',
       'test/HeatmapTests.js',
       'test/HiGlassComponentCreationTests.js',
-      'test/HiGlassComponentTest.js',
+      'test/HiGlassComponent/*.js',
       'test/Horizontal1DTrackTests.js',
       'test/HorizontalHeatmapTests.js',
       'test/HorizontalMultivecTests.js',
@@ -61,7 +61,6 @@ module.exports = config => {
       'test/PluginTrackTests.js',
       'test/PngExportTest.js',
       'test/RuleTests.js',
-      'test/SchemaTests.js',
       'test/search_field_test.js',
       'test/SVGExportTest.js',
       'test/tile-proxy.js',
@@ -69,7 +68,7 @@ module.exports = config => {
       'test/TrackLabelsTest.js',
       'test/UtilsTests.js',
       'test/ViewConfigEditorTests.js',
-      'test/ViewManipulationTests.js',
+      // 'test/ViewManipulationTests.js',
       'test/ViewportProjectionTests.js',
       'test/ZoomTests.js',
     ],
@@ -90,6 +89,7 @@ module.exports = config => {
     plugins: [
       'karma-webpack',
       'karma-jasmine',
+      'karma-server-side',
       'karma-sourcemap-loader',
       'karma-chrome-launcher',
       'karma-phantomjs2-launcher',

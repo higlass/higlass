@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 
@@ -13,7 +13,7 @@ import {
   waitForTilesLoaded,
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC
+  getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
 import { smallViewconf } from './view-configs';
@@ -25,11 +25,11 @@ describe('BedLikeTrack |', () => {
   let div = null;
 
   describe('inline annotations', () => {
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(div, hgc, smallViewconf, done);
     });
 
-    it('checks that the rectangles are strand separated or not', done => {
+    it('checks that the rectangles are strand separated or not', (done) => {
       const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'a');
 
       const ys = new Set();
@@ -64,11 +64,11 @@ describe('BedLikeTrack |', () => {
   });
 
   describe('Options', () => {
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(div, hgc, coloredBarsViewConf, done);
     });
 
-    it('checks that the rectangles are colored', done => {
+    it('checks that the rectangles are colored', (done) => {
       const svg = hgc.instance().createSVGString();
 
       // check to make sure that we have non-standard color bar
@@ -84,7 +84,7 @@ describe('BedLikeTrack |', () => {
   });
 
   describe('Options', () => {
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf1, done);
     });
 
@@ -139,7 +139,7 @@ describe('BedLikeTrack |', () => {
   });
 
   describe('vertical scaling', () => {
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf1, done);
     });
 
@@ -166,7 +166,7 @@ describe('BedLikeTrack |', () => {
   });
 
   describe('Normal tests', () => {
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
     });
 
@@ -175,7 +175,7 @@ describe('BedLikeTrack |', () => {
       const trackObj = getTrackObjectFromHGC(
         hgc.instance(),
         viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[0].uid
+        viewConf.views[0].tracks.top[0].uid,
       );
 
       expect(Object.keys(trackObj.drawnRects).length).to.be.above(0);
@@ -185,7 +185,7 @@ describe('BedLikeTrack |', () => {
       const trackObj = getTrackObjectFromHGC(
         hgc.instance(),
         viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[0].uid
+        viewConf.views[0].tracks.top[0].uid,
       );
 
       const rectHeights = new Set();
@@ -210,7 +210,7 @@ describe('BedLikeTrack |', () => {
       expect(greenIx).to.be.below(0);
     });
 
-    it('Checks minusStrandColor', done => {
+    it('Checks minusStrandColor', (done) => {
       hgc.instance().state.views.aa.tracks.top[0].options.minusStrandColor =
         'green';
 
@@ -224,7 +224,7 @@ describe('BedLikeTrack |', () => {
       done();
     });
 
-    it('Checks segment polygons', done => {
+    it('Checks segment polygons', (done) => {
       hgc.instance().state.views.aa.tracks.top[0].options.annotationStyle =
         'segment';
 
@@ -234,7 +234,7 @@ describe('BedLikeTrack |', () => {
       const trackObj = getTrackObjectFromHGC(
         hgc.instance(),
         viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[0].uid
+        viewConf.views[0].tracks.top[0].uid,
       );
 
       for (const tileId in trackObj.drawnRects) {
@@ -254,7 +254,7 @@ describe('BedLikeTrack |', () => {
       const trackObj = getTrackObjectFromHGC(
         hgc.instance(),
         viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[0].uid
+        viewConf.views[0].tracks.top[0].uid,
       );
 
       let drawnRects = Object.values(trackObj.drawnRects[13])[0][0];
@@ -303,7 +303,7 @@ describe('BedLikeTrack |', () => {
       const trackObj = getTrackObjectFromHGC(
         hgc.instance(),
         viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[0].uid
+        viewConf.views[0].tracks.top[0].uid,
       );
 
       const prevHeight = Object.values(trackObj.fetchedTiles)[0].textHeights
@@ -335,7 +335,7 @@ describe('BedLikeTrack |', () => {
       const trackObj = getTrackObjectFromHGC(
         hgc.instance(),
         viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[0].uid
+        viewConf.views[0].tracks.top[0].uid,
       );
 
       const tile = Object.values(trackObj.fetchedTiles)[0];
@@ -347,7 +347,7 @@ describe('BedLikeTrack |', () => {
         1586400000,
         1187975248,
         1187975248,
-        0
+        0,
       );
       // We have to rerender the tile due to synchronous tile loading.
       // tile.drawnAtScale is not up to date otherwise.
@@ -402,8 +402,8 @@ describe('BedLikeTrack |', () => {
                     name: 'CTCF motifs (hg19)',
                     datatype: 'bedlike',
                     coordSystem: 'hg19',
-                    coordSystem2: ''
-                  }
+                    coordSystem2: '',
+                  },
                 },
                 tiles: {
                   'N3g_OsVITeulp6cUs2EaJA.13.3025': [
@@ -419,8 +419,8 @@ describe('BedLikeTrack |', () => {
                         '46862002',
                         'CTCF_known1',
                         '1',
-                        '+'
-                      ]
+                        '+',
+                      ],
                     },
                     {
                       xStart: 1586024622,
@@ -434,8 +434,8 @@ describe('BedLikeTrack |', () => {
                         '46864928',
                         'CTCF_known1',
                         '2',
-                        '-'
-                      ]
+                        '-',
+                      ],
                     },
                     {
                       xStart: 1586342860,
@@ -449,8 +449,8 @@ describe('BedLikeTrack |', () => {
                         '47183166',
                         'CTCF_known1',
                         '3',
-                        '+'
-                      ]
+                        '+',
+                      ],
                     },
                     {
                       xStart: 1586348254,
@@ -464,9 +464,9 @@ describe('BedLikeTrack |', () => {
                         '47188560',
                         'CTCF_known1',
                         '4',
-                        '+'
-                      ]
-                    }
+                        '+',
+                      ],
+                    },
                   ],
                   'N3g_OsVITeulp6cUs2EaJA.13.3024': [
                     {
@@ -481,8 +481,8 @@ describe('BedLikeTrack |', () => {
                         '46357780',
                         'CTCF_known1',
                         '5',
-                        '+'
-                      ]
+                        '+',
+                      ],
                     },
                     {
                       xStart: 1585733113,
@@ -496,8 +496,8 @@ describe('BedLikeTrack |', () => {
                         '46573419',
                         'CTCF_known1',
                         '6',
-                        '-'
-                      ]
+                        '-',
+                      ],
                     },
                     {
                       xStart: 1585894153,
@@ -511,8 +511,8 @@ describe('BedLikeTrack |', () => {
                         '46734459',
                         'CTCF_known1',
                         '7',
-                        '+'
-                      ]
+                        '+',
+                      ],
                     },
                     {
                       xStart: 1585957049,
@@ -526,9 +526,9 @@ describe('BedLikeTrack |', () => {
                         '46797355',
                         'CTCF_known1',
                         '8',
-                        '-'
-                      ]
-                    }
+                        '-',
+                      ],
+                    },
                   ],
                   'N3g_OsVITeulp6cUs2EaJA.13.3023': [
                     {
@@ -543,8 +543,8 @@ describe('BedLikeTrack |', () => {
                         '45945003',
                         'CTCF_known1',
                         '9',
-                        '-'
-                      ]
+                        '-',
+                      ],
                     },
                     {
                       xStart: 1585306193,
@@ -558,8 +558,8 @@ describe('BedLikeTrack |', () => {
                         '46146499',
                         'CTCF_known1',
                         '10',
-                        '-'
-                      ]
+                        '-',
+                      ],
                     },
                     {
                       xStart: 1585430470,
@@ -573,8 +573,8 @@ describe('BedLikeTrack |', () => {
                         '46270776',
                         'CTCF_known1',
                         '11',
-                        '-'
-                      ]
+                        '-',
+                      ],
                     },
                     {
                       xStart: 1585440016,
@@ -588,11 +588,11 @@ describe('BedLikeTrack |', () => {
                         '46280322',
                         'CTCF_known1',
                         '12',
-                        '-'
-                      ]
-                    }
-                  ]
-                }
+                        '-',
+                      ],
+                    },
+                  ],
+                },
               },
               height: 80,
               options: {
@@ -617,20 +617,20 @@ describe('BedLikeTrack |', () => {
                   '#652537',
                   '#bf5458',
                   '#fba273',
-                  '#ffffe0'
+                  '#ffffe0',
                 ],
                 colorEncodingRange: false,
-                name: 'CTCF motifs (hg19)'
-              }
+                name: 'CTCF motifs (hg19)',
+              },
             },
-            { type: 'top-axis' }
+            { type: 'top-axis' },
           ],
           left: [],
           center: [],
           right: [],
           bottom: [],
           whole: [],
-          gallery: []
+          gallery: [],
         },
         layout: {
           w: 12,
@@ -638,29 +638,29 @@ describe('BedLikeTrack |', () => {
           x: 0,
           y: 0,
           moved: false,
-          static: false
+          static: false,
         },
         genomePositionSearchBox: {
           autocompleteServer: 'http://higlass.io/api/v1',
           chromInfoServer: 'http://higlass.io/api/v1',
           visible: true,
           chromInfoId: 'hg19',
-          autocompleteId: 'OHJakQICQD6gTD7skx4EWA'
-        }
-      }
+          autocompleteId: 'OHJakQICQD6gTD7skx4EWA',
+        },
+      },
     ],
     zoomLocks: {
       locksByViewUid: {},
-      locksDict: {}
+      locksDict: {},
     },
     locationLocks: {
       locksByViewUid: {},
-      locksDict: {}
+      locksDict: {},
     },
     valueScaleLocks: {
       locksByViewUid: {},
-      locksDict: {}
-    }
+      locksDict: {},
+    },
   };
 });
 
@@ -669,7 +669,7 @@ const coloredBarsViewConf = {
   zoomFixed: false,
   trackSourceServers: [
     '//higlass.io/api/v1',
-    'https://resgen.io/api/v1/gt/paper-data'
+    'https://resgen.io/api/v1/gt/paper-data',
   ],
   exportViewUrl: '/api/v1/viewconfs',
   views: [
@@ -682,7 +682,7 @@ const coloredBarsViewConf = {
         autocompleteId: 'OHJakQICQD6gTD7skx4EWA',
         chromInfoServer: '//higlass.io/api/v1',
         chromInfoId: 'hg19',
-        visible: true
+        visible: true,
       },
       chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
       tracks: {
@@ -709,8 +709,8 @@ const coloredBarsViewConf = {
                   header: '1\t2\t3\t4\t5\t6\t7\t8\t9',
                   version: 3,
                   name: 'GSE63525_GM12878_subcompartments_sorted.bed.beddb',
-                  coordSystem: ''
-                }
+                  coordSystem: '',
+                },
               },
               tiles: {
                 'e7xBOQrBTZu8VoG3cdN8YA.9.204': [
@@ -729,9 +729,9 @@ const coloredBarsViewConf = {
                       '.',
                       '35300000',
                       '35800000',
-                      '152,251,152'
+                      '152,251,152',
                     ],
-                    name: 'A2'
+                    name: 'A2',
                   },
                   {
                     xStart: 1715573143,
@@ -748,9 +748,9 @@ const coloredBarsViewConf = {
                       '.',
                       '35200000',
                       '35300000',
-                      '220,20,60'
+                      '220,20,60',
                     ],
-                    name: 'B1'
+                    name: 'B1',
                   },
                   {
                     xStart: 1715173143,
@@ -767,9 +767,9 @@ const coloredBarsViewConf = {
                       '.',
                       '34800000',
                       '35200000',
-                      '152,251,152'
+                      '152,251,152',
                     ],
-                    name: 'A2'
+                    name: 'A2',
                   },
                   {
                     xStart: 1713073143,
@@ -786,9 +786,9 @@ const coloredBarsViewConf = {
                       '.',
                       '32700000',
                       '34800000',
-                      '255,255,0'
+                      '255,255,0',
                     ],
-                    name: 'B2'
+                    name: 'B2',
                   },
                   {
                     xStart: 1716173143,
@@ -805,9 +805,9 @@ const coloredBarsViewConf = {
                       '.',
                       '35800000',
                       '38700000',
-                      '255,255,0'
+                      '255,255,0',
                     ],
-                    name: 'B2'
+                    name: 'B2',
                   },
                   {
                     xStart: 1711173143,
@@ -824,9 +824,9 @@ const coloredBarsViewConf = {
                       '.',
                       '30800000',
                       '32700000',
-                      '152,251,152'
+                      '152,251,152',
                     ],
-                    name: 'A2'
+                    name: 'A2',
                   },
                   {
                     xStart: 1719073143,
@@ -843,10 +843,10 @@ const coloredBarsViewConf = {
                       '.',
                       '38700000',
                       '42300000',
-                      '255,255,255'
+                      '255,255,255',
                     ],
-                    name: 'NA'
-                  }
+                    name: 'NA',
+                  },
                 ],
                 'e7xBOQrBTZu8VoG3cdN8YA.9.205': [
                   {
@@ -864,9 +864,9 @@ const coloredBarsViewConf = {
                       '.',
                       '45400000',
                       '45500000',
-                      '152,251,152'
+                      '152,251,152',
                     ],
-                    name: 'A2'
+                    name: 'A2',
                   },
                   {
                     xStart: 1725073143,
@@ -883,9 +883,9 @@ const coloredBarsViewConf = {
                       '.',
                       '44700000',
                       '44800000',
-                      '220,20,60'
+                      '220,20,60',
                     ],
-                    name: 'B1'
+                    name: 'B1',
                   },
                   {
                     xStart: 1724373143,
@@ -902,9 +902,9 @@ const coloredBarsViewConf = {
                       '.',
                       '44000000',
                       '44400000',
-                      '255,255,0'
+                      '255,255,0',
                     ],
-                    name: 'B2'
+                    name: 'B2',
                   },
                   {
                     xStart: 1722773143,
@@ -921,9 +921,9 @@ const coloredBarsViewConf = {
                       '.',
                       '42400000',
                       '42800000',
-                      '255,255,255'
+                      '255,255,255',
                     ],
-                    name: 'NA'
+                    name: 'NA',
                   },
                   {
                     xStart: 1727273143,
@@ -940,9 +940,9 @@ const coloredBarsViewConf = {
                       '.',
                       '46900000',
                       '47200000',
-                      '220,20,60'
+                      '220,20,60',
                     ],
-                    name: 'B1'
+                    name: 'B1',
                   },
                   {
                     xStart: 1723973143,
@@ -959,9 +959,9 @@ const coloredBarsViewConf = {
                       '.',
                       '43600000',
                       '43900000',
-                      '220,20,60'
+                      '220,20,60',
                     ],
-                    name: 'B1'
+                    name: 'B1',
                   },
                   {
                     xStart: 1726173143,
@@ -978,9 +978,9 @@ const coloredBarsViewConf = {
                       '.',
                       '45800000',
                       '46200000',
-                      '152,251,152'
+                      '152,251,152',
                     ],
-                    name: 'A2'
+                    name: 'A2',
                   },
                   {
                     xStart: 1724873143,
@@ -997,9 +997,9 @@ const coloredBarsViewConf = {
                       '.',
                       '44500000',
                       '44700000',
-                      '255,255,0'
+                      '255,255,0',
                     ],
-                    name: 'B2'
+                    name: 'B2',
                   },
                   {
                     xStart: 1725173143,
@@ -1016,9 +1016,9 @@ const coloredBarsViewConf = {
                       '.',
                       '44800000',
                       '45300000',
-                      '255,255,0'
+                      '255,255,0',
                     ],
-                    name: 'B2'
+                    name: 'B2',
                   },
                   {
                     xStart: 1727573143,
@@ -1035,9 +1035,9 @@ const coloredBarsViewConf = {
                       '.',
                       '47200000',
                       '47500000',
-                      '255,255,255'
+                      '255,255,255',
                     ],
-                    name: 'NA'
+                    name: 'NA',
                   },
                   {
                     xStart: 1727873143,
@@ -1054,9 +1054,9 @@ const coloredBarsViewConf = {
                       '.',
                       '47500000',
                       '47700000',
-                      '220,20,60'
+                      '220,20,60',
                     ],
-                    name: 'B1'
+                    name: 'B1',
                   },
                   {
                     xStart: 1725873143,
@@ -1073,9 +1073,9 @@ const coloredBarsViewConf = {
                       '.',
                       '45500000',
                       '45800000',
-                      '220,20,60'
+                      '220,20,60',
                     ],
-                    name: 'B1'
+                    name: 'B1',
                   },
                   {
                     xStart: 1722673143,
@@ -1092,9 +1092,9 @@ const coloredBarsViewConf = {
                       '.',
                       '42300000',
                       '42400000',
-                      '255,255,0'
+                      '255,255,0',
                     ],
-                    name: 'B2'
+                    name: 'B2',
                   },
                   {
                     xStart: 1719073143,
@@ -1111,9 +1111,9 @@ const coloredBarsViewConf = {
                       '.',
                       '38700000',
                       '42300000',
-                      '255,255,255'
+                      '255,255,255',
                     ],
-                    name: 'NA'
+                    name: 'NA',
                   },
                   {
                     xStart: 1723173143,
@@ -1130,9 +1130,9 @@ const coloredBarsViewConf = {
                       '.',
                       '42800000',
                       '43600000',
-                      '255,255,0'
+                      '255,255,0',
                     ],
-                    name: 'B2'
+                    name: 'B2',
                   },
                   {
                     xStart: 1724273143,
@@ -1149,9 +1149,9 @@ const coloredBarsViewConf = {
                       '.',
                       '43900000',
                       '44000000',
-                      '152,251,152'
+                      '152,251,152',
                     ],
-                    name: 'A2'
+                    name: 'A2',
                   },
                   {
                     xStart: 1724773143,
@@ -1168,9 +1168,9 @@ const coloredBarsViewConf = {
                       '.',
                       '44400000',
                       '44500000',
-                      '220,20,60'
+                      '220,20,60',
                     ],
-                    name: 'B1'
+                    name: 'B1',
                   },
                   {
                     xStart: 1725673143,
@@ -1187,9 +1187,9 @@ const coloredBarsViewConf = {
                       '.',
                       '45300000',
                       '45400000',
-                      '220,20,60'
+                      '220,20,60',
                     ],
-                    name: 'B1'
+                    name: 'B1',
                   },
                   {
                     xStart: 1726573143,
@@ -1206,10 +1206,10 @@ const coloredBarsViewConf = {
                       '.',
                       '46200000',
                       '46900000',
-                      '255,255,255'
+                      '255,255,255',
                     ],
-                    name: 'NA'
-                  }
+                    name: 'NA',
+                  },
                 ],
                 'e7xBOQrBTZu8VoG3cdN8YA.9.203': [
                   {
@@ -1227,9 +1227,9 @@ const coloredBarsViewConf = {
                       '.',
                       '29900000',
                       '30000000',
-                      '220,20,60'
+                      '220,20,60',
                     ],
-                    name: 'B1'
+                    name: 'B1',
                   },
                   {
                     xStart: 1710373143,
@@ -1246,9 +1246,9 @@ const coloredBarsViewConf = {
                       '.',
                       '30000000',
                       '30200000',
-                      '255,255,0'
+                      '255,255,0',
                     ],
-                    name: 'B2'
+                    name: 'B2',
                   },
                   {
                     xStart: 1709273143,
@@ -1265,9 +1265,9 @@ const coloredBarsViewConf = {
                       '.',
                       '28900000',
                       '29900000',
-                      '255,255,0'
+                      '255,255,0',
                     ],
-                    name: 'B2'
+                    name: 'B2',
                   },
                   {
                     xStart: 1709173143,
@@ -1284,9 +1284,9 @@ const coloredBarsViewConf = {
                       '.',
                       '28800000',
                       '28900000',
-                      '152,251,152'
+                      '152,251,152',
                     ],
-                    name: 'A2'
+                    name: 'A2',
                   },
                   {
                     xStart: 1710973143,
@@ -1303,9 +1303,9 @@ const coloredBarsViewConf = {
                       '.',
                       '30600000',
                       '30700000',
-                      '152,251,152'
+                      '152,251,152',
                     ],
-                    name: 'A2'
+                    name: 'A2',
                   },
                   {
                     xStart: 1710573143,
@@ -1322,9 +1322,9 @@ const coloredBarsViewConf = {
                       '.',
                       '30200000',
                       '30600000',
-                      '220,20,60'
+                      '220,20,60',
                     ],
-                    name: 'B1'
+                    name: 'B1',
                   },
                   {
                     xStart: 1711073143,
@@ -1341,9 +1341,9 @@ const coloredBarsViewConf = {
                       '.',
                       '30700000',
                       '30800000',
-                      '34,139,34'
+                      '34,139,34',
                     ],
-                    name: 'A1'
+                    name: 'A1',
                   },
                   {
                     xStart: 1703473143,
@@ -1360,9 +1360,9 @@ const coloredBarsViewConf = {
                       '.',
                       '23100000',
                       '24900000',
-                      '255,255,0'
+                      '255,255,0',
                     ],
-                    name: 'B2'
+                    name: 'B2',
                   },
                   {
                     xStart: 1705273143,
@@ -1379,9 +1379,9 @@ const coloredBarsViewConf = {
                       '.',
                       '24900000',
                       '25300000',
-                      '152,251,152'
+                      '152,251,152',
                     ],
-                    name: 'A2'
+                    name: 'A2',
                   },
                   {
                     xStart: 1707973143,
@@ -1398,9 +1398,9 @@ const coloredBarsViewConf = {
                       '.',
                       '27600000',
                       '28800000',
-                      '255,255,0'
+                      '255,255,0',
                     ],
-                    name: 'B2'
+                    name: 'B2',
                   },
                   {
                     xStart: 1706973143,
@@ -1417,9 +1417,9 @@ const coloredBarsViewConf = {
                       '.',
                       '26600000',
                       '27600000',
-                      '152,251,152'
+                      '152,251,152',
                     ],
-                    name: 'A2'
+                    name: 'A2',
                   },
                   {
                     xStart: 1711173143,
@@ -1436,9 +1436,9 @@ const coloredBarsViewConf = {
                       '.',
                       '30800000',
                       '32700000',
-                      '152,251,152'
+                      '152,251,152',
                     ],
-                    name: 'A2'
+                    name: 'A2',
                   },
                   {
                     xStart: 1702873143,
@@ -1455,9 +1455,9 @@ const coloredBarsViewConf = {
                       '.',
                       '22500000',
                       '23100000',
-                      '152,251,152'
+                      '152,251,152',
                     ],
-                    name: 'A2'
+                    name: 'A2',
                   },
                   {
                     xStart: 1705673143,
@@ -1474,12 +1474,12 @@ const coloredBarsViewConf = {
                       '.',
                       '25300000',
                       '26600000',
-                      '255,255,0'
+                      '255,255,0',
                     ],
-                    name: 'B2'
-                  }
-                ]
-              }
+                    name: 'B2',
+                  },
+                ],
+              },
             },
             width: 20,
             height: 80,
@@ -1508,20 +1508,20 @@ const coloredBarsViewConf = {
                 '#652537',
                 '#bf5458',
                 '#fba273',
-                '#ffffe0'
+                '#ffffe0',
               ],
               colorEncodingRange: false,
               annotationHeight: 16,
-              name: 'GSE63525_GM12878_subcompartments_sorted.bed.beddb'
-            }
-          }
+              name: 'GSE63525_GM12878_subcompartments_sorted.bed.beddb',
+            },
+          },
         ],
         left: [],
         center: [],
         right: [],
         bottom: [],
         whole: [],
-        gallery: []
+        gallery: [],
       },
       layout: {
         w: 12,
@@ -1529,23 +1529,23 @@ const coloredBarsViewConf = {
         x: 0,
         y: 0,
         moved: false,
-        static: false
+        static: false,
       },
-      initialYDomain: [975351340.6534767, 975351340.6534767]
-    }
+      initialYDomain: [975351340.6534767, 975351340.6534767],
+    },
   ],
   zoomLocks: {
     locksByViewUid: {},
-    locksDict: {}
+    locksDict: {},
   },
   locationLocks: {
     locksByViewUid: {},
-    locksDict: {}
+    locksDict: {},
   },
   valueScaleLocks: {
     locksByViewUid: {},
-    locksDict: {}
-  }
+    locksDict: {},
+  },
 };
 
 const viewConf1 = {
@@ -1561,7 +1561,7 @@ const viewConf1 = {
             uid: 'dnQAEksiRnC2bBOKcL9JxQ',
             type: 'top-axis',
             height: 20,
-            options: {}
+            options: {},
           },
           {
             type: 'bedlike',
@@ -1573,8 +1573,8 @@ const viewConf1 = {
                   max_zoom: 0,
                   min_pos: [0],
                   max_pos: [31960],
-                  header: 'contig\tstart\tend\tname\tscore'
-                }
+                  header: 'contig\tstart\tend\tname\tscore',
+                },
               },
               tiles: {
                 'x.0.0': [
@@ -1584,7 +1584,7 @@ const viewConf1 = {
                     xEnd: 17667,
                     chrOffset: 0,
                     fields: ['chr', 17271, 17667, 'annotation 1', '39.7'],
-                    importance: 0.9744638120748439
+                    importance: 0.9744638120748439,
                   },
                   {
                     uid: '684910d4-cd37-48da-bc23-5862bc6ef5ce',
@@ -1592,7 +1592,7 @@ const viewConf1 = {
                     xEnd: 17664,
                     chrOffset: 0,
                     fields: ['chr', 17364, 17664, 'annotation 2', '59.1'],
-                    importance: 0.8423332345173808
+                    importance: 0.8423332345173808,
                   },
                   {
                     uid: 'e1b1cdb4-68e9-4902-bd2c-3a26bdeedffe',
@@ -1600,7 +1600,7 @@ const viewConf1 = {
                     xEnd: 17658,
                     chrOffset: 0,
                     fields: ['chr', 17364, 17658, 'annotation 3', '27.9'],
-                    importance: 0.1704252983722232
+                    importance: 0.1704252983722232,
                   },
                   {
                     uid: '25825d76-a44e-462b-b58a-c35606871982',
@@ -1608,7 +1608,7 @@ const viewConf1 = {
                     xEnd: 17811,
                     chrOffset: 0,
                     fields: ['chr', 17295, 17811, 'annotation 4', '25.6'],
-                    importance: 0.4054893980746901
+                    importance: 0.4054893980746901,
                   },
                   {
                     uid: '74b86f58-797e-4316-b455-c88cf8e94e5c',
@@ -1616,7 +1616,7 @@ const viewConf1 = {
                     xEnd: 17652,
                     chrOffset: 0,
                     fields: ['chr', 17361, 17652, 'annotation 5', '57.2'],
-                    importance: 0.08369855257430192
+                    importance: 0.08369855257430192,
                   },
                   {
                     uid: '84e5efca-ff53-4368-b61e-59d28de23124',
@@ -1624,7 +1624,7 @@ const viewConf1 = {
                     xEnd: 17673,
                     chrOffset: 0,
                     fields: ['chr', 17355, 17673, 'annotation 6', '43.7'],
-                    importance: 0.4723622846939204
+                    importance: 0.4723622846939204,
                   },
                   {
                     uid: '3fc063d9-4688-4226-9512-a980b650d0c1',
@@ -1632,7 +1632,7 @@ const viewConf1 = {
                     xEnd: 17664,
                     chrOffset: 0,
                     fields: ['chr', 17346, 17664, 'annotation 7', '14.2'],
-                    importance: 0.16589513792465693
+                    importance: 0.16589513792465693,
                   },
                   {
                     uid: '3fdd9178-ba4e-4ff1-99ad-85480e3d4821',
@@ -1640,7 +1640,7 @@ const viewConf1 = {
                     xEnd: 17664,
                     chrOffset: 0,
                     fields: ['chr', 17310, 17664, 'annotation 8', '14.2'],
-                    importance: 0.469265480855537
+                    importance: 0.469265480855537,
                   },
                   {
                     uid: 'eb2b731e-e767-4e35-b4d0-fce396bb0244',
@@ -1648,10 +1648,10 @@ const viewConf1 = {
                     xEnd: 17664,
                     chrOffset: 0,
                     fields: ['chr', 17343, 17664, 'annotation 9', '34.7'],
-                    importance: 0.5706965626465064
-                  }
-                ]
-              }
+                    importance: 0.5706965626465064,
+                  },
+                ],
+              },
             },
             height: 297,
             options: {
@@ -1680,21 +1680,21 @@ const viewConf1 = {
                 '#652537',
                 '#bf5458',
                 '#fba273',
-                '#ffffe0'
+                '#ffffe0',
               ],
               colorEncodingRange: false,
-              colorEncoding: false
+              colorEncoding: false,
             },
             uid: 'a',
-            width: 470
-          }
+            width: 470,
+          },
         ],
         center: [],
         left: [],
         right: [],
         bottom: [],
         whole: [],
-        gallery: []
+        gallery: [],
       },
       layout: {
         w: 12,
@@ -1702,7 +1702,7 @@ const viewConf1 = {
         x: 0,
         y: 0,
         moved: false,
-        static: false
+        static: false,
       },
       overlays: [
         {
@@ -1717,28 +1717,28 @@ const viewConf1 = {
                   left: 0,
                   top: 0,
                   width: 470,
-                  height: 20
-                }
-              }
-            ]
+                  height: 20,
+                },
+              },
+            ],
           },
-          fillColor: 'blue'
-        }
+          fillColor: 'blue',
+        },
       ],
       initialXDomain: [16675.657112593486, 18105.83589286811],
-      initialYDomain: [-9116.921165661633, -8900.872881832913]
-    }
+      initialYDomain: [-9116.921165661633, -8900.872881832913],
+    },
   ],
   zoomLocks: {
     locksByViewUid: {},
-    locksDict: {}
+    locksDict: {},
   },
   locationLocks: {
     locksByViewUid: {},
-    locksDict: {}
+    locksDict: {},
   },
   valueScaleLocks: {
     locksByViewUid: {},
-    locksDict: {}
-  }
+    locksDict: {},
+  },
 };

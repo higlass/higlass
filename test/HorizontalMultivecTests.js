@@ -34,7 +34,7 @@ describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(done => {
+  beforeAll((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewConf1, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -45,7 +45,7 @@ describe('Horizontal heatmaps', () => {
   //   done();
   // });
 
-  it('Test horizontal multivec with track containing smaller-than-default width and height', done => {
+  it('Test horizontal multivec with track containing smaller-than-default width and height', (done) => {
     [div, hgc] = mountHGComponent(
       div,
       hgc,
@@ -108,7 +108,7 @@ describe('Horizontal heatmaps', () => {
     hgc.instance().setState({ views });
   });
 
-  it('Test horizontal multivec with null zero value color option', done => {
+  it('Test horizontal multivec with null zero value color option', (done) => {
     [div, hgc] = mountHGComponent(
       div,
       hgc,
@@ -171,7 +171,7 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
-  it('Test horizontal multivec with blue zero value color option', done => {
+  it('Test horizontal multivec with blue zero value color option', (done) => {
     horizontalMultivecWithZeroValueColorOption.views[0].tracks.center[0].options.zeroValueColor =
       'blue';
 
@@ -237,7 +237,7 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
-  it('Test horizontal multivec with transparent zero value color option', done => {
+  it('Test horizontal multivec with transparent zero value color option', (done) => {
     horizontalMultivecWithZeroValueColorOption.views[0].tracks.center[0].options.zeroValueColor =
       'transparent';
 
@@ -300,7 +300,7 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
-  it('Test horizontal multivec with filtered rows', done => {
+  it('Test horizontal multivec with filtered rows', (done) => {
     [div, hgc] = mountHGComponent(
       div,
       hgc,
@@ -329,7 +329,7 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
-  it('Test horizontal multivec without filtered rows', done => {
+  it('Test horizontal multivec without filtered rows', (done) => {
     [div, hgc] = mountHGComponent(
       div,
       hgc,
@@ -358,7 +358,7 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
-  it('Test horizontal multivec with aggregation of rows', done => {
+  it('Test horizontal multivec with aggregation of rows', (done) => {
     horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationWithRelativeHeight = true;
     [div, hgc] = mountHGComponent(
       div,
@@ -407,7 +407,7 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
-  it('Test horizontal multivec with aggregation of rows and static row height', done => {
+  it('Test horizontal multivec with aggregation of rows and static row height', (done) => {
     horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationWithRelativeHeight = false;
     [div, hgc] = mountHGComponent(
       div,
@@ -456,7 +456,7 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
-  it('handles dynamic selectRows values by updating the dataFetcher and fetching new tiles', done => {
+  it('handles dynamic selectRows values by updating the dataFetcher and fetching new tiles', (done) => {
     horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRows = [
       1,
       2,

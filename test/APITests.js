@@ -11,8 +11,8 @@ import {
 import {
   simpleCenterViewConfig,
   simple1And2dAnnotations,
-  stackedTopTracks,
-  stackedTopViews,
+  // stackedTopTracks,
+  // stackedTopViews,
 } from './view-configs';
 
 import emptyConf from './view-configs-more/emptyConf';
@@ -23,14 +23,14 @@ import simple1dHorizontalVerticalAnd2dDataTrack from './view-configs/simple-1d-h
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
-import drag from './utils/drag';
+// import drag from './utils/drag';
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 function findCanvas(element) {
   if (element.tagName.toLowerCase() === 'canvas') return element;
   let canvas;
-  some(childElement => {
+  some((childElement) => {
     const el = findCanvas(childElement);
     if (el) {
       canvas = el;
@@ -201,7 +201,7 @@ describe('API Tests', () => {
       expect(Object.keys(component.viewHeaders).length).toBeGreaterThan(0);
     });
 
-    it('zooms to negative domain', done => {
+    it('zooms to negative domain', (done) => {
       [div, api] = createElementAndApi(simpleCenterViewConfig, {
         editable: false,
       });
@@ -221,7 +221,7 @@ describe('API Tests', () => {
       });
     });
 
-    it('zooms to just x and y', done => {
+    it('zooms to just x and y', (done) => {
       [div, api] = createElementAndApi(simpleCenterViewConfig, {
         editable: false,
       });
@@ -242,7 +242,7 @@ describe('API Tests', () => {
       });
     });
 
-    it('reset viewport after zoom', done => {
+    it('reset viewport after zoom', (done) => {
       [div, api] = createElementAndApi(simpleHeatmapViewConf, {
         editable: false,
       });
@@ -315,7 +315,7 @@ describe('API Tests', () => {
       expect(trackObj).toBeDefined();
     });
 
-    it('zooms to a negative location', done => {
+    it('zooms to a negative location', (done) => {
       [div, api] = createElementAndApi(simpleCenterViewConfig, {
         editable: false,
         bounded: true,
@@ -340,193 +340,193 @@ describe('API Tests', () => {
       expect(api.option('sizeMode')).toEqual('bounded');
     });
 
-    it('overflow when in overflow mode but cannot scroll', done => {
-      [div, api] = createElementAndApi(
-        stackedTopTracks,
-        { editable: false, sizeMode: 'overflow' },
-        600,
-        200,
-        true,
-      );
+    // it('overflow when in overflow mode but cannot scroll', (done) => {
+    //   [div, api] = createElementAndApi(
+    //     stackedTopTracks,
+    //     { editable: false, sizeMode: 'overflow' },
+    //     600,
+    //     200,
+    //     true,
+    //   );
 
-      expect(api.option('sizeMode')).toEqual('overflow');
+    //   expect(api.option('sizeMode')).toEqual('overflow');
 
-      const hgContainer = div.querySelector('.higlass');
-      const hgContainerStyles = window.getComputedStyle(hgContainer);
-      const scrollContainer = div.querySelector('.higlass-scroll-container');
-      const scrollContainerStyles = window.getComputedStyle(scrollContainer);
+    //   const hgContainer = div.querySelector('.higlass');
+    //   const hgContainerStyles = window.getComputedStyle(hgContainer);
+    //   const scrollContainer = div.querySelector('.higlass-scroll-container');
+    //   const scrollContainerStyles = window.getComputedStyle(scrollContainer);
 
-      expect(hgContainerStyles.getPropertyValue('position')).toEqual(
-        'absolute',
-      );
-      expect(scrollContainerStyles.getPropertyValue('position')).toEqual(
-        'absolute',
-      );
-      expect(scrollContainerStyles.getPropertyValue('overflow')).toEqual(
-        'hidden',
-      );
+    //   expect(hgContainerStyles.getPropertyValue('position')).toEqual(
+    //     'absolute',
+    //   );
+    //   expect(scrollContainerStyles.getPropertyValue('position')).toEqual(
+    //     'absolute',
+    //   );
+    //   expect(scrollContainerStyles.getPropertyValue('overflow')).toEqual(
+    //     'hidden',
+    //   );
 
-      const hgc = api.getComponent();
+    //   const hgc = api.getComponent();
 
-      waitForTilesLoaded(hgc, () => {
-        expect(hgc.isZoomFixed('aa')).toBeFalsy();
+    //   waitForTilesLoaded(hgc, () => {
+    //     expect(hgc.isZoomFixed('aa')).toBeFalsy();
 
-        scrollContainer.scrollTop = 20;
+    //     scrollContainer.scrollTop = 20;
 
-        setTimeout(() => {
-          expect(hgc.pixiStage.y).toEqual(0);
-          done();
-        }, 50);
-      });
-    });
+    //     setTimeout(() => {
+    //       expect(hgc.pixiStage.y).toEqual(0);
+    //       done();
+    //     }, 50);
+    //   });
+    // });
 
-    it('can scroll in scroll mode', done => {
-      [div, api] = createElementAndApi(
-        stackedTopTracks,
-        { editable: false, sizeMode: 'scroll' },
-        600,
-        200,
-        true,
-      );
+    // it('can scroll in scroll mode', (done) => {
+    //   [div, api] = createElementAndApi(
+    //     stackedTopTracks,
+    //     { editable: false, sizeMode: 'scroll' },
+    //     600,
+    //     200,
+    //     true,
+    //   );
 
-      expect(api.option('sizeMode')).toEqual('scroll');
+    //   expect(api.option('sizeMode')).toEqual('scroll');
 
-      const scrollContainer = div.querySelector('.higlass-scroll-container');
-      const scrollContainerStyles = window.getComputedStyle(scrollContainer);
+    //   const scrollContainer = div.querySelector('.higlass-scroll-container');
+    //   const scrollContainerStyles = window.getComputedStyle(scrollContainer);
 
-      expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual(
-        'hidden',
-      );
-      expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual(
-        'auto',
-      );
+    //   expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual(
+    //     'hidden',
+    //   );
+    //   expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual(
+    //     'auto',
+    //   );
 
-      const hgc = api.getComponent();
+    //   const hgc = api.getComponent();
 
-      waitForTilesLoaded(hgc, () => {
-        expect(hgc.isZoomFixed('aa')).toEqual(true);
+    //   waitForTilesLoaded(hgc, () => {
+    //     expect(hgc.isZoomFixed('aa')).toEqual(true);
 
-        scrollContainer.scrollTop = 20;
+    //     scrollContainer.scrollTop = 20;
 
-        setTimeout(() => {
-          expect(scrollContainer.scrollTop).toEqual(20);
-          expect(hgc.pixiStage.y).toEqual(-20);
-          done();
-        }, 50);
-      });
-    });
+    //     setTimeout(() => {
+    //       expect(scrollContainer.scrollTop).toEqual(20);
+    //       expect(hgc.pixiStage.y).toEqual(-20);
+    //       done();
+    //     }, 50);
+    //   });
+    // });
 
-    it('remembers scroll position when switching from scroll to overflow mode', done => {
-      [div, api] = createElementAndApi(
-        stackedTopTracks,
-        { editable: false, sizeMode: 'scroll' },
-        600,
-        200,
-        true,
-      );
+    // it('remembers scroll position when switching from scroll to overflow mode', (done) => {
+    //   [div, api] = createElementAndApi(
+    //     stackedTopTracks,
+    //     { editable: false, sizeMode: 'scroll' },
+    //     600,
+    //     200,
+    //     true,
+    //   );
 
-      expect(api.option('sizeMode')).toEqual('scroll');
+    //   expect(api.option('sizeMode')).toEqual('scroll');
 
-      const hgc = api.getComponent();
+    //   const hgc = api.getComponent();
 
-      waitForTilesLoaded(hgc, () => {
-        const scrollContainer = div.querySelector('.higlass-scroll-container');
-        let scrollContainerStyles = window.getComputedStyle(scrollContainer);
-        scrollContainer.scrollTop = 20;
+    //   waitForTilesLoaded(hgc, () => {
+    //     const scrollContainer = div.querySelector('.higlass-scroll-container');
+    //     let scrollContainerStyles = window.getComputedStyle(scrollContainer);
+    //     scrollContainer.scrollTop = 20;
 
-        setTimeout(() => {
-          expect(hgc.pixiStage.y).toEqual(-20);
-          expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual(
-            'hidden',
-          );
-          expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual(
-            'auto',
-          );
+    //     setTimeout(() => {
+    //       expect(hgc.pixiStage.y).toEqual(-20);
+    //       expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual(
+    //         'hidden',
+    //       );
+    //       expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual(
+    //         'auto',
+    //       );
 
-          api.option('sizeMode', 'overflow');
-          scrollContainerStyles = window.getComputedStyle(scrollContainer);
+    //       api.option('sizeMode', 'overflow');
+    //       scrollContainerStyles = window.getComputedStyle(scrollContainer);
 
-          setTimeout(() => {
-            scrollContainer.scrollTop = 40;
-            setTimeout(() => {
-              expect(
-                scrollContainerStyles.getPropertyValue('overflow'),
-              ).toEqual('hidden');
-              expect(hgc.pixiStage.y).toEqual(-20);
-              done();
-            }, 50);
-          }, 250);
-        }, 50);
-      });
-    });
+    //       setTimeout(() => {
+    //         scrollContainer.scrollTop = 40;
+    //         setTimeout(() => {
+    //           expect(
+    //             scrollContainerStyles.getPropertyValue('overflow'),
+    //           ).toEqual('hidden');
+    //           expect(hgc.pixiStage.y).toEqual(-20);
+    //           done();
+    //         }, 50);
+    //       }, 250);
+    //     }, 50);
+    //   });
+    // });
 
-    it('can scroll multiple views', done => {
-      [div, api] = createElementAndApi(
-        stackedTopViews,
-        {
-          editable: false,
-          sizeMode: 'scroll',
-        },
-        600,
-        200,
-        true,
-      );
+    // it('can scroll multiple views', (done) => {
+    //   [div, api] = createElementAndApi(
+    //     stackedTopViews,
+    //     {
+    //       editable: false,
+    //       sizeMode: 'scroll',
+    //     },
+    //     600,
+    //     200,
+    //     true,
+    //   );
 
-      expect(api.option('sizeMode')).toEqual('scroll');
+    //   expect(api.option('sizeMode')).toEqual('scroll');
 
-      const hgc = api.getComponent();
+    //   const hgc = api.getComponent();
 
-      waitForTilesLoaded(hgc, () => {
-        const scrollContainer = div.querySelector('.higlass-scroll-container');
-        scrollContainer.scrollTop = 20;
+    //   waitForTilesLoaded(hgc, () => {
+    //     const scrollContainer = div.querySelector('.higlass-scroll-container');
+    //     scrollContainer.scrollTop = 20;
 
-        setTimeout(() => {
-          expect(hgc.pixiStage.y).toEqual(-20);
-          done();
-        }, 50);
-      });
-    });
+    //     setTimeout(() => {
+    //       expect(hgc.pixiStage.y).toEqual(-20);
+    //       done();
+    //     }, 50);
+    //   });
+    // });
 
-    it('can pan&zoom after having scrolled', done => {
-      [div, api] = createElementAndApi(
-        stackedTopViews,
-        {
-          editable: false,
-          sizeMode: 'scroll',
-        },
-        600,
-        400,
-        true,
-      );
+    // it('can pan&zoom after having scrolled', (done) => {
+    //   [div, api] = createElementAndApi(
+    //     stackedTopViews,
+    //     {
+    //       editable: false,
+    //       sizeMode: 'scroll',
+    //     },
+    //     600,
+    //     400,
+    //     true,
+    //   );
 
-      expect(api.option('sizeMode')).toEqual('scroll');
+    //   expect(api.option('sizeMode')).toEqual('scroll');
 
-      const hgc = api.getComponent();
+    //   const hgc = api.getComponent();
 
-      waitForTilesLoaded(hgc, () => {
-        expect(hgc.isZoomFixed('l')).toEqual(true);
+    //   waitForTilesLoaded(hgc, () => {
+    //     expect(hgc.isZoomFixed('l')).toEqual(true);
 
-        const scrollContainer = div.querySelector('.higlass-scroll-container');
-        // Scroll to the very end
-        scrollContainer.scrollTop = 1790;
+    //     const scrollContainer = div.querySelector('.higlass-scroll-container');
+    //     // Scroll to the very end
+    //     scrollContainer.scrollTop = 1790;
 
-        setTimeout(() => {
-          expect(hgc.pixiStage.y).toEqual(-1790);
+    //     setTimeout(() => {
+    //       expect(hgc.pixiStage.y).toEqual(-1790);
 
-          api.option('sizeMode', 'overflow');
+    //       api.option('sizeMode', 'overflow');
 
-          setTimeout(() => {
-            expect(hgc.isZoomFixed('l')).toBeFalsy();
+    //       setTimeout(() => {
+    //         expect(hgc.isZoomFixed('l')).toBeFalsy();
 
-            // Trigger a pan event
-            const [dx] = drag(150, 300, 140, 300, 'l', hgc);
+    //         // Trigger a pan event
+    //         const [dx] = drag(150, 300, 140, 300, 'l', hgc);
 
-            expect(dx).toEqual(-10);
-            done();
-          }, 250);
-        }, 50);
-      });
-    });
+    //         expect(dx).toEqual(-10);
+    //         done();
+    //       }, 250);
+    //     }, 150);
+    //   });
+    // });
 
     it('has version', () => {
       [div, api] = createElementAndApi(emptyConf, { editable: false });
@@ -534,7 +534,7 @@ describe('API Tests', () => {
       expect(api.version).toEqual(VERSION);
     });
 
-    it('mousemove and zoom events work for 1D and 2D tracks', done => {
+    it('mousemove and zoom events work for 1D and 2D tracks', (done) => {
       [div, api] = createElementAndApi(
         simple1dHorizontalVerticalAnd2dDataTrack,
         { editable: false, bounded: true },
@@ -556,7 +556,7 @@ describe('API Tests', () => {
 
       const moved = {};
 
-      api.on('mouseMoveZoom', event => {
+      api.on('mouseMoveZoom', (event) => {
         moved[event.trackId] = true;
       });
 
@@ -576,7 +576,7 @@ describe('API Tests', () => {
       });
     });
 
-    it('global mouse position broadcasting', done => {
+    it('global mouse position broadcasting', (done) => {
       [div, api] = createElementAndApi(
         simple1dHorizontalVerticalAnd2dDataTrack,
         { editable: false, bounded: true },
@@ -586,7 +586,7 @@ describe('API Tests', () => {
 
       let mouseMoveEvt = null;
 
-      globalPubSub.subscribe('higlass.mouseMove', evt => {
+      globalPubSub.subscribe('higlass.mouseMove', (evt) => {
         mouseMoveEvt = evt;
       });
 
@@ -739,7 +739,7 @@ describe('API Tests', () => {
     // with our test setup or with HG. Either way, the HG instances must have
     // some shared state that influences each other. I am giving up for now but
     // we need to look into this again.
-    it('listens to click events', done => {
+    it('listens to click events', (done) => {
       [div, api] = createElementAndApi(simple1And2dAnnotations, {
         editable: false,
         bounded: true,
@@ -786,7 +786,7 @@ describe('API Tests', () => {
       });
     });
 
-    it('has location getter', done => {
+    it('has location getter', (done) => {
       [div, api] = createElementAndApi(simpleHeatmapViewConf, {
         editable: false,
       });
@@ -813,7 +813,7 @@ describe('API Tests', () => {
       });
     });
 
-    it('triggers on viewConfig events from track resize interactions', done => {
+    it('triggers on viewConfig events from track resize interactions', (done) => {
       [div, api] = createElementAndApi(
         simple1dHorizontalVerticalAnd2dDataTrack,
       );
@@ -825,7 +825,7 @@ describe('API Tests', () => {
 
         hgc.tiledPlots.a.handleResizeTrack('h-line', 500, 100);
 
-        api.on('viewConfig', newViewConfigString => {
+        api.on('viewConfig', (newViewConfigString) => {
           const newViewConfig = JSON.parse(newViewConfigString);
           const newTopTrackHeight = newViewConfig.views[0].tracks.top[0].height;
           expect(newTopTrackHeight).toEqual(100);
@@ -834,13 +834,13 @@ describe('API Tests', () => {
       });
     });
 
-    it('triggers on wheel events', done => {
+    it('triggers on wheel events', (done) => {
       [div, api] = createElementAndApi(
         simple1dHorizontalVerticalAnd2dDataTrack,
       );
       const hgc = api.getComponent();
       waitForTilesLoaded(hgc, () => {
-        api.on('wheel', e => {
+        api.on('wheel', (e) => {
           expect(e.origEvt.clientX).toEqual(30);
           expect(e.origEvt.clientY).toEqual(40);
           done();
@@ -862,7 +862,7 @@ describe('API Tests', () => {
       });
     });
 
-    it('can modify and set the viewconf', done => {
+    it('can modify and set the viewconf', (done) => {
       [div, api] = createElementAndApi(simpleHeatmapViewConf, {
         editable: true,
       });
@@ -915,13 +915,13 @@ describe('API Tests', () => {
   });
 
   describe('Export SVG API tests', () => {
-    it('listens to create SVG events', done => {
+    it('listens to create SVG events', (done) => {
       [div, api] = createElementAndApi(simple1And2dAnnotations, {
         editable: false,
         bounded: true,
       });
 
-      api.on('createSVG', svg => {
+      api.on('createSVG', (svg) => {
         expect(svg.children.length).toEqual(2);
         done();
         return svg;
@@ -932,13 +932,13 @@ describe('API Tests', () => {
       });
     });
 
-    it('listens to create SVG events and enables manipulation of the SVG', done => {
+    it('listens to create SVG events and enables manipulation of the SVG', (done) => {
       [div, api] = createElementAndApi(simple1And2dAnnotations, {
         editable: false,
         bounded: true,
       });
 
-      api.on('createSVG', svg => {
+      api.on('createSVG', (svg) => {
         const svgSelection = select(svg);
 
         const g = create('svg:g');
@@ -977,13 +977,13 @@ describe('API Tests', () => {
   });
 
   describe('Gene search events', () => {
-    it('triggers on gene search events', done => {
+    it('triggers on gene search events', (done) => {
       [div, api] = createElementAndApi(
         simple1dHorizontalVerticalAnd2dDataTrack,
       );
       const hgc = api.getComponent();
       waitForTilesLoaded(hgc, () => {
-        api.on('geneSearch', e => {
+        api.on('geneSearch', (e) => {
           expect(e.geneSymbol).toEqual('MYC');
           expect(e.centerX).toEqual(1521546687);
           done();
