@@ -2,6 +2,8 @@
 
 ## Next
 
+- Use alt key for value scaling rather than the shift key
+
 _[Detailed changes since v1.11.2](https://github.com/higlass/higlass/compare/v1.11.3...develop)_
 
 ## v1.11.3
