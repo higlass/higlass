@@ -126,7 +126,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
 
     if (this.tilesetInfo.resolutions) {
       const sortedResolutions = this.tilesetInfo.resolutions
-        .map(x => +x)
+        .map((x) => +x)
         .sort((a, b) => b - a);
 
       this.xTiles = tileProxy.calculateTilesFromResolution(
