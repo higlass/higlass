@@ -1,5 +1,3 @@
-import { getValueScale } from './TiledPixiTrack';
-
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
 // Services
@@ -239,127 +237,52 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     sprite.y = this._refYScale(tileY);
   }
 
-  /**
-   * Convert the raw tile data to a rendered array of values which can be represented as a sprite.
-   *
-   * @param tile: The data structure containing all the tile information. Relevant to
-   *              this function are tile.tileData = \{'dense': [...], ...\}
-   *              and tile.graphics
-   */
-  renderTile(tile) {
-    const [scaleType, valueScale] = getValueScale(
-      this.options.heatmapValueScaling,
-      this.scale.minValue,
-      this.medianVisibleValue,
-      this.scale.maxValue,
-      'log',
-    );
+  pixDataFunction(tile, pixData) {
+    // the tileData has been converted to pixData by the worker script and needs to be loaded
+    // as a sprite
+    if (pixData) {
+      const graphics = tile.graphics;
 
-    this.valueScale = valueScale;
-    let pseudocount = 0;
+      const canvas = this.tileDataToCanvas(pixData.pixData);
 
-    if (scaleType === 'log') pseudocount = this.valueScale.domain()[0];
+      const texture =
+        GLOBALS.PIXI.VERSION[0] === '4'
+          ? GLOBALS.PIXI.Texture.fromCanvas(
+              canvas,
+              GLOBALS.PIXI.SCALE_MODES.NEAREST,
+            )
+          : GLOBALS.PIXI.Texture.from(canvas, {
+              scaleMode: GLOBALS.PIXI.SCALE_MODES.NEAREST,
+            });
 
-    this.limitedValueScale = this.valueScale.copy();
+      tile.sprite = new GLOBALS.PIXI.Sprite(texture);
+      tile.canvas = canvas;
 
-    if (
-      this.options &&
-      typeof this.options.scaleStartPercent !== 'undefined' &&
-      typeof this.options.scaleEndPercent !== 'undefined'
-    ) {
-      this.limitedValueScale.domain([
-        this.valueScale.domain()[0] +
-          (this.valueScale.domain()[1] - this.valueScale.domain()[0]) *
-            this.options.scaleStartPercent,
-        this.valueScale.domain()[0] +
-          (this.valueScale.domain()[1] - this.valueScale.domain()[0]) *
-            this.options.scaleEndPercent,
-      ]);
+      this.setSpriteProperties(
+        tile.sprite,
+        tile.tileData.zoomLevel,
+        tile.tileData.tilePos,
+        tile.mirrored,
+      );
+
+      graphics.pivot.x = this._refXScale(0);
+      graphics.pivot.y = this._refYScale(0);
+      graphics.scale.x = -1 / Math.sqrt(2);
+      graphics.rotation = (-3 * Math.PI) / 4;
+      graphics.scale.y = 1 / Math.sqrt(2);
+
+      graphics.position.x = this._refXScale(0);
+      graphics.position.y = 0;
+
+      graphics.removeChildren();
+      graphics.addChild(tile.sprite);
     }
 
-    /**
-     * If we've already rendered this tile at the correct scale no need to render
-     * it again
-     */
-    let toUpdate = true;
-    if (tile.renderInfo) {
-      // console.log('same scaletype', scaleType, tile.renderInfo.scaleType);
-      if (tile.renderInfo.scaleType === scaleType) {
-        if (
-          tile.renderInfo.scaleDomain &&
-          tile.renderInfo.scaleDomain[0] ===
-            this.limitedValueScale.domain()[0] &&
-          tile.renderInfo.scaleDomain[1] === this.limitedValueScale.domain()[1]
-        ) {
-          toUpdate = false;
-        }
-      }
-    }
-
-    if (!toUpdate) return;
-
-    tile.renderInfo = {};
-    tile.renderInfo.scaleType = scaleType;
-    tile.renderInfo.scaleDomain = this.limitedValueScale.domain();
-
-    this.renderingTiles.add(tile.tileId);
-    tileProxy.tileDataToPixData(
-      tile,
-      scaleType,
-      this.limitedValueScale.domain(),
-      pseudocount, // used as a pseudocount to prevent taking the log of 0
-      this.colorScale,
-      (pixData) => {
-        // the tileData has been converted to pixData by the worker script and needs to be loaded
-        // as a sprite
-        if (pixData) {
-          const graphics = tile.graphics;
-
-          const canvas = this.tileDataToCanvas(pixData.pixData);
-
-          const texture =
-            GLOBALS.PIXI.VERSION[0] === '4'
-              ? GLOBALS.PIXI.Texture.fromCanvas(
-                  canvas,
-                  GLOBALS.PIXI.SCALE_MODES.NEAREST,
-                )
-              : GLOBALS.PIXI.Texture.from(canvas, {
-                  scaleMode: GLOBALS.PIXI.SCALE_MODES.NEAREST,
-                });
-
-          tile.sprite = new GLOBALS.PIXI.Sprite(texture);
-          tile.canvas = canvas;
-
-          this.setSpriteProperties(
-            tile.sprite,
-            tile.tileData.zoomLevel,
-            tile.tileData.tilePos,
-            tile.mirrored,
-          );
-
-          graphics.pivot.x = this._refXScale(0);
-          graphics.pivot.y = this._refYScale(0);
-          graphics.scale.x = -1 / Math.sqrt(2);
-          graphics.rotation = (-3 * Math.PI) / 4;
-          graphics.scale.y = 1 / Math.sqrt(2);
-
-          graphics.position.x = this._refXScale(0);
-          graphics.position.y = 0;
-
-          graphics.removeChildren();
-          graphics.addChild(tile.sprite);
-        }
-
-        this.renderingTiles.delete(tile.tileId);
-        /*
+    this.renderingTiles.delete(tile.tileId);
+    /*
         this.animate();
         this.refreshTiles();
         */
-      },
-      this.mirrorTiles &&
-        !tile.mirrored &&
-        tile.tileData.tilePos[0] === tile.tileData.tilePos[1],
-    );
   }
 
   refScalesChanged(refXScale, refYScale) {

@@ -1169,6 +1169,48 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // console.log('destroy', PIXI.utils.BaseTextureCache);
   }
 
+  pixDataFunction(tile, pixData) {
+    // the tileData has been converted to pixData by the worker script and
+    // needs to be loaded as a sprite
+    if (pixData) {
+      const { graphics } = tile;
+      const canvas = this.tileDataToCanvas(pixData.pixData);
+
+      if (tile.sprite) {
+        // if this tile has already been rendered with a sprite, we
+        // have to destroy it before creating a new one
+        tile.sprite.destroy(true);
+      }
+
+      const texture =
+        GLOBALS.PIXI.VERSION[0] === '4'
+          ? GLOBALS.PIXI.Texture.fromCanvas(
+              canvas,
+              GLOBALS.PIXI.SCALE_MODES.NEAREST,
+            )
+          : GLOBALS.PIXI.Texture.from(canvas, {
+              scaleMode: GLOBALS.PIXI.SCALE_MODES.NEAREST,
+            });
+
+      const sprite = new GLOBALS.PIXI.Sprite(texture);
+
+      tile.sprite = sprite;
+      tile.texture = texture;
+      // store the pixData so that we can export it
+      tile.canvas = canvas;
+      this.setSpriteProperties(
+        tile.sprite,
+        tile.tileData.zoomLevel,
+        tile.tileData.tilePos,
+        tile.mirrored,
+      );
+
+      graphics.removeChildren();
+      graphics.addChild(tile.sprite);
+    }
+    this.renderingTiles.delete(tile.tileId);
+  }
+
   /**
    * Render / draw a tile.
    *
@@ -1199,47 +1241,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.limitedValueScale.domain(),
       pseudocount, // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
-      (pixData) => {
-        // the tileData has been converted to pixData by the worker script and
-        // needs to be loaded as a sprite
-        if (pixData) {
-          const { graphics } = tile;
-          const canvas = this.tileDataToCanvas(pixData.pixData);
-
-          if (tile.sprite) {
-            // if this tile has already been rendered with a sprite, we
-            // have to destroy it before creating a new one
-            tile.sprite.destroy(true);
-          }
-
-          const texture =
-            GLOBALS.PIXI.VERSION[0] === '4'
-              ? GLOBALS.PIXI.Texture.fromCanvas(
-                  canvas,
-                  GLOBALS.PIXI.SCALE_MODES.NEAREST,
-                )
-              : GLOBALS.PIXI.Texture.from(canvas, {
-                  scaleMode: GLOBALS.PIXI.SCALE_MODES.NEAREST,
-                });
-
-          const sprite = new GLOBALS.PIXI.Sprite(texture);
-
-          tile.sprite = sprite;
-          tile.texture = texture;
-          // store the pixData so that we can export it
-          tile.canvas = canvas;
-          this.setSpriteProperties(
-            tile.sprite,
-            tile.tileData.zoomLevel,
-            tile.tileData.tilePos,
-            tile.mirrored,
-          );
-
-          graphics.removeChildren();
-          graphics.addChild(tile.sprite);
-        }
-        this.renderingTiles.delete(tile.tileId);
-      },
+      (pixData) => this.pixDataFunction(tile, pixData),
       this.mirrorTiles() &&
         !tile.mirrored &&
         tile.tileData.tilePos[0] === tile.tileData.tilePos[1],

@@ -3,6 +3,7 @@
 ## Next
 
 - Fix colorbar error on degenerate colorscale
+- Update horizontal heatmap to regular heatmap rendering so that they can use the same options
 
 _[Detailed changes since v1.11.3](https://github.com/higlass/higlass/compare/v1.11.3...develop)_
 
@@ -15,6 +16,7 @@ _[Detailed changes since v1.11.3](https://github.com/higlass/higlass/compare/v1.
 - Make overlays SVG exportable
 - Fix a bug that led to the app crash when `selectRows` is set to an empty array `[]`
 - Break up and turn off some tests
+- Fix gene annotation mouseover
 
 _[Detailed changes since v1.11.2](https://github.com/higlass/higlass/compare/v1.11.2...v1.11.3)_
 
