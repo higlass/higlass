@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { rgb as d3rgb } from 'd3-color';
 import React from 'react';
 import reactCSS from 'reactcss';
@@ -21,7 +22,9 @@ class SketchInlinePicker extends React.Component {
   }
 
   handleClick() {
-    this.setState(prevState => ({ displayColorPicker: !prevState.displayColorPicker }));
+    this.setState((prevState) => ({
+      displayColorPicker: !prevState.displayColorPicker,
+    }));
   }
 
   handleClose() {
@@ -40,7 +43,7 @@ class SketchInlinePicker extends React.Component {
     const styles = reactCSS({
       default: {
         color: {
-          width: '36px',
+          width: '32px',
           height: '14px',
           borderRadius: '2px',
           background: `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b}, ${this.state.color.a})`,
@@ -48,10 +51,8 @@ class SketchInlinePicker extends React.Component {
         swatch: {
           padding: '5px',
           background: '#fff',
-          borderRadius: '1px',
-          boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
-          display: 'inline-block',
           cursor: 'pointer',
+          borderRadius: '1px',
         },
         popover: {
           position: 'absolute',
@@ -72,15 +73,23 @@ class SketchInlinePicker extends React.Component {
         <div onClick={this.handleClick.bind(this)} style={styles.swatch}>
           <div style={styles.color} />
         </div>
-        { this.state.displayColorPicker ? (
+        {this.state.displayColorPicker ? (
           <div style={styles.popover}>
             <div onClick={this.handleClose.bind(this)} style={styles.cover} />
-            <SketchPicker color={this.state.color} onChange={this.handleChange.bind(this)} />
+            <SketchPicker
+              color={this.state.color}
+              onChange={this.handleChange.bind(this)}
+            />
           </div>
-        ) : null }
+        ) : null}
       </div>
     );
   }
 }
+
+SketchInlinePicker.propTypes = {
+  color: PropTypes.string,
+  onChange: PropTypes.func,
+};
 
 export default SketchInlinePicker;

@@ -1,11 +1,9 @@
 import { scaleLinear } from 'd3-scale';
-import * as PIXI from 'pixi.js';
-
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 
 import { colorDomainToRgbaArray } from './utils';
 
-import { HEATED_OBJECT_MAP } from './configs';
+import { GLOBALS, HEATED_OBJECT_MAP } from './configs';
 
 class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
   constructor(context, options) {
@@ -23,8 +21,9 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
 
     // Normalize colormap upfront to save 3 divisions per data point during the
     // rendering.
-    this.colorScale = this.colorScale
-      .map(rgb => rgb.map(channel => channel / 255.0));
+    this.colorScale = this.colorScale.map((rgb) =>
+      rgb.map((channel) => channel / 255.0),
+    );
   }
 
   rerender(options) {
@@ -42,7 +41,7 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
   }
 
   drawTile(tile) {
-    if (!tile.graphics || (!tile.tileData || !tile.tileData.dense)) return;
+    if (!tile.graphics || !tile.tileData || !tile.tileData.dense) return;
 
     const graphics = tile.graphics;
 
@@ -58,7 +57,7 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
     const [valueScale, pseudocount] = this.makeValueScale(
       this.minValue(),
       this.medianVisibleValue,
-      this.maxValue()
+      this.maxValue(),
     );
     valueScale.range([254, 0]).clamp(true);
     this.valueScale = valueScale;
@@ -66,12 +65,12 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
     graphics.clear();
 
     if (
-      this.options.valueScaling === 'log'
-      && this.valueScale.domain()[1] < 0
+      this.options.valueScaling === 'log' &&
+      this.valueScale.domain()[1] < 0
     ) {
       console.warn(
         'Negative values present when using a log scale',
-        this.valueScale.domain()
+        this.valueScale.domain(),
       );
       return;
     }
@@ -87,8 +86,13 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
     // const logScaling = this.options.valueScaling === 'log';
 
     for (let i = 0; i < tileValues.length; i++) {
-      const xPos = this._xScale(tileXScale(i));
+      if (Number.isNaN(tileValues[i])) continue;
+
       const rgbIdx = Math.round(this.valueScale(tileValues[i] + pseudocount));
+
+      if (Number.isNaN(+rgbIdx)) continue;
+
+      const xPos = this._xScale(tileXScale(i));
       const width = this._xScale(tileXScale(i + 1)) - xPos;
       const height = this.dimensions[1];
 
@@ -96,7 +100,7 @@ class Horizontal1dHeatmapTrack extends HorizontalLine1DPixiTrack {
       tile.yValues[i] = rgbIdx;
 
       const rgb = this.colorScale[rgbIdx];
-      const hex = PIXI.utils.rgb2hex(rgb);
+      const hex = GLOBALS.PIXI.utils.rgb2hex(rgb);
 
       graphics.beginFill(hex, this.opacity);
 

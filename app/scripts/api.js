@@ -1,20 +1,18 @@
 import ReactDOM from 'react-dom';
 import createPubSub from 'pub-sub-es';
+import Ajv from 'ajv';
 
-import {
-  setDarkTheme,
-  setTileProxyAuthHeader,
-} from './services';
+import schema from '../schema.json';
 
-import {
-  getTrackObjectFromHGC
-} from './utils';
+import { setTileProxyAuthHeader } from './services';
 
-import {
-  MOUSE_TOOL_MOVE,
-  MOUSE_TOOL_SELECT,
-} from './configs';
+import { getTrackObjectFromHGC } from './utils';
 
+import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from './configs';
+
+const forceUpdate = (self) => {
+  self.setState(self.state);
+};
 
 const createApi = function api(context, pubSub) {
   const self = context;
@@ -24,7 +22,7 @@ const createApi = function api(context, pubSub) {
   const apiPubSub = createPubSub();
 
   const destroy = () => {
-    pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
+    pubSubs.forEach((subscription) => pubSub.unsubscribe(subscription));
     pubSubs = [];
   };
 
@@ -32,6 +30,9 @@ const createApi = function api(context, pubSub) {
   return {
     destroy,
     publish: apiPubSub.publish,
+    // Stack: mapping of callback names to arrays of callbacks, useful
+    // to determine how many callbacks exist for a particular event.
+    stack: apiPubSub.stack,
     // Public API
     public: {
       /**
@@ -51,10 +52,10 @@ const createApi = function api(context, pubSub) {
        *   position will be broadcasted globally.
        */
       setBroadcastMousePositionGlobally(
-        isBroadcastMousePositionGlobally = false
+        isBroadcastMousePositionGlobally = false,
       ) {
         self.setBroadcastMousePositionGlobally(
-          isBroadcastMousePositionGlobally
+          isBroadcastMousePositionGlobally,
         );
       },
 
@@ -65,9 +66,7 @@ const createApi = function api(context, pubSub) {
        *   `options.showMousePosition = true`.
        */
       setShowGlobalMousePosition(isShowGlobalMousePosition = false) {
-        self.setShowGlobalMousePosition(
-          isShowGlobalMousePosition
-        );
+        self.setShowGlobalMousePosition(isShowGlobalMousePosition);
       },
 
       /**
@@ -139,7 +138,6 @@ const createApi = function api(context, pubSub) {
         self.setState({ rangeSelectionToInt: true });
       },
 
-
       /**
        * Force float range selections.
        *
@@ -168,7 +166,7 @@ const createApi = function api(context, pubSub) {
        */
       setRangeSelection1dSize(minSize = 0, maxSize = Infinity) {
         self.setState({
-          rangeSelection1dSize: [minSize, maxSize]
+          rangeSelection1dSize: [minSize, maxSize],
         });
       },
 
@@ -178,6 +176,8 @@ const createApi = function api(context, pubSub) {
        *
        * @param {obj} newViewConfig A JSON object that defines
        *    the state of the HiGlassComponent
+       * @param {boolean} resolveImmediately If true, the returned promise resolves immediately
+       *    even if not all data has loaded. This should be set to true, if the new viewconf does not request new data. Default: false.
        * @example
        *
        * const p = hgv.setViewConfig(newViewConfig);
@@ -186,31 +186,41 @@ const createApi = function api(context, pubSub) {
        * });
        *
        * @return {Promise} dataLoaded A promise that resolves when
-       *   all of the data for this viewconfig is loaded
+       *   all of the data for this viewconfig is loaded. If `resolveImmediately` is set to true,
+       * the promise resolves without waiting for the data to be loaded.
        */
-      setViewConfig(newViewConfig) {
+      setViewConfig(newViewConfig, resolveImmediately = false) {
         const viewsByUid = self.processViewConfig(newViewConfig);
         const p = new Promise((resolve) => {
           this.requestsInFlight = 0;
 
-          pubSubs.push(pubSub.subscribe('requestSent', () => {
-            this.requestsInFlight += 1;
-          }));
+          pubSubs.push(
+            pubSub.subscribe('requestSent', () => {
+              this.requestsInFlight += 1;
+            }),
+          );
 
-          pubSubs.push(pubSub.subscribe('requestReceived', () => {
-            this.requestsInFlight -= 1;
+          pubSubs.push(
+            pubSub.subscribe('requestReceived', () => {
+              this.requestsInFlight -= 1;
 
-            if (this.requestsInFlight === 0) {
-              resolve();
-            }
-          }));
+              if (this.requestsInFlight === 0) {
+                resolve();
+              }
+            }),
+          );
 
-          self.setState({
-            viewConfig: newViewConfig,
-            views: viewsByUid,
-          }, () => {
-
-          });
+          self.setState(
+            {
+              viewConfig: newViewConfig,
+              views: viewsByUid,
+            },
+            () => {
+              if (resolveImmediately) {
+                resolve();
+              }
+            },
+          );
         });
 
         return p;
@@ -224,6 +234,21 @@ const createApi = function api(context, pubSub) {
       getViewConfig() {
         return self.getViewsAsJson();
       },
+
+      /**
+       * Validate a viewconf.
+       *
+       * @returns (Boolean) A JSON object describing the visible views
+       */
+      validateViewConfig(viewConfig, { verbose = false } = {}) {
+        const validate = new Ajv().compile(schema);
+        const valid = validate(viewConfig);
+        if (verbose && validate.errors) {
+          console.warn(JSON.stringify(validate.errors, null, 2));
+        }
+        return valid;
+      },
+
       /**
        * Get the minimum and maximum visible values for a given track.
        *
@@ -246,13 +271,13 @@ const createApi = function api(context, pubSub) {
         viewId,
         trackId,
         ignoreOffScreenValues = false,
-        ignoreFixedScale = false
+        ignoreFixedScale = false,
       ) {
         return self.getMinMaxValue(
           viewId,
           trackId,
           ignoreOffScreenValues,
-          ignoreFixedScale
+          ignoreFixedScale,
         );
       },
 
@@ -279,9 +304,11 @@ const createApi = function api(context, pubSub) {
 
       /**
        * Show overlays where this track can be positioned. This
-       * function will take a track definition and display red
-       * or green overlays highlighting where the track can be
-       * placed on the view.
+       * function will take a track definition and display red,
+       * blue or green overlays highlighting where the track can
+       * be placed on the view. Blue indicates that a track can
+       * be placed in that region, red that it can't and green that
+       * the mouse is currently over the given region.
        *
        * @param {obj} track { server, tilesetUid, datatype }
        *
@@ -312,6 +339,34 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
+       * Show the track chooser which highlights tracks
+       * when the mouse is over them.
+       *
+       * @param  {Function} callback (toViewUid, toTrackUid) =>: A function
+       *                             to be called when a track is chosen.
+       * @return {[type]}            [description]
+       */
+      showTrackChooser(callback) {
+        self.setState({
+          chooseTrackHandler: (...args) => {
+            self.setState({
+              chooseTrackHandler: null,
+            });
+
+            callback(...args);
+          },
+        });
+      },
+
+      /**
+       * Hide the track chooser.
+       */
+      hideTrackChooser() {
+        this.setState({
+          chooseTrackHandler: null,
+        });
+      },
+      /**
        *
        * When comparing different 1D tracks it can be desirable to fix their y or value
        * scale
@@ -335,10 +390,22 @@ const createApi = function api(context, pubSub) {
 
       /**
        * Choose a theme.
+       * @deprecated since version 1.6.6. Use `setTheme()` instead.
        */
       setDarkTheme(darkTheme) {
-        console.warn('Please note that the dark mode is still in beta');
-        setDarkTheme(!!darkTheme);
+        console.warn(
+          '`setDarkTheme(true)` is deprecated. Please use `setTheme("dark")`.',
+        );
+        const theme = darkTheme ? 'dark' : 'light';
+        self.setTheme(theme);
+      },
+
+      /**
+       * Choose a theme.
+       */
+      setTheme(theme) {
+        console.warn('Please note that theming is still in beta!');
+        self.setTheme(theme);
       },
 
       /**
@@ -389,15 +456,15 @@ const createApi = function api(context, pubSub) {
        *  firstViewLoc["yDomain"][1]
        * );
        */
-      zoomTo(
-        viewUid,
-        start1Abs,
-        end1Abs,
-        start2Abs,
-        end2Abs,
-        animateTime = 0,
-      ) {
-        self.zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime);
+      zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime = 0) {
+        self.zoomTo(
+          viewUid,
+          start1Abs,
+          end1Abs,
+          start2Abs,
+          end2Abs,
+          animateTime,
+        );
       },
 
       /**
@@ -518,16 +585,17 @@ const createApi = function api(context, pubSub) {
        * Get the current location for a view.
        *
        * @param {string} [viewId=null] The id of the view to get the location for
-       * @returns {obj} A an object containing two Arrays representing the domains of
-       *  the x andy scales of the view.
+       * @returns {obj} A an object containing four arrays representing the domains and ranges of
+       *  the x and y scales of the view.
        * @example
        *
-       * const {xScale, yScale} = hgv.getLocation('viewId');
+       * const {xDomain, yDomain, xRange, yRange} = hgv.getLocation('viewId');
        */
       getLocation(viewId) {
         const wurstId = viewId
           ? self.xScales[viewId] && self.yScales[viewId] && viewId
-          : Object.values(self.tiledPlots)[0] && Object.values(self.tiledPlots)[0].props.uid;
+          : Object.values(self.tiledPlots)[0] &&
+            Object.values(self.tiledPlots)[0].props.uid;
 
         if (!wurstId) {
           return 'Please provide a valid view UUID sweetheart 😙';
@@ -535,7 +603,9 @@ const createApi = function api(context, pubSub) {
 
         return {
           xDomain: self.xScales[wurstId].domain(),
-          yDomain: self.yScales[wurstId].domain()
+          yDomain: self.yScales[wurstId].domain(),
+          xRange: self.xScales[wurstId].range(),
+          yRange: self.yScales[wurstId].range(),
         };
       },
 
@@ -556,6 +626,31 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
+       * Set or get an option.
+       * @param   {string}  key  The name of the option you want get or set
+       * @param   {*}  value  If not `undefined`, `key` will be set to `value`
+       * @return  {[type]}  When `value` is `undefined` the current value of
+       *   `key` will be returned.
+       */
+      option(key, value) {
+        if (typeof value === 'undefined') return self.props.options[key];
+
+        switch (key) {
+          case 'sizeMode':
+            self.props.options[key] = value;
+            forceUpdate(self);
+            break;
+
+          default:
+            console.warn(
+              `This option "${key}" is either unknown or not settable.`,
+            );
+        }
+
+        return undefined;
+      },
+
+      /**
        * Cancel a subscription.
        *
        * @param {string} event One of the available events
@@ -569,11 +664,13 @@ const createApi = function api(context, pubSub) {
        * hgv.off('rangeSelection', rangeListener);
        * hgv.off('viewConfig', viewConfigListener);
        * hgv.off('mouseMoveZoom', mmz);
+       * hgv.off('wheel', wheelListener);
+       * hgv.off('createSVG');
+       * hgv.off('geneSearch', geneSearchListener);
        */
       off(event, listenerId, viewId) {
-        const callback = typeof listenerId === 'object'
-          ? listenerId.callback
-          : listenerId;
+        const callback =
+          typeof listenerId === 'object' ? listenerId.callback : listenerId;
 
         switch (event) {
           case 'click':
@@ -592,12 +689,24 @@ const createApi = function api(context, pubSub) {
             apiPubSub.unsubscribe('mouseMoveZoom', callback);
             break;
 
+          case 'wheel':
+            apiPubSub.unsubscribe('wheel', callback);
+            break;
+
           case 'rangeSelection':
             apiPubSub.unsubscribe('rangeSelection', callback);
             break;
 
           case 'viewConfig':
             self.offViewChange(listenerId);
+            break;
+
+          case 'createSVG':
+            self.offPostCreateSVG();
+            break;
+
+          case 'geneSearch':
+            apiPubSub.unsubscribe('geneSearch', callback);
             break;
 
           default:
@@ -680,7 +789,11 @@ const createApi = function api(context, pubSub) {
        *  // 2D or BEDPE-like array
        *  [["chr1", 249200621, "chr2", 50000], ["chr3", 197972430, "chr4", 50000]]
        *
-       * ``viewConfig:`` Returns the current view config.
+       * ``viewConfig:`` Returns the current view config (as a string).
+       *  This event is published upon interactions including:
+       *  - Saving in the view config editor modal.
+       *  - Panning and zooming in views, which update view object ``initialXDomain`` and ``initialYDomain`` values.
+       *  - Brushing in ``viewport-projection-`` tracks containing null ``fromViewUid`` fields, which update track object ``projectionXDomain`` and ``projectionYDomain`` values.
        *
        * ``mouseMoveZoom:`` Returns the location and data at the mouse cursor's
        * screen location.
@@ -723,6 +836,9 @@ const createApi = function api(context, pubSub) {
        *    isGenomicCoords
        *  }
        *
+       * ``createSVG:`` Set a callback to obtain the current exported SVG DOM node,
+       *                and potentially return a manipulated SVG DOM node.
+       *
        * @param {string} event One of the events described below
        *
        * @param {function} callback A callback to be called when the event occurs
@@ -731,7 +847,7 @@ const createApi = function api(context, pubSub) {
        *
        * @example
        *
-       *  let locationListenerId;
+       * let locationListenerId;
        * hgv.on(
        *   'location',
        *   location => console.log('Here we are:', location),
@@ -749,8 +865,28 @@ const createApi = function api(context, pubSub) {
        *   range => console.log('Selected', range)
        * );
        *
-       *  const mmz = event => console.log('Moved', event);
-       *  hgv.on('mouseMoveZoom', mmz);
+       * const mmz = event => console.log('Moved', event);
+       * hgv.on('mouseMoveZoom', mmz);
+       *
+       * const wheelListener = event => console.log('Wheel', event);
+       * hgv.on('wheel', wheelListener);
+       *
+       * hgv.on('createSVG', (svg) => {
+       *    const circle = document.createElement('circle');
+       *    circle.setAttribute('cx', 100);
+       *    circle.setAttribute('cy', 100);
+       *    circle.setAttribute('r', 50);
+       *    circle.setAttribute('fill', 'green');
+       *    svg.appendChild(circle);
+       *    return svg;
+       * });
+       *
+       * const geneSearchListener = event => {
+       *    console.log('Gene searched', event.geneSymbol);
+       *    console.log('Range of the gene', event.range);
+       *    console.log('Center of the gene', event.centerX);
+       * }
+       * hgv.on('geneSearch', geneSearchListener);
        */
       on(event, callback, viewId, callbackId) {
         switch (event) {
@@ -767,17 +903,26 @@ const createApi = function api(context, pubSub) {
           case 'mouseMoveZoom':
             return apiPubSub.subscribe('mouseMoveZoom', callback);
 
+          case 'wheel':
+            return apiPubSub.subscribe('wheel', callback);
+
           case 'rangeSelection':
             return apiPubSub.subscribe('rangeSelection', callback);
 
           case 'viewConfig':
             return self.onViewChange(callback);
 
+          case 'createSVG':
+            return self.onPostCreateSVG(callback);
+
+          case 'geneSearch':
+            return apiPubSub.subscribe('geneSearch', callback);
+
           default:
             return undefined;
         }
-      }
-    }
+      },
+    },
   };
 };
 

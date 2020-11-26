@@ -11,11 +11,20 @@ start eslint
 ./node_modules/eslint/bin/eslint.js karma.conf.js app test
 end eslint
 
+start viewconfs
+ls docs/examples/viewconfs/*.json \
+  test/view-configs/*.json \
+  test/view-configs-more/*.json \
+  | sed 's/^/-d /' \
+  | xargs npx ajv validate -s app/schema.json --errors=text \
+  || die "Invalid viewconf fixtures"
+end viewconfs
+
 start compile
 npm run compile
 [ -e dist.zip ] || die 'Missing dist.zip: Please check that it was produced by npm compile in build.sh.'
 end compile
 
 start karma
-xvfb-maybe ./node_modules/karma/bin/karma start karma.conf.js --single-run
+./node_modules/karma/bin/karma start karma.conf.js --single-run
 end karma

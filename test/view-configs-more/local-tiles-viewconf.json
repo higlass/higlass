@@ -1,0 +1,285 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": ["//higlass.io/api/v1"],
+  "exportViewUrl": "/api/v1/viewconfs",
+  "views": [
+    {
+      "uid": "vv",
+      "initialXDomain": [1317287678.041166, 1317418424.0815825],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "//higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "//higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "visible": true
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "type": "horizontal-gene-annotations",
+            "height": 60,
+            "data": {
+              "type": "local-tiles",
+              "tilesetInfo": {
+                "OHJakQICQD6gTD7skx4EWA": {
+                  "zoom_step": 1,
+                  "max_length": 3137161264,
+                  "assembly": "hg19",
+                  "chrom_names": "chr1\tchr2\tchr3\tchr4\tchr5\tchr6\tchr7\tchr8\tchr9\tchr10\tchr11\tchr12\tchr13\tchr14\tchr15\tchr16\tchr17\tchr18\tchr19\tchr20\tchr21\tchr22\tchrX\tchrY\tchrM",
+                  "chrom_sizes": "249250621\t243199373\t198022430\t191154276\t180915260\t171115067\t159138663\t146364022\t141213431\t135534747\t135006516\t133851895\t115169878\t107349540\t102531392\t90354753\t81195210\t78077248\t59128983\t63025520\t48129895\t51304566\t155270560\t59373566\t16571",
+                  "tile_size": 1024.0,
+                  "max_zoom": 22,
+                  "max_width": 4294967296.0,
+                  "min_pos": [1],
+                  "max_pos": [3137161264],
+                  "header": "",
+                  "name": "Gene Annotations (hg19)",
+                  "datatype": "gene-annotation",
+                  "coordSystem": "hg19",
+                  "coordSystem2": ""
+                }
+              },
+              "tiles": {
+                "OHJakQICQD6gTD7skx4EWA.16.20101": [
+                  {
+                    "xStart": 1317244685,
+                    "xEnd": 1317481244,
+                    "chrOffset": 1233657027,
+                    "importance": 111.0,
+                    "uid": "WepfdWoIS9qSTmH9r9QUuQ",
+                    "fields": [
+                      "chr7",
+                      "83587658",
+                      "83824217",
+                      "SEMA3A",
+                      "111",
+                      "-",
+                      "union_10371",
+                      "10371",
+                      "protein-coding",
+                      "semaphorin 3A",
+                      "83590686",
+                      "83823902",
+                      "83587658,83592520,83606447,83610636,83614751,83631270,83634654,83636668,83640337,83640498,83643524,83675639,83689780,83739785,83758438,83764109,83823790",
+                      "83591142,83592663,83606512,83610794,83614793,83631362,83634874,83636813,83640407,83640613,83643667,83675759,83689874,83739905,83758501,83764267,83824217"
+                    ]
+                  }
+                ],
+                "OHJakQICQD6gTD7skx4EWA.16.20102": [
+                  {
+                    "xStart": 1317244685,
+                    "xEnd": 1317481244,
+                    "chrOffset": 1233657027,
+                    "importance": 111.0,
+                    "uid": "WepfdWoIS9qSTmH9r9QUuQ",
+                    "fields": [
+                      "chr7",
+                      "83587658",
+                      "83824217",
+                      "SEMA3A",
+                      "111",
+                      "-",
+                      "union_10371",
+                      "10371",
+                      "protein-coding",
+                      "semaphorin 3A",
+                      "83590686",
+                      "83823902",
+                      "83587658,83592520,83606447,83610636,83614751,83631270,83634654,83636668,83640337,83640498,83643524,83675639,83689780,83739785,83758438,83764109,83823790",
+                      "83591142,83592663,83606512,83610794,83614793,83631362,83634874,83636813,83640407,83640613,83643667,83675759,83689874,83739905,83758501,83764267,83824217"
+                    ]
+                  }
+                ],
+                "OHJakQICQD6gTD7skx4EWA.16.20100": [
+                  {
+                    "xStart": 1317244685,
+                    "xEnd": 1317481244,
+                    "chrOffset": 1233657027,
+                    "importance": 111.0,
+                    "uid": "WepfdWoIS9qSTmH9r9QUuQ",
+                    "fields": [
+                      "chr7",
+                      "83587658",
+                      "83824217",
+                      "SEMA3A",
+                      "111",
+                      "-",
+                      "union_10371",
+                      "10371",
+                      "protein-coding",
+                      "semaphorin 3A",
+                      "83590686",
+                      "83823902",
+                      "83587658,83592520,83606447,83610636,83614751,83631270,83634654,83636668,83640337,83640498,83643524,83675639,83689780,83739785,83758438,83764109,83823790",
+                      "83591142,83592663,83606512,83610794,83614793,83631362,83634874,83636813,83640407,83640613,83643667,83675759,83689874,83739905,83758501,83764267,83824217"
+                    ]
+                  }
+                ]
+              }
+            },
+            "uid": "tt",
+            "options": {
+              "name": "Gene Annotations (hg19)",
+              "fontSize": 10,
+              "labelColor": "black",
+              "labelBackgroundColor": "#ffffff",
+              "labelPosition": "hidden",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "minHeight": 24,
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "showMousePosition": false,
+              "mousePositionColor": "#000000",
+              "geneAnnotationHeight": 12,
+              "geneLabelPosition": "outside",
+              "geneStrandSpacing": 4
+            },
+            "width": 1324
+          },
+          {
+            "uid": "ss",
+            "type": "horizontal-bar",
+            "data": {
+              "type": "local-tiles",
+              "tilesetInfo": {
+                "d7C4pezLQOe1LnHpbSy2Nw": {
+                  "min_pos": [0],
+                  "max_pos": [4294967296],
+                  "max_width": 4294967296,
+                  "tile_size": 1024,
+                  "max_zoom": 22,
+                  "chromsizes": [
+                    ["chr1", 249250621],
+                    ["chr2", 243199373],
+                    ["chr3", 198022430],
+                    ["chr4", 191154276],
+                    ["chr5", 180915260],
+                    ["chr6", 171115067],
+                    ["chr7", 159138663],
+                    ["chr8", 146364022],
+                    ["chr9", 141213431],
+                    ["chr10", 135534747],
+                    ["chr11", 135006516],
+                    ["chr12", 133851895],
+                    ["chr13", 115169878],
+                    ["chr14", 107349540],
+                    ["chr15", 102531392],
+                    ["chr16", 90354753],
+                    ["chr17", 81195210],
+                    ["chr18", 78077248],
+                    ["chr19", 59128983],
+                    ["chr20", 63025520],
+                    ["chr21", 48129895],
+                    ["chr22", 51304566],
+                    ["chrX", 155270560],
+                    ["chrY", 59373566],
+                    ["chrM", 16571]
+                  ],
+                  "aggregation_modes": {
+                    "mean": { "name": "Mean", "value": "mean" },
+                    "min": { "name": "Min", "value": "min" },
+                    "max": { "name": "Max", "value": "max" },
+                    "std": { "name": "Standard Deviation", "value": "std" }
+                  },
+                  "range_modes": {
+                    "minMax": { "name": "Min-Max", "value": "minMax" },
+                    "whisker": { "name": "Whisker", "value": "whisker" }
+                  },
+                  "name": "Ballinger et al. 2019 - K562 BLISS 50Kb",
+                  "datatype": "vector",
+                  "coordSystem": "hg19",
+                  "coordSystem2": ""
+                }
+              },
+              "tiles": {
+                "d7C4pezLQOe1LnHpbSy2Nw.22.0": {
+                  "min_value": 0.0,
+                  "max_value": 0.0,
+                  "dense": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+                  "size": 1,
+                  "dtype": "float16"
+                },
+                "d7C4pezLQOe1LnHpbSy2Nw.14.5025": {
+                  "min_value": 0.00018000400450546294,
+                  "max_value": 0.0004600090032909066,
+                  "dense": "5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnFDDYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg8PD+YN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDV8NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DV4OiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ8=",
+                  "size": 1,
+                  "dtype": "float16"
+                },
+                "d7C4pezLQOe1LnHpbSy2Nw.15.10050": {
+                  "min_value": 0.00018000400450546294,
+                  "max_value": 0.00044000899652019143,
+                  "dense": "5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJ5gnmCeYJmw42DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYPNg82DzYP6Q7mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g0=",
+                  "size": 1,
+                  "dtype": "float16"
+                },
+                "d7C4pezLQOe1LnHpbSy2Nw.15.10051": {
+                  "min_value": 0.00032000598730519414,
+                  "max_value": 0.0004600090032909066,
+                  "dense": "5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYN5g3mDeYNgA0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg0+DT4NPg2AD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ+JD4kPiQ8=",
+                  "size": 1,
+                  "dtype": "float16"
+                }
+              }
+            },
+            "options": {
+              "align": "bottom",
+              "labelColor": "[glyph-color]",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "labelShowAssembly": true,
+              "axisLabelFormatting": "scientific",
+              "axisPositionHorizontal": "right",
+              "barFillColor": "darkgreen",
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "barOpacity": 1,
+              "name": "Ballinger et al. 2019 - K562 BLISS 50Kb"
+            },
+            "width": 800,
+            "height": 43
+          }
+        ],
+        "left": [],
+        "center": [],
+        "right": [],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 3,
+        "x": 0,
+        "y": 0
+      },
+      "initialYDomain": [516818600.11284065, 516820825.57735837]
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

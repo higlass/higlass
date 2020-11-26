@@ -70,7 +70,9 @@ class TrackArea extends React.Component {
         <Handle />
 
         <svg
-          ref={(c) => { this.imgConfig = c; }}
+          ref={(c) => {
+            this.imgConfig = c;
+          }}
           className="no-zoom"
           height="10px"
           onClick={() => {
@@ -85,7 +87,9 @@ class TrackArea extends React.Component {
         </svg>
 
         <svg
-          ref={(c) => { this.imgAdd = c; }}
+          ref={(c) => {
+            this.imgAdd = c;
+          }}
           className="no-zoom"
           height="10px"
           onClick={() => this.props.onAddSeries(this.props.uid)}
@@ -96,7 +100,9 @@ class TrackArea extends React.Component {
         </svg>
 
         <svg
-          ref={(c) => { this.imgClose = c; }}
+          ref={(c) => {
+            this.imgClose = c;
+          }}
           className="no-zoom"
           height="10px"
           onClick={() => {

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Collapse, Panel, Checkbox } from 'react-bootstrap';
 
@@ -13,9 +14,7 @@ export class SeriesOptions extends React.Component {
     };
   }
 
-  handleNormalizeTilesetChanged() {
-
-  }
+  handleNormalizeTilesetChanged() {}
 
   handleNormalizeCheckboxChanged(e) {
     this.setState({
@@ -24,11 +23,10 @@ export class SeriesOptions extends React.Component {
   }
 
   toggleAdvancedVisible() {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       advancedVisible: !prevState.advancedVisible,
     }));
   }
-
 
   render() {
     // console.log('trackType:', this.props.trackType);
@@ -44,21 +42,29 @@ export class SeriesOptions extends React.Component {
           }}
           onChange={this.handleNormalizeCheckboxChanged.bind(this)}
         >
-                    Normalize By
+          Normalize By
         </Checkbox>
 
         <Collapse in={this.state.normalizeChecked}>
           <Panel>
             <TilesetFinder
-              onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
-              selectedTilesetChanged={this.handleNormalizeTilesetChanged.bind(this)}
+              onTrackChosen={(value) =>
+                this.props.onTrackChosen(value, this.props.position)
+              }
+              selectedTilesetChanged={this.handleNormalizeTilesetChanged.bind(
+                this,
+              )}
             />
           </Panel>
         </Collapse>
-
       </CollapsePanel>
     );
   }
 }
+
+SeriesOptions.propTypes = {
+  onTrackChosen: PropTypes.func,
+  position: PropTypes.string,
+};
 
 export default SeriesOptions;

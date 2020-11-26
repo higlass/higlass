@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -9,17 +9,11 @@ import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 
 // Utils
-import {
-  removeHGComponent,
-} from '../app/scripts/utils';
+import { removeHGComponent } from '../app/scripts/utils';
 
-import {
-  osmConf,
-} from './view-configs';
+import { osmConf } from './view-configs';
 
-import {
-  viewer
-} from '../app/scripts/hglib';
+import { viewer } from '../app/scripts/hglib';
 
 configure({ adapter: new Adapter() });
 
@@ -27,7 +21,10 @@ function createElementAndAPI(viewConfig, options) {
   const div = global.document.createElement('div');
   global.document.body.appendChild(div);
 
-  div.setAttribute('style', 'width:600px; height: 400px; background-color: lightgreen');
+  div.setAttribute(
+    'style',
+    'width:600px; height: 400px; background-color: lightgreen'
+  );
 
   const api = viewer(div, viewConfig, options);
 

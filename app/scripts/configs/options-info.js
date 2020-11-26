@@ -1,16 +1,28 @@
-import {
-  formatPrefix,
-  precisionPrefix,
-} from 'd3-format';
+import { formatPrefix, precisionPrefix } from 'd3-format';
 
 import HeatmapOptions from '../HeatmapOptions';
 
-const sizesInPx = (sizes, unit = '', multiplier = 1) => sizes.reduce(
-  (sizeOption, size) => {
+const valueColumnOptions = (track) => {
+  if (!track.header) return [];
+
+  const headerParts = track.header.split('\t');
+  const options = [];
+
+  for (let i = 0; i < headerParts.length; i++) {
+    options.push({
+      name: headerParts[i],
+      value: i + 1,
+    });
+  }
+
+  return options;
+};
+
+const sizesInPx = (sizes, unit = '', multiplier = 1) =>
+  sizes.reduce((sizeOption, size) => {
     sizeOption[size] = { name: `${size * multiplier}${unit}`, value: size };
     return sizeOption;
-  }, {}
-);
+  }, {});
 
 const YES_NO = {
   yes: { name: 'Yes', value: true },
@@ -36,9 +48,9 @@ const SPECIAL_COLORS = {
 };
 
 const AVAILABLE_WIDTHS = sizesInPx([1, 2, 3, 5, 8, 13, 21]);
-const AVAILABLE_WIDTHS_AND_NONE = Object.assign(
-  AVAILABLE_WIDTHS, { none: { name: 'none', value: 'none' } }
-);
+const AVAILABLE_WIDTHS_AND_NONE = Object.assign(AVAILABLE_WIDTHS, {
+  none: { name: 'none', value: 'none' },
+});
 
 const AVAILABLE_MARGIN = sizesInPx([0, 2, 4, 8, 16, 32, 64, 128, 256]);
 
@@ -57,9 +69,17 @@ export const OPTIONS_INFO = {
       },
       scientific: {
         name: 'scientific',
-        value: 'scientific'
+        value: 'scientific',
       },
-    }
+    },
+  },
+  flipDiagonal: {
+    name: 'Flip Across Diagonal',
+    inlineOptions: {
+      none: { name: 'No', value: 'none' },
+      yes: { name: 'Yes', value: 'yes' },
+      copy: { name: 'Copy', value: 'copy' },
+    },
   },
   heatmapValueScaling: {
     name: 'Value Scaling',
@@ -75,21 +95,37 @@ export const OPTIONS_INFO = {
       log: { name: 'Log', value: 'log' },
     },
   },
+  extent: {
+    name: 'Extent',
+    inlineOptions: {
+      full: { name: 'Full', value: 'full' },
+      upperRight: { name: 'Upper Right', value: 'upper-right' },
+      lowerLeft: { name: 'Lower Left', value: 'lower-left' },
+    },
+  },
   labelLeftMargin: {
     name: 'Label Left Margin',
-    inlineOptions: AVAILABLE_MARGIN
+    inlineOptions: AVAILABLE_MARGIN,
   },
   labelRightMargin: {
     name: 'Label Right Margin',
-    inlineOptions: AVAILABLE_MARGIN
+    inlineOptions: AVAILABLE_MARGIN,
   },
   labelTopMargin: {
     name: 'Label Top Margin',
-    inlineOptions: AVAILABLE_MARGIN
+    inlineOptions: AVAILABLE_MARGIN,
   },
   labelBottomMargin: {
     name: 'Label Bottom Margin',
-    inlineOptions: AVAILABLE_MARGIN
+    inlineOptions: AVAILABLE_MARGIN,
+  },
+  labelShowResolution: {
+    name: 'Label Show Resolution',
+    inlineOptions: YES_NO,
+  },
+  labelShowAssembly: {
+    name: 'Label Show Assembly',
+    inlineOptions: YES_NO,
   },
   lineStrokeWidth: {
     name: 'Stroke Width',
@@ -103,9 +139,21 @@ export const OPTIONS_INFO = {
     name: 'Track Border Width',
     inlineOptions: AVAILABLE_WIDTHS,
   },
+  separatePlusMinusStrands: {
+    name: 'Separate +/- strands',
+    inlineOptions: YES_NO,
+  },
   sortLargestOnTop: {
     name: 'Sort Largest On Top',
-    inlineOptions: YES_NO
+    inlineOptions: YES_NO,
+  },
+  showTexts: {
+    name: 'Show texts',
+    inlineOptions: YES_NO,
+  },
+  staggered: {
+    name: 'Staggered',
+    inlineOptions: YES_NO,
   },
   minSquareSize: {
     name: 'Minimum size',
@@ -153,7 +201,7 @@ export const OPTIONS_INFO = {
           '#BDB76B',
           '#808080',
           '#C0C0C0',
-          '#FFFFFF'
+          '#FFFFFF',
         ],
       },
       category10: {
@@ -168,9 +216,9 @@ export const OPTIONS_INFO = {
           '#E377C2',
           '#7F7F7F',
           '#BCBD22',
-          '#17BECF'
-        ]
-      }
+          '#17BECF',
+        ],
+      },
     },
   },
   minusStrandColor: {
@@ -207,6 +255,10 @@ export const OPTIONS_INFO = {
   },
   color: {
     name: 'Color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
+  fontColor: {
+    name: 'Font color',
     inlineOptions: AVAILABLE_COLORS,
   },
   fillColor: {
@@ -263,11 +315,11 @@ export const OPTIONS_INFO = {
   },
   barBorder: {
     name: 'Bar border',
-    inlineOptions: YES_NO
+    inlineOptions: YES_NO,
   },
   scaledHeight: {
     name: 'Scaled height',
-    inlineOptions: YES_NO
+    inlineOptions: YES_NO,
   },
   rectangleDomainStrokeColor: {
     name: 'Stroke color',
@@ -351,11 +403,11 @@ export const OPTIONS_INFO = {
   },
   showMousePosition: {
     name: 'Show Mouse Position',
-    inlineOptions: YES_NO
+    inlineOptions: YES_NO,
   },
   showTooltip: {
     name: 'Show Tooltip',
-    inlineOptions: YES_NO
+    inlineOptions: YES_NO,
   },
 
   fontSize: {
@@ -363,14 +415,46 @@ export const OPTIONS_INFO = {
     inlineOptions: sizesInPx([8, 9, 10, 11, 12, 14, 16, 18, 24], 'px'),
   },
 
+  tickPositions: {
+    name: 'Tick Positions',
+    inlineOptions: {
+      even: {
+        name: 'Even',
+        value: 'even',
+      },
+      ends: {
+        name: 'Ends',
+        value: 'ends',
+      },
+    },
+  },
+
+  tickFormat: {
+    name: 'Tick Format',
+    inlineOptions: {
+      plain: {
+        name: 'Plain',
+        value: 'plain',
+      },
+      si: {
+        name: 'SI',
+        value: 'si',
+      },
+    },
+  },
+
   colorEncoding: {
     name: 'Color Encode Annotations',
-    inlineOptions: YES_NO
+    inlineOptions: {
+      none: { name: 'None', value: null },
+      itemRgb: { name: 'itemRgb', value: 'itemRgb' },
+    },
+    generateOptions: valueColumnOptions,
   },
 
   fontIsAligned: {
     name: 'Left-Align Font',
-    inlineOptions: YES_NO
+    inlineOptions: YES_NO,
   },
 
   axisPositionHorizontal: {
@@ -473,7 +557,41 @@ export const OPTIONS_INFO = {
       10: { name: '10px', value: 10 },
       12: { name: '12px', value: 12 },
       16: { name: '16px', value: 16 },
-    }
+    },
+  },
+
+  annotationHeight: {
+    name: 'Annotation Height',
+    inlineOptions: {
+      5: { name: '5px', value: 5 },
+      8: { name: '8px', value: 8 },
+      10: { name: '10px', value: 10 },
+      12: { name: '12px', value: 12 },
+      16: { name: '16px', value: 16 },
+      20: { name: '20px', value: 20 },
+      scaled: { name: 'scaled', value: 'scaled' },
+    },
+  },
+
+  maxAnnotationHeight: {
+    name: 'Max Annotation Height',
+    inlineOptions: {
+      5: { name: '5px', value: 5 },
+      8: { name: '8px', value: 8 },
+      10: { name: '10px', value: 10 },
+      12: { name: '12px', value: 12 },
+      16: { name: '16px', value: 16 },
+      20: { name: '20px', value: 20 },
+      none: { name: 'none', value: null },
+    },
+  },
+
+  annotationStyle: {
+    name: 'Annotation Style',
+    inlineOptions: {
+      box: { name: 'Box', value: 'box' },
+      segment: { name: 'Segment', value: 'segment' },
+    },
   },
 
   geneLabelPosition: {
@@ -481,7 +599,7 @@ export const OPTIONS_INFO = {
     inlineOptions: {
       inside: { name: 'Inside', value: 'inside' },
       outside: { name: 'Outside', value: 'outside' },
-    }
+    },
   },
 
   geneStrandSpacing: {
@@ -490,7 +608,7 @@ export const OPTIONS_INFO = {
       2: { name: '2px', value: 2 },
       4: { name: '4px', value: 4 },
       8: { name: '8px', value: 8 },
-    }
+    },
   },
 
   labelBackgroundColor: {
@@ -529,12 +647,7 @@ export const OPTIONS_INFO = {
       },
       fall: {
         name: 'fall',
-        value: [
-          'white',
-          'rgba(245,166,35,1.0)',
-          'rgba(208,2,27,1.0)',
-          'black',
-        ],
+        value: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'],
       },
       hot: {
         name: 'hot',
@@ -590,44 +703,28 @@ export const OPTIONS_INFO = {
 
       gray: {
         name: 'greys',
-        value: [
-          'rgba(255,255,255,1)',
-          'rgba(0,0,0,1)',
-        ],
+        value: ['rgba(255,255,255,1)', 'rgba(0,0,0,1)'],
       },
       red: {
         name: 'White to red',
-        value: [
-          'rgba(255,255,255,1)',
-          'rgba(255,0,0,1)',
-        ],
+        value: ['rgba(255,255,255,1)', 'rgba(255,0,0,1)'],
       },
       green: {
         name: 'White to green',
-        value: [
-          'rgba(255,255,255,1)',
-          'rgba(0,255,0,1)',
-        ],
+        value: ['rgba(255,255,255,1)', 'rgba(0,255,0,1)'],
       },
       blue: {
         name: 'White to blue',
-        value: [
-          'rgba(255,255,255,1)',
-          'rgba(0,0,255,1)',
-        ],
+        value: ['rgba(255,255,255,1)', 'rgba(0,0,255,1)'],
       },
       custard: {
         name: 'custard',
-        value: [
-          '#FFFFFF',
-          '#F8E71C',
-          'rgba(245,166,35,1)',
-          'rgba(0,0,0,1)',
-        ],
+        value: ['#FFFFFF', '#F8E71C', 'rgba(245,166,35,1)', 'rgba(0,0,0,1)'],
       },
       magma: {
         name: 'magma',
-        value: ['rgba(0,0,3,1)',
+        value: [
+          'rgba(0,0,3,1)',
           'rgba(0,0,4,1)',
           'rgba(0,0,6,1)',
           'rgba(1,0,7,1)',
@@ -882,7 +979,8 @@ export const OPTIONS_INFO = {
           'rgba(252,248,186,1)',
           'rgba(252,250,188,1)',
           'rgba(252,251,189,1)',
-          'rgba(252,253,191,1)'],
+          'rgba(252,253,191,1)',
+        ],
       },
       viridis: {
         name: 'viridis',
@@ -1142,8 +1240,8 @@ export const OPTIONS_INFO = {
           'rgba(247,230,31,1)',
           'rgba(249,231,33,1)',
           'rgba(251,231,35,1)',
-          'rgba(254,231,36,1)'
-        ]
+          'rgba(254,231,36,1)',
+        ],
       },
       custom: {
         name: 'Custom...',
@@ -1224,12 +1322,14 @@ export const OPTIONS_INFO = {
           let resolution = 1;
 
           if (track.resolutions) {
-            const sortedResolutions = track.resolutions.map(x => +x).sort((a, b) => b - a);
-            ([maxResolutionSize] = sortedResolutions);
+            const sortedResolutions = track.resolutions
+              .map((x) => +x)
+              .sort((a, b) => b - a);
+            [maxResolutionSize] = sortedResolutions;
             resolution = sortedResolutions[i];
           } else {
-            resolution = track.maxWidth / ((2 ** i) * track.binsPerDimension);
-            maxResolutionSize = maxWidth / ((2 ** maxZoom) * binsPerDimension);
+            resolution = track.maxWidth / (2 ** i * track.binsPerDimension);
+            maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
           }
 
           const pp = precisionPrefix(maxResolutionSize, resolution);
@@ -1244,7 +1344,8 @@ export const OPTIONS_INFO = {
         }
 
         return inlineOptions;
-      } return [];
+      }
+      return [];
     },
   },
 
@@ -1253,27 +1354,12 @@ export const OPTIONS_INFO = {
     inlineOptions: {
       none: { name: 'None', value: null },
     },
-    generateOptions: (track) => {
-      if (!track.header) return [];
-
-      const headerParts = track.header.split('\t');
-      const options = [];
-
-      for (let i = 0; i < headerParts.length; i++) {
-        options.push({
-          name: headerParts[i],
-          value: i + 1,
-        });
-      }
-
-      /*
-      console.log('headerParts:', headerParts);
-      console.log('options:', options);
-      */
-
-      return options;
-    }
-  }
+    generateOptions: valueColumnOptions,
+  },
+  zeroValueColor: {
+    name: 'Zero Value Color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
 };
 
 export default OPTIONS_INFO;

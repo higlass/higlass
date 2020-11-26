@@ -1,0 +1,23 @@
+{
+  "filetype": "cooler",
+  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+  "server": "http://higlass.io/api/v1",
+  "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+  "uid": "hh1",
+  "type": "horizontal-heatmap",
+  "options": {
+    "labelPosition": "bottomRight",
+    "labelColor": "black",
+    "colorRange": [
+      "white",
+      "rgba(245,166,35,1.0)",
+      "rgba(208,2,27,1.0)",
+      "black"
+    ],
+    "maxZoom": null,
+    "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+    "colorbarPosition": "topLeft"
+  },
+  "width": 20,
+  "height": 200
+}

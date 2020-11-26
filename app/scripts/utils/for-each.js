@@ -5,6 +5,6 @@
  *   array.
  * @return  {*}  Modified array-like variable.
  */
-const forEach = f => x => Array.prototype.forEach.call(x, f);
+const forEach = (f) => (x) => Array.prototype.forEach.call(x, f);
 
 export default forEach;

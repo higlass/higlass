@@ -1,0 +1,167 @@
+{
+  "zoomFixed": false,
+  "views": [
+    {
+      "layout": {
+        "w": 12,
+        "h": 6,
+        "x": 0,
+        "y": 0
+      },
+      "uid": "aa",
+      "initialYDomain": [2535468087.753404, 2542678329.1784606],
+      "initialXDomain": [2533356361.259357, 2543534776.274586],
+      "tracks": {
+        "left": [
+          {
+            "data": {
+              "type": "vertical-section",
+              "server": "//higlass.io/api/v1",
+              "tilesetUid": "H7e9Cj97SziKnltNM9pWNw",
+              "slicePos": 2539474552.6970143
+            },
+            "options": {
+              "valueScaling": "log",
+              "align": "bottom",
+              "labelColor": "[glyph-color]",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "labelShowAssembly": true,
+              "axisLabelFormatting": "scientific",
+              "axisPositionHorizontal": "right",
+              "barFillColor": "darkgreen",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "barOpacity": 1,
+              "name": "Jin et al. (2013) IMR90 HindIII (allreps) 1kb"
+            },
+            "type": "vertical-bar",
+            "height": 20,
+            "uid": "NvbgnkVjSo-Ij-6Tyfjg1g",
+            "width": 20
+          }
+        ],
+        "top": [
+          {
+            "uid": "bar1",
+            "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
+            "height": 48,
+            "server": "//higlass.io/api/v1",
+            "type": "horizontal-bar",
+            "options": {
+              "name": "GM12878-E116-H3K27ac.fc.signal",
+              "barFillColor": "blue",
+              "axisPositionHorizontal": "right",
+              "labelColor": "black",
+              "labelTextOpacity": 1,
+              "zeroLineVisible": true,
+              "zeroLineColor": "red",
+              "zeroLineOpacity": 0.5,
+              "align": "bottom",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "labelShowAssembly": true,
+              "axisLabelFormatting": "scientific",
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "barOpacity": 1
+            },
+            "width": 819
+          }
+        ],
+        "center": [
+          {
+            "uid": "ErzI5LA8RdyhQeaUSXbSQw",
+            "type": "combined",
+            "contents": [
+              {
+                "server": "//higlass.io/api/v1",
+                "tilesetUid": "H7e9Cj97SziKnltNM9pWNw",
+                "uid": "WvGOgDR3QoOW2t6itAAfpQ",
+                "type": "heatmap",
+                "options": {
+                  "backgroundColor": "#eeeeee",
+                  "labelPosition": "bottomRight",
+                  "labelLeftMargin": 0,
+                  "labelRightMargin": 0,
+                  "labelTopMargin": 0,
+                  "labelBottomMargin": 0,
+                  "labelShowResolution": true,
+                  "labelShowAssembly": true,
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "colorbarBackgroundColor": "#ffffff",
+                  "maxZoom": null,
+                  "minWidth": 100,
+                  "minHeight": 100,
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "showMousePosition": false,
+                  "mousePositionColor": "#000000",
+                  "showTooltip": false,
+                  "extent": "full",
+                  "zeroValueColor": null,
+                  "name": "Jin et al. (2013) IMR90 HindIII (allreps) 1kb",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "width": 819,
+                "height": 566
+              }
+            ],
+            "width": 819,
+            "height": 566,
+            "options": {}
+          }
+        ],
+        "right": [],
+        "bottom": [],
+        "whole": [
+          {
+            "type": "vertical-rule",
+            "x": 2539474552.6970143,
+            "options": {
+              "color": "black"
+            },
+            "uid": "NsSLJhFwRHmKAF-PG8p5ew",
+            "width": 20,
+            "height": 20
+          }
+        ],
+        "gallery": []
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv"
+    }
+  ],
+  "editable": true,
+  "exportViewUrl": "/api/v1/viewconfs",
+  "trackSourceServers": ["//higlass.io/api/v1"],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

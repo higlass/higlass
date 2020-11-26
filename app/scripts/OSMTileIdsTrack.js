@@ -27,7 +27,7 @@ class OSMTileIdsTrack extends OSMTilesTrack {
 
       const data = {
         zoomLevel: keyParts[0],
-        tilePos: keyParts.slice(1, keyParts.length).map(keyPart => +keyPart),
+        tilePos: keyParts.slice(1, keyParts.length).map((keyPart) => +keyPart),
       };
 
       this.fetchedTiles[x.tileId] = x;
@@ -35,7 +35,9 @@ class OSMTileIdsTrack extends OSMTilesTrack {
 
       // since we're not actually fetching remote data, we can easily
       // remove these tiles from the fetching list
-      if (this.fetching.has(x.remoteId)) { this.fetching.delete(x.remoteId); }
+      if (this.fetching.has(x.remoteId)) {
+        this.fetching.delete(x.remoteId);
+      }
     });
 
     this.synchronizeTilesAndGraphics();

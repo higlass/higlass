@@ -1,0 +1,49 @@
+{
+  "editable": true,
+  "views": [
+    {
+      "uid": "UsNXitDyRqGrJNbFzGLChA",
+      "tracks": {
+        "top": [
+          {
+            "type": "top-axis",
+            "server": "",
+            "tilesetUid": "APhoEAz7SF28LA5_ZzZA6w",
+            "uid": "MCErA67KT1yKDa1n5Ue7eA",
+            "options": {},
+            "width": 770,
+            "height": 20
+          }
+        ],
+        "center": [],
+        "left": [],
+        "right": [],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 2,
+        "x": 0,
+        "y": 0
+      },
+      "initialXDomain": [403296974.26821274, 548291346.6569874],
+      "initialYDomain": [464701481.41130954, 466207916.449115]
+    }
+  ],
+  "trackSourceServers": ["http://higlass.io/api/v1"],
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs",
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

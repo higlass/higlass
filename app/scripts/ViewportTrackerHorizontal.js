@@ -1,4 +1,4 @@
-import { brush } from 'd3-brush';
+import { brushX } from 'd3-brush';
 import { event } from 'd3-selection';
 import slugid from 'slugid';
 
@@ -18,14 +18,16 @@ class ViewportTrackerHorizontal extends SVGTrack {
     this.uid = uid;
     this.options = options;
 
+    // Is there actually a linked _from_ view? Or is this projection "independent"?
+    this.hasFromView = !context.projectionXDomain;
+
     this.removeViewportChanged = removeViewportChanged;
     this.setDomainsCallback = setDomainsCallback;
 
-    this.viewportXDomain = null;
-    this.viewportYDomain = null;
+    this.viewportXDomain = this.hasFromView ? null : context.projectionXDomain;
+    this.viewportYDomain = this.hasFromView ? null : [0, 0];
 
-    this.brush = brush(true)
-      .on('brush', this.brushed.bind(this));
+    this.brush = brushX().on('brush', this.brushed.bind(this));
 
     this.gBrush = this.gMain
       .append('g')
@@ -33,27 +35,20 @@ class ViewportTrackerHorizontal extends SVGTrack {
       .call(this.brush);
 
     // turn off the ability to select new regions for this brush
-    this.gBrush.selectAll('.overlay')
-      .style('pointer-events', 'none');
+    this.gBrush.selectAll('.overlay').style('pointer-events', 'none');
 
     // turn off the ability to modify the aspect ratio of the brush
-    this.gBrush.selectAll('.handle--ne')
-      .style('pointer-events', 'none');
+    this.gBrush.selectAll('.handle--ne').style('pointer-events', 'none');
 
-    this.gBrush.selectAll('.handle--nw')
-      .style('pointer-events', 'none');
+    this.gBrush.selectAll('.handle--nw').style('pointer-events', 'none');
 
-    this.gBrush.selectAll('.handle--sw')
-      .style('pointer-events', 'none');
+    this.gBrush.selectAll('.handle--sw').style('pointer-events', 'none');
 
-    this.gBrush.selectAll('.handle--se')
-      .style('pointer-events', 'none');
+    this.gBrush.selectAll('.handle--se').style('pointer-events', 'none');
 
-    this.gBrush.selectAll('.handle--n')
-      .style('pointer-events', 'none');
+    this.gBrush.selectAll('.handle--n').style('pointer-events', 'none');
 
-    this.gBrush.selectAll('.handle--s')
-      .style('pointer-events', 'none');
+    this.gBrush.selectAll('.handle--s').style('pointer-events', 'none');
 
     registerViewportChanged(uid, this.viewportChanged.bind(this));
 
@@ -64,17 +59,22 @@ class ViewportTrackerHorizontal extends SVGTrack {
 
   brushed() {
     /**
-         * Should only be called  on active brushing, not in response to the
-         * draw event
-         */
+     * Should only be called  on active brushing, not in response to the
+     * draw event
+     */
     const s = event.selection;
 
-    if (!this._xScale || !this._yScale) { return; }
+    if (!this._xScale || !this._yScale) {
+      return;
+    }
 
-    const xDomain = [this._xScale.invert(s[0][0]),
-      this._xScale.invert(s[1][0])];
+    const xDomain = [this._xScale.invert(s[0]), this._xScale.invert(s[1])];
 
     const yDomain = this.viewportYDomain;
+
+    if (!this.hasFromView) {
+      this.viewportXDomain = xDomain;
+    }
 
     // console.log('xDomain:', xDomain);
     // console.log('yDomain:', yDomain);
@@ -102,7 +102,8 @@ class ViewportTrackerHorizontal extends SVGTrack {
 
   rerender() {
     // set the fill and stroke colors
-    this.gBrush.selectAll('.selection')
+    this.gBrush
+      .selectAll('.selection')
       .attr('fill', this.options.projectionFillColor)
       .attr('stroke', this.options.projectionStrokeColor)
       .attr('fill-opacity', this.options.projectionFillOpacity)
@@ -111,17 +112,18 @@ class ViewportTrackerHorizontal extends SVGTrack {
   }
 
   draw() {
-    if (!this._xScale || !this.yScale) { return; }
+    if (!this._xScale || !this.yScale) {
+      return;
+    }
 
-    if (!this.viewportXDomain || !this.viewportYDomain) { return; }
+    if (!this.viewportXDomain || !this.viewportYDomain) {
+      return;
+    }
 
     const x0 = this._xScale(this.viewportXDomain[0]);
-    const y0 = 0;
-
     const x1 = this._xScale(this.viewportXDomain[1]);
-    const y1 = this.dimensions[1];
 
-    const dest = [[x0, y0], [x1, y1]];
+    const dest = [x0, x1];
 
     // console.log('dest:', dest[0], dest[1]);
 
@@ -141,6 +143,22 @@ class ViewportTrackerHorizontal extends SVGTrack {
 
   setPosition(newPosition) {
     super.setPosition(newPosition);
+
+    this.draw();
+  }
+
+  setDimensions(newDimensions) {
+    super.setDimensions(newDimensions);
+
+    const xRange = this._xScale.range();
+    const yRange = this._yScale.range();
+    const xDiff = xRange[1] - xRange[0];
+
+    this.brush.extent([
+      [xRange[0] - xDiff, yRange[0]],
+      [xRange[1] + xDiff, yRange[1]],
+    ]);
+    this.gBrush.call(this.brush);
 
     this.draw();
   }

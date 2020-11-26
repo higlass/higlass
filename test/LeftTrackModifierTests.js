@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -21,18 +21,14 @@ describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
-    ([div, hgc] = mountHGComponent(div, hgc,
-      zoomLimitViewConf,
-      done,
-      {
-        style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true,
-      })
-    );
+  beforeAll(done => {
+    [div, hgc] = mountHGComponent(div, hgc, zoomLimitViewConf, done, {
+      style: 'width:800px; height:400px; background-color: lightgreen',
+      bounded: true
+    });
   });
 
-  it('should respect zoom limits', (done) => {
+  it('should respect zoom limits', () => {
     // add your tests here
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'tt');
@@ -40,14 +36,10 @@ describe('Horizontal heatmaps', () => {
     // trackObj is a LeftTrackModifier that contains the
     // original track
     expect(trackObj.originalTrack.id).to.eql('tt');
-
-    done();
   });
 
-  afterAll((done) => {
+  afterAll(() => {
     removeHGComponent(div);
-
-    done();
   });
 });
 
@@ -55,17 +47,12 @@ describe('Horizontal heatmaps', () => {
 const zoomLimitViewConf = {
   editable: true,
   zoomFixed: false,
-  trackSourceServers: [
-    '//higlass.io/api/v1'
-  ],
+  trackSourceServers: ['//higlass.io/api/v1'],
   exportViewUrl: '/api/v1/viewconfs',
   views: [
     {
       uid: 'vv',
-      initialXDomain: [
-        2.9802322387695312e-8,
-        3099999999.9999995
-      ],
+      initialXDomain: [2.9802322387695312e-8, 3099999999.9999995],
       autocompleteSource: '/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
       genomePositionSearchBox: {
         autocompleteServer: '//higlass.io/api/v1',
@@ -126,10 +113,7 @@ const zoomLimitViewConf = {
         moved: false,
         static: false
       },
-      initialYDomain: [
-        996853415.1957023,
-        2103146584.804298
-      ]
+      initialYDomain: [996853415.1957023, 2103146584.804298]
     }
   ],
   zoomLocks: {

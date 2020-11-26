@@ -14,11 +14,10 @@ import {
   mountHGComponent,
   removeHGComponent,
   getTrackObjectFromHGC,
-  waitForTilesLoaded
+  waitForTilesLoaded,
 } from '../app/scripts/utils';
 
 import viewConf from './view-configs/bar';
-
 
 configure({ adapter: new Adapter() });
 
@@ -27,7 +26,7 @@ describe('BarTrack tests', () => {
   let div = null;
 
   beforeAll((done) => {
-    ([div, hgc] = mountHGComponent(div, hgc, viewConf, done));
+    [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
   });
 
   it('Ensures that the track was rendered', (done) => {
@@ -38,26 +37,45 @@ describe('BarTrack tests', () => {
     const trackObj = getTrackObjectFromHGC(
       hgc.instance(),
       viewConf.views[0].uid,
-      trackConf.uid
+      trackConf.uid,
     );
 
     waitForTilesLoaded(hgc.instance(), () => {
-      expect(trackObj.zeroLine.fillColor)
-        .to.eql(colorToHex(trackConf.options.zeroLineColor));
+      expect(trackObj.zeroLine.fill.color).to.eql(
+        colorToHex(trackConf.options.zeroLineColor),
+      );
 
-      expect(trackObj.zeroLine.fillAlpha)
-        .to.eql(trackConf.options.zeroLineOpacity);
+      expect(trackObj.zeroLine.fill.alpha).to.eql(
+        trackConf.options.zeroLineOpacity,
+      );
 
       expect(
-        Object.values(trackObj.fetchedTiles).every(tile => tile.svgData)
+        Object.values(trackObj.fetchedTiles).every((tile) => tile.svgData),
       ).to.eql(true);
+      done();
     });
-
-    done();
   });
 
-  afterAll((done) => {
+  it('Ensures that the cross section bar track was rendered', (done) => {
+    const trackConf = viewConf.views[0].tracks.left[0];
+
+    const trackObj = getTrackObjectFromHGC(
+      hgc.instance(),
+      viewConf.views[0].uid,
+      trackConf.uid,
+    );
+
+    waitForTilesLoaded(hgc.instance(), () => {
+      expect(
+        Object.values(trackObj.originalTrack.fetchedTiles).every(
+          (tile) => tile.svgData,
+        ),
+      ).to.eql(true);
+      done();
+    });
+  });
+
+  afterAll(() => {
     removeHGComponent(div);
-    done();
   });
 });

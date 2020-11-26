@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -12,16 +12,13 @@ import { expect } from 'chai';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
+  getTrackObjectFromHGC
 } from '../app/scripts/utils';
 
 const viewconf = {
   editable: true,
   zoomFixed: false,
-  trackSourceServers: [
-    '/api/v1',
-    'http://higlass.io/api/v1'
-  ],
+  trackSourceServers: ['/api/v1', 'http://higlass.io/api/v1'],
   exportViewUrl: '/api/v1/viewconfs/',
   views: [
     {
@@ -60,14 +57,8 @@ const viewconf = {
         whole: [],
         gallery: []
       },
-      initialXDomain: [
-        77515298.79442959,
-        145520235.32544723
-      ],
-      initialYDomain: [
-        34065918.61085448,
-        102548641.5812001
-      ],
+      initialXDomain: [77515298.79442959, 145520235.32544723],
+      initialYDomain: [34065918.61085448, 102548641.5812001],
       layout: {
         w: 6,
         h: 12,
@@ -162,7 +153,6 @@ const viewconf = {
   }
 };
 
-
 configure({ adapter: new Adapter() });
 
 describe('Simple HiGlassComponent', () => {
@@ -170,30 +160,24 @@ describe('Simple HiGlassComponent', () => {
   let div = null;
 
   describe('Chromosome Grid Tests', () => {
-    beforeAll((done) => {
-      ([div, hgc] = mountHGComponent(div, hgc,
-        viewconf,
-        done,
-        {
-          style: 'width:800px; height:800px; background-color: lightgreen',
-          bounded: true,
-        })
-      );
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
+        style: 'width:800px; height:800px; background-color: lightgreen',
+        bounded: true
+      });
     });
 
-    it("Ensure that the viewport projection's borders are grey", (done) => {
+    it("Ensure that the viewport projection's borders are grey", () => {
       const trackObject = getTrackObjectFromHGC(
-        hgc.instance(), 'Mw2aWH9TTcu38t5OZlCYyA'
+        hgc.instance(),
+        'Mw2aWH9TTcu38t5OZlCYyA'
       );
 
       expect(trackObject.options.lineStrokeColor).to.eql('grey');
-      done();
     });
 
-    afterAll((done) => {
+    afterAll(() => {
       removeHGComponent(div);
-
-      done();
     });
   });
 });

@@ -26,7 +26,7 @@ class DomEvent {
     if (this.customEventHandlers[eventName]) {
       return this.customEventHandlers[eventName];
     }
-    return event => this.pubSub.publish(eventName, event);
+    return (event) => this.pubSub.publish(eventName, event);
   }
 
   /**
@@ -36,11 +36,12 @@ class DomEvent {
    * @param {object} element - DOM element which we listened to.
    */
   unregister(event, element) {
-    if (!this.registeredEls[event] && this.registeredEls[event] !== element) return;
+    if (!this.registeredEls[event] && this.registeredEls[event] !== element)
+      return;
 
     this.registeredEls[event].removeEventListener(
       event,
-      this.registeredEls[event].__handler__
+      this.registeredEls[event].__handler__,
     );
 
     this.registeredEls[event] = undefined;
@@ -65,11 +66,12 @@ class DomEvent {
     this.registeredEls[event] = newElement;
     this.registeredEls[event].__handler__ = this.getEventHandler(event);
     this.registeredEls[event].addEventListener(
-      event, this.registeredEls[event].__handler__,
+      event,
+      this.registeredEls[event].__handler__,
       {
         capture: useCapture,
         passive: false,
-      }
+      },
     );
   }
 }
@@ -79,6 +81,6 @@ class DomEvent {
  *
  * @type {object}
  */
-const domEvent = pubSub => new DomEvent(pubSub);
+const domEvent = (pubSub) => new DomEvent(pubSub);
 
 export default domEvent;

@@ -1,0 +1,99 @@
+@import './colors';
+@import './sizes';
+@import './transitions';
+
+.view-config-editor-header {
+  margin: (-1 * $base) + px (-1 * $base) + px 0 (-1 * $base) + px;
+  padding: $base + px;
+  display: flex;
+  justify-content: space-between;
+  background: $gray-lightest;
+
+  button {
+    display: flex;
+    align-items: center;
+    font-size: (1.4 * $base) + px;
+    background: $gray-lightest;
+
+    &:hover {
+      background: $gray-lighter;
+      span {
+        color: $gray-dark;
+      }
+    }
+  }
+}
+
+.view-config-editor {
+  position: absolute;
+  top: (5 * $base) + px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 1px 0 0 0;
+  padding: 0;
+  overflow: auto;
+  font-size: (1.25 * $base) + px;
+  height: calc(100% - #{(8 * $base)+px});
+}
+
+.view-config-log {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 1px 0 0 0;
+  padding: 0;
+  min-height: (3 * $base) + px;
+  background: $gray-lightest;
+  transition: height $fast $ease;
+}
+
+.view-config-log-header {
+  background: $gray-lightest;
+  border-top: 1px solid $gray-light;
+  border-bottom: 1px solid $gray-light;
+  padding-left: $base + px;
+  height: (3 * $base) + px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: sticky;
+  position: -webkit-sticky; /* Safari */
+  top: 0;
+}
+
+.view-config-log-msg {
+  background: $gray-lightest;
+  overflow: auto;
+  height: calc(100% - #{(3 * $base)+px});
+
+  tr,
+  td {
+    outline: none;
+    vertical-align: top;
+  }
+  .title {
+    font-weight: bold;
+    padding-left: 8px;
+    padding-top: 8px;
+    width: 100px;
+  }
+  .Warning {
+    color: orange;
+  }
+  .Success {
+    color: green;
+  }
+  .Error {
+    color: red;
+  }
+  pre {
+    background: white;
+    white-space: pre-wrap; /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+  }
+}

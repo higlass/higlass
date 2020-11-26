@@ -1,0 +1,50 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1",
+    "http://localhost:8989/api/v1"
+  ],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [782035593.0218927, 3161702482.099383],
+      "initialYDomain": [1142928773.5006099, 2963035748.0921783],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "http://s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
+            "type": "horizontal-chromosome-labels",
+            "height": 57,
+            "uid": "hcl",
+            "options": {},
+            "width": 1161
+          }
+        ],
+        "left": [],
+        "center": [],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 4,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

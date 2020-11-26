@@ -16,7 +16,9 @@ class MapboxTilesTrack extends OSMTilesTrack {
     this.style = options.style;
 
     if (!this.options.accessToken) {
-      this.errorTextText = "No access token provided in the viewconf options ('accessToken' option).";
+      this.errorTextText =
+        "No access token provided in the viewconf's track options " +
+        "('accessToken' option).";
       this.drawError();
     }
   }
@@ -32,19 +34,17 @@ class MapboxTilesTrack extends OSMTilesTrack {
     this.refreshTiles();
   }
 
+  /**
+   * Get the url used to fetch the tile data
+   */
   getTileUrl(tileZxy) {
-    /**
-         * Get the url used to fetch the tile data
-         */
-    let mapStyle = 'mapbox.streets';
+    const mapStyle =
+      this.options && this.options.style ? this.options.style : 'streets-v10';
 
-    if (this.options && this.options.style) {
-      mapStyle = this.options.style;
-    }
+    const tileSize =
+      this.options && +this.options.tileSize ? +this.options.tileSize : 256;
 
-    const src = `http://api.tiles.mapbox.com/v4/${mapStyle}/${tileZxy[0]}/${tileZxy[1]}/${tileZxy[2]}.png?access_token=${this.options.accessToken}`;
-
-    return src;
+    return `https://api.mapbox.com/styles/v1/mapbox/${mapStyle}/tiles/${tileSize}/${tileZxy[0]}/${tileZxy[1]}/${tileZxy[2]}?access_token=${this.options.accessToken}`;
   }
 }
 

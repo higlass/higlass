@@ -7,9 +7,9 @@ const ndarrayToList = (arr) => {
   cwise({
     args: ['array', 'scalar', 'scalar'],
     body: (a, l, i) => {
-      l[i] = a;  // eslint-disable-line
-      i++;  // eslint-disable-line
-    }
+      l[i] = a; // eslint-disable-line
+      i++; // eslint-disable-line
+    },
   })(arr, list, 0);
 
   return list;

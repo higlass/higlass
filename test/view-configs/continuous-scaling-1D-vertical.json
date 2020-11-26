@@ -1,0 +1,149 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": ["https://higlass.io/api/v1"],
+  "exportViewUrl": "/api/v1/viewconfs",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [535979957.5800824, 539850313.387287],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "https://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "https://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "visible": true
+      },
+      "tracks": {
+        "top": [],
+        "left": [
+          {
+            "server": "https://higlass.io/api/v1",
+            "tilesetUid": "PdAaSdibTLK34hCw7ubqKA",
+            "uid": "ZvRxYeAFQreOWFAzmlTkPg",
+            "type": "vertical-point",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "labelShowAssembly": true,
+              "axisLabelFormatting": "scientific",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "red",
+              "lineStrokeWidth": 1,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "name": "GM12878-E116-H3K27me3.fc.signal"
+            },
+            "width": 154,
+            "height": 524
+          }
+        ],
+        "center": [],
+        "right": [
+          {
+            "server": "https://higlass.io/api/v1",
+            "tilesetUid": "E36VpigUTAaHI-_pm1hGsA",
+            "uid": "Pb9VtK7wSH6eBqUhslelnw",
+            "type": "vertical-bar",
+            "options": {
+              "align": "bottom",
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "labelShowAssembly": true,
+              "axisLabelFormatting": "scientific",
+              "axisPositionHorizontal": "right",
+              "barFillColor": "darkgreen",
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "barOpacity": 1,
+              "name": "Ballinger et al. 2019 - MCF7 BLISS 50Kb"
+            },
+            "width": 113,
+            "height": 524
+          },
+          {
+            "server": "https://higlass.io/api/v1",
+            "tilesetUid": "B_Gv5ms9QpqzWQVEwK4PDg",
+            "uid": "GMag2ldmR2ew7S9PSCz-hg",
+            "type": "vertical-bar",
+            "options": {
+              "align": "bottom",
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "labelShowAssembly": true,
+              "axisLabelFormatting": "scientific",
+              "axisPositionHorizontal": "right",
+              "barFillColor": "darkgreen",
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "barOpacity": 1,
+              "name": "Ballinger et al. 2019 - NHEK BLESS 50Kb"
+            },
+            "width": 110,
+            "height": 524
+          }
+        ],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0
+      },
+      "initialYDomain": [1453001491.4946086, 1456806494.2018793]
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {
+      "aa.GMag2ldmR2ew7S9PSCz-hg": "b2wt6mIwQ4u9WHeZppvOlg",
+      "aa.Pb9VtK7wSH6eBqUhslelnw": "b2wt6mIwQ4u9WHeZppvOlg"
+    },
+    "locksDict": {
+      "b2wt6mIwQ4u9WHeZppvOlg": {
+        "aa.GMag2ldmR2ew7S9PSCz-hg": {
+          "view": "aa",
+          "track": "GMag2ldmR2ew7S9PSCz-hg"
+        },
+        "aa.Pb9VtK7wSH6eBqUhslelnw": {
+          "view": "aa",
+          "track": "Pb9VtK7wSH6eBqUhslelnw"
+        },
+        "uid": "b2wt6mIwQ4u9WHeZppvOlg",
+        "ignoreOffScreenValues": true
+      }
+    }
+  }
+}

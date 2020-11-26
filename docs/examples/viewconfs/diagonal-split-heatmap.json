@@ -1,0 +1,250 @@
+{
+  "zoomFixed": false,
+  "views": [
+    {
+      "layout": {
+        "w": 12,
+        "h": 7,
+        "x": 0,
+        "y": 0
+      },
+      "uid": "aa",
+      "initialYDomain": [1467204128.0563884, 1473652387.995427],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "initialXDomain": [1461044923.395712, 1479839614.6872232],
+      "tracks": {
+        "left": [],
+        "top": [
+          {
+            "uid": "genes",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "server": "http://higlass.io/api/v1",
+            "type": "horizontal-gene-annotations",
+            "height": 48,
+            "options": {
+              "labelColor": "black",
+              "plusStrandColor": "black",
+              "name": "Gene Annotations (hg19)",
+              "labelPosition": "hidden",
+              "minusStrandColor": "black",
+              "fontSize": 11,
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "showMousePosition": true,
+              "mousePositionColor": "#000000",
+              "geneAnnotationHeight": 10,
+              "geneLabelPosition": "outside",
+              "geneStrandSpacing": 4
+            }
+          },
+          {
+            "uid": "line1",
+            "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
+            "height": 20,
+            "width": 1890,
+            "server": "http://higlass.io/api/v1",
+            "type": "horizontal-line",
+            "options": {
+              "name": "GM12878-E116-H3K27ac.fc.signal",
+              "valueScaling": "linear",
+              "lineStrokeWidth": 2,
+              "lineStrokeColor": "#4a35fc",
+              "labelPosition": "topLeft",
+              "labelColor": "black",
+              "axisPositionHorizontal": "right",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": true,
+              "mousePositionColor": "#000000",
+              "showTooltip": false
+            }
+          },
+          {
+            "uid": "line2",
+            "tilesetUid": "PdAaSdibTLK34hCw7ubqKA",
+            "height": 20,
+            "width": 1890,
+            "server": "http://higlass.io/api/v1",
+            "type": "horizontal-line",
+            "options": {
+              "name": "GM12878-E116-H3K27me3.fc.signal",
+              "valueScaling": "linear",
+              "lineStrokeWidth": 2,
+              "lineStrokeColor": "#d104fa",
+              "labelPosition": "topLeft",
+              "labelColor": "black",
+              "axisPositionHorizontal": "right",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": true,
+              "mousePositionColor": "#000000",
+              "showTooltip": false
+            }
+          },
+          {
+            "uid": "line3",
+            "tilesetUid": "e0DYtZBSTqiMLHoaimsSpg",
+            "height": 20,
+            "width": 1890,
+            "server": "http://higlass.io/api/v1",
+            "type": "horizontal-line",
+            "options": {
+              "name": "GM12878-E116-H3K4me1.fc.signal",
+              "valueScaling": "linear",
+              "lineStrokeWidth": 2,
+              "lineStrokeColor": "#ff0000",
+              "labelPosition": "topLeft",
+              "labelColor": "black",
+              "axisPositionHorizontal": "right",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": true,
+              "mousePositionColor": "#000000",
+              "showTooltip": false
+            }
+          },
+          {
+            "uid": "line4",
+            "tilesetUid": "cE0nGyd0Q_yVYSyBUe89Ww",
+            "height": 20,
+            "width": 1890,
+            "server": "http://higlass.io/api/v1",
+            "type": "horizontal-line",
+            "options": {
+              "name": "GM12878-E116-H3K4me3.fc.signal",
+              "valueScaling": "linear",
+              "lineStrokeWidth": 2,
+              "lineStrokeColor": "orange",
+              "labelPosition": "topLeft",
+              "labelColor": "black",
+              "axisPositionHorizontal": "right",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": true,
+              "mousePositionColor": "#000000",
+              "showTooltip": false
+            }
+          },
+          {
+            "uid": "chroms",
+            "height": 18,
+            "width": 1890,
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "type": "horizontal-chromosome-labels",
+            "options": {
+              "color": "#777777",
+              "stroke": "#FFFFFF",
+              "fontSize": 11,
+              "fontIsLeftAligned": true,
+              "showMousePosition": true,
+              "mousePositionColor": "#000000"
+            }
+          }
+        ],
+        "right": [],
+        "center": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "QvdMEvccQuOxKTEjrVL3wA",
+            "type": "heatmap",
+            "uid": "rao-2014-k562",
+            "options": {
+              "backgroundColor": "#eeeeee",
+              "labelPosition": "bottomLeft",
+              "labelTextOpacity": 0.4,
+              "colorRange": [
+                "white",
+                "rgba(245,166,35,1.0)",
+                "rgba(208,2,27,1.0)",
+                "black"
+              ],
+              "maxZoom": null,
+              "colorbarPosition": "bottomLeft",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "heatmapValueScaling": "log",
+              "showMousePosition": true,
+              "mousePositionColor": "#000000",
+              "showTooltip": true,
+              "scaleStartPercent": "0.00000",
+              "scaleEndPercent": "1.00000",
+              "extent": "lower-left"
+            }
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+            "type": "heatmap",
+            "uid": "rao-2014-gm12878",
+            "options": {
+              "backgroundColor": "transparent",
+              "labelPosition": "topRight",
+              "labelTextOpacity": 0.4,
+              "colorRange": [
+                "white",
+                "rgba(245,166,35,1.0)",
+                "rgba(208,2,27,1.0)",
+                "black"
+              ],
+              "maxZoom": null,
+              "colorbarPosition": "topRight",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "heatmapValueScaling": "log",
+              "showMousePosition": true,
+              "mousePositionColor": "#000000",
+              "showTooltip": true,
+              "scaleStartPercent": "0.00000",
+              "scaleEndPercent": "1.00000",
+              "extent": "upper-right"
+            }
+          }
+        ],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "genomePositionSearchBoxVisible": false,
+      "genomePositionSearchBox": {
+        "visible": true,
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
+      }
+    }
+  ],
+  "editable": true,
+  "exportViewUrl": "/api/v1/viewconfs",
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "trackSourceServers": ["http://higlass.io/api/v1"],
+  "locationLocks": {
+    "locksByViewUid": {
+      "aa": "PkNgAl3mSIqttnSsCewngw",
+      "ewZvJwlDSei_dbpIAkGMlg": "PkNgAl3mSIqttnSsCewngw"
+    },
+    "locksDict": {
+      "PkNgAl3mSIqttnSsCewngw": {
+        "aa": [1550000000, 1550000000, 3380588.876772046],
+        "ewZvJwlDSei_dbpIAkGMlg": [
+          1550000000.0000002,
+          1549999999.9999993,
+          3380588.876772046
+        ],
+        "uid": "PkNgAl3mSIqttnSsCewngw"
+      }
+    }
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

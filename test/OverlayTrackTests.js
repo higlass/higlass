@@ -19,23 +19,23 @@ describe('Overlay Track:', () => {
   let viewConf;
 
   describe('Annotation overlays:', () => {
-    it('Should render', (done) => {
+    it('Should render', () => {
       viewConf = overlayAnnotations1d2dViewConf;
 
       [div, api] = createElementAndApi(viewConf, { bound: true });
 
       hgc = api.getComponent();
 
-      const numNormalTracks = viewConf.views[0].tracks.top.length
-        + viewConf.views[0].tracks.right.length
-        + viewConf.views[0].tracks.bottom.length
-        + viewConf.views[0].tracks.left.length
-        + viewConf.views[0].tracks.center.length;
+      const numNormalTracks =
+        viewConf.views[0].tracks.top.length +
+        viewConf.views[0].tracks.right.length +
+        viewConf.views[0].tracks.bottom.length +
+        viewConf.views[0].tracks.left.length +
+        viewConf.views[0].tracks.center.length;
 
       expect(numNormalTracks).toEqual(4);
 
-      const trackRenderer = hgc.tiledPlots[viewConf.views[0].uid]
-        .trackRenderer;
+      const trackRenderer = hgc.tiledPlots[viewConf.views[0].uid].trackRenderer;
 
       const posTracks = trackRenderer.props.positionedTracks;
 
@@ -45,8 +45,8 @@ describe('Overlay Track:', () => {
 
       expect(overlayTrack.track.type).toEqual('overlay-track');
 
-      const overlayTrackInfo = trackRenderer
-        .trackDefObjects[overlayTrack.track.uid];
+      const overlayTrackInfo =
+        trackRenderer.trackDefObjects[overlayTrack.track.uid];
 
       const overlayTrackDef = overlayTrackInfo.trackDef;
       const overlayTrackObj = overlayTrackInfo.trackObject;
@@ -55,8 +55,6 @@ describe('Overlay Track:', () => {
 
       expect(overlayTrackDef.width).toEqual(overlayTrackObj.dimensions[0]);
       expect(overlayTrackDef.height).toEqual(overlayTrackObj.dimensions[1]);
-
-      done();
     });
 
     afterEach(() => {
@@ -68,24 +66,23 @@ describe('Overlay Track:', () => {
   });
 
   describe('Chromosome grid overlay:', () => {
-    it('Should render', (done) => {
+    it('Should render', done => {
       viewConf = overlayChromGridViewConf;
 
       [div, api] = createElementAndApi(viewConf, { bound: true });
 
       hgc = api.getComponent();
 
-      const trackRenderer = hgc.tiledPlots[viewConf.views[0].uid]
-        .trackRenderer;
+      const trackRenderer = hgc.tiledPlots[viewConf.views[0].uid].trackRenderer;
 
-      const overlayTrackInfo = trackRenderer
-        .trackDefObjects[viewConf.views[0].overlays[0].uid];
+      const overlayTrackInfo =
+        trackRenderer.trackDefObjects[viewConf.views[0].overlays[0].uid];
 
       const overlayTrackObj = overlayTrackInfo.trackObject;
 
       expect(overlayTrackObj.constructor.name).toEqual('ChromosomeGrid');
 
-      hgc.pubSub.subscribe('requestReceived', (url) => {
+      hgc.pubSub.subscribe('requestReceived', url => {
         if (url === '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv') {
           expect(!!overlayTrackObj.lineGraphics).toBe(true);
           expect(!!overlayTrackObj.lineGraphics1dH).toBe(true);

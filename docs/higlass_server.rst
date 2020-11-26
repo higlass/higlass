@@ -65,124 +65,131 @@ Additionally, the following settings are set via ``config.json`` (see ``config.j
 ``SNIPPET_IMT_MAX_DATA_DIM`` - If specified it limits the maximum size (in pixels) of the longer side of the image tiles that are pulled out for getting the image snippet.
 
 
-Development
------------
-
-Running the server locally:
-
-.. code-block:: bash
-
-    python manage.py runserver 8000
-
-Testing
--------
-
-There are tests in ``tilesets/views.py`` which can be run
-from the command line:
-
-.. code-block:: bash
-
-    python manage.py test tilesets
-
-More specific tests can be run by specifying the class and function
-that contain the test:
-
-.. code-block:: bash
-
-    python manage.py test tilesets.tests.CoolerTest.test_get_multi_tiles
-
-Chromosome sizes
-^^^^^^^^^^^^^^^^
-Chromosome sizes specify the lengths of the chromosomes that make up an
-assembly. While they have no intrinsic biological order, HiGlass displays all
-chromosomes together on a line so the order of the entries in the file does
-have a meaning.
-
-They must be imported with the `chromsizes-tsv` filetype and `chromsizes`
-datatype to be properly recognized by the server and the API.
-
-.. code-block:: bash
-
-    docker exec higlass-container python \
-            higlass-server/manage.py ingest_tileset \
-            --filename /tmp/chromsizes_hg19.tsv \
-            --filetype chromsizes-tsv \
-            --datatype chromsizes
-
-Or using curl:
-
-.. code-block:: bash
-
-    curl -u `cat ~/.higlass-server-login` \
-        -F "datafile=@/Users/peter/projects/negspy/negspy/data/mm10/chromInfo.txt" \
-        -F "filetype=chromsizes-tsv" \
-        -F "datatype=chromsizes" \
-        -F "coordSystem=mm10" \
-        -F "name=Chromosomes (mm10)" \
-        http://higlass.io/api/v1/tilesets/
-
-This should return a JSON object contain a UUID to confirm that the data has been
-added to the server:
-
-.. code-block:: json
-
-    {
-       "uuid":"DRpJETNeTAShnhng6KhhXw",
-       "datafile":"http://higlass.io/api/v1/tilesets/media/uploads/chromInfo_ui7zU3M.txt",
-       "filetype":"chromsizes-tsv",
-       "datatype":"chromsizes",
-       "private":false,
-       "name":"Chromosomes (mm10)",
-       "coordSystem":"mm10",
-       "coordSystem2":"",
-       "created":"2017-08-10T18:44:40.369924Z"
-    }
-
 API
 ---
+
+Retrieving data (GET)
+^^^^^^^^^^^^^^^^^^^^^
 
 Retrieving a list of available tilesets:
 
 .. code-block:: bash
 
-    curl localhost:8000/api/v1/tilesets
+  curl localhost:8000/api/v1/tilesets
 
 To filter by a specific filetype, use the `t=filetype` parameter:
 
 .. code-block:: bash
 
-    curl localhost:8000/api/v1/tilesets?t=cooler
+  curl localhost:8000/api/v1/tilesets?t=cooler
 
 To filter by datatype, use the `dt=datatype` parameter:
 
 .. code-block:: bash
 
-    curl localhost:8000/api/v1/tilesets?dt=matrix
-
-Use the `dt` parameter to get gene annotations and chromsizes:
-
-.. code-block:: bash
-
-    curl localhost:8000/api/v1/tilesets?dt=gene-annotation
-    curl localhost:8000/api/v1/tilesets?dt=chromsizes
+  curl localhost:8000/api/v1/tilesets?dt=matrix
+  curl localhost:8000/api/v1/tilesets?dt=gene-annotation
+  curl localhost:8000/api/v1/tilesets?dt=chromsizes
 
 Retrieving properties of a tileset, for a specific `uuid`:
 
- .. code-block:: bash
+.. code-block:: bash
 
-    curl localhost:8000/api/v1/tilesets/${uuid}/
+  curl localhost:8000/api/v1/tilesets/${uuid}/
 
 To delete a tileset, specify the tileset `uuid` in the URL, and use the `DELETE` method with authentication credentials:
 
- .. code-block:: bash
+.. code-block:: bash
 
-    curl --user ${username}:${password} --request DELETE http://localhost:8000/api/v1/tilesets/${uuid}/
+  curl --user ${username}:${password} --request DELETE http://localhost:8000/api/v1/tilesets/${uuid}/
 
 To modify a tileset name, specify the tileset `uuid` in the URL, use the `PATCH` method with authentication credentials, and specify the new name in the JSON object passed to the request:
 
- .. code-block:: bash
+.. code-block:: bash
 
-    curl --user ${username}:${password} --request PATCH --header "Content-Type: application/json" --data '{"name":"new_name_of_tileset"}' http://localhost:8000/api/v1/tilesets/${uuid}/
+  curl --user ${username}:${password} --request PATCH --header "Content-Type: application/json" --data '{"name":"new_name_of_tileset"}' http://localhost:8000/api/v1/tilesets/${uuid}/
+
+To retrieve a particular tile, in this case tile `1` at zoom level `6` for the tileset named by the ``${uuid}`` variable:
+
+.. code-block:: bash
+
+  curl localhost:8000/api/v1/tiles?d=${uuid}.6.1
+
+To retrieve many tiles at once, in this case tiles `0`, `1`, and `2` at zoom level `6` for the tileset ``${uuid}``:
+
+.. code-block:: bash
+
+  curl localhost:8000/api/v1/tiles?d=${uuid}.6.0&d=${uuid}.6.1&d=${uuid}.6.2
+
+To retrieve multivec tiles with pre-aggregated rows, a `POST` request can be made to the ``/api/v1/tiles`` endpoint, with the following request body,
+where ``my_uuid`` is the `tilesetUid` for a multivec tileset.
+The request body will be validated against the JSON schema in the ``higlass-server`` repository `here <https://github.com/higlass/higlass-server/blob/develop/tilesets/json_schemas.py>`_.
+
+.. code-block:: json
+
+  [
+    {
+      "tilesetUid": "my_uuid",
+      "tileIds": ["6.0", "6.1"],
+      "options": {
+        "aggFunc": "mean",
+        "aggGroups": [
+          [1, 2, 3],
+          [0, 4, 9, 11]
+        ]
+      }
+    }
+  ]
+
+The ``options.aggGroups`` option takes a 1- or 2- dimensional array of integers, where each integer represents an index of a row in the multivec file.
+The ``options.aggFunc`` option takes one of the following string values: ``mean``, ``median``, ``std`` (standard deviation), ``var`` (variance), ``max``, ``min``.
+The aggregation function is evaluated for each sub-array (group of rows) if ``options.aggGroups`` is a 2-dimensional array (along axis 0).
+
+The response of the above `POST` request to ``/api/v1/tiles`` will have the following format.
+The zeroth entry of the ``shape`` property is `2` for both of these aggregated tiles, since ``options.aggGroups`` contained two groups.
+
+.. code-block:: json
+
+  {
+    "my_uuid.6.0": {
+      "dense": "9GNDVOl...",
+      "dtype": "float16",
+      "shape": [
+        2,
+        256
+      ]
+    },
+    "my_uuid.6.1": {
+      "dense": "mnGScTN...",
+      "dtype": "float16",
+      "shape": [
+        2,
+        256
+      ]
+    }
+  }
+
+
+Uploading data (POST)
+^^^^^^^^^^^^^^^^^^^^^
+
+The server API can be used to upload entire tilesets. To use this
+functionality, you need a username and password. These can be created using
+``higlass-manage create superuser``. The should be entered into a file (e.g.
+``~/.higlass-server-login)`` in the format ``username:password``.
+
+The rest of the parameters should be specified according to the filetype,
+datatype, coordSystem and name of the dataset.
+
+.. code-block:: bash
+
+  curl -u `cat ~/.higlass-server-login` \
+      -F 'datafile=@/Users/peter/projects/negspy/negspy/data/mm10/chromInfo.txt' \
+      -F 'filetype=chromsizes-tsv' \
+      -F 'datatype=chromsizes' \
+      -F 'coordSystem=mm10' \
+      -F 'name=Chromosomes (mm10)' \
+      http://higlass.io/api/v1/tilesets/
 
 Tile JSON Response Format
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -246,8 +253,65 @@ To modify the name of a tileset:
 
 .. note::  The `delete_tileset` command will delete the tileset record from the database backend. It will also delete the underlying file from the HiGlass server's `media/uploads` folder, and fail if this file cannot be removed.
 
+Chromosome sizes
+----------------
+
+Chromosome sizes specify the lengths of the chromosomes that make up an
+assembly. While they have no intrinsic biological order, HiGlass displays all
+chromosomes together on a line so the order of the entries in the file does
+have a meaning.
+
+They must be imported with the `chromsizes-tsv` filetype and `chromsizes`
+datatype to be properly recognized by the server and the API.
+
+.. code-block:: bash
+
+    docker exec higlass-container python \
+            higlass-server/manage.py ingest_tileset \
+            --filename /tmp/chromsizes_hg19.tsv \
+            --filetype chromsizes-tsv \
+            --datatype chromsizes
+
+Or using curl:
+
+.. code-block:: bash
+
+    curl -u `cat ~/.higlass-server-login` \
+        -F "datafile=@/Users/peter/projects/negspy/negspy/data/mm10/chromInfo.txt" \
+        -F "filetype=chromsizes-tsv" \
+        -F "datatype=chromsizes" \
+        -F "coordSystem=mm10" \
+        -F "name=Chromosomes (mm10)" \
+        http://higlass.io/api/v1/tilesets/
+
+This should return a JSON object containing a UUID to confirm that the data has been
+added to the server:
+
+.. code-block:: json
+
+    {
+       "uuid":"DRpJETNeTAShnhng6KhhXw",
+       "datafile":"http://higlass.io/api/v1/tilesets/media/uploads/chromInfo_ui7zU3M.txt",
+       "filetype":"chromsizes-tsv",
+       "datatype":"chromsizes",
+       "private":false,
+       "name":"Chromosomes (mm10)",
+       "coordSystem":"mm10",
+       "coordSystem2":"",
+       "created":"2017-08-10T18:44:40.369924Z"
+    }
+
+Development
+-----------
+
+Running the server locally:
+
+.. code-block:: bash
+
+    python manage.py runserver 8000
+
 Testing
-^^^^^^^
+-------
 
 .. code-block:: bash
 

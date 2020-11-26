@@ -7,12 +7,14 @@ import SeriesListSubmenuMixin from './SeriesListSubmenuMixin';
 
 import { getSeriesItems } from './SeriesListItems';
 
-import { getDarkTheme } from './services';
+import { THEME_DARK } from './configs';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMixin) {
+class ConfigTrackMenu extends mix(ContextMenuContainer).with(
+  SeriesListSubmenuMixin,
+) {
   constructor(props) {
     /**
      * A window that is opened when a user clicks on the track configuration icon.
@@ -29,11 +31,13 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
 
   render() {
     let styleNames = 'context-menu';
-    if (getDarkTheme()) styleNames += ' context-menu-dark';
+    if (this.props.theme === THEME_DARK) styleNames += ' context-menu-dark';
 
     return (
       <div
-        ref={c => this.div = c}
+        ref={(c) => {
+          this.div = c;
+        }}
         data-menu-type="ConfigTrackMenu"
         style={{
           left: this.state.left,
@@ -45,7 +49,7 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
           this.props.tracks,
           this.handleItemMouseEnter.bind(this),
           this.handleMouseLeave.bind(this),
-          null
+          null,
         )}
 
         <hr styleName="context-menu-hr" />
@@ -53,15 +57,17 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
         <ContextMenuItem
           contextMenu={this}
           onClick={() => this.props.onLockValueScale(this.props.tracks[0].uid)}
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
           {'Lock Value Scale With'}
         </ContextMenuItem>
 
         <ContextMenuItem
           contextMenu={this}
-          onClick={() => this.props.onUnlockValueScale(this.props.tracks[0].uid)}
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onClick={() =>
+            this.props.onUnlockValueScale(this.props.tracks[0].uid)
+          }
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
           {'Unlock Value Scale'}
         </ContextMenuItem>
@@ -71,7 +77,7 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
         <ContextMenuItem
           contextMenu={this}
           onClick={() => this.props.onAddSeries(this.props.tracks[0].uid)}
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
           {'Add Series'}
         </ContextMenuItem>
@@ -84,8 +90,10 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
 
         <ContextMenuItem
           onClick={() => {
-            this.props.onReplaceTrack(this.props.tracks[0].uid,
-              this.props.trackOrientation);
+            this.props.onReplaceTrack(
+              this.props.tracks[0].uid,
+              this.props.trackOrientation,
+            );
           }}
         >
           {'Replace Track'}

@@ -1,0 +1,71 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": ["http://higlass.io/api/v1"],
+  "exportViewUrl": "/api/v1/viewconfs",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [936467263.9009547, 937119339.4135379],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "visible": false
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "type": "top-axis"
+          }
+        ],
+        "left": [
+          {
+            "type": "left-axis"
+          }
+        ],
+        "center": [
+          {
+            "type": "osm-tiles",
+            "options": {
+              "maxPos": 3096000000,
+              "minPos": 0,
+              "maxZoom": 19,
+              "labelPosition": "hidden"
+            },
+            "uid": "M6CV28O9Tq2H7U2w1yvorw",
+            "width": 1677,
+            "height": 932
+          }
+        ],
+        "right": [],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 6,
+        "h": 25,
+        "x": 0,
+        "y": 0
+      },
+      "initialYDomain": [1144694580.1977904, 1146047244.4996018],
+      "genomePositionSearchBoxVisible": true
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

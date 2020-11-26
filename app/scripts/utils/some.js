@@ -5,6 +5,6 @@
  *   array.
  * @return  {*}  Modified array-like variable.
  */
-const some = f => x => Array.prototype.some.call(x, f);
+const some = (f) => (x) => Array.prototype.some.call(x, f);
 
 export default some;

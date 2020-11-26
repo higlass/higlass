@@ -7,9 +7,7 @@ const ndarrayAssign = (target, source) => {
   if (isScalar) {
     cwise({
       args: ['array', 'scalar'],
-      body: (a, s) => {
-        a = s;  // eslint-disable-line
-      }
+      body: 'function assigns(a, s) { a = s; }',
     })(target, numSource);
   } else {
     const ty = target.shape[0];
@@ -20,16 +18,17 @@ const ndarrayAssign = (target, source) => {
     if (ty !== sy || tx !== sx) {
       console.warn(
         'Cannot assign source to target ndarray as the dimensions do not match',
-        ty, sy, tx, sx
+        ty,
+        sy,
+        tx,
+        sx,
       );
       return;
     }
 
     cwise({
       args: ['array', 'array'],
-      body: (a, b) => {
-        a = b;  // eslint-disable-line
-      }
+      body: 'function assign(a, b) { a = b; }',
     })(target, source);
   }
 };

@@ -6,6 +6,5 @@ export {
   requestsInFlight,
   setTileProxyAuthHeader,
   getTileProxyAuthHeader,
-  authHeader
+  authHeader,
 } from './tile-proxy';
-export { getDarkTheme, setDarkTheme } from './is-dark-theme';

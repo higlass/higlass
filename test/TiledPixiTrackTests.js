@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import {
-  configure,
+  configure
   // render,
 } from 'enzyme';
 
@@ -12,13 +12,10 @@ import {
   removeHGComponent,
   getTrackObjectFromHGC,
   waitForTransitionsFinished,
-  waitForTilesLoaded,
+  waitForTilesLoaded
 } from '../app/scripts/utils';
 
-
-import {
-  simpleCenterViewConfig,
-} from './view-configs';
+import { simpleCenterViewConfig } from './view-configs';
 
 configure({ adapter: new Adapter() });
 
@@ -27,33 +24,23 @@ describe('Simple HiGlassComponent', () => {
   let div = null;
 
   describe('Tiled Pixi Track Tests', () => {
-    beforeAll((done) => {
-      ([div, hgc] = mountHGComponent(div, hgc,
-        simpleCenterViewConfig,
-        done,
-        {
-          style: 'width:800px; height:800px; background-color: lightgreen',
-          bounded: true,
-        })
-      );
+    beforeAll(done => {
+      [div, hgc] = mountHGComponent(div, hgc, simpleCenterViewConfig, done, {
+        style: 'width:800px; height:800px; background-color: lightgreen',
+        bounded: true
+      });
     });
 
-    it('Ensure we can set a dataChanged listener', (done) => {
-      const trackObject = getTrackObjectFromHGC(
-        hgc.instance(), 'heatmap1'
-      );
-
+    it('Ensure we can set a dataChanged listener', done => {
+      const trackObject = getTrackObjectFromHGC(hgc.instance(), 'heatmap1');
 
       const dataChangedCb = () => {};
 
       trackObject.on('dataChanged', dataChangedCb);
 
-      hgc.instance().zoomTo('a',
-        100000000,
-        200000000,
-        100000000,
-        200000000,
-        1000);
+      hgc
+        .instance()
+        .zoomTo('a', 100000000, 200000000, 100000000, 200000000, 1000);
 
       waitForTransitionsFinished(hgc.instance(), () => {
         waitForTilesLoaded(hgc.instance(), () => {
@@ -63,10 +50,8 @@ describe('Simple HiGlassComponent', () => {
       });
     });
 
-    afterAll((done) => {
+    afterAll(() => {
       removeHGComponent(div);
-
-      done();
     });
   });
 });

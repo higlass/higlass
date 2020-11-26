@@ -1,0 +1,100 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1",
+    "http://localhost:8989/api/v1"
+  ],
+  "exportViewUrl": "http://localhost:8000/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [0, 3000000000],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [],
+        "left": [],
+        "center": [
+          {
+            "uid": "c1",
+            "type": "combined",
+            "height": 1088,
+            "contents": [
+              {
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "type": "heatmap",
+                "position": "center",
+                "options": {
+                  "colorRange": ["#FFFFFF", "#F8E71C", "#F5A623", "#D0021B"],
+                  "colorbarPosition": "topRight",
+                  "colorbarLabelsPosition": "outside",
+                  "maxZoom": null,
+                  "labelPosition": "bottomLeft",
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "uid": "heatmap1",
+                "width": 961,
+                "height": 1088
+              },
+              {
+                "type": "2d-chromosome-grid",
+                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+                "uid": "LUVqXXu2QYiO8XURIwyUyA",
+                "options": {
+                  "lineStrokeWidth": 1,
+                  "lineStrokeColor": "grey"
+                },
+                "width": 961,
+                "height": 1088
+              },
+              {
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "WleVFSK7RIWx2EeptrbPBA",
+                "uid": "rectangles1",
+                "type": "2d-rectangle-domains",
+                "options": {
+                  "labelColor": "black",
+                  "labelPosition": "hidden",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "rectangleDomainFillColor": "grey",
+                  "rectangleDomainStrokeColor": "black",
+                  "rectangleDomainOpacity": 0.6,
+                  "name": "Forcato et al (2017) Rao_RepH_GM12878_InsulationScore.txt.multires.db"
+                },
+                "width": 20,
+                "height": 20
+              }
+            ],
+            "options": {},
+            "width": 961
+          }
+        ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

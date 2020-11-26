@@ -7,10 +7,12 @@
   "extends": [
     "eslint:recommended",
     "airbnb",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "prettier"
   ],
   "plugins": [
-    "react"
+    "react",
+    "prettier"
   ],
   "settings": {
     "react": {
@@ -31,7 +33,6 @@
     // TODOs:
 
     "no-param-reassign": 0, // https://github.com/higlass/higlass/issues/483
-    "no-return-assign": 0, // https://github.com/higlass/higlass/issues/480
     "react/no-find-dom-node": 0, // https://github.com/higlass/higlass/issues/510
     "react/require-default-props": 0, // https://github.com/higlass/higlass/issues/523
     "import/no-cycle": 0,
@@ -89,7 +90,6 @@
     "react/no-deprecated": 2,
     "react/no-did-mount-set-state": 1,
     "react/no-did-update-set-state": 2,
-    "react/no-direct-mutation-state": 1,
     "react/no-is-mounted": 2,
     "react/no-multi-comp": 2,
     "react/no-set-state": 0,
@@ -99,15 +99,16 @@
     "react/no-unused-state": 0,
     "react/prefer-es6-class": 2,
     "react/prop-types": 1,
-    "react/react-in-jsx-scope": 1,
+    "react/react-in-jsx-scope": 2,
     "react/self-closing-comp": 2,
-    "react/sort-comp": 1
+    "react/sort-comp": 0
   },
   "overrides": [
     {
-      "files": ["test/**/*.js"],
+      "files": ["test/**/*.js", "test/**/**/*.js" ],
       "rules": {
-        "no-use-before-define": 0 // So viewconfs can be below the body of the test.
+        "no-use-before-define": 0, // So viewconfs can be below the body of the test.
+	"no-undef": 0
       }
     }
   ]

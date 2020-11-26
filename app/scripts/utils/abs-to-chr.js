@@ -23,8 +23,8 @@ const absToChr = (absPosition, chromInfo) => {
   }
 
   if (
-    insertPoint === chromInfo.cumPositions.length - 1
-    && chrPosition > lastLength
+    insertPoint === chromInfo.cumPositions.length - 1 &&
+    chrPosition > lastLength
   ) {
     // beyond the last chromosome
     offset = chrPosition - lastLength;

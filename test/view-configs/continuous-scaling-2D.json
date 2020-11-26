@@ -1,0 +1,97 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": ["https://higlass.io/api/v1"],
+  "exportViewUrl": "/api/v1/viewconfs",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [0, 250000],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "https://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "https://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "visible": true
+      },
+      "tracks": {
+        "top": [],
+        "left": [],
+        "center": [
+          {
+            "uid": "AJ3VIPtyT7S3eccY6CCw_w",
+            "type": "combined",
+            "contents": [
+              {
+                "server": "https://higlass.io/api/v1",
+                "tilesetUid": "MGE0K5v1TZW-amlOsrtsKA",
+                "uid": "SOsG1d-NSCKhMzUNrLN0vQ",
+                "type": "heatmap",
+                "options": {
+                  "backgroundColor": "transparent",
+                  "labelPosition": "bottomRight",
+                  "labelLeftMargin": 0,
+                  "labelRightMargin": 0,
+                  "labelTopMargin": 0,
+                  "labelBottomMargin": 0,
+                  "labelShowResolution": true,
+                  "labelShowAssembly": true,
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "colorbarBackgroundColor": "#ffffff",
+                  "maxZoom": null,
+                  "minWidth": 100,
+                  "minHeight": 100,
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "showMousePosition": false,
+                  "mousePositionColor": "#000000",
+                  "showTooltip": false,
+                  "extent": "full",
+                  "name": "4DNFI4OBPEAV.mcool",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "width": 100,
+                "height": 100
+              }
+            ],
+            "options": {},
+            "width": 600,
+            "height": 600
+          }
+        ],
+        "right": [],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0
+      },
+      "initialYDomain": [0, 250000]
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

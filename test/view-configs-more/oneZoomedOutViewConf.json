@@ -1,0 +1,124 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": ["http://higlass.io/api/v1"],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [1334468431.4636846, 2088815290.9593406],
+      "initialYDomain": [1620859687.0934794, 1978456641.24886],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "horizontal-line",
+            "options": {
+              "labelColor": "red",
+              "labelPosition": "hidden",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "log",
+              "lineStrokeWidth": 1,
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black"
+            },
+            "width": 20,
+            "height": 20,
+            "uid": "line1"
+          }
+        ],
+        "left": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "vertical-line",
+            "options": {
+              "labelColor": "red",
+              "labelPosition": "hidden",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "log",
+              "axisPositionVertical": "top",
+              "lineStrokeWidth": 1,
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black"
+            },
+            "width": 20,
+            "height": 20,
+            "uid": "vline1"
+          }
+        ],
+        "center": [
+          {
+            "uid": "c1",
+            "type": "combined",
+            "height": 200,
+            "contents": [
+              {
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "type": "heatmap",
+                "options": {
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "colorbarPosition": "topLeft",
+                  "colorbarOrientation": "vertical",
+                  "colorbarLabelsPosition": "outside",
+                  "maxZoom": null,
+                  "labelPosition": "bottomRight",
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black"
+                },
+                "uid": "heatmap1"
+              }
+            ],
+            "options": {}
+          }
+        ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 5,
+        "h": 5,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {
+      "view2": "O8FOHoclT0KEYhoJybXouA",
+      "aa": "O8FOHoclT0KEYhoJybXouA"
+    },
+    "locksDict": {
+      "O8FOHoclT0KEYhoJybXouA": {
+        "view2": [1812727561.5083356, 1873757116.378131, 475954.14177536964],
+        "aa": [1812727561.5083356, 1873757116.378131, 475954.14177536964]
+      }
+    }
+  },
+  "locationLocks": {
+    "locksByViewUid": {
+      "view2": "BnrnwLnJRNm_Zlkk9ggZew",
+      "aa": "BnrnwLnJRNm_Zlkk9ggZew"
+    },
+    "locksDict": {
+      "BnrnwLnJRNm_Zlkk9ggZew": {
+        "view2": [1812727561.5083356, 1873757116.378131, 475954.14177536964],
+        "aa": [1812727561.5083356, 1873757116.378131, 475954.14177536964]
+      }
+    }
+  }
+}

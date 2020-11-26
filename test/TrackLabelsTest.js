@@ -6,9 +6,7 @@ import {
 import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 // Utils
-import {
-  mountHGComponent,
-} from '../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
 describe('Minimal viewconfs', () => {
@@ -21,7 +19,8 @@ describe('Minimal viewconfs', () => {
           tracks: {
             top: [
               {
-                name: 'wgEncodeLicrHistoneLiverH3k04me3UE14halfC57bl6StdSig.hitile',
+                name:
+                  'wgEncodeLicrHistoneLiverH3k04me3UE14halfC57bl6StdSig.hitile',
                 created: '2017-11-02T15:37:26.351612Z',
                 project: null,
                 project_name: '',
@@ -31,16 +30,16 @@ describe('Minimal viewconfs', () => {
                 uid: 'a',
                 type: 'horizontal-bar',
                 options: {
-                  barFillColor: 'red'
+                  barFillColor: 'red',
                 },
                 width: 1109,
                 height: 106,
-                position: 'top'
-              }
-            ]
-          }
-        }
-      ]
+                position: 'top',
+              },
+            ],
+          },
+        },
+      ],
     };
     let hgc = null;
     let div = null;
@@ -55,7 +54,7 @@ describe('Minimal viewconfs', () => {
     });
 
     afterAll(() => {
-      // removeHGComponent(div);
+      removeHGComponent(div);
     });
   });
 });

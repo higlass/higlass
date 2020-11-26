@@ -1,10 +1,17 @@
 import { scaleLinear } from 'd3-scale';
+import { fake as fakePubSub } from './hocs/with-pub-sub';
 
 // Services
 import { isWithin } from './utils';
 
 class Track {
-  constructor({ id, pubSub }) {
+  constructor({ id, pubSub, getTheme }) {
+    if (pubSub) {
+      this.pubSub = pubSub;
+    } else {
+      this.pubSub = fakePubSub;
+    }
+
     this.id = id;
     this._xScale = scaleLinear();
     this._yScale = scaleLinear();
@@ -19,13 +26,19 @@ class Track {
     this.position = [0, 0];
     this.dimensions = [1, 1];
     this.options = {};
-    this.pubSub = pubSub;
     this.pubSubs = [];
+
+    if (getTheme) {
+      this.getTheme = getTheme;
+    } else {
+      this.getTheme = () => {};
+    }
 
     this.pubSubs.push(
       this.pubSub.subscribe(
-        'app.mouseMove', this.defaultMouseMoveHandler.bind(this)
-      )
+        'app.mouseMove',
+        this.defaultMouseMoveHandler.bind(this),
+      ),
     );
   }
 
@@ -55,7 +68,7 @@ class Track {
       left,
       this.dimensions[0] + left,
       top,
-      this.dimensions[1] + top
+      this.dimensions[1] + top,
     );
   }
 
@@ -113,7 +126,9 @@ class Track {
    * Either get or set the yScale
    */
   yScale(_) {
-    if (!arguments.length) { return this._yScale; }
+    if (!arguments.length) {
+      return this._yScale;
+    }
 
     this._yScale = _;
 
@@ -148,13 +163,13 @@ class Track {
    *
    * @returns nothing
    */
-  defaultMouseMoveHandler(evt) {
-
-  }
+  defaultMouseMoveHandler(evt) {}
 
   remove() {
     // Clear all pubSub subscriptions
-    this.pubSubs.forEach(subscription => this.pubSub.unsubscribe(subscription));
+    this.pubSubs.forEach((subscription) =>
+      this.pubSub.unsubscribe(subscription),
+    );
     this.pubSubs = [];
   }
 
@@ -168,6 +183,10 @@ class Track {
   respondsToPosition(x, y) {
     return this.isWithin(x, y);
   }
+
+  zoomedY(trackY, kMultiplier) {}
+
+  movedY(dY) {}
 }
 
 export default Track;

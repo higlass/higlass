@@ -2,7 +2,7 @@
 import {
   MIN_HORIZONTAL_HEIGHT,
   MIN_VERTICAL_WIDTH,
-  TRACKS_INFO_BY_TYPE
+  TRACKS_INFO_BY_TYPE,
 } from '../configs';
 
 /**
@@ -26,42 +26,47 @@ const fillInMinWidths = (tracks) => {
   tracks.gallery = tracks.gallery || [];
 
   horizontalLocations
-    .map(horizontalLocation => tracks[horizontalLocation])
-    .forEach(horizontalTracks => horizontalTracks
-      .forEach((track) => {
+    .map((horizontalLocation) => tracks[horizontalLocation])
+    .forEach((horizontalTracks) =>
+      horizontalTracks.forEach((track) => {
         const trackInfo = TRACKS_INFO_BY_TYPE[track.type];
+        const defaultOptions = (trackInfo && trackInfo.defaultOptions) || {};
+        const options = track.options
+          ? { ...defaultOptions, ...track.options } // values in track.options take precedence
+          : defaultOptions;
 
-        if (trackInfo && track.height < trackInfo.minHeight) {
-          track.height = trackInfo.minHeight || MIN_HORIZONTAL_HEIGHT;
+        if (options.minHeight !== undefined && track.height === undefined) {
+          track.height = options.minHeight;
         }
 
-        if (!track.height) {
-          track.height = (
-            (trackInfo && trackInfo.defaultHeight)
-            || (trackInfo && trackInfo.minHeight)
-            || MIN_HORIZONTAL_HEIGHT
-          );
+        if (track.height === undefined) {
+          track.height =
+            (trackInfo && trackInfo.defaultHeight) || MIN_HORIZONTAL_HEIGHT;
         }
-      }));
+      }),
+    );
 
   verticalLocations
-    .map(verticalLocation => tracks[verticalLocation])
-    .forEach(verticalTracks => verticalTracks
-      .forEach((track) => {
+    .map((verticalLocation) => tracks[verticalLocation])
+    .forEach((verticalTracks) =>
+      verticalTracks.forEach((track) => {
         const trackInfo = TRACKS_INFO_BY_TYPE[track.type];
+        const defaultOptions = (trackInfo && trackInfo.defaultOptions) || {};
 
-        if (trackInfo && track.width < trackInfo.minWidth) {
-          track.width = trackInfo.minWidth || MIN_VERTICAL_WIDTH;
+        const options = track.options
+          ? { ...defaultOptions, ...track.options } // values in track.options take precedence
+          : defaultOptions;
+
+        if (options.minWidth !== undefined && track.width === undefined) {
+          track.width = options.minWidth;
         }
 
-        if (!track.width) {
-          track.width = (
-            (trackInfo && trackInfo.defaultWidth)
-            || (trackInfo && trackInfo.minWidth)
-            || MIN_VERTICAL_WIDTH
-          );
+        if (track.width === undefined) {
+          track.width =
+            (trackInfo && trackInfo.defaultWidth) || MIN_VERTICAL_WIDTH;
         }
-      }));
+      }),
+    );
 
   return tracks;
 };

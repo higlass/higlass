@@ -22,9 +22,8 @@ const SortableList = SortableContainer(
     handleResizeTrack,
     resizeHandles,
   }) => {
-    const itemElements = items.map((item, index) => React.createElement(
-      itemReactClass,
-      {
+    const itemElements = items.map((item, index) =>
+      React.createElement(itemReactClass, {
         key: `sci-${item.uid}`,
         className: itemClass,
         controlAlignLeft: itemControlAlignLeft,
@@ -43,8 +42,8 @@ const SortableList = SortableContainer(
         editable,
         handleResizeTrack,
         resizeHandles,
-      }
-    ));
+      }),
+    );
 
     return (
       <div

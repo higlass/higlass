@@ -1,0 +1,74 @@
+{
+  "editable": true,
+  "views": [
+    {
+      "uid": "Cs0jaHTuQXuibqx36Ew1xg",
+      "tracks": {
+        "top": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "VX4h-WzlSgu2VI88Fg5YGw",
+            "uid": "frcXuRouRpa_XSm5awtt3Q",
+            "type": "horizontal-bar",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "axisPositionHorizontal": "right",
+              "axisLabelFormatting": "normal",
+              "axisMargin": 10,
+              "lineStrokeColor": "blue",
+              "lineStrokeWidth": 1,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "showTooltip": false,
+              "name": "wgEncodeUwDnaseGm12865RawRep1.hitile",
+              "align": "bottom",
+              "barFillColor": "darkgreen",
+              "barOpacity": 1,
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "labelShowAssembly": true
+            },
+            "width": 275,
+            "height": 220
+          }
+        ],
+        "center": [],
+        "left": [],
+        "right": [],
+        "bottom": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 6,
+        "h": 6,
+        "x": 0,
+        "y": 0
+      },
+      "initialXDomain": [1107857626.861295, 1123722756.0119815],
+      "initialYDomain": [-3677453055.1650133, -3650079354.0674906]
+    }
+  ],
+  "trackSourceServers": ["http://higlass.io/api/v1"],
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs",
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

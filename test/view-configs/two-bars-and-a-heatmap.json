@@ -1,0 +1,172 @@
+{
+  "editable": true,
+  "views": [
+    {
+      "uid": "aa",
+      "tracks": {
+        "top": [
+          {
+            "type": "top-axis",
+            "options": {},
+            "server": "http://localhost:8111/api/v1",
+            "height": 20,
+            "uid": "P2SAGA2XR-uwEhwto227sQ",
+            "width": 470
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "Nn8aA4qbTnmaa-oGGbuE-A",
+            "uid": "tt",
+            "type": "horizontal-bar",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "axisLabelFormatting": "scientific",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "lineStrokeWidth": 1,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "showTooltip": false,
+              "name": "wgEncodeSydhTfbsGm12878InputStdSig",
+              "align": "bottom",
+              "barFillColor": "darkgreen",
+              "barOpacity": 1
+            },
+            "width": 470,
+            "height": 164
+          }
+        ],
+        "center": [
+          {
+            "uid": "R8HPGCSqQPaF4CDhSvwURQ",
+            "type": "combined",
+            "contents": [
+              {
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "D_8CofpyQoCqDqeA-A6A4g",
+                "uid": "cc",
+                "type": "heatmap",
+                "options": {
+                  "backgroundColor": "#eeeeee",
+                  "labelPosition": "bottomRight",
+                  "labelLeftMargin": 0,
+                  "labelRightMargin": 0,
+                  "labelTopMargin": 0,
+                  "labelBottomMargin": 0,
+                  "labelShowResolution": true,
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "showMousePosition": false,
+                  "mousePositionColor": "#999999",
+                  "showTooltip": false,
+                  "extent": "full",
+                  "name": "Dekker Lab HFFc6 DpnII",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "width": 470,
+                "height": 124
+              }
+            ],
+            "options": {},
+            "width": 470,
+            "height": 124
+          }
+        ],
+        "left": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "Nn8aA4qbTnmaa-oGGbuE-A",
+            "uid": "ll",
+            "type": "vertical-bar",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "bottomLeft",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "labelShowResolution": false,
+              "axisLabelFormatting": "scientific",
+              "axisPositionVertical": "top",
+              "lineStrokeWidth": 1,
+              "lineStrokeColor": "blue",
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "showTooltip": false,
+              "mousePositionColor": "#999999",
+              "name": "wgEncodeSydhTfbsGm12878InputStdSig"
+            },
+            "width": 85,
+            "height": 284
+          }
+        ],
+        "right": [],
+        "bottom": [],
+        "whole": [
+          {
+            "type": "vertical-rule",
+            "x": 504023.22434281674,
+            "options": {},
+            "uid": "e50TAB7DRjGJ0dMGPcPSBg",
+            "width": 470,
+            "height": 308
+          }
+        ],
+        "gallery": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 13,
+        "x": 0,
+        "y": 0
+      },
+      "initialXDomain": [
+        3520359.40804778,
+        3593266.0078421957
+      ],
+      "initialYDomain": [
+        3519553.443225772,
+        3573333.8960611327
+      ]
+    }
+  ],
+  "trackSourceServers": [
+    "http://higlass.io/api/v1"
+  ],
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs",
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

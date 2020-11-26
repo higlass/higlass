@@ -3,19 +3,20 @@ import PropTypes from 'prop-types';
 import { select, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import slugid from 'slugid';
+import * as PIXI from 'pixi.js';
 import ReactDOM from 'react-dom';
 import ReactGridLayout from 'react-grid-layout';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
-import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
 import parse from 'url-parse';
 import createPubSub, { globalPubSub } from 'pub-sub-es';
 
 import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
-import ExportLinkModal from './ExportLinkModal';
+import ExportLinkDialog from './ExportLinkDialog';
 import ViewHeader from './ViewHeader';
 import ChromosomeInfo from './ChromosomeInfo';
+import ViewConfigEditor from './ViewConfigEditor';
 
 import createSymbolIcon from './symbol';
 import { all as icons } from './icons';
@@ -23,13 +24,13 @@ import createApi from './api';
 
 // Higher-order components
 import { Provider as PubSubProvider } from './hocs/with-pub-sub';
+import { Provider as ModalProvider } from './hocs/with-modal';
+import { Provider as ThemeProvider } from './hocs/with-theme';
 
 // Services
 import {
   chromInfo,
   createDomEvent,
-  getDarkTheme,
-  setDarkTheme,
   setTileProxyAuthHeader,
   tileProxy,
   requestsInFlight,
@@ -53,9 +54,9 @@ import {
   // loadChromInfos,
   numericifyVersion,
   objVals,
-  positionedTracksToAllTracks,
   scalesCenterAndK,
   scalesToGenomeLoci,
+  visitPositionedTracks,
 } from './utils';
 
 // Configs
@@ -65,11 +66,14 @@ import {
   DEFAULT_CONTAINER_PADDING_Y,
   DEFAULT_VIEW_MARGIN,
   DEFAULT_VIEW_PADDING,
+  GLOBALS,
   MOUSE_TOOL_MOVE,
   MOUSE_TOOL_SELECT,
   LOCATION_LISTENER_PREFIX,
   LONG_DRAG_TIMEOUT,
   SHORT_DRAG_TIMEOUT,
+  THEME_DARK,
+  THEME_LIGHT,
   TRACKS_INFO_BY_TYPE,
 } from './configs';
 
@@ -82,6 +86,10 @@ import stylesGlobal from '../styles/HiGlass.scss'; // eslint-disable-line no-unu
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
 const VIEW_HEADER_HEIGHT = 20;
+const SIZE_MODE_DEFAULT = 'default';
+const SIZE_MODE_BOUNDED = 'bounded';
+const SIZE_MODE_OVERFLOW = 'overflow';
+const SIZE_MODE_SCROLL = 'scroll';
 
 class HiGlassComponent extends React.Component {
   constructor(props) {
@@ -90,7 +98,8 @@ class HiGlassComponent extends React.Component {
     // Check React version
     if (numericifyVersion(React.version) < 15.6) {
       console.warn(
-        'HiGlass requires React v15.6 or higher. Current version: ', React.version
+        'HiGlass requires React v15.6 or higher. Current version: ',
+        React.version,
       );
     }
 
@@ -110,6 +119,8 @@ class HiGlassComponent extends React.Component {
     // keep track of the xScales of each Track Renderer
     this.xScales = {};
     this.yScales = {};
+    this.projectionXDomains = {};
+    this.projectionYDomains = {};
     this.topDiv = null;
     this.zoomToDataExtentOnInit = new Set();
 
@@ -141,40 +152,54 @@ class HiGlassComponent extends React.Component {
     this.plusImg = {};
     this.configImg = {};
 
-    this.viewMarginTop = +props.options.viewMarginTop >= 0
-      ? +props.options.viewMarginTop
-      : DEFAULT_VIEW_MARGIN;
-    this.viewMarginBottom = +props.options.viewMarginBottom >= 0
-      ? +props.options.viewMarginBottom
-      : DEFAULT_VIEW_MARGIN;
-    this.viewMarginLeft = +props.options.viewMarginLeft >= 0
-      ? +props.options.viewMarginLeft
-      : DEFAULT_VIEW_MARGIN;
-    this.viewMarginRight = +props.options.viewMarginRight >= 0
-      ? +props.options.viewMarginRight
-      : DEFAULT_VIEW_MARGIN;
+    // allow a different PIXI to be passed in case the
+    // caller wants to use a different version
+    GLOBALS.PIXI = (props.options && props.options.PIXI) || PIXI;
 
-    this.viewPaddingTop = +props.options.viewPaddingTop >= 0
-      ? +props.options.viewPaddingTop
-      : DEFAULT_VIEW_PADDING;
-    this.viewPaddingBottom = +props.options.viewPaddingBottom >= 0
-      ? +props.options.viewPaddingBottom
-      : DEFAULT_VIEW_PADDING;
-    this.viewPaddingLeft = +props.options.viewPaddingLeft >= 0
-      ? +props.options.viewPaddingLeft
-      : DEFAULT_VIEW_PADDING;
-    this.viewPaddingRight = +props.options.viewPaddingRight >= 0
-      ? +props.options.viewPaddingRight
-      : DEFAULT_VIEW_PADDING;
+    this.viewMarginTop =
+      +props.options.viewMarginTop >= 0
+        ? +props.options.viewMarginTop
+        : DEFAULT_VIEW_MARGIN;
+    this.viewMarginBottom =
+      +props.options.viewMarginBottom >= 0
+        ? +props.options.viewMarginBottom
+        : DEFAULT_VIEW_MARGIN;
+    this.viewMarginLeft =
+      +props.options.viewMarginLeft >= 0
+        ? +props.options.viewMarginLeft
+        : DEFAULT_VIEW_MARGIN;
+    this.viewMarginRight =
+      +props.options.viewMarginRight >= 0
+        ? +props.options.viewMarginRight
+        : DEFAULT_VIEW_MARGIN;
+
+    this.viewPaddingTop =
+      +props.options.viewPaddingTop >= 0
+        ? +props.options.viewPaddingTop
+        : DEFAULT_VIEW_PADDING;
+    this.viewPaddingBottom =
+      +props.options.viewPaddingBottom >= 0
+        ? +props.options.viewPaddingBottom
+        : DEFAULT_VIEW_PADDING;
+    this.viewPaddingLeft =
+      +props.options.viewPaddingLeft >= 0
+        ? +props.options.viewPaddingLeft
+        : DEFAULT_VIEW_PADDING;
+    this.viewPaddingRight =
+      +props.options.viewPaddingRight >= 0
+        ? +props.options.viewPaddingRight
+        : DEFAULT_VIEW_PADDING;
 
     this.genomePositionSearchBox = null;
     this.viewHeaders = {};
 
-    this.boundRefreshView = (() => { this.refreshView(LONG_DRAG_TIMEOUT); });
+    this.boundRefreshView = () => {
+      this.refreshView(LONG_DRAG_TIMEOUT);
+    };
 
     this.unsetOnLocationChange = [];
 
-    if (props.options.isDarkTheme) setDarkTheme();
+    this.setTheme(props.options.theme, props.options.isDarkTheme);
 
     this.viewconfLoaded = false;
 
@@ -185,10 +210,19 @@ class HiGlassComponent extends React.Component {
       setTileProxyAuthHeader(props.options.authToken);
     }
 
-    this.pixiStage = new PIXI.Container();
+    this.pixiRoot = new GLOBALS.PIXI.Container();
+    this.pixiRoot.interactive = true;
+
+    this.pixiStage = new GLOBALS.PIXI.Container();
     this.pixiStage.interactive = true;
+    this.pixiRoot.addChild(this.pixiStage);
+
+    this.pixiMask = new GLOBALS.PIXI.Graphics();
+    this.pixiRoot.addChild(this.pixiMask);
+    this.pixiStage.mask = this.pixiMask;
 
     this.element = null;
+    this.scrollTop = 0;
 
     let mouseTool = MOUSE_TOOL_MOVE;
 
@@ -202,27 +236,42 @@ class HiGlassComponent extends React.Component {
       }
     }
 
-    const pluginTracks = {};
-    try {
-      if (window.higlassTracks) {
-        Object.values(window.higlassTracks).forEach((trackDef) => {
-          pluginTracks[trackDef.config.type] = trackDef;
-        });
-      }
-    } catch (e) {
-      console.warn(
-        'Broken config of a plugin track', this.props.options.tracks
+    if (this.props.options.pluginTracks) {
+      window.higlassTracksByType = Object.assign(
+        window.higlassTracksByType || {},
+        this.props.options.pluginTracks,
       );
     }
 
-    const rowHeight = this.props.options.pixelPreciseMarginPadding
-      ? 1
-      : 30;
+    const pluginTracks = {};
+    try {
+      if (window.higlassTracksByType) {
+        Object.entries(window.higlassTracksByType).forEach(
+          ([trackType, trackDef]) => {
+            pluginTracks[trackType] = trackDef;
+          },
+        );
+      }
+    } catch (e) {
+      console.warn('Broken config of a plugin track');
+    }
+
+    if (this.props.options.pluginDataFetchers) {
+      window.higlassDataFetchersByType = Object.assign(
+        window.higlassDataFetchersByType || {},
+        this.props.options.pluginDataFetchers,
+      );
+    }
+
+    const pluginDataFetchers = window.higlassDataFetchersByType;
+
+    const rowHeight = this.props.options.pixelPreciseMarginPadding ? 1 : 30;
 
     this.mounted = false;
+    this.pluginTracks = pluginTracks;
+    this.pluginDataFetchers = pluginDataFetchers;
+
     this.state = {
-      bounded: this.props.options.bounded || false,
-      pluginTracks,
       currentBreakpoint: 'lg',
       width: 0,
       height: 0,
@@ -232,17 +281,14 @@ class HiGlassComponent extends React.Component {
       views,
       viewConfig,
       addTrackPositionMenuPosition: null,
-
+      typedEditable: undefined,
       mouseOverOverlayUid: null,
-      exportLinkModalOpen: false,
-      exportLinkLocation: null,
       mouseTool,
       isDarkTheme: false,
       rangeSelection1dSize: [0, Infinity],
       rangeSelectionToInt: false,
+      modal: null,
     };
-
-    Object.values(views).map(view => this.adjustLayoutToTrackSizes(view));
 
     // monitor whether this element is attached to the DOM so that
     // we can determine whether to add the resizesensor
@@ -250,17 +296,19 @@ class HiGlassComponent extends React.Component {
 
     // Set up API
     const {
-      public: api, destroy: apiDestroy, publish: apiPublish
+      public: api,
+      destroy: apiDestroy,
+      publish: apiPublish,
+      stack: apiStack,
     } = createApi(this, this.pubSub);
     this.api = api;
     this.apiDestroy = apiDestroy;
     this.apiPublish = apiPublish;
+    this.apiStack = apiStack;
 
     this.viewChangeListener = [];
 
-    this.triggerViewChangeDb = debounce(
-      this.triggerViewChange.bind(this), 250,
-    );
+    this.triggerViewChangeDb = debounce(this.triggerViewChange.bind(this), 250);
 
     this.pubSubs = [];
     this.rangeSelection = [null, null];
@@ -275,11 +323,16 @@ class HiGlassComponent extends React.Component {
     this.resizeHandlerBound = this.resizeHandler.bind(this);
     this.resizeHandlerBound = this.resizeHandler.bind(this);
     this.dispatchEventBound = this.dispatchEvent.bind(this);
-    this.animateOnMouseMoveHandlerBound = this.animateOnMouseMoveHandler.bind(this);
+    this.animateOnMouseMoveHandlerBound = this.animateOnMouseMoveHandler.bind(
+      this,
+    );
     this.zoomStartHandlerBound = this.zoomStartHandler.bind(this);
     this.zoomEndHandlerBound = this.zoomEndHandler.bind(this);
     this.zoomHandlerBound = this.zoomHandler.bind(this);
     this.trackDroppedHandlerBound = this.trackDroppedHandler.bind(this);
+    this.trackDimensionsModifiedHandlerBound = this.trackDimensionsModifiedHandler.bind(
+      this,
+    );
     this.animateBound = this.animate.bind(this);
     this.animateOnGlobalEventBound = this.animateOnGlobalEvent.bind(this);
     this.requestReceivedHandlerBound = this.requestReceivedHandler.bind(this);
@@ -287,18 +340,32 @@ class HiGlassComponent extends React.Component {
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
     this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
     this.onBlurHandlerBound = this.onBlurHandler.bind(this);
+    this.openModalBound = this.openModal.bind(this);
+    this.closeModalBound = this.closeModal.bind(this);
+    this.handleEditViewConfigBound = this.handleEditViewConfig.bind(this);
+    this.onScrollHandlerBound = this.onScrollHandler.bind(this);
+
+    // for typed shortcuts (e.g. e-d-i-t) to toggle editable
+    this.typedText = '';
+    this.typedTextTimeout = null;
+
+    this.modal = {
+      open: this.openModalBound,
+      close: this.closeModalBound,
+    };
 
     this.setBroadcastMousePositionGlobally(
-      this.props.options.broadcastMousePositionGlobally
-      || this.props.options.globalMousePosition
+      this.props.options.broadcastMousePositionGlobally ||
+        this.props.options.globalMousePosition,
     );
     this.setShowGlobalMousePosition(
-      this.props.options.showGlobalMousePosition
-      || this.props.options.globalMousePosition
+      this.props.options.showGlobalMousePosition ||
+        this.props.options.globalMousePosition,
     );
   }
 
-  componentWillMount() {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount() {
     this.domEvent.register('keydown', document);
     this.domEvent.register('keyup', document);
     this.domEvent.register('scroll', document);
@@ -310,6 +377,10 @@ class HiGlassComponent extends React.Component {
     this.domEvent.register('mouseup', window, true);
     this.domEvent.register('click', window, true);
     this.domEvent.register('mousemove', window);
+    this.domEvent.register('touchmove', window);
+    this.domEvent.register('touchstart', window);
+    this.domEvent.register('touchend', window);
+    this.domEvent.register('touchcancel', window);
     this.domEvent.register('blur', window);
 
     this.pubSubs.push(
@@ -321,17 +392,36 @@ class HiGlassComponent extends React.Component {
       this.pubSub.subscribe('wheel', this.wheelHandlerBound),
       this.pubSub.subscribe('orientationchange', this.resizeHandlerBound),
       this.pubSub.subscribe('app.event', this.dispatchEventBound),
-      this.pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandlerBound),
+      this.pubSub.subscribe(
+        'app.animateOnMouseMove',
+        this.animateOnMouseMoveHandlerBound,
+      ),
       this.pubSub.subscribe('trackDropped', this.trackDroppedHandlerBound),
+      this.pubSub.subscribe(
+        'trackDimensionsModified',
+        this.trackDimensionsModifiedHandlerBound,
+      ),
       this.pubSub.subscribe('app.zoomStart', this.zoomStartHandlerBound),
       this.pubSub.subscribe('app.zoomEnd', this.zoomEndHandlerBound),
       this.pubSub.subscribe('app.zoom', this.zoomHandlerBound),
-      this.pubSub.subscribe('requestReceived', this.requestReceivedHandlerBound),
+      this.pubSub.subscribe(
+        'requestReceived',
+        this.requestReceivedHandlerBound,
+      ),
     );
 
     if (this.props.getApi) {
       this.props.getApi(this.api);
     }
+  }
+
+  get sizeMode() {
+    // eslint-disable-next-line no-nested-ternary
+    return typeof this.props.options.sizeMode === 'undefined'
+      ? this.props.options.bounded
+        ? 'bounded'
+        : SIZE_MODE_DEFAULT
+      : this.props.options.sizeMode;
   }
 
   setBroadcastMousePositionGlobally(isBroadcastMousePositionGlobally = false) {
@@ -343,14 +433,15 @@ class HiGlassComponent extends React.Component {
 
     if (this.isShowGlobalMousePosition && !this.globalMousePositionListener) {
       this.globalMousePositionListener = globalPubSub.subscribe(
-        'higlass.mouseMove', this.animateOnGlobalEventBound
+        'higlass.mouseMove',
+        this.animateOnGlobalEventBound,
       );
       this.pubSubs.push(this.globalMousePositionListener);
     }
 
     if (this.isShowGlobalMousePosition && !this.globalMousePositionListener) {
       const index = this.pubSubs.findIndex(
-        listener => listener === this.globalMousePositionListener
+        (listener) => listener === this.globalMousePositionListener,
       );
 
       globalPubSub.unsubscribe(this.globalMousePositionListener);
@@ -398,6 +489,8 @@ class HiGlassComponent extends React.Component {
     window.addEventListener('focus', this.boundRefreshView);
 
     Object.values(this.state.views).forEach((view) => {
+      this.adjustLayoutToTrackSizes(view);
+
       if (!view.layout) {
         view.layout = this.generateViewLayout(view);
       } else {
@@ -406,6 +499,8 @@ class HiGlassComponent extends React.Component {
     });
 
     const rendererOptions = {
+      width: this.state.width,
+      height: this.state.height,
       view: this.canvasElement,
       antialias: true,
       transparent: true,
@@ -413,24 +508,31 @@ class HiGlassComponent extends React.Component {
       autoResize: true,
     };
 
-    if (this.props.options.renderer === 'webgl') {
-      this.pixiRenderer = new PIXI.WebGLRenderer(
-        this.state.width,
-        this.state.height,
-        rendererOptions
-      );
-    } else if (this.props.options.renderer === 'canvas') {
-      this.pixiRenderer = new PIXI.CanvasRenderer(
-        this.state.width,
-        this.state.height,
-        rendererOptions
-      );
-    } else {
-      this.pixiRenderer = PIXI.autoDetectRenderer(
-        this.state.width,
-        this.state.height,
-        rendererOptions
-      );
+    switch (PIXI.VERSION[0]) {
+      case '4':
+        console.warn(
+          'Deprecation warning: please update Pixi.js to version 5!',
+        );
+        if (this.props.options.renderer === 'canvas') {
+          this.pixiRenderer = new GLOBALS.PIXI.CanvasRenderer(rendererOptions);
+        } else {
+          this.pixiRenderer = new GLOBALS.PIXI.WebGLRenderer(rendererOptions);
+        }
+        break;
+
+      default:
+        console.warn(
+          'Deprecation warning: please update Pixi.js to version 5! ' +
+            'This version of Pixi.js is unsupported. Good luck 🤞',
+        );
+      // eslint-disable-next-line
+      case '5':
+        if (this.props.options.renderer === 'canvas') {
+          this.pixiRenderer = new GLOBALS.PIXI.CanvasRenderer(rendererOptions);
+        } else {
+          this.pixiRenderer = new GLOBALS.PIXI.Renderer(rendererOptions);
+        }
+        break;
     }
 
     // PIXI.RESOLUTION=2;
@@ -438,6 +540,7 @@ class HiGlassComponent extends React.Component {
 
     // keep track of the width and height of this element, because it
     // needs to be reflected in the size of our drawing surface
+    // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       svgElement: this.svgElement,
       canvasElement: this.canvasElement,
@@ -447,7 +550,8 @@ class HiGlassComponent extends React.Component {
       ElementQueries.listen();
 
       this.resizeSensor = new ResizeSensor(
-        this.element.parentNode, this.updateAfterResize.bind(this),
+        this.element.parentNode,
+        this.updateAfterResize.bind(this),
       );
 
       // this.forceUpdate();
@@ -463,8 +567,8 @@ class HiGlassComponent extends React.Component {
     const baseSvg = select(this.element).append('svg').style('display', 'none');
 
     // Add SVG Icons
-    icons.forEach(
-      icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox),
+    icons.forEach((icon) =>
+      createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox),
     );
   }
 
@@ -484,22 +588,26 @@ class HiGlassComponent extends React.Component {
     let views = {};
     if (typeof viewConfig === 'string') {
       // Load external viewConfig
-      tileProxy.json(viewConfig, (error, remoteViewConfig) => {
-        viewConfig = remoteViewConfig;
-        this.setState({
-          views: this.processViewConfig(
-            JSON.parse(JSON.stringify(remoteViewConfig))
-          ),
-          viewConfig: remoteViewConfig
-        });
-        this.unsetOnLocationChange.forEach(({ viewId, callback, callbackId }) => {
-          this.onLocationChange(viewId, callback, callbackId);
-        });
-      }, this.pubSub);
-    } else {
-      views = this.processViewConfig(
-        JSON.parse(JSON.stringify(viewConfig))
+      tileProxy.json(
+        viewConfig,
+        (error, remoteViewConfig) => {
+          viewConfig = remoteViewConfig;
+          this.setState({
+            views: this.processViewConfig(
+              JSON.parse(JSON.stringify(remoteViewConfig)),
+            ),
+            viewConfig: remoteViewConfig,
+          });
+          this.unsetOnLocationChange.forEach(
+            ({ viewId, callback, callbackId }) => {
+              this.onLocationChange(viewId, callback, callbackId);
+            },
+          );
+        },
+        this.pubSub,
       );
+    } else {
+      views = this.processViewConfig(JSON.parse(JSON.stringify(viewConfig)));
       if (this.mounted) {
         this.setState({
           viewConfig,
@@ -510,7 +618,8 @@ class HiGlassComponent extends React.Component {
     return views;
   }
 
-  componentWillReceiveProps(newProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(newProps) {
     const viewsByUid = this.loadIfRemoteViewConfig(newProps.viewConfig);
 
     if (newProps.options.authToken !== this.prevAuthToken) {
@@ -541,14 +650,17 @@ class HiGlassComponent extends React.Component {
     });
   }
 
-  componentWillUpdate() {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillUpdate() {
     // let width = this.element.clientWidth;
     // let height = this.element.clientHeight;
 
-    this.pixiRenderer.render(this.pixiStage);
+    this.pixiRenderer.render(this.pixiRoot);
   }
 
   componentDidUpdate() {
+    this.setTheme(this.props.options.theme, this.props.options.isDarkTheme);
+
     this.animate();
     this.triggerViewChangeDb();
   }
@@ -575,8 +687,14 @@ class HiGlassComponent extends React.Component {
     this.domEvent.unregister('mouseup', window);
     this.domEvent.unregister('click', window);
     this.domEvent.unregister('mousemove', window);
+    this.domEvent.unregister('touchmove', window);
+    this.domEvent.unregister('touchstart', window);
+    this.domEvent.unregister('touchend', window);
+    this.domEvent.unregister('touchcancel', window);
 
-    this.pubSubs.forEach(subscription => this.pubSub.unsubscribe(subscription));
+    this.pubSubs.forEach((subscription) =>
+      this.pubSub.unsubscribe(subscription),
+    );
 
     this.pubSubs = [];
 
@@ -585,6 +703,31 @@ class HiGlassComponent extends React.Component {
 
   /* ---------------------------- Custom Methods ---------------------------- */
 
+  setTheme(
+    newTheme = this.props.options.theme,
+    isDarkTheme = this.props.options.isDarkTheme,
+  ) {
+    if (typeof isDarkTheme !== 'undefined') {
+      console.warn(
+        'The option `isDarkTheme` is deprecated. Please use `theme` instead.',
+      );
+      this.theme = isDarkTheme ? 'dark' : 'light';
+    } else {
+      switch (newTheme) {
+        case 'dark':
+          this.theme = THEME_DARK;
+          break;
+        case 'light':
+        case undefined:
+          this.theme = THEME_LIGHT;
+          break;
+        default:
+          console.warn(`Unknown theme "${newTheme}". Using light theme.`);
+          this.theme = THEME_LIGHT;
+          break;
+      }
+    }
+  }
 
   dispatchEvent(e) {
     if (!this.canvasElement) return;
@@ -609,7 +752,9 @@ class HiGlassComponent extends React.Component {
 
   animateOnMouseMoveHandler(active) {
     if (active && !this.animateOnMouseMove) {
-      this.pubSubs.push(this.pubSub.subscribe('app.mouseMove', this.animateBound));
+      this.pubSubs.push(
+        this.pubSub.subscribe('app.mouseMove', this.animateBound),
+      );
     }
     this.animateOnMouseMove = active;
   }
@@ -623,18 +768,20 @@ class HiGlassComponent extends React.Component {
     const width = this.element.parentNode.clientWidth;
     const height = this.element.parentNode.clientHeight;
 
+    this.pixiMask.beginFill(0xffffff).drawRect(0, 0, width, height).endFill();
+
     this.pixiRenderer.resize(width, height);
 
     this.pixiRenderer.view.style.width = `${width}px`;
     this.pixiRenderer.view.style.height = `${height}px`;
 
-    this.pixiRenderer.render(this.pixiStage);
+    this.pixiRenderer.render(this.pixiRoot);
   }
 
   /**
    * Add default track options. These can come from two places:
    *
-   * 1. The track definitions (options/tracks-info.js)
+   * 1. The track definitions (configs/tracks-info.js)
    * 2. The default options passed into the component
    *
    * Of these, #2 takes precendence over #1.
@@ -652,16 +799,21 @@ class HiGlassComponent extends React.Component {
     const trackOptions = track.options ? track.options : {};
 
     if (this.props.options.defaultTrackOptions) {
-      if (this.props.options.defaultTrackOptions.trackSpecific
-        && this.props.options.defaultTrackOptions.trackSpecific[track.type]) {
+      if (
+        this.props.options.defaultTrackOptions.trackSpecific &&
+        this.props.options.defaultTrackOptions.trackSpecific[track.type]
+      ) {
         // track specific options take precedence over all options
 
-        const options = this.props.options.defaultTrackOptions.trackSpecific[track.type];
+        const options = this.props.options.defaultTrackOptions.trackSpecific[
+          track.type
+        ];
 
         for (const optionName in options) {
-          track.options[optionName] = typeof (track.options[optionName]) !== 'undefined'
-            ? track.options[optionName]
-            : JSON.parse(JSON.stringify(options[optionName]));
+          track.options[optionName] =
+            typeof track.options[optionName] !== 'undefined'
+              ? track.options[optionName]
+              : JSON.parse(JSON.stringify(options[optionName]));
         }
       }
 
@@ -669,27 +821,77 @@ class HiGlassComponent extends React.Component {
         const options = this.props.options.defaultTrackOptions.all;
 
         for (const optionName in options) {
-          track.options[optionName] = typeof (track.options[optionName]) !== 'undefined'
-            ? track.options[optionName]
-            : JSON.parse(JSON.stringify(options[optionName]));
+          track.options[optionName] =
+            typeof track.options[optionName] !== 'undefined'
+              ? track.options[optionName]
+              : JSON.parse(JSON.stringify(options[optionName]));
         }
       }
     }
 
     if (trackInfo.defaultOptions) {
+      const defaultThemeOptions =
+        trackInfo.defaultOptionsByTheme &&
+        trackInfo.defaultOptionsByTheme[this.theme]
+          ? trackInfo.defaultOptionsByTheme[this.theme]
+          : {};
+
+      const defaultOptions = Object.assign(
+        {},
+        trackInfo.defaultOptions,
+        defaultThemeOptions,
+      );
+
       if (!track.options) {
-        track.options = JSON.parse(JSON.stringify(trackInfo.defaultOptions));
+        track.options = JSON.parse(JSON.stringify(defaultOptions));
       } else {
-        for (const optionName in trackInfo.defaultOptions) {
-          track.options[optionName] = typeof (track.options[optionName]) !== 'undefined'
-            ? track.options[optionName]
-            : JSON.parse(JSON.stringify(trackInfo.defaultOptions[optionName]));
+        for (const optionName in defaultOptions) {
+          track.options[optionName] =
+            typeof track.options[optionName] !== 'undefined'
+              ? track.options[optionName]
+              : JSON.parse(JSON.stringify(defaultOptions[optionName]));
         }
       }
-    } else { track.options = trackOptions; }
+    } else {
+      track.options = trackOptions;
+    }
+  }
+
+  toggleTypedEditable() {
+    this.setState({
+      typedEditable: !this.isEditable(),
+    });
+  }
+
+  /** Handle typed commands (e.g. e-d-i-t) */
+  typedTextHandler(event) {
+    if (!this.props.options.cheatCodesEnabled) {
+      return;
+    }
+
+    this.typedText = this.typedText.concat(event.key);
+
+    if (this.typedText.endsWith('hgedit')) {
+      this.toggleTypedEditable();
+      this.typedText = '';
+    }
+
+    // 1.5 seconds to type the next letter
+    const TYPED_TEXT_TIMEOUT = 750;
+    if (this.typedTextTimeout) {
+      clearTimeout(this.typedTextTimeout);
+    }
+
+    // set a timeout for new typed text
+    this.typedTextTimeout = setTimeout(() => {
+      this.typedText = '';
+    }, TYPED_TEXT_TIMEOUT);
   }
 
   keyDownHandler(event) {
+    // handle typed commands (e.g. e-d-i-t)
+    this.typedTextHandler(event);
+
     if (this.props.options.rangeSelectionOnAlt && event.key === 'Alt') {
       this.setState({
         mouseTool: MOUSE_TOOL_SELECT,
@@ -705,6 +907,64 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  openModal(modal) {
+    this.setState({
+      // The following is only needed for testing purposes
+      modal: React.cloneElement(modal, {
+        ref: (c) => {
+          this.modalRef = c;
+        },
+      }),
+    });
+  }
+
+  closeModal() {
+    this.modalRef = null;
+    this.setState({ modal: null });
+  }
+
+  handleEditViewConfig() {
+    const { viewConfig: viewConfigTmp } = this.state;
+    this.setState({ viewConfigTmp });
+    this.openModal(
+      <ViewConfigEditor
+        onCancel={() => {
+          const { viewConfigTmp: viewConfig } = this.state;
+          const views = this.processViewConfig(viewConfig);
+          for (const view of dictValues(views)) {
+            this.adjustLayoutToTrackSizes(view);
+          }
+          this.setState({
+            views,
+            viewConfig,
+            viewConfigTmp: null,
+          });
+        }}
+        onChange={(viewConfigJson) => {
+          const viewConfig = JSON.parse(viewConfigJson);
+          const views = this.processViewConfig(viewConfig);
+          for (const view of dictValues(views)) {
+            this.adjustLayoutToTrackSizes(view);
+          }
+          this.setState({ views, viewConfig });
+        }}
+        onSave={(viewConfigJson) => {
+          const viewConfig = JSON.parse(viewConfigJson);
+          const views = this.processViewConfig(viewConfig);
+          for (const view of dictValues(views)) {
+            this.adjustLayoutToTrackSizes(view);
+          }
+          this.setState({
+            views,
+            viewConfig,
+            viewConfigTmp: null,
+          });
+        }}
+        viewConfig={this.getViewsAsString()}
+      />,
+    );
+  }
+
   animate() {
     if (this.isRequestingAnimationFrame) return;
 
@@ -714,7 +974,7 @@ class HiGlassComponent extends React.Component {
       // component was probably unmounted
       if (!this.pixiRenderer) return;
 
-      this.pixiRenderer.render(this.pixiStage);
+      this.pixiRenderer.render(this.pixiRoot);
 
       this.isRequestingAnimationFrame = false;
     });
@@ -774,7 +1034,7 @@ class HiGlassComponent extends React.Component {
   handleLockLocation(uid) {
     // create a view chooser and remove the config view menu
     this.setState({
-      chooseViewHandler: uid2 => this.handleLocationLockChosen(uid, uid2),
+      chooseViewHandler: (uid2) => this.handleLocationLockChosen(uid, uid2),
       mouseOverOverlayUid: uid,
     });
   }
@@ -784,6 +1044,12 @@ class HiGlassComponent extends React.Component {
    * visible?
    */
   isEditable() {
+    if (this.state.typedEditable !== undefined) {
+      // somebody typed "edit" so we need to follow the directive of
+      // this cheat code over all other preferences
+      return this.state.typedEditable;
+    }
+
     if (!this.props.options || !('editable' in this.props.options)) {
       return this.state.viewConfig.editable;
     }
@@ -797,19 +1063,17 @@ class HiGlassComponent extends React.Component {
    */
   isTrackMenuDisabled() {
     if (
-      this.props.options && (
-        this.props.options.editable === false
-        || this.props.options.tracksEditable === false
-      )
+      this.props.options &&
+      (this.props.options.editable === false ||
+        this.props.options.tracksEditable === false)
     ) {
       return true;
     }
 
     return (
-      this.state.viewConfig && (
-        this.state.viewConfig.tracksEditable === false
-        || this.state.viewConfig.editable === false
-      )
+      this.state.viewConfig &&
+      (this.state.viewConfig.tracksEditable === false ||
+        this.state.viewConfig.editable === false)
     );
   }
 
@@ -819,19 +1083,17 @@ class HiGlassComponent extends React.Component {
    */
   isViewHeaderDisabled() {
     if (
-      this.props.options && (
-        this.props.options.editable === false
-        || this.props.options.viewEditable === false
-      )
+      this.props.options &&
+      (this.props.options.editable === false ||
+        this.props.options.viewEditable === false)
     ) {
       return true;
     }
 
     return (
-      this.state.viewConfig && (
-        this.state.viewConfig.viewEditable === false
-        || this.state.viewConfig.editable === false
-      )
+      this.state.viewConfig &&
+      (this.state.viewConfig.viewEditable === false ||
+        this.state.viewConfig.editable === false)
     );
   }
 
@@ -879,7 +1141,11 @@ class HiGlassComponent extends React.Component {
         for (const track of tracks[trackType]) {
           if (track.type === 'combined' && track.contents) {
             for (const subTrack of track.contents) {
-              allTracks.push({ viewId, trackId: subTrack.uid, track: subTrack });
+              allTracks.push({
+                viewId,
+                trackId: subTrack.uid,
+                track: subTrack,
+              });
             }
           } else {
             allTracks.push({ viewId, trackId: track.uid, track });
@@ -893,6 +1159,94 @@ class HiGlassComponent extends React.Component {
 
   setMouseTool(mouseTool) {
     this.setState({ mouseTool });
+  }
+
+  /**
+   * Checks if a track's value scale is locked with another track
+   */
+  isValueScaleLocked(viewUid, trackUid) {
+    const uid = this.combineViewAndTrackUid(viewUid, trackUid);
+
+    // the view must have been deleted
+    if (!this.state.views[viewUid]) {
+      return false;
+    }
+
+    if (this.valueScaleLocks[uid]) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Computed the minimal and maximal values of all tracks that are in the same
+   * lockGroup as a given track
+   * @param   {string}  viewUid  The id of the view containing the track
+   * @param   {string}  trackUid   The id of the track
+   * @return  {array}  Tuple [min,max] containing the overall extrema - or null.
+   */
+  getLockGroupExtrema(viewUid, trackUid) {
+    const uid = this.combineViewAndTrackUid(viewUid, trackUid);
+
+    // the view must have been deleted
+    if (!this.state.views[viewUid]) {
+      return null;
+    }
+
+    if (!this.valueScaleLocks[uid]) {
+      return null;
+    }
+
+    const lockGroup = this.valueScaleLocks[uid];
+
+    const lockedTracks = Object.values(lockGroup)
+      .filter((track) => this.tiledPlots[track.view])
+      .map((track) =>
+        this.tiledPlots[track.view].trackRenderer.getTrackObject(track.track),
+      )
+      // filter out stale locks with non-existant tracks
+      .filter((track) => track)
+      // if the track is a LeftTrackModifier we want the originalTrack
+      .map((track) =>
+        track.originalTrack === undefined ? track : track.originalTrack,
+      );
+
+    const minValues = lockedTracks
+      // exclude tracks that don't set min and max values
+      .filter((track) => track.minRawValue && track.maxRawValue)
+      .map((track) =>
+        lockGroup.ignoreOffScreenValues
+          ? track.minVisibleValue(true)
+          : track.minVisibleValueInTiles(true),
+      );
+
+    const maxValues = lockedTracks
+      // exclude tracks that don't set min and max values
+      .filter((track) => track.minRawValue && track.maxRawValue)
+      .map((track) =>
+        lockGroup.ignoreOffScreenValues
+          ? track.maxVisibleValue(true)
+          : track.maxVisibleValueInTiles(true),
+      );
+
+    if (
+      minValues.length === 0 ||
+      minValues.filter((x) => x === null || x === Infinity).length > 0
+    ) {
+      return null; // Data hasn't loaded completely
+    }
+
+    if (
+      maxValues.length === 0 ||
+      maxValues.filter((x) => x === null || x === -Infinity).length > 0
+    ) {
+      return null; // Data hasn't loaded completely
+    }
+
+    const allMin = Math.min(...minValues);
+    const allMax = Math.max(...maxValues);
+
+    return [allMin, allMax];
   }
 
   /**
@@ -915,37 +1269,46 @@ class HiGlassComponent extends React.Component {
     if (!this.state.views[viewUid]) return;
     // the view must have been deleted
 
-    const sourceTrack = getTrackByUid(this.state.views[viewUid].tracks, trackUid);
+    const sourceTrack = getTrackByUid(
+      this.state.views[viewUid].tracks,
+      trackUid,
+    );
 
     if (this.valueScaleLocks[uid]) {
-      const lockGroupValues = dictValues(this.valueScaleLocks[uid]);
+      const lockGroup = this.valueScaleLocks[uid];
 
-      // /let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
-      const lockedTracks = lockGroupValues
-        .filter(x => this.tiledPlots[x.view])
-        .map(x => this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track))
-        .filter(x => x);
+      const lockedTracks = Object.values(lockGroup)
+        .filter((track) => this.tiledPlots[track.view])
+        .map((track) =>
+          this.tiledPlots[track.view].trackRenderer.getTrackObject(track.track),
+        )
+        // filter out locks with non-existant tracks
+        .filter((track) => track)
+        // if the track is a LeftTrackModifier we want the originalTrack
+        .map((track) =>
+          track.originalTrack === undefined ? track : track.originalTrack,
+        );
 
-      const minValues = lockedTracks
-        // exclude tracks that don't set min and max values
-        .filter(x => x.minRawValue && x.maxRawValue)
-        .map(x => x.minRawValue())
-        .filter(x => x);
+      const lockGroupExtrema = this.getLockGroupExtrema(viewUid, trackUid);
 
-      const maxValues = lockedTracks
-        // exclude tracks that don't set min and max values
-        .filter(x => x.minRawValue && x.maxRawValue)
-        .map(x => x.maxRawValue())
-        .filter(x => x);
+      if (lockGroupExtrema === null) {
+        return; // Data hasn't loaded completely
+      }
 
-      const allMin = Math.min(...minValues);
-      const allMax = Math.max(...maxValues);
+      const allMin = lockGroupExtrema[0];
+      const allMax = lockGroupExtrema[1];
+
+      const epsilon = 1e-6;
 
       for (const lockedTrack of lockedTracks) {
         // set the newly calculated minimum and maximum values
         // using d3 style setters
-        if (lockedTrack.minValue) { lockedTrack.minValue(allMin); }
-        if (lockedTrack.maxValue) { lockedTrack.maxValue(allMax); }
+        if (lockedTrack.minValue) {
+          lockedTrack.minValue(allMin);
+        }
+        if (lockedTrack.maxValue) {
+          lockedTrack.maxValue(allMax);
+        }
 
         if (!lockedTrack.valueScale) {
           // this track probably hasn't loaded the tiles to
@@ -953,15 +1316,51 @@ class HiGlassComponent extends React.Component {
           continue;
         }
 
+        const hasScaleChanged =
+          Math.abs(
+            lockedTrack.minValue() - lockedTrack.valueScale.domain()[0],
+          ) > epsilon ||
+          Math.abs(
+            lockedTrack.maxValue() - lockedTrack.valueScale.domain()[1],
+          ) > epsilon;
+
+        const hasBrushMoved =
+          sourceTrack.options &&
+          lockedTrack.options &&
+          typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
+          typeof sourceTrack.options.scaleEndPercent !== 'undefined' &&
+          (Math.abs(
+            lockedTrack.options.scaleStartPercent -
+              sourceTrack.options.scaleStartPercent,
+          ) > epsilon ||
+            Math.abs(
+              lockedTrack.options.scaleEndPercent -
+                sourceTrack.options.scaleEndPercent,
+            ) > epsilon);
+
+        // If we do view based scaling we want to minimize the number of rerenders
+        // Check if it is necessary to rerender
+        if (
+          lockedTrack.continuousScaling &&
+          !hasScaleChanged &&
+          !hasBrushMoved
+        ) {
+          continue;
+        }
+
         lockedTrack.valueScale.domain([allMin, allMax]);
 
-        if (
-          sourceTrack.options
-          && typeof sourceTrack.options.scaleStartPercent !== 'undefined'
-          && typeof sourceTrack.options.scaleEndPercent !== 'undefined'
-        ) {
-          lockedTrack.options.scaleStartPercent = sourceTrack.options.scaleStartPercent;
-          lockedTrack.options.scaleEndPercent = sourceTrack.options.scaleEndPercent;
+        // In TiledPixiTrack, we check if valueScale has changed before
+        // calling onValueScaleChanged. If we don't update prevValueScale
+        // here, that function won't get called and the value scales won't
+        // stay synced
+        lockedTrack.prevValueScale = lockedTrack.valueScale.copy();
+
+        if (hasBrushMoved) {
+          lockedTrack.options.scaleStartPercent =
+            sourceTrack.options.scaleStartPercent;
+          lockedTrack.options.scaleEndPercent =
+            sourceTrack.options.scaleEndPercent;
         }
 
         // the second parameter forces a rerender even though
@@ -980,7 +1379,7 @@ class HiGlassComponent extends React.Component {
     // iterate over viewId
     dictValues(this.draggingChangedListeners).forEach((l) => {
       // iterate over listenerId
-      dictValues(l).forEach(listener => listener(dragging));
+      dictValues(l).forEach((listener) => listener(dragging));
     });
   }
 
@@ -1013,7 +1412,6 @@ class HiGlassComponent extends React.Component {
     if (this.draggingChangedListeners.hasOwnProperty(viewUid)) {
       const listeners = this.draggingChangedListeners[viewUid];
 
-
       if (listeners.hasOwnProperty(listenerUid)) {
         // make sure the listener doesn't think we're still
         // dragging
@@ -1039,7 +1437,9 @@ class HiGlassComponent extends React.Component {
 
     this.scalesChangedListeners[viewUid][listenerUid] = eventHandler;
 
-    if (!this.xScales[viewUid] || !this.yScales[viewUid]) { return; }
+    if (!this.xScales[viewUid] || !this.yScales[viewUid]) {
+      return;
+    }
 
     // call the handler for the first time
     eventHandler(this.xScales[viewUid], this.yScales[viewUid]);
@@ -1055,7 +1455,9 @@ class HiGlassComponent extends React.Component {
     if (this.scalesChangedListeners[viewUid]) {
       const listeners = this.scalesChangedListeners[viewUid];
 
-      if (listeners[listenerUid]) { delete listeners[listenerUid]; }
+      if (listeners[listenerUid]) {
+        delete listeners[listenerUid];
+      }
     }
   }
 
@@ -1063,11 +1465,14 @@ class HiGlassComponent extends React.Component {
     const svg = document.createElement('svg');
     svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
     svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    svg.setAttribute('version', '1.1');
 
     for (const tiledPlot of dictValues(this.tiledPlots)) {
       if (!tiledPlot) continue; // probably opened and closed
 
-      for (const trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
+      for (const trackDefObject of dictValues(
+        tiledPlot.trackRenderer.trackDefObjects,
+      )) {
         if (trackDefObject.trackObject.exportSVG) {
           const trackSVG = trackDefObject.trackObject.exportSVG();
 
@@ -1075,27 +1480,62 @@ class HiGlassComponent extends React.Component {
         }
       }
     }
+
+    // FF is fussier than Chrome, and requires dimensions on the SVG,
+    // if it is to be used as an image src.
+    svg.setAttribute('width', this.canvasElement.style.width);
+    svg.setAttribute('height', this.canvasElement.style.height);
+
+    if (this.postCreateSVGCallback) {
+      // Allow the callback function to modify the exported SVG string
+      // before it is finalized and returned.
+      const modifiedSvg = this.postCreateSVGCallback(svg);
+      return modifiedSvg;
+    }
     return svg;
   }
 
   createSVGString() {
-    let svgString = vkbeautify.xml(new XMLSerializer().serializeToString(this.createSVG()));
+    const svg = this.createSVG();
+
+    let svgString = vkbeautify.xml(
+      new window.XMLSerializer().serializeToString(svg),
+    );
 
     svgString = svgString.replace(/<a0:/g, '<');
     svgString = svgString.replace(/<\/a0:/g, '</');
+    // Remove duplicated xhtml namespace property
+    svgString = svgString.replace(
+      /(<svg[\n\r])(\s+xmlns="http:\/\/www\.w3\.org\/1999\/xhtml"[\n\r])/gm,
+      '$1',
+    );
+    // Remove duplicated svg namespace
+    svgString = svgString.replace(
+      /(\s+<clipPath[\n\r]\s+)(xmlns="http:\/\/www\.w3\.org\/2000\/svg")/gm,
+      '$1',
+    );
 
-    // FF is fussier than Chrome, and requires dimensions on the SVG,
-    // if it is to be used as an image src.
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=700533
-    const w = this.canvasElement.width;
-    const h = this.canvasElement.height;
-    const dimensionedSvgString = `<svg width="${w}" height="${h}" ${svgString.slice(4)}`;
+    const xmlDeclaration =
+      '<?xml version="1.0" encoding="UTF-8" standalone="no"?>';
+    const doctype =
+      '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
 
-    return dimensionedSvgString;
+    return `${xmlDeclaration}\n${doctype}\n${svgString}`;
   }
 
   handleExportSVG() {
-    download('export.svg', this.createSVGString());
+    download(
+      'export.svg',
+      new Blob([this.createSVGString()], { type: 'image/svg+xml' }),
+    );
+  }
+
+  offPostCreateSVG() {
+    this.postCreateSVGCallback = null;
+  }
+
+  onPostCreateSVG(callback) {
+    this.postCreateSVGCallback = callback;
   }
 
   createPNGBlobPromise() {
@@ -1114,7 +1554,10 @@ class HiGlassComponent extends React.Component {
 
       const svgString = this.createSVGString();
 
-      const img = new Image(this.canvasElement.width, this.canvasElement.height);
+      const img = new Image(
+        this.canvasElement.width,
+        this.canvasElement.height,
+      );
       img.src = `data:image/svg+xml;base64,${btoa(svgString)}`;
       img.onload = () => {
         const targetCanvas = document.createElement('canvas');
@@ -1122,7 +1565,9 @@ class HiGlassComponent extends React.Component {
         targetCanvas.width = this.canvasElement.width / 2;
         targetCanvas.height = this.canvasElement.height / 2;
         targetCanvas.getContext('2d').drawImage(img, 0, 0);
-        targetCanvas.toBlob((blob) => { resolve(blob); });
+        targetCanvas.toBlob((blob) => {
+          resolve(blob);
+        });
       };
     });
   }
@@ -1141,8 +1586,6 @@ class HiGlassComponent extends React.Component {
    * @param uid: The view of whom the scales have changed.
    */
   handleScalesChanged(uid, xScale, yScale, notify = true) {
-    // console.log('hsc:', xScale.domain());
-
     this.xScales[uid] = xScale;
     this.yScales[uid] = yScale;
 
@@ -1160,13 +1603,18 @@ class HiGlassComponent extends React.Component {
       const lockGroupItems = dictItems(lockGroup);
 
       // eslint-disable-next-line no-unused-vars
-      const [centerX, centerY, k] = scalesCenterAndK(this.xScales[uid], this.yScales[uid]);
+      const [centerX, centerY, k] = scalesCenterAndK(
+        this.xScales[uid],
+        this.yScales[uid],
+      );
 
       for (let i = 0; i < lockGroupItems.length; i++) {
         const key = lockGroupItems[i][0];
         const value = lockGroupItems[i][1];
 
-        if (!this.xScales[key] || !this.yScales[key]) { continue; }
+        if (!this.xScales[key] || !this.yScales[key]) {
+          continue;
+        }
 
         if (key === uid) {
           // no need to notify oneself that the scales have changed
@@ -1174,8 +1622,10 @@ class HiGlassComponent extends React.Component {
         }
 
         // eslint-disable-next-line no-unused-vars
-        const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key],
-          this.yScales[key]);
+        const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(
+          this.xScales[key],
+          this.yScales[key],
+        );
 
         const rk = value[2] / lockGroup[uid][2];
 
@@ -1183,13 +1633,18 @@ class HiGlassComponent extends React.Component {
         // let newCenterY = centerY + dy;
         const newK = k * rk;
 
-        if (!this.setCenters[key]) { continue; }
+        if (!this.setCenters[key]) {
+          continue;
+        }
 
         // the key here is the target of zoom lock, so we want to keep its
         // x center and y center unchanged
-        const [newXScale, newYScale] = this.setCenters[key](keyCenterX,
+        const [newXScale, newYScale] = this.setCenters[key](
+          keyCenterX,
           keyCenterY,
-          newK, false);
+          newK,
+          false,
+        );
 
         // because the setCenters call above has a 'false' notify, the new scales won't
         // be propagated from there, so we have to store them here
@@ -1212,34 +1667,46 @@ class HiGlassComponent extends React.Component {
       const lockGroupItems = dictItems(lockGroup);
 
       // eslint-disable-next-line no-unused-vars
-      const [centerX, centerY, k] = scalesCenterAndK(this.xScales[uid], this.yScales[uid]);
+      const [centerX, centerY, k] = scalesCenterAndK(
+        this.xScales[uid],
+        this.yScales[uid],
+      );
 
       for (let i = 0; i < lockGroupItems.length; i++) {
         const key = lockGroupItems[i][0];
         const value = lockGroupItems[i][1];
 
-        if (!this.xScales[key] || !this.yScales[key]) { continue; }
+        if (!this.xScales[key] || !this.yScales[key]) {
+          continue;
+        }
 
         // eslint-disable-next-line no-unused-vars
-        const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key],
-          this.yScales[key]);
+        const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(
+          this.xScales[key],
+          this.yScales[key],
+        );
 
-        if (key === uid) { // no need to notify oneself that the scales have changed
+        if (key === uid) {
+          // no need to notify oneself that the scales have changed
           continue;
         }
 
         const dx = value[0] - lockGroup[uid][0];
         const dy = value[1] - lockGroup[uid][1];
 
-
         const newCenterX = centerX + dx;
         const newCenterY = centerY + dy;
 
-        if (!this.setCenters[key]) { continue; }
+        if (!this.setCenters[key]) {
+          continue;
+        }
 
-        const [newXScale, newYScale] = this.setCenters[key](newCenterX,
+        const [newXScale, newYScale] = this.setCenters[key](
+          newCenterX,
           newCenterY,
-          keyK, false);
+          keyK,
+          false,
+        );
 
         // because the setCenters call above has a 'false' notify, the new scales won't
         // be propagated from there, so we have to store them here
@@ -1267,11 +1734,9 @@ class HiGlassComponent extends React.Component {
      * We want to show the extent of this viewport on another view.
      */
 
-
     this.setState({
-      chooseTrackHandler: (viewUid, trackUid) => (
-        this.handleViewportProjected(uid, viewUid, trackUid)
-      )
+      chooseTrackHandler: (viewUid, trackUid) =>
+        this.handleViewportProjected(uid, viewUid, trackUid),
     });
   }
 
@@ -1283,15 +1748,16 @@ class HiGlassComponent extends React.Component {
   handleZoomToData(viewUid) {
     if (viewUid && !this.tiledPlots[viewUid]) {
       throw new Error(
-        `View uid ${viewUid} does not exist in the current viewConfig`
+        `View uid ${viewUid} does not exist in the current viewConfig`,
       );
     }
 
     if (viewUid) {
       this.tiledPlots[viewUid].handleZoomToData();
     } else {
-      Object.values(this.tiledPlots)
-        .forEach(tiledPlot => tiledPlot.handleZoomToData());
+      Object.values(this.tiledPlots).forEach((tiledPlot) =>
+        tiledPlot.handleZoomToData(),
+      );
     }
   }
 
@@ -1303,15 +1769,16 @@ class HiGlassComponent extends React.Component {
   resetViewport(viewId) {
     if (viewId && !this.tiledPlots[viewId]) {
       throw new Error(
-        `View uid ${viewId} does not exist in the current viewConfig`
+        `View uid ${viewId} does not exist in the current viewConfig`,
       );
     }
 
     if (viewId) {
       this.tiledPlots[viewId].resetViewport();
     } else {
-      Object.values(this.tiledPlots)
-        .forEach(tiledPlot => tiledPlot.resetViewport());
+      Object.values(this.tiledPlots).forEach((tiledPlot) =>
+        tiledPlot.resetViewport(),
+      );
     }
   }
 
@@ -1323,7 +1790,7 @@ class HiGlassComponent extends React.Component {
    */
   handleYankFunction(uid, yankFunction) {
     this.setState({
-      chooseViewHandler: uid2 => yankFunction(uid, uid2),
+      chooseViewHandler: (uid2) => yankFunction(uid, uid2),
       mouseOverOverlayUid: uid,
     });
   }
@@ -1348,11 +1815,15 @@ class HiGlassComponent extends React.Component {
     }
     // delete this view from the zoomLockGroup
     if (lockGroups[uid]) {
-      if (lockGroups[uid][uid]) { delete lockGroups[uid][uid]; }
+      if (lockGroups[uid][uid]) {
+        delete lockGroups[uid][uid];
+      }
     }
 
     // remove the handler
-    if (lockGroups[uid]) { delete lockGroups[uid]; }
+    if (lockGroups[uid]) {
+      delete lockGroups[uid];
+    }
   }
 
   viewScalesLockData(uid) {
@@ -1381,10 +1852,10 @@ class HiGlassComponent extends React.Component {
     } else {
       // view1 is already in a group
       group1Members = dictItems(lockGroups[uid1])
-        .filter(x => lockData(x[0])) // make sure we can create the necessary data for this lock
+        .filter((x) => lockData(x[0])) // make sure we can create the necessary data for this lock
         // in the case of location locks, this implies that the
         // views it's locking exist
-        .map(x => [x[0], lockData(x[0])]); // x is [uid, [centerX, centerY, k]]
+        .map((x) => [x[0], lockData(x[0])]); // x is [uid, [centerX, centerY, k]]
     }
 
     if (!lockGroups[uid2]) {
@@ -1393,21 +1864,23 @@ class HiGlassComponent extends React.Component {
     } else {
       // view2 is already in a group
       group2Members = dictItems(lockGroups[uid2])
-        .filter(x => lockData.bind(this)(x[0]))
+        .filter((x) => lockData.bind(this)(x[0]))
         // make sure we can create the necessary data for this lock
         // in the case of location locks, this implies that the
         // views it's locking exist
-        .map(x => (
+        .map((x) =>
           // x is [uid, [centerX, centerY, k]]
-          [x[0], lockData.bind(this)(x[0])]
-        ));
+          [x[0], lockData.bind(this)(x[0])],
+        );
     }
 
     const allMembers = group1Members.concat(group2Members);
 
     const groupDict = dictFromTuples(allMembers);
 
-    allMembers.forEach((m) => { lockGroups[m[0]] = groupDict; });
+    allMembers.forEach((m) => {
+      lockGroups[m[0]] = groupDict;
+    });
   }
 
   /* Views uid1 and uid2 need to be locked so that they always maintain the current
@@ -1424,8 +1897,12 @@ class HiGlassComponent extends React.Component {
       return; // locking a view to itself is silly
     }
 
-    this.addLock(uid1, uid2, this.locationLocks, this.viewScalesLockData.bind(this));
-
+    this.addLock(
+      uid1,
+      uid2,
+      this.locationLocks,
+      this.viewScalesLockData.bind(this),
+    );
 
     this.setState({
       chooseViewHandler: null,
@@ -1446,8 +1923,12 @@ class HiGlassComponent extends React.Component {
       return; // locking a view to itself is silly
     }
 
-    this.addLock(uid1, uid2, this.zoomLocks, this.viewScalesLockData.bind(this));
-
+    this.addLock(
+      uid1,
+      uid2,
+      this.zoomLocks,
+      this.viewScalesLockData.bind(this),
+    );
 
     this.setState({
       chooseViewHandler: null,
@@ -1471,10 +1952,13 @@ class HiGlassComponent extends React.Component {
     let newTrackUid = null;
 
     if (fromView === toView) {
-      alert('A view can not show its own viewport.');
+      console.warn('A view can not show its own viewport.');
     } else {
       const hostTrack = getTrackByUid(this.state.views[toView].tracks, toTrack);
-      const position = getTrackPositionByUid(this.state.views[toView].tracks, toTrack);
+      const position = getTrackPositionByUid(
+        this.state.views[toView].tracks,
+        toTrack,
+      );
       newTrackUid = slugid.nice();
 
       const projectionTypes = {
@@ -1513,13 +1997,18 @@ class HiGlassComponent extends React.Component {
     const targetYScale = this.yScales[uid1];
 
     // eslint-disable-next-line no-unused-vars
-    const [targetCenterX, targetCenterY, targetK] = scalesCenterAndK(targetXScale, targetYScale);
+    const [targetCenterX, targetCenterY, targetK] = scalesCenterAndK(
+      targetXScale,
+      targetYScale,
+    );
     // eslint-disable-next-line no-unused-vars
-    const [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(sourceXScale, sourceYScale);
+    const [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(
+      sourceXScale,
+      sourceYScale,
+    );
 
     // set target center
     this.setCenters[uid1](sourceCenterX, sourceCenterY, targetK, true);
-
 
     this.setState({
       chooseViewHandler: null,
@@ -1538,9 +2027,15 @@ class HiGlassComponent extends React.Component {
     const targetYScale = this.yScales[uid1];
 
     // eslint-disable-next-line no-unused-vars
-    const [targetCenterX, targetCenterY, targetK] = scalesCenterAndK(targetXScale, targetYScale);
+    const [targetCenterX, targetCenterY, targetK] = scalesCenterAndK(
+      targetXScale,
+      targetYScale,
+    );
     // eslint-disable-next-line no-unused-vars
-    const [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(sourceXScale, sourceYScale);
+    const [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(
+      sourceXScale,
+      sourceYScale,
+    );
 
     // set target center
     this.setCenters[uid1](targetCenterX, targetCenterY, sourceK, true);
@@ -1549,7 +2044,6 @@ class HiGlassComponent extends React.Component {
       chooseViewHandler: null,
     });
   }
-
 
   /**
    * The user has chosen a position for the new track. The actual
@@ -1570,8 +2064,9 @@ class HiGlassComponent extends React.Component {
    */
   updateRowHeight() {
     if (
-      !(this.props.options && this.props.options.bounded)
-      || this.props.options.pixelPreciseMarginPadding
+      !this.props.options ||
+      this.sizeMode !== SIZE_MODE_BOUNDED ||
+      this.props.options.pixelPreciseMarginPadding
     ) {
       // not bounded so we don't need to update the row height
       return;
@@ -1590,7 +2085,7 @@ class HiGlassComponent extends React.Component {
 
     const MARGIN_HEIGHT = this.isEditable() ? 10 : 0;
 
-    const marginHeight = (MARGIN_HEIGHT * maxHeight) - 1;
+    const marginHeight = MARGIN_HEIGHT * maxHeight - 1;
     const availableHeight = height - marginHeight;
 
     // const currentRowHeight = this.state.rowHeight;
@@ -1636,26 +2131,25 @@ class HiGlassComponent extends React.Component {
    * Notify the children that the layout has changed so that they
    * know to redraw themselves
    */
-  handleLayoutChange(layout /* , layouts */) {
-    if (!this.element) { return; }
+  handleLayoutChange(layout) {
+    if (!this.element) return;
 
-    for (const l of layout) {
+    layout.forEach((l) => {
       const view = this.state.views[l.i];
 
       if (view) {
-        view.layout = l;
+        // Bad design pattern. We directly manipulate the state and rely on
+        // `this.updateRowHeight()` to trigger that the state updated
+        view.layout.x = l.x;
+        view.layout.y = l.y;
+        view.layout.w = l.w;
+        view.layout.h = l.h;
+        view.layout.i = l.i;
       }
-    }
+    });
 
-    // some of the views have changed their height
-    /*
-      this.setState({
-          views: this.state.views
-      });
-      */
-
+    // The following method actually trigger a state update
     this.updateRowHeight();
-
     this.refreshView(LONG_DRAG_TIMEOUT);
   }
 
@@ -1676,16 +2170,18 @@ class HiGlassComponent extends React.Component {
       return TRACKS_INFO_BY_TYPE[trackType];
     }
 
-    if (
-      window.higlassTracksByType && window.higlassTracksByType[trackType]
-    ) {
+    if (this.pluginTracks && this.pluginTracks[trackType]) {
+      return this.pluginTracks[trackType].config;
+    }
+
+    if (window.higlassTracksByType && window.higlassTracksByType[trackType]) {
       return window.higlassTracksByType[trackType].config;
     }
 
     console.warn(
       'Track type not found:',
       trackType,
-      '(check app/scripts/config/ for a list of defined track types)'
+      '(check app/scripts/config/ for a list of defined track types)',
     );
     return undefined;
   }
@@ -1722,64 +2218,9 @@ class HiGlassComponent extends React.Component {
   }
 
   resizeHandler() {
-    objVals(this.viewHeaders).filter(x => x).forEach(viewHeader => viewHeader.checkWidth());
-  }
-
-  /**
-   * If tracks don't have specified dimensions, add in the known
-   * minimums
-   *
-   * Operates on the tracks stored for this TiledPlot.
-   */
-  fillInMinWidths(tracksDict) {
-    const horizontalLocations = ['top', 'bottom'];
-
-    // first make sure all track types are specified
-    // this will make the code later on simpler
-    if (!('center' in tracksDict)) { tracksDict.center = []; }
-    if (!('left' in tracksDict)) { tracksDict.left = []; }
-    if (!('right' in tracksDict)) { tracksDict.right = []; }
-    if (!('top' in tracksDict)) { tracksDict.top = []; }
-    if (!('bottom' in tracksDict)) { tracksDict.bottom = []; }
-
-    for (let j = 0; j < horizontalLocations.length; j++) {
-      const tracks = tracksDict[horizontalLocations[j]];
-
-      // e.g. no 'top' tracks
-      if (!tracks) { continue; }
-
-      for (let i = 0; i < tracks.length; i++) {
-        const trackInfo = this.getTrackInfo(tracks[i].type);
-
-        if (!('height' in tracks[i]) || (trackInfo && tracks[i].height < trackInfo.minHeight)) {
-          if (trackInfo && trackInfo.minHeight) {
-            tracks[i].height = trackInfo.minHeight;
-          } else { tracks[i].height = this.minHorizontalHeight; }
-        }
-      }
-    }
-
-    const verticalLocations = ['left', 'right'];
-
-    for (let j = 0; j < verticalLocations.length; j++) {
-      const tracks = tracksDict[verticalLocations[j]];
-
-      // e.g. no 'left' tracks
-      if (!tracks) { continue; }
-
-      for (let i = 0; i < tracks.length; i++) {
-        const trackInfo = this.getTrackInfo(tracks[i].type);
-
-        if (!('width' in tracks[i]) || (trackInfo && tracks[i].width < trackInfo.minWidth)) {
-          //
-          if (trackInfo && trackInfo.minWidth) {
-            tracks[i].width = trackInfo.minWidth;
-          } else { tracks[i].width = this.minVerticalWidth; }
-        }
-      }
-    }
-
-    return tracksDict;
+    objVals(this.viewHeaders)
+      .filter((x) => x)
+      .forEach((viewHeader) => viewHeader.checkWidth());
   }
 
   /**
@@ -1794,18 +2235,16 @@ class HiGlassComponent extends React.Component {
     const defaultVerticalWidth = 0;
     const defaultCenterHeight = 100;
     const defaultCenterWidth = 100;
-    let currHeight = (
-      this.viewMarginTop
-      + this.viewMarginBottom
-      + this.viewPaddingTop
-      + this.viewPaddingBottom
-    );
-    let currWidth = (
-      this.viewMarginLeft
-      + this.viewMarginRight
-      + this.viewPaddingLeft
-      + this.viewPaddingRight
-    );
+    let currHeight =
+      this.viewMarginTop +
+      this.viewMarginBottom +
+      this.viewPaddingTop +
+      this.viewPaddingBottom;
+    let currWidth =
+      this.viewMarginLeft +
+      this.viewMarginRight +
+      this.viewPaddingLeft +
+      this.viewPaddingRight;
     // currWidth will generally be ignored because it will just be set to
     // the width of the enclosing container
     let minNecessaryHeight = 0;
@@ -1819,7 +2258,9 @@ class HiGlassComponent extends React.Component {
       for (let i = 0; i < view.tracks.top.length; i++) {
         const track = view.tracks.top[i];
         currHeight += track.height ? track.height : defaultHorizontalHeight;
-        minNecessaryHeight += track.height ? track.height : defaultHorizontalHeight;
+        minNecessaryHeight += track.height
+          ? track.height
+          : defaultHorizontalHeight;
       }
     }
 
@@ -1829,13 +2270,17 @@ class HiGlassComponent extends React.Component {
       for (let i = 0; i < view.tracks.bottom.length; i++) {
         const track = view.tracks.bottom[i];
         currHeight += track.height ? track.height : defaultHorizontalHeight;
-        minNecessaryHeight += track.height ? track.height : defaultHorizontalHeight;
+        minNecessaryHeight += track.height
+          ? track.height
+          : defaultHorizontalHeight;
       }
     }
 
-    if ((view.tracks.left && view.tracks.left.length > 0)
-      || (view.tracks.right && view.tracks.right.length > 0)
-      || (view.tracks.center && view.tracks.center.length > 0)) {
+    if (
+      (view.tracks.left && view.tracks.left.length > 0) ||
+      (view.tracks.right && view.tracks.right.length > 0) ||
+      (view.tracks.center && view.tracks.center.length > 0)
+    ) {
       minNecessaryHeight += MIN_VERTICAL_HEIGHT;
     }
 
@@ -1872,32 +2317,43 @@ class HiGlassComponent extends React.Component {
     let centerWidth = 0;
 
     if (view.tracks.center && dictValues(view.tracks.center).length > 0) {
-      if (!view.tracks.center[0].contents || view.tracks.center[0].contents.length > 0) {
+      if (
+        !view.tracks.center[0].contents ||
+        view.tracks.center[0].contents.length > 0
+      ) {
         let height = null;
         let width = null;
 
         if (view.tracks.center[0].contents) {
           // combined track in the center
           for (const track of view.tracks.center[0].contents) {
-            height = Math.max(height, track.height
-              ? track.height : defaultCenterHeight);
-            width = Math.max(width, track.width
-              ? track.width : defaultCenterWidth);
+            height = Math.max(
+              height,
+              track.height ? track.height : defaultCenterHeight,
+            );
+            width = Math.max(
+              width,
+              track.width ? track.width : defaultCenterWidth,
+            );
           }
         } else {
           height = view.tracks.center[0].height
-            ? view.tracks.center[0].height : defaultCenterHeight;
+            ? view.tracks.center[0].height
+            : defaultCenterHeight;
           width = view.tracks.center[0].width
-            ? view.tracks.center[0].width : defaultCenterWidth;
+            ? view.tracks.center[0].width
+            : defaultCenterWidth;
         }
 
         currHeight += height;
         currWidth += width;
       }
-    } else if (((view.tracks.top && dictValues(view.tracks.top).length > 1)
-      || (view.tracks.bottom && dictValues(view.tracks.bottom).length > 1))
-      && ((view.tracks.left && dictValues(view.tracks.left).length)
-      || (view.tracks.right && dictValues(view.tracks.right).length))) {
+    } else if (
+      ((view.tracks.top && dictValues(view.tracks.top).length > 1) ||
+        (view.tracks.bottom && dictValues(view.tracks.bottom).length > 1)) &&
+      ((view.tracks.left && dictValues(view.tracks.left).length) ||
+        (view.tracks.right && dictValues(view.tracks.right).length))
+    ) {
       centerWidth = defaultCenterWidth;
       centerHeight = defaultCenterHeight;
     }
@@ -1917,22 +2373,22 @@ class HiGlassComponent extends React.Component {
 
     if ('top' in view.tracks) {
       topHeight = view.tracks.top
-        .map(x => (x.height ? x.height : defaultHorizontalHeight))
+        .map((x) => (x.height ? x.height : defaultHorizontalHeight))
         .reduce((a, b) => a + b, 0);
     }
     if ('bottom' in view.tracks) {
       bottomHeight = view.tracks.bottom
-        .map(x => (x.height ? x.height : defaultHorizontalHeight))
+        .map((x) => (x.height ? x.height : defaultHorizontalHeight))
         .reduce((a, b) => a + b, 0);
     }
     if ('left' in view.tracks) {
       leftWidth = view.tracks.left
-        .map(x => (x.width ? x.width : defaultVerticalWidth))
+        .map((x) => (x.width ? x.width : defaultVerticalWidth))
         .reduce((a, b) => a + b, 0);
     }
     if ('right' in view.tracks) {
       rightWidth = view.tracks.right
-        .map(x => (x.width ? x.width : defaultVerticalWidth))
+        .map((x) => (x.width ? x.width : defaultVerticalWidth))
         .reduce((a, b) => a + b, 0);
     }
 
@@ -1947,6 +2403,36 @@ class HiGlassComponent extends React.Component {
       centerHeight,
       minNecessaryHeight,
     };
+  }
+
+  calculateZoomLimits(view, initialXDomain) {
+    const limits = [0, Infinity];
+
+    if ('zoomLimits' in view) {
+      const diffX = initialXDomain[1] - initialXDomain[0];
+      const viewConfLimit = view.zoomLimits;
+
+      if (viewConfLimit.length !== 2) {
+        return limits;
+      }
+
+      if (viewConfLimit[0] !== null && viewConfLimit[0] > 0) {
+        const upperLimit = diffX / viewConfLimit[0];
+        limits[1] = Math.max(upperLimit, 1);
+        if (upperLimit < 1) {
+          console.warn(`Invalid zoom limits. Lower limit set to ${diffX}`);
+        }
+      }
+
+      if (viewConfLimit[1] !== null && viewConfLimit[1] > viewConfLimit[0]) {
+        const lowerLimit = diffX / viewConfLimit[1];
+        limits[0] = Math.min(lowerLimit, 1);
+        if (lowerLimit > 1) {
+          console.warn(`Invalid zoom limits. Upper limit set to ${diffX}`);
+        }
+      }
+    }
+    return limits;
   }
 
   generateViewLayout(view) {
@@ -1964,8 +2450,6 @@ class HiGlassComponent extends React.Component {
         leftWidth, rightWidth,
         centerWidth, centerHeight } = this.calculateViewDimensions(view);
 
-      // console.log(totalWidth, totalHeight, leftWidth, rightWidth, centerWidth, centerHeight);
-
       if (view.searchBox) { totalHeight += 30; }
 
       const heightGrid = Math.ceil(totalHeight / this.rowHeight);
@@ -1981,7 +2465,6 @@ class HiGlassComponent extends React.Component {
       };
 
       // the height should be adjusted when the layout changes
-
 
       /*
         if ('center' in view.tracks || 'left' in view.tracks || 'right' in view.tracks) {
@@ -2009,9 +2492,6 @@ class HiGlassComponent extends React.Component {
         layout.i = slugid.nice();
         */
     }
-
-
-    // console.trace('generated layout:', layout);
 
     return layout;
   }
@@ -2082,6 +2562,11 @@ class HiGlassComponent extends React.Component {
 
     if (hostTrack.type === 'combined') {
       hostTrack.contents.push(newTrack);
+
+      if (newTrack.type === 'heatmap') {
+        // For stacked heatmaps we will adjust some options automatically for convenience
+        this.compatibilityfyStackedHeatmaps(newTrack, hostTrack);
+      }
     } else {
       const newHost = {
         type: 'combined',
@@ -2094,11 +2579,13 @@ class HiGlassComponent extends React.Component {
       const positionTracks = tracks[position];
 
       for (let i = 0; i < positionTracks.length; i++) {
-        if (positionTracks[i].uid === hostTrack.uid) { positionTracks[i] = newHost; }
+        if (positionTracks[i].uid === hostTrack.uid) {
+          positionTracks[i] = newHost;
+        }
       }
     }
 
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       views: prevState.views,
     }));
   }
@@ -2123,7 +2610,9 @@ class HiGlassComponent extends React.Component {
   handleTracksAdded(viewId, newTracks, position, host) {
     this.storeTrackSizes(viewId);
 
-    for (const newTrack of newTracks) { this.handleTrackAdded(viewId, newTrack, position, host); }
+    for (const newTrack of newTracks) {
+      this.handleTrackAdded(viewId, newTrack, position, host);
+    }
   }
 
   /**
@@ -2143,10 +2632,13 @@ class HiGlassComponent extends React.Component {
     const trackConfig = getTrackByUid(view.tracks, trackUid);
 
     // this track needs a new uid so that it will be rerendered
+    const oldUid = trackConfig.uid;
     trackConfig.uid = slugid.nice();
     trackConfig.type = newType;
+    const newUid = trackConfig.uid;
 
-    this.setState(prevState => ({
+    this.updateTrackLocks(viewUid, oldUid, newUid);
+    this.setState((prevState) => ({
       views: prevState.views,
     }));
   }
@@ -2172,7 +2664,7 @@ class HiGlassComponent extends React.Component {
     trackConfig.uid = slugid.nice();
     trackConfig.data = newData;
 
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       views: prevState.views,
     }));
   }
@@ -2196,10 +2688,10 @@ class HiGlassComponent extends React.Component {
 
     if (newTrack.contents) {
       // add default options to combined tracks
-      for (const ct of newTrack.contents) { this.addDefaultTrackOptions(ct); }
+      for (const ct of newTrack.contents) {
+        this.addDefaultTrackOptions(ct);
+      }
     }
-
-    this.addNameToTrack(newTrack);
 
     if (this.state.addTrackPosition) {
       // we've already added the track, remove the add track dialog
@@ -2215,14 +2707,23 @@ class HiGlassComponent extends React.Component {
     }
 
     newTrack.position = position;
-    newTrack.width = this.getTrackInfo(newTrack.type).defaultWidth
-      || this.getTrackInfo(newTrack.type).minWidth
-      || this.minVerticalWidth;
-    newTrack.height = this.getTrackInfo(newTrack.type).defaultHeight
-      || this.getTrackInfo(newTrack.type).minHeight
-      || this.minHorizontalHeight;
+
+    const trackInfo = this.getTrackInfo(newTrack.type);
+
+    newTrack.width =
+      trackInfo.defaultWidth ||
+      (trackInfo.defaultOptions && trackInfo.defaultOptions.minWidth) ||
+      this.minVerticalWidth;
+    newTrack.height =
+      trackInfo.defaultHeight ||
+      (trackInfo.defaultOptions && trackInfo.defaultOptions.minHeight) ||
+      this.minHorizontalHeight;
 
     const { tracks } = this.state.views[viewId];
+
+    let numTracks = 0;
+    visitPositionedTracks(tracks, () => numTracks++);
+
     if (position === 'left' || position === 'top') {
       // if we're adding a track on the left or the top, we want the
       // new track to appear at the begginning of the track list
@@ -2235,25 +2736,31 @@ class HiGlassComponent extends React.Component {
         const newCombined = {
           uid: slugid.nice(),
           type: 'combined',
-          contents: [
-            newTrack],
+          contents: [newTrack],
         };
         tracks.center = [newCombined];
       } else if (tracks.center[0].type === 'combined') {
         // if it's a combined track, we just need to add this track to the
         // contents
         tracks.center[0].contents.push(newTrack);
+
+        if (newTrack.type === 'heatmap') {
+          // For stacked heatmaps we will adjust some options automatically for convenience
+          this.compatibilityfyStackedHeatmaps(newTrack, tracks.center[0]);
+        }
       } else {
         // if it's not, we have to create a new combined track
         const newCombined = {
           uid: slugid.nice(),
           type: 'combined',
-          contents: [
-            tracks.center[0],
-            newTrack],
+          contents: [tracks.center[0], newTrack],
         };
 
         tracks.center = [newCombined];
+
+        if (newTrack.type === 'heatmap') {
+          this.compatibilityfyStackedHeatmaps(newTrack, newCombined);
+        }
       }
     } else {
       // otherwise, we want it at the end of the track list
@@ -2267,7 +2774,46 @@ class HiGlassComponent extends React.Component {
 
     this.adjustLayoutToTrackSizes(this.state.views[viewId]);
 
+    if (Object.keys(this.state.views).length === 1 && numTracks === 0) {
+      // Zoom to data extent since this is the first track we added and we only
+      // have one view
+
+      // This doesn't work because the tilesetInfo is probably not there yet
+      this.handleZoomToData(viewId);
+
+      // This might work but sometimes `TiledPlot.handleTilesetInfoReceived`
+      // isn't triggered. E.g., when adding `dm6` as `chromosome-labels`.
+      this.zoomToDataExtentOnInit.add(viewId);
+    }
+
     return newTrack;
+  }
+
+  /**
+   * We're adding a new heatmap to a combined track. We need to make sure that
+   * their options are compatible.
+   *
+   * @param   {object}  newTrack  New heatmap track
+   * @param   {object}  combinedTrack  Combined track the new heatmap is added to
+   */
+  compatibilityfyStackedHeatmaps(newTrack, combinedTrack) {
+    let otherHeatmap;
+
+    const hasHeatmaps = combinedTrack.contents.some((track) => {
+      otherHeatmap = track;
+      return track.type === 'heatmap';
+    });
+
+    if (hasHeatmaps) {
+      // There already exist a heatmap let's set the background of the new
+      // heatmap to `transparent`
+      newTrack.options.backgroundColor = 'transparent';
+      newTrack.options.showTooltip = otherHeatmap.options.showTooltip;
+      newTrack.options.showMousePosition =
+        otherHeatmap.options.showMousePosition;
+      newTrack.options.mousePositionColor =
+        otherHeatmap.options.mousePositionColor;
+    }
   }
 
   /**
@@ -2288,17 +2834,13 @@ class HiGlassComponent extends React.Component {
    *  Nothing
    */
   storeTrackSizes(viewId) {
-    const looseTracks = positionedTracksToAllTracks(this.state.views[viewId].tracks);
+    visitPositionedTracks(this.state.views[viewId].tracks, (track) => {
+      const trackObj = this.tiledPlots[viewId].trackRenderer.getTrackObject(
+        track.uid,
+      );
 
-    for (const track of looseTracks) {
-      const trackObj = this.tiledPlots[viewId].trackRenderer.getTrackObject(track.uid);
-
-      if (!trackObj) {
-        continue;
-      }
-
-      ([track.width, track.height] = trackObj.dimensions);
-    }
+      if (trackObj) [track.width, track.height] = trackObj.dimensions;
+    });
   }
 
   /*
@@ -2336,7 +2878,7 @@ class HiGlassComponent extends React.Component {
     totalTrackHeight += MARGIN_HEIGHT;
     const rowHeight = this.state.rowHeight + MARGIN_HEIGHT;
 
-    if (!this.props.options.bounded) {
+    if (this.sizeMode !== SIZE_MODE_BOUNDED) {
       view.layout.h = Math.ceil(totalTrackHeight / rowHeight);
     }
   }
@@ -2348,15 +2890,15 @@ class HiGlassComponent extends React.Component {
 
     for (const trackType in tracks) {
       const theseTracks = tracks[trackType];
-      const newTracks = theseTracks.filter(d => d.uid !== uid);
+      const newTracks = theseTracks.filter((d) => d.uid !== uid);
 
       if (newTracks.length === theseTracks.length) {
         // no whole tracks need to removed, see if any of the combined tracks
         // contain series which need to go
-        const combinedTracks = newTracks.filter(x => x.type === 'combined');
+        const combinedTracks = newTracks.filter((x) => x.type === 'combined');
 
         combinedTracks.forEach((ct) => {
-          ct.contents = ct.contents.filter(x => x.uid !== uid);
+          ct.contents = ct.contents.filter((x) => x.uid !== uid);
         });
       } else {
         tracks[trackType] = newTracks;
@@ -2366,7 +2908,7 @@ class HiGlassComponent extends React.Component {
     this.storeTrackSizes(viewId);
     this.adjustLayoutToTrackSizes(this.state.views[viewId]);
 
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       views: prevState.views,
     }));
 
@@ -2375,9 +2917,13 @@ class HiGlassComponent extends React.Component {
 
   handleLockValueScale(fromViewUid, fromTrackUid) {
     this.setState({
-      chooseTrackHandler: (toViewUid, toTrackUid) => (
-        this.handleValueScaleLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid)
-      ),
+      chooseTrackHandler: (toViewUid, toTrackUid) =>
+        this.handleValueScaleLocked(
+          fromViewUid,
+          fromTrackUid,
+          toViewUid,
+          toTrackUid,
+        ),
     });
   }
 
@@ -2398,50 +2944,102 @@ class HiGlassComponent extends React.Component {
       this.viewTrackUidsToCombinedUid[viewUid][trackUid] = uid;
     }
 
-
     return uid;
+  }
+
+  /**
+   * Update all locks involving this track to use a new track uid.
+   *
+   * @param  {string} viewUid The view's uid
+   * @param  {string} oldTrackUid The track's old uid
+   * @param  {string} newTrackUid The track's new uid
+   */
+  updateTrackLocks(viewUid, oldTrackUid, newTrackUid) {
+    // update location locks
+    // update zoom locks
+    // update value scale locks
+    const oldLockGroupUid = this.combineViewAndTrackUid(viewUid, oldTrackUid);
+    const newLockGroupUid = this.combineViewAndTrackUid(viewUid, newTrackUid);
+
+    if (this.valueScaleLocks[oldLockGroupUid]) {
+      const lockGroup = this.valueScaleLocks[oldLockGroupUid];
+      this.valueScaleLocks[newLockGroupUid] = lockGroup;
+      delete this.valueScaleLocks[oldLockGroupUid];
+    }
+
+    for (const lockGroupUid in this.valueScaleLocks) {
+      if (this.valueScaleLocks[lockGroupUid][oldLockGroupUid]) {
+        const oldEntry = this.valueScaleLocks[lockGroupUid][oldLockGroupUid];
+        this.valueScaleLocks[lockGroupUid][newLockGroupUid] = oldEntry;
+        oldEntry.track = newTrackUid;
+        delete this.valueScaleLocks[lockGroupUid][oldLockGroupUid];
+      }
+    }
   }
 
   handleUnlockValueScale(viewUid, trackUid) {
     // if it's combined track, unlock each individual component
-    if (this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid).createdTracks) {
+    if (
+      this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid)
+        .createdTracks
+    ) {
       // if the from view is a combined track, recurse and add links between its child tracks
-      const childTrackUids = dictKeys(this.tiledPlots[viewUid]
-        .trackRenderer
-        .getTrackObject(trackUid)
-        .createdTracks);
+      const childTrackUids = dictKeys(
+        this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid)
+          .createdTracks,
+      );
       for (const childTrackUid of childTrackUids) {
-        this.handleUnlock(this.combineViewAndTrackUid(viewUid, childTrackUid),
-          this.valueScaleLocks);
+        this.handleUnlock(
+          this.combineViewAndTrackUid(viewUid, childTrackUid),
+          this.valueScaleLocks,
+        );
       }
     } else {
-      this.handleUnlock(this.combineViewAndTrackUid(viewUid, trackUid), this.valueScaleLocks);
+      this.handleUnlock(
+        this.combineViewAndTrackUid(viewUid, trackUid),
+        this.valueScaleLocks,
+      );
     }
   }
 
-
   handleValueScaleLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid) {
-    if (this.tiledPlots[fromViewUid].trackRenderer.getTrackObject(fromTrackUid).createdTracks) {
+    if (
+      this.tiledPlots[fromViewUid].trackRenderer.getTrackObject(fromTrackUid)
+        .createdTracks
+    ) {
       // if the from view is a combined track, recurse and add links between its child tracks
-      const childTrackUids = dictKeys(this.tiledPlots[fromViewUid]
-        .trackRenderer
-        .getTrackObject(fromTrackUid)
-        .createdTracks);
+      const childTrackUids = dictKeys(
+        this.tiledPlots[fromViewUid].trackRenderer.getTrackObject(fromTrackUid)
+          .createdTracks,
+      );
       for (const childTrackUid of childTrackUids) {
-        this.handleValueScaleLocked(fromViewUid, childTrackUid, toViewUid, toTrackUid);
+        this.handleValueScaleLocked(
+          fromViewUid,
+          childTrackUid,
+          toViewUid,
+          toTrackUid,
+        );
       }
 
       return;
     }
 
-    if (this.tiledPlots[toViewUid].trackRenderer.getTrackObject(toTrackUid).createdTracks) {
+    if (
+      this.tiledPlots[toViewUid].trackRenderer.getTrackObject(toTrackUid)
+        .createdTracks
+    ) {
       // if the from view is a combined track, recurse and add links between its child tracks
-      const childTrackUids = dictKeys(this.tiledPlots[toViewUid]
-        .trackRenderer
-        .getTrackObject(toTrackUid)
-        .createdTracks);
+      const childTrackUids = dictKeys(
+        this.tiledPlots[toViewUid].trackRenderer.getTrackObject(toTrackUid)
+          .createdTracks,
+      );
       for (const childTrackUid of childTrackUids) {
-        this.handleValueScaleLocked(fromViewUid, fromTrackUid, toViewUid, childTrackUid);
+        this.handleValueScaleLocked(
+          fromViewUid,
+          fromTrackUid,
+          toViewUid,
+          childTrackUid,
+        );
       }
 
       return;
@@ -2450,7 +3048,12 @@ class HiGlassComponent extends React.Component {
     const fromUid = this.combineViewAndTrackUid(fromViewUid, fromTrackUid);
     const toUid = this.combineViewAndTrackUid(toViewUid, toTrackUid);
 
-    this.addLock(fromUid, toUid, this.valueScaleLocks, uid => this.combinedUidToViewTrack[uid]);
+    this.addLock(
+      fromUid,
+      toUid,
+      this.valueScaleLocks,
+      (uid) => this.combinedUidToViewTrack[uid],
+    );
 
     this.syncValueScales(fromViewUid, fromTrackUid);
 
@@ -2467,19 +3070,50 @@ class HiGlassComponent extends React.Component {
    * @param track: A view with tracks.
    */
   addCallbacks(viewUid, track) {
-    if (track.type === 'viewport-projection-center'
-          || track.type === 'viewport-projection-horizontal'
-          || track.type === 'viewport-projection-vertical'
+    if (
+      track.type === 'viewport-projection-center' ||
+      track.type === 'viewport-projection-horizontal' ||
+      track.type === 'viewport-projection-vertical'
     ) {
       const fromView = track.fromViewUid;
 
-      track.registerViewportChanged = (trackId, listener) => this.addScalesChangedListener(
-        fromView, trackId, listener
-      );
-      track.removeViewportChanged = trackId => this.removeScalesChangedListener(fromView, trackId);
+      track.registerViewportChanged = (trackId, listener) =>
+        this.addScalesChangedListener(fromView, trackId, listener);
+      track.removeViewportChanged = (trackId) =>
+        this.removeScalesChangedListener(fromView, trackId);
       track.setDomainsCallback = (xDomain, yDomain) => {
-        const tXScale = scaleLinear().domain(xDomain).range(this.xScales[fromView].range());
-        const tYScale = scaleLinear().domain(yDomain).range(this.yScales[fromView].range());
+        if (!fromView) {
+          // If there is no `fromView`, then there must be a `projectionXDomain` instead.
+          // Update the viewconfig to reflect the new `projectionXDomain` array
+          // on the `viewport-projection-horizontal` track.
+          if (!this.projectionXDomains[viewUid]) {
+            this.projectionXDomains[viewUid] = {};
+          }
+          if (!this.projectionYDomains[viewUid]) {
+            this.projectionYDomains[viewUid] = {};
+          }
+          if (
+            track.type === 'viewport-projection-horizontal' ||
+            track.type === 'viewport-projection-center'
+          ) {
+            this.projectionXDomains[viewUid][track.uid] = xDomain;
+          }
+          if (
+            track.type === 'viewport-projection-vertical' ||
+            track.type === 'viewport-projection-center'
+          ) {
+            this.projectionYDomains[viewUid][track.uid] = yDomain;
+          }
+          this.triggerViewChangeDb();
+          // Return early, since the remaining code uses the `fromView` variable.
+          return;
+        }
+        const tXScale = scaleLinear()
+          .domain(xDomain)
+          .range(this.xScales[fromView].range());
+        const tYScale = scaleLinear()
+          .domain(yDomain)
+          .range(this.yScales[fromView].range());
 
         const [tx, ty, k] = scalesCenterAndK(tXScale, tYScale);
         this.setCenters[fromView](tx, ty, k, false);
@@ -2490,8 +3124,12 @@ class HiGlassComponent extends React.Component {
         // if we drag the brush and this view is locked to others, we don't
         // want the movement we induce in them to come back and modify this
         // view and set up a feedback loop
-        if (viewUid in this.zoomLocks) { zoomLocked = fromView in this.zoomLocks[viewUid]; }
-        if (zoomLocked) { this.handleUnlock(viewUid, this.zoomLocks); }
+        if (viewUid in this.zoomLocks) {
+          zoomLocked = fromView in this.zoomLocks[viewUid];
+        }
+        if (zoomLocked) {
+          this.handleUnlock(viewUid, this.zoomLocks);
+        }
 
         if (viewUid in this.locationLocks) {
           locationLocked = fromView in this.locationLocks[viewUid];
@@ -2503,12 +3141,50 @@ class HiGlassComponent extends React.Component {
         this.handleScalesChanged(fromView, tXScale, tYScale, true);
 
         if (zoomLocked) {
-          this.addLock(viewUid, fromView, this.zoomLocks, this.viewScalesLockData);
+          this.addLock(
+            viewUid,
+            fromView,
+            this.zoomLocks,
+            this.viewScalesLockData,
+          );
         }
         if (locationLocked) {
-          this.addLock(viewUid, fromView, this.locationLocks, this.viewScalesLockData);
+          this.addLock(
+            viewUid,
+            fromView,
+            this.locationLocks,
+            this.viewScalesLockData,
+          );
         }
       };
+    }
+  }
+
+  validateLocks(locks) {
+    // locks are organized like this:
+    // { v1: { v1: [0,0,0], v2: [1,1,1]}}
+    // v1 marks the name of a lock group and also
+    // corresponds to a view uid (a view cannot belong)
+    // to more than one lock group. The numbers are the
+    // zoom, xOffset, yOffset values that were present when
+    // the view was created
+
+    const toRemove = [];
+
+    for (const viewUid of dictKeys(locks)) {
+      if (!locks[viewUid] || !locks[viewUid][viewUid]) {
+        // we need to have the starting location of the
+        // lock's namesake view
+        toRemove.push(viewUid);
+      }
+    }
+
+    for (const viewUid of toRemove) {
+      if (locks[viewUid]) {
+        console.warn(`View ${viewUid} not present in lock group. Removing...`);
+        this.handleUnlock(viewUid, locks);
+        delete locks[viewUid];
+      }
     }
   }
 
@@ -2517,10 +3193,14 @@ class HiGlassComponent extends React.Component {
 
     if (viewConfig.locationLocks) {
       for (const viewUid of dictKeys(viewConfig.locationLocks.locksByViewUid)) {
-        this.locationLocks[viewUid] = viewConfig.locationLocks
-          .locksDict[viewConfig.locationLocks.locksByViewUid[viewUid]];
+        this.locationLocks[viewUid] =
+          viewConfig.locationLocks.locksDict[
+            viewConfig.locationLocks.locksByViewUid[viewUid]
+          ];
       }
     }
+
+    this.validateLocks(this.locationLocks);
   }
 
   deserializeZoomLocks(viewConfig) {
@@ -2529,19 +3209,27 @@ class HiGlassComponent extends React.Component {
     //
     if (viewConfig.zoomLocks) {
       for (const viewUid of dictKeys(viewConfig.zoomLocks.locksByViewUid)) {
-        this.zoomLocks[viewUid] = viewConfig.zoomLocks
-          .locksDict[viewConfig.zoomLocks.locksByViewUid[viewUid]];
+        this.zoomLocks[viewUid] =
+          viewConfig.zoomLocks.locksDict[
+            viewConfig.zoomLocks.locksByViewUid[viewUid]
+          ];
       }
     }
+
+    this.validateLocks(this.zoomLocks);
   }
 
   deserializeValueScaleLocks(viewConfig) {
     this.valueScaleLocks = {};
 
     if (viewConfig.valueScaleLocks) {
-      for (const viewUid of dictKeys(viewConfig.valueScaleLocks.locksByViewUid)) {
-        this.valueScaleLocks[viewUid] = viewConfig.valueScaleLocks
-          .locksDict[viewConfig.valueScaleLocks.locksByViewUid[viewUid]];
+      for (const viewUid of dictKeys(
+        viewConfig.valueScaleLocks.locksByViewUid,
+      )) {
+        this.valueScaleLocks[viewUid] =
+          viewConfig.valueScaleLocks.locksDict[
+            viewConfig.valueScaleLocks.locksByViewUid[viewUid]
+          ];
       }
     }
   }
@@ -2579,17 +3267,16 @@ class HiGlassComponent extends React.Component {
 
   getViewsAsJson() {
     const newJson = JSON.parse(JSON.stringify(this.state.viewConfig));
-    newJson.views = dictItems(this.state.views).map((k) => {
-      const newView = JSON.parse(JSON.stringify(k[1]));
-      const uid = k[0];
+    newJson.views = Object.values(this.state.views).map((k) => {
+      const newView = JSON.parse(JSON.stringify(k));
 
-      for (const track of positionedTracksToAllTracks(newView.tracks)) {
+      visitPositionedTracks(newView.tracks, (track) => {
         if (track.server) {
           const url = parse(track.server, {});
 
           if (!url.hostname.length) {
-            // no hostname specified in the track source servers so we'll add the
-            // current URL's
+            // no hostname specified in the track source servers so we'll add
+            // the current URL's
             const hostString = window.location.host;
             const { protocol } = window.location;
             const newUrl = `${protocol}//${hostString}${url.pathname}`;
@@ -2598,23 +3285,53 @@ class HiGlassComponent extends React.Component {
           }
         }
 
-        if ('serverUidKey' in track) { delete track.serverUidKey; }
-        if ('uuid' in track) { delete track.uuid; }
-        if ('private' in track) { delete track.private; }
-        if ('maxZoom' in track) { delete track.maxZoom; }
-        if ('coordSystem' in track) { delete track.coordSystem; }
-        if ('coordSystem2' in track) { delete track.coordSystem2; }
-        if ('datatype' in track) { delete track.datatype; }
-        if ('maxWidth' in track) { delete track.maxWidth; }
-        if ('datafile' in track) { delete track.datafile; }
-        if ('filetype' in track) { delete track.filetype; }
-        if ('binsPerDimension' in track) { delete track.binsPerDimension; }
-      }
-      //
+        if (
+          (track.type === 'viewport-projection-center' ||
+            track.type === 'viewport-projection-horizontal') &&
+          this.projectionXDomains[k.uid] &&
+          this.projectionXDomains[k.uid][track.uid]
+        ) {
+          // There is no "from" view attached to this projection track,
+          // so the `projectionXDomain` field must be used.
+          track.projectionXDomain = this.projectionXDomains[k.uid][track.uid];
+        }
+        if (
+          (track.type === 'viewport-projection-center' ||
+            track.type === 'viewport-projection-vertical') &&
+          this.projectionYDomains[k.uid] &&
+          this.projectionYDomains[k.uid][track.uid]
+        ) {
+          // There is no "from" view attached to this projection track,
+          // so the `projectionYDomain` field must be used.
+          track.projectionYDomain = this.projectionYDomains[k.uid][track.uid];
+        }
 
-      newView.uid = uid;
-      newView.initialXDomain = this.xScales[uid].domain();
-      newView.initialYDomain = this.yScales[uid].domain();
+        delete track.name;
+        delete track.position;
+        delete track.header;
+        delete track.description;
+        delete track.created;
+        delete track.project;
+        delete track.project_name;
+        delete track.serverUidKey;
+        delete track.uuid;
+        delete track.private;
+        delete track.maxZoom;
+        delete track.coordSystem;
+        delete track.coordSystem2;
+        delete track.datatype;
+        delete track.maxWidth;
+        delete track.datafile;
+        delete track.binsPerDimension;
+        delete track.resolutions;
+        delete track.aggregationModes;
+      });
+
+      newView.uid = k.uid;
+      newView.initialXDomain = this.xScales[k.uid].domain();
+      newView.initialYDomain = this.yScales[k.uid].domain();
+
+      delete newView.layout.i;
 
       return newView;
     });
@@ -2639,59 +3356,59 @@ class HiGlassComponent extends React.Component {
 
   handleExportViewsAsLink(
     url = this.state.viewConfig.exportViewUrl,
-    fromApi = false
+    fromApi = false,
   ) {
-    this.width = this.element.clientWidth;
-    this.height = this.element.clientHeight;
+    const parsedUrl = new URL(url, window.location.origin);
 
-    this.setState({
-      exportLinkModalOpen: !fromApi,
-      exportLinkLocation: null,
-    });
-
-    const port = window.location.port === '' ? '' : `:${window.location.port}`;
-
-    const req = fetch(
-      url,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json, text/plain, */*',
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        body: `{"viewconf":${this.getViewsAsString()}}`,
-        credentials: 'same-origin',
-      }
-    )
+    const req = fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      body: `{"viewconf":${this.getViewsAsString()}}`,
+      credentials: 'same-origin',
+    })
       .then((response) => {
-        if (!response.ok) { throw response; }
+        if (!response.ok) {
+          throw response;
+        }
         return response.json();
       })
       .catch((err) => {
         console.warn('err:', err);
       })
-      .then(_json => ({
+      .then((_json) => ({
         id: _json.uid,
-        url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
+        url: `${parsedUrl.origin}/l/?d=${_json.uid}`,
       }));
 
     if (!fromApi) {
       req
         .then((sharedView) => {
-          this.setState({ exportLinkLocation: sharedView.url });
+          this.openModal(
+            <ExportLinkDialog
+              onDone={() => {
+                this.closeModalBound();
+              }}
+              url={sharedView.url}
+            />,
+          );
         })
-        .catch(e => console.error('Exporting view config as link failed:', e));
+        .catch((e) =>
+          console.error('Exporting view config as link failed:', e),
+        );
     }
 
     return req;
   }
 
+  /*
+   * The initial[XY]Domain of a view has changed. Update its definition
+   * and rerender.
+   */
   handleDataDomainChanged(viewUid, newXDomain, newYDomain) {
-    /*
-         * The initial[XY]Domain of a view has changed. Update its definition
-         * and rerender.
-         */
     const { views } = this.state;
 
     views[viewUid].initialXDomain = newXDomain;
@@ -2790,7 +3507,6 @@ class HiGlassComponent extends React.Component {
       }
     }
 
-
     potentialPositions.sort((a, b) => {
       const n = a[1] - b[1];
 
@@ -2804,64 +3520,36 @@ class HiGlassComponent extends React.Component {
     const jsonString = JSON.stringify(lastView);
 
     const newView = JSON.parse(jsonString); // ghetto copy
+
     newView.initialXDomain = this.xScales[newView.uid].domain();
     newView.initialYDomain = this.yScales[newView.uid].domain();
 
     // place this new view below all the others
 
-    ([[newView.layout.x, newView.layout.y]] = potentialPositions);
+    [[newView.layout.x, newView.layout.y]] = potentialPositions;
 
     // give it its own unique id
     newView.uid = slugid.nice();
     newView.layout.i = newView.uid;
 
-    positionedTracksToAllTracks(newView.tracks).forEach(t => this.addCallbacks(newView.uid, t));
-
-    this.state.views[newView.uid] = newView;
-
-    this.setState(prevState => ({
-      views: prevState.views,
-    }));
-  }
-
-  /**
-   * Add a name to this track based on its track type.
-   *
-   * Name is added in-place.
-   *
-   * The list of track information can be found in config.js:TRACKS_INFO
-   */
-  addNameToTrack(track) {
-    const config = this.getTrackInfo(track.type);
-
-    if (config && config.name) track.name = config.name;
-
-    return track;
-  }
-
-  /**
-   * Add track names to the ones that have known names in config.js
-   */
-  addUidsToTracks(allTracks) {
-    allTracks.forEach((t) => {
-      if (!t.uid) { t.uid = slugid.nice(); }
+    visitPositionedTracks(newView.tracks, (track) => {
+      this.addCallbacks(newView.uid, track);
     });
 
-    return allTracks;
-  }
-
-  /**
-   * Add track names to the ones that have known names in config.js
-   */
-  addNamesToTracks(allTracks) {
-    allTracks.forEach((t) => {
-      if (!t.name) { this.addNameToTrack(t); }
+    this.setState((prevState) => {
+      // eslint-disable-next-line no-shadow
+      const views = JSON.parse(JSON.stringify(prevState.views));
+      views[newView.uid] = newView;
+      return { views };
     });
-
-    return allTracks;
   }
 
-  handleSelectedAssemblyChanged(viewUid, newAssembly, newAutocompleteId, newServer) {
+  handleSelectedAssemblyChanged(
+    viewUid,
+    newAssembly,
+    newAutocompleteId,
+    newServer,
+  ) {
     /*
      * A new assembly was selected in the GenomePositionSearchBox.
      * Update the corresponding
@@ -2887,32 +3575,35 @@ class HiGlassComponent extends React.Component {
     views[viewUid].genomePositionSearchBox.autocompleteServer = newServer;
   }
 
-  createGenomePostionSearchBoxEntry(existingGenomePositionSearchBox, suggestedAssembly) {
+  createGenomePostionSearchBoxEntry(
+    existingGenomePositionSearchBox,
+    suggestedAssembly,
+  ) {
     /*
-         * Create genomePositionSearchBox settings. If existing settings for this view exist,
-         * then use those. Otherwise use defaults.
-         *
-         * Arguments:
-         *     existingGenomePositionSearchBox:
-         *          {
-         *              autocompleteServer: string (e.g. higlass.io/api/v1),
-         *              autocompleteId: string (e.g. Xz1f)
-         *              chromInfoServer: string (e.g. higlass.io/api/v1)
-         *              chromInfoId: string (e.g. hg19)
-         *              visible: boolean (e.g. true)
-         *           }
-         *          If there's already information about which assembly and autocomplete
-         *          source to use, it should be in this format.
-         *
-         *      suggestedAssembly:
-         *          Guess which assembly should be displayed based on the tracks visible.
-         *          In all meaningful scenarios, all tracks should be of the same assembly
-         *          but in case they're not, suggest the most common one
-         *
-         * Return:
-         *      A valid genomePositionSearchBox object
-         *
-         */
+     * Create genomePositionSearchBox settings. If existing settings for this view exist,
+     * then use those. Otherwise use defaults.
+     *
+     * Arguments:
+     *     existingGenomePositionSearchBox:
+     *          {
+     *              autocompleteServer: string (e.g. higlass.io/api/v1),
+     *              autocompleteId: string (e.g. Xz1f)
+     *              chromInfoServer: string (e.g. higlass.io/api/v1)
+     *              chromInfoId: string (e.g. hg19)
+     *              visible: boolean (e.g. true)
+     *           }
+     *          If there's already information about which assembly and autocomplete
+     *          source to use, it should be in this format.
+     *
+     *      suggestedAssembly:
+     *          Guess which assembly should be displayed based on the tracks visible.
+     *          In all meaningful scenarios, all tracks should be of the same assembly
+     *          but in case they're not, suggest the most common one
+     *
+     * Return:
+     *      A valid genomePositionSearchBox object
+     *
+     */
     let newGpsb = existingGenomePositionSearchBox;
     const defaultGpsb = {
       autocompleteServer: DEFAULT_SERVER,
@@ -2921,16 +3612,18 @@ class HiGlassComponent extends React.Component {
       visible: false,
     };
 
-    if (!newGpsb) { newGpsb = JSON.parse(JSON.stringify(defaultGpsb)); }
+    if (!newGpsb) {
+      newGpsb = JSON.parse(JSON.stringify(defaultGpsb));
+    }
 
     if (!newGpsb.autocompleteServer) {
       newGpsb.autocompleteServer = defaultGpsb.autocompleteServer;
     }
 
     /*
-         * If we don't have an autocompleteId, we'll try to look it up in
-         * the autocomplete server
-         */
+     * If we don't have an autocompleteId, we'll try to look it up in
+     * the autocomplete server
+     */
     /*
         if (!newGpsb.autocompleteId)
             newGpsb.autocompleteId = defaultGpsb.autocompleteId;
@@ -2940,42 +3633,53 @@ class HiGlassComponent extends React.Component {
       newGpsb.chromInfoId = suggestedAssembly;
     }
 
-    if (!newGpsb.chromInfoServer) { newGpsb.chromInfoServer = defaultGpsb.chromInfoServer; }
+    if (!newGpsb.chromInfoServer) {
+      newGpsb.chromInfoServer = defaultGpsb.chromInfoServer;
+    }
 
-    if (!newGpsb.visible) { newGpsb.visible = false; }
+    if (!newGpsb.visible) {
+      newGpsb.visible = false;
+    }
 
     return newGpsb;
   }
 
   handleTogglePositionSearchBox(viewUid) {
     /*
-         * Show or hide the genome position search box for a given view
-         */
+     * Show or hide the genome position search box for a given view
+     */
 
     const view = this.state.views[viewUid];
     view.genomePositionSearchBoxVisible = !view.genomePositionSearchBoxVisible;
 
-    const positionedTracks = positionedTracksToAllTracks(view.tracks);
-
     // count the number of tracks that are part of some assembly
     const assemblyCounts = {};
-    for (const track of positionedTracks) {
-      if (!track.coordSystem) { continue; }
 
-      if (!assemblyCounts[track.coordSystem]) { assemblyCounts[track.coordSystem] = 0; }
+    visitPositionedTracks(view.tracks, (track) => {
+      if (track.coordSystem) {
+        if (!assemblyCounts[track.coordSystem]) {
+          assemblyCounts[track.coordSystem] = 0;
+        }
 
-      assemblyCounts[track.coordSystem] += 1;
-    }
+        assemblyCounts[track.coordSystem] += 1;
+      }
+    });
 
-    const sortedAssemblyCounts = dictItems(assemblyCounts).sort((a, b) => b[1] - a[1]);
+    const sortedAssemblyCounts = dictItems(assemblyCounts).sort(
+      (a, b) => b[1] - a[1],
+    );
     let selectedAssembly = 'hg19'; // always the default if nothing is otherwise selected
 
-    if (sortedAssemblyCounts.length) { selectedAssembly = sortedAssemblyCounts[0][0]; }
+    if (sortedAssemblyCounts.length) {
+      selectedAssembly = sortedAssemblyCounts[0][0];
+    }
 
     view.genomePositionSearchBox = this.createGenomePostionSearchBoxEntry(
-      view.genomePositionSearchBox, selectedAssembly
+      view.genomePositionSearchBox,
+      selectedAssembly,
     );
-    view.genomePositionSearchBox.visible = !view.genomePositionSearchBox.visible;
+    view.genomePositionSearchBox.visible = !view.genomePositionSearchBox
+      .visible;
 
     this.refreshView();
 
@@ -2990,16 +3694,120 @@ class HiGlassComponent extends React.Component {
     const view = this.state.views[viewUid];
     const track = getTrackByUid(view.tracks, trackUid);
 
-    if (!track) {
-      return;
-    }
+    if (!track) return;
 
     track.options = Object.assign(track.options, newOptions);
 
     if (this.mounted) {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         views: prevState.views,
       }));
+      this.adjustSplitHeatmapTrackOptions(
+        track,
+        newOptions,
+        view.tracks,
+        viewUid,
+      );
+    }
+  }
+
+  /**
+   * For convenience we adjust some options of split heatmap tracks when they are newly added.
+   * This function has no effect when we get split heatmap tracks that are already correctly configured
+   * (i.e. correctly set "lower-extend"/"upper-extend" options)
+   * @param   {object}  track  Track whose options have changed
+   * @param   {object}  options  New track options
+   * @param   {list}  allTracks  All tracks
+   * @param   {string}  viewUid  Related view UID
+   */
+  adjustSplitHeatmapTrackOptions(track, options, allTracks, viewUid) {
+    if (track.type === 'heatmap') {
+      if (
+        options.extent === 'upper-right' &&
+        allTracks.center[0].type === 'combined' &&
+        allTracks.center[0].contents.length > 1
+      ) {
+        allTracks.center[0].contents.some((otherTrack) => {
+          if (
+            otherTrack.type === 'heatmap' &&
+            otherTrack.uid !== track.uid &&
+            otherTrack.options.extent !== 'lower-left'
+          ) {
+            // Automatically change the extent of the other track to
+            // `lower-left``
+            const otherNewOptions = Object.assign({}, otherTrack.options, {
+              extent: 'lower-left',
+              labelPosition: 'bottomLeft',
+              colorbarPosition: 'bottomLeft',
+            });
+
+            // Automatically set positions of label and colorbar of the current track
+            // to the opposite corner. We don't want overlapping labels.
+            const originalNewOptions = Object.assign({}, options, {
+              labelPosition: 'topRight',
+              colorbarPosition: 'topRight',
+            });
+
+            this.handleTrackOptionsChanged(
+              viewUid,
+              otherTrack.uid,
+              otherNewOptions,
+            );
+
+            this.handleTrackOptionsChanged(
+              viewUid,
+              track.uid,
+              originalNewOptions,
+            );
+            return true;
+          }
+          return false;
+        });
+      }
+      if (options.extent === 'lower-left') {
+        if (
+          options.extent === 'lower-left' &&
+          allTracks.center[0].type === 'combined' &&
+          allTracks.center[0].contents.length > 1
+        ) {
+          allTracks.center[0].contents.some((otherTrack) => {
+            if (
+              otherTrack.type === 'heatmap' &&
+              otherTrack.uid !== track.uid &&
+              otherTrack.options.extent !== 'upper-right'
+            ) {
+              // Automatically change the extent of the other track to
+              // `upper-right``
+              const otherNewOptions = Object.assign({}, otherTrack.options, {
+                extent: 'upper-right',
+                labelPosition: 'topRight',
+                colorbarPosition: 'topRight',
+              });
+
+              // Automatically set positions of label and colorbar of the current track
+              // to the opposite corner. We don't want overlapping labels.
+              const originalNewOptions = Object.assign({}, options, {
+                labelPosition: 'bottomLeft',
+                colorbarPosition: 'bottomLeft',
+              });
+
+              this.handleTrackOptionsChanged(
+                viewUid,
+                otherTrack.uid,
+                otherNewOptions,
+              );
+
+              this.handleTrackOptionsChanged(
+                viewUid,
+                track.uid,
+                originalNewOptions,
+              );
+              return true;
+            }
+            return false;
+          });
+        }
+      }
     }
   }
 
@@ -3013,7 +3821,7 @@ class HiGlassComponent extends React.Component {
     view.options = Object.assign(view.options || {}, newOptions);
 
     if (this.mounted) {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         views: prevState.views,
       }));
     }
@@ -3046,17 +3854,25 @@ class HiGlassComponent extends React.Component {
     const viewUidsSet = new Set(dictKeys(viewsByUid));
 
     for (const v of dictValues(viewsByUid)) {
-      for (const trackOrientation of ['left', 'top', 'center', 'right', 'bottom']) {
+      for (const trackOrientation of [
+        'left',
+        'top',
+        'center',
+        'right',
+        'bottom',
+      ]) {
         if (v.tracks && v.tracks.hasOwnProperty(trackOrientation)) {
           // filter out invalid tracks
-          v.tracks[trackOrientation] = v.tracks[trackOrientation]
-            .filter(t => this.isTrackValid(t, viewUidsSet));
+          v.tracks[trackOrientation] = v.tracks[trackOrientation].filter((t) =>
+            this.isTrackValid(t, viewUidsSet),
+          );
 
           // filter out invalid tracks in combined tracks
           v.tracks[trackOrientation].forEach((t) => {
             if (t.type === 'combined') {
-              t.contents = t.contents
-                .filter(c => this.isTrackValid(c, viewUidsSet));
+              t.contents = t.contents.filter((c) =>
+                this.isTrackValid(c, viewUidsSet),
+              );
             }
           });
         }
@@ -3075,8 +3891,8 @@ class HiGlassComponent extends React.Component {
       views = [
         {
           editable: true,
-          tracks: {}
-        }
+          tracks: {},
+        },
       ];
     }
 
@@ -3086,7 +3902,9 @@ class HiGlassComponent extends React.Component {
       }
 
       // if a view doesn't have a uid, assign it one
-      if (!v.uid) { v.uid = slugid.nice(); }
+      if (!v.uid) {
+        v.uid = slugid.nice();
+      }
 
       viewsByUid[v.uid] = v;
 
@@ -3095,7 +3913,6 @@ class HiGlassComponent extends React.Component {
       }
 
       if (!v.initialXDomain) {
-        console.warn('No initialXDomain provided in the view config.');
         v.initialXDomain = [0, 100];
 
         this.zoomToDataExtentOnInit.add(v.uid);
@@ -3120,31 +3937,22 @@ class HiGlassComponent extends React.Component {
         this.yScales[v.uid] = scaleLinear().domain(v.initialYDomain);
       }
 
-      // Add names to all the tracks
-      let looseTracks = positionedTracksToAllTracks(v.tracks);
+      visitPositionedTracks(v.tracks, (track) => {
+        if (!track.uid) track.uid = slugid.nice();
 
-      // give tracks their default names (e.g. 'type': 'top-axis'
-      // will get a name of 'Top Axis'
-      looseTracks = this.addUidsToTracks(looseTracks);
-      looseTracks = this.addNamesToTracks(looseTracks);
+        this.addCallbacks(v.uid, track);
+        this.addDefaultTrackOptions(track);
 
-      looseTracks.forEach(t => this.addCallbacks(v.uid, t));
-
-      // make sure that the layout for this view refers to this view
-      if (v.layout) { v.layout.i = v.uid; }
-
-      // add default options (as specified in config.js
-      // (e.g. line color, heatmap color scales, etc...)
-      looseTracks.forEach((t) => {
-        this.addDefaultTrackOptions(t);
-
-        if (t.contents) {
+        if (track.contents) {
           // add default options to combined tracks
-          for (const ct of t.contents) { this.addDefaultTrackOptions(ct); }
+          for (const ct of track.contents) this.addDefaultTrackOptions(ct);
         }
       });
 
-      if (!v.layout) {
+      // make sure that the layout for this view refers to this view
+      if (v.layout) {
+        v.layout.i = v.uid;
+      } else {
         v.layout = this.generateViewLayout(v);
       }
     });
@@ -3160,12 +3968,10 @@ class HiGlassComponent extends React.Component {
 
   handleWindowFocused() {
     /*
-         * The window housing this view gained focus. That means the bounding boxes
-         * may have changed so we need to redraw everything.
-         *
-         */
-
-
+     * The window housing this view gained focus. That means the bounding boxes
+     * may have changed so we need to redraw everything.
+     *
+     */
   }
 
   /**
@@ -3191,17 +3997,17 @@ class HiGlassComponent extends React.Component {
   }
 
   triggerViewChange() {
-    this.viewChangeListener.forEach(
-      callback => callback(this.getViewsAsString()),
+    this.viewChangeListener.forEach((callback) =>
+      callback(this.getViewsAsString()),
     );
   }
 
   getGenomeLocation(viewId) {
     return chromInfo
       .get(this.state.views[viewId].chromInfoPath)
-      .then(chrInfo => scalesToGenomeLoci(
-        this.xScales[viewId], this.yScales[viewId], chrInfo,
-      ));
+      .then((chrInfo) =>
+        scalesToGenomeLoci(this.xScales[viewId], this.yScales[viewId], chrInfo),
+      );
   }
 
   offLocationChange(viewId, listenerId) {
@@ -3210,37 +4016,41 @@ class HiGlassComponent extends React.Component {
 
   zoomTo(viewUid, start1Abs, end1Abs, start2Abs, end2Abs, animateTime) {
     if (!(viewUid in this.setCenters)) {
-      throw Error(`Invalid viewUid. Current uuids: ${Object.keys(this.setCenters).join(',')}`);
+      throw Error(
+        `Invalid viewUid. Current uuids: ${Object.keys(this.setCenters).join(
+          ',',
+        )}`,
+      );
     }
 
-    if (
-      Number.isNaN(+start1Abs) || Number.isNaN(+end1Abs)
-    ) {
+    if (Number.isNaN(+start1Abs) || Number.isNaN(+end1Abs)) {
       const coords = [start1Abs, end1Abs].join(', ');
-      console.warn([
-        `Invalid coordinates (${coords}). All coordinates need to be numbers
+      console.warn(
+        [
+          `Invalid coordinates (${coords}). All coordinates need to be numbers
         and should represent absolute coordinates (not chromosome
         coordinates).`,
-      ].join(' '));
+        ].join(' '),
+      );
       return;
     }
 
-    if (Number.isNaN(+start2Abs) || Number.isNaN(+end2Abs)
-      || start2Abs === null || end2Abs === null) {
+    if (
+      Number.isNaN(+start2Abs) ||
+      Number.isNaN(+end2Abs) ||
+      start2Abs === null ||
+      end2Abs === null
+    ) {
       start2Abs = start1Abs;
       end2Abs = end1Abs;
     }
-
-    // console.log('start1Abs', start1Abs, 'start2Abs', start2Abs);
 
     const [centerX, centerY, k] = scalesCenterAndK(
       this.xScales[viewUid].copy().domain([start1Abs, end1Abs]),
       this.yScales[viewUid].copy().domain([start2Abs, end2Abs]),
     );
 
-    this.setCenters[viewUid](
-      centerX, centerY, k, false, animateTime,
-    );
+    this.setCenters[viewUid](centerX, centerY, k, false, animateTime);
   }
 
   onLocationChange(viewId, callback, callbackId) {
@@ -3250,20 +4060,22 @@ class HiGlassComponent extends React.Component {
       // HiGlass was probably initialized with an URL instead of a viewconfig
       // and that remote viewConfig is not yet loaded.
       this.unsetOnLocationChange.push({
-        viewId, callback, callbackId
+        viewId,
+        callback,
+        callbackId,
       });
       return null;
     }
 
-    viewId = typeof viewId === 'undefined' && viewsIds.length === 1
-      ? viewsIds[0]
-      : viewId;
+    viewId =
+      typeof viewId === 'undefined' && viewsIds.length === 1
+        ? viewsIds[0]
+        : viewId;
 
-    if (
-      typeof viewId === 'undefined' || viewsIds.indexOf(viewId) === -1
-    ) {
+    if (typeof viewId === 'undefined' || viewsIds.indexOf(viewId) === -1) {
       console.error(
-        'onLocationChange either missing a viewId or passed an invalid viewId: ', viewId
+        'onLocationChange either missing a viewId or passed an invalid viewId: ',
+        viewId,
       );
       return null;
     }
@@ -3276,16 +4088,21 @@ class HiGlassComponent extends React.Component {
         xDomain: xScale.domain(),
         yDomain: yScale.domain(),
         xRange: xScale.range(),
-        yRange: yScale.range()
+        yRange: yScale.range(),
       });
     };
 
     let newListenerId = 1;
     if (this.scalesChangedListeners[view.uid]) {
-      newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
-        .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
-        .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
-        .reduce((max, value) => Math.max(max, value), 0) + 1;
+      newListenerId =
+        Object.keys(this.scalesChangedListeners[view.uid])
+          .filter(
+            (listenerId) => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0,
+          )
+          .map((listenerId) =>
+            parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10),
+          )
+          .reduce((max, value) => Math.max(max, value), 0) + 1;
     }
 
     this.addScalesChangedListener(
@@ -3308,15 +4125,11 @@ class HiGlassComponent extends React.Component {
     let foundTiledPlot;
 
     const views = dictValues(this.state.views);
-    // console.log('views:', views);
-    // console.log('tiledAreas:', this.tiledAreasDivs);
 
     for (let i = 0; i < views.length; i++) {
       const tiledPlot = this.tiledPlots[views[i].uid];
 
-      // console.log('1');
       const area = this.tiledAreasDivs[views[i].uid].getBoundingClientRect();
-      // console.log('2');
 
       const { top, left } = area;
       const bottom = top + area.height;
@@ -3340,25 +4153,30 @@ class HiGlassComponent extends React.Component {
    * @param {object}  e  Event object.
    */
   mouseMoveHandler(e) {
-    if (!this.topDiv) return;
+    if (!this.topDiv || this.state.modal) return;
 
     const absX = e.clientX;
     const absY = e.clientY;
     const relPos = clientPoint(this.topDiv, e);
+    // We need to add the scrollTop
+    relPos[1] += this.scrollTop;
     const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
 
     const hoveredTracks = hoveredTiledPlot
-      ? hoveredTiledPlot.listTracksAtPosition(relPos[0], relPos[1], true)
-        .map(track => track.originalTrack || track)
+      ? hoveredTiledPlot
+          .listTracksAtPosition(relPos[0], relPos[1], true)
+          .map((track) => track.originalTrack || track)
       : [];
 
-    const hoveredTrack = hoveredTracks.find(track => !track.isAugmentationTrack);
+    const hoveredTrack = hoveredTracks.find(
+      (track) => !track.isAugmentationTrack,
+    );
 
     const relTrackPos = hoveredTrack
       ? [
-        relPos[0] - hoveredTrack.position[0],
-        relPos[1] - hoveredTrack.position[1],
-      ]
+          relPos[0] - hoveredTrack.position[0],
+          relPos[1] - hoveredTrack.position[1],
+        ]
       : relPos;
 
     let dataX = -1;
@@ -3377,8 +4195,10 @@ class HiGlassComponent extends React.Component {
     const evt = {
       x: relPos[0],
       y: relPos[1],
-      relTrackX: (hoveredTrack && hoveredTrack.flipText) ? relTrackPos[1] : relTrackPos[0],
-      relTrackY: (hoveredTrack && hoveredTrack.flipText) ? relTrackPos[0] : relTrackPos[1],
+      relTrackX:
+        hoveredTrack && hoveredTrack.flipText ? relTrackPos[1] : relTrackPos[0],
+      relTrackY:
+        hoveredTrack && hoveredTrack.flipText ? relTrackPos[0] : relTrackPos[1],
       dataX,
       dataY,
       // See below why we need these derived boolean values
@@ -3435,9 +4255,9 @@ class HiGlassComponent extends React.Component {
       return undefined;
     }
 
-    if (!track.minVisibleValue || !track.maxVisibleValue) {
+    if (!track.minVisibleValueInTiles || !track.maxVisibleValueInTiles) {
       console.warn(
-        `Track ${trackId} doesn't support the retrieval of min or max values.`
+        `Track ${trackId} doesn't support the retrieval of min or max values.`,
       );
       return undefined;
     }
@@ -3450,8 +4270,8 @@ class HiGlassComponent extends React.Component {
     }
 
     return [
-      track.minVisibleValue(ignoreFixedScale),
-      track.maxVisibleValue(ignoreFixedScale)
+      track.minVisibleValueInTiles(ignoreFixedScale),
+      track.maxVisibleValueInTiles(ignoreFixedScale),
     ];
   }
 
@@ -3461,9 +4281,10 @@ class HiGlassComponent extends React.Component {
   showHoverMenu(evt) {
     // each track should have a function that returns an HTML representation
     // of the data at a give position
-    const mouseOverHtml = (evt.track && evt.track.getMouseOverHtml)
-      ? evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY)
-      : '';
+    const mouseOverHtml =
+      evt.track && evt.track.getMouseOverHtml
+        ? evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY)
+        : '';
 
     if (evt.track !== this.prevMouseHoverTrack) {
       if (this.prevMouseHoverTrack && this.prevMouseHoverTrack.stopHover) {
@@ -3473,19 +4294,16 @@ class HiGlassComponent extends React.Component {
 
     this.prevMouseHoverTrack = evt.track;
 
-
     if (this.zooming) return;
 
-    const data = (mouseOverHtml && mouseOverHtml.length) ? [1] : [];
-
+    const data = mouseOverHtml && mouseOverHtml.length ? [1] : [];
 
     // try to select the mouseover div
     let mouseOverDiv = select('body')
-      .selectAll('.track-mouseover-menu').data(data);
+      .selectAll('.track-mouseover-menu')
+      .data(data);
 
-    mouseOverDiv
-      .exit()
-      .remove();
+    mouseOverDiv.exit().remove();
 
     mouseOverDiv
       .enter()
@@ -3495,7 +4313,10 @@ class HiGlassComponent extends React.Component {
 
     mouseOverDiv = select('body').selectAll('.track-mouseover-menu');
     const mousePos = clientPoint(select('body').node(), evt.origEvt);
-
+    const normalizedMousePos = [
+      mousePos[0] - window.scrollX,
+      mousePos[1] - window.scrollY,
+    ];
 
     /*
     mouseOverDiv.selectAll('.mouseover-marker')
@@ -3506,8 +4327,8 @@ class HiGlassComponent extends React.Component {
     */
 
     mouseOverDiv
-      .style('left', `${mousePos[0]}px`)
-      .style('top', `${mousePos[1]}px`);
+      .style('left', `${normalizedMousePos[0]}px`)
+      .style('top', `${normalizedMousePos[1]}px`);
 
     // probably not over a track so there's no mouseover rectangle
     if (!mouseOverDiv.node()) return;
@@ -3517,13 +4338,13 @@ class HiGlassComponent extends React.Component {
     if (bbox.x + bbox.width > window.innerWidth) {
       // the overlay box is spilling outside of the track so switch
       // to showing it on the left
-      mouseOverDiv.style('left', `${(mousePos[0] - bbox.width)}px`);
+      mouseOverDiv.style('left', `${normalizedMousePos[0] - bbox.width}px`);
     }
 
     if (bbox.y + bbox.height > window.innerHeight) {
       // the overlay box is spilling outside of the track so switch
       // to showing it on the left
-      mouseOverDiv.style('top', `${(mousePos[1] - bbox.height)}px`);
+      mouseOverDiv.style('top', `${normalizedMousePos[1] - bbox.height}px`);
     }
 
     mouseOverDiv.html(mouseOverHtml);
@@ -3551,10 +4372,23 @@ class HiGlassComponent extends React.Component {
   }
 
   /**
+   * Handle gene search events.
+   */
+  geneSearchHandler(data) {
+    this.apiPublish('geneSearch', data);
+  }
+
+  /**
    * Handle mousedown events/
    */
-  mouseDownHandler(evt) {
+  mouseDownHandler(evt) {}
 
+  onScrollHandler() {
+    if (this.props.options.sizeMode !== SIZE_MODE_SCROLL) return;
+    this.scrollTop = this.scrollContainer.scrollTop;
+    this.pixiStage.y = -this.scrollTop;
+    this.pubSub.publish('app.scroll', this.scrollTop);
+    this.animate();
   }
 
   setTrackValueScaleLimits(viewId, trackId, minValue, maxValue) {
@@ -3572,15 +4406,19 @@ class HiGlassComponent extends React.Component {
       track.rerender(track.options, true);
       track.animate();
     } else {
-      console.warn('Track doesn\'t support fixed value scales.');
+      console.warn("Track doesn't support fixed value scales.");
     }
   }
 
   setChromInfo(chromInfoPath, callback) {
-    ChromosomeInfo(chromInfoPath, (newChromInfo) => {
-      this.chromInfo = newChromInfo;
-      callback();
-    }, this.pubSub);
+    ChromosomeInfo(
+      chromInfoPath,
+      (newChromInfo) => {
+        this.chromInfo = newChromInfo;
+        callback();
+      },
+      this.pubSub,
+    );
   }
 
   onMouseLeaveHandler() {
@@ -3595,21 +4433,50 @@ class HiGlassComponent extends React.Component {
 
   isZoomFixed(view) {
     return (
-      this.props.zoomFixed
-      || this.props.options.zoomFixed
-      || this.state.viewConfig.zoomFixed
-      || (view && view.zoomFixed)
+      this.props.zoomFixed ||
+      this.props.options.zoomFixed ||
+      this.state.viewConfig.zoomFixed ||
+      this.props.options.sizeMode === SIZE_MODE_SCROLL ||
+      (view && view.zoomFixed)
     );
   }
 
+  /**
+   * Handle trackDimensionsModified events
+   * settings.viewId = id of the view
+   * settings.trackId = id of the track
+   * settings.height = new height of the track or undefined if current height should remain
+   * settings.width = new width of the track or undefined if current width should remain
+   */
+  trackDimensionsModifiedHandler(settings) {
+    const view = this.state.views[settings.viewId];
+
+    if (!view) return;
+
+    const track = getTrackByUid(view.tracks, settings.trackId);
+
+    if (!track) return;
+
+    if (settings.height !== undefined) {
+      track.height = settings.height;
+    }
+
+    if (settings.width !== undefined) {
+      track.width = settings.width;
+    }
+    this.adjustLayoutToTrackSizes(view);
+
+    this.setState((prevState) => ({
+      views: prevState.views,
+    }));
+  }
+
   wheelHandler(evt) {
+    if (this.state.modal || this.props.options.sizeMode === SIZE_MODE_SCROLL)
+      return;
+
     // The event forwarder wasn't written for React's SyntheticEvent
     const nativeEvent = evt.nativeEvent || evt;
-    const isZoomFixed = (
-      this.props.zoomFixed
-      || this.props.options.zoomFixed
-      || this.state.viewConfig.zoomFixed
-    );
 
     const isTargetCanvas = evt.target === this.canvasElement;
 
@@ -3619,9 +4486,55 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
-    if (isZoomFixed) {
+    if (this.isZoomFixed()) {
       // ignore events when in zoom fixed mode
       return;
+    }
+
+    const absX = nativeEvent.clientX;
+    const absY = nativeEvent.clientY;
+    const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
+
+    // Find the tracks at the wheel position
+    if (this.apiStack.wheel && this.apiStack.wheel.length > 0) {
+      const relPos = clientPoint(this.topDiv, nativeEvent);
+      // We need to add the scrollTop
+      relPos[1] += this.scrollTop;
+      const hoveredTracks = hoveredTiledPlot
+        ? hoveredTiledPlot
+            .listTracksAtPosition(relPos[0], relPos[1], true)
+            .map((track) => track.originalTrack || track)
+        : [];
+      const hoveredTrack = hoveredTracks.find(
+        (track) => !track.isAugmentationTrack,
+      );
+
+      const relTrackPos = hoveredTrack
+        ? [
+            relPos[0] - hoveredTrack.position[0],
+            relPos[1] - hoveredTrack.position[1],
+          ]
+        : relPos;
+
+      const evtToPublish = {
+        x: relPos[0],
+        y: relPos[1],
+        relTrackX:
+          hoveredTrack && hoveredTrack.flipText
+            ? relTrackPos[1]
+            : relTrackPos[0],
+        relTrackY:
+          hoveredTrack && hoveredTrack.flipText
+            ? relTrackPos[0]
+            : relTrackPos[1],
+        track: hoveredTrack,
+        origEvt: nativeEvent,
+        sourceUid: this.uid,
+        hoveredTracks,
+        noHoveredTracks: hoveredTracks.length === 0,
+      };
+
+      this.apiPublish('wheel', evtToPublish);
     }
 
     if (nativeEvent.forwarded || isTargetCanvas) {
@@ -3635,8 +4548,6 @@ class HiGlassComponent extends React.Component {
 
     // forward the wheel event back to the TrackRenderer that it should go to
     // this is so that we can zoom when there's a viewport projection present
-    const hoveredTiledPlot = this.getTiledPlotAtPosition(nativeEvent.clientX, nativeEvent.clientY);
-
     if (hoveredTiledPlot) {
       const { trackRenderer } = hoveredTiledPlot;
       nativeEvent.forwarded = true;
@@ -3651,22 +4562,17 @@ class HiGlassComponent extends React.Component {
 
   render() {
     this.tiledAreasDivs = {};
-    this.tiledAreas = (
-      <div
-        styleName="styles.tiled-area"
-      />
-    );
+    this.tiledAreas = <div styleName="styles.tiled-area" />;
 
     // The component needs to be mounted in order for the initial view to have
     // the right width
     if (this.mounted) {
       this.tiledAreas = dictValues(this.state.views).map((view) => {
-        const zoomFixed = this.isZoomFixed(view);
-
         // only show the add track menu for the tiled plot it was selected for
-        const addTrackPositionMenuPosition = view.uid === this.state.addTrackPositionMenuUid
-          ? this.state.addTrackPositionMenuPosition
-          : null;
+        const addTrackPositionMenuPosition =
+          view.uid === this.state.addTrackPositionMenuUid
+            ? this.state.addTrackPositionMenuPosition
+            : null;
 
         let overlay = null;
         if (this.state.chooseViewHandler) {
@@ -3687,7 +4593,7 @@ class HiGlassComponent extends React.Component {
                 height: '100%',
                 background,
                 opacity: 0.3,
-                zIndex: 1
+                zIndex: 1,
               }}
             />
           );
@@ -3697,8 +4603,9 @@ class HiGlassComponent extends React.Component {
           <TiledPlot
             // Reserved props
             key={`tp${view.uid}`}
-            ref={(c) => { this.tiledPlots[view.uid] = c; }}
-
+            ref={(c) => {
+              this.tiledPlots[view.uid] = c;
+            }}
             // Custom props
             addTrackPosition={
               this.state.addTrackPositionView === view.uid
@@ -3709,68 +4616,90 @@ class HiGlassComponent extends React.Component {
             canvasElement={this.state.canvasElement}
             chooseTrackHandler={
               this.state.chooseTrackHandler
-                ? trackId => this.state.chooseTrackHandler(view.uid, trackId)
+                ? (trackId) => this.state.chooseTrackHandler(view.uid, trackId)
                 : null
             }
             chromInfoPath={view.chromInfoPath}
             disableTrackMenu={this.isTrackMenuDisabled()}
             draggingHappening={this.state.draggingHappening}
             editable={this.isEditable()}
+            getLockGroupExtrema={(uid) =>
+              this.getLockGroupExtrema(view.uid, uid)
+            }
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
             isShowGlobalMousePosition={this.isShowGlobalMousePosition}
+            isValueScaleLocked={(uid) => this.isValueScaleLocked(view.uid, uid)}
             marginBottom={this.viewMarginBottom}
             marginLeft={this.viewMarginLeft}
             marginRight={this.viewMarginRight}
             marginTop={this.viewMarginTop}
             metaTracks={view.metaTracks}
             mouseTool={this.state.mouseTool}
-            onChangeTrackData={(trackId, newData) => (
-              this.handleChangeTrackData(view.uid, trackId, newData))}
-            onChangeTrackType={(trackId, newType) => (
-              this.handleChangeTrackType(view.uid, trackId, newType))}
-            onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
-            onDataDomainChanged={(xDomain, yDomain) => (
-              this.handleDataDomainChanged(view.uid, xDomain, yDomain))}
-            onLockValueScale={uid => this.handleLockValueScale(view.uid, uid)}
+            onChangeTrackData={(trackId, newData) =>
+              this.handleChangeTrackData(view.uid, trackId, newData)
+            }
+            onChangeTrackType={(trackId, newType) =>
+              this.handleChangeTrackType(view.uid, trackId, newType)
+            }
+            onCloseTrack={(uid) => this.handleCloseTrack(view.uid, uid)}
+            onDataDomainChanged={(xDomain, yDomain) =>
+              this.handleDataDomainChanged(view.uid, xDomain, yDomain)
+            }
+            onLockValueScale={(uid) => this.handleLockValueScale(view.uid, uid)}
             onMouseMoveZoom={this.mouseMoveZoomHandler.bind(this)}
-            onNewTilesLoaded={trackUid => this.handleNewTilesLoaded(view.uid, trackUid)}
+            onNewTilesLoaded={(trackUid) =>
+              this.handleNewTilesLoaded(view.uid, trackUid)
+            }
             onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
             onRangeSelection={this.rangeSelectionHandler.bind(this)}
+            onResizeTrack={this.triggerViewChangeDb}
             onScalesChanged={(x, y) => this.handleScalesChanged(view.uid, x, y)}
-            onTrackOptionsChanged={(trackId, options) => (
-              this.handleTrackOptionsChanged(view.uid, trackId, options))}
+            onTrackOptionsChanged={(trackId, options) =>
+              this.handleTrackOptionsChanged(view.uid, trackId, options)
+            }
             onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
-            onTracksAdded={(newTracks, position, host) => (
-              this.handleTracksAdded(view.uid, newTracks, position, host))}
-            onUnlockValueScale={uid => this.handleUnlockValueScale(view.uid, uid)}
-            onValueScaleChanged={uid => this.syncValueScales(view.uid, uid)}
+            onTracksAdded={(newTracks, position, host) =>
+              this.handleTracksAdded(view.uid, newTracks, position, host)
+            }
+            onUnlockValueScale={(uid) =>
+              this.handleUnlockValueScale(view.uid, uid)
+            }
+            onValueScaleChanged={(uid) => this.syncValueScales(view.uid, uid)}
             overlays={view.overlays}
             paddingBottom={this.viewPaddingBottom}
             paddingLeft={this.viewPaddingLeft}
             paddingRight={this.viewPaddingRight}
             paddingTop={this.viewPaddingTop}
+            pixiRenderer={this.pixiRenderer}
             pixiStage={this.pixiStage}
-            pluginTracks={this.state.pluginTracks}
+            pluginDataFetchers={this.pluginDataFetchers}
+            pluginTracks={this.pluginTracks}
             rangeSelection1dSize={this.state.rangeSelection1dSize}
             rangeSelectionToInt={this.state.rangeSelectionToInt}
-            registerDraggingChangedListener={listener => (
-              this.addDraggingChangedListener(view.uid, view.uid, listener))}
-            removeDraggingChangedListener={listener => (
-              this.removeDraggingChangedListener(view.uid, view.uid, listener))}
-            setCentersFunction={(c) => { this.setCenters[view.uid] = c; }}
+            registerDraggingChangedListener={(listener) =>
+              this.addDraggingChangedListener(view.uid, view.uid, listener)
+            }
+            removeDraggingChangedListener={(listener) =>
+              this.removeDraggingChangedListener(view.uid, view.uid, listener)
+            }
+            setCentersFunction={(c) => {
+              this.setCenters[view.uid] = c;
+            }}
             svgElement={this.state.svgElement}
             tracks={view.tracks}
-            trackSourceServers={this.props.viewConfig.trackSourceServers}
+            trackSourceServers={this.state.viewConfig.trackSourceServers}
             uid={view.uid}
             verticalMargin={this.verticalMargin}
             viewOptions={view.options}
             // dragging={this.state.dragging}
             xDomainLimits={view.xDomainLimits}
             yDomainLimits={view.yDomainLimits}
-            zoomable={!zoomFixed}
-            zoomLimits={view.zoomLimits}
-            zoomToDataExtentOnInit={this.zoomToDataExtentOnInit.has(view.uid)}
+            zoomable={!this.isZoomFixed(view)}
+            zoomLimits={this.calculateZoomLimits(view, view.initialXDomain)}
+            zoomToDataExtentOnInit={() =>
+              this.zoomToDataExtentOnInit.has(view.uid)
+            }
           />
         );
 
@@ -3781,93 +4710,141 @@ class HiGlassComponent extends React.Component {
             <GenomePositionSearchBox
               // Reserved props
               key={`gpsb${view.uid}`}
-              ref={(c) => { this.genomePositionSearchBoxes[view.uid] = c; }}
-
+              ref={(c) => {
+                this.genomePositionSearchBoxes[view.uid] = c;
+              }}
               // Custom props
               autocompleteId={view.genomePositionSearchBox.autocompleteId}
-              autocompleteServer={view.genomePositionSearchBox.autocompleteServer}
+              autocompleteServer={
+                view.genomePositionSearchBox.autocompleteServer
+              }
               chromInfoId={view.genomePositionSearchBox.chromInfoId}
+              chromInfoPath={view.genomePositionSearchBox.chromInfoPath}
               chromInfoServer={view.genomePositionSearchBox.chromInfoServer}
+              hideAvailableAssemblies={
+                view.genomePositionSearchBox.hideAvailableAssemblies
+              }
               isFocused={isFocused}
               // the chromInfoId is either specified in the viewconfig or guessed based on
               // the visible tracks (see createGenomePositionSearchBoxEntry)
               onFocus={onFocus}
-              onSelectedAssemblyChanged={(x, y, server) => (
-                this.handleSelectedAssemblyChanged(view.uid, x, y, server))}
-              registerViewportChangedListener={listener => (
-                this.addScalesChangedListener(view.uid, view.uid, listener))}
-              removeViewportChangedListener={() => (
-                this.removeScalesChangedListener(view.uid, view.uid))}
-              setCenters={(centerX, centerY, k, animateTime) => (
-                this.setCenters[view.uid](centerX, centerY, k, false, animateTime))}
+              onGeneSearch={this.geneSearchHandler.bind(this)}
+              onSelectedAssemblyChanged={(x, y, server) =>
+                this.handleSelectedAssemblyChanged(view.uid, x, y, server)
+              }
+              registerViewportChangedListener={(listener) =>
+                this.addScalesChangedListener(view.uid, view.uid, listener)
+              }
+              removeViewportChangedListener={() =>
+                this.removeScalesChangedListener(view.uid, view.uid)
+              }
+              setCenters={(centerX, centerY, k, animateTime) =>
+                this.setCenters[view.uid](
+                  centerX,
+                  centerY,
+                  k,
+                  false,
+                  animateTime,
+                )
+              }
               trackSourceServers={this.state.viewConfig.trackSourceServers}
               twoD={true}
             />
           );
         };
 
-        const multiTrackHeader = (
-          this.isEditable()
-          && !this.isViewHeaderDisabled()
-          && !this.state.viewConfig.hideHeader
-        ) ? (
-          <ViewHeader
-            ref={(c) => { this.viewHeaders[view.uid] = c; }}
-            getGenomePositionSearchBox={getGenomePositionSearchBox}
-            isGenomePositionSearchBoxVisible={
-              view.genomePositionSearchBox && view.genomePositionSearchBox.visible
-            }
-            mouseTool={this.state.mouseTool}
-            onAddView={() => this.handleAddView(view)}
-            onClearView={() => this.handleClearView(view.uid)}
-            onCloseView={() => this.handleCloseView(view.uid)}
-            onExportPNG={this.handleExportPNG.bind(this)}
-            onExportSVG={this.handleExportSVG.bind(this)}
-            onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
-            onExportViewsAsLink={this.handleExportViewsAsLink.bind(this)}
-            onLockLocation={uid => (
-              this.handleYankFunction(uid, this.handleLocationLockChosen.bind(this)))}
-            onLockZoom={uid => (
-              this.handleYankFunction(uid, this.handleZoomLockChosen.bind(this)))}
-            onLockZoomAndLocation={uid => this.handleYankFunction(uid, (a, b) => {
-              this.handleZoomLockChosen(a, b);
-              this.handleLocationLockChosen(a, b);
-            })}
-            onProjectViewport={this.handleProjectViewport.bind(this)}
-            onTakeAndLockZoomAndLocation={(uid) => {
-              this.handleYankFunction(uid, (a, b) => {
-                this.handleZoomYanked(a, b);
-                this.handleLocationYanked(a, b);
-                this.handleZoomLockChosen(a, b);
-                this.handleLocationLockChosen(a, b);
-              });
-            }}
-            onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(this)}
-            onTrackPositionChosen={position => this.handleTrackPositionChosen(view.uid, position)}
-            onUnlockLocation={uid => this.handleUnlock(uid, this.locationLocks)}
-            onUnlockZoom={uid => this.handleUnlock(uid, this.zoomLocks)}
-            onUnlockZoomAndLocation={(uid) => {
-              this.handleUnlock(uid, this.zoomLocks);
-              this.handleUnlock(uid, this.locationLocks);
-            }}
-            onViewOptionsChanged={newOptions => this.handleViewOptionsChanged(view.uid, newOptions)}
-            onYankLocation={uid => (
-              this.handleYankFunction(uid, this.handleLocationYanked.bind(this)))}
-            onYankZoom={uid => this.handleYankFunction(uid, this.handleZoomYanked.bind(this))}
-            onYankZoomAndLocation={uid => (
-              this.handleYankFunction(uid, (a, b) => {
-                this.handleZoomYanked(a, b);
-                this.handleLocationYanked(a, b);
-              }))}
-            onZoomToData={uid => this.handleZoomToData(uid)}
-            viewUid={view.uid}
-          />
+        const multiTrackHeader =
+          this.isEditable() &&
+          !this.isViewHeaderDisabled() &&
+          !this.state.viewConfig.hideHeader ? (
+            <ViewHeader
+              ref={(c) => {
+                this.viewHeaders[view.uid] = c;
+              }}
+              getGenomePositionSearchBox={getGenomePositionSearchBox}
+              isGenomePositionSearchBoxVisible={
+                view.genomePositionSearchBox &&
+                view.genomePositionSearchBox.visible
+              }
+              mouseTool={this.state.mouseTool}
+              onAddView={() => this.handleAddView(view)}
+              onClearView={() => this.handleClearView(view.uid)}
+              onCloseView={() => this.handleCloseView(view.uid)}
+              onEditViewConfig={this.handleEditViewConfigBound}
+              onExportPNG={this.handleExportPNG.bind(this)}
+              onExportSVG={this.handleExportSVG.bind(this)}
+              onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
+              onExportViewsAsLink={this.handleExportViewsAsLink.bind(this)}
+              onLockLocation={(uid) =>
+                this.handleYankFunction(
+                  uid,
+                  this.handleLocationLockChosen.bind(this),
+                )
+              }
+              onLockZoom={(uid) =>
+                this.handleYankFunction(
+                  uid,
+                  this.handleZoomLockChosen.bind(this),
+                )
+              }
+              onLockZoomAndLocation={(uid) =>
+                this.handleYankFunction(uid, (a, b) => {
+                  this.handleZoomLockChosen(a, b);
+                  this.handleLocationLockChosen(a, b);
+                })
+              }
+              onProjectViewport={this.handleProjectViewport.bind(this)}
+              onTakeAndLockZoomAndLocation={(uid) => {
+                this.handleYankFunction(uid, (a, b) => {
+                  this.handleZoomYanked(a, b);
+                  this.handleLocationYanked(a, b);
+                  this.handleZoomLockChosen(a, b);
+                  this.handleLocationLockChosen(a, b);
+                });
+              }}
+              onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(
+                this,
+              )}
+              onTrackPositionChosen={(position) =>
+                this.handleTrackPositionChosen(view.uid, position)
+              }
+              onUnlockLocation={(uid) =>
+                this.handleUnlock(uid, this.locationLocks)
+              }
+              onUnlockZoom={(uid) => this.handleUnlock(uid, this.zoomLocks)}
+              onUnlockZoomAndLocation={(uid) => {
+                this.handleUnlock(uid, this.zoomLocks);
+                this.handleUnlock(uid, this.locationLocks);
+              }}
+              onViewOptionsChanged={(newOptions) =>
+                this.handleViewOptionsChanged(view.uid, newOptions)
+              }
+              onYankLocation={(uid) =>
+                this.handleYankFunction(
+                  uid,
+                  this.handleLocationYanked.bind(this),
+                )
+              }
+              onYankZoom={(uid) =>
+                this.handleYankFunction(uid, this.handleZoomYanked.bind(this))
+              }
+              onYankZoomAndLocation={(uid) =>
+                this.handleYankFunction(uid, (a, b) => {
+                  this.handleZoomYanked(a, b);
+                  this.handleLocationYanked(a, b);
+                })
+              }
+              onZoomToData={(uid) => this.handleZoomToData(uid)}
+              viewUid={view.uid}
+            />
           ) : null;
 
         return (
           <div
             key={view.uid}
-            ref={(c) => { this.tiledAreasDivs[view.uid] = c; }}
+            ref={(c) => {
+              this.tiledAreasDivs[view.uid] = c;
+            }}
             styleName="styles.tiled-area"
           >
             {multiTrackHeader}
@@ -3878,43 +4855,36 @@ class HiGlassComponent extends React.Component {
       });
     }
 
-    const exportLinkModal = this.state.exportLinkModalOpen
-      ? (
-        <ExportLinkModal
-          height={this.height}
-          linkLocation={this.state.exportLinkLocation}
-          onDone={() => this.setState({ exportLinkModalOpen: false })}
-          width={this.width}
-        />
-      )
-      : null;
-
     let layouts = this.mounted
-      ? Object
-        .values(this.state.views)
-        .filter(view => view.layout)
-        .map(view => view.layout)
+      ? Object.values(this.state.views)
+          .filter((view) => view.layout)
+          .map((view) => view.layout)
       : [];
 
     layouts = JSON.parse(JSON.stringify(layouts)); // make sure to copy the layouts
 
     const defaultContainerPaddingX = this.isEditable()
-      ? DEFAULT_CONTAINER_PADDING_X : 0;
+      ? DEFAULT_CONTAINER_PADDING_X
+      : 0;
     const defaultContainerPaddingY = this.isEditable()
-      ? DEFAULT_CONTAINER_PADDING_Y : 0;
+      ? DEFAULT_CONTAINER_PADDING_Y
+      : 0;
 
-    const containerPaddingX = +this.props.options.containerPaddingX >= 0
-      ? +this.props.options.containerPaddingX
-      : defaultContainerPaddingX;
-    const containerPaddingY = +this.props.options.containerPaddingY >= 0
-      ? +this.props.options.containerPaddingY
-      : defaultContainerPaddingY;
+    const containerPaddingX =
+      +this.props.options.containerPaddingX >= 0
+        ? +this.props.options.containerPaddingX
+        : defaultContainerPaddingX;
+    const containerPaddingY =
+      +this.props.options.containerPaddingY >= 0
+        ? +this.props.options.containerPaddingY
+        : defaultContainerPaddingY;
 
     const gridLayout = (
       <ReactGridLayout
         // Reserved props
-        ref={(c) => { this.gridLayout = c; }}
-
+        ref={(c) => {
+          this.gridLayout = c;
+        }}
         // Custom props
         cols={12}
         containerPadding={[containerPaddingX, containerPaddingY]}
@@ -3946,47 +4916,82 @@ class HiGlassComponent extends React.Component {
 
     let styleNames = 'styles.higlass';
 
-    if (getDarkTheme()) {
+    if (this.theme === THEME_DARK) {
       styleNames += ' styles.higlass-dark-theme';
+    }
+
+    if (
+      this.props.options.sizeMode === SIZE_MODE_OVERFLOW ||
+      this.props.options.sizeMode === SIZE_MODE_SCROLL
+    ) {
+      styleNames += ' styles.higlass-container-overflow';
+    }
+
+    let scrollStyleNames = '';
+    if (this.props.options.sizeMode === SIZE_MODE_OVERFLOW) {
+      scrollStyleNames = 'styles.higlass-scroll-container-overflow';
+    } else if (this.props.options.sizeMode === SIZE_MODE_SCROLL) {
+      scrollStyleNames = 'styles.higlass-scroll-container-scroll';
     }
 
     return (
       <div
         key={this.uid}
-        ref={(c) => { this.topDiv = c; }}
+        ref={(c) => {
+          this.topDiv = c;
+        }}
         className="higlass"
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
-        onWheel={this.onWheelHandlerBound}
         styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>
-          <canvas
-            key={this.uid}
-            ref={(c) => { this.canvasElement = c; }}
-            styleName="styles.higlass-canvas"
-          />
-          <div
-            ref={(c) => { this.divDrawingSurface = c; }}
-            styleName="styles.higlass-drawing-surface"
-          >
-            {gridLayout}
-          </div>
-          <svg
-            ref={(c) => { this.svgElement = c; }}
-            style={{
-              // inline the styles so they aren't overriden by other css
-              // on the web page
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              left: 0,
-              top: 0,
-              pointerEvents: 'none',
-            }}
-            styleName="styles.higlass-svg"
-          />
-          {exportLinkModal}
+          <ModalProvider value={this.modal}>
+            <ThemeProvider value={this.theme}>
+              {this.state.modal}
+              <canvas
+                key={this.uid}
+                ref={(c) => {
+                  this.canvasElement = c;
+                }}
+                styleName="styles.higlass-canvas"
+              />
+              <div
+                ref={(c) => {
+                  this.scrollContainer = c;
+                }}
+                className="higlass-scroll-container"
+                onScroll={this.onScrollHandlerBound}
+                styleName={scrollStyleNames}
+              >
+                <div
+                  ref={(c) => {
+                    this.divDrawingSurface = c;
+                  }}
+                  className="higlass-drawing-surface"
+                  styleName="styles.higlass-drawing-surface"
+                >
+                  {gridLayout}
+                </div>
+                <svg
+                  ref={(c) => {
+                    this.svgElement = c;
+                  }}
+                  style={{
+                    // inline the styles so they aren't overriden by other css
+                    // on the web page
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    left: 0,
+                    top: 0,
+                    pointerEvents: 'none',
+                  }}
+                  styleName="styles.higlass-svg"
+                />
+              </div>
+            </ThemeProvider>
+          </ModalProvider>
         </PubSubProvider>
       </div>
     );
@@ -3999,11 +5004,10 @@ HiGlassComponent.defaultProps = {
 };
 
 HiGlassComponent.propTypes = {
+  getApi: PropTypes.func,
   options: PropTypes.object,
-  viewConfig: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-  ]).isRequired,
+  viewConfig: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+    .isRequired,
   zoomFixed: PropTypes.bool,
 };
 

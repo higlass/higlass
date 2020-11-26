@@ -1,4 +1,3 @@
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { mix } from './mixwith';
@@ -10,12 +9,14 @@ import ContextMenuItem from './ContextMenuItem';
 import ContextMenuContainer from './ContextMenuContainer';
 import SeriesListSubmenuMixin from './SeriesListSubmenuMixin';
 
-import { getDarkTheme } from './services';
+import { THEME_DARK } from './configs';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMixin) {
+class ViewContextMenu extends mix(ContextMenuContainer).with(
+  SeriesListSubmenuMixin,
+) {
   render() {
     const seriesItems = getSeriesItems(
       this.props.tracks,
@@ -24,18 +25,23 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
     );
 
     const customItemsWrapped = this.props.customItems
-      ? React.Children.map(this.props.customItems,
-        child => React.cloneElement(
-          child, { onMouseEnter: (e) => { this.handleOtherMouseEnter(e); } }
-        ))
+      ? React.Children.map(this.props.customItems, (child) =>
+          React.cloneElement(child, {
+            onMouseEnter: (e) => {
+              this.handleOtherMouseEnter(e);
+            },
+          }),
+        )
       : null;
 
     let styleNames = 'context-menu';
-    if (getDarkTheme()) styleNames += ' context-menu-dark';
+    if (this.props.theme === THEME_DARK) styleNames += ' context-menu-dark';
 
     return (
       <div
-        ref={(c) => { this.div = c; }}
+        ref={(c) => {
+          this.div = c;
+        }}
         data-menu-type="ViewContextMenu"
         style={{
           left: this.state.left,
@@ -52,81 +58,80 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
         {seriesItems && <hr styleName="context-menu-hr" />}
 
         <ContextMenuItem
-          onClick={() => this.props.onAddTrack({
-            type: 'horizontal-rule',
-            y: this.props.coords[1],
-            position: 'whole',
-          })}
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onClick={() =>
+            this.props.onAddTrack({
+              type: 'horizontal-rule',
+              y: this.props.coords[1],
+              position: 'whole',
+            })
+          }
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
           {'Add Horizontal Rule'}
         </ContextMenuItem>
 
         <ContextMenuItem
-          onClick={() => this.props.onAddTrack({
-            type: 'vertical-rule',
-            x: this.props.coords[0],
-            position: 'whole',
-          })}
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onClick={() =>
+            this.props.onAddTrack({
+              type: 'vertical-rule',
+              x: this.props.coords[0],
+              position: 'whole',
+            })
+          }
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
           {'Add Vertical Rule'}
         </ContextMenuItem>
 
         <ContextMenuItem
-          onClick={() => this.props.onAddTrack({
-            type: 'cross-rule',
-            x: this.props.coords[0],
-            y: this.props.coords[1],
-            position: 'whole',
-          })}
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          onClick={() =>
+            this.props.onAddTrack({
+              type: 'cross-rule',
+              x: this.props.coords[0],
+              y: this.props.coords[1],
+              position: 'whole',
+            })
+          }
+          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
           {'Add Cross Rule'}
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
 
-        {
-          this.hasMatrixTrack(this.props.tracks)
-          && (
-            <ContextMenuItem
-              onClick={this.handleAddHorizontalSection.bind(this)}
-              onMouseEnter={e => this.handleOtherMouseEnter(e)}
-            >
-              {'Add Horizontal Cross Section'}
-            </ContextMenuItem>
-          )
-        }
-        {
-          this.hasMatrixTrack(this.props.tracks)
+        {this.hasMatrixTrack(this.props.tracks) && (
+          <ContextMenuItem
+            onClick={this.handleAddHorizontalSection.bind(this)}
+            onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
+          >
+            {'Add Horizontal Cross Section'}
+          </ContextMenuItem>
+        )}
+        {this.hasMatrixTrack(this.props.tracks) && (
+          <ContextMenuItem
+            onClick={this.handleAddVerticalSection.bind(this)}
+            onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
+          >
+            {'Add Vertical Cross Section'}
+          </ContextMenuItem>
+        )}
 
-          && (
-            <ContextMenuItem
-              onClick={this.handleAddVerticalSection.bind(this)}
-              onMouseEnter={e => this.handleOtherMouseEnter(e)}
-            >
-              {'Add Vertical Cross Section'}
-            </ContextMenuItem>
-          )
-        }
-
-        { /* from the SeriesListSubmenuMixin */ }
-        { this.getSubmenu() }
-
+        {/* from the SeriesListSubmenuMixin */}
+        {this.getSubmenu()}
       </div>
     );
   }
 
-
   hasMatrixTrack(tracks) {
     const trackList = expandCombinedTracks(this.props.tracks);
-    return trackList.filter(track => track.type === 'heatmap').length > 0;
+    return trackList.filter((track) => track.type === 'heatmap').length > 0;
   }
 
   handleAddHorizontalSection() {
     const trackList = expandCombinedTracks(this.props.tracks);
-    const matrixTrack = trackList.filter(track => track.type === 'heatmap')[0];
+    const matrixTrack = trackList.filter(
+      (track) => track.type === 'heatmap',
+    )[0];
 
     this.props.onAddTrack({
       type: 'horizontal-rule',
@@ -151,7 +156,9 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
 
   handleAddVerticalSection() {
     const trackList = expandCombinedTracks(this.props.tracks);
-    const matrixTrack = trackList.filter(track => track.type === 'heatmap')[0];
+    const matrixTrack = trackList.filter(
+      (track) => track.type === 'heatmap',
+    )[0];
 
     this.props.onAddTrack({
       type: 'vertical-rule',

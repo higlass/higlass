@@ -1,0 +1,112 @@
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": ["https://higlass.io/api/v1"],
+  "exportViewUrl": "http://localhost:8000/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [-128227010.6076158, 3227095876.810823],
+      "initialYDomain": [-679063376.6830564, 3737688490.1136293],
+      "autocompleteSource": "https://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": false,
+      "chromInfoPath": "https://resgen.io/api/v1/chrom-sizes/?id=ADfY_RtsQR6oKOMyrq6qhw",
+      "tracks": {
+        "top": [
+          {
+            "chromInfoPath": "https://resgen.io/api/v1/chrom-sizes/?id=ADfY_RtsQR6oKOMyrq6qhw",
+            "type": "horizontal-chromosome-labels",
+            "height": 30,
+            "uid": "I1QUF22JQJuJ38j9PS4iqw",
+            "options": {},
+            "width": 667
+          }
+        ],
+        "left": [
+          {
+            "chromInfoPath": "https://resgen.io/api/v1/chrom-sizes/?id=ADfY_RtsQR6oKOMyrq6qhw",
+            "type": "vertical-chromosome-labels",
+            "width": 30,
+            "uid": "a-mFiHnBQ8uuI6UG3USWVA",
+            "options": {},
+            "height": 828
+          }
+        ],
+        "center": [
+          {
+            "uid": "c1",
+            "type": "combined",
+            "height": 828,
+            "contents": [
+              {
+                "data": {
+                  "type": "divided",
+                  "children": [
+                    {
+                      "server": "http://higlass.io/api/v1",
+                      "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ"
+                    },
+                    {
+                      "server": "http://higlass.io/api/v1",
+                      "tilesetUid": "ZCvntCKST0KUvQPGcCbJGA"
+                    }
+                  ]
+                },
+                "type": "heatmap",
+                "options": {
+                  "colorRange": ["#FFFFFF", "#F8E71C", "#F5A623", "#D0021B"],
+                  "colorbarPosition": "topRight",
+                  "colorbarLabelsPosition": "outside",
+                  "maxZoom": null,
+                  "labelPosition": "bottomLeft",
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "uid": "heatmap1",
+                "width": 667,
+                "height": 828
+              },
+              {
+                "type": "2d-chromosome-grid",
+                "chromInfoPath": "https://resgen.io/api/v1/chrom-sizes/?id=ADfY_RtsQR6oKOMyrq6qhw",
+                "uid": "LUVqXXu2QYiO8XURIwyUyA",
+                "options": {
+                  "lineStrokeWidth": 1,
+                  "lineStrokeColor": "grey"
+                },
+                "width": 667,
+                "height": 828
+              }
+            ],
+            "options": {},
+            "width": 667
+          }
+        ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

@@ -45,13 +45,14 @@ export const getSeriesItems = (
   tracks,
   onItemMouseEnter,
   onItemMouseLeave,
-  onItemClick
+  onItemClick,
 ) => {
   if (!tracks) return null;
 
   if (window.higlassTracksByType) {
     Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
-      TRACKS_INFO_BY_TYPE[pluginTrackType] = window.higlassTracksByType[pluginTrackType].config;
+      TRACKS_INFO_BY_TYPE[pluginTrackType] =
+        window.higlassTracksByType[pluginTrackType].config;
     });
   }
 
@@ -62,34 +63,40 @@ export const getSeriesItems = (
 
     const imgTag = thumbnail ? (
       <div
+        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
         styleName="context-menu-icon"
       />
     ) : (
-      <div styleName="context-menu-icon"><svg /></div>
+      <div styleName="context-menu-icon">
+        <svg />
+      </div>
     );
 
     return (
       <ContextMenuItem
         key={x.uid}
-        onClick={() => { if (onItemClick) onItemClick(x.uid); }}
-        onMouseEnter={(e) => { if (onItemMouseEnter) onItemMouseEnter(e, x); }}
-        onMouseLeave={(e) => { if (onItemMouseLeave) onItemMouseLeave(e); }}
+        onClick={() => {
+          if (onItemClick) onItemClick(x.uid);
+        }}
+        onMouseEnter={(e) => {
+          if (onItemMouseEnter) onItemMouseEnter(e, x);
+        }}
+        onMouseLeave={(e) => {
+          if (onItemMouseLeave) onItemMouseLeave(e);
+        }}
         styleName="context-menu-item"
       >
         {imgTag}
-        <span
-          styleName="context-menu-span"
-        >
-          {(x.name && x.name.length) ? x.name : x.uid}
-          { onItemMouseEnter && onItemMouseLeave
-            ? (
-              <svg styleName="play-icon">
-                <use xlinkHref="#play" />
-              </svg>
-            )
-            : null
-          }
+        <span styleName="context-menu-span">
+          {x.options && x.options.name && x.options.name.length
+            ? x.options.name
+            : x.type}
+          {onItemMouseEnter && onItemMouseLeave ? (
+            <svg styleName="play-icon">
+              <use xlinkHref="#play" />
+            </svg>
+          ) : null}
         </span>
       </ContextMenuItem>
     );

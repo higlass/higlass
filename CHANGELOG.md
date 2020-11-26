@@ -1,24 +1,370 @@
+# Release notes
+
+## Next
+
+- Fix colorbar error on degenerate colorscale
+- Update horizontal heatmap to regular heatmap rendering so that they can use the same options
+
+_[Detailed changes since v1.11.3](https://github.com/higlass/higlass/compare/v1.11.3...develop)_
+
+## v1.11.3
+
+- Show a more comprehensive list of track types in the track config menu
+- Break up HiGlassComponentTests
+- Show only integer ticks in `HorizontalChromosomeLabels` tracks because it is misleading to have decimal values in genomic coordinates.
+- Add a `reverseOrientation` option in `HorizontalChromosomeLabels` tracks to allow aligning tick labels and lines on the top or left.
+- Make overlays SVG exportable
+- Fix a bug that led to the app crash when `selectRows` is set to an empty array `[]`
+- Break up and turn off some tests
+- Fix gene annotation mouseover
+
+_[Detailed changes since v1.11.2](https://github.com/higlass/higlass/compare/v1.11.2...v1.11.3)_
+
+## v1.11.2
+
+- Fix registration of plugin tracks
+- Don't try to render names of filler annotations
+
+_[Detailed changes since v1.11.1](https://github.com/higlass/higlass/compare/v1.11.1...v1.11.2)_
+
+## v1.11.1
+
+- Fix multivec SVG export
+- Added `ChromosomeInfo` and `SearchField` classes to `AVAILABLE_TO_PLUGINS`.
+
+_[Detailed changes since v1.11.0](https://github.com/higlass/higlass/compare/v1.11.0...v1.11.1)_
+
+## v1.11.0
+
+- Make gene annotations rotatable so that they can be added on the left
+- Tracks can now modify their own dimensions by publishing `trackDimensionsModified`.
+- Fixed a bug preventing usage of `data.url` and HorizontalMultivecTrack server-side aggregation simultaneously.
+- Fixed a bug preventing an updated value of `track.options.selectRows` from triggering a HorizontalMultivecTrack track update when using server-side aggregation (`track.options.selectRowsAggregationMethod === 'server'`).
+- Added the JS API `.on('geneSearch', callback)` option for subscribing to gene search events.
+- Simplify plugin track registry
+- Implemented plugin data fetchers.
+
+_[Detailed changes since v1.10.2](https://github.com/higlass/higlass/compare/v1.10.2...v1.11.0)_
+
+## v1.10.2
+
+- Remove view config validation from `hgApi.getViewConfig()` and `hgApi.setViewConfig()` and instead move it into a new method called `hgApi.validateViewConfig(viewConfig, { verbose: false } = {})`
+
+_[Detailed changes since v1.10.1](https://github.com/higlass/higlass/compare/v1.10.1...v1.10.2)_
+
+## v1.10.1
+
+- Remove text/plain encoding from tile proxy text fetcher
+- Added the `selectRowsAggregationMethod` option for the `horizontal-multivec` track to enable server-side aggregation if set to `"server"` rather than the default `"client"`.
+- In the view config, moved the `fileUrl` track property under the `data` property: `data: { url, server, filetype }`.
+
+_[Detailed changes since v1.10.0](https://github.com/higlass/higlass/compare/v1.10.0...v1.10.1)_
+
+## v1.10.0
+
+- Fixed horizontal and vertical cross sections
+- Changed the style for the mouse over dialog to have a maximum width of 50 and to break words so that it doesn't go off the screen if there's a very long mouseover text.
+- Lower the default annotation height in the Gene Annotations track
+- Colors for rules
+- Ability to load genome position search box chromosome sizes from an arbitrary location
+- Plugin tracks can provide their own config menu options
+- Remove horizontal-_ and vertical-_ prefixes from track names
+- Load matrices with "None" data transform without crashing
+- Add a view for showing schema log messages when JSON codes are edited in a config view.
+
+_[Detailed changes since v1.9.5](https://github.com/higlass/higlass/compare/v1.9.5...v1.10.0)_
+
+## v1.9.5
+
+- Removed styles for naked td tag
+- Reader for text genbank data (i.e. not pulled from a url)
+
+_[Detailed changes since v1.9.4](https://github.com/higlass/higlass/compare/v1.9.4...v.1.9.5)_
+
+## v1.9.4
+
+- Added the `resolveImmediately` parameter to the setViewConfig API call.
+- Zooming can now be restricted by specifying `zoomLimits` in the viewconf.
+- Fixed bug where the track config menu improperly positioned when clicked twice.
+- Update the heatmap option interface to allow seeing the preview when a color picker is opened.
+- Display an error message on tiles with errors in them
+- Don't try to assign a color value scale if the colorEncoding is set to itemRgb. itemRgb means that the color is present directly in the annotation
+- Add an option to separate the + / - strand annotations in the bedlike track
+
+_[Detailed changes since v1.9.3](https://github.com/higlass/higlass/compare/v1.9.3...v.1.9.4)_
+
+## v1.9.3
+
+- Consolidated track options of horizontal and vertical tracks
+- Set background of new heatmap tracks in a combined track to `transparent` when added via the track context menu.
+- Fixed bug where heatmap labels could not be hidden.
+- The position of labels and colorbars for split heatmaps can now be changed.
+- Use itemRgb field in bed files as the default coloring for bedlike tracks
+
+_[Detailed changes since v1.9.2](https://github.com/higlass/higlass/compare/v1.9.2...v.1.9.3)_
+
+## v1.9.2
+
+- Fixed divided tracks bug by adding denseDataExtrema
+- Fixed divergent bar track
+- Made the bar track compatible with the local tile fetcher
+- Added fontColor, fontSize and fillOpacity options to BedLikeTrack
+- Added cheat code for making the component editable (i.e. with headers)
+- Fixed track names in config menu
+- Keep locks on track type change
+- Fix crashing higlass on non-existent value scale lock member
+
+_[Detailed changes since v1.9.1](https://github.com/higlass/higlass/compare/v1.9.1...v1.9.2)_
+
+## v1.9.1
+
+- Used stretchRects to ensure that there are no rendering artifacts when zooming in too far
+- Added scaled as a potential value to the annotationHeight option
+- Added the maxAnnotationHeight option to limit the size of annotations when using the scaled option for annotationHeight
+- Added the fontSize option for bedlike tracks
+- colorAnnotations are independent of valueScale
+- Vertical zooming on BedLike annotations
+- Added support for aggregation of `horizontal-multivec` rows by passing arrays of row indices to the `selectRows` option. With this addition also comes the track options `selectRowsAggregationMode` (for specifying an aggregation function, "mean", "sum", "variance", "deviation") and `selectRowsAggregationWithRelativeHeight` (boolean) to determine whether rows representing groups of indices have 1-unit heights or `group.length`-unit heights.
+- Added the JS API `.on('wheel', callback)` option for subscribing to mouse wheel events.
+
+_[Detailed changes since v1.9.0](https://github.com/higlass/higlass/compare/v1.9.0...v1.9.1)_
+
+## v1.9.0
+
+- Support for gene annotation "filler" regions
+- Clickable gene annotations
+- Slightly updated gene annotation style with arrowheads at the ends
+- Remove Content-Type headers when fetching genbank files
+- Added the fields `xRange` and `yRange` the object returned by the JavaScript API `.getLocation()` method.
+- Fixed blurry exported heatmap SVG graphics issue using the `image-rendering` CSS property.
+- Enabled view-based scaling
+- Left and right tracks can now be value scale locked
+- Added the attributes `projectionXDomain` and `projectionYDomain` to the `viewport-projection-horizontal` and `viewport-projection-vertical`, respectively, and both to the `viewport-projection-center`, to support the case in which the `fromViewUid` attribute is undefined.
+- Added the `.on('createSVG')` listener to the JS API, with the corresponding `.off('createSVG')`, for manipulating exported SVGs before they are returned.
+- Added `zeroValueColor` as an option for the `horizontal-multivec` track, to specify the color mapping for zero data values.
+- Track resizing events now trigger the `.on('viewConfig')` JS API callback.
+- Allowed K and M notations when entering genomic coordinates in searchbox (e.g., "chr1:150M-155M").
+- Specify raw tiles locally in the viewconf
+
+_[Detailed changes since v1.8.4](https://github.com/higlass/higlass/compare/v1.8.4...v1.9.0)_
+
+## v1.8.4
+
+- Corrupted lock bug fix
+- Export to SVG with no loaded tiles bug fix
+- `selectRows` option for Horizontal Multivec Tracks
+
+_[Detailed changes since v1.8.3](https://github.com/higlass/higlass/compare/v1.8.3...v1.8.4)_
+
+## v1.8.3
+
+- Added "empty" track
+
+_[Detailed changes since v1.8.2](https://github.com/higlass/higlass/compare/v1.8.2...v1.8.3)_
+
+## v1.8.2
+
+- Fixed horizontal track not rendering properly in vertical position bug
+
+_[Detailed changes since v1.8.1](https://github.com/higlass/higlass/compare/v1.8.1...v1.8.2)_
+
+## v1.8.1
+
+- Prettified JS code
+- Added `labelShowAssembly` as an option to allow hiding the assembly in track label (e.g. `hg19 |` text)
+- Added `tickFormat` and `tickPosition` options to the chromosome labels track
+- Enabled the colorbar slider by adding the options `colorbarPosition` and `colorbarBackgroundColor` for the `horizontal-multivec`
+- Added release notes to docs.
+- Added support for selecting and filtering rows of the `horizontal-multivec` track via the `selectRows` option.
+
+_[Detailed changes since v1.8.0](https://github.com/higlass/higlass/compare/v1.8.0...v1.8.1)_
+
+## v1.8.0
+
+- Added the option to flip 2D annotations across the diagonal
+- Update heatmap docs with colorRange parameter
+- Update BedLikeTrack to display strand-specific entries
+- Added 'segment' style to the BedLikeTrack
+- Updated default plot types when adding tracks
+- When adding multiple tracks at once that have different datatype, each track is added with its default plot type. The plot type chooser is hidden.
+- In `HorizontalLine1DPixiTrack`, make sure that `this.valueScale` is set when `getMouseOverHtml()` is called.
+- VerticalRule, HorizontalRule, and CrossRule tracks included in SVG and PNG exports.
+
+_[Detailed changes since v1.7.2](https://github.com/higlass/higlass/compare/v1.7.2...v1.8.0)_
+
+## v1.7.2
+
+- Refactored the scroll options and `bounded` into a new property called `sizeMode`. There are now 4 different size modes, which determine the visible height of the HiGlass instance:
+  1. `default`: the height is given by the sum of the tracks' heights
+  2. `bounded`: tells the HiGlass component to bind the height to the parent container by dynamically adjusting the height of center tracks.
+  3. `scroll`: will activate scrolling by stretching HiGlass' drawing surface to the extent of parent DOM element and hiding overflowing content in the x direction and allowing to scroll when content overflows in the y direction.
+  4. `overflow`: same as `scroll` except that you can't scroll. This mode is only needed when you want to dynamically switch between scrolling and pan+zooming.
+
+_[Detailed changes since v1.7.0](https://github.com/higlass/higlass/compare/v1.7.0...v1.7.2)_
+
+## v1.7.1
+
+_Same as v1.7.0. This is just due to a glitch at npmjs.org._
+
+## v1.7.0
+
+- Add support for scrollable views. Activate via the option `scrollable: true`. Once you activate scrollable views all views are automatically zoomfixed! See [http://localhost:8080/others/scrollable-container.html](others/scrollable-container.html) for an example.
+- Add `option(key, value)` to the JS API for changing options. It supports getting all options when `value` is ommited and setting `scrollable`.
+- Properly display "Loading" while loading tileset info
+- Add support to ignore offscreen values for value scale locking by setting `ignoreOffScreenValues: true` for a lock group in `locksDict`.
+
+_[Detailed changes since v1.6.12](https://github.com/higlass/higlass/compare/v1.6.12...v1.7.0)_
+
+## v1.6.12
+
+- Rename React lifecycle methods according to their recommendations
+- Add support for borders (via the `stroke`, `strokeWidth`, `strokeOpacity`, and `strokePos` options) and outlines (via the `outline`, `outlineWidth`, `outlineOpacity`, and `outlinePos` options) to overlays. See [http://localhost:8080/apis/svg.html?/viewconfs/fancy-overlays.json](http://localhost:8080/apis/svg.html?/viewconfs/fancy-overlays.json) for an example.
+- Fixed horizontal rule bug (from Slack)
+
+_[Detailed changes since v1.6.11](https://github.com/higlass/higlass/compare/v1.6.11...v1.6.12)_
+
+## v1.6.11
+
+- Overlay track bug fixes
+- Added `minWidth` and `minHeight` options to `overlays` for better guidance
+- Allow viewconf JSON to override minimum track height or width defaults, when a track specifies a `minHeight` or `minWidth` parameter
+
+_[Detailed changes since v1.6.10](https://github.com/higlass/higlass/compare/v1.6.10...v1.6.11)_
+
+## v1.6.10
+
+- Add API call for show track chooser (`hgApi.showTrackChooser()`)
+- Limit icon size in plot type chooser
+- Add non-gzipped support to genbank-fetcher
+- Better error handling for genbank fetcher
+
+_[Detailed changes since v1.6.9](https://github.com/higlass/higlass/compare/v1.6.9...v1.6.10)_
+
+## v1.6.9
+
+- Enable brushing on bar, point, and 1d-heatmap tracks
+
+_[Detailed changes since v1.6.8](https://github.com/higlass/higlass/compare/v1.6.8...v1.6.9)_
+
+## v1.6.8
+
+- Add infrastructure for value scale zooming
+- Fixed the colors when dragging a track over a higlass display
+- Added support for value scale zooming
+- Added utils/track-utils to provide track functionality for use without inheritance
+- Implemented a genbank data fetcher for gene annotation tracks
+
+_[Detailed changes since v1.6.7](https://github.com/higlass/higlass/compare/v1.6.7...v1.6.8)_
+
+## v1.6.7
+
+- Fix #747: the tooltip value wasn't shown because of an issue related to minimizing the code
+- Fix #743: the tooltip position now incorporates the scroll position
+- Fix drag handle styling (typo)
+- Make drag handle area (not the style) bigger so it's easier to grab
+
+_[Detailed changes since v1.6.6](https://github.com/higlass/higlass/compare/v1.6.6...v1.6.7)_
+
+## v1.6.6
+
+- Fix #732: Remove the hold ALT feature as it's confusion and leads to a weird bug.
+- Fix leaking dark mode setting
+- Change option to activate dark theme from `isDarkTheme: true` to `theme: 'dark'`. Also, use `setTheme()` of the JsAPI instead of `setDarkTheme()` from now on.
+- Copy the tile data before mutation to fix an issue when displaying the same tileset twice (once in the upper right and lower left triangle)
+
+_[Detailed changes since v1.6.5](https://github.com/higlass/higlass/compare/v1.6.5...v1.6.6)_
+
+## v1.6.5
+
+- Fixed the replace track bug (where replacing a center track wouldn't do anything)
+
+_[Detailed changes since v1.6.4](https://github.com/higlass/higlass/compare/v1.6.4...v1.6.5)_
+
+## v1.6.4
+
+- Truly fix #593: zoom to data extent when adding the first track to an empty view
+
+_[Detailed changes since v1.6.3](https://github.com/higlass/higlass/compare/v1.6.3...v1.6.4)_
+
+## v1.6.3
+
+- Dynamically update dark theme when the options change
+- Fix #722: added `labelShowResolution` as an option to allow hiding the `[Current data resolution...]` text
+- Add support for missing values (`NaN`s) to the 1D heatmap track
+- Use the new link format
+
+_[Detailed changes since v1.6.2](https://github.com/higlass/higlass/compare/v1.6.2...v1.6.3)_
+
+## v1.6.2
+
+- Render `horizontal-heatmap` track properly in PIXI v4 and v5
+- Expose pixi renderer to plugin tracks to allow them to render textures from graphics objects. (More here: https://github.com/pixijs/pixi.js/issues/5394)
+
+_[Detailed changes since v1.6.1](https://github.com/higlass/higlass/compare/v1.6.1...v1.6.2)_
+
+## v1.6.1
+
+- Fix visual glitches with the new Modal when run in `higlass-app`
+- Really fix #651: set correct namespace for SVG exports
+- Treat `tilesetInfo.mirror_tiles = false` as a falsy value
+- Fixed: `Save and Close` in the ViewConfigEditor works properly
+
+_[Detailed changes since v1.6.0](https://github.com/higlass/higlass/compare/v1.6.0...v1.6.1)_
+
+## v1.6.0
+
+- Add an option to restrict the extent of central heatmaps to the upper-right or lower-left corner to enable comparison of two heatmaps in the center. Run `npm start` and see [http://localhost:8080/apis/svg.html?/viewconfs/diagonal-split-heatmap.json](http://localhost:8080/apis/svg.html?/viewconfs/diagonal-split-heatmap.json) for an example
+- Updated `pixi.js` to version `5`. In your `html` files you need to replace the previous PixiJS loader with `<script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>` (or `<script crossorigin src="https://unpkg.com/pixi.js-legacy@5/dist/pixi-legacy.min.js"></script>` if you want to use the Canvas renderer)
+- Add a dialog to directly edit the view config in the browser
+- Replace ReactBootstrap modal with custom modal to not rely on Bootstrap and support Jupyter
+- Updated `pub-sub-es` to version `1.2.1` to fix a bug in the shorthand event unsubscription
+- Added an example of a map overlay
+- Support semi-transparent colormaps through RGBA colors
+- Update Mapbox endpoint. See [http://localhost:8080/others/mapbox.html](http://localhost:8080/others/mapbox.html) for an example.
+- Improve performance of the `mousemove`-related event handling
+- Remove unused properties from the exported view config
+- Improve performance of tiles fetching through a combination of throttling and debouncing
+- Fix a minor visual glitch with the positioning of track-related `div`s
+- Fix OSM track to avoid CORS issues in Chrome and allow setting `minPos` to `0`
+- Fix #648: Auto select and copy URL when exporting a view by link
+- Fix #647: Shows correct URL when specifying an absolute URL as `exportViewUrl` in the viewconf
+- Fix #651: set correct namespace for SVG exports
+- Fix #593: zoom to data extent when adding the first track to an empty view
+
+_[Detailed changes since v1.5.8](https://github.com/higlass/higlass/compare/v1.5.8...v1.6.0)_
+
 ## v1.5.8
 
-- Updated `pub-sub-es` to version `1.2.1` to fix a bug in the shorthand event unsubscription
+- Fix a value scale syncing bug
+- Update the docs
+
+_[Detailed changes since v1.5.7](https://github.com/higlass/higlass/compare/v1.5.7...v1.5.8)_
 
 ## v1.5.7
 
 - Fix #637 - SVG export fill color doesn't match what is selected
 - Switch to nearest neighbor interpolation for horizontal heatmaps
 
+_[Detailed changes since v1.5.8](https://github.com/higlass/higlass/compare/v1.5.6...v1.5.7)_
+
 ## v1.5.6
 
 - Allow any horizontal track to also be placed on the left or right
+
+_[Detailed changes since v1.5.8](https://github.com/higlass/higlass/compare/v1.5.6...v1.5.7)_
 
 ## v1.5.5
 
 - Fixed #612: resolved an issue with caseinsensitive chromosome names
 - Destroy heatmap sprites and axis texts to mitigate memory leak
 
+_[Detailed changes since v1.5.4](https://github.com/higlass/higlass/compare/v1.5.4...v1.5.5)_
+
 ## v1.5.4
 
 - Fix the multiple component passive event issue by replacing the dom-event.js handlers with a class so that each component maintains its own context
+
+_[Detailed changes since v1.5.3](https://github.com/higlass/higlass/compare/v1.5.3...v1.5.4)_
 
 ## v1.5.3
 
@@ -28,11 +374,13 @@
 - Updated the docs deploy directory
 - Updated the javascript API example to include a full working html page
 - Use default height for new tracks rather than min height. Fixes
-newly added gene annotations so that they show names without having
-to be resized
+  newly added gene annotations so that they show names without having
+  to be resized
 - Fixed bug that was causing overlay tracks to not appear
 - Fixed horizontal-vector-heatmap error thrown bug by padding incomplete
   incoming data arrays
+
+_[Detailed changes since v1.5.1](https://github.com/higlass/higlass/compare/v1.5.1...v1.5.3)_
 
 ## v1.5.1
 
@@ -42,6 +390,8 @@ to be resized
 - Added a default track type for the chromsizes datatype
 - Fixed drag handler pubSub reference
 - Fixed #596: scrolling while zooming bug introduced in latest chrome
+
+_[Detailed changes since v1.5.0](https://github.com/higlass/higlass/compare/v1.5.0...v1.5.1)_
 
 ## v1.5.0
 
@@ -57,6 +407,8 @@ to be resized
 - Fix #291: allow web page scrolling when zoomFixed is set to true
 - Fix #578: BarTrack SVG export overplotting error.
 - Fix #584: Reset viewport is broken
+
+_[Detailed changes since v1.4.2](https://github.com/higlass/higlass/compare/v1.4.2...v1.5.0)_
 
 ## v1.4.2
 
@@ -151,7 +503,7 @@ to be resized
 
 - Add 1D heatmap track (#303): Alternative visual representation of 1D bigwig tracks. See https://github.com/higlass/higlass/pull/303 and https://github.com/higlass/higlass/blob/develop/docs/examples/1d-heatmap-track.html for an example.
 
-![1D Heatmap Track](https://user-images.githubusercontent.com/932103/43858298-a7463ece-9b1b-11e8-9da4-a6fccdde2406.png "1D Heatmap Track")
+![1D Heatmap Track](https://user-images.githubusercontent.com/932103/43858298-a7463ece-9b1b-11e8-9da4-a6fccdde2406.png '1D Heatmap Track')
 
 - Add fixing y-scale of 1D data tracks (#297). See https://github.com/higlass/higlass/pull/297 and https://github.com/higlass/higlass/blob/develop/docs/examples/api-set-track-value-scale-limits.html for an example.
 - Add JS-API for resetting the viewport back to the initial x and y domains in the viewconfig (#289)
@@ -160,15 +512,15 @@ to be resized
 - Enhance bed track (#278): support value encoding as the `y` offset or `color`. See https://github.com/higlass/higlass/pull/278 for an example.
 - Enhance gene annotation track (#314): See https://github.com/higlass/higlass/pull/314 and https://github.com/higlass/higlass/blob/develop/docs/examples/gene-annotations.html for an example.
 
-![Enhanced Gene Annotation Track](https://user-images.githubusercontent.com/932103/44225400-70b7f500-a15b-11e8-9656-d2ba161bccf7.png "Enhanced Gene Annotation Track")
+![Enhanced Gene Annotation Track](https://user-images.githubusercontent.com/932103/44225400-70b7f500-a15b-11e8-9656-d2ba161bccf7.png 'Enhanced Gene Annotation Track')
 
 - Enhance chrom label track (#305): add support for adjusting the font size, font alignment, and font outline to use space more economically. See https://github.com/higlass/higlass/pull/305 and https://github.com/higlass/higlass/blob/develop/docs/examples/chromosome-labels.html for an example.
 
-![Enhanced Chrom Label Track](https://user-images.githubusercontent.com/932103/43924834-9baaf4c8-9bf3-11e8-8167-1ce1dce70849.png "Enhanced Chrom Label Track")
+![Enhanced Chrom Label Track](https://user-images.githubusercontent.com/932103/43924834-9baaf4c8-9bf3-11e8-8167-1ce1dce70849.png 'Enhanced Chrom Label Track')
 
 - Enhance bar track (#304): add color and gradient encoding plus diverging tracks. See https://github.com/higlass/higlass/pull/304 and https://github.com/higlass/higlass/blob/develop/docs/examples/bar-track-color-range.html for an example.
 
-![Enhanced Bar Track](https://user-images.githubusercontent.com/932103/43865156-c00aa53a-9b2f-11e8-9213-bfd0af04f491.png "Enhanced Bar Track")
+![Enhanced Bar Track](https://user-images.githubusercontent.com/932103/43865156-c00aa53a-9b2f-11e8-9213-bfd0af04f491.png 'Enhanced Bar Track')
 
 - Expose `absToChr` and `chrToAbs` API on `ChromInfo` (#283 and #307)
 - Upgrade to React `v16.5`
@@ -1016,7 +1368,3 @@ to be resized
 - New chromosome 2D grid (for hg19)
 - New chromosome 1D axis (for hg19)
 - New chromosome horizontal axis (for hg19)
-
-* larger change
-
-- minor change

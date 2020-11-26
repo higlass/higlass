@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
@@ -38,9 +39,9 @@ class HeatmapOptions extends React.Component {
    * Add a color to the end
    */
   handleAddColor() {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       colors: prevState.colors.concat(
-        prevState.colors[prevState.colors.length - 1]
+        prevState.colors[prevState.colors.length - 1],
       ),
     }));
   }
@@ -49,176 +50,190 @@ class HeatmapOptions extends React.Component {
    * Remove one of the colors from the color map
    */
   handleRemoveColor(i) {
-    this.setState(prevState => ({
-      colors: prevState.colors.slice(0, i).concat(
-        prevState.colors.slice(i + 1)
-      ),
+    this.setState((prevState) => ({
+      colors: prevState.colors
+        .slice(0, i)
+        .concat(prevState.colors.slice(i + 1)),
     }));
   }
 
   render() {
     const track = JSON.parse(JSON.stringify(this.props.track));
 
-    const centerTrack = Object.assign(track,
-      {
-        options: {
-          colorRange: this.state.colors,
-        }
-      });
+    const centerTrack = Object.assign(track, {
+      options: {
+        colorRange: this.state.colors,
+      },
+    });
 
     const mvConfig = {
       editable: false,
       zoomFixed: true,
-      views: [{
-
-        uid: `hmo-${this.props.track.uid}`,
-        initialXDomain: this.props.xScale ? this.props.xScale.domain() : [0, 1],
-        initialYDomain: this.props.yScale ? this.props.yScale.domain() : [0, 1],
-        tracks: { center: [centerTrack] },
-        layout: {
-          x: 0, y: 0, h: 12, w: 12, i: `hmo-${this.props.track.id}`
+      views: [
+        {
+          uid: `hmo-${this.props.track.uid}`,
+          initialXDomain: this.props.xScale
+            ? this.props.xScale.domain()
+            : [0, 1],
+          initialYDomain: this.props.yScale
+            ? this.props.yScale.domain()
+            : [0, 1],
+          tracks: { center: [centerTrack] },
+          layout: {
+            x: 0,
+            y: 0,
+            h: 12,
+            w: 12,
+            i: `hmo-${this.props.track.id}`,
+          },
         },
-      }]
+      ],
     };
 
-    const colorFields = this.state.colors.map((x, i) => {
-      // only let colors be removed if there's more than two present
-      const closeButton = (this.state.colors.length > 2 && i === this.state.colors.length - 1)
-        ? (<div
-          style={{
-            background: 'white',
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            opacity: 1,
-            width: 14,
-            height: 14,
-            borderRadius: 2,
+    const colorFields = this.state.colors
+      .map((x, i) => {
+        // only let colors be removed if there's more than two present
+        const removeButton =
+          this.state.colors.length > 2 && i === this.state.colors.length - 1 ? (
+            <div
+              onClick={() => this.handleRemoveColor(i)}
+              style={{
+                background: 'white',
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                opacity: 1,
+                width: 14,
+                height: 14,
+                borderRadius: 2,
+                cursor: 'pointer',
+              }}
+            >
+              <svg
+                height="10px"
+                style={{
+                  position: 'absolute',
+                  top: 2,
+                  right: 2,
+                  opacity: 0.5,
+                  width: 10,
+                  height: 10,
+                }}
+              >
+                <use xlinkHref="#cross" />
+              </svg>
+            </div>
+          ) : null; // removeButton
 
-          }}
-        >
-          <svg
-            height="10px"
-            onClick={() => this.handleRemoveColor(i)}
+        return (
+          /* eslint-disable react/no-array-index-key */
+          // Colors may be repeated, so the array index is the best choice here.
+          <div
+            key={`l${i}`}
             style={{
-              position: 'absolute',
-              top: 2,
-              right: 2,
-              opacity: 0.5,
-              width: 10,
-              height: 10,
+              borderRadius: '1px',
+              boxShadow: '0 0 0 1px #E5E5E5',
+              position: 'relative',
+              outline: 'none',
             }}
           >
-            <use xlinkHref="#cross" />
-          </svg>
-           </div>
-        )
-        : null; // closebutton
+            {removeButton}
+            <SketchInlinePicker
+              key={i}
+              color={this.state.colors[i]}
+              onChange={(c) => {
+                this.setState(
+                  (prevState) => {
+                    const colors = prevState.colors.slice();
+                    colors[i] = c;
+                    return { colors };
+                  },
+                  () => {
+                    this.handleColorsChanged(this.state.colors);
+                  },
+                );
+              }}
+            />
+          </div>
+          /* eslint-enable react/no-array-index-key */
+        );
+      })
+      .reverse();
 
-      return (
-        /* eslint-disable react/no-array-index-key */
-        // Colors may be repeated, so the array index is the best choice here.
-        <td
-          key={`l${i}`}
+    const addButton =
+      this.state.colors.length < 10 ? (
+        <div
+          onClick={this.handleAddColor.bind(this)}
           style={{
-            border: '0px solid',
             position: 'relative',
             outline: 'none',
-          }}
-        >
-          {closeButton}
-          <SketchInlinePicker
-            key={i}
-            color={this.state.colors[i]}
-            onChange={(c) => {
-              this.state.colors[i] = c;
-              this.handleColorsChanged(this.state.colors);
-            }
-            }
-          />
-        </td>
-        /* eslint-enable react/no-array-index-key */
-      );
-    });
-
-    const addButton = this.state.colors.length < 4
-      ? (
-        <td
-          style={{
-            border: '0px solid',
-            position: 'relative',
-            outline: 'none',
+            height: '25px',
+            padding: '5px',
+            background: '#fff',
+            borderRadius: '1px',
+            boxShadow: '0 0 0 1px #E5E5E5',
+            cursor: 'pointer',
           }}
         >
           <div
             style={{
-              height: 24,
-              marginLeft: 5,
+              textAlign: 'center',
+              width: '32px',
+              height: '14px',
             }}
-
           >
             <svg
-              height="10px"
-              onClick={this.handleAddColor.bind(this)}
+              height="100%"
               style={{
                 opacity: 0.5,
+                margin: 'auto',
+                display: 'block',
               }}
               width="10px"
             >
               <use xlinkHref="#plus" />
             </svg>
           </div>
-        </td>
-      )
-      : null; // addButton
+        </div>
+      ) : null; // addButton
 
     return (
-      <Modal
-        className="hg-modal"
-        onHide={this.props.handleCancel}
-        show={true}
-      >
+      <Modal className="hg-modal" onHide={this.props.onCancel} show={true}>
         <Modal.Header closeButton>
-          <Modal.Title>Heatmap Options</Modal.Title>
+          <Modal.Title>Custom Color Map</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <table className="table-track-options">
             <thead />
-            <tbody>
+            <tbody style={{ verticalAlign: 'top' }}>
               <tr>
                 <td className="td-track-options">
-                  {'Colors'}
+                  <tr>
+                    <td className="td-track-options">Preview</td>
+                  </tr>
+                  <tr>
+                    <td className="td-track-options">
+                      <div style={{ width: 200 }}>
+                        <HiGlassComponent
+                          options={{ bounded: false }}
+                          viewConfig={mvConfig}
+                        />
+                      </div>
+                    </td>
+                  </tr>
                 </td>
-              </tr>
-              <tr>
                 <td className="td-track-options">
-                  <table>
-                    <tbody>
-                      <tr>
-                        {colorFields}
-                        {addButton}
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-
-              </tr>
-              <tr>
-                <td className="td-track-options">
-                  {'Preview'}
+                  <tr>
+                    <td className="td-track-options">Colors</td>
+                  </tr>
+                  <tr>
+                    <td className="td-track-options">
+                      {addButton}
+                      <div style={{ position: 'relative' }}>{colorFields}</div>
+                    </td>
+                  </tr>
                 </td>
               </tr>
-              <tr>
-                <td className="td-track-options" rowSpan="2">
-                  <div style={{ width: 200 }}>
-                    <HiGlassComponent
-                      options={{ bounded: false }}
-                      viewConfig={mvConfig}
-                    />
-                  </div>
-                </td>
-              </tr>
-              <tr />
             </tbody>
           </table>
         </Modal.Body>
@@ -230,5 +245,14 @@ class HeatmapOptions extends React.Component {
     );
   }
 }
+
+HeatmapOptions.propTypes = {
+  handleCancel: PropTypes.func,
+  onCancel: PropTypes.func,
+  onSubmit: PropTypes.func,
+  track: PropTypes.object,
+  xScale: PropTypes.object,
+  yScale: PropTypes.object,
+};
 
 export default HeatmapOptions;

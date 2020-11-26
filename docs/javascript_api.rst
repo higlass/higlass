@@ -12,41 +12,40 @@ javascript and css files:
 
 .. code-block:: html
 
- <!DOCTYPE html>
-<head>
-  <meta charset="utf-8">
+  <!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
 
-  <link rel="stylesheet" href="bootstrap.min.css">
-  <link rel="stylesheet" href="hglib.css">
+    <link rel="stylesheet" href="https://unpkg.com/higlass@1.5.7/dist/hglib.css" type="text/css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
 
-  <link rel="stylesheet" href="https://unpkg.com/higlass@1.5.2/dist/hglib.css" type="text/css">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
+    <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
+    <!-- To render HiGlass with the Canvas API include the pixi.js-legacy instead of pixi.js -->
+    <!-- <script crossorigin src="https://unpkg.com/pixi.js-legacy@5/dist/pixi-legacy.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
 
-  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.1/pixi.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.1/react-bootstrap.min.js"></script>
+    <script src="https://unpkg.com/higlass@1.6/dist/hglib.min.js"></script>
 
-  <script src="https://unpkg.com/higlass@1.5.2/dist/hglib.min.js"></script>
+  </head>
+  <body >
+    <div id="development-demo" style="width: 800px;
+    background-color: white;"></div>
+  </body>
 
-</head>
-<body >
-  <div id="development-demo" style="width: 800px; 
-  background-color: white;"></div>
-</body>
+  <script>
 
-<script>
+  const hgApi = hglib.viewer(
+    document.getElementById('development-demo'),
+    'http://higlass.io/api/v1/viewconfs/?d=default',
+    {
+      bounded: false,
+    }
+  );
 
-const hgApi = hglib.viewer(
-  document.getElementById('development-demo'),
-  'http://higlass.io/api/v1/viewconfs/?d=default',
-  {
-    bounded: false,
-  }
-);
-
-</script>
-</html>
+  </script>
+  </html>
 
 External tracks should be included **before** the hglib.js import:
 
@@ -63,6 +62,7 @@ Available endpoints
 .. code-block:: javascript
 
   import { HiGlassComponent, ChromosomeInfo, viewer, version } from 'higlass';
+  import 'higlass/dist/hglib.css';
 
 HiGlass exports four endpoints for your convenience. ``viewer`` is the main
 endpoint to create a new HiGlass component. ``HiGlassComponent`` can be used
@@ -71,6 +71,8 @@ for converting absolute coordinates to chromosome coordinates. It's used
 internally and made available to convert absolute range selection into
 chromosome range selections. ``version`` is a string of the current version of
 HiGlass.
+
+In order to get the expected look and feel, we also import the HiGlass CSS files. (Make sure your bundler knows how to handle CSS imports! E.g., if you're using webpack you may need to include the [css-loader]( https://webpack.js.org/loaders/css-loader/).)
 
 Creating an inline HiGlass component
 ------------------------------------
@@ -101,6 +103,36 @@ The ``options`` parameter can have the following properties:
 - ``showGlobalMousePosition``: if ``true`` any globally broadcasted mouse position will be shown for all tracks that have ``options.showMousePosition = true``.
 
 - ``globalMousePosition``: if ``true`` this will turn on ``broadcastMousePositionGlobally`` and ``showGlobalMousePosition``. This is basically a convenience option to quickly broadcast and show global mouse positions.
+
+- ``PIXI``: Use a different PIXI library. Useful if trying to use a canvas renderer. Example:
+
+.. code-block::
+
+  import * as PIXI from "pixi.js-legacy"
+
+  <HiGlassComponent
+    options={
+      renderer: 'canvas',
+      PIXI
+    }
+  />
+
+- ``renderer``: if ``canvas`` HiGlass will render to the Canvas API. Otherwise
+it will use WebGL. Need to pass in a legacy PIXI import as well. See the ``PIXI`` parameter above.
+
+- ``sizeMode``: the size mode determines the visible height of the HiGlass instance. There are 4 modes:
+  1. ``default``: the height is given by the sum of the tracks' heights
+  2. ``bounded``: tells the HiGlass component to bind the height to the parent container by dynamically adjusting the height of center tracks.
+  3. ``scroll``: will activate scrolling by stretching HiGlass' drawing surface to the extent of ``element`` and hiding overflowing content in the x direction and allowing to scroll when content overflows in the y direction. This mode will also set all views to zoom fixed automatically so that you are not scrolling and zooming at the same time.
+  4. ``overflow``: same as ``scroll`` except that you can't scroll. This mode is only needed when you want to dynamically switch between scrolling and pan+zooming. Say you scrolled halfway down and then want to temporarily pan&zoom a track at that position. If you would switch back to ``bounded`` the scrollTop position would be lost because ``bounded`` demands that your entire view is bound to the parent. Instead you want can switch to ``overflow`` to keep the current scrollTop position and enable pan&zooming.
+
+  Visually you can think of the four size modes as follows:
+
+  .. figure:: img/size-mode.png
+    :align: center
+    :figwidth: 640px
+
+  Note that if ``sizeMode`` is anything other than ``default``, the ``element`` must have a fixed height!
 
 The function returns an instance of the public API of a HiGlass component.
 
@@ -213,7 +245,7 @@ API Functions
 
 .. js:autofunction:: setViewConfig
 
-.. js:autofunction:: zoomTo
+.. js:autofunction:: public.zoomTo
 
 .. js:autofunction:: exportAsSvg
 
@@ -225,14 +257,12 @@ API Functions
 
 .. js:autofunction:: public.on
 
+.. js:autofunction:: public.off
+
 .. js:autofunction:: setBroadcastMousePositionGlobally
 
 .. js:autofunction:: setShowGlobalMousePosition
 
 .. js:autofunction:: setGlobalMousePosition
 
-TiledPixiTrack Functions
-========================
-
-.. js:autoclass:: TiledPixiTrack
-  :members: on
+.. js:autofunction:: option

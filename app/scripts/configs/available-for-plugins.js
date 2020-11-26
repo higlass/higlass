@@ -3,8 +3,6 @@
  */
 
 // Libraries
-import * as PIXI from 'pixi.js';
-
 import * as d3Array from 'd3-array';
 import * as d3Axis from 'd3-axis';
 import * as d3Brush from 'd3-brush';
@@ -22,6 +20,12 @@ import * as d3Zoom from 'd3-zoom';
 
 import slugid from 'slugid';
 import { mix } from '../mixwith';
+
+// Configs
+import * as configs from '.';
+
+// Utils
+import * as utils from '../utils';
 
 // Tracks
 import Annotations2dTrack from '../Annotations2dTrack';
@@ -67,11 +71,9 @@ import LruCache from '../factories';
 // Services
 import * as services from '../services';
 
-// Utils
-import * as utils from '../utils';
-
-// Configs
-import * as configs from '.';
+// Chromosomes
+import ChromosomeInfo from '../ChromosomeInfo';
+import SearchField from '../SearchField';
 
 const libraries = {
   d3Array,
@@ -88,7 +90,7 @@ const libraries = {
   d3Selection,
   d3Transition,
   d3Zoom,
-  PIXI,
+  PIXI: configs.GLOBALS.PIXI,
   mix,
   slugid,
 };
@@ -133,10 +135,16 @@ const tracks = {
 const factories = {
   ContextMenuItem,
   DataFetcher,
-  LruCache
+  LruCache,
+};
+
+const chromosomes = {
+  ChromosomeInfo,
+  SearchField,
 };
 
 export default {
+  chromosomes,
   libraries,
   tracks,
   factories,
@@ -144,5 +152,5 @@ export default {
   utils,
   configs,
   // Defined globally by webpack.
-  VERSION
+  VERSION,
 };

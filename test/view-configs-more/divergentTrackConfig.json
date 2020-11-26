@@ -1,0 +1,92 @@
+{
+  "zoomFixed": false,
+  "views": [
+    {
+      "layout": {
+        "w": 12,
+        "h": 3,
+        "x": 0,
+        "y": 0
+      },
+      "uid": "aa",
+      "initialYDomain": [398147254.7335776, 464208495.9452947],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "initialXDomain": [315288478.9357108, 445731438.27749157],
+      "tracks": {
+        "left": [],
+        "top": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "ZsjN4ZkJSu6PASiw_kVIrw",
+            "uid": "t1",
+            "type": "horizontal-bar",
+            "options": {
+              "labelColor": "blue",
+              "labelPosition": "bottomLeft",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "lineStrokeWidth": 1,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "name": "Schwarzer et al (2017) TAM Eigenvectors 20K",
+              "barFillColor": "darkgreen",
+              "barOpacity": 1
+            },
+            "width": 844,
+            "height": 73
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "ZsjN4ZkJSu6PASiw_kVIrw",
+            "uid": "T49eQBUaTuuk_B_eiISbbA",
+            "type": "horizontal-divergent-bar",
+            "options": {
+              "labelColor": "blue",
+              "labelPosition": "bottomLeft",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "lineStrokeWidth": 1,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "name": "Schwarzer et al (2017) TAM Eigenvectors 20K",
+              "barFillColor": "darkgreen",
+              "barOpacity": 1
+            },
+            "width": 844,
+            "height": 73
+          }
+        ],
+        "right": [],
+        "center": [],
+        "bottom": []
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+      "genomePositionSearchBoxVisible": true,
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "visible": true,
+        "chromInfoId": "mm9",
+        "autocompleteId": "GUm5aBiLRCyz2PsBea7Yzg"
+      }
+    }
+  ],
+  "editable": true,
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs",
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "editable": true,
+  "trackSourceServers": ["http://higlass.io/api/v1"],
+  "exportViewUrl": "http://localhost:8000/api/v1/viewconfs",
+  "views": [
+    {
+      "uid": "a",
+      "initialXDomain": [2285823068.9459743, 3049412580.354434],
+      "tracks": {
+        "top": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "WEPeAAfSTUOUDWFGNBfPEQ",
+            "uid": "RGinKJsyTyyTqNk3fAgOog",
+            "type": "horizontal-vector-heatmap",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "lineStrokeWidth": 1,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "mousePositionColor": "#999999",
+              "showTooltip": false,
+              "name": "GM12878-E116-DNase.fc.signal",
+              "heatmapValueScaling": "log"
+            },
+            "width": 425,
+            "height": 100
+          }
+        ],
+        "left": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "WEPeAAfSTUOUDWFGNBfPEQ",
+            "uid": "RotnGXd3TRyj1wjbybInew",
+            "type": "vertical-line",
+            "options": {
+              "labelPosition": "topLeft",
+              "labelColor": "black",
+              "labelTextOpacity": 0.4,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "heatmapValueScaling": "log",
+              "name": "GM12878-E116-DNase.fc.signal",
+              "axisPositionVertical": "top",
+              "lineStrokeWidth": 1,
+              "lineStrokeColor": "blue",
+              "showMousePosition": false,
+              "showTooltip": false,
+              "mousePositionColor": "#999999"
+            },
+            "width": 100,
+            "height": 914
+          },
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "WEPeAAfSTUOUDWFGNBfPEQ",
+            "uid": "Npe1qulkQGWVaLqRk_Oj0Q",
+            "type": "vertical-vector-heatmap",
+            "options": {
+              "labelPosition": "topLeft",
+              "labelColor": "black",
+              "labelTextOpacity": 0.4,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "heatmapValueScaling": "log",
+              "name": "GM12878-E116-DNase.fc.signal"
+            },
+            "width": 118,
+            "height": 914
+          }
+        ],
+        "center": [],
+        "bottom": [],
+        "right": [],
+        "whole": [],
+        "gallery": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 6,
+        "x": 0,
+        "y": 0
+      },
+      "initialYDomain": [1760499319.4073188, 3222997818.904932],
+      "genomePositionSearchBoxVisible": true,
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "visible": true,
+        "chromInfoId": "hg19",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}

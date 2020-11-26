@@ -30,19 +30,47 @@ This file can be aggregated like so:
 .. code-block:: bash
 
     clodius aggregate bedfile \
-        --assembly hg19 \
+        --chromsizes-filename hg19.chrom.sizes \
         short.bed
+
+If the bed file has tab-separated values, that can be specified using the ``--delimiter $'\t'`` option.
 
 And then imported into higlass after copying to the docker temp directory (``cp short.bed.multires ~/hg-tmp/``):
 
 .. code-block:: bash
 
-     docker exec higlass-container python \
-        higlass-server/manage.py ingest_tileset \
-            --filename /tmp/short.bed.multires \
-            --filetype beddb \
-            --datatype bedlike \
-            --coordSystem b37
+     higlass-manage ingest short.bed.beddb
+
+A note about assemblies and coordinate systems
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+HiGlass doesn't really have a notion of an assembly. It only displays data
+where it's told to display it. When you aggregate a bedfile with using
+chromsizes-filename, it uses the lengths of the chromosomes to determine the
+offsets of the bedfile entries from the 0 position. So if aggregate and load
+the resulting the beddb file in HiGlass, you'll see the bedfile entries
+displayed as if the chromosomes in the chromsizes file were laid end to end.
+
+Now, if you want to see which chromosomes correspond to which positions along
+the x-axis or to have the search bar display "assembly" coordinates, you'll
+need to register the chromsizes file using:
+
+.. code-block:: bash
+
+    higlass-manage ingest \
+        --filetype chromsizes-tsv \
+        --datatype chromsizes \
+        --assembly galGal6 \
+        negspy/data/galGal6/chromInfo.txt
+
+If you would like to be able to search for gene annotations in that assembly,
+you'll need to create a `gene annotation track
+</data_preparation.html#gene-annotation-tracks>`_.
+
+** Note that while the lack of assembly enforcement is generally the rule,
+`bigWig tracks </data_preparation.html#bigwig-files>`_ are a notable
+exception. All bigWig files have to be associated with a coordinate system
+that is already present in the HiGlass server in order to be ingested.
 
 Bedpe-like Files
 ----------------
@@ -50,7 +78,7 @@ Bedpe-like Files
 BEDPE-like files contain two sets of chromosomal coordinates:
 
 .. code-block:: bash
-    
+
     chr10   74160000        74720000    chr10   74165000    74725000
     chr12   120920000       121640000   chr12   120925000   121645000
     chr15   86360000        88840000    chr15   86365000    88845000
@@ -67,21 +95,49 @@ contain too many values and slow down the renderer:
         --output-file domains.txt.multires \
         domains.txt
 
-This requires the `--chr1-col`, `--from1-col`, `--to1-col`, `--chr2-col`,
-`--from2-col`, `--to2-col` parameters to specify which columns in the datafile
+This requires the ``--chr1-col``, ``--from1-col``, ``--to1-col``, ``--chr2-col``,
+``--from2-col``, ``--to2-col`` parameters to specify which columns in the datafile
 describe the x-extent and y-extent of the region.
 
 The priority with which regions are included in lower resolution tiles is
-specified by the `--impotance-column` parameter. This can either provide a
-value, contain `random`, or if it's not specified, default to the size of the
+specified by the ``--impotance-column`` parameter. This can either provide a
+value, contain ``random``, or if it's not specified, default to the size of the
 region.
+
+**BED files** can also be aggregated as BEDPE-like files for use with the
+``2d-rectangle-domains`` track. The from1_col,to1_col and from2_col,to2_col
+parameters need to be set to the same columns. Example file::
+
+    chrZ    80050000        80100000        False   0.19240442973331        0.24341494300858102
+    chrZ    81350000        81400000        False   0.5359549218130373      0.30888749507071034
+    chrZ    81750000        81800000        False   -0.5859846849030403     1.602383514196359
+
+With the aggregate command:
+
+.. code-block:: bash
+
+    clodius aggregate bedpe \
+    --chromsizes-filename galGal6.chrom.sizes \
+    --chr1-col 1 --chr2-col 1 \
+    --from1-col 2 --to1-col 3 \
+    --from2-col 2 --to2-col 3 \
+    --has-header  my_file.bed
+
+Ingesting into higlass
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+    higlass-manage ingest my-file.bedpe.multires \
+    --filetype bed2ddb \
+    --datatype 2d-rectangle-domains
 
 
 BedGraph files
 --------------
 
 .. warning:: The order of the chromosomes in the bedgraph file have to
-    be consistent with the order specified for the assembly in 
+    be consistent with the order specified for the assembly in
     `the negspy repository <https://github.com/pkerpedjiev/negspy/tree/master/negspy/data>`_.
 
 Ordering the chromosomes in the input file
@@ -92,8 +148,8 @@ Ordering the chromosomes in the input file
     input_file=~/Downloads/phastCons100way.txt.gz;
     output_file=~/Downloads/phastConst100way_ordered.txt;
     chromnames=$(awk '{print $1}' ~/projects/negspy/negspy/data/hg19/chromInfo.txt);
-    for chr in $chromnames; 
-        do echo ${chr}; 
+    for chr in $chromnames;
+        do echo ${chr};
         zcat $input_file | grep "\t${chr}\t" >> $output_file;
     done;
 
@@ -112,7 +168,7 @@ Assume we have an input file that has ``id chr start end value1 value2`` pairs::
 
 We can aggregate this file by recursively summing adjacent values. We have to
 indicate which column corresponds to the chromosome (``--chromosome-col 2``),
-the start position (``--from-pos-col 3``), the end position (``--to-pos-col 4``) 
+the start position (``--from-pos-col 3``), the end position (``--to-pos-col 4``)
 and the value column (``--value-col 5``). We specify that the first line
 of the data file contains a header using the (``--has-header``) option.
 
@@ -128,7 +184,7 @@ of the data file contains a header using the (``--has-header``) option.
         --assembly grch37               \
         --nan-value NA                  \
         --transform exp2                \
-        --has-header                    
+        --has-header
 
 Data Transform
 """"""""""""""
@@ -177,37 +233,54 @@ vector datatype and bigwig filetype:
 
 .. code-block:: bash
 
-    docker exec higlass-container python \
-            higlass-server/manage.py ingest_tileset \
-            --filename /tmp/cnvs_hw.bigWig \
-            --filetype bigwig \
-            --datatype vector \
-            --coordSystem hg19
+    higlass-manage ingest cnvs_hw.bigWig --assembly hg19
 
 **Important:** BigWig files have to be associated with a chromosome order!!
 This means that there needs to be a chromsizes file for the
-specified assembly (coordSystem) in the higlass database. If no ``coordSystem``
-is specified for the bigWig file in ``ingest_tileset``, HiGlass will try to 
-find one in the database that matches the chromosomes present in the bigWig file. 
+specified assembly in the **local** higlass database. This means that the
+chromsizes should have been ingested locally. Chromsizes available on remote
+servers (e.g. higlass.io) can not be associated with local bigWig files even 
+though they may be visible within the browser. If no ``assembly``
+is specified for the bigWig file using the `--assembly` option, HiGlass will try to
+find one in the database that matches the chromosomes present in the bigWig file.
 If a ``chromsizes`` tileset is found, it's ``coordSystem`` will also be used for
 the bigWig file. If none are found, the import will fail. If more than one is found,
 the import will also fail. If a `coordSystem` is specified for the bigWig, but no
 ``chromsizes`` are found on the server, the import will fail.
 
-TLDR: The simplest way to import a bigWig is to have a ``chromsizes`` present e.g. 
+TLDR: The simplest way to import a bigWig is to have a ``chromsizes`` present e.g.
 
-| ``ingest_tileset --filetype chromsizes-tsv --datatype chromsizes --coordSystem hg19 --filename chromSizes.tsv``
+| ``higlass-manage ingest --filetype chromsizes-tsv --datatype chromsizes --assembly hg19 chromSizes.tsv``
 
-and then to add the bigWig with the same ``coordSystem``: 
+and then to add the bigWig with the same ``coordSystem``:
 
-| ``ingest_tileset --filetype bigwig --datatype vector --coordSystem hg19 --filename cnvs_hw.bigWig``
+| ``higlass-manage ingest --assembly hg19 cnvs_hw.bigWig``
 
+Creating bigWig files
+^^^^^^^^^^^^^^^^^^^^^
+
+bigWig files can be created from any BED-like file containing ``chrom``, ``start``,
+``end``, and ``value`` fields. Just make sure to get rid of the heading if there is one
+(``tail -n +2``) and to sort by chromosome and start position (``sort -k1,1
+-k2,2n``):
+
+.. code-block:: bash
+
+    tail -n +2 my_bed_file.tsv \
+        | sort -k1,1 -k2,2n \
+        | awk \
+        '{ if (NF >= 4) print $1 "\t" $2 "\t" $3 "\t" $5}' \
+        > my.bed;
+    bedGraphToBigWig my.bed assembly.chrom.sizes.tsv my.bw;
+
+The ``bedGraphToBigWig`` utility can be installed be either downloading the binary from
+the `UCSC genome browser <http://hgdownload.soe.ucsc.edu/admin/exe/>`_ or using `conda <https://anaconda.org/bioconda/ucsc-bedgraphtobigwig>`_. Note that the example above is only an example. Other input files may have more header lines or a different format.
 
 Chromosome Sizes
 ----------------
 
-Chromosome sizes can be used to create chromosome label and chromosome grid tracks. 
-They consist of a tab-separated file containing chromosome names and sizes 
+Chromosome sizes can be used to create chromosome label and chromosome grid tracks.
+They consist of a tab-separated file containing chromosome names and sizes
 as columns:
 
 .. code-block:: bash
@@ -219,7 +292,7 @@ as columns:
 
 Chromosome sizes can be imported into the higlass server using the ``--filetype chromsizes-tsv`` and ``--datatype chromsizes`` parameters. A ``coordSystem`` should be included to identify the assembly that these chromosomes define.
 
-| ``ingest_tileset --filetype chromsizes-tsv --datatype chromsizes --coordSystem hg19 chromSizes.tsv``
+| ``higlass-manage ingest --filetype chromsizes-tsv --datatype chromsizes --assembly hg19 chromSizes.tsv``
 
 
 Gene Annotation Tracks
@@ -228,8 +301,8 @@ Gene Annotation Tracks
 HiGlass uses a specialized track for displaying gene annotations. It is rougly
 based on UCSC's refGene files
 (e.g. http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/). For any identifiable
-genome assembly the following commands can be run to generate a list of 
-gene annotation that can be loaded as a zoomable track in HiGlass. 
+genome assembly the following commands can be run to generate a list of
+gene annotation that can be loaded as a zoomable track in HiGlass.
 
 Prerequisites
 ^^^^^^^^^^^^^
@@ -250,6 +323,7 @@ http://hgdownload.cse.ucsc.edu/goldenpath/hg19/bigZips/hg19.chrom.sizes)
 
     See https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=gene&id=7157
 
+
 Set the assembly name and species ID
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -267,119 +341,83 @@ Set the assembly name and species ID
     #ASSEMBLY=dm6
     #TAXID=7227
 
+
 Download data from UCSC and NCBI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
+    # Download NCBI genbank data
+    DATADIR=~/data
+    mkdir $DATADIR/genbank
+    wget -N -P $DATADIR ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz
+    wget -N -P $DATADIR ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_info.gz
+    wget -N -P $DATADIR ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2pubmed.gz
 
-    mkdir -p ~/data/genbank-data/${ASSEMBLY}
+    # Download UCSC refGene database for assembly of interest
+    mkdir $DATADIR/$ASSEMBLY
+    wget -N -P $DATADIR/$ASSEMBLY/ http://hgdownload.cse.ucsc.edu/goldenPath/$ASSEMBLY/database/refGene.txt.gz
 
-    wget -N -P ~/data/genbank-data/${ASSEMBLY}/ \
-        http://hgdownload.cse.ucsc.edu/goldenPath/${ASSEMBLY}/database/refGene.txt.gz
+    # Filter genbank data for species of interest
+    zcat $DATADIR/gene2refseq.gz | grep ^${TAXID} > $DATADIR/$ASSEMBLY/gene2refseq
+    zcat $DATADIR/gene_info.gz | grep ^${TAXID} | sort -k 2 > $DATADIR/$ASSEMBLY/gene_info
+    zcat $DATADIR/gene2pubmed.gz | grep ^${TAXID} > $DATADIR/$ASSEMBLY/gene2pubmed
 
-    wget -N -P ~/data/genbank-data/ \
-        ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz
-
-    wget -N -P ~/data/genbank-data/ \
-        ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_info.gz
-
-    wget -N -P ~/data/genbank-data/ \
-        ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2pubmed.gz
-
-
-Preprocess data
-^^^^^^^^^^^^^^^
-
-
-.. code-block:: bash
-
-    # remove entries to chr6_...
-
-    gzcat ~/data/genbank-data/${ASSEMBLY}/refGene.txt.gz \
+    # Sort
+    # Optional: filter out unplaced and unlocalized scaffolds (which have a "_" in the chrom name)
+    zcat $DATADIR/$ASSEMBLY/refGene.txt.gz \
         | awk -F $'\t' '{if (!($3 ~ /_/)) print;}' \
-        | sort -k2 > ~/data/genbank-data/${ASSEMBLY}/sorted_refGene
-    wc -l ~/data/genbank-data/${ASSEMBLY}/sorted_refGene
-
-    zgrep ^${TAXID} ~/data/genbank-data/gene2refseq.gz \
-         > ~/data/genbank-data/${ASSEMBLY}/gene2refseq
-    head ~/data/genbank-data/${ASSEMBLY}/gene2refseq
-
-    zgrep ^${TAXID} ~/data/genbank-data/gene_info.gz \
         | sort -k 2 \
-         > ~/data/genbank-data/${ASSEMBLY}/gene_info
-    head ~/data/genbank-data/${ASSEMBLY}/gene_info
+        > $DATADIR/$ASSEMBLY/refGene_sorted
 
-    zgrep ^${TAXID} ~/data/genbank-data/gene2pubmed.gz \
-        > ~/data/genbank-data/${ASSEMBLY}/gene2pubmed
-    head ~/data/genbank-data/${ASSEMBLY}/gene2pubmed
 
-    # awk '{print $2}' ~/data/genbank-data/hg19/gene_info \
-    # | xargs python scripts/gene_info_by_id.py \
-    # | tee ~/data/genbank-data/hg19/gene_summaries.tsv
-
-    # output -> geneid \t citation_count
-
-Processing
-^^^^^^^^^^
+Get full model and citation count for each gene
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
-    cat ~/data/genbank-data/${ASSEMBLY}/gene2pubmed \
+    # Count pubmed citations
+    # Output: {gene_id} \t {citation_count}
+    cat $DATADIR/$ASSEMBLY/gene2pubmed \
         | awk '{print $2}' \
         | sort \
         | uniq -c \
         | awk '{print $2 "\t" $1}' \
         | sort \
-        > ~/data/genbank-data/${ASSEMBLY}/gene2pubmed-count
-    head ~/data/genbank-data/${ASSEMBLY}/gene2pubmed-count
+        > $DATADIR/$ASSEMBLY/gene2pubmed-count
 
-
-    # output -> geneid \t refseq_id
-
-    cat ~/data/genbank-data/${ASSEMBLY}/gene2refseq \
+    # Gene2refseq dictionary
+    # Output: {gene_id} \t {refseq_id}
+    cat $DATADIR/$ASSEMBLY/gene2refseq \
         | awk -F $'\t' '{ split($4,a,"."); if (a[1] != "-") print $2 "\t" a[1];}' \
         | sort \
         | uniq  \
-        > ~/data/genbank-data/${ASSEMBLY}/geneid_refseqid
-    head ~/data/genbank-data/${ASSEMBLY}/geneid_refseqid
-    wc -l ~/data/genbank-data/${ASSEMBLY}/geneid_refseqid
+        > $DATADIR/$ASSEMBLY/geneid_refseqid
 
-
-    #output -> geneid \t refseq_id \t citation_count
-
-    join ~/data/genbank-data/${ASSEMBLY}/geneid_refseqid \
-        ~/data/genbank-data/${ASSEMBLY}/gene2pubmed-count  \
+    # Append refseq IDs to citation count table
+    # Output: {gene_id} \t {refseq_id} \t {citation_count}
+    join $DATADIR/$ASSEMBLY/geneid_refseqid \
+        $DATADIR/$ASSEMBLY/gene2pubmed-count  \
         | sort -k2 \
-        > ~/data/genbank-data/${ASSEMBLY}/geneid_refseqid_count
+        > $DATADIR/$ASSEMBLY/geneid_refseqid_count
 
-    head ~/data/genbank-data/${ASSEMBLY}/geneid_refseqid_count
-    wc -l ~/data/genbank-data/${ASSEMBLY}/geneid_refseqid_count
-
-
-    # output -> geneid \t refseq_id \t chr (5) \t strand(6) \t txStart(7) \t txEnd(8) \t cdsStart(9) \t cdsEnd (10) \t exonCount(11) \t exonStarts(12) \t exonEnds(13)
-
+    # Join the refseq gene model against gene IDs
+    # Output: {gene_id} \t {refseq_id} \t {chrom}(5) \t {strand}(6) \t {txStart}(7) \t {txEnd}(8) \t {cdsStart}(9) \t {cdsEnd}(10) \t {exonCount}(11) \t {exonStarts}(12) \t {exonEnds}(13)
     join -1 2 -2 2 \
-        ~/data/genbank-data/${ASSEMBLY}/geneid_refseqid_count \
-        ~/data/genbank-data/${ASSEMBLY}/sorted_refGene \
+        $DATADIR/$ASSEMBLY/geneid_refseqid_count \
+        $DATADIR/$ASSEMBLY/refGene_sorted \
         | awk '{ print $2 "\t" $1 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $10 "\t" $11 "\t" $12 "\t" $13 "\t" $3; }' \
         | sort -k1   \
-        > ~/data/genbank-data/${ASSEMBLY}/geneid_refGene_count
+        > $DATADIR/$ASSEMBLY/geneid_refGene_count
 
-    head ~/data/genbank-data/${ASSEMBLY}/geneid_refGene_count
-    wc -l ~/data/genbank-data/${ASSEMBLY}/geneid_refGene_count
-
+    # Join citation counts against gene information
     # output -> geneid \t symbol \t gene_type \t name \t citation_count
-
     join -1 2 -2 1 -t $'\t' \
-        ~/data/genbank-data/${ASSEMBLY}/gene_info \
-        ~/data/genbank-data/${ASSEMBLY}/gene2pubmed-count \
+        $DATADIR/$ASSEMBLY/gene_info \
+        $DATADIR/$ASSEMBLY/gene2pubmed-count \
         | awk -F $'\t' '{print $1 "\t" $3 "\t" $10 "\t" $12 "\t" $16}' \
         | sort -k1 \
-        > ~/data/genbank-data/${ASSEMBLY}/gene_subinfo_citation_count
-    head ~/data/genbank-data/${ASSEMBLY}/gene_subinfo_citation_count
-    wc -l ~/data/genbank-data/${ASSEMBLY}/gene_subinfo_citation_count
-
+        > $DATADIR/$ASSEMBLY/gene_subinfo_citation_count
 
     # 1: chr (chr1)
     # 2: txStart (52301201) [9]
@@ -393,67 +431,31 @@ Processing
     # 10: geneDesc (activin A receptor type II-like 1)
     # 11: cdsStart (52306258)
     # 12: cdsEnd (52314677)
-    # 14: exonStarts (52301201,52306253,52306882,52307342,52307757,52308222,52309008,52309819,52312768,52314542,)
-    # 15: exonEnds (52301479,52306319,52307134,52307554,52307857,52308369,52309284,52310017,52312899,52317145,)
-
+    # 13: exonStarts (52301201,52306253,52306882,52307342,52307757,52308222,52309008,52309819,52312768,52314542,)
+    # 14: exonEnds (52301479,52306319,52307134,52307554,52307857,52308369,52309284,52310017,52312899,52317145,)
     join -t $'\t' \
-        ~/data/genbank-data/${ASSEMBLY}/gene_subinfo_citation_count \
-        ~/data/genbank-data/${ASSEMBLY}/geneid_refGene_count \
+        $DATADIR/$ASSEMBLY/gene_subinfo_citation_count \
+        $DATADIR/$ASSEMBLY/geneid_refGene_count \
         | awk -F $'\t' '{print $7 "\t" $9 "\t" $10 "\t" $2 "\t" $16 "\t" $8 "\t" $6 "\t" $1 "\t" $3 "\t" $4 "\t" $11 "\t" $12 "\t" $14 "\t" $15}' \
-        > ~/data/genbank-data/${ASSEMBLY}/geneAnnotations.bed
-    head ~/data/genbank-data/${ASSEMBLY}/geneAnnotations.bed
-    wc -l ~/data/genbank-data/${ASSEMBLY}/geneAnnotations.bed
+        > $DATADIR/$ASSEMBLY/geneAnnotations.bed
 
-    python scripts/exonU.py \
-        ~/data/genbank-data/${ASSEMBLY}/geneAnnotations.bed \
-        > ~/data/genbank-data/${ASSEMBLY}/geneAnnotationsExonUnions.bed
-    wc -l ~/data/genbank-data/${ASSEMBLY}/geneAnnotationsExonUnions.bed
+    # Download: https://raw.githubusercontent.com/higlass/clodius/develop/scripts/exonU.py
+    python exonU.py $DATADIR/$ASSEMBLY/geneAnnotations.bed > $DATADIR/$ASSEMBLY/geneAnnotationsExonUnions.bed
 
-Creating a HiGlass Track
-^^^^^^^^^^^^^^^^^^^^^^^^
+
+Create a gene annotation track file
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
-
-    workon hg-server
-    ASSEMBLY=mm9
 
     clodius aggregate bedfile \
-        --max-per-tile 20 --importance-column 5 \
-        --assembly ${ASSEMBLY} \
-        --output-file ~/data/tiled-data/gene-annotations-${ASSEMBLY}.db \
+        --max-per-tile 20 \
+        --importance-column 5 \
+        --chromsizes-filename assembly.chromSizes \
+        --output-file $DATADIR/$ASSEMBLY/gene-annotations-${ASSEMBLY}.db \
         --delimiter $'\t' \
-        ~/data/genbank-data/${ASSEMBLY}/geneAnnotationsExonUnions.bed 
+        $DATADIR/$ASSEMBLY/geneAnnotationsExonUnions.bed
 
-    aws s3 cp ~/data/tiled-data/gene-annotations-${ASSEMBLY}.db \
-        s3://pkerp/public/hg-server/data/${ASSEMBLY}/
-
-Importing into HiGlass
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. code-block:: bash
-
-    curl -u `cat ~/.higlass-server-login`    \
-        -F "datafile=@/Users/peter/data/tiled-data/gene-annotations-${ASSEMBLY}.db"    \
-        -F "name=Gene Annotations (${ASSEMBLY})"   \ 
-        -F 'filetype=beddb'  \
-        -F 'datatype=gene-annotation'  \
-        -F 'coordSystem=${ASSEMBLY}' \
-        -F 'coordSystem2=${ASSEMBLY}'  \
-        http://higlass.io:80/api/v1/tilesets/
-
-Chromosomes
-^^^^^^^^^^^
-
-.. code-block:: bash
-
-    curl -u `cat ~/.higlass-server-login`    \
-        -F "datafile=@/Users/peter/tmp/chromSizes_hg38.tsv"    \
-        -F "name=Chromosomes (hg38)"   \ 
-        -F 'filetype=chromsizes-tsv'  \
-        -F 'datatype=chromsizes'  \
-        -F "coordSystem=${ASSEMBLY}" \
-        -F "coordSystem2=${ASSEMBLY}"  \
-        http://higlass.io:80/api/v1/tilesets/
 
 Hitile files
 ------------
@@ -478,10 +480,10 @@ choose the plot type to display it as.
 
 Cooler files
 ------------
-`Cooler files <https://github.com/mirnylab/cooler>`_ (extension .cool) store 
-arbitrarily large 2D genomic matrices, such as those produced via Hi-C and other high 
+`Cooler files <https://github.com/mirnylab/cooler>`_ (extension .cool) store
+arbitrarily large 2D genomic matrices, such as those produced via Hi-C and other high
 throughput proximity ligation experiments. HiGlass can render cooler files containing
-matrices of the same dataset at a range of bin resolutions or *zoom levels*, so called multiresolution 
+matrices of the same dataset at a range of bin resolutions or *zoom levels*, so called multiresolution
 cool files (typically denoted .mcool).
 
 From pairs
@@ -490,7 +492,7 @@ From pairs
 .. note:: Starting with *cooler* 0.7.9, input pairs data no longer needs to be sorted and indexed.
 
 Often you will start with a **list of pairs** (e.g. contacts, interactions) that need to be aggregated.
-For example, the 4DN-DCIC developed a `standard pairs format <https://github.com/4dn-dcic/pairix/blob/master/pairs_format_specification.md>`_ for HiC-like data. In general, you 
+For example, the 4DN-DCIC developed a `standard pairs format <https://github.com/4dn-dcic/pairix/blob/master/pairs_format_specification.md>`_ for HiC-like data. In general, you
 only need a tab-delimited file with columns representing ``chrom1``, ``pos1``, ``chrom2``, ``pos2``, optionally gzipped. In the case of Hi-C, these would correspond to the mapped locations of the two ends of a Hi-C ligation product.
 
 You also need to provide a list of chromosomes in semantic order (chr1, chr2, ..., chrX, chrY, ...) in a
@@ -522,10 +524,10 @@ If you want to create a sorted and indexed pairs file, follow this example. Beca
 
     cooler csort -c1 1 -p1 2 -c2 4 -p2 5 mypairs.txt hg19.chrom.sizes
 
-will generate a sorted and compressed pairs file ``mypairs.blksrt.txt.gz`` along with a companion pairix ``.px2`` index file. To aggregate, use the ``cload pairix`` command. 
+will generate a sorted and compressed pairs file ``mypairs.blksrt.txt.gz`` along with a companion pairix ``.px2`` index file. To aggregate, use the ``cload pairix`` command.
 
 .. code-block:: bash
-    
+
     cooler cload pairix hg19.chrom.sizes:1000 mypairs.blksrt.txt.gz mycooler.1000.cool
 
 The output ``mycooler.1000.cool`` will serve as the *base resolution* for the multires cooler you will generate.
@@ -539,7 +541,7 @@ If your base resolution data is **already aggregated**, you can ingest data in o
 1. **COO**: Sparse matrix upper triangle `coordinate list <https://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_(COO)>`_ , i.e. tab-delimited sparse matrix triples (``row_id``, ``col_id``, ``count``). This is an output of pipelines like HiCPro.
 
 .. code-block:: bash
-    
+
     cooler load -f coo hg19.chrom.sizes:1000 mymatrix.1kb.coo.txt mycooler.1000.cool
 
 2. **BG2**: A 2D "extension" of the `bedGraph <https://genome.ucsc.edu/goldenpath/help/bedgraph.html>`_ format. Tab delimited with columns representing ``chrom1``, ``start1``, ``end1``, ``chrom2``, ``start2``, ``end2``, and ``count``.
@@ -553,16 +555,16 @@ Zoomify
 To recursively aggregate your matrix into a multires file, use the ``zoomify`` command.
 
 .. code-block:: bash
-    
+
     cooler zoomify mycooler.1000.cool
 
-The output will be a file called ``mycooler.1000.mcool`` with zoom levels increasing by factors of 2. You can also 
+The output will be a file called ``mycooler.1000.mcool`` with zoom levels increasing by factors of 2. You can also
 request an explicit list of resolutions, as long as they can be obtained via integer multiples starting from the base resolution. HiGlass performs well as long as zoom levels don't differ in resolution by greater than a factor of ~5.
 
 .. code-block:: bash
 
     cooler zoomify -r 5000,10000,25000,50000,100000,500000,1000000 mycooler.1000.cool
-   
+
 If this is Hi-C data or similar, you probably want to apply iterative correction (i.e. matrix balancing normalization) by including the ``--balance`` option.
 
 Loading pre-zoomed data
@@ -578,7 +580,7 @@ HiGlass expects each zoom level to be stored at a location named ``resolutions/{
     cooler load -f bg2 hg19.chrom.sizes:10000 mymatrix.10kb.bg2 mycooler.mcool::resolutions/10000
     ...
 
-.. seealso:: See the *cooler* `docs <http://cooler.readthedocs.io/>`_ for more information. 
+.. seealso:: See the *cooler* `docs <http://cooler.readthedocs.io/>`_ for more information.
     You can also type ``-h`` or ``--help`` after any cooler command for a detailed description.
 
 
@@ -661,8 +663,7 @@ This can be aggregated to multivec format:
         --row-infos-filename row_infos.txt \
         --num-rows 7 \
         --format states
-        --row_infos-filename rows_info.txt
-        
+
 A rows_info.txt file is required in the parameter ``--row-infos-filename`` for this type of data. This file contains the name of the states in the bedfile. e.g. rows_infos.txt::
 
      Quies
@@ -672,9 +673,9 @@ A rows_info.txt file is required in the parameter ``--row-infos-filename`` for t
      Gen3'
      Elon
      ctcf
-    
-The number of rows with the name of the states in the rows_info.txt file must match the number of states in the bedfile and that number should be stated in the ``--num-rows`` parameter. 
-   
+
+The number of rows with the name of the states in the rows_info.txt file must match the number of states in the bedfile and that number should be stated in the ``--num-rows`` parameter.
+
 The resulting output file can be ingested using ``higlass-manage``:
 
 .. code-block:: bash
@@ -698,7 +699,7 @@ example of a dataset grouped into two "segments".
     segment1    20000
     segment2    40000
 
-Data will be displayed as if the segments were laid out end to end:: 
+Data will be displayed as if the segments were laid out end to end::
 
 .. code-block:: bash
 
@@ -707,8 +708,8 @@ Data will be displayed as if the segments were laid out end to end::
 
 The individual datapoints should then be formatted as in the block below. Each
 row in this file corresponds to a column in the displayed plot. Each ``value``
-is one of sections of the stacked bar plot or matrix that is rendered by the 
-multivec plot. 
+is one of sections of the stacked bar plot or matrix that is rendered by the
+multivec plot.
 
 .. code-block:: bash
 
@@ -718,13 +719,13 @@ multivec plot.
 
 .. code-block:: bash
 
-             ______ 
+             ______
             |______|                 ______
             |      |                |______|
             |______|                |______|
             |      |                |      |
     |---------------|------------------------------|
-         segment1               segment2 
+         segment1               segment2
 
 This can be converted to a multivec file using the following command:
 
@@ -733,10 +734,10 @@ This can be converted to a multivec file using the following command:
     clodius convert bedfile_to_multivec \
         data.tsv \
         --chromsizes-file segments.tsv \
-        --starting-resolution 1 
+        --starting-resolution 1
 
-This command can also take the parameter ``--row-infos-filename rows.txt`` to 
-describe, in human readable text, each row (e.g. cell types). The passed 
+This command can also take the parameter ``--row-infos-filename rows.txt`` to
+describe, in human readable text, each row (e.g. cell types). The passed
 file should have as many rows as there are rows in the multivec matrix.
 
 The resulting output file can be ingested using ``higlass-manage``:
