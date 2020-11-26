@@ -617,6 +617,12 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       return;
     }
 
+    if (this.valueScale.domain()[1] === this.valueScale.domain()[0]) {
+      // degenerate color bar
+      this.removeColorbar();
+      return;
+    }
+
     const axisValueScale = this.valueScale
       .copy()
       .range([this.colorbarHeight, 0]);

@@ -2,8 +2,10 @@
 
 ## Next
 
+- Fix colorbar error on degenerate colorscale
 - Update horizontal heatmap to regular heatmap rendering so that they can use the same options
-  _[Detailed changes since v1.11.2](https://github.com/higlass/higlass/compare/v1.11.3...develop)_
+
+_[Detailed changes since v1.11.3](https://github.com/higlass/higlass/compare/v1.11.3...develop)_
 
 ## v1.11.3
 
