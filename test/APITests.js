@@ -258,6 +258,19 @@ describe('API Tests', () => {
       });
     });
 
+    it('suggest a list of genes that top match with the given keyword', (done) => {
+      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+        editable: false,
+      });
+
+      api.suggestGene('a', 'MY', (suggestions) => {
+        expect(
+          suggestions.find((d) => d.gene.toLowerCase() === 'MYC'.toLowerCase()),
+        ).not.toBeUndefined();
+        done();
+      });
+    });
+
     it('reset viewport after zoom', (done) => {
       [div, api] = createElementAndApi(simpleHeatmapViewConf, {
         editable: false,
