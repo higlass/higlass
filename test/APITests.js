@@ -251,7 +251,7 @@ describe('API Tests', () => {
 
       waitForTransitionsFinished(api.getComponent(), () => {
         expect(api.getComponent().xScales.a.domain()[0]).toBeCloseTo(
-          1521544004,
+          1480820463,
           -6,
         );
         done();
