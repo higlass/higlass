@@ -4063,18 +4063,23 @@ class HiGlassComponent extends React.Component {
       );
     }
 
-    const autocompleteServer = this.state.views[viewUid].genomePositionSearchBox
-      .autocompleteServer;
-    const autocompleteId = this.state.views[viewUid].genomePositionSearchBox
-      .autocompleteId;
-    const chromInfoPath = this.state.views[viewUid].chromInfoPath;
-
-    if (!autocompleteServer || !autocompleteId || !chromInfoPath) {
+    if (
+      !this.state.views[viewUid].genomePositionSearchBox ||
+      !this.state.views[viewUid].genomePositionSearchBox.autocompleteServer ||
+      !this.state.views[viewUid].genomePositionSearchBox.autocompleteId ||
+      !this.state.views[viewUid].chromInfoPath
+    ) {
       console.warn(
         'Please set chromInfoPath, autocompleteServer, and autocompleteId to use the zoomToGene API',
       );
       return;
     }
+
+    const autocompleteServer = this.state.views[viewUid].genomePositionSearchBox
+      .autocompleteServer;
+    const autocompleteId = this.state.views[viewUid].genomePositionSearchBox
+      .autocompleteId;
+    const chromInfoPath = this.state.views[viewUid].chromInfoPath;
 
     const url = `${autocompleteServer}/suggest/?d=${autocompleteId}&ac=${geneSymbol.toLowerCase()}`;
 
