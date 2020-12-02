@@ -2,6 +2,8 @@
 
 ## Next
 
+- Add a zoomToGene API that allows to zoom a HiGlass view to a location near a certain gene.
+
 _[Detailed changes since v1.11.4](https://github.com/higlass/higlass/compare/v1.11.4...develop)_
 
 ## v1.11.4

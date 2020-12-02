@@ -242,6 +242,22 @@ describe('API Tests', () => {
       });
     });
 
+    it('zooms to the location near a MYC gene', (done) => {
+      [div, api] = createElementAndApi(simpleCenterViewConfig, {
+        editable: false,
+      });
+
+      api.zoomToGene('a', 'MYC', 100);
+
+      waitForTransitionsFinished(api.getComponent(), () => {
+        expect(api.getComponent().xScales.a.domain()[0]).toBeCloseTo(
+          1480820463,
+          -6,
+        );
+        done();
+      });
+    });
+
     it('reset viewport after zoom', (done) => {
       [div, api] = createElementAndApi(simpleHeatmapViewConf, {
         editable: false,

@@ -4,6 +4,14 @@
   "trackSourceServers": ["http://higlass.io/api/v1"],
   "views": [
     {
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "genomePositionSearchBox": {
+        "visible": true,
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
+      },
       "uid": "a",
       "initialXDomain": [1480820463.833503, 2550144059.1286707],
       "initialYDomain": [1569819845.1080737, 2433776657.2008576],

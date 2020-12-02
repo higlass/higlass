@@ -468,6 +468,21 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
+       * Change the current view port to a location near the gene of interest.
+       * When ``animateTime`` is greater than 0, animate the transition.
+       *
+       * @param {string} viewUid The identifier of the view to zoom
+       * @param {string} geneSymbol The name of gene symbol to search
+       * @param {Number} animateTime The time to spend zooming to the specified location
+       * @example
+       * // Zoom to the location near 'MYC'
+       * hgApi.zoomToGene('view1', 'MYC', 2000);
+       */
+      zoomToGene(viewUid, geneSymbol, animateTime = 0) {
+        self.zoomToGene(viewUid, geneSymbol, animateTime);
+      },
+
+      /**
        * Zoom so that the entirety of all the datasets in a view
        * are visible.
        * The passed in ``viewUid`` should refer to a view which is present. If it
