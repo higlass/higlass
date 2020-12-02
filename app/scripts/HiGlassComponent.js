@@ -4908,6 +4908,7 @@ class HiGlassComponent extends React.Component {
         // `useCSSTransforms` (it's default `true`)
         // and set `measureBeforeMount={true}`.
         useCSSTransforms={this.mounted}
+        verticalCompact={this.state.viewConfig.compactLayout}
         width={this.state.width}
       >
         {this.tiledAreas}
@@ -5001,6 +5002,7 @@ class HiGlassComponent extends React.Component {
 HiGlassComponent.defaultProps = {
   options: {},
   zoomFixed: false,
+  compactLayout: true,
 };
 
 HiGlassComponent.propTypes = {
@@ -5009,6 +5011,7 @@ HiGlassComponent.propTypes = {
   viewConfig: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
     .isRequired,
   zoomFixed: PropTypes.bool,
+  compactLayout: PropTypes.bool,
 };
 
 export default HiGlassComponent;
