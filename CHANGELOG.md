@@ -2,6 +2,8 @@
 
 ## Next
 
+- Add a top-level option, `compactLayout`, that controls to allow adding vertical gaps between views.
+
 _[Detailed changes since v1.11.4](https://github.com/higlass/higlass/compare/v1.11.4...develop)_
 
 ## v1.11.4
