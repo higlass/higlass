@@ -4054,7 +4054,7 @@ class HiGlassComponent extends React.Component {
     this.setCenters[viewUid](centerX, centerY, k, false, animateTime);
   }
 
-  zoomToGene(viewUid, gene, animateTime) {
+  zoomToGene(viewUid, geneName, animateTime) {
     if (!(viewUid in this.setCenters)) {
       throw Error(
         `Invalid viewUid. Current uuids: ${Object.keys(this.setCenters).join(
@@ -4075,23 +4075,23 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
-    this.suggestGene(viewUid, gene, (suggestions) => {
+    this.suggestGene(viewUid, geneName, (suggestions) => {
       if (suggestions) {
         // extract the position of exact match
         const exactMatch = suggestions.find(
-          (d) => d.gene.toLowerCase() === gene.toLowerCase(),
+          (d) => d.geneName.toLowerCase() === geneName.toLowerCase(),
         );
 
         if (exactMatch) {
-          const { chr, start, end } = exactMatch;
+          const { chr, txStart, txEnd } = exactMatch;
 
           // extract absolute positions
           ChromosomeInfo(
             this.state.views[viewUid].chromInfoPath,
             (loadedChromInfo) => {
               // using the absolution positions, zoom to the position near a gene
-              const startAbs = loadedChromInfo.chrToAbs([chr, start]);
-              const endAbs = loadedChromInfo.chrToAbs([chr, end]);
+              const startAbs = loadedChromInfo.chrToAbs([chr, txStart]);
+              const endAbs = loadedChromInfo.chrToAbs([chr, txEnd]);
 
               const [centerX, centerY, k] = scalesCenterAndK(
                 this.xScales[viewUid].copy().domain([startAbs, endAbs]),
@@ -4103,7 +4103,7 @@ class HiGlassComponent extends React.Component {
             this.pubSub,
           );
         } else {
-          console.warn(`Couldn't find the gene symbol: ${gene}`);
+          console.warn(`Couldn't find the gene symbol: ${geneName}`);
         }
       }
     });
@@ -4139,18 +4139,7 @@ class HiGlassComponent extends React.Component {
     tileProxy
       .json(url, toVoid, this.pubSub)
       .then((suggestions) => {
-        callback(
-          suggestions.map((d) => {
-            // change to use simpler key names just to make it easier to use
-            return {
-              chr: d.chr,
-              start: d.txStart,
-              end: d.txEnd,
-              score: d.score,
-              gene: d.geneName,
-            };
-          }),
-        );
+        callback(suggestions);
       })
       .catch((error) => console.error(error));
   }

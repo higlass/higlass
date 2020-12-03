@@ -265,7 +265,9 @@ describe('API Tests', () => {
 
       api.suggestGene('a', 'MY', (suggestions) => {
         expect(
-          suggestions.find((d) => d.gene.toLowerCase() === 'MYC'.toLowerCase()),
+          suggestions.find(
+            (d) => d.geneName.toLowerCase() === 'MYC'.toLowerCase(),
+          ),
         ).not.toBeUndefined();
         done();
       });
