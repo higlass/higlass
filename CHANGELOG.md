@@ -4,6 +4,7 @@
 
 - Add a `zoomToGene` API that allows to zoom a HiGlass view to a location near a certain gene.
 - Add a `suggestGene` API that returns a list of genes of top match for a given keyword based on `autocompleteServer`.
+- Add a top-level option, `compactLayout`, that controls to allow adding vertical gaps between views.
 
 _[Detailed changes since v1.11.4](https://github.com/higlass/higlass/compare/v1.11.4...develop)_
 
