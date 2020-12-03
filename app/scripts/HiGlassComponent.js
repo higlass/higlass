@@ -4054,7 +4054,7 @@ class HiGlassComponent extends React.Component {
     this.setCenters[viewUid](centerX, centerY, k, false, animateTime);
   }
 
-  zoomToGene(viewUid, geneSymbol, animateTime) {
+  zoomToGene(viewUid, geneName, animateTime) {
     if (!(viewUid in this.setCenters)) {
       throw Error(
         `Invalid viewUid. Current uuids: ${Object.keys(this.setCenters).join(
@@ -4075,53 +4075,71 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
+    this.suggestGene(viewUid, geneName, (suggestions) => {
+      if (suggestions) {
+        // extract the position of exact match
+        const exactMatch = suggestions.find(
+          (d) => d.geneName.toLowerCase() === geneName.toLowerCase(),
+        );
+
+        if (exactMatch) {
+          const { chr, txStart, txEnd } = exactMatch;
+
+          // extract absolute positions
+          ChromosomeInfo(
+            this.state.views[viewUid].chromInfoPath,
+            (loadedChromInfo) => {
+              // using the absolution positions, zoom to the position near a gene
+              const startAbs = loadedChromInfo.chrToAbs([chr, txStart]);
+              const endAbs = loadedChromInfo.chrToAbs([chr, txEnd]);
+
+              const [centerX, centerY, k] = scalesCenterAndK(
+                this.xScales[viewUid].copy().domain([startAbs, endAbs]),
+                this.yScales[viewUid].copy().domain([startAbs, endAbs]),
+              );
+
+              this.setCenters[viewUid](centerX, centerY, k, false, animateTime);
+            },
+            this.pubSub,
+          );
+        } else {
+          console.warn(`Couldn't find the gene symbol: ${geneName}`);
+        }
+      }
+    });
+  }
+
+  suggestGene(viewUid, keyword, callback) {
+    if (!(viewUid in this.setCenters)) {
+      throw Error(
+        `Invalid viewUid. Current uuids: ${Object.keys(this.setCenters).join(
+          ',',
+        )}`,
+      );
+    }
+
+    if (
+      !this.state.views[viewUid].genomePositionSearchBox ||
+      !this.state.views[viewUid].genomePositionSearchBox.autocompleteServer ||
+      !this.state.views[viewUid].genomePositionSearchBox.autocompleteId
+    ) {
+      console.warn(
+        'Please set autocompleteServer and autocompleteId to use the suggestGene API',
+      );
+      return;
+    }
+
     const autocompleteServer = this.state.views[viewUid].genomePositionSearchBox
       .autocompleteServer;
     const autocompleteId = this.state.views[viewUid].genomePositionSearchBox
       .autocompleteId;
-    const chromInfoPath = this.state.views[viewUid].chromInfoPath;
 
-    const url = `${autocompleteServer}/suggest/?d=${autocompleteId}&ac=${geneSymbol.toLowerCase()}`;
+    const url = `${autocompleteServer}/suggest/?d=${autocompleteId}&ac=${keyword.toLowerCase()}`;
 
     tileProxy
       .json(url, toVoid, this.pubSub)
-      .then((positions) => {
-        if (positions) {
-          // extract the position of exact match
-          const genePosition = positions.find(
-            (d) => d.geneName.toLowerCase() === geneSymbol.toLowerCase(),
-          );
-
-          if (genePosition) {
-            const { chr, txStart: start, txEnd: end } = genePosition;
-
-            // extract absolute positions
-            ChromosomeInfo(
-              chromInfoPath,
-              (loadedChromInfo) => {
-                // using the absolution positions, zoom to the position near a gene
-                const startAbs = loadedChromInfo.chrToAbs([chr, start]);
-                const endAbs = loadedChromInfo.chrToAbs([chr, end]);
-
-                const [centerX, centerY, k] = scalesCenterAndK(
-                  this.xScales[viewUid].copy().domain([startAbs, endAbs]),
-                  this.yScales[viewUid].copy().domain([startAbs, endAbs]),
-                );
-
-                this.setCenters[viewUid](
-                  centerX,
-                  centerY,
-                  k,
-                  false,
-                  animateTime,
-                );
-              },
-              this.pubSub,
-            );
-          } else {
-            console.warn(`Couldn't find the gene symbol: ${geneSymbol}`);
-          }
-        }
+      .then((suggestions) => {
+        callback(suggestions);
       })
       .catch((error) => console.error(error));
   }

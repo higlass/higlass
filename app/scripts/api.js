@@ -472,14 +472,34 @@ const createApi = function api(context, pubSub) {
        * When ``animateTime`` is greater than 0, animate the transition.
        *
        * @param {string} viewUid The identifier of the view to zoom
-       * @param {string} geneSymbol The name of gene symbol to search
+       * @param {string} geneName The name of gene symbol to search
        * @param {Number} animateTime The time to spend zooming to the specified location
        * @example
        * // Zoom to the location near 'MYC'
        * hgApi.zoomToGene('view1', 'MYC', 2000);
        */
-      zoomToGene(viewUid, geneSymbol, animateTime = 0) {
-        self.zoomToGene(viewUid, geneSymbol, animateTime);
+      zoomToGene(viewUid, geneName, animateTime = 0) {
+        self.zoomToGene(viewUid, geneName, animateTime);
+      },
+
+      /**
+       * Get the list of genes of top match for a given keyword.
+       *
+       * @param {string} viewUid The id of the view containing the track.
+       * @param {string} keyword The substring of gene name to search.
+       * @param {function} callback A function to be called upon gene list search.
+       * @example
+       * hgv.suggestGene('view1', 'MY', (suggestions) => {
+       *    if(suggestions && suggestions.length > 0) {
+       *      console.log('Gene suggested', suggestions[0].geneName);
+       *      console.log('Chromosome', suggestions[0].chr);
+       *      console.log('Start position', suggestions[0].txStart);
+       *      console.log('End position', suggestions[0].txEnd);
+       *    }
+       * });
+       */
+      suggestGene(viewUid, keyword, callback) {
+        return self.suggestGene(viewUid, keyword, callback);
       },
 
       /**
