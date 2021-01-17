@@ -2,7 +2,7 @@
 [![Live Docs](https://img.shields.io/badge/docs-live-red.svg?colorB=0f9256)](https://docs.higlass.io/)
 [![DOI](https://zenodo.org/badge/56026057.svg)](https://zenodo.org/badge/latestdoi/56026057)
 [![Twitter](https://img.shields.io/badge/news-twitter-red.svg?colorB=6930bf)](https://twitter.com/higlass_io)
-[![Slack](https://now-examples-slackin-zukqykuatj.now.sh/badge.svg)](https://now-examples-slackin-zukqykuatj.now.sh/)
+[![Slack](https://img.shields.io/badge/join-Slack-red.svg?colorB=ff4000)](https://rb.gy/q9do1b)
 
 
 ### Introduction
