@@ -2,6 +2,8 @@
 
 ## Next
 
+- Allow implementing plugin viewport tracks.
+
 _[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.5...develop)_
 
 ## v1.11.5
