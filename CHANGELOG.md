@@ -2,7 +2,7 @@
 
 ## Next
 
-- Allow implementing plugin viewport tracks.
+- Allow implementing plugin viewport projection tracks using `config.projection`.
 
 _[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.5...develop)_
 
