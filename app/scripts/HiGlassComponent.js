@@ -3074,7 +3074,8 @@ class HiGlassComponent extends React.Component {
     if (
       track.type === 'viewport-projection-center' ||
       track.type === 'viewport-projection-horizontal' ||
-      track.type === 'viewport-projection-vertical'
+      track.type === 'viewport-projection-vertical' ||
+      (track.options && track.options.addCallbacks)
     ) {
       const fromView = track.fromViewUid;
 

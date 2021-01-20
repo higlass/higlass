@@ -1760,6 +1760,17 @@ class TrackRenderer extends React.Component {
           context.AVAILABLE_FOR_PLUGINS = AVAILABLE_FOR_PLUGINS;
           context.baseEl = this.baseEl;
           context.definition = track;
+
+          if (
+            track.registerViewportChanged &&
+            track.removeViewportChanged &&
+            track.setDomainsCallback
+          ) {
+            context.registerViewportChanged = track.registerViewportChanged;
+            context.removeViewportChanged = track.removeViewportChanged;
+            context.setDomainsCallback = track.setDomainsCallback;
+          }
+
           try {
             return new pluginTrack.track( // eslint-disable-line new-cap
               AVAILABLE_FOR_PLUGINS,
