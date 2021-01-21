@@ -2,10 +2,14 @@
 
 ## Next
 
+_[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.6...develop)_
+
+## v1.11.6
+
 - Allow implementing plugin viewport projection tracks using `config.projection`.
 - Change the default value of `zoomLimits` to `[1, null]`, which means highest zoom resolution is 1bp.
 
-_[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.5...develop)_
+_[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.5...v1.11.6)_
 
 ## v1.11.5
 
