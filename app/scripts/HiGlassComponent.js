@@ -3070,10 +3070,12 @@ class HiGlassComponent extends React.Component {
    * @param track: A view with tracks.
    */
   addCallbacks(viewUid, track) {
+    const trackInfo = this.getTrackInfo(track.type);
     if (
       track.type === 'viewport-projection-center' ||
       track.type === 'viewport-projection-horizontal' ||
-      track.type === 'viewport-projection-vertical'
+      track.type === 'viewport-projection-vertical' ||
+      (trackInfo && trackInfo.projection)
     ) {
       const fromView = track.fromViewUid;
 
