@@ -130,6 +130,7 @@ export default class DataFetcher {
             );
           },
           (error) => {
+            this.tilesetInfoLoading = false;
             finished({
               error,
             });
