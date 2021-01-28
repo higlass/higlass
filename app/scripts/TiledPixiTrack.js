@@ -166,6 +166,9 @@ class TiledPixiTrack extends PixiTrack {
         this.dataFetcher.dataConfig.tilesetUid = tilesetUid;
       }
 
+      this.tilesetUid = this.dataFetcher.dataConfig.tilesetUid;
+      this.server = this.dataFetcher.dataConfig.server || 'unknown';
+
       if (this.tilesetInfo.chromsizes) {
         this.chromInfo = parseChromsizesRows(this.tilesetInfo.chromsizes);
       }

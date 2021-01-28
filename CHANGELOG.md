@@ -2,6 +2,8 @@
 
 ## Next
 
+- Show visual clue when tileset info is not available ("Tileset info not found. ...").
+
 _[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.6...develop)_
 
 ## v1.11.6
