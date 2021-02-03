@@ -231,6 +231,8 @@ API Functions
 
 .. js:autofunction:: setViewConfig
 
+.. js:autofunction:: getLocation
+
 .. js:autofunction:: getMinMaxValue
 
 .. js:autofunction:: getRangeSelection
