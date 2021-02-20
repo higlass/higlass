@@ -2,6 +2,8 @@
 
 ## Next
 
+- Use bins_per_dimension or tile_size when calculating 1D visible tiles
+
 _[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.6...develop)_
 
 ## v1.11.6
