@@ -457,7 +457,7 @@ Horizontal Chromosome Grid
 .. image:: img/horizontal-chromosome-labels-thumb.png
     :align: right
 
-track-type: ``chromosome-lables``
+track-type: ``chromosome-labels``
 datatype: ``chromsizes`` or ``cooler``
 filetypes: ``chromsizes-tsv``
 
