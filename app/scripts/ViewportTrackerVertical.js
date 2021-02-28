@@ -49,10 +49,11 @@ class ViewportTrackerVertical extends SVGTrack {
 
     this.gBrush.selectAll('.handle--w').style('pointer-events', 'none');
 
-    registerViewportChanged(uid, this.viewportChanged.bind(this));
-
     // the viewport will call this.viewportChanged immediately upon
     // hearing registerViewportChanged
+    registerViewportChanged(uid, this.viewportChanged.bind(this));
+
+    this.rerender();
     this.draw();
   }
 
