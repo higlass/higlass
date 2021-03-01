@@ -2,10 +2,14 @@
 
 ## Next
 
+_[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.7...develop)_
+
+## v1.11.7
+
 - Show visual clue when tileset info is not available ("Tileset info not found. ...").
 - Properly initialize the style of 1D brushes (`viewport-projection-horizontal` and `viewport-projection-vertical`).
 
-_[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.6...develop)_
+_[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.6...v1.11.7)_
 
 ## v1.11.6
 
