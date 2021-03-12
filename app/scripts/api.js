@@ -647,6 +647,10 @@ const createApi = function api(context, pubSub) {
       /**
        * Return the track's javascript object. This is useful for subscribing to
        * data events (dataChanged)
+       *
+       * @param {string} viewId The id of the view containing the track
+       * @param {string} trackId The id of the track within the view
+       * @return {obj} The HiGlass track object for this track
        */
       getTrackObject(viewId, trackId) {
         let newViewId = viewId;
@@ -664,7 +668,7 @@ const createApi = function api(context, pubSub) {
        * Set or get an option.
        * @param   {string}  key  The name of the option you want get or set
        * @param   {*}  value  If not `undefined`, `key` will be set to `value`
-       * @return  {[type]}  When `value` is `undefined` the current value of
+       * @return  {obj}  When `value` is `undefined` the current value of
        *   `key` will be returned.
        */
       option(key, value) {
