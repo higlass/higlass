@@ -668,7 +668,7 @@ const createApi = function api(context, pubSub) {
        * Set or get an option.
        * @param   {string}  key  The name of the option you want get or set
        * @param   {*}  value  If not `undefined`, `key` will be set to `value`
-       * @return  {object}  When `value` is `undefined` the current value of
+       * @return  {obj}  When `value` is `undefined` the current value of
        *   `key` will be returned.
        */
       option(key, value) {
