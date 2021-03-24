@@ -249,7 +249,7 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
         : 0.4,
     );
 
-    graphics.alpha = this.options.rectangleDomainOpacity || 0.5;
+    // graphics.alpha = this.options.rectangleDomainOpacity || 0.5;
 
     const minSquareSize =
       this.options.minSquareSize && this.options.minSquareSize !== 'none'
