@@ -329,6 +329,10 @@ export const OPTIONS_INFO = {
     name: 'Fill color',
     inlineOptions: AVAILABLE_COLORS,
   },
+  rectangleDomainFillOpacity: {
+    name: 'Fill opacity',
+    inlineOptions: OPACITY_OPTIONS,
+  },
   rectangleDomainOpacity: {
     name: 'Opacity',
     inlineOptions: OPACITY_OPTIONS,
