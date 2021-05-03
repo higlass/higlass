@@ -2,6 +2,8 @@
 
 ## Next
 
+- Added an option menu item for rectangle domain fill opacity
+
 _[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.7...develop)_
 
 ## v1.11.7
