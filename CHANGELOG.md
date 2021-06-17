@@ -3,7 +3,7 @@
 ## Next
 
 - Added an option menu item for rectangle domain fill opacity
-- Added a parameter in `zoomToGene` to specify padding around gene to navigate
+- Added a parameter in `zoomToGene` to allow specifying padding around gene
 
 _[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.7...develop)_
 

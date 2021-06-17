@@ -473,7 +473,7 @@ const createApi = function api(context, pubSub) {
        *
        * @param {string} viewUid The identifier of the view to zoom
        * @param {string} geneName The name of gene symbol to search
-       * @param {string} padding The padding (BP) around the gene to see
+       * @param {string} padding The padding (base pairs) around a given gene for the navigation
        * @param {Number} animateTime The time to spend zooming to the specified location
        * @example
        * // Zoom to the location near 'MYC'
