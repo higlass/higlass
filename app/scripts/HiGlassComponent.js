@@ -143,6 +143,12 @@ class HiGlassComponent extends React.Component {
     this.zoomLocks = {};
     this.locationLocks = {};
 
+    // axis-specific zoom locks
+    this.locationLocksOnlyX = {}; 
+    this.locationLocksOnlyY = {};
+
+    this.locationLocksAxisIndependent = {}; // axis-specific locks
+
     // locks that keep the value scales synchronized between
     // *tracks* (which can be in different views)
     this.valueScaleLocks = {};
@@ -1724,6 +1730,132 @@ class HiGlassComponent extends React.Component {
       }
     }
 
+    if (this.locationLocksOnlyX[uid]) {
+      // this view is locked to another
+      const lockGroup = this.locationLocksOnlyX[uid].lock;
+      const lockGroupItems = dictItems(lockGroup);
+      const lockCrossAxis = this.locationLocksOnlyX[uid].axis !== 'x';
+
+      // eslint-disable-next-line no-unused-vars
+      const [centerX, centerY, k] = scalesCenterAndK(
+        this.xScales[uid],
+        this.yScales[uid],
+      );
+
+      for (let i = 0; i < lockGroupItems.length; i++) {
+        const key = lockGroupItems[i][0];
+        const value = lockGroupItems[i][1];
+
+        if (!this.xScales[key] || !this.yScales[key]) {
+          continue;
+        }
+
+        // eslint-disable-next-line no-unused-vars
+        const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(
+          this.xScales[key],
+          this.yScales[key],
+        );
+
+        if (key === uid) {
+          // no need to notify oneself that the scales have changed
+          continue;
+        }
+
+        const dx = value[0] - lockGroup[uid][0];
+        const dy = value[1] - lockGroup[uid][1];
+
+        const newCenterX = centerX + dx;
+        const newCenterY = centerY + dy;
+
+        if (!this.setCenters[key]) {
+          continue;
+        }
+
+        const [newXScale, newYScale] = this.setCenters[key](
+          lockCrossAxis ? newCenterY : newCenterX,
+          keyCenterY,
+          keyK,
+          false,
+        );
+
+        // because the setCenters call above has a 'false' notify, the new scales won't
+        // be propagated from there, so we have to store them here
+        this.xScales[key] = newXScale;
+        this.yScales[key] = newYScale;
+
+        // notify the listeners of all locked views that the scales of
+        // this view have changed
+        if (this.scalesChangedListeners.hasOwnProperty(key)) {
+          dictValues(this.scalesChangedListeners[key]).forEach((x) => {
+            x(newXScale, newYScale);
+          });
+        }
+      }
+    }
+
+    if (this.locationLocksOnlyY[uid]) {
+      // this view is locked to another
+      const lockGroup = this.locationLocksOnlyY[uid].lock;
+      const lockGroupItems = dictItems(lockGroup);
+      const lockCrossAxis = this.locationLocksOnlyY[uid].axis !== 'y';
+
+      // eslint-disable-next-line no-unused-vars
+      const [centerX, centerY, k] = scalesCenterAndK(
+        this.xScales[uid],
+        this.yScales[uid],
+      );
+
+      for (let i = 0; i < lockGroupItems.length; i++) {
+        const key = lockGroupItems[i][0];
+        const value = lockGroupItems[i][1];
+
+        if (!this.xScales[key] || !this.yScales[key]) {
+          continue;
+        }
+
+        // eslint-disable-next-line no-unused-vars
+        const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(
+          this.xScales[key],
+          this.yScales[key],
+        );
+
+        if (key === uid) {
+          // no need to notify oneself that the scales have changed
+          continue;
+        }
+
+        const dx = value[0] - lockGroup[uid][0];
+        const dy = value[1] - lockGroup[uid][1];
+
+        const newCenterX = centerX + dx;
+        const newCenterY = centerY + dy;
+
+        if (!this.setCenters[key]) {
+          continue;
+        }
+
+        const [newXScale, newYScale] = this.setCenters[key](
+          keyCenterX,
+          lockCrossAxis ? newCenterX : newCenterY,
+          keyK,
+          false,
+        );
+
+        // because the setCenters call above has a 'false' notify, the new scales won't
+        // be propagated from there, so we have to store them here
+        this.xScales[key] = newXScale;
+        this.yScales[key] = newYScale;
+
+        // notify the listeners of all locked views that the scales of
+        // this view have changed
+        if (this.scalesChangedListeners.hasOwnProperty(key)) {
+          dictValues(this.scalesChangedListeners[key]).forEach((x) => {
+            x(newXScale, newYScale);
+          });
+        }
+      }
+    }
+
     this.animate();
 
     // Call view change handler
@@ -3195,10 +3327,36 @@ class HiGlassComponent extends React.Component {
 
     if (viewConfig.locationLocks) {
       for (const viewUid of dictKeys(viewConfig.locationLocks.locksByViewUid)) {
-        this.locationLocks[viewUid] =
-          viewConfig.locationLocks.locksDict[
-            viewConfig.locationLocks.locksByViewUid[viewUid]
-          ];
+        if(typeof viewConfig.locationLocks.locksByViewUid !== 'object') {
+          this.locationLocks[viewUid] =
+            viewConfig.locationLocks.locksDict[
+              viewConfig.locationLocks.locksByViewUid[viewUid]
+            ];
+        } else {
+          // We need to link x and y axes separately.
+          
+          // x-axis specific locks
+          if('x' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
+            const lockInfo = viewConfig.locationLocks.locksDict[
+              viewConfig.locationLocks.locksByViewUid[viewUid].x.lock
+            ];
+            this.locationLocksOnlyX[viewUid] = {
+              lock: lockInfo,
+              axis: viewConfig.locationLocks.locksByViewUid[viewUid].x.axis
+            }
+          }
+          
+          // y-axis specific locks
+          if('y' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
+            const lockInfo = viewConfig.locationLocks.locksDict[
+              viewConfig.locationLocks.locksByViewUid[viewUid].y.lock
+            ];
+            this.locationLocksOnlyY[viewUid] = {
+              lock: lockInfo,
+              axis: viewConfig.locationLocks.locksByViewUid[viewUid].y.axis
+            }
+          }
+        }
       }
     }
 
@@ -3211,10 +3369,30 @@ class HiGlassComponent extends React.Component {
     //
     if (viewConfig.zoomLocks) {
       for (const viewUid of dictKeys(viewConfig.zoomLocks.locksByViewUid)) {
-        this.zoomLocks[viewUid] =
-          viewConfig.zoomLocks.locksDict[
-            viewConfig.zoomLocks.locksByViewUid[viewUid]
-          ];
+
+        if(typeof viewConfig.zoomLocks.locksByViewUid[viewUid] !== 'object') {
+          // This means we need to link both the x and y axes at once between views.
+          this.zoomLocks[viewUid] =
+            viewConfig.zoomLocks.locksDict[
+              viewConfig.zoomLocks.locksByViewUid[viewUid]
+            ];
+        } else {
+          // We need to link x and y axes separately.
+          
+          // // x-axis specific locks
+          // if('x' in viewConfig.zoomLocks.locksByViewUid[viewUid]) {
+          //   this.zoomLocksOnlyX[viewUid] = viewConfig.zoomLocks.locksDict[
+          //     viewConfig.zoomLocks.locksByViewUid[viewUid].x
+          //   ];
+          // }
+          
+          // // y-axis specific locks
+          // if('y' in viewConfig.zoomLocks.locksByViewUid[viewUid]) {
+          //   this.zoomLocksOnlyY[viewUid] = viewConfig.zoomLocks.locksDict[
+          //     viewConfig.zoomLocks.locksByViewUid[viewUid].y
+          //   ];
+          // }
+        }
       }
     }
 
@@ -3247,6 +3425,7 @@ class HiGlassComponent extends React.Component {
         // otherwise, assign this locationLock its own uid
         lockUid = slugid.nice();
       }
+      console.log('serializeLocks', locks, locks[viewUid], viewUid, lockUid);
       locks[viewUid].uid = lockUid;
 
       // make a note that we've seen this lock
@@ -4185,6 +4364,7 @@ class HiGlassComponent extends React.Component {
     };
 
     let newListenerId = 1;
+    // SHLYI TODO: revisit later
     if (this.scalesChangedListeners[view.uid]) {
       newListenerId =
         Object.keys(this.scalesChangedListeners[view.uid])
