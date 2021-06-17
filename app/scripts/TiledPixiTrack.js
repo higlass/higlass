@@ -735,10 +735,11 @@ class TiledPixiTrack extends PixiTrack {
       }
 
       [this.trackNotFoundText.x, this.trackNotFoundText.y] = this.position;
-      /*
-      if (this.flipText)
-          this.trackNotFoundText.scale.x = -1;
-      */
+
+      if (this.flipText) {
+        this.trackNotFoundText.anchor.x = 1;
+        this.trackNotFoundText.scale.x = -1;
+      }
 
       this.trackNotFoundText.visible = true;
     } else {
