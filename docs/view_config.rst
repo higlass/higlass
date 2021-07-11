@@ -50,7 +50,7 @@ header and select _Edit view config_.
 The editor support a couple of keyboard shortcuts to make editing fast:
 
 - ``CMD (or CTRL) + S `` to save and apply the view config
-- ``ESC`` to claose the modl and to undue all (saved but not finalized) changes introduced while editing the view config.
+- ``ESC`` to close the modal and to undo all (saved but not finalized) changes introduced while editing the view config.
 - ``CMD (or CTRL) + Enter`` to save, apply, and finalize changes and close the modal
 - Hold ``ALT`` for 1 second to temporarily hide the modal. The modal will reappear as soon as you release ``ALT``.
 
