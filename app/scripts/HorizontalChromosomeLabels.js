@@ -266,6 +266,14 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     this.rightBoundTick.anchor.x = 1;
 
+    if (this.flipText) {
+      // this means this track is displayed vertically, so update the anchor and scale of labels to make them readable!
+      this.leftBoundTick.scale.x = -1;
+      this.leftBoundTick.anchor.x = 1;
+      this.rightBoundTick.scale.x = -1;
+      this.rightBoundTick.anchor.x = 0;
+    }
+
     // line is offset by one because it's right on the edge of the
     // visible region and we want to get the full width
     this.leftBoundTick.tickLine = [
