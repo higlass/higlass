@@ -2,6 +2,7 @@
 
 ## Next
 
+- Remove dependency on `cwise`
 - Make vertical chromosome labels as well as loading status labels readable in vertical tracks
 - Added an option menu item for rectangle domain fill opacity
 
