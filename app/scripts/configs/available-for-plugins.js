@@ -75,6 +75,12 @@ import * as services from '../services';
 import ChromosomeInfo from '../ChromosomeInfo';
 import SearchField from '../SearchField';
 
+// Data Fetchers
+import GBKDataFetcher from '../data-fetchers/genbank-fetcher';
+import LocalDataFetcher from '../data-fetchers/local-tile-fetcher';
+import getDataFetcher from '../data-fetchers/get-data-fetcher';
+
+
 const libraries = {
   d3Array,
   d3Axis,
@@ -143,10 +149,18 @@ const chromosomes = {
   SearchField,
 };
 
+const dataFetchers = {
+  DataFetcher,
+  GBKDataFetcher,
+  LocalDataFetcher,
+  getDataFetcher,
+};
+
 export default {
   chromosomes,
   libraries,
   tracks,
+  dataFetchers,
   factories,
   services,
   utils,
