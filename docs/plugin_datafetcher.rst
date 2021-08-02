@@ -24,8 +24,16 @@ In the follow you can see a bare minimum example of this structure.
         );
       }
 
+
       // You can extend the base DataFetcher class with your plugin.
-      const { DataFetcher } = HGC.factories;
+      const { DataFetcher } = HGC.dataFetchers;
+      
+      // You also have access to other built-in data fetchers and getDataFetcher
+      const {
+        GBKDataFetcher,
+        LocalDataFetcher,
+        getDataFetcher
+      } = HGC.dataFetchers;
 
       // Other libraries, utils, etc. that are provided by HiGlass (HGC)
       const { ... } = HGC.libraries;
@@ -33,11 +41,13 @@ In the follow you can see a bare minimum example of this structure.
       const { ... } = HGC.services;
       const { ... } = HGC.utils;
       const { ... } = HGC.configs;
+      // The base DataFetcher class is also exposed from HGC.factories.
+      const { ... } = HGC.factories;
 
       // The version of HiGlass. Can be used to check for compatibility.
       const hgVersion = HGC.VERSION;
 
-      class MyDataFetcherClass extends HGC.factories.DataFetcher {
+      class MyDataFetcherClass extends HGC.dataFetchers.DataFetcher {
         constructor(dataConfig, pubSub) {
             super(dataConfig, pubSub);
             this.hgc = HGC;
