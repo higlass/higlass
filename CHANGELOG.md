@@ -5,6 +5,7 @@
 - Make vertical chromosome labels as well as loading status labels readable in vertical tracks
 - Added an option menu item for rectangle domain fill opacity
 - Add data fetchers to `AVAILABLE_FOR_PLUGINS`
+- Update track list in `AVAILABLE_FOR_PLUGINS`
 
 _[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.7...develop)_
 
