@@ -6,6 +6,7 @@
 - Added an option menu item for rectangle domain fill opacity
 - Add data fetchers to `AVAILABLE_FOR_PLUGINS`
 - Update track list in `AVAILABLE_FOR_PLUGINS`
+- Correctly setup initial scales of vertical tracks when the width of a center track is zero.
 
 _[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.7...develop)_
 
