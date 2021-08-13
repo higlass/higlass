@@ -1731,6 +1731,8 @@ class HiGlassComponent extends React.Component {
       // the x axis of this view is locked to an axis of another view
       const lockGroup = this.locationLocksAxisWise.x[uid].lock;
       const lockGroupItems = dictItems(lockGroup);
+
+      // this means the x axis of this view (uid) is locked to the y axis of another view
       const lockCrossAxis = this.locationLocksAxisWise.x[uid].axis !== 'x';
 
       // eslint-disable-next-line no-unused-vars
@@ -1759,10 +1761,10 @@ class HiGlassComponent extends React.Component {
         }
 
         const dx = value[0] - lockGroup[uid][0];
-        const dy = value[1] - lockGroup[uid][1];
+        // const dy = value[1] - lockGroup[uid][1];
 
         const newCenterX = centerX + dx;
-        const newCenterY = centerY + dy;
+        // const newCenterY = centerY + dy;
 
         if (!this.setCenters[key]) {
           continue;
@@ -1794,6 +1796,8 @@ class HiGlassComponent extends React.Component {
       // the y axis of this view is locked to an axis of another view
       const lockGroup = this.locationLocksAxisWise.y[uid].lock;
       const lockGroupItems = dictItems(lockGroup);
+
+      // this means the y axis of this view (uid) is locked to the x axis of another view
       const lockCrossAxis = this.locationLocksAxisWise.y[uid].axis !== 'y';
 
       // eslint-disable-next-line no-unused-vars
@@ -1821,10 +1825,10 @@ class HiGlassComponent extends React.Component {
           continue;
         }
 
-        const dx = value[0] - lockGroup[uid][0];
+        // const dx = value[0] - lockGroup[uid][0];
         const dy = value[1] - lockGroup[uid][1];
 
-        const newCenterX = centerX + dx;
+        // const newCenterX = centerX + dx;
         const newCenterY = centerY + dy;
 
         if (!this.setCenters[key]) {
@@ -3324,34 +3328,44 @@ class HiGlassComponent extends React.Component {
 
     if (viewConfig.locationLocks) {
       for (const viewUid of dictKeys(viewConfig.locationLocks.locksByViewUid)) {
-        if(typeof viewConfig.locationLocks.locksByViewUid !== 'object') {
+        if (typeof viewConfig.locationLocks.locksByViewUid !== 'object') {
           this.locationLocks[viewUid] =
             viewConfig.locationLocks.locksDict[
               viewConfig.locationLocks.locksByViewUid[viewUid]
             ];
         } else {
           // This means we need to link x and y axes separately.
-          
-          // x-axis specific locks
-          if(typeof viewConfig.locationLocks.locksByViewUid[viewUid] === 'object' && 'x' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
-            const lockInfo = viewConfig.locationLocks.locksDict[
-              viewConfig.locationLocks.locksByViewUid[viewUid].x.lock
-            ];
+
+          // x-axis specific locks. The x-axis of this view is linked with an axis in another view.
+          if (
+            typeof viewConfig.locationLocks.locksByViewUid[viewUid] ===
+              'object' &&
+            'x' in viewConfig.locationLocks.locksByViewUid[viewUid]
+          ) {
+            const lockInfo =
+              viewConfig.locationLocks.locksDict[
+                viewConfig.locationLocks.locksByViewUid[viewUid].x.lock
+              ];
             this.locationLocksAxisWise.x[viewUid] = {
               lock: lockInfo,
-              axis: viewConfig.locationLocks.locksByViewUid[viewUid].x.axis
-            }
+              axis: viewConfig.locationLocks.locksByViewUid[viewUid].x.axis, // The axis of another view, either 'x' or 'y'
+            };
           }
-          
-          // y-axis specific locks
-          if(typeof viewConfig.locationLocks.locksByViewUid[viewUid] === 'object' && 'y' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
-            const lockInfo = viewConfig.locationLocks.locksDict[
-              viewConfig.locationLocks.locksByViewUid[viewUid].y.lock
-            ];
+
+          // y-axis specific locks. The y-axis of this view is linked with an axis in another view.
+          if (
+            typeof viewConfig.locationLocks.locksByViewUid[viewUid] ===
+              'object' &&
+            'y' in viewConfig.locationLocks.locksByViewUid[viewUid]
+          ) {
+            const lockInfo =
+              viewConfig.locationLocks.locksDict[
+                viewConfig.locationLocks.locksByViewUid[viewUid].y.lock
+              ];
             this.locationLocksAxisWise.y[viewUid] = {
               lock: lockInfo,
-              axis: viewConfig.locationLocks.locksByViewUid[viewUid].y.axis
-            }
+              axis: viewConfig.locationLocks.locksByViewUid[viewUid].y.axis, // The axis of another view, either 'x' or 'y'
+            };
           }
         }
       }
