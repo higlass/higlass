@@ -3416,7 +3416,6 @@ class HiGlassComponent extends React.Component {
         // otherwise, assign this locationLock its own uid
         lockUid = slugid.nice();
       }
-
       locks[viewUid].uid = lockUid;
 
       // make a note that we've seen this lock
