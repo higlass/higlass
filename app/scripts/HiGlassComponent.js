@@ -4355,7 +4355,6 @@ class HiGlassComponent extends React.Component {
     };
 
     let newListenerId = 1;
-
     if (this.scalesChangedListeners[view.uid]) {
       newListenerId =
         Object.keys(this.scalesChangedListeners[view.uid])
