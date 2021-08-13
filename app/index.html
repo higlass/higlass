@@ -293,7 +293,7 @@ const viewConfig = {
                   "maxZoom": null,
                   "labelPosition": "bottomRight",
                   "colorRange": [
-                    "rgba(255,255,255,1)",
+                    "rgba(0,255,0,1)",
                     "rgba(0,0,0,1)"
                   ],
                   "name": "Rao et al. (2014) K562 MboI (allreps) 1kb",
@@ -388,6 +388,186 @@ const viewConfig = {
         "chromInfoId": "hg19",
         "visible": true
       }
+    },
+    {
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 6,
+        "moved": false,
+        "static": false
+      },
+      "uid": "view-3",
+      "initialYDomain": [
+        1500486193.0498662,
+        1501906871.0212667
+      ],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "initialXDomain": [
+        1500281634.288512,
+        1501635259.612295
+      ],
+      "tracks": {
+        "bottom": [],
+        "top": [
+          {
+            // "uid": "OHJakQICQD6gTD7skx4EWA",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "server": "//higlass.io/api/v1",
+            "height": 47,
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "plusStrandColor": "blue",
+              "name": "Gene Annotations (hg19)",
+              "labelPosition": "hidden",
+              "minusStrandColor": "red",
+              "fontSize": 10,
+              "labelBackgroundColor": "#ffffff",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "minHeight": 24,
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "showMousePosition": false,
+              "mousePositionColor": "#000000",
+              "geneAnnotationHeight": 16,
+              "geneLabelPosition": "outside",
+              "geneStrandSpacing": 4
+            },
+            "width": 321
+          },
+          {
+            // "uid": "X4e_1DKiQHmyghDa6lLMVA",
+            "height": 30,
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "type": "horizontal-chromosome-labels",
+            "options": {
+              "color": "#808080",
+              "stroke": "#ffffff",
+              "fontSize": 12,
+              "fontIsLeftAligned": false,
+              "showMousePosition": false,
+              "mousePositionColor": "#000000",
+              "reverseOrientation": false
+            }
+          }
+        ],
+        "right": [],
+        "center": [
+          {
+            "type": "combined",
+            // "uid": "QN8h5oodTfOI-ZLTfd_0Bg",
+            "contents": [
+              {
+                // "uid": "d4bx9LAFRwWAcVmVqVf_1A",
+                "tilesetUid": "QvdMEvccQuOxKTEjrVL3wA",
+                "server": "//higlass.io/api/v1",
+                "width": 20,
+                "height": 20,
+                "type": "heatmap",
+                "options": {
+                  "maxZoom": null,
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "rgba(255,0,0,1)",
+                    "rgba(0,0,0,1)"
+                  ],
+                  "name": "Rao et al. (2014) K562 MboI (allreps) 1kb",
+                  "colorbarLabelsPosition": "inside",
+                  "colorbarPosition": "topRight",
+                  "backgroundColor": "#eeeeee",
+                  "labelLeftMargin": 0,
+                  "labelRightMargin": 0,
+                  "labelTopMargin": 0,
+                  "labelBottomMargin": 0,
+                  "labelShowResolution": true,
+                  "labelShowAssembly": true,
+                  "colorbarBackgroundColor": "#ffffff",
+                  "minWidth": 100,
+                  "minHeight": 100,
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "showMousePosition": false,
+                  "mousePositionColor": "#000000",
+                  "showTooltip": false,
+                  "extent": "full",
+                  "zeroValueColor": null,
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "transforms": [
+                  {
+                    "name": "ICE",
+                    "value": "weight"
+                  }
+                ]
+              }
+            ],
+            "options": {}
+          }
+        ],
+        "left": [
+          {
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "server": "//higlass.io/api/v1",
+            "width": 48,
+            "type": "vertical-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "plusStrandColor": "blue",
+              "name": "Gene Annotations (hg19)",
+              "labelPosition": "bottomRight",
+              "minusStrandColor": "red",
+              "fontSize": 10,
+              "labelBackgroundColor": "#ffffff",
+              "labelLeftMargin": 0,
+              "labelRightMargin": 0,
+              "labelTopMargin": 0,
+              "labelBottomMargin": 0,
+              "minHeight": 24,
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "showMousePosition": false,
+              "mousePositionColor": "#000000",
+              "geneAnnotationHeight": 16,
+              "geneLabelPosition": "outside",
+              "geneStrandSpacing": 4
+            },
+            // "uid": "dqBTMH78Rn6DeSyDBoAEXw",
+            "height": 285
+          },
+          {
+            // "uid": "RHdQK4IRQ7yJeDmKWb7Pcg",
+            "width": 30,
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "type": "vertical-chromosome-labels",
+            "options": {
+              "color": "#808080",
+              "stroke": "#ffffff",
+              "fontSize": 12,
+              "fontIsLeftAligned": false,
+              "showMousePosition": false,
+              "mousePositionColor": "#000000",
+              "reverseOrientation": false
+            }
+          }
+        ],
+        "whole": [],
+        "gallery": []
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "//higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "//higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "visible": true
+      }
     }
   ],
   "editable": true,
@@ -418,8 +598,9 @@ const viewConfig = {
   ],
   "locationLocks": {
     "locksByViewUid": {
-      "view-1": { "x": { "lock": "lock-1", "axis": "y" }, "y": { "lock": "lock-2", "axis": "x" } },
-      "view-2": { "x": { "lock": "lock-2", "axis": "y" }, "y": { "lock": "lock-1", "axis": "x" } },
+      "view-1": { "x": { "lock": "lock-1", "axis": "x" } },
+      "view-2": { "y": { "lock": "lock-2", "axis": "x" } },
+      "view-3": { "x": { "lock": "lock-2", "axis": "y" }, "x": { "lock": "lock-1", "axis": "x" },  },
     },
     "locksDict": {
       "lock-1": {
@@ -428,7 +609,7 @@ const viewConfig = {
           1550000000,
           3380588.876772046
         ],
-        "view-2": [
+        "view-3": [
           1550000000.0000002,
           1549999999.9999993,
           3380588.876772046
@@ -436,12 +617,12 @@ const viewConfig = {
         "uid": "lock-1"
       },
       "lock-2": {
-        "view-1": [
-          1550000000,
-          1550000000,
+        "view-2": [
+          1550000000.0000002,
+          1549999999.9999993,
           3380588.876772046
         ],
-        "view-2": [
+        "view-3": [
           1550000000.0000002,
           1549999999.9999993,
           3380588.876772046

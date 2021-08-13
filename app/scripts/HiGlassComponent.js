@@ -3336,7 +3336,7 @@ class HiGlassComponent extends React.Component {
           // We need to link x and y axes separately.
           
           // x-axis specific locks
-          if('x' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
+          if(typeof viewConfig.locationLocks.locksByViewUid[viewUid] === 'object' && 'x' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
             const lockInfo = viewConfig.locationLocks.locksDict[
               viewConfig.locationLocks.locksByViewUid[viewUid].x.lock
             ];
@@ -3347,7 +3347,7 @@ class HiGlassComponent extends React.Component {
           }
           
           // y-axis specific locks
-          if('y' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
+          if(typeof viewConfig.locationLocks.locksByViewUid[viewUid] === 'object' && 'y' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
             const lockInfo = viewConfig.locationLocks.locksDict[
               viewConfig.locationLocks.locksByViewUid[viewUid].y.lock
             ];
