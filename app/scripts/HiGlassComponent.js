@@ -143,11 +143,8 @@ class HiGlassComponent extends React.Component {
     this.zoomLocks = {};
     this.locationLocks = {};
 
-    // axis-specific zoom locks
-    this.locationLocksOnlyX = {}; 
-    this.locationLocksOnlyY = {};
-
-    this.locationLocksAxisIndependent = {}; // axis-specific locks
+    // axis-specific location lock
+    this.locationLocksAxisWise = { x: {}, y: {} };
 
     // locks that keep the value scales synchronized between
     // *tracks* (which can be in different views)
@@ -1730,11 +1727,11 @@ class HiGlassComponent extends React.Component {
       }
     }
 
-    if (this.locationLocksOnlyX[uid]) {
-      // this view is locked to another
-      const lockGroup = this.locationLocksOnlyX[uid].lock;
+    if (this.locationLocksAxisWise.x[uid]) {
+      // the x axis of this view is locked to an axis of another view
+      const lockGroup = this.locationLocksAxisWise.x[uid].lock;
       const lockGroupItems = dictItems(lockGroup);
-      const lockCrossAxis = this.locationLocksOnlyX[uid].axis !== 'x';
+      const lockCrossAxis = this.locationLocksAxisWise.x[uid].axis !== 'x';
 
       // eslint-disable-next-line no-unused-vars
       const [centerX, centerY, k] = scalesCenterAndK(
@@ -1772,8 +1769,8 @@ class HiGlassComponent extends React.Component {
         }
 
         const [newXScale, newYScale] = this.setCenters[key](
-          lockCrossAxis ? newCenterY : newCenterX,
-          keyCenterY,
+          lockCrossAxis ? keyCenterX : newCenterX,
+          lockCrossAxis ? newCenterX : keyCenterY,
           keyK,
           false,
         );
@@ -1793,11 +1790,11 @@ class HiGlassComponent extends React.Component {
       }
     }
 
-    if (this.locationLocksOnlyY[uid]) {
-      // this view is locked to another
-      const lockGroup = this.locationLocksOnlyY[uid].lock;
+    if (this.locationLocksAxisWise.y[uid]) {
+      // the y axis of this view is locked to an axis of another view
+      const lockGroup = this.locationLocksAxisWise.y[uid].lock;
       const lockGroupItems = dictItems(lockGroup);
-      const lockCrossAxis = this.locationLocksOnlyY[uid].axis !== 'y';
+      const lockCrossAxis = this.locationLocksAxisWise.y[uid].axis !== 'y';
 
       // eslint-disable-next-line no-unused-vars
       const [centerX, centerY, k] = scalesCenterAndK(
@@ -1835,8 +1832,8 @@ class HiGlassComponent extends React.Component {
         }
 
         const [newXScale, newYScale] = this.setCenters[key](
-          keyCenterX,
-          lockCrossAxis ? newCenterX : newCenterY,
+          lockCrossAxis ? newCenterY : keyCenterX,
+          lockCrossAxis ? keyCenterY : newCenterY,
           keyK,
           false,
         );
@@ -3333,14 +3330,14 @@ class HiGlassComponent extends React.Component {
               viewConfig.locationLocks.locksByViewUid[viewUid]
             ];
         } else {
-          // We need to link x and y axes separately.
+          // This means we need to link x and y axes separately.
           
           // x-axis specific locks
           if(typeof viewConfig.locationLocks.locksByViewUid[viewUid] === 'object' && 'x' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
             const lockInfo = viewConfig.locationLocks.locksDict[
               viewConfig.locationLocks.locksByViewUid[viewUid].x.lock
             ];
-            this.locationLocksOnlyX[viewUid] = {
+            this.locationLocksAxisWise.x[viewUid] = {
               lock: lockInfo,
               axis: viewConfig.locationLocks.locksByViewUid[viewUid].x.axis
             }
@@ -3351,7 +3348,7 @@ class HiGlassComponent extends React.Component {
             const lockInfo = viewConfig.locationLocks.locksDict[
               viewConfig.locationLocks.locksByViewUid[viewUid].y.lock
             ];
-            this.locationLocksOnlyY[viewUid] = {
+            this.locationLocksAxisWise.y[viewUid] = {
               lock: lockInfo,
               axis: viewConfig.locationLocks.locksByViewUid[viewUid].y.axis
             }
@@ -3369,30 +3366,10 @@ class HiGlassComponent extends React.Component {
     //
     if (viewConfig.zoomLocks) {
       for (const viewUid of dictKeys(viewConfig.zoomLocks.locksByViewUid)) {
-
-        if(typeof viewConfig.zoomLocks.locksByViewUid[viewUid] !== 'object') {
-          // This means we need to link both the x and y axes at once between views.
-          this.zoomLocks[viewUid] =
-            viewConfig.zoomLocks.locksDict[
-              viewConfig.zoomLocks.locksByViewUid[viewUid]
-            ];
-        } else {
-          // We need to link x and y axes separately.
-          
-          // // x-axis specific locks
-          // if('x' in viewConfig.zoomLocks.locksByViewUid[viewUid]) {
-          //   this.zoomLocksOnlyX[viewUid] = viewConfig.zoomLocks.locksDict[
-          //     viewConfig.zoomLocks.locksByViewUid[viewUid].x
-          //   ];
-          // }
-          
-          // // y-axis specific locks
-          // if('y' in viewConfig.zoomLocks.locksByViewUid[viewUid]) {
-          //   this.zoomLocksOnlyY[viewUid] = viewConfig.zoomLocks.locksDict[
-          //     viewConfig.zoomLocks.locksByViewUid[viewUid].y
-          //   ];
-          // }
-        }
+        this.zoomLocks[viewUid] =
+          viewConfig.zoomLocks.locksDict[
+            viewConfig.zoomLocks.locksByViewUid[viewUid]
+          ];
       }
     }
 
@@ -3425,7 +3402,7 @@ class HiGlassComponent extends React.Component {
         // otherwise, assign this locationLock its own uid
         lockUid = slugid.nice();
       }
-      console.log('serializeLocks', locks, locks[viewUid], viewUid, lockUid);
+
       locks[viewUid].uid = lockUid;
 
       // make a note that we've seen this lock
