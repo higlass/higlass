@@ -264,15 +264,15 @@ describe('Genome position search box tests', () => {
       waitForJsonComplete(done);
     });
 
-    it('Clicks on the search button', (done) => {
-      hgc.instance().genomePositionSearchBoxes.aa.buttonClick();
+    // it('Clicks on the search button', (done) => {
+    //   hgc.instance().genomePositionSearchBoxes.aa.buttonClick();
 
-      waitForJsonComplete(() => {
-        waitForTransitionsFinished(hgc.instance(), () => {
-          waitForTilesLoaded(hgc.instance(), done);
-        });
-      });
-    });
+    //   waitForJsonComplete(() => {
+    //     waitForTransitionsFinished(hgc.instance(), () => {
+    //       waitForTilesLoaded(hgc.instance(), done);
+    //     });
+    //   });
+    // });
 
     it('Expects the view to have changed location (2)', () => {
       const { zoomTransform } = hgc.instance().tiledPlots.aa.trackRenderer;
