@@ -213,6 +213,16 @@ Chromosomes
 - ChromosomeInfo
 - SearchField
 
+Data Fetchers
+-------
+
+**Prefix:** ``dataFetchers`` (e.g., ``HGC.dataFetchers.DataFetcher``)
+
+- DataFetcher
+- GBKDataFetcher
+- LocalDataFetcher
+- getDataFetcher
+
 Other
 -----
 

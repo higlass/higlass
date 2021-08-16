@@ -34,6 +34,7 @@ other track. In the follow you can see a bare minimum example of this structure.
       const { ... } = HGC.services;
       const { ... } = HGC.utils;
       const { ... } = HGC.configs;
+      const { ... } = HGC.dataFetchers;
 
       // The version of HiGlass. Can be used to check for compatibility.
       const hgVersion = HGC.VERSION;
