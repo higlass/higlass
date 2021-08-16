@@ -249,6 +249,10 @@ API Functions
 
 .. js:autofunction:: public.zoomTo
 
+.. js:autofunction:: public.zoomToGene
+
+.. js:autofunction:: public.suggestGene
+
 .. js:autofunction:: exportAsSvg
 
 .. js:autofunction:: exportAsPngBlobPromise
