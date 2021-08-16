@@ -4055,7 +4055,7 @@ class HiGlassComponent extends React.Component {
     this.setCenters[viewUid](centerX, centerY, k, false, animateTime);
   }
 
-  zoomToGene(viewUid, geneName, animateTime) {
+  zoomToGene(viewUid, geneName, padding, animateTime) {
     if (!(viewUid in this.setCenters)) {
       throw Error(
         `Invalid viewUid. Current uuids: ${Object.keys(this.setCenters).join(
@@ -4091,8 +4091,9 @@ class HiGlassComponent extends React.Component {
             this.state.views[viewUid].chromInfoPath,
             (loadedChromInfo) => {
               // using the absolution positions, zoom to the position near a gene
-              const startAbs = loadedChromInfo.chrToAbs([chr, txStart]);
-              const endAbs = loadedChromInfo.chrToAbs([chr, txEnd]);
+              const startAbs =
+                loadedChromInfo.chrToAbs([chr, txStart]) - padding;
+              const endAbs = loadedChromInfo.chrToAbs([chr, txEnd]) + padding;
 
               const [centerX, centerY, k] = scalesCenterAndK(
                 this.xScales[viewUid].copy().domain([startAbs, endAbs]),
