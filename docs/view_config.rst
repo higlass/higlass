@@ -289,7 +289,7 @@ zoomLocks
 ^^^^^^^^^
 
 In HiGlass, the zoom and location of multiple views can be synchronized for the 
-concurrent analysis. The ``zoomLocks` field in the viewconf specifies which views
+concurrent analysis. The ``zoomLocks`` field in the viewconf specifies which views
 should be synchronized in terms of the zoom level. For example, the following 
 configuration locks the zoom level of two views:
 
