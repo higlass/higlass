@@ -65,20 +65,14 @@
         "additionalProperties": false,
         "properties": {
           "axis": {
-            "enum": [
-              "x",
-              "y"
-            ],
+            "enum": ["x", "y"],
             "type": "string"
           },
           "lock": {
             "type": "string"
           }
         },
-        "required": [
-          "lock",
-          "axis"
-        ],
+        "required": ["lock", "axis"],
         "type": "object"
       },
 
@@ -86,7 +80,7 @@
         "type": "object",
         "additionalProperties": false,
         "patternProperties": {
-          ".": { 
+          ".": {
             "anyOf": [
               {
                 "type": "string"
@@ -145,7 +139,9 @@
         "additionalProperties": false,
         "required": [],
         "properties": {
-          "locksByViewUid": { "$ref": "#/definitions/locks/locationLocksByViewUid" },
+          "locksByViewUid": {
+            "$ref": "#/definitions/locks/locationLocksByViewUid"
+          },
           "locksDict": {
             "type": "object",
             "additionalProperties": false,
@@ -332,7 +328,9 @@
             "type": "integer",
             "title": "Height",
             "default": 12
-          }
+          },
+          "moved": { "type": "boolean" },
+          "static": { "type": "boolean" }
         }
       },
 
@@ -386,7 +384,8 @@
           "position": { "type": "string" },
           "server": { "type": "string" },
           "tilesetUid": { "type": "string" },
-          "width": { "type": "number" }
+          "width": { "type": "number" },
+          "transforms": { "type": "array" }
         }
       },
 

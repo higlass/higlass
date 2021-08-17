@@ -3328,7 +3328,9 @@ class HiGlassComponent extends React.Component {
 
     if (viewConfig.locationLocks) {
       for (const viewUid of dictKeys(viewConfig.locationLocks.locksByViewUid)) {
-        if (typeof viewConfig.locationLocks.locksByViewUid !== 'object') {
+        if (
+          typeof viewConfig.locationLocks.locksByViewUid[viewUid] !== 'object'
+        ) {
           this.locationLocks[viewUid] =
             viewConfig.locationLocks.locksDict[
               viewConfig.locationLocks.locksByViewUid[viewUid]
