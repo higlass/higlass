@@ -1761,10 +1761,8 @@ class HiGlassComponent extends React.Component {
         }
 
         const dx = value[0] - lockGroup[uid][0];
-        // const dy = value[1] - lockGroup[uid][1];
 
         const newCenterX = centerX + dx;
-        // const newCenterY = centerY + dy;
 
         if (!this.setCenters[key]) {
           continue;
@@ -1825,10 +1823,8 @@ class HiGlassComponent extends React.Component {
           continue;
         }
 
-        // const dx = value[0] - lockGroup[uid][0];
         const dy = value[1] - lockGroup[uid][1];
 
-        // const newCenterX = centerX + dx;
         const newCenterY = centerY + dy;
 
         if (!this.setCenters[key]) {
