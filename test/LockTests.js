@@ -1,12 +1,16 @@
 /* eslint-env node, jasmine */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 
 import Adapter from 'enzyme-adapter-react-16';
 
 import { expect } from 'chai';
+
+import Ajv from 'ajv';
+
+import schema from '../app/schema.json';
 
 // Utils
 import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
@@ -17,11 +21,17 @@ describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(done => {
+  beforeAll((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true
+      bounded: true,
     });
+  });
+
+  it('should viewconfig be valid', () => {
+    const validate = new Ajv().compile(schema);
+    const valid = validate(viewconf);
+    expect(valid).eql(true);
   });
 
   it('should have no location locks', () => {
@@ -43,7 +53,7 @@ describe('Horizontal heatmaps', () => {
     views.v1.tracks.top[0].type = 'horizontal-bar';
 
     hgc.setState({
-      views
+      views,
     });
 
     const trackObj = hgc
@@ -71,7 +81,7 @@ const viewconf = {
         autocompleteId: 'OHJakQICQD6gTD7skx4EWA',
         chromInfoServer: '//higlass.io/api/v1',
         chromInfoId: 'hg19',
-        visible: true
+        visible: true,
       },
       chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
       tracks: {
@@ -101,10 +111,10 @@ const viewconf = {
               barOpacity: 1,
               name: 'Schwarzer et al (2017) WT Eigenvectors 20K',
               barFillColorBottom: 'red',
-              barFillColorTop: 'green'
+              barFillColorTop: 'green',
             },
             width: 20,
-            height: 20
+            height: 20,
           },
           {
             server: '//higlass.io/api/v1',
@@ -129,11 +139,11 @@ const viewconf = {
               trackBorderColor: 'black',
               labelTextOpacity: 0.4,
               barOpacity: 1,
-              name: 'Schwarzer et al (2017) NIPBL Eigenvectors 20K'
+              name: 'Schwarzer et al (2017) NIPBL Eigenvectors 20K',
             },
             width: 1890,
-            height: 20
-          }
+            height: 20,
+          },
         ],
         left: [],
         center: [
@@ -161,7 +171,7 @@ const viewconf = {
                     'white',
                     'rgba(245,166,35,1.0)',
                     'rgba(208,2,27,1.0)',
-                    'black'
+                    'black',
                   ],
                   colorbarBackgroundColor: '#ffffff',
                   minWidth: 100,
@@ -175,21 +185,21 @@ const viewconf = {
                   showTooltip: false,
                   extent: 'full',
                   scaleStartPercent: '0.00000',
-                  scaleEndPercent: '1.00000'
+                  scaleEndPercent: '1.00000',
                 },
                 uid: 'GjuZed1ySGW1IzZZqFB9BA',
                 width: 1321,
-                height: 608
-              }
+                height: 608,
+              },
             ],
             options: {},
-            width: 1321
-          }
+            width: 1321,
+          },
         ],
         right: [],
         bottom: [],
         whole: [],
-        gallery: []
+        gallery: [],
       },
       layout: {
         w: 6,
@@ -197,13 +207,13 @@ const viewconf = {
         x: 0,
         y: 0,
         moved: false,
-        static: false
+        static: false,
       },
-      initialYDomain: [802656621.7287865, 2297343378.2712135]
+      initialYDomain: [802656621.7287865, 2297343378.2712135],
     },
     {
       uid: 'v2',
-      initialXDomain: [-8321570.2394923 - 2469429.5836635],
+      initialXDomain: [-8321570.2394923, 2469429.5836635],
       tracks: {
         top: [],
         left: [],
@@ -221,21 +231,21 @@ const viewconf = {
                 transforms: [
                   {
                     name: 'ICE',
-                    value: 'weight'
-                  }
+                    value: 'weight',
+                  },
                 ],
                 width: 1321,
-                height: 608
-              }
+                height: 608,
+              },
             ],
             options: {},
-            width: 1321
-          }
+            width: 1321,
+          },
         ],
         right: [],
         bottom: [],
         whole: [],
-        gallery: []
+        gallery: [],
       },
       layout: {
         w: 6,
@@ -243,42 +253,42 @@ const viewconf = {
         x: 6,
         y: 0,
         moved: false,
-        static: false
-      }
-    }
+        static: false,
+      },
+    },
   ],
   zoomLocks: {
     locksByViewUid: {},
-    locksDict: {}
+    locksDict: {},
   },
   locationLocks: {
     locksByViewUid: {
       v1: 'CXoiuATHTaSgl8vS7cfN9Q',
-      v2: 'CXoiuATHTaSgl8vS7cfN9Q'
+      v2: 'CXoiuATHTaSgl8vS7cfN9Q',
     },
     locksDict: {
       CXoiuATHTaSgl8vS7cfN9Q: {
-        v1: [260987233.96627533, 260946896.30846155, 1028.5273218750954]
-      }
-    }
+        v1: [260987233.96627533, 260946896.30846155, 1028.5273218750954],
+      },
+    },
   },
   valueScaleLocks: {
     locksByViewUid: {
       'v1.ccUaq_JTQjSJejoatNtXoA': 'Qx-F3xOESVW3ZKX7UFneFQ',
-      'v1.TL18hD7kSomz_Ne_dJe0Zw': 'Qx-F3xOESVW3ZKX7UFneFQ'
+      'v1.TL18hD7kSomz_Ne_dJe0Zw': 'Qx-F3xOESVW3ZKX7UFneFQ',
     },
     locksDict: {
       'Qx-F3xOESVW3ZKX7UFneFQ': {
         'v1.ccUaq_JTQjSJejoatNtXoA': {
           view: 'v1',
-          track: 'ccUaq_JTQjSJejoatNtXoA'
+          track: 'ccUaq_JTQjSJejoatNtXoA',
         },
         'v1.TL18hD7kSomz_Ne_dJe0Zw': {
           view: 'v1',
-          track: 'TL18hD7kSomz_Ne_dJe0Zw'
+          track: 'TL18hD7kSomz_Ne_dJe0Zw',
         },
-        uid: 'Qx-F3xOESVW3ZKX7UFneFQ'
-      }
-    }
-  }
+        uid: 'Qx-F3xOESVW3ZKX7UFneFQ',
+      },
+    },
+  },
 };
