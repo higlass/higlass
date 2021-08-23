@@ -5138,6 +5138,7 @@ class HiGlassComponent extends React.Component {
           this.gridLayout = c;
         }}
         // Custom props
+        allowOverlap={this.state.viewConfig.allowOverlap}
         cols={12}
         containerPadding={[containerPaddingX, containerPaddingY]}
         draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}

@@ -19,6 +19,7 @@
       "default": true
     },
     "zoomFixed": { "type": "boolean" },
+    "allowOverlap": { "type": "boolean" },
     "compactLayout": { "type": "boolean" },
     "exportViewUrl": { "type": "string" },
     "trackSourceServers": {
