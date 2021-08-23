@@ -288,7 +288,7 @@ database, assigns them a uid, and makes them accessible through its API at
 zoomLocks
 ^^^^^^^^^
 
-In HiGlass, the zoom and location of multiple views can be synchronized for the 
+In HiGlass, the zoom and location of multiple views can be synchronized for 
 concurrent analysis. The ``zoomLocks`` field in the viewconf specifies which views
 should be synchronized in terms of the zoom level. For example, the following 
 configuration locks the zoom level of two views:
