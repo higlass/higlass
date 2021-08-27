@@ -1,5 +1,7 @@
 # Release notes
 
+- Remove react-bootstrap from the GenomePositionSearchBox
+
 ## v1.11.8
 
 - Make vertical chromosome labels as well as loading status labels readable in vertical tracks
