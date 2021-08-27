@@ -171,6 +171,16 @@ for a higlass server. One can also tell the genome position search box to use ch
         "visible": true
       },
 
+In rare cases, you may want to overlay multiple views on top of each 
+other that show different genome positions. In such cases, You can use
+the following option to allow overlaying HiGlass views. By default, HiGlass
+will prevent collision between views, disallowing overlaps.
+
+
+.. code-block:: javascript
+
+  allowOverlap: [true | false] (default: false)
+
 
 Views
 =====

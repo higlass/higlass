@@ -1,5 +1,9 @@
 # Release notes
 
+## Next Release
+
+- Add a top-level option, `allowOverlap`, that allows to overlay multiple HiGlass views.
+
 ## v1.11.8
 
 - Make vertical chromosome labels as well as loading status labels readable in vertical tracks
