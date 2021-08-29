@@ -126,11 +126,18 @@ $unit: 24px;
   transition: background $fast $ease,
               color $fast $ease;
 
+  g {
+    stroke: $gray;
+  }
+
   &:hover,
   &:active,
   &:focus {
     color: $white;
     background: $active;
+    g {
+      stroke: $white;
+    }
   }
 
   &:last-child {
