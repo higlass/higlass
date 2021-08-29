@@ -4381,9 +4381,11 @@ class HiGlassComponent extends React.Component {
     for (let i = 0; i < views.length; i++) {
       const tiledPlot = this.tiledPlots[views[i].uid];
 
-      const tiledAreasDiv = document.getElementById(views[i].uid);
+      const tiledAreasDiv = document.getElementById(
+        `tiled-area-${views[i].uid}`,
+      );
       if (!tiledAreasDiv) {
-        // we do not have the DIV container
+        // we do not yet have the DIV container
         continue;
       }
       const area = tiledAreasDiv.getBoundingClientRect();
@@ -5096,7 +5098,11 @@ class HiGlassComponent extends React.Component {
           ) : null;
 
         return (
-          <div key={view.uid} styleName="styles.tiled-area">
+          <div
+            key={view.uid}
+            id={`tiled-area-${view.uid}`}
+            styleName="styles.tiled-area"
+          >
             {multiTrackHeader}
             {tiledPlot}
             {overlay}
