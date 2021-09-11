@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import Dialog from './Dialog';
 
 import HiGlassComponent from './HiGlassComponent';
 import SketchInlinePicker from './SketchInlinePicker';
@@ -198,50 +198,56 @@ class HeatmapOptions extends React.Component {
       ) : null; // addButton
 
     return (
-      <Modal className="hg-modal" onHide={this.props.onCancel} show={true}>
-        <Modal.Header closeButton>
-          <Modal.Title>Custom Color Map</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <table className="table-track-options">
-            <thead />
-            <tbody style={{ verticalAlign: 'top' }}>
-              <tr>
-                <td className="td-track-options">
-                  <tr>
-                    <td className="td-track-options">Preview</td>
-                  </tr>
-                  <tr>
-                    <td className="td-track-options">
-                      <div style={{ width: 200 }}>
-                        <HiGlassComponent
-                          options={{ bounded: false }}
-                          viewConfig={mvConfig}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                </td>
-                <td className="td-track-options">
-                  <tr>
-                    <td className="td-track-options">Colors</td>
-                  </tr>
-                  <tr>
-                    <td className="td-track-options">
-                      {addButton}
-                      <div style={{ position: 'relative' }}>{colorFields}</div>
-                    </td>
-                  </tr>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={this.props.onCancel}>Cancel</Button>
-          <Button onClick={this.handleSubmit.bind(this)}>Submit</Button>
-        </Modal.Footer>
-      </Modal>
+      <Dialog
+        okayTitle="Submit"
+        onCancel={this.props.onCancel}
+        onOkay={this.handleSubmit.bind(this)}
+        title="Custom Color Map"
+      >
+        <table className="table-track-options">
+          <thead />
+          <tbody style={{ verticalAlign: 'top' }}>
+            <tr>
+              <td className="td-track-options">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td className="td-track-options">Preview</td>
+                    </tr>
+                    <tr>
+                      <td className="td-track-options">
+                        <div style={{ width: 200 }}>
+                          <HiGlassComponent
+                            options={{ bounded: false }}
+                            viewConfig={mvConfig}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+              <td className="td-track-options">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td className="td-track-options">Colors</td>
+                    </tr>
+                    <tr>
+                      <td className="td-track-options">
+                        {addButton}
+                        <div style={{ position: 'relative' }}>
+                          {colorFields}
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </Dialog>
     );
   }
 }

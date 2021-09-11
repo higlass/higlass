@@ -194,12 +194,6 @@ module.exports = (env, argv) => ({
       commonjs2: 'react-dom',
       amd: 'react-dom',
       root: 'ReactDOM'
-    },
-    'react-bootstrap': {
-      commonjs: 'react-bootstrap',
-      commonjs2: 'react-bootstrap',
-      amd: 'react-bootstrap',
-      root: 'ReactBootstrap'
     }
   },
   plugins: [
