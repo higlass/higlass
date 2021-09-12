@@ -372,9 +372,10 @@ export const svgArrowheadDomainsIcon = parser.parseFromString(
   'text/xml',
 ).documentElement;
 
-export function SearchIcon({ theStyle }) {
+export function SearchIcon({ onClick, theStyle }) {
   return (
     <svg
+      onClick={onClick}
       styleName={theStyle}
       viewBox="0 0 12 13"
       xmlns="http://www.w3.org/2000/svg"
