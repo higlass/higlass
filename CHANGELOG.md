@@ -1,5 +1,7 @@
 # Release notes
 
+- Added the `nanAsZero` option for `horizontal-line` tracks
+
 ## v1.13.5
 
 - Allow tracks to pass in custom context menu items
