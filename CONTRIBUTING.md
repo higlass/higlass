@@ -33,4 +33,7 @@ _Note, continuous integration will fail if your code is not compatible with our 
 - **JavaScript coding style**: We are following a combination of [ESLint's recommendation](https://eslint.org/docs/rules/), [Airbnb's coding style](https://github.com/airbnb/javascript), [React's recommendation](https://github.com/yannickcr/eslint-plugin-react), and [customizations](https://github.com/higlass/higlass/blob/develop/.eslintrc#L30). The easiest way to ensure you're following our coding style is to automatically run `npm run lint`.
 
 - **Python coding style**: We follow the [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide and the [numpydoc](https://numpydoc.readthedocs.io/en/latest/format.html) convention for [docstrings](https://www.python.org/dev/peps/pep-0257/).
+
+- **Changelog**: PRs should contain an update to the CHANGELOG.md describing the user-facing changes. This means that changes are strictly developer facing, such as updates to dependencies, don't need to be included.
+
 - **Documentation**:  We use the [Sphinx](http://www.sphinx-doc.org/en/master/) documentation generator, which uses [reStructuredText](http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html) as its markup language. We also use Sphinx extensions to support Markdown, API reference generation from docstrings, and rendering of Jupyter Notebooks.
