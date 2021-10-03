@@ -517,7 +517,7 @@ class TiledPixiTrack extends PixiTrack {
     return this.scale.maxRawValue;
   }
 
-  initTile(/* tile */) {
+  initTile(tile) {
     // create the tile
     // should be overwritten by child classes
     this.scale.minRawValue = this.continuousScaling
