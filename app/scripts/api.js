@@ -131,9 +131,7 @@ const createApi = function api(context, pubSub) {
           const track = self.getTrackObject(viewId, trackId);
           // Trevor: not a method on every track? refresh data?
           if (track.fetchedTiles) {
-            for (const tileId in track.fetchedTiles) {
-              delete track.fetchedTiles[tileId];
-            }
+            track.removeTiles(Object.keys(track.fetchedTiles));
             track.fetching.clear();
             track.refreshTiles();
           }
