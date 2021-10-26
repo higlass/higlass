@@ -128,15 +128,18 @@ const createApi = function api(context, pubSub) {
         }
 
         for (const { viewId, trackId } of tracks) {
-          const track = self.getTrackObject(viewId, trackId);
-          // Trevor: not a method on every track? refresh data?
-          if (track.fetchedTiles) {
-            track.removeTiles(Object.keys(track.fetchedTiles));
-            track.fetching.clear();
-            track.refreshTiles();
+          const selectedTrack = self.getTrackObject(viewId, trackId);
+          // iterate over childTracks if CombinedTrack
+          for (const track of selectedTrack.childTracks || [selectedTrack]) {
+            // reload tiles for tracks with tiles.
+            if (track.fetchedTiles) {
+              track.removeTiles(Object.keys(track.fetchedTiles));
+              track.fetching.clear();
+              track.refreshTiles();
+            }
+            // second argument forces re-render
+            track.rerender(track.options, true);
           }
-          // second argument forces re-render
-          track.rerender(track.options, true);
         }
       },
 
