@@ -413,7 +413,10 @@ export const OPTIONS_INFO = {
     name: 'Show Tooltip',
     inlineOptions: YES_NO,
   },
-
+  nanAsZero: {
+    name: 'NaN as Zero',
+    inlineOptions: YES_NO,
+  },
   fontSize: {
     name: 'Font Size',
     inlineOptions: sizesInPx([8, 9, 10, 11, 12, 14, 16, 18, 24], 'px'),

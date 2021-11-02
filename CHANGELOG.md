@@ -1,6 +1,7 @@
 # Release notes
 
 - Remove react-bootstrap from the GenomePositionSearchBox
+- Added the `nanAsZero` option for `horizontal-line` tracks
 
 ## v1.11.8
 

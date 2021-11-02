@@ -243,6 +243,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
     const minimumsPerTile = visibleAndFetchedIds
       .map((x) => this.fetchedTiles[x])
+      .filter((tile) => tile.tileData.dense)
       .map((tile) => {
         const ind = this.getIndicesOfVisibleDataInTile(tile);
         return tile.tileData.denseDataExtrema.getMinNonZeroInSubset(ind);
@@ -267,6 +268,7 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
     const maximumsPerTile = visibleAndFetchedIds
       .map((x) => this.fetchedTiles[x])
+      .filter((tile) => tile.tileData.dense)
       .map((tile) => {
         const ind = this.getIndicesOfVisibleDataInTile(tile);
         return tile.tileData.denseDataExtrema.getMaxNonZeroInSubset(ind);
