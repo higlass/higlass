@@ -44,7 +44,7 @@ module.exports = (config) => {
       'test/GenomePositionSearchBoxTest.js',
       'test/HeatmapTests.js',
       'test/HiGlassComponentCreationTests.js',
-      'test/HiGlassComponent/*.js',
+      // 'test/HiGlassComponent/*.js',
       'test/Horizontal1DTrackTests.js',
       'test/HorizontalHeatmapTests.js',
       'test/HorizontalMultivecTests.js',
