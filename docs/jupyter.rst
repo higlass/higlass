@@ -72,6 +72,12 @@ notebook.
 
 .. image:: img/remote-hic.png
 
+If the matrix doesn't show up, you may have to click on "Zoom to data extent":
+
+.. image:: img/zoom_to_data_extent.png
+    :width: 400px
+    :align: center
+
 Remote bigWig Files
 ^^^^^^^^^^^^^^^^^^^
 
