@@ -114,7 +114,11 @@ const createApi = function api(context, pubSub) {
 
       /**
        * Reload all or specific tiles for viewId/trackId
-       * @param {({ viewId: string, trackId: string } | string)[]} target
+       *
+       * @param {array} target Should be an array of type
+       *                       ({ viewId: string, trackId: string } | string).
+       *                       If the array is just strings, it's interpreted
+       *                       as a list of views whose tracks to reload.
        */
       reload(target) {
         /** @type {{ viewId: string, trackId: string}[]} */

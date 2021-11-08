@@ -106,7 +106,7 @@ The ``options`` parameter can have the following properties:
 
 - ``PIXI``: Use a different PIXI library. Useful if trying to use a canvas renderer. Example:
 
-.. code-block::
+.. code-block:: javascript
 
   import * as PIXI from "pixi.js-legacy"
 
