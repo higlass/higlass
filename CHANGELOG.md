@@ -1,9 +1,8 @@
 # Release notes
 
-- Remove react-bootstrap from the GenomePositionSearchBox
-
 ## v1.11.8
 
+- Remove react-bootstrap from the GenomePositionSearchBox
 - Make vertical chromosome labels as well as loading status labels readable in vertical tracks
 - Added an option menu item for rectangle domain fill opacity
 - Added a parameter in `zoomToGene` to allow specifying padding around gene
