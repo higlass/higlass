@@ -589,8 +589,8 @@ HiGlass expects each zoom level to be stored at a location named ``resolutions/{
 Multivec Files
 --------------
 
-Multivec files store arrays of arrays organized by chromosome. To aggregate this
-data, we need an input file where chromsome is a separate dataset. Example:
+Multivec files store arrays of arrays organized by chromosome. They are currently implemented as binary HDF5 files. To aggregate this
+data, we need an input file where each chromosome is a separate dataset. Here is an example creating of how to create the base resolution of a multivec file:
 
 .. code-block:: python
 
@@ -600,7 +600,7 @@ data, we need an input file where chromsome is a separate dataset. Example:
     d[:] = np.random.random((10000,5))
     f.close()
 
-This can be aggregated to multiple resolutions using `clodius aggregate multivec`:
+This base resolution can be aggregated to multiple resolutions using `clodius aggregate multivec`:
 
 .. code-block:: bash
 
@@ -608,11 +608,25 @@ This can be aggregated to multiple resolutions using `clodius aggregate multivec
         --chromsizes-filename ~/projects/negspy/negspy/data/hg38/chromInfo.txt \
         --starting-resolution 1000 \
         --row-infos-filename ~/Downloads/sampled_info.txt \
-        my_file_genome_wide_hg38_v2.multivec
+        /tmp/blah.h5
 
 The `--chromsizes-filename` option lists the chromosomes that are in the input
-file and their sizes.  The `--starting-resolution` option indicates that the
+file and their sizes. The contents should be a list of tab-separated values containing chromosome name and size:
+
+.. code-block:: bash
+
+    chr1    10000
+
+The `--starting-resolution` option indicates that the
 base resolution for the input data is 1000 base pairs.
+
+The `row-infos-filename` parameter specifies a file containing a list of names for the rows in the multivec file:
+
+.. code-block:: bash
+
+    Spleen
+    Thymus
+    Liver
 
 Epilogos Data (multivec)
 ------------------------
