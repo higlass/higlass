@@ -119,6 +119,22 @@ const showMousePosition = (
       y = event.isFrom2dTrack ? event.dataY : event.dataX;
     }
 
+    // If a track is not 2d and is horizontal, the event.dataY
+    // value of the mouse pointer location should not be allowed
+    // to impact how other tracks globally render their mouse
+    // position (see https://github.com/higlass/higlass/issues/814).
+    // Likewise, if a track is not 2d and is vertical, the
+    // event.dataX value should not be used by other tracks for
+    // position reporting.
+
+    if (!event.isFrom2dTrack) {
+      if (!event.isFromVerticalTrack) {
+        y = Number.MIN_SAFE_INTEGER;
+      } else {
+        x = Number.MIN_SAFE_INTEGER;
+      }
+    }
+
     // 2d or central tracks are not offset and rather rely on a mask, i.e., the
     // top left *visible* position is *not* [0,0] but given by `getPosition()`.
     const offset = is2d ? getPosition() : [0, 0];
