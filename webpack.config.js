@@ -180,7 +180,7 @@ module.exports = (env, argv) => ({
     'pixi.js': {
       commonjs: 'pixi.js',
       commonjs2: 'pixi.js',
-      amd: 'pixi.js',
+      amd: 'pixijs',
       root: 'PIXI'
     },
     react: {
