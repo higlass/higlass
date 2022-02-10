@@ -12,6 +12,7 @@
 - Correctly setup initial scales of vertical tracks when the width of a center track is zero.
 - Config-wise, allow axis-specific location locks (e.g., lock the vertical axis in a view to the horizontal axis in another).
 - Add `reload` implementation to `HiGlassComponenet` API.
+- Rename AMD module name for `"pixi.js"` to `"pixi"`.
 
 _[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.7...develop)_
 
