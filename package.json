@@ -138,7 +138,7 @@
     "jasmine-core": "^2.8.0",
     "jquery": "^3.1.0",
     "json-loader": "^0.5.4",
-    "karma": "^1.7.1",
+    "karma": "^6.3.14",
     "karma-chrome-launcher": "^2.0.0",
     "karma-jasmine": "^1.1.1",
     "karma-phantomjs-launcher": "^1.0.4",
