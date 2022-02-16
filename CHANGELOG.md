@@ -1,6 +1,7 @@
 # Release notes
 
 - Remove react-bootstrap from the GenomePositionSearchBox
+- Fix color issue in GeneAnnotation SVG export
 
 ## v1.11.8
 
