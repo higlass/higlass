@@ -1,6 +1,8 @@
 # Release notes
 
 - Remove react-bootstrap from the GenomePositionSearchBox
+- Tracks can now implement `onMouseClick()`, which allows them to react to click events on the corresponding track
+- Using the method `showCustomTrackDialog`, tracks can open modals and display custom data in them (e.g. in response to a click on the track)
 
 ## v1.11.8
 
