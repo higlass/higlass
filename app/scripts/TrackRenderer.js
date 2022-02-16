@@ -604,7 +604,8 @@ class TrackRenderer extends React.Component {
       ])
       .range([initialXDomain[0], initialXDomain[1]]);
 
-    let startY; let endY;
+    let startY;
+    let endY;
     if (this.currentProps.centerWidth === 0) {
       // If the width of the center track is zero, we do not want to make startY and endY equal.
       startY = this.currentProps.paddingTop + this.currentProps.topHeight;
@@ -1513,6 +1514,9 @@ class TrackRenderer extends React.Component {
       dataFetcher,
       getLockGroupExtrema: () => {
         return this.currentProps.getLockGroupExtrema(track.uid);
+      },
+      showCustomTrackDialog: (data) => {
+        this.currentProps.showCustomTrackDialog(data);
       },
       handleTilesetInfoReceived,
       animate: () => {

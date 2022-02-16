@@ -156,6 +156,11 @@ class HiGlassComponent extends React.Component {
     this.plusImg = {};
     this.configImg = {};
 
+    // This is used to differentiate a click (mousedown + mousup)
+    // from panning (mousedown + mousemove + mouseup)
+    this.isMouseDownActive = false;
+    this.isPanning = false;
+
     // allow a different PIXI to be passed in case the
     // caller wants to use a different version
     GLOBALS.PIXI = (props.options && props.options.PIXI) || PIXI;
@@ -342,6 +347,8 @@ class HiGlassComponent extends React.Component {
     this.requestReceivedHandlerBound = this.requestReceivedHandler.bind(this);
     this.wheelHandlerBound = this.wheelHandler.bind(this);
     this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
+    this.mouseUpHandlerBound = this.mouseUpHandler.bind(this);
+    this.mouseDownHandlerBound = this.mouseDownHandler.bind(this);
     this.onMouseLeaveHandlerBound = this.onMouseLeaveHandler.bind(this);
     this.onBlurHandlerBound = this.onBlurHandler.bind(this);
     this.openModalBound = this.openModal.bind(this);
@@ -396,6 +403,8 @@ class HiGlassComponent extends React.Component {
       this.pubSub.subscribe('wheel', this.wheelHandlerBound),
       this.pubSub.subscribe('orientationchange', this.resizeHandlerBound),
       this.pubSub.subscribe('app.event', this.dispatchEventBound),
+      this.pubSub.subscribe('mouseup', this.mouseUpHandlerBound),
+      this.pubSub.subscribe('mousedown', this.mouseDownHandlerBound),
       this.pubSub.subscribe(
         'app.animateOnMouseMove',
         this.animateOnMouseMoveHandlerBound,
@@ -4410,6 +4419,9 @@ class HiGlassComponent extends React.Component {
     const absX = e.clientX;
     const absY = e.clientY;
     const relPos = clientPoint(this.topDiv, e);
+
+    this.isPanning = this.isMouseDownActive;
+
     // We need to add the scrollTop
     relPos[1] += this.scrollTop;
     const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
@@ -4497,6 +4509,90 @@ class HiGlassComponent extends React.Component {
     });
 
     this.showHoverMenu(evt);
+  }
+
+  /**
+   * Handle mousedown events. Currently only used to determine if user is panning
+   *
+   * @param {object}  e  Event object.
+   */
+  mouseDownHandler(e) {
+    this.isMouseDownActive = true;
+    this.isPanning = false;
+  }
+
+  /**
+   * Handle mouseup events by republishing the event using pubSub.
+   *
+   * @param {object}  e  Event object.
+   */
+  mouseUpHandler(e) {
+    this.isMouseDownActive = false;
+
+    if (!this.topDiv || this.state.modal) return;
+
+    if (this.isPanning) return;
+
+    this.hideHoverMenu();
+
+    const absX = e.clientX;
+    const absY = e.clientY;
+    const relPos = clientPoint(this.topDiv, e);
+    // We need to add the scrollTop
+    relPos[1] += this.scrollTop;
+    const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
+
+    const hoveredTracks = hoveredTiledPlot
+      ? hoveredTiledPlot
+          .listTracksAtPosition(relPos[0], relPos[1], true)
+          .map((track) => track.originalTrack || track)
+      : [];
+
+    const hoveredTrack = hoveredTracks.find(
+      (track) => !track.isAugmentationTrack,
+    );
+
+    const relTrackPos = hoveredTrack
+      ? [
+          relPos[0] - hoveredTrack.position[0],
+          relPos[1] - hoveredTrack.position[1],
+        ]
+      : relPos;
+
+    let dataX = -1;
+    let dataY = -1;
+
+    if (hoveredTrack) {
+      dataX = !hoveredTrack.flipText
+        ? hoveredTrack._xScale.invert(relTrackPos[0]) // dataX
+        : hoveredTrack._xScale.invert(relTrackPos[1]); // dataY
+
+      dataY = hoveredTrack.is2d
+        ? hoveredTrack._yScale.invert(relTrackPos[1])
+        : dataX;
+    }
+
+    const evt = {
+      x: relPos[0],
+      y: relPos[1],
+      relTrackX:
+        hoveredTrack && hoveredTrack.flipText ? relTrackPos[1] : relTrackPos[0],
+      relTrackY:
+        hoveredTrack && hoveredTrack.flipText ? relTrackPos[0] : relTrackPos[1],
+      dataX,
+      dataY,
+      // See below why we need these derived boolean values
+      isFrom2dTrack: !!(hoveredTrack && hoveredTrack.is2d),
+      isFromVerticalTrack: !!(hoveredTrack && hoveredTrack.flipText),
+      track: hoveredTrack,
+      origEvt: e,
+      sourceUid: this.uid,
+      hoveredTracks,
+      // See below why we need these derived boolean values
+      noHoveredTracks: hoveredTracks.length === 0,
+    };
+
+    this.pubSub.publish('app.mouseClick', evt);
   }
 
   getMinMaxValue(viewId, trackId, ignoreOffScreenValues, ignoreFixedScale) {
@@ -4629,11 +4725,6 @@ class HiGlassComponent extends React.Component {
   geneSearchHandler(data) {
     this.apiPublish('geneSearch', data);
   }
-
-  /**
-   * Handle mousedown events/
-   */
-  mouseDownHandler(evt) {}
 
   onScrollHandler() {
     if (this.props.options.sizeMode !== SIZE_MODE_SCROLL) return;

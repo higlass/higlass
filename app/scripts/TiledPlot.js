@@ -12,6 +12,7 @@ import DragListeningDiv from './DragListeningDiv';
 import GalleryTracks from './GalleryTracks';
 import TrackRenderer from './TrackRenderer';
 import AddTrackDialog from './AddTrackDialog';
+import CustomTrackDialog from './CustomTrackDialog';
 import ConfigTrackMenu from './ConfigTrackMenu';
 import CloseTrackMenu from './CloseTrackMenu';
 import PopupMenu from './PopupMenu';
@@ -105,6 +106,7 @@ class TiledPlot extends React.Component {
       init: false,
       addTrackPosition: null,
       mouseOverOverlayUid: null,
+      customTrackDialog: null, // holds all the data to display the custom track dialog
       // trackOptions: null
       // trackOptions: trackOptions
       forceUpdate: 0, // a random value that will be assigned by
@@ -150,6 +152,9 @@ class TiledPlot extends React.Component {
     this.contextMenuHandlerBound = this.contextMenuHandler.bind(this);
     this.handleNoTrackAddedBound = this.handleNoTrackAdded.bind(this);
     this.handleTracksAddedBound = this.handleTracksAdded.bind(this);
+    this.handleCustomTrackDialogClosedBound = this.handleCustomTrackDialogClosed.bind(
+      this,
+    );
     this.closeMenusBound = this.closeMenus.bind(this);
     this.handleAddDivisorBound = this.handleAddDivisor.bind(this);
     this.handleAddSeriesBound = this.handleAddSeries.bind(this);
@@ -165,6 +170,7 @@ class TiledPlot extends React.Component {
     );
     this.handleUnlockValueScaleBound = this.handleUnlockValueScale.bind(this);
     this.onAddTrack = this.handleAddTrack.bind(this);
+    this.showCustomDialogBound = this.handleShowCustomDialog.bind(this);
   }
 
   waitForDOMAttachment(callback) {
@@ -306,6 +312,19 @@ class TiledPlot extends React.Component {
             this.handleDivisorChosen(series, newTrack);
           }}
           trackSourceServers={this.props.trackSourceServers}
+        />,
+      );
+    }
+
+    if (this.state.customTrackDialog || this.props.customTrackDialog) {
+      const dialogData =
+        this.state.customTrackDialog || this.props.customTrackDialog;
+      this.props.modal.open(
+        <CustomTrackDialog
+          children={dialogData.bodyComponent} // eslint-disable-line react/no-children-prop
+          bodyProps={dialogData.bodyProps}
+          onCancel={this.handleCustomTrackDialogClosedBound}
+          title={dialogData.title}
         />,
       );
     }
@@ -518,7 +537,7 @@ class TiledPlot extends React.Component {
   handleNoTrackAdded() {
     /*
      * User hit cancel on the AddTrack dialog so we need to
-     * just close it and do nothin
+     * just close it and do nothing
      */
     this.trackToReplace = null;
 
@@ -527,6 +546,17 @@ class TiledPlot extends React.Component {
     this.setState({
       addTrackPosition: null,
       addTrackHost: null,
+    });
+  }
+
+  handleCustomTrackDialogClosed() {
+    /*
+     * User hit cancel on the CustomTrack dialog so we need to
+     * just close it and do nothing
+     */
+
+    this.setState({
+      customTrackDialog: null,
     });
   }
 
@@ -600,6 +630,21 @@ class TiledPlot extends React.Component {
     this.setState({
       addTrackPosition: position,
       addTrackHost: null,
+    });
+  }
+
+  handleShowCustomDialog(customTrackDialogData) {
+    // Example customTrackDialogData
+    // const customTrackDialogData = {
+    //   title: "Modal title",
+    //   bodyComponent: myCustomReactComponent, // Will be displayed in the modal body
+    //   bodyProps: { // props for myCustomReactComponent
+    //     somePropName: someValue
+    //   }
+    // };
+
+    this.setState({
+      customTrackDialog: customTrackDialogData,
     });
   }
 
@@ -1352,6 +1397,7 @@ class TiledPlot extends React.Component {
       viewOptions: props.viewOptions,
       uid: props.uid,
       addTrackPosition: props.addTrackPosition,
+      customTrackDialog: props.customTrackDialog,
       editable: props.editable,
       marginTop: props.marginTop,
       marginBottom: props.marginBottom,
@@ -1366,7 +1412,7 @@ class TiledPlot extends React.Component {
       initialYDomain: props.initialYDomain,
       trackSourceServers: props.trackSourceServers,
       zoomable: props.zoomable,
-      draggingHappending: props.draggingHappening,
+      draggingHappening: props.draggingHappening,
     });
   }
 
@@ -2141,6 +2187,7 @@ class TiledPlot extends React.Component {
             this.props.removeDraggingChangedListener
           }
           setCentersFunction={this.props.setCentersFunction}
+          showCustomTrackDialog={this.showCustomDialogBound}
           svgElement={this.props.svgElement}
           topHeight={this.topHeight}
           topHeightNoGallery={this.topHeightNoGallery}

@@ -14,17 +14,25 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
       onMouseMoveZoom,
       isValueScaleLocked,
       getLockGroupExtrema,
+      showCustomTrackDialog,
     } = context;
 
     this.onMouseMoveZoom = onMouseMoveZoom;
     this.isValueScaleLocked = isValueScaleLocked;
     this.getLockGroupExtrema = getLockGroupExtrema;
+    this.showCustomTrackDialog = showCustomTrackDialog;
 
     if (this.onMouseMoveZoom) {
       this.pubSubs.push(
         this.pubSub.subscribe(
           'app.mouseMove',
           this.mouseMoveHandler.bind(this),
+        ),
+      );
+      this.pubSubs.push(
+        this.pubSub.subscribe(
+          'app.mouseClick',
+          this.mouseClickHandler.bind(this),
         ),
       );
     }
@@ -389,6 +397,19 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
   }
 
   mouseMoveZoomHandler() {
+    // Implemented in the horizontal and vertical sub-classes
+  }
+
+  mouseClickHandler({ x, y } = {}) {
+    if (!this.isWithin(x, y)) return;
+
+    this.mouseX = x;
+    this.mouseY = y;
+
+    this.onMouseClick();
+  }
+
+  onMouseClick() {
     // Implemented in the horizontal and vertical sub-classes
   }
 

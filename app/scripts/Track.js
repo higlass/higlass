@@ -40,6 +40,12 @@ class Track {
         this.defaultMouseMoveHandler.bind(this),
       ),
     );
+    this.pubSubs.push(
+      this.pubSub.subscribe(
+        'app.mouseClick',
+        this.defaultMouseClickHandler.bind(this),
+      ),
+    );
   }
 
   /**
@@ -164,6 +170,8 @@ class Track {
    * @returns nothing
    */
   defaultMouseMoveHandler(evt) {}
+
+  defaultMouseClickHandler(evt) {}
 
   remove() {
     // Clear all pubSub subscriptions
