@@ -15,6 +15,7 @@ const forceUpdate = (self) => {
 };
 
 const createApi = function api(context, pubSub) {
+  /** @type {import('./HiGlassComponent').default} */
   const self = context;
 
   let pubSubs = [];
@@ -112,10 +113,34 @@ const createApi = function api(context, pubSub) {
       },
 
       /**
-       * Reload all of the tiles
+       * Reload all or specific tiles for viewId/trackId
+       * @param {({ viewId: string, trackId: string } | string)[]} target
        */
-      reload() {
-        console.warn('Not implemented yet!');
+      reload(target) {
+        /** @type {{ viewId: string, trackId: string}[]} */
+        let tracks;
+        if (!target) {
+          tracks = self.iterateOverTracks();
+        } else {
+          tracks = target.flatMap((d) =>
+            typeof d === 'string' ? self.iterateOverTracksInView(d) : d,
+          );
+        }
+
+        for (const { viewId, trackId } of tracks) {
+          const selectedTrack = self.getTrackObject(viewId, trackId);
+          // iterate over childTracks if CombinedTrack
+          for (const track of selectedTrack.childTracks || [selectedTrack]) {
+            // reload tiles for tracks with tiles.
+            if (track.fetchedTiles) {
+              track.removeTiles(Object.keys(track.fetchedTiles));
+              track.fetching.clear();
+              track.refreshTiles();
+            }
+            // second argument forces re-render
+            track.rerender(track.options, true);
+          }
+        }
       },
 
       /**
