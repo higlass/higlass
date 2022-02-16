@@ -141,7 +141,7 @@ function externalInitTile(track, tile, options) {
     const geneId = track.geneId(geneInfo, td.type);
     const strand = td.strand || geneInfo[5];
 
-    td.strand = strand;
+    td.strand = td.strand || strand;
 
     let fill = plusStrandColor || DEFAULT_PLUS_STRAND_COLOR;
 
