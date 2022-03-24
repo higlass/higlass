@@ -36,4 +36,4 @@ _Note, continuous integration will fail if your code is not compatible with our 
 
 - **Changelog**: PRs should contain an update to the CHANGELOG.md describing the user-facing changes. This means that changes are strictly developer facing, such as updates to dependencies, don't need to be included.
 
-- **Documentation**:  We use the [Sphinx](http://www.sphinx-doc.org/en/master/) documentation generator, which uses [reStructuredText](http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html) as its markup language. We also use Sphinx extensions to support Markdown, API reference generation from docstrings, and rendering of Jupyter Notebooks.
+- **Documentation**: We use the [Sphinx](http://www.sphinx-doc.org/en/master/) documentation generator, which uses [reStructuredText](http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html) as its markup language. We also use Sphinx extensions to support Markdown, API reference generation from docstrings, and rendering of Jupyter Notebooks.

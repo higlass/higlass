@@ -1,5 +1,6 @@
 # Release notes
 
+- Remove dependency on `cwise`
 - Remove react-bootstrap from the GenomePositionSearchBox
 - Fix color issue in GeneAnnotation SVG export
 
