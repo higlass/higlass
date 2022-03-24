@@ -1,11 +1,11 @@
 # Release notes
 
+- Remove dependency on `cwise`
 - Remove react-bootstrap from the GenomePositionSearchBox
 - Fix color issue in GeneAnnotation SVG export
 
 ## v1.11.8
 
-- Remove dependency on `cwise`
 - Make vertical chromosome labels as well as loading status labels readable in vertical tracks
 - Added an option menu item for rectangle domain fill opacity
 - Added a parameter in `zoomToGene` to allow specifying padding around gene
