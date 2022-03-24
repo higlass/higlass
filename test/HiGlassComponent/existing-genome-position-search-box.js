@@ -1,4 +1,4 @@
-import { configure, ReactWrapper } from 'enzyme';
+import { configure } from 'enzyme';
 
 import Adapter from 'enzyme-adapter-react-16';
 
@@ -83,11 +83,10 @@ describe('Exising genome position search box', () => {
 
   it('Checks that mm9 was properly set and switches back to hg19', (done) => {
     hgc.update();
-    const button = new ReactWrapper(
-      hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton,
-      true,
-    );
-    expect(button.props().title).toEqual('mm9');
+    const button = hgc.instance().genomePositionSearchBoxes.aa
+      .assemblyPickButton;
+
+    expect(button.title).toEqual('mm9');
 
     hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('hg19');
 
@@ -96,11 +95,10 @@ describe('Exising genome position search box', () => {
 
   it('Checks that hg19 was properly', (done) => {
     hgc.update();
-    const button = new ReactWrapper(
-      hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton,
-      true,
-    );
-    expect(button.props().title).toEqual('hg19');
+    const button = hgc.instance().genomePositionSearchBoxes.aa
+      .assemblyPickButton;
+
+    expect(button.title).toEqual('hg19');
 
     waitForJsonComplete(done);
   });

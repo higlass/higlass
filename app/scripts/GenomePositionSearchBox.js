@@ -1,12 +1,6 @@
 import { select, event } from 'd3-selection';
 import React from 'react';
 import slugid from 'slugid';
-import {
-  FormGroup,
-  Glyphicon,
-  DropdownButton,
-  MenuItem,
-} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
 import Autocomplete from './Autocomplete';
@@ -23,7 +17,7 @@ import { scalesCenterAndK, dictKeys, toVoid } from './utils';
 
 // HOCS
 import withTheme from './hocs/with-theme';
-
+import { SearchIcon } from './icons';
 // Configs
 import { THEME_DARK, ZOOM_TRANSITION_DURATION } from './configs';
 
@@ -771,37 +765,31 @@ class GenomePositionSearchBox extends React.Component {
 
   render() {
     const assemblyMenuItems = this.state.availableAssemblies.map((x) => (
-      <MenuItem key={x} eventKey={x}>
+      <option key={x} value={x}>
         {x}
-      </MenuItem>
+      </option>
     ));
 
     let className = this.state.isFocused
       ? 'styles.genome-position-search-focus'
       : 'styles.genome-position-search';
 
-    const classNameButton = this.state.isFocused
-      ? 'styles.genome-position-search-bar-button-focus'
-      : 'styles.genome-position-search-bar-button';
-
     if (this.props.theme === THEME_DARK) {
       className += ' styles.genome-position-search-dark';
     }
 
     return (
-      <FormGroup
+      <div
         ref={(c) => {
           this.gpsbForm = c;
         }}
-        bsSize="small"
         styleName={className}
       >
         {!this.props.hideAvailableAssemblies && (
-          <DropdownButton
+          <select
             ref={(c) => {
               this.assemblyPickButton = c;
             }}
-            bsSize="small"
             className={styles['genome-position-search-bar-button']}
             id={this.uid}
             onSelect={this.handleAssemblySelect.bind(this)}
@@ -812,7 +800,7 @@ class GenomePositionSearchBox extends React.Component {
             }
           >
             {assemblyMenuItems}
-          </DropdownButton>
+          </select>
         )}
 
         <Autocomplete
@@ -853,14 +841,11 @@ class GenomePositionSearchBox extends React.Component {
           wrapperStyle={{ width: '100%' }}
         />
 
-        <button
+        <SearchIcon
           onClick={this.buttonClick.bind(this)}
-          styleName={classNameButton}
-          type="button"
-        >
-          <Glyphicon glyph="search" />
-        </button>
-      </FormGroup>
+          theStyle="multitrack-header-icon"
+        />
+      </div>
     );
   }
 }

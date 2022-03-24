@@ -604,17 +604,29 @@ class TrackRenderer extends React.Component {
       ])
       .range([initialXDomain[0], initialXDomain[1]]);
 
+    let startY;
+    let endY;
+    if (this.currentProps.centerWidth === 0) {
+      // If the width of the center track is zero, we do not want to make startY and endY equal.
+      startY = this.currentProps.paddingTop + this.currentProps.topHeight;
+      endY =
+        this.currentProps.paddingTop +
+        this.currentProps.topHeight +
+        this.currentProps.centerHeight;
+    } else {
+      startY =
+        this.currentProps.paddingTop +
+        this.currentProps.topHeight +
+        this.currentProps.centerHeight / 2 -
+        this.currentProps.centerWidth / 2;
+      endY =
+        this.currentProps.paddingTop +
+        this.currentProps.topHeight +
+        this.currentProps.centerHeight / 2 +
+        this.currentProps.centerWidth / 2;
+    }
     this.drawableToDomainY = scaleLinear()
-      .domain([
-        this.currentProps.paddingTop +
-          this.currentProps.topHeight +
-          this.currentProps.centerHeight / 2 -
-          this.currentProps.centerWidth / 2,
-        this.currentProps.paddingTop +
-          this.currentProps.topHeight +
-          this.currentProps.centerHeight / 2 +
-          this.currentProps.centerWidth / 2,
-      ])
+      .domain([startY, endY])
       .range([initialYDomain[0], initialYDomain[1]]);
 
     this.prevCenterX =

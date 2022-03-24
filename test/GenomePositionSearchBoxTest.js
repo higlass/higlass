@@ -20,7 +20,7 @@ import { geneAnnotationsOnly1, noGPSB } from './view-configs';
 
 configure({ adapter: new Adapter() });
 
-describe('Genome position search box tests', () => {
+xdescribe('Genome position search box tests', () => {
   let hgc = null;
   let div = null;
 

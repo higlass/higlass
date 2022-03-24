@@ -143,6 +143,9 @@ class HiGlassComponent extends React.Component {
     this.zoomLocks = {};
     this.locationLocks = {};
 
+    // axis-specific location lock
+    this.locationLocksAxisWise = { x: {}, y: {} };
+
     // locks that keep the value scales synchronized between
     // *tracks* (which can be in different views)
     this.valueScaleLocks = {};
@@ -1724,6 +1727,132 @@ class HiGlassComponent extends React.Component {
       }
     }
 
+    if (this.locationLocksAxisWise.x[uid]) {
+      // the x axis of this view is locked to an axis of another view
+      const lockGroup = this.locationLocksAxisWise.x[uid].lock;
+      const lockGroupItems = dictItems(lockGroup);
+
+      // this means the x axis of this view (uid) is locked to the y axis of another view
+      const lockCrossAxis = this.locationLocksAxisWise.x[uid].axis !== 'x';
+
+      // eslint-disable-next-line no-unused-vars
+      const [centerX, centerY, k] = scalesCenterAndK(
+        this.xScales[uid],
+        this.yScales[uid],
+      );
+
+      for (let i = 0; i < lockGroupItems.length; i++) {
+        const key = lockGroupItems[i][0];
+        const value = lockGroupItems[i][1];
+
+        if (!this.xScales[key] || !this.yScales[key]) {
+          continue;
+        }
+
+        // eslint-disable-next-line no-unused-vars
+        const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(
+          this.xScales[key],
+          this.yScales[key],
+        );
+
+        if (key === uid) {
+          // no need to notify oneself that the scales have changed
+          continue;
+        }
+
+        const dx = value[0] - lockGroup[uid][0];
+
+        const newCenterX = centerX + dx;
+
+        if (!this.setCenters[key]) {
+          continue;
+        }
+
+        const [newXScale, newYScale] = this.setCenters[key](
+          lockCrossAxis ? keyCenterX : newCenterX,
+          lockCrossAxis ? newCenterX : keyCenterY,
+          keyK,
+          false,
+        );
+
+        // because the setCenters call above has a 'false' notify, the new scales won't
+        // be propagated from there, so we have to store them here
+        this.xScales[key] = newXScale;
+        this.yScales[key] = newYScale;
+
+        // notify the listeners of all locked views that the scales of
+        // this view have changed
+        if (this.scalesChangedListeners.hasOwnProperty(key)) {
+          dictValues(this.scalesChangedListeners[key]).forEach((x) => {
+            x(newXScale, newYScale);
+          });
+        }
+      }
+    }
+
+    if (this.locationLocksAxisWise.y[uid]) {
+      // the y axis of this view is locked to an axis of another view
+      const lockGroup = this.locationLocksAxisWise.y[uid].lock;
+      const lockGroupItems = dictItems(lockGroup);
+
+      // this means the y axis of this view (uid) is locked to the x axis of another view
+      const lockCrossAxis = this.locationLocksAxisWise.y[uid].axis !== 'y';
+
+      // eslint-disable-next-line no-unused-vars
+      const [centerX, centerY, k] = scalesCenterAndK(
+        this.xScales[uid],
+        this.yScales[uid],
+      );
+
+      for (let i = 0; i < lockGroupItems.length; i++) {
+        const key = lockGroupItems[i][0];
+        const value = lockGroupItems[i][1];
+
+        if (!this.xScales[key] || !this.yScales[key]) {
+          continue;
+        }
+
+        // eslint-disable-next-line no-unused-vars
+        const [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(
+          this.xScales[key],
+          this.yScales[key],
+        );
+
+        if (key === uid) {
+          // no need to notify oneself that the scales have changed
+          continue;
+        }
+
+        const dy = value[1] - lockGroup[uid][1];
+
+        const newCenterY = centerY + dy;
+
+        if (!this.setCenters[key]) {
+          continue;
+        }
+
+        const [newXScale, newYScale] = this.setCenters[key](
+          lockCrossAxis ? newCenterY : keyCenterX,
+          lockCrossAxis ? keyCenterY : newCenterY,
+          keyK,
+          false,
+        );
+
+        // because the setCenters call above has a 'false' notify, the new scales won't
+        // be propagated from there, so we have to store them here
+        this.xScales[key] = newXScale;
+        this.yScales[key] = newYScale;
+
+        // notify the listeners of all locked views that the scales of
+        // this view have changed
+        if (this.scalesChangedListeners.hasOwnProperty(key)) {
+          dictValues(this.scalesChangedListeners[key]).forEach((x) => {
+            x(newXScale, newYScale);
+          });
+        }
+      }
+    }
+
     this.animate();
 
     // Call view change handler
@@ -3195,10 +3324,40 @@ class HiGlassComponent extends React.Component {
 
     if (viewConfig.locationLocks) {
       for (const viewUid of dictKeys(viewConfig.locationLocks.locksByViewUid)) {
-        this.locationLocks[viewUid] =
-          viewConfig.locationLocks.locksDict[
-            viewConfig.locationLocks.locksByViewUid[viewUid]
-          ];
+        if (
+          typeof viewConfig.locationLocks.locksByViewUid[viewUid] !== 'object'
+        ) {
+          this.locationLocks[viewUid] =
+            viewConfig.locationLocks.locksDict[
+              viewConfig.locationLocks.locksByViewUid[viewUid]
+            ];
+        } else {
+          // This means we need to link x and y axes separately.
+
+          // x-axis specific locks. The x-axis of this view is linked with an axis in another view.
+          if ('x' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
+            const lockInfo =
+              viewConfig.locationLocks.locksDict[
+                viewConfig.locationLocks.locksByViewUid[viewUid].x.lock
+              ];
+            this.locationLocksAxisWise.x[viewUid] = {
+              lock: lockInfo,
+              axis: viewConfig.locationLocks.locksByViewUid[viewUid].x.axis, // The axis of another view, either 'x' or 'y'
+            };
+          }
+
+          // y-axis specific locks. The y-axis of this view is linked with an axis in another view.
+          if ('y' in viewConfig.locationLocks.locksByViewUid[viewUid]) {
+            const lockInfo =
+              viewConfig.locationLocks.locksDict[
+                viewConfig.locationLocks.locksByViewUid[viewUid].y.lock
+              ];
+            this.locationLocksAxisWise.y[viewUid] = {
+              lock: lockInfo,
+              axis: viewConfig.locationLocks.locksByViewUid[viewUid].y.axis, // The axis of another view, either 'x' or 'y'
+            };
+          }
+        }
       }
     }
 
@@ -4055,7 +4214,7 @@ class HiGlassComponent extends React.Component {
     this.setCenters[viewUid](centerX, centerY, k, false, animateTime);
   }
 
-  zoomToGene(viewUid, geneName, animateTime) {
+  zoomToGene(viewUid, geneName, padding, animateTime) {
     if (!(viewUid in this.setCenters)) {
       throw Error(
         `Invalid viewUid. Current uuids: ${Object.keys(this.setCenters).join(
@@ -4091,8 +4250,9 @@ class HiGlassComponent extends React.Component {
             this.state.views[viewUid].chromInfoPath,
             (loadedChromInfo) => {
               // using the absolution positions, zoom to the position near a gene
-              const startAbs = loadedChromInfo.chrToAbs([chr, txStart]);
-              const endAbs = loadedChromInfo.chrToAbs([chr, txEnd]);
+              const startAbs =
+                loadedChromInfo.chrToAbs([chr, txStart]) - padding;
+              const endAbs = loadedChromInfo.chrToAbs([chr, txEnd]) + padding;
 
               const [centerX, centerY, k] = scalesCenterAndK(
                 this.xScales[viewUid].copy().domain([startAbs, endAbs]),

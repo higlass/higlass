@@ -247,7 +247,7 @@ describe('API Tests', () => {
         editable: false,
       });
 
-      api.zoomToGene('a', 'MYC', 100);
+      api.zoomToGene('a', 'MYC', 100, 1000);
 
       waitForTransitionsFinished(api.getComponent(), () => {
         expect(api.getComponent().xScales.a.domain()[0]).toBeCloseTo(
