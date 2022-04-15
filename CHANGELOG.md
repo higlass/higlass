@@ -3,6 +3,9 @@
 ## Next Release
 
 - Add a top-level option, `allowOverlap`, that allows to overlay multiple HiGlass views.
+- Remove dependency on `cwise`
+- Remove react-bootstrap from the GenomePositionSearchBox
+- Fix color issue in GeneAnnotation SVG export
 
 ## v1.11.8
 
@@ -13,6 +16,7 @@
 - Update track list in `AVAILABLE_FOR_PLUGINS`
 - Correctly setup initial scales of vertical tracks when the width of a center track is zero.
 - Config-wise, allow axis-specific location locks (e.g., lock the vertical axis in a view to the horizontal axis in another).
+- Add `reload` implementation to `HiGlassComponenet` API.
 
 _[Detailed changes since v1.11.5](https://github.com/higlass/higlass/compare/v1.11.7...develop)_
 

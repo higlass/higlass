@@ -18,13 +18,13 @@ module.exports = (env, argv) => ({
   context: `${__dirname}/app`,
   entry: {
     hglib: './scripts/hglib.js',
-    worker: './scripts/worker.js'
+    worker: './scripts/worker.js',
   },
   watch: !!argv.watch,
   watchOptions: {
     aggregateTimeout: 300,
     poll: 1000,
-    ignored: /node_modules/
+    ignored: /node_modules/,
   },
   // devtool: 'cheap-source-map',
   devServer: {
@@ -32,9 +32,9 @@ module.exports = (env, argv) => ({
       path.resolve(__dirname, 'app'),
       path.resolve(__dirname, 'docs', 'examples'),
       path.resolve(__dirname, 'node_modules'),
-      path.resolve(__dirname, 'lib', 'vendor')
+      path.resolve(__dirname, 'lib', 'vendor'),
     ],
-    publicPath: '/'
+    publicPath: '/',
   },
   output: {
     path: `${__dirname}/build`,
@@ -46,16 +46,16 @@ module.exports = (env, argv) => ({
     // missing. Hence we need to change the template based on the mode.
     filename: argv.mode === 'production' ? '[name].min.js' : '[name].js',
     libraryTarget: 'umd',
-    library: '[name]'
+    library: '[name]',
   },
   optimization: {
     minimize: argv.mode === 'production',
     minimizer: [
       new TerserPlugin({
-        include: /\.min\.js$/
+        include: /\.min\.js$/,
       }),
-      new OptimizeCSSAssetsPlugin()
-    ]
+      new OptimizeCSSAssetsPlugin(),
+    ],
   },
   module: {
     rules: [
@@ -63,7 +63,7 @@ module.exports = (env, argv) => ({
         test: /\.jsx?$/,
         include: [
           path.resolve(__dirname, 'app/scripts'),
-          path.resolve(__dirname, 'test')
+          path.resolve(__dirname, 'test'),
         ],
         use: [
           {
@@ -76,16 +76,16 @@ module.exports = (env, argv) => ({
                     context: path.resolve(__dirname, 'app'),
                     filetypes: {
                       '.scss': {
-                        syntax: 'postcss-scss'
-                      }
+                        syntax: 'postcss-scss',
+                      },
                     },
-                    generateScopedName: '[name]_[local]-[hash:base64:5]'
-                  }
-                ]
-              ]
-            }
-          }
-        ]
+                    generateScopedName: '[name]_[local]-[hash:base64:5]',
+                  },
+                ],
+              ],
+            },
+          },
+        ],
       },
       {
         test: /^((?!\.module).)*s?css$/,
@@ -96,8 +96,8 @@ module.exports = (env, argv) => ({
             options: {
               importLoaders: 2,
               minimize: false,
-              sourceMap: false
-            }
+              sourceMap: false,
+            },
           },
           {
             loader: 'postcss-loader',
@@ -113,21 +113,21 @@ module.exports = (env, argv) => ({
                     '>1%',
                     'last 4 versions',
                     'Firefox ESR',
-                    'not ie < 9' // React doesn't support IE8 anyway
+                    'not ie < 9', // React doesn't support IE8 anyway
                   ],
-                  flexbox: 'no-2009'
-                })
+                  flexbox: 'no-2009',
+                }),
               ],
-              sourceMap: false
-            }
+              sourceMap: false,
+            },
           },
           {
             loader: 'fast-sass-loader',
             options: {
-              sourceMap: false
-            }
-          }
-        ]
+              sourceMap: false,
+            },
+          },
+        ],
       },
       {
         test: /\.module.s?css$/,
@@ -140,8 +140,8 @@ module.exports = (env, argv) => ({
               localIdentName: '[name]_[local]-[hash:base64:5]',
               minimize: false,
               modules: true,
-              sourceMap: false
-            }
+              sourceMap: false,
+            },
           },
           {
             loader: 'postcss-loader',
@@ -157,60 +157,54 @@ module.exports = (env, argv) => ({
                     '>1%',
                     'last 4 versions',
                     'Firefox ESR',
-                    'not ie < 9' // React doesn't support IE8 anyway
+                    'not ie < 9', // React doesn't support IE8 anyway
                   ],
-                  flexbox: 'no-2009'
-                })
+                  flexbox: 'no-2009',
+                }),
               ],
-              sourceMap: false
-            }
+              sourceMap: false,
+            },
           },
           {
             loader: 'fast-sass-loader',
             options: {
-              sourceMap: false
-            }
-          }
-        ]
-      }
+              sourceMap: false,
+            },
+          },
+        ],
+      },
     ],
-    noParse: [/node_modules\/sinon\//]
+    noParse: [/node_modules\/sinon\//],
   },
   externals: {
     'pixi.js': {
       commonjs: 'pixi.js',
       commonjs2: 'pixi.js',
       amd: 'pixi.js',
-      root: 'PIXI'
+      root: 'PIXI',
     },
     react: {
       commonjs: 'react',
       commonjs2: 'react',
       amd: 'react',
-      root: 'React'
+      root: 'React',
     },
     'react-dom': {
       commonjs: 'react-dom',
       commonjs2: 'react-dom',
       amd: 'react-dom',
-      root: 'ReactDOM'
+      root: 'ReactDOM',
     },
-    'react-bootstrap': {
-      commonjs: 'react-bootstrap',
-      commonjs2: 'react-bootstrap',
-      amd: 'react-bootstrap',
-      root: 'ReactBootstrap'
-    }
   },
   plugins: [
     // Expose version numbers.
     new webpack.DefinePlugin({
-      VERSION: JSON.stringify(packageJson.version)
+      VERSION: JSON.stringify(packageJson.version),
     }),
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      }
+        NODE_ENV: JSON.stringify('production'),
+      },
     }),
     new webpack.IgnorePlugin(/react\/addons/),
     new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
@@ -218,7 +212,7 @@ module.exports = (env, argv) => ({
     new MiniCssExtractPlugin('hglib.css'),
     new SassOptimizer('*.scss'),
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new UnminifiedWebpackPlugin()
+    new UnminifiedWebpackPlugin(),
     // new BundleAnalyzerPlugin(),
-  ]
+  ],
 });

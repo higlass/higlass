@@ -19,8 +19,7 @@ $unit: 24px;
   border: 0;
   border-radius: $unit / 8;
   background: $gray-lighter;
-  transition: height $fast $ease,
-              margin $fast $ease;
+  transition: height $fast $ease, margin $fast $ease;
 }
 
 .multitrack-header-dark {
@@ -123,14 +122,20 @@ $unit: 24px;
   width: $unit;
   height: 100%;
   padding: $unit / 4;
-  transition: background $fast $ease,
-              color $fast $ease;
+  transition: background $fast $ease, color $fast $ease;
+
+  g {
+    stroke: $gray;
+  }
 
   &:hover,
   &:active,
   &:focus {
     color: $white;
     background: $active;
+    g {
+      stroke: $white;
+    }
   }
 
   &:last-child {
@@ -145,7 +150,7 @@ $unit: 24px;
 }
 
 .multitrack-header-icon-squeazed {
-  width: $unit / 1.2  5;
+  width: $unit / 1.2 5;
   padding-left: $unit / 8;
   padding-right: $unit / 8;
 }

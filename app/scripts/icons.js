@@ -1,4 +1,6 @@
+import React from 'react';
 import { select } from 'd3-selection';
+import '../styles/ViewHeader.module.scss';
 
 export const COG = {
   id: 'cog',
@@ -369,3 +371,18 @@ export const svgArrowheadDomainsIcon = parser.parseFromString(
   arrowHeadDomainsStr,
   'text/xml',
 ).documentElement;
+
+export function SearchIcon({ theStyle }) {
+  return (
+    <svg
+      styleName={theStyle}
+      viewBox="0 0 12 13"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g fill="none" stroke="#6c6c6c" strokeWidth="2">
+        <path d="M11.29 11.71l-4-4" />
+        <circle cx="5" cy="5" r="4" />
+      </g>
+    </svg>
+  );
+}

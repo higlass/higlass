@@ -14,7 +14,7 @@ To follow the steps in this tutorial you will require the following software pac
 - ``higlass-manage``: This package is a wrapper for the Docker commands used to run a local instance.
   It can be installed using ``pip install higlass-manage``. Brief documentation can be found
   `at its GitHub project page <https://github.com/higlass/higlass-manage>`_.
-- Sample data, if you don't have any at hand: ``wget https://data.4dnucleome.org/files-processed/4DNFI2A4OBS9/@@download/4DNFI2A4OBS9.mcool -O /tmp/sample.mcool``
+- Sample data, if you don't have any at hand: ``wget https://pkerp.s3.amazonaws.com/public/dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool -O /tmp/sample.mcool``
 
 Quickly viewing a dataset
 -------------------------
