@@ -4381,7 +4381,14 @@ class HiGlassComponent extends React.Component {
     for (let i = 0; i < views.length; i++) {
       const tiledPlot = this.tiledPlots[views[i].uid];
 
-      const area = this.tiledAreasDivs[views[i].uid].getBoundingClientRect();
+      const tiledAreasDiv = document.getElementById(
+        `tiled-area-${views[i].uid}`,
+      );
+      if (!tiledAreasDiv) {
+        // we do not yet have the DIV container
+        continue;
+      }
+      const area = tiledAreasDiv.getBoundingClientRect();
 
       const { top, left } = area;
       const bottom = top + area.height;
@@ -4813,7 +4820,6 @@ class HiGlassComponent extends React.Component {
   }
 
   render() {
-    this.tiledAreasDivs = {};
     this.tiledAreas = <div styleName="styles.tiled-area" />;
 
     // The component needs to be mounted in order for the initial view to have
@@ -5094,9 +5100,7 @@ class HiGlassComponent extends React.Component {
         return (
           <div
             key={view.uid}
-            ref={(c) => {
-              this.tiledAreasDivs[view.uid] = c;
-            }}
+            id={`tiled-area-${view.uid}`}
             styleName="styles.tiled-area"
           >
             {multiTrackHeader}
@@ -5138,6 +5142,7 @@ class HiGlassComponent extends React.Component {
           this.gridLayout = c;
         }}
         // Custom props
+        allowOverlap={this.state.viewConfig.allowOverlap}
         cols={12}
         containerPadding={[containerPaddingX, containerPaddingY]}
         draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}

@@ -1,5 +1,8 @@
 # Release notes
 
+## Next Release
+
+- Add a top-level option, `allowOverlap`, that allows to overlay multiple HiGlass views.
 - Remove dependency on `cwise`
 - Remove react-bootstrap from the GenomePositionSearchBox
 - Fix color issue in GeneAnnotation SVG export
