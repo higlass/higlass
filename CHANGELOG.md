@@ -1,6 +1,10 @@
 # Release notes
 
-## v1.11.9
+## v1.11.11
+
+- Bump terser-webpack-plugin version to fix build issue
+
+## v1.11.10
 
 - Remove dependency on `cwise`
 - Fix color issue in GeneAnnotation SVG export
