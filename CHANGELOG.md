@@ -1,11 +1,20 @@
 # Release notes
 
-- Remove react-bootstrap from the GenomePositionSearchBox
 - Tracks can now implement `onMouseClick()`, which allows them to react to click events on the corresponding track
 - Using the method `showCustomTrackDialog`, tracks can open modals and display custom data in them (e.g. in response to a click on the track)
 
+## v1.11.11
+
+- Bump terser-webpack-plugin version to fix build issue
+
+## v1.11.10
+
+- Remove dependency on `cwise`
+- Fix color issue in GeneAnnotation SVG export
+
 ## v1.11.8
 
+- Remove react-bootstrap from the GenomePositionSearchBox
 - Make vertical chromosome labels as well as loading status labels readable in vertical tracks
 - Added an option menu item for rectangle domain fill opacity
 - Added a parameter in `zoomToGene` to allow specifying padding around gene
