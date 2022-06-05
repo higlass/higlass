@@ -4638,6 +4638,10 @@ class HiGlassComponent extends React.Component {
       (track) => !track.isAugmentationTrack,
     );
 
+    // Get the position of the click event relative to the
+    // the track. This is passed on to the track's click handler
+    // so that the track can handle it and potentially return
+    // any additional information (i.e. annotations under the cursor)
     const relTrackPos = hoveredTrack
       ? [
           relPos[0] - hoveredTrack.position[0],
@@ -4658,6 +4662,9 @@ class HiGlassComponent extends React.Component {
       );
 
       if (!trackObj.respondsToPosition(relPos[0], relPos[1])) {
+        // Some tracks may want to click event even if it's outside
+        // of their bounds (an annotation track may want to deselect
+        // an annotation, for example)
         trackObj.clickOutside();
       }
     }
@@ -4666,6 +4673,8 @@ class HiGlassComponent extends React.Component {
 
     for (const track of hoveredTracks) {
       if (track.childTracks) {
+        // This is a combined track so add events for all child
+        // tracks
         for (const subtrack of track.childTracks) {
           clickReturns.push({
             trackUid: subtrack.context.trackUid,
@@ -4675,7 +4684,7 @@ class HiGlassComponent extends React.Component {
           });
         }
 
-        // add an event for the combined track
+        // Add an event for the combined track itself
         clickReturns.push({
           trackUid: track.context.trackUid,
           viewUid: track.context.viewUid,
@@ -4686,6 +4695,8 @@ class HiGlassComponent extends React.Component {
           },
         });
       } else {
+        // Not a combined track so just add an event for
+        // this track
         clickReturns.push({
           trackUid: track.context.trackUid,
           viewUid: track.context.viewUid,
