@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { zoom, zoomIdentity } from 'd3-zoom';
-import { select, event, clientPoint } from 'd3-selection';
+import { select, pointer } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import slugid from 'slugid';
 
@@ -136,7 +136,7 @@ class TrackRenderer extends React.Component {
     // catch any zooming behavior within all of the tracks in this plot
     // this.zoomTransform = zoomIdentity();
     this.zoomBehavior = zoom()
-      .filter(() => {
+      .filter((event) => {
         if (event.target.classList.contains('no-zoom')) {
           return false;
         }
@@ -1116,7 +1116,7 @@ class TrackRenderer extends React.Component {
 
   valueScaleMove(movement) {
     // mouse wheel from zoom event
-    // const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
+    // const cp = pointer(event.sourceEvent, this.props.canvasElement);
     for (const track of this.getTracksAtPosition(...this.zoomStartPos)) {
       track.movedY(movement);
     }
@@ -1124,7 +1124,7 @@ class TrackRenderer extends React.Component {
     this.zoomTransform = this.zoomStartTransform;
   }
 
-  valueScaleZoom(orientation) {
+  valueScaleZoom(event, orientation) {
     // mouse move probably from a drag event
     const mdy = event.sourceEvent.deltaY;
     const mdm = event.sourceEvent.deltaMode;
@@ -1132,7 +1132,7 @@ class TrackRenderer extends React.Component {
     const myWheelDelta = (dy, dm) => (dy * (dm ? 120 : 1)) / 500;
     const mwd = myWheelDelta(mdy, mdm);
 
-    const cp = clientPoint(this.props.canvasElement, event.sourceEvent);
+    const cp = pointer(event.sourceEvent, this.props.canvasElement);
 
     for (const track of this.getTracksAtPosition(...cp)) {
       const yPos =
@@ -1152,7 +1152,7 @@ class TrackRenderer extends React.Component {
    * We need to update our local record of the zoom transform and apply it
    * to all the tracks.
    */
-  zoomed() {
+  zoomed(event) {
     // the orientation of the track where we started zooming
     // if it's a 1d-horizontal, then mousemove events shouldn't
     // move the center track vertically
@@ -1183,7 +1183,7 @@ class TrackRenderer extends React.Component {
       // a 1d track, try to apply value scale zooming
       if (event.shiftKey || this.valueScaleZooming) {
         if (event.sourceEvent.deltaY !== undefined) {
-          this.valueScaleZoom(trackOrientation);
+          this.valueScaleZoom(event, trackOrientation);
           return;
         }
 
@@ -1278,14 +1278,11 @@ class TrackRenderer extends React.Component {
     return foundTracks;
   }
 
-  zoomStarted() {
+  zoomStarted(event) {
     this.zooming = true;
 
     if (event.sourceEvent) {
-      this.zoomStartPos = clientPoint(
-        this.props.canvasElement,
-        event.sourceEvent,
-      );
+      this.zoomStartPos = pointer(event.sourceEvent, this.props.canvasElement);
 
       if (event.sourceEvent.shiftKey) {
         this.valueScaleZooming = true;
@@ -1507,6 +1504,8 @@ class TrackRenderer extends React.Component {
     // To simplify the context creation via ES6 object shortcuts.
     const context = {
       id: track.uid,
+      trackUid: track.uid,
+      trackType: track.type,
       viewUid: this.viewUid,
       pubSub: this.props.pubSub,
       scene: this.pStage,

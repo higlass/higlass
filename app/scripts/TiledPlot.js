@@ -1,4 +1,4 @@
-import { clientPoint } from 'd3-selection';
+import { pointer } from 'd3-selection';
 import slugid from 'slugid';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -160,9 +160,8 @@ class TiledPlot extends React.Component {
     this.handleExportTrackDataBound = this.handleExportTrackData.bind(this);
     this.handleLockValueScaleBound = this.handleLockValueScale.bind(this);
     this.handleReplaceTrackBound = this.handleReplaceTrack.bind(this);
-    this.handleTrackOptionsChangedBound = this.handleTrackOptionsChanged.bind(
-      this,
-    );
+    this.handleTrackOptionsChangedBound =
+      this.handleTrackOptionsChanged.bind(this);
     this.handleUnlockValueScaleBound = this.handleUnlockValueScale.bind(this);
     this.onAddTrack = this.handleAddTrack.bind(this);
   }
@@ -358,7 +357,7 @@ class TiledPlot extends React.Component {
 
     const mousePos = [e.clientX, e.clientY];
     // Relative mouse position
-    const canvasMousePos = clientPoint(this.divTiledPlot, e);
+    const canvasMousePos = pointer(e, this.divTiledPlot);
 
     // the x and y values of the rendered plots
     // will be used if someone decides to draw a horizontal or vertical
@@ -1161,8 +1160,9 @@ class TiledPlot extends React.Component {
 
     if (hostTrackUid !== trackUid) {
       // the track whose data we're trying to export is part of a combined track
-      trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject
-        .createdTracks[track.uid];
+      trackObject =
+        this.trackRenderer.trackDefObjects[hostTrackUid].trackObject
+          .createdTracks[track.uid];
     } else {
       ({ trackObject } = this.trackRenderer.trackDefObjects[hostTrackUid]);
     }

@@ -2,7 +2,7 @@ import ndarray from 'ndarray';
 import { brushY } from 'd3-brush';
 import { format } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
-import { select, event } from 'd3-selection';
+import { select } from 'd3-selection';
 import slugid from 'slugid';
 import {
   colorToRgba,
@@ -262,12 +262,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * @return {Object}  Object holding the absolute x, y, width, and height.
    */
   getAbsTileDim(zoomLevel, tilePos, mirrored) {
-    const {
-      tileX,
-      tileY,
-      tileWidth,
-      tileHeight,
-    } = this.getTilePosAndDimensions(zoomLevel, tilePos);
+    const { tileX, tileY, tileWidth, tileHeight } =
+      this.getTilePosAndDimensions(zoomLevel, tilePos);
 
     const dim = {};
 
@@ -512,7 +508,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.brushing = true;
   }
 
-  brushMoved() {
+  brushMoved(event) {
     if (!event.selection) {
       return;
     }
@@ -1024,16 +1020,12 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
       // get the tile's position and width (in data coordinates)
       // if it's mirrored then we have to switch the position indeces
-      const {
-        tileX,
-        tileY,
-        tileWidth,
-        tileHeight,
-      } = this.getTilePosAndDimensions(
-        tile.tileData.zoomLevel,
-        tilePos,
-        this.binsPerTile(),
-      );
+      const { tileX, tileY, tileWidth, tileHeight } =
+        this.getTilePosAndDimensions(
+          tile.tileData.zoomLevel,
+          tilePos,
+          this.binsPerTile(),
+        );
 
       // calculate the tile's position in bins
       const tileXStartBin = Math.floor(tileX / tileRes);
@@ -1253,8 +1245,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       {
         selectedRows: this.options.selectRows,
         selectedRowsAggregationMode: this.options.selectRowsAggregationMode,
-        selectedRowsAggregationWithRelativeHeight: this.options
-          .selectRowsAggregationWithRelativeHeight,
+        selectedRowsAggregationWithRelativeHeight:
+          this.options.selectRowsAggregationWithRelativeHeight,
         selectedRowsAggregationMethod: this.options.selectRowsAggregationMethod,
       },
     );
@@ -1391,16 +1383,12 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       ? [tile.tileData.tilePos[1], tile.tileData.tilePos[0]]
       : tile.tileData.tilePos;
 
-    const {
-      tileX,
-      tileY,
-      tileWidth,
-      tileHeight,
-    } = this.getTilePosAndDimensions(
-      tile.tileData.zoomLevel,
-      tilePos,
-      this.binsPerTile(),
-    );
+    const { tileX, tileY, tileWidth, tileHeight } =
+      this.getTilePosAndDimensions(
+        tile.tileData.zoomLevel,
+        tilePos,
+        this.binsPerTile(),
+      );
 
     const tileXScale = scaleLinear()
       .domain([0, this.binsPerTile()])

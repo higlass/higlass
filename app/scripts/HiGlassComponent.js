@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { select, clientPoint } from 'd3-selection';
+import { select, pointer } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import slugid from 'slugid';
 import * as PIXI from 'pixi.js';
@@ -322,21 +322,20 @@ class HiGlassComponent extends React.Component {
 
     // Bound functions
     this.appClickHandlerBound = this.appClickHandler.bind(this);
+    this.canvasClickHandlerBound = this.canvasClickHandler.bind(this);
     this.keyDownHandlerBound = this.keyDownHandler.bind(this);
     this.keyUpHandlerBound = this.keyUpHandler.bind(this);
     this.resizeHandlerBound = this.resizeHandler.bind(this);
     this.resizeHandlerBound = this.resizeHandler.bind(this);
     this.dispatchEventBound = this.dispatchEvent.bind(this);
-    this.animateOnMouseMoveHandlerBound = this.animateOnMouseMoveHandler.bind(
-      this,
-    );
+    this.animateOnMouseMoveHandlerBound =
+      this.animateOnMouseMoveHandler.bind(this);
     this.zoomStartHandlerBound = this.zoomStartHandler.bind(this);
     this.zoomEndHandlerBound = this.zoomEndHandler.bind(this);
     this.zoomHandlerBound = this.zoomHandler.bind(this);
     this.trackDroppedHandlerBound = this.trackDroppedHandler.bind(this);
-    this.trackDimensionsModifiedHandlerBound = this.trackDimensionsModifiedHandler.bind(
-      this,
-    );
+    this.trackDimensionsModifiedHandlerBound =
+      this.trackDimensionsModifiedHandler.bind(this);
     this.animateBound = this.animate.bind(this);
     this.animateOnGlobalEventBound = this.animateOnGlobalEvent.bind(this);
     this.requestReceivedHandlerBound = this.requestReceivedHandler.bind(this);
@@ -809,9 +808,8 @@ class HiGlassComponent extends React.Component {
       ) {
         // track specific options take precedence over all options
 
-        const options = this.props.options.defaultTrackOptions.trackSpecific[
-          track.type
-        ];
+        const options =
+          this.props.options.defaultTrackOptions.trackSpecific[track.type];
 
         for (const optionName in options) {
           track.options[optionName] =
@@ -3839,8 +3837,8 @@ class HiGlassComponent extends React.Component {
       view.genomePositionSearchBox,
       selectedAssembly,
     );
-    view.genomePositionSearchBox.visible = !view.genomePositionSearchBox
-      .visible;
+    view.genomePositionSearchBox.visible =
+      !view.genomePositionSearchBox.visible;
 
     this.refreshView();
 
@@ -4290,10 +4288,10 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
-    const autocompleteServer = this.state.views[viewUid].genomePositionSearchBox
-      .autocompleteServer;
-    const autocompleteId = this.state.views[viewUid].genomePositionSearchBox
-      .autocompleteId;
+    const autocompleteServer =
+      this.state.views[viewUid].genomePositionSearchBox.autocompleteServer;
+    const autocompleteId =
+      this.state.views[viewUid].genomePositionSearchBox.autocompleteId;
 
     const url = `${autocompleteServer}/suggest/?d=${autocompleteId}&ac=${keyword.toLowerCase()}`;
 
@@ -4409,7 +4407,7 @@ class HiGlassComponent extends React.Component {
 
     const absX = e.clientX;
     const absY = e.clientY;
-    const relPos = clientPoint(this.topDiv, e);
+    const relPos = pointer(e, this.topDiv);
     // We need to add the scrollTop
     relPos[1] += this.scrollTop;
     const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
@@ -4564,7 +4562,7 @@ class HiGlassComponent extends React.Component {
       .classed(styles['track-mouseover-menu'], true);
 
     mouseOverDiv = select('body').selectAll('.track-mouseover-menu');
-    const mousePos = clientPoint(select('body').node(), evt.origEvt);
+    const mousePos = pointer(evt.origEvt, select('body').node());
     const normalizedMousePos = [
       mousePos[0] - window.scrollX,
       mousePos[1] - window.scrollY,
@@ -4614,6 +4612,90 @@ class HiGlassComponent extends React.Component {
    */
   appClickHandler(data) {
     this.apiPublish('click', data);
+  }
+
+  /** Handle click events on the canvas. The canvas is preferrable
+   * to the top level div because the canvas's events aren't forwarded
+   * so we only receive one click event
+   */
+  canvasClickHandler(evt) {
+    const nativeEvent = evt.nativeEvent || evt;
+    const absX = nativeEvent.clientX;
+    const absY = nativeEvent.clientY;
+
+    const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
+
+    const relPos = pointer(nativeEvent, this.topDiv);
+    relPos[1] += this.scrollTop;
+
+    const hoveredTracks = hoveredTiledPlot
+      ? hoveredTiledPlot
+          .listTracksAtPosition(relPos[0], relPos[1], true)
+          .map((track) => track.originalTrack || track)
+      : [];
+
+    const hoveredTrack = hoveredTracks.find(
+      (track) => !track.isAugmentationTrack,
+    );
+
+    const relTrackPos = hoveredTrack
+      ? [
+          relPos[0] - hoveredTrack.position[0],
+          relPos[1] - hoveredTrack.position[1],
+        ]
+      : relPos;
+
+    const relTrackX =
+      hoveredTrack && hoveredTrack.flipText ? relTrackPos[1] : relTrackPos[0];
+    const relTrackY =
+      hoveredTrack && hoveredTrack.flipText ? relTrackPos[0] : relTrackPos[1];
+
+    for (const track of this.iterateOverTracks()) {
+      const trackObj = getTrackObjById(
+        this.tiledPlots,
+        track.viewId,
+        track.trackId,
+      );
+
+      if (!trackObj.respondsToPosition(relPos[0], relPos[1])) {
+        trackObj.clickOutside();
+      }
+    }
+
+    const clickReturns = [];
+
+    for (const track of hoveredTracks) {
+      if (track.childTracks) {
+        for (const subtrack of track.childTracks) {
+          clickReturns.push({
+            trackUid: subtrack.context.trackUid,
+            viewUid: subtrack.context.viewUid,
+            trackType: subtrack.context.trackType,
+            data: subtrack.click(relTrackX, relTrackY, evt),
+          });
+        }
+
+        // add an event for the combined track
+        clickReturns.push({
+          trackUid: track.context.trackUid,
+          viewUid: track.context.viewUid,
+          trackType: track.context.trackType,
+          data: {
+            type: 'generic',
+            event: evt,
+          },
+        });
+      } else {
+        clickReturns.push({
+          trackUid: track.context.trackUid,
+          viewUid: track.context.viewUid,
+          trackType: track.context.trackType,
+          data: track.click(relTrackX, relTrackY, evt),
+        });
+      }
+    }
+
+    this.pubSub.publish('app.click', clickReturns);
   }
 
   /**
@@ -4749,7 +4831,7 @@ class HiGlassComponent extends React.Component {
 
     // Find the tracks at the wheel position
     if (this.apiStack.wheel && this.apiStack.wheel.length > 0) {
-      const relPos = clientPoint(this.topDiv, nativeEvent);
+      const relPos = pointer(nativeEvent, this.topDiv);
       // We need to add the scrollTop
       relPos[1] += this.scrollTop;
       const hoveredTracks = hoveredTiledPlot
@@ -5207,6 +5289,7 @@ class HiGlassComponent extends React.Component {
                 ref={(c) => {
                   this.canvasElement = c;
                 }}
+                onClick={this.canvasClickHandlerBound}
                 styleName="styles.higlass-canvas"
               />
               <div
