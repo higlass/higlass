@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import intoTheVoid from './utils';
+import { intoTheVoid } from './utils';
 
 class PopupMenu extends React.Component {
   constructor(props) {

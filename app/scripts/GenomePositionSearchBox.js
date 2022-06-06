@@ -857,7 +857,7 @@ GenomePositionSearchBox.propTypes = {
   chromInfoServer: PropTypes.string,
   hideAvailableAssemblies: PropTypes.bool,
   isFocused: PropTypes.bool,
-  pubSub: PropTypes.func,
+  pubSub: PropTypes.object,
   onFocus: PropTypes.func,
   onGeneSearch: PropTypes.func,
   onSelectedAssemblyChanged: PropTypes.func,
