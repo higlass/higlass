@@ -10,7 +10,7 @@ $unit: 24px;
   align-items: stretch;
   height: 100%;
   margin-bottom: 0px;
-  font-size: $unit / 1.75;
+  font-size: calc($unit / 1.75);
   transition: box-shadow $fast $ease,
               font-size $fast $ease;
 }
@@ -25,12 +25,12 @@ $unit: 24px;
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  padding: $unit / 8;
+  padding: calc($unit / 8);
   color: #666;
   font-size: inherit;
   line-height: $unit;
   border: 0;
-  border-radius: $unit / 8 0 0 $unit / 8;
+  border-radius: calc($unit / 8) 0 0 calc($unit / 8);
   background: transparent;
 
   &:focus {
@@ -46,7 +46,7 @@ $unit: 24px;
 .genome-position-search-bar-button-focus {
   display: block;
   height: 100%;
-  padding: 0 $unit / 3 !important;
+  padding: 0 calc($unit / 3) !important;
   color: $gray;
   border: 0 !important;
   border-radius: 0 !important;
@@ -74,7 +74,7 @@ $unit: 24px;
   transition: color $fast $ease;
 
   &:first-child {
-    margin-left: $unit / 4;
+    margin-left: calc($unit / 4);
     margin-right: 2px;
   }
 
@@ -104,7 +104,7 @@ $unit: 24px;
 .btn {
   display: inline-block;
   margin-bottom: 0;
-  font-size: $unit / 1.75;
+  font-size: calc($unit / 1.75);
   font-weight: 400;
   line-height: 1.42857143;
   text-align: center;
