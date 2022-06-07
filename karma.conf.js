@@ -1,5 +1,5 @@
 const webpackConfig = require('./webpack.config.js');
-require('babel-polyfill'); // eslint-disable-line import/no-extraneous-dependencies
+require('@babel/polyfill'); // eslint-disable-line import/no-extraneous-dependencies
 
 module.exports = (config) => {
   config.set({
@@ -13,7 +13,7 @@ module.exports = (config) => {
     frameworks: ['jasmine', 'server-side'],
 
     files: [
-      'node_modules/babel-polyfill/dist/polyfill.js',
+      'node_modules/@babel/polyfill/dist/polyfill.js',
       'node_modules/react/umd/react.development.js',
       'node_modules/react-dom/umd/react-dom.development.js',
       'node_modules/pixi.js/dist/pixi.js',
