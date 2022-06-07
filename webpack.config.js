@@ -1,15 +1,14 @@
 /* eslint-env node */
 const path = require('path');
 const webpack = require('webpack');
-const pkg = require('./package.json');
 
 const genericNames = require('generic-names');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const context = path.resolve(__dirname, 'app');
 const CSS_MODULE_LOCAL_IDENT_NAME = '[name]_[local]-[hash:base64:5]';
-
 const generateScopedName = genericNames(CSS_MODULE_LOCAL_IDENT_NAME);
+
+const pkg = require('./package.json');
 
 /** @returns {import('webpack').Configuration} */
 module.exports = (_env, argv) => ({
