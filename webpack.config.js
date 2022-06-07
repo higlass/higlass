@@ -3,12 +3,19 @@ const path = require('path');
 const webpack = require('webpack');
 const pkg = require('./package.json');
 
+const genericNames = require('generic-names');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
+const context = path.resolve(__dirname, 'app');
+const CSS_MODULE_LOCAL_IDENT_NAME = '[name]_[local]-[hash:base64:5]';
+
+const generateScopedName = genericNames(CSS_MODULE_LOCAL_IDENT_NAME, { context });
 
 /** @returns {import('webpack').Configuration} */
 module.exports = (_env, argv) => ({
   mode: argv.mode === 'production' ? 'production' : 'development',
-  context: path.resolve(__dirname, 'app'),
+  context,
+  devtool: 'inline-source-map',
   devServer: {
     static: path.resolve(__dirname, 'app'),
   },
@@ -29,7 +36,16 @@ module.exports = (_env, argv) => ({
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react']
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+            plugins: [
+              [
+                'react-css-modules',
+                {
+                  filetypes: { ".scss": { syntax: "postcss-scss" } },
+                  generateScopedName,
+                }
+              ]
+            ]
           }
         }
       },
@@ -37,7 +53,17 @@ module.exports = (_env, argv) => ({
         test: /\.(css|scss)$/,
         use: [
           MiniCssExtractPlugin.loader,
-          "css-loader",
+          {
+            loader: "css-loader",
+            options: {
+              importLoaders: 1,
+              modules: {
+                getLocalIdent({ resourcePath }, _localIdentName, localName) {
+                  return generateScopedName(localName, resourcePath);
+                },
+              },
+            }
+          },
           "sass-loader",
         ],
       },
@@ -51,10 +77,12 @@ module.exports = (_env, argv) => ({
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
     }),
-    new MiniCssExtractPlugin
+    new MiniCssExtractPlugin,
   ],
   resolve: {
-    fallback: {
+    alias: {
+      // Imported by `enzyme`, but package export `./lib/utils` not defined for cheerio.
+      'cheerio/lib/utils': path.resolve(__dirname, './node_modules/cheerio/lib/utils.js')
     }
   },
   externals: {
