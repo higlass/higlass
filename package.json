@@ -51,6 +51,7 @@
     "d3-axis": "^1.0.4",
     "d3-brush": "github:flekschas/d3-brush",
     "d3-color": "^1.0.3",
+    "d3-dispatch": "^1.0.5",
     "d3-drag": "^1.2.1",
     "d3-dsv": "^1.0.8",
     "d3-format": "^1.2.1",

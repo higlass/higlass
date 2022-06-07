@@ -9,12 +9,12 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const context = path.resolve(__dirname, 'app');
 const CSS_MODULE_LOCAL_IDENT_NAME = '[name]_[local]-[hash:base64:5]';
 
-const generateScopedName = genericNames(CSS_MODULE_LOCAL_IDENT_NAME, { context });
+const generateScopedName = genericNames(CSS_MODULE_LOCAL_IDENT_NAME);
 
 /** @returns {import('webpack').Configuration} */
 module.exports = (_env, argv) => ({
   mode: argv.mode === 'production' ? 'production' : 'development',
-  context,
+  context: path.resolve(__dirname, 'app'),
   devtool: 'inline-source-map',
   devServer: {
     static: path.resolve(__dirname, 'app'),
@@ -82,7 +82,9 @@ module.exports = (_env, argv) => ({
   resolve: {
     alias: {
       // Imported by `enzyme`, but package export `./lib/utils` not defined for cheerio.
-      'cheerio/lib/utils': path.resolve(__dirname, './node_modules/cheerio/lib/utils.js')
+      'cheerio/lib/utils': path.resolve(__dirname, './node_modules/cheerio/lib/utils.js'),
+      // We are stuck on Fritz's fork of d3-brush where this bug persists https://github.com/d3/d3-brush/issues/64
+      'd3-dispatch': path.resolve(__dirname, './node_modules/d3-dispatch/dist/d3-dispatch.js'),
     }
   },
   externals: {
