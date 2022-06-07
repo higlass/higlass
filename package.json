@@ -67,7 +67,6 @@
     "genbank-parser": "^1.0.0",
     "ndarray": "^1.0.18",
     "pako": "^1.0.10",
-    "path": "^0.12.7",
     "prismjs": "^1.16.0",
     "prop-types": "^15.6.0",
     "pub-sub-es": "^2.0.1",
@@ -86,16 +85,9 @@
     "reactcss": "^1.2.3",
     "robust-point-in-polygon": "^1.0.3",
     "slugid": "^1.1.0",
-    "threads": "^0.7.2",
-    "url-join": "^1.1.0",
     "url-parse": "^1.4.3",
-    "vkbeautify": "^0.99.3",
-    "webpack": "^5.73.0",
-    "whatwg-fetch": "^3.0.0"
+    "vkbeautify": "^0.99.3"
   },
-  "devDependenciesComments": [
-    "webpack-dev-server is pinned because later versions did not serve all static directories: https://github.com/higlass/higlass/issues/623"
-  ],
   "devDependencies": {
     "@babel/core": "^7.18.2",
     "@babel/preset-env": "^7.18.2",
@@ -124,6 +116,7 @@
     "sass": "^1.52.2",
     "sass-loader": "^13.0.0",
     "style-loader": "^3.3.1",
+    "webpack": "^5.73.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.9.2"
   }
