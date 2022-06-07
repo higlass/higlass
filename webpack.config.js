@@ -3,15 +3,16 @@
 const autoprefixer = require('autoprefixer');
 const path = require('path');
 const webpack = require('webpack');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const UnminifiedWebpackPlugin = require('unminified-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const SassOptimizer = require('./scripts/sass-optimizer.js');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 const packageJson = require('./package.json');
 
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
 
 module.exports = (env, argv) => ({
   mode: argv.mode === 'production' ? 'production' : 'development',
@@ -28,13 +29,12 @@ module.exports = (env, argv) => ({
   },
   // devtool: 'cheap-source-map',
   devServer: {
-    contentBase: [
+    static: [
       path.resolve(__dirname, 'app'),
       path.resolve(__dirname, 'docs', 'examples'),
       path.resolve(__dirname, 'node_modules'),
       path.resolve(__dirname, 'lib', 'vendor'),
     ],
-    publicPath: '/',
   },
   output: {
     path: `${__dirname}/build`,
@@ -48,14 +48,18 @@ module.exports = (env, argv) => ({
     libraryTarget: 'umd',
     library: '[name]',
   },
+  experiments: {
+    cacheUnaffected: true,
+  },
   optimization: {
     minimize: argv.mode === 'production',
     minimizer: [
       new TerserPlugin({
         include: /\.min\.js$/,
       }),
-      new OptimizeCSSAssetsPlugin(),
+      new CssMinimizerPlugin(),
     ],
+    providedExports: false,
   },
   module: {
     rules: [
@@ -176,43 +180,26 @@ module.exports = (env, argv) => ({
     ],
     noParse: [/node_modules\/sinon\//],
   },
-  externals: {
-    'pixi.js': {
-      commonjs: 'pixi.js',
-      commonjs2: 'pixi.js',
-      amd: 'pixi.js',
-      root: 'PIXI',
-    },
-    react: {
-      commonjs: 'react',
-      commonjs2: 'react',
-      amd: 'react',
-      root: 'React',
-    },
-    'react-dom': {
-      commonjs: 'react-dom',
-      commonjs2: 'react-dom',
-      amd: 'react-dom',
-      root: 'ReactDOM',
-    },
-  },
   plugins: [
     // Expose version numbers.
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
     new webpack.DefinePlugin({
       VERSION: JSON.stringify(packageJson.version),
     }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production'),
-      },
+    new webpack.IgnorePlugin({ resourceRegExp: /react\/addons/ }),
+    new webpack.IgnorePlugin({ resourceRegExp: /react\/lib\/ReactContext/ }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /react\/lib\/ExecutionEnvironment/,
     }),
-    new webpack.IgnorePlugin(/react\/addons/),
-    new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
-    new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
-    new MiniCssExtractPlugin('hglib.css'),
+    new MiniCssExtractPlugin({ filename: 'hglib.css' }),
     new SassOptimizer('*.scss'),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new UnminifiedWebpackPlugin(),
-    // new BundleAnalyzerPlugin(),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'disabled',
+      generateStatsFile: true,
+    }),
   ],
 });
