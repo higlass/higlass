@@ -94,6 +94,9 @@
   "devDependenciesComments": [
     "webpack-dev-server is pinned because later versions did not serve all static directories: https://github.com/higlass/higlass/issues/623"
   ],
+  "overrides": {
+    "cheerio": "1.0.0-rc.10"
+  },
   "devDependencies": {
     "ajv-cli": "^5.0.0",
     "autoprefixer": "^10.4.2",
