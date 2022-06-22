@@ -11,8 +11,8 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 const packageJson = require('./package.json');
 
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-  .BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin =
+  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = (env, argv) => ({
   mode: argv.mode === 'production' ? 'production' : 'development',
@@ -96,10 +96,12 @@ module.exports = (env, argv) => ({
         use: [
           MiniCssExtractPlugin.loader,
           {
-            loader: 'fast-css-loader',
+            loader: 'css-loader',
             options: {
               importLoaders: 2,
-              minimize: false,
+              modules: {
+                localIdentName: '[name]_[local]-[hash:base64:5]',
+              },
               sourceMap: false,
             },
           },
@@ -146,7 +148,6 @@ module.exports = (env, argv) => ({
               modules: {
                 localIdentName: '[name]_[local]-[hash:base64:5]',
               },
-              modules: true,
               sourceMap: false,
             },
           },

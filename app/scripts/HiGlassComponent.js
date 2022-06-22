@@ -82,6 +82,9 @@ import {
 import styles from '../styles/HiGlass.module.scss'; // eslint-disable-line no-unused-vars
 import stylesMTHeader from '../styles/ViewHeader.module.scss'; // eslint-disable-line no-unused-vars
 
+console.log('styles', styles);
+console.log('stylesMTHeader', stylesMTHeader);
+
 import stylesGlobal from '../styles/HiGlass.scss'; // eslint-disable-line no-unused-vars
 
 const NUM_GRID_COLUMNS = 12;
@@ -327,16 +330,14 @@ class HiGlassComponent extends React.Component {
     this.resizeHandlerBound = this.resizeHandler.bind(this);
     this.resizeHandlerBound = this.resizeHandler.bind(this);
     this.dispatchEventBound = this.dispatchEvent.bind(this);
-    this.animateOnMouseMoveHandlerBound = this.animateOnMouseMoveHandler.bind(
-      this,
-    );
+    this.animateOnMouseMoveHandlerBound =
+      this.animateOnMouseMoveHandler.bind(this);
     this.zoomStartHandlerBound = this.zoomStartHandler.bind(this);
     this.zoomEndHandlerBound = this.zoomEndHandler.bind(this);
     this.zoomHandlerBound = this.zoomHandler.bind(this);
     this.trackDroppedHandlerBound = this.trackDroppedHandler.bind(this);
-    this.trackDimensionsModifiedHandlerBound = this.trackDimensionsModifiedHandler.bind(
-      this,
-    );
+    this.trackDimensionsModifiedHandlerBound =
+      this.trackDimensionsModifiedHandler.bind(this);
     this.animateBound = this.animate.bind(this);
     this.animateOnGlobalEventBound = this.animateOnGlobalEvent.bind(this);
     this.requestReceivedHandlerBound = this.requestReceivedHandler.bind(this);
@@ -809,9 +810,8 @@ class HiGlassComponent extends React.Component {
       ) {
         // track specific options take precedence over all options
 
-        const options = this.props.options.defaultTrackOptions.trackSpecific[
-          track.type
-        ];
+        const options =
+          this.props.options.defaultTrackOptions.trackSpecific[track.type];
 
         for (const optionName in options) {
           track.options[optionName] =
@@ -3839,8 +3839,8 @@ class HiGlassComponent extends React.Component {
       view.genomePositionSearchBox,
       selectedAssembly,
     );
-    view.genomePositionSearchBox.visible = !view.genomePositionSearchBox
-      .visible;
+    view.genomePositionSearchBox.visible =
+      !view.genomePositionSearchBox.visible;
 
     this.refreshView();
 
@@ -4290,10 +4290,10 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
-    const autocompleteServer = this.state.views[viewUid].genomePositionSearchBox
-      .autocompleteServer;
-    const autocompleteId = this.state.views[viewUid].genomePositionSearchBox
-      .autocompleteId;
+    const autocompleteServer =
+      this.state.views[viewUid].genomePositionSearchBox.autocompleteServer;
+    const autocompleteId =
+      this.state.views[viewUid].genomePositionSearchBox.autocompleteId;
 
     const url = `${autocompleteServer}/suggest/?d=${autocompleteId}&ac=${keyword.toLowerCase()}`;
 
