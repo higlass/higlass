@@ -187,6 +187,11 @@ export function workerSetPix(
         Math.min(254, Math.floor(valueScale(d + pseudocount))),
       );
     }
+
+    console.log('d', d, pseudocount, valueScale.domain());
+    console.log('zeroValueColor', zeroValueColor);
+    console.log('rgbIdx', rgbIdx);
+
     // let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
     if (rgbIdx < 0 || rgbIdx > 255) {
       console.warn(
@@ -198,6 +203,7 @@ export function workerSetPix(
 
     if (zeroValueColor && !Number.isNaN(+d) && +d === 0.0) {
       rgb = zeroValueColor;
+      console.log('here', rgb);
     } else {
       rgb = colorScale[rgbIdx];
     }

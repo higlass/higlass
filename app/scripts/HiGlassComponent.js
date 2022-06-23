@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { select, clientPoint } from 'd3-selection';
+import { select, pointer } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import slugid from 'slugid';
 import * as PIXI from 'pixi.js';
@@ -4409,7 +4409,7 @@ class HiGlassComponent extends React.Component {
 
     const absX = e.clientX;
     const absY = e.clientY;
-    const relPos = clientPoint(this.topDiv, e);
+    const relPos = pointer(e, this.topDiv);
     // We need to add the scrollTop
     relPos[1] += this.scrollTop;
     const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
@@ -4564,7 +4564,7 @@ class HiGlassComponent extends React.Component {
       .classed(styles['track-mouseover-menu'], true);
 
     mouseOverDiv = select('body').selectAll('.track-mouseover-menu');
-    const mousePos = clientPoint(select('body').node(), evt.origEvt);
+    const mousePos = pointer(evt.origEvt, select('body').node());
     const normalizedMousePos = [
       mousePos[0] - window.scrollX,
       mousePos[1] - window.scrollY,
@@ -4749,7 +4749,7 @@ class HiGlassComponent extends React.Component {
 
     // Find the tracks at the wheel position
     if (this.apiStack.wheel && this.apiStack.wheel.length > 0) {
-      const relPos = clientPoint(this.topDiv, nativeEvent);
+      const relPos = pointer(nativeEvent, this.topDiv);
       // We need to add the scrollTop
       relPos[1] += this.scrollTop;
       const hoveredTracks = hoveredTiledPlot
