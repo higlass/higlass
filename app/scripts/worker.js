@@ -163,6 +163,12 @@ export function workerSetPix(
   const tileWidth = shape ? shape[1] : Math.sqrt(size);
   const pixData = new Uint8ClampedArray(filteredSize * 4);
 
+  let dToRgbIdx = (x) => {
+    const v = valueScale(x);
+    if (Number.isNaN(v)) return 254;
+    return Math.max(0, Math.min(254, Math.floor(v)));
+  };
+
   /**
    * Set the ith element of the pixData array, using value d.
    * (well not really, since i is scaled to make space for each rgb value).
@@ -182,15 +188,12 @@ export function workerSetPix(
       !Number.isNaN(+d)
     ) {
       // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
-      rgbIdx = Math.max(
-        0,
-        Math.min(254, Math.floor(valueScale(d + pseudocount))),
-      );
+      rgbIdx = dToRgbIdx(d + pseudocount);
     }
 
-    console.log('d', d, pseudocount, valueScale.domain());
-    console.log('zeroValueColor', zeroValueColor);
-    console.log('rgbIdx', rgbIdx);
+    // console.log('d', d, pseudocount, valueScale.domain());
+    // console.log('zeroValueColor', zeroValueColor);
+    // console.log('rgbIdx', rgbIdx);
 
     // let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
     if (rgbIdx < 0 || rgbIdx > 255) {

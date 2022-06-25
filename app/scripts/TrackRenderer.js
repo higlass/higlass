@@ -149,14 +149,15 @@ class TrackRenderer extends React.Component {
       .on('zoom', this.zoomedBound)
       .on('end', this.zoomEndedBound);
 
+    console.log('zoomIdentity', zoomIdentity);
     this.zoomTransform = zoomIdentity;
     this.prevZoomTransform = zoomIdentity;
 
     this.initialXDomain = [0, 1];
     this.initialYDomain = [0, 1];
-    this.xDomainLimits = [-Infinity, Infinity];
-    this.yDomainLimits = [-Infinity, Infinity];
-    this.zoomLimits = [0, Infinity];
+    this.xDomainLimits = [-Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
+    this.yDomainLimits = [-Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
+    this.zoomLimits = [0, Number.MAX_SAFE_INTEGER];
 
     this.prevCenterX =
       this.currentProps.paddingLeft +
@@ -267,6 +268,8 @@ class TrackRenderer extends React.Component {
 
     this.draggingChanged(true);
     this.addEventTracker();
+
+    console.log('extent', ext);
 
     // Init zoom and scale extent
     const transExt = [
@@ -545,9 +548,9 @@ class TrackRenderer extends React.Component {
   setUpInitialScales(
     initialXDomain = [0, 1],
     initialYDomain = [0, 1],
-    xDomainLimits = [-Infinity, Infinity],
-    yDomainLimits = [-Infinity, Infinity],
-    zoomLimits = [0, Infinity],
+    xDomainLimits = [-Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER],
+    yDomainLimits = [-Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER],
+    zoomLimits = [0, Number.MAX_SAFE_INTEGER],
   ) {
     // Make sure the initial domain is within the limits first
     zoomLimits[0] = zoomLimits[0] === null ? 0 : zoomLimits[0];
@@ -1157,7 +1160,6 @@ class TrackRenderer extends React.Component {
     // if it's a 1d-horizontal, then mousemove events shouldn't
     // move the center track vertically
     let trackOrientation = null;
-    console.log('event', event);
 
     // see what orientation of track we're over so that we decide
     // whether to move the value scale or the position scale
