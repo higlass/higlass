@@ -68,7 +68,6 @@
     "prop-types": "^15.6.0",
     "pub-sub-es": "^2.0.1",
     "react": "^16.6.3",
-    "react-autocomplete": "github:tiemevanveen/react-autocomplete#fix-176",
     "react-bootstrap": "0.32.1",
     "react-checkbox-tree": "^1.4.1",
     "react-color": "^2.13.8",
