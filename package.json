@@ -41,7 +41,7 @@
     "ajv": "^6.10.0",
     "box-intersect": "^1.0.1",
     "buffer": "^6.0.3",
-    "css-element-queries": "github:marcj/css-element-queries",
+    "css-element-queries": "^1.2.3",
     "d3-array": "^2.7.1",
     "d3-axis": "^2.0.0",
     "d3-brush": "^2.1.0",
