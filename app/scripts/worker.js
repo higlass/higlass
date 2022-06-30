@@ -206,7 +206,6 @@ export function workerSetPix(
 
     if (zeroValueColor && !Number.isNaN(+d) && +d === 0.0) {
       rgb = zeroValueColor;
-      console.log('here', rgb);
     } else {
       rgb = colorScale[rgbIdx];
     }
