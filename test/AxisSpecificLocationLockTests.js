@@ -14,7 +14,7 @@ import {
 } from '../app/scripts/utils';
 
 import schema from '../app/schema.json';
-import viewConfig from './view-configs/axis-specific-location-locks.json';
+import viewconf from './view-configs/axis-specific-location-locks.json';
 
 configure({ adapter: new Adapter() });
 
@@ -64,7 +64,7 @@ describe('Axis-specific location locks', () => {
 
   it('Validates ViewConfig', (done) => {
     const validate = new Ajv().compile(schema);
-    const valid = validate(viewConfig);
+    const valid = validate(viewconf);
     expect(valid).eql(true);
     done();
   });
