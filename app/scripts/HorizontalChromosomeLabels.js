@@ -24,12 +24,8 @@ const TICK_COLOR = 0x777777;
 class HorizontalChromosomeLabels extends PixiTrack {
   constructor(context, options) {
     super(context, options);
-    const {
-      dataConfig,
-      animate,
-      chromInfoPath,
-      isShowGlobalMousePosition,
-    } = context;
+    const { dataConfig, animate, chromInfoPath, isShowGlobalMousePosition } =
+      context;
 
     this.searchField = null;
     this.chromInfo = null;
@@ -168,6 +164,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     this.prevOptions = strOptions;
     this.options = options;
+    this.tickTexts = {};
 
     this.pixiTextConfig.fontSize = +this.options.fontSize
       ? `${+this.options.fontSize}px`
@@ -330,6 +327,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     // not sure why we're separating these out by chromosome, but ok
     const tickTexts = this.tickTexts[cumPos.chr];
+    console.log('tt', tickTexts);
 
     const tickHeight = this.options.fontIsLeftAligned
       ? (+this.options.fontSize || this.textFontSize) / 2
@@ -451,6 +449,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
       this.drawBoundsTicks(x1, x2);
 
+      console.log('tickTexts', this.tickTexts);
       return;
     }
 

@@ -96,6 +96,7 @@ export const waitForTransitionsFinished = (hgc, callback) => {
  *
  */
 export const waitForJsonComplete = (finished) => {
+  console.log('requestsInFlight', requestsInFlight);
   if (requestsInFlight > 0) {
     setTimeout(
       () => waitForJsonComplete(finished),
