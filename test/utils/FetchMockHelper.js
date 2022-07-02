@@ -28,10 +28,8 @@ class FetchMockHelper {
   }
 
   async getMockedData() {
-    console.log('get mocked data');
     const mockedResponses = await timeout(
       this.server.run(this.testName, function (testName) {
-        console.log('testName:', testName);
         try {
           const fs = serverRequire('fs-extra'); // eslint-disable-line
           const path = `./test/mocked-responses/${testName}.json`;
@@ -48,7 +46,6 @@ class FetchMockHelper {
       TIMEOUT_TIME,
       {},
     );
-    console.log('mockdResponses');
 
     return mockedResponses;
   }
@@ -75,9 +72,7 @@ class FetchMockHelper {
   }
 
   async activateFetchMock() {
-    console.log('afm');
     this.mockedData = await this.getMockedData();
-    console.log('11111');
 
     // Since we are not using the actual mocking functionality of fetch-mock,
     // catch will intercept every call of the global fetch method

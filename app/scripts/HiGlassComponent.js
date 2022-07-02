@@ -4873,7 +4873,7 @@ class HiGlassComponent extends React.Component {
             }
             chromInfoPath={view.chromInfoPath}
             disableTrackMenu={this.isTrackMenuDisabled()}
-            draggingHappening={this.state.draggingHappening}
+            draggingHappening={this.state.draggingHappening !== null}
             editable={this.isEditable()}
             getLockGroupExtrema={(uid) =>
               this.getLockGroupExtrema(view.uid, uid)
