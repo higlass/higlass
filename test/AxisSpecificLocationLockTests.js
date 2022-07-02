@@ -22,10 +22,12 @@ describe('Axis-specific location locks', () => {
   let hgc;
   let div;
 
-  beforeEach(async (done) => {
-    [div, hgc] = mountHGComponent(div, hgc, viewConfig, done, {
-      style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true,
+  beforeEach(async () => {
+    await new Promise((resolve, reject) => {
+      [div, hgc] = mountHGComponent(div, hgc, viewconf, resolve, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      });
     });
   });
 
