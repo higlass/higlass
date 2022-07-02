@@ -27,11 +27,15 @@ describe('Simple HiGlassComponent', () => {
   const fetchMockHelper = new FetchMockHelper(null, 'AxisTests');
 
   describe('Axis texts', () => {
-    beforeAll(async (done) => {
+    beforeAll(async () => {
+      console.log('helloooo');
       await fetchMockHelper.activateFetchMock();
-      [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
-        style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true,
+      console.log('xx22222');
+      await new Promise((resolve, reject) => {
+        [div, hgc] = mountHGComponent(div, hgc, viewconf, resolve, {
+          style: 'width:800px; height:400px; background-color: lightgreen',
+          bounded: true,
+        });
       });
     });
 

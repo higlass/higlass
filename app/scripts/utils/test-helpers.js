@@ -218,6 +218,7 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
   );
 
   hgc.update();
+  console.log('loading xzzz');
 
   waitForJsonComplete(() => {
     if (options && options.extendedDelay) {
