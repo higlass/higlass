@@ -1619,6 +1619,9 @@ class TiledPlot extends React.Component {
 
     const defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype] || {};
 
+    // console.log('defaultTracks', evtJson.defaultTracks);
+    // console.log('TRACKS_INFO_BY_TYPE', TRACKS_INFO_BY_TYPE);
+
     if (evtJson.defaultTracks) {
       for (const trackType of evtJson.defaultTracks) {
         if (!TRACKS_INFO_BY_TYPE[trackType]) {
