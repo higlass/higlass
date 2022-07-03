@@ -96,7 +96,6 @@ export const waitForTransitionsFinished = (hgc, callback) => {
  *
  */
 export const waitForJsonComplete = (finished) => {
-  console.log('requestsInFlight', requestsInFlight);
   if (requestsInFlight > 0) {
     setTimeout(
       () => waitForJsonComplete(finished),
@@ -219,7 +218,6 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
   );
 
   hgc.update();
-  console.log('loading xzzz');
 
   waitForJsonComplete(() => {
     if (options && options.extendedDelay) {

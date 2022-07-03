@@ -327,7 +327,6 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     // not sure why we're separating these out by chromosome, but ok
     const tickTexts = this.tickTexts[cumPos.chr];
-    console.log('tt', tickTexts);
 
     const tickHeight = this.options.fontIsLeftAligned
       ? (+this.options.fontSize || this.textFontSize) / 2
