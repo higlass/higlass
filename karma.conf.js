@@ -16,6 +16,7 @@ module.exports = (config) => {
         random: false,
       },
     },
+    browserNoActivityTimeout: 400000,
     files: [
       'node_modules/@babel/polyfill/dist/polyfill.js',
       'node_modules/react/umd/react.development.js',
