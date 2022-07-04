@@ -112,7 +112,7 @@ module.exports = (config) => {
     colors: true,
     logLevel: config.LOG_DEBUG,
     autoWatch: true,
-    browsers: ['Chrome', 'HeadlessChrome'],
+    browsers: ['Chrome'],
     singleRun: false,
     customLaunchers: {
       Chrome_travis_ci: {
