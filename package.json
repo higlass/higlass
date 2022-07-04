@@ -26,7 +26,7 @@
     "lint": "eslint app test karma.conf.js webpack.config.js",
     "precommit": "NODE_ENV=production lint-staged",
     "test": "karma start karma.conf.js --single-run",
-    "test-watch": "npm run build && karma start karma.conf.js --auto-watch",
+    "test-watch": "karma start karma.conf.js --auto-watch",
     "test-watch-headless": "npm run build && karma start karma.conf.js --browsers HeadlessChrome"
   },
   "repository": {

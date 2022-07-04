@@ -39,7 +39,6 @@ describe('Horizontal chromosome labels', () => {
       'position',
     );
 
-    console.log('1', trackObj.tickTexts);
     expect(trackObj.tickTexts).not.to.have.property('chr17');
     expect(trackObj.tickTexts.all.length).to.eql(2);
   });
@@ -50,7 +49,6 @@ describe('Horizontal chromosome labels', () => {
     hgc.update();
 
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'v1', 't1');
-    console.log('2', trackObj.tickTexts);
     expect(trackObj.tickTexts).to.have.property('chr17');
   });
 
