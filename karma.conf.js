@@ -32,7 +32,7 @@ module.exports = (config) => {
         served: true,
         included: false,
       },
-      'test/AxisTests.js',
+      // 'test/AxisTests.js',
       'test/AxisSpecificLocationLockTests.js',
       'test/2DRectangleDomainsTests.js',
       'test/AddAndRemoveViewconfTests.js',
