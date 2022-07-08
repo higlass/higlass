@@ -29,7 +29,7 @@ describe('Simple HiGlassComponent', () => {
   describe('Axis texts', () => {
     beforeAll(async () => {
       // await fetchMockHelper.activateFetchMock();
-      await new Promise((resolve, reject) => {
+      await new Promise((resolve) => {
         [div, hgc] = mountHGComponent(div, hgc, viewconf, resolve, {
           style: 'width:800px; height:400px; background-color: lightgreen',
           bounded: true,
