@@ -51,7 +51,7 @@ module.exports = (config) => {
       'test/HiGlassComponentCreationTests.js',
       // 'test/HiGlassComponent/*.js',
       'test/Horizontal1DTrackTests.js',
-      'test/HorizontalHeatmapTests.js',
+      // 'test/HorizontalHeatmapTests.js',
       // 'test/HorizontalMultivecTests.js',
       // 'test/LabelTests.js',
       // 'test/LeftTrackModifierTests.js',
