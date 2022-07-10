@@ -17,6 +17,7 @@ import schema from '../app/schema.json';
 import viewconf from './view-configs/axis-specific-location-locks.json';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Axis-specific location locks', () => {
   let hgc;
@@ -24,6 +25,7 @@ describe('Axis-specific location locks', () => {
 
   beforeEach(async () => {
     await new Promise((resolve, reject) => {
+      console.log('here111');
       [div, hgc] = mountHGComponent(div, hgc, viewconf, resolve, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,

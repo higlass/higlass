@@ -17,7 +17,7 @@ import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
 
-describe('Horizontal heatmaps', () => {
+describe('Lock tests', () => {
   let hgc = null;
   let div = null;
 
