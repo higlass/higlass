@@ -4,7 +4,9 @@ import slugid from 'slugid';
 import CheckboxTree from 'react-checkbox-tree';
 
 import { tileProxy } from './services';
+
 import '../styles/TilesetFinder.css';
+// import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 
 import withPubSub from './hocs/with-pub-sub';
 

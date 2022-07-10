@@ -93,15 +93,15 @@ module.exports = (env, argv) => ({
       },
       {
         test: /^((?!\.module).)*s?css$/,
+        // test for files that *don't* have .module.css
+        // and don't treat them as modules (i.e. don't use the `localIdentName`)
+        // scheme for the classes within them
         use: [
           MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
               importLoaders: 2,
-              modules: {
-                localIdentName: '[name]_[local]-[hash:base64:5]',
-              },
               sourceMap: false,
             },
           },
@@ -139,6 +139,8 @@ module.exports = (env, argv) => ({
       },
       {
         test: /\.module.s?css$/,
+        // for css modules, use `localIdentName` to create custom
+        // class names
         use: [
           MiniCssExtractPlugin.loader,
           {
