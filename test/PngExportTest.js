@@ -1,6 +1,7 @@
 /* eslint-env node, jasmine */
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('PNG Export', () => {
   let api;
@@ -9,13 +10,13 @@ describe('PNG Export', () => {
   describe('tests', () => {
     beforeEach(() => {
       [div, api] = createElementAndApi(
-        'http://higlass.io/api/v1/viewconfs/?d=Y7FtjugjR6OIV_P2DRqCSg'
+        'http://higlass.io/api/v1/viewconfs/?d=Y7FtjugjR6OIV_P2DRqCSg',
       );
     });
 
-    it('Exports to PNG', done => {
+    it('Exports to PNG', (done) => {
       const blobPromise = api.getComponent().createPNGBlobPromise();
-      blobPromise.then(blob => {
+      blobPromise.then((blob) => {
         const reader = new FileReader();
         reader.addEventListener('loadend', () => {
           const array = new Uint8Array(reader.result.slice(1, 4));

@@ -17,8 +17,9 @@ import {
 } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-describe('Horizontal chromosome labels', () => {
+describe('Chromosome labels', () => {
   let hgc = null;
   let div = null;
 

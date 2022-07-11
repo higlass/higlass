@@ -3,7 +3,7 @@
 // Utils
 import {
   getTrackObjectFromHGC,
-  waitForTilesLoaded
+  waitForTilesLoaded,
 } from '../app/scripts/utils';
 
 import createElementAndApi from './utils/create-element-and-api';
@@ -12,14 +12,16 @@ import removeDiv from './utils/remove-div';
 import horizontal1dLineTrackWithConstViewConf from './view-configs/horizontal-1d-line-track-with-const';
 import { horizontalLineEnd } from './view-configs';
 
-describe('Simple HiGlassComponent', () => {
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
+describe('Horizontal 1D track tests', () => {
   let hgc = null;
   let api = null;
   let div = null;
   let viewConf;
 
   describe('Horizontal1DLineTrack with const indicator', () => {
-    it('check that the const indicators were rendered', done => {
+    it('check that the const indicators were rendered', (done) => {
       viewConf = horizontal1dLineTrackWithConstViewConf;
 
       [div, api] = createElementAndApi(viewConf, { bound: true });
@@ -29,7 +31,7 @@ describe('Simple HiGlassComponent', () => {
       const trackObj = getTrackObjectFromHGC(
         hgc,
         viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[0].uid
+        viewConf.views[0].tracks.top[0].uid,
       );
 
       waitForTilesLoaded(hgc, () => {
@@ -47,7 +49,7 @@ describe('Simple HiGlassComponent', () => {
   });
 
   describe('Horizontal1DLineTrack with const indicator', () => {
-    it('check that the const indicators were rendered', done => {
+    it('check that the const indicators were rendered', (done) => {
       viewConf = horizontalLineEnd;
 
       [div, api] = createElementAndApi(viewConf, { bound: true });
@@ -57,13 +59,13 @@ describe('Simple HiGlassComponent', () => {
       const trackObj = getTrackObjectFromHGC(
         hgc,
         viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[1].uid
+        viewConf.views[0].tracks.top[1].uid,
       );
 
       const trackObjGeneAnnotations = getTrackObjectFromHGC(
         hgc,
         viewConf.views[0].uid,
-        viewConf.views[0].tracks.top[2].uid
+        viewConf.views[0].tracks.top[2].uid,
       );
 
       waitForTilesLoaded(hgc, () => {

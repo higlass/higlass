@@ -29,8 +29,9 @@ import { vecToy, vecRealistic } from './testdata/vector-data';
 import { matToy, matRealistic } from './testdata/matrix-data';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-describe('Continuous scaling tests', () => {
+describe('Dense data extrema tests', () => {
   // We can pass in the view conf as first argument to perform some
   // basic compatibility checks. Since we have two view confs here, we skip this.
   const fetchMockHelper = new FetchMockHelper(null, 'DenseDataExtrema');

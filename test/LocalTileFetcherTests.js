@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 
@@ -12,19 +12,21 @@ import viewconf from './view-configs-more/local-tiles-viewconf';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC
+  getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Local Tile Fetcher', () => {
   let hgc = null;
+
   let div = null;
 
-  beforeAll(done => {
+  beforeAll((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
       style: 'width:600px; height:400px; background-color: lightgreen',
-      bounded: true
+      bounded: true,
     });
   });
 
@@ -39,7 +41,7 @@ describe('Local Tile Fetcher', () => {
     const trackObj = getTrackObjectFromHGC(hgc.instance(), 'vv', 'ss');
 
     expect(
-      Object.values(trackObj.fetchedTiles).every(tile => tile.svgData)
+      Object.values(trackObj.fetchedTiles).every((tile) => tile.svgData),
     ).to.eql(true);
 
     expect(trackObj.zeroLine.fill.alpha).to.eql(1);

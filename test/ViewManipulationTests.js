@@ -18,8 +18,9 @@ import {
 import { emptyConf } from './view-configs';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-xdescribe('Simple HiGlassComponent', () => {
+xdescribe('View manipulation tests', () => {
   let hgc = null;
   let div = null;
 
@@ -224,9 +225,7 @@ const valueScaleLocksConf = {
       'K6tRxnTUTMmZ-DLC0RlVIw': {
         QuBlHOXDTbKqIqDk9X4FIA: [1544134916.5, 1544134916.5, 4010740.040259719],
         'Pqm9bvPORbCO-CsWqj9NWA': [
-          1544134916.5,
-          1544134916.5,
-          4010740.040259719,
+          1544134916.5, 1544134916.5, 4010740.040259719,
         ],
         uid: 'K6tRxnTUTMmZ-DLC0RlVIw',
       },
@@ -241,9 +240,7 @@ const valueScaleLocksConf = {
       Dss0P1dCQKCQdzsatsOY7A: {
         QuBlHOXDTbKqIqDk9X4FIA: [1544134916.5, 1544134916.5, 4010740.040259719],
         'Pqm9bvPORbCO-CsWqj9NWA': [
-          1544134916.5,
-          1544134916.5,
-          4010740.040259719,
+          1544134916.5, 1544134916.5, 4010740.040259719,
         ],
         uid: 'Dss0P1dCQKCQdzsatsOY7A',
       },

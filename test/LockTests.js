@@ -16,6 +16,7 @@ import schema from '../app/schema.json';
 import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Lock tests', () => {
   let hgc = null;

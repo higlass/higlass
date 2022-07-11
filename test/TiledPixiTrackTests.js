@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 
@@ -12,26 +12,27 @@ import {
   removeHGComponent,
   getTrackObjectFromHGC,
   waitForTransitionsFinished,
-  waitForTilesLoaded
+  waitForTilesLoaded,
 } from '../app/scripts/utils';
 
 import { simpleCenterViewConfig } from './view-configs';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Simple HiGlassComponent', () => {
   let hgc = null;
   let div = null;
 
   describe('Tiled Pixi Track Tests', () => {
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(div, hgc, simpleCenterViewConfig, done, {
         style: 'width:800px; height:800px; background-color: lightgreen',
-        bounded: true
+        bounded: true,
       });
     });
 
-    it('Ensure we can set a dataChanged listener', done => {
+    it('Ensure we can set a dataChanged listener', (done) => {
       const trackObject = getTrackObjectFromHGC(hgc.instance(), 'heatmap1');
 
       const dataChangedCb = () => {};

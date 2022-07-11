@@ -19,14 +19,15 @@ import {
 import viewconf from './view-configs/axis';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-describe('Simple HiGlassComponent', () => {
+describe('Axis tests', () => {
   let hgc = null;
   let div = null;
 
   const fetchMockHelper = new FetchMockHelper(null, 'AxisTests');
 
-  describe('Axis texts', () => {
+  describe('Axis tets', () => {
     beforeAll(async () => {
       // await fetchMockHelper.activateFetchMock();
       await new Promise((resolve) => {

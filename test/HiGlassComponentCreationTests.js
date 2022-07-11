@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 
@@ -12,18 +12,19 @@ import { expect } from 'chai';
 import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-describe('Simple HiGlassComponent', () => {
+describe('HiGlass component creation tests', () => {
   let hgc = null;
   let div = null;
 
   describe('API tests', () => {
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(
         div,
         hgc,
         'http://higlass.io/api/v1/viewconfs/?d=default',
-        done
+        done,
       );
     });
 

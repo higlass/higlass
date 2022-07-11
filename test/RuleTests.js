@@ -15,7 +15,7 @@ import {
 } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
-describe('Minimal viewconfs', () => {
+describe('Rule tests', () => {
   describe('Minimal with CrossRule', () => {
     const viewconf = {
       views: [

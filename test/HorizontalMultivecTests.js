@@ -29,6 +29,7 @@ import {
 } from '../app/scripts/configs';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Horizontal multivecs', () => {
   let hgc = null;

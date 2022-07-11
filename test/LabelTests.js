@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine, mocha */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 
@@ -11,22 +11,23 @@ import Adapter from 'enzyme-adapter-react-16';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC
+  getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
 import viewconf from './view-configs/label-margin';
 import viewconfSplitHeatmaps from './view-configs/label-split-heatmaps';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Label test', () => {
   describe('Axis texts', () => {
     let hgc = null;
     let div = null;
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true
+        bounded: true,
       });
     });
 
@@ -41,10 +42,10 @@ describe('Label test', () => {
       expect(track1.labelText.x).to.equal(
         track1.position[0] +
           track1.options.labelLeftMargin +
-          track1.labelText.width / 2
+          track1.labelText.width / 2,
       );
       expect(track1.labelText.y).to.equal(
-        track1.position[1] + track1.options.labelTopMargin
+        track1.position[1] + track1.options.labelTopMargin,
       );
 
       // pos: topRight margin: 10 10 0 0
@@ -52,22 +53,22 @@ describe('Label test', () => {
         track2.position[0] +
           track2.dimensions[0] -
           track2.options.labelRightMargin -
-          track2.labelText.width / 2
+          track2.labelText.width / 2,
       );
       expect(track2.labelText.y).to.equal(
-        track2.position[1] + track2.options.labelTopMargin
+        track2.position[1] + track2.options.labelTopMargin,
       );
 
       // pos: bottomLeft margin: 0 0 10 10
       expect(track3.labelText.x).to.equal(
         track3.position[0] +
           track3.options.labelLeftMargin +
-          track3.labelText.width / 2
+          track3.labelText.width / 2,
       );
       expect(track3.labelText.y).to.equal(
         track3.position[1] +
           track3.dimensions[1] -
-          track3.options.labelBottomMargin
+          track3.options.labelBottomMargin,
       );
 
       // pos: bottomRight margin: 0 10 10 0
@@ -75,12 +76,12 @@ describe('Label test', () => {
         track4.position[0] +
           track4.dimensions[0] -
           track4.options.labelRightMargin -
-          track2.labelText.width / 2
+          track2.labelText.width / 2,
       );
       expect(track4.labelText.y).to.equal(
         track4.position[1] +
           track4.dimensions[1] -
-          track4.options.labelBottomMargin
+          track4.options.labelBottomMargin,
       );
     });
 
@@ -92,10 +93,10 @@ describe('Label test', () => {
   describe('Label text options', () => {
     let hgc = null;
     let div = null;
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true
+        bounded: true,
       });
     });
 
@@ -118,10 +119,10 @@ describe('Label test', () => {
   describe('Heatmap label tests', () => {
     let hgc = null;
     let div = null;
-    beforeAll(done => {
+    beforeAll((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconfSplitHeatmaps, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true
+        bounded: true,
       });
     });
 

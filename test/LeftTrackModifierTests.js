@@ -16,6 +16,7 @@ import {
 } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Left track modifier', () => {
   let hgc = null;

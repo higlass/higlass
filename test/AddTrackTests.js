@@ -18,6 +18,7 @@ import {
 } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Add track(s)', () => {
   let hgc = null;

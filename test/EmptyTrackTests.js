@@ -1,6 +1,6 @@
 /* eslint-env node, jasmine */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 
@@ -12,19 +12,20 @@ import { expect } from 'chai';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC
+  getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Empty Tracks', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(done => {
+  beforeAll((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true
+      bounded: true,
     });
   });
 
@@ -57,17 +58,17 @@ const viewconf = {
           {
             uid: 't1',
             type: 'empty',
-            width: 73
-          }
+            width: 73,
+          },
         ],
         top: [
           {
             uid: 't2',
             type: 'empty',
-            height: 42
-          }
-        ]
-      }
-    }
-  ]
+            height: 42,
+          },
+        ],
+      },
+    },
+  ],
 };

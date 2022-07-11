@@ -19,6 +19,7 @@ import removeDiv from './utils/remove-div';
 import { geneAnnotationsOnly1, noGPSB } from './view-configs';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 xdescribe('Genome position search box tests', () => {
   let hgc = null;

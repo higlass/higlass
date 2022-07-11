@@ -20,6 +20,7 @@ import {
 import viewConf from './view-configs/bar';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('BarTrack tests', () => {
   let hgc = null;
