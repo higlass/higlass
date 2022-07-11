@@ -548,7 +548,7 @@ CenterTrack.defaultProps = {
 CenterTrack.propTypes = {
   className: PropTypes.string,
   configTrackMenuId: PropTypes.string,
-  editable: PropTypes.bool.isRequired,
+  editable: PropTypes.bool,
   height: PropTypes.number.isRequired,
   is1dRangeSelection: PropTypes.bool,
   isRangeSelectionActive: PropTypes.bool,

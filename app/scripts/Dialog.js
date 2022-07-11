@@ -21,35 +21,37 @@ const Dialog = (props) => {
 
   return (
     <Modal closeButton={false} hide={props.hide} maxHeight={props.maxHeight}>
-      <header styleName="dialog-header">
-        <h3>{props.title}</h3>
-        <Button onClick={handleCancel}>
-          <Cross />
-        </Button>
-      </header>
-      {props.maxHeight ? (
-        <main styleName={props.maxHeight ? 'dialog-main-max-height' : ''}>
-          {props.children}
-        </main>
-      ) : (
-        <main>{props.children}</main>
-      )}
-      <footer
-        styleName={
-          props.maxHeight ? 'dialog-footer-max-height' : 'dialog-footer'
-        }
-      >
-        {props.okayOnly ? (
-          <div />
-        ) : (
-          <Button onClick={handleCancel} shortcut={props.cancelShortcut}>
-            {props.cancelTitle}
+      <>
+        <header styleName="dialog-header">
+          <h3>{props.title}</h3>
+          <Button onClick={handleCancel}>
+            <Cross />
           </Button>
+        </header>
+        {props.maxHeight ? (
+          <main styleName={props.maxHeight ? 'dialog-main-max-height' : ''}>
+            {props.children}
+          </main>
+        ) : (
+          <main>{props.children}</main>
         )}
-        <Button onClick={handleOkay} shortcut={props.okayShortcut}>
-          {props.okayTitle}
-        </Button>
-      </footer>
+        <footer
+          styleName={
+            props.maxHeight ? 'dialog-footer-max-height' : 'dialog-footer'
+          }
+        >
+          {props.okayOnly ? (
+            <div />
+          ) : (
+            <Button onClick={handleCancel} shortcut={props.cancelShortcut}>
+              {props.cancelTitle}
+            </Button>
+          )}
+          <Button onClick={handleOkay} shortcut={props.okayShortcut}>
+            {props.okayTitle}
+          </Button>
+        </footer>
+      </>
     </Modal>
   );
 };
@@ -65,7 +67,7 @@ Dialog.defaultProps = {
 Dialog.propTypes = {
   cancelShortcut: PropTypes.string,
   cancelTitle: PropTypes.string,
-  children: PropTypes.func.isRequired,
+  children: PropTypes.object,
   hide: PropTypes.bool,
   maxHeight: PropTypes.bool,
   modal: PropTypes.object.isRequired,

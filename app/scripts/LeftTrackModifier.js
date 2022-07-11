@@ -139,6 +139,14 @@ class LeftTrackModifier {
     return this.originalTrack.getMouseOverHtml(trackY, trackX);
   }
 
+  clickOutside() {
+    this.originalTrack.clickOutside();
+  }
+
+  click(...args) {
+    this.originalTrack.click(...args);
+  }
+
   draw() {
     this.originalTrack.draw();
   }

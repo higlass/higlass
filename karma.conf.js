@@ -1,5 +1,5 @@
 const webpackConfig = require('./webpack.config.js');
-require('babel-polyfill'); // eslint-disable-line import/no-extraneous-dependencies
+require('@babel/polyfill'); // eslint-disable-line import/no-extraneous-dependencies
 
 module.exports = (config) => {
   config.set({
@@ -11,9 +11,13 @@ module.exports = (config) => {
     browserNoActivityTimeout: 90000,
     basePath: '',
     frameworks: ['jasmine', 'server-side'],
-
+    client: {
+      jasmine: {
+        random: false,
+      },
+    },
     files: [
-      'node_modules/babel-polyfill/dist/polyfill.js',
+      'node_modules/@babel/polyfill/dist/polyfill.js',
       'node_modules/react/umd/react.development.js',
       'node_modules/react-dom/umd/react-dom.development.js',
       'node_modules/pixi.js/dist/pixi.js',
@@ -21,6 +25,7 @@ module.exports = (config) => {
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
       'node_modules/font-awesome/css/font-awesome.css',
       'build/hglib.css',
+      'build/hglib.js',
       {
         pattern: 'docs/examples/viewconfs/*.json',
         watched: true,
@@ -46,12 +51,12 @@ module.exports = (config) => {
       'test/HiGlassComponentCreationTests.js',
       // 'test/HiGlassComponent/*.js',
       'test/Horizontal1DTrackTests.js',
-      'test/HorizontalHeatmapTests.js',
+      // 'test/HorizontalHeatmapTests.js',
       'test/HorizontalMultivecTests.js',
-      'test/LabelTests.js',
-      'test/LeftTrackModifierTests.js',
-      'test/LocalTileFetcherTests.js',
-      'test/LockTests.js',
+      // 'test/LabelTests.js',
+      // 'test/LeftTrackModifierTests.js',
+      // 'test/LocalTileFetcherTests.js',
+      // 'test/LockTests.js',
       'test/MinimalViewconfTest.js',
       'test/ndarray-assign.spec.js',
       'test/ndarray-flatten.spec.js',
@@ -86,7 +91,6 @@ module.exports = (config) => {
     webpackServer: {
       noInfo: true, // please don't spam the console when running in karma!
     },
-
     plugins: [
       'karma-webpack',
       'karma-jasmine',
@@ -107,13 +111,13 @@ module.exports = (config) => {
     colors: true,
     logLevel: config.LOG_DEBUG,
     autoWatch: true,
-    browsers: ['Chrome', 'HeadlessChrome'],
+    browsers: ['Chrome'],
     singleRun: false,
     customLaunchers: {
-      Chrome_travis_ci: {
-        base: 'Chrome',
-        flags: ['--no-sandbox'],
-      },
+      // Chrome_travis_ci: {
+      //   base: 'Chrome',
+      //   flags: ['--no-sandbox'],
+      // },
       HeadlessChrome: {
         base: 'ChromeHeadless',
         flags: [

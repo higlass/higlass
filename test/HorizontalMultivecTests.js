@@ -30,7 +30,7 @@ import {
 
 configure({ adapter: new Adapter() });
 
-describe('Horizontal heatmaps', () => {
+describe('Horizontal multivecs', () => {
   let hgc = null;
   let div = null;
 
@@ -457,11 +457,8 @@ describe('Horizontal heatmaps', () => {
   });
 
   it('handles dynamic selectRows values by updating the dataFetcher and fetching new tiles', (done) => {
-    horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRows = [
-      1,
-      2,
-      3,
-    ];
+    horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRows =
+      [1, 2, 3];
     horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationWithRelativeHeight = false;
     horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationMethod =
       'client';
@@ -501,9 +498,7 @@ describe('Horizontal heatmaps', () => {
         // When selectRows changes, check that options.aggGroups in the dataConfig also changes.
         const serverAggViewConf2 = horizontalMultivecWithAggregation;
         serverAggViewConf2.views[0].tracks.center[0].options.selectRows = [
-          4,
-          5,
-          6,
+          4, 5, 6,
         ];
         const serverAggViews2 = hgc
           .instance()
@@ -705,9 +700,7 @@ const viewConf1 = {
       PkNgAl3mSIqttnSsCewngw: {
         aa: [1550000000, 1550000000, 3380588.876772046],
         ewZvJwlDSei_dbpIAkGMlg: [
-          1550000000.0000002,
-          1549999999.9999993,
-          3380588.876772046,
+          1550000000.0000002, 1549999999.9999993, 3380588.876772046,
         ],
         uid: 'PkNgAl3mSIqttnSsCewngw',
       },

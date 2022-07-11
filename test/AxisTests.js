@@ -27,11 +27,13 @@ describe('Simple HiGlassComponent', () => {
   const fetchMockHelper = new FetchMockHelper(null, 'AxisTests');
 
   describe('Axis texts', () => {
-    beforeAll(async (done) => {
-      await fetchMockHelper.activateFetchMock();
-      [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
-        style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true,
+    beforeAll(async () => {
+      // await fetchMockHelper.activateFetchMock();
+      await new Promise((resolve) => {
+        [div, hgc] = mountHGComponent(div, hgc, viewconf, resolve, {
+          style: 'width:800px; height:400px; background-color: lightgreen',
+          bounded: true,
+        });
       });
     });
 
@@ -86,7 +88,7 @@ describe('Simple HiGlassComponent', () => {
 
     afterAll(async () => {
       removeHGComponent(div);
-      await fetchMockHelper.storeDataAndResetFetchMock();
+      // await fetchMockHelper.storeDataAndResetFetchMock();
     });
   });
 });

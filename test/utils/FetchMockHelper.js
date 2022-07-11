@@ -1,5 +1,17 @@
 import fetchMock from 'fetch-mock';
 
+const timeout = (prom, time, ret) =>
+  Promise.race([
+    prom,
+    new Promise((_r, rej) =>
+      setTimeout(() => {
+        _r(ret);
+      }, time),
+    ),
+  ]);
+
+const TIMEOUT_TIME = 1000;
+
 class FetchMockHelper {
   constructor(viewConf, testName) {
     this.checkViewConf(viewConf);
@@ -16,22 +28,24 @@ class FetchMockHelper {
   }
 
   async getMockedData() {
-    const mockedResponses = await this.server.run(this.testName, function (
-      testName,
-    ) {
-      try {
-        const fs = serverRequire('fs-extra'); // eslint-disable-line
-        const path = `./test/mocked-responses/${testName}.json`;
+    const mockedResponses = await timeout(
+      this.server.run(this.testName, function (testName) {
+        try {
+          const fs = serverRequire('fs-extra'); // eslint-disable-line
+          const path = `./test/mocked-responses/${testName}.json`;
 
-        // Read currently available mocked responses
-        if (fs.pathExistsSync(path)) {
-          return fs.readJsonSync(path);
+          // Read currently available mocked responses
+          if (fs.pathExistsSync(path)) {
+            return fs.readJsonSync(path);
+          }
+          return {};
+        } catch (error) {
+          return error;
         }
-        return {};
-      } catch (error) {
-        return error;
-      }
-    });
+      }),
+      TIMEOUT_TIME,
+      {},
+    );
 
     return mockedResponses;
   }
@@ -115,22 +129,26 @@ class FetchMockHelper {
 
     const mockedResponsesJSON = JSON.stringify(this.mockedData, null, 1);
 
-    const response = await this.server.run(
-      this.testName,
-      mockedResponsesJSON,
-      function (testName, data) {
-        try {
-          // If the test is run by Travis, don't write the file
-          if (!process.env.TRAVIS) {
-            const fs = serverRequire('fs-extra'); // eslint-disable-line
-            const path = `./test/mocked-responses/${testName}.json`;
-            fs.writeFileSync(path, data);
+    const response = await timeout(
+      this.server.run(
+        this.testName,
+        mockedResponsesJSON,
+        function (testName, data) {
+          try {
+            // If the test is run by Travis, don't write the file
+            if (!process.env.TRAVIS) {
+              const fs = serverRequire('fs-extra'); // eslint-disable-line
+              const path = `./test/mocked-responses/${testName}.json`;
+              fs.writeFileSync(path, data);
+            }
+          } catch (error) {
+            return error;
           }
-        } catch (error) {
-          return error;
-        }
-        return null;
-      },
+          return null;
+        },
+      ),
+      TIMEOUT_TIME,
+      null,
     );
 
     if (response !== null) {

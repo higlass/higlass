@@ -99,6 +99,9 @@ class Track {
     return this.dimensions;
   }
 
+  /** There was a click event outside the track * */
+  clickOutside() {}
+
   setDimensions(newDimensions) {
     this.dimensions = newDimensions;
 

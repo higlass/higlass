@@ -108,6 +108,18 @@ class CombinedTrack {
   //   }
   // }
 
+  clickOutside() {
+    for (let i = 0; i < this.childTracks.length; i++) {
+      this.childTracks[i].clickOutside();
+    }
+  }
+
+  click(...args) {
+    for (let i = 0; i < this.childTracks.length; i++) {
+      this.childTracks[i].click(...args);
+    }
+  }
+
   draw() {
     // for (let i = 0; i < this.childTracks.length; i++) {
     //   this.childTracks[i].draw();

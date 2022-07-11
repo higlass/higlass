@@ -29,8 +29,8 @@ Button.defaultProps = {
 };
 
 Button.propTypes = {
-  children: PropTypes.func.isRequired,
-  disable: PropTypes.func.isRequired,
+  children: PropTypes.any,
+  disable: PropTypes.bool,
   onBlur: PropTypes.func,
   onClick: PropTypes.func,
   onMouseDown: PropTypes.func,

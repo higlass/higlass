@@ -1,10 +1,16 @@
 {
   "presets": [
-    ["env", {
-      "modules": false
-    }],
+    [
+      "@babel/preset-env",
+      {
+        "modules": false
+      }
+    ],
     "airbnb",
-    "react"
+    "@babel/preset-react"
   ],
-  "plugins": ["transform-object-rest-spread", "transform-runtime"]
+  "plugins": [
+    "@babel/plugin-proposal-object-rest-spread",
+    "@babel/plugin-transform-runtime"
+  ]
 }

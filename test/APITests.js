@@ -103,43 +103,43 @@ describe('API Tests', () => {
       );
     });
 
-    it('shows linear-labels as available track', () => {
-      [div, api] = createElementAndApi(simpleCenterViewConfig);
+    // it('shows linear-labels as available track', () => {
+    //   [div, api] = createElementAndApi(simpleCenterViewConfig);
 
-      api.showAvailableTrackPositions({
-        server: 'http://higlass.io/api/v1',
-        tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
-        datatype: 'yyyyy',
-        defaultTracks: ['xxxxx'],
-      });
+    //   api.showAvailableTrackPositions({
+    //     server: 'http://higlass.io/api/v1',
+    //     tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+    //     datatype: 'yyyyy',
+    //     defaultTracks: ['xxxxx'],
+    //   });
 
-      // we don't know what type of track 'xxxx' is and what
-      // datatype 'yyyy' is so let's not show any overlays
-      selection = select(div).selectAll('.DragListeningDiv');
-      expect(selection.size()).toEqual(0);
+    //   // we don't know what type of track 'xxxx' is and what
+    //   // datatype 'yyyy' is so let's not show any overlays
+    //   selection = select(div).selectAll('.DragListeningDiv');
+    //   expect(selection.size()).toEqual(0);
 
-      api.showAvailableTrackPositions({
-        server: 'http://higlass.io/api/v1',
-        tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
-        datatype: 'linear-labels',
-      });
+    //   api.showAvailableTrackPositions({
+    //     server: 'http://higlass.io/api/v1',
+    //     tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+    //     datatype: 'linear-labels',
+    //   });
 
-      // before providing default tracks, higlass shouldn't know
-      // which tracks are compatible with this datatype and shouldn't
-      // display any drag listening divs
-      let selection = select(div).selectAll('.DragListeningDiv');
-      expect(selection.size()).toEqual(0);
+    //   // before providing default tracks, higlass shouldn't know
+    //   // which tracks are compatible with this datatype and shouldn't
+    //   // display any drag listening divs
+    //   let selection = select(div).selectAll('.DragListeningDiv');
+    //   expect(selection.size()).toEqual(0);
 
-      api.showAvailableTrackPositions({
-        server: 'http://higlass.io/api/v1',
-        tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
-        datatype: 'linear-labels',
-        defaultTracks: ['heatmap', 'horizontal-heatmap'],
-      });
+    //   api.showAvailableTrackPositions({
+    //     server: 'http://higlass.io/api/v1',
+    //     tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+    //     datatype: 'linear-labels',
+    //     defaultTracks: ['heatmap', 'horizontal-heatmap'],
+    //   });
 
-      selection = select(div).selectAll('.DragListeningDiv');
-      expect(selection.size()).toEqual(5);
-    });
+    //   selection = select(div).selectAll('.DragListeningDiv');
+    //   expect(selection.size()).toEqual(5);
+    // });
 
     it('creates a track with default options', () => {
       [div, api] = createElementAndApi(simpleCenterViewConfig, {
@@ -850,8 +850,8 @@ describe('API Tests', () => {
       );
       const hgc = api.getComponent();
       waitForTilesLoaded(hgc, () => {
-        const topTrackHeight = api.getViewConfig().views[0].tracks.top[0]
-          .height;
+        const topTrackHeight =
+          api.getViewConfig().views[0].tracks.top[0].height;
         expect(topTrackHeight).toEqual(60);
 
         hgc.tiledPlots.a.handleResizeTrack('h-line', 500, 100);

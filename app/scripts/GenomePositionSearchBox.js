@@ -600,9 +600,8 @@ class GenomePositionSearchBox extends React.Component {
             }
           }
 
-          const geneSymbol = this.replaceGenesWithLoadedPositions(
-            genePositions,
-          );
+          const geneSymbol =
+            this.replaceGenesWithLoadedPositions(genePositions);
 
           finished(geneSymbol);
         }
@@ -857,7 +856,7 @@ GenomePositionSearchBox.propTypes = {
   chromInfoServer: PropTypes.string,
   hideAvailableAssemblies: PropTypes.bool,
   isFocused: PropTypes.bool,
-  pubSub: PropTypes.func,
+  pubSub: PropTypes.object,
   onFocus: PropTypes.func,
   onGeneSearch: PropTypes.func,
   onSelectedAssemblyChanged: PropTypes.func,

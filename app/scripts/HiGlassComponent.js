@@ -82,6 +82,9 @@ import {
 import styles from '../styles/HiGlass.module.scss'; // eslint-disable-line no-unused-vars
 import stylesMTHeader from '../styles/ViewHeader.module.scss'; // eslint-disable-line no-unused-vars
 
+console.log('styles', styles);
+console.log('stylesMTHeader', stylesMTHeader);
+
 import stylesGlobal from '../styles/HiGlass.scss'; // eslint-disable-line no-unused-vars
 
 const NUM_GRID_COLUMNS = 12;
@@ -4966,7 +4969,7 @@ class HiGlassComponent extends React.Component {
             }
             chromInfoPath={view.chromInfoPath}
             disableTrackMenu={this.isTrackMenuDisabled()}
-            draggingHappening={this.state.draggingHappening}
+            draggingHappening={this.state.draggingHappening !== null}
             editable={this.isEditable()}
             getLockGroupExtrema={(uid) =>
               this.getLockGroupExtrema(view.uid, uid)

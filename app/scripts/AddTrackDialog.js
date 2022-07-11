@@ -27,9 +27,8 @@ class AddTrackDialog extends React.Component {
 
     this.handleSubmitBound = this.handleSubmit.bind(this);
 
-    this.handleTilesetPickerDoubleClickBound = this.handleTilesetPickerDoubleClick.bind(
-      this,
-    );
+    this.handleTilesetPickerDoubleClickBound =
+      this.handleTilesetPickerDoubleClick.bind(this);
     this.selectedTilesetsChangedBound = this.selectedTilesetsChanged.bind(this);
   }
 
@@ -189,27 +188,29 @@ class AddTrackDialog extends React.Component {
         onOkay={this.handleSubmitBound}
         title="Add Track"
       >
-        {form}
-        {
-          <PlotTypeChooser
-            // Only for testing purposes
-            ref={(c) => {
-              this.plotTypeChooser = c;
-            }}
-            allTracksSameDatatype={this.state.allTracksSameDatatype}
-            datatypes={this.state.selectedTilesets.map((x) => {
-              if (x.filetype === 'cooler') {
-                // cooler files can also supply chromsizes
-                return [x.datatype, 'chromsizes'];
-              }
+        <>
+          {form}
+          {
+            <PlotTypeChooser
+              // Only for testing purposes
+              ref={(c) => {
+                this.plotTypeChooser = c;
+              }}
+              allTracksSameDatatype={this.state.allTracksSameDatatype}
+              datatypes={this.state.selectedTilesets.map((x) => {
+                if (x.filetype === 'cooler') {
+                  // cooler files can also supply chromsizes
+                  return [x.datatype, 'chromsizes'];
+                }
 
-              return [x.datatype];
-            })}
-            onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
-            orientation={orientation}
-            position={this.props.position}
-          />
-        }
+                return [x.datatype];
+              })}
+              onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
+              orientation={orientation}
+              position={this.props.position}
+            />
+          }
+        </>
       </Dialog>
     );
   }
@@ -220,8 +221,8 @@ AddTrackDialog.defaultProps = {
 };
 
 AddTrackDialog.propTypes = {
-  datatype: PropTypes.string.isRequired,
-  host: PropTypes.string.isRequired,
+  datatype: PropTypes.string,
+  host: PropTypes.string,
   onCancel: PropTypes.func.isRequired,
   onTracksChosen: PropTypes.func.isRequired,
   position: PropTypes.string,
