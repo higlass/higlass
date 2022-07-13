@@ -6,6 +6,8 @@ module.exports = (config) => {
     /** * maximum number of tries a browser will attempt in the case
      * of a disconnection */
     browserDisconnectTolerance: 2,
+    captureTimeout: 10000,
+    pingTimeout: 10000,
     /** * How long will Karma wait for a message from a browser before
      * disconnecting from it (in ms). */
     browserNoActivityTimeout: 90000,
@@ -81,8 +83,8 @@ module.exports = (config) => {
 
     preprocessors: {
       // add webpack as preprocessor
-      'app/scripts/**/*.+(js|jsx)': ['webpack'],
-      'test/**/*.+(js|jsx)': ['webpack'],
+      'app/scripts/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
+      'test/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
     },
 
     // webpackConfig(env, argv)
@@ -95,6 +97,7 @@ module.exports = (config) => {
       'karma-webpack',
       'karma-jasmine',
       'karma-server-side',
+      'karma-sourcemap-loader',
       'karma-chrome-launcher',
       'karma-phantomjs2-launcher',
       'karma-verbose-reporter',
