@@ -81,8 +81,8 @@ module.exports = (config) => {
 
     preprocessors: {
       // add webpack as preprocessor
-      'app/scripts/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
-      'test/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
+      'app/scripts/**/*.+(js|jsx)': ['webpack'],
+      'test/**/*.+(js|jsx)': ['webpack'],
     },
 
     // webpackConfig(env, argv)
@@ -95,7 +95,6 @@ module.exports = (config) => {
       'karma-webpack',
       'karma-jasmine',
       'karma-server-side',
-      'karma-sourcemap-loader',
       'karma-chrome-launcher',
       'karma-phantomjs2-launcher',
       'karma-verbose-reporter',
