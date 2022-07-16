@@ -28,6 +28,10 @@ class FetchMockHelper {
   }
 
   async getMockedData() {
+    // We're going to use the timeout function to make sure
+    // the FetchMockHelper doesn't end up timing out. If it doesn't
+    // return within 1 second, we'll return an empty object
+    // and let higlass fetch the data from its original source
     const mockedResponses = await timeout(
       this.server.run(this.testName, function (testName) {
         try {
