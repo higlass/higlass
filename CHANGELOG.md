@@ -1,5 +1,13 @@
 # Release notes
 
+## Unreleased
+
+- Update to webpack5
+- Update a bunch of packages (most notably d3 packages which have a slightly different API)
+- Fix tests
+- Update scss to fix deprecation warnings
+- Remove pixi.js, react and react-dom as external packages
+
 ## v1.11.11
 
 - Bump terser-webpack-plugin version to fix build issue
