@@ -133,6 +133,9 @@ describe('Viewport projection tests', () => {
 });
 
 describe('Viewport projection without linked views tests', () => {
+  let api;
+  let div;
+
   beforeEach(() => {
     [div, api] = createElementAndApi(viewConfigWithoutFromViewUids);
   });
