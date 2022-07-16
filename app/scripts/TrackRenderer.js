@@ -149,7 +149,6 @@ class TrackRenderer extends React.Component {
       .on('zoom', this.zoomedBound)
       .on('end', this.zoomEndedBound);
 
-    console.log('zoomIdentity', zoomIdentity);
     this.zoomTransform = zoomIdentity;
     this.prevZoomTransform = zoomIdentity;
 
