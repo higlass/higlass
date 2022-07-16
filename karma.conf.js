@@ -34,51 +34,51 @@ module.exports = (config) => {
         served: true,
         included: false,
       },
-      'test/AxisTests.js', // works
-      'test/AxisSpecificLocationLockTests.js', // works
-      'test/2DRectangleDomainsTests.js', // works
-      'test/AddAndRemoveViewconfTests.js', // works
-      'test/AddTrackTests.js', // works
-      'test/APITests.js', // works
-      'test/BarTrackTests.js', // works
-      'test/BedLikeTests.js', // works
-      'test/ChromosomeLabelsTests.js', // works
-      'test/ChromSizesTests.js', // works
-      'test/DenseDataExtremaTests.js', // works
-      'test/EmptyTrackTests.js', // works
-      'test/GenbankFetcherTests.js', // works
-      'test/GeneAnnotationsTrackTests.js', // works
-      'test/GenomePositionSearchBoxTest.js', // works
-      'test/HeatmapTests.js', // works
-      'test/HiGlassComponentCreationTests.js', // works
-      // // 'test/HiGlassComponent/*.js',
-      'test/Horizontal1DTrackTests.js', // works
-      'test/HorizontalHeatmapTests.js', // works
-      // 'test/HorizontalMultivecTests.js', //fails
-      'test/LabelTests.js', // works
-      'test/LeftTrackModifierTests.js', // works
-      'test/LocalTileFetcherTests.js', // works
-      'test/LockTests.js', // works
-      'test/MinimalViewconfTest.js', // works
-      'test/ndarray-assign.spec.js', // works individually
-      'test/ndarray-flatten.spec.js', // works individually
-      'test/ndarray-to-list.spec.js', // works individually
-      'test/OSMTests.js', // works individually
-      'test/OverlayTrackTests.js', //works individually
-      // 'test/PluginDataFetcherTests.js', // fails
-      'test/PluginTrackTests.js', // works individually
-      'test/PngExportTest.js', // works
-      'test/RuleTests.js', // works individually
-      'test/search_field_test.js', // works individually
-      'test/SVGExportTest.js', // works
-      'test/tile-proxy.js', // works
-      'test/TiledPixiTrackTests.js', //works individually
-      'test/TrackLabelsTest.js', //works individually
-      'test/UtilsTests.js', // works individually
-      // 'test/ViewConfigEditorTests.js', //fails
-      // 'test/ViewManipulationTests.js', //fails
-      // 'test/ViewportProjectionTests.js', //fails
-      'test/ZoomTests.js', // works individually
+      // 'test/AxisTests.js', // works
+      // 'test/AxisSpecificLocationLockTests.js', // works
+      // 'test/2DRectangleDomainsTests.js', // works
+      // 'test/AddAndRemoveViewconfTests.js', // works
+      // 'test/AddTrackTests.js', // works
+      // 'test/APITests.js', // works
+      // 'test/BarTrackTests.js', // works
+      // 'test/BedLikeTests.js', // works
+      // 'test/ChromosomeLabelsTests.js', // works
+      // 'test/ChromSizesTests.js', // works
+      // 'test/DenseDataExtremaTests.js', // works
+      // 'test/EmptyTrackTests.js', // works
+      // 'test/GenbankFetcherTests.js', // works
+      // 'test/GeneAnnotationsTrackTests.js', // works
+      // 'test/GenomePositionSearchBoxTest.js', // works
+      // 'test/HeatmapTests.js', // works
+      // 'test/HiGlassComponentCreationTests.js', // works
+      // // // 'test/HiGlassComponent/*.js',
+      // 'test/Horizontal1DTrackTests.js', // works
+      // 'test/HorizontalHeatmapTests.js', // works
+      'test/HorizontalMultivecTests.js', //fails
+      // 'test/LabelTests.js', // works
+      // 'test/LeftTrackModifierTests.js', // works
+      // 'test/LocalTileFetcherTests.js', // works
+      // 'test/LockTests.js', // works
+      // 'test/MinimalViewconfTest.js', // works
+      // 'test/ndarray-assign.spec.js', // works individually
+      // 'test/ndarray-flatten.spec.js', // works individually
+      // 'test/ndarray-to-list.spec.js', // works individually
+      // 'test/OSMTests.js', // works individually
+      // 'test/OverlayTrackTests.js', //works individually
+      // // 'test/PluginDataFetcherTests.js', // fails
+      // 'test/PluginTrackTests.js', // works individually
+      // 'test/PngExportTest.js', // works
+      // 'test/RuleTests.js', // works individually
+      // 'test/search_field_test.js', // works individually
+      // 'test/SVGExportTest.js', // works
+      // 'test/tile-proxy.js', // works
+      // 'test/TiledPixiTrackTests.js', //works individually
+      // 'test/TrackLabelsTest.js', //works individually
+      // 'test/UtilsTests.js', // works individually
+      // // 'test/ViewConfigEditorTests.js', //fails
+      // // 'test/ViewManipulationTests.js', //fails
+      // // 'test/ViewportProjectionTests.js', //fails
+      // 'test/ZoomTests.js', // works individually
     ],
 
     preprocessors: {
