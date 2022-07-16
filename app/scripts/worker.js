@@ -191,10 +191,6 @@ export function workerSetPix(
       rgbIdx = dToRgbIdx(d + pseudocount);
     }
 
-    // console.log('d', d, pseudocount, valueScale.domain());
-    // console.log('zeroValueColor', zeroValueColor);
-    // console.log('rgbIdx', rgbIdx);
-
     // let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
     if (rgbIdx < 0 || rgbIdx > 255) {
       console.warn(
