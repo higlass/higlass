@@ -48,7 +48,10 @@ class ViewConfigEditor extends React.Component {
       this.editor._input.focus();
       this.editor._input.setSelectionRange(0, 0);
       await timeout(0);
-      this.editorWrap.scrollTop = 0;
+
+      if (this.editorWrap) {
+        this.editorWrap.scrollTop = 0;
+      }
     }
   }
 
@@ -169,69 +172,71 @@ class ViewConfigEditor extends React.Component {
         onOkay={this.handleSubmitBound}
         title="Edit View Config"
       >
-        <header styleName="view-config-editor-header">
-          <Button
-            onBlur={this.showBound}
-            onMouseDown={this.hideBound}
-            onMouseOut={this.showBound}
-            onMouseUp={this.showBound}
-          >
-            Hide While Mousedown
-          </Button>
-          <Button
-            onClick={() => {
-              this.props.onChange(this.state.code);
-            }}
-            shortcut="⌘+S"
-          >
-            Save
-          </Button>
-        </header>
-        <div
-          ref={(c) => {
-            this.editorWrap = c;
-          }}
-          styleName="view-config-editor"
-        >
-          <Editor
+        <>
+          <header styleName="view-config-editor-header">
+            <Button
+              onBlur={this.showBound}
+              onMouseDown={this.hideBound}
+              onMouseOut={this.showBound}
+              onMouseUp={this.showBound}
+            >
+              Hide While Mousedown
+            </Button>
+            <Button
+              onClick={() => {
+                this.props.onChange(this.state.code);
+              }}
+              shortcut="⌘+S"
+            >
+              Save
+            </Button>
+          </header>
+          <div
             ref={(c) => {
-              this.editor = c;
+              this.editorWrap = c;
             }}
-            highlight={(code) => highlight(code, languages.json)}
-            onValueChange={this.handleChangeBound}
-            padding={10}
-            style={{
-              fontFamily: '"Fira code", "Fira Mono", monospace',
-              fontSize: 'inherit',
-            }}
-            value={this.state.code}
-          />
-        </div>
-        <div
-          style={{
-            height: this.state.showLog ? '50%' : '30px',
-          }}
-          styleName="view-config-log"
-        >
-          <div
-            onClick={() => this.toggleLogBound()}
-            styleName="view-config-log-header"
+            styleName="view-config-editor"
           >
-            {`Log Messages (${
-              this.state.logMsgs.filter((d) => d.type !== 'Success').length
-            })`}
+            <Editor
+              ref={(c) => {
+                this.editor = c;
+              }}
+              highlight={(code) => highlight(code, languages.json)}
+              onValueChange={this.handleChangeBound}
+              padding={10}
+              style={{
+                fontFamily: '"Fira code", "Fira Mono", monospace',
+                fontSize: 'inherit',
+              }}
+              value={this.state.code}
+            />
           </div>
           <div
             style={{
-              padding: this.state.showLog ? '10px' : 0,
+              height: this.state.showLog ? '50%' : '30px',
             }}
-            styleName="view-config-log-msg"
+            styleName="view-config-log"
           >
-            <table>
-              <tbody>{logMessages}</tbody>
-            </table>
+            <div
+              onClick={() => this.toggleLogBound()}
+              styleName="view-config-log-header"
+            >
+              {`Log Messages (${
+                this.state.logMsgs.filter((d) => d.type !== 'Success').length
+              })`}
+            </div>
+            <div
+              style={{
+                padding: this.state.showLog ? '10px' : 0,
+              }}
+              styleName="view-config-log-msg"
+            >
+              <table>
+                <tbody>{logMessages}</tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        </>
       </Dialog>
     );
   }
@@ -243,7 +248,7 @@ ViewConfigEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   pubSub: PropTypes.object.isRequired,
-  viewConfig: PropTypes.object.isRequired,
+  viewConfig: PropTypes.string.isRequired,
 };
 
 export default withPubSub(withModal(ViewConfigEditor));

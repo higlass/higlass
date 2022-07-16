@@ -7,24 +7,25 @@ import {
   waitForTransitionsFinished,
   waitForTilesLoaded,
   getTrackObjectFromHGC,
-  waitForJsonComplete
+  waitForJsonComplete,
 } from '../app/scripts/utils';
 import viewConf from './view-configs/simple-heatmap-gene-annotations';
 
 configure({ adapter: new Adapter() });
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('View Config Editor', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(done => {
+  beforeAll((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewConf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true
+      bounded: true,
     });
   });
 
-  it('should instantiate and open', done => {
+  it('should instantiate and open', (done) => {
     hgc.instance().handleEditViewConfigBound();
     hgc.update();
 
@@ -36,7 +37,7 @@ describe('View Config Editor', () => {
   it('should focus the textarea', () => {
     expect(hgc.instance().modalRef.editorWrap.scrollTop).toEqual(0);
     expect(document.activeElement).toEqual(
-      hgc.instance().modalRef.editor._input
+      hgc.instance().modalRef.editor._input,
     );
   });
 
@@ -50,17 +51,17 @@ describe('View Config Editor', () => {
 
     // No changes should have happened yet
     expect(
-      hgc.instance().state.viewConfig.views[0].tracks.top[0].height
+      hgc.instance().state.viewConfig.views[0].tracks.top[0].height,
     ).toEqual(60);
 
     document.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 's', metaKey: true })
+      new KeyboardEvent('keydown', { key: 's', metaKey: true }),
     );
     hgc.update();
 
     // No changes should now be reflected
     expect(
-      hgc.instance().state.viewConfig.views[0].tracks.top[0].height
+      hgc.instance().state.viewConfig.views[0].tracks.top[0].height,
     ).toEqual(30);
   });
 
@@ -72,11 +73,11 @@ describe('View Config Editor', () => {
     expect(hgc.instance().modalRef).toBeFalsy();
     // No changes should be reverted
     expect(
-      hgc.instance().state.viewConfig.views[0].tracks.top[0].height
+      hgc.instance().state.viewConfig.views[0].tracks.top[0].height,
     ).toEqual(60);
   });
 
-  it('open again', done => {
+  it('open again', (done) => {
     hgc.instance().handleEditViewConfigBound();
     hgc.update();
 
@@ -95,11 +96,11 @@ describe('View Config Editor', () => {
 
     // No changes should have happened yet
     expect(
-      hgc.instance().state.viewConfig.views[0].tracks.top[0].height
+      hgc.instance().state.viewConfig.views[0].tracks.top[0].height,
     ).toEqual(60);
 
     document.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 'Enter', metaKey: true })
+      new KeyboardEvent('keydown', { key: 'Enter', metaKey: true }),
     );
     hgc.update();
 
@@ -108,11 +109,11 @@ describe('View Config Editor', () => {
 
     // No changes should now be reflected
     expect(
-      hgc.instance().state.viewConfig.views[0].tracks.top[0].height
+      hgc.instance().state.viewConfig.views[0].tracks.top[0].height,
     ).toEqual(30);
   });
 
-  it('zoom somewhere', done => {
+  it('zoom somewhere', (done) => {
     hgc
       .instance()
       .zoomTo('a', 1000000000, 2000000000, 1000000000, 2000000000, 1000);
@@ -124,7 +125,7 @@ describe('View Config Editor', () => {
     });
   });
 
-  it('open editor again, do nothing and save', done => {
+  it('open editor again, do nothing and save', (done) => {
     hgc.instance().handleEditViewConfigBound();
     hgc.update();
 
@@ -133,7 +134,7 @@ describe('View Config Editor', () => {
     waitForJsonComplete(done);
 
     document.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 'Enter', metaKey: true })
+      new KeyboardEvent('keydown', { key: 'Enter', metaKey: true }),
     );
     hgc.update();
 
@@ -142,15 +143,15 @@ describe('View Config Editor', () => {
   });
 
   it('Heatmap track should not have moved', () => {
-    const initialXDomain = hgc.instance().state.viewConfig.views[0]
-      .initialXDomain;
+    const initialXDomain =
+      hgc.instance().state.viewConfig.views[0].initialXDomain;
     const trackObject = getTrackObjectFromHGC(hgc.instance(), 'heatmap');
 
     expect(
-      Math.round(trackObject._xScale.domain()[0] - initialXDomain[0])
+      Math.round(trackObject._xScale.domain()[0] - initialXDomain[0]),
     ).toEqual(0);
     expect(
-      Math.round(trackObject._xScale.domain()[1] - initialXDomain[1])
+      Math.round(trackObject._xScale.domain()[1] - initialXDomain[1]),
     ).toEqual(0);
   });
 

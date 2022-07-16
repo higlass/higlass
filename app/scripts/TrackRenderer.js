@@ -269,8 +269,6 @@ class TrackRenderer extends React.Component {
     this.draggingChanged(true);
     this.addEventTracker();
 
-    console.log('extent', ext);
-
     // Init zoom and scale extent
     const transExt = [
       [this.xScale(this.xDomainLimits[0]), this.yScale(this.yDomainLimits[0])],

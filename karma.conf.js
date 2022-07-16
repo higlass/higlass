@@ -54,7 +54,10 @@ module.exports = (config) => {
       // // // 'test/HiGlassComponent/*.js',
       // 'test/Horizontal1DTrackTests.js', // works
       // 'test/HorizontalHeatmapTests.js', // works
-      'test/HorizontalMultivecTests.js', //fails
+      // // The tests in HorizontalMultivecTests are overwriting
+      // // the default [div,hgc] created in beforeAll. This needs
+      // // to be fixed before they can be enabled
+      // // 'test/HorizontalMultivecTests.js', //fails
       // 'test/LabelTests.js', // works
       // 'test/LeftTrackModifierTests.js', // works
       // 'test/LocalTileFetcherTests.js', // works
@@ -65,7 +68,7 @@ module.exports = (config) => {
       // 'test/ndarray-to-list.spec.js', // works individually
       // 'test/OSMTests.js', // works individually
       // 'test/OverlayTrackTests.js', //works individually
-      // // 'test/PluginDataFetcherTests.js', // fails
+      // 'test/PluginDataFetcherTests.js', // works
       // 'test/PluginTrackTests.js', // works individually
       // 'test/PngExportTest.js', // works
       // 'test/RuleTests.js', // works individually
@@ -75,9 +78,9 @@ module.exports = (config) => {
       // 'test/TiledPixiTrackTests.js', //works individually
       // 'test/TrackLabelsTest.js', //works individually
       // 'test/UtilsTests.js', // works individually
-      // // 'test/ViewConfigEditorTests.js', //fails
-      // // 'test/ViewManipulationTests.js', //fails
-      // // 'test/ViewportProjectionTests.js', //fails
+      // 'test/ViewConfigEditorTests.js', // works
+      // 'test/ViewManipulationTests.js', // skipped
+      'test/ViewportProjectionTests.js', //fails
       // 'test/ZoomTests.js', // works individually
     ],
 
