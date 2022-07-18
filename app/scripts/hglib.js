@@ -35,7 +35,7 @@ export {
 
 export const version = VERSION;
 
-const launch = (element, config, options) => {
+const launch = async (element, config, options) => {
   /**
    * The instance's public API will be passed into the callback
    *
@@ -53,9 +53,20 @@ const launch = (element, config, options) => {
   const ref = React.createRef();
   const root = createRoot(element);
 
-  root.render(
-    <HiGlassComponent ref={ref} options={options || {}} viewConfig={config} />,
-  );
+  const p = new Promise((resolve) => {
+    root.render(
+      <HiGlassComponent
+        ref={(r) => {
+          ref.current = r;
+          resolve();
+        }}
+        options={options || {}}
+        viewConfig={config}
+      />,
+    );
+  });
+
+  await p;
 
   return ref.current;
 };
@@ -105,13 +116,13 @@ const launch = (element, config, options) => {
  *
  * @return  {Object}  Newly created HiGlass component.
  */
-export const viewer = (element, viewConfig, options) => {
+export const viewer = async (element, viewConfig, options) => {
   /**
    * Available options:
    *
    *  bounded: [true/false]
    *      Fit the container to the bounds of the element
    */
-  const hg = launch(element, viewConfig, options);
+  const hg = await launch(element, viewConfig, options);
   return hg.api;
 };

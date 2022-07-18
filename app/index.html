@@ -252,16 +252,17 @@ const viewConfig = {
   }
 };
 
-const hgApi = hglib.viewer(
+hglib.viewer(
   document.getElementById('demo'),
   viewConfig,
   { bounded: true },
-);
+).then(hgApi => {
+  hgApi.setBroadcastMousePositionGlobally(true);
 
-hgApi.setBroadcastMousePositionGlobally(true);
+  hgApi.on('viewConfig', () => {
+    console.log('View Config changed');
+  });
+})
 
-hgApi.on('viewConfig', () => {
-  console.log('View Config changed');
-});
 </script>
 </html>

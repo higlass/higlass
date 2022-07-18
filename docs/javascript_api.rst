@@ -36,13 +36,15 @@ javascript and css files:
 
   <script>
 
-  const hgApi = hglib.viewer(
+  hglib.viewer(
     document.getElementById('development-demo'),
     'http://higlass.io/api/v1/viewconfs/?d=default',
     {
       bounded: false,
     }
-  );
+  ).then(hgApi => {
+  
+  });
 
   </script>
   </html>
@@ -79,7 +81,7 @@ Creating an inline HiGlass component
 
 .. code-block:: javascript
 
-  const hgv = hglib.viewer(element, config, options);
+  hglib.viewer(element, config, options);
 
 Create a new HiGlass viewer within a web page. This initializes a
 HiGlassComponent inside the element ``element`` with a viewconfig passed in as
@@ -145,7 +147,7 @@ GitHub repository
 
 .. code-block:: javascript
 
-  const hgv = hglib.viewer(
+  hglib.viewer(
     document.getElementById('development-demo'),
     testViewConfig,
     { bounded: true },

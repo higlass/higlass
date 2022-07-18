@@ -79,15 +79,16 @@ const viewConfig = {
   ],
 };
 
-const api = window.hglib.viewer(
+window.hglib.viewer(
   document.getElementById('demo'), viewConfig, { bounded: true },
-);
+).then(api => {
+  console.log('Browse somewhere! Viewport will be reset in 8 seconds');
 
-console.log('Browse somewhere! Viewport will be reset in 8 seconds');
+  setTimeout(() => {
+    console.log('Viewport reset');
+    api.resetViewport();
+  }, 8000);
+})
 
-setTimeout(() => {
-  console.log('Viewport reset');
-  api.resetViewport();
-}, 8000);
 </script>
 </html>
