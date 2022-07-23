@@ -5,6 +5,7 @@ module.exports = (config) => {
   config.set({
     /** * maximum number of tries a browser will attempt in the case
      * of a disconnection */
+    browserDisconnectTimeout: 10000,
     browserDisconnectTolerance: 2,
     captureTimeout: 10000,
     pingTimeout: 10000,
