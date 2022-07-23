@@ -12,7 +12,6 @@ import {
 import viewConf from './view-configs/simple-heatmap-gene-annotations';
 
 configure({ adapter: new Adapter() });
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('View Config Editor', () => {
   let hgc = null;

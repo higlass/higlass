@@ -1,7 +1,6 @@
 /* eslint-env node, jasmine */
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('PNG Export', () => {
   let api;

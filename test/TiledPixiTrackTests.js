@@ -18,7 +18,6 @@ import {
 import { simpleCenterViewConfig } from './view-configs';
 
 configure({ adapter: new Adapter() });
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Simple HiGlassComponent', () => {
   let hgc = null;

@@ -12,8 +12,6 @@ import removeDiv from './utils/remove-div';
 import horizontal1dLineTrackWithConstViewConf from './view-configs/horizontal-1d-line-track-with-const';
 import { horizontalLineEnd } from './view-configs';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
-
 describe('Horizontal 1D track tests', () => {
   let hgc = null;
   let api = null;

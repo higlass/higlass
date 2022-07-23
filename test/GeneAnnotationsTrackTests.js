@@ -21,7 +21,6 @@ import {
 import removeDiv from './utils/remove-div';
 
 configure({ adapter: new Adapter() });
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 // const createPointerEvent = (type, coords) => {
 //   const params = {

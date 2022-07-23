@@ -14,8 +14,6 @@ import removeDiv from './utils/remove-div';
 import viewConfig from './view-configs/viewport-projection';
 import viewConfigWithoutFromViewUids from './view-configs-more/viewportProjectionsWithoutFromViewUids';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
-
 describe('Viewport projection tests', () => {
   let api;
   let div;

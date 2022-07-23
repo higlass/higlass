@@ -2,8 +2,6 @@
 import { expect } from 'chai';
 import GBKDataFetcher from '../app/scripts/data-fetchers/genbank-fetcher';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
-
 describe('Genbank tests', () => {
   describe('Genbank data fetcher', () => {
     const df = new GBKDataFetcher({

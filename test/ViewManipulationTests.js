@@ -18,7 +18,6 @@ import {
 import { emptyConf } from './view-configs';
 
 configure({ adapter: new Adapter() });
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 xdescribe('View manipulation tests', () => {
   let hgc = null;

@@ -16,6 +16,7 @@ module.exports = (config) => {
     client: {
       jasmine: {
         random: false,
+        timeoutInterval: 35000,
       },
     },
     files: [
@@ -119,10 +120,6 @@ module.exports = (config) => {
     browsers: ['Chrome'],
     singleRun: false,
     customLaunchers: {
-      Chrome_travis_ci: {
-        base: 'Chrome',
-        flags: ['--no-sandbox'],
-      },
       HeadlessChrome: {
         base: 'ChromeHeadless',
         flags: [

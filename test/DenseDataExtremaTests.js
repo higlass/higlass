@@ -29,7 +29,6 @@ import { vecToy, vecRealistic } from './testdata/vector-data';
 import { matToy, matRealistic } from './testdata/matrix-data';
 
 configure({ adapter: new Adapter() });
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Dense data extrema tests', () => {
   // We can pass in the view conf as first argument to perform some

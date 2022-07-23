@@ -19,7 +19,6 @@ import {
 import { smallViewconf } from './view-configs';
 
 configure({ adapter: new Adapter() });
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('BedLikeTrack |', () => {
   let hgc = null;

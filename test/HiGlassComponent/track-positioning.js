@@ -23,7 +23,6 @@ import {
 
 import FetchMockHelper from '../utils/FetchMockHelper';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 configure({ adapter: new Adapter() });
 
 describe('Track positioning', () => {
@@ -72,8 +71,11 @@ describe('Track positioning', () => {
 
     track.options.oneDHeatmapFlipped = 'yes';
 
-    const trackObj = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vh1')
-      .originalTrack;
+    const trackObj = getTrackObjectFromHGC(
+      hgc.instance(),
+      'aa',
+      'vh1',
+    ).originalTrack;
     hgc.setState({
       views,
     });
@@ -209,8 +211,9 @@ describe('Track positioning', () => {
 
     // let nextTrackRendererHeight =
     // hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
-    const nextTotalHeight = hgc.instance().calculateViewDimensions(newView)
-      .totalHeight;
+    const nextTotalHeight = hgc
+      .instance()
+      .calculateViewDimensions(newView).totalHeight;
 
     // expect(nextTrackRendererHeight).toEqual(prevTrackRendererHeight - 57);
     expect(nextTotalHeight).toBeLessThan(prevTotalHeight);

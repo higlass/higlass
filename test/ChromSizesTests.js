@@ -144,7 +144,6 @@ const viewconf = {
 };
 
 configure({ adapter: new Adapter() });
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Chromsizes tests', () => {
   let hgc = null;

@@ -18,7 +18,6 @@ import viewconf from './view-configs/label-margin';
 import viewconfSplitHeatmaps from './view-configs/label-split-heatmaps';
 
 configure({ adapter: new Adapter() });
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Label test', () => {
   describe('Axis texts', () => {

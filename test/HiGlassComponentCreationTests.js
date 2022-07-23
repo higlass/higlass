@@ -12,7 +12,6 @@ import { expect } from 'chai';
 import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('HiGlass component creation tests', () => {
   let hgc = null;

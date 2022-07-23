@@ -5,7 +5,6 @@ import removeDiv from './utils/remove-div';
 import { register } from './utils/DummyDataFetcher';
 
 import dummyDataFetcherViewConf from './view-configs/dummy-data-fetcher';
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 register();
 
