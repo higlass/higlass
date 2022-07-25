@@ -149,7 +149,6 @@ class TrackRenderer extends React.Component {
       .on('zoom', this.zoomedBound)
       .on('end', this.zoomEndedBound);
 
-    console.log('zoomIdentity', zoomIdentity);
     this.zoomTransform = zoomIdentity;
     this.prevZoomTransform = zoomIdentity;
 
@@ -268,8 +267,6 @@ class TrackRenderer extends React.Component {
 
     this.draggingChanged(true);
     this.addEventTracker();
-
-    console.log('extent', ext);
 
     // Init zoom and scale extent
     const transExt = [

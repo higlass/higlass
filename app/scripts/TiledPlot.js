@@ -12,6 +12,7 @@ import DragListeningDiv from './DragListeningDiv';
 import GalleryTracks from './GalleryTracks';
 import TrackRenderer from './TrackRenderer';
 import AddTrackDialog from './AddTrackDialog';
+import CustomTrackDialog from './CustomTrackDialog';
 import ConfigTrackMenu from './ConfigTrackMenu';
 import CloseTrackMenu from './CloseTrackMenu';
 import PopupMenu from './PopupMenu';
@@ -104,6 +105,7 @@ class TiledPlot extends React.Component {
       tracks,
       init: false,
       addTrackPosition: null,
+      customDialog: null,
       mouseOverOverlayUid: null,
       // trackOptions: null
       // trackOptions: trackOptions
@@ -223,7 +225,8 @@ class TiledPlot extends React.Component {
     const toUpdate =
       thisPropsStr !== nextPropsStr ||
       thisStateStr !== nextStateStr ||
-      this.props.chooseTrackHandler !== nextProps.chooseTrackHandler;
+      this.props.chooseTrackHandler !== nextProps.chooseTrackHandler ||
+      this.props.customDialog !== nextProps.customDialog;
 
     if (toUpdate) this.previousPropsStr = nextPropsStr;
 
@@ -274,6 +277,28 @@ class TiledPlot extends React.Component {
         genomicRange,
       });
     }
+
+    if (this.state.customDialog || this.props.customDialog) {
+      const dialogData = this.state.customDialog || this.props.customDialog;
+      if (dialogData.length > 0) {
+        const componentArray = [];
+        const bodyPropsArray = [];
+        dialogData.forEach((dd) => {
+          componentArray.push(dd.bodyComponent);
+          bodyPropsArray.push(dd.bodyProps);
+        });
+
+        this.props.modal.open(
+          <CustomTrackDialog
+            children={componentArray} // eslint-disable-line react/no-children-prop
+            bodyProps={bodyPropsArray}
+            onCancel={this.props.closeCustomDialog}
+            title={dialogData[0].title}
+          />,
+        );
+      }
+    }
+    
 
     if (prevProps.tracks.center !== this.props.tracks.center) {
       // this.getDefaultChromSizes();
@@ -1366,7 +1391,7 @@ class TiledPlot extends React.Component {
       initialYDomain: props.initialYDomain,
       trackSourceServers: props.trackSourceServers,
       zoomable: props.zoomable,
-      draggingHappending: props.draggingHappening,
+      draggingHappening: props.draggingHappening,
     });
   }
 

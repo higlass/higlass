@@ -82,8 +82,8 @@ import {
 import styles from '../styles/HiGlass.module.scss'; // eslint-disable-line no-unused-vars
 import stylesMTHeader from '../styles/ViewHeader.module.scss'; // eslint-disable-line no-unused-vars
 
-console.log('styles', styles);
-console.log('stylesMTHeader', stylesMTHeader);
+// console.log('styles', styles);
+// console.log('stylesMTHeader', stylesMTHeader);
 
 import stylesGlobal from '../styles/HiGlass.scss'; // eslint-disable-line no-unused-vars
 
@@ -285,6 +285,7 @@ class HiGlassComponent extends React.Component {
       rowHeight,
       svgElement: null,
       canvasElement: null,
+      customDialog: null,
       views,
       viewConfig,
       addTrackPositionMenuPosition: null,
@@ -4611,6 +4612,15 @@ class HiGlassComponent extends React.Component {
   }
 
   /**
+   * Close the custom dialog  (e.g. when the close button is clicked)
+   */
+  closeCustomDialog(){
+    this.setState((prevState) => ({
+      customDialog: null,
+    }));
+  }
+
+  /**
    * Handle internally broadcasted click events
    */
   appClickHandler(data) {
@@ -4709,6 +4719,28 @@ class HiGlassComponent extends React.Component {
       }
     }
 
+    // Go through clicked tracks and check if we need to display a dialog
+    const customDialog = [];
+    clickReturns.forEach((clickReturn, i) => {
+      const trackObj = getTrackObjById(
+        this.tiledPlots,
+        clickReturn.viewUid,
+        clickReturn.trackUid,
+      );
+      if(typeof trackObj.clickDialog === 'function') {
+        const dialogData = trackObj.clickDialog();
+        if(dialogData){
+          customDialog.push(dialogData);
+        }
+      }
+    });
+    // We don't want to rerender everytime the canvas is clicked.
+    if(customDialog.length > 0){
+      this.setState((prevState) => ({
+        customDialog: customDialog,
+      }));
+    }
+    
     this.pubSub.publish('app.click', clickReturns);
   }
 
@@ -4966,6 +4998,10 @@ class HiGlassComponent extends React.Component {
               this.state.chooseTrackHandler
                 ? (trackId) => this.state.chooseTrackHandler(view.uid, trackId)
                 : null
+            }
+            customDialog={this.state.customDialog}
+            closeCustomDialog={() => 
+              this.closeCustomDialog()
             }
             chromInfoPath={view.chromInfoPath}
             disableTrackMenu={this.isTrackMenuDisabled()}
