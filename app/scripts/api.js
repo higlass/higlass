@@ -735,6 +735,7 @@ const createApi = function api(context, pubSub) {
        * hgv.off('mouseMoveZoom', mmz);
        * hgv.off('wheel', wheelListener);
        * hgv.off('createSVG');
+       * hgv.off('click');
        * hgv.off('geneSearch', geneSearchListener);
        */
       off(event, listenerId, viewId) {
@@ -797,15 +798,22 @@ const createApi = function api(context, pubSub) {
        *
        * **Event types**
        *
-       * ``click``: Returns clicked objects. (Currently only clicks on 1D annotations are captured.)
+       * ``click``: Returns a list of objects for each track that is below the click event.
        *
        * .. code-block:: javascript
        *
-       *     {
-       *       type: 'annotation',
-       *       event: { ... },
-       *       payload: [230000000, 561000000]
-       *     }
+       *     [
+       *      {
+       *       event: {
+       *          type: 'annotation',
+       *          event: { ... },
+       *          payload: [230000000, 561000000]
+       *        },
+       *       trackType: '1d-annotation',
+       *       trackUid: 'xyz',
+       *       viewUid: 'abc'
+       *      }
+       *     ]
        *
        * ``cursorLocation:`` Returns an object describing the location under the cursor
        *

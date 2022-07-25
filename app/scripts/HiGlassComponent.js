@@ -322,6 +322,7 @@ class HiGlassComponent extends React.Component {
 
     // Bound functions
     this.appClickHandlerBound = this.appClickHandler.bind(this);
+    this.canvasClickHandlerBound = this.canvasClickHandler.bind(this);
     this.keyDownHandlerBound = this.keyDownHandler.bind(this);
     this.keyUpHandlerBound = this.keyUpHandler.bind(this);
     this.resizeHandlerBound = this.resizeHandler.bind(this);
@@ -4613,6 +4614,101 @@ class HiGlassComponent extends React.Component {
     this.apiPublish('click', data);
   }
 
+  /** Handle click events on the canvas. The canvas is preferrable
+   * to the top level div because the canvas's events aren't forwarded
+   * so we only receive one click event
+   */
+  canvasClickHandler(evt) {
+    const nativeEvent = evt.nativeEvent || evt;
+    const absX = nativeEvent.clientX;
+    const absY = nativeEvent.clientY;
+
+    const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
+
+    const relPos = pointer(nativeEvent, this.topDiv);
+    relPos[1] += this.scrollTop;
+
+    const hoveredTracks = hoveredTiledPlot
+      ? hoveredTiledPlot
+          .listTracksAtPosition(relPos[0], relPos[1], true)
+          .map((track) => track.originalTrack || track)
+      : [];
+
+    const hoveredTrack = hoveredTracks.find(
+      (track) => !track.isAugmentationTrack,
+    );
+
+    // Get the position of the click event relative to the
+    // the track. This is passed on to the track's click handler
+    // so that the track can handle it and potentially return
+    // any additional information (i.e. annotations under the cursor)
+    const relTrackPos = hoveredTrack
+      ? [
+          relPos[0] - hoveredTrack.position[0],
+          relPos[1] - hoveredTrack.position[1],
+        ]
+      : relPos;
+
+    const relTrackX =
+      hoveredTrack && hoveredTrack.flipText ? relTrackPos[1] : relTrackPos[0];
+    const relTrackY =
+      hoveredTrack && hoveredTrack.flipText ? relTrackPos[0] : relTrackPos[1];
+
+    for (const track of this.iterateOverTracks()) {
+      const trackObj = getTrackObjById(
+        this.tiledPlots,
+        track.viewId,
+        track.trackId,
+      );
+
+      if (!trackObj.respondsToPosition(relPos[0], relPos[1])) {
+        // Some tracks may want to click event even if it's outside
+        // of their bounds (an annotation track may want to deselect
+        // an annotation, for example)
+        trackObj.clickOutside();
+      }
+    }
+
+    const clickReturns = [];
+
+    for (const track of hoveredTracks) {
+      if (track.childTracks) {
+        // This is a combined track so add events for all child
+        // tracks
+        for (const subtrack of track.childTracks) {
+          clickReturns.push({
+            trackUid: subtrack.context.trackUid,
+            viewUid: subtrack.context.viewUid,
+            trackType: subtrack.context.trackType,
+            data: subtrack.click(relTrackX, relTrackY, evt),
+          });
+        }
+
+        // Add an event for the combined track itself
+        clickReturns.push({
+          trackUid: track.context.trackUid,
+          viewUid: track.context.viewUid,
+          trackType: track.context.trackType,
+          data: {
+            type: 'generic',
+            event: evt,
+          },
+        });
+      } else {
+        // Not a combined track so just add an event for
+        // this track
+        clickReturns.push({
+          trackUid: track.context.trackUid,
+          viewUid: track.context.viewUid,
+          trackType: track.context.trackType,
+          data: track.click(relTrackX, relTrackY, evt),
+        });
+      }
+    }
+
+    this.pubSub.publish('app.click', clickReturns);
+  }
+
   /**
    * Handle mousemove and zoom events.
    */
@@ -5204,6 +5300,7 @@ class HiGlassComponent extends React.Component {
                 ref={(c) => {
                   this.canvasElement = c;
                 }}
+                onClick={this.canvasClickHandlerBound}
                 styleName="styles.higlass-canvas"
               />
               <div
