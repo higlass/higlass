@@ -512,9 +512,8 @@ class HiGlassComponent extends React.Component {
       autoResize: true,
     };
     
-
     const version_number = parseInt(PIXI.VERSION[0])
-    
+
     if (version_number === 4) {
       console.warn(
         'Deprecation warning: please update Pixi.js to version 5 or above!',
@@ -524,18 +523,14 @@ class HiGlassComponent extends React.Component {
       } else {
         this.pixiRenderer = new GLOBALS.PIXI.WebGLRenderer(rendererOptions);
       }
-    } else if (version_number < 4) {
-      console.warn(
-        'Deprecation warning: please update Pixi.js to version 5 or above! ' +
-          'This version of Pixi.js is unsupported. Good luck 🤞',
-      );
-      if (this.props.options.renderer === 'canvas') {
-        this.pixiRenderer = new GLOBALS.PIXI.CanvasRenderer(rendererOptions);
-      } else {
-        this.pixiRenderer = new GLOBALS.PIXI.Renderer(rendererOptions);
-      }
     } else {
-      // version 5 or above
+      if (version_number < 4) {
+        console.warn(
+          'Deprecation warning: please update Pixi.js to version 5 or above! ' +
+          'This version of Pixi.js is unsupported. Good luck 🤞',
+        );
+      }
+
       if (this.props.options.renderer === 'canvas') {
         this.pixiRenderer = new GLOBALS.PIXI.CanvasRenderer(rendererOptions);
       } else {
