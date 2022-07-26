@@ -16,7 +16,6 @@ import { removeHGComponent } from '../app/scripts/utils';
 import { viewer } from '../app/scripts/hglib';
 
 configure({ adapter: new Adapter() });
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Add and remove viewconf', () => {
   let div = null;

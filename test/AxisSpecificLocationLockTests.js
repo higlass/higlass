@@ -17,7 +17,7 @@ import schema from '../app/schema.json';
 import viewconf from './view-configs/axis-specific-location-locks.json';
 
 configure({ adapter: new Adapter() });
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+jasmine.VAL = 30000;
 
 describe('Axis-specific location locks', () => {
   let hgc;

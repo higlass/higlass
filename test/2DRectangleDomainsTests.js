@@ -19,7 +19,6 @@ import {
 import viewconf from './view-configs/loop-annotations';
 
 configure({ adapter: new Adapter() });
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('2D Rectangular Domains', () => {
   let hgc = null;

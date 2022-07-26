@@ -25,8 +25,6 @@ import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 // import drag from './utils/drag';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
-
 function findCanvas(element) {
   if (element.tagName.toLowerCase() === 'canvas') return element;
   let canvas;
@@ -40,8 +38,6 @@ function findCanvas(element) {
   })(element.children);
   return canvas;
 }
-
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('API Tests', () => {
   let div = null;

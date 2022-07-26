@@ -170,7 +170,6 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
    * -------
    *  Nothing
    */
-  // console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
   if (isWaitingOnTiles(hgc)) {
     setTimeout(() => {
       waitForTilesLoaded(hgc, tilesLoadedCallback);

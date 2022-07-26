@@ -9,7 +9,7 @@ import { expect } from 'chai';
 import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
-describe('Minimal viewconfs', () => {
+describe('Track Labels Test', () => {
   describe('Minimal with CrossRule', () => {
     const viewconf = {
       editable: true,

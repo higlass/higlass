@@ -209,7 +209,7 @@ class AddTrackDialog extends React.Component {
               orientation={orientation}
               position={this.props.position}
             />
-          }
+          } 
         </>
       </Dialog>
     );
