@@ -511,32 +511,31 @@ class HiGlassComponent extends React.Component {
       resolution: 2,
       autoResize: true,
     };
+    
+    const version_number = parseInt(PIXI.VERSION[0])
 
-    switch (PIXI.VERSION[0]) {
-      case '4':
+    if (version_number === 4) {
+      console.warn(
+        'Deprecation warning: please update Pixi.js to version 5 or above!',
+      );
+      if (this.props.options.renderer === 'canvas') {
+        this.pixiRenderer = new GLOBALS.PIXI.CanvasRenderer(rendererOptions);
+      } else {
+        this.pixiRenderer = new GLOBALS.PIXI.WebGLRenderer(rendererOptions);
+      }
+    } else {
+      if (version_number < 4) {
         console.warn(
-          'Deprecation warning: please update Pixi.js to version 5!',
+          'Deprecation warning: please update Pixi.js to version 5 or above! ' +
+          'This version of Pixi.js is unsupported. Good luck 🤞',
         );
-        if (this.props.options.renderer === 'canvas') {
-          this.pixiRenderer = new GLOBALS.PIXI.CanvasRenderer(rendererOptions);
-        } else {
-          this.pixiRenderer = new GLOBALS.PIXI.WebGLRenderer(rendererOptions);
-        }
-        break;
+      }
 
-      default:
-        console.warn(
-          'Deprecation warning: please update Pixi.js to version 5! ' +
-            'This version of Pixi.js is unsupported. Good luck 🤞',
-        );
-      // eslint-disable-next-line
-      case '5':
-        if (this.props.options.renderer === 'canvas') {
-          this.pixiRenderer = new GLOBALS.PIXI.CanvasRenderer(rendererOptions);
-        } else {
-          this.pixiRenderer = new GLOBALS.PIXI.Renderer(rendererOptions);
-        }
-        break;
+      if (this.props.options.renderer === 'canvas') {
+        this.pixiRenderer = new GLOBALS.PIXI.CanvasRenderer(rendererOptions);
+      } else {
+        this.pixiRenderer = new GLOBALS.PIXI.Renderer(rendererOptions);
+      }
     }
 
     // PIXI.RESOLUTION=2;
