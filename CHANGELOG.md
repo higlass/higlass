@@ -6,7 +6,6 @@
 - Update a bunch of packages (most notably d3 packages which have a slightly different API)
 - Fix tests
 - Update scss to fix deprecation warnings
-- Remove pixi.js, react and react-dom as external packages
 
 ## v1.11.11
 
