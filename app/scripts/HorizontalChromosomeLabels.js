@@ -448,7 +448,6 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
       this.drawBoundsTicks(x1, x2);
 
-      console.log('tickTexts', this.tickTexts);
       return;
     }
 
