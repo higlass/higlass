@@ -17,6 +17,7 @@
     "tracks"
   ],
   "scripts": {
+    "dev": "vite",
     "start": "webpack-dev-server --config ./webpack.config.js --mode development",
     "build": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; webpack --config ./webpack.config.js --mode development; cp build/hglib.js dist/; cp app/index.html dist/; cp build/hglib.css dist/hglib.css;",
     "build-amd": "rm -rf build/*; rm -rf dist/*; mkdir -p dist/; webpack --config ./webpack.config.amd.js --mode development; cp build/hglib-amd.js dist/; cp build/hglib-amd.css dist/hglib-amd.css;",
@@ -105,6 +106,7 @@
     "@babel/preset-env": "^7.15.8",
     "@babel/preset-react": "^7.14.5",
     "@babel/runtime": "^7.15.4",
+    "@vitejs/plugin-react": "^2.0.1",
     "ajv-cli": "^5.0.0",
     "autoprefixer": "^10.4.2",
     "babel-eslint": "^10.0.1",
@@ -133,6 +135,7 @@
     "font-awesome": "^4.7.0",
     "fs": "0.0.2",
     "fs-extra": "^10.1.0",
+    "generic-names": "^4.0.0",
     "husky": "^7.0.4",
     "jasmine": "^4.0.2",
     "jasmine-core": "^4.0.0",
@@ -162,6 +165,7 @@
     "sass-loader": "^12.1.0",
     "style-loader": "^3.3.1",
     "terser-webpack-plugin": "^5.2.4",
+    "vite": "^3.0.9",
     "webpack": "^5.68.0",
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.9.1",
