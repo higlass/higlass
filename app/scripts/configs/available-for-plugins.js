@@ -96,6 +96,8 @@ import GBKDataFetcher from '../data-fetchers/genbank-fetcher';
 import LocalDataFetcher from '../data-fetchers/local-tile-fetcher';
 import getDataFetcher from '../data-fetchers/get-data-fetcher';
 
+import { version } from '../../../package.json';
+
 const libraries = {
   d3Array,
   d3Axis,
@@ -196,6 +198,5 @@ export default {
   services,
   utils,
   configs,
-  // Defined globally by webpack.
-  VERSION,
+  VERSION: version,
 };
