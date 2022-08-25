@@ -1,9 +1,9 @@
-.higlass {
-  // Third party styles should be added here so that they are name spaces
-  @import '../../node_modules/react-grid-layout/css/styles.css';
-  @import '../../node_modules/react-resizable/css/styles.css';
+// Third party styles should be added here so that they are name spaces
+@import 'react-grid-layout/css/styles.css';
+@import 'react-resizable/css/styles.css';
+@import 'prism.css';
 
-  @import 'prism.css';
+.higlass {
 
   // Enforce to avoid big-finger mode in Jupyter Lab
   * {

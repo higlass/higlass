@@ -116,9 +116,14 @@ class TrackRenderer extends React.Component {
     this.uid = slugid.nice();
     this.viewUid = this.props.uid;
 
-    this.availableForPlugins = AVAILABLE_FOR_PLUGINS;
-    this.availableForPlugins.services.pubSub = this.props.pubSub;
-    this.availableForPlugins.services.pixiRenderer = this.props.pixiRenderer;
+    this.availableForPlugins = {
+      ...AVAILABLE_FOR_PLUGINS,
+      services: {
+        ...AVAILABLE_FOR_PLUGINS.services,
+        pubSub: this.props.pubSub,
+        pixiRenderer: this.props.pixiRenderer,
+      }
+    };
 
     this.mounted = false;
 
