@@ -1,8 +1,9 @@
+// @ts-check
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { brushY } from 'd3-brush';
-import { select, event } from 'd3-selection';
+import { select } from 'd3-selection';
 import slugid from 'slugid';
 
 import ListWrapper from './ListWrapper';
@@ -20,11 +21,15 @@ import styles from '../styles/VerticalTiledPlot.module.scss'; // eslint-disable-
 import stylesPlot from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
 import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
 
+function sourceEvent(event) {
+  return event && event.sourceEvent;
+}
+
 class VerticalTiledPlot extends React.Component {
   constructor(props) {
     super(props);
 
-    this.brushBehavior = brushY(true)
+    this.brushBehavior = brushY()
       .on('start', this.brushStarted.bind(this))
       .on('brush', this.brushed.bind(this))
       .on('end', this.brushedEnded.bind(this));
@@ -77,9 +82,6 @@ class VerticalTiledPlot extends React.Component {
 
   /* --------------------------- Getter / Setter ---------------------------- */
 
-  get sourceEvent() {
-    return event && event.sourceEvent;
-  }
 
   /* ---------------------------- Custom Methods ---------------------------- */
 
@@ -102,13 +104,13 @@ class VerticalTiledPlot extends React.Component {
     );
   }
 
-  brushed() {
+  brushed(event) {
     // Need to reassign variable to check after reset
     const rangeSelectionMoved = this.rangeSelectionMoved;
     this.rangeSelectionMoved = false;
 
     if (
-      !this.sourceEvent ||
+      !sourceEvent(event) ||
       !this.props.onRangeSelection ||
       rangeSelectionMoved
     )
@@ -118,13 +120,13 @@ class VerticalTiledPlot extends React.Component {
     this.props.onRangeSelection(event.selection);
   }
 
-  brushStarted() {
-    if (!this.sourceEvent || !event.selection) return;
+  brushStarted(event) {
+    if (!sourceEvent(event) || !event.selection) return;
 
     this.props.onRangeSelectionStart();
   }
 
-  brushedEnded() {
+  brushedEnded(event) {
     if (!this.props.is1dRangeSelection) return;
 
     const rangeSelectionMovedEnd = this.rangeSelectionMovedEnd;

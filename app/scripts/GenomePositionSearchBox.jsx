@@ -1,4 +1,5 @@
-import { select, event } from 'd3-selection';
+// @ts-check
+import { select } from 'd3-selection';
 import React from 'react';
 import slugid from 'slugid';
 import PropTypes from 'prop-types';
@@ -476,7 +477,7 @@ class GenomePositionSearchBox extends React.Component {
     );
   }
 
-  autocompleteKeyPress() {
+  autocompleteKeyPress(event) {
     const ENTER_KEY_CODE = 13;
 
     if (event.keyCode === ENTER_KEY_CODE) {

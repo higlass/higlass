@@ -1,5 +1,4 @@
 import { brushX } from 'd3-brush';
-import { event } from 'd3-selection';
 import slugid from 'slugid';
 
 import SVGTrack from './SVGTrack';
@@ -58,7 +57,7 @@ class ViewportTrackerHorizontal extends SVGTrack {
     this.draw();
   }
 
-  brushed() {
+  brushed(event) {
     /**
      * Should only be called  on active brushing, not in response to the
      * draw event
