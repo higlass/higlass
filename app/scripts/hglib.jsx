@@ -32,7 +32,7 @@ export {
   getTrackObjectFromHGC,
 } from './utils';
 
-export const version = VERSION;
+export { version } from '../../package.json';
 
 const launch = (element, config, options) => {
   /**

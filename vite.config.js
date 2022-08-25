@@ -31,7 +31,7 @@ export default defineConfig({
 			formats: ["umd"],
 		},
 		rollupOptions: {
-			external: ["react", "react-dom", "pixi.js"],
+			// external: ["react", "react-dom", "pixi.js"],
 			output: {
 				globals: {
 					"react": "React",
@@ -44,6 +44,7 @@ export default defineConfig({
 	},
 	define: {
 		XYLOPHON: JSON.stringify(version),
+		global: "globalThis",
 	},
 	css: {
 		modules: { generateScopedName },
@@ -51,4 +52,9 @@ export default defineConfig({
 	plugins: [
 		react({ babel: { plugins: [reactCssModules] } }),
 	],
+	optimizeDeps: {
+		esbuildOptions: {
+			inject: [path.resolve(__dirname, "./app/buffer-shim.js")],
+		},
+	},
 });
