@@ -23,7 +23,6 @@ const reactCssModules = [
 ];
 
 export default defineConfig({
-	root: path.resolve(__dirname, "app"),
 	build: {
 		lib: {
 			entry: path.resolve(__dirname, "app/scripts/hglib.jsx"),
