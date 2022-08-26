@@ -55,7 +55,6 @@ export const areTransitionsActive = (hgc) => {
   for (const track of hgc.iterateOverTracks()) {
     const trackRenderer = getTrackRenderer(hgc, track.viewId, track.trackId);
 
-    console.log("HERE", trackRenderer)
     if (trackRenderer.activeTransitions > 0) return true;
   }
   return false;
