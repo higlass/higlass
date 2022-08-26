@@ -73,7 +73,7 @@ export default {
 		'test/GenomePositionSearchBoxTest.jsx', // works
 		'test/HeatmapTests.js', // works
 		'test/HiGlassComponentCreationTests.js', // works
-		// // // 'test/HiGlassComponent/*.js',
+		'test/HiGlassComponent/*.js',
 		// 'test/Horizontal1DTrackTests.js', // works
 		// 'test/HorizontalHeatmapTests.js', // works
 		// // The tests in HorizontalMultivecTests are overwriting

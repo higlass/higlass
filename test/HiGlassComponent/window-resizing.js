@@ -19,7 +19,7 @@ describe('Window resizing', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  beforeAll(async (done) => {
+  before(async (done) => {
     // await fetchMockHelper.activateFetchMock();
     const newViewConf = JSON.parse(JSON.stringify(project1D));
 
@@ -40,7 +40,7 @@ describe('Window resizing', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  after(async () => {
     removeHGComponent(div);
     // await fetchMockHelper.storeDataAndResetFetchMock();
   });

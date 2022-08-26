@@ -19,7 +19,7 @@ describe('Chromosome labels', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  beforeAll(async (done) => {
+  before(async (done) => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, geneAnnotationsOnly, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -29,7 +29,7 @@ describe('Chromosome labels', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  after(async () => {
     removeHGComponent(div);
     // await fetchMockHelper.storeDataAndResetFetchMock();
   });

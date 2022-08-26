@@ -30,7 +30,7 @@ describe('Track positioning', () => {
   let div = null;
   const fetchMockHelper = new FetchMockHelper(null, 'track-positioning');
 
-  beforeAll(async (done) => {
+  before(async (done) => {
     await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(
       div,
@@ -46,7 +46,7 @@ describe('Track positioning', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  after(async () => {
     removeHGComponent(div);
     await fetchMockHelper.storeDataAndResetFetchMock();
   });

@@ -19,7 +19,7 @@ describe('Two linked views', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  beforeAll(async (done) => {
+  before(async (done) => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(
       div,
@@ -35,7 +35,7 @@ describe('Two linked views', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  after(async () => {
     removeHGComponent(div);
     // await fetchMockHelper.storeDataAndResetFetchMock();
   });
