@@ -1,8 +1,5 @@
-/* eslint-env node, jasmine */
-import {
-  configure,
-  // render,
-} from 'enzyme';
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 
 import Adapter from 'enzyme-adapter-react-16';
 
@@ -18,13 +15,15 @@ import {
 
 import viewconf from './view-configs/loop-annotations';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('2D Rectangular Domains', () => {
+  /** @type {import('enzyme').ReactWrapper} */
   let hgc = null;
+  /** @type {HTMLElement | null} */
   let div = null;
 
-  beforeAll((done) => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -65,7 +64,7 @@ describe('2D Rectangular Domains', () => {
     expect(Object.keys(trackObj.drawnRects).length).to.eql(6);
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });

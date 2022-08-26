@@ -1,4 +1,5 @@
 import { createServer } from "vite";
+import { puppeteerLauncher } from "@web/test-runner-puppeteer";
 
 /** @returns {import('@web/test-runner').TestRunnerPlugin} */
 function vite() {
@@ -53,8 +54,8 @@ export default {
 	plugins: [vite()],
 	files: [
 		"test/AxisTests.js", // works
-		// 'test/AxisSpecificLocationLockTests.js', // works
-		// 'test/2DRectangleDomainsTests.js', // works
+		// "test/AxisSpecificLocationLockTests.js", // works
+		'test/2DRectangleDomainsTests.js', // works
 		// 'test/AddAndRemoveViewconfTests.js', // works
 		// 'test/AddTrackTests.js', // works
 		// "test/APITests.js", // works
@@ -102,7 +103,8 @@ export default {
 		// 'test/ZoomTests.js', // works individually
 	],
 	filterBrowserLogs: ({ type }) => {
-    // hide some console logging
-    return !["warn", "debug", "log"].includes(type);
+		// hide some console logging
+		return !["warn", "debug", "log"].includes(type);
 	},
+	// browsers: [ puppeteerLauncher({ launchOptions: { headless: false, devtools: true } }) ],
 };

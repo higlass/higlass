@@ -1,19 +1,34 @@
 // @ts-check
-import fetchMock from 'fetch-mock';
 
 // See vite.config.js
 const mockUrl = name => `/@mocked-responses/${name}.json`
+
+/**
+ * @typedef {((...args: [...Parameters<fetch>, fetch]) => Promise<unknown>)} CustomFetch<T>
+ */
+
+/**
+ * Wraps the current global fetch with a custom handler.
+ *
+ * @param {CustomFetch} customFetch user implemented data fetcher. Has access to original fetch.
+ * @return a function to restore the global fetch.
+ */
+function setFetch(customFetch) {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, init) => {
+    let data = await customFetch(url, init, originalFetch);
+    return new Response(JSON.stringify(data));
+  }
+  return function reset() {
+    globalThis.fetch = originalFetch;
+  }
+}
 
 class FetchMockHelper {
 
   constructor(viewConf, testName) {
     this.checkViewConf(viewConf);
-
-    fetchMock.config.fallbackToNetwork = false;
-    fetchMock.config.warnOnFallback = false;
-
     this.testName = testName;
-
     this.mockedData = {};
     this.writeToFile = false;
   }
@@ -27,24 +42,19 @@ class FetchMockHelper {
     return response.json();
   }
 
-  async getOriginalFetchResponse(url, headers) {
-    // This basically disables fetch-moch, so that we can call the original fetch
-    fetchMock.config.fallbackToNetwork = 'always';
+  async getOriginalFetchResponse(originalFetch, url, init) {
+    const response = await originalFetch(url, init);
 
-    const response = await fetch(url, headers);
     let data;
 
     if (
-      headers.headers['Content-Type'] === 'application/json' ||
-      headers.headers['content-type'] === 'application/json'
+      init.headers['Content-Type'] === 'application/json' ||
+      init.headers['content-type'] === 'application/json'
     ) {
       data = response.json();
     } else {
       data = response.text();
     }
-
-    // Switch fetch-mock on again
-    fetchMock.config.fallbackToNetwork = false;
     return data;
   }
 
@@ -53,7 +63,7 @@ class FetchMockHelper {
 
     // Since we are not using the actual mocking functionality of fetch-mock,
     // catch will intercept every call of the global fetch method
-    fetchMock.catch(async (url, headers) => {
+    this.reset = setFetch(async (url, init, originalFetch) => {
       const [requestIds, isTileData] = this.getRequestIds(url);
       let data = {};
 
@@ -79,9 +89,10 @@ class FetchMockHelper {
         console.warn(
           `Not all requests have been mocked. Loading ${url} from server.`,
         );
-        data = await this.getOriginalFetchResponse(url, headers);
+        data = await this.getOriginalFetchResponse(originalFetch, url, init);
         this.addToMockedData(data, isTileData ? null : url, requestIds);
       }
+
       return data;
     });
   }
@@ -105,6 +116,7 @@ class FetchMockHelper {
     }
 
     const mockedResponsesJSON = JSON.stringify(this.mockedData, null, 1);
+
     // POST data to our vite endpoint
     const response = await fetch(mockUrl(this.testName), {
       method: "POST",
@@ -118,7 +130,7 @@ class FetchMockHelper {
 
   async storeDataAndResetFetchMock() {
     await this.storeMockedDataToFile();
-    fetchMock.reset();
+    this.reset?.();
   }
 
   getRequestIds(url) {

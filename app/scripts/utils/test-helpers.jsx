@@ -55,6 +55,7 @@ export const areTransitionsActive = (hgc) => {
   for (const track of hgc.iterateOverTracks()) {
     const trackRenderer = getTrackRenderer(hgc, track.viewId, track.trackId);
 
+    console.log("HERE", trackRenderer)
     if (trackRenderer.activeTransitions > 0) return true;
   }
   return false;
@@ -183,8 +184,8 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
 /**
  * Mount a new HiGlassComponent and unmount the previously visible one.
  *
- * @param {HTML Element} div A div element to detach and recreate for the component
- * @param {Enzyme wrapped HiGlass component} prevHgc An already mounted
+ * @param {HTMLElement | null} prevDiv A div element to detach and recreate for the component
+ * @param {import('enzyme').ReactWrapper | null} prevHgc An already mounted
  *  hgc component
  * @param {function} done The callback to call when the component is fully loaded
  */
@@ -235,7 +236,7 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
     }
   });
 
-  return [div, hgc];
+  return /** @type {const} */ ([div, hgc]);
 };
 
 export const removeHGComponent = (div) => {
