@@ -1,4 +1,5 @@
-/* eslint-env node, jasmine */
+/* eslint-env node, mocha */
+import { expect } from 'chai';
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 
@@ -20,7 +21,7 @@ describe('PNG Export', () => {
         reader.addEventListener('loadend', () => {
           const array = new Uint8Array(reader.result.slice(1, 4));
           const pngString = new TextDecoder('iso-8859-2').decode(array);
-          expect(pngString).toEqual('PNG');
+          expect(pngString).to.equal('PNG');
           done();
         });
         reader.readAsArrayBuffer(blob);

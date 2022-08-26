@@ -89,21 +89,21 @@ export default {
 		'test/ndarray-flatten.spec.js', // works individually
 		'test/ndarray-to-list.spec.js', // works individually
 		'test/OSMTests.js', // works individually
-		// 'test/OverlayTrackTests.js', //works individually
-		// 'test/PluginDataFetcherTests.js', // works
-		// 'test/PluginTrackTests.js', // works individually
-		// 'test/PngExportTest.js', // works
-		// 'test/RuleTests.js', // works individually
-		// 'test/search_field_test.js', // works individually
-		// 'test/SVGExportTest.js', // works
-		// 'test/tile-proxy.js', // works
-		// 'test/TiledPixiTrackTests.js', //works individually
-		// 'test/TrackLabelsTest.js', //works individually
-		// 'test/UtilsTests.js', // works individually
-		// 'test/ViewConfigEditorTests.js', // works
-		// 'test/ViewManipulationTests.js', // skipped
-		// 'test/ViewportProjectionTests.js', // works
-		// 'test/ZoomTests.js', // works individually
+		"test/OverlayTrackTests.js", //works individually
+		// "test/PluginDataFetcherTests.js", // works
+		// "test/PluginTrackTests.js", // works individually
+		"test/PngExportTest.js", // works
+		"test/RuleTests.js", // works individually
+		// "test/search_field_test.js", // works individually
+		"test/SVGExportTest.js", // works
+		"test/tile-proxy.js", // works
+		// "test/TiledPixiTrackTests.js", //works individually
+		"test/TrackLabelsTest.js", //works individually
+		"test/UtilsTests.js", // works individually
+		// "test/ViewConfigEditorTests.js", // works
+		"test/ViewManipulationTests.js", // skipped
+		// "test/ViewportProjectionTests.js", // works
+		"test/ZoomTests.js", // works individually
 	],
 	filterBrowserLogs: ({ type }) => {
 		// hide some console logging

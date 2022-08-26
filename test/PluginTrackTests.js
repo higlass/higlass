@@ -1,4 +1,5 @@
-/* eslint-env node, jasmine */
+/* eslint-env node, mocha */
+import { expect } from 'chai';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
@@ -26,11 +27,11 @@ describe('Plugin track tests', () => {
     const trackRenderer = hgc.tiledPlots[viewConf.views[0].uid].trackRenderer;
     const dummyTrack = trackRenderer.trackDefObjects[trackUid].trackObject;
 
-    expect(trackRenderer.props.positionedTracks.length).toEqual(1);
+    expect(trackRenderer.props.positionedTracks.length).to.equal(1);
 
-    expect(dummyTrack.constructor.name).toEqual('DummyTrackClass');
+    expect(dummyTrack.constructor.name).to.equal('DummyTrackClass');
 
-    expect(dummyTrack.hgc).toEqual(trackRenderer.availableForPlugins);
+    expect({ ...dummyTrack.hgc }).to.deep.equal(trackRenderer.availableForPlugins);
   });
 
   afterEach(() => {
