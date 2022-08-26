@@ -1,24 +1,19 @@
-/* eslint-env node, jasmine, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 // Utils
 import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('HiGlass component creation tests', () => {
   let hgc = null;
   let div = null;
 
   describe('API tests', () => {
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(
         div,
         hgc,
@@ -31,7 +26,7 @@ describe('HiGlass component creation tests', () => {
       expect(hgc.instance().state.viewConfig.editable).to.eql(true);
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });

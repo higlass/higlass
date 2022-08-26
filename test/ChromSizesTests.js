@@ -1,11 +1,6 @@
-/* eslint-env node, jasmine, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 // Utils
@@ -143,14 +138,14 @@ const viewconf = {
   },
 };
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Chromsizes tests', () => {
   let hgc = null;
   let div = null;
 
   describe('Chromosome Grid Tests', () => {
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
         style: 'width:800px; height:800px; background-color: lightgreen',
         bounded: true,
@@ -166,7 +161,7 @@ describe('Chromsizes tests', () => {
       expect(trackObject.options.lineStrokeColor).to.eql('grey');
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });

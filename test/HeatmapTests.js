@@ -1,11 +1,6 @@
-/* eslint-env node, jasmine */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 // Utils
@@ -18,14 +13,14 @@ import {
 
 import { exportDataConfig } from './view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Heatmaps', () => {
   describe('Visualization', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, noDataTransform, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
@@ -41,7 +36,7 @@ describe('Heatmaps', () => {
       expect(Number.isNaN(rectData.data[0])).to.eql(false);
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });
@@ -50,7 +45,7 @@ describe('Heatmaps', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, exportDataConfig, done, {
         style: 'width:600px;height:1200px;background-color: lightgreen',
         bounded: true,
@@ -78,7 +73,7 @@ describe('Heatmaps', () => {
       // tp.exportData();
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });
@@ -87,7 +82,7 @@ describe('Heatmaps', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
@@ -104,7 +99,7 @@ describe('Heatmaps', () => {
       expect(rectData.shape[1]).to.eql(0);
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });
@@ -113,7 +108,7 @@ describe('Heatmaps', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, baseConf, done);
     });
 
@@ -171,7 +166,7 @@ describe('Heatmaps', () => {
       });
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });

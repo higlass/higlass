@@ -1,11 +1,6 @@
-/* eslint-env node, jasmine */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 // Utils
@@ -16,13 +11,13 @@ import {
   getTrackRenderer,
 } from '../app/scripts/utils';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Chromosome labels', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -52,7 +47,7 @@ describe('Chromosome labels', () => {
     expect(trackObj.tickTexts).to.have.property('chr17');
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });

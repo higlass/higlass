@@ -1,7 +1,7 @@
-/* eslint-env node, jasmine */
-import { configure, mount } from 'enzyme';
-
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import React from 'react';
 
@@ -18,9 +18,9 @@ import removeDiv from './utils/remove-div';
 
 import { geneAnnotationsOnly1, noGPSB } from './view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
-xdescribe('Genome position search box tests', () => {
+describe('Genome position search box tests', () => {
   let hgc = null;
   let div = null;
 
@@ -78,7 +78,7 @@ xdescribe('Genome position search box tests', () => {
       div.setAttribute('style', 'width:800px;background-color: lightgreen');
       div.setAttribute('id', 'simple-hg-component');
 
-      hgc = mount(
+      hgc = Enzyme.mount(
         <HiGlassComponent
           options={{ bounded: false }}
           viewConfig={geneAnnotationsOnly1}

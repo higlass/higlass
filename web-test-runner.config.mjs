@@ -64,15 +64,15 @@ export default {
 		// "test/APITests.js", // works
 		"test/BarTrackTests.js", // works
 		"test/BedLikeTests.js", // works
-		// 'test/ChromosomeLabelsTests.js', // works
-		// 'test/ChromSizesTests.js', // works
-		// 'test/DenseDataExtremaTests.js', // works
-		// 'test/EmptyTrackTests.js', // works
-		// 'test/GenbankFetcherTests.js', // works
-		// 'test/GeneAnnotationsTrackTests.js', // works
-		// 'test/GenomePositionSearchBoxTest.js', // works
-		// 'test/HeatmapTests.js', // works
-		// 'test/HiGlassComponentCreationTests.js', // works
+		"test/ChromosomeLabelsTests.js", // works
+		"test/ChromSizesTests.js", // works
+		// "test/DenseDataExtremaTests.js", // works
+		"test/EmptyTrackTests.js", // works
+		'test/GenbankFetcherTests.js', // works
+		'test/GeneAnnotationsTrackTests.js', // works
+		'test/GenomePositionSearchBoxTest.jsx', // works
+		'test/HeatmapTests.js', // works
+		'test/HiGlassComponentCreationTests.js', // works
 		// // // 'test/HiGlassComponent/*.js',
 		// 'test/Horizontal1DTrackTests.js', // works
 		// 'test/HorizontalHeatmapTests.js', // works
