@@ -1,12 +1,8 @@
 /* eslint-env node, jasmine */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
+
 import { oneViewConfig } from './view-configs';
 
 // Utils
@@ -17,13 +13,13 @@ import {
   waitForJsonComplete,
 } from '../app/scripts/utils';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Add track(s)', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, oneViewConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -290,7 +286,7 @@ describe('Add track(s)', () => {
     });
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });

@@ -60,7 +60,7 @@ export default {
 		// "test/AxisSpecificLocationLockTests.js", // works
 		"test/2DRectangleDomainsTests.js", // works
 		"test/AddAndRemoveViewconfTests.js", // works
-		// 'test/AddTrackTests.js', // works
+		'test/AddTrackTests.js', // works
 		// "test/APITests.js", // works
 		// 'test/BarTrackTests.js', // works
 		// 'test/BedLikeTests.js', // works
