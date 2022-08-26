@@ -43,7 +43,7 @@ describe('Track Labels Test', () => {
     };
     let hgc = null;
     let div = null;
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
 
@@ -53,7 +53,7 @@ describe('Track Labels Test', () => {
       expect(obj.labelText._style._fill).to.eql('#ff0000');
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });

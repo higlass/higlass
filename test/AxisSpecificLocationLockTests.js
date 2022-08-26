@@ -33,7 +33,7 @@ describe('Axis-specific location locks', () => {
     });
   });
 
-  afterAll(async () => {
+  after(async () => {
     removeHGComponent(div);
   });
 

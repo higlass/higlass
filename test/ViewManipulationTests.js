@@ -24,7 +24,7 @@ xdescribe('View manipulation tests', () => {
   let div = null;
 
   describe('Viewconf change tests', () => {
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, valueScaleLocksConf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
@@ -40,13 +40,13 @@ xdescribe('View manipulation tests', () => {
       expect(Object.keys(hgc.instance().valueScaleLocks).length).to.eql(0);
     });
 
-    // afterAll(() => {
+    // after(() => {
     //   // removeHGComponent(div);
     // });
   });
 
   describe('Viewport projection tests', () => {
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(
         div,
         hgc,
@@ -75,7 +75,7 @@ xdescribe('View manipulation tests', () => {
       });
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });

@@ -73,22 +73,22 @@ export default {
 		'test/GenomePositionSearchBoxTest.jsx', // works
 		'test/HeatmapTests.js', // works
 		'test/HiGlassComponentCreationTests.js', // works
-		'test/HiGlassComponent/*.js',
-		// 'test/Horizontal1DTrackTests.js', // works
-		// 'test/HorizontalHeatmapTests.js', // works
+		// 'test/HiGlassComponent/*.js',
+		'test/Horizontal1DTrackTests.js', // works
+		'test/HorizontalHeatmapTests.js', // works
 		// // The tests in HorizontalMultivecTests are overwriting
 		// // the default [div,hgc] created in beforeAll. This needs
 		// // to be fixed before they can be enabled
-		// // 'test/HorizontalMultivecTests.js', //fails
-		// 'test/LabelTests.js', // works
-		// 'test/LeftTrackModifierTests.js', // works
-		// 'test/LocalTileFetcherTests.js', // works
-		// 'test/LockTests.js', // works
-		// 'test/MinimalViewconfTest.js', // works
-		// 'test/ndarray-assign.spec.js', // works individually
-		// 'test/ndarray-flatten.spec.js', // works individually
-		// 'test/ndarray-to-list.spec.js', // works individually
-		// 'test/OSMTests.js', // works individually
+		// 'test/HorizontalMultivecTests.js', //fails
+		'test/LabelTests.js', // works
+		'test/LeftTrackModifierTests.js', // works
+		'test/LocalTileFetcherTests.js', // works
+		'test/LockTests.js', // works
+		'test/MinimalViewconfTest.js', // works
+		'test/ndarray-assign.spec.js', // works individually
+		'test/ndarray-flatten.spec.js', // works individually
+		'test/ndarray-to-list.spec.js', // works individually
+		'test/OSMTests.js', // works individually
 		// 'test/OverlayTrackTests.js', //works individually
 		// 'test/PluginDataFetcherTests.js', // works
 		// 'test/PluginTrackTests.js', // works individually

@@ -1,4 +1,6 @@
-/* eslint-env node, jasmine */
+// @ts-check
+/* eslint-env node, mocha */
+import { expect } from "chai";
 
 // Utils
 import {
@@ -33,7 +35,7 @@ describe('Horizontal 1D track tests', () => {
       );
 
       waitForTilesLoaded(hgc, () => {
-        expect(trackObj.constIndicator.children.length).toEqual(3);
+        expect(trackObj.constIndicator.children.length).to.equal(3);
         done();
       });
     });
@@ -68,14 +70,14 @@ describe('Horizontal 1D track tests', () => {
 
       waitForTilesLoaded(hgc, () => {
         // this should be
-        expect(trackObj.getDataAtPos(366)).not.toEqual(null);
+        expect(trackObj.getDataAtPos(366)).not.to.equal(null);
 
         // should be beyond the end of the data array because
         // it's past the end of the last tile
-        expect(trackObj.getDataAtPos(366)).toEqual(undefined);
+        expect(trackObj.getDataAtPos(366)).to.equal(undefined);
 
         // gene annotations don't currently have a mouseover function
-        expect(trackObjGeneAnnotations.getDataAtPos(10)).toEqual(null);
+        expect(trackObjGeneAnnotations.getDataAtPos(10)).to.equal(null);
         done();
       });
     });

@@ -21,7 +21,7 @@ describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, zoomLimitViewConf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -36,7 +36,7 @@ describe('Horizontal heatmaps', () => {
     expect(trackObj.calculateZoomLevel()).to.eql(1);
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });

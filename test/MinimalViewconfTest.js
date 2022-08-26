@@ -14,13 +14,13 @@ describe('Minimal viewconfs', () => {
     const viewconf = {};
     let hgc = null;
     let div = null;
-    beforeAll(done => {
+    before(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
     it('can load and unload', () => {
       expect(true).to.equal(true);
     });
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });
@@ -42,13 +42,13 @@ describe('Minimal viewconfs', () => {
     };
     let hgc = null;
     let div = null;
-    beforeAll(done => {
+    before(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
     it('can load and unload', () => {
       expect(true).to.equal(true);
     });
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });
@@ -72,13 +72,13 @@ describe('Minimal viewconfs', () => {
     };
     let hgc = null;
     let div = null;
-    beforeAll(done => {
+    before(done => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
     it('can load and unload', () => {
       expect(true).to.equal(true);
     });
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });

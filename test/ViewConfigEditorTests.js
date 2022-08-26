@@ -17,7 +17,7 @@ describe('View Config Editor', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewConf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -154,7 +154,7 @@ describe('View Config Editor', () => {
     ).toEqual(0);
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });

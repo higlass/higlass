@@ -24,7 +24,7 @@ describe('Simple HiGlassComponent', () => {
   let div = null;
 
   describe('Tiled Pixi Track Tests', () => {
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, simpleCenterViewConfig, done, {
         style: 'width:800px; height:800px; background-color: lightgreen',
         bounded: true,
@@ -50,7 +50,7 @@ describe('Simple HiGlassComponent', () => {
       });
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });

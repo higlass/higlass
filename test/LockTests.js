@@ -21,7 +21,7 @@ describe('Lock tests', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -62,7 +62,7 @@ describe('Lock tests', () => {
     expect(trackObj).not.to.eql(null);
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });

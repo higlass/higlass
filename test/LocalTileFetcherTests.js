@@ -22,7 +22,7 @@ describe('Local Tile Fetcher', () => {
 
   let div = null;
 
-  beforeAll((done) => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
       style: 'width:600px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -46,7 +46,7 @@ describe('Local Tile Fetcher', () => {
     expect(trackObj.zeroLine.fill.alpha).to.eql(1);
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });

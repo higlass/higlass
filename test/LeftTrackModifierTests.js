@@ -21,7 +21,7 @@ describe('Left track modifier', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, zoomLimitViewConf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -38,7 +38,7 @@ describe('Left track modifier', () => {
     expect(trackObj.originalTrack.id).to.eql('tt');
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });

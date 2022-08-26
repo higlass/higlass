@@ -38,7 +38,7 @@ describe('SVG Export', () => {
   describe('color bars 0-1 log', () => {
     let hgc = null;
     let div = null;
-    beforeAll(done => {
+    before(done => {
       const viewConf = JSON.parse(JSON.stringify(baseConf));
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0;
@@ -61,7 +61,7 @@ describe('SVG Export', () => {
       );
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });
@@ -69,7 +69,7 @@ describe('SVG Export', () => {
   describe('color bars 0.5-1 log', () => {
     let hgc = null;
     let div = null;
-    beforeAll(done => {
+    before(done => {
       const viewConf = JSON.parse(JSON.stringify(baseConf));
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0.5;
@@ -92,7 +92,7 @@ describe('SVG Export', () => {
       );
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });
@@ -152,7 +152,7 @@ describe('SVG Export', () => {
       ]
     };
 
-    beforeAll(done => {
+    before(done => {
       const viewConf = JSON.parse(JSON.stringify(addedRulesConf));
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0;
@@ -194,7 +194,7 @@ describe('SVG Export', () => {
       expect(Number(line[1].getAttribute('y1'))).to.equal(307.2001108175058);
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });

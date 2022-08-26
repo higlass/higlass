@@ -34,7 +34,7 @@ describe('Horizontal multivecs', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewConf1, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -523,7 +523,7 @@ describe('Horizontal multivecs', () => {
     );
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });

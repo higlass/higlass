@@ -44,7 +44,7 @@ describe('Rule tests', () => {
     };
     let hgc = null;
     let div = null;
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
 
@@ -93,7 +93,7 @@ describe('Rule tests', () => {
       expect(obj1Width).to.equal(obj2Width);
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });

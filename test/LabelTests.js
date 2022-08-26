@@ -23,7 +23,7 @@ describe('Label test', () => {
   describe('Axis texts', () => {
     let hgc = null;
     let div = null;
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
@@ -84,7 +84,7 @@ describe('Label test', () => {
       );
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });
@@ -92,7 +92,7 @@ describe('Label test', () => {
   describe('Label text options', () => {
     let hgc = null;
     let div = null;
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
@@ -110,7 +110,7 @@ describe('Label test', () => {
       expect(track6.labelText.text.startsWith('hg19 | ')).to.be.false;
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });
@@ -118,7 +118,7 @@ describe('Label test', () => {
   describe('Heatmap label tests', () => {
     let hgc = null;
     let div = null;
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconfSplitHeatmaps, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
@@ -135,7 +135,7 @@ describe('Label test', () => {
       expect(trackObj.labelText.alpha).to.be.eql(0);
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });
