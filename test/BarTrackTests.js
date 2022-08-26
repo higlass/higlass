@@ -25,7 +25,7 @@ describe('BarTrack tests', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
   });
 
@@ -75,7 +75,7 @@ describe('BarTrack tests', () => {
     });
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });

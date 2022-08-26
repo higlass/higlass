@@ -62,7 +62,7 @@ export default {
 		"test/AddAndRemoveViewconfTests.js", // works
 		'test/AddTrackTests.js', // works
 		// "test/APITests.js", // works
-		// 'test/BarTrackTests.js', // works
+		'test/BarTrackTests.js', // works
 		// 'test/BedLikeTests.js', // works
 		// 'test/ChromosomeLabelsTests.js', // works
 		// 'test/ChromSizesTests.js', // works
