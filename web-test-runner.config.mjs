@@ -1,7 +1,10 @@
 import { createServer } from 'vite';
-import { puppeteerLauncher } from '@web/test-runner-puppeteer';
 
-/** @returns {import('@web/test-runner').TestRunnerPlugin} */
+/**
+ * A plugin to power web-dev-server with Vite.
+ *
+ * @returns {import('@web/test-runner').TestRunnerPlugin}
+ */
 function vite() {
   /** @type {import('vite').ViteDevServer} */
   let server;
@@ -109,5 +112,4 @@ export default {
     // hide some console logging
     return !['warn', 'debug', 'log'].includes(type);
   },
-  // browsers: [ puppeteerLauncher({ launchOptions: { headless: false, devtools: true } }) ],
 };

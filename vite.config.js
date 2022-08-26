@@ -24,9 +24,26 @@ const reactCssModules = [
   },
 ];
 
-// extend vite server with read/write endpoint for ./test/utils/FetchMockHelper.js
-/** @returns {import('vite').Plugin} */
-const mockedReponsesPlugin = () => {
+/**
+ * Extends Vite with read/write endpoint.
+ * Used in ./test/utils/FetchMockHelper.js 
+ *
+ * @example
+ * // read contents of "/test/mocked-responses/foo.json"
+ * let resp = await fetch("/@mocked-responses/foo.json");
+ * let data = await resp.json();
+ *
+ * @example
+ * // writes file to "/test/mocked-responses/foo.json"
+ * let resp = await = fetch("/@mocked-responses/foo.json", {
+ *   method: "POST",
+ *   body: JSON.stringify({ bar: "baz" }),
+ * });
+ * resp.ok // true;
+ *
+ * @returns {import('vite').Plugin} 
+ */
+function mockedReponsesPlugin() {
   let realRoute = '/test/mocked-responses/';
   let magicRoute = '/@mocked-responses/';
 
