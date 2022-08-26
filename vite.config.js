@@ -3,6 +3,8 @@ import react from "@vitejs/plugin-react";
 import genericNames from "generic-names";
 
 import * as path from "node:path";
+import * as fs from "fs";
+
 import { version } from "./package.json";
 
 // Necessary have consistent hashing for `react-css-modules` and `css` modules
@@ -21,6 +23,43 @@ const reactCssModules = [
 		},
 	},
 ];
+
+// extend vite server with read/write endpoint for ./test/utils/FetchMockHelper.js
+/** @returns {import('vite').Plugin} */
+const mockedReponsesPlugin = () => {
+	let realRoute = "/test/mocked-responses/";
+	let magicRoute = "/@mocked-responses/";
+
+	return {
+		name: "mocked-responses",
+		apply: "serve",
+		configureServer(server) {
+			server.middlewares.use(async (req, res, next) => {
+				if (!req.url.startsWith(magicRoute)) {
+					next();
+					return;
+				}
+				if (req.method === "POST" && req.readable) {
+					let file = path.resolve(
+						__dirname,
+						`.${realRoute}`,
+						req.url.slice(magicRoute.length),
+					);
+					req.pipe(fs.createWriteStream(file));
+					req.on("end", () => {
+						res.statusCode = 201;
+						res.end();
+					});
+					req.on("error", next);
+					return;
+				}
+				// remove magic and let vite handle...
+				req.url = req.url?.replace(magicRoute, realRoute);
+				next();
+			});
+		},
+	};
+};
 
 export default defineConfig({
 	build: {
@@ -50,6 +89,7 @@ export default defineConfig({
 	},
 	plugins: [
 		react({ babel: { plugins: [reactCssModules] } }),
+		mockedReponsesPlugin(),
 	],
 	optimizeDeps: {
 		esbuildOptions: {

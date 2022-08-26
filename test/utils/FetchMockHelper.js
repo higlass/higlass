@@ -1,22 +1,13 @@
+// @ts-check
 import fetchMock from 'fetch-mock';
 
-const timeout = (prom, time, ret) =>
-  Promise.race([
-    prom,
-    new Promise((_r, rej) =>
-      setTimeout(() => {
-        _r(ret);
-      }, time),
-    ),
-  ]);
-
-const TIMEOUT_TIME = 1000;
+// See vite.config.js
+const mockUrl = name => `/@mocked-responses/${name}.json`
 
 class FetchMockHelper {
+
   constructor(viewConf, testName) {
     this.checkViewConf(viewConf);
-
-    this.server = require('karma-server-side'); // eslint-disable-line
 
     fetchMock.config.fallbackToNetwork = false;
     fetchMock.config.warnOnFallback = false;
@@ -32,26 +23,8 @@ class FetchMockHelper {
     // the FetchMockHelper doesn't end up timing out. If it doesn't
     // return within 1 second, we'll return an empty object
     // and let higlass fetch the data from its original source
-    const mockedResponses = await timeout(
-      this.server.run(this.testName, function (testName) {
-        try {
-          const fs = serverRequire('fs-extra'); // eslint-disable-line
-          const path = `./test/mocked-responses/${testName}.json`;
-
-          // Read currently available mocked responses
-          if (fs.pathExistsSync(path)) {
-            return fs.readJsonSync(path);
-          }
-          return {};
-        } catch (error) {
-          return error;
-        }
-      }),
-      TIMEOUT_TIME,
-      {},
-    );
-
-    return mockedResponses;
+    const response = await fetch(mockUrl(this.testName));
+    return response.json();
   }
 
   async getOriginalFetchResponse(url, headers) {
@@ -132,30 +105,13 @@ class FetchMockHelper {
     }
 
     const mockedResponsesJSON = JSON.stringify(this.mockedData, null, 1);
+    // POST data to our vite endpoint
+    const response = await fetch(mockUrl(this.testName), {
+      method: "POST",
+      body: mockedResponsesJSON,
+    });
 
-    const response = await timeout(
-      this.server.run(
-        this.testName,
-        mockedResponsesJSON,
-        function (testName, data) {
-          try {
-            // If the test is run by Travis, don't write the file
-            if (!process.env.TRAVIS) {
-              const fs = serverRequire('fs-extra'); // eslint-disable-line
-              const path = `./test/mocked-responses/${testName}.json`;
-              fs.writeFileSync(path, data);
-            }
-          } catch (error) {
-            return error;
-          }
-          return null;
-        },
-      ),
-      TIMEOUT_TIME,
-      null,
-    );
-
-    if (response !== null) {
+    if (!response.ok) {
       console.error('Could not store mocked responses', response);
     }
   }
