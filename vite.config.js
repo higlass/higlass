@@ -62,6 +62,11 @@ const mockedReponsesPlugin = () => {
 };
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      'enzyme-adapter-react-16': '@wojtekmaj/enzyme-adapter-react-17'
+    }
+  },
 	build: {
 		lib: {
 			entry: path.resolve(__dirname, "app/scripts/hglib.jsx"),

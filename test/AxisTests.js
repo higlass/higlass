@@ -1,12 +1,8 @@
-/* eslint-env node, jasmine, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
-import { expect } from 'chai';
-
+// @ts-check
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import FetchMockHelper from './utils/FetchMockHelper';
 
@@ -16,9 +12,9 @@ import {
   getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
-import viewconf from './view-configs/axis';
+import viewconf from './view-configs/axis.json';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Axis tests', () => {
   let hgc = null;
@@ -27,7 +23,7 @@ describe('Axis tests', () => {
   const fetchMockHelper = new FetchMockHelper(null, 'AxisTests');
 
   describe('Axis tets', () => {
-    beforeAll(async () => {
+    before(async () => {
       await fetchMockHelper.activateFetchMock();
       await new Promise((resolve) => {
         [div, hgc] = mountHGComponent(div, hgc, viewconf, resolve, {
@@ -86,7 +82,7 @@ describe('Axis tests', () => {
       );
     });
 
-    afterAll(async () => {
+    after(async () => {
       removeHGComponent(div);
       await fetchMockHelper.storeDataAndResetFetchMock();
     });

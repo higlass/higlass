@@ -36,11 +36,10 @@ const testRunnerHtml = (testRunnerImport) =>
 <html>
   <head>
     <script type="module">
-      // Note: globals expected by @testing-library/react
-      window.global = window;
-      window.process = { env: {} };
       // Note: adapted from https://github.com/vitejs/vite/issues/1984#issuecomment-778289660
       // Note: without this you'll run into https://github.com/vitejs/vite-plugin-react/pull/11#discussion_r430879201
+      window.global = window;
+      window.process = { env: {} };
       window.__vite_plugin_react_preamble_installed__ = true;
     </script>
     <script type="module" src="${testRunnerImport}"></script>
@@ -102,4 +101,8 @@ export default {
 		// 'test/ViewportProjectionTests.js', // works
 		// 'test/ZoomTests.js', // works individually
 	],
+	filterBrowserLogs: ({ type }) => {
+    // hide some console logging
+    return !["warn", "debug", "log"].includes(type);
+	},
 };
