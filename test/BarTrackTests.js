@@ -1,11 +1,6 @@
-/* eslint-env node, jasmine, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 // Utils
@@ -19,7 +14,7 @@ import {
 
 import viewConf from './view-configs/bar';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('BarTrack tests', () => {
   let hgc = null;
