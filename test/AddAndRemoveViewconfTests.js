@@ -1,11 +1,6 @@
-/* eslint-env node, jasmine, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 import { simpleCenterViewConfig } from './view-configs';
@@ -15,14 +10,14 @@ import { removeHGComponent } from '../app/scripts/utils';
 
 import { viewer } from '../app/scripts/hglib';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Add and remove viewconf', () => {
   let div = null;
   let api = null;
 
   describe('API tests', () => {
-    beforeAll(() => {
+    before(() => {
       div = global.document.createElement('div');
       global.document.body.appendChild(div);
 
@@ -48,7 +43,7 @@ describe('Add and remove viewconf', () => {
       expect(newViewConf.trackSourceServers[0]).to.eql('http://blah');
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });

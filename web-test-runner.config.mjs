@@ -51,12 +51,15 @@ const testRunnerHtml = (testRunnerImport) =>
 /** @type {import('@web/test-runner').TestRunnerConfig} */
 export default {
 	testRunnerHtml,
+  testFramework: {
+    config: { timeout: 100000 }
+  },
 	plugins: [vite()],
 	files: [
 		"test/AxisTests.js", // works
 		// "test/AxisSpecificLocationLockTests.js", // works
-		'test/2DRectangleDomainsTests.js', // works
-		// 'test/AddAndRemoveViewconfTests.js', // works
+		"test/2DRectangleDomainsTests.js", // works
+		"test/AddAndRemoveViewconfTests.js", // works
 		// 'test/AddTrackTests.js', // works
 		// "test/APITests.js", // works
 		// 'test/BarTrackTests.js', // works
