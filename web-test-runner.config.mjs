@@ -16,10 +16,12 @@ function vite() {
       const port = server.config.server.port;
       const protocol = server.config.server.https ? 'https' : 'http';
       app.use(async (ctx, next) => {
+        // ignore web-dev-server stuff
         if (ctx.originalUrl.includes('@web/test-runner')) {
           await next();
           return;
         }
+        // pass off request to vite
         ctx.redirect(`${protocol}://localhost:${port}${ctx.originalUrl}`);
       });
     },
@@ -53,63 +55,65 @@ const testRunnerHtml = (testRunnerImport) =>
 
 /** @type {import('@web/test-runner').TestRunnerConfig} */
 export default {
-  testRunnerHtml,
-  testFramework: {
-    config: { timeout: 100000 },
-  },
   plugins: [vite()],
-  files: [
-    'test/AxisTests.js', // works
-    // "test/AxisSpecificLocationLockTests.js", // works
-    'test/2DRectangleDomainsTests.js', // works
-    'test/AddAndRemoveViewconfTests.js', // works
-    'test/AddTrackTests.js', // works
-    // "test/APITests.js", // works
-    'test/BarTrackTests.js', // works
-    'test/BedLikeTests.js', // works
-    'test/ChromosomeLabelsTests.js', // works
-    'test/ChromSizesTests.js', // works
-    // "test/DenseDataExtremaTests.js", // works
-    'test/EmptyTrackTests.js', // works
-    'test/GenbankFetcherTests.js', // works
-    'test/GeneAnnotationsTrackTests.js', // works
-    'test/GenomePositionSearchBoxTest.jsx', // works
-    'test/HeatmapTests.js', // works
-    'test/HiGlassComponentCreationTests.js', // works
-    // 'test/HiGlassComponent/*.js',
-    'test/Horizontal1DTrackTests.js', // works
-    'test/HorizontalHeatmapTests.js', // works
-    // // The tests in HorizontalMultivecTests are overwriting
-    // // the default [div,hgc] created in beforeAll. This needs
-    // // to be fixed before they can be enabled
-    // 'test/HorizontalMultivecTests.js', //fails
-    'test/LabelTests.js', // works
-    'test/LeftTrackModifierTests.js', // works
-    'test/LocalTileFetcherTests.js', // works
-    'test/LockTests.js', // works
-    'test/MinimalViewconfTest.js', // works
-    'test/ndarray-assign.spec.js', // works individually
-    'test/ndarray-flatten.spec.js', // works individually
-    'test/ndarray-to-list.spec.js', // works individually
-    'test/OSMTests.js', // works individually
-    'test/OverlayTrackTests.js', //works individually
-    // "test/PluginDataFetcherTests.js", // works
-    // "test/PluginTrackTests.js", // works individually
-    'test/PngExportTest.js', // works
-    'test/RuleTests.js', // works individually
-    // "test/search_field_test.js", // works individually
-    'test/SVGExportTest.js', // works
-    'test/tile-proxy.js', // works
-    // "test/TiledPixiTrackTests.js", //works individually
-    'test/TrackLabelsTest.js', //works individually
-    'test/UtilsTests.js', // works individually
-    // "test/ViewConfigEditorTests.js", // works
-    'test/ViewManipulationTests.js', // skipped
-    // "test/ViewportProjectionTests.js", // works
-    'test/ZoomTests.js', // works individually
-  ],
+  // html loaded for each file (loads test runner + vite globals)
+  testRunnerHtml,
+  // how long a test file can take to finish. 240000 (4 min)
+  testsFinishTimeout: 1000 * 60 * 4,
+  // mocha config https://mochajs.org/api/mocha
+  testFramework: { config: { timeout: 100000 } },
+  // hide some console logging
   filterBrowserLogs: ({ type }) => {
-    // hide some console logging
     return !['warn', 'debug', 'log'].includes(type);
   },
+  files: [
+    'test/AxisTests.js',
+    'test/AxisSpecificLocationLockTests.js',
+    'test/2DRectangleDomainsTests.js',
+    'test/AddAndRemoveViewconfTests.js',
+    'test/AddTrackTests.js',
+    'test/APITests.js',
+    'test/BarTrackTests.js',
+    'test/BedLikeTests.js',
+    'test/ChromosomeLabelsTests.js',
+    'test/ChromSizesTests.js',
+    'test/DenseDataExtremaTests.js',
+    'test/EmptyTrackTests.js',
+    'test/GenbankFetcherTests.js',
+    'test/GeneAnnotationsTrackTests.js',
+    'test/GenomePositionSearchBoxTest.jsx',
+    'test/HeatmapTests.js',
+    'test/HiGlassComponentCreationTests.js',
+    'test/HiGlassComponent/*.jsx?',
+    'test/Horizontal1DTrackTests.js',
+    'test/HorizontalHeatmapTests.js',
+    // The tests in HorizontalMultivecTests are overwriting
+    // the default [div,hgc] created in beforeAll. This needs
+    // to be fixed before they can be enabled
+    // 'test/HorizontalMultivecTests.js', //fails
+    'test/LabelTests.js',
+    'test/LeftTrackModifierTests.js',
+    'test/LocalTileFetcherTests.js',
+    'test/LockTests.js',
+    'test/MinimalViewconfTest.js',
+    'test/ndarray-assign.spec.js',
+    'test/ndarray-flatten.spec.js',
+    'test/ndarray-to-list.spec.js',
+    'test/OSMTests.js',
+    'test/OverlayTrackTests.js',
+    // "test/PluginDataFetcherTests.js",
+    // "test/PluginTrackTests.js",
+    'test/PngExportTest.js',
+    'test/RuleTests.js',
+    'test/search_field_test.js',
+    'test/SVGExportTest.js',
+    'test/tile-proxy.js',
+    'test/TiledPixiTrackTests.js',
+    'test/TrackLabelsTest.js',
+    'test/UtilsTests.js',
+    'test/ViewConfigEditorTests.js',
+    'test/ViewManipulationTests.js', // skipped
+    'test/ViewportProjectionTests.js',
+    'test/ZoomTests.js',
+  ],
 };

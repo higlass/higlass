@@ -1,8 +1,6 @@
-/* eslint-env node, jasmine, mocha */
-import { configure } from 'enzyme';
-
+/* eslint-env node, mocha */
+import Enzyme from  'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 import Ajv from 'ajv';
@@ -16,16 +14,15 @@ import {
 import schema from '../app/schema.json';
 import viewconf from './view-configs/axis-specific-location-locks.json';
 
-configure({ adapter: new Adapter() });
-jasmine.VAL = 30000;
+Enzyme.configure({ adapter: new Adapter() });
+// jasmine.VAL = 30000;
 
 describe('Axis-specific location locks', () => {
   let hgc;
   let div;
 
   beforeEach(async () => {
-    await new Promise((resolve, reject) => {
-      console.log('here111');
+    await new Promise(resolve  => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, resolve, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,

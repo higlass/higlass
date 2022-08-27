@@ -1,4 +1,5 @@
-/* eslint-env node, jasmine */
+/* eslint-env node, mocha */
+import { expect } from 'chai';
 
 // Utils
 import {
@@ -39,8 +40,8 @@ describe('Viewport projection tests', () => {
 
         const viewportRect = trackObj.gMain.select('rect.selection');
 
-        expect(viewportRect.style('color')).toEqual('rgb(51, 51, 51)');
-        expect(viewportRect.style('fill')).toEqual('rgb(0, 0, 0)');
+        expect(viewportRect.style('color')).to.equal('rgb(51, 51, 51)');
+        expect(viewportRect.style('fill')).to.equal('rgb(0, 0, 0)');
 
         done();
       }, 0);
@@ -75,8 +76,8 @@ describe('Viewport projection tests', () => {
       const ixd2 = api.getComponent().xScales.aa.domain();
 
       // shouldn't have zoomed because deltaY = 0
-      expect(ixd1[0]).toEqual(ixd2[0]);
-      expect(ixd1[1]).toEqual(ixd2[1]);
+      expect(ixd1[0]).to.equal(ixd2[0]);
+      expect(ixd1[1]).to.equal(ixd2[1]);
 
       done();
     });
@@ -110,8 +111,8 @@ describe('Viewport projection tests', () => {
       const ixd2 = api.getComponent().xScales.aa.domain();
 
       // shouldn't have zoomed because deltaY = 0
-      expect(ixd1[0]).not.toEqual(ixd2[0]);
-      expect(ixd1[1]).not.toEqual(ixd2[1]);
+      expect(ixd1[0]).not.to.equal(ixd2[0]);
+      expect(ixd1[1]).not.to.equal(ixd2[1]);
 
       done();
     });
@@ -151,9 +152,9 @@ describe('Viewport projection without linked views tests', () => {
 
       const viewportRect = trackObj.gMain.select('rect.selection');
 
-      expect(Math.round(viewportRect.attr('y'))).toEqual(0);
-      expect(Math.round(viewportRect.attr('width'))).toEqual(59);
-      expect(viewportRect.attr('fill')).toEqual('#F00');
+      expect(Math.round(viewportRect.attr('y'))).to.equal(0);
+      expect(Math.round(viewportRect.attr('width'))).to.equal(59);
+      expect(viewportRect.attr('fill')).to.equal('#F00');
 
       done();
     });
@@ -172,9 +173,9 @@ describe('Viewport projection without linked views tests', () => {
 
       const viewportRect = trackObj.gMain.select('rect.selection');
 
-      expect(Math.round(viewportRect.attr('x'))).toEqual(0);
-      expect(Math.round(viewportRect.attr('height'))).toEqual(18);
-      expect(viewportRect.attr('fill')).toEqual('#0F0');
+      expect(Math.round(viewportRect.attr('x'))).to.equal(0);
+      expect(Math.round(viewportRect.attr('height'))).to.equal(18);
+      expect(viewportRect.attr('fill')).to.equal('#0F0');
 
       done();
     });
@@ -193,9 +194,9 @@ describe('Viewport projection without linked views tests', () => {
 
       const viewportRect = trackObj.gMain.select('rect.selection');
 
-      expect(Math.round(viewportRect.attr('width'))).toEqual(59);
-      expect(Math.round(viewportRect.attr('height'))).toEqual(18);
-      expect(viewportRect.attr('fill')).toEqual('#00F');
+      expect(Math.round(viewportRect.attr('width'))).to.equal(59);
+      expect(Math.round(viewportRect.attr('height'))).to.equal(18);
+      expect(viewportRect.attr('fill')).to.equal('#00F');
 
       done();
     });
@@ -213,10 +214,10 @@ describe('Viewport projection without linked views tests', () => {
       const oldViewConfig = api.getViewConfig();
       expect(
         Math.round(oldViewConfig.views[0].tracks.whole[0].projectionXDomain[0]),
-      ).toEqual(225681610);
+      ).to.equal(225681610);
       expect(
         Math.round(oldViewConfig.views[0].tracks.whole[0].projectionXDomain[1]),
-      ).toEqual(226375262);
+      ).to.equal(226375262);
 
       api.on('viewConfig', (newViewConfigString) => {
         const newViewConfig = JSON.parse(newViewConfigString);
@@ -224,12 +225,12 @@ describe('Viewport projection without linked views tests', () => {
           Math.round(
             newViewConfig.views[0].tracks.whole[0].projectionXDomain[0],
           ),
-        ).toEqual(225681615);
+        ).to.equal(225681615);
         expect(
           Math.round(
             newViewConfig.views[0].tracks.whole[0].projectionXDomain[1],
           ),
-        ).toEqual(226375265);
+        ).to.equal(226375265);
 
         done();
       });

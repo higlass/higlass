@@ -48,8 +48,8 @@ class FetchMockHelper {
     let data;
 
     if (
-      init.headers['Content-Type'] === 'application/json' ||
-      init.headers['content-type'] === 'application/json'
+      init?.headers?.['Content-Type'] === 'application/json' ||
+      init?.headers?.['content-type'] === 'application/json'
     ) {
       data = response.json();
     } else {
