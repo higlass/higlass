@@ -43,11 +43,9 @@ describe('Genome position search box tests', () => {
       waitForJsonComplete(() => {
         const positionText = hgc.genomePositionSearchBoxes.aa.positionText;
 
-        expect(hgc.genomePositionSearchBoxes.aa.assemblyPickButton).toEqual(
-          undefined,
-        );
+        expect(hgc.genomePositionSearchBoxes.aa.assemblyPickButton).to.be.undefined;
 
-        expect(positionText.indexOf('bar')).toBeGreaterThan(-1);
+        expect(positionText.indexOf('bar')).to.be.greaterThan(-1);
         done();
       });
     });
@@ -106,8 +104,8 @@ describe('Genome position search box tests', () => {
           const secondDomain = hgc.instance().xScales.aa.domain();
           // make sure that we zoomed somwhere
 
-          expect(firstDomain[0]).not.toEqual(secondDomain[0]);
-          expect(firstDomain[1]).not.toEqual(secondDomain[1]);
+          expect(firstDomain[0]).not.to.equal(secondDomain[0]);
+          expect(firstDomain[1]).not.to.equal(secondDomain[1]);
           done();
         });
       });
@@ -144,7 +142,7 @@ describe('Genome position search box tests', () => {
       div.setAttribute('style', 'width:800px;background-color: lightgreen');
       div.setAttribute('id', 'simple-hg-component');
 
-      hgc = mount(
+      hgc = Enzyme.mount(
         <HiGlassComponent options={{ bounded: false }} viewConfig={noGPSB} />,
         { attachTo: div },
       );
@@ -158,12 +156,12 @@ describe('Genome position search box tests', () => {
       // In which case, it should be a `before` or `before_each` and not `it`.
       // let assemblyPickButton =
       hgc.find('.assembly-pick-button');
-      // expect(assemblyPickButton.length).toEqual(0);
+      // expect(assemblyPickButton.length).to.equal(0);
       hgc.instance().handleTogglePositionSearchBox('aa');
       hgc.update();
       // assemblyPickButton =
       hgc.find('.assembly-pick-button');
-      // expect(assemblyPickButton.length).toEqual(1);
+      // expect(assemblyPickButton.length).to.equal(1);
       waitForJsonComplete(done);
     });
 
@@ -171,7 +169,7 @@ describe('Genome position search box tests', () => {
       hgc.update();
       expect(
         hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly,
-      ).toEqual('mm9');
+      ).to.equal('mm9');
     });
 
     it('Switch the selected genome to dm3', (done) => {
@@ -191,7 +189,7 @@ describe('Genome position search box tests', () => {
     it('Makes sure that no genes are loaded', () => {
       expect(
         hgc.instance().genomePositionSearchBoxes.aa.state.genes.length,
-      ).toEqual(0);
+      ).to.equal(0);
     });
 
     it('Switch the selected genome to mm9', (done) => {
@@ -223,8 +221,8 @@ describe('Genome position search box tests', () => {
     it('Expects the view to have changed location (1)', () => {
       const { zoomTransform } = hgc.instance().tiledPlots.aa.trackRenderer;
 
-      expect(zoomTransform.k - 47).toBeLessThan(1);
-      expect(zoomTransform.x - 2224932).toBeLessThan(1);
+      expect(zoomTransform.k - 47).to.be.lessThan(1);
+      expect(zoomTransform.x - 2224932).to.be.lessThan(1);
     });
 
     it('Checks that autocomplete fetches some genes', (done) => {
@@ -238,10 +236,10 @@ describe('Genome position search box tests', () => {
       // don't use the human autocomplete id
       expect(
         hgc.instance().genomePositionSearchBoxes.aa.state.autocompleteId,
-      ).not.toEqual('OHJakQICQD6gTD7skx4EWA');
+      ).not.to.equal('OHJakQICQD6gTD7skx4EWA');
       expect(
         hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName,
-      ).toEqual('Gt(ROSA)26Sor');
+      ).to.equal('Gt(ROSA)26Sor');
 
       waitForJsonComplete(done);
     });
@@ -275,15 +273,15 @@ describe('Genome position search box tests', () => {
     it('Expects the view to have changed location (2)', () => {
       const { zoomTransform } = hgc.instance().tiledPlots.aa.trackRenderer;
 
-      expect(zoomTransform.k - 234).toBeLessThan(1);
-      expect(zoomTransform.x + 7656469).toBeLessThan(1);
+      expect(zoomTransform.k - 234).to.be.lessThan(1);
+      expect(zoomTransform.x + 7656469).to.be.lessThan(1);
     });
 
     it('Ensures that the autocomplete has changed', (done) => {
       hgc.instance().genomePositionSearchBoxes.aa.onAutocompleteChange({}, '');
       expect(
         hgc.instance().genomePositionSearchBoxes.aa.state.autocompleteId,
-      ).toEqual('OHJakQICQD6gTD7skx4EWA');
+      ).to.equal('OHJakQICQD6gTD7skx4EWA');
 
       waitForJsonComplete(done);
     });
@@ -291,7 +289,7 @@ describe('Genome position search box tests', () => {
     it('Ensure that newly loaded genes are from hg19', () => {
       expect(
         hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName,
-      ).toEqual('TP53');
+      ).to.equal('TP53');
     });
 
     it('Switches back to mm9', (done) => {
@@ -310,7 +308,7 @@ describe('Genome position search box tests', () => {
     it('Make sure it has mouse genes', () => {
       expect(
         hgc.instance().genomePositionSearchBoxes.aa.state.genes[0].geneName,
-      ).toEqual('Gt(ROSA)26Sor');
+      ).to.equal('Gt(ROSA)26Sor');
     });
 
     it('Switches back to hg19', (done) => {
@@ -323,12 +321,12 @@ describe('Genome position search box tests', () => {
     it('Makes the search box invisible', (done) => {
       expect(
         hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly,
-      ).toEqual('hg19');
+      ).to.equal('hg19');
       hgc.instance().handleTogglePositionSearchBox('aa');
       hgc.update();
 
       const assemblyPickButton = hgc.find('.assembly-pick-button');
-      expect(assemblyPickButton.length).toEqual(0);
+      expect(assemblyPickButton.length).to.equal(0);
 
       waitForJsonComplete(done);
     });
@@ -343,11 +341,11 @@ describe('Genome position search box tests', () => {
     it('Ensures that selected assembly is hg19', () => {
       expect(
         hgc.instance().genomePositionSearchBoxes.aa.state.selectedAssembly,
-      ).toEqual('hg19');
+      ).to.equal('hg19');
     });
 
     it("checks that the div hasn't grown too much", () => {
-      expect(div.clientHeight).toBeLessThan(500);
+      expect(div.clientHeight).to.be.lessThan(500);
     });
 
     it('Cleans up', () => {
