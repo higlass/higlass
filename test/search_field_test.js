@@ -1,4 +1,4 @@
-/* eslint-env node, jasmine */
+/* eslint-env node, mocha */
 import { expect } from 'chai';
 import SearchField from '../app/scripts/SearchField';
 
