@@ -99,8 +99,8 @@ export default {
     'test/ndarray-to-list.spec.js',
     'test/OSMTests.js',
     'test/OverlayTrackTests.js',
-    // "test/PluginDataFetcherTests.js",
-    // "test/PluginTrackTests.js",
+    'test/PluginDataFetcherTests.js', // fails
+    'test/PluginTrackTests.js', // fails
     'test/PngExportTest.js',
     'test/RuleTests.js',
     'test/search_field_test.js',
