@@ -1,11 +1,6 @@
-/* eslint-env node, jasmine */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 // Utils
@@ -15,7 +10,7 @@ import {
   getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Left track modifier', () => {
   let hgc = null;

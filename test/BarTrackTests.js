@@ -12,7 +12,7 @@ import {
   waitForTilesLoaded,
 } from '../app/scripts/utils';
 
-import viewConf from './view-configs/bar';
+import viewConf from './view-configs/bar.json';
 
 Enzyme.configure({ adapter: new Adapter() });
 

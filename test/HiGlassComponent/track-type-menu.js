@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -10,7 +11,7 @@ import {
 
 import { oneTrackConfig } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -19,7 +20,7 @@ describe('Track type menu tests', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, oneTrackConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -89,8 +90,8 @@ describe('Track type menu tests', () => {
       validSeries,
     );
 
-    expect(trackTypeItems.props.menuItems.line).toBeDefined();
-    expect(trackTypeItems.props.menuItems.point).toBeDefined();
+    expect(trackTypeItems.props.menuItems.line).to.exist;
+    expect(trackTypeItems.props.menuItems.point).to.exist;
   });
 
   it('Changes the track type', () => {
@@ -98,9 +99,9 @@ describe('Track type menu tests', () => {
     hgc.instance().tiledPlots.aa.handleChangeTrackType('line1', 'bar');
 
     // make sure that the uid of the top track has been changed
-    expect(hgc.instance().state.views.aa.tracks.top[0].uid).not.toEqual(
+    expect(hgc.instance().state.views.aa.tracks.top[0].uid).not.to.equal(
       'line1',
     );
-    expect(hgc.instance().state.views.aa.tracks.top[0].type).toEqual('bar');
+    expect(hgc.instance().state.views.aa.tracks.top[0].type).to.equal('bar');
   });
 });

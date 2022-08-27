@@ -11,7 +11,7 @@ import {
   getTrackObjectFromHGC,
   waitForJsonComplete,
 } from '../app/scripts/utils';
-import viewConf from './view-configs/simple-heatmap-gene-annotations';
+import viewConf from './view-configs/simple-heatmap-gene-annotations.json';
 
 Enzyme.configure({ adapter: new Adapter() });
 

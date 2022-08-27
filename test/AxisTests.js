@@ -1,4 +1,3 @@
-// @ts-check
 /* eslint-env node, mocha */
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';

@@ -1,8 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
-import slugid from 'slugid';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -23,14 +22,14 @@ import {
 
 import FetchMockHelper from '../utils/FetchMockHelper';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Track positioning', () => {
   let hgc = null;
   let div = null;
   const fetchMockHelper = new FetchMockHelper(null, 'track-positioning');
 
-  before(async (done) => {
+  before((done)=> {
     await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(
       div,
@@ -60,7 +59,7 @@ describe('Track positioning', () => {
 
     const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vh1');
 
-    expect(track.originalTrack.axis.track.flipText).toEqual(true);
+    expect(track.originalTrack.axis.track.flipText).to.equal(true);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -81,7 +80,7 @@ describe('Track positioning', () => {
     });
 
     // make sure the heatmap was flipped
-    expect(trackObj.pMain.scale.y).toBeLessThan(0);
+    expect(trackObj.pMain.scale.y).to.be.lessThan(0);
   });
 
   it('Should remove the vertical heatmap', (done) => {
@@ -96,7 +95,7 @@ describe('Track positioning', () => {
   it('should add a heatmap', (done) => {
     // height defined in the testViewConf file, just the chromosome names
     // track
-    expect(totalTrackPixelHeight(hgc.instance().state.views.aa)).toEqual(57);
+    expect(totalTrackPixelHeight(hgc.instance().state.views.aa)).to.equal(57);
 
     hgc.instance().handleTrackAdded('aa', horizontalHeatmapTrack, 'top');
 
@@ -116,7 +115,7 @@ describe('Track positioning', () => {
       'hh1',
     );
 
-    expect(horizontalHeatmap.options.labelBackgroundOpacity).toEqual(0.5);
+    expect(horizontalHeatmap.options.labelBackgroundOpacity).to.equal(0.5);
   });
 
   it('should have a horizontal heatmap scale', () => {
@@ -128,7 +127,7 @@ describe('Track positioning', () => {
 
     const svg = horizontalHeatmap.exportColorBarSVG();
     const rects = svg.getElementsByClassName('color-rect');
-    expect(rects.length).toBeGreaterThan(0);
+    expect(rects.length).to.be.greaterThan(0);
 
     // let svgText = new XMLSerializer().serializeToString(svg);
   });
@@ -141,7 +140,7 @@ describe('Track positioning', () => {
     hgc.setState(hgc.instance().state);
 
     // make sure that the view has grown
-    expect(hgc.instance().state.views.aa.layout.h).toBeGreaterThan(prevHeight);
+    expect(hgc.instance().state.views.aa.layout.h).to.be.greaterThan(prevHeight);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -187,7 +186,7 @@ describe('Track positioning', () => {
   //   // we deleted the tracks
   //   const newTrackRendererHeight = hgc.instance().tiledPlots.aa.trackRenderer
   //     .currentProps.height;
-  //   expect(newTrackRendererHeight).toBeLessThan(trackRendererHeight);
+  //   expect(newTrackRendererHeight).to.be.lessThan(trackRendererHeight);
   //   waitForTilesLoaded(hgc.instance(), done);
   // });
 
@@ -215,8 +214,8 @@ describe('Track positioning', () => {
       .instance()
       .calculateViewDimensions(newView).totalHeight;
 
-    // expect(nextTrackRendererHeight).toEqual(prevTrackRendererHeight - 57);
-    expect(nextTotalHeight).toBeLessThan(prevTotalHeight);
+    // expect(nextTrackRendererHeight).to.equal(prevTrackRendererHeight - 57);
+    expect(nextTotalHeight).to.be.lessThan(prevTotalHeight);
 
     // setTimeout(done, shortLoadTime);
   });
@@ -250,7 +249,7 @@ describe('Track positioning', () => {
       const newHeight = hgc.instance().tiledPlots.aa.trackRenderer
       .getTrackObject('heatmap3').dimensions[1]
       console.log('prevHeight:', prevHeight, 'newHeight:', newHeight);
-      expect(prevHeight).toEqual(newHeight);
+      expect(prevHeight).to.equal(newHeight);
 
       waitForTilesLoaded(hgc.instance(), done);
       */
@@ -280,7 +279,7 @@ describe('Track positioning', () => {
       .tiledPlots.aa.trackRenderer.getTrackObject('heatmap3').dimensions[1];
 
     // Was commented out: Uncomment and see if it works...
-    expect(nextSize).toEqual(prevSize);
+    expect(nextSize).to.equal(prevSize);
 
     waitForTilesLoaded(hgc.instance(), done);
   });

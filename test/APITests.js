@@ -1,8 +1,8 @@
-// @ts-check
 /* eslint-env mocha */
 import { globalPubSub } from 'pub-sub-es';
 import { select, create } from 'd3-selection';
 import { expect } from "chai";
+
 
 import {
   some,
@@ -17,11 +17,10 @@ import {
   // stackedTopViews,
 } from './view-configs';
 
-import emptyConf from './view-configs-more/emptyConf';
-
-import simpleHeatmapViewConf from './view-configs/simple-heatmap';
-import adjustViewSpacingConf from './view-configs/adjust-view-spacing';
-import simple1dHorizontalVerticalAnd2dDataTrack from './view-configs/simple-1d-horizontal-vertical-and-2d-data-track';
+import emptyConf from './view-configs-more/emptyConf.json';
+import simpleHeatmapViewConf from './view-configs/simple-heatmap.json';
+import adjustViewSpacingConf from './view-configs/adjust-view-spacing.json';
+import simple1dHorizontalVerticalAnd2dDataTrack from './view-configs/simple-1d-horizontal-vertical-and-2d-data-track.json';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
@@ -268,7 +267,7 @@ describe('API Tests', () => {
           suggestions.find(
             (d) => d.geneName.toLowerCase() === 'MYC'.toLowerCase(),
           ),
-        ).to.not.be.undefined;
+        ).to.not.equal(undefined);
         done();
       });
     });

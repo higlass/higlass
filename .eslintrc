@@ -13,20 +13,12 @@
     "react",
     "prettier"
   ],
-  "settings": {
-    "react": {
-      "pragma": "React"
-    },
-    "ecmascript": 6
-  },
-  "globals": {
-    "VERSION": false
-  },
   "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
-    },
-    "ecmaVersion": 6
+    }
   },
   "rules": {
     // TODOs:
@@ -104,10 +96,17 @@
   },
   "overrides": [
     {
-      "files": ["test/**/*.js", "test/**/**/*.js" ],
+      "files": ["test/**/*.{js,jsx}"],
       "rules": {
         "no-use-before-define": 0, // So viewconfs can be below the body of the test.
-        "no-undef": 0
+        "no-undef": 0,
+        "no-unused-expressions": "off", // for Mocha's expect(foo).to.be.ok syntax
+      }
+    },
+    {
+      "files": ["web-test-runner.config.mjs", "vite.config.js"],
+      "rules": {
+        "import/no-extraneous-dependencies": 0,
       }
     }
   ]

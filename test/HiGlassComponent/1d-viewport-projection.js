@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -11,7 +12,7 @@ import {
 
 import { project1D, heatmapTrack } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -20,7 +21,7 @@ describe('1D viewport projection', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     const newViewConf = JSON.parse(JSON.stringify(project1D));
 
@@ -53,12 +54,12 @@ describe('1D viewport projection', () => {
     // the viewconf contains a location lock, we need to ignore it
     //
     const track = getTrackObjectFromHGC(hgc.instance(), 'bb', 'line2');
-    expect(track.labelText.text.indexOf('hg19')).toEqual(0);
+    expect(track.labelText.text.indexOf('hg19')).to.equal(0);
 
     const overlayElements = document.getElementsByClassName('overlay');
 
     // there should be two colorbars
-    expect(overlayElements.length).toEqual(2);
+    expect(overlayElements.length).to.equal(2);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -69,7 +70,7 @@ describe('1D viewport projection', () => {
     const overlayElements = document.getElementsByClassName('overlay');
 
     // we should have created an overlay element
-    expect(overlayElements.length).toEqual(3);
+    expect(overlayElements.length).to.equal(3);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -90,7 +91,7 @@ describe('1D viewport projection', () => {
 
   it('Should make sure that the track labels still contain the assembly', (done) => {
     const track = getTrackObjectFromHGC(hgc.instance(), 'bb', 'line2');
-    expect(track.labelText.text.indexOf('hg19')).toEqual(0);
+    expect(track.labelText.text.indexOf('hg19')).to.equal(0);
     waitForTilesLoaded(hgc.instance(), done);
   });
 

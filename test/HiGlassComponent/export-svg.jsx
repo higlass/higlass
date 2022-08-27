@@ -1,6 +1,8 @@
-import { configure, mount } from 'enzyme';
-import React from 'react';
+/* eslint-env mocha */
+import * as React from 'react';
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -12,7 +14,7 @@ import HiGlassComponent from '../../app/scripts/HiGlassComponent';
 
 import { testViewConfX1, project1D } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -21,7 +23,7 @@ describe('SVG Export', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, testViewConfX1, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -40,7 +42,7 @@ describe('SVG Export', () => {
     const svg = hgc.instance().createSVG();
     const svgText = new XMLSerializer().serializeToString(svg);
 
-    expect(svgText.indexOf('rect')).toBeGreaterThan(0);
+    expect(svgText.indexOf('rect')).to.be.greaterThan(0);
     // hgc.instance().handleExportSVG();
   });
 
@@ -73,7 +75,7 @@ describe('SVG Export', () => {
   //   // const svg = hgc.instance().createSVG();
   //   // const svgText = new XMLSerializer().serializeToString(svg);
   //
-  //   // expect(svgText.indexOf('dy="-17"')).toBeGreaterThan(0);
+  //   // expect(svgText.indexOf('dy="-17"')).to.be.greaterThan(0);
   //   // hgc.instance().handleExportSVG();
   //
   //   done();
@@ -118,7 +120,7 @@ describe('SVG Export', () => {
     div.setAttribute('style', 'width:800px;background-color: lightgreen');
     div.setAttribute('id', 'simple-hg-component');
 
-    hgc = mount(
+    hgc = Enzyme.mount(
       <HiGlassComponent options={{ bounded: false }} viewConfig={project1D} />,
       { attachTo: div },
     );
@@ -133,14 +135,14 @@ describe('SVG Export', () => {
 
     // check to make sure that the horizontal labels shifted down
     // the horizontal lines' labels should be shifted down
-    expect(svgText.indexOf('dy="14"')).toBeGreaterThan(0);
+    expect(svgText.indexOf('dy="14"')).to.be.greaterThan(0);
 
     // check to make sure that chromosome tick labels are there
-    expect(svgText.indexOf('chr17: 40,500,000')).toBeGreaterThan(0);
+    expect(svgText.indexOf('chr17: 40,500,000')).to.be.greaterThan(0);
 
     // check to make sure that the chromosome ticks are present
-    expect(svgText.indexOf('line x1')).toBeGreaterThan(0);
-    expect(svgText.indexOf('#808080')).toBeGreaterThan(0);
+    expect(svgText.indexOf('line x1')).to.be.greaterThan(0);
+    expect(svgText.indexOf('#808080')).to.be.greaterThan(0);
 
     // hgc.instance().handleExportSVG();
   });

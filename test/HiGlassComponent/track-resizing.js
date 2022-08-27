@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -12,7 +13,7 @@ import {
 
 import { oneTrackConfig } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -21,7 +22,7 @@ describe('Track Resizing', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, oneTrackConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -48,7 +49,7 @@ describe('Track Resizing', () => {
   it('Ensures that the track object was resized', (done) => {
     const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1');
 
-    expect(track.dimensions[1]).toEqual(49);
+    expect(track.dimensions[1]).to.equal(49);
 
     waitForTilesLoaded(hgc.instance(), done);
   });

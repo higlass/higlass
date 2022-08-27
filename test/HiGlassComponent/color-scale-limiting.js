@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -11,7 +12,7 @@ import {
 
 import { twoViewConfig } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -20,7 +21,7 @@ describe('Color scale limiting', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -52,7 +53,7 @@ describe('Color scale limiting', () => {
     const domain2 = track.limitedValueScale.domain();
 
     // we don't expect the other view to change
-    expect(domain1[0]).not.toEqual(domain2[0]);
+    expect(domain1[0]).not.to.equal(domain2[0]);
 
     // console.log('domain1:', domain1);
     // console.log('domain2:', domain2);
@@ -93,10 +94,10 @@ describe('Color scale limiting', () => {
       'heatmap2',
     );
 
-    expect(track.options.scaleStartPercent).toEqual(
+    expect(track.options.scaleStartPercent).to.equal(
       heatmap2Track.options.scaleStartPercent,
     );
-    expect(track.options.scaleEndPercent).toEqual(
+    expect(track.options.scaleEndPercent).to.equal(
       heatmap2Track.options.scaleEndPercent,
     );
   });

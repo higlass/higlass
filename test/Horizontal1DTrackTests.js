@@ -11,7 +11,7 @@ import {
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 
-import horizontal1dLineTrackWithConstViewConf from './view-configs/horizontal-1d-line-track-with-const';
+import horizontal1dLineTrackWithConstViewConf from './view-configs/horizontal-1d-line-track-with-const.json';
 import { horizontalLineEnd } from './view-configs';
 
 describe('Horizontal 1D track tests', () => {

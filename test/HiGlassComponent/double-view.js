@@ -1,6 +1,8 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
+
 import { select } from 'd3-selection';
 
 import {
@@ -13,7 +15,7 @@ import {
 
 import { twoViewConfig, chromInfoTrack } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -22,7 +24,7 @@ describe('Double view', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -40,13 +42,13 @@ describe('Double view', () => {
   it('has a colorbar', () => {
     const heatmap = hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects
       .c1.trackObject.createdTracks.heatmap1;
-    expect(heatmap.pColorbarArea.x).toBeLessThan(heatmap.dimensions[0] / 2);
+    expect(heatmap.pColorbarArea.x).to.be.lessThan(heatmap.dimensions[0] / 2);
 
     const selection = select(div).selectAll('.selection');
 
     // we expect a colorbar selector brush to be visible
     // in both views
-    expect(selection.size()).toEqual(2);
+    expect(selection.size()).to.equal(2);
   });
 
   it('hides the colorbar', () => {
@@ -64,7 +66,7 @@ describe('Double view', () => {
 
     // we expect a colorbar selector brush to be hidden
     // in one of the views
-    expect(selection.size()).toEqual(1);
+    expect(selection.size()).to.equal(1);
 
     track.options.colorbarPosition = 'topLeft';
     hgc.instance().setState({ views });
@@ -107,11 +109,11 @@ describe('Double view', () => {
 
     expect(
       getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').options.valueScaling,
-    ).toEqual('log');
+    ).to.equal('log');
     hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
     expect(
       getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').options.valueScaling,
-    ).toEqual('linear');
+    ).to.equal('linear');
 
     newOptions.valueScaling = 'log';
     hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
@@ -126,14 +128,14 @@ describe('Double view', () => {
     // hgc.instance().handleExportSVG();
 
     // Make sure we have an axis that is offset from the origin
-    // expect(svgText.indexOf('id="axis" transform="translate(390, 68)"')).toBeGreaterThan(0);
+    // expect(svgText.indexOf('id="axis" transform="translate(390, 68)"')).to.be.greaterThan(0);
 
     // make sure that we have this color in the colorbar (this is part of the custard
     // color map)
-    expect(svgText.indexOf('rgb(231, 104, 32)')).toBeGreaterThan(0);
+    expect(svgText.indexOf('rgb(231, 104, 32)')).to.be.greaterThan(0);
 
     // make sure that this color, which is part of the afmhot colormap is not exported
-    expect(svgText.indexOf('rgb(171, 43, 0)')).toBeLessThan(0);
+    expect(svgText.indexOf('rgb(171, 43, 0)')).to.be.lessThan(0);
 
     const line1 = hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects
       .line1.trackObject;
@@ -148,7 +150,7 @@ describe('Double view', () => {
 
     // let axis = svg.getElementById('axis');
     // make sure we have a tick mark for 200000
-    expect(axisText.indexOf('1e+5')).toBeGreaterThan(0);
+    expect(axisText.indexOf('1e+5')).to.be.greaterThan(0);
   });
 
   it('Adds a chromInfo track', (done) => {
@@ -228,7 +230,7 @@ describe('Double view', () => {
   //   //
   //   const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'heatmap1');
 
-  //   expect(track.pColorbarArea.visible).toEqual(false);
+  //   expect(track.pColorbarArea.visible).to.equal(false);
 
   //   waitForTilesLoaded(hgc.instance(), done);
   // });

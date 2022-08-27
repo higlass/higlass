@@ -1,4 +1,4 @@
-/* eslint-env node, mocha */
+/* eslint-env mocha */
 import { spyOn } from 'tinyspy';
 import { expect } from 'chai';
 
@@ -7,7 +7,7 @@ import { getTrackRenderer } from '../app/scripts/utils';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
-import viewConfig from './view-configs/two-bars-and-a-heatmap';
+import viewConfig from './view-configs/two-bars-and-a-heatmap.json';
 
 describe('Zoom tests', () => {
   let api;

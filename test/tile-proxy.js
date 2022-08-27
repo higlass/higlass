@@ -1,8 +1,7 @@
-/* eslint-env node, jasmine */
-/* eslint-disable import/no-named-as-default-member */
+/* eslint-env mocha */
 import { expect } from 'chai';
 
-import tileProxy from '../app/scripts/services/tile-proxy';
+import * as tileProxy from '../app/scripts/services/tile-proxy';
 import { fake as fakePubSub } from '../app/scripts/hocs/with-pub-sub';
 import {
   multivecTileData,

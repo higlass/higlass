@@ -14,9 +14,9 @@ import {
   waitForTilesLoaded,
 } from '../app/scripts/utils';
 
-import viewConf1DHorizontal from './view-configs/continuous-scaling-1D-horizontal';
-import viewConf1DVertical from './view-configs/continuous-scaling-1D-vertical';
-import viewConf2D from './view-configs/continuous-scaling-2D';
+import viewConf1DHorizontal from './view-configs/continuous-scaling-1D-horizontal.json';
+import viewConf1DVertical from './view-configs/continuous-scaling-1D-vertical.json';
+import viewConf2D from './view-configs/continuous-scaling-2D.json';
 
 import DenseDataExtrema1D from '../app/scripts/utils/DenseDataExtrema1D';
 import DenseDataExtrema2D from '../app/scripts/utils/DenseDataExtrema2D';

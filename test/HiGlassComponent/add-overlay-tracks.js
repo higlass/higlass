@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -10,7 +11,7 @@ import {
 
 import { oneZoomedOutViewConf, chromosomeGridTrack } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -19,7 +20,7 @@ describe('Add overlay tracks', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, oneZoomedOutViewConf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -45,12 +46,12 @@ describe('Add overlay tracks', () => {
   it('Should show a grid', (done) => {
     const outputJSON = JSON.parse(hgc.instance().getViewsAsString());
 
-    expect(outputJSON.views[0].tracks.center[0].contents).toBeDefined();
+    expect(outputJSON.views[0].tracks.center[0].contents).to.exist;
 
     // should have two tracks
     expect(
       outputJSON.views[0].tracks.center[0].contents.length,
-    ).toBeGreaterThan(1);
+    ).to.be.greaterThan(1);
 
     waitForJsonComplete(done);
   });

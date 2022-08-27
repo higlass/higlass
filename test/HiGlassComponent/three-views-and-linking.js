@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -11,7 +12,7 @@ import {
 
 import { threeViews } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -20,7 +21,7 @@ describe('Three views and linking', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, threeViews, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -59,8 +60,8 @@ describe('Three views and linking', () => {
     const [aaCenterX, aaCenterY] = scalesCenterAndK(aaXScale, aaYScale);
     const [bbCenterX, bbCenterY] = scalesCenterAndK(bbXScale, bbYScale);
 
-    expect(aaCenterX - bbCenterX).toBeLessThan(0.001);
-    expect(aaCenterY - bbCenterY).toBeLessThan(0.001);
+    expect(aaCenterX - bbCenterX).to.be.lessThan(0.001);
+    expect(aaCenterY - bbCenterY).to.be.lessThan(0.001);
   });
 
   it('Links the third view', (done) => {
@@ -91,8 +92,8 @@ describe('Three views and linking', () => {
     const [aaCenterX, aaCenterY] = scalesCenterAndK(aaXScale, aaYScale);
     const [ccCenterX, ccCenterY] = scalesCenterAndK(ccXScale, ccYScale);
 
-    expect(aaCenterX - ccCenterX).toBeLessThan(0.001);
-    expect(aaCenterY - ccCenterY).toBeLessThan(0.001);
+    expect(aaCenterX - ccCenterX).to.be.lessThan(0.001);
+    expect(aaCenterY - ccCenterY).to.be.lessThan(0.001);
 
     waitForTilesLoaded(hgc.instance(), done);
   });

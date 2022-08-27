@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -11,7 +12,7 @@ import {
 
 import { oneViewConfig } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -20,7 +21,7 @@ describe('Division track', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, oneViewConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -50,8 +51,8 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).toBeGreaterThan(track.position[0]);
-    expect(pAxis.children[0].x).toBeLessThan(0);
+    expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
+    expect(pAxis.children[0].x).to.be.lessThan(0);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -67,8 +68,8 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).toBeGreaterThan(track.position[0]);
-    expect(pAxis.children[0].x).toBeGreaterThan(0);
+    expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
+    expect(pAxis.children[0].x).to.be.greaterThan(0);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -84,8 +85,8 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).toEqual(track.position[0]);
-    expect(pAxis.children[0].x).toBeLessThan(0);
+    expect(pAxis.position.x).to.equal(track.position[0]);
+    expect(pAxis.children[0].x).to.be.lessThan(0);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -101,8 +102,8 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).toEqual(track.position[0]);
-    expect(pAxis.children[0].x).toBeGreaterThan(0);
+    expect(pAxis.position.x).to.equal(track.position[0]);
+    expect(pAxis.children[0].x).to.be.greaterThan(0);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -120,8 +121,8 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).toEqual(track.position[0]);
-    expect(pAxis.children[0].x).toBeGreaterThan(0);
+    expect(pAxis.position.x).to.equal(track.position[0]);
+    expect(pAxis.children[0].x).to.be.greaterThan(0);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -139,8 +140,8 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).toEqual(track.position[0]);
-    expect(pAxis.children[0].x).toBeLessThan(0);
+    expect(pAxis.position.x).to.equal(track.position[0]);
+    expect(pAxis.children[0].x).to.be.lessThan(0);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -158,8 +159,8 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).toBeGreaterThan(track.position[0]);
-    expect(pAxis.children[0].x).toBeGreaterThan(0);
+    expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
+    expect(pAxis.children[0].x).to.be.greaterThan(0);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -176,15 +177,15 @@ describe('Division track', () => {
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
-    expect(pAxis.position.x).toBeGreaterThan(track.position[0]);
-    expect(pAxis.children[0].x).toBeLessThan(0);
+    expect(pAxis.position.x).to.be.greaterThan(track.position[0]);
+    expect(pAxis.children[0].x).to.be.lessThan(0);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
 
   it('should have a bottom track of height 0', (done) => {
     const height = hgc.instance().state.views.aa.tracks.bottom[0].height;
-    expect(height).toEqual(0);
+    expect(height).to.equal(0);
 
     waitForTilesLoaded(hgc.instance(), done);
   });

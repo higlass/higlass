@@ -1,12 +1,13 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import { mountHGComponent, removeHGComponent } from '../../app/scripts/utils';
 
 import { invalidTrackConfig } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -15,7 +16,7 @@ describe('Division track', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, invalidTrackConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -79,8 +80,8 @@ describe('Division track', () => {
 
     const trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
 
-    expect(trackTypeItems.props.menuItems.line).toBeUndefined();
-    expect(trackTypeItems.props.menuItems.point).toBeUndefined();
+    expect(trackTypeItems.props.menuItems.line).to.be.undefined;
+    expect(trackTypeItems.props.menuItems.point).to.be.undefined;
   });
 
   it('Opens the close track menu', () => {

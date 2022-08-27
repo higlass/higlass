@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -10,7 +11,7 @@ import {
 
 import { geneAnnotationsOnly } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -19,7 +20,7 @@ describe('Chromosome labels', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, geneAnnotationsOnly, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -42,7 +43,7 @@ describe('Chromosome labels', () => {
 
       // make sure none of the chromosome labels are left
       // over after zooming
-      expect(svgText.indexOf('chr11')).toEqual(-1);
+      expect(svgText.indexOf('chr11')).to.equal(-1);
 
       // hgc.instance().handleExportSVG();
       done();

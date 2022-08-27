@@ -14,13 +14,13 @@ const mockUrl = name => `/@mocked-responses/${name}.json`
  * @return a function to restore the global fetch.
  */
 function setFetch(customFetch) {
-  const originalFetch = globalThis.fetch;
-  globalThis.fetch = async (url, init) => {
-    let data = await customFetch(url, init, originalFetch);
+  const originalFetch = window.fetch;
+  window.fetch = async (url, init) => {
+    const data = await customFetch(url, init, originalFetch);
     return new Response(JSON.stringify(data));
   }
   return function reset() {
-    globalThis.fetch = originalFetch;
+    window.fetch = originalFetch;
   }
 }
 

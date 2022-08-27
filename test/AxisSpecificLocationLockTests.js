@@ -1,5 +1,5 @@
 /* eslint-env node, mocha */
-import Enzyme from  'enzyme';
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 
@@ -22,7 +22,7 @@ describe('Axis-specific location locks', () => {
   let div;
 
   beforeEach(async () => {
-    await new Promise(resolve  => {
+    await new Promise(resolve => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, resolve, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,

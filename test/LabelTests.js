@@ -1,11 +1,6 @@
-/* eslint-env node, jasmine, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import { expect } from 'chai';
-
 import Adapter from 'enzyme-adapter-react-16';
 
 import {
@@ -14,10 +9,10 @@ import {
   getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
-import viewconf from './view-configs/label-margin';
-import viewconfSplitHeatmaps from './view-configs/label-split-heatmaps';
+import viewconf from './view-configs/label-margin.json';
+import viewconfSplitHeatmaps from './view-configs/label-split-heatmaps.json';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Label test', () => {
   describe('Axis texts', () => {

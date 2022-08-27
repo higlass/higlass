@@ -1,4 +1,4 @@
-/* eslint-env node, mocha */
+/* eslint-env mocha */
 import { expect } from 'chai';
 import ndarray from 'ndarray';
 import ndarrayFlatten from '../app/scripts/utils/ndarray-flatten';

@@ -63,9 +63,7 @@ export default {
   // mocha config https://mochajs.org/api/mocha
   testFramework: { config: { timeout: 100000 } },
   // hide some console logging
-  filterBrowserLogs: ({ type }) => {
-    return !['warn', 'debug', 'log'].includes(type);
-  },
+  filterBrowserLogs: ({ type }) => !['warn', 'debug', 'log'].includes(type),
   files: [
     'test/AxisTests.js',
     'test/AxisSpecificLocationLockTests.js',
@@ -84,7 +82,7 @@ export default {
     'test/GenomePositionSearchBoxTest.jsx',
     'test/HeatmapTests.js',
     'test/HiGlassComponentCreationTests.js',
-    'test/HiGlassComponent/*.jsx?',
+    'test/HiGlassComponent/*.{js,jsx}',
     'test/Horizontal1DTrackTests.js',
     'test/HorizontalHeatmapTests.js',
     // The tests in HorizontalMultivecTests are overwriting

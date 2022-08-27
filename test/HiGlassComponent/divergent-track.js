@@ -1,12 +1,13 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import { mountHGComponent, removeHGComponent } from '../../app/scripts/utils';
 
 import { divergentTrackConfig } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -15,7 +16,7 @@ describe('Divergent tracks', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, divergentTrackConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -32,14 +33,14 @@ describe('Divergent tracks', () => {
 
   it('Check that there are green and red rects', (done) => {
     const svg = hgc.instance().createSVG();
-    const svgText = new XMLSerializer().serializeToString(svg);
 
+    const svgText = new XMLSerializer().serializeToString(svg);
     expect(
       svgText.indexOf('fill="green" stroke="green" x="11.24963759567723"'),
-    ).toBeGreaterThan(0);
+    ).to.be.greaterThan(0);
     expect(
       svgText.indexOf('fill="red" stroke="red" x="29.818754489548308"'),
-    ).toBeGreaterThan(0);
+    ).to.be.greaterThan(0);
 
     done();
   });

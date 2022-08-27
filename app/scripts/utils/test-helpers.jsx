@@ -244,3 +244,8 @@ export const removeHGComponent = (div) => {
   ReactDOM.unmountComponentAtNode(div);
   document.body.removeChild(div);
 };
+
+export const mountHGComponentAsync = (prevDiv, prevHgc, viewConf, options) => new Promise(resolve => {
+  const done = () => resolve([prevDiv, prevHgc]);
+  mountHGComponent(prevDiv, prevHgc, viewConf, done, options);
+});

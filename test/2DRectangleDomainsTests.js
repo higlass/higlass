@@ -1,8 +1,6 @@
-/* eslint-env node, mocha */
+/* eslint-env mocha */
 import Enzyme from 'enzyme';
-
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 // Utils

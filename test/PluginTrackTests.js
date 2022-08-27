@@ -1,11 +1,11 @@
-/* eslint-env node, mocha */
+/* eslint-env mocha */
 import { expect } from 'chai';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 import { register } from './utils/DummyTrack';
 
-import dummyTrackViewConf from './view-configs/dummy-track';
+import dummyTrackViewConf from './view-configs/dummy-track.json';
 
 register();
 

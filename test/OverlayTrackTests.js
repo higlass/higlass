@@ -4,8 +4,8 @@ import { expect } from "chai";
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 
-import overlayAnnotations1d2dViewConf from './view-configs/overlay-annotations-1d-2d';
-import overlayChromGridViewConf from './view-configs/overlay-chrom-grid';
+import overlayAnnotations1d2dViewConf from './view-configs/overlay-annotations-1d-2d.json';
+import overlayChromGridViewConf from './view-configs/overlay-chrom-grid.json';
 
 describe('Overlay Track:', () => {
   let hgc = null;

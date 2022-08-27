@@ -5,7 +5,7 @@ import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 import { register } from './utils/DummyDataFetcher';
 
-import dummyDataFetcherViewConf from './view-configs/dummy-data-fetcher';
+import dummyDataFetcherViewConf from './view-configs/dummy-data-fetcher.json';
 
 register();
 

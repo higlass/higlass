@@ -1,4 +1,4 @@
-/* eslint-env node, mocha */
+/* eslint-env mocha */
 import { expect } from 'chai';
 
 // Utils
@@ -12,8 +12,8 @@ import { topAxisOnly } from './view-configs';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
-import viewConfig from './view-configs/viewport-projection';
-import viewConfigWithoutFromViewUids from './view-configs-more/viewportProjectionsWithoutFromViewUids';
+import viewConfig from './view-configs/viewport-projection.json';
+import viewConfigWithoutFromViewUids from './view-configs-more/viewportProjectionsWithoutFromViewUids.json';
 
 describe('Viewport projection tests', () => {
   let api;

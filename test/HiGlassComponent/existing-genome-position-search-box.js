@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -10,7 +11,7 @@ import {
 
 import { onlyGPSB } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -19,7 +20,7 @@ describe('Exising genome position search box', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, onlyGPSB, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -53,18 +54,18 @@ describe('Exising genome position search box', () => {
       '  chr1:1-1000 & chr1:2001-3000',
     );
 
-    expect(range1[0]).toEqual(1);
-    expect(range1[1]).toEqual(1000);
+    expect(range1[0]).to.equal(1);
+    expect(range1[1]).to.equal(1000);
 
-    expect(range2[0]).toEqual(2001);
-    expect(range2[1]).toEqual(3000);
+    expect(range2[0]).to.equal(2001);
+    expect(range2[1]).to.equal(3000);
 
     [range1, range2] = gpsb.searchField.searchPosition(
       'chr1:1-1000 & chr1:2001-3000',
     );
 
-    expect(range1[0]).toEqual(1);
-    expect(range1[1]).toEqual(1000);
+    expect(range1[0]).to.equal(1);
+    expect(range1[1]).to.equal(1000);
   });
 
   it('Ensures that hg38 is in the list of available assemblies', () => {
@@ -72,7 +73,7 @@ describe('Exising genome position search box', () => {
       hgc
         .instance()
         .genomePositionSearchBoxes.aa.state.availableAssemblies.indexOf('hg38'),
-    ).toBeGreaterThanOrEqual(0);
+    ).to.be.greaterThanOrEqual(0);
   });
 
   it('Selects mm9', (done) => {
@@ -86,7 +87,7 @@ describe('Exising genome position search box', () => {
     const button = hgc.instance().genomePositionSearchBoxes.aa
       .assemblyPickButton;
 
-    expect(button.title).toEqual('mm9');
+    expect(button.title).to.equal('mm9');
 
     hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('hg19');
 
@@ -98,7 +99,7 @@ describe('Exising genome position search box', () => {
     const button = hgc.instance().genomePositionSearchBoxes.aa
       .assemblyPickButton;
 
-    expect(button.title).toEqual('hg19');
+    expect(button.title).to.equal('hg19');
 
     waitForJsonComplete(done);
   });

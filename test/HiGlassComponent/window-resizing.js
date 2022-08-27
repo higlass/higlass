@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -10,7 +11,7 @@ import {
 
 import { project1D, heatmapTrack } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -19,7 +20,7 @@ describe('Window resizing', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     const newViewConf = JSON.parse(JSON.stringify(project1D));
 
@@ -66,7 +67,7 @@ describe('Window resizing', () => {
   });
 
   it('Expect the the chosen rowHeight to be less than 24', (done) => {
-    expect(hgc.instance().state.rowHeight).toBeLessThan(24);
+    expect(hgc.instance().state.rowHeight).to.be.lessThan(24);
 
     waitForTilesLoaded(hgc.instance(), done);
   });

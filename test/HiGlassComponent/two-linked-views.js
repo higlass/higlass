@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -10,7 +11,7 @@ import {
 
 import { twoViewConfig } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -19,7 +20,7 @@ describe('Two linked views', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(
       div,
@@ -48,11 +49,11 @@ describe('Two linked views', () => {
   });
 
   it('ensures both views zoomed to the data extent', () => {
-    expect(hgc.instance().xScales.aa.domain()[0]).toEqual(
+    expect(hgc.instance().xScales.aa.domain()[0]).to.equal(
       hgc.instance().xScales.view2.domain()[0],
     );
 
-    expect(hgc.instance().xScales.aa.domain()[1]).toEqual(
+    expect(hgc.instance().xScales.aa.domain()[1]).to.equal(
       hgc.instance().xScales.view2.domain()[1],
     );
   });

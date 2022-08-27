@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -10,7 +11,7 @@ import {
 
 import { annotationsTilesView } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -19,7 +20,7 @@ describe('Track types', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async (done) => {
+  before((done)=> {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, annotationsTilesView, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -84,8 +85,8 @@ describe('Track types', () => {
 
     const trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
 
-    expect(trackTypeItems.props.menuItems['gene-annotations']).toBeDefined();
-    expect(trackTypeItems.props.menuItems['horizontal-1d-tiles']).toBeDefined();
-    expect(trackTypeItems.props.menuItems.line).toBeUndefined();
+    expect(trackTypeItems.props.menuItems['gene-annotations']).to.exist;
+    expect(trackTypeItems.props.menuItems['horizontal-1d-tiles']).to.exist;
+    expect(trackTypeItems.props.menuItems.line).to.be.undefined;
   });
 });

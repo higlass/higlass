@@ -44,8 +44,8 @@ const reactCssModules = [
  * @returns {import('vite').Plugin} 
  */
 function mockedReponsesPlugin() {
-  let realRoute = '/test/mocked-responses/';
-  let magicRoute = '/@mocked-responses/';
+  const realRoute = '/test/mocked-responses/';
+  const magicRoute = '/@mocked-responses/';
 
   return {
     name: 'mocked-responses',
@@ -57,7 +57,7 @@ function mockedReponsesPlugin() {
           return;
         }
         if (req.method === 'POST' && req.readable) {
-          let file = path.resolve(
+          const file = path.resolve(
             __dirname,
             `.${realRoute}`,
             req.url.slice(magicRoute.length),
