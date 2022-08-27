@@ -118,7 +118,7 @@ GalleryTracks.propTypes = {
   editable: PropTypes.bool,
   onCloseTrackMenuOpened: PropTypes.func.isRequired,
   onConfigTrackMenuOpened: PropTypes.func.isRequired,
-  tracks: PropTypes.array.isRequired,
+  tracks: PropTypes.array,
 };
 
 export default GalleryTracks;

@@ -188,7 +188,13 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
  *  hgc component
  * @param {function} done The callback to call when the component is fully loaded
  */
-export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
+export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options = {}) => {
+  const {
+    style = 'width:800px; background-color: lightgreen;',
+    bounded = false,
+    extendedDelay = false,
+  } = options;
+
   if (prevHgc) {
     prevHgc.unmount();
     prevHgc.detach();
@@ -197,10 +203,6 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
   if (prevDiv) {
     global.document.body.removeChild(prevDiv);
   }
-
-  const style =
-    (options && options.style) || 'width:800px; background-color: lightgreen;';
-  const bounded = (options && options.bounded) || false;
 
   // console.log('check:', options && options.style)
   // console.log('style:', style, "options:", options, "style", options.style);
@@ -219,7 +221,7 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options) => {
   hgc.update();
 
   waitForJsonComplete(() => {
-    if (options && options.extendedDelay) {
+    if (extendedDelay) {
       // Waiting for tiles to be loaded does not always mean
       // that the compoment is mounted (especially if we load the tiles
       // from the filesystem, which is quick). Wait 1000ms to make sure
@@ -245,7 +247,12 @@ export const removeHGComponent = (div) => {
   document.body.removeChild(div);
 };
 
-export const mountHGComponentAsync = (prevDiv, prevHgc, viewConf, options) => new Promise(resolve => {
-  const done = () => resolve([prevDiv, prevHgc]);
-  mountHGComponent(prevDiv, prevHgc, viewConf, done, options);
-});
+// ideally the "await-ers" avoid would be promises (rather than polling)
+// and that way `mountHGComponent` would be async by default.
+export async function mountHGComponentAsync(prevDiv, prevHgc, viewConf, options) {
+  let res;
+  await new Promise(resolve => {
+    res = mountHGComponent(prevDiv, prevHgc, viewConf, resolve, options);
+  });
+  return res;
+}

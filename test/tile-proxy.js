@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
 
-import * as tileProxy from '../app/scripts/services/tile-proxy';
+import tileProxy, { tileDataToPixData } from '../app/scripts/services/tile-proxy';
 import { fake as fakePubSub } from '../app/scripts/hocs/with-pub-sub';
 import {
   multivecTileData,
@@ -72,7 +72,7 @@ describe('tile-proxy text', () => {
     };
 
     // Call the function.
-    tileProxy.tileDataToPixData(
+    tileDataToPixData(
       {
         tileData: multivecTileData,
       },
@@ -112,7 +112,7 @@ describe('tile-proxy text', () => {
     };
 
     // Call the function.
-    tileProxy.tileDataToPixData(
+    tileDataToPixData(
       {
         tileData: multivecTileDataWithServerAggregation,
       },

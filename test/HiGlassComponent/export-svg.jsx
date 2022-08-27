@@ -5,7 +5,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../../app/scripts/utils';
@@ -16,6 +16,10 @@ import { testViewConfX1, project1D } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
+const waitForTilesLoadedAsync = (hgcInstance) => new Promise(resolve => {
+  waitForTilesLoaded(hgcInstance, () => resolve());
+});
+
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
 describe('SVG Export', () => {
@@ -23,9 +27,9 @@ describe('SVG Export', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before((done)=> {
+  before(async ()=> {
     // await fetchMockHelper.activateFetchMock();
-    [div, hgc] = mountHGComponent(div, hgc, testViewConfX1, done, {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, testViewConfX1, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
     });
@@ -46,7 +50,7 @@ describe('SVG Export', () => {
     // hgc.instance().handleExportSVG();
   });
 
-  it('Cleans up previously created instances and mounts a new component', (done) => {
+  it('Cleans up previously created instances and mounts a new component', async () => {
     if (hgc) {
       hgc.unmount();
       hgc.detach();
@@ -62,13 +66,13 @@ describe('SVG Export', () => {
     div.setAttribute('style', 'width:800px;background-color: lightgreen');
     div.setAttribute('id', 'simple-hg-component');
 
-    hgc = mount(
+    hgc = Enzyme.mount(
       <HiGlassComponent options={{ bounded: false }} viewConfig={project1D} />,
       { attachTo: div },
     );
 
     hgc.update();
-    waitForTilesLoaded(hgc.instance(), done);
+    await waitForTilesLoadedAsync(hgc.instance());
   });
 
   // it('Exports to SVG', (done) => {
@@ -104,7 +108,7 @@ describe('SVG Export', () => {
     // hgc.instance().createSVG();
   });
 
-  it('Cleans up previously created instances and mounts a new component', (done) => {
+  it('Cleans up previously created instances and mounts a new component', async () => {
     if (hgc) {
       hgc.unmount();
       hgc.detach();
@@ -126,7 +130,7 @@ describe('SVG Export', () => {
     );
 
     hgc.update();
-    waitForTilesLoaded(hgc.instance(), done);
+    await waitForTilesLoadedAsync(hgc.instance());
   });
 
   it('Exports to SVG', () => {

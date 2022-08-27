@@ -3,8 +3,10 @@ import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 
+import slugid from 'slugid';
+
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
   getTrackObjectFromHGC,
   waitForTilesLoaded,
@@ -29,13 +31,12 @@ describe('Track positioning', () => {
   let div = null;
   const fetchMockHelper = new FetchMockHelper(null, 'track-positioning');
 
-  before((done)=> {
+  before(async ()=> {
     await fetchMockHelper.activateFetchMock();
-    [div, hgc] = mountHGComponent(
+    [div, hgc] = await mountHGComponentAsync(
       div,
       hgc,
       horizontalDiagonalTrackViewConf,
-      done,
       {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: false,

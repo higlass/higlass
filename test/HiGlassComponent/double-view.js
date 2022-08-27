@@ -3,14 +3,15 @@ import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 
+import ReactDOM from 'react-dom';
 import { select } from 'd3-selection';
 
 import {
-  mountHGComponent,
   removeHGComponent,
   waitForTilesLoaded,
   getTrackByUid,
   getTrackObjectFromHGC,
+  mountHGComponentAsync,
 } from '../../app/scripts/utils';
 
 import { twoViewConfig, chromInfoTrack } from '../view-configs';
@@ -24,9 +25,9 @@ describe('Double view', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before((done)=> {
+  before(async ()=> {
     // await fetchMockHelper.activateFetchMock();
-    [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, twoViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
