@@ -200,7 +200,7 @@ export default class DataFetcher {
       this.fetchHorizontalSection(receivedTiles, tileIds, true);
     } else if (!this.dataConfig.children && this.dataConfig.tilesetUid) {
       // no children, just return the fetched tiles as is
-      const promise = new Promise((resolve) =>
+      const promise = new Promise((resolve) => {
         tileProxy.fetchTilesDebounced(
           {
             id: slugid.nice(),
@@ -211,8 +211,8 @@ export default class DataFetcher {
           },
           this.pubSub,
           true,
-        ),
-      );
+        );
+      });
 
       promise.then((returnedTiles) => {
         const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
@@ -387,7 +387,7 @@ export default class DataFetcher {
     }
 
     // actually fetch the new tileIds
-    const promise = new Promise((resolve) =>
+    const promise = new Promise((resolve) => {
       tileProxy.fetchTilesDebounced(
         {
           id: slugid.nice(),
@@ -397,8 +397,8 @@ export default class DataFetcher {
         },
         this.pubSub,
         true,
-      ),
-    );
+      )
+    });
     promise.then((returnedTiles) => {
       // we've received some new tiles, but they're 2D
       // we need to extract the row corresponding to the data we need

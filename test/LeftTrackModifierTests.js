@@ -47,6 +47,7 @@ const zoomLimitViewConf = {
   views: [
     {
       uid: 'vv',
+      /* eslint-disable-next-line no-loss-of-precision */
       initialXDomain: [2.9802322387695312e-8, 3099999999.9999995],
       autocompleteSource: '/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
       genomePositionSearchBox: {

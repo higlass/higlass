@@ -82,7 +82,7 @@ import ViewportTrackerVertical from '../ViewportTrackerVertical';
 // Factories
 import ContextMenuItem from '../ContextMenuItem';
 import DataFetcher from '../DataFetcher';
-import LruCache from '../factories';
+import LruCache from '../factories/LruCache';
 
 // Services
 import * as services from '../services';
