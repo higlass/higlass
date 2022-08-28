@@ -58,8 +58,8 @@ export default {
   plugins: [vite()],
   // html loaded for each file (loads test runner + vite globals)
   testRunnerHtml,
-  // how long a test file can take to finish. 240000 (4 min)
-  testsFinishTimeout: 1000 * 60 * 4,
+  // how long a test file can take to finish.
+  testsFinishTimeout: 1000 * 60 * 6, // (6 min)
   // mocha config https://mochajs.org/api/mocha
   testFramework: { config: { timeout: 100000 } },
   // hide some console logging

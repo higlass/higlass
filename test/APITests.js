@@ -5,7 +5,6 @@ import { expect } from "chai";
 
 
 import {
-  some,
   waitForTransitionsFinished,
   waitForTilesLoaded,
 } from '../app/scripts/utils';
@@ -27,20 +26,6 @@ import removeDiv from './utils/remove-div';
 // import drag from './utils/drag';
 
 import { version as VERSION } from '../package.json';
-
-function findCanvas(element) {
-  if (element.tagName.toLowerCase() === 'canvas') return element;
-  let canvas;
-  some((childElement) => {
-    const el = findCanvas(childElement);
-    if (el) {
-      canvas = el;
-      return true;
-    }
-    return false;
-  })(element.children);
-  return canvas;
-}
 
 describe('API Tests', () => {
   let div = null;
@@ -775,7 +760,7 @@ describe('API Tests', () => {
         bounded: true,
       });
 
-      const canvas = findCanvas(div);
+      const canvas = div.querySelector('canvas');
 
       let clicked = 0;
 
@@ -876,7 +861,7 @@ describe('API Tests', () => {
           done();
         });
 
-        const canvas = findCanvas(div);
+        const canvas = div.querySelector('canvas');
         // The wheel event that we expect to catch.
         const wheelEvent = {
           clientX: 30,
