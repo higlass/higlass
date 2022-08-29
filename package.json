@@ -84,6 +84,7 @@
     "react-dom": "^16.6.3"
   },
   "devDependencies": {
+    "@rollup/plugin-inject": "^4.0.4",
     "@vitejs/plugin-react": "^2.0.1",
     "@web/test-runner": "^0.14.0",
     "@web/test-runner-puppeteer": "^0.10.5",

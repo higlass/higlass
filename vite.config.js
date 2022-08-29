@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import genericNames from 'generic-names';
+import inject from '@rollup/plugin-inject';
 
 import * as path from 'node:path';
 import * as fs from 'fs';
@@ -99,6 +100,14 @@ export default defineConfig({
           'pixi.js': 'PIXI',
         },
       },
+      plugins: [
+        // slugid needs Buffer https://github.com/vitejs/vite/discussions/2785#discussioncomment-1450965
+        // this is necessary for the build
+        inject({
+          include: ['./node_modules/slugid/**'],
+          modules: { Buffer: ['buffer', 'Buffer'] },
+        }),
+      ]
     },
     minify: false,
   },
@@ -115,6 +124,8 @@ export default defineConfig({
   ],
   optimizeDeps: {
     esbuildOptions: {
+      // slugid needs Buffer https://github.com/vitejs/vite/discussions/2785#discussioncomment-1450965
+      // this is necessary for dev
       inject: [path.resolve(__dirname, './app/buffer-shim.js')],
     },
   },
