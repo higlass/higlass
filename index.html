@@ -260,7 +260,7 @@
       }
     };
 
-    const hgApi = hglib.viewer(
+    const hgApi = window.hgApi = hglib.viewer(
       document.getElementById('demo'),
       viewConfig,
       { bounded: true },
@@ -271,5 +271,6 @@
     hgApi.on('viewConfig', () => {
       console.log('View Config changed');
     });
+
   </script>
 </html>
