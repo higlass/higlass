@@ -78,6 +78,7 @@ export default defineConfig({
   resolve: {
     alias: {
       'enzyme-adapter-react-16': '@wojtekmaj/enzyme-adapter-react-17',
+      'lodash': 'lodash-es',
     },
   },
   build: {
@@ -126,7 +127,10 @@ export default defineConfig({
     },
   },
   plugins: [
-    react({ babel: { plugins: [reactCssModules] } }),
+    react({
+      jsxRuntime: 'classic',
+      babel: { plugins: [reactCssModules] },
+    }),
     mockedReponsesPlugin(),
   ],
 });
