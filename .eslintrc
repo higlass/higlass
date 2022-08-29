@@ -104,7 +104,11 @@
       }
     },
     {
-      "files": ["web-test-runner.config.mjs", "vite.config.js"],
+      "files": [
+        "web-test-runner.config.mjs",
+        "vite.config.js",
+        "scripts/*",
+      ],
       "rules": {
         "import/no-extraneous-dependencies": 0,
       }
