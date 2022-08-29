@@ -3,9 +3,10 @@ import { createServer } from 'vite';
 /**
  * A plugin to power web-dev-server with Vite.
  *
+ * @param {RegExp=} ignore a regex to match any routes that should be ignored by our plugin.
  * @returns {import('@web/test-runner').TestRunnerPlugin}
  */
-function vite() {
+function vite(ignore) {
   /** @type {import('vite').ViteDevServer} */
   let server;
   return {
@@ -16,8 +17,7 @@ function vite() {
       const port = server.config.server.port;
       const protocol = server.config.server.https ? 'https' : 'http';
       app.use(async (ctx, next) => {
-        // ignore web-dev-server stuff
-        if (ctx.originalUrl.includes('@web/test-runner')) {
+        if (ignore?.test(ctx.originalUrl)) {
           await next();
           return;
         }

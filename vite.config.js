@@ -91,7 +91,7 @@ export default defineConfig({
       formats: ['umd'],
     },
     rollupOptions: {
-      // external: ["react", "react-dom", "pixi.js"],
+      external: ["react", "react-dom", "pixi.js"],
       output: {
         globals: {
           react: 'React',
@@ -103,8 +103,8 @@ export default defineConfig({
     minify: false,
   },
   define: {
-    XYLOPHON: JSON.stringify(version),
     global: 'globalThis',
+    XYLOPHON: JSON.stringify(version),
   },
   css: {
     modules: { generateScopedName },
