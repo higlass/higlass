@@ -37,18 +37,27 @@ npm clean-install
 npm run start
 ```
 
-This starts a server in development mode at http://localhost:8080/.
+This starts a server in development mode at http://localhost:5173/.
 
-Once started, a list of the examples can be found at [http://localhost:8080/examples.html](http://localhost:8080/examples.html).
-Template viewconfs located at `/docs/examples/viewconfs` can viewed directly at urls such as  [http://localhost:8080/apis/svg.html?/viewconfs/overlay-tracks.json](http://localhost:8080/apis/svg.html?/viewconfs/overlay-tracks.json).
+> **Warning** 
+> The following examples need to be migrated to the latest build.
+> Once started, a list of the examples can be found at [http://localhost:8080/examples.html](http://localhost:8080/examples.html).
+> Template viewconfs located at `/docs/examples/viewconfs` can viewed directly at urls such as  [http://localhost:8080/apis/svg.html?/viewconfs/overlay-tracks.json](http://localhost:8080/apis/svg.html?/viewconfs/overlay-tracks.json).
+
 
 ### Tests
 
-The tests for the React components and API functions are located in the `test` directory. To save time and only run relevant tests, open `karma.conf.js` and select the test files to run before running `test-watch`.
+The tests for the React components and API functions are located in the `test` directory.
+Tests are run with [`web-test-runner`](https://modern-web.dev/docs/test-runner/overview/), which you can learn more about the CLI in the [documentation](https://modern-web.dev/docs/test-runner/cli-and-configuration/#test-runner-cli-and-configuration).
 
-```
-npm run test-watch
-```
+Useful commands:
+
+- Run all tests: `npm test`
+- Run all tests in interactive "watch" mode: `npm test -- --watch`
+- Run a specific test or "glob" of tests: `npm test -- test/APITests.js [--watch]`
+- Manually run individual tests in an open browser window: `npm test -- --manual`
+
+There can sometimes be import issues due to timeouts when running tests after a clean installation. It is best to run `npm run optimize` prior to running tests for the first time.
 
 **Troubleshooting:**
 
