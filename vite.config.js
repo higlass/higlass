@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import genericNames from 'generic-names';
 import inject from '@rollup/plugin-inject';
 
 import * as path from 'node:path';
@@ -8,11 +7,7 @@ import * as fs from 'fs';
 
 import { version } from './package.json';
 
-// Necessary have consistent hashing for `react-css-modules` and `css` modules
-// https://github.com/gajus/babel-plugin-react-css-modules/issues/291
-const generateScopedName = genericNames('[name]__[local]_[hash:base64:5]', {
-  context: path.resolve(__dirname, 'app'),
-});
+const generateScopedName = `[name]_[local]_hg-${version}`;
 
 // Babel plugin which enables use of `styleNames` in JSX
 const reactCssModules = [
@@ -102,7 +97,7 @@ export default defineConfig({
           'pixi.js': 'PIXI',
         },
         assetFileNames(assetInfo) {
-          if (assetInfo.name === 'style.css') return 'hglib.css'; // ensures consistent naming
+          if (assetInfo.name === 'style.css') return 'hglib.css';
           return assetInfo.name;
         }
       },
@@ -113,7 +108,7 @@ export default defineConfig({
           include: ['./node_modules/slugid/**'],
           modules: { Buffer: ['buffer', 'Buffer'] },
         }),
-      ]
+      ],
     },
   },
   define: {
