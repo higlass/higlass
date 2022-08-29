@@ -87,7 +87,6 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'app/scripts/hglib.jsx'),
       name: 'hglib',
       formats: ['umd'],
-      fileName: () => 'hglib.js',
     },
     rollupOptions: {
       external: ["react", "react-dom", "pixi.js"],
@@ -97,10 +96,6 @@ export default defineConfig({
           'react-dom': 'ReactDOM',
           'pixi.js': 'PIXI',
         },
-        assetFileNames(assetInfo) {
-          if (assetInfo.name === 'style.css') return 'hglib.css';
-          return assetInfo.name;
-        }
       },
       plugins: [
         // slugid needs Buffer https://github.com/vitejs/vite/discussions/2785#discussioncomment-1450965
