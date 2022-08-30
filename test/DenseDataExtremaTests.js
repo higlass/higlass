@@ -6,13 +6,13 @@ import { expect } from 'chai';
 import FetchMockHelper from './utils/FetchMockHelper';
 
 // Utils
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
   waitForTransitionsFinished,
   waitForTilesLoaded,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 import viewConf1DHorizontal from './view-configs/continuous-scaling-1D-horizontal.json';
 import viewConf1DVertical from './view-configs/continuous-scaling-1D-vertical.json';

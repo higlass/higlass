@@ -7,14 +7,14 @@ import ReactDOM from 'react-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { mount } from 'enzyme';
 
-import { requestsInFlight } from '../services';
+import { requestsInFlight } from '../../app/scripts/services';
 
 import {
   getTrackObjectFromHGC,
   getTrackRenderer,
-} from './get-higlass-components';
+} from '../../app/scripts/utils';
 
-import HiGlassComponent from '../HiGlassComponent';
+import HiGlassComponent from '../../app/scripts/HiGlassComponent';
 
 const TILE_LOADING_CHECK_INTERVAL = 100;
 
@@ -188,7 +188,13 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
  *  hgc component
  * @param {function} done The callback to call when the component is fully loaded
  */
-export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options = {}) => {
+export const mountHGComponent = (
+  prevDiv,
+  prevHgc,
+  viewConf,
+  done,
+  options = {},
+) => {
   const {
     style = 'width:800px; background-color: lightgreen;',
     bounded = false,
@@ -249,9 +255,14 @@ export const removeHGComponent = (div) => {
 
 // ideally the "await-ers" avoid would be promises (rather than polling)
 // and that way `mountHGComponent` would be async by default.
-export async function mountHGComponentAsync(prevDiv, prevHgc, viewConf, options) {
+export async function mountHGComponentAsync(
+  prevDiv,
+  prevHgc,
+  viewConf,
+  options,
+) {
   let res;
-  await new Promise(resolve => {
+  await new Promise((resolve) => {
     res = mountHGComponent(prevDiv, prevHgc, viewConf, resolve, options);
   });
   return res;

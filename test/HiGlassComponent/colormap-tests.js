@@ -6,7 +6,7 @@ import {
   mountHGComponent,
   removeHGComponent,
   // waitForTilesLoaded,
-} from '../../app/scripts/utils';
+} from '../utils/test-helpers';
 
 // import HeatmapOptions from '../../app/scripts/HeatmapOptions';
 

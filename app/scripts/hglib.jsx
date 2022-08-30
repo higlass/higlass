@@ -22,16 +22,6 @@ export const tracks = {
 };
 
 export { default as schema } from '../schema.json';
-
-// export functions that are useful for testing
-export {
-  waitForJsonComplete,
-  waitForTilesLoaded,
-  waitForTransitionsFinished,
-  mountHGComponent,
-  getTrackObjectFromHGC,
-} from './utils';
-
 export { version } from '../../package.json';
 
 const launch = (element, config, options) => {

@@ -7,7 +7,7 @@ import {
   mountHGComponent,
   removeHGComponent,
   waitForTilesLoaded,
-} from '../../app/scripts/utils';
+} from '../utils/test-helpers';
 
 import { twoViewConfig } from '../view-configs';
 

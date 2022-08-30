@@ -6,13 +6,15 @@ import { expect } from 'chai';
 import slugid from 'slugid';
 
 import {
-  mountHGComponentAsync,
-  removeHGComponent,
   getTrackObjectFromHGC,
-  waitForTilesLoaded,
   getTrackByUid,
   totalTrackPixelHeight,
 } from '../../app/scripts/utils';
+import {
+  mountHGComponentAsync,
+  removeHGComponent,
+  waitForTilesLoaded,
+} from '../utils/test-helpers';
 
 import {
   horizontalDiagonalTrackViewConf,

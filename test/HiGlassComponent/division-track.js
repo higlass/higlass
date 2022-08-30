@@ -2,7 +2,7 @@
 import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 
-import { mountHGComponent, removeHGComponent } from '../../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from '../utils/test-helpers';
 
 import { divisionViewConfig } from '../view-configs';
 

@@ -6,7 +6,7 @@ import { expect } from 'chai';
 import { simpleCenterViewConfig } from './view-configs';
 
 // Utils
-import { removeHGComponent } from '../app/scripts/utils';
+import { removeHGComponent } from './utils/test-helpers';
 
 import { viewer } from '../app/scripts/hglib';
 

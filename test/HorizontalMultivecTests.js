@@ -7,11 +7,8 @@ import { select } from 'd3-selection';
 import ReactDOM from 'react-dom';
 
 // Utils
-import {
-  mountHGComponent,
-  removeHGComponent,
-  getTrackObjectFromHGC,
-} from '../app/scripts/utils';
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from './utils/test-helpers';
 
 // View configs
 import horizontalMultivecWithSmallerDimensions from './view-configs-more/horizontalMultivecWithSmallerDimensions.json';

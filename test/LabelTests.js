@@ -3,11 +3,8 @@ import Enzyme from 'enzyme';
 import { expect } from 'chai';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 
-import {
-  mountHGComponent,
-  removeHGComponent,
-  getTrackObjectFromHGC,
-} from '../app/scripts/utils';
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from './utils/test-helpers';
 
 import viewconf from './view-configs/label-margin.json';
 import viewconfSplitHeatmaps from './view-configs/label-split-heatmaps.json';

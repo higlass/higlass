@@ -5,11 +5,8 @@ import { expect } from 'chai';
 
 import viewconf from './view-configs-more/local-tiles-viewconf.json';
 // Utils
-import {
-  mountHGComponent,
-  removeHGComponent,
-  getTrackObjectFromHGC,
-} from '../app/scripts/utils';
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from './utils/test-helpers';
 
 Enzyme.configure({ adapter: new Adapter() });
 

@@ -2,11 +2,11 @@
 import { expect } from 'chai';
 
 // Utils
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
 import {
   waitForTilesLoaded,
-  getTrackObjectFromHGC,
   waitForTransitionsFinished,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 import { topAxisOnly } from './view-configs';
 

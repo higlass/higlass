@@ -4,7 +4,7 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
 // Utils
-import { removeHGComponent } from '../app/scripts/utils';
+import { removeHGComponent } from './utils/test-helpers';
 
 import { osmConf } from './view-configs';
 

@@ -3,12 +3,12 @@ import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
+import { getTrackObjectFromHGC } from '../../app/scripts/utils';
 import {
   mountHGComponent,
   removeHGComponent,
   waitForTilesLoaded,
-  getTrackObjectFromHGC,
-} from '../../app/scripts/utils';
+} from '../utils/test-helpers';
 
 import { project1D, heatmapTrack } from '../view-configs';
 

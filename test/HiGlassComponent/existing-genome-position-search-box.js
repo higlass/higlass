@@ -7,7 +7,7 @@ import {
   mountHGComponent,
   removeHGComponent,
   waitForJsonComplete,
-} from '../../app/scripts/utils';
+} from '../utils/test-helpers';
 
 import { onlyGPSB } from '../view-configs';
 

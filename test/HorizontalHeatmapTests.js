@@ -1,21 +1,13 @@
 /* eslint-env mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-
 import { expect } from 'chai';
 
 // Utils
-import {
-  mountHGComponent,
-  removeHGComponent,
-  getTrackObjectFromHGC,
-} from '../app/scripts/utils';
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from './utils/test-helpers';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('Horizontal heatmaps', () => {
   let hgc = null;

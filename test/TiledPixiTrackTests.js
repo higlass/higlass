@@ -3,13 +3,13 @@ import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 
 // Utils
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
   waitForTransitionsFinished,
   waitForTilesLoaded,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 import { simpleCenterViewConfig } from './view-configs';
 
