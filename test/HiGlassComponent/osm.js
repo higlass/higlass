@@ -8,15 +8,11 @@ import { osmConf } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-// import FetchMockHelper from '../utils/FetchMockHelper';
-
 describe('osm', () => {
   let hgc = null;
   let div = null;
-  // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
   before((done) => {
-    // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, osmConf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
@@ -27,7 +23,6 @@ describe('osm', () => {
 
   after(async () => {
     removeHGComponent(div);
-    // await fetchMockHelper.storeDataAndResetFetchMock();
   });
 
   it('Switches to the osm tiles track', () => {

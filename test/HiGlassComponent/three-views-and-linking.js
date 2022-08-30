@@ -14,15 +14,11 @@ import { threeViews } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-// import FetchMockHelper from '../utils/FetchMockHelper';
-
 describe('Three views and linking', () => {
   let hgc = null;
   let div = null;
-  // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
   before((done) => {
-    // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, threeViews, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -33,7 +29,6 @@ describe('Three views and linking', () => {
 
   after(async () => {
     removeHGComponent(div);
-    // await fetchMockHelper.storeDataAndResetFetchMock();
   });
 
   it('Links two views and moves to the side', (done) => {

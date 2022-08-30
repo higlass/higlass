@@ -15,15 +15,11 @@ import { rectangleDomains } from '../view-configs';
 
 configure({ adapter: new Adapter() });
 
-// import FetchMockHelper from '../utils/FetchMockHelper';
-
 describe('2D Rectangle Annotations', () => {
   let hgc = null;
   let div = null;
-  // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
   before((done) => {
-    // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, rectangleDomains, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
@@ -34,7 +30,6 @@ describe('2D Rectangle Annotations', () => {
 
   after(async () => {
     removeHGComponent(div);
-    // await fetchMockHelper.storeDataAndResetFetchMock();
   });
 
   it('Check to make sure that the rectangles are initially small', (done) => {

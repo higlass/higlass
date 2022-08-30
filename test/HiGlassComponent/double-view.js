@@ -18,15 +18,11 @@ import { twoViewConfig, chromInfoTrack } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-// import FetchMockHelper from '../utils/FetchMockHelper';
-
 describe('Double view', () => {
   let hgc = null;
   let div = null;
-  // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
   before(async () => {
-    // await fetchMockHelper.activateFetchMock();
     [div, hgc] = await mountHGComponentAsync(div, hgc, twoViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -37,7 +33,6 @@ describe('Double view', () => {
 
   after(async () => {
     removeHGComponent(div);
-    // await fetchMockHelper.storeDataAndResetFetchMock();
   });
 
   it('has a colorbar', () => {

@@ -18,10 +18,8 @@ Enzyme.configure({ adapter: new Adapter() });
 describe('Two linked views', () => {
   let hgc = null;
   let div = null;
-  // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
   before((done) => {
-    // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(
       div,
       hgc,
@@ -38,7 +36,6 @@ describe('Two linked views', () => {
 
   after(async () => {
     removeHGComponent(div);
-    // await fetchMockHelper.storeDataAndResetFetchMock();
   });
 
   it('zoom to the data extent', (done) => {

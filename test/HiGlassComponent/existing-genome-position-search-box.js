@@ -13,15 +13,11 @@ import { onlyGPSB } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-// import FetchMockHelper from '../utils/FetchMockHelper';
-
 describe('Exising genome position search box', () => {
   let hgc = null;
   let div = null;
-  // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
   before((done) => {
-    // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, onlyGPSB, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -32,7 +28,6 @@ describe('Exising genome position search box', () => {
 
   after(async () => {
     removeHGComponent(div);
-    // await fetchMockHelper.storeDataAndResetFetchMock();
   });
 
   it('Makes the search box invisible', (done) => {

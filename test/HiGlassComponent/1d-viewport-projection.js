@@ -14,15 +14,11 @@ import { project1D, heatmapTrack } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-// import FetchMockHelper from '../utils/FetchMockHelper';
-
 describe('1D viewport projection', () => {
   let hgc = null;
   let div = null;
-  // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
   before((done) => {
-    // await fetchMockHelper.activateFetchMock();
     const newViewConf = JSON.parse(JSON.stringify(project1D));
 
     const center1 = JSON.parse(JSON.stringify(heatmapTrack));
@@ -46,7 +42,6 @@ describe('1D viewport projection', () => {
 
   after(async () => {
     removeHGComponent(div);
-    // await fetchMockHelper.storeDataAndResetFetchMock();
   });
 
   it('Should lock the location without throwing an error', (done) => {

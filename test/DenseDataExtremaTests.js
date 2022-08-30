@@ -3,8 +3,6 @@ import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
-import FetchMockHelper from './utils/FetchMockHelper';
-
 // Utils
 import {
   mountHGComponent,
@@ -28,11 +26,6 @@ Enzyme.configure({ adapter: new Adapter() });
 describe('Dense data extrema tests', () => {
   // We can pass in the view conf as first argument to perform some
   // basic compatibility checks. Since we have two view confs here, we skip this.
-  const fetchMockHelper = new FetchMockHelper(null, 'DenseDataExtrema');
-
-  before(async () => {
-    await fetchMockHelper.activateFetchMock();
-  });
 
   describe('DenseDataExtrema module', () => {
     it('should get precise extrema of toy vectors', () => {
@@ -332,9 +325,5 @@ describe('Dense data extrema tests', () => {
     after(() => {
       removeHGComponent(div);
     });
-  });
-
-  after(async () => {
-    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });
