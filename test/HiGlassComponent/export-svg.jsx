@@ -21,15 +21,12 @@ const waitForTilesLoadedAsync = (hgcInstance) =>
     waitForTilesLoaded(hgcInstance, () => resolve());
   });
 
-// import FetchMockHelper from '../utils/FetchMockHelper';
 
 describe('SVG Export', () => {
   let hgc = null;
   let div = null;
-  // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
   before(async () => {
-    // await fetchMockHelper.activateFetchMock();
     [div, hgc] = await mountHGComponentAsync(div, hgc, testViewConfX1, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: false,
@@ -40,7 +37,6 @@ describe('SVG Export', () => {
 
   after(async () => {
     removeHGComponent(div);
-    // await fetchMockHelper.storeDataAndResetFetchMock();
   });
 
   it('Exports to SVG', () => {
