@@ -34,6 +34,7 @@
     "node": ">=0.12.0"
   },
   "dependencies": {
+    "@lukeed/uuid": "^2.0.0",
     "ajv": "^6.10.0",
     "box-intersect": "^1.0.1",
     "buffer": "^6.0.3",
@@ -68,7 +69,6 @@
     "react-sortable-hoc": "^1.10.1",
     "reactcss": "^1.2.3",
     "robust-point-in-polygon": "^1.0.3",
-    "slugid": "^3.0.0",
     "stream": "0.0.2",
     "url-parse": "^1.4.3",
     "vkbeautify": "^0.99.3"
@@ -79,7 +79,6 @@
     "react-dom": "^16.6.3"
   },
   "devDependencies": {
-    "@rollup/plugin-inject": "^4.0.4",
     "@vitejs/plugin-react": "^2.0.1",
     "@web/test-runner": "^0.14.0",
     "@web/test-runner-puppeteer": "^0.10.5",
