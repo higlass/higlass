@@ -3,7 +3,7 @@ import slugid from 'slugid';
 
 import { workerGetTiles, workerSetPix } from '../worker';
 
-import { trimTrailingSlash as tts } from '../utils';
+import { trimTrailingSlash as tts, timeout as sleep } from '../utils';
 
 // Config
 import { TILE_FETCH_DEBOUNCE } from '../configs';
@@ -672,10 +672,6 @@ function fetchEither(url, callback, textOrJson, pubSub) {
  */
 function text(url, callback, pubSub) {
   return fetchEither(url, callback, 'text', pubSub);
-}
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**

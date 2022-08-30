@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -11,7 +12,7 @@ import {
 
 import { twoViewConfig, heatmapTrack } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -20,7 +21,7 @@ describe('Value scale locking', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  beforeAll(async (done) => {
+  before((done) => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -30,7 +31,7 @@ describe('Value scale locking', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  after(async () => {
     removeHGComponent(div);
     // await fetchMockHelper.storeDataAndResetFetchMock();
   });
@@ -57,7 +58,7 @@ describe('Value scale locking', () => {
   it('exports as JSON and makes sure that the scales are locked', () => {
     const data = hgc.instance().getViewsAsString();
 
-    expect(data.indexOf('valueScaleLocks')).toBeGreaterThanOrEqual(0);
+    expect(data.indexOf('valueScaleLocks')).to.be.greaterThanOrEqual(0);
   });
 
   it('Moves the brush on one view and makes sure it moves on the other', (done) => {
@@ -70,10 +71,10 @@ describe('Value scale locking', () => {
     // console.log('lvs1', heatmapTrack.limitedValueScale.domain());
 
     // move the brush down to limit the amount of visible data
-    heatmap1Track.gColorscaleBrush.call(heatmap1Track.scaleBrush.move, [
-      0,
-      100,
-    ]);
+    heatmap1Track.gColorscaleBrush.call(
+      heatmap1Track.scaleBrush.move,
+      [0, 100],
+    );
 
     // console.log('lvs2', heatmapTrack.limitedValueScale.domain());
 
@@ -83,10 +84,10 @@ describe('Value scale locking', () => {
       'heatmap2',
     );
 
-    expect(heatmap1Track.options.scaleStartPercent).toEqual(
+    expect(heatmap1Track.options.scaleStartPercent).to.equal(
       heatmap2Track.options.scaleStartPercent,
     );
-    expect(heatmap1Track.options.scaleEndPercent).toEqual(
+    expect(heatmap1Track.options.scaleEndPercent).to.equal(
       heatmap2Track.options.scaleEndPercent,
     );
 
@@ -121,9 +122,9 @@ describe('Value scale locking', () => {
 
     // the zoom levels are different because one view is slightly larger
     // than the other
-    // expect(zl1).toEqual(zl2);
+    // expect(zl1).to.equal(zl2);
 
-    expect(domain1[1]).toEqual(domain2[1]);
+    expect(domain1[1]).to.equal(domain2[1]);
   });
 
   it('unlocks the scales', (done) => {
@@ -148,7 +149,7 @@ describe('Value scale locking', () => {
     const domain1 = track1.valueScale.domain();
     const domain2 = track2.valueScale.domain();
 
-    expect(domain1[1]).not.toEqual(domain2[1]);
+    expect(domain1[1]).not.to.equal(domain2[1]);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -176,7 +177,7 @@ describe('Value scale locking', () => {
     const domain1 = track1.valueScale.domain();
     const domain2 = track2.valueScale.domain();
 
-    expect(domain1[1]).toEqual(domain2[1]);
+    expect(domain1[1]).to.equal(domain2[1]);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -200,8 +201,8 @@ describe('Value scale locking', () => {
     const domain1 = track1.valueScale.domain();
     const domain2 = track2.valueScale.domain();
 
-    expect(domain1[1]).toBeLessThan(1);
-    expect(domain1[1]).toEqual(domain2[1]);
+    expect(domain1[1]).to.be.lessThan(1);
+    expect(domain1[1]).to.equal(domain2[1]);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -232,7 +233,7 @@ describe('Value scale locking', () => {
     const domain1 = track1.valueScale.domain();
     const domain2 = track2.valueScale.domain();
 
-    expect(domain1[1]).not.toEqual(domain2[1]);
+    expect(domain1[1]).not.to.equal(domain2[1]);
 
     // hgc.instance().handleUnlockValueScale('aa', 'heatmap1');
 
@@ -278,8 +279,8 @@ describe('Value scale locking', () => {
     const track = getTrackObjectFromHGC(hgc.instance(), 'view2', 'heatmap3');
 
     // make sure that the newly added track is rendered
-    expect(track.pMain.position.x).toBeGreaterThan(404);
-    expect(track.pMain.position.x).toBeLessThan(406);
+    expect(track.pMain.position.x).to.be.greaterThan(404);
+    expect(track.pMain.position.x).to.be.lessThan(406);
 
     waitForTilesLoaded(hgc.instance(), done);
   });

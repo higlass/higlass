@@ -1,30 +1,25 @@
-import {
-  getTrackRenderer,
-} from '../../app/scripts/utils';
+import { getTrackRenderer } from '../../app/scripts/utils';
 
 const drag = (fromX, fromY, toX, toY, viewId, hgc) => {
   // simulate a zoom drag event by doing a
   // mousedown, mousemove and mouseup
-  const evtDown = new MouseEvent('mousedown',
-    {
-      clientX: fromX,
-      clientY: fromY,
-      view: window,
-    });
+  const evtDown = new MouseEvent('mousedown', {
+    clientX: fromX,
+    clientY: fromY,
+    view: window,
+  });
 
-  const evtMove = new MouseEvent('mousemove',
-    {
-      clientX: toX,
-      clientY: toY,
-      view: window,
-    });
+  const evtMove = new MouseEvent('mousemove', {
+    clientX: toX,
+    clientY: toY,
+    view: window,
+  });
 
-  const evtUp = new MouseEvent('mouseup',
-    {
-      clientX: toX,
-      clientY: toY,
-      view: window,
-    });
+  const evtUp = new MouseEvent('mouseup', {
+    clientX: toX,
+    clientY: toY,
+    view: window,
+  });
 
   const trackRenderer = getTrackRenderer(hgc, viewId);
 

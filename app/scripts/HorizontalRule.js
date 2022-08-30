@@ -1,3 +1,5 @@
+/* eslint-disable max-classes-per-file */
+
 import { mix, Mixin } from './mixwith';
 
 import PixiTrack from './PixiTrack';

@@ -1,59 +1,59 @@
-import fetchMock from 'fetch-mock';
+// @ts-check
+
+// See vite.config.js
+const mockUrl = (name) => `/@mocked-responses/${name}.json`;
+
+/**
+ * @typedef {((...args: [...Parameters<fetch>, fetch]) => Promise<unknown>)} CustomFetch<T>
+ */
+
+/**
+ * Wraps the current global fetch with a custom handler.
+ *
+ * @param {CustomFetch} customFetch user implemented data fetcher. Has access to original fetch.
+ * @return a function to restore the global fetch.
+ */
+function setFetch(customFetch) {
+  const originalFetch = window.fetch;
+  window.fetch = async (url, init) => {
+    const data = await customFetch(url, init, originalFetch);
+    return new Response(JSON.stringify(data));
+  };
+  return function reset() {
+    window.fetch = originalFetch;
+  };
+}
 
 class FetchMockHelper {
   constructor(viewConf, testName) {
     this.checkViewConf(viewConf);
-
-    this.server = require('karma-server-side'); // eslint-disable-line
-
-    fetchMock.config.fallbackToNetwork = false;
-    fetchMock.config.warnOnFallback = false;
-
     this.testName = testName;
-
     this.mockedData = {};
     this.writeToFile = false;
   }
 
   async getMockedData() {
-    const mockedResponses = await this.server.run(this.testName, function (
-      testName,
-    ) {
-      try {
-        const fs = serverRequire('fs-extra'); // eslint-disable-line
-        const path = `./test/mocked-responses/${testName}.json`;
-
-        // Read currently available mocked responses
-        if (fs.pathExistsSync(path)) {
-          return fs.readJsonSync(path);
-        }
-        return {};
-      } catch (error) {
-        return error;
-      }
-    });
-
-    return mockedResponses;
+    // We're going to use the timeout function to make sure
+    // the FetchMockHelper doesn't end up timing out. If it doesn't
+    // return within 1 second, we'll return an empty object
+    // and let higlass fetch the data from its original source
+    const response = await fetch(mockUrl(this.testName));
+    return response.json();
   }
 
-  async getOriginalFetchResponse(url, headers) {
-    // This basically disables fetch-moch, so that we can call the original fetch
-    fetchMock.config.fallbackToNetwork = 'always';
+  async getOriginalFetchResponse(originalFetch, url, init) {
+    const response = await originalFetch(url, init);
 
-    const response = await fetch(url, headers);
     let data;
 
     if (
-      headers.headers['Content-Type'] === 'application/json' ||
-      headers.headers['content-type'] === 'application/json'
+      init?.headers?.['Content-Type'] === 'application/json' ||
+      init?.headers?.['content-type'] === 'application/json'
     ) {
       data = response.json();
     } else {
       data = response.text();
     }
-
-    // Switch fetch-mock on again
-    fetchMock.config.fallbackToNetwork = false;
     return data;
   }
 
@@ -62,7 +62,7 @@ class FetchMockHelper {
 
     // Since we are not using the actual mocking functionality of fetch-mock,
     // catch will intercept every call of the global fetch method
-    fetchMock.catch(async (url, headers) => {
+    this.reset = setFetch(async (url, init, originalFetch) => {
       const [requestIds, isTileData] = this.getRequestIds(url);
       let data = {};
 
@@ -88,9 +88,10 @@ class FetchMockHelper {
         console.warn(
           `Not all requests have been mocked. Loading ${url} from server.`,
         );
-        data = await this.getOriginalFetchResponse(url, headers);
+        data = await this.getOriginalFetchResponse(originalFetch, url, init);
         this.addToMockedData(data, isTileData ? null : url, requestIds);
       }
+
       return data;
     });
   }
@@ -115,32 +116,20 @@ class FetchMockHelper {
 
     const mockedResponsesJSON = JSON.stringify(this.mockedData, null, 1);
 
-    const response = await this.server.run(
-      this.testName,
-      mockedResponsesJSON,
-      function (testName, data) {
-        try {
-          // If the test is run by Travis, don't write the file
-          if (!process.env.TRAVIS) {
-            const fs = serverRequire('fs-extra'); // eslint-disable-line
-            const path = `./test/mocked-responses/${testName}.json`;
-            fs.writeFileSync(path, data);
-          }
-        } catch (error) {
-          return error;
-        }
-        return null;
-      },
-    );
+    // POST data to our vite endpoint
+    const response = await fetch(mockUrl(this.testName), {
+      method: 'POST',
+      body: mockedResponsesJSON,
+    });
 
-    if (response !== null) {
+    if (!response.ok) {
       console.error('Could not store mocked responses', response);
     }
   }
 
   async storeDataAndResetFetchMock() {
     await this.storeMockedDataToFile();
-    fetchMock.reset();
+    this.reset?.();
   }
 
   getRequestIds(url) {

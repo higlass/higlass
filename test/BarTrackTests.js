@@ -1,11 +1,6 @@
-/* eslint-env node, jasmine, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 // Utils
@@ -17,15 +12,15 @@ import {
   waitForTilesLoaded,
 } from '../app/scripts/utils';
 
-import viewConf from './view-configs/bar';
+import viewConf from './view-configs/bar.json';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('BarTrack tests', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
   });
 
@@ -75,7 +70,7 @@ describe('BarTrack tests', () => {
     });
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });

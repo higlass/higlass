@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -11,7 +12,7 @@ import {
 
 import { testViewConfX2 } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -20,7 +21,7 @@ describe('Track addition and removal', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  beforeAll(async (done) => {
+  before((done) => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, testViewConfX2, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -30,7 +31,7 @@ describe('Track addition and removal', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  after(async () => {
     removeHGComponent(div);
     // await fetchMockHelper.storeDataAndResetFetchMock();
   });
@@ -40,7 +41,7 @@ describe('Track addition and removal', () => {
     // where the issue was that the genome position search box was being
     // styled with a margin-bottom of 10px, fixed by setting the style of
     // genome-position-search to specify margin-bottom app/styles/GenomePositionSearchBox.css
-    expect(hgc.instance().state.views.aa.layout.h).toEqual(6);
+    expect(hgc.instance().state.views.aa.layout.h).to.equal(6);
   });
 
   it('should change the opacity of the first text label to 20%', (done) => {
@@ -54,7 +55,7 @@ describe('Track addition and removal', () => {
 
     expect(
       getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').labelText.alpha,
-    ).toBeLessThan(0.21);
+    ).to.be.lessThan(0.21);
 
     waitForTilesLoaded(hgc.instance(), done);
   });
@@ -70,7 +71,7 @@ describe('Track addition and removal', () => {
 
     expect(
       getTrackObjectFromHGC(hgc.instance(), 'aa', 'line1').labelText.alpha,
-    ).toBeLessThan(0.21);
+    ).to.be.lessThan(0.21);
 
     waitForTilesLoaded(hgc.instance(), done);
   });

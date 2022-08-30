@@ -1,42 +1,44 @@
-/* eslint-env node, jasmine */
-import { configure } from 'enzyme';
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
+
 import {
   mountHGComponent,
   removeHGComponent,
   waitForTransitionsFinished,
   waitForTilesLoaded,
   getTrackObjectFromHGC,
-  waitForJsonComplete
+  waitForJsonComplete,
 } from '../app/scripts/utils';
-import viewConf from './view-configs/simple-heatmap-gene-annotations';
+import viewConf from './view-configs/simple-heatmap-gene-annotations.json';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('View Config Editor', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(done => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewConf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true
+      bounded: true,
     });
   });
 
-  it('should instantiate and open', done => {
+  it('should instantiate and open', (done) => {
     hgc.instance().handleEditViewConfigBound();
     hgc.update();
 
-    expect(hgc.instance().modalRef).toBeTruthy();
+    expect(hgc.instance().modalRef).to.exist;
 
     waitForJsonComplete(done);
   });
 
   it('should focus the textarea', () => {
-    expect(hgc.instance().modalRef.editorWrap.scrollTop).toEqual(0);
-    expect(document.activeElement).toEqual(
-      hgc.instance().modalRef.editor._input
+    expect(hgc.instance().modalRef.editorWrap.scrollTop).to.equal(0);
+    expect(document.activeElement).to.equal(
+      hgc.instance().modalRef.editor._input,
     );
   });
 
@@ -50,18 +52,18 @@ describe('View Config Editor', () => {
 
     // No changes should have happened yet
     expect(
-      hgc.instance().state.viewConfig.views[0].tracks.top[0].height
-    ).toEqual(60);
+      hgc.instance().state.viewConfig.views[0].tracks.top[0].height,
+    ).to.equal(60);
 
     document.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 's', metaKey: true })
+      new KeyboardEvent('keydown', { key: 's', metaKey: true }),
     );
     hgc.update();
 
     // No changes should now be reflected
     expect(
-      hgc.instance().state.viewConfig.views[0].tracks.top[0].height
-    ).toEqual(30);
+      hgc.instance().state.viewConfig.views[0].tracks.top[0].height,
+    ).to.equal(30);
   });
 
   it('should revert changes and close on escape', () => {
@@ -69,18 +71,18 @@ describe('View Config Editor', () => {
     hgc.update();
 
     // Modal should be closed
-    expect(hgc.instance().modalRef).toBeFalsy();
+    expect(hgc.instance().modalRef).to.be.not.ok;
     // No changes should be reverted
     expect(
-      hgc.instance().state.viewConfig.views[0].tracks.top[0].height
-    ).toEqual(60);
+      hgc.instance().state.viewConfig.views[0].tracks.top[0].height,
+    ).to.equal(60);
   });
 
-  it('open again', done => {
+  it('open again', (done) => {
     hgc.instance().handleEditViewConfigBound();
     hgc.update();
 
-    expect(hgc.instance().modalRef).toBeTruthy();
+    expect(hgc.instance().modalRef).to.be.ok;
 
     waitForJsonComplete(done);
   });
@@ -95,24 +97,24 @@ describe('View Config Editor', () => {
 
     // No changes should have happened yet
     expect(
-      hgc.instance().state.viewConfig.views[0].tracks.top[0].height
-    ).toEqual(60);
+      hgc.instance().state.viewConfig.views[0].tracks.top[0].height,
+    ).to.equal(60);
 
     document.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 'Enter', metaKey: true })
+      new KeyboardEvent('keydown', { key: 'Enter', metaKey: true }),
     );
     hgc.update();
 
     // Modal should be closed
-    expect(hgc.instance().modalRef).toBeFalsy();
+    expect(hgc.instance().modalRef).to.be.not.ok;
 
     // No changes should now be reflected
     expect(
-      hgc.instance().state.viewConfig.views[0].tracks.top[0].height
-    ).toEqual(30);
+      hgc.instance().state.viewConfig.views[0].tracks.top[0].height,
+    ).to.equal(30);
   });
 
-  it('zoom somewhere', done => {
+  it('zoom somewhere', (done) => {
     hgc
       .instance()
       .zoomTo('a', 1000000000, 2000000000, 1000000000, 2000000000, 1000);
@@ -124,37 +126,37 @@ describe('View Config Editor', () => {
     });
   });
 
-  it('open editor again, do nothing and save', done => {
+  it('open editor again, do nothing and save', (done) => {
     hgc.instance().handleEditViewConfigBound();
     hgc.update();
 
-    expect(hgc.instance().modalRef).toBeTruthy();
+    expect(hgc.instance().modalRef).to.be.ok;
 
     waitForJsonComplete(done);
 
     document.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 'Enter', metaKey: true })
+      new KeyboardEvent('keydown', { key: 'Enter', metaKey: true }),
     );
     hgc.update();
 
     // Modal should be closed
-    expect(hgc.instance().modalRef).toBeFalsy();
+    expect(hgc.instance().modalRef).to.be.not.ok;
   });
 
   it('Heatmap track should not have moved', () => {
-    const initialXDomain = hgc.instance().state.viewConfig.views[0]
-      .initialXDomain;
+    const initialXDomain =
+      hgc.instance().state.viewConfig.views[0].initialXDomain;
     const trackObject = getTrackObjectFromHGC(hgc.instance(), 'heatmap');
 
     expect(
-      Math.round(trackObject._xScale.domain()[0] - initialXDomain[0])
-    ).toEqual(0);
+      Math.round(trackObject._xScale.domain()[0] - initialXDomain[0]),
+    ).to.equal(0);
     expect(
-      Math.round(trackObject._xScale.domain()[1] - initialXDomain[1])
-    ).toEqual(0);
+      Math.round(trackObject._xScale.domain()[1] - initialXDomain[1]),
+    ).to.equal(0);
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });

@@ -1,10 +1,7 @@
-/* eslint-env node, jasmine */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import { select } from 'd3-selection';
 import ReactDOM from 'react-dom';
@@ -17,10 +14,10 @@ import {
 } from '../app/scripts/utils';
 
 // View configs
-import horizontalMultivecWithSmallerDimensions from './view-configs-more/horizontalMultivecWithSmallerDimensions';
-import horizontalMultivecWithZeroValueColorOption from './view-configs-more/horizontalMultivecWithZeroValueColorOption';
-import horizontalMultivecWithFilteredRows from './view-configs-more/horizontalMultivecWithFilteredRows';
-import horizontalMultivecWithAggregation from './view-configs-more/horizontalMultivecWithAggregation';
+import horizontalMultivecWithSmallerDimensions from './view-configs-more/horizontalMultivecWithSmallerDimensions.json';
+import horizontalMultivecWithZeroValueColorOption from './view-configs-more/horizontalMultivecWithZeroValueColorOption.json';
+import horizontalMultivecWithFilteredRows from './view-configs-more/horizontalMultivecWithFilteredRows.json';
+import horizontalMultivecWithAggregation from './view-configs-more/horizontalMultivecWithAggregation.json';
 
 // Constants
 import {
@@ -28,13 +25,13 @@ import {
   MIN_VERTICAL_WIDTH,
 } from '../app/scripts/configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
-describe('Horizontal heatmaps', () => {
+describe('Horizontal multivecs', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewConf1, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -75,12 +72,12 @@ describe('Horizontal heatmaps', () => {
       'viewConf2_uid',
       'K_0GxgCvQfCHM56neOnHKg',
     ); // uuid of horizontal-multivec
-    expect(track.pColorbarArea.x).toBeLessThan(track.dimensions[0] / 2);
+    expect(track.pColorbarArea.x).to.be.lessThan(track.dimensions[0] / 2);
 
     const selection = select(div).selectAll('.selection');
 
     // we expect one colorbar selector brush to be present
-    expect(selection.size()).toEqual(1);
+    expect(selection.size()).to.equal(1);
   });
 
   it('hides the colorbar', () => {
@@ -102,7 +99,7 @@ describe('Horizontal heatmaps', () => {
 
     // we expect the colorbar selector brush to be hidden,
     // and therefore not present
-    expect(selection.size()).toEqual(0);
+    expect(selection.size()).to.equal(0);
 
     track.options.colorbarPosition = 'topLeft';
     hgc.instance().setState({ views });
@@ -120,7 +117,7 @@ describe('Horizontal heatmaps', () => {
           'horizontal-multivec-track-0',
         ); // uuid of horizontal-multivec
         const trackTiles = track.visibleAndFetchedTiles();
-        expect(trackTiles.length).toEqual(1);
+        expect(trackTiles.length).to.equal(1);
 
         const zeroCellCoords = [79, 184];
         const tooltipValue = track.getVisibleData(
@@ -128,7 +125,7 @@ describe('Horizontal heatmaps', () => {
           zeroCellCoords[1],
         );
         // The data at this coordinate should correspond to this particular zero value.
-        expect(tooltipValue).toEqual(
+        expect(tooltipValue).to.equal(
           '0.000<br/>Homo sapiens	CHIP-SEQ ANALYSIS OF H3K27AC IN' +
             ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
             'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
@@ -139,10 +136,10 @@ describe('Horizontal heatmaps', () => {
         const canvas = trackTiles[0].canvas;
         const ctx = canvas.getContext('2d');
 
-        expect(canvas.width).toEqual(256);
-        expect(canvas.height).toEqual(228);
-        expect(track.dimensions[0]).toEqual(805);
-        expect(track.dimensions[1]).toEqual(370);
+        expect(canvas.width).to.equal(256);
+        expect(canvas.height).to.equal(228);
+        expect(track.dimensions[0]).to.equal(805);
+        expect(track.dimensions[1]).to.equal(370);
 
         // Need to scale from screen coordinates to dataset coordinates.
         const scaledCoord = [
@@ -158,10 +155,10 @@ describe('Horizontal heatmaps', () => {
         ).data;
 
         // Pixel should be slightly yellow.
-        expect(pixel[0]).toEqual(255); // r
-        expect(pixel[1]).toEqual(255); // g
-        expect(pixel[2]).toEqual(247); // b // 247, for the faint yellow color.
-        expect(pixel[3]).toEqual(255); // a
+        expect(pixel[0]).to.equal(255); // r
+        expect(pixel[1]).to.equal(255); // g
+        expect(pixel[2]).to.equal(247); // b // 247, for the faint yellow color.
+        expect(pixel[3]).to.equal(255); // a
 
         done();
       },
@@ -186,7 +183,7 @@ describe('Horizontal heatmaps', () => {
           'horizontal-multivec-track-0',
         ); // uuid of horizontal-multivec
         const trackTiles = track.visibleAndFetchedTiles();
-        expect(trackTiles.length).toEqual(1);
+        expect(trackTiles.length).to.equal(1);
 
         const zeroCellCoords = [79, 184];
         const tooltipValue = track.getVisibleData(
@@ -194,7 +191,7 @@ describe('Horizontal heatmaps', () => {
           zeroCellCoords[1],
         );
         // The data at this coordinate should correspond to this particular zero value.
-        expect(tooltipValue).toEqual(
+        expect(tooltipValue).to.equal(
           '0.000<br/>Homo sapiens	CHIP-SEQ ANALYSIS OF H3K27AC IN' +
             ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
             'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
@@ -205,10 +202,10 @@ describe('Horizontal heatmaps', () => {
         const canvas = trackTiles[0].canvas;
         const ctx = canvas.getContext('2d');
 
-        expect(canvas.width).toEqual(256);
-        expect(canvas.height).toEqual(228);
-        expect(track.dimensions[0]).toEqual(805);
-        expect(track.dimensions[1]).toEqual(370);
+        expect(canvas.width).to.equal(256);
+        expect(canvas.height).to.equal(228);
+        expect(track.dimensions[0]).to.equal(805);
+        expect(track.dimensions[1]).to.equal(370);
 
         // Need to scale from screen coordinates to dataset coordinates.
         const scaledCoord = [
@@ -224,10 +221,10 @@ describe('Horizontal heatmaps', () => {
         ).data;
 
         // Pixel should be blue.
-        expect(pixel[0]).toEqual(0); // r
-        expect(pixel[1]).toEqual(0); // g
-        expect(pixel[2]).toEqual(255); // b
-        expect(pixel[3]).toEqual(255); // a
+        expect(pixel[0]).to.equal(0); // r
+        expect(pixel[1]).to.equal(0); // g
+        expect(pixel[2]).to.equal(255); // b
+        expect(pixel[3]).to.equal(255); // a
 
         done();
       },
@@ -252,7 +249,7 @@ describe('Horizontal heatmaps', () => {
           'horizontal-multivec-track-0',
         ); // uuid of horizontal-multivec
         const trackTiles = track.visibleAndFetchedTiles();
-        expect(trackTiles.length).toEqual(1);
+        expect(trackTiles.length).to.equal(1);
 
         const zeroCellCoords = [79, 184];
         const tooltipValue = track.getVisibleData(
@@ -260,7 +257,7 @@ describe('Horizontal heatmaps', () => {
           zeroCellCoords[1],
         );
         // The data at this coordinate should correspond to this particular zero value.
-        expect(tooltipValue).toEqual(
+        expect(tooltipValue).to.equal(
           '0.000<br/>Homo sapiens	CHIP-SEQ ANALYSIS OF H3K27AC IN' +
             ' HUMAN INFERIOR TEMPORAL LOBE CELLS; DNA_LIB 1053	G' +
             'SM1112812	GSE17312	None	Inferior Temporal Lobe Cel' +
@@ -271,10 +268,10 @@ describe('Horizontal heatmaps', () => {
         const canvas = trackTiles[0].canvas;
         const ctx = canvas.getContext('2d');
 
-        expect(canvas.width).toEqual(256);
-        expect(canvas.height).toEqual(228);
-        expect(track.dimensions[0]).toEqual(805);
-        expect(track.dimensions[1]).toEqual(370);
+        expect(canvas.width).to.equal(256);
+        expect(canvas.height).to.equal(228);
+        expect(track.dimensions[0]).to.equal(805);
+        expect(track.dimensions[1]).to.equal(370);
 
         // Need to scale from screen coordinates to dataset coordinates.
         const scaledCoord = [
@@ -290,7 +287,7 @@ describe('Horizontal heatmaps', () => {
         ).data;
 
         // Pixel should be transparent.
-        expect(pixel[3]).toEqual(0); // transparent
+        expect(pixel[3]).to.equal(0); // transparent
 
         done();
       },
@@ -312,11 +309,11 @@ describe('Horizontal heatmaps', () => {
           'YafcbvKDQvWoWRT1WrygPA',
         ); // uuid of horizontal-multivec
         const trackTiles = track.visibleAndFetchedTiles();
-        expect(trackTiles.length).toEqual(2);
-        expect(trackTiles[0].canvas.width).toEqual(256);
-        expect(trackTiles[0].canvas.height).toEqual(10);
-        expect(trackTiles[1].canvas.width).toEqual(256);
-        expect(trackTiles[1].canvas.height).toEqual(10);
+        expect(trackTiles.length).to.equal(2);
+        expect(trackTiles[0].canvas.width).to.equal(256);
+        expect(trackTiles[0].canvas.height).to.equal(10);
+        expect(trackTiles[1].canvas.width).to.equal(256);
+        expect(trackTiles[1].canvas.height).to.equal(10);
 
         const tooltipValue = track.getVisibleData(100, 100);
         expect(tooltipValue.startsWith('0.676')).toBe(true);
@@ -341,14 +338,14 @@ describe('Horizontal heatmaps', () => {
           'K_0GxgCvQfCHM56neOnHKg',
         ); // uuid of horizontal-multivec
         const trackTiles = track.visibleAndFetchedTiles();
-        expect(trackTiles.length).toEqual(3);
-        expect(trackTiles[0].canvas.width).toEqual(256);
-        expect(trackTiles[0].canvas.height).toEqual(228);
-        expect(trackTiles[1].canvas.width).toEqual(256);
-        expect(trackTiles[1].canvas.height).toEqual(228);
+        expect(trackTiles.length).to.equal(3);
+        expect(trackTiles[0].canvas.width).to.equal(256);
+        expect(trackTiles[0].canvas.height).to.equal(228);
+        expect(trackTiles[1].canvas.width).to.equal(256);
+        expect(trackTiles[1].canvas.height).to.equal(228);
 
         const tooltipValue = track.getVisibleData(40, 40);
-        expect(tooltipValue).toEqual('647.000');
+        expect(tooltipValue).to.equal('647.000');
         done();
       },
       {
@@ -371,9 +368,9 @@ describe('Horizontal heatmaps', () => {
           'aggregation-track',
         ); // uuid of horizontal-multivec
         const trackTiles = track.visibleAndFetchedTiles();
-        expect(trackTiles.length).toBeGreaterThanOrEqual(1);
-        expect(trackTiles[0].canvas.width).toEqual(256);
-        expect(trackTiles[0].canvas.height).toEqual(5);
+        expect(trackTiles.length).to.be.greaterThanOrEqual(1);
+        expect(trackTiles[0].canvas.width).to.equal(256);
+        expect(trackTiles[0].canvas.height).to.equal(5);
 
         const trackHeight = track.dimensions[1];
         const itemHeight = trackHeight / 5;
@@ -381,22 +378,22 @@ describe('Horizontal heatmaps', () => {
         let tooltipValue;
 
         tooltipValue = track.getVisibleData(40, itemHeight * 0 + 1);
-        expect(tooltipValue.substring(0, 5)).toEqual('6.118');
+        expect(tooltipValue.substring(0, 5)).to.equal('6.118');
 
         tooltipValue = track.getVisibleData(40, itemHeight * 3 - 1);
-        expect(tooltipValue.substring(0, 5)).toEqual('6.118');
+        expect(tooltipValue.substring(0, 5)).to.equal('6.118');
 
         tooltipValue = track.getVisibleData(40, itemHeight * 3 + 1);
-        expect(tooltipValue.substring(0, 5)).toEqual('0.829');
+        expect(tooltipValue.substring(0, 5)).to.equal('0.829');
 
         tooltipValue = track.getVisibleData(40, itemHeight * 4 - 1);
-        expect(tooltipValue.substring(0, 5)).toEqual('0.829');
+        expect(tooltipValue.substring(0, 5)).to.equal('0.829');
 
         tooltipValue = track.getVisibleData(40, itemHeight * 4 + 1);
-        expect(tooltipValue.substring(0, 5)).toEqual('0.174');
+        expect(tooltipValue.substring(0, 5)).to.equal('0.174');
 
         tooltipValue = track.getVisibleData(40, itemHeight * 5 - 1);
-        expect(tooltipValue.substring(0, 5)).toEqual('0.174');
+        expect(tooltipValue.substring(0, 5)).to.equal('0.174');
 
         done();
       },
@@ -420,9 +417,9 @@ describe('Horizontal heatmaps', () => {
           'aggregation-track',
         ); // uuid of horizontal-multivec
         const trackTiles = track.visibleAndFetchedTiles();
-        expect(trackTiles.length).toBeGreaterThanOrEqual(1);
-        expect(trackTiles[0].canvas.width).toEqual(256);
-        expect(trackTiles[0].canvas.height).toEqual(3);
+        expect(trackTiles.length).to.be.greaterThanOrEqual(1);
+        expect(trackTiles[0].canvas.width).to.equal(256);
+        expect(trackTiles[0].canvas.height).to.equal(3);
 
         const trackHeight = track.dimensions[1];
         const itemHeight = trackHeight / 3;
@@ -430,22 +427,22 @@ describe('Horizontal heatmaps', () => {
         let tooltipValue;
 
         tooltipValue = track.getVisibleData(40, itemHeight * 0 + 1);
-        expect(tooltipValue.substring(0, 5)).toEqual('6.118');
+        expect(tooltipValue.substring(0, 5)).to.equal('6.118');
 
         tooltipValue = track.getVisibleData(40, itemHeight * 1 - 1);
-        expect(tooltipValue.substring(0, 5)).toEqual('6.118');
+        expect(tooltipValue.substring(0, 5)).to.equal('6.118');
 
         tooltipValue = track.getVisibleData(40, itemHeight * 1 + 1);
-        expect(tooltipValue.substring(0, 5)).toEqual('0.829');
+        expect(tooltipValue.substring(0, 5)).to.equal('0.829');
 
         tooltipValue = track.getVisibleData(40, itemHeight * 2 - 1);
-        expect(tooltipValue.substring(0, 5)).toEqual('0.829');
+        expect(tooltipValue.substring(0, 5)).to.equal('0.829');
 
         tooltipValue = track.getVisibleData(40, itemHeight * 2 + 1);
-        expect(tooltipValue.substring(0, 5)).toEqual('0.174');
+        expect(tooltipValue.substring(0, 5)).to.equal('0.174');
 
         tooltipValue = track.getVisibleData(40, itemHeight * 3 - 1);
-        expect(tooltipValue.substring(0, 5)).toEqual('0.174');
+        expect(tooltipValue.substring(0, 5)).to.equal('0.174');
 
         done();
       },
@@ -457,11 +454,8 @@ describe('Horizontal heatmaps', () => {
   });
 
   it('handles dynamic selectRows values by updating the dataFetcher and fetching new tiles', (done) => {
-    horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRows = [
-      1,
-      2,
-      3,
-    ];
+    horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRows =
+      [1, 2, 3];
     horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationWithRelativeHeight = false;
     horizontalMultivecWithAggregation.views[0].tracks.center[0].options.selectRowsAggregationMethod =
       'client';
@@ -478,7 +472,7 @@ describe('Horizontal heatmaps', () => {
 
         // When aggregation method === client, do not expect options in the dataConfig.
         const clientAggDataConfig = clientAggTrack.dataFetcher.dataConfig;
-        expect(clientAggDataConfig.options).toBeUndefined();
+        expect(clientAggDataConfig.options).to.be.undefined;
 
         // When aggregation method === server, expect options.aggGroups in the dataConfig.
         const serverAggViewConf1 = horizontalMultivecWithAggregation;
@@ -496,14 +490,12 @@ describe('Horizontal heatmaps', () => {
           'aggregation-track',
         );
         const serverAggDataConfig1 = serverAggTrack1.dataFetcher.dataConfig;
-        expect(serverAggDataConfig1.options.aggGroups).toEqual([1, 2, 3]);
+        expect(serverAggDataConfig1.options.aggGroups).to.equal([1, 2, 3]);
 
         // When selectRows changes, check that options.aggGroups in the dataConfig also changes.
         const serverAggViewConf2 = horizontalMultivecWithAggregation;
         serverAggViewConf2.views[0].tracks.center[0].options.selectRows = [
-          4,
-          5,
-          6,
+          4, 5, 6,
         ];
         const serverAggViews2 = hgc
           .instance()
@@ -517,7 +509,7 @@ describe('Horizontal heatmaps', () => {
           'aggregation-track',
         );
         const serverAggDataConfig2 = serverAggTrack2.dataFetcher.dataConfig;
-        expect(serverAggDataConfig2.options.aggGroups).toEqual([4, 5, 6]);
+        expect(serverAggDataConfig2.options.aggGroups).to.equal([4, 5, 6]);
 
         done();
       },
@@ -528,7 +520,7 @@ describe('Horizontal heatmaps', () => {
     );
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });
@@ -705,9 +697,7 @@ const viewConf1 = {
       PkNgAl3mSIqttnSsCewngw: {
         aa: [1550000000, 1550000000, 3380588.876772046],
         ewZvJwlDSei_dbpIAkGMlg: [
-          1550000000.0000002,
-          1549999999.9999993,
-          3380588.876772046,
+          1550000000.0000002, 1549999999.9999993, 3380588.876772046,
         ],
         uid: 'PkNgAl3mSIqttnSsCewngw',
       },

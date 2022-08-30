@@ -1,14 +1,9 @@
-/* eslint-env node, jasmine */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
-import { geneAnnotationsOnly } from './view-configs';
 
+import { geneAnnotationsOnly } from './view-configs';
 import createElementAndApi from './utils/create-element-and-api';
 
 // Utils
@@ -20,7 +15,7 @@ import {
 
 import removeDiv from './utils/remove-div';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // const createPointerEvent = (type, coords) => {
 //   const params = {
@@ -41,7 +36,7 @@ describe('Gene Annotations Tracks', () => {
   let api = null;
   let hgc = null;
 
-  beforeAll(() => {
+  before(() => {
     [div, api] = createElementAndApi(geneAnnotationsOnly);
     hgc = api.getComponent();
   });
@@ -132,7 +127,7 @@ describe('Gene Annotations Tracks', () => {
     expect(svgStr.indexOf('text')).to.be.above(0);
   });
 
-  afterAll(() => {
+  after(() => {
     api.destroy();
     removeDiv(div);
     api = undefined;

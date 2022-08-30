@@ -158,6 +158,8 @@ class TiledPixiTrack extends PixiTrack {
     );
 
     this.dataFetcher.tilesetInfo((tilesetInfo, tilesetUid) => {
+      if (!tilesetInfo) return;
+
       this.tilesetInfo = tilesetInfo;
       // If the dataConfig contained a fileUrl, then
       // we need to update the tilesetUid based
@@ -169,7 +171,7 @@ class TiledPixiTrack extends PixiTrack {
       this.tilesetUid = this.dataFetcher.dataConfig.tilesetUid;
       this.server = this.dataFetcher.dataConfig.server || 'unknown';
 
-      if (this.tilesetInfo.chromsizes) {
+      if (this.tilesetInfo && this.tilesetInfo.chromsizes) {
         this.chromInfo = parseChromsizesRows(this.tilesetInfo.chromsizes);
       }
 

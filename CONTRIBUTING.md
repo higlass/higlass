@@ -4,7 +4,7 @@
 
 ## Help! I am lost... 😭
 
-[Join our Slack channel](http://bit.ly/higlass-slack) and we're happy to help.
+[Join our Slack channel](https://tinyurl.com/3z3bds4w) and we're happy to help.
 
 ## Basic Resources 📚
 

@@ -82,7 +82,7 @@ import ViewportTrackerVertical from '../ViewportTrackerVertical';
 // Factories
 import ContextMenuItem from '../ContextMenuItem';
 import DataFetcher from '../DataFetcher';
-import LruCache from '../factories';
+import LruCache from '../factories/LruCache';
 
 // Services
 import * as services from '../services';
@@ -95,6 +95,8 @@ import SearchField from '../SearchField';
 import GBKDataFetcher from '../data-fetchers/genbank-fetcher';
 import LocalDataFetcher from '../data-fetchers/local-tile-fetcher';
 import getDataFetcher from '../data-fetchers/get-data-fetcher';
+
+import { version } from '../../../package.json';
 
 const libraries = {
   d3Array,
@@ -196,6 +198,5 @@ export default {
   services,
   utils,
   configs,
-  // Defined globally by webpack.
-  VERSION,
+  VERSION: version,
 };

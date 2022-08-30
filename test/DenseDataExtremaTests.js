@@ -1,11 +1,6 @@
-/* eslint-env node, jasmine, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 import FetchMockHelper from './utils/FetchMockHelper';
@@ -19,23 +14,23 @@ import {
   waitForTilesLoaded,
 } from '../app/scripts/utils';
 
-import viewConf1DHorizontal from './view-configs/continuous-scaling-1D-horizontal';
-import viewConf1DVertical from './view-configs/continuous-scaling-1D-vertical';
-import viewConf2D from './view-configs/continuous-scaling-2D';
+import viewConf1DHorizontal from './view-configs/continuous-scaling-1D-horizontal.json';
+import viewConf1DVertical from './view-configs/continuous-scaling-1D-vertical.json';
+import viewConf2D from './view-configs/continuous-scaling-2D.json';
 
 import DenseDataExtrema1D from '../app/scripts/utils/DenseDataExtrema1D';
 import DenseDataExtrema2D from '../app/scripts/utils/DenseDataExtrema2D';
 import { vecToy, vecRealistic } from './testdata/vector-data';
 import { matToy, matRealistic } from './testdata/matrix-data';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
-describe('Continuous scaling tests', () => {
+describe('Dense data extrema tests', () => {
   // We can pass in the view conf as first argument to perform some
   // basic compatibility checks. Since we have two view confs here, we skip this.
   const fetchMockHelper = new FetchMockHelper(null, 'DenseDataExtrema');
 
-  beforeAll(async () => {
+  before(async () => {
     await fetchMockHelper.activateFetchMock();
   });
 
@@ -94,7 +89,7 @@ describe('Continuous scaling tests', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf1DHorizontal, done, {
         extendedDelay: 1000, // additional delay in ms
       });
@@ -225,7 +220,7 @@ describe('Continuous scaling tests', () => {
       expect(vs[1]).to.be.eql(91032);
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });
@@ -234,7 +229,7 @@ describe('Continuous scaling tests', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf1DVertical, done, {
         extendedDelay: 1000, // additional delay in ms
       });
@@ -276,7 +271,7 @@ describe('Continuous scaling tests', () => {
       expect(vs2[1]).to.be.eql(1.5029296875);
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });
@@ -285,7 +280,7 @@ describe('Continuous scaling tests', () => {
     let hgc = null;
     let div = null;
 
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf2D, done, {
         style: 'width:600px; height:600px; background-color: lightgreen',
         bounded: true,
@@ -334,12 +329,12 @@ describe('Continuous scaling tests', () => {
     //   });
     // });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });
 
-  afterAll(async () => {
+  after(async () => {
     await fetchMockHelper.storeDataAndResetFetchMock();
   });
 });

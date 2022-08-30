@@ -1,4 +1,4 @@
-/* eslint-env node, jasmine */
+/* eslint-env mocha */
 import { expect } from 'chai';
 
 // Utils
@@ -14,7 +14,7 @@ describe('Utils tests', () => {
     let found = false;
     let visited = 0;
 
-    visitPositionedTracks(oneViewConfig.views[0].tracks, track => {
+    visitPositionedTracks(oneViewConfig.views[0].tracks, (track) => {
       if (track.uid === 'c1') {
         found = true;
       }
@@ -22,8 +22,8 @@ describe('Utils tests', () => {
       visited += 1;
     });
 
-    expect(found).to.eql(true);
-    expect(visited).to.eql(6);
+    expect(found).to.equal(true);
+    expect(visited).to.equal(6);
   });
 
   it('should compute size based on an array of selected item indices', () => {
@@ -31,10 +31,10 @@ describe('Utils tests', () => {
 
     let size;
     size = selectedItemsToSize(selectRows, true);
-    expect(size).to.eql(7);
+    expect(size).to.equal(7);
 
     size = selectedItemsToSize(selectRows, false);
-    expect(size).to.eql(5);
+    expect(size).to.equal(5);
   });
 
   it('should compute cumulative item size weights based on an array of selected item indices', () => {

@@ -1,5 +1,5 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
 import {
@@ -12,7 +12,7 @@ import {
 
 import { twoViewConfig } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -21,7 +21,7 @@ describe('Colormap', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  beforeAll(async (done) => {
+  before((done) => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -31,7 +31,7 @@ describe('Colormap', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  after(async () => {
     removeHGComponent(div);
     // await fetchMockHelper.storeDataAndResetFetchMock();
   });

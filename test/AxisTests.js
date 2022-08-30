@@ -1,12 +1,7 @@
-/* eslint-env node, jasmine, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
-import { expect } from 'chai';
-
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import FetchMockHelper from './utils/FetchMockHelper';
 
@@ -16,22 +11,24 @@ import {
   getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
-import viewconf from './view-configs/axis';
+import viewconf from './view-configs/axis.json';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
-describe('Simple HiGlassComponent', () => {
+describe('Axis tests', () => {
   let hgc = null;
   let div = null;
 
   const fetchMockHelper = new FetchMockHelper(null, 'AxisTests');
 
-  describe('Axis texts', () => {
-    beforeAll(async (done) => {
+  describe('Axis tets', () => {
+    before(async () => {
       await fetchMockHelper.activateFetchMock();
-      [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
-        style: 'width:800px; height:400px; background-color: lightgreen',
-        bounded: true,
+      await new Promise((resolve) => {
+        [div, hgc] = mountHGComponent(div, hgc, viewconf, resolve, {
+          style: 'width:800px; height:400px; background-color: lightgreen',
+          bounded: true,
+        });
       });
     });
 
@@ -84,7 +81,7 @@ describe('Simple HiGlassComponent', () => {
       );
     });
 
-    afterAll(async () => {
+    after(async () => {
       removeHGComponent(div);
       await fetchMockHelper.storeDataAndResetFetchMock();
     });

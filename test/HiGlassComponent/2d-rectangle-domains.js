@@ -1,6 +1,7 @@
+/* eslint-env mocha */
 import { configure } from 'enzyme';
-
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -21,7 +22,7 @@ describe('2D Rectangle Annotations', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  beforeAll(async (done) => {
+  before((done) => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, rectangleDomains, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -31,7 +32,7 @@ describe('2D Rectangle Annotations', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  after(async () => {
     removeHGComponent(div);
     // await fetchMockHelper.storeDataAndResetFetchMock();
   });
@@ -47,7 +48,7 @@ describe('2D Rectangle Annotations', () => {
       }
     }
 
-    expect(hasSmaller).toEqual(true);
+    expect(hasSmaller).to.be.true;
 
     const { views } = hgc.instance().state;
     track = getTrackByUid(views.aa.tracks, 'rectangles1');
@@ -72,7 +73,7 @@ describe('2D Rectangle Annotations', () => {
       }
     }
 
-    expect(hasSmaller).toEqual(false);
+    expect(hasSmaller).to.be.false;
 
     const { views } = hgc.instance().state;
     track = getTrackByUid(views.aa.tracks, 'rectangles1');

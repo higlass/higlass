@@ -1,11 +1,6 @@
-/* eslint-env node, jasmine, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 // Utils
@@ -17,14 +12,14 @@ import {
 
 import { emptyConf } from './view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
-xdescribe('Simple HiGlassComponent', () => {
+xdescribe('View manipulation tests', () => {
   let hgc = null;
   let div = null;
 
   describe('Viewconf change tests', () => {
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, valueScaleLocksConf, done, {
         style: 'width:800px; height:400px; background-color: lightgreen',
         bounded: true,
@@ -40,13 +35,13 @@ xdescribe('Simple HiGlassComponent', () => {
       expect(Object.keys(hgc.instance().valueScaleLocks).length).to.eql(0);
     });
 
-    // afterAll(() => {
+    // after(() => {
     //   // removeHGComponent(div);
     // });
   });
 
   describe('Viewport projection tests', () => {
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(
         div,
         hgc,
@@ -75,7 +70,7 @@ xdescribe('Simple HiGlassComponent', () => {
       });
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });
@@ -224,9 +219,7 @@ const valueScaleLocksConf = {
       'K6tRxnTUTMmZ-DLC0RlVIw': {
         QuBlHOXDTbKqIqDk9X4FIA: [1544134916.5, 1544134916.5, 4010740.040259719],
         'Pqm9bvPORbCO-CsWqj9NWA': [
-          1544134916.5,
-          1544134916.5,
-          4010740.040259719,
+          1544134916.5, 1544134916.5, 4010740.040259719,
         ],
         uid: 'K6tRxnTUTMmZ-DLC0RlVIw',
       },
@@ -241,9 +234,7 @@ const valueScaleLocksConf = {
       Dss0P1dCQKCQdzsatsOY7A: {
         QuBlHOXDTbKqIqDk9X4FIA: [1544134916.5, 1544134916.5, 4010740.040259719],
         'Pqm9bvPORbCO-CsWqj9NWA': [
-          1544134916.5,
-          1544134916.5,
-          4010740.040259719,
+          1544134916.5, 1544134916.5, 4010740.040259719,
         ],
         uid: 'Dss0P1dCQKCQdzsatsOY7A',
       },

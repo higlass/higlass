@@ -233,6 +233,7 @@ class OverlayTrack extends PixiTrack {
     graphics,
     position,
     extent,
+    /* eslint-disable-next-line default-param-last */
     minWidth = 0,
     fill,
     stroke,
@@ -270,6 +271,7 @@ class OverlayTrack extends PixiTrack {
     graphics,
     position,
     extent,
+    /* eslint-disable-next-line default-param-last */
     minHeight = 0,
     fill,
     stroke,

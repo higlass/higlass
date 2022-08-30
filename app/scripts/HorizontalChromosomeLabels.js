@@ -24,12 +24,8 @@ const TICK_COLOR = 0x777777;
 class HorizontalChromosomeLabels extends PixiTrack {
   constructor(context, options) {
     super(context, options);
-    const {
-      dataConfig,
-      animate,
-      chromInfoPath,
-      isShowGlobalMousePosition,
-    } = context;
+    const { dataConfig, animate, chromInfoPath, isShowGlobalMousePosition } =
+      context;
 
     this.searchField = null;
     this.chromInfo = null;
@@ -168,6 +164,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     this.prevOptions = strOptions;
     this.options = options;
+    this.tickTexts = {};
 
     this.pixiTextConfig.fontSize = +this.options.fontSize
       ? `${+this.options.fontSize}px`
