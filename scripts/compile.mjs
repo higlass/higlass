@@ -9,6 +9,21 @@ import * as url from 'node:url';
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 // =========================================
+//         rename vite outputs
+// =========================================
+
+await Promise.all([
+  fs.promises.rename(
+    path.resolve(__dirname, '../dist/higlass.umd.js'),
+    path.resolve(__dirname, '../dist/hglib.js'),
+  ),
+  fs.promises.rename(
+    path.resolve(__dirname, '../dist/style.css'),
+    path.resolve(__dirname, '../dist/hglib.css'),
+  ),
+]);
+
+// =========================================
 //        minify (dist/hglib.min.js)
 // =========================================
 

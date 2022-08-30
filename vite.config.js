@@ -78,6 +78,7 @@ export default defineConfig({
     alias: {
       'enzyme-adapter-react-16': '@wojtekmaj/enzyme-adapter-react-17',
       'slugid': path.resolve(__dirname, './app/bufferless-slugid.js'),
+      'lodash': 'lodash-es',
     },
   },
   build: {
@@ -86,7 +87,6 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'app/scripts/hglib.jsx'),
       name: 'hglib',
       formats: ['umd'],
-      fileName: () => 'hglib.js',
     },
     rollupOptions: {
       external: ["react", "react-dom", "pixi.js"],
@@ -96,10 +96,6 @@ export default defineConfig({
           'react-dom': 'ReactDOM',
           'pixi.js': 'PIXI',
         },
-        assetFileNames(assetInfo) {
-          if (assetInfo.name === 'style.css') return 'hglib.css';
-          return assetInfo.name;
-        }
       },
     },
   },
@@ -111,7 +107,10 @@ export default defineConfig({
     modules: { generateScopedName },
   },
   plugins: [
-    react({ babel: { plugins: [reactCssModules] } }),
+    react({
+      jsxRuntime: 'classic',
+      babel: { plugins: [reactCssModules] },
+    }),
     mockedReponsesPlugin(),
   ],
 });
