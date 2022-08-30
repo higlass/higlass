@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: sudo apt-get install xvfb
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
       - run: npm run optimize # let vite optimize deps first
       - run: xvfb-run --auto-servernum npm run test
         env:
