@@ -1,4 +1,5 @@
-import { addArrays, accessorTransposition } from '.';
+import addArrays from './add-arrays';
+import accessorTransposition from './accessor-transposition';
 
 /**
  * Perform a 2D query on a 1D array
@@ -22,7 +23,9 @@ const rangeQuery2d = (
   xRange,
   yRange,
   mirrored,
+  /* eslint-disable-next-line default-param-last */
   xOff = 0,
+  /* eslint-disable-next-line default-param-last */
   yOff = 0,
   outList,
 ) => {

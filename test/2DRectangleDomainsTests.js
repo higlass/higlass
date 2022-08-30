@@ -1,11 +1,6 @@
-/* eslint-env node, jasmine */
-import {
-  configure
-  // render,
-} from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 // Utils
@@ -13,21 +8,23 @@ import {
   getTrackByUid,
   getTrackObjectFromHGC,
   mountHGComponent,
-  removeHGComponent
+  removeHGComponent,
 } from '../app/scripts/utils';
 
 import viewconf from './view-configs/loop-annotations';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('2D Rectangular Domains', () => {
+  /** @type {import('enzyme').ReactWrapper} */
   let hgc = null;
+  /** @type {HTMLElement | null} */
   let div = null;
 
-  beforeAll(done => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true
+      bounded: true,
     });
   });
 
@@ -46,7 +43,7 @@ describe('2D Rectangular Domains', () => {
     track.options.flipDiagonal = 'yes';
 
     hgc.setState({
-      views
+      views,
     });
 
     const xVal2 = trackObj.drawnRects['CVV-O3_TTw-Jda38HzJPtgtrue'];
@@ -59,13 +56,13 @@ describe('2D Rectangular Domains', () => {
     track.options.flipDiagonal = 'copy';
 
     hgc.setState({
-      views
+      views,
     });
 
     expect(Object.keys(trackObj.drawnRects).length).to.eql(6);
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });

@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -10,7 +11,7 @@ import {
 
 import { geneAnnotationsOnly } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -19,7 +20,7 @@ describe('Track dimension modification test', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  beforeAll(async (done) => {
+  before((done) => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, geneAnnotationsOnly, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -29,7 +30,7 @@ describe('Track dimension modification test', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  after(async () => {
     removeHGComponent(div);
     // await fetchMockHelper.storeDataAndResetFetchMock();
   });
@@ -45,6 +46,6 @@ describe('Track dimension modification test', () => {
     hgc.instance().trackDimensionsModifiedHandler(settings);
 
     const track = getTrackObjectFromHGC(hgc.instance(), 'aa', trackId);
-    expect(track.dimensions[1]).toEqual(100);
+    expect(track.dimensions[1]).to.equal(100);
   });
 });

@@ -1,15 +1,13 @@
-/* eslint-env node, jasmine, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 // Utils
 import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
-configure({ adapter: new Adapter() });
-describe('Minimal viewconfs', () => {
+Enzyme.configure({ adapter: new Adapter() });
+
+describe('Track Labels Test', () => {
   describe('Minimal with CrossRule', () => {
     const viewconf = {
       editable: true,
@@ -19,8 +17,7 @@ describe('Minimal viewconfs', () => {
           tracks: {
             top: [
               {
-                name:
-                  'wgEncodeLicrHistoneLiverH3k04me3UE14halfC57bl6StdSig.hitile',
+                name: 'wgEncodeLicrHistoneLiverH3k04me3UE14halfC57bl6StdSig.hitile',
                 created: '2017-11-02T15:37:26.351612Z',
                 project: null,
                 project_name: '',
@@ -43,7 +40,7 @@ describe('Minimal viewconfs', () => {
     };
     let hgc = null;
     let div = null;
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
 
@@ -53,7 +50,7 @@ describe('Minimal viewconfs', () => {
       expect(obj.labelText._style._fill).to.eql('#ff0000');
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });

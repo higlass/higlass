@@ -13,7 +13,7 @@ const viewconf = {
         autocompleteId: 'OHJakQICQD6gTD7skx4EWA',
         chromInfoServer: '//higlass.io/api/v1',
         chromInfoId: 'hg19',
-        visible: true
+        visible: true,
       },
       chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
       tracks: {
@@ -44,35 +44,35 @@ const viewconf = {
                   rectangleDomainStrokeColor: 'black',
                   rectangleDomainOpacity: 1,
                   minSquareSize: 'none',
-                  name: 'HiCCUPS Loops'
+                  name: 'HiCCUPS Loops',
                 },
                 position: 'center',
                 width: 857,
-                height: 608
-              }
+                height: 608,
+              },
             ],
             position: 'center',
             options: {},
-            width: 857
-          }
+            width: 857,
+          },
         ],
         right: [],
         bottom: [],
         whole: [],
-        gallery: []
+        gallery: [],
       },
       layout: {
         w: 12,
         h: 12,
         x: 0,
-        y: 0
+        y: 0,
       },
-      initialYDomain: [1331899068.573772, 1332271544.8197525]
-    }
+      initialYDomain: [1331899068.573772, 1332271544.8197525],
+    },
   ],
   zoomLocks: { locksByViewUid: {}, locksDict: {} },
   locationLocks: { locksByViewUid: {}, locksDict: {} },
-  valueScaleLocks: { locksByViewUid: {}, locksDict: {} }
+  valueScaleLocks: { locksByViewUid: {}, locksDict: {} },
 };
 
 export default viewconf;

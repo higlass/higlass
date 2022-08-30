@@ -1,6 +1,7 @@
-import { configure } from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import { expect } from 'chai';
 
 import {
   mountHGComponent,
@@ -10,7 +11,7 @@ import {
 
 import { restrictedZoom } from '../view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -19,7 +20,7 @@ describe('Zoom restriction', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  beforeAll(async (done) => {
+  before((done) => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, restrictedZoom, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -29,15 +30,15 @@ describe('Zoom restriction', () => {
     // to the left
   });
 
-  afterAll(async () => {
+  after(async () => {
     removeHGComponent(div);
     // await fetchMockHelper.storeDataAndResetFetchMock();
   });
 
   it('Has the corrent limits', (done) => {
     const zoomLimits = hgc.instance().tiledPlots.aa.props.zoomLimits;
-    expect(zoomLimits[0]).toEqual(0.002);
-    expect(zoomLimits[1]).toEqual(2);
+    expect(zoomLimits[0]).to.equal(0.002);
+    expect(zoomLimits[1]).to.equal(2);
     done();
   });
 
@@ -62,7 +63,7 @@ describe('Zoom restriction', () => {
     waitForTransitionsFinished(hgc.instance(), () => {
       // Make sure, it does not zoom too far
       const k = hgc.instance().tiledPlots.aa.trackRenderer.zoomTransform.k;
-      expect(k).toEqual(2);
+      expect(k).to.equal(2);
 
       done();
     });

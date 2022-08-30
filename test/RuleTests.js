@@ -1,11 +1,8 @@
-/* eslint-env node, jasmine, mocha */
-
-import {
-  configure,
-  // render,
-} from 'enzyme';
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
+
 // Utils
 import {
   mountHGComponent,
@@ -14,8 +11,9 @@ import {
   changeOptions,
 } from '../app/scripts/utils';
 
-configure({ adapter: new Adapter() });
-describe('Minimal viewconfs', () => {
+Enzyme.configure({ adapter: new Adapter() });
+
+describe('Rule tests', () => {
   describe('Minimal with CrossRule', () => {
     const viewconf = {
       views: [
@@ -44,7 +42,7 @@ describe('Minimal viewconfs', () => {
     };
     let hgc = null;
     let div = null;
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
 
@@ -93,7 +91,7 @@ describe('Minimal viewconfs', () => {
       expect(obj1Width).to.equal(obj2Width);
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });

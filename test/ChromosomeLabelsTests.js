@@ -1,11 +1,6 @@
-/* eslint-env node, jasmine */
-import {
-  configure
-  // render,
-} from 'enzyme';
-
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 // Utils
@@ -13,19 +8,19 @@ import {
   mountHGComponent,
   removeHGComponent,
   getTrackObjectFromHGC,
-  getTrackRenderer
+  getTrackRenderer,
 } from '../app/scripts/utils';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
-describe('Horizontal chromosome labels', () => {
+describe('Chromosome labels', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(done => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true
+      bounded: true,
     });
   });
 
@@ -36,7 +31,7 @@ describe('Horizontal chromosome labels', () => {
     const trackRenderer = getTrackRenderer(hgc.instance(), 'v1');
 
     expect(trackRenderer.trackDefObjects.t1.trackDef.track).to.have.property(
-      'position'
+      'position',
     );
 
     expect(trackObj.tickTexts).not.to.have.property('chr17');
@@ -52,7 +47,7 @@ describe('Horizontal chromosome labels', () => {
     expect(trackObj.tickTexts).to.have.property('chr17');
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });
@@ -66,7 +61,7 @@ const viewconf = {
         w: 6,
         h: 2,
         x: 0,
-        y: 0
+        y: 0,
       },
       uid: 'v1',
       initialYDomain: [2541211477.406149, 2541211477.406149],
@@ -86,17 +81,17 @@ const viewconf = {
               fontIsLeftAligned: false,
               showMousePosition: true,
               mousePositionColor: '#000000',
-              tickPositions: 'ends'
+              tickPositions: 'ends',
             },
             width: 20,
-            height: 30
-          }
+            height: 30,
+          },
         ],
         right: [],
         center: [],
         bottom: [],
         whole: [],
-        gallery: []
+        gallery: [],
       },
       chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
       genomePositionSearchBox: {
@@ -104,13 +99,13 @@ const viewconf = {
         chromInfoServer: 'http://higlass.io/api/v1',
         chromInfoId: 'hg19',
         autocompleteServer: 'http://higlass.io/api/v1',
-        autocompleteId: 'OHJakQICQD6gTD7skx4EWA'
-      }
-    }
+        autocompleteId: 'OHJakQICQD6gTD7skx4EWA',
+      },
+    },
   ],
   editable: true,
   viewEditable: true,
   tracksEditable: true,
   exportViewUrl: '/api/v1/viewconfs',
-  trackSourceServers: ['http://higlass.io/api/v1']
+  trackSourceServers: ['http://higlass.io/api/v1'],
 };

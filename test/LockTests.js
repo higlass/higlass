@@ -1,13 +1,7 @@
-/* eslint-env node, jasmine */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+/* eslint-env mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
-
 import Ajv from 'ajv';
 
 import schema from '../app/schema.json';
@@ -15,13 +9,13 @@ import schema from '../app/schema.json';
 // Utils
 import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
-describe('Horizontal heatmaps', () => {
+describe('Lock tests', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll((done) => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, viewconf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -62,7 +56,7 @@ describe('Horizontal heatmaps', () => {
     expect(trackObj).not.to.eql(null);
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });

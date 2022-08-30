@@ -93,5 +93,6 @@ export {
   waitForTilesLoaded,
   waitForTransitionsFinished,
   mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from './test-helpers';

@@ -71,6 +71,7 @@ function contextMenu(menu, optsIn) {
   return function onContextMenu(
     data,
     index,
+    /* eslint-disable-next-line default-param-last */
     pMouseUp = false,
     clickAwayFunc,
     useMouse = false,

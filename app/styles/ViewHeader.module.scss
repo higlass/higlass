@@ -10,14 +10,14 @@ $unit: 24px;
   display: flex;
   justify-content: space-between;
   height: $unit;
-  margin-top: $unit / 6;
-  margin-bottom: $unit / 6;
+  margin-top: calc($unit / 6);
+  margin-bottom: calc($unit / 6);
   color: $gray;
-  font-size: $unit / 2;
+  font-size: calc($unit / 2);
   line-height: $unit;
   vertical-align: middle;
   border: 0;
-  border-radius: $unit / 8;
+  border-radius: calc($unit / 8);
   background: $gray-lighter;
   transition: height $fast $ease, margin $fast $ease;
 }
@@ -27,7 +27,7 @@ $unit: 24px;
 }
 
 .multitrack-header-focus {
-  height: $unit + ($unit / 3);
+  height: $unit + calc($unit / 3);
   margin-top: 0;
   margin-bottom: 0;
 }
@@ -55,7 +55,7 @@ $unit: 24px;
   width: $unit;
   height: 100%;
   cursor: move;
-  border-radius: $unit / 8 0 0 $unit / 8;
+  border-radius: calc($unit / 8) 0 0 calc($unit / 8);
   transition: background $fast $ease;
 
   &:hover {
@@ -82,24 +82,24 @@ $unit: 24px;
 }
 
 .multitrack-header-grabber-squeazed {
-  width: $unit / 1.25;
+  width: calc($unit / 1.25);
 }
 
 .multitrack-header-search {
   position: relative;
   flex-grow: 1;
   height: 100%;
-  margin-right: $unit / 2;
+  margin-right: calc($unit / 2);
 
   &:after {
     position: absolute;
-    top: $unit / 8;
-    bottom: $unit / 8;
-    right: -($unit / 2);
+    top: calc($unit / 8);
+    bottom: calc($unit / 8);
+    right: -(calc($unit / 2));
     display: block;
     content: '';
     width: 1px;
-    margin: 0 $unit / 4;
+    margin: 0 calc($unit / 4);
     background: $gray-light;
   }
 }
@@ -121,7 +121,7 @@ $unit: 24px;
 .multitrack-header-icon-squeazed {
   width: $unit;
   height: 100%;
-  padding: $unit / 4;
+  padding: calc($unit / 4);
   transition: background $fast $ease, color $fast $ease;
 
   g {
@@ -139,18 +139,18 @@ $unit: 24px;
   }
 
   &:last-child {
-    border-radius: 0 $unit / 8 $unit / 8 0;
+    border-radius: 0 calc($unit / 8) calc($unit / 8) 0;
   }
 }
 
 .mouse-tool-selection {
   color: white;
-  border-radius: $unit / 8 0 0 $unit / 8;
+  border-radius: calc($unit / 8) 0 0 calc($unit / 8);
   background: $active;
 }
 
 .multitrack-header-icon-squeazed {
-  width: $unit / 1.2 5;
-  padding-left: $unit / 8;
-  padding-right: $unit / 8;
+  width: calc($unit / 1.2) 5;
+  padding-left: calc($unit / 8);
+  padding-right: calc($unit / 8);
 }

@@ -143,19 +143,11 @@
         "x": 0,
         "y": 0
       },
-      "initialXDomain": [
-        3520359.40804778,
-        3593266.0078421957
-      ],
-      "initialYDomain": [
-        3519553.443225772,
-        3573333.8960611327
-      ]
+      "initialXDomain": [3520359.40804778, 3593266.0078421957],
+      "initialYDomain": [3519553.443225772, 3573333.8960611327]
     }
   ],
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["http://higlass.io/api/v1"],
   "locationLocks": {
     "locksByViewUid": {},
     "locksDict": {}

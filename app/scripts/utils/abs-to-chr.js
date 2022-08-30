@@ -1,4 +1,4 @@
-import { chromInfoBisector } from '.';
+import chromInfoBisector from './chrom-info-bisector';
 
 const absToChr = (absPosition, chromInfo) => {
   if (!chromInfo || !chromInfo.cumPositions || !chromInfo.cumPositions.length) {

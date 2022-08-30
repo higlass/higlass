@@ -1,10 +1,11 @@
-/* eslint-env node, jasmine */
+/* eslint-env node, mocha */
+import { expect } from 'chai';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 import { register } from './utils/DummyDataFetcher';
 
-import dummyDataFetcherViewConf from './view-configs/dummy-data-fetcher';
+import dummyDataFetcherViewConf from './view-configs/dummy-data-fetcher.json';
 
 register();
 
@@ -28,10 +29,12 @@ describe('Plugin data fetchers:', () => {
       const dummyDataFetcher =
         trackRenderer.trackDefObjects[trackUid].trackObject.dataFetcher;
 
-      expect(dummyDataFetcher.constructor.name).toEqual(
+      expect(dummyDataFetcher.constructor.name).to.equal(
         'DummyDataFetcherClass',
       );
-      expect(dummyDataFetcher.hgc).toEqual(trackRenderer.availableForPlugins);
+      expect(dummyDataFetcher.hgc).to.deep.equal(
+        trackRenderer.availableForPlugins,
+      );
     });
 
     afterEach(() => {

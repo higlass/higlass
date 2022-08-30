@@ -1,8 +1,6 @@
-/* eslint-env node, jasmine, mocha */
-import { configure } from 'enzyme';
-
+/* eslint-env node, mocha */
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 import Ajv from 'ajv';
@@ -14,22 +12,25 @@ import {
 } from '../app/scripts/utils';
 
 import schema from '../app/schema.json';
-import viewConfig from './view-configs/axis-specific-location-locks.json';
+import viewconf from './view-configs/axis-specific-location-locks.json';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
+// jasmine.VAL = 30000;
 
 describe('Axis-specific location locks', () => {
   let hgc;
   let div;
 
-  beforeEach(async (done) => {
-    [div, hgc] = mountHGComponent(div, hgc, viewConfig, done, {
-      style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true,
+  beforeEach(async () => {
+    await new Promise((resolve) => {
+      [div, hgc] = mountHGComponent(div, hgc, viewconf, resolve, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
+      });
     });
   });
 
-  afterAll(async () => {
+  after(async () => {
     removeHGComponent(div);
   });
 
@@ -62,7 +63,7 @@ describe('Axis-specific location locks', () => {
 
   it('Validates ViewConfig', (done) => {
     const validate = new Ajv().compile(schema);
-    const valid = validate(viewConfig);
+    const valid = validate(viewconf);
     expect(valid).eql(true);
     done();
   });

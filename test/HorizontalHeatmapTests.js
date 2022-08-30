@@ -1,6 +1,6 @@
-/* eslint-env node, jasmine */
+/* eslint-env mocha */
 import {
-  configure
+  configure,
   // render,
 } from 'enzyme';
 
@@ -12,7 +12,7 @@ import { expect } from 'chai';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC
+  getTrackObjectFromHGC,
 } from '../app/scripts/utils';
 
 configure({ adapter: new Adapter() });
@@ -21,10 +21,10 @@ describe('Horizontal heatmaps', () => {
   let hgc = null;
   let div = null;
 
-  beforeAll(done => {
+  before((done) => {
     [div, hgc] = mountHGComponent(div, hgc, zoomLimitViewConf, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
-      bounded: true
+      bounded: true,
     });
   });
 
@@ -36,7 +36,7 @@ describe('Horizontal heatmaps', () => {
     expect(trackObj.calculateZoomLevel()).to.eql(1);
   });
 
-  afterAll(() => {
+  after(() => {
     removeHGComponent(div);
   });
 });
@@ -68,23 +68,23 @@ const zoomLimitViewConf = {
                 'white',
                 'rgba(245,166,35,1.0)',
                 'rgba(208,2,27,1.0)',
-                'black'
+                'black',
               ],
               maxZoom: '1',
               trackBorderWidth: 0,
               trackBorderColor: 'black',
-              name: 'Dekker Lab HFFc6 DpnII'
+              name: 'Dekker Lab HFFc6 DpnII',
             },
             width: 570,
-            height: 101
-          }
+            height: 101,
+          },
         ],
         left: [],
         center: [],
         right: [],
         bottom: [],
         whole: [],
-        gallery: []
+        gallery: [],
       },
       initialXDomain: [645722545.1231897, 676259976.4728326],
       initialYDomain: [661682163.429321, 662057184.5160711],
@@ -95,21 +95,21 @@ const zoomLimitViewConf = {
         y: 0,
         i: 'JuRe7t2TRtWEUxBpR92gcw',
         moved: false,
-        static: false
+        static: false,
       },
-      uid: 'vv'
-    }
+      uid: 'vv',
+    },
   ],
   zoomLocks: {
     locksByViewUid: {},
-    locksDict: {}
+    locksDict: {},
   },
   locationLocks: {
     locksByViewUid: {},
-    locksDict: {}
+    locksDict: {},
   },
   valueScaleLocks: {
     locksByViewUid: {},
-    locksDict: {}
-  }
+    locksDict: {},
+  },
 };

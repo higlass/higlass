@@ -1,11 +1,6 @@
 /* eslint-env node, jasmine, mocha */
-import {
-  configure,
-  // render,
-} from 'enzyme';
-
+import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
 import { expect } from 'chai';
 
 // Utils
@@ -18,14 +13,14 @@ import {
 
 import { smallViewconf } from './view-configs';
 
-configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('BedLikeTrack |', () => {
   let hgc = null;
   let div = null;
 
   describe('inline annotations', () => {
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, smallViewconf, done);
     });
 
@@ -56,7 +51,7 @@ describe('BedLikeTrack |', () => {
       done();
     });
 
-    afterAll(() => {
+    after(() => {
       // removeHGComponent(div);
       // div = null;
       // hgc = null;
@@ -64,7 +59,7 @@ describe('BedLikeTrack |', () => {
   });
 
   describe('Options', () => {
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, coloredBarsViewConf, done);
     });
 
@@ -76,7 +71,7 @@ describe('BedLikeTrack |', () => {
       done();
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
       div = null;
       hgc = null;
@@ -84,7 +79,7 @@ describe('BedLikeTrack |', () => {
   });
 
   describe('Options', () => {
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf1, done);
     });
 
@@ -131,7 +126,7 @@ describe('BedLikeTrack |', () => {
       expect(changedIx).to.be.above(0);
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
       div = null;
       hgc = null;
@@ -139,7 +134,7 @@ describe('BedLikeTrack |', () => {
   });
 
   describe('vertical scaling', () => {
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf1, done);
     });
 
@@ -158,7 +153,7 @@ describe('BedLikeTrack |', () => {
       });
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
       div = null;
       hgc = null;
@@ -166,7 +161,7 @@ describe('BedLikeTrack |', () => {
   });
 
   describe('Normal tests', () => {
-    beforeAll((done) => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewConf, done);
     });
 
@@ -358,7 +353,7 @@ describe('BedLikeTrack |', () => {
       expect(newScaleWidth).to.be.below(scaleWidth);
     });
 
-    afterAll(() => {
+    after(() => {
       removeHGComponent(div);
     });
   });

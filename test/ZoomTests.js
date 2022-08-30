@@ -1,11 +1,13 @@
-/* eslint-env node, jasmine */
+/* eslint-env mocha */
+import { spyOn } from 'tinyspy';
+import { expect } from 'chai';
 
 // Utils
 import { getTrackRenderer } from '../app/scripts/utils';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
-import viewConfig from './view-configs/two-bars-and-a-heatmap';
+import viewConfig from './view-configs/two-bars-and-a-heatmap.json';
 
 describe('Zoom tests', () => {
   let api;
@@ -39,7 +41,7 @@ describe('Zoom tests', () => {
     const trackRenderer = getTrackRenderer(api.getComponent(), 'aa');
     trackRenderer.valueScaleZooming = valueScaleZooming;
 
-    spyOn(trackRenderer, 'valueScaleMove');
+    const spiedTrackRenderer = spyOn(trackRenderer, 'valueScaleMove');
     const prevTransform = trackRenderer.zoomTransform;
 
     trackRenderer.element.dispatchEvent(evtDown);
@@ -51,26 +53,25 @@ describe('Zoom tests', () => {
     const dx = newTransform.x - prevTransform.x;
     const dy = newTransform.y - prevTransform.y;
 
-    return [dx, dy, trackRenderer];
+    return [dx, dy, spiedTrackRenderer];
   };
 
   it('Dispatches a mousewheel event on the horizontal track', (done) => {
     // eslint-disable-next-line no-unused-vars
     const [dx, dy, _] = doMouseMove(345, 221);
 
-    expect(dy).toEqual(0);
-    expect(dx).toEqual(2);
+    expect(dy).to.equal(0);
+    expect(dx).to.equal(2);
 
     done();
   });
 
   it('Dispatches a mousewheel event on the horizontal track while vauleScaleZooming', (done) => {
-    const [dx, dy, trackRenderer] = doMouseMove(345, 221, true);
+    const [dx, dy, spiedTrackRenderer] = doMouseMove(345, 221, true);
 
-    expect(dy).toEqual(0);
-    expect(dx).toEqual(2);
-
-    expect(trackRenderer.valueScaleMove).toHaveBeenCalled();
+    expect(dy).to.equal(0);
+    expect(dx).to.equal(2);
+    expect(spiedTrackRenderer.called).to.be.true;
     done();
   });
 
@@ -78,8 +79,8 @@ describe('Zoom tests', () => {
     // eslint-disable-next-line no-unused-vars
     const [dx, dy, _] = doMouseMove(348, 315);
 
-    expect(dy).toEqual(2);
-    expect(dx).toEqual(2);
+    expect(dy).to.equal(2);
+    expect(dx).to.equal(2);
 
     done();
   });
@@ -88,8 +89,8 @@ describe('Zoom tests', () => {
     // eslint-disable-next-line no-unused-vars
     const [dx, dy, _] = doMouseMove(56, 315);
 
-    expect(dy).toEqual(2);
-    expect(dx).toEqual(0);
+    expect(dy).to.equal(2);
+    expect(dx).to.equal(0);
 
     done();
   });

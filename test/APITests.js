@@ -1,9 +1,9 @@
-/* eslint-env node, jasmine */
+/* eslint-env mocha */
 import { globalPubSub } from 'pub-sub-es';
 import { select, create } from 'd3-selection';
+import { expect } from 'chai';
 
 import {
-  some,
   waitForTransitionsFinished,
   waitForTilesLoaded,
 } from '../app/scripts/utils';
@@ -15,33 +15,16 @@ import {
   // stackedTopViews,
 } from './view-configs';
 
-import emptyConf from './view-configs-more/emptyConf';
-
-import simpleHeatmapViewConf from './view-configs/simple-heatmap';
-import adjustViewSpacingConf from './view-configs/adjust-view-spacing';
-import simple1dHorizontalVerticalAnd2dDataTrack from './view-configs/simple-1d-horizontal-vertical-and-2d-data-track';
+import emptyConf from './view-configs-more/emptyConf.json';
+import simpleHeatmapViewConf from './view-configs/simple-heatmap.json';
+import adjustViewSpacingConf from './view-configs/adjust-view-spacing.json';
+import simple1dHorizontalVerticalAnd2dDataTrack from './view-configs/simple-1d-horizontal-vertical-and-2d-data-track.json';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
 // import drag from './utils/drag';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
-
-function findCanvas(element) {
-  if (element.tagName.toLowerCase() === 'canvas') return element;
-  let canvas;
-  some((childElement) => {
-    const el = findCanvas(childElement);
-    if (el) {
-      canvas = el;
-      return true;
-    }
-    return false;
-  })(element.children);
-  return canvas;
-}
-
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+import { version as VERSION } from '../package.json';
 
 describe('API Tests', () => {
   let div = null;
@@ -80,21 +63,21 @@ describe('API Tests', () => {
         0,
       );
 
-      expect(topTrackBBox.height).toEqual(totalViewHeight);
-      expect(trackRendererBBox.height).toEqual(
+      expect(topTrackBBox.height).to.equal(totalViewHeight);
+      expect(trackRendererBBox.height).to.equal(
         totalViewHeight + options.viewPaddingTop + options.viewPaddingBottom,
       );
-      expect(tiledPlotBBox.height).toEqual(
+      expect(tiledPlotBBox.height).to.equal(
         totalViewHeight +
           options.viewPaddingTop +
           options.viewPaddingBottom +
           options.viewMarginTop +
           options.viewMarginBottom,
       );
-      expect(trackRendererBBox.width).toEqual(
+      expect(trackRendererBBox.width).to.equal(
         topTrackBBox.width + options.viewPaddingLeft + options.viewPaddingRight,
       );
-      expect(tiledPlotBBox.width).toEqual(
+      expect(tiledPlotBBox.width).to.equal(
         topTrackBBox.width +
           options.viewPaddingLeft +
           options.viewPaddingRight +
@@ -103,43 +86,43 @@ describe('API Tests', () => {
       );
     });
 
-    it('shows linear-labels as available track', () => {
-      [div, api] = createElementAndApi(simpleCenterViewConfig);
+    // it('shows linear-labels as available track', () => {
+    //   [div, api] = createElementAndApi(simpleCenterViewConfig);
 
-      api.showAvailableTrackPositions({
-        server: 'http://higlass.io/api/v1',
-        tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
-        datatype: 'yyyyy',
-        defaultTracks: ['xxxxx'],
-      });
+    //   api.showAvailableTrackPositions({
+    //     server: 'http://higlass.io/api/v1',
+    //     tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+    //     datatype: 'yyyyy',
+    //     defaultTracks: ['xxxxx'],
+    //   });
 
-      // we don't know what type of track 'xxxx' is and what
-      // datatype 'yyyy' is so let's not show any overlays
-      selection = select(div).selectAll('.DragListeningDiv');
-      expect(selection.size()).toEqual(0);
+    //   // we don't know what type of track 'xxxx' is and what
+    //   // datatype 'yyyy' is so let's not show any overlays
+    //   selection = select(div).selectAll('.DragListeningDiv');
+    //   expect(selection.size()).to.equal(0);
 
-      api.showAvailableTrackPositions({
-        server: 'http://higlass.io/api/v1',
-        tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
-        datatype: 'linear-labels',
-      });
+    //   api.showAvailableTrackPositions({
+    //     server: 'http://higlass.io/api/v1',
+    //     tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+    //     datatype: 'linear-labels',
+    //   });
 
-      // before providing default tracks, higlass shouldn't know
-      // which tracks are compatible with this datatype and shouldn't
-      // display any drag listening divs
-      let selection = select(div).selectAll('.DragListeningDiv');
-      expect(selection.size()).toEqual(0);
+    //   // before providing default tracks, higlass shouldn't know
+    //   // which tracks are compatible with this datatype and shouldn't
+    //   // display any drag listening divs
+    //   let selection = select(div).selectAll('.DragListeningDiv');
+    //   expect(selection.size()).to.equal(0);
 
-      api.showAvailableTrackPositions({
-        server: 'http://higlass.io/api/v1',
-        tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
-        datatype: 'linear-labels',
-        defaultTracks: ['heatmap', 'horizontal-heatmap'],
-      });
+    //   api.showAvailableTrackPositions({
+    //     server: 'http://higlass.io/api/v1',
+    //     tilesetUid: 'WtBJUYawQzS9M2WVIIHnlA',
+    //     datatype: 'linear-labels',
+    //     defaultTracks: ['heatmap', 'horizontal-heatmap'],
+    //   });
 
-      selection = select(div).selectAll('.DragListeningDiv');
-      expect(selection.size()).toEqual(5);
-    });
+    //   selection = select(div).selectAll('.DragListeningDiv');
+    //   expect(selection.size()).to.equal(5);
+    // });
 
     it('creates a track with default options', () => {
       [div, api] = createElementAndApi(simpleCenterViewConfig, {
@@ -166,8 +149,8 @@ describe('API Tests', () => {
       const viewconf = component.getViewsAsJson();
       const trackConf = viewconf.views[0].tracks.top[0];
 
-      expect(trackConf.options.showTooltip).toEqual(true);
-      // expect(Object.keys(component.viewHeaders).length).toBeGreaterThan(0);
+      expect(trackConf.options.showTooltip).to.equal(true);
+      // expect(Object.keys(component.viewHeaders).length).to.be.greaterThan(0);
     });
 
     it('creates a track without default options', () => {
@@ -189,8 +172,8 @@ describe('API Tests', () => {
       const viewconf = component.getViewsAsJson();
       const trackConf = viewconf.views[0].tracks.top[0];
 
-      expect(trackConf.options.showTooltip).toEqual(false);
-      // expect(Object.keys(component.viewHeaders).length).toBeGreaterThan(0);
+      expect(trackConf.options.showTooltip).to.equal(false);
+      // expect(Object.keys(component.viewHeaders).length).to.be.greaterThan(0);
     });
 
     it('creates an editable component', () => {
@@ -198,7 +181,7 @@ describe('API Tests', () => {
 
       const component = api.getComponent();
 
-      expect(Object.keys(component.viewHeaders).length).toBeGreaterThan(0);
+      expect(Object.keys(component.viewHeaders).length).to.be.greaterThan(0);
     });
 
     it('zooms to negative domain', (done) => {
@@ -216,7 +199,7 @@ describe('API Tests', () => {
       );
 
       waitForTransitionsFinished(api.getComponent(), () => {
-        expect(api.getComponent().yScales.a.domain()[0]).toBeLessThan(0);
+        expect(api.getComponent().yScales.a.domain()[0]).to.be.lessThan(0);
         done();
       });
     });
@@ -230,12 +213,12 @@ describe('API Tests', () => {
 
       waitForTransitionsFinished(api.getComponent(), () => {
         waitForTilesLoaded(api.getComponent(), () => {
-          expect(api.getComponent().yScales.a.domain()[0]).toBeGreaterThan(2);
+          expect(api.getComponent().yScales.a.domain()[0]).to.be.greaterThan(2);
 
           const trackObj = api.getTrackObject('a', 'heatmap1');
 
           const rd = trackObj.getVisibleRectangleData(285, 156, 11, 11);
-          expect(rd.data.length).toEqual(1);
+          expect(rd.data.length).to.equal(1);
 
           done();
         });
@@ -250,9 +233,9 @@ describe('API Tests', () => {
       api.zoomToGene('a', 'MYC', 100, 1000);
 
       waitForTransitionsFinished(api.getComponent(), () => {
-        expect(api.getComponent().xScales.a.domain()[0]).toBeCloseTo(
+        expect(api.getComponent().xScales.a.domain()[0]).to.be.closeTo(
           1480820463,
-          -6,
+          1,
         );
         done();
       });
@@ -268,7 +251,7 @@ describe('API Tests', () => {
           suggestions.find(
             (d) => d.geneName.toLowerCase() === 'MYC'.toLowerCase(),
           ),
-        ).not.toBeUndefined();
+        ).to.not.equal(undefined);
         done();
       });
     });
@@ -288,15 +271,15 @@ describe('API Tests', () => {
         api.zoomTo('a', ...newXDomain, null, null, 100);
 
         waitForTransitionsFinished(hgc, () => {
-          expect(Math.round(hgc.xScales.a.domain()[0])).toEqual(newXDomain[0]);
-          expect(Math.round(hgc.xScales.a.domain()[1])).toEqual(newXDomain[1]);
+          expect(Math.round(hgc.xScales.a.domain()[0])).to.equal(newXDomain[0]);
+          expect(Math.round(hgc.xScales.a.domain()[1])).to.equal(newXDomain[1]);
 
           api.resetViewport('a');
 
-          expect(Math.round(hgc.xScales.a.domain()[0])).toEqual(
+          expect(Math.round(hgc.xScales.a.domain()[0])).to.equal(
             initialXDomain[0],
           );
-          expect(Math.round(hgc.xScales.a.domain()[1])).toEqual(
+          expect(Math.round(hgc.xScales.a.domain()[1])).to.equal(
             initialXDomain[1],
           );
 
@@ -320,7 +303,7 @@ describe('API Tests', () => {
           -23.274695776773807,
           -23.27906532393644,
         ),
-      ).toThrowError('Invalid viewUid. Current uuids: a');
+      ).to.throw('Invalid viewUid. Current uuids: a');
     });
 
     it('creates a non editable component', () => {
@@ -330,7 +313,7 @@ describe('API Tests', () => {
 
       const component = api.getComponent();
 
-      expect(Object.keys(component.viewHeaders).length).toEqual(0);
+      expect(Object.keys(component.viewHeaders).length).to.equal(0);
     });
 
     it('retrieves a track', () => {
@@ -343,7 +326,7 @@ describe('API Tests', () => {
         viewconf.views[0].tracks.center[0].uid,
       );
 
-      expect(trackObj).toBeDefined();
+      expect(trackObj).to.exist;
     });
 
     it('zooms to a negative location', (done) => {
@@ -367,8 +350,8 @@ describe('API Tests', () => {
         sizeMode: 'bounded',
       });
 
-      expect(api.option('editable')).toEqual(false);
-      expect(api.option('sizeMode')).toEqual('bounded');
+      expect(api.option('editable')).to.equal(false);
+      expect(api.option('sizeMode')).to.equal('bounded');
     });
 
     // it('overflow when in overflow mode but cannot scroll', (done) => {
@@ -380,20 +363,20 @@ describe('API Tests', () => {
     //     true,
     //   );
 
-    //   expect(api.option('sizeMode')).toEqual('overflow');
+    //   expect(api.option('sizeMode')).to.equal('overflow');
 
     //   const hgContainer = div.querySelector('.higlass');
     //   const hgContainerStyles = window.getComputedStyle(hgContainer);
     //   const scrollContainer = div.querySelector('.higlass-scroll-container');
     //   const scrollContainerStyles = window.getComputedStyle(scrollContainer);
 
-    //   expect(hgContainerStyles.getPropertyValue('position')).toEqual(
+    //   expect(hgContainerStyles.getPropertyValue('position')).to.equal(
     //     'absolute',
     //   );
-    //   expect(scrollContainerStyles.getPropertyValue('position')).toEqual(
+    //   expect(scrollContainerStyles.getPropertyValue('position')).to.equal(
     //     'absolute',
     //   );
-    //   expect(scrollContainerStyles.getPropertyValue('overflow')).toEqual(
+    //   expect(scrollContainerStyles.getPropertyValue('overflow')).to.equal(
     //     'hidden',
     //   );
 
@@ -405,7 +388,7 @@ describe('API Tests', () => {
     //     scrollContainer.scrollTop = 20;
 
     //     setTimeout(() => {
-    //       expect(hgc.pixiStage.y).toEqual(0);
+    //       expect(hgc.pixiStage.y).to.equal(0);
     //       done();
     //     }, 50);
     //   });
@@ -420,28 +403,28 @@ describe('API Tests', () => {
     //     true,
     //   );
 
-    //   expect(api.option('sizeMode')).toEqual('scroll');
+    //   expect(api.option('sizeMode')).to.equal('scroll');
 
     //   const scrollContainer = div.querySelector('.higlass-scroll-container');
     //   const scrollContainerStyles = window.getComputedStyle(scrollContainer);
 
-    //   expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual(
+    //   expect(scrollContainerStyles.getPropertyValue('overflow-x')).to.equal(
     //     'hidden',
     //   );
-    //   expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual(
+    //   expect(scrollContainerStyles.getPropertyValue('overflow-y')).to.equal(
     //     'auto',
     //   );
 
     //   const hgc = api.getComponent();
 
     //   waitForTilesLoaded(hgc, () => {
-    //     expect(hgc.isZoomFixed('aa')).toEqual(true);
+    //     expect(hgc.isZoomFixed('aa')).to.equal(true);
 
     //     scrollContainer.scrollTop = 20;
 
     //     setTimeout(() => {
-    //       expect(scrollContainer.scrollTop).toEqual(20);
-    //       expect(hgc.pixiStage.y).toEqual(-20);
+    //       expect(scrollContainer.scrollTop).to.equal(20);
+    //       expect(hgc.pixiStage.y).to.equal(-20);
     //       done();
     //     }, 50);
     //   });
@@ -456,7 +439,7 @@ describe('API Tests', () => {
     //     true,
     //   );
 
-    //   expect(api.option('sizeMode')).toEqual('scroll');
+    //   expect(api.option('sizeMode')).to.equal('scroll');
 
     //   const hgc = api.getComponent();
 
@@ -466,11 +449,11 @@ describe('API Tests', () => {
     //     scrollContainer.scrollTop = 20;
 
     //     setTimeout(() => {
-    //       expect(hgc.pixiStage.y).toEqual(-20);
-    //       expect(scrollContainerStyles.getPropertyValue('overflow-x')).toEqual(
+    //       expect(hgc.pixiStage.y).to.equal(-20);
+    //       expect(scrollContainerStyles.getPropertyValue('overflow-x')).to.equal(
     //         'hidden',
     //       );
-    //       expect(scrollContainerStyles.getPropertyValue('overflow-y')).toEqual(
+    //       expect(scrollContainerStyles.getPropertyValue('overflow-y')).to.equal(
     //         'auto',
     //       );
 
@@ -482,8 +465,8 @@ describe('API Tests', () => {
     //         setTimeout(() => {
     //           expect(
     //             scrollContainerStyles.getPropertyValue('overflow'),
-    //           ).toEqual('hidden');
-    //           expect(hgc.pixiStage.y).toEqual(-20);
+    //           ).to.equal('hidden');
+    //           expect(hgc.pixiStage.y).to.equal(-20);
     //           done();
     //         }, 50);
     //       }, 250);
@@ -503,7 +486,7 @@ describe('API Tests', () => {
     //     true,
     //   );
 
-    //   expect(api.option('sizeMode')).toEqual('scroll');
+    //   expect(api.option('sizeMode')).to.equal('scroll');
 
     //   const hgc = api.getComponent();
 
@@ -512,7 +495,7 @@ describe('API Tests', () => {
     //     scrollContainer.scrollTop = 20;
 
     //     setTimeout(() => {
-    //       expect(hgc.pixiStage.y).toEqual(-20);
+    //       expect(hgc.pixiStage.y).to.equal(-20);
     //       done();
     //     }, 50);
     //   });
@@ -530,19 +513,19 @@ describe('API Tests', () => {
     //     true,
     //   );
 
-    //   expect(api.option('sizeMode')).toEqual('scroll');
+    //   expect(api.option('sizeMode')).to.equal('scroll');
 
     //   const hgc = api.getComponent();
 
     //   waitForTilesLoaded(hgc, () => {
-    //     expect(hgc.isZoomFixed('l')).toEqual(true);
+    //     expect(hgc.isZoomFixed('l')).to.equal(true);
 
     //     const scrollContainer = div.querySelector('.higlass-scroll-container');
     //     // Scroll to the very end
     //     scrollContainer.scrollTop = 1790;
 
     //     setTimeout(() => {
-    //       expect(hgc.pixiStage.y).toEqual(-1790);
+    //       expect(hgc.pixiStage.y).to.equal(-1790);
 
     //       api.option('sizeMode', 'overflow');
 
@@ -552,7 +535,7 @@ describe('API Tests', () => {
     //         // Trigger a pan event
     //         const [dx] = drag(150, 300, 140, 300, 'l', hgc);
 
-    //         expect(dx).toEqual(-10);
+    //         expect(dx).to.equal(-10);
     //         done();
     //       }, 250);
     //     }, 150);
@@ -562,7 +545,7 @@ describe('API Tests', () => {
     it('has version', () => {
       [div, api] = createElementAndApi(emptyConf, { editable: false });
 
-      expect(api.version).toEqual(VERSION);
+      expect(api.version).to.equal(VERSION);
     });
 
     it('mousemove and zoom events work for 1D and 2D tracks', (done) => {
@@ -599,9 +582,9 @@ describe('API Tests', () => {
         tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150, 150));
 
         setTimeout(() => {
-          expect(moved['h-line']).toEqual(true);
-          expect(moved['v-line']).toEqual(true);
-          expect(moved.heatmap).toEqual(true);
+          expect(moved['h-line']).to.equal(true);
+          expect(moved['v-line']).to.equal(true);
+          expect(moved.heatmap).to.equal(true);
           done();
         }, 0);
       });
@@ -641,24 +624,24 @@ describe('API Tests', () => {
         tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150, 150));
 
         setTimeout(() => {
-          expect(mouseMoveEvt).not.toEqual(null);
-          expect(mouseMoveEvt.x).toEqual(150);
-          expect(mouseMoveEvt.y).toEqual(150);
-          expect(mouseMoveEvt.relTrackX).toEqual(85);
-          expect(mouseMoveEvt.relTrackY).toEqual(85);
-          expect(Math.round(mouseMoveEvt.dataX)).toEqual(1670179850);
-          expect(Math.round(mouseMoveEvt.dataY)).toEqual(1832488682);
-          expect(mouseMoveEvt.isFrom2dTrack).toEqual(true);
-          expect(mouseMoveEvt.isFromVerticalTrack).toEqual(false);
-          expect(mouseMoveEvt.sourceUid).toBeDefined();
-          expect(mouseMoveEvt.noHoveredTracks).toEqual(false);
+          expect(mouseMoveEvt).not.to.equal(null);
+          expect(mouseMoveEvt.x).to.equal(150);
+          expect(mouseMoveEvt.y).to.equal(150);
+          expect(mouseMoveEvt.relTrackX).to.equal(85);
+          expect(mouseMoveEvt.relTrackY).to.equal(85);
+          expect(Math.round(mouseMoveEvt.dataX)).to.equal(1670179850);
+          expect(Math.round(mouseMoveEvt.dataY)).to.equal(1832488682);
+          expect(mouseMoveEvt.isFrom2dTrack).to.equal(true);
+          expect(mouseMoveEvt.isFromVerticalTrack).to.equal(false);
+          expect(mouseMoveEvt.sourceUid).to.exist;
+          expect(mouseMoveEvt.noHoveredTracks).to.equal(false);
 
           mouseMoveEvt = null;
           api.setBroadcastMousePositionGlobally(false);
           tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150, 150));
 
           setTimeout(() => {
-            expect(mouseMoveEvt).toEqual(null);
+            expect(mouseMoveEvt).to.equal(null);
             done();
           }, 0);
         }, 0);
@@ -684,7 +667,7 @@ describe('API Tests', () => {
       );
 
       setTimeout(() => {
-        expect(api).not.toEqual(api2);
+        expect(api).not.to.equal(api2);
 
         const hgc = api.getComponent();
         const hgc2 = api2.getComponent();
@@ -698,13 +681,13 @@ describe('API Tests', () => {
         hgc.apiPublish('rangeSelection', 'a');
         hgc.apiPublish('rangeSelection', 'a');
 
-        expect(counter).toEqual(2);
-        expect(counter2).toEqual(0);
+        expect(counter).to.equal(2);
+        expect(counter2).to.equal(0);
 
         hgc2.apiPublish('rangeSelection', 'b');
 
-        expect(counter).toEqual(2);
-        expect(counter2).toEqual(1);
+        expect(counter).to.equal(2);
+        expect(counter2).to.equal(1);
 
         let moved = false;
         let moved2 = false;
@@ -732,8 +715,8 @@ describe('API Tests', () => {
               .dispatchEvent(createMouseEvent('mousemove', 330, 230));
 
             setTimeout(() => {
-              expect(moved).toEqual(true);
-              expect(moved2).toEqual(false);
+              expect(moved).to.equal(true);
+              expect(moved2).to.equal(false);
 
               setTimeout(() => {
                 div2
@@ -741,7 +724,7 @@ describe('API Tests', () => {
                   .dispatchEvent(createMouseEvent('mousemove', 330, 730));
 
                 setTimeout(() => {
-                  expect(moved2).toEqual(true);
+                  expect(moved2).to.equal(true);
 
                   setTimeout(() => {
                     api2.destroy();
@@ -776,7 +759,7 @@ describe('API Tests', () => {
         bounded: true,
       });
 
-      const canvas = findCanvas(div);
+      const canvas = div.querySelector('canvas');
 
       let clicked = 0;
 
@@ -809,7 +792,7 @@ describe('API Tests', () => {
           }, 0);
 
           setTimeout(() => {
-            expect(clicked).toEqual(2);
+            expect(clicked).to.equal(2);
 
             done();
           }, 0);
@@ -830,14 +813,14 @@ describe('API Tests', () => {
 
         waitForTransitionsFinished(hgc, () => {
           const location = api.getLocation();
-          expect(Math.round(location.xDomain[0])).toEqual(1000000000);
-          expect(Math.round(location.xDomain[1])).toEqual(2000000000);
-          expect(Math.round(location.yDomain[0])).toEqual(1406779661);
-          expect(Math.round(location.yDomain[1])).toEqual(1593220339);
-          expect(Math.round(location.xRange[0])).toEqual(0);
-          expect(Math.round(location.xRange[1])).toEqual(590);
-          expect(Math.round(location.yRange[0])).toEqual(0);
-          expect(Math.round(location.yRange[1])).toEqual(110);
+          expect(Math.round(location.xDomain[0])).to.equal(1000000000);
+          expect(Math.round(location.xDomain[1])).to.equal(2000000000);
+          expect(Math.round(location.yDomain[0])).to.equal(1406779661);
+          expect(Math.round(location.yDomain[1])).to.equal(1593220339);
+          expect(Math.round(location.xRange[0])).to.equal(0);
+          expect(Math.round(location.xRange[1])).to.equal(590);
+          expect(Math.round(location.yRange[0])).to.equal(0);
+          expect(Math.round(location.yRange[1])).to.equal(110);
 
           done();
         });
@@ -850,16 +833,16 @@ describe('API Tests', () => {
       );
       const hgc = api.getComponent();
       waitForTilesLoaded(hgc, () => {
-        const topTrackHeight = api.getViewConfig().views[0].tracks.top[0]
-          .height;
-        expect(topTrackHeight).toEqual(60);
+        const topTrackHeight =
+          api.getViewConfig().views[0].tracks.top[0].height;
+        expect(topTrackHeight).to.equal(60);
 
         hgc.tiledPlots.a.handleResizeTrack('h-line', 500, 100);
 
         api.on('viewConfig', (newViewConfigString) => {
           const newViewConfig = JSON.parse(newViewConfigString);
           const newTopTrackHeight = newViewConfig.views[0].tracks.top[0].height;
-          expect(newTopTrackHeight).toEqual(100);
+          expect(newTopTrackHeight).to.equal(100);
           done();
         });
       });
@@ -872,12 +855,12 @@ describe('API Tests', () => {
       const hgc = api.getComponent();
       waitForTilesLoaded(hgc, () => {
         api.on('wheel', (e) => {
-          expect(e.origEvt.clientX).toEqual(30);
-          expect(e.origEvt.clientY).toEqual(40);
+          expect(e.origEvt.clientX).to.equal(30);
+          expect(e.origEvt.clientY).to.equal(40);
           done();
         });
 
-        const canvas = findCanvas(div);
+        const canvas = div.querySelector('canvas');
         // The wheel event that we expect to catch.
         const wheelEvent = {
           clientX: 30,
@@ -909,7 +892,7 @@ describe('API Tests', () => {
           const retrievedViewConf = api.getViewConfig();
           const newName =
             retrievedViewConf.views[0].tracks.center[0].options.name;
-          expect(newName).toEqual('Modified name');
+          expect(newName).to.equal('Modified name');
           done();
         });
       });
@@ -953,7 +936,7 @@ describe('API Tests', () => {
       });
 
       api.on('createSVG', (svg) => {
-        expect(svg.children.length).toEqual(2);
+        expect(svg.children.length).to.equal(2);
         done();
         return svg;
       });
@@ -989,10 +972,10 @@ describe('API Tests', () => {
         const domparser = new DOMParser();
         const doc = domparser.parseFromString(svgStr, 'image/svg+xml');
 
-        expect(doc.children.length).toEqual(1);
-        expect(doc.children[0].nodeName.toLowerCase()).toEqual('svg');
-        expect(doc.children[0].children.length).toEqual(1);
-        expect(doc.children[0].children[0].nodeName.toLowerCase()).toEqual(
+        expect(doc.children.length).to.equal(1);
+        expect(doc.children[0].nodeName.toLowerCase()).to.equal('svg');
+        expect(doc.children[0].children.length).to.equal(1);
+        expect(doc.children[0].children[0].nodeName.toLowerCase()).to.equal(
           'circle',
         );
         done();
@@ -1015,8 +998,8 @@ describe('API Tests', () => {
       const hgc = api.getComponent();
       waitForTilesLoaded(hgc, () => {
         api.on('geneSearch', (e) => {
-          expect(e.geneSymbol).toEqual('MYC');
-          expect(e.centerX).toEqual(1521546687);
+          expect(e.geneSymbol).to.equal('MYC');
+          expect(e.centerX).to.equal(1521546687);
           done();
         });
 
