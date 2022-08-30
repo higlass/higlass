@@ -31,7 +31,7 @@ describe('Track positioning', () => {
   let div = null;
   const fetchMockHelper = new FetchMockHelper(null, 'track-positioning');
 
-  before(async ()=> {
+  before(async () => {
     await fetchMockHelper.activateFetchMock();
     [div, hgc] = await mountHGComponentAsync(
       div,
@@ -141,7 +141,9 @@ describe('Track positioning', () => {
     hgc.setState(hgc.instance().state);
 
     // make sure that the view has grown
-    expect(hgc.instance().state.views.aa.layout.h).to.be.greaterThan(prevHeight);
+    expect(hgc.instance().state.views.aa.layout.h).to.be.greaterThan(
+      prevHeight,
+    );
 
     waitForTilesLoaded(hgc.instance(), done);
   });

@@ -21,7 +21,7 @@ describe('Value scale locking', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before((done)=> {
+  before((done) => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -71,10 +71,10 @@ describe('Value scale locking', () => {
     // console.log('lvs1', heatmapTrack.limitedValueScale.domain());
 
     // move the brush down to limit the amount of visible data
-    heatmap1Track.gColorscaleBrush.call(heatmap1Track.scaleBrush.move, [
-      0,
-      100,
-    ]);
+    heatmap1Track.gColorscaleBrush.call(
+      heatmap1Track.scaleBrush.move,
+      [0, 100],
+    );
 
     // console.log('lvs2', heatmapTrack.limitedValueScale.domain());
 

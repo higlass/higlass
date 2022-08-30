@@ -14,7 +14,7 @@ describe('Utils tests', () => {
     let found = false;
     let visited = 0;
 
-    visitPositionedTracks(oneViewConfig.views[0].tracks, track => {
+    visitPositionedTracks(oneViewConfig.views[0].tracks, (track) => {
       if (track.uid === 'c1') {
         found = true;
       }

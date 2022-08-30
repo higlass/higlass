@@ -16,9 +16,10 @@ import { testViewConfX1, project1D } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-const waitForTilesLoadedAsync = (hgcInstance) => new Promise(resolve => {
-  waitForTilesLoaded(hgcInstance, () => resolve());
-});
+const waitForTilesLoadedAsync = (hgcInstance) =>
+  new Promise((resolve) => {
+    waitForTilesLoaded(hgcInstance, () => resolve());
+  });
 
 // import FetchMockHelper from '../utils/FetchMockHelper';
 
@@ -27,7 +28,7 @@ describe('SVG Export', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async ()=> {
+  before(async () => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = await mountHGComponentAsync(div, hgc, testViewConfX1, {
       style: 'width:800px; height:400px; background-color: lightgreen',

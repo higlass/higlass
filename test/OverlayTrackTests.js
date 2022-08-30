@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-import { expect } from "chai";
+import { expect } from 'chai';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';
@@ -48,8 +48,12 @@ describe('Overlay Track:', () => {
 
       expect(overlayTrack.height).to.be.greaterThan(0);
 
-      expect(overlayTrackDef.width).to.deep.equal(overlayTrackObj.dimensions[0]);
-      expect(overlayTrackDef.height).to.deep.equal(overlayTrackObj.dimensions[1]);
+      expect(overlayTrackDef.width).to.deep.equal(
+        overlayTrackObj.dimensions[0],
+      );
+      expect(overlayTrackDef.height).to.deep.equal(
+        overlayTrackObj.dimensions[1],
+      );
     });
 
     afterEach(() => {
@@ -61,7 +65,7 @@ describe('Overlay Track:', () => {
   });
 
   describe('Chromosome grid overlay:', () => {
-    it('Should render', done => {
+    it('Should render', (done) => {
       viewConf = overlayChromGridViewConf;
 
       [div, api] = createElementAndApi(viewConf, { bound: true });
@@ -77,7 +81,7 @@ describe('Overlay Track:', () => {
 
       expect(overlayTrackObj.constructor.name).to.deep.equal('ChromosomeGrid');
 
-      hgc.pubSub.subscribe('requestReceived', url => {
+      hgc.pubSub.subscribe('requestReceived', (url) => {
         if (url === '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv') {
           expect(!!overlayTrackObj.lineGraphics).to.be.equal(true);
           expect(!!overlayTrackObj.lineGraphics1dH).to.be.equal(true);

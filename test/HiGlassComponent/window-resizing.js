@@ -20,7 +20,7 @@ describe('Window resizing', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before((done)=> {
+  before((done) => {
     // await fetchMockHelper.activateFetchMock();
     const newViewConf = JSON.parse(JSON.stringify(project1D));
 

@@ -21,7 +21,7 @@ describe('Division track', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before((done)=> {
+  before((done) => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, oneViewConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -116,8 +116,11 @@ describe('Division track', () => {
 
     hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
 
-    const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vline1')
-      .originalTrack;
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'aa',
+      'vline1',
+    ).originalTrack;
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
@@ -135,8 +138,11 @@ describe('Division track', () => {
 
     hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
 
-    const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vline1')
-      .originalTrack;
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'aa',
+      'vline1',
+    ).originalTrack;
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
@@ -154,8 +160,11 @@ describe('Division track', () => {
 
     hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
 
-    const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vline1')
-      .originalTrack;
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'aa',
+      'vline1',
+    ).originalTrack;
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track
@@ -172,8 +181,11 @@ describe('Division track', () => {
 
     hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
 
-    const track = getTrackObjectFromHGC(hgc.instance(), 'aa', 'vline1')
-      .originalTrack;
+    const track = getTrackObjectFromHGC(
+      hgc.instance(),
+      'aa',
+      'vline1',
+    ).originalTrack;
     const { pAxis } = track.axis;
 
     // we want the axis labels to be to the left of the end of the track

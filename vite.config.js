@@ -21,7 +21,7 @@ const reactCssModules = [
 
 /**
  * Extends Vite with read/write endpoint.
- * Used in ./test/utils/FetchMockHelper.js 
+ * Used in ./test/utils/FetchMockHelper.js
  *
  * @example
  * // read contents of "/test/mocked-responses/foo.json"
@@ -36,7 +36,7 @@ const reactCssModules = [
  * });
  * resp.ok // true;
  *
- * @returns {import('vite').Plugin} 
+ * @returns {import('vite').Plugin}
  */
 function mockedReponsesPlugin() {
   const realRoute = '/test/mocked-responses/';
@@ -71,34 +71,37 @@ function mockedReponsesPlugin() {
       });
     },
   };
-};
+}
 
-export default defineConfig(({ command }) => {
+export default defineConfig(({ mode }) => {
   /** @type {import('vite').UserConfig['build']} */
-  const build = command === "serve" ? {} : {
-    minify: false,
-    lib: {
-      entry: path.resolve(__dirname, 'app/scripts/hglib.jsx'),
-      name: 'hglib',
-      formats: ['umd'],
-    },
-    rollupOptions: {
-      external: ["react", "react-dom", "pixi.js"],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          'pixi.js': 'PIXI',
-        },
-      },
-    },
-  };
+  const build =
+    mode === 'production'
+      ? {
+          minify: false,
+          lib: {
+            entry: path.resolve(__dirname, 'app/scripts/hglib.jsx'),
+            name: 'hglib',
+            formats: ['umd'],
+          },
+          rollupOptions: {
+            external: ['react', 'react-dom', 'pixi.js'],
+            output: {
+              globals: {
+                react: 'React',
+                'react-dom': 'ReactDOM',
+                'pixi.js': 'PIXI',
+              },
+            },
+          },
+        }
+      : {};
   return {
     resolve: {
       alias: {
         'enzyme-adapter-react-16': '@wojtekmaj/enzyme-adapter-react-17',
-        'slugid': path.resolve(__dirname, './app/bufferless-slugid.js'),
-        'lodash': 'lodash-es',
+        slugid: path.resolve(__dirname, './app/bufferless-slugid.js'),
+        lodash: 'lodash-es',
       },
     },
     build,
@@ -116,5 +119,5 @@ export default defineConfig(({ command }) => {
       }),
       mockedReponsesPlugin(),
     ],
-  }
+  };
 });

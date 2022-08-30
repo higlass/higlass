@@ -43,7 +43,8 @@ describe('Genome position search box tests', () => {
       waitForJsonComplete(() => {
         const positionText = hgc.genomePositionSearchBoxes.aa.positionText;
 
-        expect(hgc.genomePositionSearchBoxes.aa.assemblyPickButton).to.be.undefined;
+        expect(hgc.genomePositionSearchBoxes.aa.assemblyPickButton).to.be
+          .undefined;
 
         expect(positionText.indexOf('bar')).to.be.greaterThan(-1);
         done();

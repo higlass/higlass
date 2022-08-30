@@ -21,15 +21,15 @@ const baseConf = {
                 tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
                 type: 'heatmap',
                 options: {
-                  colorRange: ['white', 'black']
-                }
-              }
-            ]
-          }
-        ]
-      }
-    }
-  ]
+                  colorRange: ['white', 'black'],
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
 };
 
 configure({ adapter: new Adapter() });
@@ -38,7 +38,7 @@ describe('SVG Export', () => {
   describe('color bars 0-1 log', () => {
     let hgc = null;
     let div = null;
-    before(done => {
+    before((done) => {
       const viewConf = JSON.parse(JSON.stringify(baseConf));
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0;
@@ -54,10 +54,10 @@ describe('SVG Export', () => {
       expect(rects.length).to.equal(257);
       expect(rects[1].getAttribute('style')).to.equal('fill: rgb(1, 1, 1)');
       expect(rects[127].getAttribute('style')).to.equal(
-        'fill: rgb(127, 127, 127)'
+        'fill: rgb(127, 127, 127)',
       );
       expect(rects[255].getAttribute('style')).to.equal(
-        'fill: rgb(255, 255, 255)'
+        'fill: rgb(255, 255, 255)',
       );
     });
 
@@ -69,7 +69,7 @@ describe('SVG Export', () => {
   describe('color bars 0.5-1 log', () => {
     let hgc = null;
     let div = null;
-    before(done => {
+    before((done) => {
       const viewConf = JSON.parse(JSON.stringify(baseConf));
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0.5;
@@ -85,10 +85,10 @@ describe('SVG Export', () => {
       expect(rects.length).to.equal(257);
       expect(rects[1].getAttribute('style')).to.equal('fill: rgb(1, 1, 1)');
       expect(rects[127].getAttribute('style')).to.equal(
-        'fill: rgb(255, 255, 255)'
+        'fill: rgb(255, 255, 255)',
       );
       expect(rects[255].getAttribute('style')).to.equal(
-        'fill: rgb(255, 255, 255)'
+        'fill: rgb(255, 255, 255)',
       );
     });
 
@@ -114,11 +114,11 @@ describe('SVG Export', () => {
                     tilesetUid: 'CQMd6V_cRw6iCI_-Unl3PQ',
                     type: 'heatmap',
                     options: {
-                      colorRange: ['white', 'black']
-                    }
-                  }
-                ]
-              }
+                      colorRange: ['white', 'black'],
+                    },
+                  },
+                ],
+              },
             ],
             whole: [
               {
@@ -127,7 +127,7 @@ describe('SVG Export', () => {
                 options: {},
                 uid: 'LoWaxFMuRAmSLFJzhiYmKQ',
                 width: 20,
-                height: 20
+                height: 20,
               },
               {
                 type: 'horizontal-rule',
@@ -135,7 +135,7 @@ describe('SVG Export', () => {
                 options: {},
                 uid: 'V0qsdww3SO2pIHUhIWZaSQ',
                 width: 20,
-                height: 20
+                height: 20,
               },
               {
                 type: 'cross-rule',
@@ -144,15 +144,15 @@ describe('SVG Export', () => {
                 options: {},
                 uid: 'dw5LQpd9Srm2uxBsfpCv0g',
                 width: 20,
-                height: 20
-              }
-            ]
-          }
-        }
-      ]
+                height: 20,
+              },
+            ],
+          },
+        },
+      ],
     };
 
-    before(done => {
+    before((done) => {
       const viewConf = JSON.parse(JSON.stringify(addedRulesConf));
       const options = viewConf.views[0].tracks.center[0].contents[0].options;
       options.scaleStartPercent = 0;

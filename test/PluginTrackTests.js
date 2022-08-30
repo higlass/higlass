@@ -31,7 +31,9 @@ describe('Plugin track tests', () => {
 
     expect(dummyTrack.constructor.name).to.equal('DummyTrackClass');
 
-    expect({ ...dummyTrack.hgc }).to.deep.equal(trackRenderer.availableForPlugins);
+    expect({ ...dummyTrack.hgc }).to.deep.equal(
+      trackRenderer.availableForPlugins,
+    );
   });
 
   afterEach(() => {

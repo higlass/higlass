@@ -20,7 +20,7 @@ describe('Exising genome position search box', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before((done)=> {
+  before((done) => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, onlyGPSB, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -84,8 +84,8 @@ describe('Exising genome position search box', () => {
 
   it('Checks that mm9 was properly set and switches back to hg19', (done) => {
     hgc.update();
-    const button = hgc.instance().genomePositionSearchBoxes.aa
-      .assemblyPickButton;
+    const button =
+      hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton;
 
     expect(button.title).to.equal('mm9');
 
@@ -96,8 +96,8 @@ describe('Exising genome position search box', () => {
 
   it('Checks that hg19 was properly', (done) => {
     hgc.update();
-    const button = hgc.instance().genomePositionSearchBoxes.aa
-      .assemblyPickButton;
+    const button =
+      hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton;
 
     expect(button.title).to.equal('hg19');
 

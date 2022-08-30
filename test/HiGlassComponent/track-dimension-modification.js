@@ -20,7 +20,7 @@ describe('Track dimension modification test', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before((done)=> {
+  before((done) => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, geneAnnotationsOnly, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',

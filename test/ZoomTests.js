@@ -71,7 +71,7 @@ describe('Zoom tests', () => {
 
     expect(dy).to.equal(0);
     expect(dx).to.equal(2);
-    expect(spiedTrackRenderer.called).to.be.true
+    expect(spiedTrackRenderer.called).to.be.true;
     done();
   });
 

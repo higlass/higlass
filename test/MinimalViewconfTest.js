@@ -13,7 +13,7 @@ describe('Minimal viewconfs', () => {
     const viewconf = {};
     let hgc = null;
     let div = null;
-    before(done => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
     it('can load and unload', () => {
@@ -34,14 +34,14 @@ describe('Minimal viewconfs', () => {
             right: [],
             bottom: [],
             whole: [],
-            gallery: []
-          }
-        }
-      ]
+            gallery: [],
+          },
+        },
+      ],
     };
     let hgc = null;
     let div = null;
-    before(done => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
     it('can load and unload', () => {
@@ -62,16 +62,16 @@ describe('Minimal viewconfs', () => {
               {
                 type: 'cross-rule',
                 x: 100,
-                y: 100
-              }
-            ]
-          }
-        }
-      ]
+                y: 100,
+              },
+            ],
+          },
+        },
+      ],
     };
     let hgc = null;
     let div = null;
-    before(done => {
+    before((done) => {
       [div, hgc] = mountHGComponent(div, hgc, viewconf, done);
     });
     it('can load and unload', () => {

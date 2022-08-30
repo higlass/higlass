@@ -1,7 +1,9 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
 
-import tileProxy, { tileDataToPixData } from '../app/scripts/services/tile-proxy';
+import tileProxy, {
+  tileDataToPixData,
+} from '../app/scripts/services/tile-proxy';
 import { fake as fakePubSub } from '../app/scripts/hocs/with-pub-sub';
 import {
   multivecTileData,

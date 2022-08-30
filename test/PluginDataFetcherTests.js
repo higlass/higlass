@@ -29,8 +29,12 @@ describe('Plugin data fetchers:', () => {
       const dummyDataFetcher =
         trackRenderer.trackDefObjects[trackUid].trackObject.dataFetcher;
 
-      expect(dummyDataFetcher.constructor.name).to.equal('DummyDataFetcherClass');
-      expect(dummyDataFetcher.hgc).to.deep.equal(trackRenderer.availableForPlugins);
+      expect(dummyDataFetcher.constructor.name).to.equal(
+        'DummyDataFetcherClass',
+      );
+      expect(dummyDataFetcher.hgc).to.deep.equal(
+        trackRenderer.availableForPlugins,
+      );
     });
 
     afterEach(() => {

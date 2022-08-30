@@ -30,11 +30,13 @@ describe('ndarrayAssign()', () => {
   it('can assign a matrix to another matrix', () => {
     const a = ndarray(
       new Array(4).fill(0).map((x, i) => i + 1),
-      [2, 2]
+      [2, 2],
     );
     const z = ndarray(new Array(4 * 4).fill(0), [4, 4]);
     ndarrayAssign(z.hi(3, 3).lo(1, 1), a);
 
-    expect(z.data).to.deep.equal([0, 0, 0, 0, 0, 1, 2, 0, 0, 3, 4, 0, 0, 0, 0, 0]);
+    expect(z.data).to.deep.equal([
+      0, 0, 0, 0, 0, 1, 2, 0, 0, 3, 4, 0, 0, 0, 0, 0,
+    ]);
   });
 });

@@ -45,7 +45,7 @@ describe('A search field', () => {
     expect(range1).to.eql([1000000, 2000000]);
 
     [range1, range2] = searchField.searchPosition(
-      'chr1:2000000-chr1:3000000 & chr1:1000000-chr1:2000000'
+      'chr1:2000000-chr1:3000000 & chr1:1000000-chr1:2000000',
     );
 
     expect(range1).to.eql([2000000, 3000000]);
@@ -78,7 +78,7 @@ describe('A search field', () => {
     expect(range1[1]).to.eql(120000);
 
     [range1, range2] = searchField.searchPosition(
-      'chr1:2M-chr1:3M & chr1:1M-chr1:2M'
+      'chr1:2M-chr1:3M & chr1:1M-chr1:2M',
     );
 
     expect(range1).to.eql([2000000, 3000000]);

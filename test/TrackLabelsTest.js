@@ -17,8 +17,7 @@ describe('Track Labels Test', () => {
           tracks: {
             top: [
               {
-                name:
-                  'wgEncodeLicrHistoneLiverH3k04me3UE14halfC57bl6StdSig.hitile',
+                name: 'wgEncodeLicrHistoneLiverH3k04me3UE14halfC57bl6StdSig.hitile',
                 created: '2017-11-02T15:37:26.351612Z',
                 project: null,
                 project_name: '',

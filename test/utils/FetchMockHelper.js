@@ -1,7 +1,7 @@
 // @ts-check
 
 // See vite.config.js
-const mockUrl = name => `/@mocked-responses/${name}.json`
+const mockUrl = (name) => `/@mocked-responses/${name}.json`;
 
 /**
  * @typedef {((...args: [...Parameters<fetch>, fetch]) => Promise<unknown>)} CustomFetch<T>
@@ -18,14 +18,13 @@ function setFetch(customFetch) {
   window.fetch = async (url, init) => {
     const data = await customFetch(url, init, originalFetch);
     return new Response(JSON.stringify(data));
-  }
+  };
   return function reset() {
     window.fetch = originalFetch;
-  }
+  };
 }
 
 class FetchMockHelper {
-
   constructor(viewConf, testName) {
     this.checkViewConf(viewConf);
     this.testName = testName;
@@ -119,7 +118,7 @@ class FetchMockHelper {
 
     // POST data to our vite endpoint
     const response = await fetch(mockUrl(this.testName), {
-      method: "POST",
+      method: 'POST',
       body: mockedResponsesJSON,
     });
 

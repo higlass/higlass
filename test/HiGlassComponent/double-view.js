@@ -25,7 +25,7 @@ describe('Double view', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before(async ()=> {
+  before(async () => {
     // await fetchMockHelper.activateFetchMock();
     [div, hgc] = await mountHGComponentAsync(div, hgc, twoViewConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
@@ -41,8 +41,9 @@ describe('Double view', () => {
   });
 
   it('has a colorbar', () => {
-    const heatmap = hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects
-      .c1.trackObject.createdTracks.heatmap1;
+    const heatmap =
+      hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects.c1.trackObject
+        .createdTracks.heatmap1;
     expect(heatmap.pColorbarArea.x).to.be.lessThan(heatmap.dimensions[0] / 2);
 
     const selection = select(div).selectAll('.selection');
@@ -138,8 +139,9 @@ describe('Double view', () => {
     // make sure that this color, which is part of the afmhot colormap is not exported
     expect(svgText.indexOf('rgb(171, 43, 0)')).to.be.lessThan(0);
 
-    const line1 = hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects
-      .line1.trackObject;
+    const line1 =
+      hgc.instance().tiledPlots.aa.trackRenderer.trackDefObjects.line1
+        .trackObject;
 
     const axis = line1.axis.exportAxisRightSVG(
       line1.valueScale,

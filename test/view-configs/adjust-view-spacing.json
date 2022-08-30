@@ -1,17 +1,12 @@
 {
   "editable": false,
   "zoomFixed": false,
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
+  "trackSourceServers": ["http://higlass.io/api/v1"],
   "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
   "views": [
     {
       "uid": "a",
-      "initialXDomain": [
-        7595655.0000270605,
-        2507738795.9999733
-      ],
+      "initialXDomain": [7595655.0000270605, 2507738795.9999733],
       "tracks": {
         "top": [
           {
