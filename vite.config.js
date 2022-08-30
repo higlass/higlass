@@ -73,15 +73,9 @@ function mockedReponsesPlugin() {
   };
 };
 
-export default defineConfig({
-  resolve: {
-    alias: {
-      'enzyme-adapter-react-16': '@wojtekmaj/enzyme-adapter-react-17',
-      'slugid': path.resolve(__dirname, './app/bufferless-slugid.js'),
-      'lodash': 'lodash-es',
-    },
-  },
-  build: {
+export default defineConfig(({ command }) => {
+  /** @type {import('vite').UserConfig['build']} */
+  const build = command === "serve" ? {} : {
     minify: false,
     lib: {
       entry: path.resolve(__dirname, 'app/scripts/hglib.jsx'),
@@ -98,19 +92,29 @@ export default defineConfig({
         },
       },
     },
-  },
-  define: {
-    global: 'globalThis',
-    XYLOPHON: JSON.stringify(version),
-  },
-  css: {
-    modules: { generateScopedName },
-  },
-  plugins: [
-    react({
-      jsxRuntime: 'classic',
-      babel: { plugins: [reactCssModules] },
-    }),
-    mockedReponsesPlugin(),
-  ],
+  };
+  return {
+    resolve: {
+      alias: {
+        'enzyme-adapter-react-16': '@wojtekmaj/enzyme-adapter-react-17',
+        'slugid': path.resolve(__dirname, './app/bufferless-slugid.js'),
+        'lodash': 'lodash-es',
+      },
+    },
+    build,
+    define: {
+      global: 'globalThis',
+      XYLOPHON: JSON.stringify(version),
+    },
+    css: {
+      modules: { generateScopedName },
+    },
+    plugins: [
+      react({
+        jsxRuntime: 'classic',
+        babel: { plugins: [reactCssModules] },
+      }),
+      mockedReponsesPlugin(),
+    ],
+  }
 });
