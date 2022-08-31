@@ -56,3 +56,12 @@ await fs.promises.writeFile(
     <script src="./hglib.min.js"></script>
   `)
 );
+
+// =========================================
+//       Copy test helpers to dist
+// =========================================
+
+await fs.promises.copyFile(
+  path.resolve(__dirname, '../test/utils/test-helpers.js'),
+  path.resolve(__dirname, '../dist/testing.js'),
+)

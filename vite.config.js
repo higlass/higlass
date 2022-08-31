@@ -101,6 +101,7 @@ export default defineConfig(({ mode }) => {
       alias: {
         slugid: path.resolve(__dirname, './app/bufferless-slugid.js'),
         lodash: 'lodash-es',
+        higlass: path.resolve(__dirname, './app/scripts/hglib.jsx'),
       },
     },
     build,

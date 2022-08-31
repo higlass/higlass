@@ -3,9 +3,10 @@
   "version": "1.11.11",
   "description": "HiGlass Hi-C / genomic / large data viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
-  "main": "dist/hglib.js",
-  "unpkg": "dist/hglib.min.js",
-  "jsdelivr": "dist/hglib.min.js",
+  "main": "./dist/hglib.js",
+  "unpkg": "./dist/hglib.min.js",
+  "jsdelivr": "./dist/hglib.min.js",
+  "css": "./dist/hglib.css",
   "files": [
     "app",
     "dist"
@@ -24,6 +25,10 @@
     "compile": "npm run build && node ./scripts/compile.mjs && zip -r dist.zip dist",
     "lint": "eslint app test vite.config.js web-test-runner.config.mjs",
     "precommit": "NODE_ENV=production lint-staged"
+  },
+  "exports": {
+    ".": "./dist/hglib.js",
+    "./testing": "./dist/testing.js"
   },
   "repository": {
     "type": "git",

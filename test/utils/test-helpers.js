@@ -1,20 +1,16 @@
 // In this project, these methods are only used in tests,
 // but plugin tracks also make use of them... so not really extraneous.
-
-import React from 'react';
+import * as React from 'react';
 import ReactDOM from 'react-dom';
-
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { mount } from 'enzyme';
-
-import { requestsInFlight } from '../../app/scripts/services';
+import Enzyme from 'enzyme';
 
 import {
-  getTrackObjectFromHGC,
+  requestsInFlight,
   getTrackRenderer,
-} from '../../app/scripts/utils';
-
-import HiGlassComponent from '../../app/scripts/HiGlassComponent';
+  getTrackObjectFromHGC,
+  HiGlassComponent,
+// eslint-disable-next-line import/no-unresolved
+} from 'higlass';
 
 const TILE_LOADING_CHECK_INTERVAL = 100;
 
@@ -191,7 +187,7 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
 export const mountHGComponent = (
   prevDiv,
   prevHgc,
-  viewConf,
+  viewConfig,
   done,
   options = {},
 ) => {
@@ -219,8 +215,8 @@ export const mountHGComponent = (
   div.setAttribute('style', style);
   div.setAttribute('id', 'simple-hg-component');
 
-  const hgc = mount(
-    <HiGlassComponent options={{ bounded }} viewConfig={viewConf} />,
+  const hgc = Enzyme.mount(
+    React.createElement(HiGlassComponent, { options: { bounded }, viewConfig }),
     { attachTo: div },
   );
 
