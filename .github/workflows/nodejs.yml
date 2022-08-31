@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '16.x'
       - run: npm ci --legacy-peer-deps
-      - run: npm lint
+      - run: npm run lint
 
   TestSchema:
     runs-on: ubuntu-latest
