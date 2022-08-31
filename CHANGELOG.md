@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- Update to webpack5
+- Migrate to Vite from webpack
+- Migrate to web-test-runner from karma
 - Update a bunch of packages (most notably d3 packages which have a slightly different API)
 - Fix tests
 - Update scss to fix deprecation warnings
