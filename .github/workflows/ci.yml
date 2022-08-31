@@ -10,7 +10,7 @@ on:
 
 jobs:
 
-  'Lint':
+  Lint:
     runs-on: ubuntu-latest
     env:
       # not needed for linting
@@ -24,7 +24,7 @@ jobs:
       - run: npm ci --legacy-peer-deps
       - run: npm run lint
 
-  'Test Schema':
+  Schema:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -43,7 +43,7 @@ jobs:
         env:
           GLOB: ${{ matrix.glob }}
 
-  'Test Browser':
+  Test:
     runs-on: ubuntu-latest
 
     steps:
