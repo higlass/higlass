@@ -9,6 +9,7 @@ on:
   pull_request:
 
 jobs:
+
   Lint:
     runs-on: ubuntu-latest
     env:
@@ -19,9 +20,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-
-    - run: npm ci --legacy-peer-deps
-    - run: npm lint
+      - run: npm ci --legacy-peer-deps
+      - run: npm lint
 
   TestSchema:
     runs-on: ubuntu-latest
