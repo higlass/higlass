@@ -63,5 +63,5 @@ await fs.promises.writeFile(
 
 await fs.promises.copyFile(
   path.resolve(__dirname, '../test/utils/test-helpers.js'),
-  path.resolve(__dirname, '../dist/testing.js'),
+  path.resolve(__dirname, '../dist/higlib.test.js'),
 )

@@ -26,10 +26,6 @@
     "lint": "eslint app test vite.config.js web-test-runner.config.mjs",
     "precommit": "NODE_ENV=production lint-staged"
   },
-  "exports": {
-    ".": "./dist/hglib.js",
-    "./testing": "./dist/testing.js"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/higlass/higlass"
