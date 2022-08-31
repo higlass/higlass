@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Node.js CI
+name: CI
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
 
-  Lint:
+  'Lint':
     runs-on: ubuntu-latest
     env:
       # not needed for linting
@@ -24,7 +24,7 @@ jobs:
       - run: npm ci --legacy-peer-deps
       - run: npm run lint
 
-  TestSchema:
+  'Test Schema':
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -32,7 +32,6 @@ jobs:
           "docs/examples/viewconfs/*.json",
           "test/view-configs/*.json",
           "test/view-configs-more/*.json",
-          "test/view-configs-invalid/*.json",
         ]
     steps:
       - uses: actions/checkout@v3
@@ -44,7 +43,7 @@ jobs:
         env:
           GLOB: ${{ matrix.glob }}
 
-  Test:
+  'Test Browser':
     runs-on: ubuntu-latest
 
     steps:
