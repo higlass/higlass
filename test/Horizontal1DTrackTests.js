@@ -1,5 +1,5 @@
 // @ts-check
-/* eslint-env node, mocha */
+/* eslint-env mocha */
 import { expect } from 'chai';
 
 // Utils
