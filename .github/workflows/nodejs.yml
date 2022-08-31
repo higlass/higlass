@@ -9,23 +9,58 @@ on:
   pull_request:
 
 jobs:
-  build:
+  Lint:
     runs-on: ubuntu-latest
     env:
-      NODE_OPTIONS: --max-old-space-size=7168
-    strategy:
-      matrix:
-        node-version: [16.x]
+      # not needed for linting
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+
+    - run: npm ci --legacy-peer-deps
+    - run: npm lint
+
+  TestSchema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - run: npm install -g ajv-cli
+      - run: |
+        ls docs/examples/viewconfs/*.json \
+        test/view-configs/*.json \
+        test/view-configs-more/*.json \
+          | sed 's/^/-d /' \
+          | xargs ajv validate -s app/schema.json --errors=text
+
+  Test:
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-      - run: sudo apt-get install xvfb
-      - run: npm ci --legacy-peer-deps
-      - run: npm run optimize # let vite optimize deps first
-      - run: xvfb-run --auto-servernum npm run test -- --static-logging # don't show progress bar in CI
+          node-version: '16.x'
+
+      # required to run headless puppeteer on ubuntu-latest
+      - name: Setup xvf
         env:
-          CI: true
+          DISPLAY: '0'
+        run: |
+          sudo apt-get install -y xvfb
+          # start xvfb in the background
+          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
+
+      - name: Install
+        run: npm ci --legacy-peer-deps
+
+      - name: Pre-bundle deps with Vite
+        # prevents timeouts when running tests on clean install
+        run: npm run optimize 
+
+      - run: npm test -- --static-logging # don't show progress bar in CI
