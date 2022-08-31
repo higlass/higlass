@@ -32,11 +32,11 @@ jobs:
           node-version: '16.x'
       - run: npm install -g ajv-cli
       - run: |
-        ls docs/examples/viewconfs/*.json \
-        test/view-configs/*.json \
-        test/view-configs-more/*.json \
-          | sed 's/^/-d /' \
-          | xargs ajv validate -s app/schema.json --errors=text
+          ls docs/examples/viewconfs/*.json \
+          test/view-configs/*.json \
+          test/view-configs-more/*.json \
+            | sed 's/^/-d /' \
+            | xargs ajv validate -s app/schema.json --errors=text
 
   Test:
     runs-on: ubuntu-latest
