@@ -39,10 +39,7 @@ jobs:
         with:
           node-version: '16.x'
       - run: npm install -g ajv-cli
-      - run: >
-          echo "$GLOB"
-          echo $GLOB
-          ajv validate -s app/schema.json -d $GLOB
+      - run: ajv validate -s app/schema.json -d "$GLOB"
         env:
           GLOB: ${{ matrix.glob }}
 
