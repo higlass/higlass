@@ -50,7 +50,7 @@ add a line to `karma.conf.js` to include it in the tests.
       // render,
     } from 'enzyme';
 
-    import Adapter from 'enzyme-adapter-react-16';
+    import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 
     import { expect } from 'chai';
 

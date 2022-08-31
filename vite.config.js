@@ -99,7 +99,6 @@ export default defineConfig(({ mode }) => {
   return {
     resolve: {
       alias: {
-        'enzyme-adapter-react-16': '@wojtekmaj/enzyme-adapter-react-17',
         slugid: path.resolve(__dirname, './app/bufferless-slugid.js'),
         lodash: 'lodash-es',
       },
