@@ -25,14 +25,21 @@ jobs:
 
   TestSchema:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        glob: [
+          "docs/examples/viewconfs/*.json",
+          "test/view-configs/*.json",
+          "test/view-configs-more/*.json"
+        ]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-      - run: npm install -g ajv-cli
-      - run: |
-          ajv -s app/schema.json -d "docs/examples/viewconfs/*.json" "test/view-configs/*.json" "test/view-configs-more/*.json"
+      - run: npx ajv test -s app/schema.json -d $GLOB
+        env:
+          GLOB: ${{ matrix.glob }}
 
   Test:
     runs-on: ubuntu-latest
