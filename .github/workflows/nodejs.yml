@@ -20,6 +20,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+          cache: 'npm'
       - run: npm ci --legacy-peer-deps
       - run: npm run lint
 
@@ -37,7 +38,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-      - run: npx ajv test -s app/schema.json -d $GLOB
+      - run: npm install -g ajv-cli
+      - run: ajv test -s app/schema.json -d $GLOB
         env:
           GLOB: ${{ matrix.glob }}
 
@@ -49,7 +51,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-
+          cache: 'npm'
       # required to run headless puppeteer on ubuntu-latest
       - name: Setup xvf
         env:
@@ -58,12 +60,8 @@ jobs:
           sudo apt-get install -y xvfb
           # start xvfb in the background
           sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
-
-      - name: Install
-        run: npm ci --legacy-peer-deps
-
+      - run: npm ci --legacy-peer-deps
       - name: Pre-bundle deps with Vite
         # prevents timeouts when running tests on clean install
-        run: npm run optimize 
-
+        run: npm run optimize
       - run: npm test -- --static-logging # don't show progress bar in CI
