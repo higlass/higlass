@@ -26,6 +26,6 @@ jobs:
       - run: sudo apt-get install xvfb
       - run: npm ci --legacy-peer-deps
       - run: npm run optimize # let vite optimize deps first
-      - run: xvfb-run --auto-servernum npm run test
+      - run: xvfb-run --auto-servernum npm run test -- --static-logging # don't show progress bar in CI
         env:
           CI: true
