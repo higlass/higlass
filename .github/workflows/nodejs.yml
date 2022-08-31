@@ -32,6 +32,7 @@ jobs:
           "docs/examples/viewconfs/*.json",
           "test/view-configs/*.json",
           "test/view-configs-more/*.json",
+          "test/view-configs-invalid/*.json",
         ]
     steps:
       - uses: actions/checkout@v3
