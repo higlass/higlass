@@ -1,0 +1,58 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+
+  Lint:
+    runs-on: ubuntu-latest
+    env:
+      # not needed for linting
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - run: npm run lint
+
+  Schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - run: npm install -g ajv-cli
+      - run: ajv validate -s app/schema.json -d "{docs/examples/viewconfs,test/{view-configs,view-configs-more}}/*.json"
+
+  Test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          cache: 'npm'
+      # required to run headless puppeteer on ubuntu-latest
+      - name: Setup xvf
+        env:
+          DISPLAY: '0'
+        run: |
+          sudo apt-get install -y xvfb
+          # start xvfb in the background
+          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
+      - run: npm ci --legacy-peer-deps
+      - name: Pre-bundle deps with Vite
+        # prevents timeouts when running tests on clean install
+        run: npm run optimize
+      - run: npm test -- --static-logging # don't show progress bar in CI

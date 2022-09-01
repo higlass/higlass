@@ -12,8 +12,8 @@ npm install -g jsdoc
 ./serve.sh
 ```
 
-Docs are built and pushed to S3 by Travis.
-See [.travis.yml](https://github.com/higlass/higlass/blob/develop/.travis.yml) for details.
+Docs are built and pushed to S3 by GH Actions.
+See [.github/workflows/docs.yml](https://github.com/higlass/higlass/blob/develop/.github/workflows/docs.yml) for details.
 
 [hga]: https://github.com/higlass/higlass-app
 [hgd]: https://github.com/higlass/higlass-docker

@@ -1,4 +1,4 @@
-/* eslint-env node, jasmine, mocha */
+/* eslint-env mocha */
 import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
