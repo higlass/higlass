@@ -1,4 +1,6 @@
+// @ts-check
 import { createServer } from 'vite';
+import cache from './scripts/cache-plugin.mjs';
 
 /**
  * A plugin to power web-dev-server with Vite.
@@ -47,6 +49,7 @@ const testRunnerHtml = (testRunnerImport) =>
       window.global = window;
       window.process = { env: {} };
       window.__vite_plugin_react_preamble_installed__ = true;
+      ${cache.clientJs}
     </script>
     <script type="module" src="${testRunnerImport}"></script>
   </head>
@@ -55,7 +58,10 @@ const testRunnerHtml = (testRunnerImport) =>
 
 /** @type {import('@web/test-runner').TestRunnerConfig} */
 export default {
-  plugins: [vite()],
+  plugins: [
+    cache({ persist: './response-cache.json' }),
+    vite(/^\/@cache/),
+  ],
   // html loaded for each file (loads test runner + vite globals)
   testRunnerHtml,
   // how long a test file can take to finish.
