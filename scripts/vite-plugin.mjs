@@ -7,7 +7,7 @@ import { createServer } from 'vite';
  * @param {RegExp=} opts.ignore a regex to match any routes that should be ignored by our plugin.
  * @returns {import('@web/test-runner').TestRunnerPlugin}
  */
-export default function({ ignore } = {}) {
+function vitePlugin({ ignore } = {}) {
   /** @type {import('vite').ViteDevServer} */
   let server;
   return {
@@ -31,3 +31,20 @@ export default function({ ignore } = {}) {
     },
   };
 }
+
+/**
+ * Client JS code to be injected into the HTML via a script tag.
+ *
+ * Sets some globals so that rect plugin for Vite is happy in web-test-runner
+ *
+ * @see https://github.com/vitejs/vite/issues/1984#issuecomment-778289660
+ * @see https://github.com/vitejs/vite-plugin-react/pull/11#discussion_r430879201
+ *
+ */
+vitePlugin.clientJs = `\
+  window.global = window;
+  window.process = { env: {} };
+  window.__vite_plugin_react_preamble_installed__ = true;
+`;
+
+export default vitePlugin;
