@@ -1,37 +1,6 @@
 // @ts-check
-import { createServer } from 'vite';
+import vite from './scripts/vite-plugin.mjs';
 import cache from './scripts/cache-plugin.mjs';
-
-/**
- * A plugin to power web-dev-server with Vite.
- *
- * @param {RegExp=} ignore a regex to match any routes that should be ignored by our plugin.
- * @returns {import('@web/test-runner').TestRunnerPlugin}
- */
-function vite(ignore) {
-  /** @type {import('vite').ViteDevServer} */
-  let server;
-  return {
-    name: 'vite-plugin',
-    async serverStart({ app }) {
-      server = await createServer({ clearScreen: false });
-      await server.listen();
-      const port = server.config.server.port;
-      const protocol = server.config.server.https ? 'https' : 'http';
-      app.use(async (ctx, next) => {
-        if (ignore?.test(ctx.originalUrl)) {
-          await next();
-          return;
-        }
-        // pass off request to vite
-        ctx.redirect(`${protocol}://localhost:${port}${ctx.originalUrl}`);
-      });
-    },
-    serverStop() {
-      return server.close();
-    },
-  };
-}
 
 /**
  * @type {import('@web/test-runner').TestRunnerConfig['testRunnerHtml']}
@@ -60,7 +29,7 @@ const testRunnerHtml = (testRunnerImport) =>
 export default {
   plugins: [
     cache({ persist: './response-cache.json' }),
-    vite(/^\/@cache/),
+    vite({ ignore: /^\/@cache/ }),
   ],
   // html loaded for each file (loads test runner + vite globals)
   testRunnerHtml,
