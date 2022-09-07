@@ -4,11 +4,8 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
 // Utils
-import {
-  mountHGComponent,
-  removeHGComponent,
-  getTrackObjectFromHGC,
-} from '../app/scripts/utils';
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from './utils/test-helpers';
 
 const viewconf = {
   editable: true,

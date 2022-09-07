@@ -3,9 +3,10 @@
   "version": "1.11.11",
   "description": "HiGlass Hi-C / genomic / large data viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
-  "main": "dist/hglib.js",
-  "unpkg": "dist/hglib.min.js",
-  "jsdelivr": "dist/hglib.min.js",
+  "main": "./dist/hglib.js",
+  "unpkg": "./dist/hglib.min.js",
+  "jsdelivr": "./dist/hglib.min.js",
+  "css": "./dist/hglib.css",
   "files": [
     "app",
     "dist"

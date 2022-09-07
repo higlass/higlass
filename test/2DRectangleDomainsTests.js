@@ -4,13 +4,8 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
 // Utils
-import {
-  getTrackByUid,
-  getTrackObjectFromHGC,
-  mountHGComponent,
-  removeHGComponent,
-} from '../app/scripts/utils';
-
+import { getTrackByUid, getTrackObjectFromHGC } from '../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from './utils/test-helpers';
 import viewconf from './view-configs/loop-annotations';
 
 Enzyme.configure({ adapter: new Adapter() });

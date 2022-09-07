@@ -4,12 +4,12 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
 // Utils
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
 import {
   waitForTilesLoaded,
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 import { smallViewconf } from './view-configs';
 

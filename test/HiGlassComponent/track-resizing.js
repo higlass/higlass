@@ -3,13 +3,12 @@ import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
+import { getTrackObjectFromHGC, getTiledPlot } from '../../app/scripts/utils';
 import {
   mountHGComponent,
   removeHGComponent,
   waitForTilesLoaded,
-  getTrackObjectFromHGC,
-  getTiledPlot,
-} from '../../app/scripts/utils';
+} from '../utils/test-helpers';
 
 import { oneTrackConfig } from '../view-configs';
 

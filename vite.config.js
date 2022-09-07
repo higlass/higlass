@@ -100,6 +100,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         lodash: 'lodash-es',
+        higlass: path.resolve(__dirname, './app/scripts/hglib.jsx'),
       },
     },
     build,

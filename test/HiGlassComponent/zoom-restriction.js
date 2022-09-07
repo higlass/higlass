@@ -7,7 +7,7 @@ import {
   mountHGComponent,
   removeHGComponent,
   waitForTransitionsFinished,
-} from '../../app/scripts/utils';
+} from '../utils/test-helpers';
 
 import { restrictedZoom } from '../view-configs';
 

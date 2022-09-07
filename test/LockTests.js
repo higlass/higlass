@@ -7,7 +7,7 @@ import Ajv from 'ajv';
 import schema from '../app/schema.json';
 
 // Utils
-import { mountHGComponent, removeHGComponent } from '../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from './utils/test-helpers';
 
 Enzyme.configure({ adapter: new Adapter() });
 

@@ -11,7 +11,7 @@ import {
   waitForJsonComplete,
   waitForTilesLoaded,
   waitForTransitionsFinished,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';

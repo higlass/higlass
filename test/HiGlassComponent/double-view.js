@@ -6,13 +6,12 @@ import { expect } from 'chai';
 import ReactDOM from 'react-dom';
 import { select } from 'd3-selection';
 
+import { getTrackByUid, getTrackObjectFromHGC } from '../../app/scripts/utils';
 import {
   removeHGComponent,
   waitForTilesLoaded,
-  getTrackByUid,
-  getTrackObjectFromHGC,
   mountHGComponentAsync,
-} from '../../app/scripts/utils';
+} from '../utils/test-helpers';
 
 import { twoViewConfig, chromInfoTrack } from '../view-configs';
 

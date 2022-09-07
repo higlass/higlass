@@ -3,14 +3,12 @@ import { configure } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
+import { getTrackObjectFromHGC, getTrackByUid } from '../../app/scripts/utils';
 import {
   mountHGComponent,
   removeHGComponent,
   waitForTilesLoaded,
-  getTrackObjectFromHGC,
-  getTrackByUid,
-} from '../../app/scripts/utils';
-
+} from '../utils/test-helpers';
 import { rectangleDomains } from '../view-configs';
 
 configure({ adapter: new Adapter() });

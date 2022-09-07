@@ -11,7 +11,7 @@ import {
   removeHGComponent,
   waitForTilesLoaded,
   waitForJsonComplete,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 Enzyme.configure({ adapter: new Adapter() });
 

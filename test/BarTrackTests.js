@@ -4,13 +4,12 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
 // Utils
+import { colorToHex, getTrackObjectFromHGC } from '../app/scripts/utils';
 import {
-  colorToHex,
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
   waitForTilesLoaded,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 import viewConf from './view-configs/bar.json';
 

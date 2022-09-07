@@ -5,11 +5,8 @@ import { expect } from 'chai';
 
 import FetchMockHelper from './utils/FetchMockHelper';
 
-import {
-  mountHGComponent,
-  removeHGComponent,
-  getTrackObjectFromHGC,
-} from '../app/scripts/utils';
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from './utils/test-helpers';
 
 import viewconf from './view-configs/axis.json';
 

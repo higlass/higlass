@@ -3,11 +3,8 @@ import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
-import {
-  mountHGComponent,
-  removeHGComponent,
-  getTrackObjectFromHGC,
-} from '../../app/scripts/utils';
+import { getTrackObjectFromHGC } from '../../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from '../utils/test-helpers';
 
 import { geneAnnotationsOnly } from '../view-configs';
 

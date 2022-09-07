@@ -8,10 +8,10 @@ import createElementAndApi from './utils/create-element-and-api';
 
 // Utils
 import {
-  waitForTilesLoaded,
   getTrackConfFromHGC,
   getTrackObjectFromHGC,
 } from '../app/scripts/utils';
+import { waitForTilesLoaded } from './utils/test-helpers';
 
 import removeDiv from './utils/remove-div';
 

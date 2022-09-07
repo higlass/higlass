@@ -6,7 +6,7 @@ import { expect } from 'chai';
 import {
   waitForTransitionsFinished,
   waitForTilesLoaded,
-} from '../app/scripts/utils';
+} from './utils/test-helpers';
 
 import {
   simpleCenterViewConfig,

@@ -1,20 +1,16 @@
 // In this project, these methods are only used in tests,
 // but plugin tracks also make use of them... so not really extraneous.
-
-import React from 'react';
+import * as React from 'react';
 import ReactDOM from 'react-dom';
-
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { mount } from 'enzyme';
-
-import { requestsInFlight } from '../services';
+import Enzyme from 'enzyme';
 
 import {
-  getTrackObjectFromHGC,
+  requestsInFlight,
   getTrackRenderer,
-} from './get-higlass-components';
-
-import HiGlassComponent from '../HiGlassComponent';
+  getTrackObjectFromHGC,
+  HiGlassComponent,
+// eslint-disable-next-line import/no-unresolved
+} from 'higlass';
 
 const TILE_LOADING_CHECK_INTERVAL = 100;
 
@@ -188,7 +184,13 @@ export const waitForTilesLoaded = (hgc, tilesLoadedCallback) => {
  *  hgc component
  * @param {function} done The callback to call when the component is fully loaded
  */
-export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options = {}) => {
+export const mountHGComponent = (
+  prevDiv,
+  prevHgc,
+  viewConfig,
+  done,
+  options = {},
+) => {
   const {
     style = 'width:800px; background-color: lightgreen;',
     bounded = false,
@@ -213,8 +215,8 @@ export const mountHGComponent = (prevDiv, prevHgc, viewConf, done, options = {})
   div.setAttribute('style', style);
   div.setAttribute('id', 'simple-hg-component');
 
-  const hgc = mount(
-    <HiGlassComponent options={{ bounded }} viewConfig={viewConf} />,
+  const hgc = Enzyme.mount(
+    React.createElement(HiGlassComponent, { options: { bounded }, viewConfig }),
     { attachTo: div },
   );
 
@@ -249,9 +251,14 @@ export const removeHGComponent = (div) => {
 
 // ideally the "await-ers" avoid would be promises (rather than polling)
 // and that way `mountHGComponent` would be async by default.
-export async function mountHGComponentAsync(prevDiv, prevHgc, viewConf, options) {
+export async function mountHGComponentAsync(
+  prevDiv,
+  prevHgc,
+  viewConf,
+  options,
+) {
   let res;
-  await new Promise(resolve => {
+  await new Promise((resolve) => {
     res = mountHGComponent(prevDiv, prevHgc, viewConf, resolve, options);
   });
   return res;

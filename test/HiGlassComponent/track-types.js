@@ -3,12 +3,8 @@ import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
-import {
-  mountHGComponent,
-  removeHGComponent,
-  getTrackByUid,
-} from '../../app/scripts/utils';
-
+import { getTrackByUid } from '../../app/scripts/utils';
+import { mountHGComponent, removeHGComponent } from '../utils/test-helpers';
 import { annotationsTilesView } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
