@@ -394,7 +394,6 @@ describe('API Tests', () => {
     //   });
     // });
 
-
     // it('can scroll in scroll mode', (done) => {
     //   [div, api] = createElementAndApi(
     //     stackedTopTracks,
@@ -605,27 +604,25 @@ describe('API Tests', () => {
         mouseMoveEvt = evt;
       });
 
-      const createMouseEvent = (el, type, x, y) => {
-        const rect = el.getBoundingClientRect();
-        return new MouseEvent(type, {
+      const createMouseEvent = (type, x, y) =>
+        new MouseEvent(type, {
           view: window,
           bubbles: true,
           cancelable: true,
           // WARNING: The following property is absolutely crucial to have the
           // event being picked up by PIXI. Do not remove under any circumstances!
           // pointerType: 'mouse',
-          screenX: x + rect.left,
-          screenY: y + rect.top,
-          clientX: x + rect.left,
-          clientY: y + rect.top,
+          screenX: x,
+          screenY: y,
+          clientX: x,
+          clientY: y,
         });
-      }
 
       waitForTilesLoaded(api.getComponent(), () => {
         /** @type {HTMLElement} */
         const tiledPlotDiv = div.querySelector('.tiled-plot-div');
-
-        tiledPlotDiv.dispatchEvent(createMouseEvent(tiledPlotDiv, 'mousemove', 150, 150));
+        const rect = tiledPlotDiv.getBoundingClientRect();
+        tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150 + rect.left, 150 + rect.top));
 
         setTimeout(() => {
           expect(mouseMoveEvt).not.to.equal(null);
@@ -642,7 +639,7 @@ describe('API Tests', () => {
 
           mouseMoveEvt = null;
           api.setBroadcastMousePositionGlobally(false);
-          tiledPlotDiv.dispatchEvent(createMouseEvent(tiledPlotDiv, 'mousemove', 150, 150));
+          tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150 + rect.left, 150 + rect.top));
 
           setTimeout(() => {
             expect(mouseMoveEvt).to.equal(null);
