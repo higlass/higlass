@@ -26,15 +26,9 @@ import removeDiv from './utils/remove-div';
 
 import { version as VERSION } from '../package.json';
 
-
 describe('API Tests', () => {
   let div = null;
   let api = null;
-
-  before(() => {
-    // important for our synthetic mouse events to be correctly positioned
-    document.body.style.margin = 0;
-  });
 
   describe('Options tests', () => {
     it('adjust view spacing', () => {
@@ -400,6 +394,7 @@ describe('API Tests', () => {
     //   });
     // });
 
+
     // it('can scroll in scroll mode', (done) => {
     //   [div, api] = createElementAndApi(
     //     stackedTopTracks,
@@ -610,24 +605,27 @@ describe('API Tests', () => {
         mouseMoveEvt = evt;
       });
 
-      const createMouseEvent = (type, x, y) =>
-        new MouseEvent(type, {
+      const createMouseEvent = (el, type, x, y) => {
+        const rect = el.getBoundingClientRect();
+        return new MouseEvent(type, {
           view: window,
           bubbles: true,
           cancelable: true,
           // WARNING: The following property is absolutely crucial to have the
           // event being picked up by PIXI. Do not remove under any circumstances!
           // pointerType: 'mouse',
-          screenX: x,
-          screenY: y,
-          clientX: x,
-          clientY: y,
+          screenX: x + rect.left,
+          screenY: y + rect.top,
+          clientX: x + rect.left,
+          clientY: y + rect.top,
         });
+      }
 
       waitForTilesLoaded(api.getComponent(), () => {
+        /** @type {HTMLElement} */
         const tiledPlotDiv = div.querySelector('.tiled-plot-div');
 
-        tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150, 150));
+        tiledPlotDiv.dispatchEvent(createMouseEvent(tiledPlotDiv, 'mousemove', 150, 150));
 
         setTimeout(() => {
           expect(mouseMoveEvt).not.to.equal(null);
@@ -644,7 +642,7 @@ describe('API Tests', () => {
 
           mouseMoveEvt = null;
           api.setBroadcastMousePositionGlobally(false);
-          tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150, 150));
+          tiledPlotDiv.dispatchEvent(createMouseEvent(tiledPlotDiv, 'mousemove', 150, 150));
 
           setTimeout(() => {
             expect(mouseMoveEvt).to.equal(null);
