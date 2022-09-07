@@ -32,6 +32,7 @@ describe('Plugin data fetchers:', () => {
       expect(dummyDataFetcher.constructor.name).to.equal(
         'DummyDataFetcherClass',
       );
+
       expect(dummyDataFetcher.hgc).to.deep.equal(
         trackRenderer.availableForPlugins,
       );

@@ -1504,6 +1504,7 @@ class TrackRenderer extends React.Component {
       dataConfig,
       this.props.pubSub,
       this.props.pluginDataFetchers,
+      this.availableForPlugins,
     );
 
     // To simplify the context creation via ES6 object shortcuts.
