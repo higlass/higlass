@@ -26,9 +26,15 @@ import removeDiv from './utils/remove-div';
 
 import { version as VERSION } from '../package.json';
 
+
 describe('API Tests', () => {
   let div = null;
   let api = null;
+
+  before(() => {
+    // important for our synthetic mouse events to be correctly positioned
+    document.body.style.margin = 0;
+  });
 
   describe('Options tests', () => {
     it('adjust view spacing', () => {
