@@ -1444,7 +1444,7 @@ class TrackRenderer extends React.Component {
           };
           try {
             return new pluginTrack.track( // eslint-disable-line new-cap
-              AVAILABLE_FOR_PLUGINS,
+              this.availableForPlugins,
               context,
               track.options,
             );
@@ -1772,7 +1772,7 @@ class TrackRenderer extends React.Component {
         const pluginTrack = this.props.pluginTracks[track.type];
 
         if (pluginTrack && !pluginTrack.isMetaTrack) {
-          context.AVAILABLE_FOR_PLUGINS = AVAILABLE_FOR_PLUGINS;
+          context.AVAILABLE_FOR_PLUGINS = this.availableForPlugins;
           context.baseEl = this.baseEl;
           context.definition = track;
 
@@ -1788,7 +1788,7 @@ class TrackRenderer extends React.Component {
 
           try {
             return new pluginTrack.track( // eslint-disable-line new-cap
-              AVAILABLE_FOR_PLUGINS,
+              this.availableForPlugins,
               context,
               options,
             );
