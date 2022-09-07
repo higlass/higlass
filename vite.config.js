@@ -99,7 +99,6 @@ export default defineConfig(({ mode }) => {
   return {
     resolve: {
       alias: {
-        slugid: path.resolve(__dirname, './app/bufferless-slugid.js'),
         lodash: 'lodash-es',
       },
     },
