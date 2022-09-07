@@ -34,10 +34,10 @@ describe('Divergent tracks', () => {
   it('Check that there are green and red rects', async () => {
     const svg = hgc.instance().createSVG();
     expect(
-      svg.querySelector("rect[fill='green'][stroke='green'][x='11.249637595676889']")
+      svg.querySelector("rect[fill='green'][stroke='green'][x^='11.24963759567']")
     ).to.exist;
     expect(
-      svg.querySelector("rect[fill='red'][stroke='red'][x='29.818754489547988']")
+      svg.querySelector("rect[fill='red'][stroke='red'][x^='29.81875448954']")
     ).to.exist;
   });
 });
