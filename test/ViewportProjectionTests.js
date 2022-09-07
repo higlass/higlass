@@ -39,10 +39,8 @@ describe('Viewport projection tests', () => {
         );
 
         const viewportRect = trackObj.gMain.select('rect.selection');
-
-        expect(viewportRect.style('color')).to.equal('rgb(51, 51, 51)');
-        expect(viewportRect.style('fill')).to.equal('rgb(0, 0, 0)');
-
+        expect(viewportRect.attr('stroke')).to.equal("black");
+        expect(viewportRect.attr('fill')).to.equal("black");
         done();
       }, 0);
     });
