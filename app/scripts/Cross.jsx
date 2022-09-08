@@ -1,7 +1,7 @@
 import React from 'react';
 
-import '../styles/Cross.module.scss';
+import classes from '../styles/Cross.module.scss';
 
-const Cross = () => <div styleName="cross" />;
+const Cross = () => <div className={classes.cross} />;
 
 export default Cross;

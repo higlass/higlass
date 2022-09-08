@@ -7,7 +7,7 @@ import React from 'react';
 import withTheme from './hocs/with-theme';
 import { THEME_DARK } from './configs';
 
-import '../styles/DraggableDiv.module.scss';
+import classes from '../styles/DraggableDiv.module.scss';
 
 class DraggableDiv extends React.Component {
   constructor(props) {
@@ -311,13 +311,13 @@ class DraggableDiv extends React.Component {
         ref={(c) => {
           this[`${x}Handle`] = c;
         }}
+        className={classes[`${x}-draggable-handle`]}
         style={styles[x]}
-        styleName={`${x}-draggable-handle`}
         title="Resize track"
       >
         <div
+          className={classes[`${x}-draggable-handle-grabber`]}
           style={{ borderColor: dragColor }}
-          styleName={`${x}-draggable-handle-grabber`}
         />
       </div>
     ));
@@ -327,9 +327,8 @@ class DraggableDiv extends React.Component {
         ref={(c) => {
           this.divContainer = c;
         }}
-        className={this.props.className}
+        className={`${this.props.className} ${classes["draggable-div"]}`}
         style={divStyle}
-        styleName="draggable-div"
       >
         {resizeHandles}
       </div>

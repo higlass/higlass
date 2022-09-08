@@ -5,7 +5,7 @@ import slugid from 'slugid';
 import withPubSub from './hocs/with-pub-sub';
 
 // Styles
-import '../styles/DragListeningDiv.module.scss';
+import classes from '../styles/DragListeningDiv.module.scss';
 
 class DragListeningDiv extends React.Component {
   constructor(props) {
@@ -26,11 +26,14 @@ class DragListeningDiv extends React.Component {
       background = 'blue';
     }
 
-    const styleNames = this.props.enabled ? 'drag-listening-div-active' : '';
+    const classNames = ["DragListeningDiv"];
+    if (this.props.enabled) {
+      classNames.push(classes['drag-listening-div-active']);
+    }
 
     return (
       <div
-        className="DragListeningDiv"
+        className={classNames.join(" ")}
         onDragEnter={() => {
           this.setState({ dragOnTop: true });
         }}
@@ -62,7 +65,6 @@ class DragListeningDiv extends React.Component {
           },
           this.props.style,
         )}
-        styleName={styleNames}
       />
     );
   }

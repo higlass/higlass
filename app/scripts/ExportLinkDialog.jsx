@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Button from './Button';
 import Dialog from './Dialog';
 
-import '../styles/ExportLinkDialog.module.scss';
+import classes from '../styles/ExportLinkDialog.module.scss';
 
 class ExportLinkDialog extends React.Component {
   render() {
@@ -15,7 +15,7 @@ class ExportLinkDialog extends React.Component {
         onOkay={this.props.onDone}
         title="Share view link"
       >
-        <div styleName="export-link-dialog-wrapper">
+        <div className={classes["export-link-dialog-wrapper"]}>
           <input
             ref={(element) => {
               if (!element) return;

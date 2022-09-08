@@ -10,7 +10,7 @@ import { getSeriesItems } from './SeriesListItems';
 import { THEME_DARK } from './configs';
 
 // Styles
-import '../styles/ContextMenu.module.scss';
+import classes from '../styles/ContextMenu.module.scss';
 
 class ConfigTrackMenu extends mix(ContextMenuContainer).with(
   SeriesListSubmenuMixin,
@@ -30,20 +30,20 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(
   }
 
   render() {
-    let styleNames = 'context-menu';
-    if (this.props.theme === THEME_DARK) styleNames += ' context-menu-dark';
+    const classNames = [classes['context-menu']];
+    if (this.props.theme === THEME_DARK) classNames.push(classes['context-menu-dark']);
 
     return (
       <div
         ref={(c) => {
           this.div = c;
         }}
+        className={classNames.join(" ")}
         data-menu-type="ConfigTrackMenu"
         style={{
           left: this.state.left,
           top: this.state.top,
         }}
-        styleName={styleNames}
       >
         {getSeriesItems(
           this.props.tracks,
@@ -52,7 +52,7 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(
           null,
         )}
 
-        <hr styleName="context-menu-hr" />
+        <hr className={classes["context-menu-hr"]} />
 
         <ContextMenuItem
           contextMenu={this}
@@ -72,7 +72,7 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(
           {'Unlock Value Scale'}
         </ContextMenuItem>
 
-        <hr styleName="context-menu-hr" />
+        <hr className={classes["context-menu-hr"]} />
 
         <ContextMenuItem
           contextMenu={this}

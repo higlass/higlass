@@ -193,22 +193,24 @@ class VerticalTiledPlot extends React.Component {
       .map((track) => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
 
-    const rangeSelectorClass = this.props.isRangeSelectionActive
-      ? 'stylesTrack.track-range-selection-active'
-      : 'stylesTrack.track-range-selection';
+    const rangeSelectorClass = stylesTrack[
+      this.props.isRangeSelectionActive
+        ? 'track-range-selection-active'
+        : 'track-range-selection'
+    ];
 
     return (
-      <div styleName="styles.vertical-tiled-plot">
+      <div className={styles["vertical-tiled-plot"]}>
         {isBrushable && (
           <svg
             ref={(el) => {
               this.brushEl = select(el);
             }}
+            className={rangeSelectorClass}
             style={{
               height: this.props.height,
               width,
             }}
-            styleName={rangeSelectorClass}
             xmlns="http://www.w3.org/2000/svg"
           />
         )}

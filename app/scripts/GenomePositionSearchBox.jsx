@@ -770,12 +770,17 @@ class GenomePositionSearchBox extends React.Component {
       </option>
     ));
 
-    let className = this.state.isFocused
-      ? 'styles.genome-position-search-focus'
-      : 'styles.genome-position-search';
+    const classNames = [
+      styles[
+        this.state.isFocused
+          ? 'genome-position-search-focus'
+          : 'genome-position-search'
+      ],
+    ];
+
 
     if (this.props.theme === THEME_DARK) {
-      className += ' styles.genome-position-search-dark';
+      classNames.push(styles['genome-position-search-dark']);
     }
 
     return (
@@ -783,7 +788,7 @@ class GenomePositionSearchBox extends React.Component {
         ref={(c) => {
           this.gpsbForm = c;
         }}
-        styleName={className}
+        className={classNames.join(" ")}
       >
         {!this.props.hideAvailableAssemblies && (
           <select

@@ -2,21 +2,21 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 // Styles
-import '../styles/ContextMenu.module.scss';
+import classes from '../styles/ContextMenu.module.scss';
 
 const ContextMenuItem = (props) => (
   <div
     data-menu-item-for={
       typeof props.children === 'string' ? props.children : null
     }
+    className={classes["context-menu-item"]}
     onClick={(e) => props.onClick(e)}
     onMouseEnter={(e) => props.onMouseEnter(e)}
     onMouseLeave={(e) => props.onMouseLeave(e)}
     role="button"
-    styleName="context-menu-item"
     tabIndex={0}
   >
-    <span styleName="context-menu-span">{props.children}</span>
+    <span className={classes["context-menu-span"]}>{props.children}</span>
   </div>
 );
 

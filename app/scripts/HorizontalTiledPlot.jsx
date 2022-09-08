@@ -1,4 +1,3 @@
-// @ts-check
 import PropTypes from 'prop-types';
 import React from 'react';
 import { brushX } from 'd3-brush';
@@ -187,24 +186,23 @@ class HorizontalTiledPlot extends React.Component {
       .reduce(or, false);
 
     const rangeSelectorClass = this.props.isRangeSelectionActive
-      ? 'stylesTrack.track-range-selection-active'
-      : 'stylesTrack.track-range-selection';
+      ? stylesTrack['track-range-selection-active']
+      : stylesTrack['track-range-selection'];
 
     return (
       <div
-        className="horizontal-tiled-plot"
-        styleName="styles.horizontal-tiled-plot"
+        className={`horizontal-tiled-plot ${styles["horizontal-tiled-plot"]}`}
       >
         {isBrushable && (
           <svg
             ref={(el) => {
               this.brushEl = select(el);
             }}
+            className={rangeSelectorClass}
             style={{
               height,
               width: this.props.width,
             }}
-            styleName={rangeSelectorClass}
             xmlns="http://www.w3.org/2000/svg"
           />
         )}

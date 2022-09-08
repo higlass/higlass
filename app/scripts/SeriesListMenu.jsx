@@ -8,7 +8,7 @@ import NestedContextMenu from './NestedContextMenu';
 import { OPTIONS_INFO, THEME_DARK, TRACKS_INFO_BY_TYPE } from './configs';
 
 // Styles
-import '../styles/ContextMenu.module.scss';
+import classes from '../styles/ContextMenu.module.scss';
 
 export default class SeriesListMenu extends ContextMenuContainer {
   getConfigureSeriesMenu(position, bbox, track) {
@@ -256,24 +256,24 @@ export default class SeriesListMenu extends ContextMenuContainer {
       // this track is already being divided
       return (
         <ContextMenuItem
+          className={classes["context-menu-item"]}
           onClick={() =>
             this.props.onChangeTrackData(this.props.series.uid, newData)
           }
           onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
-          styleName="context-menu-item"
         >
-          <span styleName="context-menu-span">Remove divisor</span>
+          <span className={classes["context-menu-span"]}>Remove divisor</span>
         </ContextMenuItem>
       );
     }
 
     return (
       <ContextMenuItem
+        className={classes["context-menu-item"]}
         onClick={() => this.props.onAddDivisor(this.props.series)}
         onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
-        styleName="context-menu-item"
       >
-        <span styleName="context-menu-span">Divide by</span>
+        <span className={classes["context-menu-span"]}>Divide by</span>
       </ContextMenuItem>
     );
   }
@@ -289,6 +289,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
     ) {
       exportDataMenuItem = (
         <ContextMenuItem
+          className={classes["context-menu-item"]}
           onClick={() =>
             this.props.onExportData(
               this.props.hostTrack.uid,
@@ -296,9 +297,8 @@ export default class SeriesListMenu extends ContextMenuContainer {
             )
           }
           onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
-          styleName="context-menu-item"
         >
-          <span styleName="context-menu-span">Export Data</span>
+          <span className={classes["context-menu-span"]}>Export Data</span>
         </ContextMenuItem>
       );
     }
@@ -307,32 +307,32 @@ export default class SeriesListMenu extends ContextMenuContainer {
     // will be null so we don't need to display the menu item
     const replaceSeriesItem = this.props.onAddSeries ? (
       <ContextMenuItem
+        className={classes["context-menu-item"]}
         onClick={() => {
           this.props.onCloseTrack(this.props.series.uid);
           this.props.onAddSeries(this.props.hostTrack.uid);
         }}
         onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
-        styleName="context-menu-item"
       >
-        <span styleName="context-menu-span">Replace Series</span>
+        <span className={classes["context-menu-span"]}>Replace Series</span>
       </ContextMenuItem>
     ) : null;
 
-    let styleNames = 'context-menu';
-    if (this.props.theme === THEME_DARK) styleNames += ' context-menu-dark';
+    const classNames = [classes['context-menu']];
+    if (this.props.theme === THEME_DARK) classNames.push(classes['context-menu-dark']);
 
     return (
       <div
         ref={(c) => {
           this.div = c;
         }}
+        className={classNames.join(" ")}
         data-menu-type="SeriesListMenu"
         onMouseLeave={this.props.handleMouseLeave}
         style={{
           left: this.state.left,
           top: this.state.top,
         }}
-        styleName={styleNames}
       >
         <ContextMenuItem
           onClick={() => {}}
@@ -345,12 +345,13 @@ export default class SeriesListMenu extends ContextMenuContainer {
           onMouseLeave={(e) => this.handleMouseLeave(e)}
         >
           {'Configure Series'}
-          <svg styleName="play-icon">
+          <svg className={classes["play-icon"]}>
             <use xlinkHref="#play" />
           </svg>
         </ContextMenuItem>
 
         <ContextMenuItem
+          className={classes["context-menu-item"]}
           onClick={() => {}}
           onMouseEnter={(e) =>
             this.handleItemMouseEnter(e, {
@@ -359,11 +360,10 @@ export default class SeriesListMenu extends ContextMenuContainer {
             })
           }
           onMouseLeave={(e) => this.handleMouseLeave(e)}
-          styleName="context-menu-item"
         >
-          <span styleName="context-menu-span">
+          <span className={classes["context-menu-span"]}>
             {'Track Type'}
-            <svg styleName="play-icon">
+            <svg className={classes["play-icon"]}>
               <use xlinkHref="#play" />
             </svg>
           </span>
@@ -374,11 +374,11 @@ export default class SeriesListMenu extends ContextMenuContainer {
         {this.getDivideByMenuItem()}
 
         <ContextMenuItem
+          className={classes["context-menu-item"]}
           onClick={this.props.onCloseTrack}
           onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
-          styleName="context-menu-item"
         >
-          <span styleName="context-menu-span">Close Series</span>
+          <span className={classes["context-menu-span"]}>Close Series</span>
         </ContextMenuItem>
 
         {replaceSeriesItem}
@@ -392,9 +392,9 @@ export default class SeriesListMenu extends ContextMenuContainer {
               // this.props.onAddSeries(this.props.hostTrack.uid);
             }}
             onMouseEnter={e => this.handleOtherMouseEnter(e)}
-            styleName="context-menu-item"
+            className={classes["context-menu-item"]}
           >
-            <span styleName="context-menu-span">
+            <span className={classes["context-menu-span"]}>
               {'Divide Series By'}
             </span>
           </ContextMenuItem>

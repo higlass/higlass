@@ -6,7 +6,7 @@ import ContextMenuItem from './ContextMenuItem';
 import { THEME_DARK } from './configs';
 
 // Styles
-import '../styles/ContextMenu.module.scss';
+import classes from '../styles/ContextMenu.module.scss';
 
 class NestedContextMenu extends ContextMenuContainer {
   getSubmenu() {
@@ -63,7 +63,7 @@ class NestedContextMenu extends ContextMenuContainer {
         >
           {menuItem.name}
           {menuItem.children && (
-            <svg styleName="play-icon">
+            <svg className={classes["play-icon"]}>
               <use xlinkHref="#play" />
             </svg>
           )}
@@ -71,19 +71,19 @@ class NestedContextMenu extends ContextMenuContainer {
       );
     }
 
-    let styleNames = 'context-menu';
-    if (this.props.theme === THEME_DARK) styleNames += ' context-menu-dark';
+    const classNames = [classes['context-menu']];
+    if (this.props.theme === THEME_DARK) classNames.push('context-menu-dark');
 
     return (
       <div
         ref={(c) => {
           this.div = c;
         }}
+        className={classNames.join(" ")}
         style={{
           left: this.state.left,
           top: this.state.top,
         }}
-        styleName={styleNames}
       >
         {menuItems}
         {this.getSubmenu()}

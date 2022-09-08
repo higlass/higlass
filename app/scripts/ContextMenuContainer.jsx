@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import { THEME_DARK } from './configs';
 
 // Styles
-import '../styles/ContextMenu.module.scss';
+import classes from '../styles/ContextMenu.module.scss';
 
 // the size of the track controls
 // taken from ../styles/TrackControl.module.css
@@ -186,18 +186,16 @@ class ContextMenuContainer extends React.Component {
 
     const wholeStyle = Object.assign(stylePosition, otherStyle);
 
-    let stylenames = 'context-menu';
-
-    if (this.props.theme === THEME_DARK) stylenames += ' context-menu-dark';
+    const classNames = classes['context-menu'];
+    if (this.props.theme === THEME_DARK) classNames.push(classes['context-menu-dark']);
 
     return (
       <div
         ref={(c) => {
           this.div = c;
         }}
-        className="context-menu-item"
+        className={["context-menu-item", ...classNames].join(" ")}
         style={wholeStyle}
-        styleName={stylenames}
       >
         {this.props.children}
       </div>

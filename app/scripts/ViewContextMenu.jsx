@@ -12,7 +12,7 @@ import SeriesListSubmenuMixin from './SeriesListSubmenuMixin';
 import { THEME_DARK } from './configs';
 
 // Styles
-import '../styles/ContextMenu.module.scss';
+import classes from '../styles/ContextMenu.module.scss';
 
 class ViewContextMenu extends mix(ContextMenuContainer).with(
   SeriesListSubmenuMixin,
@@ -34,28 +34,31 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
         )
       : null;
 
-    let styleNames = 'context-menu';
-    if (this.props.theme === THEME_DARK) styleNames += ' context-menu-dark';
+    /** @type {string[]} */
+    const classNames = [classes['context-menu']];
+    if (this.props.theme === THEME_DARK) {
+      classNames.push(classes['context-menu-dark']);
+    }
 
     return (
       <div
         ref={(c) => {
           this.div = c;
         }}
+        className={classNames.join(" ")}
         data-menu-type="ViewContextMenu"
         style={{
           left: this.state.left,
           top: this.state.top,
         }}
-        styleName={styleNames}
       >
         {customItemsWrapped}
 
-        {customItemsWrapped && <hr styleName="context-menu-hr" />}
+        {customItemsWrapped && <hr className={classes["context-menu-hr"]} />}
 
         {seriesItems}
 
-        {seriesItems && <hr styleName="context-menu-hr" />}
+        {seriesItems && <hr className={classes["context-menu-hr"]} />}
 
         <ContextMenuItem
           onClick={() =>
@@ -97,7 +100,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
           {'Add Cross Rule'}
         </ContextMenuItem>
 
-        <hr styleName="context-menu-hr" />
+        <hr className={classes["context-menu-hr"]} />
 
         {this.hasMatrixTrack(this.props.tracks) && (
           <ContextMenuItem

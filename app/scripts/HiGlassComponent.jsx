@@ -4810,7 +4810,7 @@ class HiGlassComponent extends React.Component {
 
   render() {
     this.tiledAreasDivs = {};
-    this.tiledAreas = <div styleName="styles.tiled-area" />;
+    this.tiledAreas = <div className={styles["tiled-area"]} />;
 
     // The component needs to be mounted in order for the initial view to have
     // the right width
@@ -5093,7 +5093,7 @@ class HiGlassComponent extends React.Component {
             ref={(c) => {
               this.tiledAreasDivs[view.uid] = c;
             }}
-            styleName="styles.tiled-area"
+            className={styles["tiled-area"]}
           >
             {multiTrackHeader}
             {tiledPlot}
@@ -5163,24 +5163,24 @@ class HiGlassComponent extends React.Component {
       </ReactGridLayout>
     );
 
-    let styleNames = 'styles.higlass';
+    const styleNames = ['higlass'];
 
     if (this.theme === THEME_DARK) {
-      styleNames += ' styles.higlass-dark-theme';
+      styleNames.push('higlass-dark-theme');
     }
 
     if (
       this.props.options.sizeMode === SIZE_MODE_OVERFLOW ||
       this.props.options.sizeMode === SIZE_MODE_SCROLL
     ) {
-      styleNames += ' styles.higlass-container-overflow';
+      styleNames.push('higlass-container-overflow');
     }
 
-    let scrollStyleNames = '';
+    const scrollStyleNames = [];
     if (this.props.options.sizeMode === SIZE_MODE_OVERFLOW) {
-      scrollStyleNames = 'styles.higlass-scroll-container-overflow';
+      scrollStyleNames.push('higlass-scroll-container-overflow');
     } else if (this.props.options.sizeMode === SIZE_MODE_SCROLL) {
-      scrollStyleNames = 'styles.higlass-scroll-container-scroll';
+      scrollStyleNames.push('higlass-scroll-container-scroll');
     }
 
     return (
@@ -5189,10 +5189,9 @@ class HiGlassComponent extends React.Component {
         ref={(c) => {
           this.topDiv = c;
         }}
-        className="higlass"
+        className={["higlass", ...styleNames].join(" ")}
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
-        styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>
           <ModalProvider value={this.modal}>
@@ -5203,22 +5202,20 @@ class HiGlassComponent extends React.Component {
                 ref={(c) => {
                   this.canvasElement = c;
                 }}
-                styleName="styles.higlass-canvas"
+                className={styles["higlass-canvas"]}
               />
               <div
                 ref={(c) => {
                   this.scrollContainer = c;
                 }}
-                className="higlass-scroll-container"
+                className={["higlass-scroll-container", ...scrollStyleNames].join(" ")}
                 onScroll={this.onScrollHandlerBound}
-                styleName={scrollStyleNames}
               >
                 <div
                   ref={(c) => {
                     this.divDrawingSurface = c;
                   }}
-                  className="higlass-drawing-surface"
-                  styleName="styles.higlass-drawing-surface"
+                  className={`higlass-drawing-surface ${styles["higlass-drawing-surface"]}`}
                 >
                   {gridLayout}
                 </div>
@@ -5226,6 +5223,7 @@ class HiGlassComponent extends React.Component {
                   ref={(c) => {
                     this.svgElement = c;
                   }}
+                  className={styles["higlass-svg"]}
                   style={{
                     // inline the styles so they aren't overriden by other css
                     // on the web page
@@ -5236,7 +5234,6 @@ class HiGlassComponent extends React.Component {
                     top: 0,
                     pointerEvents: 'none',
                   }}
-                  styleName="styles.higlass-svg"
                 />
               </div>
             </ThemeProvider>

@@ -5,28 +5,29 @@ import Button from './Button';
 import Cross from './Cross';
 import withModal from './hocs/with-modal';
 
-import '../styles/Modal.module.scss';
+import classes from '../styles/Modal.module.scss';
 
-const Modal = (props) => {
+function Modal(props) {
   const handleClose = () => {
     props.modal.close();
     if (props.onClose) props.onClose();
   };
 
   return (
-    <div styleName={`modal-background ${props.hide ? 'modal-hide' : ''}`}>
-      <div styleName="modal-wrap">
+    <div className={classes[`modal-background ${props.hide ? 'modal-hide' : ''}`]}>
+      <div className={classes["modal-wrap"]}>
         <div
-          styleName={`modal-window ${
-            props.maxHeight ? 'modal-window-max-height' : ''
-          }`}
+          className={[
+            classes['modal-window'],
+            classes[props.maxHeight ? 'modal-window-max-height' : '']
+          ].join(" ")}
         >
           {props.closeButton && (
             <Button onClick={handleClose}>
               <Cross />
             </Button>
           )}
-          <div styleName="modal-content">{props.children}</div>
+          <div className={classes["modal-content"]}>{props.children}</div>
         </div>
       </div>
     </div>
