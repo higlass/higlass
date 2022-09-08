@@ -186,7 +186,7 @@ class ContextMenuContainer extends React.Component {
 
     const wholeStyle = Object.assign(stylePosition, otherStyle);
 
-    const classNames = classes['context-menu'];
+    const classNames = [classes['context-menu']];
     if (this.props.theme === THEME_DARK) classNames.push(classes['context-menu-dark']);
 
     return (
