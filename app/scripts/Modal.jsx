@@ -13,13 +13,16 @@ function Modal(props) {
     if (props.onClose) props.onClose();
   };
 
+  const classNames = [classes['modal-background']];
+  if (props.hide) classNames.push(classes['modal-hide']);
+
   return (
-    <div className={classes[`modal-background ${props.hide ? 'modal-hide' : ''}`]}>
+    <div className={classNames.join(" ")}>
       <div className={classes["modal-wrap"]}>
         <div
           className={[
             classes['modal-window'],
-            classes[props.maxHeight ? 'modal-window-max-height' : '']
+            props.maxHeight ? classes['modal-window-max-height'] : ''
           ].join(" ")}
         >
           {props.closeButton && (
