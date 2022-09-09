@@ -3,7 +3,7 @@ import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
-import { mountHGComponent, removeHGComponent } from '../../app/scripts/utils';
+import { mountHGComponentAsync, removeHGComponent } from '../../app/scripts/utils';
 
 import { divergentTrackConfig } from '../view-configs';
 
@@ -16,9 +16,9 @@ describe('Divergent tracks', () => {
   let div = null;
   // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
-  before((done) => {
+  before(async () => {
     // await fetchMockHelper.activateFetchMock();
-    [div, hgc] = mountHGComponent(div, hgc, divergentTrackConfig, done, {
+    [div, hgc] = await mountHGComponentAsync(div, hgc, divergentTrackConfig, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
     });
@@ -31,17 +31,13 @@ describe('Divergent tracks', () => {
     // await fetchMockHelper.storeDataAndResetFetchMock();
   });
 
-  it('Check that there are green and red rects', (done) => {
+  it('Check that there are green and red rects', async () => {
     const svg = hgc.instance().createSVG();
-
-    const svgText = new XMLSerializer().serializeToString(svg);
     expect(
-      svgText.indexOf('fill="green" stroke="green" x="11.24963759567723"'),
-    ).to.be.greaterThan(0);
+      svg.querySelector("rect[fill='green'][stroke='green'][x^='11.24963759567']")
+    ).to.exist;
     expect(
-      svgText.indexOf('fill="red" stroke="red" x="29.818754489548308"'),
-    ).to.be.greaterThan(0);
-
-    done();
+      svg.querySelector("rect[fill='red'][stroke='red'][x^='29.81875448954']")
+    ).to.exist;
   });
 });
