@@ -619,9 +619,10 @@ describe('API Tests', () => {
         });
 
       waitForTilesLoaded(api.getComponent(), () => {
+        /** @type {HTMLElement} */
         const tiledPlotDiv = div.querySelector('.tiled-plot-div');
-
-        tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150, 150));
+        const rect = tiledPlotDiv.getBoundingClientRect();
+        tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150 + rect.left, 150 + rect.top));
 
         setTimeout(() => {
           expect(mouseMoveEvt).not.to.equal(null);
@@ -638,7 +639,7 @@ describe('API Tests', () => {
 
           mouseMoveEvt = null;
           api.setBroadcastMousePositionGlobally(false);
-          tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150, 150));
+          tiledPlotDiv.dispatchEvent(createMouseEvent('mousemove', 150 + rect.left, 150 + rect.top));
 
           setTimeout(() => {
             expect(mouseMoveEvt).to.equal(null);
