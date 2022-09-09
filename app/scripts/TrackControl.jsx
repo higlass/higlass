@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { SortableHandle } from 'react-sortable-hoc';
+import clsx from 'clsx';
 
 import withTheme from './hocs/with-theme';
 import { THEME_DARK } from './configs';
@@ -8,27 +9,23 @@ import { THEME_DARK } from './configs';
 // Styles
 import classes from '../styles/TrackControl.module.scss';
 
-const getClassNames = (props) => {
-  const classNames = [props.isVisible ? 'track-control-active' : 'track-control'];
-  if (props.isAlignLeft) classNames.push('track-control-left');
-  if (props.isVertical) classNames.push('track-control-vertical');
-  if (props.paddingRight) classNames.push('track-control-padding-right');
-  if (props.theme === THEME_DARK) classNames.push('track-control-dark');
-  return classNames.map(name => classes[name]);
-};
+const getClassName = (props) => clsx({
+  [classes['track-control-active']]: props.isVisible,
+  [classes['track-control']]: !props.isVisible,
+  [classes['track-control-left']]: props.isAlignLeft,
+  [classes['track-control-vertical']]: props.isVertical,
+  [classes['track-control-padding-right']]: props.paddingRight,
+  [classes['track-control-dark']]: props.theme === THEME_DARK,
+});
 
-const getButtonClassNames = (props) => {
-  const buttonClassNames = ['track-control-button'];
-  if (props.isVertical) {
-    buttonClassNames.push('track-control-button-vertical');
-  }
-  return buttonClassNames.map(name => classes[name]);
-};
+const getButtonClassName = (props) => clsx("no-zoom", classes['track-control-button'], {
+  [classes['track-control-button-vertical']]: props.isVertical,
+});
 
 let oldProps = null;
 let DragHandle = null;
 
-const TrackControl = (props) => {
+function TrackControl(props) {
   // Avoid constant recreating that button when the props didn't change.
   // Damn React could be a little smarter here...
   if (
@@ -39,7 +36,7 @@ const TrackControl = (props) => {
     oldProps = props;
     DragHandle = SortableHandle(() => (
       <svg
-        className={["no-zoom", ...getButtonClassNames(props)].join(" ")}
+        className={getButtonClassName(props)}
         style={Object.assign(
           { height: '20px', width: '20px' },
           props.imgStyleMove,
@@ -55,14 +52,14 @@ const TrackControl = (props) => {
   let imgClose;
 
   return (
-    <div className={getClassNames(props).join(" ")}>
+    <div className={getClassName(props)}>
       {props.isMoveable && <DragHandle />}
 
       <svg
         ref={(c) => {
           imgConfig = c;
         }}
-        className={["no-zoom", ...getButtonClassNames(props)].join(" ")}
+        className={getButtonClassName(props)}
         onClick={() => {
           props.onConfigTrackMenuOpened(
             props.uid,
@@ -80,7 +77,7 @@ const TrackControl = (props) => {
 
       {props.onAddSeries && (
         <svg
-          className={["no-zoom", ...getButtonClassNames(props)].join(" ")}
+          className={getButtonClassName(props)}
           onClick={() => props.onAddSeries(props.uid)}
           style={Object.assign(
             { height: '20px', width: '20px' },
@@ -96,7 +93,7 @@ const TrackControl = (props) => {
         ref={(c) => {
           imgClose = c;
         }}
-        className={["no-zoom", ...getButtonClassNames(props)].join(" ")}
+        className={getButtonClassName(props)}
         onClick={() => {
           props.onCloseTrackMenuOpened(
             props.uid,

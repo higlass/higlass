@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import clsx from 'clsx';
 
 import withTheme from './hocs/with-theme';
 import { THEME_DARK } from './configs';
@@ -7,13 +8,14 @@ import { THEME_DARK } from './configs';
 import classes from '../styles/AddTrackPositionMenu.module.scss';
 
 function AddTrackPositionMenu(props) {
-  const tableClassNames = [classes['add-track-position-table']];
-  if (props.theme === THEME_DARK)
-    tableClassNames.push(classes['add-track-position-table-dark']);
   return (
     <div>
       <div className={classes["add-track-position-span"]}>Add Track...</div>
-      <table className={tableClassNames.join(" ")}>
+      <table className={
+        clsx(classes['add-track-position-table'], {
+          [classes['add-track-position-table-dark']]: props.theme === THEME_DARK,
+        })}
+      >
         <tbody>
           <tr style={{ height: '30px' }}>
             <td className={classes["add-track-position-other"]} />

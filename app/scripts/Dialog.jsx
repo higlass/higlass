@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 
 import Button from './Button';
 import Cross from './Cross';
@@ -29,7 +30,7 @@ function Dialog(props) {
           </Button>
         </header>
         {props.maxHeight ? (
-          <main className={props.maxHeight ? classes['dialog-main-max-height'] : ''}>
+          <main className={clsx(props.maxHeight && classes['dialog-main-max-height'])}>
             {props.children}
           </main>
         ) : (

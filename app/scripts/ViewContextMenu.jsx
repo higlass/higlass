@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 import { mix } from './mixwith';
 
 import { expandCombinedTracks } from './utils';
@@ -34,18 +35,14 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
         )
       : null;
 
-    /** @type {string[]} */
-    const classNames = [classes['context-menu']];
-    if (this.props.theme === THEME_DARK) {
-      classNames.push(classes['context-menu-dark']);
-    }
-
     return (
       <div
         ref={(c) => {
           this.div = c;
         }}
-        className={classNames.join(" ")}
+        className={clsx(classes['context-menu'], {
+          [classes['context-menu-dark']]: this.props.theme === THEME_DARK,
+        })}
         data-menu-type="ViewContextMenu"
         style={{
           left: this.state.left,

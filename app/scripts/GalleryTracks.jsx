@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import clsx from 'clsx';
 
 import TrackControl from './TrackControl';
 
@@ -29,7 +30,7 @@ class GalleryTracks extends React.Component {
 
   render() {
     return (
-      <div className={["gallery-tracks", styles["gallery-tracks"]].join(" ")}>
+      <div className={clsx("gallery-tracks", styles["gallery-tracks"])}>
         {this.props.tracks &&
           this.props.tracks.map((track, index) => (
             <div

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 
 import PopupMenu from './PopupMenu';
 import ContextMenuContainer from './ContextMenuContainer';
@@ -217,32 +218,26 @@ class ViewHeader extends React.Component {
       },
     );
 
-    const classNames = [
-      this.state.isFocused
-        ? classes['multitrack-header-focus']
-        : classes['multitrack-header']
-    ];
+    const className = clsx(this.state.isFocused ? classes['multitrack-header-focus'] : classes['multitrack-header'], {
+      [classes['multitrack-header-dark']]: this.props.theme === THEME_DARK,
+    });
 
-    const classNameIcon = 
+    const classNameIcon =
       this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR
         ? classes['multitrack-header-icon-squeazed']
         : classes['multitrack-header-icon'];
-
-    if (this.props.theme === THEME_DARK) {
-      classNames.push(classes['multitrack-header-dark']);
-    }
 
     return (
       <div
         ref={(c) => {
           this.el = c;
         }}
-        className={classNames.join(" ")}
+        className={className}
       >
         <div className={classes["multitrack-header-left"]}>
           {this.props.mouseTool === MOUSE_TOOL_SELECT && (
             <svg
-              className={`${classes['mouse-tool-selection']} ${classNameIcon}`}
+              className={clsx(classes['mouse-tool-selection'], classNameIcon)}
               title="Selection tool active"
             >
               <use xlinkHref="#select" />

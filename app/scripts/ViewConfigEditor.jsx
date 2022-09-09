@@ -4,6 +4,7 @@ import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 import Ajv from 'ajv';
+import clsx from 'clsx';
 
 import schema from '../schema.json';
 import Button from './Button';
@@ -152,7 +153,7 @@ class ViewConfigEditor extends React.Component {
       const key = `${i}-${d.msg}`;
       return (
         <tr key={key}>
-          <td className={[classes.title, classes[d.type]].join(" ")}>{`[${i}] ${d.type}`}</td>
+          <td className={clsx(classes.title, classes[d.type])}>{`[${i}] ${d.type}`}</td>
           <td>
             <pre>{d.msg}</pre>
           </td>

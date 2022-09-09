@@ -3,6 +3,7 @@ import { select } from 'd3-selection';
 import React from 'react';
 import slugid from 'slugid';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 
 import Autocomplete from './Autocomplete';
 import ChromosomeInfo from './ChromosomeInfo';
@@ -737,11 +738,11 @@ class GenomePositionSearchBox extends React.Component {
     return (
       <PopupMenu>
         <div
+          className={styles["genome-position-search-bar-suggestions"]}
           style={{
             left: this.menuPosition.left,
             top: this.menuPosition.top,
           }}
-          styleName="styles.genome-position-search-bar-suggestions"
         >
           {items}
         </div>
@@ -770,25 +771,16 @@ class GenomePositionSearchBox extends React.Component {
       </option>
     ));
 
-    const classNames = [
-      styles[
-        this.state.isFocused
-          ? 'genome-position-search-focus'
-          : 'genome-position-search'
-      ],
-    ];
-
-
-    if (this.props.theme === THEME_DARK) {
-      classNames.push(styles['genome-position-search-dark']);
-    }
-
     return (
       <div
         ref={(c) => {
           this.gpsbForm = c;
         }}
-        className={classNames.join(" ")}
+        className={clsx({
+          [styles['genome-position-search-focus']]: this.state.isFocused,
+          [styles['genome-position-search']]: !this.state.isFocused,
+          [styles['genome-position-search-dark']]: this.props.theme === THEME_DARK,
+        })}
       >
         {!this.props.hideAvailableAssemblies && (
           <select

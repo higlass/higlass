@@ -9,6 +9,7 @@ import NestedContextMenu from './NestedContextMenu';
 import classes from '../styles/ContextMenu.module.scss';
 
 import { OPTIONS_INFO, THEME_DARK } from './configs';
+import clsx from 'clsx';
 
 class ConfigViewMenu extends ContextMenuContainer {
   constructor(props) {
@@ -105,15 +106,14 @@ class ConfigViewMenu extends ContextMenuContainer {
   }
 
   render() {
-    const classNames = [classes['context-menu']];
-    if (this.props.theme === THEME_DARK) classNames.push(classes['context-menu-dark']);
-
     return (
       <div
         ref={(c) => {
           this.div = c;
         }}
-        className={classNames.join(" ")}
+        className={clsx(classes['context-menu'], {
+          [classes['context-menu-dark']]: this.props.theme === THEME_DARK,
+        })}
         data-menu-type="ConfigViewMenu"
         style={{
           left: this.state.left,

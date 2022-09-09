@@ -7,6 +7,7 @@ import { THEME_DARK } from './configs';
 
 // Styles
 import classes from '../styles/ContextMenu.module.scss';
+import clsx from 'clsx';
 
 class NestedContextMenu extends ContextMenuContainer {
   getSubmenu() {
@@ -70,16 +71,14 @@ class NestedContextMenu extends ContextMenuContainer {
         </ContextMenuItem>,
       );
     }
-
-    const classNames = [classes['context-menu']];
-    if (this.props.theme === THEME_DARK) classNames.push('context-menu-dark');
-
     return (
       <div
         ref={(c) => {
           this.div = c;
         }}
-        className={classNames.join(" ")}
+        className={clsx(classes['context-menu'], {
+          [classes['context-menu-dark']]: this.props.theme === THEME_DARK,
+        })}
         style={{
           left: this.state.left,
           top: this.state.top,

@@ -10,6 +10,7 @@ import { ResizeSensor, ElementQueries } from 'css-element-queries';
 import vkbeautify from 'vkbeautify';
 import parse from 'url-parse';
 import createPubSub, { globalPubSub } from 'pub-sub-es';
+import clsx from 'clsx';
 
 import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
@@ -5163,33 +5164,16 @@ class HiGlassComponent extends React.Component {
       </ReactGridLayout>
     );
 
-    const styleNames = ['higlass'];
-
-    if (this.theme === THEME_DARK) {
-      styleNames.push('higlass-dark-theme');
-    }
-
-    if (
-      this.props.options.sizeMode === SIZE_MODE_OVERFLOW ||
-      this.props.options.sizeMode === SIZE_MODE_SCROLL
-    ) {
-      styleNames.push('higlass-container-overflow');
-    }
-
-    const scrollStyleNames = [];
-    if (this.props.options.sizeMode === SIZE_MODE_OVERFLOW) {
-      scrollStyleNames.push('higlass-scroll-container-overflow');
-    } else if (this.props.options.sizeMode === SIZE_MODE_SCROLL) {
-      scrollStyleNames.push('higlass-scroll-container-scroll');
-    }
-
     return (
       <div
         key={this.uid}
         ref={(c) => {
           this.topDiv = c;
         }}
-        className={["higlass", ...styleNames].join(" ")}
+        className={clsx("higlass", {
+          'higlass-dark-theme': this.theme === THEME_DARK,
+          'higlass-container-overflow': this.props.options.sizeMode === SIZE_MODE_OVERFLOW || this.props.options.sizeMode === SIZE_MODE_SCROLL,
+        })}
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
       >
@@ -5208,14 +5192,17 @@ class HiGlassComponent extends React.Component {
                 ref={(c) => {
                   this.scrollContainer = c;
                 }}
-                className={["higlass-scroll-container", ...scrollStyleNames].join(" ")}
+                className={clsx("higlass-scroll-container", {
+                  'higlass-scroll-container-overflow': this.props.options.sizeMode === SIZE_MODE_OVERFLOW,
+                  'higlass-scroll-container-scroll': this.props.options.sizeMode === SIZE_MODE_SCROLL,
+                })}
                 onScroll={this.onScrollHandlerBound}
               >
                 <div
                   ref={(c) => {
                     this.divDrawingSurface = c;
                   }}
-                  className={`higlass-drawing-surface ${styles["higlass-drawing-surface"]}`}
+                  className={clsx('higlass-drawing-surface', styles["higlass-drawing-surface"])}
                 >
                   {gridLayout}
                 </div>

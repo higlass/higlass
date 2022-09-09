@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
@@ -318,15 +319,15 @@ export default class SeriesListMenu extends ContextMenuContainer {
       </ContextMenuItem>
     ) : null;
 
-    const classNames = [classes['context-menu']];
-    if (this.props.theme === THEME_DARK) classNames.push(classes['context-menu-dark']);
-
     return (
       <div
         ref={(c) => {
           this.div = c;
         }}
-        className={classNames.join(" ")}
+        className={clsx(classes['context-menu'], {
+            [classes['context-menu-dark']]: this.props.theme === THEME_DARK,
+          })
+        }
         data-menu-type="SeriesListMenu"
         onMouseLeave={this.props.handleMouseLeave}
         style={{

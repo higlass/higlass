@@ -3,6 +3,7 @@ import React from 'react';
 import { brushX } from 'd3-brush';
 import { select } from 'd3-selection';
 import slugid from 'slugid';
+import clsx from 'clsx';
 
 import ListWrapper from './ListWrapper';
 import HorizontalItem from './HorizontalItem';
@@ -191,7 +192,7 @@ class HorizontalTiledPlot extends React.Component {
 
     return (
       <div
-        className={`horizontal-tiled-plot ${styles["horizontal-tiled-plot"]}`}
+        className={clsx('horizontal-tiled-plot', styles["horizontal-tiled-plot"])}
       >
         {isBrushable && (
           <svg
@@ -207,7 +208,7 @@ class HorizontalTiledPlot extends React.Component {
           />
         )}
         <ListWrapper
-          className={`${stylesPlot.list} ${stylesPlot.stylizedList}`}
+          className={clsx(stylesPlot.list, stylesPlot.stylizedList)}
           component={SortableList}
           editable={this.props.editable}
           handleConfigTrack={this.props.handleConfigTrack}

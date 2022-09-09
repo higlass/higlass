@@ -5,6 +5,7 @@ import React from 'react';
 import { brushY } from 'd3-brush';
 import { select } from 'd3-selection';
 import slugid from 'slugid';
+import clsx from 'clsx';
 
 import ListWrapper from './ListWrapper';
 import VerticalItem from './VerticalItem';
@@ -216,14 +217,14 @@ class VerticalTiledPlot extends React.Component {
         )}
         <ListWrapper
           axis="x"
-          className={`${stylesPlot.list} ${stylesPlot.stylizedList} ${stylesPlot.horizontalList}`}
+          className={clsx(stylesPlot.list, stylesPlot.stylizedList, stylesPlot.horizontalList)}
           component={SortableList}
           editable={this.props.editable}
           handleConfigTrack={this.props.handleConfigTrack}
           handleResizeTrack={this.props.handleResizeTrack}
           height={this.props.height}
           helperClass={stylesPlot.stylizedHelper}
-          itemClass={`${stylesPlot.stylizedItem} ${stylesPlot.horizontalItem}`}
+          itemClass={clsx(stylesPlot.stylizedItem, stylesPlot.horizontalItem)}
           itemControlAlignLeft={this.props.tracksControlAlignLeft}
           itemReactClass={VerticalItem}
           items={this.props.tracks.map((d) => ({

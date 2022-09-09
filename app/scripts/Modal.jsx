@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 
 import Button from './Button';
 import Cross from './Cross';
@@ -13,17 +14,16 @@ function Modal(props) {
     if (props.onClose) props.onClose();
   };
 
-  const classNames = [classes['modal-background']];
-  if (props.hide) classNames.push(classes['modal-hide']);
-
   return (
-    <div className={classNames.join(" ")}>
+    <div className={clsx(classes['modal-background'], {
+        [classes['modal-hide']]: props.hide,
+      })}
+    >
       <div className={classes["modal-wrap"]}>
         <div
-          className={[
-            classes['modal-window'],
-            props.maxHeight ? classes['modal-window-max-height'] : ''
-          ].join(" ")}
+          className={clsx(classes['modal-window'], {
+            [classes['modal-window-max-height']]: props.maxHeight,
+          })}
         >
           {props.closeButton && (
             <Button onClick={handleClose}>

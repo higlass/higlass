@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { brush, brushX, brushY } from 'd3-brush';
 import { select } from 'd3-selection';
+import clsx from 'clsx';
 
 import TrackControl from './TrackControl';
 
@@ -455,24 +456,24 @@ class CenterTrack extends React.Component {
       return false;
     });
 
-    let rangeSelectorClass = 'track-range-selection';
+    let rangeSelectorName = 'track-range-selection';
     if (this.props.isRangeSelectionActive) {
-      rangeSelectorClass += this.props.is1dRangeSelection
+      rangeSelectorName += this.props.is1dRangeSelection
         ? '-active-secondary'
         : '-active-primary';
     }
 
-    const rangeSelectorGroup1dClass = !this.props.is1dRangeSelection
-      ? 'track-range-selection-group-inactive'
-      : '';
+    const rangeSelectorGroup1dClass = clsx(
+      !this.props.is1dRangeSelection && stylesTrack['track-range-selection-group-inactive']
+    );
 
-    const rangeSelectorGroup2dClass = this.props.is1dRangeSelection
-      ? 'track-range-selection-group-inactive'
-      : '';
+    const rangeSelectorGroup2dClass = clsx(
+      this.props.is1dRangeSelection && stylesTrack['track-range-selection-group-inactive']
+    );
 
     return (
       <div
-        className={[this.props.className, styles["center-track"]].join(" ")}
+        className={clsx(this.props.className, styles["center-track"])}
         onMouseEnter={this.mouseEnterHandler.bind(this)}
         onMouseLeave={this.mouseLeaveHandler.bind(this)}
         style={{
@@ -482,7 +483,7 @@ class CenterTrack extends React.Component {
       >
         {isBrushable && (
           <svg
-            className={stylesTrack[rangeSelectorClass]}
+            className={stylesTrack[rangeSelectorName]}
             style={{
               height: this.props.height,
               width: this.props.width,
@@ -493,19 +494,19 @@ class CenterTrack extends React.Component {
               ref={(el) => {
                 this.brushElX = select(el);
               }}
-              className={stylesTrack[rangeSelectorGroup1dClass]}
+              className={rangeSelectorGroup1dClass}
             />
             <g
               ref={(el) => {
                 this.brushElY = select(el);
               }}
-              className={stylesTrack[rangeSelectorGroup1dClass]}
+              className={rangeSelectorGroup1dClass}
             />
             <g
               ref={(el) => {
                 this.brushElXY = select(el);
               }}
-              className={stylesTrack[rangeSelectorGroup2dClass]}
+              className={rangeSelectorGroup2dClass}
             />
           </svg>
         )}

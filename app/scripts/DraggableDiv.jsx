@@ -3,6 +3,7 @@ import { drag } from 'd3-drag';
 import { pointer, select } from 'd3-selection';
 import PropTypes from 'prop-types';
 import React from 'react';
+import clsx from 'clsx';
 
 import withTheme from './hocs/with-theme';
 import { THEME_DARK } from './configs';
@@ -327,7 +328,7 @@ class DraggableDiv extends React.Component {
         ref={(c) => {
           this.divContainer = c;
         }}
-        className={`${this.props.className} ${classes["draggable-div"]}`}
+        className={clsx(this.props.className, classes["draggable-div"])}
         style={divStyle}
       >
         {resizeHandles}
