@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 
 import PopupMenu from './PopupMenu';
 import ContextMenuContainer from './ContextMenuContainer';
@@ -18,7 +19,7 @@ import {
 } from './configs';
 
 // Styles
-import '../styles/ViewHeader.module.scss';
+import classes from '../styles/ViewHeader.module.scss';
 
 class ViewHeader extends React.Component {
   constructor(props) {
@@ -217,37 +218,33 @@ class ViewHeader extends React.Component {
       },
     );
 
-    let className = this.state.isFocused
-      ? 'multitrack-header-focus'
-      : 'multitrack-header';
+    const className = clsx(this.state.isFocused ? classes['multitrack-header-focus'] : classes['multitrack-header'], {
+      [classes['multitrack-header-dark']]: this.props.theme === THEME_DARK,
+    });
 
     const classNameIcon =
       this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR
-        ? 'multitrack-header-icon-squeazed'
-        : 'multitrack-header-icon';
-
-    if (this.props.theme === THEME_DARK) {
-      className += ' multitrack-header-dark';
-    }
+        ? classes['multitrack-header-icon-squeazed']
+        : classes['multitrack-header-icon'];
 
     return (
       <div
         ref={(c) => {
           this.el = c;
         }}
-        styleName={className}
+        className={className}
       >
-        <div styleName="multitrack-header-left">
+        <div className={classes["multitrack-header-left"]}>
           {this.props.mouseTool === MOUSE_TOOL_SELECT && (
             <svg
-              styleName={`mouse-tool-selection ${classNameIcon}`}
+              className={clsx(classes['mouse-tool-selection'], classNameIcon)}
               title="Selection tool active"
             >
               <use xlinkHref="#select" />
             </svg>
           )}
           <div
-            styleName="multitrack-header-grabber"
+            className={classes["multitrack-header-grabber"]}
             title="Drag to move the view"
           >
             <div />
@@ -255,14 +252,14 @@ class ViewHeader extends React.Component {
             <div />
           </div>
           {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR && (
-            <div styleName="multitrack-header-search">
+            <div className={classes["multitrack-header-search"]}>
               {this.props.isGenomePositionSearchBoxVisible &&
                 GenomePositionSearchBox}
             </div>
           )}
         </div>
-        <nav styleName="multitrack-header-nav-list">
-          <svg onClick={this.props.onAddView} styleName={classNameIcon}>
+        <nav className={classes["multitrack-header-nav-list"]}>
+          <svg className={classNameIcon} onClick={this.props.onAddView}>
             <title>Add new view (clone this view)</title>
             <use xlinkHref="#copy" />
           </svg>
@@ -271,8 +268,8 @@ class ViewHeader extends React.Component {
             ref={(c) => {
               this.configImg = c;
             }}
+            className={classNameIcon}
             onClick={() => this.handleConfigMenuOpened(this.props.viewUid)}
-            styleName={classNameIcon}
           >
             <title>Configure this view</title>
             <use xlinkHref="#cog" />
@@ -282,16 +279,16 @@ class ViewHeader extends React.Component {
             ref={(c) => {
               this.plusImg = c;
             }}
+            className={classNameIcon}
             onClick={() =>
               this.handleAddTrackPositionMenuOpened(this.props.viewUid)
             }
-            styleName={classNameIcon}
           >
             <title>Add Track</title>
             <use xlinkHref="#plus" />
           </svg>
 
-          <svg onClick={this.props.onCloseView} styleName={classNameIcon}>
+          <svg className={classNameIcon} onClick={this.props.onCloseView}>
             <title>Close View</title>
             <use xlinkHref="#cross" />
           </svg>

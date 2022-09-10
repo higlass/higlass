@@ -5,6 +5,7 @@ import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import slugid from 'slugid';
+import clsx from 'clsx';
 
 import PixiTrack from './PixiTrack';
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
@@ -81,7 +82,7 @@ import {
 } from './configs';
 
 // Styles
-import '../styles/TrackRenderer.module.scss';
+import classes from '../styles/TrackRenderer.module.scss';
 
 const SCROLL_TIMEOUT = 100;
 
@@ -1980,26 +1981,23 @@ class TrackRenderer extends React.Component {
         ref={(c) => {
           this.baseEl = c;
         }}
-        className="track-renderer-div"
+        className={clsx('track-renderer-div', classes["track-renderer"])}
         style={{
           height: this.currentProps.height,
           width: this.currentProps.width,
         }}
-        styleName="track-renderer"
       >
         <div
           ref={(c) => {
             this.element = c;
           }}
-          className="track-renderer-element"
-          styleName="track-renderer-element"
+          className={clsx('track-renderer-element', classes["track-renderer-element"])}
         />
         <div
           ref={(c) => {
             this.eventTracker = c;
           }}
-          className="track-renderer-events"
-          styleName="track-renderer-events"
+          className={clsx('track-renderer-events', classes["track-renderer-events"])}
         >
           {this.currentProps.children}
         </div>

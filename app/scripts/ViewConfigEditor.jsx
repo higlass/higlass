@@ -4,6 +4,7 @@ import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 import Ajv from 'ajv';
+import clsx from 'clsx';
 
 import schema from '../schema.json';
 import Button from './Button';
@@ -12,7 +13,7 @@ import withModal from './hocs/with-modal';
 import withPubSub from './hocs/with-pub-sub';
 import { timeout } from './utils';
 
-import '../styles/ViewConfigEditor.module.scss';
+import classes from '../styles/ViewConfigEditor.module.scss';
 
 class ViewConfigEditor extends React.Component {
   constructor(props) {
@@ -152,7 +153,7 @@ class ViewConfigEditor extends React.Component {
       const key = `${i}-${d.msg}`;
       return (
         <tr key={key}>
-          <td styleName={`title ${d.type}`}>{`[${i}] ${d.type}`}</td>
+          <td className={clsx(classes.title, classes[d.type])}>{`[${i}] ${d.type}`}</td>
           <td>
             <pre>{d.msg}</pre>
           </td>
@@ -173,7 +174,7 @@ class ViewConfigEditor extends React.Component {
         title="Edit View Config"
       >
         <>
-          <header styleName="view-config-editor-header">
+          <header className={classes["view-config-editor-header"]}>
             <Button
               onBlur={this.showBound}
               onMouseDown={this.hideBound}
@@ -195,7 +196,7 @@ class ViewConfigEditor extends React.Component {
             ref={(c) => {
               this.editorWrap = c;
             }}
-            styleName="view-config-editor"
+            className={classes["view-config-editor"]}
           >
             <Editor
               ref={(c) => {
@@ -212,24 +213,24 @@ class ViewConfigEditor extends React.Component {
             />
           </div>
           <div
+            className={classes["view-config-log"]}
             style={{
               height: this.state.showLog ? '50%' : '30px',
             }}
-            styleName="view-config-log"
           >
             <div
+              className={classes["view-config-log-header"]}
               onClick={() => this.toggleLogBound()}
-              styleName="view-config-log-header"
             >
               {`Log Messages (${
                 this.state.logMsgs.filter((d) => d.type !== 'Success').length
               })`}
             </div>
             <div
+              className={classes["view-config-log-msg"]}
               style={{
                 padding: this.state.showLog ? '10px' : 0,
               }}
-              styleName="view-config-log-msg"
             >
               <table>
                 <tbody>{logMessages}</tbody>

@@ -2024,7 +2024,7 @@ class TiledPlot extends React.Component {
 
     let centerTrack = (
       <div
-        className="center-track-container"
+        className={["center-track-container", stylesCenterTrack["center-track-container"]].join(" ")}
         style={{
           left: this.leftWidth + this.props.paddingLeft,
           top: this.topHeight + this.props.paddingTop,
@@ -2032,14 +2032,13 @@ class TiledPlot extends React.Component {
           height: this.bottomHeight,
           outline: trackOutline,
         }}
-        styleName="stylesCenterTrack.center-track-container"
       />
     );
 
     if (this.props.tracks.center.length) {
       centerTrack = (
         <div
-          className="center-track-container"
+          className={["center-track-container", stylesCenterTrack["center-track-container"]].join(" ")}
           style={{
             left: this.leftWidth + this.props.paddingLeft,
             top: this.topHeight + this.props.paddingTop,
@@ -2047,7 +2046,6 @@ class TiledPlot extends React.Component {
             height: this.centerHeight,
             outline: trackOutline,
           }}
-          styleName="stylesCenterTrack.center-track-container"
         >
           <CenterTrack
             configTrackMenuId={this.state.configTrackMenuId}
@@ -2309,14 +2307,13 @@ class TiledPlot extends React.Component {
         ref={(c) => {
           this.divTiledPlot = c;
         }}
-        className="tiled-plot-div"
+        className={["tiled-plot-div", styles["tiled-plot"]].join(" ")}
         style={{
           marginBottom: this.props.marginBottom,
           marginLeft: this.props.marginLeft,
           marginRight: this.props.marginRight,
           marginTop: this.props.marginTop,
         }}
-        styleName="styles.tiled-plot"
       >
         {trackRenderer}
         {overlays}

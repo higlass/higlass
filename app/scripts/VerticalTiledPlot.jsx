@@ -5,6 +5,7 @@ import React from 'react';
 import { brushY } from 'd3-brush';
 import { select } from 'd3-selection';
 import slugid from 'slugid';
+import clsx from 'clsx';
 
 import ListWrapper from './ListWrapper';
 import VerticalItem from './VerticalItem';
@@ -193,35 +194,37 @@ class VerticalTiledPlot extends React.Component {
       .map((track) => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
 
-    const rangeSelectorClass = this.props.isRangeSelectionActive
-      ? 'stylesTrack.track-range-selection-active'
-      : 'stylesTrack.track-range-selection';
+    const rangeSelectorClass = stylesTrack[
+      this.props.isRangeSelectionActive
+        ? 'track-range-selection-active'
+        : 'track-range-selection'
+    ];
 
     return (
-      <div styleName="styles.vertical-tiled-plot">
+      <div className={styles["vertical-tiled-plot"]}>
         {isBrushable && (
           <svg
             ref={(el) => {
               this.brushEl = select(el);
             }}
+            className={rangeSelectorClass}
             style={{
               height: this.props.height,
               width,
             }}
-            styleName={rangeSelectorClass}
             xmlns="http://www.w3.org/2000/svg"
           />
         )}
         <ListWrapper
           axis="x"
-          className={`${stylesPlot.list} ${stylesPlot.stylizedList} ${stylesPlot.horizontalList}`}
+          className={clsx(stylesPlot.list, stylesPlot.stylizedList, stylesPlot.horizontalList)}
           component={SortableList}
           editable={this.props.editable}
           handleConfigTrack={this.props.handleConfigTrack}
           handleResizeTrack={this.props.handleResizeTrack}
           height={this.props.height}
           helperClass={stylesPlot.stylizedHelper}
-          itemClass={`${stylesPlot.stylizedItem} ${stylesPlot.horizontalItem}`}
+          itemClass={clsx(stylesPlot.stylizedItem, stylesPlot.horizontalItem)}
           itemControlAlignLeft={this.props.tracksControlAlignLeft}
           itemReactClass={VerticalItem}
           items={this.props.tracks.map((d) => ({

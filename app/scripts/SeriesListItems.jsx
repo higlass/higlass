@@ -4,7 +4,7 @@ import ContextMenuItem from './ContextMenuItem';
 
 import { TRACKS_INFO_BY_TYPE } from './configs';
 
-import '../styles/ContextMenu.module.scss';
+import classes from '../styles/ContextMenu.module.scss';
 
 /**
  * Return a list of all the tracks and subtracks from
@@ -63,12 +63,12 @@ export const getSeriesItems = (
 
     const imgTag = thumbnail ? (
       <div
+        className={classes["context-menu-icon"]}
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
-        styleName="context-menu-icon"
       />
     ) : (
-      <div styleName="context-menu-icon">
+      <div className={classes["context-menu-icon"]}>
         <svg />
       </div>
     );
@@ -76,6 +76,7 @@ export const getSeriesItems = (
     return (
       <ContextMenuItem
         key={x.uid}
+        className={classes["context-menu-item"]}
         onClick={() => {
           if (onItemClick) onItemClick(x.uid);
         }}
@@ -85,15 +86,14 @@ export const getSeriesItems = (
         onMouseLeave={(e) => {
           if (onItemMouseLeave) onItemMouseLeave(e);
         }}
-        styleName="context-menu-item"
       >
         {imgTag}
-        <span styleName="context-menu-span">
+        <span className={classes["context-menu-span"]}>
           {x.options && x.options.name && x.options.name.length
             ? x.options.name
             : x.type}
           {onItemMouseEnter && onItemMouseLeave ? (
-            <svg styleName="play-icon">
+            <svg className={classes["play-icon"]}>
               <use xlinkHref="#play" />
             </svg>
           ) : null}

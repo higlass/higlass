@@ -3,11 +3,12 @@ import { drag } from 'd3-drag';
 import { pointer, select } from 'd3-selection';
 import PropTypes from 'prop-types';
 import React from 'react';
+import clsx from 'clsx';
 
 import withTheme from './hocs/with-theme';
 import { THEME_DARK } from './configs';
 
-import '../styles/DraggableDiv.module.scss';
+import classes from '../styles/DraggableDiv.module.scss';
 
 class DraggableDiv extends React.Component {
   constructor(props) {
@@ -311,13 +312,13 @@ class DraggableDiv extends React.Component {
         ref={(c) => {
           this[`${x}Handle`] = c;
         }}
+        className={classes[`${x}-draggable-handle`]}
         style={styles[x]}
-        styleName={`${x}-draggable-handle`}
         title="Resize track"
       >
         <div
+          className={classes[`${x}-draggable-handle-grabber`]}
           style={{ borderColor: dragColor }}
-          styleName={`${x}-draggable-handle-grabber`}
         />
       </div>
     ));
@@ -327,9 +328,8 @@ class DraggableDiv extends React.Component {
         ref={(c) => {
           this.divContainer = c;
         }}
-        className={this.props.className}
+        className={clsx(this.props.className, classes["draggable-div"])}
         style={divStyle}
-        styleName="draggable-div"
       >
         {resizeHandles}
       </div>

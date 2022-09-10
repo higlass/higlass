@@ -10,6 +10,7 @@ import { ResizeSensor, ElementQueries } from 'css-element-queries';
 import vkbeautify from 'vkbeautify';
 import parse from 'url-parse';
 import createPubSub, { globalPubSub } from 'pub-sub-es';
+import clsx from 'clsx';
 
 import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
@@ -4810,7 +4811,7 @@ class HiGlassComponent extends React.Component {
 
   render() {
     this.tiledAreasDivs = {};
-    this.tiledAreas = <div styleName="styles.tiled-area" />;
+    this.tiledAreas = <div className={styles["tiled-area"]} />;
 
     // The component needs to be mounted in order for the initial view to have
     // the right width
@@ -5093,7 +5094,7 @@ class HiGlassComponent extends React.Component {
             ref={(c) => {
               this.tiledAreasDivs[view.uid] = c;
             }}
-            styleName="styles.tiled-area"
+            className={styles["tiled-area"]}
           >
             {multiTrackHeader}
             {tiledPlot}
@@ -5163,36 +5164,18 @@ class HiGlassComponent extends React.Component {
       </ReactGridLayout>
     );
 
-    let styleNames = 'styles.higlass';
-
-    if (this.theme === THEME_DARK) {
-      styleNames += ' styles.higlass-dark-theme';
-    }
-
-    if (
-      this.props.options.sizeMode === SIZE_MODE_OVERFLOW ||
-      this.props.options.sizeMode === SIZE_MODE_SCROLL
-    ) {
-      styleNames += ' styles.higlass-container-overflow';
-    }
-
-    let scrollStyleNames = '';
-    if (this.props.options.sizeMode === SIZE_MODE_OVERFLOW) {
-      scrollStyleNames = 'styles.higlass-scroll-container-overflow';
-    } else if (this.props.options.sizeMode === SIZE_MODE_SCROLL) {
-      scrollStyleNames = 'styles.higlass-scroll-container-scroll';
-    }
-
     return (
       <div
         key={this.uid}
         ref={(c) => {
           this.topDiv = c;
         }}
-        className="higlass"
+        className={clsx("higlass", {
+          'higlass-dark-theme': this.theme === THEME_DARK,
+          'higlass-container-overflow': this.props.options.sizeMode === SIZE_MODE_OVERFLOW || this.props.options.sizeMode === SIZE_MODE_SCROLL,
+        })}
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
-        styleName={styleNames}
       >
         <PubSubProvider value={this.pubSub}>
           <ModalProvider value={this.modal}>
@@ -5203,22 +5186,23 @@ class HiGlassComponent extends React.Component {
                 ref={(c) => {
                   this.canvasElement = c;
                 }}
-                styleName="styles.higlass-canvas"
+                className={styles["higlass-canvas"]}
               />
               <div
                 ref={(c) => {
                   this.scrollContainer = c;
                 }}
-                className="higlass-scroll-container"
+                className={clsx("higlass-scroll-container", {
+                  'higlass-scroll-container-overflow': this.props.options.sizeMode === SIZE_MODE_OVERFLOW,
+                  'higlass-scroll-container-scroll': this.props.options.sizeMode === SIZE_MODE_SCROLL,
+                })}
                 onScroll={this.onScrollHandlerBound}
-                styleName={scrollStyleNames}
               >
                 <div
                   ref={(c) => {
                     this.divDrawingSurface = c;
                   }}
-                  className="higlass-drawing-surface"
-                  styleName="styles.higlass-drawing-surface"
+                  className={clsx('higlass-drawing-surface', styles["higlass-drawing-surface"])}
                 >
                   {gridLayout}
                 </div>
@@ -5226,6 +5210,7 @@ class HiGlassComponent extends React.Component {
                   ref={(c) => {
                     this.svgElement = c;
                   }}
+                  className={styles["higlass-svg"]}
                   style={{
                     // inline the styles so they aren't overriden by other css
                     // on the web page
@@ -5236,7 +5221,6 @@ class HiGlassComponent extends React.Component {
                     top: 0,
                     pointerEvents: 'none',
                   }}
-                  styleName="styles.higlass-svg"
                 />
               </div>
             </ThemeProvider>

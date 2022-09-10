@@ -1,6 +1,6 @@
 import React from 'react';
 import { select } from 'd3-selection';
-import '../styles/ViewHeader.module.scss';
+import classes from '../styles/ViewHeader.module.scss';
 
 export const COG = {
   id: 'cog',
@@ -375,7 +375,7 @@ export const svgArrowheadDomainsIcon = parser.parseFromString(
 export function SearchIcon({ theStyle }) {
   return (
     <svg
-      styleName={theStyle}
+      className={classes[theStyle]}
       viewBox="0 0 12 13"
       xmlns="http://www.w3.org/2000/svg"
     >

@@ -346,10 +346,7 @@ class TilesetFinder extends React.Component {
             type="text"
           />
         </div>
-        <div
-          className="tileset-finder-checkbox-tree"
-          styleName="tileset-finder-checkbox-tree"
-        >
+        <div className="tileset-finder-checkbox-tree">
           <CheckboxTree
             checked={this.state.checked}
             expanded={this.state.expanded}

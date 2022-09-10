@@ -1,9 +1,9 @@
-// @ts-check
 import PropTypes from 'prop-types';
 import React from 'react';
 import { brushX } from 'd3-brush';
 import { select } from 'd3-selection';
 import slugid from 'slugid';
+import clsx from 'clsx';
 
 import ListWrapper from './ListWrapper';
 import HorizontalItem from './HorizontalItem';
@@ -187,29 +187,28 @@ class HorizontalTiledPlot extends React.Component {
       .reduce(or, false);
 
     const rangeSelectorClass = this.props.isRangeSelectionActive
-      ? 'stylesTrack.track-range-selection-active'
-      : 'stylesTrack.track-range-selection';
+      ? stylesTrack['track-range-selection-active']
+      : stylesTrack['track-range-selection'];
 
     return (
       <div
-        className="horizontal-tiled-plot"
-        styleName="styles.horizontal-tiled-plot"
+        className={clsx('horizontal-tiled-plot', styles["horizontal-tiled-plot"])}
       >
         {isBrushable && (
           <svg
             ref={(el) => {
               this.brushEl = select(el);
             }}
+            className={rangeSelectorClass}
             style={{
               height,
               width: this.props.width,
             }}
-            styleName={rangeSelectorClass}
             xmlns="http://www.w3.org/2000/svg"
           />
         )}
         <ListWrapper
-          className={`${stylesPlot.list} ${stylesPlot.stylizedList}`}
+          className={clsx(stylesPlot.list, stylesPlot.stylizedList)}
           component={SortableList}
           editable={this.props.editable}
           handleConfigTrack={this.props.handleConfigTrack}

@@ -6,9 +6,10 @@ import ContextMenuItem from './ContextMenuItem';
 import NestedContextMenu from './NestedContextMenu';
 
 // Styles
-import '../styles/ContextMenu.module.scss';
+import classes from '../styles/ContextMenu.module.scss';
 
 import { OPTIONS_INFO, THEME_DARK } from './configs';
+import clsx from 'clsx';
 
 class ConfigViewMenu extends ContextMenuContainer {
   constructor(props) {
@@ -105,20 +106,19 @@ class ConfigViewMenu extends ContextMenuContainer {
   }
 
   render() {
-    let styleNames = 'context-menu';
-    if (this.props.theme === THEME_DARK) styleNames += ' context-menu-dark';
-
     return (
       <div
         ref={(c) => {
           this.div = c;
         }}
+        className={clsx(classes['context-menu'], {
+          [classes['context-menu-dark']]: this.props.theme === THEME_DARK,
+        })}
         data-menu-type="ConfigViewMenu"
         style={{
           left: this.state.left,
           top: this.state.top,
         }}
-        styleName={styleNames}
       >
         <ContextMenuItem
           onClick={(e) => this.props.onTogglePositionSearchBox(e)}
@@ -130,7 +130,7 @@ class ConfigViewMenu extends ContextMenuContainer {
           // Fritz: This seems to have been forgotten. The on-click handler does
           // nothing so I comment this out
           //
-          // <hr styleName="context-menu-hr" />
+          // <hr className={classes["context-menu-hr"]} />
           //
           // <ContextMenuItem
           //   onClick={() => {}}
@@ -142,13 +142,13 @@ class ConfigViewMenu extends ContextMenuContainer {
           //   onMouseLeave={e => this.handleMouseLeave(e)}
           // >
           //   {'Options'}
-          //   <svg styleName="play-icon">
+          //   <svg className={classes["play-icon"]}>
           //     <use xlinkHref="#play" />
           //   </svg>
           // </ContextMenuItem>
         }
 
-        <hr styleName="context-menu-hr" />
+        <hr className={classes["context-menu-hr"]} />
 
         <ContextMenuItem onClick={(e) => this.props.onZoomToData(e)}>
           {'Zoom to data extent'}
@@ -158,7 +158,7 @@ class ConfigViewMenu extends ContextMenuContainer {
           {'Clear View'}
         </ContextMenuItem>
 
-        <hr styleName="context-menu-hr" />
+        <hr className={classes["context-menu-hr"]} />
 
         <ContextMenuItem onClick={(e) => this.props.onYankZoom(e)}>
           {'Take zoom from'}
@@ -172,7 +172,7 @@ class ConfigViewMenu extends ContextMenuContainer {
           {'Take zoom and location from'}
         </ContextMenuItem>
 
-        <hr styleName="context-menu-hr" />
+        <hr className={classes["context-menu-hr"]} />
 
         <ContextMenuItem onClick={this.props.onLockZoom}>
           {'Lock zoom with'}
@@ -186,13 +186,13 @@ class ConfigViewMenu extends ContextMenuContainer {
           {'Lock zoom and location with'}
         </ContextMenuItem>
 
-        <hr styleName="context-menu-hr" />
+        <hr className={classes["context-menu-hr"]} />
 
         <ContextMenuItem onClick={this.props.onTakeAndLockZoomAndLocation}>
           {'Take and lock zoom and location with'}
         </ContextMenuItem>
 
-        <hr styleName="context-menu-hr" />
+        <hr className={classes["context-menu-hr"]} />
 
         <ContextMenuItem onClick={(e) => this.props.onUnlockZoom(e)}>
           {'Unlock zoom'}
@@ -206,19 +206,19 @@ class ConfigViewMenu extends ContextMenuContainer {
           {'Unlock zoom and location'}
         </ContextMenuItem>
 
-        <hr styleName="context-menu-hr" />
+        <hr className={classes["context-menu-hr"]} />
 
         <ContextMenuItem onClick={(e) => this.props.onProjectViewport(e)}>
           {'Show this viewport on'}
         </ContextMenuItem>
 
-        <hr styleName="context-menu-hr" />
+        <hr className={classes["context-menu-hr"]} />
 
         <ContextMenuItem onClick={(e) => this.props.onEditViewConfig(e)}>
           Edit view config
         </ContextMenuItem>
 
-        <hr styleName="context-menu-hr" />
+        <hr className={classes["context-menu-hr"]} />
 
         <ContextMenuItem onClick={() => this.props.onExportSVG()}>
           {'Export views as SVG'}

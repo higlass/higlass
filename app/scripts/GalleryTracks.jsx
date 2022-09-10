@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import clsx from 'clsx';
 
 import TrackControl from './TrackControl';
 
@@ -29,11 +30,12 @@ class GalleryTracks extends React.Component {
 
   render() {
     return (
-      <div className="gallery-tracks" styleName="styles.gallery-tracks">
+      <div className={clsx("gallery-tracks", styles["gallery-tracks"])}>
         {this.props.tracks &&
           this.props.tracks.map((track, index) => (
             <div
               key={track.uid || index}
+              className={styles["gallery-track"]}
               onMouseLeave={this.mouseLeaveHandler.bind(this)}
               style={{
                 top: track.height * index,
@@ -41,9 +43,9 @@ class GalleryTracks extends React.Component {
                 bottom: track.height * index,
                 left: track.height * index,
               }}
-              styleName="styles.gallery-track"
             >
               <div
+                className={styles["gallery-sub-track"]}
                 onMouseEnter={this.mouseEnterHandler.bind(this)}
                 style={{
                   top: 0,
@@ -51,9 +53,9 @@ class GalleryTracks extends React.Component {
                   left: 0,
                   height: track.height,
                 }}
-                styleName="styles.gallery-sub-track"
               />
               <div
+                className={styles["gallery-sub-track"]}
                 onMouseEnter={this.mouseEnterHandler.bind(this)}
                 style={{
                   top: 0,
@@ -61,9 +63,9 @@ class GalleryTracks extends React.Component {
                   bottom: 0,
                   width: track.height,
                 }}
-                styleName="styles.gallery-sub-track"
               />
               <div
+                className={styles["gallery-sub-track"]}
                 onMouseEnter={this.mouseEnterHandler.bind(this)}
                 style={{
                   right: 0,
@@ -71,9 +73,9 @@ class GalleryTracks extends React.Component {
                   left: 0,
                   height: track.height,
                 }}
-                styleName="styles.gallery-sub-track"
               />
               <div
+                className={styles["gallery-sub-track"]}
                 onMouseEnter={this.mouseEnterHandler.bind(this)}
                 style={{
                   top: 0,
@@ -81,9 +83,9 @@ class GalleryTracks extends React.Component {
                   left: 0,
                   width: track.height,
                 }}
-                styleName="styles.gallery-sub-track"
               />
               <div
+                className={styles["gallery-invisible-track"]}
                 onMouseLeave={this.mouseLeaveHandler.bind(this)}
                 style={{
                   top: track.height,
@@ -91,7 +93,6 @@ class GalleryTracks extends React.Component {
                   bottom: track.height,
                   left: track.height,
                 }}
-                styleName="styles.gallery-invisible-track"
               />
               {this.props.editable && (
                 <TrackControl

@@ -6,19 +6,6 @@ import * as fs from 'fs';
 
 import { version } from './package.json';
 
-const generateScopedName = `[name]_[local]_hg-${version}`;
-
-// Babel plugin which enables use of `styleNames` in JSX
-const reactCssModules = [
-  'react-css-modules',
-  {
-    generateScopedName,
-    filetypes: {
-      '.scss': { syntax: 'postcss-scss' },
-    },
-  },
-];
-
 /**
  * Extends Vite with read/write endpoint.
  * Used in ./test/utils/FetchMockHelper.js
@@ -107,14 +94,8 @@ export default defineConfig(({ mode }) => {
       global: 'globalThis',
       XYLOPHON: JSON.stringify(version),
     },
-    css: {
-      modules: { generateScopedName },
-    },
     plugins: [
-      react({
-        jsxRuntime: 'classic',
-        babel: { plugins: [reactCssModules] },
-      }),
+      react({ jsxRuntime: 'classic' }),
       mockedReponsesPlugin(),
     ],
   };

@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 
 import Button from './Button';
 import Cross from './Cross';
 import Modal from './Modal';
 import withModal from './hocs/with-modal';
 
-import '../styles/Dialog.module.scss';
+import classes from '../styles/Dialog.module.scss';
 
-const Dialog = (props) => {
+function Dialog(props) {
   const handleCancel = () => {
     props.modal.close();
     if (props.onCancel) props.onCancel();
@@ -22,22 +23,22 @@ const Dialog = (props) => {
   return (
     <Modal closeButton={false} hide={props.hide} maxHeight={props.maxHeight}>
       <>
-        <header styleName="dialog-header">
+        <header className={classes["dialog-header"]}>
           <h3>{props.title}</h3>
           <Button onClick={handleCancel}>
             <Cross />
           </Button>
         </header>
         {props.maxHeight ? (
-          <main styleName={props.maxHeight ? 'dialog-main-max-height' : ''}>
+          <main className={clsx(props.maxHeight && classes['dialog-main-max-height'])}>
             {props.children}
           </main>
         ) : (
           <main>{props.children}</main>
         )}
         <footer
-          styleName={
-            props.maxHeight ? 'dialog-footer-max-height' : 'dialog-footer'
+          className={
+            classes[props.maxHeight ? 'dialog-footer-max-height' : 'dialog-footer']
           }
         >
           {props.okayOnly ? (
