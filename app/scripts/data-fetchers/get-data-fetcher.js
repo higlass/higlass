@@ -3,13 +3,13 @@ import LocalDataFetcher from './local-tile-fetcher';
 import DataFetcher from '../DataFetcher';
 import { AVAILABLE_FOR_PLUGINS } from '../configs';
 
-const getDataFetcher = (dataConfig, pubSub, pluginDataFetchers) => {
+const getDataFetcher = (dataConfig, pubSub, pluginDataFetchers, availableForPlugins = AVAILABLE_FOR_PLUGINS) => {
   // Check if a plugin data fetcher is available.
   const pluginDataFetcher = pluginDataFetchers[dataConfig.type];
   if (pluginDataFetcher) {
     // eslint-disable-next-line new-cap
     return new pluginDataFetcher.dataFetcher(
-      AVAILABLE_FOR_PLUGINS,
+      availableForPlugins,
       dataConfig,
       pubSub,
     );
