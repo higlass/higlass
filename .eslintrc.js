@@ -3,11 +3,6 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: [
-    'plugin:react/recommended',
-    'airbnb',
-    'prettier',
-  ],
   plugins: [
     'react',
   ],
@@ -15,6 +10,11 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
+  extends: [
+    'plugin:react/recommended',
+    'airbnb',
+    'prettier',
+  ],
   rules: {
     // TODOs:
     'no-param-reassign': 'off', // https://github.com/higlass/higlass/issues/483
