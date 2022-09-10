@@ -6,6 +6,7 @@ module.exports = {
   extends: [
     'plugin:react/recommended',
     'airbnb',
+    'prettier',
   ],
   plugins: [
     'react',
@@ -19,8 +20,6 @@ module.exports = {
     'no-param-reassign': 'off', // https://github.com/higlass/higlass/issues/483
     'import/no-cycle': 'off',
 
-    indent: 'off', // defer to prettier
-
     // Below, if it's turned off ('off'), we definitely do not care about the rule.
     // If it's turned on ('error'), and you have a violation, either
     //   - fix it
@@ -30,11 +29,11 @@ module.exports = {
     'class-methods-use-this': 'off',
     'no-bitwise': 'off',
     'no-console': ['error', { allow: ['warn', 'error'] }],
+    'no-continue': 'off',
     'no-plusplus': 'off',
-    'no-restricted-syntax': 'off',
-    'no-underscore-dangle': 'off',
+    'no-restricted-syntax': 'off', // allows "for of" loops
+    'no-underscore-dangle': 'off', // allows '_variable'
     'no-unused-vars': 'off',
-    'operator-linebreak': 'off',
     'prefer-destructuring': 'off',
   },
   overrides: [

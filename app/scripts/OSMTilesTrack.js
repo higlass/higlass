@@ -550,7 +550,7 @@ class OSMTilesTrack extends PixiTrack {
   refScalesChanged(refXScale, refYScale) {
     super.refScalesChanged(refXScale, refYScale);
 
-    for (const uid in this.fetchedTiles) {
+    for (const uid of Object.keys(this.fetchedTiles)) {
       const tile = this.fetchedTiles[uid];
 
       if (tile.sprite) {

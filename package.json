@@ -22,7 +22,7 @@
     "build": "vite build",
     "optimize": "vite optimize",
     "compile": "npm run build && node ./scripts/compile.mjs && zip -r dist.zip dist",
-    "format": "prettier index.html app test vite.config.js web-test-runner.config.mjs --check",
+    "prettier": "prettier app test vite.config.js .eslintconfig.js web-test-runner.config.mjs",
     "lint": "eslint app test vite.config.js web-test-runner.config.mjs",
     "precommit": "NODE_ENV=production lint-staged"
   },
@@ -90,6 +90,7 @@
     "enzyme": "^3.4.1",
     "eslint": "^8.23.0",
     "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsx-a11y": "^6.6.1",
     "eslint-plugin-react": "^7.31.8",

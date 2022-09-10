@@ -288,6 +288,7 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   refScalesChanged(refXScale, refYScale) {
     super.refScalesChanged(refXScale, refYScale);
 
+    // eslint-disable-next-line guard-for-in
     for (const uid in this.fetchedTiles) {
       const tile = this.fetchedTiles[uid];
 

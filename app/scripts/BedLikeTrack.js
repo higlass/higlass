@@ -807,6 +807,7 @@ class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.allTexts = [];
     this.allBoxes = [];
 
+    // eslint-disable-next-line guard-for-in
     for (const fetchedTileId in this.fetchedTiles) {
       const tile = this.fetchedTiles[fetchedTileId];
 
