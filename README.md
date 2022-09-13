@@ -1,4 +1,4 @@
-![Build Status](https://github.com/higlass/higlass/actions/workflows/nodejs.yml/badge.svg)
+![Build Status](https://github.com/higlass/higlass/actions/workflows/ci.yml/badge.svg)
 [![Live Docs](https://img.shields.io/badge/docs-live-red.svg?colorB=0f9256)](https://docs.higlass.io/)
 [![DOI](https://zenodo.org/badge/56026057.svg)](https://zenodo.org/badge/latestdoi/56026057)
 [![Twitter](https://img.shields.io/badge/news-twitter-red.svg?colorB=6930bf)](https://twitter.com/higlass_io)
