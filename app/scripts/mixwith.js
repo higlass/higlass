@@ -75,7 +75,7 @@ export const apply = (superclass, mixin) => {
  * `mixin` to a superclass
  */
 export const isApplicationOf = (proto, mixin) =>
-  proto.hasOwnProperty(_appliedMixin) && proto[_appliedMixin] === unwrap(mixin); // eslint-disable-line no-prototype-builtins
+  proto.hasOwnProperty(_appliedMixin) && proto[_appliedMixin] === unwrap(mixin);
 
 /**
  * Returns `true` iff `o` has an application of `mixin` on its prototype
