@@ -35,7 +35,6 @@ jobs:
       - run: ajv validate -s app/schema.json -d "{docs/examples/viewconfs,test/{view-configs,view-configs-more}}/*.json"
 
   Test:
-    needs: [Lint, Schema]
     runs-on: ubuntu-latest
 
     steps:
