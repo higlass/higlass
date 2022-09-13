@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
@@ -9,7 +10,6 @@ import NestedContextMenu from './NestedContextMenu';
 import classes from '../styles/ContextMenu.module.scss';
 
 import { OPTIONS_INFO, THEME_DARK } from './configs';
-import clsx from 'clsx';
 
 class ConfigViewMenu extends ContextMenuContainer {
   constructor(props) {

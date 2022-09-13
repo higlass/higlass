@@ -22,8 +22,9 @@
     "build": "vite build",
     "optimize": "vite optimize",
     "compile": "npm run build && node ./scripts/compile.mjs && zip -r dist.zip dist",
-    "prettier": "prettier app test vite.config.js .eslintconfig.js web-test-runner.config.mjs",
-    "lint": "eslint app test vite.config.js web-test-runner.config.mjs",
+    "format": "prettier --ignore-path=.gitignore --write \"**/*.{mjs,js,jsx}\"",
+    "lint2": "prettier --ignore-path=.gitignore --check \"**/*.{mjs,js,jsx}\" && eslint --ignore-path=.gitignore !docs \"**/*.{mjs,js,jsx}\"",
+    "lint": "eslint --ignore-path=.gitignore \"**/*.{mjs,js,jsx}\"",
     "precommit": "NODE_ENV=production lint-staged"
   },
   "repository": {
