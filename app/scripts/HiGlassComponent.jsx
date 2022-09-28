@@ -513,7 +513,7 @@ class HiGlassComponent extends React.Component {
       autoResize: true,
     };
 
-    const versionNumber = parseInt(PIXI.VERSION[0], 10)
+    const versionNumber = parseInt(PIXI.VERSION[0], 10);
 
     if (versionNumber === 4) {
       console.warn(
@@ -528,7 +528,7 @@ class HiGlassComponent extends React.Component {
       if (versionNumber < 4) {
         console.warn(
           'Deprecation warning: please update Pixi.js to version 5 or above! ' +
-          'This version of Pixi.js is unsupported. Good luck 🤞',
+            'This version of Pixi.js is unsupported. Good luck 🤞',
         );
       }
 
@@ -839,11 +839,10 @@ class HiGlassComponent extends React.Component {
           ? trackInfo.defaultOptionsByTheme[this.theme]
           : {};
 
-      const defaultOptions = Object.assign(
-        {},
-        trackInfo.defaultOptions,
-        defaultThemeOptions,
-      );
+      const defaultOptions = {
+        ...trackInfo.defaultOptions,
+        ...defaultThemeOptions,
+      };
 
       if (!track.options) {
         track.options = JSON.parse(JSON.stringify(defaultOptions));
@@ -3895,18 +3894,20 @@ class HiGlassComponent extends React.Component {
           ) {
             // Automatically change the extent of the other track to
             // `lower-left``
-            const otherNewOptions = Object.assign({}, otherTrack.options, {
+            const otherNewOptions = {
+              ...otherTrack.options,
               extent: 'lower-left',
               labelPosition: 'bottomLeft',
               colorbarPosition: 'bottomLeft',
-            });
+            };
 
             // Automatically set positions of label and colorbar of the current track
             // to the opposite corner. We don't want overlapping labels.
-            const originalNewOptions = Object.assign({}, options, {
+            const originalNewOptions = {
+              ...options,
               labelPosition: 'topRight',
               colorbarPosition: 'topRight',
-            });
+            };
 
             this.handleTrackOptionsChanged(
               viewUid,
@@ -3938,18 +3939,20 @@ class HiGlassComponent extends React.Component {
             ) {
               // Automatically change the extent of the other track to
               // `upper-right``
-              const otherNewOptions = Object.assign({}, otherTrack.options, {
+              const otherNewOptions = {
+                ...otherTrack.options,
                 extent: 'upper-right',
                 labelPosition: 'topRight',
                 colorbarPosition: 'topRight',
-              });
+              };
 
               // Automatically set positions of label and colorbar of the current track
               // to the opposite corner. We don't want overlapping labels.
-              const originalNewOptions = Object.assign({}, options, {
+              const originalNewOptions = {
+                ...options,
                 labelPosition: 'bottomLeft',
                 colorbarPosition: 'bottomLeft',
-              });
+              };
 
               this.handleTrackOptionsChanged(
                 viewUid,
@@ -4611,7 +4614,7 @@ class HiGlassComponent extends React.Component {
   /**
    * Close the custom dialog  (e.g. when the close button is clicked)
    */
-  closeCustomDialog(){
+  closeCustomDialog() {
     this.setState((prevState) => ({
       customDialog: null,
     }));
@@ -4724,17 +4727,17 @@ class HiGlassComponent extends React.Component {
         clickReturn.viewUid,
         clickReturn.trackUid,
       );
-      if(typeof trackObj.clickDialog === 'function') {
+      if (typeof trackObj.clickDialog === 'function') {
         const dialogData = trackObj.clickDialog();
-        if(dialogData){
+        if (dialogData) {
           customDialog.push(dialogData);
         }
       }
     });
     // We don't want to rerender everytime the canvas is clicked.
-    if(customDialog.length > 0){
+    if (customDialog.length > 0) {
       this.setState((prevState) => ({
-        customDialog: customDialog,
+        customDialog,
       }));
     }
 
@@ -4939,7 +4942,7 @@ class HiGlassComponent extends React.Component {
 
   render() {
     this.tiledAreasDivs = {};
-    this.tiledAreas = <div className={styles["tiled-area"]} />;
+    this.tiledAreas = <div className={styles['tiled-area']} />;
 
     // The component needs to be mounted in order for the initial view to have
     // the right width
@@ -4997,9 +5000,7 @@ class HiGlassComponent extends React.Component {
                 : null
             }
             customDialog={this.state.customDialog}
-            closeCustomDialog={() => 
-              this.closeCustomDialog()
-            }
+            closeCustomDialog={() => this.closeCustomDialog()}
             chromInfoPath={view.chromInfoPath}
             disableTrackMenu={this.isTrackMenuDisabled()}
             draggingHappening={this.state.draggingHappening !== null}
@@ -5226,7 +5227,7 @@ class HiGlassComponent extends React.Component {
             ref={(c) => {
               this.tiledAreasDivs[view.uid] = c;
             }}
-            className={styles["tiled-area"]}
+            className={styles['tiled-area']}
           >
             {multiTrackHeader}
             {tiledPlot}
@@ -5302,9 +5303,11 @@ class HiGlassComponent extends React.Component {
         ref={(c) => {
           this.topDiv = c;
         }}
-        className={clsx("higlass", {
+        className={clsx('higlass', {
           'higlass-dark-theme': this.theme === THEME_DARK,
-          'higlass-container-overflow': this.props.options.sizeMode === SIZE_MODE_OVERFLOW || this.props.options.sizeMode === SIZE_MODE_SCROLL,
+          'higlass-container-overflow':
+            this.props.options.sizeMode === SIZE_MODE_OVERFLOW ||
+            this.props.options.sizeMode === SIZE_MODE_SCROLL,
         })}
         onMouseLeave={this.onMouseLeaveHandlerBound}
         onMouseMove={this.mouseMoveHandlerBound}
@@ -5319,15 +5322,17 @@ class HiGlassComponent extends React.Component {
                   this.canvasElement = c;
                 }}
                 onClick={this.canvasClickHandlerBound}
-                className={styles["higlass-canvas"]}
+                className={styles['higlass-canvas']}
               />
               <div
                 ref={(c) => {
                   this.scrollContainer = c;
                 }}
-                className={clsx("higlass-scroll-container", {
-                  'higlass-scroll-container-overflow': this.props.options.sizeMode === SIZE_MODE_OVERFLOW,
-                  'higlass-scroll-container-scroll': this.props.options.sizeMode === SIZE_MODE_SCROLL,
+                className={clsx('higlass-scroll-container', {
+                  'higlass-scroll-container-overflow':
+                    this.props.options.sizeMode === SIZE_MODE_OVERFLOW,
+                  'higlass-scroll-container-scroll':
+                    this.props.options.sizeMode === SIZE_MODE_SCROLL,
                 })}
                 onScroll={this.onScrollHandlerBound}
               >
@@ -5335,7 +5340,10 @@ class HiGlassComponent extends React.Component {
                   ref={(c) => {
                     this.divDrawingSurface = c;
                   }}
-                  className={clsx('higlass-drawing-surface', styles["higlass-drawing-surface"])}
+                  className={clsx(
+                    'higlass-drawing-surface',
+                    styles['higlass-drawing-surface'],
+                  )}
                 >
                   {gridLayout}
                 </div>
@@ -5343,7 +5351,7 @@ class HiGlassComponent extends React.Component {
                   ref={(c) => {
                     this.svgElement = c;
                   }}
-                  className={styles["higlass-svg"]}
+                  className={styles['higlass-svg']}
                   style={{
                     // inline the styles so they aren't overriden by other css
                     // on the web page

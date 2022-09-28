@@ -23,7 +23,7 @@ class CustomTrackDialog extends React.PureComponent {
         onOkay={this.props.onCancel}
         title={this.props.title}
       >
-        <React.Fragment>{childrenWithProp}</React.Fragment>
+        {childrenWithProp}
       </Dialog>
     );
   }

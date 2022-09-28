@@ -192,7 +192,7 @@ class ContextMenuContainer extends React.Component {
         ref={(c) => {
           this.div = c;
         }}
-        className={clsx("context-menu-item", classes['context-menu'], {
+        className={clsx('context-menu-item', classes['context-menu'], {
           [classes['context-menu-dark']]: this.props.theme === THEME_DARK,
         })}
         style={wholeStyle}

@@ -3,7 +3,12 @@ import LocalDataFetcher from './local-tile-fetcher';
 import DataFetcher from '../DataFetcher';
 import { AVAILABLE_FOR_PLUGINS } from '../configs';
 
-const getDataFetcher = (dataConfig, pubSub, pluginDataFetchers, availableForPlugins = AVAILABLE_FOR_PLUGINS) => {
+const getDataFetcher = (
+  dataConfig,
+  pubSub,
+  pluginDataFetchers,
+  availableForPlugins = AVAILABLE_FOR_PLUGINS,
+) => {
   // Check if a plugin data fetcher is available.
   const pluginDataFetcher = pluginDataFetchers[dataConfig.type];
   if (pluginDataFetcher) {

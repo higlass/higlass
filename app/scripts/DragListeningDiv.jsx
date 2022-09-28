@@ -29,7 +29,7 @@ class DragListeningDiv extends React.Component {
 
     return (
       <div
-        className={clsx("DragListeningDiv", {
+        className={clsx('DragListeningDiv', {
           [classes['drag-listening-div-active']]: this.props.enabled,
         })}
         onDragEnter={() => {
@@ -56,13 +56,11 @@ class DragListeningDiv extends React.Component {
           this.props.onTrackDropped(newTrack);
           this.props.pubSub.publish('trackDropped', newTrack);
         }}
-        style={Object.assign(
-          {
-            background,
-            opacity: 0.6,
-          },
-          this.props.style,
-        )}
+        style={{
+          background,
+          opacity: 0.6,
+          ...this.props.style,
+        }}
       />
     );
   }

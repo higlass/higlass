@@ -328,7 +328,7 @@ class DraggableDiv extends React.Component {
         ref={(c) => {
           this.divContainer = c;
         }}
-        className={clsx(this.props.className, classes["draggable-div"])}
+        className={clsx(this.props.className, classes['draggable-div'])}
         style={divStyle}
       >
         {resizeHandles}

@@ -9,18 +9,20 @@ import { THEME_DARK } from './configs';
 // Styles
 import classes from '../styles/TrackControl.module.scss';
 
-const getClassName = (props) => clsx({
-  [classes['track-control-active']]: props.isVisible,
-  [classes['track-control']]: !props.isVisible,
-  [classes['track-control-left']]: props.isAlignLeft,
-  [classes['track-control-vertical']]: props.isVertical,
-  [classes['track-control-padding-right']]: props.paddingRight,
-  [classes['track-control-dark']]: props.theme === THEME_DARK,
-});
+const getClassName = (props) =>
+  clsx({
+    [classes['track-control-active']]: props.isVisible,
+    [classes['track-control']]: !props.isVisible,
+    [classes['track-control-left']]: props.isAlignLeft,
+    [classes['track-control-vertical']]: props.isVertical,
+    [classes['track-control-padding-right']]: props.paddingRight,
+    [classes['track-control-dark']]: props.theme === THEME_DARK,
+  });
 
-const getButtonClassName = (props) => clsx("no-zoom", classes['track-control-button'], {
-  [classes['track-control-button-vertical']]: props.isVertical,
-});
+const getButtonClassName = (props) =>
+  clsx('no-zoom', classes['track-control-button'], {
+    [classes['track-control-button-vertical']]: props.isVertical,
+  });
 
 let oldProps = null;
 let DragHandle = null;
@@ -37,10 +39,11 @@ function TrackControl(props) {
     DragHandle = SortableHandle(() => (
       <svg
         className={getButtonClassName(props)}
-        style={Object.assign(
-          { height: '20px', width: '20px' },
-          props.imgStyleMove,
-        )}
+        style={{
+          height: '20px',
+          width: '20px',
+          ...props.imgStyleMove,
+        }}
       >
         <title>Move track</title>
         <use xlinkHref="#move" />
@@ -66,10 +69,11 @@ function TrackControl(props) {
             imgConfig.getBoundingClientRect(),
           );
         }}
-        style={Object.assign(
-          { height: '20px', width: '20px' },
-          props.imgStyleSettings,
-        )}
+        style={{
+          height: '20px',
+          width: '20px',
+          ...props.imgStyleSettings,
+        }}
       >
         <title>Configure track</title>
         <use xlinkHref="#cog" />
@@ -79,10 +83,11 @@ function TrackControl(props) {
         <svg
           className={getButtonClassName(props)}
           onClick={() => props.onAddSeries(props.uid)}
-          style={Object.assign(
-            { height: '20px', width: '20px' },
-            props.imgStyleAdd,
-          )}
+          style={{
+            height: '20px',
+            width: '20px',
+            ...props.imgStyleAdd,
+          }}
         >
           <title>Add series</title>
           <use xlinkHref="#plus" />
@@ -100,17 +105,18 @@ function TrackControl(props) {
             imgClose.getBoundingClientRect(),
           );
         }}
-        style={Object.assign(
-          { height: '20px', width: '20px' },
-          props.imgStyleClose,
-        )}
+        style={{
+          height: '20px',
+          width: '20px',
+          ...props.imgStyleClose,
+        }}
       >
         <title>Close track</title>
         <use xlinkHref="#cross" />
       </svg>
     </div>
   );
-};
+}
 
 TrackControl.propTypes = {
   imgStyleAdd: PropTypes.object,

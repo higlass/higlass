@@ -52,14 +52,14 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(
           null,
         )}
 
-        <hr className={classes["context-menu-hr"]} />
+        <hr className={classes['context-menu-hr']} />
 
         <ContextMenuItem
           contextMenu={this}
           onClick={() => this.props.onLockValueScale(this.props.tracks[0].uid)}
           onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
-          {'Lock Value Scale With'}
+          Lock Value Scale With
         </ContextMenuItem>
 
         <ContextMenuItem
@@ -69,23 +69,23 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(
           }
           onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
-          {'Unlock Value Scale'}
+          Unlock Value Scale
         </ContextMenuItem>
 
-        <hr className={classes["context-menu-hr"]} />
+        <hr className={classes['context-menu-hr']} />
 
         <ContextMenuItem
           contextMenu={this}
           onClick={() => this.props.onAddSeries(this.props.tracks[0].uid)}
           onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
-          {'Add Series'}
+          Add Series
         </ContextMenuItem>
 
         <ContextMenuItem
           onClick={() => this.props.onCloseTrack(this.props.tracks[0].uid)}
         >
-          {'Close Track'}
+          Close Track
         </ContextMenuItem>
 
         <ContextMenuItem
@@ -96,7 +96,7 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(
             );
           }}
         >
-          {'Replace Track'}
+          Replace Track
         </ContextMenuItem>
 
         {this.getSubmenu()}

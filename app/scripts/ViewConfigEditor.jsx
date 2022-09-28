@@ -153,7 +153,9 @@ class ViewConfigEditor extends React.Component {
       const key = `${i}-${d.msg}`;
       return (
         <tr key={key}>
-          <td className={clsx(classes.title, classes[d.type])}>{`[${i}] ${d.type}`}</td>
+          <td
+            className={clsx(classes.title, classes[d.type])}
+          >{`[${i}] ${d.type}`}</td>
           <td>
             <pre>{d.msg}</pre>
           </td>
@@ -174,7 +176,7 @@ class ViewConfigEditor extends React.Component {
         title="Edit View Config"
       >
         <>
-          <header className={classes["view-config-editor-header"]}>
+          <header className={classes['view-config-editor-header']}>
             <Button
               onBlur={this.showBound}
               onMouseDown={this.hideBound}
@@ -196,7 +198,7 @@ class ViewConfigEditor extends React.Component {
             ref={(c) => {
               this.editorWrap = c;
             }}
-            className={classes["view-config-editor"]}
+            className={classes['view-config-editor']}
           >
             <Editor
               ref={(c) => {
@@ -213,13 +215,13 @@ class ViewConfigEditor extends React.Component {
             />
           </div>
           <div
-            className={classes["view-config-log"]}
+            className={classes['view-config-log']}
             style={{
               height: this.state.showLog ? '50%' : '30px',
             }}
           >
             <div
-              className={classes["view-config-log-header"]}
+              className={classes['view-config-log-header']}
               onClick={() => this.toggleLogBound()}
             >
               {`Log Messages (${
@@ -227,7 +229,7 @@ class ViewConfigEditor extends React.Component {
               })`}
             </div>
             <div
-              className={classes["view-config-log-msg"]}
+              className={classes['view-config-log-msg']}
               style={{
                 padding: this.state.showLog ? '10px' : 0,
               }}

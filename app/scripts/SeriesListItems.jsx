@@ -63,12 +63,12 @@ export const getSeriesItems = (
 
     const imgTag = thumbnail ? (
       <div
-        className={classes["context-menu-icon"]}
+        className={classes['context-menu-icon']}
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
       />
     ) : (
-      <div className={classes["context-menu-icon"]}>
+      <div className={classes['context-menu-icon']}>
         <svg />
       </div>
     );
@@ -76,7 +76,7 @@ export const getSeriesItems = (
     return (
       <ContextMenuItem
         key={x.uid}
-        className={classes["context-menu-item"]}
+        className={classes['context-menu-item']}
         onClick={() => {
           if (onItemClick) onItemClick(x.uid);
         }}
@@ -88,12 +88,12 @@ export const getSeriesItems = (
         }}
       >
         {imgTag}
-        <span className={classes["context-menu-span"]}>
+        <span className={classes['context-menu-span']}>
           {x.options && x.options.name && x.options.name.length
             ? x.options.name
             : x.type}
           {onItemMouseEnter && onItemMouseLeave ? (
-            <svg className={classes["play-icon"]}>
+            <svg className={classes['play-icon']}>
               <use xlinkHref="#play" />
             </svg>
           ) : null}

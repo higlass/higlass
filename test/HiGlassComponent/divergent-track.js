@@ -3,7 +3,10 @@ import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
-import { mountHGComponentAsync, removeHGComponent } from '../../app/scripts/utils';
+import {
+  mountHGComponentAsync,
+  removeHGComponent,
+} from '../../app/scripts/utils';
 
 import { divergentTrackConfig } from '../view-configs';
 
@@ -34,10 +37,12 @@ describe('Divergent tracks', () => {
   it('Check that there are green and red rects', async () => {
     const svg = hgc.instance().createSVG();
     expect(
-      svg.querySelector("rect[fill='green'][stroke='green'][x^='11.24963759567']")
+      svg.querySelector(
+        "rect[fill='green'][stroke='green'][x^='11.24963759567']",
+      ),
     ).to.exist;
     expect(
-      svg.querySelector("rect[fill='red'][stroke='red'][x^='29.81875448954']")
+      svg.querySelector("rect[fill='red'][stroke='red'][x^='29.81875448954']"),
     ).to.exist;
   });
 });

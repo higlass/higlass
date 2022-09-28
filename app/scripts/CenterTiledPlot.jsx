@@ -1,5 +1,7 @@
 import React from 'react';
 
-const CenterTiledPlot = () => <div className="center-plot" />;
+function CenterTiledPlot() {
+  return <div className="center-plot" />;
+}
 
 export default CenterTiledPlot;

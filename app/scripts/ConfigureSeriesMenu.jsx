@@ -12,7 +12,7 @@ export default class ConfigureSeriesMenu extends ContextMenuContainer {
         ref={(c) => {
           this.div = c;
         }}
-        className={classes["context-menu"]}
+        className={classes['context-menu']}
         onMouseLeave={this.props.handleMouseLeave}
         style={{
           left: this.state.left,

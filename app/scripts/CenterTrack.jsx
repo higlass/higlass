@@ -111,7 +111,6 @@ class CenterTrack extends React.Component {
     }
   }
 
-
   /* ---------------------------- Custom Methods ---------------------------- */
 
   addBrush1d() {
@@ -464,16 +463,18 @@ class CenterTrack extends React.Component {
     }
 
     const rangeSelectorGroup1dClass = clsx(
-      !this.props.is1dRangeSelection && stylesTrack['track-range-selection-group-inactive']
+      !this.props.is1dRangeSelection &&
+        stylesTrack['track-range-selection-group-inactive'],
     );
 
     const rangeSelectorGroup2dClass = clsx(
-      this.props.is1dRangeSelection && stylesTrack['track-range-selection-group-inactive']
+      this.props.is1dRangeSelection &&
+        stylesTrack['track-range-selection-group-inactive'],
     );
 
     return (
       <div
-        className={clsx(this.props.className, styles["center-track"])}
+        className={clsx(this.props.className, styles['center-track'])}
         onMouseEnter={this.mouseEnterHandler.bind(this)}
         onMouseLeave={this.mouseLeaveHandler.bind(this)}
         style={{

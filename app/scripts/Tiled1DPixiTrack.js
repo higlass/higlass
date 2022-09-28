@@ -10,11 +10,8 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
   constructor(context, options) {
     super(context, options);
 
-    const {
-      onMouseMoveZoom,
-      isValueScaleLocked,
-      getLockGroupExtrema,
-    } = context;
+    const { onMouseMoveZoom, isValueScaleLocked, getLockGroupExtrema } =
+      context;
 
     this.onMouseMoveZoom = onMouseMoveZoom;
     this.isValueScaleLocked = isValueScaleLocked;

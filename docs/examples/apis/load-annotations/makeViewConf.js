@@ -9,7 +9,7 @@ function makeViewConf(viewconf, regions1DBait, regions1DTarget, regions2D) {
   };
   const annotations1DHorizontal = {
     type: 'horizontal-1d-annotations',
-    options: { regions: regions1DBait , ...annotation1DOptions },
+    options: { regions: regions1DBait, ...annotation1DOptions },
   };
   const annotations1DVertical = {
     type: 'vertical-1d-annotations',

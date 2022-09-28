@@ -23,14 +23,18 @@ function Dialog(props) {
   return (
     <Modal closeButton={false} hide={props.hide} maxHeight={props.maxHeight}>
       <>
-        <header className={classes["dialog-header"]}>
+        <header className={classes['dialog-header']}>
           <h3>{props.title}</h3>
           <Button onClick={handleCancel}>
             <Cross />
           </Button>
         </header>
         {props.maxHeight ? (
-          <main className={clsx(props.maxHeight && classes['dialog-main-max-height'])}>
+          <main
+            className={clsx(
+              props.maxHeight && classes['dialog-main-max-height'],
+            )}
+          >
             {props.children}
           </main>
         ) : (
@@ -38,7 +42,9 @@ function Dialog(props) {
         )}
         <footer
           className={
-            classes[props.maxHeight ? 'dialog-footer-max-height' : 'dialog-footer']
+            classes[
+              props.maxHeight ? 'dialog-footer-max-height' : 'dialog-footer'
+            ]
           }
         >
           {props.okayOnly ? (
@@ -55,7 +61,7 @@ function Dialog(props) {
       </>
     </Modal>
   );
-};
+}
 
 Dialog.defaultProps = {
   cancelTitle: 'Cancel',
