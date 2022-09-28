@@ -7,7 +7,7 @@ const Button = React.forwardRef((props, ref) => (
   <button
     ref={ref}
     className={classes[props.styleName] ?? classes.button}
-    disable={props.disable}
+    disabled={props.disable}
     onBlur={props.onBlur}
     onClick={props.onClick}
     onMouseDown={props.onMouseDown}

@@ -6,7 +6,6 @@ export default function dictValues(dictionary) {
 
   for (const key in dictionary) {
     if (dictionary.hasOwnProperty(key)) {
-      // eslint-disable-line no-prototype-builtins
       values.push(dictionary[key]);
     }
   }

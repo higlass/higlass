@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
@@ -7,7 +8,6 @@ import { THEME_DARK } from './configs';
 
 // Styles
 import classes from '../styles/ContextMenu.module.scss';
-import clsx from 'clsx';
 
 class NestedContextMenu extends ContextMenuContainer {
   getSubmenu() {

@@ -184,8 +184,8 @@ describe('BedLikeTrack |', () => {
       );
 
       const rectHeights = new Set();
-      for (const tileId in trackObj.drawnRects) {
-        for (const uid in trackObj.drawnRects[tileId]) {
+      for (const tileId of Object.keys(trackObj.drawnRects)) {
+        for (const uid of Object.keys(trackObj.drawnRects[tileId])) {
           const rect = trackObj.drawnRects[tileId][uid];
 
           rectHeights.add(rect[0][3]);
@@ -232,8 +232,8 @@ describe('BedLikeTrack |', () => {
         viewConf.views[0].tracks.top[0].uid,
       );
 
-      for (const tileId in trackObj.drawnRects) {
-        for (const uid in trackObj.drawnRects[tileId]) {
+      for (const tileId of Object.keys(trackObj.drawnRects)) {
+        for (const uid of Object.keys(trackObj.drawnRects[tileId])) {
           const rect = trackObj.drawnRects[tileId][uid];
 
           // the segment polygons have 12 vertices

@@ -9,11 +9,11 @@ function makeViewConf(viewconf, regions1DBait, regions1DTarget, regions2D) {
   };
   const annotations1DHorizontal = {
     type: 'horizontal-1d-annotations',
-    options: Object.assign({ regions: regions1DBait }, annotation1DOptions)
+    options: { regions: regions1DBait , ...annotation1DOptions },
   };
   const annotations1DVertical = {
     type: 'vertical-1d-annotations',
-    options: Object.assign({ regions: regions1DTarget }, annotation1DOptions)
+    options: { regions: regions1DTarget, ...annotation1DOptions },
   };
   const annotations2D = {
     type: '2d-chromosome-annotations', // or 2d-annotations?
@@ -21,11 +21,10 @@ function makeViewConf(viewconf, regions1DBait, regions1DTarget, regions2D) {
     options: {
       minRectWidth: 6,
       minRectHeight: 6,
-      regions: regions2D.map(row => row.concat([
-        'rgba(0, 0, 128, 0.66)', '',
-        8, 8
-      ]))
-    }
+      regions: regions2D.map((row) =>
+        row.concat(['rgba(0, 0, 128, 0.66)', '', 8, 8]),
+      ),
+    },
   };
   viewconf.views[0].tracks.top.push(annotations1DHorizontal);
   viewconf.views[0].tracks.left.push(annotations1DVertical);

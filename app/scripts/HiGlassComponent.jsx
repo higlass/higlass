@@ -510,10 +510,10 @@ class HiGlassComponent extends React.Component {
       resolution: 2,
       autoResize: true,
     };
-    
-    const version_number = parseInt(PIXI.VERSION[0])
 
-    if (version_number === 4) {
+    const versionNumber = parseInt(PIXI.VERSION[0], 10)
+
+    if (versionNumber === 4) {
       console.warn(
         'Deprecation warning: please update Pixi.js to version 5 or above!',
       );
@@ -523,7 +523,7 @@ class HiGlassComponent extends React.Component {
         this.pixiRenderer = new GLOBALS.PIXI.WebGLRenderer(rendererOptions);
       }
     } else {
-      if (version_number < 4) {
+      if (versionNumber < 4) {
         console.warn(
           'Deprecation warning: please update Pixi.js to version 5 or above! ' +
           'This version of Pixi.js is unsupported. Good luck 🤞',

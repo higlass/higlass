@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import clsx from 'clsx';
 
 import { THEME_DARK } from './configs';
 
 // Styles
 import classes from '../styles/ContextMenu.module.scss';
-import clsx from 'clsx';
 
 // the size of the track controls
 // taken from ../styles/TrackControl.module.css

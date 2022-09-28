@@ -126,6 +126,7 @@ class TilesetFinder extends React.Component {
         [].concat(
           ...this.augmentedTracksInfo
             .filter((x) => x.datatype)
+            // eslint-disable-next-line arrow-body-style
             .filter((x) => {
               return (
                 x.orientation === this.props.orientation ||
