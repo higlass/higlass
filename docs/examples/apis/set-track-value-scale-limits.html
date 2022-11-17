@@ -390,7 +390,7 @@ const testViewConfig = {
   ],
 };
 
-const hgApi = hglib.viewer(
+const hgApi = await hglib.viewer(
   document.getElementById('demo'),
   testViewConfig,
   { bounded: true },

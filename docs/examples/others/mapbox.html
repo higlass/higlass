@@ -142,7 +142,7 @@ let hgApi;
 let xDomain = [-180, 180];
 let yDomain = [180, -180];
 
-const loadHg = () => {
+const loadHg = async () => {
   accessToken = accessTokenEl.value;
   mapStyle = mapStyleEl.value;
 
@@ -156,7 +156,7 @@ const loadHg = () => {
   viewConfig.views[0].tracks.center[0].options.accessToken = accessToken;
   viewConfig.views[0].tracks.center[0].options.style = mapStyle;
 
-  hgApi = window.hglib.viewer(
+  hgApi = await window.hglib.viewer(
     document.getElementById('demo'),
     JSON.parse(JSON.stringify(viewConfig)),
     { bounded: true },

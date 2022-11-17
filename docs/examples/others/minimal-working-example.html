@@ -21,7 +21,7 @@
 </head>
 <body></body>
 <script>
-const hgApi = window.hglib.viewer(
+const hgApi = await window.hglib.viewer(
   document.body,
   'https://higlass.io/api/v1/viewconfs/?d=default',
   { bounded: true },

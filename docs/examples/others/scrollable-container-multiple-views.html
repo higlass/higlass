@@ -977,7 +977,7 @@ const viewConfig = {
   trackSourceServers: ['http://higlass.io/api/v1'],
 };
 
-const hgApi = hglib.viewer(
+const hgApi = await hglib.viewer(
   document.getElementById('demo'),
   viewConfig,
   {

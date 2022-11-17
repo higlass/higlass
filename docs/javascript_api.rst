@@ -19,8 +19,8 @@ javascript and css files:
     <link rel="stylesheet" href="https://unpkg.com/higlass@1.5.7/dist/hglib.css" type="text/css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
 
-    <script crossorigin src="https://unpkg.com/react@16.6/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@16.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/pixi.js@5/dist/pixi.min.js"></script>
     <!-- To render HiGlass with the Canvas API include the pixi.js-legacy instead of pixi.js -->
     <!-- <script crossorigin src="https://unpkg.com/pixi.js-legacy@5/dist/pixi-legacy.min.js"></script> -->
@@ -36,7 +36,7 @@ javascript and css files:
 
   <script>
 
-  const hgApi = hglib.viewer(
+  const hgApi = await hglib.viewer(
     document.getElementById('development-demo'),
     'http://higlass.io/api/v1/viewconfs/?d=default',
     {
@@ -79,7 +79,7 @@ Creating an inline HiGlass component
 
 .. code-block:: javascript
 
-  const hgv = hglib.viewer(element, config, options);
+  hglib.viewer(element, config, options);
 
 Create a new HiGlass viewer within a web page. This initializes a
 HiGlassComponent inside the element ``element`` with a viewconfig passed in as
@@ -145,7 +145,7 @@ GitHub repository
 
 .. code-block:: javascript
 
-  const hgv = hglib.viewer(
+  hglib.viewer(
     document.getElementById('development-demo'),
     testViewConfig,
     { bounded: true },

@@ -278,7 +278,7 @@ function heatmapDragStart(ev) {
   }
 }
  ;
-    function changeOverlay() {
+    async function changeOverlay() {
 
         hgcontainer = document.createElement('div');
         hgcontainer.style.width = '100%';
@@ -295,7 +295,7 @@ function heatmapDragStart(ev) {
 
         hgcontainer.appendChild(hgdisplay);
 
-        window.hgApi = hglib.viewer(
+        window.hgApi = await hglib.viewer(
                         hgdisplay,
                         testViewConfig,
                         { bounded: true }

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Upgrade to React 18
 - Migrate to Vite from webpack
 - Migrate to web-test-runner from karma
 - Update a bunch of packages (most notably d3 packages which have a slightly different API)

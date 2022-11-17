@@ -99,7 +99,7 @@ const viewConfig = {
   ],
 };
 
-const api = hglib.viewer(
+const api = await hglib.viewer(
   document.getElementById('demo'), viewConfig, { bounded: true },
 );
 

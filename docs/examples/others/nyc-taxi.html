@@ -147,7 +147,7 @@ let hgApi;
 let xDomain = [11784450, 11822597];
 let yDomain = [15049995, 15078071];
 
-const loadHg = () => {
+const loadHg = async () => {
   accessToken = accessTokenEl.value;
 
   if (!accessToken) {
@@ -171,7 +171,7 @@ const loadHg = () => {
     }
   });
 
-  hgApi = window.hglib.viewer(
+  hgApi = await window.hglib.viewer(
     document.getElementById('demo'),
     JSON.parse(JSON.stringify(viewConfig)),
     { bounded: true, theme: 'dark' },
@@ -189,7 +189,7 @@ loadEl.addEventListener('click', () => {
   loadHg();
 });
 
-window.hgApi = window.hglib.viewer(
+window.hgApi = await window.hglib.viewer(
   document.getElementById('demo'),
   viewConfig,
   { bounded: true, theme: 'dark' },

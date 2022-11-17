@@ -177,7 +177,7 @@ const viewConfig = {
   ]
 };
 
-const hgApi = hglib.viewer(
+const hgApi = await hglib.viewer(
   document.getElementById('demo'),
   viewConfig,
   {
