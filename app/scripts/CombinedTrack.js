@@ -1,7 +1,7 @@
 import slugid from 'slugid';
 
 class CombinedTrack {
-  constructor({ tracks, createTrackObject }) {
+  constructor(context) {
     this.context = context;
     const { tracks, createTrackObject } = context;
 

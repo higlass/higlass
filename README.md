@@ -33,7 +33,7 @@ Kerpedjiev, P., Abdennur, N., Lekschas, F., McCallum, C., Dinkla, K., Strobelt, 
 To run higlass from its source code simply run the following:
 
 ```
-npm clean-install
+npm clean-install // use --legacy-peer-deps if you get peer dependency errors
 npm run start
 ```
 
