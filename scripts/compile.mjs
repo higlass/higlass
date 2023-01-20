@@ -55,7 +55,6 @@ await fs.promises.writeFile(
 
 // delete the vite now that we have the final UMDs
 await fs.promises.unlink(viteUmdOutput);
-
 // =========================================
 //       UMD demo (dist/index.html)
 // =========================================
