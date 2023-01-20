@@ -1189,7 +1189,7 @@ class TrackRenderer extends React.Component {
       // a 1d track, try to apply value scale zooming
       if (event.shiftKey || this.valueScaleZooming) {
         if (event.sourceEvent.deltaY !== undefined) {
-          this.valueScaleZoom(trackOrientation);
+          this.valueScaleZoom(event, trackOrientation);
           return;
         }
 
@@ -1511,6 +1511,8 @@ class TrackRenderer extends React.Component {
     // To simplify the context creation via ES6 object shortcuts.
     const context = {
       id: track.uid,
+      trackUid: track.uid,
+      trackType: track.type,
       viewUid: this.viewUid,
       pubSub: this.props.pubSub,
       scene: this.pStage,
