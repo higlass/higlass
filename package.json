@@ -81,6 +81,8 @@
     "react-dom": "^16.6.3"
   },
   "devDependencies": {
+    "@babel/core": "^7.20.12",
+    "@babel/plugin-transform-classes": "^7.20.7",
     "@vitejs/plugin-react": "^2.0.1",
     "@web/test-runner": "^0.14.0",
     "@web/test-runner-puppeteer": "^0.10.5",

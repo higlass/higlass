@@ -1,4 +1,5 @@
 import * as esbuild from 'esbuild';
+import * as babel from '@babel/core';
 import * as React from 'react';
 import * as PIXI from 'pixi.js';
 
@@ -24,20 +25,33 @@ await fs.promises.rename(
 // we transform the contents of the vite build
 const viteUmdOutput = path.resolve(__dirname, '../dist/higlass.umd.js');
 
-await esbuild.build({
-  entryPoints: [viteUmdOutput],
+const transpiled = await babel.transformFileAsync(viteUmdOutput, {
+  plugins: ['@babel/plugin-transform-classes'],
+});
+
+const unminifed = await esbuild.transform(transpiled.code, {
   minify: false,
   define: {
     "process.env.NODE_ENV": `"production"`,
   },
-  outfile: path.resolve(__dirname, '../dist/hglib.js'),
-});
+})
 
-await esbuild.build({
-  entryPoints: [viteUmdOutput],
-  minify: true,
-  outfile: path.resolve(__dirname, '../dist/hglib.min.js'),
-});
+await fs.promises.writeFile(
+  path.resolve(__dirname, '../dist/hglib.js'),
+  unminifed.code,
+);
+
+const minifed = await esbuild.transform(transpiled.code, {
+  minify: false,
+  define: {
+    "process.env.NODE_ENV": `"production"`,
+  },
+})
+
+await fs.promises.writeFile(
+  path.resolve(__dirname, '../dist/hglib.min.js'),
+  minifed.code,
+);
 
 // delete the vite now that we have the final UMDs
 await fs.promises.unlink(viteUmdOutput);
