@@ -32,9 +32,9 @@ const transpiled = await babel.transformFileAsync(viteUmdOutput, {
 const unminifed = await esbuild.transform(transpiled.code, {
   minify: false,
   define: {
-    "process.env.NODE_ENV": `"production"`,
+    'process.env.NODE_ENV': `"production"`,
   },
-})
+});
 
 await fs.promises.writeFile(
   path.resolve(__dirname, '../dist/hglib.js'),
@@ -42,11 +42,11 @@ await fs.promises.writeFile(
 );
 
 const minifed = await esbuild.transform(transpiled.code, {
-  minify: false,
+  minify: true,
   define: {
-    "process.env.NODE_ENV": `"production"`,
+    'process.env.NODE_ENV': `"production"`,
   },
-})
+});
 
 await fs.promises.writeFile(
   path.resolve(__dirname, '../dist/hglib.min.js'),
@@ -61,21 +61,25 @@ await fs.promises.unlink(viteUmdOutput);
 // =========================================
 
 const esmHTML = await fs.promises.readFile(
-  path.resolve(__dirname, '../index.html'), { encoding: 'utf-8' },
+  path.resolve(__dirname, '../index.html'),
+  { encoding: 'utf-8' },
 );
 
-const base = "https://unpkg.com";
+const base = 'https://unpkg.com';
 const reactVersion = React.version.split('.')[0];
 const pixiVersion = PIXI.VERSION.split('.')[0];
 
 await fs.promises.writeFile(
   path.resolve(__dirname, '../dist/index.html'),
   // replace module higlass import with UMD scripts
-  esmHTML.replace(/<!-- HIGLASS IMPORT -->(.|\n)*<!-- HIGLASS IMPORT -->/, `\
+  esmHTML.replace(
+    /<!-- HIGLASS IMPORT -->(.|\n)*<!-- HIGLASS IMPORT -->/,
+    `\
     <link rel="stylesheet" href="./hglib.css">
     <script src="${base}/react@${reactVersion}/umd/react.production.min.js"></script>
     <script src="${base}/react-dom@${reactVersion}/umd/react-dom.production.min.js"></script>
     <script src="${base}/pixi.js@${pixiVersion}/dist/browser/pixi.min.js"></script>
     <script src="./hglib.min.js"></script>
-  `)
+  `,
+  ),
 );
