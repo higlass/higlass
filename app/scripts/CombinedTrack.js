@@ -1,7 +1,10 @@
 import slugid from 'slugid';
 
 class CombinedTrack {
-  constructor({ tracks, createTrackObject }) {
+  constructor(context) {
+    this.context = context;
+    const { tracks, createTrackObject } = context;
+
     this.childTracks = tracks.map(createTrackObject);
     this.createdTracks = {};
     this.uid = slugid.nice();
@@ -104,6 +107,18 @@ class CombinedTrack {
   //     this.childTracks[i].refYScale(yScale);
   //   }
   // }
+
+  clickOutside() {
+    for (let i = 0; i < this.childTracks.length; i++) {
+      this.childTracks[i].clickOutside();
+    }
+  }
+
+  click(...args) {
+    for (let i = 0; i < this.childTracks.length; i++) {
+      this.childTracks[i].click(...args);
+    }
+  }
 
   draw() {
     // for (let i = 0; i < this.childTracks.length; i++) {

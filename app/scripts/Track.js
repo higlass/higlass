@@ -5,7 +5,10 @@ import { fake as fakePubSub } from './hocs/with-pub-sub';
 import { isWithin } from './utils';
 
 class Track {
-  constructor({ id, pubSub, getTheme }) {
+  constructor(context) {
+    this.context = context;
+
+    const { id, pubSub, getTheme } = context;
     if (pubSub) {
       this.pubSub = pubSub;
     } else {
@@ -77,6 +80,19 @@ class Track {
   }
 
   getData() {}
+
+  /** Capture click events. x and y are relative to the track
+   * position */
+  click(x, y, evt) {
+    return {
+      type: 'generic',
+      event: evt,
+      payload: null,
+    };
+  }
+
+  /** There was a click event outside the track * */
+  clickOutside() {}
 
   getDimensions() {
     return this.dimensions;

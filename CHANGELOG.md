@@ -9,6 +9,8 @@
 - Update scss to fix deprecation warnings
 - Remove all references to TravisCI.
 - Update linting and schema tests to GH Actions.
+- Tracks can now implement `click()`, which allows them to react to click events on the corresponding track
+- Tracks can now implement `clickDialog`, to open modals and display custom data in them (e.g. in response to a click on the track)
 
 ## v1.11.11
 
