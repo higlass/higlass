@@ -15,7 +15,7 @@ class ExportLinkDialog extends React.Component {
         onOkay={this.props.onDone}
         title="Share view link"
       >
-        <div className={classes["export-link-dialog-wrapper"]}>
+        <div className={classes['export-link-dialog-wrapper']}>
           <input
             ref={(element) => {
               if (!element) return;

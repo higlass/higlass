@@ -140,14 +140,10 @@ class ChromosomeGrid extends PixiTrack {
       this.mask2d.beginFill(0xff0000);
 
       for (let i = 0; i < this.options.orientationsAndPositions.length; i++) {
-        const orientation = this.options.orientationsAndPositions[i]
-          .orientation;
-        const {
-          left,
-          top,
-          width,
-          height,
-        } = this.options.orientationsAndPositions[i].position;
+        const orientation =
+          this.options.orientationsAndPositions[i].orientation;
+        const { left, top, width, height } =
+          this.options.orientationsAndPositions[i].position;
 
         if (orientation === '1d-horizontal') {
           this.mask1dH.drawRect(left, top, width, height);
@@ -305,14 +301,10 @@ class ChromosomeGrid extends PixiTrack {
 
     if (this.isOverlay) {
       for (let i = 0; i < this.options.orientationsAndPositions.length; i++) {
-        const orientation = this.options.orientationsAndPositions[i]
-          .orientation;
-        const {
-          left,
-          top,
-          width,
-          height,
-        } = this.options.orientationsAndPositions[i].position;
+        const orientation =
+          this.options.orientationsAndPositions[i].orientation;
+        const { left, top, width, height } =
+          this.options.orientationsAndPositions[i].position;
         this.drawLinesSvg(output, orientation, width, height, left, top);
       }
     } else {

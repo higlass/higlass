@@ -83,7 +83,6 @@ class VerticalTiledPlot extends React.Component {
 
   /* --------------------------- Getter / Setter ---------------------------- */
 
-
   /* ---------------------------- Custom Methods ---------------------------- */
 
   addBrush() {
@@ -194,14 +193,15 @@ class VerticalTiledPlot extends React.Component {
       .map((track) => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
 
-    const rangeSelectorClass = stylesTrack[
-      this.props.isRangeSelectionActive
-        ? 'track-range-selection-active'
-        : 'track-range-selection'
-    ];
+    const rangeSelectorClass =
+      stylesTrack[
+        this.props.isRangeSelectionActive
+          ? 'track-range-selection-active'
+          : 'track-range-selection'
+      ];
 
     return (
-      <div className={styles["vertical-tiled-plot"]}>
+      <div className={styles['vertical-tiled-plot']}>
         {isBrushable && (
           <svg
             ref={(el) => {
@@ -217,7 +217,11 @@ class VerticalTiledPlot extends React.Component {
         )}
         <ListWrapper
           axis="x"
-          className={clsx(stylesPlot.list, stylesPlot.stylizedList, stylesPlot.horizontalList)}
+          className={clsx(
+            stylesPlot.list,
+            stylesPlot.stylizedList,
+            stylesPlot.horizontalList,
+          )}
           component={SortableList}
           editable={this.props.editable}
           handleConfigTrack={this.props.handleConfigTrack}

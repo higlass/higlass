@@ -55,7 +55,8 @@ describe('Horizontal multivecs', () => {
         ); // uuid of horizontal-multivec
         const width = track.dimensions[0];
         const height = track.dimensions[1];
-        if (height === MIN_HORIZONTAL_HEIGHT || width === MIN_VERTICAL_WIDTH) return;
+        if (height === MIN_HORIZONTAL_HEIGHT || width === MIN_VERTICAL_WIDTH)
+          return;
         done();
       },
       {

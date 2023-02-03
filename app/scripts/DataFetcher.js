@@ -397,7 +397,7 @@ export default class DataFetcher {
         },
         this.pubSub,
         true,
-      )
+      );
     });
     promise.then((returnedTiles) => {
       // we've received some new tiles, but they're 2D

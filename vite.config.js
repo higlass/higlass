@@ -94,9 +94,6 @@ export default defineConfig(({ mode }) => {
       global: 'globalThis',
       XYLOPHON: JSON.stringify(version),
     },
-    plugins: [
-      react({ jsxRuntime: 'classic' }),
-      mockedReponsesPlugin(),
-    ],
+    plugins: [react({ jsxRuntime: 'classic' }), mockedReponsesPlugin()],
   };
 });

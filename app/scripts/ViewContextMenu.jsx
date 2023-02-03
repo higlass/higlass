@@ -51,11 +51,11 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
       >
         {customItemsWrapped}
 
-        {customItemsWrapped && <hr className={classes["context-menu-hr"]} />}
+        {customItemsWrapped && <hr className={classes['context-menu-hr']} />}
 
         {seriesItems}
 
-        {seriesItems && <hr className={classes["context-menu-hr"]} />}
+        {seriesItems && <hr className={classes['context-menu-hr']} />}
 
         <ContextMenuItem
           onClick={() =>
@@ -67,7 +67,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
           }
           onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
-          {'Add Horizontal Rule'}
+          Add Horizontal Rule
         </ContextMenuItem>
 
         <ContextMenuItem
@@ -80,7 +80,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
           }
           onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
-          {'Add Vertical Rule'}
+          Add Vertical Rule
         </ContextMenuItem>
 
         <ContextMenuItem
@@ -94,17 +94,17 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
           }
           onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
-          {'Add Cross Rule'}
+          Add Cross Rule
         </ContextMenuItem>
 
-        <hr className={classes["context-menu-hr"]} />
+        <hr className={classes['context-menu-hr']} />
 
         {this.hasMatrixTrack(this.props.tracks) && (
           <ContextMenuItem
             onClick={this.handleAddHorizontalSection.bind(this)}
             onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
           >
-            {'Add Horizontal Cross Section'}
+            Add Horizontal Cross Section
           </ContextMenuItem>
         )}
         {this.hasMatrixTrack(this.props.tracks) && (
@@ -112,7 +112,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(
             onClick={this.handleAddVerticalSection.bind(this)}
             onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
           >
-            {'Add Vertical Cross Section'}
+            Add Vertical Cross Section
           </ContextMenuItem>
         )}
 

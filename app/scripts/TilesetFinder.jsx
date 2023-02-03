@@ -21,7 +21,7 @@ class TilesetFinder extends React.Component {
     // local tracks are ones that don't have a filetype associated with them
     this.localTracks = TRACKS_INFO.filter((x) => x.local && !x.hidden).map(
       (x) => {
-        const y = Object.assign({}, x);
+        const y = { ...x };
         y.datatype = x.datatype[0];
         return y;
       },
@@ -90,14 +90,15 @@ class TilesetFinder extends React.Component {
     const newOptions = existingOptions;
 
     const entries = newEntries.map((ne) => {
-      const ane = Object.assign({}, ne, {
+      const ane = {
+        ...ne,
         server: sourceServer,
         tilesetUid: ne.uuid,
         serverUidKey: this.serverUidKey(sourceServer, ne.uuid),
         datatype: ne.datatype,
         name: ne.name,
         uid: slugid.nice(),
-      });
+      };
 
       return ane;
     });

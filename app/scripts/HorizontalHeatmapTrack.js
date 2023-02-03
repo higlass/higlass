@@ -220,12 +220,8 @@ class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   }
 
   setSpriteProperties(sprite, zoomLevel, tilePos, mirrored) {
-    const {
-      tileX,
-      tileY,
-      tileWidth,
-      tileHeight,
-    } = this.getTilePosAndDimensions(zoomLevel, tilePos);
+    const { tileX, tileY, tileWidth, tileHeight } =
+      this.getTilePosAndDimensions(zoomLevel, tilePos);
 
     const tileEndX = tileX + tileWidth;
     const tileEndY = tileY + tileHeight;

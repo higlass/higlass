@@ -44,9 +44,8 @@ export default class SeriesListMenu extends ContextMenuContainer {
         // can we dynamically generate some options?
         // should be used if the options depend on tileset info or other current state
         if (OPTIONS_INFO[optionType].generateOptions) {
-          const generatedOptions = OPTIONS_INFO[optionType].generateOptions(
-            track,
-          );
+          const generatedOptions =
+            OPTIONS_INFO[optionType].generateOptions(track);
 
           if (!menuItems[optionType].children) {
             menuItems[optionType].children = {};
@@ -63,9 +62,8 @@ export default class SeriesListMenu extends ContextMenuContainer {
               },
             };
 
-            menuItems[optionType].children[
-              generatedOption.value
-            ] = optionSelectorSettings;
+            menuItems[optionType].children[generatedOption.value] =
+              optionSelectorSettings;
           }
         }
 
@@ -112,9 +110,8 @@ export default class SeriesListMenu extends ContextMenuContainer {
               };
             }
 
-            menuItems[optionType].children[
-              inlineOptionKey
-            ] = optionSelectorSettings;
+            menuItems[optionType].children[inlineOptionKey] =
+              optionSelectorSettings;
           }
         } else if (
           OPTIONS_INFO[optionType].componentPickers &&
@@ -257,24 +254,24 @@ export default class SeriesListMenu extends ContextMenuContainer {
       // this track is already being divided
       return (
         <ContextMenuItem
-          className={classes["context-menu-item"]}
+          className={classes['context-menu-item']}
           onClick={() =>
             this.props.onChangeTrackData(this.props.series.uid, newData)
           }
           onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
-          <span className={classes["context-menu-span"]}>Remove divisor</span>
+          <span className={classes['context-menu-span']}>Remove divisor</span>
         </ContextMenuItem>
       );
     }
 
     return (
       <ContextMenuItem
-        className={classes["context-menu-item"]}
+        className={classes['context-menu-item']}
         onClick={() => this.props.onAddDivisor(this.props.series)}
         onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
       >
-        <span className={classes["context-menu-span"]}>Divide by</span>
+        <span className={classes['context-menu-span']}>Divide by</span>
       </ContextMenuItem>
     );
   }
@@ -290,7 +287,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
     ) {
       exportDataMenuItem = (
         <ContextMenuItem
-          className={classes["context-menu-item"]}
+          className={classes['context-menu-item']}
           onClick={() =>
             this.props.onExportData(
               this.props.hostTrack.uid,
@@ -299,7 +296,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
           }
           onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
-          <span className={classes["context-menu-span"]}>Export Data</span>
+          <span className={classes['context-menu-span']}>Export Data</span>
         </ContextMenuItem>
       );
     }
@@ -308,14 +305,14 @@ export default class SeriesListMenu extends ContextMenuContainer {
     // will be null so we don't need to display the menu item
     const replaceSeriesItem = this.props.onAddSeries ? (
       <ContextMenuItem
-        className={classes["context-menu-item"]}
+        className={classes['context-menu-item']}
         onClick={() => {
           this.props.onCloseTrack(this.props.series.uid);
           this.props.onAddSeries(this.props.hostTrack.uid);
         }}
         onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
       >
-        <span className={classes["context-menu-span"]}>Replace Series</span>
+        <span className={classes['context-menu-span']}>Replace Series</span>
       </ContextMenuItem>
     ) : null;
 
@@ -325,9 +322,8 @@ export default class SeriesListMenu extends ContextMenuContainer {
           this.div = c;
         }}
         className={clsx(classes['context-menu'], {
-            [classes['context-menu-dark']]: this.props.theme === THEME_DARK,
-          })
-        }
+          [classes['context-menu-dark']]: this.props.theme === THEME_DARK,
+        })}
         data-menu-type="SeriesListMenu"
         onMouseLeave={this.props.handleMouseLeave}
         style={{
@@ -345,14 +341,14 @@ export default class SeriesListMenu extends ContextMenuContainer {
           }
           onMouseLeave={(e) => this.handleMouseLeave(e)}
         >
-          {'Configure Series'}
-          <svg className={classes["play-icon"]}>
+          Configure Series
+          <svg className={classes['play-icon']}>
             <use xlinkHref="#play" />
           </svg>
         </ContextMenuItem>
 
         <ContextMenuItem
-          className={classes["context-menu-item"]}
+          className={classes['context-menu-item']}
           onClick={() => {}}
           onMouseEnter={(e) =>
             this.handleItemMouseEnter(e, {
@@ -362,9 +358,9 @@ export default class SeriesListMenu extends ContextMenuContainer {
           }
           onMouseLeave={(e) => this.handleMouseLeave(e)}
         >
-          <span className={classes["context-menu-span"]}>
-            {'Track Type'}
-            <svg className={classes["play-icon"]}>
+          <span className={classes['context-menu-span']}>
+            Track Type
+            <svg className={classes['play-icon']}>
               <use xlinkHref="#play" />
             </svg>
           </span>
@@ -375,11 +371,11 @@ export default class SeriesListMenu extends ContextMenuContainer {
         {this.getDivideByMenuItem()}
 
         <ContextMenuItem
-          className={classes["context-menu-item"]}
+          className={classes['context-menu-item']}
           onClick={this.props.onCloseTrack}
           onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
         >
-          <span className={classes["context-menu-span"]}>Close Series</span>
+          <span className={classes['context-menu-span']}>Close Series</span>
         </ContextMenuItem>
 
         {replaceSeriesItem}

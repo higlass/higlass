@@ -123,7 +123,7 @@ class TrackRenderer extends React.Component {
         ...AVAILABLE_FOR_PLUGINS.services,
         pubSub: this.props.pubSub,
         pixiRenderer: this.props.pixiRenderer,
-      }
+      },
     };
 
     this.mounted = false;
@@ -1518,7 +1518,8 @@ class TrackRenderer extends React.Component {
       scene: this.pStage,
       dataConfig,
       dataFetcher,
-      getLockGroupExtrema: () => this.currentProps.getLockGroupExtrema(track.uid),
+      getLockGroupExtrema: () =>
+        this.currentProps.getLockGroupExtrema(track.uid),
       handleTilesetInfoReceived,
       animate: () => {
         this.currentProps.onNewTilesLoaded(track.uid);
@@ -1979,7 +1980,7 @@ class TrackRenderer extends React.Component {
         ref={(c) => {
           this.baseEl = c;
         }}
-        className={clsx('track-renderer-div', classes["track-renderer"])}
+        className={clsx('track-renderer-div', classes['track-renderer'])}
         style={{
           height: this.currentProps.height,
           width: this.currentProps.width,
@@ -1989,13 +1990,19 @@ class TrackRenderer extends React.Component {
           ref={(c) => {
             this.element = c;
           }}
-          className={clsx('track-renderer-element', classes["track-renderer-element"])}
+          className={clsx(
+            'track-renderer-element',
+            classes['track-renderer-element'],
+          )}
         />
         <div
           ref={(c) => {
             this.eventTracker = c;
           }}
-          className={clsx('track-renderer-events', classes["track-renderer-events"])}
+          className={clsx(
+            'track-renderer-events',
+            classes['track-renderer-events'],
+          )}
         >
           {this.currentProps.children}
         </div>

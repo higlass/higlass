@@ -8,7 +8,8 @@
  * @returns {number} The computed size value.
  * Between 0 and the total number of items in the (flattened) input array.
  */
-const selectedItemsToSize = (selectedItems, withRelativeSize) => selectedItems.reduce(
+const selectedItemsToSize = (selectedItems, withRelativeSize) =>
+  selectedItems.reduce(
     (a, h) => a + (Array.isArray(h) && withRelativeSize ? h.length : 1),
     0,
   );

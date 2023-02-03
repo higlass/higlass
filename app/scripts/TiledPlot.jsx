@@ -1038,7 +1038,8 @@ class TiledPlot extends React.Component {
             ? `overlay-${overlayTrack.type}-track`
             : 'overlay-track';
 
-          const overlayDef = Object.assign({}, overlayTrack, {
+          const overlayDef = {
+            ...overlayTrack,
             uid: overlayTrack.uid || slugid.nice(),
             includes: overlayTrack.includes,
             type,
@@ -1107,7 +1108,7 @@ class TiledPlot extends React.Component {
                 })
                 .filter((x) => x), // filter out null entries
             }),
-          });
+          };
 
           // the 2 * verticalMargin is to make up for the space taken away
           // in render(): this.centerHeight = this.state.height...
@@ -2048,7 +2049,10 @@ class TiledPlot extends React.Component {
 
     let centerTrack = (
       <div
-        className={["center-track-container", stylesCenterTrack["center-track-container"]].join(" ")}
+        className={[
+          'center-track-container',
+          stylesCenterTrack['center-track-container'],
+        ].join(' ')}
         style={{
           left: this.leftWidth + this.props.paddingLeft,
           top: this.topHeight + this.props.paddingTop,
@@ -2062,7 +2066,10 @@ class TiledPlot extends React.Component {
     if (this.props.tracks.center.length) {
       centerTrack = (
         <div
-          className={["center-track-container", stylesCenterTrack["center-track-container"]].join(" ")}
+          className={[
+            'center-track-container',
+            stylesCenterTrack['center-track-container'],
+          ].join(' ')}
           style={{
             left: this.leftWidth + this.props.paddingLeft,
             top: this.topHeight + this.props.paddingTop,
@@ -2331,7 +2338,7 @@ class TiledPlot extends React.Component {
         ref={(c) => {
           this.divTiledPlot = c;
         }}
-        className={["tiled-plot-div", styles["tiled-plot"]].join(" ")}
+        className={['tiled-plot-div', styles['tiled-plot']].join(' ')}
         style={{
           marginBottom: this.props.marginBottom,
           marginLeft: this.props.marginLeft,

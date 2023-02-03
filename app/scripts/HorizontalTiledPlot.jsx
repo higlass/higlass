@@ -192,7 +192,10 @@ class HorizontalTiledPlot extends React.Component {
 
     return (
       <div
-        className={clsx('horizontal-tiled-plot', styles["horizontal-tiled-plot"])}
+        className={clsx(
+          'horizontal-tiled-plot',
+          styles['horizontal-tiled-plot'],
+        )}
       >
         {isBrushable && (
           <svg

@@ -738,7 +738,7 @@ class GenomePositionSearchBox extends React.Component {
     return (
       <PopupMenu>
         <div
-          className={styles["genome-position-search-bar-suggestions"]}
+          className={styles['genome-position-search-bar-suggestions']}
           style={{
             left: this.menuPosition.left,
             top: this.menuPosition.top,
@@ -779,7 +779,8 @@ class GenomePositionSearchBox extends React.Component {
         className={clsx({
           [styles['genome-position-search-focus']]: this.state.isFocused,
           [styles['genome-position-search']]: !this.state.isFocused,
-          [styles['genome-position-search-dark']]: this.props.theme === THEME_DARK,
+          [styles['genome-position-search-dark']]:
+            this.props.theme === THEME_DARK,
         })}
       >
         {!this.props.hideAvailableAssemblies && (

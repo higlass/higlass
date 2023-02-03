@@ -74,9 +74,9 @@ const mapbox = {
 
 export const TRACKS_INFO = [
   osm,
-  { ...osm, type: 'osm'},
+  { ...osm, type: 'osm' },
   mapbox,
-  { ...mapbox, type: 'mapbox'},
+  { ...mapbox, type: 'mapbox' },
   {
     type: 'left-axis',
     datatype: ['axis'],

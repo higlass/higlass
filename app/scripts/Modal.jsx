@@ -15,11 +15,12 @@ function Modal(props) {
   };
 
   return (
-    <div className={clsx(classes['modal-background'], {
+    <div
+      className={clsx(classes['modal-background'], {
         [classes['modal-hide']]: props.hide,
       })}
     >
-      <div className={classes["modal-wrap"]}>
+      <div className={classes['modal-wrap']}>
         <div
           className={clsx(classes['modal-window'], {
             [classes['modal-window-max-height']]: props.maxHeight,
@@ -30,12 +31,12 @@ function Modal(props) {
               <Cross />
             </Button>
           )}
-          <div className={classes["modal-content"]}>{props.children}</div>
+          <div className={classes['modal-content']}>{props.children}</div>
         </div>
       </div>
     </div>
   );
-};
+}
 
 Modal.defaultProps = {
   closeButton: true,

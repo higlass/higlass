@@ -37,9 +37,8 @@ class ViewHeader extends React.Component {
       width: -1,
     };
 
-    this.handleTrackPositionChosenBound = this.handleTrackPositionChosen.bind(
-      this,
-    );
+    this.handleTrackPositionChosenBound =
+      this.handleTrackPositionChosen.bind(this);
   }
 
   componentDidMount() {
@@ -218,9 +217,14 @@ class ViewHeader extends React.Component {
       },
     );
 
-    const className = clsx(this.state.isFocused ? classes['multitrack-header-focus'] : classes['multitrack-header'], {
-      [classes['multitrack-header-dark']]: this.props.theme === THEME_DARK,
-    });
+    const className = clsx(
+      this.state.isFocused
+        ? classes['multitrack-header-focus']
+        : classes['multitrack-header'],
+      {
+        [classes['multitrack-header-dark']]: this.props.theme === THEME_DARK,
+      },
+    );
 
     const classNameIcon =
       this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR
@@ -234,7 +238,7 @@ class ViewHeader extends React.Component {
         }}
         className={className}
       >
-        <div className={classes["multitrack-header-left"]}>
+        <div className={classes['multitrack-header-left']}>
           {this.props.mouseTool === MOUSE_TOOL_SELECT && (
             <svg
               className={clsx(classes['mouse-tool-selection'], classNameIcon)}
@@ -244,7 +248,7 @@ class ViewHeader extends React.Component {
             </svg>
           )}
           <div
-            className={classes["multitrack-header-grabber"]}
+            className={classes['multitrack-header-grabber']}
             title="Drag to move the view"
           >
             <div />
@@ -252,13 +256,13 @@ class ViewHeader extends React.Component {
             <div />
           </div>
           {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR && (
-            <div className={classes["multitrack-header-search"]}>
+            <div className={classes['multitrack-header-search']}>
               {this.props.isGenomePositionSearchBoxVisible &&
                 GenomePositionSearchBox}
             </div>
           )}
         </div>
-        <nav className={classes["multitrack-header-nav-list"]}>
+        <nav className={classes['multitrack-header-nav-list']}>
           <svg className={classNameIcon} onClick={this.props.onAddView}>
             <title>Add new view (clone this view)</title>
             <use xlinkHref="#copy" />

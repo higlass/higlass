@@ -56,9 +56,8 @@ class ConfigViewMenu extends ContextMenuContainer {
               this.props.onOptionsChanged(newOptions);
             };
 
-            menuItems[optionType].children[
-              inlineOptionKey
-            ] = optionSelectorSettings;
+            menuItems[optionType].children[inlineOptionKey] =
+              optionSelectorSettings;
           }
         }
       }
@@ -123,7 +122,7 @@ class ConfigViewMenu extends ContextMenuContainer {
         <ContextMenuItem
           onClick={(e) => this.props.onTogglePositionSearchBox(e)}
         >
-          {'Toggle position search box'}
+          Toggle position search box
         </ContextMenuItem>
 
         {
@@ -148,92 +147,92 @@ class ConfigViewMenu extends ContextMenuContainer {
           // </ContextMenuItem>
         }
 
-        <hr className={classes["context-menu-hr"]} />
+        <hr className={classes['context-menu-hr']} />
 
         <ContextMenuItem onClick={(e) => this.props.onZoomToData(e)}>
-          {'Zoom to data extent'}
+          Zoom to data extent
         </ContextMenuItem>
 
         <ContextMenuItem onClick={(e) => this.props.onClearView(e)}>
-          {'Clear View'}
+          Clear View
         </ContextMenuItem>
 
-        <hr className={classes["context-menu-hr"]} />
+        <hr className={classes['context-menu-hr']} />
 
         <ContextMenuItem onClick={(e) => this.props.onYankZoom(e)}>
-          {'Take zoom from'}
+          Take zoom from
         </ContextMenuItem>
 
         <ContextMenuItem onClick={(e) => this.props.onYankLocation(e)}>
-          {'Take location from'}
+          Take location from
         </ContextMenuItem>
 
         <ContextMenuItem onClick={(e) => this.props.onYankZoomAndLocation(e)}>
-          {'Take zoom and location from'}
+          Take zoom and location from
         </ContextMenuItem>
 
-        <hr className={classes["context-menu-hr"]} />
+        <hr className={classes['context-menu-hr']} />
 
         <ContextMenuItem onClick={this.props.onLockZoom}>
-          {'Lock zoom with'}
+          Lock zoom with
         </ContextMenuItem>
 
         <ContextMenuItem onClick={this.props.onLockLocation}>
-          {'Lock location with'}
+          Lock location with
         </ContextMenuItem>
 
         <ContextMenuItem onClick={this.props.onLockZoomAndLocation}>
-          {'Lock zoom and location with'}
+          Lock zoom and location with
         </ContextMenuItem>
 
-        <hr className={classes["context-menu-hr"]} />
+        <hr className={classes['context-menu-hr']} />
 
         <ContextMenuItem onClick={this.props.onTakeAndLockZoomAndLocation}>
-          {'Take and lock zoom and location with'}
+          Take and lock zoom and location with
         </ContextMenuItem>
 
-        <hr className={classes["context-menu-hr"]} />
+        <hr className={classes['context-menu-hr']} />
 
         <ContextMenuItem onClick={(e) => this.props.onUnlockZoom(e)}>
-          {'Unlock zoom'}
+          Unlock zoom
         </ContextMenuItem>
 
         <ContextMenuItem onClick={(e) => this.props.onUnlockLocation(e)}>
-          {'Unlock location'}
+          Unlock location
         </ContextMenuItem>
 
         <ContextMenuItem onClick={(e) => this.props.onUnlockZoomAndLocation(e)}>
-          {'Unlock zoom and location'}
+          Unlock zoom and location
         </ContextMenuItem>
 
-        <hr className={classes["context-menu-hr"]} />
+        <hr className={classes['context-menu-hr']} />
 
         <ContextMenuItem onClick={(e) => this.props.onProjectViewport(e)}>
-          {'Show this viewport on'}
+          Show this viewport on
         </ContextMenuItem>
 
-        <hr className={classes["context-menu-hr"]} />
+        <hr className={classes['context-menu-hr']} />
 
         <ContextMenuItem onClick={(e) => this.props.onEditViewConfig(e)}>
           Edit view config
         </ContextMenuItem>
 
-        <hr className={classes["context-menu-hr"]} />
+        <hr className={classes['context-menu-hr']} />
 
         <ContextMenuItem onClick={() => this.props.onExportSVG()}>
-          {'Export views as SVG'}
+          Export views as SVG
         </ContextMenuItem>
 
         <ContextMenuItem onClick={() => this.props.onExportPNG()}>
-          {'Export views as PNG'}
+          Export views as PNG
         </ContextMenuItem>
 
         <ContextMenuItem onClick={() => this.props.onExportViewAsJSON()}>
-          {'Export views as JSON'}
+          Export views as JSON
         </ContextMenuItem>
 
         <ContextMenuItem onClick={() => this.props.onExportViewAsLink()}>
-          {'Export views as Link'}
+          Export views as Link
         </ContextMenuItem>
 
         {this.getSubmenu()}
