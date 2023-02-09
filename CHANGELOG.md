@@ -1,6 +1,6 @@
 # Release notes
 
-## Unreleased
+## v1.12.0
 
 - Migrate to Vite from webpack
 - Migrate to web-test-runner from karma
