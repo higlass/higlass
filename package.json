@@ -77,8 +77,8 @@
   },
   "peerDependencies": {
     "pixi.js": "^5.0.3",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3"
+    "react": "^16.6.3 || ^17.0.0",
+    "react-dom": "^16.6.3 || ^17.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
