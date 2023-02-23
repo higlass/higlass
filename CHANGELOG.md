@@ -1,5 +1,10 @@
 # Release notes
 
+## Unreleased changes
+
+- Fix GenomePositionSearchBox
+- Reduced position text in GenomePositionSearchBox when there are only 1D horizontal tracks
+
 ## v1.12.0
 
 - Migrate to Vite from webpack

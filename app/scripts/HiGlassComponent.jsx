@@ -5130,7 +5130,7 @@ class HiGlassComponent extends React.Component {
                 )
               }
               trackSourceServers={this.state.viewConfig.trackSourceServers}
-              twoD={true}
+              twoD={!!(view.tracks.left.length || view.tracks.right.length || view.tracks.center.length)}
             />
           );
         };
