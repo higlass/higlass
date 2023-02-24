@@ -623,7 +623,7 @@ class GenomePositionSearchBox extends React.Component {
         let range2 = rangePair[1];
 
         if (!range1) {
-          this.setPositionText(this.origPositionText);
+          this.setPositionText();
           return;
         }
 
@@ -750,11 +750,15 @@ class GenomePositionSearchBox extends React.Component {
     );
   }
 
-  handleAssemblySelect(evt) {
-    this.setSelectedAssembly(evt);
+  handleAssemblySelectEvt(evt) {
+    this.handleAssemblySelect(evt.target.value);
+  }
+
+  handleAssemblySelect(assembly) {
+    this.setSelectedAssembly(assembly);
 
     this.setState({
-      selectedAssembly: evt,
+      selectedAssembly: assembly,
     });
   }
 
@@ -790,7 +794,7 @@ class GenomePositionSearchBox extends React.Component {
             }}
             className={styles['genome-position-search-bar-button']}
             id={this.uid}
-            onSelect={this.handleAssemblySelect.bind(this)}
+            onChange={this.handleAssemblySelectEvt.bind(this)}
             title={
               this.state.selectedAssembly
                 ? this.state.selectedAssembly
