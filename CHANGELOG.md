@@ -1,6 +1,6 @@
 # Release notes
 
-## Unreleased changes
+## v1.12.1
 
 - Fix GenomePositionSearchBox
 - Reduced position text in GenomePositionSearchBox when there are only 1D horizontal tracks
