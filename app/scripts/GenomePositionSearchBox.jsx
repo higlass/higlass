@@ -750,11 +750,15 @@ class GenomePositionSearchBox extends React.Component {
     );
   }
 
-  handleAssemblySelect(evt) {
-    this.setSelectedAssembly(evt.target.value);
+  handleAssemblySelectEvt(evt) {
+    this.handleAssemblySelect(evt.target.value);
+  }
+
+  handleAssemblySelect(assembly) {
+    this.setSelectedAssembly(assembly);
 
     this.setState({
-      selectedAssembly: evt.target.value,
+      selectedAssembly: assembly,
     });
   }
 
@@ -790,7 +794,7 @@ class GenomePositionSearchBox extends React.Component {
             }}
             className={styles['genome-position-search-bar-button']}
             id={this.uid}
-            onChange={this.handleAssemblySelect.bind(this)}
+            onChange={this.handleAssemblySelectEvt.bind(this)}
             title={
               this.state.selectedAssembly
                 ? this.state.selectedAssembly
