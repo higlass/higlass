@@ -835,7 +835,11 @@ class GenomePositionSearchBox extends React.Component {
             </div>
           )}
           renderMenu={this.handleRenderMenu.bind(this)}
-          value={this.state.selectedAssembly ? this.positionText : 'No valid assembly selected'}
+          value={
+            this.state.selectedAssembly
+              ? this.positionText
+              : 'No valid assembly selected'
+          }
           wrapperStyle={{ width: '100%' }}
         />
 
