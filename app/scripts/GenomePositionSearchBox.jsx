@@ -795,7 +795,7 @@ class GenomePositionSearchBox extends React.Component {
             className={styles['genome-position-search-bar-button']}
             id={this.uid}
             onChange={this.handleAssemblySelectEvt.bind(this)}
-            title={
+            value={
               this.state.selectedAssembly
                 ? this.state.selectedAssembly
                 : '(none)'
@@ -839,7 +839,7 @@ class GenomePositionSearchBox extends React.Component {
             </div>
           )}
           renderMenu={this.handleRenderMenu.bind(this)}
-          value={this.positionText}
+          value={this.state.selectedAssembly ? this.positionText : ''}
           wrapperStyle={{ width: '100%' }}
         />
 
