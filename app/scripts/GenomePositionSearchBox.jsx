@@ -795,11 +795,7 @@ class GenomePositionSearchBox extends React.Component {
             className={styles['genome-position-search-bar-button']}
             id={this.uid}
             onChange={this.handleAssemblySelectEvt.bind(this)}
-            value={
-              this.state.selectedAssembly
-                ? this.state.selectedAssembly
-                : '(none)'
-            }
+            value={this.state.selectedAssembly || undefined}
           >
             {assemblyMenuItems}
           </select>
@@ -839,7 +835,7 @@ class GenomePositionSearchBox extends React.Component {
             </div>
           )}
           renderMenu={this.handleRenderMenu.bind(this)}
-          value={this.state.selectedAssembly ? this.positionText : ''}
+          value={this.state.selectedAssembly ? this.positionText : 'No valid assembly selected'}
           wrapperStyle={{ width: '100%' }}
         />
 
