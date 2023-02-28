@@ -87,7 +87,7 @@ describe('Exising genome position search box', () => {
     const button =
       hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton;
 
-    expect(button.title).to.equal('mm9');
+    expect(button.value).to.equal('mm9');
 
     hgc.instance().genomePositionSearchBoxes.aa.handleAssemblySelect('hg19');
 
@@ -99,7 +99,7 @@ describe('Exising genome position search box', () => {
     const button =
       hgc.instance().genomePositionSearchBoxes.aa.assemblyPickButton;
 
-    expect(button.title).to.equal('hg19');
+    expect(button.value).to.equal('hg19');
 
     waitForJsonComplete(done);
   });

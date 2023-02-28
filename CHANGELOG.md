@@ -1,5 +1,10 @@
 # Release notes
 
+## Unreleased
+
+- Correctly set the selected assembly on startup.
+- Hide position text in genome position search box when assembly is invalid or not set.
+
 ## v1.12.1
 
 - Fix GenomePositionSearchBox
