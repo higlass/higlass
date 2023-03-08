@@ -6,7 +6,7 @@ import {
   minNonZero,
   maxNonZero,
   DenseDataExtrema1D,
-  DenseDataExtrema2D
+  DenseDataExtrema2D,
 } from '../utils';
 
 // Services

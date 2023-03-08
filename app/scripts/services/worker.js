@@ -1,5 +1,10 @@
 import { scaleLog, scaleLinear } from 'd3-scale';
-import { DenseDataExtrema1D, DenseDataExtrema2D, getAggregationFunction, selectedItemsToSize } from '../utils';
+import {
+  DenseDataExtrema1D,
+  DenseDataExtrema2D,
+  getAggregationFunction,
+  selectedItemsToSize,
+} from '../utils';
 
 /*
 function countTransform(count) {

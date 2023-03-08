@@ -6,7 +6,10 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
 // Utils
-import { mountHGComponent, removeHGComponent } from '../app/scripts/test-helpers';
+import {
+  mountHGComponent,
+  removeHGComponent,
+} from '../app/scripts/test-helpers';
 
 const baseConf = {
   views: [

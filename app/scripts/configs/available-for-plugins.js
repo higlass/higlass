@@ -91,7 +91,11 @@ import ChromosomeInfo from '../ChromosomeInfo';
 import SearchField from '../SearchField';
 
 // Data Fetchers
-import { DataFetcher, GBKDataFetcher, LocalDataFetcher } from '../data-fetchers';
+import {
+  DataFetcher,
+  GBKDataFetcher,
+  LocalDataFetcher,
+} from '../data-fetchers';
 import getDataFetcher from './get-data-fetcher';
 
 import { version } from '../../../package.json';

@@ -1,4 +1,8 @@
-import { DataFetcher, GBKDataFetcher, LocalDataFetcher }  from '../data-fetchers';
+import {
+  DataFetcher,
+  GBKDataFetcher,
+  LocalDataFetcher,
+} from '../data-fetchers';
 import { AVAILABLE_FOR_PLUGINS } from '.';
 
 const getDataFetcher = (

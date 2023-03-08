@@ -19,4 +19,7 @@ export { default as POSITIONS_BY_DATATYPE } from './positions-by-datatype';
 export { default as DEFAULT_TRACKS_FOR_DATATYPE } from './default-tracks-for-datatype';
 export { default as AVAILABLE_FOR_PLUGINS } from './available-for-plugins';
 export { default as AVAILABLE_TRACK_TYPES } from './available-track-types';
-export { NUM_PRECOMP_SUBSETS_PER_1D_TTILE, NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from './dense-data-extrema-config';
+export {
+  NUM_PRECOMP_SUBSETS_PER_1D_TTILE,
+  NUM_PRECOMP_SUBSETS_PER_2D_TTILE,
+} from './dense-data-extrema-config';

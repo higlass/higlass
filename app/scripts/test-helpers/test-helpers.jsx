@@ -9,10 +9,7 @@ import { mount } from 'enzyme';
 
 import { requestsInFlight } from '../services';
 
-import {
-  getTrackObjectFromHGC,
-  getTrackRenderer,
-} from '../utils';
+import { getTrackObjectFromHGC, getTrackRenderer } from '../utils';
 
 import HiGlassComponent from '../HiGlassComponent';
 

@@ -23,7 +23,11 @@ import AxisPixi from './AxisPixi';
 // Services
 import { tileProxy } from './services';
 
-import { GLOBALS, HEATED_OBJECT_MAP, NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from './configs';
+import {
+  GLOBALS,
+  HEATED_OBJECT_MAP,
+  NUM_PRECOMP_SUBSETS_PER_2D_TTILE,
+} from './configs';
 
 const COLORBAR_MAX_HEIGHT = 200;
 const COLORBAR_WIDTH = 10;

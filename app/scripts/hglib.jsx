@@ -31,9 +31,7 @@ export {
   mountHGComponent,
 } from './test-helpers';
 
-export {
-  getTrackObjectFromHGC
-} from './utils';
+export { getTrackObjectFromHGC } from './utils';
 
 export { version } from '../../package.json';
 
