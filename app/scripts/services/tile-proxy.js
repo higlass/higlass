@@ -1,7 +1,7 @@
 import { range } from 'd3-array';
 import slugid from 'slugid';
 
-import { workerGetTiles, workerSetPix } from '../worker';
+import { workerGetTiles, workerSetPix } from './worker';
 
 import { trimTrailingSlash as tts, timeout as sleep } from '../utils';
 

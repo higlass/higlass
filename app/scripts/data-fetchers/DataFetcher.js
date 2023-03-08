@@ -5,13 +5,12 @@ import {
   dictValues,
   minNonZero,
   maxNonZero,
-} from './utils';
-
-import DenseDataExtrema1D from './utils/DenseDataExtrema1D';
-import DenseDataExtrema2D from './utils/DenseDataExtrema2D';
+  DenseDataExtrema1D,
+  DenseDataExtrema2D
+} from '../utils';
 
 // Services
-import { tileProxy } from './services';
+import { tileProxy } from '../services';
 
 export default class DataFetcher {
   constructor(dataConfig, pubSub) {

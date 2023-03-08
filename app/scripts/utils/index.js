@@ -81,6 +81,8 @@ export { default as visitTracks } from './visit-tracks';
 export { default as trackUtils } from './track-utils';
 export { default as DenseDataExtrema1D } from './DenseDataExtrema1D';
 export { default as DenseDataExtrema2D } from './DenseDataExtrema2D';
+export { default as getAggregationFunction } from './get-aggregation-function';
+export { default as selectedItemsToSize } from './selected-items-to-size';
 
 export {
   getTrackObjectFromHGC,

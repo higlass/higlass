@@ -1,6 +1,6 @@
 import ndarray from 'ndarray';
 
-import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from '../configs/dense-data-extrema-config';
+import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from '../configs';
 
 class DenseDataExtrema2D {
   /**

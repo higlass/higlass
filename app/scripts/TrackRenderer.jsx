@@ -61,7 +61,6 @@ import SVGTrack from './SVGTrack';
 
 // Higher-order components
 import withPubSub from './hocs/with-pub-sub';
-import getDataFetcher from './data-fetchers/get-data-fetcher';
 import withTheme from './hocs/with-theme';
 
 // Utils
@@ -80,6 +79,8 @@ import {
   THEME_DARK,
   TRACKS_INFO_BY_TYPE,
 } from './configs';
+
+const { getDataFetcher } = AVAILABLE_FOR_PLUGINS.dataFetchers;
 
 // Styles
 import classes from '../styles/TrackRenderer.module.scss';
