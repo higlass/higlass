@@ -7,9 +7,8 @@ import {
   mountHGComponent,
   removeHGComponent,
   waitForTilesLoaded,
-  getTrackByUid,
 } from '../../app/scripts/test-helpers';
-import { getTrackObjectFromHGC } from '../../app/scripts/utils';
+import { getTrackObjectFromHGC, getTrackByUid } from '../../app/scripts/utils';
 
 import { rectangleDomains } from '../view-configs';
 

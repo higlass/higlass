@@ -5,12 +5,11 @@ import { expect } from 'chai';
 
 // Utils
 import {
-  colorToHex,
   mountHGComponent,
   removeHGComponent,
   waitForTilesLoaded,
 } from '../app/scripts/test-helpers';
-import { getTrackObjectFromHGC } from '../app/scripts/utils';
+import { colorToHex, getTrackObjectFromHGC } from '../app/scripts/utils';
 
 import viewConf from './view-configs/bar.json';
 

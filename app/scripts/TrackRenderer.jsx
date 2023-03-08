@@ -80,10 +80,10 @@ import {
   TRACKS_INFO_BY_TYPE,
 } from './configs';
 
-const { getDataFetcher } = AVAILABLE_FOR_PLUGINS.dataFetchers;
-
 // Styles
 import classes from '../styles/TrackRenderer.module.scss';
+
+const { getDataFetcher } = AVAILABLE_FOR_PLUGINS.dataFetchers;
 
 const SCROLL_TIMEOUT = 100;
 

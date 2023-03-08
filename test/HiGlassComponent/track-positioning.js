@@ -9,10 +9,8 @@ import {
   mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
-  getTrackByUid,
-  totalTrackPixelHeight,
 } from '../../app/scripts/test-helpers';
-import { getTrackObjectFromHGC } from '../../app/scripts/utils';
+import { getTrackByUid, totalTrackPixelHeight, getTrackObjectFromHGC } from '../../app/scripts/utils';
 
 import {
   horizontalDiagonalTrackViewConf,

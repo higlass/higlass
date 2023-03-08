@@ -9,9 +9,8 @@ import createElementAndApi from './utils/create-element-and-api';
 // Utils
 import {
   waitForTilesLoaded,
-  getTrackConfFromHGC,
 } from '../app/scripts/test-helpers';
-import { getTrackObjectFromHGC } from '../app/scripts/utils';
+import { getTrackConfFromHGC, getTrackObjectFromHGC } from '../app/scripts/utils';
 
 import removeDiv from './utils/remove-div';
 

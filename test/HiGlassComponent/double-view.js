@@ -9,10 +9,9 @@ import { select } from 'd3-selection';
 import {
   removeHGComponent,
   waitForTilesLoaded,
-  getTrackByUid,
   mountHGComponentAsync,
 } from '../../app/scripts/test-helpers';
-import { getTrackObjectFromHGC } from '../../app/scripts/utils';
+import { getTrackByUid, getTrackObjectFromHGC } from '../../app/scripts/utils';
 
 import { twoViewConfig, chromInfoTrack } from '../view-configs';
 
