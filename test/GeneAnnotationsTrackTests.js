@@ -7,10 +7,11 @@ import { geneAnnotationsOnly } from './view-configs';
 import createElementAndApi from './utils/create-element-and-api';
 
 // Utils
+import { waitForTilesLoaded } from '../app/scripts/test-helpers';
 import {
-  waitForTilesLoaded,
-} from '../app/scripts/test-helpers';
-import { getTrackConfFromHGC, getTrackObjectFromHGC } from '../app/scripts/utils';
+  getTrackConfFromHGC,
+  getTrackObjectFromHGC,
+} from '../app/scripts/utils';
 
 import removeDiv from './utils/remove-div';
 
