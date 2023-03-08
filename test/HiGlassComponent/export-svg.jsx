@@ -8,7 +8,7 @@ import {
   mountHGComponentAsync,
   removeHGComponent,
   waitForTilesLoaded,
-} from '../../app/scripts/utils';
+} from '../../app/scripts/test-helpers';
 
 import HiGlassComponent from '../../app/scripts/HiGlassComponent';
 

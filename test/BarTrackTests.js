@@ -8,9 +8,9 @@ import {
   colorToHex,
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
   waitForTilesLoaded,
-} from '../app/scripts/utils';
+} from '../app/scripts/test-helpers';
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
 import viewConf from './view-configs/bar.json';
 

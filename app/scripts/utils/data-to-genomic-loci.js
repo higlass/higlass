@@ -1,4 +1,4 @@
-import { absToChr } from '.';
+import absToChr from './abs-to-chr';
 
 const dataToGenomicLoci = (x0, x1, chromInfo) => {
   const gX0 = absToChr(x0, chromInfo);

@@ -8,11 +8,11 @@ import slugid from 'slugid';
 import {
   mountHGComponentAsync,
   removeHGComponent,
-  getTrackObjectFromHGC,
   waitForTilesLoaded,
   getTrackByUid,
   totalTrackPixelHeight,
-} from '../../app/scripts/utils';
+} from '../../app/scripts/test-helpers';
+import { getTrackObjectFromHGC } from '../../app/scripts/utils';
 
 import {
   horizontalDiagonalTrackViewConf,

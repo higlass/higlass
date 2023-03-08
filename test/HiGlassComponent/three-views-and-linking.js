@@ -7,8 +7,8 @@ import {
   mountHGComponent,
   removeHGComponent,
   waitForTilesLoaded,
-  scalesCenterAndK,
-} from '../../app/scripts/utils';
+} from '../../app/scripts/test-helpers';
+import { scalesCenterAndK } from '../../app/scripts/utils';
 
 import { threeViews } from '../view-configs';
 

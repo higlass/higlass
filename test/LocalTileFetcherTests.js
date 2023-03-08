@@ -8,8 +8,8 @@ import viewconf from './view-configs-more/local-tiles-viewconf.json';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
-} from '../app/scripts/utils';
+} from '../app/scripts/test-helpers';
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
 Enzyme.configure({ adapter: new Adapter() });
 

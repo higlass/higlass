@@ -6,10 +6,11 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
   waitForTransitionsFinished,
   waitForTilesLoaded,
-} from '../app/scripts/utils';
+} from '../app/scripts/test-helpers';
+
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
 import { simpleCenterViewConfig } from './view-configs';
 

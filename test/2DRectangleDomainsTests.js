@@ -6,10 +6,10 @@ import { expect } from 'chai';
 // Utils
 import {
   getTrackByUid,
-  getTrackObjectFromHGC,
   mountHGComponent,
   removeHGComponent,
-} from '../app/scripts/utils';
+} from '../app/scripts/test-helpers';
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
 import viewconf from './view-configs/loop-annotations';
 

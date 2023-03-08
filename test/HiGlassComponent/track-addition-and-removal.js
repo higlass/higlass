@@ -7,8 +7,8 @@ import {
   mountHGComponent,
   removeHGComponent,
   waitForTilesLoaded,
-  getTrackObjectFromHGC,
-} from '../../app/scripts/utils';
+} from '../../app/scripts/test-helpers';
+import { getTrackObjectFromHGC } from '../../app/scripts/utils';
 
 import { testViewConfX2 } from '../view-configs';
 

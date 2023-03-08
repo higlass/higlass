@@ -6,7 +6,7 @@ import { expect } from 'chai';
 import {
   mountHGComponentAsync,
   removeHGComponent,
-} from '../../app/scripts/utils';
+} from '../../app/scripts/test-helpers';
 
 import { divergentTrackConfig } from '../view-configs';
 

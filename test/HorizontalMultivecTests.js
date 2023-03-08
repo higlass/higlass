@@ -10,8 +10,8 @@ import ReactDOM from 'react-dom';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
-} from '../app/scripts/utils';
+} from '../app/scripts/test-helpers';
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
 // View configs
 import horizontalMultivecWithSmallerDimensions from './view-configs-more/horizontalMultivecWithSmallerDimensions.json';

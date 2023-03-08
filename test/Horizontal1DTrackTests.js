@@ -3,10 +3,8 @@
 import { expect } from 'chai';
 
 // Utils
-import {
-  getTrackObjectFromHGC,
-  waitForTilesLoaded,
-} from '../app/scripts/utils';
+import { waitForTilesLoaded } from '../app/scripts/test-helpers';
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
 import createElementAndApi from './utils/create-element-and-api';
 import removeDiv from './utils/remove-div';

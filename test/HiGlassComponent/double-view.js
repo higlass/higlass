@@ -10,9 +10,9 @@ import {
   removeHGComponent,
   waitForTilesLoaded,
   getTrackByUid,
-  getTrackObjectFromHGC,
   mountHGComponentAsync,
-} from '../../app/scripts/utils';
+} from '../../app/scripts/test-helpers';
+import { getTrackObjectFromHGC } from '../../app/scripts/utils';
 
 import { twoViewConfig, chromInfoTrack } from '../view-configs';
 

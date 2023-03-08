@@ -7,7 +7,7 @@ import {
   mountHGComponent,
   removeHGComponent,
   waitForTransitionsFinished,
-} from '../../app/scripts/utils';
+} from '../../app/scripts/test-helpers';
 
 import { geneAnnotationsOnly } from '../view-configs';
 

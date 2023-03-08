@@ -1,4 +1,4 @@
-import { tileResponseToData } from '../worker';
+import { tileResponseToData } from '../services';
 
 class LocalTileDataFetcher {
   constructor(dataConfig) {
