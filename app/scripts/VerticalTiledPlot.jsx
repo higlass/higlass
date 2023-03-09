@@ -12,10 +12,7 @@ import VerticalItem from './VerticalItem';
 import SortableList from './SortableList';
 
 // Utils
-import { or, resetD3BrushStyle, sum } from './utils';
-
-// Configs
-import { IS_TRACK_RANGE_SELECTABLE } from './configs';
+import { or, resetD3BrushStyle, sum, IS_TRACK_RANGE_SELECTABLE } from './utils';
 
 // Styles
 import styles from '../styles/VerticalTiledPlot.module.scss'; // eslint-disable-line no-unused-vars

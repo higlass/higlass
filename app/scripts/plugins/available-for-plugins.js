@@ -22,7 +22,7 @@ import slugid from 'slugid';
 import { mix } from '../mixwith';
 
 // Configs
-import * as configs from '.';
+import * as configs from '../configs';
 
 // Utils
 import * as utils from '../utils';
@@ -81,7 +81,7 @@ import ViewportTrackerVertical from '../ViewportTrackerVertical';
 
 // Factories
 import ContextMenuItem from '../ContextMenuItem';
-import LruCache from './LruCache';
+import LruCache from '../utils/LruCache';
 
 // Services
 import * as services from '../services';

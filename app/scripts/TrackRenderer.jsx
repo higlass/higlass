@@ -73,12 +73,10 @@ import {
 } from './utils';
 
 // Configs
-import {
-  AVAILABLE_FOR_PLUGINS,
-  GLOBALS,
-  THEME_DARK,
-  TRACKS_INFO_BY_TYPE,
-} from './configs';
+import { GLOBALS, THEME_DARK, TRACKS_INFO_BY_TYPE } from './configs';
+
+// Plugins
+import { AVAILABLE_FOR_PLUGINS } from './plugins';
 
 // Styles
 import classes from '../styles/TrackRenderer.module.scss';
