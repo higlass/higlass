@@ -1,4 +1,4 @@
-import { ElementResizeListener } from '../services';
+import ElementResizeListener from './element-resize-listener';
 
 const getElementDim = (element) => {
   ElementResizeListener.listen();

@@ -1,4 +1,4 @@
-import { chromInfo } from '../services';
+import chromInfo from './chrom-info';
 
 import objVals from './obj-vals';
 

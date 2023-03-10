@@ -1,5 +1,5 @@
 import { tsvParseRows } from 'd3-dsv';
-import { parseChromsizesRows } from '../utils';
+import parseChromsizesRows from './parse-chromsizes-rows';
 
 const cache = {};
 

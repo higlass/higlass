@@ -1,4 +1,4 @@
-import { getXylofon } from '../utils';
+import getXylofon from './get-xylofon';
 
 let isInit = false;
 

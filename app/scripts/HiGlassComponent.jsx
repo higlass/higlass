@@ -30,7 +30,6 @@ import { Provider as ThemeProvider } from './hocs/with-theme';
 
 // Services
 import {
-  chromInfo,
   createDomEvent,
   setTileProxyAuthHeader,
   tileProxy,
@@ -39,6 +38,7 @@ import {
 
 // Utils
 import {
+  chromInfo,
   debounce,
   dictFromTuples,
   dictItems,
