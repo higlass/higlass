@@ -1,5 +1,5 @@
 import { zoomIdentity } from 'd3-zoom';
-import AxisPixi from '../AxisPixi';
+import AxisPixi from './AxisPixi';
 
 /**
  * The d3.range and python range functinons. Returns
