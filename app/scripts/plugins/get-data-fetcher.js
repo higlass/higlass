@@ -3,7 +3,8 @@ import {
   GBKDataFetcher,
   LocalDataFetcher,
 } from '../data-fetchers';
-import { AVAILABLE_FOR_PLUGINS } from './available-for-plugins';
+// TODO: we need to address this cyclic dependency
+import { AVAILABLE_FOR_PLUGINS } from '.';
 
 const getDataFetcher = (
   dataConfig,
