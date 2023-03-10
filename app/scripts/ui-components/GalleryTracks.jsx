@@ -2,12 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import clsx from 'clsx';
 
-import TrackControl from './ui-components/TrackControl';
+import TrackControl from './TrackControl';
 
 // Styles
-import styles from '../styles/GalleryTracks.module.scss'; // eslint-disable-line no-unused-vars
-import stylesPlot from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../../styles/GalleryTracks.module.scss'; // eslint-disable-line no-unused-vars
+import stylesPlot from '../../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
+import stylesTrack from '../../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
 
 const STYLES = {
   pointerEvents: 'all',

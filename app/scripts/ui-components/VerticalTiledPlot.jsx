@@ -7,17 +7,17 @@ import { select } from 'd3-selection';
 import slugid from 'slugid';
 import clsx from 'clsx';
 
-import ListWrapper from './ui-components/ListWrapper';
+import ListWrapper from './ListWrapper';
 import VerticalItem from './VerticalItem';
-import SortableList from './ui-components/SortableList';
+import SortableList from './SortableList';
 
 // Utils
-import { or, resetD3BrushStyle, sum, IS_TRACK_RANGE_SELECTABLE } from './utils';
+import { or, resetD3BrushStyle, sum, IS_TRACK_RANGE_SELECTABLE } from '../utils';
 
 // Styles
-import styles from '../styles/VerticalTiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesPlot from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../../styles/VerticalTiledPlot.module.scss'; // eslint-disable-line no-unused-vars
+import stylesPlot from '../../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
+import stylesTrack from '../../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
 
 function sourceEvent(event) {
   return event && event.sourceEvent;

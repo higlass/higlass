@@ -19,7 +19,7 @@ import { scalesCenterAndK, dictKeys, toVoid } from '../utils';
 
 // HOCS
 import withTheme from '../hocs/with-theme';
-import { SearchIcon } from '../icons';
+import { SearchIcon } from './icons';
 // Configs
 import { THEME_DARK, ZOOM_TRANSITION_DURATION } from '../configs';
 

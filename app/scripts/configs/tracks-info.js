@@ -12,7 +12,7 @@ import {
   svgVertical1DAxisIcon,
   svgVertical1DTilesIcon,
   svgGeoMapIcon,
-} from '../icons';
+} from '../ui-components/icons';
 
 const osm = {
   type: 'osm-tiles',

@@ -12,7 +12,7 @@ import parse from 'url-parse';
 import createPubSub, { globalPubSub } from 'pub-sub-es';
 import clsx from 'clsx';
 
-import TiledPlot from '../TiledPlot';
+import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
 import ExportLinkDialog from './ExportLinkDialog';
 import ViewHeader from './ViewHeader';
@@ -20,7 +20,7 @@ import ChromosomeInfo from '../ChromosomeInfo';
 import ViewConfigEditor from './ViewConfigEditor';
 
 import createSymbolIcon from '../symbol';
-import { all as icons } from '../icons';
+import { all as icons } from './icons';
 import createApi from '../api';
 
 // Higher-order components

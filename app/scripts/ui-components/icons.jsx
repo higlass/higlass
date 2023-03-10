@@ -1,6 +1,6 @@
 import React from 'react';
 import { select } from 'd3-selection';
-import classes from '../styles/ViewHeader.module.scss';
+import classes from '../../styles/ViewHeader.module.scss';
 
 export const COG = {
   id: 'cog',

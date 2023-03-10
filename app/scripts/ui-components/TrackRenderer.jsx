@@ -51,11 +51,11 @@ import {
   OverlayTrack,
   LeftTrackModifier,
   UnknownPixiTrack
-} from './tracks';
+} from '../tracks';
 
 // Higher-order components
-import withPubSub from './hocs/with-pub-sub';
-import withTheme from './hocs/with-theme';
+import withPubSub from '../hocs/with-pub-sub';
+import withTheme from '../hocs/with-theme';
 
 // Utils
 import {
@@ -64,16 +64,16 @@ import {
   forwardEvent,
   scalesCenterAndK,
   trimTrailingSlash,
-} from './utils';
+} from '../utils';
 
 // Configs
-import { GLOBALS, THEME_DARK, TRACKS_INFO_BY_TYPE } from './configs';
+import { GLOBALS, THEME_DARK, TRACKS_INFO_BY_TYPE } from '../configs';
 
 // Plugins
-import { AVAILABLE_FOR_PLUGINS } from './plugins';
+import { AVAILABLE_FOR_PLUGINS } from '../plugins';
 
 // Styles
-import classes from '../styles/TrackRenderer.module.scss';
+import classes from '../../styles/TrackRenderer.module.scss';
 
 const { getDataFetcher } = AVAILABLE_FOR_PLUGINS.dataFetchers;
 

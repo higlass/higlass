@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import DraggableDiv from '../DraggableDiv';
-import TrackArea from '../TrackArea';
+import DraggableDiv from '../ui-components/DraggableDiv';
+import TrackArea from '../ui-components/TrackArea';
 
 // See commented out block in "render()".
 //

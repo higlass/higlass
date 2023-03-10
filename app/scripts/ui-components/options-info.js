@@ -4,7 +4,7 @@
 
 import { formatPrefix, precisionPrefix } from 'd3-format';
 
-import HeatmapOptions from './ui-components/HeatmapOptions';
+import HeatmapOptions from './HeatmapOptions';
 
 const valueColumnOptions = (track) => {
   if (!track.header) return [];

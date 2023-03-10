@@ -5,14 +5,14 @@ import { brush, brushX, brushY } from 'd3-brush';
 import { select } from 'd3-selection';
 import clsx from 'clsx';
 
-import TrackControl from './ui-components/TrackControl';
+import TrackControl from './TrackControl';
 
 // Utils
-import { or, resetD3BrushStyle, IS_TRACK_RANGE_SELECTABLE } from './utils';
+import { or, resetD3BrushStyle, IS_TRACK_RANGE_SELECTABLE } from '../utils';
 
 // Styles
-import styles from '../styles/CenterTrack.module.scss'; // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../../styles/CenterTrack.module.scss'; // eslint-disable-line no-unused-vars
+import stylesTrack from '../../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
 
 const STYLES = {
   pointerEvents: 'all',

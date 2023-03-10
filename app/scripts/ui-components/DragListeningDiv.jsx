@@ -3,10 +3,10 @@ import React from 'react';
 import slugid from 'slugid';
 import clsx from 'clsx';
 
-import withPubSub from './hocs/with-pub-sub';
+import withPubSub from '../hocs/with-pub-sub';
 
 // Styles
-import classes from '../styles/DragListeningDiv.module.scss';
+import classes from '../../styles/DragListeningDiv.module.scss';
 
 class DragListeningDiv extends React.Component {
   constructor(props) {

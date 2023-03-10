@@ -7,7 +7,7 @@ import NestedContextMenu from './NestedContextMenu';
 
 // Configs
 import { THEME_DARK, TRACKS_INFO_BY_TYPE } from '../configs';
-import OPTIONS_INFO from '../options-info';
+import OPTIONS_INFO from './options-info';
 
 // Styles
 import classes from '../../styles/ContextMenu.module.scss';
