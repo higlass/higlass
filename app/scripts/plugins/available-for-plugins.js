@@ -31,7 +31,7 @@ import * as utils from '../utils';
 import * as tracks from '../tracks';
 
 // Factories
-import ContextMenuItem from '../ContextMenuItem';
+import ContextMenuItem from '../ui-components/ContextMenuItem';
 import LruCache from '../utils/LruCache';
 
 // Services

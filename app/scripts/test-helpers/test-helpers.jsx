@@ -8,7 +8,7 @@ import { requestsInFlight } from '../services';
 
 import { getTrackObjectFromHGC, getTrackRenderer } from '../utils';
 
-import HiGlassComponent from '../HiGlassComponent';
+import HiGlassComponent from '../ui-components/HiGlassComponent';
 
 const TILE_LOADING_CHECK_INTERVAL = 100;
 

@@ -1,5 +1,5 @@
 import Tiled1DPixiTrack from './Tiled1DPixiTrack';
-import AxisPixi from '../AxisPixi';
+import AxisPixi from './AxisPixi';
 
 import { tileProxy } from '../services';
 import { colorToHex, showMousePosition } from '../utils';

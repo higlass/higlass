@@ -12,7 +12,7 @@ import { tileProxy } from '../services';
 
 // Utils
 import { colorToHex } from '../utils';
-import trackUtils from '../track-utils';
+import { trackUtils } from './utils';
 
 // these are default values that are overwritten by the track's options
 const FONT_SIZE = 11;

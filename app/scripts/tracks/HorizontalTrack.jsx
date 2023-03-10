@@ -1,7 +1,7 @@
 import React from 'react';
 
 import MoveableTrack from './MoveableTrack';
-import TrackControl from '../TrackControl';
+import TrackControl from '../ui-components/TrackControl';
 
 const STYLES = {
   pointerEvents: 'all',

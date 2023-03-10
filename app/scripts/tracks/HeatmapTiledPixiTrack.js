@@ -18,7 +18,7 @@ import {
 } from '../utils';
 
 import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
-import AxisPixi from '../AxisPixi';
+import AxisPixi from './AxisPixi';
 
 // Services
 import { tileProxy } from '../services';

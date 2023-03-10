@@ -6,20 +6,20 @@ import PropTypes from 'prop-types';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
 
 // Components
-import ContextMenuItem from './ContextMenuItem';
+import ContextMenuItem from './ui-components/ContextMenuItem';
 import CenterTrack from './CenterTrack';
 import DragListeningDiv from './DragListeningDiv';
 import GalleryTracks from './GalleryTracks';
 import TrackRenderer from './TrackRenderer';
-import AddTrackDialog from './AddTrackDialog';
-import CustomTrackDialog from './CustomTrackDialog';
-import ConfigTrackMenu from './ConfigTrackMenu';
-import CloseTrackMenu from './CloseTrackMenu';
-import PopupMenu from './PopupMenu';
-import ContextMenuContainer from './ContextMenuContainer';
-import HorizontalTiledPlot from './HorizontalTiledPlot';
+import { AddTrackDialog } from './ui-components';
+import CustomTrackDialog from './ui-components/CustomTrackDialog';
+import ConfigTrackMenu from './ui-components/ConfigTrackMenu';
+import CloseTrackMenu from './ui-components/CloseTrackMenu';
+import PopupMenu from './ui-components/PopupMenu';
+import ContextMenuContainer from './ui-components/ContextMenuContainer';
+import HorizontalTiledPlot from './ui-components/HorizontalTiledPlot';
 import VerticalTiledPlot from './VerticalTiledPlot';
-import ViewContextMenu from './ViewContextMenu';
+import ViewContextMenu from './ui-components/ViewContextMenu';
 // import {HeatmapOptions} from './HeatmapOptions';
 
 // Higher-order components

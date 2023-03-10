@@ -5,7 +5,7 @@ import { brush, brushX, brushY } from 'd3-brush';
 import { select } from 'd3-selection';
 import clsx from 'clsx';
 
-import TrackControl from './TrackControl';
+import TrackControl from './ui-components/TrackControl';
 
 // Utils
 import { or, resetD3BrushStyle, IS_TRACK_RANGE_SELECTABLE } from './utils';

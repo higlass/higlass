@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import clsx from 'clsx';
 
-import TrackControl from './TrackControl';
+import TrackControl from './ui-components/TrackControl';
 
 // Styles
 import styles from '../styles/GalleryTracks.module.scss'; // eslint-disable-line no-unused-vars

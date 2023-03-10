@@ -1,33 +1,31 @@
-// @ts-check
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import { brushY } from 'd3-brush';
+import { brushX } from 'd3-brush';
 import { select } from 'd3-selection';
 import slugid from 'slugid';
 import clsx from 'clsx';
 
-import ListWrapper from './ui-components/ListWrapper';
-import VerticalItem from './VerticalItem';
-import SortableList from './ui-components/SortableList';
+import ListWrapper from './ListWrapper';
+import HorizontalItem from './HorizontalItem';
+import SortableList from './SortableList';
 
 // Utils
-import { or, resetD3BrushStyle, sum, IS_TRACK_RANGE_SELECTABLE } from './utils';
+import { or, resetD3BrushStyle, sum, IS_TRACK_RANGE_SELECTABLE } from '../utils';
 
 // Styles
-import styles from '../styles/VerticalTiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesPlot from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
+import styles from '../../styles/HorizontalTiledPlot.module.scss'; // eslint-disable-line no-unused-vars
+import stylesPlot from '../../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
+import stylesTrack from '../../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
 
 function sourceEvent(event) {
   return event && event.sourceEvent;
 }
 
-class VerticalTiledPlot extends React.Component {
+class HorizontalTiledPlot extends React.Component {
   constructor(props) {
     super(props);
 
-    this.brushBehavior = brushY()
+    this.brushBehavior = brushX()
       .on('start', this.brushStarted.bind(this))
       .on('brush', this.brushed.bind(this))
       .on('end', this.brushedEnded.bind(this));
@@ -57,12 +55,8 @@ class VerticalTiledPlot extends React.Component {
       return this.state !== nextState;
     }
     if (this.props.rangeSelection !== nextProps.rangeSelection) {
-      const accessor = this.props.is1dRangeSelection ? 0 : 1;
-
       this.moveBrush(
-        nextProps.rangeSelection[accessor]
-          ? nextProps.rangeSelection[accessor]
-          : null,
+        nextProps.rangeSelection[0] ? nextProps.rangeSelection[0] : null,
         nextProps.rangeSelectionEnd,
       );
       return this.state !== nextState;
@@ -77,8 +71,6 @@ class VerticalTiledPlot extends React.Component {
       this.removeBrush();
     }
   }
-
-  /* --------------------------- Getter / Setter ---------------------------- */
 
   /* ---------------------------- Custom Methods ---------------------------- */
 
@@ -141,6 +133,7 @@ class VerticalTiledPlot extends React.Component {
       this.props.onRangeSelectionEnd(event.selection);
     }
 
+    // Brush end event with no selection, i.e., the selection is reset
     if (!event.selection) {
       this.rangeSelectionTriggered = true;
       this.props.onRangeSelectionReset();
@@ -184,21 +177,23 @@ class VerticalTiledPlot extends React.Component {
   /* ------------------------------ Rendering ------------------------------- */
 
   render() {
-    const width = this.props.tracks.map((x) => x.width).reduce(sum, 0);
+    const height = this.props.tracks.map((x) => x.height).reduce(sum, 0);
 
     const isBrushable = this.props.tracks
       .map((track) => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
 
-    const rangeSelectorClass =
-      stylesTrack[
-        this.props.isRangeSelectionActive
-          ? 'track-range-selection-active'
-          : 'track-range-selection'
-      ];
+    const rangeSelectorClass = this.props.isRangeSelectionActive
+      ? stylesTrack['track-range-selection-active']
+      : stylesTrack['track-range-selection'];
 
     return (
-      <div className={styles['vertical-tiled-plot']}>
+      <div
+        className={clsx(
+          'horizontal-tiled-plot',
+          styles['horizontal-tiled-plot'],
+        )}
+      >
         {isBrushable && (
           <svg
             ref={(el) => {
@@ -206,33 +201,27 @@ class VerticalTiledPlot extends React.Component {
             }}
             className={rangeSelectorClass}
             style={{
-              height: this.props.height,
-              width,
+              height,
+              width: this.props.width,
             }}
             xmlns="http://www.w3.org/2000/svg"
           />
         )}
         <ListWrapper
-          axis="x"
-          className={clsx(
-            stylesPlot.list,
-            stylesPlot.stylizedList,
-            stylesPlot.horizontalList,
-          )}
+          className={clsx(stylesPlot.list, stylesPlot.stylizedList)}
           component={SortableList}
           editable={this.props.editable}
           handleConfigTrack={this.props.handleConfigTrack}
           handleResizeTrack={this.props.handleResizeTrack}
-          height={this.props.height}
+          height={height}
           helperClass={stylesPlot.stylizedHelper}
-          itemClass={clsx(stylesPlot.stylizedItem, stylesPlot.horizontalItem)}
-          itemControlAlignLeft={this.props.tracksControlAlignLeft}
-          itemReactClass={VerticalItem}
+          itemClass={stylesPlot.stylizedItem}
+          itemReactClass={HorizontalItem}
           items={this.props.tracks.map((d) => ({
             configMenuVisible: d.uid === this.props.configTrackMenuId,
             uid: d.uid || slugid.nice(),
-            height: this.props.height,
-            width: d.width,
+            width: this.props.width,
+            height: d.height,
             value: d.value,
           }))}
           onAddSeries={this.props.onAddSeries}
@@ -243,14 +232,14 @@ class VerticalTiledPlot extends React.Component {
           referenceAncestor={this.props.referenceAncestor}
           resizeHandles={this.props.resizeHandles}
           useDragHandle={true}
-          width={width}
+          width={this.props.width}
         />
       </div>
     );
   }
 }
 
-VerticalTiledPlot.propTypes = {
+HorizontalTiledPlot.propTypes = {
   configTrackMenuId: PropTypes.string,
   editable: PropTypes.bool,
   handleConfigTrack: PropTypes.func,
@@ -258,7 +247,6 @@ VerticalTiledPlot.propTypes = {
   handleSortEnd: PropTypes.func,
   is1dRangeSelection: PropTypes.bool,
   isRangeSelectionActive: PropTypes.bool,
-  height: PropTypes.number,
   onAddSeries: PropTypes.func,
   onCloseTrack: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
@@ -273,7 +261,7 @@ VerticalTiledPlot.propTypes = {
   resizeHandles: PropTypes.object,
   scale: PropTypes.func,
   tracks: PropTypes.array,
-  tracksControlAlignLeft: PropTypes.bool,
+  width: PropTypes.number,
 };
 
-export default VerticalTiledPlot;
+export default HorizontalTiledPlot;

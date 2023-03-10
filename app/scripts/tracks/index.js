@@ -1,6 +1,7 @@
 export { default as Annotations1dTrack } from './Annotations1dTrack';
 export { default as Annotations2dTrack } from './Annotations2dTrack';
 export { default as ArrowheadDomainsTrack } from './ArrowheadDomainsTrack';
+export { default as AxisPixi } from './AxisPixi';
 export { default as BarTrack } from './BarTrack';
 export { default as BedLikeTrack } from './BedLikeTrack';
 export { default as CNVIntervalTrack } from './CNVIntervalTrack';
@@ -21,7 +22,6 @@ export { default as HorizontalMultivecTrack } from './HorizontalMultivecTrack';
 export { default as HorizontalPoint1DPixiTrack } from './HorizontalPoint1DPixiTrack';
 export { default as HorizontalRule } from './HorizontalRule';
 export { default as HorizontalTiled1DPixiTrack } from './HorizontalTiled1DPixiTrack';
-export { default as HorizontalTiledPlot } from '../HorizontalTiledPlot';
 export { default as HorizontalTrack } from './HorizontalTrack';
 export { default as Id2DTiledPixiTrack } from './Id2DTiledPixiTrack';
 export { default as IdHorizontal1DTiledPixiTrack } from './IdHorizontal1DTiledPixiTrack';
