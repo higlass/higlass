@@ -7,57 +7,51 @@ import { scaleLinear } from 'd3-scale';
 import slugid from 'slugid';
 import clsx from 'clsx';
 
-import PixiTrack from './PixiTrack';
-import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
-import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
-import IdHorizontal1DTiledPixiTrack from './IdHorizontal1DTiledPixiTrack';
-import IdVertical1DTiledPixiTrack from './IdVertical1DTiledPixiTrack';
-import TopAxisTrack from './TopAxisTrack';
-import LeftAxisTrack from './LeftAxisTrack';
-import CombinedTrack from './CombinedTrack';
-import BedLikeTrack from './BedLikeTrack';
-import OverlayTrack from './OverlayTrack';
-
-import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
-import HorizontalPoint1DPixiTrack from './HorizontalPoint1DPixiTrack';
-import HorizontalMultivecTrack from './HorizontalMultivecTrack';
-import BarTrack from './BarTrack';
-import DivergentBarTrack from './DivergentBarTrack';
-import Horizontal1dHeatmapTrack from './Horizontal1dHeatmapTrack';
-
-import CNVIntervalTrack from './CNVIntervalTrack';
-import LeftTrackModifier from './LeftTrackModifier';
-import Track from './Track';
-import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
-import ArrowheadDomainsTrack from './ArrowheadDomainsTrack';
-import Annotations2dTrack from './Annotations2dTrack';
-import Annotations1dTrack from './Annotations1dTrack';
-
-import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
-
-import SquareMarkersTrack from './SquareMarkersTrack';
-import Chromosome2DLabels from './Chromosome2DLabels';
-import ChromosomeGrid from './ChromosomeGrid';
-import Chromosome2DAnnotations from './Chromosome2DAnnotations';
-import HorizontalChromosomeLabels from './HorizontalChromosomeLabels';
-
-import HorizontalHeatmapTrack from './HorizontalHeatmapTrack';
-import UnknownPixiTrack from './UnknownPixiTrack';
-import ValueIntervalTrack from './ValueIntervalTrack';
-import ViewportTracker2D from './ViewportTracker2D';
-import ViewportTrackerHorizontal from './ViewportTrackerHorizontal';
-import ViewportTrackerVertical from './ViewportTrackerVertical';
-
-import HorizontalRule from './HorizontalRule';
-import VerticalRule from './VerticalRule';
-import CrossRule from './CrossRule';
-
-import OSMTilesTrack from './OSMTilesTrack';
-import OSMTileIdsTrack from './OSMTileIdsTrack';
-import MapboxTilesTrack from './MapboxTilesTrack';
-import RasterTilesTrack from './RasterTilesTrack';
-
-import SVGTrack from './SVGTrack';
+import {
+  CNVIntervalTrack,
+  HorizontalGeneAnnotationsTrack,
+  ArrowheadDomainsTrack,
+  Annotations2dTrack,
+  Annotations1dTrack,
+  Horizontal2DDomainsTrack,
+  SquareMarkersTrack,
+  Chromosome2DLabels,
+  ChromosomeGrid,
+  Chromosome2DAnnotations,
+  HorizontalChromosomeLabels,
+  HorizontalHeatmapTrack,
+  ValueIntervalTrack,
+  ViewportTracker2D,
+  ViewportTrackerHorizontal,
+  ViewportTrackerVertical,
+  HorizontalRule,
+  VerticalRule,
+  CrossRule,
+  Track,
+  OSMTilesTrack,
+  OSMTileIdsTrack,
+  MapboxTilesTrack,
+  RasterTilesTrack,
+  SVGTrack,
+  HorizontalLine1DPixiTrack,
+  HorizontalPoint1DPixiTrack,
+  HorizontalMultivecTrack,
+  BarTrack,
+  DivergentBarTrack,
+  Horizontal1dHeatmapTrack,
+  PixiTrack,
+  HeatmapTiledPixiTrack,
+  Id2DTiledPixiTrack,
+  IdHorizontal1DTiledPixiTrack,
+  IdVertical1DTiledPixiTrack,
+  TopAxisTrack,
+  LeftAxisTrack,
+  CombinedTrack,
+  BedLikeTrack,
+  OverlayTrack,
+  LeftTrackModifier,
+  UnknownPixiTrack
+} from './tracks';
 
 // Higher-order components
 import withPubSub from './hocs/with-pub-sub';

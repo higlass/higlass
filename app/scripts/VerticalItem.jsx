@@ -1,7 +1,7 @@
 import React from 'react';
 import { SortableElement } from 'react-sortable-hoc';
 
-import VerticalTrack from './VerticalTrack';
+import { VerticalTrack } from './tracks';
 
 const VerticalItem = SortableElement((props) => (
   <VerticalTrack

@@ -36,7 +36,6 @@ export { default as hasClass } from './has-class';
 export { default as hasParent } from './has-parent';
 export { default as hexStrToInt } from './hex-string-to-int';
 export { default as intoTheVoid } from './into-the-void';
-export { default as isTrackOrChildTrack } from './is-track-or-child-track';
 export { default as isWithin } from './is-within';
 export { default as latToY } from './lat-to-y';
 export { default as loadChromInfos } from './load-chrom-infos';
