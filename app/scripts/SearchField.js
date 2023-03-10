@@ -1,6 +1,6 @@
 import { bisector } from 'd3-array';
 import { format } from 'd3-format';
-import absToChr from './utils/abs-to-chr';
+import { absToChr } from './utils';
 
 class SearchField {
   constructor(chromInfo) {

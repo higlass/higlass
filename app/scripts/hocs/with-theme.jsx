@@ -1,6 +1,6 @@
 import React from 'react';
 
-import toVoid from '../utils/to-void';
+import { toVoid } from '../utils';
 
 const { Provider, Consumer } = React.createContext({
   close: toVoid,

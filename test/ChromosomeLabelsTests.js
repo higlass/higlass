@@ -7,9 +7,8 @@ import { expect } from 'chai';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
-  getTrackRenderer,
-} from '../app/scripts/utils';
+} from '../app/scripts/test-helpers';
+import { getTrackObjectFromHGC, getTrackRenderer } from '../app/scripts/utils';
 
 Enzyme.configure({ adapter: new Adapter() });
 

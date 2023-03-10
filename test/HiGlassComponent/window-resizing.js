@@ -7,7 +7,7 @@ import {
   mountHGComponent,
   removeHGComponent,
   waitForTilesLoaded,
-} from '../../app/scripts/utils';
+} from '../../app/scripts/test-helpers';
 
 import { project1D, heatmapTrack } from '../view-configs';
 

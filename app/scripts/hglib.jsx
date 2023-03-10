@@ -29,8 +29,9 @@ export {
   waitForTilesLoaded,
   waitForTransitionsFinished,
   mountHGComponent,
-  getTrackObjectFromHGC,
-} from './utils';
+} from './test-helpers';
+
+export { getTrackObjectFromHGC } from './utils';
 
 export { version } from '../../package.json';
 

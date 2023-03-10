@@ -1,6 +1,10 @@
+// A better position of this file would be under \configs,
+// but this file imports HeatmapOptions that contains React
+// components, so having this file near track implementations
+
 import { formatPrefix, precisionPrefix } from 'd3-format';
 
-import HeatmapOptions from '../HeatmapOptions';
+import HeatmapOptions from './HeatmapOptions';
 
 const valueColumnOptions = (track) => {
   if (!track.header) return [];
@@ -59,7 +63,7 @@ const OPACITY_OPTIONS_NO_ZERO = sizesInPx([0.2, 0.4, 0.6, 0.8, 1.0], '%', 100);
 
 // these values define the options that are visible in the track config
 // menu
-export const OPTIONS_INFO = {
+const OPTIONS_INFO = {
   axisLabelFormatting: {
     name: 'Axis Label Formatting',
     inlineOptions: {

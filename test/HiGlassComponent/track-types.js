@@ -6,8 +6,8 @@ import { expect } from 'chai';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackByUid,
-} from '../../app/scripts/utils';
+} from '../../app/scripts/test-helpers';
+import { getTrackByUid } from '../../app/scripts/utils';
 
 import { annotationsTilesView } from '../view-configs';
 

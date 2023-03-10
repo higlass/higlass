@@ -9,10 +9,10 @@ import FetchMockHelper from './utils/FetchMockHelper';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
   waitForTransitionsFinished,
   waitForTilesLoaded,
-} from '../app/scripts/utils';
+} from '../app/scripts/test-helpers';
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
 import viewConf1DHorizontal from './view-configs/continuous-scaling-1D-horizontal.json';
 import viewConf1DVertical from './view-configs/continuous-scaling-1D-vertical.json';

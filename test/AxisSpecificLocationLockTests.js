@@ -9,7 +9,7 @@ import {
   mountHGComponent,
   removeHGComponent,
   waitForTransitionsFinished,
-} from '../app/scripts/utils';
+} from '../app/scripts/test-helpers';
 
 import schema from '../app/schema.json';
 import viewconf from './view-configs/axis-specific-location-locks.json';

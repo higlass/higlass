@@ -2,7 +2,7 @@ import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
 
-import DataFetcher from './DataFetcher';
+import { DataFetcher } from './data-fetchers';
 import PixiTrack from './PixiTrack';
 
 // Utils

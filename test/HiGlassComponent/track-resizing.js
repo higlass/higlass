@@ -7,9 +7,8 @@ import {
   mountHGComponent,
   removeHGComponent,
   waitForTilesLoaded,
-  getTrackObjectFromHGC,
-  getTiledPlot,
-} from '../../app/scripts/utils';
+} from '../../app/scripts/test-helpers';
+import { getTiledPlot, getTrackObjectFromHGC } from '../../app/scripts/utils';
 
 import { oneTrackConfig } from '../view-configs';
 

@@ -58,8 +58,8 @@ add a line to `karma.conf.js` to include it in the tests.
     import {
       mountHGComponent,
       removeHGComponent,
-      getTrackObjectFromHGC
-    } from '../app/scripts/utils';
+    } from '../app/scripts/test-helpers';
+    import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
     configure({ adapter: new Adapter() });
 

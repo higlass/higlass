@@ -8,10 +8,12 @@ import slugid from 'slugid';
 import {
   mountHGComponentAsync,
   removeHGComponent,
-  getTrackObjectFromHGC,
   waitForTilesLoaded,
+} from '../../app/scripts/test-helpers';
+import {
   getTrackByUid,
   totalTrackPixelHeight,
+  getTrackObjectFromHGC,
 } from '../../app/scripts/utils';
 
 import {

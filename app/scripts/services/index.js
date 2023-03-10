@@ -8,3 +8,4 @@ export {
   getTileProxyAuthHeader,
   authHeader,
 } from './tile-proxy';
+export { tileResponseToData } from './worker';

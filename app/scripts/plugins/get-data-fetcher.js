@@ -1,7 +1,10 @@
-import GBKDataFetcher from './genbank-fetcher';
-import LocalDataFetcher from './local-tile-fetcher';
-import DataFetcher from '../DataFetcher';
-import { AVAILABLE_FOR_PLUGINS } from '../configs';
+import {
+  DataFetcher,
+  GBKDataFetcher,
+  LocalDataFetcher,
+} from '../data-fetchers';
+// TODO: we need to address this cyclic dependency
+import { AVAILABLE_FOR_PLUGINS } from '.';
 
 const getDataFetcher = (
   dataConfig,

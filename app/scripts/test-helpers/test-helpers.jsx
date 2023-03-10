@@ -1,6 +1,3 @@
-// In this project, these methods are only used in tests,
-// but plugin tracks also make use of them... so not really extraneous.
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -9,10 +6,7 @@ import { mount } from 'enzyme';
 
 import { requestsInFlight } from '../services';
 
-import {
-  getTrackObjectFromHGC,
-  getTrackRenderer,
-} from './get-higlass-components';
+import { getTrackObjectFromHGC, getTrackRenderer } from '../utils';
 
 import HiGlassComponent from '../HiGlassComponent';
 

@@ -7,8 +7,8 @@ import { geneAnnotationsOnly } from './view-configs';
 import createElementAndApi from './utils/create-element-and-api';
 
 // Utils
+import { waitForTilesLoaded } from '../app/scripts/test-helpers';
 import {
-  waitForTilesLoaded,
   getTrackConfFromHGC,
   getTrackObjectFromHGC,
 } from '../app/scripts/utils';

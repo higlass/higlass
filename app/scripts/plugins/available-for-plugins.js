@@ -22,7 +22,7 @@ import slugid from 'slugid';
 import { mix } from '../mixwith';
 
 // Configs
-import * as configs from '.';
+import * as configs from '../configs';
 
 // Utils
 import * as utils from '../utils';
@@ -81,8 +81,7 @@ import ViewportTrackerVertical from '../ViewportTrackerVertical';
 
 // Factories
 import ContextMenuItem from '../ContextMenuItem';
-import DataFetcher from '../DataFetcher';
-import LruCache from '../factories/LruCache';
+import LruCache from '../utils/LruCache';
 
 // Services
 import * as services from '../services';
@@ -92,9 +91,12 @@ import ChromosomeInfo from '../ChromosomeInfo';
 import SearchField from '../SearchField';
 
 // Data Fetchers
-import GBKDataFetcher from '../data-fetchers/genbank-fetcher';
-import LocalDataFetcher from '../data-fetchers/local-tile-fetcher';
-import getDataFetcher from '../data-fetchers/get-data-fetcher';
+import {
+  DataFetcher,
+  GBKDataFetcher,
+  LocalDataFetcher,
+} from '../data-fetchers';
+import getDataFetcher from './get-data-fetcher';
 
 import { version } from '../../../package.json';
 

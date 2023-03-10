@@ -6,8 +6,8 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import {
   mountHGComponent,
   removeHGComponent,
-  getTrackObjectFromHGC,
-} from '../app/scripts/utils';
+} from '../app/scripts/test-helpers';
+import { getTrackObjectFromHGC } from '../app/scripts/utils';
 
 import viewconf from './view-configs/label-margin.json';
 import viewconfSplitHeatmaps from './view-configs/label-split-heatmaps.json';

@@ -8,10 +8,7 @@ import clsx from 'clsx';
 import TrackControl from './TrackControl';
 
 // Utils
-import { or, resetD3BrushStyle } from './utils';
-
-// Configs
-import { IS_TRACK_RANGE_SELECTABLE } from './configs';
+import { or, resetD3BrushStyle, IS_TRACK_RANGE_SELECTABLE } from './utils';
 
 // Styles
 import styles from '../styles/CenterTrack.module.scss'; // eslint-disable-line no-unused-vars
