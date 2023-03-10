@@ -1,4 +1,4 @@
-import { or } from '.';
+import { or } from './or';
 
 export const IS_TRACK_RANGE_SELECTABLE = (track) => {
   switch (track.type) {

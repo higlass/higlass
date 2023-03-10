@@ -3,7 +3,7 @@ import {
   GBKDataFetcher,
   LocalDataFetcher,
 } from '../data-fetchers';
-import { AVAILABLE_FOR_PLUGINS } from '.';
+import { AVAILABLE_FOR_PLUGINS } from './available-for-plugins';
 
 const getDataFetcher = (
   dataConfig,

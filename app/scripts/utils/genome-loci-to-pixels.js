@@ -1,4 +1,4 @@
-import { chrToAbs } from '.';
+import { chrToAbs } from './chr-to-abs';
 
 const genomeLociToPixels = (genomeLoci, chromInfo) => [
   chrToAbs(genomeLoci[0], genomeLoci[1], chromInfo),

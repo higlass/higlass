@@ -1,4 +1,4 @@
-import { DATATYPE_TO_TRACK_TYPE } from '.';
+import { DATATYPE_TO_TRACK_TYPE } from './datatype-to-track-type';
 
 /**
  * Return a list of the available track types, given a set of data types

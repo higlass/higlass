@@ -1,4 +1,4 @@
-import { map } from '.';
+import { map } from './map';
 
 /**
  * Convert an object into array which entries are the prop values of the object

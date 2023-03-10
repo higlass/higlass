@@ -1,6 +1,6 @@
 import { globalPubSub } from 'pub-sub-es';
 
-import { hexStrToInt } from '.';
+import { hexStrToInt } from './hex-string-to-int';
 
 // Configs
 import { GLOBALS } from '../configs';

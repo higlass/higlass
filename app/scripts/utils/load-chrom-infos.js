@@ -1,6 +1,6 @@
 import { chromInfo } from '../services';
 
-import { objVals } from '.';
+import { objVals } from './obj-vals';
 
 const loadChromInfos = (views) =>
   objVals(views)
