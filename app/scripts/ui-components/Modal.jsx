@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 import Button from './Button';
-import { Cross } from '.';
+import Cross from './Cross';
 import withModal from '../hocs/with-modal';
 
 import classes from '../../styles/Modal.module.scss';

@@ -13,7 +13,7 @@ import createPubSub, { globalPubSub } from 'pub-sub-es';
 import clsx from 'clsx';
 
 import TiledPlot from '../TiledPlot';
-import { GenomePositionSearchBox } from '.';
+import GenomePositionSearchBox from './GenomePositionSearchBox';
 import ExportLinkDialog from './ExportLinkDialog';
 import ViewHeader from './ViewHeader';
 import ChromosomeInfo from '../ChromosomeInfo';
