@@ -4,7 +4,11 @@ import HiGlassComponent from './HiGlassComponent';
 
 // these exports can be used to create new tracks in outside
 // environments (e.g. Observable)
-import { SVGTrack, TiledPixiTrack, HorizontalGeneAnnotationsTrack } from '../tracks';
+import {
+  SVGTrack,
+  TiledPixiTrack,
+  HorizontalGeneAnnotationsTrack,
+} from '../tracks';
 
 export { default as HiGlassComponent } from './HiGlassComponent';
 export {

@@ -6,7 +6,11 @@ import { DataFetcher } from '../data-fetchers';
 import PixiTrack from './PixiTrack';
 
 // Utils
-import { throttleAndDebounce, parseChromsizesRows, backgroundTaskScheduler } from '../utils';
+import {
+  throttleAndDebounce,
+  parseChromsizesRows,
+  backgroundTaskScheduler,
+} from '../utils';
 
 // Configs
 import { GLOBALS, ZOOM_DEBOUNCE } from '../configs';

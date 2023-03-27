@@ -8,7 +8,7 @@ import { removeHGComponent } from '../app/scripts/test-helpers';
 
 import { osmConf } from './view-configs';
 
-import { viewer } from '../app/scripts/hglib';
+import { viewer } from '../app/scripts/ui-components/hglib';
 
 Enzyme.configure({ adapter: new Adapter() });
 

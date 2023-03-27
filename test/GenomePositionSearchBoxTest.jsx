@@ -5,7 +5,7 @@ import { expect } from 'chai';
 
 import React from 'react';
 
-import HiGlassComponent from '../app/scripts/HiGlassComponent';
+import HiGlassComponent from '../app/scripts/ui-components/HiGlassComponent';
 
 import {
   waitForJsonComplete,

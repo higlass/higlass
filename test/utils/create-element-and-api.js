@@ -1,4 +1,4 @@
-import { viewer } from '../../app/scripts/hglib';
+import { viewer } from '../../app/scripts/ui-components/hglib';
 
 import createDiv from './create-div';
 

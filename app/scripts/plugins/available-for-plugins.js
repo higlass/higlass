@@ -19,7 +19,6 @@ import * as d3Transition from 'd3-transition';
 import * as d3Zoom from 'd3-zoom';
 
 import slugid from 'slugid';
-import { mix } from '../utils';
 
 // Configs
 import * as configs from '../configs';
@@ -32,7 +31,6 @@ import * as tracks from '../tracks';
 
 // Factories
 import ContextMenuItem from '../ui-components/ContextMenuItem';
-import { LruCache } from '../utils';
 
 // Services
 import * as services from '../services';
@@ -66,14 +64,14 @@ const libraries = {
   d3Transition,
   d3Zoom,
   PIXI: configs.GLOBALS.PIXI,
-  mix,
+  mix: utils.mix,
   slugid,
 };
 
 const factories = {
   ContextMenuItem,
   DataFetcher,
-  LruCache,
+  LruCache: utils.LruCache,
 };
 
 const chromosomes = {

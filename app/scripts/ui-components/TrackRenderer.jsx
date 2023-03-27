@@ -50,11 +50,11 @@ import {
   BedLikeTrack,
   OverlayTrack,
   LeftTrackModifier,
-  UnknownPixiTrack
+  UnknownPixiTrack,
 } from '../tracks';
 
 // Higher-order components
-import { withPubSub, withTheme} from '../hocs';
+import { withPubSub, withTheme } from '../hocs';
 
 // Utils
 import {

@@ -10,7 +10,7 @@ import {
   waitForTilesLoaded,
 } from '../../app/scripts/test-helpers';
 
-import HiGlassComponent from '../../app/scripts/HiGlassComponent';
+import HiGlassComponent from '../../app/scripts/ui-components/HiGlassComponent';
 
 import { testViewConfX1, project1D } from '../view-configs';
 

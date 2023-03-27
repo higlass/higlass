@@ -8,7 +8,7 @@ import { simpleCenterViewConfig } from './view-configs';
 // Utils
 import { removeHGComponent } from '../app/scripts/test-helpers';
 
-import { viewer } from '../app/scripts/hglib';
+import { viewer } from '../app/scripts/ui-components/hglib';
 
 Enzyme.configure({ adapter: new Adapter() });
 
