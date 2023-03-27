@@ -19,7 +19,7 @@ import * as d3Transition from 'd3-transition';
 import * as d3Zoom from 'd3-zoom';
 
 import slugid from 'slugid';
-import { mix } from '../mixwith';
+import { mix } from '../utils';
 
 // Configs
 import * as configs from '../configs';

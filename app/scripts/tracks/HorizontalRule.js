@@ -1,11 +1,7 @@
 /* eslint-disable max-classes-per-file */
-
-import { mix, Mixin } from '../mixwith';
-
 import PixiTrack from './PixiTrack';
-import RuleMixin from '../RuleMixin';
 
-import { colorToHex } from '../utils';
+import { colorToHex, mix, Mixin, RuleMixin } from '../utils';
 
 export const HorizontalRuleMixin = Mixin(
   (superclass) =>

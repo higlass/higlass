@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { mix } from '../mixwith';
+import { mix } from '../utils';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';

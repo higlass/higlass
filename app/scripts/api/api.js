@@ -2,15 +2,15 @@ import ReactDOM from 'react-dom';
 import createPubSub from 'pub-sub-es';
 import Ajv from 'ajv';
 
-import schema from '../schema.json';
+import schema from '../../schema.json';
 
-import { setTileProxyAuthHeader } from './services';
+import { setTileProxyAuthHeader } from '../services';
 
-import { getTrackObjectFromHGC } from './utils';
+import { getTrackObjectFromHGC } from '../utils';
 
-import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from './configs';
+import { MOUSE_TOOL_MOVE, MOUSE_TOOL_SELECT } from '../configs';
 
-import { version } from '../../package.json';
+import { version } from '../../../package.json';
 
 const forceUpdate = (self) => {
   self.setState(self.state);

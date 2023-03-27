@@ -86,6 +86,8 @@ export { default as DenseDataExtrema2D } from './DenseDataExtrema2D';
 export { default as getAggregationFunction } from './get-aggregation-function';
 export { default as selectedItemsToSize } from './selected-items-to-size';
 export { default as IS_TRACK_RANGE_SELECTABLE } from './is-track-range-selectable';
+export { mix, Mixin } from './mixwith';
+export { default as RuleMixin } from './RuleMixin';
 
 export {
   getTrackObjectFromHGC,

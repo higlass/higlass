@@ -1,8 +1,6 @@
-import { colorToHex } from '../utils';
-import { mix } from '../mixwith';
+import { colorToHex, mix, RuleMixin } from '../utils';
 
 import PixiTrack from './PixiTrack';
-import RuleMixin from '../RuleMixin';
 import { VerticalRuleMixin } from './VerticalRule';
 
 class CrossRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {

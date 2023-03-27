@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { mix } from '../mixwith';
 
-import { expandCombinedTracks } from '../utils';
+import { mix, expandCombinedTracks } from '../utils';
 import { getSeriesItems } from './SeriesListItems';
 
 import ContextMenuItem from './ContextMenuItem';

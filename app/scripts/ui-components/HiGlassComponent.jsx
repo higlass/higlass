@@ -21,7 +21,7 @@ import ViewConfigEditor from './ViewConfigEditor';
 
 import createSymbolIcon from './symbol';
 import { all as icons } from './icons';
-import createApi from '../api';
+import { createApi }  from '../api';
 
 // Higher-order components
 import { Provider as PubSubProvider } from '../hocs/with-pub-sub';
