@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import clsx from 'clsx';
 
-import withTheme from '../hocs/with-theme';
+import { withTheme } from '../hocs';
 import { THEME_DARK } from '../configs';
 
 import classes from '../../styles/AddTrackPositionMenu.module.scss';

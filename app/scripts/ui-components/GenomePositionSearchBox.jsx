@@ -11,13 +11,12 @@ import PopupMenu from './PopupMenu';
 
 // Services
 import { tileProxy } from '../services';
-import withPubSub from '../hocs/with-pub-sub';
 
 // Utils
 import { scalesCenterAndK, dictKeys, toVoid } from '../utils';
 
 // HOCS
-import withTheme from '../hocs/with-theme';
+import { withTheme, withPubSub } from '../hocs';
 import { SearchIcon } from './icons';
 // Configs
 import { THEME_DARK, ZOOM_TRANSITION_DURATION } from '../configs';

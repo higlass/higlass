@@ -4,7 +4,7 @@ import clsx from 'clsx';
 
 import Button from './Button';
 import Cross from './Cross';
-import withModal from '../hocs/with-modal';
+import { withModal } from '../hocs';
 
 import classes from '../../styles/Modal.module.scss';
 

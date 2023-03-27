@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import Button from './Button';
 import Cross from './Cross';
 import Modal from './Modal';
-import withModal from '../hocs/with-modal';
+import { withModal } from '../hocs';
 
 import classes from '../../styles/Dialog.module.scss';
 

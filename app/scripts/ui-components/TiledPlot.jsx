@@ -23,9 +23,7 @@ import ViewContextMenu from './ViewContextMenu';
 // import {HeatmapOptions} from './HeatmapOptions';
 
 // Higher-order components
-import withPubSub from '../hocs/with-pub-sub';
-import withModal from '../hocs/with-modal';
-import withTheme from '../hocs/with-theme';
+import { withPubSub, withModal, withTheme } from '../hocs';
 
 // Utils
 import {

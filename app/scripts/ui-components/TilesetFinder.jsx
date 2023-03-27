@@ -7,7 +7,7 @@ import { tileProxy } from '../services';
 
 import '../../styles/TilesetFinder.css';
 
-import withPubSub from '../hocs/with-pub-sub';
+import { withPubSub } from '../hocs';
 
 // Configs
 import { TRACKS_INFO } from '../configs';

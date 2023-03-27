@@ -54,8 +54,7 @@ import {
 } from '../tracks';
 
 // Higher-order components
-import withPubSub from '../hocs/with-pub-sub';
-import withTheme from '../hocs/with-theme';
+import { withPubSub, withTheme} from '../hocs';
 
 // Utils
 import {

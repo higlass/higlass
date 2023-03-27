@@ -8,7 +8,7 @@ import ConfigViewMenu from './ConfigViewMenu';
 import AddTrackPositionMenu from './AddTrackPositionMenu';
 
 // HOCS
-import withTheme from '../hocs/with-theme';
+import { withTheme } from '../hocs';
 
 // Configs
 import {

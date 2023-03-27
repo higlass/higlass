@@ -24,9 +24,7 @@ import { all as icons } from './icons';
 import { createApi }  from '../api';
 
 // Higher-order components
-import { Provider as PubSubProvider } from '../hocs/with-pub-sub';
-import { Provider as ModalProvider } from '../hocs/with-modal';
-import { Provider as ThemeProvider } from '../hocs/with-theme';
+import { PubSubProvider, ModalProvider, ThemeProvider } from '../hocs';
 
 // Services
 import {

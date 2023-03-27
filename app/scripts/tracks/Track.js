@@ -1,5 +1,5 @@
 import { scaleLinear } from 'd3-scale';
-import { fake as fakePubSub } from '../hocs/with-pub-sub';
+import { fakePubSub } from '../hocs';
 
 // Services
 import { isWithin } from '../utils';

@@ -9,8 +9,7 @@ import clsx from 'clsx';
 import schema from '../../schema.json';
 import Button from './Button';
 import Dialog from './Dialog';
-import withModal from '../hocs/with-modal';
-import withPubSub from '../hocs/with-pub-sub';
+import { withModal, withPubSub } from '../hocs';
 import { timeout } from '../utils';
 
 import classes from '../../styles/ViewConfigEditor.module.scss';

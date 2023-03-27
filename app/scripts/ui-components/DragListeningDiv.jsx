@@ -3,7 +3,7 @@ import React from 'react';
 import slugid from 'slugid';
 import clsx from 'clsx';
 
-import withPubSub from '../hocs/with-pub-sub';
+import { withPubSub } from '../hocs';
 
 // Styles
 import classes from '../../styles/DragListeningDiv.module.scss';
