@@ -6,8 +6,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 import Autocomplete from './Autocomplete';
-import ChromosomeInfo from '../ChromosomeInfo';
-import SearchField from '../SearchField';
+import { ChromosomeInfo, SearchField } from '../chromosome';
 import PopupMenu from './PopupMenu';
 
 // Services

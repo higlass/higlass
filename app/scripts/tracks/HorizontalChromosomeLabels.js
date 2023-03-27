@@ -3,8 +3,7 @@ import { scaleLinear } from 'd3-scale';
 import { format, precisionPrefix, formatPrefix } from 'd3-format';
 
 import PixiTrack from './PixiTrack';
-import ChromosomeInfo from '../ChromosomeInfo';
-import SearchField from '../SearchField';
+import { ChromosomeInfo, SearchField } from '../chromosome';
 
 import {
   absToChr,

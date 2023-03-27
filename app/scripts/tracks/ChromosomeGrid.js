@@ -1,6 +1,5 @@
 import PixiTrack from './PixiTrack';
-import ChromosomeInfo from '../ChromosomeInfo';
-import SearchField from '../SearchField';
+import { SearchField, ChromosomeInfo } from '../chromosome';
 
 import { colorToHex } from '../utils';
 

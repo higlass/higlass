@@ -3,9 +3,7 @@ import { format } from 'd3-format';
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
 import { tileProxy } from '../services';
-import selectedItemsToSize from '../utils/selected-items-to-size';
-import selectedItemsToCumWeights from '../utils/selected-items-to-cum-weights';
-import getAggregationFunction from '../utils/get-aggregation-function';
+import { selectedItemsToSize, selectedItemsToCumWeights, getAggregationFunction } from '../utils';
 
 export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   constructor(context, options) {

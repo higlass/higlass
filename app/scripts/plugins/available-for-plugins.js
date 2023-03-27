@@ -32,14 +32,13 @@ import * as tracks from '../tracks';
 
 // Factories
 import ContextMenuItem from '../ui-components/ContextMenuItem';
-import LruCache from '../utils/LruCache';
+import { LruCache } from '../utils';
 
 // Services
 import * as services from '../services';
 
 // Chromosomes
-import ChromosomeInfo from '../ChromosomeInfo';
-import SearchField from '../SearchField';
+import { ChromosomeInfo, SearchField } from '../chromosome';
 
 // Data Fetchers
 import {

@@ -6,7 +6,6 @@ import HiGlassComponent from './HiGlassComponent';
 // environments (e.g. Observable)
 import { SVGTrack, TiledPixiTrack, HorizontalGeneAnnotationsTrack } from '../tracks';
 
-export { default as ChromosomeInfo } from '../ChromosomeInfo';
 export { default as HiGlassComponent } from './HiGlassComponent';
 export {
   default as HiGlassTrackComponent,
@@ -28,6 +27,8 @@ export {
   waitForTransitionsFinished,
   mountHGComponent,
 } from '../test-helpers';
+
+export { ChromosomeInfo } from '../chromosome';
 
 export { getTrackObjectFromHGC } from '../utils';
 

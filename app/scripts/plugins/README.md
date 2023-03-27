@@ -1,3 +1,3 @@
 # plugins
 
-This folder contains code that are used by plugin tracks and data fetchers.
+This folder contains code that are mainly used by plugin tracks and data fetchers.

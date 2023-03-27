@@ -1,8 +1,7 @@
 import boxIntersect from 'box-intersect';
 
 import PixiTrack from './PixiTrack';
-import ChromosomeInfo from '../ChromosomeInfo';
-import SearchField from '../SearchField';
+import { ChromosomeInfo, SearchField } from '../chromosome';
 
 import { absToChr } from '../utils';
 

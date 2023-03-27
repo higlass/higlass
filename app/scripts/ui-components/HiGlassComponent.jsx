@@ -16,10 +16,10 @@ import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
 import ExportLinkDialog from './ExportLinkDialog';
 import ViewHeader from './ViewHeader';
-import ChromosomeInfo from '../ChromosomeInfo';
+import { ChromosomeInfo } from '../chromosome';
 import ViewConfigEditor from './ViewConfigEditor';
 
-import createSymbolIcon from '../symbol';
+import createSymbolIcon from './symbol';
 import { all as icons } from './icons';
 import createApi from '../api';
 

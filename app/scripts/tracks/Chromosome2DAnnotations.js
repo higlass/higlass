@@ -1,7 +1,7 @@
 import { color } from 'd3-color';
 
 import PixiTrack from './PixiTrack';
-import ChromosomeInfo from '../ChromosomeInfo';
+import { ChromosomeInfo } from '../chromosome';
 
 // Configs
 import { GLOBALS } from '../configs';

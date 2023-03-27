@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
-import SearchField from '../app/scripts/SearchField';
+import { SearchField } from '../app/scripts/chromosome';
 
 import chromInfoHg19 from './chrom_info';
 

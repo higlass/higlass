@@ -1,4 +1,4 @@
-import { CombinedTrack } from '..';
+import CombinedTrack from '../CombinedTrack';
 
 const isTrackOrChildTrack = (testTrack, track) => {
   if (track === testTrack) return true;

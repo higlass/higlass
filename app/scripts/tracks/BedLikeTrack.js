@@ -5,7 +5,7 @@ import classifyPoint from 'robust-point-in-polygon';
 import { zoomIdentity } from 'd3-zoom';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
-import { trackUtils } from './utils';
+import { trackUtils } from './track-utils';
 
 // Services
 import { tileProxy } from '../services';

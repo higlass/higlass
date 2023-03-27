@@ -1,9 +1,9 @@
 export {
-  changeOptions,
-  waitForJsonComplete,
-  waitForTilesLoaded,
-  waitForTransitionsFinished,
-  mountHGComponent,
-  mountHGComponentAsync,
-  removeHGComponent,
+    changeOptions,
+    waitForJsonComplete,
+    waitForTilesLoaded,
+    waitForTransitionsFinished,
+    mountHGComponent,
+    mountHGComponentAsync,
+    removeHGComponent,
 } from './test-helpers';
