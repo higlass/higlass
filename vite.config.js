@@ -67,7 +67,7 @@ export default defineConfig(({ mode }) => {
       ? {
           minify: false,
           lib: {
-            entry: path.resolve(__dirname, 'app/scripts/hglib.jsx'),
+            entry: path.resolve(__dirname, 'app/scripts/ui-components/hglib.jsx'),
             name: 'hglib',
             formats: ['umd'],
           },
