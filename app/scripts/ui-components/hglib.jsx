@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import HiGlassComponent from './HiGlassComponent';
+import HiGlassComponent from '../higlass-embed/HiGlassComponentPure';
 
 // these exports can be used to create new tracks in outside
 // environments (e.g. Observable)
@@ -10,7 +10,7 @@ import {
   HorizontalGeneAnnotationsTrack,
 } from '../tracks';
 
-export { default as HiGlassComponent } from './HiGlassComponent';
+export { default as HiGlassComponent } from '../higlass-embed/HiGlassComponentPure';
 export {
   default as HiGlassTrackComponent,
   trackViewer,

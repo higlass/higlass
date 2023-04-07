@@ -257,8 +257,10 @@ class TiledPlot extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    this.trackRenderer?.render();
-    this.trackRenderer?.componentDidMount(); // TODO:!!!!
+    // TODO: 
+    this.trackRenderer?.UNSAFE_componentWillMount();
+    this.trackRenderer?.mount();
+    this.trackRenderer?.componentDidMount();
 
     if (prevState.rangeSelection !== this.state.rangeSelection) {
       let genomicRange = [null, null]; // Default range
@@ -1904,6 +1906,7 @@ class TiledPlot extends React.Component {
           onValueScaleChanged: this.props.onValueScaleChanged,
           paddingLeft: this.props.paddingLeft,
           paddingTop: this.props.paddingTop,
+          pubSub: this.props.pubSub,
           pixiRenderer: this.props.pixiRenderer,
           pixiStage: this.props.pixiStage,
           pluginDataFetchers: this.props.pluginDataFetchers,

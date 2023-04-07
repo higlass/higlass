@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
@@ -90,9 +89,12 @@ class TrackRendererPure {
     // super(props);
     // console.log('props', props);
     this.props = props;
+    console.log('props', props);
 
+    // this.props.pubSub = createPubSub();
+    // console.log(this.props.pubSub);
     // TODO:
-    this.props.pubSub = { publish: () => {}, subscribe: () => {} };
+    // this.props.pubSub = { publish: () => {}, subscribe: () => {} };
 
     this.dragging = false; // is this element being dragged?
     this.element = null;
@@ -106,10 +108,6 @@ class TrackRendererPure {
     this.activeTransitions = 0;
 
     this.zoomTransform = zoomIdentity;
-    this.windowScrolledBound = this.windowScrolled.bind(this);
-    this.zoomStartedBound = this.zoomStarted.bind(this);
-    this.zoomedBound = this.zoomed.bind(this);
-    this.zoomEndedBound = this.zoomEnded.bind(this);
 
     this.uid = slugid.nice();
     this.viewUid = this.props.uid;
@@ -148,9 +146,9 @@ class TrackRendererPure {
         }
         return true;
       })
-      .on('start', this.zoomStartedBound)
-      .on('zoom', this.zoomedBound)
-      .on('end', this.zoomEndedBound);
+      .on('start', this.zoomStarted.bind(this))
+      .on('zoom', this.zoomed.bind(this))
+      .on('end', this.zoomEnded.bind(this));
 
     this.zoomTransform = zoomIdentity;
     this.prevZoomTransform = zoomIdentity;
@@ -205,40 +203,31 @@ class TrackRendererPure {
           window.higlassTracksByType[pluginTrackType].config;
       });
     }
-
-    this.boundForwardEvent = this.forwardEvent.bind(this);
-    this.boundScrollEvent = this.scrollEvent.bind(this);
-    this.boundForwardContextMenu = this.forwardContextMenu.bind(this);
-    this.dispatchEventBound = this.dispatchEvent.bind(this);
-    this.zoomToDataPosHandlerBound = this.zoomToDataPosHandler.bind(this);
-    this.onScrollHandlerBound = this.onScrollHandler.bind(this);
-    
-    // this.render(); // TODO:
   }
 
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
     this.pubSubs = [];
     this.pubSubs.push(
-      this.props.pubSub.subscribe('scroll', this.windowScrolledBound),
+      this.props.pubSub.subscribe('scroll', this.windowScrolled),
     );
     this.pubSubs.push(
-      this.props.pubSub.subscribe('app.event', this.dispatchEventBound),
+      this.props.pubSub.subscribe('app.event', this.dispatchEvent),
     );
     this.pubSubs.push(
       this.props.pubSub.subscribe(
         'zoomToDataPos',
-        this.zoomToDataPosHandlerBound,
+        this.zoomToDataPosHandler,
       ),
     );
     this.pubSubs.push(
-      this.props.pubSub.subscribe('app.scroll', this.onScrollHandlerBound),
+      this.props.pubSub.subscribe('app.scroll', this.onScrollHandler),
     );
   }
 
   componentDidMount() {
-    console.log(this.element);
     if(!this.element) return;
+    console.log('componentDidMount');
     this.elementPos = this.element.getBoundingClientRect();
     this.elementSelection = select(this.element);
     this.svgTrackAreaSelection = select(this.svgTrackArea);
@@ -1869,95 +1858,96 @@ class TrackRendererPure {
       return;
     if (!this.eventTrackerOld) this.eventTrackerOld = this.eventTracker;
 
+    console.log('addEventTracker');
     this.eventTracker = this.eventTrackerOld;
 
-    this.eventTracker.addEventListener('click', this.boundForwardEvent);
+    this.eventTracker.addEventListener('click', this.forwardEvent);
     this.eventTracker.addEventListener(
       'contextmenu',
-      this.boundForwardContextMenu,
+      this.forwardContextMenu,
     );
-    this.eventTracker.addEventListener('dblclick', this.boundForwardEvent);
-    this.eventTracker.addEventListener('wheel', this.boundForwardEvent);
-    this.eventTracker.addEventListener('dragstart', this.boundForwardEvent);
-    this.eventTracker.addEventListener('selectstart', this.boundForwardEvent);
+    this.eventTracker.addEventListener('dblclick', this.forwardEvent);
+    this.eventTracker.addEventListener('wheel', this.forwardEvent);
+    this.eventTracker.addEventListener('dragstart', this.forwardEvent);
+    this.eventTracker.addEventListener('selectstart', this.forwardEvent);
 
-    this.eventTracker.addEventListener('mouseover', this.boundForwardEvent);
-    this.eventTracker.addEventListener('mouseenter', this.boundForwardEvent);
-    this.eventTracker.addEventListener('mousedown', this.boundForwardEvent);
-    this.eventTracker.addEventListener('mouseup', this.boundForwardEvent);
-    this.eventTracker.addEventListener('mouseout', this.boundForwardEvent);
-    this.eventTracker.addEventListener('mouseleave', this.boundForwardEvent);
+    this.eventTracker.addEventListener('mouseover', this.forwardEvent);
+    this.eventTracker.addEventListener('mouseenter', this.forwardEvent);
+    this.eventTracker.addEventListener('mousedown', this.forwardEvent);
+    this.eventTracker.addEventListener('mouseup', this.forwardEvent);
+    this.eventTracker.addEventListener('mouseout', this.forwardEvent);
+    this.eventTracker.addEventListener('mouseleave', this.forwardEvent);
 
-    this.eventTracker.addEventListener('touchstart', this.boundForwardEvent);
-    this.eventTracker.addEventListener('touchend', this.boundForwardEvent);
-    this.eventTracker.addEventListener('touchmove', this.boundForwardEvent);
-    this.eventTracker.addEventListener('touchcancel', this.boundForwardEvent);
+    this.eventTracker.addEventListener('touchstart', this.forwardEvent);
+    this.eventTracker.addEventListener('touchend', this.forwardEvent);
+    this.eventTracker.addEventListener('touchmove', this.forwardEvent);
+    this.eventTracker.addEventListener('touchcancel', this.forwardEvent);
 
-    this.eventTracker.addEventListener('pointerover', this.boundForwardEvent);
-    this.eventTracker.addEventListener('pointerenter', this.boundForwardEvent);
-    this.eventTracker.addEventListener('pointerdown', this.boundForwardEvent);
-    this.eventTracker.addEventListener('pointerup', this.boundForwardEvent);
-    this.eventTracker.addEventListener('pointercancel', this.boundForwardEvent);
-    this.eventTracker.addEventListener('pointerout', this.boundForwardEvent);
-    this.eventTracker.addEventListener('pointerleave', this.boundForwardEvent);
+    this.eventTracker.addEventListener('pointerover', this.forwardEvent);
+    this.eventTracker.addEventListener('pointerenter', this.forwardEvent);
+    this.eventTracker.addEventListener('pointerdown', this.forwardEvent);
+    this.eventTracker.addEventListener('pointerup', this.forwardEvent);
+    this.eventTracker.addEventListener('pointercancel', this.forwardEvent);
+    this.eventTracker.addEventListener('pointerout', this.forwardEvent);
+    this.eventTracker.addEventListener('pointerleave', this.forwardEvent);
 
-    window.addEventListener('scroll', this.boundScrollEvent);
+    window.addEventListener('scroll', this.scrollEvent);
   }
 
   removeEventTracker() {
     if (!this.eventTracker) return;
 
-    this.eventTracker.removeEventListener('click', this.boundForwardEvent);
+    this.eventTracker.removeEventListener('click', this.forwardEvent);
     this.eventTracker.removeEventListener(
       'contextmenu',
-      this.boundForwardContextMenu,
+      this.forwardContextMenu,
     );
-    this.eventTracker.removeEventListener('dblclick', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('wheel', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('dragstart', this.boundForwardEvent);
+    this.eventTracker.removeEventListener('dblclick', this.forwardEvent);
+    this.eventTracker.removeEventListener('wheel', this.forwardEvent);
+    this.eventTracker.removeEventListener('dragstart', this.forwardEvent);
     this.eventTracker.removeEventListener(
       'selectstart',
-      this.boundForwardEvent,
+      this.forwardEvent,
     );
 
-    this.eventTracker.removeEventListener('mouseover', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('mouseenter', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('mousedown', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('mouseup', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('mouseout', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('mouseleave', this.boundForwardEvent);
+    this.eventTracker.removeEventListener('mouseover', this.forwardEvent);
+    this.eventTracker.removeEventListener('mouseenter', this.forwardEvent);
+    this.eventTracker.removeEventListener('mousedown', this.forwardEvent);
+    this.eventTracker.removeEventListener('mouseup', this.forwardEvent);
+    this.eventTracker.removeEventListener('mouseout', this.forwardEvent);
+    this.eventTracker.removeEventListener('mouseleave', this.forwardEvent);
 
-    this.eventTracker.removeEventListener('touchstart', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('touchend', this.boundForwardEvent);
+    this.eventTracker.removeEventListener('touchstart', this.forwardEvent);
+    this.eventTracker.removeEventListener('touchend', this.forwardEvent);
     this.eventTracker.removeEventListener(
       'touchcancel',
-      this.boundForwardEvent,
+      this.forwardEvent,
     );
 
     this.eventTracker.removeEventListener(
       'pointerover',
-      this.boundForwardEvent,
+      this.forwardEvent,
     );
     this.eventTracker.removeEventListener(
       'pointerenter',
-      this.boundForwardEvent,
+      this.forwardEvent,
     );
     this.eventTracker.removeEventListener(
       'pointerdown',
-      this.boundForwardEvent,
+      this.forwardEvent,
     );
-    this.eventTracker.removeEventListener('pointerup', this.boundForwardEvent);
+    this.eventTracker.removeEventListener('pointerup', this.forwardEvent);
     this.eventTracker.removeEventListener(
       'pointercancel',
-      this.boundForwardEvent,
+      this.forwardEvent,
     );
-    this.eventTracker.removeEventListener('pointerout', this.boundForwardEvent);
+    this.eventTracker.removeEventListener('pointerout', this.forwardEvent);
     this.eventTracker.removeEventListener(
       'pointerleave',
-      this.boundForwardEvent,
+      this.forwardEvent,
     );
 
-    window.removeEventListener('scroll', this.boundScrollEvent);
+    window.removeEventListener('scroll', this.scrollEvent);
   }
 
   scrollEvent() {
@@ -1976,31 +1966,39 @@ class TrackRendererPure {
 
   /* ------------------------------- Render ------------------------------- */
 
-  render() {
-    if(!document.getElementById('temporary-tiled-plot-pure-div')) {
-
-    const parentDiv = document.createElement('div');
-    parentDiv.id = 'temporary-tiled-plot-pure-div';
-    parentDiv.className = clsx('track-renderer-div', classes['track-renderer']);
-    parentDiv.style = {
-      height: this.currentProps.height,
-      width: this.currentProps.width
-    }
-
-    const childDiv = document.createElement('div');
-    childDiv.className = clsx('track-renderer-element', classes['track-renderer-element']);
-    this.element = childDiv;
-    console.log('here?');
-
-    const childChildDiv = document.createElement('div');
-    childChildDiv.className = clsx('track-renderer-events', classes['track-renderer-events']);
+  mount() {
+    if(this.mounting) return;
     
-    // console.log('this.currentProps.children', this.currentProps.children);
-    // childChildDiv.appendChild(this.currentProps.children);
-    childDiv.appendChild(childChildDiv);
-    parentDiv.appendChild(childDiv);
-    document.getElementById('temporary-parent-id').appendChild(parentDiv);
-  }
+    this.mounting = true;
+    const parent = document.getElementById('temporary-tiled-plot-pure-div');
+    if(!parent) {
+    //   while(parent.firstChild) {
+    //     parent.removeChild(parent.firstChild);
+    //   }
+    // }
+      const parentDiv = document.createElement('div');
+      parentDiv.id = 'temporary-tiled-plot-pure-div';
+      parentDiv.className = clsx('track-renderer-div', classes['track-renderer']);
+      parentDiv.style = {
+        height: this.currentProps.height,
+        width: this.currentProps.width
+      }
+      this.baseEl = parentDiv;
+
+      const childDiv = document.createElement('div');
+      childDiv.className = clsx('track-renderer-element', classes['track-renderer-element']);
+      this.element = childDiv;
+
+      const childChildDiv = document.createElement('div');
+      childChildDiv.className = clsx('track-renderer-events', classes['track-renderer-events']);
+      this.eventTracker = childChildDiv;
+      console.log(this.eventTracker);
+
+      childDiv.appendChild(childChildDiv);
+      parentDiv.appendChild(childDiv);
+      document.getElementById('temporary-parent-id').appendChild(parentDiv);
+      this.mounting = false;
+    } 
   // this.componentDidMount();
 //     return (
 //       <div
