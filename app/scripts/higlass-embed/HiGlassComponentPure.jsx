@@ -13,15 +13,15 @@ import createPubSub, { globalPubSub } from 'pub-sub-es';
 import clsx from 'clsx';
 
 // import TiledPlot from './TiledPlot';
-import TiledPlot from '../higlass-embed/TiledPlotPure';
-import GenomePositionSearchBox from './GenomePositionSearchBox';
-import ExportLinkDialog from './ExportLinkDialog';
-import ViewHeader from './ViewHeader';
+import TiledPlot from './TiledPlotPure';
+import GenomePositionSearchBox from '../ui-components/GenomePositionSearchBox';
+import ExportLinkDialog from '../ui-components/ExportLinkDialog';
+import ViewHeader from '../ui-components/ViewHeader';
 import { ChromosomeInfo } from '../chromosome';
-import ViewConfigEditor from './ViewConfigEditor';
+import ViewConfigEditor from '../ui-components/ViewConfigEditor';
 
-import createSymbolIcon from './symbol';
-import { all as icons } from './icons';
+import createSymbolIcon from '../ui-components/symbol';
+import { all as icons } from '../ui-components/icons';
 import { createApi } from '../api';
 
 // Higher-order components
@@ -4873,7 +4873,7 @@ class HiGlassComponent extends React.Component {
     const absX = nativeEvent.clientX;
     const absY = nativeEvent.clientY;
     const hoveredTiledPlot = this.getTiledPlotAtPosition(absX, absY);
-
+    console.log(hoveredTiledPlot);
     // Find the tracks at the wheel position
     if (this.apiStack.wheel && this.apiStack.wheel.length > 0) {
       const relPos = pointer(nativeEvent, this.topDiv);
@@ -4929,6 +4929,7 @@ class HiGlassComponent extends React.Component {
     // this is so that we can zoom when there's a viewport projection present
     if (hoveredTiledPlot) {
       const { trackRenderer } = hoveredTiledPlot;
+
       nativeEvent.forwarded = true;
 
       if (nativeEvent) {
@@ -5048,6 +5049,7 @@ class HiGlassComponent extends React.Component {
             }
             onValueScaleChanged={(uid) => this.syncValueScales(view.uid, uid)}
             overlays={view.overlays}
+            pubSub={this.pubSub}
             paddingBottom={this.viewPaddingBottom}
             paddingLeft={this.viewPaddingLeft}
             paddingRight={this.viewPaddingRight}
