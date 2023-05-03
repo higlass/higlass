@@ -1,5 +1,9 @@
 # Release notes
 
+## In Progress
+
+- Allow React v18 as a peer dependency.
+
 ## v1.12.2
 
 - Correctly set the selected assembly on startup.
