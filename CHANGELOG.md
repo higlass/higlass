@@ -1,6 +1,6 @@
 # Release notes
 
-## In Progress
+## v1.12.3
 
 - Allow React v18 as a peer dependency.
 
