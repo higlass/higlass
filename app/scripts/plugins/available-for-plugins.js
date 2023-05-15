@@ -21,11 +21,16 @@ import * as d3Zoom from 'd3-zoom';
 import slugid from 'slugid';
 import { mix } from '../mixwith';
 
-// Configs
-import * as configs from '../configs';
-
 // Utils
-import * as utils from '../utils';
+import * as _utils from '../utils';
+import trackUtils from '../track-utils';
+import * as testHelpers from '../test-helpers';
+const utils = { ..._utils, ...testHelpers, trackUtils, IS_TRACK_RANGE_SELECTABLE: undefined };
+
+// Configs
+import * as _configs from '../configs';
+import OPTIONS_INFO from '../options-info';
+const configs = { ..._configs, IS_TRACK_RANGE_SELECTABLE: utils.IS_TRACK_RANGE_SELECTABLE, OPTIONS_INFO };
 
 // Tracks
 import Annotations1dTrack from '../Annotations1dTrack';
