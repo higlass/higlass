@@ -25,12 +25,21 @@ import { mix } from '../mixwith';
 import * as _utils from '../utils';
 import trackUtils from '../track-utils';
 import * as testHelpers from '../test-helpers';
-const utils = { ..._utils, ...testHelpers, trackUtils, IS_TRACK_RANGE_SELECTABLE: undefined };
+const utils = {
+  ..._utils,
+  ...testHelpers,
+  trackUtils,
+  IS_TRACK_RANGE_SELECTABLE: undefined,
+};
 
 // Configs
 import * as _configs from '../configs';
 import OPTIONS_INFO from '../options-info';
-const configs = { ..._configs, IS_TRACK_RANGE_SELECTABLE: utils.IS_TRACK_RANGE_SELECTABLE, OPTIONS_INFO };
+const configs = {
+  ..._configs,
+  IS_TRACK_RANGE_SELECTABLE: utils.IS_TRACK_RANGE_SELECTABLE,
+  OPTIONS_INFO,
+};
 
 // Tracks
 import Annotations1dTrack from '../Annotations1dTrack';
