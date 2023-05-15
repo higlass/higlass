@@ -1,5 +1,9 @@
 # Release notes
 
+## Next
+
+- Fix breaking change of the plugin track API introduced by the previous patch (v1.12.3)
+
 ## v1.12.3
 
 - Allow React v18 as a peer dependency.
