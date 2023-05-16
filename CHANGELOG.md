@@ -1,6 +1,6 @@
 # Release notes
 
-## Next
+## v1.12.4
 
 - Fix breaking change of the plugin track API introduced by the previous patch (v1.12.3)
 
