@@ -17,7 +17,7 @@
     "tracks"
   ],
   "scripts": {
-    "test": "wtr test/search_field_test.js",
+    "test": "wtr",
     "start": "vite",
     "build": "vite build",
     "optimize": "vite optimize",

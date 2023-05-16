@@ -90,7 +90,9 @@ export {
   getTiledPlot,
 } from './get-higlass-components';
 
-// We want to remove following lines eventually to remove cyclic dependencies
+// We want to remove following lines eventually to remove cyclic dependencies. 
+// We need these at the moment since, available-for-plugins.js complains about 
+// uninitialized objects due to its confusing cyclic dependencies.
 export {
   changeOptions,
   waitForJsonComplete,
