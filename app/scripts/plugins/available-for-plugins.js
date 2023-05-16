@@ -21,12 +21,6 @@ import * as d3Zoom from 'd3-zoom';
 import slugid from 'slugid';
 import { mix } from '../mixwith';
 
-// Configs
-import * as configs from '../configs';
-
-// Utils
-import * as utils from '../utils';
-
 // Tracks
 import Annotations1dTrack from '../Annotations1dTrack';
 import Annotations2dTrack from '../Annotations2dTrack';
@@ -99,6 +93,20 @@ import {
 import getDataFetcher from './get-data-fetcher';
 
 import { version } from '../../../package.json';
+
+// Utils
+import * as utils from '../utils';
+
+// Configs
+import * as _configs from '../configs';
+
+import OPTIONS_INFO from '../options-info';
+
+const configs = {
+  ..._configs,
+  IS_TRACK_RANGE_SELECTABLE: utils.IS_TRACK_RANGE_SELECTABLE,
+  OPTIONS_INFO,
+};
 
 const libraries = {
   d3Array,
