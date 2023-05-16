@@ -95,21 +95,11 @@ import getDataFetcher from './get-data-fetcher';
 import { version } from '../../../package.json';
 
 // Utils
-import * as _utils from '../utils';
-import trackUtils from '../track-utils';
-import * as testHelpers from '../test-helpers';
+import * as utils from '../utils';
 
 // Configs
 import * as _configs from '../configs';
 import OPTIONS_INFO from '../options-info';
-
-const utils = {
-  ..._utils,
-  ...testHelpers,
-  trackUtils,
-  IS_TRACK_RANGE_SELECTABLE: undefined,
-};
-
 const configs = {
   ..._configs,
   IS_TRACK_RANGE_SELECTABLE: utils.IS_TRACK_RANGE_SELECTABLE,

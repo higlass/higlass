@@ -89,3 +89,15 @@ export {
   getTrackRenderer,
   getTiledPlot,
 } from './get-higlass-components';
+
+// We want to remove following lines eventually to remove cyclic dependencies
+export {
+  changeOptions,
+  waitForJsonComplete,
+  waitForTilesLoaded,
+  waitForTransitionsFinished,
+  mountHGComponent,
+  mountHGComponentAsync,
+  removeHGComponent,
+} from '../test-helpers';
+export { default as trackUtils } from '../track-utils';
