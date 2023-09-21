@@ -14,9 +14,9 @@ genomic (e.g., Hi-C, ChIP-seq, or bed annotations) and other data (e.g., geograp
 identify salient outcomes of experimental perturbations, generate new hypotheses, and share
 the results with the community.
 
-A live instance can be found at [http://higlass.io](http://higlass.io). A [Docker container](https://github.com/higlass/higlass-docker) is available for running an instance locally, although we recommend using the [higlass-manage](https://github.com/pkerpedjiev/higlass-manage) package to start, stop and configure local instances.
+A live instance can be found at [https://higlass.io](https://higlass.io). A [Docker container](https://github.com/higlass/higlass-docker) is available for running an instance locally, although we recommend using the [higlass-manage](https://github.com/pkerpedjiev/higlass-manage) package to start, stop and configure local instances.
 
-For documentation about how to use and install HiGlass, please visit [http://docs.higlass.io](http://docs.higlass.io).
+For documentation about how to use and install HiGlass, please visit [https://docs.higlass.io](https://docs.higlass.io).
 
 ### Citation
 
@@ -113,7 +113,7 @@ const hgApi = window.hglib.viewer(
 * [HiGlass Manage](https://github.com/higlass/higlass-manage) - Easy to use interface for deploying a local HiGlass instance
 * [HiGlass Docker](https://github.com/higlass/higlass-docker) - Build an image containing all the components necessary to deploy HiGlass
 * [HiGlass Server](https://github.com/higlass/higlass-server) - Server component for serving multi-resolution data
-* [HiGlass App](https://github.com/higlass/higlass-app) - The code for the web application hosted at http://higlass.io
+* [HiGlass App](https://github.com/higlass/higlass-app) - The code for the web application hosted at https://higlass.io
 * [Cooler](https://github.com/mirnylab/cooler) - Package for efficient storage of and access to sparse 2D data
 
 ### License
