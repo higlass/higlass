@@ -49,6 +49,7 @@ import {
 import styles from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
 import stylesCenterTrack from '../styles/CenterTrack.module.scss'; // eslint-disable-line no-unused-vars
 
+
 class TiledPlot extends React.Component {
   constructor(props) {
     super(props);
@@ -1185,9 +1186,10 @@ class TiledPlot extends React.Component {
 
     if (hostTrackUid !== trackUid) {
       // the track whose data we're trying to export is part of a combined track
-      trackObject =
-        this.trackRenderer.trackDefObjects[hostTrackUid].trackObject
-          .createdTracks[track.uid];
+      trackObject = this.trackRenderer
+        .trackDefObjects[hostTrackUid]
+        .trackObject
+        .createdTracks[track.uid];
     } else {
       ({ trackObject } = this.trackRenderer.trackDefObjects[hostTrackUid]);
     }

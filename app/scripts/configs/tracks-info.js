@@ -1,3 +1,4 @@
+// @ts-check
 import { THEME_DARK } from './themes';
 
 import {
@@ -13,6 +14,28 @@ import {
   svgVertical1DTilesIcon,
   svgGeoMapIcon,
 } from '../icons';
+
+/**
+ * @typedef TrackInfo
+ * @property {string} type
+ * @property {string | string[]} datatype
+ * @property {string} orientation
+ * @property {string[]=} aliases
+ * @property {boolean=} local
+ * @property {boolean=} rotatable
+ * @property {boolean=} hidden
+ * @property {string=} name
+ * @property {HTMLElement | null | string=} thumbnail
+ * @property {string[]=} availableOptions
+ * @property {Record<string, unknown>=} defaultOptions
+ * @property {boolean=} exportable
+ * @property {Record<string, Record<string, unknown>>=} defaultOptionsByTheme
+ * @property {number=} minHeight
+ * @property {number=} defaultHeight
+ * @property {number=} defaultWidth
+ * @property {string=} chromInfoPath
+ * @property {boolean=} projection
+ */
 
 const osm = {
   type: 'osm-tiles',
@@ -72,6 +95,7 @@ const mapbox = {
   },
 };
 
+/** @type {TrackInfo[]} */
 export const TRACKS_INFO = [
   osm,
   { ...osm, type: 'osm' },
@@ -140,6 +164,7 @@ export const TRACKS_INFO = [
     local: false,
     orientation: '2d',
     exportable: true,
+    name: "Simple SVG",
     availableOptions: ['minWidth', 'minHeight'],
     defaultOptions: {
       minWidth: 100,
@@ -682,7 +707,7 @@ export const TRACKS_INFO = [
     aliases: ['horizontal-1d-value-interval', 'vertical-1d-value-interval'],
     datatype: ['bed-value'],
     local: false,
-    orientation: ['1d-horizontal'],
+    orientation: '1d-horizontal',
     rotatable: true,
     name: '1D Rectangles',
     availableOptions: [
@@ -1287,7 +1312,7 @@ export const TRACKS_INFO = [
     orientation: '2d',
     hidden: true,
     name: 'Image Tiles',
-    thumbnail: null,
+    thumbnail: null
   },
   {
     type: 'bedlike',

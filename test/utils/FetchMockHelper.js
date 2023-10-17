@@ -1,5 +1,3 @@
-// @ts-check
-
 // See vite.config.js
 const mockUrl = (name) => `/@mocked-responses/${name}.json`;
 
