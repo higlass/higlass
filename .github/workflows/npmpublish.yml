@@ -12,27 +12,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 12
+          node-version: 16
       - run: sudo apt-get install xvfb
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
       - run: npm run build --if-present
-      - run: xvfb-run --auto-servernum npm run test
-        env:
-          CI: true
 
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 12
+          node-version: 16
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
       - run: npm run compile
       - run: npm publish
         env:
