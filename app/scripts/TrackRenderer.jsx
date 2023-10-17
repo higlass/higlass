@@ -252,9 +252,9 @@ class TrackRenderer extends React.Component {
     this.zoomTransform = zoomIdentity;
     /** @type {() => void} */
     this.windowScrolledBound = this.windowScrolled.bind(this);
-    /** @type {(event: any) => void} */
+    /** @type {(event?: import('d3-zoom').D3ZoomEvent<HTMLElement, unknown>) => void} */
     this.zoomStartedBound = this.zoomStarted.bind(this);
-    /** @type {(event: unknown) => void} */
+    /** @type {(event: import('d3-zoom').D3ZoomEvent<HTMLElement, unknown> & { shiftKey?: boolean }) => void} */
     this.zoomedBound = this.zoomed.bind(this);
     /** @type {() => void} */
     this.zoomEndedBound = this.zoomEnded.bind(this);
@@ -295,19 +295,20 @@ class TrackRenderer extends React.Component {
     // catch any zooming behavior within all of the tracks in this plot
     // this.zoomTransform = zoomIdentity();
     /** @type {import("d3-zoom").ZoomBehavior<HTMLElement, unknown>} */
-    this.zoomBehavior = (/** @type {import("d3-zoom").ZoomBehavior<HTMLElement, any>} */ (zoom()))
-      .filter((event) => {
-        if (event.target.classList.contains('no-zoom')) {
-          return false;
-        }
-        if (event.target.classList.contains('react-resizable-handle')) {
-          return false;
-        }
-        return true;
-      })
-      .on('start', this.zoomStartedBound)
-      .on('zoom', this.zoomedBound)
-      .on('end', this.zoomEndedBound);
+    this.zoomBehavior =
+      /** @type {import("d3-zoom").ZoomBehavior<HTMLElement, any>} */ (zoom())
+        .filter((event) => {
+          if (event.target.classList.contains('no-zoom')) {
+            return false;
+          }
+          if (event.target.classList.contains('react-resizable-handle')) {
+            return false;
+          }
+          return true;
+        })
+        .on('start', this.zoomStartedBound)
+        .on('zoom', this.zoomedBound)
+        .on('end', this.zoomEndedBound);
 
     /** @type {import('d3-zoom').ZoomTransform} */
     this.zoomTransform = zoomIdentity;
@@ -391,7 +392,7 @@ class TrackRenderer extends React.Component {
     this.onScrollHandlerBound = this.onScrollHandler.bind(this);
 
     /** @type {{ left: number, top: number, width: number, height: number }} */
-    this.elementPos = { left: 0, top: 0, width: 0, height: 0 }
+    this.elementPos = { left: 0, top: 0, width: 0, height: 0 };
   }
 
   get element() {
@@ -1327,7 +1328,7 @@ class TrackRenderer extends React.Component {
     const translateX = middleViewX - xScale(centerX) * k;
     const translateY = middleViewY - yScale(centerY) * k;
 
-    /** @type {[ScaleLinear, ScaleLinear] | undefined} */
+    /** @type {[ScaleLinear, ScaleLinear] | } */
     let last;
 
     const setZoom = () => {
@@ -1415,7 +1416,7 @@ class TrackRenderer extends React.Component {
     }
 
     // reset the zoom transform
-    if (this.zoomStartTransform)this.zoomTransform = this.zoomStartTransform;
+    if (this.zoomStartTransform) this.zoomTransform = this.zoomStartTransform;
   }
 
   /**
@@ -1447,7 +1448,7 @@ class TrackRenderer extends React.Component {
 
         if (TRACKS_INFO_BY_TYPE[trackDef.type]) {
           // some track types (like overlay-track don't have a track info)
-          if ("orientation" in TRACKS_INFO_BY_TYPE[trackDef.type]) {
+          if ('orientation' in TRACKS_INFO_BY_TYPE[trackDef.type]) {
             trackOrientation = TRACKS_INFO_BY_TYPE[trackDef.type].orientation;
           }
         }
@@ -2252,10 +2253,10 @@ class TrackRenderer extends React.Component {
   }
 
   /**
-   * Publishes an event to the pubSub channel, first overriding the 
+   * Publishes an event to the pubSub channel, first overriding the
    * sourceUid to be the uid of this track renderer.
    *
-   * @param {{ sourceUid: string, forwarded?: boolean }} event 
+   * @param {{ sourceUid: string, forwarded?: boolean }} event
    */
   forwardEvent(event) {
     event.sourceUid = this.uid;
