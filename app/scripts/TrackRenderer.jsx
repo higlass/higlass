@@ -88,7 +88,7 @@ const SCROLL_TIMEOUT = 100;
 
 /** @typedef {TrackRenderer["setCenter"]} SetCentersFunction */
 /** @typedef {import("d3-scale").ScaleLinear<number, number>} ScaleLinear */
-/** @typedef {(x: ScaleLinear, y: ScaleLinear) => [number, number]} ProjectorFunction */
+/** @typedef {(x: ScaleLinear, y: ScaleLinear) => [ScaleLinear, ScaleLinear]} ProjectorFunction */
 /** @typedef {(xScale: ScaleLinear, yScale: ScaleLinear, k?: number, x?: number, y?: number, xPosition?: number, yPosition?: number) => void} ZoomedFunction */
 /** @typedef {'left' | 'right' | 'top' | 'bottom' | 'center' | 'gallery'} TrackPosition */
 
@@ -117,6 +117,18 @@ const SCROLL_TIMEOUT = 100;
  * @property {Record<string, unknown>} options
  * @property {string} type
  * @property {TrackPosition} position
+ * @property {Record<string, unknown>=} data
+ * @property {string} server
+ * @property {string} tilesetUid
+ * @property {unknown=} coordSystem
+ * @property {number=} x
+ * @property {number=} y
+ * @property {string} chromInfoPath
+ * @property {[number, number]=} projectionXDomain
+ * @property {[number, number]=} projectionYDomain
+ * @property {unknown=} registerViewportChanged
+ * @property {unknown=} removeViewportChanged
+ * @property {unknown=} setDomainsCallback
  */
 
 /**
@@ -126,6 +138,18 @@ const SCROLL_TIMEOUT = 100;
  * @property {Array<TrackConfig>} contents
  * @property {'combined'} type
  * @property {TrackPosition} position
+ * @property {Record<string, unknown>=} data
+ * @property {string} server
+ * @property {string} tilesetUid
+ * @property {unknown=} coordSystem
+ * @property {number=} x
+ * @property {number=} y
+ * @property {string} chromInfoPath
+ * @property {[number, number]=} projectionXDomain
+ * @property {[number, number]=} projectionYDomain
+ * @property {unknown=} registerViewportChanged
+ * @property {unknown=} removeViewportChanged
+ * @property {unknown=} setDomainsCallback
  */
 
 /** @typedef {UnknownTrackConfig | CombinedTrackConfig} TrackConfig */
@@ -148,6 +172,64 @@ const SCROLL_TIMEOUT = 100;
  */
 
 /**
+ * @typedef MetaPluginTrackContext
+ * @property {(trackId: string) => TrackObject | undefined} getTrackObject
+ * @property {() => void} onNewTilesLoaded
+ * @property {TrackConfig} definition
+ */
+
+/**
+ * @typedef {Object} PluginTrackContext
+ * @property {string} id
+ * @property {string} trackUid
+ * @property {string} trackType
+ * @property {string} viewUid
+ * @property {PubSub} pubSub
+ * @property {import("pixi.js").Graphics} scene
+ * @property {Record<string, unknown>} dataConfig
+ * @property {unknown} dataFetcher
+ * @property {() => unknown} getLockGroupExtrema
+ * @property {(x: unknown) => void} handleTilesetInfoReceived
+ * @property {() => void} animate
+ * @property {HTMLElement} svgElement
+ * @property {() => boolean} isValueScaleLocked
+ * @property {() => void} onValueScaleChanged
+ * @property {(newOption: Record<string, unknown>) => void} onTrackOptionsChanged
+ * @property {() => void} onMouseMoveZoom
+ * @property {string} chromInfoPath
+ * @property {() => boolean} isShowGlobalMousePosition
+ * @property {() => (string | typeof THEME_DARK)} getTheme
+ * @property {unknown=} AVAILABLE_FOR_PLUGINS
+ * @property {(HTMLDivElement | null)=} baseEl
+ * @property {TrackConfig=} definition
+ * @property {number=} x
+ * @property {number=} y
+ * @property {number=} xPosition
+ * @property {number=} yPosition
+ * @property {[number, number]=} projectionXDomain
+ * @property {[number, number]=} projectionYDomain
+ * @property {unknown=} registerViewportChanged
+ * @property {unknown=} removeViewportChanged
+ * @property {unknown=} setDomainsCallback
+ * @property {TrackConfig[]=} tracks
+ * @property {TrackRenderer["createTrackObject"]=} createTrackObject
+ * @property {string=} orientation
+ * @property {boolean=} isOverlay
+ */
+
+/**
+ * @typedef PluginTrack
+ * @property {{ new (availableForPlugins: unknown, context: PluginTrackContext, options: Record<string, unknown>): TrackObject }} track
+ * @property {false=} isMetaTrack
+ */
+
+/**
+ * @typedef MetaPluginTrack
+ * @property {{ new (availableForPlugins: unknown, context: MetaPluginTrackContext, options: Record<string, unknown>): TrackObject }} track
+ * @property {true} isMetaTrack
+ */
+
+/**
  * @typedef TrackRendererProps
  * @property {HTMLElement} canvasElement
  * @property {number} centerHeight
@@ -165,12 +247,12 @@ const SCROLL_TIMEOUT = 100;
  * @property {number} paddingTop
  * @property {Array<TrackConfig>} metaTracks
  * @property {() => void} onMouseMoveZoom
- * @property {() => void} onNewTilesLoaded
+ * @property {(trackId?: string) => void} onNewTilesLoaded
  * @property {(x: ScaleLinear, y: ScaleLinear) => void} onScalesChanged
  * @property {import("pixi.js").Renderer} pixiRenderer
  * @property {import("pixi.js").Container} pixiStage
  * @property {Record<string, unknown>} pluginDataFetchers
- * @property {Record<string, unknown>} pluginTracks
+ * @property {Record<string, PluginTrack | MetaPluginTrack>} pluginTracks
  * @property {Array<TrackDefinition>} positionedTracks
  * @property {PubSub} pubSub
  * @property {(func: SetCentersFunction) => void} setCentersFunction
@@ -191,6 +273,11 @@ const SCROLL_TIMEOUT = 100;
  * @property {(func: (draggingStatus: boolean) => void) => void} registerDraggingChangedListener
  * @property {boolean} disableTrackMenu
  * @property {(listener: (draggingStatus: boolean) => void) => void} removeDraggingChangedListener
+ * @property {(trackId: string, x: unknown) => void} onTilesetInfoReceived
+ * @property {(trackId: string) => unknown} getLockGroupExtrema
+ * @property {(trackId: string) => boolean} isValueScaleLocked
+ * @property {(trackId: string) => void} onValueScaleChanged
+ * @property {(trackId: string, newOption: Record<string, unknown>) => void} onTrackOptionsChanged
  */
 
 /**
@@ -361,7 +448,7 @@ class TrackRenderer extends React.Component {
     /** @type {Record<string, { trackObject: TrackObject, trackDef: TrackDefinition }>} */
     this.trackDefObjects = {};
 
-    /** @type {Record<string, { trackObject: TrackObject, trackDef: TrackConfig }>} */
+    /** @type {Record<string, { trackObject: TrackObject | UnknownPixiTrack, trackDef: TrackConfig }>} */
     this.metaTracks = {};
 
     /** @type {Array<unknown>} */
@@ -378,7 +465,7 @@ class TrackRenderer extends React.Component {
       }
     }
 
-    /** @type {(event: { sourceUid: string, forwarded?: boolean }) => void} */
+    /** @type {(event: any) => void} */
     this.boundForwardEvent = this.forwardEvent.bind(this);
     /** @type {() => void} */
     this.boundScrollEvent = this.scrollEvent.bind(this);
@@ -989,6 +1076,7 @@ class TrackRenderer extends React.Component {
    * Fetch the trackObject for a track with a given ID
    *
    * @param {string} trackId
+   * @return {TrackObject | undefined}
    */
   getTrackObject(trackId) {
     const trackDefItems = dictItems(this.trackDefObjects);
@@ -1165,7 +1253,11 @@ class TrackRenderer extends React.Component {
 
     for (let i = 0; i < newTrackDefinitions.length; i++) {
       const newTrackDef = newTrackDefinitions[i];
-      const newTrackObj = this.createTrackObject(newTrackDef.track);
+
+      // FIXME: Should not need to lie about the return type from createTrackObject.
+      const newTrackObj = /** @type {TrackObject} */ (
+        this.createTrackObject(newTrackDef.track)
+      );
 
       // newTrackObj.refXScale(this.xScale);
       // newTrackObj.refYScale(this.yScale);
@@ -1328,7 +1420,7 @@ class TrackRenderer extends React.Component {
     const translateX = middleViewX - xScale(centerX) * k;
     const translateY = middleViewY - yScale(centerY) * k;
 
-    /** @type {[ScaleLinear, ScaleLinear] | } */
+    /** @type {[ScaleLinear, ScaleLinear] | undefined} */
     let last;
 
     const setZoom = () => {
@@ -1722,7 +1814,8 @@ class TrackRenderer extends React.Component {
         // Check if a plugin track is available
         const pluginTrack = this.props.pluginTracks[track.type];
 
-        if (pluginTrack && pluginTrack.isMetaTrack) {
+        if (pluginTrack?.isMetaTrack) {
+          /** @type {MetaPluginTrackContext} */
           const context = {
             getTrackObject: this.getTrackObject.bind(this),
             onNewTilesLoaded: () => {
@@ -1750,12 +1843,14 @@ class TrackRenderer extends React.Component {
         return new UnknownPixiTrack(
           this.pStage,
           { name: 'Unknown Track Type', type: track.type },
-          () => this.currentProps.onNewTilesLoaded(track.uid),
+          // FIXME: This is not a part of the contructor signature. Ok to remove?
+          // () => this.currentProps.onNewTilesLoaded(track.uid),
         );
       }
     }
   }
 
+  /** @param {TrackConfig} track */
   createTrackObject(track) {
     const trackObject = this.createLocationAgnosticTrackObject(track);
     if (track.position === 'left' || track.position === 'right') {
@@ -1766,7 +1861,9 @@ class TrackRenderer extends React.Component {
     return trackObject;
   }
 
+  /** @param {TrackConfig} track */
   createLocationAgnosticTrackObject(track) {
+    /** @param {unknown} x */
     const handleTilesetInfoReceived = (x) => {
       this.currentProps.onTilesetInfoReceived(track.uid, x);
     };
@@ -1795,7 +1892,13 @@ class TrackRenderer extends React.Component {
       this.availableForPlugins,
     );
 
+    // FIXME: non-null assert?
+    if (!this.pStage || !this.svgElement) {
+      throw new Error('No PIXI stage or svg element');
+    }
+
     // To simplify the context creation via ES6 object shortcuts.
+    /** @type {PluginTrackContext} */
     const context = {
       id: track.uid,
       trackUid: track.uid,
@@ -1974,9 +2077,9 @@ class TrackRenderer extends React.Component {
         return new SquareMarkersTrack(context, options);
 
       case 'combined':
-        context.tracks = track.contents;
+        context.tracks = /** @type {CombinedTrackConfig} */ (track).contents;
         context.createTrackObject = this.createTrackObject.bind(this);
-        return new CombinedTrack(context, options);
+        return new CombinedTrack(context /* options */);
 
       case '2d-chromosome-labels':
         return new Chromosome2DLabels(context, options);
@@ -2256,7 +2359,7 @@ class TrackRenderer extends React.Component {
    * Publishes an event to the pubSub channel, first overriding the
    * sourceUid to be the uid of this track renderer.
    *
-   * @param {{ sourceUid: string, forwarded?: boolean }} event
+   * @param {any} event
    */
   forwardEvent(event) {
     event.sourceUid = this.uid;

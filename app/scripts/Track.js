@@ -5,7 +5,7 @@ import { fake as fakePubSub } from './hocs/with-pub-sub';
 import { isWithin } from './utils';
 
 class Track {
-  constructor(context) {
+  constructor(context, options) {
     this.context = context;
 
     const { id, pubSub, getTheme } = context;
