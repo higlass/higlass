@@ -1603,7 +1603,7 @@ class TrackRenderer extends React.Component {
 
     // These props are apparently used elsewhere, for example the context menu
     if (!this.xScale || !this.yScale) {
-      return;
+      return undefined;
     }
 
     this.zoomedXScale = this.zoomTransform.rescaleX(this.xScale);
@@ -2370,6 +2370,8 @@ TrackRenderer.propTypes = {
   valueScaleZoom: PropTypes.bool,
   zoomable: PropTypes.bool.isRequired,
   zoomDomain: PropTypes.array,
+  uid: PropTypes.string,
+  zoomLimits: PropTypes.array,
 };
 
 export default withPubSub(withTheme(TrackRenderer));
