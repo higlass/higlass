@@ -164,7 +164,6 @@ export const TRACKS_INFO = [
     local: false,
     orientation: '2d',
     exportable: true,
-    name: "Simple SVG",
     availableOptions: ['minWidth', 'minHeight'],
     defaultOptions: {
       minWidth: 100,
@@ -1312,7 +1311,7 @@ export const TRACKS_INFO = [
     orientation: '2d',
     hidden: true,
     name: 'Image Tiles',
-    thumbnail: null
+    thumbnail: null,
   },
   {
     type: 'bedlike',
