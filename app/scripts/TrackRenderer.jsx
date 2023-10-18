@@ -315,7 +315,7 @@ class TrackRenderer extends React.Component {
     /** @type {boolean} */
     this.dragging = false; // is this element being dragged?
     /** @type {HTMLElement & { __zoom?: import('d3-zoom').ZoomTransform } | null} */
-    this._element = null;
+    this.element = null;
     /** @type {HTMLElement | null} */
     this.eventTracker = null;
     /** @type {HTMLElement | null} */
@@ -482,13 +482,6 @@ class TrackRenderer extends React.Component {
     this.elementPos = { left: 0, top: 0, width: 0, height: 0 };
   }
 
-  get element() {
-    if (!this._element) {
-      throw new Error('element is not defined');
-    }
-    return this._element;
-  }
-
   get xScale() {
     if (!this._xScale) {
       throw new Error('xScale is not defined');
@@ -524,6 +517,9 @@ class TrackRenderer extends React.Component {
   }
 
   componentDidMount() {
+    if (!this.element) {
+      throw new Error('this.element is not defined');
+    }
     this.elementPos = this.element.getBoundingClientRect();
     this.elementSelection = select(this.element);
 
@@ -693,7 +689,7 @@ class TrackRenderer extends React.Component {
       this.props.initialYDomain[0] !== prevProps.initialYDomain[0] ||
       this.props.initialYDomain[1] !== prevProps.initialYDomain[1]
     ) {
-      this.element.__zoom = zoomIdentity;
+      if (this.element) this.element.__zoom = zoomIdentity;
     }
 
     if (prevProps.isRangeSelection !== this.props.isRangeSelection) {
@@ -746,7 +742,7 @@ class TrackRenderer extends React.Component {
    */
   dispatchEvent(event) {
     if (event.sourceUid === this.uid && event.type !== 'contextmenu') {
-      forwardEvent(event, this.element);
+      if (this.element) forwardEvent(event, this.element);
     }
   }
 
@@ -1600,7 +1596,7 @@ class TrackRenderer extends React.Component {
           .translate(this.prevZoomTransform.x, this.zoomTransform.y)
           .scale(this.zoomTransform.k);
       }
-      this.element.__zoom = this.zoomTransform;
+      if (this.element) this.element.__zoom = this.zoomTransform;
     }
 
     this.applyZoomTransform(true);
@@ -1678,7 +1674,7 @@ class TrackRenderer extends React.Component {
 
     if (this.valueScaleZooming) {
       this.valueScaleZooming = false;
-      this.element.__zoom = this.zoomStartTransform;
+      if (this.element) this.element.__zoom = this.zoomStartTransform;
     }
 
     this.props.pubSub.publish('app.zoomEnd');
@@ -2352,6 +2348,7 @@ class TrackRenderer extends React.Component {
   }
 
   scrollEvent() {
+    if (!this.element) return;
     this.elementPos = this.element.getBoundingClientRect();
   }
 
