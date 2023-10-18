@@ -478,8 +478,8 @@ class TrackRenderer extends React.Component {
     /** @type {(scrollTop: number) => void} */
     this.onScrollHandlerBound = this.onScrollHandler.bind(this);
 
-    /** @type {{ left: number, top: number, width: number, height: number }} */
-    this.elementPos = { left: 0, top: 0, width: 0, height: 0 };
+    /** @type {{ height: number, width: number, left: number, top: number }} */
+    this.elementPos = { height: 0, width: 0, left: 0, top: 0 };
   }
 
   get xScale() {
@@ -517,10 +517,7 @@ class TrackRenderer extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.element) {
-      throw new Error('this.element is not defined');
-    }
-    this.elementPos = this.element.getBoundingClientRect();
+    this.elementPos = this.element?.getBoundingClientRect() ?? this.elementPos;
     this.elementSelection = select(this.element);
 
     /** @type {import('pixi.js').Graphics} */
@@ -2385,7 +2382,7 @@ class TrackRenderer extends React.Component {
       >
         <div
           ref={(c) => {
-            this._element = c;
+            this.element = c;
           }}
           className={clsx(
             'track-renderer-element',
