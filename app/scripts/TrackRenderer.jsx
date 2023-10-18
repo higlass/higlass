@@ -470,7 +470,7 @@ class TrackRenderer extends React.Component {
       }
     }
 
-    /** @type {(event: any) => void} */
+    /** @type {<T extends Event>(event: T & { sourceUid?: string, forwarded?: boolean }) => void} */
     this.boundForwardEvent = this.forwardEvent.bind(this);
     /** @type {() => void} */
     this.boundScrollEvent = this.scrollEvent.bind(this);
@@ -1524,7 +1524,7 @@ class TrackRenderer extends React.Component {
     // the orientation of the track where we started zooming
     // if it's a 1d-horizontal, then mousemove events shouldn't
     // move the center track vertically
-    /** @type {string | string[] | null} */
+    /** @type {string | null} */
     let trackOrientation = null;
 
     // see what orientation of track we're over so that we decide
@@ -1539,11 +1539,9 @@ class TrackRenderer extends React.Component {
           return;
         }
 
-        if (TRACKS_INFO_BY_TYPE[trackDef.type]) {
+        if (TRACKS_INFO_BY_TYPE[trackDef.type]?.orientation) {
           // some track types (like overlay-track don't have a track info)
-          if ('orientation' in TRACKS_INFO_BY_TYPE[trackDef.type]) {
-            trackOrientation = TRACKS_INFO_BY_TYPE[trackDef.type].orientation;
-          }
+          trackOrientation = TRACKS_INFO_BY_TYPE[trackDef.type].orientation;
         }
 
         if (trackAtZoomStart instanceof LeftTrackModifier) {
@@ -2076,7 +2074,9 @@ class TrackRenderer extends React.Component {
         return new SquareMarkersTrack(context, options);
 
       case 'combined':
-        context.tracks = /** @type {CombinedTrackConfig} */ (track).contents;
+        // @ts-expect-error - FIXME: Our typing should be able to narrow track config
+        // based on the type, but this isn't communicated in the type system yet.
+        context.tracks = track.contents;
         context.createTrackObject = this.createTrackObject.bind(this);
         return new CombinedTrack(context);
 
@@ -2359,7 +2359,8 @@ class TrackRenderer extends React.Component {
    * Publishes an event to the pubSub channel, first overriding the
    * sourceUid to be the uid of this track renderer.
    *
-   * @param {any} event
+   * @template {Event} T
+   * @param {T & { sourceUid?: string; forwarded?: boolean }} event
    */
   forwardEvent(event) {
     event.sourceUid = this.uid;
