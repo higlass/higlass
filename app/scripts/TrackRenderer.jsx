@@ -230,6 +230,11 @@ const SCROLL_TIMEOUT = 100;
  */
 
 /**
+ * @template T
+ * @typedef {T & { __zoom?: import('d3-zoom').ZoomTransform }} WithZoomTransform
+ */
+
+/**
  * @typedef TrackRendererProps
  * @property {HTMLElement} canvasElement
  * @property {number} centerHeight
@@ -314,7 +319,7 @@ class TrackRenderer extends React.Component {
     super(props);
     /** @type {boolean} */
     this.dragging = false; // is this element being dragged?
-    /** @type {HTMLElement & { __zoom?: import('d3-zoom').ZoomTransform } | null} */
+    /** @type {WithZoomTransform<HTMLElement> | null} */
     this.element = null;
     /** @type {HTMLElement | null} */
     this.eventTracker = null;
@@ -480,6 +485,8 @@ class TrackRenderer extends React.Component {
 
     /** @type {{ height: number, width: number, left: number, top: number }} */
     this.elementPos = { height: 0, width: 0, left: 0, top: 0 };
+    /** @type {import('d3-selection').Selection<WithZoomTransform<HTMLElement>, unknown, null, unknown> | null} */
+    this.elementSelection = null;
   }
 
   get xScale() {
@@ -517,8 +524,10 @@ class TrackRenderer extends React.Component {
   }
 
   componentDidMount() {
-    this.elementPos = this.element?.getBoundingClientRect() ?? this.elementPos;
-    this.elementSelection = select(this.element);
+    if (this.element) {
+      this.elementPos = this.element.getBoundingClientRect();
+      this.elementSelection = select(this.element);
+    }
 
     /** @type {import('pixi.js').Graphics} */
     this.pStage = new GLOBALS.PIXI.Graphics();
@@ -765,7 +774,7 @@ class TrackRenderer extends React.Component {
    * @param {{ pos: [number, number, number, number], animateTime: number, isMercator: boolean }} opts
    */
   zoomToDataPosHandler({ pos, animateTime, isMercator }) {
-    // TODO: Call here is not correct type-wise. isMercator should be a function?
+    // FIXME: Call here is not correct type-wise. isMercator should be a function?
     // this.zoomToDataPos(...pos, animateTime, isMercator);
     this.zoomToDataPos(...pos, animateTime);
   }
