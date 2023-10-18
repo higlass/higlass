@@ -163,14 +163,6 @@ const SCROLL_TIMEOUT = 100;
  * @property {number} left
  */
 
-/**
- * @template [Subscription=unknown]
- * @typedef PubSub
- * @property {(event: string, data?: unknown) => void} publish
- * @property {<T>(event: string, callback: (data: T) => void) => Subscription} subscribe
- * @property {(subscription: Subscription) => void} unsubscribe
- */
-
 /** @typedef {Record<string, unknown>} TilesetInfo */
 
 /**
@@ -186,7 +178,7 @@ const SCROLL_TIMEOUT = 100;
  * @property {string} trackUid
  * @property {string} trackType
  * @property {string} viewUid
- * @property {PubSub} pubSub
+ * @property {import('pub-sub-es').PubSub} pubSub
  * @property {import("pixi.js").Graphics} scene
  * @property {Record<string, unknown>} dataConfig
  * @property {unknown} dataFetcher
@@ -261,7 +253,7 @@ const SCROLL_TIMEOUT = 100;
  * @property {Record<string, unknown>} pluginDataFetchers
  * @property {Record<string, PluginTrack | MetaPluginTrack>} pluginTracks
  * @property {Array<TrackDefinition>} positionedTracks
- * @property {PubSub} pubSub
+ * @property {import('pub-sub-es').PubSub} pubSub
  * @property {(func: SetCentersFunction) => void} setCentersFunction
  * @property {HTMLElement} svgElement
  * @property {string | typeof THEME_DARK} theme
@@ -458,7 +450,7 @@ class TrackRenderer extends React.Component {
     /** @type {Record<string, { trackObject: TrackObject | UnknownPixiTrack, trackDef: TrackConfig }>} */
     this.metaTracks = {};
 
-    /** @type {Array<unknown>} */
+    /** @type {Array<import("pub-sub-es").Subscription>} */
     this.pubSubs = [];
 
     // if there's plugin tracks, they'll define new track

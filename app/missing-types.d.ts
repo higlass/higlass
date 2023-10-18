@@ -1,12 +1,20 @@
 /* eslint-disable */
-export {};
-
-declare global {
-  interface Window {
-    higlassTracksByType?: {
-      [trackType: string]: {
-        config: import('./scripts/configs/tracks-info').TrackInfo
-      }
-    }
+// https://www.npmjs.com/package/pub-sub-es
+declare module 'pub-sub-es' {
+  type EventMap = { [name: string]: any };
+  export type Subscription = {
+    event: string;
+    handler: (news: any) => void;
   }
+  type PublishOptions = {
+    async?: boolean;
+    isNoGlobalBroadCast?: boolean;
+  }
+  export type PubSub = {
+    publish(event: string, news?: any, options?: PublishOptions): void;
+    subscribe(event: string, handler: (news: any) => void): Subscription;
+    unsubscribe(subscription: Subscription): void;
+    clear(): void;
+  }
+  export function createPubSub(): PubSub;
 }
