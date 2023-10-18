@@ -772,11 +772,9 @@ class TrackRenderer extends React.Component {
   }
 
   /**
-   * @param {{ pos: [number, number, number, number], animateTime: number, isMercator: boolean }} opts
+   * @param {{ pos: [number, number, number, number], animateTime: number }} opts
    */
-  zoomToDataPosHandler({ pos, animateTime, isMercator }) {
-    // FIXME: Call here is not correct type-wise. isMercator should be a function?
-    // this.zoomToDataPos(...pos, animateTime, isMercator);
+  zoomToDataPosHandler({ pos, animateTime }) {
     this.zoomToDataPos(...pos, animateTime);
   }
 
