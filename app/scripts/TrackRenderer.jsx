@@ -524,10 +524,11 @@ class TrackRenderer extends React.Component {
   }
 
   componentDidMount() {
-    if (this.element) {
-      this.elementPos = this.element.getBoundingClientRect();
-      this.elementSelection = select(this.element);
+    if (!this.element) {
+      throw new Error('Component did not mount, this.element is not defined.');
     }
+    this.elementPos = this.element.getBoundingClientRect();
+    this.elementSelection = select(this.element);
 
     /** @type {import('pixi.js').Graphics} */
     this.pStage = new GLOBALS.PIXI.Graphics();
@@ -1249,17 +1250,17 @@ class TrackRenderer extends React.Component {
      */
     if (!this.currentProps.pixiStage) {
       return;
-    } // we need a pixi stage to start rendering
+    }
+    // we need a pixi stage to start rendering
     // the parent component where it lives probably
     // hasn't been mounted yet
 
     for (let i = 0; i < newTrackDefinitions.length; i++) {
       const newTrackDef = newTrackDefinitions[i];
 
-      // FIXME: Should not need to lie about the return type from createTrackObject.
-      const newTrackObj = /** @type {TrackObject} */ (
-        this.createTrackObject(newTrackDef.track)
-      );
+      /** @type {TrackObject} */
+      // @ts-expect-error - FIXME: Should not need to lie about the return type from createTrackObject.
+      const newTrackObj = this.createTrackObject(newTrackDef.track);
 
       // newTrackObj.refXScale(this.xScale);
       // newTrackObj.refYScale(this.yScale);
@@ -1842,12 +1843,10 @@ class TrackRenderer extends React.Component {
         }
 
         console.warn(`Unknown meta track of type: ${track.type}`);
-        return new UnknownPixiTrack(
-          this.pStage,
-          { name: 'Unknown Track Type', type: track.type },
-          // FIXME: This is not a part of the contructor signature. Ok to remove?
-          // () => this.currentProps.onNewTilesLoaded(track.uid),
-        );
+        return new UnknownPixiTrack(this.pStage, {
+          name: 'Unknown Track Type',
+          type: track.type,
+        });
       }
     }
   }
@@ -2020,7 +2019,7 @@ class TrackRenderer extends React.Component {
           context.setDomainsCallback = track.setDomainsCallback;
           return new ViewportTracker2D(context, options);
         }
-        return new Track(context, options);
+        return new Track(context);
 
       case 'viewport-projection-horizontal':
         // TODO: Fix this so that these functions are defined somewhere else
@@ -2034,7 +2033,7 @@ class TrackRenderer extends React.Component {
           context.setDomainsCallback = track.setDomainsCallback;
           return new ViewportTrackerHorizontal(context, options);
         }
-        return new Track(context, options);
+        return new Track(context);
 
       case 'viewport-projection-vertical':
         // TODO: Fix this so that these functions are defined somewhere else
@@ -2048,7 +2047,7 @@ class TrackRenderer extends React.Component {
           context.setDomainsCallback = track.setDomainsCallback;
           return new ViewportTrackerVertical(context, options);
         }
-        return new Track(context, options);
+        return new Track(context);
 
       case 'gene-annotations':
       case 'horizontal-gene-annotations': // legacy, included for backwards compatiblity
@@ -2081,7 +2080,7 @@ class TrackRenderer extends React.Component {
       case 'combined':
         context.tracks = /** @type {CombinedTrackConfig} */ (track).contents;
         context.createTrackObject = this.createTrackObject.bind(this);
-        return new CombinedTrack(context /* options */);
+        return new CombinedTrack(context);
 
       case '2d-chromosome-labels':
         return new Chromosome2DLabels(context, options);
