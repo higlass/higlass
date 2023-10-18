@@ -171,6 +171,8 @@ const SCROLL_TIMEOUT = 100;
  * @property {(subscription: Subscription) => void} unsubscribe
  */
 
+/** @typedef {Record<string, unknown>} TilesetInfo */
+
 /**
  * @typedef MetaPluginTrackContext
  * @property {(trackId: string) => TrackObject | undefined} getTrackObject
@@ -189,7 +191,7 @@ const SCROLL_TIMEOUT = 100;
  * @property {Record<string, unknown>} dataConfig
  * @property {unknown} dataFetcher
  * @property {() => unknown} getLockGroupExtrema
- * @property {(x: unknown) => void} handleTilesetInfoReceived
+ * @property {(tilesetInfo: TilesetInfo) => void} handleTilesetInfoReceived
  * @property {() => void} animate
  * @property {HTMLElement} svgElement
  * @property {() => boolean} isValueScaleLocked
@@ -278,7 +280,7 @@ const SCROLL_TIMEOUT = 100;
  * @property {(func: (draggingStatus: boolean) => void) => void} registerDraggingChangedListener
  * @property {boolean} disableTrackMenu
  * @property {(listener: (draggingStatus: boolean) => void) => void} removeDraggingChangedListener
- * @property {(trackId: string, x: unknown) => void} onTilesetInfoReceived
+ * @property {(trackId: string, tilesetInfo: TilesetInfo) => void} onTilesetInfoReceived
  * @property {(trackId: string) => unknown} getLockGroupExtrema
  * @property {(trackId: string) => boolean} isValueScaleLocked
  * @property {(trackId: string) => void} onValueScaleChanged
@@ -1860,11 +1862,6 @@ class TrackRenderer extends React.Component {
 
   /** @param {TrackConfig} track */
   createLocationAgnosticTrackObject(track) {
-    /** @param {unknown} x */
-    const handleTilesetInfoReceived = (x) => {
-      this.currentProps.onTilesetInfoReceived(track.uid, x);
-    };
-
     // See if this track has a data config section.
     // If it doesn't, we assume that it has the standard
     // server / tilesetUid sections
@@ -1907,7 +1904,9 @@ class TrackRenderer extends React.Component {
       dataFetcher,
       getLockGroupExtrema: () =>
         this.currentProps.getLockGroupExtrema(track.uid),
-      handleTilesetInfoReceived,
+      handleTilesetInfoReceived: (tilesetInfo) => {
+        this.currentProps.onTilesetInfoReceived(track.uid, tilesetInfo);
+      },
       animate: () => {
         this.currentProps.onNewTilesLoaded(track.uid);
       },
