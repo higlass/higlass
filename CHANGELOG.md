@@ -1,4 +1,7 @@
 # Release notes
+## v1.12.5
+
+- Upgrade pixi.js from v5 to v6. 
 
 ## v1.12.4
 
