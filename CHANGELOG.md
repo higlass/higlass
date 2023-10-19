@@ -1,8 +1,4 @@
 # Release notes
-## v1.12.5
-
-- Upgrade pixi.js from v5 to v6. 
-
 ## v1.12.4
 
 - Fix breaking change of the plugin track API introduced by the previous patch (v1.12.3)
