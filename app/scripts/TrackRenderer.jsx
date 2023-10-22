@@ -1,3 +1,4 @@
+// @ts-check
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -85,6 +86,218 @@ const { getDataFetcher } = AVAILABLE_FOR_PLUGINS.dataFetchers;
 
 const SCROLL_TIMEOUT = 100;
 
+/** @typedef {TrackRenderer["setCenter"]} SetCentersFunction */
+/** @typedef {import("d3-scale").ScaleLinear<number, number>} ScaleLinear */
+/** @typedef {(x: ScaleLinear, y: ScaleLinear) => [ScaleLinear, ScaleLinear]} ProjectorFunction */
+/** @typedef {(xScale: ScaleLinear, yScale: ScaleLinear, k?: number, x?: number, y?: number, xPosition?: number, yPosition?: number) => void} ZoomedFunction */
+/** @typedef {'left' | 'right' | 'top' | 'bottom' | 'center' | 'gallery'} TrackPosition */
+
+/**
+ * @typedef TrackObject
+ * @property {() => void} draw
+ * @property {(options: unknown) => void} rerender
+ * @property {boolean} delayDrawing
+ * @property {Array<TrackObject>=} childTracks
+ * @property {Record<string, TrackObject>} createdTracks
+ * @property {(x: ScaleLinear, y: ScaleLinear) => void} refScalesChanged
+ * @property {[number, number]} position
+ * @property {[number, number]} dimensions
+ * @property {(contents: Array<TrackConfig>, x: unknown) => TrackObject} updateContents
+ * @property {ZoomedFunction} zoomed
+ * @property {(position: [number, number]) => void} setPosition
+ * @property {(position: [number, number]) => void} setDimensions
+ * @property {() => void} remove
+ * @property {(extent: number) => void} movedY
+ * @property {(yPosition: number, wheelDelta: number) => void} zoomedY
+ */
+
+/**
+ * @typedef UnknownTrackConfig
+ * @property {string} uid
+ * @property {Record<string, unknown>} options
+ * @property {string} type
+ * @property {TrackPosition} position
+ * @property {Record<string, unknown>=} data
+ * @property {string} server
+ * @property {string} tilesetUid
+ * @property {unknown=} coordSystem
+ * @property {number=} x
+ * @property {number=} y
+ * @property {string} chromInfoPath
+ * @property {[number, number]=} projectionXDomain
+ * @property {[number, number]=} projectionYDomain
+ * @property {unknown=} registerViewportChanged
+ * @property {unknown=} removeViewportChanged
+ * @property {unknown=} setDomainsCallback
+ */
+
+/**
+ * @typedef CombinedTrackConfig
+ * @property {string} uid
+ * @property {Record<string, unknown>} options
+ * @property {Array<TrackConfig>} contents
+ * @property {'combined'} type
+ * @property {TrackPosition} position
+ * @property {Record<string, unknown>=} data
+ * @property {string} server
+ * @property {string} tilesetUid
+ * @property {unknown=} coordSystem
+ * @property {number=} x
+ * @property {number=} y
+ * @property {string} chromInfoPath
+ * @property {[number, number]=} projectionXDomain
+ * @property {[number, number]=} projectionYDomain
+ * @property {unknown=} registerViewportChanged
+ * @property {unknown=} removeViewportChanged
+ * @property {unknown=} setDomainsCallback
+ */
+
+/** @typedef {UnknownTrackConfig | CombinedTrackConfig} TrackConfig */
+
+/**
+ * @typedef TrackDefinition
+ * @property {TrackConfig} track
+ * @property {number} width
+ * @property {number} height
+ * @property {number} top
+ * @property {number} left
+ */
+
+/** @typedef {Record<string, unknown>} TilesetInfo */
+
+/**
+ * @typedef MetaPluginTrackContext
+ * @property {(trackId: string) => TrackObject | undefined} getTrackObject
+ * @property {() => void} onNewTilesLoaded
+ * @property {TrackConfig} definition
+ */
+
+/**
+ * @typedef {Object} PluginTrackContext
+ * @property {string} id
+ * @property {string} trackUid
+ * @property {string} trackType
+ * @property {string} viewUid
+ * @property {import('pub-sub-es').PubSub} pubSub
+ * @property {import("pixi.js").Graphics} scene
+ * @property {Record<string, unknown>} dataConfig
+ * @property {unknown} dataFetcher
+ * @property {() => unknown} getLockGroupExtrema
+ * @property {(tilesetInfo: TilesetInfo) => void} handleTilesetInfoReceived
+ * @property {() => void} animate
+ * @property {HTMLElement} svgElement
+ * @property {() => boolean} isValueScaleLocked
+ * @property {() => void} onValueScaleChanged
+ * @property {(newOption: Record<string, unknown>) => void} onTrackOptionsChanged
+ * @property {() => void} onMouseMoveZoom
+ * @property {string} chromInfoPath
+ * @property {() => boolean} isShowGlobalMousePosition
+ * @property {() => (string | typeof THEME_DARK)} getTheme
+ * @property {unknown=} AVAILABLE_FOR_PLUGINS
+ * @property {(HTMLDivElement | null)=} baseEl
+ * @property {TrackConfig=} definition
+ * @property {number=} x
+ * @property {number=} y
+ * @property {number=} xPosition
+ * @property {number=} yPosition
+ * @property {[number, number]=} projectionXDomain
+ * @property {[number, number]=} projectionYDomain
+ * @property {unknown=} registerViewportChanged
+ * @property {unknown=} removeViewportChanged
+ * @property {unknown=} setDomainsCallback
+ * @property {TrackConfig[]=} tracks
+ * @property {TrackRenderer["createTrackObject"]=} createTrackObject
+ * @property {string=} orientation
+ * @property {boolean=} isOverlay
+ */
+
+/**
+ * @typedef PluginTrack
+ * @property {{ new (availableForPlugins: unknown, context: PluginTrackContext, options: Record<string, unknown>): TrackObject }} track
+ * @property {false=} isMetaTrack
+ */
+
+/**
+ * @typedef MetaPluginTrack
+ * @property {{ new (availableForPlugins: unknown, context: MetaPluginTrackContext, options: Record<string, unknown>): TrackObject }} track
+ * @property {true} isMetaTrack
+ */
+
+/**
+ * @template T
+ * @typedef {T & { __zoom?: import('d3-zoom').ZoomTransform }} WithZoomTransform
+ */
+
+/**
+ * @typedef TrackRendererProps
+ * @property {HTMLElement} canvasElement
+ * @property {number} centerHeight
+ * @property {number} centerWidth
+ * @property {Array<JSX.Element>} children
+ * @property {number} galleryDim
+ * @property {number} height
+ * @property {[number, number]} initialXDomain
+ * @property {[number, number]} initialYDomain
+ * @property {boolean} isShowGlobalMousePosition
+ * @property {boolean} isRangeSelection
+ * @property {number} leftWidth
+ * @property {number} leftWidthNoGallery
+ * @property {number} paddingLeft
+ * @property {number} paddingTop
+ * @property {Array<TrackConfig>} metaTracks
+ * @property {() => void} onMouseMoveZoom
+ * @property {(trackId?: string) => void} onNewTilesLoaded
+ * @property {(x: ScaleLinear, y: ScaleLinear) => void} onScalesChanged
+ * @property {import("pixi.js").Renderer} pixiRenderer
+ * @property {import("pixi.js").Container} pixiStage
+ * @property {Record<string, unknown>} pluginDataFetchers
+ * @property {Record<string, PluginTrack | MetaPluginTrack>} pluginTracks
+ * @property {Array<TrackDefinition>} positionedTracks
+ * @property {import('pub-sub-es').PubSub} pubSub
+ * @property {(func: SetCentersFunction) => void} setCentersFunction
+ * @property {HTMLElement} svgElement
+ * @property {string | typeof THEME_DARK} theme
+ * @property {number} topHeight
+ * @property {number} topHeightNoGallery
+ * @property {Record<string, unknown>} viewOptions
+ * @property {number} width
+ * @property {[number, number]} xDomainLimits
+ * @property {[number, number]} yDomainLimits
+ * @property {boolean} valueScaleZoom
+ * @property {boolean} zoomable
+ * @property {[number, number]} zoomDomain
+ * @property {[number, number]} zoomLimits
+ * @property {string} uid
+ * @property {boolean} dragging
+ * @property {(func: (draggingStatus: boolean) => void) => void} registerDraggingChangedListener
+ * @property {boolean} disableTrackMenu
+ * @property {(listener: (draggingStatus: boolean) => void) => void} removeDraggingChangedListener
+ * @property {(trackId: string, tilesetInfo: TilesetInfo) => void} onTilesetInfoReceived
+ * @property {(trackId: string) => unknown} getLockGroupExtrema
+ * @property {(trackId: string) => boolean} isValueScaleLocked
+ * @property {(trackId: string) => void} onValueScaleChanged
+ * @property {(trackId: string, newOption: Record<string, unknown>) => void} onTrackOptionsChanged
+ */
+
+/**
+ * @param {TrackConfig} track
+ * @returns {track is CombinedTrackConfig}
+ */
+function isCombinedTrackConfig(track) {
+  return track.type === 'combined';
+}
+
+/**
+ * @param {Event} event
+ * @returns {event is { deltaY: number, deltaMode: number }}
+ */
+function isWheelEvent(event) {
+  return 'deltaY' in event && 'deltaMode' in event;
+}
+
+/**
+ * @extends {React.Component<TrackRendererProps>}
+ */
 class TrackRenderer extends React.Component {
   /**
    * Maintain a list of tracks, and re-render them whenever either
@@ -93,29 +306,52 @@ class TrackRenderer extends React.Component {
    * Zooming changes the domain of the scales.
    *
    * Resizing changes the range. Both trigger a rerender.
+   *
+   * @param {TrackRendererProps} props
    */
   constructor(props) {
     super(props);
+    /** @type {boolean} */
     this.dragging = false; // is this element being dragged?
+    /** @type {WithZoomTransform<HTMLElement> | null} */
     this.element = null;
+    /** @type {HTMLElement | null} */
+    this.eventTracker = null;
+    /** @type {HTMLElement | null} */
+    this.eventTrackerOld = null;
+    /** @type {boolean} */
     this.closing = false;
 
+    /** @type {number} */
     this.yPositionOffset = 0;
+    /** @type {number} */
     this.xPositionOffset = 0;
+    /** @type {number} */
     this.scrollTop = 0;
 
+    /** @type {ReturnType<typeof setTimeout> | null} */
     this.scrollTimeout = null;
+    /** @type {number} */
     this.activeTransitions = 0;
 
+    /** @type {import('d3-zoom').ZoomTransform} */
     this.zoomTransform = zoomIdentity;
+    /** @type {() => void} */
     this.windowScrolledBound = this.windowScrolled.bind(this);
+    /** @type {(event?: import('d3-zoom').D3ZoomEvent<HTMLElement, unknown>) => void} */
     this.zoomStartedBound = this.zoomStarted.bind(this);
+    /** @type {(event: import('d3-zoom').D3ZoomEvent<HTMLElement, unknown> & { shiftKey?: boolean }) => void} */
     this.zoomedBound = this.zoomed.bind(this);
+    /** @type {() => void} */
     this.zoomEndedBound = this.zoomEnded.bind(this);
 
+    /** @type {string} */
     this.uid = slugid.nice();
+
+    /** @type {string} */
     this.viewUid = this.props.uid;
 
+    /** @type {unknown} */
     this.availableForPlugins = {
       ...AVAILABLE_FOR_PLUGINS,
       services: {
@@ -125,55 +361,72 @@ class TrackRenderer extends React.Component {
       },
     };
 
+    /** @type {boolean} */
     this.mounted = false;
 
     // create a zoom behavior that we'll just use to transform selections
     // without having it fire an "onZoom" event
+    /** @type {import("d3-zoom").ZoomBehavior<HTMLElement, unknown>} */
     this.emptyZoomBehavior = zoom();
 
     // a lot of the updates in TrackRenderer happen in response to
     // componentWillReceiveProps so we need to perform them with the
     // newest set of props. When cWRP is called, this.props still contains
     // the old props, so we need to store them in a new variable
+    /** @type {TrackRendererProps} */
     this.currentProps = props;
+    /** @type {string} */
     this.prevPropsStr = '';
 
     // catch any zooming behavior within all of the tracks in this plot
     // this.zoomTransform = zoomIdentity();
-    this.zoomBehavior = zoom()
-      .filter((event) => {
-        if (event.target.classList.contains('no-zoom')) {
-          return false;
-        }
-        if (event.target.classList.contains('react-resizable-handle')) {
-          return false;
-        }
-        return true;
-      })
-      .on('start', this.zoomStartedBound)
-      .on('zoom', this.zoomedBound)
-      .on('end', this.zoomEndedBound);
+    /** @type {import("d3-zoom").ZoomBehavior<HTMLElement, unknown>} */
+    this.zoomBehavior =
+      /** @type {import("d3-zoom").ZoomBehavior<HTMLElement, any>} */ (zoom())
+        .filter((event) => {
+          if (event.target.classList.contains('no-zoom')) {
+            return false;
+          }
+          if (event.target.classList.contains('react-resizable-handle')) {
+            return false;
+          }
+          return true;
+        })
+        .on('start', this.zoomStartedBound)
+        .on('zoom', this.zoomedBound)
+        .on('end', this.zoomEndedBound);
 
+    /** @type {import('d3-zoom').ZoomTransform} */
     this.zoomTransform = zoomIdentity;
+    /** @type {import('d3-zoom').ZoomTransform} */
     this.prevZoomTransform = zoomIdentity;
 
+    /** @type {[number, number]} */
     this.initialXDomain = [0, 1];
+    /** @type {[number, number]} */
     this.initialYDomain = [0, 1];
+    /** @type {[number, number]} */
     this.xDomainLimits = [-Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
+    /** @type {[number, number]} */
     this.yDomainLimits = [-Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
+    /** @type {[number, number]} */
     this.zoomLimits = [0, Number.MAX_SAFE_INTEGER];
 
+    /** @type {number} */
     this.prevCenterX =
       this.currentProps.paddingLeft +
       this.currentProps.leftWidth +
       this.currentProps.centerWidth / 2;
+    /** @type {number} */
     this.prevCenterY =
       this.currentProps.paddingTop +
       this.currentProps.topHeight +
       this.currentProps.centerHeight / 2;
 
     // The offset of the center from the original. Used to keep the scales centered on resize events
+    /** @type {number} */
     this.cumCenterXOffset = 0;
+    /** @type {number} */
     this.cumCenterYOffset = 0;
 
     this.setUpInitialScales(
@@ -191,10 +444,13 @@ class TrackRenderer extends React.Component {
     // Each object will contain a trackDef
     // {'top': 100, 'left': 50,... 'track': {'source': 'http:...', 'type': 'heatmap'}}
     // And a trackObject which will be responsible for rendering it
+    /** @type {Record<string, { trackObject: TrackObject, trackDef: TrackDefinition }>} */
     this.trackDefObjects = {};
 
+    /** @type {Record<string, { trackObject: TrackObject | UnknownPixiTrack, trackDef: TrackConfig }>} */
     this.metaTracks = {};
 
+    /** @type {Array<import("pub-sub-es").Subscription>} */
     this.pubSubs = [];
 
     // if there's plugin tracks, they'll define new track
@@ -202,18 +458,43 @@ class TrackRenderer extends React.Component {
     // we look up the orientation of a track
     if (window.higlassTracksByType) {
       // Extend `TRACKS_INFO_BY_TYPE` with the configs of plugin tracks.
-      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
+      for (const pluginTrackType in window.higlassTracksByType) {
         TRACKS_INFO_BY_TYPE[pluginTrackType] =
           window.higlassTracksByType[pluginTrackType].config;
-      });
+      }
     }
 
+    /** @type {<T extends Event>(event: T & { sourceUid?: string, forwarded?: boolean }) => void} */
     this.boundForwardEvent = this.forwardEvent.bind(this);
+    /** @type {() => void} */
     this.boundScrollEvent = this.scrollEvent.bind(this);
+    /** @type {(event: { altKey: boolean, preventDefault(): void }) => void} */
     this.boundForwardContextMenu = this.forwardContextMenu.bind(this);
+    /** @type {(event: { sourceUid: string, type: string }) => void} */
     this.dispatchEventBound = this.dispatchEvent.bind(this);
+    /** @type {(opts: { pos: [number, number, number, number], animateTime: number, isMercator: boolean }) => void} */
     this.zoomToDataPosHandlerBound = this.zoomToDataPosHandler.bind(this);
+    /** @type {(scrollTop: number) => void} */
     this.onScrollHandlerBound = this.onScrollHandler.bind(this);
+
+    /** @type {{ height: number, width: number, left: number, top: number }} */
+    this.elementPos = { height: 0, width: 0, left: 0, top: 0 };
+    /** @type {import('d3-selection').Selection<WithZoomTransform<HTMLElement>, unknown, null, unknown> | null} */
+    this.elementSelection = null;
+  }
+
+  get xScale() {
+    if (!this._xScale) {
+      throw new Error('xScale is not defined');
+    }
+    return this._xScale;
+  }
+
+  get yScale() {
+    if (!this._yScale) {
+      throw new Error('yScale is not defined');
+    }
+    return this._yScale;
   }
 
   // eslint-disable-next-line camelcase
@@ -237,13 +518,19 @@ class TrackRenderer extends React.Component {
   }
 
   componentDidMount() {
+    if (!this.element) {
+      throw new Error('Component did not mount, this.element is not defined.');
+    }
     this.elementPos = this.element.getBoundingClientRect();
     this.elementSelection = select(this.element);
-    this.svgTrackAreaSelection = select(this.svgTrackArea);
 
+    /** @type {import('pixi.js').Graphics} */
     this.pStage = new GLOBALS.PIXI.Graphics();
+    /** @type {import('pixi.js').Graphics} */
     this.pMask = new GLOBALS.PIXI.Graphics();
+    /** @type {import('pixi.js').Graphics} */
     this.pOutline = new GLOBALS.PIXI.Graphics();
+    /** @type {import('pixi.js').Graphics} */
     this.pBackground = new GLOBALS.PIXI.Graphics();
 
     this.pStage.addChild(this.pMask);
@@ -274,6 +561,7 @@ class TrackRenderer extends React.Component {
     this.addEventTracker();
 
     // Init zoom and scale extent
+    /** @type {[[number, number], [number, number]]} */
     const transExt = [
       [this.xScale(this.xDomainLimits[0]), this.yScale(this.yDomainLimits[0])],
       [this.xScale(this.xDomainLimits[1]), this.yScale(this.yDomainLimits[1])],
@@ -281,6 +569,7 @@ class TrackRenderer extends React.Component {
 
     const svgBBox = this.svgElement.getBoundingClientRect();
 
+    /** @type {[[number, number], [number, number]]} */
     const ext = [
       [Math.max(transExt[0][0], 0), Math.max(transExt[0][1], 0)],
       [
@@ -296,6 +585,7 @@ class TrackRenderer extends React.Component {
   }
 
   // eslint-disable-next-line camelcase
+  /** @param {TrackRendererProps} nextProps */
   UNSAFE_componentWillReceiveProps(nextProps) {
     /**
      * The size of some tracks probably changed, so let's just
@@ -336,6 +626,7 @@ class TrackRenderer extends React.Component {
 
     this.svgElement = nextProps.svgElement;
 
+    /** @type {[[number, number], [number, number]]} */
     const transExt = [
       [this.xScale(this.xDomainLimits[0]), this.yScale(this.yDomainLimits[0])],
       [this.xScale(this.xDomainLimits[1]), this.yScale(this.yDomainLimits[1])],
@@ -343,6 +634,7 @@ class TrackRenderer extends React.Component {
 
     const svgBBox = this.svgElement.getBoundingClientRect();
 
+    /** @type {[[number, number], [number, number]]} */
     const ext = [
       [Math.max(transExt[0][0], 0), Math.max(transExt[0][1], 0)],
       [
@@ -365,7 +657,8 @@ class TrackRenderer extends React.Component {
       const trackObject = this.trackDefObjects[track.track.uid].trackObject;
       trackObject.rerender(options);
 
-      if (track.track.hasOwnProperty('contents')) {
+      if (isCombinedTrackConfig(track.track)) {
+        /** @type {Record<string, TrackConfig>} */
         const ctDefs = {};
         for (const ct of track.track.contents) {
           ctDefs[ct.uid] = ct;
@@ -386,6 +679,7 @@ class TrackRenderer extends React.Component {
     }
   }
 
+  /** @param {TrackRendererProps} prevProps */
   componentDidUpdate(prevProps) {
     // If the initial domain changed, a new view config
     // probably has loaded. Reset the element's zoomTransform in this case.
@@ -396,7 +690,7 @@ class TrackRenderer extends React.Component {
       this.props.initialYDomain[0] !== prevProps.initialYDomain[0] ||
       this.props.initialYDomain[1] !== prevProps.initialYDomain[1]
     ) {
-      this.element.__zoom = zoomIdentity;
+      if (this.element) this.element.__zoom = zoomIdentity;
     }
 
     if (prevProps.isRangeSelection !== this.props.isRangeSelection) {
@@ -427,10 +721,10 @@ class TrackRenderer extends React.Component {
     this.removeMetaTracks(Object.keys(this.metaTracks));
     this.currentProps.removeDraggingChangedListener(this.draggingChanged);
 
-    this.currentProps.pixiStage.removeChild(this.pStage);
+    if (this.pStage) this.currentProps.pixiStage.removeChild(this.pStage);
 
-    this.pMask.destroy(true);
-    this.pStage.destroy(true);
+    this.pMask?.destroy(true);
+    this.pStage?.destroy(true);
 
     this.pubSubs.forEach((subscription) =>
       this.props.pubSub.unsubscribe(subscription),
@@ -445,24 +739,22 @@ class TrackRenderer extends React.Component {
   /**
    * Dispatch a forwarded event on the main DOM element
    *
-   * @param  {Object}  e  Event to be dispatched.
+   * @param  {{ sourceUid: string, type: string }} event  Event to be dispatched.
    */
-  dispatchEvent(e) {
-    if (e.sourceUid === this.uid && e.type !== 'contextmenu') {
-      forwardEvent(e, this.element);
+  dispatchEvent(event) {
+    if (event.sourceUid === this.uid && event.type !== 'contextmenu') {
+      if (this.element) forwardEvent(event, this.element);
     }
   }
 
   /**
    * Check of a view position (i.e., pixel coords) is within this view
    *
-   * @param  {Number}  x  X position to be tested.
-   * @param  {Number}  y  Y position to be tested.
-   * @return  {Boolean}   If `true` position is within this view.
+   * @param {number} x X position to be tested.
+   * @param {number} y Y position to be tested.
+   * @return {boolean} If `true` position is within this view.
    */
   isWithin(x, y) {
-    if (!this.element) return false;
-
     const withinX =
       x >= this.elementPos.left &&
       x <= this.elementPos.width + this.elementPos.left;
@@ -473,8 +765,11 @@ class TrackRenderer extends React.Component {
     return withinX && withinY;
   }
 
-  zoomToDataPosHandler({ pos, animateTime, isMercator }) {
-    this.zoomToDataPos(...pos, animateTime, isMercator);
+  /**
+   * @param {{ pos: [number, number, number, number], animateTime: number }} opts
+   */
+  zoomToDataPosHandler({ pos, animateTime }) {
+    this.zoomToDataPos(...pos, animateTime);
   }
 
   addZoom() {
@@ -496,15 +791,15 @@ class TrackRenderer extends React.Component {
    * don't overflow its bounds.
    */
   setMask() {
-    this.pMask.clear();
-    this.pMask.beginFill();
-    this.pMask.drawRect(
+    this.pMask?.clear();
+    this.pMask?.beginFill();
+    this.pMask?.drawRect(
       this.xPositionOffset,
       this.yPositionOffset,
       this.currentProps.width,
       this.currentProps.height,
     );
-    this.pMask.endFill();
+    this.pMask?.endFill();
 
     // show the bounds of this view
     /*
@@ -524,15 +819,15 @@ class TrackRenderer extends React.Component {
         defBgColor,
     );
 
-    this.pBackground.clear();
-    this.pBackground.beginFill(bgColor);
-    this.pBackground.drawRect(
+    this.pBackground?.clear();
+    this.pBackground?.beginFill(bgColor);
+    this.pBackground?.drawRect(
       this.xPositionOffset,
       this.yPositionOffset,
       this.currentProps.width,
       this.currentProps.height,
     );
-    this.pBackground.endFill();
+    this.pBackground?.endFill();
   }
 
   windowScrolled() {
@@ -547,6 +842,13 @@ class TrackRenderer extends React.Component {
     }, SCROLL_TIMEOUT);
   }
 
+  /**
+   * @param {[number, number]} initialXDomain
+   * @param {[number, number]} initialYDomain
+   * @param {[number, number]} xDomainLimits
+   * @param {[number, number]} yDomainLimits
+   * @param {[number, number]} zoomLimits
+   */
   setUpInitialScales(
     initialXDomain = [0, 1],
     initialYDomain = [0, 1],
@@ -644,6 +946,7 @@ class TrackRenderer extends React.Component {
       this.currentProps.centerHeight / 2;
   }
 
+  /** @param {TrackRendererProps} props */
   updatablePropsToString(props) {
     return JSON.stringify({
       positionedTracks: props.positionedTracks,
@@ -660,6 +963,7 @@ class TrackRenderer extends React.Component {
     });
   }
 
+  /** @param {boolean} draggingStatus */
   draggingChanged(draggingStatus) {
     this.dragging = draggingStatus;
 
@@ -686,6 +990,10 @@ class TrackRenderer extends React.Component {
     // if the window is resized, we don't want to change the scale, but we do
     // want to move the center point. this needs to be tempered by the zoom
     // factor so that we keep the visible center point in the center
+    if (!this.drawableToDomainX || !this.drawableToDomainY) {
+      return;
+    }
+
     const centerDomainXOffset =
       (this.drawableToDomainX(currentCenterX) -
         this.drawableToDomainX(this.prevCenterX)) /
@@ -715,11 +1023,11 @@ class TrackRenderer extends React.Component {
     // if the screen has been resized, then the domain width should remain the same
 
     // this.xScale should always span the region that the zoom behavior is being called on
-    this.xScale = scaleLinear()
+    this._xScale = scaleLinear()
       .domain(visibleXDomain)
       .range([0, this.currentProps.width]);
 
-    this.yScale = scaleLinear()
+    this._yScale = scaleLinear()
       .domain(visibleYDomain)
       .range([0, this.currentProps.height]);
 
@@ -736,6 +1044,8 @@ class TrackRenderer extends React.Component {
 
   /**
    * Get a track's viewconf definition by its object
+   *
+   * @param {TrackObject} trackObjectIn
    */
   getTrackDef(trackObjectIn) {
     const trackDefItems = dictItems(this.trackDefObjects);
@@ -744,7 +1054,7 @@ class TrackRenderer extends React.Component {
       if (trackObject === trackObjectIn) {
         return trackDef.track;
       }
-      if (trackDef.track.contents) {
+      if (isCombinedTrackConfig(trackDef.track)) {
         // this is a combined track
         for (const subTrackDef of trackDef.track.contents) {
           if (trackObject.createdTracks[subTrackDef.uid] === trackObjectIn) {
@@ -757,8 +1067,11 @@ class TrackRenderer extends React.Component {
     return null;
   }
 
-  /*
+  /**
    * Fetch the trackObject for a track with a given ID
+   *
+   * @param {string} trackId
+   * @return {TrackObject | undefined}
    */
   getTrackObject(trackId) {
     const trackDefItems = dictItems(this.trackDefObjects);
@@ -817,6 +1130,9 @@ class TrackRenderer extends React.Component {
     }
   }
 
+  /**
+   * @param {Array<TrackConfig>} trackDefinitions
+   */
   syncMetaTracks(trackDefinitions) {
     const knownMetaTrackIds = Object.keys(this.metaTracks);
     const newMetaTracks = new Set(trackDefinitions.map((def) => def.uid));
@@ -837,6 +1153,9 @@ class TrackRenderer extends React.Component {
     );
   }
 
+  /**
+   * @param {Array<TrackDefinition>} trackDefinitions
+   */
   syncTrackObjects(trackDefinitions) {
     /**
      * Make sure we have a track object for every passed track definition.
@@ -858,6 +1177,7 @@ class TrackRenderer extends React.Component {
      */
     this.prevTrackDefinitions = JSON.stringify(trackDefinitions);
 
+    /** @type {Record<string, TrackDefinition>} */
     const receivedTracksDict = {};
     for (let i = 0; i < trackDefinitions.length; i++) {
       receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i];
@@ -899,7 +1219,7 @@ class TrackRenderer extends React.Component {
   /**
    * Add new meta tracks
    *
-   * @param  {Array}  metaTrackDefs  Definitions of meta tracks to be added.
+   * @param {Array<TrackConfig>} metaTrackDefs  Definitions of meta tracks to be added.
    */
   addMetaTracks(metaTrackDefs) {
     metaTrackDefs
@@ -912,6 +1232,9 @@ class TrackRenderer extends React.Component {
       });
   }
 
+  /**
+   * @param {Array<TrackDefinition>} newTrackDefinitions
+   */
   addNewTracks(newTrackDefinitions) {
     /**
      * We need to create new track objects for the given track
@@ -919,12 +1242,16 @@ class TrackRenderer extends React.Component {
      */
     if (!this.currentProps.pixiStage) {
       return;
-    } // we need a pixi stage to start rendering
+    }
+    // we need a pixi stage to start rendering
     // the parent component where it lives probably
     // hasn't been mounted yet
 
     for (let i = 0; i < newTrackDefinitions.length; i++) {
       const newTrackDef = newTrackDefinitions[i];
+
+      /** @type {TrackObject} */
+      // @ts-expect-error - FIXME: Should not need to lie about the return type from createTrackObject.
       const newTrackObj = this.createTrackObject(newTrackDef.track);
 
       // newTrackObj.refXScale(this.xScale);
@@ -949,21 +1276,23 @@ class TrackRenderer extends React.Component {
     this.applyZoomTransform(false);
   }
 
-  updateMetaTracks() {
+  /** @param {unknown} _unused */
+  updateMetaTracks(_unused) {
     // Nothing
   }
 
+  /** @param {Array<TrackDefinition>} newTrackDefs */
   updateExistingTrackDefs(newTrackDefs) {
-    for (let i = 0; i < newTrackDefs.length; i++) {
-      this.trackDefObjects[newTrackDefs[i].track.uid].trackDef =
-        newTrackDefs[i];
+    for (const trackDef of newTrackDefs) {
+      const ref = this.trackDefObjects[trackDef.track.uid];
+      ref.trackDef = trackDef;
 
       // if it's a CombinedTrack, we have to see if its contents have changed
       // e.g. somebody may have added a new Series
-      if (newTrackDefs[i].track.type === 'combined') {
-        this.trackDefObjects[newTrackDefs[i].track.uid].trackObject
+      if (isCombinedTrackConfig(trackDef.track)) {
+        ref.trackObject
           .updateContents(
-            newTrackDefs[i].track.contents,
+            trackDef.track.contents,
             this.createTrackObject.bind(this),
           )
           .refScalesChanged(this.xScale, this.yScale);
@@ -988,10 +1317,13 @@ class TrackRenderer extends React.Component {
       const prevPosition = trackObject.position;
       const prevDimensions = trackObject.dimensions;
 
+      /** @type {[number, number]} */
       const newPosition = [
         this.xPositionOffset + trackDef.left,
         this.yPositionOffset + trackDef.top,
       ];
+
+      /** @type {[number, number]} */
       const newDimensions = [trackDef.width, trackDef.height];
 
       // check if any of the track's positions have changed
@@ -1024,14 +1356,17 @@ class TrackRenderer extends React.Component {
     return updated;
   }
 
+  /** @param {string[]} trackIds */
   removeMetaTracks(trackIds) {
     trackIds.forEach((id) => {
       this.metaTracks[id].trackObject.remove();
+      // @ts-expect-error - We are deleting the track object here
       this.metaTracks[id] = undefined;
       delete this.metaTracks[id];
     });
   }
 
+  /** @param {string[]} trackUids */
   removeTracks(trackUids) {
     for (let i = 0; i < trackUids.length; i++) {
       this.trackDefObjects[trackUids[i]].trackObject.remove();
@@ -1047,10 +1382,10 @@ class TrackRenderer extends React.Component {
    * @param  {boolean}  notify  If `true` notify listeners that the scales
    *   have changed. This can be turned off to prevent circular updates when
    *   scales are locked.
-   * @param  {boolean}  animate  If `true` transition smoothly from the
-   *   current to the desired location.
    * @param  {number}  animateTime  Animation time in milliseconds. Only used
    *   when `animate` is true.
+   * @param  {ScaleLinear}  xScale  The scale to use for the X axis.
+   * @param  {ScaleLinear}  yScale  The scale to use for the Y axis.
    */
   setCenter(
     centerX,
@@ -1080,6 +1415,7 @@ class TrackRenderer extends React.Component {
     const translateX = middleViewX - xScale(centerX) * k;
     const translateY = middleViewY - yScale(centerY) * k;
 
+    /** @type {[ScaleLinear, ScaleLinear] | undefined} */
     let last;
 
     const setZoom = () => {
@@ -1088,18 +1424,21 @@ class TrackRenderer extends React.Component {
         .scale(k);
 
       this.zoomTransform = newTransform;
-      this.emptyZoomBehavior.transform(this.elementSelection, newTransform);
+      if (this.elementSelection) {
+        this.emptyZoomBehavior.transform(this.elementSelection, newTransform);
+      }
 
       last = this.applyZoomTransform(notify);
     };
 
-    if (animateTime) {
+    if (animateTime && this.elementSelection) {
       let selection = this.elementSelection;
 
       this.activeTransitions += 1;
 
       if (!document.hidden) {
         // only transition if the window is hidden
+        // @ts-expect-error - Returns a TransitionSelection, which should be OK to use below
         selection = selection.transition().duration(animateTime);
       }
 
@@ -1119,21 +1458,37 @@ class TrackRenderer extends React.Component {
     return last;
   }
 
+  /** @param {number} movement */
   valueScaleMove(movement) {
+    if (!this.zoomStartPos) {
+      return;
+    }
     // mouse wheel from zoom event
     // const cp = pointer(event.sourceEvent, this.props.canvasElement);
     for (const track of this.getTracksAtPosition(...this.zoomStartPos)) {
       track.movedY(movement);
     }
 
-    this.zoomTransform = this.zoomStartTransform;
+    if (this.zoomStartTransform) this.zoomTransform = this.zoomStartTransform;
   }
 
+  /**
+   * @param {{ sourceEvent: Event }} event
+   * @param {string | null} orientation
+   */
   valueScaleZoom(event, orientation) {
     // mouse move probably from a drag event
+    if (!isWheelEvent(event.sourceEvent)) {
+      return;
+    }
     const mdy = event.sourceEvent.deltaY;
     const mdm = event.sourceEvent.deltaMode;
 
+    /**
+     * @param {number} dy
+     * @param {number} dm
+     * @return {number}
+     */
     const myWheelDelta = (dy, dm) => (dy * (dm ? 120 : 1)) / 500;
     const mwd = myWheelDelta(mdy, mdm);
 
@@ -1148,7 +1503,7 @@ class TrackRenderer extends React.Component {
     }
 
     // reset the zoom transform
-    this.zoomTransform = this.zoomStartTransform;
+    if (this.zoomStartTransform) this.zoomTransform = this.zoomStartTransform;
   }
 
   /**
@@ -1156,11 +1511,14 @@ class TrackRenderer extends React.Component {
    *
    * We need to update our local record of the zoom transform and apply it
    * to all the tracks.
+   *
+   * @param {import("d3-zoom").D3ZoomEvent<HTMLElement, unknown> & { shiftKey?: boolean }} event
    */
   zoomed(event) {
     // the orientation of the track where we started zooming
     // if it's a 1d-horizontal, then mousemove events shouldn't
     // move the center track vertically
+    /** @type {string | null} */
     let trackOrientation = null;
 
     // see what orientation of track we're over so that we decide
@@ -1171,7 +1529,11 @@ class TrackRenderer extends React.Component {
         const trackAtZoomStart = tracksAtZoomStart[0];
         const trackDef = this.getTrackDef(trackAtZoomStart);
 
-        if (TRACKS_INFO_BY_TYPE[trackDef.type]) {
+        if (!trackDef) {
+          return;
+        }
+
+        if (TRACKS_INFO_BY_TYPE[trackDef.type]?.orientation) {
           // some track types (like overlay-track don't have a track info)
           trackOrientation = TRACKS_INFO_BY_TYPE[trackDef.type].orientation;
         }
@@ -1231,8 +1593,7 @@ class TrackRenderer extends React.Component {
           .translate(this.prevZoomTransform.x, this.zoomTransform.y)
           .scale(this.zoomTransform.k);
       }
-
-      this.element.__zoom = this.zoomTransform;
+      if (this.element) this.element.__zoom = this.zoomTransform;
     }
 
     this.applyZoomTransform(true);
@@ -1250,13 +1611,15 @@ class TrackRenderer extends React.Component {
    *
    * The position should be relative to this.props.canvasElement.
    *
-   * @param  {Number} x The query x position
-   * @param  {Number} y The query y position
-   * @return {Array}   An array of tracks at this position
+   * @param {number} x The query x position
+   * @param {number} y The query y position
+   * @return {Array<TrackObject>}  An array of tracks at this position
    */
   getTracksAtPosition(x, y) {
+    /** @type {Array<TrackObject>} */
     const foundTracks = [];
 
+    /** @type {Array<TrackObject>} */
     let tracksToVisit = [];
 
     for (const uid in this.trackDefObjects) {
@@ -1283,6 +1646,7 @@ class TrackRenderer extends React.Component {
     return foundTracks;
   }
 
+  /** @param {import('d3-zoom').D3ZoomEvent<HTMLElement, unknown>=} event */
   zoomStarted(event) {
     this.zooming = true;
 
@@ -1307,18 +1671,26 @@ class TrackRenderer extends React.Component {
 
     if (this.valueScaleZooming) {
       this.valueScaleZooming = false;
-      this.element.__zoom = this.zoomStartTransform;
+      if (this.element) this.element.__zoom = this.zoomStartTransform;
     }
 
     this.props.pubSub.publish('app.zoomEnd');
   }
 
+  /**
+   * @param {boolean=} notify
+   * @returns {[ScaleLinear, ScaleLinear] | undefined}
+   */
   applyZoomTransform(notify = true) {
     const props = this.currentProps;
     const paddingleft = props.paddingLeft + props.leftWidth;
     const paddingTop = props.paddingTop + props.topHeight;
 
     // These props are apparently used elsewhere, for example the context menu
+    if (!this.xScale || !this.yScale) {
+      return undefined;
+    }
+
     this.zoomedXScale = this.zoomTransform.rescaleX(this.xScale);
     this.zoomedYScale = this.zoomTransform.rescaleY(this.yScale);
 
@@ -1428,13 +1800,15 @@ class TrackRenderer extends React.Component {
     return [newXScale, newYScale];
   }
 
+  /** @param {TrackConfig} track */
   createMetaTrack(track) {
     switch (track.type) {
       default: {
         // Check if a plugin track is available
         const pluginTrack = this.props.pluginTracks[track.type];
 
-        if (pluginTrack && pluginTrack.isMetaTrack) {
+        if (pluginTrack?.isMetaTrack) {
+          /** @type {MetaPluginTrackContext} */
           const context = {
             getTrackObject: this.getTrackObject.bind(this),
             onNewTilesLoaded: () => {
@@ -1459,15 +1833,15 @@ class TrackRenderer extends React.Component {
         }
 
         console.warn(`Unknown meta track of type: ${track.type}`);
-        return new UnknownPixiTrack(
-          this.pStage,
-          { name: 'Unknown Track Type', type: track.type },
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-        );
+        return new UnknownPixiTrack(this.pStage, {
+          name: 'Unknown Track Type',
+          type: track.type,
+        });
       }
     }
   }
 
+  /** @param {TrackConfig} track */
   createTrackObject(track) {
     const trackObject = this.createLocationAgnosticTrackObject(track);
     if (track.position === 'left' || track.position === 'right') {
@@ -1478,11 +1852,8 @@ class TrackRenderer extends React.Component {
     return trackObject;
   }
 
+  /** @param {TrackConfig} track */
   createLocationAgnosticTrackObject(track) {
-    const handleTilesetInfoReceived = (x) => {
-      this.currentProps.onTilesetInfoReceived(track.uid, x);
-    };
-
     // See if this track has a data config section.
     // If it doesn't, we assume that it has the standard
     // server / tilesetUid sections
@@ -1507,7 +1878,13 @@ class TrackRenderer extends React.Component {
       this.availableForPlugins,
     );
 
+    // FIXME: non-null assert?
+    if (!this.pStage || !this.svgElement) {
+      throw new Error('No PIXI stage or svg element');
+    }
+
     // To simplify the context creation via ES6 object shortcuts.
+    /** @type {PluginTrackContext} */
     const context = {
       id: track.uid,
       trackUid: track.uid,
@@ -1519,7 +1896,9 @@ class TrackRenderer extends React.Component {
       dataFetcher,
       getLockGroupExtrema: () =>
         this.currentProps.getLockGroupExtrema(track.uid),
-      handleTilesetInfoReceived,
+      handleTilesetInfoReceived: (tilesetInfo) => {
+        this.currentProps.onTilesetInfoReceived(track.uid, tilesetInfo);
+      },
       animate: () => {
         this.currentProps.onNewTilesLoaded(track.uid);
       },
@@ -1627,7 +2006,7 @@ class TrackRenderer extends React.Component {
           context.setDomainsCallback = track.setDomainsCallback;
           return new ViewportTracker2D(context, options);
         }
-        return new Track(context, options);
+        return new Track(context);
 
       case 'viewport-projection-horizontal':
         // TODO: Fix this so that these functions are defined somewhere else
@@ -1641,7 +2020,7 @@ class TrackRenderer extends React.Component {
           context.setDomainsCallback = track.setDomainsCallback;
           return new ViewportTrackerHorizontal(context, options);
         }
-        return new Track(context, options);
+        return new Track(context);
 
       case 'viewport-projection-vertical':
         // TODO: Fix this so that these functions are defined somewhere else
@@ -1655,7 +2034,7 @@ class TrackRenderer extends React.Component {
           context.setDomainsCallback = track.setDomainsCallback;
           return new ViewportTrackerVertical(context, options);
         }
-        return new Track(context, options);
+        return new Track(context);
 
       case 'gene-annotations':
       case 'horizontal-gene-annotations': // legacy, included for backwards compatiblity
@@ -1686,9 +2065,11 @@ class TrackRenderer extends React.Component {
         return new SquareMarkersTrack(context, options);
 
       case 'combined':
+        // @ts-expect-error - FIXME: Our typing should be able to narrow track config
+        // based on the type, but this isn't communicated in the type system yet.
         context.tracks = track.contents;
         context.createTrackObject = this.createTrackObject.bind(this);
-        return new CombinedTrack(context, options);
+        return new CombinedTrack(context);
 
       case '2d-chromosome-labels':
         return new Chromosome2DLabels(context, options);
@@ -1818,7 +2199,7 @@ class TrackRenderer extends React.Component {
    * @param   {number}  dataYStart  Data start Y coordinate.
    * @param   {number}  dataYEnd  Data end Y coordinate.
    * @param   {number}  animateTime  Animation time in milliseconds.
-   * @param   {function}  projector  If not `null` a projector function that
+   * @param   {ProjectorFunction | null}  projector  If not `null` a projector function that
    *   provides adjusted x and y scales.
    */
   zoomToDataPos(
@@ -1849,6 +2230,9 @@ class TrackRenderer extends React.Component {
     );
   }
 
+  /**
+   * @param {{ altKey: boolean, preventDefault: () => void }} e
+   */
   forwardContextMenu(e) {
     // Do never forward the contextmenu event when ALT is being hold down.
     if (this.props.disableTrackMenu || e.altKey) return;
@@ -1958,15 +2342,24 @@ class TrackRenderer extends React.Component {
   }
 
   scrollEvent() {
+    if (!this.element) return;
     this.elementPos = this.element.getBoundingClientRect();
   }
 
-  forwardEvent(e) {
-    e.sourceUid = this.uid;
-    e.forwarded = true;
-    this.props.pubSub.publish('app.event', e);
+  /**
+   * Publishes an event to the pubSub channel, first overriding the
+   * sourceUid to be the uid of this track renderer.
+   *
+   * @template {Event} T
+   * @param {T & { sourceUid?: string; forwarded?: boolean }} event
+   */
+  forwardEvent(event) {
+    event.sourceUid = this.uid;
+    event.forwarded = true;
+    this.props.pubSub.publish('app.event', event);
   }
 
+  /** @param {number} scrollTop */
   onScrollHandler(scrollTop) {
     this.scrollTop = scrollTop;
   }
@@ -2072,6 +2465,8 @@ TrackRenderer.propTypes = {
   valueScaleZoom: PropTypes.bool,
   zoomable: PropTypes.bool.isRequired,
   zoomDomain: PropTypes.array,
+  uid: PropTypes.string,
+  zoomLimits: PropTypes.array,
 };
 
 export default withPubSub(withTheme(TrackRenderer));

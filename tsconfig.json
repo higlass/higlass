@@ -1,0 +1,17 @@
+{
+  "include": ["app"],
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "noEmit": true,
+    "jsx": "react",
+    "types": ["vite/client"]
+  }
+}

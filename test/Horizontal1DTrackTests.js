@@ -1,4 +1,3 @@
-// @ts-check
 /* eslint-env mocha */
 import { expect } from 'chai';
 

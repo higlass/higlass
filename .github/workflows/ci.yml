@@ -10,6 +10,20 @@ on:
 
 jobs:
 
+  Typecheck:
+    runs-on: ubuntu-latest
+    env:
+      # not needed for typechecking
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - run: npm run typecheck
+
   Lint:
     runs-on: ubuntu-latest
     env:
@@ -19,7 +33,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '20.x'
           cache: 'npm'
       - run: npm ci --legacy-peer-deps
       - run: npm run lint
@@ -30,19 +44,19 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '20.x'
       - run: npm install -g ajv-cli
       - run: ajv validate -s app/schema.json -d "{docs/examples/viewconfs,test/{view-configs,view-configs-more}}/*.json"
 
   Test:
-    needs: [Lint, Schema]
+    needs: [Lint, Schema, Typecheck]
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '20.x'
           cache: 'npm'
       # required to run headless puppeteer on ubuntu-latest
       - name: Setup xvf

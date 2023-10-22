@@ -1,4 +1,7 @@
+// @ts-check
 import { TRACKS_INFO } from './tracks-info';
+
+/** @typedef {Record<string, import('./tracks-info').TrackInfo>} TracksInfoByType */
 
 export const TRACKS_INFO_BY_TYPE = TRACKS_INFO.reduce((tracksByType, track) => {
   tracksByType[track.type] = track;
@@ -8,6 +11,6 @@ export const TRACKS_INFO_BY_TYPE = TRACKS_INFO.reduce((tracksByType, track) => {
     }
   }
   return tracksByType;
-}, {});
+}, /** @type {TracksInfoByType} */ ({}));
 
 export default TRACKS_INFO_BY_TYPE;
