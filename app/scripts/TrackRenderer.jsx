@@ -73,6 +73,8 @@ import {
   trimTrailingSlash,
 } from './utils';
 
+import { isCombinedTrackConfig, isWheelEvent } from './utils/type-guards';
+
 // Configs
 import { GLOBALS, THEME_DARK, TRACKS_INFO_BY_TYPE } from './configs';
 
@@ -90,7 +92,7 @@ const SCROLL_TIMEOUT = 100;
 /** @typedef {import("d3-scale").ScaleLinear<number, number>} ScaleLinear */
 /** @typedef {(x: ScaleLinear, y: ScaleLinear) => [ScaleLinear, ScaleLinear]} ProjectorFunction */
 /** @typedef {(xScale: ScaleLinear, yScale: ScaleLinear, k?: number, x?: number, y?: number, xPosition?: number, yPosition?: number) => void} ZoomedFunction */
-/** @typedef {'left' | 'right' | 'top' | 'bottom' | 'center' | 'gallery'} TrackPosition */
+/** @typedef {import('./types').TrackConfig} TrackConfig */
 
 /**
  * @typedef TrackObject
@@ -110,49 +112,6 @@ const SCROLL_TIMEOUT = 100;
  * @property {(extent: number) => void} movedY
  * @property {(yPosition: number, wheelDelta: number) => void} zoomedY
  */
-
-/**
- * @typedef UnknownTrackConfig
- * @property {string} uid
- * @property {Record<string, unknown>} options
- * @property {string} type
- * @property {TrackPosition} position
- * @property {Record<string, unknown>=} data
- * @property {string} server
- * @property {string} tilesetUid
- * @property {unknown=} coordSystem
- * @property {number=} x
- * @property {number=} y
- * @property {string} chromInfoPath
- * @property {[number, number]=} projectionXDomain
- * @property {[number, number]=} projectionYDomain
- * @property {unknown=} registerViewportChanged
- * @property {unknown=} removeViewportChanged
- * @property {unknown=} setDomainsCallback
- */
-
-/**
- * @typedef CombinedTrackConfig
- * @property {string} uid
- * @property {Record<string, unknown>} options
- * @property {Array<TrackConfig>} contents
- * @property {'combined'} type
- * @property {TrackPosition} position
- * @property {Record<string, unknown>=} data
- * @property {string} server
- * @property {string} tilesetUid
- * @property {unknown=} coordSystem
- * @property {number=} x
- * @property {number=} y
- * @property {string} chromInfoPath
- * @property {[number, number]=} projectionXDomain
- * @property {[number, number]=} projectionYDomain
- * @property {unknown=} registerViewportChanged
- * @property {unknown=} removeViewportChanged
- * @property {unknown=} setDomainsCallback
- */
-
-/** @typedef {UnknownTrackConfig | CombinedTrackConfig} TrackConfig */
 
 /**
  * @typedef TrackDefinition
@@ -259,7 +218,7 @@ const SCROLL_TIMEOUT = 100;
  * @property {string | typeof THEME_DARK} theme
  * @property {number} topHeight
  * @property {number} topHeightNoGallery
- * @property {Record<string, unknown>} viewOptions
+ * @property {{ backgroundColor?: string }} viewOptions
  * @property {number} width
  * @property {[number, number]} xDomainLimits
  * @property {[number, number]} yDomainLimits
@@ -278,22 +237,6 @@ const SCROLL_TIMEOUT = 100;
  * @property {(trackId: string) => void} onValueScaleChanged
  * @property {(trackId: string, newOption: Record<string, unknown>) => void} onTrackOptionsChanged
  */
-
-/**
- * @param {TrackConfig} track
- * @returns {track is CombinedTrackConfig}
- */
-function isCombinedTrackConfig(track) {
-  return track.type === 'combined';
-}
-
-/**
- * @param {Event} event
- * @returns {event is { deltaY: number, deltaMode: number }}
- */
-function isWheelEvent(event) {
-  return 'deltaY' in event && 'deltaMode' in event;
-}
 
 /**
  * @extends {React.Component<TrackRendererProps>}
@@ -470,7 +413,7 @@ class TrackRenderer extends React.Component {
     this.boundScrollEvent = this.scrollEvent.bind(this);
     /** @type {(event: { altKey: boolean, preventDefault(): void }) => void} */
     this.boundForwardContextMenu = this.forwardContextMenu.bind(this);
-    /** @type {(event: { sourceUid: string, type: string }) => void} */
+    /** @type {(event: Event & { sourceUid: string, type: string }) => void} */
     this.dispatchEventBound = this.dispatchEvent.bind(this);
     /** @type {(opts: { pos: [number, number, number, number], animateTime: number, isMercator: boolean }) => void} */
     this.zoomToDataPosHandlerBound = this.zoomToDataPosHandler.bind(this);
@@ -739,7 +682,7 @@ class TrackRenderer extends React.Component {
   /**
    * Dispatch a forwarded event on the main DOM element
    *
-   * @param  {{ sourceUid: string, type: string }} event  Event to be dispatched.
+   * @param  {Event & { sourceUid: string, type: string }} event Event to be dispatched.
    */
   dispatchEvent(event) {
     if (event.sourceUid === this.uid && event.type !== 'contextmenu') {
@@ -814,9 +757,7 @@ class TrackRenderer extends React.Component {
   setBackground() {
     const defBgColor = this.props.theme === THEME_DARK ? 'black' : 'white';
     const bgColor = colorToHex(
-      (this.currentProps.viewOptions &&
-        this.currentProps.viewOptions.backgroundColor) ||
-        defBgColor,
+      this.currentProps.viewOptions?.backgroundColor ?? defBgColor,
     );
 
     this.pBackground?.clear();

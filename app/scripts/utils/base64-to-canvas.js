@@ -1,9 +1,11 @@
+// @ts-check
+
 /**
  * Convert a base64 encoded image into a canvas object.
- * @param   {string}  base64  Base64 string encoding the image.
- * @param   {number}  width  Custom width for the canvas object.
- * @param   {number}  height  Custom height for the canvas object.
- * @return  {object}  The converted canvas object
+ * @param {string} base64 - Base64 string encoding the image.
+ * @param {number} width - Custom width for the canvas object.
+ * @param {number} height - Custom height for the canvas object.
+ * @return {Promise<HTMLCanvasElement>} The converted canvas object
  */
 const base64ToCanvas = (base64, width, height) => {
   const canvas = document.createElement('canvas');
@@ -13,7 +15,12 @@ const base64ToCanvas = (base64, width, height) => {
     img.onload = () => {
       canvas.width = width || img.width;
       canvas.height = height || img.height;
-      canvas.getContext('2d').drawImage(img, 0, 0);
+      const context = canvas.getContext('2d');
+      if (!context) {
+        reject(new Error('Could not get canvas context'));
+        return;
+      }
+      context.drawImage(img, 0, 0);
       resolve(canvas);
     };
 

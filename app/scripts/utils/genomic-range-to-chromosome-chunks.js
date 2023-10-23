@@ -1,13 +1,17 @@
+// @ts-check
+
 /**
  * Using the [genomicStart, genomicEnd] range, get an array of "chromosome chunks",
  * where each chunk range starts and ends with the same chromosome.
  * Start a new chromosome chunk at each chromosome boundary.
- * @param {array} chromSizes Array of [chrName, chrLen] tuples.
- * @param {object} genomicStart A genomic position object returned from abs2genomic { chr, pos }.
- * @param {object} genomicEnd A genomic position object returned from abs2genomic { chr, pos }.
- * @param {number} binSize The resolution / bin size.
- * @param {number} tileSize The tile size (probably 256).
- * @returns {array} Returns array of [chrName, zStart, zEnd] tuples.
+ *
+ * @template {string} Name
+ * @param {Array<[charName: Name, chrLen: number]>} chromSizes - Array of [chrName, chrLen] tuples.
+ * @param {{ chr: Name, pos: number }} genomicStart - A genomic position object returned from abs2genomic { chr, pos }.
+ * @param {{ chr: Name, pos: number }} genomicEnd - A genomic position object returned from abs2genomic { chr, pos }.
+ * @param {number} binSize - The resolution / bin size.
+ * @param {number} tileSize - The tile size (probably 256).
+ * @returns {Array<[chrName: Name, zStart: number, zEnd: number]>} Returns array of [chrName, zStart, zEnd] tuples.
  */
 function genomicRangeToChromosomeChunks(
   chromSizes,
@@ -19,6 +23,7 @@ function genomicRangeToChromosomeChunks(
   const { chr: chrStart, pos: chrStartPos } = genomicStart;
   const { chr: chrEnd, pos: chrEndPos } = genomicEnd;
 
+  /** @type {Array<[chrName: Name, zStart: number, zEnd: number]>} */
   const chrChunks = [];
   if (chrStart === chrEnd) {
     // This tile does _not_ cross a chromosome boundary.
@@ -37,7 +42,9 @@ function genomicRangeToChromosomeChunks(
 
     // Create a separate chunk for each chromosome that lies within the range.
     for (let chrIndex = chrStartIndex; chrIndex <= chrEndIndex; chrIndex++) {
+      /** @type {number} */
       let chrChunkStart;
+      /** @type {number} */
       let chrChunkEnd;
 
       const [currChrName, currChrLen] = chromSizes[chrIndex];
