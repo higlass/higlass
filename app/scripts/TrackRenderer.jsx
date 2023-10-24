@@ -133,7 +133,7 @@ const SCROLL_TIMEOUT = 100;
  * @property {() => void} onMouseMoveZoom
  * @property {string} chromInfoPath
  * @property {() => boolean} isShowGlobalMousePosition
- * @property {() => (string | typeof THEME_DARK)} getTheme
+ * @property {() => import('./types').Theme} getTheme
  * @property {unknown=} AVAILABLE_FOR_PLUGINS
  * @property {(HTMLDivElement | null)=} baseEl
  * @property {TrackConfig=} definition
@@ -197,7 +197,7 @@ const SCROLL_TIMEOUT = 100;
  * @property {import('pub-sub-es').PubSub} pubSub
  * @property {(func: SetCentersFunction) => void} setCentersFunction
  * @property {HTMLElement} svgElement
- * @property {string | typeof THEME_DARK} theme
+ * @property {import('./types').Theme} theme
  * @property {number} topHeight
  * @property {number} topHeightNoGallery
  * @property {{ backgroundColor?: string }} viewOptions
@@ -1927,7 +1927,7 @@ class TrackRenderer extends React.Component {
           context.setDomainsCallback = track.setDomainsCallback;
           return new ViewportTracker2D(context, options);
         }
-        return new Track(context);
+        return new Track(context, {});
 
       case 'viewport-projection-horizontal':
         // TODO: Fix this so that these functions are defined somewhere else
@@ -1941,7 +1941,7 @@ class TrackRenderer extends React.Component {
           context.setDomainsCallback = track.setDomainsCallback;
           return new ViewportTrackerHorizontal(context, options);
         }
-        return new Track(context);
+        return new Track(context, {});
 
       case 'viewport-projection-vertical':
         // TODO: Fix this so that these functions are defined somewhere else
@@ -1955,7 +1955,7 @@ class TrackRenderer extends React.Component {
           context.setDomainsCallback = track.setDomainsCallback;
           return new ViewportTrackerVertical(context, options);
         }
-        return new Track(context);
+        return new Track(context, {});
 
       case 'gene-annotations':
       case 'horizontal-gene-annotations': // legacy, included for backwards compatiblity

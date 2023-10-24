@@ -1,5 +1,7 @@
 /* eslint-disable */
 
+import type { THEME_DARK, THEME_LIGHT } from "./configs";
+
 export type Scale = import("d3-scale").ScaleContinuousNumeric<number, number>;
 
 export type TrackPosition = typeof import('./configs/primitives').TRACK_LOCATIONS[number];
@@ -77,3 +79,5 @@ export interface TrackObject {
   movedY(extent: number): void;
   zoomedY(yPosition: number, wheelDelta: number): void;
 }
+
+export type Theme = typeof THEME_DARK | typeof THEME_LIGHT;
