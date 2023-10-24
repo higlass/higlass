@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * Throttle and debounce a function call
  *
@@ -23,19 +24,22 @@
  * 09. nothing
  * 10. y(f, 2, 2)(args_10) => f(args_10) call from debouncing
  *
- * @param   {functon}  func - Function to be throttled and debounced
- * @param   {number}  interval - Throttle intevals in milliseconds
- * @param   {number}  finalWait - Debounce wait time in milliseconds
- * @return  {function} - Throttled and debounced function
+ * @template {any[]} Args
+ * @param {(...args: Args) => void} func - Function to be throttled and debounced
+ * @param {number} interval - Throttle intevals in milliseconds
+ * @param {number} finalWait - Debounce wait time in milliseconds
+ * @return {(request: unknown, ...args: Args) => void} - Throttled and debounced function
  */
 const throttleAndDebounce = (func, interval, finalWait) => {
+  /** @type {ReturnType<typeof setTimeout> | undefined} */
   let timeout;
   let blockedCalls = 0;
 
   const reset = () => {
-    timeout = null;
+    timeout = undefined;
   };
 
+  /** @param {Args} args */
   const debounced = (...args) => {
     const later = () => {
       // Since we throttle and debounce we should check whether there were
@@ -57,12 +61,17 @@ const throttleAndDebounce = (func, interval, finalWait) => {
     reset();
   };
 
+  /** @param {Args} args */
   debounced.immediate = (...args) => {
     func(...args);
   };
 
   let wait = false;
-  const throttled = (request, ...args) => {
+  /**
+   * @param {unknown} _request
+   * @param {Args} args
+   */
+  const throttled = (_request, ...args) => {
     if (!wait) {
       func(...args);
       debounced(...args);

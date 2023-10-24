@@ -1,9 +1,11 @@
+// @ts-check
 /**
  * Functional version of `Array.forEach`. More flexible and applicable to
- *   other array-like data types like `NodeList`.
- * @param   {function}  f  Modifier function applied on every item of the
- *   array.
- * @return  {*}  Modified array-like variable.
+ * other array-like data types like `NodeList`.
+ *
+ * @template T
+ * @param {(item: T, i: number) => boolean} f - Modifier function applied on every item of the array.
+ * @return {(arr: Array<T>) => boolean}  Modified array-like variable.
  */
 const some = (f) => (x) => Array.prototype.some.call(x, f);
 

@@ -88,30 +88,12 @@ const { getDataFetcher } = AVAILABLE_FOR_PLUGINS.dataFetchers;
 
 const SCROLL_TIMEOUT = 100;
 
-/** @typedef {TrackRenderer["setCenter"]} SetCentersFunction */
-/** @typedef {import("d3-scale").ScaleLinear<number, number>} ScaleLinear */
-/** @typedef {(x: ScaleLinear, y: ScaleLinear) => [ScaleLinear, ScaleLinear]} ProjectorFunction */
-/** @typedef {(xScale: ScaleLinear, yScale: ScaleLinear, k?: number, x?: number, y?: number, xPosition?: number, yPosition?: number) => void} ZoomedFunction */
+/** @typedef {import('./types').Scale} Scale */
 /** @typedef {import('./types').TrackConfig} TrackConfig */
+/** @typedef {import('./types').TrackObject} TrackObject */
 
-/**
- * @typedef TrackObject
- * @property {() => void} draw
- * @property {(options: unknown) => void} rerender
- * @property {boolean} delayDrawing
- * @property {Array<TrackObject>=} childTracks
- * @property {Record<string, TrackObject>} createdTracks
- * @property {(x: ScaleLinear, y: ScaleLinear) => void} refScalesChanged
- * @property {[number, number]} position
- * @property {[number, number]} dimensions
- * @property {(contents: Array<TrackConfig>, x: unknown) => TrackObject} updateContents
- * @property {ZoomedFunction} zoomed
- * @property {(position: [number, number]) => void} setPosition
- * @property {(position: [number, number]) => void} setDimensions
- * @property {() => void} remove
- * @property {(extent: number) => void} movedY
- * @property {(yPosition: number, wheelDelta: number) => void} zoomedY
- */
+/** @typedef {TrackRenderer["setCenter"]} SetCentersFunction */
+/** @typedef {(x: Scale, y: Scale) => [Scale, Scale]} ProjectorFunction */
 
 /**
  * @typedef TrackDefinition
@@ -206,7 +188,7 @@ const SCROLL_TIMEOUT = 100;
  * @property {Array<TrackConfig>} metaTracks
  * @property {() => void} onMouseMoveZoom
  * @property {(trackId?: string) => void} onNewTilesLoaded
- * @property {(x: ScaleLinear, y: ScaleLinear) => void} onScalesChanged
+ * @property {(x: Scale, y: Scale) => void} onScalesChanged
  * @property {import("pixi.js").Renderer} pixiRenderer
  * @property {import("pixi.js").Container} pixiStage
  * @property {Record<string, unknown>} pluginDataFetchers
@@ -693,8 +675,8 @@ class TrackRenderer extends React.Component {
   /**
    * Check of a view position (i.e., pixel coords) is within this view
    *
-   * @param {number} x X position to be tested.
-   * @param {number} y Y position to be tested.
+   * @param {number} x - X position to be tested.
+   * @param {number} y - Y position to be tested.
    * @return {boolean} If `true` position is within this view.
    */
   isWithin(x, y) {
@@ -708,9 +690,7 @@ class TrackRenderer extends React.Component {
     return withinX && withinY;
   }
 
-  /**
-   * @param {{ pos: [number, number, number, number], animateTime: number }} opts
-   */
+  /** @param {{ pos: [number, number, number, number], animateTime: number }} opts */
   zoomToDataPosHandler({ pos, animateTime }) {
     this.zoomToDataPos(...pos, animateTime);
   }
@@ -1325,8 +1305,8 @@ class TrackRenderer extends React.Component {
    *   scales are locked.
    * @param  {number}  animateTime  Animation time in milliseconds. Only used
    *   when `animate` is true.
-   * @param  {ScaleLinear}  xScale  The scale to use for the X axis.
-   * @param  {ScaleLinear}  yScale  The scale to use for the Y axis.
+   * @param  {Scale}  xScale  The scale to use for the X axis.
+   * @param  {Scale}  yScale  The scale to use for the Y axis.
    */
   setCenter(
     centerX,
@@ -1356,7 +1336,7 @@ class TrackRenderer extends React.Component {
     const translateX = middleViewX - xScale(centerX) * k;
     const translateY = middleViewY - yScale(centerY) * k;
 
-    /** @type {[ScaleLinear, ScaleLinear] | undefined} */
+    /** @type {[Scale, Scale] | undefined} */
     let last;
 
     const setZoom = () => {
@@ -1620,7 +1600,7 @@ class TrackRenderer extends React.Component {
 
   /**
    * @param {boolean=} notify
-   * @returns {[ScaleLinear, ScaleLinear] | undefined}
+   * @returns {[Scale, Scale] | undefined}
    */
   applyZoomTransform(notify = true) {
     const props = this.currentProps;

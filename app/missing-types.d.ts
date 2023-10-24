@@ -17,4 +17,5 @@ declare module 'pub-sub-es' {
     clear(): void;
   }
   export function createPubSub(): PubSub;
+  export const globalPubSub: PubSub;
 }

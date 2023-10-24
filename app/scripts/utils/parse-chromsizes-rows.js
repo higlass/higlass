@@ -1,13 +1,34 @@
+// @ts-check
+
+/** @typedef {[string, number]} ChromsizeRow */
+
 /**
- * Parse an array of chromsizes, for example that result
- * from reading rows of a chromsizes CSV file.
- * @param {array} data Array of [chrName, chrLen] "tuples".
- * @returns {object} Object containing properties
- * { cumPositions, chrPositions, totalLength, chromLengths }.
+ * @typedef CumulativeChromsizeEntry
+ * @property {number} id
+ * @property {string} chr
+ * @property {number} pos
+ */
+
+/**
+ * @typedef ParsedChromsizes
+ * @property {CumulativeChromsizeEntry[]} cumPositions
+ * @property {Record<string, CumulativeChromsizeEntry>} chrPositions
+ * @property {number} totalLength
+ * @property {Record<string, number>} chromLengths
+ */
+
+/**
+ * Parse an array of chromsizes, for example that result from reading rows of a chromsizes CSV file.
+ *
+ * @param {ArrayLike<ChromsizeRow>} data - Array of [chrName, chrLen] "tuples".
+ * @returns {ParsedChromsizes}
  */
 function parseChromsizesRows(data) {
+  /** @type {Array<CumulativeChromsizeEntry>} */
   const cumValues = [];
+  /** @type {Record<string, number>} */
   const chromLengths = {};
+  /** @type {Record<string, CumulativeChromsizeEntry>} */
   const chrPositions = {};
 
   let totalLength = 0;
