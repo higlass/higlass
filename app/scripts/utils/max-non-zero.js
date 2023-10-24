@@ -1,5 +1,11 @@
+// @ts-check
 const epsilon = 0.0000001;
 
+/**
+ * Calculate the maximum non-zero value in the data
+ * @param {ArrayLike<number>} data - An array of values
+ * @returns {number} The maximum non-zero value in the array
+ */
 export default function maxNonZero(data) {
   /**
    * Calculate the minimum non-zero value in the data

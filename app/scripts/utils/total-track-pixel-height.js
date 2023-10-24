@@ -1,17 +1,16 @@
+// @ts-check
 /**
- * Calculate the total height of the horizontal and center
- * tracks in pixels
+ * @typedef Tracks
+ * @prop {{ height: number }[]=} top
+ * @prop {{ height: number }[]=} center
+ * @prop {{ height: number }[]=} bottom
+ */
+
+/**
+ * Calculate the total height of the horizontal and center tracks in pixels
  *
- * Parameters
- * -----------
- *
- *  view : view config object
- *    A typical view configuration containing a list of tracks
- *
- * Returns
- * -------
- *  int
- *    The total height of the top, center and bottom tracks
+ * @param {{ tracks?: Tracks }} view - A typical view configuration containing a list of tracks
+ * @returns {number} - The total height of the top, center and bottom tracks
  */
 const totalTrackPixelHeight = (view) => {
   // no tracks means no height

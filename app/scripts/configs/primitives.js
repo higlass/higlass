@@ -1,3 +1,4 @@
+// @ts-check
 export const DEFAULT_VIEW_MARGIN = 0;
 
 export const DEFAULT_VIEW_PADDING = 5;
@@ -32,7 +33,7 @@ export const VIEW_HEADER_MED_WIDTH_SEARCH_BAR = 400;
 
 export const VIEW_HEADER_MIN_WIDTH_SEARCH_BAR = 300;
 
-export const TRACK_LOCATIONS = [
+export const TRACK_LOCATIONS = /** @type {const} */ ([
   'top',
   'left',
   'right',
@@ -40,7 +41,7 @@ export const TRACK_LOCATIONS = [
   'center',
   'whole',
   'gallery',
-];
+]);
 
 export const MIN_HORIZONTAL_HEIGHT = 20;
 

@@ -1,3 +1,4 @@
+// @ts-check
 export { default as absToChr } from './abs-to-chr';
 export { default as accessorTransposition } from './accessor-transposition';
 export { default as addArrays } from './add-arrays';

@@ -1,5 +1,11 @@
+// @ts-check
 import or from './or';
 
+/**
+ * Return true if this track is selectable by range.
+ * @param {import('../types').TrackConfig} track
+ * @returns {boolean}
+ */
 export const IS_TRACK_RANGE_SELECTABLE = (track) => {
   switch (track.type) {
     case 'heatmap':
@@ -24,7 +30,10 @@ export const IS_TRACK_RANGE_SELECTABLE = (track) => {
       return true;
 
     case 'combined': {
-      return track.contents
+      /** @type {import('../types').TrackConfig[]} */
+      // @ts-expect-error - TS should be able to narrow the type but isn't smart enough
+      const contents = track.contents;
+      return contents
         .map((t) => IS_TRACK_RANGE_SELECTABLE(t))
         .reduce(or, false);
     }

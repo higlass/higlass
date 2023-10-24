@@ -9,6 +9,8 @@
  * Return an array of (key,value) pairs that are present in this
  * dictionary
  *
+ * TODO(Trevor): Replace with `Object.entries`?
+ *
  * @template {object} T
  * @param {T} dictionary
  *

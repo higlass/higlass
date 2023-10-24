@@ -1,3 +1,4 @@
+// @ts-check
 import { globalPubSub } from 'pub-sub-es';
 
 import hexStrToInt from './hex-string-to-int';
@@ -9,21 +10,26 @@ const COLOR = 0xaaaaaa;
 const ALPHA = 1.0;
 
 /**
+ * @typedef MouseTrackOptions
+ * @property {string=} mousePositionColor - Color of the mouse position.
+ * @property {number=} mousePositionAlpha - Alpha of the mouse position.
+ */
+
+/**
  * Actual interface for initializing to show the mouse location
  *
- * @param  {Object}  pubSubs  PubSub service.
- * @param  {Object}  pubSubs  Subscribed PubSub events.
- * @param  {Object}  options  Track options.
- * @param  {Function}  getScales  Getter for the track's X and Y scales.
- * @param  {Function}  getPosition  Getter for the track's position.
- * @param  {Function}  getDimensions  Getter for the track's dimensions.
- * @param  {Function}  getIsFlipped  Getter determining if a track has been
+ * @param {import('pub-sub-es').PubSub} pubSub - PubSub service.
+ * @param {Array<import('pub-sub-es').Subscription>} pubSubs - Subscribed PubSub events.
+ * @param {MouseTrackOptions} options - Track options.
+ * @param {() => [import('../types').Scale, import('../types').Scale]} getScales - Getter for the track's X and Y scales.
+ * @param {() => [number, number]} getPosition - Getter for the track's position.
+ * @param {() => [number, number]} getDimensions - Getter for the track's dimensions.
+ * @param {() => boolean} getIsFlipped - Getter determining if a track has been
  *   flipped from horizontal to vertical.
- * @param  {Boolean}  is2d  If `true` draw both dimensions of the mouse
- *   location.
- * @param  {Boolean}  isGlobal   If `true` local and global events will trigger
+ * @param {boolean} is2d - If `true` draw both dimensions of the mouse location.
+ * @param {boolean} isGlobal - If `true` local and global events will trigger
  *   the mouse position drawing.
- * @return  {Object}  PIXI graphics the mouse location is drawn on.
+ * @return {import('pixi.js').Graphics} - PIXI graphics the mouse location is drawn on.
  */
 const showMousePosition = (
   pubSub,
@@ -56,10 +62,11 @@ const showMousePosition = (
   /**
    * Draw 1D mouse location (cross) hair onto the PIXI graphics.
    *
-   * @param  {Integer}   mousePos  One dimension of the mouse location
-   * @param  {Boolean}   isHorizontal  If `true` the dimension to be drawn is
+   * @param {number} mousePos - One dimension of the mouse location (integer).
+   * @param {boolean=} isHorizontal - If `true` the dimension to be drawn is
    *   horizontal.
-   * @param  {Boolean}   isNoClear  If `true` do not clear the graphics.
+   * @param  {boolean=}   isNoClear  If `true` do not clear the graphics.
+   * @return {void}
    */
   const drawMousePosition = (mousePos, isHorizontal, isNoClear) => {
     if (!isNoClear) clearGraphics();
@@ -78,9 +85,24 @@ const showMousePosition = (
   };
 
   /**
+   * @typedef NoHoveredTracksEvent
+   * @property {true} noHoveredTracks - If `true` no tracks are hovered.
+   * @property {false=} isFromVerticalTrack - If `true` the event is from a vertical track.
+   */
+
+  /**
+   * @typedef TrackEvent
+   * @property {false=} noHoveredTracks - If `true` no tracks are hovered.
+   * @property {boolean} isFromVerticalTrack - If `true` the event is from a vertical track.
+   * @property {boolean} isFrom2dTrack - If `true` the event is from a 2D track.
+   * @property {number} dataY - Y position of the mouse.
+   * @property {number} dataX - X position of the mouse.
+   */
+
+  /**
    * Mouse move handler
    *
-   * @param  {Object}  e  Event object.
+   * @param {Event & (NoHoveredTracksEvent | TrackEvent)} event - Event object.
    */
   const mouseMoveHandler = (event) => {
     if (event.noHoveredTracks) {
@@ -128,6 +150,21 @@ const showMousePosition = (
 };
 
 /**
+ * @typedef ClassContext
+ * @property {import('pixi.js').Container=} pForeground
+ * @property {import('pixi.js').Container=} pMasked
+ * @property {import('pixi.js').Container=} pMain
+ * @property {() => import('../types').Scale} xScale
+ * @property {() => import('../types').Scale} yScale
+ * @property {() => [number, number]} getPosition
+ * @property {() => [number, number]} getDimensions
+ * @property {import('pub-sub-es').PubSub} pubSub
+ * @property {Array<import('pub-sub-es').Subscription>} pubSubs
+ * @property {(prop: 'flipText') => () => boolean} getProp
+ * @property {{}} options
+ */
+
+/**
  * Public API for showing the mouse location.
  *
  * @description
@@ -135,15 +172,21 @@ const showMousePosition = (
  * `showMousePosition` is the actual function and could be called from within
  * each class as well.
  *
- * @param  {Object}  context  Class context, i.e., `this`.
- * @param  {Boolean}  is2d   If `true` both dimensions of the mouse location
+ * @param {ClassContext} context - Class context, i.e., `this`.
+ * @param {Boolean} is2d - If `true` both dimensions of the mouse location
  *   should be shown. E.g., on a central track.
- * @param  {Boolean}  isGlobal   If `true` local and global events will trigger
+ * @param {Boolean} isGlobal - If `true` local and global events will trigger
  *   the mouse position drawing.
- * @return  {Function}  Method to remove graphics showing the mouse location.
+ * @return {Function} - Method to remove graphics showing the mouse location.
  */
 const setupShowMousePosition = (context, is2d = false, isGlobal = false) => {
   const scene = is2d ? context.pMasked : context.pForeground || context.pMain;
+  if (!scene) {
+    throw new Error(
+      'setupShowMousePosition: No scene found. Please make sure to call this method after the scene has been initialized.',
+    );
+  }
+  /** @type {() => [import('../types').Scale, import('../types').Scale]} */
   const getScales = () => [context.xScale(), context.yScale()];
 
   const graphics = showMousePosition(

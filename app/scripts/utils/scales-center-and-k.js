@@ -1,12 +1,14 @@
+// @ts-check
+
 /**
  * Calculate the center of the scale as well as its scale
  * factor
  *
  * Assumes the two scales have the same k
  *
- * @param xScale: A d3 scale.
- * @param yScale: A d3 scale.
- * @return: [domainCenter, k]
+ * @param {import('../types').Scale} xScale - A d3 scale.
+ * @param {import('../types').Scale} yScale - A d3 scale.
+ * @return {[xCenter: number, yCenter: number, k: number]}
  */
 const scalesCenterAndK = (xScale, yScale) => {
   const xCenter = xScale.invert((xScale.range()[0] + xScale.range()[1]) / 2);

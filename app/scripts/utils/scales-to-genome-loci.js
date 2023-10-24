@@ -1,5 +1,15 @@
+// @ts-check
 import dataToGenomicLoci from './data-to-genomic-loci';
 
+/** @typedef {import('./data-to-genomic-loci').GenomicLoci} GenomicLoci */
+
+/**
+ * Convert a pair of scales to genomic coordinates.
+ * @param {import('../types').Scale} xScale
+ * @param {import('../types').Scale} yScale
+ * @param {import('../types').ChromInfo} chromInfo
+ * @returns {[...GenomicLoci, ...GenomicLoci] | undefined} The genomic coordinates.
+ */
 export const scalesToGenomeLoci = (xScale, yScale, chromInfo) => {
   if (chromInfo === null || !xScale || !yScale) return undefined;
 

@@ -73,6 +73,8 @@ import {
   trimTrailingSlash,
 } from './utils';
 
+import { isCombinedTrackConfig, isWheelEvent } from './utils/type-guards';
+
 // Configs
 import { GLOBALS, THEME_DARK, TRACKS_INFO_BY_TYPE } from './configs';
 
@@ -86,73 +88,12 @@ const { getDataFetcher } = AVAILABLE_FOR_PLUGINS.dataFetchers;
 
 const SCROLL_TIMEOUT = 100;
 
+/** @typedef {import('./types').Scale} Scale */
+/** @typedef {import('./types').TrackConfig} TrackConfig */
+/** @typedef {import('./types').TrackObject} TrackObject */
+
 /** @typedef {TrackRenderer["setCenter"]} SetCentersFunction */
-/** @typedef {import("d3-scale").ScaleLinear<number, number>} ScaleLinear */
-/** @typedef {(x: ScaleLinear, y: ScaleLinear) => [ScaleLinear, ScaleLinear]} ProjectorFunction */
-/** @typedef {(xScale: ScaleLinear, yScale: ScaleLinear, k?: number, x?: number, y?: number, xPosition?: number, yPosition?: number) => void} ZoomedFunction */
-/** @typedef {'left' | 'right' | 'top' | 'bottom' | 'center' | 'gallery'} TrackPosition */
-
-/**
- * @typedef TrackObject
- * @property {() => void} draw
- * @property {(options: unknown) => void} rerender
- * @property {boolean} delayDrawing
- * @property {Array<TrackObject>=} childTracks
- * @property {Record<string, TrackObject>} createdTracks
- * @property {(x: ScaleLinear, y: ScaleLinear) => void} refScalesChanged
- * @property {[number, number]} position
- * @property {[number, number]} dimensions
- * @property {(contents: Array<TrackConfig>, x: unknown) => TrackObject} updateContents
- * @property {ZoomedFunction} zoomed
- * @property {(position: [number, number]) => void} setPosition
- * @property {(position: [number, number]) => void} setDimensions
- * @property {() => void} remove
- * @property {(extent: number) => void} movedY
- * @property {(yPosition: number, wheelDelta: number) => void} zoomedY
- */
-
-/**
- * @typedef UnknownTrackConfig
- * @property {string} uid
- * @property {Record<string, unknown>} options
- * @property {string} type
- * @property {TrackPosition} position
- * @property {Record<string, unknown>=} data
- * @property {string} server
- * @property {string} tilesetUid
- * @property {unknown=} coordSystem
- * @property {number=} x
- * @property {number=} y
- * @property {string} chromInfoPath
- * @property {[number, number]=} projectionXDomain
- * @property {[number, number]=} projectionYDomain
- * @property {unknown=} registerViewportChanged
- * @property {unknown=} removeViewportChanged
- * @property {unknown=} setDomainsCallback
- */
-
-/**
- * @typedef CombinedTrackConfig
- * @property {string} uid
- * @property {Record<string, unknown>} options
- * @property {Array<TrackConfig>} contents
- * @property {'combined'} type
- * @property {TrackPosition} position
- * @property {Record<string, unknown>=} data
- * @property {string} server
- * @property {string} tilesetUid
- * @property {unknown=} coordSystem
- * @property {number=} x
- * @property {number=} y
- * @property {string} chromInfoPath
- * @property {[number, number]=} projectionXDomain
- * @property {[number, number]=} projectionYDomain
- * @property {unknown=} registerViewportChanged
- * @property {unknown=} removeViewportChanged
- * @property {unknown=} setDomainsCallback
- */
-
-/** @typedef {UnknownTrackConfig | CombinedTrackConfig} TrackConfig */
+/** @typedef {(x: Scale, y: Scale) => [Scale, Scale]} ProjectorFunction */
 
 /**
  * @typedef TrackDefinition
@@ -247,7 +188,7 @@ const SCROLL_TIMEOUT = 100;
  * @property {Array<TrackConfig>} metaTracks
  * @property {() => void} onMouseMoveZoom
  * @property {(trackId?: string) => void} onNewTilesLoaded
- * @property {(x: ScaleLinear, y: ScaleLinear) => void} onScalesChanged
+ * @property {(x: Scale, y: Scale) => void} onScalesChanged
  * @property {import("pixi.js").Renderer} pixiRenderer
  * @property {import("pixi.js").Container} pixiStage
  * @property {Record<string, unknown>} pluginDataFetchers
@@ -259,7 +200,7 @@ const SCROLL_TIMEOUT = 100;
  * @property {string | typeof THEME_DARK} theme
  * @property {number} topHeight
  * @property {number} topHeightNoGallery
- * @property {Record<string, unknown>} viewOptions
+ * @property {{ backgroundColor?: string }} viewOptions
  * @property {number} width
  * @property {[number, number]} xDomainLimits
  * @property {[number, number]} yDomainLimits
@@ -278,22 +219,6 @@ const SCROLL_TIMEOUT = 100;
  * @property {(trackId: string) => void} onValueScaleChanged
  * @property {(trackId: string, newOption: Record<string, unknown>) => void} onTrackOptionsChanged
  */
-
-/**
- * @param {TrackConfig} track
- * @returns {track is CombinedTrackConfig}
- */
-function isCombinedTrackConfig(track) {
-  return track.type === 'combined';
-}
-
-/**
- * @param {Event} event
- * @returns {event is { deltaY: number, deltaMode: number }}
- */
-function isWheelEvent(event) {
-  return 'deltaY' in event && 'deltaMode' in event;
-}
 
 /**
  * @extends {React.Component<TrackRendererProps>}
@@ -470,7 +395,7 @@ class TrackRenderer extends React.Component {
     this.boundScrollEvent = this.scrollEvent.bind(this);
     /** @type {(event: { altKey: boolean, preventDefault(): void }) => void} */
     this.boundForwardContextMenu = this.forwardContextMenu.bind(this);
-    /** @type {(event: { sourceUid: string, type: string }) => void} */
+    /** @type {(event: Event & { sourceUid: string, type: string }) => void} */
     this.dispatchEventBound = this.dispatchEvent.bind(this);
     /** @type {(opts: { pos: [number, number, number, number], animateTime: number, isMercator: boolean }) => void} */
     this.zoomToDataPosHandlerBound = this.zoomToDataPosHandler.bind(this);
@@ -739,7 +664,7 @@ class TrackRenderer extends React.Component {
   /**
    * Dispatch a forwarded event on the main DOM element
    *
-   * @param  {{ sourceUid: string, type: string }} event  Event to be dispatched.
+   * @param  {Event & { sourceUid: string, type: string }} event Event to be dispatched.
    */
   dispatchEvent(event) {
     if (event.sourceUid === this.uid && event.type !== 'contextmenu') {
@@ -750,8 +675,8 @@ class TrackRenderer extends React.Component {
   /**
    * Check of a view position (i.e., pixel coords) is within this view
    *
-   * @param {number} x X position to be tested.
-   * @param {number} y Y position to be tested.
+   * @param {number} x - X position to be tested.
+   * @param {number} y - Y position to be tested.
    * @return {boolean} If `true` position is within this view.
    */
   isWithin(x, y) {
@@ -765,9 +690,7 @@ class TrackRenderer extends React.Component {
     return withinX && withinY;
   }
 
-  /**
-   * @param {{ pos: [number, number, number, number], animateTime: number }} opts
-   */
+  /** @param {{ pos: [number, number, number, number], animateTime: number }} opts */
   zoomToDataPosHandler({ pos, animateTime }) {
     this.zoomToDataPos(...pos, animateTime);
   }
@@ -814,9 +737,7 @@ class TrackRenderer extends React.Component {
   setBackground() {
     const defBgColor = this.props.theme === THEME_DARK ? 'black' : 'white';
     const bgColor = colorToHex(
-      (this.currentProps.viewOptions &&
-        this.currentProps.viewOptions.backgroundColor) ||
-        defBgColor,
+      this.currentProps.viewOptions?.backgroundColor ?? defBgColor,
     );
 
     this.pBackground?.clear();
@@ -1384,8 +1305,8 @@ class TrackRenderer extends React.Component {
    *   scales are locked.
    * @param  {number}  animateTime  Animation time in milliseconds. Only used
    *   when `animate` is true.
-   * @param  {ScaleLinear}  xScale  The scale to use for the X axis.
-   * @param  {ScaleLinear}  yScale  The scale to use for the Y axis.
+   * @param  {Scale}  xScale  The scale to use for the X axis.
+   * @param  {Scale}  yScale  The scale to use for the Y axis.
    */
   setCenter(
     centerX,
@@ -1415,7 +1336,7 @@ class TrackRenderer extends React.Component {
     const translateX = middleViewX - xScale(centerX) * k;
     const translateY = middleViewY - yScale(centerY) * k;
 
-    /** @type {[ScaleLinear, ScaleLinear] | undefined} */
+    /** @type {[Scale, Scale] | undefined} */
     let last;
 
     const setZoom = () => {
@@ -1679,7 +1600,7 @@ class TrackRenderer extends React.Component {
 
   /**
    * @param {boolean=} notify
-   * @returns {[ScaleLinear, ScaleLinear] | undefined}
+   * @returns {[Scale, Scale] | undefined}
    */
   applyZoomTransform(notify = true) {
     const props = this.currentProps;
