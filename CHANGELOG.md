@@ -1,5 +1,10 @@
 # Release notes
 
+## v1.13.0
+
+- Add initial typechecking via JSDoc comments
+- Allow Pixi v6 as a peer dependency
+
 ## v1.12.4
 
 - Fix breaking change of the plugin track API introduced by the previous patch (v1.12.3)
