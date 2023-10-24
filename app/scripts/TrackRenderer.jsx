@@ -91,6 +91,7 @@ const SCROLL_TIMEOUT = 100;
 /** @typedef {import('./types').Scale} Scale */
 /** @typedef {import('./types').TrackConfig} TrackConfig */
 /** @typedef {import('./types').TrackObject} TrackObject */
+/** @typedef {import('./types').TilesetInfo} TilesetInfo */
 
 /** @typedef {TrackRenderer["setCenter"]} SetCentersFunction */
 /** @typedef {(x: Scale, y: Scale) => [Scale, Scale]} ProjectorFunction */
@@ -103,8 +104,6 @@ const SCROLL_TIMEOUT = 100;
  * @property {number} top
  * @property {number} left
  */
-
-/** @typedef {Record<string, unknown>} TilesetInfo */
 
 /**
  * @typedef MetaPluginTrackContext
@@ -1856,17 +1855,15 @@ class TrackRenderer extends React.Component {
       context.projectionYDomain = track.projectionYDomain;
     }
 
-    const options = track.options;
-
     switch (track.type) {
       case 'left-axis':
-        return new LeftAxisTrack(context, options);
+        return new LeftAxisTrack(context, track.options);
 
       case 'top-axis':
-        return new TopAxisTrack(context, options);
+        return new TopAxisTrack(context, track.options);
 
       case 'heatmap':
-        return new HeatmapTiledPixiTrack(context, options);
+        return new HeatmapTiledPixiTrack(context, track.options);
 
       case 'multivec':
       case 'vector-heatmap':
@@ -1874,46 +1871,46 @@ class TrackRenderer extends React.Component {
       case 'horizontal-vector-heatmap': // legacy, included for backwards compatiblity
       case 'vertical-multivec': // legacy, included for backwards compatiblity
       case 'vertical-vector-heatmap': // legacy, included for backwards compatiblity
-        return new HorizontalMultivecTrack(context, options);
+        return new HorizontalMultivecTrack(context, track.options);
 
       case '1d-heatmap':
       case 'horizontal-1d-heatmap': // legacy, included for backwards compatiblity
       case 'vertical-1d-heatmap': // legacy, included for backwards compatiblity
-        return new Horizontal1dHeatmapTrack(context, options);
+        return new Horizontal1dHeatmapTrack(context, track.options);
 
       case 'line':
       case 'horizontal-line': // legacy, included for backwards compatiblity
       case 'vertical-line': // legacy, included for backwards compatiblity
-        return new HorizontalLine1DPixiTrack(context, options);
+        return new HorizontalLine1DPixiTrack(context, track.options);
 
       case 'point':
       case 'horizontal-point': // legacy, included for backwards compatiblity
       case 'vertical-point': // legacy, included for backwards compatiblity
-        return new HorizontalPoint1DPixiTrack(context, options);
+        return new HorizontalPoint1DPixiTrack(context, track.options);
 
       case 'bar':
       case 'horizontal-bar': // legacy, included for backwards compatiblity
       case 'vertical-bar': // legacy, included for backwards compatiblity
-        return new BarTrack(context, options);
+        return new BarTrack(context, track.options);
 
       case 'divergent-bar':
       case 'horizontal-divergent-bar': // legacy, included for backwards compatiblity
       case 'vertical-divergent-bar': // legacy, included for backwards compatiblity
-        return new DivergentBarTrack(context, options);
+        return new DivergentBarTrack(context, track.options);
 
       case 'horizontal-1d-tiles':
-        return new IdHorizontal1DTiledPixiTrack(context, options);
+        return new IdHorizontal1DTiledPixiTrack(context, track.options);
 
       case 'vertical-1d-tiles':
-        return new IdVertical1DTiledPixiTrack(context, options);
+        return new IdVertical1DTiledPixiTrack(context, track.options);
 
       case '2d-tiles':
-        return new Id2DTiledPixiTrack(context, options);
+        return new Id2DTiledPixiTrack(context, track.options);
 
       case 'stacked-interval':
       case 'top-stacked-interval': // legacy, included for backwards compatiblity
       case 'left-stacked-interval': // legacy, included for backwards compatiblity
-        return new CNVIntervalTrack(context, options);
+        return new CNVIntervalTrack(context, track.options);
 
       case 'viewport-projection-center':
         // TODO: Fix this so that these functions are defined somewhere else
@@ -1925,7 +1922,7 @@ class TrackRenderer extends React.Component {
           context.registerViewportChanged = track.registerViewportChanged;
           context.removeViewportChanged = track.removeViewportChanged;
           context.setDomainsCallback = track.setDomainsCallback;
-          return new ViewportTracker2D(context, options);
+          return new ViewportTracker2D(context, track.options);
         }
         return new Track(context, {});
 
@@ -1939,7 +1936,7 @@ class TrackRenderer extends React.Component {
           context.registerViewportChanged = track.registerViewportChanged;
           context.removeViewportChanged = track.removeViewportChanged;
           context.setDomainsCallback = track.setDomainsCallback;
-          return new ViewportTrackerHorizontal(context, options);
+          return new ViewportTrackerHorizontal(context, track.options);
         }
         return new Track(context, {});
 
@@ -1953,37 +1950,37 @@ class TrackRenderer extends React.Component {
           context.registerViewportChanged = track.registerViewportChanged;
           context.removeViewportChanged = track.removeViewportChanged;
           context.setDomainsCallback = track.setDomainsCallback;
-          return new ViewportTrackerVertical(context, options);
+          return new ViewportTrackerVertical(context, track.options);
         }
         return new Track(context, {});
 
       case 'gene-annotations':
       case 'horizontal-gene-annotations': // legacy, included for backwards compatiblity
       case 'vertical-gene-annotations': // legacy, included for backwards compatiblity
-        return new HorizontalGeneAnnotationsTrack(context, options);
+        return new HorizontalGeneAnnotationsTrack(context, track.options);
 
       case '2d-rectangle-domains':
       case 'arrowhead-domains':
-        return new ArrowheadDomainsTrack(context, options);
+        return new ArrowheadDomainsTrack(context, track.options);
 
       case 'horizontal-1d-annotations':
-        return new Annotations1dTrack(context, options);
+        return new Annotations1dTrack(context, track.options);
 
       case 'vertical-1d-annotations':
         // Fix this: LeftTrackModifier is doing a whole bunch of things not
         // needed by this track but the current setup is not consistent.
-        return new Annotations1dTrack(context, options, true);
+        return new Annotations1dTrack(context, track.options, true);
 
       case '2d-annotations':
-        return new Annotations2dTrack(context, options);
+        return new Annotations2dTrack(context, track.options);
 
       case 'linear-2d-rectangle-domains':
       case 'horizontal-2d-rectangle-domains': // legacy, included for backwards compatiblity
       case 'vertical-2d-rectangle-domains': // legacy, included for backwards compatiblity
-        return new Horizontal2DDomainsTrack(context, options);
+        return new Horizontal2DDomainsTrack(context, track.options);
 
       case 'square-markers':
-        return new SquareMarkersTrack(context, options);
+        return new SquareMarkersTrack(context, track.options);
 
       case 'combined':
         // @ts-expect-error - FIXME: Our typing should be able to narrow track config
@@ -1993,80 +1990,84 @@ class TrackRenderer extends React.Component {
         return new CombinedTrack(context);
 
       case '2d-chromosome-labels':
-        return new Chromosome2DLabels(context, options);
+        return new Chromosome2DLabels(context, track.options);
 
       case 'horizontal-chromosome-grid':
         context.orientation = '1d-horizontal';
-        return new ChromosomeGrid(context, options);
+        return new ChromosomeGrid(context, track.options);
 
       case 'vertical-chromosome-grid':
         context.orientation = '1d-vertical';
-        return new ChromosomeGrid(context, options);
+        return new ChromosomeGrid(context, track.options);
 
       case '2d-chromosome-grid':
-        return new ChromosomeGrid(context, options);
+        return new ChromosomeGrid(context, track.options);
 
       case 'chromosome-labels':
       case 'horizontal-chromosome-labels': // legacy, included for backwards compatiblity
       case 'vertical-chromosome-labels': // legacy, included for backwards compatiblity
         // chromInfoPath is passed in for backwards compatibility
         // it can be used to provide custom chromosome sizes
-        return new HorizontalChromosomeLabels(context, options);
+        return new HorizontalChromosomeLabels(context, track.options);
 
       case 'linear-heatmap':
       case 'horizontal-heatmap': // legacy, included for backwards compatiblity
       case 'vertical-heatmap': // legacy, included for backwards compatiblity
-        return new HorizontalHeatmapTrack(context, options);
+        return new HorizontalHeatmapTrack(context, track.options);
 
       case '2d-chromosome-annotations':
-        return new Chromosome2DAnnotations(context, options);
+        return new Chromosome2DAnnotations(context, track.options);
 
       case '1d-value-interval':
       case 'horizontal-1d-value-interval': // legacy, included for backwards compatiblity
       case 'vertical-1d-value-interval': // legacy, included for backwards compatiblity
-        return new ValueIntervalTrack(context, options);
+        return new ValueIntervalTrack(context, track.options);
 
       case 'osm':
       case 'osm-tiles':
-        return new OSMTilesTrack(context, options);
+        return new OSMTilesTrack(context, track.options);
 
       case 'osm-2d-tile-ids':
-        return new OSMTileIdsTrack(context, options);
+        return new OSMTileIdsTrack(context, track.options);
 
       case 'mapbox':
       case 'mapbox-tiles':
-        return new MapboxTilesTrack(context, options);
+        return new MapboxTilesTrack(context, track.options);
 
       case 'raster-tiles':
-        return new RasterTilesTrack(context, options);
+        return new RasterTilesTrack(context, track.options);
 
       case 'bedlike':
       case 'vertical-bedlike': // legacy, included for backwards compatiblity
-        return new BedLikeTrack(context, options);
+        return new BedLikeTrack(context, track.options);
 
       case 'overlay-track':
-        return new OverlayTrack(context, options);
+        return new OverlayTrack(context, track.options);
 
       case 'overlay-chromosome-grid-track':
         context.isOverlay = true;
-        return new ChromosomeGrid(context, options);
+        return new ChromosomeGrid(context, track.options);
 
       case 'horizontal-rule':
-        return new HorizontalRule(context, options);
+        return new HorizontalRule(context, track.options);
 
       case 'vertical-rule':
-        return new VerticalRule(context, options);
+        return new VerticalRule(context, track.options);
 
       case 'cross-rule':
         // This needs to be harmonized.
         context.x = track.x;
         context.y = track.y;
-        return new CrossRule(context, options);
+        return new CrossRule(context, track.options);
 
       case 'simple-svg':
-        return new SVGTrack(context, options);
-      case 'empty':
+        return new SVGTrack(context, track.options);
+      case 'empty': {
+        /** @type {import('./PixiTrack').PixiTrackOptions} */
+        // @ts-expect-error - We need a way to relate the track type and track.options.
+        const options = track.options;
         return new PixiTrack(context, options);
+      }
 
       default: {
         // Check if a plugin track is available
@@ -2091,7 +2092,7 @@ class TrackRenderer extends React.Component {
             return new pluginTrack.track( // eslint-disable-line new-cap
               this.availableForPlugins,
               context,
-              options,
+              track.options,
             );
           } catch (e) {
             console.error(

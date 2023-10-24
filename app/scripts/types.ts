@@ -81,3 +81,25 @@ export interface TrackObject {
 }
 
 export type Theme = typeof THEME_DARK | typeof THEME_LIGHT;
+
+type TilesetInfoBase = {
+  name: string;
+  coordSystem: string;
+  min_pos: number[];
+  max_pos: number[];
+  max_zoom: number;
+  tile_size?: number;
+  max_tile_width?: number;
+  transforms?: { name: string, value: string }[];
+}
+
+export type LegacyTilesetInfo = TilesetInfoBase & {
+  max_width: number;
+  bins_per_dimension?: number;
+}
+
+export type ResolutionsTilesetInfo = TilesetInfoBase & {
+  resolutions: number[];
+}
+
+export type TilesetInfo = LegacyTilesetInfo | ResolutionsTilesetInfo;

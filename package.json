@@ -85,6 +85,7 @@
     "@babel/core": "^7.20.12",
     "@babel/plugin-transform-classes": "^7.20.7",
     "@types/d3-array": "^2.7.1",
+    "@types/d3-format": "^2.0.0",
     "@types/d3-scale": "^4.0.2",
     "@types/d3-selection": "^2.0.0",
     "@types/d3-transition": "^3.0.1",

@@ -6,16 +6,21 @@ import { fake as fakePubSub } from './hocs/with-pub-sub';
 import { isWithin } from './utils';
 
 /**
- * @typedef Context
+ * @typedef TrackContext
  * @property {string} id - The track ID.
  * @property {import('pub-sub-es').PubSub & { __fake__?: boolean }} [pubSub] - The pub-sub channel.
  * @property {() => import('./types').Theme} [getTheme] - A function that returns the current theme.
  */
 
+/**
+ * @template T
+ * @typedef {T & TrackContext} ExtendedTrackContext
+ */
+
 /** @template Options */
 class Track {
   /**
-   * @param {Context} context
+   * @param {TrackContext} context
    * @param {Options} options
    */
   constructor(context, options) {
@@ -275,8 +280,11 @@ class Track {
     this.pubSubs = [];
   }
 
-  /** @returns {void} */
-  rerender() {}
+  /**
+   * @param {Options} options
+   * @returns {void}
+   */
+  rerender(options) {}
 
   /**
    * This function is for seeing whether this track should respond
