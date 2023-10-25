@@ -402,4 +402,4 @@ export function SearchIcon({ theStyle, onClick }) {
 SearchIcon.propTypes = {
   theStyle: PropTypes.string,
   onClick: PropTypes.func,
-}
+};

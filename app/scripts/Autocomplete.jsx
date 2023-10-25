@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import { findDOMNode } from 'react-dom';
 import scrollIntoView from 'dom-scroll-into-view';
