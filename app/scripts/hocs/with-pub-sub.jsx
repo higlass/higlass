@@ -2,11 +2,13 @@ import React from 'react';
 
 import { toVoid } from '../utils';
 
+/** @type {import('pub-sub-es').PubSub & { __fake__: true }} */
 const fake = {
   __fake__: true,
   publish: toVoid,
-  subscribe: toVoid,
+  subscribe: () => ({ event: 'fake', handler: toVoid }),
   unsubscribe: toVoid,
+  clear: toVoid,
 };
 
 const { Provider, Consumer } = React.createContext(fake);

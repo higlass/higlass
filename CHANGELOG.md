@@ -1,5 +1,9 @@
 # Release notes
 
+## Current
+
+- Add type annotations for `Track` and `PixiTrack`
+
 ## v1.13.0
 
 - Add initial typechecking via JSDoc comments
