@@ -69,7 +69,7 @@ export default defineConfig(({ mode }) => {
           lib: {
             entry: path.resolve(__dirname, 'app/scripts/hglib.jsx'),
             name: 'hglib',
-            formats: ['umd'],
+            formats: ['umd', 'es'],
           },
           rollupOptions: {
             external: ['react', 'react-dom', 'pixi.js'],
@@ -93,6 +93,7 @@ export default defineConfig(({ mode }) => {
     define: {
       global: 'globalThis',
       XYLOPHON: JSON.stringify(version),
+      'process.env.NODE_ENV': JSON.stringify(mode),
     },
     plugins: [react({ jsxRuntime: 'classic' }), mockedReponsesPlugin()],
   };
