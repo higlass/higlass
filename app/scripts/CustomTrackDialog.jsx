@@ -11,6 +11,7 @@ class CustomTrackDialog extends React.PureComponent {
     const childrenWithProp = [];
     this.props.children.forEach((Child, i) => {
       const key = `customTrackDialog_${i}`;
+      // eslint-disable-next-line react/jsx-props-no-spreading
       childrenWithProp.push(<Child key={key} {...this.props.bodyProps[i]} />);
     });
 
@@ -33,6 +34,9 @@ CustomTrackDialog.defaultProps = {};
 
 CustomTrackDialog.propTypes = {
   onCancel: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  bodyProps: PropTypes.array,
+  children: PropTypes.array,
 };
 
 export default CustomTrackDialog;

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { select } from 'd3-selection';
 import classes from '../styles/ViewHeader.module.scss';
 
@@ -397,3 +398,8 @@ export function SearchIcon({ theStyle, onClick }) {
     </svg>
   );
 }
+
+SearchIcon.propTypes = {
+  theStyle: PropTypes.string,
+  onClick: PropTypes.func,
+};

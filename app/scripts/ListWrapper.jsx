@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import PropTypes from 'prop-types';
 import React from 'react';
 import { arrayMove } from 'react-sortable-hoc';

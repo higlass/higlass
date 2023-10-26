@@ -856,6 +856,7 @@ GenomePositionSearchBox.propTypes = {
   autocompleteServer: PropTypes.string,
   chromInfoId: PropTypes.string,
   chromInfoServer: PropTypes.string,
+  chromInfoPath: PropTypes.string,
   hideAvailableAssemblies: PropTypes.bool,
   isFocused: PropTypes.bool,
   pubSub: PropTypes.object,
