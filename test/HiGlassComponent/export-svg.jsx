@@ -21,7 +21,6 @@ const waitForTilesLoadedAsync = (hgcInstance) =>
     waitForTilesLoaded(hgcInstance, () => resolve());
   });
 
-
 describe('SVG Export', () => {
   let hgc = null;
   let div = null;

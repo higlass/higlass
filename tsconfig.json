@@ -1,5 +1,5 @@
 {
-  "include": ["app", "*.mjs"],
+  "include": ["app", "*.mjs", "test"],
   "compilerOptions": {
     "module": "esnext",
     "target": "esnext",

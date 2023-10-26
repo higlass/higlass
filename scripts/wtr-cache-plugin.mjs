@@ -9,33 +9,32 @@ import * as consumers from 'node:stream/consumers';
  */
 function cachePlugin({ persist }) {
   /** @type {Map<string, string>} */
-  let cache = new Map;
+  let cache = new Map();
 
   return {
     name: 'cache-plugin',
     async serverStart({ app }) {
-
       if (persist) {
         const obj = await fsp
           .readFile(persist, { encoding: 'utf-8' })
           .then(JSON.parse)
           .catch(() => ({}));
-        cache = new Map(Object.entries(obj))
+        cache = new Map(Object.entries(obj));
       }
 
       app.use(async (ctx, next) => {
-        const method = ctx.req.method?.toUpperCase() ?? "GET";
+        const method = ctx.req.method?.toUpperCase() ?? 'GET';
         if (!/^\/@cache/.test(ctx.url)) {
           await next();
           return;
         }
-        const search = ctx.url.split("?")[1];
+        const search = ctx.url.split('?')[1];
         const href = new URLSearchParams(search).get('href');
         if (!href) {
           await next();
           return;
         }
-        if (method === "POST" && ctx.req.readable) {
+        if (method === 'POST' && ctx.req.readable) {
           cache.set(href, await consumers.text(ctx.req));
           ctx.res.statusCode = 201;
         } else {
@@ -76,11 +75,7 @@ window.fetch = async (input, init) => {
       /\\/\\/(higlass|resgen).io/.test(href) &&
       method.toUpperCase() === 'GET'
     ) {
-      const [base, search] = href.split('?');
-      const params = new URLSearchParams(search);
-      params.delete('s'); // Remove session
-      const newHref = base + '?' + params.toString();
-      const magicUrl = \`/@cache?href=\${encodeURIComponent(newHref)}\`;
+      const magicUrl = \`/@cache?href=\${encodeURIComponent(href)}\`;
       let response = await originalFetch(magicUrl);
       if (response.status === 200) {
         return response;

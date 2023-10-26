@@ -14,7 +14,6 @@ import { oneViewConfig } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-
 describe('Division track', () => {
   let hgc = null;
   let div = null;

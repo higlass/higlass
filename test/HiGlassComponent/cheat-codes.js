@@ -26,7 +26,7 @@ describe('Cheat codes', () => {
 
   after(async () => {
     removeHGComponent(div);
-  })
+  });
 
   // it('Makes the track editable', () => {
   //   expect(hgc.instance().isEditable()).toBe(true);
