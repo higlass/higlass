@@ -1,5 +1,9 @@
 # Release notes
 
+## v1.13.2
+
+- Add entrypoint for importing from `higlass/dist/*` with bundlers
+
 ## v1.13.1
 
 - Add type annotations for `Track` and `PixiTrack`
