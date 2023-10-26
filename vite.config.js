@@ -93,7 +93,7 @@ export default defineConfig(({ mode }) => {
     define: {
       global: 'globalThis',
       XYLOPHON: JSON.stringify(version),
-      "process.env.NODE_ENV": JSON.stringify("production"),
+      'process.env.NODE_ENV': JSON.stringify('production'),
     },
     plugins: [react({ jsxRuntime: 'classic' }), mockedReponsesPlugin()],
   };
