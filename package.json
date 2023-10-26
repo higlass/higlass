@@ -10,6 +10,9 @@
   "exports": {
     ".": {
       "import": "./dist/higlass.mjs"
+    },
+    "./dist/hglib.css": {
+      "import": "./dist/hglib.css"
     }
   },
   "files": [
