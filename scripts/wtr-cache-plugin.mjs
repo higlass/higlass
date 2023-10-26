@@ -25,9 +25,13 @@ function cachePlugin({ persist }) {
 
       app.use(async (ctx, next) => {
         const method = ctx.req.method?.toUpperCase() ?? "GET";
-        const url = new URL(ctx.url);
-        const href = url.searchParams.get("href");
-        if (!/^\/@cache/.test(ctx.url) || !href) {
+        if (!/^\/@cache/.test(ctx.url)) {
+          await next();
+          return;
+        }
+        const search = ctx.url.split("?")[1];
+        const href = new URLSearchParams(search).get('href');
+        if (!href) {
           await next();
           return;
         }
@@ -72,10 +76,11 @@ window.fetch = async (input, init) => {
       /\\/\\/(higlass|resgen).io/.test(href) &&
       method.toUpperCase() === 'GET'
     ) {
-      const url = new URL(href);
-      url.searchParams.delete('s'); // Remove session
-      const magicUrl = \`/@cache?href=\${encodeURIComponent(url.href)}\`;
-      console.log(magicUrl);
+      const [base, search] = href.split('?');
+      const params = new URLSearchParams(search);
+      params.delete('s'); // Remove session
+      const newHref = base + '?' + params.toString();
+      const magicUrl = \`/@cache?href=\${encodeURIComponent(newHref)}\`;
       let response = await originalFetch(magicUrl);
       if (response.status === 200) {
         return response;
