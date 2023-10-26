@@ -1,3 +1,4 @@
+// @ts-check
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -34,7 +35,7 @@ function mockedReponsesPlugin() {
     apply: 'serve',
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
-        if (!req.url.startsWith(magicRoute)) {
+        if (!req.url?.startsWith(magicRoute)) {
           next();
           return;
         }
@@ -98,6 +99,6 @@ export default defineConfig(({ mode }) => {
     plugins: [react({ jsxRuntime: 'classic' }), mockedReponsesPlugin()],
     optimizeDeps: {
       entries: ['app/scripts/hglib.jsx', 'test/**/*'],
-    }
+    },
   };
 });
