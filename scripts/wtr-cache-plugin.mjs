@@ -1,3 +1,4 @@
+// @ts-check
 import * as fsp from 'node:fs/promises';
 import * as consumers from 'node:stream/consumers';
 
@@ -24,12 +25,12 @@ function cachePlugin({ persist }) {
 
       app.use(async (ctx, next) => {
         const method = ctx.req.method?.toUpperCase() ?? "GET";
-        if (!/^\/@cache/.test(ctx.url)) {
+        const url = new URL(ctx.url);
+        const href = url.searchParams.get("href");
+        if (!/^\/@cache/.test(ctx.url) || !href) {
           await next();
           return;
         }
-        const search = ctx.url.split("?")[1];
-        const href = new URLSearchParams(search).get("href");
         if (method === "POST" && ctx.req.readable) {
           cache.set(href, await consumers.text(ctx.req));
           ctx.res.statusCode = 201;
@@ -56,7 +57,7 @@ function cachePlugin({ persist }) {
 /**
  * Client JS code to be injected into the HTML via a script tag.
  *
- * Inspects `fetch` requests, and checks magic `/@cache` route for a given URL. 
+ * Inspects `fetch` requests, and checks magic `/@cache` route for a given URL.
  * If missing, requests original URL and then POSTs a copy of the `Response` to `/@cache`.
  */
 cachePlugin.clientJs = `\
@@ -71,7 +72,10 @@ window.fetch = async (input, init) => {
       /\\/\\/(higlass|resgen).io/.test(href) &&
       method.toUpperCase() === 'GET'
     ) {
-      const magicUrl = \`/@cache?href=\${encodeURIComponent(href)}\`;
+      const url = new URL(href);
+      url.searchParams.delete('s'); // Remove session
+      const magicUrl = \`/@cache?href=\${encodeURIComponent(url.href)}\`;
+      console.log(magicUrl);
       let response = await originalFetch(magicUrl);
       if (response.status === 200) {
         return response;

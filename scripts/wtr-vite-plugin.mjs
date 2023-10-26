@@ -1,4 +1,5 @@
-import { createServer } from 'vite';
+// @ts-check
+import { createServer, optimizeDeps } from 'vite';
 
 /**
  * A plugin to power web-dev-server with Vite.
@@ -7,13 +8,14 @@ import { createServer } from 'vite';
  * @param {RegExp=} opts.ignore a regex to match any routes that should be ignored by our plugin.
  * @returns {import('@web/test-runner').TestRunnerPlugin}
  */
-function vitePlugin({ ignore } = {}) {
+function vitePlugin({ ignore }) {
   /** @type {import('vite').ViteDevServer} */
   let server;
   return {
     name: 'vite-plugin',
     async serverStart({ app }) {
       server = await createServer({ clearScreen: false });
+      await optimizeDeps(server.config);
       await server.listen();
       const port = server.config.server.port;
       const protocol = server.config.server.https ? 'https' : 'http';

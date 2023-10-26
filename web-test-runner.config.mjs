@@ -1,6 +1,6 @@
 // @ts-check
-import vite from './scripts/vite-plugin.mjs';
-import cache from './scripts/cache-plugin.mjs';
+import vite from './scripts/wtr-vite-plugin.mjs';
+import cache from './scripts/wtr-cache-plugin.mjs';
 
 /**
  * @type {import('@web/test-runner').TestRunnerConfig['testRunnerHtml']}
