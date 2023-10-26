@@ -1,4 +1,5 @@
-import { createServer } from 'vite';
+// @ts-check
+import { createServer, optimizeDeps } from 'vite';
 
 /**
  * A plugin to power web-dev-server with Vite.
@@ -13,6 +14,7 @@ function vite(ignore) {
     name: 'vite-plugin',
     async serverStart({ app }) {
       server = await createServer({ clearScreen: false });
+      await optimizeDeps(server.config);
       await server.listen();
       const port = server.config.server.port;
       const protocol = server.config.server.https ? 'https' : 'http';

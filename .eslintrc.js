@@ -63,7 +63,7 @@ module.exports = {
       },
     },
     {
-      files: ['web-test-runner.config.mjs', 'vite.config.js', 'scripts/*'],
+      files: ['web-test-runner.config.mjs', 'vite.config.mjs', 'scripts/*'],
       rules: {
         'import/no-extraneous-dependencies': 'off',
       },
