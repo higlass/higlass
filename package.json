@@ -11,9 +11,7 @@
     ".": {
       "import": "./dist/higlass.mjs"
     },
-    "./dist/hglib.css": {
-      "import": "./dist/hglib.css"
-    }
+    "./dist/*": "./dist/*"
   },
   "files": [
     "app",
