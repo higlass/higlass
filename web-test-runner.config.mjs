@@ -23,6 +23,7 @@ const testRunnerHtml = (testRunnerImport) =>
 
 /** @type {import('@web/test-runner').TestRunnerConfig} */
 export default {
+  concurrency: 1,
   plugins: [
     cache({ persist: './response-cache.json' }),
     vite({ ignore: /^\/@cache/ }),
