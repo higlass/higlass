@@ -2,6 +2,16 @@
 import vite from './scripts/wtr-vite-plugin.mjs';
 import cache from './scripts/wtr-cache-plugin.mjs';
 
+const USE_CACHE = process.env.HIGLASS_USE_CACHE === 'true';
+const cacheFile = './response-cache.json';
+if (USE_CACHE) {
+  // eslint-disable-next-line no-console
+  console.log(`Using cache file: ${cacheFile}.`);
+} else {
+  // eslint-disable-next-line no-console
+  console.log('Not using cache.');
+}
+
 /**
  * @type {import('@web/test-runner').TestRunnerConfig['testRunnerHtml']}
  *
@@ -14,7 +24,7 @@ const testRunnerHtml = (testRunnerImport) =>
   <head>
     <script type="module">
       ${vite.clientJs}
-      ${cache.clientJs}
+      ${USE_CACHE ? cache.clientJs : ''}
     </script>
     <script type="module" src="${testRunnerImport}"></script>
   </head>
@@ -23,9 +33,10 @@ const testRunnerHtml = (testRunnerImport) =>
 
 /** @type {import('@web/test-runner').TestRunnerConfig} */
 export default {
+  // Required because tests require awaiting global variables
   concurrency: 1,
   plugins: [
-    cache({ persist: './response-cache.json' }),
+    ...(USE_CACHE ? [cache({ persist: cacheFile })] : []),
     vite({ ignore: /^\/@cache/ }),
   ],
   // html loaded for each file (loads test runner + vite globals)
