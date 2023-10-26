@@ -6,7 +6,7 @@
   "main": "dist/hglib.js",
   "unpkg": "dist/hglib.min.js",
   "jsdelivr": "dist/hglib.min.js",
-  "css": "dist/styles.css",
+  "css": "dist/hglib.css",
   "exports": {
     ".": {
       "import": "./dist/higlass.mjs"
