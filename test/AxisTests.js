@@ -3,10 +3,8 @@ import Enzyme from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { expect } from 'chai';
 
-import FetchMockHelper from './utils/FetchMockHelper';
-
 import {
-  mountHGComponent,
+  mountHGComponentAsync,
   removeHGComponent,
 } from '../app/scripts/test-helpers';
 import { getTrackObjectFromHGC } from '../app/scripts/utils';
@@ -19,16 +17,11 @@ describe('Axis tests', () => {
   let hgc = null;
   let div = null;
 
-  const fetchMockHelper = new FetchMockHelper(null, 'AxisTests');
-
   describe('Axis tets', () => {
     before(async () => {
-      await fetchMockHelper.activateFetchMock();
-      await new Promise((resolve) => {
-        [div, hgc] = mountHGComponent(div, hgc, viewconf, resolve, {
-          style: 'width:800px; height:400px; background-color: lightgreen',
-          bounded: true,
-        });
+      [div, hgc] = await mountHGComponentAsync(div, hgc, viewconf, {
+        style: 'width:800px; height:400px; background-color: lightgreen',
+        bounded: true,
       });
     });
 
@@ -83,7 +76,6 @@ describe('Axis tests', () => {
 
     after(async () => {
       removeHGComponent(div);
-      await fetchMockHelper.storeDataAndResetFetchMock();
     });
   });
 });

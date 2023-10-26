@@ -27,3 +27,4 @@ webpack-stats.json
 dist
 lib/vendor
 app/test*.html
+response-cache.json

@@ -1,36 +1,15 @@
 // @ts-check
-import { createServer, optimizeDeps } from 'vite';
+import vite from './scripts/wtr-vite-plugin.mjs';
+import cache from './scripts/wtr-cache-plugin.mjs';
 
-/**
- * A plugin to power web-dev-server with Vite.
- *
- * @param {RegExp=} ignore a regex to match any routes that should be ignored by our plugin.
- * @returns {import('@web/test-runner').TestRunnerPlugin}
- */
-function vite(ignore) {
-  /** @type {import('vite').ViteDevServer} */
-  let server;
-  return {
-    name: 'vite-plugin',
-    async serverStart({ app }) {
-      server = await createServer({ clearScreen: false });
-      await optimizeDeps(server.config);
-      await server.listen();
-      const port = server.config.server.port;
-      const protocol = server.config.server.https ? 'https' : 'http';
-      app.use(async (ctx, next) => {
-        if (ignore?.test(ctx.originalUrl)) {
-          await next();
-          return;
-        }
-        // pass off request to vite
-        ctx.redirect(`${protocol}://localhost:${port}${ctx.originalUrl}`);
-      });
-    },
-    serverStop() {
-      return server.close();
-    },
-  };
+const USE_CACHE = process.env.HIGLASS_USE_CACHE === 'true';
+const cacheFile = './response-cache.json';
+if (USE_CACHE) {
+  // eslint-disable-next-line no-console
+  console.log(`Using cache file: ${cacheFile}.`);
+} else {
+  // eslint-disable-next-line no-console
+  console.log('Not using cache.');
 }
 
 /**
@@ -44,11 +23,8 @@ const testRunnerHtml = (testRunnerImport) =>
 <html>
   <head>
     <script type="module">
-      // Note: adapted from https://github.com/vitejs/vite/issues/1984#issuecomment-778289660
-      // Note: without this you'll run into https://github.com/vitejs/vite-plugin-react/pull/11#discussion_r430879201
-      window.global = window;
-      window.process = { env: {} };
-      window.__vite_plugin_react_preamble_installed__ = true;
+      ${vite.clientJs}
+      ${USE_CACHE ? cache.clientJs : ''}
     </script>
     <script type="module" src="${testRunnerImport}"></script>
   </head>
@@ -57,7 +33,12 @@ const testRunnerHtml = (testRunnerImport) =>
 
 /** @type {import('@web/test-runner').TestRunnerConfig} */
 export default {
-  plugins: [vite()],
+  // Required because tests require awaiting global variables
+  concurrency: 1,
+  plugins: [
+    ...(USE_CACHE ? [cache({ persist: cacheFile })] : []),
+    vite({ ignore: /^\/@cache/ }),
+  ],
   // html loaded for each file (loads test runner + vite globals)
   testRunnerHtml,
   // how long a test file can take to finish.

@@ -24,17 +24,13 @@ import {
   heatmapTrack,
 } from '../view-configs';
 
-import FetchMockHelper from '../utils/FetchMockHelper';
-
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('Track positioning', () => {
   let hgc = null;
   let div = null;
-  const fetchMockHelper = new FetchMockHelper(null, 'track-positioning');
 
   before(async () => {
-    await fetchMockHelper.activateFetchMock();
     [div, hgc] = await mountHGComponentAsync(
       div,
       hgc,
@@ -50,7 +46,6 @@ describe('Track positioning', () => {
 
   after(async () => {
     removeHGComponent(div);
-    await fetchMockHelper.storeDataAndResetFetchMock();
   });
 
   it('should add and resize a vertical heatmp', (done) => {

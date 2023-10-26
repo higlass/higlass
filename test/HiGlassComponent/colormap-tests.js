@@ -14,15 +14,11 @@ import { twoViewConfig } from '../view-configs';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-// import FetchMockHelper from '../utils/FetchMockHelper';
-
 describe('Colormap', () => {
   let hgc = null;
   let div = null;
-  // const fetchMockHelper = new FetchMockHelper(null, 'higlass.io');
 
   before((done) => {
-    // await fetchMockHelper.activateFetchMock();
     [div, hgc] = mountHGComponent(div, hgc, twoViewConfig, done, {
       style: 'width:800px; height:400px; background-color: lightgreen',
       bounded: true,
@@ -33,7 +29,6 @@ describe('Colormap', () => {
 
   after(async () => {
     removeHGComponent(div);
-    // await fetchMockHelper.storeDataAndResetFetchMock();
   });
 
   // disabled to fix tests in #978
