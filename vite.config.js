@@ -96,5 +96,8 @@ export default defineConfig(({ mode }) => {
       'process.env.NODE_ENV': JSON.stringify(mode),
     },
     plugins: [react({ jsxRuntime: 'classic' }), mockedReponsesPlugin()],
+    optimizeDeps: {
+      entries: ['app/scripts/hglib.jsx', 'test/**/*'],
+    }
   };
 });

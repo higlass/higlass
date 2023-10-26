@@ -67,7 +67,4 @@ jobs:
           # start xvfb in the background
           sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
       - run: npm ci --legacy-peer-deps
-      - name: Pre-bundle deps with Vite
-        # prevents timeouts when running tests on clean install
-        run: npm run optimize
       - run: npm test -- --static-logging # don't show progress bar in CI
