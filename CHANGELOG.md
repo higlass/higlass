@@ -3,6 +3,7 @@
 ## Current
 
 - Add type annotations for `Track` and `PixiTrack`
+- Add ESM export to build
 
 ## v1.13.0
 
