@@ -404,15 +404,16 @@ export function calculateTileAndPosInTile(
  * All the parameters except the first should be present in the
  * tileset_info returned by the server.
  *
- * @param zoomLevel: The zoom level at which to find the tiles (can be
+ * @param {number} zoomLevel - The zoom level at which to find the tiles (can be
  *   calculated using this.calcaulteZoomLevel, but needs to synchronized across
  *   both x and y scales so should be calculated externally)
- * @param scale: A d3 scale mapping data domain to visible values
- * @param minX: The minimum possible value in the dataset
- * @param maxX: The maximum possible value in the dataset
- * @param maxZoom: The maximum zoom value in this dataset
- * @param maxDim: The largest dimension of the tileset (e.g., width or height)
+ * @param {import('../type').Scale} scale - A d3 scale mapping data domain to visible values
+ * @param {number} minX - The minimum possible value in the dataset
+ * @param {number} maxX - The maximum possible value in the dataset
+ * @param {number} maxZoom - The maximum zoom value in this dataset
+ * @param {number} maxDim - The largest dimension of the tileset (e.g., width or height)
  *   (roughlty equal to 2 ** maxZoom * tileSize * tileResolution)
+ * @returns {number[]} The indices of the tiles that should be visible
  */
 export const calculateTiles = (
   zoomLevel,
@@ -462,10 +463,12 @@ export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
  * Calculate the tiles that sould be visisble given the resolution and
  * the minX and maxX values for the region
  *
- * @param resolution: The number of base pairs per bin
- * @param scale: The scale to use to calculate the currently visible tiles
- * @param minX: The minimum x position of the tileset
- * @param maxX: The maximum x position of the tileset
+ * @param {number} resolution - The number of base pairs per bin
+ * @param {import('../type').Scale} scale - The scale to use to calculate the currently visible tiles
+ * @param {number} minX - The minimum x position of the tileset
+ * @param {number} maxX - The maximum x position of the tileset
+ * @param {number=} pixelsPerTile - The number of pixels per tile
+ * @returns {number[]} The indices of the tiles that should be visible
  */
 export const calculateTilesFromResolution = (
   resolution,
