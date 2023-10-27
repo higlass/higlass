@@ -1,7 +1,12 @@
 // @ts-check
 import ndarray from 'ndarray';
-
 import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from '../configs';
+
+/**
+ * @typedef View2D
+ * @property {(i: number, j: number) => number} get
+ * @property {(i: number, j: number, v: number) => void} set
+ */
 
 class DenseDataExtrema2D {
   /**
@@ -31,15 +36,15 @@ class DenseDataExtrema2D {
     this.subsetSize = this.tileSize / this.numSubsets;
 
     // Convert data to 2d array
-    /** @type {ndarray.NdArray<number[]>} */
+    /** @type {View2D} */
     const dataMatrix = ndarray(Array.from(data), [
       this.tileSize,
       this.tileSize,
     ]);
 
-    /** @type {ndarray.NdArray<number[]>} */
+    /** @type {View2D} */
     this.subsetMinimums = this.computeSubsetNonZeroMinimums(dataMatrix);
-    /** @type {ndarray.NdArray<number[]>} */
+    /** @type {View2D} */
     this.subsetMaximums = this.computeSubsetNonZeroMaximums(dataMatrix);
     /** @type {number} */
     this.minNonZeroInTile = this.getMinNonZeroInTile();
@@ -109,8 +114,8 @@ class DenseDataExtrema2D {
 
   /**
    * Precomputes non-zero minimums of subsets of a given matrix
-   * @param {ndarray.NdArray<number[]>} dataMatrix
-   * @return {ndarray.NdArray<number[]>} Matrix containing minimums of the dataMatrix after subdivision using a regular grid
+   * @param {View2D} dataMatrix
+   * @return {View2D} Matrix containing minimums of the dataMatrix after subdivision using a regular grid
    */
   computeSubsetNonZeroMinimums(dataMatrix) {
     const minimums = ndarray(new Array(this.numSubsets ** 2), [
@@ -136,8 +141,8 @@ class DenseDataExtrema2D {
   /**
    * Precomputes non-zero maximums of subsets of a given matrix
    *
-   * @param {ndarray.NdArray<number[]>} dataMatrix
-   * @return {ndarray.NdArray<number[]>} Matrix containing maximums of the dataMatrix after subdivision using a regular grid
+   * @param {View2D} dataMatrix
+   * @return {View2D} Matrix containing maximums of the dataMatrix after subdivision using a regular grid
    */
   computeSubsetNonZeroMaximums(dataMatrix) {
     const maximums = ndarray(new Array(this.numSubsets ** 2), [
@@ -162,7 +167,7 @@ class DenseDataExtrema2D {
 
   /**
    * Computes the non-zero minimum of a subset of a matrix (ndarray)
-   * @param {ndarray.NdArray<number[]>} arr
+   * @param {View2D} arr
    * @param {number} rowOffset - Starting row of the subset
    * @param {number} colOffset - Starting column of the subset
    * @param {number} width - Width (num columns) of the subset
@@ -189,7 +194,7 @@ class DenseDataExtrema2D {
 
   /**
    * Computes the non-zero maximum of a subset of a matrix (ndarray)
-   * @param {ndarray.NdArray<number[]>} arr
+   * @param {View2D} arr
    * @param {number} rowOffset - Starting row of the subset
    * @param {number} colOffset - Starting column of the subset
    * @param {number} width - Width (num columns) of the subset

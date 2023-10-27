@@ -2,7 +2,7 @@
 import { NUM_PRECOMP_SUBSETS_PER_1D_TTILE } from '../configs';
 
 /**
- * @template {ArrayLike<number>} T
+ * @template {ArrayLike<number>} [T=ArrayLike<number>]
  */
 class DenseDataExtrema1D {
   /**
