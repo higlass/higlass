@@ -1,3 +1,4 @@
+// @ts-check
 import slugid from 'slugid';
 import pako from 'pako';
 import genbankParser from 'genbank-parser';
@@ -10,6 +11,9 @@ import genbankParser from 'genbank-parser';
  * The segments should be sorted by their start coordinate.
  *
  * The scale parameter is the number of base pairs per pixels
+ *
+ * @param {{ start: number, end: number }[]} segments
+ * @param {number} scale
  */
 function collapse(segments, scale) {
   const collapsed = [];
@@ -58,7 +62,9 @@ function collapse(segments, scale) {
 
 /**
  * Shuffles array in place.
- * @param {Array} a items An array containing the items.
+ * @template T
+ * @param {Array<T>} a items An array containing the items.
+ * @returns {Array<T>} The (mutated) shuffled array
  */
 function shuffle(a) {
   for (let i = a.length - 1; i > 0; i--) {
@@ -70,6 +76,59 @@ function shuffle(a) {
   return a;
 }
 
+/**
+ * @typedef GenbankFeature
+ * @prop {number} start
+ * @prop {number} end
+ * @prop {number} strand
+ * @prop {string} type
+ * @prop {string} name
+ * @prop {string} [color]
+ */
+
+/**
+ * @typedef HgGeneFillerAnnotation
+ * @prop {number} xStart
+ * @prop {number} xEnd
+ * @prop {number} strand
+ * @prop {string} uid
+ * @prop {'filler'} type
+ * @prop {[]} fields
+ */
+
+/**
+ * @typedef HgGeneAnnotation
+ * @prop {number} xStart
+ * @prop {number} xEnd
+ * @prop {'+' | '-'} strand
+ * @prop {number} chrOffset
+ * @prop {number} importance
+ * @prop {string} uid
+ * @prop {string=} type
+ * @prop {[
+ *    chr: 'chrom',
+ *    start: number,
+ *    end: number,
+ *    name: string,
+ *    importance: number,
+ *    strand: '+' | '-',
+ *    _unknown0: string,
+ *    _unknown1: string,
+ *    type: string,
+ *    name: string,
+ *    start: string,
+ *    end: string,
+ *    start: string,
+ *    end: string,
+ *  ]} fields
+ */
+
+/**
+ * Convert a genbank feature to a higlass gene annotation
+ *
+ * @param {GenbankFeature} gb
+ * @returns {HgGeneAnnotation | HgGeneFillerAnnotation}
+ */
 function gbToHgGene(gb) {
   const importance = gb.end - gb.start;
   const strand = gb.strand === 1 ? '+' : '-';
@@ -115,55 +174,77 @@ function gbToHgGene(gb) {
   };
 }
 
-/** Convert genbank text to a JSON representation and extract features * */
-const gbToJsonAndFeatures = (gbText) => {
+/**
+ * Convert genbank text to a JSON representation and extract features
+ * @param {string} gbText
+ */
+function gbToJsonAndFeatures(gbText) {
   const gbJson = genbankParser(gbText);
   const features = shuffle(
     gbJson[0].features
       .filter((f) => f.type !== 'source')
       .sort((a, b) => a.start - b.start),
   );
-
-  return [gbJson, features];
+  return /** @type {const} */ ([gbJson, features]);
 };
 
+/**
+ * Extract the response from a fetch request
+ * @param {Response} response
+ * @param {boolean} gzipped
+ */
+async function extractResponse(response, gzipped) {
+  if (!gzipped) return response.text();
+  const buffer = await response.arrayBuffer();
+  return pako.inflate(buffer, { to: 'string' });
+}
+
+/**
+ * @typedef GBKDataConfig
+ * @prop {string=} url
+ * @prop {string=} text
+ */
 class GBKDataFetcher {
+
+  /**
+   * @param {GBKDataConfig} dataConfig
+   */
   constructor(dataConfig) {
+    /** @type {GBKDataConfig} */
     this.dataConfig = dataConfig;
+    /** @type {string} */
     this.trackUid = slugid.nice();
+
+    /** @type {ReturnType<typeof gbToJsonAndFeatures>[0] | undefined} */
+    this.gbJson = undefined;
+    /** @type {ReturnType<typeof gbToJsonAndFeatures>[1] | undefined} */
+    this.cdss = undefined;
 
     if (dataConfig.url) {
       const extension = dataConfig.url.slice(dataConfig.url.length - 3);
       const gzipped = extension === '.gz';
+
+      /** @type {string} */
       this.errorTxt = '';
 
-      this.dataPromise = fetch(dataConfig.url, {
-        mode: 'cors',
-        redirect: 'follow',
-        method: 'GET',
-      })
-        .then((response) =>
-          gzipped ? response.arrayBuffer() : response.text(),
-        )
-        .then((buffer) => {
-          const gffText = gzipped
-            ? pako.inflate(buffer, { to: 'string' })
-            : buffer;
-          [this.gbJson, this.cdss] = gbToJsonAndFeatures(gffText);
-        });
+      /** @type {Promise<ReturnType<typeof gbToJsonAndFeatures>>} */
+      this.dataPromise = fetch(dataConfig.url, { mode: 'cors', redirect: 'follow', method: 'GET' })
+        .then((response) => extractResponse(response, gzipped))
+        .then((gffText) => gbToJsonAndFeatures(gffText));
     } else if (dataConfig.text) {
-      this.dataPromise = new Promise((resolve, reject) => {
-        [this.gbJson, this.cdss] = gbToJsonAndFeatures(dataConfig.text);
-        resolve();
-      });
+      /** @type {Promise<ReturnType<typeof gbToJsonAndFeatures>>} */
+      this.dataPromise = Promise.resolve(gbToJsonAndFeatures(dataConfig.text));
     }
   }
 
+  /**
+   * @param {(x: ) => void} callback
+   */
   tilesetInfo(callback) {
     this.tilesetInfoLoading = true;
 
     return this.dataPromise
-      .then(() => {
+      .then(([gbJson]) => {
         this.tilesetInfoLoading = false;
 
         const TILE_SIZE = 1024;
@@ -172,11 +253,11 @@ class GBKDataFetcher {
         retVal = {
           tile_size: TILE_SIZE,
           max_zoom: Math.ceil(
-            Math.log(this.gbJson[0].size / TILE_SIZE) / Math.log(2),
+            Math.log(gbJson[0].size / TILE_SIZE) / Math.log(2),
           ),
-          max_width: this.gbJson[0].size,
+          max_width: gbJson[0].size,
           min_pos: [0],
-          max_pos: [this.gbJson[0].size],
+          max_pos: [gbJson[0].size],
         };
 
         if (callback) {

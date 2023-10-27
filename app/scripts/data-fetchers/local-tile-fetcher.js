@@ -1,15 +1,34 @@
+// @ts-check
 import { tileResponseToData } from '../services';
 
-class LocalTileDataFetcher {
-  constructor(dataConfig) {
-    this.dataConfig = dataConfig;
+/** @typedef {import('../types').TilesetInfo} TilesetInfo */
 
+// TODO: Add type for LocalTile
+/** @typedef {{}} LocalTile */
+
+/**
+ * @typedef LocalTileDataConfig
+ * @property {Record<string, LocalTile>} tiles
+ * @property {Record<string, TilesetInfo>} tilesetInfo
+ */
+
+class LocalTileDataFetcher {
+
+  /** @param {LocalTileDataConfig} dataConfig */
+  constructor(dataConfig) {
+    /** @type {LocalTileDataConfig} */
+    this.dataConfig = dataConfig;
+    /** @type {TilesetInfo} */
     this.tilesetInfoData = Object.values(this.dataConfig.tilesetInfo)[0];
+    /** @type {Record<string, LocalTile>} */
+    this.tilesData = {};
+    /** @type {boolean} */
+    this.tilesetInfoLoading = true;
   }
 
+  /** @param {(tilesetInfo: TilesetInfo) => void} callback */
   tilesetInfo(callback) {
     this.tilesetInfoLoading = false;
-
     callback(this.tilesetInfoData);
   }
 
@@ -17,6 +36,9 @@ class LocalTileDataFetcher {
    * and tiles data since tileResponseToData needs it
    *
    * It is also easier for users to paste in request responses for debugging.
+   *
+   * @param {(tiles: Record<string, LocalTile>) => void} receivedTiles
+   * @param {string[]} tileIds
    */
   fetchTilesDebounced(receivedTiles, tileIds) {
     this.tilesData = {};
@@ -27,6 +49,7 @@ class LocalTileDataFetcher {
       this.tilesData[newKey] = this.dataConfig.tiles[key];
     }
 
+    /** @type {Record<string, LocalTile>} */
     const ret = {};
 
     const newTileIds = tileIds.map((x) => `localtile.${x}`);
@@ -38,6 +61,11 @@ class LocalTileDataFetcher {
     receivedTiles(ret);
   }
 
+  /**
+   * @param {number} z
+   * @param {number} x
+   * @returns {void}
+   */
   tile(z, x) {}
 }
 
