@@ -1,3 +1,4 @@
+// @ts-check
 import ndarray from 'ndarray';
 
 import { NUM_PRECOMP_SUBSETS_PER_2D_TTILE } from '../configs';
@@ -9,11 +10,12 @@ class DenseDataExtrema2D {
    * These values are used to efficiently approximate extrema given arbitrary subsets.
    * Larger values of 'numSubsets' lead to more accurate approximations (more expensive).
    *
-   * @param   {array}  data array of quadratic length
+   * @param {ArrayLike<number>} data array of quadratic length
    */
   constructor(data) {
+    /** @type {number} */
     this.epsilon = 1e-6;
-
+    /** @type {number} */
     this.tileSize = Math.sqrt(data.length);
 
     if (!Number.isSafeInteger(this.tileSize)) {
@@ -23,25 +25,33 @@ class DenseDataExtrema2D {
     }
 
     // if this.numSubsets == this.tilesize the extrema are computed exactly (expensive).
+    /** @type {number} */
     this.numSubsets = Math.min(NUM_PRECOMP_SUBSETS_PER_2D_TTILE, this.tileSize);
+    /** @type {number} */
     this.subsetSize = this.tileSize / this.numSubsets;
 
     // Convert data to 2d array
+    /** @type {ndarray.NdArray<number[]>} */
     const dataMatrix = ndarray(Array.from(data), [
       this.tileSize,
       this.tileSize,
     ]);
 
+    /** @type {ndarray.NdArray<number[]>} */
     this.subsetMinimums = this.computeSubsetNonZeroMinimums(dataMatrix);
+    /** @type {ndarray.NdArray<number[]>} */
     this.subsetMaximums = this.computeSubsetNonZeroMaximums(dataMatrix);
+    /** @type {number} */
     this.minNonZeroInTile = this.getMinNonZeroInTile();
+    /** @type {number} */
     this.maxNonZeroInTile = this.getMaxNonZeroInTile();
   }
 
   /**
    * Computes an approximation of the non-zero minimum in a subset
-   * @param   {array}  indexBounds  [startX, startY, endX, endY]
-   * @return  {number}  non-zero minium of the subset
+   *
+   * @param {[startX: number, startY: number, endX: number, endY: number]} indexBounds
+   * @return {number} Non-zero minium of the subset
    */
   getMinNonZeroInSubset(indexBounds) {
     const startX = indexBounds[0];
@@ -69,8 +79,9 @@ class DenseDataExtrema2D {
 
   /**
    * Computes an approximation of the non-zero maximum in a subset
-   * @param   {array}  indexBounds  [startX, startY, endX, endY]
-   * @return  {number}  non-zero maxium of the subset
+   *
+   * @param {[startX: number, startY: number, endX: number, endY: number]} indexBounds
+   * @return {number} Non-zero maxium of the subset
    */
   getMaxNonZeroInSubset(indexBounds) {
     const startX = indexBounds[0];
@@ -98,13 +109,14 @@ class DenseDataExtrema2D {
 
   /**
    * Precomputes non-zero minimums of subsets of a given matrix
-   * @param   {ndarray}  dataMatrix
-   * @return  {ndarray}  matrix containing minimums of the dataMatrix
-   *                     after subdivision using a regular grid
+   * @param {ndarray.NdArray<number[]>} dataMatrix
+   * @return {ndarray.NdArray<number[]>} Matrix containing minimums of the dataMatrix after subdivision using a regular grid
    */
   computeSubsetNonZeroMinimums(dataMatrix) {
-    let minimums = new Array(this.numSubsets ** 2);
-    minimums = ndarray(minimums, [this.numSubsets, this.numSubsets]);
+    const minimums = ndarray(new Array(this.numSubsets ** 2), [
+      this.numSubsets,
+      this.numSubsets,
+    ]);
 
     for (let i = 0; i < this.numSubsets; i++) {
       for (let j = 0; j < this.numSubsets; j++) {
@@ -123,13 +135,15 @@ class DenseDataExtrema2D {
 
   /**
    * Precomputes non-zero maximums of subsets of a given matrix
-   * @param   {ndarray}  dataMatrix
-   * @return  {ndarray}  matrix containing maximums of the dataMatrix
-   *                     after subdivision using a regular grid
+   *
+   * @param {ndarray.NdArray<number[]>} dataMatrix
+   * @return {ndarray.NdArray<number[]>} Matrix containing maximums of the dataMatrix after subdivision using a regular grid
    */
   computeSubsetNonZeroMaximums(dataMatrix) {
-    let maximums = new Array(this.numSubsets ** 2);
-    maximums = ndarray(maximums, [this.numSubsets, this.numSubsets]);
+    const maximums = ndarray(new Array(this.numSubsets ** 2), [
+      this.numSubsets,
+      this.numSubsets,
+    ]);
 
     for (let i = 0; i < this.numSubsets; i++) {
       for (let j = 0; j < this.numSubsets; j++) {
@@ -148,12 +162,12 @@ class DenseDataExtrema2D {
 
   /**
    * Computes the non-zero minimum of a subset of a matrix (ndarray)
-   * @param   {ndarray}  arr
-   * @param   {int}  rowOffset Starting row of the subset
-   * @param   {int}  colOffset Starting column of the subset
-   * @param   {int}  width Width (num columns) of the subset
-   * @param   {int}  height Height (num rows) of the subset
-   * @return  {number}  non-zeros minimum of the subset
+   * @param {ndarray.NdArray<number[]>} arr
+   * @param {number} rowOffset - Starting row of the subset
+   * @param {number} colOffset - Starting column of the subset
+   * @param {number} width - Width (num columns) of the subset
+   * @param {number} height - Height (num rows) of the subset
+   * @return {number} Non-zeros - minimum of the subset
    */
   getMinNonZeroInNdarraySubset(arr, rowOffset, colOffset, width, height) {
     let curMin = Number.MAX_SAFE_INTEGER;
@@ -175,12 +189,12 @@ class DenseDataExtrema2D {
 
   /**
    * Computes the non-zero maximum of a subset of a matrix (ndarray)
-   * @param   {ndarray}  arr
-   * @param   {int}  rowOffset Starting row of the subset
-   * @param   {int}  colOffset Starting column of the subset
-   * @param   {int}  width Width (num columns) of the subset
-   * @param   {int}  height Height (num rows) of the subset
-   * @return  {number}  non-zeros maximum of the subset
+   * @param {ndarray.NdArray<number[]>} arr
+   * @param {number} rowOffset - Starting row of the subset
+   * @param {number} colOffset - Starting column of the subset
+   * @param {number} width - Width (num columns) of the subset
+   * @param {number} height - Height (num rows) of the subset
+   * @return {number} Non-zeros maximum of the subset
    */
   getMaxNonZeroInNdarraySubset(arr, rowOffset, colOffset, width, height) {
     let curMax = Number.MIN_SAFE_INTEGER;
@@ -211,7 +225,8 @@ class DenseDataExtrema2D {
 
   /**
    * Computes the non-zero minimum in the entire data array using precomputed values
-   * @return  {number}  non-zeros minimum of the data
+   *
+   * @return {number} Non-zeros minimum of the data
    */
   getMinNonZeroInTile() {
     return this.getMinNonZeroInNdarraySubset(
@@ -225,7 +240,8 @@ class DenseDataExtrema2D {
 
   /**
    * Computes the non-zero maximum in the entire data array using precomputed values
-   * @return  {number}  non-zeros maximum of the data
+   *
+   * @return {number} Non-zeros maximum of the data
    */
   getMaxNonZeroInTile() {
     return this.getMaxNonZeroInNdarraySubset(

@@ -1,27 +1,37 @@
+// @ts-check
 import { NUM_PRECOMP_SUBSETS_PER_1D_TTILE } from '../configs';
 
+/**
+ * @template {ArrayLike<number>} T
+ */
 class DenseDataExtrema1D {
   /**
    * This module efficiently computes extrema of arbitrary subsets of a given data array.
    * The array is subdivided into 'numSubsets' subsets where extrema are precomputed.
    * These values are used to compute extrema given arbitrary start and end indices via
    * the getMinNonZeroInSubset and getMaxNonZeroInSubset methods.
-   * @param   {array}  data
+   * @param {T}  data
    */
   constructor(data) {
+    /** @type {number} */
     this.epsilon = 1e-6;
+    /** @type {T} */
     this.data = data;
 
+    /** @type {number} */
     this.tileSize = this.data.length; // might not be a power of 2
+    /** @type {number} */
     this.paddedTileSize = 2 ** Math.ceil(Math.log2(this.tileSize));
 
     // This controls how many subsets are created and precomputed.
     // Setting numSubsets to 1, is equivalent to no precomputation in
     // most cases
+    /** @type {number} */
     this.numSubsets = Math.min(
       NUM_PRECOMP_SUBSETS_PER_1D_TTILE,
       this.paddedTileSize,
     );
+    /** @type {number} */
     this.subsetSize = this.paddedTileSize / this.numSubsets;
 
     this.subsetMinimums = this.computeSubsetNonZeroMinimums();
@@ -33,8 +43,9 @@ class DenseDataExtrema1D {
   /**
    * Computes the non-zero minimum in a subset using precomputed values,
    * if possible. data[end] is not considered.
-   * @param   {array}  indexBounds  [start, end]
-   * @return  {number}  non-zero minium of the subset
+   *
+   * @param {[start: number, end: number]} indexBounds
+   * @return {number} non-zero minium of the subset
    */
   getMinNonZeroInSubset(indexBounds) {
     const start = indexBounds[0];
@@ -79,10 +90,10 @@ class DenseDataExtrema1D {
   }
 
   /**
-   * Computes the non-zero maximum in a subset using precomputed values,
-   * if possible
-   * @param   {array}  indexBounds  [start, end]
-   * @return  {number}  non-zero maxium of the subset
+   * Computes the non-zero maximum in a subset using precomputed values, if possible
+   *
+   * @param {[start: number, end: number]}  indexBounds
+   * @return {number} non-zero maxium of the subset
    */
   getMaxNonZeroInSubset(indexBounds) {
     const start = indexBounds[0];
@@ -128,10 +139,11 @@ class DenseDataExtrema1D {
 
   /**
    * Precomputes non-zero minimums of subsets of the given data vector
-   * @return  {array}  array containing minimums of the regularly subdivided
-   *                   data vector
+   *
+   * @returns {Array<number>} - Minimums of the regularly subdivided data vector
    */
   computeSubsetNonZeroMinimums() {
+    /** @type {Array<number>} */
     const minimums = [];
 
     for (let i = 0; i < this.numSubsets; i++) {
@@ -159,10 +171,10 @@ class DenseDataExtrema1D {
 
   /**
    * Precomputes non-zero maximums of subsets of the given data vector
-   * @return  {array}  array containing maximums of the regularly subdivided
-   *                   data vector
+   * @return {Array<number>} Maximums of the regularly subdivided data vector
    */
   computeSubsetNonZeroMaximums() {
+    /** @type {Array<number>} */
     const maximums = [];
 
     for (let i = 0; i < this.numSubsets; i++) {
@@ -190,7 +202,8 @@ class DenseDataExtrema1D {
 
   /**
    * Computes the non-zero minimum in the entire data array using precomputed values
-   * @return  {number}  non-zeros maximum of the data
+   *
+   * @return {number} Non-zeros maximum of the data
    */
   getMinNonZeroInTile() {
     return Math.min(...this.subsetMinimums);
@@ -198,7 +211,8 @@ class DenseDataExtrema1D {
 
   /**
    * Computes the non-zero maximum in the entire data array using precomputed values
-   * @return  {number}  non-zeros maximum of the data
+   *
+   * @return {number} Non-zeros maximum of the data
    */
   getMaxNonZeroInTile() {
     return Math.max(...this.subsetMaximums);
@@ -208,9 +222,9 @@ class DenseDataExtrema1D {
    * Calculate the minimum non-zero value in the data from start
    * to end. No precomputations are used to compute the min.
    *
-   * @param {Float32Array} data
-   * @param {int} start
-   * @param {int} end
+   * @param {ArrayLike<number>} data
+   * @param {number} start
+   * @param {number} end
    * @return {number} non-zero min in subset
    */
   minNonZero(data, start, end) {
@@ -235,9 +249,9 @@ class DenseDataExtrema1D {
    * Calculate the maximum non-zero value in the data from start
    * to end. No precomputations are used to compute the max.
    *
-   * @param {Float32Array} data
- ` * @param {int} start
-   * @param {int} end
+   * @param {ArrayLike<number>} data
+   * @param {number} start
+   * @param {number} end
    * @return {number} non-zero max in subset
    */
   maxNonZero(data, start, end) {
