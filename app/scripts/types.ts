@@ -103,3 +103,20 @@ export type ResolutionsTilesetInfo = TilesetInfoBase & {
 }
 
 export type TilesetInfo = LegacyTilesetInfo | ResolutionsTilesetInfo;
+
+export type DataConfig = {
+  server?: string;
+  url?: string;
+  filetype?: string;
+  coordSystem?: string;
+  children?: DataConfig[];
+  options?: unknown;
+  type?: string;
+  slicePos?: number;
+}
+
+export type HandleTilesetInfoFinished = {
+  (info: null): void;
+  (info: TilesetInfo, tilesetUid: string): void;
+  (error: { error: string }): void;
+}
