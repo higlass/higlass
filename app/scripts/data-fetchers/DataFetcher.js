@@ -261,7 +261,6 @@ export default class DataFetcher {
         receivedTiles(newTiles);
         return newTiles;
       });
-
     }
 
     // multiple child tracks, need to wait for all of them to
