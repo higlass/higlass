@@ -1,16 +1,17 @@
 /* eslint-disable */
 
-import type { THEME_DARK, THEME_LIGHT } from "./configs";
+import type { THEME_DARK, THEME_LIGHT } from './configs';
 
-export type Scale = import("d3-scale").ScaleContinuousNumeric<number, number>;
+export type Scale = import('d3-scale').ScaleContinuousNumeric<number, number>;
 
-export type TrackPosition = typeof import('./configs/primitives').TRACK_LOCATIONS[number];
+export type TrackPosition =
+  typeof import('./configs/primitives').TRACK_LOCATIONS[number];
 
 export type ChromInfo<Name extends string = string> = {
-    cumPositions: { id?: number; pos: number; chr: Name }[];
-    chrPositions: Record<Name, { pos: number }>;
-    chromLengths: Record<Name, number>;
-    totalLength: number;
+  cumPositions: { id?: number; pos: number; chr: Name }[];
+  chrPositions: Record<Name, { pos: number }>;
+  chromLengths: Record<Name, number>;
+  totalLength: number;
 };
 
 export type UnknownTrackConfig = {
@@ -30,7 +31,7 @@ export type UnknownTrackConfig = {
   registerViewportChanged?: unknown;
   removeViewportChanged?: unknown;
   setDomainsCallback?: unknown;
-}
+};
 
 export type CombinedTrackConfig = {
   uid: string;
@@ -50,17 +51,25 @@ export type CombinedTrackConfig = {
   registerViewportChanged?: unknown;
   removeViewportChanged?: unknown;
   setDomainsCallback?: unknown;
-}
+};
 
 export type TrackConfig = UnknownTrackConfig | CombinedTrackConfig;
 
 export type TrackVisitor = {
   (track: TrackConfig, position: null | TrackPosition): void;
-}
+};
 
 type ZoomedFunction = {
-  (xScale: Scale, yScale: Scale, k?: number, x?: number, y?: number, xPosition?: number, yPosition?: number): void;
-}
+  (
+    xScale: Scale,
+    yScale: Scale,
+    k?: number,
+    x?: number,
+    y?: number,
+    xPosition?: number,
+    yPosition?: number,
+  ): void;
+};
 
 export interface TrackObject {
   draw(): void;
@@ -82,25 +91,26 @@ export interface TrackObject {
 
 export type Theme = typeof THEME_DARK | typeof THEME_LIGHT;
 
-type TilesetInfoBase = {
+/** Minimum information describing a tileset. */
+export type TilesetInfoShared = {
   name: string;
-  coordSystem: string;
-  min_pos: number[];
-  max_pos: number[];
+  min_pos: number[]; // should be [number, number] | [number]
+  max_pos: number[]; // should be [number, number] | [number]
   max_zoom: number;
+  coordSystem?: string;
   tile_size?: number;
   max_tile_width?: number;
-  transforms?: { name: string, value: string }[];
-}
+  transforms?: { name: string; value: string }[];
+};
 
-export type LegacyTilesetInfo = TilesetInfoBase & {
+export type LegacyTilesetInfo = TilesetInfoShared & {
   max_width: number;
   bins_per_dimension?: number;
-}
+};
 
-export type ResolutionsTilesetInfo = TilesetInfoBase & {
+export type ResolutionsTilesetInfo = TilesetInfoShared & {
   resolutions: number[];
-}
+};
 
 export type TilesetInfo = LegacyTilesetInfo | ResolutionsTilesetInfo;
 
@@ -113,10 +123,20 @@ export type DataConfig = {
   options?: unknown;
   type?: string;
   slicePos?: number;
-}
+};
 
 export type HandleTilesetInfoFinished = {
   (info: null): void;
-  (info: TilesetInfo, tilesetUid: string): void;
+  (info: TilesetInfo, tilesetUid?: string): void;
   (error: { error: string }): void;
+};
+
+export interface AbstractDataFetcher<TileType> {
+  tilesetInfo(
+    callback?: HandleTilesetInfoFinished,
+  ): Promise<TilesetInfo | undefined>;
+  fetchTilesDebounced(
+    receivedTiles: (tiles: Record<string, TileType>) => void,
+    tileIds: string[],
+  ): Promise<Record<string, TileType>>;
 }
