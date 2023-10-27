@@ -64,7 +64,7 @@ function setPixDataForSelectedRows(
         d = aggFromDataFunc(
           colI,
           // @ts-expect-error - selectedRows[selectedRowI] is number[] but TS can't infer that from
-          selectedRows[selectedRowI]
+          selectedRows[selectedRowI],
         );
       } else {
         // @ts-expect-error - selectedRows[selectedRowI] is number but TS can't infer that from
@@ -453,7 +453,8 @@ export function tileResponseToData(inputData, server, theseTileIds) {
         a = new Float32Array(arrayBuffer);
       }
 
-      const dde = tilePos.length === 2
+      const dde =
+        tilePos.length === 2
           ? new DenseDataExtrema2D(a)
           : new DenseDataExtrema1D(a);
 
