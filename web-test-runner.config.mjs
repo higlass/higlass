@@ -68,9 +68,6 @@ export default {
     'test/HiGlassComponent/*.{js,jsx}',
     'test/Horizontal1DTrackTests.js',
     'test/HorizontalHeatmapTests.js',
-    // The tests in HorizontalMultivecTests are overwriting
-    // the default [div,hgc] created in beforeAll. This needs
-    // to be fixed before they can be enabled
     'test/HorizontalMultivecTests.js',
     'test/LabelTests.js',
     'test/LeftTrackModifierTests.js',
