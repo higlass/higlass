@@ -114,3 +114,9 @@ export type DataConfig = {
   type?: string;
   slicePos?: number;
 }
+
+export type HandleTilesetInfoFinished = {
+  (info: null): void;
+  (info: TilesetInfo, tilesetUid: string): void;
+  (error: { error: string }): void;
+}

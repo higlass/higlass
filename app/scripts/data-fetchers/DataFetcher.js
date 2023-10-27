@@ -110,7 +110,7 @@ export default class DataFetcher {
 
   /**
    * Obtain tileset infos for all of the tilesets listed
-   * @param {(info: TilesetInfo) => void} finished - A callback that will be called
+   * @param {import('../types').HandleTilesetInfoFinished} finished - A callback that will be called
    */
   tilesetInfo(finished) {
     // if this track has a url, server and filetype
@@ -141,7 +141,7 @@ export default class DataFetcher {
    * infos have the same dimensions and then return a common
    * one.
    *
-   * @param {function} finished - A callback that will be called
+   * @param {import('../types').HandleTilesetInfoFinished} finished - A callback that will be called
    *  when all tileset infos are loaded
    */
   tilesetInfoAfterRegister(finished) {
