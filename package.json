@@ -104,6 +104,7 @@
     "@types/d3-selection": "^2.0.0",
     "@types/d3-transition": "^3.0.1",
     "@types/d3-zoom": "^3.0.0",
+    "@types/pako": "^2.0.2",
     "@types/prop-types": "^15.7.3",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.2",

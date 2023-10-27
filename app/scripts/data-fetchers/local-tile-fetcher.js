@@ -2,6 +2,10 @@
 import { tileResponseToData } from '../services';
 
 /** @typedef {import('../types').TilesetInfo} TilesetInfo */
+/**
+ * @template T
+ * @typedef {import('../types').AbstractDataFetcher<T>} AbstractDataFetcher
+ */
 
 // TODO: Add type for LocalTile
 /** @typedef {{}} LocalTile */
@@ -12,8 +16,8 @@ import { tileResponseToData } from '../services';
  * @property {Record<string, TilesetInfo>} tilesetInfo
  */
 
+/** @implements {AbstractDataFetcher<LocalTile>} */
 class LocalTileDataFetcher {
-
   /** @param {LocalTileDataConfig} dataConfig */
   constructor(dataConfig) {
     /** @type {LocalTileDataConfig} */
@@ -26,10 +30,11 @@ class LocalTileDataFetcher {
     this.tilesetInfoLoading = true;
   }
 
-  /** @param {(tilesetInfo: TilesetInfo) => void} callback */
-  tilesetInfo(callback) {
+  /** @param {import('../types').HandleTilesetInfoFinished} callback */
+  async tilesetInfo(callback) {
     this.tilesetInfoLoading = false;
     callback(this.tilesetInfoData);
+    return this.tilesetInfoData;
   }
 
   /** We expect there to be a tilesetUid in the provided tilesetInfo
@@ -40,7 +45,7 @@ class LocalTileDataFetcher {
    * @param {(tiles: Record<string, LocalTile>) => void} receivedTiles
    * @param {string[]} tileIds
    */
-  fetchTilesDebounced(receivedTiles, tileIds) {
+  async fetchTilesDebounced(receivedTiles, tileIds) {
     this.tilesData = {};
 
     for (const key of Object.keys(this.dataConfig.tiles)) {
@@ -59,6 +64,7 @@ class LocalTileDataFetcher {
       ret[tileId] = this.tilesData[`localtile.${tileId}`];
     }
     receivedTiles(ret);
+    return ret;
   }
 
   /**
