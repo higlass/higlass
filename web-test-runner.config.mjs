@@ -71,7 +71,7 @@ export default {
     // The tests in HorizontalMultivecTests are overwriting
     // the default [div,hgc] created in beforeAll. This needs
     // to be fixed before they can be enabled
-    // 'test/HorizontalMultivecTests.js', //fails
+    'test/HorizontalMultivecTests.js',
     'test/LabelTests.js',
     'test/LeftTrackModifierTests.js',
     'test/LocalTileFetcherTests.js',
@@ -82,8 +82,8 @@ export default {
     'test/ndarray-to-list.spec.js',
     'test/OSMTests.js',
     'test/OverlayTrackTests.js',
-    'test/PluginDataFetcherTests.js', // fails
-    'test/PluginTrackTests.js', // fails
+    'test/PluginDataFetcherTests.js',
+    'test/PluginTrackTests.js',
     'test/PngExportTest.js',
     'test/RuleTests.js',
     'test/search_field_test.js',

@@ -316,7 +316,7 @@ describe('Horizontal multivecs', () => {
         expect(trackTiles[1].canvas.height).to.equal(10);
 
         const tooltipValue = track.getVisibleData(100, 100);
-        expect(tooltipValue.startsWith('0.676')).toBe(true);
+        expect(tooltipValue.startsWith('0.676')).to.be.true;
         done();
       },
       {
@@ -490,7 +490,7 @@ describe('Horizontal multivecs', () => {
           'aggregation-track',
         );
         const serverAggDataConfig1 = serverAggTrack1.dataFetcher.dataConfig;
-        expect(serverAggDataConfig1.options.aggGroups).to.equal([1, 2, 3]);
+        expect(serverAggDataConfig1.options.aggGroups).to.eql([1, 2, 3]);
 
         // When selectRows changes, check that options.aggGroups in the dataConfig also changes.
         const serverAggViewConf2 = horizontalMultivecWithAggregation;
@@ -509,7 +509,7 @@ describe('Horizontal multivecs', () => {
           'aggregation-track',
         );
         const serverAggDataConfig2 = serverAggTrack2.dataFetcher.dataConfig;
-        expect(serverAggDataConfig2.options.aggGroups).to.equal([4, 5, 6]);
+        expect(serverAggDataConfig2.options.aggGroups).to.eql([4, 5, 6]);
 
         done();
       },

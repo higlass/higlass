@@ -30,8 +30,8 @@
     "optimize": "vite optimize",
     "compile": "npm run build && node ./scripts/compile.mjs && zip -r dist.zip dist",
     "typecheck": "tsc",
-    "format": "prettier --ignore-path=.gitignore --write \"**/*.{mjs,js,jsx}\"",
-    "lint": "prettier --ignore-path=.gitignore --check \"**/*.{mjs,js,jsx}\" && eslint --ignore-path=.gitignore \"**/*.{mjs,js,jsx}\""
+    "format": "prettier --ignore-path=.gitignore --write \"**/*.{mjs,js,jsx,ts}\"",
+    "lint": "prettier --ignore-path=.gitignore --check \"**/*.{mjs,js,jsx,ts}\" && eslint --ignore-path=.gitignore \"**/*.{mjs,js,jsx}\""
   },
   "repository": {
     "type": "git",
