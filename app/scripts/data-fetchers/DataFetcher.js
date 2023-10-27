@@ -15,6 +15,10 @@ import { tileProxy } from '../services';
 
 /** @typedef {import('../types').DataConfig} DataConfig */
 /** @typedef {import('../types').TilesetInfo} TilesetInfo */
+/**
+ * @template T
+ * @typedef {import('../types').AbstractDataFetcher<T>} AbstractDataFetcher
+ */
 
 /**
  * @typedef Tile
@@ -46,6 +50,7 @@ function isTuple(x) {
   return x.length === 2;
 }
 
+/** @implements {AbstractDataFetcher<Tile | DividedTile>} */
 export default class DataFetcher {
   /**
    * @param {import('../types').DataConfig} dataConfig
@@ -215,13 +220,17 @@ export default class DataFetcher {
    *
    * @param {(tiles: Record<string, DividedTile | Tile>) => void} receivedTiles - A function to call once the tiles have been fetched
    * @param {string[]} tileIds - The tile ids to fetch
+   * @returns {Promise<Record<string, DividedTile | Tile>>}
    */
   fetchTilesDebounced(receivedTiles, tileIds) {
     if (this.dataConfig.type === 'horizontal-section') {
-      this.fetchHorizontalSection(receivedTiles, tileIds);
-    } else if (this.dataConfig.type === 'vertical-section') {
-      this.fetchHorizontalSection(receivedTiles, tileIds, true);
-    } else if (!this.dataConfig.children && this.dataConfig.tilesetUid) {
+      return this.fetchHorizontalSection(receivedTiles, tileIds);
+    }
+    if (this.dataConfig.type === 'vertical-section') {
+      return this.fetchHorizontalSection(receivedTiles, tileIds, true);
+    }
+
+    if (!this.dataConfig.children && this.dataConfig.tilesetUid) {
       // no children, just return the fetched tiles as is
       /** @type {Promise<Record<string, Tile>>} */
       const promise = new Promise((resolve) => {
@@ -238,7 +247,7 @@ export default class DataFetcher {
         );
       });
 
-      promise.then((returnedTiles) => {
+      return promise.then((returnedTiles) => {
         const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
         /** @type {Record<string, Tile>} */
         const newTiles = {};
@@ -250,36 +259,38 @@ export default class DataFetcher {
           newTiles[tileIds[i]] = returnedTiles[fullTileId];
         }
         receivedTiles(newTiles);
+        return newTiles;
       });
-    } else {
-      // multiple child tracks, need to wait for all of them to
-      // fetch their data before returning to the parent
-      /** @type {Promise<Record<string, DividedTile | Tile>>[]} Tiles */
-      const promises =
-        this.dataConfig.children?.map(
-          (x) =>
-            /** @type {Promise<Record<string, Tile | DividedTile>>} */
-            new Promise((resolve) => {
-              x.fetchTilesDebounced(resolve, tileIds);
-            }),
-        ) ?? [];
 
-      Promise.all(promises).then((returnedTiles) => {
-        // if we're trying to divide two datasets,
-        if (this.dataConfig.type === 'divided' && isTuple(returnedTiles)) {
-          const newTiles = this.makeDivided(returnedTiles, tileIds);
-          receivedTiles(newTiles);
-        } else {
-          // assume we're just returning raw tiles
-          console.warn(
-            'Unimplemented dataConfig type. Returning first data source.',
-            this.dataConfig,
-          );
-
-          receivedTiles(returnedTiles[0]);
-        }
-      });
     }
+
+    // multiple child tracks, need to wait for all of them to
+    // fetch their data before returning to the parent
+    /** @type {Promise<Record<string, DividedTile | Tile>>[]} Tiles */
+    const promises =
+      this.dataConfig.children?.map(
+        (x) =>
+          /** @type {Promise<Record<string, Tile | DividedTile>>} */
+          new Promise((resolve) => {
+            x.fetchTilesDebounced(resolve, tileIds);
+          }),
+      ) ?? [];
+
+    return Promise.all(promises).then((returnedTiles) => {
+      // if we're trying to divide two datasets,
+      if (this.dataConfig.type === 'divided' && isTuple(returnedTiles)) {
+        const newTiles = this.makeDivided(returnedTiles, tileIds);
+        receivedTiles(newTiles);
+        return newTiles;
+      }
+      // assume we're just returning raw tiles
+      console.warn(
+        'Unimplemented dataConfig type. Returning first data source.',
+        this.dataConfig,
+      );
+      receivedTiles(returnedTiles[0]);
+      return returnedTiles[0];
+    });
   }
 
   /**
@@ -343,6 +354,7 @@ export default class DataFetcher {
    * @param {(tiles: Record<string, Tile>) => void} receivedTiles - A function to call once the tiles have been fetched
    * @param {string[]} tileIds - The tile ids to fetch
    * @param {boolean=} vertical - Whether to fetch a vertical section
+   * @returns {Promise<Record<string, Tile>>}
    */
   fetchHorizontalSection(receivedTiles, tileIds, vertical = false) {
     // We want to take a horizontal section of a 2D dataset
@@ -421,7 +433,7 @@ export default class DataFetcher {
         true,
       );
     });
-    promise.then((returnedTiles) => {
+    return promise.then((returnedTiles) => {
       // we've received some new tiles, but they're 2D
       // we need to extract the row corresponding to the data we need
 
@@ -497,6 +509,7 @@ export default class DataFetcher {
       }
 
       receivedTiles(newTiles);
+      return newTiles;
     });
   }
 
