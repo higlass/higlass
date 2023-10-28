@@ -43,6 +43,7 @@
   "dependencies": {
     "ajv": "^6.10.0",
     "box-intersect": "^1.0.1",
+    "buffer": "^6.0.3",
     "clsx": "^1.2.1",
     "css-element-queries": "^1.2.3",
     "d3-array": "^2.7.1",
@@ -75,6 +76,7 @@
     "robust-point-in-polygon": "^1.0.3",
     "slugid": "^3.2.0",
     "url-parse": "^1.4.3",
+    "vite-bundle-visualizer": "^0.10.0",
     "vkbeautify": "^0.99.3"
   },
   "peerDependencies": {
