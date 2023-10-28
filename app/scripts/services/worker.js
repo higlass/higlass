@@ -49,37 +49,34 @@ function setPixDataForSelectedRows(
   let selectedRowI;
   /** @type {number} */
   let selectedRowGroupItemI;
+  /** @type {number | number[]} */
+  let selectedRow;
 
   for (colI = 0; colI < shape[1]; colI++) {
     // For this column, aggregate along the row axis.
     pixRowI = 0;
     for (selectedRowI = 0; selectedRowI < selectedRows.length; selectedRowI++) {
+      selectedRow = selectedRows[selectedRowI];
       if (aggFunc && selectedRowsAggregationMethod === 'server') {
         d = data[selectedRowI * shape[1] + colI];
-      } else if (Array.isArray(selectedRows[selectedRowI])) {
+      } else if (Array.isArray(selectedRow)) {
         if (!aggFromDataFunc) {
           throw new Error("row aggregation requires 'aggFromDataFunc'");
         }
         // An aggregation step must be performed for this data point.
-        d = aggFromDataFunc(
-          colI,
-          // @ts-expect-error - selectedRows[selectedRowI] is number[] but TS can't infer that from
-          selectedRows[selectedRowI],
-        );
+        d = aggFromDataFunc(colI, selectedRow);
       } else {
-        // @ts-expect-error - selectedRows[selectedRowI] is number but TS can't infer that from
-        d = data[selectedRows[selectedRowI] * shape[1] + colI];
+        d = data[selectedRow * shape[1] + colI];
       }
 
       if (
         selectedRowsAggregationWithRelativeHeight &&
-        Array.isArray(selectedRows[selectedRowI])
+        Array.isArray(selectedRow)
       ) {
         // Set a pixel for multiple rows, proportionate to the size of the row aggregation group.
         for (
           selectedRowGroupItemI = 0;
-          // @ts-expect-error - selectedRows[selectedRowI] is number[] but TS can't infer that from
-          selectedRowGroupItemI < selectedRows[selectedRowI].length;
+          selectedRowGroupItemI < selectedRow.length;
           selectedRowGroupItemI++
         ) {
           setPixData(
