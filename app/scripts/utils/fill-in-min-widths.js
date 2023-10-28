@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Configs
 import {
   MIN_HORIZONTAL_HEIGHT,

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import createPubSub from 'pub-sub-es';
 
 import TiledPixiTrack from './TiledPixiTrack';

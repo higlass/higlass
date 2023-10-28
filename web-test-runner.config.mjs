@@ -1,4 +1,3 @@
-// @ts-check
 import vite from './scripts/wtr-vite-plugin.mjs';
 import cache from './scripts/wtr-cache-plugin.mjs';
 

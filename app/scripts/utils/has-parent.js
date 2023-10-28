@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Test whether a DOM element is the parent of another DOM element.
  *

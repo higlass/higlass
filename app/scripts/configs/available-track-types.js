@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { DATATYPE_TO_TRACK_TYPE } from './datatype-to-track-type';
 
 /**

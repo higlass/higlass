@@ -1,5 +1,3 @@
-// @ts-check
-
 /** @param {number} y */
 export const invGudermannian = (y) => Math.log(Math.tan((y + Math.PI / 2) / 2));
 

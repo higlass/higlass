@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { scaleLinear } from 'd3-scale';
 import { zoomIdentity } from 'd3-zoom';
 

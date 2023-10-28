@@ -1,5 +1,3 @@
-// @ts-check
-
 /**
  * Clone an event by invoking the source event's constructor and passing in the source event.
  *

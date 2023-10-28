@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { scaleLinear, scaleLog } from 'd3-scale';
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 import { colorToHex, dictValues } from './utils';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 class DomEvent {
   constructor(pubSub) {
     /**

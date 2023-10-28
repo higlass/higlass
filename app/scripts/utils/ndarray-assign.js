@@ -1,3 +1,4 @@
+// @ts-nocheck
 const ndarrayAssign = (target, source) => {
   const numSource = +source;
   const isScalar = !Number.isNaN(numSource);

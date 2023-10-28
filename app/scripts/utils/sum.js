@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Convenience function for a reducer to sum up a numerical array.
  * @param {number} a - Value A

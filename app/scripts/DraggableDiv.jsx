@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { drag } from 'd3-drag';
 import { pointer, select } from 'd3-selection';
 import PropTypes from 'prop-types';

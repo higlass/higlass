@@ -1,4 +1,3 @@
-// @ts-check
 const epsilon = 0.0000001;
 
 /**

@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Logical or operator for convenience.
  * @param {boolean} a - Value A

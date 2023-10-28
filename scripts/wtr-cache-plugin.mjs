@@ -1,4 +1,3 @@
-// @ts-check
 import * as fsp from 'node:fs/promises';
 import * as consumers from 'node:stream/consumers';
 

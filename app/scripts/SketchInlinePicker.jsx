@@ -1,3 +1,4 @@
+// @ts-nocheck
 import PropTypes from 'prop-types';
 import { rgb as d3rgb } from 'd3-color';
 import React from 'react';

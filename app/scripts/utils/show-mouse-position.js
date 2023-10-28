@@ -1,4 +1,3 @@
-// @ts-check
 import { globalPubSub } from 'pub-sub-es';
 
 import hexStrToInt from './hex-string-to-int';

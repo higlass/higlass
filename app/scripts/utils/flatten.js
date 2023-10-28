@@ -1,3 +1,4 @@
+// @ts-nocheck
 import reduce from './reduce';
 
 /**

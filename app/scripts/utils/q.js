@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Object query language using dot-notation.
  *

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* global XYLOPHON:false */
 
 import map from './map';

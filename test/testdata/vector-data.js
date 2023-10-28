@@ -1,3 +1,4 @@
+// @ts-nocheck
 // [0,1,...,63]
 export const vecToy = new Float32Array(Array.from(Array(64).keys()));
 

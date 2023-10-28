@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Functional version of `Array.forEach`. More flexible and applicable to other array-like data types.
  *

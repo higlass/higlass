@@ -1,3 +1,4 @@
+// @ts-nocheck
 import PixiTrack from './PixiTrack';
 
 class UnknownPixiTrack extends PixiTrack {

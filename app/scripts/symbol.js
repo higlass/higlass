@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Create a path-based symbol icon
  *

@@ -1,4 +1,3 @@
-// @ts-check
 import dataToGenomicLoci from './data-to-genomic-loci';
 
 /** @typedef {import('./data-to-genomic-loci').GenomicLoci} GenomicLoci */

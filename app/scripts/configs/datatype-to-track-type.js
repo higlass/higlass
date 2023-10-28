@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { TRACKS_INFO } from './tracks-info';
 
 export const DATATYPE_TO_TRACK_TYPE = (orientation) => {

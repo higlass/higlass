@@ -1,3 +1,4 @@
+// @ts-nocheck
 import ndarray from 'ndarray';
 import ndarrayToList from './ndarray-to-list';
 

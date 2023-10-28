@@ -1,3 +1,4 @@
+// @ts-nocheck
 import ReactDOM from 'react-dom';
 import createPubSub from 'pub-sub-es';
 import Ajv from 'ajv';

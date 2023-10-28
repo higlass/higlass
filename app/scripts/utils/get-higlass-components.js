@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const getTrackObjectFromHGC = (hgc, viewUid, trackUid) => {
   let newViewUid = viewUid;
   let newTrackUid = trackUid;

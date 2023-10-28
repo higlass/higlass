@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { scaleBand } from 'd3-scale';
 import { range } from 'd3-array';
 import { segmentsToRows } from './utils';

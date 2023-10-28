@@ -1,3 +1,4 @@
+// @ts-nocheck
 import boxIntersect from 'box-intersect';
 import { median, range } from 'd3-array';
 import { scaleBand, scaleLinear } from 'd3-scale';

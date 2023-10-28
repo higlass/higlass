@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Fast version of `Math.max`. Based on
  *   https://jsperf.com/math-min-max-vs-ternary-vs-if/24 `Math.max` is not
