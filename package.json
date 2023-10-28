@@ -26,9 +26,7 @@
   "scripts": {
     "test": "wtr",
     "start": "vite",
-    "build": "vite build",
-    "optimize": "vite optimize",
-    "compile": "npm run build && node ./scripts/compile.mjs && zip -r dist.zip dist",
+    "compile": "node ./scripts/compile.mjs && zip -r dist.zip dist",
     "typecheck": "tsc",
     "format": "prettier --ignore-path=.gitignore --write \"**/*.{mjs,js,jsx,ts}\"",
     "lint": "prettier --ignore-path=.gitignore --check \"**/*.{mjs,js,jsx,ts}\" && eslint --ignore-path=.gitignore \"**/*.{mjs,js,jsx}\""

@@ -57,8 +57,6 @@ Useful commands:
 - Run a specific test or "glob" of tests: `npm test -- test/APITests.js [--watch]`
 - Manually run individual tests in an open browser window: `npm test -- --manual`
 
-There can sometimes be import issues due to timeouts when running tests after a clean installation. It is best to run `npm run optimize` prior to running tests for the first time.
-
 **Troubleshooting:**
 
 - If the installation fails due to `sharp` > `node-gyp` try installing the node packages using `python2`:

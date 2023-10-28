@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as esbuild from 'esbuild';
+import * as vite from 'vite';
 import * as babel from '@babel/core';
 import * as React from 'react';
 import * as PIXI from 'pixi.js';
@@ -12,6 +13,28 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 const REACT_VERSION = React.version.split('.')[0];
 const PIXI_VERSION = PIXI.VERSION.split('.')[0];
+
+await vite.build({
+  configFile: path.resolve(__dirname, '../vite.config.mjs'),
+  build: {
+    minify: false,
+    lib: {
+      entry: path.resolve(__dirname, '../app/scripts/hglib.jsx'),
+      name: 'hglib',
+      formats: ['umd', 'es'],
+    },
+    rollupOptions: {
+      external: ['react', 'react-dom', 'pixi.js'],
+      output: {
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM',
+          'pixi.js': 'PIXI',
+        },
+      },
+    },
+  },
+});
 
 // Input HTML that needs imports to be replaced
 const inputHTML = await fs.promises.readFile(
