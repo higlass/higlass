@@ -96,11 +96,11 @@ async function build() {
     'style.css',
   ]);
 
-  const transpiledUmd = await babel.transformAsync(expected["higlass.umd.js"], {
+  const transpiledUmd = await babel.transformAsync(expected['higlass.umd.js'], {
     plugins: ['@babel/plugin-transform-classes'],
   });
 
-  const transpiledEsm = await babel.transformAsync(expected["higlass.mjs"], {
+  const transpiledEsm = await babel.transformAsync(expected['higlass.mjs'], {
     plugins: ['@babel/plugin-transform-classes'],
   });
 
@@ -116,7 +116,7 @@ async function build() {
     umd: transpiledUmd.code,
     minifiedUmd: minifiedTranspiledUmd.code,
     esm: transpiledEsm.code,
-    css: expected["style.css"],
+    css: expected['style.css'],
   };
 }
 
