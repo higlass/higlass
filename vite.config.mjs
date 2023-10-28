@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import { version } from './package.json';
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react({ jsxRuntime: 'classic' })],
+  plugins: [react()],
   resolve: {
     alias: {
       lodash: 'lodash-es',
