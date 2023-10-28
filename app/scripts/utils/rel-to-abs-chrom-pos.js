@@ -1,4 +1,3 @@
-// @ts-check
 
 /**
  * @template {string} Name

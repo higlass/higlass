@@ -1,3 +1,4 @@
+// @ts-nocheck
 // eslint-disable-next-line import/prefer-default-export
 export const defaultColorScale = [
   [251, 231, 35, 255],

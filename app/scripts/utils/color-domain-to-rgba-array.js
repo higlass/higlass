@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { scaleLinear } from 'd3-scale';
 import { range } from 'd3-array';
 import { rgb } from 'd3-color';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 const viewconf = {
   editable: true,
   zoomFixed: false,

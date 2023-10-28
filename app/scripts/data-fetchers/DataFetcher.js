@@ -1,4 +1,3 @@
-// @ts-check
 import slugid from 'slugid';
 import { scaleLinear } from 'd3-scale';
 import {

@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Converts a decimal number to a hex string.
  *

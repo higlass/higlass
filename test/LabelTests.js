@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-env mocha */
 import Enzyme from 'enzyme';
 import { expect } from 'chai';

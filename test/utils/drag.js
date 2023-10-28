@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { getTrackRenderer } from '../../app/scripts/utils';
 
 const drag = (fromX, fromY, toX, toY, viewId, hgc) => {

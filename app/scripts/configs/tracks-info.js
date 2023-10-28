@@ -1,4 +1,3 @@
-// @ts-check
 import { THEME_DARK } from './themes';
 
 import {

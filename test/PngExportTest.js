@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-env mocha */
 import { expect } from 'chai';
 import createElementAndApi from './utils/create-element-and-api';

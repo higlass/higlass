@@ -1,4 +1,3 @@
-// @ts-check
 
 /**
  * @param {{ from: number, color: string }[]} steps

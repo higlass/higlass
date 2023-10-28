@@ -1,3 +1,4 @@
+// @ts-nocheck
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
 // Configs

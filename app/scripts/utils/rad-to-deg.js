@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Convert radiance to degree
  * @param {number} rad - Radiance

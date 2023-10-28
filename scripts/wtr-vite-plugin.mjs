@@ -1,4 +1,3 @@
-// @ts-check
 import { createServer, optimizeDeps } from 'vite';
 
 /**

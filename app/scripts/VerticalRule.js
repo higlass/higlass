@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable max-classes-per-file */
 import { mix, Mixin } from './mixwith';
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { axisLeft } from 'd3-axis';
 
 import SVGTrack from './SVGTrack';

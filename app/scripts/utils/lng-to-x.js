@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Convert longitude to the X coordinate in the Mercator projection.
  * @param {number} lng - Longitude

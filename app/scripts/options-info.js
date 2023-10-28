@@ -1,3 +1,4 @@
+// @ts-nocheck
 // A better position of this file would be under \configs,
 // but this file imports HeatmapOptions that contains React
 // components, so having this file near track implementations

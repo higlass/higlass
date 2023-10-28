@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { scaleLinear, scaleLog } from 'd3-scale';
 
 import BarTrack from './BarTrack';

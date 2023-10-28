@@ -1,4 +1,3 @@
-// @ts-check
 import { mean, sum, variance, deviation } from 'd3-array';
 
 /**

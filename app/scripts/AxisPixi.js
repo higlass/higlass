@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { format } from 'd3-format';
 
 // Configs

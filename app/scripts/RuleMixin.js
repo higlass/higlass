@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Mixin } from './mixwith';
 
 const RuleMixin = Mixin(

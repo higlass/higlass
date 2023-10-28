@@ -1,4 +1,3 @@
-// @ts-check
 export const DEFAULT_VIEW_MARGIN = 0;
 
 export const DEFAULT_VIEW_PADDING = 5;

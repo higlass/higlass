@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { mouse, select, selectAll, event } from 'd3-selection';
 import slugid from 'slugid';
 

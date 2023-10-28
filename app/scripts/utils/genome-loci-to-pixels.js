@@ -1,4 +1,3 @@
-// @ts-check
 import chrToAbs from './chr-to-abs';
 
 /**

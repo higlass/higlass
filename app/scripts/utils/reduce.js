@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Pure functional reducer. Can be used for currying stuff. Check out `flatten.js`.
  * @param   {function}  f  Reducer function.

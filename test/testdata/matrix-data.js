@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Contains arrays with a quadratic number of elements that can be transformed into an
 // ndarray
 

@@ -1,4 +1,3 @@
-// @ts-check
 import { color } from 'd3-color';
 
 // Configs

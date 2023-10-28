@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Compute the size associated with a potentially 2d array of selected item indices.
  * For example, this can be used to compute the total height of a `horizontal-multivec` track

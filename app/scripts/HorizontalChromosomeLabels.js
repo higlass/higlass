@@ -1,3 +1,4 @@
+// @ts-nocheck
 import boxIntersect from 'box-intersect';
 import { scaleLinear } from 'd3-scale';
 import { format, precisionPrefix, formatPrefix } from 'd3-format';

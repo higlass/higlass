@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { getXylofon } from '../utils';
 
 let isInit = false;

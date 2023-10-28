@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * @param {string} version
  * @returns {number}

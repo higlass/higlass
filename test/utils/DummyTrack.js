@@ -1,3 +1,4 @@
+// @ts-nocheck
 const DummyTrack = function DummyTrack(HGC, ...args) {
   if (!new.target) {
     throw new Error(

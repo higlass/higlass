@@ -1,4 +1,3 @@
-// @ts-check
 
 /**
  * Download a file to the user's computer.

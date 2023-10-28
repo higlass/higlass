@@ -1,3 +1,4 @@
+// @ts-nocheck
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 // Configs

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import addArrays from './add-arrays';
 import accessorTransposition from './accessor-transposition';
 

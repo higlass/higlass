@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Exposed map function. You can do cool stuff with that!
  *

@@ -1,4 +1,3 @@
-// @ts-check
 
 /** @param {number} c */
 const componentToHex = (c) => {

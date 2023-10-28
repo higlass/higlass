@@ -1,4 +1,3 @@
-// @ts-check
 
 /**
  * Convert a base64 encoded image into a canvas object.
