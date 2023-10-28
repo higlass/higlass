@@ -26,7 +26,8 @@
   "scripts": {
     "test": "wtr",
     "start": "vite",
-    "compile": "node ./scripts/compile.mjs && zip -r dist.zip dist",
+    "build": "node ./scripts/build.mjs",
+    "compile": "npm run build && zip -r dist.zip dist",
     "typecheck": "tsc",
     "format": "prettier --ignore-path=.gitignore --write \"**/*.{mjs,js,jsx,ts}\"",
     "lint": "prettier --ignore-path=.gitignore --check \"**/*.{mjs,js,jsx,ts}\" && eslint --ignore-path=.gitignore \"**/*.{mjs,js,jsx}\""
@@ -123,8 +124,6 @@
     "eslint-plugin-react": "^7.31.8",
     "eslint-plugin-react-hooks": "^4.6.0",
     "pixi.js": "^6.5.2",
-    "postcss": "^8.4.6",
-    "postcss-scss": "^4.0.4",
     "prettier": "^2.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
