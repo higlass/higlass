@@ -1,3 +1,4 @@
+// @ts-nocheck
 const DummyDataFetcher = function DummyDataFetcher(HGC, ...args) {
   if (!new.target) {
     throw new Error(

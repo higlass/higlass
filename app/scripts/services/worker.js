@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { scaleLog, scaleLinear } from 'd3-scale';
 import {
   DenseDataExtrema1D,

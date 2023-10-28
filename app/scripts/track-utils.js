@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { zoomIdentity } from 'd3-zoom';
 import AxisPixi from './AxisPixi';
 

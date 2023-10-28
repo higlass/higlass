@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-env mocha */
 import {
   configure,

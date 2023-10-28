@@ -1,5 +1,3 @@
-// @ts-check
-
 /**
  * @template {string} Name
  * @param {Name} chrom

@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Factory function for a value to RGB color converter
  *

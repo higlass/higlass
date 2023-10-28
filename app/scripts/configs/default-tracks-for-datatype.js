@@ -1,4 +1,3 @@
-// @ts-check
 export const DEFAULT_TRACKS_FOR_DATATYPE = /** @type {const} */ ({
   chromsizes: {
     center: '2d-chromosome-grid',

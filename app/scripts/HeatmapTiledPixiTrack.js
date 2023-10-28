@@ -1,3 +1,4 @@
+// @ts-nocheck
 import ndarray from 'ndarray';
 import { brushY } from 'd3-brush';
 import { format } from 'd3-format';

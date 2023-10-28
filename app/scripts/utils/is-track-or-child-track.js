@@ -1,4 +1,3 @@
-// @ts-check
 import CombinedTrack from '../CombinedTrack';
 
 /**

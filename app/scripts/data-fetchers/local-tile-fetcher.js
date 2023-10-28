@@ -1,4 +1,3 @@
-// @ts-check
 import { tileResponseToData } from '../services';
 
 /** @typedef {import('../types').TilesetInfo} TilesetInfo */

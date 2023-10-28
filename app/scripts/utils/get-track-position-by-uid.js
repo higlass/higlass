@@ -1,3 +1,4 @@
+// @ts-nocheck
 import visitPositionedTracks from './visit-positioned-tracks';
 
 /**

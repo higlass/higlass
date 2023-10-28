@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as esbuild from 'esbuild';
 import * as babel from '@babel/core';
 import * as React from 'react';

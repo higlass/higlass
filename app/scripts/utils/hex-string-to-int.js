@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Convert a HEX string into a HEX integer.
  *

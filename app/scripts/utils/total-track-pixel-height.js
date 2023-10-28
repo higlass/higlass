@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * @typedef Tracks
  * @prop {{ height: number }[]=} top

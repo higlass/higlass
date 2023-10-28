@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { range } from 'd3-array';
 import slugid from 'slugid';
 

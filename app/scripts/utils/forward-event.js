@@ -1,4 +1,3 @@
-// @ts-check
 import cloneEvent from './clone-event';
 
 /**

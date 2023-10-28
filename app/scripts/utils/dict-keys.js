@@ -1,5 +1,3 @@
-// @ts-check
-
 /**
  * Return an array of keys that are present in this dictionary
  *

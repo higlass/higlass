@@ -1,3 +1,4 @@
+// @ts-nocheck
 export { default as annotationsTilesView } from './view-configs-more/annotationsTilesView.json';
 export { default as chromInfoTrack } from './view-configs-tracks/chromInfoTrack.json';
 export { default as chromosomeGridTrack } from './view-configs-tracks/chromosomeGridTrack.json';

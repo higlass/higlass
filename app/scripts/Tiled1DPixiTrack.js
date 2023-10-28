@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { scaleLinear } from 'd3-scale';
 
 import TiledPixiTrack from './TiledPixiTrack';

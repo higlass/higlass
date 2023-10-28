@@ -1,3 +1,4 @@
+// @ts-nocheck
 import slugid from 'slugid';
 
 import PixiTrack from './PixiTrack';

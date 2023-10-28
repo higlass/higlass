@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Code that is available to plugin tracks.
  */

@@ -1,5 +1,3 @@
-// @ts-check
-
 /** @typedef {[string, number]} ChromsizeRow */
 
 /**

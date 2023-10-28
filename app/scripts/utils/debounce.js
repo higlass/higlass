@@ -1,5 +1,3 @@
-// @ts-check
-
 /**
  * Debounce a function call
  *

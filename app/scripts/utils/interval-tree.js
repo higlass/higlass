@@ -1,3 +1,4 @@
+// @ts-nocheck
 function IntervalTreeNode(start, end, left, right) {
   /**
    * Node interval.

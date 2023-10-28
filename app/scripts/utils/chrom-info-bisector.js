@@ -1,4 +1,3 @@
-// @ts-check
 import { bisector } from 'd3-array';
 
 const chromInfoBisector = bisector(

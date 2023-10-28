@@ -1,5 +1,3 @@
-// @ts-check
-
 /**
  * @template T
  * @typedef DataTask

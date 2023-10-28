@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { colorToHex } from './utils';
 import { mix } from './mixwith';
 

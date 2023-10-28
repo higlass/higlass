@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-env mocha */
 import * as React from 'react';
 import Enzyme from 'enzyme';

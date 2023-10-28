@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { select } from 'd3-selection';
 import React from 'react';
 import slugid from 'slugid';

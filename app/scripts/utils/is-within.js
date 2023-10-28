@@ -1,5 +1,3 @@
-// @ts-check
-
 /**
  * Check if a 2D or 1D point is within a rectangle or range
  * @param {number} x - The point's X coordinate.

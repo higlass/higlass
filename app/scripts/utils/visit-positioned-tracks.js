@@ -1,4 +1,3 @@
-// @ts-check
 import visitTracks from './visit-tracks';
 
 /** @typedef {{ [Key in import('../types').TrackPosition]: import('../types').TrackConfig[] }} PositionedTracks

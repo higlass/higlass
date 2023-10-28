@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { brushX } from 'd3-brush';
 import slugid from 'slugid';
 

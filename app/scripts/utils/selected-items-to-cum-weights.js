@@ -1,4 +1,3 @@
-// @ts-check
 import selectedItemsToSize from './selected-items-to-size';
 
 /**
