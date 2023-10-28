@@ -1,4 +1,3 @@
-// @ts-check
 import { NUM_PRECOMP_SUBSETS_PER_1D_TTILE } from '../configs';
 
 /**

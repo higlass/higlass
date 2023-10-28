@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const multivecTileData = {
   dtype: 'float16',
   maxNonZero: 52672,

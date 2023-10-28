@@ -1,5 +1,3 @@
-// @ts-check
-
 /**
  * Add an event listener that fires only once and auto-removes itself
  *

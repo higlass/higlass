@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * A doubly linked list-based Least Recently Used (LRU) cache. Will keep most
  * recently used items while discarding least recently used items when its limit

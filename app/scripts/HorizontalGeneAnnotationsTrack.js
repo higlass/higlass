@@ -1,3 +1,4 @@
+// @ts-nocheck
 import boxIntersect from 'box-intersect';
 import classifyPoint from 'robust-point-in-polygon';
 

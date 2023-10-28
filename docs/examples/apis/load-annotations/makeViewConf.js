@@ -1,3 +1,4 @@
+// @ts-nocheck
 function makeViewConf(viewconf, regions1DBait, regions1DTarget, regions2D) {
   const annotation1DOptions = {
     minRectWidth: 3,

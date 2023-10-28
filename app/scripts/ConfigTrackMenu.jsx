@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import clsx from 'clsx';
 import { mix } from './mixwith';

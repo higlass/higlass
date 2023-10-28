@@ -1,3 +1,4 @@
+// @ts-nocheck
 import PropTypes from 'prop-types';
 import React from 'react';
 import { brushX } from 'd3-brush';

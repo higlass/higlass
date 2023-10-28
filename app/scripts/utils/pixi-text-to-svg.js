@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Export a PIXI text to an SVG element
  *

@@ -1,4 +1,3 @@
-// @ts-check
 import { formatPrefix, precisionPrefix } from 'd3-format';
 import slugid from 'slugid';
 

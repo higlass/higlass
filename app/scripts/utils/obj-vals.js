@@ -1,3 +1,4 @@
+// @ts-nocheck
 import map from './map';
 
 /**

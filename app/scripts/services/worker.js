@@ -6,28 +6,17 @@ import {
   selectedItemsToSize,
 } from '../utils';
 
-/*
-function countTransform(count) {
-    return Math.sqrt(Math.sqrt(count + 1));
-}
-
-function countTransform(count) {
-    return Math.log(count+0.0001);
-}
-*/
-
 /**
  * This function helps to fill in pixData by calling setPixData()
  * when selectedRowsOptions have been passed to workerSetPix().
- * @param {array} data The tile data array.
- * @param {array} shape Array `[numRows, numCols]`, used when iterating over a subset of rows,
- * when one needs to know the width of each column.
- * @param {function} setPixData The setPixData function created by workerSetPix().
- * @param {number[]} selectedRows Array of row indices, for ordering and filtering rows.
- * Used by the HorizontalMultivecTrack.
- * @param {string} selectedRowsAggregationMode String that specifies the aggregation function to use ("mean", "sum", etc).
- * @param {boolean} selectedRowsAggregationWithRelativeHeight Boolean that determines whether the height of row groups should be relative to the size of the group.
- * @param {string} selectedRowsAggregationMethod Where will the aggregation be performed? Possible values: "client", "server".
+ *
+ * @param {ArrayLike<number>} data - The (2D) tile data array.
+ * @param {[numRows: number, numCols: number]} shape - Array shape (number of rows and columns).
+ * @param {(pixDataIndex: number, dataPoint: number) => void} setPixData - The setPixData function created by workerSetPix().
+ * @param {number[] | number[][]} selectedRows - Row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
+ * @param {'mean' | 'sum' | 'variance' | 'deviation'} selectedRowsAggregationMode - The aggregation function to use ("mean", "sum", etc).
+ * @param {boolean} selectedRowsAggregationWithRelativeHeight - Whether the height of row groups should be relative to the size of the group.
+ * @param {'client' | 'server'} selectedRowsAggregationMethod - Where will the aggregation be performed? Possible values: "client", "server".
  */
 function setPixDataForSelectedRows(
   data,
@@ -39,39 +28,54 @@ function setPixDataForSelectedRows(
   selectedRowsAggregationMethod,
 ) {
   // We need to set the pixels in the order specified by the `selectedRows` parameter.
+  /** @type {((data: number[]) => number | undefined) | undefined} */
   let aggFunc;
+  /** @type {((columnIndex: number, rowIndices: number[]) => number) | undefined} */
   let aggFromDataFunc;
   if (selectedRowsAggregationMode) {
-    aggFunc = getAggregationFunction(selectedRowsAggregationMode);
+    const agg = getAggregationFunction(selectedRowsAggregationMode);
+    aggFunc = agg;
     aggFromDataFunc = (colI, rowIs) =>
-      aggFunc(rowIs.map((rowI) => data[rowI * shape[1] + colI]));
+      agg(rowIs.map((rowI) => data[rowI * shape[1] + colI])) ?? 0;
   }
+  /** @type {number} */
   let d;
+  /** @type {number} */
   let pixRowI;
+  /** @type {number} */
   let colI;
+  /** @type {number} */
   let selectedRowI;
+  /** @type {number} */
   let selectedRowGroupItemI;
+  /** @type {number | number[]} */
+  let selectedRow;
+
   for (colI = 0; colI < shape[1]; colI++) {
     // For this column, aggregate along the row axis.
     pixRowI = 0;
     for (selectedRowI = 0; selectedRowI < selectedRows.length; selectedRowI++) {
+      selectedRow = selectedRows[selectedRowI];
       if (aggFunc && selectedRowsAggregationMethod === 'server') {
         d = data[selectedRowI * shape[1] + colI];
-      } else if (Array.isArray(selectedRows[selectedRowI]) && aggFunc) {
+      } else if (Array.isArray(selectedRow)) {
+        if (!aggFromDataFunc) {
+          throw new Error("row aggregation requires 'aggFromDataFunc'");
+        }
         // An aggregation step must be performed for this data point.
-        d = aggFromDataFunc(colI, selectedRows[selectedRowI]);
+        d = aggFromDataFunc(colI, selectedRow);
       } else {
-        d = data[selectedRows[selectedRowI] * shape[1] + colI];
+        d = data[selectedRow * shape[1] + colI];
       }
 
       if (
         selectedRowsAggregationWithRelativeHeight &&
-        Array.isArray(selectedRows[selectedRowI])
+        Array.isArray(selectedRow)
       ) {
         // Set a pixel for multiple rows, proportionate to the size of the row aggregation group.
         for (
           selectedRowGroupItemI = 0;
-          selectedRowGroupItemI < selectedRows[selectedRowI].length;
+          selectedRowGroupItemI < selectedRow.length;
           selectedRowGroupItemI++
         ) {
           setPixData(
@@ -93,23 +97,32 @@ function setPixDataForSelectedRows(
 }
 
 /**
+ * @typedef SelectedRowsOptions
+ * @property {number[] | number[][]} selectedRows - Row indices, for ordering and filtering rows. Used by the HorizontalMultivecTrack.
+ * @property {'mean' | 'sum' | 'variance' | 'deviation'} selectedRowsAggregationMode - The aggregation function to use ("mean", "sum", etc).
+ * @property {boolean} selectedRowsAggregationWithRelativeHeight - Whether the height of row groups should be relative to the size of the group.
+ * @property {'client' | 'server'} selectedRowsAggregationMethod - Where will the aggregation be performed? Possible values: "client", "server".
+ */
+
+/**
  * This function takes in tile data and other rendering parameters,
  * and generates an array of pixel data that can be passed to a canvas
  * (and subsequently passed to a PIXI sprite).
- * @param {number} size The length of the `data` parameter. Often set to a tile's
- * `tile.tileData.dense.length` value.
- * @param {array} data The tile data array.
- * @param {string} valueScaleType 'log' or 'linear'.
- * @param {array} valueScaleDomain
- * @param {number} pseudocount The pseudocount is generally the minimum non-zero value and is
+ *
+ * @param {number} size - `data` parameter length. Often set to a tile's `tile.tileData.dense.length` value.
+ * @param {Array<number>} data - The tile data array.
+ * @param {'log' | 'linear'} valueScaleType 'log' or 'linear'.
+ * @param {[number, number]} valueScaleDomain
+ * @param {number} pseudocount - The pseudocount is generally the minimum non-zero value and is
  * used so that our log scaling doesn't lead to NaN values.
- * @param {array} colorScale
+ * @param {Array<[r: number, g: number, b: number, a: number]>} colorScale
  * @param {boolean} ignoreUpperRight
  * @param {boolean} ignoreLowerLeft
- * @param {array} shape Array `[numRows, numCols]`, used when iterating over a subset of rows,
+ * @param {[numRows: number, numCols: number] | null} shape - Array `[numRows, numCols]`, used when iterating over a subset of rows,
  * when one needs to know the width of each column.
- * @param {array} zeroValueColor The color to use for rendering zero data values, [r, g, b, a].
- * @param {object} selectedRowsOptions Rendering options when using a `selectRows` track option.
+ * @param {[r: number, g: number, b: number, a: number] | null} zeroValueColor - The color to use for rendering zero data values, [r, g, b, a].
+ * @param {Partial<SelectedRowsOptions> | null} selectedRowsOptions - Rendering options when using a `selectRows` track option.
+ *
  * @returns {Uint8ClampedArray} A flattened array of pixel values.
  */
 export function workerSetPix(
@@ -125,7 +138,8 @@ export function workerSetPix(
   zeroValueColor = null,
   selectedRowsOptions = null,
 ) {
-  let valueScale = null;
+  /** @type {import('../types').Scale} */
+  let valueScale;
 
   if (valueScaleType === 'log') {
     valueScale = scaleLog().range([254, 0]).domain(valueScaleDomain);
@@ -140,13 +154,12 @@ export function workerSetPix(
     valueScale = scaleLinear().range([254, 0]).domain(valueScaleDomain);
   }
 
-  // De-structure the selectedRowsOptions object.
   const {
-    selectedRows = null,
-    selectedRowsAggregationMode = null,
-    selectedRowsAggregationWithRelativeHeight = null,
-    selectedRowsAggregationMethod = null,
-  } = selectedRowsOptions || {};
+    selectedRows,
+    selectedRowsAggregationMode = 'mean',
+    selectedRowsAggregationWithRelativeHeight = false,
+    selectedRowsAggregationMethod = 'client',
+  } = selectedRowsOptions ?? {};
 
   let filteredSize = size;
   if (shape && selectedRows) {
@@ -165,6 +178,7 @@ export function workerSetPix(
   const tileWidth = shape ? shape[1] : Math.sqrt(size);
   const pixData = new Uint8ClampedArray(filteredSize * 4);
 
+  /** @type {(x: number) => number} */
   const dToRgbIdx = (x) => {
     const v = valueScale(x);
     if (Number.isNaN(v)) return 254;
@@ -174,8 +188,9 @@ export function workerSetPix(
   /**
    * Set the ith element of the pixData array, using value d.
    * (well not really, since i is scaled to make space for each rgb value).
-   * @param i Index of the element.
-   * @param d The value to be transformed and then inserted.
+   *
+   * @param {number} i - Index of the element.
+   * @param {number} d - The value to be transformed and then inserted.
    */
   const setPixData = (i, d) => {
     // Transparent
@@ -216,7 +231,7 @@ export function workerSetPix(
 
   let d;
   try {
-    if (selectedRows) {
+    if (selectedRows && shape) {
       // We need to set the pixels in the order specified by the `selectedRows` parameter.
       // Call the setPixDataForSelectedRows helper function,
       // which will loop over the data for us and call setPixData().
@@ -239,6 +254,8 @@ export function workerSetPix(
     }
   } catch (err) {
     console.warn('Odd datapoint');
+    console.warn('d:', d);
+    d = d ?? 0;
     console.warn('valueScale.domain():', valueScale.domain());
     console.warn('valueScale.range():', valueScale.range());
     console.warn('value:', valueScale(d + pseudocount));
@@ -251,14 +268,16 @@ export function workerSetPix(
   return pixData;
 }
 
+/**
+ * Yanked from https://github.com/numpy/numpy/blob/master/numpy/core/src/npymath/halffloat.c#L466
+ *
+ * Does not support infinities or NaN. All requests with such
+ * values should be encoded as float32
+ *
+ * @param {number} h
+ * @returns {number}
+ */
 function float32(h) {
-  /**
-   * Yanked from https://github.com/numpy/numpy/blob/master/numpy/core/src/npymath/halffloat.c#L466
-   *
-   * Does not support infinities or NaN. All requests with such
-   * values should be encoded as float32
-   */
-
   let hExp = h & 0x7c00;
   let hSig;
   let fExp;
@@ -295,7 +314,12 @@ function float32(h) {
   }
 }
 
-function _base64ToArrayBuffer(base64) {
+/**
+ * Convert a base64 string to an array buffer
+ * @param {string} base64
+ * @returns {ArrayBuffer}
+ */
+function base64ToArrayBuffer(base64) {
   const binaryString = atob(base64);
   const len = binaryString.length;
 
@@ -308,7 +332,13 @@ function _base64ToArrayBuffer(base64) {
   return bytes.buffer;
 }
 
-function _uint16ArrayToFloat32Array(uint16array) {
+/**
+ * Convert a uint16 array to a float32 array
+ *
+ * @param {Uint16Array} uint16array
+ * @returns {Float32Array}
+ */
+function uint16ArrayToFloat32Array(uint16array) {
   const bytes = new Uint32Array(uint16array.length);
 
   for (let i = 0; i < uint16array.length; i++) {
@@ -321,14 +351,60 @@ function _uint16ArrayToFloat32Array(uint16array) {
 }
 
 /**
- * Convert a response from the tile server to
- * data that can be used by higlass
+ * @typedef TileData<Server>
+ * @property {string} server
+ * @property {string} tileId
+ * @property {number} zoomLevel
+ * @property {[number] | [number, number]} tilePos
+ * @property {string} tilesetUid
  */
-export function tileResponseToData(data, server, theseTileIds) {
-  if (!data) {
-    // probably an error
-    data = {};
-  }
+
+/**
+ * @typedef DenseTileData
+ * @property {string} server
+ * @property {string} tileId
+ * @property {number} zoomLevel
+ * @property {[number] | [number, number]} tilePos
+ * @property {string} tilesetUid
+ * @property {Float32Array} dense
+ * @property {string} dtype
+ * @property {DenseDataExtrema1D | DenseDataExtrema2D} denseDataExtrema
+ * @property {number} minNonZero
+ * @property {number} maxNonZero
+ */
+
+/**
+ * @template T
+ * @typedef {Omit<T, keyof DenseTileData> & (TileData | DenseTileData)} CompletedTileData
+ */
+
+/**
+ * @typedef TileResponse
+ * @property {string=} dense - a base64 encoded string
+ */
+
+/**
+ * Convert a response from the tile server to data that can be used by higlass.
+ *
+ * WARNING: Mutates the data object.
+ *
+ * @template {TileResponse} T
+ * @param {Record<string, T>} inputData
+ * @param {string} server
+ * @param {string[]} theseTileIds
+ *
+ * @returns {Record<string, CompletedTileData<T>>}
+ *
+ * Trevor: This function is littered with ts-expect-error comments because
+ * the type of mutation happening to the input object is very tricky to type.
+ * The type signature of the function tries to adequately describe the mutation,
+ * to outside users.
+ */
+export function tileResponseToData(inputData, server, theseTileIds) {
+  /** @type {Record<string, Partial<DenseTileData>>} */
+  // @ts-expect-error - This function works by overriing all the properties of inputData
+  // It's not great, but I don't want to touch the implementation.
+  const data = inputData ?? {};
 
   for (const thisId of theseTileIds) {
     if (!(thisId in data)) {
@@ -345,21 +421,28 @@ export function tileResponseToData(data, server, theseTileIds) {
 
     // slice from position 2 to exclude tileId and zoomLevel
     // filter by NaN to exclude metadata portions of the tile request
-    data[key].tilePos = keyParts
+    /** @type {[number] | [number, number]} */
+    // @ts-expect-error - tilePos is [number] or [number, number]
+    const tilePos = keyParts
       .slice(2, keyParts.length)
       .map((x) => +x)
       .filter((x) => !Number.isNaN(x));
+    data[key].tilePos = tilePos;
     data[key].tilesetUid = keyParts[0];
 
     if ('dense' in data[key]) {
-      const arrayBuffer = _base64ToArrayBuffer(data[key].dense);
+      /** @type {string} */
+      // @ts-expect-error - The input of this function requires that dense is a string
+      // We are overriding the property on the input object, so TS is upset.
+      const base64 = data[key].dense;
+      const arrayBuffer = base64ToArrayBuffer(base64);
       let a;
 
       if (data[key].dtype === 'float16') {
         // data is encoded as float16s
         /* comment out until next empty line for 32 bit arrays */
         const uint16Array = new Uint16Array(arrayBuffer);
-        const newDense = _uint16ArrayToFloat32Array(uint16Array);
+        const newDense = uint16ArrayToFloat32Array(uint16Array);
         a = newDense;
       } else {
         // data is encoded as float32s
@@ -367,7 +450,7 @@ export function tileResponseToData(data, server, theseTileIds) {
       }
 
       const dde =
-        data[key].tilePos.length === 2
+        tilePos.length === 2
           ? new DenseDataExtrema2D(a)
           : new DenseDataExtrema1D(a);
 
@@ -375,22 +458,23 @@ export function tileResponseToData(data, server, theseTileIds) {
       data[key].denseDataExtrema = dde;
       data[key].minNonZero = dde.minNonZeroInTile;
       data[key].maxNonZero = dde.maxNonZeroInTile;
-      /*
-      if (data[key]['minNonZero'] === Number.MAX_SAFE_INTEGER &&
-          data[key]['maxNonZero'] === Number.MIN_SAFE_INTEGER) {
-          // if there's no values except 0,
-          // then do use it as the min value
-
-          data[key]['minNonZero'] = 0;
-          data[key]['maxNonZero'] = 1;
-      }
-      */
     }
   }
 
+  // @ts-expect-error - We have completed the tile data.
   return data;
 }
 
+/**
+ * Fetch tiles from the server.
+ *
+ * @param {string} outUrl
+ * @param {string} server
+ * @param {string[]} theseTileIds
+ * @param {string} authHeader
+ * @param {(data: Record<string, CompletedTileData<TileResponse>>) => void} done
+ * @param {Record<string, unknown>} requestBody
+ */
 export function workerGetTiles(
   outUrl,
   server,
@@ -399,6 +483,7 @@ export function workerGetTiles(
   done,
   requestBody,
 ) {
+  /** @type {Record<string, string>} */
   const headers = {
     'content-type': 'application/json',
   };
@@ -418,14 +503,6 @@ export function workerGetTiles(
     .then((response) => response.json())
     .then((data) => {
       done(tileResponseToData(data, server, theseTileIds));
-      /*
-      const denses = Object.values(data)
-        .filter(x => x.dense)
-        .map(x => x.dense);
-      */
-      // .map(x => x.dense.buffer);
-
-      // done.transfer(data, denses);
     })
     .catch((err) => console.warn('err:', err));
 }

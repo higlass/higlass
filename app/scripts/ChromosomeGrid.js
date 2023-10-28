@@ -1,3 +1,4 @@
+// @ts-nocheck
 import PixiTrack from './PixiTrack';
 import ChromosomeInfo from './ChromosomeInfo';
 import SearchField from './SearchField';

@@ -1,5 +1,3 @@
-// @ts-check
-
 /**
  * Create a dictionary from a list of [key, value] pairs.
  *

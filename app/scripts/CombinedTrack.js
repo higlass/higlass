@@ -1,3 +1,4 @@
+// @ts-nocheck
 import slugid from 'slugid';
 
 class CombinedTrack {

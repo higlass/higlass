@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { viewer } from '../../app/scripts/hglib';
 
 import createDiv from './create-div';

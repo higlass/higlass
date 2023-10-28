@@ -1,4 +1,3 @@
-// @ts-check
 import slugid from 'slugid';
 import pako from 'pako';
 import genbankParser from 'genbank-parser';

@@ -1,4 +1,3 @@
-// @ts-check
 import absToChr from './abs-to-chr';
 
 /** @typedef {[startChromName: string, startChromPos: number, endChromName: string, endChromPos: number]} GenomicLoci */

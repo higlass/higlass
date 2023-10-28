@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Throttle and debounce a function call
  *

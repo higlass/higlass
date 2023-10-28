@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Convert a 1D numerical array into a canvas image
  * @param {Uint8ClampedArray} pixData - 1D data array

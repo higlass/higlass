@@ -1,20 +1,15 @@
-// @ts-check
 import { mean, sum, variance, deviation } from 'd3-array';
+
+/** @typedef {(values: number[]) => number | undefined} Aggregation */
 
 /**
  * Get an aggregation function from a function name.
- * @template {'mean' | 'sum' | 'variance' | 'deviation'} Type
- * @param {Type} name - The name of an aggregation function
- * ('mean', 'sum', 'variance', 'deviation'). If an unknown string is passed,
- * the mean function will be used, and a console warning will be thrown.
- * @returns {{
- *  mean: typeof mean,
- *  sum: typeof sum,
- *  variance: typeof variance,
- *  deviation: typeof deviation,
- * }[Type]} The function of interest as determined by the string,
+ * @param {'mean' | 'sum' | 'variance' | 'deviation'} name - The type of aggregation.
+ * If an unknown string is passed, the mean function will be used (and a warning will be logged).
+ * @returns {Aggregation} The function of interest as determined by the string,
  */
 const getAggregationFunction = (name) => {
+  /** @type {Aggregation} */
   let aggFunc;
   const lowerCaseName = name ? name.toLowerCase() : name;
   switch (lowerCaseName) {
@@ -36,7 +31,6 @@ const getAggregationFunction = (name) => {
         'Encountered an unsupported selectedRowsAggregationMode option.',
       );
   }
-  // @ts-expect-error - TS can't infer type-mapping
   return aggFunc;
 };
 

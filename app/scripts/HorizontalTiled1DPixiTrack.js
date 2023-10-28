@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Tiled1DPixiTrack from './Tiled1DPixiTrack';
 import AxisPixi from './AxisPixi';
 

@@ -1,4 +1,3 @@
-// @ts-check
 import { scaleLinear } from 'd3-scale';
 import { fake as fakePubSub } from './hocs/with-pub-sub';
 

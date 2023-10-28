@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* ------------------------------- Primitives ------------------------------- */
 
 export * from './primitives';

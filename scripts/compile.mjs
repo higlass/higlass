@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as esbuild from 'esbuild';
 import * as vite from 'vite';
 import * as babel from '@babel/core';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Configs
 import { GLOBALS } from './configs';
 

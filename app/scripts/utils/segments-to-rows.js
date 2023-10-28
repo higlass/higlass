@@ -1,3 +1,4 @@
+// @ts-nocheck
 import IntervalTree from './interval-tree';
 
 function segmentsToRows(segments) {

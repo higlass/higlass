@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Generate a SVG line
  * @param   {number}  x1  Start X

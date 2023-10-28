@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Go through a list of tracks and expand combined
  * tracks.

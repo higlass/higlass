@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { tsvParseRows } from 'd3-dsv';
 import { parseChromsizesRows } from '../utils';
 

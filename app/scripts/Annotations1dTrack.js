@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { color } from 'd3-color';
 import PixiTrack from './PixiTrack';
 

@@ -1,4 +1,3 @@
-// @ts-check
 import { isCombinedTrackConfig } from './type-guards';
 
 /**

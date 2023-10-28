@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 
 import ContextMenuItem from './ContextMenuItem';

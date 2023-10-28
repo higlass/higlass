@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Non-negative modulo function. E.g., `mod(-1, 5) === 4` while `-1 % 5 === -1`.
  *

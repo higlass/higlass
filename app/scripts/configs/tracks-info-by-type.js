@@ -1,4 +1,3 @@
-// @ts-check
 import { TRACKS_INFO } from './tracks-info';
 
 /** @typedef {Record<string, import('./tracks-info').TrackInfo>} TracksInfoByType */
