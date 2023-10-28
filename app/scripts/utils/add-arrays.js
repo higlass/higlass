@@ -1,4 +1,3 @@
-
 /** @type {<T>(index: T) => T} */
 const identity = (i) => i;
 

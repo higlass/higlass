@@ -1,4 +1,3 @@
-
 /**
  * @param {import('../types').TrackConfig} trackConfig
  * @return {trackConfig is import('../types').CombinedTrackConfig}

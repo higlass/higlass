@@ -1,4 +1,3 @@
-
 /**
  * Download a file to the user's computer.
  * @param {string} filename - Name of the file to download

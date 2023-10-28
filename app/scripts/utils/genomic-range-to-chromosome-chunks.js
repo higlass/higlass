@@ -1,4 +1,3 @@
-
 /**
  * Using the [genomicStart, genomicEnd] range, get an array of "chromosome chunks",
  * where each chunk range starts and ends with the same chromosome.

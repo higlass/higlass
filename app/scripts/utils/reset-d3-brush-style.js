@@ -1,4 +1,3 @@
-
 /** @typedef {import('d3-selection').BaseType} BaseType */
 
 /**

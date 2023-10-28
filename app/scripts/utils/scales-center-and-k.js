@@ -1,4 +1,3 @@
-
 /**
  * Calculate the center of the scale as well as its scale
  * factor

@@ -1,4 +1,3 @@
-
 /**
  * @template T
  * @typedef DataTask

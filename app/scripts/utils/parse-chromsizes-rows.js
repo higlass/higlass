@@ -1,4 +1,3 @@
-
 /** @typedef {[string, number]} ChromsizeRow */
 
 /**

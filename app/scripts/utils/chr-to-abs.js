@@ -1,4 +1,3 @@
-
 /**
  * Convert a chromosome position to an absolute genome position.
  *

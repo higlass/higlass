@@ -1,4 +1,3 @@
-
 /**
  * Convert a base64 encoded image into a canvas object.
  * @param {string} base64 - Base64 string encoding the image.

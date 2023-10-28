@@ -1,4 +1,3 @@
-
 /** @param {number} c */
 const componentToHex = (c) => {
   const hex = c.toString(16);

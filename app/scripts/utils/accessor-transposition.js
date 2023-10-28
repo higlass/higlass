@@ -1,4 +1,3 @@
-
 /**
  * Factory function for a transposition accessor for a 2D matrix in form of a 1D
  * array.

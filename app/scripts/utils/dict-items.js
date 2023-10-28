@@ -1,4 +1,3 @@
-
 /**
  * @template T
  * @typedef {Array<{ [Key in keyof T]: [Key, T[Key]] }[keyof T]>} DictItems

@@ -1,4 +1,3 @@
-
 /**
  * @param {{ from: number, color: string }[]} steps
  * @param {number} width

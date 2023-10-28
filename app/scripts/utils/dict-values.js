@@ -1,4 +1,3 @@
-
 /**
  * Return an array of values that are present in this dictionary
  *
