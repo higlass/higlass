@@ -1,22 +1,35 @@
-import * as esbuild from 'esbuild';
-import * as vite from 'vite';
-import * as babel from '@babel/core';
-import * as React from 'react';
-import * as PIXI from 'pixi.js';
-
+/**
+ * A custom script that builds the higlass library and writes it to the dist/ directory.
+ *
+ * Ideally we could just use Vite's build (or just esbuild), but the legacy compatability
+ * needs of HiGlass require some extra modifications to the build outputs.
+ *
+ * In this file you will find:
+ *
+ * 1.) A Vite build that generates the UMD and ESM builds
+ * 2.) A babel transform that transpiles the UMD and ESM builds to ES5 classes. This is
+ *   necessary for HiGlass plugins to work (see: https://github.com/higlass/higlass/pull/1141#issue-1561403774)
+ * 3.) A esbuild transform that minifies the UMD build (for hglib.min.js)
+ * 4.) A custom HTML templates that shows usage of the UMD and ESM builds
+ *
+ * If we end up moving towards a more modern build (i.e., ESM only with ES6 classes), then
+ * this file can be removed.
+ */
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as url from 'node:url';
+
+import * as esbuild from 'esbuild';
+import * as vite from 'vite';
+import * as babel from '@babel/core';
+
+import * as React from 'react';
+import * as PIXI from 'pixi.js';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 const REACT_VERSION = React.version.split('.')[0];
 const PIXI_VERSION = PIXI.VERSION.split('.')[0];
-
-const inputHTML = await fs.promises.readFile(
-  path.resolve(__dirname, '../index.html'),
-  { encoding: 'utf-8' },
-);
 
 /**
  * @template {string} T
@@ -48,6 +61,11 @@ function collectViteBuildOutputs(buildResult, filenames) {
   return result;
 }
 
+/**
+ * Generates the UMD and ESM builds library code.
+ *
+ * @returns {Promise<{ umd: string, minifiedUmd: string, esm: string, css: string }>}
+ */
 async function build() {
   const viteBuildResult = await vite.build({
     configFile: path.resolve(__dirname, '../vite.config.mjs'),
@@ -101,31 +119,49 @@ async function build() {
   }
 }
 
-const bundle = await build();
-const out = path.resolve(__dirname, '../dist');
-await fs.promises.mkdir(out, { recursive: true });
-await fs.promises.writeFile(path.resolve(out, 'hglib.js'), bundle.umd);
-await fs.promises.writeFile(path.resolve(out, 'hglib.min.js'), bundle.minifiedUmd);
-await fs.promises.writeFile(path.resolve(out, 'higlass.mjs'), bundle.esm);
-await fs.promises.writeFile(path.resolve(out, 'hglib.css'), bundle.css);
-await fs.promises.writeFile(
-  path.resolve(out, 'index.html'),
-  inputHTML.replace(
+/**
+ * Generate HTML template for the demo page.
+ *
+ * The import block needs to be replaced, depending on the ESM vs UMD build.
+ * See usage in main().
+ *
+ * @param {string} importHTML - The HTML block where libaries are imported
+ */
+async function generateHTML(importHTML) {
+  const template = await fs.promises.readFile(
+    path.resolve(__dirname, '../index.html'),
+    { encoding: 'utf-8' },
+  );
+  return template.replace(
     /<!-- HIGLASS IMPORT -->(.|\n)*<!-- HIGLASS IMPORT -->/,
-    `\
+    importHTML,
+  );
+}
+
+/**
+ * Build the library and write it.
+ *
+ * @param {object} options
+ * @param {string} options.outDir
+ */
+async function main({ outDir }) {
+  const bundle = await build();
+  await fs.promises.mkdir(outDir, { recursive: true });
+  // CSS
+  await fs.promises.writeFile(path.resolve(outDir, 'hglib.css'), bundle.css);
+  // UMD
+  await fs.promises.writeFile(path.resolve(outDir, 'hglib.js'), bundle.umd);
+  await fs.promises.writeFile(path.resolve(outDir, 'hglib.min.js'), bundle.minifiedUmd);
+  await fs.promises.writeFile(path.resolve(outDir, 'index.html'), await generateHTML(`\
     <link rel="stylesheet" href="./hglib.css">
     <script src="https://unpkg.com/react@${REACT_VERSION}/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@${REACT_VERSION}/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/pixi.js@${PIXI_VERSION}/dist/browser/pixi.min.js"></script>
     <script src="./hglib.min.js"></script>
-  `,
-  ),
-);
-await fs.promises.writeFile(
-  path.resolve(out, 'esm.html'),
-  inputHTML.replace(
-    /<!-- HIGLASS IMPORT -->(.|\n)*<!-- HIGLASS IMPORT -->/,
-    `\
+  `));
+  // ESM
+  await fs.promises.writeFile(path.resolve(outDir, 'higlass.mjs'), bundle.esm);
+  await fs.promises.writeFile(path.resolve(outDir, 'esm.html'), await generateHTML(`\
     <link rel="stylesheet" href="./hglib.css">
     <script type="importmap">
       {
@@ -140,6 +176,7 @@ await fs.promises.writeFile(
       import * as hglib from "./higlass.mjs";
       globalThis.hglib = hglib;
     </script>
-  `,
-  ),
-);
+  `));
+}
+
+main({ outDir: path.resolve(__dirname, '../dist') });
