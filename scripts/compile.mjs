@@ -37,7 +37,7 @@ const PIXI_VERSION = PIXI.VERSION.split('.')[0];
  * @param {ReadonlyArray<T>} filenames
  * @returns {{ [K in T]: string }}
  */
-function collectViteBuildOutputs(buildResult, filenames) {
+function collectExpectedViteBuildOutputs(buildResult, filenames) {
   if (!Array.isArray(buildResult)) {
     throw new Error('Expected an array of outputs');
   }
@@ -90,16 +90,17 @@ async function build() {
     },
   });
 
-  const { 'higlass.umd.js': umd, 'higlass.mjs': esm, 'style.css': css } = collectViteBuildOutputs(
-    viteBuildResult,
-    ['higlass.umd.js', 'higlass.mjs', 'style.css'],
-  );
+  const expected = collectExpectedViteBuildOutputs(viteBuildResult, [
+    'higlass.umd.js',
+    'higlass.mjs',
+    'style.css',
+  ]);
 
-  const transpiledUmd = await babel.transformAsync(umd, {
+  const transpiledUmd = await babel.transformAsync(expected["higlass.umd.js"], {
     plugins: ['@babel/plugin-transform-classes'],
   });
 
-  const transpiledEsm = await babel.transformAsync(esm, {
+  const transpiledEsm = await babel.transformAsync(expected["higlass.mjs"], {
     plugins: ['@babel/plugin-transform-classes'],
   });
 
@@ -115,8 +116,8 @@ async function build() {
     umd: transpiledUmd.code,
     minifiedUmd: minifiedTranspiledUmd.code,
     esm: transpiledEsm.code,
-    css,
-  }
+    css: expected["style.css"],
+  };
 }
 
 /**
@@ -151,17 +152,25 @@ async function main({ outDir }) {
   await fs.promises.writeFile(path.resolve(outDir, 'hglib.css'), bundle.css);
   // UMD
   await fs.promises.writeFile(path.resolve(outDir, 'hglib.js'), bundle.umd);
-  await fs.promises.writeFile(path.resolve(outDir, 'hglib.min.js'), bundle.minifiedUmd);
-  await fs.promises.writeFile(path.resolve(outDir, 'index.html'), await generateHTML(`\
+  await fs.promises.writeFile(
+    path.resolve(outDir, 'hglib.min.js'),
+    bundle.minifiedUmd,
+  );
+  await fs.promises.writeFile(
+    path.resolve(outDir, 'index.html'),
+    await generateHTML(`\
     <link rel="stylesheet" href="./hglib.css">
     <script src="https://unpkg.com/react@${REACT_VERSION}/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@${REACT_VERSION}/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/pixi.js@${PIXI_VERSION}/dist/browser/pixi.min.js"></script>
     <script src="./hglib.min.js"></script>
-  `));
+  `),
+  );
   // ESM
   await fs.promises.writeFile(path.resolve(outDir, 'higlass.mjs'), bundle.esm);
-  await fs.promises.writeFile(path.resolve(outDir, 'esm.html'), await generateHTML(`\
+  await fs.promises.writeFile(
+    path.resolve(outDir, 'esm.html'),
+    await generateHTML(`\
     <link rel="stylesheet" href="./hglib.css">
     <script type="importmap">
       {
@@ -176,7 +185,8 @@ async function main({ outDir }) {
       import * as hglib from "./higlass.mjs";
       globalThis.hglib = hglib;
     </script>
-  `));
+  `),
+  );
 }
 
 main({ outDir: path.resolve(__dirname, '../dist') });
